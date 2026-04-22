@@ -5,25 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>منيو حلويات بوسي | الرقي والفخامة</title>
-    <!-- استدعاء الخطوط الملكية المستوردة -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
         /* =========================================
            المحرك اللوني والهوية البصرية 
-           (تم زيادة التشبع اللوني والوضوح بنسبة 20% حسب الطلب)
            ========================================= */
         :root {
-            --primary-color: #F59CB7; /* تم زيادة التشبع اللوني ليصبح أكثر حيوية */
-            --primary-dark: #E67A99;  /* درجة أغمق وأكثر عمقاً */
-            --gold-accent: #DFA918;   /* ذهبي أكثر إشراقاً وبريقاً */
+            --primary-color: #F59CB7; 
+            --primary-dark: #E67A99;  
+            --gold-accent: #DFA918;   
             --gold-light: #FFF9E6;    
             --bg-color: #FFF4F7;      
             --card-bg: #FFFFFF;       
-            --text-dark: #3A2E25;     /* بني داكن أكثر لزيادة تباين ووضوح القراءة */
+            --text-dark: #3A2E25;     
             --text-muted: #8F7671;    
             
             --whatsapp-green: #25D366;
-            --danger-color: #E53935;  /* أحمر قوي للتنبيهات الصحية */
+            --danger-color: #E53935;  
             --success-color: #66BB6A; 
             
             --transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
@@ -47,17 +45,13 @@
             display: flex; 
             flex-direction: column; 
             overflow-x: hidden; 
-            padding-bottom: 100px;
-            /* تحسين وضوح الخطوط (زيادة حدة النص) */
+            padding-bottom: 0px;
             text-rendering: optimizeLegibility;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
 
-        /* فلتر زيادة التشبع والوضوح 20% لجميع الصور في الموقع */
-        img {
-            filter: saturate(1.2) contrast(1.05);
-        }
+        img { filter: saturate(1.2) contrast(1.05); }
 
         /* شاشة التحميل */
         #splash-screen {
@@ -114,7 +108,6 @@
         .section-title { color: var(--text-dark); font-size: 2.4rem; font-weight: 900; display: inline-block; position: relative; padding: 0 24px; background: var(--bg-color); z-index: 2; }
         .section-title-wrap::after { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 2px; background: linear-gradient(to right, transparent, var(--primary-color), transparent); z-index: 1; opacity: 0.8; }
         
-        /* معرض سابقة الأعمال (Gallery) */
         .gallery-wrapper { margin-bottom: 2.5rem; background: white; padding: 1.5rem 0; border-radius: 20px; box-shadow: 0 8px 25px rgba(230, 122, 153, 0.1); border: 1px solid rgba(245, 156, 183, 0.4); }
         .gallery-title { color: var(--primary-dark); font-size: 1.3rem; font-weight: 900; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; justify-content: center; }
         .gallery-scroll { display: flex; gap: 12px; overflow-x: auto; padding: 0 1.5rem 10px 1.5rem; scrollbar-width: none; }
@@ -152,7 +145,6 @@
         .add-to-cart-btn { width: 100%; background: white; color: var(--primary-dark); border: 2px solid var(--primary-dark); border-radius: 14px; padding: 12px 0; font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: var(--transition); }
         .add-to-cart-btn:active { background: var(--primary-dark); color: white; transform: scale(0.98); }
         
-        /* الكروت العريضة العامة */
         .chic-card-wide { grid-column: 1 / -1; padding: 0 0 2.5rem 0; text-align: right; align-items: flex-start; }
         .chic-card-wide .card-image-wrapper { height: 220px; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
         .chic-card-wide .card-content-wrap { padding: 0 2.5rem; align-items: flex-start; }
@@ -164,135 +156,83 @@
         .chic-card-wide .add-to-cart-btn { width: auto; padding: 12px 40px; }
 
         /* =========================================
-           التحفة الفنية لقسم التورت (The Clean Masterpiece)
+           قسم بطاقات الهدايا (Gift Cards) والتدرجات الجديدة
            ========================================= */
-        .torte-masterpiece {
-            grid-column: 1 / -1;
-            background: #FFFFFF;
-            border-radius: 30px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(230, 122, 153, 0.15);
-            border: 1px solid rgba(245, 156, 183, 0.5);
-            position: relative;
-            margin-top: 10px;
-            margin-bottom: 30px;
-            animation: fadeIn 0.6s ease forwards;
-        }
+        .gift-faq-wrapper { background: white; border-radius: 20px; padding: 24px; margin-bottom: 25px; border: 2px dashed rgba(230, 122, 153, 0.4); box-shadow: 0 8px 25px rgba(230, 122, 153, 0.08); position: relative; overflow: hidden;}
+        .gift-faq-wrapper::before { content: '💳'; position: absolute; top: -15px; left: -15px; font-size: 6rem; opacity: 0.05; transform: rotate(-20deg); }
+        .gift-faq-title { text-align: center; color: var(--primary-dark); font-weight: 900; font-size: 1.6rem; margin-bottom: 25px; position: relative; z-index: 1;}
+        .faq-item { margin-bottom: 18px; padding-bottom: 18px; border-bottom: 1px solid rgba(230, 122, 153, 0.15); position: relative; z-index: 1;}
+        .faq-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .faq-q { color: var(--text-dark); font-weight: 900; font-size: 1.25rem; display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+        .faq-q::before { content: '👑'; font-size: 1.2rem; margin-top: 2px;}
+        .faq-a { color: var(--text-muted); font-weight: 700; font-size: 1.1rem; padding-right: 32px; line-height: 1.7; }
 
-        .mp-hero {
-            position: relative;
-            width: 100%;
-            height: 380px; 
-            background: var(--bg-color);
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
-            overflow: hidden;
-        }
-        .mp-hero img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            transition: transform 0.5s ease;
-        }
+        .card-visa-style { width: 100%; max-width: 380px; margin: 0 auto; aspect-ratio: 1.586/1; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; margin-bottom: 10px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); transition: transform 0.4s ease;}
+        .chic-card-wide:hover .card-visa-style { transform: translateY(-5px) rotateX(5deg); }
+        .card-visa-style::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to bottom right, rgba(255,255,255,0.4) 0%, transparent 40%, rgba(255,255,255,0.1) 100%); pointer-events: none; transform: rotate(30deg); }
+        .card-visa-style::after { content: '✨'; position: absolute; bottom: 15px; right: 20px; font-size: 2rem; opacity: 0.2; }
+        .cv-chip { width: 45px; height: 32px; background: linear-gradient(135deg, #FDE68A 0%, #D97706 100%); border-radius: 6px; opacity: 0.95; margin-bottom: auto; position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.1);}
+        .cv-chip::after { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(0,0,0,0.2); }
+        .cv-chip::before { content: ''; position: absolute; top: 0; left: 50%; width: 1px; height: 100%; background: rgba(0,0,0,0.2); }
+        .cv-brand { font-weight: 900; color: inherit; font-size: 1.4rem; letter-spacing: -0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);}
+        .cv-name { font-weight: 800; font-size: 1.1rem; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); text-transform: uppercase;}
+        .cv-value { font-weight: 900; font-size: 2.2rem; text-align: left; letter-spacing: 1px; text-shadow: 0 2px 5px rgba(0,0,0,0.3); display: flex; align-items: baseline; gap: 5px;}
+        .cv-currency { font-size: 1rem; font-weight: 700; opacity: 0.9; }
         
-        .mp-body {
-            padding: 35px 25px 30px; 
-            background: #FFFFFF;
-            position: relative;
-            border-top-left-radius: 35px;
-            border-top-right-radius: 35px;
-            margin-top: -30px; 
-            z-index: 2;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.08); 
-        }
+        .tier-dynamic { background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #000000 100%); color: #facc15; border: 1px solid rgba(255,255,255,0.1); }
+        
+        /* تدرجات ألوان بطاقات الهدايا للسلة والطلب */
+        .tier-silver { background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 50%, #94a3b8 100%); color: #1e293b; border: 1px solid rgba(255,255,255,0.5); }
+        .tier-gold { background: linear-gradient(135deg, #fef08a 0%, #eab308 50%, #b45309 100%); color: #451a03; border: 1px solid rgba(255,255,255,0.4); }
+        .tier-rose { background: linear-gradient(135deg, #fbcfe8 0%, #fda4af 50%, #be185d 100%); color: #4c0519; border: 1px solid rgba(255,255,255,0.5); }
+        .tier-titanium { background: linear-gradient(135deg, #94a3b8 0%, #475569 50%, #0f172a 100%); color: #f8fafc; border: 1px solid rgba(255,255,255,0.2); }
+        .tier-emerald { background: linear-gradient(135deg, #34d399 0%, #059669 50%, #064e3b 100%); color: #f0fdf4; border: 1px solid rgba(255,255,255,0.2); }
+        .tier-navy { background: linear-gradient(135deg, #60a5fa 0%, #1d4ed8 50%, #1e3a8a 100%); color: #eff6ff; border: 1px solid rgba(255,255,255,0.2); }
+        .tier-maroon { background: linear-gradient(135deg, #fca5a5 0%, #b91c1c 50%, #7f1d1d 100%); color: #fef2f2; border: 1px solid rgba(255,255,255,0.2); }
+        .tier-black { background: linear-gradient(135deg, #334155 0%, #0f172a 50%, #000000 100%); color: #facc15; border: 1px solid rgba(255,255,255,0.1); }
 
-        .mp-clean-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px dashed rgba(230, 122, 153, 0.2);
-        }
-        .mp-clean-title {
-            color: var(--primary-dark);
-            font-size: 2.2rem;
-            font-weight: 900;
-            margin-bottom: 12px;
-            line-height: 1.3;
-        }
-        .mp-clean-desc {
-            color: var(--text-muted);
-            font-size: 1.15rem;
-            line-height: 1.7;
-            font-weight: 700;
-            padding: 0 10px;
-        }
+        /* خيارات ألوان البطاقة في نافذة الإصدار */
+        .gc-color-btn { width: 42px; height: 42px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .gc-color-btn.active { border-color: var(--primary-dark); transform: scale(1.15); box-shadow: 0 0 0 3px rgba(230, 122, 153, 0.4); }
+        .gc-color-btn.silver { background: linear-gradient(135deg, #f1f5f9, #94a3b8); }
+        .gc-color-btn.gold { background: linear-gradient(135deg, #fef08a, #b45309); }
+        .gc-color-btn.rose { background: linear-gradient(135deg, #fbcfe8, #be185d); }
+        .gc-color-btn.titanium { background: linear-gradient(135deg, #94a3b8, #0f172a); }
+        .gc-color-btn.emerald { background: linear-gradient(135deg, #34d399, #064e3b); }
+        .gc-color-btn.navy { background: linear-gradient(135deg, #60a5fa, #1e3a8a); }
+        .gc-color-btn.maroon { background: linear-gradient(135deg, #fca5a5, #7f1d1d); }
+        .gc-color-btn.black { background: linear-gradient(135deg, #334155, #000000); }
 
-        .mp-warning {
-            background: linear-gradient(135deg, var(--gold-light), white);
-            border-right: 5px solid var(--gold-accent);
-            padding: 15px 20px;
-            border-radius: 16px;
-            color: var(--text-dark);
-            font-weight: 800;
-            font-size: 1.1rem;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(223, 169, 24, 0.15);
-        }
-
-        .mp-step {
-            background: white;
-            border-radius: 24px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(230, 122, 153, 0.05);
-            border: 1px solid rgba(245, 156, 183, 0.4);
-            text-align: right;
-        }
-        .mp-step-header {
-            display: flex; align-items: center; gap: 15px; margin-bottom: 20px;
-            border-bottom: 2px dashed rgba(230, 122, 153, 0.2); padding-bottom: 15px;
-        }
-        .mp-step-num {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white; width: 40px; height: 40px; border-radius: 12px;
-            display: flex; justify-content: center; align-items: center;
-            font-weight: 900; font-size: 1.4rem; box-shadow: 0 5px 15px rgba(230, 122, 153, 0.4);
-        }
+        /* =========================================
+           التحفة الفنية لقسم التورت 
+           ========================================= */
+        .torte-masterpiece { grid-column: 1 / -1; background: #FFFFFF; border-radius: 30px; overflow: hidden; box-shadow: 0 20px 60px rgba(230, 122, 153, 0.15); border: 1px solid rgba(245, 156, 183, 0.5); position: relative; margin-top: 10px; margin-bottom: 30px; animation: fadeIn 0.6s ease forwards; }
+        .mp-hero { position: relative; width: 100%; height: 380px; background: var(--bg-color); border-top-left-radius: 30px; border-top-right-radius: 30px; overflow: hidden; }
+        .mp-hero img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .mp-body { padding: 35px 25px 30px; background: #FFFFFF; position: relative; border-top-left-radius: 35px; border-top-right-radius: 35px; margin-top: -30px; z-index: 2; box-shadow: 0 -10px 30px rgba(0,0,0,0.08); }
+        .mp-clean-header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px dashed rgba(230, 122, 153, 0.2); }
+        .mp-clean-title { color: var(--primary-dark); font-size: 2.2rem; font-weight: 900; margin-bottom: 12px; line-height: 1.3; }
+        .mp-clean-desc { color: var(--text-muted); font-size: 1.15rem; line-height: 1.7; font-weight: 700; padding: 0 10px; }
+        .mp-warning { background: linear-gradient(135deg, var(--gold-light), white); border-right: 5px solid var(--gold-accent); padding: 15px 20px; border-radius: 16px; color: var(--text-dark); font-weight: 800; font-size: 1.1rem; margin-bottom: 25px; box-shadow: 0 5px 15px rgba(223, 169, 24, 0.15); }
+        .mp-step { background: white; border-radius: 24px; padding: 25px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(230, 122, 153, 0.05); border: 1px solid rgba(245, 156, 183, 0.4); text-align: right; }
+        .mp-step-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; border-bottom: 2px dashed rgba(230, 122, 153, 0.2); padding-bottom: 15px; }
+        .mp-step-num { background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); color: white; width: 40px; height: 40px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-weight: 900; font-size: 1.4rem; box-shadow: 0 5px 15px rgba(230, 122, 153, 0.4); }
         .mp-step-title { color: var(--text-dark); font-size: 1.4rem; font-weight: 900; }
-
         .mp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media(max-width: 768px) { .mp-grid { grid-template-columns: 1fr; } }
-        
         .mp-input-group { display: flex; flex-direction: column; gap: 10px; }
         .mp-label { font-size: 1.1rem; font-weight: 800; color: var(--text-muted); }
-        
-        .mp-input { 
-            width: 100%; padding: 16px; border-radius: 16px; 
-            border: 2px solid rgba(230, 122, 153, 0.2); font-size: 1.15rem; 
-            font-family: 'Tajawal', sans-serif; outline: none; transition: var(--transition); 
-            background: #FAFAFA; color: var(--text-dark); font-weight: 800; appearance: none; 
-        }
-        select.mp-input { 
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23E67A99" d="M7 10l5 5 5-5z"/></svg>'); 
-            background-repeat: no-repeat; background-position: left 15px center; padding-left: 45px;
-        }
+        .mp-input { width: 100%; padding: 16px; border-radius: 16px; border: 2px solid rgba(230, 122, 153, 0.2); font-size: 1.15rem; font-family: 'Tajawal', sans-serif; outline: none; transition: var(--transition); background: #FAFAFA; color: var(--text-dark); font-weight: 800; appearance: none; }
+        select.mp-input { background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23E67A99" d="M7 10l5 5 5-5z"/></svg>'); background-repeat: no-repeat; background-position: left 15px center; padding-left: 45px; }
         .mp-input:focus { border-color: var(--primary-dark); background: white; box-shadow: 0 0 0 4px rgba(230, 122, 153, 0.2); }
-        
         .mp-counter { display: flex; align-items: center; justify-content: space-between; background: white; border: 2px solid rgba(230, 122, 153, 0.3); border-radius: 16px; padding: 10px 15px; height: 65px; }
         .mp-counter-btn { background: var(--bg-color); color: var(--primary-dark); border: none; width: 45px; height: 45px; border-radius: 12px; font-weight: 900; font-size: 1.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
         .mp-counter-btn:active { background: var(--primary-dark); color: white; transform: scale(0.9); }
         .mp-counter-val { font-size: 1.8rem; font-weight: 900; color: var(--text-dark); text-align: center; line-height: 1; }
-        
-        .mp-file-upload { 
-            position: relative; overflow: hidden; background: linear-gradient(135deg, white, var(--bg-color)); 
-            border: 2px dashed var(--primary-color); border-radius: 16px; padding: 25px; 
-            text-align: center; cursor: pointer; color: var(--text-dark); font-weight: 900; 
-            font-size: 1.2rem; transition: var(--transition); 
-        }
+        .mp-file-upload { position: relative; overflow: hidden; background: linear-gradient(135deg, white, var(--bg-color)); border: 2px dashed var(--primary-color); border-radius: 16px; padding: 25px; text-align: center; cursor: pointer; color: var(--text-dark); font-weight: 900; font-size: 1.2rem; transition: var(--transition); }
         .mp-file-upload:active { transform: scale(0.98); }
         .mp-file-upload input { position: absolute; top: 0; left: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
         .mp-img-preview { width: 140px; height: 140px; border-radius: 16px; object-fit: cover; margin: 15px auto 0; display: none; border: 3px solid var(--primary-color); box-shadow: 0 8px 20px rgba(230, 122, 153, 0.2); }
-
         .mp-addons-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         @media(max-width: 600px) { .mp-addons-container { grid-template-columns: 1fr; } }
         .mp-addon-item { display: flex; align-items: center; background: #FAFAFA; padding: 15px; border-radius: 16px; border: 2px solid transparent; cursor: pointer; transition: var(--transition); }
@@ -300,14 +240,13 @@
         .mp-addon-item input[type="checkbox"] { width: 22px; height: 22px; margin-left: 12px; accent-color: var(--primary-dark); }
         .mp-addon-item span { font-size: 1.1rem; font-weight: 800; flex: 1; color: var(--text-dark); }
         .mp-addon-item .addon-price { color: white; font-weight: 900; background: var(--primary-dark); padding: 5px 10px; border-radius: 10px; font-size: 1rem;}
-
         .mp-action-bar { background: white; padding: 30px; border-top: 1px solid rgba(230, 122, 153, 0.2); display: flex; flex-direction: column; align-items: center; gap: 15px; text-align: center; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;}
         .mp-price-label { font-size: 1.3rem; font-weight: 800; color: var(--text-muted); margin-bottom: 5px;}
         .mp-price-val { font-size: 3.5rem; font-weight: 900; color: var(--primary-dark); line-height: 1; text-shadow: 0 2px 5px rgba(230, 122, 153, 0.2);}
         .mp-add-btn { background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); color: white; border: none; width: 100%; max-width: 450px; padding: 20px; border-radius: 20px; font-weight: 900; font-size: 1.5rem; cursor: pointer; transition: var(--transition); box-shadow: 0 12px 30px rgba(230, 122, 153, 0.4); display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 15px;}
         .mp-add-btn:active { transform: translateY(4px); box-shadow: 0 6px 15px rgba(230, 122, 153, 0.2); }
 
-        /* السلة والـ Checkout */
+        /* السلة والموديلز */
         .cart-fab { position: fixed; bottom: 30px; left: 30px; background: var(--primary-dark); color: white; width: 68px; height: 68px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 2.6rem; box-shadow: 0 12px 36px rgba(230, 122, 153, 0.5); cursor: pointer; z-index: 1000; transform: scale(0); transition: transform 0.3s; }
         .cart-fab.visible { transform: scale(1); }
         .cart-badge { position: absolute; top: -2px; right: -2px; background: var(--gold-accent); color: var(--text-dark); font-size: 1.1rem; font-weight: 900; width: 26px; height: 26px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid white; }
@@ -344,7 +283,6 @@
         .promo-wrapper .checkout-input { margin-bottom: 0; }
         .promo-btn { background: var(--primary-dark); color: white; border: none; border-radius: 14px; padding: 0 15px; font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: var(--transition);}
         .promo-btn:active { transform: scale(0.95); }
-        
         .cart-summary { background: var(--bg-color); border-radius: 14px; padding: 15px; margin-top: 15px; border: 1px dashed rgba(230, 122, 153, 0.3); }
         .summary-row { display: flex; justify-content: space-between; font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-dark);}
         .cart-footer { padding: 1.5rem; background: white; border-top: 1px solid rgba(230, 122, 153, 0.2); }
@@ -352,6 +290,14 @@
         .cart-total-val { color: var(--primary-dark); font-size: 2rem; }
         .send-whatsapp-btn { width: 100%; background: var(--whatsapp-green); color: white; border: none; padding: 15px; border-radius: 16px; font-size: 1.4rem; font-weight: 900; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: var(--transition); box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3);}
         .send-whatsapp-btn:active { transform: translateY(2px); box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);}
+
+        /* نافذة التخصيص لبطاقة الهدايا (Gift Card Modal) */
+        .smart-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(58, 46, 37, 0.8); backdrop-filter: blur(10px); z-index: 5000; display: none; opacity: 0; transition: opacity 0.4s ease; }
+        .smart-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -40%) scale(0.9); width: 92%; max-width: 420px; background: white; border-radius: 28px; z-index: 5001; padding: 30px 24px; display: none; opacity: 0; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 30px 60px rgba(0,0,0,0.2); border: 2px solid var(--primary-color); text-align: center; }
+        .smart-modal.open { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        .smart-modal-header h3 { color: var(--text-dark); font-weight: 900; font-size: 1.6rem; margin-bottom: 15px; }
+        .smart-btn-decline { background: transparent; color: var(--text-muted); border: 2px solid rgba(143, 118, 113, 0.3); width: 100%; padding: 14px; border-radius: 16px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: var(--transition);}
+        .smart-btn-decline:active { background: rgba(0,0,0,0.05); }
 
         /* Upsell Modal */
         .upsell-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(58, 46, 37, 0.7); z-index: 3000; display: none; opacity: 0; transition: opacity 0.3s; backdrop-filter: blur(5px);}
@@ -363,59 +309,67 @@
         .upsell-btn:active { transform: scale(0.95); }
         .upsell-skip { display: block; margin-top: 15px; color: var(--text-muted); text-decoration: underline; font-weight: bold; cursor: pointer; }
 
-        /* Smart Shape Modal (التوعية الذكية للتورت - عميلنا العزيز) */
-        .smart-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(58, 46, 37, 0.8); backdrop-filter: blur(10px); z-index: 5000; display: none; opacity: 0; transition: opacity 0.4s ease; }
-        .smart-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -40%) scale(0.9); width: 92%; max-width: 420px; background: white; border-radius: 28px; z-index: 5001; padding: 30px 24px; display: none; opacity: 0; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 30px 60px rgba(0,0,0,0.2); border: 2px solid var(--primary-color); text-align: center; }
-        .smart-modal.open { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-        .smart-icon { font-size: 4rem; margin-bottom: 10px; display: block; animation: float 3s ease-in-out infinite;}
-        .smart-modal-header h3 { color: var(--text-dark); font-weight: 900; font-size: 1.6rem; margin-bottom: 15px; }
-        .smart-modal-body { font-size: 1.15rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 25px; font-weight: 700; text-align: right;}
-        .smart-btn-accept { background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%); color: white; border: none; width: 100%; padding: 16px; border-radius: 16px; font-weight: 900; font-size: 1.2rem; cursor: pointer; margin-bottom: 12px; box-shadow: 0 6px 15px rgba(230, 122, 153, 0.4); transition: var(--transition);}
-        .smart-btn-accept:active { transform: scale(0.95); }
-        .smart-btn-decline { background: transparent; color: var(--text-muted); border: 2px solid rgba(143, 118, 113, 0.3); width: 100%; padding: 14px; border-radius: 16px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: var(--transition);}
-        .smart-btn-decline:active { background: rgba(0,0,0,0.05); }
-
-        /* Lightbox (معرض الصور المنبثق الفاخر) */
         .lightbox-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(15px); z-index: 99990; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .lightbox-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.85); z-index: 99991; display: none; opacity: 0; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); max-width: 95vw; max-height: 90vh; flex-direction: column; align-items: center; justify-content: center; }
         .lightbox-container.open { transform: translate(-50%, -50%) scale(1); opacity: 1; }
         .lightbox-img { max-width: 100%; max-height: 80vh; border-radius: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 30px rgba(230, 122, 153, 0.2); object-fit: contain; }
         .lightbox-close { position: absolute; top: -60px; right: 0; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.5); color: white; width: 45px; height: 45px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: var(--transition); backdrop-filter: blur(5px); }
-        .lightbox-close:active { transform: scale(0.9); background: rgba(255,255,255,0.4); }
 
-        /* الفوتر - الزر السري للإدارة */
-        footer { background-color: var(--primary-dark); color: white; text-align: center; padding: 3rem 1.5rem; border-top-left-radius: 40px; border-top-right-radius: 40px; margin-top: auto; position: relative; }
-        .footer-logo { color: var(--gold-light); font-size: 2.2rem; font-weight: 900; margin-bottom: 1rem; cursor: default; user-select: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
-
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--text-dark); color: white; padding: 14px 24px; border-radius: 30px; font-size: 1.15rem; font-weight: 800; z-index: 99999; opacity: 0; visibility: hidden; transition: var(--transition); text-align: center; line-height: 1.6; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 2px solid rgba(255,255,255,0.1);}
-        .toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
-        .hidden { display: none !important; }
+        /* =========================================
+           الفوتر الملكي (الجديد)
+           ========================================= */
+        .premium-footer { background-color: var(--primary-dark); color: white; padding: 4rem 1.5rem 2rem; border-top-left-radius: 40px; border-top-right-radius: 40px; margin-top: auto; position: relative; z-index: 10; box-shadow: 0 -10px 30px rgba(230, 122, 153, 0.15);}
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2.5rem; max-width: 1100px; margin: 0 auto; text-align: right; }
         
-        /* القائمة الجانبية للعميل (VIP Concierge Drawer) */
+        .footer-col-brand { text-align: center; }
+        @media(min-width: 768px) { .footer-col-brand { text-align: right; border-left: 1px dashed rgba(255,255,255,0.2); padding-left: 2rem;} }
+        .footer-logo { color: var(--gold-light); font-size: 2.5rem; font-weight: 900; margin-bottom: 0.5rem; cursor: default; user-select: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; text-shadow: 0 2px 10px rgba(0,0,0,0.1);}
+        .footer-brand-desc { font-size: 1.1rem; color: var(--gold-light); opacity: 0.9; font-weight: 700; line-height: 1.6; margin-bottom: 1rem;}
+        
+        .footer-col h4 { color: var(--gold-light); font-size: 1.4rem; font-weight: 900; margin-bottom: 1.2rem; padding-bottom: 10px; position: relative; display: inline-block;}
+        .footer-col h4::after { content: ''; position: absolute; bottom: 0; right: 0; width: 40px; height: 3px; background: var(--gold-accent); border-radius: 2px;}
+        
+        .footer-link { display: flex; align-items: center; gap: 8px; color: white; opacity: 0.9; text-decoration: none; margin-bottom: 1rem; font-size: 1.15rem; font-weight: 800; cursor: pointer; transition: var(--transition); }
+        .footer-link:hover, .footer-link:active { opacity: 1; color: var(--gold-light); transform: translateX(-5px); }
+        .footer-link-icon { font-size: 1.2rem; }
+        
+        .footer-bottom { text-align: center; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 3rem; padding-top: 1.5rem; font-size: 1.1rem; opacity: 0.8; font-weight: bold; color: var(--gold-light);}
+
+        /* نوافذ المعلومات الفخمة (المنبثقة من الفوتر) */
+        .info-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(58, 46, 37, 0.8); backdrop-filter: blur(8px); z-index: 6000; display: none; opacity: 0; transition: opacity 0.3s; }
+        .info-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -40%) scale(0.9); width: 92%; max-width: 500px; background: white; border-radius: 28px; z-index: 6001; display: none; flex-direction: column; opacity: 0; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); box-shadow: 0 20px 50px rgba(0,0,0,0.2); max-height: 85vh; border: 2px solid var(--primary-color);}
+        .info-modal.open { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        
+        .info-header { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: white; padding: 20px 24px; border-top-left-radius: 26px; border-top-right-radius: 26px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .info-header h3 { font-size: 1.5rem; font-weight: 900; margin: 0; display: flex; align-items: center; gap: 10px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);}
+        .info-close-btn { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; width: 36px; height: 36px; border-radius: 10px; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition);}
+        .info-close-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.3); }
+        
+        .info-body { padding: 24px; overflow-y: auto; flex: 1; text-align: right; color: var(--text-dark); line-height: 1.8; font-size: 1.15rem; font-weight: 700; }
+        .info-body p { margin-bottom: 15px; }
+        .info-body ul { padding-right: 24px; margin-bottom: 15px; list-style-type: none;}
+        .info-body li { margin-bottom: 12px; position: relative;}
+        .info-body li::before { content: '✨'; position: absolute; right: -24px; top: 0; font-size: 1rem;}
+        .info-highlight { color: var(--primary-dark); font-weight: 900; font-size: 1.2rem;}
+
+        /* القائمة الجانبية */
         .side-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(58, 46, 37, 0.6); backdrop-filter: blur(8px); z-index: 4000; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
         .side-menu { position: fixed; top: 0; right: -100%; width: 85%; max-width: 340px; height: 100%; background: white; z-index: 4001; transition: right 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; border-top-left-radius: 35px; border-bottom-left-radius: 35px; box-shadow: -10px 0 30px rgba(0,0,0,0.1); overflow: hidden;}
         .side-menu.open { right: 0; }
-        
         .side-menu-header { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); padding: 3.5rem 1.5rem 2.5rem; color: white; position: relative; text-align: right; }
         .side-menu-header::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 20px; background: white; border-top-left-radius: 25px; border-top-right-radius: 25px; }
         .close-side-btn { position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; width: 40px; height: 40px; border-radius: 12px; font-size: 1.5rem; cursor: pointer; transition: var(--transition); display:flex; justify-content:center; align-items:center;}
         .close-side-btn:active { transform: scale(0.9); background: rgba(255,255,255,0.3); }
-        
         .side-menu-content { flex: 1; padding: 0.5rem 1.5rem 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;}
-        
         .side-link { display: flex; align-items: center; gap: 15px; padding: 14px 18px; border-radius: 18px; background: var(--bg-color); border: 1px solid rgba(230, 122, 153, 0.2); color: var(--text-dark); text-decoration: none; cursor: pointer; transition: var(--transition); }
         .side-link:active { transform: translateX(-5px); background: var(--primary-color); color: white; border-color: var(--primary-dark); }
         .side-link .icon-wrap { width: 42px; height: 42px; background: white; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; border: 1px solid rgba(230, 122, 153, 0.3); color: var(--primary-dark); }
         .side-link .text-wrap { font-size: 1.25rem; font-weight: 800; flex: 1;}
         .side-link .arrow { font-size: 1.2rem; opacity: 0.5;}
-
         .side-menu-footer { padding: 1.5rem; border-top: 1px dashed rgba(230, 122, 153, 0.3); background: var(--bg-color); text-align: center; }
         .side-whatsapp-btn { background: var(--whatsapp-green); color: white; border: none; width: 100%; padding: 14px; border-radius: 16px; font-size: 1.2rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 6px 15px rgba(37, 211, 102, 0.2); transition: var(--transition);}
-        .side-whatsapp-btn:active { transform: scale(0.95); }
 
-        /* =========================================
-           لوحة الإدارة المخصصة للموبايل (Eye-Care Pro)
-           ========================================= */
+        /* Admin UI */
         .admin-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); z-index: 10000; display: none; opacity: 0; transition: opacity 0.3s; }
         .admin-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0F172A; color: #F8FAFC; z-index: 10001; display: none; flex-direction: column; opacity: 0; transition: opacity 0.3s; }
         @media(min-width: 768px) { .admin-modal { top: 5%; left: 5%; width: 90%; height: 90%; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); } }
@@ -423,7 +377,6 @@
         .admin-header { padding: 16px; background: #020617; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1E293B; flex-shrink: 0;}
         .admin-header h3 { font-size: 1.3rem; color: #F4B860; font-weight: 900; display:flex; align-items:center; gap:8px;}
         .admin-close-btn { background: rgba(239, 68, 68, 0.15); border: none; color: #EF4444; width: 36px; height: 36px; border-radius: 10px; font-size: 1.4rem; font-weight: bold; cursor: pointer; }
-        
         .admin-tabs-bar { display: flex; overflow-x: auto; background: #0B1120; border-bottom: 1px solid #1E293B; padding: 10px; gap: 8px; flex-shrink: 0; scrollbar-width: none; }
         .admin-tabs-bar::-webkit-scrollbar { display: none; }
         .admin-tab-btn { background: #1E293B; color: #94A3B8; border: 1px solid #334155; padding: 10px 16px; border-radius: 12px; font-size: 1rem; font-weight: 800; white-space: nowrap; cursor: pointer; }
@@ -432,20 +385,16 @@
         .admin-tab-pane { display: none; animation: fadeTab 0.3s ease; }
         .admin-tab-pane.active { display: block; }
         @keyframes fadeTab { from{opacity:0; transform:translateY(5px)} to{opacity:1; transform:translateY(0)} }
-
         .admin-card { background: #1E293B; padding: 16px; border-radius: 16px; border: 1px solid #334155; margin-bottom: 16px; }
         .admin-card-title { color: #F4B860; font-size: 1.15rem; font-weight: 900; margin-bottom: 15px; border-bottom: 1px dashed #334155; padding-bottom: 8px; }
-        
         .admin-input-group { margin-bottom: 12px; display: flex; flex-direction: column; gap: 6px; }
         .admin-input-group label { color: #94A3B8; font-size: 0.95rem; font-weight: 700; }
         .admin-input { width: 100%; padding: 12px 14px; background: #0B1120; border: 1px solid #334155; border-radius: 10px; color: white; font-size: 16px; font-family: 'Tajawal', sans-serif; outline:none;}
         .admin-input:focus { border-color: #F4B860; }
-        
         .admin-btn { background: #E86A8D; color: white; border: none; padding: 14px; border-radius: 12px; font-size: 1.1rem; font-weight: 900; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px;}
         .admin-btn.gold { background: #F4B860; color: #0F172A; }
         .admin-btn.danger { background: rgba(239, 68, 68, 0.15); color: #EF4444; border: 1px solid rgba(239, 68, 68, 0.3); }
         .admin-btn.outline { background: transparent; color: #10B981; border: 1px dashed #10B981; }
-
         .admin-img-preview-box { display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 8px;}
         .admin-img-thumb { width: 60px; height: 60px; border-radius: 10px; object-fit: cover; border: 2px solid #475569; }
         .admin-row-flex { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 10px; margin-bottom: 8px;}
@@ -454,14 +403,12 @@
 </head>
 <body>
 
-    <!-- شاشة التحميل -->
     <div id="splash-screen">
         <div class="splash-title">حلويات بوسي</div>
         <div class="splash-subtitle" id="splashSubtitleDisplay">الرقي والفخامة المطلقة</div>
     </div>
     <div id="toast" class="toast"></div>
 
-    <!-- الهيدر -->
     <header class="hero-header">
         <button class="menu-toggle-btn" onclick="toggleSideMenu()">☰</button>
         <h1 class="brand-name">حلويات بوسي</h1>
@@ -476,17 +423,46 @@
         <div class="category-nav" id="categoryNav"></div>
     </div>
 
-    <!-- محتوى المنيو -->
     <main class="container" id="menuContainer"></main>
 
-    <!-- الفوتر -->
-    <footer>
-        <div class="footer-logo" onclick="handleSecretClick(event)" title="حلويات بوسي">حلويات بوسي</div>
-        <p style="color: var(--gold-light); margin-bottom: 1rem; font-size: 1.3rem; font-weight: 700;">مركز الفرافرة، الوادي الجديد</p>
-        <p style="font-size: 1.15rem; color: var(--gold-light); opacity: 0.8; font-weight: 800;">الجودة الاستثنائية والذوق الرفيع</p>
+    <footer class="premium-footer">
+        <div class="footer-grid">
+            <div class="footer-col-brand">
+                <div class="footer-logo" onclick="handleSecretClick(event)" title="حلويات بوسي">حلويات بوسي</div>
+                <p class="footer-brand-desc">صُنع بحب في قلب الفرافرة 👑<br>نقدم لكُم أعلى معايير الجودة الاستثنائية والذوق الرفيع الذي يليق بمناسباتكم السعيدة.</p>
+                <p style="color: var(--gold-light); font-size: 1.2rem; font-weight: 900; margin-top: 15px;">📍 الكفاح، شارع الوحدة المحلية</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>معلومات تهمك 💡</h4>
+                <a class="footer-link" onclick="openInfoModal('care_pickup')"><span class="footer-link-icon">🛵</span> استلام ونقل الحلويات</a>
+                <a class="footer-link" onclick="openInfoModal('care_storage')"><span class="footer-link-icon">❄️</span> طريقة الحفظ والتبريد</a>
+                <a class="footer-link" onclick="openInfoModal('care_shelf')"><span class="footer-link-icon">⏳</span> مدة الصلاحية</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>روابط هامة 🔗</h4>
+                <a class="footer-link" onclick="openInfoModal('about')"><span class="footer-link-icon">✨</span> من نحن</a>
+                <a class="footer-link" onclick="openInfoModal('policy')"><span class="footer-link-icon">📜</span> سياسة الاسترجاع</a>
+                <a class="footer-link" onclick="openWhatsAppContact()"><span class="footer-link-icon">💬</span> تواصل معنا مباشرة</a>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            جميع الحقوق محفوظة © حلويات بوسي | صُمم بحب وفخامة 👑
+        </div>
     </footer>
 
-    <!-- السلة والطلب -->
+    <div class="info-modal-overlay" id="infoModalOverlay" onclick="closeInfoModal()"></div>
+    <div class="info-modal" id="infoModal">
+        <div class="info-header">
+            <h3 id="infoModalTitle">✨ العنوان</h3>
+            <button class="info-close-btn" onclick="closeInfoModal()">✕</button>
+        </div>
+        <div class="info-body" id="infoModalBody">
+            </div>
+    </div>
+
     <div class="cart-fab" id="cartFab" onclick="toggleCart()">🛒<div class="cart-badge" id="cartBadge">0</div></div>
     <div class="cart-modal-overlay" id="cartOverlay" onclick="toggleCart()"></div>
     <div class="cart-modal" id="cartModal">
@@ -522,7 +498,48 @@
         </div>
     </div>
 
-    <!-- Upsell Modal -->
+    <div class="smart-modal-overlay" id="giftCardOverlay" onclick="closeGiftCardModal()"></div>
+    <div class="smart-modal" id="giftCardModal">
+        <div class="smart-modal-header" style="text-align:center; border-bottom: 2px dashed rgba(230, 122, 153, 0.2); padding-bottom:15px; margin-bottom:20px;">
+            <h3 style="color: var(--primary-dark); font-size: 1.8rem; font-weight: 900; margin-bottom: 5px;">💳 إصدار بطاقة هدايا</h3>
+            <p style="color: var(--text-muted); font-weight: 700; font-size: 1rem; margin: 0;">اصنع تجربة VIP تليق بمن تحب</p>
+        </div>
+        
+        <div class="mp-input-group" style="text-align: right;">
+            <label class="mp-label">اسم الشخص (يُطبع على البطاقة لتمييزه):</label>
+            <input type="text" id="gcInputName" class="mp-input" placeholder="مثال: أستاذ أحمد محمود">
+        </div>
+        
+        <div class="mp-input-group" style="text-align: right; margin-top: 18px;">
+            <label class="mp-label flex justify-between">
+                <span>قيمة البطاقة:</span>
+                <span style="color: var(--gold-accent); font-size: 0.85rem;">كل ما القيمة تزيد، فئة البطاقة بتعلى! 👑</span>
+            </label>
+            <input type="number" id="gcInputValue" class="mp-input" min="100" placeholder="مثال: 500" oninput="autoSelectGiftCardTier(this.value)">
+            <div id="tierFeedbackMsg" style="font-size: 0.95rem; font-weight: 900; color: var(--primary-dark); margin-top: 8px; text-align: center; background: var(--bg-color); padding: 8px; border-radius: 10px;">فئة البطاقة: كلاسيك فضي</div>
+        </div>
+        
+        <div class="mp-input-group" style="text-align: right; margin-top: 18px;">
+            <label class="mp-label" style="font-size: 0.95rem;">اللون المختار (يُحدد تلقائياً حسب القيمة ويمكن تعديله):</label>
+            <div style="display: flex; gap: 10px; margin-top: 8px; justify-content:center; flex-wrap: wrap;">
+                <button class="gc-color-btn silver active" onclick="selectGcColor('silver', this)" title="كلاسيك فضي"></button>
+                <button class="gc-color-btn rose" onclick="selectGcColor('rose', this)" title="روز جولد"></button>
+                <button class="gc-color-btn gold" onclick="selectGcColor('gold', this)" title="ذهبي مميز"></button>
+                <button class="gc-color-btn titanium" onclick="selectGcColor('titanium', this)" title="تيتانيوم"></button>
+                <button class="gc-color-btn emerald" onclick="selectGcColor('emerald', this)" title="زمردي VIP"></button>
+                <button class="gc-color-btn navy" onclick="selectGcColor('navy', this)" title="كحلي ملكي"></button>
+                <button class="gc-color-btn maroon" onclick="selectGcColor('maroon', this)" title="عنابي فخم"></button>
+                <button class="gc-color-btn black" onclick="selectGcColor('black', this)" title="أسود إنفينيتي"></button>
+            </div>
+            <input type="hidden" id="gcInputColor" value="silver">
+        </div>
+        
+        <div style="margin-top: 30px; display: flex; gap: 12px;">
+            <button class="mp-add-btn" style="margin-top: 0; flex: 2;" onclick="confirmGiftCardIssue()">إضافة للسلة 🛒</button>
+            <button class="smart-btn-decline" style="flex: 1;" onclick="closeGiftCardModal()">إلغاء</button>
+        </div>
+    </div>
+
     <div class="upsell-modal-overlay" id="upsellOverlay" onclick="closeUpsellModal()"></div>
     <div class="upsell-modal" id="upsellModal">
         <div class="upsell-header"><h3>لمسات إضافية ✨</h3></div>
@@ -531,7 +548,6 @@
         <span class="upsell-skip" onclick="confirmUpsell(true)">متابعة بدون إضافات</span>
     </div>
 
-    <!-- Smart Shape Modal (نافذة التوعية الذكية للتورت - عميلنا العزيز) -->
     <div class="smart-modal-overlay" id="smartShapeOverlay"></div>
     <div class="smart-modal" id="smartShapeModal">
         <span class="smart-icon">✨</span>
@@ -545,14 +561,12 @@
         </div>
     </div>
 
-    <!-- Lightbox Modal (معرض الصور المنبثق الفاخر) -->
     <div class="lightbox-overlay" id="lightboxOverlay" onclick="closeLightbox()"></div>
     <div class="lightbox-container" id="lightboxContainer">
         <button class="lightbox-close" onclick="closeLightbox()">✕</button>
         <img class="lightbox-img" id="lightboxImg" src="">
     </div>
 
-    <!-- القائمة الجانبية (VIP Drawer) -->
     <div class="side-menu-overlay" id="sideMenuOverlay" onclick="toggleSideMenu()"></div>
     <div class="side-menu" id="sideMenu">
         <div class="side-menu-header">
@@ -567,16 +581,12 @@
         </div>
     </div>
 
-    <!-- =========================================
-         لوحة تحكم الإدارة (Mobile-First Eye-Care Pro)
-         ========================================= -->
     <div class="admin-modal-overlay" id="adminOverlay"></div>
     <div class="admin-modal" id="adminModal">
         <div class="admin-header">
             <h3>⚙️ إدارة المنيو</h3>
             <button class="admin-close-btn" onclick="closeAdmin()">✕</button>
         </div>
-        
         <div class="admin-tabs-bar">
             <button class="admin-tab-btn active" onclick="switchAdminTab('products', this)">📦 المنتجات والأقسام</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('settings', this)">⚙️ إعدادات المتجر</button>
@@ -585,7 +595,6 @@
             <button class="admin-tab-btn" onclick="switchAdminTab('promos', this)">🎁 الخصومات</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('system', this)">🛡️ النظام والداتا</button>
         </div>
-        
         <div class="admin-content-area">
             
             <div id="tab-products" class="admin-tab-pane active">
@@ -708,11 +717,109 @@
             return 4; 
         }
 
+        /* --- بيانات النوافذ المنبثقة للفوتر (جديد) --- */
+        const infoData = {
+            about: {
+                title: "من نحن 👑",
+                icon: "✨",
+                content: `
+                    <p><strong>حلويات بوسي</strong> مش مجرد مكان بيعمل كيك.. إحنا مصنع للسعادة في قلب الفرافرة!</p>
+                    <p>بدأنا بشغف وحب للحلويات، وهدفنا إننا نقدم أعلى معايير الجودة اللي بتنافس البراندات العالمية، بس بلمسة مصرية دافية.</p>
+                    <p>كل خامة بنستخدمها مختارة بعناية شديدة، وكل أوردر بيطلع من عندنا هو قطعة فنية معمولة بحب مخصوص عشان تسعدكم وتزين مناسباتكم.</p>
+                `
+            },
+            policy: {
+                title: "سياسة الاسترجاع 📜",
+                icon: "🤝",
+                content: `
+                    <p>عشان جودتنا هي رأس مالنا، وثقتكم هي هدفنا الأساسي، يهمنا نوضح سياسة التعامل لضمان حقوقكم:</p>
+                    <ul>
+                        <li>نظراً لطبيعة منتجاتنا (مواد غذائية طازجة سريعة التلف)، لا يمكن استرجاع أو استبدال المنتج بعد استلامه ومغادرة المندوب أو الخروج من الفرع.</li>
+                        <li>في حالة وجود أي مشكلة في الجودة عند الاستلام مباشرة، يتم التواصل معنا فوراً (إما بالتبديل أو التعويض).</li>
+                        <li>العربون المدفوع للحجوزات الخاصة لا يُسترد في حالة الإلغاء قبل الموعد بـ 24 ساعة فقط، نظراً للبدء في تجهيز الخامات.</li>
+                    </ul>
+                `
+            },
+            care_pickup: {
+                title: "دليل الاستلام والنقل 🛵",
+                icon: "🎂",
+                content: `
+                    <p class="info-highlight">السر في النقل عشان التورتة توصل سليمة:</p>
+                    <ul>
+                        <li><strong>شيليها زي البيبي 👶:</strong> التورتة لازم تكون على سطح مستوي تماماً (أرضية العربية هي أفضل مكان، بلاش الكرسي المايل أو تحطيها على رجلك).</li>
+                        <li><strong>الجو المناسب ❄️:</strong> شغلي تكييف العربية ووجهيه ناحية العلبة، وابعديها عن أي شمس مباشرة.</li>
+                        <li><strong>السواقة الهادية 🚗:</strong> تجنبي الفرملة المفاجئة أو المطبات القوية عشان نحافظ على التصميم وتفاصيله.</li>
+                    </ul>
+                `
+            },
+            care_storage: {
+                title: "دليل الحفظ والتبريد ❄️",
+                icon: "🧊",
+                content: `
+                    <p class="info-highlight">عشان تحافظي على طعم وقوام الكيك:</p>
+                    <ul>
+                        <li>التورت والحلويات لازم تدخل الثلاجة فوراً بمجرد الوصول للبيت.</li>
+                        <li>ابعديها عن أي أكل ليه ريحة قوية في الثلاجة (زي الثوم أو البصل) لأن الكريمة بتلقط الروائح بسرعة.</li>
+                        <li><strong>نصيحة الصيف والحر ☀️:</strong> التورتة تفضل في الثلاجة وتطلع وقت التقطيع والأكل مباشرة (أو قبلها بـ 5 دقايق بالكتير) عشان الكريمة تفضل متماسكة ومظبوطة وما تسيحش من الحر وتستمتعوا بيها بأفضل قوام 🤤.</li>
+                    </ul>
+                `
+            },
+            care_shelf: {
+                title: "مدة الصلاحية ⏳",
+                icon: "⏱️",
+                content: `
+                    <p class="info-highlight">لأننا نعتمد على الطبيعة 100%:</p>
+                    <ul>
+                        <li>منتجاتنا <strong>خالية تماماً من المواد الحافظة</strong>، لذلك طعمها غني وطازج.</li>
+                        <li>يفضل استهلاك التورت والحلويات الكريمة خلال <strong>3 إلى 4 أيام بحد أقصى</strong>.</li>
+                        <li>يجب أن تكون محفوظة طوال هذه الفترة داخل الثلاجة في علبة محكمة الغلق.</li>
+                    </ul>
+                `
+            }
+        };
+
+        function openInfoModal(topic) {
+            const data = infoData[topic];
+            if(!data) return;
+            document.getElementById('infoModalTitle').innerHTML = `${data.icon} ${data.title}`;
+            document.getElementById('infoModalBody').innerHTML = data.content;
+            document.getElementById('infoModalOverlay').style.display = 'block';
+            document.getElementById('infoModal').style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('infoModalOverlay').style.opacity = '1';
+                document.getElementById('infoModal').classList.add('open');
+            }, 10);
+        }
+
+        function closeInfoModal() {
+            document.getElementById('infoModal').classList.remove('open');
+            document.getElementById('infoModalOverlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('infoModalOverlay').style.display = 'none';
+                document.getElementById('infoModal').style.display = 'none';
+            }, 300);
+        }
+        /* ------------------------------------------- */
+
         /* --- MENU DATA START --- */
         const baseMenuData = {
             "torteRoyal": {
                 "navTitle": "تورت خاصة", "title": "قسم التورت الخاصة 👑", "gallery": [],
                 "items": [{ "name": "تورتة حلويات بوسي الخاصة", "isCalculatingTorte": true, "basePricePerPerson": 145, "minPersons": 4, "maxPersons": 250, "isWide": true, "desc": "القسم الأرقى في حلويات بوسي. خدمات تصميم وتنفيذ التورت للمناسبات الكبرى باحترافية تامة. نلتزم بأعلى معايير الجودة والخامات المستوردة.", "img": "", "isSoldOut": false }]
+            },
+            "giftCards": {
+                "navTitle": "بطاقات الهدايا", "title": "بطاقات هدايا حلويات بوسي 💳", "gallery": [],
+                "items": [
+                    { 
+                        "name": "بطاقة هدايا VIP (مفتوحة القيمة)", 
+                        "price": "sales", 
+                        "desc": "الهدية الأرقى والأكثر تميزاً. حدد القيمة التي تناسبك (تبدأ من 100 ج.م ومفيش حد أقصى). البطاقة بتصدر باسم الشخص اللي هتهديه عشان يحس بمدى غلاوته عندك.", 
+                        "img": "", 
+                        "isSoldOut": false, 
+                        "isWide": true,
+                        "isOpenValueGiftCard": true 
+                    }
+                ]
             },
             "settings": {
                 "promos": {}, "deliveryAreas": [{ "id": "20", "name": "الفرافرة" }],
@@ -733,6 +840,14 @@
             if (savedMenu) { menuData = JSON.parse(savedMenu); } 
             else { menuData = JSON.parse(JSON.stringify(baseMenuData)); }
         } catch(e) { menuData = JSON.parse(JSON.stringify(baseMenuData)); }
+
+        if(!menuData.giftCards) {
+            menuData.giftCards = JSON.parse(JSON.stringify(baseMenuData.giftCards));
+        } else {
+            if(menuData.giftCards.items && !menuData.giftCards.items[0].isOpenValueGiftCard) {
+                menuData.giftCards.items = JSON.parse(JSON.stringify(baseMenuData.giftCards.items));
+            }
+        }
 
         if(!menuData.settings) menuData.settings = JSON.parse(JSON.stringify(baseMenuData.settings));
         if(!menuData.settings.storeInfo) menuData.settings.storeInfo = JSON.parse(JSON.stringify(baseMenuData.settings.storeInfo));
@@ -810,6 +925,108 @@
             saveCart(); updateCartUI(); showToast(`تم إضافة الصنف للسلة.`, 'success');
         }
 
+        // ==========================================
+        // المحرك الخاص بإصدار بطاقات الهدايا (الألوان المتعددة الديناميكية)
+        // ==========================================
+        let currentGiftCardItem = "";
+        
+        function openGiftCardModal(itemName) {
+            currentGiftCardItem = itemName;
+            document.getElementById('gcInputName').value = '';
+            document.getElementById('gcInputValue').value = '100';
+            
+            // افتراضياً نختار الفضي
+            autoSelectGiftCardTier("100");
+            
+            document.getElementById('giftCardOverlay').style.display = 'block';
+            document.getElementById('giftCardModal').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('giftCardOverlay').style.opacity = '1';
+                document.getElementById('giftCardModal').classList.add('open');
+            }, 10);
+        }
+
+        function closeGiftCardModal() {
+            document.getElementById('giftCardModal').classList.remove('open');
+            document.getElementById('giftCardOverlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('giftCardOverlay').style.display = 'none';
+                document.getElementById('giftCardModal').style.display = 'none';
+            }, 300);
+        }
+
+        // الدالة الذكية لتغيير اللون أوتوماتيكياً بناءً على القيمة المدخلة
+        function autoSelectGiftCardTier(valStr) {
+            let numericVal = parseInt(valStr);
+            if (isNaN(numericVal) || numericVal < 100) numericVal = 100;
+
+            let targetColor = 'silver';
+            let tierName = 'كلاسيك فضي';
+
+            if (numericVal >= 10000) { targetColor = 'black'; tierName = 'أسود إنفينيتي'; }
+            else if (numericVal >= 7000) { targetColor = 'maroon'; tierName = 'عنابي فخم'; }
+            else if (numericVal >= 5000) { targetColor = 'navy'; tierName = 'كحلي بلاتينيوم'; }
+            else if (numericVal >= 3000) { targetColor = 'emerald'; tierName = 'زمردي VIP'; }
+            else if (numericVal >= 2000) { targetColor = 'titanium'; tierName = 'تيتانيوم معدني'; }
+            else if (numericVal >= 1000) { targetColor = 'gold'; tierName = 'ذهبي مميز'; }
+            else if (numericVal >= 500) { targetColor = 'rose'; tierName = 'روز جولد'; }
+            else { targetColor = 'silver'; tierName = 'كلاسيك فضي'; }
+
+            // تحديث رسالة التحفيز
+            const feedbackMsg = document.getElementById('tierFeedbackMsg');
+            if(feedbackMsg) {
+                feedbackMsg.textContent = `فئة البطاقة: ${tierName} ✨`;
+            }
+
+            // تفعيل الزر المناسب بصرياً
+            const targetBtn = document.querySelector(`.gc-color-btn.${targetColor}`);
+            if (targetBtn) {
+                selectGcColor(targetColor, targetBtn);
+            }
+        }
+
+        function selectGcColor(color, btnElement) {
+            document.querySelectorAll('.gc-color-btn').forEach(btn => btn.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
+            document.getElementById('gcInputColor').value = color;
+        }
+
+        function confirmGiftCardIssue() {
+            const name = document.getElementById('gcInputName').value.trim();
+            const valStr = document.getElementById('gcInputValue').value;
+            const val = parseInt(valStr);
+            const color = document.getElementById('gcInputColor').value;
+
+            if(!name) { showToast('عميلنا العزيز، لازم نكتب اسم الشخص عشان البطاقة تكون مميزة وقيمة باسمه!', 'error'); return; }
+            if(isNaN(val) || val < 100) { showToast('قيمة البطاقة تبدأ من 100 ج.م على الأقل لتليق بكم.', 'error'); return; }
+
+            let colorNameAr = '';
+            let tierClass = 'tier-' + color; 
+            
+            switch(color) {
+                case 'black': colorNameAr = 'أسود إنفينيتي'; break;
+                case 'gold': colorNameAr = 'ذهبي مميز'; break;
+                case 'silver': colorNameAr = 'كلاسيك فضي'; break;
+                case 'rose': colorNameAr = 'روز جولد'; break;
+                case 'titanium': colorNameAr = 'تيتانيوم معدني'; break;
+                case 'emerald': colorNameAr = 'زمردي VIP'; break;
+                case 'navy': colorNameAr = 'كحلي بلاتينيوم'; break;
+                case 'maroon': colorNameAr = 'عنابي فخم'; break;
+                default: colorNameAr = 'فضي'; tierClass = 'tier-silver';
+            }
+
+            addToCart(`${currentGiftCardItem} (${val} ج.م)`, val, 1, {
+                giftCardName: name,
+                giftCardValue: val,
+                giftCardColorAr: colorNameAr,
+                giftCardTier: tierClass
+            });
+
+            closeGiftCardModal();
+        }
+        // ==========================================
+
+
         function triggerUpsell(e, itemName, itemPrice) {
             const qtyEl = e.parentElement.parentElement.querySelector('.qty-val') ? e.parentElement.parentElement.querySelector('.qty-val') : e.parentElement.querySelector('.qty-val');
             const qty = parseInt(qtyEl.textContent);
@@ -871,10 +1088,13 @@
                     if(i.customData.hasImage) customHtml += `<div class="custom-detail-row"><span class="custom-detail-label">الصورة:</span> تم إرفاق صورة 📸</div>`;
                     if(i.customData.desc) customHtml += `<div class="custom-detail-row"><span class="custom-detail-label">الوصف:</span> ${i.customData.desc}</div>`;
                     if(i.customData.cakeText) customHtml += `<div class="custom-detail-row"><span class="custom-detail-label">الكتابة:</span> ${i.customData.cakeText}</div>`;
-                    if(i.customData.giftCard) customHtml += `<div class="custom-detail-row"><span class="custom-detail-label">الكارت:</span> ${i.customData.giftCard}</div>`;
+                    
+                    if(i.customData.giftCardName) customHtml += `<div class="custom-detail-row" style="color:var(--primary-dark); font-weight:800;"><span class="custom-detail-label">💳 تتصدر باسم:</span> ${i.customData.giftCardName}</div>`;
+                    if(i.customData.giftCardValue) customHtml += `<div class="custom-detail-row" style="color:var(--gold-accent); font-weight:900;"><span class="custom-detail-label">💰 القيمة:</span> ${i.customData.giftCardValue} ج.م</div>`;
+                    if(i.customData.giftCardColorAr) customHtml += `<div class="custom-detail-row" style="font-weight:700;"><span class="custom-detail-label">🎨 التصميم المختار:</span> ${i.customData.giftCardColorAr}</div>`;
+                    
                     if(i.customData.addons && i.customData.addons.length > 0) customHtml += `<div class="custom-detail-row"><span class="custom-detail-label">إضافات:</span> ${i.customData.addons.map(a => a.name).join(' + ')}</div>`;
                     if(i.customData.globalAddons && i.customData.globalAddons.length > 0) customHtml += `<div class="custom-detail-row"><span class="custom-detail-label">إكسترا:</span> ${i.customData.globalAddons.map(a => a.name).join(' + ')}</div>`;
-                    // إظهار التنبيه الصحي بوضوح في السلة
                     if(i.customData.healthNotes) customHtml += `<div class="custom-detail-row" style="color: var(--danger-color); font-weight: 900;"><span class="custom-detail-label">🚨 تنبيه صحي:</span> ${i.customData.healthNotes}</div>`;
                     customHtml += `</div>`;
                 }
@@ -911,9 +1131,13 @@
                     if(i.customData.hasImage) { t += `   📸 تصميم مرفق\n`; hasCustomImage = true; }
                     if(i.customData.desc) t += `   🔸 وصف: ${i.customData.desc}\n`;
                     if(i.customData.cakeText) t += `   🔸 كتابة: ${i.customData.cakeText}\n`;
+                    
+                    if(i.customData.giftCardName) t += `   💳 🎁 *إصدار بطاقة هدية باسم:* ${i.customData.giftCardName}\n`;
+                    if(i.customData.giftCardValue) t += `   💰 *بقيمة:* ${i.customData.giftCardValue} ج.م\n`;
+                    if(i.customData.giftCardColorAr) t += `   🎨 *لون البطاقة المختارة:* ${i.customData.giftCardColorAr}\n`;
+                    
                     if(i.customData.addons) i.customData.addons.forEach(a => { t += `      - ${a.name} (+${a.price})\n`; });
                     if(i.customData.globalAddons) i.customData.globalAddons.forEach(a => { t += `      - ${a.name} (+${a.price})\n`; });
-                    // إضافة المحاذير الصحية بوضوح في الواتساب
                     if(i.customData.healthNotes) t += `   🚨 *تنبيه صحي/حساسية:* ${i.customData.healthNotes}\n`;
                 }
                 if (i.price === 'sales') { sItems += t; } else { pItems += t; } 
@@ -1024,7 +1248,6 @@
                 showToast(`عميلنا العزيز، شكل ${sName} يتطلب ${dynamicMin} فرد على الأقل`, 'error'); return; 
             }
 
-            // التقاط بيانات الحساسية أو المحاذير الصحية
             const healthNotesVal = card.querySelector('.torte-health-notes') ? card.querySelector('.torte-health-notes').value.trim() : "";
 
             const customData = { 
@@ -1041,13 +1264,12 @@
 
             addToCart(`${baseName} (${persons} أفراد)`, (persons * basePrice) + totalAddonsPrice, 1, customData);
             
-            // تصفية الحقول بعد الإضافة للسلة
             card.querySelectorAll('select').forEach(s => s.value="غير محدد"); 
             card.querySelectorAll('input[type=text], textarea').forEach(i => i.value=""); 
             card.querySelector('.torte-img-data').value = ""; 
             card.querySelector('.mp-img-preview').style.display = "none"; 
             card.querySelectorAll('.torte-addon-chk').forEach(chk => chk.checked = false);
-            if(card.querySelector('.torte-health-notes')) card.querySelector('.torte-health-notes').value = ""; // تصفية حقل الحساسية
+            if(card.querySelector('.torte-health-notes')) card.querySelector('.torte-health-notes').value = ""; 
             
             const minP = parseInt(btn.getAttribute('data-min')) || 4; 
             card.querySelector('.torte-size-val').textContent = minP; 
@@ -1079,6 +1301,33 @@
                 const s = document.createElement('section'); s.id = k; s.className = `menu-section ${first ? 'active' : ''}`; 
                 let html = `<div class="section-title-wrap"><h2 class="section-title">${cat.title}</h2></div>`;
                 
+                if(k === 'giftCards') {
+                    html += `
+                    <div class="gift-faq-wrapper">
+                        <div class="gift-faq-title">أسئلة وأجوبة عن بطاقات هدايا بوسي ✨</div>
+                        <div class="faq-item">
+                            <div class="faq-q">إيه هي بطاقة هدايا حلويات بوسي؟</div>
+                            <div class="faq-a">بدل ما تهدي شخص فلوس أو رسالة عادية، بتهديه "بطاقة رقمية فخمة جداً" بتصميم زي الفيزا، يقدر يشتري بيها أي حاجة من المنيو بتاعنا براحته وفي أي وقت.</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-q">قيمة البطاقة بتبدأ من كام؟</div>
+                            <div class="faq-a">علشان نضمن المرونة لكل عملائنا، <strong>القيمة مفتوحة ومفيش ليها حد أقصى!</strong>، بتبدأ فقط من 100 ج.م وأنتِ بتحددي القيمة اللي تناسبك.</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-q">صلاحية البطاقة بتنتهي إمتى؟</div>
+                            <div class="faq-a" style="color: var(--primary-dark); font-weight: 900;">علشان راحتك، <strong>البطاقة ملهاش مدة انتهاء أبداً!</strong> صالحة مدى الحياة وطول ما فيها رصيد العميل يقدر يطلب بيها في أي وقت براحته تماماً.</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-q">البطاقة بتكون باسم مين؟</div>
+                            <div class="faq-a">علشان نميز العميل وندلعه، <strong>البطاقة بتصدر باسم الشخص اللي هتهديه</strong> (بيطبع اسمه على البطاقة نفسها) عشان يحس إنه عميل استثنائي وVIP عندنا.</div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-q">العميل بيستلمها إزاي؟</div>
+                            <div class="faq-a">بعد تأكيدك للطلب، بنصدر كارت فخم باسم المهدى إليه وفيه "كود خاص" (مثال: BOSSY 1234) وبنبعتهولك في صورة راقية جداً باللون اللي اخترتيه عشان تقدري تبعتيها ليه واتساب.</div>
+                        </div>
+                    </div>`;
+                }
+
                 if(cat.gallery && cat.gallery.length > 0) {
                     html += `<div class="gallery-wrapper"><div class="gallery-title">✨ من أعمالنا السابقة</div><div class="gallery-scroll">`;
                     cat.gallery.forEach(gImg => { html += `<div class="gallery-item" onclick="openLightbox('${gImg}')"><img src="${gImg}" loading="lazy"></div>`; });
@@ -1104,7 +1353,6 @@
                             if(!item.isSoldOut) { btnHtml = `<button class="mp-add-btn" data-base="${item.basePricePerPerson}" data-min="${item.minPersons || 4}" onclick="addCalculatedTorte(this, '${item.name}', ${item.basePricePerPerson})">اعتماد التصميم وإضافة للسلة 🛒</button>`; }
                             else { btnHtml = `<button class="mp-add-btn disabled-btn" style="background:#E0E0E0; color:#757575; box-shadow:none; cursor:not-allowed;">نفدت الكمية ⏳</button>`; }
                             
-                            // التصميم الفخم المطور (Clean UI) مع إضافة حقل الحساسية
                             html += `
                             <div class="torte-masterpiece ${soldOutClass}" style="animation-delay:${d}s">
                                 <div class="mp-hero">
@@ -1162,7 +1410,6 @@
                                             <div class="mp-step-title">اللمسات الشخصية 👑</div>
                                         </div>
                                         <div class="mp-grid">
-                                            <!-- إضافة حقل الحساسية بشكل بارز -->
                                             <div class="mp-input-group" style="grid-column: 1 / -1; background: rgba(229, 57, 53, 0.05); padding: 15px; border-radius: 16px; border: 1px dashed var(--danger-color);">
                                                 <label class="mp-label" style="color: var(--danger-color); font-weight: 900;">🚨 محاذير صحية أو حساسية (هام جداً):</label>
                                                 <input type="text" class="mp-input torte-health-notes" placeholder="مثال: حساسية مكسرات، سكر دايت، بدون فراولة..." ${item.isSoldOut ? 'disabled' : ''} style="border-color: rgba(229, 57, 53, 0.3);">
@@ -1198,6 +1445,36 @@
                                     <div class="mp-price-label">التكلفة المبدئية للتصميم</div>
                                     <div class="mp-price-val"><span class="calc-price-val">${defaultPrice.toLocaleString('en-US')}</span> <span style="font-size:1.5rem; color:var(--text-muted);">ج.م</span></div>
                                     ${btnHtml}
+                                </div>
+                            </div>`;
+                        }
+                        else if (k === 'giftCards' && item.isOpenValueGiftCard) {
+                            if(!item.isSoldOut) {
+                                btnHtml = `<button class="add-to-cart-btn" onclick="openGiftCardModal('${item.name}')">إصدار البطاقة الآن 🛒</button>`;
+                            }
+                            
+                            html += `
+                            <div class="chic-card chic-card-wide ${soldOutClass}" style="animation-delay:${d}s">
+                                <div class="card-image-wrapper" style="background:transparent; height:auto; padding:15px 15px 5px 15px; border:none; overflow:visible;">
+                                    <div class="card-visa-style tier-dynamic" dir="ltr">
+                                        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                            <div style="display:flex; flex-direction:column; line-height:1;">
+                                                <span class="cv-brand">Bossy Sweets</span>
+                                                <span style="font-size:0.6rem; opacity:0.8; font-weight:bold; letter-spacing:1px; margin-top:2px;">PREMIUM GIFT CARD</span>
+                                            </div>
+                                            <span style="font-size:0.7rem; opacity:0.9; font-weight:900; letter-spacing:2px;">VIP</span>
+                                        </div>
+                                        <div class="cv-chip"></div>
+                                        <div class="cv-value" style="font-size:1.5rem;">VALUE <span style="font-size:0.9rem; margin-left:10px;">(100+ EGP)</span></div>
+                                        <div class="cv-name" style="margin-top:5px;">VALUED CUSTOMER</div>
+                                    </div>
+                                </div>
+                                <div class="card-content-wrap">
+                                    <div class="card-name">${item.name}</div>
+                                    <div class="card-desc">${item.desc}</div>
+                                    <div class="card-action-row" style="justify-content:center;">
+                                        ${btnHtml}
+                                    </div>
                                 </div>
                             </div>`;
                         }
@@ -1255,7 +1532,7 @@
         document.addEventListener('DOMContentLoaded', () => { try { document.getElementById('displaySlogan').textContent = menuData.settings.storeInfo.slogan || "صنعناها بحُب.. لتهديها لمن تُحب ✨"; buildDeliveryAreas(); buildMenu(); loadCart(); } finally { setTimeout(hideSplash, 1500); } });
 
         /* =========================================
-           نظام الدخول السري وإدارة الداتا (حقن مباشر)
+           نظام الدخول السري وإدارة الداتا
            ========================================= */
         function toggleSideMenu() { 
             const m = document.getElementById('sideMenu'), o = document.getElementById('sideMenuOverlay'); 
@@ -1352,7 +1629,10 @@
                 const isDespacito = menuData[catKey].isDynamicSize && catKey === 'despacito';
                 let priceHtml = ''; let imgHtml = '';
 
-                if(isDespacito && item.prices) {
+                if (item.isOpenValueGiftCard) {
+                    priceHtml = `<div class="admin-input-group"><label>السعر:</label><input type="text" class="admin-input" value="مفتوح ومحدد من العميل" disabled style="opacity:0.7;"></div>`;
+                }
+                else if(isDespacito && item.prices) {
                     priceHtml = `
                         <div class="admin-input-group"><label>سعر المثلث:</label><input type="number" class="admin-input" value="${item.prices.small}" oninput="updateItemData('${catKey}', ${index}, 'prices.small', this.value)"></div>
                         <div class="admin-input-group"><label>سعر الوسط:</label><input type="number" class="admin-input" value="${item.prices.medium}" oninput="updateItemData('${catKey}', ${index}, 'prices.medium', this.value)"></div>
@@ -1384,7 +1664,7 @@
                     priceHtml = `<div class="admin-input-group"><label>السعر (اكتب sales للمبيعات):</label><input type="text" class="admin-input" value="${item.price || 'sales'}" oninput="updateItemData('${catKey}', ${index}, 'price', this.value)"></div>`;
                 }
 
-                if(!isDespacito) {
+                if(!isDespacito && !item.isOpenValueGiftCard) {
                     imgHtml = `
                     <div class="admin-img-preview-box">
                         <img src="${item.img || getPlaceholder()}" class="admin-img-thumb" id="preview_${catKey}_${index}">
@@ -1401,8 +1681,8 @@
                         <button class="admin-close-btn" style="width:30px;height:30px;font-size:1rem;" onclick="deleteItem('${catKey}', ${index})">🗑</button>
                     </div>
                     <div class="admin-input-group"><label>اسم المنتج:</label><input type="text" class="admin-input" value="${item.name}" oninput="updateItemData('${catKey}', ${index}, 'name', this.value)"></div>
-                    ${!isDespacito && !item.isCalculatingTorte ? priceHtml : ''}
-                    ${isDespacito || item.isCalculatingTorte ? priceHtml : ''}
+                    ${!isDespacito && !item.isCalculatingTorte && !item.isOpenValueGiftCard ? priceHtml : ''}
+                    ${isDespacito || item.isCalculatingTorte || item.isOpenValueGiftCard ? priceHtml : ''}
                     <div class="admin-input-group"><label>الوصف:</label><textarea class="admin-input" rows="2" oninput="updateItemData('${catKey}', ${index}, 'desc', this.value)">${item.desc || ''}</textarea></div>
                     ${imgHtml}
                     <div class="admin-row-flex" style="${item.isSoldOut ? 'background:rgba(229,57,53,0.2);' : ''}">
@@ -1617,6 +1897,3 @@
     </script>
 </body>
 </html>
-
-
-
