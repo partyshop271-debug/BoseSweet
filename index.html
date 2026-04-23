@@ -360,7 +360,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // State Management 
+        // State Management
         let currentData = { storeInfo: {}, deliveryOptions: [], torteOptions: {}, categories: {} };
         let cart = [];
         let deliveryFee = 0;
@@ -368,13 +368,12 @@
         let flavorLocalQuantities = {};
         let editingCategory = null;
         let editingItemIndex = null;
-        let itemBase64 = null;
+        let itemBase64 = null; 
         let user = null;
 
         let isConfigLoaded = false;
         let isCategoriesLoaded = false;
 
-        // دالة تشفير الباسورد 
         async function hashPassword(password) {
             const msgBuffer = new TextEncoder().encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -382,14 +381,8 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        // Initialize App
         async function init() {
-            try {
-                await signInAnonymously(auth);
-            } catch (err) {
-                console.error("Auth Error", err);
-            }
-
+            try { await signInAnonymously(auth); } catch (err) { console.error("Auth Error", err); }
             onAuthStateChanged(auth, (u) => {
                 user = u;
                 if (u) { listenToData(); }
@@ -397,27 +390,22 @@
         }
 
         function tryRender() {
-            if(isConfigLoaded && isCategoriesLoaded) {
-                renderAll();
-            }
+            if(isConfigLoaded && isCategoriesLoaded) { renderAll(); }
         }
 
-        // 🚀 نظام الدمج الذكي الجذري لتفادي أي أخطاء من الفايربيز
+        // 🔥 نظام الدمج العبقري لحماية الداتا مهما كانت بايظة في الفايربيز
         function listenToData() {
             const configDocPath = doc(db, 'artifacts', appId, 'public', 'data', 'storeConfig', 'main');
             onSnapshot(configDocPath, (snap) => {
+                const fallbackInfo = getInitialFallback().storeInfo;
                 if (snap.exists()) {
-                    const dbData = snap.data();
-                    const defaultInfo = getInitialFallback().storeInfo;
-                    const dbInfo = dbData.storeInfo || {};
-                    
-                    // دمج البيانات الافتراضية مع اللي جاية من القاعدة عشان مفيش حاجة تقع
-                    currentData.storeInfo = { ...defaultInfo, ...dbInfo };
-                    
-                    currentData.deliveryOptions = dbData.deliveryOptions || [];
-                    currentData.torteOptions = dbData.torteOptions || {};
+                    const dbInfo = snap.data().storeInfo || {};
+                    // دمج ذكي: بياخد بياناتك الأساسية (باسورد، كلاوديناري) ويحط فوقيها الداتا، عشان لو الداتا ناقصة الأساسيات تسندها
+                    currentData.storeInfo = { ...fallbackInfo, ...dbInfo };
+                    currentData.deliveryOptions = snap.data().deliveryOptions || [];
+                    currentData.torteOptions = snap.data().torteOptions || {};
                 } else {
-                    currentData.storeInfo = getInitialFallback().storeInfo;
+                    currentData.storeInfo = fallbackInfo;
                     currentData.deliveryOptions = [];
                     setDoc(configDocPath, { storeInfo: currentData.storeInfo, deliveryOptions: currentData.deliveryOptions });
                 }
@@ -428,9 +416,7 @@
             const catColPath = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
             onSnapshot(catColPath, (snap) => {
                 currentData.categories = {};
-                snap.forEach(doc => {
-                    currentData.categories[doc.id] = doc.data();
-                });
+                snap.forEach(doc => { currentData.categories[doc.id] = doc.data(); });
                 isCategoriesLoaded = true;
                 tryRender();
             }, (err) => console.error("Categories Listen Error", err));
@@ -441,7 +427,6 @@
             const info = currentData.storeInfo;
             document.getElementById('splashSubtitle').innerText = info.splashSubtitle || "";
             
-            // Store Status
             const badge = document.getElementById('storeStatusBadge');
             if(info.isOpen) {
                 badge.className = "inline-flex items-center gap-2 px-5 py-2 rounded-full font-bold text-sm bg-white text-green-600 shadow-soft border border-green-100";
@@ -531,6 +516,7 @@
         window.toCart = (k, i) => {
             const item = currentData.categories[k].items[i];
             const qty = flavorLocalQuantities[`${k}-${i}`];
+            
             const existing = cart.find(c => {
                 if(c.item.id && item.id) return c.item.id === item.id;
                 return c.item.name === item.name;
@@ -676,28 +662,31 @@
             document.body.style.overflow = ''; 
         };
 
-        // 🚀 الحل النهائي (نظام مفتاح الطوارئ) مستحيل اللوجين يرفضك تاني 
+        // 🔥 الماستر كي الذي لا يقهر - بيفتح بالإجبار وبيصلح الداتا
         window.attemptLogin = async () => {
             const pass = document.getElementById('adminPasswordInput').value;
             const hashedPass = await hashPassword(pass);
             const info = currentData.storeInfo || {};
             
-            // 1. مفتاح الطوارئ: Aadmin بيدخل إجباري مهما كانت الداتا بايظة في الفايربيز
-            const isMasterKey = (pass === "Aadmin" || pass === "aadmin");
-            
-            // 2. التحقق الطبيعي (سواء مشفر أو عادي قديم)
-            const isHashMatch = (info.adminPasswordHash === hashedPass);
-            const isPlainMatch = (info.adminPassword === pass);
-            
-            if (isMasterKey || isHashMatch || isPlainMatch) {
+            // 1. مفتاح الطوارئ الذي لا يرد (الماستر كي)
+            if (pass === "Aadmin" || pass === "aadmin") {
+                // لو دخلتي بالماستر كي، بيفرمت الباسورد البايظ ويحط الجديد المشفر أوتوماتيك ويحفظ
+                currentData.storeInfo.adminPasswordHash = await hashPassword("Aadmin");
+                delete currentData.storeInfo.adminPassword; 
+                await syncConfigToFirebase(); 
                 
-                // لو دخلنا بمفتاح الطوارئ أو بالباسورد العادي القديم.. نفرض التشفير فوراً ونصلح الداتا
-                if (isMasterKey || isPlainMatch) {
-                    currentData.storeInfo.adminPasswordHash = await hashPassword(pass);
-                    delete currentData.storeInfo.adminPassword; // بنمسح القديم خالص للأمان
-                    await syncConfigToFirebase(); // بنحفظ التعديل عشان يتصلح للابد
+                closeLogin();
+                openAdmin();
+                return; // يدخل فوراً وميكملش باقي الشروط
+            }
+            
+            // 2. التحقق العادي (لو غيرتي الباسورد بعد كده)
+            if (info.adminPasswordHash === hashedPass || info.adminPassword === pass) {
+                if (info.adminPassword === pass) {
+                    info.adminPasswordHash = hashedPass;
+                    delete info.adminPassword;
+                    await syncConfigToFirebase();
                 }
-                
                 closeLogin();
                 openAdmin();
             } else {
@@ -713,10 +702,9 @@
             document.getElementById('adminSplashSubtitle').value = info.splashSubtitle || "";
             document.getElementById('adminNewPassword').value = ""; 
             
-            // قراءة إعدادات Cloudinary لرفع الصور
             document.getElementById('adminCloudinaryName').value = info.cloudinaryName || ""; 
             document.getElementById('adminCloudinaryPreset').value = info.cloudinaryPreset || ""; 
-
+            
             renderAdminProducts();
             renderAdminDelivery();
             
@@ -830,7 +818,7 @@
 
         window.closeItemModal = () => document.getElementById('adminItemModal').classList.add('hidden');
 
-        // 🚀 ربط Cloudinary لرفع الصور بسرعة الصاروخ
+        // الرفع لـ Cloudinary
         window.saveItemChanges = async () => {
             const name = document.getElementById('itemNameInput').value.trim();
             const price = parseInt(document.getElementById('itemPriceInput').value);
@@ -845,10 +833,9 @@
             try {
                 let finalImageUrl = itemBase64; 
 
-                // لو الصورة دي جديدة من الموبايل
                 if (itemBase64.startsWith('data:image')) {
-                    const cName = currentData.storeInfo.cloudinaryName || ""; 
-                    const cPreset = currentData.storeInfo.cloudinaryPreset || "";
+                    const cName = currentData.storeInfo.cloudinaryName || "dyx4w0dr1"; 
+                    const cPreset = currentData.storeInfo.cloudinaryPreset || "ml_default";
                     
                     if (cName.trim() !== "" && cPreset.trim() !== "") {
                         const formData = new FormData();
@@ -862,7 +849,7 @@
                         
                         const result = await uploadResponse.json();
                         if(result.secure_url) {
-                            finalImageUrl = result.secure_url; // أخدنا الرابط المباشر
+                            finalImageUrl = result.secure_url; 
                         } else {
                             throw new Error("فشل الرفع لـ Cloudinary");
                         }
@@ -909,7 +896,6 @@
             showToast("تم الحذف!");
         };
 
-        // Admin - Settings & Delivery
         async function syncConfigToFirebase() {
             const configDoc = doc(db, 'artifacts', appId, 'public', 'data', 'storeConfig', 'main');
             await setDoc(configDoc, {
@@ -925,7 +911,6 @@
             currentData.storeInfo.minOrderValue = parseInt(document.getElementById('adminMinOrder').value) || 0;
             currentData.storeInfo.splashSubtitle = document.getElementById('adminSplashSubtitle').value;
             
-            // حفظ إعدادات Cloudinary
             currentData.storeInfo.cloudinaryName = document.getElementById('adminCloudinaryName').value.trim();
             currentData.storeInfo.cloudinaryPreset = document.getElementById('adminCloudinaryPreset').value.trim();
             
@@ -969,21 +954,20 @@
             showToast("تم تغيير وتشفير الباسورد بنجاح 🔒");
         };
 
-        // موتور الضغط المسبق قبل الرفع السحابي
         function compressImage(file, callback) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
+                    const MAX_WIDTH = 800; 
                     let width = img.width;
                     let height = img.height;
                     if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
                     canvas.width = width; canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    callback(canvas.toDataURL('image/webp', 0.8));
+                    callback(canvas.toDataURL('image/webp', 0.8)); 
                 };
                 img.src = e.target.result;
             };
@@ -1000,7 +984,7 @@
             });
         };
 
-        // نظام تقسيم ذكي: فك ملف الـ JSON وتقسيمه على الفايربيز
+        // 🔥 درع حماية الاستيراد: بيستورد البيانات القديمة بس بيحمي الباسورد من المسح
         document.getElementById('jsonImportInput').onchange = (e) => {
             const file = e.target.files[0];
             if(!file) return;
@@ -1012,10 +996,16 @@
                     const sysKeys = ['deliveryOptions', 'storeInfo', 'torteOptions', 'adminTokens'];
                     
                     const configDoc = doc(db, 'artifacts', appId, 'public', 'data', 'storeConfig', 'main');
+                    
+                    // دمج ذكي بيحافظ على الباسورد الحالي من الضياع لو الملف القديم مفيهوش باسورد
+                    const fallbackInfo = getInitialFallback().storeInfo;
+                    const importedInfo = data.storeInfo || {};
+                    const protectedStoreInfo = { ...fallbackInfo, ...currentData.storeInfo, ...importedInfo };
+                    
                     const configData = {
-                        storeInfo: data.storeInfo || getInitialFallback().storeInfo,
-                        deliveryOptions: data.deliveryOptions || [],
-                        torteOptions: data.torteOptions || {}
+                        storeInfo: protectedStoreInfo,
+                        deliveryOptions: data.deliveryOptions || currentData.deliveryOptions || [],
+                        torteOptions: data.torteOptions || currentData.torteOptions || {}
                     };
                     await setDoc(configDoc, configData);
 
@@ -1048,7 +1038,6 @@
             setTimeout(() => t.classList.add('translate-y-32', 'opacity-0'), 3000);
         }
 
-        // تم إضافة بيانات Cloudinary الخاصة بك كبيانات افتراضية هنا
         function getInitialFallback() {
             return {
                 storeInfo: {
@@ -1072,4 +1061,5 @@
     </script>
 </body>
 </html>
+
 
