@@ -218,8 +218,8 @@
                 <!-- Products Tab -->
                 <div id="tab-products" class="admin-tab-content block fade-in">
                     <div class="flex flex-col gap-4 mb-8">
-                        <h3 class="text-2xl font-black text-white border-r-4 border-brand-price pr-3">قائمة الأصناف</h3>
-                        <button onclick="openCategoryModal()" class="w-full bg-brand-price text-white py-4 rounded-2xl font-black shadow-lg active:scale-95"><i class="fa-solid fa-plus ml-1"></i> إضافة قسم جديد</button>
+                        <h3 class="text-2xl font-black text-white border-r-4 border-brand-price pr-3">قائمة الأقسام والمنتجات</h3>
+                        <button onclick="openCategoryModal()" class="w-full bg-brand-price text-white py-4 rounded-2xl font-black shadow-lg active:scale-95"><i class="fa-solid fa-plus ml-1"></i> إضافة قسم جديد (زي دوناتس، سينابون..)</button>
                     </div>
                     <div id="adminProductsList" class="space-y-6"></div>
                 </div>
@@ -253,14 +253,27 @@
 
                         <button onclick="saveStoreSettings()" class="w-full bg-brand-price text-white font-black py-4 rounded-xl shadow-lg mt-4">حفظ الإعدادات</button>
                         
-                        <!-- JSON Import Utility -->
+                        <!-- JSON Import Utility - التحديث الأقوى (طريقين للاستيراد) -->
                         <div class="pt-6 border-t border-slate-700">
                             <h4 class="text-brand-bambi font-black mb-3">تقسيم وتحديث شامل (ملف الـ JSON)</h4>
-                            <p class="text-[10px] text-slate-400 mb-3">ارفعي ملف النسخة الاحتياطية هنا، والموقع هيقسمه أوتوماتيك لملفات صغيرة سريعة عشان يمنع أي عطل. 🚀</p>
-                            <label class="block w-full bg-slate-700 text-white text-center py-3 rounded-xl font-bold cursor-pointer border-2 border-dashed border-slate-500 hover:bg-slate-600 transition-colors">
+                            <p class="text-[10px] text-slate-400 mb-3">لو الموبايل بيختار ملفات غريبة زي log_list، تقدري تنسخي النص من ملفك وتلصقيه هنا بدل الرفع! 🚀</p>
+                            
+                            <!-- الطريقة الأولى: زرار الرفع العادي -->
+                            <label class="block w-full bg-slate-700 text-white text-center py-3 rounded-xl font-bold cursor-pointer border-2 border-dashed border-slate-500 hover:bg-slate-600 transition-colors mb-4">
                                 اختيار ملف النسخة الاحتياطية
-                                <input type="file" id="jsonImportInput" accept=".json" class="hidden">
+                                <input type="file" id="jsonImportInput" accept=".json,application/json,text/plain" class="hidden">
                             </label>
+
+                            <div class="flex items-center justify-center gap-4 mb-4">
+                                <div class="h-px bg-slate-600 flex-grow"></div>
+                                <span class="text-xs font-bold text-slate-500">أو خطة الطوارئ</span>
+                                <div class="h-px bg-slate-600 flex-grow"></div>
+                            </div>
+
+                            <!-- الطريقة التانية: مربع النص (مستحيل تفشل) -->
+                            <textarea id="jsonPasteArea" placeholder="افتحي ملف النسخة الاحتياطية، انسخي كل الكلام اللي فيه والصقيه هنا..." class="w-full bg-slate-800 border border-slate-600 text-left text-white rounded-xl p-4 font-mono text-xs h-32 resize-y mb-3" dir="ltr"></textarea>
+                            <button onclick="importFromJsonText()" class="w-full bg-brand-bambi text-brand-berry font-black py-3 rounded-xl shadow-lg hover:bg-brand-bambiDark transition-colors">تحديث البيانات من النص 🔄</button>
+
                         </div>
                     </div>
                 </div>
@@ -290,7 +303,7 @@
     <!-- Modals -->
     <div id="adminItemModal" class="fixed inset-0 bg-black/95 z-[550] hidden items-center justify-center p-4 modal-blur">
         <div class="bg-brand-adminSidebar w-full max-w-lg rounded-[2.5rem] p-6 border border-slate-600 shadow-2xl">
-            <h3 id="itemModalTitle" class="text-2xl font-black text-brand-bambi mb-6">تفاصيل النكهة</h3>
+            <h3 id="itemModalTitle" class="text-2xl font-black text-brand-bambi mb-6">تفاصيل النكهة / المنتج</h3>
             <div class="space-y-4 max-h-[60vh] overflow-y-auto pr-2 admin-scrollbar">
                 <div class="text-center">
                     <div class="w-28 h-28 bg-slate-800 rounded-2xl mx-auto mb-3 overflow-hidden border border-slate-600 flex items-center justify-center relative shadow-inner">
@@ -302,12 +315,12 @@
                         <input type="file" id="itemImgInput" accept="image/*" class="hidden">
                     </label>
                 </div>
-                <input type="text" id="itemNameInput" placeholder="اسم النكهة" class="w-full bg-slate-800 border border-slate-600 text-white rounded-xl p-4 font-bold">
+                <input type="text" id="itemNameInput" placeholder="اسم المنتج (مثال: بوكس 6 قطع)" class="w-full bg-slate-800 border border-slate-600 text-white rounded-xl p-4 font-bold">
                 <input type="number" id="itemPriceInput" placeholder="السعر" class="w-full bg-slate-800 border border-slate-600 text-white rounded-xl p-4 font-bold">
-                <textarea id="itemDescInput" placeholder="وصف النكهة..." class="w-full bg-slate-800 border border-slate-600 text-white rounded-xl p-4 font-bold h-24 resize-none"></textarea>
+                <textarea id="itemDescInput" placeholder="وصف تفصيلي للمنتج..." class="w-full bg-slate-800 border border-slate-600 text-white rounded-xl p-4 font-bold h-24 resize-none"></textarea>
             </div>
             <div class="flex gap-3 mt-8">
-                <button id="saveItemBtn" onclick="saveItemChanges()" class="flex-grow bg-brand-price text-white font-black py-4 rounded-2xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed">حفظ</button>
+                <button id="saveItemBtn" onclick="saveItemChanges()" class="flex-grow bg-brand-price text-white font-black py-4 rounded-2xl shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed">حفظ المنتج</button>
                 <button onclick="closeItemModal()" class="w-1/3 bg-slate-700 text-white font-black py-4 rounded-2xl">إلغاء</button>
             </div>
         </div>
@@ -316,7 +329,7 @@
     <div id="adminCatModal" class="fixed inset-0 bg-black/95 z-[550] hidden items-center justify-center p-4 modal-blur">
         <div class="bg-brand-adminSidebar w-full max-w-sm rounded-[2rem] p-8 border border-slate-600 shadow-2xl text-center">
             <h3 class="text-xl font-black text-brand-bambi mb-4">إضافة قسم جديد 🍭</h3>
-            <input type="text" id="catNameInput" placeholder="مثال: دوناتس، سينابون" class="w-full bg-slate-800 border border-slate-600 text-white rounded-xl p-4 font-bold mb-6 text-center">
+            <input type="text" id="catNameInput" placeholder="مثال: دوناتس، تورت، سينابون" class="w-full bg-slate-800 border border-slate-600 text-white rounded-xl p-4 font-bold mb-6 text-center">
             <div class="flex gap-3">
                 <button onclick="saveNewCategory()" class="flex-grow bg-brand-price text-white font-black py-3 rounded-xl shadow-lg">إضافة</button>
                 <button onclick="closeCategoryModal()" class="bg-slate-700 text-white px-6 py-3 rounded-xl font-black">إلغاء</button>
@@ -393,14 +406,12 @@
             if(isConfigLoaded && isCategoriesLoaded) { renderAll(); }
         }
 
-        // 🔥 نظام الدمج العبقري لحماية الداتا مهما كانت بايظة في الفايربيز
         function listenToData() {
             const configDocPath = doc(db, 'artifacts', appId, 'public', 'data', 'storeConfig', 'main');
             onSnapshot(configDocPath, (snap) => {
                 const fallbackInfo = getInitialFallback().storeInfo;
                 if (snap.exists()) {
                     const dbInfo = snap.data().storeInfo || {};
-                    // دمج ذكي: بياخد بياناتك الأساسية (باسورد، كلاوديناري) ويحط فوقيها الداتا، عشان لو الداتا ناقصة الأساسيات تسندها
                     currentData.storeInfo = { ...fallbackInfo, ...dbInfo };
                     currentData.deliveryOptions = snap.data().deliveryOptions || [];
                     currentData.torteOptions = snap.data().torteOptions || {};
@@ -467,7 +478,7 @@
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-berry/90 via-brand-berry/10 to-transparent"></div>
                         <div class="absolute bottom-4 left-4 right-4 text-center text-white">
                             <h3 class="text-2xl font-black mb-1">${cat.title || cat.navTitle || key}</h3>
-                            <div class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold border border-white/30 inline-block">عرض النكهات</div>
+                            <div class="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold border border-white/30 inline-block">عرض المنتجات</div>
                         </div>
                     </div>`;
                 grid.appendChild(card);
@@ -497,7 +508,7 @@
                                 <span id="qty-${itemKey}" class="font-black text-sm">1</span>
                                 <button onclick="window.adj('${key}', ${idx}, 1)" class="w-7 h-7 bg-white rounded-lg shadow-sm font-black text-green-600">+</button>
                             </div>
-                            <button onclick="window.toCart('${key}', ${idx})" class="w-full bg-brand-bambi text-brand-berry font-black py-2.5 rounded-xl text-xs md:text-sm shadow-sm active:scale-95 transition-transform">إضافة</button>
+                            <button onclick="window.toCart('${key}', ${idx})" class="w-full bg-brand-bambi text-brand-berry font-black py-2.5 rounded-xl text-xs md:text-sm shadow-sm active:scale-95 transition-transform">إضافة للسلة</button>
                         </div>
                     </div>`;
                 grid.appendChild(card);
@@ -516,12 +527,10 @@
         window.toCart = (k, i) => {
             const item = currentData.categories[k].items[i];
             const qty = flavorLocalQuantities[`${k}-${i}`];
-            
             const existing = cart.find(c => {
                 if(c.item.id && item.id) return c.item.id === item.id;
                 return c.item.name === item.name;
             });
-            
             if(existing) existing.quantity += qty; else cart.push({ item, quantity: qty });
             updateCartUI();
             showToast(`تم إضافة ${qty} من ${item.name} للسلة 🌸`);
@@ -662,25 +671,21 @@
             document.body.style.overflow = ''; 
         };
 
-        // 🔥 الماستر كي الذي لا يقهر - بيفتح بالإجبار وبيصلح الداتا
+        // الماستر كي القاهر
         window.attemptLogin = async () => {
             const pass = document.getElementById('adminPasswordInput').value;
             const hashedPass = await hashPassword(pass);
             const info = currentData.storeInfo || {};
             
-            // 1. مفتاح الطوارئ الذي لا يرد (الماستر كي)
             if (pass === "Aadmin" || pass === "aadmin") {
-                // لو دخلتي بالماستر كي، بيفرمت الباسورد البايظ ويحط الجديد المشفر أوتوماتيك ويحفظ
                 currentData.storeInfo.adminPasswordHash = await hashPassword("Aadmin");
                 delete currentData.storeInfo.adminPassword; 
                 await syncConfigToFirebase(); 
-                
                 closeLogin();
                 openAdmin();
-                return; // يدخل فوراً وميكملش باقي الشروط
+                return; 
             }
             
-            // 2. التحقق العادي (لو غيرتي الباسورد بعد كده)
             if (info.adminPasswordHash === hashedPass || info.adminPassword === pass) {
                 if (info.adminPassword === pass) {
                     info.adminPasswordHash = hashedPass;
@@ -704,7 +709,7 @@
             
             document.getElementById('adminCloudinaryName').value = info.cloudinaryName || ""; 
             document.getElementById('adminCloudinaryPreset').value = info.cloudinaryPreset || ""; 
-            
+
             renderAdminProducts();
             renderAdminDelivery();
             
@@ -739,34 +744,44 @@
             Object.keys(currentData.categories).forEach(key => {
                 const cat = currentData.categories[key];
                 const section = document.createElement('div');
-                section.className = 'bg-brand-adminSidebar rounded-3xl border border-slate-700 p-5 shadow-lg';
+                section.className = 'bg-brand-adminSidebar rounded-3xl border border-slate-700 p-6 shadow-xl mb-6 relative overflow-hidden';
+                
                 section.innerHTML = `
-                    <div class="flex justify-between items-center mb-5 pb-3 border-b border-slate-600 text-brand-bambi font-black">
-                        <h4>${cat.title || cat.navTitle || key}</h4>
+                    <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-600 text-brand-bambi font-black">
+                        <h4 class="text-xl">${cat.title || cat.navTitle || key}</h4>
                         <div class="flex gap-2">
-                            <button onclick="window.openAddItem('${key}')" class="bg-green-600/20 text-green-400 p-2 rounded-lg"><i class="fa-solid fa-plus"></i></button>
-                            <button onclick="window.deleteCategory('${key}')" class="bg-red-600/20 text-red-400 p-2 rounded-lg"><i class="fa-solid fa-trash-can"></i></button>
+                            <button onclick="window.deleteCategory('${key}')" class="bg-red-600/20 text-red-400 px-4 py-2 rounded-xl text-sm hover:bg-red-600/30 transition-colors"><i class="fa-solid fa-trash-can ml-1"></i> حذف القسم</button>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="admin-items-${key}"></div>`;
+                    
+                    <button onclick="window.openAddItem('${key}')" class="w-full bg-green-600/20 text-green-400 border-2 border-green-600/30 border-dashed py-4 rounded-2xl font-black mb-5 hover:bg-green-600/30 hover:border-green-600/50 transition-all text-lg">
+                        <i class="fa-solid fa-plus ml-2 text-xl"></i> إضافة منتج جديد في (${cat.title || key})
+                    </button>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="admin-items-${key}"></div>`;
                 list.appendChild(section);
                 
                 const itemsContainer = document.getElementById(`admin-items-${key}`);
-                (cat.items || []).forEach((it, idx) => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'bg-slate-800 p-3 rounded-2xl flex items-center gap-3 border border-slate-700 shadow-sm';
-                    itemDiv.innerHTML = `
-                        <img src="${it.img}" loading="lazy" class="w-12 h-12 rounded-lg object-cover shadow-sm">
-                        <div class="flex-grow text-white">
-                            <p class="font-black text-xs line-clamp-1">${it.name}</p>
-                            <p class="text-brand-price font-black text-[10px]">${it.price} ج</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="window.openEditItem('${key}', ${idx})" class="w-8 h-8 rounded-lg bg-blue-600/20 text-blue-400 flex items-center justify-center"><i class="fa-solid fa-pen text-xs"></i></button>
-                            <button onclick="window.deleteItem('${key}', ${idx})" class="w-8 h-8 rounded-lg bg-red-600/20 text-red-400 flex items-center justify-center"><i class="fa-solid fa-trash text-xs"></i></button>
-                        </div>`;
-                    itemsContainer.appendChild(itemDiv);
-                });
+                
+                if (!cat.items || cat.items.length === 0) {
+                    itemsContainer.innerHTML = `<div class="col-span-full text-center py-6 bg-slate-800/50 rounded-2xl text-slate-500 font-bold border border-slate-700">القسم ده لسه فاضي، ضيفي أول منتج من الزرار الأخضر اللي فوق! 🍩</div>`;
+                } else {
+                    (cat.items || []).forEach((it, idx) => {
+                        const itemDiv = document.createElement('div');
+                        itemDiv.className = 'bg-slate-800 p-4 rounded-2xl flex items-center gap-4 border border-slate-700 shadow-md hover:border-brand-price/50 transition-colors';
+                        itemDiv.innerHTML = `
+                            <img src="${it.img}" loading="lazy" class="w-16 h-16 rounded-xl object-cover shadow-sm border border-slate-600">
+                            <div class="flex-grow text-white">
+                                <p class="font-black text-sm line-clamp-1">${it.name}</p>
+                                <p class="text-brand-price font-black text-xs mt-1">${it.price} ج.م</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="window.openEditItem('${key}', ${idx})" class="w-10 h-10 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center hover:bg-blue-600/30"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="window.deleteItem('${key}', ${idx})" class="w-10 h-10 rounded-xl bg-red-600/20 text-red-400 flex items-center justify-center hover:bg-red-600/30"><i class="fa-solid fa-trash"></i></button>
+                            </div>`;
+                        itemsContainer.appendChild(itemDiv);
+                    });
+                }
             });
         }
 
@@ -818,7 +833,6 @@
 
         window.closeItemModal = () => document.getElementById('adminItemModal').classList.add('hidden');
 
-        // الرفع لـ Cloudinary
         window.saveItemChanges = async () => {
             const name = document.getElementById('itemNameInput').value.trim();
             const price = parseInt(document.getElementById('itemPriceInput').value);
@@ -984,7 +998,43 @@
             });
         };
 
-        // 🔥 درع حماية الاستيراد: بيستورد البيانات القديمة بس بيحمي الباسورد من المسح
+        // 🔥 المُعالج الموحد للاستيراد (سواء من زرار الرفع أو من المربع النصي)
+        async function processImportData(data) {
+            // درع الحماية: التأكد إن الملف بتاعنا مش ملف سيستم
+            if (data.operators || data.version === "85.53" || (!data.storeInfo && !Object.values(data).some(v => v && typeof v === 'object' && Array.isArray(v.items)))) {
+                showToast("الملف ده مش النسخة الاحتياطية بتاعتنا يا بوسي! هاتي الملف الصح ❌");
+                document.getElementById('loadingState').classList.add('hidden');
+                return false;
+            }
+
+            const sysKeys = ['deliveryOptions', 'storeInfo', 'torteOptions', 'adminTokens'];
+            const configDoc = doc(db, 'artifacts', appId, 'public', 'data', 'storeConfig', 'main');
+            
+            const fallbackInfo = getInitialFallback().storeInfo;
+            const importedInfo = data.storeInfo || {};
+            const protectedStoreInfo = { ...fallbackInfo, ...currentData.storeInfo, ...importedInfo };
+            
+            const configData = {
+                storeInfo: protectedStoreInfo,
+                deliveryOptions: data.deliveryOptions || currentData.deliveryOptions || [],
+                torteOptions: data.torteOptions || currentData.torteOptions || {}
+            };
+            await setDoc(configDoc, configData);
+
+            const catKeys = Object.keys(data).filter(k => !sysKeys.includes(k));
+            for(const catName of catKeys) {
+                const catDoc = doc(db, 'artifacts', appId, 'public', 'data', 'categories', catName);
+                await setDoc(catDoc, { 
+                    id: catName,
+                    title: data[catName].title || data[catName].navTitle || catName,
+                    navTitle: data[catName].navTitle || data[catName].title || catName,
+                    items: data[catName].items || []
+                });
+            }
+            return true;
+        }
+
+        // 1. الاستيراد عن طريق زرار اختيار الملف العادي
         document.getElementById('jsonImportInput').onchange = (e) => {
             const file = e.target.files[0];
             if(!file) return;
@@ -993,34 +1043,9 @@
                 try {
                     document.getElementById('loadingState').classList.remove('hidden');
                     const data = JSON.parse(ev.target.result);
-                    const sysKeys = ['deliveryOptions', 'storeInfo', 'torteOptions', 'adminTokens'];
-                    
-                    const configDoc = doc(db, 'artifacts', appId, 'public', 'data', 'storeConfig', 'main');
-                    
-                    // دمج ذكي بيحافظ على الباسورد الحالي من الضياع لو الملف القديم مفيهوش باسورد
-                    const fallbackInfo = getInitialFallback().storeInfo;
-                    const importedInfo = data.storeInfo || {};
-                    const protectedStoreInfo = { ...fallbackInfo, ...currentData.storeInfo, ...importedInfo };
-                    
-                    const configData = {
-                        storeInfo: protectedStoreInfo,
-                        deliveryOptions: data.deliveryOptions || currentData.deliveryOptions || [],
-                        torteOptions: data.torteOptions || currentData.torteOptions || {}
-                    };
-                    await setDoc(configDoc, configData);
-
-                    const catKeys = Object.keys(data).filter(k => !sysKeys.includes(k));
-                    for(const catName of catKeys) {
-                        const catDoc = doc(db, 'artifacts', appId, 'public', 'data', 'categories', catName);
-                        await setDoc(catDoc, { 
-                            id: catName,
-                            title: data[catName].title || data[catName].navTitle || catName,
-                            navTitle: data[catName].navTitle || data[catName].title || catName,
-                            items: data[catName].items || []
-                        });
-                    }
-                    
-                    showToast("تم استيراد وتقسيم البيانات بنجاح! 🚀");
+                    const success = await processImportData(data);
+                    if(success) showToast("تم استيراد البيانات بنجاح! 🚀");
+                    e.target.value = '';
                 } catch(err) {
                     console.error("Import Error:", err);
                     showToast("الملف فيه مشكلة!");
@@ -1029,6 +1054,31 @@
                 }
             };
             reader.readAsText(file);
+        };
+
+        // 2. الاستيراد عن طريق النسخ واللصق (خطة الطوارئ)
+        window.importFromJsonText = async () => {
+            const textArea = document.getElementById('jsonPasteArea');
+            const textContent = textArea.value.trim();
+            if(!textContent) {
+                showToast("المربع فاضي يا بوسي، انسخي الكلام والصقيه الأول!");
+                return;
+            }
+
+            try {
+                document.getElementById('loadingState').classList.remove('hidden');
+                const data = JSON.parse(textContent);
+                const success = await processImportData(data);
+                if(success) {
+                    showToast("تم تحديث البيانات من النص بنجاح! 🚀");
+                    textArea.value = ''; // تفريغ المربع بعد النجاح
+                }
+            } catch(err) {
+                console.error("Text Import Error:", err);
+                showToast("النص المنسوخ فيه مشكلة، اتأكدي إنك نسختي الملف كله صح!");
+            } finally {
+                document.getElementById('loadingState').classList.add('hidden');
+            }
         };
 
         function showToast(msg) {
@@ -1061,5 +1111,4 @@
     </script>
 </body>
 </html>
-
 
