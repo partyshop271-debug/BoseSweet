@@ -680,10 +680,38 @@
             </div>
 
             <div id="tab-promos" class="admin-tab-pane">
+                
+                <!-- القسم الجديد: مصنع بطاقات الهدايا (توليد الدفعات) -->
+                <div class="admin-card" style="border-color: #10B981; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.1);">
+                    <h4 class="admin-card-title" style="color: #10B981; border-bottom: 1px dashed #10B981;">✨ التوليد الذكي لأكواد بطاقات الهدايا (دفعة واحدة)</h4>
+                    <p style="color:#94A3B8; font-size:0.9rem; margin-bottom:15px;">ولدي مجموعة أكواد لبطاقات الهدايا مرة واحدة، هيتم إضافتها تلقائياً كأكواد خصم ثابتة في النظام، وتقدري تنسخيها عشان تحطيها في "خزنة الكروت".</p>
+                    
+                    <div style="display:flex; gap:10px; margin-bottom:15px;">
+                        <div class="admin-input-group" style="flex:1;">
+                            <label>قيمة البطاقة (ج.م):</label>
+                            <input type="number" id="bulkGiftCardValue" class="admin-input" placeholder="مثال: 1000">
+                        </div>
+                        <div class="admin-input-group" style="flex:1;">
+                            <label>العدد المطلوب:</label>
+                            <input type="number" id="bulkGiftCardCount" class="admin-input" placeholder="مثال: 20">
+                        </div>
+                    </div>
+                    
+                    <button class="admin-btn" style="background:linear-gradient(135deg, #10B981, #059669); color:white; border: none;" onclick="generateBulkGiftCards()">
+                        ⚡ توليد وإضافة الأكواد الآن
+                    </button>
+                    
+                    <div id="bulkGeneratedCodesResult" style="display:none; margin-top:15px; padding-top: 15px; border-top: 1px dashed #334155;">
+                        <label style="color:#F4B860; font-size:0.95rem; font-weight:700;">تم التوليد! انسخي الأكواد دي لخزنة الكروت:</label>
+                        <textarea id="bulkCodesList" class="admin-input" rows="5" readonly style="font-family:monospace; font-weight: bold; margin-top:8px; height: 130px; letter-spacing: 1px;"></textarea>
+                    </div>
+                </div>
+                <!-- نهاية القسم الجديد -->
+
                 <div class="admin-card">
                     <h4 class="admin-card-title">أكواد الخصم النشطة</h4>
                     <div id="promosContainer"></div>
-                    <button class="admin-btn gold" onclick="addNewPromo()">+ إنشاء كود خصم</button>
+                    <button class="admin-btn gold" onclick="addNewPromo()">+ إنشاء كود خصم عادي</button>
                 </div>
             </div>
 
@@ -1780,6 +1808,57 @@
                 }
             }
         }
+
+        /* --- الدالة الذكية الجديدة لتوليد الدفعات (Bulk Generator) --- */
+        function generateBulkGiftCards() {
+            const valInput = document.getElementById('bulkGiftCardValue').value;
+            const countInput = document.getElementById('bulkGiftCardCount').value;
+
+            const value = parseInt(valInput);
+            const count = parseInt(countInput);
+
+            if (isNaN(value) || value <= 0) { alert('برجاء إدخال قيمة صحيحة للبطاقة (أكبر من صفر).'); return; }
+            if (isNaN(count) || count <= 0 || count > 200) { alert('برجاء إدخال عدد صحيح (بحد أقصى 200 كود في المرة الواحدة لضمان سرعة النظام).'); return; }
+
+            if (!menuData.settings.promos) menuData.settings.promos = {};
+
+            let generatedList = [];
+            for (let i = 0; i < count; i++) {
+                // تكوين كود مميز جداً: SWEET - 4 أحرف - 4 أرقام
+                let part1 = Math.random().toString(36).substring(2, 6).toUpperCase();
+                let part2 = Math.floor(1000 + Math.random() * 9000);
+                let newCode = `SWEET-${part1}-${part2}`;
+
+                // التأكد من عدم تكرار الكود صدفة في النظام
+                while (menuData.settings.promos[newCode]) {
+                    part1 = Math.random().toString(36).substring(2, 6).toUpperCase();
+                    part2 = Math.floor(1000 + Math.random() * 9000);
+                    newCode = `SWEET-${part1}-${part2}`;
+                }
+
+                // تسجيل الكود في نظام الخصومات كخصم ثابت (مبلغ)
+                menuData.settings.promos[newCode] = { type: 'fixed', value: value };
+                generatedList.push(newCode);
+            }
+
+            renderAdminPromos(); // تحديث القائمة المرئية
+            triggerAutoSave();   // حفظ الداتا
+
+            // عرض الأكواد المنسوخة
+            const resultDiv = document.getElementById('bulkGeneratedCodesResult');
+            const textArea = document.getElementById('bulkCodesList');
+            textArea.value = generatedList.join('\n');
+            resultDiv.style.display = 'block';
+
+            // تفريغ الحقول
+            document.getElementById('bulkGiftCardValue').value = '';
+            document.getElementById('bulkGiftCardCount').value = '';
+
+            alert(`يا ملكة 👑، تم توليد ${count} كود بقيمة ${value} ج.م بنجاح!
+الأكواد دلوقتي شغالة في السلة وتقدر تخصم القيمة فوراً.
+انسخيها دلوقتي وحطيها في تطبيق (الخزنة) عشان تطلعيها للعملاء.`);
+        }
+        /* ------------------------------------------------------------- */
 
         function updateItemData(catKey, itemIdx, field, value) {
             if(field.startsWith('prices.')) menuData[catKey].items[itemIdx].prices[field.split('.')[1]] = parseInt(value) || 0; 
