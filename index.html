@@ -393,13 +393,27 @@
             if(isConfigLoaded && isCategoriesLoaded) { renderAll(); }
         }
 
+        // الدمج الذكي للداتا لضمان إن الباسورد الافتراضي يشتغل حتى لو الفايربيز مفيهوش حاجة
         function listenToData() {
             const configDocPath = doc(db, 'artifacts', appId, 'public', 'data', 'storeConfig', 'main');
             onSnapshot(configDocPath, (snap) => {
                 if (snap.exists()) {
-                    currentData.storeInfo = snap.data().storeInfo || getInitialFallback().storeInfo;
-                    currentData.deliveryOptions = snap.data().deliveryOptions || [];
-                    currentData.torteOptions = snap.data().torteOptions || {};
+                    const dbData = snap.data();
+                    const defaultInfo = getInitialFallback().storeInfo;
+                    const dbInfo = dbData.storeInfo || {};
+                    
+                    // دمج ذكي: لو قاعدة البيانات القديمة مفهاش باسورد، نديها الافتراضي Aadmin
+                    if(!dbInfo.adminPasswordHash && !dbInfo.adminPassword) {
+                        dbInfo.adminPassword = "Aadmin";
+                    }
+                    
+                    // دمج إعدادات الكلاوديناري لو مش موجودة في الداتا القديمة
+                    if(!dbInfo.cloudinaryName) dbInfo.cloudinaryName = "dyx4w0dr1";
+                    if(!dbInfo.cloudinaryPreset) dbInfo.cloudinaryPreset = "ml_default";
+                    
+                    currentData.storeInfo = { ...defaultInfo, ...dbInfo };
+                    currentData.deliveryOptions = dbData.deliveryOptions || [];
+                    currentData.torteOptions = dbData.torteOptions || {};
                 } else {
                     currentData.storeInfo = getInitialFallback().storeInfo;
                     currentData.deliveryOptions = [];
@@ -663,12 +677,16 @@
             const hashedPass = await hashPassword(pass);
             const info = currentData.storeInfo;
             
+            // تحقق من الباسورد (مشفر أو عادي) ولو مفيهوش خالص ومتطابق مع الافتراضي هيدخل
             if (info.adminPasswordHash === hashedPass || info.adminPassword === pass) {
+                
+                // لو هو الباسورد العادي، هيقوم مشفره وحافظه في قاعدة البيانات لمزيد من الأمان
                 if (info.adminPassword === pass) {
                     info.adminPasswordHash = hashedPass;
-                    delete info.adminPassword;
+                    delete info.adminPassword; // بيمسح الباسورد المكشوف
                     await syncConfigToFirebase();
                 }
+                
                 closeLogin();
                 openAdmin();
             } else {
@@ -800,7 +818,6 @@
 
         window.closeItemModal = () => document.getElementById('adminItemModal').classList.add('hidden');
 
-        // 🔥 الرفع السحابي لـ Cloudinary مع دمج الإعدادات الافتراضية
         window.saveItemChanges = async () => {
             const name = document.getElementById('itemNameInput').value.trim();
             const price = parseInt(document.getElementById('itemPriceInput').value);
@@ -816,7 +833,6 @@
                 let finalImageUrl = itemBase64; 
 
                 if (itemBase64.startsWith('data:image')) {
-                    // دمجنا الإعدادات اللي بعتيها كإعدادات افتراضية في الكود
                     const cName = currentData.storeInfo.cloudinaryName || "dyx4w0dr1"; 
                     const cPreset = currentData.storeInfo.cloudinaryPreset || "ml_default";
                     
@@ -1015,6 +1031,7 @@
             setTimeout(() => t.classList.add('translate-y-32', 'opacity-0'), 3000);
         }
 
+        // تم إضافة الباسورد الافتراضي العادي عشان يشتغل لو الداتا القديمة مفهاش نظام التشفير
         function getInitialFallback() {
             return {
                 storeInfo: {
@@ -1023,8 +1040,7 @@
                     closeMessage: "مغلق حالياً",
                     minOrderValue: 0,
                     splashSubtitle: "مرحبا بكم",
-                    adminPasswordHash: "7b0b9dc69634289ea6c321034f41dd6ff4a0a430635da10b501f21db5311e3b5",
-                    // تم وضع بياناتك كافتراضية هنا عشان تشتغل أوتوماتيك
+                    adminPassword: "Aadmin", 
                     cloudinaryName: "dyx4w0dr1", 
                     cloudinaryPreset: "ml_default"
                 }
@@ -1039,5 +1055,4 @@
     </script>
 </body>
 </html>
-
 
