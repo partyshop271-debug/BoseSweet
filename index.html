@@ -686,7 +686,14 @@
         import { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- FIREBASE CONFIG MARKER ---
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        let firebaseConfig = {};
+        try {
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                firebaseConfig = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
+            }
+        } catch(e) {
+            console.warn("تم تجاوز إعدادات الفايربيس للعمل على التخزين المحلي فقط.");
+        }
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'bossy-sweets-app';
         // --- END FIREBASE CONFIG MARKER ---
 
@@ -695,56 +702,60 @@
         let cloudPromos = {}; 
 
         if (firebaseConfig.apiKey) {
-            const app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            
-            const initAuth = async () => {
-                try {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-                } catch (err) { console.error("Auth error", err); }
-            };
-            initAuth();
+            try {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                
+                const initAuth = async () => {
+                    try {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (err) { console.error("Auth error", err); }
+                };
+                initAuth();
 
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    const promosRef = collection(db, 'artifacts', appId, 'public', 'data', 'promos');
-                    onSnapshot(promosRef, (snapshot) => {
-                        const newPromos = {};
-                        snapshot.forEach(docSnap => {
-                            newPromos[docSnap.id] = docSnap.data();
-                        });
-                        cloudPromos = newPromos;
-                        
-                        if (menuData.settings && menuData.settings.promos) {
-                            Object.keys(menuData.settings.promos).forEach(async (code) => {
-                                if (!cloudPromos[code]) {
-                                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'promos', code);
-                                    await setDoc(docRef, menuData.settings.promos[code]);
-                                }
+                onAuthStateChanged(auth, (user) => {
+                    if (user) {
+                        const promosRef = collection(db, 'artifacts', appId, 'public', 'data', 'promos');
+                        onSnapshot(promosRef, (snapshot) => {
+                            const newPromos = {};
+                            snapshot.forEach(docSnap => {
+                                newPromos[docSnap.id] = docSnap.data();
                             });
-                        }
-                        
-                        if(!menuData.settings) menuData.settings = {};
-                        menuData.settings.promos = cloudPromos; 
-                        
-                        if(document.getElementById('adminModal').classList.contains('open')) {
-                            renderAdminPromos();
-                        }
-                        if (appliedPromoCode !== "") {
-                            if (!cloudPromos[appliedPromoCode]) {
-                                appliedPromoCode = "";
-                                showToast("عفواً، رصيد الكود انتهى وتم حذفه", "error");
+                            cloudPromos = newPromos;
+                            
+                            if (menuData.settings && menuData.settings.promos) {
+                                Object.keys(menuData.settings.promos).forEach(async (code) => {
+                                    if (!cloudPromos[code]) {
+                                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'promos', code);
+                                        await setDoc(docRef, menuData.settings.promos[code]);
+                                    }
+                                });
                             }
-                            updateCalculations();
-                        }
-                    }, (err) => console.error("Firebase Sync Error", err));
-                }
-            });
+                            
+                            if(!menuData.settings) menuData.settings = {};
+                            menuData.settings.promos = cloudPromos; 
+                            
+                            if(document.getElementById('adminModal').classList.contains('open')) {
+                                renderAdminPromos();
+                            }
+                            if (appliedPromoCode !== "") {
+                                if (!cloudPromos[appliedPromoCode]) {
+                                    appliedPromoCode = "";
+                                    showToast("عفواً، رصيد الكود انتهى وتم حذفه", "error");
+                                }
+                                updateCalculations();
+                            }
+                        }, (err) => console.error("Firebase Sync Error", err));
+                    }
+                });
+            } catch(e) {
+                console.error("خطأ أثناء تهيئة الفايربيس، سيتم الاعتماد على المحرك المحلي.", e);
+            }
         }
 
         /* --- MENU DATA START --- */
@@ -900,45 +911,61 @@
             // 🔥 الاستعلام اللحظي الصارم من السحابة قبل الإرسال للواتساب 🔥
             if (appliedPromoCode !== "" && originalPromoValue > 0) {
                 if (!db) {
-                    showToast('عفواً، يتطلب الاتصال بالإنترنت لمراجعة وتأكيد كود الخصم', 'error'); return;
-                }
+                    // الدعم المحلي في حال غياب الإنترنت أو قاعدة البيانات
+                    console.warn("جاري استخدام التخزين المحلي لخصم كود العرض بسبب غياب الاتصال بقاعدة البيانات.");
+                    let localPromo = menuData.settings.promos[appliedPromoCode];
+                    if (!localPromo) {
+                        showToast('عفواً، هذا الكود غير صالح أو تم استهلاكه بالكامل!', 'error');
+                        appliedPromoCode = ""; updateCalculations(); return;
+                    }
+                    if (localPromo.value < Math.round(currentDiscount)) {
+                        showToast('عفواً، رصيد الكود الفعلي أقل من الخصم المطلوب!', 'error'); return;
+                    }
+                    let newBalance = localPromo.value - Math.round(currentDiscount);
+                    if (newBalance <= 0) {
+                        delete menuData.settings.promos[appliedPromoCode];
+                    } else {
+                        menuData.settings.promos[appliedPromoCode].value = newBalance;
+                    }
+                    saveAdminChangesToMemory(false); // حفظ التعديل محلياً
+                } else {
+                    btnSend.innerHTML = 'جاري مراجعة الكود وتأمين الطلب... ⏳';
+                    btnSend.style.pointerEvents = 'none';
 
-                btnSend.innerHTML = 'جاري مراجعة الكود وتأمين الطلب... ⏳';
-                btnSend.style.pointerEvents = 'none';
+                    try {
+                        const promoRef = doc(db, 'artifacts', appId, 'public', 'data', 'promos', appliedPromoCode);
+                        const promoSnap = await getDoc(promoRef); // Live Server Check!
 
-                try {
-                    const promoRef = doc(db, 'artifacts', appId, 'public', 'data', 'promos', appliedPromoCode);
-                    const promoSnap = await getDoc(promoRef); // Live Server Check!
+                        if (!promoSnap.exists()) {
+                            showToast('عفواً، هذا الكود غير صالح أو تم استهلاكه بالكامل من قبل!', 'error');
+                            appliedPromoCode = ""; updateCalculations();
+                            btnSend.innerHTML = originalBtnText; btnSend.style.pointerEvents = 'auto';
+                            return; // 🛑 إيقاف الأوردر فوراً
+                        }
 
-                    if (!promoSnap.exists()) {
-                        showToast('عفواً، هذا الكود غير صالح أو تم استهلاكه بالكامل من قبل!', 'error');
-                        appliedPromoCode = ""; updateCalculations();
+                        const liveData = promoSnap.data();
+                        
+                        // تأمين: هل الرصيد الفعلي في السحابة يكفي للخصم اللي طالبه العميل؟
+                        if (liveData.value < Math.round(currentDiscount)) {
+                             showToast('عفواً، رصيد الكود الفعلي أقل من الخصم المطلوب!', 'error');
+                             btnSend.innerHTML = originalBtnText; btnSend.style.pointerEvents = 'auto';
+                             return; // 🛑 إيقاف الأوردر فوراً
+                        }
+
+                        // خصم الرصيد بصرامة وحذف الكود لو خلص
+                        let newBalance = liveData.value - Math.round(currentDiscount);
+                        if (newBalance <= 0) { 
+                            await deleteDoc(promoRef); 
+                        } else { 
+                            await updateDoc(promoRef, { value: newBalance }); 
+                        }
+
+                    } catch(e) {
+                        console.error("Cloud Security Error", e);
+                        showToast('حدثت مشكلة في الاتصال بالسيرفر، تأكد من جودة الإنترنت.', 'error');
                         btnSend.innerHTML = originalBtnText; btnSend.style.pointerEvents = 'auto';
-                        return; // 🛑 إيقاف الأوردر فوراً
+                        return; // 🛑 إيقاف الأوردر فوراً في حالة ضعف النت لمنع الاستغلال
                     }
-
-                    const liveData = promoSnap.data();
-                    
-                    // تأمين: هل الرصيد الفعلي في السحابة يكفي للخصم اللي طالبه العميل؟
-                    if (liveData.value < Math.round(currentDiscount)) {
-                         showToast('عفواً، رصيد الكود الفعلي أقل من الخصم المطلوب!', 'error');
-                         btnSend.innerHTML = originalBtnText; btnSend.style.pointerEvents = 'auto';
-                         return; // 🛑 إيقاف الأوردر فوراً
-                    }
-
-                    // خصم الرصيد بصرامة وحذف الكود لو خلص
-                    let newBalance = liveData.value - Math.round(currentDiscount);
-                    if (newBalance <= 0) { 
-                        await deleteDoc(promoRef); 
-                    } else { 
-                        await updateDoc(promoRef, { value: newBalance }); 
-                    }
-
-                } catch(e) {
-                    console.error("Cloud Security Error", e);
-                    showToast('حدثت مشكلة في الاتصال بالسيرفر، تأكد من جودة الإنترنت.', 'error');
-                    btnSend.innerHTML = originalBtnText; btnSend.style.pointerEvents = 'auto';
-                    return; // 🛑 إيقاف الأوردر فوراً في حالة ضعف النت لمنع الاستغلال
                 }
             }
 
@@ -974,7 +1001,7 @@
                 msg += `🎟️ كود الخصم المستخدم: ${appliedPromoCode}\n`;
                 if (originalPromoValue > 0) { 
                     msg += `🔻 تم خصم من الرصيد: ${Math.round(currentDiscount)} ج.م\n`;
-                    msg += `💼 الرصيد المتبقي للكود: ${remainingPromoBalance} ج.م (تم تعديله تلقائياً في السحابة ✅)\n`;
+                    msg += `💼 الرصيد المتبقي للكود: ${remainingPromoBalance} ج.م (تم تعديله تلقائياً ✅)\n`;
                 } else { msg += `🔻 قيمة الخصم: -${Math.round(currentDiscount)} ج.م\n`; }
             }
 
@@ -1276,7 +1303,7 @@
                 const appStr = typeof __app_id !== 'undefined' ? `'${__app_id}'` : "'bossy-sweets-app'";
                 const fbRegex = /\/\/ --- FIREBASE CONFIG MARKER ---([\s\S]*?)\/\/ --- END FIREBASE CONFIG MARKER ---/;
                 if (fbRegex.test(htmlText)) {
-                    htmlText = htmlText.replace(fbRegex, `// --- FIREBASE CONFIG MARKER ---\n        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : JSON.parse(${fbConfigStr});\n        const appId = typeof __app_id !== 'undefined' ? __app_id : ${appStr};\n        // --- END FIREBASE CONFIG MARKER ---`);
+                    htmlText = htmlText.replace(fbRegex, `// --- FIREBASE CONFIG MARKER ---\n        let firebaseConfig = {};\n        try {\n            if (typeof __firebase_config !== 'undefined' && __firebase_config) {\n                firebaseConfig = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;\n            }\n        } catch(e) { console.warn("Firebase skipped in export"); }\n        const appId = typeof __app_id !== 'undefined' ? __app_id : ${appStr};\n        // --- END FIREBASE CONFIG MARKER ---`);
                 }
 
                 const blob = new Blob([htmlText], { type: "text/html;charset=utf-8" });
@@ -1286,10 +1313,12 @@
             } catch(e) { alert("حدثت مشكلة في التنزيل."); }
         }
 
+        // تم رفع هذه الدوال لتكون متاحة بشكل كامل في النافذة العالمية حتى في حال توقف أي شيء في السحابة
         Object.assign(window, {
             toggleSideMenu, closeAndGoTo, handleSecretClick, changeAdminPassword, checkPasswordAndOpenAdmin, openAdmin, closeAdmin, switchAdminTab, renderAdminProducts, handleGalleryUpload, deleteGalleryImage, renderAdminSettings, renderAdminTorte, renderAdminDelivery, renderAdminPromos, editPromoValue, generateBulkGiftCards, updateItemData, handleImageUpload, addNewCategory, deleteCategory, deleteItem, updateCurrentCategory, addNewItemToCategory, toggleStoreStatus, updateStoreInfo, addGlobalExtra, delGlobalExtra, updateTorteLeadTime, addTorteOption, delTorteOption, addTorteAddon, delTorteAddon, addNewDeliveryArea, updateDeliveryArea, deleteDeliveryArea, addNewPromo, deletePromo, saveAdminChangesToMemory, importDatabaseJSON, exportDatabaseJSON, downloadUpdatedWebsite, openInfoModal, closeInfoModal, openLightbox, closeLightbox, toggleDeliveryMethod, changeQty, filterMenu, addToCart, openGiftCardModal, closeGiftCardModal, autoSelectGiftCardTier, selectGcColor, confirmGiftCardIssue, triggerUpsell, closeUpsellModal, confirmUpsell, updateCalculations, applyPromo, removeFromCart, toggleCart, sendWhatsAppOrder, openWhatsAppContact, recalcTorteCard, updateTorteSize, handleShapeChange, closeSmartShapeModal, handleTorteImageUpload, addCalculatedTorte, changeDesSize, changeType, openSection, saveCart, filterAdminItems, escapeStr, getShapeMin, getPlaceholder
         });
     </script>
 </body>
 </html>
+
 
