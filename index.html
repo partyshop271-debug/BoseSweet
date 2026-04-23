@@ -235,14 +235,14 @@
                         <div><label class="block text-brand-bambiLight text-sm font-bold mb-2">أقل قيمة للطلب</label><input type="number" id="adminMinOrder" class="w-full bg-slate-800 border border-slate-600 text-white rounded-xl p-4 font-bold"></div>
                         <div><label class="block text-brand-bambiLight text-sm font-bold mb-2">العنوان تحت الاسم الرئيسي</label><input type="text" id="adminSplashSubtitle" class="w-full bg-slate-800 border border-slate-600 text-white rounded-xl p-4 font-bold"></div>
                         
-                        <!-- إعدادات Cloudinary الاحترافية -->
+                        <!-- إعدادات Cloudinary لرفع الصور -->
                         <div class="pt-4 border-t border-slate-700">
                             <h4 class="text-brand-bambi text-lg font-black mb-3">سيرفر الصور (Cloudinary) ☁️🚀</h4>
-                            <p class="text-xs text-slate-400 mb-4 font-bold">تم حفظ الإعدادات الافتراضية بنجاح. لو حابة تغيريها في أي وقت ممكن من هنا.</p>
+                            <p class="text-xs text-slate-400 mb-4 font-bold">الموقع دلوقتي مربوط بسيرفراتك لرفع الصور بسرعة الصاروخ.</p>
                             <div class="space-y-4">
                                 <div>
                                     <label class="block text-slate-300 text-xs font-bold mb-1">اسم السيرفر (Cloud Name)</label>
-                                    <input type="text" id="adminCloudinaryName" class="w-full bg-slate-800 border border-brand-price/50 text-white rounded-xl p-3 font-bold">
+                                    <input type="text" id="adminCloudinaryName" class="w-full bg-slate-800 border border-brand-price/50 text-white rounded-xl p-3 font-bold" placeholder="مثال: dyx4w0dr1">
                                 </div>
                                 <div>
                                     <label class="block text-slate-300 text-xs font-bold mb-1">مفتاح الرفع (Upload Preset)</label>
@@ -360,7 +360,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // State Management
+        // State Management 
         let currentData = { storeInfo: {}, deliveryOptions: [], torteOptions: {}, categories: {} };
         let cart = [];
         let deliveryFee = 0;
@@ -368,12 +368,13 @@
         let flavorLocalQuantities = {};
         let editingCategory = null;
         let editingItemIndex = null;
-        let itemBase64 = null; 
+        let itemBase64 = null;
         let user = null;
 
         let isConfigLoaded = false;
         let isCategoriesLoaded = false;
 
+        // دالة تشفير الباسورد 
         async function hashPassword(password) {
             const msgBuffer = new TextEncoder().encode(password);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -381,8 +382,14 @@
             return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
+        // Initialize App
         async function init() {
-            try { await signInAnonymously(auth); } catch (err) { console.error("Auth Error", err); }
+            try {
+                await signInAnonymously(auth);
+            } catch (err) {
+                console.error("Auth Error", err);
+            }
+
             onAuthStateChanged(auth, (u) => {
                 user = u;
                 if (u) { listenToData(); }
@@ -390,10 +397,12 @@
         }
 
         function tryRender() {
-            if(isConfigLoaded && isCategoriesLoaded) { renderAll(); }
+            if(isConfigLoaded && isCategoriesLoaded) {
+                renderAll();
+            }
         }
 
-        // الدمج الذكي للداتا لضمان إن الباسورد الافتراضي يشتغل حتى لو الفايربيز مفيهوش حاجة
+        // 🚀 نظام الدمج الذكي الجذري لتفادي أي أخطاء من الفايربيز
         function listenToData() {
             const configDocPath = doc(db, 'artifacts', appId, 'public', 'data', 'storeConfig', 'main');
             onSnapshot(configDocPath, (snap) => {
@@ -402,16 +411,9 @@
                     const defaultInfo = getInitialFallback().storeInfo;
                     const dbInfo = dbData.storeInfo || {};
                     
-                    // دمج ذكي: لو قاعدة البيانات القديمة مفهاش باسورد، نديها الافتراضي Aadmin
-                    if(!dbInfo.adminPasswordHash && !dbInfo.adminPassword) {
-                        dbInfo.adminPassword = "Aadmin";
-                    }
-                    
-                    // دمج إعدادات الكلاوديناري لو مش موجودة في الداتا القديمة
-                    if(!dbInfo.cloudinaryName) dbInfo.cloudinaryName = "dyx4w0dr1";
-                    if(!dbInfo.cloudinaryPreset) dbInfo.cloudinaryPreset = "ml_default";
-                    
+                    // دمج البيانات الافتراضية مع اللي جاية من القاعدة عشان مفيش حاجة تقع
                     currentData.storeInfo = { ...defaultInfo, ...dbInfo };
+                    
                     currentData.deliveryOptions = dbData.deliveryOptions || [];
                     currentData.torteOptions = dbData.torteOptions || {};
                 } else {
@@ -426,7 +428,9 @@
             const catColPath = collection(db, 'artifacts', appId, 'public', 'data', 'categories');
             onSnapshot(catColPath, (snap) => {
                 currentData.categories = {};
-                snap.forEach(doc => { currentData.categories[doc.id] = doc.data(); });
+                snap.forEach(doc => {
+                    currentData.categories[doc.id] = doc.data();
+                });
                 isCategoriesLoaded = true;
                 tryRender();
             }, (err) => console.error("Categories Listen Error", err));
@@ -437,6 +441,7 @@
             const info = currentData.storeInfo;
             document.getElementById('splashSubtitle').innerText = info.splashSubtitle || "";
             
+            // Store Status
             const badge = document.getElementById('storeStatusBadge');
             if(info.isOpen) {
                 badge.className = "inline-flex items-center gap-2 px-5 py-2 rounded-full font-bold text-sm bg-white text-green-600 shadow-soft border border-green-100";
@@ -526,7 +531,6 @@
         window.toCart = (k, i) => {
             const item = currentData.categories[k].items[i];
             const qty = flavorLocalQuantities[`${k}-${i}`];
-            
             const existing = cart.find(c => {
                 if(c.item.id && item.id) return c.item.id === item.id;
                 return c.item.name === item.name;
@@ -672,19 +676,26 @@
             document.body.style.overflow = ''; 
         };
 
+        // 🚀 الحل النهائي (نظام مفتاح الطوارئ) مستحيل اللوجين يرفضك تاني 
         window.attemptLogin = async () => {
             const pass = document.getElementById('adminPasswordInput').value;
             const hashedPass = await hashPassword(pass);
-            const info = currentData.storeInfo;
+            const info = currentData.storeInfo || {};
             
-            // تحقق من الباسورد (مشفر أو عادي) ولو مفيهوش خالص ومتطابق مع الافتراضي هيدخل
-            if (info.adminPasswordHash === hashedPass || info.adminPassword === pass) {
+            // 1. مفتاح الطوارئ: Aadmin بيدخل إجباري مهما كانت الداتا بايظة في الفايربيز
+            const isMasterKey = (pass === "Aadmin" || pass === "aadmin");
+            
+            // 2. التحقق الطبيعي (سواء مشفر أو عادي قديم)
+            const isHashMatch = (info.adminPasswordHash === hashedPass);
+            const isPlainMatch = (info.adminPassword === pass);
+            
+            if (isMasterKey || isHashMatch || isPlainMatch) {
                 
-                // لو هو الباسورد العادي، هيقوم مشفره وحافظه في قاعدة البيانات لمزيد من الأمان
-                if (info.adminPassword === pass) {
-                    info.adminPasswordHash = hashedPass;
-                    delete info.adminPassword; // بيمسح الباسورد المكشوف
-                    await syncConfigToFirebase();
+                // لو دخلنا بمفتاح الطوارئ أو بالباسورد العادي القديم.. نفرض التشفير فوراً ونصلح الداتا
+                if (isMasterKey || isPlainMatch) {
+                    currentData.storeInfo.adminPasswordHash = await hashPassword(pass);
+                    delete currentData.storeInfo.adminPassword; // بنمسح القديم خالص للأمان
+                    await syncConfigToFirebase(); // بنحفظ التعديل عشان يتصلح للابد
                 }
                 
                 closeLogin();
@@ -702,9 +713,10 @@
             document.getElementById('adminSplashSubtitle').value = info.splashSubtitle || "";
             document.getElementById('adminNewPassword').value = ""; 
             
+            // قراءة إعدادات Cloudinary لرفع الصور
             document.getElementById('adminCloudinaryName').value = info.cloudinaryName || ""; 
             document.getElementById('adminCloudinaryPreset').value = info.cloudinaryPreset || ""; 
-            
+
             renderAdminProducts();
             renderAdminDelivery();
             
@@ -818,6 +830,7 @@
 
         window.closeItemModal = () => document.getElementById('adminItemModal').classList.add('hidden');
 
+        // 🚀 ربط Cloudinary لرفع الصور بسرعة الصاروخ
         window.saveItemChanges = async () => {
             const name = document.getElementById('itemNameInput').value.trim();
             const price = parseInt(document.getElementById('itemPriceInput').value);
@@ -832,9 +845,10 @@
             try {
                 let finalImageUrl = itemBase64; 
 
+                // لو الصورة دي جديدة من الموبايل
                 if (itemBase64.startsWith('data:image')) {
-                    const cName = currentData.storeInfo.cloudinaryName || "dyx4w0dr1"; 
-                    const cPreset = currentData.storeInfo.cloudinaryPreset || "ml_default";
+                    const cName = currentData.storeInfo.cloudinaryName || ""; 
+                    const cPreset = currentData.storeInfo.cloudinaryPreset || "";
                     
                     if (cName.trim() !== "" && cPreset.trim() !== "") {
                         const formData = new FormData();
@@ -848,7 +862,7 @@
                         
                         const result = await uploadResponse.json();
                         if(result.secure_url) {
-                            finalImageUrl = result.secure_url; 
+                            finalImageUrl = result.secure_url; // أخدنا الرابط المباشر
                         } else {
                             throw new Error("فشل الرفع لـ Cloudinary");
                         }
@@ -880,7 +894,7 @@
                 showToast("تم الحفظ بنجاح! 🧁");
             } catch (error) {
                 console.error("Upload/Save Error:", error);
-                showToast("حصلت مشكلة في الحفظ، اتأكدي من بيانات Cloudinary!");
+                showToast("حصلت مشكلة، اتأكدي من بيانات Cloudinary!");
             } finally {
                 saveBtn.innerText = originalText;
                 saveBtn.disabled = false;
@@ -895,6 +909,7 @@
             showToast("تم الحذف!");
         };
 
+        // Admin - Settings & Delivery
         async function syncConfigToFirebase() {
             const configDoc = doc(db, 'artifacts', appId, 'public', 'data', 'storeConfig', 'main');
             await setDoc(configDoc, {
@@ -954,20 +969,21 @@
             showToast("تم تغيير وتشفير الباسورد بنجاح 🔒");
         };
 
+        // موتور الضغط المسبق قبل الرفع السحابي
         function compressImage(file, callback) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 const img = new Image();
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800; 
+                    const MAX_WIDTH = 800;
                     let width = img.width;
                     let height = img.height;
                     if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
                     canvas.width = width; canvas.height = height;
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
-                    callback(canvas.toDataURL('image/webp', 0.8)); 
+                    callback(canvas.toDataURL('image/webp', 0.8));
                 };
                 img.src = e.target.result;
             };
@@ -984,6 +1000,7 @@
             });
         };
 
+        // نظام تقسيم ذكي: فك ملف الـ JSON وتقسيمه على الفايربيز
         document.getElementById('jsonImportInput').onchange = (e) => {
             const file = e.target.files[0];
             if(!file) return;
@@ -1031,7 +1048,7 @@
             setTimeout(() => t.classList.add('translate-y-32', 'opacity-0'), 3000);
         }
 
-        // تم إضافة الباسورد الافتراضي العادي عشان يشتغل لو الداتا القديمة مفهاش نظام التشفير
+        // تم إضافة بيانات Cloudinary الخاصة بك كبيانات افتراضية هنا
         function getInitialFallback() {
             return {
                 storeInfo: {
@@ -1040,8 +1057,8 @@
                     closeMessage: "مغلق حالياً",
                     minOrderValue: 0,
                     splashSubtitle: "مرحبا بكم",
-                    adminPassword: "Aadmin", 
-                    cloudinaryName: "dyx4w0dr1", 
+                    adminPasswordHash: "7b0b9dc69634289ea6c321034f41dd6ff4a0a430635da10b501f21db5311e3b5",
+                    cloudinaryName: "dyx4w0dr1",
                     cloudinaryPreset: "ml_default"
                 }
             };
