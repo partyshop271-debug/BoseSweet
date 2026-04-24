@@ -6,224 +6,285 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>حلويات بوسي | BoseSweets</title>
     
-    <!-- المكاتب الأساسية والاعتمادات -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&display=swap');
         
         :root {
             --brand-pink: #ff85ad;
-            --brand-soft: #fdfdfd;
-            --text-main: #2d3436;
+            --brand-dark: #1a1a1a;
+            --bg-light: #fcfcfc;
+            --card-shadow: 0 12px 30px -10px rgba(255, 133, 173, 0.15);
         }
 
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: var(--brand-soft);
-            color: var(--text-main);
+            background-color: var(--bg-light);
+            color: var(--brand-dark);
             -webkit-tap-highlight-color: transparent;
+            font-weight: 600;
+            overflow-x: hidden;
         }
 
-        /* الهيكل البصري المقدس لبراند حلويات بوسي */
-        .font-title { font-weight: 700; letter-spacing: -0.01em; }
-        .font-sub { font-weight: 600; color: #636e72; }
-        .font-price { font-weight: 700; color: var(--brand-pink); }
+        /* تنسيقات الأوزان المقدسة */
+        .f-600 { font-weight: 600; }
+        .f-700 { font-weight: 700; }
+        .f-800 { font-weight: 800; }
 
-        .clean-card {
+        /* الكروت الاحترافية المدمجة */
+        .bose-card {
             background: #ffffff;
-            border-radius: 1.25rem;
-            padding: 0.75rem;
-            border: 1px solid #f1f1f1;
+            border-radius: 1.5rem;
+            border: 1px solid #f1f2f6;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             flex-direction: column;
+            box-shadow: var(--card-shadow);
             height: 100%;
-            transition: all 0.2s ease;
         }
-        .clean-card:active { transform: scale(0.98); }
-        
-        .img-wrapper {
+        .bose-card:active { transform: scale(0.96); }
+
+        .img-box {
+            position: relative;
             width: 100%;
             aspect-ratio: 1/1;
-            border-radius: 1rem;
+            background: #f9f9f9;
             overflow: hidden;
-            background: #fafafa;
-            margin-bottom: 0.75rem;
         }
-        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+        .bose-card:hover .img-box img { transform: scale(1.1); }
 
-        .qty-box {
-            display: flex;
-            align-items: center;
-            background: #f8f8f8;
-            padding: 3px;
-            border-radius: 0.75rem;
-            gap: 6px;
-        }
-        .qty-btn {
-            width: 28px;
-            height: 28px;
+        .price-tag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
             background: white;
-            border-radius: 0.5rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 14px;
+            font-weight: 800;
+            color: var(--brand-pink);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 10;
+            font-size: 0.9rem;
+        }
+
+        /* الشبكة لمنع المط */
+        .grid-compact {
+            display: grid;
+            gap: 1.25rem;
+            grid-template-columns: repeat(2, 1fr);
+        }
+        @media (min-width: 768px) {
+            .grid-compact { gap: 2rem; grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (min-width: 1200px) {
+            .grid-compact { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        /* أزرار البراند */
+        .btn-brand {
+            background: var(--brand-pink);
+            color: white;
+            font-weight: 700;
+            padding: 0.9rem;
+            border-radius: 1.2rem;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--brand-pink);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-            font-size: 14px;
+            gap: 0.6rem;
+            width: 100%;
+            border: none;
+            cursor: pointer;
         }
+        .btn-brand:hover { background: #ff6b9d; box-shadow: 0 8px 20px rgba(255, 133, 173, 0.3); }
+        .btn-brand:active { transform: scale(0.95); }
 
-        .view-fade { animation: viewFade 0.4s ease-out forwards; }
-        @keyframes viewFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--brand-pink); border-radius: 10px; }
-
-        .btn-brand {
-            background-color: var(--brand-pink);
-            color: white;
-            font-weight: 600;
-            border-radius: 12px;
-            transition: all 0.2s;
-        }
-        .btn-brand:active { opacity: 0.8; transform: scale(0.97); }
-
-        .admin-sidebar { background: #111827; }
-        .admin-tab-active { background: #1f2937; border-right: 3px solid var(--brand-pink); color: white; }
-
-        /* Loader */
+        /* شاشة التحميل الاحترافية */
         #main-loader {
             position: fixed;
             inset: 0;
             background: white;
-            z-index: 3000;
+            z-index: 9999;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 1.5rem;
+            transition: opacity 0.8s ease;
         }
-        .loader-dots { width: 45px; height: 10px; background: var(--brand-pink); border-radius: 10px; animation: pulse 1s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(0.5); opacity: 0.5; } }
+        .loader-bar {
+            width: 80px;
+            height: 3px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 1.5rem;
+        }
+        .loader-bar::after {
+            content: '';
+            position: absolute;
+            width: 50%;
+            height: 100%;
+            background: var(--brand-pink);
+            animation: loadingMove 1.5s infinite ease-in-out;
+        }
+        @keyframes loadingMove { 0% { left: -50%; } 100% { left: 100%; } }
 
-        /* Admin UI Helpers */
-        .admin-card { background: white; border-radius: 1.5rem; border: 1px solid #f1f1f1; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); }
-        .admin-input { background: #f9f9f9; border: 1px solid #eeeeee; border-radius: 0.75rem; padding: 0.75rem 1rem; width: 100%; font-size: 0.875rem; outline: none; transition: border 0.2s; }
-        .admin-input:focus { border-color: var(--brand-pink); background: white; }
+        .reveal { animation: revealIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        @keyframes revealIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* تخصيص السكرول */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--brand-pink); border-radius: 10px; }
+
+        /* ستايل لوحة الإدارة */
+        .admin-sidebar { background: #0d0d0d; border-left: 1px solid #222; }
+        .admin-active { background: #ff85ad15; color: var(--brand-pink); border-right: 4px solid var(--brand-pink); }
+        .admin-input { background: #ffffff; border: 2px solid #f0f0f0; border-radius: 1rem; padding: 0.8rem 1.2rem; font-weight: 700; width: 100%; outline: none; transition: 0.3s; }
+        .admin-input:focus { border-color: var(--brand-pink); box-shadow: 0 0 0 4px rgba(255, 133, 173, 0.1); }
     </style>
 </head>
-<body class="overflow-x-hidden">
+<body class="antialiased">
 
-    <!-- شاشة التحميل -->
+    <!-- شاشة التحميل الترحيبية -->
     <div id="main-loader">
-        <h1 class="font-title text-3xl text-pink-400">حلويات بوسي</h1>
-        <div class="loader-dots"></div>
+        <h1 class="text-3xl font-black text-pink-400">حلويات بوسي</h1>
+        <div class="loader-bar"></div>
+        <p class="mt-6 text-sm font-bold text-gray-400 italic">مرحبا بكم في عالم حلويات بوسي</p>
     </div>
 
-    <!-- نظام التنبيهات المخصص -->
-    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[4000] hidden bg-gray-900/95 text-white px-8 py-4 rounded-3xl text-sm font-bold shadow-2xl transition-all border border-white/10">
-        <span id="toast-msg"></span>
-    </div>
-
-    <!-- واجهة دخول الإدارة -->
-    <div id="admin-gate" class="fixed inset-0 bg-white/98 z-[2500] hidden flex flex-col items-center justify-center p-6 backdrop-blur-xl">
-        <div class="w-full max-w-xs text-center">
-            <h3 class="font-title text-2xl mb-8">إدارة BoseSweets 👑</h3>
-            <input type="password" id="admin-pass" placeholder="الرمز السري" class="w-full bg-gray-50 border border-gray-100 rounded-2xl p-5 text-center font-bold outline-none mb-4 focus:ring-4 focus:ring-pink-100 transition-all">
-            <button id="btn-login-confirm" class="w-full btn-brand py-4 text-lg shadow-xl shadow-pink-100">دخول اللوحة</button>
-            <button onclick="document.getElementById('admin-gate').classList.add('hidden')" class="mt-8 text-gray-400 text-xs font-bold uppercase tracking-widest hover:text-pink-400 transition-colors">العودة للمتجر</button>
+    <!-- نظام التنبيهات -->
+    <div id="toast" class="fixed top-8 left-1/2 -translate-x-1/2 z-[10000] hidden">
+        <div class="bg-gray-900/95 backdrop-blur-md text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-white/10">
+            <i class="ph-fill ph-check-circle text-pink-400 text-xl"></i>
+            <span id="toast-msg" class="text-sm font-bold"></span>
         </div>
     </div>
 
-    <!-- الهيدر الموحد -->
-    <header id="main-header" class="sticky top-0 bg-white/90 backdrop-blur-md z-50 border-b border-gray-50 px-4 md:px-12 py-4 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-            <button onclick="toggleSidebar(true)" class="p-2 text-gray-400 hover:text-pink-400 transition-colors"><i class="ph ph-list text-2xl"></i></button>
-            <div class="cursor-pointer" onclick="loadView('home')">
-                <h1 class="font-title text-xl md:text-2xl text-pink-400">حلويات بوسي</h1>
-                <p class="text-[7px] tracking-[0.3em] text-gray-300 font-bold -mt-1 uppercase">BoseSweets</p>
+    <!-- الهيدر الرسمي -->
+    <header class="sticky top-0 bg-white/90 backdrop-blur-xl z-[5000] border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <button onclick="toggleSidebar(true)" class="p-2 text-gray-400 hover:text-pink-500 transition-colors">
+                    <i class="ph-bold ph-squares-four text-2xl"></i>
+                </button>
+                <div onclick="loadView('home')" class="cursor-pointer">
+                    <h1 class="text-xl md:text-2xl font-black text-gray-800 leading-none">حلويات بوسي</h1>
+                    <span class="text-[8px] font-bold text-gray-400 tracking-[0.2em] uppercase">BoseSweets Official</span>
+                </div>
             </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <button onclick="loadView('cart')" class="relative p-3 bg-pink-50 rounded-full text-pink-400 border border-pink-100 active:scale-90 transition-all">
-                <i class="ph ph-shopping-bag text-2xl"></i>
-                <span id="cart-dot" class="absolute top-0 right-0 w-3.5 h-3.5 bg-pink-500 border-2 border-white rounded-full hidden animate-pulse"></span>
-            </button>
+            <div class="flex items-center gap-4">
+                <button onclick="loadView('cart')" class="relative p-3 bg-pink-50 rounded-2xl text-pink-500 border border-pink-100 hover:bg-pink-500 hover:text-white transition-all active:scale-90">
+                    <i class="ph-bold ph-shopping-bag text-xl"></i>
+                    <span id="cart-dot" class="absolute top-1 right-1 w-3 h-3 bg-pink-500 border-2 border-white rounded-full hidden animate-bounce"></span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <main id="view-viewport" class="min-h-screen">
+    <main id="app-viewport" class="min-h-screen">
         
+        <!-- واجهة العميل -->
         <div id="client-container">
-            <!-- الصفحة الرئيسية -->
-            <section id="view-home" class="view-fade">
-                <div class="py-24 md:py-40 px-6 text-center bg-gradient-to-b from-pink-50/50 via-white to-white">
-                    <div class="max-w-3xl mx-auto">
-                        <h2 class="font-title text-4xl md:text-6xl mb-8 leading-tight text-gray-800">
-                            <span class="text-pink-400 italic">عقد</span> من التميز في <br> صناعة الحلويات
+            
+            <!-- الهيرو سكشن المحدث -->
+            <section id="view-home" class="reveal">
+                <div class="bg-white py-16 md:py-28 px-6 border-b border-gray-50 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-pink-50 rounded-full blur-[120px] opacity-40 -translate-y-1/2 translate-x-1/2"></div>
+                    <div class="max-w-4xl mx-auto text-center relative z-10">
+                        <span class="inline-block px-5 py-2 bg-pink-50 text-pink-500 text-[10px] font-black rounded-full mb-8 border border-pink-100 uppercase tracking-widest">BoseSweets Premium</span>
+                        <h2 class="text-4xl md:text-7xl font-black text-gray-800 mb-10 leading-tight">
+                            مرحبا بكم في عالم <br> <span class="text-pink-400">حلويات بوسي</span>
                         </h2>
-                        <p id="splash-sub" class="font-sub text-sm md:text-xl mb-14 max-w-xl mx-auto italic text-gray-400 leading-relaxed"></p>
-                        <button onclick="scrollToCatalog()" class="btn-brand px-16 py-5 text-base shadow-2xl shadow-pink-100 uppercase tracking-widest">تصفح القائمة الكاملة</button>
+                        <p id="splash-sub" class="text-gray-400 text-sm md:text-xl mb-14 max-w-2xl mx-auto leading-relaxed font-bold italic"></p>
+                        <button onclick="scrollToGrid()" class="bg-gray-900 text-white px-14 py-5 rounded-2xl font-black text-sm hover:bg-pink-500 transition-all shadow-2xl shadow-gray-200 uppercase tracking-widest active:scale-95">استكشف السعادة</button>
                     </div>
                 </div>
-                <div id="catalog-area" class="max-w-7xl mx-auto px-4 md:px-12 py-20">
-                    <div id="categories-grid" class="grid grid-cols-1 md:grid-cols-3 gap-12"></div>
+
+                <div id="catalog-area" class="max-w-7xl mx-auto px-4 py-20">
+                    <div class="flex items-center gap-5 mb-14">
+                        <h3 class="text-lg font-black text-gray-800 border-r-4 border-pink-400 pr-5">أقسام حلويات بوسي</h3>
+                        <div class="h-[1px] flex-1 bg-gray-100"></div>
+                    </div>
+                    <div id="categories-grid" class="grid-compact"></div>
                 </div>
             </section>
 
-            <!-- صفحة القسم -->
-            <section id="view-category" class="hidden view-fade py-10 px-4 md:px-12 max-w-7xl mx-auto">
-                <div class="mb-14 border-r-4 border-pink-400 pr-8">
-                    <button onclick="loadView('home')" class="text-[10px] font-bold text-gray-400 mb-2 uppercase flex items-center gap-1">الرئيسية / القائمة</button>
-                    <h2 id="cat-display-title" class="font-title text-3xl md:text-5xl text-gray-800"></h2>
-                    <div id="torte-notice" class="hidden mt-6 bg-pink-50 p-6 rounded-2xl text-[12px] font-bold text-pink-600 border border-pink-100 max-w-md leading-relaxed italic"></div>
+            <!-- عرض المنتجات -->
+            <section id="view-category" class="hidden reveal py-10 px-4 max-w-7xl mx-auto">
+                <div class="mb-14 border-r-4 border-pink-400 pr-6">
+                    <button onclick="loadView('home')" class="text-xs font-black text-gray-400 mb-5 flex items-center gap-2 hover:text-pink-500 transition-colors uppercase tracking-widest">
+                        <i class="ph-bold ph-caret-right"></i> القائمة الرئيسية
+                    </button>
+                    <h2 id="cat-display-title" class="text-3xl md:text-6xl font-black text-gray-800 uppercase tracking-tight"></h2>
+                    <div id="torte-notice" class="hidden mt-8 bg-pink-50 p-8 rounded-3xl text-xs font-bold text-pink-600 border border-pink-100 italic leading-loose"></div>
                 </div>
-                <div id="products-grid" class="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12"></div>
+                <div id="products-grid" class="grid-compact"></div>
             </section>
 
-            <!-- صفحة السلة -->
-            <section id="view-cart" class="hidden view-fade py-12 px-4 md:px-12 max-w-3xl mx-auto">
-                <h2 class="font-title text-3xl mb-12 text-gray-800">سلة حلويات بوسي</h2>
-                <div id="cart-list" class="space-y-6"></div>
-                <div id="cart-summary" class="mt-20 pt-10 border-t border-gray-100 hidden">
-                    <div class="flex justify-between items-center mb-14">
-                        <span class="font-title text-xl text-gray-400">المجموع الفرعي</span>
-                        <span id="cart-subtotal" class="font-price text-4xl italic">0 ج.م</span>
-                    </div>
-                    <button onclick="loadView('checkout')" class="w-full btn-brand py-6 text-xl shadow-2xl shadow-pink-100">متابعة إتمام الطلب</button>
+            <!-- سلة المشتريات المدمجة -->
+            <section id="view-cart" class="hidden reveal py-14 px-4 max-w-3xl mx-auto">
+                <div class="flex items-center justify-between mb-14">
+                    <h2 class="text-3xl font-black text-gray-800">سلة حلويات بوسي</h2>
+                    <span id="cart-badge-text" class="bg-gray-100 text-gray-500 px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">0 منتج</span>
                 </div>
-                <div id="cart-empty-msg" class="hidden py-40 text-center text-gray-300 font-bold italic text-xl">السلة خالية حالياً.. ابدأ بإضافة السعادة!</div>
+                <div id="cart-list" class="space-y-5"></div>
+                
+                <div id="cart-empty-msg" class="hidden text-center py-28 bg-white rounded-[3rem] border-2 border-dashed border-gray-100">
+                    <i class="ph ph-shopping-cart text-8xl text-gray-100 mb-8"></i>
+                    <p class="text-gray-300 font-black italic text-2xl">السلة خالية حالياً..</p>
+                    <button onclick="loadView('home')" class="mt-8 text-pink-400 font-black text-sm uppercase tracking-widest hover:underline">ابدأ التسوق الآن</button>
+                </div>
+
+                <div id="cart-summary" class="hidden mt-16 bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm">
+                    <div class="flex justify-between items-center mb-12">
+                        <span class="text-gray-400 font-black text-lg">إجمالي الطلبات</span>
+                        <span id="cart-subtotal" class="text-5xl font-black text-pink-500">0 ج.م</span>
+                    </div>
+                    <button onclick="loadView('checkout')" class="btn-brand py-7 text-2xl shadow-xl shadow-pink-100">إتمام الطلب الآن</button>
+                </div>
             </section>
 
-            <!-- صفحة إتمام الطلب -->
-            <section id="view-checkout" class="hidden view-fade py-12 px-4 max-w-xl mx-auto">
-                <div class="bg-white rounded-[3.5rem] p-10 md:p-16 border border-gray-50 shadow-sm">
-                    <h2 class="font-title text-2xl mb-12 text-gray-800">تفاصيل استلام الطلب</h2>
-                    <div class="space-y-8">
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-gray-300 px-4 uppercase tracking-widest">الاسم بالكامل</label>
-                            <input type="text" id="co-name" class="w-full bg-gray-50 border-none rounded-2xl p-5 font-bold outline-none focus:ring-4 focus:ring-pink-50 transition-all">
+            <!-- صفحة إتمام الطلب والبيانات -->
+            <section id="view-checkout" class="hidden reveal py-14 px-4 max-w-xl mx-auto">
+                <div class="bg-white rounded-[4rem] p-10 md:p-16 border border-gray-100 shadow-sm">
+                    <h2 class="text-3xl font-black mb-14 text-gray-800 border-b pb-8">بيانات الاستلام 📍</h2>
+                    <div class="space-y-10">
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-gray-400 px-5 uppercase tracking-[0.2em]">الاسم بالكامل</label>
+                            <input type="text" id="co-name" placeholder="اكتب اسمك الثلاثي" class="w-full bg-gray-50 border-0 rounded-2xl p-6 font-bold outline-none focus:ring-4 focus:ring-pink-50 transition-all text-gray-700">
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-gray-300 px-4 uppercase tracking-widest">رقم الموبايل</label>
-                            <input type="tel" id="co-phone" dir="ltr" class="w-full bg-gray-50 border-none rounded-2xl p-5 font-bold outline-none focus:ring-4 focus:ring-pink-50 transition-all">
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-gray-400 px-5 uppercase tracking-[0.2em]">رقم الموبايل</label>
+                            <input type="tel" id="co-phone" dir="ltr" placeholder="01xxxxxxxxx" class="w-full bg-gray-50 border-0 rounded-2xl p-6 font-bold outline-none focus:ring-4 focus:ring-pink-50 transition-all text-gray-700">
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-gray-300 px-4 uppercase tracking-widest">منطقة التوصيل</label>
-                            <select id="co-shipping" class="w-full bg-gray-50 border-none rounded-2xl p-5 font-bold outline-none appearance-none cursor-pointer focus:ring-4 focus:ring-pink-50 transition-all"></select>
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-gray-400 px-5 uppercase tracking-[0.2em]">منطقة التوصيل</label>
+                            <select id="co-shipping" class="w-full bg-gray-50 border-0 rounded-2xl p-6 font-bold outline-none appearance-none cursor-pointer text-gray-700"></select>
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[11px] font-bold text-gray-300 px-4 uppercase tracking-widest">العنوان بالتفصيل</label>
-                            <textarea id="co-address" class="w-full bg-gray-50 border-none rounded-2xl p-5 font-bold outline-none min-h-[140px] focus:ring-4 focus:ring-pink-50 transition-all"></textarea>
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-gray-400 px-5 uppercase tracking-[0.2em]">عنوان السعادة بالتفصيل</label>
+                            <textarea id="co-address" placeholder="رقم المنزل، الشارع، أو علامة مميزة" class="w-full bg-gray-50 border-0 rounded-2xl p-6 font-bold outline-none min-h-[160px] text-gray-700"></textarea>
                         </div>
                     </div>
-                    <div class="mt-20 pt-10 border-t border-dashed border-gray-100">
-                        <div class="flex justify-between items-center mb-14 bg-gray-50 p-8 rounded-[2.5rem]">
-                            <span class="font-bold text-gray-400">الإجمالي النهائي</span>
-                            <span id="final-total" class="font-price text-4xl">0 ج.م</span>
+                    <div class="mt-16 pt-12 border-t-2 border-dashed border-gray-100">
+                        <div class="flex justify-between items-center mb-14 bg-gray-50 p-10 rounded-[2.5rem]">
+                            <span class="font-black text-gray-400">الإجمالي النهائي</span>
+                            <span id="final-total" class="text-5xl font-black text-pink-500">0 ج.م</span>
                         </div>
-                        <button id="btn-submit-order" class="w-full bg-[#25D366] text-white font-bold py-6 rounded-3xl flex items-center justify-center gap-4 shadow-xl active:scale-95 transition-all shadow-green-100">
+                        <button id="btn-submit-order" class="w-full bg-[#25D366] text-white font-black py-7 rounded-[2rem] flex items-center justify-center gap-5 text-xl shadow-2xl shadow-green-100 transition-all active:scale-95">
                             <i class="ph-fill ph-whatsapp-logo text-4xl"></i> إرسال الطلب عبر واتساب
                         </button>
                     </div>
@@ -231,305 +292,319 @@
             </section>
         </div>
 
-        <!-- لوحة التحكم الاحترافية -->
-        <div id="admin-view" class="hidden h-screen bg-gray-50 flex overflow-hidden">
-            <aside class="w-80 admin-sidebar p-10 flex flex-col shrink-0">
-                <div class="mb-16">
-                    <h3 class="text-white font-title text-2xl">BoseSweets</h3>
-                    <p class="text-[9px] font-bold text-pink-400 tracking-widest uppercase">Admin Engine v3.5</p>
+        <!-- نظام الإدارة المركزي -->
+        <div id="admin-view" class="hidden h-screen bg-white flex flex-col md:flex-row overflow-hidden">
+            <aside class="w-full md:w-80 admin-sidebar p-10 flex flex-col shrink-0">
+                <div class="mb-20">
+                    <h3 class="text-white font-black text-3xl">حلويات بوسي</h3>
+                    <p class="text-[10px] font-bold text-pink-400 tracking-[0.3em] uppercase mt-2">BoseSweets Core v5.1</p>
                 </div>
                 <nav class="space-y-4 flex-1">
-                    <button onclick="loadAdminTab('dashboard')" class="admin-tab w-full flex items-center gap-5 p-5 rounded-2xl font-bold text-sm text-gray-400 transition-all hover:text-white" data-tab="dashboard">
-                        <i class="ph ph-chart-line text-xl"></i> الإحصائيات
+                    <button onclick="loadAdminTab('catalog')" data-atab="catalog" class="admin-tab w-full flex items-center gap-5 p-5 rounded-2xl font-bold text-sm text-gray-500 transition-all hover:text-white">
+                        <i class="ph ph-cookie text-2xl"></i> إدارة المنيو
                     </button>
-                    <button onclick="loadAdminTab('catalog')" class="admin-tab w-full flex items-center gap-5 p-5 rounded-2xl font-bold text-sm text-gray-400 transition-all hover:text-white" data-tab="catalog">
-                        <i class="ph ph-cake text-xl"></i> إدارة الأصناف
+                    <button onclick="loadAdminTab('orders')" data-atab="orders" class="admin-tab w-full flex items-center gap-5 p-5 rounded-2xl font-bold text-sm text-gray-500 transition-all hover:text-white">
+                        <i class="ph ph-scroll text-2xl"></i> سجل الطلبات
                     </button>
-                    <button onclick="loadAdminTab('orders')" class="admin-tab w-full flex items-center gap-5 p-5 rounded-2xl font-bold text-sm text-gray-400 transition-all hover:text-white" data-tab="orders">
-                        <i class="ph ph-receipt text-xl"></i> سجل الطلبات
-                    </button>
-                    <button onclick="loadAdminTab('restore')" class="admin-tab w-full flex items-center gap-5 p-5 rounded-2xl font-bold text-sm text-gray-400 transition-all hover:text-white" data-tab="restore">
-                        <i class="ph ph-database text-xl"></i> استعادة البيانات
+                    <button onclick="loadAdminTab('restore')" data-atab="restore" class="admin-tab w-full flex items-center gap-5 p-5 rounded-2xl font-bold text-sm text-gray-500 transition-all hover:text-white">
+                        <i class="ph ph-cloud-arrow-up text-2xl"></i> استعادة البيانات
                     </button>
                 </nav>
-                <button onclick="location.reload()" class="text-xs text-gray-500 font-bold border-t border-gray-800 pt-10 hover:text-pink-400 transition-colors flex items-center gap-2">
-                    <i class="ph ph-arrow-left"></i> خروج للمتجر
-                </button>
+                <div class="pt-10 border-t border-white/5 text-center">
+                    <button onclick="location.reload()" class="text-xs font-black text-gray-600 hover:text-pink-400 uppercase tracking-widest transition-colors">خروج من النظام</button>
+                </div>
             </aside>
-            <section id="admin-workspace" class="flex-1 overflow-y-auto p-16"></section>
+            <section id="admin-workspace" class="flex-1 overflow-y-auto p-8 md:p-16 bg-gray-50"></section>
         </div>
 
     </main>
 
     <!-- الفوتر الرسمي -->
-    <footer id="main-footer" class="bg-white border-t border-gray-50 pt-24 pb-12 px-6 text-center">
-        <h2 class="font-title text-pink-400 text-3xl mb-6">حلويات بوسي</h2>
-        <p id="footer-slogan" class="font-sub text-xs mb-14 italic text-gray-400 leading-loose"></p>
-        <div class="flex justify-center gap-12 mb-24">
-            <a id="wa-footer" href="#" target="_blank" class="text-3xl text-green-500 hover:scale-125 transition-transform"><i class="ph ph-whatsapp-logo"></i></a>
-            <a href="#" class="text-3xl text-blue-600 hover:scale-125 transition-transform"><i class="ph ph-facebook-logo"></i></a>
+    <footer id="main-footer" class="bg-white border-t border-gray-100 py-20 px-6 text-center">
+        <h2 class="font-black text-pink-400 text-4xl mb-8">حلويات بوسي</h2>
+        <p id="footer-slogan" class="text-sm font-bold text-gray-400 italic mb-14 max-w-sm mx-auto leading-loose"></p>
+        <div class="flex justify-center gap-12 mb-20">
+            <a id="wa-footer-link" href="#" target="_blank" class="text-4xl text-green-500 hover:scale-125 transition-transform"><i class="ph-fill ph-whatsapp-logo"></i></a>
+            <a href="https://www.facebook.com/share/12AVoR17m6Z/?mibextid=wwXIfr" target="_blank" class="text-4xl text-blue-600 hover:scale-125 transition-transform"><i class="ph-fill ph-facebook-logo"></i></a>
         </div>
         <div class="border-t border-gray-50 pt-14">
-            <p class="text-[10px] font-bold text-gray-300 uppercase tracking-[0.2em] italic">© 2026 براند حلويات بوسي | BoseSweets</p>
-            <button onclick="document.getElementById('admin-gate').classList.remove('hidden')" class="mt-8 text-[9px] text-gray-200 hover:text-pink-200 transition-colors">الإدارة المركزية لبراند حلويات بوسي</button>
+            <p class="text-[11px] text-gray-300 font-black uppercase tracking-[0.4em] mb-10 italic">© 2026 براند حلويات بوسي | BoseSweets</p>
+            <button onclick="document.getElementById('admin-gate').classList.remove('hidden')" class="text-[9px] text-gray-200 hover:text-pink-300 transition-colors font-bold tracking-widest uppercase">الإدارة المركزية</button>
         </div>
     </footer>
 
-    <!-- السايدبار -->
-    <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/10 backdrop-blur-sm z-[1000] hidden"></div>
-    <aside id="sidebar" class="fixed top-0 right-0 h-full w-[340px] bg-white z-[1100] translate-x-full transition-transform duration-500 shadow-2xl p-14 flex flex-col">
-        <div class="flex justify-between items-center mb-24">
-            <span class="font-title text-pink-400 text-2xl">القائمة</span>
-            <button onclick="toggleSidebar(false)" class="text-gray-300 hover:text-pink-400 transition-colors"><i class="ph ph-x text-3xl"></i></button>
+    <!-- السايدبار الجانبي -->
+    <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/40 backdrop-blur-md z-[6000] hidden"></div>
+    <aside id="sidebar" class="fixed top-0 right-0 h-full w-80 bg-white z-[6100] translate-x-full transition-transform duration-500 shadow-2xl p-12 flex flex-col">
+        <div class="flex justify-between items-center mb-20">
+            <span class="font-black text-pink-400 text-3xl">القائمة</span>
+            <button onclick="toggleSidebar(false)" class="text-gray-300 hover:text-pink-500 transition-colors"><i class="ph-bold ph-x-circle text-4xl"></i></button>
         </div>
-        <nav id="nav-list" class="space-y-12 flex-1"></nav>
-        <div class="border-t pt-10">
-            <p class="text-[10px] text-gray-300 font-bold uppercase italic tracking-widest text-center">BoseSweets since 2014</p>
+        <nav id="nav-list" class="space-y-10 flex-1"></nav>
+        <div class="text-center pt-10 border-t">
+            <p class="text-[10px] text-gray-300 font-black uppercase italic tracking-[0.3em]">BoseSweets Premium Brand</p>
         </div>
     </aside>
 
-    <!-- المحرك البرمجي (The Master Engine) -->
+    <!-- بوابة الأدمن -->
+    <div id="admin-gate" class="fixed inset-0 bg-white/98 z-[8000] hidden flex flex-col items-center justify-center p-6 backdrop-blur-3xl">
+        <div class="w-full max-w-xs text-center">
+            <div class="mb-14">
+                <h3 class="font-black text-3xl mb-3 text-gray-800">BoseSweets 👑</h3>
+                <p class="text-[11px] font-black text-gray-400 uppercase tracking-widest">إدارة حلويات بوسي</p>
+            </div>
+            <input type="password" id="admin-pass" placeholder="الرمز السري" class="w-full bg-gray-50 border-2 border-gray-100 rounded-3xl p-6 text-center font-black outline-none mb-8 focus:border-pink-400 transition-all text-2xl">
+            <button id="btn-login-confirm" class="btn-brand py-6 text-xl shadow-2xl shadow-pink-100">دخول النظام</button>
+            <button onclick="document.getElementById('admin-gate').classList.add('hidden')" class="mt-12 text-gray-400 text-[10px] font-black uppercase tracking-[0.3em] hover:text-pink-400 transition-colors">العودة للمتجر</button>
+        </div>
+    </div>
+
+    <!-- المحرك السحابي Master Engine v5.1 -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-        // إدماج مفاتيح Firebase الرسمية لبراند حلويات بوسي
         const firebaseConfig = {
-          apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
-          authDomain: "bosy-sweets.firebaseapp.com",
-          projectId: "bosy-sweets",
-          storageBucket: "bosy-sweets.firebasestorage.app",
-          messagingSenderId: "473615735083",
-          appId: "1:473615735083:web:f09c6001c72640b2588d6e",
-          measurementId: "G-46D1CS3WLB"
+            apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
+            authDomain: "bosy-sweets.firebaseapp.com",
+            projectId: "bosy-sweets",
+            storageBucket: "bosy-sweets.firebasestorage.app",
+            messagingSenderId: "473615735083",
+            appId: "1:473615735083:web:f09c6001c72640b2588d6e"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'bosy-sweets-official';
+        const appId = 'bosy-sweets-official';
 
-        // إعدادات Cloudinary لبراند حلويات بوسي
-        const CLOUDINARY_CONFIG = {
-            cloudName: 'dyx4w0dr1',
-            uploadPreset: 'ml_default' // يجب أن يكون Unsigned في إعدادات Cloudinary
-        };
+        const CLOUDINARY = { cloudName: 'dyx4w0dr1', uploadPreset: 'ml_default' };
+        const IMG_FALLBACK = "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?q=80&w=500&auto=format&fit=crop";
 
         const State = {
             data: null,
-            cart: JSON.parse(localStorage.getItem('bose_cart_2026')) || [],
+            cart: JSON.parse(localStorage.getItem('bose_cart_v5')) || [],
             user: null
         };
 
         // --- تهيئة المحرك ---
         async function startEngine() {
-            try {
-                await signInAnonymously(auth);
-                onAuthStateChanged(auth, (user) => {
-                    State.user = user;
-                    if (user) syncData();
-                });
-            } catch (e) {
-                console.error("Engine Start Error", e);
-                showToast("خطأ في تشغيل المحرك السحابي ❌");
-            }
+            onAuthStateChanged(auth, (user) => {
+                State.user = user;
+                if (user) syncData();
+                else signInAnonymously(auth);
+            });
         }
 
-        // --- مزامنة السحابة (Cloud Sync) ---
         function syncData() {
             const menuRef = doc(db, 'artifacts', appId, 'public', 'data', 'masterMenu');
             onSnapshot(menuRef, (snap) => {
                 if (snap.exists()) {
                     State.data = snap.data();
-                    renderFullApp();
-                    document.getElementById('main-loader').style.opacity = '0';
-                    setTimeout(() => document.getElementById('main-loader').style.display = 'none', 500);
+                    renderUI();
                 } else {
-                    document.getElementById('main-loader').style.display = 'none';
-                    showToast("بانتظار رفع البيانات من لوحة التحكم 👑");
+                    showToast("يرجى رفع البيانات من الإدارة ⚠️");
                 }
-            }, (err) => {
-                console.error("Sync Error", err);
+                hideLoader();
+            }, () => {
                 showToast("خطأ في الاتصال بالسحابة ☁️");
+                hideLoader();
             });
         }
 
-        // --- محرك العرض (Rendering Engine) ---
-        function renderFullApp() {
-            if (!State.data) return;
-            const d = State.data;
-            document.getElementById('splash-sub').innerText = d.storeInfo.splashSubtitle;
-            document.getElementById('footer-slogan').innerText = d.storeInfo.splashSubtitle;
-            document.getElementById('wa-footer').href = `https://wa.me/${d.storeInfo.whatsapp}`;
+        function hideLoader() {
+            const ldr = document.getElementById('main-loader');
+            if (ldr) {
+                ldr.style.opacity = '0';
+                setTimeout(() => ldr.style.display = 'none', 800);
+            }
+        }
 
-            const keys = Object.keys(d).filter(k => !['shipping_zones', 'storeInfo', 'torteOptions'].includes(k));
+        // --- عرض الواجهة ---
+        function renderUI() {
+            const d = State.data;
+            if (!d) return;
+
+            document.getElementById('splash-sub').innerText = d.storeInfo?.splashSubtitle || "";
+            document.getElementById('footer-slogan').innerText = d.storeInfo?.splashSubtitle || "";
+            document.getElementById('wa-footer-link').href = `https://wa.me/${d.storeInfo?.whatsapp}`;
+
+            const categories = Object.keys(d).filter(k => !['shipping_zones', 'storeInfo', 'torteOptions'].includes(k));
             
-            // رندر الأقسام الرئيسية
-            document.getElementById('categories-grid').innerHTML = keys.map(k => `
-                <div onclick="window.openCategory('${k}')" class="group cursor-pointer view-fade">
-                    <div class="relative overflow-hidden rounded-[2.5rem] aspect-[4/5] bg-pink-50 mb-6 border border-gray-50 shadow-md">
-                        <img src="${d[k].items[0]?.img || ''}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 flex items-end p-10">
-                            <span class="bg-white/20 backdrop-blur-md text-white px-7 py-3 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20">تصفح القسم</span>
+            // الشبكة الرئيسية
+            const catGrid = document.getElementById('categories-grid');
+            catGrid.innerHTML = categories.map(k => `
+                <div onclick="openCategory('${k}')" class="bose-card group cursor-pointer reveal">
+                    <div class="img-box">
+                        <img src="${d[k].items?.[0]?.img || IMG_FALLBACK}" onerror="this.src='${IMG_FALLBACK}'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent flex items-end p-6">
+                            <span class="text-white text-[11px] font-black uppercase tracking-widest border-r-4 border-pink-400 pr-4">اكتشف القسم</span>
                         </div>
                     </div>
-                    <h4 class="font-title text-2xl text-gray-800 text-center">${d[k].navTitle}</h4>
+                    <div class="p-6 text-center">
+                        <h4 class="font-black text-gray-800 text-sm md:text-xl group-hover:text-pink-500 transition-colors uppercase">${d[k].navTitle}</h4>
+                    </div>
                 </div>
             `).join('');
 
-            // رندر السايدبار
-            document.getElementById('nav-list').innerHTML = `<a href="javascript:loadView('home')" class="block font-title text-2xl hover:text-pink-400 transition-colors">الرئيسية</a>` + 
-                keys.map(k => `<a href="javascript:window.openCategory('${k}')" class="block font-title text-2xl hover:text-pink-400 transition-colors">${d[k].navTitle}</a>`).join('') +
-                `<a href="javascript:loadView('cart')" class="block font-title text-2xl hover:text-pink-400 transition-colors">سلة المشتريات</a>`;
+            // القائمة الجانبية
+            const nav = document.getElementById('nav-list');
+            nav.innerHTML = `<a href="javascript:loadView('home')" class="block font-black text-3xl hover:text-pink-500 transition-colors">الرئيسية</a>` +
+                categories.map(k => `<a href="javascript:openCategory('${k}')" class="block font-black text-3xl hover:text-pink-500 transition-colors">${d[k].navTitle}</a>`).join('');
 
-            // رندر مناطق الشحن
-            const sel = document.getElementById('co-shipping');
-            sel.innerHTML = d.shipping_zones.map(z => `<option value="${z.id}">${z.name} (+${z.id}ج)</option>`).join('');
-            sel.onchange = updateTotals;
-            updateTotals();
+            // مناطق الشحن
+            const ship = document.getElementById('co-shipping');
+            ship.innerHTML = (d.shipping_zones || []).map(z => `<option value="${z.id}">${z.name} (+${z.id}ج)</option>`).join('');
+            ship.onchange = updateTotals;
+
             updateBadge();
         }
 
         window.openCategory = (key) => {
             const cat = State.data[key];
             document.getElementById('cat-display-title').innerText = cat.title;
+            
             const notice = document.getElementById('torte-notice');
             if (key === 'tortes') {
-                notice.innerText = State.data.torteOptions.leadTimeMsg;
+                notice.innerText = State.data.torteOptions?.leadTimeMsg || "";
                 notice.classList.remove('hidden');
             } else notice.classList.add('hidden');
 
-            document.getElementById('products-grid').innerHTML = cat.items.map((it, idx) => `
-                <div class="clean-card view-fade">
-                    <div class="img-wrapper"><img src="${it.img}" alt="${it.name}"></div>
-                    <div class="flex-1 flex flex-col">
-                        <h4 class="font-title text-[15px] mb-2 text-gray-800">${it.name}</h4>
-                        <p class="font-sub text-[10px] mb-5 line-clamp-2 italic h-8 leading-relaxed">${it.desc}</p>
-                        <div class="mt-auto flex justify-between items-center mb-4">
-                            <span class="font-price text-xl">${it.price} ج</span>
-                            <div class="qty-box">
-                                <button onclick="window.modLocalQty('${key}-${idx}', -1)" class="qty-btn transition-colors hover:bg-pink-50"><i class="ph ph-minus"></i></button>
-                                <span id="qty-${key}-${idx}" class="text-[12px] font-bold w-6 text-center">1</span>
-                                <button onclick="window.modLocalQty('${key}-${idx}', 1)" class="qty-btn transition-colors hover:bg-pink-50"><i class="ph ph-plus"></i></button>
-                            </div>
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = (cat.items || []).map((it, idx) => `
+                <div class="bose-card reveal">
+                    <div class="img-box">
+                        <img src="${it.img || IMG_FALLBACK}" onerror="this.src='${IMG_FALLBACK}'">
+                        <div class="price-tag">${it.price} ج</div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <h4 class="font-black text-[15px] text-gray-800 mb-2 truncate">${it.name}</h4>
+                        <p class="text-[11px] text-gray-400 font-bold italic line-clamp-2 mb-6 leading-relaxed h-10">${it.desc}</p>
+                        <div class="mt-auto flex items-center gap-2 mb-5 bg-gray-50 p-2 rounded-xl">
+                            <button onclick="modVal('${key}-${idx}', -1)" class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-pink-500 shadow-sm transition-all active:scale-90"><i class="ph ph-minus font-bold"></i></button>
+                            <span id="qty-${key}-${idx}" class="flex-1 text-center font-black text-sm">1</span>
+                            <button onclick="modVal('${key}-${idx}', 1)" class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-pink-500 shadow-sm transition-all active:scale-90"><i class="ph ph-plus font-bold"></i></button>
                         </div>
-                        <button onclick="window.addToCart('${key}', ${idx})" class="w-full btn-brand py-4 text-[10px] uppercase tracking-widest shadow-lg shadow-pink-50 active:scale-95 transition-transform">إضافة للسلة</button>
+                        <button onclick="addToCart('${key}', ${idx})" class="btn-brand text-xs font-black uppercase tracking-widest py-4">إضافة للسعادة</button>
                     </div>
                 </div>
             `).join('');
             loadView('category');
         };
 
-        window.modLocalQty = (id, d) => { const el = document.getElementById(`qty-${id}`); el.innerText = Math.max(1, parseInt(el.innerText) + d); };
-        
+        window.modVal = (id, d) => {
+            const el = document.getElementById(`qty-${id}`);
+            el.innerText = Math.max(1, parseInt(el.innerText) + d);
+        };
+
         window.addToCart = (key, idx) => {
             const it = State.data[key].items[idx];
             const q = parseInt(document.getElementById(`qty-${key}-${idx}`).innerText);
-            const ex = State.cart.find(i => i.name === it.name);
-            if (ex) ex.qty += q; else State.cart.push({ ...it, qty: q });
-            localStorage.setItem('bose_cart_2026', JSON.stringify(State.cart));
+            const uid = `${key}-${idx}`;
+            
+            const exists = State.cart.find(i => i.id === uid);
+            if (exists) exists.qty += q;
+            else State.cart.push({ ...it, id: uid, qty: q });
+            
+            localStorage.setItem('bose_cart_v5', JSON.stringify(State.cart));
             updateBadge();
-            showToast("تمت إضافة السعادة للسلة ✨");
-            document.getElementById(`qty-${key}-${idx}`).innerText = "1";
+            showToast("✅ تمت إضافة السعادة لسلتك!");
+            document.getElementById(`qty-${uid}`).innerText = "1";
         };
 
-        function updateBadge() { document.getElementById('cart-dot').classList.toggle('hidden', State.cart.length === 0); }
+        function updateBadge() {
+            const has = State.cart.length > 0;
+            document.getElementById('cart-dot').classList.toggle('hidden', !has);
+            document.getElementById('cart-badge-text').innerText = `${State.cart.length} منتج`;
+        }
 
-        window.renderCartView = () => {
-            const c = State.cart;
+        window.renderCart = () => {
             const cont = document.getElementById('cart-list');
-            if (c.length === 0) {
-                cont.innerHTML = ""; document.getElementById('cart-summary').classList.add('hidden');
-                document.getElementById('cart-empty-msg').classList.remove('hidden'); return;
+            const summary = document.getElementById('cart-summary');
+            const msg = document.getElementById('cart-empty-msg');
+            
+            if (State.cart.length === 0) {
+                cont.innerHTML = "";
+                summary.classList.add('hidden');
+                msg.classList.remove('hidden');
+                return;
             }
-            document.getElementById('cart-empty-msg').classList.add('hidden');
-            document.getElementById('cart-summary').classList.remove('hidden');
-            cont.innerHTML = c.map((it, idx) => `
-                <div class="flex items-center gap-6 bg-white p-6 rounded-[2.5rem] border border-gray-50 shadow-sm view-fade">
-                    <img src="${it.img}" class="w-24 h-24 rounded-2xl object-cover shadow-sm">
-                    <div class="flex-1"><h4 class="font-title text-base text-gray-700">${it.name}</h4><span class="font-price text-2xl">${it.price} ج</span></div>
-                    <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-xl">
-                        <button onclick="window.modCart(${idx}, -1)" class="text-gray-300 hover:text-pink-400 transition-colors"><i class="ph ph-minus-circle text-2xl"></i></button>
-                        <span class="text-base font-bold text-gray-600">${it.qty}</span>
-                        <button onclick="window.modCart(${idx}, 1)" class="text-pink-400 hover:text-pink-500 transition-colors"><i class="ph ph-plus-circle text-2xl"></i></button>
+
+            msg.classList.add('hidden');
+            summary.classList.remove('hidden');
+            cont.innerHTML = State.cart.map((it, idx) => `
+                <div class="flex items-center gap-6 bg-white p-6 rounded-3xl border border-gray-50 shadow-sm reveal">
+                    <img src="${it.img || IMG_FALLBACK}" class="w-24 h-24 rounded-2xl object-cover shrink-0 shadow-sm">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-black text-base text-gray-800 truncate mb-1">${it.name}</h4>
+                        <span class="text-pink-500 font-black text-xl">${it.price} ج</span>
+                    </div>
+                    <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-2xl">
+                        <button onclick="modCart(${idx}, -1)" class="text-gray-300 hover:text-pink-500 transition-colors"><i class="ph ph-minus-circle text-3xl"></i></button>
+                        <span class="font-black text-lg w-6 text-center">${it.qty}</span>
+                        <button onclick="modCart(${idx}, 1)" class="text-pink-500 hover:text-pink-600 transition-colors"><i class="ph ph-plus-circle text-3xl"></i></button>
                     </div>
                 </div>
             `).join('');
-            const sub = c.reduce((a, b) => a + (b.price * b.qty), 0);
-            document.getElementById('cart-subtotal').innerText = sub + " ج.م";
+            updateTotals();
         };
 
-        window.modCart = (idx, d) => { State.cart[idx].qty += d; if (State.cart[idx].qty < 1) State.cart.splice(idx, 1); 
-            localStorage.setItem('bose_cart_2026', JSON.stringify(State.cart)); window.renderCartView(); updateBadge(); };
+        window.modCart = (idx, d) => {
+            State.cart[idx].qty += d;
+            if (State.cart[idx].qty < 1) State.cart.splice(idx, 1);
+            localStorage.setItem('bose_cart_v5', JSON.stringify(State.cart));
+            renderCart();
+            updateBadge();
+        };
 
+        function updateTotals() {
+            const sub = State.cart.reduce((a, b) => a + (b.price * b.qty), 0);
+            const ship = parseInt(document.getElementById('co-shipping').value) || 0;
+            document.getElementById('cart-subtotal').innerText = sub + " ج.م";
+            document.getElementById('final-total').innerText = (sub + ship) + " ج.م";
+        }
+
+        // --- معالجة الطلب ---
         document.getElementById('btn-submit-order').onclick = async () => {
-            const n = document.getElementById('co-name').value;
-            const p = document.getElementById('co-phone').value;
-            const a = document.getElementById('co-address').value;
-            const s = document.getElementById('co-shipping');
-            if (!n || !p || !a) return showToast("أكمل البيانات المطلوبة ❌");
+            const name = document.getElementById('co-name').value.trim();
+            const phone = document.getElementById('co-phone').value.trim();
+            const addr = document.getElementById('co-address').value.trim();
+            const ship = document.getElementById('co-shipping');
 
-            const total = State.cart.reduce((a, b) => a + (b.price * b.qty), 0) + parseInt(s.value);
-            const order = { client: n, phone: p, addr: a, zone: s.options[s.selectedIndex].text, items: State.cart, total, createdAt: serverTimestamp() };
-            
+            if (!name || !phone || !addr) return showToast("يرجى إكمال بيانات الاستلام ❌");
+            if (!/^01[0125][0-9]{8}$/.test(phone)) return showToast("رقم الموبايل غير صحيح ❌");
+
+            const total = State.cart.reduce((a, b) => a + (b.price * b.qty), 0) + parseInt(ship.value);
+            const zone = ship.options[ship.selectedIndex].text;
+
             try {
-                // حفظ في Firestore
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'orders'), order);
+                showToast("جاري تأكيد طلب السعادة... 🔄");
+                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'orders'), {
+                    client: name, phone, addr, zone, items: State.cart, total, createdAt: serverTimestamp()
+                });
                 
-                // تحضير الواتساب
-                let msg = `*طلب جديد - BoseSweets 👑*\n\n`;
-                msg += `👤 *العميل:* ${n}\n`;
-                msg += `📞 *الموبايل:* ${p}\n`;
-                msg += `📍 *المنطقة:* ${s.options[s.selectedIndex].text}\n`;
-                msg += `🏠 *العنوان:* ${a}\n\n`;
+                let msg = `*طلب جديد من حلويات بوسي 👑*\n\n`;
+                msg += `👤 *العميل:* ${name}\n`;
+                msg += `📞 *الموبايل:* ${phone}\n`;
+                msg += `📍 *المنطقة:* ${zone}\n`;
+                msg += `🏠 *العنوان:* ${addr}\n\n`;
                 msg += `*الطلبات:* \n`;
                 State.cart.forEach(i => msg += `🍰 ${i.name} × ${i.qty} = ${i.price * i.qty}ج\n`);
                 msg += `\n💰 *الإجمالي النهائي:* ${total} ج.م\n`;
-                msg += `_(شامل مصاريف التوصيل)_`;
+                msg += `\n_تم الطلب عبر الموقع الرسمي لبراند حلويات بوسي_`;
 
                 window.open(`https://wa.me/${State.data.storeInfo.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
-                State.cart = []; localStorage.removeItem('bose_cart_2026'); updateBadge(); loadView('home');
-                showToast("تم إرسال طلبك بنجاح لبراند حلويات بوسي ❤️");
-            } catch (e) { showToast("فشل في حفظ الطلب سحابياً ❌"); }
+                
+                State.cart = [];
+                localStorage.removeItem('bose_cart_v5');
+                updateBadge();
+                loadView('home');
+                showToast("✅ تم إرسال طلبك بنجاح لبراند حلويات بوسي!");
+            } catch { showToast("عفواً! حدث خطأ في الاتصال ❌"); }
         };
 
-        // --- محرك الصور السحابي (Cloudinary Engine) ---
-        async function uploadToCloudinary(file) {
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
-
-            try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`, {
-                    method: 'POST',
-                    body: formData
-                });
-                const data = await response.json();
-                return data.secure_url;
-            } catch (error) {
-                console.error("Cloudinary Upload Error", error);
-                return null;
-            }
-        }
-
-        window.handleImageUpload = async (event, key, idx) => {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            showToast("جاري رفع الصورة لبراند حلويات بوسي... ☁️");
-            const imageUrl = await uploadToCloudinary(file);
-            
-            if (imageUrl) {
-                State.data[key].items[idx].img = imageUrl;
-                document.getElementById(`img-edit-${key}-${idx}`).src = imageUrl;
-                showToast("تم رفع الصورة بنجاح ✅");
-            } else {
-                showToast("فشل الرفع! تأكد من إعدادات Cloudinary ❌");
-            }
-        };
-
-        // --- واجهة الإدارة (Admin View Engine) ---
+        // --- نظام الإدارة ---
         document.getElementById('btn-login-confirm').onclick = () => {
             if (document.getElementById('admin-pass').value === '2026') {
                 document.getElementById('admin-gate').classList.add('hidden');
@@ -537,172 +612,146 @@
                 document.getElementById('main-header').classList.add('hidden');
                 document.getElementById('main-footer').classList.add('hidden');
                 document.getElementById('admin-view').classList.remove('hidden');
-                loadAdminTab('dashboard');
+                loadAdminTab('catalog');
             } else showToast("الرمز السري غير صحيح ❌");
         };
 
         window.loadAdminTab = (tab) => {
-            document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('admin-tab-active'));
-            const targetBtn = document.querySelector(`[data-tab="${tab}"]`);
-            if (targetBtn) targetBtn.classList.add('admin-tab-active');
-            
+            document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('admin-active'));
+            document.querySelector(`[data-atab="${tab}"]`).classList.add('admin-active');
             const ws = document.getElementById('admin-workspace');
             ws.innerHTML = "";
 
-            if (tab === 'dashboard') {
-                ws.innerHTML = `
-                    <div class="view-fade">
-                        <h2 class="font-title text-4xl mb-12">نظرة عامة على BoseSweets 👑</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div class="admin-card border-l-8 border-l-pink-400">
-                                <p class="text-gray-400 font-bold mb-4 uppercase text-[10px] tracking-widest">حالة السحابة</p>
-                                <span class="text-2xl font-title text-green-500">متصل (Firestore) ✅</span>
-                            </div>
-                            <div class="admin-card border-l-8 border-l-blue-400">
-                                <p class="text-gray-400 font-bold mb-4 uppercase text-[10px] tracking-widest">محرك الصور</p>
-                                <span class="text-2xl font-title text-blue-500">Cloudinary Active 📸</span>
-                            </div>
-                        </div>
-                        <div class="mt-12 bg-white p-10 rounded-[2.5rem] shadow-sm border border-gray-100">
-                            <h4 class="font-title text-xl text-gray-700 mb-4">تعليمات إدارة براند حلويات بوسي 💡</h4>
-                            <p class="font-sub text-sm leading-relaxed text-gray-500">
-                                يمكنك التحكم الكامل في المنيو والأسعار والصور من هنا. تذكر دائماً أن جودة الصور الطبيعية هي ما يميزنا. بعد أي تعديل، لا تنسَ الضغط على "حفظ التعديلات" لتظهر للعملاء فوراً.
-                            </p>
-                        </div>
-                    </div>`;
-            } else if (tab === 'catalog') {
-                renderCatalogEditor();
-            } else if (tab === 'orders') {
-                renderAdminOrders();
-            } else if (tab === 'restore') {
-                renderRestoreTool();
-            }
+            if (tab === 'catalog') renderCatalogEditor();
+            else if (tab === 'orders') renderOrdersLog();
+            else if (tab === 'restore') renderRestoreTool();
         };
 
-        async function renderCatalogEditor() {
+        function renderCatalogEditor() {
+            const d = State.data;
+            const keys = Object.keys(d).filter(k => !['shipping_zones', 'storeInfo', 'torteOptions'].includes(k));
             const ws = document.getElementById('admin-workspace');
-            const keys = Object.keys(State.data).filter(k => !['shipping_zones', 'storeInfo', 'torteOptions'].includes(k));
-            ws.innerHTML = `<h2 class="font-title text-4xl mb-12">مدير أصناف حلويات بوسي 🍰</h2>
-                <div class="space-y-12 pb-20">
-                    ${keys.map(k => `
-                        <div class="admin-card">
-                            <h3 class="font-title text-pink-400 text-2xl mb-8 border-b border-gray-50 pb-6">${State.data[k].navTitle}</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                ${State.data[k].items.map((it, idx) => `
-                                    <div class="flex gap-6 items-center p-6 bg-gray-50/50 rounded-[2.5rem] border border-gray-100/50 transition-all hover:bg-white hover:shadow-md group">
-                                        <div class="relative overflow-hidden rounded-2xl w-28 h-28 shrink-0 shadow-sm border-2 border-white">
-                                            <img src="${it.img}" id="img-edit-${k}-${idx}" class="w-full h-full object-cover">
-                                            <label class="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 group-hover:opacity-100 cursor-pointer transition-all">
-                                                <i class="ph ph-camera text-2xl"></i>
-                                                <input type="file" class="hidden" accept="image/*" onchange="window.handleImageUpload(event, '${k}', ${idx})">
-                                            </label>
-                                        </div>
-                                        <div class="flex-1 space-y-3">
-                                            <input type="text" value="${it.name}" onchange="window.updateField('${k}', ${idx}, 'name', this.value)" class="admin-input font-bold" placeholder="اسم المنتج">
-                                            <input type="number" value="${it.price}" onchange="window.updateField('${k}', ${idx}, 'price', this.value)" class="admin-input font-price text-lg" placeholder="السعر">
-                                        </div>
-                                    </div>
-                                `).join('')}
+            ws.innerHTML = `<h2 class="text-3xl font-black mb-12">مدير المنيو 🍰</h2>` + keys.map(k => `
+                <div class="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm mb-12">
+                    <div class="flex justify-between items-center mb-10 border-b pb-6">
+                        <h4 class="font-black text-pink-500 text-xl">${d[k].navTitle}</h4>
+                        <button onclick="saveMenu()" class="bg-pink-400 text-white px-10 py-3 rounded-2xl font-bold text-xs shadow-xl shadow-pink-50">حفظ القسم</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        ${d[k].items.map((it, idx) => `
+                            <div class="bg-gray-50 p-6 rounded-3xl flex gap-5 items-center transition-all hover:bg-white hover:shadow-md">
+                                <div class="relative w-20 h-20 shrink-0 rounded-2xl overflow-hidden group">
+                                    <img src="${it.img || IMG_FALLBACK}" id="img-ad-${k}-${idx}" class="w-full h-full object-cover">
+                                    <label class="absolute inset-0 bg-black/70 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-all">
+                                        <i class="ph ph-camera-plus text-white text-2xl"></i>
+                                        <input type="file" class="hidden" onchange="uploadImg(event, '${k}', ${idx})">
+                                    </label>
+                                </div>
+                                <div class="flex-1 space-y-3">
+                                    <input type="text" value="${it.name}" onchange="updateState('${k}', ${idx}, 'name', this.value)" class="admin-input text-xs" placeholder="اسم المنتج">
+                                    <input type="number" value="${it.price}" onchange="updateState('${k}', ${idx}, 'price', this.value)" class="admin-input text-sm text-pink-500" placeholder="السعر">
+                                </div>
                             </div>
-                            <div class="flex justify-end mt-10">
-                                <button onclick="window.saveCatalog()" class="btn-brand px-12 py-4 shadow-xl shadow-pink-50 flex items-center gap-3">
-                                    <i class="ph ph-floppy-disk text-xl"></i> حفظ تعديلات القسم
-                                </button>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>`;
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
         }
 
-        window.updateField = (key, idx, field, val) => { 
-            State.data[key].items[idx][field] = field === 'price' ? parseInt(val) : val; 
+        window.updateState = (k, idx, f, v) => { State.data[k].items[idx][f] = f === 'price' ? parseInt(v) : v; };
+
+        window.uploadImg = async (e, k, idx) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            showToast("جاري الرفع للسحابة... ☁️");
+            const fd = new FormData();
+            fd.append('file', file);
+            fd.append('upload_preset', CLOUDINARY.uploadPreset);
+            try {
+                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY.cloudName}/image/upload`, { method: 'POST', body: fd });
+                const resJ = await res.json();
+                State.data[k].items[idx].img = resJ.secure_url;
+                document.getElementById(`img-ad-${k}-${idx}`).src = resJ.secure_url;
+                showToast("✅ تم تحديث الصورة!");
+            } catch { showToast("فشل الرفع! ❌"); }
         };
 
-        window.saveCatalog = async () => {
-            showToast("جاري حفظ التعديلات سحابياً... ☁️");
+        window.saveMenu = async () => {
+            showToast("جاري مزامنة المنيو... ☁️");
             await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'masterMenu'), State.data);
-            showToast("تم تحديث منيو حلويات بوسي بنجاح 👑✨");
+            showToast("✅ تمت المزامنة بنجاح!");
         };
 
-        function renderAdminOrders() {
+        function renderOrdersLog() {
             const ws = document.getElementById('admin-workspace');
-            ws.innerHTML = `<h2 class="font-title text-4xl mb-12">سجل الطلبات الأخير 📋</h2><div id="admin-orders-list" class="space-y-6"></div>`;
+            ws.innerHTML = `<h2 class="text-3xl font-black mb-12">سجل المبيعات 📋</h2><div id="orders-wall" class="space-y-6"></div>`;
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'orders'), (snap) => {
-                const os = []; snap.forEach(d => os.push({id: d.id, ...d.data()}));
-                os.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                document.getElementById('admin-orders-list').innerHTML = os.map(o => `
-                    <div class="admin-card flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-r-8 border-r-pink-200">
+                const orders = []; snap.forEach(d => orders.push(d.data()));
+                orders.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+                document.getElementById('orders-wall').innerHTML = orders.map(o => `
+                    <div class="bg-white p-8 rounded-[2.5rem] border border-pink-50 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6 reveal">
                         <div>
-                            <h4 class="font-bold text-xl text-gray-800 mb-1">${o.client}</h4>
-                            <p class="text-xs text-gray-400 font-bold">${o.phone} | ${o.zone}</p>
-                            <p class="text-[10px] text-gray-300 mt-2">${o.createdAt ? new Date(o.createdAt.seconds * 1000).toLocaleString('ar-EG') : 'الآن'}</p>
+                            <h4 class="font-black text-xl text-gray-800 mb-1">${o.client}</h4>
+                            <p class="text-xs font-bold text-gray-400">${o.phone} | ${o.zone}</p>
+                            <p class="text-[10px] text-gray-300 mt-2 font-black uppercase tracking-widest">${o.createdAt ? new Date(o.createdAt.seconds*1000).toLocaleString('ar-EG') : 'جاري التحميل...'}</p>
                         </div>
-                        <div class="text-left">
-                            <span class="font-price text-3xl text-pink-500">${o.total} ج.م</span>
-                            <p class="text-[9px] font-bold text-gray-300 uppercase tracking-widest mt-1">${o.items.length} أصناف في السلة</p>
+                        <div class="text-center md:text-left">
+                            <span class="text-4xl font-black text-pink-500">${o.total}ج</span>
+                            <p class="text-[10px] font-black text-gray-300 uppercase mt-2 tracking-[0.2em]">${o.items.length} صنف في الطلب</p>
                         </div>
                     </div>
-                `).join('') || "لا توجد طلبات مسجلة بعد.";
+                `).join('') || "لا توجد مبيعات مسجلة.";
             });
         }
 
         function renderRestoreTool() {
             const ws = document.getElementById('admin-workspace');
             ws.innerHTML = `
-                <h2 class="font-title text-4xl mb-12">استعادة البيانات 🔄</h2>
-                <div class="admin-card border-2 border-dashed border-pink-200 text-center py-24 bg-pink-50/20">
-                    <i class="ph ph-file-js text-7xl text-pink-100 mb-8 block"></i>
-                    <p class="text-gray-400 mb-10 font-bold italic max-w-sm mx-auto">ارفع ملف الـ JSON الخاص ببراند حلويات بوسي لاسترجاع المنيو والأسعار فوراً.</p>
+                <div class="bg-white p-20 rounded-[4rem] text-center border-2 border-dashed border-pink-100">
+                    <i class="ph ph-cloud-arrow-up text-8xl text-pink-200 mb-10 block"></i>
+                    <h2 class="text-3xl font-black mb-6">استعادة قاعدة البيانات</h2>
+                    <p class="text-sm text-gray-400 font-bold mb-14 max-w-sm mx-auto italic">ارفع ملف JSON الرسمي لاستعادة المنيو والأسعار والإعدادات فوراً.</p>
                     <input type="file" id="json-input" accept=".json" class="hidden">
-                    <button onclick="document.getElementById('json-input').click()" class="btn-brand px-16 py-5 shadow-2xl">اختيار الملف السحابي 🔄</button>
+                    <button onclick="document.getElementById('json-input').click()" class="btn-brand px-16 py-6 shadow-2xl">اختر ملف النسخة الاحتياطية 🔄</button>
                 </div>`;
             document.getElementById('json-input').onchange = (e) => {
-                const f = e.target.files[0];
                 const r = new FileReader();
                 r.onload = async (ev) => {
-                    try {
-                        const d = JSON.parse(ev.target.result);
-                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'masterMenu'), d);
-                        showToast("تمت استعادة بيانات BoseSweets بنجاح 👑✨");
-                    } catch (err) {
-                        showToast("خطأ في قراءة ملف الـ JSON ❌");
-                    }
+                    const d = JSON.parse(ev.target.result);
+                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'masterMenu'), d);
+                    showToast("✅ تمت استعادة قاعدة البيانات!");
+                    setTimeout(() => location.reload(), 1500);
                 };
-                r.readAsText(f);
+                r.readAsText(e.target.files[0]);
             };
         }
 
+        // --- الملاحة والوظائف العامة ---
         window.loadView = (v) => {
             ['home', 'category', 'cart', 'checkout'].forEach(i => document.getElementById(`view-${i}`).classList.add('hidden'));
             document.getElementById(`view-${v}`).classList.remove('hidden');
-            if (v === 'cart') window.renderCartView();
-            window.toggleSidebar(false);
+            if (v === 'cart') renderCart();
+            toggleSidebar(false);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
-
-        function updateTotals() {
-            const sub = State.cart.reduce((a, b) => a + (b.price * b.qty), 0);
-            const ship = parseInt(document.getElementById('co-shipping').value) || 0;
-            document.getElementById('final-total').innerText = (sub + ship) + " ج.م";
-        }
 
         window.toggleSidebar = (s) => {
             document.getElementById('sidebar').classList.toggle('translate-x-full', !s);
             document.getElementById('sidebar-overlay').classList.toggle('hidden', !s);
         };
 
+        window.scrollToGrid = () => document.getElementById('catalog-area').scrollIntoView({ behavior: 'smooth' });
+
         function showToast(m) {
             const t = document.getElementById('toast');
             document.getElementById('toast-msg').innerText = m;
             t.classList.remove('hidden');
-            setTimeout(() => t.classList.add('hidden'), 3500);
+            setTimeout(() => t.classList.add('hidden'), 4000);
         }
 
-        window.scrollToCatalog = () => document.getElementById('catalog-area').scrollIntoView({ behavior: 'smooth' });
-
-        // بدء تشغيل المحرك
-        startEngine();
+        window.onload = startEngine;
 
     </script>
 </body>
 </html>
+
