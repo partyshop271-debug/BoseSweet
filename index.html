@@ -3,20 +3,25 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>حلويات بوسي | BoseSweets</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
         
         :root {
             --brand-pink: #ff85ad;
+            --brand-pink-dark: #ff4d85;
+            --brand-pink-light: #fff0f5;
             --brand-dark: #1a1a1a;
-            --bg-light: #fcfcfc;
-            --card-shadow: 0 12px 30px -10px rgba(255, 133, 173, 0.15);
+            --bg-light: #f8f9fa;
+            --surface: #ffffff;
+            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 25px rgba(255, 133, 173, 0.12);
+            --shadow-lg: 0 15px 35px rgba(255, 133, 173, 0.15);
         }
 
         body {
@@ -24,756 +29,1477 @@
             background-color: var(--bg-light);
             color: var(--brand-dark);
             -webkit-tap-highlight-color: transparent;
-            font-weight: 600;
             overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
-        /* تنسيقات الأوزان المقدسة */
         .f-600 { font-weight: 600; }
         .f-700 { font-weight: 700; }
         .f-800 { font-weight: 800; }
+        .f-900 { font-weight: 900; }
 
-        /* الكروت الاحترافية المدمجة */
-        .bose-card {
-            background: #ffffff;
-            border-radius: 1.5rem;
-            border: 1px solid #f1f2f6;
+        .text-gradient {
+            background: linear-gradient(135deg, var(--brand-pink-dark), var(--brand-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-premium { 
+            background: linear-gradient(135deg, var(--brand-pink), var(--brand-pink-dark)); 
+            color: white; 
+            box-shadow: 0 6px 20px rgba(255, 133, 173, 0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-premium:active { transform: scale(0.96); box-shadow: 0 3px 10px rgba(255, 133, 173, 0.2); }
+        .btn-premium:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 133, 173, 0.1);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* تبويبات الأقسام الفاخرة (Tabs) */
+        .tab-btn {
+            position: relative;
+            white-space: nowrap;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tab-btn.active {
+            background: var(--brand-pink);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 133, 173, 0.3);
+            border-color: var(--brand-pink);
+        }
+
+        /* كروت المنتجات الاحترافية (2 في الصف) */
+        .menu-item-card {
+            background: var(--surface);
+            border-radius: 20px;
             overflow: hidden;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
-            box-shadow: var(--card-shadow);
             height: 100%;
         }
-        .bose-card:active { transform: scale(0.96); }
-
-        .img-box {
-            position: relative;
+        .menu-item-card:active { transform: scale(0.97); }
+        
+        .menu-item-img-wrap {
             width: 100%;
-            aspect-ratio: 1/1;
-            background: #f9f9f9;
+            aspect-ratio: 1/1; 
+            position: relative;
+            background: var(--brand-pink-light);
             overflow: hidden;
         }
-        .img-box img {
+        .menu-item-img-wrap img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.8s ease;
+            transition: transform 0.5s ease;
         }
-        .bose-card:hover .img-box img { transform: scale(1.1); }
+        .menu-item-card:hover .menu-item-img-wrap img { transform: scale(1.08); }
 
-        .price-tag {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: white;
-            padding: 0.5rem 1.2rem;
-            border-radius: 14px;
-            font-weight: 800;
-            color: var(--brand-pink);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            z-index: 10;
-            font-size: 0.9rem;
+        .qty-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f1f5f9;
+            border-radius: 10px;
+            padding: 3px;
+            border: 1px solid #e2e8f0;
+            width: 100%;
         }
-
-        /* الشبكة لمنع المط */
-        .grid-compact {
-            display: grid;
-            gap: 1.25rem;
-            grid-template-columns: repeat(2, 1fr);
-        }
-        @media (min-width: 768px) {
-            .grid-compact { gap: 2rem; grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (min-width: 1200px) {
-            .grid-compact { grid-template-columns: repeat(4, 1fr); }
-        }
-
-        /* أزرار البراند */
-        .btn-brand {
-            background: var(--brand-pink);
-            color: white;
-            font-weight: 700;
-            padding: 0.9rem;
-            border-radius: 1.2rem;
-            transition: all 0.3s ease;
+        .qty-btn {
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.6rem;
-            width: 100%;
-            border: none;
-            cursor: pointer;
+            border-radius: 8px;
+            background: white;
+            color: var(--brand-dark);
+            font-weight: 800;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.2s;
         }
-        .btn-brand:hover { background: #ff6b9d; box-shadow: 0 8px 20px rgba(255, 133, 173, 0.3); }
-        .btn-brand:active { transform: scale(0.95); }
+        .qty-btn:active { transform: scale(0.9); background: #e2e8f0; }
 
-        /* شاشة التحميل الاحترافية */
-        #main-loader {
+        /* مدخلات قسم التورتة الاحترافية */
+        .premium-input {
+            width: 100%;
+            padding: 1.15rem 1.25rem;
+            border-radius: 16px;
+            border: 2px solid #e2e8f0;
+            background-color: #f8fafc;
+            font-weight: 700;
+            color: var(--brand-dark);
+            transition: all 0.3s ease;
+            appearance: none;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+        }
+        .premium-input:focus {
+            outline: none;
+            border-color: var(--brand-pink);
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(255, 133, 173, 0.15);
+        }
+
+        .addon-checkbox { display: none; }
+        .addon-label {
+            display: flex;
+            align-items: center;
+            padding: 1.15rem;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 0.5rem;
+        }
+        .addon-checkbox:checked + .addon-label {
+            background: var(--brand-pink-light);
+            border-color: var(--brand-pink);
+            color: var(--brand-pink-dark);
+        }
+        .addon-checkbox:checked + .addon-label .check-circle {
+            background: var(--brand-pink);
+            border-color: var(--brand-pink);
+        }
+        .addon-checkbox:checked + .addon-label .check-circle i {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        #loader {
             position: fixed;
             inset: 0;
-            background: white;
+            background: var(--surface);
             z-index: 9999;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.8s ease;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        .loader-bar {
-            width: 80px;
-            height: 3px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-            margin-top: 1.5rem;
-        }
-        .loader-bar::after {
-            content: '';
-            position: absolute;
-            width: 50%;
-            height: 100%;
-            background: var(--brand-pink);
-            animation: loadingMove 1.5s infinite ease-in-out;
-        }
-        @keyframes loadingMove { 0% { left: -50%; } 100% { left: 100%; } }
 
-        .reveal { animation: revealIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
-        @keyframes revealIn {
-            from { opacity: 0; transform: translateY(20px); }
+        .view-section { 
+            transition: opacity 0.4s ease, transform 0.4s ease; 
+            min-height: 100vh;
+            width: 100%; 
+        }
+        .animate-enter { animation: slideUpFade 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* تخصيص السكرول */
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: var(--brand-pink); border-radius: 10px; }
-
-        /* ستايل لوحة الإدارة */
-        .admin-sidebar { background: #0d0d0d; border-left: 1px solid #222; }
-        .admin-active { background: #ff85ad15; color: var(--brand-pink); border-right: 4px solid var(--brand-pink); }
-        .admin-input { background: #ffffff; border: 2px solid #f0f0f0; border-radius: 1rem; padding: 0.8rem 1.2rem; font-weight: 700; width: 100%; outline: none; transition: 0.3s; }
-        .admin-input:focus { border-color: var(--brand-pink); box-shadow: 0 0 0 4px rgba(255, 133, 173, 0.1); }
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop { animation: pop 0.3s ease; }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased pb-[90px]">
 
-    <!-- شاشة التحميل الترحيبية -->
-    <div id="main-loader">
-        <h1 class="text-3xl font-black text-pink-400">حلويات بوسي</h1>
-        <div class="loader-bar"></div>
-        <p class="mt-6 text-sm font-bold text-gray-400 italic">مرحبا بكم في عالم حلويات بوسي</p>
+    <!-- Loader -->
+    <div id="loader">
+        <div class="relative mb-6">
+            <div class="absolute inset-0 bg-[#ff85ad] blur-2xl opacity-20 rounded-full animate-pulse"></div>
+            <i class="ph-fill ph-cake text-8xl text-[#ff85ad] relative z-10 animate-bounce"></i>
+        </div>
+        <h1 class="text-4xl f-900 text-gradient mb-2 tracking-tight">حلويات بوسي</h1>
+        <p class="text-gray-400 f-700 text-sm tracking-wide">المنيو الديجيتال الفاخر</p>
     </div>
 
-    <!-- نظام التنبيهات -->
-    <div id="toast" class="fixed top-8 left-1/2 -translate-x-1/2 z-[10000] hidden">
-        <div class="bg-gray-900/95 backdrop-blur-md text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-white/10">
-            <i class="ph-fill ph-check-circle text-pink-400 text-xl"></i>
-            <span id="toast-msg" class="text-sm font-bold"></span>
-        </div>
+    <!-- Toast -->
+    <div id="toast" class="fixed top-6 left-1/2 transform -translate-x-1/2 bg-gray-900/95 backdrop-blur-md text-white px-6 py-4 rounded-2xl shadow-2xl z-[10000] hidden transition-all duration-300 flex items-center gap-3 border border-white/10 w-max max-w-[90vw]">
+        <i class="ph-fill ph-check-circle text-2xl text-[#ff85ad]" id="toast-icon"></i>
+        <span id="toast-msg" class="f-700 text-sm"></span>
     </div>
 
-    <!-- الهيدر الرسمي -->
-    <header class="sticky top-0 bg-white/90 backdrop-blur-xl z-[5000] border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar(true)" class="p-2 text-gray-400 hover:text-pink-500 transition-colors">
-                    <i class="ph-bold ph-squares-four text-2xl"></i>
-                </button>
-                <div onclick="loadView('home')" class="cursor-pointer">
-                    <h1 class="text-xl md:text-2xl font-black text-gray-800 leading-none">حلويات بوسي</h1>
-                    <span class="text-[8px] font-bold text-gray-400 tracking-[0.2em] uppercase">BoseSweets Official</span>
-                </div>
-            </div>
-            <div class="flex items-center gap-4">
-                <button onclick="loadView('cart')" class="relative p-3 bg-pink-50 rounded-2xl text-pink-500 border border-pink-100 hover:bg-pink-500 hover:text-white transition-all active:scale-90">
-                    <i class="ph-bold ph-shopping-bag text-xl"></i>
-                    <span id="cart-dot" class="absolute top-1 right-1 w-3 h-3 bg-pink-500 border-2 border-white rounded-full hidden animate-bounce"></span>
-                </button>
-            </div>
+    <!-- Header -->
+    <header id="main-header" class="fixed top-0 left-0 right-0 glass-nav z-50 px-5 py-4 flex justify-between items-center hidden shadow-sm">
+        <button onclick="toggleSidebar(true)" class="text-gray-700 hover:text-[#ff85ad] active:scale-90 transition-transform">
+            <i class="ph ph-list text-3xl"></i>
+        </button>
+        
+        <div class="flex items-center gap-2 cursor-pointer active:scale-95 transition-transform" onclick="loadView('home')">
+            <h1 class="text-2xl f-900 text-gradient tracking-tight">حلويات بوسي</h1>
         </div>
+
+        <button onclick="loadView('cart')" class="relative text-gray-700 hover:text-[#ff85ad] active:scale-90 transition-transform">
+            <i class="ph ph-shopping-cart text-3xl"></i>
+            <span id="cart-badge" class="absolute -top-1 -right-1 bg-[#ff85ad] text-white text-[11px] rounded-full h-[20px] w-[20px] flex items-center justify-center hidden f-900 shadow-md border-2 border-white">0</span>
+        </button>
     </header>
 
-    <main id="app-viewport" class="min-h-screen">
-        
-        <!-- واجهة العميل -->
-        <div id="client-container">
+    <!-- Sidebar -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-50 hidden backdrop-blur-sm transition-opacity" onclick="toggleSidebar(false)"></div>
+    <div id="sidebar" class="fixed top-0 right-0 h-full w-[300px] bg-white z-50 transform translate-x-full transition-transform duration-400 shadow-2xl flex flex-col rounded-l-[32px] overflow-hidden">
+        <div class="p-8 bg-gradient-to-br from-pink-50 to-white relative">
+            <i class="ph-fill ph-cookie absolute -left-4 -bottom-4 text-7xl text-pink-100 opacity-50 transform rotate-12"></i>
+            <h2 class="text-3xl f-900 text-gray-800 relative z-10">المنيو</h2>
+            <p class="text-sm text-[#ff85ad] f-700 mt-1 relative z-10">اكتشف أقسام السعادة</p>
+            <button onclick="toggleSidebar(false)" class="absolute top-6 left-6 text-gray-400 bg-white rounded-full p-2 shadow-sm active:scale-90">
+                <i class="ph ph-x text-xl"></i>
+            </button>
+        </div>
+        <div id="sidebar-categories" class="p-5 flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-3"></div>
+        <div class="p-5 border-t border-gray-100">
+             <button onclick="loadView('admin')" class="w-full flex items-center justify-center gap-2 py-4 bg-gray-900 text-white rounded-2xl f-800 shadow-lg active:scale-95 transition-transform">
+                <i class="ph-fill ph-shield-check text-xl text-[#ff85ad]"></i> إدارة حلويات بوسي
+            </button>
+        </div>
+    </div>
+
+    <main class="pt-[80px] mx-auto min-h-screen relative max-w-lg">
+
+        <!-- ========================================== -->
+        <!-- الشاشة الرئيسية (Home) -->
+        <!-- ========================================== -->
+        <div id="view-home" class="view-section hidden px-5 pt-4 pb-32">
             
-            <!-- الهيرو سكشن المحدث -->
-            <section id="view-home" class="reveal">
-                <div class="bg-white py-16 md:py-28 px-6 border-b border-gray-50 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-96 h-96 bg-pink-50 rounded-full blur-[120px] opacity-40 -translate-y-1/2 translate-x-1/2"></div>
-                    <div class="max-w-4xl mx-auto text-center relative z-10">
-                        <span class="inline-block px-5 py-2 bg-pink-50 text-pink-500 text-[10px] font-black rounded-full mb-8 border border-pink-100 uppercase tracking-widest">BoseSweets Premium</span>
-                        <h2 class="text-4xl md:text-7xl font-black text-gray-800 mb-10 leading-tight">
-                            مرحبا بكم في عالم <br> <span class="text-pink-400">حلويات بوسي</span>
-                        </h2>
-                        <p id="splash-sub" class="text-gray-400 text-sm md:text-xl mb-14 max-w-2xl mx-auto leading-relaxed font-bold italic"></p>
-                        <button onclick="scrollToGrid()" class="bg-gray-900 text-white px-14 py-5 rounded-2xl font-black text-sm hover:bg-pink-500 transition-all shadow-2xl shadow-gray-200 uppercase tracking-widest active:scale-95">استكشف السعادة</button>
-                    </div>
-                </div>
+            <div id="store-closed-msg" class="hidden bg-red-50 p-4 rounded-2xl mb-6 border border-red-100 flex gap-4 items-center shadow-sm">
+                <div class="bg-white p-2 rounded-xl text-red-500 shadow-sm shrink-0"><i class="ph-fill ph-lock-key text-2xl"></i></div>
+                <p id="store-closed-text" class="f-800 text-sm text-red-700"></p>
+            </div>
 
-                <div id="catalog-area" class="max-w-7xl mx-auto px-4 py-20">
-                    <div class="flex items-center gap-5 mb-14">
-                        <h3 class="text-lg font-black text-gray-800 border-r-4 border-pink-400 pr-5">أقسام حلويات بوسي</h3>
-                        <div class="h-[1px] flex-1 bg-gray-100"></div>
-                    </div>
-                    <div id="categories-grid" class="grid-compact"></div>
-                </div>
-            </section>
-
-            <!-- عرض المنتجات -->
-            <section id="view-category" class="hidden reveal py-10 px-4 max-w-7xl mx-auto">
-                <div class="mb-14 border-r-4 border-pink-400 pr-6">
-                    <button onclick="loadView('home')" class="text-xs font-black text-gray-400 mb-5 flex items-center gap-2 hover:text-pink-500 transition-colors uppercase tracking-widest">
-                        <i class="ph-bold ph-caret-right"></i> القائمة الرئيسية
-                    </button>
-                    <h2 id="cat-display-title" class="text-3xl md:text-6xl font-black text-gray-800 uppercase tracking-tight"></h2>
-                    <div id="torte-notice" class="hidden mt-8 bg-pink-50 p-8 rounded-3xl text-xs font-bold text-pink-600 border border-pink-100 italic leading-loose"></div>
-                </div>
-                <div id="products-grid" class="grid-compact"></div>
-            </section>
-
-            <!-- سلة المشتريات المدمجة -->
-            <section id="view-cart" class="hidden reveal py-14 px-4 max-w-3xl mx-auto">
-                <div class="flex items-center justify-between mb-14">
-                    <h2 class="text-3xl font-black text-gray-800">سلة حلويات بوسي</h2>
-                    <span id="cart-badge-text" class="bg-gray-100 text-gray-500 px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest">0 منتج</span>
-                </div>
-                <div id="cart-list" class="space-y-5"></div>
+            <!-- Banner -->
+            <div class="bg-gray-900 rounded-[32px] p-8 mb-10 relative overflow-hidden shadow-xl">
+                <div class="absolute top-0 right-0 w-full h-full bg-[url('https://images.unsplash.com/photo-1551024601-bec78aea704b?q=80&w=600&auto=format&fit=crop')] bg-cover opacity-20"></div>
+                <div class="absolute inset-0 bg-gradient-to-l from-gray-900 via-gray-900/80 to-transparent"></div>
                 
-                <div id="cart-empty-msg" class="hidden text-center py-28 bg-white rounded-[3rem] border-2 border-dashed border-gray-100">
-                    <i class="ph ph-shopping-cart text-8xl text-gray-100 mb-8"></i>
-                    <p class="text-gray-300 font-black italic text-2xl">السلة خالية حالياً..</p>
-                    <button onclick="loadView('home')" class="mt-8 text-pink-400 font-black text-sm uppercase tracking-widest hover:underline">ابدأ التسوق الآن</button>
+                <div class="relative z-10">
+                    <span class="bg-[#ff85ad] text-white text-[10px] px-3 py-1 rounded-full f-800 mb-3 inline-block">حلويات بوسي 👑</span>
+                    <h2 class="text-3xl f-900 text-white mb-2 leading-tight">حلويات تصنع<br>سعادتك</h2>
+                    <p class="text-gray-300 f-600 text-sm max-w-[200px]" id="home-welcome-msg"></p>
                 </div>
+            </div>
 
-                <div id="cart-summary" class="hidden mt-16 bg-white p-10 rounded-[3rem] border border-gray-100 shadow-sm">
-                    <div class="flex justify-between items-center mb-12">
-                        <span class="text-gray-400 font-black text-lg">إجمالي الطلبات</span>
-                        <span id="cart-subtotal" class="text-5xl font-black text-pink-500">0 ج.م</span>
-                    </div>
-                    <button onclick="loadView('checkout')" class="btn-brand py-7 text-2xl shadow-xl shadow-pink-100">إتمام الطلب الآن</button>
-                </div>
-            </section>
-
-            <!-- صفحة إتمام الطلب والبيانات -->
-            <section id="view-checkout" class="hidden reveal py-14 px-4 max-w-xl mx-auto">
-                <div class="bg-white rounded-[4rem] p-10 md:p-16 border border-gray-100 shadow-sm">
-                    <h2 class="text-3xl font-black mb-14 text-gray-800 border-b pb-8">بيانات الاستلام 📍</h2>
-                    <div class="space-y-10">
-                        <div class="space-y-3">
-                            <label class="text-[11px] font-black text-gray-400 px-5 uppercase tracking-[0.2em]">الاسم بالكامل</label>
-                            <input type="text" id="co-name" placeholder="اكتب اسمك الثلاثي" class="w-full bg-gray-50 border-0 rounded-2xl p-6 font-bold outline-none focus:ring-4 focus:ring-pink-50 transition-all text-gray-700">
-                        </div>
-                        <div class="space-y-3">
-                            <label class="text-[11px] font-black text-gray-400 px-5 uppercase tracking-[0.2em]">رقم الموبايل</label>
-                            <input type="tel" id="co-phone" dir="ltr" placeholder="01xxxxxxxxx" class="w-full bg-gray-50 border-0 rounded-2xl p-6 font-bold outline-none focus:ring-4 focus:ring-pink-50 transition-all text-gray-700">
-                        </div>
-                        <div class="space-y-3">
-                            <label class="text-[11px] font-black text-gray-400 px-5 uppercase tracking-[0.2em]">منطقة التوصيل</label>
-                            <select id="co-shipping" class="w-full bg-gray-50 border-0 rounded-2xl p-6 font-bold outline-none appearance-none cursor-pointer text-gray-700"></select>
-                        </div>
-                        <div class="space-y-3">
-                            <label class="text-[11px] font-black text-gray-400 px-5 uppercase tracking-[0.2em]">عنوان السعادة بالتفصيل</label>
-                            <textarea id="co-address" placeholder="رقم المنزل، الشارع، أو علامة مميزة" class="w-full bg-gray-50 border-0 rounded-2xl p-6 font-bold outline-none min-h-[160px] text-gray-700"></textarea>
-                        </div>
-                    </div>
-                    <div class="mt-16 pt-12 border-t-2 border-dashed border-gray-100">
-                        <div class="flex justify-between items-center mb-14 bg-gray-50 p-10 rounded-[2.5rem]">
-                            <span class="font-black text-gray-400">الإجمالي النهائي</span>
-                            <span id="final-total" class="text-5xl font-black text-pink-500">0 ج.م</span>
-                        </div>
-                        <button id="btn-submit-order" class="w-full bg-[#25D366] text-white font-black py-7 rounded-[2rem] flex items-center justify-center gap-5 text-xl shadow-2xl shadow-green-100 transition-all active:scale-95">
-                            <i class="ph-fill ph-whatsapp-logo text-4xl"></i> إرسال الطلب عبر واتساب
-                        </button>
-                    </div>
-                </div>
-            </section>
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl f-900 text-gray-800">أقسام المنيو</h3>
+            </div>
+            
+            <div id="home-categories-grid" class="flex flex-col gap-4">
+                <!-- الأقسام سيتم جلبها وتوليدها هنا -->
+            </div>
         </div>
 
-        <!-- نظام الإدارة المركزي -->
-        <div id="admin-view" class="hidden h-screen bg-white flex flex-col md:flex-row overflow-hidden">
-            <aside class="w-full md:w-80 admin-sidebar p-10 flex flex-col shrink-0">
-                <div class="mb-20">
-                    <h3 class="text-white font-black text-3xl">حلويات بوسي</h3>
-                    <p class="text-[10px] font-bold text-pink-400 tracking-[0.3em] uppercase mt-2">BoseSweets Core v5.1</p>
+        <!-- ========================================== -->
+        <!-- شاشة القسم (المنيو الديجيتال الفاخر) -->
+        <!-- ========================================== -->
+        <div id="view-category" class="view-section hidden px-5 pt-4 pb-32">
+            
+            <!-- الهيدر اللزج للقسم -->
+            <div class="flex items-center gap-4 mb-6 bg-white/95 backdrop-blur-md p-4 rounded-[24px] shadow-sm border border-gray-50 sticky top-[75px] z-40">
+                <button onclick="loadView('home')" class="bg-gray-50 w-12 h-12 rounded-full flex items-center justify-center text-gray-600 active:scale-90 transition-transform shrink-0">
+                    <i class="ph-bold ph-arrow-right text-xl"></i>
+                </button>
+                <div>
+                    <h2 id="cat-title" class="text-2xl f-900 text-gray-800 tracking-tight"></h2>
+                    <p class="text-xs text-[#ff85ad] f-700 mt-1">تذوق الفخامة من حلويات بوسي</p>
                 </div>
-                <nav class="space-y-4 flex-1">
-                    <button onclick="loadAdminTab('catalog')" data-atab="catalog" class="admin-tab w-full flex items-center gap-5 p-5 rounded-2xl font-bold text-sm text-gray-500 transition-all hover:text-white">
-                        <i class="ph ph-cookie text-2xl"></i> إدارة المنيو
-                    </button>
-                    <button onclick="loadAdminTab('orders')" data-atab="orders" class="admin-tab w-full flex items-center gap-5 p-5 rounded-2xl font-bold text-sm text-gray-500 transition-all hover:text-white">
-                        <i class="ph ph-scroll text-2xl"></i> سجل الطلبات
-                    </button>
-                    <button onclick="loadAdminTab('restore')" data-atab="restore" class="admin-tab w-full flex items-center gap-5 p-5 rounded-2xl font-bold text-sm text-gray-500 transition-all hover:text-white">
-                        <i class="ph ph-cloud-arrow-up text-2xl"></i> استعادة البيانات
-                    </button>
-                </nav>
-                <div class="pt-10 border-t border-white/5 text-center">
-                    <button onclick="location.reload()" class="text-xs font-black text-gray-600 hover:text-pink-400 uppercase tracking-widest transition-colors">خروج من النظام</button>
+            </div>
+
+            <!-- حاوية التبويبات (الأحجام/الأنواع) -->
+            <div id="category-tabs-container" class="hidden w-full overflow-x-auto hide-scrollbar mb-8 -mx-2 px-2 pb-2">
+                <div id="category-tabs" class="flex gap-3">
+                    <!-- سيتم توليد التبويبات هنا -->
                 </div>
-            </aside>
-            <section id="admin-workspace" class="flex-1 overflow-y-auto p-8 md:p-16 bg-gray-50"></section>
+            </div>
+            
+            <!-- حاوية التورتة الملكي -->
+            <div id="category-torte-builder" class="hidden flex flex-col w-full mb-10">
+                <div class="w-full h-[30vh] min-h-[250px] relative rounded-[32px] shadow-lg overflow-hidden mb-8 border border-gray-100">
+                    <img src="https://images.unsplash.com/photo-1557925923-33b251d5928f?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover" alt="التورت الملكي حلويات بوسي">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                    <div class="absolute bottom-6 left-0 right-0 px-6 z-20">
+                        <span class="inline-block bg-[#ff85ad] text-white px-4 py-1.5 rounded-full text-xs f-800 mb-3 shadow-lg">التورت الملكي 👑</span>
+                        <h2 class="text-3xl f-900 text-white mb-1">صمم تورتتك الخاصة</h2>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[32px] shadow-xl p-6 sm:p-8 border border-gray-100">
+                    
+                    <div id="torte-lead-msg" class="bg-pink-50 p-5 rounded-2xl mb-10 flex gap-4 items-start border border-pink-100">
+                        <div class="bg-white p-2.5 rounded-xl shadow-sm shrink-0"><i class="ph-fill ph-info text-2xl text-[#ff85ad]"></i></div>
+                        <span id="torte-lead-text" class="text-[14px] f-700 text-gray-800 leading-relaxed mt-1"></span>
+                    </div>
+
+                    <form id="torte-form" class="flex flex-col gap-10"> 
+                        
+                        <div class="w-full block">
+                            <label class="flex items-center gap-3 text-xl f-900 text-gray-800">
+                                <span class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-base text-gray-500 shadow-inner">1</span>
+                                اختار شكل التورتة <span class="text-red-500">*</span>
+                            </label>
+                            <div class="relative mt-3 ml-12">
+                                <select id="torte-shape" class="premium-input"></select>
+                                <i class="ph-bold ph-caret-down absolute bottom-5 left-5 text-[#ff85ad] pointer-events-none text-xl"></i>
+                            </div>
+                        </div>
+
+                        <div class="w-full block pt-8 border-t border-gray-100">
+                            <label class="flex items-center gap-3 text-xl f-900 text-gray-800">
+                                <span class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-base text-gray-500 shadow-inner">2</span>
+                                الحشو الداخلي
+                            </label>
+                            <div class="relative mt-3 ml-12">
+                                <select id="torte-filling" class="premium-input"></select>
+                                <i class="ph-bold ph-caret-down absolute bottom-5 left-5 text-[#ff85ad] pointer-events-none text-xl"></i>
+                            </div>
+                        </div>
+
+                        <div class="w-full block pt-8 border-t border-gray-100">
+                            <div class="mb-5">
+                                <label class="flex items-center gap-3 text-xl f-900 text-gray-800">
+                                    <span class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-base text-gray-500 shadow-inner">3</span>
+                                    إضافات مميزة للتورتة
+                                </label>
+                                <p class="text-sm text-gray-500 f-600 mt-2 mr-14">تقدر تختار أكتر من إضافة لتورتتك</p>
+                            </div>
+                            <div id="torte-addons-list" class="grid grid-cols-1 gap-4 mr-14">
+                            </div>
+                        </div>
+
+                        <div class="w-full block pt-8 border-t border-gray-100">
+                            <div class="mb-5">
+                                <label class="flex items-center gap-3 text-xl f-900 text-gray-800">
+                                    <span class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-base text-gray-500 shadow-inner">4</span>
+                                    تفاصيلك والملاحظات
+                                </label>
+                                <p class="text-sm text-gray-500 f-600 mt-2 mr-14">اكتب الاسم، الألوان المطلوبة، أو أي وصف دقيق</p>
+                            </div>
+                            <div class="mr-14">
+                                <textarea id="torte-notes" rows="4" class="premium-input resize-none" placeholder="مثال: كتابة عيد ميلاد سعيد يا أحمد باللون الذهبي..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="pt-8">
+                            <button type="button" onclick="addCustomTorteToCart()" class="w-full btn-premium py-5 rounded-2xl f-900 text-xl flex items-center justify-center gap-3">
+                                <i class="ph-bold ph-check-circle text-2xl"></i> تأكيد وإضافة للسلة
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- شبكة المنتجات العادية للقسم (2 في الصف) -->
+            <div id="products-grid" class="grid grid-cols-2 gap-4"></div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- شاشة السلة -->
+        <!-- ========================================== -->
+        <div id="view-cart" class="view-section hidden px-5 pt-6 bg-white pb-32">
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="loadView('home')" class="bg-gray-50 w-12 h-12 rounded-full flex items-center justify-center text-gray-600 active:scale-90 transition-transform">
+                    <i class="ph-bold ph-arrow-right text-xl"></i>
+                </button>
+                <h2 class="text-3xl f-900 text-gray-800">سلة الطلبات</h2>
+            </div>
+            
+            <div id="cart-empty" class="hidden text-center py-20">
+                <div class="w-32 h-32 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="ph-fill ph-shopping-bag text-6xl text-[#ff85ad] opacity-70"></i>
+                </div>
+                <h3 class="f-900 text-gray-800 text-2xl mb-3">السلة فاضية!</h3>
+                <p class="text-gray-500 f-600 text-base mb-8">لم تقم باختيار أي حلويات حتى الآن من إبداعات حلويات بوسي.</p>
+                <button onclick="loadView('home')" class="btn-premium px-10 py-4 rounded-2xl f-800 text-lg">
+                    تصفح المنيو
+                </button>
+            </div>
+
+            <div id="cart-content" class="hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="f-800 text-gray-800 text-lg">مراجعة المنتجات</span>
+                    <button onclick="clearCartConfirm()" class="text-sm f-700 text-red-500 bg-red-50 px-4 py-2 rounded-xl">إفراغ السلة</button>
+                </div>
+                
+                <div id="cart-items" class="flex flex-col gap-4 mb-8"></div>
+                
+                <div class="bg-gray-50 p-6 rounded-[24px] mb-8 border border-gray-100">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600 f-700 text-lg">المجموع (بدون توصيل):</span>
+                        <span id="cart-subtotal" class="f-900 text-2xl text-[#ff85ad]">0 ج.م</span>
+                    </div>
+                </div>
+                
+                <button onclick="loadView('checkout')" class="w-full btn-premium py-5 rounded-2xl f-900 text-xl flex items-center justify-center gap-3">
+                    المتابعة للدفع <i class="ph-bold ph-arrow-left text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- شاشة الدفع (Checkout) -->
+        <!-- ========================================== -->
+        <div id="view-checkout" class="view-section hidden px-5 pt-6 bg-white pb-32">
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="loadView('cart')" class="bg-gray-50 w-12 h-12 rounded-full flex items-center justify-center text-gray-600 active:scale-90 transition-transform">
+                    <i class="ph-bold ph-arrow-right text-xl"></i>
+                </button>
+                <h2 class="text-3xl f-900 text-gray-800">إتمام الطلب</h2>
+            </div>
+
+            <div id="memory-toast" class="hidden mb-6 bg-gray-900 text-white p-4 rounded-2xl f-700 text-sm flex items-center gap-3 shadow-lg">
+                <i class="ph-fill ph-hand-waving text-2xl text-[#ff85ad]"></i>
+                <span>أهلاً بك مجدداً! تم استرجاع بياناتك لتوفير وقتك.</span>
+            </div>
+
+            <form id="checkout-form" class="flex flex-col gap-5 mb-8">
+                <div>
+                    <label class="block text-base f-800 text-gray-800 mb-2">الاسم الكريم <span class="text-red-500">*</span></label>
+                    <input type="text" id="cust-name" required class="premium-input mt-0" placeholder="اكتب اسمك">
+                </div>
+                <div>
+                    <label class="block text-base f-800 text-gray-800 mb-2">رقم الواتساب <span class="text-red-500">*</span></label>
+                    <input type="tel" id="cust-phone" required class="premium-input mt-0 text-left" dir="ltr" placeholder="01xxxxxxxxx">
+                </div>
+                <div class="relative">
+                    <label class="block text-base f-800 text-gray-800 mb-2">منطقة التوصيل <span class="text-red-500">*</span></label>
+                    <select id="cust-area" required class="premium-input mt-0 appearance-none" onchange="calculateFinalTotal()"></select>
+                    <i class="ph-bold ph-caret-down absolute bottom-5 left-5 text-[#ff85ad] pointer-events-none text-xl"></i>
+                </div>
+                <div>
+                    <label class="block text-base f-800 text-gray-800 mb-2">العنوان بالتفصيل</label>
+                    <textarea id="cust-address" rows="2" class="premium-input mt-0 resize-none" placeholder="الشارع، رقم العمارة..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-base f-800 text-gray-800 mb-2">ملاحظات التوصيل (اختياري)</label>
+                    <textarea id="cust-notes" rows="2" class="premium-input mt-0 resize-none"></textarea>
+                </div>
+            </form>
+
+            <div class="bg-gray-50 p-6 rounded-[24px] mb-8 border border-gray-100">
+                <h3 class="f-900 text-xl mb-5 text-gray-800">الفاتورة</h3>
+                <div class="flex justify-between items-center mb-3 text-gray-600 f-700">
+                    <span>قيمة المنتجات:</span> <span id="summary-subtotal">0 ج.م</span>
+                </div>
+                <div class="flex justify-between items-center mb-5 text-gray-600 f-700">
+                    <span>التوصيل:</span> <span id="summary-delivery">يحدد حسب المنطقة</span>
+                </div>
+                <div class="flex justify-between items-center text-2xl f-900 text-[#ff85ad] pt-5 border-t border-gray-200">
+                    <span>الإجمالي التقديري:</span> <span id="summary-total">0 ج.م</span>
+                </div>
+                <p id="custom-torte-notice" class="hidden text-xs text-gray-500 mt-4 f-700 text-center bg-white p-2 rounded-lg">* التورتة الخاصة غير مشمولة في الإجمالي، سيتم تسعيرها لاحقاً.</p>
+            </div>
+
+            <button onclick="submitOrder()" id="btn-submit-order" class="w-full bg-[#10B981] text-white py-5 rounded-2xl f-900 text-xl shadow-[0_8px_25px_rgba(16,185,129,0.3)] flex items-center justify-center gap-3 active:scale-95 transition-transform mb-10">
+                <i class="ph-fill ph-whatsapp text-3xl"></i> إرسال الطلب لإدارة حلويات بوسي
+            </button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- شاشة الإدارة المخفية (Admin) -->
+        <!-- ========================================== -->
+        <div id="view-admin" class="view-section hidden px-5 pt-8 bg-white pb-32">
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="loadView('home')" class="bg-gray-50 w-12 h-12 rounded-full flex items-center justify-center text-gray-600 active:scale-90 transition-transform">
+                    <i class="ph-bold ph-arrow-right text-xl"></i>
+                </button>
+                <h2 class="text-3xl f-900 text-gray-800">لوحة الإدارة 👑</h2>
+            </div>
+
+            <div class="bg-gray-50 rounded-[32px] p-6 mb-8 border border-gray-100">
+                <h3 class="f-900 text-xl mb-6 text-gray-800">إعدادات المتجر</h3>
+                
+                <div class="flex items-center justify-between mb-6 bg-white p-4 rounded-2xl shadow-sm">
+                    <span class="f-800 text-gray-700">استقبال الطلبات</span>
+                    <div class="relative inline-block w-12 mr-2 align-middle select-none">
+                        <input type="checkbox" id="admin-is-open" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-transform duration-200 ease-in-out"/>
+                        <label for="admin-is-open" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer transition-colors duration-200 ease-in-out"></label>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-base f-800 text-gray-700 mb-2">رسالة الإغلاق</label>
+                    <textarea id="admin-close-msg" rows="2" class="premium-input mt-0 bg-white"></textarea>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-base f-800 text-gray-700 mb-2">رقم واتساب الإدارة</label>
+                    <input type="tel" id="admin-whatsapp" dir="ltr" class="premium-input mt-0 bg-white text-left">
+                </div>
+                
+                <button onclick="saveAdminSettings()" class="w-full bg-gray-900 text-white py-4 rounded-2xl f-800 text-lg flex justify-center items-center gap-2 active:scale-95 transition-transform">
+                    <i class="ph-bold ph-floppy-disk text-xl"></i> حفظ الإعدادات
+                </button>
+            </div>
+
+            <div class="bg-pink-50 rounded-[32px] p-8 text-center relative overflow-hidden group cursor-pointer border border-pink-100">
+                <input type="file" id="backup-upload-admin" accept=".json" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-50" onchange="handleFileUpload(event)">
+                <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-md group-hover:scale-110 transition-transform">
+                    <i class="ph-fill ph-file-json text-4xl text-[#ff85ad]"></i>
+                </div>
+                <h3 class="f-900 text-gray-800 text-xl mb-1">تحديث المنيو الشامل</h3>
+                <p class="text-sm text-gray-500 f-700">اضغطي لرفع ملف JSON</p>
+
+                <div id="upload-status-admin" class="hidden mt-4 bg-white p-3 rounded-xl flex items-center justify-center gap-3">
+                    <div class="w-5 h-5 border-2 border-pink-200 border-t-[#ff85ad] rounded-full animate-spin"></div>
+                    <span class="text-sm f-800 text-[#ff85ad]">جاري الرفع وتحليل الصور بعمق...</span>
+                </div>
+            </div>
         </div>
 
     </main>
 
-    <!-- الفوتر الرسمي -->
-    <footer id="main-footer" class="bg-white border-t border-gray-100 py-20 px-6 text-center">
-        <h2 class="font-black text-pink-400 text-4xl mb-8">حلويات بوسي</h2>
-        <p id="footer-slogan" class="text-sm font-bold text-gray-400 italic mb-14 max-w-sm mx-auto leading-loose"></p>
-        <div class="flex justify-center gap-12 mb-20">
-            <a id="wa-footer-link" href="#" target="_blank" class="text-4xl text-green-500 hover:scale-125 transition-transform"><i class="ph-fill ph-whatsapp-logo"></i></a>
-            <a href="https://www.facebook.com/share/12AVoR17m6Z/?mibextid=wwXIfr" target="_blank" class="text-4xl text-blue-600 hover:scale-125 transition-transform"><i class="ph-fill ph-facebook-logo"></i></a>
+    <!-- شريط التنقل السفلي -->
+    <nav id="bottom-nav" class="fixed bottom-0 left-0 right-0 glass-nav z-50 hidden pb-safe shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+        <div class="flex justify-around items-center h-[75px] max-w-lg mx-auto px-2">
+            <button onclick="loadView('home')" class="flex flex-col items-center justify-center gap-1.5 w-20 h-full text-gray-400 hover:text-[#ff85ad] active:scale-90 transition-all" id="nav-btn-home">
+                <i class="ph-fill ph-house text-[28px]"></i>
+                <span class="text-[11px] f-800">الرئيسية</span>
+            </button>
+            <button onclick="toggleSidebar(true)" class="flex flex-col items-center justify-center gap-1.5 w-20 h-full text-gray-400 hover:text-[#ff85ad] active:scale-90 transition-all">
+                <i class="ph-fill ph-squares-four text-[28px]"></i>
+                <span class="text-[11px] f-800">الأقسام</span>
+            </button>
+            <button onclick="loadView('cart')" class="flex flex-col items-center justify-center gap-1.5 w-20 h-full text-gray-400 hover:text-[#ff85ad] active:scale-90 transition-all relative" id="nav-btn-cart">
+                <div class="relative">
+                    <i class="ph-fill ph-shopping-bag text-[28px]"></i>
+                    <span id="bottom-cart-badge" class="absolute -top-1.5 -right-2 bg-[#ff85ad] text-white text-[10px] rounded-full h-[20px] w-[20px] flex items-center justify-center hidden f-900 border-2 border-white shadow-sm">0</span>
+                </div>
+                <span class="text-[11px] f-800">السلة</span>
+            </button>
         </div>
-        <div class="border-t border-gray-50 pt-14">
-            <p class="text-[11px] text-gray-300 font-black uppercase tracking-[0.4em] mb-10 italic">© 2026 براند حلويات بوسي | BoseSweets</p>
-            <button onclick="document.getElementById('admin-gate').classList.remove('hidden')" class="text-[9px] text-gray-200 hover:text-pink-300 transition-colors font-bold tracking-widest uppercase">الإدارة المركزية</button>
-        </div>
-    </footer>
+    </nav>
 
-    <!-- السايدبار الجانبي -->
-    <div id="sidebar-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/40 backdrop-blur-md z-[6000] hidden"></div>
-    <aside id="sidebar" class="fixed top-0 right-0 h-full w-80 bg-white z-[6100] translate-x-full transition-transform duration-500 shadow-2xl p-12 flex flex-col">
-        <div class="flex justify-between items-center mb-20">
-            <span class="font-black text-pink-400 text-3xl">القائمة</span>
-            <button onclick="toggleSidebar(false)" class="text-gray-300 hover:text-pink-500 transition-colors"><i class="ph-bold ph-x-circle text-4xl"></i></button>
-        </div>
-        <nav id="nav-list" class="space-y-10 flex-1"></nav>
-        <div class="text-center pt-10 border-t">
-            <p class="text-[10px] text-gray-300 font-black uppercase italic tracking-[0.3em]">BoseSweets Premium Brand</p>
-        </div>
-    </aside>
-
-    <!-- بوابة الأدمن -->
-    <div id="admin-gate" class="fixed inset-0 bg-white/98 z-[8000] hidden flex flex-col items-center justify-center p-6 backdrop-blur-3xl">
-        <div class="w-full max-w-xs text-center">
-            <div class="mb-14">
-                <h3 class="font-black text-3xl mb-3 text-gray-800">BoseSweets 👑</h3>
-                <p class="text-[11px] font-black text-gray-400 uppercase tracking-widest">إدارة حلويات بوسي</p>
-            </div>
-            <input type="password" id="admin-pass" placeholder="الرمز السري" class="w-full bg-gray-50 border-2 border-gray-100 rounded-3xl p-6 text-center font-black outline-none mb-8 focus:border-pink-400 transition-all text-2xl">
-            <button id="btn-login-confirm" class="btn-brand py-6 text-xl shadow-2xl shadow-pink-100">دخول النظام</button>
-            <button onclick="document.getElementById('admin-gate').classList.add('hidden')" class="mt-12 text-gray-400 text-[10px] font-black uppercase tracking-[0.3em] hover:text-pink-400 transition-colors">العودة للمتجر</button>
-        </div>
-    </div>
-
-    <!-- المحرك السحابي Master Engine v5.1 -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
-            authDomain: "bosy-sweets.firebaseapp.com",
-            projectId: "bosy-sweets",
-            storageBucket: "bosy-sweets.firebasestorage.app",
-            messagingSenderId: "473615735083",
-            appId: "1:473615735083:web:f09c6001c72640b2588d6e"
-        };
-
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = 'bosy-sweets-official';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'bose-sweets-app';
 
-        const CLOUDINARY = { cloudName: 'dyx4w0dr1', uploadPreset: 'ml_default' };
-        const IMG_FALLBACK = "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?q=80&w=500&auto=format&fit=crop";
+        let globalData = null;
+        let cart = JSON.parse(localStorage.getItem('bose_cart')) || [];
+        let currentUserId = null;
+        let currentView = null;
+        let isAppReady = false;
+        let dbUnsubscribe = null;
 
-        const State = {
-            data: null,
-            cart: JSON.parse(localStorage.getItem('bose_cart_v5')) || [],
-            user: null
-        };
+        window.currentGroupedItems = null;
+        window.currentCategoryKeyForTabs = null;
 
-        // --- تهيئة المحرك ---
-        async function startEngine() {
-            onAuthStateChanged(auth, (user) => {
-                State.user = user;
-                if (user) syncData();
-                else signInAnonymously(auth);
-            });
-        }
+        // ===== 1. خزنة البيانات المحلية العملاقة (IndexedDB) =====
+        const DB_NAME = 'BoseSweets_Menu_DB';
+        const STORE_NAME = 'LocalMenuData';
 
-        // تم التعديل والبناء هنا لحل مشكلة عدم التحميل وإضافة الـ Fallback
-        function syncData() {
-            const menuRef = doc(db, 'artifacts', appId, 'public', 'data', 'masterMenu');
-            onSnapshot(menuRef, (snap) => {
-                if (snap.exists()) {
-                    State.data = snap.data();
-                    renderUI();
-                } else {
-                    console.warn("⚠️ لا توجد بيانات في Firestore - تم تشغيل الوضع الافتراضي");
-                    showToast("يرجى رفع البيانات من الإدارة ⚠️");
-                    
-                    // إضافة الفولباك لتجنب الشاشة البيضاء وتمكين فتح الموقع
-                    State.data = {
-                        storeInfo: { 
-                            splashSubtitle: "المنيو قيد التحديث، يرجى العودة لاحقاً 👑", 
-                            whatsapp: "" 
-                        },
-                        shipping_zones: []
-                    };
-                    renderUI();
-                }
-                hideLoader(); // تأكيد إخفاء شاشة التحميل في كل الأحوال
-            }, (error) => {
-                console.error("🔥 Firebase Error:", error);
-                showToast("خطأ في الاتصال بالسحابة ☁️");
-                
-                // إضافة الفولباك عند خطأ الاتصال أيضاً لتجنب توقف واجهة العميل
-                State.data = {
-                    storeInfo: { 
-                        splashSubtitle: "عذراً، يوجد خطأ في الاتصال بالسحابة ☁️", 
-                        whatsapp: "" 
-                    },
-                    shipping_zones: []
+        function initLocalDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(STORE_NAME)) {
+                        db.createObjectStore(STORE_NAME);
+                    }
                 };
-                renderUI();
-                hideLoader();
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
             });
         }
+
+        async function saveMenuLocally(data) {
+            try {
+                const localDb = await initLocalDB();
+                const tx = localDb.transaction(STORE_NAME, 'readwrite');
+                tx.objectStore(STORE_NAME).put(data, 'Master_JSON');
+                return new Promise(resolve => { tx.oncomplete = () => resolve(true); });
+            } catch (e) { console.error("LocalDB Save Error", e); return false; }
+        }
+
+        async function getMenuLocally() {
+            try {
+                const localDb = await initLocalDB();
+                const tx = localDb.transaction(STORE_NAME, 'readonly');
+                const req = tx.objectStore(STORE_NAME).get('Master_JSON');
+                return new Promise(resolve => { 
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => resolve(null);
+                });
+            } catch (e) { return null; }
+        }
+        // ========================================================
+
+        setTimeout(() => {
+            if (!isAppReady) { hideLoader(); loadView('admin'); showToast("تم فتح الإدارة لتأخر الاتصال"); }
+        }, 6000);
 
         function hideLoader() {
-            const ldr = document.getElementById('main-loader');
-            if (ldr) {
-                ldr.style.opacity = '0';
-                setTimeout(() => ldr.style.display = 'none', 800);
+            const loader = document.getElementById('loader');
+            if(loader && !loader.classList.contains('hidden')) { 
+                loader.style.opacity = '0'; 
+                loader.style.visibility = 'hidden';
+                setTimeout(() => loader.classList.add('hidden'), 500); 
             }
         }
 
-        // --- عرض الواجهة ---
-        function renderUI() {
-            const d = State.data;
-            if (!d) return;
-
-            document.getElementById('splash-sub').innerText = d.storeInfo?.splashSubtitle || "";
-            document.getElementById('footer-slogan').innerText = d.storeInfo?.splashSubtitle || "";
-            document.getElementById('wa-footer-link').href = `https://wa.me/${d.storeInfo?.whatsapp}`;
-
-            const categories = Object.keys(d).filter(k => !['shipping_zones', 'storeInfo', 'torteOptions'].includes(k));
-            
-            // الشبكة الرئيسية
-            const catGrid = document.getElementById('categories-grid');
-            catGrid.innerHTML = categories.map(k => `
-                <div onclick="openCategory('${k}')" class="bose-card group cursor-pointer reveal">
-                    <div class="img-box">
-                        <img src="${d[k].items?.[0]?.img || IMG_FALLBACK}" onerror="this.src='${IMG_FALLBACK}'">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent flex items-end p-6">
-                            <span class="text-white text-[11px] font-black uppercase tracking-widest border-r-4 border-pink-400 pr-4">اكتشف القسم</span>
-                        </div>
-                    </div>
-                    <div class="p-6 text-center">
-                        <h4 class="font-black text-gray-800 text-sm md:text-xl group-hover:text-pink-500 transition-colors uppercase">${d[k].navTitle}</h4>
-                    </div>
-                </div>
-            `).join('');
-
-            // القائمة الجانبية
-            const nav = document.getElementById('nav-list');
-            nav.innerHTML = `<a href="javascript:loadView('home')" class="block font-black text-3xl hover:text-pink-500 transition-colors">الرئيسية</a>` +
-                categories.map(k => `<a href="javascript:openCategory('${k}')" class="block font-black text-3xl hover:text-pink-500 transition-colors">${d[k].navTitle}</a>`).join('');
-
-            // مناطق الشحن
-            const ship = document.getElementById('co-shipping');
-            ship.innerHTML = (d.shipping_zones || []).map(z => `<option value="${z.id}">${z.name} (+${z.id}ج)</option>`).join('');
-            ship.onchange = updateTotals;
-
-            updateBadge();
+        async function startEngine() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                
+                onAuthStateChanged(auth, async (user) => {
+                    if (user) { 
+                        currentUserId = user.uid; 
+                        await loadDatabase(); 
+                    } else { 
+                        isAppReady = true; hideLoader(); loadView('admin'); 
+                    }
+                });
+            } catch (error) { 
+                isAppReady = true; hideLoader(); loadView('admin'); 
+            }
         }
 
-        window.openCategory = (key) => {
-            const cat = State.data[key];
-            document.getElementById('cat-display-title').innerText = cat.title;
+        async function loadDatabase() {
+            if (!currentUserId) return; 
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'masterMenu');
             
-            const notice = document.getElementById('torte-notice');
-            if (key === 'tortes') {
-                notice.innerText = State.data.torteOptions?.leadTimeMsg || "";
-                notice.classList.remove('hidden');
-            } else notice.classList.add('hidden');
+            try {
+                const localData = await getMenuLocally();
+                if (localData && Object.keys(localData).length > 0) {
+                    globalData = localData;
+                    buildAppUI();
+                    document.getElementById('main-header').classList.remove('hidden');
+                    document.getElementById('bottom-nav').classList.remove('hidden');
+                    if (!currentView || currentView === 'admin') loadView('home');
+                    isAppReady = true; hideLoader();
+                }
 
-            const grid = document.getElementById('products-grid');
-            grid.innerHTML = (cat.items || []).map((it, idx) => `
-                <div class="bose-card reveal">
-                    <div class="img-box">
-                        <img src="${it.img || IMG_FALLBACK}" onerror="this.src='${IMG_FALLBACK}'">
-                        <div class="price-tag">${it.price} ج</div>
-                    </div>
-                    <div class="p-6 flex-1 flex flex-col">
-                        <h4 class="font-black text-[15px] text-gray-800 mb-2 truncate">${it.name}</h4>
-                        <p class="text-[11px] text-gray-400 font-bold italic line-clamp-2 mb-6 leading-relaxed h-10">${it.desc}</p>
-                        <div class="mt-auto flex items-center gap-2 mb-5 bg-gray-50 p-2 rounded-xl">
-                            <button onclick="modVal('${key}-${idx}', -1)" class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-pink-500 shadow-sm transition-all active:scale-90"><i class="ph ph-minus font-bold"></i></button>
-                            <span id="qty-${key}-${idx}" class="flex-1 text-center font-black text-sm">1</span>
-                            <button onclick="modVal('${key}-${idx}', 1)" class="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-pink-500 shadow-sm transition-all active:scale-90"><i class="ph ph-plus font-bold"></i></button>
+                const snapshot = await getDoc(docRef);
+                isAppReady = true; hideLoader(); 
+                
+                if (snapshot.exists() && Object.keys(snapshot.data()).length > 0) {
+                    globalData = snapshot.data();
+                    await saveMenuLocally(globalData); 
+                    buildAppUI();
+                    document.getElementById('main-header').classList.remove('hidden');
+                    document.getElementById('bottom-nav').classList.remove('hidden');
+                    if (!currentView || currentView === 'admin') loadView('home');
+                    else updateCartUI(); 
+                } else if (!globalData) {
+                    document.getElementById('main-header').classList.remove('hidden');
+                    document.getElementById('bottom-nav').classList.remove('hidden');
+                    loadView('admin');
+                }
+
+                if (dbUnsubscribe) dbUnsubscribe();
+                dbUnsubscribe = onSnapshot(docRef, (snap) => {
+                    if(snap.exists() && Object.keys(snap.data()).length > 0) { 
+                        globalData = snap.data(); 
+                        saveMenuLocally(globalData); 
+                        buildAppUI(); 
+                        if(currentView === 'category') {
+                            let currentTitle = document.getElementById('cat-title').innerText;
+                            for(let k in globalData){
+                                if(globalData[k].title === currentTitle || globalData[k].navTitle === currentTitle){ openCategory(k); break; }
+                            }
+                        }
+                    }
+                });
+            } catch(e) { 
+                if (!globalData) { isAppReady = true; hideLoader(); loadView('admin'); }
+            }
+        }
+
+        window.handleFileUpload = async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const uploadStatus = document.getElementById('upload-status-admin');
+            if(uploadStatus) { uploadStatus.classList.remove('hidden'); uploadStatus.classList.add('flex'); }
+            
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const jsonData = JSON.parse(e.target.result);
+                    globalData = jsonData; 
+                    
+                    await saveMenuLocally(jsonData);
+                    
+                    buildAppUI();
+                    if(uploadStatus) { uploadStatus.classList.add('hidden'); uploadStatus.classList.remove('flex'); }
+                    loadView('home'); 
+                    showToast("🎉 تم قراءة المنيو بنجاح وجاهز للعمل!");
+                    
+                    try {
+                        await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'masterMenu'), jsonData);
+                        setTimeout(() => showToast("👑 تم المزامنة السحابية بنجاح!"), 1500);
+                    } catch (dbError) {
+                        console.error("DB Limit:", dbError);
+                        setTimeout(() => showToast("⚠️ المنيو يعمل بكفاءة محلياً (الحجم تخطى الحد السحابي)."), 2000);
+                    }
+
+                } catch (error) { 
+                    if(uploadStatus) { uploadStatus.classList.add('hidden'); uploadStatus.classList.remove('flex'); }
+                    showToast("❌ خطأ في هيكل ملف الـ JSON."); 
+                } finally { event.target.value = ''; }
+            };
+            reader.readAsText(file); 
+        };
+
+        window.saveAdminSettings = async () => {
+            if (!globalData) return showToast("الرجاء رفع المنيو أولاً");
+            if(!globalData.storeInfo) globalData.storeInfo = {};
+            globalData.storeInfo.isOpen = document.getElementById('admin-is-open').checked;
+            globalData.storeInfo.closeMessage = document.getElementById('admin-close-msg').value;
+            globalData.storeInfo.whatsapp = document.getElementById('admin-whatsapp').value;
+            
+            showToast("جاري الحفظ...");
+            try {
+                await saveMenuLocally(globalData); 
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'masterMenu'), globalData); 
+                showToast("تم الحفظ بنجاح 👑"); 
+                buildAppUI();
+            } catch (e) { showToast("تم الحفظ على الجهاز 📱"); }
+        };
+
+        function buildTorteBuilder() {
+            if(!globalData || !globalData.torteOptions) return;
+            const opts = globalData.torteOptions;
+            
+            const leadMsg = document.getElementById('torte-lead-text');
+            if(leadMsg) leadMsg.innerText = opts.leadTimeMsg || "ملاحظة: التورت تحتاج حجز مسبق للحفاظ على أعلى جودة من حلويات بوسي.";
+
+            const shapeSel = document.getElementById('torte-shape');
+            if(shapeSel) {
+                shapeSel.innerHTML = '<option value="" disabled selected>-- اضغط هنا لاختيار الشكل --</option>';
+                if(opts.shapes && opts.shapes.length) {
+                    opts.shapes.forEach(s => shapeSel.innerHTML += `<option value="${s}">${s}</option>`);
+                } else {
+                    shapeSel.innerHTML += `<option value="دائري">دائري كلاسيك</option><option value="مربع">مربع فخم</option>`;
+                }
+            }
+
+            const fillSel = document.getElementById('torte-filling');
+            if(fillSel) {
+                fillSel.innerHTML = '<option value="" selected>بدون حشو إضافي (الأساسي فقط)</option>';
+                if(opts.fillings && opts.fillings.length > 0) {
+                    opts.fillings.forEach(f => fillSel.innerHTML += `<option value="${f}">${f}</option>`);
+                } else {
+                    fillSel.innerHTML += `<option value="شوكولاتة بندق">شوكولاتة بندق</option><option value="كريمة فانيليا فاخرة">كريمة فانيليا فاخرة</option>`;
+                }
+            }
+
+            const addList = document.getElementById('torte-addons-list');
+            if(addList) {
+                addList.innerHTML = '';
+                const currentAddons = (opts.addons && opts.addons.length > 0) ? opts.addons : ["كتابة اسم بالشوكولاتة", "تغليف هدايا فاخر"];
+                
+                currentAddons.forEach((a, i) => {
+                    const uniqueId = `addon-${i}`;
+                    addList.innerHTML += `
+                        <div>
+                            <input type="checkbox" id="${uniqueId}" value="${a}" class="addon-checkbox">
+                            <label for="${uniqueId}" class="addon-label">
+                                <div class="check-circle w-6 h-6 rounded-full border-2 border-gray-300 ml-3 flex items-center justify-center transition-all shadow-inner">
+                                    <i class="ph-bold ph-check text-white text-xs opacity-0 transition-opacity"></i>
+                                </div>
+                                ${a}
+                            </label>
                         </div>
-                        <button onclick="addToCart('${key}', ${idx})" class="btn-brand text-xs font-black uppercase tracking-widest py-4">إضافة للسعادة</button>
-                    </div>
-                </div>
-            `).join('');
+                    `;
+                });
+            }
+        }
+
+        function buildAppUI() {
+            if (!globalData) return;
+            
+            if (globalData.storeInfo) {
+                if(document.getElementById('admin-is-open')) document.getElementById('admin-is-open').checked = globalData.storeInfo.isOpen !== false;
+                if(document.getElementById('admin-close-msg')) document.getElementById('admin-close-msg').value = globalData.storeInfo.closeMessage || "";
+                if(document.getElementById('admin-whatsapp')) document.getElementById('admin-whatsapp').value = globalData.storeInfo.whatsapp || "201097238441";
+                
+                const btnSubmit = document.getElementById('btn-submit-order');
+                const closedMsgBox = document.getElementById('store-closed-msg');
+                
+                if (!globalData.storeInfo.isOpen) {
+                    if(closedMsgBox) { closedMsgBox.classList.remove('hidden'); document.getElementById('store-closed-text').innerText = globalData.storeInfo.closeMessage || "نعتذر، حلويات بوسي في فترة راحة حالياً، هنرجع نستقبل طلباتكم قريب جداً! 👑"; }
+                    if(btnSubmit) {
+                        btnSubmit.disabled = true; 
+                        btnSubmit.className = "w-full bg-gray-300 text-gray-500 py-5 rounded-2xl f-900 text-xl flex items-center justify-center gap-3 cursor-not-allowed";
+                        btnSubmit.innerHTML = `<i class="ph-fill ph-lock-key text-3xl"></i> المتجر مغلق`;
+                    }
+                } else {
+                    if(closedMsgBox) closedMsgBox.classList.add('hidden');
+                    if(btnSubmit) {
+                        btnSubmit.disabled = false; 
+                        btnSubmit.className = "w-full bg-[#10B981] text-white py-5 rounded-2xl f-900 text-xl shadow-[0_8px_25px_rgba(16,185,129,0.3)] flex items-center justify-center gap-3 active:scale-95 transition-transform";
+                        btnSubmit.innerHTML = `<i class="ph-fill ph-whatsapp text-3xl"></i> إرسال الطلب لإدارة حلويات بوسي`;
+                    }
+                }
+                
+                if(document.getElementById('home-welcome-msg') && globalData.storeInfo.splashSubtitle) {
+                    document.getElementById('home-welcome-msg').innerText = globalData.storeInfo.splashSubtitle;
+                }
+            }
+
+            buildTorteBuilder();
+
+            const sidebarContainer = document.getElementById('sidebar-categories');
+            const homeGridContainer = document.getElementById('home-categories-grid');
+            if(sidebarContainer) sidebarContainer.innerHTML = ''; 
+            if(homeGridContainer) homeGridContainer.innerHTML = '';
+
+            const icons = ['ph-cake', 'ph-cookie', 'ph-ice-cream', 'ph-coffee', 'ph-gift'];
+            let iconIndex = 0;
+
+            for (const key in globalData) {
+                if (['deliveryAreas', 'storeInfo', 'torteOptions'].includes(key)) continue; 
+
+                const category = globalData[key];
+                const currentIcon = icons[iconIndex % icons.length];
+                iconIndex++;
+
+                if(sidebarContainer) {
+                    sidebarContainer.innerHTML += `
+                        <button onclick="openCategory('${key}')" class="flex items-center gap-4 w-full p-4 rounded-2xl hover:bg-gray-50 active:scale-95 transition-all text-right group">
+                            <div class="bg-pink-50 w-12 h-12 rounded-xl flex items-center justify-center text-[#ff85ad] group-hover:scale-110 transition-transform"><i class="ph-fill ${currentIcon} text-2xl"></i></div>
+                            <span class="f-900 text-lg text-gray-800">${category.navTitle || category.title}</span>
+                        </button>
+                    `;
+                }
+
+                if(homeGridContainer) {
+                    homeGridContainer.innerHTML += `
+                        <div onclick="openCategory('${key}')" class="bg-white rounded-[24px] p-5 shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer active:scale-95 transition-all group">
+                            <div class="bg-pink-50 w-16 h-16 rounded-[18px] flex items-center justify-center text-[#ff85ad] group-hover:scale-110 transition-transform shadow-sm">
+                                <i class="ph-fill ${currentIcon} text-3xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="f-900 text-xl text-gray-800 mb-1">${category.navTitle || category.title}</h4>
+                                <p class="text-xs text-gray-500 f-700">اضغط لعرض التفاصيل</p>
+                            </div>
+                            <i class="ph-bold ph-caret-left text-gray-300 text-xl"></i>
+                        </div>
+                    `;
+                }
+            }
+
+            const areaSelect = document.getElementById('cust-area');
+            if(areaSelect) {
+                const cv = areaSelect.value;
+                areaSelect.innerHTML = '<option value="" disabled selected>اختر منطقتك...</option>';
+                if (globalData.deliveryAreas) {
+                    globalData.deliveryAreas.forEach(a => areaSelect.innerHTML += `<option value="${a.id}">${a.name} (+${a.id} جنيه توصيل)</option>`);
+                }
+                if(cv) areaSelect.value = cv;
+            }
+
+            updateCartUI();
+        }
+
+        window.changeLocalQty = (event, itemId, delta) => {
+            event.stopPropagation(); 
+            const qtySpan = document.getElementById(`local-qty-${itemId}`);
+            if(!qtySpan) return;
+            let current = parseInt(qtySpan.innerText);
+            current += delta;
+            if (current < 1) current = 1;
+            qtySpan.innerText = current;
+            
+            qtySpan.classList.remove('animate-pop');
+            void qtySpan.offsetWidth; 
+            qtySpan.classList.add('animate-pop');
+        };
+
+        window.addLocalToCart = (event, name, price, itemId) => {
+            event.stopPropagation();
+            const btn = event.currentTarget;
+            const qtySpan = document.getElementById(`local-qty-${itemId}`);
+            const qty = parseInt(qtySpan.innerText) || 1;
+
+            const existing = cart.find(i => i.name === name && !i.isCustom);
+            if (existing) existing.qty += qty;
+            else cart.push({ name, price, qty: qty });
+            
+            saveCart();
+            showToast(`تمت الإضافة للسلة ✨`);
+            qtySpan.innerText = '1'; 
+            
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="ph-bold ph-check text-lg"></i>';
+            btn.classList.add('bg-[#10B981]', 'text-white', 'border-transparent');
+            btn.classList.remove('bg-gray-900', 'text-[#ff85ad]', 'border-gray-200');
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.remove('bg-[#10B981]', 'text-white', 'border-transparent');
+                btn.classList.add('bg-gray-900', 'text-[#ff85ad]', 'border-gray-200');
+            }, 1000);
+        };
+
+        const translateSizeToArabic = (rawSize) => {
+            if (!rawSize) return 'الكل';
+            const s = rawSize.toLowerCase().trim();
+            if (s.includes('small') || s.includes('mini') || s.includes('صغير') || s.includes('سمول')) return 'حجم صغير';
+            if (s.includes('medium') || s.includes('mid') || s.includes('وسط') || s.includes('ميديام')) return 'حجم وسط';
+            if (s.includes('large') || s.includes('big') || s.includes('family') || s.includes('كبير') || s.includes('لارج') || s.includes('عائلي')) return 'حجم كبير';
+            return rawSize; 
+        };
+
+        const renderProductGrid = (itemsToRender, categoryKey) => {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+
+            if (itemsToRender && itemsToRender.length > 0) {
+                itemsToRender.forEach((item, index) => {
+                    const cleanId = `${categoryKey}-${index}-${Math.floor(Math.random()*1000)}`; 
+                    
+                    const itemImg = item.img || '';
+                    const hasValidImg = itemImg && typeof itemImg === 'string' && itemImg.trim().length > 10;
+                    
+                    const imgHtml = hasValidImg 
+                        ? `<img src="${itemImg}" alt="${item.name}" loading="lazy" class="w-full h-full object-cover">`
+                        : `<div class="w-full h-full flex flex-col items-center justify-center text-pink-200/50 bg-pink-50/30"><i class="ph-fill ph-image text-4xl mb-1"></i><span class="f-800 text-[10px]">بدون صورة</span></div>`;
+
+                    const arabicSize = translateSizeToArabic(item.size);
+                    const itemNameForCart = arabicSize !== 'الكل' && !item.name.includes(arabicSize) 
+                                            ? `${item.name} (${arabicSize})` 
+                                            : item.name;
+
+                    const safeItemName = itemNameForCart.replace(/'/g, "\\'");
+
+                    grid.innerHTML += `
+                        <div class="menu-item-card h-full flex flex-col">
+                            <div class="menu-item-img-wrap">
+                                ${imgHtml}
+                            </div>
+                            <div class="p-3 flex flex-col flex-1 bg-white">
+                                <h4 class="f-900 text-[14px] text-gray-800 mb-1 leading-tight">${item.name}</h4>
+                                <p class="text-[11px] text-gray-500 f-700 leading-relaxed mb-3 flex-1">${item.desc || 'وصفة حلويات بوسي الخاصة 👑'}</p>
+                                
+                                <div class="mt-auto pt-3 border-t border-gray-50">
+                                    <div class="flex items-end justify-between mb-3">
+                                        <div>
+                                            <span class="text-[9px] text-gray-400 f-800 block mb-0.5">سعر المنتج</span>
+                                            <span class="f-900 text-[17px] text-[#ff85ad]">${item.price || 0} <span class="text-[10px] text-gray-500">ج.م</span></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="qty-control mb-2">
+                                        <button onclick="changeLocalQty(event, '${cleanId}', 1)" class="qty-btn text-green-600">+</button>
+                                        <span id="local-qty-${cleanId}" class="f-900 text-sm w-6 text-center text-gray-800">1</span>
+                                        <button onclick="changeLocalQty(event, '${cleanId}', -1)" class="qty-btn text-red-500">-</button>
+                                    </div>
+                                    <button onclick="addLocalToCart(event, '${safeItemName}', ${item.price || 0}, '${cleanId}')" class="w-full bg-gray-900 hover:bg-[#ff85ad] text-white py-2 rounded-xl f-800 text-[12px] flex items-center justify-center gap-1 active:scale-95 transition-all">
+                                        أضف للسلة <i class="ph-bold ph-plus text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>`;
+                });
+            } else {
+                grid.innerHTML = `
+                    <div class="col-span-2 text-center py-20 bg-gray-50 rounded-[32px] border border-gray-100 w-full">
+                        <i class="ph-fill ph-ghost text-5xl text-gray-300 mb-3"></i>
+                        <h3 class="f-900 text-lg text-gray-800">قريباً جداً!</h3>
+                        <p class="text-gray-500 text-sm f-700">لسه بنجهزلك أحلى اختراعات حلويات بوسي هنا، خليك متابع! 👑</p>
+                    </div>`;
+            }
+        };
+
+        window.changeTab = (sizeName) => {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if(btn.getAttribute('data-size') === sizeName) {
+                    btn.classList.add('active', 'border-transparent');
+                    btn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+                } else {
+                    btn.classList.remove('active', 'border-transparent');
+                    btn.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+                }
+            });
+            
+            const itemsForThisSize = window.currentGroupedItems[sizeName];
+            renderProductGrid(itemsForThisSize, window.currentCategoryKeyForTabs);
+        };
+
+        // ===== 2. محرك الرادار الخارق المطوّر للبحث عن الصور (The Ultimate Radar) =====
+        const findDeepImage = (obj) => {
+            if (!obj) return '';
+
+            // فحص النصوص واستخراج Base64 حتى لو كان خام أو بدون بادئة
+            const checkString = (str) => {
+                if (typeof str !== 'string') return '';
+                if (str.startsWith('data:image/') || str.startsWith('http')) return str;
+                
+                // صيد أكواد Base64 الخام (Raw) اللي مش بتبدأ بـ data:image
+                if (str.length > 300 && !str.includes(' ')) {
+                    if (str.startsWith('/9j/')) return 'data:image/jpeg;base64,' + str; // JPEG
+                    if (str.startsWith('iVBORw0KGgo')) return 'data:image/png;base64,' + str; // PNG
+                    if (str.startsWith('UklGR')) return 'data:image/webp;base64,' + str; // WEBP (مثل اللي موجود في ملفك)
+                    if (/^[a-zA-Z0-9+/]+={0,2}$/.test(str.substring(0, 50))) return 'data:image/png;base64,' + str; // افتراضي
+                }
+                return '';
+            };
+
+            if (typeof obj === 'string') return checkString(obj);
+
+            if (typeof obj === 'object') {
+                // البحث في المفاتيح المشهورة أولاً وبداخل المصفوفات (Arrays) لو الصور متخزنة فيها
+                const commonKeys = ['img', 'image', 'imageUrl', 'photo', 'pic', 'picture', 'thumbnail', 'cover', 'base64', 'src'];
+                for (let k of commonKeys) {
+                    if (obj[k]) {
+                        if (typeof obj[k] === 'string') {
+                            let s = checkString(obj[k]);
+                            if (s) return s;
+                        } else if (Array.isArray(obj[k]) && obj[k].length > 0 && typeof obj[k][0] === 'string') {
+                            let s = checkString(obj[k][0]);
+                            if (s) return s;
+                        }
+                    }
+                }
+                
+                // البحث المتعمق العشوائي (DFS) في كل خصائص الأوبجيكت
+                for (let key in obj) {
+                    if (typeof obj[key] === 'object' || typeof obj[key] === 'string') {
+                        let res = findDeepImage(obj[key]);
+                        if (res) return res;
+                    }
+                }
+            }
+            return '';
+        };
+        // ==============================================================================
+
+        // ===== 3. الثقب الأسود للبيانات (The Black Hole Normalizer) =====
+        // بيفرد أي تفرع داخلي مهما كان اسمه لاستخراج الأصناف الفرعية بدقة
+        window.openCategory = (categoryKey) => {
+            let category = globalData[categoryKey];
+            if (!category) return;
+
+            if (Array.isArray(category)) {
+                category = { title: categoryKey, navTitle: categoryKey, items: category };
+            }
+
+            const titleEl = document.getElementById('cat-title');
+            if(titleEl) titleEl.innerText = category.title || category.navTitle || 'قسم حلويات بوسي';
+            
+            const torteBuilder = document.getElementById('category-torte-builder');
+            if (categoryKey === 'tortes' || (category.title && category.title.includes('تورت'))) {
+                torteBuilder.classList.remove('hidden');
+            } else {
+                torteBuilder.classList.add('hidden');
+            }
+
+            const tabsContainerWrap = document.getElementById('category-tabs-container');
+            const tabsInner = document.getElementById('category-tabs');
+            tabsContainerWrap.classList.add('hidden');
+            tabsInner.innerHTML = '';
+            
+            const grid = document.getElementById('products-grid');
+            if(!grid) return;
+            grid.innerHTML = '';
+
+            // استخراج جذر البيانات
+            let rawItems = category.items || category.products || category.data || category.list || category.menu;
+            if (!rawItems) {
+                rawItems = {};
+                for(let k in category) {
+                    if(!['title', 'navTitle', 'icon', 'desc', 'image', 'img'].includes(k)) {
+                        rawItems[k] = category[k];
+                    }
+                }
+            }
+
+            let normalizedItems = [];
+
+            if (Array.isArray(rawItems)) {
+                normalizedItems = [...rawItems];
+            } else if (typeof rawItems === 'object' && rawItems !== null) {
+                for (const key in rawItems) {
+                    if (Array.isArray(rawItems[key])) {
+                        rawItems[key].forEach(i => {
+                            let newItem = { ...i };
+                            if (!newItem.size && !newItem.name?.includes(key)) newItem.size = key;
+                            if (!newItem.name) newItem.name = key;
+                            normalizedItems.push(newItem);
+                        });
+                    } else if (typeof rawItems[key] === 'object' && rawItems[key] !== null) {
+                        let newItem = { ...rawItems[key] };
+                        if (!newItem.name && typeof key === 'string') newItem.name = key;
+                        normalizedItems.push(newItem);
+                    }
+                }
+            }
+
+            let finalItems = [];
+            normalizedItems.forEach(item => {
+                // سحب الصورة الجذرية باستخدام محرك الرادار الخارق
+                const rootImg = findDeepImage(item);
+
+                // البحث عن أي تفرع داخلي بيحتوي على خصائص (أسعار، تفاصيل) مهما كان اسمه
+                let variationsObj = item.prices || item.sizes || item.variations || item.options || item.flavors || item.types || item.details;
+                
+                // لو ملقاش الأسماء المشهورة، بيفحص الأوبجيكت نفسه لاكتشاف أي تفرع بيحتوي على أسعار
+                if (!variationsObj) {
+                     for(let k in item) {
+                         if (typeof item[k] === 'object' && item[k] !== null && !Array.isArray(item[k])) {
+                             let hasPriceOrImg = Object.values(item[k]).some(v => typeof v === 'object' && (v.price !== undefined || findDeepImage(v)));
+                             if (hasPriceOrImg) {
+                                 variationsObj = item[k]; break;
+                             }
+                         }
+                     }
+                }
+
+                if (Array.isArray(variationsObj)) {
+                    variationsObj.forEach(s => {
+                        finalItems.push({
+                            ...item,
+                            name: item.name || s.name || item.title || 'حلويات بوسي المميزة', 
+                            price: s.price !== undefined ? s.price : (item.price || 0),
+                            size: s.size || s.name || s.type || item.size || '',
+                            img: findDeepImage(s) || rootImg, // استخدام الرادار للصورة الفرعية
+                            desc: s.desc || item.desc || ''
+                        });
+                    });
+                } else if (variationsObj && typeof variationsObj === 'object' && !Array.isArray(variationsObj)) {
+                     for (const [sName, sVal] of Object.entries(variationsObj)) {
+                         if (typeof sVal === 'object' && sVal !== null) {
+                             finalItems.push({
+                                 ...item, ...sVal,
+                                 name: item.name || sVal.name || item.title || 'حلويات بوسي المميزة',
+                                 size: sName,
+                                 img: findDeepImage(sVal) || rootImg // استخدام الرادار
+                             });
+                         } else {
+                             finalItems.push({
+                                 ...item,
+                                 name: item.name || item.title || 'حلويات بوسي المميزة',
+                                 price: sVal,
+                                 size: sName,
+                                 img: rootImg
+                             });
+                         }
+                     }
+                } else {
+                    item.img = rootImg;
+                    finalItems.push(item);
+                }
+            });
+
+            if (finalItems.length > 0) {
+                let groupedItems = { 'الكل': [] };
+                let hasDetectedSizes = false;
+
+                finalItems.forEach(item => {
+                    let arabicAssignedSize = translateSizeToArabic(item.size);
+                    
+                    if (arabicAssignedSize !== 'الكل') {
+                        hasDetectedSizes = true;
+                    }
+
+                    if (!groupedItems[arabicAssignedSize]) groupedItems[arabicAssignedSize] = [];
+                    groupedItems[arabicAssignedSize].push(item);
+                });
+
+                if (hasDetectedSizes && Object.keys(groupedItems).length > 1) {
+                    if(groupedItems['الكل'].length === 0) delete groupedItems['الكل'];
+
+                    tabsContainerWrap.classList.remove('hidden');
+                    const sizesFound = Object.keys(groupedItems);
+                    
+                    const sortOrder = { 'حجم كبير': 1, 'حجم وسط': 2, 'حجم صغير': 3, 'الكل': 4 };
+                    sizesFound.sort((a, b) => (sortOrder[a] || 5) - (sortOrder[b] || 5));
+
+                    sizesFound.forEach((size, index) => {
+                        const isActive = index === 0; 
+                        tabsInner.innerHTML += `
+                            <button onclick="changeTab('${size}')" 
+                                    class="tab-btn px-6 py-2.5 rounded-[14px] border f-900 text-sm active:scale-95 ${isActive ? 'active border-transparent' : 'bg-white text-gray-600 border-gray-200 shadow-sm'}" 
+                                    data-size="${size}">
+                                ${size}
+                            </button>
+                        `;
+                    });
+
+                    window.currentGroupedItems = groupedItems;
+                    window.currentCategoryKeyForTabs = categoryKey;
+                    
+                    renderProductGrid(groupedItems[sizesFound[0]], categoryKey);
+                } else {
+                    renderProductGrid(finalItems, categoryKey);
+                }
+
+            } else if (categoryKey !== 'tortes' && (!category.title || !category.title.includes('تورت'))) {
+                grid.innerHTML = `
+                    <div class="col-span-2 text-center py-20 bg-gray-50 rounded-[32px] border border-gray-100 w-full">
+                        <i class="ph-fill ph-ghost text-5xl text-gray-300 mb-3"></i>
+                        <h3 class="f-900 text-lg text-gray-800">قريباً جداً!</h3>
+                        <p class="text-gray-500 text-sm f-700">لسه بنجهزلك أحلى اختراعات حلويات بوسي هنا، خليك متابع! 👑</p>
+                    </div>`;
+            }
+
             loadView('category');
         };
+        // ===================================================================================
 
-        window.modVal = (id, d) => {
-            const el = document.getElementById(`qty-${id}`);
-            el.innerText = Math.max(1, parseInt(el.innerText) + d);
+        window.addCustomTorteToCart = () => {
+            const shapeEl = document.getElementById('torte-shape');
+            if(!shapeEl.value) {
+                showToast("⚠️ يرجى اختيار شكل التورتة أولاً من القائمة");
+                shapeEl.focus();
+                return;
+            }
+            
+            const shape = shapeEl.value;
+            const fillEl = document.getElementById('torte-filling');
+            const filling = fillEl && !fillEl.parentElement.classList.contains('hidden') && fillEl.value ? fillEl.value : '';
+            
+            const addEls = document.querySelectorAll('.addon-checkbox:checked');
+            let addons = [];
+            addEls.forEach(el => addons.push(el.value));
+
+            const notes = document.getElementById('torte-notes').value.trim();
+
+            const itemName = `🎂 تورتة خاصة: ${shape}`;
+            let itemDesc = '';
+            if(filling) itemDesc += `الحشو: ${filling} | `;
+            if(addons.length > 0) itemDesc += `إضافات: ${addons.join('، ')} | `;
+            if(notes) itemDesc += `ملاحظات: ${notes}`;
+
+            cart.push({ name: itemName, price: 0, qty: 1, isCustom: true, desc: itemDesc });
+            saveCart();
+            
+            document.getElementById('torte-notes').value = '';
+            addEls.forEach(el => el.checked = false);
+            shapeEl.value = '';
+            if(fillEl) fillEl.value = '';
+
+            showToast("تمت إضافة التورتة للسلة بنجاح ✨");
+            setTimeout(() => { loadView('cart'); }, 600);
         };
 
-        window.addToCart = (key, idx) => {
-            const it = State.data[key].items[idx];
-            const q = parseInt(document.getElementById(`qty-${key}-${idx}`).innerText);
-            const uid = `${key}-${idx}`;
-            
-            const exists = State.cart.find(i => i.id === uid);
-            if (exists) exists.qty += q;
-            else State.cart.push({ ...it, id: uid, qty: q });
-            
-            localStorage.setItem('bose_cart_v5', JSON.stringify(State.cart));
-            updateBadge();
-            showToast("✅ تمت إضافة السعادة لسلتك!");
-            document.getElementById(`qty-${uid}`).innerText = "1";
+        window.updateQty = (index, delta) => {
+            cart[index].qty += delta;
+            if (cart[index].qty <= 0) cart.splice(index, 1);
+            saveCart();
+            if(currentView === 'cart') renderCart();
         };
 
-        function updateBadge() {
-            const has = State.cart.length > 0;
-            document.getElementById('cart-dot').classList.toggle('hidden', !has);
-            document.getElementById('cart-badge-text').innerText = `${State.cart.length} منتج`;
+        window.clearCartConfirm = () => {
+            if(confirm('هل أنت متأكد من إفراغ السلة بالكامل؟')) {
+                cart = []; saveCart(); renderCart(); showToast('تم إفراغ السلة.');
+            }
+        };
+
+        function saveCart() { 
+            localStorage.setItem('bose_cart', JSON.stringify(cart)); 
+            updateCartUI(); 
+        }
+
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            const badge1 = document.getElementById('cart-badge');
+            const badge2 = document.getElementById('bottom-cart-badge');
+            
+            [badge1, badge2].forEach(badge => {
+                if (badge) {
+                    badge.innerText = totalItems;
+                    if (totalItems > 0) { 
+                        badge.classList.remove('hidden'); badge.classList.add('animate-pop'); 
+                        setTimeout(() => badge.classList.remove('animate-pop'), 300); 
+                    } else { badge.classList.add('hidden'); }
+                }
+            });
         }
 
         window.renderCart = () => {
-            const cont = document.getElementById('cart-list');
-            const summary = document.getElementById('cart-summary');
-            const msg = document.getElementById('cart-empty-msg');
+            const emptyState = document.getElementById('cart-empty');
+            const contentState = document.getElementById('cart-content');
+            const itemsContainer = document.getElementById('cart-items');
             
-            if (State.cart.length === 0) {
-                cont.innerHTML = "";
-                summary.classList.add('hidden');
-                msg.classList.remove('hidden');
-                return;
+            if (cart.length === 0) { 
+                emptyState.classList.remove('hidden'); contentState.classList.add('hidden'); return; 
             }
+            
+            emptyState.classList.add('hidden'); contentState.classList.remove('hidden'); itemsContainer.innerHTML = '';
 
-            msg.classList.add('hidden');
-            summary.classList.remove('hidden');
-            cont.innerHTML = State.cart.map((it, idx) => `
-                <div class="flex items-center gap-6 bg-white p-6 rounded-3xl border border-gray-50 shadow-sm reveal">
-                    <img src="${it.img || IMG_FALLBACK}" class="w-24 h-24 rounded-2xl object-cover shrink-0 shadow-sm">
-                    <div class="flex-1 min-w-0">
-                        <h4 class="font-black text-base text-gray-800 truncate mb-1">${it.name}</h4>
-                        <span class="text-pink-500 font-black text-xl">${it.price} ج</span>
-                    </div>
-                    <div class="flex items-center gap-4 bg-gray-50 p-3 rounded-2xl">
-                        <button onclick="modCart(${idx}, -1)" class="text-gray-300 hover:text-pink-500 transition-colors"><i class="ph ph-minus-circle text-3xl"></i></button>
-                        <span class="font-black text-lg w-6 text-center">${it.qty}</span>
-                        <button onclick="modCart(${idx}, 1)" class="text-pink-500 hover:text-pink-600 transition-colors"><i class="ph ph-plus-circle text-3xl"></i></button>
-                    </div>
-                </div>
-            `).join('');
-            updateTotals();
-        };
+            let subtotal = 0; let hasCustomTorte = false;
 
-        window.modCart = (idx, d) => {
-            State.cart[idx].qty += d;
-            if (State.cart[idx].qty < 1) State.cart.splice(idx, 1);
-            localStorage.setItem('bose_cart_v5', JSON.stringify(State.cart));
-            renderCart();
-            updateBadge();
-        };
+            cart.forEach((item, index) => {
+                if(item.isCustom) hasCustomTorte = true;
+                subtotal += item.price * item.qty;
 
-        function updateTotals() {
-            const sub = State.cart.reduce((a, b) => a + (b.price * b.qty), 0);
-            const ship = parseInt(document.getElementById('co-shipping').value) || 0;
-            document.getElementById('cart-subtotal').innerText = sub + " ج.م";
-            document.getElementById('final-total').innerText = (sub + ship) + " ج.م";
-        }
+                const pDisp = item.isCustom ? `<span class="text-xs text-white f-800 bg-[#ff85ad] px-3 py-1 rounded-lg">السعر يحدد لاحقاً</span>` : `<span class="text-[#ff85ad] f-900 text-xl">${item.price} <span class="text-xs">ج.م</span></span>`;
+                const dDisp = item.isCustom ? `<div class="bg-gray-50 p-3 rounded-xl mt-3 border border-gray-100"><p class="text-xs text-gray-600 f-700 leading-relaxed">${item.desc}</p></div>` : '';
 
-        // --- معالجة الطلب ---
-        document.getElementById('btn-submit-order').onclick = async () => {
-            const name = document.getElementById('co-name').value.trim();
-            const phone = document.getElementById('co-phone').value.trim();
-            const addr = document.getElementById('co-address').value.trim();
-            const ship = document.getElementById('co-shipping');
-
-            if (!name || !phone || !addr) return showToast("يرجى إكمال بيانات الاستلام ❌");
-            if (!/^01[0125][0-9]{8}$/.test(phone)) return showToast("رقم الموبايل غير صحيح ❌");
-
-            const total = State.cart.reduce((a, b) => a + (b.price * b.qty), 0) + parseInt(ship.value);
-            const zone = ship.options[ship.selectedIndex].text;
-
-            try {
-                showToast("جاري تأكيد طلب السعادة... 🔄");
-                await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'orders'), {
-                    client: name, phone, addr, zone, items: State.cart, total, createdAt: serverTimestamp()
-                });
-                
-                let msg = `*طلب جديد من حلويات بوسي 👑*\n\n`;
-                msg += `👤 *العميل:* ${name}\n`;
-                msg += `📞 *الموبايل:* ${phone}\n`;
-                msg += `📍 *المنطقة:* ${zone}\n`;
-                msg += `🏠 *العنوان:* ${addr}\n\n`;
-                msg += `*الطلبات:* \n`;
-                State.cart.forEach(i => msg += `🍰 ${i.name} × ${i.qty} = ${i.price * i.qty}ج\n`);
-                msg += `\n💰 *الإجمالي النهائي:* ${total} ج.م\n`;
-                msg += `\n_تم الطلب عبر الموقع الرسمي لبراند حلويات بوسي_`;
-
-                window.open(`https://wa.me/${State.data.storeInfo.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
-                
-                State.cart = [];
-                localStorage.removeItem('bose_cart_v5');
-                updateBadge();
-                loadView('home');
-                showToast("✅ تم إرسال طلبك بنجاح لبراند حلويات بوسي!");
-            } catch { showToast("عفواً! حدث خطأ في الاتصال ❌"); }
-        };
-
-        // --- نظام الإدارة ---
-        document.getElementById('btn-login-confirm').onclick = () => {
-            if (document.getElementById('admin-pass').value === '2026') {
-                document.getElementById('admin-gate').classList.add('hidden');
-                document.getElementById('client-container').classList.add('hidden');
-                document.getElementById('main-header').classList.add('hidden');
-                document.getElementById('main-footer').classList.add('hidden');
-                document.getElementById('admin-view').classList.remove('hidden');
-                loadAdminTab('catalog');
-            } else showToast("الرمز السري غير صحيح ❌");
-        };
-
-        window.loadAdminTab = (tab) => {
-            document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('admin-active'));
-            document.querySelector(`[data-atab="${tab}"]`).classList.add('admin-active');
-            const ws = document.getElementById('admin-workspace');
-            ws.innerHTML = "";
-
-            if (tab === 'catalog') renderCatalogEditor();
-            else if (tab === 'orders') renderOrdersLog();
-            else if (tab === 'restore') renderRestoreTool();
-        };
-
-        function renderCatalogEditor() {
-            const d = State.data;
-            const keys = Object.keys(d).filter(k => !['shipping_zones', 'storeInfo', 'torteOptions'].includes(k));
-            const ws = document.getElementById('admin-workspace');
-            ws.innerHTML = `<h2 class="text-3xl font-black mb-12">مدير المنيو 🍰</h2>` + keys.map(k => `
-                <div class="bg-white p-10 rounded-[2.5rem] border border-gray-100 shadow-sm mb-12">
-                    <div class="flex justify-between items-center mb-10 border-b pb-6">
-                        <h4 class="font-black text-pink-500 text-xl">${d[k].navTitle}</h4>
-                        <button onclick="saveMenu()" class="bg-pink-400 text-white px-10 py-3 rounded-2xl font-bold text-xs shadow-xl shadow-pink-50">حفظ القسم</button>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        ${d[k].items.map((it, idx) => `
-                            <div class="bg-gray-50 p-6 rounded-3xl flex gap-5 items-center transition-all hover:bg-white hover:shadow-md">
-                                <div class="relative w-20 h-20 shrink-0 rounded-2xl overflow-hidden group">
-                                    <img src="${it.img || IMG_FALLBACK}" id="img-ad-${k}-${idx}" class="w-full h-full object-cover">
-                                    <label class="absolute inset-0 bg-black/70 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-all">
-                                        <i class="ph ph-camera-plus text-white text-2xl"></i>
-                                        <input type="file" class="hidden" onchange="uploadImg(event, '${k}', ${idx})">
-                                    </label>
-                                </div>
-                                <div class="flex-1 space-y-3">
-                                    <input type="text" value="${it.name}" onchange="updateState('${k}', ${idx}, 'name', this.value)" class="admin-input text-xs" placeholder="اسم المنتج">
-                                    <input type="number" value="${it.price}" onchange="updateState('${k}', ${idx}, 'price', this.value)" class="admin-input text-sm text-pink-500" placeholder="السعر">
-                                </div>
+                itemsContainer.innerHTML += `
+                    <div class="bg-white p-5 rounded-[24px] border border-gray-100 shadow-sm flex flex-col gap-4">
+                        <div class="flex justify-between items-start gap-4">
+                            <div class="flex-1">
+                                <h5 class="f-900 text-lg text-gray-800 mb-1">${item.name}</h5>
+                                ${pDisp}
                             </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.updateState = (k, idx, f, v) => { State.data[k].items[idx][f] = f === 'price' ? parseInt(v) : v; };
-
-        window.uploadImg = async (e, k, idx) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            showToast("جاري الرفع للسحابة... ☁️");
-            const fd = new FormData();
-            fd.append('file', file);
-            fd.append('upload_preset', CLOUDINARY.uploadPreset);
-            try {
-                const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY.cloudName}/image/upload`, { method: 'POST', body: fd });
-                const resJ = await res.json();
-                State.data[k].items[idx].img = resJ.secure_url;
-                document.getElementById(`img-ad-${k}-${idx}`).src = resJ.secure_url;
-                showToast("✅ تم تحديث الصورة!");
-            } catch { showToast("فشل الرفع! ❌"); }
-        };
-
-        window.saveMenu = async () => {
-            showToast("جاري مزامنة المنيو... ☁️");
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'masterMenu'), State.data);
-            showToast("✅ تمت المزامنة بنجاح!");
-        };
-
-        function renderOrdersLog() {
-            const ws = document.getElementById('admin-workspace');
-            ws.innerHTML = `<h2 class="text-3xl font-black mb-12">سجل المبيعات 📋</h2><div id="orders-wall" class="space-y-6"></div>`;
-            onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'orders'), (snap) => {
-                const orders = []; snap.forEach(d => orders.push(d.data()));
-                orders.sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-                document.getElementById('orders-wall').innerHTML = orders.map(o => `
-                    <div class="bg-white p-8 rounded-[2.5rem] border border-pink-50 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6 reveal">
-                        <div>
-                            <h4 class="font-black text-xl text-gray-800 mb-1">${o.client}</h4>
-                            <p class="text-xs font-bold text-gray-400">${o.phone} | ${o.zone}</p>
-                            <p class="text-[10px] text-gray-300 mt-2 font-black uppercase tracking-widest">${o.createdAt ? new Date(o.createdAt.seconds*1000).toLocaleString('ar-EG') : 'جاري التحميل...'}</p>
+                            <div class="qty-control max-w-[100px]">
+                                <button onclick="updateQty(${index}, 1)" class="qty-btn text-green-600">+</button>
+                                <span class="f-900 w-6 text-center text-sm">${item.qty}</span>
+                                <button onclick="updateQty(${index}, -1)" class="qty-btn text-red-500">-</button>
+                            </div>
                         </div>
-                        <div class="text-center md:text-left">
-                            <span class="text-4xl font-black text-pink-500">${o.total}ج</span>
-                            <p class="text-[10px] font-black text-gray-300 uppercase mt-2 tracking-[0.2em]">${o.items.length} صنف في الطلب</p>
-                        </div>
-                    </div>
-                `).join('') || "لا توجد مبيعات مسجلة.";
+                        ${dDisp}
+                    </div>`;
             });
-        }
-
-        function renderRestoreTool() {
-            const ws = document.getElementById('admin-workspace');
-            ws.innerHTML = `
-                <div class="bg-white p-20 rounded-[4rem] text-center border-2 border-dashed border-pink-100">
-                    <i class="ph ph-cloud-arrow-up text-8xl text-pink-200 mb-10 block"></i>
-                    <h2 class="text-3xl font-black mb-6">استعادة قاعدة البيانات</h2>
-                    <p class="text-sm text-gray-400 font-bold mb-14 max-w-sm mx-auto italic">ارفع ملف JSON الرسمي لاستعادة المنيو والأسعار والإعدادات فوراً.</p>
-                    <input type="file" id="json-input" accept=".json" class="hidden">
-                    <button onclick="document.getElementById('json-input').click()" class="btn-brand px-16 py-6 shadow-2xl">اختر ملف النسخة الاحتياطية 🔄</button>
-                </div>`;
-            document.getElementById('json-input').onchange = (e) => {
-                const r = new FileReader();
-                r.onload = async (ev) => {
-                    const d = JSON.parse(ev.target.result);
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'masterMenu'), d);
-                    showToast("✅ تمت استعادة قاعدة البيانات!");
-                    setTimeout(() => location.reload(), 1500);
-                };
-                r.readAsText(e.target.files[0]);
-            };
-        }
-
-        // --- الملاحة والوظائف العامة ---
-        window.loadView = (v) => {
-            ['home', 'category', 'cart', 'checkout'].forEach(i => document.getElementById(`view-${i}`).classList.add('hidden'));
-            document.getElementById(`view-${v}`).classList.remove('hidden');
-            if (v === 'cart') renderCart();
-            toggleSidebar(false);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('cart-subtotal').innerText = `${subtotal} ج.م`;
+            
+            if(currentView === 'checkout') calculateFinalTotal(); 
         };
 
-        window.toggleSidebar = (s) => {
-            document.getElementById('sidebar').classList.toggle('translate-x-full', !s);
-            document.getElementById('sidebar-overlay').classList.toggle('hidden', !s);
+        window.calculateFinalTotal = () => {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            
+            const stEl = document.getElementById('summary-subtotal');
+            if(stEl) stEl.innerText = `${subtotal} ج.م`;
+            
+            const areaSelect = document.getElementById('cust-area');
+            let deliveryFee = 0;
+            if(areaSelect && areaSelect.value) { deliveryFee = parseInt(areaSelect.value) || 0; }
+            
+            const delEl = document.getElementById('summary-delivery');
+            if(delEl) { delEl.innerText = areaSelect && areaSelect.value ? (deliveryFee === 0 ? 'مجاني 🎁' : `${deliveryFee} ج.م`) : 'يحدد حسب المنطقة'; }
+            
+            const totEl = document.getElementById('summary-total');
+            if(totEl) totEl.innerText = `${subtotal + deliveryFee} ج.م`;
+            
+            const hasCustom = cart.some(i => i.isCustom);
+            const cn = document.getElementById('custom-torte-notice');
+            if(cn) cn.classList.toggle('hidden', !hasCustom);
+            
+            return { subtotal, deliveryFee, finalTotal: subtotal + deliveryFee };
         };
 
-        window.scrollToGrid = () => document.getElementById('catalog-area').scrollIntoView({ behavior: 'smooth' });
-
-        function showToast(m) {
-            const t = document.getElementById('toast');
-            document.getElementById('toast-msg').innerText = m;
-            t.classList.remove('hidden');
-            setTimeout(() => t.classList.add('hidden'), 4000);
+        function loadCustomerMemory() {
+            const m = localStorage.getItem('bose_customer_memory');
+            if (m) {
+                try {
+                    const mem = JSON.parse(m);
+                    if(document.getElementById('cust-name')) document.getElementById('cust-name').value = mem.name || '';
+                    if(document.getElementById('cust-phone')) document.getElementById('cust-phone').value = mem.phone || '';
+                    if(document.getElementById('cust-address')) document.getElementById('cust-address').value = mem.address || '';
+                    
+                    if (mem.area && document.getElementById('cust-area')) {
+                        setTimeout(() => { document.getElementById('cust-area').value = mem.area; calculateFinalTotal(); }, 300);
+                    }
+                    if(mem.name) {
+                        const memToast = document.getElementById('memory-toast');
+                        if(memToast) memToast.classList.remove('hidden');
+                    }
+                } catch(e) {}
+            }
         }
 
-        window.onload = startEngine;
+        window.submitOrder = () => {
+            if (globalData && globalData.storeInfo && !globalData.storeInfo.isOpen) return showToast("نعتذر، المتجر مغلق 🔒.");
+            
+            const nameEl = document.getElementById('cust-name');
+            const phoneEl = document.getElementById('cust-phone');
+            const areaEl = document.getElementById('cust-area');
+            
+            if (!nameEl.value.trim()) return showToast("الرجاء كتابة الاسم ⚠️");
+            if (!phoneEl.value.trim() || phoneEl.value.trim().length < 10) return showToast("رقم الواتساب غير صحيح ⚠️");
+            if (!areaEl.value) return showToast("الرجاء اختيار منطقة التوصيل ⚠️");
 
+            const address = document.getElementById('cust-address').value.trim();
+            localStorage.setItem('bose_customer_memory', JSON.stringify({ name: nameEl.value.trim(), phone: phoneEl.value.trim(), address, area: areaEl.value }));
+            
+            const totals = calculateFinalTotal();
+            const areaText = areaEl.options[areaEl.selectedIndex].text.split(' (+')[0];
+
+            let msg = `✨ *طلب جديد من حلويات بوسي* ✨\n\n`;
+            msg += `👤 *الاسم:* ${nameEl.value.trim()}\n📱 *الواتساب:* ${phoneEl.value.trim()}\n📍 *المنطقة:* ${areaText}\n`;
+            if (address) msg += `🏠 *العنوان:* ${address}\n`;
+            if (document.getElementById('cust-notes').value.trim()) msg += `📝 *ملاحظات:* ${document.getElementById('cust-notes').value.trim()}\n`;
+            
+            msg += `\n🛒 *الطلبات:*\n`;
+            let hasCustom = false;
+            cart.forEach(item => {
+                if(item.isCustom) { 
+                    hasCustom = true; 
+                    msg += `▪️ ${item.qty}x ${item.name}\n   💡 تفاصيل: ${item.desc}\n\n`; 
+                } else {
+                    msg += `▪️ ${item.qty}x ${item.name} (${item.price * item.qty} ج.م)\n`;
+                }
+            });
+
+            msg += `\n==================\n`;
+            msg += `💰 *قيمة المنتجات:* ${totals.subtotal} ج.م\n🛵 *التوصيل:* ${totals.deliveryFee === 0 ? 'مجاناً' : totals.deliveryFee + ' ج.م'}\n💎 *الإجمالي التقديري:* *${totals.finalTotal} ج.م*\n`;
+            if(hasCustom) msg += `\n⚠️ *ملاحظة:* توجد تورتة خاصة سيتم تحديد تكلفتها من الإدارة.\n`;
+            msg += `==================\nشكراً لاختياركم حلويات بوسي ❤️`;
+
+            cart = []; saveCart(); 
+            const adminPhone = globalData?.storeInfo?.whatsapp || "201097238441";
+            window.open(`https://wa.me/${adminPhone}?text=${encodeURIComponent(msg)}`, '_blank');
+            setTimeout(() => { loadView('home'); }, 1000);
+        };
+
+        window.loadView = (viewId) => {
+            currentView = viewId;
+            ['home', 'category', 'cart', 'checkout', 'admin'].forEach(v => {
+                const el = document.getElementById(`view-${v}`); 
+                if(el) { 
+                    el.classList.add('hidden'); 
+                    el.classList.remove('animate-enter'); 
+                }
+            });
+            const activeEl = document.getElementById(`view-${viewId}`);
+            if(activeEl) {
+                activeEl.classList.remove('hidden');
+                void activeEl.offsetWidth; 
+                activeEl.classList.add('animate-enter');
+            }
+            
+            const navHome = document.getElementById('nav-btn-home'); 
+            const navCart = document.getElementById('nav-btn-cart');
+            if(navHome) { navHome.classList.toggle('text-[#ff85ad]', viewId === 'home'); navHome.classList.toggle('text-gray-400', viewId !== 'home'); }
+            if(navCart) { navCart.classList.toggle('text-[#ff85ad]', viewId === 'cart' || viewId === 'checkout'); navCart.classList.toggle('text-gray-400', viewId !== 'cart' && viewId !== 'checkout'); }
+            
+            const mainHeader = document.getElementById('main-header');
+            if(mainHeader) mainHeader.classList.remove('hidden');
+
+            if (viewId === 'cart' || viewId === 'checkout') { renderCart(); if(viewId === 'checkout') loadCustomerMemory(); }
+            toggleSidebar(false); window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.toggleSidebar = (show) => {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if(sidebar) sidebar.classList.toggle('translate-x-full', !show);
+            if(overlay) overlay.classList.toggle('hidden', !show);
+            document.body.style.overflow = show ? 'hidden' : '';
+        };
+
+        window.showToast = (msg) => {
+            const t = document.getElementById('toast'); const tMsg = document.getElementById('toast-msg');
+            if(t && tMsg) {
+                tMsg.innerText = msg;
+                t.classList.remove('hidden', '-translate-y-full', 'opacity-0');
+                t.style.transform = "translate(-50%, 0) scale(1)"; t.style.opacity = "1";
+                setTimeout(() => { t.style.transform = "translate(-50%, -20px) scale(0.95)"; t.style.opacity = "0"; }, 3000);
+                setTimeout(() => t.classList.add('hidden'), 3500);
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', startEngine);
     </script>
 </body>
 </html>
