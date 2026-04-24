@@ -397,6 +397,7 @@
             });
         }
 
+        // تم التعديل والبناء هنا لحل مشكلة عدم التحميل وإضافة الـ Fallback
         function syncData() {
             const menuRef = doc(db, 'artifacts', appId, 'public', 'data', 'masterMenu');
             onSnapshot(menuRef, (snap) => {
@@ -404,11 +405,33 @@
                     State.data = snap.data();
                     renderUI();
                 } else {
+                    console.warn("⚠️ لا توجد بيانات في Firestore - تم تشغيل الوضع الافتراضي");
                     showToast("يرجى رفع البيانات من الإدارة ⚠️");
+                    
+                    // إضافة الفولباك لتجنب الشاشة البيضاء وتمكين فتح الموقع
+                    State.data = {
+                        storeInfo: { 
+                            splashSubtitle: "المنيو قيد التحديث، يرجى العودة لاحقاً 👑", 
+                            whatsapp: "" 
+                        },
+                        shipping_zones: []
+                    };
+                    renderUI();
                 }
-                hideLoader();
-            }, () => {
+                hideLoader(); // تأكيد إخفاء شاشة التحميل في كل الأحوال
+            }, (error) => {
+                console.error("🔥 Firebase Error:", error);
                 showToast("خطأ في الاتصال بالسحابة ☁️");
+                
+                // إضافة الفولباك عند خطأ الاتصال أيضاً لتجنب توقف واجهة العميل
+                State.data = {
+                    storeInfo: { 
+                        splashSubtitle: "عذراً، يوجد خطأ في الاتصال بالسحابة ☁️", 
+                        whatsapp: "" 
+                    },
+                    shipping_zones: []
+                };
+                renderUI();
                 hideLoader();
             });
         }
