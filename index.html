@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -92,6 +93,18 @@
         }
         /* Pause on hover */
         #ticker-container:hover .animate-ticker { animation-play-state: paused; }
+
+        /* CX Upgrade: Snap Scroll for Multi-Image */
+        .snap-slider { scroll-snap-type: x mandatory; }
+        .snap-slide { scroll-snap-align: center; }
+        
+        /* CX Upgrade: Highlight Animation for Shared Products */
+        @keyframes targetHighlight {
+            0% { box-shadow: 0 0 0 0px hsl(var(--brand-hue), 80%, 65%); transform: scale(1); }
+            50% { box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); transform: scale(1.02); }
+            100% { box-shadow: 0 0 0 0px rgba(236, 72, 153, 0); transform: scale(1); }
+        }
+        .highlight-target { animation: targetHighlight 2s ease-out; }
     </style>
 </head>
 <body>
@@ -121,10 +134,17 @@
     <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 top-[40px] py-3 md:py-4 border-b border-pink-50" style="background-color: var(--site-bg);">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
             
-            <!-- Mobile Menu Toggle Button (Left in LTR, Right in RTL) -->
-            <button onclick="toggleCustomerMenu(true)" class="p-2 md:p-3 rounded-xl transition-all shadow-sm border" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);" onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 80%, 97%)'" onmouseout="this.style.backgroundColor='var(--site-bg)'">
-                <i data-lucide="menu" class="w-6 h-6 md:w-7 md:h-7"></i>
-            </button>
+            <div class="flex items-center gap-2 md:gap-3">
+                <!-- Mobile Menu Toggle Button -->
+                <button onclick="toggleCustomerMenu(true)" class="p-2 md:p-3 rounded-xl transition-all shadow-sm border" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);" onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 80%, 97%)'" onmouseout="this.style.backgroundColor='var(--site-bg)'">
+                    <i data-lucide="menu" class="w-6 h-6 md:w-7 md:h-7"></i>
+                </button>
+                
+                <!-- CX Upgrade: Customer Search Button -->
+                <button onclick="toggleLiveSearch(true)" class="p-2 md:p-3 rounded-xl transition-all shadow-sm border" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);" onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 80%, 97%)'" onmouseout="this.style.backgroundColor='var(--site-bg)'">
+                    <i data-lucide="search" class="w-6 h-6 md:w-7 md:h-7"></i>
+                </button>
+            </div>
 
             <!-- Center Logo Area -->
             <div class="flex items-center gap-2 md:gap-4 cursor-pointer absolute left-1/2 -translate-x-1/2" onclick="window.scrollTo({top:0, behavior:'smooth'})">
@@ -146,6 +166,27 @@
 
         </div>
     </nav>
+
+    <!-- CX Upgrade: Fullscreen Live Search Overlay -->
+    <div id="live-search-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-md z-[200] hidden opacity-0 transition-opacity duration-300">
+        <div class="max-w-3xl mx-auto w-full h-full flex flex-col p-4 sm:p-8">
+            <div class="flex items-center gap-3 mb-6 relative mt-10">
+                <i data-lucide="search" class="absolute right-5 w-6 h-6 text-gray-400"></i>
+                <input type="text" id="live-search-input" onkeyup="performLiveSearch(this.value)" placeholder="بتدور على إيه النهاردة؟ (تورتة، جاتوه، سينابون...)" class="w-full pl-16 pr-14 py-4 md:py-5 rounded-2xl md:rounded-[2rem] text-lg font-bold shadow-2xl border-2 focus:outline-none transition-colors" style="background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <button onclick="toggleLiveSearch(false)" class="absolute left-3 p-2 md:p-3 rounded-xl bg-gray-100 hover:bg-red-100 hover:text-red-600 transition-colors text-gray-500">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            
+            <div id="live-search-results" class="flex-1 overflow-y-auto hide-scrollbar pb-20 space-y-3">
+                <!-- JS Filled -->
+                <div class="h-full flex flex-col items-center justify-center text-white/50 font-bold">
+                    <i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i>
+                    <p>ابدأ البحث في قائمة حلويات بوسي...</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Engine Upgrade: Customer Comprehensive Sidebar Menu -->
     <div id="customer-menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[110] hidden opacity-0 transition-opacity duration-300" onclick="toggleCustomerMenu(false)"></div>
@@ -434,8 +475,8 @@
                 <button onclick="switchAdminTab('security')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-security"><i data-lucide="shield" class="w-5 h-5"></i> الحماية ورمز المرور</button>
                 
                 <div class="mt-auto pt-4 border-t border-gray-700 text-center">
-                    <p class="text-[10px] text-gray-500 font-bold tracking-widest">BoseSweets ERP v10.10</p>
-                    <p class="text-[9px] text-emerald-400 font-bold mt-1">✓ Full UI/UX Engine Active 🌟</p>
+                    <p class="text-[10px] text-gray-500 font-bold tracking-widest">BoseSweets ERP v10.50</p>
+                    <p class="text-[9px] text-emerald-400 font-bold mt-1">✓ CX/UX Engine Update 🌟</p>
                 </div>
             </div>
             
@@ -625,6 +666,8 @@
                                 <label class="block text-xs font-bold text-gray-400 mb-1.5">اسم العلامة التجارية</label>
                                 <input type="text" id="set-brand" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none text-sm font-bold text-white transition-all">
                             </div>
+                            <!-- Hidden announcement to not break logic -->
+                            <input type="hidden" id="set-announcement">
                         </div>
 
                         <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 space-y-5">
@@ -751,13 +794,14 @@
 
                     <div class="bg-gray-800 rounded-2xl shadow-lg border border-gray-700 overflow-hidden mt-4">
                         <div class="overflow-x-auto admin-scroll" style="max-height: 60vh;">
-                            <table class="w-full text-right border-collapse min-w-[700px]">
+                            <table class="w-full text-right border-collapse min-w-[800px]">
                                 <thead class="sticky top-0 z-10 bg-gray-900 border-b border-gray-700 shadow-sm">
                                     <tr class="text-gray-400 text-sm">
                                         <th class="p-4 font-bold whitespace-nowrap">صورة</th>
                                         <th class="p-4 font-bold whitespace-nowrap">القسم</th>
                                         <th class="p-4 font-bold w-1/3 min-w-[200px]">اسم المنتج والمخزون</th>
                                         <th class="p-4 font-bold whitespace-nowrap">السعر</th>
+                                        <th class="p-4 font-bold whitespace-nowrap">البادج</th>
                                         <th class="p-4 font-bold text-center whitespace-nowrap">تحكم</th>
                                     </tr>
                                 </thead>
@@ -850,22 +894,44 @@
                                 <option value="half">كارت صغير (ضمن الشبكة العادية)</option>
                             </select>
                         </div>
-                        <div class="flex items-center pt-5 pl-2">
-                            <label class="flex items-center gap-2 cursor-pointer group">
-                                <input type="checkbox" id="edit-prod-instock" checked class="w-5 h-5 accent-emerald-500 rounded cursor-pointer">
-                                <span class="text-xs font-bold text-gray-300 group-hover:text-emerald-400 transition-colors">المنتج متوفر للطلب (In Stock)</span>
+                        <div>
+                            <!-- CX Upgrade: Badges selector -->
+                            <label class="block text-xs font-bold text-gray-400 mb-1.5 flex items-center gap-1"><i data-lucide="tag" class="w-3.5 h-3.5"></i> بادج الترويج العروض</label>
+                            <select id="edit-prod-badge" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white font-bold text-xs">
+                                <option value="">بدون بادج (افتراضي)</option>
+                                <option value="جديد 🌟">جديد 🌟</option>
+                                <option value="الأكثر مبيعاً 🔥">الأكثر مبيعاً 🔥</option>
+                                <option value="خصم حصري 🏷️">خصم حصري 🏷️</option>
+                                <option value="عرض اليوم 🎁">عرض اليوم 🎁</option>
+                                <option value="توصية الإدارة 👑">توصية الإدارة 👑</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center pt-2 pl-2">
+                        <label class="flex items-center gap-2 cursor-pointer group">
+                            <input type="checkbox" id="edit-prod-instock" checked class="w-5 h-5 accent-emerald-500 rounded cursor-pointer">
+                            <span class="text-xs font-bold text-gray-300 group-hover:text-emerald-400 transition-colors">المنتج متوفر للطلب (In Stock)</span>
+                        </label>
+                    </div>
+
+                    <!-- CX Upgrade: Multi-Image Manager -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-400 mb-1.5 flex justify-between items-center">
+                            <span>صور المنتج (يمكنك رفع أكثر من صورة للمنتج الواحد)</span>
+                            <span id="uploading-spinner" class="hidden"><i data-lucide="loader-2" class="w-4 h-4 text-pink-500 animate-spin"></i></span>
+                        </label>
+                        <div class="flex gap-2 mb-2">
+                            <label class="w-full bg-gray-700 hover:bg-pink-500 text-white p-3 rounded-lg cursor-pointer flex items-center justify-center gap-2 text-sm font-bold transition-colors">
+                                <i data-lucide="image-plus" class="w-5 h-5"></i> أضف صورة جديدة
+                                <input type="file" id="prod-img-upload" accept="image/*" class="hidden" onchange="compressAndUploadMultiImage(event)">
                             </label>
+                        </div>
+                        <div id="edit-prod-images-container" class="flex gap-2 overflow-x-auto hide-scrollbar py-2">
+                            <!-- Thumbnails JS -->
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-gray-400 mb-1.5">الصورة</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="edit-prod-img" dir="ltr" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-xs text-gray-300">
-                            <label class="bg-gray-700 hover:bg-pink-500 text-white p-3 rounded-lg cursor-pointer"><i data-lucide="cloud-upload" class="w-5 h-5"></i><input type="file" id="prod-img-upload" accept="image/*" class="hidden" onchange="compressAndUploadImage(event)"></label>
-                        </div>
-                        <div class="mt-3 h-32 w-full bg-gray-900 rounded-lg border border-gray-700 flex items-center justify-center overflow-hidden"><img id="edit-prod-preview" src="" class="h-full w-full object-contain hidden"><span id="edit-prod-preview-text" class="text-xs text-gray-500 font-bold"><i data-lucide="image" class="w-6 h-6 opacity-50 block mx-auto"></i></span></div>
-                    </div>
                     <div><label class="block text-xs font-bold text-gray-400 mb-1.5">الوصف</label><textarea id="edit-prod-desc" rows="3" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white admin-scroll"></textarea></div>
                 </div>
                 <div class="flex gap-3 mt-8">
@@ -929,7 +995,13 @@
             loadedUrls: new Set(),
             ignite(catalogData, galleryData = []) {
                 setTimeout(() => {
-                    const allUrls = [...catalogData.map(i => i.img || getImgFallback(i.category)), ...galleryData.map(g => g.url)];
+                    const allUrls = [];
+                    catalogData.forEach(i => {
+                        if(i.images && i.images.length > 0) i.images.forEach(img => allUrls.push(img));
+                        else allUrls.push(i.img || getImgFallback(i.category));
+                    });
+                    galleryData.forEach(g => allUrls.push(g.url));
+                    
                     allUrls.forEach(url => {
                         if(url && !this.loadedUrls.has(url)) {
                             const img = new Image(); img.src = url; this.loadedUrls.add(url);
@@ -988,24 +1060,23 @@
             brandColorHex: "#ec4899", bgColor: "#ffffff", textColor: "#663b3b",
             fontFamily: "'Cairo', sans-serif", baseFontSize: 16, baseFontWeight: 400,
             
-            // Engine Upgrade: Ticker defaults
             tickerActive: true, tickerText: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب ✨", tickerSpeed: 20, 
             tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff", tickerBgColor: "#e11d48"
         };
         
         const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
         const defaultCatalog = [
-            { id: 1, category: 'جاتوهات', name: 'جاتوه ملكي', price: 638, desc: 'طبقات من الكيك الإسفنجي الهش متدلعة بالكريمة الغنية والشوكولاتة البلجيكية الأصلية.. قطعة فنية لمناسباتك المهمة! 👑🍫' },
+            { id: 1, category: 'جاتوهات', name: 'جاتوه ملكي', price: 638, badge: 'الأكثر مبيعاً 🔥', images: [], desc: 'طبقات من الكيك الإسفنجي الهش متدلعة بالكريمة الغنية والشوكولاتة البلجيكية الأصلية.. قطعة فنية لمناسباتك المهمة! 👑🍫' },
             { id: 2, category: 'جاتوهات', name: 'جاتوه كلاسيك', price: 506, desc: 'الجاتوه الأصلي بطعم زمان وجودة "حلويات بوسي" اللي متعودين عليها.. خفة وطعم يرجّع أحلى الذكريات! 🍰✨' },
-            { id: 4, category: 'قشطوطة', name: 'نوتيلا وايت', price: 121, desc: 'غرقانة في الحليب ومتغطية بسحابة من كريمة النوتيلا البيضاء الناعمة.. حتة دلع تصالح بيها مزاجك! 🤍🥛' },
+            { id: 4, category: 'قشطوطة', name: 'نوتيلا وايت', price: 121, badge: 'جديد 🌟', desc: 'غرقانة في الحليب ومتغطية بسحابة من كريمة النوتيلا البيضاء الناعمة.. حتة دلع تصالح بيها مزاجك! 🤍🥛' },
             { id: 14, category: 'بامبوليني', name: 'نوتيلا وايت', price: 88, desc: 'عجينة إيطالية هشة ومقلية صح، محشية لحد آخرها بكريمة النوتيلا البيضاء اللي بتبظ من كل ناحية! ☁️🤍' },
             { id: 27, category: 'دوناتس', name: 'نوتيلا وايت', price: 88, desc: 'حلقة من السعادة الهشة، متغطية ومحشية بالنوتيلا البيضاء اللي بتدوب بمجرد ما تلمسها! 🍩🤍' },
-            { id: 40, category: 'ديسباسيتو', size: 'وسط', subType: 'وسط', name: 'نوتيلا دارك', price: 132, desc: 'طاجن كيك غرقان ومسقي حليب صح، وعليه طبقة كثيفة من النوتيلا الغامقة.. السعادة في معلقة! 🍫🤤' },
+            { id: 40, category: 'ديسباسيتو', size: 'وسط', subType: 'وسط', name: 'نوتيلا دارك', price: 132, badge: 'خصم حصري 🏷️', desc: 'طاجن كيك غرقان ومسقي حليب صح، وعليه طبقة كثيفة من النوتيلا الغامقة.. السعادة في معلقة! 🍫🤤' },
             { id: 62, category: 'سينابون', name: 'نوتيلا دارك', price: 121, desc: 'رول سينابون طري ودافي، ريحته قرفة تجنن، وغرقان بصوص النوتيلا الغامقة الكثيفة! 🤎✨' },
             { id: 73, category: 'ريد فيلفت', name: 'مثلث كبير', subType: 'مثلث كبير', price: 72, desc: 'قطعة كيك مخملية بتدوب، مع طبقات كريمة الجبن الأصلية اللي بتوزن الطعم صح! ❤️🍰' },
             { id: 76, category: 'كبات السعادة', name: 'نوتيلا', price: 61, desc: 'كب صغير بس سعادته كبيرة! طبقات كيك هشة وكريمة غنية متغطية بصوص النوتيلا السايح! 🍫😋' },
             { id: 99, category: 'ميني تورتة', name: 'حجم (فرد - فردين)', price: 154, desc: 'تورتة صغيرة بتصميم كيوت وشيك جداً، مثالية لمفاجأة سريعة أو هدية رقيقة تفرح بيها حبايبك! 🎂💖' },
-            { id: 98, category: 'عروض وبوكسات', name: 'بوكس الروقان', price: 550, desc: 'جمعنالك دلع الدنيا في بوكس! تورتة نص فانيليا/شوكولاتة + 2 كب سعادة + ديسباسيتو + ريد فيلفت.. روقان بجد! 🎁🎉' },
+            { id: 98, category: 'عروض وبوكسات', name: 'بوكس الروقان', price: 550, badge: 'عرض اليوم 🎁', desc: 'جمعنالك دلع الدنيا في بوكس! تورتة نص فانيليا/شوكولاتة + 2 كب سعادة + ديسباسيتو + ريد فيلفت.. روقان بجد! 🎁🎉' },
             { id: 103, category: 'ورد', flowerType: 'ورد طبيعي', subType: 'ورد طبيعي', name: 'بوكيه طبيعي فريش', price: 0, desc: 'بوكيه ورد طبيعي طازة متنسق باحترافية وألوان تفتح النفس عشان تكمل بيك هديتك وتبهج اللي بتحبهم! 🌸🍃' }
         ];
 
@@ -1017,6 +1088,9 @@
         
         let adminCurrentCat = 'all';
         let adminOrderFilter = 'all';
+        
+        // Tracking images for multi-upload modal
+        let tempProdImages = []; 
 
         async function loadEngineMemory() {
             try {
@@ -1135,8 +1209,126 @@
             syncCartUI(); 
             lucide.createIcons();
             PreloadEngine.ignite(catalog, galleryData);
+            
+            // CX Upgrade: Check Deep Link and handle smooth scroll and highlight
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedProductId = urlParams.get('product');
+            if(sharedProductId) {
+                const prod = catalogMap.get(sharedProductId);
+                if(prod) {
+                    setCategory(prod.category); // switch to that category first
+                    setTimeout(() => {
+                        const el = document.getElementById('product-card-' + sharedProductId);
+                        if(el) {
+                            el.scrollIntoView({behavior: 'smooth', block: 'center'});
+                            el.classList.add('highlight-target');
+                            setTimeout(() => el.classList.remove('highlight-target'), 2500);
+                        }
+                    }, 500);
+                }
+            }
         }
         
+        // CX Upgrade: Customer Live Search Engine
+        function toggleLiveSearch(show) {
+            const overlay = document.getElementById('live-search-overlay');
+            const input = document.getElementById('live-search-input');
+            const results = document.getElementById('live-search-results');
+            
+            if (show) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => { 
+                    overlay.classList.add('opacity-100'); 
+                    input.focus(); 
+                }, 10);
+                input.value = '';
+                results.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10">
+                        <i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i>
+                        <p>ابدأ البحث في قائمة حلويات بوسي...</p>
+                    </div>`;
+                lucide.createIcons();
+            } else {
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+        
+        function performLiveSearch(query) {
+            const resultsContainer = document.getElementById('live-search-results');
+            const q = query.trim().toLowerCase();
+            
+            if (!q) {
+                resultsContainer.innerHTML = `
+                    <div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10">
+                        <i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i>
+                        <p>ابدأ البحث في قائمة حلويات بوسي...</p>
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+            
+            const matches = catalog.filter(p => 
+                (p.name && p.name.toLowerCase().includes(q)) || 
+                (p.category && p.category.toLowerCase().includes(q)) ||
+                (p.desc && p.desc.toLowerCase().includes(q))
+            );
+            
+            if (matches.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="flex flex-col items-center justify-center text-white/70 font-bold mt-10 bg-white/5 p-8 rounded-2xl">
+                        <i data-lucide="search-x" class="w-12 h-12 mb-4 text-pink-400"></i>
+                        <p>لم نجد تطابق للبحث عن "${escapeHTML(query)}"</p>
+                        <p class="text-xs opacity-70 mt-2">جرب البحث بكلمة مختلفة مثل "تورتة"، "نوتيلا"، "لوتس"</p>
+                    </div>`;
+                lucide.createIcons();
+                return;
+            }
+            
+            resultsContainer.innerHTML = matches.map(p => {
+                const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category));
+                const isOutOfStock = p.inStock === false;
+                
+                return `
+                <div class="flex items-center gap-4 p-3 rounded-2xl bg-white shadow-sm border border-pink-100 transition-all hover:shadow-md cursor-pointer ${isOutOfStock ? 'opacity-70' : ''}" onclick="toggleLiveSearch(false); setCategory('${p.category}'); setTimeout(()=> { const el = document.getElementById('product-card-${p.id}'); if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); el.classList.add('highlight-target'); setTimeout(()=>el.classList.remove('highlight-target'), 2500);} }, 500);">
+                    <img src="${imgUrl}" class="w-16 h-16 object-cover rounded-xl shadow-sm border border-gray-100 ${isOutOfStock ? 'grayscale' : ''}">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm text-gray-800">${escapeHTML(p.name)}</h4>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md font-bold">${p.category}</span>
+                            <span class="font-bold text-pink-600 text-sm">${Number(p.price) > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
+                        </div>
+                    </div>
+                    <div class="px-2">
+                        ${isOutOfStock ? 
+                            `<span class="text-xs text-red-500 font-bold bg-red-50 px-2 py-1 rounded-lg border border-red-100"><i data-lucide="ban" class="w-3 h-3 inline"></i> نفدت</span>` : 
+                            `<button class="w-10 h-10 bg-pink-50 text-pink-500 hover:bg-pink-500 hover:text-white rounded-xl flex items-center justify-center transition-colors shadow-sm"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>`
+                        }
+                    </div>
+                </div>`;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        // CX Upgrade: Product Deep Share
+        function shareProduct(id, name) {
+            const url = window.location.origin + window.location.pathname + '?product=' + id;
+            if (navigator.share) {
+                navigator.share({
+                    title: siteSettings.brandName + ' - ' + name,
+                    text: 'شوف المنتج الروعة ده من حلويات بوسي!',
+                    url: url
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    showSystemToast('تم نسخ رابط المنتج بنجاح!', 'success');
+                }).catch(() => {
+                    const t = document.createElement("textarea"); t.value = url; document.body.appendChild(t); t.select(); document.execCommand("Copy"); t.remove(); 
+                    showSystemToast('تم نسخ الرابط!', 'success');
+                });
+            }
+        }
+
         // Engine Upgrade: Customer Sidebar Menu Logic
         function toggleCustomerMenu(show) {
             const ov = document.getElementById('customer-menu-overlay');
@@ -1243,21 +1435,48 @@
                 colSpanClass = 'col-span-2 md:col-span-2 lg:col-span-2'; 
             }
 
-            const aspectClass = isFullWidth ? 'aspect-[4/3] w-full' : 'aspect-square w-full';
+            const aspectClass = isFullWidth ? 'aspect-[4/3] w-full' : 'aspect-[4/3] sm:aspect-square w-full';
             const titleClass = isFullWidth ? 'text-[16px] sm:text-lg' : 'text-[12px] sm:text-sm';
-            const descClass = isFullWidth ? 'text-[13px] sm:text-sm line-clamp-none mt-2' : 'text-[11px] sm:text-xs line-clamp-3';
+            const descClass = isFullWidth ? 'text-[13px] sm:text-sm line-clamp-none mt-2' : 'text-[11px] sm:text-xs line-clamp-2';
             const cardPadding = isFullWidth ? 'p-4 sm:p-5' : 'p-2.5 sm:p-4';
 
             const isOutOfStock = p.inStock === false;
+            
+            // CX Multi-Image Logic
+            const imageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
+            const hasMultipleImages = imageList.length > 1;
 
             return `
                 <div id="product-card-${p.id}" class="rounded-[1rem] sm:rounded-2xl shadow-sm hover:shadow-lg border flex flex-col group ${cardPadding} ${colSpanClass} transition-all duration-300 relative h-full" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
                     
+                    <!-- CX Upgrade: Share Button -->
+                    <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-4 left-4 z-20 w-8 h-8 rounded-full shadow-md flex items-center justify-center hover:scale-110 transition-transform active:scale-95" style="background-color: var(--site-bg); color: var(--site-text);">
+                        <i data-lucide="share-2" class="w-4 h-4"></i>
+                    </button>
+
                     ${isOutOfStock ? `<div class="absolute top-4 right-4 z-20 bg-gray-900/85 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-600 backdrop-blur-sm shadow-lg flex items-center gap-1"><i data-lucide="ban" class="w-3 h-3 text-red-400"></i> نفدت الكمية</div>` : ''}
                     
+                    <!-- CX Upgrade: Dynamic Badge -->
+                    ${p.badge && !isOutOfStock ? `<div class="absolute top-4 right-4 z-20 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg border animate-pulse tracking-wide" style="background-color: hsl(var(--brand-hue), 70%, 55%); border-color: hsl(var(--brand-hue), 80%, 75%);">${p.badge}</div>` : ''}
+
                     <div class="${aspectClass} rounded-lg sm:rounded-xl overflow-hidden border relative shrink-0" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                        <img src="${p.img || getImgFallback(p.category)}" class="w-full h-full object-cover transition-transform duration-700 ${isOutOfStock ? 'grayscale-overlay scale-100' : 'group-hover:scale-105'}" loading="lazy">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent opacity-0 ${isOutOfStock ? '' : 'group-hover:opacity-100'} transition-opacity duration-300"></div>
+                        
+                        <!-- CX Upgrade: Snap Slider for Multi-Images -->
+                        <div class="relative w-full h-full flex overflow-x-auto snap-slider hide-scrollbar ${isOutOfStock ? 'grayscale-overlay' : ''}">
+                            ${imageList.map(url => `
+                                <img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 ${isOutOfStock ? '' : 'group-hover:scale-105'}" loading="lazy">
+                            `).join('')}
+                        </div>
+                        
+                        <!-- Indicator Dots if multiple -->
+                        ${hasMultipleImages ? `
+                            <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">
+                                ${imageList.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-white opacity-100 w-3' : 'bg-white opacity-50'} shadow-sm transition-all"></div>`).join('')}
+                            </div>
+                            <div class="absolute top-2 left-2 bg-black/40 text-white text-[8px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm"><i data-lucide="images" class="w-3 h-3"></i> ${imageList.length}</div>
+                        ` : ''}
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent opacity-0 ${isOutOfStock ? '' : 'group-hover:opacity-100'} pointer-events-none transition-opacity duration-300"></div>
                     </div>
                     
                     <div class="mt-2.5 sm:mt-3 flex-1 flex flex-col justify-between">
@@ -2105,12 +2324,36 @@
                 renderAdminGallery();
             }
         }
+        
+        // CX Upgrade: Handle Multiple Images Upload Array
+        function renderAdminTempImages() {
+            const container = document.getElementById('edit-prod-images-container');
+            if(tempProdImages.length === 0) {
+                container.innerHTML = `<div class="w-full text-center py-4 text-xs text-gray-500 font-bold border-2 border-dashed border-gray-700 rounded-lg">لم يتم إضافة صور للمنتج بعد</div>`;
+                return;
+            }
+            
+            container.innerHTML = tempProdImages.map((url, idx) => `
+                <div class="relative w-24 h-24 shrink-0 rounded-lg overflow-hidden border-2 border-gray-600 group">
+                    <img src="${url}" class="w-full h-full object-cover">
+                    ${idx === 0 ? `<div class="absolute bottom-0 left-0 right-0 bg-pink-500/90 text-white text-[9px] font-bold text-center py-0.5">الرئيسية</div>` : ''}
+                    <button onclick="removeTempImage(${idx})" class="absolute top-1 right-1 bg-red-500 text-white p-1 rounded hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+        
+        function removeTempImage(idx) {
+            tempProdImages.splice(idx, 1);
+            renderAdminTempImages();
+        }
 
-        async function compressAndUploadImage(e) {
+        async function compressAndUploadMultiImage(e) {
             const file = e.target.files[0]; if (!file) return;
             if (!file.type.match('image.*')) { showSystemToast("الرجاء اختيار ملف صورة فقط", "error"); return; }
-            const previewImg = document.getElementById('edit-prod-preview'); const previewText = document.getElementById('edit-prod-preview-text');
-            previewImg.classList.add('hidden'); previewText.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 opacity-70 animate-spin text-pink-500 mb-2 block mx-auto"></i>'; previewText.classList.remove('hidden'); lucide.createIcons();
+            
+            const spinner = document.getElementById('uploading-spinner');
+            spinner.classList.remove('hidden');
 
             const reader = new FileReader(); reader.readAsDataURL(file);
             reader.onload = function(ev) {
@@ -2126,17 +2369,21 @@
                         const formData = new FormData(); formData.append('file', base64Str); formData.append('upload_preset', 'gct8i28h'); 
                         const response = await fetch('https://api.cloudinary.com/v1_1/dyx4w0dr1/image/upload', { method: 'POST', body: formData });
                         const data = await response.json();
-                        if (data.secure_url) { document.getElementById('edit-prod-img').value = data.secure_url; showImagePreview(data.secure_url); showSystemToast("تم الرفع بنجاح ☁️", "success"); } 
-                        else throw new Error("Upload failed");
-                    } catch (err) { document.getElementById('edit-prod-img').value = base64Str; showImagePreview(base64Str); showSystemToast("تم الحفظ محلياً", "info"); }
+                        if (data.secure_url) { 
+                            tempProdImages.push(data.secure_url);
+                            renderAdminTempImages();
+                            showSystemToast("تم رفع الصورة وإضافتها للمنتج ☁️", "success"); 
+                        } else throw new Error("Upload failed");
+                    } catch (err) { 
+                        tempProdImages.push(base64Str);
+                        renderAdminTempImages();
+                        showSystemToast("تم الحفظ محلياً", "info"); 
+                    } finally {
+                        spinner.classList.add('hidden');
+                        document.getElementById('prod-img-upload').value = ''; // reset input
+                    }
                 }
             }
-        }
-
-        function showImagePreview(src) {
-            const previewImg = document.getElementById('edit-prod-preview'); const previewText = document.getElementById('edit-prod-preview-text');
-            if (src) { previewImg.src = src; previewImg.classList.remove('hidden'); previewText.classList.add('hidden'); } 
-            else { previewImg.src = ''; previewImg.classList.add('hidden'); previewText.innerHTML = '<i data-lucide="image" class="w-6 h-6 opacity-50 block mx-auto mb-2"></i>'; previewText.classList.remove('hidden'); lucide.createIcons(); }
         }
 
         function renderAdminCatalogTabs() {
@@ -2179,12 +2426,19 @@
                 
                 let stockBadge = p.inStock === false ? '<span class="mr-2 text-[10px] bg-red-900/40 text-red-300 px-2.5 py-1 rounded-md border border-red-700/50"><i data-lucide="ban" class="w-3 h-3 inline"></i> نفدت</span>' : '';
 
+                // First image or fallback
+                const renderImg = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category));
+
                 return `
                 <tr class="hover:bg-gray-800 transition-colors border-b border-gray-700 ${p.inStock === false ? 'opacity-70' : ''}">
-                    <td class="p-4 whitespace-nowrap"><img src="${p.img || getImgFallback(p.category)}" class="w-10 h-10 object-cover rounded-lg border border-gray-600 ${p.inStock === false ? 'grayscale' : ''}"></td>
+                    <td class="p-4 whitespace-nowrap relative">
+                        <img src="${renderImg}" class="w-10 h-10 object-cover rounded-lg border border-gray-600 ${p.inStock === false ? 'grayscale' : ''}">
+                        ${(p.images && p.images.length > 1) ? `<span class="absolute top-3 left-3 bg-black/60 text-white text-[8px] px-1 rounded font-bold">+${p.images.length - 1}</span>` : ''}
+                    </td>
                     <td class="p-4 whitespace-nowrap"><span class="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">${escapeHTML(p.category)}</span></td>
                     <td class="p-4 font-bold text-gray-200 min-w-[200px] flex items-center flex-wrap gap-y-2 h-[73px]">${escapeHTML(p.name)} ${layoutBadge} ${stockBadge}</td>
                     <td class="p-4 text-emerald-400 font-black whitespace-nowrap">${Number(p.price) > 0 ? Number(p.price) : 'متغير'}</td>
+                    <td class="p-4 whitespace-nowrap text-xs font-bold text-pink-300">${p.badge ? p.badge : '-'}</td>
                     <td class="p-4 text-center whitespace-nowrap">
                         <div class="flex gap-2 justify-center">
                             <button onclick="openEditModal('${p.id}')" class="text-blue-400 hover:text-white p-2 bg-gray-700 hover:bg-blue-600 rounded-lg shadow-sm transition-colors"><i data-lucide="edit" class="w-4 h-4"></i></button>
@@ -2198,11 +2452,15 @@
 
         function openAddProductModal() {
             currentEditId = null; document.getElementById('prod-modal-title').innerText = "إضافة منتج";
-            ['id','name','price','sub','img','desc','upload'].forEach(k => { const el = document.getElementById(k === 'upload' ? 'prod-img-upload' : `edit-prod-${k}`); if(el) el.value = ''; });
+            ['id','name','price','sub','desc'].forEach(k => { const el = document.getElementById(`edit-prod-${k}`); if(el) el.value = ''; });
             document.getElementById('edit-prod-cat').value = adminCurrentCat === 'all' ? "جاتوهات" : adminCurrentCat; 
             document.getElementById('edit-prod-layout').value = 'default';
+            document.getElementById('edit-prod-badge').value = '';
             document.getElementById('edit-prod-instock').checked = true; 
-            showImagePreview(""); 
+            
+            tempProdImages = [];
+            renderAdminTempImages();
+            
             const m = document.getElementById('admin-prod-modal'); m.classList.remove('hidden'); m.classList.add('flex');
         }
 
@@ -2215,11 +2473,20 @@
                 
                 document.getElementById('edit-prod-sub').value = p.subType || p.size || p.flowerType || ""; 
                 document.getElementById('edit-prod-layout').value = p.layout || 'default';
+                document.getElementById('edit-prod-badge').value = p.badge || '';
                 document.getElementById('edit-prod-instock').checked = p.inStock !== false; 
+                document.getElementById('edit-prod-desc').value = p.desc || ''; 
                 
-                document.getElementById('edit-prod-img').value = p.img || "";
-                document.getElementById('edit-prod-desc').value = p.desc || ''; document.getElementById('prod-img-upload').value = ""; 
-                showImagePreview(p.img || getImgFallback(p.category)); 
+                // Init Temp Images
+                if(p.images && p.images.length > 0) {
+                    tempProdImages = [...p.images];
+                } else if(p.img) {
+                    tempProdImages = [p.img];
+                } else {
+                    tempProdImages = [];
+                }
+                renderAdminTempImages();
+                
                 const m = document.getElementById('admin-prod-modal'); m.classList.remove('hidden'); m.classList.add('flex');
             }
         }
@@ -2230,22 +2497,27 @@
             const nName = document.getElementById('edit-prod-name').value.trim(); const nPrice = parseInt(document.getElementById('edit-prod-price').value) || 0;
             const nCat = document.getElementById('edit-prod-cat').value; const nSub = document.getElementById('edit-prod-sub').value.trim();
             const nLayout = document.getElementById('edit-prod-layout').value;
+            const nBadge = document.getElementById('edit-prod-badge').value;
             const nInStock = document.getElementById('edit-prod-instock').checked; 
-            const nImg = document.getElementById('edit-prod-img').value.trim(); const nDesc = document.getElementById('edit-prod-desc').value.trim();
+            const nDesc = document.getElementById('edit-prod-desc').value.trim();
             
             if(!nName) { showSystemToast("يجب كتابة اسم المنتج", "error"); return; }
+
+            const finalImagesArray = [...tempProdImages];
+            const finalImg = finalImagesArray.length > 0 ? finalImagesArray[0] : '';
 
             let prodObj;
             if (currentEditId) {
                 const idx = catalog.findIndex(x => String(x.id) === String(currentEditId));
                 if (idx > -1) {
-                    catalog[idx].name = nName; catalog[idx].price = nPrice; catalog[idx].category = nCat; catalog[idx].desc = nDesc; catalog[idx].img = nImg;
-                    catalog[idx].subType = nSub; catalog[idx].layout = nLayout; catalog[idx].inStock = nInStock;
+                    catalog[idx].name = nName; catalog[idx].price = nPrice; catalog[idx].category = nCat; catalog[idx].desc = nDesc; 
+                    catalog[idx].images = finalImagesArray; catalog[idx].img = finalImg;
+                    catalog[idx].subType = nSub; catalog[idx].layout = nLayout; catalog[idx].badge = nBadge; catalog[idx].inStock = nInStock;
                     if(nCat === 'ديسباسيتو') catalog[idx].size = nSub; if(nCat === 'ورد') catalog[idx].flowerType = nSub; 
                     prodObj = catalog[idx];
                 }
             } else {
-                prodObj = { id: Date.now() + Math.floor(Math.random()*1000), category: nCat, name: nName, price: nPrice, desc: nDesc, img: nImg, subType: nSub, layout: nLayout, inStock: nInStock };
+                prodObj = { id: Date.now() + Math.floor(Math.random()*1000), category: nCat, name: nName, price: nPrice, desc: nDesc, images: finalImagesArray, img: finalImg, subType: nSub, layout: nLayout, badge: nBadge, inStock: nInStock };
                 if(nCat === 'ديسباسيتو') prodObj.size = nSub || 'وسط'; if(nCat === 'ورد') prodObj.flowerType = nSub || 'ورد طبيعي'; 
                 catalog.unshift(prodObj); 
             }
@@ -2286,11 +2558,9 @@
             else { n.classList.remove('nav-scrolled'); }
         });
 
-        document.getElementById('edit-prod-img').addEventListener('input', function(e) { showImagePreview(e.target.value); });
-
         window.onload = initApp;
     </script>
 </body>
 </html>
 
-
+```
