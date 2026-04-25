@@ -348,7 +348,8 @@
 
     <!-- Enhanced Cart Sidebar with Smart Checkout Form -->
     <div id="cart-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-md z-[200] hidden opacity-0 transition-all duration-500" onclick="toggleCart(false)"></div>
-    <div id="cart-sidebar" class="fixed top-0 left-0 bottom-0 w-full sm:w-[580px] z-[210] shadow-2xl translate-x-[-100%] transition-transform duration-500 ease-out flex flex-col" style="background-color: var(--site-bg);">
+    <div id="cart-sidebar" class="fixed top-0 left-0 bottom-0 w-full sm:w-[580px] z-[210] shadow-2xl -translate-x-full transition-transform duration-500 ease-out flex flex-col" style="background-color: var(--site-bg);">
+
         <div class="p-6 sm:p-10 border-b flex justify-between items-center" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
             <div class="flex items-center gap-4 sm:gap-6">
                 <div class="p-3 sm:p-4 rounded-[1.2rem] sm:rounded-[1.5rem] shadow-xl text-white" style="background-color: hsl(var(--brand-hue), 70%, 65%);"><i data-lucide="shopping-cart" class="w-6 h-6 sm:w-8 sm:h-8"></i></div>
@@ -475,6 +476,8 @@
                 <button onclick="switchAdminTab('settings')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-settings"><i data-lucide="settings-2" class="w-5 h-5"></i> إعدادات الهوية والنسخ</button>
                 <button onclick="switchAdminTab('shipping')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-shipping"><i data-lucide="truck" class="w-5 h-5"></i> مناطق وأسعار الشحن</button>
                 <button onclick="switchAdminTab('menu')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-menu"><i data-lucide="database" class="w-5 h-5"></i> الكتالوج والمنتجات</button>
+<button onclick="switchAdminTab('cakebuilder')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-cakebuilder"><i data-lucide="cake" class="w-5 h-5"></i> تحكم التورت الملكية</button>
+
                 <button onclick="switchAdminTab('gallery')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-gallery"><i data-lucide="image" class="w-5 h-5"></i> معرض الصور (سابقة الأعمال)</button>
                 <button onclick="switchAdminTab('orders')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-orders"><i data-lucide="shopping-bag" class="w-5 h-5"></i> سجل الطلبات</button>
                 <button onclick="switchAdminTab('security')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-security"><i data-lucide="shield" class="w-5 h-5"></i> الحماية ورمز المرور</button>
@@ -1041,7 +1044,7 @@
         function generateUniqueID() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
 
         function showSystemToast(message, type = 'info') {
-            const toast = document.getElementById('system-toast');
+            const .getElementById('system-toast');
             const msgEl = document.getElementById('toast-message');
             const iconEl = document.getElementById('toast-icon');
             
@@ -1791,17 +1794,25 @@
             calculateCartTotal();
         }
 
-        function toggleCart(s) {
-            const ov = document.getElementById('cart-overlay');
-            const sd = document.getElementById('cart-sidebar');
-            if (s) { 
-                ov.classList.remove('hidden'); setTimeout(() => { ov.classList.add('opacity-100'); sd.classList.remove('translate-x-full'); }, 10); 
-                renderCartList(); calculateCartTotal();
-            } else { 
-                ov.classList.remove('opacity-100'); sd.classList.add('translate-x-full'); 
-                setTimeout(() => ov.classList.add('hidden'), 500); 
-            }
-        }
+function toggleCart(s) {
+    const ov = document.getElementById('cart-overlay');
+    const sd = document.getElementById('cart-sidebar');
+    if (s) {
+        ov.classList.remove('hidden'); 
+        setTimeout(() => { 
+            ov.classList.add('opacity-100'); 
+            sd.classList.remove('-translate-x-full'); 
+            sd.classList.remove('translate-x-[-100%]'); 
+        }, 10);
+        renderCartList(); 
+        calculateCartTotal();
+    } else {
+        ov.classList.remove('opacity-100'); 
+        sd.classList.add('-translate-x-full');
+        setTimeout(() => ov.classList.add('hidden'), 500);
+    }
+}
+
 
         function renderCartList() {
             const l = document.getElementById('cart-list');
