@@ -25,7 +25,6 @@
             --site-text: #663b3b;
             
             /* Ticker Variables */
-            --ticker-bg: hsl(355, 70%, 55%);
             --ticker-color: #ffffff;
             --ticker-font: 'Cairo', sans-serif;
             --ticker-speed: 20s;
@@ -44,8 +43,13 @@
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Dynamic Gradient */
+        /* Dynamic Gradient for Brand Identity */
         .brand-gradient { background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 65%) 0%, hsl(var(--brand-hue), 85%, 75%) 50%, hsl(var(--brand-hue), 90%, 85%) 100%); }
+        
+        /* Ticker Identity Gradients */
+        .ticker-brand-gradient { background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 65%) 0%, hsl(var(--brand-hue), 85%, 75%) 50%, hsl(var(--brand-hue), 90%, 85%) 100%); }
+        .ticker-fade-right { background: linear-gradient(to left, hsl(var(--brand-hue), 80%, 65%), transparent); }
+        .ticker-fade-left { background: linear-gradient(to right, hsl(var(--brand-hue), 90%, 85%), transparent); }
         
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
@@ -67,7 +71,7 @@
         .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .lightbox-enter { animation: fadeIn 0.3s ease-out forwards; }
 
-        #global-loader { transition: opacity 0.5s ease; }
+        #global-loader { transition: opacity 0.5s ease, visibility 0.5s; }
         
         /* Custom UI for Radio Buttons */
         .custom-radio-container:has(input:checked) {
@@ -108,10 +112,12 @@
 </head>
 <body>
 
-    <!-- Engine Upgrade: Cloud Loading Screen -->
-    <div id="global-loader" class="fixed inset-0 z-[999] flex flex-col items-center justify-center" style="background-color: var(--site-bg);">
-        <i data-lucide="cake" class="w-16 h-16 animate-bounce" style="color: hsl(var(--brand-hue), 70%, 65%);"></i>
-        <p class="mt-4 font-bold text-lg" style="color: var(--site-text);">جاري الاتصال بالسحابة المركزية...</p>
+    <!-- Engine Upgrade: Cloud Loading Screen with Brand Identity -->
+    <div id="global-loader" class="fixed inset-0 z-[999] flex flex-col items-center justify-center brand-gradient transition-opacity duration-500">
+        <div class="p-6 bg-white/20 backdrop-blur-md rounded-full border border-white/40 shadow-inner mb-6 floating">
+            <i data-lucide="cake" class="w-16 h-16 text-white drop-shadow-lg"></i>
+        </div>
+        <p class="font-bold text-xl md:text-2xl text-white tracking-wide drop-shadow-md">أهلاً بكم في عالم حلويات بوسي ✨</p>
     </div>
 
     <!-- Engine Upgrade: Smart Toast Notification System -->
@@ -120,13 +126,13 @@
         <span id="toast-message"></span>
     </div>
 
-    <!-- Engine Upgrade: Dynamic Smart Ticker -->
-    <div id="ticker-container" class="relative w-full overflow-hidden flex items-center sticky top-0 z-[70] shadow-md border-b" style="background-color: var(--ticker-bg); color: var(--ticker-color); border-color: rgba(255,255,255,0.2); height: 40px; font-family: var(--ticker-font);">
-        <div class="absolute right-0 z-10 h-full w-8 bg-gradient-to-l from-[var(--ticker-bg)] to-transparent pointer-events-none"></div>
-        <div id="dyn-ticker-text" class="animate-ticker font-bold text-[11px] md:text-sm tracking-wide">
+    <!-- Engine Upgrade: Dynamic Smart Ticker Integrated with Brand Identity -->
+    <div id="ticker-container" class="relative w-full overflow-hidden flex items-center sticky top-0 z-[70] shadow-md border-b ticker-brand-gradient" style="color: var(--ticker-color); border-color: rgba(255,255,255,0.2); height: 40px; font-family: var(--ticker-font);">
+        <div class="absolute right-0 z-10 h-full w-12 ticker-fade-right pointer-events-none"></div>
+        <div id="dyn-ticker-text" class="animate-ticker font-bold text-[11px] md:text-sm tracking-wide text-white drop-shadow-sm">
             حلويات بوسي: صنعناها بحب لتهديها لمن تحب
         </div>
-        <div class="absolute left-0 z-10 h-full w-8 bg-gradient-to-r from-[var(--ticker-bg)] to-transparent pointer-events-none"></div>
+        <div class="absolute left-0 z-10 h-full w-12 ticker-fade-left pointer-events-none"></div>
     </div>
 
     <!-- Enhanced Navigation Header -->
@@ -474,8 +480,8 @@
                 <button onclick="switchAdminTab('security')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-security"><i data-lucide="shield" class="w-5 h-5"></i> الحماية ورمز المرور</button>
                 
                 <div class="mt-auto pt-4 border-t border-gray-700 text-center">
-                    <p class="text-[10px] text-gray-500 font-bold tracking-widest">BoseSweets ERP v10.50</p>
-                    <p class="text-[9px] text-emerald-400 font-bold mt-1">✓ CX/UX Engine Update 🌟</p>
+                    <p class="text-[10px] text-gray-500 font-bold tracking-widest">BoseSweets ERP v10.60</p>
+                    <p class="text-[9px] text-emerald-400 font-bold mt-1">✓ Identity Integrity Update ✨</p>
                 </div>
             </div>
             
@@ -546,9 +552,8 @@
                                 <div class="space-y-4">
                                     <div>
                                         <label class="block text-xs font-bold text-gray-400 mb-1.5">لون خلفية الشريط</label>
-                                        <div class="flex items-center gap-3">
-                                            <input type="color" id="set-ticker-bg" class="w-14 h-12 p-1 bg-gray-900 border border-gray-700 rounded-lg cursor-pointer transition-all">
-                                            <input type="text" id="set-ticker-bg-text" dir="ltr" class="flex-1 p-3 bg-gray-900 border border-gray-700 rounded-lg outline-none text-sm font-mono text-gray-300 uppercase" readonly>
+                                        <div class="p-3 bg-gray-900 border border-gray-700 rounded-lg text-sm font-bold flex items-center gap-2" style="color: hsl(var(--brand-hue), 70%, 65%);">
+                                            <i data-lucide="link" class="w-4 h-4"></i> مدمج تلقائياً مع الهوية البصرية (Gradient)
                                         </div>
                                     </div>
                                     <div>
@@ -1060,7 +1065,7 @@
             fontFamily: "'Cairo', sans-serif", baseFontSize: 16, baseFontWeight: 400,
             
             tickerActive: true, tickerText: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب ✨", tickerSpeed: 20, 
-            tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff", tickerBgColor: "#e11d48"
+            tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff"
         };
         
         const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
@@ -1157,13 +1162,12 @@
             root.style.setProperty('--site-bg', siteSettings.bgColor || '#ffffff');
             root.style.setProperty('--site-text', siteSettings.textColor || '#663b3b');
             
-            // Ticker Settings Application
-            const isTickerActive = siteSettings.tickerActive !== false; // Default true
+            // Ticker Settings Application (Now perfectly synced with Brand Identity)
+            const isTickerActive = siteSettings.tickerActive !== false; 
             const tickerContainer = document.getElementById('ticker-container');
             if (isTickerActive) {
                 tickerContainer.classList.remove('hidden');
                 tickerContainer.classList.add('flex');
-                root.style.setProperty('--ticker-bg', siteSettings.tickerBgColor || '#e11d48');
                 root.style.setProperty('--ticker-color', siteSettings.tickerColor || '#ffffff');
                 root.style.setProperty('--ticker-font', siteSettings.tickerFont || "'Cairo', sans-serif");
                 root.style.setProperty('--ticker-speed', (siteSettings.tickerSpeed || 20) + 's');
@@ -1200,7 +1204,11 @@
         async function initApp() {
             await loadEngineMemory();
             const loader = document.getElementById('global-loader');
-            if(loader) { loader.style.opacity = '0'; setTimeout(() => loader.style.display = 'none', 500); }
+            if(loader) { 
+                loader.style.opacity = '0'; 
+                loader.style.visibility = 'hidden';
+                setTimeout(() => loader.style.display = 'none', 500); 
+            }
             applySettingsToUI();
             renderCustomerGallery(); 
             renderCategories();
@@ -2006,21 +2014,20 @@
             const fontSize = document.getElementById('set-font-size').value + 'px';
             const fontWeight = document.getElementById('set-font-weight').value;
             
-            // Ticker live update
+            // Ticker live update (Integrated Gradient)
             const isTickerActive = document.getElementById('set-ticker-active').checked;
             const tickerText = document.getElementById('set-ticker-text').value || "حلويات بوسي: تجربة التذوق الفاخرة...";
             const tickerSpeed = document.getElementById('set-ticker-speed').value + 's';
-            const tickerBg = document.getElementById('set-ticker-bg').value;
-            const tickerColor = document.getElementById('set-ticker-color').value;
             const tickerFont = document.getElementById('set-ticker-font').value;
             
             const previewTickerWrap = document.getElementById('preview-ticker-wrap');
             const previewTickerText = document.getElementById('preview-ticker-text');
+            const calculatedHue = hexToMathHSL(brandColor);
             
             if(isTickerActive) {
                 previewTickerWrap.style.display = 'flex';
-                previewTickerWrap.style.backgroundColor = tickerBg;
-                previewTickerText.style.color = tickerColor;
+                previewTickerWrap.style.background = `linear-gradient(135deg, hsl(${calculatedHue}, 80%, 65%) 0%, hsl(${calculatedHue}, 85%, 75%) 50%, hsl(${calculatedHue}, 90%, 85%) 100%)`;
+                previewTickerText.style.color = '#ffffff'; // Always white for gradient readability
                 previewTickerText.style.fontFamily = tickerFont;
                 previewTickerText.style.animationDuration = tickerSpeed;
                 previewTickerText.innerText = tickerText;
@@ -2037,7 +2044,6 @@
             previewBox.style.fontSize = fontSize;
             previewBox.style.fontWeight = fontWeight;
             
-            const calculatedHue = hexToMathHSL(brandColor);
             previewBtn.style.backgroundImage = `linear-gradient(135deg, hsl(${calculatedHue}, 80%, 65%) 0%, hsl(${calculatedHue}, 85%, 75%) 50%, hsl(${calculatedHue}, 90%, 85%) 100%)`;
         }
 
@@ -2082,17 +2088,10 @@
             document.getElementById('set-ticker-speed').value = siteSettings.tickerSpeed || 20;
             document.getElementById('ticker-speed-val').innerText = (siteSettings.tickerSpeed || 20) + 's';
             document.getElementById('set-ticker-font').value = siteSettings.tickerFont || "'Cairo', sans-serif";
-            
-            document.getElementById('set-ticker-bg').value = siteSettings.tickerBgColor || '#e11d48';
-            document.getElementById('set-ticker-bg-text').value = (siteSettings.tickerBgColor || '#e11d48').toUpperCase();
-            document.getElementById('set-ticker-color').value = siteSettings.tickerColor || '#ffffff';
-            document.getElementById('set-ticker-color-text').value = (siteSettings.tickerColor || '#ffffff').toUpperCase();
 
             syncColorInput('set-brand-color', 'set-brand-color-text');
             syncColorInput('set-bg-color', 'set-bg-color-text');
             syncColorInput('set-text-color', 'set-text-color-text');
-            syncColorInput('set-ticker-bg', 'set-ticker-bg-text');
-            syncColorInput('set-ticker-color', 'set-ticker-color-text');
             
             document.getElementById('set-font').addEventListener('change', updateLiveThemePreview);
             document.getElementById('set-font-weight').addEventListener('change', updateLiveThemePreview);
@@ -2119,13 +2118,12 @@
             siteSettings.baseFontSize = parseInt(document.getElementById('set-font-size').value);
             siteSettings.baseFontWeight = parseInt(document.getElementById('set-font-weight').value);
             
-            // Ticker Data
+            // Ticker Data (Background color is now tied to Brand Gradient in CSS)
             siteSettings.tickerActive = document.getElementById('set-ticker-active').checked;
             siteSettings.tickerText = document.getElementById('set-ticker-text').value;
             siteSettings.tickerSpeed = parseInt(document.getElementById('set-ticker-speed').value);
             siteSettings.tickerFont = document.getElementById('set-ticker-font').value;
-            siteSettings.tickerBgColor = document.getElementById('set-ticker-bg').value;
-            siteSettings.tickerColor = document.getElementById('set-ticker-color').value;
+            siteSettings.tickerColor = "#ffffff"; // Always white for gradient readability
 
             try {
                 await NetworkEngine.safeWrite('settings', 'main', siteSettings); saveEngineMemory('set'); 
