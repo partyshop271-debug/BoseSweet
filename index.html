@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -13,51 +14,93 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <!-- Dynamic Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&family=Tajawal:wght@300;400;500;700&family=Almarai:wght@300;400;700&family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700;900&family=Almarai:wght@300;400;700;800&family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style id="dynamic-theme-styles">
+        /* Engine Upgrade: Dynamic Theme Engine Base */
         :root {
             --brand-font: 'Cairo', sans-serif;
             --brand-hue: 355; 
+            --base-font-size: 16px;
+            --base-font-weight: 400;
+            --site-bg: #ffffff;
+            --site-text: #663b3b;
+            
+            /* Ticker Variables */
+            --ticker-bg: hsl(355, 70%, 55%);
+            --ticker-color: #ffffff;
+            --ticker-font: 'Cairo', sans-serif;
+            --ticker-speed: 20s;
         }
-        body { font-family: var(--brand-font); scroll-behavior: smooth; background-color: #ffffff; color: #663b3b; }
+        html { font-size: var(--base-font-size); }
+        body { 
+            font-family: var(--brand-font); 
+            font-weight: var(--base-font-weight);
+            background-color: var(--site-bg); 
+            color: var(--site-text);
+            scroll-behavior: smooth; 
+            overflow-x: hidden;
+        }
+    </style>
+    <style>
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Dynamic Gradient */
         .brand-gradient { background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 65%) 0%, hsl(var(--brand-hue), 85%, 75%) 50%, hsl(var(--brand-hue), 90%, 85%) 100%); }
+        
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
         .floating { animation: float 6s ease-in-out infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
-        .card-shadow { box-shadow: 0 10px 30px -5px rgba(236, 72, 153, 0.15); }
+        
         .nav-scrolled { background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 4px 10px -1px rgba(0, 0, 0, 0.05); }
         input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue), 80%, 65%); }
         
-        /* Admin Dashboard specific styles - Dark Mode */
+        /* Admin Dashboard styles */
         .admin-glass { background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(20px); }
         .admin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
         .admin-scroll::-webkit-scrollbar-thumb { background-color: #4b5563; border-radius: 10px; }
         .admin-scroll::-webkit-scrollbar-track { background-color: transparent; }
 
-        /* Toast & Lightbox Animation */
+        /* Toast Animation */
         @keyframes slideInUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .lightbox-enter { animation: fadeIn 0.3s ease-out forwards; }
 
         #global-loader { transition: opacity 0.5s ease; }
         
-        /* Custom UI for modern Radio Buttons */
+        /* Custom UI for Radio Buttons */
         .custom-radio-container:has(input:checked) {
             border-color: hsl(var(--brand-hue), 80%, 65%) !important;
             background-color: hsl(var(--brand-hue), 80%, 97%) !important;
             color: hsl(var(--brand-hue), 70%, 50%) !important;
         }
+        
+        /* Out of stock overlay */
+        .grayscale-overlay { filter: grayscale(100%) opacity(0.7); }
+
+        /* Ticker Marquee Animation */
+        @keyframes ticker-marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-ticker {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%; /* Start offscreen */
+            animation: ticker-marquee var(--ticker-speed) linear infinite;
+        }
+        /* Pause on hover */
+        #ticker-container:hover .animate-ticker { animation-play-state: paused; }
     </style>
 </head>
 <body>
 
     <!-- Engine Upgrade: Cloud Loading Screen -->
-    <div id="global-loader" class="fixed inset-0 bg-white z-[999] flex flex-col items-center justify-center">
+    <div id="global-loader" class="fixed inset-0 z-[999] flex flex-col items-center justify-center" style="background-color: var(--site-bg);">
         <i data-lucide="cake" class="w-16 h-16 animate-bounce" style="color: hsl(var(--brand-hue), 70%, 65%);"></i>
-        <p class="mt-4 font-bold text-lg" style="color: #7b4c53;">جاري الاتصال بالسحابة المركزية...</p>
+        <p class="mt-4 font-bold text-lg" style="color: var(--site-text);">جاري الاتصال بالسحابة المركزية...</p>
     </div>
 
     <!-- Engine Upgrade: Smart Toast Notification System -->
@@ -66,38 +109,93 @@
         <span id="toast-message"></span>
     </div>
 
-    <!-- Announcement Bar -->
-    <div class="text-white text-[10px] md:text-sm py-3 px-4 text-center font-bold flex justify-center items-center gap-2 sticky top-0 z-[70] shadow-md border-b" style="background-color: hsl(var(--brand-hue), 70%, 55%); border-color: hsl(var(--brand-hue), 70%, 65%);">
-        <i data-lucide="heart" class="w-4 h-4 text-pink-100 fill-current"></i>
-        <span id="dyn-announcement" class="tracking-wide">حلويات بوسي: صنعناها بحب لتهديها لمن تحب</span>
-        <i data-lucide="heart" class="w-4 h-4 text-pink-100 fill-current"></i>
+    <!-- Engine Upgrade: Dynamic Smart Ticker -->
+    <div id="ticker-container" class="relative w-full overflow-hidden flex items-center sticky top-0 z-[70] shadow-md border-b" style="background-color: var(--ticker-bg); color: var(--ticker-color); border-color: rgba(255,255,255,0.2); height: 40px; font-family: var(--ticker-font);">
+        <div class="absolute right-0 z-10 h-full w-8 bg-gradient-to-l from-[var(--ticker-bg)] to-transparent pointer-events-none"></div>
+        <div id="dyn-ticker-text" class="animate-ticker font-bold text-[11px] md:text-sm tracking-wide">
+            حلويات بوسي: صنعناها بحب لتهديها لمن تحب
+        </div>
+        <div class="absolute left-0 z-10 h-full w-8 bg-gradient-to-r from-[var(--ticker-bg)] to-transparent pointer-events-none"></div>
     </div>
 
-    <!-- Navigation -->
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 top-[40px] md:top-[44px] bg-white py-4 border-b border-pink-50">
+    <!-- Enhanced Navigation Header -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 top-[40px] py-3 md:py-4 border-b border-pink-50" style="background-color: var(--site-bg);">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            <div class="flex items-center gap-3 md:gap-4 cursor-pointer" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-                <div class="w-12 h-12 md:w-14 md:h-14 rounded-full flex items-center justify-center border-2 shadow-sm transition-transform hover:rotate-6" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                    <i data-lucide="cake" class="w-6 h-6 md:w-8 md:h-8" style="color: hsl(var(--brand-hue), 80%, 60%);"></i>
+            
+            <!-- Mobile Menu Toggle Button (Left in LTR, Right in RTL) -->
+            <button onclick="toggleCustomerMenu(true)" class="p-2 md:p-3 rounded-xl transition-all shadow-sm border" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);" onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 80%, 97%)'" onmouseout="this.style.backgroundColor='var(--site-bg)'">
+                <i data-lucide="menu" class="w-6 h-6 md:w-7 md:h-7"></i>
+            </button>
+
+            <!-- Center Logo Area -->
+            <div class="flex items-center gap-2 md:gap-4 cursor-pointer absolute left-1/2 -translate-x-1/2" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div class="w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center border-2 shadow-sm transition-transform hover:rotate-6" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                    <i data-lucide="cake" class="w-5 h-5 md:w-8 md:h-8" style="color: hsl(var(--brand-hue), 80%, 60%);"></i>
                 </div>
-                <div class="flex flex-col">
-                    <h1 id="dyn-brand-name" class="text-xl md:text-3xl font-bold bg-clip-text text-transparent tracking-tight" style="background-image: linear-gradient(to left, hsl(var(--brand-hue), 70%, 50%), hsl(var(--brand-hue), 80%, 70%));">حلويات بوسي</h1>
-                    <div class="flex items-center gap-1 opacity-80 mt-0.5">
-                        <i data-lucide="award" class="w-3 h-3" style="color: hsl(var(--brand-hue), 80%, 65%);"></i>
-                        <span class="text-[9px] md:text-xs font-bold uppercase tracking-widest" style="color: #7b4c53;">Premium Patisserie</span>
-                    </div>
+                <div class="flex flex-col items-center">
+                    <h1 id="dyn-brand-name" class="text-lg md:text-3xl font-bold bg-clip-text text-transparent tracking-tight leading-none md:leading-normal" style="background-image: linear-gradient(to left, hsl(var(--brand-hue), 70%, 50%), hsl(var(--brand-hue), 80%, 70%));">حلويات بوسي</h1>
+                    <span class="text-[7px] md:text-[9px] font-bold uppercase tracking-widest mt-0.5" style="color: var(--site-text); opacity: 0.8;">Premium Patisserie</span>
                 </div>
             </div>
-            <button onclick="toggleCart(true)" class="relative p-3 bg-pink-50 text-pink-600 border border-pink-100 rounded-2xl hover:text-white transition-all shadow-sm flex items-center gap-3 group" style="background-color: hsl(var(--brand-hue), 80%, 97%); color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 85%);" onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 70%, 65%)'; this.style.color='white'" onmouseout="this.style.backgroundColor='hsl(var(--brand-hue), 80%, 97%)'; this.style.color='hsl(var(--brand-hue), 80%, 60%)'">
+
+            <!-- Cart Button -->
+            <button onclick="toggleCart(true)" class="relative p-2 md:p-3 border rounded-xl md:rounded-2xl transition-all shadow-sm flex items-center gap-2 md:gap-3 group" style="background-color: hsl(var(--brand-hue), 80%, 97%); color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 85%);" onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 70%, 65%)'; this.style.color='white'" onmouseout="this.style.backgroundColor='hsl(var(--brand-hue), 80%, 97%)'; this.style.color='hsl(var(--brand-hue), 80%, 60%)'">
                 <i data-lucide="shopping-cart" class="w-6 h-6"></i>
-                <span id="cart-count-badge" class="hidden absolute -top-2 -right-2 text-white text-[10px] font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-white shadow-md transition-transform duration-300" style="background-color: hsl(var(--brand-hue), 70%, 55%);">0</span>
-                <span class="hidden md:block font-bold text-sm">سلة المراجعة</span>
+                <span id="cart-count-badge" class="hidden absolute -top-2 -left-2 md:-right-2 text-white text-[10px] font-bold w-5 h-5 md:w-6 md:h-6 flex items-center justify-center rounded-full border-2 border-white shadow-md transition-transform duration-300" style="background-color: hsl(var(--brand-hue), 70%, 55%);">0</span>
+                <span class="hidden lg:block font-bold text-sm">السلة</span>
             </button>
+
         </div>
     </nav>
 
+    <!-- Engine Upgrade: Customer Comprehensive Sidebar Menu -->
+    <div id="customer-menu-overlay" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[110] hidden opacity-0 transition-opacity duration-300" onclick="toggleCustomerMenu(false)"></div>
+    <div id="customer-menu-sidebar" class="fixed top-0 right-0 bottom-0 w-[80%] max-w-[320px] shadow-2xl z-[120] translate-x-full transition-transform duration-500 ease-out flex flex-col border-l border-white/20" style="background-color: var(--site-bg);">
+        
+        <div class="p-6 border-b flex justify-between items-center" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center shadow-inner bg-white">
+                    <i data-lucide="cake" class="w-5 h-5" style="color: hsl(var(--brand-hue), 70%, 60%);"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg leading-none" style="color: var(--site-text);">القائمة السريعة</h3>
+                    <span class="text-[9px] font-bold opacity-70" style="color: var(--site-text);">تصفح أسهل وأسرع</span>
+                </div>
+            </div>
+            <button onclick="toggleCustomerMenu(false)" class="p-2 bg-white rounded-lg shadow-sm border text-gray-500 hover:text-red-500" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto hide-scrollbar p-6 space-y-8">
+            <!-- Categories Section in Sidebar -->
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-widest mb-4 opacity-60 flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="layout-grid" class="w-4 h-4"></i> أقسام المنيو</h4>
+                <div id="sidebar-categories" class="flex flex-col gap-2">
+                    <!-- JS Filled -->
+                </div>
+            </div>
+
+            <!-- Important Links Section -->
+            <div class="border-t pt-6" style="border-color: hsl(var(--brand-hue), 80%, 95%);">
+                <h4 class="text-xs font-bold uppercase tracking-widest mb-4 opacity-60 flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="info" class="w-4 h-4"></i> روابط هامة</h4>
+                <div class="flex flex-col gap-3">
+                    <button onclick="toggleCustomerMenu(false); showInfo('care')" class="text-right p-3 rounded-xl flex items-center gap-3 font-bold text-sm transition-colors hover:bg-gray-50" style="color: var(--site-text); border: 1px solid hsl(var(--brand-hue), 80%, 95%);"><i data-lucide="thermometer-sun" class="w-4 h-4" style="color: hsl(var(--brand-hue), 60%, 60%);"></i> دليل الجودة والعناية</button>
+                    <button onclick="toggleCustomerMenu(false); showInfo('about')" class="text-right p-3 rounded-xl flex items-center gap-3 font-bold text-sm transition-colors hover:bg-gray-50" style="color: var(--site-text); border: 1px solid hsl(var(--brand-hue), 80%, 95%);"><i data-lucide="store" class="w-4 h-4" style="color: hsl(var(--brand-hue), 60%, 60%);"></i> من نحن (حلويات بوسي)</button>
+                    <button onclick="toggleCustomerMenu(false); showInfo('refund')" class="text-right p-3 rounded-xl flex items-center gap-3 font-bold text-sm transition-colors hover:bg-gray-50" style="color: var(--site-text); border: 1px solid hsl(var(--brand-hue), 80%, 95%);"><i data-lucide="refresh-ccw" class="w-4 h-4" style="color: hsl(var(--brand-hue), 60%, 60%);"></i> سياسة الاسترجاع</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 border-t bg-gray-50" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+            <a href="https://wa.me/201097238441" target="_blank" class="w-full bg-green-500 text-white font-bold py-3 rounded-xl flex justify-center items-center gap-2 shadow-md hover:bg-green-600 transition-colors text-sm">
+                <i data-lucide="message-circle" class="w-5 h-5"></i> تواصل مع الإدارة
+            </a>
+        </div>
+    </div>
+
     <!-- Header Banner -->
-    <header class="pt-28 md:pt-48 pb-4 md:pb-6 px-4 max-w-7xl mx-auto">
+    <header class="pt-28 md:pt-36 pb-4 md:pb-6 px-4 max-w-7xl mx-auto">
         <div class="brand-gradient rounded-[2rem] md:rounded-[3.5rem] px-6 py-8 md:p-16 text-white shadow-2xl relative overflow-hidden group">
             <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12 text-center md:text-right">
                 <div class="flex-1 w-full">
@@ -107,7 +205,7 @@
                     </div>
                     <h2 id="dyn-hero-title" class="text-3xl sm:text-4xl md:text-7xl font-bold mb-4 md:mb-8 leading-tight tracking-tight text-gray-800 drop-shadow-sm">أهلاً بكم في <br class="hidden md:block"/> <span class="text-white relative inline-block mt-1 md:mt-2 drop-shadow-md">حلويات بوسي</span></h2>
                     <p id="dyn-hero-desc" class="text-sm md:text-2xl opacity-90 max-w-2xl font-bold leading-relaxed md:leading-loose mb-6 md:mb-10 mx-auto md:mx-0 text-gray-800">يسر إدارة حلويات بوسي استعراض تشكيلتها الحصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بذوقكم الرفيع ومناسباتكم السعيدة.</p>
-                    <button onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})" class="w-full sm:w-auto bg-white font-bold text-sm md:text-xl px-8 md:px-12 py-3.5 md:py-5 rounded-[1.2rem] md:rounded-[1.5rem] shadow-xl transition-all flex items-center justify-center gap-3 transform hover:scale-105 active:scale-95 mx-auto md:mx-0" style="color: hsl(var(--brand-hue), 80%, 55%);">
+                    <button onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})" class="w-full sm:w-auto font-bold text-sm md:text-xl px-8 md:px-12 py-3.5 md:py-5 rounded-[1.2rem] md:rounded-[1.5rem] shadow-xl transition-all flex items-center justify-center gap-3 transform hover:scale-105 active:scale-95 mx-auto md:mx-0" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 80%, 55%);">
                         استعراض القائمة الرسمية <i data-lucide="chevron-down" class="w-5 h-5 md:w-6 md:h-6 animate-bounce"></i>
                     </button>
                 </div>
@@ -124,7 +222,7 @@
             <h3 class="text-xl md:text-2xl font-bold flex items-center gap-2" style="color: hsl(var(--brand-hue), 70%, 45%);">
                 <i data-lucide="camera" class="w-6 h-6"></i> عدسة حلويات بوسي 📸
             </h3>
-            <span class="text-[10px] md:text-xs font-bold bg-pink-50 px-3 py-1 rounded-full border" style="color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);">سابقة أعمالنا بشهادتكم</span>
+            <span class="text-[10px] md:text-xs font-bold px-3 py-1 rounded-full border" style="background-color: hsl(var(--brand-hue), 80%, 97%); color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);">سابقة أعمالنا بشهادتكم</span>
         </div>
         <!-- Horizontal Scrollable Container -->
         <div id="gallery-slider" class="flex overflow-x-auto hide-scrollbar gap-4 pb-4 pt-2">
@@ -142,7 +240,7 @@
     </div>
 
     <!-- Category Section -->
-    <section id="menu-section" class="sticky top-[78px] md:top-[90px] bg-white/95 backdrop-blur-xl z-40 py-5 shadow-sm border-b mt-4" style="border-color: hsl(var(--brand-hue), 80%, 95%);">
+    <section id="menu-section" class="sticky top-[78px] md:top-[85px] backdrop-blur-xl z-40 py-5 shadow-sm border-b mt-4" style="background-color: rgba(var(--site-bg), 0.95); border-color: hsl(var(--brand-hue), 80%, 95%);">
         <div class="max-w-7xl mx-auto px-4">
             <div id="categories-nav" class="flex overflow-x-auto hide-scrollbar gap-4 pb-2 -mx-4 px-4 sm:mx-0">
                 <!-- JS Fill -->
@@ -165,11 +263,11 @@
                         <div class="w-12 h-12 rounded-full flex items-center justify-center shadow-lg" style="background-color: hsl(var(--brand-hue), 70%, 65%);"><i data-lucide="cake" class="text-white w-6 h-6"></i></div>
                         <h3 id="dyn-footer-brand" class="text-3xl font-bold" style="color: hsl(var(--brand-hue), 70%, 45%);">حلويات بوسي</h3>
                     </div>
-                    <p id="dyn-footer-quote" class="text-sm leading-loose mb-10 font-bold opacity-80 italic" style="color: #7b4c53;">"نؤمن أن الحلويات لغة للتعبير عن المحبة، لذا نصنع كل قطعة بشغف لنكون شركاءكم في أجمل اللحظات."</p>
+                    <p id="dyn-footer-quote" class="text-sm leading-loose mb-10 font-bold opacity-80 italic" style="color: var(--site-text);">"نؤمن أن الحلويات لغة للتعبير عن المحبة، لذا نصنع كل قطعة بشغف لنكون شركاءكم في أجمل اللحظات."</p>
                 </div>
                 <div>
                     <h4 class="font-bold mb-10 text-xl border-r-4 pr-4 uppercase tracking-wider" style="color: hsl(var(--brand-hue), 70%, 35%); border-color: hsl(var(--brand-hue), 80%, 65%);">إدارة العلامة التجارية</h4>
-                    <div class="flex flex-col gap-6 font-bold text-sm" style="color: #7b4c53;">
+                    <div class="flex flex-col gap-6 font-bold text-sm" style="color: var(--site-text);">
                         <button onclick="showInfo('about')" class="hover:text-pink-500 text-right flex items-center gap-3 justify-center md:justify-start transition-colors">من نحن (تاريخنا وجودتنا)</button>
                         <button onclick="showInfo('privacy')" class="hover:text-pink-500 text-right flex items-center gap-3 justify-center md:justify-start transition-colors">سياسة الخصوصية والأمان</button>
                         <button onclick="showInfo('refund')" class="hover:text-pink-500 text-right flex items-center gap-3 justify-center md:justify-start transition-colors">سياسة الاسترجاع والتعديل</button>
@@ -177,12 +275,12 @@
                 </div>
                 <div>
                     <h4 class="font-bold mb-10 text-xl border-r-4 pr-4" style="color: hsl(var(--brand-hue), 70%, 35%); border-color: hsl(var(--brand-hue), 80%, 65%);">دليل الجودة الملكي</h4>
-                    <p class="text-xs font-bold mb-6 leading-relaxed opacity-80" style="color: #7b4c53;">لضمان الحفاظ على سلامة ومذاق المنتجات في المناخ الحار، نرجو التكرم بالاطلاع على الإرشادات الرسمية.</p>
-                    <button onclick="showInfo('care')" class="w-full bg-white border-2 py-4 rounded-2xl font-bold text-xs hover:text-white transition-all shadow-sm dyn-hover-bg" style="color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 85%);" onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 70%, 65%)'" onmouseout="this.style.backgroundColor='white'">دليل العناية بالمنتج</button>
+                    <p class="text-xs font-bold mb-6 leading-relaxed opacity-80" style="color: var(--site-text);">لضمان الحفاظ على سلامة ومذاق المنتجات في المناخ الحار، نرجو التكرم بالاطلاع على الإرشادات الرسمية.</p>
+                    <button onclick="showInfo('care')" class="w-full border-2 py-4 rounded-2xl font-bold text-xs hover:text-white transition-all shadow-sm dyn-hover-bg" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 85%);" onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 70%, 65%)'" onmouseout="this.style.backgroundColor='var(--site-bg)'">دليل العناية بالمنتج</button>
                 </div>
                 <div>
                     <h4 class="font-bold mb-10 text-xl border-r-4 pr-4" style="color: hsl(var(--brand-hue), 70%, 35%); border-color: hsl(var(--brand-hue), 80%, 65%);">الموقع والتواصل</h4>
-                    <div class="flex flex-col gap-6 text-xs font-bold" style="color: #7b4c53;">
+                    <div class="flex flex-col gap-6 text-xs font-bold" style="color: var(--site-text);">
                         <div class="flex items-start gap-4 justify-center md:justify-start">
                             <i data-lucide="map-pin" class="w-5 h-5 mt-1" style="color: hsl(var(--brand-hue), 80%, 60%);"></i>
                             <span id="dyn-footer-address" class="leading-relaxed">الكفاح، مركز الفرافرة، <br> محافظة الوادي الجديد</span>
@@ -196,41 +294,40 @@
             </div>
             <div class="pt-10 border-t flex flex-col md:flex-row justify-between items-center gap-6" style="border-color: hsl(var(--brand-hue), 80%, 85%);">
                 <div class="flex items-center gap-2">
-                    <p onclick="handleSecretTap()" class="text-[10px] font-bold tracking-tighter uppercase cursor-default select-none transition-colors opacity-60 hover:opacity-100" style="color: #7b4c53;">جميع الحقوق محفوظة لعلامة BoseSweets - حلويات بوسي © 2026</p>
+                    <p onclick="handleSecretTap()" class="text-[10px] font-bold tracking-tighter uppercase cursor-default select-none transition-colors opacity-60 hover:opacity-100" style="color: var(--site-text);">جميع الحقوق محفوظة لعلامة BoseSweets - حلويات بوسي © 2026</p>
                 </div>
-                <div class="flex items-center gap-4 px-8 py-3 bg-white rounded-full border text-[10px] font-bold shadow-sm" style="border-color: hsl(var(--brand-hue), 80%, 90%); color: #7b4c53;"><i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i> إدارة رقمية رسمية معتمدة وموثوقة</div>
+                <div class="flex items-center gap-4 px-8 py-3 rounded-full border text-[10px] font-bold shadow-sm" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%); color: var(--site-text);"><i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i> إدارة رقمية رسمية معتمدة وموثوقة</div>
             </div>
         </div>
     </footer>
 
     <!-- Enhanced Cart Sidebar with Smart Checkout Form -->
-    <div id="cart-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-md z-[100] hidden opacity-0 transition-all duration-500" onclick="toggleCart(false)"></div>
-    <div id="cart-sidebar" class="fixed top-0 left-0 bottom-0 w-full sm:w-[580px] bg-white z-[110] shadow-2xl translate-x-[-100%] transition-transform duration-500 ease-out flex flex-col">
+    <div id="cart-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-md z-[200] hidden opacity-0 transition-all duration-500" onclick="toggleCart(false)"></div>
+    <div id="cart-sidebar" class="fixed top-0 left-0 bottom-0 w-full sm:w-[580px] z-[210] shadow-2xl translate-x-[-100%] transition-transform duration-500 ease-out flex flex-col" style="background-color: var(--site-bg);">
         <div class="p-6 sm:p-10 border-b flex justify-between items-center" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
             <div class="flex items-center gap-4 sm:gap-6">
                 <div class="p-3 sm:p-4 rounded-[1.2rem] sm:rounded-[1.5rem] shadow-xl text-white" style="background-color: hsl(var(--brand-hue), 70%, 65%);"><i data-lucide="shopping-cart" class="w-6 h-6 sm:w-8 sm:h-8"></i></div>
                 <div>
-                    <h2 class="text-2xl sm:text-3xl font-bold" style="color: var(--text-brown);">سلة المراجعة</h2>
+                    <h2 class="text-2xl sm:text-3xl font-bold" style="color: var(--site-text);">سلة المراجعة</h2>
                     <p class="text-[10px] sm:text-xs font-bold uppercase tracking-widest mt-1" style="color: hsl(var(--brand-hue), 70%, 55%);">Order Summary</p>
                 </div>
             </div>
-            <button onclick="toggleCart(false)" class="p-3 sm:p-4 bg-white rounded-xl sm:rounded-2xl transition-colors shadow-sm border" style="border-color: hsl(var(--brand-hue), 80%, 90%); color: #7b4c53;"><i data-lucide="x" class="w-6 h-6 sm:w-8 sm:h-8"></i></button>
+            <button onclick="toggleCart(false)" class="p-3 sm:p-4 rounded-xl sm:rounded-2xl transition-colors shadow-sm border" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%); color: var(--site-text);"><i data-lucide="x" class="w-6 h-6 sm:w-8 sm:h-8"></i></button>
         </div>
         
         <div id="cart-list" class="flex-1 overflow-y-auto p-4 sm:p-10 space-y-6 sm:space-y-8 admin-scroll" style="background-color: hsl(var(--brand-hue), 80%, 99%);"></div>
         
-        <div id="cart-checkout" class="p-6 sm:p-10 bg-white border-t rounded-t-[2.5rem] sm:rounded-t-[4rem] hidden animate-fade-in shadow-[0_-10px_40px_rgba(0,0,0,0.05)]" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+        <div id="cart-checkout" class="p-6 sm:p-10 border-t rounded-t-[2.5rem] sm:rounded-t-[4rem] hidden animate-fade-in shadow-[0_-10px_40px_rgba(0,0,0,0.05)]" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
             
             <div class="mb-6 space-y-4">
-                <h4 class="font-bold text-sm sm:text-base flex items-center gap-2 mb-2" style="color: var(--text-brown);"><i data-lucide="calendar-clock" class="w-5 h-5" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> تفاصيل التوصيل والاستلام</h4>
+                <h4 class="font-bold text-sm sm:text-base flex items-center gap-2 mb-2" style="color: var(--site-text);"><i data-lucide="calendar-clock" class="w-5 h-5" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> تفاصيل التوصيل والاستلام</h4>
                 
-                <!-- Engine Upgrade: Logistics & Delivery System -->
-                <div class="flex gap-3 bg-gray-50 p-1.5 rounded-xl border border-gray-200">
-                    <label class="custom-radio-container flex-1 flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-lg cursor-pointer transition-all border-2 border-transparent bg-white shadow-sm text-sm font-bold text-gray-500 hover:bg-gray-100">
+                <div class="flex gap-3 bg-gray-50 p-1.5 rounded-xl border border-gray-200" style="background-color: hsl(var(--brand-hue), 80%, 97%);">
+                    <label class="custom-radio-container flex-1 flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-lg cursor-pointer transition-all border-2 border-transparent shadow-sm text-sm font-bold text-gray-500 hover:bg-gray-100" style="background-color: var(--site-bg);">
                         <input type="radio" name="delivery_method" value="delivery" checked onchange="toggleDeliveryMethod()" class="hidden">
                         <i data-lucide="truck" class="w-4 h-4"></i> هنشحنلك 🛵
                     </label>
-                    <label class="custom-radio-container flex-1 flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-lg cursor-pointer transition-all border-2 border-transparent bg-white shadow-sm text-sm font-bold text-gray-500 hover:bg-gray-100">
+                    <label class="custom-radio-container flex-1 flex items-center justify-center gap-2 p-2.5 sm:p-3 rounded-lg cursor-pointer transition-all border-2 border-transparent shadow-sm text-sm font-bold text-gray-500 hover:bg-gray-100" style="background-color: var(--site-bg);">
                         <input type="radio" name="delivery_method" value="pickup" onchange="toggleDeliveryMethod()" class="hidden">
                         <i data-lucide="store" class="w-4 h-4"></i> هستلم بنفسي 🏪
                     </label>
@@ -239,52 +336,51 @@
                 <div class="flex flex-col sm:flex-row gap-3">
                     <div class="w-full">
                         <label class="text-[10px] font-bold text-gray-500 mb-1.5 block px-1">تاريخ الاستلام</label>
-                        <input type="date" id="cust-date" class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold bg-white transition-all text-gray-700 shadow-sm" style="color: var(--text-brown);">
+                        <input type="date" id="cust-date" class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold transition-all shadow-sm" style="background-color: var(--site-bg); color: var(--site-text);">
                     </div>
                     <div class="w-full">
                         <label class="text-[10px] font-bold text-gray-500 mb-1.5 block px-1">وقت الاستلام</label>
-                        <input type="time" id="cust-time" class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold bg-white transition-all text-gray-700 shadow-sm" style="color: var(--text-brown);">
+                        <input type="time" id="cust-time" class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold transition-all shadow-sm" style="background-color: var(--site-bg); color: var(--site-text);">
                     </div>
                 </div>
 
-                <input type="text" id="cust-name" placeholder="الاسم الكريم..." class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold bg-white transition-all shadow-sm" style="color: var(--text-brown);">
+                <input type="text" id="cust-name" placeholder="الاسم الكريم..." class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold transition-all shadow-sm" style="background-color: var(--site-bg); color: var(--site-text);">
                 
                 <div class="flex flex-col sm:flex-row gap-3">
-                    <input type="tel" id="cust-phone" placeholder="رقم الموبايل..." class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold bg-white transition-all shadow-sm" style="color: var(--text-brown);">
+                    <input type="tel" id="cust-phone" placeholder="رقم الموبايل..." class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold transition-all shadow-sm" style="background-color: var(--site-bg); color: var(--site-text);">
                     
                     <div id="delivery-area-container" class="w-full transition-all duration-300">
-                        <select id="cust-area" onchange="calculateCartTotal()" class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold bg-white transition-all shadow-sm" style="color: #7b4c53;">
+                        <select id="cust-area" onchange="calculateCartTotal()" class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold transition-all shadow-sm" style="background-color: var(--site-bg); color: var(--site-text);">
                             <!-- JS Fill -->
                         </select>
                     </div>
                 </div>
 
-                <!-- Engine Upgrade: Pickup Branch Address Display -->
                 <div id="pickup-info" class="hidden p-4 rounded-xl border transition-all duration-300 shadow-inner animate-fade-in" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
                     <div class="flex gap-3 items-start">
                         <i data-lucide="map-pin" class="w-5 h-5 shrink-0 mt-0.5" style="color: hsl(var(--brand-hue), 70%, 50%);"></i>
                         <div>
-                            <p class="font-bold text-sm" style="color: var(--text-brown);">عنوان فرع حلويات بوسي للاستلام:</p>
-                            <p class="text-xs font-bold leading-loose mt-1.5" style="color: #7b4c53;">📍 الكفاح، شارع الوحده المحليه، بجوار صيدلية الدكتور احمد مجدي، وبجوار عيادة الدكتور علي.</p>
+                            <p class="font-bold text-sm" style="color: var(--site-text);">عنوان فرع حلويات بوسي للاستلام:</p>
+                            <p class="text-xs font-bold leading-loose mt-1.5 opacity-80" style="color: var(--site-text);">📍 الكفاح، شارع الوحده المحليه، بجوار صيدلية الدكتور احمد مجدي، وبجوار عيادة الدكتور علي.</p>
                         </div>
                     </div>
                 </div>
 
-                <textarea id="cust-notes" placeholder="ملاحظات إضافية (اختياري)..." rows="2" class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold bg-white transition-all admin-scroll shadow-sm" style="color: var(--text-brown);"></textarea>
+                <textarea id="cust-notes" placeholder="ملاحظات إضافية (اختياري)..." rows="2" class="w-full p-3 sm:p-4 rounded-xl border border-gray-200 focus:ring-2 outline-none text-sm font-bold transition-all admin-scroll shadow-sm" style="background-color: var(--site-bg); color: var(--site-text);"></textarea>
             </div>
 
             <div class="flex flex-col gap-3 mb-6 sm:mb-8 p-4 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] border shadow-inner" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                <div class="flex justify-between items-center text-sm font-bold opacity-80" style="color: #7b4c53;">
+                <div class="flex justify-between items-center text-sm font-bold opacity-80" style="color: var(--site-text);">
                     <span>قيمة المنتجات:</span>
                     <span id="cart-subtotal-text">0 ج.م</span>
                 </div>
-                <div class="flex justify-between items-center text-sm font-bold opacity-80 border-b pb-3" style="color: #7b4c53; border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <div class="flex justify-between items-center text-sm font-bold opacity-80 border-b pb-3" style="color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);">
                     <span>رسوم التوصيل:</span>
                     <span id="cart-shipping-text">يُحدد بالمنطقة</span>
                 </div>
                 <div class="flex justify-between items-center pt-1">
                     <div class="flex items-center gap-3">
-                        <div class="p-2 sm:p-3 bg-white rounded-xl shadow-sm" style="color: hsl(var(--brand-hue), 70%, 65%);"><i data-lucide="receipt" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
+                        <div class="p-2 sm:p-3 rounded-xl shadow-sm" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 65%);"><i data-lucide="receipt" class="w-5 h-5 sm:w-6 sm:h-6"></i></div>
                         <span class="font-bold text-sm sm:text-lg" style="color: hsl(var(--brand-hue), 70%, 40%);">الإجمالي النهائي</span>
                     </div>
                     <span id="cart-total-text" class="text-2xl sm:text-3xl font-bold tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">0 ج.م</span>
@@ -298,17 +394,17 @@
     </div>
 
     <!-- Info Modal -->
-    <div id="info-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[150] hidden items-center justify-center p-4">
-        <div class="bg-white rounded-[3.5rem] p-10 md:p-12 max-w-2xl w-full shadow-3xl relative border-4 animate-fade-in overflow-hidden" style="border-color: hsl(var(--brand-hue), 80%, 95%);">
+    <div id="info-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[300] hidden items-center justify-center p-4">
+        <div class="rounded-[3.5rem] p-10 md:p-12 max-w-2xl w-full shadow-3xl relative border-4 animate-fade-in overflow-hidden" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 95%);">
             <button onclick="closeInfo()" class="absolute top-6 left-6 p-3 rounded-2xl hover:rotate-90 transition-all" style="background-color: hsl(var(--brand-hue), 80%, 95%); color: hsl(var(--brand-hue), 70%, 60%);"><i data-lucide="x" class="w-6 h-6"></i></button>
             <h3 id="info-title" class="text-2xl md:text-3xl font-bold mb-8 border-b-2 pb-6 flex items-center gap-4" style="color: hsl(var(--brand-hue), 70%, 55%); border-color: hsl(var(--brand-hue), 80%, 90%);"></h3>
-            <p id="info-body" class="leading-loose font-bold text-base md:text-lg whitespace-pre-line p-8 rounded-[2.5rem] border shadow-inner max-h-[50vh] overflow-y-auto hide-scrollbar" style="background-color: hsl(var(--brand-hue), 80%, 99%); border-color: hsl(var(--brand-hue), 80%, 95%); color: #7b4c53;"></p>
+            <p id="info-body" class="leading-loose font-bold text-base md:text-lg whitespace-pre-line p-8 rounded-[2.5rem] border shadow-inner max-h-[50vh] overflow-y-auto hide-scrollbar" style="background-color: hsl(var(--brand-hue), 80%, 99%); border-color: hsl(var(--brand-hue), 80%, 95%); color: var(--site-text);"></p>
             <button onclick="closeInfo()" class="mt-10 w-full py-5 text-white font-bold text-xl rounded-2xl shadow-xl brand-gradient">إغلاق النافذة</button>
         </div>
     </div>
 
     <!-- Engine Upgrade: Full ERP & CMS Admin Dashboard (Dark Mode) -->
-    <div id="admin-dashboard" class="fixed inset-0 bg-gray-900 z-[200] hidden flex-col font-sans text-gray-100" dir="rtl">
+    <div id="admin-dashboard" class="fixed inset-0 bg-gray-900 z-[9999] hidden flex-col font-sans text-gray-100" dir="rtl">
         <!-- Admin Topbar -->
         <div class="bg-gray-800 text-white p-4 flex justify-between items-center shadow-md border-b border-gray-700 z-[203]">
             <div class="flex items-center gap-3 md:gap-4">
@@ -330,19 +426,17 @@
                 <button onclick="toggleAdminSidebar()" class="md:hidden absolute top-4 left-4 p-2 bg-gray-700 rounded-lg text-gray-300 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
                 
                 <button onclick="switchAdminTab('overview')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm bg-pink-500 text-white transition-colors shadow-md" data-target="admin-overview"><i data-lucide="activity" class="w-5 h-5"></i> الإحصائيات والإيرادات</button>
-                <button onclick="switchAdminTab('settings')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-settings"><i data-lucide="settings-2" class="w-5 h-5"></i> إعدادات النظام والنسخ</button>
+                <button onclick="switchAdminTab('theme')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-theme"><i data-lucide="palette" class="w-5 h-5"></i> المظهر والشريط والخطوط</button>
+                <button onclick="switchAdminTab('settings')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-settings"><i data-lucide="settings-2" class="w-5 h-5"></i> إعدادات الهوية والنسخ</button>
                 <button onclick="switchAdminTab('shipping')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-shipping"><i data-lucide="truck" class="w-5 h-5"></i> مناطق وأسعار الشحن</button>
                 <button onclick="switchAdminTab('menu')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-menu"><i data-lucide="database" class="w-5 h-5"></i> الكتالوج والمنتجات</button>
-                
-                <!-- Engine Upgrade: New Gallery Tab Button -->
                 <button onclick="switchAdminTab('gallery')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-gallery"><i data-lucide="image" class="w-5 h-5"></i> معرض الصور (سابقة الأعمال)</button>
-                
                 <button onclick="switchAdminTab('orders')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-orders"><i data-lucide="shopping-bag" class="w-5 h-5"></i> سجل الطلبات</button>
                 <button onclick="switchAdminTab('security')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-security"><i data-lucide="shield" class="w-5 h-5"></i> الحماية ورمز المرور</button>
                 
                 <div class="mt-auto pt-4 border-t border-gray-700 text-center">
-                    <p class="text-[10px] text-gray-500 font-bold tracking-widest">BoseSweets ERP v10.5</p>
-                    <p class="text-[9px] text-blue-400 font-bold mt-1">✓ Smart Logistics Active 🚚☁️</p>
+                    <p class="text-[10px] text-gray-500 font-bold tracking-widest">BoseSweets ERP v10.10</p>
+                    <p class="text-[9px] text-emerald-400 font-bold mt-1">✓ Full UI/UX Engine Active 🌟</p>
                 </div>
             </div>
             
@@ -359,48 +453,178 @@
                         </div>
                         <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 flex items-center gap-4 hover:border-gray-600 transition-colors">
                             <div class="p-4 bg-gray-700 text-emerald-400 rounded-xl"><i data-lucide="shopping-cart" class="w-7 h-7"></i></div>
-                            <div><p class="text-xs md:text-sm font-bold text-gray-400">الطلبات المُنفذة</p><p id="admin-stat-orders" class="text-2xl md:text-3xl font-black text-gray-100 mt-1">0</p></div>
+                            <div><p class="text-xs md:text-sm font-bold text-gray-400">الطلبات المُنفذة الفعالة</p><p id="admin-stat-orders" class="text-2xl md:text-3xl font-black text-gray-100 mt-1">0</p></div>
                         </div>
                         <div class="bg-gradient-to-l from-pink-500 to-pink-800 p-6 rounded-2xl shadow-lg border border-pink-700 flex items-center gap-4 text-white sm:col-span-2 lg:col-span-1">
                             <div class="p-4 bg-white/10 rounded-xl"><i data-lucide="trending-up" class="w-7 h-7"></i></div>
-                            <div><p class="text-xs md:text-sm font-bold text-pink-200">الإيرادات التقديرية</p><p id="admin-stat-revenue" class="text-2xl md:text-3xl font-black mt-1">0 ج.م</p></div>
+                            <div><p class="text-xs md:text-sm font-bold text-pink-200">الإيرادات التقديرية (الفعالة)</p><p id="admin-stat-revenue" class="text-2xl md:text-3xl font-black mt-1">0 ج.م</p></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tab: Settings -->
+                <!-- Engine Upgrade: Full Theme & Ticker Engine Tab -->
+                <div id="admin-theme" class="admin-tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-800 pb-4">
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-100">المظهر والشريط والخطوط</h2>
+                        <button onclick="saveStoreSettings()" class="w-full sm:w-auto bg-emerald-500 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-emerald-600 flex justify-center items-center gap-2 shadow-md transition-colors"><i data-lucide="save" class="w-4 h-4"></i> حفظ وتطبيق الإعدادات</button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        
+                        <!-- NEW: Ticker Tape Controls -->
+                        <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 space-y-5 lg:col-span-2">
+                            <div class="flex justify-between items-center border-b border-gray-700 pb-2">
+                                <h3 class="font-bold text-lg text-amber-400 flex items-center gap-2"><i data-lucide="newspaper" class="w-5 h-5"></i> شريط الأخبار المتحرك (Ticker)</h3>
+                                <label class="flex items-center gap-2 cursor-pointer group bg-gray-900 px-3 py-1.5 rounded-lg border border-gray-600">
+                                    <input type="checkbox" id="set-ticker-active" class="w-4 h-4 accent-amber-500 rounded cursor-pointer" onchange="updateLiveThemePreview()">
+                                    <span class="text-xs font-bold text-gray-300 group-hover:text-amber-400 transition-colors">تفعيل الشريط</span>
+                                </label>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-400 mb-1.5">نص الشريط المتحرك</label>
+                                        <input type="text" id="set-ticker-text" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg outline-none text-sm font-bold text-white transition-all focus:border-amber-500" placeholder="مثال: خصم 20% لفترة محدودة..." oninput="updateLiveThemePreview()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-400 mb-1.5 flex justify-between">
+                                            <span>سرعة الحركة (ثانية/دورة)</span>
+                                            <span id="ticker-speed-val" class="text-amber-400 font-mono">20s</span>
+                                        </label>
+                                        <input type="range" id="set-ticker-speed" min="5" max="60" step="1" class="w-full accent-amber-500 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer mt-2" oninput="document.getElementById('ticker-speed-val').innerText = this.value + 's'; updateLiveThemePreview();">
+                                        <p class="text-[9px] text-gray-500 mt-1 font-bold">كلما زاد الرقم، أصبح الشريط أبطأ وأسهل في القراءة.</p>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-400 mb-1.5">نوع خط الشريط</label>
+                                        <select id="set-ticker-font" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg outline-none text-sm font-bold text-white transition-all" onchange="updateLiveThemePreview()">
+                                            <option value="'Cairo', sans-serif">Cairo</option>
+                                            <option value="'Tajawal', sans-serif">Tajawal</option>
+                                            <option value="'Almarai', sans-serif">Almarai</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-400 mb-1.5">لون خلفية الشريط</label>
+                                        <div class="flex items-center gap-3">
+                                            <input type="color" id="set-ticker-bg" class="w-14 h-12 p-1 bg-gray-900 border border-gray-700 rounded-lg cursor-pointer transition-all">
+                                            <input type="text" id="set-ticker-bg-text" dir="ltr" class="flex-1 p-3 bg-gray-900 border border-gray-700 rounded-lg outline-none text-sm font-mono text-gray-300 uppercase" readonly>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-400 mb-1.5">لون نص الشريط</label>
+                                        <div class="flex items-center gap-3">
+                                            <input type="color" id="set-ticker-color" class="w-14 h-12 p-1 bg-gray-900 border border-gray-700 rounded-lg cursor-pointer transition-all">
+                                            <input type="text" id="set-ticker-color-text" dir="ltr" class="flex-1 p-3 bg-gray-900 border border-gray-700 rounded-lg outline-none text-sm font-mono text-gray-300 uppercase" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Colors Settings -->
+                        <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 space-y-5">
+                            <h3 class="font-bold text-lg text-pink-400 mb-4 border-b border-gray-700 pb-2"><i data-lucide="droplet" class="inline w-5 h-5 ml-1"></i> باليتة ألوان الموقع</h3>
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 mb-1.5">لون البراند الأساسي (اللون البارز للتدرجات)</label>
+                                    <div class="flex items-center gap-3">
+                                        <input type="color" id="set-brand-color" class="w-14 h-12 p-1 bg-gray-900 border border-gray-700 rounded-lg cursor-pointer transition-all">
+                                        <input type="text" id="set-brand-color-text" dir="ltr" class="flex-1 p-3 bg-gray-900 border border-gray-700 rounded-lg outline-none text-sm font-mono text-gray-300 uppercase" readonly>
+                                    </div>
+                                    <p class="text-[10px] text-gray-500 mt-1 font-bold">هذا اللون سيقوم المحرك بتحليله لتوليد التدرجات والظلال الخاصة بالبراند أوتوماتيكياً.</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 mb-1.5">لون خلفية الموقع (Background)</label>
+                                    <div class="flex items-center gap-3">
+                                        <input type="color" id="set-bg-color" class="w-14 h-12 p-1 bg-gray-900 border border-gray-700 rounded-lg cursor-pointer transition-all">
+                                        <input type="text" id="set-bg-color-text" dir="ltr" class="flex-1 p-3 bg-gray-900 border border-gray-700 rounded-lg outline-none text-sm font-mono text-gray-300 uppercase" readonly>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-400 mb-1.5">لون النصوص الأساسي (Text Color)</label>
+                                    <div class="flex items-center gap-3">
+                                        <input type="color" id="set-text-color" class="w-14 h-12 p-1 bg-gray-900 border border-gray-700 rounded-lg cursor-pointer transition-all">
+                                        <input type="text" id="set-text-color-text" dir="ltr" class="flex-1 p-3 bg-gray-900 border border-gray-700 rounded-lg outline-none text-sm font-mono text-gray-300 uppercase" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Typography Settings -->
+                        <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 space-y-5">
+                            <h3 class="font-bold text-lg text-blue-400 mb-4 border-b border-gray-700 pb-2"><i data-lucide="type" class="inline w-5 h-5 ml-1"></i> هندسة التايبوجرافي والخطوط</h3>
+                            
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 mb-1.5">عائلة الخط (Font Family)</label>
+                                <select id="set-font" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-bold text-white transition-all">
+                                    <option value="'Cairo', sans-serif">Cairo (الافتراضي للبراند)</option>
+                                    <option value="'Tajawal', sans-serif">Tajawal (طابع رسمي أكثر)</option>
+                                    <option value="'Almarai', sans-serif">Almarai (ناعم وانسيابي)</option>
+                                    <option value="'Readex Pro', sans-serif">Readex Pro (عصري وتكنولوجي)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 mb-1.5 flex justify-between">
+                                    <span>حجم الخط الأساسي (Base Font Size)</span>
+                                    <span id="font-size-val" class="text-blue-400 font-mono">16px</span>
+                                </label>
+                                <input type="range" id="set-font-size" min="12" max="22" step="1" oninput="document.getElementById('font-size-val').innerText = this.value + 'px';" class="w-full accent-blue-500 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer mt-2">
+                                <p class="text-[10px] text-gray-500 mt-2 font-bold">هذا المؤشر يقوم بتكبير/تصغير كل نصوص الموقع بشكل متناسق (الافتراضي 16).</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-gray-400 mb-1.5">وزن الخط الأساسي (Font Weight)</label>
+                                <select id="set-font-weight" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-bold text-white transition-all">
+                                    <option value="300">Light (رفيع وشيك)</option>
+                                    <option value="400">Regular (متوسط - الافتراضي)</option>
+                                    <option value="600">Semi-Bold (نصف سميك)</option>
+                                    <option value="700">Bold (سميك وبارز)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Live Preview Box -->
+                        <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 space-y-5 lg:col-span-2">
+                            <h3 class="font-bold text-lg text-gray-100 mb-4 border-b border-gray-700 pb-2"><i data-lucide="eye" class="inline w-5 h-5 ml-1 text-gray-400"></i> نافذة المعاينة الحية (Live Preview)</h3>
+                            
+                            <!-- Ticker Preview inside the box -->
+                            <div id="preview-ticker-wrap" class="w-full overflow-hidden flex items-center mb-4 rounded-t-xl" style="height: 30px;">
+                                <div id="preview-ticker-text" class="whitespace-nowrap font-bold text-xs tracking-wide animate-marquee"></div>
+                            </div>
+
+                            <div id="theme-live-preview" class="p-6 rounded-b-xl border transition-all duration-300 relative overflow-hidden" style="background-color: #ffffff; color: #663b3b; font-family: 'Cairo', sans-serif; font-size: 16px; border-color: #e5e7eb;">
+                                <div class="absolute inset-0 bg-gradient-to-br from-transparent to-black/5 pointer-events-none"></div>
+                                <div class="relative z-10">
+                                    <h4 class="font-bold text-2xl mb-2" id="preview-heading">حلويات بوسي - جودة تحاكي الواقع ✨</h4>
+                                    <p class="font-normal opacity-90 mb-4 leading-relaxed">هذا النص هو مثال لمعاينة إعدادات الألوان والخطوط الجديدة قبل حفظها وتطبيقها على الواجهة الرئيسية للعملاء.</p>
+                                    <button class="font-bold px-6 py-3 rounded-xl shadow-lg transition-transform hover:scale-105" id="preview-button" style="background-image: linear-gradient(135deg, #ec4899 0%, #f9a8d4 100%); color: white; border: none;">
+                                        إضافة للسلة
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: Settings (Identity & Data) -->
                 <div id="admin-settings" class="admin-tab-content hidden space-y-6">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-800 pb-4">
-                        <h2 class="text-xl md:text-2xl font-bold text-gray-100">إعدادات النظام والنسخ الاحتياطي</h2>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-100">إعدادات الهوية والنسخ الاحتياطي</h2>
                         <button onclick="saveStoreSettings()" class="w-full sm:w-auto bg-pink-500 text-white px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-pink-600 flex justify-center items-center gap-2 shadow-md transition-colors"><i data-lucide="save" class="w-4 h-4"></i> حفظ للتخزين السحابي</button>
                     </div>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 space-y-5">
-                            <h3 class="font-bold text-lg text-pink-400 mb-4 border-b border-gray-700 pb-2"><i data-lucide="palette" class="inline w-5 h-5 ml-1"></i> الهوية والمظهر</h3>
+                            <h3 class="font-bold text-lg text-pink-400 mb-4 border-b border-gray-700 pb-2"><i data-lucide="fingerprint" class="inline w-5 h-5 ml-1"></i> بيانات الهوية الرئيسية</h3>
                             <div>
                                 <label class="block text-xs font-bold text-gray-400 mb-1.5">اسم العلامة التجارية</label>
                                 <input type="text" id="set-brand" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none text-sm font-bold text-white transition-all">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1.5">اللون الأساسي (Hue 0-360)</label>
-                                <div class="flex items-center gap-4 bg-gray-900 p-3 rounded-lg border border-gray-700">
-                                    <input type="range" id="set-hue" min="0" max="360" oninput="document.getElementById('hue-preview').style.backgroundColor=`hsl(${this.value}, 80%, 65%)`" class="w-full accent-pink-500">
-                                    <div id="hue-preview" class="w-8 h-8 rounded-full shadow-inner border border-gray-600 shrink-0 transition-colors"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1.5">الخط العربي (Font)</label>
-                                <select id="set-font" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none text-sm font-bold text-white transition-all">
-                                    <option value="'Cairo', sans-serif">Cairo (الافتراضي)</option>
-                                    <option value="'Tajawal', sans-serif">Tajawal (رسمي)</option>
-                                    <option value="'Almarai', sans-serif">Almarai (ناعم)</option>
-                                    <option value="'Readex Pro', sans-serif">Readex Pro (عصري)</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1.5">شريط الإعلانات العلوي</label>
-                                <input type="text" id="set-announcement" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-pink-500 outline-none text-sm font-bold text-white transition-all">
                             </div>
                         </div>
 
@@ -431,12 +655,12 @@
                         </div>
 
                         <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 space-y-5 lg:col-span-2">
-                             <h3 class="font-bold text-lg text-emerald-400 mb-4 border-b border-gray-700 pb-2"><i data-lucide="grid" class="inline w-5 h-5 ml-1"></i> التحكم في طريقة العرض</h3>
+                             <h3 class="font-bold text-lg text-emerald-400 mb-4 border-b border-gray-700 pb-2"><i data-lucide="grid" class="inline w-5 h-5 ml-1"></i> الإعدادات العامة لعرض المنتجات</h3>
                              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                  <label class="flex flex-col p-4 bg-gray-900 border border-gray-700 rounded-xl cursor-pointer hover:border-emerald-500 transition-colors group relative">
                                      <input type="radio" name="set-layout" value="full" id="set-layout-full" class="absolute top-4 right-4 accent-emerald-500 w-5 h-5">
                                      <div class="w-full h-20 bg-gray-800 rounded-lg mb-3 border-2 border-dashed border-gray-600 flex items-center justify-center"><div class="w-3/4 h-1/2 bg-gray-700 rounded"></div></div>
-                                     <span class="font-bold text-sm text-white text-center">كارت كامل (منتج لكل صف)</span>
+                                     <span class="font-bold text-sm text-white text-center">كارت كامل (لكل المنتجات)</span>
                                  </label>
                                  <label class="flex flex-col p-4 bg-gray-900 border border-gray-700 rounded-xl cursor-pointer hover:border-emerald-500 transition-colors group relative">
                                      <input type="radio" name="set-layout" value="grid" id="set-layout-grid" class="absolute top-4 right-4 accent-emerald-500 w-5 h-5">
@@ -444,9 +668,10 @@
                                          <div class="flex-1 bg-gray-800 rounded-lg border-2 border-dashed border-gray-600 flex items-center justify-center"><div class="w-1/2 h-1/2 bg-gray-700 rounded"></div></div>
                                          <div class="flex-1 bg-gray-800 rounded-lg border-2 border-dashed border-gray-600 flex items-center justify-center"><div class="w-1/2 h-1/2 bg-gray-700 rounded"></div></div>
                                      </div>
-                                     <span class="font-bold text-sm text-white text-center">كارتين بجوار بعض (Grid)</span>
+                                     <span class="font-bold text-sm text-white text-center">كارتين بجوار بعض (شبكة)</span>
                                  </label>
                              </div>
+                             <p class="text-xs text-gray-500 mt-2 font-bold"><i data-lucide="info" class="w-3 h-3 inline"></i> ملحوظة: يمكنك تجاوز هذا الإعداد لاحقاً لكل منتج على حدة من داخل الكتالوج.</p>
                         </div>
                         
                         <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 space-y-5 lg:col-span-2">
@@ -497,7 +722,6 @@
                         </label>
                     </div>
                     
-                    <!-- Loading state for upload -->
                     <div id="gallery-upload-loader" class="hidden bg-gray-800 border border-gray-700 p-4 rounded-xl text-center text-pink-400 text-sm font-bold animate-pulse">
                         <i data-lucide="loader-2" class="w-5 h-5 inline animate-spin mr-2"></i> جاري رفع الصورة وتأمينها على السحابة...
                     </div>
@@ -512,17 +736,28 @@
                 <!-- Tab: Menu Manager -->
                 <div id="admin-menu" class="admin-tab-content hidden space-y-6">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-800 pb-4">
-                        <h2 class="text-xl md:text-2xl font-bold text-gray-100">إدارة الكتالوج والمنتجات</h2>
-                        <button onclick="openAddProductModal()" class="w-full sm:w-auto bg-pink-500 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-pink-600 flex justify-center items-center gap-2 shadow-md transition-colors"><i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة منتج للكتالوج</button>
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-100 shrink-0">إدارة الكتالوج والمنتجات</h2>
+                        <div class="flex-1 w-full sm:w-auto sm:px-8">
+                            <div class="relative w-full max-w-md mx-auto sm:ml-0">
+                                <i data-lucide="search" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+                                <input type="text" id="admin-search-catalog" onkeyup="renderAdminMenu(this.value)" placeholder="ابحث باسم المنتج أو القسم..." class="w-full bg-gray-900 border border-gray-700 text-white text-sm rounded-lg py-2.5 pr-10 pl-4 focus:ring-2 focus:ring-pink-500 outline-none transition-all">
+                            </div>
+                        </div>
+                        <button onclick="openAddProductModal()" class="w-full sm:w-auto bg-pink-500 text-white px-5 py-2.5 rounded-lg text-sm font-bold hover:bg-pink-600 flex justify-center items-center gap-2 shadow-md transition-colors shrink-0"><i data-lucide="plus-circle" class="w-4 h-4"></i> إضافة منتج للكتالوج</button>
                     </div>
-                    <div class="bg-gray-800 rounded-2xl shadow-lg border border-gray-700 overflow-hidden">
-                        <div class="overflow-x-auto admin-scroll" style="max-height: 65vh;">
-                            <table class="w-full text-right border-collapse min-w-[600px]">
+                    
+                    <div id="admin-catalog-tabs" class="flex overflow-x-auto hide-scrollbar gap-2 pb-2 mb-2 border-b border-gray-800">
+                        <!-- JS Fill -->
+                    </div>
+
+                    <div class="bg-gray-800 rounded-2xl shadow-lg border border-gray-700 overflow-hidden mt-4">
+                        <div class="overflow-x-auto admin-scroll" style="max-height: 60vh;">
+                            <table class="w-full text-right border-collapse min-w-[700px]">
                                 <thead class="sticky top-0 z-10 bg-gray-900 border-b border-gray-700 shadow-sm">
                                     <tr class="text-gray-400 text-sm">
                                         <th class="p-4 font-bold whitespace-nowrap">صورة</th>
                                         <th class="p-4 font-bold whitespace-nowrap">القسم</th>
-                                        <th class="p-4 font-bold w-1/3 min-w-[150px]">اسم المنتج</th>
+                                        <th class="p-4 font-bold w-1/3 min-w-[200px]">اسم المنتج والمخزون</th>
                                         <th class="p-4 font-bold whitespace-nowrap">السعر</th>
                                         <th class="p-4 font-bold text-center whitespace-nowrap">تحكم</th>
                                     </tr>
@@ -540,19 +775,26 @@
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-800 pb-4">
                         <div>
                             <h2 class="text-xl md:text-2xl font-bold text-gray-100">سجل الطلبات الواردة (Cloud)</h2>
-                            <p class="text-xs text-gray-500 mt-1 font-bold">يتم تسجيل وحفظ أي طلب يُرسل للواتساب هنا تلقائياً في السيرفر.</p>
+                            <p class="text-xs text-gray-500 mt-1 font-bold">يتم تسجيل أي طلب هنا. يمكنك تغيير حالة الطلب وحذف الطلبات القديمة أو الملغية.</p>
                         </div>
                     </div>
-                    <div class="bg-gray-800 rounded-2xl shadow-lg border border-gray-700 overflow-hidden">
-                        <div class="overflow-x-auto admin-scroll" style="max-height: 65vh;">
-                            <table class="w-full text-right border-collapse min-w-[800px]">
+                    
+                    <div id="admin-order-filters" class="flex overflow-x-auto hide-scrollbar gap-2 pb-2 mb-2 border-b border-gray-800">
+                        <!-- JS Fill -->
+                    </div>
+
+                    <div class="bg-gray-800 rounded-2xl shadow-lg border border-gray-700 overflow-hidden mt-4">
+                        <div class="overflow-x-auto admin-scroll" style="max-height: 60vh;">
+                            <table class="w-full text-right border-collapse min-w-[900px]">
                                 <thead class="sticky top-0 z-10 bg-gray-900 border-b border-gray-700 text-gray-400 text-sm shadow-sm">
                                     <tr>
-                                        <th class="p-4 font-bold whitespace-nowrap">رقم الطلب (ID)</th>
+                                        <th class="p-4 font-bold whitespace-nowrap">رقم الطلب</th>
                                         <th class="p-4 font-bold whitespace-nowrap">التاريخ والوقت</th>
                                         <th class="p-4 font-bold min-w-[150px]">بيانات العميل</th>
                                         <th class="p-4 font-bold min-w-[200px]">تفاصيل الأصناف</th>
                                         <th class="p-4 font-bold whitespace-nowrap">الإجمالي</th>
+                                        <th class="p-4 font-bold whitespace-nowrap">الحالة</th>
+                                        <th class="p-4 font-bold text-center whitespace-nowrap">إجراء</th>
                                     </tr>
                                 </thead>
                                 <tbody id="admin-orders-tbody" class="divide-y divide-gray-700 text-sm font-bold text-gray-200">
@@ -582,7 +824,7 @@
         
         <!-- Admin Edit/Add Product Modal -->
         <div id="admin-prod-modal" class="fixed inset-0 bg-black/80 z-[210] hidden items-center justify-center p-4 backdrop-blur-sm">
-            <div class="bg-gray-800 rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl relative max-h-[90vh] overflow-y-auto admin-scroll border border-gray-700">
+            <div class="bg-gray-800 rounded-2xl p-6 md:p-8 max-w-lg w-full shadow-2xl relative max-h-[95vh] overflow-y-auto admin-scroll border border-gray-700">
                 <h3 id="prod-modal-title" class="text-xl font-bold mb-6 border-b border-gray-700 pb-4 text-white">تعديل المنتج</h3>
                 <input type="hidden" id="edit-prod-id">
                 <div class="space-y-4">
@@ -599,6 +841,24 @@
                         </div>
                         <div><label class="block text-xs font-bold text-gray-400 mb-1.5">المقاس/النوع</label><input type="text" id="edit-prod-sub" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white" placeholder="مثال: وسط، طبيعي، مثلث"></div>
                     </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1.5 flex items-center gap-1"><i data-lucide="layout-template" class="w-3.5 h-3.5"></i> شكل العرض للعميل</label>
+                            <select id="edit-prod-layout" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white font-bold text-xs">
+                                <option value="default">تلقائي (حسب إعدادات المتجر)</option>
+                                <option value="full">كارت كبير جداً (يأخذ عرض الشاشة)</option>
+                                <option value="half">كارت صغير (ضمن الشبكة العادية)</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center pt-5 pl-2">
+                            <label class="flex items-center gap-2 cursor-pointer group">
+                                <input type="checkbox" id="edit-prod-instock" checked class="w-5 h-5 accent-emerald-500 rounded cursor-pointer">
+                                <span class="text-xs font-bold text-gray-300 group-hover:text-emerald-400 transition-colors">المنتج متوفر للطلب (In Stock)</span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div>
                         <label class="block text-xs font-bold text-gray-400 mb-1.5">الصورة</label>
                         <div class="flex gap-2">
@@ -665,16 +925,14 @@
             }
         };
 
-        // ⚡ Engine Upgrade: Smart Pre-load Engine & Image Optimization
+        // ⚡ Engine Upgrade: Smart Pre-load Engine
         const PreloadEngine = {
             loadedUrls: new Set(),
             ignite(catalogData, galleryData = []) {
-                // Delay loading images not currently visible
                 setTimeout(() => {
                     const allUrls = [...catalogData.map(i => i.img || getImgFallback(i.category)), ...galleryData.map(g => g.url)];
                     allUrls.forEach(url => {
                         if(url && !this.loadedUrls.has(url)) {
-                            // Using a virtual image to cache it in the browser
                             const img = new Image(); img.src = url; this.loadedUrls.add(url);
                         }
                     });
@@ -682,10 +940,24 @@
             }
         };
 
+        // 🎨 Math Engine for Colors
+        function hexToMathHSL(hex) {
+            let r = 0, g = 0, b = 0;
+            if (hex.length == 4) { r = "0x" + hex[1] + hex[1]; g = "0x" + hex[2] + hex[2]; b = "0x" + hex[3] + hex[3]; } 
+            else if (hex.length == 7) { r = "0x" + hex[1] + hex[2]; g = "0x" + hex[3] + hex[4]; b = "0x" + hex[5] + hex[6]; }
+            r /= 255; g /= 255; b /= 255;
+            let cmin = Math.min(r,g,b), cmax = Math.max(r,g,b), delta = cmax - cmin, h = 0;
+            if (delta == 0) h = 0;
+            else if (cmax == r) h = ((g - b) / delta) % 6;
+            else if (cmax == g) h = (b - r) / delta + 2;
+            else h = (r - g) / delta + 4;
+            h = Math.round(h * 60); if (h < 0) h += 360;
+            return h;
+        }
+
         let catalogMap = new Map();
         function syncCatalogMap() { catalogMap.clear(); catalog.forEach(p => catalogMap.set(String(p.id), p)); }
         
-        // --- Core Functions ---
         function escapeHTML(str) {
             if (typeof str !== 'string') return str;
             return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
@@ -712,8 +984,16 @@
             heroDesc: "يسر إدارة حلويات بوسي استعراض تشكيلتها الحصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بذوقكم الرفيع ومناسباتكم السعيدة.",
             footerPhone: "01097238441", footerAddress: "الكفاح، مركز الفرافرة، <br> محافظة الوادي الجديد",
             footerQuote: `"نؤمن أن الحلويات لغة للتعبير عن المحبة، لذا نصنع كل قطعة بشغف لنكون شركاءكم في أجمل اللحظات."`,
-            themeHue: 355, fontFamily: "'Cairo', sans-serif", adminPassword: "2026", productLayout: "grid" 
+            productLayout: "grid",
+            
+            brandColorHex: "#ec4899", bgColor: "#ffffff", textColor: "#663b3b",
+            fontFamily: "'Cairo', sans-serif", baseFontSize: 16, baseFontWeight: 400,
+            
+            // Engine Upgrade: Ticker defaults
+            tickerActive: true, tickerText: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب ✨", tickerSpeed: 20, 
+            tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff", tickerBgColor: "#e11d48"
         };
+        
         const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
         const defaultCatalog = [
             { id: 1, category: 'جاتوهات', name: 'جاتوه ملكي', price: 638, desc: 'طبقات من الكيك الإسفنجي الهش متدلعة بالكريمة الغنية والشوكولاتة البلجيكية الأصلية.. قطعة فنية لمناسباتك المهمة! 👑🍫' },
@@ -736,6 +1016,9 @@
         let globalOrders = []; 
         let galleryData = []; 
         
+        let adminCurrentCat = 'all';
+        let adminOrderFilter = 'all';
+
         async function loadEngineMemory() {
             try {
                 const setDoc = await db.collection('settings').doc('main').get();
@@ -757,8 +1040,6 @@
                 if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
 
                 syncCatalogMap(); 
-                
-                // 🛡️ Saving to Secure Local Vault (Offline Data)
                 localStorage.setItem('bSweets_catalog', JSON.stringify(catalog));
                 localStorage.setItem('bSweets_settings', JSON.stringify(siteSettings));
                 localStorage.setItem('bSweets_shipping', JSON.stringify(shippingZones));
@@ -767,7 +1048,6 @@
 
             } catch (e) {
                 console.warn("تعذر الاتصال بالسحابة المركزية، يتم استرجاع البيانات من الخزنة المحلية 🛡️", e);
-                // Fallback to offline mode seamlessly
                 try {
                     const sCat = localStorage.getItem('bSweets_catalog'); catalog = sCat ? JSON.parse(sCat) : [...defaultCatalog];
                     const sSet = localStorage.getItem('bSweets_settings'); if (sSet) siteSettings = { ...defaultSettings, ...JSON.parse(sSet) };
@@ -778,7 +1058,6 @@
                 } catch(err) { catalog = [...defaultCatalog]; syncCatalogMap(); }
             }
 
-            // 🛒 Engine Upgrade: Cart Persistence (Load saved cart from previous session)
             try { const savedCart = localStorage.getItem('boseSweets_cart_data'); if (savedCart) state.cart = JSON.parse(savedCart); } catch (e) { state.cart = []; }
         }
 
@@ -791,16 +1070,39 @@
             } catch (e) {}
         }
 
-        // 🛒 Secure Cart Save Function
         function saveCartToStorage() { try { localStorage.setItem('boseSweets_cart_data', JSON.stringify(state.cart)); } catch (e) {} }
         function clearCartStorage() { try { localStorage.removeItem('boseSweets_cart_data'); } catch (e) {} }
 
+        // 🎨 Engine Upgrade: Smart Theme Injector & Ticker Control
         function applySettingsToUI() {
-            document.documentElement.style.setProperty('--brand-hue', siteSettings.themeHue);
-            document.documentElement.style.setProperty('--brand-font', siteSettings.fontFamily);
+            const root = document.documentElement;
+            const computedHue = hexToMathHSL(siteSettings.brandColorHex || '#ec4899');
+            
+            root.style.setProperty('--brand-hue', computedHue);
+            root.style.setProperty('--brand-font', siteSettings.fontFamily || "'Cairo', sans-serif");
+            root.style.setProperty('--base-font-size', (siteSettings.baseFontSize || 16) + 'px');
+            root.style.setProperty('--base-font-weight', siteSettings.baseFontWeight || 400);
+            root.style.setProperty('--site-bg', siteSettings.bgColor || '#ffffff');
+            root.style.setProperty('--site-text', siteSettings.textColor || '#663b3b');
+            
+            // Ticker Settings Application
+            const isTickerActive = siteSettings.tickerActive !== false; // Default true
+            const tickerContainer = document.getElementById('ticker-container');
+            if (isTickerActive) {
+                tickerContainer.classList.remove('hidden');
+                tickerContainer.classList.add('flex');
+                root.style.setProperty('--ticker-bg', siteSettings.tickerBgColor || '#e11d48');
+                root.style.setProperty('--ticker-color', siteSettings.tickerColor || '#ffffff');
+                root.style.setProperty('--ticker-font', siteSettings.tickerFont || "'Cairo', sans-serif");
+                root.style.setProperty('--ticker-speed', (siteSettings.tickerSpeed || 20) + 's');
+                document.getElementById('dyn-ticker-text').innerText = siteSettings.tickerText || siteSettings.announcement;
+            } else {
+                tickerContainer.classList.add('hidden');
+                tickerContainer.classList.remove('flex');
+            }
+
             document.getElementById('dyn-page-title').innerText = `${siteSettings.brandName} | القائمة الرسمية`;
             document.getElementById('dyn-brand-name').innerText = siteSettings.brandName;
-            document.getElementById('dyn-announcement').innerText = siteSettings.announcement;
             document.getElementById('dyn-hero-title').innerHTML = siteSettings.heroTitle;
             document.getElementById('dyn-hero-desc').innerText = siteSettings.heroDesc;
             document.getElementById('dyn-footer-brand').innerText = siteSettings.brandName;
@@ -810,6 +1112,8 @@
 
             const areaSelect = document.getElementById('cust-area');
             if(areaSelect) areaSelect.innerHTML = `<option value="" disabled selected>اختر المنطقة...</option>` + shippingZones.map(z => `<option value="${z.id}">${escapeHTML(z.name)} (+${Number(z.fee)} ج.م توصيل)</option>`).join('');
+            
+            renderCustomerSidebarCategories();
         }
 
         const catMenu = ['تورت', 'جاتوهات', 'قشطوطة', 'بامبوليني', 'دوناتس', 'ديسباسيتو', 'سينابون', 'ريد فيلفت', 'كبات السعادة', 'ميل فاي', 'إكلير', 'تشيز كيك', 'عروض وبوكسات', 'ميني تورتة', 'ورد'];
@@ -829,11 +1133,33 @@
             renderCustomerGallery(); 
             renderCategories();
             renderMainDisplay();
-            syncCartUI(); // This will show the badge if items were saved from a previous session
+            syncCartUI(); 
             lucide.createIcons();
-            
-            // ⚡ Fire up Preload Engine
             PreloadEngine.ignite(catalog, galleryData);
+        }
+        
+        // Engine Upgrade: Customer Sidebar Menu Logic
+        function toggleCustomerMenu(show) {
+            const ov = document.getElementById('customer-menu-overlay');
+            const sd = document.getElementById('customer-menu-sidebar');
+            if (show) {
+                ov.classList.remove('hidden'); 
+                setTimeout(() => { ov.classList.add('opacity-100'); sd.classList.remove('translate-x-full'); }, 10);
+            } else {
+                ov.classList.remove('opacity-100'); sd.classList.add('translate-x-full');
+                setTimeout(() => ov.classList.add('hidden'), 500);
+            }
+        }
+        
+        function renderCustomerSidebarCategories() {
+            const container = document.getElementById('sidebar-categories');
+            container.innerHTML = catMenu.map(c => `
+                <button onclick="toggleCustomerMenu(false); setCategory('${c}')" class="text-right w-full p-3 rounded-xl font-bold text-sm transition-all hover:bg-gray-50 flex items-center justify-between" style="border: 1px solid hsl(var(--brand-hue), 80%, 95%); color: var(--site-text);">
+                    <span>${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</span>
+                    <i data-lucide="chevron-left" class="w-4 h-4 opacity-50"></i>
+                </button>
+            `).join('');
+            lucide.createIcons();
         }
 
         function renderCustomerGallery() {
@@ -864,8 +1190,8 @@
             const el = document.getElementById('categories-nav');
             el.innerHTML = catMenu.map(c => `
                 <button id="cat-btn-${c.replace(/\s+/g, '-')}" onclick="setCategory('${c}')" class="whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-sm sm:text-base 
-                ${state.activeCat === c ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'bg-white border-pink-100 hover:border-pink-300'}"
-                style="${state.activeCat === c ? '' : `color: #7b4c53; border-color: hsl(var(--brand-hue), 80%, 90%);`}">
+                ${state.activeCat === c ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'border-pink-100 hover:border-pink-300'}"
+                style="${state.activeCat === c ? '' : `background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);`}">
                     ${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}
                 </button>
             `).join('');
@@ -885,13 +1211,13 @@
             else {
                 if (state.activeCat === 'ديسباسيتو') {
                     subTabs.classList.remove('hidden');
-                    subTabs.innerHTML = `<div class="bg-white p-2 rounded-2xl shadow-sm border flex justify-center gap-2" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
-                        ${dSizes.map(s => `<button onclick="setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.dSize === s ? 'text-white shadow-md brand-gradient' : 'bg-gray-50'}" style="${state.dSize === s ? '' : 'color: #7b4c53;'}">${s}</button>`).join('')}
+                    subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                        ${dSizes.map(s => `<button onclick="setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.dSize === s ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.dSize === s ? '' : 'color: var(--site-text);'}">${s}</button>`).join('')}
                     </div>`;
                 } else if (state.activeCat === 'ورد') {
                     subTabs.classList.remove('hidden');
-                    subTabs.innerHTML = `<div class="bg-white p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
-                        ${fTypes.map(f => `<button onclick="setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'bg-gray-50'}" style="${state.fType === f ? '' : 'color: #7b4c53;'}">${f}</button>`).join('')}
+                    subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                        ${fTypes.map(f => `<button onclick="setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}
                     </div>`;
                 }
                 
@@ -909,43 +1235,62 @@
 
         function drawProductCard(p, layoutMode = 'grid') {
             const pIdSafe = String(p.id); const item = state.cart.find(i => String(i.cartItemId) === pIdSafe || String(i.id) === pIdSafe);
-            const isFullWidth = (layoutMode === 'full');
+            
+            let itemLayout = (p.layout && p.layout !== 'default') ? p.layout : layoutMode;
+            let isFullWidth = (itemLayout === 'full');
+            
+            let colSpanClass = '';
+            if (layoutMode === 'grid' && isFullWidth) {
+                colSpanClass = 'col-span-2 md:col-span-2 lg:col-span-2'; 
+            }
+
             const aspectClass = isFullWidth ? 'aspect-[4/3] w-full' : 'aspect-square w-full';
             const titleClass = isFullWidth ? 'text-[16px] sm:text-lg' : 'text-[12px] sm:text-sm';
             const descClass = isFullWidth ? 'text-[13px] sm:text-sm line-clamp-none mt-2' : 'text-[11px] sm:text-xs line-clamp-3';
             const cardPadding = isFullWidth ? 'p-4 sm:p-5' : 'p-2.5 sm:p-4';
 
-            // 🖼️ Lazy Loading 'loading="lazy"' is added to images here
+            const isOutOfStock = p.inStock === false;
+
             return `
-                <div id="product-card-${p.id}" class="bg-white rounded-[1rem] sm:rounded-2xl shadow-sm hover:shadow-lg border flex flex-col group ${cardPadding} transition-all duration-300 relative h-full" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <div id="product-card-${p.id}" class="rounded-[1rem] sm:rounded-2xl shadow-sm hover:shadow-lg border flex flex-col group ${cardPadding} ${colSpanClass} transition-all duration-300 relative h-full" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                    
+                    ${isOutOfStock ? `<div class="absolute top-4 right-4 z-20 bg-gray-900/85 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-600 backdrop-blur-sm shadow-lg flex items-center gap-1"><i data-lucide="ban" class="w-3 h-3 text-red-400"></i> نفدت الكمية</div>` : ''}
+                    
                     <div class="${aspectClass} rounded-lg sm:rounded-xl overflow-hidden border relative shrink-0" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                        <img src="${p.img || getImgFallback(p.category)}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        <img src="${p.img || getImgFallback(p.category)}" class="w-full h-full object-cover transition-transform duration-700 ${isOutOfStock ? 'grayscale-overlay scale-100' : 'group-hover:scale-105'}" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent opacity-0 ${isOutOfStock ? '' : 'group-hover:opacity-100'} transition-opacity duration-300"></div>
                     </div>
                     
                     <div class="mt-2.5 sm:mt-3 flex-1 flex flex-col justify-between">
                         <div class="mb-3">
-                            <h4 class="font-bold ${titleClass} leading-tight mb-1 line-clamp-1" style="color: var(--text-brown);">${escapeHTML(p.name)}</h4>
-                            ${p.desc ? `<p class="font-bold leading-relaxed ${descClass}" style="color: #7b4c53;">${escapeHTML(p.desc)}</p>` : ''}
+                            <h4 class="font-bold ${titleClass} leading-tight mb-1 line-clamp-1" style="color: var(--site-text);">${escapeHTML(p.name)}</h4>
+                            ${p.desc ? `<p class="font-bold leading-relaxed ${descClass} ${isOutOfStock ? 'opacity-50' : 'opacity-80'}" style="color: var(--site-text);">${escapeHTML(p.desc)}</p>` : ''}
                         </div>
                         
                         <div class="mt-auto flex flex-col gap-1.5 sm:gap-2">
                             <div class="border rounded-lg p-1.5 flex items-center justify-between shadow-inner" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                                <button onclick="${item ? `modQ('${item.cartItemId || item.id}', -1)` : ''}" class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center bg-white rounded-md shadow-sm transition-all border ${item ? 'active:scale-90 cursor-pointer hover:text-white' : 'opacity-40 cursor-not-allowed'}" style="${item ? `color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);` : ''}" ${item ? `onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 70%, 65%)'" onmouseout="this.style.backgroundColor='white'"` : ''}>
+                                <button ${isOutOfStock ? 'disabled' : `onclick="${item ? `modQ('${item.cartItemId || item.id}', -1)` : ''}"`} class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-md shadow-sm transition-all border ${item && !isOutOfStock ? 'active:scale-90 cursor-pointer hover:text-white' : 'opacity-40 cursor-not-allowed'}" style="${item && !isOutOfStock ? `background-color: var(--site-bg); color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);` : `background-color: var(--site-bg);`}" ${item && !isOutOfStock ? `onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 70%, 65%)'" onmouseout="this.style.backgroundColor='var(--site-bg)'"` : ''}>
                                     <i data-lucide="minus" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
                                 </button>
                                 <div class="flex flex-col items-center justify-center px-1">
-                                    <span class="font-bold text-[12px] sm:text-[14px] tracking-tight leading-none" style="color: hsl(var(--brand-hue), 70%, 40%);">${Number(p.price) > 0 ? Number(p.price) + ' ج.م' : 'حسب الطلب'}</span>
-                                    ${item ? `<span class="text-[9px] font-bold mt-0.5 bg-white px-2 py-0.5 rounded-full border shadow-sm transition-all" style="color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);">الكمية: ${Number(item.quantity)}</span>` : ''}
+                                    <span class="font-bold text-[12px] sm:text-[14px] tracking-tight leading-none ${isOutOfStock ? 'opacity-50' : ''}" style="color: hsl(var(--brand-hue), 70%, 40%);">${Number(p.price) > 0 ? Number(p.price) + ' ج.م' : 'حسب الطلب'}</span>
+                                    ${item ? `<span class="text-[9px] font-bold mt-0.5 px-2 py-0.5 rounded-full border shadow-sm transition-all" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);">الكمية: ${Number(item.quantity)}</span>` : ''}
                                 </div>
-                                <button onclick="addJS('${p.id}')" class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center bg-white rounded-md shadow-sm transition-all active:scale-90 border cursor-pointer hover:text-white" style="color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);" onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 70%, 65%)'" onmouseout="this.style.backgroundColor='white'">
+                                <button ${isOutOfStock ? 'disabled' : `onclick="addJS('${p.id}')"`} class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-md shadow-sm transition-all border ${!isOutOfStock ? 'active:scale-90 cursor-pointer hover:text-white' : 'opacity-40 cursor-not-allowed'}" style="${!isOutOfStock ? `background-color: var(--site-bg); color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);` : `background-color: var(--site-bg);`}" ${!isOutOfStock ? `onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 70%, 65%)'" onmouseout="this.style.backgroundColor='var(--site-bg)'"` : ''}>
                                     <i data-lucide="plus" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
                                 </button>
                             </div>
-                            <button onclick="addJS('${p.id}')" class="w-full font-bold text-[11px] sm:text-xs py-2 rounded-lg border transition-all flex justify-center items-center gap-1.5 shadow-sm active:scale-95 ${item ? 'text-white brand-gradient border-transparent' : 'bg-white hover:text-white'}" style="${item ? '' : `color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 80%);`}" ${item ? '' : `onmouseover="this.style.background='hsl(var(--brand-hue), 70%, 65%)'" onmouseout="this.style.background='white'"`}>
-                                <i data-lucide="${item ? 'check-circle' : 'shopping-cart'}" class="w-3.5 h-3.5"></i>
-                                <span>${item ? 'تمت الإضافة' : 'إضافة للسلة'}</span>
-                            </button>
+                            
+                            ${isOutOfStock ? 
+                                `<button disabled class="w-full font-bold text-[11px] sm:text-xs py-2 rounded-lg border flex justify-center items-center gap-1.5 shadow-sm bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed">
+                                    <i data-lucide="clock" class="w-3.5 h-3.5"></i> غير متوفر حالياً
+                                </button>` 
+                            : 
+                                `<button onclick="addJS('${p.id}')" class="w-full font-bold text-[11px] sm:text-xs py-2 rounded-lg border transition-all flex justify-center items-center gap-1.5 shadow-sm active:scale-95 ${item ? 'text-white brand-gradient border-transparent' : 'hover:text-white'}" style="${item ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 80%);`}" ${item ? '' : `onmouseover="this.style.background='hsl(var(--brand-hue), 70%, 65%)'" onmouseout="this.style.background='var(--site-bg)'"`}>
+                                    <i data-lucide="${item ? 'check-circle' : 'shopping-cart'}" class="w-3.5 h-3.5"></i>
+                                    <span>${item ? 'تمت الإضافة' : 'إضافة للسلة'}</span>
+                                </button>`
+                            }
                         </div>
                     </div>
                 </div>
@@ -979,76 +1324,76 @@
             const flavors = ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت', 'كراميل', 'فستق', 'لوتس', 'ميكس فواكه'];
 
             target.innerHTML = `
-                <div class="bg-white rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <div class="rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
                     <div class="p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
                         <img src="${getImgFallback('تورت')}" class="w-full md:w-1/3 h-56 object-cover rounded-2xl shadow-lg border-2 border-white">
                         <div class="flex-1 text-center md:text-right">
                             <h2 class="text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">تخصيص التورت الملكية 👑</h2>
-                            <p class="text-sm md:text-base font-bold leading-loose" style="color: #7b4c53;">نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة، مع ضمان تنفيذ إدارة حلويات بوسي لكافة الطلبات بأعلى مستوى احترافي.</p>
+                            <p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة، مع ضمان تنفيذ إدارة حلويات بوسي لكافة الطلبات بأعلى مستوى احترافي.</p>
                         </div>
                     </div>
                     
                     <div class="p-6 md:p-12 space-y-12">
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             <div class="space-y-4">
-                                <label class="font-bold text-lg flex items-center gap-2" style="color: var(--text-brown);"><i data-lucide="cake" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> نكهة الكيك المفضلة</label>
+                                <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="cake" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> نكهة الكيك المفضلة</label>
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                    ${flavors.map(fl => `<button onclick="uCake('flv', '${fl}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'bg-white hover:bg-gray-50'}" style="${c.flv === fl ? '' : `color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${fl}</button>`).join('')}
+                                    ${flavors.map(fl => `<button onclick="uCake('flv', '${fl}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${fl}</button>`).join('')}
                                 </div>
                             </div>
                             <div class="space-y-4">
-                                <label class="font-bold text-lg flex items-center gap-2" style="color: var(--text-brown);"><i data-lucide="heart" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> عدد الأفراد (رقم زوجي)</label>
+                                <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="heart" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> عدد الأفراد (رقم زوجي)</label>
                                 <div class="flex items-center justify-between border rounded-2xl p-2 shadow-inner h-full max-h-[80px]" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                                    <button onclick="adjP(-2)" class="p-3 bg-white rounded-xl border hover:scale-105 transition-all" style="color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);"><i data-lucide="minus" class="w-6 h-6"></i></button>
+                                    <button onclick="adjP(-2)" class="p-3 rounded-xl border hover:scale-105 transition-all" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);"><i data-lucide="minus" class="w-6 h-6"></i></button>
                                     <div class="text-center flex flex-col items-center"><span class="text-3xl font-bold" style="color: hsl(var(--brand-hue), 70%, 40%);">${c.ps}</span><span class="text-[9px] font-bold uppercase tracking-widest" style="color: hsl(var(--brand-hue), 70%, 65%);">فرداً</span></div>
-                                    <button onclick="adjP(2)" class="p-3 bg-white rounded-xl border hover:scale-105 transition-all" style="color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);"><i data-lucide="plus" class="w-6 h-6"></i></button>
+                                    <button onclick="adjP(2)" class="p-3 rounded-xl border hover:scale-105 transition-all" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);"><i data-lucide="plus" class="w-6 h-6"></i></button>
                                 </div>
                             </div>
                         </div>
 
                         <div class="p-8 rounded-[2rem] border space-y-8 shadow-inner relative" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                            <label class="font-bold text-lg flex items-center gap-2" style="color: var(--text-brown);"><i data-lucide="star" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> الشكل الهندسي المختار</label>
+                            <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="star" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> الشكل الهندسي المختار</label>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 ${['دائري', 'قلب', 'مربع', 'مستطيل'].map(sh => `
-                                    <button onclick="setSh('${sh}')" class="py-5 rounded-xl font-bold flex flex-col items-center gap-2 border-2 transition-all ${c.sh === sh ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'bg-white hover:bg-gray-50'}" style="${c.sh === sh ? '' : `color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">
+                                    <button onclick="setSh('${sh}')" class="py-5 rounded-xl font-bold flex flex-col items-center gap-2 border-2 transition-all ${c.sh === sh ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.sh === sh ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">
                                         <span class="text-sm">${sh}</span>
                                         ${sh === 'مربع' || sh === 'مستطيل' ? `<span class="text-[9px] opacity-75">${sh === 'مربع' ? '(من 16)' : '(من 20)'}</span>` : ''}
                                     </button>
                                 `).join('')}
                             </div>
-                            <label class="flex items-center gap-4 cursor-pointer p-3 bg-white/50 rounded-xl border border-white"><input type="checkbox" ${c.trd ? 'checked' : ''} onchange="uCake('trd', this.checked)" class="w-6 h-6 rounded"> <span class="font-bold text-sm md:text-base" style="color: var(--text-brown);">هل تفضلون التصميم متعدد الأدوار؟</span></label>
+                            <label class="flex items-center gap-4 cursor-pointer p-3 rounded-xl border" style="background-color: rgba(var(--site-bg), 0.5);"><input type="checkbox" ${c.trd ? 'checked' : ''} onchange="uCake('trd', this.checked)" class="w-6 h-6 rounded"> <span class="font-bold text-sm md:text-base" style="color: var(--site-text);">هل تفضلون التصميم متعدد الأدوار؟</span></label>
                         </div>
 
-                        <div class="bg-rose-50 p-8 rounded-[2rem] border border-rose-100 flex flex-col md:flex-row gap-6 shadow-sm">
-                            <i data-lucide="alert-circle" class="w-10 h-10 text-rose-500 flex-shrink-0"></i>
+                        <div class="p-8 rounded-[2rem] border flex flex-col md:flex-row gap-6 shadow-sm" style="background-color: hsl(var(--brand-hue), 30%, 97%); border-color: hsl(var(--brand-hue), 30%, 90%);">
+                            <i data-lucide="alert-circle" class="w-10 h-10 flex-shrink-0" style="color: hsl(var(--brand-hue), 60%, 50%);"></i>
                             <div class="flex-1">
-                                <h4 class="font-bold text-rose-800 mb-3 text-lg md:text-xl tracking-tight leading-tight">الرعاية الصحية وسلامة الغذاء</h4>
-                                <p class="text-xs text-rose-700 mb-5 font-bold leading-loose opacity-80">صحتكم وسلامتكم أولوية؛ نرجو تدوين أي تفاصيل تتعلق بالحساسية الغذائية لضمان تجربة آمنة تماماً.</p>
-                                <input type="text" value="${escapeHTML(c.alg)}" onchange="uCake('alg', this.value)" placeholder="ملاحظات صحية إن وجدت..." class="w-full p-4 rounded-xl border border-rose-200 outline-none focus:ring-2 focus:ring-rose-200 font-bold text-sm bg-white text-gray-700 shadow-inner">
+                                <h4 class="font-bold mb-3 text-lg md:text-xl tracking-tight leading-tight" style="color: hsl(var(--brand-hue), 60%, 40%);">الرعاية الصحية وسلامة الغذاء</h4>
+                                <p class="text-xs mb-5 font-bold leading-loose opacity-80" style="color: hsl(var(--brand-hue), 60%, 30%);">صحتكم وسلامتكم أولوية؛ نرجو تدوين أي تفاصيل تتعلق بالحساسية الغذائية لضمان تجربة آمنة تماماً.</p>
+                                <input type="text" value="${escapeHTML(c.alg)}" onchange="uCake('alg', this.value)" placeholder="ملاحظات صحية إن وجدت..." class="w-full p-4 rounded-xl border outline-none focus:ring-2 font-bold text-sm shadow-inner" style="background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 30%, 85%);">
                             </div>
                         </div>
 
-                        <div class="bg-fuchsia-50/50 p-8 rounded-[2rem] border border-fuchsia-100 flex flex-col md:flex-row gap-8 shadow-sm relative overflow-hidden">
-                            <div class="absolute top-0 right-0 w-32 h-32 bg-fuchsia-200 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse"></div>
+                        <div class="p-8 rounded-[2rem] border flex flex-col md:flex-row gap-8 shadow-sm relative overflow-hidden" style="background-color: hsl(var(--brand-hue), 10%, 97%); border-color: hsl(var(--brand-hue), 10%, 90%);">
+                            <div class="absolute top-0 right-0 w-32 h-32 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse" style="background-color: hsl(var(--brand-hue), 50%, 80%);"></div>
                             <div class="flex-1 space-y-4 relative z-10">
-                                <label class="font-bold text-fuchsia-900 flex items-center gap-2 text-lg"><i data-lucide="party-popper" class="text-fuchsia-600 w-6 h-6"></i> طبيعة المناسبة</label>
-                                <p class="text-[11px] md:text-xs text-fuchsia-700 font-bold leading-loose">أخبرنا بمناسبتك السعيدة ليتم ابتكار اللمسات الإبداعية التي تليق بالحدث.</p>
-                                <input type="text" value="${escapeHTML(c.occ)}" onchange="uCake('occ', this.value)" placeholder="مثال: عيد ميلاد، زفاف..." class="w-full p-4 rounded-xl border border-fuchsia-200 bg-white font-bold text-sm text-gray-800 shadow-sm focus:ring-2 focus:ring-fuchsia-100 outline-none transition-all">
+                                <label class="font-bold flex items-center gap-2 text-lg" style="color: var(--site-text);"><i data-lucide="party-popper" class="w-6 h-6" style="color: hsl(var(--brand-hue), 60%, 50%);"></i> طبيعة المناسبة</label>
+                                <p class="text-[11px] md:text-xs font-bold leading-loose opacity-80" style="color: var(--site-text);">أخبرنا بمناسبتك السعيدة ليتم ابتكار اللمسات الإبداعية التي تليق بالحدث.</p>
+                                <input type="text" value="${escapeHTML(c.occ)}" onchange="uCake('occ', this.value)" placeholder="مثال: عيد ميلاد، زفاف..." class="w-full p-4 rounded-xl border shadow-sm outline-none transition-all font-bold text-sm" style="background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 20%, 85%);">
                             </div>
-                            <div class="flex-1 space-y-4 relative z-10 border-t md:border-t-0 md:border-r border-fuchsia-100 pt-6 md:pt-0 md:pr-8">
-                                 <label class="font-bold text-fuchsia-900 flex items-center gap-2 text-lg"><i data-lucide="image-plus" class="text-fuchsia-600 w-6 h-6"></i> تصميم مرجعي</label>
-                                 <p class="text-[11px] md:text-xs text-fuchsia-700 font-bold leading-loose">هل لديك صورة لتصميم أعجبك؟ قم بإرفاق الصورة هنا.</p>
-                                 <div class="relative border-2 border-dashed border-fuchsia-300 rounded-xl p-4 text-center hover:bg-fuchsia-100 transition-all cursor-pointer bg-white overflow-hidden group">
+                            <div class="flex-1 space-y-4 relative z-10 border-t md:border-t-0 md:border-r pt-6 md:pt-0 md:pr-8" style="border-color: hsl(var(--brand-hue), 20%, 85%);">
+                                 <label class="font-bold flex items-center gap-2 text-lg" style="color: var(--site-text);"><i data-lucide="image-plus" class="w-6 h-6" style="color: hsl(var(--brand-hue), 60%, 50%);"></i> تصميم مرجعي</label>
+                                 <p class="text-[11px] md:text-xs font-bold leading-loose opacity-80" style="color: var(--site-text);">هل لديك صورة لتصميم أعجبك؟ قم بإرفاق الصورة هنا.</p>
+                                 <div class="relative border-2 border-dashed rounded-xl p-4 text-center hover:opacity-80 transition-all cursor-pointer overflow-hidden group" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 40%, 80%);">
                                      <input type="file" accept="image/*" onchange="handleRefImage(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                                      ${c.refImgUrl ? `
                                         <div class="relative z-0">
-                                            <img src="${c.refImgUrl}" class="h-24 w-full object-cover rounded-lg shadow-sm mb-2 border border-fuchsia-100">
-                                            <span class="text-[10px] font-bold text-fuchsia-700 bg-fuchsia-50 px-3 py-1 rounded-md border border-fuchsia-200 inline-block shadow-sm">✓ تم الإرفاق</span>
+                                            <img src="${c.refImgUrl}" class="h-24 w-full object-cover rounded-lg shadow-sm mb-2 border" style="border-color: hsl(var(--brand-hue), 20%, 85%);">
+                                            <span class="text-[10px] font-bold px-3 py-1 rounded-md border inline-block shadow-sm" style="background-color: hsl(var(--brand-hue), 80%, 97%); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 40%, 80%);">✓ تم الإرفاق</span>
                                         </div>
                                      ` : `
                                         <div class="relative z-0 py-2">
-                                            <div class="w-12 h-12 bg-fuchsia-50 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform"><i data-lucide="upload-cloud" class="w-6 h-6 text-fuchsia-500"></i></div>
-                                            <span class="text-[10px] font-bold text-gray-500 block">اضغط هنا أو اسحب الصورة</span>
+                                            <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform" style="background-color: hsl(var(--brand-hue), 80%, 97%);"><i data-lucide="upload-cloud" class="w-6 h-6" style="color: hsl(var(--brand-hue), 60%, 50%);"></i></div>
+                                            <span class="text-[10px] font-bold opacity-70 block" style="color: var(--site-text);">اضغط هنا أو اسحب الصورة</span>
                                         </div>
                                      `}
                                  </div>
@@ -1057,24 +1402,24 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 border-t pt-10" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
                             <div class="space-y-4">
-                                <label class="font-bold text-lg flex items-center gap-2" style="color: var(--text-brown);"><i data-lucide="camera" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> طباعة صورة</label>
+                                <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="camera" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> طباعة صورة</label>
                                 <div class="space-y-3">
                                     ${['بدون', 'صورة قابلة للأكل', 'صورة غير قابلة للأكل'].map(it => `
-                                        <label class="flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${c.img === it ? 'bg-pink-50 shadow-sm scale-[1.01]' : 'bg-white'}" style="${c.img === it ? `border-color: hsl(var(--brand-hue), 70%, 60%);` : `border-color: hsl(var(--brand-hue), 80%, 95%);`}">
-                                            <div class="flex items-center gap-3"><input type="radio" name="cakeImg" ${c.img === it ? 'checked' : ''} onclick="uCake('img', '${it}')" class="w-5 h-5"> <span class="font-bold text-sm" style="color: var(--text-brown);">${it}</span></div>
-                                            ${it !== 'بدون' ? `<span class="bg-white px-3 py-1.5 rounded-lg border font-bold text-[10px] shadow-sm" style="color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);">+${it.includes('غير') ? '20' : '60'} ج.م</span>` : ''}
+                                        <label class="flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${c.img === it ? 'shadow-sm scale-[1.01]' : ''}" style="${c.img === it ? `background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 70%, 60%);` : `background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 95%);`}">
+                                            <div class="flex items-center gap-3"><input type="radio" name="cakeImg" ${c.img === it ? 'checked' : ''} onclick="uCake('img', '${it}')" class="w-5 h-5"> <span class="font-bold text-sm" style="color: var(--site-text);">${it}</span></div>
+                                            ${it !== 'بدون' ? `<span class="px-3 py-1.5 rounded-lg border font-bold text-[10px] shadow-sm" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);">+${it.includes('غير') ? '20' : '60'} ج.م</span>` : ''}
                                         </label>
                                     `).join('')}
                                 </div>
                             </div>
                             <div class="space-y-6">
                                 <div class="space-y-3">
-                                    <label class="font-bold text-lg flex items-center gap-2" style="color: var(--text-brown);"><i data-lucide="pen-tool" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> العبارة المراد تدوينها</label>
-                                    <input type="text" value="${escapeHTML(c.msg)}" onchange="uCake('msg', this.value)" placeholder="يرجى كتابة العبارة بوضوح..." class="w-full p-4 rounded-xl border bg-white/50 font-bold text-sm shadow-inner" style="border-color: hsl(var(--brand-hue), 80%, 90%); color: var(--text-brown);">
+                                    <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="pen-tool" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> العبارة المراد تدوينها</label>
+                                    <input type="text" value="${escapeHTML(c.msg)}" onchange="uCake('msg', this.value)" placeholder="يرجى كتابة العبارة بوضوح..." class="w-full p-4 rounded-xl border font-bold text-sm shadow-inner" style="background-color: rgba(var(--site-bg), 0.5); border-color: hsl(var(--brand-hue), 80%, 90%); color: var(--site-text);">
                                 </div>
                                 <div class="flex flex-col gap-4">
-                                    <label class="flex items-center gap-3 cursor-pointer p-4 bg-white rounded-xl border shadow-sm transition-all active:scale-95" style="border-color: hsl(var(--brand-hue), 80%, 95%);"><input type="checkbox" ${c.crd ? 'checked' : ''} onchange="uCake('crd', this.checked)" class="w-5 h-5 rounded"> <span class="font-bold text-sm" style="color: var(--text-brown);">إرفاق بطاقة إهداء فاخرة.</span></label>
-                                    <label class="flex items-center gap-3 cursor-pointer p-4 bg-white rounded-xl border shadow-sm transition-all active:scale-95" style="border-color: hsl(var(--brand-hue), 80%, 95%);"><input type="checkbox" ${c.dlg ? 'checked' : ''} onchange="uCake('dlg', this.checked)" class="w-5 h-5 rounded"> <span class="font-bold text-sm" style="color: var(--text-brown);">تفويض الإدارة لابتكار التصميم.</span></label>
+                                    <label class="flex items-center gap-3 cursor-pointer p-4 rounded-xl border shadow-sm transition-all active:scale-95" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 95%);"><input type="checkbox" ${c.crd ? 'checked' : ''} onchange="uCake('crd', this.checked)" class="w-5 h-5 rounded"> <span class="font-bold text-sm" style="color: var(--site-text);">إرفاق بطاقة إهداء فاخرة.</span></label>
+                                    <label class="flex items-center gap-3 cursor-pointer p-4 rounded-xl border shadow-sm transition-all active:scale-95" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 95%);"><input type="checkbox" ${c.dlg ? 'checked' : ''} onchange="uCake('dlg', this.checked)" class="w-5 h-5 rounded"> <span class="font-bold text-sm" style="color: var(--site-text);">تفويض الإدارة لابتكار التصميم.</span></label>
                                 </div>
                             </div>
                         </div>
@@ -1131,6 +1476,7 @@
             const safeId = String(id);
             const prod = catalogMap.get(safeId); 
             if (!prod) return;
+            if (prod.inStock === false) { showSystemToast('نأسف، هذا المنتج غير متوفر حالياً.', 'error'); return; }
             const exist = state.cart.find(i => String(i.id) === safeId);
             if (exist) { exist.quantity = Number(exist.quantity) + 1; } 
             else {
@@ -1224,10 +1570,10 @@
             const ov = document.getElementById('cart-overlay');
             const sd = document.getElementById('cart-sidebar');
             if (s) { 
-                ov.classList.remove('hidden'); setTimeout(() => { ov.classList.add('opacity-100'); sd.classList.add('translate-x-0'); }, 10); 
+                ov.classList.remove('hidden'); setTimeout(() => { ov.classList.add('opacity-100'); sd.classList.remove('translate-x-full'); }, 10); 
                 renderCartList(); calculateCartTotal();
             } else { 
-                ov.classList.remove('opacity-100'); sd.classList.remove('translate-x-0'); 
+                ov.classList.remove('opacity-100'); sd.classList.add('translate-x-full'); 
                 setTimeout(() => ov.classList.add('hidden'), 500); 
             }
         }
@@ -1243,26 +1589,25 @@
                     const identifier = item.cartItemId || item.id;
                     const q = Number(item.quantity); const p = Number(item.price);
                     
-                    // Engine Upgrade: Robust Display Name for Cart
                     let catName = item.category ? `[${item.category}]` : '';
                     let subTypeName = (item.subType || item.size || item.flowerType) ? ` (${item.subType || item.size || item.flowerType})` : '';
                     let fullName = item.isCustom ? item.name : `${catName}${subTypeName} ${item.name}`.trim();
 
                     return `
-                        <div class="bg-white p-5 sm:p-6 rounded-2xl border shadow-sm flex flex-col gap-4 relative" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+                        <div class="p-5 sm:p-6 rounded-2xl border shadow-sm flex flex-col gap-4 relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
                             <div class="flex justify-between items-start gap-4">
                                 <div class="flex-1 text-right">
-                                    <h4 class="font-bold text-sm sm:text-base leading-tight" style="color: var(--text-brown);">${escapeHTML(fullName)}</h4>
-                                    ${item.desc ? `<p class="text-[10px] sm:text-xs font-bold mt-1 line-clamp-1" style="color: #7b4c53;">${escapeHTML(item.desc)}</p>` : ''}
+                                    <h4 class="font-bold text-sm sm:text-base leading-tight" style="color: var(--site-text);">${escapeHTML(fullName)}</h4>
+                                    ${item.desc ? `<p class="text-[10px] sm:text-xs font-bold mt-1 line-clamp-1 opacity-80" style="color: var(--site-text);">${escapeHTML(item.desc)}</p>` : ''}
                                 </div>
-                                <button onclick="modQ('${identifier}', -${q})" class="text-gray-300 hover:text-red-500 p-1 transition-all"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                                <button onclick="modQ('${identifier}', -${q})" class="text-gray-400 hover:text-red-500 p-1 transition-all"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
                             </div>
                             <div class="flex justify-between items-center mt-2">
                                 <span class="font-bold text-lg" style="color: hsl(var(--brand-hue), 70%, 50%);">${p > 0 ? (p * q) + ' ج.م' : 'يُحدد لاحقاً'}</span>
                                 <div class="flex items-center gap-2 rounded-lg p-1 border" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                                    <button onclick="modQ('${identifier}', -1)" class="p-1.5 bg-white rounded shadow-sm active:scale-90 transition-all" style="color: hsl(var(--brand-hue), 70%, 60%);"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                                    <button onclick="modQ('${identifier}', -1)" class="p-1.5 rounded shadow-sm active:scale-90 transition-all" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 60%);"><i data-lucide="minus" class="w-4 h-4"></i></button>
                                     <span class="text-sm font-bold w-6 text-center" style="color: hsl(var(--brand-hue), 70%, 40%);">${q}</span>
-                                    <button onclick="modQ('${identifier}', 1)" class="p-1.5 bg-white rounded shadow-sm active:scale-90 transition-all" style="color: hsl(var(--brand-hue), 70%, 60%);"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                                    <button onclick="modQ('${identifier}', 1)" class="p-1.5 rounded shadow-sm active:scale-90 transition-all" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 60%);"><i data-lucide="plus" class="w-4 h-4"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -1319,8 +1664,6 @@
 
             state.cart.forEach((i, idx) => {
                 let p = Number(i.price); let q = Number(i.quantity); sub += (p * q);
-                
-                // Engine Upgrade: Robust Display Name for WhatsApp to solve sales team confusion
                 let catName = i.category ? `[${i.category}]` : '';
                 let subTypeName = (i.subType || i.size || i.flowerType) ? ` (${i.subType || i.size || i.flowerType})` : '';
                 let finalItemName = i.isCustom ? i.name : `${catName}${subTypeName} ${i.name}`.trim();
@@ -1339,10 +1682,10 @@
                 phone: cPhone, 
                 area: areaName, 
                 items: itemsDesc.join('، '), 
-                total: (sub + state.currentShippingFee) 
+                total: (sub + state.currentShippingFee),
+                status: 'pending'
             };
 
-            // Network Engine will try to send to cloud, but if offline, it saves to local cache and keeps the user moving!
             try {
                 await NetworkEngine.safeWrite('orders', orderId, orderObj);
                 globalOrders.unshift(orderObj); localStorage.setItem('boseSweets_admin_orders', JSON.stringify(globalOrders));
@@ -1377,6 +1720,10 @@
             const pwd = prompt("النظام السحابي المشفر لإدارة المتجر ☁️🛡️\n\nبرجاء إدخال رمز المرور السري:");
             if (pwd === (siteSettings.adminPassword || "2026")) {
                 document.getElementById('admin-dashboard').classList.remove('hidden'); document.getElementById('admin-dashboard').classList.add('flex');
+                
+                renderAdminCatalogTabs();
+                renderAdminOrderFilters(); 
+                
                 renderAdminOverview(); renderAdminOrders(); renderAdminMenu(); renderAdminShipping(); renderAdminGallery(); fillAdminSettingsForm();
                 document.getElementById('sec-current-pwd').value = ''; document.getElementById('sec-new-pwd').value = ''; document.getElementById('sec-confirm-pwd').value = '';
                 lucide.createIcons();
@@ -1433,26 +1780,141 @@
             } catch (e) { showSystemToast("فشل النسخ", "error"); }
         }
 
+        // 🎨 Engine Upgrade: Live Preview Function including Ticker
+        function updateLiveThemePreview() {
+            const brandColor = document.getElementById('set-brand-color').value;
+            const bgColor = document.getElementById('set-bg-color').value;
+            const textColor = document.getElementById('set-text-color').value;
+            const fontFamily = document.getElementById('set-font').value;
+            const fontSize = document.getElementById('set-font-size').value + 'px';
+            const fontWeight = document.getElementById('set-font-weight').value;
+            
+            // Ticker live update
+            const isTickerActive = document.getElementById('set-ticker-active').checked;
+            const tickerText = document.getElementById('set-ticker-text').value || "حلويات بوسي: تجربة التذوق الفاخرة...";
+            const tickerSpeed = document.getElementById('set-ticker-speed').value + 's';
+            const tickerBg = document.getElementById('set-ticker-bg').value;
+            const tickerColor = document.getElementById('set-ticker-color').value;
+            const tickerFont = document.getElementById('set-ticker-font').value;
+            
+            const previewTickerWrap = document.getElementById('preview-ticker-wrap');
+            const previewTickerText = document.getElementById('preview-ticker-text');
+            
+            if(isTickerActive) {
+                previewTickerWrap.style.display = 'flex';
+                previewTickerWrap.style.backgroundColor = tickerBg;
+                previewTickerText.style.color = tickerColor;
+                previewTickerText.style.fontFamily = tickerFont;
+                previewTickerText.style.animationDuration = tickerSpeed;
+                previewTickerText.innerText = tickerText;
+            } else {
+                previewTickerWrap.style.display = 'none';
+            }
+            
+            const previewBox = document.getElementById('theme-live-preview');
+            const previewBtn = document.getElementById('preview-button');
+            
+            previewBox.style.backgroundColor = bgColor;
+            previewBox.style.color = textColor;
+            previewBox.style.fontFamily = fontFamily;
+            previewBox.style.fontSize = fontSize;
+            previewBox.style.fontWeight = fontWeight;
+            
+            const calculatedHue = hexToMathHSL(brandColor);
+            previewBtn.style.backgroundImage = `linear-gradient(135deg, hsl(${calculatedHue}, 80%, 65%) 0%, hsl(${calculatedHue}, 85%, 75%) 50%, hsl(${calculatedHue}, 90%, 85%) 100%)`;
+        }
+
+        function syncColorInput(inputId, textId) {
+            document.getElementById(inputId).addEventListener('input', (e) => {
+                document.getElementById(textId).value = e.target.value.toUpperCase();
+                updateLiveThemePreview();
+            });
+        }
+
         function fillAdminSettingsForm() {
-            document.getElementById('set-brand').value = siteSettings.brandName; document.getElementById('set-announcement').value = siteSettings.announcement;
-            document.getElementById('set-hero-title').value = siteSettings.heroTitle; document.getElementById('set-hero-desc').value = siteSettings.heroDesc;
-            document.getElementById('set-footer-phone').value = siteSettings.footerPhone; document.getElementById('set-footer-address').value = siteSettings.footerAddress.replace(/<br>/g, '');
-            document.getElementById('set-footer-quote').value = siteSettings.footerQuote; document.getElementById('set-hue').value = siteSettings.themeHue;
-            document.getElementById('set-font').value = siteSettings.fontFamily; document.getElementById('hue-preview').style.backgroundColor = `hsl(${siteSettings.themeHue}, 80%, 65%)`;
+            // Data Tab
+            document.getElementById('set-brand').value = siteSettings.brandName; 
+            document.getElementById('set-announcement').value = siteSettings.announcement;
+            document.getElementById('set-hero-title').value = siteSettings.heroTitle; 
+            document.getElementById('set-hero-desc').value = siteSettings.heroDesc;
+            document.getElementById('set-footer-phone').value = siteSettings.footerPhone; 
+            document.getElementById('set-footer-address').value = siteSettings.footerAddress.replace(/<br>/g, '');
+            document.getElementById('set-footer-quote').value = siteSettings.footerQuote; 
+            
             const layout = siteSettings.productLayout || 'grid';
             if(layout === 'full') document.getElementById('set-layout-full').checked = true; else document.getElementById('set-layout-grid').checked = true;
+
+            // Theme Tab
+            document.getElementById('set-brand-color').value = siteSettings.brandColorHex || '#ec4899';
+            document.getElementById('set-brand-color-text').value = (siteSettings.brandColorHex || '#ec4899').toUpperCase();
+            
+            document.getElementById('set-bg-color').value = siteSettings.bgColor || '#ffffff';
+            document.getElementById('set-bg-color-text').value = (siteSettings.bgColor || '#ffffff').toUpperCase();
+            
+            document.getElementById('set-text-color').value = siteSettings.textColor || '#663b3b';
+            document.getElementById('set-text-color-text').value = (siteSettings.textColor || '#663b3b').toUpperCase();
+            
+            document.getElementById('set-font').value = siteSettings.fontFamily || "'Cairo', sans-serif";
+            document.getElementById('set-font-size').value = siteSettings.baseFontSize || 16;
+            document.getElementById('font-size-val').innerText = (siteSettings.baseFontSize || 16) + 'px';
+            document.getElementById('set-font-weight').value = siteSettings.baseFontWeight || 400;
+            
+            // Ticker Tab
+            document.getElementById('set-ticker-active').checked = siteSettings.tickerActive !== false;
+            document.getElementById('set-ticker-text').value = siteSettings.tickerText || siteSettings.announcement;
+            document.getElementById('set-ticker-speed').value = siteSettings.tickerSpeed || 20;
+            document.getElementById('ticker-speed-val').innerText = (siteSettings.tickerSpeed || 20) + 's';
+            document.getElementById('set-ticker-font').value = siteSettings.tickerFont || "'Cairo', sans-serif";
+            
+            document.getElementById('set-ticker-bg').value = siteSettings.tickerBgColor || '#e11d48';
+            document.getElementById('set-ticker-bg-text').value = (siteSettings.tickerBgColor || '#e11d48').toUpperCase();
+            document.getElementById('set-ticker-color').value = siteSettings.tickerColor || '#ffffff';
+            document.getElementById('set-ticker-color-text').value = (siteSettings.tickerColor || '#ffffff').toUpperCase();
+
+            syncColorInput('set-brand-color', 'set-brand-color-text');
+            syncColorInput('set-bg-color', 'set-bg-color-text');
+            syncColorInput('set-text-color', 'set-text-color-text');
+            syncColorInput('set-ticker-bg', 'set-ticker-bg-text');
+            syncColorInput('set-ticker-color', 'set-ticker-color-text');
+            
+            document.getElementById('set-font').addEventListener('change', updateLiveThemePreview);
+            document.getElementById('set-font-weight').addEventListener('change', updateLiveThemePreview);
+            
+            updateLiveThemePreview();
         }
 
         async function saveStoreSettings() {
-            siteSettings.brandName = document.getElementById('set-brand').value; siteSettings.announcement = document.getElementById('set-announcement').value;
-            siteSettings.heroTitle = document.getElementById('set-hero-title').value; siteSettings.heroDesc = document.getElementById('set-hero-desc').value;
-            siteSettings.footerPhone = document.getElementById('set-footer-phone').value; siteSettings.footerAddress = document.getElementById('set-footer-address').value;
-            siteSettings.footerQuote = document.getElementById('set-footer-quote').value; siteSettings.themeHue = document.getElementById('set-hue').value;
-            siteSettings.fontFamily = document.getElementById('set-font').value;
+            // Identity Data
+            siteSettings.brandName = document.getElementById('set-brand').value; 
+            siteSettings.announcement = document.getElementById('set-announcement').value;
+            siteSettings.heroTitle = document.getElementById('set-hero-title').value; 
+            siteSettings.heroDesc = document.getElementById('set-hero-desc').value;
+            siteSettings.footerPhone = document.getElementById('set-footer-phone').value; 
+            siteSettings.footerAddress = document.getElementById('set-footer-address').value;
+            siteSettings.footerQuote = document.getElementById('set-footer-quote').value; 
             siteSettings.productLayout = document.getElementById('set-layout-full').checked ? 'full' : 'grid';
+
+            // Theme Data
+            siteSettings.brandColorHex = document.getElementById('set-brand-color').value;
+            siteSettings.bgColor = document.getElementById('set-bg-color').value;
+            siteSettings.textColor = document.getElementById('set-text-color').value;
+            siteSettings.fontFamily = document.getElementById('set-font').value;
+            siteSettings.baseFontSize = parseInt(document.getElementById('set-font-size').value);
+            siteSettings.baseFontWeight = parseInt(document.getElementById('set-font-weight').value);
+            
+            // Ticker Data
+            siteSettings.tickerActive = document.getElementById('set-ticker-active').checked;
+            siteSettings.tickerText = document.getElementById('set-ticker-text').value;
+            siteSettings.tickerSpeed = parseInt(document.getElementById('set-ticker-speed').value);
+            siteSettings.tickerFont = document.getElementById('set-ticker-font').value;
+            siteSettings.tickerBgColor = document.getElementById('set-ticker-bg').value;
+            siteSettings.tickerColor = document.getElementById('set-ticker-color').value;
+
             try {
-                await NetworkEngine.safeWrite('settings', 'main', siteSettings); saveEngineMemory('set'); showSystemToast("تم حفظ الإعدادات بنجاح!", "success");
-            } catch(e) { saveEngineMemory('set'); showSystemToast("تم الحفظ محلياً", "info"); }
+                await NetworkEngine.safeWrite('settings', 'main', siteSettings); saveEngineMemory('set'); 
+                showSystemToast("تم حفظ الإعدادات والمظهر بنجاح! سيتم التطبيق فور إغلاق اللوحة.", "success");
+                applySettingsToUI(); 
+            } catch(e) { saveEngineMemory('set'); showSystemToast("تم الحفظ محلياً", "info"); applySettingsToUI(); }
         }
 
         async function changeAdminPassword() {
@@ -1503,22 +1965,92 @@
 
         function renderAdminOverview() {
             document.getElementById('admin-stat-products').innerText = catalog.length;
-            document.getElementById('admin-stat-orders').innerText = globalOrders.length;
-            document.getElementById('admin-stat-revenue').innerText = globalOrders.reduce((sum, order) => sum + (Number(order.total) || 0), 0).toLocaleString('ar-EG') + ' ج.م';
+            const validOrders = globalOrders.filter(o => o.status !== 'cancelled');
+            document.getElementById('admin-stat-orders').innerText = validOrders.length;
+            document.getElementById('admin-stat-revenue').innerText = validOrders.reduce((sum, order) => sum + (Number(order.total) || 0), 0).toLocaleString('ar-EG') + ' ج.م';
+        }
+
+        function renderAdminOrderFilters() {
+            const filtersEl = document.getElementById('admin-order-filters');
+            const filters = [
+                { id: 'all', label: 'الكل' },
+                { id: 'pending', label: '⏳ قيد المراجعة' },
+                { id: 'processing', label: '👨‍🍳 جاري التجهيز' },
+                { id: 'completed', label: '✅ تم التسليم' },
+                { id: 'cancelled', label: '❌ ملغي' }
+            ];
+            
+            filtersEl.innerHTML = filters.map(f => `
+                <button onclick="setAdminOrderFilter('${f.id}')" class="whitespace-nowrap px-4 py-2 rounded-lg font-bold text-xs transition-all shadow-sm ${adminOrderFilter === f.id ? 'bg-pink-500 text-white scale-105' : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200 border border-gray-700'}">${f.label}</button>
+            `).join('');
+        }
+
+        function setAdminOrderFilter(f) {
+            adminOrderFilter = f;
+            renderAdminOrderFilters();
+            renderAdminOrders();
         }
 
         function renderAdminOrders() {
             const tbody = document.getElementById('admin-orders-tbody');
-            if(globalOrders.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-gray-500 font-bold">لا توجد طلبات.</td></tr>`; return; }
-            tbody.innerHTML = globalOrders.map(o => `
+            
+            let list = globalOrders;
+            if (adminOrderFilter !== 'all') {
+                list = list.filter(o => (o.status || 'pending') === adminOrderFilter);
+            }
+
+            if(list.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="p-8 text-center text-gray-500 font-bold">لا توجد طلبات في هذا القسم.</td></tr>`; return; }
+            
+            tbody.innerHTML = list.map(o => {
+                const s = o.status || 'pending';
+                return `
                 <tr class="hover:bg-gray-800 transition-colors border-b border-gray-700">
                     <td class="p-4 font-mono text-pink-400 whitespace-nowrap">${escapeHTML(o.id)}</td>
                     <td class="p-4 text-xs text-gray-400 whitespace-nowrap" dir="ltr">${escapeHTML(o.date)}</td>
                     <td class="p-4 min-w-[150px]"><p class="font-bold text-gray-200">${escapeHTML(o.name)}</p><p class="text-xs text-gray-500">${escapeHTML(o.phone)} | ${escapeHTML(o.area)}</p></td>
                     <td class="p-4 text-xs text-gray-400 max-w-xs truncate min-w-[200px]" title="${escapeHTML(o.items)}">${escapeHTML(o.items)}</td>
-                    <td class="p-4 font-black text-emerald-400 whitespace-nowrap">${escapeHTML(o.total.toString())}</td>
+                    <td class="p-4 font-black text-emerald-400 whitespace-nowrap">${escapeHTML(o.total.toString())} ج.م</td>
+                    <td class="p-4 whitespace-nowrap">
+                        <select onchange="updateOrderStatus('${o.id}', this.value)" class="bg-gray-700 border border-gray-600 font-bold text-xs text-white rounded-lg p-2 outline-none focus:ring-2 focus:ring-pink-500 transition-all cursor-pointer">
+                            <option value="pending" ${s==='pending'?'selected':''}>⏳ قيد المراجعة</option>
+                            <option value="processing" ${s==='processing'?'selected':''}>👨‍🍳 جاري التجهيز</option>
+                            <option value="completed" ${s==='completed'?'selected':''}>✅ تم التسليم</option>
+                            <option value="cancelled" ${s==='cancelled'?'selected':''}>❌ ملغي</option>
+                        </select>
+                    </td>
+                    <td class="p-4 text-center whitespace-nowrap">
+                        <button onclick="deleteOrder('${o.id}')" class="text-red-400 hover:text-white p-2 bg-gray-700 hover:bg-red-600 rounded-lg transition-colors shadow-sm"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
                 </tr>
-            `).join('');
+            `}).join('');
+            lucide.createIcons();
+        }
+
+        async function updateOrderStatus(id, newStatus) {
+            const orderIdx = globalOrders.findIndex(o => String(o.id) === String(id));
+            if (orderIdx > -1) {
+                globalOrders[orderIdx].status = newStatus;
+                localStorage.setItem('boseSweets_admin_orders', JSON.stringify(globalOrders));
+                try {
+                    await NetworkEngine.safeWrite('orders', String(id), globalOrders[orderIdx]);
+                    showSystemToast('تم تحديث حالة الطلب', 'success');
+                } catch (e) { showSystemToast('تم تحديث الحالة محلياً', 'info'); }
+                renderAdminOverview(); 
+                if(adminOrderFilter !== 'all') renderAdminOrders(); 
+            }
+        }
+
+        async function deleteOrder(id) {
+            if(confirm("هل أنت متأكد من حذف أو أرشفة هذا الطلب نهائياً من السجلات؟")) {
+                globalOrders = globalOrders.filter(o => String(o.id) !== String(id));
+                localStorage.setItem('boseSweets_admin_orders', JSON.stringify(globalOrders));
+                try { 
+                    await NetworkEngine.safeDelete('orders', String(id)); 
+                    showSystemToast("تم حذف الطلب نهائياً", "success"); 
+                } catch(e) { }
+                renderAdminOrders();
+                renderAdminOverview();
+            }
         }
 
         function renderAdminGallery() {
@@ -1608,26 +2140,70 @@
             else { previewImg.src = ''; previewImg.classList.add('hidden'); previewText.innerHTML = '<i data-lucide="image" class="w-6 h-6 opacity-50 block mx-auto mb-2"></i>'; previewText.classList.remove('hidden'); lucide.createIcons(); }
         }
 
-        function renderAdminMenu() {
-            document.getElementById('admin-menu-tbody').innerHTML = catalog.map(p => `
-                <tr class="hover:bg-gray-800 transition-colors border-b border-gray-700">
-                    <td class="p-4 whitespace-nowrap"><img src="${p.img || getImgFallback(p.category)}" class="w-10 h-10 object-cover rounded-lg border border-gray-600"></td>
+        function renderAdminCatalogTabs() {
+            const tabsEl = document.getElementById('admin-catalog-tabs');
+            let html = `<button onclick="setAdminCat('all')" class="whitespace-nowrap px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-sm ${adminCurrentCat === 'all' ? 'bg-pink-500 text-white scale-105' : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200 border border-gray-700'}">عرض الكل</button>`;
+            
+            catMenu.forEach(c => {
+                html += `<button onclick="setAdminCat('${c}')" class="whitespace-nowrap px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-sm ${adminCurrentCat === c ? 'bg-pink-500 text-white scale-105' : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200 border border-gray-700'}">${c}</button>`;
+            });
+            tabsEl.innerHTML = html;
+        }
+
+        function setAdminCat(c) {
+            adminCurrentCat = c;
+            renderAdminCatalogTabs();
+            const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
+            renderAdminMenu(currentSearch);
+        }
+
+        function renderAdminMenu(searchQuery = '') {
+            let list = catalog;
+
+            if (adminCurrentCat !== 'all') {
+                list = list.filter(p => p.category === adminCurrentCat);
+            }
+
+            if (searchQuery.trim() !== '') {
+                const q = searchQuery.toLowerCase().trim();
+                list = list.filter(p => 
+                    (p.name && p.name.toLowerCase().includes(q)) || 
+                    (p.category && p.category.toLowerCase().includes(q)) || 
+                    (p.subType && p.subType.toLowerCase().includes(q))
+                );
+            }
+            
+            document.getElementById('admin-menu-tbody').innerHTML = list.map(p => {
+                let layoutBadge = '';
+                if (p.layout === 'full') layoutBadge = '<span class="mr-3 text-[10px] bg-pink-900/40 text-pink-300 px-2.5 py-1 rounded-md border border-pink-700/50">كارت كبير</span>';
+                if (p.layout === 'half') layoutBadge = '<span class="mr-3 text-[10px] bg-blue-900/40 text-blue-300 px-2.5 py-1 rounded-md border border-blue-700/50">كارت صغير</span>';
+                
+                let stockBadge = p.inStock === false ? '<span class="mr-2 text-[10px] bg-red-900/40 text-red-300 px-2.5 py-1 rounded-md border border-red-700/50"><i data-lucide="ban" class="w-3 h-3 inline"></i> نفدت</span>' : '';
+
+                return `
+                <tr class="hover:bg-gray-800 transition-colors border-b border-gray-700 ${p.inStock === false ? 'opacity-70' : ''}">
+                    <td class="p-4 whitespace-nowrap"><img src="${p.img || getImgFallback(p.category)}" class="w-10 h-10 object-cover rounded-lg border border-gray-600 ${p.inStock === false ? 'grayscale' : ''}"></td>
                     <td class="p-4 whitespace-nowrap"><span class="bg-gray-700 text-gray-300 px-2 py-1 rounded text-xs">${escapeHTML(p.category)}</span></td>
-                    <td class="p-4 font-bold text-gray-200 min-w-[150px]">${escapeHTML(p.name)}</td>
+                    <td class="p-4 font-bold text-gray-200 min-w-[200px] flex items-center flex-wrap gap-y-2 h-[73px]">${escapeHTML(p.name)} ${layoutBadge} ${stockBadge}</td>
                     <td class="p-4 text-emerald-400 font-black whitespace-nowrap">${Number(p.price) > 0 ? Number(p.price) : 'متغير'}</td>
-                    <td class="p-4 text-center flex gap-2 justify-center whitespace-nowrap">
-                        <button onclick="openEditModal('${p.id}')" class="text-blue-400 hover:text-white p-2 bg-gray-700 hover:bg-blue-600 rounded-lg"><i data-lucide="edit" class="w-4 h-4"></i></button>
-                        <button onclick="deleteProduct('${p.id}')" class="text-red-400 hover:text-white p-2 bg-gray-700 hover:bg-red-600 rounded-lg"><i data-lucide="trash" class="w-4 h-4"></i></button>
+                    <td class="p-4 text-center whitespace-nowrap">
+                        <div class="flex gap-2 justify-center">
+                            <button onclick="openEditModal('${p.id}')" class="text-blue-400 hover:text-white p-2 bg-gray-700 hover:bg-blue-600 rounded-lg shadow-sm transition-colors"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                            <button onclick="deleteProduct('${p.id}')" class="text-red-400 hover:text-white p-2 bg-gray-700 hover:bg-red-600 rounded-lg shadow-sm transition-colors"><i data-lucide="trash" class="w-4 h-4"></i></button>
+                        </div>
                     </td>
                 </tr>
-            `).join('');
+            `}).join('');
             lucide.createIcons();
         }
 
         function openAddProductModal() {
             currentEditId = null; document.getElementById('prod-modal-title').innerText = "إضافة منتج";
             ['id','name','price','sub','img','desc','upload'].forEach(k => { const el = document.getElementById(k === 'upload' ? 'prod-img-upload' : `edit-prod-${k}`); if(el) el.value = ''; });
-            document.getElementById('edit-prod-cat').value = "جاتوهات"; showImagePreview(""); 
+            document.getElementById('edit-prod-cat').value = adminCurrentCat === 'all' ? "جاتوهات" : adminCurrentCat; 
+            document.getElementById('edit-prod-layout').value = 'default';
+            document.getElementById('edit-prod-instock').checked = true; 
+            showImagePreview(""); 
             const m = document.getElementById('admin-prod-modal'); m.classList.remove('hidden'); m.classList.add('flex');
         }
 
@@ -1638,8 +2214,9 @@
                 document.getElementById('edit-prod-id').value = p.id; document.getElementById('edit-prod-name').value = p.name;
                 document.getElementById('edit-prod-price').value = p.price; document.getElementById('edit-prod-cat').value = p.category;
                 
-                // Engine Upgrade: Fetch subType accurately from the new logic
                 document.getElementById('edit-prod-sub').value = p.subType || p.size || p.flowerType || ""; 
+                document.getElementById('edit-prod-layout').value = p.layout || 'default';
+                document.getElementById('edit-prod-instock').checked = p.inStock !== false; 
                 
                 document.getElementById('edit-prod-img').value = p.img || "";
                 document.getElementById('edit-prod-desc').value = p.desc || ''; document.getElementById('prod-img-upload').value = ""; 
@@ -1653,7 +2230,10 @@
         async function saveProductData() {
             const nName = document.getElementById('edit-prod-name').value.trim(); const nPrice = parseInt(document.getElementById('edit-prod-price').value) || 0;
             const nCat = document.getElementById('edit-prod-cat').value; const nSub = document.getElementById('edit-prod-sub').value.trim();
+            const nLayout = document.getElementById('edit-prod-layout').value;
+            const nInStock = document.getElementById('edit-prod-instock').checked; 
             const nImg = document.getElementById('edit-prod-img').value.trim(); const nDesc = document.getElementById('edit-prod-desc').value.trim();
+            
             if(!nName) { showSystemToast("يجب كتابة اسم المنتج", "error"); return; }
 
             let prodObj;
@@ -1661,30 +2241,31 @@
                 const idx = catalog.findIndex(x => String(x.id) === String(currentEditId));
                 if (idx > -1) {
                     catalog[idx].name = nName; catalog[idx].price = nPrice; catalog[idx].category = nCat; catalog[idx].desc = nDesc; catalog[idx].img = nImg;
-                    
-                    // Engine Upgrade: Save subType globally for all products
-                    catalog[idx].subType = nSub;
-                    if(nCat === 'ديسباسيتو') catalog[idx].size = nSub; if(nCat === 'ورد') catalog[idx].flowerType = nSub; // For backward compatibility
-                    
+                    catalog[idx].subType = nSub; catalog[idx].layout = nLayout; catalog[idx].inStock = nInStock;
+                    if(nCat === 'ديسباسيتو') catalog[idx].size = nSub; if(nCat === 'ورد') catalog[idx].flowerType = nSub; 
                     prodObj = catalog[idx];
                 }
             } else {
-                prodObj = { id: Date.now() + Math.floor(Math.random()*1000), category: nCat, name: nName, price: nPrice, desc: nDesc, img: nImg, subType: nSub };
-                if(nCat === 'ديسباسيتو') prodObj.size = nSub || 'وسط'; if(nCat === 'ورد') prodObj.flowerType = nSub || 'ورد طبيعي'; // For backward compatibility
+                prodObj = { id: Date.now() + Math.floor(Math.random()*1000), category: nCat, name: nName, price: nPrice, desc: nDesc, img: nImg, subType: nSub, layout: nLayout, inStock: nInStock };
+                if(nCat === 'ديسباسيتو') prodObj.size = nSub || 'وسط'; if(nCat === 'ورد') prodObj.flowerType = nSub || 'ورد طبيعي'; 
                 catalog.unshift(prodObj); 
             }
             syncCatalogMap(); 
             try { await NetworkEngine.safeWrite('catalog', String(prodObj.id), prodObj); saveEngineMemory('cat'); showSystemToast("تم الحفظ بنجاح", "success"); } 
             catch(e) { saveEngineMemory('cat'); showSystemToast("تم الحفظ محلياً", "info"); }
-            closeProdModal(); renderAdminMenu(); renderAdminOverview(); if(state.activeCat === nCat) renderMainDisplay();
+            
+            const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
+            closeProdModal(); renderAdminMenu(currentSearch); renderAdminOverview(); if(state.activeCat === nCat) renderMainDisplay();
         }
 
         async function deleteProduct(id) {
-            if(confirm("حذف هذا المنتج؟")) {
+            if(confirm("حذف هذا المنتج بشكل نهائي؟")) {
                 const safeId = String(id); catalog = catalog.filter(p => String(p.id) !== safeId); syncCatalogMap(); 
-                try { await NetworkEngine.safeDelete('catalog', safeId); saveEngineMemory('cat'); showSystemToast("تم الحذف", "success"); } 
+                try { await NetworkEngine.safeDelete('catalog', safeId); saveEngineMemory('cat'); showSystemToast("تم الحذف بنجاح", "success"); } 
                 catch(e) { saveEngineMemory('cat'); }
-                renderAdminMenu(); renderAdminOverview(); renderMainDisplay(); 
+                
+                const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
+                renderAdminMenu(currentSearch); renderAdminOverview(); renderMainDisplay(); 
             }
         }
 
@@ -1702,8 +2283,8 @@
 
         window.addEventListener('scroll', () => {
             const n = document.getElementById('navbar');
-            if (window.scrollY > 30) { n.classList.add('nav-scrolled', 'top-0'); n.classList.remove('top-[40px]', 'md:top-[44px]'); }
-            else { n.classList.remove('nav-scrolled', 'top-0'); n.classList.add('top-[40px]', 'md:top-[44px]'); }
+            if (window.scrollY > 30) { n.classList.add('nav-scrolled'); }
+            else { n.classList.remove('nav-scrolled'); }
         });
 
         document.getElementById('edit-prod-img').addEventListener('input', function(e) { showImagePreview(e.target.value); });
@@ -1712,3 +2293,5 @@
     </script>
 </body>
 </html>
+
+
