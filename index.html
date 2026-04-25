@@ -1044,7 +1044,7 @@
         function generateUniqueID() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
 
         function showSystemToast(message, type = 'info') {
-            const .getElementById('system-toast');
+            const toast = document.getElementById('system-toast');
             const msgEl = document.getElementById('toast-message');
             const iconEl = document.getElementById('toast-icon');
             
@@ -1054,6 +1054,7 @@
             lucide.createIcons();
             setTimeout(() => { toast.classList.replace('flex', 'hidden'); toast.classList.remove('toast-enter'); }, 4000);
         }
+
 
         // Data Models
         const defaultSettings = {
