@@ -856,6 +856,31 @@
                         </div>
                     </div>
                 </div>
+                <div id="admin-cakebuilder" class="admin-tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-800 pb-4">
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-100">تحكم التورت الملكية 👑</h2>
+                        <button onclick="saveStoreSettings()" class="bg-emerald-500 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md">حفظ تعديلات القسم</button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 space-y-4">
+                            <h3 class="font-bold text-pink-400">التسعير والأساسيات</h3>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">السعر الأساسي للفرد (ج.م)</label>
+                                <input type="number" id="set-cake-base-price" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white">
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 space-y-4">
+                            <h3 class="font-bold text-pink-400">إدارة النكهات والمكونات</h3>
+                            <div id="admin-cake-flavors-list" class="flex flex-wrap gap-2"></div>
+                            <div class="flex gap-2">
+                                <input type="text" id="new-flavor-input" placeholder="نكهة جديدة..." class="flex-1 p-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-xs">
+                                <button onclick="addCakeFlavor()" class="bg-blue-600 px-4 py-2 rounded-lg text-xs font-bold text-white">إضافة</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Tab: Security -->
                 <div id="admin-security" class="admin-tab-content hidden space-y-6">
@@ -1059,7 +1084,7 @@
 
 
         // Data Models
-        const defaultSettings = {
+                const defaultSettings = {
             brandName: "حلويات بوسي", announcement: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب",
             heroTitle: "أهلاً بكم في <br class='hidden md:block'/> <span class='text-white relative inline-block mt-1 md:mt-2 drop-shadow-md'>حلويات بوسي</span>",
             heroDesc: "يسر إدارة حلويات بوسي استعراض تشكيلتها الحصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بذوقكم الرفيع ومناسباتكم السعيدة.",
@@ -1071,8 +1096,20 @@
             fontFamily: "'Cairo', sans-serif", baseFontSize: 16, baseFontWeight: 400,
             
             tickerActive: true, tickerText: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب ✨", tickerSpeed: 20, 
-            tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff"
+            tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff",
+
+            cakeBuilder: {
+                basePrice: 145, 
+                flavors: ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت', 'كراميل', 'فستق', 'لوتس', 'ميكس فواكه'],
+                images: [], 
+                imagePrinting: [
+                    { label: 'بدون', price: 0 },
+                    { label: 'صورة قابلة للأكل', price: 60 },
+                    { label: 'صورة غير قابلة للأكل', price: 20 }
+                ]
+            }
         };
+
         
         const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
         const defaultCatalog = [
@@ -1549,15 +1586,25 @@
             return m[cat] || m['جاتوهات'];
         }
 
-        function renderCakeBuilder(target) {
+                function renderCakeBuilder(target) {
             const c = state.cakeBuilder;
-            const price = Number(c.ps) * 145 + (c.img === 'صورة قابلة للأكل' ? 60 : (c.img === 'صورة غير قابلة للأكل' ? 20 : 0));
-            const flavors = ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت', 'كراميل', 'فستق', 'لوتس', 'ميكس فواكه'];
+            
+            // جلب الإعدادات من السحابة أو استخدام الافتراضي
+            const settings = siteSettings.cakeBuilder || defaultSettings.cakeBuilder;
+            
+            // حساب السعر بناءً على لوحة التحكم
+            const baseP = Number(settings.basePrice) || 145;
+            const imgOpts = settings.imagePrinting || defaultSettings.cakeBuilder.imagePrinting;
+            const selectedImgOption = imgOpts.find(opt => opt.label === c.img) || {price: 0};
+            const price = Number(c.ps) * baseP + Number(selectedImgOption.price);
+            
+            const flavors = settings.flavors || ['فانيليا'];
+            const headerImg = (settings.images && settings.images.length > 0) ? settings.images[0] : getImgFallback('تورت');
 
             target.innerHTML = `
                 <div class="rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
                     <div class="p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                        <img src="${getImgFallback('تورت')}" class="w-full md:w-1/3 h-56 object-cover rounded-2xl shadow-lg border-2 border-white">
+                        <img src="${headerImg}" class="w-full md:w-1/3 h-56 object-cover rounded-2xl shadow-lg border-2 border-white">
                         <div class="flex-1 text-center md:text-right">
                             <h2 class="text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">تخصيص التورت الملكية 👑</h2>
                             <p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة، مع ضمان تنفيذ إدارة حلويات بوسي لكافة الطلبات بأعلى مستوى احترافي.</p>
@@ -1635,10 +1682,10 @@
                             <div class="space-y-4">
                                 <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="camera" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> طباعة صورة</label>
                                 <div class="space-y-3">
-                                    ${['بدون', 'صورة قابلة للأكل', 'صورة غير قابلة للأكل'].map(it => `
-                                        <label class="flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${c.img === it ? 'shadow-sm scale-[1.01]' : ''}" style="${c.img === it ? `background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 70%, 60%);` : `background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 95%);`}">
-                                            <div class="flex items-center gap-3"><input type="radio" name="cakeImg" ${c.img === it ? 'checked' : ''} onclick="uCake('img', '${it}')" class="w-5 h-5"> <span class="font-bold text-sm" style="color: var(--site-text);">${it}</span></div>
-                                            ${it !== 'بدون' ? `<span class="px-3 py-1.5 rounded-lg border font-bold text-[10px] shadow-sm" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);">+${it.includes('غير') ? '20' : '60'} ج.م</span>` : ''}
+                                    ${imgOpts.map(it => `
+                                        <label class="flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all ${c.img === it.label ? 'shadow-sm scale-[1.01]' : ''}" style="${c.img === it.label ? `background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 70%, 60%);` : `background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 95%);`}">
+                                            <div class="flex items-center gap-3"><input type="radio" name="cakeImg" ${c.img === it.label ? 'checked' : ''} onclick="uCake('img', '${it.label}')" class="w-5 h-5"> <span class="font-bold text-sm" style="color: var(--site-text);">${it.label}</span></div>
+                                            ${it.price > 0 ? `<span class="px-3 py-1.5 rounded-lg border font-bold text-[10px] shadow-sm" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);">+${it.price} ج.م</span>` : ''}
                                         </label>
                                     `).join('')}
                                 </div>
@@ -1733,7 +1780,13 @@
 
         function commitCakeBuilder() {
             const c = state.cakeBuilder;
-            const pr = Number(c.ps) * 145 + (c.img === 'صورة قابلة للأكل' ? 60 : (c.img === 'صورة غير قابلة للأكل' ? 20 : 0));
+            const settings = siteSettings.cakeBuilder || defaultSettings.cakeBuilder;
+            const baseP = Number(settings.basePrice) || 145;
+            const imgOpts = settings.imagePrinting || defaultSettings.cakeBuilder.imagePrinting;
+            const selectedImgOption = imgOpts.find(opt => opt.label === c.img) || {price: 0};
+            
+            const pr = Number(c.ps) * baseP + Number(selectedImgOption.price);
+            
             let ds = `النكهة: ${c.flv} | العدد: ${c.ps} أفراد | الشكل: ${c.sh}${c.trd ? ' (أدوار)' : ''}`;
             if (c.occ) ds += `\nالمناسبة: ${c.occ}`;
             ds += `\nالإضافات: ${c.img}${c.crd ? ' + بطاقة' : ''}`;
@@ -1749,6 +1802,7 @@
             renderMainDisplay();
             showSystemToast('تم تسجيل التورتة في السلة بنجاح', 'success');
         }
+
 
         function toggleDeliveryMethod() {
             const method = document.querySelector('input[name="delivery_method"]:checked').value;
@@ -2107,11 +2161,20 @@ function toggleCart(s) {
             syncColorInput('set-bg-color', 'set-bg-color-text');
             syncColorInput('set-text-color', 'set-text-color-text');
             
-            document.getElementById('set-font').addEventListener('change', updateLiveThemePreview);
-            document.getElementById('set-font-weight').addEventListener('change', updateLiveThemePreview);
-            
-            updateLiveThemePreview();
+        document.getElementById('set-font-weight').addEventListener('change', updateLiveThemePreview);
+        
+        // === تشغيل وربط قسم التورت الملكية ===
+        if (!siteSettings.cakeBuilder) {
+            siteSettings.cakeBuilder = JSON.parse(JSON.stringify(defaultSettings.cakeBuilder));
         }
+        const cakePriceInp = document.getElementById('set-cake-base-price');
+        if (cakePriceInp) cakePriceInp.value = siteSettings.cakeBuilder.basePrice || 145;
+        if (typeof renderAdminCakeFlavors === 'function') renderAdminCakeFlavors();
+        if (typeof updateCakeHeaderPreview === 'function') updateCakeHeaderPreview();
+        
+        updateLiveThemePreview();
+    }
+
 
         async function saveStoreSettings() {
             // Identity Data
