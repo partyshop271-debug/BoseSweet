@@ -1,4 +1,5 @@
-!DOCTYPE html>
+
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -597,7 +598,7 @@
                                 <option value="تورت">تورت</option><option value="جاتوهات">جاتوهات</option><option value="قشطوطة">قشطوطة</option><option value="بامبوليني">بامبوليني</option><option value="دوناتس">دوناتس</option><option value="ديسباسيتو">ديسباسيتو</option><option value="سينابون">سينابون</option><option value="ريد فيلفت">ريد فيلفت</option><option value="كبات السعادة">كبات السعادة</option><option value="ميل فاي">ميل فاي</option><option value="إكلير">إكلير</option><option value="تشيز كيك">تشيز كيك</option><option value="عروض وبوكسات">عروض وبوكسات</option><option value="ميني تورتة">ميني تورتة</option><option value="ورد">ورد</option>
                             </select>
                         </div>
-                        <div><label class="block text-xs font-bold text-gray-400 mb-1.5">المقاس/النوع</label><input type="text" id="edit-prod-sub" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white"></div>
+                        <div><label class="block text-xs font-bold text-gray-400 mb-1.5">المقاس/النوع</label><input type="text" id="edit-prod-sub" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white" placeholder="مثال: وسط، طبيعي، مثلث"></div>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-400 mb-1.5">الصورة</label>
@@ -721,13 +722,13 @@
             { id: 4, category: 'قشطوطة', name: 'نوتيلا وايت', price: 121, desc: 'غرقانة في الحليب ومتغطية بسحابة من كريمة النوتيلا البيضاء الناعمة.. حتة دلع تصالح بيها مزاجك! 🤍🥛' },
             { id: 14, category: 'بامبوليني', name: 'نوتيلا وايت', price: 88, desc: 'عجينة إيطالية هشة ومقلية صح، محشية لحد آخرها بكريمة النوتيلا البيضاء اللي بتبظ من كل ناحية! ☁️🤍' },
             { id: 27, category: 'دوناتس', name: 'نوتيلا وايت', price: 88, desc: 'حلقة من السعادة الهشة، متغطية ومحشية بالنوتيلا البيضاء اللي بتدوب بمجرد ما تلمسها! 🍩🤍' },
-            { id: 40, category: 'ديسباسيتو', size: 'وسط', name: 'نوتيلا دارك', price: 132, desc: 'طاجن كيك غرقان ومسقي حليب صح، وعليه طبقة كثيفة من النوتيلا الغامقة.. السعادة في معلقة! 🍫🤤' },
+            { id: 40, category: 'ديسباسيتو', size: 'وسط', subType: 'وسط', name: 'نوتيلا دارك', price: 132, desc: 'طاجن كيك غرقان ومسقي حليب صح، وعليه طبقة كثيفة من النوتيلا الغامقة.. السعادة في معلقة! 🍫🤤' },
             { id: 62, category: 'سينابون', name: 'نوتيلا دارك', price: 121, desc: 'رول سينابون طري ودافي، ريحته قرفة تجنن، وغرقان بصوص النوتيلا الغامقة الكثيفة! 🤎✨' },
-            { id: 73, category: 'ريد فيلفت', name: 'مثلث كبير', price: 72, desc: 'قطعة كيك مخملية بتدوب، مع طبقات كريمة الجبن الأصلية اللي بتوزن الطعم صح! ❤️🍰' },
+            { id: 73, category: 'ريد فيلفت', name: 'مثلث كبير', subType: 'مثلث كبير', price: 72, desc: 'قطعة كيك مخملية بتدوب، مع طبقات كريمة الجبن الأصلية اللي بتوزن الطعم صح! ❤️🍰' },
             { id: 76, category: 'كبات السعادة', name: 'نوتيلا', price: 61, desc: 'كب صغير بس سعادته كبيرة! طبقات كيك هشة وكريمة غنية متغطية بصوص النوتيلا السايح! 🍫😋' },
             { id: 99, category: 'ميني تورتة', name: 'حجم (فرد - فردين)', price: 154, desc: 'تورتة صغيرة بتصميم كيوت وشيك جداً، مثالية لمفاجأة سريعة أو هدية رقيقة تفرح بيها حبايبك! 🎂💖' },
             { id: 98, category: 'عروض وبوكسات', name: 'بوكس الروقان', price: 550, desc: 'جمعنالك دلع الدنيا في بوكس! تورتة نص فانيليا/شوكولاتة + 2 كب سعادة + ديسباسيتو + ريد فيلفت.. روقان بجد! 🎁🎉' },
-            { id: 103, category: 'ورد', flowerType: 'ورد طبيعي', name: 'بوكيه طبيعي فريش', price: 0, desc: 'بوكيه ورد طبيعي طازة متنسق باحترافية وألوان تفتح النفس عشان تكمل بيك هديتك وتبهج اللي بتحبهم! 🌸🍃' }
+            { id: 103, category: 'ورد', flowerType: 'ورد طبيعي', subType: 'ورد طبيعي', name: 'بوكيه طبيعي فريش', price: 0, desc: 'بوكيه ورد طبيعي طازة متنسق باحترافية وألوان تفتح النفس عشان تكمل بيك هديتك وتبهج اللي بتحبهم! 🌸🍃' }
         ];
 
         let siteSettings = { ...defaultSettings };
@@ -896,8 +897,8 @@
                 }
                 
                 let list = catalog.filter(p => p.category === state.activeCat);
-                if (state.activeCat === 'ديسباسيتو') list = list.filter(p => p.size === state.dSize || (p.desc && p.desc.includes(state.dSize)));
-                if (state.activeCat === 'ورد') list = list.filter(p => p.flowerType === state.fType || (p.desc && p.desc.includes(state.fType)));
+                if (state.activeCat === 'ديسباسيتو') list = list.filter(p => p.size === state.dSize || p.subType === state.dSize || (p.desc && p.desc.includes(state.dSize)));
+                if (state.activeCat === 'ورد') list = list.filter(p => p.flowerType === state.fType || p.subType === state.fType || (p.desc && p.desc.includes(state.fType)));
 
                 const userLayout = siteSettings.productLayout || 'grid';
                 let gridClass = (userLayout === 'full') ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
@@ -1242,13 +1243,12 @@
                 l.innerHTML = state.cart.map(item => {
                     const identifier = item.cartItemId || item.id;
                     const q = Number(item.quantity); const p = Number(item.price);
-                    let fullName = item.name;
-                    if (!item.isCustom) {
-                        let prefix = item.category || '';
-                        if (item.size) prefix += ` (${item.size})`;
-                        else if (item.flowerType && item.category === 'ورد') prefix += ` (${item.flowerType})`;
-                        fullName = prefix ? `${prefix} - ${item.name}` : item.name;
-                    }
+                    
+                    // Engine Upgrade: Robust Display Name for Cart
+                    let catName = item.category ? `[${item.category}]` : '';
+                    let subTypeName = (item.subType || item.size || item.flowerType) ? ` (${item.subType || item.size || item.flowerType})` : '';
+                    let fullName = item.isCustom ? item.name : `${catName}${subTypeName} ${item.name}`.trim();
+
                     return `
                         <div class="bg-white p-5 sm:p-6 rounded-2xl border shadow-sm flex flex-col gap-4 relative" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
                             <div class="flex justify-between items-start gap-4">
@@ -1320,14 +1320,14 @@
 
             state.cart.forEach((i, idx) => {
                 let p = Number(i.price); let q = Number(i.quantity); sub += (p * q);
-                let fullName = i.name;
-                if (!i.isCustom) {
-                    let prefix = i.category || '';
-                    if (i.size) prefix += ` (${i.size})`; else if (i.flowerType && i.category === 'ورد') prefix += ` (${i.flowerType})`;
-                    fullName = prefix ? `${prefix} - ${i.name}` : i.name;
-                }
-                m += `\n*${idx+1}. ${fullName}* (x${q}) = ${p > 0 ? (p * q) + ' ج.م' : 'يتم التحديد'}\n${i.desc ? `_المواصفات:_\n${i.desc}\n` : ''}`;
-                itemsDesc.push(`${fullName} (x${q})`);
+                
+                // Engine Upgrade: Robust Display Name for WhatsApp to solve sales team confusion
+                let catName = i.category ? `[${i.category}]` : '';
+                let subTypeName = (i.subType || i.size || i.flowerType) ? ` (${i.subType || i.size || i.flowerType})` : '';
+                let finalItemName = i.isCustom ? i.name : `${catName}${subTypeName} ${i.name}`.trim();
+
+                m += `\n*${idx+1}. ${finalItemName}* (الكمية: ${q}) = ${p > 0 ? (p * q) + ' ج.م' : 'يتم التحديد'}\n${i.desc ? `_المواصفات:_\n${i.desc}\n` : ''}`;
+                itemsDesc.push(`${finalItemName} (x${q})`);
             });
             
             m += `\nــــــــــــــــــــــــــــــــــــــــ\n*قيمة المنتجات:* ${sub} ج.م\n*رسوم التوصيل:* ${state.currentShippingFee} ج.م\n*الإجمالي النهائي:* ${sub + state.currentShippingFee} ج.م\n`;
@@ -1638,7 +1638,11 @@
                 currentEditId = String(id); document.getElementById('prod-modal-title').innerText = "تعديل المنتج";
                 document.getElementById('edit-prod-id').value = p.id; document.getElementById('edit-prod-name').value = p.name;
                 document.getElementById('edit-prod-price').value = p.price; document.getElementById('edit-prod-cat').value = p.category;
-                document.getElementById('edit-prod-sub').value = p.size || p.flowerType || ""; document.getElementById('edit-prod-img').value = p.img || "";
+                
+                // Engine Upgrade: Fetch subType accurately from the new logic
+                document.getElementById('edit-prod-sub').value = p.subType || p.size || p.flowerType || ""; 
+                
+                document.getElementById('edit-prod-img').value = p.img || "";
                 document.getElementById('edit-prod-desc').value = p.desc || ''; document.getElementById('prod-img-upload').value = ""; 
                 showImagePreview(p.img || getImgFallback(p.category)); 
                 const m = document.getElementById('admin-prod-modal'); m.classList.remove('hidden'); m.classList.add('flex');
@@ -1658,12 +1662,16 @@
                 const idx = catalog.findIndex(x => String(x.id) === String(currentEditId));
                 if (idx > -1) {
                     catalog[idx].name = nName; catalog[idx].price = nPrice; catalog[idx].category = nCat; catalog[idx].desc = nDesc; catalog[idx].img = nImg;
-                    if(nCat === 'ديسباسيتو') catalog[idx].size = nSub; if(nCat === 'ورد') catalog[idx].flowerType = nSub;
+                    
+                    // Engine Upgrade: Save subType globally for all products
+                    catalog[idx].subType = nSub;
+                    if(nCat === 'ديسباسيتو') catalog[idx].size = nSub; if(nCat === 'ورد') catalog[idx].flowerType = nSub; // For backward compatibility
+                    
                     prodObj = catalog[idx];
                 }
             } else {
-                prodObj = { id: Date.now() + Math.floor(Math.random()*1000), category: nCat, name: nName, price: nPrice, desc: nDesc, img: nImg };
-                if(nCat === 'ديسباسيتو') prodObj.size = nSub || 'وسط'; if(nCat === 'ورد') prodObj.flowerType = nSub || 'ورد طبيعي';
+                prodObj = { id: Date.now() + Math.floor(Math.random()*1000), category: nCat, name: nName, price: nPrice, desc: nDesc, img: nImg, subType: nSub };
+                if(nCat === 'ديسباسيتو') prodObj.size = nSub || 'وسط'; if(nCat === 'ورد') prodObj.flowerType = nSub || 'ورد طبيعي'; // For backward compatibility
                 catalog.unshift(prodObj); 
             }
             syncCatalogMap(); 
@@ -1686,7 +1694,7 @@
                 about: { t: 'من نحن', b: siteSettings.footerQuote },
                 privacy: { t: 'سياسة الخصوصية والأمان', b: 'تلتزم إدارة حلويات بوسي بمنتهى السرية والاحترافية في التعامل مع بياناتكم وطلباتكم.' },
                 refund: { t: 'سياسة الاسترجاع والتعديل', b: 'يتم التعديل على الطلبات المخصصة قبل التنفيذ بـ 24 ساعة على الأقل.' },
-                care: { t: 'دليل الجودة الملكي', b: '1. الحفظ في مبرد (4-8 مئوية).\\n2. تجنب ترك المنتج في السيارة.\\n3. يُنصح بالتقديم بعد 10 دقائق من الخروج من المبرد.' }
+                care: { t: 'دليل الجودة الملكي', b: '1. الحفظ في مبرد (4-8 مئوية).\n2. تجنب ترك المنتج في السيارة.\n3. يُنصح بالتقديم بعد 10 دقائق من الخروج من المبرد.' }
             };
             document.getElementById('info-title').innerText = d[t].t; document.getElementById('info-body').innerText = d[t].b;
             const m = document.getElementById('info-modal'); m.classList.remove('hidden'); m.classList.add('flex'); lucide.createIcons();
