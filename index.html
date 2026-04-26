@@ -875,7 +875,8 @@
                         <h2 class="text-xl md:text-2xl font-bold text-gray-100">تحكم التورت الملكية 👑</h2>
                         <button onclick="saveCakeBuilderSettings()" class="bg-emerald-500 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-emerald-600 transition-colors">حفظ تعديلات القسم</button>
                     </div>
-                    
+                    <button onclick="switchAdminTab('categories')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-categories"><i data-lucide="layers" class="w-5 h-5"></i> إدارة أقسام المنيو</button>
+
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 space-y-4">
                             <h3 class="font-bold text-pink-400 border-b border-gray-700 pb-2">التسعير والأساسيات</h3>
@@ -933,6 +934,29 @@
                                     <input type="number" id="set-print-nonedible" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white">
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="admin-categories" class="admin-tab-content hidden space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-800 pb-4">
+                        <h2 class="text-xl md:text-2xl font-bold text-gray-100">إدارة أقسام المنيو المتطورة</h2>
+                        <button onclick="saveCategoriesToCloud()" class="w-full sm:w-auto bg-emerald-500 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="save" class="w-4 h-4"></i> حفظ الأقسام سحابياً
+                        </button>
+                    </div>
+
+                    <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 space-y-6 shadow-lg">
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="text" id="new-category-input" placeholder="اسم القسم الجديد (مثال: بوكسات هدايا، عصائر)..." class="flex-1 p-3 bg-gray-900 border border-gray-700 rounded-lg text-white font-bold outline-none focus:border-pink-500 transition-colors">
+                            <button onclick="addNewCategory()" class="bg-pink-500 text-white px-6 py-3 rounded-lg font-bold hover:bg-pink-600 transition-colors shadow-md flex items-center justify-center gap-2 shrink-0">
+                                <i data-lucide="plus" class="w-5 h-5"></i> إضافة للكتالوج
+                            </button>
+                        </div>
+
+                        <div class="space-y-2">
+                            <p class="text-xs text-gray-400 font-bold mb-3"><i data-lucide="info" class="w-4 h-4 inline"></i> الأقسام الحالية (تظهر للعملاء بنفس الترتيب):</p>
+                            <div id="admin-categories-list" class="flex flex-col gap-3 admin-scroll max-h-[50vh] overflow-y-auto pr-2">
+                                </div>
                         </div>
                     </div>
                 </div>
@@ -1195,7 +1219,6 @@
         
         // Tracking images for multi-upload modal
         let tempProdImages = []; 
-
         async function loadEngineMemory() {
             try {
                 const setDoc = await db.collection('settings').doc('main').get();
@@ -1216,6 +1239,18 @@
                 const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
                 if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
 
+                // المحرك الذكي
+                if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
+                    catMenu = siteSettings.catMenu;
+                } else {
+                    catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
+                }
+                
+                // 👑 درع الحماية: ضمان وجود قسم التورت دائماً في المقدمة
+                if (!catMenu.includes('تورت')) {
+                    catMenu.unshift('تورت');
+                }
+
                 syncCatalogMap(); 
                 localStorage.setItem('bSweets_catalog', JSON.stringify(catalog));
                 localStorage.setItem('bSweets_settings', JSON.stringify(siteSettings));
@@ -1231,12 +1266,26 @@
                     const sShip = localStorage.getItem('bSweets_shipping'); if (sShip) shippingZones = JSON.parse(sShip);
                     const sOrd = localStorage.getItem('boseSweets_admin_orders'); if(sOrd) globalOrders = JSON.parse(sOrd);
                     const sGal = localStorage.getItem('bSweets_gallery'); if(sGal) galleryData = JSON.parse(sGal);
+                    
+                    if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
+                        catMenu = siteSettings.catMenu;
+                    } else {
+                        catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
+                    }
+                    
+                    // 👑 درع الحماية في حالة الاوفلاين
+                    if (!catMenu.includes('تورت')) {
+                        catMenu.unshift('تورت');
+                    }
+
                     syncCatalogMap(); 
                 } catch(err) { catalog = [...defaultCatalog]; syncCatalogMap(); }
             }
 
             try { const savedCart = localStorage.getItem('boseSweets_cart_data'); if (savedCart) state.cart = JSON.parse(savedCart); } catch (e) { state.cart = []; }
         }
+
+
 
         async function saveEngineMemory(type) {
             try {
@@ -1291,8 +1340,8 @@
             
             renderCustomerSidebarCategories();
         }
+        let catMenu = []; // ⚡ Engine Upgrade: Dynamic Category System
 
-        const catMenu = ['تورت', 'جاتوهات', 'قشطوطة', 'بامبوليني', 'دوناتس', 'ديسباسيتو', 'سينابون', 'ريد فيلفت', 'كبات السعادة', 'ميل فاي', 'إكلير', 'تشيز كيك', 'عروض وبوكسات', 'ميني تورتة', 'ورد'];
         const dSizes = ['مثلث', 'وسط', 'كبير'];
         const fTypes = ['ورد طبيعي', 'ورد صناعي', 'ورد ستان', 'ورد بالصور', 'ورد بالفلوس'];
 
@@ -1575,6 +1624,8 @@
                                 <img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 ${isOutOfStock ? '' : 'group-hover:scale-105'}" loading="lazy">
                             `).join('')}
                         </div>
+
+
                         
                         <!-- Indicator Dots if multiple -->
                         ${hasMultipleImages ? `
@@ -2139,7 +2190,7 @@ function toggleCart(s) {
                 
                 renderAdminCatalogTabs();
                 renderAdminOrderFilters(); 
-                
+               renderAdminCategories();
                 renderAdminOverview(); renderAdminOrders(); renderAdminMenu(); renderAdminShipping(); renderAdminGallery(); fillAdminSettingsForm();
                 document.getElementById('sec-current-pwd').value = ''; document.getElementById('sec-new-pwd').value = ''; document.getElementById('sec-confirm-pwd').value = '';
                 lucide.createIcons();
@@ -2899,6 +2950,65 @@ function toggleCart(s) {
         });
 
         window.onload = initApp;
+        // --- محرك إدارة الأقسام الديناميكي لـ BoseSweets ---
+
+function renderAdminCategories() {
+    const listEl = document.getElementById('admin-categories-list');
+    if (!listEl) return;
+    if (catMenu.length === 0) {
+        listEl.innerHTML = `<p class="text-center text-gray-500 py-8 font-bold">لا توجد أقسام حالياً. ابدأ بإضافة أول قسم لـ BoseSweets!</p>`;
+        return;
+    }
+    listEl.innerHTML = catMenu.map((cat, index) => `
+        <div class="flex items-center justify-between p-4 bg-gray-900 border border-gray-700 rounded-xl group hover:border-pink-500 transition-all">
+            <div class="flex items-center gap-3">
+                <span class="w-8 h-8 flex items-center justify-center bg-gray-800 rounded-lg text-xs text-gray-400 font-mono">${index + 1}</span>
+                <span class="font-bold text-gray-200">${cat}</span>
+            </div>
+            <button onclick="removeCategory(${index})" class="p-2 text-gray-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100">
+                <i data-lucide="trash-2" class="w-5 h-5"></i>
+            </button>
+        </div>
+    `).join('');
+    lucide.createIcons();
+}
+
+function addNewCategory() {
+    const input = document.getElementById('new-category-input');
+    const val = input.value.trim();
+    if (!val) { showSystemToast("اكتبي اسم القسم الأول يا إدارة", "error"); return; }
+    if (catMenu.includes(val)) { showSystemToast("القسم ده موجود فعلاً", "error"); return; }
+    catMenu.push(val);
+    input.value = '';
+    renderAdminCategories();
+    showSystemToast(`تمت إضافة "${val}" للقائمة المؤقتة`, "success");
+}
+
+function removeCategory(index) {
+    // 👑 درع الحماية: منع حذف قسم التورت الملكية
+    if (catMenu[index] === 'تورت') {
+        showSystemToast("عفواً، لا يمكن حذف قسم التورت الملكية الأساسي! 👑", "error");
+        return;
+    }
+    
+    if (confirm(`حذف قسم "${catMenu[index]}"؟ (المنتجات مش هتتحذف)`)) {
+        catMenu.splice(index, 1);
+        renderAdminCategories();
+    }
+}
+
+
+async function saveCategoriesToCloud() {
+    try {
+        siteSettings.catMenu = catMenu; 
+        await NetworkEngine.safeWrite('settings', 'main', siteSettings);
+        renderCategories();
+        renderAdminCatalogTabs();
+        renderCustomerSidebarCategories();
+        showSystemToast("تم حفظ وترتيب الأقسام سحابياً بنجاح! ✨", "success");
+    } catch (e) { showSystemToast("فشل الحفظ سحابياً", "error"); }
+}
+
     </script>
 </body>
 </html>
