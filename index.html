@@ -1904,6 +1904,39 @@
             calculateCartTotal();
         }
 
+// ⚡ Engine Upgrade: Customer Auto-Fill Memory
+function loadCustomerData() {
+    try {
+        const savedData = localStorage.getItem('boseSweets_customer_data');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            
+            if (data.name) document.getElementById('cust-name').value = data.name;
+            if (data.phone) document.getElementById('cust-phone').value = data.phone;
+            
+            if (data.method) {
+                const methodRadio = document.querySelector(`input[name="delivery_method"][value="${data.method}"]`);
+                if (methodRadio) {
+                    methodRadio.checked = true;
+                    toggleDeliveryMethod();
+                }
+            }
+            
+            if (data.area && data.method === 'delivery') {
+                setTimeout(() => {
+                    const areaSelect = document.getElementById('cust-area');
+                    if (areaSelect) {
+                        areaSelect.value = data.area;
+                        calculateCartTotal();
+                    }
+                }, 200);
+            }
+        }
+    } catch (e) {
+        console.warn("No previous customer data found.");
+    }
+}
+
 function toggleCart(s) {
     const ov = document.getElementById('cart-overlay');
     const sd = document.getElementById('cart-sidebar');
@@ -1916,12 +1949,14 @@ function toggleCart(s) {
         }, 10);
         renderCartList(); 
         calculateCartTotal();
+        loadCustomerData(); // استدعاء بيانات العميل
     } else {
         ov.classList.remove('opacity-100'); 
         sd.classList.add('-translate-x-full');
         setTimeout(() => ov.classList.add('hidden'), 500);
     }
 }
+
 
 
         function renderCartList() {
@@ -2014,9 +2049,17 @@ function toggleCart(s) {
                 let subTypeName = (i.subType || i.size || i.flowerType) ? ` (${i.subType || i.size || i.flowerType})` : '';
                 let finalItemName = i.isCustom ? i.name : `${catName}${subTypeName} ${i.name}`.trim();
 
-                m += `\n*${idx+1}. ${finalItemName}* (الكمية: ${q}) = ${p > 0 ? (p * q) + ' ج.م' : 'يتم التحديد'}\n${i.desc ? `_المواصفات:_\n${i.desc}\n` : ''}`;
+                // عرض الاسم والسعر فقط لكل المنتجات
+                m += `\n*${idx+1}. ${finalItemName}* (الكمية: ${q}) = ${p > 0 ? (p * q) + ' ج.م' : 'يتم التحديد'}\n`;
+                
+                // عرض التفاصيل فقط لو كانت تورتة ملكية (تصميم خاص)
+                if (i.isCustom && i.desc) {
+                    m += `_تفاصيل التصميم المطلوبة:_\n${i.desc}\n`;
+                }
+                
                 itemsDesc.push(`${finalItemName} (x${q})`);
             });
+
             
             m += `\nــــــــــــــــــــــــــــــــــــــــ\n*قيمة المنتجات:* ${sub} ج.م\n*رسوم التوصيل:* ${state.currentShippingFee} ج.م\n*الإجمالي النهائي:* ${sub + state.currentShippingFee} ج.م\n`;
 
@@ -2039,14 +2082,26 @@ function toggleCart(s) {
                 globalOrders.unshift(orderObj); localStorage.setItem('boseSweets_admin_orders', JSON.stringify(globalOrders));
             }
 
+            // --- التعديل الجديد: حفظ بيانات العميل ---
+            const customerData = {
+                name: cName,
+                phone: cPhone,
+                area: deliveryMethod === 'delivery' ? cAreaId : '',
+                method: deliveryMethod
+            };
+            localStorage.setItem('boseSweets_customer_data', JSON.stringify(customerData));
+
             window.open(`https://wa.me/201097238441?text=${encodeURIComponent(m)}`, '_blank');
             state.cart = []; clearCartStorage(); syncCartUI(); toggleCart(false); renderMainDisplay();
-            document.getElementById('cust-name').value = ''; document.getElementById('cust-phone').value = ''; 
-            document.getElementById('cust-area').value = ''; document.getElementById('cust-notes').value = '';
-            document.getElementById('cust-date').value = ''; document.getElementById('cust-time').value = '';
             
-            showSystemToast('تم تسجيل الطلب في السحابة وتحويلك لواتساب الإدارة!', 'success');
+            // --- التعديل الجديد: مسح الملاحظات والتاريخ فقط ---
+            document.getElementById('cust-notes').value = '';
+            document.getElementById('cust-date').value = ''; 
+            document.getElementById('cust-time').value = '';
+            
+            showSystemToast('طلبك اتسجل بنجاح وجاري تحويلك لواتساب الإدارة لتأكيده 🎂', 'success');
         }
+
 
         let secretTaps = 0; let tapTimer = null;
         function handleSecretTap() {
