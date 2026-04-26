@@ -859,24 +859,65 @@
                 <div id="admin-cakebuilder" class="admin-tab-content hidden space-y-6">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-gray-800 pb-4">
                         <h2 class="text-xl md:text-2xl font-bold text-gray-100">تحكم التورت الملكية 👑</h2>
-                        <button onclick="saveStoreSettings()" class="bg-emerald-500 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md">حفظ تعديلات القسم</button>
+                        <button onclick="saveCakeBuilderSettings()" class="bg-emerald-500 text-white px-6 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-emerald-600 transition-colors">حفظ تعديلات القسم</button>
                     </div>
                     
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 space-y-4">
-                            <h3 class="font-bold text-pink-400">التسعير والأساسيات</h3>
+                            <h3 class="font-bold text-pink-400 border-b border-gray-700 pb-2">التسعير والأساسيات</h3>
                             <div>
                                 <label class="block text-xs text-gray-400 mb-1">السعر الأساسي للفرد (ج.م)</label>
                                 <input type="number" id="set-cake-base-price" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white">
                             </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">وصف قسم التورت للعميل</label>
+                                <textarea id="set-cake-desc" rows="3" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white admin-scroll"></textarea>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">أقل عدد للتصميم المربع</label>
+                                    <input type="number" id="set-cake-min-sq" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">أقل عدد للمستطيل</label>
+                                    <input type="number" id="set-cake-min-rect" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 space-y-4">
-                            <h3 class="font-bold text-pink-400">إدارة النكهات والمكونات</h3>
+                            <h3 class="font-bold text-pink-400 border-b border-gray-700 pb-2 flex justify-between items-center">
+                                <span>صور قسم التورت</span>
+                                <span id="cake-upload-spinner" class="hidden"><i data-lucide="loader-2" class="w-4 h-4 text-pink-500 animate-spin"></i></span>
+                            </h3>
+                            <p class="text-[10px] text-gray-400">ارفع صور متعددة، ستعرض للعميل بشكل متحرك.</p>
+                            <label class="w-full bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-lg cursor-pointer flex items-center justify-center gap-2 text-sm font-bold transition-colors">
+                                <i data-lucide="image-plus" class="w-5 h-5"></i> إضافة صورة جديدة للتورت
+                                <input type="file" accept="image/*" class="hidden" onchange="uploadCakeImage(event)">
+                            </label>
+                            <div id="admin-cake-images-list" class="flex gap-2 overflow-x-auto hide-scrollbar py-2"></div>
+                        </div>
+
+                        <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 space-y-4">
+                            <h3 class="font-bold text-pink-400 border-b border-gray-700 pb-2">إدارة النكهات</h3>
                             <div id="admin-cake-flavors-list" class="flex flex-wrap gap-2"></div>
-                            <div class="flex gap-2">
-                                <input type="text" id="new-flavor-input" placeholder="نكهة جديدة..." class="flex-1 p-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-xs">
-                                <button onclick="addCakeFlavor()" class="bg-blue-600 px-4 py-2 rounded-lg text-xs font-bold text-white">إضافة</button>
+                            <div class="flex gap-2 mt-2">
+                                <input type="text" id="new-flavor-input" placeholder="نكهة جديدة..." class="flex-1 p-2 bg-gray-900 border border-gray-700 rounded-lg text-white text-xs outline-none">
+                                <button onclick="addCakeFlavor()" class="bg-pink-500 px-4 py-2 rounded-lg text-xs font-bold text-white">إضافة</button>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-800 p-6 rounded-2xl border border-gray-700 space-y-4">
+                            <h3 class="font-bold text-pink-400 border-b border-gray-700 pb-2">أسعار طباعة الصور (ج.م)</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">صورة قابلة للأكل (Edible)</label>
+                                    <input type="number" id="set-print-edible" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">صورة غير قابلة للأكل</label>
+                                    <input type="number" id="set-print-nonedible" class="w-full p-3 bg-gray-900 border border-gray-700 rounded-lg text-white">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1100,6 +1141,9 @@
 
             cakeBuilder: {
                 basePrice: 145, 
+                desc: "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة، مع ضمان تنفيذ إدارة حلويات بوسي لكافة الطلبات بأعلى مستوى احترافي.",
+                minSquare: 16,
+                minRect: 20,
                 flavors: ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت', 'كراميل', 'فستق', 'لوتس', 'ميكس فواكه'],
                 images: [], 
                 imagePrinting: [
@@ -1108,7 +1152,7 @@
                     { label: 'صورة غير قابلة للأكل', price: 20 }
                 ]
             }
-        };
+
 
         
         const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
@@ -1586,28 +1630,34 @@
             return m[cat] || m['جاتوهات'];
         }
 
-                function renderCakeBuilder(target) {
+        function renderCakeBuilder(target) {
             const c = state.cakeBuilder;
-            
-            // جلب الإعدادات من السحابة أو استخدام الافتراضي
             const settings = siteSettings.cakeBuilder || defaultSettings.cakeBuilder;
             
-            // حساب السعر بناءً على لوحة التحكم
             const baseP = Number(settings.basePrice) || 145;
             const imgOpts = settings.imagePrinting || defaultSettings.cakeBuilder.imagePrinting;
             const selectedImgOption = imgOpts.find(opt => opt.label === c.img) || {price: 0};
             const price = Number(c.ps) * baseP + Number(selectedImgOption.price);
             
             const flavors = settings.flavors || ['فانيليا'];
-            const headerImg = (settings.images && settings.images.length > 0) ? settings.images[0] : getImgFallback('تورت');
+            const imagesList = (settings.images && settings.images.length > 0) ? settings.images : [getImgFallback('تورت')];
+            const descText = settings.desc || defaultSettings.cakeBuilder.desc;
+            const minSq = settings.minSquare || 16;
+            const minRect = settings.minRect || 20;
+
+            let sliderHtml = `
+                <div class="w-full md:w-1/3 h-56 rounded-2xl overflow-hidden border-2 shadow-lg relative flex snap-slider hide-scrollbar" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+                    ${imagesList.map(url => `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide">`).join('')}
+                    ${imagesList.length > 1 ? `<div class="absolute bottom-2 w-full text-center z-10"><span class="bg-black/50 text-white text-[10px] px-2 py-1 rounded-full backdrop-blur-sm">مرر لمشاهدة ${imagesList.length} صور</span></div>` : ''}
+                </div>`;
 
             target.innerHTML = `
                 <div class="rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
                     <div class="p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                        <img src="${headerImg}" class="w-full md:w-1/3 h-56 object-cover rounded-2xl shadow-lg border-2 border-white">
+                        ${sliderHtml}
                         <div class="flex-1 text-center md:text-right">
                             <h2 class="text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">تخصيص التورت الملكية 👑</h2>
-                            <p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة، مع ضمان تنفيذ إدارة حلويات بوسي لكافة الطلبات بأعلى مستوى احترافي.</p>
+                            <p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">${escapeHTML(descText)}</p>
                         </div>
                     </div>
                     
@@ -1616,7 +1666,7 @@
                             <div class="space-y-4">
                                 <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="cake" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> نكهة الكيك المفضلة</label>
                                 <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                    ${flavors.map(fl => `<button onclick="uCake('flv', '${fl}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${fl}</button>`).join('')}
+                                    ${flavors.map(fl => `<button onclick="uCake('flv', '${escapeHTML(fl)}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${escapeHTML(fl)}</button>`).join('')}
                                 </div>
                             </div>
                             <div class="space-y-4">
@@ -1635,7 +1685,7 @@
                                 ${['دائري', 'قلب', 'مربع', 'مستطيل'].map(sh => `
                                     <button onclick="setSh('${sh}')" class="py-5 rounded-xl font-bold flex flex-col items-center gap-2 border-2 transition-all ${c.sh === sh ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.sh === sh ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">
                                         <span class="text-sm">${sh}</span>
-                                        ${sh === 'مربع' || sh === 'مستطيل' ? `<span class="text-[9px] opacity-75">${sh === 'مربع' ? '(من 16)' : '(من 20)'}</span>` : ''}
+                                        ${sh === 'مربع' || sh === 'مستطيل' ? `<span class="text-[9px] opacity-75">${sh === 'مربع' ? `(من ${minSq})` : `(من ${minRect})`}</span>` : ''}
                                     </button>
                                 `).join('')}
                             </div>
@@ -1652,26 +1702,23 @@
                         </div>
 
                         <div class="p-8 rounded-[2rem] border flex flex-col md:flex-row gap-8 shadow-sm relative overflow-hidden" style="background-color: hsl(var(--brand-hue), 10%, 97%); border-color: hsl(var(--brand-hue), 10%, 90%);">
-                            <div class="absolute top-0 right-0 w-32 h-32 rounded-full mix-blend-multiply filter blur-3xl opacity-50 animate-pulse" style="background-color: hsl(var(--brand-hue), 50%, 80%);"></div>
                             <div class="flex-1 space-y-4 relative z-10">
                                 <label class="font-bold flex items-center gap-2 text-lg" style="color: var(--site-text);"><i data-lucide="party-popper" class="w-6 h-6" style="color: hsl(var(--brand-hue), 60%, 50%);"></i> طبيعة المناسبة</label>
-                                <p class="text-[11px] md:text-xs font-bold leading-loose opacity-80" style="color: var(--site-text);">أخبرنا بمناسبتك السعيدة ليتم ابتكار اللمسات الإبداعية التي تليق بالحدث.</p>
                                 <input type="text" value="${escapeHTML(c.occ)}" onchange="uCake('occ', this.value)" placeholder="مثال: عيد ميلاد، زفاف..." class="w-full p-4 rounded-xl border shadow-sm outline-none transition-all font-bold text-sm" style="background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 20%, 85%);">
                             </div>
                             <div class="flex-1 space-y-4 relative z-10 border-t md:border-t-0 md:border-r pt-6 md:pt-0 md:pr-8" style="border-color: hsl(var(--brand-hue), 20%, 85%);">
                                  <label class="font-bold flex items-center gap-2 text-lg" style="color: var(--site-text);"><i data-lucide="image-plus" class="w-6 h-6" style="color: hsl(var(--brand-hue), 60%, 50%);"></i> تصميم مرجعي</label>
-                                 <p class="text-[11px] md:text-xs font-bold leading-loose opacity-80" style="color: var(--site-text);">هل لديك صورة لتصميم أعجبك؟ قم بإرفاق الصورة هنا.</p>
                                  <div class="relative border-2 border-dashed rounded-xl p-4 text-center hover:opacity-80 transition-all cursor-pointer overflow-hidden group" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 40%, 80%);">
                                      <input type="file" accept="image/*" onchange="handleRefImage(event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
                                      ${c.refImgUrl ? `
                                         <div class="relative z-0">
-                                            <img src="${c.refImgUrl}" class="h-24 w-full object-cover rounded-lg shadow-sm mb-2 border" style="border-color: hsl(var(--brand-hue), 20%, 85%);">
-                                            <span class="text-[10px] font-bold px-3 py-1 rounded-md border inline-block shadow-sm" style="background-color: hsl(var(--brand-hue), 80%, 97%); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 40%, 80%);">✓ تم الإرفاق</span>
+                                            <img src="${c.refImgUrl}" class="h-24 w-full object-cover rounded-lg shadow-sm mb-2 border">
+                                            <span class="text-[10px] font-bold px-3 py-1 rounded-md border inline-block shadow-sm">✓ تم الإرفاق</span>
                                         </div>
                                      ` : `
                                         <div class="relative z-0 py-2">
-                                            <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform" style="background-color: hsl(var(--brand-hue), 80%, 97%);"><i data-lucide="upload-cloud" class="w-6 h-6" style="color: hsl(var(--brand-hue), 60%, 50%);"></i></div>
-                                            <span class="text-[10px] font-bold opacity-70 block" style="color: var(--site-text);">اضغط هنا أو اسحب الصورة</span>
+                                            <div class="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2" style="background-color: hsl(var(--brand-hue), 80%, 97%);"><i data-lucide="upload-cloud" class="w-6 h-6"></i></div>
+                                            <span class="text-[10px] font-bold opacity-70 block">اضغط هنا لرفع تصميم أعجبك</span>
                                         </div>
                                      `}
                                  </div>
@@ -1727,20 +1774,27 @@
                 state.cakeBuilder.refImgUrl = URL.createObjectURL(file); state.cakeBuilder.hasRefImg = true; renderMainDisplay();
             }
         }
+
         function adjP(d) {
             let n = Number(state.cakeBuilder.ps) + Number(d);
             if (n < 4) n = 4; if (n > 250) n = 250;
             const s = state.cakeBuilder.sh;
-            if (s === 'مربع' && n < 16) { showSystemToast('التصميم المربع يتطلب 16 فرداً على الأقل.', 'error'); return; }
-            if (s === 'مستطيل' && n < 20) { showSystemToast('التصميم المستطيل يتطلب 20 فرداً على الأقل.', 'error'); return; }
+            const minSq = siteSettings.cakeBuilder?.minSquare || 16;
+            const minRect = siteSettings.cakeBuilder?.minRect || 20;
+            if (s === 'مربع' && n < minSq) { showSystemToast(`التصميم المربع يتطلب ${minSq} فرداً على الأقل.`, 'error'); return; }
+            if (s === 'مستطيل' && n < minRect) { showSystemToast(`التصميم المستطيل يتطلب ${minRect} فرداً على الأقل.`, 'error'); return; }
             state.cakeBuilder.ps = n; renderMainDisplay();
         }
+
         function setSh(s) {
             const p = Number(state.cakeBuilder.ps);
-            if (s === 'مربع' && p < 16) { showSystemToast('للتصميم المربع، يرجى زيادة العدد لـ 16.', 'error'); return; }
-            if (s === 'مستطيل' && p < 20) { showSystemToast('للتصميم المستطيل، يرجى زيادة العدد لـ 20.', 'error'); return; }
+            const minSq = siteSettings.cakeBuilder?.minSquare || 16;
+            const minRect = siteSettings.cakeBuilder?.minRect || 20;
+            if (s === 'مربع' && p < minSq) { showSystemToast(`للتصميم المربع، يرجى زيادة العدد لـ ${minSq}.`, 'error'); return; }
+            if (s === 'مستطيل' && p < minRect) { showSystemToast(`للتصميم المستطيل، يرجى زيادة العدد لـ ${minRect}.`, 'error'); return; }
             state.cakeBuilder.sh = s; renderMainDisplay();
         }
+
 
         function updateCardUI(id) {
             const safeId = String(id);
@@ -2164,16 +2218,10 @@ function toggleCart(s) {
         document.getElementById('set-font-weight').addEventListener('change', updateLiveThemePreview);
         
         // === تشغيل وربط قسم التورت الملكية ===
-        if (!siteSettings.cakeBuilder) {
-            siteSettings.cakeBuilder = JSON.parse(JSON.stringify(defaultSettings.cakeBuilder));
-        }
-        const cakePriceInp = document.getElementById('set-cake-base-price');
-        if (cakePriceInp) cakePriceInp.value = siteSettings.cakeBuilder.basePrice || 145;
-        if (typeof renderAdminCakeFlavors === 'function') renderAdminCakeFlavors();
-        if (typeof updateCakeHeaderPreview === 'function') updateCakeHeaderPreview();
+        fillCakeBuilderAdmin();
         
         updateLiveThemePreview();
-    }
+
 
 
         async function saveStoreSettings() {
@@ -2625,6 +2673,118 @@ function toggleCart(s) {
             const m = document.getElementById('info-modal'); m.classList.remove('hidden'); m.classList.add('flex'); lucide.createIcons();
         }
         function closeInfo() { const m = document.getElementById('info-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+
+        // === محرك إدارة التورت الملكية ===
+        function fillCakeBuilderAdmin() {
+            if (!siteSettings.cakeBuilder) siteSettings.cakeBuilder = JSON.parse(JSON.stringify(defaultSettings.cakeBuilder));
+            const c = siteSettings.cakeBuilder;
+            document.getElementById('set-cake-base-price').value = c.basePrice || 145;
+            document.getElementById('set-cake-desc').value = c.desc || "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة، مع ضمان تنفيذ إدارة حلويات بوسي لكافة الطلبات بأعلى مستوى احترافي.";
+            document.getElementById('set-cake-min-sq').value = c.minSquare || 16;
+            document.getElementById('set-cake-min-rect').value = c.minRect || 20;
+            
+            const edible = c.imagePrinting.find(i => i.label === 'صورة قابلة للأكل');
+            const nonedible = c.imagePrinting.find(i => i.label === 'صورة غير قابلة للأكل');
+            if(edible) document.getElementById('set-print-edible').value = edible.price;
+            if(nonedible) document.getElementById('set-print-nonedible').value = nonedible.price;
+
+            renderAdminCakeFlavors();
+            renderAdminCakeImages();
+        }
+
+        function renderAdminCakeFlavors() {
+            const list = siteSettings.cakeBuilder.flavors || [];
+            document.getElementById('admin-cake-flavors-list').innerHTML = list.map((fl, idx) => `
+                <div class="bg-gray-700 text-gray-200 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 border border-gray-600">
+                    <span>${fl}</span>
+                    <button onclick="removeCakeFlavor(${idx})" class="text-red-400 hover:text-red-300"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function addCakeFlavor() {
+            const val = document.getElementById('new-flavor-input').value.trim();
+            if(!val) return;
+            if(!siteSettings.cakeBuilder.flavors) siteSettings.cakeBuilder.flavors = [];
+            siteSettings.cakeBuilder.flavors.push(val);
+            document.getElementById('new-flavor-input').value = '';
+            renderAdminCakeFlavors();
+        }
+
+        function removeCakeFlavor(idx) {
+            siteSettings.cakeBuilder.flavors.splice(idx, 1);
+            renderAdminCakeFlavors();
+        }
+
+        function renderAdminCakeImages() {
+            const list = siteSettings.cakeBuilder.images || [];
+            const container = document.getElementById('admin-cake-images-list');
+            if(list.length === 0) { container.innerHTML = \`<span class="text-xs text-gray-500">لا يوجد صور، سيتم استخدام الصورة الافتراضية.</span>\`; return; }
+            container.innerHTML = list.map((url, idx) => \`
+                <div class="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden border border-gray-600 group">
+                    <img src="\${url}" class="w-full h-full object-cover">
+                    <button onclick="removeCakeImage(\${idx})" class="absolute top-1 right-1 bg-red-500 text-white p-1 rounded hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </div>
+            \`).join('');
+            lucide.createIcons();
+        }
+
+        function removeCakeImage(idx) {
+            siteSettings.cakeBuilder.images.splice(idx, 1);
+            renderAdminCakeImages();
+        }
+
+        async function uploadCakeImage(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const spinner = document.getElementById('cake-upload-spinner'); spinner.classList.remove('hidden');
+            const reader = new FileReader(); reader.readAsDataURL(file);
+            reader.onload = function(ev) {
+                const img = new Image(); img.src = ev.target.result;
+                img.onload = async function() {
+                    const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; let scaleSize = 1;
+                    if (img.width > MAX_WIDTH) scaleSize = MAX_WIDTH / img.width;
+                    canvas.width = img.width * scaleSize; canvas.height = img.height * scaleSize;
+                    const ctx = canvas.getContext('2d'); ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    const base64Str = canvas.toDataURL('image/jpeg', 0.8);
+                    try {
+                        const formData = new FormData(); formData.append('file', base64Str); formData.append('upload_preset', 'gct8i28h'); 
+                        const response = await fetch('https://api.cloudinary.com/v1_1/dyx4w0dr1/image/upload', { method: 'POST', body: formData });
+                        const data = await response.json();
+                        if (data.secure_url) { 
+                            if(!siteSettings.cakeBuilder.images) siteSettings.cakeBuilder.images = [];
+                            siteSettings.cakeBuilder.images.push(data.secure_url);
+                            renderAdminCakeImages();
+                            showSystemToast("تم رفع الصورة للسحابة", "success");
+                        }
+                    } catch (err) { 
+                        if(!siteSettings.cakeBuilder.images) siteSettings.cakeBuilder.images = [];
+                        siteSettings.cakeBuilder.images.push(base64Str); renderAdminCakeImages(); showSystemToast("تم الحفظ محلياً", "info");
+                    } finally { spinner.classList.add('hidden'); }
+                }
+            }
+        }
+
+        async function saveCakeBuilderSettings() {
+            const c = siteSettings.cakeBuilder;
+            c.basePrice = Number(document.getElementById('set-cake-base-price').value) || 145;
+            c.desc = document.getElementById('set-cake-desc').value;
+            c.minSquare = Number(document.getElementById('set-cake-min-sq').value) || 16;
+            c.minRect = Number(document.getElementById('set-cake-min-rect').value) || 20;
+            
+            c.imagePrinting = [
+                { label: 'بدون', price: 0 },
+                { label: 'صورة قابلة للأكل', price: Number(document.getElementById('set-print-edible').value) || 0 },
+                { label: 'صورة غير قابلة للأكل', price: Number(document.getElementById('set-print-nonedible').value) || 0 }
+            ];
+
+            try {
+                await NetworkEngine.safeWrite('settings', 'main', siteSettings); saveEngineMemory('set'); 
+                showSystemToast("تم حفظ تعديلات التورت الملكية بنجاح! 👑", "success");
+                if(state.activeCat === 'تورت') renderMainDisplay();
+            } catch(e) { saveEngineMemory('set'); showSystemToast("تم الحفظ محلياً", "info"); }
+        }
+
 
         window.addEventListener('scroll', () => {
             const n = document.getElementById('navbar');
