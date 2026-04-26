@@ -574,9 +574,23 @@
 
                         <!-- Colors Settings -->
                         <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 space-y-5">
+                        <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 space-y-5">
                             <h3 class="font-bold text-lg text-pink-400 mb-4 border-b border-gray-700 pb-2"><i data-lucide="droplet" class="inline w-5 h-5 ml-1"></i> باليتة ألوان الموقع</h3>
                             
+                            <div class="bg-gray-900 p-4 rounded-xl border border-gray-700 mb-6 shadow-inner">
+                                <p class="text-xs font-bold text-gray-400 mb-3">باليتة ألوان البراند (اضغطي على اللون للاختيار مباشرة):</p>
+                                <div class="flex flex-wrap gap-3">
+                                    <button onclick="document.getElementById('set-brand-color').value='#EC4899'; document.getElementById('set-brand-color-text').value='#EC4899'; updateLiveThemePreview();" class="w-10 h-10 rounded-full bg-[#EC4899] shadow-md border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                                    <button onclick="document.getElementById('set-brand-color').value='#E81E63'; document.getElementById('set-brand-color-text').value='#E81E63'; updateLiveThemePreview();" class="w-10 h-10 rounded-full bg-[#E81E63] shadow-md border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                                    <button onclick="document.getElementById('set-brand-color').value='#D81B60'; document.getElementById('set-brand-color-text').value='#D81B60'; updateLiveThemePreview();" class="w-10 h-10 rounded-full bg-[#D81B60] shadow-md border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                                    <button onclick="document.getElementById('set-brand-color').value='#F472B6'; document.getElementById('set-brand-color-text').value='#F472B6'; updateLiveThemePreview();" class="w-10 h-10 rounded-full bg-[#F472B6] shadow-md border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                                    <button onclick="document.getElementById('set-brand-color').value='#C2185B'; document.getElementById('set-brand-color-text').value='#C2185B'; updateLiveThemePreview();" class="w-10 h-10 rounded-full bg-[#C2185B] shadow-md border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                                    <button onclick="document.getElementById('set-brand-color').value='#FF69B4'; document.getElementById('set-brand-color-text').value='#FF69B4'; updateLiveThemePreview();" class="w-10 h-10 rounded-full bg-[#FF69B4] shadow-md border-2 border-white/20 hover:scale-110 transition-transform"></button>
+                                </div>
+                            </div>
+                            
                             <div class="space-y-4">
+
                                 <div>
                                     <label class="block text-xs font-bold text-gray-400 mb-1.5">لون البراند الأساسي (اللون البارز للتدرجات)</label>
                                     <div class="flex items-center gap-3">
@@ -1530,7 +1544,8 @@
 
             const aspectClass = isFullWidth ? 'aspect-[4/3] w-full' : 'aspect-[4/3] sm:aspect-square w-full';
             const titleClass = isFullWidth ? 'text-[16px] sm:text-lg' : 'text-[12px] sm:text-sm';
-            const descClass = isFullWidth ? 'text-[13px] sm:text-sm line-clamp-none mt-2' : 'text-[11px] sm:text-xs line-clamp-2';
+            // التعديل: استبدال line-clamp-2 بـ line-clamp-none لإظهار الوصف كاملاً
+            const descClass = isFullWidth ? 'text-[13px] sm:text-sm line-clamp-none mt-2' : 'text-[11px] sm:text-xs line-clamp-none';
             const cardPadding = isFullWidth ? 'p-4 sm:p-5' : 'p-2.5 sm:p-4';
 
             const isOutOfStock = p.inStock === false;
@@ -2227,7 +2242,7 @@ function toggleCart(s) {
             const colorInput = document.getElementById(inputId);
             const textInput = document.getElementById(textId);
             
-            // فك الحماية عن مربع النص لتمكين الإدخال اليدوي
+            // فك الحماية لتمكين الكتابة
             textInput.removeAttribute('readonly');
 
             // من مربع اللون للنص
@@ -2236,15 +2251,36 @@ function toggleCart(s) {
                 updateLiveThemePreview();
             });
 
-            // من النص لمربع اللون (لو الموبايل معلق تقدري تكتبي الكود هنا مباشرة)
+            // ⚡ تحديث الموتور الذكي: يقبل الكود حتى لو فيه مسافات أو بدون علامة #
             textInput.addEventListener('input', (e) => {
-                let val = e.target.value;
-                if(val.length === 7 && val.startsWith('#')) {
+                let val = e.target.value.trim(); 
+                
+                // وضع علامة الشباك أوتوماتيكياً لو نسيها المستخدم
+                if (val.length > 0 && !val.startsWith('#')) {
+                    val = '#' + val;
+                }
+                
+                // لو الكود سليم يتم تطبيقه فوراً
+                if(/^#[0-9A-Fa-f]{6}$/i.test(val)) {
                     colorInput.value = val;
                     updateLiveThemePreview();
                 }
             });
+
+            // تأكيد أخير عند الخروج من المربع لضمان صحة الكود
+            textInput.addEventListener('blur', (e) => {
+                let val = e.target.value.trim();
+                if (val.length > 0 && !val.startsWith('#')) val = '#' + val;
+                if(/^#[0-9A-Fa-f]{6}$/i.test(val)) {
+                    colorInput.value = val;
+                    e.target.value = val.toUpperCase();
+                } else {
+                    e.target.value = colorInput.value.toUpperCase(); 
+                }
+                updateLiveThemePreview();
+            });
         }
+
 
         function fillAdminSettingsForm() {
             // Data Tab
