@@ -1125,7 +1125,7 @@
 
 
         // Data Models
-                const defaultSettings = {
+        const defaultSettings = {
             brandName: "حلويات بوسي", announcement: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب",
             heroTitle: "أهلاً بكم في <br class='hidden md:block'/> <span class='text-white relative inline-block mt-1 md:mt-2 drop-shadow-md'>حلويات بوسي</span>",
             heroDesc: "يسر إدارة حلويات بوسي استعراض تشكيلتها الحصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بذوقكم الرفيع ومناسباتكم السعيدة.",
@@ -1152,8 +1152,7 @@
                     { label: 'صورة غير قابلة للأكل', price: 20 }
                 ]
             }
-
-
+        }; // <-- تم إصلاح خطأ السكريبت هنا
         
         const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
         const defaultCatalog = [
@@ -2221,7 +2220,7 @@ function toggleCart(s) {
         fillCakeBuilderAdmin();
         
         updateLiveThemePreview();
-
+        }
 
 
         async function saveStoreSettings() {
@@ -2720,13 +2719,13 @@ function toggleCart(s) {
         function renderAdminCakeImages() {
             const list = siteSettings.cakeBuilder.images || [];
             const container = document.getElementById('admin-cake-images-list');
-            if(list.length === 0) { container.innerHTML = \`<span class="text-xs text-gray-500">لا يوجد صور، سيتم استخدام الصورة الافتراضية.</span>\`; return; }
-            container.innerHTML = list.map((url, idx) => \`
+            if(list.length === 0) { container.innerHTML = `<span class="text-xs text-gray-500">لا يوجد صور، سيتم استخدام الصورة الافتراضية.</span>`; return; }
+            container.innerHTML = list.map((url, idx) => `
                 <div class="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden border border-gray-600 group">
-                    <img src="\${url}" class="w-full h-full object-cover">
-                    <button onclick="removeCakeImage(\${idx})" class="absolute top-1 right-1 bg-red-500 text-white p-1 rounded hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    <img src="${url}" class="w-full h-full object-cover">
+                    <button onclick="removeCakeImage(${idx})" class="absolute top-1 right-1 bg-red-500 text-white p-1 rounded hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-3 h-3"></i></button>
                 </div>
-            \`).join('');
+            `).join('');
             lucide.createIcons();
         }
 
@@ -2796,4 +2795,3 @@ function toggleCart(s) {
     </script>
 </body>
 </html>
-
