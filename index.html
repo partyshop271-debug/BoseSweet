@@ -2224,9 +2224,25 @@ function toggleCart(s) {
         }
 
         function syncColorInput(inputId, textId) {
-            document.getElementById(inputId).addEventListener('input', (e) => {
-                document.getElementById(textId).value = e.target.value.toUpperCase();
+            const colorInput = document.getElementById(inputId);
+            const textInput = document.getElementById(textId);
+            
+            // فك الحماية عن مربع النص لتمكين الإدخال اليدوي
+            textInput.removeAttribute('readonly');
+
+            // من مربع اللون للنص
+            colorInput.addEventListener('input', (e) => {
+                textInput.value = e.target.value.toUpperCase();
                 updateLiveThemePreview();
+            });
+
+            // من النص لمربع اللون (لو الموبايل معلق تقدري تكتبي الكود هنا مباشرة)
+            textInput.addEventListener('input', (e) => {
+                let val = e.target.value;
+                if(val.length === 7 && val.startsWith('#')) {
+                    colorInput.value = val;
+                    updateLiveThemePreview();
+                }
             });
         }
 
