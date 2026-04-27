@@ -1217,20 +1217,18 @@
         }; // <-- تم إصلاح خطأ السكريبت هنا
         
         const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
-        const defaultCatalog = [
-            { id: 1, category: 'جاتوهات', name: 'جاتوه ملكي', price: 638, badge: 'الأكثر مبيعاً 🔥', images: [], desc: 'طبقات من الكيك الإسفنجي الهش متدلعة بالكريمة الغنية والشوكولاتة البلجيكية الأصلية.. قطعة فنية لمناسباتك المهمة! 👑🍫' },
-            { id: 2, category: 'جاتوهات', name: 'جاتوه كلاسيك', price: 506, desc: 'الجاتوه الأصلي بطعم زمان وجودة "حلويات بوسي" اللي متعودين عليها.. خفة وطعم يرجّع أحلى الذكريات! 🍰✨' },
-            { id: 4, category: 'قشطوطة', name: 'نوتيلا وايت', price: 121, badge: 'جديد 🌟', desc: 'غرقانة في الحليب ومتغطية بسحابة من كريمة النوتيلا البيضاء الناعمة.. حتة دلع تصالح بيها مزاجك! 🤍🥛' },
-            { id: 14, category: 'بامبوليني', name: 'نوتيلا وايت', price: 88, desc: 'عجينة إيطالية هشة ومقلية صح، محشية لحد آخرها بكريمة النوتيلا البيضاء اللي بتبظ من كل ناحية! ☁️🤍' },
-            { id: 27, category: 'دوناتس', name: 'نوتيلا وايت', price: 88, desc: 'حلقة من السعادة الهشة، متغطية ومحشية بالنوتيلا البيضاء اللي بتدوب بمجرد ما تلمسها! 🍩🤍' },
-            { id: 40, category: 'ديسباسيتو', size: 'وسط', subType: 'وسط', name: 'نوتيلا دارك', price: 132, badge: 'خصم حصري 🏷️', desc: 'طاجن كيك غرقان ومسقي حليب صح، وعليه طبقة كثيفة من النوتيلا الغامقة.. السعادة في معلقة! 🍫🤤' },
-            { id: 62, category: 'سينابون', name: 'نوتيلا دارك', price: 121, desc: 'رول سينابون طري ودافي، ريحته قرفة تجنن، وغرقان بصوص النوتيلا الغامقة الكثيفة! 🤎✨' },
-            { id: 73, category: 'ريد فيلفت', name: 'مثلث كبير', subType: 'مثلث كبير', price: 72, desc: 'قطعة كيك مخملية بتدوب، مع طبقات كريمة الجبن الأصلية اللي بتوزن الطعم صح! ❤️🍰' },
-            { id: 76, category: 'كبات السعادة', name: 'نوتيلا', price: 61, desc: 'كب صغير بس سعادته كبيرة! طبقات كيك هشة وكريمة غنية متغطية بصوص النوتيلا السايح! 🍫😋' },
-            { id: 99, category: 'ميني تورتة', name: 'حجم (فرد - فردين)', price: 154, desc: 'تورتة صغيرة بتصميم كيوت وشيك جداً، مثالية لمفاجأة سريعة أو هدية رقيقة تفرح بيها حبايبك! 🎂💖' },
-            { id: 98, category: 'عروض وبوكسات', name: 'بوكس الروقان', price: 550, badge: 'عرض اليوم 🎁', desc: 'جمعنالك دلع الدنيا في بوكس! تورتة نص فانيليا/شوكولاتة + 2 كب سعادة + ديسباسيتو + ريد فيلفت.. روقان بجد! 🎁🎉' },
-            { id: 103, category: 'ورد', flowerType: 'ورد طبيعي', subType: 'ورد طبيعي', name: 'بوكيه طبيعي فريش', price: 0, desc: 'بوكيه ورد طبيعي طازة متنسق باحترافية وألوان تفتح النفس عشان تكمل بيك هديتك وتبهج اللي بتحبهم! 🌸🍃' }
-        ];
+        
+        let defaultCatalog = [];
+        
+        // محرك سحب البيانات الافتراضية
+        async function fetchDefaultCatalog() {
+            try {
+                const response = await fetch('data.json');
+                defaultCatalog = await response.json();
+            } catch (error) {
+                console.error("تعذر تحميل الكتالوج الافتراضي:", error);
+            }
+        }
 
         let siteSettings = { ...defaultSettings };
         let shippingZones = [ ...defaultShipping ];
@@ -1243,75 +1241,68 @@
         
         // Tracking images for multi-upload modal
         let tempProdImages = []; 
+        //         // --- بناء موتور الذاكرة المطور لعلامة حلويات بوسي ---
         async function loadEngineMemory() {
             try {
-                const setDoc = await db.collection('settings').doc('main').get();
-                if (setDoc.exists) siteSettings = { ...defaultSettings, ...setDoc.data() };
-                else await NetworkEngine.safeWrite('settings', 'main', siteSettings);
+                // 1. استدعاء المحرك المحلي لجلب البيانات والأسعار من ملف الجيسون
+                await fetchDefaultCatalog(); 
+                catalog = [...defaultCatalog];
 
-                const shipSnap = await db.collection('shipping').get();
-                if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); } 
-                else for (let z of shippingZones) await NetworkEngine.safeWrite('shipping', String(z.id), z); 
-
+                // 2. مزامنة السحابة (Firebase)
                 const catSnap = await db.collection('catalog').get();
-                if (!catSnap.empty) { catalog = []; catSnap.forEach(doc => catalog.push(doc.data())); } 
-                else { catalog = [...defaultCatalog]; for (let p of catalog) await NetworkEngine.safeWrite('catalog', String(p.id), p); }
+                if (catSnap.empty) {
+                    console.log("جاري رفع منيو حلويات بوسي المتطورة للسحابة... 🚀");
+                    for (let p of catalog) {
+                        await NetworkEngine.safeWrite('catalog', String(p.id), p);
+                    }
+                } else {
+                    catalog = [];
+                    catSnap.forEach(doc => catalog.push(doc.data()));
+                }
+                
+                console.log("تم تفعيل المنيو الشاملة لـ BoseSweets بنجاح! 👑✨");
 
+                // 3. استكمال باقي البيانات (طلبات، معرض صور، إعدادات، مناطق شحن)
                 const orderSnap = await db.collection('orders').orderBy('timestamp', 'desc').get();
                 if (!orderSnap.empty) { globalOrders = []; orderSnap.forEach(doc => globalOrders.push(doc.data())); }
 
                 const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
                 if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
+                
+                const settingsSnap = await db.collection('settings').doc('main').get();
+                if (settingsSnap.exists) { siteSettings = { ...defaultSettings, ...settingsSnap.data() }; }
 
-                // المحرك الذكي
+                const shipSnap = await db.collection('shipping').get();
+                if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); }
+
+                // 4. ترتيب الأقسام والتأكد من وجود قسم "تورت" في المقدمة
                 if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
                     catMenu = siteSettings.catMenu;
                 } else {
                     catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
                 }
-                
-                // 👑 درع الحماية: ضمان وجود قسم التورت دائماً في المقدمة
                 if (!catMenu.includes('تورت')) {
                     catMenu.unshift('تورت');
                 }
 
                 syncCatalogMap(); 
-                localStorage.setItem('bSweets_catalog', JSON.stringify(catalog));
-                localStorage.setItem('bSweets_settings', JSON.stringify(siteSettings));
-                localStorage.setItem('bSweets_shipping', JSON.stringify(shippingZones));
-                localStorage.setItem('boseSweets_admin_orders', JSON.stringify(globalOrders));
-                localStorage.setItem('bSweets_gallery', JSON.stringify(galleryData));
 
-            } catch (e) {
-                console.warn("تعذر الاتصال بالسحابة المركزية، يتم استرجاع البيانات من الخزنة المحلية 🛡️", e);
-                try {
-                    const sCat = localStorage.getItem('bSweets_catalog'); catalog = sCat ? JSON.parse(sCat) : [...defaultCatalog];
-                    const sSet = localStorage.getItem('bSweets_settings'); if (sSet) siteSettings = { ...defaultSettings, ...JSON.parse(sSet) };
-                    const sShip = localStorage.getItem('bSweets_shipping'); if (sShip) shippingZones = JSON.parse(sShip);
-                    const sOrd = localStorage.getItem('boseSweets_admin_orders'); if(sOrd) globalOrders = JSON.parse(sOrd);
-                    const sGal = localStorage.getItem('bSweets_gallery'); if(sGal) galleryData = JSON.parse(sGal);
-                    
-                    if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
-                        catMenu = siteSettings.catMenu;
-                    } else {
-                        catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
-                    }
-                    
-                    // 👑 درع الحماية في حالة الاوفلاين
-                    if (!catMenu.includes('تورت')) {
-                        catMenu.unshift('تورت');
-                    }
-
-                    syncCatalogMap(); 
-                } catch(err) { catalog = [...defaultCatalog]; syncCatalogMap(); }
+            } catch(err) { 
+                console.error("Cloud Error:", err);
+                catalog = [...defaultCatalog]; 
+                syncCatalogMap(); 
             }
-
-            try { const savedCart = localStorage.getItem('boseSweets_cart_data'); if (savedCart) state.cart = JSON.parse(savedCart); } catch (e) { state.cart = []; }
-        }
-
-
+            // 5. استرجاع السلة لو العميل كان طالب حاجات ومقفلش الأوردر
+            try { 
+                const savedCart = localStorage.getItem('boseSweets_cart_data'); 
+                if (savedCart) state.cart = JSON.parse(savedCart); 
+            } catch (e) { 
+                state.cart = []; 
+            }
+        } // <--- القوس ده هو مفتاح الحل اللي هيرجع الموتور للحياة 🚀
 
         async function saveEngineMemory(type) {
+
             try {
                 if (type === 'cat' || type === 'all') localStorage.setItem('bSweets_catalog', JSON.stringify(catalog));
                 if (type === 'set' || type === 'all') localStorage.setItem('bSweets_settings', JSON.stringify(siteSettings));
@@ -1376,6 +1367,7 @@
 
         async function initApp() {
             await loadEngineMemory();
+            await fetchDefaultCatalog();
             const loader = document.getElementById('global-loader');
             if(loader) { 
                 loader.style.opacity = '0'; 
@@ -1615,43 +1607,37 @@
                 colSpanClass = 'col-span-2 md:col-span-2 lg:col-span-2'; 
             }
 
-            const aspectClass = isFullWidth ? 'aspect-[4/3] w-full' : 'aspect-[4/3] sm:aspect-square w-full';
+            // 👑 التعديل الذكي الأول: هندسة أبعاد متغيرة (مربع للكارتين، ومستطيل للكارت الكبير)
+            const aspectClass = isFullWidth ? 'aspect-[4/3] w-full' : 'aspect-square w-full';
+            
             const titleClass = isFullWidth ? 'text-[16px] sm:text-lg' : 'text-[12px] sm:text-sm';
-            // التعديل: استبدال line-clamp-2 بـ line-clamp-none لإظهار الوصف كاملاً
             const descClass = isFullWidth ? 'text-[13px] sm:text-sm line-clamp-none mt-2' : 'text-[11px] sm:text-xs line-clamp-none';
             const cardPadding = isFullWidth ? 'p-4 sm:p-5' : 'p-2.5 sm:p-4';
 
             const isOutOfStock = p.inStock === false;
             
-            // CX Multi-Image Logic
             const imageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
             const hasMultipleImages = imageList.length > 1;
 
             return `
                 <div id="product-card-${p.id}" class="rounded-[1rem] sm:rounded-2xl shadow-sm hover:shadow-lg border flex flex-col group ${cardPadding} ${colSpanClass} transition-all duration-300 relative h-full" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
                     
-                    <!-- CX Upgrade: Share Button -->
                     <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-4 left-4 z-20 w-8 h-8 rounded-full shadow-md flex items-center justify-center hover:scale-110 transition-transform active:scale-95" style="background-color: var(--site-bg); color: var(--site-text);">
                         <i data-lucide="share-2" class="w-4 h-4"></i>
                     </button>
 
                     ${isOutOfStock ? `<div class="absolute top-4 right-4 z-20 bg-gray-900/85 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-600 backdrop-blur-sm shadow-lg flex items-center gap-1"><i data-lucide="ban" class="w-3 h-3 text-red-400"></i> نفدت الكمية</div>` : ''}
                     
-                    <!-- CX Upgrade: Dynamic Badge -->
                     ${p.badge && !isOutOfStock ? `<div class="absolute top-4 right-4 z-20 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg border animate-pulse tracking-wide" style="background-color: hsl(var(--brand-hue), 70%, 55%); border-color: hsl(var(--brand-hue), 80%, 75%);">${p.badge}</div>` : ''}
 
                     <div class="${aspectClass} rounded-lg sm:rounded-xl overflow-hidden border relative shrink-0" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
                         
-                        <!-- CX Upgrade: Snap Slider for Multi-Images -->
                         <div class="relative w-full h-full flex overflow-x-auto snap-slider hide-scrollbar ${isOutOfStock ? 'grayscale-overlay' : ''}">
                             ${imageList.map(url => `
-                                <img src="${url}" class="w-full h-full object-contain shrink-0 snap-slide transition-transform duration-700 ${isOutOfStock ? '' : 'group-hover:scale-105'}" loading="lazy">
+                                <img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 ${isOutOfStock ? '' : 'group-hover:scale-105'}" loading="lazy">
                             `).join('')}
                         </div>
-
-
                         
-                        <!-- Indicator Dots if multiple -->
                         ${hasMultipleImages ? `
                             <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">
                                 ${imageList.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-white opacity-100 w-3' : 'bg-white opacity-50'} shadow-sm transition-all"></div>`).join('')}
@@ -1697,6 +1683,7 @@
                 </div>
             `;
         }
+
 
         function getImgFallback(cat) {
             const m = {
@@ -2485,17 +2472,29 @@ function renderCartList() {
             reader.onload = async function(ev) {
                 try {
                     const data = JSON.parse(ev.target.result);
-                    if(data.settings) await NetworkEngine.safeWrite('settings', 'main', data.settings); 
-                    if(data.shipping) for (let z of data.shipping) await NetworkEngine.safeWrite('shipping', String(z.id), z); 
-                    if(data.catalog) for (let p of data.catalog) await NetworkEngine.safeWrite('catalog', String(p.id), p); 
-                    if(data.orders) for (let o of data.orders) await NetworkEngine.safeWrite('orders', String(o.id), o); 
-                    if(data.gallery) for (let g of data.gallery) await NetworkEngine.safeWrite('gallery', String(g.id), g);
-                    showSystemToast("تم استرجاع البيانات للسحابة! جاري إعادة تشغيل النظام...", "success");
+
+                    // ⚡ Engine Upgrade: Smart Import Logic for BoseSweets
+                    if (Array.isArray(data)) {
+                        for (let p of data) {
+                            await NetworkEngine.safeWrite('catalog', String(p.id), p);
+                        }
+                    } else {
+                        if(data.settings) await NetworkEngine.safeWrite('settings', 'main', data.settings); 
+                        if(data.shipping) for (let z of data.shipping) await NetworkEngine.safeWrite('shipping', String(z.id), z); 
+                        if(data.catalog) for (let p of data.catalog) await NetworkEngine.safeWrite('catalog', String(p.id), p); 
+                        if(data.orders) for (let o of data.orders) await NetworkEngine.safeWrite('orders', String(o.id), o); 
+                        if(data.gallery) for (let g of data.gallery) await NetworkEngine.safeWrite('gallery', String(g.id), g);
+                    }
+
+                    showSystemToast("تم استرجاع بيانات حلويات بوسي للسحابة بنجاح! جاري إعادة تشغيل النظام...", "success");
                     setTimeout(() => location.reload(), 2000);
-                } catch(err) { showSystemToast("ملف JSON غير صالح أو تعذر الاتصال!", "error"); }
+                } catch(err) { 
+                    showSystemToast("ملف JSON غير صالح أو تعذر الاتصال بالسحابة!", "error"); 
+                }
             };
             reader.readAsText(file);
         }
+
         
         function copyBackupText() {
             try {
