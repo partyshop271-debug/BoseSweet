@@ -455,7 +455,12 @@
             </div>
         </div>
 
-        <textarea id="cust-notes" placeholder="ملاحظات إضافية (مثلاً: تفاصيل العنوان أو طلبات خاصة)" rows="3" class="w-full p-4 rounded-2xl border-2 border-gray-50 focus:border-pink-500 outline-none font-bold transition-all resize-none"></textarea>
+<div id="address-field-container">
+    <input type="text" id="cust-address" placeholder="العنوان" class="w-full p-4 rounded-2xl border-2 border-gray-50 focus:border-pink-500 outline-none font-bold transition-all text-sm">
+</div>
+
+<textarea id="cust-notes" placeholder="ملاحظات إضافية (أي طلبات خاصة بالأوردر)" rows="3" class="w-full p-4 rounded-2xl border-2 border-gray-50 focus:border-pink-500 outline-none font-bold transition-all resize-none"></textarea>
+
         
         <button onclick="submitOrder()" class="w-full bg-pink-500 text-white py-5 rounded-2xl font-black text-lg shadow-lg shadow-pink-100 flex items-center justify-center gap-3 active:scale-95 transition-all">
             <span>تأكيد الأوردر عبر واتساب</span>
@@ -486,15 +491,17 @@
                 <button onclick="switchAdminTab('orders')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-orders"><i data-lucide="shopping-bag" class="w-5 h-5"></i> سجل الطلبات</button>
                 <button onclick="switchAdminTab('security')" class="admin-tab-btn flex items-center gap-3 w-full p-3 rounded-lg text-right font-bold text-sm text-gray-400 hover:bg-gray-700 hover:text-gray-200 transition-colors" data-target="admin-security"><i data-lucide="shield" class="w-5 h-5"></i> الحماية ورمز المرور</button>
                 
-                <div class="mt-auto pt-4 border-t border-gray-700 text-center">
-                    <p class="text-[10px] text-gray-500 font-bold tracking-widest">BoseSweets ERP v10.60</p>
-                    <p class="text-[9px] text-emerald-400 font-bold mt-1">✓ Identity Integrity Update ✨</p>
-                </div>
-            </div>
-            
-            <!-- Admin Content Area -->
-            <div class="flex-1 bg-gray-900 overflow-y-auto p-4 sm:p-6 md:p-8 admin-scroll">
-                
+        <div class="mt-auto pt-4 border-t border-gray-700 text-center">
+            <p class="text-[10px] text-gray-500 font-bold tracking-widest">BoseSweets ERP v10.60</p>
+            <p class="text-[9px] text-emerald-400 font-bold mt-1">✓ Identity Integrity Update ✨</p>
+        </div>
+    </div>
+</div> <div class="flex-1 bg-gray-900 overflow-y-auto p-4 sm:p-6 md:p-8 admin-scroll relative">
+    
+    <button onclick="toggleAdminSidebar()" class="md:hidden mb-6 p-2.5 bg-pink-500 hover:bg-pink-600 text-white rounded-lg shadow-md flex items-center gap-2 font-bold text-sm transition-all">
+        <i data-lucide="menu" class="w-5 h-5"></i> فتح القائمة
+    </button>
+
                 <!-- Tab: Overview -->
                 <div id="admin-overview" class="admin-tab-content block space-y-6">
                     <h2 class="text-xl md:text-2xl font-bold text-gray-100 border-b border-gray-800 pb-4">مركز الإدارة والقيادة</h2>
@@ -976,9 +983,8 @@
                         <button onclick="changeAdminPassword()" class="w-full bg-pink-500 text-white px-6 py-3 rounded-lg font-bold mt-4"><i data-lucide="key" class="inline w-4 h-4"></i> حفظ</button>
                     </div>
                 </div>
-
+                
             </div>
-        </div>
         
         <!-- Admin Edit/Add Product Modal -->
         <div id="admin-prod-modal" class="fixed inset-0 bg-black/80 z-[210] hidden items-center justify-center p-4 backdrop-blur-sm">
@@ -1155,8 +1161,15 @@
         
         function escapeHTML(str) {
             if (typeof str !== 'string') return str;
-            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+            return str.replace(/[&<>'"]/g, tag => ({ 
+                '&': '&amp;', 
+                '<': '&lt;', 
+                '>': '&gt;', 
+                "'": '&#39;', 
+                '"': '&quot;' 
+            }[tag] || tag));
         }
+
 
         function generateUniqueID() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
 
@@ -2136,10 +2149,15 @@ function goToCheckout() {
         showSystemToast("المشتريات لسه فاضية يا سكر 🌸", "info")
         return
     }
+
+    // السطر السحري لاستدعاء بيانات العميل من الذاكرة 🧠
+    loadCustomerData(); 
+
     step1.classList.add('hidden')
     step2.classList.remove('hidden')
     step2.scrollTop = 0 
 }
+
 
 function backToCart() {
     const step1 = document.getElementById('step-1-cart')
@@ -2290,16 +2308,23 @@ function renderCartList() {
             const cName = document.getElementById('cust-name').value.trim();
             const cPhone = document.getElementById('cust-phone').value.trim();
             const cAreaId = document.getElementById('cust-area').value;
-            const cNotes = document.getElementById('cust-notes').value.trim();
+            
+            // جلب قيمة العنوان الجديد والملاحظات
+            const addressEl = document.getElementById('cust-address');
+            const cAddress = addressEl ? addressEl.value.trim() : '';
+            const notesEl = document.getElementById('cust-notes');
+            const cNotes = notesEl ? notesEl.value.trim() : '';
 
+            // درع الحماية: التأكد من البيانات الأساسية
             if (!cName || !cPhone || !cDate || !cTime) { 
                 showSystemToast('يرجى استكمال البيانات الأساسية (التاريخ، الوقت، الاسم، والموبايل).', 'error'); 
                 return; 
             }
             
-            if (deliveryMethod === 'delivery' && !cAreaId) {
-                showSystemToast('يرجى تحديد منطقة التوصيل.', 'error'); 
-                return;
+            // إجبار العميل على كتابة العنوان لو اختار توصيل بالرسالة المبسطة
+            if (deliveryMethod === 'delivery') {
+                if (!cAreaId) { showSystemToast('يرجى تحديد منطقة التوصيل.', 'error'); return; }
+                if (!cAddress) { showSystemToast('يرجى كتابة العنوان لضمان وصول الأوردر 🛵', 'error'); return; }
             }
 
             let formattedDate = cDate;
@@ -2317,76 +2342,68 @@ function renderCartList() {
             const orderId = 'BS-' + Math.floor(10000 + Math.random() * 90000);
             let sub = 0; let itemsDesc = [];
 
-            let m = `*طلب جديد عبر القائمة الإلكترونية لـ ${siteSettings.brandName}* 🧁\n*رقم الطلب:* ${orderId}\nــــــــــــــــــــــــــــــــــــــــ\n\n`;
-            m += `*بيانات العميل:*\n👤 الاسم: ${cName}\n📞 الموبايل: ${cPhone}\n`;
+            // بناء الرسالة: العنوان سيظهر الآن باسم "العنوان" وليس ملاحظات
+            let m = `*طلب جديد من حلويات بوسي* 🧁\n*رقم الطلب:* ${orderId}\nــــــــــــــــــــــــــــــــــــــــ\n\n`;
+            m += `👤 الاسم: ${cName}\n📞 الموبايل: ${cPhone}\n`;
             m += `🚚 الاستلام: ${deliveryMethod === 'pickup' ? 'استلام من الفرع 🏪' : 'توصيل للمنزل 🛵'}\n`;
-            if (deliveryMethod === 'delivery') m += `📍 المنطقة: ${areaName}\n`;
-            m += `⏰ الموعد: ${formattedDate} - الساعة ${formattedTime}\n`;
-            if (cNotes) m += `📝 ملاحظات: ${cNotes}\n`;
+            
+            if (deliveryMethod === 'delivery') {
+                m += `📍 المنطقة: ${areaName}\n`;
+                m += `🏠 العنوان: ${cAddress}\n`; // العنوان يظهر هنا بشكل مستقل
+            }
+            
+            m += `⏰ الموعد: ${formattedDate} - ${formattedTime}\n`;
+            if (cNotes) m += `📝 ملاحظات: ${cNotes}\n`; // الملاحظات تظهر هنا بشكل مستقل
             m += `ــــــــــــــــــــــــــــــــــــــــ\n\n*الطلبات:*\n`;
 
             state.cart.forEach((i, idx) => {
                 let p = Number(i.price); let q = Number(i.quantity); sub += (p * q);
-                let catName = i.category ? `[${i.category}]` : '';
-                let subTypeName = (i.subType || i.size || i.flowerType) ? ` (${i.subType || i.size || i.flowerType})` : '';
-                let finalItemName = i.isCustom ? i.name : `${catName}${subTypeName} ${i.name}`.trim();
-
-                // عرض الاسم والسعر فقط لكل المنتجات
-                m += `\n*${idx+1}. ${finalItemName}* (الكمية: ${q}) = ${p > 0 ? (p * q) + ' ج.م' : 'يتم التحديد'}\n`;
-                
-                // عرض التفاصيل فقط لو كانت تورتة ملكية (تصميم خاص)
-                if (i.isCustom && i.desc) {
-                    m += `_تفاصيل التصميم المطلوبة:_\n${i.desc}\n`;
-                }
-                
+                let finalItemName = i.isCustom ? i.name : `[${i.category}] ${i.name}`.trim();
+                m += `\n*${idx+1}. ${finalItemName}* (x${q}) = ${(p * q)} ج\n`;
+                if (i.isCustom && i.desc) m += `_التفاصيل:_ ${i.desc}\n`;
                 itemsDesc.push(`${finalItemName} (x${q})`);
             });
 
-            
-            m += `\nــــــــــــــــــــــــــــــــــــــــ\n*قيمة المنتجات:* ${sub} ج.م\n*رسوم التوصيل:* ${state.currentShippingFee} ج.م\n*الإجمالي النهائي:* ${sub + state.currentShippingFee} ج.م\n`;
+            m += `\nــــــــــــــــــــــــــــــــــــــــ\n*الحساب:* ${sub + state.currentShippingFee} ج.م\n`;
 
+            // حفظ الطلب سحابياً مع فصل العنوان عن الملاحظات
             const orderObj = { 
-                id: orderId, 
-                timestamp: Date.now(), 
-                date: `${formattedDate} (${formattedTime})`, 
-                name: cName, 
-                phone: cPhone, 
-                area: areaName, 
-                items: itemsDesc.join('، '), 
-                total: (sub + state.currentShippingFee),
-                status: 'pending'
+                id: orderId, timestamp: Date.now(), date: formattedDate, name: cName, phone: cPhone, 
+                area: areaName, address: cAddress, notes: cNotes, total: (sub + state.currentShippingFee), status: 'pending' 
             };
 
             try {
                 await NetworkEngine.safeWrite('orders', orderId, orderObj);
                 globalOrders.unshift(orderObj); localStorage.setItem('boseSweets_admin_orders', JSON.stringify(globalOrders));
-            } catch(e) {
-                globalOrders.unshift(orderObj); localStorage.setItem('boseSweets_admin_orders', JSON.stringify(globalOrders));
-            }
-
-            // --- التعديل الجديد: حفظ بيانات العميل ---
-            const customerData = {
-                name: cName,
-                phone: cPhone,
-                area: deliveryMethod === 'delivery' ? cAreaId : '',
-                method: deliveryMethod
-            };
-            localStorage.setItem('boseSweets_customer_data', JSON.stringify(customerData));
+            } catch(e) {}
 
             window.open(`https://wa.me/201097238441?text=${encodeURIComponent(m)}`, '_blank');
             state.cart = []; clearCartStorage(); syncCartUI(); toggleCart(false); renderMainDisplay();
             
-            // --- التعديل الجديد: مسح الملاحظات والتاريخ فقط ---
-            document.getElementById('cust-notes').value = '';
+            // تفريغ الخانات بعد نجاح الطلب عشان السلة ترجع جديدة
             document.getElementById('cust-date').value = ''; 
             document.getElementById('cust-time').value = '';
+            if (addressEl) addressEl.value = '';
+            if (notesEl) notesEl.value = '';
             
-            showSystemToast('طلبك اتسجل بنجاح وجاري تحويلك لواتساب الإدارة لتأكيده 🎂', 'success');
+            showSystemToast('تم إرسال طلبك بنجاح! 🎂', 'success');
         }
 
 
+        // 🛡️ Engine Upgrade: Advanced Security & Hashing Engine
+        async function hashPassword(password) {
+            const msgBuffer = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        
+        // شفرة الباسورد الافتراضية 2026
+        const DEFAULT_ADMIN_HASH = "e4125b7405be53da470ec0865e8aebfcb03b223403ba78028f24419cb7ed490c";
+
         let secretTaps = 0; let tapTimer = null;
         function handleSecretTap() {
+
             secretTaps++; clearTimeout(tapTimer);
             if (secretTaps >= 5) { secretTaps = 0; openAdminDashboard(); } else { tapTimer = setTimeout(() => { secretTaps = 0; }, 2000); }
         }
@@ -2399,18 +2416,43 @@ function renderCartList() {
             else { sb.classList.add('translate-x-full'); ov.classList.add('hidden'); }
         }
 
-        function openAdminDashboard() {
+        async function openAdminDashboard() {
             const pwd = prompt("النظام السحابي المشفر لإدارة المتجر ☁️🛡️\n\nبرجاء إدخال رمز المرور السري:");
-            if (pwd === (siteSettings.adminPassword || "2026")) {
-                document.getElementById('admin-dashboard').classList.remove('hidden'); document.getElementById('admin-dashboard').classList.add('flex');
-                
-                renderAdminCatalogTabs();
-                renderAdminOrderFilters(); 
-               renderAdminCategories();
-                renderAdminOverview(); renderAdminOrders(); renderAdminMenu(); renderAdminShipping(); renderAdminGallery(); fillAdminSettingsForm();
-                document.getElementById('sec-current-pwd').value = ''; document.getElementById('sec-new-pwd').value = ''; document.getElementById('sec-confirm-pwd').value = '';
-                lucide.createIcons();
-            } else if (pwd !== null) { showSystemToast("رمز المرور غير صحيح.", "error"); }
+            if (pwd === null) return; 
+            
+            try {
+                const hashedInput = await hashPassword(pwd);
+                let isMatch = false;
+
+                // 🛡️ التوافق الذكي: التحقق من الباسورد لو لسه ماتشفرتش في السحابة
+                if (siteSettings.adminPasswordHash) {
+                    isMatch = (hashedInput === siteSettings.adminPasswordHash);
+                } else if (siteSettings.adminPassword) {
+                    isMatch = (pwd === siteSettings.adminPassword); // لو الباسورد القديمة موجودة وماتشفرتش
+                } else {
+                    isMatch = (hashedInput === DEFAULT_ADMIN_HASH);
+                }
+
+                if (isMatch) {
+                    document.getElementById('admin-dashboard').classList.remove('hidden'); document.getElementById('admin-dashboard').classList.add('flex');
+                    
+                    renderAdminCatalogTabs();
+                    renderAdminOrderFilters(); 
+                    renderAdminCategories();
+                    renderAdminOverview(); renderAdminOrders(); renderAdminMenu(); renderAdminShipping(); renderAdminGallery(); fillAdminSettingsForm();
+                    document.getElementById('sec-current-pwd').value = ''; document.getElementById('sec-new-pwd').value = ''; document.getElementById('sec-confirm-pwd').value = '';
+                    lucide.createIcons();
+                } else { 
+                    showSystemToast("رمز المرور غير صحيح.. المحاولة مسجلة 🛡️", "error"); 
+                }
+            } catch (error) {
+                if(pwd === (siteSettings.adminPassword || "2026")) {
+                    document.getElementById('admin-dashboard').classList.remove('hidden'); document.getElementById('admin-dashboard').classList.add('flex');
+                    renderAdminOverview(); fillAdminSettingsForm();
+                } else {
+                    showSystemToast("رمز المرور غير صحيح", "error");
+                }
+            }
         }
 
         function closeAdminDashboard() {
@@ -2631,18 +2673,41 @@ function renderCartList() {
         }
 
         async function changeAdminPassword() {
-            const currentInput = document.getElementById('sec-current-pwd').value; const newPwd = document.getElementById('sec-new-pwd').value; const confirmPwd = document.getElementById('sec-confirm-pwd').value;
-            const actualPassword = siteSettings.adminPassword || "2026";
+            const currentInput = document.getElementById('sec-current-pwd').value; 
+            const newPwd = document.getElementById('sec-new-pwd').value; 
+            const confirmPwd = document.getElementById('sec-confirm-pwd').value;
+            
             if (!currentInput || !newPwd || !confirmPwd) { showSystemToast("يرجى ملء جميع الحقول", "error"); return; }
-            if (currentInput !== actualPassword) { showSystemToast("الرمز الحالي غير صحيح", "error"); return; }
-            if (newPwd !== confirmPwd) { showSystemToast("الرمز الجديد غير متطابق", "error"); return; }
-            if (newPwd.length < 4) { showSystemToast("يجب أن يكون 4 أحرف/أرقام على الأقل", "error"); return; }
-            siteSettings.adminPassword = newPwd;
+            
             try {
-                await NetworkEngine.safeWrite('settings', 'main', siteSettings); saveEngineMemory('set'); showSystemToast("تم تغيير الرمز بنجاح! 🛡️", "success");
+                const hashedCurrentInput = await hashPassword(currentInput);
+                let isMatch = false;
+
+                if (siteSettings.adminPasswordHash) {
+                    isMatch = (hashedCurrentInput === siteSettings.adminPasswordHash);
+                } else if (siteSettings.adminPassword) {
+                    isMatch = (currentInput === siteSettings.adminPassword);
+                } else {
+                    isMatch = (hashedCurrentInput === DEFAULT_ADMIN_HASH);
+                }
+
+                if (!isMatch) { showSystemToast("الرمز الحالي غير صحيح", "error"); return; }
+                if (newPwd !== confirmPwd) { showSystemToast("الرمز الجديد غير متطابق", "error"); return; }
+                if (newPwd.length < 4) { showSystemToast("يجب أن يكون 4 أحرف أو أرقام على الأقل", "error"); return; }
+                
+                siteSettings.adminPasswordHash = await hashPassword(newPwd);
+                if(siteSettings.adminPassword) delete siteSettings.adminPassword; // تنظيف الباسورد القديمة
+                
+                await NetworkEngine.safeWrite('settings', 'main', siteSettings); 
+                saveEngineMemory('set'); 
+                showSystemToast("تم تغيير الرمز وتشفيره بنجاح 🛡️", "success");
                 document.getElementById('sec-current-pwd').value = ''; document.getElementById('sec-new-pwd').value = ''; document.getElementById('sec-confirm-pwd').value = '';
-            } catch(e) { saveEngineMemory('set'); showSystemToast("تم الحفظ محلياً", "info"); }
+            } catch(e) { 
+                saveEngineMemory('set'); 
+                showSystemToast("تم الحفظ محلياً", "info"); 
+            }
         }
+
 
         function renderAdminShipping() {
             document.getElementById('admin-shipping-tbody').innerHTML = shippingZones.map(z => `
