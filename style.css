@@ -1,17 +1,18 @@
-/* Engine Upgrade: Dynamic Theme Engine Base */
+/* Engine Upgrade: Dynamic Theme Engine Base & Soft Premium UI */
 :root {
     --brand-font: 'Cairo', sans-serif;
     --brand-hue: 355; 
     --base-font-size: 16px;
     --base-font-weight: 400;
-    --site-bg: #ffffff;
-    --site-text: #663b3b;
+    --site-bg: #fdfdfd; /* لون خلفية مريح جدا وأكثر فخامة من الأبيض الصريح */
+    --site-text: #4a2b2b; /* لون نص ناعم ومقروء */
     
     /* Ticker Variables */
     --ticker-color: #ffffff;
     --ticker-font: 'Cairo', sans-serif;
     --ticker-speed: 20s;
 }
+
 html { font-size: var(--base-font-size); }
 body { 
     font-family: var(--brand-font); 
@@ -20,36 +21,49 @@ body {
     color: var(--site-text);
     scroll-behavior: smooth; 
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* Dynamic Gradient for Brand Identity */
-.brand-gradient { background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 65%) 0%, hsl(var(--brand-hue), 85%, 75%) 50%, hsl(var(--brand-hue), 90%, 85%) 100%); }
+.brand-gradient { 
+    background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 60%) 0%, hsl(var(--brand-hue), 85%, 70%) 50%, hsl(var(--brand-hue), 90%, 80%) 100%); 
+}
 
 /* Ticker Identity Gradients */
 .ticker-brand-gradient { background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 65%) 0%, hsl(var(--brand-hue), 85%, 75%) 50%, hsl(var(--brand-hue), 90%, 85%) 100%); }
 .ticker-fade-right { background: linear-gradient(to left, hsl(var(--brand-hue), 80%, 65%), transparent); }
 .ticker-fade-left { background: linear-gradient(to right, hsl(var(--brand-hue), 90%, 85%), transparent); }
 
-.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+/* Animations */
+.animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(15px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
 
 .floating { animation: float 6s ease-in-out infinite; }
-@keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+@keyframes float { 
+    0%, 100% { transform: translateY(0px); } 
+    50% { transform: translateY(-10px); } 
+}
 
-.nav-scrolled { background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 4px 10px -1px rgba(0, 0, 0, 0.05); }
+.nav-scrolled { 
+    background-color: rgba(253, 253, 253, 0.95); 
+    backdrop-filter: blur(12px); 
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05); 
+}
+
 input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue), 80%, 65%); }
 
-/* Admin Dashboard styles */
-.admin-glass { background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(20px); }
-.admin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-.admin-scroll::-webkit-scrollbar-thumb { background-color: #4b5563; border-radius: 10px; }
-.admin-scroll::-webkit-scrollbar-track { background-color: transparent; }
-
 /* Toast Animation */
-@keyframes slideInUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+@keyframes slideInUp { 
+    from { transform: translate(-50%, 100%); opacity: 0; } 
+    to { transform: translate(-50%, 0); opacity: 1; } 
+}
 .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 .lightbox-enter { animation: fadeIn 0.3s ease-out forwards; }
 
@@ -63,7 +77,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue)
 }
 
 /* Out of stock overlay */
-.grayscale-overlay { filter: grayscale(100%) opacity(0.7); }
+.grayscale-overlay { filter: grayscale(100%) opacity(0.6); }
 
 /* Ticker Marquee Animation */
 @keyframes ticker-marquee {

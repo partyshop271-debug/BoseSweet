@@ -1,4 +1,4 @@
-// ⚡ Engine Upgrade: Smart Pre-load Engine
+// ⚡ Engine Upgrade: Smart Pre-load Engine & Premium UX
 const PreloadEngine = {
     loadedUrls: new Set(),
     ignite(catalogData, galleryData = []) {
@@ -120,8 +120,8 @@ function applySettingsToUI() {
     root.style.setProperty('--brand-font', siteSettings.fontFamily || "'Cairo', sans-serif");
     root.style.setProperty('--base-font-size', (siteSettings.baseFontSize || 16) + 'px');
     root.style.setProperty('--base-font-weight', siteSettings.baseFontWeight || 400);
-    root.style.setProperty('--site-bg', siteSettings.bgColor || '#ffffff');
-    root.style.setProperty('--site-text', siteSettings.textColor || '#663b3b');
+    root.style.setProperty('--site-bg', siteSettings.bgColor || '#fdfdfd');
+    root.style.setProperty('--site-text', siteSettings.textColor || '#4a2b2b');
     
     const isTickerActive = siteSettings.tickerActive !== false; 
     const tickerContainer = document.getElementById('ticker-container');
@@ -240,7 +240,7 @@ function closeLightbox() { const lb = document.getElementById('gallery-lightbox'
 function renderCategories() {
     const el = document.getElementById('categories-nav');
     if(!el) return;
-    el.innerHTML = catMenu.map(c => `<button id="cat-btn-${c.replace(/\s+/g, '-')}" onclick="setCategory('${c}')" class="whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === c ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'border-pink-100 hover:border-pink-300'}" style="${state.activeCat === c ? '' : `background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</button>`).join('');
+    el.innerHTML = catMenu.map(c => `<button id="cat-btn-${c.replace(/\s+/g, '-')}" onclick="setCategory('${c}')" class="whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === c ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'border-transparent hover:bg-gray-50'}" style="${state.activeCat === c ? '' : `background-color: var(--site-bg); color: var(--site-text);`}">${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</button>`).join('');
 }
 
 function setCategory(c) { state.activeCat = c; renderCategories(); renderMainDisplay(); setTimeout(() => { const activeBtn = document.getElementById(`cat-btn-${c.replace(/\s+/g, '-')}`); if (activeBtn) { activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } }, 50); }
@@ -253,78 +253,102 @@ function renderMainDisplay() {
     else {
         if (state.activeCat === 'ديسباسيتو') {
             subTabs.classList.remove('hidden');
-            subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${dSizes.map(s => `<button onclick="setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.dSize === s ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.dSize === s ? '' : 'color: var(--site-text);'}">${s}</button>`).join('')}</div>`;
+            subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${dSizes.map(s => `<button onclick="setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.dSize === s ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100 hover:bg-gray-50'}" style="${state.dSize === s ? '' : 'color: var(--site-text);'}">${s}</button>`).join('')}</div>`;
         } else if (state.activeCat === 'ورد') {
             subTabs.classList.remove('hidden');
-            subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${fTypes.map(f => `<button onclick="setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}</div>`;
+            subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${fTypes.map(f => `<button onclick="setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100 hover:bg-gray-50'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}</div>`;
         }
         let list = catalog.filter(p => p.category === state.activeCat);
         if (state.activeCat === 'ديسباسيتو') list = list.filter(p => p.size === state.dSize || p.subType === state.dSize || (p.desc && p.desc.includes(state.dSize)));
         if (state.activeCat === 'ورد') list = list.filter(p => p.flowerType === state.fType || p.subType === state.fType || (p.desc && p.desc.includes(state.fType)));
 
         const userLayout = siteSettings.productLayout || 'grid';
-        let gridClass = (userLayout === 'full') ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
+        let gridClass = (userLayout === 'full') ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-2' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
         container.innerHTML = `<div class="grid ${gridClass} gap-4 sm:gap-6 lg:gap-8 items-stretch">${list.map(p => drawProductCard(p, userLayout)).join('')}</div>`;
     }
     if(window.lucide) lucide.createIcons();
 }
 
+// 👑 التطوير الجذري لواجهة الكارت - Smart UX Premium Overhaul 👑
 function drawProductCard(p, layoutMode = 'grid') {
     const pIdSafe = String(p.id); const item = state.cart.find(i => String(i.cartItemId) === pIdSafe || String(i.id) === pIdSafe);
     let itemLayout = (p.layout && p.layout !== 'default') ? p.layout : layoutMode;
     
-    // استخدام مساحة العرض حسب اللي اختارته الإدارة
     let isFullWidth = (itemLayout === 'full');
     let colSpanClass = (layoutMode === 'grid' && isFullWidth) ? 'col-span-2 md:col-span-2 lg:col-span-2' : '';
     
-    // نسبة الطول للعرض بحيث مياخدش شاشة الموبايل كلها في العرض المميز
-    const aspectClass = isFullWidth ? 'aspect-[16/9] sm:aspect-[4/3] w-full' : 'aspect-square w-full';
-    const titleClass = isFullWidth ? 'text-[16px] sm:text-lg' : 'text-[12px] sm:text-sm';
-    const descClass = isFullWidth ? 'text-[13px] sm:text-sm line-clamp-none mt-2' : 'text-[11px] sm:text-xs line-clamp-none';
-    const cardPadding = isFullWidth ? 'p-4 sm:p-5' : 'p-2.5 sm:p-4';
     const isOutOfStock = p.inStock === false;
     const imageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
     const hasMultipleImages = imageList.length > 1;
 
-    return `
-        <div id="product-card-${p.id}" class="rounded-[1rem] sm:rounded-2xl shadow-sm hover:shadow-lg border flex flex-col group ${cardPadding} ${colSpanClass} transition-all duration-300 relative h-full" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
-            <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-4 left-4 z-30 w-8 h-8 rounded-full shadow-md flex items-center justify-center hover:scale-110 transition-transform active:scale-95" style="background-color: var(--site-bg); color: var(--site-text);"><i data-lucide="share-2" class="w-4 h-4"></i></button>
-            ${isOutOfStock ? `<div class="absolute top-4 right-4 z-30 bg-gray-900/85 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-600 backdrop-blur-sm shadow-lg flex items-center gap-1"><i data-lucide="ban" class="w-3 h-3 text-red-400"></i> نفدت الكمية</div>` : ''}
-            ${p.badge && !isOutOfStock ? `<div class="absolute top-4 right-4 z-30 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg border animate-pulse tracking-wide" style="background-color: hsl(var(--brand-hue), 70%, 55%); border-color: hsl(var(--brand-hue), 80%, 75%);">${p.badge}</div>` : ''}
+    // دالة الأزرار الذكية - تقضي على الزحمة
+    const renderBtns = () => {
+        if (isOutOfStock) return `<button disabled class="w-full font-bold text-[11px] sm:text-xs py-3 rounded-xl flex justify-center items-center gap-2 bg-gray-50 text-gray-400 cursor-not-allowed shadow-inner border border-gray-100"><i data-lucide="clock" class="w-4 h-4"></i> غير متوفر</button>`;
+        if (item) return `<div class="flex items-center justify-between bg-white rounded-xl p-1 shadow-sm border" style="border-color: hsl(var(--brand-hue), 80%, 90%);"><button onclick="modQ('${item.cartItemId || item.id}', -1)" class="w-10 h-10 flex items-center justify-center rounded-lg transition-all active:scale-90" style="background-color: hsl(var(--brand-hue), 80%, 97%); color: hsl(var(--brand-hue), 70%, 50%);"><i data-lucide="${item.quantity == 1 ? 'trash-2' : 'minus'}" class="w-4 h-4"></i></button><div class="flex flex-col items-center"><span class="font-black text-lg leading-none mt-1" style="color: hsl(var(--brand-hue), 70%, 40%);">${Number(item.quantity)}</span><span class="text-[9px] font-bold opacity-70" style="color: var(--site-text);">في السلة</span></div><button onclick="addJS('${p.id}')" class="w-10 h-10 flex items-center justify-center rounded-lg transition-all active:scale-90 brand-gradient text-white shadow-md"><i data-lucide="plus" class="w-4 h-4"></i></button></div>`;
+        return `<button onclick="addJS('${p.id}')" class="w-full font-bold text-[11px] sm:text-xs py-3 rounded-xl transition-all flex justify-center items-center gap-2 shadow-md hover:shadow-lg active:scale-95 text-white brand-gradient border-0 hover:-translate-y-0.5"><i data-lucide="shopping-bag" class="w-4 h-4"></i><span>إضافة للسلة</span></button>`;
+    };
+
+    if (!isFullWidth) {
+        // الكارت العادي - تم تطويل الصورة وإضافة مساحات تنفس
+        return `
+        <div id="product-card-${p.id}" class="rounded-[1.5rem] shadow-[0_8px_24px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] bg-white flex flex-col group transition-all duration-300 relative overflow-hidden border border-gray-100 hover:-translate-y-1 h-full">
+            <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-3 left-3 z-30 w-8 h-8 rounded-full shadow-md bg-white/90 text-gray-500 flex items-center justify-center hover:scale-110 hover:text-pink-500 transition-all backdrop-blur-sm"><i data-lucide="share-2" class="w-4 h-4"></i></button>
+            ${isOutOfStock ? `<div class="absolute top-3 right-3 z-30 bg-gray-900/85 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg backdrop-blur-sm shadow-md flex items-center gap-1"><i data-lucide="ban" class="w-3 h-3 text-red-400"></i> نفدت</div>` : ''}
+            ${p.badge && !isOutOfStock ? `<div class="absolute top-3 right-3 z-30 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-md tracking-wide brand-gradient">${p.badge}</div>` : ''}
             
-            <div class="${aspectClass} rounded-lg sm:rounded-xl overflow-hidden border relative shrink-0" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                <div id="slider-${p.id}" class="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-auto touch-pan-x" style="-webkit-overflow-scrolling: touch; scroll-behavior: smooth;">
-                    ${imageList.map(url => `<img src="${url}" class="min-w-full w-full h-full object-cover shrink-0 snap-center transition-transform duration-700 ${isOutOfStock ? 'grayscale-overlay' : 'group-hover:scale-105'}" loading="lazy" style="pointer-events: none;">`).join('')}
+            <div class="aspect-[4/5] w-full relative shrink-0 bg-gray-50 overflow-hidden">
+                <div id="slider-${p.id}" class="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-auto touch-pan-x">
+                    ${imageList.map(url => `<img src="${url}" class="min-w-full w-full h-full object-cover shrink-0 snap-center transition-transform duration-700 ${isOutOfStock ? 'grayscale-overlay' : 'group-hover:scale-105'}" loading="lazy">`).join('')}
                 </div>
-                
-                ${hasMultipleImages ? `
-                    <button onclick="event.stopPropagation(); document.getElementById('slider-${p.id}').scrollBy({left: -200, behavior: 'smooth'})" class="absolute left-1 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-pink-500 rounded-full w-7 h-7 flex items-center justify-center shadow-md z-20 backdrop-blur-sm transition-all active:scale-90"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
-                    <button onclick="event.stopPropagation(); document.getElementById('slider-${p.id}').scrollBy({left: 200, behavior: 'smooth'})" class="absolute right-1 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-pink-500 rounded-full w-7 h-7 flex items-center justify-center shadow-md z-20 backdrop-blur-sm transition-all active:scale-90"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
-                    <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">${imageList.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-white opacity-100 w-3' : 'bg-white opacity-50'} shadow-sm transition-all"></div>`).join('')}</div>
-                    <div class="absolute top-2 left-2 bg-black/40 text-white text-[8px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm z-20"><i data-lucide="images" class="w-3 h-3"></i> ${imageList.length}</div>
-                ` : ''}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent opacity-0 ${isOutOfStock ? '' : 'group-hover:opacity-100'} pointer-events-none transition-opacity duration-300 z-0"></div>
+                ${hasMultipleImages ? `<div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">${imageList.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-white opacity-100 w-3' : 'bg-white opacity-60'} shadow-sm transition-all"></div>`).join('')}</div>` : ''}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent opacity-0 ${isOutOfStock ? '' : 'group-hover:opacity-100'} pointer-events-none transition-opacity duration-300 z-0"></div>
             </div>
             
-            <div class="mt-2.5 sm:mt-3 flex-1 flex flex-col justify-between z-10">
-                <div class="mb-3">
-                    <h4 class="font-bold ${titleClass} leading-tight mb-1 line-clamp-1" style="color: var(--site-text);">${escapeHTML(p.name)}</h4>
-                    ${p.desc ? `<p class="font-bold leading-relaxed ${descClass} ${isOutOfStock ? 'opacity-50' : 'opacity-80'}" style="color: var(--site-text);">${escapeHTML(p.desc)}</p>` : ''}
+            <div class="p-4 sm:p-5 flex-1 flex flex-col justify-between bg-white z-10">
+                <div class="mb-4">
+                    <span class="text-[9px] font-bold px-2 py-0.5 rounded-md mb-2 inline-block shadow-sm" style="background-color: hsl(var(--brand-hue), 80%, 97%); color: hsl(var(--brand-hue), 70%, 50%);">${escapeHTML(p.category)}</span>
+                    <h4 class="font-black text-[13px] sm:text-[15px] leading-tight mb-1.5 line-clamp-2" style="color: var(--site-text);">${escapeHTML(p.name)}</h4>
+                    ${p.desc ? `<p class="font-bold text-[11px] line-clamp-2 leading-relaxed opacity-70" style="color: var(--site-text);">${escapeHTML(p.desc)}</p>` : ''}
                 </div>
-                <div class="mt-auto flex flex-col gap-1.5 sm:gap-2">
-                    <div class="border rounded-lg p-1.5 flex items-center justify-between shadow-inner" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                        <button ${isOutOfStock ? 'disabled' : `onclick="${item ? `modQ('${item.cartItemId || item.id}', -1)` : ''}"`} class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-md shadow-sm transition-all border ${item && !isOutOfStock ? 'active:scale-90 cursor-pointer hover:text-white' : 'opacity-40 cursor-not-allowed'}" style="${item && !isOutOfStock ? `background-color: var(--site-bg); color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);` : `background-color: var(--site-bg);`}" ${item && !isOutOfStock ? `onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 70%, 65%)'" onmouseout="this.style.backgroundColor='var(--site-bg)'"` : ''}><i data-lucide="minus" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></button>
-                        <div class="flex flex-col items-center justify-center px-1">
-                            <span class="font-bold text-[12px] sm:text-[14px] tracking-tight leading-none ${isOutOfStock ? 'opacity-50' : ''}" style="color: hsl(var(--brand-hue), 70%, 40%);">${Number(p.price) > 0 ? Number(p.price) + ' ج.م' : 'حسب الطلب'}</span>
-                            ${item ? `<span class="text-[9px] font-bold mt-0.5 px-2 py-0.5 rounded-full border shadow-sm transition-all" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);">الكمية: ${Number(item.quantity)}</span>` : ''}
-                        </div>
-                        <button ${isOutOfStock ? 'disabled' : `onclick="addJS('${p.id}')"`} class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center rounded-md shadow-sm transition-all border ${!isOutOfStock ? 'active:scale-90 cursor-pointer hover:text-white' : 'opacity-40 cursor-not-allowed'}" style="${!isOutOfStock ? `background-color: var(--site-bg); color: hsl(var(--brand-hue), 80%, 60%); border-color: hsl(var(--brand-hue), 80%, 90%);` : `background-color: var(--site-bg);`}" ${!isOutOfStock ? `onmouseover="this.style.backgroundColor='hsl(var(--brand-hue), 70%, 65%)'" onmouseout="this.style.backgroundColor='var(--site-bg)'"` : ''}><i data-lucide="plus" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></button>
-                    </div>
-                    ${isOutOfStock ? `<button disabled class="w-full font-bold text-[11px] sm:text-xs py-2 rounded-lg border flex justify-center items-center gap-1.5 shadow-sm bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"><i data-lucide="clock" class="w-3.5 h-3.5"></i> غير متوفر حالياً</button>` : `<button onclick="addJS('${p.id}')" class="w-full font-bold text-[11px] sm:text-xs py-2 rounded-lg border transition-all flex justify-center items-center gap-1.5 shadow-sm active:scale-95 ${item ? 'text-white brand-gradient border-transparent' : 'hover:text-white'}" style="${item ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 60%); border-color: hsl(var(--brand-hue), 80%, 80%);`}" ${item ? '' : `onmouseover="this.style.background='hsl(var(--brand-hue), 70%, 65%)'" onmouseout="this.style.background='var(--site-bg)'"`}><i data-lucide="${item ? 'check-circle' : 'shopping-cart'}" class="w-3.5 h-3.5"></i><span>${item ? 'تمت الإضافة' : 'إضافة للسلة'}</span></button>`}
+                <div class="mt-auto space-y-3">
+                    <div class="font-black text-[16px] sm:text-lg drop-shadow-sm" style="color: hsl(var(--brand-hue), 70%, 45%);">${Number(p.price) > 0 ? Number(p.price) + ' ج.م' : 'حسب الطلب'}</div>
+                    ${renderBtns()}
                 </div>
             </div>
         </div>
-    `;
+        `;
+    } else {
+        // الكارت المميز (مالي الشاشة) - تصميم أفقي فاخر يمنع القص تماماً
+        return `
+        <div id="product-card-${p.id}" class="${colSpanClass} rounded-[2rem] shadow-[0_8px_24px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] bg-white flex flex-row group transition-all duration-300 relative overflow-hidden items-stretch border border-gray-100 min-h-[160px] sm:min-h-[220px] hover:-translate-y-1">
+            
+            <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-4 left-4 z-30 w-8 h-8 rounded-full shadow-md bg-white/90 text-gray-500 flex items-center justify-center hover:scale-110 hover:text-pink-500 transition-all backdrop-blur-sm"><i data-lucide="share-2" class="w-4 h-4"></i></button>
+            ${isOutOfStock ? `<div class="absolute top-4 right-4 z-30 bg-gray-900/85 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg backdrop-blur-sm shadow-md flex items-center gap-1"><i data-lucide="ban" class="w-3 h-3 text-red-400"></i> نفدت</div>` : ''}
+            ${p.badge && !isOutOfStock ? `<div class="absolute top-4 right-4 z-30 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-md tracking-wide brand-gradient">${p.badge}</div>` : ''}
+            
+            <div class="w-[45%] sm:w-[45%] relative shrink-0 bg-gray-50 overflow-hidden border-l border-gray-50">
+                <div id="slider-${p.id}" class="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-auto touch-pan-x">
+                    ${imageList.map(url => `<img src="${url}" class="min-w-full w-full h-full object-cover shrink-0 snap-center transition-transform duration-700 ${isOutOfStock ? 'grayscale-overlay' : 'group-hover:scale-105'}" loading="lazy">`).join('')}
+                </div>
+                ${hasMultipleImages ? `<div class="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">${imageList.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-white opacity-100 w-3' : 'bg-white opacity-60'} shadow-sm transition-all"></div>`).join('')}</div>` : ''}
+            </div>
+            
+            <div class="w-[55%] sm:w-[55%] p-4 sm:p-6 flex flex-col justify-center bg-white z-10">
+                <div class="mb-3 sm:mb-5">
+                    <span class="text-[9px] sm:text-[10px] font-bold px-2.5 py-1 rounded-lg mb-2 sm:mb-3 inline-block shadow-sm tracking-wide" style="background-color: hsl(var(--brand-hue), 80%, 97%); color: hsl(var(--brand-hue), 70%, 50%);">${escapeHTML(p.category)}</span>
+                    <h4 class="font-black text-[15px] sm:text-xl leading-tight mb-2 line-clamp-2" style="color: var(--site-text);">${escapeHTML(p.name)}</h4>
+                    ${p.desc ? `<p class="font-bold text-[11px] sm:text-sm line-clamp-2 sm:line-clamp-3 leading-relaxed opacity-70" style="color: var(--site-text);">${escapeHTML(p.desc)}</p>` : ''}
+                </div>
+                <div class="mt-auto space-y-4">
+                    <div class="font-black text-lg sm:text-2xl drop-shadow-sm" style="color: hsl(var(--brand-hue), 70%, 45%);">${Number(p.price) > 0 ? Number(p.price) + ' ج.م' : 'حسب الطلب'}</div>
+                    <div class="w-full sm:w-2/3">
+                        ${renderBtns()}
+                    </div>
+                </div>
+            </div>
+        </div>
+        `;
+    }
 }
 
 function getImgFallback(cat) {
@@ -456,20 +480,20 @@ function renderCartCrossSell() {
     suggestions = [...new Set(suggestions)].slice(0, 3);
 
     return `
-        <div class="mt-8 animate-fade-in border-t border-dashed border-pink-200 pt-6">
-            <p class="text-sm font-black text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-pink-500"></i> كملي اللحظة الحلوة بمنتجات تليق بيكي</p>
+        <div class="mt-8 animate-fade-in border-t border-dashed pt-6" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+            <p class="text-sm font-black mb-4 flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="sparkles" class="w-4 h-4 text-pink-500"></i> كملي اللحظة الحلوة بمنتجات تليق بيكي</p>
             <div class="flex gap-4 overflow-x-auto pb-6 hide-scrollbar snap-slider">
                 ${suggestions.map(p => {
                     const img = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category));
                     return `
-                        <div class="shrink-0 w-[260px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col hover:shadow-md hover:border-pink-300 transition-all group">
-                            <div class="relative w-full h-36 mb-4 rounded-xl overflow-hidden border border-gray-50 bg-gray-50"><img src="${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">${p.badge ? `<span class="absolute top-2 right-2 bg-pink-500 text-white text-[10px] px-2 py-1 rounded-lg font-bold shadow-md">${p.badge}</span>` : ''}</div>
+                        <div class="shrink-0 w-[260px] snap-slide bg-white rounded-[1.5rem] p-4 shadow-sm flex flex-col hover:shadow-md hover:-translate-y-1 transition-all group border-0">
+                            <div class="relative w-full h-36 mb-4 rounded-xl overflow-hidden bg-gray-50"><img src="${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">${p.badge ? `<span class="absolute top-2 right-2 brand-gradient text-white text-[10px] px-2 py-1 rounded-lg font-bold shadow-md">${p.badge}</span>` : ''}</div>
                             <div class="flex-1 flex flex-col">
-                                <span class="text-[10px] font-bold text-pink-500 mb-1 tracking-wider bg-pink-50 self-start px-2 py-0.5 rounded-md">${escapeHTML(p.category)}</span>
-                                <h5 class="text-[14px] font-bold text-gray-800 mb-1 leading-tight">${escapeHTML(p.name)}</h5>
-                                <p class="text-[11px] text-gray-500 line-clamp-2 mb-4 font-bold opacity-90 leading-relaxed">${escapeHTML(p.desc || 'لمسة ساحرة من إبداعات حلويات بوسي تذوب في الفم.')}</p>
+                                <span class="text-[10px] font-bold mb-1 tracking-wider self-start px-2 py-0.5 rounded-md shadow-sm" style="background-color: hsl(var(--brand-hue), 80%, 97%); color: hsl(var(--brand-hue), 70%, 50%);">${escapeHTML(p.category)}</span>
+                                <h5 class="text-[14px] font-bold mb-1 leading-tight" style="color: var(--site-text);">${escapeHTML(p.name)}</h5>
+                                <p class="text-[11px] line-clamp-2 mb-4 font-bold opacity-70 leading-relaxed" style="color: var(--site-text);">${escapeHTML(p.desc || 'لمسة ساحرة من إبداعات حلويات بوسي تذوب في الفم.')}</p>
                                 <div class="flex items-center justify-between mt-auto">
-                                    <span class="text-[14px] text-pink-600 font-black">${p.price > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
+                                    <span class="text-[14px] font-black" style="color: hsl(var(--brand-hue), 70%, 45%);">${p.price > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
                                     <button onclick="addJS('${p.id}')" class="px-4 py-2 bg-white border border-pink-200 text-pink-500 rounded-xl flex items-center gap-1.5 hover:bg-pink-500 hover:text-white transition-all shadow-sm text-[11px] font-bold active:scale-95"><i data-lucide="plus" class="w-3.5 h-3.5"></i> إضافة</button>
                                 </div>
                             </div>
@@ -618,7 +642,7 @@ async function submitOrder() {
     const areaName = deliveryMethod === 'pickup' ? 'استلام من الفرع' : (shippingZones.find(z => String(z.id) === String(cAreaId))?.name || 'أخرى');
     const orderId = 'BS-' + Math.floor(10000 + Math.random() * 90000); let sub = 0; 
     let itemsDesc = [];
-    let itemsForDb = []; // <-- الثغرة تم حلها هنا: مصفوفة لحفظ تفاصيل كل منتج للوحدة الإدارية
+    let itemsForDb = []; 
 
     let m = `*طلب جديد من حلويات بوسي* 🧁\n*رقم الطلب:* ${orderId}\nــــــــــــــــــــــــــــــــــــــــ\n\n`;
     m += `👤 الاسم: ${cName}\n📞 الموبايل: ${cPhone}\n🚚 الاستلام: ${deliveryMethod === 'pickup' ? 'استلام من الفرع 🏪' : 'توصيل للمنزل 🛵'}\n`;
@@ -634,7 +658,6 @@ async function submitOrder() {
         if (i.isCustom && i.desc) m += `_التفاصيل:_ ${i.desc}\n`; 
         itemsDesc.push(`${finalItemName} (x${q})`);
 
-        // بناء تفاصيل المنتج وحفظها لداتا بيز الإدارة
         itemsForDb.push({
             id: i.id,
             cartItemId: i.cartItemId || i.id,
@@ -647,7 +670,6 @@ async function submitOrder() {
     });
     m += `\nــــــــــــــــــــــــــــــــــــــــ\n*الحساب:* ${sub + state.currentShippingFee} ج.م\n`;
 
-    // دمج المصفوفة داخل الكائن الخاص بقاعدة البيانات ليظهر في لوحة التحكم
     const orderObj = { 
         id: orderId, 
         timestamp: Date.now(), 
@@ -659,7 +681,7 @@ async function submitOrder() {
         notes: cNotes, 
         total: (sub + state.currentShippingFee), 
         status: 'pending',
-        itemsArray: itemsForDb, // <-- دمج عناصر السلة بالكامل هنا
+        itemsArray: itemsForDb,
         itemsDesc: itemsDesc.join(' \n ')
     };
     
@@ -690,7 +712,7 @@ async function handleSecretTap() {
     secretTaps++; clearTimeout(tapTimer);
     if (secretTaps >= 5) {
         secretTaps = 0;
-        window.location.href = 'login.html'; // توجيه لبوابة الإدارة الرسمية
+        window.location.href = 'login.html'; 
     } else { tapTimer = setTimeout(() => { secretTaps = 0; }, 2000); }
 }
 
