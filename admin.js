@@ -1340,4 +1340,4 @@ function escapeHTML(str) {
             '"': '&quot;'
         }[tag])
     );
-}
+
