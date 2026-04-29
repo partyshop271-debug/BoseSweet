@@ -1,11 +1,10 @@
-
 /**
  * ============================================================================
- * محرك مركز قيادة حلويات بوسي | BoseSweets Admin Engine (V2.1 PRO MAX)
+ * محرك مركز قيادة حلويات بوسي | BoseSweets Admin Engine (V2.5 PRO MAX)
  * ============================================================================
  * تم بناء وتوسيع هذا المحرك لضمان أعلى أداء، وتوسيع القدرات الإدارية، مع الحفاظ
  * على كامل البيانات والوظائف السابقة بنظام (البناء والتطوير دون حذف).
- * يحتوي على أقوى خطوط دفاع لحماية المتغيرات، فك تجميد اللوحة، وضمان استيراد الملفات.
+ * يحتوي على أقوى خطوط دفاع لحماية المتغيرات، وإعادة هندسة السكرول لضمان السلاسة.
  */
 
 let adminCurrentCat = 'all';
@@ -32,34 +31,27 @@ const executeSafely = (taskName, taskFunction) => {
  * 1. دوال التهيئة والواجهة الأساسية (Initialization & UI Safeguards)
  * --------------------------------------------------------------------------*/
 
-function toggleAdminSidebar() {
-    const sb = document.getElementById('admin-sidebar'); 
-    const ov = document.getElementById('admin-sidebar-overlay');
-    if(!sb || !ov) return;
-    if(sb.classList.contains('translate-x-full')) { 
-        sb.classList.remove('translate-x-full'); ov.classList.remove('hidden'); 
-    } else { 
-        sb.classList.add('translate-x-full'); ov.classList.add('hidden'); 
-    }
-}
-
-// دالة الطوارئ لفك أي تجميد في واجهة الموقع (Scroll & Click Enabler)
+// 🚀 Engine Upgrade: Safe UI Unfreeze without breaking Layout
 function unfreezeAdminUI() {
-    document.body.style.overflow = ''; 
-    document.body.style.pointerEvents = 'auto';
-    document.documentElement.style.overflow = '';
-    document.body.classList.remove('overflow-hidden');
-    document.documentElement.classList.remove('overflow-hidden');
+    // إزالة كلاس overflow-hidden من body إن وجد بطريق الخطأ قديماً، 
+    // ولكن في تصميمنا الجديد الهيكل محمي بـ h-screen والـ Scroll موجود في main-scroll-area
     const loadingScreen = document.getElementById('global-loading-screen');
     if(loadingScreen) loadingScreen.classList.add('hidden');
+    
+    // تأكيد إن منطقة التمرير شغالة
+    const scrollArea = document.getElementById('main-scroll-area');
+    if(scrollArea) {
+        scrollArea.style.overflowY = 'auto';
+        scrollArea.style.pointerEvents = 'auto';
+    }
 }
 
 // الدالة المركزية لتشغيل لوحة القيادة - (مؤمنة بالكامل للعمل تحت أي ظروف)
 function openAdminDashboardDirectly() {
     try {
-        unfreezeAdminUI(); // فك التجميد الإجباري للوحة والسكرول
+        unfreezeAdminUI();
 
-        // جلب البيانات بالقوة من الذاكرة المحلية إذا لم تكن موجودة لتجنب اختفاء المنتجات
+        // جلب البيانات بالقوة من الذاكرة المحلية إذا لم تكن موجودة
         window.catalog = (window.catalog && window.catalog.length > 0) ? window.catalog : JSON.parse(localStorage.getItem('boseSweets_catalog') || '[]');
         window.globalOrders = (window.globalOrders && window.globalOrders.length > 0) ? window.globalOrders : JSON.parse(localStorage.getItem('boseSweets_admin_orders') || '[]');
         window.siteSettings = (window.siteSettings && Object.keys(window.siteSettings).length > 0) ? window.siteSettings : JSON.parse(localStorage.getItem('boseSweets_settings') || '{}');
@@ -68,7 +60,6 @@ function openAdminDashboardDirectly() {
         
         window.catMenu = (window.siteSettings && window.siteSettings.catMenu && window.siteSettings.catMenu.length > 0) ? window.siteSettings.catMenu : ['تورت', 'جاتوهات'];
 
-        // تشغيل المهام تباعاً بنظام العزل، لفصل أي خطأ عن التأثير على الباقي
         executeSafely('Tabs', renderAdminCatalogTabs);
         executeSafely('OrderFilters', renderAdminOrderFilters); 
         executeSafely('Categories', renderAdminCategories);
@@ -92,9 +83,58 @@ function openAdminDashboardDirectly() {
     }
 }
 
+// 🚀 Engine Upgrade: Multi-Platform Tab Switcher (Mobile + Desktop)
+function switchAdminTab(tabId) {
+    // 1. إخفاء كل المحتوى وإظهار المطلوب
+    document.querySelectorAll('.admin-tab-content').forEach(el => {
+        el.classList.remove('block');
+        el.classList.add('hidden');
+    });
+    const target = document.getElementById('admin-' + tabId);
+    if(target) {
+        target.classList.remove('hidden');
+        target.classList.add('block');
+    }
+    
+    // 2. تفعيل الزر في الموبايل (Bottom Nav)
+    document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+        btn.classList.remove('text-pink-400');
+        btn.classList.add('text-slate-400');
+    });
+    const activeMobileBtn = document.querySelector(`.mobile-nav-btn[data-tab="${tabId}"]`);
+    if(activeMobileBtn) {
+        activeMobileBtn.classList.remove('text-slate-400');
+        activeMobileBtn.classList.add('text-pink-400');
+    }
+
+    // 3. تفعيل الزر في الديسكتوب (Sidebar Nav)
+    document.querySelectorAll('.desktop-nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    const activeDesktopBtn = document.querySelector(`.desktop-nav-btn[data-tab="${tabId}"]`);
+    if(activeDesktopBtn) {
+        activeDesktopBtn.classList.add('active');
+    }
+
+    // تمرير منطقة المحتوى لأعلى بسلاسة
+    const scrollArea = document.getElementById('main-scroll-area');
+    if(scrollArea) {
+        scrollArea.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' }); // Fallback
+    }
+}
+
 function closeAdminDashboard() {
     sessionStorage.removeItem('bosy_admin_auth');
-    window.location.href = 'index.html';
+    // إجبار تسجيل الخروج من الفايربيس لو موجود
+    if(typeof auth !== 'undefined') {
+        auth.signOut().then(() => {
+            window.location.href = 'index.html';
+        });
+    } else {
+        window.location.href = 'index.html';
+    }
 }
 
 function showSystemToast(message, type = 'info') {
@@ -239,40 +279,6 @@ function copyBackupText() {
  * 4. إدارة المظهر والإعدادات الشاملة (Settings & Theme)
  * --------------------------------------------------------------------------*/
 
-function updateLiveThemePreview() {
-    try {
-        const bgColor = document.getElementById('set-bg-color')?.value;
-        const textColor = document.getElementById('set-text-color')?.value;
-        const fontFamily = document.getElementById('set-font')?.value;
-        const previewBox = document.getElementById('theme-live-preview');
-        if(previewBox && bgColor) {
-            previewBox.style.backgroundColor = bgColor;
-            previewBox.style.color = textColor;
-            previewBox.style.fontFamily = fontFamily;
-        }
-    } catch(e) {}
-}
-
-function syncColorInput(inputId, textId) {
-    const colorInput = document.getElementById(inputId);
-    const textInput = document.getElementById(textId);
-    if(!colorInput || !textInput) return;
-    textInput.removeAttribute('readonly');
-    colorInput.addEventListener('input', (e) => { textInput.value = e.target.value.toUpperCase(); updateLiveThemePreview(); });
-    textInput.addEventListener('input', (e) => {
-        let val = e.target.value.trim(); 
-        if (val.length > 0 && !val.startsWith('#')) val = '#' + val;
-        if(/^#[0-9A-Fa-f]{6}$/i.test(val)) { colorInput.value = val; updateLiveThemePreview(); }
-    });
-    textInput.addEventListener('blur', (e) => {
-        let val = e.target.value.trim();
-        if (val.length > 0 && !val.startsWith('#')) val = '#' + val;
-        if(/^#[0-9A-Fa-f]{6}$/i.test(val)) { colorInput.value = val; e.target.value = val.toUpperCase(); } 
-        else { e.target.value = colorInput.value.toUpperCase(); }
-        updateLiveThemePreview();
-    });
-}
-
 function fillAdminSettingsForm() {
     if(!window.siteSettings) return;
     
@@ -286,10 +292,6 @@ function fillAdminSettingsForm() {
     if(document.getElementById('set-ticker-active')) document.getElementById('set-ticker-active').checked = siteSettings.tickerActive !== false;
     if(document.getElementById('set-ticker-text')) document.getElementById('set-ticker-text').value = siteSettings.tickerText || siteSettings.announcement || '';
 
-    syncColorInput('set-brand-color', 'set-brand-color-text');
-    syncColorInput('set-bg-color', 'set-bg-color-text');
-    syncColorInput('set-text-color', 'set-text-color-text');
-    
     executeSafely('CakeBuilder', fillCakeBuilderAdmin);
 }
 
@@ -327,30 +329,24 @@ async function changeAdminPassword() {
     if (!currentInput || !newPwd || !confirmPwd) { showSystemToast("يرجى ملء جميع الحقول", "error"); return; }
     
     try {
-        const hashedCurrentInput = typeof hashPassword === 'function' ? await hashPassword(currentInput) : currentInput;
-        let isMatch = false;
-        
-        if (siteSettings.adminPasswordHash) isMatch = (hashedCurrentInput === siteSettings.adminPasswordHash);
-        else if (siteSettings.adminPassword) isMatch = (currentInput === siteSettings.adminPassword);
-        else if (typeof DEFAULT_ADMIN_HASH !== 'undefined') isMatch = (hashedCurrentInput === DEFAULT_ADMIN_HASH);
-
-        if (!isMatch) { showSystemToast("كلمة المرور الحالية غير صحيحة", "error"); return; }
-        if (newPwd !== confirmPwd) { showSystemToast("كلمة المرور الجديدة غير متطابقة", "error"); return; }
-        if (newPwd.length < 4) { showSystemToast("يجب أن تكون 4 أحرف أو أرقام على الأقل", "error"); return; }
-        
-        siteSettings.adminPasswordHash = typeof hashPassword === 'function' ? await hashPassword(newPwd) : newPwd;
-        if(siteSettings.adminPassword) delete siteSettings.adminPassword; 
-        
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', siteSettings); 
-        if(typeof saveEngineMemory === 'function') saveEngineMemory('set'); 
-        showSystemToast("تم تغيير الرمز السري وتشفيره بنجاح 🛡️", "success");
+        // إذا كان النظام بيستخدم Firebase Auth، تغيير الباسورد يتم كالتالي:
+        if(typeof auth !== 'undefined' && auth.currentUser) {
+            if (newPwd !== confirmPwd) { showSystemToast("كلمة المرور الجديدة غير متطابقة", "error"); return; }
+            if (newPwd.length < 6) { showSystemToast("يجب أن تكون 6 أحرف أو أرقام على الأقل", "error"); return; }
+            
+            // تحديث في Firebase
+            await auth.currentUser.updatePassword(newPwd);
+            showSystemToast("تم تغيير الرمز السري السحابي بنجاح 🛡️", "success");
+        } else {
+             showSystemToast("الخاصية مرتبطة بحساب المسؤول. يرجى الاتصال بالدعم الفني.", "error"); return;
+        }
         
         document.getElementById('sec-current-pwd').value = ''; 
         document.getElementById('sec-new-pwd').value = ''; 
         document.getElementById('sec-confirm-pwd').value = '';
     } catch(e) { 
-        if(typeof saveEngineMemory === 'function') saveEngineMemory('set'); 
-        showSystemToast("تم الحفظ محلياً", "info"); 
+        console.error(e);
+        showSystemToast("فشل تغيير كلمة المرور. ربما تحتاج لتسجيل الدخول مرة أخرى.", "error"); 
     }
 }
 
@@ -592,10 +588,19 @@ function renderAdminOrders() {
     }
 
     const pendingCount = globalOrders.filter(o => o.status === 'pending').length;
+    
+    // Update both Mobile and Desktop badges
     const navBadge = document.getElementById('nav-order-badge');
     if(navBadge) {
         if(pendingCount > 0) navBadge.classList.remove('hidden');
         else navBadge.classList.add('hidden');
+    }
+    const sidebarBadge = document.getElementById('sidebar-order-badge');
+    if(sidebarBadge) {
+        if(pendingCount > 0) {
+             sidebarBadge.classList.remove('hidden');
+             sidebarBadge.innerText = pendingCount > 9 ? '+9' : pendingCount;
+        } else sidebarBadge.classList.add('hidden');
     }
 
     if(list.length === 0) { 
@@ -821,7 +826,6 @@ function renderAdminMenu(searchQuery = '') {
                         ${prod.subType || prod.size ? `<p class="text-[10px] text-slate-400 mb-2 truncate"><i data-lucide="tag" class="w-3 h-3 inline"></i> ${escapeHTML(prod.subType || prod.size)}</p>` : ''}
                     </div>
                     
-                    <!-- حل مشكلة التعديل: إعطاء الأزرار z-50 و pointer-events-auto لتكون قابلة للنقر فوق أي طبقة -->
                     <div class="flex gap-2 mt-3 md:mt-0 relative z-50 pointer-events-auto">
                         <button onclick="editProduct('${prod.id}')" class="flex-1 bg-indigo-500/10 hover:bg-indigo-500 text-indigo-400 hover:text-white transition-colors py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95 border border-indigo-500/20 cursor-pointer pointer-events-auto">
                             <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> تعديل
@@ -852,7 +856,6 @@ function renderAdminTempImages() {
         <div class="relative w-20 h-20 shrink-0 rounded-xl overflow-hidden border-2 border-slate-700 group">
             <img src="${url}" class="w-full h-full object-cover">
             ${idx === 0 ? `<div class="absolute bottom-0 left-0 right-0 bg-pink-500/90 text-white text-[9px] font-bold text-center py-0.5 backdrop-blur-sm z-10">الرئيسية</div>` : ''}
-            <!-- تأمين زر حذف الصورة ليكون ضغطه متاحاً دائماً -->
             <button onclick="removeTempImage(${idx})" class="absolute top-1 right-1 bg-red-500/80 text-white p-1 rounded-md hover:bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg backdrop-blur-sm cursor-pointer z-50 pointer-events-auto"><i data-lucide="x" class="w-3 h-3"></i></button>
         </div>
     `).join('');
@@ -1311,6 +1314,3 @@ function escapeHTML(str) {
         }[tag])
     );
 }
-
-
-
