@@ -178,9 +178,6 @@ async function initApp() {
     }
 }
 
-// ----------------------------------------------------
-// UI Logic (Search, Menu, Cart, Cross Sell)
-// ----------------------------------------------------
 function toggleLiveSearch(show) {
     const overlay = document.getElementById('live-search-overlay'); const input = document.getElementById('live-search-input'); const results = document.getElementById('live-search-results');
     if (show) { overlay.classList.remove('hidden'); setTimeout(() => { overlay.classList.add('opacity-100'); input.focus(); }, 10); input.value = ''; results.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; if(window.lucide) lucide.createIcons(); } 
@@ -195,8 +192,8 @@ function performLiveSearch(query) {
     resultsContainer.innerHTML = matches.map(p => {
         const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category)); const isOutOfStock = p.inStock === false;
         return `
-        <div class="flex items-center gap-4 p-3 rounded-2xl bg-white shadow-sm border border-gray-100 transition-all hover:shadow-md cursor-pointer ${isOutOfStock ? 'opacity-70' : ''}" onclick="toggleLiveSearch(false); setCategory('${p.category}'); setTimeout(()=> { const el = document.getElementById('product-card-${p.id}'); if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); el.classList.add('highlight-target'); setTimeout(()=>el.classList.remove('highlight-target'), 2500);} }, 500);">
-            <img src="${imgUrl}" class="w-16 h-16 object-cover rounded-xl shadow-sm border border-gray-100 ${isOutOfStock ? 'grayscale' : ''}">
+        <div class="flex items-center gap-4 p-3 rounded-2xl bg-white shadow-sm border transition-all hover:shadow-md cursor-pointer ${isOutOfStock ? 'opacity-70' : ''}" style="border-color: hsl(var(--brand-hue), 80%, 90%);" onclick="toggleLiveSearch(false); setCategory('${p.category}'); setTimeout(()=> { const el = document.getElementById('product-card-${p.id}'); if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); el.classList.add('highlight-target'); setTimeout(()=>el.classList.remove('highlight-target'), 2500);} }, 500);">
+            <img src="${imgUrl}" class="w-16 h-16 object-cover rounded-xl shadow-sm border ${isOutOfStock ? 'grayscale' : ''}" style="border-color: hsl(var(--brand-hue), 80%, 95%);">
             <div class="flex-1">
                 <h4 class="font-bold text-sm text-gray-800">${escapeHTML(p.name)}</h4>
                 <div class="flex items-center gap-2 mt-1"><span class="text-[10px] px-2 py-0.5 rounded-md font-bold shadow-sm" style="color: hsl(var(--brand-hue), 70%, 50%); background-color: hsl(var(--brand-hue), 80%, 97%);">${p.category}</span><span class="font-bold text-sm" style="color: hsl(var(--brand-hue), 70%, 50%);">${Number(p.price) > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span></div>
@@ -283,16 +280,13 @@ window.addWithQty = function(id) {
     const el = document.getElementById('temp-qty-' + id);
     let qty = 1;
     if(el) qty = parseInt(el.innerText) || 1;
-    
     const safeId = String(id); 
     const prod = catalogMap.get(safeId); 
     if (!prod) return;
     if (prod.inStock === false) { showSystemToast('نأسف، هذا المنتج غير متوفر حالياً.', 'error'); return; }
-    
     const exist = state.cart.find(i => String(i.id) === safeId);
-    if (exist) { 
-        exist.quantity = Number(exist.quantity) + qty; 
-    } else { 
+    if (exist) { exist.quantity = Number(exist.quantity) + qty; } 
+    else { 
         const newCartItem = JSON.parse(JSON.stringify(prod)); 
         newCartItem.quantity = qty; 
         newCartItem.cartItemId = generateUniqueID(); 
@@ -306,17 +300,14 @@ window.addWithQty = function(id) {
 function drawProductCard(p, layoutMode = 'grid') {
     const pIdSafe = String(p.id); const item = state.cart.find(i => String(i.cartItemId) === pIdSafe || String(i.id) === pIdSafe);
     let itemLayout = (p.layout && p.layout !== 'default') ? p.layout : layoutMode;
-    
     let isFullWidth = (itemLayout === 'full');
     let colSpanClass = isFullWidth ? 'col-span-full' : '';
-    
     const isOutOfStock = p.inStock === false;
     const imageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
     const hasMultipleImages = imageList.length > 1;
 
     const renderBtns = () => {
         if (isOutOfStock) return `<button disabled class="w-full font-bold text-xs py-3.5 rounded-xl flex justify-center items-center gap-2 bg-gray-50 text-gray-400 border border-gray-200 cursor-not-allowed shadow-inner"><i data-lucide="clock" class="w-4 h-4"></i> غير متوفر حالياً</button>`;
-        
         if (item) {
             return `
             <div class="flex items-center justify-between rounded-xl p-1.5 shadow-sm border w-full" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
@@ -329,7 +320,6 @@ function drawProductCard(p, layoutMode = 'grid') {
             </div>
             `;
         }
-
         return `
         <div class="flex items-center gap-2.5 w-full">
             <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl p-1 w-[40%] shrink-0">
@@ -344,6 +334,15 @@ function drawProductCard(p, layoutMode = 'grid') {
         `;
     };
 
+    const sliderHTML = `
+    <div id="slider-${p.id}" class="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-auto touch-pan-y">
+        ${imageList.map(url => `
+            <div class="min-w-full w-full h-full shrink-0 snap-center">
+                <img src="${url}" class="w-full h-full object-cover pointer-events-none" loading="lazy">
+            </div>
+        `).join('')}
+    </div>`;
+
     if (isFullWidth) {
         return `
         <div id="product-card-${p.id}" class="${colSpanClass} rounded-[2rem] shadow-sm hover:shadow-2xl border border-gray-100 flex flex-col group transition-all duration-500 overflow-hidden bg-white mb-4 hover:-translate-y-1">
@@ -351,40 +350,27 @@ function drawProductCard(p, layoutMode = 'grid') {
                 <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-4 left-4 z-30 w-10 h-10 rounded-full shadow-lg bg-white/90 text-gray-600 flex items-center justify-center hover:scale-110 transition-all backdrop-blur-sm"><i data-lucide="share-2" class="w-5 h-5"></i></button>
                 ${isOutOfStock ? `<div class="absolute top-4 right-4 z-30 bg-gray-900/90 text-white text-xs font-bold px-4 py-2 rounded-xl backdrop-blur-sm shadow-xl flex items-center gap-2"><i data-lucide="ban" class="w-4 h-4 text-red-400"></i> نفدت الكمية</div>` : ''}
                 ${p.badge && !isOutOfStock ? `<div class="absolute top-4 right-4 z-30 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xl tracking-wide brand-gradient animate-pulse">${p.badge}</div>` : ''}
-                
-                <div id="slider-${p.id}" class="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-auto touch-pan-x">
-                    ${imageList.map(url => `<img src="${url}" class="min-w-full w-full h-full object-cover shrink-0 snap-center transition-transform duration-1000 ${isOutOfStock ? 'grayscale-overlay' : 'group-hover:scale-105'}" loading="lazy">`).join('')}
-                </div>
+                ${sliderHTML}
                 ${hasMultipleImages ? `<div class="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10 pointer-events-none">${imageList.map((_, idx) => `<div class="w-2 h-2 rounded-full ${idx === 0 ? 'bg-white opacity-100 w-4' : 'bg-white opacity-60'} shadow-md transition-all"></div>`).join('')}</div>` : ''}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent opacity-0 ${isOutOfStock ? '' : 'group-hover:opacity-100'} pointer-events-none transition-opacity duration-500 z-0"></div>
             </div>
-            
             <div class="p-6 sm:p-10 flex flex-col justify-between z-10 w-full text-center items-center max-w-4xl mx-auto">
                 <span class="text-[10px] sm:text-xs font-bold px-3 py-1 rounded-lg mb-4 inline-block shadow-sm tracking-widest uppercase" style="color: hsl(var(--brand-hue), 70%, 50%); background-color: hsl(var(--brand-hue), 80%, 97%); border: 1px solid hsl(var(--brand-hue), 80%, 90%);">${escapeHTML(p.category)}</span>
                 <h3 class="font-black text-2xl sm:text-4xl text-gray-800 leading-tight mb-4">${escapeHTML(p.name)}</h3>
                 ${p.desc ? `<p class="font-bold text-sm sm:text-lg text-gray-500 line-clamp-none leading-loose mb-8 max-w-2xl px-4">${escapeHTML(p.desc)}</p>` : ''}
                 <div class="font-black text-3xl sm:text-5xl drop-shadow-sm mb-8" style="color: hsl(var(--brand-hue), 70%, 50%);">${Number(p.price) > 0 ? Number(p.price) + ' ج.م' : 'حسب الطلب'}</div>
-                <div class="w-full sm:w-2/3 md:w-1/2 mx-auto">
-                    ${renderBtns()}
-                </div>
+                <div class="w-full sm:w-2/3 md:w-1/2 mx-auto">${renderBtns()}</div>
             </div>
-        </div>
-        `;
+        </div>`;
     } else {
         return `
         <div id="product-card-${p.id}" class="rounded-[1.5rem] shadow-sm hover:shadow-xl border border-gray-100 flex flex-col group transition-all duration-300 relative overflow-hidden bg-white hover:-translate-y-1 h-full">
             <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-3 left-3 z-30 w-8 h-8 rounded-full shadow-md bg-white/90 text-gray-500 flex items-center justify-center hover:scale-110 transition-all backdrop-blur-sm"><i data-lucide="share-2" class="w-4 h-4"></i></button>
             ${isOutOfStock ? `<div class="absolute top-3 right-3 z-30 bg-gray-900/85 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg backdrop-blur-sm shadow-md flex items-center gap-1"><i data-lucide="ban" class="w-3 h-3 text-red-400"></i> نفدت</div>` : ''}
             ${p.badge && !isOutOfStock ? `<div class="absolute top-3 right-3 z-30 text-white text-[10px] font-bold px-3 py-1.5 rounded-lg shadow-md tracking-wide brand-gradient">${p.badge}</div>` : ''}
-            
             <div class="aspect-square sm:aspect-[4/5] w-full relative shrink-0 bg-gray-50 overflow-hidden">
-                <div id="slider-${p.id}" class="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-auto touch-pan-x">
-                    ${imageList.map(url => `<img src="${url}" class="min-w-full w-full h-full object-cover shrink-0 snap-center transition-transform duration-700 ${isOutOfStock ? 'grayscale-overlay' : 'group-hover:scale-105'}" loading="lazy">`).join('')}
-                </div>
+                ${sliderHTML}
                 ${hasMultipleImages ? `<div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">${imageList.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-white opacity-100 w-3' : 'bg-white opacity-60'} shadow-sm transition-all"></div>`).join('')}</div>` : ''}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent opacity-0 ${isOutOfStock ? '' : 'group-hover:opacity-100'} pointer-events-none transition-opacity duration-300 z-0"></div>
             </div>
-            
             <div class="p-4 sm:p-5 flex-1 flex flex-col justify-between bg-white z-10">
                 <div class="mb-5">
                     <span class="text-[9px] font-bold px-2 py-0.5 rounded-md mb-2.5 inline-block shadow-sm border" style="color: hsl(var(--brand-hue), 70%, 50%); background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">${escapeHTML(p.category)}</span>
@@ -396,8 +382,7 @@ function drawProductCard(p, layoutMode = 'grid') {
                     ${renderBtns()}
                 </div>
             </div>
-        </div>
-        `;
+        </div>`;
     }
 }
 
@@ -415,7 +400,7 @@ function renderCakeBuilder(target) {
     const descText = settings.desc || defaultSettings.cakeBuilder.desc;
     const minSq = settings.minSquare || 16; const minRect = settings.minRect || 20;
 
-    let sliderHtml = `<div class="w-full md:w-2/5 aspect-[3/4] md:aspect-square rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border-2 shadow-xl relative flex snap-slider hide-scrollbar bg-white group" style="border-color: hsl(var(--brand-hue), 80%, 90%);">${imagesList.map(url => `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 group-hover:scale-105">`).join('')}${imagesList.length > 1 ? `<div class="absolute bottom-3 w-full text-center z-10"><span class="bg-black/60 text-white text-[10px] px-3 py-1.5 rounded-full backdrop-blur-md font-bold tracking-wider border border-white/20 shadow-lg">مرر لمشاهدة ${imagesList.length} صور</span></div>` : ''}</div>`;
+    let sliderHtml = `<div class="w-full md:w-2/5 aspect-[3/4] md:aspect-square rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border-2 shadow-xl relative flex snap-slider hide-scrollbar bg-white group" style="border-color: hsl(var(--brand-hue), 80%, 90%);">${imagesList.map(url => `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 group-hover:scale-105 pointer-events-none">`).join('')}${imagesList.length > 1 ? `<div class="absolute bottom-3 w-full text-center z-10"><span class="bg-black/60 text-white text-[10px] px-3 py-1.5 rounded-full backdrop-blur-md font-bold tracking-wider border border-white/20 shadow-lg">مرر لمشاهدة ${imagesList.length} صور</span></div>` : ''}</div>`;
 
     target.innerHTML = `
         <div class="rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
@@ -423,7 +408,6 @@ function renderCakeBuilder(target) {
                 ${sliderHtml}
                 <div class="flex-1 text-center md:text-right"><h2 class="text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">تخصيص التورت الملكية 👑</h2><p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">${escapeHTML(descText)}</p></div>
             </div>
-            
             <div class="p-6 md:p-12 space-y-12">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     <div class="space-y-4">
@@ -439,18 +423,15 @@ function renderCakeBuilder(target) {
                         </div>
                     </div>
                 </div>
-
                 <div class="p-8 rounded-[2rem] border space-y-8 shadow-inner relative" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
                     <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="star" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> الشكل الهندسي المختار</label>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">${['دائري', 'قلب', 'مربع', 'مستطيل'].map(sh => `<button onclick="setSh('${sh}')" class="py-5 rounded-xl font-bold flex flex-col items-center gap-2 border-2 transition-all ${c.sh === sh ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.sh === sh ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}"><span class="text-sm">${sh}</span>${sh === 'مربع' || sh === 'مستطيل' ? `<span class="text-[9px] opacity-75">${sh === 'مربع' ? `(من ${minSq})` : `(من ${minRect})`}</span>` : ''}</button>`).join('')}</div>
                     <label class="flex items-center gap-4 cursor-pointer p-3 rounded-xl border" style="background-color: rgba(var(--site-bg), 0.5);"><input type="checkbox" ${c.trd ? 'checked' : ''} onchange="uCake('trd', this.checked)" class="w-6 h-6 rounded"> <span class="font-bold text-sm md:text-base" style="color: var(--site-text);">هل تفضلون التصميم متعدد الأدوار؟</span></label>
                 </div>
-
                 <div class="p-8 rounded-[2rem] border flex flex-col md:flex-row gap-6 shadow-sm" style="background-color: hsl(var(--brand-hue), 30%, 97%); border-color: hsl(var(--brand-hue), 30%, 90%);">
                     <i data-lucide="alert-circle" class="w-10 h-10 flex-shrink-0" style="color: hsl(var(--brand-hue), 60%, 50%);"></i>
                     <div class="flex-1"><h4 class="font-bold mb-3 text-lg md:text-xl tracking-tight leading-tight" style="color: hsl(var(--brand-hue), 60%, 40%);">الرعاية الصحية وسلامة الغذاء</h4><p class="text-xs mb-5 font-bold leading-loose opacity-80" style="color: hsl(var(--brand-hue), 60%, 30%);">صحتكم وسلامتكم أولوية؛ نرجو تدوين أي تفاصيل تتعلق بالحساسية الغذائية لضمان تجربة آمنة تماماً.</p><input type="text" value="${escapeHTML(c.alg)}" onchange="uCake('alg', this.value)" placeholder="ملاحظات صحية إن وجدت..." class="w-full p-4 rounded-xl border outline-none focus:ring-2 font-bold text-sm shadow-inner" style="background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 30%, 85%);"></div>
                 </div>
-
                 <div class="p-8 rounded-[2rem] border flex flex-col md:flex-row gap-8 shadow-sm relative overflow-hidden" style="background-color: hsl(var(--brand-hue), 10%, 97%); border-color: hsl(var(--brand-hue), 10%, 90%);">
                     <div class="flex-1 space-y-4 relative z-10"><label class="font-bold flex items-center gap-2 text-lg" style="color: var(--site-text);"><i data-lucide="party-popper" class="w-6 h-6" style="color: hsl(var(--brand-hue), 60%, 50%);"></i> طبيعة المناسبة</label><input type="text" value="${escapeHTML(c.occ)}" onchange="uCake('occ', this.value)" placeholder="مثال: عيد ميلاد، زفاف..." class="w-full p-4 rounded-xl border shadow-sm outline-none transition-all font-bold text-sm" style="background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 20%, 85%);"></div>
                     <div class="flex-1 space-y-4 relative z-10 border-t md:border-t-0 md:border-r pt-6 md:pt-0 md:pr-8" style="border-color: hsl(var(--brand-hue), 20%, 85%);">
@@ -461,7 +442,6 @@ function renderCakeBuilder(target) {
                          </div>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10 border-t pt-10" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
                     <div class="space-y-4">
                         <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="camera" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> طباعة صورة</label>
@@ -476,7 +456,6 @@ function renderCakeBuilder(target) {
                     </div>
                 </div>
             </div>
-            
             <div class="p-8 md:p-14 border-t-2 flex flex-col md:flex-row justify-between items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 95%); border-color: hsl(var(--brand-hue), 80%, 85%);">
                 <div class="text-center md:text-right">
                     <span class="block font-bold mb-2 text-lg md:text-xl opacity-70 uppercase tracking-widest" style="color: hsl(var(--brand-hue), 70%, 50%);">الإجمالي التقديري</span>
@@ -484,8 +463,7 @@ function renderCakeBuilder(target) {
                 </div>
                 <button onclick="commitCakeBuilder()" class="w-full md:w-auto text-white font-bold text-xl md:text-2xl py-5 px-12 rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all border-b-4 brand-gradient" style="border-color: hsl(var(--brand-hue), 70%, 40%);">إضافة للمراجعة</button>
             </div>
-        </div>
-    `;
+        </div>`;
     if(window.lucide) lucide.createIcons();
 }
 
@@ -528,7 +506,6 @@ function renderCartCrossSell() {
     if (newExperiences.length > 0) { const shuffled = newExperiences.sort(() => 0.5 - Math.random()); suggestions.push(...shuffled.slice(0, 2)); }
     if (suggestions.length < 3) { const remaining = available.filter(p => !suggestions.includes(p)); const extra = remaining.sort(() => 0.5 - Math.random()).slice(0, 3 - suggestions.length); suggestions.push(...extra); }
     suggestions = [...new Set(suggestions)].slice(0, 3);
-
     return `
         <div class="mt-8 animate-fade-in border-t border-dashed pt-6" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
             <p class="text-sm font-black text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4" style="color: hsl(var(--brand-hue), 70%, 50%);"></i> كملي اللحظة الحلوة بمنتجات تليق بيكي</p>
@@ -537,7 +514,7 @@ function renderCartCrossSell() {
                     const img = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category));
                     return `
                         <div class="shrink-0 w-[260px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col transition-all group hover:shadow-md" style="border-color: hsl(var(--brand-hue), 80%, 95%); hover:border-color: hsl(var(--brand-hue), 80%, 90%);">
-                            <div class="relative w-full h-36 mb-4 rounded-xl overflow-hidden border border-gray-50 bg-gray-50"><img src="${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">${p.badge ? `<span class="absolute top-2 right-2 brand-gradient text-white text-[10px] px-2 py-1 rounded-lg font-bold shadow-md border-0">${p.badge}</span>` : ''}</div>
+                            <div class="relative w-full h-36 mb-4 rounded-xl overflow-hidden border border-gray-50 bg-gray-50"><img src="${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pointer-events-none">${p.badge ? `<span class="absolute top-2 right-2 brand-gradient text-white text-[10px] px-2 py-1 rounded-lg font-bold shadow-md border-0">${p.badge}</span>` : ''}</div>
                             <div class="flex-1 flex flex-col">
                                 <span class="text-[10px] font-bold mb-1 tracking-wider self-start px-2 py-0.5 rounded-md border shadow-sm" style="color: hsl(var(--brand-hue), 70%, 50%); background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">${escapeHTML(p.category)}</span>
                                 <h5 class="text-[14px] font-bold text-gray-800 mb-1 leading-tight">${escapeHTML(p.name)}</h5>
@@ -547,12 +524,10 @@ function renderCartCrossSell() {
                                     <button onclick="addWithQty('${p.id}')" class="px-4 py-2 brand-gradient text-white border-0 rounded-xl flex items-center gap-1.5 transition-all shadow-md text-[11px] font-bold active:scale-95 hover:-translate-y-0.5"><i data-lucide="plus" class="w-3.5 h-3.5"></i> إضافة</button>
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        </div>`;
                 }).join('')}
             </div>
-        </div>
-    `;
+        </div>`;
 }
 
 function renderCartList() {
@@ -569,7 +544,6 @@ function renderCartList() {
         </div>`;
         if (crossSellArea) crossSellArea.innerHTML = ''; if (totalDisplay) totalDisplay.innerText = "0 ج.م"; if (window.lucide) lucide.createIcons(); return;
     }
-
     let total = 0;
     container.innerHTML = state.cart.map(item => {
         const identifier = item.cartItemId || item.id; const q = Number(item.quantity); const p = Number(item.price); total += (p * q);
@@ -586,13 +560,10 @@ function renderCartList() {
                         <button onclick="modQ('${identifier}', 1)" class="w-6 h-6 flex items-center justify-center rounded-md text-white brand-gradient border-0 shadow-sm active:scale-90 transition-all"><i data-lucide="plus" class="w-3 h-3"></i></button>
                     </div>
                 </div>
-            </div>
-        `;
+            </div>`;
     }).join('');
     if (totalDisplay) totalDisplay.innerText = total + " ج.م";
-    if (crossSellArea) {
-        crossSellArea.innerHTML = renderCartCrossSell();
-    }
+    if (crossSellArea) crossSellArea.innerHTML = renderCartCrossSell();
     if (window.lucide) lucide.createIcons();
 }
 
@@ -682,64 +653,33 @@ async function submitOrder() {
     const cName = document.getElementById('cust-name').value.trim(); const cPhone = document.getElementById('cust-phone').value.trim(); const cAreaId = document.getElementById('cust-area').value;
     const addressEl = document.getElementById('cust-address'); const cAddress = addressEl ? addressEl.value.trim() : '';
     const notesEl = document.getElementById('cust-notes'); const cNotes = notesEl ? notesEl.value.trim() : '';
-
     if (!cName || !cPhone || !cDate || !cTime) { showSystemToast('يرجى استكمال البيانات الأساسية (التاريخ، الوقت، الاسم، والموبايل).', 'error'); return; }
     if (deliveryMethod === 'delivery') {
         if (!cAreaId) { showSystemToast('يرجى تحديد منطقة التوصيل.', 'error'); return; }
         if (!cAddress) { showSystemToast('يرجى كتابة العنوان لضمان وصول الأوردر 🛵', 'error'); return; }
     }
-
     let formattedDate = cDate; try { formattedDate = new Date(cDate).toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); } catch(e){}
     let formattedTime = cTime; try { const [hours, minutes] = cTime.split(':'); const ampm = hours >= 12 ? 'مساءً' : 'صباحاً'; const hours12 = hours % 12 || 12; formattedTime = `${hours12}:${minutes} ${ampm}`; } catch(e){}
-
     const areaName = deliveryMethod === 'pickup' ? 'استلام من الفرع' : (shippingZones.find(z => String(z.id) === String(cAreaId))?.name || 'أخرى');
     const orderId = 'BS-' + Math.floor(10000 + Math.random() * 90000); let sub = 0; 
-    let itemsDesc = [];
-    let itemsForDb = []; 
-
+    let itemsDesc = []; let itemsForDb = []; 
     let m = `*طلب جديد من حلويات بوسي* 🧁\n*رقم الطلب:* ${orderId}\nــــــــــــــــــــــــــــــــــــــــ\n\n`;
     m += `👤 الاسم: ${cName}\n📞 الموبايل: ${cPhone}\n🚚 الاستلام: ${deliveryMethod === 'pickup' ? 'استلام من الفرع 🏪' : 'توصيل للمنزل 🛵'}\n`;
     if (deliveryMethod === 'delivery') { m += `📍 المنطقة: ${areaName}\n🏠 العنوان: ${cAddress}\n`; }
     m += `⏰ الموعد: ${formattedDate} - ${formattedTime}\n`;
     if (cNotes) m += `📝 ملاحظات: ${cNotes}\n`; 
     m += `ــــــــــــــــــــــــــــــــــــــــ\n\n*الطلبات:*\n`;
-
     state.cart.forEach((i, idx) => {
         let p = Number(i.price); let q = Number(i.quantity); sub += (p * q);
         let finalItemName = i.isCustom ? i.name : `[${i.category}] ${i.name}`.trim();
         m += `\n*${idx+1}. ${finalItemName}* (x${q}) = ${(p * q)} ج\n`;
         if (i.isCustom && i.desc) m += `_التفاصيل:_ ${i.desc}\n`; 
         itemsDesc.push(`${finalItemName} (x${q})`);
-
-        itemsForDb.push({
-            id: i.id,
-            cartItemId: i.cartItemId || i.id,
-            name: finalItemName,
-            price: p,
-            quantity: q,
-            category: i.category || '',
-            desc: (i.isCustom && i.desc) ? i.desc : ''
-        });
+        itemsForDb.push({ id: i.id, cartItemId: i.cartItemId || i.id, name: finalItemName, price: p, quantity: q, category: i.category || '', desc: (i.isCustom && i.desc) ? i.desc : '' });
     });
     m += `\nــــــــــــــــــــــــــــــــــــــــ\n*الحساب:* ${sub + state.currentShippingFee} ج.م\n`;
-
-    const orderObj = { 
-        id: orderId, 
-        timestamp: Date.now(), 
-        date: formattedDate, 
-        name: cName, 
-        phone: cPhone, 
-        area: areaName, 
-        address: cAddress, 
-        notes: cNotes, 
-        total: (sub + state.currentShippingFee), 
-        status: 'pending',
-        itemsArray: itemsForDb, 
-        itemsDesc: itemsDesc.join(' \n ')
-    };
-    
+    const orderObj = { id: orderId, timestamp: Date.now(), date: formattedDate, name: cName, phone: cPhone, area: areaName, address: cAddress, notes: cNotes, total: (sub + state.currentShippingFee), status: 'pending', itemsArray: itemsForDb, itemsDesc: itemsDesc.join(' \n ') };
     try { await NetworkEngine.safeWrite('orders', orderId, orderObj); globalOrders.unshift(orderObj); localStorage.setItem('boseSweets_admin_orders', JSON.stringify(globalOrders)); } catch(e) {}
-
     window.open(`https://wa.me/201097238441?text=${encodeURIComponent(m)}`, '_blank');
     state.cart = []; clearCartStorage(); syncCartUI(); toggleCart(false); renderMainDisplay();
     document.getElementById('cust-date').value = ''; document.getElementById('cust-time').value = '';
@@ -756,7 +696,6 @@ function closeInfo() { const m = document.getElementById('info-modal'); m.classL
 
 let isScrolling = false;
 const navbarEl = document.getElementById('navbar');
-
 window.addEventListener('scroll', () => {
     if (!isScrolling && navbarEl) {
         window.requestAnimationFrame(() => {
@@ -776,5 +715,4 @@ async function handleSecretTap() {
         window.location.href = 'login.html'; 
     } else { tapTimer = setTimeout(() => { secretTaps = 0; }, 2000); }
 }
-
 window.onload = initApp;

@@ -4,8 +4,8 @@
     --brand-hue: 355; 
     --base-font-size: 16px;
     --base-font-weight: 400;
-    --site-bg: #fdfdfd; /* لون خلفية مريح جدا وأكثر فخامة من الأبيض الصريح */
-    --site-text: #4a2b2b; /* لون نص ناعم ومقروء */
+    --site-bg: #fdfdfd; 
+    --site-text: #4a2b2b; 
     
     /* Ticker Variables */
     --ticker-color: #ffffff;
@@ -22,27 +22,22 @@ body {
     font-weight: var(--base-font-weight);
     background-color: var(--site-bg); 
     color: var(--site-text);
-    /* تم إزالة scroll-behavior: smooth لإنهاء الثقل والتقطيع تماماً وجعل التصفح خفيف */
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* إخفاء شريط التمرير مع الحفاظ على الوظيفة لجمال الواجهة */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Dynamic Gradient for Brand Identity */
 .brand-gradient { 
     background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 60%) 0%, hsl(var(--brand-hue), 85%, 70%) 50%, hsl(var(--brand-hue), 90%, 80%) 100%); 
 }
 
-/* Ticker Identity Gradients */
 .ticker-brand-gradient { background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 65%) 0%, hsl(var(--brand-hue), 85%, 75%) 50%, hsl(var(--brand-hue), 90%, 85%) 100%); }
 .ticker-fade-right { background: linear-gradient(to left, hsl(var(--brand-hue), 80%, 65%), transparent); }
 .ticker-fade-left { background: linear-gradient(to right, hsl(var(--brand-hue), 90%, 85%), transparent); }
 
-/* Animations */
 .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
 @keyframes fadeIn { 
     from { opacity: 0; transform: translateY(15px); } 
@@ -55,8 +50,6 @@ body {
     50% { transform: translateY(-10px); } 
 }
 
-/* النافبار العلوية - تم تخفيف الزجاج المغبش لزيادة سرعة السكرول ومنع التقطيع */
-/* النافبار العلوية - تم إضافة تسريع المعالج الرسومي (GPU Acceleration) لمنع التجميد */
 .nav-scrolled { 
     background-color: rgba(253, 253, 253, 0.95); 
     backdrop-filter: blur(4px);
@@ -66,10 +59,8 @@ body {
     will-change: background-color, backdrop-filter;
 }
 
-
 input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue), 80%, 65%); }
 
-/* Toast Animation */
 @keyframes slideInUp { 
     from { transform: translate(-50%, 100%); opacity: 0; } 
     to { transform: translate(-50%, 0); opacity: 1; } 
@@ -79,17 +70,14 @@ input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue)
 
 #global-loader { transition: opacity 0.5s ease, visibility 0.5s; }
 
-/* Custom UI for Radio Buttons */
 .custom-radio-container:has(input:checked) {
     border-color: hsl(var(--brand-hue), 80%, 65%) !important;
     background-color: hsl(var(--brand-hue), 80%, 97%) !important;
     color: hsl(var(--brand-hue), 70%, 50%) !important;
 }
 
-/* Out of stock overlay */
 .grayscale-overlay { filter: grayscale(100%) opacity(0.6); }
 
-/* Ticker Marquee Animation */
 @keyframes ticker-marquee {
     0% { transform: translateX(100%); }
     100% { transform: translateX(-100%); }
@@ -102,11 +90,19 @@ input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue)
 }
 #ticker-container:hover .animate-ticker { animation-play-state: paused; }
 
-/* CX Upgrade: Snap Scroll for Multi-Image */
-.snap-slider { scroll-snap-type: x mandatory; }
-.snap-slide { scroll-snap-align: center; }
+/* ⚡ إصلاح مشكلة تجمد السكرول عند لمس الصور */
+.snap-slider { 
+    scroll-snap-type: x mandatory; 
+    touch-action: pan-y !important; /* السماح بالسكرول الرأسي دائماً */
+    -webkit-overflow-scrolling: touch;
+}
 
-/* CX Upgrade: Highlight Animation for Shared Products */
+.snap-slide img {
+    pointer-events: none !important; /* منع الصور من تعطيل اللمس */
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
 @keyframes targetHighlight {
     0% { box-shadow: 0 0 0 0px hsl(var(--brand-hue), 80%, 65%); transform: scale(1); }
     50% { box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); transform: scale(1.02); }
