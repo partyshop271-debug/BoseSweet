@@ -13,6 +13,7 @@
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script> <!-- تمت إضافة مكتبة الحماية -->
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700;900&family=Almarai:wght@300;400;700;800&family=Readex+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -73,7 +74,7 @@
         <div class="max-w-3xl mx-auto w-full h-full flex flex-col p-4 sm:p-8">
             <div class="flex items-center gap-3 mb-6 relative mt-10">
                 <i data-lucide="search" class="absolute right-5 w-6 h-6 text-gray-400"></i>
-                <input type="text" id="live-search-input" onkeyup="performLiveSearch(this.value)" placeholder="بتدور على إيه النهاردة؟" class="w-full pl-16 pr-14 py-4 md:py-5 rounded-2xl md:rounded-[2rem] text-lg font-bold shadow-2xl border-2 focus:outline-none transition-colors" style="background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <input type="text" id="live-search-input" onkeyup="performLiveSearch(this.value)" placeholder="بتدور على إيه النهاردة؟ (تورتة، جاتوه، سينابون...)" class="w-full pl-16 pr-14 py-4 md:py-5 rounded-2xl md:rounded-[2rem] text-lg font-bold shadow-2xl border-2 focus:outline-none transition-colors" style="background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);">
                 <button onclick="toggleLiveSearch(false)" class="absolute left-3 p-2 md:p-3 rounded-xl bg-gray-100 hover:bg-red-100 hover:text-red-600 transition-colors text-gray-500">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
@@ -284,6 +285,8 @@
     </div>
 
     <!-- Script Links -->
+    <script src="firebase-config.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
+
