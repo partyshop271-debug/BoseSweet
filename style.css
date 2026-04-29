@@ -1,4 +1,4 @@
-/* Engine Upgrade: Dynamic Theme Engine Base & Soft Premium UI */
+/* Engine Upgrade: Dynamic Theme Engine Base & Soft Premium UI (Optimized for Zero-Lag) */
 :root {
     --brand-font: 'Cairo', sans-serif;
     --brand-hue: 355; 
@@ -13,18 +13,22 @@
     --ticker-speed: 20s;
 }
 
-html { font-size: var(--base-font-size); }
+html { 
+    font-size: var(--base-font-size); 
+}
+
 body { 
     font-family: var(--brand-font); 
     font-weight: var(--base-font-weight);
     background-color: var(--site-bg); 
     color: var(--site-text);
-    scroll-behavior: smooth; 
+    /* تم إزالة scroll-behavior: smooth لإنهاء الثقل والتقطيع تماماً وجعل التصفح خفيف */
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* إخفاء شريط التمرير مع الحفاظ على الوظيفة لجمال الواجهة */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -51,9 +55,10 @@ body {
     50% { transform: translateY(-10px); } 
 }
 
+/* النافبار العلوية - تم تخفيف الزجاج المغبش لزيادة سرعة السكرول ومنع التقطيع */
 .nav-scrolled { 
-    background-color: rgba(253, 253, 253, 0.95); 
-    backdrop-filter: blur(12px); 
+    background-color: rgba(253, 253, 253, 0.98); 
+    backdrop-filter: blur(8px); 
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05); 
 }
 
