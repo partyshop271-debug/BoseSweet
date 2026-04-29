@@ -1,33 +1,3 @@
-const firebaseConfig = {
-    apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
-    authDomain: "bosy-sweets.firebaseapp.com",
-    projectId: "bosy-sweets",
-    storageBucket: "bosy-sweets.firebasestorage.app",
-    messagingSenderId: "473615735083",
-    appId: "1:473615735083:web:f09c6001c72640b2588d6e",
-    measurementId: "G-46D1CS3WLB"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-const NetworkEngine = {
-    async safeWrite(collectionName, docId, data, maxRetries = 4) {
-        let attempt = 0;
-        while (attempt < maxRetries) {
-            try { await db.collection(collectionName).doc(String(docId)).set(data); return true; } 
-            catch (error) { attempt++; if (attempt === maxRetries) throw error; await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(1.5, attempt))); }
-        }
-    },
-    async safeDelete(collectionName, docId, maxRetries = 3) {
-        let attempt = 0;
-        while (attempt < maxRetries) {
-            try { await db.collection(collectionName).doc(String(docId)).delete(); return true; } 
-            catch (error) { attempt++; if (attempt === maxRetries) throw error; await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(1.5, attempt))); }
-        }
-    }
-};
-
 const PreloadEngine = {
     loadedUrls: new Set(),
     ignite(catalogData, galleryData = []) {
@@ -206,8 +176,7 @@ async function initApp() {
     }
 }
 
-// Security Logic - Redirects to Admin Page
-const DEFAULT_ADMIN_HASH = "e4125b7405be53da470ec0865e8aebfcb03b223403ba78028f24419cb7ed490c";
+// 🛡️ Engine Upgrade: Advanced Security & Hashing Engine
 async function hashPassword(password) {
     const msgBuffer = new TextEncoder().encode(password);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -215,30 +184,15 @@ async function hashPassword(password) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+const DEFAULT_ADMIN_HASH = "e4125b7405be53da470ec0865e8aebfcb03b223403ba78028f24419cb7ed490c";
+
+// التحديث الأمني: دالة الانتقال لصفحة تسجيل الدخول الرسمية بدلاً من النافذة المنبثقة
 let secretTaps = 0; let tapTimer = null;
 async function handleSecretTap() {
     secretTaps++; clearTimeout(tapTimer);
     if (secretTaps >= 5) {
         secretTaps = 0;
-        const pwd = prompt("النظام السحابي المشفر لإدارة المتجر ☁️🛡️\n\nبرجاء إدخال رمز المرور السري:");
-        if (pwd === null) return; 
-        try {
-            const hashedInput = await hashPassword(pwd);
-            let isMatch = false;
-            if (siteSettings.adminPasswordHash) isMatch = (hashedInput === siteSettings.adminPasswordHash);
-            else if (siteSettings.adminPassword) isMatch = (pwd === siteSettings.adminPassword);
-            else isMatch = (hashedInput === DEFAULT_ADMIN_HASH);
-
-            if (isMatch) {
-                sessionStorage.setItem('bosy_admin_auth', 'true');
-                window.location.href = 'admin.html';
-            } else { showSystemToast("رمز المرور غير صحيح.. المحاولة مسجلة 🛡️", "error"); }
-        } catch (error) {
-            if(pwd === (siteSettings.adminPassword || "2026")) {
-                sessionStorage.setItem('bosy_admin_auth', 'true');
-                window.location.href = 'admin.html';
-            } else { showSystemToast("رمز المرور غير صحيح", "error"); }
-        }
+        window.location.href = 'login.html'; // فتح بوابة الدخول الرسمية
     } else { tapTimer = setTimeout(() => { secretTaps = 0; }, 2000); }
 }
 
@@ -707,4 +661,25 @@ window.addEventListener('scroll', () => {
     if(n) { if (window.scrollY > 30) n.classList.add('nav-scrolled'); else n.classList.remove('nav-scrolled'); }
 });
 
+// 🛡️ Engine Upgrade: Advanced Security & Hashing Engine
+async function hashPassword(password) {
+    const msgBuffer = new TextEncoder().encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+const DEFAULT_ADMIN_HASH = "e4125b7405be53da470ec0865e8aebfcb03b223403ba78028f24419cb7ed490c";
+
+// بوابة الدخول الرسمية للإدارة
+let secretTaps = 0; let tapTimer = null;
+async function handleSecretTap() {
+    secretTaps++; clearTimeout(tapTimer);
+    if (secretTaps >= 5) {
+        secretTaps = 0;
+        window.location.href = 'login.html'; // فتح بوابة الدخول الرسمية بدلا من الباسورد المنبثق
+    } else { tapTimer = setTimeout(() => { secretTaps = 0; }, 2000); }
+}
+
 window.onload = initApp;
+
+
