@@ -949,7 +949,7 @@ async function generateSmartDescription() {
     if(window.lucide) lucide.createIcons();
     
     try {
-        const apiKey = 'AIzaSyCYIz6kCuMZ6g5dqJaDTJh5yDRizTHMhQU'; 
+        const apiKey ='AIzaSyAA5xO_yml-osLan53Oi5SnjzgNkAujA9U'; 
         const promptText = `أنت كاتب إعلانات محترف لعلامة تجارية مصرية راقية اسمها "حلويات بوسي"\nاكتب وصف قصير وجذاب لمنتج اسمه "${prodName}" من قسم "${prodCat}"\nالشروط: لهجة مصرية عامية راقية، بدون علامات ترقيم، استخدم إيموجي تخدم المعنى، لا يتعدى سطرين. يفتح الشهية ويشجع على الشراء فوراً.`;
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
