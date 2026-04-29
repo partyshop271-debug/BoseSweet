@@ -1,4 +1,4 @@
- // firebase-config.js
+// firebase-config.js
 // 👑 BoseSweets Cloud Central Connection
 
 const firebaseConfig = {
@@ -17,7 +17,7 @@ firebase.initializeApp(firebaseConfig);
 // تعريف محرك قاعدة البيانات
 const db = firebase.firestore();
 
-// تعريف محرك المصادقة (الحماية الجديدة)
+// تعريف محرك المصادقة (الحماية الجديدة للإدارة)
 const auth = firebase.auth();
 
 // 🛡️ Engine Upgrade: Network Resilience Engine
