@@ -270,15 +270,15 @@ function renderMainDisplay() {
 window.updateTempQty = function(id, delta) {
     const el = document.getElementById('temp-qty-' + id);
     if(el) {
-        let val = parseInt(el.innerText) + delta;
+        let val = parseInt(el.innerText.replace(/[^0-9]/g, '')) + delta;
         if(val < 1) val = 1; if(val > 50) val = 50;
-        el.innerText = val;
+        el.innerText = `الكمية: ${val}`;
     }
 };
 
 window.addWithQty = function(id) {
     const el = document.getElementById('temp-qty-' + id);
-    let qty = 1; if(el) qty = parseInt(el.innerText) || 1;
+    let qty = 1; if(el) qty = parseInt(el.innerText.replace(/[^0-9]/g, '')) || 1;
     const safeId = String(id); const prod = catalogMap.get(safeId); 
     if (!prod) return;
     if (prod.inStock === false) { showSystemToast('نأسف، هذا المنتج غير متوفر حالياً.', 'error'); return; }
@@ -295,11 +295,40 @@ function drawProductCard(p, layoutMode = 'grid') {
     let isFullWidth = (itemLayout === 'full');
     const isOutOfStock = p.inStock === false;
     const imageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
+
     const renderActionArea = () => {
-        if (isOutOfStock) return `<div class="w-full py-3 text-[11px] font-bold text-gray-400 bg-gray-50 rounded-xl text-center tracking-widest uppercase">Sold Out</div>`;
-        return `<div class="flex items-center gap-3 w-full animate-fade-in"><div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl p-1 w-[45%] shrink-0"><button onclick="updateTempQty('${p.id}', -1)" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-pink-500 transition-colors"><i data-lucide="minus" class="w-3.5 h-3.5"></i></button><span id="temp-qty-${p.id}" class="font-bold text-sm text-gray-800">1</span><button onclick="updateTempQty('${p.id}', 1)" class="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-pink-500 transition-colors"><i data-lucide="plus" class="w-3.5 h-3.5"></i></button></div><button onclick="addWithQty('${p.id}')" class="flex-1 py-3 bg-gray-900 text-white rounded-xl text-[10px] font-black tracking-widest uppercase transition-all hover:bg-gray-800 active:scale-95 shadow-sm">Add to Bag</button></div>`;
+        if (isOutOfStock) return `<div class="w-full py-3 text-sm font-bold text-pink-300 bg-pink-50 rounded-xl text-center border border-pink-100">نفدت الكمية</div>`;
+        return `
+        <div class="space-y-4 w-full animate-fade-in">
+            <div class="flex items-center justify-between gap-4">
+                <button onclick="updateTempQty('${p.id}', -1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-pink-50 text-pink-500 border border-pink-100 active:scale-90 transition-all"><i data-lucide="minus" class="w-5 h-5"></i></button>
+                <div class="flex-1 text-center">
+                    <span class="block font-black text-xl text-pink-600">${Number(p.price) > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
+                    <span id="temp-qty-${p.id}" class="text-xs font-bold text-gray-400">الكمية: 1</span>
+                </div>
+                <button onclick="updateTempQty('${p.id}', 1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-pink-50 text-pink-500 border border-pink-100 active:scale-90 transition-all"><i data-lucide="plus" class="w-5 h-5"></i></button>
+            </div>
+            <button onclick="addWithQty('${p.id}')" class="w-full py-4 brand-gradient text-white rounded-2xl font-black text-sm shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+                <i data-lucide="shopping-basket" class="w-5 h-5"></i>
+                إضافة للسلة
+            </button>
+        </div>`;
     };
-    return `<div id="product-card-${p.id}" class="${isFullWidth ? 'col-span-full' : ''} group bg-white flex flex-col transition-all duration-700 h-full overflow-hidden border border-transparent"><div class="relative aspect-[4/5] overflow-hidden bg-[#fafafa] rounded-[1.5rem] sm:rounded-[2rem]"><button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-4 left-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 w-9 h-9 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-gray-500 hover:text-pink-500 shadow-sm"><i data-lucide="share-2" class="w-4 h-4"></i></button><div id="slider-${p.id}" class="w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar snap-slider">${imageList.map(url => `<img src="${url}" class="min-w-full h-full object-cover snap-slide transition-transform duration-1000 group-hover:scale-105" loading="lazy">`).join('')}</div>${isOutOfStock ? `<div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] flex items-center justify-center z-10"><span class="text-[10px] font-black tracking-[0.2em] text-gray-900 uppercase border-y border-gray-900 py-1 px-4">Out of Stock</span></div>` : ''}</div><div class="pt-5 pb-2 px-1 flex flex-col flex-1 text-right"><div class="flex justify-between items-start mb-2"><span class="text-[14px] font-black text-gray-900">${Number(p.price) > 0 ? p.price + ' EGP' : 'On Request'}</span><span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-0.5">${escapeHTML(p.category)}</span></div><h4 class="text-[15px] sm:text-[17px] font-bold text-gray-800 leading-tight mb-2 group-hover:text-pink-600 transition-colors">${escapeHTML(p.name)}</h4>${p.desc ? `<p class="text-[11px] sm:text-[12px] font-medium text-gray-500 leading-relaxed mb-5 line-clamp-3 opacity-80">${escapeHTML(p.desc)}</p>` : ''}<div class="mt-auto">${renderActionArea()}</div></div></div>`;
+
+    return `
+    <div id="product-card-${p.id}" class="${isFullWidth ? 'col-span-full' : ''} bg-white flex flex-col h-full overflow-hidden border border-pink-50 rounded-[2rem] transition-all duration-500 hover:shadow-xl">
+        <div class="relative aspect-square overflow-hidden bg-pink-50/30">
+            <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-4 left-4 z-20 w-9 h-9 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-pink-500 shadow-sm transition-all hover:scale-110"><i data-lucide="share-2" class="w-4 h-4"></i></button>
+            <div id="slider-${p.id}" class="w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar snap-slider">
+                ${imageList.map(url => `<img src="${url}" class="min-w-full h-full object-cover snap-slide transition-transform duration-1000 hover:scale-105" loading="lazy">`).join('')}
+            </div>
+        </div>
+        <div class="p-6 flex flex-col flex-1 text-center items-center">
+            <h4 class="text-lg sm:text-xl font-black text-gray-800 mb-2">${escapeHTML(p.name)}</h4>
+            ${p.desc ? `<p class="text-xs sm:text-sm font-bold text-gray-500 leading-relaxed mb-6 px-2 line-clamp-3">${escapeHTML(p.desc)}</p>` : ''}
+            <div class="mt-auto w-full">${renderActionArea()}</div>
+        </div>
+    </div>`;
 }
 
 function getImgFallback(cat) {
@@ -320,13 +349,6 @@ function renderCakeBuilder(target) {
 }
 
 function uCake(k, v) { state.cakeBuilder[k] = v; renderMainDisplay(); }
-function handleRefImage(e) {
-    const file = e.target.files[0];
-    if (file) {
-        if (state.cakeBuilder.refImgUrl) URL.revokeObjectURL(state.cakeBuilder.refImgUrl);
-        state.cakeBuilder.refImgUrl = URL.createObjectURL(file); state.cakeBuilder.hasRefImg = true; renderMainDisplay();
-    }
-}
 function adjP(d) {
     let n = Number(state.cakeBuilder.ps) + Number(d); if (n < 4) n = 4;
     state.cakeBuilder.ps = n; renderMainDisplay();
@@ -439,7 +461,7 @@ async function submitOrder() {
 }
 
 function showInfo(t) {
-    const d = { about: { t: 'من نحن', b: siteSettings.footerQuote }, privacy: { t: 'سياسة الخصوصية والأمان', b: 'تلتزم إدارة حلويات بوسي بالسرية.' } };
+    const d = { about: { t: 'من نحن', b: siteSettings.footerQuote }, privacy: { t: 'سياسة الخصوصية والأمان', b: 'تلتزم إدارة حلويات بوسي بالسرية التامة.' } };
     document.getElementById('info-title').innerText = d[t].t; document.getElementById('info-body').innerText = d[t].b;
     const m = document.getElementById('info-modal'); m.classList.remove('hidden'); m.classList.add('flex'); if(window.lucide) lucide.createIcons();
 }
