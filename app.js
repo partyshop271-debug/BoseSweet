@@ -1,53 +1,3 @@
-// === BoseSweets Pro Engine: Royal Identity Edition ===
-const firebaseConfig = {
-    apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
-    authDomain: "bosy-sweets.firebaseapp.com",
-    projectId: "bosy-sweets",
-    storageBucket: "bosy-sweets.firebasestorage.app",
-    messagingSenderId: "473615735083",
-    appId: "1:473615735083:web:f09c6001c72640b2588d6e"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-let catalog = []; 
-let siteSettings = {}; 
-let currentCategory = ''; // هيبدأ فاضي عشان ياخد أول قسم حقيقي
-
-async function igniteEngine() {
-    try {
-        const settingsSnap = await db.collection('settings').doc('main').get();
-        if (settingsSnap.exists) siteSettings = settingsSnap.data();
-
-        const catalogSnap = await db.collection('catalog').get();
-        catalog = [];
-        catalogSnap.forEach(doc => catalog.push(doc.data()));
-
-        // ترتيب الأقسام: التورت أولاً دائماً
-        const categories = [...new Set(catalog.map(p => p.category))].filter(Boolean);
-        currentCategory = categories.includes('تورت') ? 'تورت' : categories[0];
-
-        applyGlobalUI(); 
-        renderCategoriesNav(categories); 
-        renderFilteredProducts(currentCategory); 
-        
-        document.getElementById('global-loader')?.classList.add('opacity-0');
-    } catch (e) { console.error("Cloud Error"); }
-}
-
-function renderCategoriesNav(categories) {
-    const nav = document.getElementById('categories-nav');
-    if (!nav) return;
-    
-    nav.innerHTML = categories.map(cat => `
-        <button onclick="renderFilteredProducts('${cat}')" 
-                class="px-8 py-3 rounded-full font-black whitespace-nowrap transition-all border-2
-                ${currentCategory === cat ? 'bg-pink-500 text-white border-pink-500 shadow-md' : 'bg-white text-gray-500 border-gray-50 hover:border-pink-100'}">
-            ${cat}
-        </button>
-    `).join('');
-}
-
 function renderFilteredProducts(cat) {
     currentCategory = cat;
     const categories = [...new Set(catalog.map(p => p.category))].filter(Boolean);
@@ -56,36 +6,40 @@ function renderFilteredProducts(cat) {
     const container = document.getElementById('display-container');
     const filtered = catalog.filter(p => p.category === cat);
     
+    // نظام العرض الذكي بناءً على إعدادات المنتج (بناء وتوسيع)
     container.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            ${filtered.map(p => `
-                <div class="bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-gray-50 flex flex-col h-full hover:shadow-xl transition-all duration-500">
-                    <div class="relative aspect-square">
-                        <img src="${p.img || ''}" class="w-full h-full object-cover">
-                        ${p.badge ? `<span class="absolute top-5 right-5 bg-pink-500 text-white text-[11px] font-black px-4 py-2 rounded-full">${p.badge}</span>` : ''}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+            ${filtered.map(p => {
+                // تحديد لو كان الكارت هيشغل مساحة كاملة بناءً على الإعدادات الأصلية
+                const isFullWidth = p.layout === 'full' ? 'md:col-span-2 lg:col-span-3' : '';
+                return `
+                <div class="${isFullWidth} bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-pink-50 flex flex-col h-full hover:shadow-xl transition-all duration-500 group">
+                    <div class="relative aspect-[4/3] md:aspect-video overflow-hidden">
+                        <img src="${p.img || ''}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
+                        ${p.badge ? `<span class="absolute top-5 right-5 bg-pink-500 text-white text-[10px] font-black px-4 py-2 rounded-full shadow-lg">${p.badge}</span>` : ''}
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                     </div>
-                    <div class="p-8 flex flex-col flex-1">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-[10px] font-bold text-pink-400 tracking-widest uppercase">${p.category}</span>
-                            <span class="text-2xl font-black text-gray-900">${p.price} ج.م</span>
+                    <div class="p-6 md:p-8 flex flex-col flex-1">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <span class="text-[9px] font-bold text-pink-400 tracking-[0.2em] uppercase">${p.category}</span>
+                                <h3 class="text-xl md:text-2xl font-black text-gray-800 mt-1">${p.name}</h3>
+                            </div>
+                            <div class="text-left">
+                                <span class="text-xl md:text-2xl font-black text-pink-600">${p.price}</span>
+                                <span class="text-[10px] font-bold text-gray-400 mr-1">ج.م</span>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-black text-gray-800 mb-4">${p.name}</h3>
-                        <p class="text-sm text-gray-500 font-bold leading-relaxed mb-8 flex-1">${p.desc || ''}</p>
+                        <p class="text-sm text-gray-500 font-medium leading-relaxed mb-8 flex-1 opacity-80">${p.desc || ''}</p>
                         
-                        <button onclick="openProductDetails('${p.id}')" class="w-full bg-gray-900 text-white py-5 rounded-2xl font-black text-sm flex items-center justify-center gap-3 active:scale-95 transition-all">
-                            تخصيص وطلب التورتة 👑
+                        <button onclick="openProductDetails('${p.id}')" class="w-full bg-gray-900 text-white py-4 md:py-5 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transform active:scale-95 transition-all hover:bg-pink-600 shadow-lg shadow-gray-200">
+                            <span>تخصيص وطلب المنتج</span>
+                            <i data-lucide="arrow-left" class="w-4 h-4"></i>
                         </button>
                     </div>
                 </div>
-            `).join('')}
+            `}).join('')}
         </div>
     `;
     if (window.lucide) lucide.createIcons();
 }
-
-function applyGlobalUI() {
-    document.documentElement.style.setProperty('--brand-hue', "355"); // وردي بوسي الموحد
-    document.getElementById('dyn-brand-name').innerText = "حلويات بوسي";
-}
-
-window.onload = igniteEngine;
