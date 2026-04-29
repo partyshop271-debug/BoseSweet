@@ -81,20 +81,21 @@ function escapeHTML(str) {
     }[tag] || tag));
 }
 
+
 function generateUniqueID() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
 
 function showSystemToast(message, type = 'info') {
     const toast = document.getElementById('system-toast');
     const msgEl = document.getElementById('toast-message');
     const iconEl = document.getElementById('toast-icon');
-    if(!toast || !msgEl || !iconEl) return;
     
     msgEl.innerText = message;
     toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] flex items-center gap-3 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm max-w-[90vw] text-center border border-gray-700 toast-enter ${type === 'error' ? 'bg-red-900' : (type === 'success' ? 'bg-emerald-800' : 'bg-gray-900')}`;
     iconEl.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : (type === 'success' ? 'check-circle' : 'info'));
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
     setTimeout(() => { toast.classList.replace('flex', 'hidden'); toast.classList.remove('toast-enter'); }, 4000);
 }
+
 
 // Data Models
 const defaultSettings = {
@@ -124,23 +125,21 @@ const defaultSettings = {
             { label: 'صورة غير قابلة للأكل', price: 20 }
         ]
     }
-};
+}; // <-- تم إصلاح خطأ السكريبت هنا
 
 const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
-const defaultCatalog = [
-    { id: 1, category: 'جاتوهات', name: 'جاتوه ملكي', price: 638, badge: 'الأكثر مبيعاً 🔥', images: [], desc: 'طبقات من الكيك الإسفنجي الهش متدلعة بالكريمة الغنية والشوكولاتة البلجيكية الأصلية.. قطعة فنية لمناسباتك المهمة! 👑🍫' },
-    { id: 2, category: 'جاتوهات', name: 'جاتوه كلاسيك', price: 506, desc: 'الجاتوه الأصلي بطعم زمان وجودة "حلويات بوسي" اللي متعودين عليها.. خفة وطعم يرجّع أحلى الذكريات! 🍰✨' },
-    { id: 4, category: 'قشطوطة', name: 'نوتيلا وايت', price: 121, badge: 'جديد 🌟', desc: 'غرقانة في الحليب ومتغطية بسحابة من كريمة النوتيلا البيضاء الناعمة.. حتة دلع تصالح بيها مزاجك! 🤍🥛' },
-    { id: 14, category: 'بامبوليني', name: 'نوتيلا وايت', price: 88, desc: 'عجينة إيطالية هشة ومقلية صح، محشية لحد آخرها بكريمة النوتيلا البيضاء اللي بتبظ من كل ناحية! ☁️🤍' },
-    { id: 27, category: 'دوناتس', name: 'نوتيلا وايت', price: 88, desc: 'حلقة من السعادة الهشة، متغطية ومحشية بالنوتيلا البيضاء اللي بتدوب بمجرد ما تلمسها! 🍩🤍' },
-    { id: 40, category: 'ديسباسيتو', size: 'وسط', subType: 'وسط', name: 'نوتيلا دارك', price: 132, badge: 'خصم حصري 🏷️', desc: 'طاجن كيك غرقان ومسقي حليب صح، وعليه طبقة كثيفة من النوتيلا الغامقة.. السعادة في معلقة! 🍫🤤' },
-    { id: 62, category: 'سينابون', name: 'نوتيلا دارك', price: 121, desc: 'رول سينابون طري ودافي، ريحته قرفة تجنن، وغرقان بصوص النوتيلا الغامقة الكثيفة! 🤎✨' },
-    { id: 73, category: 'ريد فيلفت', name: 'مثلث كبير', subType: 'مثلث كبير', price: 72, desc: 'قطعة كيك مخملية بتدوب، مع طبقات كريمة الجبن الأصلية اللي بتوزن الطعم صح! ❤️🍰' },
-    { id: 76, category: 'كبات السعادة', name: 'نوتيلا', price: 61, desc: 'كب صغير بس سعادته كبيرة! طبقات كيك هشة وكريمة غنية متغطية بصوص النوتيلا السايح! 🍫😋' },
-    { id: 99, category: 'ميني تورتة', name: 'حجم (فرد - فردين)', price: 154, desc: 'تورتة صغيرة بتصميم كيوت وشيك جداً، مثالية لمفاجأة سريعة أو هدية رقيقة تفرح بيها حبايبك! 🎂💖' },
-    { id: 98, category: 'عروض وبوكسات', name: 'بوكس الروقان', price: 550, badge: 'عرض اليوم 🎁', desc: 'جمعنالك دلع الدنيا في بوكس! تورتة نص فانيليا/شوكولاتة + 2 كب سعادة + ديسباسيتو + ريد فيلفت.. روقان بجد! 🎁🎉' },
-    { id: 103, category: 'ورد', flowerType: 'ورد طبيعي', subType: 'ورد طبيعي', name: 'بوكيه طبيعي فريش', price: 0, desc: 'بوكيه ورد طبيعي طازة متنسق باحترافية وألوان تفتح النفس عشان تكمل بيك هديتك وتبهج اللي بتحبهم! 🌸🍃' }
-];
+
+let defaultCatalog = [];
+
+// محرك سحب البيانات الافتراضية
+async function fetchDefaultCatalog() {
+    try {
+        const response = await fetch('data.json');
+        defaultCatalog = await response.json();
+    } catch (error) {
+        console.error("تعذر تحميل الكتالوج الافتراضي:", error);
+    }
+}
 
 let siteSettings = { ...defaultSettings };
 let shippingZones = [ ...defaultShipping ];
@@ -151,74 +150,70 @@ let galleryData = [];
 let adminCurrentCat = 'all';
 let adminOrderFilter = 'all';
 
+// Tracking images for multi-upload modal
 let tempProdImages = []; 
-
+//         // --- بناء موتور الذاكرة المطور لعلامة حلويات بوسي ---
 async function loadEngineMemory() {
     try {
-        const setDoc = await db.collection('settings').doc('main').get();
-        if (setDoc.exists) siteSettings = { ...defaultSettings, ...setDoc.data() };
-        else await NetworkEngine.safeWrite('settings', 'main', siteSettings);
+        // 1. استدعاء المحرك المحلي لجلب البيانات والأسعار من ملف الجيسون
+        await fetchDefaultCatalog(); 
+        catalog = [...defaultCatalog];
 
-        const shipSnap = await db.collection('shipping').get();
-        if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); } 
-        else for (let z of shippingZones) await NetworkEngine.safeWrite('shipping', String(z.id), z); 
-
+        // 2. مزامنة السحابة (Firebase)
         const catSnap = await db.collection('catalog').get();
-        if (!catSnap.empty) { catalog = []; catSnap.forEach(doc => catalog.push(doc.data())); } 
-        else { catalog = [...defaultCatalog]; for (let p of catalog) await NetworkEngine.safeWrite('catalog', String(p.id), p); }
+        if (catSnap.empty) {
+            console.log("جاري رفع منيو حلويات بوسي المتطورة للسحابة... 🚀");
+            for (let p of catalog) {
+                await NetworkEngine.safeWrite('catalog', String(p.id), p);
+            }
+        } else {
+            catalog = [];
+            catSnap.forEach(doc => catalog.push(doc.data()));
+        }
+        
+        console.log("تم تفعيل المنيو الشاملة لـ BoseSweets بنجاح! 👑✨");
 
+        // 3. استكمال باقي البيانات (طلبات، معرض صور، إعدادات، مناطق شحن)
         const orderSnap = await db.collection('orders').orderBy('timestamp', 'desc').get();
         if (!orderSnap.empty) { globalOrders = []; orderSnap.forEach(doc => globalOrders.push(doc.data())); }
 
         const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
         if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
+        
+        const settingsSnap = await db.collection('settings').doc('main').get();
+        if (settingsSnap.exists) { siteSettings = { ...defaultSettings, ...settingsSnap.data() }; }
 
-        // المحرك الذكي
+        const shipSnap = await db.collection('shipping').get();
+        if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); }
+
+        // 4. ترتيب الأقسام والتأكد من وجود قسم "تورت" في المقدمة
         if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
             catMenu = siteSettings.catMenu;
         } else {
             catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
         }
-        
-        // 👑 درع الحماية: ضمان وجود قسم التورت دائماً في المقدمة
         if (!catMenu.includes('تورت')) {
             catMenu.unshift('تورت');
         }
 
         syncCatalogMap(); 
-        localStorage.setItem('bSweets_catalog', JSON.stringify(catalog));
-        localStorage.setItem('bSweets_settings', JSON.stringify(siteSettings));
-        localStorage.setItem('bSweets_shipping', JSON.stringify(shippingZones));
-        localStorage.setItem('boseSweets_admin_orders', JSON.stringify(globalOrders));
-        localStorage.setItem('bSweets_gallery', JSON.stringify(galleryData));
 
-    } catch (e) {
-        console.warn("تعذر الاتصال بالسحابة المركزية، يتم استرجاع البيانات من الخزنة المحلية 🛡️", e);
-        try {
-            const sCat = localStorage.getItem('bSweets_catalog'); catalog = sCat ? JSON.parse(sCat) : [...defaultCatalog];
-            const sSet = localStorage.getItem('bSweets_settings'); if (sSet) siteSettings = { ...defaultSettings, ...JSON.parse(sSet) };
-            const sShip = localStorage.getItem('bSweets_shipping'); if (sShip) shippingZones = JSON.parse(sShip);
-            const sOrd = localStorage.getItem('boseSweets_admin_orders'); if(sOrd) globalOrders = JSON.parse(sOrd);
-            const sGal = localStorage.getItem('bSweets_gallery'); if(sGal) galleryData = JSON.parse(sGal);
-            
-            if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
-                catMenu = siteSettings.catMenu;
-            } else {
-                catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
-            }
-            
-            if (!catMenu.includes('تورت')) {
-                catMenu.unshift('تورت');
-            }
-
-            syncCatalogMap(); 
-        } catch(err) { catalog = [...defaultCatalog]; syncCatalogMap(); }
+    } catch(err) { 
+        console.error("Cloud Error:", err);
+        catalog = [...defaultCatalog]; 
+        syncCatalogMap(); 
     }
-
-    try { const savedCart = localStorage.getItem('boseSweets_cart_data'); if (savedCart) state.cart = JSON.parse(savedCart); } catch (e) { state.cart = []; }
-}
+    // 5. استرجاع السلة لو العميل كان طالب حاجات ومقفلش الأوردر
+    try { 
+        const savedCart = localStorage.getItem('boseSweets_cart_data'); 
+        if (savedCart) state.cart = JSON.parse(savedCart); 
+    } catch (e) { 
+        state.cart = []; 
+    }
+} // <--- القوس ده هو مفتاح الحل اللي هيرجع الموتور للحياة 🚀
 
 async function saveEngineMemory(type) {
+
     try {
         if (type === 'cat' || type === 'all') localStorage.setItem('bSweets_catalog', JSON.stringify(catalog));
         if (type === 'set' || type === 'all') localStorage.setItem('bSweets_settings', JSON.stringify(siteSettings));
@@ -242,39 +237,36 @@ function applySettingsToUI() {
     root.style.setProperty('--site-bg', siteSettings.bgColor || '#ffffff');
     root.style.setProperty('--site-text', siteSettings.textColor || '#663b3b');
     
+    // Ticker Settings Application (Now perfectly synced with Brand Identity)
     const isTickerActive = siteSettings.tickerActive !== false; 
     const tickerContainer = document.getElementById('ticker-container');
-    if(tickerContainer) {
-        if (isTickerActive) {
-            tickerContainer.classList.remove('hidden');
-            tickerContainer.classList.add('flex');
-            root.style.setProperty('--ticker-color', siteSettings.tickerColor || '#ffffff');
-            root.style.setProperty('--ticker-font', siteSettings.tickerFont || "'Cairo', sans-serif");
-            root.style.setProperty('--ticker-speed', (siteSettings.tickerSpeed || 20) + 's');
-            const dynTickerText = document.getElementById('dyn-ticker-text');
-            if(dynTickerText) dynTickerText.innerText = siteSettings.tickerText || siteSettings.announcement;
-        } else {
-            tickerContainer.classList.add('hidden');
-            tickerContainer.classList.remove('flex');
-        }
+    if (isTickerActive) {
+        tickerContainer.classList.remove('hidden');
+        tickerContainer.classList.add('flex');
+        root.style.setProperty('--ticker-color', siteSettings.tickerColor || '#ffffff');
+        root.style.setProperty('--ticker-font', siteSettings.tickerFont || "'Cairo', sans-serif");
+        root.style.setProperty('--ticker-speed', (siteSettings.tickerSpeed || 20) + 's');
+        document.getElementById('dyn-ticker-text').innerText = siteSettings.tickerText || siteSettings.announcement;
+    } else {
+        tickerContainer.classList.add('hidden');
+        tickerContainer.classList.remove('flex');
     }
 
-    if(document.getElementById('dyn-page-title')) document.getElementById('dyn-page-title').innerText = `${siteSettings.brandName} | القائمة الرسمية`;
-    if(document.getElementById('dyn-brand-name')) document.getElementById('dyn-brand-name').innerText = siteSettings.brandName;
-    if(document.getElementById('dyn-hero-title')) document.getElementById('dyn-hero-title').innerHTML = siteSettings.heroTitle;
-    if(document.getElementById('dyn-hero-desc')) document.getElementById('dyn-hero-desc').innerText = siteSettings.heroDesc;
-    if(document.getElementById('dyn-footer-brand')) document.getElementById('dyn-footer-brand').innerText = siteSettings.brandName;
-    if(document.getElementById('dyn-footer-quote')) document.getElementById('dyn-footer-quote').innerText = siteSettings.footerQuote;
-    if(document.getElementById('dyn-footer-phone')) document.getElementById('dyn-footer-phone').innerText = siteSettings.footerPhone;
-    if(document.getElementById('dyn-footer-address')) document.getElementById('dyn-footer-address').innerHTML = siteSettings.footerAddress;
+    document.getElementById('dyn-page-title').innerText = `${siteSettings.brandName} | القائمة الرسمية`;
+    document.getElementById('dyn-brand-name').innerText = siteSettings.brandName;
+    document.getElementById('dyn-hero-title').innerHTML = siteSettings.heroTitle;
+    document.getElementById('dyn-hero-desc').innerText = siteSettings.heroDesc;
+    document.getElementById('dyn-footer-brand').innerText = siteSettings.brandName;
+    document.getElementById('dyn-footer-quote').innerText = siteSettings.footerQuote;
+    document.getElementById('dyn-footer-phone').innerText = siteSettings.footerPhone;
+    document.getElementById('dyn-footer-address').innerHTML = siteSettings.footerAddress;
 
     const areaSelect = document.getElementById('cust-area');
     if(areaSelect) areaSelect.innerHTML = `<option value="" disabled selected>اختر المنطقة...</option>` + shippingZones.map(z => `<option value="${z.id}">${escapeHTML(z.name)} (+${Number(z.fee)} ج.م توصيل)</option>`).join('');
     
     renderCustomerSidebarCategories();
 }
-
-let catMenu = []; 
+let catMenu = []; // ⚡ Engine Upgrade: Dynamic Category System
 
 const dSizes = ['مثلث', 'وسط', 'كبير'];
 const fTypes = ['ورد طبيعي', 'ورد صناعي', 'ورد ستان', 'ورد بالصور', 'ورد بالفلوس'];
@@ -286,6 +278,7 @@ let state = {
 
 async function initApp() {
     await loadEngineMemory();
+    await fetchDefaultCatalog();
     const loader = document.getElementById('global-loader');
     if(loader) { 
         loader.style.opacity = '0'; 
@@ -297,7 +290,7 @@ async function initApp() {
     renderCategories();
     renderMainDisplay();
     syncCartUI(); 
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
     PreloadEngine.ignite(catalog, galleryData);
     
     // CX Upgrade: Check Deep Link and handle smooth scroll and highlight
@@ -306,7 +299,7 @@ async function initApp() {
     if(sharedProductId) {
         const prod = catalogMap.get(sharedProductId);
         if(prod) {
-            setCategory(prod.category); 
+            setCategory(prod.category); // switch to that category first
             setTimeout(() => {
                 const el = document.getElementById('product-card-' + sharedProductId);
                 if(el) {
@@ -325,8 +318,6 @@ function toggleLiveSearch(show) {
     const input = document.getElementById('live-search-input');
     const results = document.getElementById('live-search-results');
     
-    if(!overlay || !input || !results) return;
-
     if (show) {
         overlay.classList.remove('hidden');
         setTimeout(() => { 
@@ -339,7 +330,7 @@ function toggleLiveSearch(show) {
                 <i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i>
                 <p>ابدأ البحث في قائمة حلويات بوسي...</p>
             </div>`;
-        if(window.lucide) lucide.createIcons();
+        lucide.createIcons();
     } else {
         overlay.classList.remove('opacity-100');
         setTimeout(() => overlay.classList.add('hidden'), 300);
@@ -348,7 +339,6 @@ function toggleLiveSearch(show) {
 
 function performLiveSearch(query) {
     const resultsContainer = document.getElementById('live-search-results');
-    if(!resultsContainer) return;
     const q = query.trim().toLowerCase();
     
     if (!q) {
@@ -357,7 +347,7 @@ function performLiveSearch(query) {
                 <i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i>
                 <p>ابدأ البحث في قائمة حلويات بوسي...</p>
             </div>`;
-        if(window.lucide) lucide.createIcons();
+        lucide.createIcons();
         return;
     }
     
@@ -374,7 +364,7 @@ function performLiveSearch(query) {
                 <p>لم نجد تطابق للبحث عن "${escapeHTML(query)}"</p>
                 <p class="text-xs opacity-70 mt-2">جرب البحث بكلمة مختلفة مثل "تورتة"، "نوتيلا"، "لوتس"</p>
             </div>`;
-        if(window.lucide) lucide.createIcons();
+        lucide.createIcons();
         return;
     }
     
@@ -400,9 +390,10 @@ function performLiveSearch(query) {
             </div>
         </div>`;
     }).join('');
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
 
+// CX Upgrade: Product Deep Share
 function shareProduct(id, name) {
     const url = window.location.origin + window.location.pathname + '?product=' + id;
     if (navigator.share) {
@@ -421,10 +412,10 @@ function shareProduct(id, name) {
     }
 }
 
+// Engine Upgrade: Customer Sidebar Menu Logic
 function toggleCustomerMenu(show) {
     const ov = document.getElementById('customer-menu-overlay');
     const sd = document.getElementById('customer-menu-sidebar');
-    if(!ov || !sd) return;
     if (show) {
         ov.classList.remove('hidden'); 
         setTimeout(() => { ov.classList.add('opacity-100'); sd.classList.remove('translate-x-full'); }, 10);
@@ -436,20 +427,18 @@ function toggleCustomerMenu(show) {
 
 function renderCustomerSidebarCategories() {
     const container = document.getElementById('sidebar-categories');
-    if(!container) return;
     container.innerHTML = catMenu.map(c => `
         <button onclick="toggleCustomerMenu(false); setCategory('${c}')" class="text-right w-full p-3 rounded-xl font-bold text-sm transition-all hover:bg-gray-50 flex items-center justify-between" style="border: 1px solid hsl(var(--brand-hue), 80%, 95%); color: var(--site-text);">
             <span>${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</span>
             <i data-lucide="chevron-left" class="w-4 h-4 opacity-50"></i>
         </button>
     `).join('');
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
 
 function renderCustomerGallery() {
     const sec = document.getElementById('gallery-customer-section');
     const slider = document.getElementById('gallery-slider');
-    if(!sec || !slider) return;
     if (galleryData.length === 0) { sec.classList.add('hidden'); return; }
     sec.classList.remove('hidden');
     slider.innerHTML = galleryData.map(g => `
@@ -463,19 +452,16 @@ function renderCustomerGallery() {
 
 function openLightbox(url) {
     const lb = document.getElementById('gallery-lightbox');
-    if(!lb) return;
     document.getElementById('lightbox-img').src = url;
-    lb.classList.remove('hidden'); lb.classList.add('flex'); if(window.lucide) lucide.createIcons();
+    lb.classList.remove('hidden'); lb.classList.add('flex'); lucide.createIcons();
 }
 function closeLightbox() {
     const lb = document.getElementById('gallery-lightbox');
-    if(!lb) return;
     lb.classList.add('hidden'); lb.classList.remove('flex');
 }
 
 function renderCategories() {
     const el = document.getElementById('categories-nav');
-    if(!el) return;
     el.innerHTML = catMenu.map(c => `
         <button id="cat-btn-${c.replace(/\s+/g, '-')}" onclick="setCategory('${c}')" class="whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-sm sm:text-base 
         ${state.activeCat === c ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'border-pink-100 hover:border-pink-300'}"
@@ -493,21 +479,16 @@ function setCategory(c) {
 function renderMainDisplay() {
     const container = document.getElementById('display-container');
     const subTabs = document.getElementById('sub-tabs-area');
-    if(!container) return;
-    
-    if(subTabs) {
-        subTabs.classList.add('hidden'); 
-    }
-    container.innerHTML = '';
+    subTabs.classList.add('hidden'); container.innerHTML = '';
 
     if (state.activeCat === 'تورت') { renderCakeBuilder(container); } 
     else {
-        if (state.activeCat === 'ديسباسيتو' && subTabs) {
+        if (state.activeCat === 'ديسباسيتو') {
             subTabs.classList.remove('hidden');
             subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
                 ${dSizes.map(s => `<button onclick="setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.dSize === s ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.dSize === s ? '' : 'color: var(--site-text);'}">${s}</button>`).join('')}
             </div>`;
-        } else if (state.activeCat === 'ورد' && subTabs) {
+        } else if (state.activeCat === 'ورد') {
             subTabs.classList.remove('hidden');
             subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
                 ${fTypes.map(f => `<button onclick="setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}
@@ -523,7 +504,7 @@ function renderMainDisplay() {
 
         container.innerHTML = `<div class="grid ${gridClass} gap-4 sm:gap-6 lg:gap-8 items-stretch">${list.map(p => drawProductCard(p, userLayout)).join('')}</div>`;
     }
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
 
 function drawProductCard(p, layoutMode = 'grid') {
@@ -537,7 +518,9 @@ function drawProductCard(p, layoutMode = 'grid') {
         colSpanClass = 'col-span-2 md:col-span-2 lg:col-span-2'; 
     }
 
-    const aspectClass = isFullWidth ? 'aspect-[4/3] w-full' : 'aspect-[4/3] sm:aspect-square w-full';
+    // 👑 التعديل الذكي الأول: هندسة أبعاد متغيرة (مربع للكارتين، ومستطيل للكارت الكبير)
+    const aspectClass = isFullWidth ? 'aspect-[4/3] w-full' : 'aspect-square w-full';
+    
     const titleClass = isFullWidth ? 'text-[16px] sm:text-lg' : 'text-[12px] sm:text-sm';
     const descClass = isFullWidth ? 'text-[13px] sm:text-sm line-clamp-none mt-2' : 'text-[11px] sm:text-xs line-clamp-none';
     const cardPadding = isFullWidth ? 'p-4 sm:p-5' : 'p-2.5 sm:p-4';
@@ -562,10 +545,10 @@ function drawProductCard(p, layoutMode = 'grid') {
                 
                 <div class="relative w-full h-full flex overflow-x-auto snap-slider hide-scrollbar ${isOutOfStock ? 'grayscale-overlay' : ''}">
                     ${imageList.map(url => `
-                        <img src="${url}" class="w-full h-full object-contain shrink-0 snap-slide transition-transform duration-700 ${isOutOfStock ? '' : 'group-hover:scale-105'}" loading="lazy">
+                        <img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 ${isOutOfStock ? '' : 'group-hover:scale-105'}" loading="lazy">
                     `).join('')}
                 </div>
-
+                
                 ${hasMultipleImages ? `
                     <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">
                         ${imageList.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-white opacity-100 w-3' : 'bg-white opacity-50'} shadow-sm transition-all"></div>`).join('')}
@@ -612,6 +595,7 @@ function drawProductCard(p, layoutMode = 'grid') {
     `;
 }
 
+
 function getImgFallback(cat) {
     const m = {
         'تورت': 'https://images.unsplash.com/photo-1535141192574-5d4897c12636?auto=format&fit=crop&w=800&q=80',
@@ -648,10 +632,11 @@ function renderCakeBuilder(target) {
     const minSq = settings.minSquare || 16;
     const minRect = settings.minRect || 20;
 
+    // التعديل الذكي المربع هنا مبني على نسبة 3/4 عشان يتطابق مع مقاس صورتك ويملا الشاشة
     let sliderHtml = `
-        <div class="w-full md:w-1/3 h-56 rounded-2xl overflow-hidden border-2 shadow-lg relative flex snap-slider hide-scrollbar" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
-            ${imagesList.map(url => `<img src="${url}" class="w-full h-full object-contain shrink-0 snap-slide">`).join('')}
-            ${imagesList.length > 1 ? `<div class="absolute bottom-2 w-full text-center z-10"><span class="bg-black/50 text-white text-[10px] px-2 py-1 rounded-full backdrop-blur-sm">مرر لمشاهدة ${imagesList.length} صور</span></div>` : ''}
+        <div class="w-full md:w-2/5 aspect-[3/4] md:aspect-square rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border-2 shadow-xl relative flex snap-slider hide-scrollbar bg-white group" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+            ${imagesList.map(url => `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 group-hover:scale-105">`).join('')}
+            ${imagesList.length > 1 ? `<div class="absolute bottom-3 w-full text-center z-10"><span class="bg-black/60 text-white text-[10px] px-3 py-1.5 rounded-full backdrop-blur-md font-bold tracking-wider border border-white/20 shadow-lg">مرر لمشاهدة ${imagesList.length} صور</span></div>` : ''}
         </div>`;
 
     target.innerHTML = `
@@ -765,7 +750,7 @@ function renderCakeBuilder(target) {
             </div>
         </div>
     `;
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
 
 function setSub(t, v) { if(t==='s') state.dSize=v; if(t==='f') state.fType=v; renderMainDisplay(); }
@@ -798,140 +783,96 @@ function setSh(s) {
     state.cakeBuilder.sh = s; renderMainDisplay();
 }
 
+
 function updateCardUI(id) {
     const safeId = String(id);
     const cardEl = document.getElementById(`product-card-${safeId}`);
     const prod = catalogMap.get(safeId); 
     const userLayout = siteSettings.productLayout || 'grid';
-    if (cardEl && prod) { cardEl.outerHTML = drawProductCard(prod, userLayout); if(window.lucide) lucide.createIcons(); }
+    if (cardEl && prod) { cardEl.outerHTML = drawProductCard(prod, userLayout); lucide.createIcons(); }
 }
-
 // ⚡ Engine Upgrade: Cross-Sell logic for BoseSweets
 function renderCartCrossSell() {
-    const cartIds = state.cart.map(i => String(i.id));
-    const cartCats = new Set(state.cart.map(i => i.category));
-    
-    let available = catalog.filter(p => !cartIds.includes(String(p.id)) && p.inStock !== false);
-    
-    if (available.length === 0) return '';
+// نقترح منتجات من قسم الورد لو السلة فيها تورتة، أو العكس
+const hasCake = state.cart.some(i => i.category === 'تورت' || i.isCustom);
+const hasFlowers = state.cart.some(i => i.category === 'ورد');
 
-    let suggestions = [];
-
-    if (cartCats.has('تورت') || state.cart.some(i => i.isCustom)) {
-        const flower = available.find(p => p.category === 'ورد');
-        if (flower) suggestions.push(flower);
-    }
-
-    const newExperiences = available.filter(p => !cartCats.has(p.category));
-    if (newExperiences.length > 0) {
-        const shuffled = newExperiences.sort(() => 0.5 - Math.random());
-        suggestions.push(...shuffled.slice(0, 2));
-    }
-
-    if (suggestions.length < 3) {
-        const remaining = available.filter(p => !suggestions.includes(p));
-        const extra = remaining.sort(() => 0.5 - Math.random()).slice(0, 3 - suggestions.length);
-        suggestions.push(...extra);
-    }
-
-    suggestions = [...new Set(suggestions)].slice(0, 3);
-
-    return `
-        <div class="mt-8 animate-fade-in border-t border-dashed border-pink-200 pt-6">
-            <p class="text-sm font-black text-gray-800 mb-4 flex items-center gap-2">
-                <i data-lucide="sparkles" class="w-4 h-4 text-pink-500"></i> كملي اللحظة الحلوة بمنتجات تليق بيكي
-            </p>
-            <div class="flex gap-4 overflow-x-auto pb-6 hide-scrollbar snap-slider">
-                ${suggestions.map(p => {
-                    const img = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category));
-                    return `
-                        <div class="shrink-0 w-[260px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col hover:shadow-md hover:border-pink-300 transition-all group">
-                            <div class="relative w-full h-36 mb-4 rounded-xl overflow-hidden border border-gray-50 bg-gray-50">
-                                <img src="${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
-                                ${p.badge ? `<span class="absolute top-2 right-2 bg-pink-500 text-white text-[10px] px-2 py-1 rounded-lg font-bold shadow-md">${p.badge}</span>` : ''}
-                            </div>
-                            
-                            <div class="flex-1 flex flex-col">
-                                <span class="text-[10px] font-bold text-pink-500 mb-1 tracking-wider bg-pink-50 self-start px-2 py-0.5 rounded-md">${escapeHTML(p.category)}</span>
-                                
-                                <h5 class="text-[14px] font-bold text-gray-800 mb-1 leading-tight">${escapeHTML(p.name)}</h5>
-                                
-                                <p class="text-[11px] text-gray-500 line-clamp-2 mb-4 font-bold opacity-90 leading-relaxed">${escapeHTML(p.desc || 'لمسة ساحرة من إبداعات حلويات بوسي تذوب في الفم.')}</p>
-                                
-                                <div class="flex items-center justify-between mt-auto">
-                                    <span class="text-[14px] text-pink-600 font-black">${p.price > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
-                                    <button onclick="addJS('${p.id}')" class="px-4 py-2 bg-white border border-pink-200 text-pink-500 rounded-xl flex items-center gap-1.5 hover:bg-pink-500 hover:text-white transition-all shadow-sm text-[11px] font-bold active:scale-95">
-                                        <i data-lucide="plus" class="w-3.5 h-3.5"></i> إضافة
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        </div>
-    `;
+let suggestion = null;
+if (hasCake && !hasFlowers) {
+suggestion = catalog.find(p => p.category === 'ورد' && p.inStock !== false);
+} else if (!hasCake) {
+suggestion = catalog.find(p => p.category === 'تورت' || p.category === 'ميني تورتة');
 }
 
+if (!suggestion) return '';
+
+return `
+<div class="mt-8 p-4 rounded-2xl border-2 border-dashed border-pink-200 bg-pink-50/30 animate-fade-in">
+    <p class="text-[11px] font-bold text-pink-500 mb-3 flex items-center gap-2">
+        <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> كملي اللحظة الحلوة.. قد يعجبك أيضاً:
+    </p>
+    <div class="flex items-center gap-3">
+        <img src="${suggestion.images?.[0] || suggestion.img || getImgFallback(suggestion.category)}" class="w-12 h-12 rounded-lg object-cover border shadow-sm">
+        <div class="flex-1">
+            <h5 class="text-xs font-bold text-gray-800">${suggestion.name}</h5>
+            <p class="text-[10px] text-pink-600 font-bold">${suggestion.price} ج.م</p>
+        </div>
+        <button onclick="addJS('${suggestion.id}')" class="bg-white text-pink-500 border border-pink-200 px-3 py-1.5 rounded-lg text-[10px] font-bold hover:bg-pink-500 hover:text-white transition-all shadow-sm">
+            إضافة للسلة
+        </button>
+    </div>
+</div>
+`;
+}
+
+// ⚡ Engine Upgrade: Enhanced Cart List Renderer
 function renderCartList() {
-    const container = document.getElementById('cart-list');
-    const crossSellArea = document.getElementById('cross-sell-area');
-    const totalDisplay = document.getElementById('cart-total-display');
-    const f = document.getElementById('step-1-cart');
-    
-    if (!container) return;
+const l = document.getElementById('cart-list');
+const f = document.getElementById('cart-checkout');
 
-    if (state.cart.length === 0) {
-        container.innerHTML = `
-            <div class="flex flex-col items-center justify-center py-12 px-4 text-center">
-                <div class="w-20 h-20 bg-pink-50 rounded-full flex items-center justify-center mb-4 border-2 border-pink-100 shadow-inner text-pink-300">
-                    <i data-lucide="shopping-bag" class="w-10 h-10"></i>
-                </div>
-                <h3 class="text-gray-800 font-bold mb-1 text-lg">سلة حلويات بوسي في انتظارك 🌸</h3>
-                <p class="text-gray-500 text-sm mb-6">دلع نفسك واختار أحلى الحلويات من القائمة</p>
-                <button onclick="toggleCart(false)" class="bg-pink-500 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-pink-200 active:scale-95 transition-all">يلا نتسوق</button>
+if (state.cart.length === 0) {
+l.innerHTML = `
+    <div class="h-full flex flex-col items-center justify-center opacity-50 mt-10">
+        <div class="w-24 h-24 bg-pink-50 rounded-full flex items-center justify-center mb-6 border-2 border-pink-100 shadow-inner">
+            <i data-lucide="shopping-cart" class="w-12 h-12 text-pink-300"></i>
+        </div>
+        <p class="text-xl font-bold text-gray-400">سلة حلويات بوسي في انتظارك</p>
+        <button onclick="toggleCart(false)" class="mt-6 px-6 py-2 bg-white border-2 border-pink-200 text-pink-500 rounded-xl font-bold hover:bg-pink-50 transition-colors">تصفح المنيو</button>
+    </div>`;
+f.classList.add('hidden');
+} else {
+l.innerHTML = state.cart.map(item => {
+    const identifier = item.cartItemId || item.id;
+    const q = Number(item.quantity); 
+    const p = Number(item.price);
+    const renderImg = (item.images && item.images.length > 0) ? item.images[0] : (item.img || getImgFallback(item.category));
+
+    return `
+        <div class="p-3 sm:p-4 rounded-2xl bg-white border border-pink-100 shadow-sm flex gap-4 relative mb-4">
+            <div class="w-20 h-20 shrink-0 rounded-xl overflow-hidden border bg-gray-50">
+                <img src="${renderImg}" class="w-full h-full object-cover">
             </div>
-        `;
-        if (crossSellArea) crossSellArea.innerHTML = '';
-        if (totalDisplay) totalDisplay.innerText = "0 ج.م";
-        if (window.lucide) lucide.createIcons();
-        return;
-    }
-
-    let total = 0;
-    container.innerHTML = state.cart.map(item => {
-        const identifier = item.cartItemId || item.id;
-        const q = Number(item.quantity);
-        const p = Number(item.price);
-        total += (p * q);
-        const renderImg = (item.images && item.images.length > 0) ? item.images[0] : (item.img || getImgFallback(item.category));
-
-        return `
-            <div class="group flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-2xl mb-3 hover:border-pink-200 transition-all shadow-sm">
-                <div class="w-16 h-16 bg-pink-50 rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-50">
-                    <img src="${renderImg}" class="w-full h-full object-cover">
-                </div>
-                <div class="flex-1 min-w-0 text-right">
-                    <h4 class="font-bold text-gray-800 text-[13px] line-clamp-1">${escapeHTML(item.name)}</h4>
-                    <p class="text-[11px] text-pink-500 font-bold mt-1">${p} ج.م</p>
-                </div>
-                <div class="flex flex-col items-end gap-2">
-                    <button onclick="modQ('${identifier}', -${q})" class="p-1 text-gray-300 hover:text-red-500 transition-colors">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border">
-                        <button onclick="modQ('${identifier}', -1)" class="w-5 h-5 flex items-center justify-center rounded text-pink-500 hover:bg-pink-200 transition-all"><i data-lucide="minus" class="w-3 h-3"></i></button>
-                        <span class="text-xs font-bold w-4 text-center">${q}</span>
-                        <button onclick="modQ('${identifier}', 1)" class="w-5 h-5 flex items-center justify-center rounded text-pink-500 hover:bg-pink-200 transition-all"><i data-lucide="plus" class="w-3 h-3"></i></button>
-                    </div>
+            <div class="flex-1">
+                <h4 class="font-bold text-sm text-gray-800">${item.name}</h4>
+                <p class="text-xs text-pink-600 font-bold mt-1">${p * q} ج.م</p>
+                <div class="flex items-center gap-3 mt-2">
+                    <button onclick="modQ('${identifier}', -1)" class="w-6 h-6 flex items-center justify-center border rounded-md text-pink-500 hover:bg-pink-500 hover:text-white transition-all"><i data-lucide="minus" class="w-3 h-3"></i></button>
+                    <span class="text-sm font-bold">${q}</span>
+                    <button onclick="modQ('${identifier}', 1)" class="w-6 h-6 flex items-center justify-center border rounded-md text-pink-500 hover:bg-pink-500 hover:text-white transition-all"><i data-lucide="plus" class="w-3 h-3"></i></button>
                 </div>
             </div>
-        `;
-    }).join('');
+            <button onclick="modQ('${identifier}', -${q})" class="absolute top-3 left-3 text-gray-300 hover:text-red-500 transition-colors">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+        </div>
+    `;
+}).join('');
 
-    if (totalDisplay) totalDisplay.innerText = total + " ج.م";
-    if (crossSellArea) crossSellArea.innerHTML = renderCartCrossSell();
-    if (window.lucide) lucide.createIcons();
+// ربط دالة الاقتراحات (Cross-Sell)
+l.innerHTML += renderCartCrossSell();
+f.classList.remove('hidden');
+}
+lucide.createIcons();
 }
 
 function addJS(id) {
@@ -987,15 +928,12 @@ function commitCakeBuilder() {
     showSystemToast('تم تسجيل التورتة في السلة بنجاح', 'success');
 }
 
+
 function toggleDeliveryMethod() {
-    const methodEl = document.querySelector('input[name="delivery_method"]:checked');
-    if(!methodEl) return;
-    const method = methodEl.value;
+    const method = document.querySelector('input[name="delivery_method"]:checked').value;
     const areaContainer = document.getElementById('delivery-area-container');
     const pickupInfo = document.getElementById('pickup-info');
     
-    if(!areaContainer || !pickupInfo) return;
-
     if (method === 'pickup') {
         areaContainer.classList.add('hidden');
         pickupInfo.classList.remove('hidden');
@@ -1022,100 +960,243 @@ function calculateCartTotal() {
     }
 
     state.currentShippingFee = shipFee;
-    const subtotalText = document.getElementById('cart-subtotal-text');
-    const shippingText = document.getElementById('cart-shipping-text');
-    const totalText = document.getElementById('cart-total-text');
-    
-    if(subtotalText) subtotalText.innerText = sub + ' ج.م';
-    if(shippingText) shippingText.innerText = (shipFee > 0 ? '+' + shipFee : '0') + ' ج.م';
-    if(totalText) totalText.innerText = (sub + shipFee) + ' ج.م';
+    document.getElementById('cart-subtotal-text').innerText = sub + ' ج.م';
+    document.getElementById('cart-shipping-text').innerText = (shipFee > 0 ? '+' + shipFee : '0') + ' ج.م';
+    document.getElementById('cart-total-text').innerText = (sub + shipFee) + ' ج.م';
 }
 
 function syncCartUI() {
     const b = document.getElementById('cart-count-badge');
-    if(!b) return;
     const totalCount = state.cart.reduce((s, i) => s + Number(i.quantity), 0);
     if (totalCount > 0) { 
         b.innerText = totalCount; b.classList.remove('hidden'); b.classList.add('scale-125');
         setTimeout(() => b.classList.remove('scale-125'), 200);
     } else { b.classList.add('hidden'); }
-    
-    const cartSidebar = document.getElementById('cart-sidebar');
-    if (cartSidebar && !cartSidebar.classList.contains('-translate-x-full')) renderCartList();
+    if (document.getElementById('cart-overlay').classList.contains('opacity-100')) renderCartList();
     calculateCartTotal();
 }
 
 // ⚡ Engine Upgrade: Customer Auto-Fill Memory
 function loadCustomerData() {
-    try {
-        const savedData = localStorage.getItem('boseSweets_customer_data');
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            
-            if (data.name) document.getElementById('cust-name').value = data.name;
-            if (data.phone) document.getElementById('cust-phone').value = data.phone;
-            
-            if (data.method) {
-                const methodRadio = document.querySelector(`input[name="delivery_method"][value="${data.method}"]`);
-                if (methodRadio) {
-                    methodRadio.checked = true;
-                    toggleDeliveryMethod();
-                }
-            }
-            
-            if (data.area && data.method === 'delivery') {
-                setTimeout(() => {
-                    const areaSelect = document.getElementById('cust-area');
-                    if (areaSelect) {
-                        areaSelect.value = data.area;
-                        calculateCartTotal();
-                    }
-                }, 200);
-            }
+try {
+const savedData = localStorage.getItem('boseSweets_customer_data');
+if (savedData) {
+    const data = JSON.parse(savedData);
+    
+    if (data.name) document.getElementById('cust-name').value = data.name;
+    if (data.phone) document.getElementById('cust-phone').value = data.phone;
+    
+    if (data.method) {
+        const methodRadio = document.querySelector(`input[name="delivery_method"][value="${data.method}"]`);
+        if (methodRadio) {
+            methodRadio.checked = true;
+            toggleDeliveryMethod();
         }
-    } catch (e) {
-        console.warn("No previous customer data found.");
     }
+    
+    if (data.area && data.method === 'delivery') {
+        setTimeout(() => {
+            const areaSelect = document.getElementById('cust-area');
+            if (areaSelect) {
+                areaSelect.value = data.area;
+                calculateCartTotal();
+            }
+        }, 200);
+    }
+}
+} catch (e) {
+console.warn("No previous customer data found.");
+}
+}
+
+// 🔄 محرك التنقل المطور لـ BoseSweets
+// التحديث الشامل لموتور السلة الموحد 
+
+function syncCartUI() {
+const b = document.getElementById('cart-count-badge')
+const totalCount = state.cart.reduce((s, i) => s + Number(i.quantity), 0)
+if (totalCount > 0) { 
+b.innerText = totalCount
+b.classList.remove('hidden')
+b.classList.add('scale-125')
+setTimeout(() => b.classList.remove('scale-125'), 200)
+} else { 
+b.classList.add('hidden') 
+}
+renderCartList()
+calculateCartTotal()
 }
 
 function toggleCart(show) {
-    const sd = document.getElementById('cart-sidebar');
-    if (!sd) return;
-    if (show) {
-        sd.classList.remove('-translate-x-full');
-        backToCart(); 
-        renderCartList(); 
-        document.body.style.overflow = 'hidden'; 
-    } else {
-        sd.classList.add('-translate-x-full');
-        document.body.style.overflow = 'auto'; 
-    }
+const sd = document.getElementById('cart-sidebar')
+if (!sd) return
+if (show) {
+sd.classList.remove('-translate-x-full')
+backToCart() 
+renderCartList() 
+document.body.style.overflow = 'hidden' 
+} else {
+sd.classList.add('-translate-x-full')
+document.body.style.overflow = 'auto' 
+}
 }
 
 function goToCheckout() {
-    const step1 = document.getElementById('step-1-cart');
-    const step2 = document.getElementById('step-2-checkout');
-    if(!step1 || !step2) return;
-
-    if (state.cart.length === 0) {
-        showSystemToast("المشتريات لسه فاضية يا سكر 🌸", "info");
-        return;
-    }
-
-    loadCustomerData(); 
-
-    step1.classList.add('hidden');
-    step2.classList.remove('hidden');
-    step2.scrollTop = 0; 
+const step1 = document.getElementById('step-1-cart')
+const step2 = document.getElementById('step-2-checkout')
+if (state.cart.length === 0) {
+showSystemToast("المشتريات لسه فاضية يا سكر 🌸", "info")
+return
 }
+
+// السطر السحري لاستدعاء بيانات العميل من الذاكرة 🧠
+loadCustomerData(); 
+
+step1.classList.add('hidden')
+step2.classList.remove('hidden')
+step2.scrollTop = 0 
+}
+
 
 function backToCart() {
-    const step1 = document.getElementById('step-1-cart');
-    const step2 = document.getElementById('step-2-checkout');
-    if(!step1 || !step2) return;
-    step2.classList.add('hidden');
-    step1.classList.remove('hidden');
+const step1 = document.getElementById('step-1-cart')
+const step2 = document.getElementById('step-2-checkout')
+step2.classList.add('hidden')
+step1.classList.remove('hidden')
 }
+// محرك الاقتراحات الذكي والمتجدد (النسخة الاحترافية الفاخرة) لـ حلويات بوسي 👑✨
+function renderCartCrossSell() {
+const cartIds = state.cart.map(i => String(i.id));
+const cartCats = new Set(state.cart.map(i => i.category));
+
+// 1. تصفية المنيو (استبعاد اللي في السلة + اللي خلصان من المخزن)
+let available = catalog.filter(p => !cartIds.includes(String(p.id)) && p.inStock !== false);
+
+if (available.length === 0) return '';
+
+let suggestions = [];
+
+// 2. منطق "ذكاء المكملات": لو السلة فيها تورتة.. الورد أولوية 💐
+if (cartCats.has('تورت') || state.cart.some(i => i.isCustom)) {
+const flower = available.find(p => p.category === 'ورد');
+if (flower) suggestions.push(flower);
+}
+
+// 3. منطق "الاكتشاف": بنعرض منتجات من أقسام العميل لسه ما اشتراش منها 🍰
+const newExperiences = available.filter(p => !cartCats.has(p.category));
+if (newExperiences.length > 0) {
+// خلط عشوائي عشان الاقتراحات تتغير في كل مرة "Renewable"
+const shuffled = newExperiences.sort(() => 0.5 - Math.random());
+suggestions.push(...shuffled.slice(0, 2));
+}
+
+// 4. لو لسه فيه مساحة، بنكمل من باقي المنيو بشكل عشوائي تماماً
+if (suggestions.length < 3) {
+const remaining = available.filter(p => !suggestions.includes(p));
+const extra = remaining.sort(() => 0.5 - Math.random()).slice(0, 3 - suggestions.length);
+suggestions.push(...extra);
+}
+
+// تأمين الحصول على منتجات فريدة بحد أقصى 3 كروت عرض
+suggestions = [...new Set(suggestions)].slice(0, 3);
+
+return `
+<div class="mt-8 animate-fade-in border-t border-dashed border-pink-200 pt-6">
+    <p class="text-sm font-black text-gray-800 mb-4 flex items-center gap-2">
+        <i data-lucide="sparkles" class="w-4 h-4 text-pink-500"></i> كملي اللحظة الحلوة بمنتجات تليق بيكي
+    </p>
+    <div class="flex gap-4 overflow-x-auto pb-6 hide-scrollbar snap-slider">
+        ${suggestions.map(p => {
+            const img = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category));
+            return `
+                <div class="shrink-0 w-[260px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col hover:shadow-md hover:border-pink-300 transition-all group">
+                    <div class="relative w-full h-36 mb-4 rounded-xl overflow-hidden border border-gray-50 bg-gray-50">
+                        <img src="${img}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                        ${p.badge ? `<span class="absolute top-2 right-2 bg-pink-500 text-white text-[10px] px-2 py-1 rounded-lg font-bold shadow-md">${p.badge}</span>` : ''}
+                    </div>
+                    
+                    <div class="flex-1 flex flex-col">
+                        <span class="text-[10px] font-bold text-pink-500 mb-1 tracking-wider bg-pink-50 self-start px-2 py-0.5 rounded-md">${escapeHTML(p.category)}</span>
+                        
+                        <h5 class="text-[14px] font-bold text-gray-800 mb-1 leading-tight">${escapeHTML(p.name)}</h5>
+                        
+                        <p class="text-[11px] text-gray-500 line-clamp-2 mb-4 font-bold opacity-90 leading-relaxed">${escapeHTML(p.desc || 'لمسة ساحرة من إبداعات حلويات بوسي تذوب في الفم.')}</p>
+                        
+                        <div class="flex items-center justify-between mt-auto">
+                            <span class="text-[14px] text-pink-600 font-black">${p.price > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
+                            <button onclick="addJS('${p.id}')" class="px-4 py-2 bg-white border border-pink-200 text-pink-500 rounded-xl flex items-center gap-1.5 hover:bg-pink-500 hover:text-white transition-all shadow-sm text-[11px] font-bold active:scale-95">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> إضافة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('')}
+    </div>
+</div>
+`;
+}
+
+function renderCartList() {
+const container = document.getElementById('cart-list')
+const crossSellArea = document.getElementById('cross-sell-area')
+const totalDisplay = document.getElementById('cart-total-display')
+
+if (!container) return
+
+if (state.cart.length === 0) {
+container.innerHTML = `
+    <div class="flex flex-col items-center justify-center py-12 px-4 text-center">
+        <div class="w-20 h-20 bg-pink-50 rounded-full flex items-center justify-center mb-4 border-2 border-pink-100 shadow-inner text-pink-300">
+            <i data-lucide="shopping-bag" class="w-10 h-10"></i>
+        </div>
+        <h3 class="text-gray-800 font-bold mb-1 text-lg">سلة حلويات بوسي في انتظارك 🌸</h3>
+        <p class="text-gray-500 text-sm mb-6">دلع نفسك واختار أحلى الحلويات من القائمة</p>
+        <button onclick="toggleCart(false)" class="bg-pink-500 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-pink-200 active:scale-95 transition-all">يلا نتسوق</button>
+    </div>
+`
+if (crossSellArea) crossSellArea.innerHTML = ''
+if (totalDisplay) totalDisplay.innerText = "0 ج.م"
+if (window.lucide) lucide.createIcons()
+return
+}
+
+let total = 0
+container.innerHTML = state.cart.map(item => {
+const identifier = item.cartItemId || item.id
+const q = Number(item.quantity)
+const p = Number(item.price)
+total += (p * q)
+const renderImg = (item.images && item.images.length > 0) ? item.images[0] : (item.img || getImgFallback(item.category))
+
+return `
+    <div class="group flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-2xl mb-3 hover:border-pink-200 transition-all shadow-sm">
+        <div class="w-16 h-16 bg-pink-50 rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-50">
+            <img src="${renderImg}" class="w-full h-full object-cover">
+        </div>
+        <div class="flex-1 min-w-0 text-right">
+            <h4 class="font-bold text-gray-800 text-[13px] line-clamp-1">${escapeHTML(item.name)}</h4>
+            <p class="text-[11px] text-pink-500 font-bold mt-1">${p} ج.م</p>
+        </div>
+        <div class="flex flex-col items-end gap-2">
+            <button onclick="modQ('${identifier}', -${q})" class="p-1 text-gray-300 hover:text-red-500 transition-colors">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+            <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border">
+                <button onclick="modQ('${identifier}', -1)" class="w-5 h-5 flex items-center justify-center rounded text-pink-500 hover:bg-pink-200 transition-all"><i data-lucide="minus" class="w-3 h-3"></i></button>
+                <span class="text-xs font-bold w-4 text-center">${q}</span>
+                <button onclick="modQ('${identifier}', 1)" class="w-5 h-5 flex items-center justify-center rounded text-pink-500 hover:bg-pink-200 transition-all"><i data-lucide="plus" class="w-3 h-3"></i></button>
+            </div>
+        </div>
+    </div>
+`
+}).join('')
+
+if (totalDisplay) totalDisplay.innerText = total + " ج.م"
+if (crossSellArea) crossSellArea.innerHTML = renderCartCrossSell()
+if (window.lucide) lucide.createIcons()
+}
+
 
 async function submitOrder() {
     if (state.cart.length === 0) return;
@@ -1127,16 +1208,19 @@ async function submitOrder() {
     const cPhone = document.getElementById('cust-phone').value.trim();
     const cAreaId = document.getElementById('cust-area').value;
     
+    // جلب قيمة العنوان الجديد والملاحظات
     const addressEl = document.getElementById('cust-address');
     const cAddress = addressEl ? addressEl.value.trim() : '';
     const notesEl = document.getElementById('cust-notes');
     const cNotes = notesEl ? notesEl.value.trim() : '';
 
+    // درع الحماية: التأكد من البيانات الأساسية
     if (!cName || !cPhone || !cDate || !cTime) { 
         showSystemToast('يرجى استكمال البيانات الأساسية (التاريخ، الوقت، الاسم، والموبايل).', 'error'); 
         return; 
     }
     
+    // إجبار العميل على كتابة العنوان لو اختار توصيل بالرسالة المبسطة
     if (deliveryMethod === 'delivery') {
         if (!cAreaId) { showSystemToast('يرجى تحديد منطقة التوصيل.', 'error'); return; }
         if (!cAddress) { showSystemToast('يرجى كتابة العنوان لضمان وصول الأوردر 🛵', 'error'); return; }
@@ -1157,17 +1241,18 @@ async function submitOrder() {
     const orderId = 'BS-' + Math.floor(10000 + Math.random() * 90000);
     let sub = 0; let itemsDesc = [];
 
+    // بناء الرسالة: العنوان سيظهر الآن باسم "العنوان" وليس ملاحظات
     let m = `*طلب جديد من حلويات بوسي* 🧁\n*رقم الطلب:* ${orderId}\nــــــــــــــــــــــــــــــــــــــــ\n\n`;
     m += `👤 الاسم: ${cName}\n📞 الموبايل: ${cPhone}\n`;
     m += `🚚 الاستلام: ${deliveryMethod === 'pickup' ? 'استلام من الفرع 🏪' : 'توصيل للمنزل 🛵'}\n`;
     
     if (deliveryMethod === 'delivery') {
         m += `📍 المنطقة: ${areaName}\n`;
-        m += `🏠 العنوان: ${cAddress}\n`;
+        m += `🏠 العنوان: ${cAddress}\n`; // العنوان يظهر هنا بشكل مستقل
     }
     
     m += `⏰ الموعد: ${formattedDate} - ${formattedTime}\n`;
-    if (cNotes) m += `📝 ملاحظات: ${cNotes}\n`; 
+    if (cNotes) m += `📝 ملاحظات: ${cNotes}\n`; // الملاحظات تظهر هنا بشكل مستقل
     m += `ــــــــــــــــــــــــــــــــــــــــ\n\n*الطلبات:*\n`;
 
     state.cart.forEach((i, idx) => {
@@ -1180,9 +1265,10 @@ async function submitOrder() {
 
     m += `\nــــــــــــــــــــــــــــــــــــــــ\n*الحساب:* ${sub + state.currentShippingFee} ج.م\n`;
 
+    // حفظ الطلب سحابياً مع فصل العنوان عن الملاحظات
     const orderObj = { 
         id: orderId, timestamp: Date.now(), date: formattedDate, name: cName, phone: cPhone, 
-        area: areaName, address: cAddress, notes: cNotes, total: (sub + state.currentShippingFee), status: 'pending', items: itemsDesc.join(', ')
+        area: areaName, address: cAddress, notes: cNotes, total: (sub + state.currentShippingFee), status: 'pending' 
     };
 
     try {
@@ -1193,6 +1279,7 @@ async function submitOrder() {
     window.open(`https://wa.me/201097238441?text=${encodeURIComponent(m)}`, '_blank');
     state.cart = []; clearCartStorage(); syncCartUI(); toggleCart(false); renderMainDisplay();
     
+    // تفريغ الخانات بعد نجاح الطلب عشان السلة ترجع جديدة
     document.getElementById('cust-date').value = ''; 
     document.getElementById('cust-time').value = '';
     if (addressEl) addressEl.value = '';
@@ -1200,6 +1287,7 @@ async function submitOrder() {
     
     showSystemToast('تم إرسال طلبك بنجاح! 🎂', 'success');
 }
+
 
 // 🛡️ Engine Upgrade: Advanced Security & Hashing Engine
 async function hashPassword(password) {
@@ -1209,10 +1297,12 @@ async function hashPassword(password) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+// شفرة الباسورد الافتراضية 2026
 const DEFAULT_ADMIN_HASH = "e4125b7405be53da470ec0865e8aebfcb03b223403ba78028f24419cb7ed490c";
 
 let secretTaps = 0; let tapTimer = null;
 function handleSecretTap() {
+
     secretTaps++; clearTimeout(tapTimer);
     if (secretTaps >= 5) { secretTaps = 0; openAdminDashboard(); } else { tapTimer = setTimeout(() => { secretTaps = 0; }, 2000); }
 }
@@ -1221,7 +1311,6 @@ let currentEditId = null;
 
 function toggleAdminSidebar() {
     const sb = document.getElementById('admin-sidebar'); const ov = document.getElementById('admin-sidebar-overlay');
-    if(!sb || !ov) return;
     if(sb.classList.contains('translate-x-full')) { sb.classList.remove('translate-x-full'); ov.classList.remove('hidden'); } 
     else { sb.classList.add('translate-x-full'); ov.classList.add('hidden'); }
 }
@@ -1234,10 +1323,11 @@ async function openAdminDashboard() {
         const hashedInput = await hashPassword(pwd);
         let isMatch = false;
 
+        // 🛡️ التوافق الذكي: التحقق من الباسورد لو لسه ماتشفرتش في السحابة
         if (siteSettings.adminPasswordHash) {
             isMatch = (hashedInput === siteSettings.adminPasswordHash);
         } else if (siteSettings.adminPassword) {
-            isMatch = (pwd === siteSettings.adminPassword); 
+            isMatch = (pwd === siteSettings.adminPassword); // لو الباسورد القديمة موجودة وماتشفرتش
         } else {
             isMatch = (hashedInput === DEFAULT_ADMIN_HASH);
         }
@@ -1249,10 +1339,8 @@ async function openAdminDashboard() {
             renderAdminOrderFilters(); 
             renderAdminCategories();
             renderAdminOverview(); renderAdminOrders(); renderAdminMenu(); renderAdminShipping(); renderAdminGallery(); fillAdminSettingsForm();
-            if(document.getElementById('sec-current-pwd')) document.getElementById('sec-current-pwd').value = ''; 
-            if(document.getElementById('sec-new-pwd')) document.getElementById('sec-new-pwd').value = ''; 
-            if(document.getElementById('sec-confirm-pwd')) document.getElementById('sec-confirm-pwd').value = '';
-            if(window.lucide) lucide.createIcons();
+            document.getElementById('sec-current-pwd').value = ''; document.getElementById('sec-new-pwd').value = ''; document.getElementById('sec-confirm-pwd').value = '';
+            lucide.createIcons();
         } else { 
             showSystemToast("رمز المرور غير صحيح.. المحاولة مسجلة 🛡️", "error"); 
         }
@@ -1267,23 +1355,15 @@ async function openAdminDashboard() {
 }
 
 function closeAdminDashboard() {
-    const dash = document.getElementById('admin-dashboard');
-    if(dash) {
-        dash.classList.add('hidden'); dash.classList.remove('flex');
-    }
+    document.getElementById('admin-dashboard').classList.add('hidden'); document.getElementById('admin-dashboard').classList.remove('flex');
     initApp(); 
 }
 
 function switchAdminTab(tabId) {
     document.querySelectorAll('.admin-tab-content').forEach(el => { el.classList.add('hidden'); el.classList.remove('block'); });
     document.querySelectorAll('.admin-tab-btn').forEach(btn => { btn.classList.remove('bg-pink-500', 'text-white'); btn.classList.add('text-gray-400'); });
-    const targetTab = document.getElementById(`admin-${tabId}`);
-    if(targetTab) {
-        targetTab.classList.remove('hidden'); targetTab.classList.add('block');
-    }
-    if(event && event.currentTarget) {
-        event.currentTarget.classList.add('bg-pink-500', 'text-white'); event.currentTarget.classList.remove('text-gray-400');
-    }
+    document.getElementById(`admin-${tabId}`).classList.remove('hidden'); document.getElementById(`admin-${tabId}`).classList.add('block');
+    event.currentTarget.classList.add('bg-pink-500', 'text-white'); event.currentTarget.classList.remove('text-gray-400');
     if(window.innerWidth < 768) { toggleAdminSidebar(); }
 }
 
@@ -1304,17 +1384,29 @@ function importBackupJSON(e) {
     reader.onload = async function(ev) {
         try {
             const data = JSON.parse(ev.target.result);
-            if(data.settings) await NetworkEngine.safeWrite('settings', 'main', data.settings); 
-            if(data.shipping) for (let z of data.shipping) await NetworkEngine.safeWrite('shipping', String(z.id), z); 
-            if(data.catalog) for (let p of data.catalog) await NetworkEngine.safeWrite('catalog', String(p.id), p); 
-            if(data.orders) for (let o of data.orders) await NetworkEngine.safeWrite('orders', String(o.id), o); 
-            if(data.gallery) for (let g of data.gallery) await NetworkEngine.safeWrite('gallery', String(g.id), g);
-            showSystemToast("تم استرجاع البيانات للسحابة! جاري إعادة تشغيل النظام...", "success");
+
+            // ⚡ Engine Upgrade: Smart Import Logic for BoseSweets
+            if (Array.isArray(data)) {
+                for (let p of data) {
+                    await NetworkEngine.safeWrite('catalog', String(p.id), p);
+                }
+            } else {
+                if(data.settings) await NetworkEngine.safeWrite('settings', 'main', data.settings); 
+                if(data.shipping) for (let z of data.shipping) await NetworkEngine.safeWrite('shipping', String(z.id), z); 
+                if(data.catalog) for (let p of data.catalog) await NetworkEngine.safeWrite('catalog', String(p.id), p); 
+                if(data.orders) for (let o of data.orders) await NetworkEngine.safeWrite('orders', String(o.id), o); 
+                if(data.gallery) for (let g of data.gallery) await NetworkEngine.safeWrite('gallery', String(g.id), g);
+            }
+
+            showSystemToast("تم استرجاع بيانات حلويات بوسي للسحابة بنجاح! جاري إعادة تشغيل النظام...", "success");
             setTimeout(() => location.reload(), 2000);
-        } catch(err) { showSystemToast("ملف JSON غير صالح أو تعذر الاتصال!", "error"); }
+        } catch(err) { 
+            showSystemToast("ملف JSON غير صالح أو تعذر الاتصال بالسحابة!", "error"); 
+        }
     };
     reader.readAsText(file);
 }
+
 
 function copyBackupText() {
     try {
@@ -1324,6 +1416,7 @@ function copyBackupText() {
     } catch (e) { showSystemToast("فشل النسخ", "error"); }
 }
 
+// 🎨 Engine Upgrade: Live Preview Function including Ticker
 function updateLiveThemePreview() {
     const brandColor = document.getElementById('set-brand-color').value;
     const bgColor = document.getElementById('set-bg-color').value;
@@ -1332,6 +1425,7 @@ function updateLiveThemePreview() {
     const fontSize = document.getElementById('set-font-size').value + 'px';
     const fontWeight = document.getElementById('set-font-weight').value;
     
+    // Ticker live update (Integrated Gradient)
     const isTickerActive = document.getElementById('set-ticker-active').checked;
     const tickerText = document.getElementById('set-ticker-text').value || "حلويات بوسي: تجربة التذوق الفاخرة...";
     const tickerSpeed = document.getElementById('set-ticker-speed').value + 's';
@@ -1344,7 +1438,7 @@ function updateLiveThemePreview() {
     if(isTickerActive) {
         previewTickerWrap.style.display = 'flex';
         previewTickerWrap.style.background = `linear-gradient(135deg, hsl(${calculatedHue}, 80%, 65%) 0%, hsl(${calculatedHue}, 85%, 75%) 50%, hsl(${calculatedHue}, 90%, 85%) 100%)`;
-        previewTickerText.style.color = '#ffffff'; 
+        previewTickerText.style.color = '#ffffff'; // Always white for gradient readability
         previewTickerText.style.fontFamily = tickerFont;
         previewTickerText.style.animationDuration = tickerSpeed;
         previewTickerText.innerText = tickerText;
@@ -1367,26 +1461,33 @@ function updateLiveThemePreview() {
 function syncColorInput(inputId, textId) {
     const colorInput = document.getElementById(inputId);
     const textInput = document.getElementById(textId);
-    if(!colorInput || !textInput) return;
     
+    // فك الحماية لتمكين الكتابة
     textInput.removeAttribute('readonly');
 
+    // من مربع اللون للنص
     colorInput.addEventListener('input', (e) => {
         textInput.value = e.target.value.toUpperCase();
         updateLiveThemePreview();
     });
 
+    // ⚡ تحديث الموتور الذكي: يقبل الكود حتى لو فيه مسافات أو بدون علامة #
     textInput.addEventListener('input', (e) => {
         let val = e.target.value.trim(); 
+        
+        // وضع علامة الشباك أوتوماتيكياً لو نسيها المستخدم
         if (val.length > 0 && !val.startsWith('#')) {
             val = '#' + val;
         }
+        
+        // لو الكود سليم يتم تطبيقه فوراً
         if(/^#[0-9A-Fa-f]{6}$/i.test(val)) {
             colorInput.value = val;
             updateLiveThemePreview();
         }
     });
 
+    // تأكيد أخير عند الخروج من المربع لضمان صحة الكود
     textInput.addEventListener('blur', (e) => {
         let val = e.target.value.trim();
         if (val.length > 0 && !val.startsWith('#')) val = '#' + val;
@@ -1400,52 +1501,57 @@ function syncColorInput(inputId, textId) {
     });
 }
 
+
 function fillAdminSettingsForm() {
-    if(document.getElementById('set-brand')) document.getElementById('set-brand').value = siteSettings.brandName; 
-    if(document.getElementById('set-announcement')) document.getElementById('set-announcement').value = siteSettings.announcement;
-    if(document.getElementById('set-hero-title')) document.getElementById('set-hero-title').value = siteSettings.heroTitle; 
-    if(document.getElementById('set-hero-desc')) document.getElementById('set-hero-desc').value = siteSettings.heroDesc;
-    if(document.getElementById('set-footer-phone')) document.getElementById('set-footer-phone').value = siteSettings.footerPhone; 
-    if(document.getElementById('set-footer-address')) document.getElementById('set-footer-address').value = siteSettings.footerAddress.replace(/<br>/g, '');
-    if(document.getElementById('set-footer-quote')) document.getElementById('set-footer-quote').value = siteSettings.footerQuote; 
+    // Data Tab
+    document.getElementById('set-brand').value = siteSettings.brandName; 
+    document.getElementById('set-announcement').value = siteSettings.announcement;
+    document.getElementById('set-hero-title').value = siteSettings.heroTitle; 
+    document.getElementById('set-hero-desc').value = siteSettings.heroDesc;
+    document.getElementById('set-footer-phone').value = siteSettings.footerPhone; 
+    document.getElementById('set-footer-address').value = siteSettings.footerAddress.replace(/<br>/g, '');
+    document.getElementById('set-footer-quote').value = siteSettings.footerQuote; 
     
     const layout = siteSettings.productLayout || 'grid';
-    if(layout === 'full' && document.getElementById('set-layout-full')) document.getElementById('set-layout-full').checked = true; 
-    else if (document.getElementById('set-layout-grid')) document.getElementById('set-layout-grid').checked = true;
+    if(layout === 'full') document.getElementById('set-layout-full').checked = true; else document.getElementById('set-layout-grid').checked = true;
 
-    if(document.getElementById('set-brand-color')) document.getElementById('set-brand-color').value = siteSettings.brandColorHex || '#ec4899';
-    if(document.getElementById('set-brand-color-text')) document.getElementById('set-brand-color-text').value = (siteSettings.brandColorHex || '#ec4899').toUpperCase();
+    // Theme Tab
+    document.getElementById('set-brand-color').value = siteSettings.brandColorHex || '#ec4899';
+    document.getElementById('set-brand-color-text').value = (siteSettings.brandColorHex || '#ec4899').toUpperCase();
     
-    if(document.getElementById('set-bg-color')) document.getElementById('set-bg-color').value = siteSettings.bgColor || '#ffffff';
-    if(document.getElementById('set-bg-color-text')) document.getElementById('set-bg-color-text').value = (siteSettings.bgColor || '#ffffff').toUpperCase();
+    document.getElementById('set-bg-color').value = siteSettings.bgColor || '#ffffff';
+    document.getElementById('set-bg-color-text').value = (siteSettings.bgColor || '#ffffff').toUpperCase();
     
-    if(document.getElementById('set-text-color')) document.getElementById('set-text-color').value = siteSettings.textColor || '#663b3b';
-    if(document.getElementById('set-text-color-text')) document.getElementById('set-text-color-text').value = (siteSettings.textColor || '#663b3b').toUpperCase();
+    document.getElementById('set-text-color').value = siteSettings.textColor || '#663b3b';
+    document.getElementById('set-text-color-text').value = (siteSettings.textColor || '#663b3b').toUpperCase();
     
-    if(document.getElementById('set-font')) document.getElementById('set-font').value = siteSettings.fontFamily || "'Cairo', sans-serif";
-    if(document.getElementById('set-font-size')) document.getElementById('set-font-size').value = siteSettings.baseFontSize || 16;
-    if(document.getElementById('font-size-val')) document.getElementById('font-size-val').innerText = (siteSettings.baseFontSize || 16) + 'px';
-    if(document.getElementById('set-font-weight')) document.getElementById('set-font-weight').value = siteSettings.baseFontWeight || 400;
+    document.getElementById('set-font').value = siteSettings.fontFamily || "'Cairo', sans-serif";
+    document.getElementById('set-font-size').value = siteSettings.baseFontSize || 16;
+    document.getElementById('font-size-val').innerText = (siteSettings.baseFontSize || 16) + 'px';
+    document.getElementById('set-font-weight').value = siteSettings.baseFontWeight || 400;
     
-    if(document.getElementById('set-ticker-active')) document.getElementById('set-ticker-active').checked = siteSettings.tickerActive !== false;
-    if(document.getElementById('set-ticker-text')) document.getElementById('set-ticker-text').value = siteSettings.tickerText || siteSettings.announcement;
-    if(document.getElementById('set-ticker-speed')) document.getElementById('set-ticker-speed').value = siteSettings.tickerSpeed || 20;
-    if(document.getElementById('ticker-speed-val')) document.getElementById('ticker-speed-val').innerText = (siteSettings.tickerSpeed || 20) + 's';
-    if(document.getElementById('set-ticker-font')) document.getElementById('set-ticker-font').value = siteSettings.tickerFont || "'Cairo', sans-serif";
+    // Ticker Tab
+    document.getElementById('set-ticker-active').checked = siteSettings.tickerActive !== false;
+    document.getElementById('set-ticker-text').value = siteSettings.tickerText || siteSettings.announcement;
+    document.getElementById('set-ticker-speed').value = siteSettings.tickerSpeed || 20;
+    document.getElementById('ticker-speed-val').innerText = (siteSettings.tickerSpeed || 20) + 's';
+    document.getElementById('set-ticker-font').value = siteSettings.tickerFont || "'Cairo', sans-serif";
 
     syncColorInput('set-brand-color', 'set-brand-color-text');
     syncColorInput('set-bg-color', 'set-bg-color-text');
     syncColorInput('set-text-color', 'set-text-color-text');
     
-    if(document.getElementById('set-font-weight')) {
-        document.getElementById('set-font-weight').addEventListener('change', updateLiveThemePreview);
-    }
-    
-    fillCakeBuilderAdmin();
-    updateLiveThemePreview();
+document.getElementById('set-font-weight').addEventListener('change', updateLiveThemePreview);
+
+// === تشغيل وربط قسم التورت الملكية ===
+fillCakeBuilderAdmin();
+
+updateLiveThemePreview();
 }
 
+
 async function saveStoreSettings() {
+    // Identity Data
     siteSettings.brandName = document.getElementById('set-brand').value; 
     siteSettings.announcement = document.getElementById('set-announcement').value;
     siteSettings.heroTitle = document.getElementById('set-hero-title').value; 
@@ -1455,6 +1561,7 @@ async function saveStoreSettings() {
     siteSettings.footerQuote = document.getElementById('set-footer-quote').value; 
     siteSettings.productLayout = document.getElementById('set-layout-full').checked ? 'full' : 'grid';
 
+    // Theme Data
     siteSettings.brandColorHex = document.getElementById('set-brand-color').value;
     siteSettings.bgColor = document.getElementById('set-bg-color').value;
     siteSettings.textColor = document.getElementById('set-text-color').value;
@@ -1462,11 +1569,12 @@ async function saveStoreSettings() {
     siteSettings.baseFontSize = parseInt(document.getElementById('set-font-size').value);
     siteSettings.baseFontWeight = parseInt(document.getElementById('set-font-weight').value);
     
+    // Ticker Data (Background color is now tied to Brand Gradient in CSS)
     siteSettings.tickerActive = document.getElementById('set-ticker-active').checked;
     siteSettings.tickerText = document.getElementById('set-ticker-text').value;
     siteSettings.tickerSpeed = parseInt(document.getElementById('set-ticker-speed').value);
     siteSettings.tickerFont = document.getElementById('set-ticker-font').value;
-    siteSettings.tickerColor = "#ffffff"; 
+    siteSettings.tickerColor = "#ffffff"; // Always white for gradient readability
 
     try {
         await NetworkEngine.safeWrite('settings', 'main', siteSettings); saveEngineMemory('set'); 
@@ -1499,7 +1607,7 @@ async function changeAdminPassword() {
         if (newPwd.length < 4) { showSystemToast("يجب أن يكون 4 أحرف أو أرقام على الأقل", "error"); return; }
         
         siteSettings.adminPasswordHash = await hashPassword(newPwd);
-        if(siteSettings.adminPassword) delete siteSettings.adminPassword; 
+        if(siteSettings.adminPassword) delete siteSettings.adminPassword; // تنظيف الباسورد القديمة
         
         await NetworkEngine.safeWrite('settings', 'main', siteSettings); 
         saveEngineMemory('set'); 
@@ -1511,17 +1619,16 @@ async function changeAdminPassword() {
     }
 }
 
+
 function renderAdminShipping() {
-    const tbody = document.getElementById('admin-shipping-tbody');
-    if(!tbody) return;
-    tbody.innerHTML = shippingZones.map(z => `
+    document.getElementById('admin-shipping-tbody').innerHTML = shippingZones.map(z => `
         <tr class="hover:bg-gray-800 border-b border-gray-700 transition-colors">
             <td class="p-4 font-bold text-gray-200 whitespace-nowrap">${escapeHTML(z.name)}</td>
             <td class="p-4 font-bold text-emerald-400 whitespace-nowrap">${z.fee}</td>
             <td class="p-4 text-center whitespace-nowrap"><button onclick="deleteShippingZone('${z.id}')" class="text-red-400 hover:text-white p-2 bg-gray-700 hover:bg-red-600 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
         </tr>
     `).join('');
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
 
 function openAddShippingModal() { document.getElementById('ship-area-name').value = ''; document.getElementById('ship-area-fee').value = ''; document.getElementById('admin-ship-modal').classList.remove('hidden'); document.getElementById('admin-ship-modal').classList.add('flex'); }
@@ -1546,15 +1653,14 @@ async function deleteShippingZone(id) {
 }
 
 function renderAdminOverview() {
-    if(document.getElementById('admin-stat-products')) document.getElementById('admin-stat-products').innerText = catalog.length;
+    document.getElementById('admin-stat-products').innerText = catalog.length;
     const validOrders = globalOrders.filter(o => o.status !== 'cancelled');
-    if(document.getElementById('admin-stat-orders')) document.getElementById('admin-stat-orders').innerText = validOrders.length;
-    if(document.getElementById('admin-stat-revenue')) document.getElementById('admin-stat-revenue').innerText = validOrders.reduce((sum, order) => sum + (Number(order.total) || 0), 0).toLocaleString('ar-EG') + ' ج.م';
+    document.getElementById('admin-stat-orders').innerText = validOrders.length;
+    document.getElementById('admin-stat-revenue').innerText = validOrders.reduce((sum, order) => sum + (Number(order.total) || 0), 0).toLocaleString('ar-EG') + ' ج.م';
 }
 
 function renderAdminOrderFilters() {
     const filtersEl = document.getElementById('admin-order-filters');
-    if(!filtersEl) return;
     const filters = [
         { id: 'all', label: 'الكل' },
         { id: 'pending', label: '⏳ قيد المراجعة' },
@@ -1576,7 +1682,6 @@ function setAdminOrderFilter(f) {
 
 function renderAdminOrders() {
     const tbody = document.getElementById('admin-orders-tbody');
-    if(!tbody) return;
     
     let list = globalOrders;
     if (adminOrderFilter !== 'all') {
@@ -1607,7 +1712,7 @@ function renderAdminOrders() {
             </td>
         </tr>
     `}).join('');
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
 
 async function updateOrderStatus(id, newStatus) {
@@ -1639,10 +1744,9 @@ async function deleteOrder(id) {
 
 function renderAdminGallery() {
     const grid = document.getElementById('admin-gallery-grid');
-    if(!grid) return;
     if (galleryData.length === 0) {
         grid.innerHTML = `<div class="col-span-full py-8 text-center text-gray-500 font-bold"><i data-lucide="image" class="w-12 h-12 mx-auto mb-2 opacity-50"></i> لم تقم برفع أي أعمال سابقة حتى الآن.</div>`;
-        if(window.lucide) lucide.createIcons(); return;
+        lucide.createIcons(); return;
     }
     grid.innerHTML = galleryData.map(g => `
         <div class="relative group rounded-xl overflow-hidden border border-gray-600 h-32 md:h-40">
@@ -1652,7 +1756,7 @@ function renderAdminGallery() {
             </div>
         </div>
     `).join('');
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
 
 async function uploadGalleryToCloud(e) {
@@ -1692,9 +1796,9 @@ async function deleteGalleryImage(id) {
     }
 }
 
+// CX Upgrade: Handle Multiple Images Upload Array
 function renderAdminTempImages() {
     const container = document.getElementById('edit-prod-images-container');
-    if(!container) return;
     if(tempProdImages.length === 0) {
         container.innerHTML = `<div class="w-full text-center py-4 text-xs text-gray-500 font-bold border-2 border-dashed border-gray-700 rounded-lg">لم يتم إضافة صور للمنتج بعد</div>`;
         return;
@@ -1707,7 +1811,7 @@ function renderAdminTempImages() {
             <button onclick="removeTempImage(${idx})" class="absolute top-1 right-1 bg-red-500 text-white p-1 rounded hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"><i data-lucide="x" class="w-3 h-3"></i></button>
         </div>
     `).join('');
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
 
 function removeTempImage(idx) {
@@ -1720,7 +1824,7 @@ async function compressAndUploadMultiImage(e) {
     if (!file.type.match('image.*')) { showSystemToast("الرجاء اختيار ملف صورة فقط", "error"); return; }
     
     const spinner = document.getElementById('uploading-spinner');
-    if(spinner) spinner.classList.remove('hidden');
+    spinner.classList.remove('hidden');
 
     const reader = new FileReader(); reader.readAsDataURL(file);
     reader.onload = function(ev) {
@@ -1746,9 +1850,8 @@ async function compressAndUploadMultiImage(e) {
                 renderAdminTempImages();
                 showSystemToast("تم الحفظ محلياً", "info"); 
             } finally {
-                if(spinner) spinner.classList.add('hidden');
-                const uploadEl = document.getElementById('prod-img-upload');
-                if(uploadEl) uploadEl.value = ''; 
+                spinner.classList.add('hidden');
+                document.getElementById('prod-img-upload').value = ''; // reset input
             }
         }
     }
@@ -1756,7 +1859,6 @@ async function compressAndUploadMultiImage(e) {
 
 function renderAdminCatalogTabs() {
     const tabsEl = document.getElementById('admin-catalog-tabs');
-    if(!tabsEl) return;
     let html = `<button onclick="setAdminCat('all')" class="whitespace-nowrap px-5 py-2.5 rounded-lg font-bold text-sm transition-all shadow-sm ${adminCurrentCat === 'all' ? 'bg-pink-500 text-white scale-105' : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200 border border-gray-700'}">عرض الكل</button>`;
     
     catMenu.forEach(c => {
@@ -1773,9 +1875,6 @@ function setAdminCat(c) {
 }
 
 function renderAdminMenu(searchQuery = '') {
-    const tbody = document.getElementById('admin-menu-tbody');
-    if(!tbody) return;
-
     let list = catalog;
 
     if (adminCurrentCat !== 'all') {
@@ -1791,13 +1890,14 @@ function renderAdminMenu(searchQuery = '') {
         );
     }
     
-    tbody.innerHTML = list.map(p => {
+    document.getElementById('admin-menu-tbody').innerHTML = list.map(p => {
         let layoutBadge = '';
         if (p.layout === 'full') layoutBadge = '<span class="mr-3 text-[10px] bg-pink-900/40 text-pink-300 px-2.5 py-1 rounded-md border border-pink-700/50">كارت كبير</span>';
         if (p.layout === 'half') layoutBadge = '<span class="mr-3 text-[10px] bg-blue-900/40 text-blue-300 px-2.5 py-1 rounded-md border border-blue-700/50">كارت صغير</span>';
         
         let stockBadge = p.inStock === false ? '<span class="mr-2 text-[10px] bg-red-900/40 text-red-300 px-2.5 py-1 rounded-md border border-red-700/50"><i data-lucide="ban" class="w-3 h-3 inline"></i> نفدت</span>' : '';
 
+        // First image or fallback
         const renderImg = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category));
 
         return `
@@ -1818,40 +1918,37 @@ function renderAdminMenu(searchQuery = '') {
             </td>
         </tr>
     `}).join('');
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
 
 function openAddProductModal() {
-    currentEditId = null; 
-    if(document.getElementById('prod-modal-title')) document.getElementById('prod-modal-title').innerText = "إضافة منتج";
+    currentEditId = null; document.getElementById('prod-modal-title').innerText = "إضافة منتج";
     ['id','name','price','sub','desc'].forEach(k => { const el = document.getElementById(`edit-prod-${k}`); if(el) el.value = ''; });
-    if(document.getElementById('edit-prod-cat')) document.getElementById('edit-prod-cat').value = adminCurrentCat === 'all' ? "جاتوهات" : adminCurrentCat; 
-    if(document.getElementById('edit-prod-layout')) document.getElementById('edit-prod-layout').value = 'default';
-    if(document.getElementById('edit-prod-badge')) document.getElementById('edit-prod-badge').value = '';
-    if(document.getElementById('edit-prod-instock')) document.getElementById('edit-prod-instock').checked = true; 
+    document.getElementById('edit-prod-cat').value = adminCurrentCat === 'all' ? "جاتوهات" : adminCurrentCat; 
+    document.getElementById('edit-prod-layout').value = 'default';
+    document.getElementById('edit-prod-badge').value = '';
+    document.getElementById('edit-prod-instock').checked = true; 
     
     tempProdImages = [];
     renderAdminTempImages();
     
-    const m = document.getElementById('admin-prod-modal'); 
-    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+    const m = document.getElementById('admin-prod-modal'); m.classList.remove('hidden'); m.classList.add('flex');
 }
 
 function openEditModal(id) {
     const p = catalogMap.get(String(id)); 
     if (p) {
-        currentEditId = String(id); 
-        if(document.getElementById('prod-modal-title')) document.getElementById('prod-modal-title').innerText = "تعديل المنتج";
-        if(document.getElementById('edit-prod-id')) document.getElementById('edit-prod-id').value = p.id; 
-        if(document.getElementById('edit-prod-name')) document.getElementById('edit-prod-name').value = p.name;
-        if(document.getElementById('edit-prod-price')) document.getElementById('edit-prod-price').value = p.price; 
-        if(document.getElementById('edit-prod-cat')) document.getElementById('edit-prod-cat').value = p.category;
-        if(document.getElementById('edit-prod-sub')) document.getElementById('edit-prod-sub').value = p.subType || p.size || p.flowerType || ""; 
-        if(document.getElementById('edit-prod-layout')) document.getElementById('edit-prod-layout').value = p.layout || 'default';
-        if(document.getElementById('edit-prod-badge')) document.getElementById('edit-prod-badge').value = p.badge || '';
-        if(document.getElementById('edit-prod-instock')) document.getElementById('edit-prod-instock').checked = p.inStock !== false; 
-        if(document.getElementById('edit-prod-desc')) document.getElementById('edit-prod-desc').value = p.desc || ''; 
+        currentEditId = String(id); document.getElementById('prod-modal-title').innerText = "تعديل المنتج";
+        document.getElementById('edit-prod-id').value = p.id; document.getElementById('edit-prod-name').value = p.name;
+        document.getElementById('edit-prod-price').value = p.price; document.getElementById('edit-prod-cat').value = p.category;
         
+        document.getElementById('edit-prod-sub').value = p.subType || p.size || p.flowerType || ""; 
+        document.getElementById('edit-prod-layout').value = p.layout || 'default';
+        document.getElementById('edit-prod-badge').value = p.badge || '';
+        document.getElementById('edit-prod-instock').checked = p.inStock !== false; 
+        document.getElementById('edit-prod-desc').value = p.desc || ''; 
+        
+        // Init Temp Images
         if(p.images && p.images.length > 0) {
             tempProdImages = [...p.images];
         } else if(p.img) {
@@ -1861,12 +1958,11 @@ function openEditModal(id) {
         }
         renderAdminTempImages();
         
-        const m = document.getElementById('admin-prod-modal'); 
-        if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+        const m = document.getElementById('admin-prod-modal'); m.classList.remove('hidden'); m.classList.add('flex');
     }
 }
 
-function closeProdModal() { const m = document.getElementById('admin-prod-modal'); if(m) { m.classList.add('hidden'); m.classList.remove('flex'); } currentEditId = null; }
+function closeProdModal() { const m = document.getElementById('admin-prod-modal'); m.classList.add('hidden'); m.classList.remove('flex'); currentEditId = null; }
 
 async function saveProductData() {
     const nName = document.getElementById('edit-prod-name').value.trim(); const nPrice = parseInt(document.getElementById('edit-prod-price').value) || 0;
@@ -1922,27 +2018,24 @@ function showInfo(t) {
         refund: { t: 'سياسة الاسترجاع والتعديل', b: 'يتم التعديل على الطلبات المخصصة قبل التنفيذ بـ 24 ساعة على الأقل.' },
         care: { t: 'دليل الجودة الملكي', b: '1. الحفظ في مبرد (4-8 مئوية).\n2. تجنب ترك المنتج في السيارة.\n3. يُنصح بالتقديم بعد 10 دقائق من الخروج من المبرد.' }
     };
-    if(document.getElementById('info-title')) document.getElementById('info-title').innerText = d[t].t; 
-    if(document.getElementById('info-body')) document.getElementById('info-body').innerText = d[t].b;
-    const m = document.getElementById('info-modal'); 
-    if(m) { m.classList.remove('hidden'); m.classList.add('flex'); }
-    if(window.lucide) lucide.createIcons();
+    document.getElementById('info-title').innerText = d[t].t; document.getElementById('info-body').innerText = d[t].b;
+    const m = document.getElementById('info-modal'); m.classList.remove('hidden'); m.classList.add('flex'); lucide.createIcons();
 }
-function closeInfo() { const m = document.getElementById('info-modal'); if(m) { m.classList.add('hidden'); m.classList.remove('flex'); } }
+function closeInfo() { const m = document.getElementById('info-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
 
 // === محرك إدارة التورت الملكية ===
 function fillCakeBuilderAdmin() {
     if (!siteSettings.cakeBuilder) siteSettings.cakeBuilder = JSON.parse(JSON.stringify(defaultSettings.cakeBuilder));
     const c = siteSettings.cakeBuilder;
-    if(document.getElementById('set-cake-base-price')) document.getElementById('set-cake-base-price').value = c.basePrice || 145;
-    if(document.getElementById('set-cake-desc')) document.getElementById('set-cake-desc').value = c.desc || "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة، مع ضمان تنفيذ إدارة حلويات بوسي لكافة الطلبات بأعلى مستوى احترافي.";
-    if(document.getElementById('set-cake-min-sq')) document.getElementById('set-cake-min-sq').value = c.minSquare || 16;
-    if(document.getElementById('set-cake-min-rect')) document.getElementById('set-cake-min-rect').value = c.minRect || 20;
+    document.getElementById('set-cake-base-price').value = c.basePrice || 145;
+    document.getElementById('set-cake-desc').value = c.desc || "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة، مع ضمان تنفيذ إدارة حلويات بوسي لكافة الطلبات بأعلى مستوى احترافي.";
+    document.getElementById('set-cake-min-sq').value = c.minSquare || 16;
+    document.getElementById('set-cake-min-rect').value = c.minRect || 20;
     
     const edible = c.imagePrinting.find(i => i.label === 'صورة قابلة للأكل');
     const nonedible = c.imagePrinting.find(i => i.label === 'صورة غير قابلة للأكل');
-    if(edible && document.getElementById('set-print-edible')) document.getElementById('set-print-edible').value = edible.price;
-    if(nonedible && document.getElementById('set-print-nonedible')) document.getElementById('set-print-nonedible').value = nonedible.price;
+    if(edible) document.getElementById('set-print-edible').value = edible.price;
+    if(nonedible) document.getElementById('set-print-nonedible').value = nonedible.price;
 
     renderAdminCakeFlavors();
     renderAdminCakeImages();
@@ -1950,15 +2043,13 @@ function fillCakeBuilderAdmin() {
 
 function renderAdminCakeFlavors() {
     const list = siteSettings.cakeBuilder.flavors || [];
-    const el = document.getElementById('admin-cake-flavors-list');
-    if(!el) return;
-    el.innerHTML = list.map((fl, idx) => `
+    document.getElementById('admin-cake-flavors-list').innerHTML = list.map((fl, idx) => `
         <div class="bg-gray-700 text-gray-200 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 border border-gray-600">
             <span>${fl}</span>
             <button onclick="removeCakeFlavor(${idx})" class="text-red-400 hover:text-red-300"><i data-lucide="x" class="w-3 h-3"></i></button>
         </div>
     `).join('');
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
 
 function addCakeFlavor() {
@@ -1978,7 +2069,6 @@ function removeCakeFlavor(idx) {
 function renderAdminCakeImages() {
     const list = siteSettings.cakeBuilder.images || [];
     const container = document.getElementById('admin-cake-images-list');
-    if(!container) return;
     if(list.length === 0) { container.innerHTML = `<span class="text-xs text-gray-500">لا يوجد صور، سيتم استخدام الصورة الافتراضية.</span>`; return; }
     container.innerHTML = list.map((url, idx) => `
         <div class="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden border border-gray-600 group">
@@ -1986,7 +2076,7 @@ function renderAdminCakeImages() {
             <button onclick="removeCakeImage(${idx})" class="absolute top-1 right-1 bg-red-500 text-white p-1 rounded hover:bg-red-600 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="x" class="w-3 h-3"></i></button>
         </div>
     `).join('');
-    if(window.lucide) lucide.createIcons();
+    lucide.createIcons();
 }
 
 function removeCakeImage(idx) {
@@ -1996,7 +2086,7 @@ function removeCakeImage(idx) {
 
 async function uploadCakeImage(e) {
     const file = e.target.files[0]; if (!file) return;
-    const spinner = document.getElementById('cake-upload-spinner'); if(spinner) spinner.classList.remove('hidden');
+    const spinner = document.getElementById('cake-upload-spinner'); spinner.classList.remove('hidden');
     const reader = new FileReader(); reader.readAsDataURL(file);
     reader.onload = function(ev) {
         const img = new Image(); img.src = ev.target.result;
@@ -2019,7 +2109,7 @@ async function uploadCakeImage(e) {
             } catch (err) { 
                 if(!siteSettings.cakeBuilder.images) siteSettings.cakeBuilder.images = [];
                 siteSettings.cakeBuilder.images.push(base64Str); renderAdminCakeImages(); showSystemToast("تم الحفظ محلياً", "info");
-            } finally { if(spinner) spinner.classList.add('hidden'); }
+            } finally { spinner.classList.add('hidden'); }
         }
     }
 }
@@ -2044,121 +2134,126 @@ async function saveCakeBuilderSettings() {
     } catch(e) { saveEngineMemory('set'); showSystemToast("تم الحفظ محلياً", "info"); }
 }
 
+
 window.addEventListener('scroll', () => {
     const n = document.getElementById('navbar');
-    if(!n) return;
     if (window.scrollY > 30) { n.classList.add('nav-scrolled'); }
     else { n.classList.remove('nav-scrolled'); }
 });
 
 window.onload = initApp;
-
 // --- محرك إدارة الأقسام الديناميكي لـ BoseSweets ---
+
 function renderAdminCategories() {
-    const listEl = document.getElementById('admin-categories-list');
-    if (!listEl) return;
-    if (catMenu.length === 0) {
-        listEl.innerHTML = `<p class="text-center text-gray-500 py-8 font-bold">لا توجد أقسام حالياً. ابدأ بإضافة أول قسم لـ BoseSweets!</p>`;
-        return;
-    }
-    listEl.innerHTML = catMenu.map((cat, index) => `
-        <div class="flex items-center justify-between p-4 bg-gray-900 border border-gray-700 rounded-xl group hover:border-pink-500 transition-all">
-            <div class="flex items-center gap-3">
-                <span class="w-8 h-8 flex items-center justify-center bg-gray-800 rounded-lg text-xs text-gray-400 font-mono">${index + 1}</span>
-                <span class="font-bold text-gray-200">${cat}</span>
-            </div>
-            <button onclick="removeCategory(${index})" class="p-2 text-gray-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100">
-                <i data-lucide="trash-2" class="w-5 h-5"></i>
-            </button>
-        </div>
-    `).join('');
-    if(window.lucide) lucide.createIcons();
+const listEl = document.getElementById('admin-categories-list');
+if (!listEl) return;
+if (catMenu.length === 0) {
+listEl.innerHTML = `<p class="text-center text-gray-500 py-8 font-bold">لا توجد أقسام حالياً. ابدأ بإضافة أول قسم لـ BoseSweets!</p>`;
+return;
+}
+listEl.innerHTML = catMenu.map((cat, index) => `
+<div class="flex items-center justify-between p-4 bg-gray-900 border border-gray-700 rounded-xl group hover:border-pink-500 transition-all">
+    <div class="flex items-center gap-3">
+        <span class="w-8 h-8 flex items-center justify-center bg-gray-800 rounded-lg text-xs text-gray-400 font-mono">${index + 1}</span>
+        <span class="font-bold text-gray-200">${cat}</span>
+    </div>
+    <button onclick="removeCategory(${index})" class="p-2 text-gray-500 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100">
+        <i data-lucide="trash-2" class="w-5 h-5"></i>
+    </button>
+</div>
+`).join('');
+lucide.createIcons();
 }
 
 function addNewCategory() {
-    const input = document.getElementById('new-category-input');
-    const val = input.value.trim();
-    if (!val) { showSystemToast("اكتبي اسم القسم الأول يا إدارة", "error"); return; }
-    if (catMenu.includes(val)) { showSystemToast("القسم ده موجود فعلاً", "error"); return; }
-    catMenu.push(val);
-    input.value = '';
-    renderAdminCategories();
-    showSystemToast(`تمت إضافة "${val}" للقائمة المؤقتة`, "success");
+const input = document.getElementById('new-category-input');
+const val = input.value.trim();
+if (!val) { showSystemToast("اكتبي اسم القسم الأول يا إدارة", "error"); return; }
+if (catMenu.includes(val)) { showSystemToast("القسم ده موجود فعلاً", "error"); return; }
+catMenu.push(val);
+input.value = '';
+renderAdminCategories();
+showSystemToast(`تمت إضافة "${val}" للقائمة المؤقتة`, "success");
 }
 
 function removeCategory(index) {
-    if (catMenu[index] === 'تورت') {
-        showSystemToast("عفواً، لا يمكن حذف قسم التورت الملكية الأساسي! 👑", "error");
-        return;
-    }
-    
-    if (confirm(`حذف قسم "${catMenu[index]}"؟ (المنتجات مش هتتحذف)`)) {
-        catMenu.splice(index, 1);
-        renderAdminCategories();
-    }
+// 👑 درع الحماية: منع حذف قسم التورت الملكية
+if (catMenu[index] === 'تورت') {
+showSystemToast("عفواً، لا يمكن حذف قسم التورت الملكية الأساسي! 👑", "error");
+return;
 }
+
+if (confirm(`حذف قسم "${catMenu[index]}"؟ (المنتجات مش هتتحذف)`)) {
+catMenu.splice(index, 1);
+renderAdminCategories();
+}
+}
+
 
 async function saveCategoriesToCloud() {
-    try {
-        siteSettings.catMenu = catMenu; 
-        await NetworkEngine.safeWrite('settings', 'main', siteSettings);
-        renderCategories();
-        renderAdminCatalogTabs();
-        renderCustomerSidebarCategories();
-        showSystemToast("تم حفظ وترتيب الأقسام سحابياً بنجاح! ✨", "success");
-    } catch (e) { showSystemToast("فشل الحفظ سحابياً", "error"); }
+try {
+siteSettings.catMenu = catMenu; 
+await NetworkEngine.safeWrite('settings', 'main', siteSettings);
+renderCategories();
+renderAdminCatalogTabs();
+renderCustomerSidebarCategories();
+showSystemToast("تم حفظ وترتيب الأقسام سحابياً بنجاح! ✨", "success");
+} catch (e) { showSystemToast("فشل الحفظ سحابياً", "error"); }
+}
+// === محرك حلويات بوسي لتوليد الوصف الذكي (نسخة كشف الأعطال) ===
+async function generateSmartDescription() {
+const prodName = document.getElementById('edit-prod-name').value.trim();
+const prodCat = document.getElementById('edit-prod-cat').value;
+const btn = document.getElementById('btn-smart-desc');
+const descField = document.getElementById('edit-prod-desc');
+
+if (!prodName) {
+alert('اكتبي اسم المنتج الأول يا إدارة عشان نقدر نولد وصفه ✨');
+return;
 }
 
-// === محرك حلويات بوسي لتوليد الوصف الذكي ===
-async function generateSmartDescription() {
-    const prodName = document.getElementById('edit-prod-name').value.trim();
-    const prodCat = document.getElementById('edit-prod-cat').value;
-    const btn = document.getElementById('btn-smart-desc');
-    const descField = document.getElementById('edit-prod-desc');
+const originalBtnHTML = btn.innerHTML;
+btn.innerHTML = 'جاري التفكير... ⏳';
+btn.disabled = true;
 
-    if (!prodName) {
-        alert('اكتبي اسم المنتج الأول يا إدارة عشان نقدر نولد وصفه ✨');
-        return;
-    }
+try {
+// حطي المفتاح بتاعك هنا زي ما عملتي المرة اللي فاتت بالظبط
+const apiKey = 'AIzaSyBr3ERdNUbAegDPHk4TOMF3sHxMMVYCFxk'; 
 
-    const originalBtnHTML = btn.innerHTML;
-    btn.innerHTML = 'جاري التفكير... ⏳';
-    btn.disabled = true;
+const promptText = `أنت كاتب إعلانات محترف لعلامة تجارية مصرية راقية اسمها "حلويات بوسي"
+اكتب وصف قصير وجذاب لمنتج اسمه "${prodName}" من قسم "${prodCat}"
+الشروط: لهجة مصرية عامية راقية، بدون علامات ترقيم، استخدم إيموجي تخدم المعنى، لا يتعدى سطرين.`;
 
-    try {
-        const apiKey = 'AIzaSyBr3ERdNUbAegDPHk4TOMF3sHxMMVYCFxk'; 
-        
-        const promptText = `أنت كاتب إعلانات محترف لعلامة تجارية مصرية راقية اسمها "حلويات بوسي"
-        اكتب وصف قصير وجذاب لمنتج اسمه "${prodName}" من قسم "${prodCat}"
-        الشروط: لهجة مصرية عامية راقية، بدون علامات ترقيم، استخدم إيموجي تخدم المعنى، لا يتعدى سطرين.`;
+const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+        contents: [{ parts: [{ text: promptText }] }]
+    })
+});
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }]
-            })
-        });
+const data = await response.json();
 
-        const data = await response.json();
+// لو جوجل رفض الطلب، هنمسك رسالة الرفض ونعرضها
+if (!response.ok) {
+    throw new Error(data.error ? data.error.message : 'خطأ غير معروف من جوجل');
+}
 
-        if (!response.ok) {
-            throw new Error(data.error ? data.error.message : 'خطأ غير معروف من جوجل');
-        }
+if (data.candidates && data.candidates.length > 0) {
+    descField.value = data.candidates[0].content.parts[0].text.trim();
+    alert('تم التوليد بنجاح! 👑 راجعي الوصف في الخانة.');
+} else {
+    throw new Error('الذكاء الاصطناعي ماردش بوصف صحيح.');
+}
 
-        if (data.candidates && data.candidates.length > 0) {
-            descField.value = data.candidates[0].content.parts[0].text.trim();
-            alert('تم التوليد بنجاح! 👑 راجعي الوصف في الخانة.');
-        } else {
-            throw new Error('الذكاء الاصطناعي ماردش بوصف صحيح.');
-        }
-
-    } catch (error) {
-        alert("تنبيه للإدارة! سبب المشكلة: \n" + error.message);
-    } finally {
-        btn.innerHTML = originalBtnHTML;
-        btn.disabled = false;
-        if(window.lucide) lucide.createIcons();
-    }
+} catch (error) {
+// الشاشة المنبثقة اللي هتقولنا العيب فين بالظبط
+alert("تنبيه للإدارة! سبب المشكلة: \n" + error.message);
+} finally {
+// إرجاع الزرار لشكله الطبيعي في كل الحالات
+btn.innerHTML = originalBtnHTML;
+btn.disabled = false;
+lucide.createIcons();
+}
 }
 
