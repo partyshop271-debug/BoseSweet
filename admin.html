@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -9,10 +8,8 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Chart.js للرسوم البيانية الاحترافية -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -114,24 +111,15 @@
         /* تحسينات الجداول */
         table th { position: sticky; top: 0; z-index: 10; background-color: #0f172a; }
         tr:hover td { background-color: rgba(255, 255, 255, 0.02); }
-
-        /* تنسيق الأزرار الجانبية */
-        .desktop-nav-btn {
-            display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-radius: 16px; font-weight: 700; color: #94a3b8; transition: all 0.3s ease;
-        }
-        .desktop-nav-btn:hover { background-color: rgba(255, 255, 255, 0.05); color: #f8fafc; }
-        .desktop-nav-btn.active { background: linear-gradient(to left, rgba(236, 72, 153, 0.2), transparent); color: #ec4899; border-right: 4px solid #ec4899; }
     </style>
 </head>
-<body class="h-screen w-full overflow-hidden flex bg-slate-950">
+<body class="h-[100dvh] flex flex-col overflow-hidden bg-[#0f172a]">
 
-    <!-- إشعارات النظام الذكية (Toast) -->
     <div id="system-toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] hidden items-center gap-3 bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm max-w-[90vw] text-center border border-slate-700 transition-all">
         <i id="toast-icon" data-lucide="info" class="w-5 h-5 shrink-0 text-pink-500"></i>
         <span id="toast-message"></span>
     </div>
 
-    <!-- نافذة التأكيد الذكية (Confirmation Dialog) -->
     <div id="admin-confirm-modal" class="fixed inset-0 bg-slate-950/80 z-[9998] hidden items-center justify-center p-4 backdrop-blur-sm opacity-0 transition-opacity">
         <div class="admin-card modal-desktop w-full max-w-sm text-center p-6 bg-slate-900 border-red-500/30">
             <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
@@ -146,448 +134,382 @@
         </div>
     </div>
 
-    <!-- 💻 الشريط الجانبي للشاشات الكبيرة (Desktop Sidebar) - إضافة جديدة ومهمة -->
-    <aside class="hidden md:flex flex-col w-72 bg-slate-900 border-l border-slate-800 h-full shrink-0 relative z-50">
-        <div class="p-6 border-b border-slate-800 flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-pink-600 to-pink-400 flex items-center justify-center shadow-lg shadow-pink-500/20 shrink-0">
-                <i data-lucide="crown" class="w-7 h-7 text-white"></i>
+    <div class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-40 flex justify-between items-center shadow-sm w-full shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-pink-600 to-pink-400 flex items-center justify-center shadow-lg shadow-pink-500/20">
+                <i data-lucide="crown" class="w-6 h-6 text-white"></i>
             </div>
             <div>
-                <h1 class="text-xl font-black leading-none tracking-tight text-white">حلويات بوسي</h1>
-                <p class="text-[10px] text-pink-400 font-bold uppercase tracking-widest mt-1.5">مركز القيادة المتقدم</p>
+                <h1 class="text-lg font-black leading-none tracking-tight text-white">حلويات بوسي</h1>
+                <p class="text-[10px] text-pink-400 font-bold uppercase tracking-widest mt-1">مركز القيادة المتقدم</p>
             </div>
         </div>
-        
-        <div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
-            <button onclick="switchAdminTab('overview')" class="desktop-nav-btn w-full active" data-tab="overview">
-                <i data-lucide="layout-dashboard" class="w-5 h-5"></i> <span>الرئيسية والإحصائيات</span>
+        <div class="flex items-center gap-3">
+            <a href="index.html" target="_blank" class="hidden md:flex items-center gap-2 p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700 transition-colors text-xs font-bold">
+                <i data-lucide="external-link" class="w-4 h-4"></i> زيارة المتجر
+            </a>
+            <button onclick="closeAdminDashboard()" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-red-400 rounded-xl border border-slate-700 transition-colors active:scale-95" title="تسجيل الخروج">
+                <i data-lucide="log-out" class="w-5 h-5"></i>
             </button>
-            <button onclick="switchAdminTab('orders')" class="desktop-nav-btn w-full relative" data-tab="orders">
-                <i data-lucide="shopping-bag" class="w-5 h-5"></i> <span>الطلبات الواردة</span>
-                <span id="sidebar-order-badge" class="absolute left-4 top-1/2 -translate-y-1/2 bg-pink-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold hidden">جديد</span>
-            </button>
-            <button onclick="switchAdminTab('menu')" class="desktop-nav-btn w-full" data-tab="menu">
-                <i data-lucide="book-open" class="w-5 h-5"></i> <span>إدارة الكتالوج</span>
-            </button>
-            <button onclick="switchAdminTab('settings')" class="desktop-nav-btn w-full" data-tab="settings">
-                <i data-lucide="sliders" class="w-5 h-5"></i> <span>إعدادات المتجر</span>
-            </button>
+        </div>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar relative w-full pb-[140px] md:pb-8" id="main-scroll-area">
+
+        <div id="admin-overview" class="admin-tab-content block space-y-6 animate-fade-in max-w-6xl mx-auto">
+            <div class="flex justify-between items-end mb-6">
+                <h2 class="text-2xl font-black text-white flex items-center gap-2">
+                    <i data-lucide="activity" class="w-6 h-6 text-pink-500"></i> نظرة عامة
+                </h2>
+                <span class="text-xs text-slate-400 font-bold" id="admin-current-date"></span>
+            </div>
             
-            <div class="pt-6 mt-6 border-t border-slate-800/50">
-                <button onclick="openAddProductModal()" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-3.5 rounded-xl font-bold shadow-lg shadow-pink-500/20 active:scale-95 flex items-center justify-center gap-2 transition-all">
-                    <i data-lucide="plus-circle" class="w-5 h-5"></i> منتج جديد
-                </button>
-            </div>
-        </div>
-
-        <div class="p-4 border-t border-slate-800">
-            <div class="flex flex-col gap-2">
-                <a href="index.html" target="_blank" class="w-full flex items-center justify-center gap-2 p-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl border border-slate-700 transition-colors text-sm font-bold">
-                    <i data-lucide="external-link" class="w-4 h-4"></i> زيارة واجهة المتجر
-                </a>
-                <button onclick="closeAdminDashboard()" class="w-full flex items-center justify-center gap-2 p-3 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl border border-red-500/20 transition-colors text-sm font-bold">
-                    <i data-lucide="log-out" class="w-4 h-4"></i> تسجيل الخروج
-                </button>
-            </div>
-        </div>
-    </aside>
-
-    <!-- منطقة المحتوى الرئيسية (Main Content Wrapper) -->
-    <div class="flex-1 flex flex-col h-full w-full relative overflow-hidden bg-[#0f172a]">
-        
-        <!-- 📱 الهيدر العلوي (يظهر للموبايل فقط بعد إضافة السايدبار) -->
-        <div class="md:hidden bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-40 flex justify-between items-center shadow-sm shrink-0 w-full">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-pink-600 to-pink-400 flex items-center justify-center shadow-lg shadow-pink-500/20">
-                    <i data-lucide="crown" class="w-6 h-6 text-white"></i>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="admin-card flex flex-col justify-center items-center text-center gap-2 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors"></div>
+                    <div class="p-3 bg-blue-500/10 text-blue-400 rounded-2xl z-10"><i data-lucide="package" class="w-6 h-6"></i></div>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wide z-10">إجمالي المنتجات</p>
+                    <p id="admin-stat-products" class="text-3xl font-black text-white z-10">0</p>
                 </div>
-                <div>
-                    <h1 class="text-lg font-black leading-none tracking-tight text-white">حلويات بوسي</h1>
-                    <p class="text-[10px] text-pink-400 font-bold uppercase tracking-widest mt-1">مركز القيادة</p>
+                <div class="admin-card flex flex-col justify-center items-center text-center gap-2 relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors"></div>
+                    <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-2xl z-10"><i data-lucide="shopping-cart" class="w-6 h-6"></i></div>
+                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wide z-10">الطلبات المكتملة</p>
+                    <p id="admin-stat-orders" class="text-3xl font-black text-white z-10">0</p>
+                </div>
+                <div class="admin-card col-span-2 bg-gradient-to-br from-slate-800 to-slate-900 border-pink-500/30 flex flex-col justify-center items-center text-center gap-2 relative overflow-hidden">
+                    <div class="absolute -right-10 -top-10 w-32 h-32 bg-pink-500/20 rounded-full blur-3xl"></div>
+                    <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl"></div>
+                    <p class="text-xs font-bold text-pink-400 z-10">إجمالي المبيعات التقديرية (هذا الشهر)</p>
+                    <p id="admin-stat-revenue" class="text-4xl md:text-5xl font-black text-white z-10 tracking-tight">0 <span class="text-lg text-slate-400">ج.م</span></p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="closeAdminDashboard()" class="p-2.5 bg-slate-800 text-red-400 rounded-xl border border-slate-700 active:scale-95" title="تسجيل الخروج">
-                    <i data-lucide="log-out" class="w-5 h-5"></i>
-                </button>
-            </div>
-        </div>
 
-        <!-- منطقة التمرير للمحتوى (Scrollable Area) -->
-        <main class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 pb-safe relative w-full" id="main-scroll-area">
-
-            <!-- Tab: 1. لوحة التحكم السريعة (Overview & Analytics) -->
-            <div id="admin-overview" class="admin-tab-content block space-y-6 animate-fade-in max-w-6xl mx-auto">
-                <div class="flex justify-between items-end mb-6">
-                    <h2 class="text-2xl font-black text-white flex items-center gap-2">
-                        <i data-lucide="activity" class="w-6 h-6 text-pink-500"></i> نظرة عامة
-                    </h2>
-                    <span class="text-xs text-slate-400 font-bold" id="admin-current-date"></span>
-                </div>
-                
-                <!-- إحصائيات سريعة -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div class="admin-card flex flex-col justify-center items-center text-center gap-2 relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-blue-500/5 group-hover:bg-blue-500/10 transition-colors"></div>
-                        <div class="p-3 bg-blue-500/10 text-blue-400 rounded-2xl z-10"><i data-lucide="package" class="w-6 h-6"></i></div>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wide z-10">إجمالي المنتجات</p>
-                        <p id="admin-stat-products" class="text-3xl font-black text-white z-10">0</p>
-                    </div>
-                    <div class="admin-card flex flex-col justify-center items-center text-center gap-2 relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-emerald-500/5 group-hover:bg-emerald-500/10 transition-colors"></div>
-                        <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-2xl z-10"><i data-lucide="shopping-cart" class="w-6 h-6"></i></div>
-                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wide z-10">الطلبات المكتملة</p>
-                        <p id="admin-stat-orders" class="text-3xl font-black text-white z-10">0</p>
-                    </div>
-                    <div class="admin-card col-span-2 bg-gradient-to-br from-slate-800 to-slate-900 border-pink-500/30 flex flex-col justify-center items-center text-center gap-2 relative overflow-hidden">
-                        <div class="absolute -right-10 -top-10 w-32 h-32 bg-pink-500/20 rounded-full blur-3xl"></div>
-                        <div class="absolute -left-10 -bottom-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl"></div>
-                        <p class="text-xs font-bold text-pink-400 z-10">إجمالي المبيعات التقديرية (هذا الشهر)</p>
-                        <p id="admin-stat-revenue" class="text-4xl md:text-5xl font-black text-white z-10 tracking-tight">0 <span class="text-lg text-slate-400">ج.م</span></p>
-                    </div>
-                </div>
-
-                <!-- الرسوم البيانية وأحدث الطلبات -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-                    <!-- الرسم البياني -->
-                    <div class="admin-card lg:col-span-2 space-y-4">
-                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                            <i data-lucide="trending-up" class="w-5 h-5 text-indigo-400"></i> أداء المبيعات
-                        </h3>
-                        <div class="w-full h-64 relative">
-                            <!-- Canvas for Chart.js -->
-                            <canvas id="salesChart"></canvas>
-                            <!-- Placeholder -->
-                            <div id="chart-placeholder" class="absolute inset-0 flex items-center justify-center text-slate-500 text-sm font-bold bg-slate-900/50 rounded-xl border border-dashed border-slate-700">
-                                جاري تجميع البيانات...
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- أحدث الطلبات -->
-                    <div class="admin-card space-y-4 flex flex-col h-full max-h-[350px]">
-                        <div class="flex justify-between items-center shrink-0">
-                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                                <i data-lucide="bell" class="w-5 h-5 text-amber-400"></i> أحدث الطلبات
-                            </h3>
-                            <button onclick="switchAdminTab('orders')" class="text-[10px] text-pink-400 font-bold hover:underline">عرض الكل</button>
-                        </div>
-                        <div id="quick-recent-orders" class="flex-1 space-y-3 overflow-y-auto custom-scrollbar pr-1">
-                            <!-- سيتم توليدها برمجياً -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+                <div class="admin-card lg:col-span-2 space-y-4">
+                    <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i data-lucide="trending-up" class="w-5 h-5 text-indigo-400"></i> أداء المبيعات
+                    </h3>
+                    <div class="w-full h-64 relative">
+                        <canvas id="salesChart"></canvas>
+                        <div id="chart-placeholder" class="absolute inset-0 flex items-center justify-center text-slate-500 text-sm font-bold bg-slate-900/50 rounded-xl border border-dashed border-slate-700">
+                            جاري تجميع البيانات...
                         </div>
                     </div>
                 </div>
-                
-                <!-- أزرار الوصول السريع للموبايل -->
-                <div class="grid grid-cols-2 gap-4 mt-6 md:hidden">
-                     <button onclick="switchAdminTab('settings')" class="admin-card hover:border-slate-500 transition-colors flex flex-col items-center justify-center gap-3 py-6 active:scale-95">
-                         <i data-lucide="sliders" class="w-8 h-8 text-slate-400"></i>
-                         <span class="text-sm font-bold text-white">إعدادات المتجر</span>
-                     </button>
-                     <button onclick="document.getElementById('set-hero-title').focus(); switchAdminTab('settings');" class="admin-card hover:border-slate-500 transition-colors flex flex-col items-center justify-center gap-3 py-6 active:scale-95">
-                         <i data-lucide="megaphone" class="w-8 h-8 text-amber-400"></i>
-                         <span class="text-sm font-bold text-white">تحديث الإعلانات</span>
-                     </button>
-                </div>
-            </div>
 
-            <!-- Tab: 2. إدارة المنتجات (Menu) -->
-            <div id="admin-menu" class="admin-tab-content hidden space-y-6 animate-fade-in max-w-6xl mx-auto">
-                <div class="flex flex-col gap-4 mb-4 sticky top-0 bg-[#0f172a] z-20 pb-4 border-b border-slate-800 pt-2 shadow-sm">
+                <div class="admin-card space-y-4 flex flex-col h-full">
                     <div class="flex justify-between items-center">
-                        <h2 class="text-2xl font-black text-white flex items-center gap-2">
-                            <i data-lucide="book-open" class="w-6 h-6 text-pink-500"></i> إدارة المنتجات
-                        </h2>
-                        <!-- الزر متاح فقط للموبايل هنا، في الديسكتوب موجود في السايدبار -->
-                        <button onclick="openAddProductModal()" class="md:hidden bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-pink-500/20 active:scale-95 flex items-center gap-2">
-                            <i data-lucide="plus" class="w-4 h-4"></i> منتج جديد
-                        </button>
+                        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i data-lucide="bell" class="w-5 h-5 text-amber-400"></i> أحدث الطلبات
+                        </h3>
+                        <button onclick="switchAdminTab('orders')" class="text-[10px] text-pink-400 font-bold hover:underline">عرض الكل</button>
                     </div>
-                    
-                    <!-- أدوات الفلترة والبحث -->
-                    <div class="flex flex-col md:flex-row gap-3 w-full">
-                        <div class="relative flex-1">
-                            <i data-lucide="search" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-                            <input type="text" id="admin-search-catalog" onkeyup="renderAdminMenu(this.value)" placeholder="ابحث عن منتج بالاسم أو القسم..." class="admin-input pl-4 pr-12 py-3.5 shadow-inner">
+                    <div id="quick-recent-orders" class="flex-1 space-y-3 overflow-y-auto custom-scrollbar pr-1">
+                        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 flex justify-between items-center">
+                            <div>
+                                <p class="text-sm font-bold text-white">#ORD-1029</p>
+                                <p class="text-xs text-slate-400">محمد أحمد • منذ 10 دقائق</p>
+                            </div>
+                            <span class="text-xs bg-amber-500/20 text-amber-400 px-2 py-1 rounded-md font-bold">قيد المراجعة</span>
                         </div>
-                        <select id="admin-sort-catalog" class="admin-input md:w-48 py-3.5" onchange="renderAdminMenu(document.getElementById('admin-search-catalog').value)">
-                            <option value="newest">الأحدث أولاً</option>
-                            <option value="price_high">الأعلى سعراً</option>
-                            <option value="price_low">الأقل سعراً</option>
-                            <option value="name">أبجدياً</option>
-                        </select>
-                    </div>
-                    
-                    <!-- فلتر الأقسام السريع -->
-                    <div id="admin-catalog-tabs" class="flex overflow-x-auto hide-scrollbar gap-2 w-full pb-2"></div>
-                </div>
-                
-                <!-- قائمة المنتجات -->
-                <div id="admin-menu-list" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-                    <!-- يتم توليد الكروت هنا من الجافاسكريبت. -->
-                </div>
-            </div>
-
-            <!-- Tab: 3. إدارة الطلبات (Orders) -->
-            <div id="admin-orders" class="admin-tab-content hidden space-y-6 animate-fade-in max-w-6xl mx-auto">
-                <div class="flex flex-col gap-4 mb-4 sticky top-0 bg-[#0f172a] z-20 pb-4 border-b border-slate-800 pt-2 shadow-sm">
-                    <h2 class="text-2xl font-black text-white flex items-center gap-2">
-                        <i data-lucide="shopping-bag" class="w-6 h-6 text-purple-400"></i> الطلبات الواردة
-                    </h2>
-                    
-                    <!-- فلاتر الطلبات المتقدمة -->
-                    <div class="flex flex-col md:flex-row gap-3">
-                        <div id="admin-order-filters" class="flex overflow-x-auto hide-scrollbar gap-2 flex-1">
-                            <!-- أزرار فلترة الحالة -->
-                        </div>
-                        <div class="flex gap-2 w-full md:w-auto">
-                            <input type="date" id="order-filter-date" class="admin-input py-2 px-3 text-xs flex-1 md:w-40" onchange="filterOrdersByDate()">
-                            <button onclick="refreshOrders()" class="bg-slate-800 border border-slate-700 text-white p-2 rounded-xl active:scale-95"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="admin-card p-0 overflow-hidden">
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="w-full text-right border-collapse min-w-[900px]">
-                            <thead class="bg-slate-900 border-b border-slate-800 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
-                                <tr>
-                                    <th class="p-4 rounded-tr-xl">رقم الطلب</th>
-                                    <th class="p-4">التاريخ والوقت</th>
-                                    <th class="p-4">العميل / الهاتف</th>
-                                    <th class="p-4">الإجمالي</th>
-                                    <th class="p-4">الحالة</th>
-                                    <th class="p-4 text-center rounded-tl-xl">إجراءات</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-orders-tbody" class="divide-y divide-slate-800/50 text-sm text-slate-200">
-                                <!-- سيتم حقن صفوف الطلبات هنا -->
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                 <button onclick="openAddProductModal()" class="admin-card hover:border-pink-500/50 transition-colors flex flex-col items-center justify-center gap-3 py-6 active:scale-95 group">
+                     <div class="p-3 bg-pink-500/10 rounded-full group-hover:bg-pink-500 group-hover:text-white text-pink-500 transition-colors"><i data-lucide="plus" class="w-6 h-6"></i></div>
+                     <span class="text-sm font-bold text-white">إضافة منتج</span>
+                 </button>
+                 <button onclick="switchAdminTab('menu')" class="admin-card hover:border-slate-500 transition-colors flex flex-col items-center justify-center gap-3 py-6 active:scale-95">
+                     <i data-lucide="book-open" class="w-8 h-8 text-slate-400"></i>
+                     <span class="text-sm font-bold text-white">تعديل المنيو</span>
+                 </button>
+                 <button onclick="switchAdminTab('settings')" class="admin-card hover:border-slate-500 transition-colors flex flex-col items-center justify-center gap-3 py-6 active:scale-95">
+                     <i data-lucide="sliders" class="w-8 h-8 text-slate-400"></i>
+                     <span class="text-sm font-bold text-white">إعدادات المتجر</span>
+                 </button>
+                 <button onclick="document.getElementById('set-hero-title').focus(); switchAdminTab('settings');" class="admin-card hover:border-slate-500 transition-colors flex flex-col items-center justify-center gap-3 py-6 active:scale-95">
+                     <i data-lucide="megaphone" class="w-8 h-8 text-amber-400"></i>
+                     <span class="text-sm font-bold text-white">تحديث الإعلانات</span>
+                 </button>
+            </div>
+        </div>
 
-            <!-- Tab: 4. الإعدادات الشاملة (Settings) -->
-            <div id="admin-settings" class="admin-tab-content hidden space-y-6 animate-fade-in max-w-6xl mx-auto">
-                <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4 sticky top-0 bg-[#0f172a] z-20 pt-2">
+        <div id="admin-menu" class="admin-tab-content hidden space-y-6 animate-fade-in max-w-6xl mx-auto">
+            <div class="flex flex-col gap-4 mb-4 sticky top-0 bg-[#0f172a] z-20 pb-4 border-b border-slate-800 pt-2 shadow-sm">
+                <div class="flex justify-between items-center">
                     <h2 class="text-2xl font-black text-white flex items-center gap-2">
-                        <i data-lucide="sliders" class="w-6 h-6 text-emerald-400"></i> الإعدادات المتقدمة
+                        <i data-lucide="book-open" class="w-6 h-6 text-pink-500"></i> إدارة المنتجات
                     </h2>
-                    <button onclick="saveStoreSettings()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/20 active:scale-95 flex items-center gap-2 transition-all">
-                        <i data-lucide="save" class="w-4 h-4"></i> <span class="hidden md:inline">حفظ كافة التعديلات</span><span class="md:hidden">حفظ</span>
+                    <button onclick="openAddProductModal()" class="hidden md:flex bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-pink-500/20 active:scale-95 items-center gap-2">
+                        <i data-lucide="plus" class="w-4 h-4"></i> منتج جديد
                     </button>
                 </div>
-
-                <!-- شبكة الأقسام -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    
-                    <!-- العمود الأول -->
-                    <div class="space-y-6">
-                        <!-- بيانات البراند -->
-                        <div class="admin-card space-y-4">
-                            <h3 class="text-lg font-bold text-pink-400 flex items-center gap-2 border-b border-slate-700 pb-2"><i data-lucide="fingerprint" class="w-5 h-5"></i> بيانات العلامة التجارية (BoseSweets)</h3>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 mb-2">اسم العلامة التجارية (مقدس لا يتغير)</label>
-                                <input type="text" id="set-brand" class="admin-input bg-slate-900 border-slate-800 text-slate-500" value="حلويات بوسي" readonly title="اسم العلامة التجارية لا يمكن تغييره">
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-400 mb-2">رقم هاتف المبيعات</label>
-                                    <input type="tel" id="set-footer-phone" class="admin-input" dir="ltr" placeholder="مثال: 01xxxxxxxxx">
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-400 mb-2">العنوان الظاهر للعملاء</label>
-                                    <input type="text" id="set-footer-address" class="admin-input" placeholder="مثال: مركز الفرافرة، الوادي الجديد">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 mb-2">عنوان الهيدر الترحيبي (Hook)</label>
-                                <input type="text" id="set-hero-title" class="admin-input" placeholder="مثال: طعم السعادة في كل قضمة!">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 mb-2">وصف الهيدر الجذاب</label>
-                                <textarea id="set-hero-desc" rows="2" class="admin-input resize-none" placeholder="اكتب وصف يشجع العميل على الطلب..."></textarea>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 mb-2">رسالة الفوتر (مقولة)</label>
-                                <input type="text" id="set-footer-quote" class="admin-input" placeholder="مثال: صُنع بحب لأجلكم">
-                            </div>
-                        </div>
-
-                        <!-- الأقسام (Categories) -->
-                        <div class="admin-card space-y-4">
-                            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-                                <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5"></i> أقسام المنيو</h3>
-                                <button onclick="saveCategoriesToCloud()" class="text-xs bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition-colors px-3 py-1.5 rounded-lg font-bold border border-blue-500/30">حفظ الأقسام</button>
-                            </div>
-                            <div class="flex gap-2">
-                                <input type="text" id="new-category-input" placeholder="اكتب اسم قسم جديد..." class="admin-input flex-1">
-                                <button onclick="addNewCategory()" class="bg-blue-500 text-white px-5 rounded-xl font-bold active:scale-95 transition-colors hover:bg-blue-600"><i data-lucide="plus" class="w-5 h-5"></i></button>
-                            </div>
-                            <div id="admin-categories-list" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1 mt-2">
-                                <!-- توليد الأقسام هنا -->
-                            </div>
-                        </div>
-
-                        <!-- شريط الأخبار والإعلانات -->
-                        <div class="admin-card space-y-4">
-                            <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2 border-b border-slate-700 pb-2"><i data-lucide="megaphone" class="w-5 h-5"></i> شريط الإعلانات أعلى الموقع</h3>
-                            
-                            <label class="flex items-center justify-between p-3 rounded-xl border border-slate-700 bg-slate-800/50 cursor-pointer">
-                                <span class="font-bold text-sm">تفعيل شريط الأخبار المتحرك</span>
-                                <input type="checkbox" id="set-ticker-active" class="w-5 h-5 accent-amber-500 rounded">
-                            </label>
-                            
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 mb-2">نص الإعلان (يمكن استخدام الإيموجي)</label>
-                                <input type="text" id="set-ticker-text" class="admin-input" placeholder="مثال: خصم 20% على جميع التورت لفترة محدودة! 🎉">
-                            </div>
-                            <!-- الحفاظ على القيم القديمة كـ Hidden -->
-                            <input type="hidden" id="set-announcement">
-                            <input type="hidden" id="set-ticker-speed" value="30">
-                            <input type="hidden" id="set-ticker-font" value="Cairo">
-                        </div>
+                
+                <div class="flex flex-col md:flex-row gap-3 w-full">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                        <input type="text" id="admin-search-catalog" onkeyup="renderAdminMenu(this.value)" placeholder="ابحث عن منتج بالاسم أو القسم..." class="admin-input pl-4 pr-12 py-3.5 shadow-inner">
                     </div>
-
-                    <!-- العمود الثاني -->
-                    <div class="space-y-6">
-                        <!-- مناطق الشحن -->
-                        <div class="admin-card space-y-4">
-                            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-                                <h3 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i data-lucide="truck" class="w-5 h-5"></i> مناطق التوصيل والتسعير</h3>
-                                <button onclick="openAddShippingModal()" class="text-xs bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-colors px-3 py-1.5 rounded-lg font-bold border border-emerald-500/30 flex items-center gap-1"><i data-lucide="plus" class="w-3 h-3"></i> إضافة</button>
-                            </div>
-                            <div class="overflow-x-auto custom-scrollbar bg-slate-900 rounded-xl border border-slate-800">
-                                <table class="w-full text-right">
-                                    <thead class="bg-slate-800 text-[10px] text-slate-400">
-                                        <tr><th class="p-3">المنطقة</th><th class="p-3">السعر</th><th class="p-3 text-center">حذف</th></tr>
-                                    </thead>
-                                    <tbody id="admin-shipping-tbody" class="divide-y divide-slate-800 text-sm"></tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- التورت الملكية (CakeBuilder) -->
-                        <div class="admin-card space-y-4">
-                             <div class="flex justify-between items-center border-b border-slate-700 pb-2">
-                                <h3 class="text-lg font-bold text-purple-400 flex items-center gap-2"><i data-lucide="cake" class="w-5 h-5"></i> نظام تسعير التورت الملكية</h3>
-                                <button onclick="saveCakeBuilderSettings()" class="text-xs bg-purple-500/10 text-purple-400 hover:bg-purple-500 hover:text-white transition-colors px-3 py-1.5 rounded-lg font-bold border border-purple-500/30">حفظ النظام</button>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 mb-1">السعر الأساسي للفرد (ج.م)</label>
-                                    <input type="number" id="set-cake-base-price" class="admin-input py-2.5 text-purple-400 font-bold">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 mb-1">رسوم الطباعة القابلة للأكل</label>
-                                    <input type="number" id="set-print-edible" class="admin-input py-2.5 font-bold">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 mb-1">أقل عدد أفراد (المربع)</label>
-                                    <input type="number" id="set-cake-min-sq" class="admin-input py-2.5">
-                                </div>
-                                <div>
-                                    <label class="block text-[10px] font-bold text-slate-400 mb-1">أقل عدد أفراد (المستطيل)</label>
-                                    <input type="number" id="set-cake-min-rect" class="admin-input py-2.5">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 mb-2">النكهات المتاحة للحشو والكيك</label>
-                                <div id="admin-cake-flavors-list" class="flex flex-wrap gap-2 mb-2 p-3 bg-slate-900 rounded-xl border border-slate-800 min-h-[50px]"></div>
-                                <div class="flex gap-2 mt-2">
-                                    <input type="text" id="new-flavor-input" placeholder="اكتب نكهة جديدة..." class="admin-input py-2.5 text-xs flex-1">
-                                    <button onclick="addCakeFlavor()" class="bg-purple-500 text-white px-4 rounded-xl text-xs font-bold hover:bg-purple-600 transition-colors">إضافة</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- الكوبونات والخصومات -->
-                        <div class="admin-card space-y-4">
-                            <h3 class="text-lg font-bold text-orange-400 flex items-center gap-2 border-b border-slate-700 pb-2"><i data-lucide="ticket" class="w-5 h-5"></i> إدارة الكوبونات والخصومات</h3>
-                            <div class="flex gap-2">
-                                <input type="text" id="promo-code-input" placeholder="كود الخصم (مثال: BOSE20)" class="admin-input uppercase font-bold text-orange-400 flex-1">
-                                <input type="number" id="promo-discount-input" placeholder="القيمة %" class="admin-input w-24">
-                                <button onclick="addPromoCode()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 rounded-xl font-bold transition-colors"><i data-lucide="plus" class="w-5 h-5"></i></button>
-                            </div>
-                            <div id="promo-codes-list" class="space-y-2 max-h-32 overflow-y-auto custom-scrollbar">
-                                <p class="text-xs text-slate-500 text-center py-2">لا توجد كوبونات مفعلة حالياً</p>
-                            </div>
-                        </div>
-
-                        <!-- الأمان والمرور والنسخ الاحتياطي -->
-                        <div class="admin-card space-y-4 border-red-500/20 bg-red-500/5">
-                            <h3 class="text-lg font-bold text-red-400 flex items-center gap-2 border-b border-slate-700 pb-2"><i data-lucide="shield-alert" class="w-5 h-5"></i> الحماية والنسخ الاحتياطي</h3>
-                            
-                            <!-- إدارة كلمة المرور -->
-                            <div class="space-y-3 mb-6 bg-slate-900 p-4 rounded-xl border border-slate-800">
-                                <h4 class="text-sm font-bold text-white mb-2">تغيير كلمة المرور</h4>
-                                <input type="password" id="sec-current-pwd" placeholder="كلمة المرور الحالية" class="admin-input py-2 text-sm">
-                                <div class="flex gap-2">
-                                    <input type="password" id="sec-new-pwd" placeholder="الكلمة الجديدة" class="admin-input py-2 text-sm flex-1">
-                                    <input type="password" id="sec-confirm-pwd" placeholder="تأكيد الكلمة" class="admin-input py-2 text-sm flex-1">
-                                </div>
-                                <button onclick="changeAdminPassword()" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-sm font-bold border border-slate-700 mt-2">تحديث كلمة المرور</button>
-                            </div>
-
-                            <div class="flex gap-3">
-                                <button onclick="exportBackupJSON()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl text-xs font-bold border border-slate-700 flex justify-center items-center gap-2 transition-colors"><i data-lucide="download-cloud" class="w-4 h-4 text-emerald-400"></i> تحميل نسخة احتياطية</button>
-                                <label class="flex-1 bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl text-xs font-bold border border-slate-700 flex justify-center items-center gap-2 cursor-pointer transition-colors"><i data-lucide="upload-cloud" class="w-4 h-4 text-blue-400"></i> استعادة البيانات<input type="file" accept=".json" class="hidden" onchange="importBackupJSON(event)"></label>
-                            </div>
-                        </div>
-                    </div>
+                    <select id="admin-sort-catalog" class="admin-input md:w-48 py-3.5" onchange="renderAdminMenu(document.getElementById('admin-search-catalog').value)">
+                        <option value="newest">الأحدث أولاً</option>
+                        <option value="price_high">الأعلى سعراً</option>
+                        <option value="price_low">الأقل سعراً</option>
+                        <option value="name">أبجدياً</option>
+                    </select>
                 </div>
-
-                <!-- حقول مخفية للحفاظ على التوافق مع دوال الألوان والخطوط القديمة -->
-                <div class="hidden">
-                    <input type="hidden" id="set-brand-color">
-                    <input type="hidden" id="set-bg-color">
-                    <input type="hidden" id="set-text-color">
-                    <input type="hidden" id="set-font">
-                    <input type="hidden" id="set-font-size">
-                    <input type="hidden" id="set-font-weight">
+                
+                <div id="admin-catalog-tabs" class="flex overflow-x-auto hide-scrollbar gap-2 w-full pb-2"></div>
+            </div>
+            
+            <div id="admin-menu-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                </div>
+            
+            <div class="admin-card p-0 overflow-hidden hidden" id="legacy-menu-table-container">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-right border-collapse min-w-[700px]">
+                        <thead class="bg-slate-900 border-b border-slate-800 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
+                            <tr><th class="p-4">صورة</th><th class="p-4">القسم</th><th class="p-4">البيانات</th><th class="p-4">السعر</th><th class="p-4 text-center">تحكم</th></tr>
+                        </thead>
+                        <tbody id="admin-menu-tbody" class="divide-y divide-slate-800/50 text-sm text-slate-200"></tbody>
+                    </table>
                 </div>
             </div>
+        </div>
 
-        </main> <!-- نهاية منطقة التمرير -->
-
-        <!-- 📱 شريط التنقل السفلي الاحترافي (App-Like Bottom Nav) للموبايل فقط -->
-        <div class="md:hidden bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 z-50 flex justify-between items-end px-6 pb-6 pt-3 shadow-[0_-10px_20px_rgba(0,0,0,0.2)] shrink-0 w-full">
-            <button onclick="switchAdminTab('overview')" class="mobile-nav-btn flex flex-col items-center gap-1.5 text-pink-400 transition-colors w-12" data-tab="overview">
-                <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
-                <span class="text-[10px] font-bold">الرئيسية</span>
-            </button>
-            <button onclick="switchAdminTab('orders')" class="mobile-nav-btn flex flex-col items-center gap-1.5 text-slate-400 hover:text-pink-400 transition-colors w-12 relative" data-tab="orders">
-                <i data-lucide="shopping-bag" class="w-6 h-6"></i>
-                <span class="text-[10px] font-bold">الطلبات</span>
-                <span id="nav-order-badge" class="absolute top-0 right-2 w-2.5 h-2.5 bg-pink-500 border-2 border-slate-900 rounded-full animate-pulse hidden"></span>
-            </button>
+        <div id="admin-orders" class="admin-tab-content hidden space-y-6 animate-fade-in max-w-6xl mx-auto">
+            <div class="flex flex-col gap-4 mb-4 sticky top-0 bg-[#0f172a] z-20 pb-4 border-b border-slate-800 pt-2 shadow-sm">
+                <h2 class="text-2xl font-black text-white flex items-center gap-2">
+                    <i data-lucide="shopping-bag" class="w-6 h-6 text-purple-400"></i> الطلبات الواردة
+                </h2>
+                
+                <div class="flex flex-col md:flex-row gap-3">
+                    <div id="admin-order-filters" class="flex overflow-x-auto hide-scrollbar gap-2 flex-1">
+                        </div>
+                    <div class="flex gap-2 w-full md:w-auto">
+                        <input type="date" id="order-filter-date" class="admin-input py-2 px-3 text-xs flex-1 md:w-40" onchange="filterOrdersByDate()">
+                        <button onclick="refreshOrders()" class="bg-slate-800 border border-slate-700 text-white p-2 rounded-xl active:scale-95"><i data-lucide="refresh-cw" class="w-5 h-5"></i></button>
+                    </div>
+                </div>
+            </div>
             
-            <!-- زر الإضافة العائم السحري (FAB) -->
-            <div class="relative -top-5">
-                <button onclick="openAddProductModal()" class="flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-pink-600 to-pink-500 text-white rounded-2xl shadow-[0_8px_30px_rgba(236,72,153,0.4)] transform transition active:scale-90 border-4 border-[#0f172a] rotate-45 group">
-                    <i data-lucide="plus" class="w-7 h-7 -rotate-45 group-active:rotate-90 transition-transform"></i>
+            <div class="admin-card p-0 overflow-hidden">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-right border-collapse min-w-[900px]">
+                        <thead class="bg-slate-900 border-b border-slate-800 text-slate-400 text-[11px] font-bold uppercase tracking-wider">
+                            <tr>
+                                <th class="p-4 rounded-tr-xl">رقم الطلب</th>
+                                <th class="p-4">التاريخ والوقت</th>
+                                <th class="p-4">العميل / الهاتف</th>
+                                <th class="p-4">الإجمالي</th>
+                                <th class="p-4">الحالة</th>
+                                <th class="p-4 text-center rounded-tl-xl">إجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-orders-tbody" class="divide-y divide-slate-800/50 text-sm text-slate-200">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="admin-settings" class="admin-tab-content hidden space-y-6 animate-fade-in max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4 sticky top-0 bg-[#0f172a] z-20 pt-2">
+                <h2 class="text-2xl font-black text-white flex items-center gap-2">
+                    <i data-lucide="sliders" class="w-6 h-6 text-emerald-400"></i> الإعدادات المتقدمة
+                </h2>
+                <button onclick="saveStoreSettings()" class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-emerald-500/20 active:scale-95 flex items-center gap-2 transition-all">
+                    <i data-lucide="save" class="w-4 h-4"></i> حفظ كافة التعديلات
                 </button>
             </div>
 
-            <button onclick="switchAdminTab('menu')" class="mobile-nav-btn flex flex-col items-center gap-1.5 text-slate-400 hover:text-pink-400 transition-colors w-12" data-tab="menu">
-                <i data-lucide="book-open" class="w-6 h-6"></i>
-                <span class="text-[10px] font-bold">الكتالوج</span>
-            </button>
-            <button onclick="switchAdminTab('settings')" class="mobile-nav-btn flex flex-col items-center gap-1.5 text-slate-400 hover:text-pink-400 transition-colors w-12" data-tab="settings">
-                <i data-lucide="sliders" class="w-6 h-6"></i>
-                <span class="text-[10px] font-bold">الضبط</span>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <div class="space-y-6">
+                    <div class="admin-card space-y-4">
+                        <h3 class="text-lg font-bold text-pink-400 flex items-center gap-2 border-b border-slate-700 pb-2"><i data-lucide="fingerprint" class="w-5 h-5"></i> بيانات العلامة التجارية (BoseSweets)</h3>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2">اسم العلامة التجارية (مقدس لا يتغير)</label>
+                            <input type="text" id="set-brand" class="admin-input bg-slate-900 border-slate-800 text-slate-500" value="حلويات بوسي" readonly title="اسم العلامة التجارية لا يمكن تغييره">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-2">رقم هاتف المبيعات</label>
+                                <input type="tel" id="set-footer-phone" class="admin-input" dir="ltr" placeholder="مثال: 01xxxxxxxxx">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 mb-2">العنوان الظاهر للعملاء</label>
+                                <input type="text" id="set-footer-address" class="admin-input" placeholder="مثال: مركز الفرافرة، الوادي الجديد">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2">عنوان الهيدر الترحيبي (Hook)</label>
+                            <input type="text" id="set-hero-title" class="admin-input" placeholder="مثال: طعم السعادة في كل قضمة!">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2">وصف الهيدر الجذاب</label>
+                            <textarea id="set-hero-desc" rows="2" class="admin-input resize-none" placeholder="اكتب وصف يشجع العميل على الطلب..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2">رسالة الفوتر (مقولة)</label>
+                            <input type="text" id="set-footer-quote" class="admin-input" placeholder="مثال: صُنع بحب لأجلكم">
+                        </div>
+                    </div>
+
+                    <div class="admin-card space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                            <h3 class="text-lg font-bold text-blue-400 flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5"></i> أقسام المنيو</h3>
+                            <button onclick="saveCategoriesToCloud()" class="text-xs bg-blue-500/10 text-blue-400 hover:bg-blue-500 hover:text-white transition-colors px-3 py-1.5 rounded-lg font-bold border border-blue-500/30">حفظ الأقسام</button>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="text" id="new-category-input" placeholder="اكتب اسم قسم جديد..." class="admin-input flex-1">
+                            <button onclick="addNewCategory()" class="bg-blue-500 text-white px-5 rounded-xl font-bold active:scale-95 transition-colors hover:bg-blue-600"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                        </div>
+                        <div id="admin-categories-list" class="space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1 mt-2">
+                            </div>
+                    </div>
+
+                    <div class="admin-card space-y-4">
+                        <h3 class="text-lg font-bold text-amber-400 flex items-center gap-2 border-b border-slate-700 pb-2"><i data-lucide="megaphone" class="w-5 h-5"></i> شريط الإعلانات أعلى الموقع</h3>
+                        
+                        <label class="flex items-center justify-between p-3 rounded-xl border border-slate-700 bg-slate-800/50 cursor-pointer">
+                            <span class="font-bold text-sm">تفعيل شريط الأخبار المتحرك</span>
+                            <input type="checkbox" id="set-ticker-active" class="w-5 h-5 accent-amber-500 rounded">
+                        </label>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 mb-2">نص الإعلان (يمكن استخدام الإيموجي)</label>
+                            <input type="text" id="set-ticker-text" class="admin-input" placeholder="مثال: خصم 20% على جميع التورت لفترة محدودة! 🎉">
+                        </div>
+                        <input type="hidden" id="set-announcement">
+                        <input type="hidden" id="set-ticker-speed" value="30">
+                        <input type="hidden" id="set-ticker-font" value="Cairo">
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="admin-card space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                            <h3 class="text-lg font-bold text-emerald-400 flex items-center gap-2"><i data-lucide="truck" class="w-5 h-5"></i> مناطق التوصيل والتسعير</h3>
+                            <button onclick="openAddShippingModal()" class="text-xs bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-white transition-colors px-3 py-1.5 rounded-lg font-bold border border-emerald-500/30 flex items-center gap-1"><i data-lucide="plus" class="w-3 h-3"></i> إضافة منطقة</button>
+                        </div>
+                        <div class="overflow-x-auto custom-scrollbar bg-slate-900 rounded-xl border border-slate-800">
+                            <table class="w-full text-right">
+                                <thead class="bg-slate-800 text-[10px] text-slate-400">
+                                    <tr><th class="p-3">المنطقة</th><th class="p-3">السعر</th><th class="p-3 text-center">حذف</th></tr>
+                                </thead>
+                                <tbody id="admin-shipping-tbody" class="divide-y divide-slate-800 text-sm"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="admin-card space-y-4">
+                         <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                            <h3 class="text-lg font-bold text-purple-400 flex items-center gap-2"><i data-lucide="cake" class="w-5 h-5"></i> نظام تسعير التورت الملكية</h3>
+                            <button onclick="saveCakeBuilderSettings()" class="text-xs bg-purple-500/10 text-purple-400 hover:bg-purple-500 hover:text-white transition-colors px-3 py-1.5 rounded-lg font-bold border border-purple-500/30">حفظ النظام</button>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1">السعر الأساسي للفرد (ج.م)</label>
+                                <input type="number" id="set-cake-base-price" class="admin-input py-2.5 text-purple-400 font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1">رسوم الطباعة القابلة للأكل</label>
+                                <input type="number" id="set-print-edible" class="admin-input py-2.5 font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1">أقل عدد أفراد (المربع)</label>
+                                <input type="number" id="set-cake-min-sq" class="admin-input py-2.5">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 mb-1">أقل عدد أفراد (المستطيل)</label>
+                                <input type="number" id="set-cake-min-rect" class="admin-input py-2.5">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 mb-2">النكهات المتاحة للحشو والكيك</label>
+                            <div id="admin-cake-flavors-list" class="flex flex-wrap gap-2 mb-2 p-3 bg-slate-900 rounded-xl border border-slate-800 min-h-[50px]"></div>
+                            <div class="flex gap-2 mt-2">
+                                <input type="text" id="new-flavor-input" placeholder="اكتب نكهة جديدة..." class="admin-input py-2.5 text-xs flex-1">
+                                <button onclick="addCakeFlavor()" class="bg-purple-500 text-white px-4 rounded-xl text-xs font-bold hover:bg-purple-600 transition-colors">إضافة</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-card space-y-4">
+                        <h3 class="text-lg font-bold text-orange-400 flex items-center gap-2 border-b border-slate-700 pb-2"><i data-lucide="ticket" class="w-5 h-5"></i> إدارة الكوبونات والخصومات</h3>
+                        <div class="flex gap-2">
+                            <input type="text" id="promo-code-input" placeholder="كود الخصم (مثال: BOSE20)" class="admin-input uppercase font-bold text-orange-400 flex-1">
+                            <input type="number" id="promo-discount-input" placeholder="القيمة %" class="admin-input w-24">
+                            <button onclick="addPromoCode()" class="bg-orange-500 hover:bg-orange-600 text-white px-4 rounded-xl font-bold transition-colors"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                        </div>
+                        <div id="promo-codes-list" class="space-y-2 max-h-32 overflow-y-auto custom-scrollbar">
+                            <p class="text-xs text-slate-500 text-center py-2">لا توجد كوبونات مفعلة حالياً</p>
+                        </div>
+                    </div>
+
+                    <div class="admin-card space-y-4 border-red-500/20 bg-red-500/5">
+                        <h3 class="text-lg font-bold text-red-400 flex items-center gap-2 border-b border-slate-700 pb-2"><i data-lucide="shield-alert" class="w-5 h-5"></i> الحماية والنسخ الاحتياطي</h3>
+                        
+                        <div class="space-y-3 mb-6 bg-slate-900 p-4 rounded-xl border border-slate-800">
+                            <h4 class="text-sm font-bold text-white mb-2">تغيير كلمة المرور</h4>
+                            <input type="password" id="sec-current-pwd" placeholder="كلمة المرور الحالية" class="admin-input py-2 text-sm">
+                            <div class="flex gap-2">
+                                <input type="password" id="sec-new-pwd" placeholder="الكلمة الجديدة" class="admin-input py-2 text-sm flex-1">
+                                <input type="password" id="sec-confirm-pwd" placeholder="تأكيد الكلمة" class="admin-input py-2 text-sm flex-1">
+                            </div>
+                            <button onclick="changeAdminPassword()" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-2 rounded-xl text-sm font-bold border border-slate-700 mt-2">تحديث كلمة المرور</button>
+                        </div>
+
+                        <div class="flex gap-3">
+                            <button onclick="exportBackupJSON()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl text-xs font-bold border border-slate-700 flex justify-center items-center gap-2 transition-colors"><i data-lucide="download-cloud" class="w-4 h-4 text-emerald-400"></i> تحميل نسخة احتياطية</button>
+                            <label class="flex-1 bg-slate-800 hover:bg-slate-700 text-white p-3 rounded-xl text-xs font-bold border border-slate-700 flex justify-center items-center gap-2 cursor-pointer transition-colors"><i data-lucide="upload-cloud" class="w-4 h-4 text-blue-400"></i> استعادة البيانات<input type="file" accept=".json" class="hidden" onchange="importBackupJSON(event)"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden">
+                <input type="hidden" id="set-brand-color">
+                <input type="hidden" id="set-bg-color">
+                <input type="hidden" id="set-text-color">
+                <input type="hidden" id="set-font">
+                <input type="hidden" id="set-font-size">
+                <input type="hidden" id="set-font-weight">
+            </div>
+        </div>
+
+    </div> <div class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 z-50 flex justify-between items-end px-6 pb-6 pt-3 shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
+        <button onclick="switchAdminTab('overview')" class="flex flex-col items-center gap-1.5 text-slate-400 hover:text-pink-400 transition-colors w-12">
+            <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold">الرئيسية</span>
+        </button>
+        <button onclick="switchAdminTab('orders')" class="flex flex-col items-center gap-1.5 text-slate-400 hover:text-pink-400 transition-colors w-12 relative">
+            <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold">الطلبات</span>
+            <span id="nav-order-badge" class="absolute top-0 right-2 w-2.5 h-2.5 bg-pink-500 border-2 border-slate-900 rounded-full animate-pulse hidden"></span>
+        </button>
+        
+        <div class="relative -top-5">
+            <button onclick="openAddProductModal()" class="flex items-center justify-center w-14 h-14 bg-gradient-to-tr from-pink-600 to-pink-500 text-white rounded-2xl shadow-[0_8px_30px_rgba(236,72,153,0.4)] transform transition active:scale-90 border-4 border-[#0f172a] rotate-45 group">
+                <i data-lucide="plus" class="w-7 h-7 -rotate-45 group-active:rotate-90 transition-transform"></i>
             </button>
         </div>
 
-    </div> <!-- نهاية منطقة المحتوى الرئيسية (Main Content Wrapper) -->
+        <button onclick="switchAdminTab('menu')" class="flex flex-col items-center gap-1.5 text-slate-400 hover:text-pink-400 transition-colors w-12">
+            <i data-lucide="book-open" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold">الكتالوج</span>
+        </button>
+        <button onclick="switchAdminTab('settings')" class="flex flex-col items-center gap-1.5 text-slate-400 hover:text-pink-400 transition-colors w-12">
+            <i data-lucide="sliders" class="w-6 h-6"></i>
+            <span class="text-[10px] font-bold">الضبط</span>
+        </button>
+    </div>
 
-
-    <!-- النوافذ المنبثقة (Modals) تبدأ من هنا -->
-
-    <!-- نافذة تفاصيل الطلب (Order Details Modal) -->
     <div id="admin-order-modal" class="fixed inset-0 bg-slate-950/90 z-[250] hidden items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-md transition-opacity">
-        <div class="admin-card bottom-sheet md:modal-desktop rounded-t-3xl md:rounded-3xl p-0 w-full max-w-3xl relative max-h-[90vh] flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.5)] bg-slate-900 border-slate-700">
+        <div class="admin-card bottom-sheet md:modal-desktop rounded-t-3xl md:rounded-3xl p-0 w-full max-w-3xl relative max-h-[85dvh] flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.5)] bg-slate-900 border-slate-700">
             
             <div class="sticky top-0 bg-slate-900/95 backdrop-blur z-10 px-6 py-5 border-b border-slate-800 flex justify-between items-center rounded-t-3xl md:rounded-t-3xl">
                 <div>
@@ -600,7 +522,7 @@
             </div>
 
             <div class="p-6 overflow-y-auto custom-scrollbar flex-1 space-y-6">
-                <!-- شبكة بيانات العميل -->
+                
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-slate-800/50 p-4 rounded-2xl border border-slate-700/50">
                         <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold mb-1">العميل</p>
@@ -622,13 +544,12 @@
                     </div>
                 </div>
 
-                <!-- المشتريات -->
                 <div>
                     <h4 class="text-sm font-bold text-slate-400 border-b border-slate-800 pb-2 mb-3">عناصر الطلب</h4>
-                    <div id="modal-order-items" class="space-y-3"></div>
+                    <div id="modal-order-items" class="space-y-3">
+                        </div>
                 </div>
 
-                <!-- ملخص الحساب -->
                 <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
                     <div class="flex justify-between text-sm text-slate-400">
                         <span>المجموع الفرعي:</span>
@@ -643,9 +564,9 @@
                         <span id="modal-order-total" class="text-pink-400 font-mono">0 ج.م</span>
                     </div>
                 </div>
+
             </div>
 
-            <!-- الفوتر (تغيير الحالة) -->
             <div class="sticky bottom-0 bg-slate-900 border-t border-slate-800 p-4 md:p-6 rounded-b-3xl">
                 <div class="flex flex-col md:flex-row gap-4 items-center">
                     <div class="w-full md:w-1/2">
@@ -667,9 +588,8 @@
         </div>
     </div>
 
-    <!-- نافذة إضافة/تعديل منتج -->
     <div id="admin-prod-modal" class="fixed inset-0 bg-slate-950/80 z-[200] hidden items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-sm transition-opacity">
-        <div class="admin-card bottom-sheet md:modal-desktop rounded-t-3xl md:rounded-3xl p-6 md:p-8 w-full max-w-2xl relative max-h-[90vh] overflow-y-auto custom-scrollbar shadow-[0_-10px_40px_rgba(0,0,0,0.3)] bg-slate-900 border-slate-700">
+        <div class="admin-card bottom-sheet md:modal-desktop rounded-t-3xl md:rounded-3xl p-6 md:p-8 w-full max-w-2xl relative max-h-[85dvh] overflow-y-auto custom-scrollbar shadow-[0_-10px_40px_rgba(0,0,0,0.3)] bg-slate-900 border-slate-700">
             
             <div class="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-6 md:hidden"></div> 
             
@@ -697,7 +617,7 @@
                         <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wide mb-1.5">القسم الرئيسي</label>
                         <select id="edit-prod-cat" class="admin-input py-3">
                             <option value="تورت">تورت</option><option value="جاتوهات">جاتوهات</option><option value="قشطوطة">قشطوطة</option><option value="بامبوليني">بامبوليني</option><option value="دوناتس">دوناتس</option><option value="ديسباسيتو">ديسباسيتو</option><option value="سينابون">سينابون</option><option value="ريد فيلفت">ريد فيلفت</option><option value="كبات السعادة">كبات السعادة</option><option value="ميل فاي">ميل فاي</option><option value="إكلير">إكلير</option><option value="تشيز كيك">تشيز كيك</option><option value="عروض وبوكسات">عروض وبوكسات</option><option value="ميني تورتة">ميني تورتة</option><option value="ورد">ورد</option>
-                        </select>
+                            </select>
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wide mb-1.5">النوع/المقاس</label>
@@ -729,14 +649,16 @@
                 
                 <div class="bg-slate-950 p-5 rounded-2xl border border-slate-800">
                     <div class="flex justify-between items-center mb-3">
-                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wide">الصور عالية الجودة</label>
+                        <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wide">الصور عالية الجودة (تدعم السحب والإفلات)</label>
                         <span id="uploading-spinner" class="hidden"><i data-lucide="loader-2" class="w-4 h-4 text-pink-500 animate-spin"></i> جاري الرفع...</span>
                     </div>
+                    
                     <label class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 py-6 rounded-xl cursor-pointer flex flex-col justify-center items-center gap-2 text-sm font-bold transition-all border-2 border-dashed border-slate-600 hover:border-pink-500/50 mb-4 group">
                         <i data-lucide="image-plus" class="w-8 h-8 text-slate-400 group-hover:text-pink-400 transition-colors"></i> 
                         <span>اضغط لرفع صور أو اسحبها هنا</span>
                         <input type="file" id="prod-img-upload" accept="image/*" multiple class="hidden" onchange="compressAndUploadMultiImage(event)">
                     </label>
+                    
                     <div id="edit-prod-images-container" class="flex gap-3 overflow-x-auto custom-scrollbar pb-2 min-h-[80px]"></div>
                 </div>
                 
@@ -747,7 +669,7 @@
                             <i data-lucide="sparkles" class="w-3 h-3"></i> مساعدة الذكاء الاصطناعي
                         </button>
                     </div>
-                    <textarea id="edit-prod-desc" rows="3" placeholder="اكتب تفاصيل ومكونات المنتج تشجع العميل على الشراء..." class="admin-input py-3 resize-y min-h-[80px] custom-scrollbar leading-relaxed"></textarea>
+                    <textarea id="edit-prod-desc" rows="3" placeholder="اكتب تفاصيل ومكونات المنتج تشجع العميل على الشراء. أو اضغط على الزر أعلاه لتوليد وصف احترافي..." class="admin-input py-3 resize-y min-h-[80px] custom-scrollbar leading-relaxed"></textarea>
                 </div>
             </div>
             
@@ -759,7 +681,6 @@
         </div>
     </div>
 
-    <!-- نافذة إضافة منطقة شحن -->
     <div id="admin-ship-modal" class="fixed inset-0 bg-slate-950/80 z-[200] hidden items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-sm transition-opacity">
         <div class="admin-card bottom-sheet md:modal-desktop rounded-t-3xl md:rounded-3xl p-6 md:p-8 max-w-sm w-full relative shadow-2xl bg-slate-900 border-slate-700">
             <div class="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-6 md:hidden"></div>
@@ -781,7 +702,6 @@
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="firebase-config.js"></script>
     <script src="app.js"></script>
     <script src="gallery.js"></script>
@@ -791,30 +711,91 @@
         // التهيئة وبدء تشغيل النظام
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+            
+            // تحديد التاريخ في الشاشة الرئيسية
             const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const dateEl = document.getElementById('admin-current-date');
-            if(dateEl) dateEl.textContent = new Date().toLocaleDateString('ar-EG', dateOptions);
+            document.getElementById('admin-current-date').textContent = new Date().toLocaleDateString('ar-EG', dateOptions);
         });
 
-        // 🚀 Engine Upgrade: Instant Boot without waiting for window.onload
         if(typeof auth !== 'undefined') {
-            auth.onAuthStateChanged(async user => {
+            auth.onAuthStateChanged(user => {
                 if (user) {
-                    try {
-                        showSystemToast("تم التحقق، جاري جلب البيانات... 👑", "info");
+                    window.onload = async () => {
                         await loadEngineMemory(); 
                         openAdminDashboardDirectly(); 
                         lucide.createIcons();
+                        // تهيئة مبدئية لرسوم Chart.js إن وجدت دالة في admin.js
                         if(typeof initAdminCharts === 'function') initAdminCharts();
-                    } catch (error) {
-                        console.error("Boot Error:", error);
-                        showSystemToast("حدث خطأ أثناء تحميل البيانات", "error");
-                    }
+                    };
                 } else {
                     window.location.href = 'login.html';
                 }
             });
         }
+        
+        // دالة التنقل المحسنة
+        function switchAdminTab(tabId) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => {
+                el.classList.remove('block');
+                el.classList.add('hidden');
+            });
+            const target = document.getElementById('admin-' + tabId);
+            if(target) {
+                target.classList.remove('hidden');
+                target.classList.add('block');
+            }
+            
+            // تفعيل الأزرار في الشريط السفلي
+            document.querySelectorAll('.fixed.bottom-0 button').forEach(btn => {
+                if(!btn.classList.contains('bg-gradient-to-tr')) { // تجاهل زر الإضافة العائم
+                    btn.classList.remove('text-pink-400');
+                    btn.classList.add('text-slate-400');
+                }
+            });
+            
+            const activeBtn = Array.from(document.querySelectorAll('.fixed.bottom-0 button')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(`switchAdminTab('${tabId}')`));
+            if(activeBtn && !activeBtn.classList.contains('bg-gradient-to-tr')) {
+                activeBtn.classList.remove('text-slate-400');
+                activeBtn.classList.add('text-pink-400');
+            }
+            // السكرول لمكان منطقة المحتوى فقط لمنع حركة الصفحة بالكامل
+            const scrollArea = document.getElementById('main-scroll-area');
+            if(scrollArea) {
+                scrollArea.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // دوال واجهة التأكيد السريعة (يتم استدعاء الوظيفة الحقيقية برمجيا)
+        let confirmActionCallback = null;
+        function openConfirmModal(title, message, callback) {
+            document.getElementById('confirm-title').innerText = title;
+            document.getElementById('confirm-message').innerText = message;
+            confirmActionCallback = callback;
+            
+            const modal = document.getElementById('admin-confirm-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+            
+            document.getElementById('btn-confirm-action').onclick = () => {
+                if(confirmActionCallback) confirmActionCallback();
+                closeConfirmModal();
+            };
+        }
+        function closeConfirmModal() {
+            const modal = document.getElementById('admin-confirm-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        // دوال وهمية لإغلاق النوافذ الجديدة لتفادي أخطاء Console لحين برمجتها في JS
+        function closeOrderModal() {
+            const modal = document.getElementById('admin-order-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+        // يمكن لـ admin.js لاحقاً استخدام دالة openOrderModal(orderId) لفتحها
     </script>
 </body>
 </html>
