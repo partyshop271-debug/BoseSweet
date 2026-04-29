@@ -46,7 +46,7 @@ function showSystemToast(message, type = 'info') {
     msgEl.innerText = message;
     toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] flex items-center gap-3 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm max-w-[90vw] text-center border border-gray-700 toast-enter ${type === 'error' ? 'bg-red-900' : (type === 'success' ? 'bg-emerald-800' : 'bg-gray-900')}`;
     iconEl.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : (type === 'success' ? 'check-circle' : 'info'));
-    lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
     setTimeout(() => { toast.classList.replace('flex', 'hidden'); toast.classList.remove('toast-enter'); }, 4000);
 }
 
@@ -160,7 +160,8 @@ async function initApp() {
     if(document.getElementById('categories-nav')) renderCategories();
     if(document.getElementById('display-container')) renderMainDisplay();
     
-    syncCartUI(); lucide.createIcons();
+    syncCartUI(); 
+    if(window.lucide) lucide.createIcons();
     PreloadEngine.ignite(catalog, galleryData);
     
     const urlParams = new URLSearchParams(window.location.search);
@@ -182,15 +183,15 @@ async function initApp() {
 // ----------------------------------------------------
 function toggleLiveSearch(show) {
     const overlay = document.getElementById('live-search-overlay'); const input = document.getElementById('live-search-input'); const results = document.getElementById('live-search-results');
-    if (show) { overlay.classList.remove('hidden'); setTimeout(() => { overlay.classList.add('opacity-100'); input.focus(); }, 10); input.value = ''; results.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; lucide.createIcons(); } 
+    if (show) { overlay.classList.remove('hidden'); setTimeout(() => { overlay.classList.add('opacity-100'); input.focus(); }, 10); input.value = ''; results.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; if(window.lucide) lucide.createIcons(); } 
     else { overlay.classList.remove('opacity-100'); setTimeout(() => overlay.classList.add('hidden'), 300); }
 }
 
 function performLiveSearch(query) {
     const resultsContainer = document.getElementById('live-search-results'); const q = query.trim().toLowerCase();
-    if (!q) { resultsContainer.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; lucide.createIcons(); return; }
+    if (!q) { resultsContainer.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; if(window.lucide) lucide.createIcons(); return; }
     const matches = catalog.filter(p => (p.name && p.name.toLowerCase().includes(q)) || (p.category && p.category.toLowerCase().includes(q)) || (p.desc && p.desc.toLowerCase().includes(q)));
-    if (matches.length === 0) { resultsContainer.innerHTML = `<div class="flex flex-col items-center justify-center text-white/70 font-bold mt-10 bg-white/5 p-8 rounded-2xl"><i data-lucide="search-x" class="w-12 h-12 mb-4 text-pink-400"></i><p>لم نجد تطابق للبحث عن "${escapeHTML(query)}"</p><p class="text-xs opacity-70 mt-2">جرب البحث بكلمة مختلفة مثل "تورتة"، "نوتيلا"، "لوتس"</p></div>`; lucide.createIcons(); return; }
+    if (matches.length === 0) { resultsContainer.innerHTML = `<div class="flex flex-col items-center justify-center text-white/70 font-bold mt-10 bg-white/5 p-8 rounded-2xl"><i data-lucide="search-x" class="w-12 h-12 mb-4 text-pink-400"></i><p>لم نجد تطابق للبحث عن "${escapeHTML(query)}"</p><p class="text-xs opacity-70 mt-2">جرب البحث بكلمة مختلفة مثل "تورتة"، "نوتيلا"، "لوتس"</p></div>`; if(window.lucide) lucide.createIcons(); return; }
     resultsContainer.innerHTML = matches.map(p => {
         const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category)); const isOutOfStock = p.inStock === false;
         return `
@@ -203,7 +204,7 @@ function performLiveSearch(query) {
             <div class="px-2">${isOutOfStock ? `<span class="text-xs text-red-500 font-bold bg-red-50 px-2 py-1 rounded-lg border border-red-100"><i data-lucide="ban" class="w-3 h-3 inline"></i> نفدت</span>` : `<button class="w-10 h-10 bg-pink-50 text-pink-500 hover:bg-pink-500 hover:text-white rounded-xl flex items-center justify-center transition-colors shadow-sm"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>`}</div>
         </div>`;
     }).join('');
-    lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function shareProduct(id, name) {
@@ -222,7 +223,7 @@ function renderCustomerSidebarCategories() {
     const container = document.getElementById('sidebar-categories');
     if(!container) return;
     container.innerHTML = catMenu.map(c => `<button onclick="toggleCustomerMenu(false); setCategory('${c}')" class="text-right w-full p-3 rounded-xl font-bold text-sm transition-all hover:bg-gray-50 flex items-center justify-between" style="border: 1px solid hsl(var(--brand-hue), 80%, 95%); color: var(--site-text);"><span>${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</span><i data-lucide="chevron-left" class="w-4 h-4 opacity-50"></i></button>`).join('');
-    lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function renderCustomerGallery() {
@@ -233,7 +234,7 @@ function renderCustomerGallery() {
     slider.innerHTML = galleryData.map(g => `<div class="shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="openLightbox('${g.url}')"><div class="w-32 h-40 md:w-40 md:h-52 rounded-2xl overflow-hidden shadow-sm border" style="border-color: hsl(var(--brand-hue), 80%, 90%);"><img src="${g.url}" class="w-full h-full object-cover" loading="lazy" alt="سابقة أعمال حلويات بوسي"></div></div>`).join('');
 }
 
-function openLightbox(url) { const lb = document.getElementById('gallery-lightbox'); document.getElementById('lightbox-img').src = url; lb.classList.remove('hidden'); lb.classList.add('flex'); lucide.createIcons(); }
+function openLightbox(url) { const lb = document.getElementById('gallery-lightbox'); document.getElementById('lightbox-img').src = url; lb.classList.remove('hidden'); lb.classList.add('flex'); if(window.lucide) lucide.createIcons(); }
 function closeLightbox() { const lb = document.getElementById('gallery-lightbox'); lb.classList.add('hidden'); lb.classList.remove('flex'); }
 
 function renderCategories() {
@@ -265,7 +266,7 @@ function renderMainDisplay() {
         let gridClass = (userLayout === 'full') ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
         container.innerHTML = `<div class="grid ${gridClass} gap-4 sm:gap-6 lg:gap-8 items-stretch">${list.map(p => drawProductCard(p, userLayout)).join('')}</div>`;
     }
-    lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function drawProductCard(p, layoutMode = 'grid') {
@@ -411,7 +412,7 @@ function renderCakeBuilder(target) {
             </div>
         </div>
     `;
-    lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function setSub(t, v) { if(t==='s') state.dSize=v; if(t==='f') state.fType=v; renderMainDisplay(); }
@@ -440,7 +441,7 @@ function setSh(s) {
 function updateCardUI(id) {
     const safeId = String(id); const cardEl = document.getElementById(`product-card-${safeId}`);
     const prod = catalogMap.get(safeId); const userLayout = siteSettings.productLayout || 'grid';
-    if (cardEl && prod) { cardEl.outerHTML = drawProductCard(prod, userLayout); lucide.createIcons(); }
+    if (cardEl && prod) { cardEl.outerHTML = drawProductCard(prod, userLayout); if(window.lucide) lucide.createIcons(); }
 }
 
 function renderCartCrossSell() {
@@ -615,7 +616,9 @@ async function submitOrder() {
     let formattedTime = cTime; try { const [hours, minutes] = cTime.split(':'); const ampm = hours >= 12 ? 'مساءً' : 'صباحاً'; const hours12 = hours % 12 || 12; formattedTime = `${hours12}:${minutes} ${ampm}`; } catch(e){}
 
     const areaName = deliveryMethod === 'pickup' ? 'استلام من الفرع' : (shippingZones.find(z => String(z.id) === String(cAreaId))?.name || 'أخرى');
-    const orderId = 'BS-' + Math.floor(10000 + Math.random() * 90000); let sub = 0; let itemsDesc = [];
+    const orderId = 'BS-' + Math.floor(10000 + Math.random() * 90000); let sub = 0; 
+    let itemsDesc = [];
+    let itemsForDb = []; // <-- الثغرة تم حلها هنا: مصفوفة لحفظ تفاصيل كل منتج للوحدة الإدارية
 
     let m = `*طلب جديد من حلويات بوسي* 🧁\n*رقم الطلب:* ${orderId}\nــــــــــــــــــــــــــــــــــــــــ\n\n`;
     m += `👤 الاسم: ${cName}\n📞 الموبايل: ${cPhone}\n🚚 الاستلام: ${deliveryMethod === 'pickup' ? 'استلام من الفرع 🏪' : 'توصيل للمنزل 🛵'}\n`;
@@ -628,11 +631,38 @@ async function submitOrder() {
         let p = Number(i.price); let q = Number(i.quantity); sub += (p * q);
         let finalItemName = i.isCustom ? i.name : `[${i.category}] ${i.name}`.trim();
         m += `\n*${idx+1}. ${finalItemName}* (x${q}) = ${(p * q)} ج\n`;
-        if (i.isCustom && i.desc) m += `_التفاصيل:_ ${i.desc}\n`; itemsDesc.push(`${finalItemName} (x${q})`);
+        if (i.isCustom && i.desc) m += `_التفاصيل:_ ${i.desc}\n`; 
+        itemsDesc.push(`${finalItemName} (x${q})`);
+
+        // بناء تفاصيل المنتج وحفظها لداتا بيز الإدارة
+        itemsForDb.push({
+            id: i.id,
+            cartItemId: i.cartItemId || i.id,
+            name: finalItemName,
+            price: p,
+            quantity: q,
+            category: i.category || '',
+            desc: (i.isCustom && i.desc) ? i.desc : ''
+        });
     });
     m += `\nــــــــــــــــــــــــــــــــــــــــ\n*الحساب:* ${sub + state.currentShippingFee} ج.م\n`;
 
-    const orderObj = { id: orderId, timestamp: Date.now(), date: formattedDate, name: cName, phone: cPhone, area: areaName, address: cAddress, notes: cNotes, total: (sub + state.currentShippingFee), status: 'pending' };
+    // دمج المصفوفة داخل الكائن الخاص بقاعدة البيانات ليظهر في لوحة التحكم
+    const orderObj = { 
+        id: orderId, 
+        timestamp: Date.now(), 
+        date: formattedDate, 
+        name: cName, 
+        phone: cPhone, 
+        area: areaName, 
+        address: cAddress, 
+        notes: cNotes, 
+        total: (sub + state.currentShippingFee), 
+        status: 'pending',
+        itemsArray: itemsForDb, // <-- دمج عناصر السلة بالكامل هنا
+        itemsDesc: itemsDesc.join(' \n ')
+    };
+    
     try { await NetworkEngine.safeWrite('orders', orderId, orderObj); globalOrders.unshift(orderObj); localStorage.setItem('boseSweets_admin_orders', JSON.stringify(globalOrders)); } catch(e) {}
 
     window.open(`https://wa.me/201097238441?text=${encodeURIComponent(m)}`, '_blank');
@@ -645,7 +675,7 @@ async function submitOrder() {
 function showInfo(t) {
     const d = { about: { t: 'من نحن', b: siteSettings.footerQuote }, privacy: { t: 'سياسة الخصوصية والأمان', b: 'تلتزم إدارة حلويات بوسي بمنتهى السرية والاحترافية في التعامل مع بياناتكم وطلباتكم.' }, refund: { t: 'سياسة الاسترجاع والتعديل', b: 'يتم التعديل على الطلبات المخصصة قبل التنفيذ بـ 24 ساعة على الأقل.' }, care: { t: 'دليل الجودة الملكي', b: '1. الحفظ في مبرد (4-8 مئوية).\n2. تجنب ترك المنتج في السيارة.\n3. يُنصح بالتقديم بعد 10 دقائق من الخروج من المبرد.' } };
     document.getElementById('info-title').innerText = d[t].t; document.getElementById('info-body').innerText = d[t].b;
-    const m = document.getElementById('info-modal'); m.classList.remove('hidden'); m.classList.add('flex'); lucide.createIcons();
+    const m = document.getElementById('info-modal'); m.classList.remove('hidden'); m.classList.add('flex'); if(window.lucide) lucide.createIcons();
 }
 function closeInfo() { const m = document.getElementById('info-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
 

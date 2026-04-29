@@ -4,7 +4,7 @@
  * ============================================================================
  * تم بناء وتوسيع هذا المحرك لضمان أعلى أداء، وتوسيع القدرات الإدارية، مع الحفاظ
  * على كامل البيانات والوظائف السابقة بنظام (البناء والتطوير دون حذف).
- * يحتوي على أقوى خطوط دفاع لحماية المتغيرات، فك تجميد اللوحة، وضمان استيراد الملفات.
+ * تم تطبيق إصلاحات التواريخ (Timestamp) والمبيعات وترتيب الطلبات.
  */
 
 let adminCurrentCat = 'all';
@@ -83,7 +83,7 @@ function openAdminDashboardDirectly() {
             executeSafely('Charts', () => { if(typeof initAdminCharts === 'function') initAdminCharts(); });
         }, 500);
 
-        executeSafely('Icons', () => { if(typeof lucide !== 'undefined') lucide.createIcons(); });
+        executeSafely('Icons', () => { if(window.lucide) lucide.createIcons(); });
         
     } catch (error) {
         console.error("BoseSweets Error: فشل غير متوقع في الإقلاع الأساسي", error);
@@ -116,7 +116,7 @@ function showSystemToast(message, type = 'info') {
         iconEl.className = "w-5 h-5 shrink-0 text-pink-500";
     }
     
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
     
     toast.classList.remove('hidden');
     toast.classList.add('animate-fade-in');
@@ -375,7 +375,7 @@ function renderAdminShipping() {
             </td>
         </tr>
     `).join('');
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function openAddShippingModal() { 
@@ -441,15 +441,22 @@ async function executeDeleteShippingZone(id) {
 
 /** ---------------------------------------------------------------------------
  * 6. لوحة التحليلات والإحصائيات الشاملة (Overview & Analytics)
+ * تم حل ثغرة حساب مبيعات الشهر وتحديث الرسوم البيانية بدقة
  * --------------------------------------------------------------------------*/
 
 function renderAdminOverview() {
+    const now = new Date();
+    // الحصول على بداية الشهر الحالي بنظام Timestamp
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+    
     const validOrders = globalOrders.filter(o => o.status !== 'cancelled');
-    const totalRevenue = validOrders.reduce((sum, order) => sum + (Number(order.total) || 0), 0);
+    
+    // حساب مبيعات (هذا الشهر فقط) اعتماداً على Timestamp بدلاً من الحساب التراكمي
+    const monthlyRevenue = validOrders.filter(o => (o.timestamp || 0) >= startOfMonth).reduce((sum, order) => sum + (Number(order.total) || 0), 0);
     
     if(document.getElementById('admin-stat-products')) document.getElementById('admin-stat-products').innerText = catalog ? catalog.length : 0;
     if(document.getElementById('admin-stat-orders')) document.getElementById('admin-stat-orders').innerText = validOrders.length;
-    if(document.getElementById('admin-stat-revenue')) document.getElementById('admin-stat-revenue').innerHTML = totalRevenue.toLocaleString('ar-EG') + ' <span class="text-lg text-slate-400">ج.م</span>';
+    if(document.getElementById('admin-stat-revenue')) document.getElementById('admin-stat-revenue').innerHTML = monthlyRevenue.toLocaleString('ar-EG') + ' <span class="text-lg text-slate-400">ج.م</span>';
 
     renderQuickRecentOrders();
 }
@@ -463,7 +470,8 @@ function renderQuickRecentOrders() {
         return;
     }
 
-    const recent = [...globalOrders].sort((a,b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+    // الاعتماد المطلق على timestamp لترتيب دقيق للطلبات
+    const recent = [...globalOrders].sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0)).slice(0, 5);
     
     container.innerHTML = recent.map(o => {
         let statusColor = "bg-slate-500/20 text-slate-400";
@@ -473,8 +481,8 @@ function renderQuickRecentOrders() {
         if(o.status === 'completed') { statusColor = "bg-emerald-500/20 text-emerald-400"; statusText = "مكتمل"; }
         if(o.status === 'cancelled') { statusColor = "bg-red-500/20 text-red-400"; statusText = "ملغي"; }
 
-        let timeString = o.date;
-        try { timeString = o.date.split(',')[1] || o.date; } catch(e){}
+        let timeString = o.date || '';
+        try { if(timeString.includes(',')) timeString = timeString.split(',')[1]; } catch(e){}
 
         return `
             <div onclick="openOrderDetails('${o.id}')" class="p-3 bg-slate-900 hover:bg-slate-800 rounded-xl border border-slate-800 flex justify-between items-center cursor-pointer transition-colors active:scale-95">
@@ -489,7 +497,7 @@ function renderQuickRecentOrders() {
             </div>
         `;
     }).join('');
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function initAdminCharts() {
@@ -501,16 +509,23 @@ function initAdminCharts() {
 
     const last7Days = [];
     const salesData = [];
+    const now = new Date();
+    
+    // تصحيح الرسوم البيانية لتعتمد على Timestamp بدلاً من مطابقة النصوص المعرضة للخطأ
     for(let i=6; i>=0; i--) {
-        const d = new Date(); d.setDate(d.getDate() - i);
+        const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
         last7Days.push(d.toLocaleDateString('ar-EG', { weekday: 'short' }));
-        const dayString = d.toISOString().split('T')[0];
+        
+        const startOfDay = d.setHours(0, 0, 0, 0);
+        const endOfDay = d.setHours(23, 59, 59, 999);
         
         let dayTotal = 0;
         if(globalOrders && globalOrders.length > 0) {
-            dayTotal = globalOrders.filter(o => o.status === 'completed' && o.date && o.date.includes(dayString)).reduce((sum, o) => sum + Number(o.total || 0), 0);
+            dayTotal = globalOrders.filter(o => 
+                o.status === 'completed' && o.timestamp >= startOfDay && o.timestamp <= endOfDay
+            ).reduce((sum, o) => sum + Number(o.total || 0), 0);
         }
-        salesData.push(dayTotal || Math.floor(Math.random() * 800)); 
+        salesData.push(dayTotal); 
     }
 
     if(salesChartInstance) salesChartInstance.destroy();
@@ -547,6 +562,7 @@ function initAdminCharts() {
 
 /** ---------------------------------------------------------------------------
  * 7. نظام إدارة الطلبات المتقدم (Advanced Order Engine)
+ * تم حل مشكلة الترتيب العشوائي بدقة باستخدام Timestamp
  * --------------------------------------------------------------------------*/
 
 function renderAdminOrderFilters() {
@@ -581,13 +597,18 @@ function renderAdminOrders() {
         return; 
     }
 
-    let list = [...globalOrders].sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
+    // الاعتماد على timestamp للترتيب الزمني الصحيح (من الأحدث للأقدم)
+    let list = [...globalOrders].sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
     
     if (adminOrderFilter !== 'all') list = list.filter(o => (o.status || 'pending') === adminOrderFilter);
     
     const dateFilter = document.getElementById('order-filter-date')?.value;
     if(dateFilter) {
-        list = list.filter(o => o.date && o.date.includes(dateFilter));
+        // إذا كان هناك فلتر زمني، نستخدم Timestamp للبحث داخل نفس اليوم لضمان الدقة
+        const filterDate = new Date(dateFilter);
+        const startOfFilter = filterDate.setHours(0,0,0,0);
+        const endOfFilter = filterDate.setHours(23,59,59,999);
+        list = list.filter(o => o.timestamp >= startOfFilter && o.timestamp <= endOfFilter);
     }
 
     const pendingCount = globalOrders.filter(o => o.status === 'pending').length;
@@ -610,10 +631,13 @@ function renderAdminOrders() {
         if(s === 'completed') statusBadge = '<span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-1 rounded text-[10px] font-bold">مكتمل</span>';
         if(s === 'cancelled') statusBadge = '<span class="bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-1 rounded text-[10px] font-bold">ملغي</span>';
 
+        // تنسيق التاريخ للعرض
+        let displayDate = escapeHTML(o.date || '');
+        
         return `
         <tr class="hover:bg-slate-800 transition-colors border-b border-slate-800/50 cursor-pointer group" onclick="openOrderDetails('${o.id}')">
             <td class="p-4 font-mono text-pink-400 whitespace-nowrap font-bold text-xs">#${escapeHTML((o.id||'').substring(0,8))}</td>
-            <td class="p-4 text-[11px] text-slate-400 whitespace-nowrap" dir="ltr">${escapeHTML(o.date || '')}</td>
+            <td class="p-4 text-[11px] text-slate-400 whitespace-nowrap" dir="ltr">${displayDate}</td>
             <td class="p-4 min-w-[150px]">
                 <p class="font-bold text-slate-200">${escapeHTML(o.name || 'عميل')}</p>
                 <p class="text-[10px] text-slate-500 mt-1 font-mono">${escapeHTML(o.phone || '')}</p>
@@ -627,7 +651,7 @@ function renderAdminOrders() {
             </td>
         </tr>
     `}).join('');
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function openOrderDetails(orderId) {
@@ -661,21 +685,26 @@ function openOrderDetails(orderId) {
 
     const itemsContainer = document.getElementById('modal-order-items');
     if(itemsContainer) {
-        if(typeof order.items === 'string') {
-            itemsContainer.innerHTML = `<div class="p-3 bg-slate-800 rounded-lg text-sm text-slate-300 leading-relaxed">${escapeHTML(order.items).replace(/\n/g, '<br>')}</div>`;
-        } else if (Array.isArray(order.itemsArray)) {
+        // حماية مضافة: معالجة العناصر سواء كانت نصية أو مصفوفة محتفظة بكامل بياناتها (حل ثغرة اختفاء تفاصيل المنتجات)
+        if (Array.isArray(order.itemsArray)) {
             itemsContainer.innerHTML = order.itemsArray.map(item => `
                 <div class="flex justify-between items-center bg-slate-800 p-3 rounded-xl border border-slate-700">
                     <div class="flex items-center gap-3">
-                        <span class="w-6 h-6 flex items-center justify-center bg-slate-900 text-pink-400 font-bold rounded text-xs">${item.qty}x</span>
+                        <span class="w-6 h-6 flex items-center justify-center bg-slate-900 text-pink-400 font-bold rounded text-xs">${item.qty || item.quantity || 1}x</span>
                         <div>
                             <p class="text-sm font-bold text-white">${escapeHTML(item.name || '')}</p>
-                            ${item.notes ? `<p class="text-[10px] text-amber-400 mt-0.5">${escapeHTML(item.notes)}</p>` : ''}
+                            ${item.desc || item.notes ? `<p class="text-[10px] text-amber-400 mt-0.5">${escapeHTML(item.desc || item.notes)}</p>` : ''}
                         </div>
                     </div>
-                    <span class="text-sm font-mono text-emerald-400">${(item.price || 0) * (item.qty || 1)} ج</span>
+                    <span class="text-sm font-mono text-emerald-400">${(item.price || 0) * (item.qty || item.quantity || 1)} ج</span>
                 </div>
             `).join('');
+        } else if(typeof order.items === 'string') {
+            itemsContainer.innerHTML = `<div class="p-3 bg-slate-800 rounded-lg text-sm text-slate-300 leading-relaxed">${escapeHTML(order.items).replace(/\n/g, '<br>')}</div>`;
+        } else if(typeof order.itemsDesc === 'string') {
+            itemsContainer.innerHTML = `<div class="p-3 bg-slate-800 rounded-lg text-sm text-slate-300 leading-relaxed">${escapeHTML(order.itemsDesc).replace(/\n/g, '<br>')}</div>`;
+        } else {
+            itemsContainer.innerHTML = `<div class="p-3 bg-slate-800 rounded-lg text-sm text-slate-500 italic">لا توجد تفاصيل للعناصر</div>`;
         }
     }
 
@@ -694,7 +723,7 @@ function openOrderDetails(orderId) {
         modal.classList.remove('hidden');
         setTimeout(() => modal.classList.remove('opacity-0'), 10);
     }
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function closeOrderModal() {
@@ -769,7 +798,7 @@ function renderAdminMenu(searchQuery = '') {
                 <button onclick="openAddProductModal()" class="mt-4 px-4 py-2 bg-pink-500 text-white rounded-lg text-xs font-bold hover:bg-pink-600 transition-colors relative z-50 pointer-events-auto cursor-pointer">إضافة منتج جديد</button>
             </div>
         `;
-        if(typeof lucide !== 'undefined') lucide.createIcons();
+        if(window.lucide) lucide.createIcons();
         return;
     }
 
@@ -793,7 +822,7 @@ function renderAdminMenu(searchQuery = '') {
                 <p class="font-bold text-sm">لا يوجد منتجات مطابقة لعملية البحث</p>
             </div>
         `;
-        if(typeof lucide !== 'undefined') lucide.createIcons();
+        if(window.lucide) lucide.createIcons();
         return;
     }
 
@@ -832,7 +861,7 @@ function renderAdminMenu(searchQuery = '') {
             </div>
         `;
     }).join('');
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 /** ---------------------------------------------------------------------------
@@ -853,7 +882,7 @@ function renderAdminTempImages() {
             <button onclick="removeTempImage(${idx})" class="absolute top-1 right-1 bg-red-500/80 text-white p-1 rounded-md hover:bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg backdrop-blur-sm cursor-pointer z-50 pointer-events-auto"><i data-lucide="x" class="w-3 h-3"></i></button>
         </div>
     `).join('');
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function removeTempImage(idx) { tempProdImages.splice(idx, 1); renderAdminTempImages(); }
@@ -921,7 +950,7 @@ function openAddProductModal() {
         m.classList.remove('hidden'); m.classList.add('flex');
         setTimeout(() => m.classList.remove('opacity-0'), 10);
     }
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function editProduct(id) {
@@ -956,7 +985,7 @@ function editProduct(id) {
             m.classList.remove('hidden'); m.classList.add('flex');
             setTimeout(() => m.classList.remove('opacity-0'), 10);
         }
-        if(typeof lucide !== 'undefined') lucide.createIcons();
+        if(window.lucide) lucide.createIcons();
     }
 }
 
@@ -1016,6 +1045,10 @@ async function saveProductData() {
         if(typeof saveEngineMemory === 'function') saveEngineMemory('cat'); 
         showSystemToast("تم الحفظ محلياً لتعذر الاتصال بالسحابة", "info"); 
     }
+    
+    // تفريغ الذاكرة المؤقتة لضمان أداء أفضل بعد الحفظ
+    tempProdImages = [];
+    renderAdminTempImages();
     
     const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
     closeProdModal(); 
@@ -1077,7 +1110,7 @@ function renderAdminCakeFlavors() {
             <button onclick="removeCakeFlavor(${idx})" class="text-red-400 hover:text-red-300 ml-1 relative z-50 pointer-events-auto"><i data-lucide="x" class="w-3 h-3"></i></button>
         </div>
     `).join('');
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function addCakeFlavor() {
@@ -1143,7 +1176,7 @@ function renderAdminCategories() {
             </button>
         </div>
     `).join('');
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
     
     const catSelect = document.getElementById('edit-prod-cat');
     if(catSelect) catSelect.innerHTML = catMenu.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('');
@@ -1208,7 +1241,7 @@ function renderPromoCodes() {
             <button onclick="deletePromoCode(${idx})" class="text-red-400 hover:text-white p-1 rounded hover:bg-red-500/20 relative z-50 pointer-events-auto"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         </div>
     `).join('');
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
 }
 
 function addPromoCode() {
@@ -1265,10 +1298,9 @@ async function generateSmartDescription() {
     const originalBtnHTML = btn.innerHTML;
     btn.innerHTML = '<i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> جاري التفكير...'; 
     btn.disabled = true;
-    if(typeof lucide !== 'undefined') lucide.createIcons();
+    if(window.lucide) lucide.createIcons();
     
     try {
-        // تم تحديث مفتاح الذكاء الاصطناعي بنجاح
         const apiKey = 'AIzaSyCYIz6kCuMZ6g5dqJaDTJh5yDRizTHMhQU'; 
         const promptText = `أنت كاتب إعلانات محترف لعلامة تجارية مصرية راقية اسمها "حلويات بوسي"\nاكتب وصف قصير وجذاب لمنتج اسمه "${prodName}" من قسم "${prodCat}"\nالشروط: لهجة مصرية عامية راقية، بدون علامات ترقيم، استخدم إيموجي تخدم المعنى، لا يتعدى سطرين. يفتح الشهية ويشجع على الشراء فوراً.`;
         
@@ -1292,7 +1324,7 @@ async function generateSmartDescription() {
     } finally { 
         btn.innerHTML = originalBtnHTML; 
         btn.disabled = false; 
-        if(typeof lucide !== 'undefined') lucide.createIcons(); 
+        if(window.lucide) lucide.createIcons(); 
     }
 }
 

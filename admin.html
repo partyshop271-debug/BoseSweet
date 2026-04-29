@@ -656,7 +656,7 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
+            if(window.lucide) lucide.createIcons();
             const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             document.getElementById('admin-current-date').textContent = new Date().toLocaleDateString('ar-EG', dateOptions);
         });
@@ -664,12 +664,19 @@
         if(typeof auth !== 'undefined') {
             auth.onAuthStateChanged(user => {
                 if (user) {
-                    window.onload = async () => {
+                    // حماية متقدمة لضمان تنفيذ التحميل مباشرة لو الـ DOM كان جاهز
+                    const initDashboard = async () => {
                         await loadEngineMemory(); 
                         openAdminDashboardDirectly(); 
-                        lucide.createIcons();
+                        if(window.lucide) lucide.createIcons();
                         if(typeof initAdminCharts === 'function') initAdminCharts();
                     };
+                    
+                    if (document.readyState === 'complete') {
+                        initDashboard();
+                    } else {
+                        window.addEventListener('load', initDashboard);
+                    }
                 } else {
                     window.location.href = 'login.html';
                 }
