@@ -1,7 +1,8 @@
-/* Engine Upgrade: Dynamic Theme Engine Base */
+/* === BoseSweets Royal Theme Engine - Full Identity === */
+
 :root {
     --brand-font: 'Cairo', sans-serif;
-    --brand-hue: 355; 
+    --brand-hue: 355; /* هذا الرقم يتم التحكم فيه ديناميكياً من لوحة التحكم */
     --base-font-size: 16px;
     --base-font-weight: 400;
     --site-bg: #ffffff;
@@ -12,7 +13,9 @@
     --ticker-font: 'Cairo', sans-serif;
     --ticker-speed: 20s;
 }
+
 html { font-size: var(--base-font-size); }
+
 body { 
     font-family: var(--brand-font); 
     font-weight: var(--base-font-weight);
@@ -22,50 +25,23 @@ body {
     overflow-x: hidden;
 }
 
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+/* محرك التدرجات اللونية لبراند بوسي */
+.brand-gradient { 
+    background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 65%) 0%, hsl(var(--brand-hue), 85%, 75%) 50%, hsl(var(--brand-hue), 90%, 85%) 100%); 
+}
 
-/* Dynamic Gradient for Brand Identity */
-.brand-gradient { background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 65%) 0%, hsl(var(--brand-hue), 85%, 75%) 50%, hsl(var(--brand-hue), 90%, 85%) 100%); }
+.ticker-brand-gradient { 
+    background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 65%) 0%, hsl(var(--brand-hue), 85%, 75%) 50%, hsl(var(--brand-hue), 90%, 85%) 100%); 
+}
 
-/* Ticker Identity Gradients */
-.ticker-brand-gradient { background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 65%) 0%, hsl(var(--brand-hue), 85%, 75%) 50%, hsl(var(--brand-hue), 90%, 85%) 100%); }
-.ticker-fade-right { background: linear-gradient(to left, hsl(var(--brand-hue), 80%, 65%), transparent); }
-.ticker-fade-left { background: linear-gradient(to right, hsl(var(--brand-hue), 90%, 85%), transparent); }
-
+/* تأثيرات الانتقال والظهور الملكي */
 .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
 .floating { animation: float 6s ease-in-out infinite; }
 @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
 
-.nav-scrolled { background-color: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 4px 10px -1px rgba(0, 0, 0, 0.05); }
-input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue), 80%, 65%); }
-
-/* Admin Dashboard styles */
-.admin-glass { background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(20px); }
-.admin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-.admin-scroll::-webkit-scrollbar-thumb { background-color: #4b5563; border-radius: 10px; }
-.admin-scroll::-webkit-scrollbar-track { background-color: transparent; }
-
-/* Toast Animation */
-@keyframes slideInUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-.toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-.lightbox-enter { animation: fadeIn 0.3s ease-out forwards; }
-
-#global-loader { transition: opacity 0.5s ease, visibility 0.5s; }
-
-/* Custom UI for Radio Buttons */
-.custom-radio-container:has(input:checked) {
-    border-color: hsl(var(--brand-hue), 80%, 65%) !important;
-    background-color: hsl(var(--brand-hue), 80%, 97%) !important;
-    color: hsl(var(--brand-hue), 70%, 50%) !important;
-}
-
-/* Out of stock overlay */
-.grayscale-overlay { filter: grayscale(100%) opacity(0.7); }
-
-/* Ticker Marquee Animation */
+/* محرك الشريط المتحرك (Ticker) */
 @keyframes ticker-marquee {
     0% { transform: translateX(100%); }
     100% { transform: translateX(-100%); }
@@ -73,17 +49,33 @@ input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue)
 .animate-ticker {
     display: inline-block;
     white-space: nowrap;
-    padding-left: 100%; /* Start offscreen */
+    padding-left: 100%;
     animation: ticker-marquee var(--ticker-speed) linear infinite;
 }
-/* Pause on hover */
 #ticker-container:hover .animate-ticker { animation-play-state: paused; }
 
-/* CX Upgrade: Snap Scroll for Multi-Image */
-.snap-slider { scroll-snap-type: x mandatory; }
-.snap-slide { scroll-snap-align: center; }
+/* ضمان ظهور وصف المنتجات كاملاً دون حذف */
+.line-clamp-none {
+    display: block !important;
+    -webkit-line-clamp: unset !important;
+    overflow: visible !important;
+}
 
-/* CX Upgrade: Highlight Animation for Shared Products */
+/* تنسيقات لوحة التحكم الزجاجية */
+.admin-glass { background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(20px); }
+
+/* إخفاء شريط التمرير مع الحفاظ على الوظيفة */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* تنسيق أزرار الاختيار المخصصة للتوصيل */
+.custom-radio-container:has(input:checked) {
+    border-color: hsl(var(--brand-hue), 80%, 65%) !important;
+    background-color: hsl(var(--brand-hue), 80%, 97%) !important;
+    color: hsl(var(--brand-hue), 70%, 50%) !important;
+}
+
+/* تأثير التوهج للمنتجات المميزة عند المشاركة */
 @keyframes targetHighlight {
     0% { box-shadow: 0 0 0 0px hsl(var(--brand-hue), 80%, 65%); transform: scale(1); }
     50% { box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); transform: scale(1.02); }
