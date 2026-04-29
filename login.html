@@ -2,77 +2,138 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- منع الزووم التلقائي المزعج في الموبايل عند الكتابة -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BoseSweets | دخول الإدارة</title>
+    
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="firebase-config.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Cairo', sans-serif; }</style>
-</head>
-<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
-    <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
-        <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <i data-lucide="shield-check" class="text-pink-500 w-10 h-10"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-gray-800 mb-2">دخول الإدارة 👑</h2>
-        <p class="text-gray-500 text-sm mb-8">يسمح فقط لإدارة حلويات بوسي بالدخول</p>
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; }
         
-        <div class="space-y-4">
-            <input type="email" id="admin-email" placeholder="البريد الإلكتروني" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-pink-500 font-bold transition-all">
-            <input type="password" id="admin-pwd" placeholder="كلمة المرور السحابية" class="w-full p-4 bg-gray-50 border rounded-2xl outline-none focus:border-pink-500 font-bold transition-all">
-            <button onclick="loginAdmin()" id="login-btn" class="w-full bg-pink-500 text-white py-4 rounded-2xl font-bold text-lg shadow-lg hover:bg-pink-600 active:scale-95 transition-all">دخول النظام</button>
+        /* إشعارات الموبايل الاحترافية */
+        @keyframes slideUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+        .toast-animate { animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        
+        /* تأثيرات الإضاءة الخلفية */
+        .glow-blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.4; z-index: 0; pointer-events: none; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-5 relative overflow-hidden">
+
+    <!-- إضاءة خلفية فخمة (تأثير زجاجي) -->
+    <div class="glow-blob bg-pink-600 w-64 h-64 top-[-10%] right-[-10%]"></div>
+    <div class="glow-blob bg-purple-600 w-64 h-64 bottom-[-10%] left-[-10%]"></div>
+
+    <!-- نظام الإشعارات الذكي (بديل للـ alert المزعج) -->
+    <div id="login-toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[999] hidden items-center gap-3 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm max-w-[90%] text-center border transition-all w-full md:w-auto">
+        <i id="toast-icon" data-lucide="info" class="w-5 h-5 shrink-0"></i>
+        <span id="toast-msg" class="flex-1"></span>
+    </div>
+
+    <!-- كارت تسجيل الدخول -->
+    <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-[2.5rem] p-8 md:p-10 w-full max-w-md shadow-2xl relative z-10">
+        
+        <div class="text-center mb-10">
+            <div class="w-20 h-20 bg-gradient-to-tr from-pink-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg shadow-pink-500/30">
+                <i data-lucide="lock-keyhole" class="text-white w-10 h-10"></i>
+            </div>
+            <h2 class="text-2xl font-black text-white mb-2 tracking-tight">بوابة القيادة 👑</h2>
+            <p class="text-slate-400 text-sm font-bold">النظام مشفر. مسموح فقط لإدارة حلويات بوسي.</p>
         </div>
-        <a href="index.html" class="block mt-6 text-gray-400 text-sm font-bold hover:text-gray-600 transition-colors">العودة للمتجر</a>
+        
+        <div class="space-y-5">
+            <!-- خانة الإيميل -->
+            <div class="relative">
+                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                    <i data-lucide="mail" class="w-5 h-5 text-slate-500"></i>
+                </div>
+                <input type="email" id="admin-email" placeholder="البريد الإلكتروني" class="w-full py-4 pr-12 pl-4 bg-slate-950 border border-slate-700 rounded-2xl outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white font-bold transition-all shadow-inner text-left" dir="ltr">
+            </div>
+
+            <!-- خانة الباسورد -->
+            <div class="relative">
+                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                    <i data-lucide="shield" class="w-5 h-5 text-slate-500"></i>
+                </div>
+                <input type="password" id="admin-pwd" placeholder="كلمة المرور السحابية" class="w-full py-4 pr-12 pl-4 bg-slate-950 border border-slate-700 rounded-2xl outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white font-bold transition-all shadow-inner text-left" dir="ltr">
+            </div>
+
+            <!-- زر الدخول -->
+            <button onclick="loginAdmin()" id="login-btn" class="w-full bg-gradient-to-l from-pink-500 to-pink-600 text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-pink-500/25 active:scale-95 transition-all flex items-center justify-center gap-2 mt-4">
+                <span>تسجيل الدخول</span>
+                <i data-lucide="arrow-left" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="mt-8 text-center border-t border-slate-800 pt-6">
+            <a href="index.html" class="inline-flex items-center gap-2 text-slate-500 text-sm font-bold hover:text-white transition-colors">
+                <i data-lucide="store" class="w-4 h-4"></i> العودة لواجهة المتجر
+            </a>
+        </div>
     </div>
 
     <script>
         lucide.createIcons();
+
+        // دالة الإشعارات الأنيقة للموبايل
+        function showToast(msg, type = 'error') {
+            const toast = document.getElementById('login-toast');
+            const toastMsg = document.getElementById('toast-msg');
+            const icon = document.getElementById('toast-icon');
+            
+            toastMsg.innerText = msg;
+            toast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 z-[999] flex items-center gap-3 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm w-[90%] md:w-max text-center border toast-animate ${type === 'error' ? 'bg-red-950 border-red-800/50 text-red-200' : 'bg-emerald-950 border-emerald-800/50 text-emerald-200'}`;
+            icon.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : 'check-circle');
+            lucide.createIcons();
+            
+            setTimeout(() => { toast.classList.replace('flex', 'hidden'); toast.classList.remove('toast-animate'); }, 4000);
+        }
+
+        // دالة تسجيل الدخول
         async function loginAdmin() {
-            const email = document.getElementById('admin-email').value;
+            const email = document.getElementById('admin-email').value.trim();
             const pwd = document.getElementById('admin-pwd').value;
             const btn = document.getElementById('login-btn');
             
-            if(!email || !pwd) { alert("اكتبي بيانات الدخول يا إدارة 🌸"); return; }
+            if(!email || !pwd) { 
+                showToast("يرجى كتابة البريد الإلكتروني وكلمة المرور 🌸", "error"); 
+                return; 
+            }
             
-            btn.innerText = "جاري التحقق... ⏳"; btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> جاري التحقق...`; 
+            btn.disabled = true;
+            lucide.createIcons();
+
             try {
+                // الاتصال بقاعدة بيانات Firebase للتحقق
                 await auth.signInWithEmailAndPassword(email, pwd);
-                window.location.href = 'admin.html';
+                
+                showToast("تم التحقق بنجاح! جاري فتح اللوحة 👑", "success");
+                setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
+                
             } catch (error) {
-                alert("بيانات الدخول غير صحيحة! تم تسجيل المحاولة 🛡️");
-                btn.innerText = "دخول النظام"; btn.disabled = false;
+                console.error(error);
+                showToast("بيانات الدخول غير صحيحة! تم تسجيل المحاولة 🛡️", "error");
+                btn.innerHTML = `<span>تسجيل الدخول</span><i data-lucide="arrow-left" class="w-5 h-5"></i>`; 
+                btn.disabled = false;
+                lucide.createIcons();
             }
         }
+
+        // إمكانية الضغط على زر Enter لتسجيل الدخول
+        document.getElementById('admin-pwd').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') { loginAdmin(); }
+        });
     </script>
 </body>
 </html>
 
-```
-### 4. تعديل ملف admin.html (القفل النهائي)
-افتحي ملف admin.html وتأكدي أن الـ Scripts في النهاية تستدعي ملف الإعدادات بدلاً من الأكواد المكررة.
-**استبدلي كود الـ <script> الأخير في admin.html بهذا الكود الذكي:**
-```javascript
-    <script src="firebase-config.js"></script>
-    <script src="app.js"></script>
-    <script src="gallery.js"></script>
-    <script src="admin.js"></script>
-    
-    <script>
-        // 🛡️ درع الحماية السحابي: التأكد من هوية الأدمن قبل عرض أي بيانات
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                // الأدمن مسجل دخوله.. شغّل اللوحة
-                window.onload = async () => {
-                    await loadEngineMemory(); 
-                    openAdminDashboardDirectly(); 
-                };
-            } else {
-                // شخص مجهول يحاول الدخول.. اطرده لصفحة الدخول
-                window.location.href = 'login.html';
-            }
-        });
-    </script>
 
