@@ -2,43 +2,38 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <!-- منع الزووم التلقائي المزعج في الموبايل عند الكتابة -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BoseSweets | دخول الإدارة</title>
     
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Firebase -->
+    <!-- مكتبات Firebase الكاملة (تمت إضافة المكتبة الناقصة هنا) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script> <!-- السطر اللي كان ناقص -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    
+    <!-- ملف الاتصال بالسحابة -->
     <script src="firebase-config.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Cairo', sans-serif; background-color: #0f172a; }
-        
-        /* إشعارات الموبايل الاحترافية */
         @keyframes slideUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         .toast-animate { animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        
-        /* تأثيرات الإضاءة الخلفية */
         .glow-blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.4; z-index: 0; pointer-events: none; }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-5 relative overflow-hidden">
 
-    <!-- إضاءة خلفية فخمة (تأثير زجاجي) -->
     <div class="glow-blob bg-pink-600 w-64 h-64 top-[-10%] right-[-10%]"></div>
     <div class="glow-blob bg-purple-600 w-64 h-64 bottom-[-10%] left-[-10%]"></div>
 
-    <!-- نظام الإشعارات الذكي (بديل للـ alert المزعج) -->
     <div id="login-toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[999] hidden items-center gap-3 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm max-w-[90%] text-center border transition-all w-full md:w-auto">
         <i id="toast-icon" data-lucide="info" class="w-5 h-5 shrink-0"></i>
         <span id="toast-msg" class="flex-1"></span>
     </div>
 
-    <!-- كارت تسجيل الدخول -->
     <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-[2.5rem] p-8 md:p-10 w-full max-w-md shadow-2xl relative z-10">
         
         <div class="text-center mb-10">
@@ -50,23 +45,16 @@
         </div>
         
         <div class="space-y-5">
-            <!-- خانة الإيميل -->
             <div class="relative">
-                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                    <i data-lucide="mail" class="w-5 h-5 text-slate-500"></i>
-                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none"><i data-lucide="mail" class="w-5 h-5 text-slate-500"></i></div>
                 <input type="email" id="admin-email" placeholder="البريد الإلكتروني" class="w-full py-4 pr-12 pl-4 bg-slate-950 border border-slate-700 rounded-2xl outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white font-bold transition-all shadow-inner text-left" dir="ltr">
             </div>
 
-            <!-- خانة الباسورد -->
             <div class="relative">
-                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                    <i data-lucide="shield" class="w-5 h-5 text-slate-500"></i>
-                </div>
+                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none"><i data-lucide="shield" class="w-5 h-5 text-slate-500"></i></div>
                 <input type="password" id="admin-pwd" placeholder="كلمة المرور السحابية" class="w-full py-4 pr-12 pl-4 bg-slate-950 border border-slate-700 rounded-2xl outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white font-bold transition-all shadow-inner text-left" dir="ltr">
             </div>
 
-            <!-- زر الدخول -->
             <button onclick="loginAdmin()" id="login-btn" class="w-full bg-gradient-to-l from-pink-500 to-pink-600 text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-pink-500/25 active:scale-95 transition-all flex items-center justify-center gap-2 mt-4">
                 <span>تسجيل الدخول</span>
                 <i data-lucide="arrow-left" class="w-5 h-5"></i>
@@ -83,7 +71,6 @@
     <script>
         lucide.createIcons();
 
-        // دالة الإشعارات الأنيقة للموبايل
         function showToast(msg, type = 'error') {
             const toast = document.getElementById('login-toast');
             const toastMsg = document.getElementById('toast-msg');
@@ -93,34 +80,27 @@
             toast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 z-[999] flex items-center gap-3 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm w-[90%] md:w-max text-center border toast-animate ${type === 'error' ? 'bg-red-950 border-red-800/50 text-red-200' : 'bg-emerald-950 border-emerald-800/50 text-emerald-200'}`;
             icon.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : 'check-circle');
             lucide.createIcons();
-            
             setTimeout(() => { toast.classList.replace('flex', 'hidden'); toast.classList.remove('toast-animate'); }, 4000);
         }
 
-        // دالة تسجيل الدخول
         async function loginAdmin() {
             const email = document.getElementById('admin-email').value.trim();
             const pwd = document.getElementById('admin-pwd').value;
             const btn = document.getElementById('login-btn');
             
-            if(!email || !pwd) { 
-                showToast("يرجى كتابة البريد الإلكتروني وكلمة المرور 🌸", "error"); 
-                return; 
-            }
+            if(!email || !pwd) { showToast("يرجى كتابة البريد الإلكتروني وكلمة المرور 🌸", "error"); return; }
             
             btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> جاري التحقق...`; 
             btn.disabled = true;
             lucide.createIcons();
 
             try {
-                // الاتصال بقاعدة بيانات Firebase للتحقق
+                // الاتصال بحارس بوابة Firebase
                 await auth.signInWithEmailAndPassword(email, pwd);
-                
                 showToast("تم التحقق بنجاح! جاري فتح اللوحة 👑", "success");
                 setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
-                
             } catch (error) {
-                console.error(error);
+                console.error("Firebase Auth Error:", error.message);
                 showToast("بيانات الدخول غير صحيحة! تم تسجيل المحاولة 🛡️", "error");
                 btn.innerHTML = `<span>تسجيل الدخول</span><i data-lucide="arrow-left" class="w-5 h-5"></i>`; 
                 btn.disabled = false;
@@ -128,12 +108,10 @@
             }
         }
 
-        // إمكانية الضغط على زر Enter لتسجيل الدخول
         document.getElementById('admin-pwd').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') { loginAdmin(); }
         });
     </script>
 </body>
 </html>
-
 
