@@ -1,4 +1,4 @@
-// === BoseSweets Pro Engine: Royal Identity Edition (2026) ===
+// === BoseSweets Pro Engine: Comprehensive Logic (No Simplification) ===
 
 const firebaseConfig = {
     apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
@@ -9,176 +9,170 @@ const firebaseConfig = {
     appId: "1:473615735083:web:f09c6001c72640b2588d6e"
 };
 
-// Initialize Firebase
+// تهيئة Firebase
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 const db = firebase.firestore();
 
-let catalog = []; 
-let siteSettings = {}; 
-let currentCategory = ''; 
+// المتغيرات المركزية للمحرك
+let catalog = [];
+let siteSettings = {};
+let shippingZones = [];
+let catMenu = [];
+let cart = JSON.parse(localStorage.getItem('boseSweets_cart_data')) || [];
 
-/**
- * دالة تشغيل المحرك الرئيسي
- * تقوم بجلب البيانات من السحابة وترتيب الأقسام وبناء الواجهة
- */
+let state = {
+    activeCat: 'تورت',
+    cakeBuilder: { 
+        flv: 'فانيليا', ps: 4, sh: 'دائري', trd: false, 
+        img: 'بدون', msg: '', alg: '', occ: '', 
+        hasRefImg: false, crd: false, dlg: false 
+    }
+};
+
+// 1. تشغيل المحرك الرئيسي
 async function igniteEngine() {
     try {
-        // 1. جلب إعدادات المتجر العامة
-        const settingsSnap = await db.collection('settings').doc('main').get();
-        if (settingsSnap.exists) {
-            siteSettings = settingsSnap.data();
-            applyGlobalSettings(siteSettings);
-        }
+        // جلب الإعدادات السحابية
+        const setDoc = await db.collection('settings').doc('main').get();
+        if (setDoc.exists) siteSettings = setDoc.data();
 
-        // 2. جلب الكتالوج الكامل
-        const catalogSnap = await db.collection('catalog').get();
+        // جلب الكتالوج
+        const catSnap = await db.collection('catalog').get();
         catalog = [];
-        catalogSnap.forEach(doc => {
-            catalog.push({ id: doc.id, ...doc.data() });
-        });
+        catSnap.forEach(doc => catalog.push({ id: doc.id, ...doc.data() }));
 
-        // 3. استخراج الأقسام وترتيبها (التورت أولاً بذكاء)
-        const categories = [...new Set(catalog.map(p => p.category))].filter(Boolean);
+        // جلب مناطق الشحن
+        const shipSnap = await db.collection('shipping').get();
+        shippingZones = [];
+        shipSnap.forEach(doc => shippingZones.push(doc.data()));
+
+        // ترتيب الأقسام
+        catMenu = siteSettings.catMenu || [...new Set(catalog.map(p => p.category))].filter(Boolean);
+        if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
+
+        applySettingsToUI();
+        renderCategories();
+        renderMainDisplay();
+        syncCartUI();
         
-        // تحديد القسم الافتراضي (تورت أو أول قسم متاح)
-        const priorityCat = categories.find(c => c.includes('تورت')) || categories[0];
-        currentCategory = priorityCat;
-
-        // 4. بناء الواجهة
-        renderCategoriesNav(categories); 
-        renderFilteredProducts(currentCategory); 
-        
-        // إخفاء الشاشة التحميلية
-        const loader = document.getElementById('global-loader');
-        if (loader) {
-            loader.classList.add('opacity-0');
-            setTimeout(() => loader.style.display = 'none', 500);
-        }
-
-    } catch (e) { 
-        console.error("Cloud Connection Error:", e);
-        showToast("عذراً، يوجد مشكلة في الاتصال بالسحابة");
+        document.getElementById('global-loader')?.classList.add('opacity-0');
+        setTimeout(() => document.getElementById('global-loader').style.display = 'none', 500);
+    } catch (e) {
+        console.error("Cloud Connection Failed:", e);
     }
 }
 
-/**
- * بناء شريط الأقسام العلوي
- */
-function renderCategoriesNav(categories) {
-    const nav = document.getElementById('categories-nav');
-    if (!nav) return;
+// 2. تطبيق الهوية البصرية (محرك الألوان والخطوط)
+function applySettingsToUI() {
+    const root = document.documentElement;
+    if (siteSettings.brandColorHex) {
+        const hue = hexToMathHSL(siteSettings.brandColorHex);
+        root.style.setProperty('--brand-hue', hue);
+    }
+    root.style.setProperty('--brand-font', siteSettings.fontFamily || "'Cairo', sans-serif");
+    root.style.setProperty('--base-font-size', (siteSettings.baseFontSize || 16) + 'px');
     
-    nav.innerHTML = categories.map(cat => `
-        <button onclick="renderFilteredProducts('${cat}')" 
-                class="px-8 py-3 rounded-full font-black whitespace-nowrap transition-all border-2
-                ${currentCategory === cat 
-                    ? 'bg-pink-500 text-white border-pink-500 shadow-md' 
-                    : 'bg-white text-gray-500 border-gray-50 hover:border-pink-100 hover:text-pink-500'}">
-            ${cat}
-        </button>
-    `).join('');
+    document.getElementById('dyn-brand-name').innerText = siteSettings.brandName || "حلويات بوسي";
+    document.getElementById('dyn-ticker-text').innerText = siteSettings.tickerText || "حلويات بوسي: صنعناها بحب لتهديها لمن تحب ✨";
 }
 
-/**
- * عرض المنتجات بناءً على القسم المختار
- * تطبق نظام الكروت الاحترافي المتنوع (توسيع وبناء)
- */
-function renderFilteredProducts(cat) {
-    currentCategory = cat;
-    
-    // تحديث شكل الأزرار النشطة
-    const categories = [...new Set(catalog.map(p => p.category))].filter(Boolean);
-    renderCategoriesNav(categories); 
-    
+// 3. عرض المنتجات (مع الحفاظ على التنسيق الملكي)
+function renderMainDisplay() {
     const container = document.getElementById('display-container');
-    if (!container) return;
-
-    const filtered = catalog.filter(p => p.category === cat);
-    
-    if (filtered.length === 0) {
-        container.innerHTML = `<div class="text-center py-20 font-bold text-gray-400">لا توجد منتجات في هذا القسم حالياً</div>`;
-        return;
+    if (state.activeCat === 'تورت') {
+        renderCakeBuilder(container);
+    } else {
+        const filtered = catalog.filter(p => p.category === state.activeCat);
+        container.innerHTML = `
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                ${filtered.map(p => drawProductCard(p)).join('')}
+            </div>`;
     }
-
-    container.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-            ${filtered.map(p => {
-                // التحكم في حجم الكارت (كامل العرض للأصناف المميزة)
-                const layoutClass = p.layout === 'full' ? 'md:col-span-2 lg:col-span-3' : '';
-                
-                return `
-                <div class="${layoutClass} bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-pink-50 flex flex-col h-full hover:shadow-xl transition-all duration-500 group animate-fade-in">
-                    <div class="relative aspect-[4/3] md:aspect-video overflow-hidden">
-                        <img src="${p.img || ''}" alt="${p.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy">
-                        ${p.badge ? `
-                            <span class="absolute top-5 right-5 bg-pink-500 text-white text-[10px] font-black px-4 py-2 rounded-full shadow-lg">
-                                ${p.badge}
-                            </span>
-                        ` : ''}
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                    </div>
-                    
-                    <div class="p-6 md:p-8 flex flex-col flex-1">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <span class="text-[9px] font-bold text-pink-400 tracking-[0.2em] uppercase">${p.category}</span>
-                                <h3 class="text-xl md:text-2xl font-black text-gray-800 mt-1">${p.name}</h3>
-                            </div>
-                            <div class="text-left bg-pink-50 px-3 py-1 rounded-xl">
-                                <span class="text-xl md:text-2xl font-black text-pink-600">${p.price}</span>
-                                <span class="text-[10px] font-bold text-pink-400 mr-1">ج.م</span>
-                            </div>
-                        </div>
-                        
-                        <p class="text-sm text-gray-500 font-medium leading-relaxed mb-8 flex-1 opacity-80">
-                            ${p.desc || 'نقدم لكم أرقى المكونات الطبيعية 100% المحضرة يدوياً بكل حب.'}
-                        </p>
-                        
-                        <button onclick="handleProductAction('${p.id}', '${p.category}')" 
-                                class="w-full bg-gray-900 text-white py-4 md:py-5 rounded-2xl font-black text-sm flex items-center justify-center gap-3 transform active:scale-95 transition-all hover:bg-pink-600 shadow-lg shadow-gray-200">
-                            <span>${p.category.includes('تورت') ? 'تخصيص وطلب التورتة 👑' : 'إضافة للسلة ✨'}</span>
-                            <i data-lucide="${p.category.includes('تورت') ? 'settings-2' : 'shopping-cart'}" class="w-4 h-4"></i>
-                        </button>
-                    </div>
-                </div>
-            `;}).join('')}
-        </div>
-    `;
-    
     if (window.lucide) lucide.createIcons();
 }
 
-/**
- * تطبيق الإعدادات العالمية للهوية البصرية (اللون الوردي الموحد)
- */
-function applyGlobalSettings(settings) {
-    document.documentElement.style.setProperty('--brand-hue', "355"); 
-    
-    if (settings.brandName) {
-        document.getElementById('dyn-brand-name').innerText = settings.brandName;
-        document.getElementById('dyn-page-title').innerText = `${settings.brandName} | القائمة الرسمية`;
-    }
+function drawProductCard(p) {
+    const isFull = p.layout === 'full' ? 'md:col-span-2 lg:col-span-3' : '';
+    return `
+        <div class="${isFull} bg-white rounded-[2.5rem] overflow-hidden shadow-sm border border-pink-50 flex flex-col h-full hover:shadow-xl transition-all duration-500 group">
+            <div class="relative aspect-video overflow-hidden">
+                <img src="${p.img || ''}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                ${p.badge ? `<span class="absolute top-5 right-5 bg-pink-500 text-white text-[10px] font-black px-4 py-2 rounded-full shadow-lg">${p.badge}</span>` : ''}
+            </div>
+            <div class="p-8 flex flex-col flex-1">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl md:text-2xl font-black text-gray-800">${p.name}</h3>
+                    <div class="text-pink-600 font-black text-xl">${p.price} ج.م</div>
+                </div>
+                <p class="text-sm text-gray-500 font-bold leading-relaxed mb-8 flex-1 line-clamp-none">${p.desc || ''}</p>
+                <button onclick="addToCart('${p.id}')" class="w-full bg-gray-900 text-white py-5 rounded-2xl font-black text-sm flex items-center justify-center gap-3 hover:bg-pink-600 transition-all">
+                    إضافة للسلة ✨ <i data-lucide="shopping-cart" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>`;
 }
 
-/**
- * دالة التنبيهات (Toast)
- */
-function showToast(message) {
-    const toast = document.getElementById('system-toast');
-    const msgSpan = document.getElementById('toast-message');
-    if (!toast || !msgSpan) return;
-
-    msgSpan.innerText = message;
-    toast.classList.remove('hidden');
-    toast.classList.add('flex', 'toast-enter');
-    
-    setTimeout(() => {
-        toast.classList.add('hidden');
-        toast.classList.remove('flex', 'toast-enter');
-    }, 3000);
+// 4. نظام السلة والواتساب (بدون تبسيط)
+function addToCart(id) {
+    const p = catalog.find(x => String(x.id) === String(id));
+    const exist = cart.find(i => String(i.id) === String(id));
+    if (exist) exist.quantity++; else cart.push({ ...p, quantity: 1 });
+    saveCart();
+    showToast("تمت الإضافة للسلة 🌸");
 }
 
-// تشغيل المحرك عند تحميل النافذة
-window.addEventListener('DOMContentLoaded', igniteEngine);
+function saveCart() {
+    localStorage.setItem('boseSweets_cart_data', JSON.stringify(cart));
+    syncCartUI();
+}
+
+function syncCartUI() {
+    const badge = document.getElementById('cart-count-badge');
+    const totalQ = cart.reduce((s, i) => s + i.quantity, 0);
+    badge.innerText = totalQ;
+    badge.classList.toggle('hidden', totalQ === 0);
+}
+
+async function submitOrder() {
+    const name = document.getElementById('cust-name').value.trim();
+    const phone = document.getElementById('cust-phone').value.trim();
+    if (!name || !phone) return alert("الرجاء إكمال البيانات الملكية ✨");
+
+    let msg = `*طلب جديد من حلويات بوسي* 🧁\n👤 العميل: ${name}\n📞 الهاتف: ${phone}\n\n*الطلبات:*\n`;
+    cart.forEach((i, idx) => msg += `${idx + 1}. ${i.name} (x${i.quantity}) = ${i.price * i.quantity} ج\n`);
+    msg += `\n*الإجمالي:* ${cart.reduce((s, i) => s + (i.price * i.quantity), 0)} ج.م`;
+
+    window.open(`https://wa.me/201097238441?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// محول الألوان HEX -> HSL
+function hexToMathHSL(hex) {
+    let r = parseInt(hex.slice(1, 3), 16) / 255;
+    let g = parseInt(hex.slice(3, 5), 16) / 255;
+    let b = parseInt(hex.slice(5, 7), 16) / 255;
+    let max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h = (max + min) / 2;
+    if (max !== min) {
+        let d = max - min;
+        switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+    } else h = 0;
+    return Math.round(h * 360);
+}
+
+// الوظائف المساعدة
+function setCategory(c) { state.activeCat = c; renderCategories(); renderMainDisplay(); }
+function showToast(m) { alert(m); } // يمكن استبدالها بـ UI Toast
+function renderCategories() {
+    document.getElementById('categories-nav').innerHTML = catMenu.map(c => `
+        <button onclick="setCategory('${c}')" class="px-8 py-3 rounded-full font-black border-2 ${state.activeCat === c ? 'bg-pink-500 text-white border-pink-500' : 'bg-white text-gray-500 border-gray-50'}">${c}</button>
+    `).join('');
+}
+
+window.onload = igniteEngine;
