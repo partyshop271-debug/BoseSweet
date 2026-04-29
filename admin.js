@@ -127,6 +127,7 @@ function openAdminDashboardDirectly() {
         executeSafely('Shipping', renderAdminShipping); 
         executeSafely('SettingsForm', fillAdminSettingsForm);
         executeSafely('PromoCodes', initAdminPromoCodes); 
+        executeSafely('Gallery', () => { if(typeof renderAdminGallery === 'function') renderAdminGallery(); });
         
         setTimeout(() => {
             executeSafely('Charts', () => { if(typeof initAdminCharts === 'function') initAdminCharts(); });
@@ -978,21 +979,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if(dateEl) dateEl.textContent = new Date().toLocaleDateString('ar-EG', dateOptions);
 });
 
-// 🛡️ Boot Controller (The Master Fix)
-window.addEventListener('load', () => {
+// 🛡️ Boot Controller (The Master Fix: الفك الفوري للتجميد والإقلاع السريع)
+function bootBoseSweetsEngine() {
     console.log("BoseSweets Admin Engine Initiating...");
     
-    // 1. Safely start the dashboard and load data after Auth state is confirmed
+    // 1. فك التجميد فوراً لتفعيل الأزرار قبل انتظار تحميل أي ملفات خارجية
+    unfreezeAdminUI();
+
+    // 2. البدء الآمن في قراءة البيانات بعد التأكد من المصادقة
     if(typeof auth !== 'undefined') {
         auth.onAuthStateChanged(async user => {
-            if (user) {
-                try { await loadEngineMemory(); } catch(e) { console.error("BoseSweets Error:", e); }
-                openAdminDashboardDirectly();
-            } else {
-                console.warn("BoseSweets: User not logged in Booting Dashboard in local mode");
-                try { await loadEngineMemory(); } catch(e) { console.error("BoseSweets Error:", e); }
-                openAdminDashboardDirectly();
-            }
+            try { await loadEngineMemory(); } catch(e) { console.error("BoseSweets Error:", e); }
+            openAdminDashboardDirectly();
         });
     } else {
         console.warn("BoseSweets: Firebase Auth undefined Booting locally");
@@ -1000,7 +998,11 @@ window.addEventListener('load', () => {
             openAdminDashboardDirectly();
         });
     }
-    
-    // Failsafe Unfreeze Timeout
-    setTimeout(unfreezeAdminUI, 2500);
-});
+}
+
+// تشغيل المحرك فور قراءة الكود وليس بعد التحميل لتجنب التجميد
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootBoseSweetsEngine);
+} else {
+    bootBoseSweetsEngine();
+}

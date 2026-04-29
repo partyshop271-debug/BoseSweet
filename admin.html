@@ -9,7 +9,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Firebase (Optional/Fallback supported) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -107,15 +106,13 @@
         tr:hover td { background-color: rgba(255, 255, 255, 0.02); }
     </style>
 </head>
-<body class="h-[100dvh] flex flex-col overflow-hidden bg-[#0f172a]">
+<body class="h-[100dvh] flex flex-col bg-[#0f172a]">
 
-    <!-- إشعارات النظام المتقدمة -->
     <div id="system-toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] hidden items-center gap-3 bg-slate-800 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm max-w-[90vw] text-center border border-slate-700 transition-all">
         <i id="toast-icon" data-lucide="info" class="w-5 h-5 shrink-0 text-pink-500"></i>
         <span id="toast-message"></span>
     </div>
 
-    <!-- نافذة التأكيد الذكية -->
     <div id="admin-confirm-modal" class="fixed inset-0 bg-slate-950/80 z-[9998] hidden items-center justify-center p-4 backdrop-blur-sm opacity-0 transition-opacity">
         <div class="admin-card modal-desktop w-full max-w-sm text-center p-6 bg-slate-900 border-red-500/30">
             <div class="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
@@ -130,7 +127,6 @@
         </div>
     </div>
 
-    <!-- الهيدر العلوي لمركز القيادة -->
     <div class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-40 flex justify-between items-center shadow-sm w-full shrink-0">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-pink-600 to-pink-400 flex items-center justify-center shadow-lg shadow-pink-500/20">
@@ -151,10 +147,8 @@
         </div>
     </div>
 
-    <!-- المساحة الرئيسية للتمرير -->
     <div class="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar relative w-full pb-[140px] md:pb-8" id="main-scroll-area">
 
-        <!-- تبويبة: النظرة العامة -->
         <div id="admin-overview" class="admin-tab-content block space-y-6 animate-fade-in max-w-6xl mx-auto">
             <div class="flex justify-between items-end mb-6">
                 <h2 class="text-2xl font-black text-white flex items-center gap-2">
@@ -217,18 +211,17 @@
                      <i data-lucide="book-open" class="w-8 h-8 text-slate-400"></i>
                      <span class="text-sm font-bold text-white">تعديل المنيو</span>
                  </button>
+                 <button onclick="switchAdminTab('gallery')" class="admin-card hover:border-purple-500/50 transition-colors flex flex-col items-center justify-center gap-3 py-6 active:scale-95 group">
+                     <div class="p-3 bg-purple-500/10 rounded-full group-hover:bg-purple-500 group-hover:text-white text-purple-500 transition-colors"><i data-lucide="camera" class="w-6 h-6"></i></div>
+                     <span class="text-sm font-bold text-white">سابقة الأعمال</span>
+                 </button>
                  <button onclick="switchAdminTab('settings')" class="admin-card hover:border-slate-500 transition-colors flex flex-col items-center justify-center gap-3 py-6 active:scale-95">
                      <i data-lucide="sliders" class="w-8 h-8 text-slate-400"></i>
                      <span class="text-sm font-bold text-white">إعدادات المتجر</span>
                  </button>
-                 <button onclick="document.getElementById('set-hero-title').focus(); switchAdminTab('settings');" class="admin-card hover:border-slate-500 transition-colors flex flex-col items-center justify-center gap-3 py-6 active:scale-95">
-                     <i data-lucide="megaphone" class="w-8 h-8 text-amber-400"></i>
-                     <span class="text-sm font-bold text-white">تحديث الإعلانات</span>
-                 </button>
             </div>
         </div>
 
-        <!-- تبويبة: إدارة الكتالوج -->
         <div id="admin-menu" class="admin-tab-content hidden space-y-6 animate-fade-in max-w-6xl mx-auto">
             <div class="flex flex-col gap-4 mb-4 sticky top-0 bg-[#0f172a] z-20 pb-4 border-b border-slate-800 pt-2 shadow-sm">
                 <div class="flex justify-between items-center">
@@ -259,7 +252,23 @@
             <div id="admin-menu-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
 
-        <!-- تبويبة: الطلبات -->
+        <div id="admin-gallery" class="admin-tab-content hidden space-y-6 animate-fade-in max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4 sticky top-0 bg-[#0f172a] z-20 pt-2 shadow-sm">
+                <h2 class="text-2xl font-black text-white flex items-center gap-2">
+                    <i data-lucide="camera" class="w-6 h-6 text-purple-400"></i> عدسة حلويات بوسي
+                </h2>
+                <label class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-lg shadow-purple-500/20 active:scale-95 flex items-center gap-2 transition-all cursor-pointer">
+                    <i data-lucide="upload" class="w-4 h-4"></i> رفع عمل جديد
+                    <input type="file" class="hidden" accept="image/*" onchange="uploadGalleryToCloud(event)">
+                </label>
+            </div>
+            <div id="gallery-upload-loader" class="hidden text-center text-purple-400 py-4">
+                <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto"></i>
+                <p class="mt-2 text-sm font-bold">جاري المعالجة والرفع للسحابة بأعلى جودة...</p>
+            </div>
+            <div id="admin-gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+        </div>
+
         <div id="admin-orders" class="admin-tab-content hidden space-y-6 animate-fade-in max-w-6xl mx-auto">
             <div class="flex flex-col gap-4 mb-4 sticky top-0 bg-[#0f172a] z-20 pb-4 border-b border-slate-800 pt-2 shadow-sm">
                 <h2 class="text-2xl font-black text-white flex items-center gap-2">
@@ -293,7 +302,6 @@
             </div>
         </div>
 
-        <!-- تبويبة: الإعدادات -->
         <div id="admin-settings" class="admin-tab-content hidden space-y-6 animate-fade-in max-w-6xl mx-auto">
             <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-4 sticky top-0 bg-[#0f172a] z-20 pt-2">
                 <h2 class="text-2xl font-black text-white flex items-center gap-2">
@@ -305,7 +313,6 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- إعدادات المتجر العامة -->
                 <div class="space-y-6">
                     <div class="admin-card space-y-4">
                         <h3 class="text-lg font-bold text-pink-400 flex items-center gap-2 border-b border-slate-700 pb-2"><i data-lucide="fingerprint" class="w-5 h-5"></i> بيانات العلامة التجارية (BoseSweets)</h3>
@@ -431,7 +438,6 @@
                 </div>
             </div>
 
-            <!-- حقول مخفية للحفاظ على التوافق -->
             <div class="hidden">
                 <input type="hidden" id="set-brand-color">
                 <input type="hidden" id="set-bg-color">
@@ -444,7 +450,6 @@
 
     </div> 
 
-    <!-- البار السفلي للموبايل -->
     <div class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur-xl border-t border-slate-800 z-50 flex justify-between items-end px-6 pb-6 pt-3 shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
         <button onclick="switchAdminTab('overview')" class="flex flex-col items-center gap-1.5 text-pink-400 hover:text-pink-400 transition-colors w-12">
             <i data-lucide="layout-dashboard" class="w-6 h-6"></i>
@@ -472,7 +477,6 @@
         </button>
     </div>
 
-    <!-- نافذة تفاصيل الطلب -->
     <div id="admin-order-modal" class="fixed inset-0 bg-slate-950/90 z-[250] hidden items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-md transition-opacity">
         <div class="admin-card bottom-sheet md:modal-desktop rounded-t-3xl md:rounded-3xl p-0 w-full max-w-3xl relative max-h-[85dvh] flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.5)] bg-slate-900 border-slate-700">
             <div class="sticky top-0 bg-slate-900/95 backdrop-blur z-10 px-6 py-5 border-b border-slate-800 flex justify-between items-center rounded-t-3xl md:rounded-t-3xl">
@@ -520,11 +524,10 @@
                     <div class="w-full md:w-1/2">
                         <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1.5">تغيير حالة الطلب</label>
                         <select id="modal-order-status" class="admin-input py-3 font-bold border-2 focus:border-purple-500">
-                            <option value="قيد المراجعة">🟡 قيد المراجعة</option>
-                            <option value="جاري التجهيز">🟠 جاري التجهيز</option>
-                            <option value="في الطريق">🔵 في الطريق للعميل</option>
-                            <option value="مكتمل">🟢 تم التسليم بنجاح</option>
-                            <option value="ملغي">🔴 ملغي</option>
+                            <option value="pending">🟡 مراجعة</option>
+                            <option value="processing">🟠 تجهيز</option>
+                            <option value="completed">🟢 مكتمل</option>
+                            <option value="cancelled">🔴 ملغي</option>
                         </select>
                     </div>
                     <div class="w-full md:w-1/2 flex gap-2 h-full items-end pb-0.5">
@@ -536,7 +539,6 @@
         </div>
     </div>
 
-    <!-- نافذة إضافة/تعديل منتج -->
     <div id="admin-prod-modal" class="fixed inset-0 bg-slate-950/80 z-[200] hidden items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-sm transition-opacity">
         <div class="admin-card bottom-sheet md:modal-desktop rounded-t-3xl md:rounded-3xl p-6 md:p-8 w-full max-w-2xl relative max-h-[85dvh] overflow-y-auto custom-scrollbar shadow-[0_-10px_40px_rgba(0,0,0,0.3)] bg-slate-900 border-slate-700">
             
@@ -565,8 +567,7 @@
                     <div>
                         <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wide mb-1.5">القسم الرئيسي</label>
                         <select id="edit-prod-cat" class="admin-input py-3">
-                            <!-- Options injected by JS -->
-                        </select>
+                            </select>
                     </div>
                     <div>
                         <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wide mb-1.5">النوع/المقاس</label>
@@ -635,7 +636,6 @@
         </div>
     </div>
 
-    <!-- نافذة إضافة منطقة شحن -->
     <div id="admin-ship-modal" class="fixed inset-0 bg-slate-950/80 z-[200] hidden items-end md:items-center justify-center p-0 md:p-4 backdrop-blur-sm transition-opacity">
         <div class="admin-card bottom-sheet md:modal-desktop rounded-t-3xl md:rounded-3xl p-6 md:p-8 max-w-sm w-full relative shadow-2xl bg-slate-900 border-slate-700">
             <div class="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-6 md:hidden"></div>
@@ -657,9 +657,8 @@
         </div>
     </div>
 
-    <!-- ربط محرك قاعدة البيانات والملفات المنفصلة -->
     <script src="firebase-config.js"></script>
     <script src="admin.js"></script>
+    <script src="gallery.js"></script>
 </body>
 </html>
-
