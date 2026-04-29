@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="dyn-page-title">حلويات بوسي - BoseSweets | القائمة الرسمية</title>
     
-    <meta name="description" content="حلويات بوسي - أرقى وألذ الحلويات والتورت المخصصة في الفرافرة والوادي الجديد.">
-    <meta name="author" content="حلويات بوسي - BoseSweets">
+    <link rel="stylesheet" href="style.css">
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -14,9 +13,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
 <body class="bg-white text-gray-800">
 
@@ -24,78 +21,79 @@
         <div class="p-6 bg-white/20 backdrop-blur-md rounded-full border border-white/40 shadow-inner mb-6 floating">
             <i data-lucide="cake" class="w-16 h-16 text-white"></i>
         </div>
-        <p class="font-bold text-xl text-white tracking-wide drop-shadow-md">أهلاً بكم في عالم حلويات بوسي ✨</p>
+        <p class="font-bold text-xl text-white tracking-wide">عالم حلويات بوسي بانتظارك... ✨</p>
     </div>
 
     <div id="ticker-container" class="relative w-full overflow-hidden flex items-center sticky top-0 z-[70] shadow-md ticker-brand-gradient h-[40px]">
         <div id="dyn-ticker-text" class="animate-ticker font-bold text-sm text-white">
-            حلويات بوسي: صنعناها بحب لتهديها لمن تحب
-        </div>
+            </div>
     </div>
 
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 top-[40px] py-4 bg-white border-b border-pink-50">
+    <nav class="fixed w-full z-50 top-[40px] py-4 bg-white/90 backdrop-blur-sm border-b border-pink-50">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
             <h1 id="dyn-brand-name" class="text-2xl font-black text-pink-600">حلويات بوسي</h1>
-            <button onclick="toggleCart(true)" class="relative p-2 bg-pink-50 text-pink-600 rounded-xl">
-                <i data-lucide="shopping-cart" class="w-6 h-6"></i>
-                <span id="cart-count-badge" class="hidden absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full">0</span>
-            </button>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleCart(true)" class="relative p-2 bg-pink-50 text-pink-600 rounded-xl active:scale-95 transition-all">
+                    <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                    <span id="cart-count-badge" class="hidden absolute -top-2 -right-2 bg-pink-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">0</span>
+                </button>
+            </div>
         </div>
     </nav>
 
     <header class="pt-36 pb-12 px-4 max-w-7xl mx-auto">
-        <div class="brand-gradient rounded-[3rem] p-12 text-white shadow-2xl text-center md:text-right">
-            <h2 class="text-4xl md:text-6xl font-black mb-6">أهلاً بكم في <br> <span class="text-gray-900">حلويات بوسي</span></h2>
-            <p class="text-lg opacity-90 max-w-2xl font-bold mb-8">نقدم لكم تشكيلتنا الحصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بمناسباتكم السعيدة.</p>
+        <div class="brand-gradient rounded-[3rem] p-12 text-white shadow-2xl text-center md:text-right relative overflow-hidden">
+            <h2 class="text-4xl md:text-6xl font-black mb-6 leading-tight">أهلاً بكم في <br> <span class="text-gray-900">حلويات بوسي</span></h2>
+            <p class="text-lg opacity-95 max-w-2xl font-bold">كل قطعة حكاية.. وكل تورتة مناسبة لا تُنسى. استكشفي القائمة الآن.</p>
         </div>
     </header>
 
-    <section id="menu-section" class="sticky top-[95px] bg-white/90 backdrop-blur-md z-40 py-4 border-b">
+    <section class="sticky top-[95px] bg-white/95 backdrop-blur-md z-40 py-4 border-b border-gray-50">
         <div class="max-w-7xl mx-auto px-4">
             <div id="categories-nav" class="flex overflow-x-auto hide-scrollbar gap-4">
                 </div>
         </div>
     </section>
 
-    <main class="max-w-7xl mx-auto px-4 py-12">
+    <main class="max-w-7xl mx-auto px-4 py-12 min-h-[500px]">
         <div id="display-container" class="animate-fade-in">
             </div>
     </main>
 
-    <div id="cart-sidebar" class="fixed top-0 left-0 bottom-0 w-full md:w-[450px] z-[100] shadow-2xl -translate-x-full transition-transform duration-500 ease-out flex flex-col bg-white">
-        <div class="p-6 border-b flex justify-between items-center">
-            <h2 class="text-2xl font-black">المشتريات 🌸</h2>
+    <section id="gallery-customer-section" class="py-16 bg-pink-50/30 hidden border-y border-pink-100/50">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-black text-gray-800 mb-10 italic">من مطبخنا الملكي 🌸</h2>
+            <div id="gallery-slider" class="flex overflow-x-auto gap-6 hide-scrollbar snap-x pb-8">
+                </div>
+        </div>
+    </section>
+
+    <div id="cart-sidebar" class="fixed top-0 left-0 bottom-0 w-full md:w-[450px] z-[100] shadow-2xl -translate-x-full transition-transform duration-500 flex flex-col bg-white">
+        <div class="p-6 border-b flex justify-between items-center bg-gray-50">
+            <h2 class="text-2xl font-black">طلباتك الملكية 🌸</h2>
             <button onclick="toggleCart(false)"><i data-lucide="x"></i></button>
         </div>
-        <div id="step-1-cart" class="flex-1 overflow-y-auto p-6">
-            <div id="cart-list"></div>
-            <div class="py-6 border-t mt-4">
-                <div class="flex justify-between font-black text-xl">
-                    <span>إجمالي الحساب</span>
-                    <span id="cart-total-display">0 ج.م</span>
-                </div>
-            </div>
-            <button onclick="goToCheckout()" class="w-full bg-gray-900 text-white py-5 rounded-2xl font-black mt-6">إتمام الطلب</button>
+        <div id="cart-content-area" class="flex-1 overflow-y-auto p-6">
+            <div id="cart-list" class="space-y-4"></div>
         </div>
-        
-        <div id="step-2-checkout" class="hidden flex-1 p-6 overflow-y-auto">
-            <button onclick="backToCart()" class="text-pink-500 font-bold mb-6 flex items-center gap-2">
-                <i data-lucide="arrow-right"></i> رجوع للسلة
-            </button>
-            <h3 class="text-xl font-black mb-6">بيانات الاستلام</h3>
-            <div class="space-y-4">
-                <input type="text" id="cust-name" placeholder="الاسم بالكامل" class="w-full p-4 border rounded-2xl font-bold outline-none focus:border-pink-500">
-                <input type="tel" id="cust-phone" placeholder="رقم الموبايل" class="w-full p-4 border rounded-2xl font-bold outline-none focus:border-pink-500">
-                <button onclick="submitOrder()" class="w-full bg-pink-500 text-white py-5 rounded-2xl font-black shadow-lg shadow-pink-100">تأكيد الأوردر عبر واتساب</button>
+        <div class="p-6 border-t bg-gray-50">
+            <div class="flex justify-between font-black text-2xl mb-6">
+                <span>الإجمالي:</span>
+                <span id="cart-total-display" class="text-pink-600">0 ج.م</span>
             </div>
+            <button onclick="goToCheckout()" class="w-full bg-gray-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-pink-600 transition-all">تأكيد الأوردر</button>
         </div>
     </div>
 
-    <div id="system-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] hidden items-center gap-3 bg-gray-900 text-white px-6 py-4 rounded-2xl font-bold">
-        <span id="toast-message"></span>
-    </div>
+    <script src="app.js" defer></script>
+    
+    <script src="gallery.js" defer></script>
 
-    <script src="app.js"></script>
-    <script>if(window.lucide) lucide.createIcons();</script>
+    <script>
+        // تفعيل الأيقونات فور التحميل
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) lucide.createIcons();
+        });
+    </script>
 </body>
 </html>
