@@ -1,3 +1,4 @@
+// ⚡ Engine Upgrade: Smart Pre-load Engine
 const PreloadEngine = {
     loadedUrls: new Set(),
     ignite(catalogData, galleryData = []) {
@@ -174,26 +175,6 @@ async function initApp() {
             }, 500);
         }
     }
-}
-
-// 🛡️ Engine Upgrade: Advanced Security & Hashing Engine
-async function hashPassword(password) {
-    const msgBuffer = new TextEncoder().encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-const DEFAULT_ADMIN_HASH = "e4125b7405be53da470ec0865e8aebfcb03b223403ba78028f24419cb7ed490c";
-
-// التحديث الأمني: دالة الانتقال لصفحة تسجيل الدخول الرسمية بدلاً من النافذة المنبثقة
-let secretTaps = 0; let tapTimer = null;
-async function handleSecretTap() {
-    secretTaps++; clearTimeout(tapTimer);
-    if (secretTaps >= 5) {
-        secretTaps = 0;
-        window.location.href = 'login.html'; // فتح بوابة الدخول الرسمية
-    } else { tapTimer = setTimeout(() => { secretTaps = 0; }, 2000); }
 }
 
 // ----------------------------------------------------
@@ -661,25 +642,14 @@ window.addEventListener('scroll', () => {
     if(n) { if (window.scrollY > 30) n.classList.add('nav-scrolled'); else n.classList.remove('nav-scrolled'); }
 });
 
-// 🛡️ Engine Upgrade: Advanced Security & Hashing Engine
-async function hashPassword(password) {
-    const msgBuffer = new TextEncoder().encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
-const DEFAULT_ADMIN_HASH = "e4125b7405be53da470ec0865e8aebfcb03b223403ba78028f24419cb7ed490c";
-
-// بوابة الدخول الرسمية للإدارة
+// 🛡️ Engine Upgrade: Advanced Security & Redirect
 let secretTaps = 0; let tapTimer = null;
 async function handleSecretTap() {
     secretTaps++; clearTimeout(tapTimer);
     if (secretTaps >= 5) {
         secretTaps = 0;
-        window.location.href = 'login.html'; // فتح بوابة الدخول الرسمية بدلا من الباسورد المنبثق
+        window.location.href = 'login.html'; // توجيه لبوابة الإدارة الرسمية
     } else { tapTimer = setTimeout(() => { secretTaps = 0; }, 2000); }
 }
 
 window.onload = initApp;
-
-
