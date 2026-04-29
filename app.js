@@ -271,9 +271,13 @@ function renderMainDisplay() {
 function drawProductCard(p, layoutMode = 'grid') {
     const pIdSafe = String(p.id); const item = state.cart.find(i => String(i.cartItemId) === pIdSafe || String(i.id) === pIdSafe);
     let itemLayout = (p.layout && p.layout !== 'default') ? p.layout : layoutMode;
+    
+    // استخدام مساحة العرض حسب اللي اختارته الإدارة
     let isFullWidth = (itemLayout === 'full');
     let colSpanClass = (layoutMode === 'grid' && isFullWidth) ? 'col-span-2 md:col-span-2 lg:col-span-2' : '';
-    const aspectClass = isFullWidth ? 'aspect-[4/3] w-full' : 'aspect-square w-full';
+    
+    // نسبة الطول للعرض بحيث مياخدش شاشة الموبايل كلها في العرض المميز
+    const aspectClass = isFullWidth ? 'aspect-[16/9] sm:aspect-[4/3] w-full' : 'aspect-square w-full';
     const titleClass = isFullWidth ? 'text-[16px] sm:text-lg' : 'text-[12px] sm:text-sm';
     const descClass = isFullWidth ? 'text-[13px] sm:text-sm line-clamp-none mt-2' : 'text-[11px] sm:text-xs line-clamp-none';
     const cardPadding = isFullWidth ? 'p-4 sm:p-5' : 'p-2.5 sm:p-4';
@@ -283,17 +287,25 @@ function drawProductCard(p, layoutMode = 'grid') {
 
     return `
         <div id="product-card-${p.id}" class="rounded-[1rem] sm:rounded-2xl shadow-sm hover:shadow-lg border flex flex-col group ${cardPadding} ${colSpanClass} transition-all duration-300 relative h-full" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
-            <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-4 left-4 z-20 w-8 h-8 rounded-full shadow-md flex items-center justify-center hover:scale-110 transition-transform active:scale-95" style="background-color: var(--site-bg); color: var(--site-text);"><i data-lucide="share-2" class="w-4 h-4"></i></button>
-            ${isOutOfStock ? `<div class="absolute top-4 right-4 z-20 bg-gray-900/85 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-600 backdrop-blur-sm shadow-lg flex items-center gap-1"><i data-lucide="ban" class="w-3 h-3 text-red-400"></i> نفدت الكمية</div>` : ''}
-            ${p.badge && !isOutOfStock ? `<div class="absolute top-4 right-4 z-20 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg border animate-pulse tracking-wide" style="background-color: hsl(var(--brand-hue), 70%, 55%); border-color: hsl(var(--brand-hue), 80%, 75%);">${p.badge}</div>` : ''}
+            <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-4 left-4 z-30 w-8 h-8 rounded-full shadow-md flex items-center justify-center hover:scale-110 transition-transform active:scale-95" style="background-color: var(--site-bg); color: var(--site-text);"><i data-lucide="share-2" class="w-4 h-4"></i></button>
+            ${isOutOfStock ? `<div class="absolute top-4 right-4 z-30 bg-gray-900/85 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg border border-gray-600 backdrop-blur-sm shadow-lg flex items-center gap-1"><i data-lucide="ban" class="w-3 h-3 text-red-400"></i> نفدت الكمية</div>` : ''}
+            ${p.badge && !isOutOfStock ? `<div class="absolute top-4 right-4 z-30 text-white text-[10px] md:text-xs font-bold px-3 py-1.5 rounded-lg shadow-lg border animate-pulse tracking-wide" style="background-color: hsl(var(--brand-hue), 70%, 55%); border-color: hsl(var(--brand-hue), 80%, 75%);">${p.badge}</div>` : ''}
+            
             <div class="${aspectClass} rounded-lg sm:rounded-xl overflow-hidden border relative shrink-0" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                <div class="relative w-full h-full flex overflow-x-auto snap-slider hide-scrollbar ${isOutOfStock ? 'grayscale-overlay' : ''}">
-                    ${imageList.map(url => `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 ${isOutOfStock ? '' : 'group-hover:scale-105'}" loading="lazy">`).join('')}
+                <div id="slider-${p.id}" class="relative w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar pointer-events-auto touch-pan-x" style="-webkit-overflow-scrolling: touch; scroll-behavior: smooth;">
+                    ${imageList.map(url => `<img src="${url}" class="min-w-full w-full h-full object-cover shrink-0 snap-center transition-transform duration-700 ${isOutOfStock ? 'grayscale-overlay' : 'group-hover:scale-105'}" loading="lazy" style="pointer-events: none;">`).join('')}
                 </div>
-                ${hasMultipleImages ? `<div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">${imageList.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-white opacity-100 w-3' : 'bg-white opacity-50'} shadow-sm transition-all"></div>`).join('')}</div><div class="absolute top-2 left-2 bg-black/40 text-white text-[8px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm"><i data-lucide="images" class="w-3 h-3"></i> ${imageList.length}</div>` : ''}
-                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent opacity-0 ${isOutOfStock ? '' : 'group-hover:opacity-100'} pointer-events-none transition-opacity duration-300"></div>
+                
+                ${hasMultipleImages ? `
+                    <button onclick="event.stopPropagation(); document.getElementById('slider-${p.id}').scrollBy({left: -200, behavior: 'smooth'})" class="absolute left-1 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-pink-500 rounded-full w-7 h-7 flex items-center justify-center shadow-md z-20 backdrop-blur-sm transition-all active:scale-90"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                    <button onclick="event.stopPropagation(); document.getElementById('slider-${p.id}').scrollBy({left: 200, behavior: 'smooth'})" class="absolute right-1 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-pink-500 rounded-full w-7 h-7 flex items-center justify-center shadow-md z-20 backdrop-blur-sm transition-all active:scale-90"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">${imageList.map((_, idx) => `<div class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-white opacity-100 w-3' : 'bg-white opacity-50'} shadow-sm transition-all"></div>`).join('')}</div>
+                    <div class="absolute top-2 left-2 bg-black/40 text-white text-[8px] font-bold px-1.5 py-0.5 rounded flex items-center gap-1 backdrop-blur-sm z-20"><i data-lucide="images" class="w-3 h-3"></i> ${imageList.length}</div>
+                ` : ''}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent opacity-0 ${isOutOfStock ? '' : 'group-hover:opacity-100'} pointer-events-none transition-opacity duration-300 z-0"></div>
             </div>
-            <div class="mt-2.5 sm:mt-3 flex-1 flex flex-col justify-between">
+            
+            <div class="mt-2.5 sm:mt-3 flex-1 flex flex-col justify-between z-10">
                 <div class="mb-3">
                     <h4 class="font-bold ${titleClass} leading-tight mb-1 line-clamp-1" style="color: var(--site-text);">${escapeHTML(p.name)}</h4>
                     ${p.desc ? `<p class="font-bold leading-relaxed ${descClass} ${isOutOfStock ? 'opacity-50' : 'opacity-80'}" style="color: var(--site-text);">${escapeHTML(p.desc)}</p>` : ''}
