@@ -111,7 +111,15 @@ let defaultCatalog = [];
 async function fetchDefaultCatalog() {
     try {
         const response = await fetch('data.json');
-        defaultCatalog = await response.json();
+        const data = await response.json();
+        // ⚡ Smart Engine Upgrade: JSON Parser
+        if (Array.isArray(data)) {
+            defaultCatalog = data;
+        } else if (data && data.catalog && Array.isArray(data.catalog)) {
+            defaultCatalog = data.catalog; // بيستخرج المنتجات من ملف الباك أب
+        } else {
+            defaultCatalog = [];
+        }
     } catch (error) { console.error("تعذر تحميل الكتالوج الافتراضي:", error); }
 }
 
