@@ -750,10 +750,22 @@ function showInfo(t) {
 }
 function closeInfo() { const m = document.getElementById('info-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
 
+// ⚡ Engine Optimization: Smart Scroll Listener (Zero-Lag)
+let isScrolling = false;
 window.addEventListener('scroll', () => {
-    const n = document.getElementById('navbar');
-    if(n) { if (window.scrollY > 30) n.classList.add('nav-scrolled'); else n.classList.remove('nav-scrolled'); }
-});
+    if (!isScrolling) {
+        window.requestAnimationFrame(() => {
+            const n = document.getElementById('navbar');
+            if (n) { 
+                if (window.scrollY > 30) n.classList.add('nav-scrolled'); 
+                else n.classList.remove('nav-scrolled'); 
+            }
+            isScrolling = false;
+        });
+        isScrolling = true;
+    }
+}, { passive: true });
+
 
 // 🛡️ Engine Upgrade: Advanced Security & Redirect
 let secretTaps = 0; let tapTimer = null;

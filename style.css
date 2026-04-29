@@ -56,11 +56,16 @@ body {
 }
 
 /* النافبار العلوية - تم تخفيف الزجاج المغبش لزيادة سرعة السكرول ومنع التقطيع */
+/* النافبار العلوية - تم إضافة تسريع المعالج الرسومي (GPU Acceleration) لمنع التجميد */
 .nav-scrolled { 
     background-color: rgba(253, 253, 253, 0.98); 
-    backdrop-filter: blur(8px); 
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05); 
+    transform: translateZ(0); 
+    will-change: background-color, backdrop-filter;
 }
+
 
 input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue), 80%, 65%); }
 
