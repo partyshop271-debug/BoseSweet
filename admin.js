@@ -979,28 +979,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 🛡️ Boot Controller (The Master Fix)
-window.addEventListener('load', async () => {
+window.addEventListener('load', () => {
     console.log("BoseSweets Admin Engine Initiating...");
     
-    // 1. Force Load Data (With error catching)
-    try { await loadEngineMemory(); } 
-    catch(e) { console.error("Memory load warning:", e); }
-
-    // 2. Safely start the dashboard regardless of Auth state delays
+    // 1. Safely start the dashboard and load data after Auth state is confirmed
     if(typeof auth !== 'undefined') {
-        auth.onAuthStateChanged(user => {
+        auth.onAuthStateChanged(async user => {
             if (user) {
+                try { await loadEngineMemory(); } catch(e) { console.error("BoseSweets Error:", e); }
                 openAdminDashboardDirectly();
             } else {
-                console.warn("BoseSweets: User not logged in. Booting Dashboard in local mode to prevent freeze.");
+                console.warn("BoseSweets: User not logged in Booting Dashboard in local mode");
+                try { await loadEngineMemory(); } catch(e) { console.error("BoseSweets Error:", e); }
                 openAdminDashboardDirectly();
             }
         });
     } else {
-        console.warn("BoseSweets: Firebase Auth undefined. Booting locally.");
-        openAdminDashboardDirectly();
+        console.warn("BoseSweets: Firebase Auth undefined Booting locally");
+        loadEngineMemory().then(() => {
+            openAdminDashboardDirectly();
+        });
     }
     
     // Failsafe Unfreeze Timeout
-    setTimeout(unfreezeAdminUI, 2000);
-}
+    setTimeout(unfreezeAdminUI, 2500);
+});
