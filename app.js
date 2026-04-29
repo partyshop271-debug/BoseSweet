@@ -1,19 +1,3 @@
-// ⚡ Engine Upgrade: Smart Pre-load Engine
-const PreloadEngine = {
-    loadedUrls: new Set(),
-    ignite(catalogData, galleryData = []) {
-        setTimeout(() => {
-            const allUrls = [];
-            catalogData.forEach(i => {
-                if(i.images && i.images.length > 0) i.images.forEach(img => allUrls.push(img));
-                else allUrls.push(i.img || getImgFallback(i.category));
-            });
-            galleryData.forEach(g => allUrls.push(g.url));
-            allUrls.forEach(url => { if(url && !this.loadedUrls.has(url)) { const img = new Image(); img.src = url; this.loadedUrls.add(url); } });
-        }, 3000); 
-    }
-};
-
 function hexToMathHSL(hex) {
     let r = 0, g = 0, b = 0;
     if (hex.length == 4) { r = "0x" + hex[1] + hex[1]; g = "0x" + hex[2] + hex[2]; b = "0x" + hex[3] + hex[3]; } 
@@ -46,7 +30,7 @@ function showSystemToast(message, type = 'info') {
     msgEl.innerText = message;
     toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] flex items-center gap-3 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm max-w-[90vw] text-center border border-gray-700 toast-enter ${type === 'error' ? 'bg-red-900' : (type === 'success' ? 'bg-emerald-800' : 'bg-gray-900')}`;
     iconEl.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : (type === 'success' ? 'check-circle' : 'info'));
-    if(window.lucide) lucide.createIcons();
+    if(window.lucide) lucide.createIcons({ rootNode: toast });
     setTimeout(() => { toast.classList.replace('flex', 'hidden'); toast.classList.remove('toast-enter'); }, 4000);
 }
 
@@ -162,7 +146,6 @@ async function initApp() {
     
     syncCartUI(); 
     if(window.lucide) lucide.createIcons();
-    PreloadEngine.ignite(catalog, galleryData);
     
     const urlParams = new URLSearchParams(window.location.search);
     const sharedProductId = urlParams.get('product');
@@ -183,15 +166,15 @@ async function initApp() {
 // ----------------------------------------------------
 function toggleLiveSearch(show) {
     const overlay = document.getElementById('live-search-overlay'); const input = document.getElementById('live-search-input'); const results = document.getElementById('live-search-results');
-    if (show) { overlay.classList.remove('hidden'); setTimeout(() => { overlay.classList.add('opacity-100'); input.focus(); }, 10); input.value = ''; results.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; if(window.lucide) lucide.createIcons(); } 
+    if (show) { overlay.classList.remove('hidden'); setTimeout(() => { overlay.classList.add('opacity-100'); input.focus(); }, 10); input.value = ''; results.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; if(window.lucide) lucide.createIcons({ rootNode: results }); } 
     else { overlay.classList.remove('opacity-100'); setTimeout(() => overlay.classList.add('hidden'), 300); }
 }
 
 function performLiveSearch(query) {
     const resultsContainer = document.getElementById('live-search-results'); const q = query.trim().toLowerCase();
-    if (!q) { resultsContainer.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; if(window.lucide) lucide.createIcons(); return; }
+    if (!q) { resultsContainer.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; if(window.lucide) lucide.createIcons({ rootNode: resultsContainer }); return; }
     const matches = catalog.filter(p => (p.name && p.name.toLowerCase().includes(q)) || (p.category && p.category.toLowerCase().includes(q)) || (p.desc && p.desc.toLowerCase().includes(q)));
-    if (matches.length === 0) { resultsContainer.innerHTML = `<div class="flex flex-col items-center justify-center text-white/70 font-bold mt-10 bg-white/5 p-8 rounded-2xl"><i data-lucide="search-x" class="w-12 h-12 mb-4 text-pink-400"></i><p>لم نجد تطابق للبحث عن "${escapeHTML(query)}"</p><p class="text-xs opacity-70 mt-2">جرب البحث بكلمة مختلفة مثل "تورتة"، "نوتيلا"، "لوتس"</p></div>`; if(window.lucide) lucide.createIcons(); return; }
+    if (matches.length === 0) { resultsContainer.innerHTML = `<div class="flex flex-col items-center justify-center text-white/70 font-bold mt-10 bg-white/5 p-8 rounded-2xl"><i data-lucide="search-x" class="w-12 h-12 mb-4 text-pink-400"></i><p>لم نجد تطابق للبحث عن "${escapeHTML(query)}"</p><p class="text-xs opacity-70 mt-2">جرب البحث بكلمة مختلفة مثل "تورتة"، "نوتيلا"، "لوتس"</p></div>`; if(window.lucide) lucide.createIcons({ rootNode: resultsContainer }); return; }
     resultsContainer.innerHTML = matches.map(p => {
         const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category)); const isOutOfStock = p.inStock === false;
         return `
@@ -204,7 +187,7 @@ function performLiveSearch(query) {
             <div class="px-2">${isOutOfStock ? `<span class="text-xs text-red-500 font-bold bg-red-50 px-2 py-1 rounded-lg border border-red-100"><i data-lucide="ban" class="w-3 h-3 inline"></i> نفدت</span>` : `<button class="w-10 h-10 bg-pink-50 text-pink-500 hover:bg-pink-500 hover:text-white rounded-xl flex items-center justify-center transition-colors shadow-sm"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>`}</div>
         </div>`;
     }).join('');
-    if(window.lucide) lucide.createIcons();
+    if(window.lucide) lucide.createIcons({ rootNode: resultsContainer });
 }
 
 function shareProduct(id, name) {
@@ -223,7 +206,7 @@ function renderCustomerSidebarCategories() {
     const container = document.getElementById('sidebar-categories');
     if(!container) return;
     container.innerHTML = catMenu.map(c => `<button onclick="toggleCustomerMenu(false); setCategory('${c}')" class="text-right w-full p-3 rounded-xl font-bold text-sm transition-all hover:bg-gray-50 flex items-center justify-between" style="border: 1px solid hsl(var(--brand-hue), 80%, 95%); color: var(--site-text);"><span>${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</span><i data-lucide="chevron-left" class="w-4 h-4 opacity-50"></i></button>`).join('');
-    if(window.lucide) lucide.createIcons();
+    if(window.lucide) lucide.createIcons({ rootNode: container });
 }
 
 function renderCustomerGallery() {
@@ -234,7 +217,7 @@ function renderCustomerGallery() {
     slider.innerHTML = galleryData.map(g => `<div class="shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="openLightbox('${g.url}')"><div class="w-32 h-40 md:w-40 md:h-52 rounded-2xl overflow-hidden shadow-sm border" style="border-color: hsl(var(--brand-hue), 80%, 90%);"><img src="${g.url}" class="w-full h-full object-cover" loading="lazy" alt="سابقة أعمال حلويات بوسي"></div></div>`).join('');
 }
 
-function openLightbox(url) { const lb = document.getElementById('gallery-lightbox'); document.getElementById('lightbox-img').src = url; lb.classList.remove('hidden'); lb.classList.add('flex'); if(window.lucide) lucide.createIcons(); }
+function openLightbox(url) { const lb = document.getElementById('gallery-lightbox'); document.getElementById('lightbox-img').src = url; lb.classList.remove('hidden'); lb.classList.add('flex'); if(window.lucide) lucide.createIcons({ rootNode: lb }); }
 function closeLightbox() { const lb = document.getElementById('gallery-lightbox'); lb.classList.add('hidden'); lb.classList.remove('flex'); }
 
 function renderCategories() {
@@ -263,15 +246,12 @@ function renderMainDisplay() {
         if (state.activeCat === 'ورد') list = list.filter(p => p.flowerType === state.fType || p.subType === state.fType || (p.desc && p.desc.includes(state.fType)));
 
         const userLayout = siteSettings.productLayout || 'grid';
-        // تعديل بسيط للشبكة لكي تظهر الكروت العادية بشكل جميل
         let gridClass = 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4';
         container.innerHTML = `<div class="grid ${gridClass} gap-5 sm:gap-8 items-stretch">${list.map(p => drawProductCard(p, userLayout)).join('')}</div>`;
     }
-    if(window.lucide) lucide.createIcons();
+    if(window.lucide) lucide.createIcons({ rootNode: container });
 }
 
-// 👑 التطوير الجذري لواجهة الكارت - Smart UX Premium Overhaul 👑
-// دوال ذكية للتحكم بالكمية قبل الإضافة للسلة
 window.updateTempQty = function(id, delta) {
     const el = document.getElementById('temp-qty-' + id);
     if(el) {
@@ -311,19 +291,16 @@ function drawProductCard(p, layoutMode = 'grid') {
     let itemLayout = (p.layout && p.layout !== 'default') ? p.layout : layoutMode;
     
     let isFullWidth = (itemLayout === 'full');
-    // الكارت المميز يأخذ العرض بالكامل داخل الشبكة
     let colSpanClass = isFullWidth ? 'col-span-full' : '';
     
     const isOutOfStock = p.inStock === false;
     const imageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
     const hasMultipleImages = imageList.length > 1;
 
-    // دالة الأزرار الذكية المحدثة كلياً لتلبي رغبة الإدارة (الكمية أولاً)
     const renderBtns = () => {
         if (isOutOfStock) return `<button disabled class="w-full font-bold text-xs py-3.5 rounded-xl flex justify-center items-center gap-2 bg-gray-50 text-gray-400 border border-gray-200 cursor-not-allowed shadow-inner"><i data-lucide="clock" class="w-4 h-4"></i> غير متوفر حالياً</button>`;
         
         if (item) {
-            // حالة المنتج موجود بالفعل في السلة
             return `
             <div class="flex items-center justify-between bg-white rounded-xl p-1.5 shadow-sm border border-pink-200 w-full">
                 <button onclick="modQ('${item.cartItemId || item.id}', -1)" class="w-10 h-10 flex items-center justify-center rounded-lg transition-all active:scale-90 bg-pink-50 text-pink-500 hover:bg-pink-100"><i data-lucide="${item.quantity == 1 ? 'trash-2' : 'minus'}" class="w-4 h-4"></i></button>
@@ -336,7 +313,6 @@ function drawProductCard(p, layoutMode = 'grid') {
             `;
         }
 
-        // حالة المنتج ليس في السلة (إظهار عداد الكمية مع زر الإضافة كما طلبت الإدارة)
         return `
         <div class="flex items-center gap-2.5 w-full">
             <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl p-1 w-[40%] shrink-0">
@@ -352,7 +328,6 @@ function drawProductCard(p, layoutMode = 'grid') {
     };
 
     if (isFullWidth) {
-        // 👑 الكارت المميز الفاخر (Full Width Cinematic View) - لا يوجد قص أو ضغط للصورة نهائياً
         return `
         <div id="product-card-${p.id}" class="${colSpanClass} rounded-[2rem] shadow-sm hover:shadow-2xl border border-gray-100 flex flex-col group transition-all duration-500 overflow-hidden bg-white mb-4 hover:-translate-y-1">
             <div class="relative w-full aspect-[4/5] sm:aspect-square md:aspect-[16/9] bg-gray-50 overflow-hidden">
@@ -379,7 +354,6 @@ function drawProductCard(p, layoutMode = 'grid') {
         </div>
         `;
     } else {
-        // الكارت العادي في الشبكة (مساحات تنفس رائعة ووداعاً للتكديس)
         return `
         <div id="product-card-${p.id}" class="rounded-[1.5rem] shadow-sm hover:shadow-xl border border-gray-100 flex flex-col group transition-all duration-300 relative overflow-hidden bg-white hover:-translate-y-1 h-full">
             <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-3 left-3 z-30 w-8 h-8 rounded-full shadow-md bg-white/90 text-gray-500 flex items-center justify-center hover:scale-110 hover:text-pink-500 transition-all backdrop-blur-sm"><i data-lucide="share-2" class="w-4 h-4"></i></button>
@@ -495,7 +469,7 @@ function renderCakeBuilder(target) {
             </div>
         </div>
     `;
-    if(window.lucide) lucide.createIcons();
+    if(window.lucide) lucide.createIcons({ rootNode: target });
 }
 
 function setSub(t, v) { if(t==='s') state.dSize=v; if(t==='f') state.fType=v; renderMainDisplay(); }
@@ -524,7 +498,11 @@ function setSh(s) {
 function updateCardUI(id) {
     const safeId = String(id); const cardEl = document.getElementById(`product-card-${safeId}`);
     const prod = catalogMap.get(safeId); const userLayout = siteSettings.productLayout || 'grid';
-    if (cardEl && prod) { cardEl.outerHTML = drawProductCard(prod, userLayout); if(window.lucide) lucide.createIcons(); }
+    if (cardEl && prod) { 
+        cardEl.outerHTML = drawProductCard(prod, userLayout); 
+        const newCardEl = document.getElementById(`product-card-${safeId}`);
+        if(window.lucide && newCardEl) lucide.createIcons({ rootNode: newCardEl }); 
+    }
 }
 
 function renderCartCrossSell() {
@@ -569,7 +547,7 @@ function renderCartList() {
     if (!container) return;
     if (state.cart.length === 0) {
         container.innerHTML = `<div class="flex flex-col items-center justify-center py-12 px-4 text-center"><div class="w-20 h-20 bg-pink-50 rounded-full flex items-center justify-center mb-4 border-2 border-pink-100 shadow-inner text-pink-300"><i data-lucide="shopping-bag" class="w-10 h-10"></i></div><h3 class="text-gray-800 font-bold mb-1 text-lg">سلة حلويات بوسي في انتظارك 🌸</h3><p class="text-gray-500 text-sm mb-6">دلع نفسك واختار أحلى الحلويات من القائمة</p><button onclick="toggleCart(false)" class="bg-pink-500 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-pink-200 active:scale-95 transition-all">يلا نتسوق</button></div>`;
-        if (crossSellArea) crossSellArea.innerHTML = ''; if (totalDisplay) totalDisplay.innerText = "0 ج.م"; if (window.lucide) lucide.createIcons(); return;
+        if (crossSellArea) crossSellArea.innerHTML = ''; if (totalDisplay) totalDisplay.innerText = "0 ج.م"; if (window.lucide) lucide.createIcons({ rootNode: container }); return;
     }
 
     let total = 0;
@@ -588,8 +566,11 @@ function renderCartList() {
         `;
     }).join('');
     if (totalDisplay) totalDisplay.innerText = total + " ج.م";
-    if (crossSellArea) crossSellArea.innerHTML = renderCartCrossSell();
-    if (window.lucide) lucide.createIcons();
+    if (crossSellArea) {
+        crossSellArea.innerHTML = renderCartCrossSell();
+        if (window.lucide) lucide.createIcons({ rootNode: crossSellArea });
+    }
+    if (window.lucide) lucide.createIcons({ rootNode: container });
 }
 
 function modQ(cartId, d) {
@@ -746,26 +727,24 @@ async function submitOrder() {
 function showInfo(t) {
     const d = { about: { t: 'من نحن', b: siteSettings.footerQuote }, privacy: { t: 'سياسة الخصوصية والأمان', b: 'تلتزم إدارة حلويات بوسي بمنتهى السرية والاحترافية في التعامل مع بياناتكم وطلباتكم.' }, refund: { t: 'سياسة الاسترجاع والتعديل', b: 'يتم التعديل على الطلبات المخصصة قبل التنفيذ بـ 24 ساعة على الأقل.' }, care: { t: 'دليل الجودة الملكي', b: '1. الحفظ في مبرد (4-8 مئوية).\n2. تجنب ترك المنتج في السيارة.\n3. يُنصح بالتقديم بعد 10 دقائق من الخروج من المبرد.' } };
     document.getElementById('info-title').innerText = d[t].t; document.getElementById('info-body').innerText = d[t].b;
-    const m = document.getElementById('info-modal'); m.classList.remove('hidden'); m.classList.add('flex'); if(window.lucide) lucide.createIcons();
+    const m = document.getElementById('info-modal'); m.classList.remove('hidden'); m.classList.add('flex'); if(window.lucide) lucide.createIcons({ rootNode: m });
 }
 function closeInfo() { const m = document.getElementById('info-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
 
 // ⚡ Engine Optimization: Smart Scroll Listener (Zero-Lag)
 let isScrolling = false;
+const navbarEl = document.getElementById('navbar');
+
 window.addEventListener('scroll', () => {
-    if (!isScrolling) {
+    if (!isScrolling && navbarEl) {
         window.requestAnimationFrame(() => {
-            const n = document.getElementById('navbar');
-            if (n) { 
-                if (window.scrollY > 30) n.classList.add('nav-scrolled'); 
-                else n.classList.remove('nav-scrolled'); 
-            }
+            if (window.scrollY > 30) navbarEl.classList.add('nav-scrolled'); 
+            else navbarEl.classList.remove('nav-scrolled'); 
             isScrolling = false;
         });
         isScrolling = true;
     }
 }, { passive: true });
-
 
 // 🛡️ Engine Upgrade: Advanced Security & Redirect
 let secretTaps = 0; let tapTimer = null;
