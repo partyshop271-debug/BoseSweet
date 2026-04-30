@@ -396,7 +396,7 @@ window.addWithQty = function(id) {
     showSystemToast(`تم إضافة الكمية (${qty}) للسلة بنجاح 🛍️`, 'success');
 };
 
-// 🎨 هيكلة الكارت الجديدة الاحترافية التي تستجيب لنوع التخطيط (Full vs Grid)
+// 🎨 هيكلة الكارت الجديدة الاحترافية التي تستجيب لنوع التخطيط وبدون أي بتر للنصوص
 function drawProductCard(p, layoutMode = 'grid') {
     const pIdSafe = String(p.id); 
     let itemLayout = (p.layout && p.layout !== 'default') ? p.layout : layoutMode;
@@ -429,11 +429,13 @@ function drawProductCard(p, layoutMode = 'grid') {
         </div>`;
     };
 
-    // تصميم وتنسيق النص يختلف لو الكارت مالي الشاشة (Full Width) بياخد راحته بدون Line Clamp
+    // تصميم وتنسيق النص يختلف لو الكارت مالي الشاشة (Full Width) بياخد راحته
     const titleClass = isFullWidth ? 'text-[15px] sm:text-[18px] mb-2' : 'text-[13px] sm:text-[15px] mb-1';
+    
+    // ⚡ تعديل الوصف للكروت الصغيرة: إزالة القص (line-clamp)، تغيير لون الخط ليصبح أغمق وأوضح، وزيادة الوزن إلى font-bold، وتصغير الحجم قليلاً وتقليل المسافة بين السطور لمنع المطة
     const descClass = isFullWidth 
-        ? 'text-[12px] sm:text-[13px] font-medium text-gray-500 leading-relaxed mb-4 px-2' 
-        : 'text-[10px] sm:text-[11px] font-medium text-gray-500 leading-snug mb-2 line-clamp-2 px-0.5';
+        ? 'text-[12px] sm:text-[14px] font-bold text-gray-600 leading-relaxed mb-4 px-2' 
+        : 'text-[10px] sm:text-[11px] font-bold text-gray-600 leading-tight mb-2 px-0.5';
 
     return `
     <div id="product-card-${p.id}" class="${isFullWidth ? 'col-span-full' : ''} bg-white flex flex-col h-full overflow-hidden border border-pink-100/80 rounded-[1.2rem] sm:rounded-[1.5rem] transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1">
@@ -446,6 +448,7 @@ function drawProductCard(p, layoutMode = 'grid') {
         
         <div class="p-2.5 sm:p-4 flex flex-col flex-1 text-center bg-white">
             <h4 class="${titleClass} font-black leading-tight" style="color: hsl(var(--brand-hue), 70%, 40%);">${escapeHTML(p.name)}</h4>
+            <!-- تم إزالة خطوة القص نهائياً لضمان قراءة الوصف كاملاً، مع تقوية الخط ووضوحه -->
             <p class="${descClass}">${escapeHTML(finalDesc)}</p>
             ${renderActionArea()}
         </div>
