@@ -1,4 +1,3 @@
-
 // ⚡ Engine Upgrade: Ultimate Dynamic Catalog Engine (V. Infinity)
 const PreloadEngine = {
     loadedUrls: new Set(),
@@ -191,7 +190,7 @@ const defaultSettings = {
 
 const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
 
-// ⚡ إضافة المنيو الجديد للديسباسيتو مباشرة داخل الكتالوج الافتراضي مع زيادة السعر 10%
+// ⚡ تحديث حصري: قائمة الديسباسيتو (فقط النكهات الجديدة من المنيو) مع زيادة السعر 10%
 let defaultCatalog = [
     // --- ديسباسيتو مثلث ---
     { id: 'dp_tri_dark', name: 'ديسباسيتو نوتيلا دارك', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
@@ -250,7 +249,17 @@ async function loadEngineMemory() {
         await fetchDefaultCatalog(); catalog = [...defaultCatalog];
         const catSnap = await db.collection('catalog').get();
         if (catSnap.empty) { for (let p of catalog) await NetworkEngine.safeWrite('catalog', String(p.id), p); } 
-        else { catalog = []; catSnap.forEach(doc => catalog.push(doc.data())); }
+        else { 
+            catalog = []; 
+            catSnap.forEach(doc => {
+                const p = doc.data();
+                // ⚡ فلترة احترافية: مسح أي منتج ديسباسيتو قديم من قاعدة البيانات واستبعاده تماماً
+                if (p.category !== 'ديسباسيتو') catalog.push(p);
+            });
+            // ⚡ ضخ النكهات المحدثة للديسباسيتو حصرياً من الكود لتجنب أي تكرار
+            const freshDespacito = defaultCatalog.filter(p => p.category === 'ديسباسيتو');
+            catalog = [...catalog, ...freshDespacito];
+        }
         const orderSnap = await db.collection('orders').orderBy('timestamp', 'desc').get();
         if (!orderSnap.empty) { globalOrders = []; orderSnap.forEach(doc => globalOrders.push(doc.data())); }
         const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
@@ -664,4 +673,3 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 window.onload = initApp;
-
