@@ -130,7 +130,6 @@ function getFinalDescription(p, isFullWidth) {
     return getCapsuleDescription(p);
 }
 
-
 function hexToMathHSL(hex) {
     let r = 0, g = 0, b = 0;
     if (hex.length == 4) { r = "0x" + hex[1] + hex[1]; g = "0x" + hex[2] + hex[2]; b = "0x" + hex[3] + hex[3]; } 
@@ -167,158 +166,7 @@ function showSystemToast(message, type = 'info') {
     setTimeout(() => { toast.classList.replace('flex', 'hidden'); toast.classList.remove('toast-enter'); }, 4000);
 }
 
-// 👑👑👑 السيستم المدمج لإدارة حلويات بوسي (تسجيل الدخول + لوحة التحكم) 👑👑👑
-const AdminSystem = {
-    // الباسورد الافتراضي لدخول السيستم (رقم تليفون حلويات بوسي لسهولة الدخول)
-    authPass: '01097238441', 
-    
-    // إظهار شاشة تسجيل الدخول
-    showLogin() {
-        let existing = document.getElementById('admin-login-modal');
-        if(existing) existing.remove();
-        
-        const modal = document.createElement('div');
-        modal.id = 'admin-login-modal';
-        modal.className = 'fixed inset-0 bg-black/80 z-[3000] flex items-center justify-center p-4 backdrop-blur-md animate-fade-in';
-        modal.innerHTML = `
-            <div class="bg-white rounded-[2rem] shadow-2xl p-8 w-full max-w-sm text-center border-4 border-pink-500 relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-pink-400 to-pink-600"></div>
-                <div class="w-24 h-24 bg-pink-50 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-pink-100 text-pink-600 shadow-inner">
-                    <i data-lucide="shield-check" class="w-12 h-12"></i>
-                </div>
-                <h2 class="text-2xl font-black text-gray-800 mb-1">حلويات بوسي 👑</h2>
-                <p class="text-sm font-bold text-gray-500 mb-8">تسجيل الدخول للوحة التحكم السرية</p>
-                
-                <input type="password" id="admin-pass-input" class="w-full bg-gray-50 border-2 border-gray-200 rounded-xl p-4 mb-6 text-center text-xl font-bold tracking-widest focus:border-pink-500 focus:outline-none transition-all shadow-inner" placeholder="كلمة المرور">
-                
-                <button onclick="AdminSystem.verify()" class="w-full bg-gradient-to-r from-pink-600 to-pink-500 text-white font-black text-lg py-4 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 active:scale-95 transition-all flex justify-center items-center gap-2">
-                    <i data-lucide="log-in" class="w-5 h-5"></i> دخول للسيستم
-                </button>
-                
-                <button onclick="document.getElementById('admin-login-modal').remove()" class="mt-6 text-gray-400 text-sm font-bold hover:text-pink-500 transition-colors">إغلاق وتراجع</button>
-            </div>
-        `;
-        document.body.appendChild(modal);
-        if(window.lucide) lucide.createIcons();
-        document.getElementById('admin-pass-input').focus();
-        
-        // دعم الدخول بزر الانتر
-        document.getElementById('admin-pass-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') AdminSystem.verify();
-        });
-    },
-
-    // التحقق من كلمة المرور
-    verify() {
-        const pass = document.getElementById('admin-pass-input').value;
-        if(pass === this.authPass || pass === 'admin' || pass === 'bose') {
-            document.getElementById('admin-login-modal').remove();
-            this.renderDashboard();
-            showSystemToast('مرحباً بك يا إدارة حلويات بوسي 👑 في لوحة التحكم', 'success');
-        } else {
-            showSystemToast('كلمة المرور غير صحيحة، حاول مرة أخرى ❌', 'error');
-        }
-    },
-
-    // بناء لوحة التحكم المدمجة
-    renderDashboard() {
-        let existing = document.getElementById('admin-dashboard-overlay');
-        if(existing) existing.remove();
-
-        const dash = document.createElement('div');
-        dash.id = 'admin-dashboard-overlay';
-        dash.className = 'fixed inset-0 bg-gray-50 z-[2000] flex flex-col overflow-hidden animate-fade-in';
-        dash.innerHTML = `
-            <!-- الهيدر الخاص بلوحة التحكم -->
-            <div class="bg-white shadow-sm border-b border-pink-100 px-4 md:px-8 py-4 flex justify-between items-center shrink-0">
-                <div class="flex items-center gap-3 md:gap-4">
-                    <div class="w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br from-pink-500 to-pink-600 rounded-full flex items-center justify-center text-white shadow-md">
-                        <i data-lucide="crown" class="w-5 h-5 md:w-7 md:h-7"></i>
-                    </div>
-                    <div>
-                        <h1 class="font-black text-lg md:text-2xl text-gray-800">سيستم إدارة حلويات بوسي</h1>
-                        <p class="text-[10px] md:text-xs font-bold text-pink-500">التحكم المركزي في الموقع والإعدادات</p>
-                    </div>
-                </div>
-                <button onclick="document.getElementById('admin-dashboard-overlay').remove()" class="w-10 h-10 md:w-12 md:h-12 bg-red-50 text-red-500 rounded-xl flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors shadow-sm">
-                    <i data-lucide="x" class="w-5 h-5"></i>
-                </button>
-            </div>
-
-            <!-- محتوى الإعدادات والسيستم -->
-            <div class="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col gap-6 md:gap-8 max-w-7xl mx-auto w-full">
-                
-                <!-- إحصائيات سريعة -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-pink-100 flex items-center gap-3">
-                        <div class="w-12 h-12 bg-pink-50 rounded-xl flex items-center justify-center text-pink-500 shrink-0"><i data-lucide="package"></i></div>
-                        <div><p class="text-gray-500 text-[11px] font-bold">إجمالي المنيو</p><h3 class="text-xl font-black text-gray-800">${catalog.length} صنف</h3></div>
-                    </div>
-                    <div class="bg-white rounded-2xl p-4 shadow-sm border border-emerald-100 flex items-center gap-3">
-                        <div class="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-emerald-500 shrink-0"><i data-lucide="folder-tree"></i></div>
-                        <div><p class="text-gray-500 text-[11px] font-bold">أقسام الموقع</p><h3 class="text-xl font-black text-gray-800">${catMenu.length} أقسام</h3></div>
-                    </div>
-                </div>
-
-                <!-- إعدادات الموقع الأساسية -->
-                <div class="bg-white rounded-[2rem] p-6 md:p-8 shadow-sm border border-gray-100">
-                    <h2 class="text-xl font-black text-pink-600 mb-6 flex items-center gap-2 border-b pb-4"><i data-lucide="settings"></i> الإعدادات العامة للموقع</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-600 mb-2">الشريط المتحرك بالأعلى (Ticker)</label>
-                            <input type="text" id="admin-set-ticker" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:border-pink-500 focus:outline-none font-bold" value="${siteSettings.tickerText}">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-600 mb-2">رقم هاتف استلام الطلبات</label>
-                            <input type="text" id="admin-set-phone" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 focus:border-pink-500 focus:outline-none font-bold" value="${siteSettings.footerPhone}">
-                        </div>
-                        <div class="col-span-full">
-                            <label class="block text-sm font-bold text-gray-600 mb-2">الرسالة الترحيبية (في الواجهة)</label>
-                            <textarea id="admin-set-desc" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 h-24 focus:border-pink-500 focus:outline-none font-bold leading-relaxed">${siteSettings.heroDesc}</textarea>
-                        </div>
-                    </div>
-
-                    <div class="mt-8 pt-6 border-t flex justify-end">
-                        <button onclick="AdminSystem.saveSettings()" class="bg-gradient-to-r from-pink-600 to-pink-500 text-white px-8 py-3.5 rounded-xl font-black shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all flex items-center gap-2">
-                            <i data-lucide="save" class="w-5 h-5"></i> حفظ الإعدادات وتحديث الموقع
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="text-center mt-auto pb-4">
-                    <p class="text-gray-400 font-bold text-sm">حلويات بوسي - لوحة التحكم المدمجة V. Infinity 👑</p>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(dash);
-        if(window.lucide) lucide.createIcons();
-    },
-
-    // حفظ الإعدادات في الذاكرة وتحديث الموقع لحظياً
-    async saveSettings() {
-        try {
-            siteSettings.tickerText = document.getElementById('admin-set-ticker').value;
-            siteSettings.footerPhone = document.getElementById('admin-set-phone').value;
-            siteSettings.heroDesc = document.getElementById('admin-set-desc').value;
-            
-            // تطبيق التعديلات على واجهة المستخدم فوراً
-            applySettingsToUI();
-            saveEngineMemory('set');
-            
-            // محاولة الحفظ في قاعدة البيانات إذا كانت متصلة
-            if (typeof db !== 'undefined' && db.collection) {
-                await db.collection('settings').doc('main').set(siteSettings, {merge: true});
-            }
-            showSystemToast('تم حفظ الإعدادات بنجاح! الموقع اتحدث فوراً 👑', 'success');
-        } catch(e) {
-            console.error(e);
-            showSystemToast('حدث خطأ أثناء الحفظ، يرجى المحاولة لاحقاً', 'error');
-        }
-    }
-};
-
-// ⚡ الباب السري للوحة تحكم إدارة حلويات بوسي
+// ⚡ الباب السري الحقيقي لتسجيل الدخول بفايربيز
 let adminClicksCounter = 0;
 let adminClickTimer;
 
@@ -329,13 +177,18 @@ window.triggerAdminAccess = function(e) {
     
     if (adminClicksCounter >= 5) {
         adminClicksCounter = 0;
-        // استدعاء لوحة تسجيل الدخول المدمجة فوراً
-        AdminSystem.showLogin();
+        showSystemToast('جاري التحويل لصفحة تسجيل الدخول الآمنة 👑...', 'success');
+        setTimeout(() => {
+            // توجيه سليم لصفحة الفايربيز اللي إنتي مصمماها بدون أي تدخل في برمجتها
+            // ملحوظة: لو اسم صفحة لوحة التحكم عندك مختلف عن admin.html ممكن تعدلي الكلمة دي بس.
+            window.location.href = 'admin.html';
+        }, 800);
     }
     
     adminClickTimer = setTimeout(() => { adminClicksCounter = 0; }, 1500); 
 };
 
+// زراعة زر العبور السري في الفوتر بدون التأثير على الـ HTML
 function autoBindAdminAccess() {
     const textNodes = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
     let node;
@@ -501,7 +354,7 @@ async function initApp() {
     if(loader) { loader.style.opacity = '0'; loader.style.visibility = 'hidden'; setTimeout(() => loader.style.display = 'none', 500); }
     applySettingsToUI();
     
-    // ⚡ تفعيل الباب السري للوحة التحكم والإعدادات تلقائياً
+    // ⚡ تفعيل كود العبور السري عشان يحولك للوحة المربوطة بالفايربيز
     autoBindAdminAccess();
     
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
