@@ -178,7 +178,7 @@ let adminClicksCounter = 0;
 let adminClickTimer;
 
 window.triggerAdminAccess = function(e) {
-    if(e) e.stopPropagation(); // منع أي تداخل مع الكليكات التانية
+    if(e) e.stopPropagation(); 
     adminClicksCounter++;
     clearTimeout(adminClickTimer);
     
@@ -186,15 +186,13 @@ window.triggerAdminAccess = function(e) {
         adminClicksCounter = 0;
         showSystemToast('مرحباً بك يا إدارة حلويات بوسي 👑، جاري التحويل للوحة التحكم...', 'success');
         setTimeout(() => {
-            // الانتقال الفوري لمسار لوحة التحكم (لو المسار مختلف، ممكن يتعدل من هنا ببساطة)
             window.location.href = 'admin.html';
         }, 1200);
     }
     
-    adminClickTimer = setTimeout(() => { adminClicksCounter = 0; }, 1500); // تصفير العداد لو وقفتي ضغط
+    adminClickTimer = setTimeout(() => { adminClicksCounter = 0; }, 1500); 
 };
 
-// الدالة دي بتدور على جملة جميع الحقوق محفوظة وبتزرع فيها المستشعر السري
 function autoBindAdminAccess() {
     const textNodes = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
     let node;
@@ -203,7 +201,7 @@ function autoBindAdminAccess() {
             const parentEl = node.parentElement;
             if (parentEl && !parentEl.dataset.adminBound) {
                 parentEl.dataset.adminBound = 'true';
-                parentEl.style.userSelect = 'none'; // منع تظليل النص المزعج وقت الضغط المتكرر
+                parentEl.style.userSelect = 'none'; 
                 parentEl.style.cursor = 'pointer';
                 parentEl.addEventListener('click', window.triggerAdminAccess);
             }
@@ -225,7 +223,7 @@ const defaultSettings = {
 
 const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
 
-// ⚡ تحديث حصري: قائمة الديسباسيتو (فقط النكهات الجديدة من المنيو) مع زيادة السعر 10%
+// ⚡ قائمة الديسباسيتو المحدثة حصرياً
 let defaultCatalog = [
     // --- ديسباسيتو مثلث ---
     { id: 'dp_tri_dark', name: 'ديسباسيتو نوتيلا دارك', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
@@ -288,10 +286,8 @@ async function loadEngineMemory() {
             catalog = []; 
             catSnap.forEach(doc => {
                 const p = doc.data();
-                // ⚡ فلترة احترافية: مسح أي منتج ديسباسيتو قديم من قاعدة البيانات واستبعاده تماماً
                 if (p.category !== 'ديسباسيتو') catalog.push(p);
             });
-            // ⚡ ضخ النكهات المحدثة للديسباسيتو حصرياً من الكود لتجنب أي تكرار
             const freshDespacito = defaultCatalog.filter(p => p.category === 'ديسباسيتو');
             catalog = [...catalog, ...freshDespacito];
         }
@@ -362,7 +358,7 @@ async function initApp() {
     if(loader) { loader.style.opacity = '0'; loader.style.visibility = 'hidden'; setTimeout(() => loader.style.display = 'none', 500); }
     applySettingsToUI();
     
-    // ⚡ ربط الباب السري للوحة التحكم تلقائياً بدون تغيير أي شيء في الهيكل
+    // ⚡ تفعيل الباب السري للوحة التحكم
     autoBindAdminAccess();
     
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
