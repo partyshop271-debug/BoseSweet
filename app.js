@@ -1,4 +1,4 @@
-// ⚡ Engine Upgrade: Smart Pre-load Engine & Deep Smart Description Engine (V. Pro Max - Capsule Edition)
+// ⚡ Engine Upgrade: Dual-Core Smart Pre-load & Copywriting Engine (V. Elite)
 const PreloadEngine = {
     loadedUrls: new Set(),
     ignite(catalogData, galleryData = []) {
@@ -14,34 +14,47 @@ const PreloadEngine = {
     }
 };
 
-// 🌟 المحرك الذكي المتقدم للأوصاف (وصف الكبسولة: قصير، يخاطب الحواس، ويفصل المنتج عن النكهة)
-function getSmartDescription(p) {
+// 🌟 المحرك ثنائي النواة: قاموس الأوصاف التفصيلية (للكروت الكبيرة اللي مالية الشاشة)
+const detailedDescriptions = {
+    'جاتوه سواريه': 'الجاتوه السواريه مش مجرد حلويات ده عنوان للشياكة والرقي قطع فنية صغيرة معمولة بدقة متناهية علشان تخطف العين وتدوب في البق فورا حجمها المثالي بيخليها الاختيار الأول للضيافة الراقية والمناسبات المهمة علشان ضيوفك يدوقوا أكتر من نكهة بدون إحراج لو مجربتيش السواريه في مناسبتك الجاية فايتك كتير من الفخامة 🎀👑',
+    'جاتوه ملكي': 'الجاتوه الملكي من حلويات بوسي هو الترجمة الحرفية للفخامة مش مجرد كيك وكريمة دي خامات مستوردة وتفاصيل بتتعمل بحب علشان تليق بضيوفك الـ VIP طعم غني جدا وتوازن سكر يظبط المزاج لو بتدوري على حاجة ترفع الراس وتشرفك بجد الجاتوه الملكي هو اختيارك اللي مفيش فيه تنازل 👑✨',
+    'جاتوه كلاسيك': 'قطعة الجاتوه الأصيلة اللي بترجعنا لأحلى الذكريات بس بلمسة حلويات بوسي الفاخرة كيك اسفنجي هش جدا بيدوب مع كريمة غنية متوازنة السكر اختيار آمن ومضمون يرضي كل الأذواق ويليق بأي عزومة سريعة أو قعدة عائلية دافية 🍰🎉',
+    'ميني تورتة': 'ليه تستني مناسبة كبيرة علشان تفرحي؟ الميني تورتة معمولة مخصوص علشان اللحظات الحلوة المفاجئة حجمها كيوت ومثالي جدا يكفي من فردين لثلاثة مليانة حشوات غنية وتفاصيل تفرح القلب لو ناوية تصالحي حد أو تحتفلي بنجاح صغير أو حتى تدلعي نفسك الميني تورتة هي الحل السحري والأسرع 🎂🥰',
+    'تورتة': 'تورتة حلويات بوسي مش مجرد كيكة دي الملكة اللي بتتربع على عرش مناسبتك تصميم بيخطف العين من أول نظرة وكيك هش جدا مع حشوات غنية ومقادير مظبوطة بالمللي تضمنلك إن كل ضيوفك هيسألوا عنها مناسبتك متكملش من غير التورتة اللي تليق باسمك 👑🎂',
+    'ورد': 'الورد مش مجرد هدية ده لغة بتنطق حب ومشاعر من غير ولا كلمة تنسيق راقي جدا بورد فريش وألوان مبهجة تليق بذوقك لو عايز توصل رسالة اعتذار أو حب أو شكر الورد من حلويات بوسي هو أقصر طريق يوصل للقلب ويسيب ذكرى مستحيل تتنسي 💐💖',
+    'بوكس الروقان': 'ليه تحتار تختار إيه لما ممكن تاخد كل حاجة حلوة في بوكس واحد؟ بوكس الروقان تجميعة من ألذ وأرقى أصنافنا معمول مخصوص علشان يفصلك عن دوشة العالم ويدخلك في حالة روقان تام اختيار مثالي لهدية قيمة أو لقعدة صحاب عايزين يتبسطوا بجد 🎁✨',
+    'قشطوطة': 'سر القشطوطة الحقيقي في الهشاشة اللي بتدوب بمجرد ما تلمسها كيكة سحابية غرقانة في حليب فريش وقشطة طبيعية بتطبطب على القلب تجربة حسية متكاملة تخليك تفصل عن الدنيا وتعيش اللحظة بكل تفاصيلها الحلوة اختاري النكهة اللي تدلع مزاجك ☁️🤍',
+    'ديسباسيتو': 'القنبلة البرازيلية اللي خطفت قلوب عشاق الشيكولاتة كيكة اسفنجية خفيفة لأبعد حد غرقانة في صوص شيكولاتة غني جدا بتركيبة سرية طعمها بيعدل المود فوراً ويطبطب على القلب لو يومك كان طويل وصعب الديسباسيتو هي المكافأة اللي تستحقيها 🍫🤤',
+    'سينابون': 'سر السينابون عندنا في العجينة القطنية الطرية اللي مخبوزة بحب ومحشية بأجود أنواع القرفة والسكر البني بمجرد ما تفتح العلبة الريحة كفيلة تدفيك الصوص الكريمي الغني اللي بيغطيها بيكمل اللوحة الفنية طعم يخليك تحس بالدفا والاحتواء 🤎✨',
+    'دوناتس': 'انسوا أي دوناتس دوقته قبل كده العجينة عندنا مقلية باحترافية علشان تكون خفيفة وهشة زي القطنة ومش شاربة زيت نهائيا متغطية بطبقات من الصوصات المبهجة اللي بتفرح الكبار قبل الصغيرين قطعة واحدة منها قادرة تغير مسار يومك بالكامل 🍩😍',
+    'بامبوليني': 'النسخة الإيطالية الفاخرة من الدوناتس كورة من العجينة السحابية الغنية متدحرجة في السكر ومحشية من جوة بقلب بينبض بالكريمة الغنية أو النوتيلا أول ما تقطمها الحشوة بتبظ في البق وتغمر حواسك تجربة استثنائية لازم تعيشيها 🥯🍯'
+};
+
+// 🌟 المحرك ثنائي النواة: القاموس الكبسولة (للكروت الصغيرة لتجنب المطة)
+function getCapsuleDescription(p) {
     let n = (p.name || '').trim().toLowerCase();
     let c = (p.category || '').trim().toLowerCase();
     
-    // 1. الدوناتس والبامبوليني
     if (c.includes('دوناتس') || n.includes('دوناتس') || c.includes('بامبوليني') || n.includes('بامبوليني')) {
-        let base = c.includes('بامبوليني') || n.includes('بامبوليني') ? 'دوناتس إيطالي محشي كورة سحابية هشة' : 'عجينة مقلية خفيفة زي القطنة';
+        let base = c.includes('بامبوليني') || n.includes('بامبوليني') ? 'دوناتس إيطالي محشي كورة سحابية' : 'عجينة مقلية خفيفة زي القطنة';
         if (n.includes('نوتيلا')) return `${base} بتبظ نوتيلا أصلية سايحة.. سعادة مستحيل تقاومها 🍩🍫`;
         if (n.includes('لوتس')) return `${base} محشية زبدة لوتس وبسكوت.. قرمشة بتدوب في البق 🍩🤎`;
         if (n.includes('كراميل')) return `${base} بصوص كراميل دافي وغني.. روقان بيعدل المود 🍩🍮`;
         if (n.includes('فراول')) return `${base} بصوص فراولة فريش.. ميكس المزازة والحلاوة اللي يجنن 🍩🍓`;
         if (n.includes('كندر')) return `${base} بصوص كندر غني.. طعم بيفرح الكبار والصغيرين 🍩💛`;
         if (n.includes('دارك')) return `شيكولاتة دارك إيطالية في قلب دوناتس خفيفة.. للذواقة وبس 🍩🖤`;
-        if (n.includes('وايت') || n.includes('ابيض')) return `${base} متغطية نوتيلا بيضاء مستوردة.. تجربة رقيقة بتدوب 🍩🤍`;
+        if (n.includes('وايت') || n.includes('ابيض')) return `${base} متغطية نوتيلا بيضاء مستوردة.. تجربة رقيقة 🍩🤍`;
         return `${base} بصوصات مبهجة.. مستحيل تكتفي بواحدة 🍩😍`;
     }
 
-    // 2. السينابون
     if (c.includes('سينابون') || n.includes('سينابون')) {
         let base = 'عجينة قطنية بقرفة وصوص جبنة غني';
         if (n.includes('نوتيلا')) return `${base} وغرقانة نوتيلا سايحة.. دفا وسعادة 🤎🍫`;
         if (n.includes('لوتس')) return `${base} بصوص اللوتس الساحر.. ميكس يدلع حواسك 🤎✨`;
-        if (n.includes('كراميل') || n.includes('بيكان')) return `قرمشة البيكان مع الكراميل الغني على عجينة قطنية.. طعم يخطفك 🤎🍮`;
+        if (n.includes('كراميل') || n.includes('بيكان')) return `قرمشة البيكان مع الكراميل الغني على عجينة قطنية 🤎🍮`;
         return `عجينة قطنية طرية غرقانة قرفة وصوص جبنة.. ريحتها هتدفيك 🤎✨`;
     }
 
-    // 3. القشطوطة
     if (c.includes('قشطوط') || n.includes('قشطوط')) {
         if (n.includes('نوتيلا وايت')) return 'سحابة نوتيلا بيضاء على قشطوطة هشة غرقانة حليب.. دلع صافي ☁️🤍';
         if (n.includes('نوتيلا')) return 'نوتيلا أصلية سايحة على قشطوطة بتدوب في الحليب.. لعشاق الشيكولاتة 🍫🤤';
@@ -56,7 +69,6 @@ function getSmartDescription(p) {
         return 'كيكة هشة بتدوب غرقانة حليب وقشطة طبيعية.. تطبطب على قلبك ☁️🤍';
     }
 
-    // 4. الديسباسيتو وكبات السعادة
     if (c.includes('ديسباسيتو') || n.includes('ديسباسيتو')) {
         let base = 'كيكة اسفنجية غرقانة صوص شيكولاتة برازيلي';
         if (n.includes('نوتيلا')) return `${base} ونوتيلا.. دمار لذيذ 🍫🤤`;
@@ -71,12 +83,12 @@ function getSmartDescription(p) {
         return 'طبقات كيك وكريمة وصوصات لذيذة.. كب السعادة في أي مكان 🧁🤩';
     }
 
-    // 5. الأقسام الكلاسيكية
-    if (c.includes('تشيز كيك') || n.includes('تشيز')) return 'بسكوت مقرمش وجبنة كريمية ناعمة بصوص فريش.. توازن بيذوب في البق 🍓🧀';
+    if (c.includes('تشيز كيك') || n.includes('تشيز')) return 'بسكوت مقرمش وجبنة كريمية ناعمة بصوص فريش.. توازن بيذوب 🍓🧀';
     if (c.includes('ريد فيلفت') || n.includes('فيلفت')) return 'كيكة مخملية حمراء بكريمة تشيز غنية.. رقي وذوق عالي 🍒♥️';
-    if (c.includes('ميل فاي') || n.includes('ميل فاي')) return 'طبقات مورقة مقرمشة بباستري كريم غني.. سيمفونية قرمشة ونعومة 🥐💛';
+    if (c.includes('ميل فاي') || n.includes('ميل فاي')) return 'طبقات مورقة مقرمشة بباستري كريم غني.. سيمفونية قرمشة 🥐💛';
     if (c.includes('إكلير') || n.includes('إكلير')) return 'عجينة شو فرنسية بكريمة غنية وشيكولاتة بتلمع.. كلاسيكية باريسية 🥖🍫';
     if (c.includes('كب كيك') || n.includes('كب كيك')) return '12 قطعة كب كيك هش بكريمة وتفاصيل شيك.. تكمل حلاوة مناسبتك 🧁✨';
+    
     if (c.includes('جاتوه') || n.includes('جاتوه')) {
         if (n.includes('سواريه')) return 'قطع فنية صغيرة شيك جداً بتدوب في البق.. للضيافة الراقية 🎀👑';
         if (n.includes('ملكي') || n.includes('فاخر')) return 'جاتوه فاخر بخامات مستوردة.. طعم ملكي يبهر ضيوفك 👑✨';
@@ -89,9 +101,25 @@ function getSmartDescription(p) {
     if (c.includes('ورد') || n.includes('ورد')) return 'ورد طبيعي فريش بتنسيق راقي.. هدية بتنطق حب وتكمل اللحظة 💐💖';
     if (c.includes('بوكس') || n.includes('بوكس') || c.includes('عروض')) return 'تجميعة ألذ الأصناف في بوكس متكامل.. بيفصلك عن العالم 🎁✨';
 
-    // 6. الوصف الافتراضي الكبسولة لو مفيش أي تطابق
     return p.desc && p.desc.trim() !== '' ? p.desc : 'قطعة فنية معمولة بحب ومقادير مظبوطة.. تدلع مزاجك وتليق بيك ✨';
 }
+
+// الدالة الذكية لاختيار نوع الوصف بناء على التخطيط (Full width vs Grid)
+function getSmartDescriptionCore(p, isFullWidth) {
+    if (!isFullWidth) return getCapsuleDescription(p); // لو كارت صغير اديله كبسولة
+
+    // لو كارت كبير ندور في القاموس التفصيلي الأول
+    let n = (p.name || '').trim().toLowerCase();
+    let c = (p.category || '').trim().toLowerCase();
+    
+    for (let key in detailedDescriptions) {
+        if (n.includes(key) || c.includes(key)) return detailedDescriptions[key];
+    }
+    
+    // لو ملقيناش وصف تفصيلي للمنتج ده بالذات، نرجع الوصف الافتراضي أو الكبسولة
+    return p.desc && p.desc.trim() !== '' ? p.desc : getCapsuleDescription(p);
+}
+
 
 function hexToMathHSL(hex) {
     let r = 0, g = 0, b = 0;
@@ -351,7 +379,7 @@ window.updateTempQty = function(id, delta) {
     if(el) {
         let val = parseInt(el.innerText.replace(/[^0-9]/g, '')) + delta;
         if(val < 1) val = 1; if(val > 50) val = 50;
-        el.innerText = val; // إزالة كلمة "الكمية:" لتوفير مساحة
+        el.innerText = val; 
     }
 };
 
@@ -368,6 +396,7 @@ window.addWithQty = function(id) {
     showSystemToast(`تم إضافة الكمية (${qty}) للسلة بنجاح 🛍️`, 'success');
 };
 
+// 🎨 هيكلة الكارت الجديدة الاحترافية التي تستجيب لنوع التخطيط (Full vs Grid)
 function drawProductCard(p, layoutMode = 'grid') {
     const pIdSafe = String(p.id); 
     let itemLayout = (p.layout && p.layout !== 'default') ? p.layout : layoutMode;
@@ -375,44 +404,49 @@ function drawProductCard(p, layoutMode = 'grid') {
     const isOutOfStock = p.inStock === false;
     const imageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
     
-    // سحب الوصف الكبسولة اللي بيضرب في الحواس فوراً
-    const finalDesc = getSmartDescription(p);
+    // سحب الوصف من المحرك الذكي بناءً على حجم الكارت
+    const finalDesc = getSmartDescriptionCore(p, isFullWidth);
 
     const renderActionArea = () => {
         if (isOutOfStock) return `<div class="w-full py-2.5 mt-auto text-[11px] font-bold text-pink-500 bg-pink-50 rounded-xl text-center border border-pink-100">نفدت الكمية 😔</div>`;
         return `
         <div class="mt-auto flex flex-col gap-2 w-full pt-1">
             <div class="flex items-center justify-center bg-pink-50/80 rounded-full py-1 px-3 border border-pink-100 mx-auto min-w-[70%] shadow-sm">
-                <span class="font-black text-[14px] text-pink-700">${Number(p.price) > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
+                <span class="font-black text-[14px] sm:text-[16px] text-pink-700">${Number(p.price) > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
             </div>
             
             <div class="flex items-center justify-between gap-2 w-full">
                 <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-0.5 border border-gray-100 shadow-inner">
-                    <button onclick="updateTempQty('${p.id}', -1)" class="w-6 h-6 flex items-center justify-center text-pink-600 bg-white rounded shadow-sm hover:bg-pink-50 active:scale-90 transition-all"><i data-lucide="minus" class="w-3 h-3"></i></button>
-                    <span id="temp-qty-${p.id}" class="text-[11px] font-black text-gray-700 w-3 text-center">1</span>
-                    <button onclick="updateTempQty('${p.id}', 1)" class="w-6 h-6 flex items-center justify-center text-pink-600 bg-white rounded shadow-sm hover:bg-pink-50 active:scale-90 transition-all"><i data-lucide="plus" class="w-3 h-3"></i></button>
+                    <button onclick="updateTempQty('${p.id}', -1)" class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-pink-600 bg-white rounded shadow-sm hover:bg-pink-50 active:scale-90 transition-all"><i data-lucide="minus" class="w-3 h-3 sm:w-4 sm:h-4"></i></button>
+                    <span id="temp-qty-${p.id}" class="text-[11px] sm:text-[13px] font-black text-gray-700 w-3 sm:w-4 text-center">1</span>
+                    <button onclick="updateTempQty('${p.id}', 1)" class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-pink-600 bg-white rounded shadow-sm hover:bg-pink-50 active:scale-90 transition-all"><i data-lucide="plus" class="w-3 h-3 sm:w-4 sm:h-4"></i></button>
                 </div>
                 
-                <button onclick="addWithQty('${p.id}')" class="flex-1 py-1.5 bg-gradient-to-r from-pink-500 to-pink-400 text-white rounded-lg font-bold text-[11px] shadow-sm shadow-pink-200 hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all flex items-center justify-center gap-1.5 border border-pink-400/50">
-                    <i data-lucide="shopping-basket" class="w-3.5 h-3.5"></i> إضافة
+                <button onclick="addWithQty('${p.id}')" class="flex-1 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500 to-pink-400 text-white rounded-lg font-bold text-[11px] sm:text-[13px] shadow-sm shadow-pink-200 hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all flex items-center justify-center gap-1.5 border border-pink-400/50">
+                    <i data-lucide="shopping-basket" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> إضافة
                 </button>
             </div>
         </div>`;
     };
 
+    // تصميم وتنسيق النص يختلف لو الكارت مالي الشاشة (Full Width) بياخد راحته بدون Line Clamp
+    const titleClass = isFullWidth ? 'text-[15px] sm:text-[18px] mb-2' : 'text-[13px] sm:text-[15px] mb-1';
+    const descClass = isFullWidth 
+        ? 'text-[12px] sm:text-[13px] font-medium text-gray-500 leading-relaxed mb-4 px-2' 
+        : 'text-[10px] sm:text-[11px] font-medium text-gray-500 leading-snug mb-2 line-clamp-2 px-0.5';
+
     return `
     <div id="product-card-${p.id}" class="${isFullWidth ? 'col-span-full' : ''} bg-white flex flex-col h-full overflow-hidden border border-pink-100/80 rounded-[1.2rem] sm:rounded-[1.5rem] transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1">
         <div class="relative aspect-square overflow-hidden bg-pink-50/30 shrink-0">
-            <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-2 left-2 z-20 w-7 h-7 sm:w-8 sm:h-8 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-pink-500 shadow-sm transition-all hover:scale-110"><i data-lucide="share-2" class="w-3 h-3 sm:w-4 sm:h-4"></i></button>
+            <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-2 left-2 z-20 w-7 h-7 sm:w-9 sm:h-9 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-pink-500 shadow-sm transition-all hover:scale-110"><i data-lucide="share-2" class="w-3 h-3 sm:w-4 sm:h-4"></i></button>
             <div id="slider-${p.id}" class="w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar snap-slider">
                 ${imageList.map(url => `<img src="${url}" class="min-w-full h-full object-cover snap-slide transition-transform duration-700 hover:scale-105" loading="lazy" alt="${escapeHTML(p.name)}">`).join('')}
             </div>
         </div>
         
-        <div class="p-2.5 sm:p-3 flex flex-col flex-1 text-center bg-white">
-            <h4 class="text-[13px] sm:text-[15px] font-black mb-1 leading-tight" style="color: hsl(var(--brand-hue), 70%, 40%);">${escapeHTML(p.name)}</h4>
-            <!-- تم تقليل الوصف ليكون سطرين فقط، ومعتمد على نظرية الكبسولة -->
-            <p class="text-[10px] sm:text-[11px] font-medium text-gray-500 leading-snug mb-2 line-clamp-2 px-0.5">${escapeHTML(finalDesc)}</p>
+        <div class="p-2.5 sm:p-4 flex flex-col flex-1 text-center bg-white">
+            <h4 class="${titleClass} font-black leading-tight" style="color: hsl(var(--brand-hue), 70%, 40%);">${escapeHTML(p.name)}</h4>
+            <p class="${descClass}">${escapeHTML(finalDesc)}</p>
             ${renderActionArea()}
         </div>
     </div>`;
