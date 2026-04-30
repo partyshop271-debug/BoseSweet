@@ -1,3 +1,4 @@
+
 // ⚡ Engine Upgrade: Ultimate Dynamic Catalog Engine (V. Infinity)
 const PreloadEngine = {
     loadedUrls: new Set(),
@@ -189,11 +190,52 @@ const defaultSettings = {
 };
 
 const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
-let defaultCatalog = [];
+
+// ⚡ إضافة المنيو الجديد للديسباسيتو مباشرة داخل الكتالوج الافتراضي مع زيادة السعر 10%
+let defaultCatalog = [
+    // --- ديسباسيتو مثلث ---
+    { id: 'dp_tri_dark', name: 'ديسباسيتو نوتيلا دارك', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
+    { id: 'dp_tri_lotus', name: 'ديسباسيتو لوتس', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
+    { id: 'dp_tri_white', name: 'ديسباسيتو نوتيلا وايت', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
+    { id: 'dp_tri_caramel', name: 'ديسباسيتو كراميل', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
+    { id: 'dp_tri_kinder', name: 'ديسباسيتو كيندر', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
+    { id: 'dp_tri_blueb', name: 'ديسباسيتو بلوبيري', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
+    { id: 'dp_tri_raspb', name: 'ديسباسيتو راسبيري', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
+    { id: 'dp_tri_cherry', name: 'ديسباسيتو كرز', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
+    { id: 'dp_tri_snick', name: 'ديسباسيتو اسنيكرز', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
+    { id: 'dp_tri_mix', name: 'ديسباسيتو ميكس شوكليت', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
+    { id: 'dp_tri_pist', name: 'ديسباسيتو بيستاشيو', category: 'ديسباسيتو', size: 'مثلث', price: 83, inStock: true },
+
+    // --- ديسباسيتو وسط ---
+    { id: 'dp_med_dark', name: 'ديسباسيتو نوتيلا دارك', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
+    { id: 'dp_med_lotus', name: 'ديسباسيتو لوتس', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
+    { id: 'dp_med_white', name: 'ديسباسيتو نوتيلا وايت', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
+    { id: 'dp_med_caramel', name: 'ديسباسيتو كراميل', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
+    { id: 'dp_med_kinder', name: 'ديسباسيتو كيندر', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
+    { id: 'dp_med_blueb', name: 'ديسباسيتو بلوبيري', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
+    { id: 'dp_med_raspb', name: 'ديسباسيتو راسبيري', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
+    { id: 'dp_med_cherry', name: 'ديسباسيتو كرز', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
+    { id: 'dp_med_snick', name: 'ديسباسيتو اسنيكرز', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
+    { id: 'dp_med_mix', name: 'ديسباسيتو ميكس شوكليت', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
+    { id: 'dp_med_pist', name: 'ديسباسيتو بيستاشيو', category: 'ديسباسيتو', size: 'وسط', price: 165, inStock: true },
+
+    // --- ديسباسيتو كبير ---
+    { id: 'dp_lrg_dark', name: 'ديسباسيتو نوتيلا دارك', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
+    { id: 'dp_lrg_lotus', name: 'ديسباسيتو لوتس', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
+    { id: 'dp_lrg_white', name: 'ديسباسيتو نوتيلا وايت', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
+    { id: 'dp_lrg_caramel', name: 'ديسباسيتو كراميل', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
+    { id: 'dp_lrg_kinder', name: 'ديسباسيتو كيندر', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
+    { id: 'dp_lrg_blueb', name: 'ديسباسيتو بلوبيري', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
+    { id: 'dp_lrg_raspb', name: 'ديسباسيتو راسبيري', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
+    { id: 'dp_lrg_cherry', name: 'ديسباسيتو كرز', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
+    { id: 'dp_lrg_snick', name: 'ديسباسيتو اسنيكرز', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
+    { id: 'dp_lrg_mix', name: 'ديسباسيتو ميكس شوكليت', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
+    { id: 'dp_lrg_pist', name: 'ديسباسيتو بيستاشيو', category: 'ديسباسيتو', size: 'كبير', price: 297, inStock: true }
+];
 
 async function fetchDefaultCatalog() {
-    try { const response = await fetch('data.json'); defaultCatalog = await response.json(); } 
-    catch (error) { console.error("تعذر تحميل الكتالوج الافتراضي:", error); }
+    try { const response = await fetch('data.json'); const fetchedData = await response.json(); if(fetchedData && fetchedData.length > 0) defaultCatalog = [...defaultCatalog, ...fetchedData]; } 
+    catch (error) { console.error("تعذر تحميل الكتالوج الافتراضي الإضافي:", error); }
 }
 
 let siteSettings = { ...defaultSettings };
@@ -622,3 +664,4 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 window.onload = initApp;
+
