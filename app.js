@@ -1,4 +1,4 @@
-// ⚡ Engine Upgrade: Smart Pre-load Engine
+// ⚡ Engine Upgrade: Smart Pre-load Engine & Deep Smart Description Engine (V. Pro)
 const PreloadEngine = {
     loadedUrls: new Set(),
     ignite(catalogData, galleryData = []) {
@@ -13,6 +13,65 @@ const PreloadEngine = {
         }, 3000); 
     }
 };
+
+// 🌟 مكتبة الأوصاف السحرية والدقيقة لكل صنف (كوبي رايتنج احترافي وحصري لحلويات بوسي)
+const smartDescriptions = {
+    // قسم القشطوطة
+    'قشطوطة نوتيلا وايت': 'سحابة من كريمة النوتيلا البيضاء الناعمة فوق القشطوطة الهشة الغرقانة في حليب فريش طعم ياخدك لعالم تاني من الروقان ويدلع مزاجك ☁️🤍',
+    'قشطوطة أوريو': 'طعم الأوريو الأصلي غرقان في قشطوطة بتدوب من كتر الهشاشة وحليب طازة ميكس يخطف القلب وتجربة ما تتنسيش لازم تعيشيها 🍪🥛',
+    'قشطوطة': 'كيكة هشة بتدوب في البق غرقانة في حليب فريش وقشطة طبيعية بتطبطب على القلب وتخليكي تعيشي اللحظة بكل تفاصيلها الحلوة ☁️🤍',
+    
+    // قسم الكيك والحلويات الغربية
+    'ديسباسيتو': 'لعشاق الشيكولاتة اللي بجد كيكة اسفنجية خفيفة جدا غرقانة في صوص شيكولاتة برازيلي غني طعم يطبطب على القلب ويعدل المود من أول معلقة 🍫🤤',
+    'ريد فيلفت': 'الكيكة المخملية الساحرة بلونها الأحمر الجذاب وطعمها الغني مع طبقات كريمة التشيز اللذيذة مزيج يجنن يعبر عن الرقي والذوق العالي 🍒♥️',
+    'كبات السعادة': 'طبقات من الكيك الهش والكريمة الغنية والصوصات اللذيذة متجمعة في كب واحد شيك جدا علشان تاخديه معاكي في أي مكان وتاخدي جرعة سعادة سريعة 🧁🤩',
+    'تشيز كيك': 'طبقة بسكوت مقرمشة متغطية بطبقة جبنة كريمية غنية وناعمة جدا مع صوصات فواكه فريش طعم متوازن بين الحلاوة والمزازه يخليكي تدوبي معاه 🍓🧀',
+    
+    // قسم المخبوزات والدوناتس
+    'سينابون': 'عجينة قطنية طرية ومخبوزة بحب محشية قرفة وسكر بني ومتغطية بصوص الجبنة الكريمي الغني ريحتها بس كفاية تدفيك وتفصلك عن دوشة اليوم 🤎✨',
+    'دوناتس': 'عجينة مقلية هشة وخفيفة زي القطنة غرقانة صوصات شيكولاتة أو كراميل طعمها مبهج وبيفرح الكبار قبل الصغيرين ومستحيل تكتفي بواحدة 🍩😍',
+    'بامبوليني': 'الدوناتس الإيطالي المحشي كورة من العجينة السحابية غرقانة سكر ومحشية من جوه بكريمة غنية أو نوتيلا بتبظ في البق مع كل قطمة تجربة لازم تعيشيها 🥯🍯',
+    'ميل فاي': 'طبقات من العجينة المورقة المقرمشة اللي بتدوب بمجرد ما تدوقيها محشية باستري كريم غني ومربى أو سكر بودرة سيمفونية من القرمشة والنعومة 🥐💛',
+    'إكلير': 'عجينة الشو الفرنسية الخفيفة المحشية بكريمة غنية وناعمة ومتغطية بطبقة شيكولاتة بتلمع طعم كلاسيكي راقي بياخدك في رحلة لباريس مع كل قطمة 🥖🍫',
+    'كب كيك': 'دستة كاملة 12 قطعة من الكب كيك الهش جدا متزين بكريمة غنية وتفاصيل شيك علشان يكمل شياكة مناسبتك بنقدمه بالدستة علشان الحلاوة دي ما ينفعش منها قطعة واحدة 🧁✨',
+
+    // قسم الجاتوه
+    'جاتوه سواريه': 'قطع فنية صغيرة شيك جدا معمولة بدقة علشان تخطف العين وتدوب في البق مقاسها مثالي جدا للضيافة الراقية وتخليكي دايما فخورة ومميزة 🎀👑',
+    'جاتوه كلاسيك': 'قطعة الجاتوه اللي اتربينا عليها بس بلمسة حلويات بوسي الفاخرة كيك اسفنجي بيدوب وكريمة غنية متوازنة السكر تناسب كل الأذواق 🍰🎉',
+    'جاتوه ملكي': 'تجربة ملكية من الجاتوه الفاخر بخامات مستوردة وطعم غني جدا بيعكس الفخامة في كل قطمة ويخلي ضيوفك ينبهروا بالضيافة 👑✨',
+    'جاتوه': 'قطعة الجاتوه اللي اتربينا عليها بس بلمسة حلويات بوسي الفاخرة كيك اسفنجي بيدوب وكريمة غنية متوازنة السكر تناسب كل الأذواق 🍰🎉',
+    
+    // قسم التورت
+    'ميني تورتة': 'تورتة صغيرة في الحجم بس مليانة حب وتفاصيل تكفي من فردين لثلاثة ومناسبة جدا للمفاجآت السريعة واللحظات اللي محتاجة تتوثق بطعم حلو 🎂🥰',
+    'تورتة': 'تورتة ملكية بتصميم يخطف العين معمولة مخصوص علشان تتربع على عرش مناسبتك كيك هش وحشوات غنية تخلي كل ضيوفك يسألوا عنها 👑🎂',
+    'تورت': 'تورتة ملكية بتصميم يخطف العين معمولة مخصوص علشان تتربع على عرش مناسبتك كيك هش وحشوات غنية تخلي كل ضيوفك يسألوا عنها 👑🎂',
+    
+    // البوكسات والهدايا
+    'بوكس الروقان': 'تجميعه من ألذ الأصناف اللي بتعدل المزاج بوكس متكامل معمول مخصوص علشان يفصلك عن العالم ويدخلك في حالة روقان تام انتي وحبايبك 🎁✨',
+    'عروض وبوكسات': 'تجميعه من ألذ الأصناف اللي بتعدل المزاج بوكس متكامل معمول مخصوص علشان يفصلك عن العالم ويدخلك في حالة روقان تام 🎁✨',
+    'ورد طبيعي': 'ورد طبيعي فريش متنسق بألوان مبهجة وتفاصيل راقية علشان يوصل مشاعرك بأجمل طريقة ممكنة هدية بتنطق حب وتكمل حلاوة اللحظة 💐💖',
+    'ورد': 'ورد طبيعي فريش متنسق بألوان مبهجة وتفاصيل راقية علشان يوصل مشاعرك بأجمل طريقة ممكنة هدية بتنطق حب وتكمل حلاوة اللحظة 💐💖'
+};
+
+// محرك ذكي لاستخراج الوصف الدقيق بناءً على اسم أو فئة المنتج
+function getSmartDescription(p) {
+    let n = p.name ? p.name.trim() : '';
+    let c = p.category ? p.category.trim() : '';
+    
+    // 1. التطابق التام مع الاسم
+    if (n && smartDescriptions[n]) return smartDescriptions[n];
+    
+    // 2. التطابق الجزئي مع الاسم (لضمان شمولية الوصف لو الاسم مركب)
+    for (let key in smartDescriptions) {
+        if (n && n.includes(key)) return smartDescriptions[key];
+    }
+    
+    // 3. التطابق مع القسم الأساسي
+    if (c && smartDescriptions[c]) return smartDescriptions[c];
+    
+    // 4. لو المنتج ليه وصف خاص مكتوب في الداتا بيز نعرضه، ولو لأ نعرض وصف راقي افتراضي
+    return p.desc && p.desc.trim() !== '' ? p.desc : 'قطعة فنية معمولة بحب ومقادير مظبوطة بالمللي علشان تدلع مزاجك وتكمل أوقاتك الحلوة وتليق بذوقك الراقي ✨';
+}
 
 function hexToMathHSL(hex) {
     let r = 0, g = 0, b = 0;
@@ -289,26 +348,42 @@ window.addWithQty = function(id) {
     showSystemToast(`تم إضافة الكمية (${qty}) للسلة بنجاح 🛍️`, 'success');
 };
 
+// 🎨 هيكلة كارت المنتج الاحترافية الموحدة بالهوية البصرية وتجربة المستخدم الخالية من الإنجليزية
 function drawProductCard(p, layoutMode = 'grid') {
-    const pIdSafe = String(p.id); const item = state.cart.find(i => String(i.cartItemId) === pIdSafe || String(i.id) === pIdSafe);
+    const pIdSafe = String(p.id); 
     let itemLayout = (p.layout && p.layout !== 'default') ? p.layout : layoutMode;
     let isFullWidth = (itemLayout === 'full');
     const isOutOfStock = p.inStock === false;
     const imageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
+    
+    // استدعاء الوصف المخصص الساحر من المحرك الذكي
+    const finalDesc = getSmartDescription(p);
 
     const renderActionArea = () => {
-        if (isOutOfStock) return `<div class="w-full py-3 text-sm font-bold text-pink-300 bg-pink-50 rounded-xl text-center border border-pink-100">نفدت الكمية</div>`;
+        if (isOutOfStock) return `<div class="w-full py-3 text-sm font-bold text-pink-300 bg-pink-50 rounded-xl text-center border border-pink-100">نفدت الكمية 😔</div>`;
         return `
-        <div class="space-y-4 w-full animate-fade-in">
-            <div class="flex items-center justify-between gap-4">
-                <button onclick="updateTempQty('${p.id}', -1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-pink-50 text-pink-500 border border-pink-100 active:scale-90 transition-all"><i data-lucide="minus" class="w-5 h-5"></i></button>
-                <div class="flex-1 text-center">
-                    <span class="block font-black text-xl text-pink-600">${Number(p.price) > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
-                    <span id="temp-qty-${p.id}" class="text-xs font-bold text-gray-400">الكمية: 1</span>
+        <div class="flex flex-col gap-3 w-full mt-auto animate-fade-in">
+            <!-- سطر التحكم في الكمية والسعر بشكل احترافي في المنتصف -->
+            <div class="flex items-center justify-between bg-pink-50/40 rounded-2xl border border-pink-100 p-1.5 shadow-sm">
+                <!-- زر الزيادة -->
+                <button onclick="updateTempQty('${p.id}', 1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-pink-500 shadow-sm hover:bg-pink-500 hover:text-white active:scale-90 transition-all border border-pink-100">
+                    <i data-lucide="plus" class="w-5 h-5"></i>
+                </button>
+                
+                <!-- السعر والكمية -->
+                <div class="flex-1 text-center flex flex-col items-center justify-center">
+                    <span class="block font-black text-[17px] text-pink-600">${Number(p.price) > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
+                    <span id="temp-qty-${p.id}" class="text-[11px] font-bold text-gray-500 mt-0.5">الكمية: 1</span>
                 </div>
-                <button onclick="updateTempQty('${p.id}', 1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-pink-50 text-pink-500 border border-pink-100 active:scale-90 transition-all"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                
+                <!-- زر النقصان -->
+                <button onclick="updateTempQty('${p.id}', -1)" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-pink-500 shadow-sm hover:bg-pink-500 hover:text-white active:scale-90 transition-all border border-pink-100">
+                    <i data-lucide="minus" class="w-5 h-5"></i>
+                </button>
             </div>
-            <button onclick="addWithQty('${p.id}')" class="w-full py-4 brand-gradient text-white rounded-2xl font-black text-sm shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+            
+            <!-- زر الإضافة للسلة الصريح والواضح -->
+            <button onclick="addWithQty('${p.id}')" class="w-full py-3.5 brand-gradient text-white rounded-2xl font-black text-[15px] shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
                 <i data-lucide="shopping-basket" class="w-5 h-5"></i>
                 إضافة للسلة
             </button>
@@ -316,17 +391,18 @@ function drawProductCard(p, layoutMode = 'grid') {
     };
 
     return `
-    <div id="product-card-${p.id}" class="${isFullWidth ? 'col-span-full' : ''} bg-white flex flex-col h-full overflow-hidden border border-pink-50 rounded-[2rem] transition-all duration-500 hover:shadow-xl">
+    <div id="product-card-${p.id}" class="${isFullWidth ? 'col-span-full' : ''} bg-white flex flex-col h-full overflow-hidden border border-pink-100 rounded-[2rem] transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
         <div class="relative aspect-square overflow-hidden bg-pink-50/30">
-            <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-4 left-4 z-20 w-9 h-9 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-pink-500 shadow-sm transition-all hover:scale-110"><i data-lucide="share-2" class="w-4 h-4"></i></button>
+            <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-4 left-4 z-20 w-9 h-9 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-pink-500 shadow-sm transition-all hover:scale-110"><i data-lucide="share-2" class="w-4 h-4"></i></button>
             <div id="slider-${p.id}" class="w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar snap-slider">
-                ${imageList.map(url => `<img src="${url}" class="min-w-full h-full object-cover snap-slide transition-transform duration-1000 hover:scale-105" loading="lazy">`).join('')}
+                ${imageList.map(url => `<img src="${url}" class="min-w-full h-full object-cover snap-slide transition-transform duration-1000 hover:scale-105" loading="lazy" alt="${escapeHTML(p.name)}">`).join('')}
             </div>
         </div>
-        <div class="p-6 flex flex-col flex-1 text-center items-center">
-            <h4 class="text-lg sm:text-xl font-black text-gray-800 mb-2">${escapeHTML(p.name)}</h4>
-            ${p.desc ? `<p class="text-xs sm:text-sm font-bold text-gray-500 leading-relaxed mb-6 px-2 line-clamp-3">${escapeHTML(p.desc)}</p>` : ''}
-            <div class="mt-auto w-full">${renderActionArea()}</div>
+        <div class="p-5 flex flex-col flex-1 text-center items-center bg-white">
+            <h4 class="text-lg sm:text-xl font-black text-gray-800 mb-1.5 leading-tight">${escapeHTML(p.name)}</h4>
+            <!-- عرض الوصف المخصص هنا -->
+            <p class="text-[13px] font-bold text-gray-500 leading-relaxed mb-5 px-1">${escapeHTML(finalDesc)}</p>
+            ${renderActionArea()}
         </div>
     </div>`;
 }
