@@ -120,13 +120,10 @@ function getCapsuleDescription(p) {
 
 // ⚡ ⚡ الحل الجذري والنهائي: السيادة المطلقة لوصف الإدارة من قاعدة البيانات ⚡ ⚡
 function getFinalDescription(p, isFullWidth) {
-    // الأولوية القصوى: لو حضرتك ضيفتي أي منتج (شرقي، بوكيه فلوس، الخ) وكتبتي وصفه بإيدك في لوحة التحكم
-    // الكود هيسيب كل القواميس وياخد وصفك إنتي يعرضه نصاً، علشان يضمن لك حرية مطلقة في التوسع
     if (p.desc && p.desc.trim().length > 3) {
         return escapeHTML(p.desc.trim());
     }
 
-    // لو مفيش وصف مكتوب (زي المنتجات القديمة)، نستخدم المحرك الذكي كخطة طوارئ
     if (!isFullWidth) return getCapsuleDescription(p);
 
     let n = (p.name || '').trim().toLowerCase();
@@ -174,6 +171,44 @@ function showSystemToast(message, type = 'info') {
     iconEl.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : (type === 'success' ? 'check-circle' : 'info'));
     if(window.lucide) lucide.createIcons();
     setTimeout(() => { toast.classList.replace('flex', 'hidden'); toast.classList.remove('toast-enter'); }, 4000);
+}
+
+// ⚡ الباب السري للوحة تحكم إدارة حلويات بوسي
+let adminClicksCounter = 0;
+let adminClickTimer;
+
+window.triggerAdminAccess = function(e) {
+    if(e) e.stopPropagation(); // منع أي تداخل مع الكليكات التانية
+    adminClicksCounter++;
+    clearTimeout(adminClickTimer);
+    
+    if (adminClicksCounter >= 5) {
+        adminClicksCounter = 0;
+        showSystemToast('مرحباً بك يا إدارة حلويات بوسي 👑، جاري التحويل للوحة التحكم...', 'success');
+        setTimeout(() => {
+            // الانتقال الفوري لمسار لوحة التحكم (لو المسار مختلف، ممكن يتعدل من هنا ببساطة)
+            window.location.href = 'admin.html';
+        }, 1200);
+    }
+    
+    adminClickTimer = setTimeout(() => { adminClicksCounter = 0; }, 1500); // تصفير العداد لو وقفتي ضغط
+};
+
+// الدالة دي بتدور على جملة جميع الحقوق محفوظة وبتزرع فيها المستشعر السري
+function autoBindAdminAccess() {
+    const textNodes = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    let node;
+    while (node = textNodes.nextNode()) {
+        if (node.nodeValue.includes('جميع الحقوق محفوظة')) {
+            const parentEl = node.parentElement;
+            if (parentEl && !parentEl.dataset.adminBound) {
+                parentEl.dataset.adminBound = 'true';
+                parentEl.style.userSelect = 'none'; // منع تظليل النص المزعج وقت الضغط المتكرر
+                parentEl.style.cursor = 'pointer';
+                parentEl.addEventListener('click', window.triggerAdminAccess);
+            }
+        }
+    }
 }
 
 const defaultSettings = {
@@ -326,6 +361,10 @@ async function initApp() {
     const loader = document.getElementById('global-loader');
     if(loader) { loader.style.opacity = '0'; loader.style.visibility = 'hidden'; setTimeout(() => loader.style.display = 'none', 500); }
     applySettingsToUI();
+    
+    // ⚡ ربط الباب السري للوحة التحكم تلقائياً بدون تغيير أي شيء في الهيكل
+    autoBindAdminAccess();
+    
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
     if(document.getElementById('categories-nav')) renderCategories();
     if(document.getElementById('display-container')) renderMainDisplay();
@@ -466,7 +505,6 @@ window.addWithQty = function(id) {
     showSystemToast(`تم إضافة الكمية (${qty}) للسلة بنجاح 🛍️`, 'success');
 };
 
-// 🎨 هيكلة الكارت اللي بتدعم (السيادة المطلقة لوصف الإدارة) وتتأقلم مع الحجم
 function drawProductCard(p, layoutMode = 'grid') {
     const pIdSafe = String(p.id); 
     let itemLayout = (p.layout && p.layout !== 'default') ? p.layout : layoutMode;
@@ -474,7 +512,6 @@ function drawProductCard(p, layoutMode = 'grid') {
     const isOutOfStock = p.inStock === false;
     const imageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
     
-    // سحب الوصف النهائي (اللي بيحترم وصف الإدارة من الداتا بيز فوق أي حاجة)
     const finalDesc = getFinalDescription(p, isFullWidth);
 
     const renderActionArea = () => {
@@ -501,7 +538,6 @@ function drawProductCard(p, layoutMode = 'grid') {
 
     const titleClass = isFullWidth ? 'text-[15px] sm:text-[18px] mb-2' : 'text-[13px] sm:text-[15px] mb-1';
     
-    // تصميم النص يضمن ظهور الوصف كاملاً وبخط عريض وواضح بدون بتر 
     const descClass = isFullWidth 
         ? 'text-[12px] sm:text-[14px] font-bold text-gray-600 leading-relaxed mb-4 px-2' 
         : 'text-[10px] sm:text-[11px] font-bold text-gray-600 leading-tight mb-2 px-0.5';
@@ -517,7 +553,6 @@ function drawProductCard(p, layoutMode = 'grid') {
         
         <div class="p-2.5 sm:p-4 flex flex-col flex-1 text-center bg-white">
             <h4 class="${titleClass} font-black leading-tight" style="color: hsl(var(--brand-hue), 70%, 40%);">${escapeHTML(p.name)}</h4>
-            <!-- هنا بنعرض الوصف اللي راجع من الدالة (إما وصف الداتا بيز أو الكبسولة أو التفصيلي) بدون أي بتر -->
             <p class="${descClass}">${finalDesc}</p>
             ${renderActionArea()}
         </div>
