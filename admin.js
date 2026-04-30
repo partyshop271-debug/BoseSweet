@@ -143,6 +143,7 @@ function openAdminDashboardDirectly() {
 
 function closeAdminDashboard() {
     sessionStorage.removeItem('bosy_admin_auth');
+    if(typeof auth !== 'undefined') auth.signOut();
     window.location.href = 'index.html';
 }
 
@@ -650,7 +651,7 @@ function renderAdminMenu(searchQuery = '') {
     if(window.lucide) lucide.createIcons();
 }
 
-// --- Product Editor ---
+// --- Product Editor (مُحدث لدعم المزامنة الأوفلاين) ---
 function renderAdminTempImages() {
     const container = document.getElementById('edit-prod-images-container');
     if(!container) return;
@@ -671,6 +672,8 @@ function removeTempImage(idx) { tempProdImages.splice(idx, 1); renderAdminTempIm
 async function compressAndUploadMultiImage(e) {
     const files = e.target.files; if (!files || files.length === 0) return;
     const spinner = document.getElementById('uploading-spinner'); if(spinner) spinner.classList.remove('hidden');
+    let offlineSaved = false;
+
     for(let i=0; i<files.length; i++) {
         const file = files[i];
         if (!file.type.match('image.*')) { showSystemToast("الرجاء اختيار ملف صورة فقط", "error"); continue; }
@@ -684,12 +687,21 @@ async function compressAndUploadMultiImage(e) {
                     canvas.width = img.width * scaleSize; canvas.height = img.height * scaleSize;
                     const ctx = canvas.getContext('2d'); ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     const base64Str = canvas.toDataURL('image/jpeg', 0.85); 
-                    try {
-                        const formData = new FormData(); formData.append('file', base64Str); formData.append('upload_preset', 'gct8i28h'); 
-                        const response = await fetch('https://api.cloudinary.com/v1_1/dyx4w0dr1/image/upload', { method: 'POST', body: formData });
-                        const data = await response.json();
-                        if (data.secure_url) { tempProdImages.push(data.secure_url); } else throw new Error("Upload failed");
-                    } catch (err) { tempProdImages.push(base64Str); } 
+                    
+                    if (navigator.onLine) {
+                        try {
+                            const formData = new FormData(); formData.append('file', base64Str); formData.append('upload_preset', 'gct8i28h'); 
+                            const response = await fetch('https://api.cloudinary.com/v1_1/dyx4w0dr1/image/upload', { method: 'POST', body: formData });
+                            const data = await response.json();
+                            if (data.secure_url) { tempProdImages.push(data.secure_url); } else throw new Error("Upload failed");
+                        } catch (err) { 
+                            tempProdImages.push(base64Str); 
+                            offlineSaved = true; 
+                        } 
+                    } else {
+                        tempProdImages.push(base64Str); 
+                        offlineSaved = true;
+                    }
                     resolve();
                 }
             }
@@ -698,7 +710,12 @@ async function compressAndUploadMultiImage(e) {
     renderAdminTempImages();
     if(spinner) spinner.classList.add('hidden'); 
     if(document.getElementById('prod-img-upload')) document.getElementById('prod-img-upload').value = '';
-    showSystemToast("تم الرفع وإضافة الصور للمنتج 👑", "success");
+    
+    if (offlineSaved) {
+        showSystemToast("تم حفظ الصور مؤقتاً لضعف الإنترنت، ستُرفع للسحابة لاحقاً 🔄", "info");
+    } else {
+        showSystemToast("تم الرفع وإضافة الصور للمنتج 👑", "success");
+    }
 }
 
 function openAddProductModal() {
@@ -970,7 +987,53 @@ function escapeHTML(str) {
 }
 
 // ==========================================
-// 3. Engine Initialization & Failsafe Boot
+// 4. SMART BACKGROUND SYNC ENGINE (🔄 محرك المزامنة الذكي)
+// ==========================================
+async function syncOfflineImages() {
+    if (!navigator.onLine) return; // الخروج لو مفيش نت
+    
+    let needsSync = false;
+    console.log("BoseSweets Sync: Checking for offline Base64 data to sync...");
+
+    for (let p of catalog) {
+        // فحص وجود صور Base64
+        if (p.images && p.images.some(img => img.startsWith('data:image'))) {
+            needsSync = true;
+            for (let i = 0; i < p.images.length; i++) {
+                if (p.images[i].startsWith('data:image')) {
+                    try {
+                        const formData = new FormData();
+                        formData.append('file', p.images[i]);
+                        formData.append('upload_preset', 'gct8i28h');
+                        
+                        const res = await fetch('https://api.cloudinary.com/v1_1/dyx4w0dr1/image/upload', { 
+                            method: 'POST', body: formData 
+                        });
+                        const data = await res.json();
+                        if (data.secure_url) {
+                            p.images[i] = data.secure_url;
+                            if (i === 0) p.img = data.secure_url; 
+                        }
+                    } catch (e) { console.error("Sync failed for item:", p.name); }
+                }
+            }
+            if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(p.id), p);
+        }
+    }
+
+    if (needsSync) {
+        saveEngineMemory('cat');
+        const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
+        renderAdminMenu(currentSearch);
+        showSystemToast("تمت مزامنة الصور مع السحابة وتنظيف المساحة ☁️", "success");
+    }
+}
+
+// تشغيل المزامنة تلقائياً عند عودة الإنترنت
+window.addEventListener('online', syncOfflineImages);
+
+// ==========================================
+// 5. Engine Initialization & Failsafe Boot
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     if(window.lucide) lucide.createIcons();
@@ -979,28 +1042,30 @@ document.addEventListener('DOMContentLoaded', () => {
     if(dateEl) dateEl.textContent = new Date().toLocaleDateString('ar-EG', dateOptions);
 });
 
-// 🛡️ Boot Controller (The Master Fix: الفك الفوري للتجميد والإقلاع السريع)
+// 🛡️ Boot Controller (جدار الحماية الفولاذي)
 function bootBoseSweetsEngine() {
     console.log("BoseSweets Admin Engine Initiating...");
     
-    // 1. فك التجميد فوراً لتفعيل الأزرار قبل انتظار تحميل أي ملفات خارجية
     unfreezeAdminUI();
 
-    // 2. البدء الآمن في قراءة البيانات بعد التأكد من المصادقة
     if(typeof auth !== 'undefined') {
         auth.onAuthStateChanged(async user => {
-            try { await loadEngineMemory(); } catch(e) { console.error("BoseSweets Error:", e); }
-            openAdminDashboardDirectly();
+            if (user) { // المستخدم مسجل دخول
+                try { await loadEngineMemory(); } catch(e) { console.error("BoseSweets Error:", e); }
+                openAdminDashboardDirectly();
+                syncOfflineImages(); // تشغيل المزامنة فور الدخول
+            } else { // طرد فوراً في حال عدم وجود مستخدم
+                console.warn("Unauthorized access detected. Redirecting to login...");
+                window.location.href = 'login.html';
+            }
         });
     } else {
-        console.warn("BoseSweets: Firebase Auth undefined Booting locally");
-        loadEngineMemory().then(() => {
-            openAdminDashboardDirectly();
-        });
+        console.warn("BoseSweets: Firebase Auth undefined. Blocking access.");
+        window.location.href = 'login.html';
     }
 }
 
-// تشغيل المحرك فور قراءة الكود وليس بعد التحميل لتجنب التجميد
+// تشغيل المحرك فور قراءة الكود
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', bootBoseSweetsEngine);
 } else {

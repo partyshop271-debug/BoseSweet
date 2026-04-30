@@ -166,7 +166,7 @@ function showSystemToast(message, type = 'info') {
     setTimeout(() => { toast.classList.replace('flex', 'hidden'); toast.classList.remove('toast-enter'); }, 4000);
 }
 
-// ⚡ الباب السري الحقيقي لتسجيل الدخول بفايربيز
+// 👑 المفتاح السري المطور - توجيه لصفحة الأمان
 let adminClicksCounter = 0;
 let adminClickTimer;
 
@@ -177,31 +177,22 @@ window.triggerAdminAccess = function(e) {
     
     if (adminClicksCounter >= 5) {
         adminClicksCounter = 0;
-        showSystemToast('جاري التحويل لصفحة تسجيل الدخول الآمنة 👑...', 'success');
+        showSystemToast('جاري التحويل لبوابة الحماية 🛡️...', 'success');
         setTimeout(() => {
-            // توجيه سليم لصفحة الفايربيز اللي إنتي مصمماها بدون أي تدخل في برمجتها
-            // ملحوظة: لو اسم صفحة لوحة التحكم عندك مختلف عن admin.html ممكن تعدلي الكلمة دي بس.
-            window.location.href = 'admin.html';
+            // التوجيه الصحيح لصفحة تسجيل الدخول
+            window.location.href = 'login.html';
         }, 800);
     }
     
     adminClickTimer = setTimeout(() => { adminClicksCounter = 0; }, 1500); 
 };
 
-// زراعة زر العبور السري في الفوتر بدون التأثير على الـ HTML
+// الربط الاحترافي بالمعرف الموحد في القائمة الجانبية
 function autoBindAdminAccess() {
-    const textNodes = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-    let node;
-    while (node = textNodes.nextNode()) {
-        if (node.nodeValue.includes('جميع الحقوق محفوظة')) {
-            const parentEl = node.parentElement;
-            if (parentEl && !parentEl.dataset.adminBound) {
-                parentEl.dataset.adminBound = 'true';
-                parentEl.style.userSelect = 'none'; 
-                parentEl.style.cursor = 'pointer';
-                parentEl.addEventListener('click', window.triggerAdminAccess);
-            }
-        }
+    const portal = document.getElementById('admin-secret-portal');
+    if (portal) {
+        portal.addEventListener('click', window.triggerAdminAccess);
+        console.log("BoseSweets: Secret portal bound to Sidebar Header.");
     }
 }
 
@@ -353,9 +344,6 @@ async function initApp() {
     const loader = document.getElementById('global-loader');
     if(loader) { loader.style.opacity = '0'; loader.style.visibility = 'hidden'; setTimeout(() => loader.style.display = 'none', 500); }
     applySettingsToUI();
-    
-    // ⚡ تفعيل كود العبور السري عشان يحولك للوحة المربوطة بالفايربيز
-    autoBindAdminAccess();
     
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
     if(document.getElementById('categories-nav')) renderCategories();
@@ -641,7 +629,7 @@ function calculateCartTotal() {
     state.currentShippingFee = shipFee;
     if(document.getElementById('cart-subtotal-text')) document.getElementById('cart-subtotal-text').innerText = sub + ' ج.م';
     if(document.getElementById('cart-shipping-text')) document.getElementById('cart-shipping-text').innerText = (shipFee > 0 ? '+' + shipFee : '0') + ' ج.م';
-    if(document.getElementById('cart-total-text')) document.getElementById('cart-total-text').innerText = (sub + shipFee) + ' ج.م';
+    if(document.getElementById('cart-total-text')) document.getElementById('cart-total-textinnerText = (sub + shipFee) + ' ج.م';
 }
 
 function syncCartUI() {
@@ -681,12 +669,15 @@ async function submitOrder() {
 }
 
 function showInfo(t) {
-    const d = { about: { t: 'من نحن', b: siteSettings.footerQuote }, privacy: { t: 'سياسة الخصوصية والأمان', b: 'تلتزم إدارة حلويات بوسي بالسرية التامة.' } };
+    const d = { about: { t: 'من نحن', b: siteSettings.footerQuote }, privacy: { t: 'سياسة الخصوصية والأمان', b: 'تلتزم إدارة حلويات بوسي بالسرية التامة.' }, refund: { t: 'سياسة الاسترجاع والتعديل', b: 'نسعى دائماً لرضاكم التام في حلويات بوسي.' } };
+    if(!d[t]) return;
     document.getElementById('info-title').innerText = d[t].t; document.getElementById('info-body').innerText = d[t].b;
     const m = document.getElementById('info-modal'); m.classList.remove('hidden'); m.classList.add('flex'); if(window.lucide) lucide.createIcons();
 }
+
 function closeInfo() { const m = document.getElementById('info-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
 
+// ⚡ تحسين أداء السكرول والـ Navbar (تقليل استهلاك المعالج)
 let isScrolling = false;
 window.addEventListener('scroll', () => {
     if (!isScrolling) {
@@ -699,4 +690,8 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-window.onload = initApp;
+// ⚡ تشغيل وبدء التطبيق
+window.onload = () => {
+    initApp();
+    autoBindAdminAccess();
+};
