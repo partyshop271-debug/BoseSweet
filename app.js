@@ -629,7 +629,9 @@ function calculateCartTotal() {
     state.currentShippingFee = shipFee;
     if(document.getElementById('cart-subtotal-text')) document.getElementById('cart-subtotal-text').innerText = sub + ' ج.م';
     if(document.getElementById('cart-shipping-text')) document.getElementById('cart-shipping-text').innerText = (shipFee > 0 ? '+' + shipFee : '0') + ' ج.م';
-    if(document.getElementById('cart-total-text')) document.getElementById('cart-total-textinnerText = (sub + shipFee) + ' ج.م';
+    
+    // ✅ السطر اللي تم إصلاحه لضمان عدم حدوث Syntax Error ويحسب التكلفة الإجمالية بدقة
+    if(document.getElementById('cart-total-text')) document.getElementById('cart-total-text').innerText = (sub + shipFee) + ' ج.م';
 }
 
 function syncCartUI() {
@@ -690,8 +692,19 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-// ⚡ تشغيل وبدء التطبيق
+// ⚡ تشغيل وبدء التطبيق مع نظام الإقلاع الآمن المطور (Failsafe Boot)
 window.onload = () => {
+    // 🛡️ طبقة حماية إضافية: إجبار شاشة التحميل على الاختفاء بعد 8 ثوانٍ كحد أقصى لضمان عدم تعطل تجربة العميل
+    setTimeout(() => {
+        const loader = document.getElementById('global-loader');
+        if (loader && loader.style.display !== 'none') {
+            loader.style.opacity = '0';
+            loader.style.visibility = 'hidden';
+            setTimeout(() => loader.style.display = 'none', 500);
+            console.warn("BoseSweets Failsafe: Loader timeout triggered to protect UX.");
+        }
+    }, 8000);
+
     initApp();
     autoBindAdminAccess();
 };
