@@ -79,11 +79,11 @@
         }
 
         .brand-gradient {
-            background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 50%, #f9a8d4 100%);
+            background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 95%) 0%, hsl(var(--brand-hue), 85%, 85%) 50%, hsl(var(--brand-hue), 80%, 70%) 100%);
         }
 
         .ticker-brand-gradient {
-            background: linear-gradient(to left, #db2777, #ec4899);
+            background: linear-gradient(to left, hsl(var(--brand-hue), 70%, 50%), hsl(var(--brand-hue), 80%, 60%));
         }
 
         .animate-ticker {
@@ -107,15 +107,13 @@
             50% { transform: translateY(-10px); }
         }
 
-        .dyn-hover-bg:hover { background-color: #db2777 !important; color: white !important; }
+        .dyn-hover-bg:hover { background-color: hsl(var(--brand-hue), 70%, 50%) !important; color: white !important; }
 
-        /* Custom Checkbox/Radio */
         .custom-radio-container input:checked + span {
-            background-color: #ec4899;
+            background-color: hsl(var(--brand-hue), 80%, 60%);
             color: white;
         }
 
-        /* 🚀 تحسين أداء الرندرة للصور */
         img {
             content-visibility: auto;
         }
@@ -144,27 +142,27 @@
     <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 top-[40px] py-3 md:py-4 border-b border-pink-50" style="background-color: var(--site-bg);">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div class="flex items-center gap-2 md:gap-3">
-                <button onclick="toggleCustomerMenu(true)" class="p-2 md:p-3 rounded-xl transition-all shadow-sm border hover:bg-pink-50" style="background-color: var(--site-bg); color: #db2777; border-color: #fce7f3;">
+                <button onclick="toggleCustomerMenu(true)" class="p-2 md:p-3 rounded-xl transition-all shadow-sm border hover:bg-pink-50" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);">
                     <i data-lucide="menu" class="w-6 h-6 md:w-7 md:h-7"></i>
                 </button>
-                <button onclick="toggleLiveSearch(true)" class="p-2 md:p-3 rounded-xl transition-all shadow-sm border hover:bg-pink-50" style="background-color: var(--site-bg); color: #db2777; border-color: #fce7f3;">
+                <button onclick="toggleLiveSearch(true)" class="p-2 md:p-3 rounded-xl transition-all shadow-sm border hover:bg-pink-50" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);">
                     <i data-lucide="search" class="w-6 h-6 md:w-7 md:h-7"></i>
                 </button>
             </div>
             
-            <div class="flex items-center gap-2 md:gap-4 cursor-pointer absolute left-1/2 -translate-x-1/2" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-                <div class="w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center border-2 shadow-sm" style="background-color: #fdf2f8; border-color: #fce7f3;">
-                    <i data-lucide="cake" class="w-5 h-5 md:w-8 md:h-8" style="color: #db2777;"></i>
+            <div id="admin-secret-portal" class="flex items-center gap-2 md:gap-4 cursor-pointer absolute left-1/2 -translate-x-1/2" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+                <div class="w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center border-2 shadow-sm" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                    <i data-lucide="cake" class="w-5 h-5 md:w-8 md:h-8" style="color: hsl(var(--brand-hue), 70%, 50%);"></i>
                 </div>
                 <div class="flex flex-col items-center">
-                    <h1 class="text-lg md:text-3xl font-bold bg-clip-text text-transparent tracking-tight leading-none" style="background-image: linear-gradient(to left, #db2777, #ec4899);">حلويات بوسي</h1>
-                    <span class="text-[7px] md:text-[9px] font-bold uppercase tracking-widest mt-0.5 opacity-80">Premium Patisserie</span>
+                    <h1 id="dyn-brand-name" class="text-lg md:text-3xl font-bold bg-clip-text text-transparent tracking-tight leading-none" style="background-image: linear-gradient(to left, hsl(var(--brand-hue), 70%, 50%), hsl(var(--brand-hue), 80%, 60%));">حلويات بوسي</h1>
+                    <span class="text-[7px] md:text-[9px] font-bold uppercase tracking-widest mt-0.5 opacity-80" style="color: var(--site-text);">Premium Patisserie</span>
                 </div>
             </div>
 
-            <button onclick="toggleCart(true)" class="relative p-2 md:p-3 border rounded-xl transition-all shadow-sm flex items-center gap-2" style="background-color: #fdf2f8; color: #db2777; border-color: #f9a8d4;">
+            <button onclick="toggleCart(true)" class="relative p-2 md:p-3 border rounded-xl transition-all shadow-sm flex items-center gap-2" style="background-color: hsl(var(--brand-hue), 80%, 97%); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 85%);">
                 <i data-lucide="shopping-cart" class="w-6 h-6"></i>
-                <span id="cart-count-badge" class="hidden absolute -top-2 -left-2 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md animate-bounce" style="background-color: #db2777;">0</span>
+                <span id="cart-count-badge" class="hidden absolute -top-2 -left-2 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-md animate-bounce" style="background-color: hsl(var(--brand-hue), 70%, 50%);">0</span>
             </button>
         </div>
     </nav>
@@ -174,12 +172,12 @@
             <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-right">
                 <div class="flex-1">
                     <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/30 backdrop-blur-md rounded-full text-[10px] md:text-xs font-bold mb-5 border border-white/50 text-gray-800">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-pink-600"></i>
+                        <i data-lucide="sparkles" class="w-4 h-4" style="color: hsl(var(--brand-hue), 70%, 50%);"></i>
                         <span>أرقى الحلويات والتورت في الفرافرة والوادي الجديد</span>
                     </div>
-                    <h2 class="text-3xl sm:text-4xl md:text-7xl font-bold mb-4 leading-tight text-gray-800 tracking-tighter">طعم السعادة.. <br>في كل قطعة! 🍰</h2>
-                    <p class="text-sm md:text-2xl opacity-90 max-w-2xl font-bold leading-relaxed mb-6 text-gray-800">بنقدم لك تشكيلة ملكية من التورت والحلويات الشرقية والغربية، معمولة بكل حب في قلب الكفاح عشان تحلي أيامكم ومناسباتكم.</p>
-                    <button onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})" class="w-full sm:w-auto font-bold text-sm md:text-xl px-10 py-4 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 bg-white text-pink-600 hover:bg-pink-50 active:scale-95 shadow-lg shadow-pink-200">
+                    <h2 id="dyn-hero-title" class="text-3xl sm:text-4xl md:text-7xl font-bold mb-4 leading-tight text-gray-800 tracking-tighter">أهلاً بكم في <br class='hidden md:block'/> <span class='text-white relative inline-block mt-1 md:mt-2 drop-shadow-md'>حلويات بوسي</span></h2>
+                    <p id="dyn-hero-desc" class="text-sm md:text-2xl opacity-90 max-w-2xl font-bold leading-relaxed mb-6 text-gray-800">يسر إدارة حلويات بوسي استعراض تشكيلتها الحصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بذوقكم الرفيع ومناسباتكم السعيدة.</p>
+                    <button onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})" class="w-full sm:w-auto font-bold text-sm md:text-xl px-10 py-4 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 bg-white hover:bg-pink-50 active:scale-95 shadow-lg" style="color: hsl(var(--brand-hue), 70%, 50%);">
                         استعراض القائمة الرسمية <i data-lucide="chevron-down" class="w-5 h-5 animate-bounce"></i>
                     </button>
                 </div>
@@ -193,9 +191,11 @@
         </div>
     </header>
 
-    <section id="menu-section" class="sticky top-[78px] md:top-[85px] backdrop-blur-xl z-40 py-5 shadow-sm border-b" style="background-color: rgba(255,255,255,0.95); border-color: #fce7f3;">
-        <div class="max-w-7xl mx-auto px-4 flex overflow-x-auto hide-scrollbar gap-4" id="categories-nav">
-            </div>
+    <section id="menu-section" class="sticky top-[78px] md:top-[85px] backdrop-blur-xl z-40 py-5 shadow-sm border-b" style="background-color: rgba(255,255,255,0.95); border-color: hsl(var(--brand-hue), 80%, 95%);">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col gap-4">
+            <div id="categories-nav" class="flex overflow-x-auto hide-scrollbar gap-4 pb-2"></div>
+            <div id="sub-tabs-area" class="hidden w-full transition-all duration-300"></div>
+        </div>
     </section>
 
     <main class="max-w-7xl mx-auto px-4 py-12 mb-32">
@@ -203,34 +203,49 @@
             </div>
     </main>
 
-    <footer class="border-t pt-24 pb-12" style="background-color: #fdf2f8; border-color: #fce7f3;">
+    <section id="gallery-customer-section" class="hidden py-16 mt-8 border-t border-b" style="background-color: hsl(var(--brand-hue), 80%, 98%); border-color: hsl(var(--brand-hue), 80%, 90%);">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center mb-10">
+                <h3 class="text-3xl font-black mb-3" style="color: hsl(var(--brand-hue), 70%, 40%);">عدسة حلويات بوسي 📸</h3>
+                <p class="font-bold opacity-70" style="color: var(--site-text);">بعض من أعمالنا الفنية السابقة التي نفخر بها</p>
+            </div>
+            <div class="flex overflow-x-auto gap-4 pb-6 hide-scrollbar snap-slider" id="gallery-slider"></div>
+        </div>
+    </section>
+
+    <div id="gallery-lightbox" class="fixed inset-0 z-[300] bg-black/95 hidden items-center justify-center p-4 lightbox-enter">
+        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white/70 hover:text-white p-2 rounded-full bg-white/10 transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
+        <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl">
+    </div>
+
+    <footer class="border-t pt-24 pb-12" style="background-color: hsl(var(--brand-hue), 80%, 98%); border-color: hsl(var(--brand-hue), 80%, 95%);">
         <div class="max-w-7xl mx-auto px-6 text-center md:text-right">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
                 <div>
                     <div class="flex items-center gap-3 justify-center md:justify-start mb-6">
-                        <i data-lucide="cake" class="text-pink-600 w-8 h-8"></i>
-                        <h3 class="text-2xl font-bold text-pink-800">حلويات بوسي</h3>
+                        <i data-lucide="cake" class="w-8 h-8" style="color: hsl(var(--brand-hue), 70%, 50%);"></i>
+                        <h3 id="dyn-footer-brand" class="text-2xl font-bold" style="color: hsl(var(--brand-hue), 70%, 40%);">حلويات بوسي</h3>
                     </div>
-                    <p class="text-sm font-bold opacity-70 leading-relaxed">البراند الأول للحلويات الملكية في الفرافرة. جودة تليق بمناسباتكم السعيدة في قلب الوادي الجديد. اطلب الآن واستمتع بطعم لا يقاوم.</p>
+                    <p id="dyn-footer-quote" class="text-sm font-bold opacity-70 leading-relaxed" style="color: var(--site-text);">البراند الأول للحلويات الملكية في الفرافرة. جودة تليق بمناسباتكم السعيدة في قلب الوادي الجديد. اطلب الآن واستمتع بطعم لا يقاوم.</p>
                 </div>
                 <div>
-                    <h4 class="font-bold mb-6 text-pink-700 underline decoration-pink-200 underline-offset-8">تواصل معنا</h4>
-                    <p class="text-sm font-bold">الموقع: الكفاح، مركز الفرافرة، بجوار صيدلية د. أحمد مجدي</p>
-                    <p class="text-lg font-bold mt-3 text-pink-600 flex items-center justify-center md:justify-start gap-2" dir="ltr">
-                        <i data-lucide="phone" class="w-4 h-4"></i> +20 109 723 8441
+                    <h4 class="font-bold mb-6 underline underline-offset-8" style="color: hsl(var(--brand-hue), 70%, 40%); text-decoration-color: hsl(var(--brand-hue), 80%, 85%);">تواصل معنا</h4>
+                    <p id="dyn-footer-address" class="text-sm font-bold" style="color: var(--site-text);">الموقع: الكفاح، مركز الفرافرة، محافظة الوادي الجديد</p>
+                    <p class="text-lg font-bold mt-3 flex items-center justify-center md:justify-start gap-2" dir="ltr" style="color: hsl(var(--brand-hue), 70%, 50%);">
+                        <i data-lucide="phone" class="w-4 h-4"></i> <span id="dyn-footer-phone">+20 109 723 8441</span>
                     </p>
                 </div>
                 <div>
-                    <h4 class="font-bold mb-6 text-pink-700 underline decoration-pink-200 underline-offset-8">روابط سريعة</h4>
+                    <h4 class="font-bold mb-6 underline underline-offset-8" style="color: hsl(var(--brand-hue), 70%, 40%); text-decoration-color: hsl(var(--brand-hue), 80%, 85%);">روابط سريعة</h4>
                     <div class="flex flex-col gap-3 text-sm font-bold">
-                        <a href="#" class="hover:text-pink-600 transition-colors">من نحن - قصة حلويات بوسي</a>
-                        <a href="#" class="hover:text-pink-600 transition-colors">سياسة التوصيل في مركز الفرافرة</a>
-                        <a href="#" class="hover:text-pink-600 transition-colors">تواصل مع الإدارة</a>
+                        <button onclick="showInfo('about')" class="text-right hover:text-pink-600 transition-colors" style="color: var(--site-text);">من نحن - قصة حلويات بوسي</button>
+                        <button onclick="showInfo('privacy')" class="text-right hover:text-pink-600 transition-colors" style="color: var(--site-text);">سياسة الخصوصية والأمان</button>
+                        <button onclick="showInfo('refund')" class="text-right hover:text-pink-600 transition-colors" style="color: var(--site-text);">سياسة الاسترجاع والتعديل</button>
                     </div>
                 </div>
             </div>
-            <div class="border-t border-pink-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-[10px] font-bold opacity-50 tracking-widest">جميع الحقوق محفوظة لعلامة BoseSweets - حلويات بوسي © 2026</p>
+            <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <p class="text-[10px] font-bold opacity-50 tracking-widest" style="color: var(--site-text);">جميع الحقوق محفوظة لعلامة BoseSweets - حلويات بوسي © 2026</p>
                 <div class="flex gap-4">
                     <a href="https://facebook.com/BoseSweets" target="_blank" class="text-blue-600 hover:scale-110 transition-transform"><i data-lucide="facebook" class="w-5 h-5"></i></a>
                     <a href="https://tiktok.com/@BoseSweets" target="_blank" class="text-black hover:scale-110 transition-transform"><i data-lucide="music-2" class="w-5 h-5"></i></a>
@@ -239,292 +254,152 @@
         </div>
     </footer>
 
-    <div id="cart-sidebar" class="fixed top-0 left-0 bottom-0 w-full sm:w-[450px] z-[210] shadow-2xl -translate-x-full transition-transform duration-500 ease-out flex flex-col bg-white border-r border-pink-50">
-        <div class="p-6 border-b flex justify-between items-center bg-pink-50/50">
-            <h2 class="text-2xl font-black text-pink-900">سلة السعادة 🛍️</h2>
-            <button onclick="toggleCart(false)" class="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                <i data-lucide="x" class="w-6 h-6"></i>
-            </button>
+    <div id="cart-sidebar" class="fixed top-0 left-0 bottom-0 w-full sm:w-[450px] z-[210] shadow-2xl -translate-x-full transition-transform duration-500 ease-out flex flex-col bg-white border-r" style="border-color: hsl(var(--brand-hue), 80%, 95%);">
+        
+        <div id="step-1-cart" class="flex flex-col h-full">
+            <div class="p-6 border-b flex justify-between items-center" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <h2 class="text-2xl font-black" style="color: hsl(var(--brand-hue), 70%, 40%);">سلة السعادة 🛍️</h2>
+                <button onclick="toggleCart(false)" class="p-2 text-gray-400 hover:text-red-500 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div id="cart-list" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar bg-white"></div>
+            <div class="px-6" id="cross-sell-area"></div>
+            <div class="p-6 border-t shadow-[0_-10px_20px_rgba(0,0,0,0.02)]" style="background-color: hsl(var(--brand-hue), 80%, 98%); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="font-bold text-gray-500">إجمالي المشتريات:</span>
+                    <span id="cart-total-display" class="text-2xl font-black" style="color: hsl(var(--brand-hue), 70%, 50%);">0 ج.م</span>
+                </div>
+                <button onclick="goToCheckout()" class="w-full text-white py-4 rounded-2xl font-black text-lg shadow-lg flex items-center justify-center gap-3 active:scale-95 transition-all brand-gradient">
+                    متابعة الدفع <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                </button>
+            </div>
         </div>
-        <div id="cart-list" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar bg-white">
+
+        <div id="step-2-checkout" class="flex flex-col h-full hidden bg-white">
+            <div class="p-6 border-b flex items-center gap-4" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <button onclick="backToCart()" class="p-2 bg-white rounded-full shadow-sm hover:scale-105 transition-transform text-gray-500"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+                <h2 class="text-xl font-black" style="color: hsl(var(--brand-hue), 70%, 40%);">بيانات الاستلام 🛵</h2>
             </div>
-        <div class="p-6 border-t bg-pink-50/20 shadow-[0_-10px_20px_rgba(0,0,0,0.02)]">
-            <div class="flex justify-between items-center mb-6">
-                <span class="font-bold text-gray-500">إجمالي المشتريات:</span>
-                <span id="cart-total-display" class="text-2xl font-black text-pink-600">0 ج.م</span>
+            
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                <div class="space-y-4">
+                    <h3 class="font-bold flex items-center gap-2 border-b pb-2" style="color: hsl(var(--brand-hue), 70%, 40%); border-color: hsl(var(--brand-hue), 80%, 90%);"><i data-lucide="user" class="w-5 h-5"></i> معلومات التواصل</h3>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1.5">الاسم الكريم <span class="text-red-500">*</span></label>
+                        <input type="text" id="cust-name" placeholder="اكتب اسمك هنا..." class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-pink-500 outline-none transition-all font-bold text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1.5">رقم الموبايل (واتساب) <span class="text-red-500">*</span></label>
+                        <input type="tel" id="cust-phone" dir="ltr" placeholder="01xxxxxxxxx" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-pink-500 outline-none transition-all font-bold text-sm text-right">
+                    </div>
+                </div>
+
+                <div class="space-y-4 pt-4">
+                    <h3 class="font-bold flex items-center gap-2 border-b pb-2" style="color: hsl(var(--brand-hue), 70%, 40%); border-color: hsl(var(--brand-hue), 80%, 90%);"><i data-lucide="map-pin" class="w-5 h-5"></i> طريقة الاستلام</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="custom-radio-container relative cursor-pointer">
+                            <input type="radio" name="delivery_method" value="delivery" checked class="peer sr-only" onchange="toggleDeliveryMethod()">
+                            <span class="flex flex-col items-center justify-center p-4 border-2 border-gray-100 rounded-xl peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all text-center">
+                                <i data-lucide="truck" class="w-6 h-6 mb-2"></i>
+                                <span class="font-bold text-sm">توصيل للمنزل</span>
+                            </span>
+                        </label>
+                        <label class="custom-radio-container relative cursor-pointer">
+                            <input type="radio" name="delivery_method" value="pickup" class="peer sr-only" onchange="toggleDeliveryMethod()">
+                            <span class="flex flex-col items-center justify-center p-4 border-2 border-gray-100 rounded-xl peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all text-center">
+                                <i data-lucide="store" class="w-6 h-6 mb-2"></i>
+                                <span class="font-bold text-sm">استلام من الفرع</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="delivery-area-container" class="space-y-4 pt-2">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1.5">المنطقة <span class="text-red-500">*</span></label>
+                        <select id="cust-area" onchange="calculateCartTotal()" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-pink-500 outline-none transition-all font-bold text-sm"></select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 mb-1.5">العنوان بالتفصيل</label>
+                        <textarea id="cust-address" rows="2" placeholder="الشارع، رقم العمارة، علامة مميزة..." class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-pink-500 outline-none transition-all font-bold text-sm resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div id="pickup-info" class="hidden bg-blue-50 border border-blue-100 p-4 rounded-xl text-blue-800 text-sm font-bold flex gap-3">
+                    <i data-lucide="info" class="w-5 h-5 shrink-0"></i>
+                    <p>مقر حلويات بوسي: الكفاح، مركز الفرافرة، بجوار صيدلية د. أحمد مجدي. سيتم التواصل لتأكيد ميعاد الاستلام.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 mb-1.5">ملاحظات إضافية (اختياري)</label>
+                    <textarea id="cust-notes" rows="2" placeholder="أي تفاصيل خاصة بالطلب..." class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-pink-500 outline-none transition-all font-bold text-sm resize-none"></textarea>
+                </div>
             </div>
-            <button onclick="submitToWhatsApp()" class="w-full bg-pink-600 text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-pink-100 flex items-center justify-center gap-3 hover:bg-pink-700 active:scale-95 transition-all">
-                تأكيد الطلب عبر واتساب <i data-lucide="send" class="w-5 h-5"></i>
-            </button>
+
+            <div class="p-6 border-t shadow-[0_-10px_20px_rgba(0,0,0,0.02)]" style="background-color: hsl(var(--brand-hue), 80%, 98%); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <div class="space-y-2 mb-4">
+                    <div class="flex justify-between text-sm font-bold text-gray-500"><span>المجموع الفرعي:</span><span id="cart-subtotal-text">0 ج.م</span></div>
+                    <div class="flex justify-between text-sm font-bold text-gray-500"><span>رسوم التوصيل:</span><span id="cart-shipping-text">0 ج.م</span></div>
+                    <div class="flex justify-between text-lg font-black pt-2 border-t border-gray-200 mt-2" style="color: hsl(var(--brand-hue), 70%, 40%);"><span>الإجمالي المطلوب:</span><span id="cart-total-text">0 ج.م</span></div>
+                </div>
+                <button onclick="submitOrder()" class="w-full text-white py-4 rounded-2xl font-black text-lg shadow-lg flex items-center justify-center gap-3 active:scale-95 transition-all brand-gradient">
+                    إرسال الطلب واتساب <i data-lucide="send" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="customer-menu-overlay" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-[200] hidden transition-all duration-300">
+        <div id="customer-menu-sidebar" class="absolute top-0 right-0 bottom-0 w-[80%] max-w-sm bg-white shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
+            <div class="p-6 border-b flex justify-between items-center" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <h2 class="text-xl font-black" style="color: hsl(var(--brand-hue), 70%, 40%);">أقسام المنيو 📋</h2>
+                <button onclick="toggleCustomerMenu(false)" class="p-2 text-gray-400 hover:text-red-500 transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            <div id="sidebar-categories" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
         </div>
     </div>
 
     <div id="live-search-overlay" class="fixed inset-0 z-[220] bg-gray-900/98 backdrop-blur-xl hidden flex flex-col p-6 transition-all duration-300">
         <div class="max-w-4xl mx-auto w-full pt-16">
             <div class="flex justify-between items-center mb-10">
-                <h3 class="text-3xl font-black text-white border-r-4 border-pink-600 pr-4">ابحثي عن طلبك ✨</h3>
+                <h3 class="text-3xl font-black text-white border-r-4 pr-4" style="border-color: hsl(var(--brand-hue), 70%, 50%);">ابحثي عن طلبك ✨</h3>
                 <button onclick="toggleLiveSearch(false)" class="text-white hover:text-pink-500 p-2 bg-white/5 rounded-full"><i data-lucide="x" class="w-8 h-8"></i></button>
             </div>
             <div class="relative group">
-                <i data-lucide="search" class="absolute right-6 top-1/2 -translate-y-1/2 text-pink-500 w-8 h-8 group-focus-within:scale-110 transition-transform"></i>
-                <input type="text" id="live-search-input" oninput="performLiveSearchDebounced(this.value)" placeholder="تورتة، سينابون، نوتيلا، ديسباسيتو..." class="w-full bg-white/5 border-2 border-white/10 py-7 pr-16 pl-6 rounded-[2rem] text-white text-2xl font-bold outline-none focus:border-pink-500 focus:bg-white/10 transition-all shadow-2xl">
+                <i data-lucide="search" class="absolute right-6 top-1/2 -translate-y-1/2 w-8 h-8 group-focus-within:scale-110 transition-transform" style="color: hsl(var(--brand-hue), 70%, 50%);"></i>
+                <input type="text" id="live-search-input" oninput="performLiveSearchDebounced(this.value)" placeholder="تورتة، سينابون، نوتيلا، ديسباسيتو..." class="w-full bg-white/5 border-2 border-white/10 py-7 pr-16 pl-6 rounded-[2rem] text-white text-2xl font-bold outline-none transition-all shadow-2xl focus:bg-white/10" style="caret-color: hsl(var(--brand-hue), 70%, 50%); border-color: focus:hsl(var(--brand-hue), 70%, 50%);">
             </div>
-            <div id="live-search-results" class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto max-h-[60vh] hide-scrollbar pb-10">
-                </div>
+            <div id="live-search-results" class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto max-h-[60vh] hide-scrollbar pb-10"></div>
+        </div>
+    </div>
+
+    <div id="info-modal" class="fixed inset-0 z-[400] bg-gray-900/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-[2rem] p-8 w-full max-w-md shadow-2xl relative animate-fade-in border-2" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+            <button onclick="closeInfo()" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-red-500 rounded-full bg-gray-50"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <div class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4" style="background-color: hsl(var(--brand-hue), 80%, 95%); color: hsl(var(--brand-hue), 70%, 50%);">
+                <i data-lucide="info" class="w-8 h-8"></i>
+            </div>
+            <h3 id="info-title" class="text-2xl font-black text-center mb-4" style="color: var(--site-text);"></h3>
+            <p id="info-body" class="text-sm font-bold text-gray-600 leading-relaxed text-center"></p>
         </div>
     </div>
 
     <script>
-        // تثبيت الهوية البرمجية لمركز القيادة
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'bose-sweets-v5-client';
+        // إزالة الكود التجريبي المتضارب تماما والاعتماد على الموتور الأساسي في app.js
+        console.log("BoseSweets Index: Cleaned structure ready for app.js injection. 👑");
         
-        let cart = [];
-        let categories = [];
-        let products = [];
-
-        // 🚀 إقلاع النظام (Boot Sequence)
-        document.addEventListener('DOMContentLoaded', async () => {
-            // تفعيل الأيقونات الذكية
-            if(window.lucide) lucide.createIcons();
-            
-            // إخفاء شاشة التحميل بنعومة بعد اكتمال المزامنة
-            setTimeout(() => {
-                const loader = document.getElementById('global-loader');
-                if(loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => loader.style.display = 'none', 700);
-                }
-            }, 1800);
-
-            // تشغيل المحاكاة في حالة غياب المحرك الخارجي app.js
-            if (typeof loadEngineMemory === 'undefined') {
-                console.log("BoseSweets: Running in failsafe mode (Local Mock Data)...");
-                await initAuth();
-                loadMockData(); 
-            }
-        });
-
-        async function initAuth() {
-            try {
-                if(typeof auth !== 'undefined') {
-                    await auth.signInAnonymously();
-                }
-            } catch (e) {
-                console.warn("BoseSweets Cloud: Anonymous Auth bypassed.");
-            }
-        }
-
-        function loadMockData() {
-            // بيانات تجريبية ضخمة لضمان بقاء الهيكل ممتلئاً
-            categories = [
-                { id: 'torta', name: 'تورت ملكية 🎂', icon: 'cake' },
-                { id: 'cinnabon', name: 'سينابون بوسي 🍥', icon: 'wind' },
-                { id: 'despacito', name: 'ديسباسيتو 🍫', icon: 'coffee' },
-                { id: 'oriental', name: 'شرقيات 🍮', icon: 'sparkles' }
-            ];
-
-            products = [
-                { id: 101, name: 'تورتة نوتيلا كيندر الملكية', price: 280, category: 'torta', img: 'https://via.placeholder.com/400x400/fdf2f8/db2777?text=BoseSweets+Cake' },
-                { id: 102, name: 'سينابون لوتس عائلي (6 قطع)', price: 150, category: 'cinnabon', img: 'https://via.placeholder.com/400x400/fdf2f8/db2777?text=BoseSweets+Cinnabon' },
-                { id: 103, name: 'بوكس الروقان (مشكل غربي)', price: 190, category: 'despacito', img: 'https://via.placeholder.com/400x400/fdf2f8/db2777?text=BoseSweets+Box' }
-            ];
-
-            renderCategories();
-            renderProducts();
-        }
-
-        function renderCategories() {
-            const nav = document.getElementById('categories-nav');
-            if(!nav) return;
-            nav.innerHTML = categories.map(cat => `
-                <button onclick="filterByCategory('${cat.id}')" class="whitespace-nowrap px-8 py-3 rounded-full font-bold text-sm border-2 border-pink-50 bg-white text-pink-700 hover:bg-pink-600 hover:text-white hover:border-pink-600 transition-all shadow-sm">
-                    ${cat.name}
-                </button>
-            `).join('');
-        }
-
-        function renderProducts(filter = 'all') {
-            const container = document.getElementById('display-container');
-            if(!container) return;
-            const items = filter === 'all' ? products : products.filter(p => p.category === filter);
-            
-            // تطبيق Lazy Loading و SEO Alt Tags
-            container.innerHTML = items.map(p => `
-                <div class="bg-white rounded-[2.5rem] border border-pink-50 p-5 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
-                    <div class="aspect-square rounded-[2rem] overflow-hidden mb-5 bg-pink-50/30 relative">
-                        <img src="${p.img}" alt="حلويات بوسي - ${p.name} الفرافرة" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        <div class="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold text-pink-600 border border-pink-100">جديد ✨</div>
-                    </div>
-                    <h3 class="font-black text-xl mb-3 text-gray-800">${p.name}</h3>
-                    <div class="flex justify-between items-center mt-auto">
-                        <div class="flex flex-col">
-                            <span class="text-[10px] font-bold text-gray-400 uppercase">السعر التقديري</span>
-                            <span class="text-pink-600 font-black text-2xl">${p.price} <small class="text-xs">ج.م</small></span>
-                        </div>
-                        <button onclick="addToCart(${p.id})" class="p-4 bg-pink-600 text-white rounded-[1.2rem] shadow-lg shadow-pink-100 active:scale-90 hover:bg-pink-700 transition-all">
-                            <i data-lucide="plus" class="w-6 h-6"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-            if(window.lucide) lucide.createIcons();
-        }
-
-        function addToCart(id) {
-            const product = products.find(p => p.id === id);
-            if(!product) return;
-            cart.push({...product, cartId: Date.now()});
-            updateCartUI();
-            showToast(`تم إضافة ${product.name} لسلة السعادة 💖`);
-            
-            // تأثير بصري على زر السلة
-            const cartBtn = document.querySelector('button[onclick="toggleCart(true)"]');
-            cartBtn.classList.add('scale-110', 'bg-pink-100');
-            setTimeout(() => cartBtn.classList.remove('scale-110', 'bg-pink-100'), 300);
-        }
-
-        function updateCartUI() {
-            const badge = document.getElementById('cart-count-badge');
-            const list = document.getElementById('cart-list');
-            const totalDisplay = document.getElementById('cart-total-display');
-
-            if(badge) {
-                badge.innerText = cart.length;
-                badge.classList.toggle('hidden', cart.length === 0);
-            }
-
-            if(list) {
-                if(cart.length === 0) {
-                    list.innerHTML = `<div class="flex flex-col items-center justify-center h-full opacity-30">
-                        <i data-lucide="shopping-bag" class="w-20 h-20 mb-4"></i>
-                        <p class="font-bold">السلة لسه فاضية يا فندم!</p>
-                    </div>`;
-                } else {
-                    list.innerHTML = cart.map((item, index) => `
-                        <div class="flex items-center gap-4 bg-pink-50/30 p-4 rounded-3xl border border-pink-100/50 animate-fadeIn">
-                            <img src="${item.img}" alt="${item.name}" loading="lazy" class="w-20 h-20 rounded-2xl object-cover shadow-sm">
-                            <div class="flex-1">
-                                <h4 class="font-black text-sm text-gray-800">${item.name}</h4>
-                                <div class="flex justify-between items-center mt-2">
-                                    <span class="text-pink-600 font-black">${item.price} ج.م</span>
-                                    <button onclick="removeFromCart(${index})" class="text-red-400 p-2 hover:bg-red-50 rounded-xl transition-colors">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `).join('');
-                }
-            }
-
-            if(totalDisplay) {
-                const total = cart.reduce((sum, item) => sum + item.price, 0);
-                totalDisplay.innerText = `${total} ج.م`;
-            }
-            if(window.lucide) lucide.createIcons();
-        }
-
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCartUI();
-        }
-
-        function toggleCart(show) {
-            const sidebar = document.getElementById('cart-sidebar');
-            if(sidebar) sidebar.style.transform = show ? 'translateX(0)' : 'translateX(-100%)';
-            // منع سكرول الجسم عند فتح السلة
-            document.body.style.overflow = show ? 'hidden' : 'auto';
-        }
-
-        function toggleCustomerMenu(show) {
-            showToast("جاري فتح قائمة الأقسام الكاملة...");
-            // يمكن تطويرها لفتح Sidebar مخصص للأقسام
-        }
-        
-        function toggleLiveSearch(show) {
-            const overlay = document.getElementById('live-search-overlay');
-            if(!overlay) return;
-            overlay.classList.toggle('hidden', !show);
-            if(show) {
-                document.getElementById('live-search-input').focus();
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.style.overflow = 'auto';
-            }
-        }
-
-        function performLiveSearch(query) {
-            const results = document.getElementById('live-search-results');
-            if(!query || query.length < 2) {
-                results.innerHTML = "";
-                return;
-            }
-            
-            const filtered = products.filter(p => p.name.includes(query) || p.category.includes(query));
-            results.innerHTML = filtered.map(p => `
-                <div onclick="toggleLiveSearch(false); filterByCategory('${p.category}')" class="flex items-center gap-4 bg-white/10 p-4 rounded-3xl cursor-pointer hover:bg-white/20 transition-all border border-white/5">
-                    <img src="${p.img}" class="w-16 h-16 rounded-2xl object-cover">
-                    <div>
-                        <h4 class="text-white font-bold">${p.name}</h4>
-                        <p class="text-pink-400 font-black">${p.price} ج.م</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function showToast(msg) {
-            const toast = document.getElementById('system-toast');
-            const toastMsg = document.getElementById('toast-message');
-            if(!toast || !toastMsg) return;
-            toastMsg.innerText = msg;
-            toast.classList.remove('hidden');
-            toast.classList.add('flex', 'animate-bounce');
-            setTimeout(() => {
-                toast.classList.add('hidden');
-                toast.classList.remove('flex', 'animate-bounce');
-            }, 3000);
-        }
-
-        function submitToWhatsApp() {
-            if (cart.length === 0) return showToast("السلة لسه فاضية يا فندم! اطلبي تورتة الأول 😊");
-            
-            let message = `*طلب جديد من موقع حلويات بوسي* 👑\n`;
-            message += `--------------------------------\n`;
-            cart.forEach((item, idx) => message += `${idx+1}. ${item.name} (${item.price} ج.م)\n`);
-            message += `--------------------------------\n`;
-            message += `*إجمالي الحساب:* ${cart.reduce((sum, i) => sum + i.price, 0)} ج.م\n\n`;
-            message += `يرجى تأكيد الطلب وتحديد موعد الاستلام 🌸`;
-            
-            let phone = "201097238441";
-            // محاولة سحب الرقم من إعدادات السحابة ديناميكياً
-            if (typeof siteSettings !== 'undefined' && siteSettings.footerPhone) {
-                phone = siteSettings.footerPhone.replace(/\D/g, '');
-                if (phone.startsWith('0')) phone = '2' + phone;
-            }
-            
-            const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-            window.open(url, '_blank');
-        }
-
-        function filterByCategory(id) {
-            renderProducts(id);
-            // تحسين الرابط للـ SEO
-            if(window.history.pushState) {
-                window.history.pushState({category: id}, '', '?category=' + id);
-            }
-            const section = document.getElementById('menu-section');
-            if(section) window.scrollTo({top: section.offsetTop - 100, behavior: 'smooth'});
-        }
-
-        // مراقبة السكرول لتغيير شكل الـ Navbar ديناميكياً
+        // ربط أحداث السكرول لتحسين شريط التنقل
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                nav.style.padding = '8px 0';
-                nav.classList.add('shadow-lg', 'bg-white/95');
-            } else {
-                nav.style.padding = '12px 0';
-                nav.classList.remove('shadow-lg', 'bg-white/95');
+            if(nav) {
+                if (window.scrollY > 50) {
+                    nav.style.padding = '8px 0';
+                    nav.classList.add('nav-scrolled');
+                } else {
+                    nav.style.padding = '12px 0';
+                    nav.classList.remove('nav-scrolled');
+                }
             }
         });
     </script>
