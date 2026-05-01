@@ -125,7 +125,7 @@
         <div class="p-6 bg-white/20 backdrop-blur-md rounded-full border border-white/40 shadow-inner mb-6 floating">
             <i data-lucide="cake" class="w-16 h-16 text-white drop-shadow-lg"></i>
         </div>
-        <p class="font-bold text-xl md:text-2xl text-white tracking-wide drop-shadow-md">أهلاً بكم في عالم حلويات بوسي ✨</p>
+        <p id="dyn-loader-text" class="font-bold text-xl md:text-2xl text-white tracking-wide drop-shadow-md">أهلاً بكم في عالم حلويات بوسي ✨</p>
     </div>
 
     <div id="system-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] hidden items-center gap-3 bg-gray-900 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm max-w-[90vw] text-center border border-gray-700">
@@ -386,10 +386,8 @@
     </div>
 
     <script>
-        // إزالة الكود التجريبي المتضارب تماما والاعتماد على الموتور الأساسي في app.js
         console.log("BoseSweets Index: Cleaned structure ready for app.js injection. 👑");
         
-        // ربط أحداث السكرول لتحسين شريط التنقل
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
             if(nav) {

@@ -1,23 +1,21 @@
 /**
  * ============================================================================
- * محرك مركز قيادة حلويات بوسي | BoseSweets Admin Engine (V5.0 ULTIMATE SECURE & SYNC)
+ * محرك مركز قيادة حلويات بوسي | BoseSweets Admin Engine (V6.0 ULTIMATE DYNAMIC)
  * ============================================================================
  * تم بناء وتوسيع هذا المحرك لضمان أعلى أداء، وتوسيع القدرات الإدارية، مع الحفاظ
  * على كامل البيانات والوظائف السابقة بنظام (البناء والتطوير دون حذف).
- * يحتوي على قلب النظام (Data Core)، محرك الذاكرة الفولاذي (IndexedDB)، 
- * والرصد الحي للطلبات بنظام المزامنة التفاضلية (Differential Sync)،
- * ومحرك التخزين المعزول للصور (OfflineStorageManager).
+ * التحديث الجديد (V6.0) يتضمن: محرك الهوية البصرية، الأسعار العالمية، نظام المخزون،
+ * الخصومات والعروض، والترتيب المخصص للأقسام والمنتجات.
  */
 
 // 🛡️ Engine Upgrade: Centralized Admin Error Tracking System
-// صندوق أسود لتسجيل أي أعطال أو أخطاء في محركات التخزين أثناء انقطاع الإنترنت
 const AdminErrorTracker = {
     log(context, error) {
         try {
             const errLog = { context, msg: error.message || String(error), time: new Date().toLocaleString('ar-EG') };
             let logs = JSON.parse(localStorage.getItem('BoseSweets_Admin_ErrorLogs') || '[]');
             logs.unshift(errLog);
-            if(logs.length > 50) logs.pop(); // الحفاظ على المساحة بحد أقصى 50 سجل
+            if(logs.length > 50) logs.pop(); 
             localStorage.setItem('BoseSweets_Admin_ErrorLogs', JSON.stringify(logs));
             console.warn(`BoseSweets Admin Vault: Error intercepted in [${context}] and logged securely. 🛡️`);
         } catch(e) {}
@@ -78,8 +76,6 @@ const StorageEngine = {
 
 /**
  * 🛡️ Engine Upgrade: Offline Storage Manager (Isolated Base64 Storage)
- * محرك تخزين معزول تماماً لحفظ الصور "أوفلاين" في حال انقطاع الإنترنت أثناء الرفع.
- * يتم الاحتفاظ بالصور بصيغة Base64 لحين استقرار الشبكة ثم رفعها تلقائياً للسحابة.
  */
 const OfflineStorageManager = {
     dbName: 'BoseSweetsOfflineVault',
@@ -110,7 +106,6 @@ const OfflineStorageManager = {
             });
         } catch (e) { 
             AdminErrorTracker.log('OfflineVault_Enqueue', e);
-            console.warn("Offline Vault Enqueue Error", e); 
         }
     },
     async getAllPayloads() {
@@ -150,8 +145,11 @@ const defaultSettings = {
     heroDesc: "يسر إدارة حلويات بوسي استعراض تشكيلتها الحصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بذوقكم الرفيع ومناسباتكم السعيدة.",
     footerPhone: "01097238441", footerAddress: "الكفاح، مركز الفرافرة، <br> محافظة الوادي الجديد",
     footerQuote: `"نؤمن أن الحلويات لغة للتعبير عن المحبة، لذا نصنع كل قطعة بشغف لنكون شركاءكم في أجمل اللحظات."`,
-    productLayout: "grid", brandColorHex: "#ec4899", bgColor: "#ffffff", textColor: "#663b3b",
-    fontFamily: "'Cairo', sans-serif", baseFontSize: 16, baseFontWeight: 400,
+    productLayout: "grid", 
+    visuals: {
+        themeHex: "#ec4899", bgHex: "#ffffff", textHex: "#4a2b2b",
+        fontFamily: "'Cairo', sans-serif", loaderText: "أهلاً بكم في عالم حلويات بوسي ✨"
+    },
     tickerActive: true, tickerText: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب ✨", tickerSpeed: 20, tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff",
     cakeBuilder: { basePrice: 145, desc: "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة.", minSquare: 16, minRect: 20, flavors: ['فانيليا', 'شيكولاتة', ' نص ونص', 'ريد فيلفت'], images: [], imagePrinting: [{ label: 'بدون', price: 0 }, { label: 'صورة قابلة للأكل', price: 60 }, { label: 'صورة غير قابلة للأكل', price: 20 }] }
 };
@@ -176,8 +174,6 @@ let ordersUnsubscribe = null;
 
 /**
  * 🛡️ Engine Upgrade: Differential Sync Realtime Orders
- * نظام المزامنة التفاضلية المتطور؛ يقوم برصد الإضافات والتعديلات والحذف "لحظياً"
- * مع استهلاك أقل قدر ممكن من البيانات وضمان إرسال تنبيهات صوتية عند وصول أي طلب جديد.
  */
 function setupRealtimeOrders() {
     if (typeof db === 'undefined') return;
@@ -209,10 +205,7 @@ function setupRealtimeOrders() {
             }
         });
 
-        // إعادة الترتيب لضمان أن الأحدث دائماً في الأعلى
         globalOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-        // حفظ البيانات في الذاكرة الفولاذية
         saveEngineMemory('ord');
 
         if (!isFirstOrderLoad && hasNewOrder) {
@@ -228,7 +221,6 @@ function setupRealtimeOrders() {
         });
     }, error => {
         AdminErrorTracker.log('RealtimeOrdersSync', error);
-        console.error("BoseSweets Realtime Orders Sync Error:", error);
     });
 }
 
@@ -275,9 +267,16 @@ async function loadEngineMemory() {
         galleryData = (await StorageEngine.get('boseSweets_gallery')) || JSON.parse(localStorage.getItem('bSweets_gallery') || localStorage.getItem('boseSweets_gallery')) || [];
     }
 
+    // 👑 التحديث الملكي: دعم ترتيب الأقسام
     if (siteSettings.catMenu && siteSettings.catMenu.length > 0) catMenu = siteSettings.catMenu;
-    else catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
-    if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
+    else catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean).map((name, i) => ({name, order: i+1}));
+    
+    // تحويل الأقسام القديمة إلى النظام الجديد الداعم للترتيب
+    if(catMenu.length > 0 && typeof catMenu[0] === 'string') {
+        catMenu = catMenu.map((name, i) => ({name, order: i+1}));
+    }
+    
+    if (!catMenu.find(c => c.name === 'تورت')) catMenu.unshift({name: 'تورت', order: 0});
     syncCatalogMap(); 
 }
 
@@ -430,6 +429,45 @@ function closeConfirmModal() {
     if(modal){ modal.classList.add('opacity-0'); setTimeout(() => modal.classList.add('hidden'), 300); }
 }
 
+// 👑 التحديث الملكي: محرك تعديل الأسعار الجماعي والتخفيضات
+async function applyGlobalPriceChange() {
+    const percentStr = document.getElementById('global-price-percent')?.value;
+    const percent = parseFloat(percentStr);
+    const action = document.getElementById('global-price-action')?.value;
+    
+    if(isNaN(percent) || percent <= 0) { showSystemToast("يرجى إدخال نسبة صحيحة أكبر من 0", "error"); return; }
+    
+    const msg = action === 'increase' ? `هل أنت متأكد من رفع جميع أسعار المنتجات بنسبة ${percent}%؟` : `هل أنت متأكد من تطبيق خصم بنسبة ${percent}%؟ (سيتم حفظ السعر القديم للمنتجات لإظهار العروض)`;
+    
+    openConfirmModal('تأكيد التعديل الجماعي للأسعار', msg, async () => {
+        const multiplier = action === 'increase' ? (1 + (percent / 100)) : (1 - (percent / 100));
+        let updatedCount = 0;
+        
+        for (let p of catalog) {
+            if (p.price && !isNaN(p.price)) {
+                if (action === 'decrease') {
+                    p.oldPrice = p.price; // حفظ السعر القديم
+                } else {
+                    p.oldPrice = null; // إزالة السعر القديم عند الزيادة
+                }
+                
+                p.price = Math.round(p.price * multiplier);
+                updatedCount++;
+                
+                try { 
+                    if (typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(p.id), p); 
+                } catch (e) {}
+            }
+        }
+        
+        saveEngineMemory('cat'); syncCatalogMap();
+        const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
+        renderAdminMenu(currentSearch); renderAdminOverview();
+        
+        showSystemToast(`تم تطبيق النسبة بنجاح على ${updatedCount} منتج 👑`, "success");
+    });
+}
+
 function exportBackupJSON() {
     try {
         const backupData = { catalog, settings: siteSettings, shipping: shippingZones, orders: globalOrders, gallery: galleryData };
@@ -476,6 +514,7 @@ function importBackupJSON(e) {
     reader.readAsText(file);
 }
 
+// 👑 التحديث الملكي: حقن إعدادات الهوية البصرية لاستوديو الألوان
 function fillAdminSettingsForm() {
     if(!window.siteSettings) return;
     if(document.getElementById('set-brand')) document.getElementById('set-brand').value = siteSettings.brandName || 'حلويات بوسي'; 
@@ -486,6 +525,17 @@ function fillAdminSettingsForm() {
     if(document.getElementById('set-footer-quote')) document.getElementById('set-footer-quote').value = siteSettings.footerQuote || ''; 
     if(document.getElementById('set-ticker-active')) document.getElementById('set-ticker-active').checked = siteSettings.tickerActive !== false;
     if(document.getElementById('set-ticker-text')) document.getElementById('set-ticker-text').value = siteSettings.tickerText || siteSettings.announcement || '';
+
+    // إعدادات الهوية
+    const v = siteSettings.visuals || defaultSettings.visuals;
+    if(document.getElementById('set-visual-color-hex')) {
+        document.getElementById('set-visual-color-hex').value = v.themeHex || '#ec4899';
+        if(document.getElementById('set-visual-color-picker')) document.getElementById('set-visual-color-picker').value = v.themeHex || '#ec4899';
+    }
+    if(document.getElementById('set-visual-bg')) document.getElementById('set-visual-bg').value = v.bgHex || '#ffffff';
+    if(document.getElementById('set-visual-text')) document.getElementById('set-visual-text').value = v.textHex || '#4a2b2b';
+    if(document.getElementById('set-visual-font')) document.getElementById('set-visual-font').value = v.fontFamily || "'Cairo', sans-serif";
+    if(document.getElementById('set-visual-loader')) document.getElementById('set-visual-loader').value = v.loaderText || "أهلاً بكم في عالم حلويات بوسي ✨";
 
     executeSafely('CakeBuilder', fillCakeBuilderAdmin);
 }
@@ -504,6 +554,14 @@ async function saveStoreSettings() {
         siteSettings.announcement = document.getElementById('set-ticker-text').value; 
     }
 
+    // حفظ الهوية
+    if(!siteSettings.visuals) siteSettings.visuals = {};
+    if(document.getElementById('set-visual-color-hex')) siteSettings.visuals.themeHex = document.getElementById('set-visual-color-hex').value;
+    if(document.getElementById('set-visual-bg')) siteSettings.visuals.bgHex = document.getElementById('set-visual-bg').value;
+    if(document.getElementById('set-visual-text')) siteSettings.visuals.textHex = document.getElementById('set-visual-text').value;
+    if(document.getElementById('set-visual-font')) siteSettings.visuals.fontFamily = document.getElementById('set-visual-font').value;
+    if(document.getElementById('set-visual-loader')) siteSettings.visuals.loaderText = document.getElementById('set-visual-loader').value;
+
     try {
         if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', siteSettings); 
         saveEngineMemory('set'); 
@@ -513,8 +571,6 @@ async function saveStoreSettings() {
 
 /**
  * 🛡️ Engine Upgrade: Secure Cloud Password Management
- * نظام متطور لتغيير وتشفير كلمة مرور مركز القيادة سحابياً (Cloud Auth Provider).
- * يضمن أعلى مستويات الأمان لبراند حلويات بوسي.
  */
 async function changeAdminPassword() {
     const currentInput = document.getElementById('sec-current-pwd').value; 
@@ -529,14 +585,10 @@ async function changeAdminPassword() {
         const user = auth.currentUser;
         if (!user) { showSystemToast("انتهت جلسة الإدارة، يرجى تسجيل الدخول مجدداً", "error"); return; }
 
-        // إعادة التأكيد الأمني قبل تغيير كلمة المرور
         const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentInput);
         await user.reauthenticateWithCredential(credential);
-
-        // التحديث السحابي المشفر
         await user.updatePassword(newPwd);
 
-        // مسح كلمة المرور القديمة من الإعدادات إذا كانت موجودة (زيادة في الأمان)
         if (siteSettings.adminPassword) {
             delete siteSettings.adminPassword;
             if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', siteSettings);
@@ -842,9 +894,13 @@ function printOrderInvoice() { window.print(); }
 function renderAdminCatalogTabs() {
     const tabsEl = document.getElementById('admin-catalog-tabs');
     if(!tabsEl) return;
+    
+    // 👑 التحديث الملكي: ترتيب الأقسام
+    const sortedCats = [...catMenu].sort((a, b) => a.order - b.order);
+    
     let html = `<button onclick="setAdminCat('all')" class="whitespace-nowrap px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm border relative z-20 pointer-events-auto ${adminCurrentCat === 'all' ? 'bg-pink-500 text-white border-pink-400' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border-slate-700'}">الكل</button>`;
-    if(catMenu && catMenu.length > 0) {
-        catMenu.forEach(c => { html += `<button onclick="setAdminCat('${escapeHTML(c)}')" class="whitespace-nowrap px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm border relative z-20 pointer-events-auto ${adminCurrentCat === c ? 'bg-pink-500 text-white border-pink-400' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border-slate-700'}">${escapeHTML(c)}</button>`; });
+    if(sortedCats && sortedCats.length > 0) {
+        sortedCats.forEach(c => { html += `<button onclick="setAdminCat('${escapeHTML(c.name)}')" class="whitespace-nowrap px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm border relative z-20 pointer-events-auto ${adminCurrentCat === c.name ? 'bg-pink-500 text-white border-pink-400' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border-slate-700'}">${escapeHTML(c.name)}</button>`; });
     }
     tabsEl.innerHTML = html;
 }
@@ -855,6 +911,7 @@ function setAdminCat(c) {
     renderAdminMenu(currentSearch);
 }
 
+// 👑 التحديث الملكي: ترتيب المنتجات المخصص وإظهار الخصومات والمخزون
 function renderAdminMenu(searchQuery = '') {
     const container = document.getElementById('admin-menu-list');
     if (!container) return; 
@@ -870,7 +927,10 @@ function renderAdminMenu(searchQuery = '') {
         const q = searchQuery.toLowerCase().trim();
         list = list.filter(p => (p.name && p.name.toLowerCase().includes(q)) || (p.category && p.category.toLowerCase().includes(q)) || (p.subType && p.subType.toLowerCase().includes(q)));
     }
-    const sortType = document.getElementById('admin-sort-catalog')?.value || 'newest';
+    
+    const sortType = document.getElementById('admin-sort-catalog')?.value || 'custom';
+    if(sortType === 'custom') list.sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
+    if(sortType === 'newest') list.sort((a, b) => { const timeA = a.id.split('_')[1]; const timeB = b.id.split('_')[1]; return timeB - timeA; });
     if(sortType === 'price_high') list.sort((a, b) => b.price - a.price);
     if(sortType === 'price_low') list.sort((a, b) => a.price - b.price);
     if(sortType === 'name') list.sort((a, b) => (a.name||'').localeCompare(b.name||'', 'ar'));
@@ -883,17 +943,22 @@ function renderAdminMenu(searchQuery = '') {
     container.innerHTML = list.map(prod => {
         const imageUrl = (prod.images && prod.images.length > 0) ? (prod.images[0].startsWith('offline_img_') ? 'https://via.placeholder.com/150?text=جاري+الرفع' : prod.images[0]) : (prod.img || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=300&q=80');
         const isInstock = prod.inStock !== false;
+        const oldPriceHtml = (prod.oldPrice && prod.oldPrice > prod.price) ? `<del class="text-[10px] text-slate-500 ml-1 font-normal">${prod.oldPrice}</del>` : '';
+        
         return `
             <div class="admin-card flex flex-col md:flex-row gap-4 relative overflow-visible group transition-all duration-300 hover:border-pink-500/50 ${!isInstock ? 'opacity-60' : ''} p-4 bg-slate-900 rounded-xl border border-slate-800">
                 <div class="w-full md:w-28 h-36 md:h-28 rounded-xl bg-slate-800 shrink-0 overflow-hidden relative shadow-inner">
                     <img src="${imageUrl}" alt="${escapeHTML(prod.name || '')}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
                     ${prod.badge ? `<span class="absolute top-2 right-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-[9px] px-2 py-0.5 rounded shadow-lg font-bold z-10">${prod.badge}</span>` : ''}
-                    ${!isInstock ? `<div class="absolute inset-0 bg-slate-900/70 flex items-center justify-center backdrop-blur-sm z-10"><span class="bg-red-500 text-white text-[10px] px-2 py-1 rounded font-bold">نفذت</span></div>` : ''}
+                    ${!isInstock ? `<div class="absolute inset-0 bg-slate-900/80 flex items-center justify-center backdrop-blur-sm z-10"><span class="bg-red-500 text-white text-[10px] px-2 py-1 rounded font-bold">نفذت الكمية</span></div>` : ''}
                     ${(prod.images && prod.images.length > 1) ? `<span class="absolute bottom-2 left-2 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded font-bold z-10">+${prod.images.length - 1}</span>` : ''}
                 </div>
                 <div class="flex-1 flex flex-col justify-between py-1 relative z-20">
                     <div>
-                        <div class="flex justify-between items-start mb-1"><p class="text-[10px] text-pink-400 font-bold uppercase tracking-wider bg-pink-500/10 px-2 py-0.5 rounded inline-block">${escapeHTML(prod.category || '')}</p><p class="text-white font-black text-base bg-slate-900 px-2 py-0.5 rounded border border-slate-700">${Number(prod.price) > 0 ? prod.price + '<span class="text-[9px] text-slate-400 ml-1">ج.م</span>' : 'متغير'}</p></div>
+                        <div class="flex justify-between items-start mb-1">
+                            <p class="text-[10px] text-pink-400 font-bold uppercase tracking-wider bg-pink-500/10 px-2 py-0.5 rounded inline-block">${escapeHTML(prod.category || '')}</p>
+                            <p class="text-white font-black text-base bg-slate-900 px-2 py-0.5 rounded border border-slate-700">${Number(prod.price) > 0 ? prod.price + '<span class="text-[9px] text-slate-400 ml-1">ج.م</span>' + oldPriceHtml : 'متغير'}</p>
+                        </div>
                         <h3 class="text-white font-bold text-sm leading-tight mb-1 line-clamp-2">${escapeHTML(prod.name || '')}</h3>
                         ${prod.subType || prod.size ? `<p class="text-[10px] text-slate-400 mb-2 truncate"><i data-lucide="tag" class="w-3 h-3 inline"></i> ${escapeHTML(prod.subType || prod.size)}</p>` : ''}
                     </div>
@@ -943,11 +1008,6 @@ async function getSecureUploadSignature() {
     }
 }
 
-/**
- * 🛡️ Engine Upgrade: Intercept Base64 & push to Offline Vault if Offline
- * نظام متطور يكتشف حالة الإنترنت؛ إذا انقطع الاتصال يتم حفظ الصور "فوراً" في خزنة
- * OfflineStorageManager المشفرة لاستكمال الرفع لاحقاً دون فقدان أي بيانات.
- */
 async function compressAndUploadMultiImage(e) {
     const files = e.target.files; if (!files || files.length === 0) return;
     const spinner = document.getElementById('uploading-spinner'); if(spinner) spinner.classList.remove('hidden');
@@ -1015,16 +1075,23 @@ async function compressAndUploadMultiImage(e) {
 function openAddProductModal() {
     currentEditId = null; 
     if(document.getElementById('prod-modal-title')) document.getElementById('prod-modal-title').innerHTML = `<i data-lucide="plus-circle" class="w-6 h-6 text-pink-500"></i> إضافة منتج جديد`;
-    const fields = ['edit-prod-id','edit-prod-name','edit-prod-price','edit-prod-sub','edit-prod-desc'];
+    
+    const fields = ['edit-prod-id','edit-prod-name','edit-prod-price','edit-prod-old-price','edit-prod-sub','edit-prod-sort','edit-prod-desc'];
     fields.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+    
     const catSelect = document.getElementById('edit-prod-cat');
+    const sortedCats = [...catMenu].sort((a, b) => a.order - b.order);
     if(catSelect) {
-        catSelect.innerHTML = (catMenu || []).map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('');
-        catSelect.value = adminCurrentCat === 'all' ? (catMenu && catMenu.length > 0 ? catMenu[0] : "تورت") : adminCurrentCat; 
+        catSelect.innerHTML = sortedCats.map(c => `<option value="${escapeHTML(c.name)}">${escapeHTML(c.name)}</option>`).join('');
+        catSelect.value = adminCurrentCat === 'all' ? (sortedCats.length > 0 ? sortedCats[0].name : "تورت") : adminCurrentCat; 
     }
+    
     if(document.getElementById('edit-prod-layout')) document.getElementById('edit-prod-layout').value = 'default';
     if(document.getElementById('edit-prod-badge')) document.getElementById('edit-prod-badge').value = '';
-    if(document.getElementById('edit-prod-instock')) document.getElementById('edit-prod-instock').checked = true; 
+    
+    const stockEl = document.getElementById('edit-prod-instock');
+    if(stockEl) { stockEl.checked = true; if(document.getElementById('instock-label-text')) document.getElementById('instock-label-text').innerText = 'متوفر'; }
+    
     tempProdImages = []; renderAdminTempImages();
     const m = document.getElementById('admin-prod-modal'); 
     if(m) { m.classList.remove('hidden'); m.classList.add('flex'); setTimeout(() => m.classList.remove('opacity-0'), 10); }
@@ -1037,19 +1104,32 @@ function editProduct(id) {
     if (p) {
         currentEditId = String(id); 
         if(document.getElementById('prod-modal-title')) document.getElementById('prod-modal-title').innerHTML = `<i data-lucide="edit-3" class="w-6 h-6 text-pink-500"></i> تعديل المنتج`;
+        
         const catSelect = document.getElementById('edit-prod-cat');
-        if(catSelect) catSelect.innerHTML = (catMenu || []).map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('');
+        const sortedCats = [...catMenu].sort((a, b) => a.order - b.order);
+        if(catSelect) catSelect.innerHTML = sortedCats.map(c => `<option value="${escapeHTML(c.name)}">${escapeHTML(c.name)}</option>`).join('');
+        
         if(document.getElementById('edit-prod-id')) document.getElementById('edit-prod-id').value = p.id; 
         if(document.getElementById('edit-prod-name')) document.getElementById('edit-prod-name').value = p.name || '';
         if(document.getElementById('edit-prod-price')) document.getElementById('edit-prod-price').value = p.price || ''; 
+        if(document.getElementById('edit-prod-old-price')) document.getElementById('edit-prod-old-price').value = p.oldPrice || ''; 
         if(document.getElementById('edit-prod-cat')) document.getElementById('edit-prod-cat').value = p.category;
         if(document.getElementById('edit-prod-sub')) document.getElementById('edit-prod-sub').value = p.subType || p.size || p.flowerType || ""; 
+        if(document.getElementById('edit-prod-sort')) document.getElementById('edit-prod-sort').value = p.sortOrder || ""; 
         if(document.getElementById('edit-prod-layout')) document.getElementById('edit-prod-layout').value = p.layout || 'default';
         if(document.getElementById('edit-prod-badge')) document.getElementById('edit-prod-badge').value = p.badge || '';
-        if(document.getElementById('edit-prod-instock')) document.getElementById('edit-prod-instock').checked = p.inStock !== false; 
+        
+        const stockEl = document.getElementById('edit-prod-instock');
+        if(stockEl) { 
+            stockEl.checked = p.inStock !== false; 
+            if(document.getElementById('instock-label-text')) document.getElementById('instock-label-text').innerText = (p.inStock !== false) ? 'متوفر' : 'نفذت'; 
+        }
+        
         if(document.getElementById('edit-prod-desc')) document.getElementById('edit-prod-desc').value = p.desc || ''; 
+        
         if(p.images && p.images.length > 0) tempProdImages = [...p.images]; else if(p.img) tempProdImages = [p.img]; else tempProdImages = [];
         renderAdminTempImages();
+        
         const m = document.getElementById('admin-prod-modal'); 
         if(m) { m.classList.remove('hidden'); m.classList.add('flex'); setTimeout(() => m.classList.remove('opacity-0'), 10); }
         if(window.lucide) lucide.createIcons();
@@ -1062,36 +1142,48 @@ function closeProdModal() {
 }
 
 async function saveProductData() {
-    const nName = document.getElementById('edit-prod-name')?.value.trim(); const nPrice = parseInt(document.getElementById('edit-prod-price')?.value) || 0;
-    const nCat = document.getElementById('edit-prod-cat')?.value; const nSub = document.getElementById('edit-prod-sub')?.value.trim();
-    const nLayout = document.getElementById('edit-prod-layout')?.value || 'default'; const nBadge = document.getElementById('edit-prod-badge')?.value || '';
-    const nInStock = document.getElementById('edit-prod-instock')?.checked; const nDesc = document.getElementById('edit-prod-desc')?.value.trim();
+    const nName = document.getElementById('edit-prod-name')?.value.trim(); 
+    const nPrice = parseInt(document.getElementById('edit-prod-price')?.value) || 0;
+    const nOldPrice = parseInt(document.getElementById('edit-prod-old-price')?.value) || null;
+    const nSort = parseInt(document.getElementById('edit-prod-sort')?.value) || 999;
+    const nCat = document.getElementById('edit-prod-cat')?.value; 
+    const nSub = document.getElementById('edit-prod-sub')?.value.trim();
+    const nLayout = document.getElementById('edit-prod-layout')?.value || 'default'; 
+    const nBadge = document.getElementById('edit-prod-badge')?.value || '';
+    const nInStock = document.getElementById('edit-prod-instock')?.checked; 
+    const nDesc = document.getElementById('edit-prod-desc')?.value.trim();
+    
     if(!nName) { showSystemToast("يجب كتابة اسم المنتج", "error"); return; }
+    
     const finalImagesArray = [...tempProdImages]; const finalImg = finalImagesArray.length > 0 ? finalImagesArray[0] : '';
     let prodObj;
+    
     if (currentEditId) {
         const idx = catalog.findIndex(x => String(x.id) === String(currentEditId));
         if (idx > -1) {
-            catalog[idx].name = nName; catalog[idx].price = nPrice; catalog[idx].category = nCat; catalog[idx].desc = nDesc; 
-            catalog[idx].images = finalImagesArray; catalog[idx].img = finalImg; catalog[idx].subType = nSub; catalog[idx].layout = nLayout; catalog[idx].badge = nBadge; catalog[idx].inStock = nInStock;
+            catalog[idx].name = nName; catalog[idx].price = nPrice; catalog[idx].oldPrice = nOldPrice;
+            catalog[idx].category = nCat; catalog[idx].desc = nDesc; catalog[idx].sortOrder = nSort;
+            catalog[idx].images = finalImagesArray; catalog[idx].img = finalImg; catalog[idx].subType = nSub; 
+            catalog[idx].layout = nLayout; catalog[idx].badge = nBadge; catalog[idx].inStock = nInStock;
             if(nCat === 'ديسباسيتو') catalog[idx].size = nSub; if(nCat === 'ورد') catalog[idx].flowerType = nSub; 
             prodObj = catalog[idx];
         }
     } else {
-        prodObj = { id: 'prod_' + Date.now() + Math.floor(Math.random()*1000), category: nCat, name: nName, price: nPrice, desc: nDesc, images: finalImagesArray, img: finalImg, subType: nSub, layout: nLayout, badge: nBadge, inStock: nInStock };
+        prodObj = { id: 'prod_' + Date.now() + Math.floor(Math.random()*1000), category: nCat, name: nName, price: nPrice, oldPrice: nOldPrice, desc: nDesc, sortOrder: nSort, images: finalImagesArray, img: finalImg, subType: nSub, layout: nLayout, badge: nBadge, inStock: nInStock };
         if(nCat === 'ديسباسيتو') prodObj.size = nSub || 'وسط'; if(nCat === 'ورد') prodObj.flowerType = nSub || 'ورد طبيعي'; 
         catalog.unshift(prodObj); 
     }
+    
     if(typeof syncCatalogMap === 'function') syncCatalogMap(); 
     try { 
         if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(prodObj.id), prodObj); 
         saveEngineMemory('cat'); showSystemToast("تم الحفظ في متجر حلويات بوسي بنجاح 👑", "success"); 
     } catch(e) { saveEngineMemory('cat'); showSystemToast("تم الحفظ محلياً", "info"); }
+    
     tempProdImages = []; renderAdminTempImages();
     const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
     closeProdModal(); renderAdminMenu(currentSearch); renderAdminOverview();
     
-    // محاولة مزامنة السحابة مباشرة بعد الحفظ لو النت متاح
     syncOfflineImages();
 }
 
@@ -1167,35 +1259,47 @@ async function saveCakeBuilderSettings() {
     } catch(e) { saveEngineMemory('set'); showSystemToast("تم الحفظ محلياً", "info"); }
 }
 
+// 👑 التحديث الملكي: الترتيب المخصص للأقسام
 function renderAdminCategories() {
     const listEl = document.getElementById('admin-categories-list');
     if (!listEl) return;
-    if (!catMenu || catMenu.length === 0) { listEl.innerHTML = `<p class="text-center text-slate-500 py-6 font-bold text-xs">لا توجد أقسام حالياً. ابدأ بإضافة أول قسم!</p>`; return; }
-    listEl.innerHTML = catMenu.map((cat, index) => `
+    
+    const sortedCats = [...catMenu].sort((a, b) => a.order - b.order);
+
+    if (sortedCats.length === 0) { listEl.innerHTML = `<p class="text-center text-slate-500 py-6 font-bold text-xs">لا توجد أقسام حالياً. ابدأ بإضافة أول قسم!</p>`; return; }
+    listEl.innerHTML = sortedCats.map((cat, index) => `
         <div class="flex items-center justify-between p-3 bg-slate-800/50 border border-slate-700 rounded-xl group hover:border-blue-500/50 transition-all mb-2">
-            <div class="flex items-center gap-3"><span class="w-6 h-6 flex items-center justify-center bg-slate-900 rounded-lg text-[10px] text-slate-400 font-bold">${index + 1}</span><span class="font-bold text-slate-200 text-sm">${escapeHTML(cat)}</span></div>
-            <button onclick="removeCategory(${index})" class="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100 relative z-50 pointer-events-auto"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <div class="flex items-center gap-3"><span class="w-6 h-6 flex items-center justify-center bg-slate-900 rounded-lg text-[10px] text-slate-400 font-bold">${cat.order}</span><span class="font-bold text-slate-200 text-sm">${escapeHTML(cat.name)}</span></div>
+            <button onclick="removeCategory('${cat.name}')" class="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100 relative z-50 pointer-events-auto"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         </div>
     `).join('');
     if(window.lucide) lucide.createIcons();
     const catSelect = document.getElementById('edit-prod-cat');
-    if(catSelect) catSelect.innerHTML = catMenu.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join('');
+    if(catSelect) catSelect.innerHTML = sortedCats.map(c => `<option value="${escapeHTML(c.name)}">${escapeHTML(c.name)}</option>`).join('');
 }
 
 function addNewCategory() {
-    const input = document.getElementById('new-category-input'); if(!input) return;
+    const input = document.getElementById('new-category-input'); 
+    const orderInput = document.getElementById('new-category-order');
+    if(!input) return;
     const val = input.value.trim();
+    const order = parseInt(orderInput?.value) || (catMenu.length + 1);
+
     if (!val) { showSystemToast("يرجى كتابة اسم القسم", "error"); return; }
-    if (catMenu && catMenu.includes(val)) { showSystemToast("هذا القسم موجود بالفعل", "error"); return; }
-    if(!catMenu) window.catMenu = [];
-    catMenu.push(val); input.value = ''; renderAdminCategories(); renderAdminCatalogTabs();
+    if (catMenu.find(c => c.name === val)) { showSystemToast("هذا القسم موجود بالفعل", "error"); return; }
+    
+    catMenu.push({name: val, order: order}); 
+    input.value = ''; 
+    if(orderInput) orderInput.value = '';
+    renderAdminCategories(); renderAdminCatalogTabs();
     showSystemToast(`تم إضافة القسم. لا تنسى الضغط على حفظ الأقسام.`, "success");
 }
 
-function removeCategory(index) {
-    if (catMenu[index] === 'تورت') { showSystemToast("عفواً، قسم التورت الملكية أساسي لا يمكن حذفه! 👑", "error"); return; }
-    openConfirmModal('حذف قسم', `هل أنت متأكد من حذف قسم "${catMenu[index]}"؟`, () => {
-        catMenu.splice(index, 1); renderAdminCategories(); renderAdminCatalogTabs();
+function removeCategory(catName) {
+    if (catName === 'تورت') { showSystemToast("عفواً، قسم التورت الملكية أساسي لا يمكن حذفه! 👑", "error"); return; }
+    openConfirmModal('حذف قسم', `هل أنت متأكد من حذف قسم "${catName}"؟`, () => {
+        catMenu = catMenu.filter(c => c.name !== catName);
+        renderAdminCategories(); renderAdminCatalogTabs();
     });
 }
 
@@ -1288,11 +1392,6 @@ function escapeHTML(str) {
     return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
 }
 
-/**
- * 🛡️ Engine Upgrade: Background Sync Process for Offline Vault
- * محرك المزامنة الخلفي؛ يراقب عودة الإنترنت؛ وعند توفره يقوم بسحب الصور من الخزنة
- * المحلية ورفعها لـ Cloudinary واستبدال معرفاتها المؤقتة بروابط حقيقية في الكتالوج.
- */
 async function syncOfflineImages() {
     if (!navigator.onLine) return; 
     let needsSync = false;
@@ -1306,7 +1405,6 @@ async function syncOfflineImages() {
         for (let payload of payloads) {
             let uploadedUrl = null;
             try {
-                // محاولة جلب توقيع آمن في الخلفية
                 const secureToken = await getSecureUploadSignature();
                 const formData = new FormData();
                 formData.append('file', payload.base64);
@@ -1329,7 +1427,6 @@ async function syncOfflineImages() {
             }
 
             if(uploadedUrl) {
-                // تدوير واستبدال المعرف المحلي بالرابط الحقيقي داخل الكتالوج لضمان سلامة البيانات
                 for (let p of catalog) {
                     if (p.images) {
                         for (let i = 0; i < p.images.length; i++) {
@@ -1357,7 +1454,6 @@ async function syncOfflineImages() {
     }
 }
 
-// مراقبة عودة الإنترنت لتشغيل المزامنة تلقائياً
 window.addEventListener('online', syncOfflineImages);
 
 document.addEventListener('DOMContentLoaded', () => {

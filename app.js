@@ -228,8 +228,8 @@ const detailedDescriptions = {
     'ورد هدايا': 'تنسيق متكامل يجمع بين رقة الورد وشياكة التغليف.. البوكيه ده معمول مخصوص عشان يكون رفيق للهدايا القيمة، بلمسات فنية بتخلي شكل الهدية النهائي يبهر اللي هيستلمها 🎁✨',
     'ورد شيكولاتة': 'ميكس السعادة المطلق.. بوكيه بيجمع بين شياكة الورد وطعم شيكولاتة بوسي الملكية، هدية "تؤكل" وتفرح القلب والعين في نفس الوقت.. الدلع اللي بجد 🍫🌹',
 
-    // 🍰 الجاتوه (كيك اسبونج)
-    'جاتوه كلاسيك': 'قطعة الجاتوه الأصيلة اللي بترجعنا لأحلى الذكريات بلمسة بوسي.. كيك اسبونج خفيف جداً وهش زي السحاب، بيدوب مع كريمة غنية وسكر مظبوط بالمللي.. الاختيار اللي مبيختلفش عليه اتنين 🍰✨',
+    // 🍰 الجاتوه (فادج كيك بدلاً من الاسبونج بناءً على توجيهات الإدارة)
+    'جاتوه كلاسيك': 'قطعة الجاتوه الأصيلة اللي بترجعنا لأحلى الذكريات بلمسة بوسي.. فادج كيك خفيف جداً وهش، بيدوب مع كريمة غنية وسكر مظبوط بالمللي.. الاختيار اللي مبيختلفش عليه اتنين 🍰✨',
 
     // 🎂 تورتات (وصف مستقل لكل حجم)
     'تورتة ميني': 'تورتة ميني كيوت تكفي فردين.. مثالية للمفاجآت السريعة والرومانسية 🎂🥰',
@@ -317,7 +317,7 @@ function getFinalDescription(p, isFullWidth) {
             return detailedDescriptions[key];
         }
         if ((n.includes('جاتوه') || c.includes('جاتوه')) && key.includes('جاتوه')) {
-            return detailedDescriptions['جاتوه كلاسيك']; // كيك اسبونج
+            return detailedDescriptions['جاتوه كلاسيك']; // فادج كيك
         }
     }
 
@@ -469,20 +469,28 @@ let catalog = []; let galleryData = []; let catMenu = [];
 const dSizes = ['مثلث', 'وسط', 'كبير']; const fTypes = ['ورد طبيعي', 'ورد صناعي', 'ورد ستان', 'ورد هدايا', 'ورد فلوس', 'ورد شيكولاتة'];
 let state = { activeCat: 'تورت', dSize: 'مثلث', fType: 'ورد طبيعي', cart: [], currentShippingFee: 0, cakeBuilder: { flv: 'فانيليا', ps: 4, sh: 'دائري', trd: false, img: 'بدون', msg: '', alg: '', occ: '', refImgUrl: '', hasRefImg: false, crd: false, dlg: false } };
 
-// 🛡️ الموتور الأساسي: حماية الهوية البصرية (تعديل السيادة)
+// 🛡️ الموتور الأساسي: حماية الهوية البصرية (تعديل السيادة الشامل)
 function applySettingsToUI() {
     const root = document.documentElement;
     
-    // ضمان بقاء الهوية البصرية (الوردي الملكي 340) حتى لو فشل الاتصال بالسحابة
-    const brandHue = siteSettings.brandColorHex ? hexToMathHSL(siteSettings.brandColorHex) : 340;
+    // بناء وتطوير لسحب درجات الألوان من استوديو الهوية مع الحفاظ على الوردي الملكي كاحتياطي
+    const brandHue = (siteSettings.visuals && siteSettings.visuals.themeHex) 
+        ? hexToMathHSL(siteSettings.visuals.themeHex) 
+        : (siteSettings.brandColorHex ? hexToMathHSL(siteSettings.brandColorHex) : 340);
     
     root.style.setProperty('--brand-hue', brandHue);
-    root.style.setProperty('--brand-font', siteSettings.fontFamily || "'Cairo', sans-serif");
+    root.style.setProperty('--brand-font', (siteSettings.visuals && siteSettings.visuals.fontFamily) ? siteSettings.visuals.fontFamily : (siteSettings.fontFamily || "'Cairo', sans-serif"));
     root.style.setProperty('--base-font-size', (siteSettings.baseFontSize || 16) + 'px');
     root.style.setProperty('--base-font-weight', siteSettings.baseFontWeight || 400);
-    root.style.setProperty('--site-bg', siteSettings.bgColor || '#ffffff');
-    root.style.setProperty('--site-text', siteSettings.textColor || '#663b3b');
+    root.style.setProperty('--site-bg', (siteSettings.visuals && siteSettings.visuals.bgHex) ? siteSettings.visuals.bgHex : (siteSettings.bgColor || '#ffffff'));
+    root.style.setProperty('--site-text', (siteSettings.visuals && siteSettings.visuals.textHex) ? siteSettings.visuals.textHex : (siteSettings.textColor || '#663b3b'));
     
+    // التوسيع لربط نص اللودر بشكل ديناميكي كامل
+    const loaderTextEl = document.getElementById('dyn-loader-text');
+    if (loaderTextEl) {
+        loaderTextEl.innerText = (siteSettings.visuals && siteSettings.visuals.loaderText) ? siteSettings.visuals.loaderText : "أهلاً بكم في عالم حلويات بوسي ✨";
+    }
+
     const isTickerActive = siteSettings.tickerActive !== false; 
     const tickerContainer = document.getElementById('ticker-container');
     if(tickerContainer) {
@@ -788,12 +796,24 @@ function drawProductCard(p, layoutMode = 'grid') {
     
     const finalDesc = getFinalDescription(p, isFullWidth);
 
+    // ⚡ محرك حساب الخصم التلقائي ⚡
+    let discountBadgeHtml = '';
+    const oldP = Number(p.oldPrice);
+    const currentP = Number(p.price);
+    if (oldP && oldP > currentP) {
+        const discountPercent = Math.round(((oldP - currentP) / oldP) * 100);
+        discountBadgeHtml = `<span class="absolute top-2 right-2 bg-red-500 text-white text-[11px] px-2.5 py-1 rounded-br-xl rounded-tl-xl shadow-lg font-black z-20 animate-pulse border border-red-400">خصم ${discountPercent}% 🔥</span>`;
+    } else if (p.badge) {
+        discountBadgeHtml = `<span class="absolute top-2 right-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-[10px] px-2 py-1 rounded-br-xl rounded-tl-xl shadow-md font-bold z-20">${escapeHTML(p.badge)}</span>`;
+    }
+
     const renderActionArea = () => {
-        if (isOutOfStock) return `<div class="w-full py-2.5 mt-auto text-[11px] font-bold text-pink-500 bg-pink-50 rounded-xl text-center border border-pink-100">نفدت الكمية 😔</div>`;
+        if (isOutOfStock) return `<div class="w-full py-2.5 mt-auto text-[11px] font-bold text-pink-500 bg-pink-50 rounded-xl text-center border border-pink-100 shadow-inner">نفدت الكمية 😔</div>`;
         return `
         <div class="mt-auto flex flex-col gap-2 w-full pt-1">
-            <div class="flex items-center justify-center bg-pink-50/80 rounded-full py-1 px-3 border border-pink-100 mx-auto min-w-[70%] shadow-sm">
-                <span class="font-black text-[14px] sm:text-[16px] text-pink-700">${Number(p.price) > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
+            <div class="flex items-center justify-center bg-pink-50/80 rounded-full py-1.5 px-3 border border-pink-100 mx-auto min-w-[70%] shadow-sm relative">
+                <span class="font-black text-[14px] sm:text-[16px] text-pink-700">${currentP > 0 ? currentP + ' ج.م' : 'حسب الطلب'}</span>
+                ${(oldP && oldP > currentP) ? `<del class="absolute -top-3 text-[10px] text-gray-400 font-bold opacity-70">${oldP}</del>` : ''}
             </div>
             
             <div class="flex items-center justify-between gap-2 w-full">
@@ -811,7 +831,6 @@ function drawProductCard(p, layoutMode = 'grid') {
     };
 
     const titleClass = isFullWidth ? 'text-[15px] sm:text-[18px] mb-2' : 'text-[13px] sm:text-[15px] mb-1';
-    
     const descClass = isFullWidth 
         ? 'text-[12px] sm:text-[14px] font-bold text-gray-600 leading-relaxed mb-4 px-2' 
         : 'text-[10px] sm:text-[11px] font-bold text-gray-600 leading-tight mb-2 px-0.5';
@@ -819,13 +838,15 @@ function drawProductCard(p, layoutMode = 'grid') {
     return `
     <div id="product-card-${p.id}" class="${isFullWidth ? 'col-span-full' : ''} bg-white flex flex-col h-full overflow-hidden border border-pink-100/80 rounded-[1.2rem] sm:rounded-[1.5rem] transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1">
         <div class="relative aspect-square overflow-hidden bg-pink-50/30 shrink-0">
+            ${discountBadgeHtml}
             <button onclick="shareProduct('${p.id}', '${escapeHTML(p.name)}')" class="absolute top-2 left-2 z-20 w-7 h-7 sm:w-9 sm:h-9 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-pink-500 shadow-sm transition-all hover:scale-110"><i data-lucide="share-2" class="w-3 h-3 sm:w-4 sm:h-4"></i></button>
             <div id="slider-${p.id}" class="w-full h-full flex overflow-x-auto snap-x snap-mandatory hide-scrollbar snap-slider">
                 ${imageList.map(url => `<img src="${url}" class="min-w-full h-full object-cover snap-slide transition-transform duration-700 hover:scale-105" loading="lazy" alt="${escapeHTML(p.name)}">`).join('')}
             </div>
+            ${isOutOfStock ? `<div class="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-10"></div>` : ''}
         </div>
         
-        <div class="p-2.5 sm:p-4 flex flex-col flex-1 text-center bg-white">
+        <div class="p-2.5 sm:p-4 flex flex-col flex-1 text-center bg-white relative z-20">
             <h4 class="${titleClass} font-black leading-tight" style="color: hsl(var(--brand-hue), 70%, 40%);">${escapeHTML(p.name)}</h4>
             <p class="${descClass}">${finalDesc}</p>
             ${renderActionArea()}
