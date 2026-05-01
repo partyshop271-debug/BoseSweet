@@ -517,7 +517,7 @@ function applySettingsToUI() {
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
-// 📦 محرك جلب البيانات والذاكرة الفولاذية (تعديل منع الاختفاء)
+// 📦 محرك جلب البيانات والذاكرة الفولاذية (تعديل منع الاختفاء وبناء التوافق)
 async function loadEngineMemory() {
     try {
         // الخطوة 1: تحميل الكتالوج الافتراضي فوراً لضمان عدم وجود شاشة فارغة
@@ -560,8 +560,18 @@ async function loadEngineMemory() {
         const shipSnap = await db.collection('shipping').get();
         if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); }
         
-        if (siteSettings.catMenu && siteSettings.catMenu.length > 0) catMenu = siteSettings.catMenu;
-        else catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
+        // 👑 بناء جسر التوافق: معالجة ذكية لهيكل الأقسام سواء كان قادم من الإدارة القديمة أو المتطورة V6
+        if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
+            if (typeof siteSettings.catMenu[0] === 'object') {
+                // تحويل الكائن المعقد إلى قائمة نصوص بسيطة يفهمها محرك العميل مع الحفاظ على الترتيب
+                catMenu = siteSettings.catMenu.sort((a, b) => a.order - b.order).map(c => c.name);
+            } else {
+                catMenu = siteSettings.catMenu;
+            }
+        } else {
+            catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
+        }
+        
         if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
         
         syncCatalogMap(); 
@@ -832,8 +842,8 @@ function drawProductCard(p, layoutMode = 'grid') {
 
     const titleClass = isFullWidth ? 'text-[15px] sm:text-[18px] mb-2' : 'text-[13px] sm:text-[15px] mb-1';
     const descClass = isFullWidth 
-        ? 'text-[12px] sm:text-[14px] font-bold text-gray-600 leading-relaxed mb-4 px-2' 
-        : 'text-[10px] sm:text-[11px] font-bold text-gray-600 leading-tight mb-2 px-0.5';
+        ? 'text-[12px] sm:text-[14px] font-bold leading-relaxed mb-4 px-2' 
+        : 'text-[10px] sm:text-[11px] font-bold leading-tight mb-2 px-0.5';
 
     return `
     <div id="product-card-${p.id}" class="${isFullWidth ? 'col-span-full' : ''} bg-white flex flex-col h-full overflow-hidden border border-pink-100/80 rounded-[1.2rem] sm:rounded-[1.5rem] transition-all duration-300 shadow-sm hover:shadow-lg hover:-translate-y-1">
@@ -848,7 +858,7 @@ function drawProductCard(p, layoutMode = 'grid') {
         
         <div class="p-2.5 sm:p-4 flex flex-col flex-1 text-center bg-white relative z-20">
             <h4 class="${titleClass} font-black leading-tight" style="color: hsl(var(--brand-hue), 70%, 40%);">${escapeHTML(p.name)}</h4>
-            <p class="${descClass}">${finalDesc}</p>
+            <p class="${descClass}" style="color: var(--site-text); opacity: 0.85;">${finalDesc}</p>
             ${renderActionArea()}
         </div>
     </div>`;
