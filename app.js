@@ -469,22 +469,67 @@ let catalog = []; let galleryData = []; let catMenu = [];
 const dSizes = ['مثلث', 'وسط', 'كبير']; const fTypes = ['ورد طبيعي', 'ورد صناعي', 'ورد ستان', 'ورد هدايا', 'ورد فلوس', 'ورد شيكولاتة'];
 let state = { activeCat: 'تورت', dSize: 'مثلث', fType: 'ورد طبيعي', cart: [], currentShippingFee: 0, cakeBuilder: { flv: 'فانيليا', ps: 4, sh: 'دائري', trd: false, img: 'بدون', msg: '', alg: '', occ: '', refImgUrl: '', hasRefImg: false, crd: false, dlg: false } };
 
+// 🛡️ الموتور الأساسي: حماية الهوية البصرية (تعديل السيادة)
+function applySettingsToUI() {
+    const root = document.documentElement;
+    
+    // ضمان بقاء الهوية البصرية (الوردي الملكي 340) حتى لو فشل الاتصال بالسحابة
+    const brandHue = siteSettings.brandColorHex ? hexToMathHSL(siteSettings.brandColorHex) : 340;
+    
+    root.style.setProperty('--brand-hue', brandHue);
+    root.style.setProperty('--brand-font', siteSettings.fontFamily || "'Cairo', sans-serif");
+    root.style.setProperty('--base-font-size', (siteSettings.baseFontSize || 16) + 'px');
+    root.style.setProperty('--base-font-weight', siteSettings.baseFontWeight || 400);
+    root.style.setProperty('--site-bg', siteSettings.bgColor || '#ffffff');
+    root.style.setProperty('--site-text', siteSettings.textColor || '#663b3b');
+    
+    const isTickerActive = siteSettings.tickerActive !== false; 
+    const tickerContainer = document.getElementById('ticker-container');
+    if(tickerContainer) {
+        if (isTickerActive) {
+            tickerContainer.classList.remove('hidden'); tickerContainer.classList.add('flex');
+            root.style.setProperty('--ticker-color', siteSettings.tickerColor || '#ffffff');
+            root.style.setProperty('--ticker-font', siteSettings.tickerFont || "'Cairo', sans-serif");
+            root.style.setProperty('--ticker-speed', (siteSettings.tickerSpeed || 20) + 's');
+            document.getElementById('dyn-ticker-text').innerText = siteSettings.tickerText || siteSettings.announcement;
+        } else { tickerContainer.classList.add('hidden'); tickerContainer.classList.remove('flex'); }
+    }
+    
+    if(document.getElementById('dyn-page-title')) document.getElementById('dyn-page-title').innerText = `${siteSettings.brandName} | القائمة الرسمية`;
+    if(document.getElementById('dyn-brand-name')) document.getElementById('dyn-brand-name').innerText = siteSettings.brandName;
+    if(document.getElementById('dyn-hero-title')) document.getElementById('dyn-hero-title').innerHTML = siteSettings.heroTitle;
+    if(document.getElementById('dyn-hero-desc')) document.getElementById('dyn-hero-desc').innerText = siteSettings.heroDesc;
+    if(document.getElementById('dyn-footer-brand')) document.getElementById('dyn-footer-brand').innerText = siteSettings.brandName;
+    if(document.getElementById('dyn-footer-quote')) document.getElementById('dyn-footer-quote').innerText = siteSettings.footerQuote;
+    if(document.getElementById('dyn-footer-phone')) document.getElementById('dyn-footer-phone').innerText = siteSettings.footerPhone;
+    if(document.getElementById('dyn-footer-address')) document.getElementById('dyn-footer-address').innerHTML = siteSettings.footerAddress;
+    
+    const areaSelect = document.getElementById('cust-area');
+    if(areaSelect) areaSelect.innerHTML = `<option value="" disabled selected>اختر المنطقة...</option>` + shippingZones.map(z => `<option value="${z.id}">${escapeHTML(z.name)} (+${Number(z.fee)} ج.م توصيل)</option>`).join('');
+    if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
+}
+
+// 📦 محرك جلب البيانات والذاكرة الفولاذية (تعديل منع الاختفاء)
 async function loadEngineMemory() {
     try {
-        await fetchDefaultCatalog(); catalog = [...defaultCatalog];
+        // الخطوة 1: تحميل الكتالوج الافتراضي فوراً لضمان عدم وجود شاشة فارغة
+        await fetchDefaultCatalog(); 
+        catalog = [...defaultCatalog];
+        
+        // الخطوة 2: محاولة جلب التحديثات من السحابة (Firebase)
         const catSnap = await db.collection('catalog').get();
-        if (catSnap.empty) { for (let p of catalog) await NetworkEngine.safeWrite('catalog', String(p.id), p); } 
-        else { 
-            catalog = []; 
+        if (!catSnap.empty) { 
+            let cloudCatalog = []; 
             catSnap.forEach(doc => {
                 const p = doc.data();
-                if (p.category !== 'ديسباسيتو') catalog.push(p);
+                if (p.category !== 'ديسباسيتو') cloudCatalog.push(p);
             });
             const freshDespacito = defaultCatalog.filter(p => p.category === 'ديسباسيتو');
-            catalog = [...catalog, ...freshDespacito];
+            // دمج ذكي لضمان استمرارية العرض
+            if (cloudCatalog.length > 0) catalog = [...cloudCatalog, ...freshDespacito];
         }
 
-        // 🛡️ المراقبة اللحظية لتحديث الكتالوج والفهرس تلقائياً
+        // المراقبة اللحظية لتحديث الكتالوج والفهرس تلقائياً
         db.collection('catalog').onSnapshot(snapshot => {
             let updatedCatalog = [];
             snapshot.forEach(doc => {
@@ -495,33 +540,37 @@ async function loadEngineMemory() {
             catalog = [...updatedCatalog, ...freshDespacito];
             syncCatalogMap();
             LiveSearchEngine.observeIndexUpdate(catalog);
-            if(document.getElementById('display-container')) renderMainDisplay(); // تحديث الواجهة مباشرة
+            if(document.getElementById('display-container')) renderMainDisplay();
         });
 
         const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
         if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
+        
         const settingsSnap = await db.collection('settings').doc('main').get();
         if (settingsSnap.exists) { siteSettings = { ...defaultSettings, ...settingsSnap.data() }; }
+        
         const shipSnap = await db.collection('shipping').get();
         if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); }
+        
         if (siteSettings.catMenu && siteSettings.catMenu.length > 0) catMenu = siteSettings.catMenu;
         else catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
         if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
-        syncCatalogMap(); 
         
-        // بناء محرك البحث اللحظي المتقدم عند التشغيل
+        syncCatalogMap(); 
         LiveSearchEngine.build(catalog);
+        applySettingsToUI();
+        
     } catch(err) { 
         catalog = [...defaultCatalog]; 
         syncCatalogMap(); 
         LiveSearchEngine.build(catalog);
+        console.warn("BoseSweets: Emergency fallback active. 🛡️");
     }
     
     try { 
         const dbCart = await ClientStorageEngine.get('cart');
-        if (dbCart) {
-            state.cart = dbCart;
-        } else {
+        if (dbCart) state.cart = dbCart;
+        else {
             const savedCart = localStorage.getItem('boseSweets_cart_data'); 
             if (savedCart) state.cart = JSON.parse(savedCart);
         }
@@ -549,39 +598,6 @@ function clearCartStorage() {
         ClientStorageEngine.remove('cart');
         localStorage.removeItem('boseSweets_cart_data'); 
     } catch (e) {} 
-}
-
-function applySettingsToUI() {
-    const root = document.documentElement;
-    const computedHue = hexToMathHSL(siteSettings.brandColorHex || '#ec4899');
-    root.style.setProperty('--brand-hue', computedHue);
-    root.style.setProperty('--brand-font', siteSettings.fontFamily || "'Cairo', sans-serif");
-    root.style.setProperty('--base-font-size', (siteSettings.baseFontSize || 16) + 'px');
-    root.style.setProperty('--base-font-weight', siteSettings.baseFontWeight || 400);
-    root.style.setProperty('--site-bg', siteSettings.bgColor || '#ffffff');
-    root.style.setProperty('--site-text', siteSettings.textColor || '#663b3b');
-    const isTickerActive = siteSettings.tickerActive !== false; 
-    const tickerContainer = document.getElementById('ticker-container');
-    if(tickerContainer) {
-        if (isTickerActive) {
-            tickerContainer.classList.remove('hidden'); tickerContainer.classList.add('flex');
-            root.style.setProperty('--ticker-color', siteSettings.tickerColor || '#ffffff');
-            root.style.setProperty('--ticker-font', siteSettings.tickerFont || "'Cairo', sans-serif");
-            root.style.setProperty('--ticker-speed', (siteSettings.tickerSpeed || 20) + 's');
-            document.getElementById('dyn-ticker-text').innerText = siteSettings.tickerText || siteSettings.announcement;
-        } else { tickerContainer.classList.add('hidden'); tickerContainer.classList.remove('flex'); }
-    }
-    if(document.getElementById('dyn-page-title')) document.getElementById('dyn-page-title').innerText = `${siteSettings.brandName} | القائمة الرسمية`;
-    if(document.getElementById('dyn-brand-name')) document.getElementById('dyn-brand-name').innerText = siteSettings.brandName;
-    if(document.getElementById('dyn-hero-title')) document.getElementById('dyn-hero-title').innerHTML = siteSettings.heroTitle;
-    if(document.getElementById('dyn-hero-desc')) document.getElementById('dyn-hero-desc').innerText = siteSettings.heroDesc;
-    if(document.getElementById('dyn-footer-brand')) document.getElementById('dyn-footer-brand').innerText = siteSettings.brandName;
-    if(document.getElementById('dyn-footer-quote')) document.getElementById('dyn-footer-quote').innerText = siteSettings.footerQuote;
-    if(document.getElementById('dyn-footer-phone')) document.getElementById('dyn-footer-phone').innerText = siteSettings.footerPhone;
-    if(document.getElementById('dyn-footer-address')) document.getElementById('dyn-footer-address').innerHTML = siteSettings.footerAddress;
-    const areaSelect = document.getElementById('cust-area');
-    if(areaSelect) areaSelect.innerHTML = `<option value="" disabled selected>اختر المنطقة...</option>` + shippingZones.map(z => `<option value="${z.id}">${escapeHTML(z.name)} (+${Number(z.fee)} ج.م توصيل)</option>`).join('');
-    if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
 async function initApp() {
@@ -621,7 +637,6 @@ function toggleLiveSearch(show) {
     else { overlay.classList.remove('opacity-100'); MemoryManager.set('search_hide', () => overlay.classList.add('hidden'), 300); MemoryManager.flush(); }
 }
 
-// 🛡️ تفعيل محرك البحث اللحظي المطور لسرعة استجابة فائقة وتوفير الموارد
 function performLiveSearch(query) {
     const resultsContainer = document.getElementById('live-search-results'); 
     const q = query.trim().toLowerCase();
@@ -698,9 +713,17 @@ function setSub(t, v) {
     }
 }
 
+// 🖼️ وظيفة العرض الرئيسي (تعديل العرض السريع)
 function renderMainDisplay() {
     const container = document.getElementById('display-container'); const subTabs = document.getElementById('sub-tabs-area');
     if(!container) return;
+    
+    // فحص حماية: لو المصفوفة فاضية، استدعي الذاكرة الفولاذية فوراً
+    if (catalog.length === 0) {
+        console.warn("BoseSweets: Empty catalog detected, triggering recovery render.");
+        catalog = [...defaultCatalog];
+    }
+
     subTabs.classList.add('hidden'); container.innerHTML = '';
     if (state.activeCat === 'تورت') { renderCakeBuilder(container); } 
     else if (state.activeCat === 'ورد') {
@@ -984,14 +1007,11 @@ function backToCart() {
 async function submitOrder() {
     if (state.cart.length === 0) return;
     
-    // 🛡️ Engine Upgrade: Pre-flight Stock Validation (التأكد من توفر المنتجات قبل تمرير الطلب)
     let outOfStockItems = [];
     for (let item of state.cart) {
         if (item.isCustom) continue;
         const freshProd = catalogMap.get(String(item.id));
-        if (freshProd && freshProd.inStock === false) {
-            outOfStockItems.push(item.name);
-        }
+        if (freshProd && freshProd.inStock === false) outOfStockItems.push(item.name);
     }
     
     if (outOfStockItems.length > 0) {
@@ -1019,7 +1039,6 @@ async function submitOrder() {
     }
 
     const orderId = generateSecureOrderId(); 
-    
     let subtotal = 0;
     state.cart.forEach(i => subtotal += (Number(i.price) * Number(i.quantity)));
     const finalTotal = subtotal + state.currentShippingFee;
@@ -1040,13 +1059,9 @@ async function submitOrder() {
         date: new Date().toLocaleString('ar-EG')
     };
 
-    // 🛡️ Engine Upgrade: Auto-Retry Mechanism for Flaky Networks (نظام الطابور)
     try {
-        if(navigator.onLine && typeof db !== 'undefined') {
-            await db.collection('orders').doc(String(orderId)).set(orderData);
-        } else {
-            throw new Error("Offline or Firebase Unavailable");
-        }
+        if(navigator.onLine && typeof db !== 'undefined') await db.collection('orders').doc(String(orderId)).set(orderData);
+        else throw new Error("Offline or Firebase Unavailable");
     } catch(e) {
         console.warn("BoseSweets: Network unstable, queuing order for auto-retry 🔄", e);
         await ClientStorageEngine.queueOrder(orderData);
@@ -1080,20 +1095,16 @@ async function submitOrder() {
     MemoryManager.flush();
 }
 
-// 🛡️ Engine Upgrade: Background Sync Process for Queued Orders (تصفية طابور الطلبات)
 async function syncOfflineOrders() {
     if (!navigator.onLine || typeof db === 'undefined') return;
     try {
         const pendingOrders = await ClientStorageEngine.getQueuedOrders();
         if (pendingOrders.length === 0) return;
-        
         for (let order of pendingOrders) {
             try {
                 await db.collection('orders').doc(String(order.id)).set(order);
                 await ClientStorageEngine.removeQueuedOrder(order.id);
-            } catch (e) {
-                console.warn(`Failed to sync queued order ${order.id}`);
-            }
+            } catch (e) { console.warn(`Failed to sync queued order ${order.id}`); }
         }
         console.log("BoseSweets: Offline orders synced successfully 🚀");
     } catch (e) {}
@@ -1123,7 +1134,6 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 🛡️ Failsafe Loader: حماية تجربة المستخدم من تجمد المتصفح
     MemoryManager.set('failsafe_loader', () => {
         const loader = document.getElementById('global-loader');
         if (loader && loader.style.display !== 'none') {
