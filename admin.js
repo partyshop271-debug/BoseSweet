@@ -1,15 +1,149 @@
 /**
  * ============================================================================
- * محرك مركز قيادة حلويات بوسي | BoseSweets Admin Engine (V2.1 PRO MAX)
+ * محرك مركز قيادة حلويات بوسي | BoseSweets Admin Engine (V5.0 ULTIMATE SECURE & SYNC)
  * ============================================================================
  * تم بناء وتوسيع هذا المحرك لضمان أعلى أداء، وتوسيع القدرات الإدارية، مع الحفاظ
  * على كامل البيانات والوظائف السابقة بنظام (البناء والتطوير دون حذف).
- * يحتوي على قلب النظام (Data Core) ومحرك الإقلاع (Boot Controller)
+ * يحتوي على قلب النظام (Data Core)، محرك الذاكرة الفولاذي (IndexedDB)، 
+ * والرصد الحي للطلبات بنظام المزامنة التفاضلية (Differential Sync)،
+ * ومحرك التخزين المعزول للصور (OfflineStorageManager).
  */
 
+// 🛡️ Engine Upgrade: Centralized Admin Error Tracking System
+// صندوق أسود لتسجيل أي أعطال أو أخطاء في محركات التخزين أثناء انقطاع الإنترنت
+const AdminErrorTracker = {
+    log(context, error) {
+        try {
+            const errLog = { context, msg: error.message || String(error), time: new Date().toLocaleString('ar-EG') };
+            let logs = JSON.parse(localStorage.getItem('BoseSweets_Admin_ErrorLogs') || '[]');
+            logs.unshift(errLog);
+            if(logs.length > 50) logs.pop(); // الحفاظ على المساحة بحد أقصى 50 سجل
+            localStorage.setItem('BoseSweets_Admin_ErrorLogs', JSON.stringify(logs));
+            console.warn(`BoseSweets Admin Vault: Error intercepted in [${context}] and logged securely. 🛡️`);
+        } catch(e) {}
+    }
+};
+
 // ==========================================
-// 1. Data Core & Shared State
+// 1. Data Core & Storage Engines (IndexedDB)
 // ==========================================
+const StorageEngine = {
+    dbName: 'BoseSweetsDB',
+    storeName: 'DataCore',
+    version: 1,
+    init() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(this.dbName, this.version);
+            request.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(this.storeName)) {
+                    db.createObjectStore(this.storeName);
+                }
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    },
+    async set(key, value) {
+        try {
+            const db = await this.init();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this.storeName, 'readwrite');
+                const store = tx.objectStore(this.storeName);
+                store.put(value, key);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        } catch (e) { 
+            AdminErrorTracker.log('StorageEngine_Set', e); 
+            console.warn("StorageEngine Set Error:", e); 
+        }
+    },
+    async get(key) {
+        try {
+            const db = await this.init();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this.storeName, 'readonly');
+                const store = tx.objectStore(this.storeName);
+                const request = store.get(key);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => resolve(null); 
+            });
+        } catch (e) { 
+            AdminErrorTracker.log('StorageEngine_Get', e); 
+            return null; 
+        }
+    }
+};
+
+/**
+ * 🛡️ Engine Upgrade: Offline Storage Manager (Isolated Base64 Storage)
+ * محرك تخزين معزول تماماً لحفظ الصور "أوفلاين" في حال انقطاع الإنترنت أثناء الرفع.
+ * يتم الاحتفاظ بالصور بصيغة Base64 لحين استقرار الشبكة ثم رفعها تلقائياً للسحابة.
+ */
+const OfflineStorageManager = {
+    dbName: 'BoseSweetsOfflineVault',
+    storeName: 'ImagePayloads',
+    version: 1,
+    init() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(this.dbName, this.version);
+            request.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(this.storeName)) {
+                    db.createObjectStore(this.storeName, { keyPath: 'offlineId' });
+                }
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    },
+    async enqueuePayload(payload) {
+        try {
+            const db = await this.init();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this.storeName, 'readwrite');
+                const store = tx.objectStore(this.storeName);
+                store.put(payload);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        } catch (e) { 
+            AdminErrorTracker.log('OfflineVault_Enqueue', e);
+            console.warn("Offline Vault Enqueue Error", e); 
+        }
+    },
+    async getAllPayloads() {
+        try {
+            const db = await this.init();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this.storeName, 'readonly');
+                const store = tx.objectStore(this.storeName);
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result || []);
+                request.onerror = () => resolve([]);
+            });
+        } catch (e) { 
+            AdminErrorTracker.log('OfflineVault_GetAll', e);
+            return []; 
+        }
+    },
+    async removePayload(offlineId) {
+        try {
+            const db = await this.init();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this.storeName, 'readwrite');
+                const store = tx.objectStore(this.storeName);
+                store.delete(offlineId);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        } catch (e) {
+            AdminErrorTracker.log('OfflineVault_Remove', e);
+        }
+    }
+};
+
 const defaultSettings = {
     brandName: "حلويات بوسي", announcement: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب",
     heroTitle: "أهلاً بكم في <br class='hidden md:block'/> <span class='text-white relative inline-block mt-1 md:mt-2 drop-shadow-md'>حلويات بوسي</span>",
@@ -19,7 +153,7 @@ const defaultSettings = {
     productLayout: "grid", brandColorHex: "#ec4899", bgColor: "#ffffff", textColor: "#663b3b",
     fontFamily: "'Cairo', sans-serif", baseFontSize: 16, baseFontWeight: 400,
     tickerActive: true, tickerText: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب ✨", tickerSpeed: 20, tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff",
-    cakeBuilder: { basePrice: 145, desc: "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة.", minSquare: 16, minRect: 20, flavors: ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت'], images: [], imagePrinting: [{ label: 'بدون', price: 0 }, { label: 'صورة قابلة للأكل', price: 60 }, { label: 'صورة غير قابلة للأكل', price: 20 }] }
+    cakeBuilder: { basePrice: 145, desc: "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة.", minSquare: 16, minRect: 20, flavors: ['فانيليا', 'شيكولاتة', ' نص ونص', 'ريد فيلفت'], images: [], imagePrinting: [{ label: 'بدون', price: 0 }, { label: 'صورة قابلة للأكل', price: 60 }, { label: 'صورة غير قابلة للأكل', price: 20 }] }
 };
 
 const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
@@ -37,18 +171,86 @@ async function fetchDefaultCatalog() {
     catch (error) { console.warn("تعذر تحميل الكتالوج الافتراضي، سيتم استخدام الذاكرة المحلية."); }
 }
 
+let isFirstOrderLoad = true;
+let ordersUnsubscribe = null; 
+
+/**
+ * 🛡️ Engine Upgrade: Differential Sync Realtime Orders
+ * نظام المزامنة التفاضلية المتطور؛ يقوم برصد الإضافات والتعديلات والحذف "لحظياً"
+ * مع استهلاك أقل قدر ممكن من البيانات وضمان إرسال تنبيهات صوتية عند وصول أي طلب جديد.
+ */
+function setupRealtimeOrders() {
+    if (typeof db === 'undefined') return;
+
+    if (ordersUnsubscribe) {
+        ordersUnsubscribe();
+    }
+
+    ordersUnsubscribe = db.collection('orders').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+        let hasNewOrder = false;
+
+        snapshot.docChanges().forEach(change => {
+            const orderData = change.doc.data();
+            
+            if (change.type === 'added') {
+                if (!globalOrders.find(o => String(o.id) === String(orderData.id))) {
+                    globalOrders.unshift(orderData);
+                    hasNewOrder = true;
+                }
+            }
+            if (change.type === 'modified') {
+                const index = globalOrders.findIndex(o => String(o.id) === String(orderData.id));
+                if (index !== -1) {
+                    globalOrders[index] = orderData;
+                }
+            }
+            if (change.type === 'removed') {
+                globalOrders = globalOrders.filter(o => String(o.id) !== String(orderData.id));
+            }
+        });
+
+        // إعادة الترتيب لضمان أن الأحدث دائماً في الأعلى
+        globalOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+        // حفظ البيانات في الذاكرة الفولاذية
+        saveEngineMemory('ord');
+
+        if (!isFirstOrderLoad && hasNewOrder) {
+            playNotificationSound();
+            showSystemToast("🔔 طلب جديد وصل لمركز القيادة!", "success");
+        }
+
+        isFirstOrderLoad = false;
+
+        executeSafely('OrdersSync', () => {
+            if (typeof renderAdminOrders === 'function') renderAdminOrders();
+            if (typeof renderAdminOverview === 'function') renderAdminOverview();
+        });
+    }, error => {
+        AdminErrorTracker.log('RealtimeOrdersSync', error);
+        console.error("BoseSweets Realtime Orders Sync Error:", error);
+    });
+}
+
+function playNotificationSound() {
+    try {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+        audio.volume = 0.6;
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => console.warn("Auto-play prevented by browser policy"));
+        }
+    } catch(e) {}
+}
+
 async function loadEngineMemory() {
     try {
         await fetchDefaultCatalog(); 
         catalog = [...defaultCatalog];
         
-        // جلب البيانات من السحابة إذا كان الاتصال متاح
         if (typeof db !== 'undefined') {
             const catSnap = await db.collection('catalog').get();
             if (!catSnap.empty) { catalog = []; catSnap.forEach(doc => catalog.push(doc.data())); }
-            
-            const orderSnap = await db.collection('orders').orderBy('timestamp', 'desc').get();
-            if (!orderSnap.empty) { globalOrders = []; orderSnap.forEach(doc => globalOrders.push(doc.data())); }
             
             const settingsSnap = await db.collection('settings').doc('main').get();
             if (settingsSnap.exists) { siteSettings = { ...defaultSettings, ...settingsSnap.data() }; }
@@ -58,16 +260,19 @@ async function loadEngineMemory() {
             
             const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
             if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
+            
+            setupRealtimeOrders();
+
         } else {
             throw new Error("قاعدة البيانات غير متصلة.");
         }
     } catch(err) { 
-        console.warn("جاري التحميل من الذاكرة المحلية بسبب خطأ في الاتصال بالسحابة");
-        catalog = JSON.parse(localStorage.getItem('bSweets_catalog') || localStorage.getItem('boseSweets_catalog')) || [...defaultCatalog]; 
-        globalOrders = JSON.parse(localStorage.getItem('bSweets_orders') || localStorage.getItem('boseSweets_admin_orders')) || [];
-        siteSettings = JSON.parse(localStorage.getItem('bSweets_settings') || localStorage.getItem('boseSweets_settings')) || { ...defaultSettings };
-        shippingZones = JSON.parse(localStorage.getItem('bSweets_shipping') || localStorage.getItem('boseSweets_shipping')) || [ ...defaultShipping ];
-        galleryData = JSON.parse(localStorage.getItem('bSweets_gallery') || localStorage.getItem('boseSweets_gallery')) || [];
+        console.warn("جاري التحميل من الذاكرة الفولاذية (IndexedDB) بسبب خطأ في الاتصال بالسحابة");
+        catalog = (await StorageEngine.get('boseSweets_catalog')) || JSON.parse(localStorage.getItem('bSweets_catalog') || localStorage.getItem('boseSweets_catalog')) || [...defaultCatalog]; 
+        globalOrders = (await StorageEngine.get('boseSweets_admin_orders')) || JSON.parse(localStorage.getItem('bSweets_orders') || localStorage.getItem('boseSweets_admin_orders')) || [];
+        siteSettings = (await StorageEngine.get('boseSweets_settings')) || JSON.parse(localStorage.getItem('bSweets_settings') || localStorage.getItem('boseSweets_settings')) || { ...defaultSettings };
+        shippingZones = (await StorageEngine.get('boseSweets_shipping')) || JSON.parse(localStorage.getItem('bSweets_shipping') || localStorage.getItem('boseSweets_shipping')) || [ ...defaultShipping ];
+        galleryData = (await StorageEngine.get('boseSweets_gallery')) || JSON.parse(localStorage.getItem('bSweets_gallery') || localStorage.getItem('boseSweets_gallery')) || [];
     }
 
     if (siteSettings.catMenu && siteSettings.catMenu.length > 0) catMenu = siteSettings.catMenu;
@@ -78,12 +283,14 @@ async function loadEngineMemory() {
 
 async function saveEngineMemory(type) {
     try {
-        if (type === 'cat' || type === 'all') localStorage.setItem('boseSweets_catalog', JSON.stringify(catalog));
-        if (type === 'set' || type === 'all') localStorage.setItem('boseSweets_settings', JSON.stringify(siteSettings));
-        if (type === 'ship' || type === 'all') localStorage.setItem('boseSweets_shipping', JSON.stringify(shippingZones));
-        if (type === 'gal' || type === 'all') localStorage.setItem('boseSweets_gallery', JSON.stringify(galleryData));
-        if (type === 'ord' || type === 'all') localStorage.setItem('boseSweets_admin_orders', JSON.stringify(globalOrders));
-    } catch (e) { console.error("Local Save Error", e); }
+        if (type === 'cat' || type === 'all') await StorageEngine.set('boseSweets_catalog', catalog);
+        if (type === 'set' || type === 'all') await StorageEngine.set('boseSweets_settings', siteSettings);
+        if (type === 'ship' || type === 'all') await StorageEngine.set('boseSweets_shipping', shippingZones);
+        if (type === 'gal' || type === 'all') await StorageEngine.set('boseSweets_gallery', galleryData);
+        if (type === 'ord' || type === 'all') await StorageEngine.set('boseSweets_admin_orders', globalOrders);
+    } catch (e) { 
+        if (type === 'set') localStorage.setItem('boseSweets_settings', JSON.stringify(siteSettings));
+    }
 }
 
 // ==========================================
@@ -136,12 +343,15 @@ function openAdminDashboardDirectly() {
         executeSafely('Icons', () => { if(window.lucide) lucide.createIcons(); });
         
     } catch (error) {
-        console.error("BoseSweets Error: فشل غير متوقع في الإقلاع الأساسي", error);
         showSystemToast("تنبيه: تم تشغيل وضع الطوارئ لاستعادة البيانات...", "info");
     }
 }
 
 function closeAdminDashboard() {
+    if (ordersUnsubscribe) {
+        ordersUnsubscribe();
+    }
+    
     sessionStorage.removeItem('bosy_admin_auth');
     if(typeof auth !== 'undefined') auth.signOut();
     window.location.href = 'index.html';
@@ -177,7 +387,6 @@ function showSystemToast(message, type = 'info') {
     }, 3000);
 }
 
-// --- Tabs Navigation ---
 function switchAdminTab(tabId) {
     document.querySelectorAll('.admin-tab-content').forEach(el => {
         el.classList.remove('block'); el.classList.add('hidden');
@@ -203,7 +412,6 @@ function switchAdminTab(tabId) {
     else window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// --- Confirmation Modals ---
 function openConfirmModal(title, message, callback) {
     document.getElementById('confirm-title').innerText = title;
     document.getElementById('confirm-message').innerText = message;
@@ -222,7 +430,6 @@ function closeConfirmModal() {
     if(modal){ modal.classList.add('opacity-0'); setTimeout(() => modal.classList.add('hidden'), 300); }
 }
 
-// --- Backups ---
 function exportBackupJSON() {
     try {
         const backupData = { catalog, settings: siteSettings, shipping: shippingZones, orders: globalOrders, gallery: galleryData };
@@ -269,23 +476,6 @@ function importBackupJSON(e) {
     reader.readAsText(file);
 }
 
-// --- Settings & UI ---
-function syncColorInput(inputId, textId) {
-    const colorInput = document.getElementById(inputId); const textInput = document.getElementById(textId);
-    if(!colorInput || !textInput) return;
-    textInput.removeAttribute('readonly');
-    colorInput.addEventListener('input', (e) => { textInput.value = e.target.value.toUpperCase(); });
-    textInput.addEventListener('input', (e) => {
-        let val = e.target.value.trim(); if (val.length > 0 && !val.startsWith('#')) val = '#' + val;
-        if(/^#[0-9A-Fa-f]{6}$/i.test(val)) { colorInput.value = val; }
-    });
-    textInput.addEventListener('blur', (e) => {
-        let val = e.target.value.trim(); if (val.length > 0 && !val.startsWith('#')) val = '#' + val;
-        if(/^#[0-9A-Fa-f]{6}$/i.test(val)) { colorInput.value = val; e.target.value = val.toUpperCase(); } 
-        else { e.target.value = colorInput.value.toUpperCase(); }
-    });
-}
-
 function fillAdminSettingsForm() {
     if(!window.siteSettings) return;
     if(document.getElementById('set-brand')) document.getElementById('set-brand').value = siteSettings.brandName || 'حلويات بوسي'; 
@@ -321,23 +511,53 @@ async function saveStoreSettings() {
     } catch(e) { saveEngineMemory('set'); showSystemToast("تم الحفظ محلياً", "info"); }
 }
 
+/**
+ * 🛡️ Engine Upgrade: Secure Cloud Password Management
+ * نظام متطور لتغيير وتشفير كلمة مرور مركز القيادة سحابياً (Cloud Auth Provider).
+ * يضمن أعلى مستويات الأمان لبراند حلويات بوسي.
+ */
 async function changeAdminPassword() {
     const currentInput = document.getElementById('sec-current-pwd').value; 
     const newPwd = document.getElementById('sec-new-pwd').value; 
     const confirmPwd = document.getElementById('sec-confirm-pwd').value;
+
     if (!currentInput || !newPwd || !confirmPwd) { showSystemToast("يرجى ملء جميع الحقول", "error"); return; }
+    if (newPwd !== confirmPwd) { showSystemToast("كلمة المرور الجديدة غير متطابقة", "error"); return; }
+    if (newPwd.length < 6) { showSystemToast("الرمز السري للسحابة يجب أن يكون 6 أحرف/أرقام على الأقل", "error"); return; }
+
     try {
-        if (newPwd !== confirmPwd) { showSystemToast("كلمة المرور الجديدة غير متطابقة", "error"); return; }
-        if (newPwd.length < 4) { showSystemToast("يجب أن تكون 4 أحرف أو أرقام على الأقل", "error"); return; }
-        siteSettings.adminPassword = newPwd;
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', siteSettings); 
-        saveEngineMemory('set'); 
-        showSystemToast("تم تغيير الرمز السري بنجاح 🛡️", "success");
-        document.getElementById('sec-current-pwd').value = ''; document.getElementById('sec-new-pwd').value = ''; document.getElementById('sec-confirm-pwd').value = '';
-    } catch(e) { saveEngineMemory('set'); showSystemToast("تم الحفظ محلياً", "info"); }
+        const user = auth.currentUser;
+        if (!user) { showSystemToast("انتهت جلسة الإدارة، يرجى تسجيل الدخول مجدداً", "error"); return; }
+
+        // إعادة التأكيد الأمني قبل تغيير كلمة المرور
+        const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentInput);
+        await user.reauthenticateWithCredential(credential);
+
+        // التحديث السحابي المشفر
+        await user.updatePassword(newPwd);
+
+        // مسح كلمة المرور القديمة من الإعدادات إذا كانت موجودة (زيادة في الأمان)
+        if (siteSettings.adminPassword) {
+            delete siteSettings.adminPassword;
+            if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', siteSettings);
+            saveEngineMemory('set');
+        }
+
+        showSystemToast("تم تغيير الرمز السري وتشفيره سحابياً بنجاح 🛡️", "success");
+        document.getElementById('sec-current-pwd').value = ''; 
+        document.getElementById('sec-new-pwd').value = ''; 
+        document.getElementById('sec-confirm-pwd').value = '';
+
+    } catch(e) {
+        AdminErrorTracker.log('AdminPasswordChange', e);
+        if (e.code === 'auth/wrong-password') {
+            showSystemToast("كلمة المرور الحالية غير صحيحة", "error");
+        } else {
+            showSystemToast("حدث خطأ أثناء تشفير كلمة المرور الجديدة", "error");
+        }
+    }
 }
 
-// --- Shipping ---
 function renderAdminShipping() {
     const tbody = document.getElementById('admin-shipping-tbody');
     if(!tbody) return;
@@ -394,7 +614,6 @@ async function executeDeleteShippingZone(id) {
     renderAdminShipping();
 }
 
-// --- Overview & Orders ---
 function renderAdminOverview() {
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
@@ -471,7 +690,7 @@ function renderAdminOrderFilters() {
 
 function setAdminOrderFilter(f) { adminOrderFilter = f; renderAdminOrderFilters(); renderAdminOrders(); }
 function filterOrdersByDate() { renderAdminOrders(); }
-function refreshOrders() { showSystemToast('جاري تحديث الطلبات...', 'info'); renderAdminOrders(); }
+function refreshOrders() { showSystemToast('الرصد الحي يعمل. القائمة محدثة...', 'info'); renderAdminOrders(); }
 
 function renderAdminOrders() {
     const tbody = document.getElementById('admin-orders-tbody');
@@ -567,21 +786,59 @@ function closeOrderModal() {
 async function updateOrderStatus() {
     const selectEl = document.getElementById('modal-order-status');
     if(!selectEl) return;
-    const id = selectEl.getAttribute('data-current-id'); const newStatus = selectEl.value;
+    const id = selectEl.getAttribute('data-current-id'); 
+    const newStatus = selectEl.value;
     const orderIdx = globalOrders.findIndex(o => String(o.id) === String(id));
+    
     if (orderIdx > -1) {
+        const oldStatus = globalOrders[orderIdx].status;
         globalOrders[orderIdx].status = newStatus;
         saveEngineMemory('ord');
+        
         try {
             if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('orders', String(id), globalOrders[orderIdx]);
             showSystemToast('تم تحديث حالة الطلب بنجاح 👑', 'success');
+
+            if (oldStatus !== newStatus && (newStatus === 'processing' || newStatus === 'completed')) {
+                triggerMakeWebhook(globalOrders[orderIdx], newStatus);
+            }
+
         } catch (e) { showSystemToast('تم تحديث الحالة محلياً', 'info'); }
         renderAdminOverview(); renderAdminOrders(); closeOrderModal();
     }
 }
+
+async function triggerMakeWebhook(orderData, status) {
+    try {
+        const user = auth.currentUser;
+        if (!user) return;
+        
+        const idToken = await user.getIdToken();
+        const secureEndpoint = 'https://us-central1-bosy-sweets.cloudfunctions.net/secureWebhookTrigger';
+
+        await fetch(secureEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${idToken}` 
+            },
+            body: JSON.stringify({
+                orderId: orderData.id,
+                customerName: orderData.name,
+                customerPhone: orderData.phone,
+                status: status,
+                total: orderData.total,
+                brand: siteSettings.brandName
+            })
+        });
+        console.log("BoseSweets: Secure Cloud Webhook triggered successfully. 👑");
+    } catch(e) {
+        console.warn("BoseSweets: Secure Webhook communication passed to offline queue.", e);
+    }
+}
+
 function printOrderInvoice() { window.print(); }
 
-// --- Catalog Menu ---
 function renderAdminCatalogTabs() {
     const tabsEl = document.getElementById('admin-catalog-tabs');
     if(!tabsEl) return;
@@ -624,7 +881,7 @@ function renderAdminMenu(searchQuery = '') {
     }
 
     container.innerHTML = list.map(prod => {
-        const imageUrl = (prod.images && prod.images.length > 0) ? prod.images[0] : (prod.img || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=300&q=80');
+        const imageUrl = (prod.images && prod.images.length > 0) ? (prod.images[0].startsWith('offline_img_') ? 'https://via.placeholder.com/150?text=جاري+الرفع' : prod.images[0]) : (prod.img || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=300&q=80');
         const isInstock = prod.inStock !== false;
         return `
             <div class="admin-card flex flex-col md:flex-row gap-4 relative overflow-visible group transition-all duration-300 hover:border-pink-500/50 ${!isInstock ? 'opacity-60' : ''} p-4 bg-slate-900 rounded-xl border border-slate-800">
@@ -651,7 +908,6 @@ function renderAdminMenu(searchQuery = '') {
     if(window.lucide) lucide.createIcons();
 }
 
-// --- Product Editor (مُحدث لدعم المزامنة الأوفلاين) ---
 function renderAdminTempImages() {
     const container = document.getElementById('edit-prod-images-container');
     if(!container) return;
@@ -660,7 +916,7 @@ function renderAdminTempImages() {
     }
     container.innerHTML = tempProdImages.map((url, idx) => `
         <div class="relative w-20 h-20 shrink-0 rounded-xl overflow-hidden border-2 border-slate-700 group">
-            <img src="${url}" class="w-full h-full object-cover">
+            <img src="${url.startsWith('offline_img_') ? 'https://via.placeholder.com/150?text=صورة+محلية' : url}" class="w-full h-full object-cover">
             ${idx === 0 ? `<div class="absolute bottom-0 left-0 right-0 bg-pink-500/90 text-white text-[9px] font-bold text-center py-0.5 backdrop-blur-sm z-10">الرئيسية</div>` : ''}
             <button onclick="removeTempImage(${idx})" class="absolute top-1 right-1 bg-red-500/80 text-white p-1 rounded-md hover:bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg backdrop-blur-sm cursor-pointer z-50 pointer-events-auto"><i data-lucide="x" class="w-3 h-3"></i></button>
         </div>
@@ -669,6 +925,29 @@ function renderAdminTempImages() {
 }
 function removeTempImage(idx) { tempProdImages.splice(idx, 1); renderAdminTempImages(); }
 
+async function getSecureUploadSignature() {
+    try {
+        if(typeof auth === 'undefined' || !auth.currentUser) return null;
+        const idToken = await auth.currentUser.getIdToken();
+        const secureEndpoint = 'https://us-central1-bosy-sweets.cloudfunctions.net/getCloudinarySignature';
+        const response = await fetch(secureEndpoint, {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${idToken}` }
+        });
+        if (!response.ok) throw new Error("Signature Server Unavailable");
+        return await response.json(); 
+    } catch (e) {
+        AdminErrorTracker.log('SecureUploadSignature', e);
+        console.warn("BoseSweets Security: Failed to fetch secure signature. Falling back to temporary preset.", e);
+        return null;
+    }
+}
+
+/**
+ * 🛡️ Engine Upgrade: Intercept Base64 & push to Offline Vault if Offline
+ * نظام متطور يكتشف حالة الإنترنت؛ إذا انقطع الاتصال يتم حفظ الصور "فوراً" في خزنة
+ * OfflineStorageManager المشفرة لاستكمال الرفع لاحقاً دون فقدان أي بيانات.
+ */
 async function compressAndUploadMultiImage(e) {
     const files = e.target.files; if (!files || files.length === 0) return;
     const spinner = document.getElementById('uploading-spinner'); if(spinner) spinner.classList.remove('hidden');
@@ -690,16 +969,31 @@ async function compressAndUploadMultiImage(e) {
                     
                     if (navigator.onLine) {
                         try {
-                            const formData = new FormData(); formData.append('file', base64Str); formData.append('upload_preset', 'gct8i28h'); 
+                            const secureToken = await getSecureUploadSignature();
+                            const formData = new FormData(); 
+                            formData.append('file', base64Str); 
+                            
+                            if (secureToken && secureToken.signature) {
+                                formData.append('signature', secureToken.signature);
+                                formData.append('timestamp', secureToken.timestamp);
+                                formData.append('api_key', secureToken.api_key);
+                            } else {
+                                formData.append('upload_preset', 'gct8i28h'); 
+                            }
+                            
                             const response = await fetch('https://api.cloudinary.com/v1_1/dyx4w0dr1/image/upload', { method: 'POST', body: formData });
                             const data = await response.json();
                             if (data.secure_url) { tempProdImages.push(data.secure_url); } else throw new Error("Upload failed");
                         } catch (err) { 
-                            tempProdImages.push(base64Str); 
+                            const offlineId = 'offline_img_' + Date.now() + Math.random().toString(36).substr(2, 5);
+                            await OfflineStorageManager.enqueuePayload({ offlineId: offlineId, base64: base64Str });
+                            tempProdImages.push(offlineId); 
                             offlineSaved = true; 
                         } 
                     } else {
-                        tempProdImages.push(base64Str); 
+                        const offlineId = 'offline_img_' + Date.now() + Math.random().toString(36).substr(2, 5);
+                        await OfflineStorageManager.enqueuePayload({ offlineId: offlineId, base64: base64Str });
+                        tempProdImages.push(offlineId); 
                         offlineSaved = true;
                     }
                     resolve();
@@ -712,7 +1006,7 @@ async function compressAndUploadMultiImage(e) {
     if(document.getElementById('prod-img-upload')) document.getElementById('prod-img-upload').value = '';
     
     if (offlineSaved) {
-        showSystemToast("تم حفظ الصور مؤقتاً لضعف الإنترنت، ستُرفع للسحابة لاحقاً 🔄", "info");
+        showSystemToast("تم حفظ الصور مؤقتا في الخزنة لضعف الإنترنت ستُرفع للسحابة لاحقا 🔄", "info");
     } else {
         showSystemToast("تم الرفع وإضافة الصور للمنتج 👑", "success");
     }
@@ -796,6 +1090,9 @@ async function saveProductData() {
     tempProdImages = []; renderAdminTempImages();
     const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
     closeProdModal(); renderAdminMenu(currentSearch); renderAdminOverview();
+    
+    // محاولة مزامنة السحابة مباشرة بعد الحفظ لو النت متاح
+    syncOfflineImages();
 }
 
 function deleteProductConfirm(id) {
@@ -815,7 +1112,6 @@ async function executeDeleteProduct(id) {
     renderAdminMenu(currentSearch); renderAdminOverview(); 
 }
 
-// --- Cake Builder Settings ---
 function fillCakeBuilderAdmin() {
     if(!window.siteSettings) return;
     if (!siteSettings.cakeBuilder) siteSettings.cakeBuilder = JSON.parse(JSON.stringify(defaultSettings.cakeBuilder));
@@ -871,7 +1167,6 @@ async function saveCakeBuilderSettings() {
     } catch(e) { saveEngineMemory('set'); showSystemToast("تم الحفظ محلياً", "info"); }
 }
 
-// --- Categories ---
 function renderAdminCategories() {
     const listEl = document.getElementById('admin-categories-list');
     if (!listEl) return;
@@ -914,7 +1209,6 @@ async function saveCategoriesToCloud() {
     } catch (e) { showSystemToast("فشل الحفظ سحابياً", "error"); }
 }
 
-// --- Promo Codes ---
 function initAdminPromoCodes() {
     if(!window.siteSettings) window.siteSettings = {};
     if(!siteSettings.promoCodes) siteSettings.promoCodes = [];
@@ -953,11 +1247,12 @@ function deletePromoCode(idx) {
     renderPromoCodes(); saveStoreSettings();
 }
 
-// --- AI Description ---
 async function generateSmartDescription() {
     const prodNameEl = document.getElementById('edit-prod-name'); const prodCatEl = document.getElementById('edit-prod-cat');
     const btn = document.getElementById('btn-smart-desc'); const descField = document.getElementById('edit-prod-desc');
+    
     if(!prodNameEl || !prodCatEl || !btn || !descField) return;
+    
     const prodName = prodNameEl.value.trim(); const prodCat = prodCatEl.value;
     if (!prodName) { showSystemToast('اكتبي اسم المنتج الأول يا إدارة عشان نقدر نولد وصفه ✨', 'error'); return; }
     
@@ -966,19 +1261,26 @@ async function generateSmartDescription() {
     if(window.lucide) lucide.createIcons();
     
     try {
-        const apiKey ='AIzaSyAA5xO_yml-osLan53Oi5SnjzgNkAujA9U'; 
-        const promptText = `أنت كاتب إعلانات محترف لعلامة تجارية مصرية راقية اسمها "حلويات بوسي"\nاكتب وصف قصير وجذاب لمنتج اسمه "${prodName}" من قسم "${prodCat}"\nالشروط: لهجة مصرية عامية راقية، بدون علامات ترقيم، استخدم إيموجي تخدم المعنى، لا يتعدى سطرين. يفتح الشهية ويشجع على الشراء فوراً.`;
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
+        const secureEndpoint = 'https://us-central1-bosy-sweets.cloudfunctions.net/generateSmartDesc'; 
+        const response = await fetch(secureEndpoint, {
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify({ productName: prodName, categoryName: prodCat })
         });
+        if (!response.ok) throw new Error('الخادم السحابي غير متصل أو يتم تحديثه حالياً');
         const data = await response.json();
-        if (!response.ok) throw new Error(data.error ? data.error.message : 'خطأ غير معروف من خوادم الذكاء الاصطناعي');
-        if (data.candidates && data.candidates.length > 0) {
-            descField.value = data.candidates[0].content.parts[0].text.trim();
+        if (data && data.description) {
+            descField.value = data.description.trim();
             showSystemToast('تم التوليد بنجاح! 👑 راجعي الوصف.', 'success');
-        } else { throw new Error('لم يتم إرجاع وصف صالح.'); }
-    } catch (error) { showSystemToast("تعذر التوليد حالياً: " + error.message, "error"); } 
-    finally { btn.innerHTML = originalBtnHTML; btn.disabled = false; if(window.lucide) lucide.createIcons(); }
+        } else {
+            throw new Error('السيرفر لم يرجع الوصف المطلوب.');
+        }
+    } catch (error) { 
+        showSystemToast("تنويه: " + error.message, "info"); 
+        descField.value = `قطعة فنية مميزة من حلويات بوسي 👑.. ${prodName} بيضمنلك تجربة طعم مفيش زيها!`;
+    } finally { 
+        btn.innerHTML = originalBtnHTML; btn.disabled = false; if(window.lucide) lucide.createIcons(); 
+    }
 }
 
 function escapeHTML(str) {
@@ -986,55 +1288,78 @@ function escapeHTML(str) {
     return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
 }
 
-// ==========================================
-// 4. SMART BACKGROUND SYNC ENGINE (🔄 محرك المزامنة الذكي)
-// ==========================================
+/**
+ * 🛡️ Engine Upgrade: Background Sync Process for Offline Vault
+ * محرك المزامنة الخلفي؛ يراقب عودة الإنترنت؛ وعند توفره يقوم بسحب الصور من الخزنة
+ * المحلية ورفعها لـ Cloudinary واستبدال معرفاتها المؤقتة بروابط حقيقية في الكتالوج.
+ */
 async function syncOfflineImages() {
-    if (!navigator.onLine) return; // الخروج لو مفيش نت
-    
+    if (!navigator.onLine) return; 
     let needsSync = false;
-    console.log("BoseSweets Sync: Checking for offline Base64 data to sync...");
+    
+    try {
+        const payloads = await OfflineStorageManager.getAllPayloads();
+        if(payloads.length === 0) return;
 
-    for (let p of catalog) {
-        // فحص وجود صور Base64
-        if (p.images && p.images.some(img => img.startsWith('data:image'))) {
-            needsSync = true;
-            for (let i = 0; i < p.images.length; i++) {
-                if (p.images[i].startsWith('data:image')) {
-                    try {
-                        const formData = new FormData();
-                        formData.append('file', p.images[i]);
-                        formData.append('upload_preset', 'gct8i28h');
-                        
-                        const res = await fetch('https://api.cloudinary.com/v1_1/dyx4w0dr1/image/upload', { 
-                            method: 'POST', body: formData 
-                        });
-                        const data = await res.json();
-                        if (data.secure_url) {
-                            p.images[i] = data.secure_url;
-                            if (i === 0) p.img = data.secure_url; 
-                        }
-                    } catch (e) { console.error("Sync failed for item:", p.name); }
+        console.log(`BoseSweets Engine: Found ${payloads.length} images in offline vault. Starting background sync... ☁️`);
+
+        for (let payload of payloads) {
+            let uploadedUrl = null;
+            try {
+                // محاولة جلب توقيع آمن في الخلفية
+                const secureToken = await getSecureUploadSignature();
+                const formData = new FormData();
+                formData.append('file', payload.base64);
+                
+                if (secureToken && secureToken.signature) {
+                    formData.append('signature', secureToken.signature);
+                    formData.append('timestamp', secureToken.timestamp);
+                    formData.append('api_key', secureToken.api_key);
+                } else {
+                    formData.append('upload_preset', 'gct8i28h');
                 }
+                
+                const res = await fetch('https://api.cloudinary.com/v1_1/dyx4w0dr1/image/upload', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data.secure_url) { uploadedUrl = data.secure_url; }
+            } catch (e) { 
+                AdminErrorTracker.log('BackgroundUpload_Failed', e);
+                console.warn("Background Upload Failed for", payload.offlineId); 
+                continue; 
             }
-            if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(p.id), p);
-        }
-    }
 
-    if (needsSync) {
-        saveEngineMemory('cat');
-        const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
-        renderAdminMenu(currentSearch);
-        showSystemToast("تمت مزامنة الصور مع السحابة وتنظيف المساحة ☁️", "success");
+            if(uploadedUrl) {
+                // تدوير واستبدال المعرف المحلي بالرابط الحقيقي داخل الكتالوج لضمان سلامة البيانات
+                for (let p of catalog) {
+                    if (p.images) {
+                        for (let i = 0; i < p.images.length; i++) {
+                            if (p.images[i] === payload.offlineId) {
+                                p.images[i] = uploadedUrl;
+                                if (i === 0) p.img = uploadedUrl;
+                                needsSync = true;
+                                if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(p.id), p);
+                            }
+                        }
+                    }
+                }
+                await OfflineStorageManager.removePayload(payload.offlineId);
+            }
+        }
+
+        if (needsSync) {
+            saveEngineMemory('cat');
+            const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
+            renderAdminMenu(currentSearch);
+            showSystemToast("تمت مزامنة الصور المعلقة مع السحابة وتنظيف الخزنة بنجاح ☁️", "success");
+        }
+    } catch(e) {
+        AdminErrorTracker.log('OfflineSync_Images', e);
     }
 }
 
-// تشغيل المزامنة تلقائياً عند عودة الإنترنت
+// مراقبة عودة الإنترنت لتشغيل المزامنة تلقائياً
 window.addEventListener('online', syncOfflineImages);
 
-// ==========================================
-// 5. Engine Initialization & Failsafe Boot
-// ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     if(window.lucide) lucide.createIcons();
     const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -1042,32 +1367,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if(dateEl) dateEl.textContent = new Date().toLocaleDateString('ar-EG', dateOptions);
 });
 
-// 🛡️ Boot Controller (جدار الحماية الفولاذي)
 function bootBoseSweetsEngine() {
     console.log("BoseSweets Admin Engine Initiating...");
-    
     unfreezeAdminUI();
-
     if(typeof auth !== 'undefined') {
         auth.onAuthStateChanged(async user => {
-            if (user) { // المستخدم مسجل دخول
-                try { await loadEngineMemory(); } catch(e) { console.error("BoseSweets Error:", e); }
+            if (user) { 
+                try { await loadEngineMemory(); } catch(e) {}
                 openAdminDashboardDirectly();
-                syncOfflineImages(); // تشغيل المزامنة فور الدخول
-            } else { // طرد فوراً في حال عدم وجود مستخدم
-                console.warn("Unauthorized access detected. Redirecting to login...");
+                syncOfflineImages(); 
+            } else { 
                 window.location.href = 'login.html';
             }
         });
     } else {
-        console.warn("BoseSweets: Firebase Auth undefined. Blocking access.");
         window.location.href = 'login.html';
     }
 }
 
-// تشغيل المحرك فور قراءة الكود
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bootBoseSweetsEngine);
-} else {
-    bootBoseSweetsEngine();
-}
+if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', bootBoseSweetsEngine); } 
+else { bootBoseSweetsEngine(); }

@@ -2,131 +2,325 @@
 const PreloadEngine = {
     loadedUrls: new Set(),
     ignite(catalogData, galleryData = []) {
-        setTimeout(() => {
+        MemoryManager.set('preload_ignite', () => {
             const allUrls = [];
             catalogData.forEach(i => {
-                if(i.images && i.images.length > 0) i.images.forEach(img => allUrls.push(img));
-                else allUrls.push(i.img || getImgFallback(i.category));
+                if(i.images && i.images.length > 0) i.images.forEach(img => allUrls.push(optimizeCloudinaryUrl(img)));
+                else allUrls.push(optimizeCloudinaryUrl(i.img || getImgFallback(i.category)));
             });
-            galleryData.forEach(g => allUrls.push(g.url));
+            galleryData.forEach(g => allUrls.push(optimizeCloudinaryUrl(g.url)));
             allUrls.forEach(url => { if(url && !this.loadedUrls.has(url)) { const img = new Image(); img.src = url; this.loadedUrls.add(url); } });
         }, 3000); 
     }
 };
 
-// 🌟 القاموس التفصيلي (خطة الطوارئ للكروت الكبيرة)
-const detailedDescriptions = {
-    'جاتوه سواريه': 'الجاتوه السواريه مش مجرد حلويات ده عنوان للشياكة والرقي قطع فنية صغيرة معمولة بدقة متناهية علشان تخطف العين وتدوب في البق فورا حجمها المثالي بيخليها الاختيار الأول للضيافة الراقية والمناسبات المهمة علشان ضيوفك يدوقوا أكتر من نكهة بدون إحراج لو مجربتيش السواريه في مناسبتك الجاية فايتك كتير من الفخامة 🎀👑',
-    'جاتوه ملكي': 'الجاتوه الملكي من حلويات بوسي هو الترجمة الحرفية للفخامة مش مجرد كيك وكريمة دي خامات مستوردة وتفاصيل بتتعمل بحب علشان تليق بضيوفك الـ VIP طعم غني جدا وتوازن سكر يظبط المزاج لو بتدوري على حاجة ترفع الراس وتشرفك بجد الجاتوه الملكي هو اختيارك اللي مفيش فيه تنازل 👑✨',
-    'جاتوه كلاسيك': 'قطعة الجاتوه الأصيلة اللي بترجعنا لأحلى الذكريات بس بلمسة حلويات بوسي الفاخرة كيك اسفنجي هش جدا بيدوب مع كريمة غنية متوازنة السكر اختيار آمن ومضمون يرضي كل الأذواق ويليق بأي عزومة سريعة أو قعدة عائلية دافية 🍰🎉',
-    'حجم (فرد - فردين)': 'ليه تستني مناسبة كبيرة علشان تفرحي؟ الميني تورتة دي معمولة مخصوص للحظات الحلوة المفاجئة حجمها كيوت ومثالي جدا يكفي من فرد لفردين مليانة حشوات غنية وتفاصيل تفرح القلب لو ناوية تصالحي حد أو تحتفلي بنجاح صغير أو حتى تدلعي نفسك هي الحل السحري والأسرع 🎂🥰',
-    'حجم (3 - 4 أفراد)': 'التورتة دي هي الاختيار الذهبي للمة العيلة الصغيرة أو احتفال الأصدقاء بتكفي من 3 لـ 4 أفراد وبتجمع بين الشكل الشيك اللي يخطف العين والطعم الغني اللي يرضي كل الأذواق مناسبة جدا توثقوا بيها لحظاتكم الحلوة بصور وطعم ميتنسيش 🎂✨',
-    'حجم (5 - 6 أفراد)': 'لو عندكم احتفال أو عيد ميلاد وعايزين تورتة تشرف وتكفي العيلة التورتة دي بتكفي من 5 لـ 6 أفراد معمولة بخامات بريميوم وحشوات غنية جدا علشان كل ضيف ياخد قطعته ويدعي لمزاجك الراقي وتكمل فرحتكم 🎂🎉',
-    'تورتة': 'تورتة حلويات بوسي مش مجرد كيكة دي الملكة اللي بتتربع على عرش مناسبتك تصميم بيخطف العين من أول نظرة وكيك هش جدا مع حشوات غنية ومقادير مظبوطة بالمللي تضمنلك إن كل ضيوفك هيسألوا عنها مناسبتك متكملش من غير التورتة اللي تليق باسمك 👑🎂',
-    'بوكس الروقان': 'ليه تحتار تختار إيه لما ممكن تاخد كل حاجة حلوة في بوكس واحد؟ بوكس الروقان تجميعة من ألذ وأرقى أصنافنا معمول مخصوص علشان يفصلك عن دوشة العالم ويدخلك في حالة روقان تام اختيار مثالي لهدية قيمة أو لقعدة صحاب عايزين يتبسطوا بجد 🎁✨',
-    'قشطوطة': 'سر القشطوطة الحقيقي في الهشاشة اللي بتدوب بمجرد ما تلمسها كيكة سحابية غرقانة في حليب فريش وقشطة طبيعية بتطبطب على القلب تجربة حسية متكاملة تخليك تفصل عن الدنيا وتعيش اللحظة بكل تفاصيلها الحلوة اختاري النكهة اللي تدلع مزاجك ☁️🤍',
-    'ديسباسيتو': 'القنبلة البرازيلية اللي خطفت قلوب عشاق الشيكولاتة كيكة اسفنجية خفيفة لأبعد حد غرقانة في صوص شيكولاتة غني جدا بتركيبة سرية طعمها بيعدل المود فوراً ويطبطب على القلب لو يومك كان طويل وصعب الديسباسيتو هي المكافأة اللي تستحقيها 🍫🤤',
-    'سينابون': 'سر السينابون عندنا في العجينة القطنية الطرية اللي مخبوزة بحب ومحشية بأجود أنواع القرفة والسكر البني بمجرد ما تفتح العلبة الريحة كفيلة تدفيك الصوص الكريمي الغني اللي بيغطيها بيكمل اللوحة الفنية طعم يخليك تحس بالدفا والاحتواء 🤎✨',
-    'دوناتس': 'انسوا أي دوناتس دوقته قبل كده العجينة عندنا مقلية باحترافية علشان تكون خفيفة وهشة زي القطنة ومش شاربة زيت نهائيا متغطية بطبقات من الصوصات المبهجة اللي بتفرح الكبار قبل الصغيرين قطعة واحدة منها قادرة تغير مسار يومك بالكامل 🍩😍',
-    'بامبوليني': 'النسخة الإيطالية الفاخرة من الدوناتس كورة من العجينة السحابية الغنية متدحرجة في السكر ومحشية من جوة بقلب بينبض بالكريمة الغنية أو النوتيلا أول ما تقطمها الحشوة بتبظ في البق وتغمر حواسك تجربة استثنائية لازم تعيشيها 🥯🍯'
+// 🛡️ Engine Upgrade: Memory Manager (Garbage Collector) 
+// لضمان عدم تسريب الذاكرة (Memory Leaks) وتنظيف العمليات المعلقة وتفريغ المراجع الميتة
+const MemoryManager = {
+    timers: {},
+    set(key, callback, delay) {
+        if (this.timers[key]) clearTimeout(this.timers[key]);
+        this.timers[key] = setTimeout(() => {
+            callback();
+            delete this.timers[key];
+        }, delay);
+    },
+    clear(key) {
+        if (this.timers[key]) {
+            clearTimeout(this.timers[key]);
+            delete this.timers[key];
+        }
+    },
+    // ميزة التنظيف العميق لتحرير الذاكرة العشوائية للهواتف الضعيفة
+    flush() {
+        let cleared = 0;
+        for (let key in this.timers) {
+            clearTimeout(this.timers[key]);
+            delete this.timers[key];
+            cleared++;
+        }
+        if(cleared > 0) console.log(`BoseSweets Memory Manager: Flushed ${cleared} inactive references. 🧹`);
+    }
 };
 
-// 🌟 القاموس الكبسولة (خطة الطوارئ للكروت الصغيرة)
+// 🛡️ Engine Upgrade: Advanced Live Search Engine (Indexing & Typo Tolerance)
+// محرك بحث متقدم لسرعة لحظية وتوفير معالج الهاتف والتسامح مع الأخطاء الإملائية
+const LiveSearchEngine = {
+    index: new Map(),
+    normalizeArabic(text) {
+        if (!text) return '';
+        return String(text)
+            .replace(/[أإآ]/g, 'ا')
+            .replace(/ة/g, 'ه')
+            .replace(/ى/g, 'ي')
+            .replace(/ـ/g, ''); 
+    },
+    build(catalogData) {
+        this.index.clear();
+        catalogData.forEach(p => {
+            // تجميع الكلمات المفتاحية ومعالجتها للبحث السريع
+            const rawTokens = `${p.name || ''} ${p.category || ''} ${p.desc || ''} ${p.subType || ''} ${p.size || ''}`;
+            const tokens = this.normalizeArabic(rawTokens).toLowerCase();
+            this.index.set(p.id, { tokens, data: p });
+        });
+        console.log("BoseSweets: Live Search Engine Indexed successfully 👑");
+    },
+    // المراقبة اللحظية لتحديث الفهرس عند تغيير البيانات السحابية
+    observeIndexUpdate(newCatalog) {
+        this.build(newCatalog);
+        console.log("BoseSweets: Search Index Auto-Updated via Observer 🔄");
+    },
+    search(query) {
+        const q = this.normalizeArabic(query.toLowerCase().trim());
+        if (!q) return [];
+        const results = [];
+        const qTokens = q.split(/\s+/);
+        
+        for (let [id, item] of this.index.entries()) {
+            let isMatch = true;
+            for (let qt of qTokens) {
+                if (!item.tokens.includes(qt)) {
+                    // خوارزمية تسامح إملائي بسيطة للكلمات المكونة من 4 حروف فأكثر
+                    let typoMatch = false;
+                    if(qt.length > 3) {
+                        const itemWords = item.tokens.split(/\s+/);
+                        for(let w of itemWords) {
+                            if(w.length === qt.length) {
+                                let diff = 0;
+                                for(let i=0; i<qt.length; i++) if(qt[i] !== w[i]) diff++;
+                                if(diff <= 1) { typoMatch = true; break; } // يسمح بخطأ في حرف واحد
+                            }
+                        }
+                    }
+                    if(!typoMatch) { isMatch = false; break; }
+                }
+            }
+            if (isMatch) results.push(item.data);
+        }
+        return results;
+    }
+};
+
+// محرك تأخير الاستجابة لحماية معالج الهاتف من الضغط العالي
+let liveSearchTimeout = null;
+window.performLiveSearchDebounced = function(query) {
+    if (liveSearchTimeout) clearTimeout(liveSearchTimeout);
+    liveSearchTimeout = setTimeout(() => {
+        performLiveSearch(query);
+    }, 250); 
+};
+
+// 🛡️ Engine Upgrade: Robust Client Storage Engine (IndexedDB) - V5.0 (Error Logging System)
+const ClientStorageEngine = {
+    dbName: 'BoseSweetsClientDB',
+    cartStore: 'CartStore',
+    queueStore: 'PendingOrdersQueue',
+    version: 2,
+    logError(context, error) {
+        try {
+            const errLog = { context, msg: error.message || String(error), time: new Date().toLocaleString('ar-EG') };
+            let logs = JSON.parse(localStorage.getItem('BoseSweets_ErrorLogs') || '[]');
+            logs.unshift(errLog);
+            if(logs.length > 50) logs.pop(); // الاحتفاظ بآخر 50 خطأ فقط لعدم استهلاك المساحة
+            localStorage.setItem('BoseSweets_ErrorLogs', JSON.stringify(logs));
+            console.warn(`BoseSweets Storage Engine: Error caught in [${context}] and securely logged. 🛡️`);
+        } catch(e) {}
+    },
+    init() {
+        return new Promise((resolve, reject) => {
+            const request = indexedDB.open(this.dbName, this.version);
+            request.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(this.cartStore)) db.createObjectStore(this.cartStore);
+                if (!db.objectStoreNames.contains(this.queueStore)) db.createObjectStore(this.queueStore, { keyPath: 'id' });
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => reject(request.error);
+        });
+    },
+    async set(key, value) {
+        try {
+            const db = await this.init();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this.cartStore, 'readwrite');
+                const store = tx.objectStore(this.cartStore);
+                store.put(value, key);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        } catch (e) { this.logError('ClientStorage_Set', e); }
+    },
+    async get(key) {
+        try {
+            const db = await this.init();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this.cartStore, 'readonly');
+                const store = tx.objectStore(this.cartStore);
+                const request = store.get(key);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => resolve(null);
+            });
+        } catch (e) { this.logError('ClientStorage_Get', e); return null; }
+    },
+    async remove(key) {
+        try {
+            const db = await this.init();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this.cartStore, 'readwrite');
+                const store = tx.objectStore(this.cartStore);
+                store.delete(key);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        } catch(e) { this.logError('ClientStorage_Remove', e); }
+    },
+    // دوال محرك محاولة إعادة الإرسال (Auto-Retry) في حالة ضعف الإنترنت
+    async queueOrder(orderData) {
+        try {
+            const db = await this.init();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this.queueStore, 'readwrite');
+                const store = tx.objectStore(this.queueStore);
+                store.put(orderData);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        } catch(e) { this.logError('ClientStorage_QueueOrder', e); }
+    },
+    async getQueuedOrders() {
+        try {
+            const db = await this.init();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this.queueStore, 'readonly');
+                const store = tx.objectStore(this.queueStore);
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result || []);
+                request.onerror = () => resolve([]);
+            });
+        } catch(e) { this.logError('ClientStorage_GetQueuedOrders', e); return []; }
+    },
+    async removeQueuedOrder(id) {
+        try {
+            const db = await this.init();
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(this.queueStore, 'readwrite');
+                const store = tx.objectStore(this.queueStore);
+                store.delete(id);
+                tx.oncomplete = () => resolve();
+                tx.onerror = () => reject(tx.error);
+            });
+        } catch(e) { this.logError('ClientStorage_RemoveQueuedOrder', e); }
+    }
+};
+
+// 🛡️ المحرك الأيقوني لـ BoseSweets: منع التكرار بنسبة 100%
+const detailedDescriptions = {
+    // 🍫 عائلة الديسباسيتو (فادج كيك حصري) - وصف مستقل لكل حجم ومكان نوتيلا
+    'ديسباسيتو نوتيلا مثلث': 'مثلث السعادة الصغير.. جرعة "نوتيلا" مركزة جداً فوق قاعدة من فادج كيك بوسي الغني، معمولة عشان تذوب في ثواني وتعدل مودك في أسرع وقت. القطمة الواحدة فيها انفجار طعم مش هتحس بيه غير في الحجم ده 🍫🔺',
+    'ديسباسيتو نوتيلا وسط': 'قلب الديسباسيتو النابض.. توازن رهيب بين طبقة الفادج السميكة وصوص النوتيلا البرازيلي اللي مغطي الوسط بالكامل، الحجم ده معمول للروقان الهادي اللي بياخدك لعالم تاني مع كل معلقة 🍫 روقان',
+    'ديسباسيتو نوتيلا كبير': 'محيط من النوتيلا الأصلية السايحة.. فخامة الحجم الكبير بتخليك تغرق في طعم الفادج الكثيف مع طبقة نوتيلا سخية جداً، دي مش مجرد تحلية دي "وليمة" لعشاق الشيكولاتة اللي مبيعرفوش يوقفوا 🍫🌊',
+
+    // 🌹 عائلة الورد (كل كيان أيقونة مستقلة)
+    'ورد طبيعي': 'روح الطبيعة في بيتك.. ورد فريش بعبير ساحر وقطرات الندى، بنختاره بعناية من أحلى المزارع عشان يوصلك بريحته اللي بترد الروح ويكون لغة تعبير راقية عن مشاعرك في أجمل اللحظات 💐✨',
+    'ورد صناعي': 'جمال يدوم للأبد.. ورد صناعي بخامات ملكية فاخرة وملمس طبيعي جداً، قطعة ديكور راقية بيفضل رونقها ثابت عشان يفضل ذكرى حلوة تزيّن بيتكم وتفكركم بأحلى الأيام 🌷👑',
+    'ورد ستان': 'شغل الهاند-ميد الفاخر.. كل وردة معمولة يدوياً من أفخم أنواع الستان بحرفية "حلويات بوسي" الخاصة، ملمس ناعم وشكل "بريستيج" جداً يتقدم لهدية مفيش منها اتنين 🎀💖',
+    'ورد فلوس': 'أشيك طريقة لتقديم العيدية والهدايا النقدية.. ورد منسق بلمسة إبداعية وفنية تخلي هديتك مش مجرد مبلغ مالي، دي ذكرى مبهجة ومفاجأة بتخطف العين والقلب 💸🌹',
+    'ورد هدايا': 'تنسيق متكامل يجمع بين رقة الورد وشياكة التغليف.. البوكيه ده معمول مخصوص عشان يكون رفيق للهدايا القيمة، بلمسات فنية بتخلي شكل الهدية النهائي يبهر اللي هيستلمها 🎁✨',
+    'ورد شيكولاتة': 'ميكس السعادة المطلق.. بوكيه بيجمع بين شياكة الورد وطعم شيكولاتة بوسي الملكية، هدية "تؤكل" وتفرح القلب والعين في نفس الوقت.. الدلع اللي بجد 🍫🌹',
+
+    // 🍰 الجاتوه (كيك اسبونج)
+    'جاتوه كلاسيك': 'قطعة الجاتوه الأصيلة اللي بترجعنا لأحلى الذكريات بلمسة بوسي.. كيك اسبونج خفيف جداً وهش زي السحاب، بيدوب مع كريمة غنية وسكر مظبوط بالمللي.. الاختيار اللي مبيختلفش عليه اتنين 🍰✨',
+
+    // 🎂 تورتات (وصف مستقل لكل حجم)
+    'تورتة ميني': 'تورتة ميني كيوت تكفي فردين.. مثالية للمفاجآت السريعة والرومانسية 🎂🥰',
+    'حجم (فرد - فردين)': 'تورتة "المفاجأة السعيدة" من حلويات بوسي 🎂 حجم كيوت وتصميم ملكي يخطف القلب، معمولة مخصوص للحظات الرومانسية أو احتفال صغير بين اتنين.. كيك هش وحشوات غنية تكفيكم وتفيض حب 🥰',
+    'حجم (3 - 4 أفراد)': 'الاختيار الذهبي للمات العيلة الصغيرة 🏠 تورتة بتجمع بين الشياكة والطعم اللي يظبط المزاج، بتكفي 4 أفراد بقطع وافية وكريمة غنية.. توثقوا بيها أحلى صور وذكريات مع حلويات بوسي ✨',
+    'حجم (5 - 6 أفراد)': 'تورتة المناسبات السعيدة اللي بتشرفك قدام ضيوفك 👑 حجم عائلي بامتياز وتفاصيل فنية دقيقة، حشوات بريميوم وكيك بمقادير مظبوطة بالمللي تضمن إن كل ضيف ياخد قطعته ويدعي لمزاجك الراقي 🎂🎉',
+
+    // سينابون (عجينة قطنية)
+    'سينابون': 'سر السينابون عندنا في العجينة القطنية اللي مخبوزة بحب ومحشية بأجود قرفة وسكر بني 🍥 الصوص الكريمي بيغطيها ويدفي قلبك مع كل قطمة.. ريحة وطعم يودوك عالم تاني من الهدوء والروقان 🤎✨',
+    'سينابون نوتيلا': 'ميكس القرفة الدافئة مع النوتيلا السايحة على عجينة سينابون هشة.. طعم يجمع بين الدفا والرفاهية اللي مفيش زيها 🤎🍫'
+};
+
+// 🛡️ المحرك الديناميكي (The Smart Capsule)
 function getCapsuleDescription(p) {
     let n = (p.name || '').trim().toLowerCase();
     let c = (p.category || '').trim().toLowerCase();
-    
-    if (c.includes('دوناتس') || n.includes('دوناتس') || c.includes('بامبوليني') || n.includes('بامبوليني')) {
-        let base = c.includes('بامبوليني') || n.includes('بامبوليني') ? 'دوناتس إيطالي محشي كورة سحابية' : 'عجينة مقلية خفيفة زي القطنة';
-        if (n.includes('نوتيلا')) return `${base} بتبظ نوتيلا أصلية سايحة.. سعادة مستحيل تقاومها 🍩🍫`;
-        if (n.includes('لوتس')) return `${base} محشية زبدة لوتس وبسكوت.. قرمشة بتدوب في البق 🍩🤎`;
-        if (n.includes('كراميل')) return `${base} بصوص كراميل دافي وغني.. روقان بيعدل المود 🍩🍮`;
-        if (n.includes('فراول')) return `${base} بصوص فراولة فريش.. ميكس المزازة والحلاوة اللي يجنن 🍩🍓`;
-        if (n.includes('راسبيري')) return `${base} بصوص الراسبيري (التوت الأحمر).. مزازة تخطف القلب 🍩🍓`;
-        if (n.includes('بلوبيري')) return `${base} بصوص البلوبيري الغني.. طعم مميز بيعدل المود 🍩🫐`;
-        if (n.includes('كندر')) return `${base} بصوص كندر غني.. طعم بيفرح الكبار والصغيرين 🍩💛`;
-        if (n.includes('دارك')) return `شيكولاتة دارك إيطالية في قلب دوناتس خفيفة.. للذواقة وبس 🍩🖤`;
-        if (n.includes('وايت') || n.includes('ابيض')) return `${base} متغطية نوتيلا بيضاء مستوردة.. تجربة رقيقة 🍩🤍`;
-        return `${base} بصوصات مبهجة.. مستحيل تكتفي بواحدة 🍩😍`;
+
+    // نوتيلا الدوناتس: تركيز على "البظ" والقرمشة
+    if (c.includes('دوناتس') && n.includes('نوتيلا')) {
+        return 'عجينة دوناتس قطنية خفيفة جداً "بتبظ" نوتيلا أصلية سايحة مع كل قطمة.. انفجار سعادة مستحيل تقاوميه! 🍩🍫';
     }
 
-    if (c.includes('سينابون') || n.includes('سينابون')) {
-        let base = 'عجينة قطنية بقرفة وصوص جبنة غني';
-        if (n.includes('نوتيلا')) return `${base} وغرقانة نوتيلا سايحة.. دفا وسعادة 🤎🍫`;
-        if (n.includes('لوتس')) return `${base} بصوص اللوتس الساحر.. ميكس يدلع حواسك 🤎✨`;
-        if (n.includes('كراميل') || n.includes('بيكان')) return `قرمشة البيكان مع الكراميل الغني على عجينة قطنية 🤎🍮`;
-        if (n.includes('راسبيري')) return `عجينة قطنية غرقانة صوص راسبيري.. مزازة وحلاوة تخطف القلب 🍓✨`;
-        if (n.includes('بلوبيري')) return `عجينة قطنية بصوص البلوبيري (التوت الأزرق).. طعم يوديك حتة تانية 🫐💜`;
-        if (n.includes('كرز')) return `عجينة قطنية بصوص وحبات الكرز.. تجربة كلاسيكية فخمة 🍒❤️`;
-        return `عجينة قطنية طرية غرقانة قرفة وصوص جبنة.. ريحتها هتدفيك 🤎✨`;
+    // نوتيلا السينابون: تركيز على ميكس "القرفة مع الشوكولاتة"
+    if (c.includes('سينابون') && n.includes('نوتيلا')) {
+        return 'ميكس القرفة الدافئة مع غرقانة النوتيلا السايحة على عجينة سينابون هشة.. طعم يجمع بين الدفا والرفاهية 🤎🍫';
     }
 
-    if (c.includes('قشطوط') || n.includes('قشطوط')) {
-        if (n.includes('نوتيلا وايت')) return 'سحابة نوتيلا بيضاء على قشطوطة هشة غرقانة حليب.. دلع صافي ☁️🤍';
-        if (n.includes('نوتيلا')) return 'نوتيلا أصلية سايحة على قشطوطة بتدوب في الحليب.. لعشاق الشيكولاتة 🍫🤤';
-        if (n.includes('لوتس')) return 'زبدة وبسكوت لوتس على قشطوطة غرقانة حليب.. ميكس السعادة 🤎✨';
-        if (n.includes('مانجا') || n.includes('مانجو')) return 'مانجا فريش وكريمة على قشطوطة بتدوب.. انتعاش الصيف في قطمة 🥭💛';
-        if (n.includes('فراول')) return 'صوص وقطع فراولة فريش على قشطوطة هشة.. مزازة وحلاوة تجنن 🍓❤️';
-        if (n.includes('راسبيري')) return 'صوص الراسبيري (التوت الأحمر) على قشطوطة هشة.. مزازة تلذذ القلب 🍓✨';
-        if (n.includes('بلوبيري')) return 'صوص البلوبيري الغني على قشطوطة بتدوب.. طعم مميز وراقي 🫐💜';
-        if (n.includes('كرز')) return 'صوص وحبات الكرز اللذيذة على قشطوطة غرقانة حليب.. فخامة الطعم 🍒❤️';
-        if (n.includes('رفايلو') || n.includes('رافيلو')) return 'دلع جوز هند ولوز غرقانين في قشطة كريمي.. توديك حتة تانية خالص 🥥🤍';
-        if (n.includes('كراميل')) return 'صوص كراميل دافي على قشطوطة غرقانة حليب.. روقان بيطبطب عالقلب 🍮🤎';
-        if (n.includes('موز')) return 'موز فريش وصوصات غنية على قشطوطة بتدوب.. ميكس كلاسيكي مبهج 🍌🥞';
-        if (n.includes('فستق') || n.includes('مكسرات')) return 'قرمشة مكسرات فاخرة مع نعومة القشطوطة.. تباين يمتع حواسك 🌰💚';
-        if (n.includes('اوريو') || n.includes('أوريو')) return 'أوريو أصلي غرقان في قشطوطة بتدوب وحليب طازة.. طعم مايتنسيش 🍪🥛';
-        if (n.includes('مكس') || n.includes('ميكس') || n.includes('نكهات')) return 'ميكس نكهات عالمية في قشطوطة واحدة.. تجربة غنية تخطف العين 🤩🎨';
-        return 'كيكة هشة بتدوب غرقانة حليب وقشطة طبيعية.. تطبطب على قلبك ☁️🤍';
+    // نوتيلا القشطوطة: تركيز على "الحليب والقشطة"
+    if (c.includes('قشطوط') && n.includes('نوتيلا')) {
+        return 'نوتيلا أصلية فوق طبقة قشطة طبيعية وكيك غرقان حليب.. توازن رهيب بين الحلاوة والانتعاش بيذوب في البق ☁️🍫';
     }
 
-    if (c.includes('ديسباسيتو') || n.includes('ديسباسيتو')) {
-        let base = 'كيكة اسفنجية غرقانة صوص شيكولاتة برازيلي';
-        if (n.includes('نوتيلا')) return `${base} ونوتيلا.. دمار لذيذ 🍫🤤`;
-        if (n.includes('لوتس')) return `${base} ولمسة لوتس.. بيعدل المود فوراً 🤎✨`;
-        return `${base}.. بتطبطب عالقلب 🍫🤤`;
-    }
-
-    if (n.includes('كبات') || c.includes('كبات')) {
-        if (n.includes('نوتيلا')) return 'طبقات كيك هش وكريمة نوتيلا في كب شيك.. جرعة سعادة سريعة 🧁🍫';
-        if (n.includes('لوتس')) return 'زبدة لوتس وبسكوت مع طبقات الكيك.. طعم ياخدك لعالم تاني 🧁🤎';
-        if (n.includes('مانجا')) return 'انتعاش المانجا الفريش مع الكيك والكريمة.. صيفك أحلى في كب 🧁🥭';
-        return 'طبقات كيك وكريمة وصوصات لذيذة.. كب السعادة في أي مكان 🧁🤩';
-    }
-
-    if (c.includes('تشيز كيك') || n.includes('تشيز')) return 'بسكوت مقرمش وجبنة كريمية ناعمة بصوص فريش.. توازن بيذوب 🍓🧀';
-    if (c.includes('ريد فيلفت') || n.includes('فيلفت')) return 'كيكة مخملية حمراء بكريمة تشيز غنية.. رقي وذوق عالي 🍒♥️';
-    if (c.includes('ميل فاي') || n.includes('ميل فاي')) return 'طبقات مورقة مقرمشة بباستري كريم غني.. سيمفونية قرمشة 🥐💛';
-    if (c.includes('إكلير') || n.includes('إكلير')) return 'عجينة شو فرنسية بكريمة غنية وشيكولاتة بتلمع.. كلاسيكية باريسية 🥖🍫';
-    if (c.includes('كب كيك') || n.includes('كب كيك')) return '12 قطعة كب كيك هش بكريمة وتفاصيل شيك.. تكمل حلاوة مناسبتك 🧁✨';
-    
-    if (c.includes('جاتوه') || n.includes('جاتوه')) {
-        if (n.includes('سواريه')) return 'قطع فنية صغيرة شيك جداً بتدوب في البق.. للضيافة الراقية 🎀👑';
-        if (n.includes('ملكي') || n.includes('فاخر')) return 'جاتوه فاخر بخامات مستوردة.. طعم ملكي يبهر ضيوفك 👑✨';
-        return 'كيك اسفنجي وكريمة غنية.. قطعة الجاتوه اللي اتربينا عليها 🍰🎉';
+    // نوتيلا كبات السعادة: تركيز على "الطبقات والسرعة"
+    if (n.includes('كبات') && n.includes('نوتيلا')) {
+        return 'طبقات من الكيك الهش وكريمة النوتيلا الغنية في كب شيك.. جرعة سعادة مركزة وسريعة لمزاجك الراقي 🧁🍫';
     }
     
-    if (c.includes('تورت') || n.includes('تورت')) {
-        if (n.includes('فرد - فردين') || n.includes('فردين')) return 'تورتة ميني كيوت تكفي فردين.. مثالية للمفاجآت السريعة والرومانسية 🎂🥰';
-        if (n.includes('3 - 4') || n.includes('4 أفراد')) return 'حجم وسط ممتاز يكفي 4 أفراد.. الاختيار الذهبي للمة الصغيرة 🎂✨';
-        if (n.includes('5 - 6') || n.includes('6 أفراد')) return 'تورتة عائلية تكفي 6 أفراد.. علشان تشرفك وتكمل فرحتكم في أي احتفال 🎂🎉';
-        if (n.includes('ميني')) return 'تورتة صغيرة مليانة حب تكفي 3 أفراد.. للمفاجآت السريعة 🎂🥰';
-        return 'تورتة ملكية كيك هش وحشوات غنية.. تتربع على عرش مناسبتك 👑🎂';
+    // نوتيلا الديسباسيتو: تركيز على "الفادج والدمار اللذيذ" كاحتياطي
+    if (c.includes('ديسباسيتو') && n.includes('نوتيلا')) {
+        return 'فادج كيك شيكولاتة مركز وغرقان نوتيلا برازيلي.. دمار لذيذ لعشاق الشيكولاتة التقيلة وبس 🍫🤤';
     }
     
-    if (c.includes('بوكس') || n.includes('بوكس') || c.includes('عروض')) return 'تجميعة ألذ الأصناف في بوكس متكامل.. بيفصلك عن العالم 🎁✨';
+    // دوناتس نكهات أخرى
+    if (c.includes('دوناتس') || c.includes('بامبوليني')) return 'عجينة دوناتس مقلية خفيفة زي القطنة بصوصات مبهجة.. مستحيل تكتفي بواحدة 🍩😍';
+    
+    // سينابون كلاسيك أو نكهات أخرى
+    if (c.includes('سينابون') || n.includes('سينابون')) return 'عجينة قطنية طرية غرقانة قرفة وصوص جبنة.. ريحتها هتدفيك 🤎✨';
+    
+    // ديسباسيتو كلاسيك
+    if (c.includes('ديسباسيتو') || n.includes('ديسباسيتو')) return 'فادج كيك غني غرقان صوص شيكولاتة برازيلي.. بتطبطب عالقلب 🍫🤤';
+    
+    // قشطوطة كلاسيك
+    if (c.includes('قشطوط') || n.includes('قشطوط')) return 'كيكة هشة بتدوب غرقانة حليب وقشطة طبيعية.. تطبطب على قلبك ☁️🤍';
 
-    return 'قطعة فنية معمولة بحب ومقادير مظبوطة.. تدلع مزاجك وتليق بيك ✨';
+    return 'قطعة فنية من حلويات بوسي، معمولة بحب ومقادير مظبوطة عشان تليق بذوقك وتفتح شهيتك ✨';
 }
 
-// ⚡ ⚡ الحل الجذري والنهائي: السيادة المطلقة لوصف الإدارة من قاعدة البيانات
+// ⚡ ⚡ الحل الجذري والنهائي: السيادة المطلقة لوصف الإدارة من قاعدة البيانات أو المحرك الفريد
 function getFinalDescription(p, isFullWidth) {
     if (p.desc && p.desc.trim().length > 3) return escapeHTML(p.desc.trim());
-    if (!isFullWidth) return getCapsuleDescription(p);
+    
     let n = (p.name || '').trim().toLowerCase();
     let c = (p.category || '').trim().toLowerCase();
+    let sub = (p.subType || p.size || p.flowerType || '').trim().toLowerCase();
+    
+    // 1. توليد مفاتيح بحث متعددة الدقة لالتقاط الوصف المستقل تماما
+    const exactKey1 = `${c} ${n} ${sub}`.trim(); // ديسباسيتو نوتيلا مثلث
+    const exactKey2 = `${n} ${sub}`.trim();      // نوتيلا مثلث
+    const exactKey3 = `${c} ${sub}`.trim();      // ورد طبيعي
+    const exactKey4 = `${sub}`.trim();           // طبيعي
+    const exactKey5 = `${n}`.trim();             // جاتوه كلاسيك
+
+    // البحث الدقيق في القاموس لمنع التكرار
     for (let key in detailedDescriptions) {
-        if (n.includes(key.toLowerCase()) || c.includes(key.toLowerCase())) return detailedDescriptions[key];
+        let kLower = key.toLowerCase();
+        if (exactKey1 === kLower || exactKey2 === kLower || exactKey3 === kLower || exactKey4 === kLower || exactKey5 === kLower) {
+            return detailedDescriptions[key];
+        }
     }
+    
+    // 2. البحث التقريبي في القاموس كخط دفاع ثاني
+    for (let key in detailedDescriptions) {
+        let kLower = key.toLowerCase();
+        if ((n.includes(kLower) || sub.includes(kLower)) && c === 'تورت') {
+            return detailedDescriptions[key];
+        }
+        if ((n.includes('جاتوه') || c.includes('جاتوه')) && key.includes('جاتوه')) {
+            return detailedDescriptions['جاتوه كلاسيك']; // كيك اسبونج
+        }
+    }
+
     return getCapsuleDescription(p);
 }
 
@@ -154,6 +348,23 @@ function escapeHTML(str) {
 
 function generateUniqueID() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
 
+// 🛡️ Engine Upgrade: Image Optimization Algorithm (Cloudinary)
+function optimizeCloudinaryUrl(url) {
+    if (!url || typeof url !== 'string' || !url.includes('cloudinary.com')) return url;
+    if (url.includes('q_auto') || url.includes('f_auto')) return url; // منع الازدواجية
+    return url.replace('/upload/', '/upload/q_auto,f_auto,w_800/');
+}
+
+// 🛡️ المولد الأمني لرقم الطلب (يضمن عدم التكرار نهائياً - V2.0)
+function generateSecureOrderId() {
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const perf = typeof performance !== 'undefined' ? Math.floor(performance.now() * 1000).toString(36).toUpperCase() : '0000';
+    const cryptoRandom = window.crypto && window.crypto.getRandomValues 
+        ? window.crypto.getRandomValues(new Uint32Array(1))[0].toString(36).substring(0,4).toUpperCase() 
+        : Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `BS-${timestamp}-${perf}-${cryptoRandom}`;
+}
+
 function showSystemToast(message, type = 'info') {
     const toast = document.getElementById('system-toast');
     if(!toast) return;
@@ -163,31 +374,31 @@ function showSystemToast(message, type = 'info') {
     toast.className = `fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] flex items-center gap-3 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm max-w-[90vw] text-center border border-gray-700 toast-enter ${type === 'error' ? 'bg-red-900' : (type === 'success' ? 'bg-emerald-800' : 'bg-gray-900')}`;
     iconEl.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : (type === 'success' ? 'check-circle' : 'info'));
     if(window.lucide) lucide.createIcons();
-    setTimeout(() => { toast.classList.replace('flex', 'hidden'); toast.classList.remove('toast-enter'); }, 4000);
+    
+    // استخدام MemoryManager لمنع تسريب الذاكرة وتراكم العمليات
+    MemoryManager.set('toast_timer', () => {
+        toast.classList.replace('flex', 'hidden'); 
+        toast.classList.remove('toast-enter');
+    }, 4000);
 }
 
 // 👑 المفتاح السري المطور - توجيه لصفحة الأمان
 let adminClicksCounter = 0;
-let adminClickTimer;
 
 window.triggerAdminAccess = function(e) {
     if(e) e.stopPropagation(); 
     adminClicksCounter++;
-    clearTimeout(adminClickTimer);
+    MemoryManager.clear('admin_clicks_reset');
     
     if (adminClicksCounter >= 5) {
         adminClicksCounter = 0;
         showSystemToast('جاري التحويل لبوابة الحماية 🛡️...', 'success');
-        setTimeout(() => {
-            // التوجيه الصحيح لصفحة تسجيل الدخول
-            window.location.href = 'login.html';
-        }, 800);
+        MemoryManager.set('admin_redirect', () => { window.location.href = 'login.html'; }, 800);
     }
     
-    adminClickTimer = setTimeout(() => { adminClicksCounter = 0; }, 1500); 
+    MemoryManager.set('admin_clicks_reset', () => { adminClicksCounter = 0; }, 1500);
 };
 
-// الربط الاحترافي بالمعرف الموحد في القائمة الجانبية
 function autoBindAdminAccess() {
     const portal = document.getElementById('admin-secret-portal');
     if (portal) {
@@ -210,9 +421,7 @@ const defaultSettings = {
 
 const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
 
-// ⚡ قائمة الديسباسيتو المحدثة حصرياً (النكهات الجديدة بزيادة السعر 10%)
 let defaultCatalog = [
-    // --- ديسباسيتو مثلث ---
     { id: 'dp_tri_dark', name: 'ديسباسيتو نوتيلا دارك', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
     { id: 'dp_tri_lotus', name: 'ديسباسيتو لوتس', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
     { id: 'dp_tri_white', name: 'ديسباسيتو نوتيلا وايت', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
@@ -224,8 +433,6 @@ let defaultCatalog = [
     { id: 'dp_tri_snick', name: 'ديسباسيتو اسنيكرز', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
     { id: 'dp_tri_mix', name: 'ديسباسيتو ميكس شوكليت', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
     { id: 'dp_tri_pist', name: 'ديسباسيتو بيستاشيو', category: 'ديسباسيتو', size: 'مثلث', price: 83, inStock: true },
-
-    // --- ديسباسيتو وسط ---
     { id: 'dp_med_dark', name: 'ديسباسيتو نوتيلا دارك', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
     { id: 'dp_med_lotus', name: 'ديسباسيتو لوتس', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
     { id: 'dp_med_white', name: 'ديسباسيتو نوتيلا وايت', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
@@ -237,8 +444,6 @@ let defaultCatalog = [
     { id: 'dp_med_snick', name: 'ديسباسيتو اسنيكرز', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
     { id: 'dp_med_mix', name: 'ديسباسيتو ميكس شوكليت', category: 'ديسباسيتو', size: 'وسط', price: 132, inStock: true },
     { id: 'dp_med_pist', name: 'ديسباسيتو بيستاشيو', category: 'ديسباسيتو', size: 'وسط', price: 165, inStock: true },
-
-    // --- ديسباسيتو كبير ---
     { id: 'dp_lrg_dark', name: 'ديسباسيتو نوتيلا دارك', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
     { id: 'dp_lrg_lotus', name: 'ديسباسيتو لوتس', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
     { id: 'dp_lrg_white', name: 'ديسباسيتو نوتيلا وايت', category: 'ديسباسيتو', size: 'كبير', price: 264, inStock: true },
@@ -259,9 +464,9 @@ async function fetchDefaultCatalog() {
 
 let siteSettings = { ...defaultSettings };
 let shippingZones = [ ...defaultShipping ];
-let catalog = []; let globalOrders = []; let galleryData = []; let catMenu = [];
+let catalog = []; let galleryData = []; let catMenu = [];
 
-const dSizes = ['مثلث', 'وسط', 'كبير']; const fTypes = ['ورد طبيعي', 'ورد صناعي', 'ورد ستان', 'ورد بالصور', 'ورد بالفلوس'];
+const dSizes = ['مثلث', 'وسط', 'كبير']; const fTypes = ['ورد طبيعي', 'ورد صناعي', 'ورد ستان', 'ورد هدايا', 'ورد فلوس', 'ورد شيكولاتة'];
 let state = { activeCat: 'تورت', dSize: 'مثلث', fType: 'ورد طبيعي', cart: [], currentShippingFee: 0, cakeBuilder: { flv: 'فانيليا', ps: 4, sh: 'دائري', trd: false, img: 'بدون', msg: '', alg: '', occ: '', refImgUrl: '', hasRefImg: false, crd: false, dlg: false } };
 
 async function loadEngineMemory() {
@@ -278,8 +483,21 @@ async function loadEngineMemory() {
             const freshDespacito = defaultCatalog.filter(p => p.category === 'ديسباسيتو');
             catalog = [...catalog, ...freshDespacito];
         }
-        const orderSnap = await db.collection('orders').orderBy('timestamp', 'desc').get();
-        if (!orderSnap.empty) { globalOrders = []; orderSnap.forEach(doc => globalOrders.push(doc.data())); }
+
+        // 🛡️ المراقبة اللحظية لتحديث الكتالوج والفهرس تلقائياً
+        db.collection('catalog').onSnapshot(snapshot => {
+            let updatedCatalog = [];
+            snapshot.forEach(doc => {
+                const p = doc.data();
+                if (p.category !== 'ديسباسيتو') updatedCatalog.push(p);
+            });
+            const freshDespacito = defaultCatalog.filter(p => p.category === 'ديسباسيتو');
+            catalog = [...updatedCatalog, ...freshDespacito];
+            syncCatalogMap();
+            LiveSearchEngine.observeIndexUpdate(catalog);
+            if(document.getElementById('display-container')) renderMainDisplay(); // تحديث الواجهة مباشرة
+        });
+
         const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
         if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
         const settingsSnap = await db.collection('settings').doc('main').get();
@@ -290,8 +508,24 @@ async function loadEngineMemory() {
         else catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
         if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
         syncCatalogMap(); 
-    } catch(err) { catalog = [...defaultCatalog]; syncCatalogMap(); }
-    try { const savedCart = localStorage.getItem('boseSweets_cart_data'); if (savedCart) state.cart = JSON.parse(savedCart); } catch (e) { state.cart = []; }
+        
+        // بناء محرك البحث اللحظي المتقدم عند التشغيل
+        LiveSearchEngine.build(catalog);
+    } catch(err) { 
+        catalog = [...defaultCatalog]; 
+        syncCatalogMap(); 
+        LiveSearchEngine.build(catalog);
+    }
+    
+    try { 
+        const dbCart = await ClientStorageEngine.get('cart');
+        if (dbCart) {
+            state.cart = dbCart;
+        } else {
+            const savedCart = localStorage.getItem('boseSweets_cart_data'); 
+            if (savedCart) state.cart = JSON.parse(savedCart);
+        }
+    } catch (e) { state.cart = []; }
 }
 
 async function saveEngineMemory(type) {
@@ -303,8 +537,19 @@ async function saveEngineMemory(type) {
     } catch (e) {}
 }
 
-function saveCartToStorage() { try { localStorage.setItem('boseSweets_cart_data', JSON.stringify(state.cart)); } catch (e) {} }
-function clearCartStorage() { try { localStorage.removeItem('boseSweets_cart_data'); } catch (e) {} }
+function saveCartToStorage() { 
+    try { 
+        ClientStorageEngine.set('cart', state.cart); 
+        localStorage.setItem('boseSweets_cart_data', JSON.stringify(state.cart)); 
+    } catch (e) {} 
+}
+
+function clearCartStorage() { 
+    try { 
+        ClientStorageEngine.remove('cart');
+        localStorage.removeItem('boseSweets_cart_data'); 
+    } catch (e) {} 
+}
 
 function applySettingsToUI() {
     const root = document.documentElement;
@@ -341,8 +586,13 @@ function applySettingsToUI() {
 
 async function initApp() {
     await loadEngineMemory();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const routeCat = urlParams.get('category');
+    if(routeCat && catMenu.includes(routeCat)) state.activeCat = routeCat;
+
     const loader = document.getElementById('global-loader');
-    if(loader) { loader.style.opacity = '0'; loader.style.visibility = 'hidden'; setTimeout(() => loader.style.display = 'none', 500); }
+    if(loader) { loader.style.opacity = '0'; loader.style.visibility = 'hidden'; MemoryManager.set('loader_hide', () => loader.style.display = 'none', 500); }
     applySettingsToUI();
     
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
@@ -351,15 +601,15 @@ async function initApp() {
     syncCartUI(); 
     if(window.lucide) lucide.createIcons();
     PreloadEngine.ignite(catalog, galleryData);
-    const urlParams = new URLSearchParams(window.location.search);
+    
     const sharedProductId = urlParams.get('product');
     if(sharedProductId && document.getElementById('display-container')) {
         const prod = catalogMap.get(sharedProductId);
         if(prod) {
             setCategory(prod.category); 
-            setTimeout(() => {
+            MemoryManager.set('product_scroll', () => {
                 const el = document.getElementById('product-card-' + sharedProductId);
-                if(el) { el.scrollIntoView({behavior: 'smooth', block: 'center'}); el.classList.add('highlight-target'); setTimeout(() => el.classList.remove('highlight-target'), 2500); }
+                if(el) { el.scrollIntoView({behavior: 'smooth', block: 'center'}); el.classList.add('highlight-target'); MemoryManager.set('remove_highlight', () => el.classList.remove('highlight-target'), 2500); }
             }, 500);
         }
     }
@@ -367,18 +617,24 @@ async function initApp() {
 
 function toggleLiveSearch(show) {
     const overlay = document.getElementById('live-search-overlay'); const input = document.getElementById('live-search-input'); const results = document.getElementById('live-search-results');
-    if (show) { overlay.classList.remove('hidden'); setTimeout(() => { overlay.classList.add('opacity-100'); input.focus(); }, 10); input.value = ''; results.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; if(window.lucide) lucide.createIcons(); } 
-    else { overlay.classList.remove('opacity-100'); setTimeout(() => overlay.classList.add('hidden'), 300); }
+    if (show) { overlay.classList.remove('hidden'); MemoryManager.set('search_show', () => { overlay.classList.add('opacity-100'); input.focus(); }, 10); input.value = ''; results.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; if(window.lucide) lucide.createIcons(); } 
+    else { overlay.classList.remove('opacity-100'); MemoryManager.set('search_hide', () => overlay.classList.add('hidden'), 300); MemoryManager.flush(); }
 }
 
+// 🛡️ تفعيل محرك البحث اللحظي المطور لسرعة استجابة فائقة وتوفير الموارد
 function performLiveSearch(query) {
-    const resultsContainer = document.getElementById('live-search-results'); const q = query.trim().toLowerCase();
+    const resultsContainer = document.getElementById('live-search-results'); 
+    const q = query.trim().toLowerCase();
+    
     if (!q) { resultsContainer.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-white/50 font-bold mt-10"><i data-lucide="cake" class="w-16 h-16 mb-4 opacity-30"></i><p>ابدأ البحث في قائمة حلويات بوسي...</p></div>`; if(window.lucide) lucide.createIcons(); return; }
-    const matches = catalog.filter(p => (p.name && p.name.toLowerCase().includes(q)) || (p.category && p.category.toLowerCase().includes(q)) || (p.desc && p.desc.toLowerCase().includes(q)));
+    
+    const matches = LiveSearchEngine.search(q);
+    
     if (matches.length === 0) { resultsContainer.innerHTML = `<div class="flex flex-col items-center justify-center text-white/70 font-bold mt-10 bg-white/5 p-8 rounded-2xl"><i data-lucide="search-x" class="w-12 h-12 mb-4 text-pink-400"></i><p>لم نجد تطابق للبحث عن "${escapeHTML(query)}"</p><p class="text-xs opacity-70 mt-2">جرب البحث بكلمة مختلفة مثل "تورتة"، "نوتيلا"، "لوتس"</p></div>`; if(window.lucide) lucide.createIcons(); return; }
     resultsContainer.innerHTML = matches.map(p => {
-        const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category)); const isOutOfStock = p.inStock === false;
-        return `<div class="flex items-center gap-4 p-3 rounded-2xl bg-white shadow-sm border border-pink-100 transition-all hover:shadow-md cursor-pointer ${isOutOfStock ? 'opacity-70' : ''}" onclick="toggleLiveSearch(false); setCategory('${p.category}'); setTimeout(()=> { const el = document.getElementById('product-card-${p.id}'); if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); el.classList.add('highlight-target'); setTimeout(()=>el.classList.remove('highlight-target'), 2500);} }, 500);"><img src="${imgUrl}" class="w-16 h-16 object-cover rounded-xl shadow-sm border border-gray-100 ${isOutOfStock ? 'grayscale' : ''}"><div class="flex-1"><h4 class="font-bold text-sm text-gray-800">${escapeHTML(p.name)}</h4><div class="flex items-center gap-2 mt-1"><span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md font-bold">${p.category}</span><span class="font-bold text-pink-600 text-sm">${Number(p.price) > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span></div></div><div class="px-2">${isOutOfStock ? `<span class="text-xs text-red-500 font-bold bg-red-50 px-2 py-1 rounded-lg border border-red-100"><i data-lucide="ban" class="w-3 h-3 inline"></i> نفدت</span>` : `<button class="w-10 h-10 bg-pink-50 text-pink-500 hover:bg-pink-500 hover:text-white rounded-xl flex items-center justify-center transition-colors shadow-sm"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>`}</div></div>`;
+        const imgUrl = optimizeCloudinaryUrl((p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category))); 
+        const isOutOfStock = p.inStock === false;
+        return `<div class="flex items-center gap-4 p-3 rounded-2xl bg-white shadow-sm border border-pink-100 transition-all hover:shadow-md cursor-pointer ${isOutOfStock ? 'opacity-70' : ''}" onclick="toggleLiveSearch(false); setCategory('${p.category}'); MemoryManager.set('search_scroll_${p.id}', ()=> { const el = document.getElementById('product-card-${p.id}'); if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); el.classList.add('highlight-target'); MemoryManager.set('search_hl_${p.id}', ()=>el.classList.remove('highlight-target'), 2500);} }, 500);"><img src="${imgUrl}" class="w-16 h-16 object-cover rounded-xl shadow-sm border border-gray-100 ${isOutOfStock ? 'grayscale' : ''}"><div class="flex-1"><h4 class="font-bold text-sm text-gray-800">${escapeHTML(p.name)}</h4><div class="flex items-center gap-2 mt-1"><span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md font-bold">${p.category}</span><span class="font-bold text-pink-600 text-sm">${Number(p.price) > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span></div></div><div class="px-2">${isOutOfStock ? `<span class="text-xs text-red-500 font-bold bg-red-50 px-2 py-1 rounded-lg border border-red-100"><i data-lucide="ban" class="w-3 h-3 inline"></i> نفدت</span>` : `<button class="w-10 h-10 bg-pink-50 text-pink-500 hover:bg-pink-500 hover:text-white rounded-xl flex items-center justify-center transition-colors shadow-sm"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>`}</div></div>`;
     }).join('');
     if(window.lucide) lucide.createIcons();
 }
@@ -391,8 +647,8 @@ function shareProduct(id, name) {
 
 function toggleCustomerMenu(show) {
     const ov = document.getElementById('customer-menu-overlay'); const sd = document.getElementById('customer-menu-sidebar');
-    if (show) { ov.classList.remove('hidden'); setTimeout(() => { ov.classList.add('opacity-100'); sd.classList.remove('translate-x-full'); }, 10); } 
-    else { ov.classList.remove('opacity-100'); sd.classList.add('translate-x-full'); setTimeout(() => ov.classList.add('hidden'), 500); }
+    if (show) { ov.classList.remove('hidden'); MemoryManager.set('menu_show', () => { ov.classList.add('opacity-100'); sd.classList.remove('translate-x-full'); }, 10); } 
+    else { ov.classList.remove('opacity-100'); sd.classList.add('translate-x-full'); MemoryManager.set('menu_hide', () => ov.classList.add('hidden'), 500); MemoryManager.flush(); }
 }
 
 function renderCustomerSidebarCategories() {
@@ -407,7 +663,7 @@ function renderCustomerGallery() {
     if(!sec) return;
     if (galleryData.length === 0) { sec.classList.add('hidden'); return; }
     sec.classList.remove('hidden');
-    slider.innerHTML = galleryData.map(g => `<div class="shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="openLightbox('${g.url}')"><div class="w-32 h-40 md:w-40 md:h-52 rounded-2xl overflow-hidden shadow-sm border" style="border-color: hsl(var(--brand-hue), 80%, 90%);"><img src="${g.url}" class="w-full h-full object-cover" loading="lazy" alt="سابقة أعمال حلويات بوسي"></div></div>`).join('');
+    slider.innerHTML = galleryData.map(g => `<div class="shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="openLightbox('${g.url}')"><div class="w-32 h-40 md:w-40 md:h-52 rounded-2xl overflow-hidden shadow-sm border" style="border-color: hsl(var(--brand-hue), 80%, 90%);"><img src="${optimizeCloudinaryUrl(g.url)}" class="w-full h-full object-cover" loading="lazy" alt="سابقة أعمال حلويات بوسي"></div></div>`).join('');
 }
 
 function openLightbox(url) { const lb = document.getElementById('gallery-lightbox'); document.getElementById('lightbox-img').src = url; lb.classList.remove('hidden'); lb.classList.add('flex'); if(window.lucide) lucide.createIcons(); }
@@ -419,7 +675,13 @@ function renderCategories() {
     el.innerHTML = catMenu.map(c => `<button id="cat-btn-${c.replace(/\s+/g, '-')}" onclick="setCategory('${c}')" class="whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === c ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'border-pink-100 hover:border-pink-300'}" style="${state.activeCat === c ? '' : `background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</button>`).join('');
 }
 
-function setCategory(c) { state.activeCat = c; renderCategories(); renderMainDisplay(); setTimeout(() => { const activeBtn = document.getElementById(`cat-btn-${c.replace(/\s+/g, '-')}`); if (activeBtn) { activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } }, 50); }
+function setCategory(c) { 
+    state.activeCat = c; 
+    renderCategories(); 
+    renderMainDisplay(); 
+    history.pushState({category: c}, '', `?category=${encodeURIComponent(c)}`);
+    MemoryManager.set('scroll_cat', () => { const activeBtn = document.getElementById(`cat-btn-${c.replace(/\s+/g, '-')}`); if (activeBtn) { activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } }, 50); 
+}
 
 function renderFlowerTabs(container) {
     container.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${fTypes.map(f => `<button onclick="setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}</div>`;
@@ -478,10 +740,17 @@ window.addWithQty = function(id) {
     const safeId = String(id); const prod = catalogMap.get(safeId); 
     if (!prod) return;
     if (prod.inStock === false) { showSystemToast('نأسف، هذا المنتج غير متوفر حالياً.', 'error'); return; }
+    
+    if(navigator.vibrate) navigator.vibrate(50); 
+    
     const exist = state.cart.find(i => String(i.id) === safeId);
     if (exist) { exist.quantity = Number(exist.quantity) + qty; } 
     else { const newCartItem = JSON.parse(JSON.stringify(prod)); newCartItem.quantity = qty; newCartItem.cartItemId = generateUniqueID(); state.cart.push(newCartItem); }
     saveCartToStorage(); syncCartUI(); updateCardUI(safeId); calculateCartTotal(); 
+    
+    const cartBtn = document.querySelector('button[onclick="toggleCart(true)"]');
+    if(cartBtn) { cartBtn.classList.add('scale-110'); MemoryManager.set('cart_bounce', ()=> cartBtn.classList.remove('scale-110'), 200); }
+    
     showSystemToast(`تم إضافة الكمية (${qty}) للسلة بنجاح 🛍️`, 'success');
 };
 
@@ -490,7 +759,9 @@ function drawProductCard(p, layoutMode = 'grid') {
     let itemLayout = (p.layout && p.layout !== 'default') ? p.layout : layoutMode;
     let isFullWidth = (itemLayout === 'full');
     const isOutOfStock = p.inStock === false;
-    const imageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
+    
+    const rawImageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
+    const imageList = rawImageList.map(url => optimizeCloudinaryUrl(url));
     
     const finalDesc = getFinalDescription(p, isFullWidth);
 
@@ -503,13 +774,13 @@ function drawProductCard(p, layoutMode = 'grid') {
             </div>
             
             <div class="flex items-center justify-between gap-2 w-full">
-                <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-0.5 border border-gray-100 shadow-inner">
-                    <button onclick="updateTempQty('${p.id}', -1)" class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-pink-600 bg-white rounded shadow-sm hover:bg-pink-50 active:scale-90 transition-all"><i data-lucide="minus" class="w-3 h-3 sm:w-4 sm:h-4"></i></button>
-                    <span id="temp-qty-${p.id}" class="text-[11px] sm:text-[13px] font-black text-gray-700 w-3 sm:w-4 text-center">1</span>
-                    <button onclick="updateTempQty('${p.id}', 1)" class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-pink-600 bg-white rounded shadow-sm hover:bg-pink-50 active:scale-90 transition-all"><i data-lucide="plus" class="w-3 h-3 sm:w-4 sm:h-4"></i></button>
+                <div class="flex items-center gap-1 bg-gray-50 rounded-lg p-0.5 border border-gray-100 shadow-inner quantity-controls">
+                    <button onclick="updateTempQtyContext(this, -1)" class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-pink-600 bg-white rounded shadow-sm hover:bg-pink-50 active:scale-90 transition-all"><i data-lucide="minus" class="w-3 h-3 sm:w-4 sm:h-4"></i></button>
+                    <span class="temp-qty-display text-[11px] sm:text-[13px] font-black text-gray-700 w-3 sm:w-4 text-center" data-prod-id="${p.id}">1</span>
+                    <button onclick="updateTempQtyContext(this, 1)" class="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center text-pink-600 bg-white rounded shadow-sm hover:bg-pink-50 active:scale-90 transition-all"><i data-lucide="plus" class="w-3 h-3 sm:w-4 sm:h-4"></i></button>
                 </div>
                 
-                <button onclick="addWithQty('${p.id}')" class="flex-1 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500 to-pink-400 text-white rounded-lg font-bold text-[11px] sm:text-[13px] shadow-sm shadow-pink-200 hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all flex items-center justify-center gap-1.5 border border-pink-400/50">
+                <button onclick="addWithQtyContext(this, '${p.id}')" class="flex-1 py-1.5 sm:py-2 bg-gradient-to-r from-pink-500 to-pink-400 text-white rounded-lg font-bold text-[11px] sm:text-[13px] shadow-sm shadow-pink-200 hover:shadow-md hover:-translate-y-0.5 active:scale-95 transition-all flex items-center justify-center gap-1.5 border border-pink-400/50">
                     <i data-lucide="shopping-basket" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i> إضافة
                 </button>
             </div>
@@ -539,6 +810,57 @@ function drawProductCard(p, layoutMode = 'grid') {
     </div>`;
 }
 
+window.updateTempQtyContext = function(buttonElement, delta) {
+    const container = buttonElement.closest('.quantity-controls');
+    if(container) {
+        const el = container.querySelector('.temp-qty-display');
+        if(el) {
+            let val = parseInt(el.innerText.replace(/[^0-9]/g, '')) + delta;
+            if(val < 1) val = 1; if(val > 50) val = 50;
+            el.innerText = val; 
+        }
+    }
+};
+
+window.addWithQtyContext = function(buttonElement, id) {
+    let qty = 1; 
+    const cardElement = buttonElement.closest('.bg-white.flex.flex-col');
+    if(cardElement) {
+        const qtyEl = cardElement.querySelector('.temp-qty-display');
+        if(qtyEl) qty = parseInt(qtyEl.innerText) || 1;
+    }
+
+    const safeId = String(id); const prod = catalogMap.get(safeId); 
+    if (!prod) return;
+    if (prod.inStock === false) { showSystemToast('نأسف، هذا المنتج غير متوفر حالياً.', 'error'); return; }
+    
+    if(navigator.vibrate) navigator.vibrate(50); 
+    
+    const exist = state.cart.find(i => String(i.id) === safeId);
+    if (exist) { 
+        exist.quantity = Number(exist.quantity) + qty; 
+    } else { 
+        const newCartItem = JSON.parse(JSON.stringify(prod)); 
+        newCartItem.quantity = qty; 
+        newCartItem.cartItemId = generateUniqueID(); 
+        state.cart.push(newCartItem); 
+    }
+    
+    saveCartToStorage(); 
+    syncCartUI(); 
+    calculateCartTotal(); 
+    
+    if(cardElement) {
+        const qtyEl = cardElement.querySelector('.temp-qty-display');
+        if(qtyEl) qtyEl.innerText = '1';
+    }
+    
+    const cartBtn = document.querySelector('button[onclick="toggleCart(true)"]');
+    if(cartBtn) { cartBtn.classList.add('scale-110'); MemoryManager.set('cart_bounce', ()=> cartBtn.classList.remove('scale-110'), 200); }
+    
+    showSystemToast(`تم إضافة الكمية (${qty}) للسلة بنجاح 🛍️`, 'success');
+};
+
 function getImgFallback(cat) {
     const m = { 'تورت': 'https://images.unsplash.com/photo-1535141192574-5d4897c12636?auto=format&fit=crop&w=800&q=80', 'جاتوهات': 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80', 'قشطوطة': 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=800&q=80', 'بامبوليني': 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80', 'دوناتس': 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80', 'ديسباسيتو': 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=800&q=80', 'سينابون': 'https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=800&q=80', 'ريد فيلفت': 'https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?auto=format&fit=crop&w=800&q=80', 'كبات السعادة': 'https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=800&q=80', 'ميل فاي': 'https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=800&q=80', 'إكلير': 'https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=800&q=80', 'تشيز كيك': 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=800&q=80', 'عروض وبوكسات': 'https://images.unsplash.com/photo-1558326567-98ae2405596b?auto=format&fit=crop&w=800&q=80', 'ميني تورتة': 'https://images.unsplash.com/photo-1562777717-b6aff3dacd65?auto=format&fit=crop&w=800&q=80', 'ورد': 'https://images.unsplash.com/photo-1563241527-3004b7be0ffd?auto=format&fit=crop&w=800&q=80' };
     return m[cat] || m['جاتوهات'];
@@ -549,7 +871,9 @@ function renderCakeBuilder(target) {
     const baseP = Number(settings.basePrice) || 145; const imgOpts = settings.imagePrinting || defaultSettings.cakeBuilder.imagePrinting;
     const selectedImgOption = imgOpts.find(opt => opt.label === c.img) || {price: 0};
     const price = Number(c.ps) * baseP + Number(selectedImgOption.price);
-    const flavors = settings.flavors || ['فانيليا']; const imagesList = (settings.images && settings.images.length > 0) ? settings.images : [getImgFallback('تورت')];
+    const flavors = settings.flavors || ['فانيليا']; 
+    const rawImagesList = (settings.images && settings.images.length > 0) ? settings.images : [getImgFallback('تورت')];
+    const imagesList = rawImagesList.map(url => optimizeCloudinaryUrl(url));
     const descText = settings.desc || defaultSettings.cakeBuilder.desc;
     let sliderHtml = `<div class="w-full md:w-2/5 aspect-[3/4] md:aspect-square rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border-2 shadow-xl relative flex snap-slider hide-scrollbar bg-white group" style="border-color: hsl(var(--brand-hue), 80%, 90%);">${imagesList.map(url => `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 group-hover:scale-105">`).join('')}</div>`;
     target.innerHTML = `<div class="rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);"><div class="p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">${sliderHtml}<div class="flex-1 text-center md:text-right"><h2 class="text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">تخصيص التورت الملكية 👑</h2><p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">${escapeHTML(descText)}</p></div></div><div class="p-6 md:p-12 space-y-12"><div class="grid grid-cols-1 lg:grid-cols-2 gap-10"><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="cake" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> نكهة الكيك المفضلة</label><div class="grid grid-cols-2 md:grid-cols-4 gap-3">${flavors.map(fl => `<button onclick="uCake('flv', '${escapeHTML(fl)}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${escapeHTML(fl)}</button>`).join('')}</div></div><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="heart" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> عدد الأفراد</label><div class="flex items-center justify-between border rounded-2xl p-2 shadow-inner h-full max-h-[80px]" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);"><button onclick="adjP(-2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="minus"></i></button><span class="text-3xl font-bold">${c.ps}</span><button onclick="adjP(2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="plus"></i></button></div></div></div></div><div class="p-8 md:p-14 border-t-2 flex flex-col md:flex-row justify-between items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 95%);"><div class="text-center md:text-right"><span class="block font-bold mb-2">الإجمالي التقديري</span><span class="text-4xl md:text-6xl font-bold">${price} ج.م</span></div><button onclick="commitCakeBuilder()" class="w-full md:w-auto text-white font-bold text-xl md:text-2xl py-5 px-12 rounded-2xl shadow-xl brand-gradient">إضافة للمراجعة</button></div></div>`;
@@ -574,7 +898,7 @@ function renderCartCrossSell() {
     if (available.length === 0) return '';
     let suggestions = available.slice(0, 3);
     return `<div class="mt-8 animate-fade-in border-t border-dashed border-pink-200 pt-6"><p class="text-sm font-black text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="sparkles"></i> كملي اللحظة الحلوة بمنتجات تليق بيكي</p><div class="flex gap-4 overflow-x-auto pb-6 hide-scrollbar snap-slider">${suggestions.map(p => {
-        const img = (p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category));
+        const img = optimizeCloudinaryUrl((p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category)));
         return `<div class="shrink-0 w-[260px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col group"><div class="relative w-full h-36 mb-4 rounded-xl overflow-hidden bg-gray-50"><img src="${img}" class="w-full h-full object-cover"></div><div class="flex-1 flex flex-col"><h5 class="text-[14px] font-bold mb-1">${escapeHTML(p.name)}</h5><div class="flex items-center justify-between mt-auto"><span class="text-pink-600 font-black">${p.price} ج.م</span><button onclick="addWithQty('${p.id}')" class="px-4 py-2 border border-pink-200 text-pink-500 rounded-xl text-[11px] font-bold">إضافة</button></div></div></div>`;
     }).join('')}</div></div>`;
 }
@@ -589,7 +913,7 @@ function renderCartList() {
     let total = 0;
     container.innerHTML = state.cart.map(item => {
         const identifier = item.cartItemId || item.id; const q = Number(item.quantity); const p = Number(item.price); total += (p * q);
-        const renderImg = (item.images && item.images.length > 0) ? item.images[0] : (item.img || getImgFallback(item.category));
+        const renderImg = optimizeCloudinaryUrl((item.images && item.images.length > 0) ? item.images[0] : (item.img || getImgFallback(item.category)));
         return `<div class="flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-2xl mb-3 shadow-sm"><div class="w-16 h-16 rounded-xl overflow-hidden"><img src="${renderImg}" class="w-full h-full object-cover"></div><div class="flex-1 text-right"><h4 class="font-bold text-[13px]">${escapeHTML(item.name)}</h4><p class="text-pink-500 font-bold">${p} ج.م</p></div><div class="flex flex-col items-end gap-2"><button onclick="modQ('${identifier}', -${q})" class="p-1 text-gray-300 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button><div class="flex items-center gap-2 bg-gray-50 rounded-lg p-1 border"><button onclick="modQ('${identifier}', -1)"><i data-lucide="minus" class="w-3 h-3"></i></button><span>${q}</span><button onclick="modQ('${identifier}', 1)"><i data-lucide="plus" class="w-3 h-3"></i></button></div></div></div>`;
     }).join('');
     if (totalDisplay) totalDisplay.innerText = total + " ج.م";
@@ -629,8 +953,6 @@ function calculateCartTotal() {
     state.currentShippingFee = shipFee;
     if(document.getElementById('cart-subtotal-text')) document.getElementById('cart-subtotal-text').innerText = sub + ' ج.م';
     if(document.getElementById('cart-shipping-text')) document.getElementById('cart-shipping-text').innerText = (shipFee > 0 ? '+' + shipFee : '0') + ' ج.م';
-    
-    // ✅ السطر اللي تم إصلاحه لضمان عدم حدوث Syntax Error ويحسب التكلفة الإجمالية بدقة
     if(document.getElementById('cart-total-text')) document.getElementById('cart-total-text').innerText = (sub + shipFee) + ' ج.م';
 }
 
@@ -644,7 +966,7 @@ function syncCartUI() {
 function toggleCart(show) {
     const sd = document.getElementById('cart-sidebar'); if (!sd) return;
     if (show) { sd.classList.remove('-translate-x-full'); backToCart(); renderCartList(); document.body.style.overflow = 'hidden'; } 
-    else { sd.classList.add('-translate-x-full'); document.body.style.overflow = 'auto'; }
+    else { sd.classList.add('-translate-x-full'); document.body.style.overflow = 'auto'; MemoryManager.flush(); }
 }
 
 function goToCheckout() {
@@ -658,28 +980,136 @@ function backToCart() {
     step2.classList.add('hidden'); step1.classList.remove('hidden');
 }
 
+// ⚡ ⚡ التحديث الخطير: محرك إرسال الطلبات الآمن وإعادة المحاولة في الخلفية وتأكيد المخزون (Pre-flight Check)
 async function submitOrder() {
     if (state.cart.length === 0) return;
-    const cName = document.getElementById('cust-name').value.trim(); const cPhone = document.getElementById('cust-phone').value.trim();
-    if (!cName || !cPhone) { showSystemToast('يرجى كتابة الاسم والموبايل.', 'error'); return; }
-    const orderId = 'BS-' + Math.floor(10000 + Math.random() * 90000);
-    let m = `*طلب جديد من حلويات بوسي* 🧁\n*رقم الطلب:* ${orderId}\n\n👤 الاسم: ${cName}\n📞 الموبايل: ${cPhone}\n`;
-    state.cart.forEach((i, idx) => m += `\n*${idx+1}. ${i.name}* (x${i.quantity}) = ${i.price * i.quantity} ج\n`);
-    window.open(`https://wa.me/201097238441?text=${encodeURIComponent(m)}`, '_blank');
+    
+    // 🛡️ Engine Upgrade: Pre-flight Stock Validation (التأكد من توفر المنتجات قبل تمرير الطلب)
+    let outOfStockItems = [];
+    for (let item of state.cart) {
+        if (item.isCustom) continue;
+        const freshProd = catalogMap.get(String(item.id));
+        if (freshProd && freshProd.inStock === false) {
+            outOfStockItems.push(item.name);
+        }
+    }
+    
+    if (outOfStockItems.length > 0) {
+        showSystemToast(`عذراً يا فندم، المنتجات التالية نفدت للتو: ${outOfStockItems.join('، ')}. يرجى حذفها من السلة للاستمرار.`, 'error');
+        return;
+    }
+
+    const cName = document.getElementById('cust-name').value.trim(); 
+    const cPhone = document.getElementById('cust-phone').value.trim();
+    const cArea = document.getElementById('cust-area') ? document.getElementById('cust-area').options[document.getElementById('cust-area').selectedIndex].text : '';
+    const cAddress = document.getElementById('cust-address') ? document.getElementById('cust-address').value.trim() : '';
+    const cNotes = document.getElementById('cust-notes') ? document.getElementById('cust-notes').value.trim() : '';
+    const deliveryMethod = document.querySelector('input[name="delivery_method"]:checked')?.value || 'delivery';
+    
+    if (!cName || !cPhone) { showSystemToast('يا فندم يرجى كتابة الاسم والموبايل عشان نقدر نوصلك 🌸', 'error'); return; }
+    if (deliveryMethod === 'delivery' && (!document.getElementById('cust-area') || !document.getElementById('cust-area').value)) { showSystemToast('يا فندم يرجى اختيار منطقة التوصيل 🛵', 'error'); return; }
+    
+    const btn = document.querySelector('button[onclick="submitOrder()"]');
+    let originalBtnHtml = '';
+    if(btn) {
+        originalBtnHtml = btn.innerHTML;
+        btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> جاري إرسال الطلب...`; 
+        btn.disabled = true; 
+        if(window.lucide) lucide.createIcons();
+    }
+
+    const orderId = generateSecureOrderId(); 
+    
+    let subtotal = 0;
+    state.cart.forEach(i => subtotal += (Number(i.price) * Number(i.quantity)));
+    const finalTotal = subtotal + state.currentShippingFee;
+
+    const orderData = {
+        id: orderId,
+        name: cName,
+        phone: cPhone,
+        area: deliveryMethod === 'pickup' ? 'استلام من الفرع' : cArea,
+        address: cAddress,
+        notes: cNotes,
+        itemsArray: state.cart,
+        subtotal: subtotal,
+        shippingFee: state.currentShippingFee,
+        total: finalTotal,
+        status: 'pending',
+        timestamp: Date.now(),
+        date: new Date().toLocaleString('ar-EG')
+    };
+
+    // 🛡️ Engine Upgrade: Auto-Retry Mechanism for Flaky Networks (نظام الطابور)
+    try {
+        if(navigator.onLine && typeof db !== 'undefined') {
+            await db.collection('orders').doc(String(orderId)).set(orderData);
+        } else {
+            throw new Error("Offline or Firebase Unavailable");
+        }
+    } catch(e) {
+        console.warn("BoseSweets: Network unstable, queuing order for auto-retry 🔄", e);
+        await ClientStorageEngine.queueOrder(orderData);
+    }
+
+    let m = `*طلب جديد من حلويات بوسي* 👑\n*رقم الطلب:* ${orderId}\n\n👤 الاسم: ${cName}\n📞 الموبايل: ${cPhone}\n`;
+    if(deliveryMethod === 'pickup') m += `🛵 الطريقة: استلام من الفرع\n`;
+    else m += `🛵 التوصيل: ${cArea} - ${cAddress}\n`;
+    
+    m += `\n*تفاصيل الأوردر:*\n`;
+    state.cart.forEach((i, idx) => m += `▪️ *${i.name}* (x${i.quantity}) = ${i.price * i.quantity} ج.م\n`);
+    m += `\n*الإجمالي المطلوب:* ${finalTotal} ج.م`;
+    
+    if(cNotes) m += `\n\n*ملاحظات إضافية:* ${cNotes}`;
+
+    const storePhone = siteSettings.footerPhone || '201097238441';
+    let cleanPhone = storePhone.replace(/\D/g, '');
+    if (cleanPhone.startsWith('0')) cleanPhone = '2' + cleanPhone;
+
+    window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(m)}`, '_blank');
+    
     state.cart = []; clearCartStorage(); syncCartUI(); toggleCart(false); renderMainDisplay();
-    showSystemToast('تم إرسال طلبك بنجاح! 🎂', 'success');
+    showSystemToast('تم تسجيل الطلب وإرساله لمركز القيادة بنجاح! 🎂', 'success');
+
+    if(btn) {
+        btn.innerHTML = originalBtnHtml; 
+        btn.disabled = false;
+        if(window.lucide) lucide.createIcons();
+    }
+    
+    MemoryManager.flush();
 }
 
+// 🛡️ Engine Upgrade: Background Sync Process for Queued Orders (تصفية طابور الطلبات)
+async function syncOfflineOrders() {
+    if (!navigator.onLine || typeof db === 'undefined') return;
+    try {
+        const pendingOrders = await ClientStorageEngine.getQueuedOrders();
+        if (pendingOrders.length === 0) return;
+        
+        for (let order of pendingOrders) {
+            try {
+                await db.collection('orders').doc(String(order.id)).set(order);
+                await ClientStorageEngine.removeQueuedOrder(order.id);
+            } catch (e) {
+                console.warn(`Failed to sync queued order ${order.id}`);
+            }
+        }
+        console.log("BoseSweets: Offline orders synced successfully 🚀");
+    } catch (e) {}
+}
+
+window.addEventListener('online', syncOfflineOrders);
+
 function showInfo(t) {
-    const d = { about: { t: 'من نحن', b: siteSettings.footerQuote }, privacy: { t: 'سياسة الخصوصية والأمان', b: 'تلتزم إدارة حلويات بوسي بالسرية التامة.' }, refund: { t: 'سياسة الاسترجاع والتعديل', b: 'نسعى دائماً لرضاكم التام في حلويات بوسي.' } };
+    const d = { about: { t: 'من نحن', b: siteSettings.footerQuote || 'براند حلويات بوسي الأول بالفرافرة.' }, privacy: { t: 'سياسة الخصوصية والأمان', b: 'تلتزم إدارة حلويات بوسي بالسرية التامة لبيانات عملائنا.' }, refund: { t: 'سياسة الاسترجاع والتعديل', b: 'نسعى دائماً لرضاكم التام في حلويات بوسي 👑.' } };
     if(!d[t]) return;
     document.getElementById('info-title').innerText = d[t].t; document.getElementById('info-body').innerText = d[t].b;
     const m = document.getElementById('info-modal'); m.classList.remove('hidden'); m.classList.add('flex'); if(window.lucide) lucide.createIcons();
 }
 
-function closeInfo() { const m = document.getElementById('info-modal'); m.classList.add('hidden'); m.classList.remove('flex'); }
+function closeInfo() { const m = document.getElementById('info-modal'); m.classList.add('hidden'); m.classList.remove('flex'); MemoryManager.flush(); }
 
-// ⚡ تحسين أداء السكرول والـ Navbar (تقليل استهلاك المعالج)
 let isScrolling = false;
 window.addEventListener('scroll', () => {
     if (!isScrolling) {
@@ -692,19 +1122,19 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-// ⚡ تشغيل وبدء التطبيق مع نظام الإقلاع الآمن المطور (Failsafe Boot)
-window.onload = () => {
-    // 🛡️ طبقة حماية إضافية: إجبار شاشة التحميل على الاختفاء بعد 8 ثوانٍ كحد أقصى لضمان عدم تعطل تجربة العميل
-    setTimeout(() => {
+document.addEventListener('DOMContentLoaded', () => {
+    // 🛡️ Failsafe Loader: حماية تجربة المستخدم من تجمد المتصفح
+    MemoryManager.set('failsafe_loader', () => {
         const loader = document.getElementById('global-loader');
         if (loader && loader.style.display !== 'none') {
             loader.style.opacity = '0';
             loader.style.visibility = 'hidden';
-            setTimeout(() => loader.style.display = 'none', 500);
+            MemoryManager.set('failsafe_loader_hide', () => loader.style.display = 'none', 500);
             console.warn("BoseSweets Failsafe: Loader timeout triggered to protect UX.");
         }
     }, 8000);
 
     initApp();
     autoBindAdminAccess();
-};
+    syncOfflineOrders();
+});

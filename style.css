@@ -1,16 +1,24 @@
-/* Engine Upgrade: Dynamic Theme Engine Base & Soft Premium UI (Optimized for Zero-Lag) */
+/* 👑 Engine Upgrade: Dynamic Theme Engine Base & Soft Premium UI (V. Infinity) */
+/* نظام ألوان متطور يسمح بتغيير هوية البراند بضغطة واحدة مع ضمان التباين والجمال */
 :root {
+    /* متغيرات الهوية الأساسية */
     --brand-font: 'Cairo', sans-serif;
-    --brand-hue: 355; 
+    --brand-hue: 355; /* القيمة الافتراضية للوردي الملكي */
     --base-font-size: 16px;
     --base-font-weight: 400;
     --site-bg: #fdfdfd; 
     --site-text: #4a2b2b; 
     
-    /* Ticker Variables */
+    /* متغيرات شريط الإعلانات (Ticker) */
     --ticker-color: #ffffff;
     --ticker-font: 'Cairo', sans-serif;
     --ticker-speed: 20s;
+
+    /* تدرجات ألوان براند حلويات بوسي - استخراج ديناميكي من الـ Hue */
+    --brand-primary: hsl(var(--brand-hue), 80%, 60%);
+    --brand-secondary: hsl(var(--brand-hue), 85%, 70%);
+    --brand-light: hsl(var(--brand-hue), 90%, 95%);
+    --brand-glow: hsla(var(--brand-hue), 80%, 65%, 0.3);
 }
 
 html { 
@@ -28,40 +36,93 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* 🛡️ تنظيف الذاكرة البصرية وتحسين الأداء */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* 👑 التدرجات الملكية الفاخرة */
 .brand-gradient { 
-    background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 60%) 0%, hsl(var(--brand-hue), 85%, 70%) 50%, hsl(var(--brand-hue), 90%, 80%) 100%); 
+    background: linear-gradient(135deg, 
+        var(--brand-primary) 0%, 
+        var(--brand-secondary) 50%, 
+        hsl(var(--brand-hue), 90%, 80%) 100%); 
+    box-shadow: 0 4px 15px -5px var(--brand-glow);
 }
 
-.ticker-brand-gradient { background: linear-gradient(135deg, hsl(var(--brand-hue), 80%, 65%) 0%, hsl(var(--brand-hue), 85%, 75%) 50%, hsl(var(--brand-hue), 90%, 85%) 100%); }
+.ticker-brand-gradient { 
+    background: linear-gradient(135deg, 
+        hsl(var(--brand-hue), 80%, 65%) 0%, 
+        hsl(var(--brand-hue), 85%, 75%) 50%, 
+        hsl(var(--brand-hue), 90%, 85%) 100%); 
+}
+
 .ticker-fade-right { background: linear-gradient(to left, hsl(var(--brand-hue), 80%, 65%), transparent); }
 .ticker-fade-left { background: linear-gradient(to right, hsl(var(--brand-hue), 90%, 85%), transparent); }
 
+/* 🌟 محرك الحركات المتقدم (Advanced Animation Engine) */
 .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
 @keyframes fadeIn { 
     from { opacity: 0; transform: translateY(15px); } 
     to { opacity: 1; transform: translateY(0); } 
 }
 
+/* حركة الطفو للمنتجات المميزة */
 .floating { animation: float 6s ease-in-out infinite; }
 @keyframes float { 
     0%, 100% { transform: translateY(0px); } 
     50% { transform: translateY(-10px); } 
 }
 
-.nav-scrolled { 
-    background-color: rgba(253, 253, 253, 0.95); 
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05); 
-    transform: translateZ(0); 
-    will-change: background-color, backdrop-filter;
+/* حركات الأزرار الراقية */
+.btn-premium-action {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
 }
 
-input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue), 80%, 65%); }
+.btn-premium-action:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 8px 25px -5px var(--brand-glow);
+}
 
+.btn-premium-action:active {
+    transform: scale(0.95);
+}
+
+/* تأثير اللمعان عند مرور الماوس */
+.btn-premium-action::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(30deg);
+    transition: all 0.6s ease;
+}
+
+.btn-premium-action:hover::after {
+    left: 120%;
+}
+
+/* 🛡️ الهيكل المقدس - شريط التنقل المتطور */
+.nav-scrolled { 
+    background-color: rgba(253, 253, 253, 0.95); 
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.08); 
+    transform: translateZ(0); 
+    will-change: background-color, backdrop-filter;
+    border-bottom: 1px solid var(--brand-light);
+}
+
+/* تخصيص عناصر الإدخال لتلائم ذوق حلويات بوسي */
+input[type="checkbox"], input[type="radio"] { 
+    accent-color: var(--brand-primary); 
+}
+
+/* حركات القوائم والرسائل المنبثقة */
 @keyframes slideInUp { 
     from { transform: translate(-50%, 100%); opacity: 0; } 
     to { transform: translate(-50%, 0); opacity: 1; } 
@@ -71,14 +132,18 @@ input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue)
 
 #global-loader { transition: opacity 0.5s ease, visibility 0.5s; }
 
+/* تنسيق الراديو المخصص لضمان أفضل تجربة مستخدم */
 .custom-radio-container:has(input:checked) {
-    border-color: hsl(var(--brand-hue), 80%, 65%) !important;
-    background-color: hsl(var(--brand-hue), 80%, 97%) !important;
+    border-color: var(--brand-primary) !important;
+    background-color: var(--brand-light) !important;
     color: hsl(var(--brand-hue), 70%, 50%) !important;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px -3px var(--brand-glow);
 }
 
 .grayscale-overlay { filter: grayscale(100%) opacity(0.6); }
 
+/* محرك شريط الأخبار المتطور */
 @keyframes ticker-marquee {
     0% { transform: translateX(100%); }
     100% { transform: translateX(-100%); }
@@ -88,27 +153,74 @@ input[type="checkbox"], input[type="radio"] { accent-color: hsl(var(--brand-hue)
     white-space: nowrap;
     padding-left: 100%;
     animation: ticker-marquee var(--ticker-speed) linear infinite;
+    font-weight: 700;
+    /* التوسيع الجديد: توجيه المعالجة لكارت الشاشة لضمان سلاسة الحركة */
+    will-change: transform; 
+    transform: translateZ(0); 
 }
 #ticker-container:hover .animate-ticker { animation-play-state: paused; }
 
-/* ⚡ إصلاح مشكلة تجمد السكرول عند لمس الصور */
+/* ⚡ إصلاح مشكلة تجمد السكرول عند لمس الصور في الهواتف */
 .snap-slider { 
     scroll-snap-type: x mandatory; 
-    touch-action: pan-y !important; /* السماح بالسكرول الرأسي دائماً ومنع تجمد الشاشة */
+    touch-action: pan-y !important; 
     -webkit-overflow-scrolling: touch;
     overflow-x: auto;
 }
 
 .snap-slide img {
-    pointer-events: auto !important; /* السماح باللمس لتقليب الصور أفقياً */
+    pointer-events: auto !important; 
     user-select: none;
     -webkit-user-drag: none;
-    touch-action: pan-y !important; /* إجبار المتصفح على تمرير الحركة الرأسية */
+    touch-action: pan-y !important; 
 }
 
+/* تأثير التمييز الملكي عند الوصول لمنتج محدد */
 @keyframes targetHighlight {
-    0% { box-shadow: 0 0 0 0px hsl(var(--brand-hue), 80%, 65%); transform: scale(1); }
-    50% { box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); transform: scale(1.02); }
+    0% { box-shadow: 0 0 0 0px var(--brand-primary); transform: scale(1); }
+    50% { box-shadow: 0 0 0 20px rgba(236, 72, 153, 0); transform: scale(1.03); }
     100% { box-shadow: 0 0 0 0px rgba(236, 72, 153, 0); transform: scale(1); }
 }
 .highlight-target { animation: targetHighlight 2s ease-out; }
+
+/* 🍮 تأثيرات خاصة لمنتجات حلويات بوسي (قشطوطة، ديسباسيتو، سينابون) */
+.product-card-premium {
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.product-card-premium:hover {
+    transform: translateY(-8px);
+}
+
+.product-image-glow {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image-glow::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+    transform: skewX(-25deg);
+    transition: 0.75s;
+}
+
+.product-card-premium:hover .product-image-glow::before {
+    left: 125%;
+}
+
+/* 🚀 تحسينات الأداء: تخفيف الضغط على معالج الرسوميات (GPU) في الموبايلات */
+.glow-blob { 
+    position: absolute; 
+    border-radius: 50%; 
+    filter: blur(60px); 
+    opacity: 0.4; 
+    z-index: 0; 
+    pointer-events: none;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+}
