@@ -495,139 +495,158 @@ function applySettingsToUI() {
 }
 
 // 📦 محرك جلب البيانات والذاكرة الفولاذية (المراقبة اللحظية مع Smart Render Guard)
+// 🛡️ Engine Upgrade: Synchronized Boot Manager (V. Infinity)
+// محرك الإقلاع الذكي لمنع تذبذب الشاشة ورندرة البيانات المتعددة
+
+let isCloudSettingsReady = false;
+let isCloudCatalogReady = false;
 let lastCatalogHash = "";
+
 async function loadEngineMemory() {
     try {
+        // 1. جلب البيانات الافتراضية كخط دفاع أول
         await fetchDefaultCatalog(); 
         catalog = [...defaultCatalog];
         
-        // 👑 التحديث الثوري: المراقبة اللحظية للإعدادات مع منع الرندرة المتكررة
-        db.collection('settings').doc('main').onSnapshot(snapshot => {
-            if (snapshot.exists) {
-                const cloudData = snapshot.data();
-                
-                // 🛡️ الحاجز الذكي: التحقق من وجود تغيير فعلي في الهوية قبل الرندرة
-                const newSettingsHash = JSON.stringify(cloudData.visuals);
-                if (window.lastSettingsHash === newSettingsHash) return; 
-                window.lastSettingsHash = newSettingsHash;
-
-                siteSettings = { ...defaultSettings, ...cloudData };
-                
-                if(cloudData.visuals) {
-                    siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
-                }
-
-                if(cloudData.cakeBuilder) {
-                    siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
-                    if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) {
-                        siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
-                    }
-                } else {
-                    siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
-                }
-
-                if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
-                    if (typeof siteSettings.catMenu[0] === 'object') {
-                        catMenu = siteSettings.catMenu.sort((a, b) => a.order - b.order).map(c => c.name);
-                    } else {
-                        catMenu = siteSettings.catMenu;
-                    }
-                } else {
-                    catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
-                }
-                
-                if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
-                
-                applySettingsToUI();
-                if(document.getElementById('categories-nav')) renderCategories();
-                
-                // استخدام التايمر لضمان استقرار الواجهة (Debouncing)
-                if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
-                window.renderDebounceTimer = setTimeout(() => { 
-                    if(document.getElementById('display-container')) renderMainDisplay(); 
-                }, 300);
-            }
-        });
-
-        // مراقبة الكتالوج مع محرك التحديث الموجه (Smart Targeted Render Guard)
-        db.collection('catalog').onSnapshot(snapshot => {
-            let updatedCatalog = [];
-            snapshot.forEach(doc => {
-                const p = doc.data();
-                if (p.category !== 'ديسباسيتو') updatedCatalog.push(p);
-            });
-            
-            const freshDespacito = defaultCatalog.filter(p => p.category === 'ديسباسيتو');
-            const newFullCatalog = [...updatedCatalog, ...freshDespacito];
-            
-            // 👑 1. الحاجز الذكي الفولاذي: ترتيب الكتالوج أبجدياً حسب الـ ID قبل التشفير
-            // هذا يضمن أن الـ Hash لن يتغير أبداً بسبب اختلاف الترتيب العشوائي القادم من السيرفر
-            const sortedCatalogForHash = [...updatedCatalog].sort((a, b) => String(a.id).localeCompare(String(b.id)));
-            const currentHash = sortedCatalogForHash.map(p => `${p.id}_${p.price}_${p.inStock}`).join('|');
-
-            // إذا كان الهاش متطابقاً، نوقف العملية فوراً (لا يوجد تغيير فعلي)
-            if (lastCatalogHash === currentHash) return;
-            lastCatalogHash = currentHash;
-
-            catalog = newFullCatalog;
-            syncCatalogMap();
-            LiveSearchEngine.observeIndexUpdate(catalog);
-            
-            if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
-            window.renderDebounceTimer = setTimeout(() => { 
-                if(document.getElementById('display-container')) {
+        // 2. وعاء الانتظار الذكي (Promises) لضمان وصول بيانات السحابة قبل رسم الشاشة
+        const settingsPromise = new Promise((resolve) => {
+            if (typeof db === 'undefined') { resolve(); return; }
+            db.collection('settings').doc('main').onSnapshot(snapshot => {
+                if (snapshot.exists) {
+                    const cloudData = snapshot.data();
                     
-                    // 👑 2. محرك الرندرة الموجه (Targeted Rendering)
-                    // نتحقق من نوع التغيير لتحديث العنصر المطلوب فقط بدون مسح الشاشة
-                    let needsFullRender = false;
-                    const changes = snapshot.docChanges();
+                    const newSettingsHash = JSON.stringify(cloudData.visuals);
+                    if (window.lastSettingsHash !== newSettingsHash) {
+                        window.lastSettingsHash = newSettingsHash;
+                        siteSettings = { ...defaultSettings, ...cloudData };
+                        
+                        if(cloudData.visuals) {
+                            siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
+                        }
 
-                    // إذا كان هذا هو التحميل الأول بالكامل، نرندر الشاشة كلها
-                    if(changes.length === snapshot.docs.length) {
-                        needsFullRender = true;
-                    } else {
-                        changes.forEach(change => {
-                            if (change.type === 'added' || change.type === 'removed') {
-                                // في حالة إضافة منتج جديد أو حذف منتج، نحتاج إعادة بناء الشاشة
-                                needsFullRender = true;
-                            } else if (change.type === 'modified') {
-                                // 🌟 السحر الحقيقي: تحديث كارت المنتج المُعدل فقط في مكانه بدون أي اهتزاز
-                                if(typeof updateCardUI === 'function') {
-                                    updateCardUI(change.doc.data().id);
-                                }
+                        if(cloudData.cakeBuilder) {
+                            siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
+                            if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) {
+                                siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
                             }
-                        });
-                    }
+                        } else {
+                            siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
+                        }
 
-                    // تنفيذ الرندرة الكاملة فقط للضرورة القصوى
-                    if (needsFullRender) {
-                        renderMainDisplay(); 
+                        if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
+                            if (typeof siteSettings.catMenu[0] === 'object') {
+                                catMenu = siteSettings.catMenu.sort((a, b) => a.order - b.order).map(c => c.name);
+                            } else {
+                                catMenu = siteSettings.catMenu;
+                            }
+                        } else {
+                            catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
+                        }
+                        
+                        if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
+                        
+                        // تطبيق الألوان والهوية فوراً خلف الكواليس
+                        applySettingsToUI();
+                        
+                        // تحديث الأقسام فقط إذا تم فتح القفل (لتجنب الرندرة المزدوجة)
+                        if(isCloudSettingsReady && document.getElementById('categories-nav')) renderCategories();
                     }
                 }
-            }, 300); 
+                
+                // فتح قفل الإعدادات في أول مرة تحميل
+                if(!isCloudSettingsReady) { 
+                    isCloudSettingsReady = true; 
+                    resolve(); 
+                }
+            }, (error) => {
+                console.warn("BoseSweets: Settings Sync Error", error);
+                resolve(); // الفتح الإجباري للقفل في حالة الخطأ لضمان عدم توقف الموقع
+            });
         });
 
-        const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
-        if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
-        
-        const shipSnap = await db.collection('shipping').get();
-        if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); }
-        
-        syncCatalogMap(); 
-        LiveSearchEngine.build(catalog);
+        const catalogPromise = new Promise((resolve) => {
+            if (typeof db === 'undefined') { resolve(); return; }
+            db.collection('catalog').onSnapshot(snapshot => {
+                let updatedCatalog = [];
+                snapshot.forEach(doc => {
+                    const p = doc.data();
+                    if (p.category !== 'ديسباسيتو') updatedCatalog.push(p);
+                });
+                
+                const freshDespacito = defaultCatalog.filter(p => p.category === 'ديسباسيتو');
+                const newFullCatalog = [...updatedCatalog, ...freshDespacito];
+                
+                const sortedCatalogForHash = [...updatedCatalog].sort((a, b) => String(a.id).localeCompare(String(b.id)));
+                const currentHash = sortedCatalogForHash.map(p => `${p.id}_${p.price}_${p.inStock}`).join('|');
+
+                if (lastCatalogHash !== currentHash) {
+                    lastCatalogHash = currentHash;
+                    catalog = newFullCatalog;
+                    syncCatalogMap();
+                    LiveSearchEngine.observeIndexUpdate(catalog);
+                    
+                    // الرندرة الموجهة تعمل فقط بعد الإقلاع الأولي
+                    if(isCloudCatalogReady && document.getElementById('display-container')) {
+                        let needsFullRender = false;
+                        const changes = snapshot.docChanges();
+
+                        if(changes.length === snapshot.docs.length) {
+                            needsFullRender = true;
+                        } else {
+                            changes.forEach(change => {
+                                if (change.type === 'added' || change.type === 'removed') {
+                                    needsFullRender = true;
+                                } else if (change.type === 'modified') {
+                                    if(typeof updateCardUI === 'function') {
+                                        updateCardUI(change.doc.data().id);
+                                    }
+                                }
+                            });
+                        }
+
+                        if (needsFullRender) {
+                            if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
+                            window.renderDebounceTimer = setTimeout(() => { renderMainDisplay(); }, 300);
+                        }
+                    }
+                }
+                
+                // فتح قفل الكتالوج في أول مرة تحميل
+                if(!isCloudCatalogReady) {
+                    isCloudCatalogReady = true;
+                    resolve();
+                }
+            }, (error) => {
+                console.warn("BoseSweets: Catalog Sync Error", error);
+                resolve();
+            });
+        });
+
+        // 3. الحاجز الفولاذي: ننتظر حتى تكتمل بيانات السحابة بالكامل
+        await Promise.all([settingsPromise, catalogPromise]);
+
+        // 4. جلب البيانات غير الحرجة (المعرض والشحن)
+        if (typeof db !== 'undefined') {
+            const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
+            if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
+            
+            const shipSnap = await db.collection('shipping').get();
+            if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); }
+        }
         
     } catch(err) { 
+        // وضع الطوارئ
         catalog = [...defaultCatalog]; 
         syncCatalogMap(); 
         LiveSearchEngine.build(catalog);
         const availableCats = [...new Set(catalog.map(p => p.category))];
         if (!availableCats.includes(state.activeCat) && availableCats.length > 0) {
             state.activeCat = availableCats[0];
-            if(document.getElementById('categories-nav')) renderCategories();
         }
         console.warn("BoseSweets: Emergency fallback active. 🛡️");
     }
     
+    // استرجاع السلة
     try { 
         const dbCart = await ClientStorageEngine.get('cart');
         if (dbCart) state.cart = dbCart;
@@ -662,16 +681,16 @@ function clearCartStorage() {
 }
 
 async function initApp() {
+    // 1. تشغيل الذاكرة والانتظار حتى اكتمال السحابة بنسبة 100%
     await loadEngineMemory();
     
+    // 2. إعداد المتغيرات الأولية بناءً على الرابط
     const urlParams = new URLSearchParams(window.location.search);
     const routeCat = urlParams.get('category');
     if(routeCat && catMenu.includes(routeCat)) state.activeCat = routeCat;
 
-    const loader = document.getElementById('global-loader');
-    if(loader) { loader.style.opacity = '0'; loader.style.visibility = 'hidden'; MemoryManager.set('loader_hide', () => loader.style.display = 'none', 500); }
+    // 3. رسم الشاشة لمرة واحدة فقط ببيانات مكتملة ونهائية
     applySettingsToUI();
-    
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
     if(document.getElementById('categories-nav')) renderCategories();
     if(document.getElementById('display-container')) renderMainDisplay();
@@ -679,6 +698,15 @@ async function initApp() {
     if(window.lucide) lucide.createIcons();
     PreloadEngine.ignite(catalog, galleryData);
     
+    // 4. إخفاء اللودر بأمان تام بعد التأكد من اكتمال ورسم الشاشة
+    const loader = document.getElementById('global-loader');
+    if(loader) { 
+        loader.style.opacity = '0'; 
+        loader.style.visibility = 'hidden'; 
+        MemoryManager.set('loader_hide', () => loader.style.display = 'none', 500); 
+    }
+    
+    // 5. التوجيه المباشر لمنتج معين (إن وجد)
     const sharedProductId = urlParams.get('product');
     if(sharedProductId && document.getElementById('display-container')) {
         const prod = catalogMap.get(sharedProductId);
@@ -686,7 +714,11 @@ async function initApp() {
             setCategory(prod.category); 
             MemoryManager.set('product_scroll', () => {
                 const el = document.getElementById('product-card-' + sharedProductId);
-                if(el) { el.scrollIntoView({behavior: 'smooth', block: 'center'}); el.classList.add('highlight-target'); MemoryManager.set('remove_highlight', () => el.classList.remove('highlight-target'), 2500); }
+                if(el) { 
+                    el.scrollIntoView({behavior: 'smooth', block: 'center'}); 
+                    el.classList.add('highlight-target'); 
+                    MemoryManager.set('remove_highlight', () => el.classList.remove('highlight-target'), 2500); 
+                }
             }, 500);
         }
     }
