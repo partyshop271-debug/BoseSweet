@@ -1,5 +1,6 @@
-// ⚡ Engine Upgrade: Ultimate Dynamic Catalog Engine (V. Infinity)
-// 👑 تم إيقاف PreloadEngine مؤقتاً لتخفيف الضغط على المتصفح وتعديل زمن البحث
+// ⚡ Engine Upgrade: Ultimate Dynamic Catalog Engine (V. Stable & Clean)
+// 👑 تم الاعتماد على جلب البيانات مرة واحدة فقط (Single Fetch) لمنع ظاهرة الـ 3 شاشات والرعشة نهائياً
+
 const PreloadEngine = {
     loadedUrls: new Set(),
     ignite(catalogData, galleryData = []) {
@@ -15,7 +16,6 @@ const PreloadEngine = {
     }
 };
 
-// 🛡️ Engine Upgrade: Memory Manager (Garbage Collector) 
 const MemoryManager = {
     timers: {},
     set(key, callback, delay) {
@@ -41,7 +41,6 @@ const MemoryManager = {
     }
 };
 
-// 🛡️ Engine Upgrade: Advanced Live Search Engine
 const LiveSearchEngine = {
     index: new Map(),
     normalizeArabic(text) {
@@ -55,33 +54,6 @@ const LiveSearchEngine = {
             const tokens = this.normalizeArabic(rawTokens).toLowerCase();
             this.index.set(p.id, { tokens, data: p });
         });
-    },
-    observeIndexUpdate(newCatalog) {
-        if (!this.index || this.index.size === 0) {
-            this.build(newCatalog);
-            return;
-        }
-
-        const newIds = new Set();
-        newCatalog.forEach(p => {
-            if (!p || !p.id) return;
-            newIds.add(p.id);
-            const rawTokens = `${p.name || ''} ${p.category || ''} ${p.desc || ''} ${p.subType || ''} ${p.size || ''}`;
-            const tokens = this.normalizeArabic(rawTokens).toLowerCase();
-
-            if (this.index.has(p.id)) {
-                const existing = this.index.get(p.id);
-                if (existing.tokens !== tokens || JSON.stringify(existing.data) !== JSON.stringify(p)) {
-                    this.index.set(p.id, { tokens, data: p });
-                }
-            } else {
-                this.index.set(p.id, { tokens, data: p });
-            }
-        });
-
-        for (let id of this.index.keys()) {
-            if (!newIds.has(id)) this.index.delete(id);
-        }
     },
     search(query) {
         const q = this.normalizeArabic(query.toLowerCase().trim());
@@ -119,7 +91,6 @@ window.performLiveSearchDebounced = function(query) {
     liveSearchTimeout = setTimeout(() => { performLiveSearch(query); }, 500); 
 };
 
-// 🛡️ Engine Upgrade: Robust Client Storage Engine (IndexedDB)
 const ClientStorageEngine = {
     dbName: 'BoseSweetsClientDB',
     cartStore: 'CartStore',
@@ -287,7 +258,6 @@ function getFinalDescription(p, isFullWidth) {
     return getCapsuleDescription(p);
 }
 
-// 🛡️ المصدات القوية ضد انهيار الألوان
 function hexToMathHSL(hex) {
     try {
         if (!hex || typeof hex !== 'string') return 340;
@@ -417,21 +387,6 @@ let isAppReady = false;
 const dSizes = ['مثلث', 'وسط', 'كبير']; const fTypes = ['ورد طبيعي', 'ورد صناعي', 'ورد ستان', 'ورد هدايا', 'ورد فلوس', 'ورد شيكولاتة'];
 let state = { activeCat: 'تورت', dSize: 'مثلث', fType: 'ورد طبيعي', cart: [], currentShippingFee: 0, cakeBuilder: { flv: 'فانيليا', ps: 4, sh: 'دائري', trd: false, img: 'بدون', msg: '', alg: '', occ: '', refImgUrl: '', hasRefImg: false, crd: false, dlg: false } };
 
-// 👑 THE ULTIMATE DATA SHIELD (State Manager V. Infinity)
-const StateManager = {
-    isStable: false,
-    isInitialRenderComplete: false, // علم لتحديد هل تم الرسم لأول مرة أم لا
-    pendingRenders: null,
-    triggerRender() {
-        if (!isAppReady || !this.isStable) return;
-        if (this.pendingRenders) cancelAnimationFrame(this.pendingRenders);
-        this.pendingRenders = requestAnimationFrame(() => {
-            renderMainDisplay();
-            if (document.getElementById('categories-nav')) renderCategories();
-            this.isInitialRenderComplete = true; // تم الرسم بنجاح وثبات
-        });
-    }
-};
 
 function applySettingsToUI() {
     if (!isAppReady) return; 
@@ -487,20 +442,18 @@ function applySettingsToUI() {
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
-// 👑 CLEAN SLATE STRATEGY: SINGLE SOURCE OF TRUTH (V. Infinity)
-// المحرك هنا تم برمجته عشان يتجاهل التضارب تماماً، ويطلب الداتا مرة واحدة قاطعة قبل ما يرسم الموقع
+// 👑 CLEAN SLATE STRATEGY: GET ONLY (No Listeners for Client)
+// تم إيقاف الـ onSnapshot بالكامل للعميل. الموقع بيقرأ البيانات مرة واحدة فقط عند التحميل.
 async function loadEngineMemory() {
     try {
-        // 1. تجهيز الداتا الافتراضية للضرورة القصوى (كخطة بديلة فقط)
         await fetchDefaultCatalog(); 
         
         if (typeof db === 'undefined') {
             catalog = [...defaultCatalog]; 
-            StateManager.isStable = true;
             return;
         }
         
-        // 2. جلب الإعدادات بخبطة واحدة صريحة للسيرفر (إلغاء التضارب)
+        // 1. جلب الإعدادات مرة واحدة فقط
         try {
             let settingsDoc = await db.collection('settings').doc('main').get({ source: 'server' });
             if (!settingsDoc.exists) settingsDoc = await db.collection('settings').doc('main').get({ source: 'cache' });
@@ -522,7 +475,7 @@ async function loadEngineMemory() {
                 }
             }
         } catch(e) {
-            console.warn("BoseSweets: Clean Slate Settings Fetch Failed, using local cache.");
+            console.warn("BoseSweets: Settings Fetch Failed, using local cache.");
         }
 
         if (!catMenu || catMenu.length === 0) catMenu = [...new Set(defaultCatalog.map(p => p.category))].filter(Boolean);
@@ -533,7 +486,7 @@ async function loadEngineMemory() {
             if (loaderTextEl) loaderTextEl.innerText = siteSettings.visuals.loaderText;
         }
 
-        // 3. جلب كتالوج المنتجات بخبطة واحدة صريحة للسيرفر (إلغاء التضارب)
+        // 2. جلب كتالوج المنتجات مرة واحدة فقط
         try {
             let catalogSnap = await db.collection('catalog').get({ source: 'server' });
             if (catalogSnap.empty) catalogSnap = await db.collection('catalog').get({ source: 'cache' });
@@ -551,50 +504,12 @@ async function loadEngineMemory() {
                 catalog = [...defaultCatalog];
             }
         } catch (e) {
-            console.warn("BoseSweets: Clean Slate Catalog Fetch Failed, using defaults.");
+            console.warn("BoseSweets: Catalog Fetch Failed, using defaults.");
             catalog = [...defaultCatalog];
         }
 
-        // 4. إعلان الاستقرار الشامل (الآن فقط يُسمح للمحرك برسم الموقع)
         syncCatalogMap();
         LiveSearchEngine.build(catalog);
-        StateManager.isStable = true;
-
-        // 5. تفعيل التحديث الصامت (Silent Sync) في الخلفية للمستقبل فقط
-        // الدالة دي مش هتشتغل ولا تمسح الشاشة، دي هتتأكد إن أي تعديل من الإدارة يسمع بنعومة 
-        db.collection('settings').doc('main').onSnapshot(snap => {
-            if(StateManager.isInitialRenderComplete && snap.exists) {
-                const cloudData = snap.data();
-                siteSettings = { ...defaultSettings, ...cloudData };
-                if(cloudData.visuals) siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
-                if(cloudData.cakeBuilder) {
-                    siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
-                    if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
-                }
-                if (siteSettings.catMenu && siteSettings.catMenu.length > 0) catMenu = typeof siteSettings.catMenu[0] === 'object' ? siteSettings.catMenu.sort((a, b) => a.order - b.order).map(c => c.name) : siteSettings.catMenu;
-                if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
-                applySettingsToUI();
-                StateManager.triggerRender();
-            }
-        });
-
-        db.collection('catalog').onSnapshot(snap => {
-            // تجاهل التحديثات الوهمية (المحفوظة محلياً) والاعتماد فقط على التحديثات الحقيقية من الإدارة
-            if(StateManager.isInitialRenderComplete && !snap.metadata.hasPendingWrites) {
-                let newData = [];
-                snap.forEach(d => newData.push(d.data()));
-                if(newData.length > 0) {
-                    newData.sort((a, b) => {
-                        if ((a.sortOrder || 999) !== (b.sortOrder || 999)) return (a.sortOrder || 999) - (b.sortOrder || 999);
-                        return String(a.id).localeCompare(String(b.id));
-                    });
-                    catalog = newData;
-                    syncCatalogMap();
-                    LiveSearchEngine.observeIndexUpdate(catalog);
-                    StateManager.triggerRender(); // المحرك الذكي سيدمج التعديلات بنعومة
-                }
-            }
-        });
 
         // Background Fetches - Non Blocking
         if (typeof db !== 'undefined') {
@@ -608,7 +523,7 @@ async function loadEngineMemory() {
         }
         
     } catch(err) { 
-        catalog = [...defaultCatalog]; syncCatalogMap(); LiveSearchEngine.build(catalog); StateManager.isStable = true;
+        catalog = [...defaultCatalog]; syncCatalogMap(); LiveSearchEngine.build(catalog);
         const availableCats = [...new Set(catalog.map(p => p.category))];
         if (!availableCats.includes(state.activeCat) && availableCats.length > 0) state.activeCat = availableCats[0];
     }
@@ -638,15 +553,13 @@ function clearCartStorage() {
 }
 
 async function initApp() {
-    // 1. التطبيق بيبدأ، اللودر ظاهر بالكامل
-    await loadEngineMemory(); // 2. الداتا بتيجي مرة واحدة بصورة قاطعة
+    await loadEngineMemory(); 
     isAppReady = true;
 
     const urlParams = new URLSearchParams(window.location.search);
     const routeCat = urlParams.get('category');
     if(routeCat && catMenu.includes(routeCat)) state.activeCat = routeCat;
 
-    // 3. بنطبق الإعدادات ونرسم الشاشة لأول مرة ونهائية!
     applySettingsToUI();
     renderCategories();
     renderMainDisplay();
@@ -655,7 +568,7 @@ async function initApp() {
     syncCartUI(); 
     if(window.lucide) lucide.createIcons();
     
-    // 4. إخفاء اللودر فوراً بعد الرسم الكامل والأكيد
+    // إخفاء اللودر فوراً
     setTimeout(() => {
         window.requestAnimationFrame(() => {
             const loader = document.getElementById('global-loader');
@@ -764,7 +677,7 @@ function renderCategories() {
 function setCategory(c) { 
     state.activeCat = c; 
     renderCategories(); 
-    StateManager.triggerRender(); 
+    renderMainDisplay(); 
     history.pushState({category: c}, '', `?category=${encodeURIComponent(c)}`);
     MemoryManager.set('scroll_cat', () => { const activeBtn = document.getElementById(`cat-btn-${c.replace(/\\s+/g, '-')}`); if (activeBtn) { activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } }, 50); 
 }
@@ -778,7 +691,7 @@ function renderFlowerTabs(container) {
 }
 
 function setSub(t, v) { 
-    if(t === 's') { state.dSize = v; StateManager.triggerRender(); } 
+    if(t === 's') { state.dSize = v; renderMainDisplay(); } 
     if(t === 'f') {
         state.fType = v;
         const targetSection = document.getElementById(`flower-group-${v.replace(/\\s+/g, '-')}`);
@@ -793,7 +706,7 @@ function getCakeBuilderHTML() {
     const baseP = Number(settings.basePrice) || 145; const imgOpts = settings.imagePrinting || defaultSettings.cakeBuilder.imagePrinting;
     const selectedImgOption = imgOpts.find(opt => opt.label === c.img) || {price: 0};
     const price = Number(c.ps) * baseP + Number(selectedImgOption.price);
-    const flavors = settings.flavors || ['فانيليا']; 
+    const flavors = settings.flavors || ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت']; 
     const rawImagesList = (settings.images && settings.images.length > 0) ? settings.images : [getImgFallback('تورت')];
     const imagesList = rawImagesList.map(url => optimizeCloudinaryUrl(url));
     const descText = settings.desc || defaultSettings.cakeBuilder.desc;
@@ -803,91 +716,7 @@ function getCakeBuilderHTML() {
     return `<div class=\"rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative\" style=\"background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);\"><div class=\"p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8\" style=\"background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);\">${sliderHtml}<div class=\"flex-1 text-center md:text-right\"><h2 class=\"text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight\" style=\"color: hsl(var(--brand-hue), 70%, 50%);\">تخصيص التورت الملكية 👑</h2><p class=\"text-sm md:text-base font-bold leading-loose opacity-80\" style=\"color: var(--site-text);\">${escapeHTML(descText)}</p></div></div><div class=\"p-6 md:p-12 space-y-12\"><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-10\"><div class=\"space-y-4\"><label class=\"font-bold text-lg flex items-center gap-2\" style=\"color: var(--site-text);\"><i data-lucide=\"cake\" style=\"color: hsl(var(--brand-hue), 70%, 60%);\"></i> نكهة الكيك المفضلة</label><div class=\"grid grid-cols-2 md:grid-cols-4 gap-3\">${flavors.map(fl => `<button onclick=\"uCake('flv', '${escapeHTML(fl)}')\" class=\"py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}\" style=\"${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}\">${escapeHTML(fl)}</button>`).join('')}</div></div><div class=\"space-y-4\"><label class=\"font-bold text-lg flex items-center gap-2\" style=\"color: var(--site-text);\"><i data-lucide=\"heart\" style=\"color: hsl(var(--brand-hue), 70%, 60%);\"></i> عدد الأفراد</label><div class=\"flex items-center justify-between border rounded-2xl p-2 shadow-inner h-full max-h-[80px]\" style=\"background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);\"><button onclick=\"adjP(-2)\" class=\"p-3 rounded-xl border hover:scale-105 transition-all\"><i data-lucide=\"minus\"></i></button><span class=\"text-3xl font-bold\">${c.ps}</span><button onclick=\"adjP(2)\" class=\"p-3 rounded-xl border hover:scale-105 transition-all\"><i data-lucide=\"plus\"></i></button></div></div></div></div><div class=\"p-8 md:p-14 border-t-2 flex flex-col md:flex-row justify-between items-center gap-8\" style=\"background-color: hsl(var(--brand-hue), 80%, 95%);\"><div class=\"text-center md:text-right\"><span class=\"block font-bold mb-2\">الإجمالي التقديري</span><span class=\"text-4xl md:text-6xl font-bold\">${price} ج.م</span></div><button onclick=\"commitCakeBuilder()\" class=\"w-full md:w-auto text-white font-bold text-xl md:text-2xl py-5 px-12 rounded-2xl shadow-xl brand-gradient\">إضافة للمراجعة</button></div></div>`;
 }
 
-// 👑 Smart DOM Morphing Engine (Zero Flicker Technology)
-function smartDOMReplace(container, newHTML, hash) {
-    if (!container.firstElementChild) {
-        container.innerHTML = newHTML;
-        container.dataset.renderedHash = hash;
-        if(window.lucide) lucide.createIcons();
-        return;
-    }
-
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = newHTML;
-
-    if (container.children.length !== tempDiv.children.length ||
-        container.firstElementChild.tagName !== tempDiv.firstElementChild?.tagName) {
-        
-        const h = container.getBoundingClientRect().height;
-        container.style.minHeight = h + 'px';
-        window.requestAnimationFrame(() => {
-            container.innerHTML = newHTML;
-            container.dataset.renderedHash = hash;
-            if(window.lucide) lucide.createIcons();
-            window.requestAnimationFrame(() => container.style.minHeight = '');
-        });
-        return;
-    }
-
-    const syncCards = (oldParent, newParent) => {
-        const oldCardsMap = new Map();
-        Array.from(oldParent.children).forEach(child => {
-            if (child.id && child.id.startsWith('product-card-')) oldCardsMap.set(child.id, child);
-            else if (child.classList.contains('grid')) syncCards(child, Array.from(newParent.children).find(c => c.classList.contains('grid')));
-            else if (child.querySelector('.grid')) syncCards(child.querySelector('.grid'), Array.from(newParent.children).find(c => c.querySelector('.grid'))?.querySelector('.grid'));
-        });
-
-        if (oldCardsMap.size > 0) {
-            const newCards = Array.from(newParent.children);
-            oldParent.innerHTML = ''; 
-
-            newCards.forEach(newCard => {
-                if (newCard.id && oldCardsMap.has(newCard.id)) {
-                    const oldCard = oldCardsMap.get(newCard.id);
-                    if (oldCard.children.length >= 2 && newCard.children.length >= 2) {
-                        if (oldCard.children[1].innerHTML !== newCard.children[1].innerHTML) {
-                            oldCard.children[1].innerHTML = newCard.children[1].innerHTML;
-                        }
-                        
-                        const oldBadge = oldCard.children[0].querySelector('.absolute.top-2.right-2.z-20');
-                        const newBadge = newCard.children[0].querySelector('.absolute.top-2.right-2.z-20');
-                        if (oldBadge && !newBadge) oldBadge.remove();
-                        else if (!oldBadge && newBadge) oldCard.children[0].appendChild(newBadge.cloneNode(true));
-                        else if (oldBadge && newBadge && oldBadge.outerHTML !== newBadge.outerHTML) oldBadge.outerHTML = newBadge.outerHTML;
-
-                        const oldOOS = oldCard.children[0].querySelector('.bg-white\\/40');
-                        const newOOS = newCard.children[0].querySelector('.bg-white\\/40');
-                        if (oldOOS && !newOOS) oldOOS.remove();
-                        else if (!oldOOS && newOOS) oldCard.children[0].appendChild(newOOS.cloneNode(true));
-                    } else {
-                        oldCard.innerHTML = newCard.innerHTML;
-                    }
-                    oldParent.appendChild(oldCard);
-                } else {
-                    oldParent.appendChild(newCard);
-                }
-            });
-        }
-    };
-
-    for (let i = 0; i < tempDiv.children.length; i++) {
-        const oldChild = container.children[i];
-        const newChild = tempDiv.children[i];
-        if (oldChild && newChild) {
-            if (oldChild.classList.contains('grid')) {
-                syncCards(oldChild, newChild);
-            } else if (oldChild.querySelector('.grid') && newChild.querySelector('.grid')) {
-                syncCards(oldChild.querySelector('.grid'), newChild.querySelector('.grid'));
-            } else {
-                oldChild.innerHTML = newChild.innerHTML;
-            }
-        }
-    }
-
-    container.dataset.renderedHash = hash;
-    if(window.lucide) lucide.createIcons();
-}
-
+// 👑 إرجاع كود الرسم المباشر والأصيل مع تغليف شبكي (Grid) لحماية الكروت من التمدد
 function renderMainDisplay() {
     if (!isAppReady) return; 
     const container = document.getElementById('display-container'); 
@@ -928,12 +757,16 @@ function renderMainDisplay() {
             });
         }
         const userLayout = siteSettings.productLayout || 'grid';
-        targetHTML = `<div class=\"grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 items-stretch\">${list.map(p => drawProductCard(p, userLayout)).join('')}</div>`;
+        // 🛡️ التغليف الآمن في شبكة Grid لضمان عدم تمدد الكارت للشاشة كاملة
+        targetHTML = `<div class=\"grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 items-stretch w-full\">${list.map(p => drawProductCard(p, userLayout)).join('')}</div>`;
         dataHashToCompare = "NORMAL_" + state.activeCat + "_" + list.map(p => p.id + p.price + p.inStock + p.name + (p.images ? p.images.length : 0)).join('-');
     }
 
+    // تطبيق الـ HTML فقط إذا كان هناك تغيير (لمنع الرعشة)
     if (container.dataset.renderedHash !== dataHashToCompare) {
-        smartDOMReplace(container, targetHTML, dataHashToCompare);
+        container.innerHTML = targetHTML;
+        container.dataset.renderedHash = dataHashToCompare; 
+        if(window.lucide) lucide.createIcons();
     }
 
     if (showSubTabs) {
@@ -996,6 +829,7 @@ window.addWithQtyContext = function(buttonElement, id) {
 function drawProductCard(p, layoutMode = 'grid') {
     if (!p) return '';
     const pIdSafe = String(p.id || ''); 
+    // 🛡️ تحديد العرض يتم بناء على الإعدادات، وإذا كان full يتم تطبيق العرض الكامل
     let itemLayout = (p.layout && p.layout !== 'default') ? p.layout : layoutMode;
     let isFullWidth = (itemLayout === 'full');
     const isOutOfStock = p.inStock === false;
@@ -1061,10 +895,10 @@ function getImgFallback(cat) {
     return m[cat] || m['جاتوهات'];
 }
 
-function uCake(k, v) { state.cakeBuilder[k] = v; StateManager.triggerRender(); }
+function uCake(k, v) { state.cakeBuilder[k] = v; renderMainDisplay(); }
 function adjP(d) {
     let n = Number(state.cakeBuilder.ps) + Number(d); if (n < 4) n = 4;
-    state.cakeBuilder.ps = n; StateManager.triggerRender();
+    state.cakeBuilder.ps = n; renderMainDisplay();
 }
 
 function renderCartList() {
@@ -1116,7 +950,7 @@ function commitCakeBuilder() {
     const customId = generateUniqueID();
     state.cart.push({ id: customId, cartItemId: customId, name: 'تورتة الفئة الملكية (تصميم خاص)', price: pr, desc: ds, quantity: 1, isCustom: true });
     saveCartToStorage(); toggleCart(true); calculateCartTotal();
-    state.cakeBuilder.msg = ''; StateManager.triggerRender(); showSystemToast('تم تسجيل التورتة في السلة بنجاح', 'success');
+    state.cakeBuilder.msg = ''; renderMainDisplay(); showSystemToast('تم تسجيل التورتة في السلة بنجاح', 'success');
 }
 
 function toggleDeliveryMethod() {
@@ -1253,7 +1087,7 @@ async function submitOrder() {
         ClientStorageEngine.queueOrder(orderData);
     }
 
-    state.cart = []; clearCartStorage(); syncCartUI(); toggleCart(false); StateManager.triggerRender();
+    state.cart = []; clearCartStorage(); syncCartUI(); toggleCart(false); renderMainDisplay();
     showSystemToast('تم تسجيل الطلب وإرساله لمركز القيادة بنجاح! 🎂', 'success');
 
     if(btn) {
@@ -1304,6 +1138,7 @@ window.addEventListener('scroll', () => {
 
 // 👑 THE ULTIMATE EXECUTION ISOLATION GUARD
 document.addEventListener('DOMContentLoaded', () => {
+    // 🛡️ حماية العميل من تداخل صفحة الإدارة معه
     if (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة') || document.getElementById('admin-orders-tbody')) {
         console.warn("BoseSweets: Client Engine bypassed to prevent Multi-Source Rendering Conflict in Admin Zone. 🛡️");
         return; 
