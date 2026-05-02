@@ -245,7 +245,24 @@ async function loadEngineMemory() {
             if (!catSnap.empty) { catalog = []; catSnap.forEach(doc => catalog.push(doc.data())); }
             
             const settingsSnap = await db.collection('settings').doc('main').get();
-            if (settingsSnap.exists) { siteSettings = { ...defaultSettings, ...settingsSnap.data() }; }
+            if (settingsSnap.exists) { 
+                const cloudData = settingsSnap.data();
+                siteSettings = { ...defaultSettings, ...cloudData };
+                
+                if(cloudData.visuals) {
+                    siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
+                }
+                
+                // 🛡️ الحماية العميقة لخانات التورتة جوه لوحة الإدارة
+                if(cloudData.cakeBuilder) {
+                    siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
+                    if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) {
+                        siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
+                    }
+                } else {
+                    siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
+                }
+            }
             
             const shipSnap = await db.collection('shipping').get();
             if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); }
@@ -1204,59 +1221,29 @@ async function executeDeleteProduct(id) {
     renderAdminMenu(currentSearch); renderAdminOverview(); 
 }
 
-function fillCakeBuilderAdmin() {
-    if(!window.siteSettings) return;
-    if (!siteSettings.cakeBuilder) siteSettings.cakeBuilder = JSON.parse(JSON.stringify(defaultSettings.cakeBuilder));
-    const c = siteSettings.cakeBuilder;
-    if(document.getElementById('set-cake-base-price')) document.getElementById('set-cake-base-price').value = c.basePrice || 145;
-    if(document.getElementById('set-cake-min-sq')) document.getElementById('set-cake-min-sq').value = c.minSquare || 16;
-    if(document.getElementById('set-cake-min-rect')) document.getElementById('set-cake-min-rect').value = c.minRect || 20;
-    if(c.imagePrinting) {
-        const edible = c.imagePrinting.find(i => i.label === 'صورة قابلة للأكل');
-        if(edible && document.getElementById('set-print-edible')) document.getElementById('set-print-edible').value = edible.price;
-    }
-    renderAdminCakeFlavors(); 
-}
-
-function renderAdminCakeFlavors() {
-    if(!window.siteSettings) return;
-    const list = siteSettings.cakeBuilder?.flavors || [];
-    const container = document.getElementById('admin-cake-flavors-list');
-    if(!container) return;
-    container.innerHTML = list.map((fl, idx) => `
-        <div class="bg-purple-500/10 text-purple-300 text-[10px] px-2.5 py-1 rounded-md flex items-center gap-1.5 border border-purple-500/20 font-bold">
-            <span>${escapeHTML(fl)}</span>
-            <button onclick="removeCakeFlavor(${idx})" class="text-red-400 hover:text-red-300 ml-1 relative z-50 pointer-events-auto"><i data-lucide="x" class="w-3 h-3"></i></button>
-        </div>
-    `).join('');
-    if(window.lucide) lucide.createIcons();
-}
-
-function addCakeFlavor() {
-    const input = document.getElementById('new-flavor-input'); if(!input) return;
-    const val = input.value.trim(); if(!val) return;
-    if(!siteSettings.cakeBuilder.flavors) siteSettings.cakeBuilder.flavors = [];
-    siteSettings.cakeBuilder.flavors.push(val);
-    input.value = ''; renderAdminCakeFlavors();
-}
-
-function removeCakeFlavor(idx) { 
-    if(siteSettings.cakeBuilder && siteSettings.cakeBuilder.flavors) { siteSettings.cakeBuilder.flavors.splice(idx, 1); renderAdminCakeFlavors(); }
-}
-
 async function saveCakeBuilderSettings() {
-    if(!window.siteSettings) return;
+    if(!window.siteSettings) window.siteSettings = { ...defaultSettings };
+    if(!siteSettings.cakeBuilder) siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
+    
     const c = siteSettings.cakeBuilder;
     if(c) {
         c.basePrice = Number(document.getElementById('set-cake-base-price')?.value) || 145;
         c.minSquare = Number(document.getElementById('set-cake-min-sq')?.value) || 16;
         c.minRect = Number(document.getElementById('set-cake-min-rect')?.value) || 20;
-        c.imagePrinting = [ { label: 'بدون', price: 0 }, { label: 'صورة قابلة للأكل', price: Number(document.getElementById('set-print-edible')?.value) || 0 }, { label: 'صورة غير قابلة للأكل', price: 0 } ];
+        c.imagePrinting = [ 
+            { label: 'بدون', price: 0 }, 
+            { label: 'صورة قابلة للأكل', price: Number(document.getElementById('set-print-edible')?.value) || 0 }, 
+            { label: 'صورة غير قابلة للأكل', price: 0 } 
+        ];
     }
     try {
         if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', siteSettings); 
-        saveEngineMemory('set'); showSystemToast("تم حفظ إعدادات التورت الملكية 👑", "success");
-    } catch(e) { saveEngineMemory('set'); showSystemToast("تم الحفظ محلياً", "info"); }
+        saveEngineMemory('set'); 
+        showSystemToast("تم حفظ إعدادات التورت الملكية 👑", "success");
+    } catch(e) { 
+        saveEngineMemory('set'); 
+        showSystemToast("تم الحفظ محلياً", "info"); 
+    }
 }
 
 // 👑 التحديث الملكي: الترتيب المخصص للأقسام

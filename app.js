@@ -62,7 +62,6 @@ const LiveSearchEngine = {
         console.log("BoseSweets: Live Search Engine Indexed successfully 👑");
     },
     observeIndexUpdate(newCatalog) {
-        // 🛡️ خوارزمية الفهرسة التفاضلية (Differential Indexing) لتقليل استهلاك الرامات
         if (!this.index || this.index.size === 0) {
             this.build(newCatalog);
             return;
@@ -241,7 +240,7 @@ const ClientStorageEngine = {
 };
 
 const detailedDescriptions = {
-    'ديسباسيتو نوتيلا مثلث': 'مثلث السعادة الصغير.. جرعة "نوتيلا" مركزة جداً فوق قاعدة من فادج كيك بوسي الغني، معمولة عشان تذوب في ثواني وتعدل مودك في أسرع وقت. القطمة الواحدة فيها انفجار طعم مش هتحس بيه غير في الحجم ده 🍫🔺',
+    'ديسباسيتو نوتيلا مثلث': 'مثلث السعادة الصغير.. جرعة "نوتيلا" مركزة جداً فوق قاعدة من فادج كيك حلويات بوسي الغني، معمولة عشان تذوب في ثواني وتعدل مودك في أسرع وقت. القطمة الواحدة فيها انفجار طعم مش هتحس بيه غير في الحجم ده 🍫🔺',
     'ديسباسيتو نوتيلا وسط': 'قلب الديسباسيتو النابض.. توازن رهيب بين طبقة الفادج السميكة وصوص النوتيلا البرازيلي اللي مغطي الوسط بالكامل، الحجم ده معمول للروقان الهادي اللي بياخدك لعالم تاني مع كل معلقة 🍫 روقان',
     'ديسباسيتو نوتيلا كبير': 'محيط من النوتيلا الأصلية السايحة.. فخامة الحجم الكبير بتخليك تغرق في طعم الفادج الكثيف مع طبقة نوتيلا سخية جداً، دي مش مجرد تحلية دي "وليمة" لعشاق الشيكولاتة اللي مبيعرفوش يوقفوا 🍫🌊',
     'ورد طبيعي': 'روح الطبيعة في بيتك.. ورد فريش بعبير ساحر وقطرات الندى، بنختاره بعناية من أحلى المزارع عشان يوصلك بريحته اللي بترد الروح ويكون لغة تعبير راقية عن مشاعرك في أجمل اللحظات 💐✨',
@@ -249,7 +248,7 @@ const detailedDescriptions = {
     'ورد ستان': 'شغل الهاند-ميد الفاخر.. كل وردة معمولة يدوياً من أفخم أنواع الستان بحرفية "حلويات بوسي" الخاصة، ملمس ناعم وشكل "بريستيج" جداً يتقدم لهدية مفيش منها اتنين 🎀💖',
     'ورد فلوس': 'أشيك طريقة لتقديم العيدية والهدايا النقدية.. ورد منسق بلمسة إبداعية وفنية تخلي هديتك مش مجرد مبلغ مالي، دي ذكرى مبهجة ومفاجأة بتخطف العين والقلب 💸🌹',
     'ورد هدايا': 'تنسيق متكامل يجمع بين رقة الورد وشياكة التغليف.. البوكيه ده معمول مخصوص عشان يكون رفيق للهدايا القيمة، بلمسات فنية بتخلي شكل الهدية النهائي يبهر اللي هيستلمها 🎁✨',
-    'ورد شيكولاتة': 'ميكس السعادة المطلق.. بوكيه بيجمع بين شياكة الورد وطعم شيكولاتة بوسي الملكية، هدية "تؤكل" وتفرح القلب والعين في نفس الوقت.. الدلع اللي بجد 🍫🌹',
+    'ورد شيكولاتة': 'ميكس السعادة المطلق.. بوكيه بيجمع بين شياكة الورد وطعم شيكولاتة حلويات بوسي الملكية، هدية "تؤكل" وتفرح القلب والعين في نفس الوقت.. الدلع اللي بجد 🍫🌹',
     'جاتوه كلاسيك': 'قطعة الجاتوه الأصيلة اللي بترجعنا لأحلى الذكريات بلمسة بوسي.. فادج كيك خفيف جداً وهش، بيدوب مع كريمة غنية وسكر مظبوط بالمللي.. الاختيار اللي مبيختلفش عليه اتنين 🍰✨',
     'تورتة ميني': 'تورتة ميني كيوت تكفي فردين.. مثالية للمفاجآت السريعة والرومانسية 🎂🥰',
     'حجم (فرد - فردين)': 'تورتة "المفاجأة السعيدة" من حلويات بوسي 🎂 حجم كيوت وتصميم ملكي يخطف القلب، معمولة مخصوص للحظات الرومانسية أو احتفال صغير بين اتنين.. كيك هش وحشوات غنية تكفيكم وتفيض حب 🥰',
@@ -501,14 +500,28 @@ async function loadEngineMemory() {
         await fetchDefaultCatalog(); 
         catalog = [...defaultCatalog];
         
-        // 👑 التحديث الثوري: المراقبة اللحظية للإعدادات وتطبيقها فوراً بدمج عميق لمنع اختفاء الألوان
+        // 👑 التحديث الثوري: المراقبة اللحظية للإعدادات وتطبيقها فوراً بدمج عميق لمنع اختفاء البيانات
         db.collection('settings').doc('main').onSnapshot(snapshot => {
             if (snapshot.exists) {
                 const cloudData = snapshot.data();
+                
+                // دمج عميق للمستوى الأول
                 siteSettings = { ...defaultSettings, ...cloudData };
                 
+                // دمج عميق لحماية الهوية البصرية
                 if(cloudData.visuals) {
                     siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
+                }
+
+                // 🛡️ دمج عميق وحماية فولاذية لخانات التورتة عشان متتمسحش أبدا
+                if(cloudData.cakeBuilder) {
+                    siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
+                    // لو النكهات اتمسحت لأي سبب نرجعها فورا من الافتراضي
+                    if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) {
+                        siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
+                    }
+                } else {
+                    siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
                 }
 
                 if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
@@ -543,7 +556,6 @@ async function loadEngineMemory() {
             if (cloudCatalog.length > 0) catalog = [...cloudCatalog, ...freshDespacito];
         }
 
-        // 👑 التحديث الثوري: مصدات الحماية (Debounce) لمنع الـ Crash أثناء رفع عدة منتجات
         db.collection('catalog').onSnapshot(snapshot => {
             let updatedCatalog = [];
             snapshot.forEach(doc => {
@@ -728,7 +740,6 @@ function renderMainDisplay() {
     if(!container) return;
     
     if (catalog.length === 0) {
-        console.warn("BoseSweets: Empty catalog detected, triggering recovery render.");
         catalog = [...defaultCatalog];
     }
 
@@ -756,18 +767,26 @@ function renderMainDisplay() {
     if(window.lucide) lucide.createIcons();
 }
 
-window.updateTempQty = function(id, delta) {
-    const el = document.getElementById('temp-qty-' + id);
-    if(el) {
-        let val = parseInt(el.innerText.replace(/[^0-9]/g, '')) + delta;
-        if(val < 1) val = 1; if(val > 50) val = 50;
-        el.innerText = val; 
+window.updateTempQtyContext = function(buttonElement, delta) {
+    const container = buttonElement.closest('.quantity-controls');
+    if(container) {
+        const el = container.querySelector('.temp-qty-display');
+        if(el) {
+            let val = parseInt(el.innerText.replace(/[^0-9]/g, '')) + delta;
+            if(val < 1) val = 1; if(val > 50) val = 50;
+            el.innerText = val; 
+        }
     }
 };
 
-window.addWithQty = function(id) {
-    const el = document.getElementById('temp-qty-' + id);
-    let qty = 1; if(el) qty = parseInt(el.innerText) || 1;
+window.addWithQtyContext = function(buttonElement, id) {
+    let qty = 1; 
+    const cardElement = buttonElement.closest('.bg-white.flex.flex-col');
+    if(cardElement) {
+        const qtyEl = cardElement.querySelector('.temp-qty-display');
+        if(qtyEl) qty = parseInt(qtyEl.innerText) || 1;
+    }
+
     const safeId = String(id); const prod = catalogMap.get(safeId); 
     if (!prod) return;
     if (prod.inStock === false) { showSystemToast('نأسف، هذا المنتج غير متوفر حالياً.', 'error'); return; }
@@ -775,9 +794,23 @@ window.addWithQty = function(id) {
     if(navigator.vibrate) navigator.vibrate(50); 
     
     const exist = state.cart.find(i => String(i.id) === safeId);
-    if (exist) { exist.quantity = Number(exist.quantity) + qty; } 
-    else { const newCartItem = JSON.parse(JSON.stringify(prod)); newCartItem.quantity = qty; newCartItem.cartItemId = generateUniqueID(); state.cart.push(newCartItem); }
-    saveCartToStorage(); syncCartUI(); updateCardUI(safeId); calculateCartTotal(); 
+    if (exist) { 
+        exist.quantity = Number(exist.quantity) + qty; 
+    } else { 
+        const newCartItem = JSON.parse(JSON.stringify(prod)); 
+        newCartItem.quantity = qty; 
+        newCartItem.cartItemId = generateUniqueID(); 
+        state.cart.push(newCartItem); 
+    }
+    
+    saveCartToStorage(); 
+    syncCartUI(); 
+    calculateCartTotal(); 
+    
+    if(cardElement) {
+        const qtyEl = cardElement.querySelector('.temp-qty-display');
+        if(qtyEl) qtyEl.innerText = '1';
+    }
     
     const cartBtn = document.querySelector('button[onclick="toggleCart(true)"]');
     if(cartBtn) { cartBtn.classList.add('scale-110'); MemoryManager.set('cart_bounce', ()=> cartBtn.classList.remove('scale-110'), 200); }
@@ -853,57 +886,6 @@ function drawProductCard(p, layoutMode = 'grid') {
         </div>
     </div>`;
 }
-
-window.updateTempQtyContext = function(buttonElement, delta) {
-    const container = buttonElement.closest('.quantity-controls');
-    if(container) {
-        const el = container.querySelector('.temp-qty-display');
-        if(el) {
-            let val = parseInt(el.innerText.replace(/[^0-9]/g, '')) + delta;
-            if(val < 1) val = 1; if(val > 50) val = 50;
-            el.innerText = val; 
-        }
-    }
-};
-
-window.addWithQtyContext = function(buttonElement, id) {
-    let qty = 1; 
-    const cardElement = buttonElement.closest('.bg-white.flex.flex-col');
-    if(cardElement) {
-        const qtyEl = cardElement.querySelector('.temp-qty-display');
-        if(qtyEl) qty = parseInt(qtyEl.innerText) || 1;
-    }
-
-    const safeId = String(id); const prod = catalogMap.get(safeId); 
-    if (!prod) return;
-    if (prod.inStock === false) { showSystemToast('نأسف، هذا المنتج غير متوفر حالياً.', 'error'); return; }
-    
-    if(navigator.vibrate) navigator.vibrate(50); 
-    
-    const exist = state.cart.find(i => String(i.id) === safeId);
-    if (exist) { 
-        exist.quantity = Number(exist.quantity) + qty; 
-    } else { 
-        const newCartItem = JSON.parse(JSON.stringify(prod)); 
-        newCartItem.quantity = qty; 
-        newCartItem.cartItemId = generateUniqueID(); 
-        state.cart.push(newCartItem); 
-    }
-    
-    saveCartToStorage(); 
-    syncCartUI(); 
-    calculateCartTotal(); 
-    
-    if(cardElement) {
-        const qtyEl = cardElement.querySelector('.temp-qty-display');
-        if(qtyEl) qtyEl.innerText = '1';
-    }
-    
-    const cartBtn = document.querySelector('button[onclick="toggleCart(true)"]');
-    if(cartBtn) { cartBtn.classList.add('scale-110'); MemoryManager.set('cart_bounce', ()=> cartBtn.classList.remove('scale-110'), 200); }
-    
-    showSystemToast(`تم إضافة الكمية (${qty}) للسلة بنجاح 🛍️`, 'success');
-};
 
 function getImgFallback(cat) {
     const m = { 'تورت': 'https://images.unsplash.com/photo-1535141192574-5d4897c12636?auto=format&fit=crop&w=800&q=80', 'جاتوهات': 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80', 'قشطوطة': 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=800&q=80', 'بامبوليني': 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80', 'دوناتس': 'https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&w=800&q=80', 'ديسباسيتو': 'https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&w=800&q=80', 'سينابون': 'https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=800&q=80', 'ريد فيلفت': 'https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?auto=format&fit=crop&w=800&q=80', 'كبات السعادة': 'https://images.unsplash.com/photo-1550617931-e17a7b70dce2?auto=format&fit=crop&w=800&q=80', 'ميل فاي': 'https://images.unsplash.com/photo-1587314168485-3236d6710814?auto=format&fit=crop&w=800&q=80', 'إكلير': 'https://images.unsplash.com/photo-1603532648955-039310d9ed75?auto=format&fit=crop&w=800&q=80', 'تشيز كيك': 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=800&q=80', 'عروض وبوكسات': 'https://images.unsplash.com/photo-1558326567-98ae2405596b?auto=format&fit=crop&w=800&q=80', 'ميني تورتة': 'https://images.unsplash.com/photo-1562777717-b6aff3dacd65?auto=format&fit=crop&w=800&q=80', 'ورد': 'https://images.unsplash.com/photo-1563241527-3004b7be0ffd?auto=format&fit=crop&w=800&q=80' };
@@ -1074,14 +1056,11 @@ async function submitOrder() {
     }
 
     const orderId = generateSecureOrderId(); 
-    
-    // 🛡️ التعديل الأول: طبقة الحماية وتصحيح الأسعار قبل العمليات الحسابية
     let subtotal = 0;
     state.cart.forEach(item => {
         if (!item.isCustom) {
             const trueProd = catalogMap.get(String(item.id));
             if (trueProd && trueProd.price) {
-                // التصحيح الصامت لمنع تلاعب العميل بأسعار السلة من المتصفح
                 item.price = Number(trueProd.price);
             }
         }
@@ -1106,7 +1085,6 @@ async function submitOrder() {
         date: new Date().toLocaleString('ar-EG')
     };
 
-    // 🛡️ التعديل الثاني: تجهيز رابط الواتساب وإطلاقه فوراً قبل اتصال قاعدة البيانات
     let m = `*طلب جديد من حلويات بوسي* 👑\n*رقم الطلب:* ${orderId}\n\n👤 الاسم: ${cName}\n📞 الموبايل: ${cPhone}\n`;
     if(deliveryMethod === 'pickup') m += `🛵 الطريقة: استلام من الفرع\n`;
     else m += `🛵 التوصيل: ${cArea} - ${cAddress}\n`;
@@ -1121,21 +1099,17 @@ async function submitOrder() {
     let cleanPhone = storePhone.replace(/\D/g, '');
     if (cleanPhone.startsWith('0')) cleanPhone = '2' + cleanPhone;
 
-    // فتح النافذة فوراً كاستجابة مباشرة للنقرة لتخطي حظر المتصفحات (Popup Blocker)
     window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(m)}`, '_blank');
     
-    // تشغيل الرفع لقاعدة البيانات في الخلفية لتسريع الأداء وتفادي التعطيل
     try {
         if(navigator.onLine && typeof db !== 'undefined') {
             db.collection('orders').doc(String(orderId)).set(orderData).catch(e => {
-                console.warn("BoseSweets: Background save delayed, queuing...", e);
                 ClientStorageEngine.queueOrder(orderData);
             });
         } else {
             throw new Error("Offline or Firebase Unavailable");
         }
     } catch(e) {
-        console.warn("BoseSweets: Network unstable, queuing order for auto-retry 🔄", e);
         ClientStorageEngine.queueOrder(orderData);
     }
 
