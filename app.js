@@ -549,7 +549,7 @@ async function loadEngineMemory() {
             }
         });
 
-        // مراقبة الكتالوج مع منع التذبذب البصري (Smart Render Guard)
+        // مراقبة الكتالوج مع محرك التحديث الموجه (Smart Targeted Render Guard)
         db.collection('catalog').onSnapshot(snapshot => {
             let updatedCatalog = [];
             snapshot.forEach(doc => {
@@ -560,8 +560,12 @@ async function loadEngineMemory() {
             const freshDespacito = defaultCatalog.filter(p => p.category === 'ديسباسيتو');
             const newFullCatalog = [...updatedCatalog, ...freshDespacito];
             
-            // 🛡️ الحل السحري: لا تقم بالرندرة إذا كانت البيانات الجوهرية لم تتغير
-            const currentHash = JSON.stringify(updatedCatalog.map(p => p.id + p.price + p.inStock));
+            // 👑 1. الحاجز الذكي الفولاذي: ترتيب الكتالوج أبجدياً حسب الـ ID قبل التشفير
+            // هذا يضمن أن الـ Hash لن يتغير أبداً بسبب اختلاف الترتيب العشوائي القادم من السيرفر
+            const sortedCatalogForHash = [...updatedCatalog].sort((a, b) => String(a.id).localeCompare(String(b.id)));
+            const currentHash = sortedCatalogForHash.map(p => `${p.id}_${p.price}_${p.inStock}`).join('|');
+
+            // إذا كان الهاش متطابقاً، نوقف العملية فوراً (لا يوجد تغيير فعلي)
             if (lastCatalogHash === currentHash) return;
             lastCatalogHash = currentHash;
 
@@ -572,7 +576,33 @@ async function loadEngineMemory() {
             if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
             window.renderDebounceTimer = setTimeout(() => { 
                 if(document.getElementById('display-container')) {
-                    renderMainDisplay(); 
+                    
+                    // 👑 2. محرك الرندرة الموجه (Targeted Rendering)
+                    // نتحقق من نوع التغيير لتحديث العنصر المطلوب فقط بدون مسح الشاشة
+                    let needsFullRender = false;
+                    const changes = snapshot.docChanges();
+
+                    // إذا كان هذا هو التحميل الأول بالكامل، نرندر الشاشة كلها
+                    if(changes.length === snapshot.docs.length) {
+                        needsFullRender = true;
+                    } else {
+                        changes.forEach(change => {
+                            if (change.type === 'added' || change.type === 'removed') {
+                                // في حالة إضافة منتج جديد أو حذف منتج، نحتاج إعادة بناء الشاشة
+                                needsFullRender = true;
+                            } else if (change.type === 'modified') {
+                                // 🌟 السحر الحقيقي: تحديث كارت المنتج المُعدل فقط في مكانه بدون أي اهتزاز
+                                if(typeof updateCardUI === 'function') {
+                                    updateCardUI(change.doc.data().id);
+                                }
+                            }
+                        });
+                    }
+
+                    // تنفيذ الرندرة الكاملة فقط للضرورة القصوى
+                    if (needsFullRender) {
+                        renderMainDisplay(); 
+                    }
                 }
             }, 300); 
         });
