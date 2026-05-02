@@ -178,9 +178,9 @@ const NetworkEngine = {
     },
     
     /**
-     * 🛡️ خوارزمية الطابور الذكي المطورة (Parallel Processing & Jittered Backoff)
-     * تعالج جميع الطلبات المعلقة في نفس الوقت (بالتوازي) لتسريع المزامنة بشكل هائل،
-     * مع توزيع الحمل بذكاء.
+     * 🛡️ خوارزمية الطابور الذكي المطورة (Smart Batch Processing & Jittered Backoff)
+     * تعالج الطلبات المعلقة في دفعات (Batches) لتسريع المزامنة بشكل هائل
+     * مع توزيع الحمل بذكاء لمنع اختناق الشبكة أو ضغط السيرفرات.
      */
     async processQueue() {
         if (!navigator.onLine) return;
@@ -189,17 +189,16 @@ const NetworkEngine = {
             const queue = await CloudQueueDB.getAll();
             if (queue.length === 0) return;
             
-            console.log(`BoseSweets Engine: Processing ${queue.length} background operations in PARALLEL... ⚡👑`);
-            const baseDelay = 1500; // تأخير مبدئي 1.5 ثانية
+            console.log(`BoseSweets Engine: Processing ${queue.length} background operations in SMART BATCHES... ⚡👑`);
+            const baseDelay = 1500; 
             
-            // دالة داخلية لمعالجة كل عملية بشكل مستقل وبدون تعطيل باقي العمليات
+            // دالة المعالجة الفردية (محتفظين بيها زي ما هي بكل تفاصيل الحماية)
             const processSingleOperation = async (op) => {
                 let retries = 0;
-                const maxRetries = 5; // زيادة عدد المحاولات للشبكات الضعيفة جداً
+                const maxRetries = 5; 
                 let success = false;
 
                 while (retries < maxRetries && !success) {
-                    // التوسيع الجديد: إيقاف المحاولة فوراً إذا انقطع الإنترنت لحماية الذاكرة
                     if (!navigator.onLine) {
                         console.warn("BoseSweets: Connection lost during queue processing. Halting.");
                         break; 
@@ -208,45 +207,59 @@ const NetworkEngine = {
                     try {
                         if (op.type === 'write') {
                             await db.collection(op.collectionName).doc(op.docId).set(op.data, { merge: true });
-                            
-                            // تشغيل المزامنة العكسية بعد رفع الطلب المتأخر بنجاح
                             if(op.collectionName === 'orders') {
                                 ReverseSyncEngine.triggerOrderWebhook(op.data);
                             }
-                            
                         } else if (op.type === 'delete') {
                             await db.collection(op.collectionName).doc(op.docId).delete();
                         }
                         
-                        // مسح العملية من الطابور فور نجاحها لتوفير الذاكرة
                         await CloudQueueDB.remove(op.queueId);
                         success = true;
-                        return true; // تمت بنجاح
+                        return true; 
                         
                     } catch (e) {
                         retries++;
                         console.warn(`BoseSweets Engine: Failed to process queued op [${op.queueId}]. Retry ${retries}/${maxRetries}.`, e);
                         
                         if (retries < maxRetries) {
-                            /**
-                             * هندسة التأخير المتضاعف مع الجيتر (Exponential Backoff with Jitter):
-                             * إضافة وقت عشوائي بسيط (Jitter) لمنع تزامن المحاولات الفاشلة معاً (Thundering Herd Problem)
-                             */
                             const jitter = Math.random() * 1000;
                             const backoffTime = (baseDelay * Math.pow(2, retries)) + jitter;
                             await new Promise(res => setTimeout(res, backoffTime));
                         }
                     }
                 }
-                return false; // فشلت بعد كل المحاولات الممكنة
+                return false; 
             };
 
-            // تنفيذ جميع العمليات بالتوازي (Parallel Execution) باستخدام Promise.all
-            const results = await Promise.all(queue.map(op => processSingleOperation(op)));
-            const processedCount = results.filter(result => result === true).length;
+            // 👑 التوسيع الهندسي: تقسيم الطابور لدفعات (Chunking) 
+            const batchSize = 5; // المحرك هيعالج 5 طلبات في المرة الواحدة
+            let processedCount = 0;
+
+            for (let i = 0; i < queue.length; i += batchSize) {
+                // التأكد إن النت لسه شغال قبل كل دفعة
+                if (!navigator.onLine) {
+                    console.warn("BoseSweets: Network unstable, pausing batch processing.");
+                    break;
+                }
+
+                // سحب دفعة جديدة من الطابور
+                const currentBatch = queue.slice(i, i + batchSize);
+                console.log(`BoseSweets Engine: Firing batch ${Math.floor(i/batchSize) + 1} (${currentBatch.length} ops)... 🚀`);
+
+                // تنفيذ الدفعة الحالية بالتوازي
+                const batchResults = await Promise.all(currentBatch.map(op => processSingleOperation(op)));
+                processedCount += batchResults.filter(result => result === true).length;
+
+                // لو لسه في دفعات تانية، نعمل فاصل زمني بسيط (Jitter) عشان نريح السيرفر
+                if (i + batchSize < queue.length) {
+                    const batchDelay = Math.random() * 500 + 500; // فاصل عشوائي من نص ثانية لثانية
+                    await new Promise(res => setTimeout(res, batchDelay));
+                }
+            }
             
             if (processedCount > 0) {
-                console.log(`BoseSweets Engine: Successfully synced ${processedCount} queued operations to the cloud in parallel. ☁️⚡👑`);
+                console.log(`BoseSweets Engine: Successfully synced ${processedCount} queued operations using Smart Batches. ☁️⚡👑`);
             }
         } catch (e) {
             console.error("BoseSweets Queue Processing Error:", e);
@@ -261,3 +274,5 @@ window.addEventListener('online', () => NetworkEngine.processQueue());
 setTimeout(() => NetworkEngine.processQueue(), 5000);
 
 console.log("BoseSweets Cloud Engine V5.1: Secured & Connected with Parallel Background Queue & Reverse Sync & Persistence Enabled 👑");
+
+}
