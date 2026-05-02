@@ -505,140 +505,82 @@ function applySettingsToUI() {
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
-// 📦 محرك جلب البيانات والذاكرة الفولاذية (المراقبة اللحظية مع Smart Render Guard)
-// 🛡️ Engine Upgrade: Synchronized Boot Manager (V. Infinity)
-
+// 👑 SINGLE SOURCE OF TRUTH (SSOT) ENGINE
+// النظام العبقري لمنع التضارب بين النسخ وإنهاء الرندرة العشوائية للأبد
 let isCloudSettingsReady = false;
 let isCloudCatalogReady = false;
-let lastCatalogHash = "";
-
-// 🛡️ التحديث الجذري: الذاكرة التخزينية للهيكل لمنع الرعشة والمسح
-window.__domCache = window.__domCache || {};
 
 async function loadEngineMemory() {
     try {
+        // نضع الديفولت كـ "شبكة أمان" للتشغيل الأولي فقط (لو النت فاصل عند العميل)
         await fetchDefaultCatalog(); 
-        catalog = [...defaultCatalog];
+        catalog = [...defaultCatalog]; 
         
         const settingsPromise = new Promise((resolve) => {
             if (typeof db === 'undefined') { resolve(); return; }
             db.collection('settings').doc('main').onSnapshot(snapshot => {
                 if (snapshot.exists) {
                     const cloudData = snapshot.data();
-                    
                     const newSettingsHash = JSON.stringify(cloudData.visuals);
+                    
                     if (window.lastSettingsHash !== newSettingsHash) {
                         window.lastSettingsHash = newSettingsHash;
                         siteSettings = { ...defaultSettings, ...cloudData };
                         
-                        if(cloudData.visuals) {
-                            siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
-                        }
-
+                        if(cloudData.visuals) siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
                         if(cloudData.cakeBuilder) {
                             siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
                             if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) {
                                 siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
                             }
-                        } else {
-                            siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
-                        }
+                        } else siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
 
                         if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
-                            if (typeof siteSettings.catMenu[0] === 'object') {
-                                catMenu = siteSettings.catMenu.sort((a, b) => a.order - b.order).map(c => c.name);
-                            } else {
-                                catMenu = siteSettings.catMenu;
-                            }
+                            catMenu = typeof siteSettings.catMenu[0] === 'object' ? siteSettings.catMenu.sort((a, b) => a.order - b.order).map(c => c.name) : siteSettings.catMenu;
                         } else {
                             catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
                         }
-                        
                         if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
                         
                         applySettingsToUI();
-                        
                         if(isCloudSettingsReady && document.getElementById('categories-nav')) renderCategories();
                     }
                 }
-                
-                if(!isCloudSettingsReady) { 
-                    isCloudSettingsReady = true; 
-                    resolve(); 
-                }
-            }, (error) => {
-                console.warn("BoseSweets: Settings Sync Error", error);
-                resolve(); 
-            });
+                if(!isCloudSettingsReady) { isCloudSettingsReady = true; resolve(); }
+            }, (error) => { console.warn("BoseSweets: Settings Sync Error", error); resolve(); });
         });
 
         const catalogPromise = new Promise((resolve) => {
             if (typeof db === 'undefined') { resolve(); return; }
             db.collection('catalog').onSnapshot(snapshot => {
                 
-                // 🛡️ التحديث الجذري: منع مسح الشاشة إذا السحابة أرسلت لقطة فارغة بالغلط
-                if (snapshot.empty && catalog.length > 0) {
-                    console.warn("BoseSweets: Ignored empty snapshot to prevent UI wipe. 🛡️");
-                    if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
-                    return;
-                }
-
-                let updatedCatalog = [];
-                snapshot.forEach(doc => {
-                    updatedCatalog.push(doc.data());
-                });
+                // 👑 الخطوة الأولى: إلغاء محاولة دمج السحابة مع الأكواد الافتراضية.
+                // السحابة (Firebase) هي الإدارة الوحيدة. طالما متصلين، ما يقوله الفايربيس ينفذ بالحرف.
+                let firebaseData = [];
+                snapshot.forEach(doc => firebaseData.push(doc.data()));
                 
-                let newFullCatalog = [];
-                // 🛡️ التحديث الجذري: إيقاف استدعاء المنتجات الافتراضية إذا كان هناك منتجات على السحابة
-                // هذا يمنع المنتجات من "الظهور من العدم" بعد أن تقوم الإدارة بحذفها!
-                if (updatedCatalog.length === 0 && defaultCatalog.length > 0) {
-                    newFullCatalog = [...defaultCatalog];
+                // تحديث مباشر للكتالوج الرئيسي، لو الإدارة مسحت منتج هيتمسح، لو ضافوا هيتضاف. لا عودة للأشباح.
+                if (firebaseData.length > 0) {
+                    catalog = firebaseData;
+                } else if (snapshot.empty && !isCloudCatalogReady) {
+                    // السحابة فاضية تماما في أول تحميل؟ نستعمل الديفولت مؤقتا عشان الموقع ميبقاش فاضي
+                    catalog = [...defaultCatalog];
                 } else {
-                    newFullCatalog = [...updatedCatalog];
+                    // السحابة فاضية والإدارة اللي مسحت كل حاجة؟ الموقع يفضي نفسه طاعة للإدارة.
+                    catalog = [];
+                }
+
+                syncCatalogMap();
+                LiveSearchEngine.observeIndexUpdate(catalog);
+                
+                // 👑 الخطوة الثانية: منع الرندرة العشوائية بإخبار المتصفح بإعادة الرسم فقط لو احنا فاتحين الصفحة.
+                if(isCloudCatalogReady && document.getElementById('display-container')) {
+                    if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
+                    window.renderDebounceTimer = setTimeout(() => { renderMainDisplay(); }, 150);
                 }
                 
-                const sortedCatalogForHash = [...newFullCatalog].sort((a, b) => String(a.id).localeCompare(String(b.id)));
-                const currentHash = sortedCatalogForHash.map(p => `${p.id}_${p.price}_${p.inStock}`).join('|');
-
-                if (lastCatalogHash !== currentHash) {
-                    lastCatalogHash = currentHash;
-                    catalog = newFullCatalog;
-                    syncCatalogMap();
-                    LiveSearchEngine.observeIndexUpdate(catalog);
-                    
-                    if(isCloudCatalogReady && document.getElementById('display-container')) {
-                        let needsFullRender = false;
-                        const changes = snapshot.docChanges();
-
-                        if(changes.length === snapshot.docs.length) {
-                            needsFullRender = true;
-                        } else {
-                            changes.forEach(change => {
-                                if (change.type === 'added' || change.type === 'removed') {
-                                    needsFullRender = true;
-                                } else if (change.type === 'modified') {
-                                    if(typeof updateCardUI === 'function') {
-                                        updateCardUI(change.doc.data().id);
-                                    }
-                                }
-                            });
-                        }
-
-                        if (needsFullRender) {
-                            if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
-                            window.renderDebounceTimer = setTimeout(() => { renderMainDisplay(); }, 150);
-                        }
-                    }
-                }
-                
-                if(!isCloudCatalogReady) {
-                    isCloudCatalogReady = true;
-                    resolve();
-                }
-            }, (error) => {
-                console.warn("BoseSweets: Catalog Sync Error", error);
-                resolve();
-            });
+                if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
+            }, (error) => { console.warn("BoseSweets: Catalog Sync Error", error); resolve(); });
         });
 
         await Promise.all([settingsPromise, catalogPromise]);
@@ -656,10 +598,8 @@ async function loadEngineMemory() {
         syncCatalogMap(); 
         LiveSearchEngine.build(catalog);
         const availableCats = [...new Set(catalog.map(p => p.category))];
-        if (!availableCats.includes(state.activeCat) && availableCats.length > 0) {
-            state.activeCat = availableCats[0];
-        }
-        console.warn("BoseSweets: Emergency fallback active. 🛡️");
+        if (!availableCats.includes(state.activeCat) && availableCats.length > 0) state.activeCat = availableCats[0];
+        console.warn("BoseSweets: Offline Mode active. 🛡️");
     }
     
     try { 
@@ -774,8 +714,14 @@ function toggleCustomerMenu(show) {
 function renderCustomerSidebarCategories() {
     const container = document.getElementById('sidebar-categories');
     if(!container) return;
-    container.innerHTML = catMenu.map(c => `<button onclick="toggleCustomerMenu(false); setCategory('${c}')" class="text-right w-full p-3 rounded-xl font-bold text-sm transition-all hover:bg-gray-50 flex items-center justify-between" style="border: 1px solid hsl(var(--brand-hue), 80%, 95%); color: var(--site-text);"><span>${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</span><i data-lucide="chevron-left" class="w-4 h-4 opacity-50"></i></button>`).join('');
-    if(window.lucide) lucide.createIcons();
+    
+    // 👑 Data-Hashing for Sidebar: لا يتم تغيير الهيكل إلا إذا تغيرت التصنيفات فعلياً
+    const newHash = JSON.stringify(catMenu);
+    if (container.dataset.renderedHash !== newHash) {
+        container.innerHTML = catMenu.map(c => `<button onclick="toggleCustomerMenu(false); setCategory('${c}')" class="text-right w-full p-3 rounded-xl font-bold text-sm transition-all hover:bg-gray-50 flex items-center justify-between" style="border: 1px solid hsl(var(--brand-hue), 80%, 95%); color: var(--site-text);"><span>${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</span><i data-lucide="chevron-left" class="w-4 h-4 opacity-50"></i></button>`).join('');
+        container.dataset.renderedHash = newHash;
+        if(window.lucide) lucide.createIcons();
+    }
 }
 
 function renderCustomerGallery() {
@@ -783,7 +729,12 @@ function renderCustomerGallery() {
     if(!sec) return;
     if (galleryData.length === 0) { sec.classList.add('hidden'); return; }
     sec.classList.remove('hidden');
-    slider.innerHTML = galleryData.map(g => `<div class="shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="openLightbox('${g.url}')"><div class="w-32 h-40 md:w-40 md:h-52 rounded-2xl overflow-hidden shadow-sm border" style="border-color: hsl(var(--brand-hue), 80%, 90%);"><img src="${optimizeCloudinaryUrl(g.url)}" class="w-full h-full object-cover" loading="lazy" alt="سابقة أعمال حلويات بوسي"></div></div>`).join('');
+    
+    const newHash = JSON.stringify(galleryData.map(g=>g.id));
+    if (slider.dataset.renderedHash !== newHash) {
+        slider.innerHTML = galleryData.map(g => `<div class="shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="openLightbox('${g.url}')"><div class="w-32 h-40 md:w-40 md:h-52 rounded-2xl overflow-hidden shadow-sm border" style="border-color: hsl(var(--brand-hue), 80%, 90%);"><img src="${optimizeCloudinaryUrl(g.url)}" class="w-full h-full object-cover" loading="lazy" alt="سابقة أعمال حلويات بوسي"></div></div>`).join('');
+        slider.dataset.renderedHash = newHash;
+    }
 }
 
 function openLightbox(url) { const lb = document.getElementById('gallery-lightbox'); document.getElementById('lightbox-img').src = url; lb.classList.remove('hidden'); lb.classList.add('flex'); if(window.lucide) lucide.createIcons(); }
@@ -792,7 +743,12 @@ function closeLightbox() { const lb = document.getElementById('gallery-lightbox'
 function renderCategories() {
     const el = document.getElementById('categories-nav');
     if(!el) return;
-    el.innerHTML = catMenu.map(c => `<button id="cat-btn-${c.replace(/\s+/g, '-')}" onclick="setCategory('${c}')" class="whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === c ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'border-pink-100 hover:border-pink-300'}" style="${state.activeCat === c ? '' : `background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</button>`).join('');
+    
+    const newHash = JSON.stringify(catMenu) + "_" + state.activeCat;
+    if (el.dataset.renderedHash !== newHash) {
+        el.innerHTML = catMenu.map(c => `<button id="cat-btn-${c.replace(/\s+/g, '-')}" onclick="setCategory('${c}')" class="whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === c ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'border-pink-100 hover:border-pink-300'}" style="${state.activeCat === c ? '' : `background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</button>`).join('');
+        el.dataset.renderedHash = newHash;
+    }
 }
 
 function setCategory(c) { 
@@ -804,11 +760,10 @@ function setCategory(c) {
 }
 
 function renderFlowerTabs(container) {
-    const newHtml = `<div class="p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${fTypes.map(f => `<button onclick="setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}</div>`;
-    // 🛡️ استخدام نفس الذاكرة لتجنب المسح العشوائي
-    if (window.__domCache['flowerTabs'] !== newHtml) {
-        container.innerHTML = newHtml;
-        window.__domCache['flowerTabs'] = newHtml;
+    const newHash = state.fType;
+    if (container.dataset.renderedHash !== newHash) {
+        container.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${fTypes.map(f => `<button onclick="setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}</div>`;
+        container.dataset.renderedHash = newHash;
     }
 }
 
@@ -838,34 +793,36 @@ function getCakeBuilderHTML() {
     return `<div class="rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);"><div class="p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">${sliderHtml}<div class="flex-1 text-center md:text-right"><h2 class="text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">تخصيص التورت الملكية 👑</h2><p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">${escapeHTML(descText)}</p></div></div><div class="p-6 md:p-12 space-y-12"><div class="grid grid-cols-1 lg:grid-cols-2 gap-10"><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="cake" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> نكهة الكيك المفضلة</label><div class="grid grid-cols-2 md:grid-cols-4 gap-3">${flavors.map(fl => `<button onclick="uCake('flv', '${escapeHTML(fl)}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${escapeHTML(fl)}</button>`).join('')}</div></div><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="heart" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> عدد الأفراد</label><div class="flex items-center justify-between border rounded-2xl p-2 shadow-inner h-full max-h-[80px]" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);"><button onclick="adjP(-2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="minus"></i></button><span class="text-3xl font-bold">${c.ps}</span><button onclick="adjP(2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="plus"></i></button></div></div></div></div><div class="p-8 md:p-14 border-t-2 flex flex-col md:flex-row justify-between items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 95%);"><div class="text-center md:text-right"><span class="block font-bold mb-2">الإجمالي التقديري</span><span class="text-4xl md:text-6xl font-bold">${price} ج.م</span></div><button onclick="commitCakeBuilder()" class="w-full md:w-auto text-white font-bold text-xl md:text-2xl py-5 px-12 rounded-2xl shadow-xl brand-gradient">إضافة للمراجعة</button></div></div>`;
 }
 
-// 🛡️ التحديث الجذري: المحرك المطور للرندرة باستخدام (String Caching)
-// يقضي نهائياً على مشكلة وميض الشاشة والرندرة العشوائية الناجمة عن تلاعب المتصفح بالكود
+// 👑 DATA HASHING ENGINE (الحل النهائي لمنع الرندرة)
+// يقوم بمقارنة "البيانات نفسها" (الاسم، السعر، المخزون) بدلا من مقارنة "شكل كود HTML"
+// عشان لو المتصفح لعب في شكل الأيقونات، الموقع ميتلخبطش ويعيد الرسم!
 function renderMainDisplay() {
     const container = document.getElementById('display-container'); 
     const subTabs = document.getElementById('sub-tabs-area');
     if(!container) return;
-    
-    if (catalog.length === 0) {
-        catalog = [...defaultCatalog];
-    }
 
     let targetHTML = '';
     let showSubTabs = false;
+    let dataHashToCompare = '';
 
     if (state.activeCat === 'تورت') { 
         targetHTML = getCakeBuilderHTML(); 
+        dataHashToCompare = "CAKE_" + JSON.stringify(state.cakeBuilder);
     } 
     else if (state.activeCat === 'ورد') {
         showSubTabs = true;
         let flowerHtml = `<div class="flex flex-col gap-12 w-full">`;
+        let listToHash = [];
         fTypes.forEach(type => {
             const list = catalog.filter(p => p && p.category === 'ورد' && (p.flowerType === type || (p.desc && typeof p.desc === 'string' && p.desc.includes(type))));
             if(list.length > 0) { 
+                listToHash.push(...list);
                 flowerHtml += `<div id="flower-group-${type.replace(/\s+/g, '-')}" class="space-y-6 animate-fade-in"><div class="flex items-center gap-4 mb-4"><h3 class="font-black text-xl text-pink-600 shrink-0">${type}</h3><div class="h-[1px] w-full bg-pink-100"></div></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${list.map(p => drawProductCard(p, 'full')).join('')}</div></div>`; 
             }
         });
         flowerHtml += `</div>`; 
         targetHTML = flowerHtml;
+        dataHashToCompare = "FLOWER_" + listToHash.map(p => p.id + p.price + p.inStock + (p.images ? p.images.length : 0)).join('-');
     }
     else {
         if (state.activeCat === 'ديسباسيتو') {
@@ -873,21 +830,21 @@ function renderMainDisplay() {
         }
         let list = catalog.filter(p => p && p.category === state.activeCat);
         if (state.activeCat === 'ديسباسيتو') {
-            // 🛡️ التحديث الجذري: تخفيف فلتر الديسباسيتو لكي لا تختفي المنتجات المضافة حديثاً!
             list = list.filter(p => {
                 const matchSize = p.size === state.dSize || p.subType === state.dSize || (p.desc && typeof p.desc === 'string' && p.desc.includes(state.dSize));
-                const isUncategorized = !p.size && !p.subType; // يظهر المنتج إذا نسي الإدمن تصنيفه بدلاً من إخفائه
+                const isUncategorized = !p.size && !p.subType;
                 return matchSize || isUncategorized;
             });
         }
         const userLayout = siteSettings.productLayout || 'grid';
         targetHTML = `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 items-stretch">${list.map(p => drawProductCard(p, userLayout)).join('')}</div>`;
+        dataHashToCompare = "NORMAL_" + state.activeCat + "_" + list.map(p => p.id + p.price + p.inStock + p.name + (p.images ? p.images.length : 0)).join('-');
     }
 
-    // 🛡️ التطبيق الذكي للمقارنة: تحديث الشاشة فقط من خلال الذاكرة الفولاذية
-    if (window.__domCache['mainDisplay'] !== targetHTML) {
+    // 👑 التطبيق الفولاذي: إذا كانت بيانات المنتجات مطابقة لآخر مرة اترسمت فيها، لا تفعل شيئاً!
+    if (container.dataset.renderedHash !== dataHashToCompare) {
         container.innerHTML = targetHTML;
-        window.__domCache['mainDisplay'] = targetHTML;
+        container.dataset.renderedHash = dataHashToCompare; // تسجيل بصمة البيانات
         if(window.lucide) lucide.createIcons();
     }
 
@@ -895,10 +852,10 @@ function renderMainDisplay() {
         subTabs.classList.remove('hidden');
         if (state.activeCat === 'ورد') renderFlowerTabs(subTabs);
         if (state.activeCat === 'ديسباسيتو') {
-            const despacitoTabsHTML = `<div class="p-2 rounded-2xl shadow-sm border flex justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${dSizes.map(s => `<button onclick="setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.dSize === s ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.dSize === s ? '' : 'color: var(--site-text);'}">${s}</button>`).join('')}</div>`;
-            if (window.__domCache['subTabs'] !== despacitoTabsHTML) {
-                subTabs.innerHTML = despacitoTabsHTML;
-                window.__domCache['subTabs'] = despacitoTabsHTML;
+            const dHash = "DESP_TABS_" + state.dSize;
+            if (subTabs.dataset.renderedHash !== dHash) {
+                subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${dSizes.map(s => `<button onclick="setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.dSize === s ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.dSize === s ? '' : 'color: var(--site-text);'}">${s}</button>`).join('')}</div>`;
+                subTabs.dataset.renderedHash = dHash;
             }
         }
     } else {
@@ -1037,20 +994,6 @@ function adjP(d) {
     state.cakeBuilder.ps = n; renderMainDisplay();
 }
 
-// 🛡️ التحديث الجذري: تطبيق الذاكرة لتحديث الكارت الفردي بدون مسح الصور
-function updateCardUI(id) {
-    const safeId = String(id); const cardEl = document.getElementById(`product-card-${safeId}`);
-    const prod = catalogMap.get(safeId); const userLayout = siteSettings.productLayout || 'grid';
-    if (cardEl && prod) { 
-        const newHtml = drawProductCard(prod, userLayout);
-        if (window.__domCache['card_' + safeId] !== newHtml) {
-            cardEl.outerHTML = newHtml;
-            window.__domCache['card_' + safeId] = newHtml;
-            if(window.lucide) lucide.createIcons(); 
-        }
-    }
-}
-
 function renderCartList() {
     const container = document.getElementById('cart-list'); const crossSellArea = document.getElementById('cross-sell-area'); const totalDisplay = document.getElementById('cart-total-display');
     if (!container) return;
@@ -1097,7 +1040,6 @@ function modQ(cartId, d) {
     
     saveCartToStorage(); 
     syncCartUI(); 
-    if(it && it.id) updateCardUI(it.id); 
     calculateCartTotal();
 }
 
