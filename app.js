@@ -482,8 +482,19 @@ function applySettingsToUI() {
     
     if(document.getElementById('dyn-page-title')) document.getElementById('dyn-page-title').innerText = `${siteSettings.brandName} | القائمة الرسمية`;
     if(document.getElementById('dyn-brand-name')) document.getElementById('dyn-brand-name').innerText = siteSettings.brandName;
-    if(document.getElementById('dyn-hero-title')) document.getElementById('dyn-hero-title').innerHTML = siteSettings.heroTitle;
-    if(document.getElementById('dyn-hero-desc')) document.getElementById('dyn-hero-desc').innerText = siteSettings.heroDesc;
+    
+    if(document.getElementById('dyn-hero-title')) {
+        const title = document.getElementById('dyn-hero-title');
+        title.innerHTML = siteSettings.heroTitle;
+        title.style.opacity = '1';
+    }
+    
+    if(document.getElementById('dyn-hero-desc')) {
+        const desc = document.getElementById('dyn-hero-desc');
+        desc.innerText = siteSettings.heroDesc;
+        desc.style.opacity = '0.9';
+    }
+    
     if(document.getElementById('dyn-footer-brand')) document.getElementById('dyn-footer-brand').innerText = siteSettings.brandName;
     if(document.getElementById('dyn-footer-quote')) document.getElementById('dyn-footer-quote').innerText = siteSettings.footerQuote;
     if(document.getElementById('dyn-footer-phone')) document.getElementById('dyn-footer-phone').innerText = siteSettings.footerPhone;
@@ -698,13 +709,15 @@ async function initApp() {
     if(window.lucide) lucide.createIcons();
     PreloadEngine.ignite(catalog, galleryData);
     
-    // 4. إخفاء اللودر بأمان تام بعد التأكد من اكتمال ورسم الشاشة
-    const loader = document.getElementById('global-loader');
-    if(loader) { 
-        loader.style.opacity = '0'; 
-        loader.style.visibility = 'hidden'; 
-        MemoryManager.set('loader_hide', () => loader.style.display = 'none', 500); 
-    }
+    // 4. إخفاء اللودر بأمان تام بعد التأكد من استقرار الـ DOM
+    window.requestAnimationFrame(() => {
+        const loader = document.getElementById('global-loader');
+        if(loader) { 
+            loader.style.opacity = '0'; 
+            loader.style.visibility = 'hidden'; 
+            MemoryManager.set('loader_hide', () => loader.style.display = 'none', 500); 
+        }
+    });
     
     // 5. التوجيه المباشر لمنتج معين (إن وجد)
     const sharedProductId = urlParams.get('product');
