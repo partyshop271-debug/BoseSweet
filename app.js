@@ -494,7 +494,7 @@ function applySettingsToUI() {
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
-// 📦 محرك جلب البيانات والذاكرة الفولاذية (المراقبة اللحظية مع حماية הذاكرة)
+// 📦 محرك جلب البيانات والذاكرة الفولاذية (المراقبة اللحظية مع حماية الذاكرة)
 async function loadEngineMemory() {
     try {
         await fetchDefaultCatalog(); 
@@ -586,6 +586,14 @@ async function loadEngineMemory() {
         catalog = [...defaultCatalog]; 
         syncCatalogMap(); 
         LiveSearchEngine.build(catalog);
+        
+        // 👑 التحديث الملكي: تأمين القسم النشط عشان الشاشة ماتبقاش فاضية أبداً
+        const availableCats = [...new Set(catalog.map(p => p.category))];
+        if (!availableCats.includes(state.activeCat) && availableCats.length > 0) {
+            state.activeCat = availableCats[0];
+            if(document.getElementById('categories-nav')) renderCategories();
+        }
+        
         console.warn("BoseSweets: Emergency fallback active. 🛡️");
     }
     
