@@ -513,7 +513,12 @@ let isCloudCatalogReady = false;
 async function loadEngineMemory() {
     try {
         await fetchDefaultCatalog(); 
-        catalog = [...defaultCatalog]; 
+        
+        // 👑 الحل الجذري 1: لا نضع الداتا الافتراضية فوراً إلا إذا كان الفايربيز غير موجود
+        // لكي لا يحدث وميض (Flicker) بين الداتا الافتراضية والداتا الحقيقية.
+        if (typeof db === 'undefined') {
+            catalog = [...defaultCatalog]; 
+        }
         
         const settingsPromise = new Promise((resolve) => {
             if (typeof db === 'undefined') { resolve(); return; }
@@ -545,7 +550,16 @@ async function loadEngineMemory() {
                         if(document.getElementById('categories-nav')) renderCategories();
                     }
                 }
-                if(!isCloudSettingsReady) { isCloudSettingsReady = true; resolve(); }
+                
+                // 👑 الحل الجذري 2: التأكد من أن البيانات جاءت من "السيرفر" وليس "الذاكرة المؤقتة"
+                if (!snapshot.metadata.fromCache || !navigator.onLine) {
+                    if(!isCloudSettingsReady) { isCloudSettingsReady = true; resolve(); }
+                } else {
+                    // مهلة أمان قصوى لو الإنترنت بطيء جداً
+                    MemoryManager.set('settings_resolve_fallback', () => {
+                        if(!isCloudSettingsReady) { isCloudSettingsReady = true; resolve(); }
+                    }, 2500);
+                }
             }, (error) => { console.warn("BoseSweets: Settings Sync Error", error); resolve(); });
         });
 
@@ -556,7 +570,6 @@ async function loadEngineMemory() {
                 let firebaseData = [];
                 snapshot.forEach(doc => firebaseData.push(doc.data()));
                 
-                // 👑 التعديل الجذري: توحيد الترتيب لمنع انهيار الـ Hash
                 firebaseData.sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
 
                 if (firebaseData.length > 0) {
@@ -570,12 +583,19 @@ async function loadEngineMemory() {
                 syncCatalogMap();
                 LiveSearchEngine.observeIndexUpdate(catalog);
                 
-                // 👑 التحديث الحاسم: تجميع الرندرة من الكاش والسيرفر في ضربة واحدة لمنع الـ Flicker
                 if(document.getElementById('display-container')) {
                     if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
                     window.renderDebounceTimer = setTimeout(() => { 
                         renderMainDisplay(); 
-                        if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
+                        
+                        // 👑 الحل الجذري 3: عدم إنهاء مرحلة التحميل إلا مع وصول داتا السيرفر
+                        if (!snapshot.metadata.fromCache || !navigator.onLine) {
+                            if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
+                        } else {
+                            MemoryManager.set('catalog_resolve_fallback', () => {
+                                if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
+                            }, 2500);
+                        }
                     }, 150);
                 } else {
                     if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
@@ -637,19 +657,19 @@ function clearCartStorage() {
 }
 
 async function initApp() {
+    // ننتظر تحميل الذاكرة (هنا سيتوقف الكود حتى يؤكد الفايربيز وصول الداتا من السيرفر)
     await loadEngineMemory();
     
     const urlParams = new URLSearchParams(window.location.search);
     const routeCat = urlParams.get('category');
     if(routeCat && catMenu.includes(routeCat)) state.activeCat = routeCat;
 
-    // 👑 الحل الجذري: تم مسح أوامر الرندرة اليدوية من هنا لمنع الصراع مع Firebase
-    
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
     syncCartUI(); 
     if(window.lucide) lucide.createIcons();
     PreloadEngine.ignite(catalog, galleryData);
     
+    // 👑 الآن فقط، وبأمان تام، نُخفي اللودر بعد أن استقر الموقع على بياناته النهائية
     window.requestAnimationFrame(() => {
         const loader = document.getElementById('global-loader');
         if(loader) { 
@@ -793,9 +813,7 @@ function getCakeBuilderHTML() {
     return `<div class="rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);"><div class="p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">${sliderHtml}<div class="flex-1 text-center md:text-right"><h2 class="text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">تخصيص التورت الملكية 👑</h2><p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">${escapeHTML(descText)}</p></div></div><div class="p-6 md:p-12 space-y-12"><div class="grid grid-cols-1 lg:grid-cols-2 gap-10"><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="cake" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> نكهة الكيك المفضلة</label><div class="grid grid-cols-2 md:grid-cols-4 gap-3">${flavors.map(fl => `<button onclick="uCake('flv', '${escapeHTML(fl)}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${escapeHTML(fl)}</button>`).join('')}</div></div><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="heart" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> عدد الأفراد</label><div class="flex items-center justify-between border rounded-2xl p-2 shadow-inner h-full max-h-[80px]" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);"><button onclick="adjP(-2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="minus"></i></button><span class="text-3xl font-bold">${c.ps}</span><button onclick="adjP(2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="plus"></i></button></div></div></div></div><div class="p-8 md:p-14 border-t-2 flex flex-col md:flex-row justify-between items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 95%);"><div class="text-center md:text-right"><span class="block font-bold mb-2">الإجمالي التقديري</span><span class="text-4xl md:text-6xl font-bold">${price} ج.م</span></div><button onclick="commitCakeBuilder()" class="w-full md:w-auto text-white font-bold text-xl md:text-2xl py-5 px-12 rounded-2xl shadow-xl brand-gradient">إضافة للمراجعة</button></div></div>`;
 }
 
-// 👑 DATA HASHING ENGINE (الحل النهائي لمنع الرندرة)
-// يقوم بمقارنة "البيانات نفسها" (الاسم، السعر، المخزون) بدلا من مقارنة "شكل كود HTML"
-// عشان لو المتصفح لعب في شكل الأيقونات، الموقع ميتلخبطش ويعيد الرسم!
+// 👑 DATA HASHING ENGINE
 function renderMainDisplay() {
     const container = document.getElementById('display-container'); 
     const subTabs = document.getElementById('sub-tabs-area');
@@ -841,10 +859,9 @@ function renderMainDisplay() {
         dataHashToCompare = "NORMAL_" + state.activeCat + "_" + list.map(p => p.id + p.price + p.inStock + p.name + (p.images ? p.images.length : 0)).join('-');
     }
 
-    // 👑 التطبيق الفولاذي: إذا كانت بيانات المنتجات مطابقة لآخر مرة اترسمت فيها، لا تفعل شيئاً!
     if (container.dataset.renderedHash !== dataHashToCompare) {
         container.innerHTML = targetHTML;
-        container.dataset.renderedHash = dataHashToCompare; // تسجيل بصمة البيانات
+        container.dataset.renderedHash = dataHashToCompare; 
         if(window.lucide) lucide.createIcons();
     }
 
