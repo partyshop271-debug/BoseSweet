@@ -512,7 +512,6 @@ let isCloudCatalogReady = false;
 
 async function loadEngineMemory() {
     try {
-        // نضع الديفولت كـ "شبكة أمان" للتشغيل الأولي فقط (لو النت فاصل عند العميل)
         await fetchDefaultCatalog(); 
         catalog = [...defaultCatalog]; 
         
@@ -543,7 +542,7 @@ async function loadEngineMemory() {
                         if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
                         
                         applySettingsToUI();
-                        if(isCloudSettingsReady && document.getElementById('categories-nav')) renderCategories();
+                        if(document.getElementById('categories-nav')) renderCategories();
                     }
                 }
                 if(!isCloudSettingsReady) { isCloudSettingsReady = true; resolve(); }
@@ -554,26 +553,23 @@ async function loadEngineMemory() {
             if (typeof db === 'undefined') { resolve(); return; }
             db.collection('catalog').onSnapshot(snapshot => {
                 
-                // 👑 الخطوة الأولى: إلغاء محاولة دمج السحابة مع الأكواد الافتراضية.
-                // السحابة (Firebase) هي الإدارة الوحيدة. طالما متصلين، ما يقوله الفايربيس ينفذ بالحرف.
                 let firebaseData = [];
                 snapshot.forEach(doc => firebaseData.push(doc.data()));
                 
-                // تحديث مباشر للكتالوج الرئيسي، لو الإدارة مسحت منتج هيتمسح، لو ضافوا هيتضاف. لا عودة للأشباح.
+                // 👑 التعديل الجذري: توحيد الترتيب لمنع انهيار الـ Hash
+                firebaseData.sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
+
                 if (firebaseData.length > 0) {
                     catalog = firebaseData;
                 } else if (snapshot.empty && !isCloudCatalogReady) {
-                    // السحابة فاضية تماما في أول تحميل؟ نستعمل الديفولت مؤقتا عشان الموقع ميبقاش فاضي
                     catalog = [...defaultCatalog];
                 } else {
-                    // السحابة فاضية والإدارة اللي مسحت كل حاجة؟ الموقع يفضي نفسه طاعة للإدارة.
                     catalog = [];
                 }
 
                 syncCatalogMap();
                 LiveSearchEngine.observeIndexUpdate(catalog);
                 
-                // 👑 الخطوة الثانية: منع الرندرة العشوائية بإخبار المتصفح بإعادة الرسم فقط لو احنا فاتحين الصفحة.
                 if(isCloudCatalogReady && document.getElementById('display-container')) {
                     if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
                     window.renderDebounceTimer = setTimeout(() => { renderMainDisplay(); }, 150);
