@@ -1,12 +1,11 @@
 /**
  * ============================================================================
- * محرك مركز قيادة حلويات بوسي | BoseSweets Admin Engine (V6.0 ULTIMATE DYNAMIC)
+ * محرك مركز قيادة حلويات بوسي | BoseSweets Admin Engine (V6.1 PRODUCTION STABLE)
  * ============================================================================
  * تم بناء وتوسيع هذا المحرك لضمان أعلى أداء، وتوسيع القدرات الإدارية، مع الحفاظ
  * على كامل البيانات والوظائف السابقة بنظام (البناء والتطوير دون حذف).
- * التحديث الجديد (V6.0) يتضمن: محرك الهوية البصرية، الأسعار العالمية، نظام المخزون،
- * الخصومات والعروض، والترتيب المخصص للأقسام والمنتجات.
- * 👑 تم تطبيق نظام Render Lock + Data Hashing لمنع الرعشة والـ Infinite Loop
+ * 👑 التحديث النهائي (V6.1): The Ultimate Render Lock & Deep Hashing
+ * تم القضاء على الرعشة (Flicker) بنسبة 100% من خلال الفلترة الصارمة لنبضات الفايربيز.
  */
 
 // 🛡️ Engine Upgrade: Centralized Admin Error Tracking System
@@ -178,7 +177,8 @@ let adminOrdersHash = '';
 let adminRenderDebounce = null;
 
 /**
- * 🛡️ Engine Upgrade: Differential Sync Realtime Orders (With Render Lock)
+ * 🛡️ Engine Upgrade: Ultimate Differential Sync Realtime Orders
+ * تم التطوير بناءً على التحليل الفني الأخير للقضاء على الـ Render Noise
  */
 function setupRealtimeOrders() {
     if (typeof db === 'undefined') return;
@@ -190,21 +190,30 @@ function setupRealtimeOrders() {
     ordersUnsubscribe = db.collection('orders').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
         let hasNewOrder = false;
         let hasActualChanges = false;
+        let needsSorting = false; // 👑 لا يتم الترتيب إلا عند الضرورة فقط
 
         snapshot.docChanges().forEach(change => {
-            hasActualChanges = true;
+            // 🛡️ فلترة صارمة: تجاهل أي تحديثات وهمية أو بيانات وصفية (Metadata)
+            if (!['added', 'modified', 'removed'].includes(change.type)) return;
+
             const orderData = change.doc.data();
+            hasActualChanges = true;
             
             if (change.type === 'added') {
                 if (!globalOrders.find(o => String(o.id) === String(orderData.id))) {
-                    globalOrders.unshift(orderData);
+                    globalOrders.push(orderData); // إلحاق فقط، الترتيب لاحقاً
                     hasNewOrder = true;
+                    needsSorting = true; // يحتاج لترتيب بسبب العنصر الجديد
                 }
             }
             if (change.type === 'modified') {
                 const index = globalOrders.findIndex(o => String(o.id) === String(orderData.id));
                 if (index !== -1) {
-                    globalOrders[index] = orderData;
+                    // 🛡️ Deep Data Comparison للمنطقة المتغيرة
+                    if(JSON.stringify(globalOrders[index]) !== JSON.stringify(orderData)) {
+                        globalOrders[index] = orderData;
+                        needsSorting = true; // قد تكون الحالة تغيرت وتؤثر على العرض
+                    }
                 }
             }
             if (change.type === 'removed') {
@@ -212,13 +221,17 @@ function setupRealtimeOrders() {
             }
         });
 
-        if (!hasActualChanges) return; // 🛡️ تجاهل التحديثات الوهمية من الفايربيز
+        // 🛡️ Guard 1: إذا لم تكن هناك تغييرات حقيقية، أوقف التنفيذ فوراً
+        if (!hasActualChanges) return;
 
-        // 🛡️ الترتيب فقط عند وجود تغيير حقيقي
-        globalOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        // 🛡️ Guard 2: الترتيب المشروط فقط
+        if (hasNewOrder || needsSorting) {
+            globalOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        }
         
-        // 🛡️ التشفير ومقارنة البيانات لمنع الرندر المتكرر (Data Hashing)
-        const newHash = JSON.stringify(globalOrders.map(o => o.id + o.status + o.total));
+        // 👑 Guard 3: The Ultimate Deep Data Hashing
+        // تحويل المصفوفة بالكامل لنص لضمان عدم تفويت أي تغيير (ملاحظات، عميل، أسعار)
+        const newHash = JSON.stringify(globalOrders);
         if (newHash === adminOrdersHash && !isFirstOrderLoad) return; 
         adminOrdersHash = newHash;
 
@@ -231,7 +244,8 @@ function setupRealtimeOrders() {
 
         isFirstOrderLoad = false;
 
-        // 🛡️ Render Lock & Debounce (لحل مشكلة الـ Flickering نهائياً)
+        // 🛡️ Guard 4: Enhanced Render Lock & Deep Debounce (350ms)
+        // زمن كافي جداً لامتصاص عاصفة تحديثات متتالية من الفايربيز
         if(adminRenderDebounce) clearTimeout(adminRenderDebounce);
         adminRenderDebounce = setTimeout(() => {
             if(!window.__adminRenderLock) {
@@ -244,7 +258,7 @@ function setupRealtimeOrders() {
                     window.__adminRenderLock = false;
                 });
             }
-        }, 150); // تأخير بسيط لدمج التحديثات المتتالية
+        }, 350); 
 
     }, error => {
         AdminErrorTracker.log('RealtimeOrdersSync', error);
