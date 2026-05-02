@@ -6,6 +6,7 @@
  * على كامل البيانات والوظائف السابقة بنظام (البناء والتطوير دون حذف).
  * التحديث الجديد (V6.0) يتضمن: محرك الهوية البصرية، الأسعار العالمية، نظام المخزون،
  * الخصومات والعروض، والترتيب المخصص للأقسام والمنتجات.
+ * 👑 تم تطبيق نظام Render Lock + Data Hashing لمنع الرعشة والـ Infinite Loop
  */
 
 // 🛡️ Engine Upgrade: Centralized Admin Error Tracking System
@@ -172,8 +173,12 @@ async function fetchDefaultCatalog() {
 let isFirstOrderLoad = true;
 let ordersUnsubscribe = null; 
 
+// 👑 متغيرات التحكم في الرندر ومنع الرعشة (Render Lock & Hash)
+let adminOrdersHash = '';
+let adminRenderDebounce = null;
+
 /**
- * 🛡️ Engine Upgrade: Differential Sync Realtime Orders
+ * 🛡️ Engine Upgrade: Differential Sync Realtime Orders (With Render Lock)
  */
 function setupRealtimeOrders() {
     if (typeof db === 'undefined') return;
@@ -184,8 +189,10 @@ function setupRealtimeOrders() {
 
     ordersUnsubscribe = db.collection('orders').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
         let hasNewOrder = false;
+        let hasActualChanges = false;
 
         snapshot.docChanges().forEach(change => {
+            hasActualChanges = true;
             const orderData = change.doc.data();
             
             if (change.type === 'added') {
@@ -205,7 +212,16 @@ function setupRealtimeOrders() {
             }
         });
 
+        if (!hasActualChanges) return; // 🛡️ تجاهل التحديثات الوهمية من الفايربيز
+
+        // 🛡️ الترتيب فقط عند وجود تغيير حقيقي
         globalOrders.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+        
+        // 🛡️ التشفير ومقارنة البيانات لمنع الرندر المتكرر (Data Hashing)
+        const newHash = JSON.stringify(globalOrders.map(o => o.id + o.status + o.total));
+        if (newHash === adminOrdersHash && !isFirstOrderLoad) return; 
+        adminOrdersHash = newHash;
+
         saveEngineMemory('ord');
 
         if (!isFirstOrderLoad && hasNewOrder) {
@@ -215,10 +231,21 @@ function setupRealtimeOrders() {
 
         isFirstOrderLoad = false;
 
-        executeSafely('OrdersSync', () => {
-            if (typeof renderAdminOrders === 'function') renderAdminOrders();
-            if (typeof renderAdminOverview === 'function') renderAdminOverview();
-        });
+        // 🛡️ Render Lock & Debounce (لحل مشكلة الـ Flickering نهائياً)
+        if(adminRenderDebounce) clearTimeout(adminRenderDebounce);
+        adminRenderDebounce = setTimeout(() => {
+            if(!window.__adminRenderLock) {
+                window.__adminRenderLock = true;
+                window.requestAnimationFrame(() => {
+                    executeSafely('OrdersSync', () => {
+                        if (typeof renderAdminOrders === 'function') renderAdminOrders();
+                        if (typeof renderAdminOverview === 'function') renderAdminOverview();
+                    });
+                    window.__adminRenderLock = false;
+                });
+            }
+        }, 150); // تأخير بسيط لدمج التحديثات المتتالية
+
     }, error => {
         AdminErrorTracker.log('RealtimeOrdersSync', error);
     });

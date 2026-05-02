@@ -1,4 +1,5 @@
 // ⚡ Engine Upgrade: Ultimate Dynamic Catalog Engine (V. Infinity)
+// 👑 تم إيقاف PreloadEngine مؤقتاً لتخفيف الضغط على المتصفح وتعديل زمن البحث
 const PreloadEngine = {
     loadedUrls: new Set(),
     ignite(catalogData, galleryData = []) {
@@ -134,7 +135,7 @@ window.performLiveSearchDebounced = function(query) {
     if (liveSearchTimeout) clearTimeout(liveSearchTimeout);
     liveSearchTimeout = setTimeout(() => {
         performLiveSearch(query);
-    }, 250); 
+    }, 500); // 🎯 تم رفع زمن التأخير لـ 500 مللي ثانية لمنع الاستدعاء المستمر أثناء الكتابة
 };
 
 // 🛡️ Engine Upgrade: Robust Client Storage Engine (IndexedDB)
@@ -681,7 +682,10 @@ async function initApp() {
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
     syncCartUI(); 
     if(window.lucide) lucide.createIcons();
-    PreloadEngine.ignite(catalog, galleryData);
+    
+    // 🎯 تم إيقاف PreloadEngine مؤقتاً لتخفيف الضغط على المتصفح وحل مشكلة الـ Overload
+    // PreloadEngine.ignite(catalog, galleryData);
+    console.log("BoseSweets: PreloadEngine disabled to optimize performance and RAM usage.");
     
     // 4. ننتظر جزء بسيط جداً من الثانية (150ms) للسماح للمتصفح برسم الألوان الجديدة، ثم نخفي اللودر بأناقة
     setTimeout(() => {
