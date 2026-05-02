@@ -1,9 +1,10 @@
 /**
- * 👑 BoseSweets Cloud Engine - الموتور الرسمي والنهائي (V5.1 - Smart Sync & Parallel Edition)
+ * 👑 BoseSweets Cloud Engine - الموتور الرسمي والنهائي (V5.2 - Smart Sync & Parallel Edition)
  * تم تنظيف هذا الملف من "قواعد الأمان" ليعمل كمحرك تشغيل فقط.
  * ملاحظة للإدارة: مفتاح الـ API مدمج الآن بشكل صحيح وبأحدث معايير الأمان.
  * الترقية الجديدة (V5.1): دمج نظام الطابور الذكي لمعالجة الطلبات المعلقة بالتوازي (Parallel Processing)
  * مع خوارزمية (Exponential Backoff + Jitter) والمزامنة العكسية (Reverse Sync).
+ * الترقية (V5.2): ربط المتغيرات الأساسية بجذر المتصفح (Window) لمنع أخطاء النطاق (Scope).
  */
 
 const firebaseConfig = {
@@ -21,8 +22,11 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-const db = firebase.firestore();
-const auth = firebase.auth();
+// 👑 التحديث الملكي V5.2: ربط المتغيرات بـ window لضمان عدم فقدان الاتصال في متصفحات الموبايل
+window.db = firebase.firestore();
+window.auth = firebase.auth();
+const db = window.db;
+const auth = window.auth;
 
 /**
  * 🛡️ Engine Upgrade: تفعيل ميزة الأوفلاين (Persistence) 
@@ -57,7 +61,7 @@ const ReverseSyncEngine = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_V5_1',
+                        source: 'BoseSweets_Engine_V5_2',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
                         customerName: orderData.name,
@@ -142,7 +146,7 @@ const CloudQueueDB = {
 };
 
 /**
- * 🛡️ الموتور الأساسي للتعامل الآمن مع السحابة (NetworkEngine) - ترقية V5.1
+ * 🛡️ الموتور الأساسي للتعامل الآمن مع السحابة (NetworkEngine) - ترقية V5.2
  * تم استبدال الكائن بالكامل لدعم المعالجة المتوازية (Parallel Processing)
  * مع إضافة تقنية Jitter لعدم الضغط على سيرفرات فايربيز في نفس اللحظة.
  */
@@ -273,6 +277,4 @@ window.addEventListener('online', () => NetworkEngine.processQueue());
 // محاولة تفريغ الطابور بعد إقلاع النظام بقليل لضمان تزامن العمليات السابقة عند كل دخول
 setTimeout(() => NetworkEngine.processQueue(), 5000);
 
-console.log("BoseSweets Cloud Engine V5.1: Secured & Connected with Parallel Background Queue & Reverse Sync & Persistence Enabled 👑");
-
-}
+console.log("BoseSweets Cloud Engine V5.2: Secured & Connected with Parallel Background Queue & Reverse Sync & Persistence Enabled 👑");
