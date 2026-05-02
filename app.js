@@ -507,19 +507,19 @@ function applySettingsToUI() {
 
 // 📦 محرك جلب البيانات والذاكرة الفولاذية (المراقبة اللحظية مع Smart Render Guard)
 // 🛡️ Engine Upgrade: Synchronized Boot Manager (V. Infinity)
-// محرك الإقلاع الذكي لمنع تذبذب الشاشة ورندرة البيانات المتعددة
 
 let isCloudSettingsReady = false;
 let isCloudCatalogReady = false;
 let lastCatalogHash = "";
 
+// 🛡️ التحديث الجذري: الذاكرة التخزينية للهيكل لمنع الرعشة والمسح
+window.__domCache = window.__domCache || {};
+
 async function loadEngineMemory() {
     try {
-        // 1. جلب البيانات الافتراضية كخط دفاع أول
         await fetchDefaultCatalog(); 
         catalog = [...defaultCatalog];
         
-        // 2. وعاء الانتظار الذكي (Promises) لضمان وصول بيانات السحابة قبل رسم الشاشة
         const settingsPromise = new Promise((resolve) => {
             if (typeof db === 'undefined') { resolve(); return; }
             db.collection('settings').doc('main').onSnapshot(snapshot => {
@@ -556,22 +556,19 @@ async function loadEngineMemory() {
                         
                         if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
                         
-                        // تطبيق الألوان والهوية فوراً خلف الكواليس
                         applySettingsToUI();
                         
-                        // تحديث الأقسام فقط إذا تم فتح القفل (لتجنب الرندرة المزدوجة)
                         if(isCloudSettingsReady && document.getElementById('categories-nav')) renderCategories();
                     }
                 }
                 
-                // فتح قفل الإعدادات في أول مرة تحميل
                 if(!isCloudSettingsReady) { 
                     isCloudSettingsReady = true; 
                     resolve(); 
                 }
             }, (error) => {
                 console.warn("BoseSweets: Settings Sync Error", error);
-                resolve(); // الفتح الإجباري للقفل في حالة الخطأ لضمان عدم توقف الموقع
+                resolve(); 
             });
         });
 
@@ -579,8 +576,8 @@ async function loadEngineMemory() {
             if (typeof db === 'undefined') { resolve(); return; }
             db.collection('catalog').onSnapshot(snapshot => {
                 
-                // 🛡️ درع الحماية ضد تفريغ الشاشة بسبب ضعف الاتصال العابر
-                if (snapshot.empty && catalog.length > 20) {
+                // 🛡️ التحديث الجذري: منع مسح الشاشة إذا السحابة أرسلت لقطة فارغة بالغلط
+                if (snapshot.empty && catalog.length > 0) {
                     console.warn("BoseSweets: Ignored empty snapshot to prevent UI wipe. 🛡️");
                     if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
                     return;
@@ -588,15 +585,17 @@ async function loadEngineMemory() {
 
                 let updatedCatalog = [];
                 snapshot.forEach(doc => {
-                    // 🛡️ التحديث الجذري: عدم استثناء أي قسم وجلب كل التعديلات الحقيقية من السحابة
                     updatedCatalog.push(doc.data());
                 });
                 
-                // 🛡️ التحديث الجذري: دمج العناصر الافتراضية بذكاء فقط إذا لم تكن موجودة في السحابة
-                const firebaseIds = new Set(updatedCatalog.map(p => String(p.id)));
-                const missingDefaults = defaultCatalog.filter(p => !firebaseIds.has(String(p.id)));
-                
-                const newFullCatalog = [...updatedCatalog, ...missingDefaults];
+                let newFullCatalog = [];
+                // 🛡️ التحديث الجذري: إيقاف استدعاء المنتجات الافتراضية إذا كان هناك منتجات على السحابة
+                // هذا يمنع المنتجات من "الظهور من العدم" بعد أن تقوم الإدارة بحذفها!
+                if (updatedCatalog.length === 0 && defaultCatalog.length > 0) {
+                    newFullCatalog = [...defaultCatalog];
+                } else {
+                    newFullCatalog = [...updatedCatalog];
+                }
                 
                 const sortedCatalogForHash = [...newFullCatalog].sort((a, b) => String(a.id).localeCompare(String(b.id)));
                 const currentHash = sortedCatalogForHash.map(p => `${p.id}_${p.price}_${p.inStock}`).join('|');
@@ -607,7 +606,6 @@ async function loadEngineMemory() {
                     syncCatalogMap();
                     LiveSearchEngine.observeIndexUpdate(catalog);
                     
-                    // الرندرة الموجهة تعمل فقط بعد الإقلاع الأولي
                     if(isCloudCatalogReady && document.getElementById('display-container')) {
                         let needsFullRender = false;
                         const changes = snapshot.docChanges();
@@ -633,7 +631,6 @@ async function loadEngineMemory() {
                     }
                 }
                 
-                // فتح قفل الكتالوج في أول مرة تحميل
                 if(!isCloudCatalogReady) {
                     isCloudCatalogReady = true;
                     resolve();
@@ -644,10 +641,8 @@ async function loadEngineMemory() {
             });
         });
 
-        // 3. الحاجز الفولاذي: ننتظر حتى تكتمل بيانات السحابة بالكامل
         await Promise.all([settingsPromise, catalogPromise]);
 
-        // 4. جلب البيانات غير الحرجة (المعرض والشحن)
         if (typeof db !== 'undefined') {
             const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
             if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
@@ -657,7 +652,6 @@ async function loadEngineMemory() {
         }
         
     } catch(err) { 
-        // وضع الطوارئ
         catalog = [...defaultCatalog]; 
         syncCatalogMap(); 
         LiveSearchEngine.build(catalog);
@@ -668,7 +662,6 @@ async function loadEngineMemory() {
         console.warn("BoseSweets: Emergency fallback active. 🛡️");
     }
     
-    // استرجاع السلة
     try { 
         const dbCart = await ClientStorageEngine.get('cart');
         if (dbCart) state.cart = dbCart;
@@ -703,15 +696,12 @@ function clearCartStorage() {
 }
 
 async function initApp() {
-    // 1. تشغيل الذاكرة والانتظار حتى اكتمال السحابة بنسبة 100%
     await loadEngineMemory();
     
-    // 2. إعداد المتغيرات الأولية بناءً على الرابط
     const urlParams = new URLSearchParams(window.location.search);
     const routeCat = urlParams.get('category');
     if(routeCat && catMenu.includes(routeCat)) state.activeCat = routeCat;
 
-    // 3. رسم الشاشة لمرة واحدة فقط ببيانات مكتملة ونهائية
     applySettingsToUI();
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
     if(document.getElementById('categories-nav')) renderCategories();
@@ -720,7 +710,6 @@ async function initApp() {
     if(window.lucide) lucide.createIcons();
     PreloadEngine.ignite(catalog, galleryData);
     
-    // 4. إخفاء اللودر بأمان تام بعد التأكد من استقرار الـ DOM
     window.requestAnimationFrame(() => {
         const loader = document.getElementById('global-loader');
         if(loader) { 
@@ -730,7 +719,6 @@ async function initApp() {
         }
     });
     
-    // 5. التوجيه المباشر لمنتج معين (إن وجد)
     const sharedProductId = urlParams.get('product');
     if(sharedProductId && document.getElementById('display-container')) {
         const prod = catalogMap.get(sharedProductId);
@@ -817,7 +805,11 @@ function setCategory(c) {
 
 function renderFlowerTabs(container) {
     const newHtml = `<div class="p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${fTypes.map(f => `<button onclick="setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}</div>`;
-    if (container.innerHTML !== newHtml) container.innerHTML = newHtml;
+    // 🛡️ استخدام نفس الذاكرة لتجنب المسح العشوائي
+    if (window.__domCache['flowerTabs'] !== newHtml) {
+        container.innerHTML = newHtml;
+        window.__domCache['flowerTabs'] = newHtml;
+    }
 }
 
 function setSub(t, v) { 
@@ -831,7 +823,6 @@ function setSub(t, v) {
     }
 }
 
-// 🛡️ التحديث الجذري: دالة الحصول على كود التورتة (بدون التأثير على الـ DOM مباشرة)
 function getCakeBuilderHTML() {
     const c = state.cakeBuilder; const settings = siteSettings.cakeBuilder || defaultSettings.cakeBuilder;
     const baseP = Number(settings.basePrice) || 145; const imgOpts = settings.imagePrinting || defaultSettings.cakeBuilder.imagePrinting;
@@ -847,8 +838,8 @@ function getCakeBuilderHTML() {
     return `<div class="rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);"><div class="p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">${sliderHtml}<div class="flex-1 text-center md:text-right"><h2 class="text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">تخصيص التورت الملكية 👑</h2><p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">${escapeHTML(descText)}</p></div></div><div class="p-6 md:p-12 space-y-12"><div class="grid grid-cols-1 lg:grid-cols-2 gap-10"><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="cake" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> نكهة الكيك المفضلة</label><div class="grid grid-cols-2 md:grid-cols-4 gap-3">${flavors.map(fl => `<button onclick="uCake('flv', '${escapeHTML(fl)}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${escapeHTML(fl)}</button>`).join('')}</div></div><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="heart" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> عدد الأفراد</label><div class="flex items-center justify-between border rounded-2xl p-2 shadow-inner h-full max-h-[80px]" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);"><button onclick="adjP(-2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="minus"></i></button><span class="text-3xl font-bold">${c.ps}</span><button onclick="adjP(2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="plus"></i></button></div></div></div></div><div class="p-8 md:p-14 border-t-2 flex flex-col md:flex-row justify-between items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 95%);"><div class="text-center md:text-right"><span class="block font-bold mb-2">الإجمالي التقديري</span><span class="text-4xl md:text-6xl font-bold">${price} ج.م</span></div><button onclick="commitCakeBuilder()" class="w-full md:w-auto text-white font-bold text-xl md:text-2xl py-5 px-12 rounded-2xl shadow-xl brand-gradient">إضافة للمراجعة</button></div></div>`;
 }
 
-// 🛡️ التحديث الجذري: المحرك المطور للرندرة باستخدام (HTML Diffing)
-// هذه التقنية تقضي نهائياً على مشكلة وميض الشاشة والرندرة العشوائية
+// 🛡️ التحديث الجذري: المحرك المطور للرندرة باستخدام (String Caching)
+// يقضي نهائياً على مشكلة وميض الشاشة والرندرة العشوائية الناجمة عن تلاعب المتصفح بالكود
 function renderMainDisplay() {
     const container = document.getElementById('display-container'); 
     const subTabs = document.getElementById('sub-tabs-area');
@@ -882,25 +873,33 @@ function renderMainDisplay() {
         }
         let list = catalog.filter(p => p && p.category === state.activeCat);
         if (state.activeCat === 'ديسباسيتو') {
-            list = list.filter(p => p.size === state.dSize || p.subType === state.dSize || (p.desc && typeof p.desc === 'string' && p.desc.includes(state.dSize)));
+            // 🛡️ التحديث الجذري: تخفيف فلتر الديسباسيتو لكي لا تختفي المنتجات المضافة حديثاً!
+            list = list.filter(p => {
+                const matchSize = p.size === state.dSize || p.subType === state.dSize || (p.desc && typeof p.desc === 'string' && p.desc.includes(state.dSize));
+                const isUncategorized = !p.size && !p.subType; // يظهر المنتج إذا نسي الإدمن تصنيفه بدلاً من إخفائه
+                return matchSize || isUncategorized;
+            });
         }
         const userLayout = siteSettings.productLayout || 'grid';
         targetHTML = `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 items-stretch">${list.map(p => drawProductCard(p, userLayout)).join('')}</div>`;
     }
 
-    // 🛡️ التطبيق الذكي للمقارنة: تحديث الشاشة فقط إذا تغير المحتوى!
-    if (container.innerHTML !== targetHTML) {
+    // 🛡️ التطبيق الذكي للمقارنة: تحديث الشاشة فقط من خلال الذاكرة الفولاذية
+    if (window.__domCache['mainDisplay'] !== targetHTML) {
         container.innerHTML = targetHTML;
+        window.__domCache['mainDisplay'] = targetHTML;
         if(window.lucide) lucide.createIcons();
     }
 
-    // إدارة الأقسام الفرعية بذكاء
     if (showSubTabs) {
         subTabs.classList.remove('hidden');
         if (state.activeCat === 'ورد') renderFlowerTabs(subTabs);
         if (state.activeCat === 'ديسباسيتو') {
             const despacitoTabsHTML = `<div class="p-2 rounded-2xl shadow-sm border flex justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${dSizes.map(s => `<button onclick="setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.dSize === s ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.dSize === s ? '' : 'color: var(--site-text);'}">${s}</button>`).join('')}</div>`;
-            if (subTabs.innerHTML !== despacitoTabsHTML) subTabs.innerHTML = despacitoTabsHTML;
+            if (window.__domCache['subTabs'] !== despacitoTabsHTML) {
+                subTabs.innerHTML = despacitoTabsHTML;
+                window.__domCache['subTabs'] = despacitoTabsHTML;
+            }
         }
     } else {
         subTabs.classList.add('hidden');
@@ -1038,14 +1037,15 @@ function adjP(d) {
     state.cakeBuilder.ps = n; renderMainDisplay();
 }
 
-// 🛡️ التحديث الجذري: تطبيق نفس المقارنة الذكية لتحديث الكارت الفردي
+// 🛡️ التحديث الجذري: تطبيق الذاكرة لتحديث الكارت الفردي بدون مسح الصور
 function updateCardUI(id) {
     const safeId = String(id); const cardEl = document.getElementById(`product-card-${safeId}`);
     const prod = catalogMap.get(safeId); const userLayout = siteSettings.productLayout || 'grid';
     if (cardEl && prod) { 
         const newHtml = drawProductCard(prod, userLayout);
-        if (cardEl.outerHTML !== newHtml) {
+        if (window.__domCache['card_' + safeId] !== newHtml) {
             cardEl.outerHTML = newHtml;
+            window.__domCache['card_' + safeId] = newHtml;
             if(window.lucide) lucide.createIcons(); 
         }
     }
