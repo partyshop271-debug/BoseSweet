@@ -444,12 +444,17 @@ async function fetchDefaultCatalog() {
 let siteSettings = { ...defaultSettings };
 let shippingZones = [ ...defaultShipping ];
 let catalog = []; let galleryData = []; let catMenu = [];
+// 👑 قفل الرندرة الصامت (Silent Render Lock)
+// هذا المتغير سيمنع المحرك من رسم أي شيء عشوائي على الشاشة حتى تستقر كل البيانات!
+let isAppReady = false; 
 
 const dSizes = ['مثلث', 'وسط', 'كبير']; const fTypes = ['ورد طبيعي', 'ورد صناعي', 'ورد ستان', 'ورد هدايا', 'ورد فلوس', 'ورد شيكولاتة'];
 let state = { activeCat: 'تورت', dSize: 'مثلث', fType: 'ورد طبيعي', cart: [], currentShippingFee: 0, cakeBuilder: { flv: 'فانيليا', ps: 4, sh: 'دائري', trd: false, img: 'بدون', msg: '', alg: '', occ: '', refImgUrl: '', hasRefImg: false, crd: false, dlg: false } };
 
 // 🛡️ الموتور الأساسي: حماية الهوية البصرية (تعديل السيادة الشامل)
 function applySettingsToUI() {
+    if (!isAppReady) return; // 🔒 منع تشتيت الهوية البصرية أثناء جلب البيانات
+
     const root = document.documentElement;
     
     const brandHue = (siteSettings.visuals && siteSettings.visuals.themeHex) 
@@ -502,11 +507,11 @@ function applySettingsToUI() {
     
     const areaSelect = document.getElementById('cust-area');
     if(areaSelect) areaSelect.innerHTML = `<option value="" disabled selected>اختر المنطقة...</option>` + shippingZones.map(z => `<option value="${z.id}">${escapeHTML(z.name)} (+${Number(z.fee)} ج.م توصيل)</option>`).join('');
+    
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
 // 👑 SINGLE SOURCE OF TRUTH (SSOT) ENGINE
-// النظام العبقري لمنع التضارب بين النسخ وإنهاء الرندرة العشوائية للأبد
 let isCloudSettingsReady = false;
 let isCloudCatalogReady = false;
 
@@ -514,8 +519,6 @@ async function loadEngineMemory() {
     try {
         await fetchDefaultCatalog(); 
         
-        // 👑 الحل الجذري 1: لا نضع الداتا الافتراضية فوراً إلا إذا كان الفايربيز غير موجود
-        // لكي لا يحدث وميض (Flicker) بين الداتا الافتراضية والداتا الحقيقية.
         if (typeof db === 'undefined') {
             catalog = [...defaultCatalog]; 
         }
@@ -546,16 +549,15 @@ async function loadEngineMemory() {
                         }
                         if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
                         
+                        // هنا المتغير isAppReady هيحمي الواجهة لو لسه بنحمل!
                         applySettingsToUI();
                         if(document.getElementById('categories-nav')) renderCategories();
                     }
                 }
                 
-                // 👑 الحل الجذري 2: التأكد من أن البيانات جاءت من "السيرفر" وليس "الذاكرة المؤقتة"
                 if (!snapshot.metadata.fromCache || !navigator.onLine) {
                     if(!isCloudSettingsReady) { isCloudSettingsReady = true; resolve(); }
                 } else {
-                    // مهلة أمان قصوى لو الإنترنت بطيء جداً
                     MemoryManager.set('settings_resolve_fallback', () => {
                         if(!isCloudSettingsReady) { isCloudSettingsReady = true; resolve(); }
                     }, 2500);
@@ -586,9 +588,9 @@ async function loadEngineMemory() {
                 if(document.getElementById('display-container')) {
                     if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
                     window.renderDebounceTimer = setTimeout(() => { 
+                        // هنا المتغير isAppReady هيحمي الرندرة العشوائية!
                         renderMainDisplay(); 
                         
-                        // 👑 الحل الجذري 3: عدم إنهاء مرحلة التحميل إلا مع وصول داتا السيرفر
                         if (!snapshot.metadata.fromCache || !navigator.onLine) {
                             if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
                         } else {
@@ -657,19 +659,28 @@ function clearCartStorage() {
 }
 
 async function initApp() {
-    // ننتظر تحميل الذاكرة (هنا سيتوقف الكود حتى يؤكد الفايربيز وصول الداتا من السيرفر)
+    // 1. ننتظر تجميع كافة البيانات في صمت تام (تحت اللودر)
     await loadEngineMemory();
     
+    // 2. 👑 فتح القفل: الداتا استقرت 100% (سواء من الكاش أو السيرفر)، الآن يمكننا الرسم بطلاقة
+    isAppReady = true;
+
+    // 3. تحديد مسار المستخدم إن وجد
     const urlParams = new URLSearchParams(window.location.search);
     const routeCat = urlParams.get('category');
     if(routeCat && catMenu.includes(routeCat)) state.activeCat = routeCat;
+
+    // 4. إطلاق الرندرة النهائية الشاملة (مرة واحدة فقط!)
+    applySettingsToUI();
+    renderCategories();
+    renderMainDisplay();
 
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
     syncCartUI(); 
     if(window.lucide) lucide.createIcons();
     PreloadEngine.ignite(catalog, galleryData);
     
-    // 👑 الآن فقط، وبأمان تام، نُخفي اللودر بعد أن استقر الموقع على بياناته النهائية
+    // 5. إخفاء اللودر بأمان تام لأن الموقع بالكامل قد تـم رسمه بشكل صحيح
     window.requestAnimationFrame(() => {
         const loader = document.getElementById('global-loader');
         if(loader) { 
@@ -679,6 +690,7 @@ async function initApp() {
         }
     });
     
+    // 6. التعامل مع مشاركة المنتجات
     const sharedProductId = urlParams.get('product');
     if(sharedProductId && document.getElementById('display-container')) {
         const prod = catalogMap.get(sharedProductId);
@@ -732,19 +744,20 @@ function toggleCustomerMenu(show) {
 }
 
 function renderCustomerSidebarCategories() {
+    if (!isAppReady) return; // 🔒 قفل الرندرة
     const container = document.getElementById('sidebar-categories');
     if(!container) return;
     
-    // 👑 Data-Hashing for Sidebar: لا يتم تغيير الهيكل إلا إذا تغيرت التصنيفات فعلياً
     const newHash = JSON.stringify(catMenu);
     if (container.dataset.renderedHash !== newHash) {
-        container.innerHTML = catMenu.map(c => `<button onclick="toggleCustomerMenu(false); setCategory('${c}')" class="text-right w-full p-3 rounded-xl font-bold text-sm transition-all hover:bg-gray-50 flex items-center justify-between" style="border: 1px solid hsl(var(--brand-hue), 80%, 95%); color: var(--site-text);"><span>${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</span><i data-lucide="chevron-left" class="w-4 h-4 opacity-50"></i></button>`).join('');
+        container.innerHTML = catMenu.map(c => `<button onclick="toggleCustomerMenu(false); setCategory('${c.name || c}')" class="text-right w-full p-3 rounded-xl font-bold text-sm transition-all hover:bg-gray-50 flex items-center justify-between" style="border: 1px solid hsl(var(--brand-hue), 80%, 95%); color: var(--site-text);"><span>${c.name === 'ورد' || c === 'ورد' ? 'ورد وهدايا 💐' : (c.name === 'تورت' || c === 'تورت' ? 'تورت وتصميم 🎂' : (c.name || c))}</span><i data-lucide="chevron-left" class="w-4 h-4 opacity-50"></i></button>`).join('');
         container.dataset.renderedHash = newHash;
         if(window.lucide) lucide.createIcons();
     }
 }
 
 function renderCustomerGallery() {
+    if (!isAppReady) return; // 🔒 قفل الرندرة
     const sec = document.getElementById('gallery-customer-section'); const slider = document.getElementById('gallery-slider');
     if(!sec) return;
     if (galleryData.length === 0) { sec.classList.add('hidden'); return; }
@@ -761,12 +774,13 @@ function openLightbox(url) { const lb = document.getElementById('gallery-lightbo
 function closeLightbox() { const lb = document.getElementById('gallery-lightbox'); lb.classList.add('hidden'); lb.classList.remove('flex'); }
 
 function renderCategories() {
+    if (!isAppReady) return; // 🔒 قفل الرندرة
     const el = document.getElementById('categories-nav');
     if(!el) return;
     
     const newHash = JSON.stringify(catMenu) + "_" + state.activeCat;
     if (el.dataset.renderedHash !== newHash) {
-        el.innerHTML = catMenu.map(c => `<button id="cat-btn-${c.replace(/\s+/g, '-')}" onclick="setCategory('${c}')" class="whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === c ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'border-pink-100 hover:border-pink-300'}" style="${state.activeCat === c ? '' : `background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${c === 'ورد' ? 'ورد وهدايا 💐' : (c === 'تورت' ? 'تورت وتصميم 🎂' : c)}</button>`).join('');
+        el.innerHTML = catMenu.map(c => `<button id="cat-btn-${(c.name || c).replace(/\s+/g, '-')}" onclick="setCategory('${c.name || c}')" class="whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === (c.name || c) ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'border-pink-100 hover:border-pink-300'}" style="${state.activeCat === (c.name || c) ? '' : `background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${c.name === 'ورد' || c === 'ورد' ? 'ورد وهدايا 💐' : (c.name === 'تورت' || c === 'تورت' ? 'تورت وتصميم 🎂' : (c.name || c))}</button>`).join('');
         el.dataset.renderedHash = newHash;
     }
 }
@@ -815,6 +829,7 @@ function getCakeBuilderHTML() {
 
 // 👑 DATA HASHING ENGINE
 function renderMainDisplay() {
+    if (!isAppReady) return; // 🔒 قفل الرندرة
     const container = document.getElementById('display-container'); 
     const subTabs = document.getElementById('sub-tabs-area');
     if(!container) return;
