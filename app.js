@@ -578,16 +578,27 @@ async function loadEngineMemory() {
         const catalogPromise = new Promise((resolve) => {
             if (typeof db === 'undefined') { resolve(); return; }
             db.collection('catalog').onSnapshot(snapshot => {
+                
+                // 🛡️ درع الحماية ضد تفريغ الشاشة بسبب ضعف الاتصال العابر
+                if (snapshot.empty && catalog.length > 20) {
+                    console.warn("BoseSweets: Ignored empty snapshot to prevent UI wipe. 🛡️");
+                    if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
+                    return;
+                }
+
                 let updatedCatalog = [];
                 snapshot.forEach(doc => {
-                    const p = doc.data();
-                    if (p.category !== 'ديسباسيتو') updatedCatalog.push(p);
+                    // 🛡️ التحديث الجذري: عدم استثناء أي قسم وجلب كل التعديلات الحقيقية من السحابة
+                    updatedCatalog.push(doc.data());
                 });
                 
-                const freshDespacito = defaultCatalog.filter(p => p.category === 'ديسباسيتو');
-                const newFullCatalog = [...updatedCatalog, ...freshDespacito];
+                // 🛡️ التحديث الجذري: دمج العناصر الافتراضية بذكاء فقط إذا لم تكن موجودة في السحابة
+                const firebaseIds = new Set(updatedCatalog.map(p => String(p.id)));
+                const missingDefaults = defaultCatalog.filter(p => !firebaseIds.has(String(p.id)));
                 
-                const sortedCatalogForHash = [...updatedCatalog].sort((a, b) => String(a.id).localeCompare(String(b.id)));
+                const newFullCatalog = [...updatedCatalog, ...missingDefaults];
+                
+                const sortedCatalogForHash = [...newFullCatalog].sort((a, b) => String(a.id).localeCompare(String(b.id)));
                 const currentHash = sortedCatalogForHash.map(p => `${p.id}_${p.price}_${p.inStock}`).join('|');
 
                 if (lastCatalogHash !== currentHash) {
@@ -617,7 +628,7 @@ async function loadEngineMemory() {
 
                         if (needsFullRender) {
                             if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
-                            window.renderDebounceTimer = setTimeout(() => { renderMainDisplay(); }, 300);
+                            window.renderDebounceTimer = setTimeout(() => { renderMainDisplay(); }, 150);
                         }
                     }
                 }
@@ -805,7 +816,8 @@ function setCategory(c) {
 }
 
 function renderFlowerTabs(container) {
-    container.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${fTypes.map(f => `<button onclick="setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}</div>`;
+    const newHtml = `<div class="p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${fTypes.map(f => `<button onclick="setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}</div>`;
+    if (container.innerHTML !== newHtml) container.innerHTML = newHtml;
 }
 
 function setSub(t, v) { 
@@ -819,36 +831,80 @@ function setSub(t, v) {
     }
 }
 
+// 🛡️ التحديث الجذري: دالة الحصول على كود التورتة (بدون التأثير على الـ DOM مباشرة)
+function getCakeBuilderHTML() {
+    const c = state.cakeBuilder; const settings = siteSettings.cakeBuilder || defaultSettings.cakeBuilder;
+    const baseP = Number(settings.basePrice) || 145; const imgOpts = settings.imagePrinting || defaultSettings.cakeBuilder.imagePrinting;
+    const selectedImgOption = imgOpts.find(opt => opt.label === c.img) || {price: 0};
+    const price = Number(c.ps) * baseP + Number(selectedImgOption.price);
+    const flavors = settings.flavors || ['فانيليا']; 
+    const rawImagesList = (settings.images && settings.images.length > 0) ? settings.images : [getImgFallback('تورت')];
+    const imagesList = rawImagesList.map(url => optimizeCloudinaryUrl(url));
+    const descText = settings.desc || defaultSettings.cakeBuilder.desc;
+    
+    let sliderHtml = `<div class="w-full md:w-2/5 aspect-[3/4] md:aspect-square rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border-2 shadow-xl relative flex snap-slider hide-scrollbar bg-white group" style="border-color: hsl(var(--brand-hue), 80%, 90%);">${imagesList.map(url => `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 group-hover:scale-105">`).join('')}</div>`;
+    
+    return `<div class="rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);"><div class="p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">${sliderHtml}<div class="flex-1 text-center md:text-right"><h2 class="text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">تخصيص التورت الملكية 👑</h2><p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">${escapeHTML(descText)}</p></div></div><div class="p-6 md:p-12 space-y-12"><div class="grid grid-cols-1 lg:grid-cols-2 gap-10"><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="cake" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> نكهة الكيك المفضلة</label><div class="grid grid-cols-2 md:grid-cols-4 gap-3">${flavors.map(fl => `<button onclick="uCake('flv', '${escapeHTML(fl)}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${escapeHTML(fl)}</button>`).join('')}</div></div><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="heart" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> عدد الأفراد</label><div class="flex items-center justify-between border rounded-2xl p-2 shadow-inner h-full max-h-[80px]" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);"><button onclick="adjP(-2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="minus"></i></button><span class="text-3xl font-bold">${c.ps}</span><button onclick="adjP(2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="plus"></i></button></div></div></div></div><div class="p-8 md:p-14 border-t-2 flex flex-col md:flex-row justify-between items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 95%);"><div class="text-center md:text-right"><span class="block font-bold mb-2">الإجمالي التقديري</span><span class="text-4xl md:text-6xl font-bold">${price} ج.م</span></div><button onclick="commitCakeBuilder()" class="w-full md:w-auto text-white font-bold text-xl md:text-2xl py-5 px-12 rounded-2xl shadow-xl brand-gradient">إضافة للمراجعة</button></div></div>`;
+}
+
+// 🛡️ التحديث الجذري: المحرك المطور للرندرة باستخدام (HTML Diffing)
+// هذه التقنية تقضي نهائياً على مشكلة وميض الشاشة والرندرة العشوائية
 function renderMainDisplay() {
-    const container = document.getElementById('display-container'); const subTabs = document.getElementById('sub-tabs-area');
+    const container = document.getElementById('display-container'); 
+    const subTabs = document.getElementById('sub-tabs-area');
     if(!container) return;
     
     if (catalog.length === 0) {
         catalog = [...defaultCatalog];
     }
 
-    subTabs.classList.add('hidden'); container.innerHTML = '';
-    if (state.activeCat === 'تورت') { renderCakeBuilder(container); } 
+    let targetHTML = '';
+    let showSubTabs = false;
+
+    if (state.activeCat === 'تورت') { 
+        targetHTML = getCakeBuilderHTML(); 
+    } 
     else if (state.activeCat === 'ورد') {
-        subTabs.classList.remove('hidden'); renderFlowerTabs(subTabs);
+        showSubTabs = true;
         let flowerHtml = `<div class="flex flex-col gap-12 w-full">`;
         fTypes.forEach(type => {
             const list = catalog.filter(p => p && p.category === 'ورد' && (p.flowerType === type || (p.desc && typeof p.desc === 'string' && p.desc.includes(type))));
-            if(list.length > 0) { flowerHtml += `<div id="flower-group-${type.replace(/\s+/g, '-')}" class="space-y-6 animate-fade-in"><div class="flex items-center gap-4 mb-4"><h3 class="font-black text-xl text-pink-600 shrink-0">${type}</h3><div class="h-[1px] w-full bg-pink-100"></div></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${list.map(p => drawProductCard(p, 'full')).join('')}</div></div>`; }
+            if(list.length > 0) { 
+                flowerHtml += `<div id="flower-group-${type.replace(/\s+/g, '-')}" class="space-y-6 animate-fade-in"><div class="flex items-center gap-4 mb-4"><h3 class="font-black text-xl text-pink-600 shrink-0">${type}</h3><div class="h-[1px] w-full bg-pink-100"></div></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${list.map(p => drawProductCard(p, 'full')).join('')}</div></div>`; 
+            }
         });
-        flowerHtml += `</div>`; container.innerHTML = flowerHtml;
+        flowerHtml += `</div>`; 
+        targetHTML = flowerHtml;
     }
     else {
         if (state.activeCat === 'ديسباسيتو') {
-            subTabs.classList.remove('hidden');
-            subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${dSizes.map(s => `<button onclick="setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.dSize === s ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.dSize === s ? '' : 'color: var(--site-text);'}">${s}</button>`).join('')}</div>`;
+            showSubTabs = true;
         }
         let list = catalog.filter(p => p && p.category === state.activeCat);
-        if (state.activeCat === 'ديسباسيتو') list = list.filter(p => p.size === state.dSize || p.subType === state.dSize || (p.desc && typeof p.desc === 'string' && p.desc.includes(state.dSize)));
+        if (state.activeCat === 'ديسباسيتو') {
+            list = list.filter(p => p.size === state.dSize || p.subType === state.dSize || (p.desc && typeof p.desc === 'string' && p.desc.includes(state.dSize)));
+        }
         const userLayout = siteSettings.productLayout || 'grid';
-        container.innerHTML = `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 items-stretch">${list.map(p => drawProductCard(p, userLayout)).join('')}</div>`;
+        targetHTML = `<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 items-stretch">${list.map(p => drawProductCard(p, userLayout)).join('')}</div>`;
     }
-    if(window.lucide) lucide.createIcons();
+
+    // 🛡️ التطبيق الذكي للمقارنة: تحديث الشاشة فقط إذا تغير المحتوى!
+    if (container.innerHTML !== targetHTML) {
+        container.innerHTML = targetHTML;
+        if(window.lucide) lucide.createIcons();
+    }
+
+    // إدارة الأقسام الفرعية بذكاء
+    if (showSubTabs) {
+        subTabs.classList.remove('hidden');
+        if (state.activeCat === 'ورد') renderFlowerTabs(subTabs);
+        if (state.activeCat === 'ديسباسيتو') {
+            const despacitoTabsHTML = `<div class="p-2 rounded-2xl shadow-sm border flex justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${dSizes.map(s => `<button onclick="setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.dSize === s ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.dSize === s ? '' : 'color: var(--site-text);'}">${s}</button>`).join('')}</div>`;
+            if (subTabs.innerHTML !== despacitoTabsHTML) subTabs.innerHTML = despacitoTabsHTML;
+        }
+    } else {
+        subTabs.classList.add('hidden');
+    }
 }
 
 window.updateTempQtyContext = function(buttonElement, delta) {
@@ -976,30 +1032,23 @@ function getImgFallback(cat) {
     return m[cat] || m['جاتوهات'];
 }
 
-function renderCakeBuilder(target) {
-    const c = state.cakeBuilder; const settings = siteSettings.cakeBuilder || defaultSettings.cakeBuilder;
-    const baseP = Number(settings.basePrice) || 145; const imgOpts = settings.imagePrinting || defaultSettings.cakeBuilder.imagePrinting;
-    const selectedImgOption = imgOpts.find(opt => opt.label === c.img) || {price: 0};
-    const price = Number(c.ps) * baseP + Number(selectedImgOption.price);
-    const flavors = settings.flavors || ['فانيليا']; 
-    const rawImagesList = (settings.images && settings.images.length > 0) ? settings.images : [getImgFallback('تورت')];
-    const imagesList = rawImagesList.map(url => optimizeCloudinaryUrl(url));
-    const descText = settings.desc || defaultSettings.cakeBuilder.desc;
-    let sliderHtml = `<div class="w-full md:w-2/5 aspect-[3/4] md:aspect-square rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border-2 shadow-xl relative flex snap-slider hide-scrollbar bg-white group" style="border-color: hsl(var(--brand-hue), 80%, 90%);">${imagesList.map(url => `<img src="${url}" class="w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 group-hover:scale-105">`).join('')}</div>`;
-    target.innerHTML = `<div class="rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);"><div class="p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">${sliderHtml}<div class="flex-1 text-center md:text-right"><h2 class="text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">تخصيص التورت الملكية 👑</h2><p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">${escapeHTML(descText)}</p></div></div><div class="p-6 md:p-12 space-y-12"><div class="grid grid-cols-1 lg:grid-cols-2 gap-10"><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="cake" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> نكهة الكيك المفضلة</label><div class="grid grid-cols-2 md:grid-cols-4 gap-3">${flavors.map(fl => `<button onclick="uCake('flv', '${escapeHTML(fl)}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${escapeHTML(fl)}</button>`).join('')}</div></div><div class="space-y-4"><label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="heart" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> عدد الأفراد</label><div class="flex items-center justify-between border rounded-2xl p-2 shadow-inner h-full max-h-[80px]" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);"><button onclick="adjP(-2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="minus"></i></button><span class="text-3xl font-bold">${c.ps}</span><button onclick="adjP(2)" class="p-3 rounded-xl border hover:scale-105 transition-all"><i data-lucide="plus"></i></button></div></div></div></div><div class="p-8 md:p-14 border-t-2 flex flex-col md:flex-row justify-between items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 95%);"><div class="text-center md:text-right"><span class="block font-bold mb-2">الإجمالي التقديري</span><span class="text-4xl md:text-6xl font-bold">${price} ج.م</span></div><button onclick="commitCakeBuilder()" class="w-full md:w-auto text-white font-bold text-xl md:text-2xl py-5 px-12 rounded-2xl shadow-xl brand-gradient">إضافة للمراجعة</button></div></div>`;
-    if(window.lucide) lucide.createIcons();
-}
-
 function uCake(k, v) { state.cakeBuilder[k] = v; renderMainDisplay(); }
 function adjP(d) {
     let n = Number(state.cakeBuilder.ps) + Number(d); if (n < 4) n = 4;
     state.cakeBuilder.ps = n; renderMainDisplay();
 }
 
+// 🛡️ التحديث الجذري: تطبيق نفس المقارنة الذكية لتحديث الكارت الفردي
 function updateCardUI(id) {
     const safeId = String(id); const cardEl = document.getElementById(`product-card-${safeId}`);
     const prod = catalogMap.get(safeId); const userLayout = siteSettings.productLayout || 'grid';
-    if (cardEl && prod) { cardEl.outerHTML = drawProductCard(prod, userLayout); if(window.lucide) lucide.createIcons(); }
+    if (cardEl && prod) { 
+        const newHtml = drawProductCard(prod, userLayout);
+        if (cardEl.outerHTML !== newHtml) {
+            cardEl.outerHTML = newHtml;
+            if(window.lucide) lucide.createIcons(); 
+        }
+    }
 }
 
 function renderCartList() {
@@ -1027,7 +1076,7 @@ function renderCartCrossSell() {
     let suggestions = available.slice(0, 3);
     return `<div class="mt-8 animate-fade-in border-t border-dashed pt-6" style="border-color: hsl(var(--brand-hue), 80%, 85%);"><p class="text-sm font-black text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="sparkles"></i> كملي اللحظة الحلوة بمنتجات تليق بيكي</p><div class="flex gap-4 overflow-x-auto pb-6 hide-scrollbar snap-slider">${suggestions.map(p => {
         const img = optimizeCloudinaryUrl((p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category)));
-        return `<div class="shrink-0 w-[260px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col group"><div class="relative w-full h-36 mb-4 rounded-xl overflow-hidden bg-gray-50"><img src="${img}" class="w-full h-full object-cover"></div><div class="flex-1 flex flex-col"><h5 class="text-[14px] font-bold mb-1">${escapeHTML(p.name)}</h5><div class="flex items-center justify-between mt-auto"><span class="font-black" style="color: hsl(var(--brand-hue), 70%, 40%);">${p.price} ج.م</span><button onclick="addWithQty('${p.id}')" class="px-4 py-2 border rounded-xl text-[11px] font-bold dyn-hover-bg transition-colors" style="border-color: hsl(var(--brand-hue), 80%, 85%); color: hsl(var(--brand-hue), 70%, 50%);">إضافة</button></div></div></div>`;
+        return `<div class="shrink-0 w-[260px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col group"><div class="relative w-full h-36 mb-4 rounded-xl overflow-hidden bg-gray-50"><img src="${img}" class="w-full h-full object-cover"></div><div class="flex-1 flex flex-col"><h5 class="text-[14px] font-bold mb-1">${escapeHTML(p.name)}</h5><div class="flex items-center justify-between mt-auto"><span class="font-black" style="color: hsl(var(--brand-hue), 70%, 40%);">${p.price} ج.م</span><button onclick="addWithQtyContext(this, '${p.id}')" class="px-4 py-2 border rounded-xl text-[11px] font-bold dyn-hover-bg transition-colors" style="border-color: hsl(var(--brand-hue), 80%, 85%); color: hsl(var(--brand-hue), 70%, 50%);">إضافة</button></div></div></div>`;
     }).join('')}</div></div>`;
 }
 
