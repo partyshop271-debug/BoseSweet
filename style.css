@@ -36,6 +36,13 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* 🛡️ منع القفزات البصرية أثناء تحميل البيانات وتحسين أداء الرندرة */
+#display-container {
+    min-height: 400px;
+    transition: opacity 0.3s ease-in-out;
+    contain: layout; 
+}
+
 /* 🛡️ تنظيف الذاكرة البصرية وتحسين الأداء */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -60,7 +67,11 @@ body {
 .ticker-fade-left { background: linear-gradient(to right, hsl(var(--brand-hue), 90%, 85%), transparent); }
 
 /* 🌟 محرك الحركات المتقدم (Advanced Animation Engine) */
-.animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+.animate-fade-in { 
+    animation: fadeIn 0.4s ease-out forwards; 
+    will-change: opacity, transform;
+}
+
 @keyframes fadeIn { 
     from { opacity: 0; transform: translateY(15px); } 
     to { opacity: 1; transform: translateY(0); } 

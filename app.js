@@ -433,7 +433,7 @@ let defaultCatalog = [
     { id: 'dp_tri_cherry', name: 'ديسباسيتو كرز', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
     { id: 'dp_tri_snick', name: 'ديسباسيتو اسنيكرز', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
     { id: 'dp_tri_mix', name: 'ديسباسيتو ميكس شوكليت', category: 'ديسباسيتو', size: 'مثلث', price: 66, inStock: true },
-    { id: 'dp_tri_pist', name: 'ديسباسيتو بيستاشيو', category: 'ديسباسيتو', size: 'مثلث', price: 83, inStock: true }
+    { id: 'dp_tri_pist', name: 'ديسباسيتو بيستاشيو', category: 'ديسباسيتو', size: '83', inStock: true }
 ];
 
 async function fetchDefaultCatalog() {
@@ -494,29 +494,31 @@ function applySettingsToUI() {
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
-// 📦 محرك جلب البيانات والذاكرة الفولاذية (المراقبة اللحظية مع حماية الذاكرة)
+// 📦 محرك جلب البيانات والذاكرة الفولاذية (المراقبة اللحظية مع Smart Render Guard)
+let lastCatalogHash = "";
 async function loadEngineMemory() {
     try {
         await fetchDefaultCatalog(); 
         catalog = [...defaultCatalog];
         
-        // 👑 التحديث الثوري: المراقبة اللحظية للإعدادات وتطبيقها فوراً بدمج عميق لمنع اختفاء البيانات
+        // 👑 التحديث الثوري: المراقبة اللحظية للإعدادات مع منع الرندرة المتكررة
         db.collection('settings').doc('main').onSnapshot(snapshot => {
             if (snapshot.exists) {
                 const cloudData = snapshot.data();
                 
-                // دمج عميق للمستوى الأول
+                // 🛡️ الحاجز الذكي: التحقق من وجود تغيير فعلي في الهوية قبل الرندرة
+                const newSettingsHash = JSON.stringify(cloudData.visuals);
+                if (window.lastSettingsHash === newSettingsHash) return; 
+                window.lastSettingsHash = newSettingsHash;
+
                 siteSettings = { ...defaultSettings, ...cloudData };
                 
-                // دمج عميق لحماية الهوية البصرية
                 if(cloudData.visuals) {
                     siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
                 }
 
-                // 🛡️ دمج عميق وحماية فولاذية لخانات التورتة عشان متتمسحش أبدا
                 if(cloudData.cakeBuilder) {
                     siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
-                    // لو النكهات اتمسحت لأي سبب نرجعها فورا من الافتراضي
                     if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) {
                         siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
                     }
@@ -538,39 +540,41 @@ async function loadEngineMemory() {
                 
                 applySettingsToUI();
                 if(document.getElementById('categories-nav')) renderCategories();
-                if(document.getElementById('display-container')) {
-                    if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
-                    window.renderDebounceTimer = setTimeout(() => { renderMainDisplay(); }, 150);
-                }
+                
+                // استخدام التايمر لضمان استقرار الواجهة (Debouncing)
+                if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
+                window.renderDebounceTimer = setTimeout(() => { 
+                    if(document.getElementById('display-container')) renderMainDisplay(); 
+                }, 300);
             }
         });
 
-        const catSnap = await db.collection('catalog').get();
-        if (!catSnap.empty) { 
-            let cloudCatalog = []; 
-            catSnap.forEach(doc => {
-                const p = doc.data();
-                if (p.category !== 'ديسباسيتو') cloudCatalog.push(p);
-            });
-            const freshDespacito = defaultCatalog.filter(p => p.category === 'ديسباسيتو');
-            if (cloudCatalog.length > 0) catalog = [...cloudCatalog, ...freshDespacito];
-        }
-
+        // مراقبة الكتالوج مع منع التذبذب البصري (Smart Render Guard)
         db.collection('catalog').onSnapshot(snapshot => {
             let updatedCatalog = [];
             snapshot.forEach(doc => {
                 const p = doc.data();
                 if (p.category !== 'ديسباسيتو') updatedCatalog.push(p);
             });
+            
             const freshDespacito = defaultCatalog.filter(p => p.category === 'ديسباسيتو');
-            catalog = [...updatedCatalog, ...freshDespacito];
+            const newFullCatalog = [...updatedCatalog, ...freshDespacito];
+            
+            // 🛡️ الحل السحري: لا تقم بالرندرة إذا كانت البيانات الجوهرية لم تتغير
+            const currentHash = JSON.stringify(updatedCatalog.map(p => p.id + p.price + p.inStock));
+            if (lastCatalogHash === currentHash) return;
+            lastCatalogHash = currentHash;
+
+            catalog = newFullCatalog;
             syncCatalogMap();
             LiveSearchEngine.observeIndexUpdate(catalog);
             
-            if(document.getElementById('display-container')) {
-                if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
-                window.renderDebounceTimer = setTimeout(() => { renderMainDisplay(); }, 150);
-            }
+            if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
+            window.renderDebounceTimer = setTimeout(() => { 
+                if(document.getElementById('display-container')) {
+                    renderMainDisplay(); 
+                }
+            }, 300); 
         });
 
         const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
@@ -586,14 +590,11 @@ async function loadEngineMemory() {
         catalog = [...defaultCatalog]; 
         syncCatalogMap(); 
         LiveSearchEngine.build(catalog);
-        
-        // 👑 التحديث الملكي: تأمين القسم النشط عشان الشاشة ماتبقاش فاضية أبداً
         const availableCats = [...new Set(catalog.map(p => p.category))];
         if (!availableCats.includes(state.activeCat) && availableCats.length > 0) {
             state.activeCat = availableCats[0];
             if(document.getElementById('categories-nav')) renderCategories();
         }
-        
         console.warn("BoseSweets: Emergency fallback active. 🛡️");
     }
     
