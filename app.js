@@ -445,13 +445,12 @@ let siteSettings = { ...defaultSettings };
 let shippingZones = [ ...defaultShipping ];
 let catalog = []; let galleryData = []; let catMenu = [];
 // 👑 قفل الرندرة الصامت (Silent Render Lock)
-// هذا المتغير سيمنع المحرك من رسم أي شيء عشوائي على الشاشة حتى تستقر كل البيانات!
 let isAppReady = false; 
 
 const dSizes = ['مثلث', 'وسط', 'كبير']; const fTypes = ['ورد طبيعي', 'ورد صناعي', 'ورد ستان', 'ورد هدايا', 'ورد فلوس', 'ورد شيكولاتة'];
 let state = { activeCat: 'تورت', dSize: 'مثلث', fType: 'ورد طبيعي', cart: [], currentShippingFee: 0, cakeBuilder: { flv: 'فانيليا', ps: 4, sh: 'دائري', trd: false, img: 'بدون', msg: '', alg: '', occ: '', refImgUrl: '', hasRefImg: false, crd: false, dlg: false } };
 
-// 🛡️ الموتور الأساسي: حماية الهوية البصرية (تعديل السيادة الشامل)
+// 🛡️ الموتور الأساسي: حماية الهوية البصرية
 function applySettingsToUI() {
     if (!isAppReady) return; // 🔒 منع تشتيت الهوية البصرية أثناء جلب البيانات
 
@@ -468,6 +467,7 @@ function applySettingsToUI() {
     root.style.setProperty('--site-bg', (siteSettings.visuals && siteSettings.visuals.bgHex) ? siteSettings.visuals.bgHex : (siteSettings.bgColor || '#ffffff'));
     root.style.setProperty('--site-text', (siteSettings.visuals && siteSettings.visuals.textHex) ? siteSettings.visuals.textHex : (siteSettings.textColor || '#663b3b'));
     
+    // تحديث نص اللودر (يتم تحديثه مبكراً أيضاً في دالة الإقلاع لمنع وميض النص)
     const loaderTextEl = document.getElementById('dyn-loader-text');
     if (loaderTextEl) {
         loaderTextEl.innerText = (siteSettings.visuals && siteSettings.visuals.loaderText) ? siteSettings.visuals.loaderText : "أهلاً بكم في عالم حلويات بوسي ✨";
@@ -511,109 +511,113 @@ function applySettingsToUI() {
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
-// 👑 SINGLE SOURCE OF TRUTH (SSOT) ENGINE
-let isCloudSettingsReady = false;
-let isCloudCatalogReady = false;
-
+// 👑 SINGLE SOURCE OF TRUTH (SSOT) ENGINE WITH STRICT AWAIT
 async function loadEngineMemory() {
     try {
         await fetchDefaultCatalog(); 
         
         if (typeof db === 'undefined') {
             catalog = [...defaultCatalog]; 
+            return;
         }
         
         const settingsPromise = new Promise((resolve) => {
-            if (typeof db === 'undefined') { resolve(); return; }
+            let isResolved = false;
+            const complete = () => { if(!isResolved) { isResolved = true; resolve(); } };
+            
             db.collection('settings').doc('main').onSnapshot(snapshot => {
                 if (snapshot.exists) {
                     const cloudData = snapshot.data();
-                    const newSettingsHash = JSON.stringify(cloudData.visuals);
+                    siteSettings = { ...defaultSettings, ...cloudData };
                     
-                    if (window.lastSettingsHash !== newSettingsHash) {
-                        window.lastSettingsHash = newSettingsHash;
-                        siteSettings = { ...defaultSettings, ...cloudData };
-                        
-                        if(cloudData.visuals) siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
-                        if(cloudData.cakeBuilder) {
-                            siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
-                            if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) {
-                                siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
-                            }
-                        } else siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
-
-                        if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
-                            catMenu = typeof siteSettings.catMenu[0] === 'object' ? siteSettings.catMenu.sort((a, b) => a.order - b.order).map(c => c.name) : siteSettings.catMenu;
-                        } else {
-                            catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
+                    if(cloudData.visuals) siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
+                    if(cloudData.cakeBuilder) {
+                        siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
+                        if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) {
+                            siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
                         }
-                        if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
-                        
-                        // هنا المتغير isAppReady هيحمي الواجهة لو لسه بنحمل!
+                    } else siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
+
+                    if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
+                        catMenu = typeof siteSettings.catMenu[0] === 'object' ? siteSettings.catMenu.sort((a, b) => a.order - b.order).map(c => c.name) : siteSettings.catMenu;
+                    } else {
+                        catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean);
+                    }
+                    if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
+                    
+                    // تحديث نص اللودر فوراً لمنع الوميض أثناء الانتظار
+                    if (siteSettings.visuals && siteSettings.visuals.loaderText) {
+                        const loaderTextEl = document.getElementById('dyn-loader-text');
+                        if (loaderTextEl) loaderTextEl.innerText = siteSettings.visuals.loaderText;
+                    }
+                    
+                    if (isAppReady) {
                         applySettingsToUI();
                         if(document.getElementById('categories-nav')) renderCategories();
                     }
                 }
                 
+                // 🔒 لا نغلق وعد الانتظار إلا بعد استلام البيانات من السيرفر (أو إذا كنا أوفلاين كلياً)
                 if (!snapshot.metadata.fromCache || !navigator.onLine) {
-                    if(!isCloudSettingsReady) { isCloudSettingsReady = true; resolve(); }
-                } else {
-                    MemoryManager.set('settings_resolve_fallback', () => {
-                        if(!isCloudSettingsReady) { isCloudSettingsReady = true; resolve(); }
-                    }, 2500);
+                    complete();
                 }
-            }, (error) => { console.warn("BoseSweets: Settings Sync Error", error); resolve(); });
+            }, (error) => { console.warn("BoseSweets: Settings Sync Error", error); complete(); });
+            
+            // ⏳ مهلة انتظار قصوى 10 ثوانٍ لحماية الموقع من التجمد إذا كان الإنترنت بطيئاً جداً
+            setTimeout(complete, 10000);
         });
 
         const catalogPromise = new Promise((resolve) => {
-            if (typeof db === 'undefined') { resolve(); return; }
+            let isResolved = false;
+            const complete = () => { if(!isResolved) { isResolved = true; resolve(); } };
+            
             db.collection('catalog').onSnapshot(snapshot => {
-                
                 let firebaseData = [];
                 snapshot.forEach(doc => firebaseData.push(doc.data()));
                 
-                firebaseData.sort((a, b) => (a.sortOrder || 999) - (b.sortOrder || 999));
+                // 🔒 الترتيب المستقر (Stable Sorting) لمنع تغيير ترتيب المصفوفة العشوائي الذي يسبب رندرة وهمية
+                firebaseData.sort((a, b) => {
+                    if ((a.sortOrder || 999) !== (b.sortOrder || 999)) {
+                        return (a.sortOrder || 999) - (b.sortOrder || 999);
+                    }
+                    return String(a.id).localeCompare(String(b.id));
+                });
 
                 if (firebaseData.length > 0) {
                     catalog = firebaseData;
-                } else if (snapshot.empty && !isCloudCatalogReady) {
+                } else if (snapshot.empty && !isResolved) {
                     catalog = [...defaultCatalog];
-                } else {
-                    catalog = [];
                 }
 
                 syncCatalogMap();
                 LiveSearchEngine.observeIndexUpdate(catalog);
                 
-                if(document.getElementById('display-container')) {
+                if (isAppReady && document.getElementById('display-container')) {
                     if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
-                    window.renderDebounceTimer = setTimeout(() => { 
-                        // هنا المتغير isAppReady هيحمي الرندرة العشوائية!
-                        renderMainDisplay(); 
-                        
-                        if (!snapshot.metadata.fromCache || !navigator.onLine) {
-                            if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
-                        } else {
-                            MemoryManager.set('catalog_resolve_fallback', () => {
-                                if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
-                            }, 2500);
-                        }
-                    }, 150);
-                } else {
-                    if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
+                    window.renderDebounceTimer = setTimeout(() => { renderMainDisplay(); }, 150);
                 }
 
-            }, (error) => { console.warn("BoseSweets: Catalog Sync Error", error); resolve(); });
+                // 🔒 لا نغلق وعد الانتظار إلا بعد استلام البيانات من السيرفر
+                if (!snapshot.metadata.fromCache || !navigator.onLine) {
+                    complete();
+                }
+            }, (error) => { console.warn("BoseSweets: Catalog Sync Error", error); complete(); });
+            
+            // ⏳ مهلة انتظار قصوى 10 ثوانٍ
+            setTimeout(complete, 10000);
         });
 
+        // هذا السطر يمنع الكود من الاستمرار حتى تنتهي الـ 10 ثوانٍ أو تصل بيانات السيرفر
         await Promise.all([settingsPromise, catalogPromise]);
 
         if (typeof db !== 'undefined') {
-            const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
-            if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
-            
-            const shipSnap = await db.collection('shipping').get();
-            if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); }
+            try {
+                const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get({ source: 'server' }).catch(() => db.collection('gallery').orderBy('timestamp', 'desc').get());
+                if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
+                
+                const shipSnap = await db.collection('shipping').get({ source: 'server' }).catch(() => db.collection('shipping').get());
+                if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); }
+            } catch(e) {}
         }
         
     } catch(err) { 
@@ -659,18 +663,17 @@ function clearCartStorage() {
 }
 
 async function initApp() {
-    // 1. ننتظر تجميع كافة البيانات في صمت تام (تحت اللودر)
+    // 1. ننتظر حتى وصول كافة البيانات من السيرفر كلياً (أو انتهاء الـ 10 ثوانٍ)
     await loadEngineMemory();
     
-    // 2. 👑 فتح القفل: الداتا استقرت 100% (سواء من الكاش أو السيرفر)، الآن يمكننا الرسم بطلاقة
+    // 2. الآن البيانات أصبحت مستقرة 100%، نرفع القفل ونقوم بالرسم مرة واحدة فقط!
     isAppReady = true;
 
-    // 3. تحديد مسار المستخدم إن وجد
     const urlParams = new URLSearchParams(window.location.search);
     const routeCat = urlParams.get('category');
     if(routeCat && catMenu.includes(routeCat)) state.activeCat = routeCat;
 
-    // 4. إطلاق الرندرة النهائية الشاملة (مرة واحدة فقط!)
+    // 3. تطبيق الهوية البصرية ورسم الأقسام والمنتجات بصمت تحت اللودر
     applySettingsToUI();
     renderCategories();
     renderMainDisplay();
@@ -680,17 +683,18 @@ async function initApp() {
     if(window.lucide) lucide.createIcons();
     PreloadEngine.ignite(catalog, galleryData);
     
-    // 5. إخفاء اللودر بأمان تام لأن الموقع بالكامل قد تـم رسمه بشكل صحيح
-    window.requestAnimationFrame(() => {
-        const loader = document.getElementById('global-loader');
-        if(loader) { 
-            loader.style.opacity = '0'; 
-            loader.style.visibility = 'hidden'; 
-            MemoryManager.set('loader_hide', () => loader.style.display = 'none', 500); 
-        }
-    });
+    // 4. ننتظر جزء بسيط جداً من الثانية (150ms) للسماح للمتصفح برسم الألوان الجديدة، ثم نخفي اللودر بأناقة
+    setTimeout(() => {
+        window.requestAnimationFrame(() => {
+            const loader = document.getElementById('global-loader');
+            if(loader) { 
+                loader.style.opacity = '0'; 
+                loader.style.visibility = 'hidden'; 
+                MemoryManager.set('loader_hide', () => loader.style.display = 'none', 500); 
+            }
+        });
+    }, 150);
     
-    // 6. التعامل مع مشاركة المنتجات
     const sharedProductId = urlParams.get('product');
     if(sharedProductId && document.getElementById('display-container')) {
         const prod = catalogMap.get(sharedProductId);
