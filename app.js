@@ -570,12 +570,17 @@ async function loadEngineMemory() {
                 syncCatalogMap();
                 LiveSearchEngine.observeIndexUpdate(catalog);
                 
-                if(isCloudCatalogReady && document.getElementById('display-container')) {
+                // 👑 التحديث الحاسم: تجميع الرندرة من الكاش والسيرفر في ضربة واحدة لمنع الـ Flicker
+                if(document.getElementById('display-container')) {
                     if(window.renderDebounceTimer) clearTimeout(window.renderDebounceTimer);
-                    window.renderDebounceTimer = setTimeout(() => { renderMainDisplay(); }, 150);
+                    window.renderDebounceTimer = setTimeout(() => { 
+                        renderMainDisplay(); 
+                        if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
+                    }, 150);
+                } else {
+                    if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
                 }
-                
-                if(!isCloudCatalogReady) { isCloudCatalogReady = true; resolve(); }
+
             }, (error) => { console.warn("BoseSweets: Catalog Sync Error", error); resolve(); });
         });
 
@@ -638,10 +643,9 @@ async function initApp() {
     const routeCat = urlParams.get('category');
     if(routeCat && catMenu.includes(routeCat)) state.activeCat = routeCat;
 
-    applySettingsToUI();
+    // 👑 الحل الجذري: تم مسح أوامر الرندرة اليدوية من هنا لمنع الصراع مع Firebase
+    
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
-    if(document.getElementById('categories-nav')) renderCategories();
-    if(document.getElementById('display-container')) renderMainDisplay();
     syncCartUI(); 
     if(window.lucide) lucide.createIcons();
     PreloadEngine.ignite(catalog, galleryData);
