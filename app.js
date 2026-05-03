@@ -344,16 +344,53 @@ function applySettingsToUI() {
     const loaderTextEl = document.getElementById('dyn-loader-text');
     if (loaderTextEl) loaderTextEl.innerText = (siteSettings.visuals && siteSettings.visuals.loaderText) ? siteSettings.visuals.loaderText : "أهلاً بكم في عالم حلويات بوسي ✨";
 
+    // 1. الحقن البرمجي للشريط المتحرك وإزاحة الهيدر
     const isTickerActive = siteSettings.tickerActive !== false; 
-    const tickerContainer = document.getElementById('ticker-container');
-    if(tickerContainer) {
-        if (isTickerActive) {
-            tickerContainer.classList.remove('hidden'); tickerContainer.classList.add('flex');
-            root.style.setProperty('--ticker-color', siteSettings.tickerColor || '#ffffff');
-            root.style.setProperty('--ticker-font', siteSettings.tickerFont || "'Cairo', sans-serif");
-            root.style.setProperty('--ticker-speed', (siteSettings.tickerSpeed || 20) + 's');
-            document.getElementById('dyn-ticker-text').innerText = siteSettings.tickerText || siteSettings.announcement;
-        } else { tickerContainer.classList.add('hidden'); tickerContainer.classList.remove('flex'); }
+    let tickerContainer = document.getElementById('ticker-container');
+    
+    if (isTickerActive) {
+        if (!tickerContainer) {
+            tickerContainer = document.createElement('div');
+            tickerContainer.id = 'ticker-container';
+            tickerContainer.className = 'w-full z-[500] py-1.5 overflow-hidden flex items-center absolute top-0 left-0 right-0';
+            tickerContainer.style.backgroundColor = 'var(--brand-primary, #ff3377)'; // الالتزام بلون الهوية
+            tickerContainer.innerHTML = '<span id="dyn-ticker-text" class="animate-ticker text-xs md:text-sm text-white font-medium" style="white-space: nowrap;"></span>';
+            document.body.insertBefore(tickerContainer, document.body.firstChild);
+            
+            const nav = document.getElementById('navbar');
+            if(nav) nav.style.top = '30px';
+        }
+        tickerContainer.classList.remove('hidden'); 
+        tickerContainer.classList.add('flex');
+        
+        root.style.setProperty('--ticker-color', siteSettings.tickerColor || '#ffffff');
+        root.style.setProperty('--ticker-font', siteSettings.tickerFont || "'Cairo', sans-serif");
+        root.style.setProperty('--ticker-speed', (siteSettings.tickerSpeed || 20) + 's');
+        
+        const tickerTextEl = document.getElementById('dyn-ticker-text');
+        if(tickerTextEl) tickerTextEl.innerText = siteSettings.tickerText || siteSettings.announcement;
+    } else if (tickerContainer) {
+        tickerContainer.classList.add('hidden');
+        tickerContainer.classList.remove('flex');
+    }
+
+    // 2. تحديث محركات البحث (SEO) ديناميكياً
+    if (siteSettings.seo) {
+        if (siteSettings.seo.title) {
+            document.title = siteSettings.seo.title;
+            const titleEl = document.getElementById('dyn-page-title');
+            if(titleEl) titleEl.innerText = siteSettings.seo.title;
+        }
+        if (siteSettings.seo.desc) {
+            let metaDesc = document.querySelector('meta[name="description"]');
+            if(metaDesc) metaDesc.setAttribute('content', siteSettings.seo.desc);
+        }
+    }
+
+    // 3. ربط الروابط الاجتماعية
+    if (siteSettings.social) {
+        document.querySelectorAll('a[href*="facebook.com"]').forEach(a => a.href = siteSettings.social.facebook || 'https://facebook.com/BoseSweets');
+        document.querySelectorAll('a[href*="instagram.com"]').forEach(a => a.href = siteSettings.social.instagram || 'https://instagram.com/BoseSweets');
     }
     
     if(document.getElementById('dyn-page-title')) document.getElementById('dyn-page-title').innerText = `${siteSettings.brandName} | القائمة الرسمية`;
@@ -407,15 +444,18 @@ function initHomepageSections() {
     const bsContainer = document.getElementById('bestsellers-slider-home');
     const naContainer = document.getElementById('new-arrivals-slider-home');
     
-    if(!bsContainer && !naContainer) return;
+    if (!bsContainer && !naContainer) return;
 
+    // استخراج المنتجات آلياً
     const bestSellers = catalog.filter(p => p.badge && p.badge.includes('مبيعاً')).slice(0, 8);
     const newArrivals = catalog.filter(p => p.badge && p.badge.includes('جديد')).slice(0, 8);
 
+    // توفير بدائل في حال عدم وجود شارات
     const fallbackBS = bestSellers.length > 0 ? bestSellers : catalog.slice(0, 6);
     const fallbackNA = newArrivals.length > 0 ? newArrivals : catalog.slice().reverse().slice(0, 6);
 
-    if(bsContainer) {
+    // ضخ المنتجات في واجهة العرض باستخدام المكون المعتمد للكروت
+    if (bsContainer) {
         bsContainer.innerHTML = fallbackBS.map(p => `
             <div class="shrink-0 w-[260px] md:w-[300px] snap-center">
                 ${drawProductCard(p, siteSettings.productLayout || 'grid')}
@@ -423,7 +463,7 @@ function initHomepageSections() {
         `).join('');
     }
 
-    if(naContainer) {
+    if (naContainer) {
         naContainer.innerHTML = fallbackNA.map(p => `
             <div class="shrink-0 w-[260px] md:w-[300px] snap-center">
                 ${drawProductCard(p, siteSettings.productLayout || 'grid')}
@@ -431,7 +471,7 @@ function initHomepageSections() {
         `).join('');
     }
     
-    if(window.lucide) lucide.createIcons();
+    if (window.lucide) lucide.createIcons();
     setupSliderButtons();
 }
 
@@ -568,15 +608,20 @@ async function initApp() {
 
     const urlParams = new URLSearchParams(window.location.search);
     const routeCat = urlParams.get('category');
-    if(routeCat && catMenu.includes(routeCat)) state.activeCat = routeCat;
+    
+    if (routeCat && catMenu.includes(routeCat)) {
+        state.activeCat = routeCat;
+    } else {
+        state.activeCat = 'الرئيسية';
+    }
 
     applySettingsToUI();
     renderCategories();
     
     if (state.activeCat === 'الرئيسية') {
-        if(window.goToHome) window.goToHome();
+        if (window.goToHome) window.goToHome();
     } else {
-        if(window.switchToMenuView) window.switchToMenuView();
+        if (window.switchToMenuView) window.switchToMenuView();
         renderMainDisplay();
     }
 
@@ -771,6 +816,32 @@ function getCakeBuilderHTML() {
 
 function renderMainDisplay() {
     if (!isAppReady) return; 
+
+    const catDescArea = document.getElementById('category-description-area');
+    const catNameEl = document.getElementById('current-cat-name');
+    const catDescEl = document.getElementById('current-cat-desc');
+
+    if (catDescArea && state.activeCat !== 'الرئيسية' && state.activeCat !== 'تورت') {
+        catDescArea.classList.remove('hidden');
+        if (catNameEl) catNameEl.innerText = state.activeCat === 'ورد' ? 'ورد وهدايا 💐' : state.activeCat;
+        
+        // محرك الأوصاف التلقائية المعيارية
+        const defaultDescs = {
+            'ديسباسيتو': 'أكواب الديسباسيتو الغنية المجهزة خصيصاً من فادج كيك حلويات بوسي الأصلي، مغطاة بأرقى أنواع الشيكولاتة.',
+            'سينابون': 'مخبوزات السينابون الفاخرة، معتمدة على عجينة الخميرة القطنية الهشة (Yeast Dough) والمحشوة بالقرفة والسكر البني.',
+            'قشطوطة': 'كيك الحليب الغني والمشبع، يعلوه طبقة من القشطة الطبيعية لترطيب مثالي وتجربة تذوق استثنائية.',
+            'جاتوهات': 'قطع جاتوه كلاسيكية تعتمد على إسفنج كيك خفيف الوزن مع كريمة غنية ونسبة سكر مدروسة بدقة.'
+        };
+
+        let desc = siteSettings.catDescriptions && siteSettings.catDescriptions[state.activeCat] 
+                    ? siteSettings.catDescriptions[state.activeCat] 
+                    : (defaultDescs[state.activeCat] || `أشهى الأصناف المميزة من قسم ${state.activeCat} محضرة بحرفية لضمان أعلى معايير الجودة.`);
+        
+        if (catDescEl) catDescEl.innerText = desc;
+    } else if (catDescArea) {
+        catDescArea.classList.add('hidden');
+    }
+
     const container = document.getElementById('display-container'); 
     const subTabs = document.getElementById('sub-tabs-area');
     if(!container) return;

@@ -138,6 +138,8 @@ const defaultSettings = {
         themeHex: "#ff3377", bgHex: "#ffffff", textHex: "#4a2b2b",
         fontFamily: "'Cairo', sans-serif", loaderText: "أهلاً بكم في عالم حلويات بوسي ✨"
     },
+    seo: { title: "", desc: "", keywords: "" },
+    social: { facebook: "", instagram: "" },
     catDescriptions: {}, // تمت الإضافة لدعم وصف الأقسام
     goldenTips: [],      // تمت الإضافة لدعم النصائح الذهبية
     customerReviews: [], // تمت الإضافة لدعم مراجعات العملاء
@@ -172,8 +174,6 @@ let adminRenderDebounce = null;
 
 /**
  * 👑 THE ULTIMATE FIX: Single Source of Truth + Immutable Updates
- * بدلاً من تعديل المصفوفة مباشرة، نسحب البيانات كاملة ونقارن الهاش
- * لمنع تضارب الحالات المتعددة.
  */
 function setupRealtimeOrders() {
     if (typeof db === 'undefined') return;
@@ -202,15 +202,15 @@ function setupRealtimeOrders() {
             if (change.type === 'added') hasNewOrder = true;
         });
 
-        // 3. The Ultimate Deep Hash (يشمل كل شيء لضمان عدم وجود رندر وهمي)
+        // 3. The Ultimate Deep Hash
         const newHash = JSON.stringify(freshOrders);
         
-        // 4. Guard: إذا لم يتغير الهاش، توقف فوراً ولا تقم بأي عملية رسم
+        // 4. Guard: إذا لم يتغير الهاش، توقف فوراً
         if (newHash === adminOrdersHash && !isFirstOrderLoad) return; 
         
-        // 5. التحديث الآمن للحالة (State Assignment)
+        // 5. التحديث الآمن للحالة
         adminOrdersHash = newHash;
-        globalOrders = freshOrders; // استبدال كامل وليس ترقيع
+        globalOrders = freshOrders; 
 
         saveEngineMemory('ord');
 
@@ -221,7 +221,7 @@ function setupRealtimeOrders() {
 
         isFirstOrderLoad = false;
 
-        // 6. الرندر الموحد (Single Render Pathway)
+        // 6. الرندر الموحد
         if(adminRenderDebounce) clearTimeout(adminRenderDebounce);
         adminRenderDebounce = setTimeout(() => {
             window.requestAnimationFrame(() => {
@@ -230,11 +230,11 @@ function setupRealtimeOrders() {
                     if (typeof renderAdminOverview === 'function') renderAdminOverview();
                 });
             });
-        }, 300); // 300ms لضمان استقرار الشبكة
+        }, 300); 
 
     }, error => {
         AdminErrorTracker.log('RealtimeOrdersSync', error);
-        window.__ordersListenerActive = false; // إعادة الضبط في حالة الخطأ
+        window.__ordersListenerActive = false; 
     });
 }
 
@@ -260,7 +260,6 @@ async function loadEngineMemory() {
                 const cloudData = settingsSnap.data();
                 siteSettings = { ...defaultSettings, ...cloudData };
                 
-                // جلب المصفوفات الجديدة والهوية البصرية من السحابة
                 if(cloudData.visuals) siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
                 if(cloudData.catDescriptions) siteSettings.catDescriptions = { ...(defaultSettings.catDescriptions || {}), ...cloudData.catDescriptions };
                 else siteSettings.catDescriptions = defaultSettings.catDescriptions;
@@ -357,7 +356,6 @@ function openAdminDashboardDirectly() {
         executeSafely('PromoCodes', initAdminPromoCodes); 
         executeSafely('Gallery', () => { if(typeof renderAdminGallery === 'function') renderAdminGallery(); });
         
-        // تنفيذ الدوال المعمارية الجديدة
         executeSafely('HomepageSelection', renderHomepageSelection);
         executeSafely('CategoryDesc', renderCategoryDescAdmin);
         
@@ -493,6 +491,7 @@ function importBackupJSON(e) {
     reader.readAsText(file);
 }
 
+// 👑 الدالة المحدثة هندسياً لدعم السيو والسوشيال
 function fillAdminSettingsForm() {
     if(!window.siteSettings) return;
     if(document.getElementById('set-brand')) document.getElementById('set-brand').value = siteSettings.brandName || 'حلويات بوسي'; 
@@ -500,60 +499,31 @@ function fillAdminSettingsForm() {
     if(document.getElementById('set-hero-desc')) document.getElementById('set-hero-desc').value = siteSettings.heroDesc || '';
     if(document.getElementById('set-footer-phone')) document.getElementById('set-footer-phone').value = siteSettings.footerPhone || ''; 
     if(document.getElementById('set-footer-address')) document.getElementById('set-footer-address').value = (siteSettings.footerAddress || '').replace(/<br>/g, '');
-    if(document.getElementById('set-footer-quote')) document.getElementById('set-footer-quote').value = siteSettings.footerQuote || ''; 
     if(document.getElementById('set-ticker-active')) document.getElementById('set-ticker-active').checked = siteSettings.tickerActive !== false;
     if(document.getElementById('set-ticker-text')) document.getElementById('set-ticker-text').value = siteSettings.tickerText || siteSettings.announcement || '';
+
+    // تعبئة حقول السيو (SEO)
+    if(siteSettings.seo) {
+        if(document.getElementById('set-seo-title')) document.getElementById('set-seo-title').value = siteSettings.seo.title || '';
+        if(document.getElementById('set-seo-desc')) document.getElementById('set-seo-desc').value = siteSettings.seo.desc || '';
+        if(document.getElementById('set-seo-keywords')) document.getElementById('set-seo-keywords').value = siteSettings.seo.keywords || '';
+    }
+
+    // تعبئة السوشيال ميديا
+    if(siteSettings.social) {
+        if(document.getElementById('set-social-fb')) document.getElementById('set-social-fb').value = siteSettings.social.facebook || '';
+        if(document.getElementById('set-social-ig')) document.getElementById('set-social-ig').value = siteSettings.social.instagram || '';
+    }
 
     const v = siteSettings.visuals || defaultSettings.visuals;
     if(document.getElementById('set-visual-color-hex')) {
         document.getElementById('set-visual-color-hex').value = v.themeHex || '#ff3377';
-        if(document.getElementById('set-visual-color-picker')) document.getElementById('set-visual-color-picker').value = v.themeHex || '#ff3377';
-        // مزامنة الألوان الحية في لوحة التحكم
-        if(typeof window.setBrandColor === 'function') window.setBrandColor(v.themeHex || '#ff3377');
     }
-    if(document.getElementById('set-visual-bg')) document.getElementById('set-visual-bg').value = v.bgHex || '#ffffff';
-    if(document.getElementById('set-visual-text')) document.getElementById('set-visual-text').value = v.textHex || '#4a2b2b';
-    if(document.getElementById('set-visual-font')) document.getElementById('set-visual-font').value = v.fontFamily || "'Cairo', sans-serif";
-    if(document.getElementById('set-visual-loader')) document.getElementById('set-visual-loader').value = v.loaderText || "أهلاً بكم في عالم حلويات بوسي ✨";
     
-    // تعبئة البيانات الجديدة في الواجهة
     executeSafely('CategoryDesc', renderCategoryDescAdmin);
-    
-    executeSafely('CakeBuilder', fillCakeBuilderAdmin);
 }
 
-// 👑 الدالة الأصلية المحتفظ بها للاستقرار، ولكن سيتم استبدالها لاحقاً بالوظيفة الشاملة
-async function saveStoreSettings() {
-    if(!window.siteSettings) window.siteSettings = {};
-    if(document.getElementById('set-brand')) siteSettings.brandName = document.getElementById('set-brand').value; 
-    if(document.getElementById('set-hero-title')) siteSettings.heroTitle = document.getElementById('set-hero-title').value; 
-    if(document.getElementById('set-hero-desc')) siteSettings.heroDesc = document.getElementById('set-hero-desc').value;
-    if(document.getElementById('set-footer-phone')) siteSettings.footerPhone = document.getElementById('set-footer-phone').value; 
-    if(document.getElementById('set-footer-address')) siteSettings.footerAddress = document.getElementById('set-footer-address').value;
-    if(document.getElementById('set-footer-quote')) siteSettings.footerQuote = document.getElementById('set-footer-quote').value; 
-    if(document.getElementById('set-ticker-active')) siteSettings.tickerActive = document.getElementById('set-ticker-active').checked;
-    if(document.getElementById('set-ticker-text')) {
-        siteSettings.tickerText = document.getElementById('set-ticker-text').value;
-        siteSettings.announcement = document.getElementById('set-ticker-text').value; 
-    }
-    if(!siteSettings.visuals) siteSettings.visuals = {};
-    if(document.getElementById('set-visual-color-hex')) siteSettings.visuals.themeHex = document.getElementById('set-visual-color-hex').value;
-    if(document.getElementById('set-visual-bg')) siteSettings.visuals.bgHex = document.getElementById('set-visual-bg').value;
-    if(document.getElementById('set-visual-text')) siteSettings.visuals.textHex = document.getElementById('set-visual-text').value;
-    if(document.getElementById('set-visual-font')) siteSettings.visuals.fontFamily = document.getElementById('set-visual-font').value;
-    if(document.getElementById('set-visual-loader')) siteSettings.visuals.loaderText = document.getElementById('set-visual-loader').value;
-
-    try {
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', siteSettings); 
-        saveEngineMemory('set'); showSystemToast("قرار إداري: تم حفظ إعدادات حلويات بوسي بنجاح! 👑", "success");
-    } catch(e) { saveEngineMemory('set'); showSystemToast("تم الحفظ محلياً لحين توفر اتصال", "info"); }
-}
-
-/**
- * 👑 الإضافة المعمارية الجديدة: مجمع البيانات الشامل
- * يقوم بسحب البيانات من جميع التبويبات (الألوان، النصوص، النصائح، الأوصاف)
- * ودمجها وإرسالها ككتلة واحدة صلبة لضمان التزامن اللحظي.
- */
+// 👑 المجمع الشامل المطور - يدعم كافة الحقول دون استثناء
 window.saveAllSettings = async function() {
     if(!window.siteSettings) window.siteSettings = {};
     
@@ -569,36 +539,29 @@ window.saveAllSettings = async function() {
         siteSettings.announcement = document.getElementById('set-ticker-text').value; 
     }
 
-    // 2. تجميع الهوية البصرية (اللون البمبي الملكي)
+    // 2. حفظ بيانات السيو والسوشيال الجديدة
+    if(!siteSettings.seo) siteSettings.seo = {};
+    if(document.getElementById('set-seo-title')) siteSettings.seo.title = document.getElementById('set-seo-title').value;
+    if(document.getElementById('set-seo-desc')) siteSettings.seo.desc = document.getElementById('set-seo-desc').value;
+    if(document.getElementById('set-seo-keywords')) siteSettings.seo.keywords = document.getElementById('set-seo-keywords').value;
+
+    if(!siteSettings.social) siteSettings.social = {};
+    if(document.getElementById('set-social-fb')) siteSettings.social.facebook = document.getElementById('set-social-fb').value;
+    if(document.getElementById('set-social-ig')) siteSettings.social.instagram = document.getElementById('set-social-ig').value;
+
+    // 3. تجميع الهوية البصرية
     if(!siteSettings.visuals) siteSettings.visuals = {};
     const hexInput = document.getElementById('sys-brand-color') || document.getElementById('set-visual-color-hex');
     if(hexInput) siteSettings.visuals.themeHex = hexInput.value || '#ff3377';
-    if(document.getElementById('set-visual-bg')) siteSettings.visuals.bgHex = document.getElementById('set-visual-bg').value;
-    if(document.getElementById('set-visual-text')) siteSettings.visuals.textHex = document.getElementById('set-visual-text').value;
-    if(document.getElementById('set-visual-font')) siteSettings.visuals.fontFamily = document.getElementById('set-visual-font').value;
-    if(document.getElementById('set-visual-loader')) siteSettings.visuals.loaderText = document.getElementById('set-visual-loader').value;
 
-    // 3. تجميع أوصاف الأقسام (Category Descriptions)
+    // 4. تجميع أوصاف الأقسام
     if(!siteSettings.catDescriptions) siteSettings.catDescriptions = {};
     catMenu.forEach(cat => {
         const safeId = 'desc-cat-' + Array.from(cat.name).map(c => c.charCodeAt(0)).join('');
         const descInput = document.getElementById(safeId);
-        // الدعم التوافقي للحقول المعرفة مسبقاً في الـ HTML كأمثلة
-        if(descInput) {
-            siteSettings.catDescriptions[cat.name] = descInput.value.trim();
-        } else if (cat.name === 'تورت' && document.getElementById('desc-cakes')) {
-            siteSettings.catDescriptions[cat.name] = document.getElementById('desc-cakes').value.trim();
-        } else if (cat.name === 'سينابون' && document.getElementById('desc-cinnabon')) {
-            siteSettings.catDescriptions[cat.name] = document.getElementById('desc-cinnabon').value.trim();
-        } else if (cat.name === 'ديسباسيتو' && document.getElementById('desc-despacito')) {
-            siteSettings.catDescriptions[cat.name] = document.getElementById('desc-despacito').value.trim();
-        }
+        if(descInput) siteSettings.catDescriptions[cat.name] = descInput.value.trim();
     });
 
-    // ملاحظة: المصفوفات مثل goldenTips و customerReviews يتم تحديثها فورياً 
-    // من خلال دوالها الخاصة (addSystemTip و addSystemReview) ولكن سيتم تضمينهم هنا للتأكيد
-    
-    // 4. الاعتماد والإرسال للسحابة
     try {
         if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', siteSettings); 
         saveEngineMemory('set'); 
@@ -609,43 +572,27 @@ window.saveAllSettings = async function() {
     }
 };
 
-// ربط زر "حفظ شامل" بالدالة المعمارية الجديدة
 window.triggerMasterSave = window.saveAllSettings;
 
-/**
- * 👑 الإضافة المعمارية الجديدة: توليد مساحات نصية لأوصاف الأقسام
- * تقوم بإنشاء حقول إدخال لكل قسم موجود في المنيو ليتسنى للإدارة كتابة وصف دقيق.
- */
 window.renderCategoryDescAdmin = function() {
-    // محاولة العثور على حاوية الأوصاف داخل تبويب الهوية البصرية
     let container = document.getElementById('dynamic-category-desc-container');
     
     if (!container) {
-        // إذا لم توجد الحاوية الديناميكية، نقوم بإنشائها أو تحديث الحقول الموجودة
         const identityTab = document.getElementById('admin-identity');
         if(!identityTab) return;
-        
-        // البحث عن مكان الحقن المناسب
         const targetSection = identityTab.querySelector('.space-y-6') || identityTab;
-        
         const newContainer = document.createElement('div');
         newContainer.id = 'dynamic-category-desc-container';
         newContainer.className = 'space-y-3 mt-6 border-t border-slate-800 pt-4';
         newContainer.innerHTML = '<label class="block text-xs font-bold text-slate-300 mb-2">صياغة أوصاف الأقسام بأسلوب بوسي التفاعلي</label>';
-        
         targetSection.appendChild(newContainer);
         container = newContainer;
     }
     
-    if(!container) return;
-    
-    // مسح المحتوى القديم مع الإبقاء على العنوان
     container.innerHTML = '<label class="block text-xs font-bold text-slate-300 mb-2">صياغة أوصاف الأقسام بأسلوب بوسي التفاعلي</label>';
-    
     const descriptions = siteSettings.catDescriptions || {};
     
     catMenu.forEach(cat => {
-        // إنشاء معرّف آمن للقسم لتفادي مشاكل المسافات والحروف العربية في الـ ID
         const safeId = 'desc-cat-' + Array.from(cat.name).map(c => c.charCodeAt(0)).join('');
         const currentVal = descriptions[cat.name] || '';
         
@@ -659,10 +606,6 @@ window.renderCategoryDescAdmin = function() {
     });
 };
 
-/**
- * 👑 الإضافة المعمارية الجديدة: اختيار الواجهة الرئيسية (وصل حديثاً / الأكثر مبيعاً)
- * تقوم بمسح الكتالوج وعرض المنتجات لتحديد ما يظهر في الصفحة الرئيسية.
- */
 window.renderHomepageSelection = function() {
     const overviewTab = document.getElementById('admin-overview');
     if(!overviewTab) return;
@@ -680,7 +623,6 @@ window.renderHomepageSelection = function() {
         return;
     }
     
-    // واجهة تحكم بسيطة تتيح اختيار حالة المنتج (حديث / أكثر مبيعاً)
     let html = '<h3 class="text-sm font-black text-indigo-400 flex items-center gap-2 mb-4"><i data-lucide="layout-template" class="w-4 h-4"></i> هندسة واجهة العميل (الترشيحات)</h3>';
     html += '<div class="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">';
     
@@ -707,12 +649,10 @@ window.renderHomepageSelection = function() {
     if(window.lucide) lucide.createIcons();
 };
 
-// دالة مساعدة لتحديث شريط المنتج مباشرة من قسم ترشيحات الواجهة
 window.toggleProductBadge = async function(prodId, targetBadge) {
     const idx = catalog.findIndex(p => String(p.id) === String(prodId));
     if (idx === -1) return;
     
-    // إذا كان يحمل نفس الشريط، قم بإزالته. وإلا استبدله بالشريط الجديد.
     if (catalog[idx].badge === targetBadge) {
         catalog[idx].badge = '';
     } else {
@@ -728,9 +668,7 @@ window.toggleProductBadge = async function(prodId, targetBadge) {
         saveEngineMemory('cat');
     }
     
-    // إعادة رسم الواجهة لتحديث الأزرار
     renderHomepageSelection();
-    // إعادة رسم الكتالوج إذا كنا في التبويب الخاص به
     const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
     renderAdminMenu(currentSearch);
 };
@@ -811,7 +749,7 @@ function deleteShippingZoneConfirm(id, name) {
 async function executeDeleteShippingZone(id) {
     shippingZones = shippingZones.filter(z => String(z.id) !== String(id));
     try { 
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeDelete('shipping', String(id)); 
+        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('shipping', String(id), null); 
         saveEngineMemory('ship'); showSystemToast("تم الحذف بنجاح", "success"); 
     } catch(e) { saveEngineMemory('ship'); }
     renderAdminShipping();
@@ -827,7 +765,6 @@ function renderAdminOverview() {
     if(document.getElementById('admin-stat-orders')) document.getElementById('admin-stat-orders').innerText = validOrders.length;
     if(document.getElementById('admin-stat-revenue')) document.getElementById('admin-stat-revenue').innerHTML = monthlyRevenue.toLocaleString('ar-EG') + ' <span class=\"text-lg text-slate-400\">ج.م</span>';
     renderQuickRecentOrders();
-    // تحديث قسم ترشيحات الواجهة الرئيسية
     executeSafely('HomepageSelection', renderHomepageSelection);
 }
 
@@ -1099,7 +1036,6 @@ function renderAdminMenu(searchQuery = '') {
                     <img src=\"${imageUrl}\" alt=\"${escapeHTML(prod.name || '')}\" class=\"w-full h-full object-cover group-hover:scale-110 transition-transform duration-500\" loading=\"lazy\" />
                     ${prod.badge ? `<span class=\"absolute top-2 right-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-[9px] px-2 py-0.5 rounded shadow-lg font-bold z-10\">${prod.badge}</span>` : ''}
                     ${!isInstock ? `<div class=\"absolute inset-0 bg-slate-900/80 flex items-center justify-center backdrop-blur-sm z-10\"><span class=\"bg-red-500 text-white text-[10px] px-2 py-1 rounded font-bold\">نفذت الكمية</span></div>` : ''}
-                    ${(prod.images && prod.images.length > 1) ? `<span class=\"absolute bottom-2 left-2 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded font-bold z-10\">+${prod.images.length - 1}</span>` : ''}
                 </div>
                 <div class=\"flex-1 flex flex-col justify-between py-1 relative z-20\">
                     <div>
@@ -1108,7 +1044,6 @@ function renderAdminMenu(searchQuery = '') {
                             <p class=\"text-white font-black text-base bg-slate-900 px-2 py-0.5 rounded border border-slate-700\">${Number(prod.price) > 0 ? prod.price + '<span class=\"text-[9px] text-slate-400 ml-1\">ج.م</span>' + oldPriceHtml : 'متغير'}</p>
                         </div>
                         <h3 class=\"text-white font-bold text-sm leading-tight mb-1 line-clamp-2\">${escapeHTML(prod.name || '')}</h3>
-                        ${prod.subType || prod.size ? `<p class=\"text-[10px] text-slate-400 mb-2 truncate\"><i data-lucide=\"tag\" class=\"w-3 h-3 inline\"></i> ${escapeHTML(prod.subType || prod.size)}</p>` : ''}
                     </div>
                     <div class=\"flex gap-2 mt-3 md:mt-0 relative z-50 pointer-events-auto\">
                         <button onclick=\"editProduct('${prod.id}')\" class=\"flex-1 bg-indigo-500/10 hover:bg-indigo-500 text-indigo-400 hover:text-white transition-colors py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95 border border-indigo-500/20 cursor-pointer pointer-events-auto\"><i data-lucide=\"edit-3\" class=\"w-3.5 h-3.5\"></i> التعديل الفني</button>
@@ -1247,7 +1182,7 @@ function editProduct(id) {
         if(document.getElementById('edit-prod-price')) document.getElementById('edit-prod-price').value = p.price || ''; 
         if(document.getElementById('edit-prod-old-price')) document.getElementById('edit-prod-old-price').value = p.oldPrice || ''; 
         if(document.getElementById('edit-prod-cat')) document.getElementById('edit-prod-cat').value = p.category;
-        if(document.getElementById('edit-prod-sub')) document.getElementById('edit-prod-sub').value = p.subType || p.size || p.flowerType || ""; 
+        if(document.getElementById('edit-prod-sub')) document.getElementById('edit-prod-sub').value = p.subType || p.size || ""; 
         if(document.getElementById('edit-prod-sort')) document.getElementById('edit-prod-sort').value = p.sortOrder || ""; 
         if(document.getElementById('edit-prod-layout')) document.getElementById('edit-prod-layout').value = p.layout || 'default';
         if(document.getElementById('edit-prod-badge')) document.getElementById('edit-prod-badge').value = p.badge || '';
@@ -1298,16 +1233,14 @@ async function saveProductData() {
             catalog[idx].category = nCat; catalog[idx].desc = nDesc; catalog[idx].sortOrder = nSort;
             catalog[idx].images = finalImagesArray; catalog[idx].img = finalImg; catalog[idx].subType = nSub; 
             catalog[idx].layout = nLayout; catalog[idx].badge = nBadge; catalog[idx].inStock = nInStock;
-            if(nCat === 'ديسباسيتو') catalog[idx].size = nSub; if(nCat === 'ورد') catalog[idx].flowerType = nSub; 
             prodObj = catalog[idx];
         }
     } else {
         prodObj = { id: 'prod_' + Date.now() + Math.floor(Math.random()*1000), category: nCat, name: nName, price: nPrice, oldPrice: nOldPrice, desc: nDesc, sortOrder: nSort, images: finalImagesArray, img: finalImg, subType: nSub, layout: nLayout, badge: nBadge, inStock: nInStock };
-        if(nCat === 'ديسباسيتو') prodObj.size = nSub || 'وسط'; if(nCat === 'ورد') prodObj.flowerType = nSub || 'ورد طبيعي'; 
         catalog.unshift(prodObj); 
     }
     
-    if(typeof syncCatalogMap === 'function') syncCatalogMap(); 
+    syncCatalogMap(); 
     try { 
         if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(prodObj.id), prodObj); 
         saveEngineMemory('cat'); showSystemToast("تم الاعتماد الفني والحفظ في متجر حلويات بوسي بنجاح 👑", "success"); 
@@ -1327,7 +1260,7 @@ function deleteProductConfirm(id) {
 
 async function executeDeleteProduct(id) {
     const safeId = String(id); catalog = catalog.filter(p => String(p.id) !== safeId); 
-    if(typeof syncCatalogMap === 'function') syncCatalogMap(); 
+    syncCatalogMap(); 
     try { 
         if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeDelete('catalog', safeId); 
         saveEngineMemory('cat'); showSystemToast("تم تنفيذ قرار الحذف بنجاح", "success"); 
@@ -1389,7 +1322,6 @@ function addNewCategory() {
     input.value = ''; if(orderInput) orderInput.value = '';
     renderAdminCategories(); renderAdminCatalogTabs();
     
-    // تحديث ديناميكي لأوصاف الأقسام
     executeSafely('CategoryDesc', renderCategoryDescAdmin);
     
     showSystemToast(`تم إدراج القسم بالهيكل. لا تنسى تفعيل الحفظ الشامل.`, "success");
@@ -1443,7 +1375,6 @@ function addPromoCode() {
     siteSettings.promoCodes.push({ code, discount });
     codeInput.value = ''; discountInput.value = '';
     renderPromoCodes(); 
-    // التوجيه المهني: بدلاً من saveStoreSettings القديمة، نستخدم الدالة الشاملة
     if(typeof saveAllSettings === 'function') saveAllSettings(); 
 }
 
@@ -1550,7 +1481,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 👑 THE ULTIMATE BOOT GUARD
 function bootBoseSweetsEngine() {
-    if (window.__BoseSweetsAdminBooted) return; // منع التكرار نهائياً
+    if (window.__BoseSweetsAdminBooted) return; 
     window.__BoseSweetsAdminBooted = true;
     
     console.log("BoseSweets Admin Engine Initiating Architecture Safe Mode...");
