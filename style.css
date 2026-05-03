@@ -5,12 +5,13 @@
 /* =========================================================== */
 
 :root {
-    /* 📐 الخطوط الأساسية والقياسات */
+    /* 📐 الخطوط الأساسية والقياسات (متغيرات ديناميكية قابلة للتعديل من app.js) */
     --brand-font: 'Cairo', sans-serif;
     --base-font-size: 16px;
     --base-font-weight: 400;
     
     /* 🎨 الألوان السيادية (BoseSweets Color Palette) */
+    /* يتم سحب هذه القيم وتحديثها برمجياً من لوحة التحكم */
     --brand-primary: #ff3377; /* البمبي الملكي المشبع - اللون القيادي */
     --brand-secondary: #ff75a0; /* البمبي المضيء - للتدرجات ولمعان الأزرار */
     --brand-light: #fff0f5; /* الروز الفاتح المضيء (Light Rose Cloud) - للخلفيات ومساحات الراحة */
@@ -351,4 +352,120 @@ input[type="checkbox"], input[type="radio"] {
     border-radius: 9999px !important;
     font-weight: 800;
     box-shadow: 0 8px 25px -5px rgba(37, 211, 102, 0.4) !important;
+}
+
+/* =========================================================== */
+/* 🎂 هندسة قسم التورت الملكية (Premium Cake Builder) */
+/* =========================================================== */
+
+.cake-builder-container {
+    background: var(--site-bg);
+    border: 1px solid var(--brand-light);
+    border-radius: 2.5rem;
+    padding: 24px;
+    box-shadow: 0 10px 40px -10px var(--brand-glow);
+}
+
+.shape-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.shape-option-card {
+    background: var(--site-bg);
+    border: 2px solid var(--brand-light);
+    border-radius: 2rem;
+    padding: 20px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    position: relative;
+    overflow: hidden;
+}
+
+.shape-option-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 51, 119, 0.3);
+    box-shadow: 0 10px 25px var(--brand-glow);
+}
+
+.shape-option-card.active {
+    border-color: var(--brand-primary);
+    background: var(--brand-light);
+    transform: scale(1.05);
+    box-shadow: 0 12px 30px -5px var(--brand-glow);
+}
+
+/* الأشكال الهندسية داخل الكروت */
+.cake-shape-icon {
+    width: 45px;
+    height: 45px;
+    margin: 0 auto 12px auto;
+    border: 3px solid var(--brand-secondary);
+    transition: all 0.4s ease;
+    background: var(--site-bg);
+}
+
+.shape-option-card.active .cake-shape-icon {
+    border-color: var(--brand-primary);
+    background: var(--brand-primary);
+    box-shadow: 0 0 20px var(--brand-glow);
+}
+
+/* الدائري (الزوايا الناعمة جداً) */
+.cake-shape-round { border-radius: 50%; }
+
+/* المربع (محتفظ بالانحناء بناءً على الهوية) */
+.cake-shape-square { border-radius: 14px; }
+
+/* القلب (رسم هندسي بالـ CSS) */
+.cake-shape-heart {
+    position: relative;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+.cake-shape-heart::before,
+.cake-shape-heart::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 26px;
+    height: 40px;
+    border-radius: 26px 26px 0 0;
+    background: var(--brand-secondary);
+    transition: all 0.4s ease;
+}
+.cake-shape-heart::before {
+    left: 26px;
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+}
+.cake-shape-heart::after {
+    left: 0;
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
+}
+.shape-option-card.active .cake-shape-heart::before,
+.shape-option-card.active .cake-shape-heart::after {
+    background: var(--brand-primary);
+}
+
+/* تأثيرات الطبقات والإضافات (Tiers & Extras) */
+.cake-tier-premium {
+    background: linear-gradient(135deg, var(--site-bg) 0%, var(--brand-light) 100%);
+    border: 1px solid var(--brand-light);
+    border-radius: 2rem;
+    padding: 20px;
+    margin-bottom: 16px;
+    transition: all 0.4s ease;
+}
+
+.cake-tier-premium:hover {
+    border-color: rgba(255, 51, 119, 0.4);
+    box-shadow: inset 0 0 20px var(--brand-light), 0 8px 25px -5px var(--brand-glow);
+    transform: translateX(-5px);
 }

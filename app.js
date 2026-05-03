@@ -62,7 +62,7 @@ const LiveSearchEngine = {
             }
             if (isMatch) results.push(item.data);
         }
-        return results.slice(0, 12); // منع الشلل عبر تقييد نتائج البحث الحي
+        return results.slice(0, 12); 
     }
 };
 
@@ -163,7 +163,6 @@ const ClientStorageEngine = {
     }
 };
 
-// 👑 Linguistic Purge: الاعتماد على لغة القرار المهني
 const detailedDescriptions = {
     'ديسباسيتو نوتيلا مثلث': 'منتج ديسباسيتو الفاخر بحجم صغير، يتكون من قاعدة فادج كيك غنية مضاف إليها طبقة كثيفة من صوص النوتيلا الأصلي لضمان تجربة تذوق احترافية 🍫',
     'ديسباسيتو نوتيلا وسط': 'الإصدار المتوسط من ديسباسيتو نوتيلا، يتميز بتوازن دقيق بين طبقة الكيك الغنية وكريمة النوتيلا، مصمم لمحبي المذاق المتزن 🍫',
@@ -296,8 +295,6 @@ function showSystemToast(message, type = 'info') {
     }, 4000);
 }
 
-// 👑 Security Purge: تم حذف بوابة الإدارة triggerAdminAccess لضمان الخصوصية الكاملة
-
 const defaultSettings = {
     brandName: "حلويات بوسي", announcement: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب",
     heroTitle: "أهلاً بكم في <br class='hidden md:block'/> <span class='text-white relative inline-block mt-1 md:mt-2 drop-shadow-md'>حلويات بوسي</span>",
@@ -385,7 +382,6 @@ function applySettingsToUI() {
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
-// 👑 Waterfall Engine: ملء شلال الصور بصور حقيقية من الكتالوج
 function initWaterfall() {
     const col1 = document.getElementById('waterfall-col-1');
     const col2 = document.getElementById('waterfall-col-2');
@@ -396,7 +392,7 @@ function initWaterfall() {
     
     if (allImages.length === 0) return;
 
-    const shuffled = allImages.sort(() => 0.5 - Math.random()).slice(0, 6); // الحفاظ على العدد المثالي للذاكرة
+    const shuffled = allImages.sort(() => 0.5 - Math.random()).slice(0, 6); 
     
     const renderCard = (img) => `
         <div class="waterfall-card cursor-pointer" onclick="navigateToProduct('${img.id}')">
@@ -407,7 +403,6 @@ function initWaterfall() {
     col2.innerHTML = shuffled.slice(3, 6).map(renderCard).join('') + col2.innerHTML;
 }
 
-// 👑 Homepage Engine: تشغيل وتغذية أقسام "الأكثر مبيعاً" و"وصل حديثاً"
 function initHomepageSections() {
     const bsContainer = document.getElementById('bestsellers-slider-home');
     const naContainer = document.getElementById('new-arrivals-slider-home');
@@ -460,7 +455,7 @@ function setupSliderButtons() {
 window.navigateToProduct = function(id) {
     const prod = catalogMap.get(String(id));
     if (prod) {
-        window.switchToMenuView();
+        if(window.switchToMenuView) window.switchToMenuView();
         setCategory(prod.category);
         MemoryManager.set(`nav_scroll_${id}`, () => {
             const el = document.getElementById(`product-card-${id}`);
@@ -566,6 +561,7 @@ function clearCartStorage() {
     } catch (e) {} 
 }
 
+// 👑 Mute Router & Load Engine Update
 async function initApp() {
     await loadEngineMemory(); 
     isAppReady = true;
@@ -578,27 +574,20 @@ async function initApp() {
     renderCategories();
     
     if (state.activeCat === 'الرئيسية') {
-        window.switchToHomeView();
+        if(window.goToHome) window.goToHome();
     } else {
+        if(window.switchToMenuView) window.switchToMenuView();
         renderMainDisplay();
     }
 
-    initWaterfall(); // تشغيل محرك الشلال
-    initHomepageSections(); // تشغيل محرك الواجهة المضاف (الأكثر مبيعاً ووصل حديثاً)
+    initWaterfall(); 
+    initHomepageSections(); 
 
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
     syncCartUI(); 
     if(window.lucide) lucide.createIcons();
     
-    setTimeout(() => {
-        window.requestAnimationFrame(() => {
-            const loader = document.getElementById('global-loader');
-            if(loader) { 
-                loader.style.opacity = '0'; 
-                setTimeout(() => loader.style.display = 'none', 500); 
-            }
-        });
-    }, 100);
+    renderSmartSuggestions('main');
 }
 
 function toggleLiveSearch(show) {
@@ -666,10 +655,9 @@ function renderCategories() {
     el.innerHTML = catMenu.map(c => `<button id=\"cat-btn-${(c.name || c).replace(/\\s+/g, '-')}\" onclick=\"setCategory('${c.name || c}')\" class=\"whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === (c.name || c) ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'border-pink-100 hover:border-pink-300'}\" style=\"${state.activeCat === (c.name || c) ? '' : `background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);`}\">${c.name === 'ورد' || c === 'ورد' ? 'ورد وهدايا 💐' : (c.name === 'تورت' || c === 'تورت' ? 'تورت وتصميم 🎂' : (c.name || c))}</button>`).join('');
 }
 
-// 👑 View Router Engine: التبديل الذكي بين الواجهات
 function setCategory(c) {
     if (c === 'الرئيسية') {
-        if(window.switchToHomeView) window.switchToHomeView();
+        if(window.goToHome) window.goToHome();
         state.activeCat = 'الرئيسية';
     } else {
         if(window.switchToMenuView) window.switchToMenuView();
@@ -699,19 +687,86 @@ function setSub(t, v) {
     }
 }
 
+// 👑 Royal Cake Engine: محرك تخصيص التورت الملكية الشامل بالخانات المستحدثة وقواعد الأبعاد المعتمدة
 function getCakeBuilderHTML() {
     const c = state.cakeBuilder; const settings = siteSettings.cakeBuilder || defaultSettings.cakeBuilder;
-    const baseP = Number(settings.basePrice) || 145; const imgOpts = settings.imagePrinting || defaultSettings.cakeBuilder.imagePrinting;
+    const baseP = Number(settings.basePrice) || 145; 
+    const imgOpts = settings.imagePrinting || defaultSettings.cakeBuilder.imagePrinting;
     const selectedImgOption = imgOpts.find(opt => opt.label === c.img) || {price: 0};
     const price = Number(c.ps) * baseP + Number(selectedImgOption.price);
     const flavors = settings.flavors || ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت']; 
+    const shapes = ['دائري', 'مربع', 'مستطيل'];
     const rawImagesList = (settings.images && settings.images.length > 0) ? settings.images : [getImgFallback('تورت')];
     const imagesList = rawImagesList.map(url => optimizeCloudinaryUrl(url));
     const descText = settings.desc || defaultSettings.cakeBuilder.desc;
     
     let sliderHtml = `<div class=\"w-full md:w-2/5 aspect-[3/4] md:aspect-square rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border-2 shadow-xl relative flex snap-slider hide-scrollbar bg-white group\" style=\"border-color: hsl(var(--brand-hue), 80%, 90%);\">${imagesList.map(url => `<img src=\"${url}\" class=\"w-full h-full object-cover shrink-0 snap-slide transition-transform duration-700 group-hover:scale-105\">`).join('')}</div>`;
     
-    return `<div class=\"rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative\" style=\"background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);\"><div class=\"p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8\" style=\"background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);\">${sliderHtml}<div class=\"flex-1 text-center md:text-right\"><h2 class=\"text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight\" style=\"color: hsl(var(--brand-hue), 70%, 50%);\">تخصيص التورت الملكية 👑</h2><p class=\"text-sm md:text-base font-bold leading-loose opacity-80\" style=\"color: var(--site-text);\">${escapeHTML(descText)}</p></div></div><div class=\"p-6 md:p-12 space-y-12\"><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-10\"><div class=\"space-y-4\"><label class=\"font-bold text-lg flex items-center gap-2\" style=\"color: var(--site-text);\"><i data-lucide=\"cake\" style=\"color: hsl(var(--brand-hue), 70%, 60%);\"></i> نكهة الكيك المفضلة</label><div class=\"grid grid-cols-2 md:grid-cols-4 gap-3\">${flavors.map(fl => `<button onclick=\"uCake('flv', '${escapeHTML(fl)}')\" class=\"py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}\" style=\"${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}\">${escapeHTML(fl)}</button>`).join('')}</div></div><div class=\"space-y-4\"><label class=\"font-bold text-lg flex items-center gap-2\" style=\"color: var(--site-text);\"><i data-lucide=\"heart\" style=\"color: hsl(var(--brand-hue), 70%, 60%);\"></i> عدد الأفراد</label><div class=\"flex items-center justify-between border rounded-2xl p-2 shadow-inner h-full max-h-[80px]\" style=\"background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);\"><button onclick=\"adjP(-2)\" class=\"p-3 rounded-xl border hover:scale-105 transition-all\"><i data-lucide=\"minus\"></i></button><span class=\"text-3xl font-bold\">${c.ps}</span><button onclick=\"adjP(2)\" class=\"p-3 rounded-xl border hover:scale-105 transition-all\"><i data-lucide=\"plus\"></i></button></div></div></div></div><div class=\"p-8 md:p-14 border-t-2 flex flex-col md:flex-row justify-between items-center gap-8\" style=\"background-color: hsl(var(--brand-hue), 80%, 95%);\"><div class=\"text-center md:text-right\"><span class=\"block font-bold mb-2\">الإجمالي التقديري</span><span class=\"text-4xl md:text-6xl font-bold\">${price} ج.م</span></div><button onclick=\"commitCakeBuilder()\" class=\"w-full md:w-auto text-white font-bold text-xl md:text-2xl py-5 px-12 rounded-2xl shadow-xl brand-gradient\">إضافة للمراجعة</button></div></div>`;
+    return `
+    <div class="rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">
+        <div class="p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
+            ${sliderHtml}
+            <div class="flex-1 text-center md:text-right">
+                <h2 class="text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight" style="color: hsl(var(--brand-hue), 70%, 50%);">تخصيص التورت الملكية 👑</h2>
+                <p class="text-sm md:text-base font-bold leading-loose opacity-80" style="color: var(--site-text);">${escapeHTML(descText)}</p>
+            </div>
+        </div>
+        
+        <div class="p-6 md:p-12 space-y-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                
+                <div class="space-y-4">
+                    <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="cake" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> نكهة الكيك المفضلة</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        ${flavors.map(fl => `<button onclick="uCake('flv', '${escapeHTML(fl)}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${escapeHTML(fl)}</button>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="box" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> الهيكل والتصميم</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        ${shapes.map(sh => `<button onclick="uCake('sh', '${sh}')" class="py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.sh === sh ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.sh === sh ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${sh}</button>`).join('')}
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="users" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> عدد الأفراد المقترح</label>
+                    <div class="flex items-center justify-between border rounded-2xl p-2 shadow-inner h-[60px]" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
+                        <button onclick="adjP(-2)" class="p-3 rounded-xl border hover:scale-105 transition-all bg-white"><i data-lucide="minus"></i></button>
+                        <span class="text-3xl font-black">${c.ps}</span>
+                        <button onclick="adjP(2)" class="p-3 rounded-xl border hover:scale-105 transition-all bg-white"><i data-lucide="plus"></i></button>
+                    </div>
+                    <p class="text-xs font-bold opacity-70 text-pink-600 mt-2">* الحد الأدنى للتورتة الدائرية 4 أفراد، المربعة 16، المستطيلة 20 فرداً.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="printer" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> تكنولوجيا طباعة الصور</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        ${imgOpts.map(opt => `<button onclick="uCake('img', '${escapeHTML(opt.label)}')" class="py-3 px-2 rounded-xl font-bold border-2 text-xs transition-all ${c.img === opt.label ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}" style="${c.img === opt.label ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}">${escapeHTML(opt.label)} <span class="block opacity-80 text-[10px] mt-1">(+${opt.price} ج.م)</span></button>`).join('')}
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="party-popper" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> تحديد المناسبة</label>
+                    <input type="text" onchange="uCake('occ', this.value)" value="${escapeHTML(c.occ || '')}" placeholder="مثال: عيد ميلاد، حفل زفاف..." class="w-full p-4 border-2 rounded-xl font-bold outline-none transition-all focus:border-pink-500" style="background-color: hsl(var(--brand-hue), 80%, 98%); border-color: hsl(var(--brand-hue), 80%, 90%); color: var(--site-text);">
+                </div>
+
+                <div class="space-y-4">
+                    <label class="font-bold text-lg flex items-center gap-2" style="color: var(--site-text);"><i data-lucide="shield-alert" style="color: hsl(var(--brand-hue), 70%, 60%);"></i> ملاحظات صحية (اختياري)</label>
+                    <input type="text" onchange="uCake('alg', this.value)" value="${escapeHTML(c.alg || '')}" placeholder="أي حساسية أو نظام صحي معين..." class="w-full p-4 border-2 rounded-xl font-bold outline-none transition-all focus:border-pink-500" style="background-color: hsl(var(--brand-hue), 80%, 98%); border-color: hsl(var(--brand-hue), 80%, 90%); color: var(--site-text);">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="p-8 md:p-14 border-t-2 flex flex-col md:flex-row justify-between items-center gap-8" style="background-color: hsl(var(--brand-hue), 80%, 95%);">
+            <div class="text-center md:text-right">
+                <span class="block font-bold mb-2 uppercase tracking-widest text-xs opacity-70">الإجمالي التقديري للتصميم</span>
+                <span class="text-4xl md:text-6xl font-black" style="color: hsl(var(--brand-hue), 70%, 40%);">${price} ج.م</span>
+            </div>
+            <button onclick="commitCakeBuilder()" class="w-full md:w-auto text-white font-black text-xl md:text-2xl py-5 px-12 rounded-[2rem] shadow-xl brand-gradient hover:scale-105 active:scale-95 transition-all">إضافة للمراجعة الإدارية</button>
+        </div>
+    </div>`;
 }
 
 function renderMainDisplay() {
@@ -723,6 +778,7 @@ function renderMainDisplay() {
     let targetHTML = '';
     let showSubTabs = false;
 
+    // تم إزالة الشرط القديم للاعتماد الكلي على المحرك الملكي المحدث للتورت
     if (state.activeCat === 'تورت') { 
         container.className = 'w-full animate-fade-in';
         targetHTML = getCakeBuilderHTML(); 
@@ -800,7 +856,6 @@ window.addWithQtyContext = function(buttonElement, id) {
     const safeId = String(id); const prod = catalogMap.get(safeId); 
     if (!prod) return;
     
-    // 👑 Haptic Feedback: تغذية راجعة اهتزازية متطورة
     if (prod.inStock === false) { 
         if(navigator.vibrate) navigator.vibrate([100, 50, 100]); 
         showSystemToast('نأسف، هذا المنتج غير متوفر حالياً لتلبية الطلب.', 'error'); 
@@ -823,6 +878,10 @@ window.addWithQtyContext = function(buttonElement, id) {
     const cartBtn = document.querySelector('button[onclick=\"toggleCart(true)\"]');
     if(cartBtn) { cartBtn.classList.add('scale-110'); MemoryManager.set('cart_bounce', ()=> cartBtn.classList.remove('scale-110'), 200); }
     showSystemToast(`تم إضافة الكمية (${qty}) بنجاح لقائمة المشتريات 🛍️`, 'success');
+
+    // 👑 تحديث الاقتراحات الذكية برمجياً لضمان عدم تكرار المشتريات
+    renderSmartSuggestions('main');
+    renderSmartSuggestions('cart');
 };
 
 function drawProductCard(p, layoutMode = 'grid') {
@@ -893,59 +952,85 @@ function getImgFallback(cat) {
     return m[cat] || m['جاتوهات'];
 }
 
-function uCake(k, v) { state.cakeBuilder[k] = v; renderMainDisplay(); }
+function uCake(k, v) { 
+    state.cakeBuilder[k] = v; 
+    
+    // تطبيق القواعد الهندسية عند تغيير الهيكل
+    if (k === 'sh') {
+        if (v === 'مربع' && state.cakeBuilder.ps < 16) state.cakeBuilder.ps = 16;
+        else if (v === 'مستطيل' && state.cakeBuilder.ps < 20) state.cakeBuilder.ps = 20;
+        else if (v === 'دائري' && state.cakeBuilder.ps < 4) state.cakeBuilder.ps = 4;
+    }
+    renderMainDisplay(); 
+}
+
 function adjP(d) {
-    let n = Number(state.cakeBuilder.ps) + Number(d); if (n < 4) n = 4;
-    state.cakeBuilder.ps = n; renderMainDisplay();
+    let n = Number(state.cakeBuilder.ps) + Number(d); 
+    let min = 4;
+    if (state.cakeBuilder.sh === 'مربع') min = 16;
+    if (state.cakeBuilder.sh === 'مستطيل') min = 20;
+    
+    if (n < min) n = min;
+    state.cakeBuilder.ps = n; 
+    renderMainDisplay();
 }
 
 function renderCartList() {
-    const container = document.getElementById('cart-list'); const crossSellArea = document.getElementById('cross-sell-area'); const totalDisplay = document.getElementById('cart-total-display');
+    const container = document.getElementById('cart-items-list'); 
+    const totalDisplay = document.getElementById('cart-total-display');
+    
     if (!container) return;
     if (state.cart.length === 0) {
         container.innerHTML = `<div class=\"flex flex-col items-center py-12 px-4 text-center\"><i data-lucide=\"shopping-bag\" class=\"w-10 h-10 mb-4\" style=\"color: hsl(var(--brand-hue), 80%, 75%);\"></i><h3 class=\"font-bold\">قائمة المشتريات فارغة حالياً.</h3><button onclick=\"toggleCart(false)\" class=\"mt-6 text-white px-8 py-3 rounded-2xl font-bold brand-gradient btn-premium-action\">تصفح القائمة</button></div>`;
-        if (crossSellArea) crossSellArea.innerHTML = ''; if (totalDisplay) totalDisplay.innerText = "0 ج.م"; if (window.lucide) lucide.createIcons(); return;
+        if (totalDisplay) totalDisplay.innerText = "0 ج.م"; 
+        if (window.lucide) lucide.createIcons(); 
+        return;
     }
+    
     let total = 0;
     container.innerHTML = state.cart.map(item => {
         const identifier = item.cartItemId || item.id; const q = Number(item.quantity); const p = Number(item.price); total += (p * q);
         const renderImg = optimizeCloudinaryUrl((item.images && item.images.length > 0) ? item.images[0] : (item.img || getImgFallback(item.category)));
         return `<div class=\"flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-2xl mb-3 shadow-sm\"><div class=\"w-16 h-16 rounded-xl overflow-hidden\"><img src=\"${renderImg}\" class=\"w-full h-full object-cover\"></div><div class=\"flex-1 text-right\"><h4 class=\"font-bold text-[13px]\">${escapeHTML(item.name)}</h4><p class=\"font-bold\" style=\"color: hsl(var(--brand-hue), 70%, 50%);\">${p} ج.م</p></div><div class=\"flex flex-col items-end gap-2\"><button onclick=\"modQ('${identifier}', 'remove')\" class=\"p-1 text-gray-300 hover:text-red-500\"><i data-lucide=\"trash-2\" class=\"w-4 h-4\"></i></button><div class=\"flex items-center gap-2 bg-gray-50 rounded-lg p-1 border\"><button onclick=\"modQ('${identifier}', -1)\"><i data-lucide=\"minus\" class=\"w-3 h-3\"></i></button><span>${q}</span><button onclick=\"modQ('${identifier}', 1)\"><i data-lucide=\"plus\" class=\"w-3 h-3\"></i></button></div></div></div>`;
     }).join('');
+    
     if (totalDisplay) totalDisplay.innerText = total + " ج.م";
-    if (crossSellArea) crossSellArea.innerHTML = renderCartCrossSell();
     if (window.lucide) lucide.createIcons();
 }
 
-// 👑 Smart Cross-Sell Engine: محرك الاقتراحات الذكي
-function renderCartCrossSell() {
-    const cartCats = state.cart.map(i => String(i.category));
-    let recommendationIds = [];
-
-    if (cartCats.includes('تورت')) {
-        const flower = catalog.find(p => p.category === 'ورد' && p.inStock !== false);
-        if (flower) recommendationIds.push(flower.id);
-    }
+// 👑 Smart Suggestions Engine: التدوير الساعي والتوصيات الذكية
+window.renderSmartSuggestions = function(context = 'main') {
+    const containerId = context === 'cart' ? 'cart-suggestions-container' : 'related-products-container';
+    const parentAreaId = context === 'cart' ? 'cart-suggestions-area' : 'related-products-area';
     
-    if (cartCats.includes('دوناتس')) {
-        const happinessCup = catalog.find(p => p.category.includes('كبات') && p.inStock !== false);
-        if (happinessCup) recommendationIds.push(happinessCup.id);
-    }
+    const container = document.getElementById(containerId);
+    const parentArea = document.getElementById(parentAreaId);
 
-    const cartIds = state.cart.map(i => String(i.id)); 
-    let suggestions = catalog.filter(p => p && recommendationIds.includes(p.id) && !cartIds.includes(String(p.id)));
+    if (!container || !parentArea) return;
+
+    const cartIds = state.cart.map(i => String(i.id));
+    const currentHour = new Date().getHours();
     
-    if (suggestions.length === 0) {
-        suggestions = catalog.filter(p => p && !cartIds.includes(String(p.id)) && p.inStock !== false).slice(0, 3);
+    let availableProducts = catalog.filter(p => p && p.inStock !== false && !cartIds.includes(String(p.id)));
+    
+    if (availableProducts.length === 0) {
+        parentArea.classList.add('hidden');
+        return;
     }
 
-    if (suggestions.length === 0) return '';
+    parentArea.classList.remove('hidden');
 
-    return `<div class=\"mt-8 animate-fade-in border-t border-dashed pt-6\" style=\"border-color: hsl(var(--brand-hue), 80%, 85%);\"><p class=\"text-sm font-black text-gray-800 mb-4 flex items-center gap-2\"><i data-lucide=\"sparkles\"></i> خيارات مكملة لتجربة تذوق مثالية</p><div class=\"flex gap-4 overflow-x-auto pb-6 hide-scrollbar snap-slider\">${suggestions.map(p => {
+    const rotateIndex = currentHour % availableProducts.length;
+    const rotated = availableProducts.slice(rotateIndex).concat(availableProducts.slice(0, rotateIndex));
+    const suggestions = rotated.slice(0, context === 'cart' ? 4 : 8);
+
+    container.innerHTML = suggestions.map(p => {
         const img = optimizeCloudinaryUrl((p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category)));
-        return `<div class=\"shrink-0 w-[260px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col group\"><div class=\"relative w-full h-36 mb-4 rounded-xl overflow-hidden bg-gray-50\"><img src=\"${img}\" class=\"w-full h-full object-cover\"></div><div class=\"flex-1 flex flex-col\"><h5 class=\"text-[14px] font-bold mb-1\">${escapeHTML(p.name)}</h5><div class=\"flex items-center justify-between mt-auto\"><span class=\"font-black\" style=\"color: hsl(var(--brand-hue), 70%, 40%);\">${p.price} ج.م</span><button onclick=\"addWithQtyContext(this, '${p.id}')\" class=\"px-4 py-2 border rounded-xl text-[11px] font-bold dyn-hover-bg transition-colors\" style=\"border-color: hsl(var(--brand-hue), 80%, 85%); color: hsl(var(--brand-hue), 70%, 50%);\">إضافة</button></div></div></div>`;
-    }).join('')}</div></div>`;
-}
+        return `<div class=\"shrink-0 w-[220px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col group\"><div class=\"relative w-full h-36 mb-4 rounded-xl overflow-hidden bg-gray-50\"><img src=\"${img}\" class=\"w-full h-full object-cover\"></div><div class=\"flex-1 flex flex-col\"><h5 class=\"text-[14px] font-bold mb-1\">${escapeHTML(p.name)}</h5><div class=\"flex items-center justify-between mt-auto\"><span class=\"font-black\" style=\"color: hsl(var(--brand-hue), 70%, 40%);\">${p.price} ج.م</span><button onclick=\"addWithQtyContext(this, '${p.id}')\" class=\"px-4 py-2 border rounded-xl text-[11px] font-bold dyn-hover-bg transition-colors\" style=\"border-color: hsl(var(--brand-hue), 80%, 85%); color: hsl(var(--brand-hue), 70%, 50%);\">إضافة</button></div></div></div>`;
+    }).join('');
+    
+    if(window.lucide) lucide.createIcons();
+};
 
 function modQ(cartId, d) {
     const safeCartId = String(cartId); 
@@ -957,25 +1042,31 @@ function modQ(cartId, d) {
     }
     
     saveCartToStorage(); syncCartUI(); calculateCartTotal();
+    renderSmartSuggestions('main');
+    renderSmartSuggestions('cart');
 }
 
 function commitCakeBuilder() {
     const c = state.cakeBuilder; const settings = siteSettings.cakeBuilder || defaultSettings.cakeBuilder;
     const baseP = Number(settings.basePrice) || 145;
-    const pr = Number(c.ps) * baseP;
-    let ds = `النكهة: ${c.flv} | العدد: ${c.ps} أفراد`;
+    const imgOpts = settings.imagePrinting || defaultSettings.cakeBuilder.imagePrinting;
+    const selectedImgOption = imgOpts.find(opt => opt.label === c.img) || {price: 0};
+    
+    const pr = Number(c.ps) * baseP + Number(selectedImgOption.price);
+    let ds = `النكهة: ${c.flv} | العدد: ${c.ps} أفراد | الشكل: ${c.sh} | الطباعة: ${c.img}`;
+    if (c.occ) ds += ` | المناسبة: ${c.occ}`;
+    if (c.alg) ds += ` | صحي: ${c.alg}`;
+    
     const customId = generateUniqueID();
     state.cart.push({ id: customId, cartItemId: customId, name: 'تورتة الإصدار الملكي (طلب خاص)', price: pr, category: 'تورت', desc: ds, quantity: 1, isCustom: true });
     saveCartToStorage(); toggleCart(true); calculateCartTotal();
-    state.cakeBuilder.msg = ''; renderMainDisplay(); showSystemToast('تم إضافة طلب التخصيص بنجاح لمراجعة الإدارة', 'success');
-}
-
-function toggleDeliveryMethod() {
-    const method = document.querySelector('input[name=\"delivery_method\"]:checked').value;
-    const areaContainer = document.getElementById('delivery-area-container'); const pickupInfo = document.getElementById('pickup-info');
-    if (method === 'pickup') { areaContainer.classList.add('hidden'); pickupInfo.classList.remove('hidden'); } 
-    else { areaContainer.classList.remove('hidden'); pickupInfo.classList.add('hidden'); }
-    calculateCartTotal();
+    
+    state.cakeBuilder.msg = ''; 
+    state.cakeBuilder.occ = ''; 
+    state.cakeBuilder.alg = ''; 
+    renderMainDisplay(); 
+    
+    showSystemToast('تم إضافة طلب التخصيص بنجاح لمراجعة الإدارة', 'success');
 }
 
 function calculateCartTotal() {
@@ -995,24 +1086,7 @@ function syncCartUI() {
     renderCartList(); calculateCartTotal();
 }
 
-function toggleCart(show) {
-    const sd = document.getElementById('cart-sidebar'); if (!sd) return;
-    if (show) { sd.classList.remove('-translate-x-full'); backToCart(); renderCartList(); document.body.style.overflow = 'hidden'; } 
-    else { sd.classList.add('-translate-x-full'); document.body.style.overflow = 'auto'; MemoryManager.flush(); }
-}
-
-function goToCheckout() {
-    const step1 = document.getElementById('step-1-cart'); const step2 = document.getElementById('step-2-checkout');
-    if (state.cart.length === 0) { showSystemToast("سلة المشتريات فارغة، يرجى اختيار المنتجات أولاً.", "info"); return; }
-    step1.classList.add('hidden'); step2.classList.remove('hidden'); step2.scrollTop = 0;
-}
-
-function backToCart() {
-    const step1 = document.getElementById('step-1-cart'); const step2 = document.getElementById('step-2-checkout');
-    step2.classList.add('hidden'); step1.classList.remove('hidden');
-}
-
-async function submitOrder() {
+window.submitOrderFinal = async function() {
     if (state.cart.length === 0) return;
     
     let outOfStockItems = [];
@@ -1037,7 +1111,7 @@ async function submitOrder() {
     if (!cName || !cPhone) { showSystemToast('يرجى إكمال بيانات الاسم ورقم التواصل لضمان وصول الطلب بدقة.', 'error'); return; }
     if (deliveryMethod === 'delivery' && (!document.getElementById('cust-area') || !document.getElementById('cust-area').value)) { showSystemToast('يرجى تحديد منطقة التوصيل المطلوبة.', 'error'); return; }
     
-    const btn = document.querySelector('button[onclick=\"submitOrder()\"]');
+    const btn = document.querySelector('button[onclick=\"submitOrderFinal()\"]');
     let originalBtnHtml = '';
     if(btn) {
         originalBtnHtml = btn.innerHTML;
@@ -1090,6 +1164,7 @@ async function submitOrder() {
     let cleanPhone = storePhone.replace(/\D/g, '');
     if (cleanPhone.startsWith('0')) cleanPhone = '2' + cleanPhone;
 
+    // فتح الطلب في نافذة مستقلة للحفاظ على استقرار الموقع
     window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(m)}`, '_blank');
     
     try {
@@ -1104,7 +1179,10 @@ async function submitOrder() {
         ClientStorageEngine.queueOrder(orderData);
     }
 
-    state.cart = []; clearCartStorage(); syncCartUI(); toggleCart(false); renderMainDisplay();
+    state.cart = []; clearCartStorage(); syncCartUI(); toggleCart(false); 
+    if(window.switchToMenuView) window.switchToMenuView();
+    else renderMainDisplay();
+    
     showSystemToast('تم إرسال الطلب لمركز العمليات بنجاح.', 'success');
 
     if(btn) {
