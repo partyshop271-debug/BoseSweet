@@ -36,6 +36,29 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* ----------------------------------------------------------- */
+/* 🕊️ تحسين الـ Hero ليعتمد التنفس البصري (Visual Breathing) */
+/* ----------------------------------------------------------- */
+#hero-header {
+    background-color: transparent; /* إزالة أي خلفية لاعتماد الـ Whitespace */
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#dyn-hero-title {
+    text-shadow: none; /* إزالة الظلال لزيادة نقاء الخط الملكي */
+    color: var(--brand-primary);
+    font-weight: 900; /* الوزن الأسود للعناوين الكبرى */
+}
+
+#dyn-hero-desc {
+    color: #64748b; /* لون رمادي احترافي مريح للعين */
+    font-weight: 600; /* الوزن المتوسط لسهولة القراءة */
+    line-height: 1.6;
+}
+
 /* 🛡️ منع القفزات البصرية أثناء تحميل البيانات وتحسين أداء الرندرة */
 #display-container {
     min-height: 400px;
@@ -197,7 +220,7 @@ input[type="checkbox"], input[type="radio"] {
 /* 🍮 تأثيرات خاصة لمنتجات حلويات بوسي (قشطوطة، ديسباسيتو، سينابون) */
 .product-card-premium {
     transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    border-radius: 2.5rem;
+    border-radius: 2.5rem; /* */
 }
 
 .product-card-premium:hover {
