@@ -94,7 +94,7 @@ const ClientStorageEngine = {
             const db = await this.init();
             return new Promise((resolve, reject) => {
                 const tx = db.transaction(this.cartStore, 'readwrite');
-                store = tx.objectStore(this.cartStore);
+                const store = tx.objectStore(this.cartStore);
                 store.put(value, key);
                 tx.oncomplete = () => resolve();
                 tx.onerror = () => reject(tx.error);
@@ -163,23 +163,24 @@ const ClientStorageEngine = {
     }
 };
 
+// 👑 Linguistic Purge: الاعتماد على لغة القرار المهني
 const detailedDescriptions = {
-    'ديسباسيتو نوتيلا مثلث': 'مثلث السعادة الصغير.. جرعة "نوتيلا" مركزة جداً فوق قاعدة من فادج كيك حلويات بوسي الغني، معمولة عشان تذوب في ثواني وتعدل مودك في أسرع وقت. القطمة الواحدة فيها انفجار طعم مش هتحس بيه غير في الحجم ده 🍫🔺',
-    'ديسباسيتو نوتيلا وسط': 'قلب الديسباسيتو النابض.. توازن رهيب بين طبقة الفادج السميكة وصوص النوتيلا البرازيلي اللي مغطي الوسط بالكامل، الحجم ده معمول للروقان الهادي اللي بياخدك لعالم تاني مع كل معلقة 🍫 روقان',
-    'ديسباسيتو نوتيلا كبير': 'محيط من النوتيلا الأصلية السايحة.. فخامة الحجم الكبير بتخليك تغرق في طعم الفادج الكثيف مع طبقة نوتيلا سخية جداً، دي مش مجرد تحلية دي "وليمة" لعشاق الشيكولاتة اللي مبيعرفوش يوقفوا 🍫🌊',
-    'ورد طبيعي': 'روح الطبيعة في بيتك.. ورد فريش بعبير ساحر وقطرات الندى، بنختاره بعناية من أحلى المزارع عشان يوصلك بريحته اللي بترد الروح ويكون لغة تعبير راقية عن مشاعرك في أجمل اللحظات 💐✨',
-    'ورد صناعي': 'جمال يدوم للأبد.. ورد صناعي بخامات ملكية فاخرة وملمس طبيعي جداً، قطعة ديكور راقية بيفضل رونقها ثابت عشان يفضل ذكرى حلوة تزيّن بيتكم وتفكركم بأحلى الأيام 🌷👑',
-    'ورد ستان': 'شغل الهاند-ميد الفاخر.. كل وردة معمولة يدوياً من أفخم أنواع الستان بحرفية "حلويات بوسي" الخاصة، ملمس ناعم وشكل "بريستيج" جداً يتقدم لهدية مفيش منها اتنين 🎀💖',
-    'ورد فلوس': 'أشيك طريقة لتقديم العيدية والهدايا النقدية.. ورد منسق بلمسة إبداعية وفنية تخلي هديتك مش مجرد مبلغ مالي، دي ذكرى مبهجة ومفاجأة بتخطف العين والقلب 💸🌹',
-    'ورد هدايا': 'تنسيق متكامل يجمع بين رقة الورد وشياكة التغليف.. البوكيه ده معمول مخصوص عشان يكون رفيق للهدايا القيمة، بلمسات فنية بتخلي شكل الهدية النهائي يبهر اللي هيستلمها 🎁✨',
-    'ورد شيكولاتة': 'ميكس السعادة المطلق.. بوكيه بيجمع بين شياكة الورد وطعم شيكولاتة حلويات بوسي الملكية، هدية "تؤكل" وتفرح القلب والعين في نفس الوقت.. الدلع اللي بجد 🍫🌹',
-    'جاتوه كلاسيك': 'قطعة الجاتوه الأصيلة اللي بترجعنا لأحلى الذكريات بلمسة بوسي.. فادج كيك خفيف جداً وهش، بيدوب مع كريمة غنية وسكر مظبوط بالمللي.. الاختيار اللي مبيختلفش عليه اتنين 🍰✨',
-    'تورتة ميني': 'تورتة ميني كيوت تكفي فردين.. مثالية للمفاجآت السريعة والرومانسية 🎂🥰',
-    'حجم (فرد - فردين)': 'تورتة "المفاجأة السعيدة" من حلويات بوسي 🎂 حجم كيوت وتصميم ملكي يخطف القلب، معمولة مخصوص للحظات الرومانسية أو احتفال صغير بين اتنين.. كيك هش وحشوات غنية تكفيكم وتفيض حب 🥰',
-    'حجم (3 - 4 أفراد)': 'الاختيار الذهبي للمات العيلة الصغيرة 🏠 تورتة بتجمع بين الشياكة والطعم اللي يظبط المزاج، بتكفي 4 أفراد بقطع وافية وكريمة غنية.. توثقوا بيها أحلى صور وذكريات مع حلويات بوسي ✨',
-    'حجم (5 - 6 أفراد)': 'تورتة المناسبات السعيدة اللي بتشرفك قدام ضيوفك 👑 حجم عائلي بامتياز وتفاصيل فنية دقيقة، حشوات بريميوم وكيك بمقادير مظبوطة بالمللي تضمن إن كل ضيف ياخد قطعته ويدعي لمزاجك الراقي 🎂🎉',
-    'سينابون': 'سر السينابون عندنا في العجينة القطنية اللي مخبوزة بحب ومحشية بأجود قرفة وسكر بني 🍥 الصوص الكريمي بيغطيها ويدفي قلبك مع كل قطمة.. ريحة وطعم يودوك عالم تاني من الهدوء والروقان 🤎✨',
-    'سينابون نوتيلا': 'ميكس القرفة الدافئة مع النوتيلا السايحة على عجينة سينابون هشة.. طعم يجمع بين الدفا والرفاهية اللي مفيش زيها 🤎🍫'
+    'ديسباسيتو نوتيلا مثلث': 'منتج ديسباسيتو الفاخر بحجم صغير، يتكون من قاعدة فادج كيك غنية مضاف إليها طبقة كثيفة من صوص النوتيلا الأصلي لضمان تجربة تذوق احترافية 🍫',
+    'ديسباسيتو نوتيلا وسط': 'الإصدار المتوسط من ديسباسيتو نوتيلا، يتميز بتوازن دقيق بين طبقة الكيك الغنية وكريمة النوتيلا، مصمم لمحبي المذاق المتزن 🍫',
+    'ديسباسيتو نوتيلا كبير': 'الحجم العائلي الفاخر من ديسباسيتو نوتيلا، يحتوي على كمية مضاعفة من صوص النوتيلا الأصلي فوق قاعدة فادج حلويات بوسي الكثيفة 🍫',
+    'ورد طبيعي': 'تنسيق فاخر من الورد الطبيعي الطازج، يتم اختياره وفق معايير الجودة العالية لضمان النضارة والاستدامة، يمثل لغة تعبير راقية في المناسبات الرسمية 💐',
+    'ورد صناعي': 'ورد صناعي مصنع من خامات ملكية فاخرة تحاكي الملمس الطبيعي، قطعة ديكور مستديمة تحتفظ برونقها كذكرى كلاسيكية راقية 🌷👑',
+    'ورد ستان': 'عمل يدوي احترافي مصنع من أجود أنواع الستان بحرفية حلويات بوسي، يتميز بملمس ناعم ومظهر بريستيج مخصص للإهداءات الخاصة 🎀💖',
+    'ورد فلوس': 'طريقة مهنية ومبتكرة لتنسيق الهدايا النقدية، تدمج بين الفن ودقة التقديم لتوفير تجربة إهداء غير تقليدية ومبهرة 💸🌹',
+    'ورد هدايا': 'تنسيق متكامل يدمج بين رقة الورد وشياكة التغليف الهندسي، مصمم ليكون المكمل المثالي للهدايا القيمة بلمسات فنية متطورة 🎁✨',
+    'ورد شيكولاتة': 'بوكيه حصري يجمع بين تنسيق الورد الفاخر وقطع شيكولاتة حلويات بوسي الملكية، هدية تدمج بين القيمة البصرية والمذاق الرفيع 🍫🌹',
+    'جاتوه كلاسيك': 'قطعة جاتوه فاخرة تعتمد على فادج كيك خفيف الوزن مع كريمة غنية ونسبة سكر مدروسة بدقة، تمثل الاختيار الاحترافي للمناسبات 🍰✨',
+    'تورتة ميني': 'تورتة ميني مصممة لشخصين، تتميز بتصميم ملكي مكثف وتفاصيل دقيقة تناسب الاحتفالات الثنائية الخاصة 🎂🥰',
+    'حجم (فرد - فردين)': 'تورتة الإصدار الخاص من حلويات بوسي، تتميز بتصميم هندسي انسيابي يكفي لشخصين، مع حشوات غنية وكيك هش عالي الجودة 🥰',
+    'حجم (3 - 4 أفراد)': 'الاختيار المتوازن للمناسبات العائلية الصغيرة، تورتة تجمع بين الرقي في التصميم ووفرة المكونات، تكفي 4 أفراد بقطع متساوية وغنية ✨',
+    'حجم (5 - 6 أفراد)': 'تورتة المناسبات الرسمية الكبيرة، تتميز بحجم عائلي وتفاصيل فنية معقدة وحشوات بريميوم تضمن أعلى معايير الضيافة 🎂🎉',
+    'سينابون': 'مخبوزات سينابون تعتمد على عجينة قطنية احترافية محشوة بالقرفة الفاخرة والسكر البني، مغطاة بصوص كريمي خاص يمنحها مذاقاً متفرداً 🍥🤎',
+    'سينابون نوتيلا': 'مزيج احترافي بين القرفة الدافئة وصوص النوتيلا الأصلي الموزع بعناية فوق عجينة السينابون الهشة 🤎🍫'
 };
 
 function getCapsuleDescription(p) {
@@ -187,17 +188,17 @@ function getCapsuleDescription(p) {
     let n = (p.name ? String(p.name) : '').trim().toLowerCase();
     let c = (p.category ? String(p.category) : '').trim().toLowerCase();
 
-    if (c.includes('دوناتس') && n.includes('نوتيلا')) return 'عجينة دوناتس قطنية خفيفة جداً "بتبظ" نوتيلا أصلية سايحة مع كل قطمة.. انفجار سعادة مستحيل تقاوميه! 🍩🍫';
-    if (c.includes('سينابون') && n.includes('نوتيلا')) return 'ميكس القرفة الدافئة مع غرقانة النوتيلا السايحة على عجينة سينابون هشة.. طعم يجمع بين الدفا والرفاهية 🤎🍫';
-    if (c.includes('قشطوط') && n.includes('نوتيلا')) return 'نوتيلا أصلية فوق طبقة قشطة طبيعية وكيك غرقان حليب.. توازن رهيب بين الحلاوة والانتعاش بيذوب في البق ☁️🍫';
-    if (n.includes('كبات') && n.includes('نوتيلا')) return 'طبقات من الكيك الهش وكريمة النوتيلا الغنية في كب شيك.. جرعة سعادة مركزة وسريعة لمزاجك الراقي 🧁🍫';
-    if (c.includes('ديسباسيتو') && n.includes('نوتيلا')) return 'فادج كيك شيكولاتة مركز وغرقان نوتيلا برازيلي.. دمار لذيذ لعشاق الشيكولاتة التقيلة وبس 🍫🤤';
-    if (c.includes('دوناتس') || c.includes('بامبوليني')) return 'عجينة دوناتس مقلية خفيفة زي القطنة بصوصات مبهجة.. مستحيل تكتفي بواحدة 🍩😍';
-    if (c.includes('سينابون') || n.includes('سينابون')) return 'عجينة قطنية طرية غرقانة قرفة وصوص جبنة.. ريحتها هتدفيك 🤎✨';
-    if (c.includes('ديسباسيتو') || n.includes('ديسباسيتو')) return 'فادج كيك غني غرقان صوص شيكولاتة برازيلي.. بتطبطب عالقلب 🍫🤤';
-    if (c.includes('قشطوط') || n.includes('قشطوط')) return 'كيكة هشة بتدوب غرقانة حليب وقشطة طبيعية.. تطبطب على قلبك ☁️🤍';
+    if (c.includes('دوناتس') && n.includes('نوتيلا')) return 'دوناتس تعتمد على عجينة خفيفة محشوة بشيكولاتة نوتيلا أصلية، مصنعة لضمان أعلى مستويات الجودة 🍩🍫';
+    if (c.includes('سينابون') && n.includes('نوتيلا')) return 'مزيج من عجينة السينابون القطنية مع صوص النوتيلا الفاخر، اختيار مثالي لمحبي التميز 🤎🍫';
+    if (c.includes('قشطوط') && n.includes('نوتيلا')) return 'قشطوطة مكونة من كيك غني بالحليب وطبقة قشطة طبيعية مغطاة بالنوتيلا الأصلية لضمان توازن المذاق ☁️🍫';
+    if (n.includes('كبات') && n.includes('نوتيلا')) return 'طبقات كيك وكريمة نوتيلا غنية مقدمة في كب بتصميم عصري يناسب التقديم الفردي الراقي 🧁🍫';
+    if (c.includes('ديسباسيتو') && n.includes('نوتيلا')) return 'فادج كيك شيكولاتة مركز مع طبقة سخية من النوتيلا البرازيلية الأصلية 🍫';
+    if (c.includes('دوناتس') || c.includes('بامبوليني')) return 'عجينة مخبوزات خفيفة مغطاة بصوصات متنوعة محضرة وفق معايير حلويات بوسي 🍩';
+    if (c.includes('سينابون') || n.includes('سينابون')) return 'عجينة قطنية طرية غنية بالقرفة وصوص الجبن الكريمي الخاص 🤎✨';
+    if (c.includes('ديسباسيتو') || n.includes('ديسباسيتو')) return 'كيك فادج غني مضاف إليه صوص الشيكولاتة البرازيلي الفاخر 🍫';
+    if (c.includes('قشطوط') || n.includes('قشطوط')) return 'كيكة مشبعة بالحليب والقشطة الطبيعية، تتميز بملمس ناعم ومذاق منعش ☁️🤍';
 
-    return 'قطعة فنية من حلويات بوسي، معمولة بحب ومقادير مظبوطة عشان تليق بذوقك وتفتح شهيتك ✨';
+    return 'إصدار فاخر من حلويات بوسي، مُعد بمكونات عالية الجودة لضمان تجربة تذوق استثنائية ✨';
 }
 
 function getFinalDescription(p, isFullWidth) {
@@ -295,25 +296,7 @@ function showSystemToast(message, type = 'info') {
     }, 4000);
 }
 
-let adminClicksCounter = 0;
-window.triggerAdminAccess = function(e) {
-    if(e) e.stopPropagation(); 
-    adminClicksCounter++;
-    MemoryManager.clear('admin_clicks_reset');
-    
-    if (adminClicksCounter >= 5) {
-        adminClicksCounter = 0;
-        showSystemToast('جاري التحويل لبوابة الحماية 🛡️...', 'success');
-        MemoryManager.set('admin_redirect', () => { window.location.href = 'login.html'; }, 800);
-    }
-    
-    MemoryManager.set('admin_clicks_reset', () => { adminClicksCounter = 0; }, 1500);
-};
-
-function autoBindAdminAccess() {
-    const portal = document.getElementById('admin-secret-portal');
-    if (portal) portal.addEventListener('click', window.triggerAdminAccess);
-}
+// 👑 Security Purge: تم حذف بوابة الإدارة triggerAdminAccess لضمان الخصوصية الكاملة
 
 const defaultSettings = {
     brandName: "حلويات بوسي", announcement: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب",
@@ -321,10 +304,10 @@ const defaultSettings = {
     heroDesc: "يسر إدارة حلويات بوسي استعراض تشكيلتها الحصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بذوقكم الرفيع ومناسباتكم السعيدة.",
     footerPhone: "01097238441", footerAddress: "الكفاح، مركز الفرافرة، <br> محافظة الوادي الجديد",
     footerQuote: `"نؤمن أن الحلويات لغة للتعبير عن المحبة، لذا نصنع كل قطعة بشغف لنكون شركاءكم في أجمل اللحظات."`,
-    productLayout: "grid", brandColorHex: "#ec4899", bgColor: "#ffffff", textColor: "#663b3b",
+    productLayout: "grid", brandColorHex: "#ff3377", bgColor: "#ffffff", textColor: "#663b3b",
     fontFamily: "'Cairo', sans-serif", baseFontSize: 16, baseFontWeight: 400,
-    tickerActive: true, tickerText: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب ✨", tickerSpeed: 20, tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff",
-    cakeBuilder: { basePrice: 145, desc: "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة.", minSquare: 16, minRect: 20, flavors: ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت'], images: [], imagePrinting: [{ label: 'بدون', price: 0 }, { label: 'صورة قابلة للأكل', price: 60 }, { label: 'صورة غير قابلة للأكل', price: 20 }] }
+    tickerActive: true, tickerText: "حلويات بوسي: تجربة تذوق ملكية في قلب الوادي الجديد ✨", tickerSpeed: 20, tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff",
+    cakeBuilder: { basePrice: 145, desc: "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة وفق أعلى معايير الجودة.", minSquare: 16, minRect: 20, flavors: ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت'], images: [], imagePrinting: [{ label: 'بدون', price: 0 }, { label: 'صورة قابلة للأكل', price: 60 }, { label: 'صورة غير قابلة للأكل', price: 20 }] }
 };
 
 const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
@@ -402,7 +385,44 @@ function applySettingsToUI() {
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
-// 👑 CLEAN SLATE STRATEGY: جلب البيانات مرة واحدة فقط من السيرفر (بدون onSnapshot للعميل)
+// 👑 Waterfall Engine: ملء شلال الصور بصور حقيقية من الكتالوج
+function initWaterfall() {
+    const col1 = document.getElementById('waterfall-col-1');
+    const col2 = document.getElementById('waterfall-col-2');
+    if (!col1 || !col2) return;
+
+    const allImages = catalog.filter(p => p.images && p.images.length > 0)
+                             .map(p => ({url: p.images[0], id: p.id}));
+    
+    if (allImages.length === 0) return;
+
+    const shuffled = allImages.sort(() => 0.5 - Math.random()).slice(0, 6);
+    
+    const renderCard = (img) => `
+        <div class="waterfall-card cursor-pointer" onclick="navigateToProduct('${img.id}')">
+            <img src="${optimizeCloudinaryUrl(img.url)}" loading="lazy">
+        </div>`;
+
+    col1.innerHTML = shuffled.slice(0, 3).map(renderCard).join('') + col1.innerHTML;
+    col2.innerHTML = shuffled.slice(3, 6).map(renderCard).join('') + col2.innerHTML;
+}
+
+window.navigateToProduct = function(id) {
+    const prod = catalogMap.get(String(id));
+    if (prod) {
+        window.switchToMenuView();
+        setCategory(prod.category);
+        MemoryManager.set(`nav_scroll_${id}`, () => {
+            const el = document.getElementById(`product-card-${id}`);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                el.classList.add('highlight-target');
+                setTimeout(() => el.classList.remove('highlight-target'), 2500);
+            }
+        }, 500);
+    }
+};
+
 async function loadEngineMemory() {
     try {
         await fetchDefaultCatalog(); 
@@ -412,7 +432,6 @@ async function loadEngineMemory() {
             return;
         }
         
-        // 1. جلب الإعدادات (Single Fetch)
         try {
             let settingsDoc = await db.collection('settings').doc('main').get();
             if (settingsDoc.exists) {
@@ -436,7 +455,6 @@ async function loadEngineMemory() {
         if (!catMenu || catMenu.length === 0) catMenu = [...new Set(defaultCatalog.map(p => p.category))].filter(Boolean);
         if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
         
-        // 2. جلب كتالوج المنتجات (Single Fetch)
         try {
             let catalogSnap = await db.collection('catalog').get();
             let firebaseData = [];
@@ -458,7 +476,6 @@ async function loadEngineMemory() {
         syncCatalogMap();
         LiveSearchEngine.build(catalog);
 
-        // 3. مهام خلفية (شحن، معرض الصور)
         if (typeof db !== 'undefined') {
             db.collection('gallery').orderBy('timestamp', 'desc').get().then(gallerySnap => {
                 if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); if(isAppReady) renderCustomerGallery(); }
@@ -475,7 +492,6 @@ async function loadEngineMemory() {
         if (!availableCats.includes(state.activeCat) && availableCats.length > 0) state.activeCat = availableCats[0];
     }
     
-    // جلب السلة
     try { 
         const dbCart = await ClientStorageEngine.get('cart');
         if (dbCart) state.cart = dbCart;
@@ -510,13 +526,19 @@ async function initApp() {
 
     applySettingsToUI();
     renderCategories();
-    renderMainDisplay();
+    
+    if (state.activeCat === 'الرئيسية') {
+        window.switchToHomeView();
+    } else {
+        renderMainDisplay();
+    }
+
+    initWaterfall(); // تشغيل محرك الشلال
 
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
     syncCartUI(); 
     if(window.lucide) lucide.createIcons();
     
-    // إخفاء اللودر فوراً
     setTimeout(() => {
         window.requestAnimationFrame(() => {
             const loader = document.getElementById('global-loader');
@@ -593,12 +615,23 @@ function renderCategories() {
     el.innerHTML = catMenu.map(c => `<button id=\"cat-btn-${(c.name || c).replace(/\\s+/g, '-')}\" onclick=\"setCategory('${c.name || c}')\" class=\"whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === (c.name || c) ? 'text-white shadow-lg scale-105 brand-gradient border-transparent' : 'border-pink-100 hover:border-pink-300'}\" style=\"${state.activeCat === (c.name || c) ? '' : `background-color: var(--site-bg); color: var(--site-text); border-color: hsl(var(--brand-hue), 80%, 90%);`}\">${c.name === 'ورد' || c === 'ورد' ? 'ورد وهدايا 💐' : (c.name === 'تورت' || c === 'تورت' ? 'تورت وتصميم 🎂' : (c.name || c))}</button>`).join('');
 }
 
-function setCategory(c) { 
-    state.activeCat = c; 
-    renderCategories(); 
-    renderMainDisplay(); 
+// 👑 View Router Engine: التبديل الذكي بين الواجهات
+function setCategory(c) {
+    if (c === 'الرئيسية') {
+        if(window.switchToHomeView) window.switchToHomeView();
+        state.activeCat = 'الرئيسية';
+    } else {
+        if(window.switchToMenuView) window.switchToMenuView();
+        state.activeCat = c;
+        renderMainDisplay();
+    }
+    renderCategories();
     history.pushState({category: c}, '', `?category=${encodeURIComponent(c)}`);
-    MemoryManager.set('scroll_cat', () => { const activeBtn = document.getElementById(`cat-btn-${c.replace(/\\s+/g, '-')}`); if (activeBtn) { activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } }, 50); 
+    MemoryManager.set('scroll_cat', () => { 
+        const safeId = String(c).replace(/\s+/g, '-');
+        const activeBtn = document.getElementById(`cat-btn-${safeId}`); 
+        if (activeBtn) { activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } 
+    }, 50); 
 }
 
 function renderFlowerTabs(container) {
@@ -630,7 +663,6 @@ function getCakeBuilderHTML() {
     return `<div class=\"rounded-[2.5rem] shadow-xl border overflow-hidden animate-fade-in relative\" style=\"background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);\"><div class=\"p-6 md:p-10 border-b flex flex-col md:flex-row items-center gap-8\" style=\"background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);\">${sliderHtml}<div class=\"flex-1 text-center md:text-right\"><h2 class=\"text-2xl md:text-4xl font-bold mb-4 uppercase tracking-tight\" style=\"color: hsl(var(--brand-hue), 70%, 50%);\">تخصيص التورت الملكية 👑</h2><p class=\"text-sm md:text-base font-bold leading-loose opacity-80\" style=\"color: var(--site-text);\">${escapeHTML(descText)}</p></div></div><div class=\"p-6 md:p-12 space-y-12\"><div class=\"grid grid-cols-1 lg:grid-cols-2 gap-10\"><div class=\"space-y-4\"><label class=\"font-bold text-lg flex items-center gap-2\" style=\"color: var(--site-text);\"><i data-lucide=\"cake\" style=\"color: hsl(var(--brand-hue), 70%, 60%);\"></i> نكهة الكيك المفضلة</label><div class=\"grid grid-cols-2 md:grid-cols-4 gap-3\">${flavors.map(fl => `<button onclick=\"uCake('flv', '${escapeHTML(fl)}')\" class=\"py-3 rounded-xl font-bold border-2 text-sm transition-all ${c.flv === fl ? 'text-white shadow-md scale-105 brand-gradient border-transparent' : 'hover:opacity-80'}\" style=\"${c.flv === fl ? '' : `background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);`}\">${escapeHTML(fl)}</button>`).join('')}</div></div><div class=\"space-y-4\"><label class=\"font-bold text-lg flex items-center gap-2\" style=\"color: var(--site-text);\"><i data-lucide=\"heart\" style=\"color: hsl(var(--brand-hue), 70%, 60%);\"></i> عدد الأفراد</label><div class=\"flex items-center justify-between border rounded-2xl p-2 shadow-inner h-full max-h-[80px]\" style=\"background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);\"><button onclick=\"adjP(-2)\" class=\"p-3 rounded-xl border hover:scale-105 transition-all\"><i data-lucide=\"minus\"></i></button><span class=\"text-3xl font-bold\">${c.ps}</span><button onclick=\"adjP(2)\" class=\"p-3 rounded-xl border hover:scale-105 transition-all\"><i data-lucide=\"plus\"></i></button></div></div></div></div><div class=\"p-8 md:p-14 border-t-2 flex flex-col md:flex-row justify-between items-center gap-8\" style=\"background-color: hsl(var(--brand-hue), 80%, 95%);\"><div class=\"text-center md:text-right\"><span class=\"block font-bold mb-2\">الإجمالي التقديري</span><span class=\"text-4xl md:text-6xl font-bold\">${price} ج.م</span></div><button onclick=\"commitCakeBuilder()\" class=\"w-full md:w-auto text-white font-bold text-xl md:text-2xl py-5 px-12 rounded-2xl shadow-xl brand-gradient\">إضافة للمراجعة</button></div></div>`;
 }
 
-// 👑 إرجاع البناء المنطقي لحل مشكلة الدوناتس العملاقة واختفاء التورت
 function renderMainDisplay() {
     if (!isAppReady) return; 
     const container = document.getElementById('display-container'); 
@@ -640,14 +672,13 @@ function renderMainDisplay() {
     let targetHTML = '';
     let showSubTabs = false;
 
-    // 🛡️ التعديل الجذري هنا: نغير الـ Classes الخاصة بالحاوية بناءً على المحتوى
     if (state.activeCat === 'تورت') { 
-        container.className = 'w-full animate-fade-in'; // نلغي الجريد عشان التورتة تاخد راحتها
+        container.className = 'w-full animate-fade-in';
         targetHTML = getCakeBuilderHTML(); 
     } 
     else if (state.activeCat === 'ورد') {
         showSubTabs = true;
-        container.className = 'w-full animate-fade-in'; // نلغي الجريد الخارجي لأن الورد له جريد داخلي مقسم للأنواع
+        container.className = 'w-full animate-fade-in';
         
         let flowerHtml = `<div class=\"flex flex-col gap-12 w-full\">`;
         fTypes.forEach(type => {
@@ -662,7 +693,6 @@ function renderMainDisplay() {
     else {
         if (state.activeCat === 'ديسباسيتو') showSubTabs = true;
         
-        // 🛡️ نُرجع كلاسات الـ Grid القوية عشان الكروت متتمطش وتكبر
         container.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6 items-stretch w-full animate-fade-in';
         
         let list = catalog.filter(p => p && p.category === state.activeCat);
@@ -674,11 +704,10 @@ function renderMainDisplay() {
             });
         }
         
-        // نرسم الكروت مباشرة جوه الحاوية المجهزة
         targetHTML = list.map(p => drawProductCard(p, siteSettings.productLayout || 'grid')).join('');
         
         if (list.length === 0) {
-            container.className = 'w-full animate-fade-in'; // لو مفيش منتجات نخليه كامل
+            container.className = 'w-full animate-fade-in';
             targetHTML = `<div class=\"text-center py-20\"><i data-lucide=\"package-x\" class=\"w-16 h-16 mx-auto mb-4 text-gray-300\"></i><p class=\"font-bold text-gray-500\">لا توجد منتجات في هذا القسم حالياً.</p></div>`;
         }
     }
@@ -711,7 +740,7 @@ window.updateTempQtyContext = function(buttonElement, delta) {
 
 window.addWithQtyContext = function(buttonElement, id) {
     let qty = 1; 
-    const cardElement = buttonElement.closest('.bg-white.flex.flex-col');
+    const cardElement = buttonElement.closest('.bg-white.flex.flex-col') || buttonElement.closest('.group');
     if(cardElement) {
         const qtyEl = cardElement.querySelector('.temp-qty-display');
         if(qtyEl) qty = parseInt(qtyEl.innerText) || 1;
@@ -719,7 +748,13 @@ window.addWithQtyContext = function(buttonElement, id) {
 
     const safeId = String(id); const prod = catalogMap.get(safeId); 
     if (!prod) return;
-    if (prod.inStock === false) { showSystemToast('نأسف، هذا المنتج غير متوفر حالياً.', 'error'); return; }
+    
+    // 👑 Haptic Feedback: تغذية راجعة اهتزازية متطورة
+    if (prod.inStock === false) { 
+        if(navigator.vibrate) navigator.vibrate([100, 50, 100]); 
+        showSystemToast('نأسف، هذا المنتج غير متوفر حالياً لتلبية الطلب.', 'error'); 
+        return; 
+    }
     
     if(navigator.vibrate) navigator.vibrate(50); 
     
@@ -736,7 +771,7 @@ window.addWithQtyContext = function(buttonElement, id) {
     
     const cartBtn = document.querySelector('button[onclick=\"toggleCart(true)\"]');
     if(cartBtn) { cartBtn.classList.add('scale-110'); MemoryManager.set('cart_bounce', ()=> cartBtn.classList.remove('scale-110'), 200); }
-    showSystemToast(`تم إضافة الكمية (${qty}) للسلة بنجاح 🛍️`, 'success');
+    showSystemToast(`تم إضافة الكمية (${qty}) بنجاح لقائمة المشتريات 🛍️`, 'success');
 };
 
 function drawProductCard(p, layoutMode = 'grid') {
@@ -761,7 +796,7 @@ function drawProductCard(p, layoutMode = 'grid') {
     }
 
     const renderActionArea = () => {
-        if (isOutOfStock) return `<div class=\"w-full py-2.5 mt-auto text-[11px] font-bold rounded-xl text-center border shadow-inner\" style=\"color: hsl(var(--brand-hue), 70%, 50%); background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);\">نفدت الكمية 😔</div>`;
+        if (isOutOfStock) return `<div class=\"w-full py-2.5 mt-auto text-[11px] font-bold rounded-xl text-center border shadow-inner\" style=\"color: hsl(var(--brand-hue), 70%, 50%); background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);\">غير متوفر حالياً</div>`;
         return `
         <div class=\"mt-auto flex flex-col gap-2 w-full pt-1\">
             <div class=\"flex items-center justify-center rounded-full py-1.5 px-3 border mx-auto min-w-[70%] shadow-sm relative\" style=\"background-color: hsla(var(--brand-hue), 80%, 95%, 0.8); border-color: hsl(var(--brand-hue), 80%, 90%);\">
@@ -817,7 +852,7 @@ function renderCartList() {
     const container = document.getElementById('cart-list'); const crossSellArea = document.getElementById('cross-sell-area'); const totalDisplay = document.getElementById('cart-total-display');
     if (!container) return;
     if (state.cart.length === 0) {
-        container.innerHTML = `<div class=\"flex flex-col items-center py-12 px-4 text-center\"><i data-lucide=\"shopping-bag\" class=\"w-10 h-10 mb-4\" style=\"color: hsl(var(--brand-hue), 80%, 75%);\"></i><h3 class=\"font-bold\">سلة حلويات بوسي في انتظارك 🌸</h3><button onclick=\"toggleCart(false)\" class=\"mt-6 text-white px-8 py-3 rounded-2xl font-bold brand-gradient btn-premium-action\">يلا نتسوق</button></div>`;
+        container.innerHTML = `<div class=\"flex flex-col items-center py-12 px-4 text-center\"><i data-lucide=\"shopping-bag\" class=\"w-10 h-10 mb-4\" style=\"color: hsl(var(--brand-hue), 80%, 75%);\"></i><h3 class=\"font-bold\">قائمة المشتريات فارغة حالياً.</h3><button onclick=\"toggleCart(false)\" class=\"mt-6 text-white px-8 py-3 rounded-2xl font-bold brand-gradient btn-premium-action\">تصفح القائمة</button></div>`;
         if (crossSellArea) crossSellArea.innerHTML = ''; if (totalDisplay) totalDisplay.innerText = "0 ج.م"; if (window.lucide) lucide.createIcons(); return;
     }
     let total = 0;
@@ -831,12 +866,31 @@ function renderCartList() {
     if (window.lucide) lucide.createIcons();
 }
 
+// 👑 Smart Cross-Sell Engine: محرك الاقتراحات الذكي
 function renderCartCrossSell() {
+    const cartCats = state.cart.map(i => String(i.category));
+    let recommendationIds = [];
+
+    if (cartCats.includes('تورت')) {
+        const flower = catalog.find(p => p.category === 'ورد' && p.inStock !== false);
+        if (flower) recommendationIds.push(flower.id);
+    }
+    
+    if (cartCats.includes('دوناتس')) {
+        const happinessCup = catalog.find(p => p.category.includes('كبات') && p.inStock !== false);
+        if (happinessCup) recommendationIds.push(happinessCup.id);
+    }
+
     const cartIds = state.cart.map(i => String(i.id)); 
-    let available = catalog.filter(p => p && !cartIds.includes(String(p.id)) && p.inStock !== false);
-    if (available.length === 0) return '';
-    let suggestions = available.slice(0, 3);
-    return `<div class=\"mt-8 animate-fade-in border-t border-dashed pt-6\" style=\"border-color: hsl(var(--brand-hue), 80%, 85%);\"><p class=\"text-sm font-black text-gray-800 mb-4 flex items-center gap-2\"><i data-lucide=\"sparkles\"></i> كملي اللحظة الحلوة بمنتجات تليق بيكي</p><div class=\"flex gap-4 overflow-x-auto pb-6 hide-scrollbar snap-slider\">${suggestions.map(p => {
+    let suggestions = catalog.filter(p => p && recommendationIds.includes(p.id) && !cartIds.includes(String(p.id)));
+    
+    if (suggestions.length === 0) {
+        suggestions = catalog.filter(p => p && !cartIds.includes(String(p.id)) && p.inStock !== false).slice(0, 3);
+    }
+
+    if (suggestions.length === 0) return '';
+
+    return `<div class=\"mt-8 animate-fade-in border-t border-dashed pt-6\" style=\"border-color: hsl(var(--brand-hue), 80%, 85%);\"><p class=\"text-sm font-black text-gray-800 mb-4 flex items-center gap-2\"><i data-lucide=\"sparkles\"></i> خيارات مكملة لتجربة تذوق مثالية</p><div class=\"flex gap-4 overflow-x-auto pb-6 hide-scrollbar snap-slider\">${suggestions.map(p => {
         const img = optimizeCloudinaryUrl((p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category)));
         return `<div class=\"shrink-0 w-[260px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col group\"><div class=\"relative w-full h-36 mb-4 rounded-xl overflow-hidden bg-gray-50\"><img src=\"${img}\" class=\"w-full h-full object-cover\"></div><div class=\"flex-1 flex flex-col\"><h5 class=\"text-[14px] font-bold mb-1\">${escapeHTML(p.name)}</h5><div class=\"flex items-center justify-between mt-auto\"><span class=\"font-black\" style=\"color: hsl(var(--brand-hue), 70%, 40%);\">${p.price} ج.م</span><button onclick=\"addWithQtyContext(this, '${p.id}')\" class=\"px-4 py-2 border rounded-xl text-[11px] font-bold dyn-hover-bg transition-colors\" style=\"border-color: hsl(var(--brand-hue), 80%, 85%); color: hsl(var(--brand-hue), 70%, 50%);\">إضافة</button></div></div></div>`;
     }).join('')}</div></div>`;
@@ -860,9 +914,9 @@ function commitCakeBuilder() {
     const pr = Number(c.ps) * baseP;
     let ds = `النكهة: ${c.flv} | العدد: ${c.ps} أفراد`;
     const customId = generateUniqueID();
-    state.cart.push({ id: customId, cartItemId: customId, name: 'تورتة الفئة الملكية (تصميم خاص)', price: pr, desc: ds, quantity: 1, isCustom: true });
+    state.cart.push({ id: customId, cartItemId: customId, name: 'تورتة الإصدار الملكي (طلب خاص)', price: pr, category: 'تورت', desc: ds, quantity: 1, isCustom: true });
     saveCartToStorage(); toggleCart(true); calculateCartTotal();
-    state.cakeBuilder.msg = ''; renderMainDisplay(); showSystemToast('تم تسجيل التورتة في السلة بنجاح', 'success');
+    state.cakeBuilder.msg = ''; renderMainDisplay(); showSystemToast('تم إضافة طلب التخصيص بنجاح لمراجعة الإدارة', 'success');
 }
 
 function toggleDeliveryMethod() {
@@ -898,7 +952,7 @@ function toggleCart(show) {
 
 function goToCheckout() {
     const step1 = document.getElementById('step-1-cart'); const step2 = document.getElementById('step-2-checkout');
-    if (state.cart.length === 0) { showSystemToast("المشتريات لسه فاضية يا سكر 🌸", "info"); return; }
+    if (state.cart.length === 0) { showSystemToast("سلة المشتريات فارغة، يرجى اختيار المنتجات أولاً.", "info"); return; }
     step1.classList.add('hidden'); step2.classList.remove('hidden'); step2.scrollTop = 0;
 }
 
@@ -918,7 +972,7 @@ async function submitOrder() {
     }
     
     if (outOfStockItems.length > 0) {
-        showSystemToast(`عذراً يا فندم، المنتجات التالية نفدت للتو: ${outOfStockItems.join('، ')}. يرجى حذفها من السلة للاستمرار.`, 'error');
+        showSystemToast(`نعتذر، المنتجات التالية غير متوفرة حالياً: ${outOfStockItems.join('، ')}. يرجى تحديث القائمة للاستمرار.`, 'error');
         return;
     }
 
@@ -929,14 +983,14 @@ async function submitOrder() {
     const cNotes = document.getElementById('cust-notes') ? document.getElementById('cust-notes').value.trim() : '';
     const deliveryMethod = document.querySelector('input[name=\"delivery_method\"]:checked')?.value || 'delivery';
     
-    if (!cName || !cPhone) { showSystemToast('يا فندم يرجى كتابة الاسم والموبايل عشان نقدر نوصلك 🌸', 'error'); return; }
-    if (deliveryMethod === 'delivery' && (!document.getElementById('cust-area') || !document.getElementById('cust-area').value)) { showSystemToast('يا فندم يرجى اختيار منطقة التوصيل 🛵', 'error'); return; }
+    if (!cName || !cPhone) { showSystemToast('يرجى إكمال بيانات الاسم ورقم التواصل لضمان وصول الطلب بدقة.', 'error'); return; }
+    if (deliveryMethod === 'delivery' && (!document.getElementById('cust-area') || !document.getElementById('cust-area').value)) { showSystemToast('يرجى تحديد منطقة التوصيل المطلوبة.', 'error'); return; }
     
     const btn = document.querySelector('button[onclick=\"submitOrder()\"]');
     let originalBtnHtml = '';
     if(btn) {
         originalBtnHtml = btn.innerHTML;
-        btn.innerHTML = `<i data-lucide=\"loader-2\" class=\"w-5 h-5 animate-spin\"></i> جاري إرسال الطلب...`; 
+        btn.innerHTML = `<i data-lucide=\"loader-2\" class=\"w-5 h-5 animate-spin\"></i> جاري معالجة الطلب...`; 
         btn.disabled = true; 
         if(window.lucide) lucide.createIcons();
     }
@@ -971,15 +1025,15 @@ async function submitOrder() {
         date: new Date().toLocaleString('ar-EG')
     };
 
-    let m = `*طلب جديد من حلويات بوسي* 👑\n*رقم الطلب:* ${orderId}\n\n👤 الاسم: ${cName}\n📞 الموبايل: ${cPhone}\n`;
-    if(deliveryMethod === 'pickup') m += `🛵 الطريقة: استلام من الفرع\n`;
-    else m += `🛵 التوصيل: ${cArea} - ${cAddress}\n`;
+    let m = `*أمر توريد منتجات - حلويات بوسي* 👑\n*الرقم المرجعي:* ${orderId}\n\n👤 العميل: ${cName}\n📞 الهاتف: ${cPhone}\n`;
+    if(deliveryMethod === 'pickup') m += `🛵 وسيلة الاستلام: استلام مباشر من الفرع\n`;
+    else m += `🛵 وسيلة التوصيل: ${cArea} - ${cAddress}\n`;
     
-    m += `\n*تفاصيل الأوردر:*\n`;
-    state.cart.forEach((i, idx) => m += `▪️ *${i.name}* (x${i.quantity}) = ${i.price * i.quantity} ج.م\n`);
-    m += `\n*الإجمالي المطلوب:* ${finalTotal} ج.م`;
+    m += `\n*بيان الأصناف:*\n`;
+    state.cart.forEach((i, idx) => m += `▪️ *${i.name}* (الكمية: ${i.quantity}) = ${i.price * i.quantity} ج.م\n`);
+    m += `\n*القيمة الإجمالية:* ${finalTotal} ج.م`;
     
-    if(cNotes) m += `\n\n*ملاحظات إضافية:* ${cNotes}`;
+    if(cNotes) m += `\n\n*ملاحظات مهنية:* ${cNotes}`;
 
     const storePhone = siteSettings.footerPhone || '201097238441';
     let cleanPhone = storePhone.replace(/\D/g, '');
@@ -1000,7 +1054,7 @@ async function submitOrder() {
     }
 
     state.cart = []; clearCartStorage(); syncCartUI(); toggleCart(false); renderMainDisplay();
-    showSystemToast('تم تسجيل الطلب وإرساله لمركز القيادة بنجاح! 🎂', 'success');
+    showSystemToast('تم إرسال الطلب لمركز العمليات بنجاح.', 'success');
 
     if(btn) {
         btn.innerHTML = originalBtnHtml; 
@@ -1026,7 +1080,7 @@ async function syncOfflineOrders() {
 window.addEventListener('online', syncOfflineOrders);
 
 function showInfo(t) {
-    const d = { about: { t: 'من نحن', b: siteSettings.footerQuote || 'براند حلويات بوسي الأول بالفرافرة.' }, privacy: { t: 'سياسة الخصوصية والأمان', b: 'تلتزم إدارة حلويات بوسي بالسرية التامة لبيانات عملائنا.' }, refund: { t: 'سياسة الاسترجاع والتعديل', b: 'نسعى دائماً لرضاكم التام في حلويات بوسي 👑.' } };
+    const d = { about: { t: 'عن حلويات بوسي', b: siteSettings.footerQuote || 'العلامة التجارية الرائدة في صناعة الحلويات الفاخرة بالفرافرة.' }, privacy: { t: 'سياسة الأمان والبيانات', b: 'نلتزم في إدارة حلويات بوسي بحماية بيانات عملائنا وفق أعلى معايير الخصوصية.' }, refund: { t: 'سياسة الاستبدال والاسترجاع', b: 'تخضع كافة الطلبات لمعايير رقابة الجودة لضمان رضاكم التام.' } };
     if(!d[t]) return;
     document.getElementById('info-title').innerText = d[t].t; document.getElementById('info-body').innerText = d[t].b;
     const m = document.getElementById('info-modal'); m.classList.remove('hidden'); m.classList.add('flex'); if(window.lucide) lucide.createIcons();
@@ -1048,10 +1102,8 @@ window.addEventListener('scroll', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     if (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة') || document.getElementById('admin-orders-tbody')) {
-        console.warn("BoseSweets: Client Engine bypassed to prevent Multi-Source Rendering Conflict in Admin Zone. 🛡️");
         return; 
     }
     initApp();
-    autoBindAdminAccess();
     syncOfflineOrders();
 });

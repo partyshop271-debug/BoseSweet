@@ -7,7 +7,7 @@
     --base-font-size: 16px;
     --base-font-weight: 400;
     --site-bg: #fdfdfd; 
-    --site-text: #4a2b2b; 
+    --site-text: #ff3377; /* اللون السيد: البمبي الملكي المشبع */
     
     /* متغيرات شريط الإعلانات (Ticker) */
     --ticker-color: #ffffff;
@@ -15,10 +15,10 @@
     --ticker-speed: 20s;
 
     /* تدرجات ألوان براند حلويات بوسي - استخراج ديناميكي من الـ Hue */
-    --brand-primary: hsl(var(--brand-hue), 80%, 60%);
-    --brand-secondary: hsl(var(--brand-hue), 85%, 70%);
-    --brand-light: hsl(var(--brand-hue), 90%, 95%);
-    --brand-glow: hsla(var(--brand-hue), 80%, 65%, 0.3);
+    --brand-primary: #ff3377; /* Vibrant Royal Pink */
+    --brand-secondary: #ff75a0; /* Secondary Glow Pink */
+    --brand-light: #fff0f5; /* Light Rose Cloud */
+    --brand-glow: rgba(255, 51, 119, 0.5); /* Glow Effect */
 }
 
 html { 
@@ -52,19 +52,19 @@ body {
     background: linear-gradient(135deg, 
         var(--brand-primary) 0%, 
         var(--brand-secondary) 50%, 
-        hsl(var(--brand-hue), 90%, 80%) 100%); 
+        var(--brand-light) 100%); 
     box-shadow: 0 4px 15px -5px var(--brand-glow);
 }
 
 .ticker-brand-gradient { 
     background: linear-gradient(135deg, 
-        hsl(var(--brand-hue), 80%, 65%) 0%, 
-        hsl(var(--brand-hue), 85%, 75%) 50%, 
-        hsl(var(--brand-hue), 90%, 85%) 100%); 
+        var(--brand-primary) 0%, 
+        var(--brand-secondary) 50%, 
+        var(--brand-light) 100%); 
 }
 
-.ticker-fade-right { background: linear-gradient(to left, hsl(var(--brand-hue), 80%, 65%), transparent); }
-.ticker-fade-left { background: linear-gradient(to right, hsl(var(--brand-hue), 90%, 85%), transparent); }
+.ticker-fade-right { background: linear-gradient(to left, var(--brand-primary), transparent); }
+.ticker-fade-left { background: linear-gradient(to right, var(--brand-light), transparent); }
 
 /* 🌟 محرك الحركات المتقدم (Advanced Animation Engine) */
 .animate-fade-in { 
@@ -89,6 +89,7 @@ body {
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
+    border-radius: 9999px; /* rounded-full */
 }
 
 .btn-premium-action:hover {
@@ -120,8 +121,8 @@ body {
 /* 🛡️ الهيكل المقدس - شريط التنقل المتطور */
 .nav-scrolled { 
     background-color: rgba(253, 253, 253, 0.95); 
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(10px); /* تأثير الزجاج */
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 10px 40px -15px rgba(0, 0, 0, 0.08); 
     transform: translateZ(0); 
     will-change: background-color, backdrop-filter;
@@ -147,7 +148,7 @@ input[type="checkbox"], input[type="radio"] {
 .custom-radio-container:has(input:checked) {
     border-color: var(--brand-primary) !important;
     background-color: var(--brand-light) !important;
-    color: hsl(var(--brand-hue), 70%, 50%) !important;
+    color: var(--brand-primary) !important;
     transform: scale(1.02);
     box-shadow: 0 4px 12px -3px var(--brand-glow);
 }
@@ -164,8 +165,7 @@ input[type="checkbox"], input[type="radio"] {
     white-space: nowrap;
     padding-left: 100%;
     animation: ticker-marquee var(--ticker-speed) linear infinite;
-    font-weight: 700;
-    /* التوسيع الجديد: توجيه المعالجة لكارت الشاشة لضمان سلاسة الحركة */
+    font-weight: 600; /* Medium */
     will-change: transform; 
     transform: translateZ(0); 
 }
@@ -189,14 +189,15 @@ input[type="checkbox"], input[type="radio"] {
 /* تأثير التمييز الملكي عند الوصول لمنتج محدد */
 @keyframes targetHighlight {
     0% { box-shadow: 0 0 0 0px var(--brand-primary); transform: scale(1); }
-    50% { box-shadow: 0 0 0 20px rgba(236, 72, 153, 0); transform: scale(1.03); }
-    100% { box-shadow: 0 0 0 0px rgba(236, 72, 153, 0); transform: scale(1); }
+    50% { box-shadow: 0 0 0 20px rgba(255, 51, 119, 0); transform: scale(1.03); }
+    100% { box-shadow: 0 0 0 0px rgba(255, 51, 119, 0); transform: scale(1); }
 }
 .highlight-target { animation: targetHighlight 2s ease-out; }
 
 /* 🍮 تأثيرات خاصة لمنتجات حلويات بوسي (قشطوطة، ديسباسيتو، سينابون) */
 .product-card-premium {
     transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border-radius: 2.5rem;
 }
 
 .product-card-premium:hover {
@@ -234,4 +235,114 @@ input[type="checkbox"], input[type="radio"] {
     pointer-events: none;
     will-change: transform, opacity;
     transform: translateZ(0);
+}
+
+/* ----------------------------------------------------------- */
+/* 1. محرك "شلال الصور المتعاكس" (Visual Waterfall) */
+/* ----------------------------------------------------------- */
+
+#section-waterfall {
+    perspective: 1000px;
+}
+
+/* عمود الصور - الارتفاع الثابت 290px لمنع الانضغاط (Anti-Squish) */
+.waterfall-card {
+    height: 290px;
+    width: 100%;
+    border-radius: 2.5rem; /* الانحناء الدائري الكبير المعتمد */
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.5s ease;
+}
+
+.waterfall-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* أنيميشن الأعمدة المتعاكسة */
+@keyframes waterfall-up {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+}
+
+@keyframes waterfall-down {
+    0% { transform: translateY(-50%); }
+    100% { transform: translateY(0); }
+}
+
+.animate-waterfall-up {
+    animation: waterfall-up 25s linear infinite;
+    will-change: transform;
+}
+
+.animate-waterfall-down {
+    animation: waterfall-down 25s linear infinite;
+    will-change: transform;
+}
+
+.waterfall-paused {
+    animation-play-state: paused !important;
+}
+
+/* ----------------------------------------------------------- */
+/* 2. محرك "الظهور التدريجي" (Lazy Loading & Fade-in) */
+/* ----------------------------------------------------------- */
+
+.lazy-section {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: opacity, transform;
+}
+
+.lazy-section.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ----------------------------------------------------------- */
+/* 3. تنسيق "السلايدر الإطاري" و "الأكثر مبيعاً" */
+/* ----------------------------------------------------------- */
+
+#bestsellers-slider-home, #new-arrivals-slider-home {
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* تنسيق نقط التنقل */
+.slider-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #e2e8f0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.slider-dot.active {
+    width: 24px;
+    border-radius: 4px;
+    background-color: var(--brand-primary);
+}
+
+/* تأثير الزجاج على الأسهم الجانبية */
+#bs-prev, #bs-next, #na-prev, #na-next {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 51, 119, 0.1);
+    color: var(--brand-primary);
+}
+
+/* ----------------------------------------------------------- */
+/* التعديل الهندسي لمنع انضغاط الصور (Anti-Squish) */
+/* ----------------------------------------------------------- */
+
+img {
+    object-fit: cover;
+    object-position: center;
+    image-rendering: -webkit-optimize-contrast;
 }

@@ -61,7 +61,6 @@
     <script src="app.js"></script>
 
     <style>
-        /* ⚙️ إعدادات المحرك البصري الأصلي لبراند حلويات بوسي */
         :root {
             --brand-hue: 340;
             --site-bg: #ffffff;
@@ -114,18 +113,30 @@
             color: white;
         }
 
-        img {
-            content-visibility: auto;
+        img { content-visibility: auto; }
+
+        /* 🚀 أنيميشن الأقسام الجديدة */
+        @keyframes waterfall-up { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+        @keyframes waterfall-down { 0% { transform: translateY(-50%); } 100% { transform: translateY(0); } }
+        .animate-waterfall-up { animation: waterfall-up 25s linear infinite; }
+        .animate-waterfall-down { animation: waterfall-down 25s linear infinite; }
+        .waterfall-paused { animation-play-state: paused !important; }
+
+        .mask-image-y {
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+            mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
         }
+
+        .lazy-section { opacity: 0; transform: translateY(40px); transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .lazy-section.is-visible { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
 
-    <div id="global-loader" class="fixed inset-0 z-[999] flex flex-col items-center justify-center brand-gradient transition-opacity duration-700">
-        <div class="p-6 bg-white/20 backdrop-blur-md rounded-full border border-white/40 shadow-inner mb-6 floating">
-            <i data-lucide="cake" class="w-16 h-16 text-white drop-shadow-lg"></i>
-        </div>
-        <p id="dyn-loader-text" class="font-bold text-xl md:text-2xl text-white tracking-wide drop-shadow-md">أهلاً بكم في عالم حلويات بوسي ✨</p>
+    <div id="global-loader" class="fixed inset-0 z-[999] flex flex-col items-center justify-center bg-white transition-opacity duration-700">
+        <h1 class="font-black text-2xl md:text-4xl text-slate-800 tracking-wide text-center leading-relaxed px-4">
+            أهلاً بكم في عالم حلويات بوسي<br>ينتظرك شيء جميل بالداخل
+        </h1>
     </div>
 
     <div id="system-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[300] hidden items-center gap-3 bg-gray-900 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm max-w-[90vw] text-center border border-gray-700">
@@ -139,7 +150,7 @@
         </div>
     </div>
 
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 top-[40px] py-3 md:py-4 border-b border-pink-50" style="background-color: var(--site-bg);">
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-500 top-[40px] py-3 md:py-4 border-b border-pink-50 shadow-sm" style="background-color: var(--site-bg);">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
             <div class="flex items-center gap-2 md:gap-3">
                 <button onclick="toggleCustomerMenu(true)" class="p-2 md:p-3 rounded-xl transition-all shadow-sm border hover:bg-pink-50" style="background-color: var(--site-bg); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 90%);">
@@ -150,15 +161,15 @@
                 </button>
             </div>
             
-            <div id="admin-secret-portal" class="flex items-center gap-2 md:gap-4 cursor-pointer absolute left-1/2 -translate-x-1/2" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+            <a href="index.html" id="brand-home-link" class="flex items-center gap-2 md:gap-4 cursor-pointer absolute left-1/2 -translate-x-1/2">
                 <div class="w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center border-2 shadow-sm" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
                     <i data-lucide="cake" class="w-5 h-5 md:w-8 md:h-8" style="color: hsl(var(--brand-hue), 70%, 50%);"></i>
                 </div>
                 <div class="flex flex-col items-center">
-                    <h1 id="dyn-brand-name" class="text-lg md:text-3xl font-bold bg-clip-text text-transparent tracking-tight leading-none" style="background-image: linear-gradient(to left, hsl(var(--brand-hue), 70%, 50%), hsl(var(--brand-hue), 80%, 60%));">حلويات بوسي</h1>
+                    <h1 id="dyn-brand-name" class="text-lg md:text-3xl font-black bg-clip-text text-transparent tracking-tight leading-none" style="background-image: linear-gradient(to left, hsl(var(--brand-hue), 70%, 50%), hsl(var(--brand-hue), 80%, 60%));">حلويات بوسي</h1>
                     <span class="text-[7px] md:text-[9px] font-bold uppercase tracking-widest mt-0.5 opacity-80" style="color: var(--site-text);">Premium Patisserie</span>
                 </div>
-            </div>
+            </a>
 
             <button onclick="toggleCart(true)" class="relative p-2 md:p-3 border rounded-xl transition-all shadow-sm flex items-center gap-2" style="background-color: hsl(var(--brand-hue), 80%, 97%); color: hsl(var(--brand-hue), 70%, 50%); border-color: hsl(var(--brand-hue), 80%, 85%);">
                 <i data-lucide="shopping-cart" class="w-6 h-6"></i>
@@ -167,7 +178,7 @@
         </div>
     </nav>
 
-    <header class="pt-28 md:pt-36 pb-4 md:pb-6 px-4 max-w-7xl mx-auto">
+    <header id="hero-header" class="pt-28 md:pt-36 pb-4 md:pb-6 px-4 max-w-7xl mx-auto">
         <div class="brand-gradient rounded-[2rem] md:rounded-[3.5rem] px-6 py-8 md:p-16 text-white shadow-2xl relative overflow-hidden group">
             <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-right">
                 <div class="flex-1">
@@ -175,80 +186,125 @@
                         <i data-lucide="sparkles" class="w-4 h-4" style="color: hsl(var(--brand-hue), 70%, 50%);"></i>
                         <span>أرقى الحلويات والتورت في الفرافرة والوادي الجديد</span>
                     </div>
-                    <h2 id="dyn-hero-title" class="text-3xl sm:text-4xl md:text-7xl font-bold mb-4 leading-tight text-gray-800 tracking-tighter opacity-0 transition-opacity duration-500"></h2>
-                    <p id="dyn-hero-desc" class="text-sm md:text-2xl opacity-0 max-w-2xl font-bold leading-relaxed mb-6 text-gray-800 transition-opacity duration-500"></p>
-                    <button onclick="document.getElementById('menu-section').scrollIntoView({behavior:'smooth'})" class="w-full sm:w-auto font-bold text-sm md:text-xl px-10 py-4 rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 bg-white hover:bg-pink-50 active:scale-95 shadow-lg" style="color: hsl(var(--brand-hue), 70%, 50%);">
-                        استعراض القائمة الرسمية <i data-lucide="chevron-down" class="w-5 h-5 animate-bounce"></i>
-                    </button>
+                    <h2 id="dyn-hero-title" class="text-3xl sm:text-4xl md:text-7xl font-black mb-4 leading-tight text-gray-800 tracking-tighter">حلويات بوسي</h2>
+                    <p id="dyn-hero-desc" class="text-sm md:text-2xl max-w-2xl font-bold leading-relaxed mb-6 text-gray-800">تشكيلة حصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بمناسباتكم السعيدة.</p>
                 </div>
                 <div class="hidden md:block w-1/3">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/hero_cake_bose.png" 
-                         alt="حلويات بوسي - BoseSweets الفرافرة" 
-                         loading="lazy" 
-                         class="w-full h-auto floating drop-shadow-2xl">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/hero_cake_bose.png" alt="حلويات بوسي" class="w-full h-auto floating drop-shadow-2xl">
                 </div>
             </div>
         </div>
     </header>
 
-    <section id="menu-section" class="sticky top-[78px] md:top-[85px] backdrop-blur-xl z-40 py-5 shadow-sm border-b" style="background-color: rgba(255,255,255,0.95); border-color: hsl(var(--brand-hue), 80%, 95%);">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col gap-4">
-            <div id="categories-nav" class="flex overflow-x-auto hide-scrollbar gap-4 pb-2"></div>
-            <div id="sub-tabs-area" class="hidden w-full transition-all duration-300"></div>
-        </div>
-    </section>
+    <div id="home-view-sections" class="w-full flex flex-col gap-32 py-16">
+        
+        <section id="section-excellence" class="max-w-7xl mx-auto px-4 text-center lazy-section">
+            <h2 class="text-3xl md:text-5xl font-black mb-6" style="color: hsl(var(--brand-hue), 70%, 40%);">أكثر من عقد من التميز</h2>
+            <p class="text-lg font-bold text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">منذ انطلاقتنا، ونحن نصنع الحلويات بشغف واحترافية لتكون جزءاً من أجمل لحظاتكم. نقدم لكم تجربة تذوق ملكية لا تُنسى تعكس التزامنا بأعلى معايير الجودة.</p>
+            <button id="btn-browse-menu-home" onclick="switchToMenuView()" class="font-black text-lg px-12 py-4 rounded-full shadow-xl transition-all brand-gradient text-white hover:scale-105 active:scale-95">تصفح المنيو</button>
+        </section>
 
-    <main class="max-w-7xl mx-auto px-4 py-12 mb-32">
-        <div id="display-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        </div>
-    </main>
-
-    <section id="gallery-customer-section" class="hidden py-16 mt-8 border-t border-b" style="background-color: hsl(var(--brand-hue), 80%, 98%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="text-center mb-10">
-                <h3 class="text-3xl font-black mb-3" style="color: hsl(var(--brand-hue), 70%, 40%);">عدسة حلويات بوسي 📸</h3>
-                <p class="font-bold opacity-70" style="color: var(--site-text);">بعض من أعمالنا الفنية السابقة التي نفخر بها</p>
+        <section id="section-waterfall" class="max-w-5xl mx-auto px-4 overflow-hidden relative lazy-section">
+            <div class="flex gap-4 md:gap-8 justify-center h-[700px] md:h-[900px] overflow-hidden mask-image-y" id="waterfall-trigger">
+                <div class="w-1/2 flex flex-col gap-4 md:gap-8 animate-waterfall-up hover:waterfall-paused" id="waterfall-col-1"></div>
+                <div class="w-1/2 flex flex-col gap-4 md:gap-8 animate-waterfall-down hover:waterfall-paused" id="waterfall-col-2"></div>
             </div>
-            <div class="flex overflow-x-auto gap-4 pb-6 hide-scrollbar snap-slider" id="gallery-slider"></div>
-        </div>
-    </section>
+        </section>
 
-    <div id="gallery-lightbox" class="fixed inset-0 z-[300] bg-black/95 hidden items-center justify-center p-4 lightbox-enter">
-        <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white/70 hover:text-white p-2 rounded-full bg-white/10 transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
-        <img id="lightbox-img" src="" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl">
+        <section id="section-mastery" class="max-w-7xl mx-auto px-4 text-center lazy-section">
+            <h2 class="text-3xl md:text-5xl font-black mb-6" style="color: hsl(var(--brand-hue), 70%, 40%);">سنوات من الإتقان</h2>
+            <p class="text-lg font-bold text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">كل قطعة تُصنع بعناية فائقة وتفاصيل دقيقة لضمان تجربة بصرية ومذاق يرضي الذوق الرفيع.</p>
+            <div class="relative w-full max-w-5xl mx-auto aspect-video bg-gray-50 rounded-[2rem] border-8 shadow-2xl overflow-hidden" style="border-color: hsl(var(--brand-hue), 80%, 95%);">
+                <div id="mastery-slider-frame" class="w-full h-full relative">
+                    </div>
+            </div>
+        </section>
+
+        <section id="section-bestsellers" class="max-w-7xl mx-auto px-4 text-center lazy-section">
+            <h2 class="text-3xl md:text-5xl font-black mb-6" style="color: hsl(var(--brand-hue), 70%, 40%);">الأكثر مبيعاً في حلويات بوسي</h2>
+            <p class="text-lg font-bold text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">الإصدارات المفضلة والأعلى طلباً، صُممت لتلبي شغفكم بالجودة الفورية والمضمونة.</p>
+            <div class="relative group px-4 md:px-12">
+                <button id="bs-prev" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-gray-800 hover:text-pink-600 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="chevron-right"></i></button>
+                <div id="bestsellers-slider-home" class="flex overflow-x-hidden gap-6 scroll-smooth py-4">
+                    </div>
+                <button id="bs-next" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-gray-800 hover:text-pink-600 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="chevron-left"></i></button>
+            </div>
+            <div id="bestsellers-dots-home" class="flex justify-center gap-3 mt-6"></div>
+        </section>
+
+        <section id="section-milestone" class="max-w-7xl mx-auto px-4 lazy-section">
+            <div class="brand-gradient rounded-[3rem] p-12 md:p-20 text-center text-white shadow-2xl relative overflow-hidden">
+                <div class="absolute inset-0 bg-black/5 mix-blend-overlay"></div>
+                <div class="relative z-10">
+                    <i data-lucide="award" class="w-16 h-16 mx-auto mb-6 opacity-90 drop-shadow-md"></i>
+                    <h2 class="text-4xl md:text-6xl font-black mb-6">الفخر والاعتزاز</h2>
+                    <p class="text-xl md:text-2xl font-bold max-w-3xl mx-auto leading-relaxed">نفخر بخدمة أكثر من <span class="text-yellow-300 font-black text-3xl md:text-4xl px-2">10,000</span> عميل، كنا وما زلنا شريك السعادة الموثوق في مناسباتهم الاستثنائية.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-new-arrivals" class="max-w-7xl mx-auto px-4 text-center lazy-section">
+            <h2 class="text-3xl md:text-5xl font-black mb-6" style="color: hsl(var(--brand-hue), 70%, 40%);">وصل حديثاً</h2>
+            <p class="text-lg font-bold text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">اكتشف أحدث النكهات والإصدارات الحصرية من مطبخ حلويات بوسي.</p>
+            <div class="relative group px-4 md:px-12">
+                <button id="na-prev" class="absolute right-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-gray-800 hover:text-pink-600 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="chevron-right"></i></button>
+                <div id="new-arrivals-slider-home" class="flex overflow-x-hidden gap-6 scroll-smooth py-4">
+                    </div>
+                <button id="na-next" class="absolute left-2 top-1/2 -translate-y-1/2 z-10 w-12 h-12 bg-white/90 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-gray-800 hover:text-pink-600 opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="chevron-left"></i></button>
+            </div>
+            <div id="new-arrivals-dots-home" class="flex justify-center gap-3 mt-6"></div>
+        </section>
+
     </div>
+    <div id="menu-view-section" class="hidden w-full flex-col animate-fade-in">
+        <section id="menu-sticky-nav" class="sticky top-[78px] md:top-[85px] backdrop-blur-xl z-40 py-5 shadow-sm border-b" style="background-color: rgba(255,255,255,0.95); border-color: hsl(var(--brand-hue), 80%, 95%);">
+            <div class="max-w-7xl mx-auto px-4 flex flex-col gap-4">
+                <div id="categories-nav" class="flex overflow-x-auto hide-scrollbar gap-4 pb-2"></div>
+                <div id="sub-tabs-area" class="hidden w-full transition-all duration-300"></div>
+            </div>
+        </section>
 
-    <footer class="border-t pt-24 pb-12" style="background-color: hsl(var(--brand-hue), 80%, 98%); border-color: hsl(var(--brand-hue), 80%, 95%);">
+        <main class="max-w-7xl mx-auto px-4 py-12 mb-32">
+            <div id="display-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 items-stretch"></div>
+        </main>
+    </div>
+    <footer id="main-footer" class="border-t pt-24 pb-12 mt-16" style="background-color: hsl(var(--brand-hue), 80%, 98%); border-color: hsl(var(--brand-hue), 80%, 95%);">
         <div class="max-w-7xl mx-auto px-6 text-center md:text-right">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
                 <div>
                     <div class="flex items-center gap-3 justify-center md:justify-start mb-6">
                         <i data-lucide="cake" class="w-8 h-8" style="color: hsl(var(--brand-hue), 70%, 50%);"></i>
-                        <h3 id="dyn-footer-brand" class="text-2xl font-bold" style="color: hsl(var(--brand-hue), 70%, 40%);">حلويات بوسي</h3>
+                        <h3 id="dyn-footer-brand" class="text-2xl font-black" style="color: hsl(var(--brand-hue), 70%, 40%);">حلويات بوسي</h3>
                     </div>
-                    <p id="dyn-footer-quote" class="text-sm font-bold opacity-70 leading-relaxed" style="color: var(--site-text);">البراند الأول للحلويات الملكية في الفرافرة. جودة تليق بمناسباتكم السعيدة في قلب الوادي الجديد. اطلب الآن واستمتع بطعم لا يقاوم.</p>
+                    <p id="dyn-footer-quote" class="text-sm font-bold opacity-70 leading-relaxed" style="color: var(--site-text);">البراند الأول للحلويات الملكية. جودة تليق بمناسباتكم السعيدة، نصنعها بشغف واحترافية في قلب الوادي الجديد.</p>
                 </div>
+                
                 <div>
-                    <h4 class="font-bold mb-6 underline underline-offset-8" style="color: hsl(var(--brand-hue), 70%, 40%); text-decoration-color: hsl(var(--brand-hue), 80%, 85%);">تواصل معنا</h4>
-                    <p id="dyn-footer-address" class="text-sm font-bold" style="color: var(--site-text);">الموقع: الكفاح، مركز الفرافرة، محافظة الوادي الجديد</p>
-                    <p class="text-lg font-bold mt-3 flex items-center justify-center md:justify-start gap-2" dir="ltr" style="color: hsl(var(--brand-hue), 70%, 50%);">
+                    <h4 class="font-black mb-6 underline underline-offset-8" style="color: hsl(var(--brand-hue), 70%, 40%); text-decoration-color: hsl(var(--brand-hue), 80%, 85%);">تواصل معنا</h4>
+                    <p id="dyn-footer-address" class="text-sm font-bold mb-4" style="color: var(--site-text);">الموقع: الكفاح، مركز الفرافرة، محافظة الوادي الجديد</p>
+                    <p class="text-lg font-black mt-3 flex items-center justify-center md:justify-start gap-2" dir="ltr" style="color: hsl(var(--brand-hue), 70%, 50%);">
                         <i data-lucide="phone" class="w-4 h-4"></i> <span id="dyn-footer-phone">+20 109 723 8441</span>
                     </p>
                 </div>
+                
                 <div>
-                    <h4 class="font-bold mb-6 underline underline-offset-8" style="color: hsl(var(--brand-hue), 70%, 40%); text-decoration-color: hsl(var(--brand-hue), 80%, 85%);">روابط سريعة</h4>
+                    <h4 class="font-black mb-6 underline underline-offset-8" style="color: hsl(var(--brand-hue), 70%, 40%); text-decoration-color: hsl(var(--brand-hue), 80%, 85%);">روابط سريعة</h4>
                     <div class="flex flex-col gap-3 text-sm font-bold">
                         <button onclick="showInfo('about')" class="text-right hover:text-pink-600 transition-colors" style="color: var(--site-text);">من نحن - قصة حلويات بوسي</button>
                         <button onclick="showInfo('privacy')" class="text-right hover:text-pink-600 transition-colors" style="color: var(--site-text);">سياسة الخصوصية والأمان</button>
-                        <button onclick="showInfo('refund')" class="text-right hover:text-pink-600 transition-colors" style="color: var(--site-text);">سياسة الاسترجاع والتعديل</button>
+                        <button onclick="showInfo('refund')" class="text-right hover:text-pink-600 transition-colors" style="color: var(--site-text);">سياسة الاسترجاع والاستبدال</button>
+                        <button onclick="showInfo('golden_tips')" class="text-right hover:text-pink-600 transition-colors" style="color: var(--site-text);">النصائح الذهبية (تخزين وصلاحية)</button>
                     </div>
                 </div>
             </div>
-            <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
-                <p class="text-[10px] font-bold opacity-50 tracking-widest" style="color: var(--site-text);">جميع الحقوق محفوظة لعلامة BoseSweets - حلويات بوسي © 2026</p>
-                <div class="flex gap-4">
-                    <a href="https://facebook.com/BoseSweets" target="_blank" class="text-blue-600 hover:scale-110 transition-transform"><i data-lucide="facebook" class="w-5 h-5"></i></a>
-                    <a href="https://tiktok.com/@BoseSweets" target="_blank" class="text-black hover:scale-110 transition-transform"><i data-lucide="music-2" class="w-5 h-5"></i></a>
+            
+            <div class="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-6" style="border-color: hsl(var(--brand-hue), 80%, 90%);">
+                <p class="text-[11px] font-bold opacity-60 tracking-widest" style="color: var(--site-text);">جميع الحقوق محفوظة لعلامة BoseSweets - حلويات بوسي © 2026</p>
+                <div class="flex gap-5">
+                    <a href="https://facebook.com/BoseSweets" target="_blank" class="text-blue-600 hover:scale-125 transition-transform" aria-label="Facebook"><i data-lucide="facebook" class="w-6 h-6"></i></a>
+                    <a href="https://tiktok.com/@BoseSweets" target="_blank" class="text-black hover:scale-125 transition-transform" aria-label="TikTok"><i data-lucide="music-2" class="w-6 h-6"></i></a>
+                    <a href="#" target="_blank" class="text-pink-600 hover:scale-125 transition-transform" aria-label="Instagram"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                    <a href="#" target="_blank" class="text-green-600 hover:scale-125 transition-transform" aria-label="Google Maps"><i data-lucide="map-pinned" class="w-6 h-6"></i></a>
                 </div>
             </div>
         </div>
@@ -258,13 +314,12 @@
         
         <div id="step-1-cart" class="flex flex-col h-full">
             <div class="p-6 border-b flex justify-between items-center" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
-                <h2 class="text-2xl font-black" style="color: hsl(var(--brand-hue), 70%, 40%);">سلة السعادة 🛍️</h2>
-                <button onclick="toggleCart(false)" class="p-2 text-gray-400 hover:text-red-500 transition-colors">
-                    <i data-lucide="x" class="w-6 h-6"></i>
-                </button>
+                <h2 class="text-2xl font-black" style="color: hsl(var(--brand-hue), 70%, 40%);">السلة الذكية 🛍️</h2>
+                <button onclick="toggleCart(false)" class="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-full hover:bg-white"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
             <div id="cart-list" class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar bg-white"></div>
-            <div class="px-6" id="cross-sell-area"></div>
+            <div class="px-6 pb-4" id="cross-sell-area">
+                </div>
             <div class="p-6 border-t shadow-[0_-10px_20px_rgba(0,0,0,0.02)]" style="background-color: hsl(var(--brand-hue), 80%, 98%); border-color: hsl(var(--brand-hue), 80%, 90%);">
                 <div class="flex justify-between items-center mb-6">
                     <span class="font-bold text-gray-500">إجمالي المشتريات:</span>
@@ -284,57 +339,26 @@
             
             <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
                 <div class="space-y-4">
-                    <h3 class="font-bold flex items-center gap-2 border-b pb-2" style="color: hsl(var(--brand-hue), 70%, 40%); border-color: hsl(var(--brand-hue), 80%, 90%);"><i data-lucide="user" class="w-5 h-5"></i> معلومات التواصل</h3>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1.5">الاسم الكريم <span class="text-red-500">*</span></label>
-                        <input type="text" id="cust-name" placeholder="اكتب اسمك هنا..." class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-pink-500 outline-none transition-all font-bold text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1.5">رقم الموبايل (واتساب) <span class="text-red-500">*</span></label>
-                        <input type="tel" id="cust-phone" dir="ltr" placeholder="01xxxxxxxxx" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-pink-500 outline-none transition-all font-bold text-sm text-right">
-                    </div>
+                    <h3 class="font-black flex items-center gap-2 border-b pb-2" style="color: hsl(var(--brand-hue), 70%, 40%); border-color: hsl(var(--brand-hue), 80%, 90%);"><i data-lucide="user" class="w-5 h-5"></i> معلومات التواصل</h3>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1.5">الاسم الكريم <span class="text-red-500">*</span></label><input type="text" id="cust-name" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none font-bold text-sm"></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1.5">رقم الموبايل (واتساب) <span class="text-red-500">*</span></label><input type="tel" id="cust-phone" dir="ltr" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none font-bold text-sm text-right"></div>
                 </div>
 
                 <div class="space-y-4 pt-4">
-                    <h3 class="font-bold flex items-center gap-2 border-b pb-2" style="color: hsl(var(--brand-hue), 70%, 40%); border-color: hsl(var(--brand-hue), 80%, 90%);"><i data-lucide="map-pin" class="w-5 h-5"></i> طريقة الاستلام</h3>
+                    <h3 class="font-black flex items-center gap-2 border-b pb-2" style="color: hsl(var(--brand-hue), 70%, 40%); border-color: hsl(var(--brand-hue), 80%, 90%);"><i data-lucide="map-pin" class="w-5 h-5"></i> طريقة الاستلام</h3>
                     <div class="grid grid-cols-2 gap-3">
-                        <label class="custom-radio-container relative cursor-pointer">
-                            <input type="radio" name="delivery_method" value="delivery" checked class="peer sr-only" onchange="toggleDeliveryMethod()">
-                            <span class="flex flex-col items-center justify-center p-4 border-2 border-gray-100 rounded-xl peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all text-center">
-                                <i data-lucide="truck" class="w-6 h-6 mb-2"></i>
-                                <span class="font-bold text-sm">توصيل للمنزل</span>
-                            </span>
-                        </label>
-                        <label class="custom-radio-container relative cursor-pointer">
-                            <input type="radio" name="delivery_method" value="pickup" class="peer sr-only" onchange="toggleDeliveryMethod()">
-                            <span class="flex flex-col items-center justify-center p-4 border-2 border-gray-100 rounded-xl peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all text-center">
-                                <i data-lucide="store" class="w-6 h-6 mb-2"></i>
-                                <span class="font-bold text-sm">استلام من الفرع</span>
-                            </span>
-                        </label>
+                        <label class="custom-radio-container relative cursor-pointer"><input type="radio" name="delivery_method" value="delivery" checked class="peer sr-only" onchange="toggleDeliveryMethod()"><span class="flex flex-col items-center justify-center p-4 border-2 border-gray-100 rounded-xl peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all text-center"><i data-lucide="truck" class="w-6 h-6 mb-2"></i><span class="font-bold text-sm">توصيل للمنزل</span></span></label>
+                        <label class="custom-radio-container relative cursor-pointer"><input type="radio" name="delivery_method" value="pickup" class="peer sr-only" onchange="toggleDeliveryMethod()"><span class="flex flex-col items-center justify-center p-4 border-2 border-gray-100 rounded-xl peer-checked:border-pink-500 peer-checked:bg-pink-50 transition-all text-center"><i data-lucide="store" class="w-6 h-6 mb-2"></i><span class="font-bold text-sm">استلام من الفرع</span></span></label>
                     </div>
                 </div>
 
                 <div id="delivery-area-container" class="space-y-4 pt-2">
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1.5">المنطقة <span class="text-red-500">*</span></label>
-                        <select id="cust-area" onchange="calculateCartTotal()" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-pink-500 outline-none transition-all font-bold text-sm"></select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1.5">العنوان بالتفصيل</label>
-                        <textarea id="cust-address" rows="2" placeholder="الشارع، رقم العمارة، علامة مميزة..." class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-pink-500 outline-none transition-all font-bold text-sm resize-none"></textarea>
-                    </div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1.5">المنطقة <span class="text-red-500">*</span></label><select id="cust-area" onchange="calculateCartTotal()" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none font-bold text-sm"></select></div>
+                    <div><label class="block text-xs font-bold text-gray-500 mb-1.5">العنوان بالتفصيل</label><textarea id="cust-address" rows="2" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none font-bold text-sm resize-none"></textarea></div>
                 </div>
 
-                <div id="pickup-info" class="hidden bg-blue-50 border border-blue-100 p-4 rounded-xl text-blue-800 text-sm font-bold flex gap-3">
-                    <i data-lucide="info" class="w-5 h-5 shrink-0"></i>
-                    <p>مقر حلويات بوسي: الكفاح، مركز الفرافرة، بجوار صيدلية د. أحمد مجدي. سيتم التواصل لتأكيد ميعاد الاستلام.</p>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-gray-500 mb-1.5">ملاحظات إضافية (اختياري)</label>
-                    <textarea id="cust-notes" rows="2" placeholder="أي تفاصيل خاصة بالطلب..." class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:border-pink-500 outline-none transition-all font-bold text-sm resize-none"></textarea>
-                </div>
+                <div id="pickup-info" class="hidden bg-blue-50 border border-blue-100 p-4 rounded-xl text-blue-800 text-sm font-bold flex gap-3"><i data-lucide="info" class="w-5 h-5 shrink-0"></i><p>مقر حلويات بوسي: الكفاح، مركز الفرافرة. سيتم التواصل لتأكيد ميعاد الاستلام.</p></div>
+                <div><label class="block text-xs font-bold text-gray-500 mb-1.5">ملاحظات إضافية (اختياري)</label><textarea id="cust-notes" rows="2" class="w-full p-3.5 bg-gray-50 border border-gray-200 rounded-xl outline-none font-bold text-sm resize-none"></textarea></div>
             </div>
 
             <div class="p-6 border-t shadow-[0_-10px_20px_rgba(0,0,0,0.02)]" style="background-color: hsl(var(--brand-hue), 80%, 98%); border-color: hsl(var(--brand-hue), 80%, 90%);">
@@ -354,9 +378,9 @@
         <div id="customer-menu-sidebar" class="absolute top-0 right-0 bottom-0 w-[80%] max-w-sm bg-white shadow-2xl translate-x-full transition-transform duration-300 flex flex-col">
             <div class="p-6 border-b flex justify-between items-center" style="background-color: hsl(var(--brand-hue), 80%, 97%); border-color: hsl(var(--brand-hue), 80%, 90%);">
                 <h2 class="text-xl font-black" style="color: hsl(var(--brand-hue), 70%, 40%);">أقسام المنيو 📋</h2>
-                <button onclick="toggleCustomerMenu(false)" class="p-2 text-gray-400 hover:text-red-500 transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
+                <button onclick="toggleCustomerMenu(false)" class="p-2 text-gray-400 hover:text-red-500 transition-colors rounded-full hover:bg-white"><i data-lucide="x" class="w-6 h-6"></i></button>
             </div>
-            <div id="sidebar-categories" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+            <div id="sidebar-categories" class="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar"></div>
         </div>
     </div>
 
@@ -364,11 +388,11 @@
         <div class="max-w-4xl mx-auto w-full pt-16">
             <div class="flex justify-between items-center mb-10">
                 <h3 class="text-3xl font-black text-white border-r-4 pr-4" style="border-color: hsl(var(--brand-hue), 70%, 50%);">ابحثي عن طلبك ✨</h3>
-                <button onclick="toggleLiveSearch(false)" class="text-white hover:text-pink-500 p-2 bg-white/5 rounded-full"><i data-lucide="x" class="w-8 h-8"></i></button>
+                <button onclick="toggleLiveSearch(false)" class="text-white hover:text-pink-500 p-2 bg-white/5 rounded-full transition-colors"><i data-lucide="x" class="w-8 h-8"></i></button>
             </div>
             <div class="relative group">
                 <i data-lucide="search" class="absolute right-6 top-1/2 -translate-y-1/2 w-8 h-8 group-focus-within:scale-110 transition-transform" style="color: hsl(var(--brand-hue), 70%, 50%);"></i>
-                <input type="text" id="live-search-input" oninput="performLiveSearchDebounced(this.value)" placeholder="تورتة، سينابون، نوتيلا، ديسباسيتو..." class="w-full bg-white/5 border-2 border-white/10 py-7 pr-16 pl-6 rounded-[2rem] text-white text-2xl font-bold outline-none transition-all shadow-2xl focus:bg-white/10" style="caret-color: hsl(var(--brand-hue), 70%, 50%); border-color: focus:hsl(var(--brand-hue), 70%, 50%);">
+                <input type="text" id="live-search-input" oninput="performLiveSearchDebounced(this.value)" placeholder="تورتة، سينابون، دوناتس..." class="w-full bg-white/5 border-2 border-white/10 py-7 pr-16 pl-6 rounded-[2rem] text-white text-2xl font-bold outline-none transition-all shadow-2xl focus:bg-white/10" style="caret-color: hsl(var(--brand-hue), 70%, 50%); border-color: focus:hsl(var(--brand-hue), 70%, 50%);">
             </div>
             <div id="live-search-results" class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto max-h-[60vh] hide-scrollbar pb-10"></div>
         </div>
@@ -381,13 +405,44 @@
                 <i data-lucide="info" class="w-8 h-8"></i>
             </div>
             <h3 id="info-title" class="text-2xl font-black text-center mb-4" style="color: var(--site-text);"></h3>
-            <p id="info-body" class="text-sm font-bold text-gray-600 leading-relaxed text-center"></p>
+            <div id="info-body" class="text-sm font-bold text-gray-600 leading-relaxed text-center overflow-y-auto max-h-[50vh] px-2"></div>
         </div>
     </div>
 
     <script>
-        console.log("BoseSweets Index: Cleaned structure ready for app.js injection. 👑");
+        lucide.createIcons();
+        
+        // 🚀 محرك تفعيل تأثير الظهور التدريجي للأقسام (Intersection Observer)
+        const observerOptions = { threshold: 0.12, rootMargin: "0px 0px -50px 0px" };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // بمجرد الظهور، لا داعي لمراقبته مرة أخرى لتحسين الأداء
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.lazy-section').forEach(section => observer.observe(section));
+
+        // 🚀 دالة التبديل بين الصفحة الرئيسية والمنيو (سيتم استدعاؤها من app.js)
+        window.switchToMenuView = function() {
+            document.getElementById('home-view-sections').classList.add('hidden');
+            document.getElementById('hero-header').classList.add('hidden');
+            document.getElementById('menu-view-section').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if(typeof setCategory === 'function') setCategory('تورت'); // القيمة الافتراضية عند الفتح
+        };
+
+        window.switchToHomeView = function() {
+            document.getElementById('menu-view-section').classList.add('hidden');
+            document.getElementById('home-view-sections').classList.remove('hidden');
+            document.getElementById('hero-header').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        console.log("BoseSweets Architecture: Visual Hook & Home View Fully Deployed. 👑");
     </script>
 </body>
 </html>
-
