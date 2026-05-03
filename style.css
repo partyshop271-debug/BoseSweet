@@ -113,6 +113,11 @@ body {
     position: relative;
     overflow: hidden;
     border-radius: 9999px; /* rounded-full */
+    background: var(--brand-primary);
+    color: #ffffff;
+    font-weight: 700;
+    border: none;
+    padding: 12px 24px;
 }
 
 .btn-premium-action:hover {
@@ -220,7 +225,8 @@ input[type="checkbox"], input[type="radio"] {
 /* 🍮 تأثيرات خاصة لمنتجات حلويات بوسي (قشطوطة، ديسباسيتو، سينابون) */
 .product-card-premium {
     transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    border-radius: 2.5rem; /* */
+    border-radius: 2.5rem; /* rounded-large */
+    background: var(--brand-light) !important;
 }
 
 .product-card-premium:hover {
@@ -261,7 +267,7 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 /* ----------------------------------------------------------- */
-/* 1. محرك "شلال الصور المتعاكس" (Visual Waterfall) */
+/* 1. محرك "شلال الصور المتعاكس" (Visual Waterfall) المطور */
 /* ----------------------------------------------------------- */
 
 #section-waterfall {
@@ -275,20 +281,22 @@ input[type="checkbox"], input[type="radio"] {
     border-radius: 2.5rem; /* الانحناء الدائري الكبير المعتمد */
     overflow: hidden;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px var(--brand-glow);
     transition: transform 0.5s ease;
+    margin-bottom: 8px; /* التباعد المعتمد */
 }
 
 .waterfall-card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    image-rendering: high-quality;
 }
 
-/* أنيميشن الأعمدة المتعاكسة */
+/* أنيميشن الأعمدة المتعاكسة (Seamless Waterfall) */
 @keyframes waterfall-up {
     0% { transform: translateY(0); }
-    100% { transform: translateY(-50%); }
+    100% { transform: translateY(-50%); } /* التحرك لنصف الطول المكرر */
 }
 
 @keyframes waterfall-down {
@@ -297,17 +305,24 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .animate-waterfall-up {
-    animation: waterfall-up 25s linear infinite;
+    animation: waterfall-up 40s linear infinite; /* سرعة أبطأ وأكثر رقي */
     will-change: transform;
 }
 
 .animate-waterfall-down {
-    animation: waterfall-down 25s linear infinite;
+    animation: waterfall-down 40s linear infinite;
     will-change: transform;
 }
 
 .waterfall-paused {
     animation-play-state: paused !important;
+}
+
+/* 🛡️ حماية المنيو ومنع تداخل الضغط */
+#menu-view-section {
+    position: relative;
+    z-index: 10;
+    pointer-events: auto !important;
 }
 
 /* ----------------------------------------------------------- */
@@ -361,9 +376,16 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 /* ----------------------------------------------------------- */
-/* التعديل الهندسي لمنع انضغاط الصور (Anti-Squish) */
+/* 🛑 تطهير الألوان ومنع التشتت البصري */
 /* ----------------------------------------------------------- */
 
+/* تصحيح ألوان الأرقام والإحصائيات لتكون ملكية موحدة */
+.stat-number {
+    color: var(--brand-primary) !important;
+    font-weight: 900;
+}
+
+/* التعديل الهندسي لمنع انضغاط الصور (Anti-Squish) */
 img {
     object-fit: cover;
     object-position: center;
