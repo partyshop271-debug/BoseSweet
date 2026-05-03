@@ -1,42 +1,122 @@
-/* 👑 BoseSweets Premium Identity: Vibrant Peach-Pink Edition (V. Infinity) */
-/* تم تحديث الكود لزيادة تشبع اللون البمبي الخوخي ليصبح ظاهراً وجذاباً مع الحفاظ على النقاء */
+/* =========================================================== */
+/* 👑 BoseSweets Premium Identity: Pure Royal Pink Edition      */
+/* تم توحيد الهوية وإجبار كافة مكونات الموقع (الشريط، السلة، اللودر) */
+/* على الخضوع التام للألوان الملكية المعتمدة.                   */
+/* =========================================================== */
+
 :root {
+    /* 📐 الخطوط الأساسية والقياسات */
     --brand-font: 'Cairo', sans-serif;
-    --brand-hue: 350; 
     --base-font-size: 16px;
     --base-font-weight: 400;
-    --site-bg: #FFF9F8; 
-    --site-text: #4A3B39; 
     
-    --ticker-color: #ffffff;
-    --ticker-font: 'Cairo', sans-serif;
-    --ticker-speed: 20s;
-
-    /* 🌸 الدرجات الجديدة: تم رفع التشبع (Saturation) ليكون البمبي واضحاً جداً */
-    --brand-primary: #FF85A2; /* بمبي خوخي مشبع وظاهر جداً */
-    --brand-secondary: #FFA3B1; /* درجة توهج تزيد من لمعان اللون */
-    --brand-light: #FFF9F8; 
-    --brand-glow: rgba(255, 133, 162, 0.5); /* تأثير يشع جمالاً حول الأزرار */
+    /* 🎨 الألوان السيادية (BoseSweets Color Palette) */
+    --brand-primary: #ff3377; /* البمبي الملكي المشبع - اللون القيادي */
+    --brand-secondary: #ff75a0; /* البمبي المضيء - للتدرجات ولمعان الأزرار */
+    --brand-light: #fff0f5; /* الروز الفاتح المضيء (Light Rose Cloud) - للخلفيات ومساحات الراحة */
+    
+    /* 🌗 ألوان الخلفيات والنصوص الأساسية */
+    --site-bg: #ffffff; /* أبيض نقي لخلفية الموقع الأساسية */
+    --site-text: #1e293b; /* رمادي داكن (Slate) لضمان أعلى درجات الوضوح والرسمية في القراءة */
+    
+    /* ✨ المؤثرات البصرية */
+    --brand-glow: rgba(255, 51, 119, 0.4); /* توهج العلامة التجارية للظلال */
+    --ticker-speed: 25s;
+    
+    /* 🔔 ألوان الحالات */
+    --success-color: #10b981;
+    --error-color: #ef4444;
 }
 
+/* =========================================================== */
+/* 🛠️ الإعدادات العامة (Global Resets) */
+/* =========================================================== */
 html { 
     font-size: var(--base-font-size); 
     scroll-behavior: smooth;
 }
 
 body { 
-    font-family: var(--brand-font); 
+    font-family: var(--brand-font) !important; 
     font-weight: var(--base-font-weight);
-    background-color: var(--brand-light); 
-    color: var(--site-text);
+    background-color: var(--site-bg) !important; 
+    color: var(--site-text) !important;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ----------------------------------------------------------- */
-/* 🕊️ تحسين الـ Hero ليعتمد التنفس البصري (Visual Breathing) */
-/* ----------------------------------------------------------- */
+/* تنظيف الذاكرة البصرية وإخفاء أشرطة التمرير */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* =========================================================== */
+/* 🚀 الأوامر السيادية لتوحيد الهوية (The Overrides) */
+/* =========================================================== */
+
+/* 1. توحيد شريط الأخبار العلوي (Ticker) */
+#ticker-container, .top-bar-bg {
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
+    color: #ffffff !important;
+    border-bottom: 2px solid var(--brand-secondary) !important;
+    box-shadow: 0 4px 15px -5px var(--brand-glow) !important;
+}
+
+/* 2. توحيد شاشة التحميل (Global Loader) */
+#global-loader {
+    background-color: var(--brand-light) !important; /* روز فاتح مريح أثناء التحميل */
+    transition: opacity 0.5s ease, visibility 0.5s; 
+}
+#global-loader i, #global-loader svg, .loader-icon {
+    color: var(--brand-primary) !important;
+}
+.loader-spinner {
+    border-color: var(--brand-light) !important;
+    border-top-color: var(--brand-primary) !important;
+}
+
+/* 3. توحيد سلة المشتريات (Cart Sidebar) */
+#cart-sidebar {
+    background-color: var(--site-bg) !important;
+    border-right: 2px solid var(--brand-light) !important;
+    box-shadow: -10px 0 40px rgba(0,0,0,0.05) !important;
+}
+#cart-sidebar .cart-header {
+    background-color: var(--brand-light) !important;
+    border-bottom: 1px solid rgba(255, 51, 119, 0.1) !important;
+}
+
+/* 4. توحيد شاشة إتمام الطلب (Checkout Modal) */
+#checkout-modal, #step-2-checkout {
+    background-color: var(--site-bg) !important;
+}
+
+/* 5. توحيد الحقول والنماذج (Inputs & Forms) */
+input[type="text"], input[type="tel"], textarea, select {
+    border: 2px solid var(--brand-light) !important;
+    background-color: var(--site-bg) !important;
+    color: var(--site-text) !important;
+    transition: all 0.3s ease;
+}
+input[type="text"]:focus, input[type="tel"]:focus, textarea:focus, select:focus {
+    border-color: var(--brand-primary) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 4px rgba(255, 51, 119, 0.1) !important;
+}
+input[type="checkbox"], input[type="radio"] { 
+    accent-color: var(--brand-primary) !important; 
+}
+.custom-radio-container:has(input:checked) {
+    border-color: var(--brand-primary) !important;
+    background-color: var(--brand-light) !important;
+    color: var(--brand-primary) !important;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px -3px var(--brand-glow);
+}
+
+/* =========================================================== */
+/* 🕊️ الهيدر الرئيسي (Hero Section) والمحرك الأساسي */
+/* =========================================================== */
 #hero-header {
     background-color: transparent; 
     min-height: 60vh;
@@ -57,69 +137,36 @@ body {
     line-height: 1.6;
 }
 
-/* 🛡️ منع القفزات البصرية وتحسين أداء الرندرة */
 #display-container {
     min-height: 400px;
     transition: opacity 0.3s ease-in-out;
     contain: layout; 
 }
 
-/* 🛡️ تنظيف الذاكرة البصرية وتحسين الأداء */
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* 👑 التدرجات الملكية المشبعة */
+/* =========================================================== */
+/* 👑 التدرجات والأزرار الملكية (Premium UI Elements) */
+/* =========================================================== */
 .brand-gradient { 
-    background: linear-gradient(135deg, 
-        var(--brand-primary) 0%, 
-        var(--brand-secondary) 50%, 
-        var(--brand-light) 100%); 
-    box-shadow: 0 4px 15px -5px var(--brand-glow);
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important; 
+    box-shadow: 0 4px 15px -5px var(--brand-glow) !important;
 }
 
-.ticker-brand-gradient { 
-    background: linear-gradient(135deg, 
-        var(--brand-primary) 0%, 
-        var(--brand-secondary) 100%); 
-}
-
-.ticker-fade-right { background: linear-gradient(to left, var(--brand-primary), transparent); }
-.ticker-fade-left { background: linear-gradient(to right, var(--brand-light), transparent); }
-
-/* 🌟 محرك الحركات المتقدم (Advanced Animation Engine) */
-.animate-fade-in { 
-    animation: fadeIn 0.4s ease-out forwards; 
-    will-change: opacity, transform;
-}
-
-@keyframes fadeIn { 
-    from { opacity: 0; transform: translateY(15px); } 
-    to { opacity: 1; transform: translateY(0); } 
-}
-
-.floating { animation: float 6s ease-in-out infinite; }
-@keyframes float { 
-    0%, 100% { transform: translateY(0px); } 
-    50% { transform: translateY(-10px); } 
-}
-
-/* حركات الأزرار الراقية (بمبي مشبع) */
 .btn-premium-action {
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
     border-radius: 9999px; 
-    background: var(--brand-primary);
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
     color: #ffffff !important;
     font-weight: 700;
     border: none;
     padding: 12px 24px;
     box-shadow: 0 8px 25px -5px var(--brand-glow);
+    z-index: 1;
 }
 
 .btn-premium-action:hover {
     transform: scale(1.05) translateY(-2px);
-    background: var(--brand-secondary);
     box-shadow: 0 12px 30px -5px var(--brand-glow);
 }
 
@@ -127,6 +174,7 @@ body {
     transform: scale(0.95);
 }
 
+/* تأثير اللمعة الزجاجية على الأزرار */
 .btn-premium-action::after {
     content: '';
     position: absolute;
@@ -137,53 +185,106 @@ body {
     background: rgba(255, 255, 255, 0.3);
     transform: rotate(30deg);
     transition: all 0.6s ease;
+    z-index: -1;
 }
 
 .btn-premium-action:hover::after {
     left: 120%;
 }
 
-/* 🛡️ شريط التنقل المتطور بتأثير الزجاج المضيء */
+/* =========================================================== */
+/* 🛡️ شريط التنقل المتطور بتأثير الزجاج المضيء (Glassmorphism) */
+/* =========================================================== */
 .nav-scrolled { 
-    background-color: rgba(255, 249, 248, 0.95); 
+    background-color: rgba(255, 255, 255, 0.95) !important; 
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 10px 40px -15px rgba(255, 133, 162, 0.2); 
+    box-shadow: 0 10px 40px -15px var(--brand-glow) !important; 
     transform: translateZ(0); 
-    border-bottom: 1px solid rgba(255, 133, 162, 0.1);
+    border-bottom: 1px solid var(--brand-light) !important;
 }
 
-input[type="checkbox"], input[type="radio"] { 
-    accent-color: var(--brand-primary); 
+/* =========================================================== */
+/* 🍮 كروت المنتجات الفاخرة (Product Cards) */
+/* =========================================================== */
+.product-card-premium {
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border-radius: 2.5rem; 
+    background: var(--site-bg) !important;
+    border: 1px solid var(--brand-light);
 }
 
-@keyframes slideInUp { 
-    from { transform: translate(-50%, 100%); opacity: 0; } 
-    to { transform: translate(-50%, 0); opacity: 1; } 
-}
-.toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-.lightbox-enter { animation: fadeIn 0.3s ease-out forwards; }
-
-#global-loader { 
-    background-color: var(--brand-light) !important;
-    transition: opacity 0.5s ease, visibility 0.5s; 
+.product-card-premium:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -15px var(--brand-glow);
+    border-color: rgba(255, 51, 119, 0.2);
 }
 
-.custom-radio-container:has(input:checked) {
-    border-color: var(--brand-primary) !important;
-    background-color: #FFFFFF !important;
-    color: var(--brand-primary) !important;
-    transform: scale(1.02);
-    box-shadow: 0 4px 12px -3px var(--brand-glow);
+.product-image-glow {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--brand-light);
 }
 
-.grayscale-overlay { filter: grayscale(100%) opacity(0.6); }
-
-/* محرك شريط الأخبار المضيء */
-@keyframes ticker-marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+.product-image-glow::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+    transform: skewX(-25deg);
+    transition: 0.75s;
+    z-index: 5;
 }
+
+.product-card-premium:hover .product-image-glow::before {
+    left: 125%;
+}
+
+/* =========================================================== */
+/* 📸 شلال الصور ومحركات الحركة (Animations & Waterfall) */
+/* =========================================================== */
+#section-waterfall { perspective: 1000px; }
+
+.waterfall-card {
+    height: 290px; 
+    width: 100%; 
+    border-radius: 2.5rem; 
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px var(--brand-glow);
+    transition: transform 0.5s ease;
+    margin-bottom: 8px; 
+    background: var(--brand-light);
+}
+
+.waterfall-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: high-quality;
+}
+
+@keyframes waterfall-up { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+@keyframes waterfall-down { 0% { transform: translateY(-50%); } 100% { transform: translateY(0); } }
+
+.animate-waterfall-up { animation: waterfall-up 40s linear infinite; will-change: transform; }
+.animate-waterfall-down { animation: waterfall-down 40s linear infinite; will-change: transform; }
+.waterfall-paused { animation-play-state: paused !important; }
+
+/* محرك الظهور التدريجي */
+.lazy-section {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: opacity, transform;
+}
+.lazy-section.is-visible { opacity: 1; transform: translateY(0); }
+
+/* محرك شريط الأخبار */
+@keyframes ticker-marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 .animate-ticker {
     display: inline-block;
     white-space: nowrap;
@@ -194,13 +295,22 @@ input[type="checkbox"], input[type="radio"] {
 }
 #ticker-container:hover .animate-ticker { animation-play-state: paused; }
 
+/* حركات الإشعارات */
+@keyframes slideInUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+.toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.lightbox-enter { animation: fadeIn 0.3s ease-out forwards; }
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; will-change: opacity, transform; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* =========================================================== */
+/* 🧭 السلايدرات الجانبية (Snap Sliders) */
+/* =========================================================== */
 .snap-slider { 
     scroll-snap-type: x mandatory; 
     touch-action: pan-y !important; 
     -webkit-overflow-scrolling: touch;
     overflow-x: auto;
 }
-
 .snap-slide img {
     pointer-events: auto !important; 
     user-select: none;
@@ -208,181 +318,37 @@ input[type="checkbox"], input[type="radio"] {
     touch-action: pan-y !important; 
 }
 
-@keyframes targetHighlight {
-    0% { box-shadow: 0 0 0 0px var(--brand-primary); transform: scale(1); }
-    50% { box-shadow: 0 0 0 20px rgba(255, 133, 162, 0); transform: scale(1.03); }
-    100% { box-shadow: 0 0 0 0px rgba(255, 133, 162, 0); transform: scale(1); }
-}
-.highlight-target { animation: targetHighlight 2s ease-out; }
-
-/* 🍮 كروت حلويات بوسي الفاخرة (نقاء أبيض وحواف بمبي مشبع) */
-.product-card-premium {
-    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    border-radius: 2.5rem; 
-    background: #FFFFFF !important;
-    border: 1px solid #FFE4E9;
-}
-
-.product-card-premium:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px -15px var(--brand-glow);
-}
-
-.product-image-glow {
-    position: relative;
-    overflow: hidden;
-}
-
-.product-image-glow::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
-    transform: skewX(-25deg);
-    transition: 0.75s;
-}
-
-.product-card-premium:hover .product-image-glow::before {
-    left: 125%;
-}
-
-.glow-blob { 
-    position: absolute; 
-    border-radius: 50%; 
-    filter: blur(60px); 
-    opacity: 0.3; 
-    z-index: 0; 
-    background: var(--brand-primary);
-    pointer-events: none;
-    will-change: transform, opacity;
-}
-
-/* ----------------------------------------------------------- */
-/* 1. محرك "شلال الصور المتعاكس" (Visual Waterfall) المطور */
-/* ----------------------------------------------------------- */
-#section-waterfall {
-    perspective: 1000px;
-}
-
-.waterfall-card {
-    height: 290px;
-    width: 100%;
-    border-radius: 2.5rem; 
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(255, 133, 162, 0.2);
-    transition: transform 0.5s ease;
-    margin-bottom: 8px; 
-    background: #FFFFFF;
-}
-
-.waterfall-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    image-rendering: high-quality;
-}
-
-@keyframes waterfall-up {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-50%); }
-}
-
-@keyframes waterfall-down {
-    0% { transform: translateY(-50%); }
-    100% { transform: translateY(0); }
-}
-
-.animate-waterfall-up {
-    animation: waterfall-up 40s linear infinite;
-    will-change: transform;
-}
-
-.animate-waterfall-down {
-    animation: waterfall-down 40s linear infinite;
-    will-change: transform;
-}
-
-.waterfall-paused {
-    animation-play-state: paused !important;
-}
-
-/* 🛡️ حماية المنيو */
-#menu-view-section {
-    position: relative;
-    z-index: 10;
-    pointer-events: auto !important;
-}
-
-/* ----------------------------------------------------------- */
-/* 2. محرك "الظهور التدريجي" (Lazy Loading) */
-/* ----------------------------------------------------------- */
-.lazy-section {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
-    will-change: opacity, transform;
-}
-
-.lazy-section.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* ----------------------------------------------------------- */
-/* 3. تنسيق السلايدرات والأزرار الوظيفية */
-/* ----------------------------------------------------------- */
 #bestsellers-slider-home, #new-arrivals-slider-home {
     scroll-snap-type: x mandatory;
     -ms-overflow-style: none;
     scrollbar-width: none;
-}
-
-.slider-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #FFE4E9;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.slider-dot.active {
-    width: 24px;
-    border-radius: 4px;
-    background-color: var(--brand-primary);
+    padding-bottom: 20px;
 }
 
 #bs-prev, #bs-next, #na-prev, #na-next {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 133, 162, 0.1);
-    color: var(--brand-primary);
-}
-
-/* 🛑 تطهير الألوان ومنع التشتت */
-.stat-number {
+    border: 1px solid var(--brand-light) !important;
     color: var(--brand-primary) !important;
-    font-weight: 900;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
-
-img {
-    object-fit: cover;
-    object-position: center;
-    image-rendering: -webkit-optimize-contrast;
-}
-
-/* ألوان شاشة الطلب والواتساب */
-#cart-view, #checkout-modal {
-    background-color: var(--brand-light) !important;
-}
-
-.send-whatsapp-btn {
-    background-color: #25D366 !important;
+#bs-prev:hover, #bs-next:hover, #na-prev:hover, #na-next:hover {
+    background: var(--brand-primary) !important;
     color: white !important;
-    border-radius: 50px !important;
+}
+
+/* =========================================================== */
+/* 📱 تخصيصات إضافية */
+/* =========================================================== */
+.stat-number { color: var(--brand-primary) !important; font-weight: 900; }
+.text-brand { color: var(--brand-primary) !important; }
+.bg-brand-light { background-color: var(--brand-light) !important; }
+
+/* زر الواتساب للتأكيد النهائي */
+.send-whatsapp-btn {
+    background-color: #25D366 !important; /* لون الواتساب القياسي يحافظ على هويته للثقة */
+    color: white !important;
+    border-radius: 9999px !important;
     font-weight: 800;
+    box-shadow: 0 8px 25px -5px rgba(37, 211, 102, 0.4) !important;
 }

@@ -62,7 +62,7 @@ const LiveSearchEngine = {
             }
             if (isMatch) results.push(item.data);
         }
-        return results;
+        return results.slice(0, 12); // منع الشلل عبر تقييد نتائج البحث الحي
     }
 };
 
@@ -396,7 +396,7 @@ function initWaterfall() {
     
     if (allImages.length === 0) return;
 
-    const shuffled = allImages.sort(() => 0.5 - Math.random()).slice(0, 6);
+    const shuffled = allImages.sort(() => 0.5 - Math.random()).slice(0, 6); // الحفاظ على العدد المثالي للذاكرة
     
     const renderCard = (img) => `
         <div class="waterfall-card cursor-pointer" onclick="navigateToProduct('${img.id}')">
@@ -405,6 +405,56 @@ function initWaterfall() {
 
     col1.innerHTML = shuffled.slice(0, 3).map(renderCard).join('') + col1.innerHTML;
     col2.innerHTML = shuffled.slice(3, 6).map(renderCard).join('') + col2.innerHTML;
+}
+
+// 👑 Homepage Engine: تشغيل وتغذية أقسام "الأكثر مبيعاً" و"وصل حديثاً"
+function initHomepageSections() {
+    const bsContainer = document.getElementById('bestsellers-slider-home');
+    const naContainer = document.getElementById('new-arrivals-slider-home');
+    
+    if(!bsContainer && !naContainer) return;
+
+    const bestSellers = catalog.filter(p => p.badge && p.badge.includes('مبيعاً')).slice(0, 8);
+    const newArrivals = catalog.filter(p => p.badge && p.badge.includes('جديد')).slice(0, 8);
+
+    const fallbackBS = bestSellers.length > 0 ? bestSellers : catalog.slice(0, 6);
+    const fallbackNA = newArrivals.length > 0 ? newArrivals : catalog.slice().reverse().slice(0, 6);
+
+    if(bsContainer) {
+        bsContainer.innerHTML = fallbackBS.map(p => `
+            <div class="shrink-0 w-[260px] md:w-[300px] snap-center">
+                ${drawProductCard(p, siteSettings.productLayout || 'grid')}
+            </div>
+        `).join('');
+    }
+
+    if(naContainer) {
+        naContainer.innerHTML = fallbackNA.map(p => `
+            <div class="shrink-0 w-[260px] md:w-[300px] snap-center">
+                ${drawProductCard(p, siteSettings.productLayout || 'grid')}
+            </div>
+        `).join('');
+    }
+    
+    if(window.lucide) lucide.createIcons();
+    setupSliderButtons();
+}
+
+function setupSliderButtons() {
+    const attachScroll = (btnId, sliderId, direction) => {
+        const btn = document.getElementById(btnId);
+        const slider = document.getElementById(sliderId);
+        if(btn && slider) {
+            btn.onclick = () => {
+                const scrollAmount = direction === 'right' ? 300 : -300;
+                slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            };
+        }
+    };
+    attachScroll('bs-next', 'bestsellers-slider-home', 'left');
+    attachScroll('bs-prev', 'bestsellers-slider-home', 'right');
+    attachScroll('na-next', 'new-arrivals-slider-home', 'left');
+    attachScroll('na-prev', 'new-arrivals-slider-home', 'right');
 }
 
 window.navigateToProduct = function(id) {
@@ -534,6 +584,7 @@ async function initApp() {
     }
 
     initWaterfall(); // تشغيل محرك الشلال
+    initHomepageSections(); // تشغيل محرك الواجهة المضاف (الأكثر مبيعاً ووصل حديثاً)
 
     if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
     syncCartUI(); 
