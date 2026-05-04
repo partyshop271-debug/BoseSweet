@@ -1,24 +1,23 @@
 /* =========================================================== */
 /* 👑 BoseSweets Premium Identity: Pure Royal Pink Edition      */
 /* تم توحيد الهوية وإجبار كافة مكونات الموقع (الشريط، السلة، اللودر) */
-/* على الخضوع التام للألوان الملكية المعتمدة.                   */
+/* على الخضوع التام للألوان الملكية المعتمدة مع دمج مساحات التنفس. */
 /* =========================================================== */
 
 :root {
-    /* 📐 الخطوط الأساسية والقياسات (متغيرات ديناميكية قابلة للتعديل من app.js) */
+    /* 📐 الخطوط الأساسية والقياسات */
     --brand-font: 'Cairo', sans-serif;
     --base-font-size: 16px;
     --base-font-weight: 400;
     
-    /* 🎨 الألوان السيادية (BoseSweets Color Palette) */
-    /* يتم سحب هذه القيم وتحديثها برمجياً من لوحة التحكم */
+    /* 🎨 الألوان السيادية لحلويات بوسي (BoseSweets Color Palette) */
     --brand-primary: #ff3377; /* البمبي الملكي المشبع - اللون القيادي */
     --brand-secondary: #ff75a0; /* البمبي المضيء - للتدرجات ولمعان الأزرار */
-    --brand-light: #fff0f5; /* الروز الفاتح المضيء (Light Rose Cloud) - للخلفيات ومساحات الراحة */
+    --brand-light: #fff0f5; /* الروز الفاتح المضيء (Light Rose Cloud) */
     
     /* 🌗 ألوان الخلفيات والنصوص الأساسية */
     --site-bg: #ffffff; /* أبيض نقي لخلفية الموقع الأساسية */
-    --site-text: #1e293b; /* رمادي داكن (Slate) لضمان أعلى درجات الوضوح والرسمية في القراءة */
+    --site-text: #1e293b; /* رمادي داكن لضمان الوضوح والرسمية */
     
     /* ✨ المؤثرات البصرية */
     --brand-glow: rgba(255, 51, 119, 0.4); /* توهج العلامة التجارية للظلال */
@@ -65,7 +64,7 @@ body {
 
 /* 2. توحيد شاشة التحميل (Global Loader) */
 #global-loader {
-    background-color: var(--brand-light) !important; /* روز فاتح مريح أثناء التحميل */
+    background-color: var(--brand-light) !important; 
     transition: opacity 0.5s ease, visibility 0.5s; 
 }
 #global-loader i, #global-loader svg, .loader-icon {
@@ -80,7 +79,7 @@ body {
 #cart-sidebar {
     background-color: var(--site-bg) !important;
     border-right: 2px solid var(--brand-light) !important;
-    box-shadow: -10px 0 40px rgba(0,0,0,0.05) !important;
+    box-shadow: -20px 0 50px rgba(0,0,0,0.1) !important; /* ظل أقوى وأعمق بناءً على التحديث */
 }
 #cart-sidebar .cart-header {
     background-color: var(--brand-light) !important;
@@ -93,19 +92,21 @@ body {
 }
 
 /* 5. توحيد الحقول والنماذج (Inputs & Forms) */
-input[type="text"], input[type="tel"], textarea, select {
+input[type="text"], input[type="tel"], input[type="date"], input[type="time"], textarea, select {
     border: 2px solid var(--brand-light) !important;
     background-color: var(--site-bg) !important;
     color: var(--site-text) !important;
     transition: all 0.3s ease;
 }
-input[type="text"]:focus, input[type="tel"]:focus, textarea:focus, select:focus {
+input[type="text"]:focus, input[type="tel"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus, select:focus {
     border-color: var(--brand-primary) !important;
     outline: none !important;
     box-shadow: 0 0 0 4px rgba(255, 51, 119, 0.1) !important;
 }
-input[type="checkbox"], input[type="radio"] { 
+input[type="radio"], input[type="checkbox"] { 
     accent-color: var(--brand-primary) !important; 
+    width: 1.2rem;
+    height: 1.2rem;
 }
 .custom-radio-container:has(input:checked) {
     border-color: var(--brand-primary) !important;
@@ -164,6 +165,7 @@ input[type="checkbox"], input[type="radio"] {
     padding: 12px 24px;
     box-shadow: 0 8px 25px -5px var(--brand-glow);
     z-index: 1;
+    cursor: pointer; /* إضافة مؤشر التفاعل للكمبيوتر */
 }
 
 .btn-premium-action:hover {
@@ -195,7 +197,6 @@ input[type="checkbox"], input[type="radio"] {
 
 /* =========================================================== */
 /* 🛡️ شريط التنقل المتطور بتأثير الزجاج المضيء (Glassmorphism) */
-/* تم تخفيف الـ Blur لمنع الشلل تماماً في الموبايل */
 /* =========================================================== */
 .nav-scrolled { 
     background-color: rgba(255, 255, 255, 0.98) !important; 
@@ -214,6 +215,7 @@ input[type="checkbox"], input[type="radio"] {
     border-radius: 2.5rem; 
     background: var(--site-bg) !important;
     border: 1px solid var(--brand-light);
+    padding: 12px; /* تم إضافة مساحة تنفس داخلية لحماية التفاصيل */
 }
 
 .product-card-premium:hover {
@@ -226,6 +228,7 @@ input[type="checkbox"], input[type="radio"] {
     position: relative;
     overflow: hidden;
     background-color: var(--brand-light);
+    border-radius: inherit; /* لضمان تطابق الانحناء */
 }
 
 .product-image-glow::before {
@@ -248,17 +251,22 @@ input[type="checkbox"], input[type="radio"] {
 /* =========================================================== */
 /* 📸 شلال الصور ومحركات الحركة (Hardware Accelerated Animations) */
 /* =========================================================== */
-#section-waterfall { perspective: 1000px; }
+#section-waterfall { 
+    perspective: 1000px; 
+    display: flex; 
+    overflow: hidden; 
+    height: 600px; /* تم التحديد لمنع الانهيار وتوفير عرض متزن */
+}
 
 .waterfall-card {
-    height: 290px; 
+    height: 290px; /* تم التثبيت لمنع الانضغاط (Anti-Squish) بناءً على القاعدة الهندسية */
     width: 100%; 
     border-radius: 2.5rem; 
     overflow: hidden;
     position: relative;
     box-shadow: 0 10px 30px var(--brand-glow);
     transition: transform 0.5s ease;
-    margin-bottom: 8px; 
+    margin-bottom: 24px; /* تم زيادة مساحة التنفس بين كروت الشلال */
     background: var(--brand-light);
 }
 
@@ -269,15 +277,21 @@ input[type="checkbox"], input[type="radio"] {
     image-rendering: high-quality;
 }
 
-/* 👑 قرار مهني: استخدام translate3d لتسريع المعالج الرسومي وحل الشلل */
-@keyframes waterfall-up { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
-@keyframes waterfall-down { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
+/* استخدام translate3d لتسريع المعالج الرسومي وحل شلل التحريك على الموبايل */
+@keyframes waterfall-up { 
+    0% { transform: translate3d(0, 0, 0); } 
+    100% { transform: translate3d(0, -50%, 0); } 
+}
+@keyframes waterfall-down { 
+    0% { transform: translate3d(0, -50%, 0); } 
+    100% { transform: translate3d(0, 0, 0); } 
+}
 
-.animate-waterfall-up { animation: waterfall-up 40s linear infinite; will-change: transform; }
-.animate-waterfall-down { animation: waterfall-down 40s linear infinite; will-change: transform; }
+.animate-waterfall-up { animation: waterfall-up 30s linear infinite; will-change: transform; }
+.animate-waterfall-down { animation: waterfall-down 30s linear infinite; will-change: transform; }
 .waterfall-paused { animation-play-state: paused !important; }
 
-/* محرك الظهور التدريجي (تم تحسينه لمنع الفراغات) */
+/* محرك الظهور التدريجي */
 .lazy-section {
     opacity: 0;
     transform: translate3d(0, 30px, 0);
@@ -287,7 +301,10 @@ input[type="checkbox"], input[type="radio"] {
 .lazy-section.is-visible { opacity: 1; transform: translate3d(0, 0, 0); }
 
 /* محرك شريط الأخبار المسرّع */
-@keyframes ticker-marquee { 0% { transform: translate3d(100vw, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
+@keyframes ticker-marquee { 
+    0% { transform: translate3d(100vw, 0, 0); } 
+    100% { transform: translate3d(-100%, 0, 0); } 
+}
 .animate-ticker {
     display: inline-block;
     white-space: nowrap;
@@ -304,6 +321,29 @@ input[type="checkbox"], input[type="radio"] {
 .lightbox-enter { animation: fadeIn 0.3s ease-out forwards; }
 .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; will-change: opacity, transform; }
 @keyframes fadeIn { from { opacity: 0; transform: translate3d(0, 15px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+
+/* Lightbox Modal (عارض الصور الاحترافي) */
+#global-image-lightbox {
+    backdrop-filter: blur(10px);
+    transition: opacity 0.3s ease;
+}
+
+/* =========================================================== */
+/* 🛒 السلة ومساحات إتمام الطلب (Cart & Checkout Spacing) */
+/* =========================================================== */
+.cart-item-spacious {
+    background: #ffffff;
+    border: 1px solid var(--brand-light);
+    border-radius: 2rem;
+    padding: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+    transition: all 0.3s ease;
+}
+.cart-item-spacious:hover {
+    box-shadow: 0 8px 30px rgba(255, 51, 119, 0.1);
+    border-color: rgba(255, 51, 119, 0.3);
+}
 
 /* =========================================================== */
 /* 🧭 السلايدرات الجانبية (Snap Sliders) */
