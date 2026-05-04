@@ -469,8 +469,12 @@ function initWaterfall() {
             <img src="${optimizeCloudinaryUrl(img.url)}" loading="lazy">
         </div>`;
 
-    col1.innerHTML = shuffled.slice(0, 3).map(renderCard).join('') + col1.innerHTML;
-    col2.innerHTML = shuffled.slice(3, 6).map(renderCard).join('') + col2.innerHTML;
+    const col1Content = shuffled.slice(0, 3).map(renderCard).join('');
+    const col2Content = shuffled.slice(3, 6).map(renderCard).join('');
+
+    // القرار المهني: تكرار المحتوى برمجياً لضمان عدم توقف الشلال أو وجود مساحات فارغة
+    col1.innerHTML = col1Content + col1Content + col1Content;
+    col2.innerHTML = col2Content + col2Content + col2Content;
 }
 
 window.initHomepageSections = function() {
@@ -488,7 +492,10 @@ window.initHomepageSections = function() {
     const fallbackNA = newArrivals.length > 0 ? newArrivals : catalog.slice().reverse().slice(0, 6);
 
     if (bsContainer && fallbackBS.length > 0) {
-        if(sectionBS) sectionBS.classList.remove('hidden');
+        if(sectionBS) {
+            sectionBS.classList.remove('hidden');
+            setTimeout(() => sectionBS.classList.add('is-visible'), 100); // إجبار الظهور التدريجي
+        }
         bsContainer.innerHTML = fallbackBS.map(p => `
             <div class="shrink-0 w-[260px] md:w-[300px] snap-center">
                 ${window.drawProductCard(p, siteSettings.productLayout || 'grid')}
@@ -499,7 +506,10 @@ window.initHomepageSections = function() {
     }
 
     if (naContainer && fallbackNA.length > 0) {
-        if(sectionNA) sectionNA.classList.remove('hidden');
+        if(sectionNA) {
+            sectionNA.classList.remove('hidden');
+            setTimeout(() => sectionNA.classList.add('is-visible'), 100); // إجبار الظهور التدريجي
+        }
         naContainer.innerHTML = fallbackNA.map(p => `
             <div class="shrink-0 w-[260px] md:w-[300px] snap-center">
                 ${window.drawProductCard(p, siteSettings.productLayout || 'grid')}
@@ -751,7 +761,12 @@ window.getCakeBuilderHTML = function() {
     
     return `
     <div class="rounded-[3rem] shadow-2xl border-2 overflow-hidden animate-fade-in relative bg-white border-pink-100">
-        <div class="p-10 text-center bg-pink-50 border-b border-pink-100">
+        <div class="w-full h-64 bg-[#fff0f5] relative overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover opacity-90 mix-blend-multiply">
+            <div class="absolute inset-0 bg-gradient-to-t from-pink-50 via-transparent to-transparent"></div>
+        </div>
+        
+        <div class="p-10 text-center bg-pink-50 border-b border-pink-100 relative z-10 -mt-10 rounded-t-[3rem]">
             <h2 class="text-4xl font-black mb-4 uppercase tracking-tight text-pink-600">هندسة التورت الملكية المخصصة 👑</h2>
             <p class="text-lg font-bold text-slate-600 max-w-2xl mx-auto">نمنحك التحكم الكامل في أدق التفاصيل لضمان تصميم تورته تعكس فخامة مناسبتك السعيدة.</p>
         </div>
@@ -978,14 +993,15 @@ window.drawProductCard = function(p, layoutMode = 'grid') {
 
     return `
     <div id="product-card-${pIdSafe}" class="bg-white flex flex-col h-full overflow-hidden border-2 rounded-[2.5rem] transition-all duration-300 shadow-sm hover:shadow-2xl hover:-translate-y-2 border-pink-50 p-4">
-        <div class="relative aspect-square overflow-hidden rounded-[2rem] bg-pink-50/50 cursor-zoom-in" onclick="openGlobalLightbox('${displayImg}')">
+        <div class="relative aspect-square overflow-hidden rounded-[2rem] bg-[#fff0f5] cursor-zoom-in p-4" onclick="openGlobalLightbox('${displayImg}')">
             ${discountBadgeHtml}
-            <img src="${displayImg}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110" loading="lazy" alt="${escapeHTML(p.name)}">
+            <img src="${displayImg}" class="w-full h-full object-contain transition-transform duration-700 hover:scale-110 drop-shadow-md" loading="lazy" alt="${escapeHTML(p.name)}">
             ${isOutOfStock ? `<div class="absolute inset-0 bg-white/50 backdrop-blur-[4px] z-10 flex items-center justify-center"><span class="bg-red-500 text-white font-black px-4 py-2 rounded-xl shadow-lg">نفدت الكمية</span></div>` : ''}
         </div>
         
         <div class="pt-6 pb-2 px-2 flex flex-col flex-1 text-center bg-white relative z-20">
-            <h4 class="text-xl font-black leading-tight text-slate-800 mb-3">${escapeHTML(p.name)}</h4>
+            <h4 class="text-xl font-black leading-tight text-slate-800 mb-2">${escapeHTML(p.name)}</h4>
+            <p class="text-xs font-bold text-slate-500 mb-4 line-clamp-2 leading-relaxed">${getFinalDescription(p)}</p>
             <div class="mt-auto flex flex-col gap-4 w-full">
                 <div class="flex items-center justify-center rounded-full py-2 px-4 border mx-auto min-w-[70%] shadow-sm bg-pink-50 border-pink-100">
                     <span class="font-black text-2xl text-pink-600">${currentP > 0 ? currentP + ' ج.م' : 'حسب الطلب'}</span>
@@ -1032,8 +1048,8 @@ window.renderCartList = function() {
         
         return `
         <div class="cart-item-spacious flex items-center gap-6 bg-white p-4 rounded-[2rem] border border-slate-100 shadow-sm">
-            <div class="w-24 h-24 rounded-[1.5rem] overflow-hidden shrink-0 shadow-sm">
-                <img src="${renderImg}" class="w-full h-full object-cover">
+            <div class="w-24 h-24 rounded-[1.5rem] overflow-hidden shrink-0 shadow-sm bg-[#fff0f5] p-2">
+                <img src="${renderImg}" class="w-full h-full object-contain drop-shadow-sm">
             </div>
             <div class="flex-1 text-right">
                 <h4 class="font-black text-lg text-slate-800 mb-1">${escapeHTML(item.name)}</h4>
@@ -1081,7 +1097,7 @@ window.renderSmartSuggestions = function(context = 'main') {
 
     container.innerHTML = suggestions.map(p => {
         const img = optimizeCloudinaryUrl((p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category)));
-        return `<div class="shrink-0 w-[220px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col group hover:-translate-y-1 transition-transform"><div class="relative w-full h-36 mb-4 rounded-xl overflow-hidden bg-pink-50"><img src="${img}" class="w-full h-full object-cover"></div><div class="flex-1 flex flex-col"><h5 class="text-[14px] font-bold mb-1">${escapeHTML(p.name)}</h5><div class="flex items-center justify-between mt-auto"><span class="font-black text-pink-600">${p.price} ج.م</span><button onclick="addWithQtyContext(this, '${p.id}')" class="px-4 py-2 border rounded-xl text-[11px] font-bold border-pink-100 text-pink-500 hover:bg-pink-50 transition-colors">إضافة</button></div></div></div>`;
+        return `<div class="shrink-0 w-[220px] snap-slide bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col group hover:-translate-y-1 transition-transform"><div class="relative w-full h-36 mb-4 rounded-xl overflow-hidden bg-[#fff0f5] p-2"><img src="${img}" class="w-full h-full object-contain drop-shadow-sm"></div><div class="flex-1 flex flex-col"><h5 class="text-[14px] font-bold mb-1">${escapeHTML(p.name)}</h5><div class="flex items-center justify-between mt-auto"><span class="font-black text-pink-600">${p.price} ج.م</span><button onclick="addWithQtyContext(this, '${p.id}')" class="px-4 py-2 border rounded-xl text-[11px] font-bold border-pink-100 text-pink-500 hover:bg-pink-50 transition-colors">إضافة</button></div></div></div>`;
     }).join('');
     
     if(window.lucide) lucide.createIcons();
