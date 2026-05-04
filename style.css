@@ -10,6 +10,12 @@
     --base-font-size: 16px;
     --base-font-weight: 400;
     
+    /* تيبوغرافيا مهنية متزنة لضمان راحة العين */
+    --h1-size: 2.2rem;
+    --h2-size: 1.6rem;
+    --h3-size: 1.3rem;
+    --p-size: 0.95rem;
+    
     /* 🎨 الألوان السيادية لحلويات بوسي (BoseSweets Color Palette) */
     --brand-primary: #ff3377; /* البمبي الملكي المشبع - اللون القيادي */
     --brand-secondary: #ff75a0; /* البمبي المضيء - للتدرجات ولمعان الأزرار */
@@ -29,7 +35,7 @@
 }
 
 /* =========================================================== */
-/* 🛠️ الإعدادات العامة (Global Resets) */
+/* 🛠️ الإعدادات العامة والتيبوغرافيا (Global Resets) */
 /* =========================================================== */
 html { 
     font-size: var(--base-font-size); 
@@ -45,6 +51,12 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+/* توحيد التوازن البصري للخطوط لمنع الأحجام الضخمة المزعجة */
+h1 { font-size: var(--h1-size); font-weight: 900; line-height: 1.3; }
+h2 { font-size: var(--h2-size); font-weight: 900; line-height: 1.4; }
+h3 { font-size: var(--h3-size); font-weight: 800; line-height: 1.4; }
+p { font-size: var(--p-size); font-weight: 600; line-height: 1.7; }
 
 /* تنظيف الذاكرة البصرية وإخفاء أشرطة التمرير */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -79,7 +91,7 @@ body {
 #cart-sidebar {
     background-color: var(--site-bg) !important;
     border-right: 2px solid var(--brand-light) !important;
-    box-shadow: -20px 0 50px rgba(0,0,0,0.1) !important; /* ظل أقوى وأعمق بناءً على التحديث */
+    box-shadow: -20px 0 50px rgba(0,0,0,0.1) !important;
 }
 #cart-sidebar .cart-header {
     background-color: var(--brand-light) !important;
@@ -97,6 +109,7 @@ input[type="text"], input[type="tel"], input[type="date"], input[type="time"], t
     background-color: var(--site-bg) !important;
     color: var(--site-text) !important;
     transition: all 0.3s ease;
+    font-weight: 700;
 }
 input[type="text"]:focus, input[type="tel"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus, select:focus {
     border-color: var(--brand-primary) !important;
@@ -165,7 +178,7 @@ input[type="radio"], input[type="checkbox"] {
     padding: 12px 24px;
     box-shadow: 0 8px 25px -5px var(--brand-glow);
     z-index: 1;
-    cursor: pointer; /* إضافة مؤشر التفاعل للكمبيوتر */
+    cursor: pointer;
 }
 
 .btn-premium-action:hover {
@@ -177,7 +190,6 @@ input[type="radio"], input[type="checkbox"] {
     transform: scale(0.95);
 }
 
-/* تأثير اللمعة الزجاجية على الأزرار */
 .btn-premium-action::after {
     content: '';
     position: absolute;
@@ -215,7 +227,7 @@ input[type="radio"], input[type="checkbox"] {
     border-radius: 2.5rem; 
     background: var(--site-bg) !important;
     border: 1px solid var(--brand-light);
-    padding: 12px; /* تم إضافة مساحة تنفس داخلية لحماية التفاصيل */
+    padding: 12px; 
 }
 
 .product-card-premium:hover {
@@ -228,7 +240,7 @@ input[type="radio"], input[type="checkbox"] {
     position: relative;
     overflow: hidden;
     background-color: var(--brand-light);
-    border-radius: inherit; /* لضمان تطابق الانحناء */
+    border-radius: inherit; 
 }
 
 .product-image-glow::before {
@@ -255,19 +267,31 @@ input[type="radio"], input[type="checkbox"] {
     perspective: 1000px; 
     display: flex; 
     overflow: hidden; 
-    height: 600px; /* تم التحديد لمنع الانهيار وتوفير عرض متزن */
+    height: 600px; 
+    width: 100%;
+    justify-content: center;
+    gap: 16px;
+}
+
+.waterfall-col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 50%;
+    max-width: 600px;
+    will-change: transform;
 }
 
 .waterfall-card {
-    height: 290px; /* تم التثبيت لمنع الانضغاط (Anti-Squish) بناءً على القاعدة الهندسية */
+    height: 290px; /* الالتزام الصارم بقاعدة Anti-Squish */
+    flex-shrink: 0; /* منع الانضغاط نهائياً */
     width: 100%; 
     border-radius: 2.5rem; 
     overflow: hidden;
     position: relative;
     box-shadow: 0 10px 30px var(--brand-glow);
-    transition: transform 0.5s ease;
-    margin-bottom: 24px; /* تم زيادة مساحة التنفس بين كروت الشلال */
     background: var(--brand-light);
+    border: 2px solid var(--brand-light);
 }
 
 .waterfall-card img {
@@ -277,7 +301,6 @@ input[type="radio"], input[type="checkbox"] {
     image-rendering: high-quality;
 }
 
-/* استخدام translate3d لتسريع المعالج الرسومي وحل شلل التحريك على الموبايل */
 @keyframes waterfall-up { 
     0% { transform: translate3d(0, 0, 0); } 
     100% { transform: translate3d(0, -50%, 0); } 
@@ -291,7 +314,6 @@ input[type="radio"], input[type="checkbox"] {
 .animate-waterfall-down { animation: waterfall-down 30s linear infinite; will-change: transform; }
 .waterfall-paused { animation-play-state: paused !important; }
 
-/* محرك الظهور التدريجي */
 .lazy-section {
     opacity: 0;
     transform: translate3d(0, 30px, 0);
@@ -315,7 +337,6 @@ input[type="radio"], input[type="checkbox"] {
 }
 #ticker-container:hover .animate-ticker { animation-play-state: paused; }
 
-/* حركات الإشعارات */
 @keyframes slideInUp { from { transform: translate3d(-50%, 100%, 0); opacity: 0; } to { transform: translate3d(-50%, 0, 0); opacity: 1; } }
 .toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 .lightbox-enter { animation: fadeIn 0.3s ease-out forwards; }
@@ -389,7 +410,7 @@ input[type="radio"], input[type="checkbox"] {
 
 /* زر الواتساب للتأكيد النهائي */
 .send-whatsapp-btn {
-    background-color: #25D366 !important; /* لون الواتساب القياسي يحافظ على هويته للثقة */
+    background-color: #25D366 !important;
     color: white !important;
     border-radius: 9999px !important;
     font-weight: 800;
@@ -511,4 +532,3 @@ input[type="radio"], input[type="checkbox"] {
     box-shadow: inset 0 0 20px var(--brand-light), 0 8px 25px -5px var(--brand-glow);
     transform: translateX(-5px);
 }
-

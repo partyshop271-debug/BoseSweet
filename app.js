@@ -330,7 +330,6 @@ let isAppReady = false;
 const dSizes = ['مثلث', 'وسط', 'كبير']; const fTypes = ['ورد طبيعي', 'ورد صناعي', 'ورد ستان', 'ورد هدايا', 'ورد فلوس', 'ورد شيكولاتة'];
 let state = { activeCat: 'تورت', dSize: 'مثلث', fType: 'ورد طبيعي', cart: [], currentShippingFee: 0, cakeBuilder: { flv: 'فانيليا', ps: 4, sh: 'دائري', trd: false, img: 'بدون', msg: '', alg: '', occ: '', refImgUrl: '', hasRefImg: false, crd: false, dlg: false } };
 
-// 👑 Global Lightbox Engine Update
 window.openGlobalLightbox = function(imgUrl) {
     const lightbox = document.getElementById('global-image-lightbox');
     const mainImg = document.getElementById('lightbox-main-img');
@@ -446,6 +445,7 @@ function applySettingsToUI() {
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
+// 👑 معالجة الشلل الحركي في الشلال عن طريق التكرار البرمجي المانع للتقطيع
 function initWaterfall() {
     const sectionWaterfall = document.getElementById('section-waterfall');
     const col1 = document.getElementById('waterfall-col-1');
@@ -472,9 +472,9 @@ function initWaterfall() {
     const col1Content = shuffled.slice(0, 3).map(renderCard).join('');
     const col2Content = shuffled.slice(3, 6).map(renderCard).join('');
 
-    // القرار المهني: تكرار المحتوى برمجياً لضمان عدم توقف الشلال أو وجود مساحات فارغة
-    col1.innerHTML = col1Content + col1Content + col1Content;
-    col2.innerHTML = col2Content + col2Content + col2Content;
+    // تكرار العنصر 4 مرات بدلاً من 3 لضمان التغطية التامة ومحاكاة التسريع السلس (Infinite Loop Fix)
+    col1.innerHTML = col1Content + col1Content + col1Content + col1Content;
+    col2.innerHTML = col2Content + col2Content + col2Content + col2Content;
 }
 
 window.initHomepageSections = function() {
@@ -494,7 +494,7 @@ window.initHomepageSections = function() {
     if (bsContainer && fallbackBS.length > 0) {
         if(sectionBS) {
             sectionBS.classList.remove('hidden');
-            setTimeout(() => sectionBS.classList.add('is-visible'), 100); // إجبار الظهور التدريجي
+            setTimeout(() => sectionBS.classList.add('is-visible'), 100); 
         }
         bsContainer.innerHTML = fallbackBS.map(p => `
             <div class="shrink-0 w-[260px] md:w-[300px] snap-center">
@@ -508,7 +508,7 @@ window.initHomepageSections = function() {
     if (naContainer && fallbackNA.length > 0) {
         if(sectionNA) {
             sectionNA.classList.remove('hidden');
-            setTimeout(() => sectionNA.classList.add('is-visible'), 100); // إجبار الظهور التدريجي
+            setTimeout(() => sectionNA.classList.add('is-visible'), 100); 
         }
         naContainer.innerHTML = fallbackNA.map(p => `
             <div class="shrink-0 w-[260px] md:w-[300px] snap-center">
@@ -748,7 +748,7 @@ function renderFlowerTabs(container) {
     container.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${fTypes.map(f => `<button onclick="window.setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'opacity-80 hover:opacity-100'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}</div>`;
 }
 
-// 👑 Royal Cake Engine: محرك تخصيص التورت الملكية المتقدم (التصميم الواسع والمريح)
+// 👑 هندسة التورت الملكية المحدثة: معالجة الأحجام الضخمة وإزالة التداخل تماماً
 window.getCakeBuilderHTML = function() {
     const c = state.cakeBuilder; 
     const settings = siteSettings.cakeBuilder || defaultSettings.cakeBuilder;
@@ -760,47 +760,47 @@ window.getCakeBuilderHTML = function() {
     const shapes = ['دائري', 'مربع', 'مستطيل'];
     
     return `
-    <div class="rounded-[3rem] shadow-2xl border-2 overflow-hidden animate-fade-in relative bg-white border-pink-100">
-        <div class="w-full h-64 bg-[#fff0f5] relative overflow-hidden">
+    <div class="rounded-[3rem] shadow-2xl border-2 overflow-hidden animate-fade-in relative bg-white border-pink-100 mt-6">
+        <div class="w-full h-64 bg-[#fff0f5] relative overflow-hidden rounded-t-[3rem]">
             <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80" class="w-full h-full object-cover opacity-90 mix-blend-multiply">
             <div class="absolute inset-0 bg-gradient-to-t from-pink-50 via-transparent to-transparent"></div>
         </div>
         
-        <div class="p-10 text-center bg-pink-50 border-b border-pink-100 relative z-10 -mt-10 rounded-t-[3rem]">
-            <h2 class="text-4xl font-black mb-4 uppercase tracking-tight text-pink-600">هندسة التورت الملكية المخصصة 👑</h2>
-            <p class="text-lg font-bold text-slate-600 max-w-2xl mx-auto">نمنحك التحكم الكامل في أدق التفاصيل لضمان تصميم تورته تعكس فخامة مناسبتك السعيدة.</p>
+        <div class="p-10 text-center bg-pink-50 border-b border-pink-100 relative z-10">
+            <h2 class="text-3xl font-black mb-4 uppercase tracking-tight text-pink-600">هندسة التورت الملكية المخصصة 👑</h2>
+            <p class="text-base font-bold text-slate-600 max-w-2xl mx-auto">نمنحك التحكم الكامل في أدق التفاصيل لضمان تصميم تورته تعكس فخامة مناسبتك السعيدة.</p>
         </div>
         
         <div class="p-12 space-y-16">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                 
                 <div class="space-y-6">
-                    <label class="font-black text-xl text-slate-800 flex items-center gap-3"><i data-lucide="cake" class="text-pink-500"></i> النكهة الأساسية</label>
+                    <label class="font-black text-lg text-slate-800 flex items-center gap-3"><i data-lucide="cake" class="text-pink-500"></i> النكهة الأساسية</label>
                     <div class="grid grid-cols-2 gap-4">
-                        ${flavors.map(fl => `<button onclick="window.uCake('flv', '${fl}')" class="py-5 rounded-2xl font-black text-lg transition-all border-2 ${c.flv === fl ? 'brand-gradient text-white border-transparent shadow-xl transform scale-105' : 'bg-slate-50 border-slate-100 text-slate-600 hover:border-pink-300'}">${fl}</button>`).join('')}
+                        ${flavors.map(fl => `<button onclick="window.uCake('flv', '${fl}')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${c.flv === fl ? 'brand-gradient text-white border-transparent shadow-md transform scale-105' : 'bg-slate-50 border-slate-100 text-slate-600 hover:border-pink-300'}">${fl}</button>`).join('')}
                     </div>
                 </div>
                 
                 <div class="space-y-6">
-                    <label class="font-black text-xl text-slate-800 flex items-center gap-3"><i data-lucide="box" class="text-pink-500"></i> التصميم الهندسي</label>
+                    <label class="font-black text-lg text-slate-800 flex items-center gap-3"><i data-lucide="box" class="text-pink-500"></i> التصميم الهندسي</label>
                     <div class="grid grid-cols-3 gap-4">
-                        ${shapes.map(sh => `<button onclick="window.uCake('sh', '${sh}')" class="py-5 rounded-2xl font-black text-lg transition-all border-2 ${c.sh === sh ? 'brand-gradient text-white border-transparent shadow-xl transform scale-105' : 'bg-slate-50 border-slate-100 text-slate-600 hover:border-pink-300'}">${sh}</button>`).join('')}
+                        ${shapes.map(sh => `<button onclick="window.uCake('sh', '${sh}')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${c.sh === sh ? 'brand-gradient text-white border-transparent shadow-md transform scale-105' : 'bg-slate-50 border-slate-100 text-slate-600 hover:border-pink-300'}">${sh}</button>`).join('')}
                     </div>
                 </div>
 
                 <div class="space-y-6">
-                    <label class="font-black text-xl text-slate-800 flex items-center gap-3"><i data-lucide="users" class="text-pink-500"></i> عدد الأفراد المقترح</label>
+                    <label class="font-black text-lg text-slate-800 flex items-center gap-3"><i data-lucide="users" class="text-pink-500"></i> عدد الأفراد المقترح</label>
                     <div class="flex items-center justify-between border-2 rounded-[2rem] p-4 bg-slate-50 border-slate-100">
-                        <button onclick="window.adjP(-2)" class="p-4 rounded-2xl bg-white shadow-sm hover:scale-110 transition-all text-pink-500"><i data-lucide="minus" class="w-8 h-8"></i></button>
-                        <span class="text-5xl font-black text-slate-800">${c.ps}</span>
-                        <button onclick="window.adjP(2)" class="p-4 rounded-2xl bg-white shadow-sm hover:scale-110 transition-all text-pink-500"><i data-lucide="plus" class="w-8 h-8"></i></button>
+                        <button onclick="window.adjP(-2)" class="p-3 rounded-2xl bg-white shadow-sm hover:scale-110 transition-all text-pink-500"><i data-lucide="minus" class="w-6 h-6"></i></button>
+                        <span class="text-4xl font-black text-slate-800">${c.ps}</span>
+                        <button onclick="window.adjP(2)" class="p-3 rounded-2xl bg-white shadow-sm hover:scale-110 transition-all text-pink-500"><i data-lucide="plus" class="w-6 h-6"></i></button>
                     </div>
                 </div>
 
                 <div class="space-y-6">
-                    <label class="font-black text-xl text-slate-800 flex items-center gap-3"><i data-lucide="printer" class="text-pink-500"></i> تكنولوجيا طباعة الصور</label>
+                    <label class="font-black text-lg text-slate-800 flex items-center gap-3"><i data-lucide="printer" class="text-pink-500"></i> تكنولوجيا طباعة الصور</label>
                     <div class="grid grid-cols-2 gap-4">
-                        ${imgOpts.map(opt => `<button onclick="window.uCake('img', '${opt.label}')" class="py-4 px-2 rounded-2xl font-black text-sm transition-all border-2 ${c.img === opt.label ? 'brand-gradient text-white border-transparent shadow-xl transform scale-105' : 'bg-slate-50 border-slate-100 text-slate-600 hover:border-pink-300'}">${opt.label} <span class="block text-xs mt-2 opacity-80">(+${opt.price} ج.م)</span></button>`).join('')}
+                        ${imgOpts.map(opt => `<button onclick="window.uCake('img', '${opt.label}')" class="py-4 px-2 rounded-2xl font-black text-sm transition-all border-2 ${c.img === opt.label ? 'brand-gradient text-white border-transparent shadow-md transform scale-105' : 'bg-slate-50 border-slate-100 text-slate-600 hover:border-pink-300'}">${opt.label} <span class="block text-xs mt-2 opacity-80">(+${opt.price} ج.م)</span></button>`).join('')}
                     </div>
                     ${c.img !== 'بدون' ? `
                     <div class="mt-4 p-6 bg-pink-50 border-2 border-pink-100 rounded-2xl animate-fade-in">
@@ -809,26 +809,26 @@ window.getCakeBuilderHTML = function() {
                     </div>` : ''}
                 </div>
 
-                <div class="space-y-6 lg:col-span-2 bg-slate-50 p-8 rounded-[2rem] border-2 border-slate-100">
-                    <label class="font-black text-xl text-slate-800 flex items-center gap-3"><i data-lucide="image-plus" class="text-pink-500"></i> صورة مرجعية للتصميم (اختياري)</label>
-                    <p class="text-sm font-bold text-slate-500 mb-4">إذا كان لديك تصميم معين تود تنفيذه، يمكنك إرفاق صورته هنا لندرسه فنياً.</p>
-                    <input type="file" id="cake-ref-img" class="w-full font-bold text-slate-600 bg-white p-4 rounded-xl border border-slate-200" accept="image/*">
+                <div class="space-y-6 lg:col-span-2 bg-slate-50 p-6 rounded-[2rem] border-2 border-slate-100">
+                    <label class="font-black text-lg text-slate-800 flex items-center gap-3"><i data-lucide="image-plus" class="text-pink-500"></i> صورة مرجعية للتصميم (اختياري)</label>
+                    <p class="text-xs font-bold text-slate-500 mb-4">إذا كان لديك تصميم معين تود تنفيذه، يمكنك إرفاق صورته هنا لندرسه فنياً.</p>
+                    <input type="file" id="cake-ref-img" class="w-full font-bold text-slate-600 bg-white p-3 rounded-xl border border-slate-200 text-sm" accept="image/*">
                 </div>
 
                 <div class="space-y-6 lg:col-span-2">
-                    <label class="font-black text-xl text-slate-800 flex items-center gap-3"><i data-lucide="pen-tool" class="text-pink-500"></i> ملاحظات التنفيذ الفنية</label>
-                    <textarea id="cake-notes" rows="4" class="w-full p-6 bg-slate-50 border-2 border-slate-100 rounded-[2rem] font-bold text-lg outline-none focus:border-pink-500 resize-none" placeholder="اكتب أي تفاصيل، عبارات للطباعة، أو ألوان معينة تود إضافتها للتصميم...">${c.msg || ''}</textarea>
+                    <label class="font-black text-lg text-slate-800 flex items-center gap-3"><i data-lucide="pen-tool" class="text-pink-500"></i> ملاحظات التنفيذ الفنية</label>
+                    <textarea id="cake-notes" rows="3" class="w-full p-5 bg-slate-50 border-2 border-slate-100 rounded-[2rem] font-bold text-base outline-none focus:border-pink-500 resize-none" placeholder="اكتب أي تفاصيل، عبارات للطباعة، أو ألوان معينة تود إضافتها للتصميم...">${c.msg || ''}</textarea>
                 </div>
 
             </div>
         </div>
 
-        <div class="p-10 border-t-2 bg-pink-50 border-pink-100 flex flex-col md:flex-row justify-between items-center gap-8">
+        <div class="p-8 border-t-2 bg-pink-50 border-pink-100 flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-right">
-                <span class="block font-black mb-2 uppercase tracking-widest text-sm text-slate-500">الإجمالي التقديري للتصميم</span>
-                <span class="text-5xl font-black text-pink-600">${price} ج.م</span>
+                <span class="block font-black mb-1 uppercase tracking-widest text-xs text-slate-500">الإجمالي التقديري للتصميم</span>
+                <span class="text-4xl font-black text-pink-600">${price} ج.م</span>
             </div>
-            <button onclick="window.commitCakeBuilder()" class="w-full md:w-auto text-white font-black text-2xl py-6 px-16 rounded-[3rem] btn-premium-action brand-gradient">إضافة للمراجعة الإدارية</button>
+            <button onclick="window.commitCakeBuilder()" class="w-full md:w-auto text-white font-black text-xl py-4 px-12 rounded-[3rem] btn-premium-action brand-gradient">إضافة للمراجعة الإدارية</button>
         </div>
     </div>`;
 };
@@ -971,7 +971,6 @@ window.addWithQtyContext = function(buttonElement, id) {
     window.renderSmartSuggestions('cart');
 };
 
-// 👑 رسم الكروت مع إتاحة مساحة تنفس وتفعيل Lightbox
 window.drawProductCard = function(p, layoutMode = 'grid') {
     if (!p) return '';
     const pIdSafe = String(p.id || ''); 
@@ -1025,7 +1024,6 @@ window.drawProductCard = function(p, layoutMode = 'grid') {
     </div>`;
 };
 
-// 👑 رسم عناصر السلة بأسلوب احترافي مريح (Spacious Cart)
 window.renderCartList = function() {
     const container = document.getElementById('cart-items-list'); 
     const totalDisplay = document.getElementById('cart-total-display');
@@ -1120,7 +1118,6 @@ function syncCartUI() {
     window.renderCartList(); calculateCartTotal();
 }
 
-// 👑 الاعتماد النهائي للطلب الشامل مع تفاصيل المواعيد ونظام Firebase المزدوج
 window.submitOrderFinal = async function() {
     if (state.cart.length === 0) return;
     
@@ -1291,8 +1288,6 @@ document.addEventListener('DOMContentLoaded', () => {
     syncOfflineOrders();
 });
 
-// 👑 ملحق الربط السيادي (Sovereign Binding Engine)
-
 window.setCategory = function(c) {
     if (c === 'الرئيسية') {
         if(window.goToHome) window.goToHome();
@@ -1353,7 +1348,6 @@ window.modQ = function(cartId, d) {
     window.renderSmartSuggestions('cart');
 };
 
-// Cake Builder Commit Fix (to include notes)
 window.commitCakeBuilder = function() {
     const c = state.cakeBuilder; 
     const settings = siteSettings.cakeBuilder || defaultSettings.cakeBuilder;

@@ -56,7 +56,7 @@
             --site-text: #1e293b;
             --brand-font: 'Cairo', sans-serif;
             
-            /* تيبوغرافيا مهنية متزنة */
+            /* تيبوغرافيا مهنية متزنة مريحة للعين */
             --h1-size: 2.2rem;
             --h2-size: 1.6rem;
             --p-size: 0.95rem;
@@ -93,7 +93,8 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--brand-secondary); border-radius: 10px; }
 
         /* شلال الصور (Anti-Squish Engine) */
-        .waterfall-card { height: 290px; border-radius: 2.5rem; overflow: hidden; border: 2px solid var(--brand-light); box-shadow: 0 10px 30px var(--brand-glow); }
+        .waterfall-col { display: flex; flex-direction: column; gap: 16px; width: 50%; max-width: 600px; will-change: transform; }
+        .waterfall-card { height: 290px; flex-shrink: 0; border-radius: 2.5rem; overflow: hidden; border: 2px solid var(--brand-light); box-shadow: 0 10px 30px var(--brand-glow); }
         .waterfall-card img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
 
         /* تزيين الكروت الملكية */
@@ -182,15 +183,15 @@
                 <i data-lucide="sparkles" class="w-5 h-5"></i>
                 <span>أرقى حلويات الفرافرة والوادي الجديد</span>
             </div>
-            <h1 class="text-bose-primary tracking-tighter mb-8 text-5xl md:text-7xl font-black drop-shadow-md">أهلاً بكم في <br> حلويات بوسي</h1>
-            <p class="max-w-3xl mx-auto font-bold text-slate-500 opacity-90 mb-12 text-lg">تشكيلة حصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بمناسباتكم الاستثنائية.</p>
+            <h1 class="text-bose-primary tracking-tighter mb-6 text-4xl md:text-5xl font-black drop-shadow-md leading-tight">أهلاً بكم في <br> حلويات بوسي</h1>
+            <p class="max-w-2xl mx-auto font-semibold text-slate-500 opacity-90 mb-10 text-base md:text-lg">تشكيلة حصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بمناسباتكم الاستثنائية.</p>
             <button onclick="switchToMenuView()" class="px-10 py-4 rounded-full brand-gradient text-white font-bold text-xl shadow-xl hover:scale-105 active:scale-95 transition-all">استعراض المنيو الملكي</button>
         </header>
 
-        <section id="section-waterfall" class="w-full max-w-[1450px] mx-auto px-4 overflow-hidden relative lazy-section">
-            <div class="flex gap-8 justify-center h-[600px] overflow-hidden">
-                <div class="w-1/2 flex flex-col animate-waterfall-up" id="waterfall-col-1"></div>
-                <div class="w-1/2 flex flex-col animate-waterfall-down" id="waterfall-col-2"></div>
+        <section id="section-waterfall" class="w-full max-w-[1450px] mx-auto px-4 overflow-hidden relative lazy-section mt-16">
+            <div class="flex gap-4 justify-center h-[600px] overflow-hidden">
+                <div class="waterfall-col animate-waterfall-up" id="waterfall-col-1"></div>
+                <div class="waterfall-col animate-waterfall-down" id="waterfall-col-2"></div>
             </div>
         </section>
 
@@ -435,7 +436,6 @@
             if (open) {
                 document.getElementById('cart-step-1').classList.remove('hidden');
                 document.getElementById('cart-step-2').classList.add('hidden');
-                // تحديث الاقتراحات الذكية داخل السلة عند فتحها
                 if(typeof renderSmartSuggestions === 'function') renderSmartSuggestions('cart');
             }
         };
@@ -491,7 +491,6 @@
             if (lightbox && img && imageSrc) {
                 img.src = imageSrc;
                 lightbox.classList.replace('hidden', 'flex');
-                // Allow reflow
                 void lightbox.offsetWidth;
                 lightbox.classList.replace('opacity-0', 'opacity-100');
                 img.classList.replace('scale-95', 'scale-100');
@@ -533,7 +532,6 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-visible');
-                    // إيقاف المراقبة بعد الظهور لتخفيف العبء عن المعالج
                     observer.unobserve(entry.target); 
                 }
             });
@@ -551,7 +549,7 @@
             }, 600);
         });
 
-        console.log("BoseSweets V17.0: Professional Micro-copy, Lightbox Engine, & Premium Delivery Flow Ready. 👑🌍✨");
+        console.log("BoseSweets V17.0: Professional Micro-copy, Lightbox Engine, Anti-Squish & Premium Typography Fixed. 👑🌍✨");
     </script>
 </body>
 </html>
