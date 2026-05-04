@@ -419,15 +419,23 @@ function applySettingsToUI() {
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 }
 
+// 👑 معالجة ذكية لشلل الشلال ومنع الفراغات الضخمة
 function initWaterfall() {
+    const sectionWaterfall = document.getElementById('section-waterfall');
     const col1 = document.getElementById('waterfall-col-1');
     const col2 = document.getElementById('waterfall-col-2');
-    if (!col1 || !col2) return;
+    if (!col1 || !col2 || !sectionWaterfall) return;
 
     const allImages = catalog.filter(p => p.images && p.images.length > 0)
                              .map(p => ({url: p.images[0], id: p.id}));
     
-    if (allImages.length === 0) return;
+    // إذا لم تكن هناك صور، نخفي القسم بالكامل لمنع ظهور فجوة بيضاء تكسر التصميم (Paralysis Fix)
+    if (allImages.length === 0) {
+        sectionWaterfall.classList.add('hidden');
+        return;
+    } else {
+        sectionWaterfall.classList.remove('hidden');
+    }
 
     const shuffled = allImages.sort(() => 0.5 - Math.random()).slice(0, 6); 
     
@@ -440,36 +448,42 @@ function initWaterfall() {
     col2.innerHTML = shuffled.slice(3, 6).map(renderCard).join('') + col2.innerHTML;
 }
 
+// 👑 معالجة الأقسام الديناميكية لمنع التداخل والفراغات وتوسيط العناوين
 window.initHomepageSections = function() {
-    // 👑 القرار المهني: الاعتماد على المعرفات الحقيقية الموجودة في الهيكل الثابت
+    const sectionBS = document.getElementById('section-bestsellers');
+    const sectionNA = document.getElementById('section-newarrivals');
     const bsContainer = document.getElementById('bestsellers-container');
     const naContainer = document.getElementById('newarrivals-container');
     
     if (!bsContainer && !naContainer) return;
 
-    // استخراج المنتجات آلياً مع الحفاظ على القواعد المحسنة
     const bestSellers = catalog.filter(p => p.badge && p.badge.includes('مبيعاً')).slice(0, 8);
     const newArrivals = catalog.filter(p => p.badge && p.badge.includes('جديد')).slice(0, 8);
 
-    // توفير بدائل هندسية في حال عدم وجود شارات
     const fallbackBS = bestSellers.length > 0 ? bestSellers : catalog.slice(0, 6);
     const fallbackNA = newArrivals.length > 0 ? newArrivals : catalog.slice().reverse().slice(0, 6);
 
-    // ضخ المنتجات في واجهة العرض باستخدام المكون المعتمد للكروت
-    if (bsContainer) {
+    // إخفاء الأقسام إذا كانت فارغة تماماً للحفاظ على تخطيط العناوين والتوسيط
+    if (bsContainer && fallbackBS.length > 0) {
+        if(sectionBS) sectionBS.classList.remove('hidden');
         bsContainer.innerHTML = fallbackBS.map(p => `
             <div class="shrink-0 w-[260px] md:w-[300px] snap-center">
                 ${drawProductCard(p, siteSettings.productLayout || 'grid')}
             </div>
         `).join('');
+    } else {
+        if(sectionBS) sectionBS.classList.add('hidden');
     }
 
-    if (naContainer) {
+    if (naContainer && fallbackNA.length > 0) {
+        if(sectionNA) sectionNA.classList.remove('hidden');
         naContainer.innerHTML = fallbackNA.map(p => `
             <div class="shrink-0 w-[260px] md:w-[300px] snap-center">
                 ${drawProductCard(p, siteSettings.productLayout || 'grid')}
             </div>
         `).join('');
+    } else {
+        if(sectionNA) sectionNA.classList.add('hidden');
     }
     
     if (window.lucide) lucide.createIcons();
