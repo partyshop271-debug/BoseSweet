@@ -1,7 +1,7 @@
 /* =========================================================== */
-/* 👑 BoseSweets Premium Identity: Pure Royal Pink Edition      */
+/* 👑 BoseSweets Premium Identity: Pure Soft Pink Edition       */
 /* تم توحيد الهوية وإجبار كافة مكونات الموقع (الشريط، السلة، اللودر) */
-/* على الخضوع التام للألوان الملكية المعتمدة مع دمج مساحات التنفس. */
+/* على الخضوع التام للون البمبي الناعم حصراً في كل التفاصيل.   */
 /* =========================================================== */
 
 :root {
@@ -16,22 +16,23 @@
     --h3-size: 1.3rem;
     --p-size: 0.95rem;
     
-    /* 🎨 الألوان السيادية لحلويات بوسي (BoseSweets Color Palette) */
-    --brand-primary: #ff3377; /* البمبي الملكي المشبع - اللون القيادي */
-    --brand-secondary: #ff75a0; /* البمبي المضيء - للتدرجات ولمعان الأزرار */
-    --brand-light: #fff0f5; /* الروز الفاتح المضيء (Light Rose Cloud) */
+    /* 🎨 الألوان السيادية لحلويات بوسي (Soft Pink Palette) */
+    --brand-primary: #ffb7c5; /* البمبي الناعم المستخرج من الصور */
+    --brand-secondary: #ffc4d4; /* درجة فاتحة لتعزيز النعومة في التدرجات */
+    --brand-light: #fff0f5; /* الروز الفاتح جداً لمساحات التنفس والخلفيات */
     
     /* 🌗 ألوان الخلفيات والنصوص الأساسية */
     --site-bg: #ffffff; /* أبيض نقي لخلفية الموقع الأساسية */
-    --site-text: #1e293b; /* رمادي داكن لضمان الوضوح والرسمية */
+    --site-text: #a85c70; /* درجة مركزة (داكنة) من نفس البمبي الناعم للنصوص */
     
     /* ✨ المؤثرات البصرية */
-    --brand-glow: rgba(255, 51, 119, 0.4); /* توهج العلامة التجارية للظلال */
+    --brand-glow: rgba(255, 183, 197, 0.4); /* توهج ناعم جداً للظلال */
+    --brand-glow-strong: rgba(255, 183, 197, 0.7);
     --ticker-speed: 25s;
     
-    /* 🔔 ألوان الحالات */
-    --success-color: #10b981;
-    --error-color: #ef4444;
+    /* 🔔 ألوان الحالات (مخففة لتناسب الهوية) */
+    --success-color: #86d4ad;
+    --error-color: #e68e8e;
 }
 
 /* =========================================================== */
@@ -52,13 +53,11 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* توحيد التوازن البصري للخطوط لمنع الأحجام الضخمة المزعجة */
 h1 { font-size: var(--h1-size); font-weight: 900; line-height: 1.3; }
 h2 { font-size: var(--h2-size); font-weight: 900; line-height: 1.4; }
 h3 { font-size: var(--h3-size); font-weight: 800; line-height: 1.4; }
 p { font-size: var(--p-size); font-weight: 600; line-height: 1.7; }
 
-/* تنظيف الذاكرة البصرية وإخفاء أشرطة التمرير */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -66,7 +65,6 @@ p { font-size: var(--p-size); font-weight: 600; line-height: 1.7; }
 /* 🚀 الأوامر السيادية لتوحيد الهوية (The Overrides) */
 /* =========================================================== */
 
-/* 1. توحيد شريط الأخبار العلوي (Ticker) */
 #ticker-container, .top-bar-bg {
     background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
     color: #ffffff !important;
@@ -74,7 +72,6 @@ p { font-size: var(--p-size); font-weight: 600; line-height: 1.7; }
     box-shadow: 0 4px 15px -5px var(--brand-glow) !important;
 }
 
-/* 2. توحيد شاشة التحميل (Global Loader) */
 #global-loader {
     background-color: var(--brand-light) !important; 
     transition: opacity 0.5s ease, visibility 0.5s; 
@@ -87,23 +84,20 @@ p { font-size: var(--p-size); font-weight: 600; line-height: 1.7; }
     border-top-color: var(--brand-primary) !important;
 }
 
-/* 3. توحيد سلة المشتريات (Cart Sidebar) */
 #cart-sidebar {
     background-color: var(--site-bg) !important;
     border-right: 2px solid var(--brand-light) !important;
-    box-shadow: -20px 0 50px rgba(0,0,0,0.1) !important;
+    box-shadow: -20px 0 50px rgba(255, 183, 197, 0.1) !important;
 }
 #cart-sidebar .cart-header {
     background-color: var(--brand-light) !important;
-    border-bottom: 1px solid rgba(255, 51, 119, 0.1) !important;
+    border-bottom: 1px solid rgba(255, 183, 197, 0.2) !important;
 }
 
-/* 4. توحيد شاشة إتمام الطلب (Checkout Modal) */
 #checkout-modal, #step-2-checkout {
     background-color: var(--site-bg) !important;
 }
 
-/* 5. توحيد الحقول والنماذج (Inputs & Forms) */
 input[type="text"], input[type="tel"], input[type="date"], input[type="time"], textarea, select {
     border: 2px solid var(--brand-light) !important;
     background-color: var(--site-bg) !important;
@@ -114,7 +108,7 @@ input[type="text"], input[type="tel"], input[type="date"], input[type="time"], t
 input[type="text"]:focus, input[type="tel"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus, select:focus {
     border-color: var(--brand-primary) !important;
     outline: none !important;
-    box-shadow: 0 0 0 4px rgba(255, 51, 119, 0.1) !important;
+    box-shadow: 0 0 0 4px rgba(255, 183, 197, 0.2) !important;
 }
 input[type="radio"], input[type="checkbox"] { 
     accent-color: var(--brand-primary) !important; 
@@ -147,9 +141,10 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 #dyn-hero-desc {
-    color: #64748b; 
+    color: var(--site-text); 
     font-weight: 600; 
     line-height: 1.6;
+    opacity: 0.8;
 }
 
 #display-container {
@@ -183,7 +178,7 @@ input[type="radio"], input[type="checkbox"] {
 
 .btn-premium-action:hover {
     transform: scale(1.05) translateY(-2px);
-    box-shadow: 0 12px 30px -5px var(--brand-glow);
+    box-shadow: 0 12px 30px -5px var(--brand-glow-strong);
 }
 
 .btn-premium-action:active {
@@ -197,7 +192,7 @@ input[type="radio"], input[type="checkbox"] {
     left: -60%;
     width: 20%;
     height: 200%;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.4);
     transform: rotate(30deg);
     transition: all 0.6s ease;
     z-index: -1;
@@ -233,7 +228,7 @@ input[type="radio"], input[type="checkbox"] {
 .product-card-premium:hover {
     transform: translateY(-8px);
     box-shadow: 0 20px 40px -15px var(--brand-glow);
-    border-color: rgba(255, 51, 119, 0.2);
+    border-color: rgba(255, 183, 197, 0.5);
 }
 
 .product-image-glow {
@@ -250,7 +245,7 @@ input[type="radio"], input[type="checkbox"] {
     left: -100%;
     width: 50%;
     height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.6), transparent);
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.7), transparent);
     transform: skewX(-25deg);
     transition: 0.75s;
     z-index: 5;
@@ -261,7 +256,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 /* =========================================================== */
-/* 📸 شلال الصور ومحركات الحركة (Hardware Accelerated Animations) */
+/* 📸 شلال الصور ومحركات الحركة */
 /* =========================================================== */
 #section-waterfall { 
     perspective: 1000px; 
@@ -283,8 +278,8 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 .waterfall-card {
-    height: 290px; /* الالتزام الصارم بقاعدة Anti-Squish */
-    flex-shrink: 0; /* منع الانضغاط نهائياً */
+    height: 290px;
+    flex-shrink: 0;
     width: 100%; 
     border-radius: 2.5rem; 
     overflow: hidden;
@@ -312,7 +307,6 @@ input[type="radio"], input[type="checkbox"] {
 
 .animate-waterfall-up { animation: waterfall-up 30s linear infinite; will-change: transform; }
 .animate-waterfall-down { animation: waterfall-down 30s linear infinite; will-change: transform; }
-.waterfall-paused { animation-play-state: paused !important; }
 
 .lazy-section {
     opacity: 0;
@@ -322,7 +316,6 @@ input[type="radio"], input[type="checkbox"] {
 }
 .lazy-section.is-visible { opacity: 1; transform: translate3d(0, 0, 0); }
 
-/* محرك شريط الأخبار المسرّع */
 @keyframes ticker-marquee { 
     0% { transform: translate3d(100vw, 0, 0); } 
     100% { transform: translate3d(-100%, 0, 0); } 
@@ -335,22 +328,14 @@ input[type="radio"], input[type="checkbox"] {
     font-weight: 700;
     will-change: transform; 
 }
-#ticker-container:hover .animate-ticker { animation-play-state: paused; }
 
-@keyframes slideInUp { from { transform: translate3d(-50%, 100%, 0); opacity: 0; } to { transform: translate3d(-50%, 0, 0); opacity: 1; } }
-.toast-enter { animation: slideInUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-.lightbox-enter { animation: fadeIn 0.3s ease-out forwards; }
-.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; will-change: opacity, transform; }
-@keyframes fadeIn { from { opacity: 0; transform: translate3d(0, 15px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
-
-/* Lightbox Modal (عارض الصور الاحترافي) */
 #global-image-lightbox {
     backdrop-filter: blur(10px);
     transition: opacity 0.3s ease;
 }
 
 /* =========================================================== */
-/* 🛒 السلة ومساحات إتمام الطلب (Cart & Checkout Spacing) */
+/* 🛒 السلة ومساحات إتمام الطلب */
 /* =========================================================== */
 .cart-item-spacious {
     background: #ffffff;
@@ -362,12 +347,12 @@ input[type="radio"], input[type="checkbox"] {
     transition: all 0.3s ease;
 }
 .cart-item-spacious:hover {
-    box-shadow: 0 8px 30px rgba(255, 51, 119, 0.1);
-    border-color: rgba(255, 51, 119, 0.3);
+    box-shadow: 0 8px 30px rgba(255, 183, 197, 0.2);
+    border-color: rgba(255, 183, 197, 0.4);
 }
 
 /* =========================================================== */
-/* 🧭 السلايدرات الجانبية (Snap Sliders) */
+/* 🧭 السلايدرات الجانبية */
 /* =========================================================== */
 .snap-slider { 
     scroll-snap-type: x mandatory; 
@@ -394,7 +379,7 @@ input[type="radio"], input[type="checkbox"] {
     backdrop-filter: blur(10px);
     border: 1px solid var(--brand-light) !important;
     color: var(--brand-primary) !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 15px rgba(255, 183, 197, 0.1);
 }
 #bs-prev:hover, #bs-next:hover, #na-prev:hover, #na-next:hover {
     background: var(--brand-primary) !important;
@@ -418,9 +403,8 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 /* =========================================================== */
-/* 🎂 هندسة قسم التورت الملكية (Premium Cake Builder) */
+/* 🎂 هندسة قسم التورت الملكية */
 /* =========================================================== */
-
 .cake-builder-container {
     background: var(--site-bg);
     border: 1px solid var(--brand-light);
@@ -451,7 +435,7 @@ input[type="radio"], input[type="checkbox"] {
 
 .shape-option-card:hover {
     transform: translateY(-5px);
-    border-color: rgba(255, 51, 119, 0.3);
+    border-color: rgba(255, 183, 197, 0.5);
     box-shadow: 0 10px 25px var(--brand-glow);
 }
 
@@ -462,7 +446,6 @@ input[type="radio"], input[type="checkbox"] {
     box-shadow: 0 12px 30px -5px var(--brand-glow);
 }
 
-/* الأشكال الهندسية داخل الكروت */
 .cake-shape-icon {
     width: 45px;
     height: 45px;
@@ -478,13 +461,9 @@ input[type="radio"], input[type="checkbox"] {
     box-shadow: 0 0 20px var(--brand-glow);
 }
 
-/* الدائري (الزوايا الناعمة جداً) */
 .cake-shape-round { border-radius: 50%; }
-
-/* المربع (محتفظ بالانحناء بناءً على الهوية) */
 .cake-shape-square { border-radius: 14px; }
 
-/* القلب (رسم هندسي بالـ CSS) */
 .cake-shape-heart {
     position: relative;
     border: none !important;
@@ -517,7 +496,6 @@ input[type="radio"], input[type="checkbox"] {
     background: var(--brand-primary);
 }
 
-/* تأثيرات الطبقات والإضافات (Tiers & Extras) */
 .cake-tier-premium {
     background: linear-gradient(135deg, var(--site-bg) 0%, var(--brand-light) 100%);
     border: 1px solid var(--brand-light);
@@ -528,7 +506,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 .cake-tier-premium:hover {
-    border-color: rgba(255, 51, 119, 0.4);
+    border-color: rgba(255, 183, 197, 0.5);
     box-shadow: inset 0 0 20px var(--brand-light), 0 8px 25px -5px var(--brand-glow);
     transform: translateX(-5px);
 }
