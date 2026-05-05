@@ -179,14 +179,26 @@
 
     <div id="view-home" class="w-full flex flex-col gap-32 pt-40 overflow-x-hidden">
         
-        <header class="px-4 text-center max-w-7xl mx-auto relative lazy-section is-visible">
-            <div class="inline-flex items-center gap-2 px-6 py-3 bg-pink-50 rounded-full text-xs font-black text-pink-600 mb-8 border border-pink-100 uppercase tracking-widest shadow-sm">
-                <i data-lucide="sparkles" class="w-5 h-5"></i>
+        <header class="px-6 text-center max-w-4xl mx-auto relative lazy-section is-visible pt-20 pb-16">
+            
+            <div class="inline-flex items-center gap-2 px-5 py-2.5 bg-[#fff0f5] rounded-full text-[13px] font-bold text-[#ff3377] mb-8 border border-[#ff75a0]/20 shadow-sm transition-all">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
                 <span>أرقى حلويات الفرافرة والوادي الجديد</span>
             </div>
-            <h1 class="text-bose-primary tracking-tighter mb-6 text-4xl md:text-5xl font-black drop-shadow-md leading-tight">أهلاً بكم في <br> حلويات بوسي</h1>
-            <p class="max-w-2xl mx-auto font-semibold text-slate-500 opacity-90 mb-10 text-base md:text-lg">تشكيلة حصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بمناسباتكم الاستثنائية.</p>
-            <button onclick="switchToMenuView()" class="px-10 py-4 rounded-full brand-gradient text-white font-bold text-xl shadow-xl hover:scale-105 active:scale-95 transition-all">استعراض المنيو الملكي</button>
+
+            <h1 class="text-[#ff3377] tracking-tight mb-6 text-4xl md:text-5xl font-bold leading-relaxed drop-shadow-sm">
+                أهلاً بكم في <br class="md:hidden"> حلويات بوسي
+            </h1>
+
+            <p class="max-w-2xl mx-auto font-normal text-slate-500 mb-12 text-base md:text-lg leading-loose">
+                تشكيلة حصرية من الأصناف الفاخرة والمُعدة بعناية فائقة. 
+                نقدمها بكل هدوء ورقي لتليق بمناسباتكم الاستثنائية وذوقكم الرفيع.
+            </p>
+
+            <button onclick="switchToMenuView()" class="px-10 py-3.5 rounded-full bg-[#ff3377] text-white font-bold text-lg shadow-[0_8px_20px_rgba(255,51,119,0.25)] hover:shadow-[0_12px_25px_rgba(255,51,119,0.35)] hover:-translate-y-1 active:scale-95 transition-all">
+                استعراض المنيو الملكي
+            </button>
+            
         </header>
 
         <section id="section-waterfall" class="w-full max-w-[1450px] mx-auto px-4 overflow-hidden relative lazy-section mt-16">
