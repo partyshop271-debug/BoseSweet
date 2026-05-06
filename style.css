@@ -651,3 +651,33 @@ main {
     padding-bottom: 80px !important;
     margin-bottom: 20px !important;
 }
+
+/* =========================================================
+   تصحيح البنية الهندسية وتجربة المستخدم (UX) - حلويات بوسي
+   ========================================================= */
+
+/* 1. تأمين المحتوى الرئيسي من الانزلاق تحت الشريط العلوي */
+main, .main-container, #main-content {
+    padding-top: 110px !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+/* 2. الإجبار الهندسي لحماية الأبعاد الطبيعية لصور المنتجات والشلال */
+.product-card img,
+.gallery-slide img,
+.swiper-slide img,
+.image-container img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+/* 3. فك الاشتباك في أزرار هندسة التورتة الملكية */
+#cake-builder-steps-container,
+.cake-builder-actions,
+.step-container {
+    padding-bottom: 90px !important;
+    margin-bottom: 30px !important;
+}

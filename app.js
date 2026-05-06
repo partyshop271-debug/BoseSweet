@@ -1829,3 +1829,28 @@ window.submitCustomerReviewLive = async function(productId) {
         submitBtn.innerText = "إرسال المراجعة المعتمدة";
     }
 };
+
+/* =========================================================
+   محرك تصحيح التبويبات والأقسام - حلويات بوسي
+   ========================================================= */
+document.addEventListener('DOMContentLoaded', () => {
+    // مراقبة الضغط على أي قسم من أقسام القائمة المعتمدة
+    document.body.addEventListener('click', function(e) {
+        // استهداف أزرار التبويبات بشكل ذكي
+        const tabBtn = e.target.closest('.category-tab, .cat-btn, [onclick*="Category"], [onclick*="Cat"]');
+        
+        if (tabBtn) {
+            // إعطاء المحرك مهلة زمنية دقيقة لمعالجة البيانات ثم إجبار العرض
+            setTimeout(() => {
+                const productContainers = document.querySelectorAll('.products-grid, #products-container, .catalog-grid, [id*="grid"]');
+                
+                productContainers.forEach(container => {
+                    if (container) {
+                        container.style.display = 'grid'; // فرض الشبكة الهندسية
+                        container.classList.remove('hidden'); // إزالة حظر الظهور
+                    }
+                });
+            }, 150);
+        }
+    });
+});
