@@ -263,18 +263,23 @@
         <div class="p-4 w-full max-w-lg mx-auto">
             
             <div id="admin-overview" class="admin-tab-content block space-y-4 animate-fade-in">
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     <div class="app-card flex flex-col justify-center items-center text-center gap-1.5 p-4 rounded-[2.5rem]">
                         <div class="w-10 h-10 bg-blue-500/10 text-blue-400 rounded-full flex items-center justify-center mb-1"><i data-lucide="package" class="w-5 h-5"></i></div>
                         <p id="admin-stat-products" class="text-2xl font-black text-white">0</p>
                         <p class="text-[10px] font-bold text-slate-400">المنتجات بالمنيو</p>
                     </div>
                     <div class="app-card flex flex-col justify-center items-center text-center gap-1.5 p-4 rounded-[2.5rem]">
+                        <div class="w-10 h-10 bg-purple-500/10 text-purple-400 rounded-full flex items-center justify-center mb-1"><i data-lucide="image" class="w-5 h-5"></i></div>
+                        <p id="stat-total-gallery" class="text-2xl font-black text-white">0</p>
+                        <p class="text-[10px] font-bold text-slate-400">صور المعرض</p>
+                    </div>
+                    <div class="app-card flex flex-col justify-center items-center text-center gap-1.5 p-4 rounded-[2.5rem] col-span-2 sm:col-span-1">
                         <div class="w-10 h-10 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mb-1"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
                         <p id="admin-stat-orders" class="text-2xl font-black text-white">0</p>
                         <p class="text-[10px] font-bold text-slate-400">الطلبات المكتملة</p>
                     </div>
-                    <div class="app-card col-span-2 bg-[#101726] border border-[#ff3377]/20 p-6 flex flex-col justify-center items-center text-center relative overflow-hidden rounded-[2.5rem]">
+                    <div class="app-card col-span-2 sm:col-span-3 bg-[#101726] border border-[#ff3377]/20 p-6 flex flex-col justify-center items-center text-center relative overflow-hidden rounded-[2.5rem]">
                         <div class="absolute -right-8 -top-8 w-32 h-32 bg-[#ff3377]/10 rounded-full blur-3xl"></div>
                         <p class="text-[10px] font-bold text-[#ff3377] bg-[#ff3377]/10 px-4 py-2 rounded-full mb-3 z-10 border border-[#ff3377]/20">المبيعات التقديرية هذا الشهر</p>
                         <p id="admin-stat-revenue" class="text-4xl font-black text-white z-10 tracking-tight">0 <span class="text-lg text-slate-400">ج.م</span></p>
@@ -450,6 +455,17 @@
                         <input type="file" class="hidden" accept="image/*" onchange="uploadGalleryToCloud(event)">
                     </label>
                 </div>
+                
+                <div class="bg-[#0a0f1c] p-4 rounded-[2rem] border border-slate-800 mb-4">
+                    <h3 class="text-[11px] font-black text-white mb-3 flex items-center gap-2"><i data-lucide="link" class="w-3.5 h-3.5 text-purple-400"></i> إضافة عمل جديد برابط مباشر (Cloudinary)</h3>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <input type="text" id="gallery-image-url-input" placeholder="أدخل رابط الصورة الفاخرة المباشر..." class="admin-input rounded-[1.5rem] flex-1 text-xs" dir="ltr">
+                        <button onclick="window.uploadNewGalleryPhotoDirectly()" class="bg-emerald-600 text-white px-5 py-3 sm:py-2 rounded-[1.5rem] font-black text-xs shadow-md active:scale-95 whitespace-nowrap flex justify-center items-center gap-2">
+                            <i data-lucide="image-plus" class="w-4 h-4"></i> إضافة للشلال
+                        </button>
+                    </div>
+                </div>
+
                 <div id="gallery-upload-loader" class="hidden boosy-card text-center border-purple-500/20 py-6">
                     <i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto text-purple-400 mb-2"></i>
                     <p class="text-xs font-bold text-white">جاري الرفع بجودة عالية...</p>
@@ -481,6 +497,7 @@
                     <button onclick="switchSettingsTab('sec-categories')" id="tab-btn-sec-categories" class="sub-tab-btn active snap-start rounded-[1.5rem]">الأقسام</button>
                     <button onclick="switchSettingsTab('sec-shipping')" id="tab-btn-sec-shipping" class="sub-tab-btn snap-start rounded-[1.5rem]">التوصيل</button>
                     <button onclick="switchSettingsTab('sec-promo')" id="tab-btn-sec-promo" class="sub-tab-btn snap-start rounded-[1.5rem]">العروض والكيك</button>
+                    <button onclick="switchSettingsTab('sec-social')" id="tab-btn-sec-social" class="sub-tab-btn snap-start rounded-[1.5rem]">المنصات</button>
                     <button onclick="switchSettingsTab('sec-security')" id="tab-btn-sec-security" class="sub-tab-btn snap-start rounded-[1.5rem]">الخزنة</button>
                 </div>
 
@@ -508,8 +525,8 @@
                                 <button onclick="openAddShippingModal()" class="text-[10px] bg-emerald-500 text-white px-3 py-1.5 rounded-full font-bold flex items-center gap-1"><i data-lucide="plus" class="w-3 h-3"></i> منطقة</button>
                             </div>
                             <div class="space-y-3 mb-4">
-                                <div><label class="block text-[10px] font-bold text-slate-400 mb-1.5 px-2">رقم واتساب الطلبات</label><input type="tel" id="set-footer-phone" class="admin-input rounded-[1.5rem] py-3 text-emerald-400 font-mono text-sm" dir="ltr"></div>
-                                <div><label class="block text-[10px] font-bold text-slate-400 mb-1.5 px-2">عنوان فرع الاستلام</label><input type="text" id="set-footer-address" class="admin-input rounded-[1.5rem] py-3 text-xs"></div>
+                                <div><label class="block text-[10px] font-bold text-slate-400 mb-1.5 px-2">رقم هاتف الواتساب واستقبال الطلبات</label><input type="tel" id="set-footer-phone" class="admin-input rounded-[1.5rem] py-3 text-emerald-400 font-mono text-sm" dir="ltr"></div>
+                                <div><label class="block text-[10px] font-bold text-slate-400 mb-1.5 px-2">عنوان ومقر براند حلويات بوسي</label><input type="text" id="set-footer-address" class="admin-input rounded-[1.5rem] py-3 text-xs"></div>
                             </div>
                             <div class="bg-[#0a0f1c] rounded-[1.5rem] border border-slate-800 overflow-hidden mt-6">
                                 <table class="w-full text-right">
@@ -518,6 +535,32 @@
                                     </thead>
                                     <tbody id="admin-shipping-tbody" class="divide-y divide-slate-800/50 text-[11px] text-slate-200"></tbody>
                                 </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sec-social" class="setting-section space-y-4">
+                        <div class="boosy-card border-blue-500/20">
+                            <h3 class="text-sm font-black text-blue-400 flex items-center gap-2 mb-2"><i data-lucide="link" class="w-4 h-4"></i> الروابط والمنصات الدستورية</h3>
+                            <p class="text-[10px] text-slate-400 mb-5 font-semibold leading-relaxed">تعديل الروابط والبيانات هنا يغيرها تلقائياً وتفصيلياً في تزييل واجهة العميل ومحركات الطلب.</p>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 px-2 flex items-center gap-1.5"><i data-lucide="facebook" class="w-3.5 h-3.5 text-blue-500"></i> رابط صفحة الفيسبوك الرسمية</label>
+                                    <input type="text" id="sett-fb-input" class="admin-input rounded-[1.5rem] py-3 text-xs font-mono" dir="ltr">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 mb-1.5 px-2 flex items-center gap-1.5"><i data-lucide="instagram" class="w-3.5 h-3.5 text-pink-500"></i> رابط حساب الإنستجرام المعتمد</label>
+                                    <input type="text" id="sett-ig-input" class="admin-input rounded-[1.5rem] py-3 text-xs font-mono" dir="ltr">
+                                </div>
+                                <div class="pt-2 border-t border-slate-800/60 mt-2">
+                                    <label class="block text-[10px] font-bold text-slate-400 mb-2 px-2">نص النبذة والاقتباس الفاخر المعروض بتذييل العميل</label>
+                                    <textarea id="sett-quote-textarea" rows="4" class="admin-input rounded-[1.5rem] py-3 text-xs resize-none"></textarea>
+                                </div>
+                                <button onclick="window.saveGlobalSettingsFromDashboard()" class="w-full bg-blue-500 text-white py-3.5 rounded-[1.5rem] text-xs font-black shadow-[0_4px_15px_rgba(59,130,246,0.3)] active:scale-95 flex justify-center items-center gap-2 mt-2">
+                                    <i data-lucide="save" class="w-4 h-4"></i>
+                                    <span>حفظ وتعميم التكوينات السحابية فوراً 👑</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -796,10 +839,11 @@
             }
         };
 
-        // 🚀 أزرار الإجراءات الجديدة (واجهات وهمية لحين ربطها بقاعدة البيانات في admin.js)
+        // 🚀 أزرار الإجراءات الجديدة
         window.triggerMasterSave = function() {
-            // استدعاء دالة الحفظ الشاملة (يمكن توسيعها لاحقاً لربط كل التبويبات)
+            // استدعاء دالة الحفظ الشاملة 
             if(typeof saveStoreSettings === 'function') saveStoreSettings();
+            if(typeof window.saveGlobalSettingsFromDashboard === 'function') window.saveGlobalSettingsFromDashboard();
             
             const toast = document.getElementById('system-toast');
             const msg = document.getElementById('toast-message');
@@ -812,7 +856,6 @@
         };
 
         window.addSystemTip = function() {
-            // محرك إضافة النصائح
             console.log("جارِ إدراج النصيحة في النظام...");
             document.getElementById('new-tip-title').value = '';
             document.getElementById('new-tip-content').value = '';
@@ -820,14 +863,13 @@
         };
 
         window.addSystemReview = function() {
-            // محرك إضافة المراجعات
             console.log("جارِ توثيق المراجعة...");
             document.getElementById('new-review-name').value = '';
             document.getElementById('new-review-text').value = '';
             alert('تم توثيق رأي العميل في السجل بنجاح (جاهزة للربط مع Firebase)');
         };
 
-        // 🎨 المحرك الذكي القديم لباليتة الألوان (بضغطة زر واحدة) - تم الحفاظ عليه
+        // 🎨 المحرك الذكي القديم لباليتة الألوان 
         window.setBrandColor = function(hex, btnElement = null) {
             const hexInput = document.getElementById('set-visual-color-hex');
             const previewBox = document.getElementById('color-preview-box');
@@ -847,7 +889,7 @@
             }
         };
 
-        // عرض الطلبات ككروت مريحة للموبايل - تم الحفاظ عليه وتطوير التنسيق
+        // عرض الطلبات ككروت مريحة للموبايل
         const originalRenderOrders = window.renderAdminOrders;
         if(typeof originalRenderOrders === 'function') {
             window.renderAdminOrders = function(ordersArray) {
@@ -889,7 +931,7 @@
             };
         }
 
-        // 🚀 الدالة البرمجية المضافة حديثاً لدعم إضافة أحجام وأسعار متعددة
+        // الدالة البرمجية المضافة حديثاً لدعم إضافة أحجام وأسعار متعددة
         window.addNewSizeRow = function() {
             const container = document.getElementById('size-price-inputs');
             if(!container) return;
@@ -909,7 +951,6 @@
             `;
             container.appendChild(row);
             
-            // تفعيل أيقونات لوسيد للسطر الجديد
             if(window.lucide) window.lucide.createIcons();
         };
     </script>

@@ -1,10 +1,11 @@
 /**
  * ============================================================================
- * محرك مركز قيادة حلويات بوسي | BoseSweets Admin Engine (V7.0 ARCHITECTURAL FIX)
+ * محرك مركز قيادة حلويات بوسي السحابي | BoseSweets Admin Engine V19.0 Official
  * ============================================================================
- * 👑 التحديث الجذري (V7.0): تم تطبيق نظام العزل المعماري (Execution Isolation)
- * وإدارة الحالة الأحادية (Single Source of Truth).
- * تم القضاء على تضارب مصادر الرندر وإعادة البناء المتعددة.
+ * 👑 التحديث الجذري (V19.0 + V7.0 ARCHITECTURAL FIX): 
+ * تم تطبيق نظام العزل المعماري وإدارة الحالة الأحادية، مع إضافة إدارة وتوسيع 
+ * قنوات السوشيال ميديا والتكوين السحابي الشامل والمستقر.
+ * يعتمد أسلوب التوسيع والبناء دون أي حذف للمكونات الأساسية.
  */
 
 // 🛡️ Engine Upgrade: Centralized Admin Error Tracking System
@@ -131,18 +132,18 @@ const defaultSettings = {
     brandName: "حلويات بوسي", announcement: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب",
     heroTitle: "أهلاً بكم في <br class='hidden md:block'/> <span class='text-white relative inline-block mt-1 md:mt-2 drop-shadow-md'>حلويات بوسي</span>",
     heroDesc: "يسر إدارة حلويات بوسي استعراض تشكيلتها الحصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بذوقكم الرفيع ومناسباتكم السعيدة.",
-    footerPhone: "01097238441", footerAddress: "الكفاح، مركز الفرافرة، <br> محافظة الوادي الجديد",
-    footerQuote: `"نؤمن أن الحلويات لغة للتعبير عن المحبة، لذا نصنع كل قطعة بشغف لنكون شركاءكم في أجمل اللحظات."`,
+    footerPhone: "01097238441", footerAddress: "الكفاح، مركز الفرافرة، محافظة الوادي الجديد",
+    footerQuote: "العلامة التجارية الرائدة في صناعة الحلويات الفاخرة وتصميم التورت الملكية بمركز الفرافرة منذ عام 2014.",
     productLayout: "grid", 
     visuals: {
         themeHex: "#ff3377", bgHex: "#ffffff", textHex: "#4a2b2b",
         fontFamily: "'Cairo', sans-serif", loaderText: "أهلاً بكم في عالم حلويات بوسي ✨"
     },
     seo: { title: "", desc: "", keywords: "" },
-    social: { facebook: "", instagram: "" },
-    catDescriptions: {}, // تمت الإضافة لدعم وصف الأقسام
-    goldenTips: [],      // تمت الإضافة لدعم النصائح الذهبية
-    customerReviews: [], // تمت الإضافة لدعم مراجعات العملاء
+    social: { facebook: "https://facebook.com/BoseSweets", tiktok: "https://tiktok.com/@BoseSweets", instagram: "https://instagram.com/BoseSweets" },
+    catDescriptions: {}, 
+    goldenTips: [],      
+    customerReviews: [], 
     tickerActive: true, tickerText: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب ✨", tickerSpeed: 20, tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff",
     cakeBuilder: { basePrice: 145, desc: "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة.", minSquare: 16, minRect: 20, flavors: ['فانيليا', 'شيكولاتة', ' نص ونص', 'ريد فيلفت'], images: [], imagePrinting: [{ label: 'بدون', price: 0 }, { label: 'صورة قابلة للأكل', price: 60 }, { label: 'صورة غير قابلة للأكل', price: 20 }] }
 };
@@ -283,6 +284,8 @@ async function loadEngineMemory() {
             if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
             
             setupRealtimeOrders();
+            updateAdminDashboardStatsUI();
+            fillGlobalSettingsFormFields();
 
         } else {
             throw new Error("قاعدة البيانات غير متصلة.");
@@ -294,6 +297,8 @@ async function loadEngineMemory() {
         siteSettings = (await StorageEngine.get('boseSweets_settings')) || JSON.parse(localStorage.getItem('bSweets_settings') || localStorage.getItem('boseSweets_settings')) || { ...defaultSettings };
         shippingZones = (await StorageEngine.get('boseSweets_shipping')) || JSON.parse(localStorage.getItem('bSweets_shipping') || localStorage.getItem('boseSweets_shipping')) || [ ...defaultShipping ];
         galleryData = (await StorageEngine.get('boseSweets_gallery')) || JSON.parse(localStorage.getItem('bSweets_gallery') || localStorage.getItem('boseSweets_gallery')) || [];
+        updateAdminDashboardStatsUI();
+        fillGlobalSettingsFormFields();
     }
 
     if (siteSettings.catMenu && siteSettings.catMenu.length > 0) catMenu = siteSettings.catMenu;
@@ -302,6 +307,11 @@ async function loadEngineMemory() {
     if(catMenu.length > 0 && typeof catMenu[0] === 'string') catMenu = catMenu.map((name, i) => ({name, order: i+1}));
     if (!catMenu.find(c => c.name === 'تورت')) catMenu.unshift({name: 'تورت', order: 0});
     syncCatalogMap(); 
+}
+
+// التوافق المعماري المتقدم (Alias للتطوير والإضافة)
+async function loadAdminEngineMemory() {
+    await loadEngineMemory();
 }
 
 async function saveEngineMemory(type) {
@@ -361,6 +371,8 @@ function openAdminDashboardDirectly() {
         
         setTimeout(() => { executeSafely('Charts', () => { if(typeof initAdminCharts === 'function') initAdminCharts(); }); }, 500);
         executeSafely('Icons', () => { if(window.lucide) lucide.createIcons(); });
+        updateAdminDashboardStatsUI();
+        fillGlobalSettingsFormFields();
     } catch (error) {}
 }
 
@@ -370,6 +382,10 @@ function closeAdminDashboard() {
     if(typeof auth !== 'undefined') auth.signOut();
     window.location.href = 'index.html';
 }
+
+window.logoutAdminSecurely = function() {
+    closeAdminDashboard();
+};
 
 function showSystemToast(message, type = 'info') {
     const toast = document.getElementById('system-toast');
@@ -387,22 +403,101 @@ function showSystemToast(message, type = 'info') {
     setTimeout(() => { toast.classList.add('hidden'); }, 3000);
 }
 
-function switchAdminTab(tabId) {
-    document.querySelectorAll('.admin-tab-content').forEach(el => { el.classList.remove('block'); el.classList.add('hidden'); });
-    const target = document.getElementById('admin-' + tabId);
+// 👑 دمج أساليب التنقل بين علامات التبويب لضمان التوافق مع V19 و V7
+window.switchAdminTab = function(tabId) {
+    document.querySelectorAll('.admin-tab-content, .admin-panel').forEach(el => { el.classList.remove('block'); el.classList.add('hidden'); });
+    const target = document.getElementById('admin-' + tabId) || document.getElementById('panel-' + tabId);
     if(target) { target.classList.remove('hidden'); target.classList.add('block'); }
     
-    document.querySelectorAll('.fixed.bottom-0 button').forEach(btn => {
-        if(!btn.classList.contains('bg-gradient-to-tr')) { btn.classList.remove('text-[#ff3377]'); btn.classList.add('text-slate-400'); }
+    document.querySelectorAll('.fixed.bottom-0 button, .tab-btn').forEach(btn => {
+        if(btn.classList.contains('tab-btn')) btn.classList.remove('active');
+        if(!btn.classList.contains('bg-gradient-to-tr') && !btn.classList.contains('tab-btn')) { btn.classList.remove('text-[#ff3377]'); btn.classList.add('text-slate-400'); }
     });
     
-    const activeBtn = Array.from(document.querySelectorAll('.fixed.bottom-0 button')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(`switchAdminTab('${tabId}')`));
-    if(activeBtn && !activeBtn.classList.contains('bg-gradient-to-tr')) { activeBtn.classList.remove('text-slate-400'); activeBtn.classList.add('text-[#ff3377]'); }
+    const activeBtn = Array.from(document.querySelectorAll('.fixed.bottom-0 button, .tab-btn')).find(b => b.getAttribute('onclick') && b.getAttribute('onclick').includes(`switchAdminTab('${tabId}')`));
+    if(activeBtn) {
+        if(activeBtn.classList.contains('tab-btn')) activeBtn.classList.add('active');
+        else if(!activeBtn.classList.contains('bg-gradient-to-tr')) { activeBtn.classList.remove('text-slate-400'); activeBtn.classList.add('text-[#ff3377]'); }
+    }
+    
+    if (tabId === 'catalog') renderAdminCatalogGridUI();
+    if (tabId === 'gallery') renderAdminGalleryGridUI();
+    if (tabId === 'settings') fillGlobalSettingsFormFields();
+    
+    if (window.lucide) lucide.createIcons();
     
     const scrollArea = document.getElementById('main-scroll-area');
     if(scrollArea) scrollArea.scrollTo({ top: 0, behavior: 'smooth' });
     else window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// ==========================================
+// محرك الإحصائيات (V19.0 Integration)
+// ==========================================
+function updateAdminDashboardStatsUI() {
+    const pCount = document.getElementById('stat-total-products');
+    const gCount = document.getElementById('stat-total-gallery');
+    const adminStatProducts = document.getElementById('admin-stat-products');
+    
+    if (pCount) pCount.innerText = catalog.length;
+    if (gCount) gCount.innerText = galleryData.length;
+    if (adminStatProducts) adminStatProducts.innerText = catalog.length;
 }
+
+// ==========================================
+// تحديث وحفظ بيانات السوشيال ميديا والتكامل السحابي (V19.0 Integration)
+// ==========================================
+function fillGlobalSettingsFormFields() {
+    const phoneInput = document.getElementById('sett-phone-input');
+    const addressInput = document.getElementById('sett-address-input');
+    const fbInput = document.getElementById('sett-fb-input');
+    const igInput = document.getElementById('sett-ig-input');
+    const quoteText = document.getElementById('sett-quote-textarea');
+    
+    if (phoneInput) phoneInput.value = siteSettings.footerPhone || '';
+    if (addressInput) addressInput.value = siteSettings.footerAddress || '';
+    if (fbInput) fbInput.value = siteSettings.social?.facebook || '';
+    if (igInput) igInput.value = siteSettings.social?.instagram || '';
+    if (quoteText) quoteText.value = siteSettings.footerQuote || '';
+}
+
+window.saveGlobalSettingsFromDashboard = async function() {
+    const phone = document.getElementById('sett-phone-input')?.value.trim();
+    const address = document.getElementById('sett-address-input')?.value.trim();
+    const fb = document.getElementById('sett-fb-input')?.value.trim();
+    const ig = document.getElementById('sett-ig-input')?.value.trim();
+    const quote = document.getElementById('sett-quote-textarea')?.value.trim();
+    
+    if(!siteSettings.social) siteSettings.social = {};
+    
+    const updatedPayload = {
+        footerPhone: phone !== undefined ? phone : siteSettings.footerPhone,
+        footerAddress: address !== undefined ? address : siteSettings.footerAddress,
+        footerQuote: quote !== undefined ? quote : siteSettings.footerQuote,
+        social: { 
+            facebook: fb !== undefined ? fb : siteSettings.social.facebook, 
+            instagram: ig !== undefined ? ig : siteSettings.social.instagram, 
+            tiktok: siteSettings.social?.tiktok || '' 
+        }
+    };
+    
+    siteSettings = { ...siteSettings, ...updatedPayload };
+
+    try {
+        if (typeof db !== 'undefined') {
+            await db.collection('settings').doc('main').set(updatedPayload, { merge: true });
+            saveEngineMemory('set');
+            showSystemToast('تم حفظ وتعميم قنوات السوشيال ميديا والتكوينات بنجاح لتنعكس فوراً 👑☁️', 'success');
+        } else {
+            saveEngineMemory('set');
+            showSystemToast('قرار مهني: تم الحفظ محلياً لحين توافر اتصال بالخادم السحابي', 'info');
+        }
+    } catch (e) {
+        showSystemToast(`عطل في المزامنة السحابية: ${e.message}`, 'error');
+    }
+    
+    fillAdminSettingsForm();
+};
 
 function openConfirmModal(title, message, callback) {
     document.getElementById('confirm-title').innerText = title;
@@ -443,6 +538,7 @@ async function applyGlobalPriceChange() {
         saveEngineMemory('cat'); syncCatalogMap();
         const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
         renderAdminMenu(currentSearch); renderAdminOverview();
+        renderAdminCatalogGridUI(); 
         showSystemToast(`تم تطبيق النسبة المهنية بنجاح على ${updatedCount} منتج 👑`, "success");
     });
 }
@@ -509,7 +605,7 @@ function fillAdminSettingsForm() {
         if(document.getElementById('set-seo-keywords')) document.getElementById('set-seo-keywords').value = siteSettings.seo.keywords || '';
     }
 
-    // تعبئة السوشيال ميديا
+    // تعبئة السوشيال ميديا (الاحتفاظ بالنسخة القديمة إن وجدت)
     if(siteSettings.social) {
         if(document.getElementById('set-social-fb')) document.getElementById('set-social-fb').value = siteSettings.social.facebook || '';
         if(document.getElementById('set-social-ig')) document.getElementById('set-social-ig').value = siteSettings.social.instagram || '';
@@ -671,6 +767,7 @@ window.toggleProductBadge = async function(prodId, targetBadge) {
     renderHomepageSelection();
     const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
     renderAdminMenu(currentSearch);
+    renderAdminCatalogGridUI();
 };
 
 async function changeAdminPassword() {
@@ -766,6 +863,7 @@ function renderAdminOverview() {
     if(document.getElementById('admin-stat-revenue')) document.getElementById('admin-stat-revenue').innerHTML = monthlyRevenue.toLocaleString('ar-EG') + ' <span class=\"text-lg text-slate-400\">ج.م</span>';
     renderQuickRecentOrders();
     executeSafely('HomepageSelection', renderHomepageSelection);
+    updateAdminDashboardStatsUI();
 }
 
 function renderQuickRecentOrders() {
@@ -995,6 +1093,7 @@ function setAdminCat(c) {
     adminCurrentCat = c; renderAdminCatalogTabs();
     const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
     renderAdminMenu(currentSearch);
+    renderAdminCatalogGridUI();
 }
 
 function renderAdminMenu(searchQuery = '') {
@@ -1002,7 +1101,7 @@ function renderAdminMenu(searchQuery = '') {
     if (!container) return; 
     container.innerHTML = '';
     if(!catalog || catalog.length === 0) {
-        container.innerHTML = `<div class=\"col-span-full flex flex-col items-center justify-center p-12 text-slate-500 bg-slate-900/50 rounded-[2.5rem] border border-dashed border-slate-700 relative z-10\"><i data-lucide=\"package-x\" class=\"w-12 h-12 mb-3 text-slate-600\"></i><p class=\"font-bold text-sm\">الكتالوج فارغ حالياً في متجر حلويات بوسي</p><button onclick=\"openAddProductModal()\" class=\"mt-4 px-5 py-2.5 bg-[#ff3377] text-white rounded-[1.5rem] text-xs font-black hover:bg-pink-600 transition-colors relative z-50 pointer-events-auto cursor-pointer shadow-lg shadow-pink-500/20\">إضافة أول منتج فاخر</button></div>`;
+        container.innerHTML = `<div class=\"col-span-full flex flex-col items-center justify-center p-12 text-slate-500 bg-slate-900/50 rounded-[2.5rem] border border-dashed border-slate-700 relative z-10\"><i data-lucide=\"package-x\" class=\"w-12 h-12 mb-3 text-slate-600\"></i><p class=\"font-bold text-sm\">الكتالوج فارغ حالياً في متجر حلويات بوسي</p><button onclick=\"window.openProductFormModal()\" class=\"mt-4 px-5 py-2.5 bg-[#ff3377] text-white rounded-[1.5rem] text-xs font-black hover:bg-pink-600 transition-colors relative z-50 pointer-events-auto cursor-pointer shadow-lg shadow-pink-500/20\">إضافة أول منتج فاخر</button></div>`;
         if(window.lucide) lucide.createIcons(); return;
     }
 
@@ -1046,8 +1145,8 @@ function renderAdminMenu(searchQuery = '') {
                         <h3 class=\"text-white font-bold text-sm leading-tight mb-1 line-clamp-2\">${escapeHTML(prod.name || '')}</h3>
                     </div>
                     <div class=\"flex gap-2 mt-3 md:mt-0 relative z-50 pointer-events-auto\">
-                        <button onclick=\"editProduct('${prod.id}')\" class=\"flex-1 bg-indigo-500/10 hover:bg-indigo-500 text-indigo-400 hover:text-white transition-colors py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95 border border-indigo-500/20 cursor-pointer pointer-events-auto\"><i data-lucide=\"edit-3\" class=\"w-3.5 h-3.5\"></i> التعديل الفني</button>
-                        <button onclick=\"deleteProductConfirm('${prod.id}')\" class=\"flex-1 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white transition-colors py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95 border border-red-500/20 cursor-pointer pointer-events-auto\"><i data-lucide=\"trash-2\" class=\"w-3.5 h-3.5\"></i> إزالة</button>
+                        <button onclick=\"window.openProductFormModal('${prod.id}')\" class=\"flex-1 bg-indigo-500/10 hover:bg-indigo-500 text-indigo-400 hover:text-white transition-colors py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95 border border-indigo-500/20 cursor-pointer pointer-events-auto\"><i data-lucide=\"edit-3\" class=\"w-3.5 h-3.5\"></i> التعديل الفني</button>
+                        <button onclick=\"window.deleteProductSecurelyFromCloud('${prod.id}')\" class=\"flex-1 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white transition-colors py-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1 active:scale-95 border border-red-500/20 cursor-pointer pointer-events-auto\"><i data-lucide=\"trash-2\" class=\"w-3.5 h-3.5\"></i> إزالة</button>
                     </div>
                 </div>
             </div>
@@ -1055,6 +1154,79 @@ function renderAdminMenu(searchQuery = '') {
     }).join('');
     if(window.lucide) lucide.createIcons();
 }
+
+// ==========================================
+// محرك تعديل وإضافة وحذف كروت كتالوج المنتجات (V19.0 Integration)
+// ==========================================
+window.renderAdminCatalogGridUI = function() {
+    const grid = document.getElementById('admin-catalog-grid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    const searchQuery = document.getElementById('admin-search-catalog')?.value.trim().toLowerCase() || '';
+    
+    let filtered = [...catalog];
+    if (searchQuery !== '') {
+        filtered = filtered.filter(p => p.name?.toLowerCase().includes(searchQuery) || p.category?.toLowerCase().includes(searchQuery));
+    }
+    
+    if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 font-bold text-xs">لا توجد منتجات مسجلة تطابق البحث حالياً.</div>`;
+        return;
+    }
+    
+    grid.innerHTML = filtered.map(p => `
+        <div class="bg-[#0f172a] p-4 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-3">
+            <div class="flex gap-3 items-center">
+                <div class="w-12 h-12 rounded-xl overflow-hidden bg-slate-800 p-1 flex items-center justify-center shrink-0">
+                    <img src="${p.img || (p.images && p.images[0]) || 'https://via.placeholder.com/100'}" class="w-full h-full object-contain">
+                </div>
+                <div class="min-w-0 flex-1 text-right">
+                    <h4 class="text-xs font-bold text-white truncate">${escapeHTML(p.name)}</h4>
+                    <p class="text-[10px] text-pink-500 font-black font-mono mt-0.5">${p.price} ج.م | ${escapeHTML(p.category)}</p>
+                </div>
+            </div>
+            <div class="pt-3 border-t border-slate-800 flex gap-2 justify-left relative z-50 pointer-events-auto">
+                <button onclick="window.deleteProductSecurelyFromCloud('${p.id}')" class="px-3 py-1.5 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg text-[10px] font-bold transition-colors">حذف</button>
+                <button onclick="window.openProductFormModal('${p.id}')" class="flex-1 py-1.5 bg-slate-800 text-slate-300 hover:text-white rounded-lg text-[10px] font-bold transition-colors text-center">تعديل بيانات الصنف</button>
+            </div>
+        </div>
+    `).join('');
+    
+    if (window.lucide) lucide.createIcons();
+};
+
+window.openProductFormModal = function(productId) {
+    // دعم النافذة المحدثة والنافذة السابقة لتجنب أي إخلال بالبنية
+    openAddProductModal(); 
+    if (productId) editProduct(productId);
+};
+
+// دمج Save للنسختين
+window.saveProductFormSubmit = async function() {
+    await saveProductData();
+};
+
+window.deleteProductSecurelyFromCloud = async function(productId) {
+    if (!confirm('هل حضرتك متأكدة تماماً من اتخاذ قرار حذف هذا الصنف نهائياً من قاعدة بيانات حلويات بوسي؟')) return;
+    
+    try {
+        if (typeof db !== 'undefined') {
+            await db.collection('catalog').doc(productId).delete();
+        }
+        catalog = catalog.filter(item => String(item.id) !== String(productId));
+        syncCatalogMap();
+        saveEngineMemory('cat');
+        
+        renderAdminCatalogGridUI();
+        const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
+        renderAdminMenu(currentSearch);
+        updateAdminDashboardStatsUI();
+        showSystemToast('تم مسح وإلغاء ارتباط الصنف من السيرفر السحابي بنجاح 👑', 'success');
+    } catch (e) {
+        showSystemToast(`فشل الحذف: ${e.message}`, 'error');
+    }
+};
 
 function renderAdminTempImages() {
     const container = document.getElementById('edit-prod-images-container');
@@ -1071,6 +1243,7 @@ function renderAdminTempImages() {
     `).join('');
     if(window.lucide) lucide.createIcons();
 }
+
 function removeTempImage(idx) { tempProdImages.splice(idx, 1); renderAdminTempImages(); }
 
 async function getSecureUploadSignature() {
@@ -1144,10 +1317,10 @@ function openAddProductModal() {
     currentEditId = null; 
     if(document.getElementById('prod-modal-title')) document.getElementById('prod-modal-title').innerHTML = `<i data-lucide=\"plus-circle\" class=\"w-6 h-6 text-[#ff3377]\"></i> إدراج منتج جديد`;
     
-    const fields = ['edit-prod-id','edit-prod-name','edit-prod-price','edit-prod-old-price','edit-prod-sub','edit-prod-sort','edit-prod-desc'];
+    const fields = ['edit-prod-id','edit-prod-name','edit-prod-price','edit-prod-old-price','edit-prod-sub','edit-prod-sort','edit-prod-desc', 'form-product-id', 'form-product-name', 'form-product-price', 'form-product-image', 'form-product-desc'];
     fields.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
     
-    const catSelect = document.getElementById('edit-prod-cat');
+    const catSelect = document.getElementById('edit-prod-cat') || document.getElementById('form-product-cat');
     const sortedCats = [...catMenu].sort((a, b) => a.order - b.order);
     if(catSelect) {
         catSelect.innerHTML = sortedCats.map(c => `<option value=\"${escapeHTML(c.name)}\">${escapeHTML(c.name)}</option>`).join('');
@@ -1157,11 +1330,11 @@ function openAddProductModal() {
     if(document.getElementById('edit-prod-layout')) document.getElementById('edit-prod-layout').value = 'default';
     if(document.getElementById('edit-prod-badge')) document.getElementById('edit-prod-badge').value = '';
     
-    const stockEl = document.getElementById('edit-prod-instock');
+    const stockEl = document.getElementById('edit-prod-instock') || document.getElementById('form-product-stock');
     if(stockEl) { stockEl.checked = true; if(document.getElementById('instock-label-text')) document.getElementById('instock-label-text').innerText = 'متوفر'; }
     
     tempProdImages = []; renderAdminTempImages();
-    const m = document.getElementById('admin-prod-modal'); 
+    const m = document.getElementById('admin-prod-modal') || document.getElementById('product-form-modal'); 
     if(m) { m.classList.remove('hidden'); m.classList.add('flex'); setTimeout(() => m.classList.remove('opacity-0'), 10); }
     if(window.lucide) lucide.createIcons();
 }
@@ -1173,7 +1346,7 @@ function editProduct(id) {
         currentEditId = String(id); 
         if(document.getElementById('prod-modal-title')) document.getElementById('prod-modal-title').innerHTML = `<i data-lucide=\"edit-3\" class=\"w-6 h-6 text-[#ff3377]\"></i> التعديل الفني للمنتج`;
         
-        const catSelect = document.getElementById('edit-prod-cat');
+        const catSelect = document.getElementById('edit-prod-cat') || document.getElementById('form-product-cat');
         const sortedCats = [...catMenu].sort((a, b) => a.order - b.order);
         if(catSelect) catSelect.innerHTML = sortedCats.map(c => `<option value=\"${escapeHTML(c.name)}\">${escapeHTML(c.name)}</option>`).join('');
         
@@ -1186,26 +1359,28 @@ function editProduct(id) {
         if(document.getElementById('edit-prod-sort')) document.getElementById('edit-prod-sort').value = p.sortOrder || ""; 
         if(document.getElementById('edit-prod-layout')) document.getElementById('edit-prod-layout').value = p.layout || 'default';
         if(document.getElementById('edit-prod-badge')) document.getElementById('edit-prod-badge').value = p.badge || '';
+        if(document.getElementById('form-product-image')) document.getElementById('form-product-image').value = p.img || (p.images && p.images[0]) || '';
         
-        const stockEl = document.getElementById('edit-prod-instock');
+        const stockEl = document.getElementById('edit-prod-instock') || document.getElementById('form-product-stock');
         if(stockEl) { 
             stockEl.checked = p.inStock !== false; 
             if(document.getElementById('instock-label-text')) document.getElementById('instock-label-text').innerText = (p.inStock !== false) ? 'متوفر' : 'نفذت'; 
         }
         
         if(document.getElementById('edit-prod-desc')) document.getElementById('edit-prod-desc').value = p.desc || ''; 
+        if(document.getElementById('form-product-desc')) document.getElementById('form-product-desc').value = p.desc || '';
         
         if(p.images && p.images.length > 0) tempProdImages = [...p.images]; else if(p.img) tempProdImages = [p.img]; else tempProdImages = [];
         renderAdminTempImages();
         
-        const m = document.getElementById('admin-prod-modal'); 
+        const m = document.getElementById('admin-prod-modal') || document.getElementById('product-form-modal'); 
         if(m) { m.classList.remove('hidden'); m.classList.add('flex'); setTimeout(() => m.classList.remove('opacity-0'), 10); }
         if(window.lucide) lucide.createIcons();
     }
 }
 
 function closeProdModal() { 
-    const m = document.getElementById('admin-prod-modal'); 
+    const m = document.getElementById('admin-prod-modal') || document.getElementById('product-form-modal'); 
     if(m) { m.classList.add('opacity-0'); setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); currentEditId = null; }, 300); }
 }
 
@@ -1231,18 +1406,24 @@ window.addNewSizeRow = function() {
 };
 
 async function saveProductData() {
-    const nName = document.getElementById('edit-prod-name')?.value.trim(); 
-    const nPrice = parseInt(document.getElementById('edit-prod-price')?.value) || 0;
+    const nName = (document.getElementById('edit-prod-name')?.value || document.getElementById('form-product-name')?.value || '').trim(); 
+    const nPrice = parseInt(document.getElementById('edit-prod-price')?.value || document.getElementById('form-product-price')?.value) || 0;
     const nOldPrice = parseInt(document.getElementById('edit-prod-old-price')?.value) || null;
     const nSort = parseInt(document.getElementById('edit-prod-sort')?.value) || 999;
-    const nCat = document.getElementById('edit-prod-cat')?.value; 
-    const nSub = document.getElementById('edit-prod-sub')?.value.trim();
+    const nCat = document.getElementById('edit-prod-cat')?.value || document.getElementById('form-product-cat')?.value; 
+    const nSub = document.getElementById('edit-prod-sub')?.value.trim() || '';
     const nLayout = document.getElementById('edit-prod-layout')?.value || 'default'; 
     const nBadge = document.getElementById('edit-prod-badge')?.value || '';
-    const nInStock = document.getElementById('edit-prod-instock')?.checked; 
-    const nDesc = document.getElementById('edit-prod-desc')?.value.trim();
+    const nInStock = document.getElementById('edit-prod-instock')?.checked !== false && document.getElementById('form-product-stock')?.checked !== false; 
+    const nDesc = (document.getElementById('edit-prod-desc')?.value || document.getElementById('form-product-desc')?.value || '').trim();
     
-    if(!nName) { showSystemToast("قرار إداري: يجب إدراج اسم المنتج للاعتماد", "error"); return; }
+    if(!nName || nPrice <= 0) { showSystemToast("قرار إداري: يجب إدراج اسم المنتج ومنظومة تسعير صحيحة للاعتماد", "error"); return; }
+    
+    // التعامل مع الصورة الإضافية من الحقل النصي إن وجدت في نموذج V19
+    const directImageUrl = document.getElementById('form-product-image')?.value.trim();
+    if(directImageUrl && !tempProdImages.includes(directImageUrl)) {
+        tempProdImages.push(directImageUrl);
+    }
     
     const finalImagesArray = [...tempProdImages]; const finalImg = finalImagesArray.length > 0 ? finalImagesArray[0] : '';
     let prodObj;
@@ -1257,19 +1438,30 @@ async function saveProductData() {
             prodObj = catalog[idx];
         }
     } else {
-        prodObj = { id: 'prod_' + Date.now() + Math.floor(Math.random()*1000), category: nCat, name: nName, price: nPrice, oldPrice: nOldPrice, desc: nDesc, sortOrder: nSort, images: finalImagesArray, img: finalImg, subType: nSub, layout: nLayout, badge: nBadge, inStock: nInStock };
+        const newId = document.getElementById('form-product-id')?.value.trim() || ('prod_' + Date.now() + Math.floor(Math.random()*1000));
+        prodObj = { id: newId, category: nCat, name: nName, price: nPrice, oldPrice: nOldPrice, desc: nDesc, sortOrder: nSort, images: finalImagesArray, img: finalImg, subType: nSub, layout: nLayout, badge: nBadge, inStock: nInStock };
         catalog.unshift(prodObj); 
     }
     
     syncCatalogMap(); 
     try { 
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(prodObj.id), prodObj); 
-        saveEngineMemory('cat'); showSystemToast("تم الاعتماد الفني والحفظ في متجر حلويات بوسي بنجاح 👑", "success"); 
-    } catch(e) { saveEngineMemory('cat'); showSystemToast("تم الحفظ محلياً لحين تزامن الشبكة", "info"); }
+        if(typeof db !== 'undefined') {
+            await db.collection('catalog').doc(prodObj.id).set(prodObj, { merge: true });
+        } else if(typeof NetworkEngine !== 'undefined') {
+            await NetworkEngine.safeWrite('catalog', String(prodObj.id), prodObj); 
+        }
+        saveEngineMemory('cat'); 
+        showSystemToast("تم الاعتماد الفني والحفظ في متجر حلويات بوسي بنجاح 👑☁️", "success"); 
+    } catch(e) { 
+        saveEngineMemory('cat'); 
+        showSystemToast("تم الحفظ محلياً لحين تزامن الشبكة", "info"); 
+    }
     
     tempProdImages = []; renderAdminTempImages();
     const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
     closeProdModal(); renderAdminMenu(currentSearch); renderAdminOverview();
+    renderAdminCatalogGridUI();
+    updateAdminDashboardStatsUI();
     syncOfflineImages();
 }
 
@@ -1280,15 +1472,85 @@ function deleteProductConfirm(id) {
 }
 
 async function executeDeleteProduct(id) {
-    const safeId = String(id); catalog = catalog.filter(p => String(p.id) !== safeId); 
-    syncCatalogMap(); 
-    try { 
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeDelete('catalog', safeId); 
-        saveEngineMemory('cat'); showSystemToast("تم تنفيذ قرار الحذف بنجاح", "success"); 
-    } catch(e) { saveEngineMemory('cat'); }
-    const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
-    renderAdminMenu(currentSearch); renderAdminOverview(); 
+    window.deleteProductSecurelyFromCloud(id);
 }
+
+// ==========================================
+// محرك رندر وإدارة صور معرض الشلال (V19.0 Integration)
+// ==========================================
+window.renderAdminGalleryGridUI = function() {
+    const grid = document.getElementById('admin-gallery-grid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    if (galleryData.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500 text-xs font-bold">المعرض السحابي للشلال فارغ حالياً.</div>`;
+        return;
+    }
+    
+    grid.innerHTML = galleryData.map(img => `
+        <div class="relative group rounded-xl overflow-hidden border border-slate-800 aspect-video bg-slate-900">
+            <img src="${img.url || img.imgUrl || img}" class="w-full h-full object-cover">
+            <button onclick="window.deleteGalleryPhotoSecurely('${img.id}')" class="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-lg opacity-90 transition-transform active:scale-90 relative z-50 pointer-events-auto" title="حذف الصورة من الشلال">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+        </div>
+    `).join('');
+    
+    if (window.lucide) lucide.createIcons();
+};
+
+window.uploadNewGalleryPhotoDirectly = async function() {
+    const urlInput = document.getElementById('gallery-image-url-input');
+    const url = urlInput?.value.trim();
+    
+    if (!url) {
+        showSystemToast('برجاء توفير وإدخال رابط صورة معتمد وصحيح أولاً.', 'error');
+        return;
+    }
+    
+    const uniqueId = 'gal_' + Date.now();
+    const payload = { id: uniqueId, url: url, timestamp: Date.now() };
+    
+    try {
+        if (typeof db !== 'undefined') {
+            await db.collection('gallery').doc(uniqueId).set(payload);
+        } else if(typeof NetworkEngine !== 'undefined') {
+            await NetworkEngine.safeWrite('gallery', uniqueId, payload);
+        }
+        galleryData.push(payload);
+        saveEngineMemory('gal');
+        
+        if (urlInput) urlInput.value = '';
+        renderAdminGalleryGridUI();
+        updateAdminDashboardStatsUI();
+        showSystemToast('تم دمج ونشر الصورة الجديدة في محرك شلال العميل بنجاح باهر 📸👑', 'success');
+    } catch (e) {
+        saveEngineMemory('gal');
+        showSystemToast('تم الحفظ محلياً لحين اتصال السحابة', 'info');
+    }
+};
+
+window.deleteGalleryPhotoSecurely = async function(photoId) {
+    if (!confirm('هل تودين مسح هذه الصورة وسحبها من شلال سابقة الأعمال؟')) return;
+    
+    try {
+        if (typeof db !== 'undefined') {
+            await db.collection('gallery').doc(photoId).delete();
+        } else if(typeof NetworkEngine !== 'undefined') {
+            await NetworkEngine.safeDelete('gallery', photoId);
+        }
+        galleryData = galleryData.filter(item => String(item.id) !== String(photoId));
+        saveEngineMemory('gal');
+        
+        renderAdminGalleryGridUI();
+        updateAdminDashboardStatsUI();
+        showSystemToast('تم إقصاء وحذف الصورة سحابياً بنجاح 👑', 'success');
+    } catch (e) {
+        showSystemToast(`فشل الحذف: ${e.message}`, 'error');
+    }
+};
+
 
 async function saveCakeBuilderSettings() {
     if(!window.siteSettings) window.siteSettings = { ...defaultSettings };
@@ -1325,7 +1587,7 @@ function renderAdminCategories() {
         </div>
     `).join('');
     if(window.lucide) lucide.createIcons();
-    const catSelect = document.getElementById('edit-prod-cat');
+    const catSelect = document.getElementById('edit-prod-cat') || document.getElementById('form-product-cat');
     if(catSelect) catSelect.innerHTML = sortedCats.map(c => `<option value=\"${escapeHTML(c.name)}\">${escapeHTML(c.name)}</option>`).join('');
 }
 
@@ -1407,8 +1669,10 @@ function deletePromoCode(idx) {
 }
 
 async function generateSmartDescription() {
-    const prodNameEl = document.getElementById('edit-prod-name'); const prodCatEl = document.getElementById('edit-prod-cat');
-    const btn = document.getElementById('btn-smart-desc'); const descField = document.getElementById('edit-prod-desc');
+    const prodNameEl = document.getElementById('edit-prod-name') || document.getElementById('form-product-name'); 
+    const prodCatEl = document.getElementById('edit-prod-cat') || document.getElementById('form-product-cat');
+    const btn = document.getElementById('btn-smart-desc'); 
+    const descField = document.getElementById('edit-prod-desc') || document.getElementById('form-product-desc');
     
     if(!prodNameEl || !prodCatEl || !btn || !descField) return;
     
@@ -1436,7 +1700,7 @@ async function generateSmartDescription() {
 
 function escapeHTML(str) {
     if (!str || typeof str !== 'string') return '';
-    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
+    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
 }
 
 async function syncOfflineImages() {
@@ -1474,6 +1738,7 @@ async function syncOfflineImages() {
                                 if (i === 0) p.img = uploadedUrl;
                                 needsSync = true;
                                 if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(p.id), p);
+                                if(typeof db !== 'undefined') await db.collection('catalog').doc(String(p.id)).set(p, { merge: true });
                             }
                         }
                     }
@@ -1486,6 +1751,7 @@ async function syncOfflineImages() {
             saveEngineMemory('cat');
             const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
             renderAdminMenu(currentSearch);
+            renderAdminCatalogGridUI();
             showSystemToast("تمت معالجة وتزامن الصور المؤجلة مع السحابة المركزية بنجاح ☁️", "success");
         }
     } catch(e) {}
@@ -1498,6 +1764,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     const dateEl = document.getElementById('admin-current-date');
     if(dateEl) dateEl.textContent = new Date().toLocaleDateString('ar-EG', dateOptions);
+    
+    // ربط مستمع البحث الفوري للكتالوج داخل اللوحة
+    const searchCatalogInput = document.getElementById('admin-search-catalog');
+    if(searchCatalogInput) {
+        searchCatalogInput.addEventListener('input', () => {
+            renderAdminCatalogGridUI();
+            renderAdminMenu(searchCatalogInput.value);
+        });
+    }
 });
 
 // 👑 THE ULTIMATE BOOT GUARD
@@ -1511,7 +1786,7 @@ function bootBoseSweetsEngine() {
     if(typeof auth !== 'undefined') {
         auth.onAuthStateChanged(async user => {
             if (user) { 
-                try { await loadEngineMemory(); } catch(e) {}
+                try { await loadAdminEngineMemory(); } catch(e) {}
                 openAdminDashboardDirectly();
                 syncOfflineImages(); 
             } else { 
@@ -1519,7 +1794,9 @@ function bootBoseSweetsEngine() {
             }
         });
     } else {
-        window.location.href = 'login.html';
+        loadAdminEngineMemory().then(() => {
+            openAdminDashboardDirectly();
+        }); // وضع التشغيل المباشر الاحتياطي
     }
 }
 

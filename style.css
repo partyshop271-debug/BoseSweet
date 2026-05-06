@@ -1,32 +1,37 @@
 /* =========================================================== */
-/* 👑 BoseSweets Premium Identity: Pure Soft Pink Edition       */
-/* تم توحيد الهوية وإجبار كافة مكونات الموقع على اللون البمبي   */
-/* وتم فرض خط Cairo بصرامة في كافة أرجاء الهيكل البرمجي.        */
+/* 👑 BoseSweets Sovereign Style & Visual Identity Engine      */
+/* العلامة التجارية الرسمية: حلويات بوسي                       */
+/* الإصدار: الموحد والسيادي المقاوم للتشتت اللوني والخطوط الضخمة */
 /* =========================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
 
 :root {
+    /* 👑 دستور التيبوغرافيا المهنية والمتزنة لراحة العين */
     --brand-font: 'Cairo', sans-serif;
     --base-font-size: 16px;
     --base-font-weight: 400;
     
-    --h1-size: 2.2rem;
-    --h2-size: 1.6rem;
-    --h3-size: 1.3rem;
+    /* مقاسات هندسية رشيقة تماماً تقضي على الضخامة العشوائية */
+    --h1-size: 1.8rem;
+    --h2-size: 1.4rem;
+    --h3-size: 1.2rem;
     --p-size: 0.95rem;
     
-    --brand-primary: #D2386C; /* البمبي الملكي المعتمد للعلامة */
-    --brand-secondary: #ff75a0; 
-    --brand-light: #fff0f5; 
+    /* 🎨 باليتة الألوان الموحدة والحصرية بقرار مهني قاطع */
+    --brand-primary: #D2386C;    /* البمبي الملكي المعتمد الحصري للأزرار والأسعار والأسكوب */
+    --brand-secondary: #ff75a0;  /* درجة التفتيح الانسيابي للجراديانت */
+    --brand-light: #fff0f5;      /* الخلفيات الناعمة جداً للمساحات التفاعلية */
     
-    --site-bg: #ffffff; /* المساحات البيضاء النقية لراحة العين */
-    --site-text: #1a1a1a; /* الرمادي الفحمي الداكن جداً للنصوص */
+    --site-bg: #ffffff;          /* المساحات البيضاء النقية لراحة العين وفخامة العرض */
+    --site-text: #475569;        /* الرمادي الفحمي الراقي والوحيد للموقع بأكمله (لون الحقوق) */
+    --text-dark: #1e293b;        /* رمادي داكن للعناوين البارزة فقط لضمان التباين */
     
-    --brand-glow: rgba(210, 56, 108, 0.4); 
-    --brand-glow-strong: rgba(255, 51, 119, 0.6);
+    --brand-glow: rgba(210, 56, 108, 0.25); 
+    --brand-glow-strong: rgba(210, 56, 108, 0.45);
     --ticker-speed: 25s;
     
+    /* الألوان الوظيفية الأساسية المعتمدة مسبقاً */
     --success-color: #86d4ad;
     --error-color: #e68e8e;
 }
@@ -34,11 +39,14 @@
 * {
     font-family: var(--brand-font) !important;
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 html { 
     font-size: var(--base-font-size); 
     scroll-behavior: smooth;
+    background-color: var(--site-bg);
 }
 
 body { 
@@ -51,10 +59,16 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* 👑 هندسة رشيقة للعناوين لمنع تضخم الكلمات */
 h1 { font-size: var(--h1-size); font-weight: 900; line-height: 1.3; color: var(--brand-primary); }
-h2 { font-size: var(--h2-size); font-weight: 900; line-height: 1.4; }
-h3 { font-size: var(--h3-size); font-weight: 700; line-height: 1.4; }
-p { font-size: var(--p-size); font-weight: 400; line-height: 1.7; }
+h2 { font-size: var(--h2-size); font-weight: 900; line-height: 1.4; color: var(--text-dark); }
+h3 { font-size: var(--h3-size); font-weight: 700; line-height: 1.4; color: var(--text-dark); }
+p { font-size: var(--p-size); font-weight: 400; line-height: 1.7; color: var(--site-text) !important; }
+
+/* إلغاء أي ألوان عشوائية أو روابط ملونة خارج الدستور */
+a, span, label, div, td, th {
+    color: inherit;
+}
 
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -63,11 +77,12 @@ p { font-size: var(--p-size); font-weight: 400; line-height: 1.7; }
 .custom-scrollbar::-webkit-scrollbar-track { background: var(--brand-light); border-radius: 10px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--brand-secondary); border-radius: 10px; }
 
+/* شريط الإعلانات العلوي السيادي */
 #ticker-container, .top-bar-bg {
     background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
     color: #ffffff !important;
-    border-bottom: 2px solid var(--brand-secondary) !important;
-    box-shadow: 0 4px 15px -5px var(--brand-glow) !important;
+    border-bottom: 1px solid var(--brand-secondary) !important;
+    box-shadow: 0 2px 10px var(--brand-glow) !important;
     position: fixed;
     top: 0;
     left: 0;
@@ -86,11 +101,12 @@ p { font-size: var(--p-size); font-weight: 400; line-height: 1.7; }
     transition: all 0.3s ease;
 }
 
+/* اللودر الملكي */
 #global-loader {
     background-color: var(--brand-light) !important; 
     transition: opacity 0.5s ease, visibility 0.5s; 
 }
-#global-loader i, #global-loader svg, .loader-icon {
+#global-loader h1, #global-loader i, #global-loader svg, .loader-icon {
     color: var(--brand-primary) !important;
 }
 .loader-spinner {
@@ -98,27 +114,31 @@ p { font-size: var(--p-size); font-weight: 400; line-height: 1.7; }
     border-top-color: var(--brand-primary) !important;
 }
 
+/* القوائم الجانبية المستقرة */
 #cart-sidebar, #advanced-sidebar {
     background-color: var(--site-bg) !important;
-    border-right: 2px solid var(--brand-light) !important;
-    box-shadow: -20px 0 50px rgba(255, 51, 119, 0.1) !important;
+    border-left: 1px solid var(--brand-light) !important;
+    border-right: 1px solid var(--brand-light) !important;
+    box-shadow: 0 0 40px rgba(210, 56, 108, 0.08) !important;
 }
 
 #checkout-modal, #step-2-checkout {
     background-color: var(--site-bg) !important;
 }
 
+/* ضبط حقول الإدخال لتتناسب مع راحة العين والموبايل */
 input[type="text"], input[type="tel"], input[type="date"], input[type="time"], textarea, select {
-    border: 2px solid var(--brand-light) !important;
+    border: 1px solid var(--brand-light) !important;
     background-color: var(--site-bg) !important;
     color: var(--site-text) !important;
     transition: all 0.3s ease;
-    font-weight: 700;
+    font-weight: 600;
+    border-radius: 1rem !important;
 }
 input[type="text"]:focus, input[type="tel"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus, select:focus {
     border-color: var(--brand-primary) !important;
     outline: none !important;
-    box-shadow: 0 0 0 4px rgba(255, 51, 119, 0.2) !important;
+    box-shadow: 0 0 0 3px rgba(210, 56, 108, 0.15) !important;
 }
 input[type="radio"], input[type="checkbox"] { 
     accent-color: var(--brand-primary) !important; 
@@ -129,8 +149,8 @@ input[type="radio"], input[type="checkbox"] {
     border-color: var(--brand-primary) !important;
     background-color: var(--brand-light) !important;
     color: var(--brand-primary) !important;
-    transform: scale(1.02);
     box-shadow: 0 4px 12px var(--brand-glow);
+    transform: scale(1.02);
 }
 
 #hero-header {
@@ -160,13 +180,14 @@ input[type="radio"], input[type="checkbox"] {
     contain: layout; 
 }
 
+/* زر التفاعل الموحد والوحيد بلمسة بوسي الاحترافية */
 .brand-gradient { 
     background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important; 
     box-shadow: 0 4px 15px var(--brand-glow) !important;
 }
 
 .btn-premium-action {
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
     position: relative;
     overflow: hidden;
     border-radius: 9999px; 
@@ -175,14 +196,14 @@ input[type="radio"], input[type="checkbox"] {
     font-weight: 700; 
     border: none;
     padding: 12px 24px;
-    box-shadow: 0 8px 25px var(--brand-glow);
+    box-shadow: 0 6px 20px var(--brand-glow);
     z-index: 1;
     cursor: pointer;
 }
 
 .btn-premium-action:hover {
-    transform: scale(1.02) translateY(-2px);
-    box-shadow: 0 12px 30px var(--brand-glow-strong);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 10px 25px var(--brand-glow-strong);
 }
 
 .btn-premium-action:active {
@@ -193,26 +214,27 @@ input[type="radio"], input[type="checkbox"] {
     background-color: rgba(255, 255, 255, 0.98) !important; 
     backdrop-filter: blur(8px); 
     -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 10px 40px -15px var(--brand-glow) !important; 
+    box-shadow: 0 4px 20px rgba(210, 56, 108, 0.05) !important; 
     transform: translateZ(0); 
     border-bottom: 1px solid var(--brand-light) !important;
 }
 
+/* كروت المنتجات الاحترافية الموحدة المقاسات */
 .product-card-premium {
-    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    border-radius: 2.5rem; 
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border-radius: 2rem; 
     background: var(--site-bg) !important;
     border: 1px solid var(--brand-light);
-    padding: 16px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     height: 100%;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.01);
 }
 
 .product-card-premium:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 40px var(--brand-glow);
+    transform: translate3d(0, -4px, 0);
+    box-shadow: 0 15px 35px var(--brand-glow);
     border-color: var(--brand-primary);
 }
 
@@ -220,15 +242,16 @@ input[type="radio"], input[type="checkbox"] {
     position: relative;
     overflow: hidden;
     background-color: var(--brand-light);
-    border-radius: 2rem; 
+    border-radius: 1.5rem; 
     cursor: zoom-in;
 }
 
+/* تفتيح وإبراز تفاصيل ولمعة المنتج طبيعياً 100% بنور النهار القوي المعتمد بدستور الصور */
 .product-image-glow img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    transition: transform 0.7s ease;
+    transition: transform 0.5s ease;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
 }
 
@@ -236,83 +259,71 @@ input[type="radio"], input[type="checkbox"] {
     transform: scale(1.1);
 }
 
-/* 👑 محرك الشلال الاحترافي فائق الأداء وخفيف الوزن */
+/* 👑 هندسة محرك الشلال فائق الأداء لصور المنتجات */
 #section-waterfall { 
     perspective: 1000px; 
     display: flex; 
     overflow: hidden; 
-    height: 650px; 
+    height: 580px; 
     width: 100%; 
-    max-width: 1450px; 
+    max-width: 1400px; 
     margin: 0 auto; 
     justify-content: center;
-    gap: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
+    gap: 16px;
     contain: strict; 
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
 }
 
 .waterfall-col { 
     display: flex; 
     flex-direction: column; 
-    gap: 0; 
+    gap: 16px; 
     width: 50%; 
-    max-width: 600px; 
+    max-width: 550px; 
     will-change: transform; 
 }
 
 .waterfall-card {
-    height: 325px; 
+    height: 270px; 
     flex-shrink: 0; 
     width: 100%; 
     border-radius: 2rem; 
     overflow: hidden;
     position: relative; 
-    background: transparent; 
-    border: none; 
-    box-shadow: none;
-    transform: scale(0.98); 
-    transition: transform 0.4s ease;
+    background: transparent;
+    transition: transform 0.3s ease;
+    border: 1px solid var(--brand-light);
 }
 
 .waterfall-card img { 
     width: 100%; 
     height: 100%; 
-    object-fit: contain; 
+    object-fit: cover; 
 }
 
 .waterfall-card:hover { 
-    transform: scale(1); 
-    z-index: 10; 
+    transform: scale(1.01); 
+    border-color: var(--brand-primary);
+    z-index: 10;
 }
 
-.animate-waterfall-up { animation: waterfall-up 25s linear infinite; }
-.animate-waterfall-down { animation: waterfall-down 25s linear infinite; }
+.animate-waterfall-up { animation: waterfall-up 30s linear infinite; }
+.animate-waterfall-down { animation: waterfall-down 30s linear infinite; }
 
-@keyframes waterfall-up { 
-    0% { transform: translateY(0); } 
-    100% { transform: translateY(-50%); } 
-}
-
-@keyframes waterfall-down { 
-    0% { transform: translateY(-50%); } 
-    100% { transform: translateY(0); } 
-}
+@keyframes waterfall-up { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
+@keyframes waterfall-down { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
 
 .lazy-section {
     opacity: 0;
-    transform: translate3d(0, 30px, 0);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    transform: translate3d(0, 20px, 0);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     will-change: opacity, transform;
 }
 .lazy-section.is-visible { opacity: 1; transform: translate3d(0, 0, 0); }
 
-@keyframes ticker-marquee { 
-    0% { transform: translate3d(100vw, 0, 0); } 
-    100% { transform: translate3d(-100%, 0, 0); } 
-}
+/* شريط الإعلانات المتحرك السلس */
+@keyframes ticker-marquee { 0% { transform: translate3d(100vw, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
 .animate-ticker {
     display: inline-block;
     white-space: nowrap;
@@ -327,17 +338,18 @@ input[type="radio"], input[type="checkbox"] {
     transition: opacity 0.3s ease;
 }
 
+/* كروت السلة التفاعلية الفسيحة */
 .cart-item-spacious {
     background: #ffffff;
     border: 1px solid var(--brand-light);
-    border-radius: 2rem;
+    border-radius: 1.5rem;
     padding: 16px;
     margin-bottom: 20px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.02);
     transition: all 0.3s ease;
 }
 .cart-item-spacious:hover {
-    box-shadow: 0 8px 30px var(--brand-glow);
+    box-shadow: 0 8px 25px var(--brand-glow);
     border-color: var(--brand-primary);
 }
 
@@ -491,6 +503,49 @@ input[type="radio"], input[type="checkbox"] {
     transform: translateX(-5px);
 }
 
+/* الخطوات المتتالية لتجهيز التورتة الملكية المخصصة */
+.cake-builder-step-panel {
+    border: 1px solid var(--brand-light);
+    border-radius: 2rem;
+    background: var(--site-bg);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+    display: none;
+}
+.cake-builder-step-panel.step-active {
+    display: block;
+    animation: fade-in 0.4s ease-out forwards;
+}
+
+/* تزيين خطوط برستيج التورت الملكية المخصصة */
+.step-indicator-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    margin-bottom: 2rem;
+}
+.step-indicator-dot {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--brand-light);
+    color: var(--site-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    border: 2px solid var(--brand-light);
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+.step-indicator-dot.dot-active {
+    background: var(--brand-primary);
+    color: white;
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 15px var(--brand-glow);
+}
+
 .bg-clip-text, 
 .text-transparent,
 h1.brand-gradient,
@@ -503,3 +558,13 @@ h2.brand-gradient,
     box-shadow: none !important;
     background-size: 200% auto;
 }
+
+/* تذييل الصفحة الفاخر الموحد */
+.prestigious-footer {
+    background-color: var(--brand-light) !important;
+    border-top: 1px solid rgba(210, 56, 108, 0.15) !important;
+    color: var(--site-text) !important;
+}
+
+@keyframes fade-in { from { opacity: 0; transform: translate3d(0, 10px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+.animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
