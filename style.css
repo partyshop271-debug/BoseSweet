@@ -147,11 +147,20 @@ main, .main-container, #main-content {
     max-width: 1200px !important;
     margin: 20px auto 0 auto !important;
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: row !important; /* السماح بالتوزيع الأفقي المتزن هندسياً */
+    flex-wrap: wrap !important;     /* منع الخنق والانهيار العمودي على الهواتف */
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
     padding: 0 20px !important;
+    gap: 20px !important;
+}
+
+/* تعديل ذكي للموبايل لضمان الانسيابية الكاملة للـ Hero */
+@media (max-width: 768px) {
+    #hero-header, .hero-section {
+        flex-direction: column !important;
+    }
 }
 
 #dyn-hero-title, #dyn-hero-desc, .hero-section p, .hero-section h1 {
