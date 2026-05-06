@@ -1,4 +1,3 @@
-
 /* =========================================================== */
 /* 👑 BoseSweets Premium Identity: Pure Soft Pink Edition       */
 /* تم توحيد الهوية وإجبار كافة مكونات الموقع (الشريط، السلة، اللودر) */
@@ -281,13 +280,15 @@ input[type="radio"], input[type="checkbox"] {
 .waterfall-card {
     height: 290px;
     flex-shrink: 0;
-    width: 100%; 
+    width: 140%; /* 📐 تم زيادة العرض بنسبة 40% لدعم الامتداد الهندسي */
     border-radius: 2.5rem; 
     overflow: hidden;
     position: relative;
     box-shadow: 0 10px 30px var(--brand-glow);
     background: var(--brand-light);
     border: 2px solid var(--brand-light);
+    left: 50%; /* 🛠️ إزاحة اختيارية للتوسيط الهيكلي */
+    transform: translateX(-50%); /* ⚖️ موازنة دقيقة للأبعاد لمنع الانحراف البصري */
 }
 
 .waterfall-card img {
@@ -298,12 +299,12 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 @keyframes waterfall-up { 
-    0% { transform: translate3d(0, 0, 0); } 
-    100% { transform: translate3d(0, -50%, 0); } 
+    0% { transform: translate3d(-50%, 0, 0); } 
+    100% { transform: translate3d(-50%, -50%, 0); } 
 }
 @keyframes waterfall-down { 
-    0% { transform: translate3d(0, -50%, 0); } 
-    100% { transform: translate3d(0, 0, 0); } 
+    0% { transform: translate3d(-50%, -50%, 0); } 
+    100% { transform: translate3d(-50%, 0, 0); } 
 }
 
 .animate-waterfall-up { animation: waterfall-up 30s linear infinite; will-change: transform; }
