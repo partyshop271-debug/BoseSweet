@@ -1722,6 +1722,15 @@ document.addEventListener('DOMContentLoaded', () => {
     syncOfflineOrders();
 });
 
+// 👑 التوسيع السيادي لحماية المحرك من الانهيار الصامت
+window.getImgFallback = function(categoryName) {
+    const safeCat = categoryName ? String(categoryName).trim() : '';
+    const encodedBrand = encodeURIComponent('حلويات بوسي');
+    // توفير مسار آمن للصورة البديلة لضمان عدم توقف دورة رسم المنتجات
+    return `https://via.placeholder.com/400/fff0f5/ff3377?text=${encodedBrand}`;
+};
+
+// 👑 تطوير دالة الأقسام لدمج التوجيه الرأسي السلس
 window.setCategory = function(c) {
     if (c === 'الرئيسية') {
         if(window.showHomeView) window.showHomeView();
@@ -1732,9 +1741,26 @@ window.setCategory = function(c) {
         else if(window.switchToMenuView) window.switchToMenuView();
         state.activeCat = c;
         renderMainDisplay();
+
+        // التوجيه الرأسي الذكي لبداية القسم لحماية العميل من التشتت
+        MemoryManager.set('scroll_to_products', () => {
+            const displayContainer = document.getElementById('display-container');
+            const catDescArea = document.getElementById('category-description-area');
+            const targetElement = (catDescArea && !catDescArea.classList.contains('hidden')) ? catDescArea : displayContainer;
+            
+            if (targetElement) {
+                const headerOffset = 140; 
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                
+                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+            }
+        }, 100);
     }
+    
     renderCategories();
     history.pushState({category: c}, '', `?category=${encodeURIComponent(c)}`);
+    
     MemoryManager.set('scroll_cat', () => { 
         const safeId = String(c).replace(/\s+/g, '-');
         const activeBtn = document.getElementById(`cat-btn-${safeId}`); 

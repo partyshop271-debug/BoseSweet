@@ -681,3 +681,51 @@ main, .main-container, #main-content {
     padding-bottom: 90px !important;
     margin-bottom: 30px !important;
 }
+/* =========================================================
+   👑 التوسيع الهندسي الصارم لفك الاشتباك وحماية الهوية البصرية 
+   ========================================================= */
+
+/* 1. حماية المساحة العلوية ومنع انزلاق الهيكل التنظيمي تحت الهيدر */
+body, html {
+    padding-top: 120px !important; 
+}
+
+/* 2. تثبيت الهيدر بشكل سيادي وتأمين مساحته */
+#navbar, header {
+    position: fixed !important;
+    top: 35px !important; 
+    background-color: var(--site-bg) !important;
+    box-shadow: 0 4px 15px rgba(210, 56, 108, 0.08) !important;
+    z-index: 2000 !important;
+    height: auto !important;
+    min-height: 75px !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+/* 3. إظهار اسم العلامة التجارية (حلويات بوسي) وحمايته من الاقتطاع */
+#dyn-brand-name, .brand-title, .brand-logo-text {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: var(--brand-primary) !important;
+    font-weight: 900 !important;
+    font-size: 1.6rem !important;
+    line-height: 1.2 !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    z-index: 2005 !important;
+    position: relative !important;
+}
+
+/* 4. إزاحة محرك الشلال والنصوص لأسفل لفك التكدس */
+#hero-header, .hero-section, #section-waterfall {
+    margin-top: 20px !important;
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+/* 5. إبطال أي تموضع خاطئ سابق للهيدر */
+.bg-\[\#070b14\]\/80 {
+    position: fixed !important;
+}
