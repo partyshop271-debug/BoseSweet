@@ -1,36 +1,38 @@
 /* =========================================================== */
 /* 👑 BoseSweets Premium Identity: Pure Soft Pink Edition       */
-/* تم توحيد الهوية وإجبار كافة مكونات الموقع (الشريط، السلة، اللودر) */
-/* على الخضوع التام للون البمبي الناعم حصراً في كل التفاصيل.   */
+/* تم توحيد الهوية وإجبار كافة مكونات الموقع على اللون البمبي   */
+/* وتم فرض خط Cairo بصرامة في كافة أرجاء الهيكل البرمجي.        */
 /* =========================================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
 :root {
-    /* 📐 الخطوط الأساسية والقياسات */
+    /* 📐 الخطوط الأساسية والقياسات الهندسة البصرية */
     --brand-font: 'Cairo', sans-serif;
     --base-font-size: 16px;
     --base-font-weight: 400;
     
-    /* تيبوغرافيا مهنية متزنة لضمان راحة العين */
+    /* تيبوغرافيا مهنية متزنة لضمان راحة العين الفائقة */
     --h1-size: 2.2rem;
     --h2-size: 1.6rem;
     --h3-size: 1.3rem;
     --p-size: 0.95rem;
     
-    /* 🎨 الألوان السيادية لحلويات بوسي (Soft Pink Palette) */
-    --brand-primary: #ffb7c5; /* البمبي الناعم المستخرج من الصور */
-    --brand-secondary: #ffc4d4; /* درجة فاتحة لتعزيز النعومة في التدرجات */
-    --brand-light: #fff0f5; /* الروز الفاتح جداً لمساحات التنفس والخلفيات */
+    /* 🎨 الألوان السيادية المعتمدة لحلويات بوسي (Master Palette) */
+    --brand-primary: #D2386C; /* البمبي الملكي المشبع - اللون السيد للعلامة التجارية */
+    --brand-secondary: #ff75a0; /* البمبي المضيء لتعزيز الأبعاد البصرية والتدرجات */
+    --brand-light: #fff0f5; /* الروز الفاتح المضيء لخلق مساحات التنفس مريحة للعين */
     
-    /* 🌗 ألوان الخلفيات والنصوص الأساسية */
-    --site-bg: #ffffff; /* أبيض نقي لخلفية الموقع الأساسية */
-    --site-text: #a85c70; /* درجة مركزة (داكنة) من نفس البمبي الناعم للنصوص */
+    /* 🌗 ألوان الخلفيات والنصوص الفاخرة */
+    --site-bg: #ffffff; /* أبيض نقي لإبراز جمال صور المنتجات الطبيعية */
+    --site-text: #CE5B78; /* اللون الرسمي الموحد لكافة النصوص بدلاً من حدة الأسود */
     
-    /* ✨ المؤثرات البصرية */
-    --brand-glow: rgba(255, 183, 197, 0.4); /* توهج ناعم جداً للظلال */
-    --brand-glow-strong: rgba(255, 183, 197, 0.7);
+    /* ✨ المؤثرات البصرية واللمعة الطبيعية */
+    --brand-glow: rgba(255, 51, 119, 0.5); /* ظلال ناعمة تعطي إحساساً بالتوهج والجاذبية */
+    --brand-glow-strong: rgba(255, 51, 119, 0.7);
     --ticker-speed: 25s;
     
-    /* 🔔 ألوان الحالات (مخففة لتناسب الهوية) */
+    /* 🔔 ألوان الحالات (مخففة هندسياً لتناسب فخامة الهوية) */
     --success-color: #86d4ad;
     --error-color: #e68e8e;
 }
@@ -38,13 +40,17 @@
 /* =========================================================== */
 /* 🛠️ الإعدادات العامة والتيبوغرافيا (Global Resets) */
 /* =========================================================== */
+* {
+    font-family: var(--brand-font) !important;
+    box-sizing: border-box;
+}
+
 html { 
     font-size: var(--base-font-size); 
     scroll-behavior: smooth;
 }
 
 body { 
-    font-family: var(--brand-font) !important; 
     font-weight: var(--base-font-weight);
     background-color: var(--site-bg) !important; 
     color: var(--site-text) !important;
@@ -53,25 +59,42 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-h1 { font-size: var(--h1-size); font-weight: 900; line-height: 1.3; }
+h1 { font-size: var(--h1-size); font-weight: 900; line-height: 1.3; color: var(--brand-primary); }
 h2 { font-size: var(--h2-size); font-weight: 900; line-height: 1.4; }
-h3 { font-size: var(--h3-size); font-weight: 800; line-height: 1.4; }
-p { font-size: var(--p-size); font-weight: 600; line-height: 1.7; }
+h3 { font-size: var(--h3-size); font-weight: 700; line-height: 1.4; }
+p { font-size: var(--p-size); font-weight: 400; line-height: 1.7; } /* الوزن العادي للوصف والسياسات */
 
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* =========================================================== */
-/* 🚀 الأوامر السيادية لتوحيد الهوية (The Overrides) */
-/* =========================================================== */
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: var(--brand-light); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--brand-secondary); border-radius: 10px; }
 
+/* =========================================================== */
+/* 🚀 الأوامر السيادية لتوحيد الهوية وإصلاح الأشرطة والقوائم */
+/* =========================================================== */
 #ticker-container, .top-bar-bg {
     background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
     color: #ffffff !important;
     border-bottom: 2px solid var(--brand-secondary) !important;
     box-shadow: 0 4px 15px -5px var(--brand-glow) !important;
-    contain: layout; /* لمنع تأخر الرندرة والتأثير على بقية العناصر */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    contain: layout;
     will-change: transform;
+}
+
+#navbar {
+    top: 35px; /* عزل شريط الهيدر هندسياً لمنع تداخله مع شريط الأخبار المتحرك */
+    z-index: 9998;
+    transition: all 0.3s ease;
 }
 
 #global-loader {
@@ -86,20 +109,21 @@ p { font-size: var(--p-size); font-weight: 600; line-height: 1.7; }
     border-top-color: var(--brand-primary) !important;
 }
 
-#cart-sidebar {
+#cart-sidebar, #advanced-sidebar {
     background-color: var(--site-bg) !important;
     border-right: 2px solid var(--brand-light) !important;
-    box-shadow: -20px 0 50px rgba(255, 183, 197, 0.1) !important;
+    box-shadow: -20px 0 50px rgba(255, 51, 119, 0.1) !important;
 }
 #cart-sidebar .cart-header {
     background-color: var(--brand-light) !important;
-    border-bottom: 1px solid rgba(255, 183, 197, 0.2) !important;
+    border-bottom: 1px solid rgba(255, 51, 119, 0.2) !important;
 }
 
 #checkout-modal, #step-2-checkout {
     background-color: var(--site-bg) !important;
 }
 
+/* هندسة الفيلدات واستمارات البيانات المدخلة */
 input[type="text"], input[type="tel"], input[type="date"], input[type="time"], textarea, select {
     border: 2px solid var(--brand-light) !important;
     background-color: var(--site-bg) !important;
@@ -110,7 +134,7 @@ input[type="text"], input[type="tel"], input[type="date"], input[type="time"], t
 input[type="text"]:focus, input[type="tel"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus, select:focus {
     border-color: var(--brand-primary) !important;
     outline: none !important;
-    box-shadow: 0 0 0 4px rgba(255, 183, 197, 0.2) !important;
+    box-shadow: 0 0 0 4px rgba(255, 51, 119, 0.2) !important;
 }
 input[type="radio"], input[type="checkbox"] { 
     accent-color: var(--brand-primary) !important; 
@@ -122,7 +146,7 @@ input[type="radio"], input[type="checkbox"] {
     background-color: var(--brand-light) !important;
     color: var(--brand-primary) !important;
     transform: scale(1.02);
-    box-shadow: 0 4px 12px -3px var(--brand-glow);
+    box-shadow: 0 4px 12px var(--brand-glow);
 }
 
 /* =========================================================== */
@@ -146,7 +170,7 @@ input[type="radio"], input[type="checkbox"] {
     color: var(--site-text); 
     font-weight: 600; 
     line-height: 1.6;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 #display-container {
@@ -160,48 +184,31 @@ input[type="radio"], input[type="checkbox"] {
 /* =========================================================== */
 .brand-gradient { 
     background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important; 
-    box-shadow: 0 4px 15px -5px var(--brand-glow) !important;
+    box-shadow: 0 4px 15px var(--brand-glow) !important;
 }
 
 .btn-premium-action {
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
-    border-radius: 9999px; 
+    border-radius: 9999px; /* انحناء دائري كامل هندسي مرن */
     background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
     color: #ffffff !important;
-    font-weight: 700;
+    font-weight: 700; /* الوزن العريض لنصوص الأزرار */
     border: none;
     padding: 12px 24px;
-    box-shadow: 0 8px 25px -5px var(--brand-glow);
+    box-shadow: 0 8px 25px var(--brand-glow);
     z-index: 1;
     cursor: pointer;
 }
 
 .btn-premium-action:hover {
-    transform: scale(1.05) translateY(-2px);
-    box-shadow: 0 12px 30px -5px var(--brand-glow-strong);
+    transform: scale(1.02) translateY(-2px);
+    box-shadow: 0 12px 30px var(--brand-glow-strong);
 }
 
 .btn-premium-action:active {
-    transform: scale(0.95);
-}
-
-.btn-premium-action::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -60%;
-    width: 20%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.4);
-    transform: rotate(30deg);
-    transition: all 0.6s ease;
-    z-index: -1;
-}
-
-.btn-premium-action:hover::after {
-    left: 120%;
+    transform: scale(0.98);
 }
 
 /* =========================================================== */
@@ -217,44 +224,44 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 /* =========================================================== */
-/* 🍮 كروت المنتجات الفاخرة (Product Cards) */
+/* 🍮 كروت المنتجات الفاخرة (Product Cards) والشبكة الذكية */
 /* =========================================================== */
 .product-card-premium {
     transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    border-radius: 2.5rem; 
+    border-radius: 2.5rem; /* زاوية انحناء كبيرة تعكس روح الكريمة والحلويات الناعمة */
     background: var(--site-bg) !important;
     border: 1px solid var(--brand-light);
-    padding: 12px; 
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
 }
 
 .product-card-premium:hover {
     transform: translateY(-8px);
-    box-shadow: 0 20px 40px -15px var(--brand-glow);
-    border-color: rgba(255, 183, 197, 0.5);
+    box-shadow: 0 20px 40px var(--brand-glow);
+    border-color: var(--brand-primary);
 }
 
 .product-image-glow {
     position: relative;
     overflow: hidden;
     background-color: var(--brand-light);
-    border-radius: inherit; 
+    border-radius: 2rem; 
+    cursor: zoom-in;
 }
 
-.product-image-glow::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
+.product-image-glow img {
+    width: 100%;
     height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.7), transparent);
-    transform: skewX(-25deg);
-    transition: 0.75s;
-    z-index: 5;
+    object-fit: contain;
+    transition: transform 0.7s ease;
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
 }
 
-.product-card-premium:hover .product-image-glow::before {
-    left: 125%;
+.product-card-premium:hover .product-image-glow img {
+    transform: scale(1.1);
 }
 
 /* =========================================================== */
@@ -268,9 +275,10 @@ input[type="radio"], input[type="checkbox"] {
     width: 100%;
     max-width: 100vw;
     justify-content: center;
-    gap: 12px;
+    gap: 8px; /* تماشياً مع حسابات الفراغات الهندسية المعتمدة */
     padding: 0 8px;
     box-sizing: border-box;
+    contain: strict; /* تحسين الرندرة تماماً وعزل القسم برمجياً للأداء العالي */
 }
 
 .waterfall-col {
@@ -280,11 +288,11 @@ input[type="radio"], input[type="checkbox"] {
     width: 50%;
     max-width: 600px;
     will-change: transform;
-    transform: translateZ(0); /* تفعيل تسريع الرندرة عبر الـ GPU لمنع ثقل السكرول */
+    transform: translateZ(0); /* تفعيل تسريع الرندرة عبر الـ GPU لمنع ثقل السكرول على الموبايل والكمبيوتر */
 }
 
 .waterfall-card {
-    height: 290px;
+    height: 290px; /* الارتفاع الثابت الصارم لمنع الانضغاط نهائياً Anti-Squish */
     flex-shrink: 0;
     width: 100%; /* تملأ العمود بالكامل هندسياً دون انحراف أو تراكب */
     border-radius: 2.5rem; 
@@ -312,8 +320,8 @@ input[type="radio"], input[type="checkbox"] {
     100% { transform: translate3d(0, 0, 0); } 
 }
 
-.animate-waterfall-up { animation: waterfall-up 30s linear infinite; will-change: transform; }
-.animate-waterfall-down { animation: waterfall-down 30s linear infinite; will-change: transform; }
+.animate-waterfall-up { animation: waterfall-up 35s linear infinite; will-change: transform; }
+.animate-waterfall-down { animation: waterfall-down 35s linear infinite; will-change: transform; }
 
 .lazy-section {
     opacity: 0;
@@ -332,7 +340,7 @@ input[type="radio"], input[type="checkbox"] {
     white-space: nowrap;
     padding-left: 100%;
     animation: ticker-marquee var(--ticker-speed) linear infinite;
-    font-weight: 700;
+    font-weight: 600; /* الوزن المتوسط المعتمد لنصوص شريط الأخبار */
     will-change: transform; 
 }
 
@@ -354,8 +362,8 @@ input[type="radio"], input[type="checkbox"] {
     transition: all 0.3s ease;
 }
 .cart-item-spacious:hover {
-    box-shadow: 0 8px 30px rgba(255, 183, 197, 0.2);
-    border-color: rgba(255, 183, 197, 0.4);
+    box-shadow: 0 8px 30px var(--brand-glow);
+    border-color: var(--brand-primary);
 }
 
 /* =========================================================== */
@@ -386,7 +394,7 @@ input[type="radio"], input[type="checkbox"] {
     backdrop-filter: blur(10px);
     border: 1px solid var(--brand-light) !important;
     color: var(--brand-primary) !important;
-    box-shadow: 0 4px 15px rgba(255, 183, 197, 0.1);
+    box-shadow: 0 4px 15px rgba(255, 51, 119, 0.1);
 }
 #bs-prev:hover, #bs-next:hover, #na-prev:hover, #na-next:hover {
     background: var(--brand-primary) !important;
@@ -396,7 +404,7 @@ input[type="radio"], input[type="checkbox"] {
 /* =========================================================== */
 /* 📱 تخصيصات إضافية */
 /* =========================================================== */
-.stat-number { color: var(--brand-primary) !important; font-weight: 900; }
+.stat-number { color: var(--brand-primary) !important; font-weight: 900; } /* السعر والخطوط الكبرى بالوزن الأسود */
 .text-brand { color: var(--brand-primary) !important; }
 .bg-brand-light { background-color: var(--brand-light) !important; }
 
@@ -442,7 +450,7 @@ input[type="radio"], input[type="checkbox"] {
 
 .shape-option-card:hover {
     transform: translateY(-5px);
-    border-color: rgba(255, 183, 197, 0.5);
+    border-color: rgba(255, 51, 119, 0.5);
     box-shadow: 0 10px 25px var(--brand-glow);
 }
 
@@ -513,7 +521,7 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 .cake-tier-premium:hover {
-    border-color: rgba(255, 183, 197, 0.5);
+    border-color: rgba(255, 51, 119, 0.5);
     box-shadow: inset 0 0 20px var(--brand-light), 0 8px 25px -5px var(--brand-glow);
     transform: translateX(-5px);
 }
