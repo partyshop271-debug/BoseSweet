@@ -15,166 +15,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <style>
-        /* 👑 Ultra-Soft Mobile UI & BoseSweets Brand Identity */
-        :root {
-            --bg-deep: #070b14;     
-            --bg-card: #101726;     
-            --bg-input: #1a2235;    
-            --text-main: #f8fafc;   
-            --text-muted: #8b9bb4;  
-            --brand-primary: #ff3377; /* البمبي الملكي المشبع */
-            --brand-glow: rgba(255, 51, 119, 0.5);
-            --border-soft: rgba(255,255,255,0.05);
-        }
-
-        body { 
-            font-family: 'Cairo', sans-serif; 
-            background-color: var(--bg-deep); 
-            color: var(--text-main);
-            -webkit-tap-highlight-color: transparent; 
-            position: fixed;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* 🚀 منطقة السكرول الناعمة */
-        #main-scroll-area {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch; 
-            padding-bottom: 160px !important; 
-        }
-
-        .app-card { 
-            background: var(--bg-card); 
-            border: 1px solid var(--border-soft); 
-            border-radius: 24px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        /* حاويات بوسي الجديدة بالزوايا الناعمة جداً */
-        .boosy-card {
-            background: var(--bg-card); 
-            border: 1px solid var(--border-soft); 
-            border-radius: 2.5rem; /* 40px - كما هو مطلوب في الدستور الهندسي */
-            padding: 24px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        /* حقول بمقاس 16px الإجباري لمنع الزووم في الموبايل */
-        .admin-input { 
-            background: var(--bg-input); 
-            border: 1px solid transparent; 
-            color: var(--text-main);
-            padding: 16px 20px;
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 16px !important; 
-            width: 100%;
-            transition: all 0.2s ease;
-            appearance: none; 
-        }
-        .admin-input:focus { 
-            border-color: var(--brand-primary); 
-            background: #141b2d;
-            outline: none; 
-            box-shadow: 0 0 15px var(--brand-glow);
-        }
-        .admin-input::placeholder { color: #475569; font-weight: 600; font-size: 14px; }
-        
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        
-        .bottom-sheet {
-            animation: slideUp 0.3s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
-            border-top-left-radius: 32px;
-            border-top-right-radius: 32px;
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.7);
-        }
-
-        /* 💎 الزر العائم مع لون بوسي الملكي */
-        .fab-diamond {
-            background: var(--brand-primary);
-            box-shadow: 0 10px 30px var(--brand-glow);
-            animation: float-pulse 3s infinite;
-        }
-        @keyframes float-pulse {
-            0% { box-shadow: 0 0 0 0 var(--brand-glow); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 51, 119, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 51, 119, 0); }
-        }
-
-        /* تبويبات النفيجيشن العلوية */
-        .main-nav-btn {
-            white-space: nowrap;
-            padding: 12px 24px;
-            border-radius: 16px;
-            font-size: 13px;
-            font-weight: 800;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        /* التبويب النشط باللون الملكي */
-        .main-nav-btn.active-tab {
-            background-color: var(--brand-primary) !important;
-            color: white !important;
-            box-shadow: 0 4px 15px var(--brand-glow);
-        }
-
-        .sub-tab-btn {
-            white-space: nowrap;
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--text-muted);
-            background: var(--bg-card);
-            border: 1px solid var(--border-soft);
-            transition: all 0.2s;
-        }
-        .sub-tab-btn.active {
-            background: var(--brand-primary);
-            color: white;
-            border-color: transparent;
-        }
-        .setting-section { display: none; animation: fadeIn 0.3s ease; }
-        .setting-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .modal-scroll-area {
-            flex: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 60px;
-        }
-
-        /* باليتة الألوان الحصرية */
-        .color-swatch {
-            position: relative;
-            cursor: pointer;
-        }
-        .color-swatch::after {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-        }
-        .color-swatch.active::after {
-            border-color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="admin-style.css">
 </head>
 <body>
 
@@ -499,6 +340,9 @@
                     <button onclick="switchSettingsTab('sec-promo')" id="tab-btn-sec-promo" class="sub-tab-btn snap-start rounded-[1.5rem]">العروض والكيك</button>
                     <button onclick="switchSettingsTab('sec-social')" id="tab-btn-sec-social" class="sub-tab-btn snap-start rounded-[1.5rem]">المنصات</button>
                     <button onclick="switchSettingsTab('sec-security')" id="tab-btn-sec-security" class="sub-tab-btn snap-start rounded-[1.5rem]">الخزنة</button>
+                    <button onclick="switchSettingsTab('sec-layout')" id="tab-btn-sec-layout" class="sub-tab-btn snap-start rounded-[1.5rem]">الأبعاد والشلال</button>
+                    <button onclick="switchSettingsTab('sec-ui-fonts')" id="tab-btn-sec-ui-fonts" class="sub-tab-btn snap-start rounded-[1.5rem]">اللودر والخطوط</button>
+                    <button onclick="switchSettingsTab('sec-structure')" id="tab-btn-sec-structure" class="sub-tab-btn snap-start rounded-[1.5rem]">الصفحات والهيكل</button>
                 </div>
 
                 <div class="w-full">
@@ -613,6 +457,127 @@
                                 <input type="password" id="sec-new-pwd" placeholder="الجديد" class="admin-input rounded-[1.5rem] py-3 text-xs bg-[#070b14]">
                                 <input type="password" id="sec-confirm-pwd" placeholder="تأكيد الجديد" class="admin-input rounded-[1.5rem] py-3 text-xs bg-[#070b14]">
                                 <button onclick="changeAdminPassword()" class="w-full bg-red-500 text-white py-3.5 rounded-[1.5rem] text-xs font-black mt-3 shadow-[0_4px_15px_rgba(239,68,68,0.3)] active:scale-95">تغيير الباسورد</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sec-layout" class="setting-section space-y-4">
+                        <div class="boosy-card border-indigo-500/20">
+                            <h3 class="text-sm font-black text-indigo-400 flex items-center gap-2 mb-4"><i data-lucide="layout" class="w-4 h-4"></i> إدارة المظهر والشلال والأبعاد</h3>
+                            
+                            <div class="bg-[#0a0f1c] p-4 rounded-[1.5rem] border border-slate-800 mb-4">
+                                <label class="block text-xs font-bold text-white mb-3">طريقة عرض كروت المنتجات</label>
+                                <div class="flex gap-4">
+                                    <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                                        <input type="radio" name="layout_viewMode" value="column_1" class="accent-indigo-500"> كارت واحد مالي الشاشة
+                                    </label>
+                                    <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                                        <input type="radio" name="layout_viewMode" value="columns_2" class="accent-indigo-500" checked> كارتين متجاورين
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="bg-[#0a0f1c] p-4 rounded-[1.5rem] border border-slate-800">
+                                <label class="block text-xs font-bold text-white mb-3">أبعاد الشلال والكروت</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-[10px] text-slate-400 mb-1">عرض الكارت</label>
+                                        <input type="text" id="set-layout-card-width" class="admin-input rounded-[1rem] py-2 text-xs bg-[#1a2235]" placeholder="100%">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] text-slate-400 mb-1">ارتفاع الكارت</label>
+                                        <input type="text" id="set-layout-card-height" class="admin-input rounded-[1rem] py-2 text-xs bg-[#1a2235]" placeholder="auto">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] text-slate-400 mb-1">عرض صورة الشلال</label>
+                                        <input type="text" id="set-layout-wf-width" class="admin-input rounded-[1rem] py-2 text-xs bg-[#1a2235]" placeholder="100%">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] text-slate-400 mb-1">ارتفاع صورة الشلال</label>
+                                        <input type="text" id="set-layout-wf-height" class="admin-input rounded-[1rem] py-2 text-xs bg-[#1a2235]" placeholder="270px">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sec-ui-fonts" class="setting-section space-y-4">
+                        <div class="boosy-card border-[#ff3377]/20">
+                            <h3 class="text-sm font-black text-[#ff3377] flex items-center gap-2 mb-4"><i data-lucide="type" class="w-4 h-4"></i> إدارة الخطوط وشاشة التحميل</h3>
+                            
+                            <div class="bg-[#0a0f1c] p-4 rounded-[1.5rem] border border-slate-800 mb-4">
+                                <label class="block text-xs font-bold text-white mb-3">إعدادات اللودر (شاشة التحميل)</label>
+                                <div class="space-y-3">
+                                    <input type="text" id="set-loader-text" class="admin-input rounded-[1rem] py-2 text-xs bg-[#1a2235]" placeholder="العبارة المكتوبة على اللودر...">
+                                    <div class="flex gap-3">
+                                        <div class="flex-1">
+                                            <label class="block text-[10px] text-slate-400 mb-1">لون خلفية اللودر</label>
+                                            <input type="color" id="set-loader-bg-color" class="w-full h-10 rounded-lg cursor-pointer bg-transparent">
+                                        </div>
+                                        <div class="flex-1">
+                                            <label class="block text-[10px] text-slate-400 mb-1">لون خط اللودر</label>
+                                            <input type="color" id="set-loader-text-color" class="w-full h-10 rounded-lg cursor-pointer bg-transparent">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-[#0a0f1c] p-4 rounded-[1.5rem] border border-slate-800">
+                                <label class="block text-xs font-bold text-white mb-3">إعدادات الخطوط الشاملة</label>
+                                <div class="grid grid-cols-2 gap-3 mb-3">
+                                    <div>
+                                        <label class="block text-[10px] text-slate-400 mb-1">لون النصوص الشامل</label>
+                                        <input type="color" id="set-global-text-color" class="w-full h-10 rounded-lg cursor-pointer bg-transparent">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] text-slate-400 mb-1">نوع الخط</label>
+                                        <select id="set-font-family" class="admin-input rounded-[1rem] py-2 text-[10px] bg-[#1a2235]">
+                                            <option value="'Cairo', sans-serif">Cairo</option>
+                                            <option value="'Tajawal', sans-serif">Tajawal</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label class="block text-[10px] text-slate-400 mb-1">الحجم الأساسي</label>
+                                        <input type="text" id="set-font-size-base" class="admin-input rounded-[1rem] py-2 text-xs bg-[#1a2235]" placeholder="16px">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[10px] text-slate-400 mb-1">سمك الخط العريض</label>
+                                        <select id="set-font-weight-bold" class="admin-input rounded-[1rem] py-2 text-[10px] bg-[#1a2235]">
+                                            <option value="700">Bold (700)</option>
+                                            <option value="900">Black (900)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="sec-structure" class="setting-section space-y-4">
+                        <div class="boosy-card border-emerald-500/20">
+                            <h3 class="text-sm font-black text-emerald-400 flex items-center gap-2 mb-4"><i data-lucide="layers" class="w-4 h-4"></i> إدارة الصفحات والتذييل والمراجعات</h3>
+                            
+                            <div class="bg-[#0a0f1c] p-4 rounded-[1.5rem] border border-slate-800 mb-4">
+                                <label class="block text-xs font-bold text-white mb-3">أبعاد الصفحات الداخلية (لمنع التمدد المبالغ)</label>
+                                <div class="flex gap-3">
+                                    <div class="flex-1">
+                                        <label class="block text-[10px] text-slate-400 mb-1">أقصى ارتفاع للصفحة</label>
+                                        <input type="text" id="set-page-max-height" class="admin-input rounded-[1rem] py-2 text-xs bg-[#1a2235]" placeholder="auto">
+                                    </div>
+                                    <div class="flex-1">
+                                        <label class="block text-[10px] text-slate-400 mb-1">أدنى ارتفاع للصفحة</label>
+                                        <input type="text" id="set-page-min-height" class="admin-input rounded-[1rem] py-2 text-xs bg-[#1a2235]" placeholder="100vh">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-[#0a0f1c] p-4 rounded-[1.5rem] border border-slate-800">
+                                <label class="block text-xs font-bold text-white mb-3">التحكم في الأقسام الحية</label>
+                                <label class="flex items-center justify-between cursor-pointer mb-3">
+                                    <span class="font-bold text-slate-300 text-xs">تفعيل قسم "قد يعجبك أيضاً"</span>
+                                    <input type="checkbox" id="set-you-may-like" class="w-5 h-5 accent-emerald-500 rounded" checked>
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -769,7 +734,11 @@
     </div>
 
     <script src="firebase-config.js"></script>
-    <script src="admin.js"></script>
+    <script src="admin-core.js"></script>
+    <script src="admin-ui.js"></script>
+    <script src="admin-orders.js"></script>
+    <script src="admin-catalog.js"></script>
+    <script src="admin-settings.js"></script>
     <script src="gallery.js"></script>
     
     <script>

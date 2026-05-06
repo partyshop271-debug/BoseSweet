@@ -236,7 +236,7 @@ const NetworkEngine = {
                 return false; 
             };
 
-            // 👑 التوسيع الهندسي: تقسيم الطابور لدفعات (Chunking) 
+            // 👑 تقسيم الطابور لدفعات (Chunking) 
             const batchSize = 5; // المحرك هيعالج 5 طلبات في المرة الواحدة
             let processedCount = 0;
 
@@ -269,6 +269,25 @@ const NetworkEngine = {
             console.error("BoseSweets Queue Processing Error:", e);
         }
     }
+};
+
+// 👑 توسيع محرك الشبكة السحابي لتأمين مستند التحكم المركزي وقواعد الأمان لـ حلويات بوسي
+const OriginalSafeWrite = NetworkEngine.safeWrite;
+
+NetworkEngine.safeWrite = async function(collectionName, docId, data) {
+    // فلترة برمجية صارمة لحماية مستند الإعدادات والأبعاد والـ CSS من التعديل الخارجي غير الموثق
+    if (collectionName === 'settings' && docId === 'main') {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+            console.error("🔒 رفض الأمان: لا يمكن تعديل siteSettings إلا من خلال حساب الإدارة الموثق.");
+            if (typeof showSystemToast === 'function') {
+                showSystemToast("تنبيه أمني: غير مسموح بتعديل الإعدادات السيادية بدون توثيق 🛡️", "error");
+            }
+            return false;
+        }
+    }
+    // تمرير العملية للمحرك الأصلي بالتوازي في حال اجتياز الفحص الآمن
+    return await OriginalSafeWrite.call(NetworkEngine, collectionName, docId, data);
 };
 
 // تشغيل محرك المعالجة الخلفية تلقائياً عند عودة الاتصال بالإنترنت

@@ -19,7 +19,7 @@
     --p-size: 0.95rem;
     
     /* 🎨 باليتة الألوان الموحدة والحصرية بقرار مهني قاطع */
-    --brand-primary: #D2386C;    /* البمبي الملكي المعتمد الحصري للأزرار والأسعار والأسكوب */
+    --brand-primary: #ff75a0;    /* البمبي الملكي المعتمد الحصري للأزرار والأسعار والأسكوب */
     --brand-secondary: #ff75a0;  /* درجة التفتيح الانسيابي للجراديانت */
     --brand-light: #fff0f5;      /* الخلفيات الناعمة جداً للمساحات التفاعلية */
     
@@ -34,6 +34,11 @@
     /* الألوان الوظيفية الأساسية المعتمدة مسبقاً */
     --success-color: #86d4ad;
     --error-color: #e68e8e;
+
+    /* 👑 متغيرات الأبعاد والشلال الديناميكية */
+    --layout-waterfall-height: 270px;
+    --layout-waterfall-width: 100%;
+    --layout-waterfall-fit: cover;
 }
 
 * {
@@ -96,8 +101,10 @@ a, span, label, div, td, th {
 }
 
 #navbar {
-    top: 35px; 
-    z-index: 9998;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
     transition: all 0.3s ease;
 }
 
@@ -285,9 +292,9 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 .waterfall-card {
-    height: 270px; 
+    height: var(--layout-waterfall-height); 
+    width: var(--layout-waterfall-width); 
     flex-shrink: 0; 
-    width: 100%; 
     border-radius: 2rem; 
     overflow: hidden;
     position: relative; 
@@ -299,7 +306,7 @@ input[type="radio"], input[type="checkbox"] {
 .waterfall-card img { 
     width: 100%; 
     height: 100%; 
-    object-fit: cover; 
+    object-fit: var(--layout-waterfall-fit); 
 }
 
 .waterfall-card:hover { 
@@ -568,3 +575,52 @@ h2.brand-gradient,
 
 @keyframes fade-in { from { opacity: 0; transform: translate3d(0, 10px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
 .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+
+/* 👑 التوسيع المعماري للهوية البصرية ودستور الألوان المعتمد لـ حلويات بوسي */
+:root {
+    --brand-bamby: #fff0f5;         /* البامبي الفاتح المعتمد للموقع */
+    --brand-primary-pink: #ff3377;  /* البمبي الملكي المشبع */
+    --brand-white: #ffffff;         /* الأبيض النقي */
+    
+    /* أبعاد الشلال والكروت الديناميكية المستلمة من السيرفر */
+    --layout-waterfall-height: 270px;
+    --layout-waterfall-width: 100%;
+    --layout-waterfall-fit: cover;
+}
+
+/* 🛡️ إعدام اللون البني تماماً وإحلال الهوية المعتمدة */
+body, .app-card, .boosy-card {
+    color: #475569 !important; /* لون النص الشامل المعتمد */
+    background-color: var(--brand-white) !important;
+}
+
+/* 🤖 حسم حركة الهيدر واقتطاعه مساحة من الشاشة عند التمرير */
+#navbar, header, .bg-\[\#070b14\]\/80 {
+    position: absolute !important;
+    top: 0 !important;
+    width: 100% !important;
+    z-index: 1000 !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* هندسة كروت الشلال لمنع التمدد المشوه وتطبيق الأبعاد ديناميكياً */
+.waterfall-card img {
+    width: var(--layout-waterfall-width) !important;
+    height: var(--layout-waterfall-height) !important;
+    object-fit: var(--layout-waterfall-fit) !important;
+    border-radius: 1.5rem;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* تأثيرات بصرية صامتة وراقية عند ضغط الأزرار */
+button, .main-nav-btn, .btn-premium-action {
+    transition: all 0.2s ease-in-out !important;
+}
+button:hover, .main-nav-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+button:active, .main-nav-btn:active {
+    transform: scale(0.95) !important;
+}
