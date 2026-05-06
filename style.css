@@ -16,14 +16,14 @@
     --h3-size: 1.3rem;
     --p-size: 0.95rem;
     
-    --brand-primary: #D2386C; 
+    --brand-primary: #D2386C; /* البمبي الملكي المعتمد للعلامة */
     --brand-secondary: #ff75a0; 
     --brand-light: #fff0f5; 
     
-    --site-bg: #ffffff; 
-    --site-text: #CE5B78; 
+    --site-bg: #ffffff; /* المساحات البيضاء النقية لراحة العين */
+    --site-text: #1a1a1a; /* الرمادي الفحمي الداكن جداً للنصوص */
     
-    --brand-glow: rgba(255, 51, 119, 0.4); 
+    --brand-glow: rgba(210, 56, 108, 0.4); 
     --brand-glow-strong: rgba(255, 51, 119, 0.6);
     --ticker-speed: 25s;
     
@@ -45,6 +45,7 @@ body {
     font-weight: var(--base-font-weight);
     background-color: var(--site-bg) !important; 
     color: var(--site-text) !important;
+    font-family: var(--brand-font) !important;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -240,59 +241,65 @@ input[type="radio"], input[type="checkbox"] {
     perspective: 1000px; 
     display: flex; 
     overflow: hidden; 
-    height: 650px; /* الارتفاع الدستوري المعتمد */
-    width: 100%;
-    max-width: 1450px; /* العرض الأقصى المعتمد */
-    margin: 0 auto;
+    height: 650px; 
+    width: 100%; 
+    max-width: 1450px; 
+    margin: 0 auto; 
     justify-content: center;
-    gap: 16px; 
-    padding: 0 16px;
-    box-sizing: border-box;
+    gap: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
     contain: strict; 
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%);
 }
 
-.waterfall-col {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    width: 50%;
-    max-width: 600px;
-    will-change: transform;
-    transform: translate3d(0, 0, 0); /* إجبار المتصفح على استخدام كارت الشاشة GPU لمنع التعليق */
+.waterfall-col { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0; 
+    width: 50%; 
+    max-width: 600px; 
+    will-change: transform; 
 }
 
 .waterfall-card {
-    height: 290px; /* الارتفاع الهندسي الصارم لحماية الصور Anti-Squish */
-    flex-shrink: 0;
+    height: 325px; 
+    flex-shrink: 0; 
     width: 100%; 
-    border-radius: 2.5rem; 
+    border-radius: 2rem; 
     overflow: hidden;
-    position: relative;
-    box-shadow: 0 10px 30px var(--brand-glow);
-    background: var(--brand-light);
-    border: 2px solid var(--brand-light);
-    box-sizing: border-box;
+    position: relative; 
+    background: transparent; 
+    border: none; 
+    box-shadow: none;
+    transform: scale(0.98); 
+    transition: transform 0.4s ease;
 }
 
-.waterfall-card img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    image-rendering: auto;
+.waterfall-card img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain; 
 }
 
-/* أنيميشن ناعم ومخفف تماماً على رامات الأجهزة لحل مشكلة السكرول */
+.waterfall-card:hover { 
+    transform: scale(1); 
+    z-index: 10; 
+}
+
+.animate-waterfall-up { animation: waterfall-up 25s linear infinite; }
+.animate-waterfall-down { animation: waterfall-down 25s linear infinite; }
+
 @keyframes waterfall-up { 
-    0% { transform: translate3d(0, 0, 0); } 
-    100% { transform: translate3d(0, -300px, 0); } 
-}
-@keyframes waterfall-down { 
-    0% { transform: translate3d(0, -300px, 0); } 
-    100% { transform: translate3d(0, 0, 0); } 
+    0% { transform: translateY(0); } 
+    100% { transform: translateY(-50%); } 
 }
 
-.animate-waterfall-up { animation: waterfall-up 20s linear infinite; will-change: transform; }
-.animate-waterfall-down { animation: waterfall-down 20s linear infinite; will-change: transform; }
+@keyframes waterfall-down { 
+    0% { transform: translateY(-50%); } 
+    100% { transform: translateY(0); } 
+}
 
 .lazy-section {
     opacity: 0;

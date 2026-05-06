@@ -1209,6 +1209,27 @@ function closeProdModal() {
     if(m) { m.classList.add('opacity-0'); setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); currentEditId = null; }, 300); }
 }
 
+window.addNewSizeRow = function() {
+    const container = document.getElementById('size-price-inputs');
+    if(!container) return;
+    
+    const row = document.createElement('div');
+    row.className = 'flex gap-2 items-center bg-[#070b14] p-2 rounded-[1rem] border border-slate-800 mt-2';
+    row.innerHTML = `
+        <div class="flex-1">
+            <input type="text" placeholder="الحجم (مثال: كبير)" class="size-name admin-input rounded-xl py-2 text-xs bg-[#1a2235]">
+        </div>
+        <div class="flex-1">
+            <input type="number" placeholder="السعر (ج.م)" class="size-val admin-input rounded-xl py-2 font-black text-[#ff3377] text-center bg-[#1a2235]">
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="p-2 bg-red-500/10 text-red-400 rounded-xl active:scale-90 flex-shrink-0 transition-transform cursor-pointer pointer-events-auto relative z-50">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+    `;
+    container.appendChild(row);
+    if(window.lucide) window.lucide.createIcons();
+};
+
 async function saveProductData() {
     const nName = document.getElementById('edit-prod-name')?.value.trim(); 
     const nPrice = parseInt(document.getElementById('edit-prod-price')?.value) || 0;

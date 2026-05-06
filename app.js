@@ -1,5 +1,5 @@
-// ⚡ Engine Upgrade: Clean & Stable Catalog Engine (BoseSweets Sovereign V18.0)
-// 👑 تم تنظيف المحرك بالكامل وتوسيع منطق العمليات والشبكة الذكية لنسخة V18.0 السيادية مع دمج الأوصاف الدستورية دون حذف أو اختصار نهائياً.
+// ⚡ Engine Upgrade: Clean & Stable Catalog Engine (BoseSweets Sovereign V18.0 - Waterfall Enhanced)
+// 👑 تم تنظيف المحرك بالكامل وتوسيع منطق العمليات والشبكة الذكية لنسخة V18.0 السيادية مع دمج الأوصاف الدستورية ودوران الشلال الذكي دون حذف أو اختصار نهائياً.
 
 const MemoryManager = {
     timers: {},
@@ -213,7 +213,6 @@ function getCapsuleDescription(p) {
 
 function getFinalDescription(p, isFullWidth) {
     if (!p) return '';
-    // إذا كان هناك وصف مخصص تم إدخاله يدوياً من لوحة التحكم، نلتزم به فوراً ولا نستبدله
     if (p.desc && typeof p.desc === 'string' && p.desc.trim().length > 3) return escapeHTML(p.desc.trim());
     
     let n = (p.name ? String(p.name) : '').trim().toLowerCase();
@@ -226,7 +225,6 @@ function getFinalDescription(p, isFullWidth) {
     const exactKey4 = `${sub}`.trim();           
     const exactKey5 = `${n}`.trim();             
 
-    // 🛡️ الفحص السيادي الصارم: يمنع تداخل الأقسام نهائياً وضمان عزل النصوص المعتمدة
     for (let key in detailedDescriptions) {
         let kLower = key.toLowerCase();
         if (exactKey1 === kLower || exactKey2 === kLower || exactKey3 === kLower || exactKey4 === kLower || exactKey5 === kLower) {
@@ -236,7 +234,6 @@ function getFinalDescription(p, isFullWidth) {
     
     for (let key in detailedDescriptions) {
         let kLower = key.toLowerCase();
-        // قيد سيادي: لا يتم تطبيق أوصاف التورت إلا إذا كان القسم الفعلي هو "تورت" منعا للاختلاط والمسح مسبقاً
         if ((n.includes(kLower) || sub.includes(kLower)) && c === 'تورت') return detailedDescriptions[key];
         if ((n.includes('جاتوه') || c.includes('جاتوه')) && key.includes('جاتوه')) return detailedDescriptions['جاتوه كلاسيك']; 
     }
@@ -520,33 +517,32 @@ function shareProduct(id, name) {
     else { navigator.clipboard.writeText(url).then(() => { showSystemToast('تم نسخ رابط المنتج بنجاح!', 'success'); }).catch(() => { const t = document.createElement("textarea"); t.value = url; document.body.appendChild(t); t.select(); document.execCommand("Copy"); t.remove(); showSystemToast('تم نسخ الرابط!', 'success'); }); }
 }
 
+// 👑 الشلال الذكي المطور: تدوير الصور تلقائياً حسب الساعة الحالية بدون عشوائية مفرطة لضمان أعلى معايير الأداء
 function initWaterfall() {
-    const sectionWaterfall = document.getElementById('section-waterfall');
     const col1 = document.getElementById('waterfall-col-1');
     const col2 = document.getElementById('waterfall-col-2');
-    if (!col1 || !col2 || !sectionWaterfall) return;
+    if (!col1 || !col2) return;
 
-    const allImages = catalog.filter(p => p.images && p.images.length > 0)
-                             .map(p => ({url: p.images[0], id: p.id}));
-    
-    if (allImages.length === 0) {
-        sectionWaterfall.classList.add('hidden');
-        return;
-    } else {
-        sectionWaterfall.classList.remove('hidden');
-    }
+    // تصفية المنتجات التي تحتوي على صور فعلية في الكتالوج المعتمد
+    const allImages = catalog.filter(p => p && p.images && p.images.length > 0);
+    if (allImages.length === 0) return;
 
-    // 🛡️ التوسيع المعماري الفولاذي: جلب 4 صور فقط وتجنب التكرار العنيف لحماية المعالج ومنع الشلل
-    const shuffled = allImages.sort(() => 0.5 - Math.random()).slice(0, 4); 
-    
-    const renderCard = (img) => `
-        <div class="waterfall-card cursor-pointer" onclick="navigateToProduct('${img.id}')">
-            <img src="${optimizeCloudinaryUrl(img.url)}" loading="lazy" decoding="async" alt="منتج بوسي">
+    // منطق هندسي لاختيار 6 صور مختلفة ومميزة بناءً على الساعة الحالية لحماية الـ DOM ومنع شلل المعالجة
+    const hourIndex = new Date().getHours() % Math.max(1, Math.floor(allImages.length / 6));
+    const startIndex = hourIndex * 6;
+    const displayItems = allImages.slice(startIndex, startIndex + 6);
+
+    const renderItem = (item) => `
+        <div class="waterfall-card cursor-pointer" onclick="navigateToProduct('${item.id}')">
+            <img src="${optimizeCloudinaryUrl(item.images[0])}" loading="lazy" decoding="async" alt="${escapeHTML(item.name)}">
         </div>`;
 
-    // 👑 عزل البناء والتكرار في حدود الأداء العالي فقط دون إغراق الـ DOM
-    col1.innerHTML = shuffled.slice(0, 2).map(renderCard).join('');
-    col2.innerHTML = shuffled.slice(2, 4).map(renderCard).join('');
+    const html1 = displayItems.slice(0, 3).map(renderItem).join('');
+    const html2 = displayItems.slice(3, 6).map(renderItem).join('');
+
+    // تكرار الصور لضمان انسيابية الحركة الفيزيائية داخل التصميم بدون انقطاع بصري
+    col1.innerHTML = html1 + html1;
+    col2.innerHTML = html2 + html2;
 }
 
 window.initHomepageSections = function() {
@@ -799,7 +795,6 @@ function renderMainDisplay() {
         targetHTML = flowerHtml;
     }
     else {
-        // 🛡️ تصحيح الحرف الأجنبي الساقط في كلمة ديسباسيتو منعا لإفشال الفلترة
         if (state.activeCat === 'ديسباسيتو') showSubTabs = true;
         
         if (isFullWidth) {
