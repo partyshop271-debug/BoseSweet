@@ -1,7 +1,7 @@
 /* =========================================================== */
 /* 👑 BoseSweets Sovereign Style & Visual Identity Engine      */
-/* العلامة التجارية الرسمية: حلويات بوسي                       */
-/* الإصدار: الموحد والسيادي المقاوم للتشتت اللوني والخطوط الضخمة */
+/* العلامة التجارية الرسمية المعتمدة: حلويات بوسي               */
+/* الإصدار الموحد والسيادي المقاوم للتشتت وفك الاشتباك الفني     */
 /* =========================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
@@ -12,35 +12,38 @@
     --base-font-size: 16px;
     --base-font-weight: 400;
     
-    /* مقاسات هندسية رشيقة تماماً تقضي على الضخامة العشوائية */
+    /* مقاسات هندسية رشيقة تقضي تماماً على الضخامة العشوائية وتدعم الجوال والكمبيوتر */
     --h1-size: 1.8rem;
     --h2-size: 1.4rem;
     --h3-size: 1.2rem;
     --p-size: 0.95rem;
     
-    /* 🎨 باليتة الألوان الموحدة والحصرية بقرار مهني قاطع */
+    /* 🎨 باليتة الألوان الموحدة والحصرية بقرار مهني قاطع لبراند حلويات بوسي */
     --brand-primary: #ff75a0;    /* البمبي الملكي المعتمد الحصري للأزرار والأسعار والأسكوب */
-    --brand-secondary: #ff75a0;  /* درجة التفتيح الانسيابي للجراديانت */
-    --brand-light: #fff0f5;      /* الخلفيات الناعمة جداً للمساحات التفاعلية */
+    --brand-secondary: #ff75a0;  /* درجة التفتيح الانسيابي المتزن للجراديانت */
+    --brand-light: #fff0f5;      /* الخلفيات الناعمة جداً للمساحات التفاعلية (البامبي الفاتح) */
     
     --site-bg: #ffffff;          /* المساحات البيضاء النقية لراحة العين وفخامة العرض */
-    --site-text: #475569;        /* الرمادي الفحمي الراقي والوحيد للموقع بأكمله (لون الحقوق) */
-    --text-dark: #1e293b;        /* رمادي داكن للعناوين البارزة فقط لضمان التباين */
+    --site-text: #475569;        /* الرمادي الفحمي الراقي والوحيد للموقع بأكمله لضمان الوضوح */
+    --text-dark: #1e293b;        /* رمادي داكن مخصص للعناوين البارزة فقط لضمان التباين */
     
-    --brand-glow: rgba(210, 56, 108, 0.25); 
-    --brand-glow-strong: rgba(210, 56, 108, 0.45);
+    --brand-glow: rgba(255, 51, 119, 0.15); 
+    --brand-glow-strong: rgba(255, 51, 119, 0.35);
     --ticker-speed: 25s;
     
-    /* الألوان الوظيفية الأساسية المعتمدة مسبقاً */
+    /* الألوان الوظيفية الأساسية المعيارية */
     --success-color: #86d4ad;
     --error-color: #e68e8e;
 
-    /* 👑 متغيرات الأبعاد والشلال الديناميكية */
+    /* 👑 متغيرات الأبعاد والشلال الديناميكية المستلمة من السيرفر */
     --layout-waterfall-height: 270px;
     --layout-waterfall-width: 100%;
     --layout-waterfall-fit: cover;
 }
 
+/* =========================================================== */
+/* 🛠️ تصفير الحسابات وضبط القواعد الهيكلية الموحدة              */
+/* =========================================================== */
 * {
     font-family: var(--brand-font) !important;
     box-sizing: border-box;
@@ -62,9 +65,10 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    padding-top: 120px !important; /* مساحة علوية آمنة وثابتة لمنع انزلاق الهيكل تحت الهيدر */
 }
 
-/* 👑 هندسة رشيقة للعناوين لمنع تضخم الكلمات */
+/* 👑 هندسة رشيقة للعناوين لمنع تضخم الكلمات وحماية التبويبات */
 h1 { font-size: var(--h1-size); font-weight: 900; line-height: 1.3; color: var(--brand-primary); }
 h2 { font-size: var(--h2-size); font-weight: 900; line-height: 1.4; color: var(--text-dark); }
 h3 { font-size: var(--h3-size); font-weight: 700; line-height: 1.4; color: var(--text-dark); }
@@ -80,96 +84,87 @@ a, span, label, div, td, th {
 
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
 .custom-scrollbar::-webkit-scrollbar-track { background: var(--brand-light); border-radius: 10px; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--brand-secondary); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--brand-primary); border-radius: 10px; }
 
-/* شريط الإعلانات العلوي السيادي */
+/* =========================================================== */
+/* 👑 نظام التموضع والتحكم الفني بالهيدر والبار العلوي          */
+/* =========================================================== */
 #ticker-container, .top-bar-bg {
     background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
     color: #ffffff !important;
-    border-bottom: 1px solid var(--brand-secondary) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
     box-shadow: 0 2px 10px var(--brand-glow) !important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    height: 35px;
-    display: flex;
-    align-items: center;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
+    height: 35px !important;
+    display: flex !important;
+    align-items: center !important;
     contain: layout;
     will-change: transform;
 }
 
-#navbar {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
+#navbar, header, .bg-\[\#070b14\]\/80 {
+    position: fixed !important;
+    top: 35px !important; /* يستقر مباشرة تحت شريط الإعلانات لمنع التداخل والاشتباك */
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    background-color: var(--site-bg) !important;
+    box-shadow: 0 4px 15px rgba(255, 51, 119, 0.06) !important;
+    z-index: 9000 !important;
+    height: auto !important;
+    min-height: 75px !important;
+    display: flex !important;
+    align-items: center !important;
     transition: all 0.3s ease;
 }
 
-/* اللودر الملكي */
-#global-loader {
-    background-color: var(--brand-light) !important; 
-    transition: opacity 0.5s ease, visibility 0.5s; 
-}
-#global-loader h1, #global-loader i, #global-loader svg, .loader-icon {
-    color: var(--brand-primary) !important;
-}
-.loader-spinner {
-    border-color: var(--brand-light) !important;
-    border-top-color: var(--brand-primary) !important;
+.nav-scrolled { 
+    background-color: rgba(255, 255, 255, 0.98) !important; 
+    backdrop-filter: blur(8px); 
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 20px rgba(255, 51, 119, 0.1) !important; 
+    transform: translateZ(0); 
+    border-bottom: 1px solid var(--brand-light) !important;
 }
 
-/* القوائم الجانبية المستقرة */
-#cart-sidebar, #advanced-sidebar {
-    background-color: var(--site-bg) !important;
-    border-left: 1px solid var(--brand-light) !important;
-    border-right: 1px solid var(--brand-light) !important;
-    box-shadow: 0 0 40px rgba(210, 56, 108, 0.08) !important;
+main, .main-container, #main-content {
+    position: relative !important;
+    z-index: 10 !important;
+    width: 100% !important;
+    max-width: 100% !important;
 }
 
-#checkout-modal, #step-2-checkout {
-    background-color: var(--site-bg) !important;
-}
-
-/* ضبط حقول الإدخال لتتناسب مع راحة العين والموبايل */
-input[type="text"], input[type="tel"], input[type="date"], input[type="time"], textarea, select {
-    border: 1px solid var(--brand-light) !important;
-    background-color: var(--site-bg) !important;
-    color: var(--site-text) !important;
-    transition: all 0.3s ease;
-    font-weight: 600;
-    border-radius: 1rem !important;
-}
-input[type="text"]:focus, input[type="tel"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus, select:focus {
-    border-color: var(--brand-primary) !important;
-    outline: none !important;
-    box-shadow: 0 0 0 3px rgba(210, 56, 108, 0.15) !important;
-}
-input[type="radio"], input[type="checkbox"] { 
-    accent-color: var(--brand-primary) !important; 
-    width: 1.2rem;
-    height: 1.2rem;
-}
-.custom-radio-container:has(input:checked) {
-    border-color: var(--brand-primary) !important;
-    background-color: var(--brand-light) !important;
-    color: var(--brand-primary) !important;
-    box-shadow: 0 4px 12px var(--brand-glow);
-    transform: scale(1.02);
-}
-
-#hero-header {
+/* =========================================================== */
+/* 👑 حماية الواجهة والتحكم بالنصوص الترحيبية (منع الانهيار العمودي) */
+/* =========================================================== */
+#hero-header, .hero-section {
     background-color: transparent; 
-    min-height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 20px auto 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding: 0 20px !important;
+}
+
+#dyn-hero-title, #dyn-hero-desc, .hero-section p, .hero-section h1 {
+    width: 100% !important;
+    max-width: 800px !important;
+    word-break: keep-all !important; /* منع الكسر العمودي العشوائي للكلمات */
+    white-space: normal !important;   /* السماح بالامتداد الأفقي الطبيعي للجمل */
+    flex-shrink: 0 !important;       /* حماية النصوص من الانضغاط بفعل عناصر مجاورة */
+    display: block !important;
+    text-shadow: none !important;
 }
 
 #dyn-hero-title {
-    text-shadow: none;
     color: var(--brand-primary);
     font-weight: 900; 
 }
@@ -181,52 +176,36 @@ input[type="radio"], input[type="checkbox"] {
     opacity: 0.9;
 }
 
+/* حماية اسم العلامة التجارية من الاقتطاع أو الاحتجاب */
+#dyn-brand-name, .brand-title, .brand-logo-text {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: var(--brand-primary) !important;
+    font-weight: 900 !important;
+    font-size: 1.6rem !important;
+    line-height: 1.2 !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    z-index: 9005 !important;
+    position: relative !important;
+}
+
+/* تحجيم شارات الدوائر التعريفية لعدم خنق الهيكل النصي للموقع */
+.badge-circle, .floating-badge {
+    flex-shrink: 0 !important;
+    max-width: 120px !important;
+}
+
+/* =========================================================== */
+/* 👑 كروت المنتجات الاحترافية الموحدة المقاسات                     */
+/* =========================================================== */
 #display-container {
     min-height: 400px;
     transition: opacity 0.3s ease-in-out;
     contain: layout; 
 }
 
-/* زر التفاعل الموحد والوحيد بلمسة بوسي الاحترافية */
-.brand-gradient { 
-    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important; 
-    box-shadow: 0 4px 15px var(--brand-glow) !important;
-}
-
-.btn-premium-action {
-    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-    position: relative;
-    overflow: hidden;
-    border-radius: 9999px; 
-    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
-    color: #ffffff !important;
-    font-weight: 700; 
-    border: none;
-    padding: 12px 24px;
-    box-shadow: 0 6px 20px var(--brand-glow);
-    z-index: 1;
-    cursor: pointer;
-}
-
-.btn-premium-action:hover {
-    transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 10px 25px var(--brand-glow-strong);
-}
-
-.btn-premium-action:active {
-    transform: scale(0.98);
-}
-
-.nav-scrolled { 
-    background-color: rgba(255, 255, 255, 0.98) !important; 
-    backdrop-filter: blur(8px); 
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 4px 20px rgba(210, 56, 108, 0.05) !important; 
-    transform: translateZ(0); 
-    border-bottom: 1px solid var(--brand-light) !important;
-}
-
-/* كروت المنتجات الاحترافية الموحدة المقاسات */
 .product-card-premium {
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     border-radius: 2rem; 
@@ -251,22 +230,33 @@ input[type="radio"], input[type="checkbox"] {
     background-color: var(--brand-light);
     border-radius: 1.5rem; 
     cursor: zoom-in;
+    width: 100%;
+    aspect-ratio: 1 / 1;
 }
 
-/* تفتيح وإبراز تفاصيل ولمعة المنتج طبيعياً 100% بنور النهار القوي المعتمد بدستور الصور */
-.product-image-glow img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+/* إبراز تفاصيل ولمعة المنتج طبيعياً بنور النهار القوي المعتمد بدستور الصور */
+.product-card img,
+.product-card-premium img,
+.product-image-glow img,
+.gallery-slide img,
+.product-image-container img,
+.image-container img,
+.swiper-slide img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important; /* حماية الأبعاد الطبيعية ومنع التشويه المطاطي للحلويات */
+    object-position: center !important;
     transition: transform 0.5s ease;
-    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
+    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.06));
 }
 
 .product-card-premium:hover .product-image-glow img {
     transform: scale(1.1);
 }
 
-/* 👑 هندسة محرك الشلال فائق الأداء لصور المنتجات */
+/* =========================================================== */
+/* 👑 محرك الشلال فائق الأداء لصور المنتجات                       */
+/* =========================================================== */
 #section-waterfall { 
     perspective: 1000px; 
     display: flex; 
@@ -274,7 +264,7 @@ input[type="radio"], input[type="checkbox"] {
     height: 580px; 
     width: 100%; 
     max-width: 1400px; 
-    margin: 0 auto; 
+    margin: 20px auto 0 auto !important; 
     justify-content: center;
     gap: 16px;
     contain: strict; 
@@ -292,8 +282,8 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 .waterfall-card {
-    height: var(--layout-waterfall-height); 
-    width: var(--layout-waterfall-width); 
+    height: var(--layout-waterfall-height) !important; 
+    width: var(--layout-waterfall-width) !important; 
     flex-shrink: 0; 
     border-radius: 2rem; 
     overflow: hidden;
@@ -304,9 +294,9 @@ input[type="radio"], input[type="checkbox"] {
 }
 
 .waterfall-card img { 
-    width: 100%; 
-    height: 100%; 
-    object-fit: var(--layout-waterfall-fit); 
+    width: var(--layout-waterfall-width) !important;
+    height: var(--layout-waterfall-height) !important;
+    object-fit: var(--layout-waterfall-fit) !important; 
 }
 
 .waterfall-card:hover { 
@@ -321,6 +311,37 @@ input[type="radio"], input[type="checkbox"] {
 @keyframes waterfall-up { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(0, -50%, 0); } }
 @keyframes waterfall-down { 0% { transform: translate3d(0, -50%, 0); } 100% { transform: translate3d(0, 0, 0); } }
 
+/* =========================================================== */
+/* 👑 الـ اللودر والتحكم بالعناصر المساعدة والقوائم الجانبية      */
+/* =========================================================== */
+#global-loader {
+    background-color: var(--brand-light) !important; 
+    transition: opacity 0.5s ease, visibility 0.5s; 
+}
+#global-loader h1, #global-loader i, #global-loader svg, .loader-icon {
+    color: var(--brand-primary) !important;
+}
+.loader-spinner {
+    border-color: var(--brand-light) !important;
+    border-top-color: var(--brand-primary) !important;
+}
+
+#cart-sidebar, #advanced-sidebar {
+    background-color: var(--site-bg) !important;
+    border-left: 1px solid var(--brand-light) !important;
+    border-right: 1px solid var(--brand-light) !important;
+    box-shadow: 0 0 40px rgba(255, 51, 119, 0.08) !important;
+}
+
+#checkout-modal, #step-2-checkout {
+    background-color: var(--site-bg) !important;
+}
+
+#global-image-lightbox {
+    backdrop-filter: blur(10px);
+    transition: opacity 0.3s ease;
+}
+
 .lazy-section {
     opacity: 0;
     transform: translate3d(0, 20px, 0);
@@ -329,23 +350,90 @@ input[type="radio"], input[type="checkbox"] {
 }
 .lazy-section.is-visible { opacity: 1; transform: translate3d(0, 0, 0); }
 
-/* شريط الإعلانات المتحرك السلس */
-@keyframes ticker-marquee { 0% { transform: translate3d(100vw, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-.animate-ticker {
-    display: inline-block;
-    white-space: nowrap;
-    padding-left: 100%;
-    animation: ticker-marquee var(--ticker-speed) linear infinite;
-    font-weight: 600; 
-    will-change: transform; 
+/* =========================================================== */
+/* 👑 حقول الإدخال واستمارات الطلب الموثقة                      */
+/* =========================================================== */
+input[type="text"], input[type="tel"], input[type="date"], input[type="time"], textarea, select {
+    border: 1px solid var(--brand-light) !important;
+    background-color: var(--site-bg) !important;
+    color: var(--site-text) !important;
+    transition: all 0.3s ease;
+    font-weight: 600;
+    border-radius: 1rem !important;
+}
+input[type="text"]:focus, input[type="tel"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus, select:focus {
+    border-color: var(--brand-primary) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(255, 51, 119, 0.15) !important;
+}
+input[type="radio"], input[type="checkbox"] { 
+    accent-color: var(--brand-primary) !important; 
+    width: 1.2rem;
+    height: 1.2rem;
+}
+.custom-radio-container:has(input:checked) {
+    border-color: var(--brand-primary) !important;
+    background-color: var(--brand-light) !important;
+    color: var(--brand-primary) !important;
+    box-shadow: 0 4px 12px var(--brand-glow);
+    transform: scale(1.02);
 }
 
-#global-image-lightbox {
-    backdrop-filter: blur(10px);
-    transition: opacity 0.3s ease;
+/* =========================================================== */
+/* 👑 أزرار التفاعل الموحدة بلمسة بوسي الاحترافية                   */
+/* =========================================================== */
+.brand-gradient { 
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important; 
+    box-shadow: 0 4px 15px var(--brand-glow) !important;
 }
 
-/* كروت السلة التفاعلية الفسيحة */
+.btn-premium-action {
+    transition: all 0.2s ease-in-out !important;
+    position: relative;
+    overflow: hidden;
+    border-radius: 9999px; 
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
+    color: #ffffff !important;
+    font-weight: 700; 
+    border: none;
+    padding: 12px 24px;
+    box-shadow: 0 6px 20px var(--brand-glow);
+    z-index: 1;
+    cursor: pointer;
+}
+
+.btn-premium-action:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 10px 25px var(--brand-glow-strong);
+    opacity: 0.9;
+}
+
+.btn-premium-action:active {
+    transform: scale(0.95) !important;
+}
+
+button, .main-nav-btn {
+    transition: all 0.2s ease-in-out !important;
+}
+button:hover, .main-nav-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+button:active, .main-nav-btn:active {
+    transform: scale(0.95) !important;
+}
+
+.send-whatsapp-btn {
+    background-color: #25D366 !important;
+    color: white !important;
+    border-radius: 9999px !important;
+    font-weight: 800;
+    box-shadow: 0 8px 25px -5px rgba(37, 211, 102, 0.4) !important;
+}
+
+/* =========================================================== */
+/* 👑 هندسة السلة ومعالج التورتة الملكية المخصصة (Multi-Step)   */
+/* =========================================================== */
 .cart-item-spacious {
     background: #ffffff;
     border: 1px solid var(--brand-light);
@@ -358,50 +446,6 @@ input[type="radio"], input[type="checkbox"] {
 .cart-item-spacious:hover {
     box-shadow: 0 8px 25px var(--brand-glow);
     border-color: var(--brand-primary);
-}
-
-.snap-slider { 
-    scroll-snap-type: x mandatory; 
-    touch-action: pan-y !important; 
-    -webkit-overflow-scrolling: touch;
-    overflow-x: auto;
-}
-.snap-slide img {
-    pointer-events: auto !important; 
-    user-select: none;
-    -webkit-user-drag: none;
-    touch-action: pan-y !important; 
-}
-
-#bestsellers-slider-home, #new-arrivals-slider-home {
-    scroll-snap-type: x mandatory;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    padding-bottom: 20px;
-}
-
-#bs-prev, #bs-next, #na-prev, #na-next {
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--brand-light) !important;
-    color: var(--brand-primary) !important;
-    box-shadow: 0 4px 15px rgba(255, 51, 119, 0.1);
-}
-#bs-prev:hover, #bs-next:hover, #na-prev:hover, #na-next:hover {
-    background: var(--brand-primary) !important;
-    color: white !important;
-}
-
-.stat-number { color: var(--brand-primary) !important; font-weight: 900; } 
-.text-brand { color: var(--brand-primary) !important; }
-.bg-brand-light { background-color: var(--brand-light) !important; }
-
-.send-whatsapp-btn {
-    background-color: #25D366 !important;
-    color: white !important;
-    border-radius: 9999px !important;
-    font-weight: 800;
-    box-shadow: 0 8px 25px -5px rgba(37, 211, 102, 0.4) !important;
 }
 
 .cake-builder-container {
@@ -510,7 +554,6 @@ input[type="radio"], input[type="checkbox"] {
     transform: translateX(-5px);
 }
 
-/* الخطوات المتتالية لتجهيز التورتة الملكية المخصصة */
 .cake-builder-step-panel {
     border: 1px solid var(--brand-light);
     border-radius: 2rem;
@@ -523,7 +566,14 @@ input[type="radio"], input[type="checkbox"] {
     animation: fade-in 0.4s ease-out forwards;
 }
 
-/* تزيين خطوط برستيج التورت الملكية المخصصة */
+/* فك الاشتباك الهندسي لحماية منطقة اتخاذ القرار والخطوات */
+#cake-builder-steps-container,
+.cake-builder-actions,
+.step-container {
+    padding-bottom: 90px !important;
+    margin-bottom: 30px !important;
+}
+
 .step-indicator-bar {
     display: flex;
     justify-content: space-between;
@@ -553,6 +603,45 @@ input[type="radio"], input[type="checkbox"] {
     box-shadow: 0 0 15px var(--brand-glow);
 }
 
+/* =========================================================== */
+/* 👑 السلايدر وشريط التمرير والتذييل                             */
+/* =========================================================== */
+.snap-slider { 
+    scroll-snap-type: x mandatory; 
+    touch-action: pan-y !important; 
+    -webkit-overflow-scrolling: touch;
+    overflow-x: auto;
+}
+.snap-slide img {
+    pointer-events: auto !important; 
+    user-select: none;
+    -webkit-user-drag: none;
+    touch-action: pan-y !important; 
+}
+
+#bestsellers-slider-home, #new-arrivals-slider-home {
+    scroll-snap-type: x mandatory;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    padding-bottom: 20px;
+}
+
+#bs-prev, #bs-next, #na-prev, #na-next {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--brand-light) !important;
+    color: var(--brand-primary) !important;
+    box-shadow: 0 4px 15px rgba(255, 51, 119, 0.1);
+}
+#bs-prev:hover, #bs-next:hover, #na-prev:hover, #na-next:hover {
+    background: var(--brand-primary) !important;
+    color: white !important;
+}
+
+.stat-number { color: var(--brand-primary) !important; font-weight: 900; } 
+.text-brand { color: var(--brand-primary) !important; }
+.bg-brand-light { background-color: var(--brand-light) !important; }
+
 .bg-clip-text, 
 .text-transparent,
 h1.brand-gradient,
@@ -566,166 +655,12 @@ h2.brand-gradient,
     background-size: 200% auto;
 }
 
-/* تذييل الصفحة الفاخر الموحد */
+/* تذييل الصفحة الفاخر والموحد للبراند */
 .prestigious-footer {
     background-color: var(--brand-light) !important;
-    border-top: 1px solid rgba(210, 56, 108, 0.15) !important;
+    border-top: 1px solid rgba(255, 51, 119, 0.15) !important;
     color: var(--site-text) !important;
 }
 
 @keyframes fade-in { from { opacity: 0; transform: translate3d(0, 10px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
 .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
-
-/* 👑 التوسيع المعماري للهوية البصرية ودستور الألوان المعتمد لـ حلويات بوسي */
-:root {
-    --brand-bamby: #fff0f5;         /* البامبي الفاتح المعتمد للموقع */
-    --brand-primary-pink: #ff3377;  /* البمبي الملكي المشبع */
-    --brand-white: #ffffff;         /* الأبيض النقي */
-    
-    /* أبعاد الشلال والكروت الديناميكية المستلمة من السيرفر */
-    --layout-waterfall-height: 270px;
-    --layout-waterfall-width: 100%;
-    --layout-waterfall-fit: cover;
-}
-
-/* 🛡️ إعدام اللون البني تماماً وإحلال الهوية المعتمدة */
-body, .app-card, .boosy-card {
-    color: #475569 !important; /* لون النص الشامل المعتمد */
-    background-color: var(--brand-white) !important;
-}
-
-/* 🤖 حسم حركة الهيدر واقتطاعه مساحة من الشاشة عند التمرير */
-#navbar, header, .bg-\[\#070b14\]\/80 {
-    position: absolute !important;
-    top: 0 !important;
-    width: 100% !important;
-    z-index: 1000 !important;
-    background-color: transparent !important;
-    box-shadow: none !important;
-}
-
-/* هندسة كروت الشلال لمنع التمدد المشوه وتطبيق الأبعاد ديناميكياً */
-.waterfall-card img {
-    width: var(--layout-waterfall-width) !important;
-    height: var(--layout-waterfall-height) !important;
-    object-fit: var(--layout-waterfall-fit) !important;
-    border-radius: 1.5rem;
-    transition: transform 0.5s ease-in-out;
-}
-
-/* تأثيرات بصرية صامتة وراقية عند ضغط الأزرار */
-button, .main-nav-btn, .btn-premium-action {
-    transition: all 0.2s ease-in-out !important;
-}
-button:hover, .main-nav-btn:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
-}
-button:active, .main-nav-btn:active {
-    transform: scale(0.95) !important;
-}
-
-/* =========================================================== */
-/* 🛠️ التحديثات الهندسية لفك الاشتباك وحماية الأبعاد           */
-/* =========================================================== */
-
-/* هندسة المساحة الآمنة أسفل الهيدر لمنع انزلاق الموقع */
-main {
-    padding-top: 85px !important; 
-    position: relative;
-    z-index: 10;
-}
-
-/* حماية الأبعاد الطبيعية لصور حلويات بوسي لمنع التشوه البصري */
-.product-card img,
-.gallery-slide img,
-.product-image-container img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: center !important;
-}
-
-/* فك الاشتباك في معالج التورتة الملكية لحماية منطقة القرار */
-#cake-builder-steps-container {
-    padding-bottom: 80px !important;
-    margin-bottom: 20px !important;
-}
-
-/* =========================================================
-   تصحيح البنية الهندسية وتجربة المستخدم (UX) - حلويات بوسي
-   ========================================================= */
-
-/* 1. تأمين المحتوى الرئيسي من الانزلاق تحت الشريط العلوي */
-main, .main-container, #main-content {
-    padding-top: 110px !important;
-    position: relative !important;
-    z-index: 10 !important;
-}
-
-/* 2. الإجبار الهندسي لحماية الأبعاد الطبيعية لصور المنتجات والشلال */
-.product-card img,
-.gallery-slide img,
-.swiper-slide img,
-.image-container img {
-    width: 100% !important;
-    height: 100% !important;
-    object-fit: cover !important;
-    object-position: center !important;
-}
-
-/* 3. فك الاشتباك في أزرار هندسة التورتة الملكية */
-#cake-builder-steps-container,
-.cake-builder-actions,
-.step-container {
-    padding-bottom: 90px !important;
-    margin-bottom: 30px !important;
-}
-/* =========================================================
-   👑 التوسيع الهندسي الصارم لفك الاشتباك وحماية الهوية البصرية 
-   ========================================================= */
-
-/* 1. حماية المساحة العلوية ومنع انزلاق الهيكل التنظيمي تحت الهيدر */
-body, html {
-    padding-top: 120px !important; 
-}
-
-/* 2. تثبيت الهيدر بشكل سيادي وتأمين مساحته */
-#navbar, header {
-    position: fixed !important;
-    top: 35px !important; 
-    background-color: var(--site-bg) !important;
-    box-shadow: 0 4px 15px rgba(210, 56, 108, 0.08) !important;
-    z-index: 2000 !important;
-    height: auto !important;
-    min-height: 75px !important;
-    display: flex !important;
-    align-items: center !important;
-}
-
-/* 3. إظهار اسم العلامة التجارية (حلويات بوسي) وحمايته من الاقتطاع */
-#dyn-brand-name, .brand-title, .brand-logo-text {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    color: var(--brand-primary) !important;
-    font-weight: 900 !important;
-    font-size: 1.6rem !important;
-    line-height: 1.2 !important;
-    overflow: visible !important;
-    white-space: normal !important;
-    z-index: 2005 !important;
-    position: relative !important;
-}
-
-/* 4. إزاحة محرك الشلال والنصوص لأسفل لفك التكدس */
-#hero-header, .hero-section, #section-waterfall {
-    margin-top: 20px !important;
-    position: relative !important;
-    z-index: 10 !important;
-}
-
-/* 5. إبطال أي تموضع خاطئ سابق للهيدر */
-.bg-\[\#070b14\]\/80 {
-    position: fixed !important;
-}
