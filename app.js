@@ -5,6 +5,7 @@
 // - تحويل محرك شلال الصور التفاعلي بالكامل لروابط ذكية ومباشرة للمنتج.
 // - دمج وهندسة معالج التورت المخصص في خطوات متتالية (Multi-Step Wizard).
 // - تأمين تداول البيانات محلياً وسحابياً بالتزامن المباشر.
+// - معالج فرض العرض الشبكي لضمان استقرار التبويبات والمساحات.
 
 const MemoryManager = {
     timers: {},
@@ -946,6 +947,17 @@ function renderFlowerTabs(container) {
     container.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border bg-white border-pink-100 flex flex-wrap justify-center gap-2" style="background-color: var(--site-bg); border-color: hsl(var(--brand-hue), 80%, 90%);">${fTypes.map(f => `<button onclick="window.setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all ${state.fType === f ? 'text-white shadow-md brand-gradient' : 'text-slate-600 opacity-80 hover:opacity-100'}" style="${state.fType === f ? '' : 'color: var(--site-text);'}">${f}</button>`).join('')}</div>`;
 }
 
+// 👑 معالج فرض العرض الشبكي (القرار المهني لمنع انهيار المساحات البيضاء)
+window.enforceCategoryRender = function(containerId, productsHTML) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        container.innerHTML = ''; 
+        container.classList.remove('hidden'); 
+        container.style.display = 'grid'; 
+        container.innerHTML = productsHTML; 
+    }
+};
+
 function renderMainDisplay() {
     if (!isAppReady) return; 
 
@@ -1034,7 +1046,8 @@ function renderMainDisplay() {
         }
     }
 
-    container.innerHTML = targetHTML;
+    // التنفيذ القاطع لدالة الإجبار الشبكي
+    window.enforceCategoryRender('display-container', targetHTML);
     if(window.lucide) lucide.createIcons();
 
     if (showSubTabs) {

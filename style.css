@@ -624,3 +624,30 @@ button:hover, .main-nav-btn:hover {
 button:active, .main-nav-btn:active {
     transform: scale(0.95) !important;
 }
+
+/* =========================================================== */
+/* 🛠️ التحديثات الهندسية لفك الاشتباك وحماية الأبعاد           */
+/* =========================================================== */
+
+/* هندسة المساحة الآمنة أسفل الهيدر لمنع انزلاق الموقع */
+main {
+    padding-top: 85px !important; 
+    position: relative;
+    z-index: 10;
+}
+
+/* حماية الأبعاد الطبيعية لصور حلويات بوسي لمنع التشوه البصري */
+.product-card img,
+.gallery-slide img,
+.product-image-container img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+/* فك الاشتباك في معالج التورتة الملكية لحماية منطقة القرار */
+#cake-builder-steps-container {
+    padding-bottom: 80px !important;
+    margin-bottom: 20px !important;
+}
