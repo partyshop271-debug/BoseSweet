@@ -213,6 +213,7 @@ function getCapsuleDescription(p) {
 
 function getFinalDescription(p, isFullWidth) {
     if (!p) return '';
+    // إذا كان هناك وصف مخصص تم إدخاله يدوياً من لوحة التحكم، نلتزم به فوراً ولا نستبدله
     if (p.desc && typeof p.desc === 'string' && p.desc.trim().length > 3) return escapeHTML(p.desc.trim());
     
     let n = (p.name ? String(p.name) : '').trim().toLowerCase();
@@ -225,6 +226,7 @@ function getFinalDescription(p, isFullWidth) {
     const exactKey4 = `${sub}`.trim();           
     const exactKey5 = `${n}`.trim();             
 
+    // 🛡️ الفحص السيادي الصارم: يمنع تداخل الأقسام نهائياً وضمان عزل النصوص المعتمدة
     for (let key in detailedDescriptions) {
         let kLower = key.toLowerCase();
         if (exactKey1 === kLower || exactKey2 === kLower || exactKey3 === kLower || exactKey4 === kLower || exactKey5 === kLower) {
@@ -234,6 +236,7 @@ function getFinalDescription(p, isFullWidth) {
     
     for (let key in detailedDescriptions) {
         let kLower = key.toLowerCase();
+        // قيد سيادي: لا يتم تطبيق أوصاف التورت إلا إذا كان القسم الفعلي هو "تورت" منعا للاختلاط والمسح مسبقاً
         if ((n.includes(kLower) || sub.includes(kLower)) && c === 'تورت') return detailedDescriptions[key];
         if ((n.includes('جاتوه') || c.includes('جاتوه')) && key.includes('جاتوه')) return detailedDescriptions['جاتوه كلاسيك']; 
     }
@@ -297,7 +300,6 @@ function showSystemToast(message, type = 'info') {
     const iconEl = document.getElementById('toast-icon');
     msgEl.innerText = message;
     
-    // الألوان معتمدة على الهوية الرسمية المستقرة
     let bgColor = 'bg-slate-900';
     if(type === 'error') bgColor = 'bg-[#ff3377]';
     if(type === 'success') bgColor = 'bg-emerald-600';
@@ -370,7 +372,7 @@ window.closeGlobalLightbox = function() {
     if(lightbox && mainImg) {
         lightbox.classList.add('opacity-0');
         mainImg.classList.remove('scale-100');
-        mainImg.classList.add('scale-95');
+        mainImg.classList.remove('scale-95');
         setTimeout(() => {
             lightbox.classList.add('hidden');
             lightbox.classList.remove('flex');
@@ -534,18 +536,17 @@ function initWaterfall() {
         sectionWaterfall.classList.remove('hidden');
     }
 
-    const shuffled = allImages.sort(() => 0.5 - Math.random()).slice(0, 6); 
+    // 🛡️ التوسيع المعماري الفولاذي: جلب 4 صور فقط وتجنب التكرار العنيف لحماية المعالج ومنع الشلل
+    const shuffled = allImages.sort(() => 0.5 - Math.random()).slice(0, 4); 
     
     const renderCard = (img) => `
         <div class="waterfall-card cursor-pointer" onclick="navigateToProduct('${img.id}')">
             <img src="${optimizeCloudinaryUrl(img.url)}" loading="lazy" decoding="async" alt="منتج بوسي">
         </div>`;
 
-    const col1Content = shuffled.slice(0, 3).map(renderCard).join('');
-    const col2Content = shuffled.slice(3, 6).map(renderCard).join('');
-
-    col1.innerHTML = col1Content + col1Content + col1Content + col1Content;
-    col2.innerHTML = col2Content + col2Content + col2Content + col2Content;
+    // 👑 عزل البناء والتكرار في حدود الأداء العالي فقط دون إغراق الـ DOM
+    col1.innerHTML = shuffled.slice(0, 2).map(renderCard).join('');
+    col2.innerHTML = shuffled.slice(2, 4).map(renderCard).join('');
 }
 
 window.initHomepageSections = function() {
@@ -556,8 +557,8 @@ window.initHomepageSections = function() {
     
     if (!bsContainer && !naContainer) return;
 
-    const bestSellers = catalog.filter(p => p.badge && p.badge.includes('مبيعاً')).slice(0, 8);
-    const newArrivals = catalog.filter(p => p.badge && p.badge.includes('جديد')).slice(0, 8);
+    const bestSellers = catalog.filter(p => p.badge && (p.badge.includes('مبيعاً') || p.badge.includes('مبيعات'))).slice(0, 8);
+    const newArrivals = catalog.filter(p => p.badge && (p.badge.includes('جديد') || p.badge.includes('🌟'))).slice(0, 8);
 
     const fallbackBS = bestSellers.length > 0 ? bestSellers : catalog.slice(0, 6);
     const fallbackNA = newArrivals.length > 0 ? newArrivals : catalog.slice().reverse().slice(0, 6);
@@ -798,6 +799,7 @@ function renderMainDisplay() {
         targetHTML = flowerHtml;
     }
     else {
+        // 🛡️ تصحيح الحرف الأجنبي الساقط في كلمة ديسباسيتو منعا لإفشال الفلترة
         if (state.activeCat === 'ديسباسيتو') showSubTabs = true;
         
         if (isFullWidth) {
@@ -807,7 +809,7 @@ function renderMainDisplay() {
         }
         
         let list = catalog.filter(p => p && p.category === state.activeCat);
-        if (state.activeCat === 'ديسباسيتo') {
+        if (state.activeCat === 'ديسباسيتو') {
             list = list.filter(p => {
                 const matchSize = p.size === state.dSize || p.subType === state.dSize || (p.desc && typeof p.desc === 'string' && p.desc.includes(state.dSize));
                 const isUncategorized = !p.size && !p.subType;
