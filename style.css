@@ -114,6 +114,21 @@ a, span, label, div, td, th {
     will-change: transform;
 }
 
+.animate-ticker {
+    position: relative !important;
+    z-index: 10005 !important;
+    display: inline-block !important;
+    will-change: transform;
+    animation-name: ticker-slide;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}
+
+@keyframes ticker-slide {
+    0% { transform: translateX(100%); }
+    100% { transform: translateX(-100%); }
+}
+
 #navbar {
     position: fixed !important;
     top: 35px !important; 

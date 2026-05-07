@@ -1,4 +1,4 @@
-// القلب النابض للمحرك الرئيسي (app.js) - حلويات بوسي - النسخة المستعادة بالكامل
+// القلب النابض للمحرك الرئيسي (app.js) - حلويات بوسي - النسخة الكاملة المستعادة
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
 import { siteSettings, shippingZones, catalog, galleryData, catMenu, isAppReady, state, currentBuilderStep, cakeState, catalogMap, syncCatalogMap, setAppReady } from './state.js';
 import { MemoryManager, hexToMathHSL, escapeHTML, generateUniqueID, optimizeCloudinaryUrl, generateSecureOrderId, showSystemToast } from './utils.js';
@@ -67,7 +67,7 @@ async function fetchDefaultCatalog() {
 
 async function loadEngineMemory() {
     try {
-        await fetchDefaultCatalog(); 
+        await fetchDefaultCatalog(); // تحميل البيانات المحلية أولاً كأمان
         
         if (typeof db === 'undefined') {
             catalog.length = 0; catalog.push(...defaultCatalog); 
@@ -122,7 +122,7 @@ async function loadEngineMemory() {
                     catMenu.push(...newMenu);
                 }
             }
-        } catch(e) {}
+        } catch(e) { console.warn("Firebase Settings Failed - Using Defaults"); }
 
         if (!catMenu || catMenu.length === 0) {
             const generated = [...new Set(defaultCatalog.map(p => p.category))].filter(Boolean);
@@ -143,10 +143,10 @@ async function loadEngineMemory() {
                 });
                 catalog.length = 0; catalog.push(...firebaseData);
             } else {
-                catalog.length = 0; catalog.push(...defaultCatalog);
+                if (catalog.length === 0) catalog.push(...defaultCatalog);
             }
         } catch (e) {
-            catalog.length = 0; catalog.push(...defaultCatalog);
+            if (catalog.length === 0) catalog.push(...defaultCatalog);
         }
 
         syncCatalogMap();
@@ -163,7 +163,11 @@ async function loadEngineMemory() {
         }
         
     } catch(err) { 
-        catalog.length = 0; catalog.push(...defaultCatalog); syncCatalogMap(); LiveSearchEngine.build(catalog);
+        if (catalog.length === 0) catalog.push(...defaultCatalog); 
+        syncCatalogMap(); 
+        LiveSearchEngine.build(catalog);
+    } finally {
+        setAppReady();
     }
     
     try { 
@@ -184,7 +188,6 @@ async function loadEngineMemory() {
 
 async function initApp() {
     await loadEngineMemory(); 
-    setAppReady();
 
     const urlParams = new URLSearchParams(window.location.search);
     const routeCat = urlParams.get('category');
@@ -287,12 +290,12 @@ document.addEventListener('click', function(event) {
         event.preventDefault();
         
         const button = event.target.closest('.add-to-cart-btn');
-        const productCard = button.closest('.product-card') || button.closest('.product-item');
+        const card = button.closest('.product-card') || button.closest('.product-item');
         
-        const productId = productCard.getAttribute('data-id') || Date.now().toString();
-        const productName = productCard.querySelector('.product-title, .product-name').innerText;
+        const productId = card.getAttribute('data-id') || Date.now().toString();
+        const productName = card.querySelector('.product-title, .product-name').innerText;
         
-        const priceText = productCard.querySelector('.product-price').innerText;
+        const priceText = card.querySelector('.product-price').innerText;
         const productPrice = parseFloat(priceText.replace(/[^0-9.]/g, ''));
 
         processBoseSweetsOrder(productId, productName, productPrice);

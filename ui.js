@@ -182,6 +182,8 @@ window.loadLiveReviews = async function(productId) {
 };
 
 export function applySettingsToUI() {
+    window.renderTicker(); // 👑 استدعاء مستقل وفوري للشريط العلوي لحلويات بوسي
+
     if (!isAppReady) return; 
 
     const root = document.documentElement;
@@ -194,8 +196,6 @@ export function applySettingsToUI() {
 
     const loaderTextEl = document.getElementById('dyn-loader-text');
     if (loaderTextEl) loaderTextEl.innerText = (siteSettings.visuals && siteSettings.visuals.loaderText) ? siteSettings.visuals.loaderText : "أهلاً بيك في عالم حلويات بوسي ✨";
-
-    window.renderTicker();
 
     if (siteSettings.seo) {
         if (siteSettings.seo.title && siteSettings.seo.title.trim() !== '') {
