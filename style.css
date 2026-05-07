@@ -530,3 +530,38 @@ h2.brand-gradient,
 
 @keyframes fade-in { from { opacity: 0; transform: translate3d(0, 10px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
 .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+/* هندسة الواجهة العلوية لمنصة حلويات بوسي */
+.header, .navbar {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 10px 15px !important;
+    background-color: #ffffff;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.logo-container, .brand-logo {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.brand-logo img {
+    max-height: 65px;
+    object-fit: contain;
+}
+
+.menu-toggle, .cart-icon {
+    flex: 0 0 auto;
+    display: block !important;
+    visibility: visible !important;
+    cursor: pointer;
+    z-index: 100;
+}
+
+.hero-section, .trust-badge-wrapper, .main-content {
+    margin-top: 15px !important;
+    padding-top: 10px !important;
+}

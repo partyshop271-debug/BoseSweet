@@ -1880,3 +1880,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+/* ترقية محرك سلة المشتريات لمنصة حلويات بوسي */
+document.addEventListener('click', function(event) {
+    if (event.target && event.target.closest('.add-to-cart-btn')) {
+        event.preventDefault();
+        
+        const button = event.target.closest('.add-to-cart-btn');
+        const productCard = button.closest('.product-card') || button.closest('.product-item');
+        
+        const productId = productCard.getAttribute('data-id') || Date.now().toString();
+        const productName = productCard.querySelector('.product-title, .product-name').innerText;
+        
+        const priceText = productCard.querySelector('.product-price').innerText;
+        const productPrice = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+
+        processBoseSweetsOrder(productId, productName, productPrice);
+    }
+});
+
+function processBoseSweetsOrder(id, name, price) {
+    let currentCart = JSON.parse(localStorage.getItem('boseSweetsCartData')) || [];
+    let existingItem = currentCart.find(item => item.id === id || item.name === name);
+    
+    if (existingItem) {
+        existingItem.quantity += 1;
+    } else {
+        currentCart.push({ id: id, name: name, price: price, quantity: 1 });
+    }
+    
+    localStorage.setItem('boseSweetsCartData', JSON.stringify(currentCart));
+    updateCartDisplay();
+}
+
+function updateCartDisplay() {
+    let currentCart = JSON.parse(localStorage.getItem('boseSweetsCartData')) || [];
+    let totalItems = currentCart.reduce((sum, item) => sum + item.quantity, 0);
+    
+    const cartCounters = document.querySelectorAll('.cart-counter, .cart-badge');
+    cartCounters.forEach(counter => {
+        counter.innerText = totalItems;
+        counter.style.display = totalItems > 0 ? 'flex' : 'none';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', updateCartDisplay);
