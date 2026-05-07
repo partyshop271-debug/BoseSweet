@@ -132,7 +132,7 @@ window.renderTicker = function() {
     let container = document.getElementById('ticker-container');
     const navbar = document.getElementById('navbar');
     
-    const isActive = siteSettings.ticker_isActive ?? siteSettings.tickerActive ?? false;
+    const isActive = siteSettings.ticker_isActive ?? siteSettings.tickerActive ?? true;
     
     if (!isActive) {
         if(container) { container.classList.add('hidden'); container.classList.remove('flex'); }
@@ -143,13 +143,14 @@ window.renderTicker = function() {
     if (!container) {
         container = document.createElement('div');
         container.id = 'ticker-container';
-        container.className = 'w-full z-[500] py-1.5 overflow-hidden absolute top-0 left-0 right-0 border-b border-white/10';
+        container.className = 'w-full py-1.5 overflow-hidden absolute top-0 left-0 right-0 border-b border-white/10';
+        container.style.zIndex = '9999';
         document.body.insertBefore(container, document.body.firstChild);
     }
 
-    const text = siteSettings.ticker_text || siteSettings.tickerText || siteSettings.announcement || '';
+    const text = siteSettings.ticker_text || siteSettings.tickerText || siteSettings.announcement || 'حلويات بوسي: تجربة تذوق بتعكس الجودة الأصلية وتليق بمناسباتك السعيدة';
     const speed = siteSettings.ticker_speed || siteSettings.tickerSpeed || 20;
-    const bgColor = siteSettings.ticker_bgColor || siteSettings.visuals?.themeHex || '#D2386C';
+    const bgColor = siteSettings.ticker_bgColor || siteSettings.visuals?.themeHex || '#ff3377';
     const textColor = siteSettings.ticker_textColor || '#ffffff';
 
     container.style.backgroundColor = bgColor;
@@ -182,7 +183,7 @@ window.loadLiveReviews = async function(productId) {
 };
 
 export function applySettingsToUI() {
-    window.renderTicker(); // 👑 استدعاء مستقل وفوري للشريط العلوي لحلويات بوسي
+    window.renderTicker(); 
 
     if (!isAppReady) return; 
 
@@ -990,9 +991,10 @@ window.setCategory = function(c) {
         else if(window.goToHome) window.goToHome();
         state.activeCat = 'الرئيسية';
     } else {
+        state.activeCat = c;
         if(window.showMenuView) window.showMenuView();
         else if(window.switchToMenuView) window.switchToMenuView();
-        state.activeCat = c;
+        
         window.renderMainDisplay && window.renderMainDisplay();
 
         MemoryManager.set('scroll_to_products', () => {
@@ -1018,16 +1020,6 @@ window.setCategory = function(c) {
         const activeBtn = document.getElementById(`cat-btn-${safeId}`); 
         if (activeBtn) { activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } 
     }, 50);
-};
-
-window.setSub = function(t, v) { 
-    if(t === 's') { state.dSize = v; window.renderMainDisplay && window.renderMainDisplay(); } 
-    if(t === 'f') { 
-        state.fType = v; 
-        window.renderMainDisplay && window.renderMainDisplay(); 
-        const targetSection = document.getElementById(`flower-group-${v.replace(/\s+/g, '-')}`);
-        if(targetSection) targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
 };
 
 /* محرك تصحيح التبويبات والأقسام - حلويات بوسي */

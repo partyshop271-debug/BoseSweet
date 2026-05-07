@@ -156,11 +156,11 @@
                 </button>
             </div>
             
-            <div id="brand-home-link" onclick="goToHome(event)" class="flex-1 flex items-center justify-center gap-2 overflow-hidden cursor-pointer select-none group">
+            <div id="brand-home-link" onclick="goToHome(event)" class="flex-1 flex items-center justify-center gap-2 cursor-pointer select-none group w-full" style="min-width: max-content;">
                 <div class="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center bg-pink-50 border border-pink-100 shadow-sm group-hover:scale-105 transition-transform shrink-0 hidden sm:flex">
-                    <i data-lucide="cake" class="w-5 h-5 md:w-6 md:h-6 text-pink-500"></i>
+                    <i data-lucide="cake" class="w-5 h-5 md:w-6 md:h-6 text-[#ff3377]"></i>
                 </div>
-                <h1 class="text-xl md:text-2xl font-black bg-clip-text text-transparent brand-gradient leading-none tracking-tighter truncate" style="white-space: nowrap;">حلويات بوسي</h1>
+                <h1 class="text-xl md:text-2xl font-black bg-clip-text text-transparent brand-gradient leading-relaxed tracking-normal" style="white-space: nowrap; overflow: visible;">حلويات بوسي</h1>
             </div>
 
             <div class="flex items-center shrink-0">
@@ -505,7 +505,9 @@
             document.getElementById('view-menu').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
             if(typeof state !== 'undefined') {
-                state.activeCat = 'تورت';
+                if(state.activeCat === 'الرئيسية') {
+                    state.activeCat = 'تورت';
+                }
                 if(typeof renderMainDisplay === 'function') renderMainDisplay();
                 if(typeof renderCategories === 'function') renderCategories();
             }
@@ -539,7 +541,7 @@
             }, 600);
         });
 
-        console.log("BoseSweets V19.0: Full Expansion, Tone Adjusted, Space Fixed, Ticker Active. 👑✨");
+        console.log("BoseSweets V19.1: Brand Name Protection Applied. 👑✨");
     </script>
 </body>
 </html>

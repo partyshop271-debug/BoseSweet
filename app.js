@@ -67,85 +67,76 @@ async function fetchDefaultCatalog() {
 
 async function loadEngineMemory() {
     try {
-        await fetchDefaultCatalog(); // تحميل البيانات المحلية أولاً كأمان
-        
-        if (typeof db === 'undefined') {
-            catalog.length = 0; catalog.push(...defaultCatalog); 
-            return;
-        }
-        
-        try {
-            let settingsDoc = await db.collection('settings').doc('main').get();
-            if (settingsDoc.exists) {
-                const cloudData = settingsDoc.data();
-                Object.assign(siteSettings, defaultSettings, cloudData);
-                
-                if (cloudData) {
-                    window.siteSettings = { ...defaultSettings, ...cloudData };
-                    
-                    if (cloudData.layout_settings) {
-                        const root = document.documentElement;
-                        if (cloudData.layout_settings.layout_waterfall_img_height) {
-                            root.style.setProperty('--layout-waterfall-height', cloudData.layout_settings.layout_waterfall_img_height);
-                        }
-                        if (cloudData.layout_settings.layout_waterfall_img_width) {
-                            root.style.setProperty('--layout-waterfall-width', cloudData.layout_settings.layout_waterfall_img_width);
-                        }
-                        if (cloudData.layout_settings.layout_waterfall_img_objectFit) {
-                            root.style.setProperty('--layout-waterfall-fit', cloudData.layout_settings.layout_waterfall_img_objectFit);
-                        }
-                    }
-                    
-                    if (cloudData.UI_Settings && cloudData.UI_Settings.typography_config) {
-                        const config = cloudData.UI_Settings.typography_config;
-                        const root = document.documentElement;
-                        if (config.main_font_family) root.style.setProperty('--brand-font', config.main_font_family);
-                        if (config.global_font_size_base) root.style.setProperty('--global-font-size-base', config.global_font_size_base);
-                        if (config.global_font_weight_bold) root.style.setProperty('--global-font-weight-bold', config.global_font_weight_bold);
-                        if (config.global_text_color) root.style.setProperty('--global-text-color', config.global_text_color);
-                    }
-                }
-
-                if(cloudData.visuals) siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
-                if(cloudData.cakeBuilder) {
-                    siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
-                    if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) {
-                        siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
-                    }
-                } else siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
-
-                if(cloudData.social) siteSettings.social = { ...siteSettings.social, ...cloudData.social };
-
-                if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
-                    const newMenu = typeof siteSettings.catMenu[0] === 'object' ? siteSettings.catMenu.sort((a, b) => a.order - b.order).map(c => c.name) : siteSettings.catMenu;
-                    catMenu.length = 0;
-                    catMenu.push(...newMenu);
-                }
-            }
-        } catch(e) { console.warn("Firebase Settings Failed - Using Defaults"); }
+        await fetchDefaultCatalog();
 
         if (!catMenu || catMenu.length === 0) {
             const generated = [...new Set(defaultCatalog.map(p => p.category))].filter(Boolean);
             catMenu.length = 0;
             catMenu.push(...generated);
+            if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
         }
-        if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
-        
-        try {
-            let catalogSnap = await db.collection('catalog').get();
-            let firebaseData = [];
-            catalogSnap.forEach(doc => firebaseData.push(doc.data()));
 
-            if (firebaseData.length > 0) {
-                firebaseData.sort((a, b) => {
-                    if ((a.sortOrder || 999) !== (b.sortOrder || 999)) return (a.sortOrder || 999) - (b.sortOrder || 999);
-                    return String(a.id).localeCompare(String(b.id));
-                });
-                catalog.length = 0; catalog.push(...firebaseData);
-            } else {
+        if (typeof db !== 'undefined') {
+            try {
+                let settingsDoc = await db.collection('settings').doc('main').get();
+                if (settingsDoc.exists) {
+                    const cloudData = settingsDoc.data();
+                    Object.assign(siteSettings, defaultSettings, cloudData);
+                    
+                    if (cloudData) {
+                        window.siteSettings = { ...defaultSettings, ...cloudData };
+                        if (cloudData.layout_settings) {
+                            const root = document.documentElement;
+                            if (cloudData.layout_settings.layout_waterfall_img_height) root.style.setProperty('--layout-waterfall-height', cloudData.layout_settings.layout_waterfall_img_height);
+                            if (cloudData.layout_settings.layout_waterfall_img_width) root.style.setProperty('--layout-waterfall-width', cloudData.layout_settings.layout_waterfall_img_width);
+                            if (cloudData.layout_settings.layout_waterfall_img_objectFit) root.style.setProperty('--layout-waterfall-fit', cloudData.layout_settings.layout_waterfall_img_objectFit);
+                        }
+                        if (cloudData.UI_Settings && cloudData.UI_Settings.typography_config) {
+                            const config = cloudData.UI_Settings.typography_config;
+                            const root = document.documentElement;
+                            if (config.main_font_family) root.style.setProperty('--brand-font', config.main_font_family);
+                            if (config.global_font_size_base) root.style.setProperty('--global-font-size-base', config.global_font_size_base);
+                            if (config.global_font_weight_bold) root.style.setProperty('--global-font-weight-bold', config.global_font_weight_bold);
+                            if (config.global_text_color) root.style.setProperty('--global-text-color', config.global_text_color);
+                        }
+                    }
+
+                    if(cloudData.visuals) siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
+                    if(cloudData.cakeBuilder) {
+                        siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
+                        if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) {
+                            siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
+                        }
+                    } else siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
+
+                    if(cloudData.social) siteSettings.social = { ...siteSettings.social, ...cloudData.social };
+
+                    if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
+                        const newMenu = typeof siteSettings.catMenu[0] === 'object' ? siteSettings.catMenu.sort((a, b) => a.order - b.order).map(c => c.name) : siteSettings.catMenu;
+                        catMenu.length = 0;
+                        catMenu.push(...newMenu);
+                    }
+                }
+            } catch(e) { console.warn("Firebase Settings Failed - Using Defaults"); }
+
+            try {
+                let catalogSnap = await db.collection('catalog').get();
+                let firebaseData = [];
+                catalogSnap.forEach(doc => firebaseData.push(doc.data()));
+
+                if (firebaseData.length > 0) {
+                    firebaseData.sort((a, b) => {
+                        if ((a.sortOrder || 999) !== (b.sortOrder || 999)) return (a.sortOrder || 999) - (b.sortOrder || 999);
+                        return String(a.id).localeCompare(String(b.id));
+                    });
+                    catalog.length = 0; catalog.push(...firebaseData);
+                } else {
+                    if (catalog.length === 0) catalog.push(...defaultCatalog);
+                }
+            } catch (e) {
                 if (catalog.length === 0) catalog.push(...defaultCatalog);
             }
-        } catch (e) {
+        } else {
             if (catalog.length === 0) catalog.push(...defaultCatalog);
         }
 
