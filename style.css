@@ -1,41 +1,36 @@
 /* =========================================================== */
 /* 👑 BoseSweets Sovereign Style & Visual Identity Engine      */
 /* العلامة التجارية الرسمية المعتمدة: حلويات بوسي               */
-/* الإصدار الموحد والسيادي الشامل - البناء والتوسيع والمقاومة     */
+/* الإصدار الموحد والشامل - البناء والتوسيع والمقاومة           */
 /* =========================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
 
 :root {
-    /* 👑 دستور التيبوغرافيا المهنية والمتزنة لراحة العين */
     --brand-font: 'Cairo', sans-serif;
     --base-font-size: 16px;
     --base-font-weight: 400;
     
-    /* مقاسات هندسية رشيقة تقضي تماماً على الضخامة العشوائية وتدعم الجوال والكمبيوتر */
     --h1-size: 1.8rem;
     --h2-size: 1.4rem;
     --h3-size: 1.2rem;
     --p-size: 0.95rem;
     
-    /* 🎨 باليتة الألوان الموحدة والحصرية بقرار مهني قاطع لبراند حلويات بوسي */
-    --brand-primary: #ff75a0;    /* البمبي الملكي المعتمد الموحد (#ff3377) للأزرار والأسعار والأسكوب */
-    --brand-secondary: #ff75a0;  /* درجة التفتيح الانسيابي المتزن للجراديانت */
-    --brand-light: #fff0f5;      /* الخلفيات الناعمة جداً للمساحات التفاعلية (البامبي الفاتح) */
+    --brand-primary: #ff75a0;    
+    --brand-secondary: #ff75a0;  
+    --brand-light: #fff0f5;      
     
-    --site-bg: #ffffff;          /* المساحات البيضاء النقية لراحة العين وفخامة العرض */
-    --site-text: #475569;        /* الرمادي الفحمي الراقي والوحيد للموقع بأكمله لضمان الوضوح */
-    --text-dark: #1e293b;        /* رمادي داكن مخصص للعناوين البارزة فقط لضمان التباين */
+    --site-bg: #ffffff;          
+    --site-text: #475569;        
+    --text-dark: #1e293b;        
     
     --brand-glow: rgba(255, 51, 119, 0.15); 
     --brand-glow-strong: rgba(255, 51, 119, 0.35);
     --ticker-speed: 25s;
     
-    /* الألوان الوظيفية الأساسية المعيارية */
     --success-color: #86d4ad;
     --error-color: #e68e8e;
 
-    /* 👑 متغيرات الأبعاد والشلال الديناميكية المستلمة من السيرفر */
     --layout-waterfall-height: 270px;
     --layout-waterfall-width: 100%;
     --layout-waterfall-fit: cover;
@@ -65,10 +60,10 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    padding-top: 140px !important; /* مساحة علوية آمنة وثابتة تمنع انزلاق الهيكل واختفاء الهيدر */
+    /* 👑 ضبط المساحة العلوية لتناسب الشريط العلوي والهيدر وتقضي على المساحات الضخمة */
+    padding-top: 110px !important; 
 }
 
-/* 👑 هندسة رشيقة للعناوين لمنع تضخم الكلمات وحماية التبويبات */
 h1 { font-size: var(--h1-size); font-weight: 900; line-height: 1.3; color: var(--brand-primary); }
 h2 { font-size: var(--h2-size); font-weight: 900; line-height: 1.4; color: var(--text-dark); }
 h3 { font-size: var(--h3-size); font-weight: 700; line-height: 1.4; color: var(--text-dark); }
@@ -86,7 +81,21 @@ a, span, label, div, td, th {
 .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--brand-primary); border-radius: 10px; }
 
 /* =========================================================== */
-/* 👑 نظام التموضع والتحكم الفني بالهيدر والبار العلوي          */
+/* 👑 هندسة التمرير الأفقي للأجهزة المحمولة (RTL)               */
+/* =========================================================== */
+.snap-x {
+    scroll-padding-inline-start: 20px;
+    scroll-padding-inline-end: 20px;
+}
+.snap-x > div:first-child {
+    margin-inline-start: 10px;
+}
+.snap-x > div:last-child {
+    margin-inline-end: 10px;
+}
+
+/* =========================================================== */
+/* 👑 نظام التموضع والتحكم الفني بالهيدر والشريط العلوي          */
 /* =========================================================== */
 #ticker-container, .top-bar-bg {
     background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
@@ -107,7 +116,7 @@ a, span, label, div, td, th {
 
 #navbar {
     position: fixed !important;
-    top: 35px !important; /* يستقر مباشرة تحت شريط الإعلانات لمنع التداخل والاشتباك */
+    top: 35px !important; 
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
@@ -137,7 +146,7 @@ main, .main-container, #main-content {
 }
 
 /* =========================================================== */
-/* 👑 حماية الواجهة والتحكم بالنصوص الترحيبية (منع الانهيار العمودي) */
+/* 👑 حماية الواجهة والتحكم بالنصوص الترحيبية                   */
 /* =========================================================== */
 #view-home header, .hero-section {
     background-color: transparent !important; 
@@ -145,9 +154,9 @@ main, .main-container, #main-content {
     top: 0 !important;
     width: 100% !important;
     max-width: 800px !important;
-    margin: 40px auto 0 auto !important;
+    margin: 20px auto 0 auto !important; /* تم تقليص المساحة العلوية */
     display: flex !important;
-    flex-direction: column !important; /* فرض التوزيع العمودي الصارم لحماية الهيكل */
+    flex-direction: column !important; 
     align-items: center !important;
     justify-content: center !important;
     text-align: center !important;
@@ -158,14 +167,13 @@ main, .main-container, #main-content {
     min-height: auto !important;
 }
 
-/* حل مشكلة اختناق ونزول الحروف عمودياً وفرد الكلمات أفقياً لامتياز العرض */
 #dyn-hero-title, #dyn-hero-desc, .hero-section p, .hero-section h1 {
     width: 100% !important;
     max-width: 100% !important;
-    word-break: keep-all !important;  /* منع قطع الكلمات إلى حروف منفصلة */
-    overflow-wrap: break-word !important; /* السماح بالانتقال المتزن للسطر الجديد */
-    white-space: normal !important;    /* إعطاء النص مرونة التدفق الأفقي الطبيعي */
-    flex-shrink: 1 !important;        /* إلغاء القفل القديم والتعليق الصامت للمتصفحات */
+    word-break: keep-all !important;  
+    overflow-wrap: break-word !important; 
+    white-space: normal !important;    
+    flex-shrink: 1 !important;        
     display: block !important;
     text-shadow: none !important;
 }
@@ -173,7 +181,7 @@ main, .main-container, #main-content {
 #dyn-hero-title {
     color: var(--brand-primary) !important;
     font-weight: 900 !important;
-    font-size: calc(1.6rem + 1vw) !important; /* تحجيم مرن يتناسب مع كافة مقاسات الشاشات */
+    font-size: calc(1.6rem + 1vw) !important; 
     line-height: 1.4 !important;
 }
 
@@ -187,7 +195,6 @@ main, .main-container, #main-content {
     opacity: 0.9 !important;
 }
 
-/* حماية اسم العلامة التجارية من الاقتطاع أو الاحتجاب */
 #dyn-brand-name, .brand-title, .brand-logo-text {
     display: block !important;
     visibility: visible !important;
@@ -201,7 +208,6 @@ main, .main-container, #main-content {
     z-index: 9005 !important;
 }
 
-/* تحجيم شارات الدوائر التعريفية لعدم خنق الهيكل النصي للموقع */
 .badge-circle, .floating-badge {
     flex-shrink: 0 !important;
     max-width: 140px !important;
@@ -244,7 +250,6 @@ main, .main-container, #main-content {
     aspect-ratio: 1 / 1;
 }
 
-/* إبراز تفاصيل ولمعة المنتج طبيعياً بنور النهار القوي المعتمد بدستور الصور */
 .product-card img,
 .product-card-premium img,
 .product-image-glow img,
@@ -254,7 +259,7 @@ main, .main-container, #main-content {
 .swiper-slide img {
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important; /* حماية الأبعاد الطبيعية ومنع التشويه المطاطي للحلويات */
+    object-fit: cover !important; 
     object-position: center !important;
     transition: transform 0.5s ease;
     filter: drop-shadow(0 4px 10px rgba(0,0,0,0.06));
