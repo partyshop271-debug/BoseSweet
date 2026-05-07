@@ -16,13 +16,15 @@
     --h3-size: 1.2rem;
     --p-size: 0.95rem;
     
-    --brand-primary: #ff75a0;    
-    --brand-secondary: #ff75a0;  
+    /* 👑 الألوان الرسمية المعتمدة لإدارة حلويات بوسي */
+    --brand-primary: #ff91a4;    
+    --brand-secondary: #ff91a4;  
     --brand-light: #fff0f5;      
     
-    --site-bg: #ffffff;          
+    --bg-main: #ffffff;
+    --site-bg: var(--bg-main);          
     --site-text: #475569;        
-    --text-dark: #1e293b;        
+    --text-dark: #333333;        
     
     --brand-glow: rgba(255, 51, 119, 0.15); 
     --brand-glow-strong: rgba(255, 51, 119, 0.35);
@@ -49,14 +51,14 @@
 html { 
     font-size: var(--base-font-size); 
     scroll-behavior: smooth;
-    background-color: var(--site-bg);
+    background-color: var(--bg-main);
 }
 
 body { 
+    font-family: 'Cairo', sans-serif !important;
+    background-color: var(--bg-main) !important;
     font-weight: var(--base-font-weight);
-    background-color: var(--site-bg) !important; 
     color: var(--site-text) !important;
-    font-family: var(--brand-font) !important;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -135,7 +137,7 @@ a, span, label, div, td, th {
     left: 0 !important;
     right: 0 !important;
     width: 100% !important;
-    background-color: var(--site-bg) !important;
+    background-color: var(--bg-main) !important;
     box-shadow: 0 4px 15px rgba(255, 51, 119, 0.06) !important;
     z-index: 9000 !important;
     height: 75px !important;
@@ -169,7 +171,7 @@ main, .main-container, #main-content {
     top: 0 !important;
     width: 100% !important;
     max-width: 800px !important;
-    margin: 20px auto 0 auto !important; /* تم تقليص المساحة العلوية */
+    margin: 20px auto 0 auto !important; 
     display: flex !important;
     flex-direction: column !important; 
     align-items: center !important;
@@ -240,7 +242,7 @@ main, .main-container, #main-content {
 .product-card-premium {
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     border-radius: 2rem; 
-    background: var(--site-bg) !important;
+    background: var(--bg-main) !important;
     border: 1px solid var(--brand-light);
     padding: 20px;
     display: flex;
@@ -353,7 +355,7 @@ main, .main-container, #main-content {
 }
 
 #cart-sidebar, #advanced-sidebar {
-    background-color: var(--site-bg) !important;
+    background-color: var(--bg-main) !important;
     border-left: 1px solid var(--brand-light) !important;
     border-right: 1px solid var(--brand-light) !important;
     box-shadow: 0 0 40px rgba(255, 51, 119, 0.08) !important;
@@ -377,16 +379,22 @@ main, .main-container, #main-content {
 /* =========================================================== */
 input[type="text"], input[type="tel"], input[type="date"], input[type="time"], textarea, select {
     border: 1px solid var(--brand-light) !important;
-    background-color: var(--site-bg) !important;
+    background-color: var(--bg-main) !important;
     color: var(--site-text) !important;
     transition: all 0.3s ease;
     font-weight: 600;
     border-radius: 1rem !important;
 }
+
 input[type="text"]:focus, input[type="tel"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus, select:focus {
     border-color: var(--brand-primary) !important;
     outline: none !important;
     box-shadow: 0 0 0 3px rgba(255, 51, 119, 0.15) !important;
+}
+
+/* منع التكبير العشوائي في شاشات الموبايل */
+input, textarea, select {
+    font-size: 16px !important; 
 }
 
 .custom-radio-container:has(input:checked) {
@@ -454,7 +462,7 @@ button, .main-nav-btn {
 .cake-builder-step-panel {
     border: 1px solid var(--brand-light);
     border-radius: 2rem;
-    background: var(--site-bg);
+    background: var(--bg-main);
     box-shadow: 0 10px 30px rgba(0,0,0,0.02);
     display: none;
 }
@@ -550,13 +558,14 @@ h2.brand-gradient,
 
 @keyframes fade-in { from { opacity: 0; transform: translate3d(0, 10px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
 .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
+
 /* هندسة الواجهة العلوية لمنصة حلويات بوسي */
 .header, .navbar {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
     padding: 10px 15px !important;
-    background-color: #ffffff;
+    background-color: var(--bg-main);
     width: 100%;
     box-sizing: border-box;
 }

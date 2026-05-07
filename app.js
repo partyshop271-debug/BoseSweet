@@ -1,4 +1,4 @@
-// القلب النابض للمحرك الرئيسي (app.js) - حلويات بوسي - النسخة الكاملة المستعادة
+// القلب النابض للمحرك الرئيسي (app.js) - حلويات بوسي - النسخة الكاملة المستعادة والمطورة
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
 import { siteSettings, shippingZones, catalog, galleryData, catMenu, isAppReady, state, currentBuilderStep, cakeState, catalogMap, syncCatalogMap, setAppReady } from './state.js';
 import { MemoryManager, hexToMathHSL, escapeHTML, generateUniqueID, optimizeCloudinaryUrl, generateSecureOrderId, showSystemToast } from './utils.js';
@@ -177,9 +177,16 @@ async function loadEngineMemory() {
     } catch (e) { state.cart.length = 0; }
 }
 
-async function initApp() {
-    await loadEngineMemory(); 
+async function fallbackToLocalMemory() {
+    if (catalog.length === 0 && typeof defaultCatalog !== 'undefined' && defaultCatalog.length > 0) {
+        catalog.push(...defaultCatalog);
+        if (typeof syncCatalogMap === 'function') syncCatalogMap();
+        if (typeof LiveSearchEngine !== 'undefined' && LiveSearchEngine.build) LiveSearchEngine.build(catalog);
+    }
+    initUI();
+}
 
+function initUI() {
     const urlParams = new URLSearchParams(window.location.search);
     const routeCat = urlParams.get('category');
     
@@ -223,6 +230,17 @@ async function initApp() {
             <a href="${siteSettings.social.instagram}" target="_blank" class="p-2 bg-white rounded-lg text-pink-600 hover:scale-110 transition-transform shadow-xs"><i data-lucide="instagram" class="w-4 h-4"></i></a>
         `;
         if (window.lucide) lucide.createIcons();
+    }
+}
+
+async function initApp() {
+    // يجب التأكد من اكتمال تحميل الكتالوج قبل رسم الواجهة
+    await loadEngineMemory(); 
+    if (catalog.length > 0) {
+        initUI(); // رسم الواجهة فقط بعد التأكد من وجود منتجات
+    } else {
+        // في حال تأخر الشبكة، يتم استدعاء الذاكرة الفولاذية كبديل
+        fallbackToLocalMemory(); 
     }
 }
 

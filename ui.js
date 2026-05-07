@@ -338,7 +338,18 @@ export function initWaterfall() {
     }
 
     const buildCardHTML = (item) => {
-        const url = optimizeCloudinaryUrl((item.images && item.images.length > 0) ? item.images[0] : item.img);
+        // تأمين ظهور الصورة أو استخدام البديل المعتمد للحفاظ على الهيكل الهندسي
+        const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://via.placeholder.com/400x400/fff0f5/ff3377.png?text=BoseSweets';
+        let rawImageUrl = defaultFallbackImage;
+        if (item.images && item.images.length > 0 && item.images[0] && String(item.images[0]).trim() !== '') {
+            rawImageUrl = item.images[0];
+        } else if (item.img && String(item.img).trim() !== '') {
+            rawImageUrl = item.img;
+        } else if (typeof window.getImgFallback === 'function') {
+            rawImageUrl = window.getImgFallback(item.category) || defaultFallbackImage;
+        }
+        const url = optimizeCloudinaryUrl(rawImageUrl);
+
         return `
             <div class="waterfall-card cursor-pointer group relative" onclick="window.navigateToProduct('${item.id}')" title="اضغط لاستعراض تفاصيل ${escapeHTML(item.name)}">
                 <img src="${url}" loading="lazy" decoding="async" class="transition-transform duration-500 group-hover:scale-105" alt="صنف ${escapeHTML(item.name)} من قسم ${escapeHTML(item.category)} - حلويات بوسي بمركز الفرافرة" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(item.category)}');">
@@ -563,8 +574,19 @@ window.navigateToProduct = function(productId) {
     const container = document.getElementById('single-product-container');
     if (!container) return;
     
-    const imageUrl = optimizeCloudinaryUrl((prod.images && prod.images.length > 0) ? prod.images[0] : (prod.img || 'https://via.placeholder.com/400'));
     const isOutOfStock = prod.inStock === false;
+    
+    // تأمين ظهور الصورة أو استخدام البديل المعتمد للحفاظ على الهيكل الهندسي
+    const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://via.placeholder.com/400x400/fff0f5/ff3377.png?text=BoseSweets';
+    let rawImageUrl = defaultFallbackImage;
+    if (prod.images && prod.images.length > 0 && prod.images[0] && String(prod.images[0]).trim() !== '') {
+        rawImageUrl = prod.images[0];
+    } else if (prod.img && String(prod.img).trim() !== '') {
+        rawImageUrl = prod.img;
+    } else if (typeof window.getImgFallback === 'function') {
+        rawImageUrl = window.getImgFallback(prod.category) || defaultFallbackImage;
+    }
+    const imageUrl = optimizeCloudinaryUrl(rawImageUrl);
     
     container.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start bg-white p-6 rounded-[2.5rem] border border-pink-50 shadow-sm max-w-4xl mx-auto">
@@ -766,9 +788,19 @@ window.drawProductCard = function(p) {
     const pIdSafe = String(p.id || ''); 
     const isOutOfStock = p.inStock === false;
     
-    const rawImageList = (p.images && p.images.length > 0) ? p.images : [p.img || getImgFallback(p.category)];
-    const imageList = rawImageList.map(url => optimizeCloudinaryUrl(url));
-    const displayImg = imageList[0] || 'https://via.placeholder.com/400';
+    // تأمين ظهور الصورة أو استخدام البديل المعتمد للحفاظ على الهيكل الهندسي
+    const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://via.placeholder.com/400x400/fff0f5/ff3377.png?text=BoseSweets';
+    let rawImageUrl = defaultFallbackImage;
+    
+    if (p.images && p.images.length > 0 && p.images[0] && String(p.images[0]).trim() !== '') {
+        rawImageUrl = p.images[0];
+    } else if (p.img && String(p.img).trim() !== '') {
+        rawImageUrl = p.img;
+    } else if (typeof window.getImgFallback === 'function') {
+        rawImageUrl = window.getImgFallback(p.category) || defaultFallbackImage;
+    }
+
+    const displayImg = optimizeCloudinaryUrl(rawImageUrl);
     
     let discountBadgeHtml = '';
     const oldP = Number(p.oldPrice);
@@ -846,7 +878,18 @@ window.renderCartList = function() {
         const q = Number(item.quantity); 
         const p = Number(item.price); 
         total += (p * q);
-        const renderImg = optimizeCloudinaryUrl((item.images && item.images.length > 0) ? item.images[0] : (item.img || getImgFallback(item.category)));
+        
+        // تأمين ظهور الصورة أو استخدام البديل المعتمد للحفاظ على الهيكل الهندسي
+        const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://via.placeholder.com/400x400/fff0f5/ff3377.png?text=BoseSweets';
+        let rawImageUrl = defaultFallbackImage;
+        if (item.images && item.images.length > 0 && item.images[0] && String(item.images[0]).trim() !== '') {
+            rawImageUrl = item.images[0];
+        } else if (item.img && String(item.img).trim() !== '') {
+            rawImageUrl = item.img;
+        } else if (typeof window.getImgFallback === 'function') {
+            rawImageUrl = window.getImgFallback(item.category) || defaultFallbackImage;
+        }
+        const renderImg = optimizeCloudinaryUrl(rawImageUrl);
         
         return `
         <div class="cart-item-spacious flex items-center gap-6 bg-white p-4 rounded-[2rem] border border-slate-100 shadow-sm">
@@ -903,7 +946,18 @@ window.renderSmartSuggestions = function(context = 'main') {
     const suggestions = shuffled.slice(0, context === 'cart' ? 4 : 8);
 
     container.innerHTML = suggestions.map(p => {
-        const img = optimizeCloudinaryUrl((p.images && p.images.length > 0) ? p.images[0] : (p.img || getImgFallback(p.category)));
+        // تأمين ظهور الصورة أو استخدام البديل المعتمد للحفاظ على الهيكل الهندسي
+        const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://via.placeholder.com/400x400/fff0f5/ff3377.png?text=BoseSweets';
+        let rawImageUrl = defaultFallbackImage;
+        if (p.images && p.images.length > 0 && p.images[0] && String(p.images[0]).trim() !== '') {
+            rawImageUrl = p.images[0];
+        } else if (p.img && String(p.img).trim() !== '') {
+            rawImageUrl = p.img;
+        } else if (typeof window.getImgFallback === 'function') {
+            rawImageUrl = window.getImgFallback(p.category) || defaultFallbackImage;
+        }
+        const img = optimizeCloudinaryUrl(rawImageUrl);
+        
         return `<div class="shrink-0 w-[240px] snap-slide bg-white border border-pink-100 rounded-[2rem] p-4 shadow-sm flex flex-col group hover:-translate-y-2 transition-transform cursor-pointer" onclick="navigateToProduct('${p.id}')">
             <div class="relative w-full aspect-square mb-4 rounded-xl overflow-hidden bg-[#fff0f5] p-2 flex items-center justify-center">
                 <img src="${img}" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110" loading="lazy" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
