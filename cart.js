@@ -109,35 +109,37 @@ export function modQ(cartId, d) {
 
 export function commitCakeBuilderToCart() {
     const basePrice = siteSettings.cakeBuilder.basePrice || 145;
-    
-    // محرك حساب تسعير الصور المحدث
     let printingPrice = 0;
     if (cakeState.printing === 'صورة قابلة للأكل') printingPrice = siteSettings.cakeBuilder.imagePrintingPrice || 60;
     else if (cakeState.printing === 'صورة غير قابلة للأكل') printingPrice = 20;
-
-    const finalPrice = (cakeState.persons * basePrice) + printingPrice;
+    const cardPrice = cakeState.hasCard ? 40 : 0;
     
-    let detailsString = `نكهة: ${cakeState.flavor} | هندسة: ${cakeState.shape} | عدد: ${cakeState.persons} فرد | صورة: ${cakeState.printing}`;
-    if (cakeState.notes && cakeState.notes.trim() !== '') detailsString += ` | ملاحظات العميل: ${cakeState.notes.trim()}`;
+    const finalPrice = (cakeState.persons * basePrice) + printingPrice + cardPrice;
+    
+    let detailsString = `النوع: ${cakeState.flavor} (${cakeState.shape}) | الحجم: ${cakeState.persons} أفراد | التصميم: ${cakeState.designStyle} | الصورة: ${cakeState.printing}`;
+    if (cakeState.occasion) detailsString += ` | المناسبة: ${cakeState.occasion}`;
+    if (cakeState.hasCard) detailsString += ` | كارت إهداء: نعم (${cakeState.cardText || 'لم يُكتب نص'})`;
+    if (cakeState.allergies) detailsString += ` | 🚨 موانع صحية: ${cakeState.allergies}`;
+    if (cakeState.notes && cakeState.notes.trim() !== '') detailsString += ` | ملاحظات للتنفيذ: ${cakeState.notes.trim()}`;
     
     const uniqueCustomId = 'cb_' + Date.now();
     const customCakeItem = {
         id: uniqueCustomId,
         cartItemId: uniqueCustomId,
-        name: 'تورتة الإصدار الملكي المخصص', // تم التعديل لتكون أقصر وتظهر بوضوح في السلة
+        name: 'تورتة الإصدار الملكي المخصص',
         category: 'تورت',
         price: finalPrice,
         quantity: 1,
         desc: detailsString,
         isCustom: true,
-        img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg' // توفير صورة افتراضية لعدم ظهور السلة فارغة
+        img: cakeState.refImage || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'
     };
     
     state.cart.push(customCakeItem);
     saveCartToStorage();
     syncCartUI();
     
-    cakeState.flavor = 'فانيليا'; cakeState.shape = 'دائري'; cakeState.persons = 4; cakeState.printing = 'بدون'; cakeState.notes = ''; cakeState.refImage = null;
+    cakeState.flavor = 'فانيليا'; cakeState.shape = 'دائري'; cakeState.persons = 4; cakeState.printing = 'بدون'; cakeState.notes = ''; cakeState.refImage = null; cakeState.allergies = ''; cakeState.hasCard = false; cakeState.cardText = ''; cakeState.occasion = ''; cakeState.designStyle = 'تصميم محدد';
     
     if (window.toggleCart) window.toggleCart(true);
     if (window.showMenuView) window.showMenuView();
