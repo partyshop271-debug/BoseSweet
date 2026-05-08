@@ -9,29 +9,29 @@
 :root {
     --brand-font: 'Cairo', sans-serif;
     --base-font-size: 16px;
-    --base-font-weight: 400;
+    --base-font-weight: 700;
     
     --h1-size: 1.8rem;
     --h2-size: 1.4rem;
     --h3-size: 1.2rem;
     --p-size: 0.95rem;
     
-    /* 👑 الألوان الرسمية المعتمدة لإدارة حلويات بوسي */
+    /* 👑 الألوان الرسمية المعتمدة الصارمة لإدارة حلويات بوسي */
     --brand-primary: #ff91a4;    
     --brand-secondary: #ff91a4;  
-    --brand-light: #fff0f5;      
+    --brand-light: #ffffff;      
     
     --bg-main: #ffffff;
-    --site-bg: var(--bg-main);          
-    --site-text: #475569;        
-    --text-dark: #333333;        
+    --site-bg: #ffffff;          
+    --site-text: #4E342E;        
+    --text-dark: #4E342E;        
     
-    --brand-glow: rgba(255, 51, 119, 0.15); 
-    --brand-glow-strong: rgba(255, 51, 119, 0.35);
+    --brand-glow: rgba(255, 145, 164, 0.15); 
+    --brand-glow-strong: rgba(255, 145, 164, 0.35);
     --ticker-speed: 25s;
     
-    --success-color: #86d4ad;
-    --error-color: #e68e8e;
+    --success-color: #ff91a4;
+    --error-color: #ff91a4;
 
     --layout-waterfall-height: 270px;
     --layout-waterfall-width: 100%;
@@ -62,14 +62,19 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* 👑 ضبط المساحة العلوية لتناسب الشريط العلوي والهيدر وتقضي على المساحات الضخمة */
-    padding-top: 110px !important; 
+    /* 👑 ضبط المساحة العلوية لتناسب الشريط العلوي والهيدر */
+    padding-top: 130px !important; 
 }
 
-h1 { font-size: var(--h1-size); font-weight: 900; line-height: 1.3; color: var(--brand-primary); }
-h2 { font-size: var(--h2-size); font-weight: 900; line-height: 1.4; color: var(--text-dark); }
-h3 { font-size: var(--h3-size); font-weight: 700; line-height: 1.4; color: var(--text-dark); }
-p { font-size: var(--p-size); font-weight: 400; line-height: 1.7; color: var(--site-text) !important; }
+h1, h2, h3, h4, h5, h6 { 
+    color: var(--text-dark) !important; 
+    font-weight: 900;
+}
+
+h1 { font-size: var(--h1-size); line-height: 1.3; color: var(--brand-primary) !important; }
+h2 { font-size: var(--h2-size); line-height: 1.4; }
+h3 { font-size: var(--h3-size); line-height: 1.4; }
+p { font-size: var(--p-size); font-weight: 700; line-height: 1.7; color: var(--site-text) !important; }
 
 a, span, label, div, td, th {
     color: inherit;
@@ -79,7 +84,7 @@ a, span, label, div, td, th {
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: var(--brand-light); border-radius: 10px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: var(--bg-main); border-radius: 10px; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--brand-primary); border-radius: 10px; }
 
 /* =========================================================== */
@@ -100,15 +105,14 @@ a, span, label, div, td, th {
 /* 👑 نظام التموضع والتحكم الفني بالهيدر والشريط العلوي          */
 /* =========================================================== */
 #ticker-container, .top-bar-bg {
-    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
-    color: #ffffff !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 2px 10px var(--brand-glow) !important;
+    background: var(--brand-primary) !important;
+    color: var(--bg-main) !important;
+    border-bottom: 1px solid var(--bg-main) !important;
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    z-index: 9999 !important;
+    z-index: 10000 !important;
     height: 35px !important;
     display: flex !important;
     align-items: center !important;
@@ -138,21 +142,19 @@ a, span, label, div, td, th {
     right: 0 !important;
     width: 100% !important;
     background-color: var(--bg-main) !important;
-    box-shadow: 0 4px 15px rgba(255, 51, 119, 0.06) !important;
-    z-index: 9000 !important;
-    height: 75px !important;
+    border-bottom: 2px solid var(--brand-primary) !important;
+    z-index: 9999 !important;
+    height: 80px !important;
     display: flex !important;
     align-items: center !important;
     transition: all 0.3s ease;
 }
 
 .nav-scrolled { 
-    background-color: rgba(255, 255, 255, 0.98) !important; 
-    backdrop-filter: blur(8px); 
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 4px 20px rgba(255, 51, 119, 0.1) !important; 
+    background-color: var(--bg-main) !important; 
+    border-bottom: 2px solid var(--brand-primary) !important;
+    box-shadow: 0 4px 20px var(--brand-glow) !important; 
     transform: translateZ(0); 
-    border-bottom: 1px solid var(--brand-light) !important;
 }
 
 main, .main-container, #main-content {
@@ -204,12 +206,12 @@ main, .main-container, #main-content {
 
 #dyn-hero-desc {
     color: var(--site-text) !important; 
-    font-weight: 600 !important; 
+    font-weight: 700 !important; 
     font-size: 1rem !important;
     line-height: 1.8 !important;
     max-width: 600px !important;
     margin: 0 auto !important;
-    opacity: 0.9 !important;
+    opacity: 1 !important;
 }
 
 #dyn-brand-name, .brand-title, .brand-logo-text {
@@ -235,32 +237,31 @@ main, .main-container, #main-content {
 /* =========================================================== */
 #display-container {
     min-height: 400px;
-    transition: opacity 0.3s ease-in-out;
     contain: layout; 
+    opacity: 1 !important;
+    display: grid;
 }
 
 .product-card-premium {
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     border-radius: 2rem; 
     background: var(--bg-main) !important;
-    border: 1px solid var(--brand-light);
+    border: 2px solid var(--brand-primary) !important;
     padding: 20px;
     display: flex;
     flex-direction: column;
     height: 100%;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.01);
 }
 
 .product-card-premium:hover {
     transform: translate3d(0, -4px, 0);
     box-shadow: 0 15px 35px var(--brand-glow);
-    border-color: var(--brand-primary);
 }
 
 .product-image-glow {
     position: relative;
     overflow: hidden;
-    background-color: var(--brand-light);
+    background-color: var(--bg-main);
     border-radius: 1.5rem; 
     cursor: zoom-in;
     width: 100%;
@@ -279,7 +280,6 @@ main, .main-container, #main-content {
     object-fit: cover !important; 
     object-position: center !important;
     transition: transform 0.5s ease;
-    filter: drop-shadow(0 4px 10px rgba(0,0,0,0.06));
 }
 
 .product-card-premium:hover .product-image-glow img {
@@ -320,9 +320,9 @@ main, .main-container, #main-content {
     border-radius: 2rem; 
     overflow: hidden;
     position: relative; 
-    background: transparent;
+    background: var(--bg-main);
     transition: transform 0.3s ease;
-    border: 1px solid var(--brand-light);
+    border: 2px solid var(--brand-primary) !important;
 }
 
 .waterfall-card img { 
@@ -333,7 +333,6 @@ main, .main-container, #main-content {
 
 .waterfall-card:hover { 
     transform: scale(1.01); 
-    border-color: var(--brand-primary);
     z-index: 10;
 }
 
@@ -347,8 +346,9 @@ main, .main-container, #main-content {
 /* 👑 الـ اللودر والتحكم بالعناصر المساعدة والقوائم الجانبية      */
 /* =========================================================== */
 #global-loader {
-    background-color: var(--brand-light) !important; 
+    background-color: var(--bg-main) !important; 
     transition: opacity 0.5s ease, visibility 0.5s; 
+    z-index: 100000;
 }
 #global-loader h1, #global-loader i, #global-loader svg, .loader-icon {
     color: var(--brand-primary) !important;
@@ -356,50 +356,45 @@ main, .main-container, #main-content {
 
 #cart-sidebar, #advanced-sidebar {
     background-color: var(--bg-main) !important;
-    border-left: 1px solid var(--brand-light) !important;
-    border-right: 1px solid var(--brand-light) !important;
-    box-shadow: 0 0 40px rgba(255, 51, 119, 0.08) !important;
+    border-left: 2px solid var(--brand-primary) !important;
+    border-right: 2px solid var(--brand-primary) !important;
+    z-index: 10000;
 }
 
 #global-image-lightbox {
     backdrop-filter: blur(10px);
     transition: opacity 0.3s ease;
+    z-index: 100000;
 }
 
 .lazy-section {
-    opacity: 0;
-    transform: translate3d(0, 20px, 0);
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    will-change: opacity, transform;
+    opacity: 1 !important; 
+    transform: translate3d(0, 0, 0) !important;
 }
-.lazy-section.is-visible { opacity: 1; transform: translate3d(0, 0, 0); }
 
 /* =========================================================== */
 /* 👑 حقول الإدخال واستمارات الطلب الموثقة                      */
 /* =========================================================== */
 input[type="text"], input[type="tel"], input[type="date"], input[type="time"], textarea, select {
-    border: 1px solid var(--brand-light) !important;
+    border: 2px solid var(--brand-primary) !important;
     background-color: var(--bg-main) !important;
     color: var(--site-text) !important;
     transition: all 0.3s ease;
-    font-weight: 600;
+    font-weight: 700;
     border-radius: 1rem !important;
 }
 
 input[type="text"]:focus, input[type="tel"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus, select:focus {
-    border-color: var(--brand-primary) !important;
     outline: none !important;
-    box-shadow: 0 0 0 3px rgba(255, 51, 119, 0.15) !important;
+    box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.3) !important;
 }
 
-/* منع التكبير العشوائي في شاشات الموبايل */
 input, textarea, select {
     font-size: 16px !important; 
 }
 
 .custom-radio-container:has(input:checked) {
-    border-color: var(--brand-primary) !important;
-    background-color: var(--brand-light) !important;
+    background-color: var(--bg-main) !important;
     color: var(--brand-primary) !important;
     box-shadow: 0 4px 12px var(--brand-glow);
     transform: scale(1.02);
@@ -409,8 +404,8 @@ input, textarea, select {
 /* 👑 أزرار التفاعل الموحدة بلمسة بوسي الاحترافية                   */
 /* =========================================================== */
 .brand-gradient { 
-    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important; 
-    box-shadow: 0 4px 15px var(--brand-glow) !important;
+    background: var(--brand-primary) !important; 
+    color: var(--bg-main) !important;
 }
 
 .btn-premium-action {
@@ -418,20 +413,19 @@ input, textarea, select {
     position: relative;
     overflow: hidden;
     border-radius: 9999px; 
-    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
-    color: #ffffff !important;
-    font-weight: 700; 
-    border: none;
+    background: var(--brand-primary) !important;
+    color: var(--bg-main) !important;
+    font-weight: 800; 
+    border: 2px solid var(--brand-primary) !important;
     padding: 12px 24px;
-    box-shadow: 0 6px 20px var(--brand-glow);
     z-index: 1;
     cursor: pointer;
 }
 
 .btn-premium-action:hover {
     transform: translateY(-1px) scale(1.02);
-    box-shadow: 0 10px 25px var(--brand-glow-strong);
-    opacity: 0.9;
+    background: var(--bg-main) !important;
+    color: var(--brand-primary) !important;
 }
 
 button, .main-nav-btn {
@@ -439,36 +433,38 @@ button, .main-nav-btn {
 }
 
 .send-whatsapp-btn {
-    background-color: #25D366 !important;
-    color: white !important;
+    background-color: var(--brand-primary) !important;
+    color: var(--bg-main) !important;
     border-radius: 9999px !important;
     font-weight: 800;
-    box-shadow: 0 8px 25px -5px rgba(37, 211, 102, 0.4) !important;
+    border: 2px solid var(--brand-primary) !important;
+}
+
+.send-whatsapp-btn:hover {
+    background-color: var(--bg-main) !important;
+    color: var(--brand-primary) !important;
 }
 
 /* =========================================================== */
 /* 👑 هندسة السلة ومعالج التورتة الملكية المخصصة (Multi-Step)   */
 /* =========================================================== */
 .cart-item-spacious {
-    background: #ffffff;
-    border: 1px solid var(--brand-light);
+    background: var(--bg-main);
+    border: 2px solid var(--brand-primary);
     border-radius: 1.5rem;
     padding: 16px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
     transition: all 0.3s ease;
 }
 
 .cake-builder-step-panel {
-    border: 1px solid var(--brand-light);
+    border: 2px solid var(--brand-primary);
     border-radius: 2rem;
     background: var(--bg-main);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.02);
     display: none;
 }
 .cake-builder-step-panel.step-active {
     display: block;
-    animation: fade-in 0.4s ease-out forwards;
 }
 
 #cake-builder-steps-container,
@@ -478,33 +474,25 @@ button, .main-nav-btn {
     margin-bottom: 30px !important;
 }
 
-.step-indicator-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: relative;
-    margin-bottom: 2rem;
-}
 .step-indicator-dot {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--brand-light);
+    background: var(--bg-main);
     color: var(--site-text);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
+    font-weight: 800;
     font-size: 14px;
-    border: 2px solid var(--brand-light);
+    border: 2px solid var(--brand-primary);
     transition: all 0.3s ease;
     z-index: 2;
 }
 .step-indicator-dot.dot-active {
     background: var(--brand-primary);
-    color: white;
+    color: var(--bg-main);
     border-color: var(--brand-primary);
-    box-shadow: 0 0 15px var(--brand-glow);
 }
 
 .snap-slider { 
@@ -522,20 +510,18 @@ button, .main-nav-btn {
 }
 
 #bs-prev, #bs-next, #na-prev, #na-next {
-    background: rgba(255, 255, 255, 0.95) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--brand-light) !important;
+    background: var(--bg-main) !important;
+    border: 2px solid var(--brand-primary) !important;
     color: var(--brand-primary) !important;
-    box-shadow: 0 4px 15px rgba(255, 51, 119, 0.1);
 }
 #bs-prev:hover, #bs-next:hover, #na-prev:hover, #na-next:hover {
     background: var(--brand-primary) !important;
-    color: white !important;
+    color: var(--bg-main) !important;
 }
 
 .stat-number { color: var(--brand-primary) !important; font-weight: 900; } 
 .text-brand { color: var(--brand-primary) !important; }
-.bg-brand-light { background-color: var(--brand-light) !important; }
+.bg-brand-light { background-color: var(--bg-main) !important; }
 
 .bg-clip-text, 
 .text-transparent,
@@ -545,21 +531,21 @@ h2.brand-gradient,
     -webkit-background-clip: text !important;
     background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
-    color: transparent !important;
+    color: var(--brand-primary) !important;
     box-shadow: none !important;
-    background-image: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%) !important;
+    background-image: none !important;
+    background: var(--brand-primary) !important;
 }
 
 .prestigious-footer {
-    background-color: var(--brand-light) !important;
-    border-top: 1px solid rgba(255, 51, 119, 0.15) !important;
+    background-color: var(--bg-main) !important;
+    border-top: 2px solid var(--brand-primary) !important;
     color: var(--site-text) !important;
 }
 
-@keyframes fade-in { from { opacity: 0; transform: translate3d(0, 10px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+@keyframes fade-in { from { opacity: 0; transform: translate3d(0, 0, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
 .animate-fade-in { animation: fade-in 0.4s ease-out forwards; }
 
-/* هندسة الواجهة العلوية لمنصة حلويات بوسي */
 .header, .navbar {
     display: flex !important;
     justify-content: space-between !important;
@@ -593,4 +579,18 @@ h2.brand-gradient,
 .hero-section, .trust-badge-wrapper, .main-content {
     margin-top: 15px !important;
     padding-top: 10px !important;
+}
+
+/* أوامر نهائية لفرض اللون البني على كافة النصوص */
+* {
+    color: var(--site-text);
+}
+.text-white, .text-[#ffffff] {
+    color: var(--bg-main) !important;
+}
+.bg-white, .bg-[#ffffff] {
+    background-color: var(--bg-main) !important;
+}
+.border-white, .border-[#ffffff] {
+    border-color: var(--bg-main) !important;
 }

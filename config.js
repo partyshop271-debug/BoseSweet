@@ -7,7 +7,7 @@ export const detailedDescriptions = {
     'ديسباسيتو نوتيلا كبير': 'حجم عائلي يجمع الحبايب، كمية مضاعفة من صوص النوتيلا الأصلي فوق قاعدة فادج حلويات بوسي الكثيفة.',
     'ريد فيلفت': 'طبقات كيك ريد فيلفت مخملية، معاها موس جبن غني وحشوة التوت البري لمكس طعم هياخدك في حتة تانية.',
     'قشطوطة': 'كيك فانيليا إسفنجي مسقي بالحليب المحلى، عليه طبقة كريمة ناعمة ولمسة مكسرات لطعم شرقي أصيل.',
-    'كبات السعادة': 'طبقات كيك إسفنجي طازج، مكس مع موس فاخر مجهز بعناية عشان يقدم لك طعم يعلي هرمون السعادة.',
+    'كبات السعادة': 'طبقات كيك إسفنجي طازج، مكس مع موس فاخر مجهز بعناية عشان تعيش طعم يعلي هرمون السعادة.',
     'سينابون': 'سينابون حلويات بوسي بعجينة الخميرة القطنية الهشة، محشي قرفة وسكر بني، متوفر بإضافات مختلفة تناسب كل الأذواق.',
     'سينابون نوتيلا': 'مكس روعة بين القرفة الدافئة وصوص النوتيلا الأصلي المتوزع صح فوق عجينة السينابون الهشة.',
     'دوناتس': 'دوناتس بعجينة خفيفة وهشة، حشوات غنية وتغطية من اختيارك عشان تستمتع بكل قطمة.',
@@ -27,15 +27,35 @@ export const detailedDescriptions = {
 };
 
 export const defaultSettings = {
-    brandName: "حلويات بوسي", announcement: "حلويات بوسي: عقد من التميز في صناعة الحلويات",
-    heroTitle: "أهلاً بيك في <br class='hidden md:block'/> <span class='text-white relative inline-block mt-1 md:mt-2 drop-shadow-md'>عالم حلويات بوسي</span>",
-    heroDesc: "تجربة تذوق استثنائية بتعكس الجودة الأصلية وتليق بمناسباتك السعيدة في قلب الفرافرة.",
-    footerPhone: "01097238441", footerAddress: "الكفاح، مركز الفرافرة، <br> محافظة الوادي الجديد",
-    footerQuote: `"عقد من التميز في صناعة الحلويات وتصميم التورت بمركز الفرافرة."`,
-    productLayout: "grid", brandColorHex: "#ff3377", bgColor: "#ffffff", textColor: "#663b3b",
-    fontFamily: "'Cairo', sans-serif", baseFontSize: 16, baseFontWeight: 400,
-    tickerActive: true, tickerText: "حلويات بوسي: تجربة تذوق بتعكس الجودة الأصلية وتليق بمناسباتك السعيدة ✨", tickerSpeed: 20, tickerFont: "'Cairo', sans-serif", tickerColor: "#ffffff",
-    cakeBuilder: { basePrice: 145, desc: "صمم تورتة مناسبتك السعيدة بنفسك، اختار التفاصيل وسيب الباقي علينا.", minSquare: 16, minRect: 20, flavors: ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت'], images: [], imagePrintingPrice: 60, imagePrinting: [{ label: 'بدون', price: 0 }, { label: 'صورة قابلة للأكل', price: 60 }, { label: 'صورة غير قابلة للأكل', price: 20 }] },
+    brandName: "حلويات بوسي", 
+    announcement: "حلويات بوسي: عقد من التميز في صناعة الحلويات",
+    heroTitle: "حلويات بوسي <br class='hidden md:block'/> <span class='text-[#ff91a4] relative inline-block mt-1 md:mt-2 drop-shadow-md'>الطعم الفاخر اللي تستحقه</span>",
+    heroDesc: "بنختار خاماتنا بعناية وبنهتم بأدق التفاصيل، عشان نقدم طعم مميز وتجربة تذوق راقية تليق بيك وبكل مناسباتك السعيدة.",
+    footerPhone: "01097238441", 
+    footerAddress: "الكفاح، مركز الفرافرة، <br> محافظة الوادي الجديد",
+    footerQuote: `"عشر سنين من التميز في صناعة الحلويات وتصميم التورت بمركز الفرافرة."`,
+    productLayout: "grid", 
+    brandColorHex: "#ff91a4", 
+    bgColor: "#ffffff", 
+    textColor: "#4E342E",
+    fontFamily: "'Cairo', sans-serif", 
+    baseFontSize: 16, 
+    baseFontWeight: 700,
+    tickerActive: true, 
+    tickerText: "حلويات بوسي: عشر سنين من التميز في الفرافرة.. طعم فاخر يليق بيك وبكل مناسباتك السعيدة ✨", 
+    tickerSpeed: 20, 
+    tickerFont: "'Cairo', sans-serif", 
+    tickerColor: "#ffffff",
+    cakeBuilder: { 
+        basePrice: 145, 
+        desc: "صمم تورتة مناسبتك السعيدة بنفسك، اختار التفاصيل وسيب الباقي علينا.", 
+        minSquare: 16, 
+        minRect: 20, 
+        flavors: ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت'], 
+        images: [], 
+        imagePrintingPrice: 60, 
+        imagePrinting: [{ label: 'بدون', price: 0 }, { label: 'صورة قابلة للأكل', price: 60 }, { label: 'صورة غير قابلة للأكل', price: 20 }] 
+    },
     social: { facebook: "https://facebook.com/BoseSweets", tiktok: "https://tiktok.com/@BoseSweets", instagram: "https://instagram.com/BoseSweets" }
 };
 

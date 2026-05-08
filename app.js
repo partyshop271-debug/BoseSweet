@@ -1,4 +1,4 @@
-// القلب النابض للمحرك الرئيسي (app.js) - حلويات بوسي - النسخة الكاملة المستعادة والمطورة
+// القلب النابض للمحرك الرئيسي (app.js) - حلويات بوسي - النسخة الكاملة
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
 import { siteSettings, shippingZones, catalog, galleryData, catMenu, isAppReady, state, currentBuilderStep, cakeState, catalogMap, syncCatalogMap, setAppReady } from './state.js';
 import { MemoryManager, hexToMathHSL, escapeHTML, generateUniqueID, optimizeCloudinaryUrl, generateSecureOrderId, showSystemToast } from './utils.js';
@@ -95,9 +95,6 @@ async function loadEngineMemory() {
                             const config = cloudData.UI_Settings.typography_config;
                             const root = document.documentElement;
                             if (config.main_font_family) root.style.setProperty('--brand-font', config.main_font_family);
-                            if (config.global_font_size_base) root.style.setProperty('--global-font-size-base', config.global_font_size_base);
-                            if (config.global_font_weight_bold) root.style.setProperty('--global-font-weight-bold', config.global_font_weight_bold);
-                            if (config.global_text_color) root.style.setProperty('--global-text-color', config.global_text_color);
                         }
                     }
 
@@ -226,20 +223,18 @@ function initUI() {
     const socialGrid = document.getElementById('footer-social-links-grid');
     if (socialGrid && siteSettings.social) {
         socialGrid.innerHTML = `
-            <a href="${siteSettings.social.facebook}" target="_blank" class="p-2 bg-white rounded-lg text-blue-600 hover:scale-110 transition-transform shadow-xs"><i data-lucide="facebook" class="w-4 h-4"></i></a>
-            <a href="${siteSettings.social.instagram}" target="_blank" class="p-2 bg-white rounded-lg text-pink-600 hover:scale-110 transition-transform shadow-xs"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+            <a href="${siteSettings.social.facebook}" target="_blank" class="p-2 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-lg hover:scale-110 hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+            <a href="${siteSettings.social.instagram}" target="_blank" class="p-2 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-lg hover:scale-110 hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="instagram" class="w-4 h-4"></i></a>
         `;
         if (window.lucide) lucide.createIcons();
     }
 }
 
 async function initApp() {
-    // يجب التأكد من اكتمال تحميل الكتالوج قبل رسم الواجهة
     await loadEngineMemory(); 
     if (catalog.length > 0) {
-        initUI(); // رسم الواجهة فقط بعد التأكد من وجود منتجات
+        initUI(); 
     } else {
-        // في حال تأخر الشبكة، يتم استدعاء الذاكرة الفولاذية كبديل
         fallbackToLocalMemory(); 
     }
 }
