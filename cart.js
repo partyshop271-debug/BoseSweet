@@ -1,4 +1,4 @@
-// منظومة السلة والعمليات الحسابية السيادية
+// منظومة السلة والعمليات الحسابية السيادية - حلويات بوسي
 import { state, catalogMap, catalog, siteSettings, shippingZones, cakeState } from './state.js';
 import { ClientStorageEngine } from './storage.js';
 import { MemoryManager, showSystemToast, generateSecureOrderId, generateUniqueID } from './utils.js';
@@ -150,6 +150,21 @@ export function commitCakeBuilderToCart() {
 export async function submitOrderFinal() {
     if (state.cart.length === 0) return;
     
+    const sysTime = Date.now();
+    const orderHistoryTime = localStorage.getItem('bose_order_timer');
+    const orderAttempts = localStorage.getItem('bose_order_attempts') || 0;
+
+    if (orderHistoryTime && (sysTime - orderHistoryTime < 300000)) { 
+        if (Number(orderAttempts) >= 2) {
+            showSystemToast('قرار إداري: يرجى الانتظار بضع دقائق قبل إرسال طلب جديد لضمان استقرار الخدمة.', 'error');
+            return;
+        }
+        localStorage.setItem('bose_order_attempts', Number(orderAttempts) + 1);
+    } else {
+        localStorage.setItem('bose_order_timer', sysTime);
+        localStorage.setItem('bose_order_attempts', 1);
+    }
+    
     let outOfStockItems = [];
     for (let item of state.cart) {
         if (item.isCustom) continue;
@@ -201,10 +216,13 @@ export async function submitOrderFinal() {
 
     const orderId = generateSecureOrderId(); 
     let subtotal = 0;
+    
     state.cart.forEach(item => {
         if (!item.isCustom) {
             const trueProd = catalogMap.get(String(item.id)) || catalog.find(p => String(p.id) === String(item.id));
-            if (trueProd && trueProd.price) { item.price = Number(trueProd.price); }
+            if (trueProd && trueProd.price) { 
+                item.price = Number(trueProd.price); 
+            }
         }
         subtotal += (Number(item.price) * Number(item.quantity));
     });
@@ -225,12 +243,25 @@ export async function submitOrderFinal() {
     
     m += `📅 موعد الاستلام: ${cDate} الساعة ${cTime}\n`;
     m += `\n*بيان الأصناف والكميات المحجوزة:*\n`;
+    
     state.cart.forEach((i, idx) => {
         const cost = i.price * i.quantity;
-        m += `${idx + 1}. *${i.name}*\n`;
-        m += `   - التخصيص: ${i.desc || 'صنف قياسي بالمنيو'}\n`;
+        // دمج القسم مع الاسم لتأمين هوية المنتج
+        m += `${idx + 1}. *${i.category} | ${i.name}*\n`;
+        
+        // إزالة الوصف العشوائي والاكتفاء بالتخصيص للطلبات الخاصة أو الخصائص الفرعية
+        if (i.isCustom) {
+            m += `   - التخصيص: ${i.desc}\n`;
+        } else {
+            let details = [];
+            if(i.size) details.push(i.size);
+            if(i.flowerType) details.push(i.flowerType);
+            if(details.length > 0) m += `   - التفاصيل: ${details.join(' - ')}\n`;
+        }
+        
         m += `   - الكمية: ${i.quantity} × السعر: ${i.price} ج ⬅️ الحساب: ${cost} ج.م\n\n`;
     });
+    
     m += `-------------------------------------------\n`;
     if(shipFee > 0) m += `رسوم التوصيل: ${shipFee} ج.م\n`;
     m += `*الإجمالي المالي للطلب:* ${finalTotal} ج.م\n`;
@@ -280,8 +311,19 @@ export function dispatchWhatsAppOrder() {
     state.cart.forEach((item, index) => {
         const cost = item.price * item.quantity;
         subtotal += cost;
-        orderMessage += `${index + 1}. *${item.name}*\n`;
-        orderMessage += `   - التخصيص: ${item.desc || 'صنف قياسي بالمنيو'}\n`;
+        
+        // دمج القسم مع الاسم لتأمين هوية المنتج
+        orderMessage += `${index + 1}. *${item.category} | ${item.name}*\n`;
+        
+        if (item.isCustom) {
+            orderMessage += `   - التخصيص: ${item.desc}\n`;
+        } else {
+            let details = [];
+            if(item.size) details.push(item.size);
+            if(item.flowerType) details.push(item.flowerType);
+            if(details.length > 0) orderMessage += `   - التفاصيل: ${details.join(' - ')}\n`;
+        }
+        
         orderMessage += `   - الكمية: ${item.quantity} × السعر: ${item.price} ج ⬅️ الحساب: ${cost} ج.م\n\n`;
     });
     

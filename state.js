@@ -63,11 +63,29 @@ export function getFromLocalMemory(key) {
 
 export async function loadAndCacheCatalog(fetchPromise) {
     try {
+        const cacheKey = 'boseSweets_catalog';
+        const timeKey = 'boseSweets_catalog_time';
+        const cacheDuration = 24 * 60 * 60 * 1000; // 👑 24 ساعة لتوفير الموارد السحابية وحماية الاستضافة
+        
+        const localData = getFromLocalMemory(cacheKey);
+        const cacheTime = getFromLocalMemory(timeKey);
+        const currentTime = Date.now();
+        
+        // 👑 تفعيل نظام التخزين المؤقت الذكي لتوفير الموارد بشكل قطعي
+        if (localData && Array.isArray(localData) && localData.length > 0 && cacheTime && (currentTime - cacheTime < cacheDuration)) {
+            catalog.length = 0;
+            localData.forEach(item => catalog.push(item));
+            syncCatalogMap();
+            return true;
+        }
+
         const data = await fetchPromise(); 
         
         if (data && Array.isArray(data) && data.length > 0) {
-            catalog = data;
-            saveToLocalMemory('boseSweets_catalog', catalog); 
+            catalog.length = 0;
+            data.forEach(item => catalog.push(item));
+            saveToLocalMemory(cacheKey, catalog); 
+            saveToLocalMemory(timeKey, currentTime); 
             syncCatalogMap();
             return true; 
         } else {
@@ -77,7 +95,8 @@ export async function loadAndCacheCatalog(fetchPromise) {
         console.warn('نظام حلويات بوسي: جاري تفعيل وضع الاستدعاء المحلي لتأمين عرض المنتجات.');
         const localData = getFromLocalMemory('boseSweets_catalog');
         if (localData && Array.isArray(localData) && localData.length > 0) {
-            catalog = localData;
+            catalog.length = 0;
+            localData.forEach(item => catalog.push(item));
             syncCatalogMap(); 
             return true;
         }

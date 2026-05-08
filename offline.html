@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حلويات بوسي - انقطاع الاتصال</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            color: #333333;
+        }
+        .offline-container {
+            padding: 40px 20px;
+            max-width: 400px;
+        }
+        .brand-name {
+            color: #ff91a4;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: #333333;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            color: #666666;
+        }
+        .retry-btn {
+            background-color: #ff91a4;
+            color: #ffffff;
+            border: none;
+            padding: 12px 35px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: opacity 0.3s ease;
+        }
+        .retry-btn:active {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="brand-name">حلويات بوسي</div>
+        <h1>عفواً، لا يوجد اتصال بالإنترنت</h1>
+        <p>يرجى التحقق من إعدادات الشبكة الخاصة بحضرتك والمحاولة مرة أخرى لاستكمال تجربة التسوق.</p>
+        <button class="retry-btn" onclick="window.location.reload();">تحديث الصفحة</button>
+    </div>
+</body>
+</html>

@@ -467,13 +467,23 @@ export const renderFlowerTabs = function(container) {
 };
 window.renderFlowerTabs = renderFlowerTabs;
 
+// 👑 نظام التحديث الجزئي للواجهة (Virtual Patcher) لمنع إعادة التحميل الكامل مدمج برمجياً داخل المحرك
 export const enforceCategoryRender = function(containerId, productsHTML) {
     const container = document.getElementById(containerId);
     if (container) {
+        // بناء شريحة تخيلية في الذاكرة أولاً
+        const fragment = document.createDocumentFragment();
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = productsHTML;
+        
+        while (tempDiv.firstChild) {
+            fragment.appendChild(tempDiv.firstChild);
+        }
+        
         container.innerHTML = ''; 
+        container.appendChild(fragment);
         container.classList.remove('hidden'); 
         container.style.display = 'grid'; 
-        container.innerHTML = productsHTML; 
     }
 };
 window.enforceCategoryRender = enforceCategoryRender;
@@ -593,6 +603,13 @@ export const navigateToProduct = function(productId) {
     const prod = catalog.find(p => String(p.id) === String(productId));
     if (!prod) return;
     
+    // 👑 تحليل البيانات الصامت: تسجيل اهتمامات العميل لترتيب الاقتراحات
+    try {
+        let userPrefs = JSON.parse(localStorage.getItem('bose_user_prefs')) || {};
+        userPrefs[prod.category] = (userPrefs[prod.category] || 0) + 1;
+        localStorage.setItem('bose_user_prefs', JSON.stringify(userPrefs));
+    } catch(e) {}
+
     const vHome = document.getElementById('view-home'); if(vHome) vHome.classList.add('hidden');
     const vMenu = document.getElementById('view-menu'); if(vMenu) vMenu.classList.add('hidden');
     const vTips = document.getElementById('view-tips'); if(vTips) vTips.classList.add('hidden');
@@ -614,7 +631,6 @@ export const navigateToProduct = function(productId) {
     }
     const imageUrl = optimizeCloudinaryUrl(rawImageUrl);
 
-    // محرك معرض الصور المتعددة للمنتج
     let imagesGalleryHtml = '';
     if (prod.images && prod.images.length > 1) {
         imagesGalleryHtml = `<div class="flex gap-2 mt-4 overflow-x-auto hide-scrollbar pb-2">
@@ -682,6 +698,7 @@ export const navigateToProduct = function(productId) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 window.navigateToProduct = navigateToProduct;
+
 export const renderMultiStepCakeBuilder = function() {
     const wrapper = document.getElementById('cake-builder-steps-wrapper');
     if (!wrapper) return;
@@ -885,6 +902,7 @@ export const adjustBuilderPersons = function(delta) {
 };
 window.adjustBuilderPersons = adjustBuilderPersons;
 
+// 👑 دالة هندسية متطورة لرسم بطاقات المنتجات بتقنية Blur-up مع تصفية لونية صارمة
 export const drawProductCard = function(p) {
     if (!p) return '';
     const pIdSafe = String(p.id || ''); 
@@ -913,10 +931,10 @@ export const drawProductCard = function(p) {
         discountBadgeHtml = `<div class="text-[#ff91a4] text-sm font-black mb-2 px-3 py-1 bg-[#ffffff] rounded-full inline-block border-2 border-[#ff91a4]">${escapeHTML(p.badge)}</div>`;
     }
 
-    return `
+    let cardHtml = `
     <div id="product-card-${pIdSafe}" class="product-card-premium">
         <div class="product-image-glow w-full aspect-square mb-4 relative overflow-hidden rounded-[2rem]" onclick="navigateToProduct('${pIdSafe}')">
-            <img src="${displayImg}" class="${isOutOfStock ? 'grayscale opacity-70' : ''} w-full h-full object-contain transition-transform duration-700 hover:scale-110 cursor-pointer" loading="lazy" decoding="async" alt="صنف ${escapeHTML(p.name)} من قسم ${escapeHTML(p.category)} - حلويات بوسي بمركز الفرافرة" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
+            <img src="${displayImg}" class="${isOutOfStock ? 'grayscale opacity-70' : ''} blur-load w-full h-full object-contain transition-all duration-700 hover:scale-110 cursor-pointer" loading="lazy" decoding="async" alt="صنف ${escapeHTML(p.name)} من قسم ${escapeHTML(p.category)} - حلويات بوسي بمركز الفرافرة" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
             ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/50 backdrop-blur-[4px] z-10 flex items-center justify-center"><span class="bg-[#ff91a4] text-[#ffffff] font-black px-4 py-2 rounded-xl shadow-lg border-2 border-[#ffffff]">نفدت الكمية</span></div>` : ''}
         </div>
         
@@ -952,6 +970,14 @@ export const drawProductCard = function(p) {
             </div>
         </div>
     </div>`;
+
+    // فلترة وضبط الألوان للحفاظ على هوية براند حلويات بوسي
+    cardHtml = cardHtml.replace(/#ff3377/g, '#ff91a4'); 
+    cardHtml = cardHtml.replace(/#4E342E/g, '#1a1a1a'); 
+    cardHtml = cardHtml.replace(/bg-red-50/g, 'bg-[#ffffff]'); 
+    cardHtml = cardHtml.replace(/text-red-500/g, 'text-[#ff91a4]'); 
+
+    return cardHtml;
 };
 window.drawProductCard = drawProductCard;
 
@@ -992,22 +1018,30 @@ export const renderCartList = function() {
         }
         const renderImg = optimizeCloudinaryUrl(rawImageUrl);
         
+        // هندسة الواجهة الجديدة: فصل السعر عن أزرار الكمية وعرض تصنيف المنتج بوضوح
         return `
-        <div class="cart-item-spacious flex items-center gap-6 bg-[#ffffff] p-4 rounded-[2rem] border-2 border-[#ff91a4] shadow-sm">
-            <div class="w-24 h-24 rounded-[1.5rem] overflow-hidden shrink-0 bg-[#ffffff] border-2 border-[#ff91a4] p-2 flex items-center justify-center">
-                <img src="${renderImg}" class="w-full h-full object-contain" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(item.category)}');">
+        <div class="cart-item-premium flex flex-col bg-[#ffffff] p-4 rounded-[2rem] border-2 border-[#ff91a4] shadow-sm relative mb-4">
+            <div class="absolute top-4 left-4 z-10">
+                <button onclick="window.modQ('${identifier}', 'remove')" class="p-2 text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] border-2 border-transparent hover:border-[#ff91a4] rounded-xl transition-all"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
             </div>
-            <div class="flex-1 text-right min-w-0">
-                <h4 class="font-black text-lg text-[#1a1a1a] mb-1 truncate">${escapeHTML(item.name)}</h4>
-                <p class="text-xs font-bold text-[#1a1a1a] mb-2 truncate">${escapeHTML(item.desc || 'منتج مميز بطلبك.')}</p>
-                <p class="font-black text-[#ff91a4] text-xl font-mono">${p} ج.م</p>
+            
+            <div class="flex items-start gap-4 mb-4">
+                <div class="w-20 h-20 md:w-24 md:h-24 rounded-[1.5rem] overflow-hidden shrink-0 bg-[#ffffff] border-2 border-[#ff91a4] p-1 flex items-center justify-center">
+                    <img src="${renderImg}" class="w-full h-full object-contain" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(item.category)}');">
+                </div>
+                <div class="flex-1 text-right pr-2 pt-1 min-w-0">
+                    <span class="text-[10px] font-black text-[#ffffff] bg-[#ff91a4] px-3 py-1 rounded-full mb-2 inline-block shadow-sm">${escapeHTML(item.category)}</span>
+                    <h4 class="font-black text-sm md:text-base text-[#1a1a1a] mb-1 leading-tight pr-8 truncate">${escapeHTML(item.name)}</h4>
+                    ${item.isCustom ? `<p class="text-[11px] font-bold text-[#1a1a1a] leading-relaxed line-clamp-2">${escapeHTML(item.desc)}</p>` : ''}
+                </div>
             </div>
-            <div class="flex flex-col items-end gap-3 shrink-0">
-                <button onclick="window.modQ('${identifier}', 'remove')" class="p-2 text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] border-2 border-transparent hover:border-[#ffffff] rounded-xl transition-all"><i data-lucide="trash-2" class="w-6 h-6"></i></button>
-                <div class="flex items-center gap-3 bg-[#ffffff] rounded-full p-1 border-2 border-[#ff91a4]">
-                    <button class="w-8 h-8 flex justify-center items-center rounded-full text-[#ff91a4] border-2 border-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] font-black transition-all" onclick="window.modQ('${identifier}', -1)"><i data-lucide="minus" class="w-4 h-4"></i></button>
-                    <span class="font-black text-lg text-[#1a1a1a] w-6 text-center">${q}</span>
-                    <button class="w-8 h-8 flex justify-center items-center rounded-full text-[#ff91a4] border-2 border-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] font-black transition-all" onclick="window.modQ('${identifier}', 1)"><i data-lucide="plus" class="w-4 h-4"></i></button>
+            
+            <div class="flex justify-between items-center border-t-2 border-[#ff91a4] pt-4 mt-auto">
+                <div class="font-black text-[#ff91a4] text-xl font-mono">${p} ج.م</div>
+                <div class="flex items-center gap-3 bg-[#ffffff] rounded-full p-1 border-2 border-[#ff91a4] shadow-sm">
+                    <button class="w-8 h-8 flex justify-center items-center rounded-full text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] font-black transition-all" onclick="window.modQ('${identifier}', -1)"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                    <span class="font-black text-base text-[#1a1a1a] w-6 text-center">${q}</span>
+                    <button class="w-8 h-8 flex justify-center items-center rounded-full text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] font-black transition-all" onclick="window.modQ('${identifier}', 1)"><i data-lucide="plus" class="w-4 h-4"></i></button>
                 </div>
             </div>
         </div>`;
@@ -1044,8 +1078,16 @@ export const renderSmartSuggestions = function(context = 'main') {
 
     parentArea.classList.remove('hidden');
 
-    const shuffled = availableProducts.sort(() => 0.5 - Math.random());
-    const suggestions = shuffled.slice(0, context === 'cart' ? 4 : 8);
+    let userPrefs = {};
+    try { userPrefs = JSON.parse(localStorage.getItem('bose_user_prefs')) || {}; } catch(e) {}
+    
+    const sortedProducts = availableProducts.sort((a, b) => {
+        const scoreA = userPrefs[a.category] || 0;
+        const scoreB = userPrefs[b.category] || 0;
+        return (scoreB - scoreA) + (0.5 - Math.random());
+    });
+    
+    const suggestions = sortedProducts.slice(0, context === 'cart' ? 4 : 8);
 
     container.innerHTML = suggestions.map(p => {
         const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://via.placeholder.com/400x400/ffffff/ff91a4.png?text=BoseSweets';
@@ -1059,12 +1101,13 @@ export const renderSmartSuggestions = function(context = 'main') {
         }
         const img = optimizeCloudinaryUrl(rawImageUrl);
         
+        // استخدام object-cover حصرياً لهذا القسم لإبراز التفاصيل
         return `<div class="shrink-0 w-[240px] snap-slide bg-[#ffffff] border-2 border-[#ff91a4] rounded-[2rem] p-4 shadow-sm flex flex-col group hover:-translate-y-2 transition-transform cursor-pointer" onclick="navigateToProduct('${p.id}')">
-            <div class="relative w-full aspect-video mb-4 rounded-xl overflow-hidden bg-[#ffffff] border-2 border-[#ff91a4] p-2 flex items-center justify-center">
-                <img src="${img}" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110" loading="lazy" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
+            <div class="relative w-full aspect-square mb-4 rounded-xl overflow-hidden bg-[#ffffff] border-2 border-[#ff91a4] flex items-center justify-center p-0">
+                <img src="${img}" class="w-full h-full object-cover drop-shadow-sm transition-transform duration-500 group-hover:scale-110" loading="lazy" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
             </div>
             <div class="flex-1 flex flex-col text-center">
-                <span class="text-[10px] bg-[#ff91a4] text-[#ffffff] px-2 py-1 rounded-full font-bold mb-2 self-center border border-[#ff91a4]">${escapeHTML(p.category)}</span>
+                <span class="text-[10px] bg-[#ff91a4] text-[#ffffff] px-3 py-1 rounded-full font-black mb-2 self-center shadow-sm">${escapeHTML(p.category)}</span>
                 <h5 class="text-[15px] font-black text-[#1a1a1a] mb-2 leading-tight line-clamp-1">${escapeHTML(p.name)}</h5>
                 <div class="mt-auto">
                     <span class="font-black text-[#ff91a4] block mb-3 text-lg font-mono">${p.price > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
@@ -1110,8 +1153,9 @@ export const submitCustomerReviewLive = async function(productId) {
 
     if (!nameInput || !commentInput || !ratingSelect) return;
 
-    const customerName = nameInput.value.trim();
-    const comment = commentInput.value.trim();
+    // 👑 تعقيم وتأمين المدخلات لحماية قواعد البيانات من الحقن البرمجي
+    const customerName = escapeHTML(nameInput.value.trim());
+    const comment = escapeHTML(commentInput.value.trim());
     const rating = parseInt(ratingSelect.value) || 5;
 
     if (!customerName || !comment) {
