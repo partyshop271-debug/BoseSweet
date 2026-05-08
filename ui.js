@@ -613,12 +613,23 @@ export const navigateToProduct = function(productId) {
         rawImageUrl = window.getImgFallback(prod.category) || defaultFallbackImage;
     }
     const imageUrl = optimizeCloudinaryUrl(rawImageUrl);
+
+    // محرك معرض الصور المتعددة للمنتج
+    let imagesGalleryHtml = '';
+    if (prod.images && prod.images.length > 1) {
+        imagesGalleryHtml = `<div class="flex gap-2 mt-4 overflow-x-auto hide-scrollbar pb-2">
+            ${prod.images.map(img => `<img src="${optimizeCloudinaryUrl(img)}" onclick="document.getElementById('main-prod-img-${prod.id}').src='${optimizeCloudinaryUrl(img)}'" class="w-16 h-16 rounded-xl object-cover border-2 border-[#ff91a4] cursor-pointer hover:opacity-80 transition-opacity">`).join('')}
+        </div>`;
+    }
     
     container.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start bg-[#ffffff] p-6 rounded-[2.5rem] border-2 border-[#ff91a4] shadow-sm max-w-4xl mx-auto">
-            <div class="rounded-2xl overflow-hidden bg-[#ffffff] border-2 border-[#ff91a4] h-64 md:h-[350px] relative" onclick="openGlobalLightbox('${imageUrl}')">
-                <img src="${imageUrl}" class="w-full h-full object-contain cursor-pointer transition-transform duration-300 hover:scale-105 ${isOutOfStock ? 'grayscale opacity-60' : ''}" alt="صنف ${escapeHTML(prod.name)} من قسم ${escapeHTML(prod.category)} - حلويات بوسي بمركز الفرافرة" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(prod.category)}');">
-                ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/40 flex items-center justify-center"><span class="bg-[#ff91a4] text-[#ffffff] px-4 py-2 rounded-xl text-xs font-bold shadow border-2 border-[#ffffff]">نفدت الكمية</span></div>` : ''}
+            <div class="flex flex-col">
+                <div class="rounded-2xl overflow-hidden bg-[#ffffff] border-2 border-[#ff91a4] h-64 md:h-[350px] relative" onclick="openGlobalLightbox(document.getElementById('main-prod-img-${prod.id}').src)">
+                    <img id="main-prod-img-${prod.id}" src="${imageUrl}" class="w-full h-full object-contain cursor-pointer transition-transform duration-300 hover:scale-105 ${isOutOfStock ? 'grayscale opacity-60' : ''}" alt="صنف ${escapeHTML(prod.name)} من قسم ${escapeHTML(prod.category)} - حلويات بوسي بمركز الفرافرة" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(prod.category)}');">
+                    ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/40 flex items-center justify-center"><span class="bg-[#ff91a4] text-[#ffffff] px-4 py-2 rounded-xl text-xs font-bold shadow border-2 border-[#ffffff]">نفدت الكمية</span></div>` : ''}
+                </div>
+                ${imagesGalleryHtml}
             </div>
             <div class="space-y-4 text-right flex flex-col h-full justify-between">
                 <div class="space-y-2">
@@ -671,14 +682,16 @@ export const navigateToProduct = function(productId) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 window.navigateToProduct = navigateToProduct;
-
 export const renderMultiStepCakeBuilder = function() {
     const wrapper = document.getElementById('cake-builder-steps-wrapper');
     if (!wrapper) return;
 
     const basePrice = siteSettings.cakeBuilder.basePrice || 145;
-    const printingPrice = siteSettings.cakeBuilder.imagePrintingPrice || 60;
-    const currentPrice = cakeState.persons * basePrice + (cakeState.printing !== 'بدون' ? printingPrice : 0);
+    let printingPrice = 0;
+    if (cakeState.printing === 'صورة قابلة للأكل') printingPrice = siteSettings.cakeBuilder.imagePrintingPrice || 60;
+    else if (cakeState.printing === 'صورة غير قابلة للأكل') printingPrice = 20;
+    const cardPrice = cakeState.hasCard ? 40 : 0;
+    const currentPrice = (cakeState.persons * basePrice) + printingPrice + cardPrice;
 
     for (let i = 1; i <= 3; i++) {
         const dot = document.getElementById(`step-dot-${i}`);
@@ -692,12 +705,22 @@ export const renderMultiStepCakeBuilder = function() {
 
     if (window.currentBuilderStep === 1) {
         stepContentHTML = `
-            <div class="p-10 text-center bg-[#ffffff] border-b-2 border-[#ff91a4] relative z-10 rounded-t-[3rem]">
-                <h2 class="text-3xl font-black mb-4 uppercase tracking-tight text-[#ff91a4]">صمم تورتة مناسبتك السعيدة 👑</h2>
-                <p class="text-base font-bold text-[#1a1a1a] max-w-2xl mx-auto">اختار أدق التفاصيل لتصميم تورتتك، وسيب الباقي علينا.</p>
+            <div class="relative w-full h-48 md:h-64 rounded-t-[3rem] overflow-hidden bg-[#ffffff] border-b-2 border-[#ff91a4]">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" class="w-full h-full object-cover opacity-90" alt="تصميم تورت حلويات بوسي">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#ffffff] to-transparent"></div>
+                <div class="absolute bottom-6 w-full text-center px-4">
+                    <h2 class="text-3xl font-black uppercase tracking-tight text-[#ff91a4] drop-shadow-md">صمم تورتة مناسبتك السعيدة 👑</h2>
+                </div>
             </div>
             <div class="cake-builder-step-panel step-active p-8 md:p-12 space-y-8 bg-[#ffffff]">
+                <div class="bg-[#ffffff] border-2 border-[#ff91a4] rounded-2xl p-4 text-center">
+                    <p class="text-xs font-bold text-[#1a1a1a]"><i data-lucide="info" class="w-4 h-4 inline text-[#ff91a4]"></i> تنويه احترافي: لضمان أعلى جودة، يُفضل تأكيد طلبات التورت المخصصة قبل الموعد بـ 48 ساعة.</p>
+                </div>
                 <div class="space-y-4">
+                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="calendar-heart" class="w-5 h-5 text-[#ff91a4]"></i> نوع المناسبة السعيدة</label>
+                    <input type="text" value="${escapeHTML(cakeState.occasion)}" oninput="cakeState.occasion = this.value" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-sm font-bold focus:outline-none" placeholder="مثال: عيد ميلاد، خطوبة، تخرج، ذكرى زواج...">
+                </div>
+                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
                     <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="cake" class="w-5 h-5 text-[#ff91a4]"></i> نكهة الكيك الأساسي</label>
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         ${(siteSettings.cakeBuilder.flavors || ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت']).map(fl => `
@@ -714,18 +737,18 @@ export const renderMultiStepCakeBuilder = function() {
                     </div>
                 </div>
                 <div class="flex justify-end pt-6 mt-4">
-                    <button onclick="window.changeBuilderStep(1)" class="px-8 py-4 bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4] font-black text-sm rounded-full shadow-lg hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all">التالي: الحجم والمرفقات ⬅️</button>
+                    <button onclick="window.changeBuilderStep(1)" class="px-8 py-4 bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4] font-black text-sm rounded-full shadow-lg hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all">التالي: الحجم والطباعة ⬅️</button>
                 </div>
             </div>`;
     }
     else if (window.currentBuilderStep === 2) {
         stepContentHTML = `
             <div class="p-10 text-center bg-[#ffffff] border-b-2 border-[#ff91a4] relative z-10 rounded-t-[3rem]">
-                <h2 class="text-3xl font-black mb-4 uppercase tracking-tight text-[#ff91a4]">تحديد الحجم والإضافات</h2>
+                <h2 class="text-3xl font-black mb-4 uppercase tracking-tight text-[#ff91a4]">الحجم وتفاصيل التصميم</h2>
             </div>
             <div class="cake-builder-step-panel step-active p-8 md:p-12 space-y-8 bg-[#ffffff]">
                 <div class="space-y-4">
-                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="users" class="w-5 h-5 text-[#ff91a4]"></i> عدد الأفراد</label>
+                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="users" class="w-5 h-5 text-[#ff91a4]"></i> عدد الأفراد (حجم التورتة)</label>
                     <div class="flex items-center justify-between border-2 rounded-[2rem] p-4 bg-[#ffffff] border-[#ff91a4] max-w-md mx-auto">
                         <button onclick="window.adjustBuilderPersons(-2)" class="p-3 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-2xl flex items-center justify-center font-black shadow-sm hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="minus" class="w-6 h-6"></i></button>
                         <span class="text-4xl font-black text-[#1a1a1a]">${cakeState.persons}</span>
@@ -733,36 +756,71 @@ export const renderMultiStepCakeBuilder = function() {
                     </div>
                 </div>
                 <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
+                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="palette" class="w-5 h-5 text-[#ff91a4]"></i> أسلوب التصميم</label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="window.updateCakeBuilderField('designStyle', 'تصميم محدد')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.designStyle === 'تصميم محدد' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">عندي تصميم محدد</button>
+                        <button onclick="window.updateCakeBuilderField('designStyle', 'على ذوق بوسي')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.designStyle === 'على ذوق بوسي' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">سيب الإبداع علينا</button>
+                    </div>
+                </div>
+                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
                     <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="printer" class="w-5 h-5 text-[#ff91a4]"></i> دمج وطباعة الصور</label>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <button onclick="window.updateCakeBuilderField('printing', 'بدون')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'بدون' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">بدون صورة</button>
-                        <button onclick="window.updateCakeBuilderField('printing', 'صورة قابلة للأكل')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'صورة قابلة للأكل' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">صورة قابلة للأكل (+${printingPrice} ج.م)</button>
-                        <button onclick="window.updateCakeBuilderField('printing', 'صورة غير قابلة للأكل')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'صورة غير قابلة للأكل' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">صورة غير قابلة للأكل (+20 ج.م)</button>
+                        <button onclick="window.updateCakeBuilderField('printing', 'صورة قابلة للأكل')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'صورة قابلة للأكل' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">صورة قابلة للأكل (+${siteSettings.cakeBuilder.imagePrintingPrice || 60} ج)</button>
+                        <button onclick="window.updateCakeBuilderField('printing', 'صورة غير قابلة للأكل')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'صورة غير قابلة للأكل' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">صورة غير قابلة للأكل (+20 ج)</button>
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row justify-between gap-4 pt-6 mt-4">
                     <button onclick="window.changeBuilderStep(-1)" class="px-8 py-4 bg-[#ffffff] border-2 border-[#ff91a4] text-[#1a1a1a] font-black text-sm rounded-full active:scale-95 hover:bg-[#ff91a4] hover:text-[#ffffff]">➡️ السابق</button>
-                    <button onclick="window.changeBuilderStep(1)" class="px-8 py-4 bg-[#ff91a4] border-2 border-[#ff91a4] text-[#ffffff] font-black text-sm rounded-full shadow-lg hover:bg-[#ffffff] hover:text-[#ff91a4]">التالي: الملاحظات والتأكيد ⬅️</button>
+                    <button onclick="window.changeBuilderStep(1)" class="px-8 py-4 bg-[#ff91a4] border-2 border-[#ff91a4] text-[#ffffff] font-black text-sm rounded-full shadow-lg hover:bg-[#ffffff] hover:text-[#ff91a4]">التالي: التخصيص النهائي ⬅️</button>
                 </div>
             </div>`;
     }
     else if (window.currentBuilderStep === 3) {
         stepContentHTML = `
             <div class="p-10 text-center bg-[#ffffff] border-b-2 border-[#ff91a4] relative z-10 rounded-t-[3rem]">
-                <h2 class="text-3xl font-black mb-4 uppercase tracking-tight text-[#ff91a4]">مراجعة وتأكيد الطلب</h2>
+                <h2 class="text-3xl font-black mb-4 uppercase tracking-tight text-[#ff91a4]">اللمسات الأخيرة والمراجعة</h2>
             </div>
             <div class="cake-builder-step-panel step-active p-8 md:p-12 space-y-8 bg-[#ffffff]">
+                
                 <div class="space-y-4">
-                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="edit-3" class="w-5 h-5 text-[#ff91a4]"></i> ملاحظات أو عبارات للطباعة</label>
-                    <textarea id="builder-notes-textarea" rows="4" oninput="cakeState.notes = this.value" class="w-full p-5 bg-[#ffffff] border-2 border-[#ff91a4] rounded-[2rem] font-bold text-[#1a1a1a] text-base focus:outline-none resize-none" placeholder="اكتب الاسم، السن، الألوان المفضلة، أو أي تفاصيل للتصميم...">${escapeHTML(cakeState.notes)}</textarea>
+                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="image-plus" class="w-5 h-5 text-[#ff91a4]"></i> إرفاق صورة (للتصميم أو الطباعة)</label>
+                    <div class="border-2 border-dashed border-[#ff91a4] p-4 rounded-2xl text-center bg-[#ffffff]">
+                        <input type="file" id="cake-image-upload" accept="image/*" class="hidden" onchange="window.handleCakeImageUpload(this)">
+                        <label for="cake-image-upload" class="cursor-pointer inline-flex items-center gap-2 bg-[#ff91a4] text-[#ffffff] px-6 py-3 rounded-full font-bold text-sm hover:bg-[#ffffff] hover:text-[#ff91a4] border-2 border-[#ff91a4] transition-colors">
+                            <i data-lucide="upload-cloud" class="w-4 h-4"></i> رفع صورة توضيحية
+                        </label>
+                        <p class="text-[11px] font-bold text-[#1a1a1a] mt-3">يتم إرفاق نسخة مصغرة لتأكيد الطلب. للإدارة الحق في طلب الصورة الأصلية عالية الجودة عبر الواتساب لضمان دقة التنفيذ.</p>
+                        ${cakeState.refImage ? `<div class="mt-3 inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-bold border border-green-200 rounded-lg">تم إرفاق الصورة بنجاح ✅</div>` : ''}
+                    </div>
+                </div>
+
+                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
+                    <div class="flex items-center justify-between">
+                        <label class="font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="mail" class="w-5 h-5 text-[#ff91a4]"></i> كارت إهداء راقي (+40 ج.م)</label>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" class="sr-only peer" ${cakeState.hasCard ? 'checked' : ''} onchange="window.updateCakeBuilderField('hasCard', this.checked)">
+                          <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#ff91a4]"></div>
+                        </label>
+                    </div>
+                    ${cakeState.hasCard ? `<textarea rows="2" oninput="cakeState.cardText = this.value" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl font-bold text-[#1a1a1a] text-sm focus:outline-none resize-none" placeholder="اكتب رسالتك للإهداء هنا...">${escapeHTML(cakeState.cardText)}</textarea>` : ''}
+                </div>
+
+                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
+                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3 text-red-500"><i data-lucide="shield-alert" class="w-5 h-5 text-red-500"></i> موانع صحية أو حساسية (إن وجد)</label>
+                    <input type="text" value="${escapeHTML(cakeState.allergies)}" oninput="cakeState.allergies = this.value" class="w-full p-4 bg-[#ffffff] border-2 border-red-300 rounded-xl text-sm font-bold focus:outline-none focus:border-red-500 placeholder-red-300" placeholder="مثال: حساسية مكسرات، حساسية فراولة، الخ...">
+                </div>
+
+                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
+                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="edit-3" class="w-5 h-5 text-[#ff91a4]"></i> ملاحظات دقيقة للإدارة</label>
+                    <textarea rows="3" oninput="cakeState.notes = this.value" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl font-bold text-[#1a1a1a] text-sm focus:outline-none resize-none" placeholder="الاسم للكتابة على التورتة، السن، الألوان المفضلة...">${escapeHTML(cakeState.notes)}</textarea>
                 </div>
                 
-                <div class="bg-[#ffffff] p-6 rounded-[2rem] border-2 border-[#ff91a4] space-y-3">
-                    <h4 class="font-black text-[#1a1a1a] text-lg mb-4 border-b-2 border-[#ff91a4] pb-3 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-[#ff91a4]"></i> ملخص التصميم:</h4>
-                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[#1a1a1a]">النكهة:</span><span class="font-black text-[#1a1a1a]">${cakeState.flavor}</span></div>
-                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[#1a1a1a]">الشكل:</span><span class="font-black text-[#1a1a1a]">${cakeState.shape}</span></div>
-                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[#1a1a1a]">تكفي:</span><span class="font-black text-[#1a1a1a] font-mono">${cakeState.persons} أفراد</span></div>
-                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[#1a1a1a]">إضافة صورة:</span><span class="font-black text-[#1a1a1a]">${cakeState.printing}</span></div>
+                <div class="bg-[#ffffff] p-6 rounded-[2rem] border-2 border-[#ff91a4] space-y-3 mt-6">
+                    <h4 class="font-black text-[#1a1a1a] text-lg mb-4 border-b-2 border-[#ff91a4] pb-3 flex items-center gap-2"><i data-lucide="file-check-2" class="w-5 h-5 text-[#ff91a4]"></i> ملخص الاعتماد:</h4>
+                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[#1a1a1a]">النوع:</span><span class="font-black text-[#1a1a1a]">${cakeState.flavor} (${cakeState.shape})</span></div>
+                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[#1a1a1a]">تكفي:</span><span class="font-black text-[#1a1a1a]">${cakeState.persons} أفراد</span></div>
+                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[#1a1a1a]">إضافات:</span><span class="font-black text-[#1a1a1a]">${cakeState.printing}${cakeState.hasCard ? ' + كارت إهداء' : ''}</span></div>
                     <div class="flex justify-between items-center pt-4 border-t-2 border-[#ff91a4] mt-4 text-lg font-black">
                         <span class="text-[#1a1a1a]">القيمة التقديرية:</span>
                         <span class="text-2xl text-[#ff91a4] font-mono">${currentPrice} ج.م</span>
@@ -771,7 +829,7 @@ export const renderMultiStepCakeBuilder = function() {
 
                 <div class="flex flex-col sm:flex-row justify-between gap-4 pt-6 mt-4">
                     <button onclick="window.changeBuilderStep(-1)" class="px-8 py-4 bg-[#ffffff] border-2 border-[#ff91a4] text-[#1a1a1a] font-black text-sm rounded-full active:scale-95 hover:bg-[#ff91a4] hover:text-[#ffffff]">➡️ تعديل البيانات</button>
-                    <button onclick="window.commitCakeBuilderToCart()" class="px-8 py-4 bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4] font-black text-lg rounded-full shadow-xl flex-1 text-center hover:bg-[#ffffff] hover:text-[#ff91a4]">تأكيد وإضافة للسلة 👑</button>
+                    <button onclick="window.commitCakeBuilderToCart()" class="px-8 py-4 bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4] font-black text-lg rounded-full shadow-xl flex-1 text-center hover:bg-[#ffffff] hover:text-[#ff91a4]">اعتماد وإضافة للسلة 👑</button>
                 </div>
             </div>`;
     }
@@ -781,6 +839,19 @@ export const renderMultiStepCakeBuilder = function() {
 };
 window.renderMultiStepCakeBuilder = renderMultiStepCakeBuilder;
 
+// دالة لمعالجة الصورة المرفوعة وربطها بالمحرك
+window.handleCakeImageUpload = async function(input) {
+    if (input.files && input.files[0]) {
+        try {
+            const compressedBase64 = await window.MemoryManager.compressImageClientSide ? window.MemoryManager.compressImageClientSide(input.files[0]) : (await import('./utils.js')).compressImageClientSide(input.files[0]);
+            cakeState.refImage = compressedBase64;
+            window.renderMultiStepCakeBuilder();
+            showSystemToast('تم إرفاق ومعالجة الصورة بنجاح.', 'success');
+        } catch (e) {
+            showSystemToast('حدث خطأ أثناء معالجة الصورة، يرجى إرسالها عبر الواتساب لاحقاً.', 'error');
+        }
+    }
+};
 export const changeBuilderStep = function(delta) {
     window.currentBuilderStep += delta;
     if (window.currentBuilderStep < 1) window.currentBuilderStep = 1;

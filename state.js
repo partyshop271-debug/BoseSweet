@@ -19,8 +19,7 @@ export let state = {
 
 // هندسة الحالة المخصصة للمعالج متعدد الخطوات
 export let currentBuilderStep = 1;
-export let cakeState = { flavor: 'فانيليا', shape: 'دائري', persons: 4, printing: 'بدون', notes: '', refImage: null };
-
+export let cakeState = { flavor: 'فانيليا', shape: 'دائري', persons: 4, printing: 'بدون', notes: '', refImage: null, allergies: '', hasCard: false, cardText: '', occasion: '', designStyle: 'تصميم محدد' };
 export let catalogMap = new Map();
 
 export function syncCatalogMap() { 
