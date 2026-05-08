@@ -1,9 +1,12 @@
 // المعالجات الرسومية والواجهات (ui.js) لمنصة حلويات بوسي
 import { detailedDescriptions, dSizes, fTypes } from './config.js';
 import { siteSettings, catalog, galleryData, catMenu, state, cakeState, isAppReady, shippingZones } from './state.js';
-import { MemoryManager, hexToMathHSL, escapeHTML, optimizeCloudinaryUrl, showSystemToast, getImgFallback as utilsGetImgFallback } from './utils.js';
+import { MemoryManager, hexToMathHSL, escapeHTML, optimizeCloudinaryUrl, showSystemToast } from './utils.js';
 
-export const getImgFallback = utilsGetImgFallback;
+// بناء الدالة المفقودة داخلياً لضمان عدم انهيار النظام
+export const getImgFallback = function(category) {
+    return (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
+};
 window.getImgFallback = getImgFallback;
 window.currentBuilderStep = 1;
 

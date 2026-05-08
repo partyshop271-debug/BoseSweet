@@ -522,17 +522,6 @@ button, .main-nav-btn {
 .text-brand { color: var(--brand-primary) !important; }
 .bg-brand-light { background-color: var(--bg-main) !important; }
 
-/* معالجة وحل مشكلة طمس الهوية البصرية باسم العلامة التجارية */
-.bg-clip-text, 
-.text-transparent,
-h1.brand-gradient,
-h2.brand-gradient,
-#brand-home-link h1 {
-    color: var(--brand-primary) !important;
-    background: transparent !important;
-    text-shadow: none !important;
-}
-
 .prestigious-footer {
     background-color: var(--bg-main) !important;
     border-top: 2px solid var(--brand-primary) !important;
@@ -581,3 +570,13 @@ h2.brand-gradient,
 .text-white, .text-[#ffffff] { color: var(--bg-main) !important; }
 .bg-white, .bg-[#ffffff] { background-color: var(--bg-main) !important; }
 .border-white, .border-[#ffffff] { border-color: var(--bg-main) !important; }
+
+/* معالجة قاطعة ومباشرة لظهور المربع الزهري فوق اسم العلامة التجارية */
+#brand-home-link h1, .brand-title, .text-bose-primary {
+    background: none !important;
+    background-color: transparent !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: var(--brand-primary) !important;
+    color: var(--brand-primary) !important;
+    text-shadow: none !important;
+}

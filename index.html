@@ -54,7 +54,7 @@
             --brand-secondary: #ff91a4;
             --brand-light: #ffffff;
             --site-bg: #ffffff;
-            --site-text: #4E342E;
+            --site-text: #1a1a1a;
             --brand-font: 'Cairo', sans-serif;
             
             --h1-size: 2.2rem;
@@ -139,7 +139,7 @@
         }
     </style>
 </head>
-<body class="bg-[#ffffff] text-[#4E342E]">
+<body class="bg-[#ffffff] text-[#1a1a1a]">
 
     <div id="global-image-lightbox" class="fixed inset-0 z-[100000] hidden items-center justify-center bg-[#ffffff]/95 cursor-zoom-out transition-opacity duration-300" onclick="closeGlobalLightbox()">
         <img id="lightbox-main-img" src="" class="max-w-[95%] max-h-[95vh] object-contain rounded-[2.5rem] shadow-2xl transition-transform transform scale-95 duration-300 border-4 border-[#ff91a4]" alt="تفاصيل المنتج">
@@ -155,28 +155,24 @@
         <h1 class="font-black text-2xl text-[#ff91a4] tracking-tighter text-center px-4">حلويات بوسي...</h1>
     </div>
 
-    <div id="system-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100000] hidden items-center gap-4 bg-[#ffffff] text-[#4E342E] px-8 py-4 rounded-[2.5rem] shadow-2xl font-bold border-2 border-[#ff91a4] animate-fade-in">
+    <div id="system-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100000] hidden items-center gap-4 bg-[#ffffff] text-[#1a1a1a] px-8 py-4 rounded-[2.5rem] shadow-2xl font-bold border-2 border-[#ff91a4] animate-fade-in">
         <i id="toast-icon" data-lucide="info" class="text-[#ff91a4] w-6 h-6"></i>
         <span id="toast-message" class="text-sm"></span>
     </div>
 
-    <!-- الشريط العلوي (الهيدر) الموحد والخالي من التكدس -->
     <nav id="navbar" class="fixed w-full z-[9999] transition-all duration-500 top-[35px] py-3 bg-[#ffffff] border-b-2 border-[#ff91a4] h-[80px]">
         <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-full w-full">
             
-            <!-- قائمة جانبية (ثلث المساحة) -->
             <div class="w-1/3 flex justify-start"> 
                 <button onclick="toggleSidebarMenu(true)" class="p-2.5 rounded-xl border-2 border-[#ff91a4] text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all bg-[#ffffff]">
                     <i data-lucide="layout-grid" class="w-6 h-6 md:w-7 md:h-7"></i>
                 </button>
             </div>
             
-            <!-- الشعار (ثلث المساحة) -->
             <div id="brand-home-link" onclick="goToHome(event)" class="w-1/3 flex justify-center items-center cursor-pointer select-none">
                 <h1 class="text-2xl md:text-3xl font-black text-[#ff91a4] tracking-normal" style="white-space: nowrap;">حلويات بوسي</h1>
             </div>
 
-            <!-- السلة (ثلث المساحة) -->
             <div class="w-1/3 flex justify-end">
                 <button onclick="toggleCart(true)" class="relative p-2.5 rounded-xl border-2 border-[#ff91a4] hover:scale-110 transition-transform bg-[#ffffff] text-[#ff91a4]">
                     <i data-lucide="shopping-basket" class="w-6 h-6 md:w-7 md:h-7"></i>
@@ -186,10 +182,8 @@
         </div>
     </nav>
 
-    <!-- الواجهة الرئيسية -->
     <div id="view-home" class="w-full flex flex-col gap-10 overflow-x-hidden content-padding-top">
         
-        <!-- هوك العلامة التجارية (بسيط، راقي، ومقنع) بدون تكلف -->
         <header class="px-4 text-center max-w-4xl mx-auto relative pt-4 pb-4">
             <div class="inline-flex items-center gap-2 px-5 py-2 bg-[#ffffff] rounded-full text-[12px] font-bold text-[#ff91a4] mb-6 border-2 border-[#ff91a4]">
                 <i data-lucide="crown" class="w-4 h-4"></i>
@@ -200,7 +194,7 @@
                 حلويات بوسي <br class="md:hidden"> الطعم الفاخر اللي تستحقه
             </h1>
 
-            <p class="max-w-2xl mx-auto font-bold text-[#4E342E] mb-8 text-sm md:text-base leading-loose">
+            <p class="max-w-2xl mx-auto font-bold text-[#1a1a1a] mb-8 text-sm md:text-base leading-loose">
                 بنختار خاماتنا بعناية شديدة وبنهتم بأدق التفاصيل، عشان نقدم طعم مميز وتجربة تذوق راقية تليق بيك وبكل مناسباتك السعيدة.
             </p>
 
@@ -219,19 +213,18 @@
         <section class="w-full flex flex-col gap-10 mb-16">
             <div id="section-bestsellers" class="max-w-7xl mx-auto w-full px-4 text-center hidden">
                 <h2 class="mb-4 text-[#ff91a4] tracking-tighter text-3xl md:text-5xl text-center">الأكثر مبيعاً</h2>
-                <p class="text-[#4E342E] mb-10 max-w-2xl mx-auto text-sm md:text-base font-bold">إبداعات حلويات بوسي اللي خطفت قلوب عملائنا، دايماً جاهزة تشاركك أجمل اللحظات.</p>
+                <p class="text-[#1a1a1a] mb-10 max-w-2xl mx-auto text-sm md:text-base font-bold">إبداعات حلويات بوسي اللي خطفت قلوب عملائنا، دايماً جاهزة تشاركك أجمل اللحظات.</p>
                 <div id="bestsellers-container" class="flex overflow-x-auto gap-4 md:gap-8 hide-scrollbar snap-x py-6 px-4 justify-start sm:justify-center"></div>
             </div>
             
             <div id="section-newarrivals" class="max-w-7xl mx-auto w-full px-4 text-center hidden">
                 <h2 class="mb-4 text-[#ff91a4] tracking-tighter text-3xl md:text-5xl text-center">وصل حديثاً</h2>
-                <p class="text-[#4E342E] mb-10 max-w-2xl mx-auto text-sm md:text-base font-bold">أحدث إضافات حلويات بوسي، طعم جديد وتجربة مميزة تستحق تكتشفها.</p>
+                <p class="text-[#1a1a1a] mb-10 max-w-2xl mx-auto text-sm md:text-base font-bold">أحدث إضافات حلويات بوسي، طعم جديد وتجربة مميزة تستحق تكتشفها.</p>
                 <div id="newarrivals-container" class="flex overflow-x-auto gap-4 md:gap-8 hide-scrollbar snap-x py-6 px-4 justify-start sm:justify-center"></div>
             </div>
         </section>
     </div>
 
-    <!-- واجهة المنيو -->
     <div id="view-menu" class="hidden w-full flex-col animate-fade-in content-padding-top">
         
         <section class="sticky top-[115px] bg-[#ffffff] z-[300] py-4 border-b-2 border-[#ff91a4]">
@@ -245,7 +238,7 @@
             <div id="category-description-area" class="mb-12 text-center max-w-5xl mx-auto hidden animate-fade-in">
                 <div class="p-8 bg-[#ffffff] rounded-[2.5rem] border-2 border-[#ff91a4] relative overflow-hidden">
                     <h2 id="current-cat-name" class="text-[#ff91a4] mb-3 tracking-tighter uppercase text-2xl md:text-4xl">اسم القسم</h2>
-                    <p id="current-cat-desc" class="font-bold text-[#4E342E] leading-relaxed text-center text-base"></p>
+                    <p id="current-cat-desc" class="font-bold text-[#1a1a1a] leading-relaxed text-center text-base"></p>
                 </div>
             </div>
 
@@ -265,12 +258,11 @@
     <div id="view-tips" class="hidden w-full flex-col pb-32 px-4 animate-fade-in content-padding-top">
         <header class="max-w-4xl mx-auto text-center mb-16">
             <h1 class="text-[#ff91a4] mb-6 tracking-tighter text-4xl md:text-5xl">أسرار الطعم الأصلي</h1>
-            <p class="text-lg font-bold text-[#4E342E] leading-relaxed max-w-3xl mx-auto">نصائح من مطبخ حلويات بوسي عشان تحافظ على جودة وطعم المنتجات لأطول فترة ممكنة.</p>
+            <p class="text-lg font-bold text-[#1a1a1a] leading-relaxed max-w-3xl mx-auto">نصائح من مطبخ حلويات بوسي عشان تحافظ على جودة وطعم المنتجات لأطول فترة ممكنة.</p>
         </header>
         <div id="tips-grid" class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4"></div>
     </div>
 
-    <!-- القائمة الجانبية -->
     <div id="advanced-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-[380px] bg-[#ffffff] translate-x-full flex flex-col border-l-2 border-[#ff91a4] z-[10000]">
         <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex justify-between items-center">
             <h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter">قائمة بوسي</h2>
@@ -278,28 +270,27 @@
         </div>
         <div class="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar bg-[#ffffff]">
             <nav class="flex flex-col gap-5">
-                <button onclick="goToHome(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#4E342E] hover:text-[#ff91a4] transition-all"><i data-lucide="home" class="w-5 h-5 text-[#ff91a4]"></i> الرئيسية</button>
-                <button onclick="switchToMenuView(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#4E342E] hover:text-[#ff91a4] transition-all"><i data-lucide="book-open" class="w-5 h-5 text-[#ff91a4]"></i> المنيو</button>
-                <button onclick="showGoldenTips(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#4E342E] hover:text-[#ff91a4] transition-all"><i data-lucide="award" class="w-5 h-5 text-[#ff91a4]"></i> أسرار الطعم</button>
+                <button onclick="goToHome(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-all"><i data-lucide="home" class="w-5 h-5 text-[#ff91a4]"></i> الرئيسية</button>
+                <button onclick="switchToMenuView(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-all"><i data-lucide="book-open" class="w-5 h-5 text-[#ff91a4]"></i> المنيو</button>
+                <button onclick="showGoldenTips(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-all"><i data-lucide="award" class="w-5 h-5 text-[#ff91a4]"></i> أسرار الطعم</button>
             </nav>
             <div class="pt-8 border-t-2 border-[#ff91a4] text-center">
-                <h3 class="text-sm font-black text-[#4E342E] mb-5">تواصل معانا</h3>
+                <h3 class="text-sm font-black text-[#1a1a1a] mb-5">تواصل معانا</h3>
                 <div class="grid grid-cols-2 gap-3">
-                    <a href="https://facebook.com/BoseSweets" target="_blank" class="flex items-center justify-center gap-2 p-4 bg-[#ffffff] border-2 border-[#ff91a4] text-[#4E342E] rounded-2xl font-black text-sm hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="facebook" class="w-4 h-4"></i> فيسبوك</a>
-                    <a href="https://instagram.com/BoseSweets" target="_blank" class="flex items-center justify-center gap-2 p-4 bg-[#ffffff] border-2 border-[#ff91a4] text-[#4E342E] rounded-2xl font-black text-sm hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="instagram" class="w-4 h-4"></i> انستجرام</a>
+                    <a href="https://facebook.com/BoseSweets" target="_blank" class="flex items-center justify-center gap-2 p-4 bg-[#ffffff] border-2 border-[#ff91a4] text-[#1a1a1a] rounded-2xl font-black text-sm hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="facebook" class="w-4 h-4"></i> فيسبوك</a>
+                    <a href="https://instagram.com/BoseSweets" target="_blank" class="flex items-center justify-center gap-2 p-4 bg-[#ffffff] border-2 border-[#ff91a4] text-[#1a1a1a] rounded-2xl font-black text-sm hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="instagram" class="w-4 h-4"></i> انستجرام</a>
                 </div>
             </div>
             <div class="pt-8 border-t-2 border-[#ff91a4] space-y-4">
-                <button onclick="showInfo('about')" class="block w-full text-right font-bold text-[#4E342E] hover:text-[#ff91a4] transition-colors text-base">عن حلويات بوسي</button>
-                <button onclick="showInfo('privacy')" class="block w-full text-right font-bold text-[#4E342E] hover:text-[#ff91a4] transition-colors text-base">سياسة الخصوصية</button>
+                <button onclick="showInfo('about')" class="block w-full text-right font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-colors text-base">عن حلويات بوسي</button>
+                <button onclick="showInfo('privacy')" class="block w-full text-right font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-colors text-base">سياسة الخصوصية</button>
             </div>
         </div>
         <div class="p-6 bg-[#ffffff] border-t-2 border-[#ff91a4] text-center">
-            <p class="text-[12px] font-black text-[#4E342E]">حلويات بوسي © 2026</p>
+            <p class="text-[12px] font-black text-[#1a1a1a]">حلويات بوسي © 2026</p>
         </div>
     </div>
 
-    <!-- سلة المشتريات -->
     <div id="cart-sidebar" class="fixed inset-y-0 left-0 w-full md:w-[500px] bg-[#ffffff] -translate-x-full flex flex-col border-r-2 border-[#ff91a4] transition-transform duration-500 z-[10000]">
         
         <div id="cart-step-1" class="flex flex-col h-full bg-[#ffffff]">
@@ -320,14 +311,13 @@
 
             <div class="p-6 bg-[#ffffff] border-t-2 border-[#ff91a4]">
                 <div class="flex justify-between items-center mb-6 px-4 bg-[#ffffff] border-2 border-[#ff91a4] p-4 rounded-2xl">
-                    <span class="font-black text-[#4E342E] text-base">الإجمالي</span>
+                    <span class="font-black text-[#1a1a1a] text-base">الإجمالي</span>
                     <span id="cart-total-display" class="text-2xl font-black text-[#ff91a4]">0 ج.م</span>
                 </div>
                 <button onclick="goToCheckout()" class="w-full py-3.5 rounded-2xl text-[#ffffff] font-bold text-lg bg-[#ff91a4] border-2 border-[#ff91a4]">متابعة الطلب</button>
             </div>
         </div>
         
-        <!-- بيانات الاستلام -->
         <div id="cart-step-2" class="hidden flex flex-col h-full bg-[#ffffff] animate-fade-in">
             <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex items-center gap-4">
                 <button onclick="backToCart()" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-transform"><i data-lucide="arrow-right" class="w-5 h-5"></i></button>
@@ -337,17 +327,17 @@
             <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar text-right">
                 
                 <div class="bg-[#ffffff] p-5 rounded-2xl border-2 border-[#ff91a4]">
-                    <label class="block text-base font-black text-[#4E342E] mb-4">طريقة الاستلام <span class="text-[#ff91a4]">*</span></label>
+                    <label class="block text-base font-black text-[#1a1a1a] mb-4">طريقة الاستلام <span class="text-[#ff91a4]">*</span></label>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="relative flex flex-col items-center justify-center p-4 border-2 border-[#ff91a4] rounded-xl cursor-pointer hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all custom-radio-container bg-[#ffffff]">
                             <input type="radio" name="delivery_method" value="delivery" class="absolute opacity-0" checked onchange="toggleDeliveryOptions()">
                             <i data-lucide="truck" class="w-6 h-6 mb-2 text-[#ff91a4] transition-colors"></i>
-                            <span class="font-black text-sm text-[#4E342E] transition-colors">توصيل للمنزل</span>
+                            <span class="font-black text-sm text-[#1a1a1a] transition-colors">توصيل للمنزل</span>
                         </label>
                         <label class="relative flex flex-col items-center justify-center p-4 border-2 border-[#ff91a4] rounded-xl cursor-pointer hover:bg-[#ff91a4] transition-all custom-radio-container bg-[#ffffff]">
                             <input type="radio" name="delivery_method" value="pickup" class="absolute opacity-0" onchange="toggleDeliveryOptions()">
                             <i data-lucide="store" class="w-6 h-6 mb-2 text-[#ff91a4] transition-colors"></i>
-                            <span class="font-black text-sm text-[#4E342E] transition-colors">استلام من الفرع</span>
+                            <span class="font-black text-sm text-[#1a1a1a] transition-colors">استلام من الفرع</span>
                         </label>
                     </div>
                 </div>
@@ -357,45 +347,45 @@
                         <i data-lucide="map-pin" class="w-6 h-6 text-[#ff91a4]"></i>
                     </div>
                     <h3 class="font-black text-[#ff91a4] text-lg mb-2">عنوان الاستلام</h3>
-                    <p class="font-bold text-[#4E342E] leading-relaxed text-sm">الكفاح شارع الوحدة المحلية<br>بجوار صيدلية د/ أحمد مجدي وعيادة د/ علي</p>
+                    <p class="font-bold text-[#1a1a1a] leading-relaxed text-sm">الكفاح شارع الوحدة المحلية<br>بجوار صيدلية د/ أحمد مجدي وعيادة د/ علي</p>
                 </div>
 
                 <div class="grid grid-cols-1 gap-5">
                     <div class="space-y-2">
-                        <label class="block font-black text-[#4E342E] text-sm">الاسم بالكامل</label>
-                        <input type="text" id="cust-name" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#4E342E] focus:outline-none" placeholder="الاسم بالكامل...">
+                        <label class="block font-black text-[#1a1a1a] text-sm">الاسم بالكامل</label>
+                        <input type="text" id="cust-name" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] focus:outline-none" placeholder="الاسم بالكامل...">
                     </div>
                     <div class="space-y-2">
-                        <label class="block font-black text-[#4E342E] text-sm">رقم الواتساب <span class="text-[#ff91a4]">*</span></label>
-                        <input type="tel" id="cust-phone" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#4E342E] focus:outline-none" dir="ltr" placeholder="01xxxxxxxxx">
+                        <label class="block font-black text-[#1a1a1a] text-sm">رقم الواتساب <span class="text-[#ff91a4]">*</span></label>
+                        <input type="tel" id="cust-phone" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] focus:outline-none" dir="ltr" placeholder="01xxxxxxxxx">
                     </div>
                 </div>
 
                 <div id="delivery-address-box" class="space-y-5 animate-fade-in">
                     <div class="space-y-2">
-                        <label class="block font-black text-[#4E342E] text-sm">منطقة التوصيل <span class="text-[#ff91a4]">*</span></label>
-                        <select id="cust-area" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#4E342E] outline-none"></select>
+                        <label class="block font-black text-[#1a1a1a] text-sm">منطقة التوصيل <span class="text-[#ff91a4]">*</span></label>
+                        <select id="cust-area" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] outline-none"></select>
                     </div>
                     <div class="space-y-2">
-                        <label class="block font-black text-[#4E342E] text-sm">العنوان التفصيلي <span class="text-[#ff91a4]">*</span></label>
-                        <textarea id="cust-address" rows="2" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#4E342E] resize-none outline-none" placeholder="الشارع، رقم المنزل، علامة مميزة..."></textarea>
+                        <label class="block font-black text-[#1a1a1a] text-sm">العنوان التفصيلي <span class="text-[#ff91a4]">*</span></label>
+                        <textarea id="cust-address" rows="2" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] resize-none outline-none" placeholder="الشارع، رقم المنزل، علامة مميزة..."></textarea>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 bg-[#ffffff] p-5 rounded-2xl border-2 border-[#ff91a4]">
                     <div class="space-y-2">
-                        <label class="block font-black text-[#4E342E] text-sm">تاريخ الاستلام <span class="text-[#ff91a4]">*</span></label>
-                        <input type="date" id="cust-date" class="w-full p-3 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-sm font-bold text-[#4E342E] outline-none">
+                        <label class="block font-black text-[#1a1a1a] text-sm">تاريخ الاستلام <span class="text-[#ff91a4]">*</span></label>
+                        <input type="date" id="cust-date" class="w-full p-3 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-sm font-bold text-[#1a1a1a] outline-none">
                     </div>
                     <div class="space-y-2">
-                        <label class="block font-black text-[#4E342E] text-sm">الوقت <span class="text-[#ff91a4]">*</span></label>
-                        <input type="time" id="cust-time" class="w-full p-3 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-sm font-bold text-[#4E342E] outline-none">
+                        <label class="block font-black text-[#1a1a1a] text-sm">الوقت <span class="text-[#ff91a4]">*</span></label>
+                        <input type="time" id="cust-time" class="w-full p-3 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-sm font-bold text-[#1a1a1a] outline-none">
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block font-black text-[#4E342E] text-sm">ملاحظات إضافية</label>
-                    <textarea id="cust-notes" rows="2" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#4E342E] resize-none outline-none" placeholder="أي تفاصيل تحب تبلغنا بيها..."></textarea>
+                    <label class="block font-black text-[#1a1a1a] text-sm">ملاحظات إضافية</label>
+                    <textarea id="cust-notes" rows="2" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] resize-none outline-none" placeholder="أي تفاصيل تحب تبلغنا بيها..."></textarea>
                 </div>
             </div>
             
@@ -407,7 +397,6 @@
         </div>
     </div>
 
-    <!-- الفوتر (التذييل) -->
     <footer class="bg-[#ffffff] pt-20 pb-10 border-t-2 border-[#ff91a4]">
         <div class="max-w-7xl mx-auto px-6 text-center md:text-right">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
@@ -416,25 +405,25 @@
                         <i data-lucide="cake" class="w-8 h-8 text-[#ff91a4]"></i>
                         <h3 class="text-3xl font-black text-[#ff91a4] tracking-tighter">حلويات بوسي</h3>
                     </div>
-                    <p class="text-base font-bold text-[#4E342E] leading-relaxed">عقد من التميز في صناعة الحلويات بمركز الفرافرة.</p>
+                    <p class="text-base font-bold text-[#1a1a1a] leading-relaxed">عقد من التميز في صناعة الحلويات بمركز الفرافرة.</p>
                 </div>
                 <div>
                     <h4 class="font-black text-[#ff91a4] text-xl mb-6 text-center md:text-right">تواصل معانا</h4>
-                    <p class="text-base font-bold text-[#4E342E] mb-4 flex items-center justify-center md:justify-start gap-2">
+                    <p class="text-base font-bold text-[#1a1a1a] mb-4 flex items-center justify-center md:justify-start gap-2">
                         <i data-lucide="map-pin" class="w-5 h-5 text-[#ff91a4]"></i> الكفاح، الفرافرة، الوادي الجديد
                     </p>
                     <p class="text-2xl font-black text-[#ff91a4] tracking-tighter mb-6" dir="ltr">+20 109 723 8441</p>
                 </div>
                 <div>
                     <h4 class="font-black text-[#ff91a4] text-xl mb-6 text-center md:text-right">روابط سريعة</h4>
-                    <nav class="flex flex-col gap-4 text-base font-bold text-[#4E342E] text-center md:text-right">
+                    <nav class="flex flex-col gap-4 text-base font-bold text-[#1a1a1a] text-center md:text-right">
                         <button onclick="goToHome()" class="hover:text-[#ff91a4] transition-colors">الرئيسية</button>
                         <button onclick="switchToMenuView()" class="hover:text-[#ff91a4] transition-colors">المنيو</button>
                     </nav>
                 </div>
             </div>
             <div class="border-t-2 border-[#ff91a4] pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p class="text-[12px] font-black text-[#4E342E]">جميع الحقوق محفوظة لـ حلويات بوسي © 2026</p>
+                <p class="text-[12px] font-black text-[#1a1a1a]">جميع الحقوق محفوظة لـ حلويات بوسي © 2026</p>
                 <div class="flex gap-6">
                     <a href="https://facebook.com/BoseSweets" class="text-[#ff91a4] hover:scale-110 transition-transform"><i data-lucide="facebook" class="w-6 h-6"></i></a>
                     <a href="https://instagram.com/BoseSweets" class="text-[#ff91a4] hover:scale-110 transition-transform"><i data-lucide="instagram" class="w-6 h-6"></i></a>
@@ -548,5 +537,3 @@
     </script>
 </body>
 </html>
-
-
