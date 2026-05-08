@@ -1,16 +1,25 @@
-// القلب النابض للمحرك الرئيسي (app.js) - حلويات بوسي - النسخة المستقرة والمؤمنة
+/**
+ * 👑 BoseSweets Main Orchestrator (V6.1) - النسخة المستقرة والمؤمنة
+ * القلب النابض للمحرك - تم معالجة الانقطاع في دوائر الاتصال وضبط تزامن العمليات
+ */
+
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
 import { siteSettings, shippingZones, catalog, galleryData, catMenu, isAppReady, state, currentBuilderStep, cakeState, catalogMap, syncCatalogMap, setAppReady } from './state.js';
 import { MemoryManager, hexToMathHSL, escapeHTML, generateUniqueID, optimizeCloudinaryUrl, generateSecureOrderId, showSystemToast } from './utils.js';
 import { ClientStorageEngine } from './storage.js';
 import { LiveSearchEngine, performLiveSearchDebounced, toggleLiveSearch, performLiveSearch } from './search.js';
 import { saveCartToStorage, clearCartStorage, calculateCartTotal, syncCartUI, updateTempQtyContext, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay } from './cart.js';
-import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay } from './ui.js';
+import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay, initHomepageSections } from './ui.js';
 
 // كسر العزل التقني وإعادة ربط قاعدة البيانات بالمحرك
-const db = window.db || (typeof window !== 'undefined' && window.firebase ? window.firebase.firestore() : undefined);
+const db = window.firebase ? window.firebase.firestore() : undefined;
 
-// ربط الدوال الحيوية بالنطاق العام لتعمل مع واجهات HTML بنجاح
+// 👑 ربط الدوال الحيوية والحالة (State) بالنطاق العام لتعمل مع واجهات HTML بنجاح
+window.state = state; // إصلاح جذري لانقطاع الاتصال وتفعيل أزرار التنقل
+window.siteSettings = siteSettings;
+window.catalog = catalog;
+window.catMenu = catMenu;
+
 window.performLiveSearchDebounced = performLiveSearchDebounced;
 window.toggleLiveSearch = toggleLiveSearch;
 window.performLiveSearch = performLiveSearch;
@@ -24,168 +33,120 @@ window.processBoseSweetsOrder = processBoseSweetsOrder;
 window.updateCartDisplay = updateCartDisplay;
 window.MemoryManager = MemoryManager;
 window.LiveSearchEngine = LiveSearchEngine;
+window.renderMainDisplay = renderMainDisplay;
+window.renderCategories = renderCategories;
+window.initWaterfall = initWaterfall;
+window.initHomepageSections = initHomepageSections;
 
-async function fetchDefaultCatalog() {
-    try { 
-        const response = await fetch('data.json'); 
-        const fetchedData = await response.json(); 
-        if(fetchedData && fetchedData.length > 0) defaultCatalog.push(...fetchedData); 
-    } catch (error) {}
-}
-
-async function loadEngineMemory() {
+/**
+ * دقة متناهية في ترتيب عمليات الإقلاع (تزامن كامل)
+ */
+async function bootSystemCore() {
     try {
-        await fetchDefaultCatalog();
+        const db = window.firebase ? window.firebase.firestore() : undefined;
+        if (!db) return;
 
-        if (!catMenu || catMenu.length === 0) {
-            const generated = [...new Set(defaultCatalog.map(p => p.category))].filter(Boolean);
-            catMenu.length = 0;
-            catMenu.push(...generated);
-            if (!catMenu.includes('تورت')) catMenu.unshift('تورت');
-        }
+        // 1. جلب الإعدادات (الشريط واللوجو)
+        const sSnap = await db.collection('settings').doc('main').get();
+        if (sSnap.exists) Object.assign(siteSettings, sSnap.data());
 
-        if (typeof db !== 'undefined') {
-            try {
-                let settingsDoc = await db.collection('settings').doc('main').get();
-                if (settingsDoc.exists) {
-                    const cloudData = settingsDoc.data();
-                    Object.assign(siteSettings, defaultSettings, cloudData);
-                    
-                    if (cloudData) {
-                        window.siteSettings = { ...defaultSettings, ...cloudData };
-                        if (cloudData.layout_settings) {
-                            const root = document.documentElement;
-                            if (cloudData.layout_settings.layout_waterfall_img_height) root.style.setProperty('--layout-waterfall-height', cloudData.layout_settings.layout_waterfall_img_height);
-                            if (cloudData.layout_settings.layout_waterfall_img_width) root.style.setProperty('--layout-waterfall-width', cloudData.layout_settings.layout_waterfall_img_width);
-                            if (cloudData.layout_settings.layout_waterfall_img_objectFit) root.style.setProperty('--layout-waterfall-fit', cloudData.layout_settings.layout_waterfall_img_objectFit);
-                        }
-                        if (cloudData.UI_Settings && cloudData.UI_Settings.typography_config) {
-                            const config = cloudData.UI_Settings.typography_config;
-                            const root = document.documentElement;
-                            if (config.main_font_family) root.style.setProperty('--brand-font', config.main_font_family);
-                        }
-                    }
-                }
-            } catch(e) { console.warn("الاعتماد على الإعدادات الافتراضية"); }
+        // 2. جلب المنتجات (الكتالوج)
+        const pSnap = await db.collection('catalog').where('isActive', '==', true).get();
+        catalog.length = 0; 
+        pSnap.forEach(doc => catalog.push({ id: doc.id, ...doc.data() }));
 
-            try {
-                let catalogSnap = await db.collection('catalog').get();
-                let firebaseData = [];
-                catalogSnap.forEach(doc => firebaseData.push(doc.data()));
+        // 3. جلب صور الشلال
+        const gSnap = await db.collection('gallery').orderBy('timestamp', 'desc').limit(15).get();
+        galleryData.length = 0;
+        gSnap.forEach(doc => galleryData.push({ id: doc.id, ...doc.data() }));
 
-                if (firebaseData.length > 0) {
-                    firebaseData.sort((a, b) => {
-                        if ((a.sortOrder || 999) !== (b.sortOrder || 999)) return (a.sortOrder || 999) - (b.sortOrder || 999);
-                        return String(a.id).localeCompare(String(b.id));
-                    });
-                    catalog.length = 0; catalog.push(...firebaseData);
-                } else {
-                    if (catalog.length === 0) catalog.push(...defaultCatalog);
-                }
-            } catch (e) {
-                if (catalog.length === 0) catalog.push(...defaultCatalog);
-            }
-        } else {
-            if (catalog.length === 0) catalog.push(...defaultCatalog);
-        }
-
-        syncCatalogMap();
-        LiveSearchEngine.build(catalog);
-
-        if (typeof db !== 'undefined') {
-            db.collection('gallery').orderBy('timestamp', 'desc').get().then(gallerySnap => {
-                if (!gallerySnap.empty) { galleryData.length = 0; gallerySnap.forEach(doc => galleryData.push(doc.data())); if(isAppReady && window.renderCustomerGallery) window.renderCustomerGallery(); }
-            }).catch(()=>{});
-            
-            db.collection('shipping').get().then(shipSnap => {
-                if (!shipSnap.empty) { shippingZones.length = 0; shipSnap.forEach(doc => shippingZones.push(doc.data())); if(isAppReady && window.applySettingsToUI) window.applySettingsToUI(); }
-            }).catch(()=>{});
-        }
-        
-    } catch(err) { 
-        if (catalog.length === 0) catalog.push(...defaultCatalog); 
-        syncCatalogMap(); 
-        LiveSearchEngine.build(catalog);
-    } finally {
         setAppReady();
+    } catch (e) {
+        console.error("خطأ في تشغيل المحرك:", e);
     }
-    
-    try { 
-        const dbCart = await ClientStorageEngine.get('cart');
-        if (dbCart) {
-            state.cart.length = 0; state.cart.push(...dbCart);
-        } else {
-            const savedCart = localStorage.getItem('boseSweets_cart_data'); 
-            const savedCartSecured = localStorage.getItem('boseSweets_secured_cart'); 
-            if (savedCartSecured) {
-                state.cart.length = 0; state.cart.push(...JSON.parse(savedCartSecured));
-            } else if (savedCart) {
-                state.cart.length = 0; state.cart.push(...JSON.parse(savedCart));
-            }
+}
+
+function syncBoseSweetsLayout() {
+    const uniqueCats = [...new Set(catalog.map(p => p.category))].filter(Boolean);
+    catMenu.length = 0;
+    const priorityCategories = ['الرئيسية', 'تورت', 'ورد'];
+    priorityCategories.forEach(c => catMenu.push(c));
+    uniqueCats.forEach(c => {
+        if (!priorityCategories.includes(c)) catMenu.push(c);
+    });
+
+    syncCatalogMap();
+    if(typeof LiveSearchEngine !== 'undefined' && LiveSearchEngine.build) {
+        LiveSearchEngine.build(catalog);
+    }
+}
+
+async function recoverBoseSweetsCart() {
+    if(!ClientStorageEngine) return;
+    const savedCart = await ClientStorageEngine.get('bose_cart');
+    if (savedCart && Array.isArray(savedCart)) {
+        state.cart.length = 0;
+        state.cart.push(...savedCart);
+    }
+    if(db) {
+        const shipSnap = await db.collection('shipping').get();
+        if (!shipSnap.empty) {
+            shippingZones.length = 0;
+            shipSnap.forEach(doc => shippingZones.push(doc.data()));
         }
-    } catch (e) { state.cart.length = 0; }
-}
-
-async function fallbackToLocalMemory() {
-    if (catalog.length === 0 && typeof defaultCatalog !== 'undefined' && defaultCatalog.length > 0) {
-        catalog.push(...defaultCatalog);
-        if (typeof syncCatalogMap === 'function') syncCatalogMap();
-        if (typeof LiveSearchEngine !== 'undefined' && LiveSearchEngine.build) LiveSearchEngine.build(catalog);
     }
-    initUI();
 }
 
+// 👑 دالة تفعيل الواجهة تم استدعاؤها في المكان الصحيح الآن
 function initUI() {
     const urlParams = new URLSearchParams(window.location.search);
     const routeCat = urlParams.get('category');
     
-    if (routeCat && catMenu.includes(routeCat)) {
-        state.activeCat = routeCat;
-    } else {
-        state.activeCat = 'الرئيسية';
-    }
+    state.activeCat = (routeCat && catMenu.includes(routeCat)) ? routeCat : 'الرئيسية';
 
-    if(window.applySettingsToUI) window.applySettingsToUI();
-    if(window.renderCategories) window.renderCategories();
+    applySettingsToUI();
+    renderCategories();
     
     if (state.activeCat === 'الرئيسية') {
-        if (window.showHomeView) window.showHomeView();
+        if (typeof window.showHomeView === 'function') window.showHomeView();
+        initWaterfall(); 
+        initHomepageSections(); 
     } else {
-        if (window.showMenuView) window.showMenuView();
-        if(window.renderMainDisplay) window.renderMainDisplay();
+        if (typeof window.showMenuView === 'function') window.showMenuView();
+        renderMainDisplay();
     }
 
-    if(window.initWaterfall) window.initWaterfall(); 
-    if(window.initHomepageSections) window.initHomepageSections(); 
-
-    if(document.getElementById('gallery-customer-section') && window.renderCustomerGallery) window.renderCustomerGallery(); 
-    syncCartUI(); 
-    if(window.lucide) lucide.createIcons();
+    if (document.getElementById('gallery-customer-section') && typeof renderCustomerGallery === 'function') {
+        renderCustomerGallery();
+    }
     
-    if(window.renderSmartSuggestions) window.renderSmartSuggestions('main');
+    if(typeof syncCartUI === 'function') syncCartUI(); 
+    if (window.lucide) lucide.createIcons();
+    
+    if (typeof window.renderSmartSuggestions === 'function') window.renderSmartSuggestions('main');
     
     const phoneDisplay = document.getElementById('footer-phone-display');
     if (phoneDisplay && siteSettings) {
         phoneDisplay.innerText = siteSettings.footerPhone || '';
     }
-}
 
-async function initApp() {
-    await loadEngineMemory(); 
-    if (catalog.length > 0) {
-        initUI(); 
-    } else {
-        fallbackToLocalMemory(); 
+    const loader = document.getElementById('global-loader');
+    if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
     }
 }
 
 async function syncOfflineOrders() {
-    if (!navigator.onLine || typeof db === 'undefined') return;
+    if (!navigator.onLine || !db || typeof ClientStorageEngine === 'undefined') return;
     try {
         const pendingOrders = await ClientStorageEngine.getQueuedOrders();
-        if (pendingOrders.length === 0) return;
+        if (!pendingOrders || pendingOrders.length === 0) return;
         for (let order of pendingOrders) {
-            try { await db.collection('orders').doc(String(order.id)).set(order); await ClientStorageEngine.removeQueuedOrder(order.id); } catch (e) { }
+            try { 
+                await db.collection('orders').doc(String(order.id)).set(order); 
+                await ClientStorageEngine.removeQueuedOrder(order.id); 
+            } catch (e) { }
         }
     } catch (e) {}
 }
@@ -204,11 +165,16 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-// هندسة التشغيل الذكي لضمان العمل على الموبايل
-function startBoseSweetsEngine() {
+// 👑 المحرك يعمل الآن بشكل تسلسلي متزامن
+async function startBoseSweetsEngine() {
     if (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة') || document.getElementById('admin-orders-tbody')) { return; }
-    initApp();
-    syncOfflineOrders();
+    
+    await bootSystemCore();         // 1. انتظر جلب البيانات بالكامل
+    syncBoseSweetsLayout();         // 2. قم ببناء القوائم بناءً على البيانات الدقيقة
+    initUI();                       // 3. فعّل الواجهة وارسم المنتجات والشريط والشلال
+    
+    recoverBoseSweetsCart();        
+    syncOfflineOrders();            
 }
 
 if (document.readyState === 'loading') {
@@ -222,11 +188,11 @@ document.addEventListener('click', function(event) {
         event.preventDefault();
         const button = event.target.closest('.add-to-cart-btn');
         const card = button.closest('.product-card') || button.closest('.product-item');
-        if(!card) return;
+        if (!card) return;
         const productId = card.getAttribute('data-id') || Date.now().toString();
         const productName = card.querySelector('.product-title, .product-name').innerText;
         const priceText = card.querySelector('.product-price').innerText;
         const productPrice = parseFloat(priceText.replace(/[^0-9.]/g, ''));
-        processBoseSweetsOrder(productId, productName, productPrice);
+        if(typeof processBoseSweetsOrder === 'function') processBoseSweetsOrder(productId, productName, productPrice);
     }
 });
