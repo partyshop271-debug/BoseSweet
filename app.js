@@ -1,11 +1,14 @@
-// القلب النابض للمحرك الرئيسي (app.js) - حلويات بوسي - النسخة الكاملة
+// القلب النابض للمحرك الرئيسي (app.js) - حلويات بوسي - النسخة الكاملة والمعالجة
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
 import { siteSettings, shippingZones, catalog, galleryData, catMenu, isAppReady, state, currentBuilderStep, cakeState, catalogMap, syncCatalogMap, setAppReady } from './state.js';
-import { MemoryManager, hexToMathHSL, escapeHTML, generateUniqueID, optimizeCloudinaryUrl, generateSecureOrderId, showSystemToast } from './utils.js';
+import { MemoryManager, hexToMathHSL, escapeHTML, generateUniqueID, optimizeCloudinaryUrl, generateSecureOrderId, showSystemToast, getImgFallback } from './utils.js';
 import { ClientStorageEngine } from './storage.js';
 import { LiveSearchEngine, performLiveSearchDebounced, toggleLiveSearch, performLiveSearch } from './search.js';
 import { saveCartToStorage, clearCartStorage, calculateCartTotal, syncCartUI, updateTempQtyContext, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay } from './cart.js';
-import { getCapsuleDescription, getFinalDescription, showHomeView, showMenuView, showGoldenTips, showCakeBuilderView, openGlobalLightbox, closeGlobalLightbox, renderTicker, loadLiveReviews, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, initHomepageSections, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, enforceCategoryRender, renderMainDisplay, navigateToProduct, renderMultiStepCakeBuilder, changeBuilderStep, updateCakeBuilderField, adjustBuilderPersons, drawProductCard, renderCartList, renderSmartSuggestions, showInfo, closeInfo, submitCustomerReviewLive, setCategory, setSub, getImgFallback } from './ui.js';
+import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay } from './ui.js';
+
+// تشغيل الوحدات لضمان تسجيل كافة الدوال المرئية بشكل صحيح
+import './ui.js';
 
 // ربط الدوال الحيوية بالنطاق العام لتعمل مع واجهات HTML بنجاح
 window.performLiveSearchDebounced = performLiveSearchDebounced;
@@ -17,45 +20,10 @@ window.modQ = modQ;
 window.commitCakeBuilderToCart = commitCakeBuilderToCart;
 window.submitOrderFinal = submitOrderFinal;
 window.dispatchWhatsAppOrder = dispatchWhatsAppOrder;
-window.toggleCustomerMenu = toggleCustomerMenu;
-window.MemoryManager = MemoryManager;
-window.LiveSearchEngine = LiveSearchEngine;
-window.showHomeView = showHomeView;
-window.showMenuView = showMenuView;
-window.showGoldenTips = showGoldenTips;
-window.showCakeBuilderView = showCakeBuilderView;
-window.openGlobalLightbox = openGlobalLightbox;
-window.closeGlobalLightbox = closeGlobalLightbox;
-window.renderTicker = renderTicker;
-window.loadLiveReviews = loadLiveReviews;
-window.applySettingsToUI = applySettingsToUI;
-window.renderCustomerSidebarCategories = renderCustomerSidebarCategories;
-window.renderCustomerGallery = renderCustomerGallery;
-window.shareProduct = shareProduct;
-window.initWaterfall = initWaterfall;
-window.initHomepageSections = initHomepageSections;
-window.setupSliderButtons = setupSliderButtons;
-window.renderCategories = renderCategories;
-window.setActiveCategoryPill = setActiveCategoryPill;
-window.renderFlowerTabs = renderFlowerTabs;
-window.enforceCategoryRender = enforceCategoryRender;
-window.renderMainDisplay = renderMainDisplay;
-window.navigateToProduct = navigateToProduct;
-window.renderMultiStepCakeBuilder = renderMultiStepCakeBuilder;
-window.changeBuilderStep = changeBuilderStep;
-window.updateCakeBuilderField = updateCakeBuilderField;
-window.adjustBuilderPersons = adjustBuilderPersons;
-window.drawProductCard = drawProductCard;
-window.renderCartList = renderCartList;
-window.renderSmartSuggestions = renderSmartSuggestions;
-window.showInfo = showInfo;
-window.closeInfo = closeInfo;
-window.submitCustomerReviewLive = submitCustomerReviewLive;
-window.setCategory = setCategory;
-window.setSub = setSub;
-window.getImgFallback = getImgFallback;
 window.processBoseSweetsOrder = processBoseSweetsOrder;
 window.updateCartDisplay = updateCartDisplay;
+window.MemoryManager = MemoryManager;
+window.LiveSearchEngine = LiveSearchEngine;
 
 async function fetchDefaultCatalog() {
     try { 
@@ -142,11 +110,11 @@ async function loadEngineMemory() {
 
         if (typeof db !== 'undefined') {
             db.collection('gallery').orderBy('timestamp', 'desc').get().then(gallerySnap => {
-                if (!gallerySnap.empty) { galleryData.length = 0; gallerySnap.forEach(doc => galleryData.push(doc.data())); if(isAppReady) renderCustomerGallery(); }
+                if (!gallerySnap.empty) { galleryData.length = 0; gallerySnap.forEach(doc => galleryData.push(doc.data())); if(isAppReady) window.renderCustomerGallery(); }
             }).catch(()=>{});
             
             db.collection('shipping').get().then(shipSnap => {
-                if (!shipSnap.empty) { shippingZones.length = 0; shipSnap.forEach(doc => shippingZones.push(doc.data())); if(isAppReady) applySettingsToUI(); }
+                if (!shipSnap.empty) { shippingZones.length = 0; shipSnap.forEach(doc => shippingZones.push(doc.data())); if(isAppReady) window.applySettingsToUI(); }
             }).catch(()=>{});
         }
         
@@ -193,8 +161,8 @@ function initUI() {
         state.activeCat = 'الرئيسية';
     }
 
-    applySettingsToUI();
-    renderCategories();
+    window.applySettingsToUI();
+    window.renderCategories();
     
     if (state.activeCat === 'الرئيسية') {
         if (window.showHomeView) window.showHomeView();
@@ -202,17 +170,17 @@ function initUI() {
     } else {
         if (window.showMenuView) window.showMenuView();
         else if (window.switchToMenuView) window.switchToMenuView();
-        renderMainDisplay();
+        window.renderMainDisplay();
     }
 
-    initWaterfall(); 
+    window.initWaterfall(); 
     window.initHomepageSections(); 
 
-    if(document.getElementById('gallery-customer-section')) renderCustomerGallery(); 
+    if(document.getElementById('gallery-customer-section')) window.renderCustomerGallery(); 
     syncCartUI(); 
     if(window.lucide) lucide.createIcons();
     
-    renderSmartSuggestions('main');
+    if(window.renderSmartSuggestions) window.renderSmartSuggestions('main');
     
     const phoneDisplay = document.getElementById('footer-phone-display');
     if (phoneDisplay) {

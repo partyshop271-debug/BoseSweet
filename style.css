@@ -23,8 +23,8 @@
     
     --bg-main: #ffffff;
     --site-bg: #ffffff;          
-    --site-text: #4E342E;        
-    --text-dark: #4E342E;        
+    --site-text: #1a1a1a;        
+    --text-dark: #1a1a1a;        
     
     --brand-glow: rgba(255, 145, 164, 0.15); 
     --brand-glow-strong: rgba(255, 145, 164, 0.35);
@@ -62,7 +62,6 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* 👑 ضبط المساحة العلوية لتناسب الشريط العلوي والهيدر */
     padding-top: 130px !important; 
 }
 
@@ -523,18 +522,15 @@ button, .main-nav-btn {
 .text-brand { color: var(--brand-primary) !important; }
 .bg-brand-light { background-color: var(--bg-main) !important; }
 
+/* معالجة وحل مشكلة طمس الهوية البصرية باسم العلامة التجارية */
 .bg-clip-text, 
 .text-transparent,
 h1.brand-gradient,
 h2.brand-gradient,
 #brand-home-link h1 {
-    -webkit-background-clip: text !important;
-    background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
     color: var(--brand-primary) !important;
-    box-shadow: none !important;
-    background-image: none !important;
-    background: var(--brand-primary) !important;
+    background: transparent !important;
+    text-shadow: none !important;
 }
 
 .prestigious-footer {
@@ -581,16 +577,7 @@ h2.brand-gradient,
     padding-top: 10px !important;
 }
 
-/* أوامر نهائية لفرض اللون البني على كافة النصوص */
-* {
-    color: var(--site-text);
-}
-.text-white, .text-[#ffffff] {
-    color: var(--bg-main) !important;
-}
-.bg-white, .bg-[#ffffff] {
-    background-color: var(--bg-main) !important;
-}
-.border-white, .border-[#ffffff] {
-    border-color: var(--bg-main) !important;
-}
+* { color: var(--site-text); }
+.text-white, .text-[#ffffff] { color: var(--bg-main) !important; }
+.bg-white, .bg-[#ffffff] { background-color: var(--bg-main) !important; }
+.border-white, .border-[#ffffff] { border-color: var(--bg-main) !important; }
