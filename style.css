@@ -62,7 +62,7 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    padding-top: 130px !important; 
+    padding-top: 120px !important; 
 }
 
 h1, h2, h3, h4, h5, h6 { 
@@ -539,6 +539,9 @@ button, .main-nav-btn {
     background-color: var(--bg-main);
     width: 100%;
     box-sizing: border-box;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 9999 !important;
 }
 
 .logo-container, .brand-logo {
@@ -579,4 +582,6 @@ button, .main-nav-btn {
     -webkit-text-fill-color: var(--brand-primary) !important;
     color: var(--brand-primary) !important;
     text-shadow: none !important;
+}
+
 }

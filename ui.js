@@ -731,13 +731,13 @@ export const renderMultiStepCakeBuilder = function() {
                         <span class="text-4xl font-black text-[#1a1a1a]">${cakeState.persons}</span>
                         <button onclick="window.adjustBuilderPersons(2)" class="p-3 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-2xl flex items-center justify-center font-black shadow-sm hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="plus" class="w-6 h-6"></i></button>
                     </div>
-                    <p class="text-sm text-[#1a1a1a] text-center font-bold">حساب التسعير: المتر للفرد يعادل ${basePrice} ج.م</p>
                 </div>
                 <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
                     <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="printer" class="w-5 h-5 text-[#ff91a4]"></i> دمج وطباعة الصور</label>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <button onclick="window.updateCakeBuilderField('printing', 'بدون')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'بدون' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">بدون صورة</button>
-                        <button onclick="window.updateCakeBuilderField('printing', 'صورة مجسمة')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'صورة مجسمة' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">صورة قابلة للأكل (+${printingPrice} ج.م)</button>
+                        <button onclick="window.updateCakeBuilderField('printing', 'صورة قابلة للأكل')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'صورة قابلة للأكل' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">صورة قابلة للأكل (+${printingPrice} ج.م)</button>
+                        <button onclick="window.updateCakeBuilderField('printing', 'صورة غير قابلة للأكل')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'صورة غير قابلة للأكل' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">صورة غير قابلة للأكل (+20 ج.م)</button>
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row justify-between gap-4 pt-6 mt-4">
@@ -989,13 +989,14 @@ export const renderSmartSuggestions = function(context = 'main') {
         const img = optimizeCloudinaryUrl(rawImageUrl);
         
         return `<div class="shrink-0 w-[240px] snap-slide bg-[#ffffff] border-2 border-[#ff91a4] rounded-[2rem] p-4 shadow-sm flex flex-col group hover:-translate-y-2 transition-transform cursor-pointer" onclick="navigateToProduct('${p.id}')">
-            <div class="relative w-full aspect-square mb-4 rounded-xl overflow-hidden bg-[#ffffff] border-2 border-[#ff91a4] p-2 flex items-center justify-center">
+            <div class="relative w-full aspect-video mb-4 rounded-xl overflow-hidden bg-[#ffffff] border-2 border-[#ff91a4] p-2 flex items-center justify-center">
                 <img src="${img}" class="w-full h-full object-contain drop-shadow-sm transition-transform duration-500 group-hover:scale-110" loading="lazy" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
             </div>
             <div class="flex-1 flex flex-col text-center">
-                <h5 class="text-[15px] font-bold text-[#1a1a1a] mb-2 leading-tight line-clamp-1">${escapeHTML(p.name)}</h5>
+                <span class="text-[10px] bg-[#ff91a4] text-[#ffffff] px-2 py-1 rounded-full font-bold mb-2 self-center border border-[#ff91a4]">${escapeHTML(p.category)}</span>
+                <h5 class="text-[15px] font-black text-[#1a1a1a] mb-2 leading-tight line-clamp-1">${escapeHTML(p.name)}</h5>
                 <div class="mt-auto">
-                    <span class="font-black text-[#ff91a4] block mb-3 text-lg font-mono">${p.price} ج.م</span>
+                    <span class="font-black text-[#ff91a4] block mb-3 text-lg font-mono">${p.price > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
                     <button onclick="event.stopPropagation(); addWithQtyContext(this, '${p.id}')" class="w-full py-2.5 bg-[#ffffff] text-[#ff91a4] rounded-full font-black hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors border-2 border-[#ff91a4] flex items-center justify-center gap-1.5"><i data-lucide="plus" class="w-4 h-4"></i> إضافة</button>
                 </div>
             </div>
@@ -1117,12 +1118,14 @@ window.setCategory = setCategory;
 
 /* محرك تصحيح التبويبات والأقسام - حلويات بوسي */
 document.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide) lucide.createIcons();
+
     document.body.addEventListener('click', function(e) {
         const tabBtn = e.target.closest('.category-tab, .cat-btn, [onclick*="Category"], [onclick*="Cat"]');
         
         if (tabBtn) {
             setTimeout(() => {
-                const productContainers = document.querySelectorAll('.products-grid, #products-container, .catalog-grid, [id*="grid"]');
+                const productContainers = document.querySelectorAll('.products-grid, #products-container, .catalog-grid, [id*="grid"], #display-container');
                 
                 productContainers.forEach(container => {
                     if (container) {

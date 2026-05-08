@@ -109,8 +109,13 @@ export function modQ(cartId, d) {
 
 export function commitCakeBuilderToCart() {
     const basePrice = siteSettings.cakeBuilder.basePrice || 145;
-    const printingPrice = siteSettings.cakeBuilder.imagePrintingPrice || 60;
-    const finalPrice = cakeState.persons * basePrice + (cakeState.printing !== 'بدون' ? printingPrice : 0);
+    
+    // محرك حساب تسعير الصور المحدث
+    let printingPrice = 0;
+    if (cakeState.printing === 'صورة قابلة للأكل') printingPrice = siteSettings.cakeBuilder.imagePrintingPrice || 60;
+    else if (cakeState.printing === 'صورة غير قابلة للأكل') printingPrice = 20;
+
+    const finalPrice = (cakeState.persons * basePrice) + printingPrice;
     
     let detailsString = `نكهة: ${cakeState.flavor} | هندسة: ${cakeState.shape} | عدد: ${cakeState.persons} فرد | صورة: ${cakeState.printing}`;
     if (cakeState.notes && cakeState.notes.trim() !== '') detailsString += ` | ملاحظات العميل: ${cakeState.notes.trim()}`;
@@ -119,12 +124,13 @@ export function commitCakeBuilderToCart() {
     const customCakeItem = {
         id: uniqueCustomId,
         cartItemId: uniqueCustomId,
-        name: 'تورتة الإصدار الملكي المخصص (طلب خاص)',
+        name: 'تورتة الإصدار الملكي المخصص', // تم التعديل لتكون أقصر وتظهر بوضوح في السلة
         category: 'تورت',
         price: finalPrice,
         quantity: 1,
         desc: detailsString,
-        isCustom: true
+        isCustom: true,
+        img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg' // توفير صورة افتراضية لعدم ظهور السلة فارغة
     };
     
     state.cart.push(customCakeItem);

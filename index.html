@@ -46,7 +46,6 @@
 
     <style id="sovereign-styling-engine">
         :root {
-            /* القاعدة الصارمة للألوان */
             --brand-primary: #ff91a4;
             --brand-secondary: #ff91a4;
             --brand-light: #ffffff;
@@ -81,7 +80,7 @@
         .brand-gradient { background: var(--brand-primary); }
         .glass-nav { background: var(--site-bg); }
         
-        .lazy-section { opacity: 1; transform: translate3d(0, 0, 0); } /* تعطيل الإخفاء العشوائي */
+        .lazy-section { opacity: 1; transform: translate3d(0, 0, 0); } 
 
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -130,9 +129,8 @@
         @keyframes ticker-scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .animate-ticker { display: inline-block; animation: ticker-scroll linear infinite; padding-right: 100%; }
         
-        /* المساحات الحيوية لمنع تداخل الهيدر */
         .content-padding-top {
-            padding-top: 100px !important; 
+            padding-top: 15px !important; 
         }
     </style>
 </head>
@@ -262,7 +260,7 @@
 
     <div id="advanced-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-[380px] bg-[#ffffff] translate-x-full flex flex-col border-l-2 border-[#ff91a4] z-[10000]">
         <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex justify-between items-center">
-            <h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter">قائمة بوسي</h2>
+<h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter">قائمة حلويات بوسي</h2>
             <button onclick="toggleSidebarMenu(false)" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] rounded-full text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
         <div class="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar bg-[#ffffff]">
@@ -537,4 +535,3 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
-
