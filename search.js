@@ -1,5 +1,6 @@
 // محرك البحث السيادي لمنصة حلويات بوسي
-import { MemoryManager, escapeHTML, optimizeCloudinaryUrl, getImgFallback } from './utils.js';
+import { MemoryManager, escapeHTML, optimizeCloudinaryUrl } from './utils.js';
+import { getImgFallback } from './ui.js';
 
 export const LiveSearchEngine = {
     index: new Map(),
