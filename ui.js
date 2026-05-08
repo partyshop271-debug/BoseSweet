@@ -3,6 +3,9 @@ import { detailedDescriptions, dSizes, fTypes } from './config.js';
 import { siteSettings, catalog, galleryData, catMenu, state, cakeState, isAppReady, shippingZones } from './state.js';
 import { MemoryManager, hexToMathHSL, escapeHTML, optimizeCloudinaryUrl, showSystemToast } from './utils.js';
 
+const db = window.db || (typeof window !== 'undefined' && window.firebase ? window.firebase.firestore() : undefined);
+const firebase = window.firebase || (typeof window !== 'undefined' ? window.firebase : undefined);
+
 // بناء الدالة المفقودة داخلياً لضمان عدم انهيار النظام
 export const getImgFallback = function(category) {
     return (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';

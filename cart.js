@@ -3,6 +3,9 @@ import { state, catalogMap, catalog, siteSettings, shippingZones, cakeState } fr
 import { ClientStorageEngine } from './storage.js';
 import { MemoryManager, showSystemToast, generateSecureOrderId, generateUniqueID } from './utils.js';
 
+// تهيئة الاتصال بقاعدة البيانات لضمان تمرير الفواتير بسلامة
+const db = window.db || (typeof window !== 'undefined' && window.firebase ? window.firebase.firestore() : undefined);
+
 export function saveCartToStorage() { 
     try { 
         ClientStorageEngine.set('cart', state.cart); 

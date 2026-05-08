@@ -7,6 +7,9 @@ import { LiveSearchEngine, performLiveSearchDebounced, toggleLiveSearch, perform
 import { saveCartToStorage, clearCartStorage, calculateCartTotal, syncCartUI, updateTempQtyContext, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay } from './cart.js';
 import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay } from './ui.js';
 
+// كسر العزل التقني وإعادة ربط قاعدة البيانات بالمحرك
+const db = window.db || (typeof window !== 'undefined' && window.firebase ? window.firebase.firestore() : undefined);
+
 // ربط الدوال الحيوية بالنطاق العام لتعمل مع واجهات HTML بنجاح
 window.performLiveSearchDebounced = performLiveSearchDebounced;
 window.toggleLiveSearch = toggleLiveSearch;
