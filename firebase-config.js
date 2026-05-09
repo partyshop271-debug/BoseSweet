@@ -7,6 +7,7 @@
  * الترقية الجديدة (V5.1): دمج نظام الطابور الذكي لمعالجة الطلبات المعلقة بالتوازي (Parallel Processing)
  * مع خوارزمية (Exponential Backoff + Jitter) والمزامنة العكسية (Reverse Sync).
  * الترقية (V5.2): ربط المتغيرات الأساسية بجذر المتصفح (Window) لمنع أخطاء النطاق (Scope).
+ * الترقية السيادية (V20.0): تحديث معرف القياس وضبط بروتوكول التحقق المباشر من الهوية.
  */
 
 const firebaseConfig = {
@@ -16,7 +17,7 @@ const firebaseConfig = {
   storageBucket: "bosy-sweets.firebasestorage.app",
   messagingSenderId: "473615735083",
   appId: "1:473615735083:web:f09c6001c72640b2588d6e",
-  measurementId: "G-46D1CS3WLB"
+  measurementId: "G-6S8EXY7Y4P" // 👑 تحديث معرف القياس المعتمد
 };
 
 // تهيئة النظام وتفعيل خدمات السحابة لبراند حلويات بوسي
@@ -24,9 +25,10 @@ if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
 
-// 👑 التحديث الملكي V5.2: ربط المتغيرات بـ window لضمان عدم فقدان الاتصال في متصفحات الموبايل
+// 👑 التحديث الملكي V5.2: ربط المتغيرات بـ window لضمان عدم فقدان الاتصال في متصفحات الموبايل والكمبيوتر
 window.db = firebase.firestore();
 window.auth = firebase.auth();
+window.firebase = firebase;
 const db = window.db;
 const auth = window.auth;
 
@@ -37,10 +39,8 @@ const auth = window.auth;
  */
 db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
     if (err.code == 'failed-precondition') {
-        // تحدث هذه المشكلة عند فتح الموقع في أكثر من تبويب في المتصفح
         console.warn("BoseSweets Warning: تعدد التبويبات يمنع وضع الأوفلاين حالياً.");
     } else if (err.code == 'unimplemented') {
-        // تحدث إذا كان المتصفح قديماً جداً ولا يدعم IndexedDB
         console.warn("BoseSweets Warning: المتصفح الحالي لا يدعم التخزين المحلي.");
     }
 });
@@ -48,17 +48,13 @@ db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
 /**
  * 🛡️ Engine Upgrade: Reverse Sync Engine (Webhook Fallback & Broadcast)
  * محرك المزامنة العكسية لضمان وصول الطلب للإدارة كخط دفاع بديل وقوي جداً
- * في حال فشل المتصفح في فتح الواتساب، يقوم السيرفر بإرسال بيانات الطلب فوراً.
  */
 const ReverseSyncEngine = {
     triggerOrderWebhook(orderData) {
         try {
-            // نقطة الاتصال الآمنة السحابية لبراند حلويات بوسي
             const webhookUrl = 'https://us-central1-bosy-sweets.cloudfunctions.net/secureReverseSync';
             
-            // التأكد من أن الطلب جديد لتجنب إرسال إشعارات مكررة عند تعديل الحالات
             if(orderData && orderData.status === 'pending') {
-                // استخدام نمط (Fire and Forget) لضمان عدم تأخير تجربة العميل
                 fetch(webhookUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -82,13 +78,13 @@ const ReverseSyncEngine = {
         }
     },
 
-    // 👑 التحديث السيادي V20.0: بث إشارة المزامنة اللحظية لإلغاء الكاش عند العملاء
     broadcastGlobalUpdate() {
         try {
             if (typeof db !== 'undefined') {
                 db.collection('system').doc('syncFlag').set({
                     lastAdminUpdate: Date.now(),
-                    trigger: 'Sovereign_Admin_Update'
+                    trigger: 'Sovereign_Admin_Update',
+                    version: 'V20.0'
                 }, { merge: true }).catch(e => console.warn('BoseSweets Sync Broadcast slightly delayed.'));
                 console.log("BoseSweets 👑: Reverse Sync Signal broadcasted to all clients.");
             }
@@ -125,7 +121,6 @@ const CloudQueueDB = {
             return new Promise((resolve, reject) => {
                 const tx = database.transaction(this.storeName, 'readwrite');
                 const store = tx.objectStore(this.storeName);
-                // إضافة معرّف فريد لكل عملية معلقة لضمان المزامنة الدقيقة
                 store.put({ 
                     ...operation, 
                     queueId: 'op_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
@@ -164,38 +159,53 @@ const CloudQueueDB = {
 
 /**
  * 🛡️ الموتور الأساسي للتعامل الآمن مع السحابة (NetworkEngine) - ترقية V20.0
- * تم استبدال الكائن بالكامل لدعم المعالجة المتوازية (Parallel Processing) والمزامنة اللحظية
- * مع إضافة تقنية Jitter لعدم الضغط على سيرفرات فايربيز في نفس اللحظة.
+ * يدعم المعالجة المتوازية (Parallel Processing) والمزامنة اللحظية
  */
 const NetworkEngine = {
     async safeWrite(collectionName, docId, data) {
         try {
-            await db.collection(collectionName).doc(docId).set(data, { merge: true });
+            // 👑 فلترة برمجية صارمة وفحص الهوية قبل التعديل السيادي
+            if (collectionName === 'settings' && docId === 'main') {
+                const currentUser = auth.currentUser;
+                if (!currentUser) {
+                    const authError = "🔒 رفض الأمان: لا يمكن تعديل الإعدادات السيادية بدون توثيق 🛡️";
+                    console.error(authError);
+                    if (typeof showSystemToast === 'function') {
+                        showSystemToast(authError, "error");
+                    }
+                    throw new Error(authError);
+                }
+            }
+
+            await db.collection(collectionName).doc(String(docId)).set(data, { merge: true });
             console.log(`BoseSweets: Data synced to [${collectionName}] securely. 👑`);
             
-            // تفعيل المزامنة العكسية فوراً إذا كان المكتوب طلباً جديداً
+            // تفعيل المزامنة العكسية وإشارات البث
             if(collectionName === 'orders') {
                 ReverseSyncEngine.triggerOrderWebhook(data);
             } else if (['settings', 'catalog', 'shipping', 'gallery'].includes(collectionName)) {
-                // بث إشارة المزامنة للعملاء عند تحديث الإعدادات أو المنتجات
                 ReverseSyncEngine.broadcastGlobalUpdate();
             }
             
             return true;
         } catch (error) {
+            // إذا كان الخطأ أمني (عدم تسجيل دخول)، لا نضع العملية في الطابور
+            if (error.message && error.message.includes("🛡️")) {
+                return false;
+            }
+
             console.warn(`BoseSweets Network Warning: Network fluctuation detected. Queuing write operation for [${collectionName}] in background... 🔄`);
-            // تخزين العملية الفاشلة في الطابور ليتم محاولة إرسالها لاحقاً
             await CloudQueueDB.enqueue({ type: 'write', collectionName, docId, data });
             return true; 
         }
     },
+    
     async safeDelete(collectionName, docId) {
         try {
-            await db.collection(collectionName).doc(docId).delete();
+            await db.collection(collectionName).doc(String(docId)).delete();
             console.log(`BoseSweets: Data deleted from [${collectionName}] securely. 👑`);
             
             if (['settings', 'catalog', 'shipping', 'gallery'].includes(collectionName)) {
-                // بث إشارة المزامنة للعملاء عند الحذف
                 ReverseSyncEngine.broadcastGlobalUpdate();
             }
             
@@ -207,11 +217,6 @@ const NetworkEngine = {
         }
     },
     
-    /**
-     * 🛡️ خوارزمية الطابور الذكي المطورة (Smart Batch Processing & Jittered Backoff)
-     * تعالج الطلبات المعلقة في دفعات (Batches) لتسريع المزامنة بشكل هائل
-     * مع توزيع الحمل بذكاء لمنع اختناق الشبكة أو ضغط السيرفرات.
-     */
     async processQueue() {
         if (!navigator.onLine) return;
         
@@ -222,28 +227,24 @@ const NetworkEngine = {
             console.log(`BoseSweets Engine: Processing ${queue.length} background operations in SMART BATCHES... ⚡👑`);
             const baseDelay = 1500; 
             
-            // دالة المعالجة الفردية (محتفظين بيها زي ما هي بكل تفاصيل الحماية)
             const processSingleOperation = async (op) => {
                 let retries = 0;
                 const maxRetries = 5; 
                 let success = false;
 
                 while (retries < maxRetries && !success) {
-                    if (!navigator.onLine) {
-                        console.warn("BoseSweets: Connection lost during queue processing. Halting.");
-                        break; 
-                    }
+                    if (!navigator.onLine) break; 
                     
                     try {
                         if (op.type === 'write') {
-                            await db.collection(op.collectionName).doc(op.docId).set(op.data, { merge: true });
+                            await db.collection(op.collectionName).doc(String(op.docId)).set(op.data, { merge: true });
                             if(op.collectionName === 'orders') {
                                 ReverseSyncEngine.triggerOrderWebhook(op.data);
                             } else if (['settings', 'catalog', 'shipping', 'gallery'].includes(op.collectionName)) {
                                 ReverseSyncEngine.broadcastGlobalUpdate();
                             }
                         } else if (op.type === 'delete') {
-                            await db.collection(op.collectionName).doc(op.docId).delete();
+                            await db.collection(op.collectionName).doc(String(op.docId)).delete();
                             if (['settings', 'catalog', 'shipping', 'gallery'].includes(op.collectionName)) {
                                 ReverseSyncEngine.broadcastGlobalUpdate();
                             }
@@ -255,8 +256,6 @@ const NetworkEngine = {
                         
                     } catch (e) {
                         retries++;
-                        console.warn(`BoseSweets Engine: Failed to process queued op [${op.queueId}]. Retry ${retries}/${maxRetries}.`, e);
-                        
                         if (retries < maxRetries) {
                             const jitter = Math.random() * 1000;
                             const backoffTime = (baseDelay * Math.pow(2, retries)) + jitter;
@@ -267,34 +266,23 @@ const NetworkEngine = {
                 return false; 
             };
 
-            // 👑 تقسيم الطابور لدفعات (Chunking) 
-            const batchSize = 5; // المحرك هيعالج 5 طلبات في المرة الواحدة
+            const batchSize = 5; 
             let processedCount = 0;
 
             for (let i = 0; i < queue.length; i += batchSize) {
-                // التأكد إن النت لسه شغال قبل كل دفعة
-                if (!navigator.onLine) {
-                    console.warn("BoseSweets: Network unstable, pausing batch processing.");
-                    break;
-                }
+                if (!navigator.onLine) break;
 
-                // سحب دفعة جديدة من الطابور
                 const currentBatch = queue.slice(i, i + batchSize);
-                console.log(`BoseSweets Engine: Firing batch ${Math.floor(i/batchSize) + 1} (${currentBatch.length} ops)... 🚀`);
-
-                // تنفيذ الدفعة الحالية بالتوازي
                 const batchResults = await Promise.all(currentBatch.map(op => processSingleOperation(op)));
                 processedCount += batchResults.filter(result => result === true).length;
 
-                // لو لسه في دفعات تانية، نعمل فاصل زمني بسيط (Jitter) عشان نريح السيرفر
                 if (i + batchSize < queue.length) {
-                    const batchDelay = Math.random() * 500 + 500; // فاصل عشوائي من نص ثانية لثانية
-                    await new Promise(res => setTimeout(res, batchDelay));
+                    await new Promise(res => setTimeout(res, Math.random() * 500 + 500));
                 }
             }
             
             if (processedCount > 0) {
-                console.log(`BoseSweets Engine: Successfully synced ${processedCount} queued operations using Smart Batches. ☁️⚡👑`);
+                console.log(`BoseSweets Engine: Successfully synced ${processedCount} queued operations. ☁️⚡👑`);
             }
         } catch (e) {
             console.error("BoseSweets Queue Processing Error:", e);
@@ -302,34 +290,13 @@ const NetworkEngine = {
     }
 };
 
-// 👑 توسيع محرك الشبكة السحابي لتأمين مستند التحكم المركزي وقواعد الأمان لـ حلويات بوسي
-const OriginalSafeWrite = NetworkEngine.safeWrite;
-
-NetworkEngine.safeWrite = async function(collectionName, docId, data) {
-    // فلترة برمجية صارمة لحماية مستند الإعدادات والأبعاد والـ CSS من التعديل الخارجي غير الموثق
-    if (collectionName === 'settings' && docId === 'main') {
-        const currentUser = firebase.auth().currentUser;
-        if (!currentUser) {
-            console.error("🔒 رفض الأمان: لا يمكن تعديل siteSettings إلا من خلال حساب الإدارة الموثق.");
-            if (typeof showSystemToast === 'function') {
-                showSystemToast("تنبيه أمني: غير مسموح بتعديل الإعدادات السيادية بدون توثيق 🛡️", "error");
-            }
-            return false;
-        }
-    }
-    // تمرير العملية للمحرك الأصلي بالتوازي في حال اجتياز الفحص الآمن
-    return await OriginalSafeWrite.call(NetworkEngine, collectionName, docId, data);
-};
-
-// 👑 التحديث السيادي: إلحاق المحركات بجذر المتصفح (Window) لضمان توافرها الشامل لكافة ملفات النظام
+// إلحاق المحركات بنطاق window لضمان الوصول الشامل
 window.ReverseSyncEngine = ReverseSyncEngine;
 window.CloudQueueDB = CloudQueueDB;
 window.NetworkEngine = NetworkEngine;
 
-// تشغيل محرك المعالجة الخلفية تلقائياً عند عودة الاتصال بالإنترنت
+// تفعيل المزامنة التلقائية عند عودة الإنترنت
 window.addEventListener('online', () => NetworkEngine.processQueue());
-
-// محاولة تفريغ الطابور بعد إقلاع النظام بقليل لضمان تزامن العمليات السابقة عند كل دخول
 setTimeout(() => NetworkEngine.processQueue(), 5000);
 
 console.log("BoseSweets Cloud Engine V20.0: Sovereign Zero-Delay Sync & Parallel Background Queue Enabled 👑");

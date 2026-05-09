@@ -6,21 +6,26 @@
  */
 
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
-import { siteSettings, shippingZones, catalog, galleryData, catMenu, isAppReady, state, currentBuilderStep, cakeState, catalogMap, syncCatalogMap, setAppReady } from './state.js';
+import { 
+    siteSettings, shippingZones, catalog, galleryData, catMenu, isAppReady, state, 
+    currentBuilderStep, cakeState, catalogMap, syncCatalogMap, setAppReady, fetchAndSyncBoseSweetsData 
+} from './state.js';
 import { MemoryManager, hexToMathHSL, escapeHTML, generateUniqueID, optimizeCloudinaryUrl, generateSecureOrderId, showSystemToast, BehavioralAnalytics, AdvancedNetworkEngine } from './utils.js';
 import { ClientStorageEngine } from './storage.js';
 import { LiveSearchEngine, performLiveSearchDebounced, toggleLiveSearch, performLiveSearch } from './search.js';
 import { saveCartToStorage, clearCartStorage, calculateCartTotal, syncCartUI, updateTempQtyContext, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay } from './cart.js';
 import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay, initHomepageSections } from './ui.js';
 
+// تعريف قاعدة البيانات عالمياً لضمان التوافق مع كافة المحركات
 const db = window.firebase ? window.firebase.firestore() : undefined;
+window.db = db;
 
+// تصدير الوظائف للنافذة العالمية لضمان عمل الواجهة التفاعلية
 window.state = state;
 window.siteSettings = siteSettings;
 window.catalog = catalog;
 window.catMenu = catMenu;
 window.galleryData = galleryData;
-
 window.performLiveSearchDebounced = performLiveSearchDebounced;
 window.toggleLiveSearch = toggleLiveSearch;
 window.performLiveSearch = performLiveSearch;
@@ -41,87 +46,127 @@ window.initHomepageSections = initHomepageSections;
 
 let lastSyncTime = Date.now();
 
-// 👑 بروتوكول الاستماع السيادي (Sovereign Sync Listener)
+/**
+ * 👑 بروتوكول الاستماع السيادي (Sovereign Sync Listener)
+ * يقوم بمراقبة "جرس التحديث" من لوحة إدارة حلويات بوسي لمزامنة البيانات فوراً.
+ */
 function setupSovereignSyncListener() {
     if (!db) return;
+    
     db.collection('system').doc('syncFlag').onSnapshot(async doc => {
         if (doc.exists) {
             const data = doc.data();
-            // إذا كان التحديث القادم من الإدارة أحدث من وقت فتح العميل للموقع
-            if (data.lastAdminUpdate > lastSyncTime) {
-                console.log("👑 إشارة سيادية: تم رصد تحديث من الإدارة. جاري المزامنة اللحظية...");
+            // إذا كان التحديث القادم من الإدارة أحدث من وقت فتح العميل للموقع أو تم إرسال إشارة تحديث
+            if (data.lastAdminUpdate > lastSyncTime || data.forceRefresh) {
+                console.log("👑 إشارة سيادية: تم رصد تحديث من مركز قيادة حلويات بوسي. جاري المزامنة اللحظية...");
                 lastSyncTime = Date.now();
-                showSystemToast("جاري مزامنة أحدث عروض وأصناف حلويات بوسي اللحظية ✨", "info");
                 
-                await bootSystemCore(); 
-                syncBoseSweetsLayout();
-                initUI();
+                // مسح الكاش المحلي لإجبار المحرك على جلب أحدث البيانات
+                localStorage.removeItem('boseSweets_catalog');
+                localStorage.removeItem('boseSweets_catalog_timestamp');
                 
-                // تحديث السلة لتطبيق أي تغيير في الأسعار
-                if(typeof syncCartUI === 'function') syncCartUI();
+                // إعادة تشغيل المحرك لتحديث البيانات والواجهة
+                await startBoseSweetsEngine(true);
             }
         }
     }, error => {
-        console.warn("BoseSweets: تعذر الاستماع للبث السيادي الخلفي.");
+        console.warn("تنبيه: محرك المزامنة اللحظية في وضع الاستعداد (Sovereign Listener Standby).");
     });
 }
 
-async function bootSystemCore() {
-    console.log("👑 حلويات بوسي: بدء تشغيل المحرك الرئيسي...");
-    
-    setAppReady();
-    if(state) state.isAppReady = true;
+/**
+ * 👑 محرك التشغيل الرئيسي (BoseSweets Engine)
+ * المسؤول عن إقلاع النظام، جلب البيانات، وتنسيق الواجهة.
+ */
+async function startBoseSweetsEngine(isUpdate = false) {
+    if (!isUpdate && (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة'))) return;
+
+    if (!isUpdate) {
+        console.log("👑 حلويات بوسي: بدء تشغيل المحرك الرئيسي...");
+        registerBoseSweetsPWA();
+    }
 
     try {
         if (!db) {
             console.warn("حلويات بوسي: قاعدة البيانات غير متصلة، جاري تفعيل نظام الطوارئ.");
             fallbackToEmergencyData();
+            initUI();
             return;
         }
 
+        // 1. جلب الإعدادات العامة (Settings)
         try {
             const sSnap = await db.collection('settings').doc('main').get();
             if (sSnap.exists) {
                 Object.assign(siteSettings, sSnap.data());
-                // حفظ التوسعات الجديدة في الذاكرة
                 if(sSnap.data().social) siteSettings.social = sSnap.data().social;
                 if(sSnap.data().dynamicSections) siteSettings.dynamicSections = sSnap.data().dynamicSections;
             }
-        } catch(e) { }
+        } catch(e) { console.error("عطل في جلب الإعدادات:", e); }
 
-        try {
-            const pSnap = await db.collection('catalog').where('isActive', '==', true).get();
-            if (!pSnap.empty) {
-                catalog.length = 0;
-                pSnap.forEach(doc => catalog.push({ id: doc.id, ...doc.data() }));
-                console.log(`حلويات بوسي: تم استيراد ${catalog.length} منتج بنجاح.`);
-            } else {
-                throw new Error("قاعدة البيانات لا تحتوي على منتجات نشطة حالياً.");
-            }
-        } catch(e) {
+        // 2. جلب الكتالوج باستخدام المحرك المحدث (Catalog Sync)
+        const catalogStatus = await fetchAndSyncBoseSweetsData(async () => {
             try {
-                const pSnap2 = await db.collection('catalog').get();
-                if (!pSnap2.empty) {
-                    catalog.length = 0;
-                    pSnap2.forEach(doc => {
-                        if(doc.data().isActive !== false) catalog.push({ id: doc.id, ...doc.data() });
-                    });
+                const pSnap = await db.collection('catalog').where('isActive', '==', true).get();
+                if (!pSnap.empty) {
+                    return pSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 } else {
-                    fallbackToEmergencyData();
+                    // محاولة ثانية في حال عدم وجود حقل isActive لضمان عدم توقف الخدمة
+                    const pSnap2 = await db.collection('catalog').get();
+                    return pSnap2.docs.filter(d => d.data().isActive !== false).map(d => ({ id: d.id, ...d.data() }));
                 }
-            } catch(err) {
-                fallbackToEmergencyData();
+            } catch (err) {
+                throw err;
             }
+        }, 'boseSweets_catalog');
+
+        // تحديث مصفوفة الكتالوج العالمية
+        if (catalogStatus) {
+            catalog.length = 0;
+            catalog.push(...catalogStatus);
+            console.log(`حلويات بوسي: تم مزامنة ${catalog.length} منتج بنجاح.`);
+        } else {
+            fallbackToEmergencyData();
         }
 
+        // 3. جلب بيانات المعرض (Gallery)
         try {
             const gSnap = await db.collection('gallery').orderBy('timestamp', 'desc').limit(15).get();
             galleryData.length = 0;
             gSnap.forEach(doc => galleryData.push({ id: doc.id, ...doc.data() }));
         } catch(e) { }
 
+        // 4. تحديث الخرائط المرجعية وتنسيق القائمة
+        syncBoseSweetsLayout();
+        
+        // 5. إعداد الحالة وتحديث الواجهة
+        setAppReady();
+        if(state) state.isAppReady = true;
+
+        if (isUpdate) {
+            // تحديث العناصر النشطة فقط دون إعادة تحميل كاملة
+            renderCategories();
+            if (state.activeCat === 'الرئيسية') {
+                initWaterfall();
+                initHomepageSections();
+            } else {
+                renderMainDisplay();
+            }
+            if(typeof syncCartUI === 'function') syncCartUI();
+            showSystemToast("تم تحديث القائمة بأحدث أصناف حلويات بوسي ✨", "success");
+        } else {
+            // الإقلاع الأول
+            initUI();
+            recoverBoseSweetsCart();
+            syncOfflineOrders();
+            setupSovereignSyncListener();
+            console.log("👑 حلويات بوسي: المنظومة تعمل الآن بكامل طاقتها واستقرارها.");
+        }
+
     } catch (e) {
+        console.error("عطل في إقلاع المحرك الرئيسي:", e);
         fallbackToEmergencyData();
+        initUI();
     }
 }
 
@@ -136,7 +181,6 @@ function syncBoseSweetsLayout() {
     const uniqueCats = [...new Set(catalog.map(p => p.category))].filter(Boolean);
     catMenu.length = 0;
     
-    // استدعاء الترتيب المخصص إذا تم حفظه من الإدارة
     if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
         catMenu.push(...siteSettings.catMenu.map(c => c.name || c));
     } else {
@@ -265,30 +309,16 @@ function registerBoseSweetsPWA() {
     }
 }
 
-async function startBoseSweetsEngine() {
-    if (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة') || document.getElementById('admin-orders-tbody')) { return; }
-
-    registerBoseSweetsPWA();        
-    await bootSystemCore();         
-    syncBoseSweetsLayout();         
-    
-    // 👑 تفعيل الاستماع للبث السيادي
-    setupSovereignSyncListener();
-
-    initUI();                       
-    recoverBoseSweetsCart();        
-    syncOfflineOrders();            
-    
-    console.log("👑 حلويات بوسي: المنظومة تعمل الآن بكامل طاقتها واستقرارها.");
-}
-
+// نقطة الانطلاق الرسمية للمنظومة
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', startBoseSweetsEngine);
+    document.addEventListener('DOMContentLoaded', () => startBoseSweetsEngine(false));
 } else {
-    startBoseSweetsEngine();
+    startBoseSweetsEngine(false);
 }
 
+// إدارة الأحداث التفاعلية (Clicks Manager)
 document.addEventListener('click', function(event) {
+    // معالجة زر الإضافة للسلة
     if (event.target && event.target.closest('.add-to-cart-btn')) {
         event.preventDefault();
         const button = event.target.closest('.add-to-cart-btn');
@@ -303,6 +333,7 @@ document.addEventListener('click', function(event) {
         if(typeof processBoseSweetsOrder === 'function') processBoseSweetsOrder(productId, productName, productPrice);
     }
     
+    // تتبع نقرات الأقسام للتحليلات
     if (event.target && event.target.closest('.cat-pill')) {
         const btn = event.target.closest('.cat-pill');
         if(typeof BehavioralAnalytics !== 'undefined') {
