@@ -8,6 +8,10 @@
  * يعتمد أسلوب التوسيع والبناء دون أي حذف للمكونات الأساسية.
  */
 
+// 👑 تأمين النطاق الشامل (Global Scope Linkage) لمنع الانقطاع السحابي
+const db = window.db || (typeof firebase !== 'undefined' ? firebase.firestore() : undefined);
+const auth = window.auth || (typeof firebase !== 'undefined' ? firebase.auth() : undefined);
+
 // 🛡️ Engine Upgrade: Centralized Admin Error Tracking System
 const AdminErrorTracker = {
     log(context, error) {
@@ -33,9 +37,9 @@ const StorageEngine = {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open(this.dbName, this.version);
             request.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains(this.storeName)) {
-                    db.createObjectStore(this.storeName);
+                const database = e.target.result;
+                if (!database.objectStoreNames.contains(this.storeName)) {
+                    database.createObjectStore(this.storeName);
                 }
             };
             request.onsuccess = () => resolve(request.result);
@@ -44,9 +48,9 @@ const StorageEngine = {
     },
     async set(key, value) {
         try {
-            const db = await this.init();
+            const database = await this.init();
             return new Promise((resolve, reject) => {
-                const tx = db.transaction(this.storeName, 'readwrite');
+                const tx = database.transaction(this.storeName, 'readwrite');
                 const store = tx.objectStore(this.storeName);
                 store.put(value, key);
                 tx.oncomplete = () => resolve();
@@ -58,9 +62,9 @@ const StorageEngine = {
     },
     async get(key) {
         try {
-            const db = await this.init();
+            const database = await this.init();
             return new Promise((resolve, reject) => {
-                const tx = db.transaction(this.storeName, 'readonly');
+                const tx = database.transaction(this.storeName, 'readonly');
                 const store = tx.objectStore(this.storeName);
                 const request = store.get(key);
                 request.onsuccess = () => resolve(request.result);
@@ -81,9 +85,9 @@ const OfflineStorageManager = {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open(this.dbName, this.version);
             request.onupgradeneeded = (e) => {
-                const db = e.target.result;
-                if (!db.objectStoreNames.contains(this.storeName)) {
-                    db.createObjectStore(this.storeName, { keyPath: 'offlineId' });
+                const database = e.target.result;
+                if (!database.objectStoreNames.contains(this.storeName)) {
+                    database.createObjectStore(this.storeName, { keyPath: 'offlineId' });
                 }
             };
             request.onsuccess = () => resolve(request.result);
@@ -92,9 +96,9 @@ const OfflineStorageManager = {
     },
     async enqueuePayload(payload) {
         try {
-            const db = await this.init();
+            const database = await this.init();
             return new Promise((resolve, reject) => {
-                const tx = db.transaction(this.storeName, 'readwrite');
+                const tx = database.transaction(this.storeName, 'readwrite');
                 const store = tx.objectStore(this.storeName);
                 store.put(payload);
                 tx.oncomplete = () => resolve();
@@ -104,9 +108,9 @@ const OfflineStorageManager = {
     },
     async getAllPayloads() {
         try {
-            const db = await this.init();
+            const database = await this.init();
             return new Promise((resolve, reject) => {
-                const tx = db.transaction(this.storeName, 'readonly');
+                const tx = database.transaction(this.storeName, 'readonly');
                 const store = tx.objectStore(this.storeName);
                 const request = store.getAll();
                 request.onsuccess = () => resolve(request.result || []);
@@ -116,9 +120,9 @@ const OfflineStorageManager = {
     },
     async removePayload(offlineId) {
         try {
-            const db = await this.init();
+            const database = await this.init();
             return new Promise((resolve, reject) => {
-                const tx = db.transaction(this.storeName, 'readwrite');
+                const tx = database.transaction(this.storeName, 'readwrite');
                 const store = tx.objectStore(this.storeName);
                 store.delete(offlineId);
                 tx.oncomplete = () => resolve();
@@ -261,7 +265,7 @@ let adminOrdersHash = '';
 let adminRenderDebounce = null;
 
 function setupRealtimeOrders() {
-    if (typeof db === 'undefined') return;
+    if (typeof db === 'undefined' || !db) return;
     
     // 🛡️ Guard: منع إنشاء أكثر من مستمع واحد نهائياً
     if (window.__ordersListenerActive) {
@@ -338,7 +342,7 @@ async function loadEngineMemory() {
         await fetchDefaultCatalog(); 
         catalog = [...defaultCatalog];
         
-        if (typeof db !== 'undefined') {
+        if (typeof db !== 'undefined' && db !== null) {
             const catSnap = await db.collection('catalog').get();
             if (!catSnap.empty) { catalog = []; catSnap.forEach(doc => catalog.push(doc.data())); }
             
@@ -395,10 +399,10 @@ async function loadEngineMemory() {
             if (typeof fillGlobalSettingsFormFields === 'function') fillGlobalSettingsFormFields();
 
         } else {
-            throw new Error("قاعدة البيانات غير متصلة.");
+            throw new Error("قاعدة البيانات غير متصلة بالنطاق الشامل.");
         }
     } catch(err) { 
-        console.warn("BoseSweets: جاري التحميل من الذاكرة الفولاذية");
+        console.warn("BoseSweets: جاري التحميل من الذاكرة الفولاذية", err);
         catalog = (await StorageEngine.get('boseSweets_catalog')) || JSON.parse(localStorage.getItem('bSweets_catalog') || localStorage.getItem('boseSweets_catalog')) || [...defaultCatalog]; 
         globalOrders = (await StorageEngine.get('boseSweets_admin_orders')) || JSON.parse(localStorage.getItem('bSweets_orders') || localStorage.getItem('boseSweets_admin_orders')) || [];
         siteSettings = (await StorageEngine.get('boseSweets_settings')) || JSON.parse(localStorage.getItem('bSweets_settings') || localStorage.getItem('boseSweets_settings')) || { ...defaultSettings };
@@ -484,7 +488,7 @@ function openAdminDashboardDirectly() {
 function closeAdminDashboard() {
     if (ordersUnsubscribe) ordersUnsubscribe();
     sessionStorage.removeItem('bosy_admin_auth');
-    if(typeof auth !== 'undefined') auth.signOut();
+    if(typeof auth !== 'undefined' && auth) auth.signOut();
     window.location.href = 'index.html';
 }
 
@@ -494,7 +498,7 @@ window.logoutAdminSecurely = function() {
 
 async function getSecureUploadSignature() {
     try {
-        if(typeof auth === 'undefined' || !auth.currentUser) return null;
+        if(typeof auth === 'undefined' || !auth || !auth.currentUser) return null;
         const idToken = await auth.currentUser.getIdToken();
         const secureEndpoint = 'https://us-central1-bosy-sweets.cloudfunctions.net/getCloudinarySignature';
         const response = await fetch(secureEndpoint, { headers: { 'Authorization': `Bearer ${idToken}` } });
@@ -538,7 +542,7 @@ async function syncOfflineImages() {
                                 if (i === 0) p.img = uploadedUrl;
                                 needsSync = true;
                                 if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(p.id), p);
-                                if(typeof db !== 'undefined') await db.collection('catalog').doc(String(p.id)).set(p, { merge: true });
+                                if(typeof db !== 'undefined' && db) await db.collection('catalog').doc(String(p.id)).set(p, { merge: true });
                             }
                         }
                     }
@@ -567,17 +571,20 @@ function bootBoseSweetsEngine() {
     console.log("BoseSweets Admin Engine Initiating Architecture Safe Mode...");
     unfreezeAdminUI();
     
-    if(typeof auth !== 'undefined') {
+    // التحقق من حالة المصادقة بشكل آمن وربط العمليات بها
+    if(typeof auth !== 'undefined' && auth !== null) {
         auth.onAuthStateChanged(async user => {
             if (user) { 
-                try { await loadAdminEngineMemory(); } catch(e) {}
+                try { await loadAdminEngineMemory(); } catch(e) { AdminErrorTracker.log('BootMemoryLoad', e); }
                 openAdminDashboardDirectly();
                 syncOfflineImages(); 
             } else { 
+                // إذا لم يكن هنالك توثيق، يتم التحويل فوراً لصفحة الدخول
                 window.location.href = 'login.html';
             }
         });
     } else {
+        // خط دفاع إضافي في حالة تعذر تحميل خدمات فايربيز مبكراً
         loadAdminEngineMemory().then(() => {
             openAdminDashboardDirectly();
         });
