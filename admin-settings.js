@@ -5,7 +5,6 @@
  */
 
 function ensureAdvancedControlsExist() {
-    // حقن حقول التحكم بالسرعات حركياً إذا لم تكن موجودة في هيكل الـ HTML
     const homepageSection = document.getElementById('admin-homepage');
     if (homepageSection && !document.getElementById('set-ticker-speed')) {
         const advDiv = document.createElement('div');
@@ -31,20 +30,20 @@ function fillGlobalSettingsFormFields() {
     const waInput = document.getElementById('sett-whatsapp-input'); 
     const quoteText = document.getElementById('sett-quote-textarea');
     
-    if (phoneInput) phoneInput.value = siteSettings.footerPhone || '';
-    if (addressInput) addressInput.value = siteSettings.footerAddress || '';
-    if (fbInput) fbInput.value = siteSettings.social?.facebook || '';
-    if (igInput) igInput.value = siteSettings.social?.instagram || '';
-    if (ttInput) ttInput.value = siteSettings.social?.tiktok || '';
-    if (waInput) waInput.value = siteSettings.social?.whatsapp || '';
-    if (quoteText) quoteText.value = siteSettings.footerQuote || '';
+    if (phoneInput) phoneInput.value = window.siteSettings.footerPhone || '';
+    if (addressInput) addressInput.value = window.siteSettings.footerAddress || '';
+    if (fbInput) fbInput.value = window.siteSettings.social?.facebook || '';
+    if (igInput) igInput.value = window.siteSettings.social?.instagram || '';
+    if (ttInput) ttInput.value = window.siteSettings.social?.tiktok || '';
+    if (waInput) waInput.value = window.siteSettings.social?.whatsapp || '';
+    if (quoteText) quoteText.value = window.siteSettings.footerQuote || '';
 
-    if (siteSettings.cakeBuilder) {
-        if(document.getElementById('set-cake-base-price')) document.getElementById('set-cake-base-price').value = siteSettings.cakeBuilder.basePrice || 145;
-        if(document.getElementById('set-cake-min-sq')) document.getElementById('set-cake-min-sq').value = siteSettings.cakeBuilder.minSquare || 16;
-        if(document.getElementById('set-cake-min-rect')) document.getElementById('set-cake-min-rect').value = siteSettings.cakeBuilder.minRect || 20;
+    if (window.siteSettings.cakeBuilder) {
+        if(document.getElementById('set-cake-base-price')) document.getElementById('set-cake-base-price').value = window.siteSettings.cakeBuilder.basePrice || 145;
+        if(document.getElementById('set-cake-min-sq')) document.getElementById('set-cake-min-sq').value = window.siteSettings.cakeBuilder.minSquare || 16;
+        if(document.getElementById('set-cake-min-rect')) document.getElementById('set-cake-min-rect').value = window.siteSettings.cakeBuilder.minRect || 20;
         
-        const printing = siteSettings.cakeBuilder.imagePrinting || [];
+        const printing = window.siteSettings.cakeBuilder.imagePrinting || [];
         const edible = printing.find(p => p.label === 'صورة قابلة للأكل');
         if(document.getElementById('set-print-edible')) document.getElementById('set-print-edible').value = edible ? edible.price : 60;
     }
@@ -59,30 +58,30 @@ window.saveGlobalSettingsFromDashboard = async function() {
     const wa = document.getElementById('sett-whatsapp-input')?.value.trim();
     const quote = document.getElementById('sett-quote-textarea')?.value.trim();
     
-    if(!siteSettings.social) siteSettings.social = {};
+    if(!window.siteSettings.social) window.siteSettings.social = {};
     
     const updatedPayload = {
-        footerPhone: phone !== undefined ? phone : siteSettings.footerPhone,
-        footerAddress: address !== undefined ? address : siteSettings.footerAddress,
-        footerQuote: quote !== undefined ? quote : siteSettings.footerQuote,
+        footerPhone: phone !== undefined ? phone : window.siteSettings.footerPhone,
+        footerAddress: address !== undefined ? address : window.siteSettings.footerAddress,
+        footerQuote: quote !== undefined ? quote : window.siteSettings.footerQuote,
         social: { 
-            facebook: fb !== undefined ? fb : siteSettings.social.facebook, 
-            instagram: ig !== undefined ? ig : siteSettings.social.instagram, 
-            tiktok: tt !== undefined ? tt : (siteSettings.social?.tiktok || ''),
-            whatsapp: wa !== undefined ? wa : (siteSettings.social?.whatsapp || ''),
-            customLinks: siteSettings.social.customLinks || []
+            facebook: fb !== undefined ? fb : window.siteSettings.social.facebook, 
+            instagram: ig !== undefined ? ig : window.siteSettings.social.instagram, 
+            tiktok: tt !== undefined ? tt : (window.siteSettings.social?.tiktok || ''),
+            whatsapp: wa !== undefined ? wa : (window.siteSettings.social?.whatsapp || ''),
+            customLinks: window.siteSettings.social.customLinks || []
         }
     };
     
-    siteSettings = { ...siteSettings, ...updatedPayload };
+    window.siteSettings = { ...window.siteSettings, ...updatedPayload };
 
     try {
         if (typeof NetworkEngine !== 'undefined') {
-            await NetworkEngine.safeWrite('settings', 'main', siteSettings);
+            await NetworkEngine.safeWrite('settings', 'main', window.siteSettings);
             if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
             showSystemToast('تم تحديث قنوات التواصل والتكوينات السيادية بنجاح 👑☁️', 'success');
-        } else if (typeof db !== 'undefined') {
-            await db.collection('settings').doc('main').set(siteSettings, { merge: true });
+        } else if (typeof window.db !== 'undefined') {
+            await window.db.collection('settings').doc('main').set(window.siteSettings, { merge: true });
             if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
             showSystemToast('تم التزامن المباشر مع السحابة بنجاح 👑', 'success');
         }
@@ -98,14 +97,14 @@ async function applyGlobalPriceChange() {
     const percent = parseFloat(percentStr);
     const action = document.getElementById('global-price-action')?.value;
     
-    if(isNaN(percent) || percent <= 0) { showSystemToast("قرار إداري: يرجى إدخل نسبة صحيحة أكبر من 0", "error"); return; }
+    if(isNaN(percent) || percent <= 0) { showSystemToast("قرار إداري: يرجى إدخال نسبة صحيحة أكبر من 0", "error"); return; }
     const msg = action === 'increase' ? `هل أنت متأكد من رفع جميع أسعار المنتجات بنسبة ${percent}%؟` : `هل أنت متأكد من تطبيق خصم بنسبة ${percent}%؟`;
     
     openConfirmModal('تأكيد التعديل الجماعي', msg, async () => {
         const multiplier = action === 'increase' ? (1 + (percent / 100)) : (1 - (percent / 100));
         let updatedCount = 0;
         
-        for (let p of catalog) {
+        for (let p of window.catalog) {
             if (p.price && !isNaN(p.price)) {
                 if (action === 'decrease') p.oldPrice = p.price; 
                 else p.oldPrice = null; 
@@ -127,7 +126,7 @@ async function applyGlobalPriceChange() {
 
 function exportBackupJSON() {
     try {
-        const backupData = { catalog, settings: siteSettings, shipping: shippingZones, orders: globalOrders, gallery: galleryData };
+        const backupData = { catalog: window.catalog, settings: window.siteSettings, shipping: window.shippingZones, orders: window.globalOrders, gallery: window.galleryData };
         const blob = new Blob([JSON.stringify(backupData)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a'); a.href = url; a.download = `BoseSweets_CloudBackup_${new Date().toISOString().split('T')[0]}.json`;
@@ -173,71 +172,70 @@ function fillAdminSettingsForm() {
     ensureAdvancedControlsExist();
     
     if(!window.siteSettings) return;
-    if(document.getElementById('set-brand')) document.getElementById('set-brand').value = siteSettings.brandName || 'حلويات بوسي';
-    if(document.getElementById('set-hero-title')) document.getElementById('set-hero-title').value = siteSettings.heroTitle || '';
-    if(document.getElementById('set-hero-desc')) document.getElementById('set-hero-desc').value = siteSettings.heroDesc || '';
-    if(document.getElementById('set-footer-phone')) document.getElementById('set-footer-phone').value = siteSettings.footerPhone || '';
-    if(document.getElementById('set-footer-address')) document.getElementById('set-footer-address').value = (siteSettings.footerAddress || '').replace(/<br>/g, '');
-    if(document.getElementById('set-ticker-active')) document.getElementById('set-ticker-active').checked = siteSettings.tickerActive !== false;
-    if(document.getElementById('set-ticker-text')) document.getElementById('set-ticker-text').value = siteSettings.tickerText || siteSettings.announcement || '';
-    if(document.getElementById('set-ticker-speed')) document.getElementById('set-ticker-speed').value = siteSettings.tickerSpeed || 20;
-    if(document.getElementById('set-waterfall-speed')) document.getElementById('set-waterfall-speed').value = siteSettings.layout_settings?.layout_waterfall_speed || 3000;
+    if(document.getElementById('set-brand')) document.getElementById('set-brand').value = window.siteSettings.brandName || 'حلويات بوسي';
+    if(document.getElementById('set-hero-title')) document.getElementById('set-hero-title').value = window.siteSettings.heroTitle || '';
+    if(document.getElementById('set-hero-desc')) document.getElementById('set-hero-desc').value = window.siteSettings.heroDesc || '';
+    if(document.getElementById('set-footer-phone')) document.getElementById('set-footer-phone').value = window.siteSettings.footerPhone || '';
+    if(document.getElementById('set-footer-address')) document.getElementById('set-footer-address').value = (window.siteSettings.footerAddress || '').replace(/<br>/g, '');
+    if(document.getElementById('set-ticker-active')) document.getElementById('set-ticker-active').checked = window.siteSettings.tickerActive !== false;
+    if(document.getElementById('set-ticker-text')) document.getElementById('set-ticker-text').value = window.siteSettings.tickerText || window.siteSettings.announcement || '';
+    if(document.getElementById('set-ticker-speed')) document.getElementById('set-ticker-speed').value = window.siteSettings.tickerSpeed || 20;
+    if(document.getElementById('set-waterfall-speed')) document.getElementById('set-waterfall-speed').value = window.siteSettings.layout_settings?.layout_waterfall_speed || 3000;
 
-    if(siteSettings.seo) {
-        if(document.getElementById('set-seo-title')) document.getElementById('set-seo-title').value = siteSettings.seo.title || '';
-        if(document.getElementById('set-seo-desc')) document.getElementById('set-seo-desc').value = siteSettings.seo.desc || '';
-        if(document.getElementById('set-seo-keywords')) document.getElementById('set-seo-keywords').value = siteSettings.seo.keywords || '';
+    if(window.siteSettings.seo) {
+        if(document.getElementById('set-seo-title')) document.getElementById('set-seo-title').value = window.siteSettings.seo.title || '';
+        if(document.getElementById('set-seo-desc')) document.getElementById('set-seo-desc').value = window.siteSettings.seo.desc || '';
+        if(document.getElementById('set-seo-keywords')) document.getElementById('set-seo-keywords').value = window.siteSettings.seo.keywords || '';
     }
 
-    if(siteSettings.social) {
-        if(document.getElementById('set-social-fb')) document.getElementById('set-social-fb').value = siteSettings.social.facebook || '';
-        if(document.getElementById('set-social-ig')) document.getElementById('set-social-ig').value = siteSettings.social.instagram || '';
-        if(document.getElementById('set-social-tt')) document.getElementById('set-social-tt').value = siteSettings.social.tiktok || '';
-        if(document.getElementById('set-social-wa')) document.getElementById('set-social-wa').value = siteSettings.social.whatsapp || '';
+    if(window.siteSettings.social) {
+        if(document.getElementById('set-social-fb')) document.getElementById('set-social-fb').value = window.siteSettings.social.facebook || '';
+        if(document.getElementById('set-social-ig')) document.getElementById('set-social-ig').value = window.siteSettings.social.instagram || '';
+        if(document.getElementById('set-social-tt')) document.getElementById('set-social-tt').value = window.siteSettings.social.tiktok || '';
+        if(document.getElementById('set-social-wa')) document.getElementById('set-social-wa').value = window.siteSettings.social.whatsapp || '';
     }
 
-    const v = siteSettings.visuals || defaultSettings.visuals;
+    const v = window.siteSettings.visuals || defaultSettings.visuals;
     if(document.getElementById('set-visual-color-hex')) {
         document.getElementById('set-visual-color-hex').value = v.themeHex || '#ff91a4';
     }
     
     executeSafely('CategoryDesc', () => { if(typeof renderCategoryDescAdmin === 'function') renderCategoryDescAdmin(); });
 
-    if(siteSettings.layout_settings) {
+    if(window.siteSettings.layout_settings) {
         const viewModeRadios = document.getElementsByName('layout_viewMode');
         if(viewModeRadios) {
             viewModeRadios.forEach(radio => {
-                if(radio.value === siteSettings.layout_settings.layout_viewMode) radio.checked = true;
+                if(radio.value === window.siteSettings.layout_settings.layout_viewMode) radio.checked = true;
             });
         }
-        if(document.getElementById('set-layout-card-width')) document.getElementById('set-layout-card-width').value = siteSettings.layout_settings.layout_card_width || '';
-        if(document.getElementById('set-layout-card-height')) document.getElementById('set-layout-card-height').value = siteSettings.layout_settings.layout_card_height || '';
-        if(document.getElementById('set-layout-wf-width')) document.getElementById('set-layout-wf-width').value = siteSettings.layout_settings.layout_waterfall_img_width || '';
-        if(document.getElementById('set-layout-wf-height')) document.getElementById('set-layout-wf-height').value = siteSettings.layout_settings.layout_waterfall_img_height || '';
+        if(document.getElementById('set-layout-card-width')) document.getElementById('set-layout-card-width').value = window.siteSettings.layout_settings.layout_card_width || '';
+        if(document.getElementById('set-layout-card-height')) document.getElementById('set-layout-card-height').value = window.siteSettings.layout_settings.layout_card_height || '';
+        if(document.getElementById('set-layout-wf-width')) document.getElementById('set-layout-wf-width').value = window.siteSettings.layout_settings.layout_waterfall_img_width || '';
+        if(document.getElementById('set-layout-wf-height')) document.getElementById('set-layout-wf-height').value = window.siteSettings.layout_settings.layout_waterfall_img_height || '';
     }
 
-    if(siteSettings.UI_Settings) {
-        if(document.getElementById('set-loader-text')) document.getElementById('set-loader-text').value = siteSettings.UI_Settings.loader_text || '';
-        if(document.getElementById('set-loader-bg-color')) document.getElementById('set-loader-bg-color').value = siteSettings.UI_Settings.loader_bgColor || '#ffffff';
-        if(document.getElementById('set-loader-text-color')) document.getElementById('set-loader-text-color').value = siteSettings.UI_Settings.loader_textColor || '#ff91a4';
+    if(window.siteSettings.UI_Settings) {
+        if(document.getElementById('set-loader-text')) document.getElementById('set-loader-text').value = window.siteSettings.UI_Settings.loader_text || '';
+        if(document.getElementById('set-loader-bg-color')) document.getElementById('set-loader-bg-color').value = window.siteSettings.UI_Settings.loader_bgColor || '#ffffff';
+        if(document.getElementById('set-loader-text-color')) document.getElementById('set-loader-text-color').value = window.siteSettings.UI_Settings.loader_textColor || '#ff91a4';
         
-        if(siteSettings.UI_Settings.typography_config) {
-            if(document.getElementById('set-global-text-color')) document.getElementById('set-global-text-color').value = siteSettings.UI_Settings.typography_config.global_text_color || '#1a1a1a';
-            if(document.getElementById('set-font-family')) document.getElementById('set-font-family').value = siteSettings.UI_Settings.typography_config.main_font_family || "'Cairo', sans-serif";
-            if(document.getElementById('set-font-size-base')) document.getElementById('set-font-size-base').value = siteSettings.UI_Settings.typography_config.global_font_size_base || '16px';
-            if(document.getElementById('set-font-weight-bold')) document.getElementById('set-font-weight-bold').value = siteSettings.UI_Settings.typography_config.global_font_weight_bold || '900';
+        if(window.siteSettings.UI_Settings.typography_config) {
+            if(document.getElementById('set-global-text-color')) document.getElementById('set-global-text-color').value = window.siteSettings.UI_Settings.typography_config.global_text_color || '#1a1a1a';
+            if(document.getElementById('set-font-family')) document.getElementById('set-font-family').value = window.siteSettings.UI_Settings.typography_config.main_font_family || "'Cairo', sans-serif";
+            if(document.getElementById('set-font-size-base')) document.getElementById('set-font-size-base').value = window.siteSettings.UI_Settings.typography_config.global_font_size_base || '16px';
+            if(document.getElementById('set-font-weight-bold')) document.getElementById('set-font-weight-bold').value = window.siteSettings.UI_Settings.typography_config.global_font_weight_bold || '900';
         }
-        if(siteSettings.UI_Settings.page_dimensions) {
-            if(document.getElementById('set-page-max-height')) document.getElementById('set-page-max-height').value = siteSettings.UI_Settings.page_dimensions.productPageMaxHeight || 'auto';
-            if(document.getElementById('set-page-min-height')) document.getElementById('set-page-min-height').value = siteSettings.UI_Settings.page_dimensions.productPageMinHeight || '100vh';
+        if(window.siteSettings.UI_Settings.page_dimensions) {
+            if(document.getElementById('set-page-max-height')) document.getElementById('set-page-max-height').value = window.siteSettings.UI_Settings.page_dimensions.productPageMaxHeight || 'auto';
+            if(document.getElementById('set-page-min-height')) document.getElementById('set-page-min-height').value = window.siteSettings.UI_Settings.page_dimensions.productPageMinHeight || '100vh';
         }
     }
 
-    if(siteSettings.Structure_Settings) {
-        if(document.getElementById('set-you-may-like')) document.getElementById('set-you-may-like').checked = siteSettings.Structure_Settings.section_youMayAlsoLike_isActive !== false;
+    if(window.siteSettings.Structure_Settings) {
+        if(document.getElementById('set-you-may-like')) document.getElementById('set-you-may-like').checked = window.siteSettings.Structure_Settings.section_youMayAlsoLike_isActive !== false;
     }
 
-    // تفعيل رندر الأقسام الديناميكية، المراجعات، والروابط
     if(typeof renderDynamicSectionsList === 'function') renderDynamicSectionsList();
     if(typeof renderCustomSocialLinks === 'function') renderCustomSocialLinks();
     if(typeof renderReviewsList === 'function') renderReviewsList();
@@ -280,12 +278,12 @@ window.saveAllSettings = async function() {
         future_sections_registry: window.siteSettings.Structure_Settings?.future_sections_registry || []
     };
 
-    if(!siteSettings.catDescriptions) siteSettings.catDescriptions = {};
-    if(typeof catMenu !== 'undefined' && Array.isArray(catMenu)) {
-        catMenu.forEach(cat => {
+    if(!window.siteSettings.catDescriptions) window.siteSettings.catDescriptions = {};
+    if(typeof window.catMenu !== 'undefined' && Array.isArray(window.catMenu)) {
+        window.catMenu.forEach(cat => {
             const safeId = 'desc-cat-' + Array.from(cat.name).map(c => c.charCodeAt(0)).join('');
             const descInput = document.getElementById(safeId);
-            if(descInput) siteSettings.catDescriptions[cat.name] = descInput.value.trim();
+            if(descInput) window.siteSettings.catDescriptions[cat.name] = descInput.value.trim();
         });
     }
 
@@ -317,8 +315,8 @@ window.saveAllSettings = async function() {
             themeHex: document.getElementById('sys-brand-color')?.value || document.getElementById('set-visual-color-hex')?.value || window.siteSettings.visuals?.themeHex || '#ff91a4'
         },
         
-        dynamicSections: siteSettings.dynamicSections || [],
-        customerReviews: siteSettings.customerReviews || [],
+        dynamicSections: window.siteSettings.dynamicSections || [],
+        customerReviews: window.siteSettings.customerReviews || [],
         layout_settings: layout_settings_payload,
         UI_Settings: UI_Settings_payload,
         Structure_Settings: Structure_Settings_payload
@@ -331,8 +329,8 @@ window.saveAllSettings = async function() {
             await NetworkEngine.safeWrite('settings', 'main', finalMasterPayload);
             if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
             showSystemToast("تم الاعتماد البرمجي وتحديث كامل قيم التكوين سحابياً بنجاح 👑☁️", "success");
-        } else if(typeof db !== 'undefined') {
-            await db.collection('settings').doc('main').set(finalMasterPayload, { merge: true });
+        } else if(typeof window.db !== 'undefined') {
+            await window.db.collection('settings').doc('main').set(finalMasterPayload, { merge: true });
             if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
             showSystemToast("تم الاعتماد البرمجي وتحديث كامل قيم التكوين سحابياً بنجاح 👑☁️", "success");
         }
@@ -349,16 +347,16 @@ window.saveStoreSettings = window.saveAllSettings;
 window.renderDynamicSectionsList = function() {
     const container = document.getElementById('dynamic-sections-list');
     if(!container) return;
-    if(!siteSettings.dynamicSections) siteSettings.dynamicSections = [];
+    if(!window.siteSettings.dynamicSections) window.siteSettings.dynamicSections = [];
     
-    siteSettings.dynamicSections.sort((a,b) => (a.order || 0) - (b.order || 0));
+    window.siteSettings.dynamicSections.sort((a,b) => (a.order || 0) - (b.order || 0));
     
-    if(siteSettings.dynamicSections.length === 0) {
+    if(window.siteSettings.dynamicSections.length === 0) {
         container.innerHTML = `<p class="text-xs text-slate-500 font-bold text-center py-4">لا توجد أقسام مخصصة للمناسبات حالياً.</p>`;
         return;
     }
     
-    container.innerHTML = siteSettings.dynamicSections.map((sec, idx) => `
+    container.innerHTML = window.siteSettings.dynamicSections.map((sec, idx) => `
         <div class="flex items-center justify-between p-3 bg-slate-900/80 border border-slate-800 rounded-2xl group ${!sec.active ? 'opacity-50 grayscale' : ''}">
             <div class="flex items-center gap-3 w-2/3 truncate">
                 <span class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center font-black text-[10px] shrink-0 shadow-inner">${idx + 1}</span>
@@ -385,13 +383,13 @@ window.openAddSectionModal = function() {
     if(typeChoice === '2') type = 'slider';
     if(typeChoice === '3') type = 'waterfall';
     
-    if(!siteSettings.dynamicSections) siteSettings.dynamicSections = [];
-    siteSettings.dynamicSections.push({
+    if(!window.siteSettings.dynamicSections) window.siteSettings.dynamicSections = [];
+    window.siteSettings.dynamicSections.push({
         id: 'sec_' + Date.now(),
         title: title.trim(),
         type: type,
         active: true,
-        order: siteSettings.dynamicSections.length + 1
+        order: window.siteSettings.dynamicSections.length + 1
     });
     
     renderDynamicSectionsList();
@@ -399,13 +397,13 @@ window.openAddSectionModal = function() {
 };
 
 window.toggleSectionVisibility = function(id) {
-    const sec = siteSettings.dynamicSections.find(s => s.id === id);
+    const sec = window.siteSettings.dynamicSections.find(s => s.id === id);
     if(sec) { sec.active = !sec.active; renderDynamicSectionsList(); }
 };
 
 window.deleteDynamicSection = function(id) {
     if(!confirm("هل توافقين على الحذف السيادي لهذا القسم من الواجهة؟")) return;
-    siteSettings.dynamicSections = siteSettings.dynamicSections.filter(s => s.id !== id);
+    window.siteSettings.dynamicSections = window.siteSettings.dynamicSections.filter(s => s.id !== id);
     renderDynamicSectionsList();
 };
 
@@ -422,15 +420,15 @@ window.renderCustomSocialLinks = function() {
     }
     if(!listContainer) return;
     
-    if(!siteSettings.social) siteSettings.social = {};
-    if(!siteSettings.social.customLinks) siteSettings.social.customLinks = [];
+    if(!window.siteSettings.social) window.siteSettings.social = {};
+    if(!window.siteSettings.social.customLinks) window.siteSettings.social.customLinks = [];
     
-    if (siteSettings.social.customLinks.length === 0) {
+    if (window.siteSettings.social.customLinks.length === 0) {
         listContainer.innerHTML = '';
         return;
     }
 
-    listContainer.innerHTML = siteSettings.social.customLinks.map((link, idx) => `
+    listContainer.innerHTML = window.siteSettings.social.customLinks.map((link, idx) => `
         <div class="flex items-center justify-between p-2.5 bg-slate-800/80 border border-slate-700 rounded-xl group">
             <div class="truncate pl-2">
                 <p class="text-[10px] font-black text-white">${escapeHTML(link.label)}</p>
@@ -449,10 +447,10 @@ window.addNewSocialLink = function() {
     const url = urlEl?.value.trim();
     if(!label || !url) { showSystemToast("قرار إداري: يجب إدخال اسم المنصة والرابط أولاً", "error"); return; }
     
-    if(!siteSettings.social) siteSettings.social = {};
-    if(!siteSettings.social.customLinks) siteSettings.social.customLinks = [];
+    if(!window.siteSettings.social) window.siteSettings.social = {};
+    if(!window.siteSettings.social.customLinks) window.siteSettings.social.customLinks = [];
     
-    siteSettings.social.customLinks.push({ label, url });
+    window.siteSettings.social.customLinks.push({ label, url });
     if(labelEl) labelEl.value = '';
     if(urlEl) urlEl.value = '';
     renderCustomSocialLinks();
@@ -461,7 +459,7 @@ window.addNewSocialLink = function() {
 
 window.removeCustomSocialLink = function(idx) {
     if(!confirm("حذف هذه المنصة من الروابط؟")) return;
-    siteSettings.social.customLinks.splice(idx, 1);
+    window.siteSettings.social.customLinks.splice(idx, 1);
     renderCustomSocialLinks();
 };
 
@@ -469,14 +467,14 @@ window.removeCustomSocialLink = function(idx) {
 window.renderReviewsList = function() {
     const container = document.getElementById('admin-reviews-list');
     if(!container) return;
-    if(!siteSettings.customerReviews) siteSettings.customerReviews = [];
+    if(!window.siteSettings.customerReviews) window.siteSettings.customerReviews = [];
     
-    if(siteSettings.customerReviews.length === 0) {
+    if(window.siteSettings.customerReviews.length === 0) {
         container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-xs font-bold border border-dashed border-slate-700 rounded-3xl">سجل المراجعات فارغ حالياً.</div>`;
         return;
     }
     
-    container.innerHTML = siteSettings.customerReviews.map((rev, idx) => `
+    container.innerHTML = window.siteSettings.customerReviews.map((rev, idx) => `
         <div class="bg-slate-900 p-4 rounded-3xl border border-slate-800 relative group transition-all duration-300 hover:border-[#ff91a4]/50 ${!rev.active ? 'opacity-40 grayscale' : ''}">
             <div class="flex justify-between items-start mb-3 pr-8">
                 <div>
@@ -505,8 +503,8 @@ window.openAddReviewModal = function() {
     if(!text) return;
     const rating = prompt("تقييم العميل من 1 إلى 5 نجوم:", "5");
     
-    if(!siteSettings.customerReviews) siteSettings.customerReviews = [];
-    siteSettings.customerReviews.unshift({
+    if(!window.siteSettings.customerReviews) window.siteSettings.customerReviews = [];
+    window.siteSettings.customerReviews.unshift({
         id: 'rev_' + Date.now(),
         name: name.trim(),
         text: text.trim(),
@@ -520,13 +518,13 @@ window.openAddReviewModal = function() {
 };
 
 window.toggleReviewStatus = function(id) {
-    const rev = siteSettings.customerReviews.find(r => r.id === id);
+    const rev = window.siteSettings.customerReviews.find(r => r.id === id);
     if(rev) { rev.active = !rev.active; renderReviewsList(); }
 };
 
 window.deleteReview = function(id) {
     if(!confirm("هل تودين حذف هذا التقييم نهائياً من سجل العملاء؟")) return;
-    siteSettings.customerReviews = siteSettings.customerReviews.filter(r => r.id !== id);
+    window.siteSettings.customerReviews = window.siteSettings.customerReviews.filter(r => r.id !== id);
     renderReviewsList();
 };
 
@@ -536,9 +534,9 @@ window.renderCategoryDescAdmin = function() {
     if (!container) return;
     
     container.innerHTML = '<label class="block text-xs font-bold text-slate-300 mb-2">صياغة أوصاف الأقسام بأسلوب بوسي التفاعلي</label>';
-    const descriptions = siteSettings.catDescriptions || {};
+    const descriptions = window.siteSettings.catDescriptions || {};
     
-    catMenu.forEach(cat => {
+    window.catMenu.forEach(cat => {
         const safeId = 'desc-cat-' + Array.from(cat.name).map(c => c.charCodeAt(0)).join('');
         const currentVal = descriptions[cat.name] || '';
         
@@ -564,7 +562,7 @@ window.renderHomepageSelection = function() {
         overviewTab.appendChild(container);
     }
     
-    if (!catalog || catalog.length === 0) {
+    if (!window.catalog || window.catalog.length === 0) {
         container.innerHTML = '<p class="text-xs text-slate-500 text-center font-bold">لا توجد منتجات مسجلة لاختيارها للواجهة الرئيسية.</p>';
         return;
     }
@@ -572,7 +570,7 @@ window.renderHomepageSelection = function() {
     let html = '<h3 class="text-sm font-black text-[#ff91a4] flex items-center gap-2 mb-4"><i data-lucide="layout-template" class="w-4 h-4"></i> هندسة واجهة العميل (الترشيحات)</h3>';
     html += '<div class="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">';
     
-    catalog.forEach(prod => {
+    window.catalog.forEach(prod => {
         const isNew = prod.badge === 'جديد 🌟' || prod.badge === 'جديد';
         const isBest = prod.badge === 'الأكثر مبيعاً 🔥' || prod.badge === 'مبيعاً';
         const isOutOfStock = prod.inStock === false;
@@ -597,18 +595,18 @@ window.renderHomepageSelection = function() {
 };
 
 window.toggleProductBadge = async function(prodId, targetBadge) {
-    const idx = catalog.findIndex(p => String(p.id) === String(prodId));
+    const idx = window.catalog.findIndex(p => String(p.id) === String(prodId));
     if (idx === -1) return;
     
-    if (catalog[idx].badge === targetBadge) {
-        catalog[idx].badge = '';
+    if (window.catalog[idx].badge === targetBadge) {
+        window.catalog[idx].badge = '';
     } else {
-        catalog[idx].badge = targetBadge;
+        window.catalog[idx].badge = targetBadge;
     }
     
     syncCatalogMap();
     try {
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(catalog[idx].id), catalog[idx]);
+        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(window.catalog[idx].id), window.catalog[idx]);
         if (typeof saveEngineMemory === 'function') saveEngineMemory('cat');
         showSystemToast("تم تحديث تمييز المنتج للواجهة بنجاح", "success");
     } catch(e) {
@@ -630,7 +628,7 @@ async function changeAdminPassword() {
     if (newPwd.length < 6) { showSystemToast("الرمز السري للسحابة يجب أن يكون 6 أحرف/أرقام على الأقل", "error"); return; }
 
     try {
-        const user = auth.currentUser;
+        const user = window.auth.currentUser;
         if (!user) { showSystemToast("انتهت جلسة الإدارة، يرجى تسجيل الدخول مجدداً", "error"); return; }
         const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentInput);
         await user.reauthenticateWithCredential(credential);
@@ -646,10 +644,10 @@ async function changeAdminPassword() {
 function renderAdminShipping() {
     const tbody = document.getElementById('admin-shipping-tbody');
     if(!tbody) return;
-    if(!shippingZones || shippingZones.length === 0) {
+    if(!window.shippingZones || window.shippingZones.length === 0) {
         tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-500 font-bold text-xs">لا يوجد مناطق توصيل معتمدة</td></tr>`; return;
     }
-    tbody.innerHTML = shippingZones.map(z => `
+    tbody.innerHTML = window.shippingZones.map(z => `
         <tr class="hover:bg-slate-800 border-b border-slate-800/50 transition-colors">
             <td class="p-3 font-bold text-slate-200 whitespace-nowrap">${escapeHTML(z.name || '')}</td>
             <td class="p-3 font-black text-emerald-400 whitespace-nowrap">${z.fee} ج.م</td>
@@ -677,7 +675,7 @@ async function saveShippingZone() {
     const n = document.getElementById('ship-area-name').value.trim(); const f = parseInt(document.getElementById('ship-area-fee').value) || 0;
     if(!n) { showSystemToast("الرجاء كتابة اسم المنطقة", "error"); return; }
     const newZone = { id: 'sh_' + Date.now() + Math.floor(Math.random() * 100), name: n, fee: f };
-    shippingZones.push(newZone);
+    window.shippingZones.push(newZone);
     try { 
         if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('shipping', String(newZone.id), newZone);
         if (typeof saveEngineMemory === 'function') saveEngineMemory('ship');
@@ -694,7 +692,7 @@ function deleteShippingZoneConfirm(id, name) {
 }
 
 async function executeDeleteShippingZone(id) {
-    shippingZones = shippingZones.filter(z => String(z.id) !== String(id));
+    window.shippingZones = window.shippingZones.filter(z => String(z.id) !== String(id));
     try { 
         if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('shipping', String(id), null);
         if (typeof saveEngineMemory === 'function') saveEngineMemory('ship');
@@ -707,9 +705,9 @@ async function executeDeleteShippingZone(id) {
 
 async function saveCakeBuilderSettings() {
     if(!window.siteSettings) window.siteSettings = { ...defaultSettings };
-    if(!siteSettings.cakeBuilder) siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
+    if(!window.siteSettings.cakeBuilder) window.siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
     
-    const c = siteSettings.cakeBuilder;
+    const c = window.siteSettings.cakeBuilder;
     if(c) {
         c.basePrice = Number(document.getElementById('set-cake-base-price')?.value) || 145;
         c.minSquare = Number(document.getElementById('set-cake-min-sq')?.value) || 16;
@@ -721,7 +719,7 @@ async function saveCakeBuilderSettings() {
         ];
     }
     try {
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', siteSettings);
+        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', window.siteSettings);
         if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
         showSystemToast("تم اعتماد وإرسال إعدادات التورت الملكية 👑", "success");
     } catch(e) { 
@@ -734,7 +732,7 @@ function renderAdminCategories() {
     const listEl = document.getElementById('admin-categories-list');
     if (!listEl) return;
     
-    const sortedCats = [...catMenu].sort((a, b) => a.order - b.order);
+    const sortedCats = [...window.catMenu].sort((a, b) => a.order - b.order);
 
     if (sortedCats.length === 0) { listEl.innerHTML = `<p class="text-center text-slate-500 py-6 font-bold text-xs">لم يتم هندسة أي قسم للآن.</p>`; return; }
     listEl.innerHTML = sortedCats.map((cat, index) => `
@@ -753,12 +751,12 @@ function addNewCategory() {
     const orderInput = document.getElementById('new-category-order');
     if(!input) return;
     const val = input.value.trim();
-    const order = parseInt(orderInput?.value) || (catMenu.length + 1);
+    const order = parseInt(orderInput?.value) || (window.catMenu.length + 1);
 
     if (!val) { showSystemToast("قرار إداري: يرجى صياغة اسم القسم للاعتماد", "error"); return; }
-    if (catMenu.find(c => c.name === val)) { showSystemToast("هذا المسمى موجود بالفعل بالهيكل", "error"); return; }
+    if (window.catMenu.find(c => c.name === val)) { showSystemToast("هذا المسمى موجود بالفعل بالهيكل", "error"); return; }
     
-    catMenu.push({name: val, order: order});
+    window.catMenu.push({name: val, order: order});
     input.value = ''; if(orderInput) orderInput.value = '';
     renderAdminCategories();
     if(typeof renderAdminCatalogTabs === 'function') renderAdminCatalogTabs();
@@ -771,7 +769,7 @@ function addNewCategory() {
 function removeCategory(catName) {
     if (catName === 'تورت') { showSystemToast("قرار إداري: قسم التورت الملكية ذو طابع سيادي ولا يُمكن إزالته! 👑", "error"); return; }
     openConfirmModal('استبعاد قسم', `هل توافق على استبعاد قسم "${catName}" نهائياً من الهيكل؟`, () => {
-        catMenu = catMenu.filter(c => c.name !== catName);
+        window.catMenu = window.catMenu.filter(c => c.name !== catName);
         renderAdminCategories(); 
         if(typeof renderAdminCatalogTabs === 'function') renderAdminCatalogTabs();
         executeSafely('CategoryDesc', () => { if(typeof renderCategoryDescAdmin === 'function') renderCategoryDescAdmin(); });
@@ -781,8 +779,8 @@ function removeCategory(catName) {
 async function saveCategoriesToCloud() {
     try {
         if(!window.siteSettings) window.siteSettings = {};
-        siteSettings.catMenu = catMenu;
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', siteSettings);
+        window.siteSettings.catMenu = window.catMenu;
+        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', window.siteSettings);
         if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
         showSystemToast("تم هندسة الأقسام وحفظها سحابياً بنجاح! ✨", "success");
     } catch (e) { showSystemToast("فشل الاتصال السحابي أثناء اعتماد الأقسام", "error"); }
@@ -790,13 +788,13 @@ async function saveCategoriesToCloud() {
 
 function initAdminPromoCodes() {
     if(!window.siteSettings) window.siteSettings = {};
-    if(!siteSettings.promoCodes) siteSettings.promoCodes = [];
+    if(!window.siteSettings.promoCodes) window.siteSettings.promoCodes = [];
     renderPromoCodes();
 }
 
 function renderPromoCodes() {
     const container = document.getElementById('promo-codes-list'); if(!container) return;
-    const codes = siteSettings.promoCodes || [];
+    const codes = window.siteSettings.promoCodes || [];
     if(codes.length === 0) { container.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">لا توجد كوبونات تفاعلية مفعلة حالياً</p>`; return; }
     container.innerHTML = codes.map((c, idx) => `
         <div class="flex justify-between items-center bg-[#ff91a4]/5 border border-[#ff91a4]/20 p-2.5 rounded-[1rem] mb-2">
@@ -813,17 +811,17 @@ function addPromoCode() {
     const code = codeInput.value.trim().toUpperCase(); const discount = parseInt(discountInput.value) || 0;
     if(!code || discount <= 0 || discount > 100) { showSystemToast("قرار إداري: يرجى اعتماد كود سليم ونسبة تتراوح بين 1 و 100", "error"); return; }
     if(!window.siteSettings) window.siteSettings = {};
-    if(!siteSettings.promoCodes) siteSettings.promoCodes = [];
-    if(siteSettings.promoCodes.find(c => c.code === code)) { showSystemToast("هذا الكود مدرج مسبقاً بالنظام", "error"); return; }
-    siteSettings.promoCodes.push({ code, discount });
+    if(!window.siteSettings.promoCodes) window.siteSettings.promoCodes = [];
+    if(window.siteSettings.promoCodes.find(c => c.code === code)) { showSystemToast("هذا الكود مدرج مسبقاً بالنظام", "error"); return; }
+    window.siteSettings.promoCodes.push({ code, discount });
     codeInput.value = ''; discountInput.value = '';
     renderPromoCodes();
     if(typeof saveAllSettings === 'function') saveAllSettings();
 }
 
 function deletePromoCode(idx) {
-    if(!siteSettings.promoCodes) return;
-    siteSettings.promoCodes.splice(idx, 1);
+    if(!window.siteSettings.promoCodes) return;
+    window.siteSettings.promoCodes.splice(idx, 1);
     renderPromoCodes();
     if(typeof saveAllSettings === 'function') saveAllSettings();
 }

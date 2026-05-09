@@ -3,14 +3,10 @@
  * محرك مركز قيادة حلويات بوسي السحابي | BoseSweets Admin Engine V20.0 Official
  * ============================================================================
  * 👑 التحديث السيادي للسيطرة المطلقة: 
- * تم توسيع الذاكرة الأساسية لتستوعب (الأقسام الديناميكية، المراجعات الحية، 
- * والروابط الشمولية المضافة)، مع ضمان عدم اختفاء أي بيانات عند تحديث اللوحة.
+ * تم معالجة تصادم التعريفات وتوحيد مسارات الذاكرة لضمان اتصال لوحة التحكم 
+ * بالموقع وقاعدة البيانات لحظياً دون أي انقطاع.
  * يعتمد أسلوب التوسيع والبناء دون أي حذف للمكونات الأساسية.
  */
-
-// 👑 تأمين النطاق الشامل (Global Scope Linkage) لمنع الانقطاع السحابي
-const db = window.db || (typeof firebase !== 'undefined' ? firebase.firestore() : undefined);
-const auth = window.auth || (typeof firebase !== 'undefined' ? firebase.auth() : undefined);
 
 // 🛡️ Engine Upgrade: Centralized Admin Error Tracking System
 const AdminErrorTracker = {
@@ -143,7 +139,6 @@ const defaultSettings = {
     footerQuote: "العلامة التجارية الرائدة في صناعة الحلويات الفاخرة وتصميم التورت الملكية بمركز الفرافرة منذ عام 2014.",
     productLayout: "grid", 
     
-    // الهيكل القديم محتفظ به التزاماً بمعايير استقرار النظام
     visuals: {
         themeHex: "#ff91a4", 
         bgHex: "#ffffff", 
@@ -169,7 +164,6 @@ const defaultSettings = {
     },
     seo: { title: "", desc: "", keywords: "" },
     
-    // ✅ تحديث قنوات التواصل الاجتماعي مع الروابط الشمولية (التحديث السيادي V20)
     social: { 
         facebook: "https://facebook.com/BoseSweets", 
         tiktok: "https://tiktok.com/@BoseSweets", 
@@ -181,14 +175,13 @@ const defaultSettings = {
     catDescriptions: {}, 
     goldenTips: [],      
     customerReviews: [], 
-    dynamicSections: [], // الأقسام الديناميكية المضافة في التحديث السيادي
+    dynamicSections: [], 
     tickerActive: true, 
     tickerText: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب ✨", 
     tickerSpeed: 20, 
     tickerFont: "'Cairo', sans-serif", 
     tickerColor: "#ffffff",
 
-    // ✅ تحديث قسم التورت (cakeBuilder)
     cakeBuilder: { 
         basePrice: 145, 
         desc: "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة.", 
@@ -203,20 +196,16 @@ const defaultSettings = {
         ] 
     },
 
-    // 👑 التوسيع الهندسي الجديد المعتمد بوثيقة المواصفات الفنية
-    
-    // ✅ 1. إعدادات تخطيط العرض (Layout Settings)
     layout_settings: {
         layout_viewMode: "columns_2", 
         layout_card_width: "100%",
         layout_card_height: "auto",
         layout_waterfall_img_height: "270px",
-        layout_waterfall_speed: 3000, // سرعة الشلال المضافة في V20
+        layout_waterfall_speed: 3000,
         layout_waterfall_img_width: "100%",
         layout_waterfall_img_objectFit: "cover" 
     },
 
-    // ✅ 2. إعدادات واجهة المستخدم (UI Settings)
     UI_Settings: {
         loader_text: "جاري تجهيز عالم بوسي السحري...", 
         loader_bgColor: "#ffffff", 
@@ -243,14 +232,14 @@ const defaultSettings = {
 const defaultShipping = [ { id: 'sh_1', name: 'الكفاح', fee: 0 }, { id: 'sh_2', name: 'أبو منقار', fee: 50 }, { id: 'sh_3', name: 'النهضة', fee: 30 }, { id: 'sh_4', name: 'مركز الفرافرة', fee: 20 } ];
 let defaultCatalog = [];
 
-// 👑 SINGLE SOURCE OF TRUTH (STATE)
-let siteSettings = { ...defaultSettings };
-let shippingZones = [ ...defaultShipping ];
-let catalog = []; 
-let globalOrders = []; 
-let galleryData = []; 
-let catMenu = [];
-let catalogMap = new Map();
+// 👑 SINGLE SOURCE OF TRUTH (STATE) - تم الاعتماد المهني بتوحيد النطاق لتفادي العزل السحابي
+var siteSettings = { ...defaultSettings };
+var shippingZones = [ ...defaultShipping ];
+var catalog = []; 
+var globalOrders = []; 
+var galleryData = []; 
+var catMenu = [];
+var catalogMap = new Map();
 
 function syncCatalogMap() { catalogMap.clear(); catalog.forEach(p => catalogMap.set(String(p.id), p)); }
 
@@ -259,13 +248,13 @@ async function fetchDefaultCatalog() {
     catch (error) { console.warn("Fallback to local memory."); }
 }
 
-let isFirstOrderLoad = true;
-let ordersUnsubscribe = null; 
-let adminOrdersHash = '';
-let adminRenderDebounce = null;
+var isFirstOrderLoad = true;
+var ordersUnsubscribe = null; 
+var adminOrdersHash = '';
+var adminRenderDebounce = null;
 
 function setupRealtimeOrders() {
-    if (typeof db === 'undefined' || !db) return;
+    if (typeof window.db === 'undefined' || !window.db) return;
     
     // 🛡️ Guard: منع إنشاء أكثر من مستمع واحد نهائياً
     if (window.__ordersListenerActive) {
@@ -276,7 +265,7 @@ function setupRealtimeOrders() {
 
     if (ordersUnsubscribe) ordersUnsubscribe();
 
-    ordersUnsubscribe = db.collection('orders').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+    ordersUnsubscribe = window.db.collection('orders').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
         
         // 1. بناء حالة جديدة تماماً (Immutable State)
         const freshOrders = [];
@@ -297,9 +286,9 @@ function setupRealtimeOrders() {
         // 4. Guard: إذا لم يتغير الهاش، توقف فوراً
         if (newHash === adminOrdersHash && !isFirstOrderLoad) return; 
         
-        // 5. التحديث الآمن للحالة
+        // 5. التحديث الآمن للحالة الشاملة
         adminOrdersHash = newHash;
-        globalOrders = freshOrders; 
+        window.globalOrders = freshOrders; 
 
         saveEngineMemory('ord');
 
@@ -340,59 +329,57 @@ function playNotificationSound() {
 async function loadEngineMemory() {
     try {
         await fetchDefaultCatalog(); 
-        catalog = [...defaultCatalog];
+        window.catalog = [...defaultCatalog];
         
-        if (typeof db !== 'undefined' && db !== null) {
-            const catSnap = await db.collection('catalog').get();
-            if (!catSnap.empty) { catalog = []; catSnap.forEach(doc => catalog.push(doc.data())); }
+        if (typeof window.db !== 'undefined' && window.db !== null) {
+            const catSnap = await window.db.collection('catalog').get();
+            if (!catSnap.empty) { window.catalog = []; catSnap.forEach(doc => window.catalog.push(doc.data())); }
             
-            const settingsSnap = await db.collection('settings').doc('main').get();
+            const settingsSnap = await window.db.collection('settings').doc('main').get();
             if (settingsSnap.exists) { 
                 const cloudData = settingsSnap.data();
-                siteSettings = { ...defaultSettings, ...cloudData };
+                window.siteSettings = { ...defaultSettings, ...cloudData };
                 
-                if(cloudData.visuals) siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
-                if(cloudData.catDescriptions) siteSettings.catDescriptions = { ...(defaultSettings.catDescriptions || {}), ...cloudData.catDescriptions };
-                else siteSettings.catDescriptions = defaultSettings.catDescriptions;
+                if(cloudData.visuals) window.siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
+                if(cloudData.catDescriptions) window.siteSettings.catDescriptions = { ...(defaultSettings.catDescriptions || {}), ...cloudData.catDescriptions };
+                else window.siteSettings.catDescriptions = defaultSettings.catDescriptions;
                 
-                if(cloudData.goldenTips) siteSettings.goldenTips = [...cloudData.goldenTips];
-                else siteSettings.goldenTips = [...defaultSettings.goldenTips];
+                if(cloudData.goldenTips) window.siteSettings.goldenTips = [...cloudData.goldenTips];
+                else window.siteSettings.goldenTips = [...defaultSettings.goldenTips];
                 
-                if(cloudData.customerReviews) siteSettings.customerReviews = [...cloudData.customerReviews];
-                else siteSettings.customerReviews = [...defaultSettings.customerReviews];
+                if(cloudData.customerReviews) window.siteSettings.customerReviews = [...cloudData.customerReviews];
+                else window.siteSettings.customerReviews = [...defaultSettings.customerReviews];
 
-                // 👑 دمج التوسعات الديناميكية في V20
-                if(cloudData.dynamicSections) siteSettings.dynamicSections = [...cloudData.dynamicSections];
+                if(cloudData.dynamicSections) window.siteSettings.dynamicSections = [...cloudData.dynamicSections];
 
                 if(cloudData.social) {
-                    siteSettings.social = { ...defaultSettings.social, ...cloudData.social };
-                    if(cloudData.social.customLinks) siteSettings.social.customLinks = [...cloudData.social.customLinks];
+                    window.siteSettings.social = { ...defaultSettings.social, ...cloudData.social };
+                    if(cloudData.social.customLinks) window.siteSettings.social.customLinks = [...cloudData.social.customLinks];
                 }
 
                 if(cloudData.cakeBuilder) {
-                    siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
-                    if(!siteSettings.cakeBuilder.flavors || siteSettings.cakeBuilder.flavors.length === 0) siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
-                } else { siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder }; }
+                    window.siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
+                    if(!window.siteSettings.cakeBuilder.flavors || window.siteSettings.cakeBuilder.flavors.length === 0) window.siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
+                } else { window.siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder }; }
 
-                // 👑 استدعاء التوسعات الهندسية الجديدة بأمان تام
-                if(cloudData.layout_settings) siteSettings.layout_settings = { ...defaultSettings.layout_settings, ...cloudData.layout_settings };
+                if(cloudData.layout_settings) window.siteSettings.layout_settings = { ...defaultSettings.layout_settings, ...cloudData.layout_settings };
                 if(cloudData.UI_Settings) {
-                    siteSettings.UI_Settings = { ...defaultSettings.UI_Settings, ...cloudData.UI_Settings };
-                    if(cloudData.UI_Settings.typography_config) siteSettings.UI_Settings.typography_config = { ...defaultSettings.UI_Settings.typography_config, ...cloudData.UI_Settings.typography_config };
-                    if(cloudData.UI_Settings.page_dimensions) siteSettings.UI_Settings.page_dimensions = { ...defaultSettings.UI_Settings.page_dimensions, ...cloudData.UI_Settings.page_dimensions };
+                    window.siteSettings.UI_Settings = { ...defaultSettings.UI_Settings, ...cloudData.UI_Settings };
+                    if(cloudData.UI_Settings.typography_config) window.siteSettings.UI_Settings.typography_config = { ...defaultSettings.UI_Settings.typography_config, ...cloudData.UI_Settings.typography_config };
+                    if(cloudData.UI_Settings.page_dimensions) window.siteSettings.UI_Settings.page_dimensions = { ...defaultSettings.UI_Settings.page_dimensions, ...cloudData.UI_Settings.page_dimensions };
                 }
                 if(cloudData.Structure_Settings) {
-                    siteSettings.Structure_Settings = { ...defaultSettings.Structure_Settings, ...cloudData.Structure_Settings };
-                    if(cloudData.Structure_Settings.footer_sections) siteSettings.Structure_Settings.footer_sections = [...cloudData.Structure_Settings.footer_sections];
-                    if(cloudData.Structure_Settings.future_sections_registry) siteSettings.Structure_Settings.future_sections_registry = [...cloudData.Structure_Settings.future_sections_registry];
+                    window.siteSettings.Structure_Settings = { ...defaultSettings.Structure_Settings, ...cloudData.Structure_Settings };
+                    if(cloudData.Structure_Settings.footer_sections) window.siteSettings.Structure_Settings.footer_sections = [...cloudData.Structure_Settings.footer_sections];
+                    if(cloudData.Structure_Settings.future_sections_registry) window.siteSettings.Structure_Settings.future_sections_registry = [...cloudData.Structure_Settings.future_sections_registry];
                 }
             }
             
-            const shipSnap = await db.collection('shipping').get();
-            if (!shipSnap.empty) { shippingZones = []; shipSnap.forEach(doc => shippingZones.push(doc.data())); }
+            const shipSnap = await window.db.collection('shipping').get();
+            if (!shipSnap.empty) { window.shippingZones = []; shipSnap.forEach(doc => window.shippingZones.push(doc.data())); }
             
-            const gallerySnap = await db.collection('gallery').orderBy('timestamp', 'desc').get();
-            if (!gallerySnap.empty) { galleryData = []; gallerySnap.forEach(doc => galleryData.push(doc.data())); }
+            const gallerySnap = await window.db.collection('gallery').orderBy('timestamp', 'desc').get();
+            if (!gallerySnap.empty) { window.galleryData = []; gallerySnap.forEach(doc => window.galleryData.push(doc.data())); }
             
             setupRealtimeOrders();
             if (typeof updateAdminDashboardStatsUI === 'function') updateAdminDashboardStatsUI();
@@ -403,20 +390,20 @@ async function loadEngineMemory() {
         }
     } catch(err) { 
         console.warn("BoseSweets: جاري التحميل من الذاكرة الفولاذية", err);
-        catalog = (await StorageEngine.get('boseSweets_catalog')) || JSON.parse(localStorage.getItem('bSweets_catalog') || localStorage.getItem('boseSweets_catalog')) || [...defaultCatalog]; 
-        globalOrders = (await StorageEngine.get('boseSweets_admin_orders')) || JSON.parse(localStorage.getItem('bSweets_orders') || localStorage.getItem('boseSweets_admin_orders')) || [];
-        siteSettings = (await StorageEngine.get('boseSweets_settings')) || JSON.parse(localStorage.getItem('bSweets_settings') || localStorage.getItem('boseSweets_settings')) || { ...defaultSettings };
-        shippingZones = (await StorageEngine.get('boseSweets_shipping')) || JSON.parse(localStorage.getItem('bSweets_shipping') || localStorage.getItem('boseSweets_shipping')) || [ ...defaultShipping ];
-        galleryData = (await StorageEngine.get('boseSweets_gallery')) || JSON.parse(localStorage.getItem('bSweets_gallery') || localStorage.getItem('boseSweets_gallery')) || [];
+        window.catalog = (await StorageEngine.get('boseSweets_catalog')) || JSON.parse(localStorage.getItem('bSweets_catalog') || localStorage.getItem('boseSweets_catalog')) || [...defaultCatalog]; 
+        window.globalOrders = (await StorageEngine.get('boseSweets_admin_orders')) || JSON.parse(localStorage.getItem('bSweets_orders') || localStorage.getItem('boseSweets_admin_orders')) || [];
+        window.siteSettings = (await StorageEngine.get('boseSweets_settings')) || JSON.parse(localStorage.getItem('bSweets_settings') || localStorage.getItem('boseSweets_settings')) || { ...defaultSettings };
+        window.shippingZones = (await StorageEngine.get('boseSweets_shipping')) || JSON.parse(localStorage.getItem('bSweets_shipping') || localStorage.getItem('boseSweets_shipping')) || [ ...defaultShipping ];
+        window.galleryData = (await StorageEngine.get('boseSweets_gallery')) || JSON.parse(localStorage.getItem('bSweets_gallery') || localStorage.getItem('boseSweets_gallery')) || [];
         if (typeof updateAdminDashboardStatsUI === 'function') updateAdminDashboardStatsUI();
         if (typeof fillGlobalSettingsFormFields === 'function') fillGlobalSettingsFormFields();
     }
 
-    if (siteSettings.catMenu && siteSettings.catMenu.length > 0) catMenu = siteSettings.catMenu;
-    else catMenu = [...new Set(catalog.map(p => p.category))].filter(Boolean).map((name, i) => ({name, order: i+1}));
+    if (window.siteSettings.catMenu && window.siteSettings.catMenu.length > 0) window.catMenu = window.siteSettings.catMenu;
+    else window.catMenu = [...new Set(window.catalog.map(p => p.category))].filter(Boolean).map((name, i) => ({name, order: i+1}));
     
-    if(catMenu.length > 0 && typeof catMenu[0] === 'string') catMenu = catMenu.map((name, i) => ({name, order: i+1}));
-    if (!catMenu.find(c => c.name === 'تورت')) catMenu.unshift({name: 'تورت', order: 0});
+    if(window.catMenu.length > 0 && typeof window.catMenu[0] === 'string') window.catMenu = window.catMenu.map((name, i) => ({name, order: i+1}));
+    if (!window.catMenu.find(c => c.name === 'تورت')) window.catMenu.unshift({name: 'تورت', order: 0});
     syncCatalogMap(); 
 }
 
@@ -426,25 +413,25 @@ async function loadAdminEngineMemory() {
 
 async function saveEngineMemory(type) {
     try {
-        if (type === 'cat' || type === 'all') await StorageEngine.set('boseSweets_catalog', catalog);
-        if (type === 'set' || type === 'all') await StorageEngine.set('boseSweets_settings', siteSettings);
-        if (type === 'ship' || type === 'all') await StorageEngine.set('boseSweets_shipping', shippingZones);
-        if (type === 'gal' || type === 'all') await StorageEngine.set('boseSweets_gallery', galleryData);
-        if (type === 'ord' || type === 'all') await StorageEngine.set('boseSweets_admin_orders', globalOrders);
+        if (type === 'cat' || type === 'all') await StorageEngine.set('boseSweets_catalog', window.catalog);
+        if (type === 'set' || type === 'all') await StorageEngine.set('boseSweets_settings', window.siteSettings);
+        if (type === 'ship' || type === 'all') await StorageEngine.set('boseSweets_shipping', window.shippingZones);
+        if (type === 'gal' || type === 'all') await StorageEngine.set('boseSweets_gallery', window.galleryData);
+        if (type === 'ord' || type === 'all') await StorageEngine.set('boseSweets_admin_orders', window.globalOrders);
     } catch (e) { 
-        if (type === 'set') localStorage.setItem('boseSweets_settings', JSON.stringify(siteSettings));
+        if (type === 'set') localStorage.setItem('boseSweets_settings', JSON.stringify(window.siteSettings));
     }
 }
 
 // ==========================================
 // 2. Admin Logic & Shared Variables
 // ==========================================
-let adminCurrentCat = 'all';
-let adminOrderFilter = 'all';
-let tempProdImages = []; 
-let currentEditId = null;
-let salesChartInstance = null;
-let confirmActionCallback = null;
+var adminCurrentCat = 'all';
+var adminOrderFilter = 'all';
+var tempProdImages = []; 
+var currentEditId = null;
+var salesChartInstance = null;
+var confirmActionCallback = null;
 
 const executeSafely = (taskName, taskFunction) => {
     try {
@@ -488,7 +475,7 @@ function openAdminDashboardDirectly() {
 function closeAdminDashboard() {
     if (ordersUnsubscribe) ordersUnsubscribe();
     sessionStorage.removeItem('bosy_admin_auth');
-    if(typeof auth !== 'undefined' && auth) auth.signOut();
+    if(typeof window.auth !== 'undefined' && window.auth) window.auth.signOut();
     window.location.href = 'index.html';
 }
 
@@ -498,8 +485,8 @@ window.logoutAdminSecurely = function() {
 
 async function getSecureUploadSignature() {
     try {
-        if(typeof auth === 'undefined' || !auth || !auth.currentUser) return null;
-        const idToken = await auth.currentUser.getIdToken();
+        if(typeof window.auth === 'undefined' || !window.auth || !window.auth.currentUser) return null;
+        const idToken = await window.auth.currentUser.getIdToken();
         const secureEndpoint = 'https://us-central1-bosy-sweets.cloudfunctions.net/getCloudinarySignature';
         const response = await fetch(secureEndpoint, { headers: { 'Authorization': `Bearer ${idToken}` } });
         if (!response.ok) throw new Error("Signature Server Unavailable");
@@ -534,7 +521,7 @@ async function syncOfflineImages() {
             } catch (e) { continue; }
 
             if(uploadedUrl) {
-                for (let p of catalog) {
+                for (let p of window.catalog) {
                     if (p.images) {
                         for (let i = 0; i < p.images.length; i++) {
                             if (p.images[i] === payload.offlineId) {
@@ -542,7 +529,7 @@ async function syncOfflineImages() {
                                 if (i === 0) p.img = uploadedUrl;
                                 needsSync = true;
                                 if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(p.id), p);
-                                if(typeof db !== 'undefined' && db) await db.collection('catalog').doc(String(p.id)).set(p, { merge: true });
+                                if(typeof window.db !== 'undefined' && window.db) await window.db.collection('catalog').doc(String(p.id)).set(p, { merge: true });
                             }
                         }
                     }
@@ -571,20 +558,17 @@ function bootBoseSweetsEngine() {
     console.log("BoseSweets Admin Engine Initiating Architecture Safe Mode...");
     unfreezeAdminUI();
     
-    // التحقق من حالة المصادقة بشكل آمن وربط العمليات بها
-    if(typeof auth !== 'undefined' && auth !== null) {
-        auth.onAuthStateChanged(async user => {
+    if(typeof window.auth !== 'undefined' && window.auth !== null) {
+        window.auth.onAuthStateChanged(async user => {
             if (user) { 
                 try { await loadAdminEngineMemory(); } catch(e) { AdminErrorTracker.log('BootMemoryLoad', e); }
                 openAdminDashboardDirectly();
                 syncOfflineImages(); 
             } else { 
-                // إذا لم يكن هنالك توثيق، يتم التحويل فوراً لصفحة الدخول
                 window.location.href = 'login.html';
             }
         });
     } else {
-        // خط دفاع إضافي في حالة تعذر تحميل خدمات فايربيز مبكراً
         loadAdminEngineMemory().then(() => {
             openAdminDashboardDirectly();
         });
