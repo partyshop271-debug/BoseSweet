@@ -121,6 +121,7 @@ async function applyGlobalPriceChange() {
         if(typeof renderAdminOverview === 'function') renderAdminOverview();
         if(typeof renderAdminCatalogGridUI === 'function') renderAdminCatalogGridUI(); 
         showSystemToast(`تم تطبيق النسبة المهنية بنجاح على ${updatedCount} منتج 👑`, "success");
+        if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
     });
 }
 
@@ -329,10 +330,12 @@ window.saveAllSettings = async function() {
             await NetworkEngine.safeWrite('settings', 'main', finalMasterPayload);
             if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
             showSystemToast("تم الاعتماد البرمجي وتحديث كامل قيم التكوين سحابياً بنجاح 👑☁️", "success");
+            if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
         } else if(typeof window.db !== 'undefined') {
             await window.db.collection('settings').doc('main').set(finalMasterPayload, { merge: true });
             if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
             showSystemToast("تم الاعتماد البرمجي وتحديث كامل قيم التكوين سحابياً بنجاح 👑☁️", "success");
+            if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
         }
     } catch(e) {
         if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
@@ -783,6 +786,7 @@ async function saveCategoriesToCloud() {
         if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', window.siteSettings);
         if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
         showSystemToast("تم هندسة الأقسام وحفظها سحابياً بنجاح! ✨", "success");
+        if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
     } catch (e) { showSystemToast("فشل الاتصال السحابي أثناء اعتماد الأقسام", "error"); }
 }
 

@@ -371,11 +371,12 @@ async function saveProductData() {
             catalog[idx].images = finalImagesArray; catalog[idx].img = finalImg; catalog[idx].subType = nSub; 
             catalog[idx].layout = nLayout; catalog[idx].badge = nBadge; catalog[idx].inStock = nInStock;
             catalog[idx].sizes = sizesArray;
+            catalog[idx].isActive = true; // التوسيع المضاف
             prodObj = catalog[idx];
         }
     } else {
         const newId = document.getElementById('form-product-id')?.value.trim() || ('prod_' + Date.now() + Math.floor(Math.random()*1000));
-        prodObj = { id: newId, category: nCat, name: nName, price: nPrice, oldPrice: nOldPrice, desc: nDesc, sortOrder: nSort, images: finalImagesArray, img: finalImg, subType: nSub, layout: nLayout, badge: nBadge, inStock: nInStock, sizes: sizesArray };
+        prodObj = { id: newId, category: nCat, name: nName, price: nPrice, oldPrice: nOldPrice, desc: nDesc, sortOrder: nSort, images: finalImagesArray, img: finalImg, subType: nSub, layout: nLayout, badge: nBadge, inStock: nInStock, sizes: sizesArray, isActive: true };
         catalog.unshift(prodObj); 
     }
     
@@ -388,6 +389,7 @@ async function saveProductData() {
         }
         saveEngineMemory('cat'); 
         showSystemToast("تم الاعتماد الفني والحفظ في متجر حلويات بوسي بنجاح 👑☁️", "success"); 
+        if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
     } catch(e) { 
         saveEngineMemory('cat'); 
         showSystemToast("تم الحفظ محلياً لحين تزامن الشبكة", "info"); 

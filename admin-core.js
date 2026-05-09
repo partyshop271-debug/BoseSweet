@@ -577,3 +577,20 @@ function bootBoseSweetsEngine() {
 
 if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', bootBoseSweetsEngine); } 
 else { bootBoseSweetsEngine(); }
+
+// دالة التوسيع: البث السيادي لتحديث الواجهة لحظياً
+window.triggerSovereignSync = async function() {
+    try {
+        if (typeof window.db !== 'undefined' && window.db !== null) {
+            await window.db.collection('system').doc('syncFlag').set({
+                lastAdminUpdate: Date.now()
+            }, { merge: true });
+        } else if (typeof NetworkEngine !== 'undefined') {
+            await NetworkEngine.safeWrite('system', 'syncFlag', { lastAdminUpdate: Date.now() });
+        }
+    } catch (error) {
+        // يتم التسجيل بصمت في حالة عدم استقرار الشبكة
+        AdminErrorTracker.log('SovereignSyncTrigger', error);
+    }
+};
+}
