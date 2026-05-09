@@ -1,7 +1,7 @@
 /**
- * 👑 BoseSweets Main Orchestrator (V7.0 - PWA & Engine Expansion Edition)
+ * 👑 BoseSweets Main Orchestrator (V7.1 - Clean Native PWA Edition)
  * القلب النابض للمحرك الرئيسي - حلويات بوسي 
- * تم التوسيع لتشمل الويب التقدمي ومحرك الأحداث المركزي دون المساس بالهيكل الأساسي
+ * تم تنظيف التضارب في محرك الويب التقدمي لضمان نزول التطبيق بنسخة WebAPK أصلية
  */
 
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
@@ -176,12 +176,10 @@ function initUI() {
 async function syncOfflineOrders() {
     if (!navigator.onLine || !db) return;
     
-    // دمج ذكي لتفريغ الطلبات المتراكمة في التخزين المحلي القديم وإحالتها للمحرك الشامل
     if (typeof ClientStorageEngine !== 'undefined') {
         try {
             const pendingOrders = await ClientStorageEngine.getQueuedOrders();
             if (pendingOrders && pendingOrders.length > 0) {
-                console.log(`حلويات بوسي: جاري تحويل وتأمين ${pendingOrders.length} طلبات معلقة من النظام القديم.`);
                 for (let order of pendingOrders) {
                     if (window.NetworkEngine) {
                         window.NetworkEngine.safeWrite('orders', order.id, order);
@@ -194,7 +192,6 @@ async function syncOfflineOrders() {
         } catch (e) {}
     }
 
-    // تفعيل محرك الطابور الذكي الرئيسي لمعالجة الدفعات المعلقة (Batches)
     if (window.NetworkEngine && typeof window.NetworkEngine.processQueue === 'function') {
         window.NetworkEngine.processQueue();
     }
@@ -221,22 +218,14 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-// التحديث الهندسي لدورة حياة محرك PWA لضمان الالتقاط الفوري
+// التسجيل الموحد والمستقل لمحرك PWA لمنع التضارب
 function registerBoseSweetsPWA() {
     if ('serviceWorker' in navigator) {
-        const registerSW = () => {
-            navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(registration => {
-                console.log('حلويات بوسي: تم تأكيد تسجيل محرك تطبيق الموبايل بنجاح.', registration.scope);
-            }).catch(error => {
-                console.log('حلويات بوسي: تأخير في تسجيل محرك التطبيق، جاري المحاولة لاحقاً.', error);
-            });
-        };
-
-        if (document.readyState === 'complete') {
-            registerSW();
-        } else {
-            window.addEventListener('load', registerSW);
-        }
+        navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(registration => {
+            console.log('حلويات بوسي: تم تأكيد تسجيل محرك التطبيق بنجاح.', registration.scope);
+        }).catch(error => {
+            console.log('حلويات بوسي: تأخير في تسجيل محرك التطبيق.', error);
+        });
     }
 }
 
@@ -260,7 +249,6 @@ if (document.readyState === 'loading') {
     startBoseSweetsEngine();
 }
 
-// محرك تفويض الأحداث الشامل (Event Delegation Engine) لرفع الأداء
 document.addEventListener('click', function(event) {
     if (event.target && event.target.closest('.add-to-cart-btn')) {
         event.preventDefault();
@@ -276,7 +264,6 @@ document.addEventListener('click', function(event) {
         if(typeof processBoseSweetsOrder === 'function') processBoseSweetsOrder(productId, productName, productPrice);
     }
     
-    // تسجيل النقرات للأقسام لخدمة التحليل السلوكي الصامت
     if (event.target && event.target.closest('.cat-pill')) {
         const btn = event.target.closest('.cat-pill');
         if(typeof BehavioralAnalytics !== 'undefined') {

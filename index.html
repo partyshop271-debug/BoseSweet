@@ -15,6 +15,16 @@
     <meta name="apple-mobile-web-app-title" content="حلويات بوسي">
     <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.png">
     
+    <!-- محرك التقاط التثبيت المبكر - تم النقل للرأس لضمان عدم ضياع الإشارة -->
+    <script>
+        window.deferredInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            window.deferredInstallPrompt = e;
+            console.log('حلويات بوسي: تم التقاط إشارة التثبيت الأصلية بنجاح.');
+        });
+    </script>
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -147,6 +157,7 @@
         <span>عفواً، لا يوجد اتصال بالإنترنت. تتصفح الآن النسخة المحفوظة.</span>
     </div>
 
+    <!-- نافذة الطوارئ للتثبيت (تظهر فقط في أجهزة iOS أو عند فشل المتصفح) -->
     <div id="ios-install-prompt" class="fixed inset-0 z-[100000] hidden items-end sm:items-center justify-center bg-[#1a1a1a]/60 backdrop-blur-sm transition-opacity duration-300 pb-6 sm:pb-0 px-4">
         <div class="bg-[#ffffff] w-full sm:w-[400px] rounded-[2.5rem] p-6 border-2 border-[#ff91a4] shadow-2xl relative animate-fade-in">
             <button onclick="closeIosPrompt()" class="absolute top-4 left-4 p-2 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
@@ -305,8 +316,8 @@
                 <button onclick="switchToMenuView(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-all"><i data-lucide="book-open" class="w-5 h-5 text-[#ff91a4]"></i> المنيو</button>
                 <button onclick="showGoldenTips(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-all"><i data-lucide="award" class="w-5 h-5 text-[#ff91a4]"></i> أسرار الطعم</button>
                 
-                <button id="custom-pwa-install-btn" class="flex items-center gap-4 text-lg font-bold text-[#ff91a4] hover:text-[#1a1a1a] transition-all mt-4 p-3 border-2 border-[#ff91a4] rounded-2xl bg-[#ffffff]">
-                    <i data-lucide="download" class="w-5 h-5"></i> تثبيت التطبيق
+                <button id="custom-pwa-install-btn" class="flex items-center gap-4 text-lg font-bold text-[#ffffff] hover:text-[#ff91a4] hover:bg-[#ffffff] transition-all mt-4 p-3 border-2 border-[#ff91a4] rounded-2xl bg-[#ff91a4] shadow-md">
+                    <i data-lucide="download" class="w-5 h-5"></i> تثبيت التطبيق الأصلي
                 </button>
             </nav>
             <div class="pt-8 border-t-2 border-[#ff91a4] text-center">
@@ -570,19 +581,6 @@
     </script>
 
     <script>
-        // تشغيل محرك الخلفية
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js', { scope: '/' })
-                    .then((registration) => {
-                        console.log('حلويات بوسي: تم تشغيل محرك الخلفية بنجاح', registration.scope);
-                    })
-                    .catch((error) => {
-                        console.error('حلويات بوسي: فشل تشغيل المحرك', error);
-                    });
-            });
-        }
-
         // هندسة حالة الشبكة
         const networkBanner = document.getElementById('network-status-banner');
         function updateNetworkStatus() {
@@ -598,29 +596,22 @@
         window.addEventListener('offline', updateNetworkStatus);
         if (!navigator.onLine) updateNetworkStatus();
 
-        // 👑 محرك التثبيت الشامل والحاسم (Universal Install Engine)
-        let deferredPrompt = null;
+        // 👑 محرك التثبيت الشامل والحاسم المطور (Native PWA Trigger)
         const installBtn = document.getElementById('custom-pwa-install-btn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            console.log('حلويات بوسي: تم استقبال إشارة التثبيت التلقائية');
-            e.preventDefault();
-            deferredPrompt = e;
-        });
 
         if (installBtn) {
             installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    // الاعتماد المباشر للتثبيت
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
+                if (window.deferredInstallPrompt) {
+                    // الاعتماد المباشر للتثبيت المستقل (WebAPK)
+                    window.deferredInstallPrompt.prompt();
+                    const { outcome } = await window.deferredInstallPrompt.userChoice;
                     if (outcome === 'accepted') {
-                        console.log('حلويات بوسي: تم التثبيت بنجاح');
+                        console.log('حلويات بوسي: تم التثبيت كتطبيق مستقل بنجاح.');
                         installBtn.style.display = 'none';
                     }
-                    deferredPrompt = null;
+                    window.deferredInstallPrompt = null;
                 } else {
-                    // الدعم اليدوي الشامل في حال تعنت المتصفح أو بيئة iOS
+                    // الدعم اليدوي في حال نظام iOS أو تجاوز المتصفح للإشارة
                     const promptModal = document.getElementById('ios-install-prompt');
                     if (promptModal) {
                         const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
@@ -647,7 +638,7 @@
             if (installBtn) {
                 installBtn.style.display = 'none';
             }
-            deferredPrompt = null;
+            window.deferredInstallPrompt = null;
         });
 
         const iosPrompt = document.getElementById('ios-install-prompt');
@@ -660,3 +651,4 @@
     <script type="module" src="app.js"></script>
 </body>
 </html>
+
