@@ -1,13 +1,23 @@
-/* 👑 Ultra-Soft Mobile UI & BoseSweets Brand Identity */
+/* * =========================================================== 
+ * 👑 BoseSweets Sovereign Admin Style Engine 
+ * 👑 Ultra-Soft Mobile UI & BoseSweets Brand Identity
+ * ملف الأنماط البصرية السيادي لمركز قيادة حلويات بوسي
+ * =========================================================== 
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+
 :root {
+    /* باليتة الألوان الرسمية المعتمدة لمركز القيادة */
     --bg-deep: #070b14;     
     --bg-card: #101726;     
     --bg-input: #1a2235;    
     --text-main: #f8fafc;   
     --text-muted: #8b9bb4;  
     --brand-primary: #ff91a4; /* الوردي الملكي الناعم المعتمد */
-    --brand-glow: rgba(255, 145, 164, 0.5);
-    --border-soft: rgba(255,255,255,0.05);
+    --brand-glow: rgba(255, 145, 164, 0.5); /* تم الحفاظ على التوهج الأصلي مع دعم التحديثات */
+    --border-soft: rgba(255, 255, 255, 0.05);
+    --border-focus: rgba(255, 145, 164, 0.5);
 }
 
 body { 
@@ -15,21 +25,38 @@ body {
     background-color: var(--bg-deep); 
     color: var(--text-main);
     -webkit-tap-highlight-color: transparent; 
+    
+    /* دمج الخصائص الأصلية مع التحديثات الجديدة لضمان استقرار الشاشة */
     position: fixed;
     inset: 0;
     display: flex;
     flex-direction: column;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 
-/* 🚀 منطقة السكرول الناعمة */
+/* 🚀 هندسة مساحة التمرير (السكرول) للعمل الميداني المريح */
 #main-scroll-area {
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch; 
     padding-bottom: 160px !important; 
+    scroll-behavior: smooth;
 }
 
+/* تخصيص السكرول بار ليتناسب مع الهوية */
+.custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+    background: var(--brand-primary); 
+    border-radius: 10px; 
+}
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* البطاقة الأساسية الأصلية */
 .app-card { 
     background: var(--bg-card); 
     border: 1px solid var(--border-soft); 
@@ -38,39 +65,59 @@ body {
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-/* حاويات بوسي الجديدة بالزوايا الناعمة جداً */
+/* * البطاقات القيادية (Boosy Cards)
+ * تستخدم لاحتواء الإحصائيات وأدوات التحكم مع الزوايا الناعمة جداً
+ */
 .boosy-card {
     background: var(--bg-card); 
     border: 1px solid var(--border-soft); 
     border-radius: 2.5rem; /* 40px - كما هو مطلوب في الدستور الهندسي */
-    padding: 24px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    padding: 24px; /* الحفاظ على المساحة المريحة */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* تم تحديث الظل لعمق أكبر */
+    transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.boosy-card:hover {
+    border-color: rgba(255, 145, 164, 0.1);
 }
 
-/* حقول بمقاس 16px الإجباري لمنع الزووم في الموبايل */
+/* * حقول الإدخال (Inputs & Textareas)
+ * مصممة لتكون واضحة، سهلة اللمس، وبدون تشتت بصري
+ * حقول بمقاس 16px الإجباري لمنع الزووم في الموبايل
+ */
 .admin-input { 
-    background: var(--bg-input); 
-    border: 1px solid transparent; 
+    background-color: var(--bg-input); 
+    border: 1px solid var(--border-soft); 
     color: var(--text-main);
-    padding: 16px 20px;
+    padding: 16px 20px; /* الحفاظ على المقاس الأصلي المريح */
     border-radius: 16px;
     font-weight: 700;
-    font-size: 16px !important; 
+    font-size: 16px !important; /* حماية إجبارية لمنع زووم المتصفحات */
     width: 100%;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     appearance: none; 
+    outline: none;
 }
 .admin-input:focus { 
     border-color: var(--brand-primary); 
-    background: #141b2d;
+    background-color: #1e293b; /* تم تحديث لون التركيز */
     outline: none; 
-    box-shadow: 0 0 15px var(--brand-glow);
+    box-shadow: 0 0 15px var(--brand-glow), 0 0 0 3px rgba(255, 145, 164, 0.15);
 }
-.admin-input::placeholder { color: #475569; font-weight: 600; font-size: 14px; }
+.admin-input::placeholder { 
+    color: var(--text-muted); 
+    font-weight: 600; 
+    font-size: 14px; 
+}
+select.admin-input {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/200.svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238b9bb4' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: left 1rem center;
+    background-size: 1em;
+    padding-left: 2.5rem;
+}
 
-.hide-scrollbar::-webkit-scrollbar { display: none; }
-.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
+/* الشيت السفلي وحركاته */
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
 .bottom-sheet {
@@ -128,9 +175,10 @@ body {
     color: white;
     border-color: transparent;
 }
-.setting-section { display: none; animation: fadeIn 0.3s ease; }
+
+/* حركات الأقسام (تم دمجها مع التحديثات) */
+.setting-section { display: none; animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
 .setting-section.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
 .modal-scroll-area {
     flex: 1;
@@ -154,4 +202,59 @@ body {
 }
 .color-swatch.active::after {
     border-color: white;
+}
+
+/* * حركات المودال والتنبيهات (Animations)
+ */
+.animate-fade-in {
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* * الجداول وعرض البيانات
+ */
+table { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0; 
+}
+th { 
+    text-transform: uppercase; 
+    font-size: 10px; 
+    letter-spacing: 0.05em;
+    color: var(--text-muted); 
+    font-weight: 900;
+}
+td { 
+    border-bottom: 1px solid var(--border-soft); 
+    vertical-align: middle;
+}
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* اقتطاع النصوص الطويلة بأناقة */
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* تأمين حالة الأزرار لمنع النقرات المزدوجة أثناء التحميل */
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
 }

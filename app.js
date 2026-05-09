@@ -1,7 +1,8 @@
 /**
- * 👑 BoseSweets Main Orchestrator (V7.1 - Clean Native PWA Edition)
+ * 👑 BoseSweets Main Orchestrator (V20.0 - Sovereign Client Sync Edition)
  * القلب النابض للمحرك الرئيسي - حلويات بوسي 
- * تم تنظيف التضارب في محرك الويب التقدمي لضمان نزول التطبيق بنسخة WebAPK أصلية
+ * تم دمج بروتوكول "الاستماع السيادي" (Sovereign Sync Listener) ليقوم بمسح الكاش
+ * وتحديث الواجهة لحظياً فور قيام الإدارة بحفظ أي تعديل، دون إجبار العميل على إعادة التحميل.
  */
 
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
@@ -38,6 +39,33 @@ window.renderCategories = renderCategories;
 window.initWaterfall = initWaterfall;
 window.initHomepageSections = initHomepageSections;
 
+let lastSyncTime = Date.now();
+
+// 👑 بروتوكول الاستماع السيادي (Sovereign Sync Listener)
+function setupSovereignSyncListener() {
+    if (!db) return;
+    db.collection('system').doc('syncFlag').onSnapshot(async doc => {
+        if (doc.exists) {
+            const data = doc.data();
+            // إذا كان التحديث القادم من الإدارة أحدث من وقت فتح العميل للموقع
+            if (data.lastAdminUpdate > lastSyncTime) {
+                console.log("👑 إشارة سيادية: تم رصد تحديث من الإدارة. جاري المزامنة اللحظية...");
+                lastSyncTime = Date.now();
+                showSystemToast("جاري مزامنة أحدث عروض وأصناف حلويات بوسي اللحظية ✨", "info");
+                
+                await bootSystemCore(); 
+                syncBoseSweetsLayout();
+                initUI();
+                
+                // تحديث السلة لتطبيق أي تغيير في الأسعار
+                if(typeof syncCartUI === 'function') syncCartUI();
+            }
+        }
+    }, error => {
+        console.warn("BoseSweets: تعذر الاستماع للبث السيادي الخلفي.");
+    });
+}
+
 async function bootSystemCore() {
     console.log("👑 حلويات بوسي: بدء تشغيل المحرك الرئيسي...");
     
@@ -53,7 +81,12 @@ async function bootSystemCore() {
 
         try {
             const sSnap = await db.collection('settings').doc('main').get();
-            if (sSnap.exists) Object.assign(siteSettings, sSnap.data());
+            if (sSnap.exists) {
+                Object.assign(siteSettings, sSnap.data());
+                // حفظ التوسعات الجديدة في الذاكرة
+                if(sSnap.data().social) siteSettings.social = sSnap.data().social;
+                if(sSnap.data().dynamicSections) siteSettings.dynamicSections = sSnap.data().dynamicSections;
+            }
         } catch(e) { }
 
         try {
@@ -103,12 +136,16 @@ function syncBoseSweetsLayout() {
     const uniqueCats = [...new Set(catalog.map(p => p.category))].filter(Boolean);
     catMenu.length = 0;
     
-    const priorityCategories = ['الرئيسية', 'تورت', 'ورد'];
-    priorityCategories.forEach(c => catMenu.push(c));
-    
-    uniqueCats.forEach(c => {
-        if (!priorityCategories.includes(c)) catMenu.push(c);
-    });
+    // استدعاء الترتيب المخصص إذا تم حفظه من الإدارة
+    if (siteSettings.catMenu && siteSettings.catMenu.length > 0) {
+        catMenu.push(...siteSettings.catMenu.map(c => c.name || c));
+    } else {
+        const priorityCategories = ['الرئيسية', 'تورت', 'ورد'];
+        priorityCategories.forEach(c => catMenu.push(c));
+        uniqueCats.forEach(c => {
+            if (!priorityCategories.includes(c)) catMenu.push(c);
+        });
+    }
 
     syncCatalogMap();
     if(typeof LiveSearchEngine !== 'undefined' && LiveSearchEngine.build) {
@@ -218,7 +255,6 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-// التسجيل الموحد والمستقل لمحرك PWA لمنع التضارب
 function registerBoseSweetsPWA() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(registration => {
@@ -235,8 +271,11 @@ async function startBoseSweetsEngine() {
     registerBoseSweetsPWA();        
     await bootSystemCore();         
     syncBoseSweetsLayout();         
-    initUI();                       
+    
+    // 👑 تفعيل الاستماع للبث السيادي
+    setupSovereignSyncListener();
 
+    initUI();                       
     recoverBoseSweetsCart();        
     syncOfflineOrders();            
     

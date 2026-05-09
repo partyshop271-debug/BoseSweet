@@ -1,5 +1,7 @@
 /**
- * 👑 BoseSweets Cloud Engine - الموتور الرسمي والنهائي (V5.2 - Smart Sync & Parallel Edition)
+ * 👑 BoseSweets Cloud Engine - الموتور الرسمي والنهائي (V20.0 - Sovereign Zero-Delay Sync Edition)
+ * تم دمج بروتوكول المزامنة العكسية (Reverse Sync Broadcast) لإجبار العملاء على مسح التخزين المؤقت
+ * فور حدوث أي تعديل من قبل الإدارة.
  * تم تنظيف هذا الملف من "قواعد الأمان" ليعمل كمحرك تشغيل فقط.
  * ملاحظة للإدارة: مفتاح الـ API مدمج الآن بشكل صحيح وبأحدث معايير الأمان.
  * الترقية الجديدة (V5.1): دمج نظام الطابور الذكي لمعالجة الطلبات المعلقة بالتوازي (Parallel Processing)
@@ -44,7 +46,7 @@ db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
 });
 
 /**
- * 🛡️ Engine Upgrade: Reverse Sync Engine (Webhook Fallback)
+ * 🛡️ Engine Upgrade: Reverse Sync Engine (Webhook Fallback & Broadcast)
  * محرك المزامنة العكسية لضمان وصول الطلب للإدارة كخط دفاع بديل وقوي جداً
  * في حال فشل المتصفح في فتح الواتساب، يقوم السيرفر بإرسال بيانات الطلب فوراً.
  */
@@ -61,7 +63,7 @@ const ReverseSyncEngine = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_V5_2',
+                        source: 'BoseSweets_Engine_Sovereign',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
                         customerName: orderData.name,
@@ -77,6 +79,21 @@ const ReverseSyncEngine = {
             }
         } catch (error) {
             console.warn("BoseSweets: Reverse Sync Engine encountered a background issue.", error);
+        }
+    },
+
+    // 👑 التحديث السيادي V20.0: بث إشارة المزامنة اللحظية لإلغاء الكاش عند العملاء
+    broadcastGlobalUpdate() {
+        try {
+            if (typeof db !== 'undefined') {
+                db.collection('system').doc('syncFlag').set({
+                    lastAdminUpdate: Date.now(),
+                    trigger: 'Sovereign_Admin_Update'
+                }, { merge: true }).catch(e => console.warn('BoseSweets Sync Broadcast slightly delayed.'));
+                console.log("BoseSweets 👑: Reverse Sync Signal broadcasted to all clients.");
+            }
+        } catch (error) {
+            console.warn("BoseSweets: Failed to broadcast sync signal.", error);
         }
     }
 };
@@ -146,8 +163,8 @@ const CloudQueueDB = {
 };
 
 /**
- * 🛡️ الموتور الأساسي للتعامل الآمن مع السحابة (NetworkEngine) - ترقية V5.2
- * تم استبدال الكائن بالكامل لدعم المعالجة المتوازية (Parallel Processing)
+ * 🛡️ الموتور الأساسي للتعامل الآمن مع السحابة (NetworkEngine) - ترقية V20.0
+ * تم استبدال الكائن بالكامل لدعم المعالجة المتوازية (Parallel Processing) والمزامنة اللحظية
  * مع إضافة تقنية Jitter لعدم الضغط على سيرفرات فايربيز في نفس اللحظة.
  */
 const NetworkEngine = {
@@ -159,6 +176,9 @@ const NetworkEngine = {
             // تفعيل المزامنة العكسية فوراً إذا كان المكتوب طلباً جديداً
             if(collectionName === 'orders') {
                 ReverseSyncEngine.triggerOrderWebhook(data);
+            } else if (['settings', 'catalog', 'shipping', 'gallery'].includes(collectionName)) {
+                // بث إشارة المزامنة للعملاء عند تحديث الإعدادات أو المنتجات
+                ReverseSyncEngine.broadcastGlobalUpdate();
             }
             
             return true;
@@ -173,6 +193,12 @@ const NetworkEngine = {
         try {
             await db.collection(collectionName).doc(docId).delete();
             console.log(`BoseSweets: Data deleted from [${collectionName}] securely. 👑`);
+            
+            if (['settings', 'catalog', 'shipping', 'gallery'].includes(collectionName)) {
+                // بث إشارة المزامنة للعملاء عند الحذف
+                ReverseSyncEngine.broadcastGlobalUpdate();
+            }
+            
             return true;
         } catch (error) {
             console.warn(`BoseSweets Network Warning: Network fluctuation detected. Queuing delete operation for [${collectionName}] in background... 🔄`);
@@ -213,9 +239,14 @@ const NetworkEngine = {
                             await db.collection(op.collectionName).doc(op.docId).set(op.data, { merge: true });
                             if(op.collectionName === 'orders') {
                                 ReverseSyncEngine.triggerOrderWebhook(op.data);
+                            } else if (['settings', 'catalog', 'shipping', 'gallery'].includes(op.collectionName)) {
+                                ReverseSyncEngine.broadcastGlobalUpdate();
                             }
                         } else if (op.type === 'delete') {
                             await db.collection(op.collectionName).doc(op.docId).delete();
+                            if (['settings', 'catalog', 'shipping', 'gallery'].includes(op.collectionName)) {
+                                ReverseSyncEngine.broadcastGlobalUpdate();
+                            }
                         }
                         
                         await CloudQueueDB.remove(op.queueId);
@@ -301,4 +332,4 @@ window.addEventListener('online', () => NetworkEngine.processQueue());
 // محاولة تفريغ الطابور بعد إقلاع النظام بقليل لضمان تزامن العمليات السابقة عند كل دخول
 setTimeout(() => NetworkEngine.processQueue(), 5000);
 
-console.log("BoseSweets Cloud Engine V5.2: Secured & Connected with Parallel Background Queue & Reverse Sync & Persistence Enabled 👑");
+console.log("BoseSweets Cloud Engine V20.0: Sovereign Zero-Delay Sync & Parallel Background Queue Enabled 👑");

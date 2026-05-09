@@ -13,58 +13,52 @@ export const getImgFallback = function(category) {
 window.getImgFallback = getImgFallback;
 window.currentBuilderStep = 1;
 
-export const getCapsuleDescription = function(p) {
+export const getFinalDescription = function(p) {
     if (!p) return '';
-    let n = (p.name ? String(p.name) : '').trim().toLowerCase();
-    let c = (p.category ? String(p.category) : '').trim().toLowerCase();
-
-    if (c.includes('دوناتس') && n.includes('نوتيلا')) return 'دوناتس تعتمد على عجينة خفيفة محشوة بشيكولاتة نوتيلا أصلية، مجهزة بعناية عشان تديك أعلى جودة.';
-    if (c.includes('سينابون') && n.includes('نوتيلا')) return 'مزيج من عجينة السينابون القطنية القائمة على الخميرة مع صوص النوتيلا الفاخر، اختيار مثالي لعشاق الشيكولاتة.';
-    if (c.includes('قشطوط') && n.includes('نوتيلا')) return 'قشطوطة غنية بالحليب وطبقة قشطة طبيعية مغطاة بالنوتيلا الأصلية لطعم متوازن ومميز.';
-    if (n.includes('كبات') && n.includes('نوتيلا')) return 'طبقات كيك وكريمة نوتيلا غنية في كب بتصميم عصري يناسبك.';
-    if (c.includes('ديسباسيتو') && n.includes('نوتيلا')) return 'فادج كيك شيكولاتة مركز مع طبقة غنية من النوتيلا البرازيلية الأصلية لتجربة طعم فخمة.';
-    if (c.includes('دوناتس') || c.includes('بامبوليني')) return 'عجينة مخبوزات خفيفة مغطاة بصوصات متنوعة محضرة بأعلى معايير الجودة في مطبخ حلويات بوسي.';
-    if (c.includes('سينابون') || n.includes('سينابون')) return 'عجينة قطنية طرية غنية بالقرفة وصوص الجبن المخصوص وتعتمد كلياً على عجين الخميرة المخبوز بعناية.';
-    if (c.includes('ديسباسيتو') || n.includes('ديسباسيتو')) return detailedDescriptions['ديسباسيتو'];
-    if (c.includes('ريد فيلفت') || n.includes('ريد فيلفت')) return detailedDescriptions['ريد فيلفت'];
-    if (c.includes('قشطوط') || n.includes('قشطوط')) return detailedDescriptions['قشطوطة'];
-    if (c.includes('كبات') || n.includes('كبات')) return detailedDescriptions['كبات السعادة'];
-    if (c.includes('جاتوه') || n.includes('جاتوه')) return detailedDescriptions['جاتوه'];
     
-    return 'إصدار فاخر من حلويات بوسي، مجهز بمكونات عالية الجودة عشان تعيش تجربة تذوق استثنائية.';
-};
-window.getCapsuleDescription = getCapsuleDescription;
-
-export const getFinalDescription = function(p, isFullWidth) {
-    if (!p) return '';
-    if (p.desc && typeof p.desc === 'string' && p.desc.trim().length > 3) return escapeHTML(p.desc.trim());
+    // 1. الأولوية المطلقة للوصف المكتوب يدوياً من لوحة التحكم (إذا كان موجوداً)
+    if (p.desc && typeof p.desc === 'string' && p.desc.trim().length > 3) {
+        return escapeHTML(p.desc.trim());
+    }
     
-    let n = (p.name ? String(p.name) : '').trim().toLowerCase();
-    let c = (p.category ? String(p.category) : '').trim().toLowerCase();
-    let sub = (p.subType ? String(p.subType) : (p.size ? String(p.size) : (p.flowerType ? String(p.flowerType) : ''))).trim().toLowerCase();
+    const name = (p.name ? String(p.name) : '').trim();
+    const category = (p.category ? String(p.category) : '').trim();
+    const subType = (p.subType || p.size || '').trim();
     
-    const exactKey1 = `${c} ${n} ${sub}`.trim(); 
-    const exactKey2 = `${n} ${sub}`.trim();      
-    const exactKey3 = `${c} ${sub}`.trim();      
-    const exactKey4 = `${sub}`.trim();           
-    const exactKey5 = `${n}`.trim();             
-
+    // 2. البحث الدقيق في القاموس السيادي بناءً على الاسم أو النكهة
     for (let key in detailedDescriptions) {
-        let kLower = key.toLowerCase();
-        if (exactKey1 === kLower || exactKey2 === kLower || exactKey3 === kLower || exactKey4 === kLower || exactKey5 === kLower) {
+        if (name.includes(key) || `${category} ${subType}`.includes(key)) {
             return detailedDescriptions[key];
         }
     }
     
-    for (let key in detailedDescriptions) {
-        let kLower = key.toLowerCase();
-        if ((n.includes(kLower) || sub.includes(kLower)) && c === 'تورت') return detailedDescriptions[key];
-        if ((n.includes('جاتوه') || c.includes('جاتوه')) && key.includes('جاتوه')) return detailedDescriptions['جاتوه كلاسيك']; 
+    // 3. محرك التوليد الآلي الاحترافي (يُستخدم فقط للأصناف غير المدرجة في القاموس)
+    // يضمن عدم وجود وصف "مقرر" من خلال دمج اسم المنتج وتصنيفه في جملة احترافية
+    let dynamicDesc = `إصدار فاخر من قائمة ${escapeHTML(category)} الخاصة بحلويات بوسي. `;
+    
+    if (category.includes('تورت')) {
+        dynamicDesc = `تورتة ${escapeHTML(name)} مصممة بحرفية عالية لتناسب مناسباتك السعيدة، تعتمد على مكونات طازجة وحشوات غنية تضمن لك تجربة تذوق تليق بضيوفك.`;
+    } else if (category.includes('دوناتس') || category.includes('بامبوليني')) {
+        dynamicDesc = `قطع ${escapeHTML(name)} المحضرة من عجينة مخبوزات خفيفة وطازجة، مدعمة بتغطية غنية ومكونات مضبوطة بدقة لتقديم حلاوة معتدلة وقوام طري.`;
+    } else if (category.includes('سينابون')) {
+        dynamicDesc = `لفائف ${escapeHTML(name)} المخبوزة من عجينة الخميرة الطبيعية، تتميز بقوام قطني هش يتداخل مع الإضافات المميزة لضمان طعم غني في كل قطعة.`;
+    } else if (name.includes('نوتيلا')) {
+        dynamicDesc += `تعتمد تركيبة ${escapeHTML(name)} بشكل أساسي على دمج قوام المنتج مع شوكولاتة النوتيلا الأصلية لرفع القيمة التذوقية وإعطاء طعم مكثف.`;
+    } else if (name.includes('لوتس')) {
+        dynamicDesc += `يتميز ${escapeHTML(name)} بإضافة زبدة اللوتس الكثيفة التي تمنح المنتج نكهة مكرملة وقواماً متكاملاً يلبي تطلعاتك.`;
+    } else {
+        dynamicDesc += `يتم تحضير ${escapeHTML(name)} وفق أعلى معايير الجودة المعتمدة في مطبخنا، بمكونات مختارة بعناية لتقديم مذاق أصيل وموزون.`;
     }
-
-    return getCapsuleDescription(p);
+    
+    return dynamicDesc;
 };
 window.getFinalDescription = getFinalDescription;
+
+// تهميش دالة getCapsuleDescription القديمة وتوجيهها للمحرك الجديد لضمان توحيد مصدر البيانات
+export const getCapsuleDescription = function(p) {
+    return getFinalDescription(p);
+};
+window.getCapsuleDescription = getCapsuleDescription;
 
 export const showHomeView = function() {
     const vMenu = document.getElementById('view-menu'); if(vMenu) vMenu.classList.add('hidden');
@@ -207,11 +201,15 @@ export const applySettingsToUI = function() {
 
     const root = document.documentElement;
     root.style.setProperty('--brand-font', (siteSettings.visuals && siteSettings.visuals.fontFamily) ? siteSettings.visuals.fontFamily : (siteSettings.fontFamily || "'Cairo', sans-serif"));
+    
+    // 👑 الترقية السيادية: تطبيق اللون الرئيسي المختار من لوحة التحكم بشكل شامل
+    const themeColor = (siteSettings.visuals && siteSettings.visuals.themeHex) ? siteSettings.visuals.themeHex : '#ff91a4';
+    root.style.setProperty('--brand-primary', themeColor);
     root.style.setProperty('--site-bg', '#ffffff');
     root.style.setProperty('--site-text', '#1a1a1a');
 
     const loaderTextEl = document.getElementById('dyn-loader-text');
-    if (loaderTextEl) loaderTextEl.innerText = (siteSettings.visuals && siteSettings.visuals.loaderText) ? siteSettings.visuals.loaderText : "حلويات بوسي ✨";
+    if (loaderTextEl) loaderTextEl.innerText = (siteSettings.UI_Settings && siteSettings.UI_Settings.loader_text) ? siteSettings.UI_Settings.loader_text : ((siteSettings.visuals && siteSettings.visuals.loaderText) ? siteSettings.visuals.loaderText : "حلويات بوسي ✨");
 
     if (siteSettings.seo) {
         if (siteSettings.seo.title && siteSettings.seo.title.trim() !== '') {
@@ -250,13 +248,13 @@ export const applySettingsToUI = function() {
     if (siteSettings.UI_Settings) {
         const loader = document.getElementById('global-loader');
         if (loader) {
-            loader.style.backgroundColor = '#ffffff';
+            loader.style.backgroundColor = siteSettings.UI_Settings.loader_bgColor || '#ffffff';
             const loaderTextEl = loader.querySelector('h1');
             if (loaderTextEl) {
-                loaderTextEl.style.color = '#ff91a4';
+                loaderTextEl.style.color = siteSettings.UI_Settings.loader_textColor || '#ff91a4';
             }
             const loaderIcon = loader.querySelector('i');
-            if(loaderIcon) loaderIcon.style.color = '#ff91a4';
+            if(loaderIcon) loaderIcon.style.color = siteSettings.UI_Settings.loader_textColor || '#ff91a4';
         }
     }
 
@@ -269,6 +267,22 @@ export const applySettingsToUI = function() {
     if (siteSettings.social) {
         document.querySelectorAll('a[href*="facebook.com"]').forEach(a => a.href = siteSettings.social.facebook || 'https://facebook.com/BoseSweets');
         document.querySelectorAll('a[href*="instagram.com"]').forEach(a => a.href = siteSettings.social.instagram || 'https://instagram.com/BoseSweets');
+        
+        // 👑 حقن الروابط الشمولية المخصصة في التزييل
+        const footerLinksContainer = document.getElementById('custom-social-links-container');
+        if (footerLinksContainer) {
+            let customHtml = '';
+            if (siteSettings.social.tiktok) customHtml += `<a href="${siteSettings.social.tiktok}" target="_blank" class="w-10 h-10 rounded-full bg-[#ff91a4]/10 text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] flex items-center justify-center transition-all" title="TikTok"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 15.68a6.34 6.34 0 0 0 6.27 6.36 6.33 6.33 0 0 0 6.27-6.36v-6.9a8.16 8.16 0 0 0 4.7 1.48v-3.4a4.85 4.85 0 0 1-2.65-.17z"/></svg></a>`;
+            if (siteSettings.social.whatsapp) customHtml += `<a href="https://wa.me/${siteSettings.social.whatsapp}" target="_blank" class="w-10 h-10 rounded-full bg-[#ff91a4]/10 text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] flex items-center justify-center transition-all" title="WhatsApp"><i data-lucide="message-circle" class="w-5 h-5"></i></a>`;
+            
+            if (siteSettings.social.customLinks && siteSettings.social.customLinks.length > 0) {
+                siteSettings.social.customLinks.forEach(link => {
+                    customHtml += `<a href="${escapeHTML(link.url)}" target="_blank" class="w-10 h-10 rounded-full bg-[#ff91a4]/10 text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] flex items-center justify-center transition-all" title="${escapeHTML(link.label)}"><i data-lucide="link-2" class="w-5 h-5"></i></a>`;
+                });
+            }
+            footerLinksContainer.innerHTML = customHtml;
+            if(window.lucide) lucide.createIcons();
+        }
     }
     
     if(document.getElementById('dyn-page-title')) document.getElementById('dyn-page-title').innerText = `${siteSettings.brandName} | القائمة الرسمية`;
@@ -296,7 +310,6 @@ export const applySettingsToUI = function() {
     
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
 
-    // 👑 الترقية السيادية: نظام التوجيه الذكي للروابط المشتركة (Deep Link Router)
     setTimeout(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('product');
@@ -320,7 +333,7 @@ export const renderCustomerSidebarCategories = function() {
     const container = document.getElementById('sidebar-categories');
     if(!container) return;
     
-    container.innerHTML = catMenu.map(c => `<button onclick="toggleCustomerMenu(false); window.setCategory('${c.name || c}')" class="text-right w-full p-3 rounded-xl font-bold text-sm transition-all hover:bg-[#ffffff] flex items-center justify-between" style="border: 2px solid #ff91a4; color: #1a1a1a;"><span>${c.name === 'ورد' || c === 'ورد' ? 'ورد وهدايا 💐' : (c.name === 'تورت' || c === 'تورت' ? 'تورت وتصميم 🎂' : (c.name || c))}</span><i data-lucide="chevron-left" class="w-4 h-4 opacity-50"></i></button>`).join('');
+    container.innerHTML = catMenu.map(c => `<button onclick="toggleCustomerMenu(false); window.setCategory('${c.name || c}')" class="text-right w-full p-3 rounded-xl font-bold text-sm transition-all hover:bg-[#ffffff] flex items-center justify-between" style="border: 2px solid var(--brand-primary); color: var(--site-text);"><span>${c.name === 'ورد' || c === 'ورد' ? 'ورد وهدايا 💐' : (c.name === 'تورت' || c === 'تورت' ? 'تورت وتصميم 🎂' : (c.name || c))}</span><i data-lucide="chevron-left" class="w-4 h-4 opacity-50"></i></button>`).join('');
     if(window.lucide) lucide.createIcons();
 };
 window.renderCustomerSidebarCategories = renderCustomerSidebarCategories;
@@ -332,7 +345,7 @@ export const renderCustomerGallery = function() {
     if (galleryData.length === 0) { sec.classList.add('hidden'); return; }
     sec.classList.remove('hidden');
     
-    slider.innerHTML = galleryData.map(g => `<div class="shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="openGlobalLightbox('${optimizeCloudinaryUrl(g.url)}')"><div class="w-32 h-40 md:w-40 md:h-52 rounded-2xl overflow-hidden shadow-sm border-2 border-[#ff91a4]"><img src="${optimizeCloudinaryUrl(g.url)}" class="w-full h-full object-cover" loading="lazy" alt="سابقة أعمال حلويات بوسي" onerror="this.onerror=null; this.src=window.getImgFallback('سابقة أعمال');"></div></div>`).join('');
+    slider.innerHTML = galleryData.map(g => `<div class="shrink-0 cursor-pointer hover:scale-105 transition-transform" onclick="openGlobalLightbox('${optimizeCloudinaryUrl(g.url)}')"><div class="w-32 h-40 md:w-40 md:h-52 rounded-2xl overflow-hidden shadow-sm border-2 border-[var(--brand-primary)]"><img src="${optimizeCloudinaryUrl(g.url)}" class="w-full h-full object-cover" loading="lazy" alt="سابقة أعمال حلويات بوسي" onerror="this.onerror=null; this.src=window.getImgFallback('سابقة أعمال');"></div></div>`).join('');
 };
 window.renderCustomerGallery = renderCustomerGallery;
 
@@ -374,8 +387,8 @@ export const initWaterfall = function() {
         return `
             <div class="waterfall-card cursor-pointer group relative" onclick="window.navigateToProduct('${item.id}')" title="اضغط لاستعراض تفاصيل ${escapeHTML(item.name)}">
                 <img src="${url}" loading="lazy" decoding="async" class="transition-transform duration-500 group-hover:scale-105" alt="صنف ${escapeHTML(item.name)} من قسم ${escapeHTML(item.category)} - حلويات بوسي بمركز الفرافرة" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(item.category)}');">
-                <div class="absolute inset-x-0 bottom-0 bg-[#ffffff]/80 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start border-t-2 border-[#ff91a4]">
-                    <span class="text-[#ff91a4] text-xs font-bold truncate tracking-wide">${escapeHTML(item.name)}</span>
+                <div class="absolute inset-x-0 bottom-0 bg-[#ffffff]/80 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start border-t-2 border-[var(--brand-primary)]">
+                    <span class="text-[var(--brand-primary)] text-xs font-bold truncate tracking-wide">${escapeHTML(item.name)}</span>
                 </div>
             </div>`;
     };
@@ -388,40 +401,80 @@ export const initWaterfall = function() {
 };
 window.initWaterfall = initWaterfall;
 
+// 👑 حقن الأقسام الديناميكية للمناسبات (Sovereign Dynamic Sections Injection)
 export const initHomepageSections = function() {
     const sectionBS = document.getElementById('section-bestsellers');
     const sectionNA = document.getElementById('section-newarrivals');
     const bsContainer = document.getElementById('bestsellers-container');
     const naContainer = document.getElementById('newarrivals-container');
     
-    if (!bsContainer && !naContainer) return;
+    // 1. الأقسام الثابتة
+    if (bsContainer && naContainer) {
+        const bestSellers = catalog.filter(p => p.badge && (p.badge.includes('مبيعاً') || p.badge.includes('مبيعات'))).slice(0, 8);
+        const newArrivals = catalog.filter(p => p.badge && (p.badge.includes('جديد') || p.badge.includes('🌟'))).slice(0, 8);
 
-    const bestSellers = catalog.filter(p => p.badge && (p.badge.includes('مبيعاً') || p.badge.includes('مبيعات'))).slice(0, 8);
-    const newArrivals = catalog.filter(p => p.badge && (p.badge.includes('جديد') || p.badge.includes('🌟'))).slice(0, 8);
+        const fallbackBS = bestSellers.length > 0 ? bestSellers : catalog.slice(0, 6);
+        const fallbackNA = newArrivals.length > 0 ? newArrivals : catalog.slice().reverse().slice(0, 6);
 
-    const fallbackBS = bestSellers.length > 0 ? bestSellers : catalog.slice(0, 6);
-    const fallbackNA = newArrivals.length > 0 ? newArrivals : catalog.slice().reverse().slice(0, 6);
+        if (bsContainer && fallbackBS.length > 0) {
+            if(sectionBS) sectionBS.classList.remove('hidden');
+            bsContainer.innerHTML = fallbackBS.map(p => `<div class="shrink-0 w-[300px] snap-center">${window.drawProductCard(p)}</div>`).join('');
+        } else {
+            if(sectionBS) sectionBS.classList.add('hidden');
+        }
 
-    if (bsContainer && fallbackBS.length > 0) {
-        if(sectionBS) sectionBS.classList.remove('hidden');
-        bsContainer.innerHTML = fallbackBS.map(p => `
-            <div class="shrink-0 w-[300px] snap-center">
-                ${window.drawProductCard(p)}
-            </div>
-        `).join('');
-    } else {
-        if(sectionBS) sectionBS.classList.add('hidden');
+        if (naContainer && fallbackNA.length > 0) {
+            if(sectionNA) sectionNA.classList.remove('hidden');
+            naContainer.innerHTML = fallbackNA.map(p => `<div class="shrink-0 w-[300px] snap-center">${window.drawProductCard(p)}</div>`).join('');
+        } else {
+            if(sectionNA) sectionNA.classList.add('hidden');
+        }
     }
 
-    if (naContainer && fallbackNA.length > 0) {
-        if(sectionNA) sectionNA.classList.remove('hidden');
-        naContainer.innerHTML = fallbackNA.map(p => `
-            <div class="shrink-0 w-[300px] snap-center">
-                ${window.drawProductCard(p)}
-            </div>
-        `).join('');
-    } else {
-        if(sectionNA) sectionNA.classList.add('hidden');
+    // 2. 👑 الأقسام الديناميكية المبتكرة من لوحة التحكم (Dynamic Sections Engine)
+    let dynContainer = document.getElementById('dynamic-sections-container');
+    const homeView = document.getElementById('view-home');
+    
+    if (homeView && siteSettings.dynamicSections && siteSettings.dynamicSections.length > 0) {
+        if (!dynContainer) {
+            dynContainer = document.createElement('div');
+            dynContainer.id = 'dynamic-sections-container';
+            dynContainer.className = 'w-full flex flex-col gap-12 mt-12';
+            if (sectionNA) {
+                sectionNA.parentNode.insertBefore(dynContainer, sectionNA.nextSibling);
+            } else {
+                homeView.appendChild(dynContainer);
+            }
+        }
+        
+        const activeDynSections = siteSettings.dynamicSections.filter(s => s.active).sort((a,b) => (a.order || 0) - (b.order || 0));
+        
+        dynContainer.innerHTML = activeDynSections.map(sec => {
+            const sectionProducts = catalog.filter(p => p.badge && p.badge.includes(sec.title)).slice(0, 8);
+            if (sectionProducts.length === 0) return ''; // لا ترسم القسم إذا كان فارغاً
+            
+            let itemsHtml = '';
+            if (sec.type === 'slider') {
+                itemsHtml = `<div class="relative w-full"><div id="dyn-slider-${sec.id}" class="flex overflow-x-auto gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scrollbar scroll-smooth pl-4">${sectionProducts.map(p => `<div class="shrink-0 w-[300px] snap-center">${window.drawProductCard(p)}</div>`).join('')}</div></div>`;
+            } else if (sec.type === 'grid') {
+                itemsHtml = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">${sectionProducts.map(p => window.drawProductCard(p)).join('')}</div>`;
+            } else {
+                itemsHtml = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">${sectionProducts.map(p => window.drawProductCard(p)).join('')}</div>`;
+            }
+
+            return `
+            <section class="w-full relative z-10 animate-fade-in mb-8">
+                <div class="px-6 md:px-12 mb-8 flex justify-between items-end border-r-4 border-[var(--brand-primary)]">
+                    <div>
+                        <h2 class="text-3xl font-black text-[var(--site-text)] leading-tight">${escapeHTML(sec.title)}</h2>
+                        <p class="text-[var(--brand-primary)] text-sm font-bold mt-2 tracking-wide">أحدث الإضافات لعلامة حلويات بوسي</p>
+                    </div>
+                </div>
+                ${itemsHtml}
+            </section>`;
+        }).join('');
+    } else if (dynContainer) {
+        dynContainer.innerHTML = '';
     }
     
     if (window.lucide) lucide.createIcons();
@@ -452,31 +505,30 @@ export const renderCategories = function() {
     const el = document.getElementById('categories-nav');
     if(!el) return;
     
-    el.innerHTML = catMenu.map(c => `<button id="cat-btn-${(c.name || c).replace(/\s+/g, '-')}" onclick="window.setCategory('${c.name || c}')" class="cat-pill whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === (c.name || c) ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4]' : 'bg-[#ffffff] text-[#1a1a1a] border-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">${c.name === 'ورد' || c === 'ورد' ? 'ورد وهدايا 💐' : (c.name === 'تورت' || c === 'تورت' ? 'تورت وتصميم 🎂' : (c.name || c))}</button>`).join('');
+    el.innerHTML = catMenu.map(c => `<button id="cat-btn-${(c.name || c).replace(/\s+/g, '-')}" onclick="window.setCategory('${c.name || c}')" class="cat-pill whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === (c.name || c) ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)]' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${c.name === 'ورد' || c === 'ورد' ? 'ورد وهدايا 💐' : (c.name === 'تورت' || c === 'تورت' ? 'تورت وتصميم 🎂' : (c.name || c))}</button>`).join('');
 };
 window.renderCategories = renderCategories;
 
 export const setActiveCategoryPill = function(catName) {
     document.querySelectorAll('.cat-pill').forEach(btn => {
-        btn.classList.remove('bg-[#ff91a4]', 'text-[#ffffff]');
-        btn.classList.add('bg-[#ffffff]', 'text-[#1a1a1a]');
+        btn.classList.remove('bg-[var(--brand-primary)]', 'text-[#ffffff]');
+        btn.classList.add('bg-[#ffffff]', 'text-[var(--site-text)]');
     });
     const safeId = String(catName).replace(/\s+/g, '-');
     const activeBtn = document.getElementById(`cat-btn-${safeId}`);
     if (activeBtn) {
-        activeBtn.classList.remove('bg-[#ffffff]', 'text-[#1a1a1a]');
-        activeBtn.classList.add('bg-[#ff91a4]', 'text-[#ffffff]');
+        activeBtn.classList.remove('bg-[#ffffff]', 'text-[var(--site-text)]');
+        activeBtn.classList.add('bg-[var(--brand-primary)]', 'text-[#ffffff]');
         activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
     }
 };
 window.setActiveCategoryPill = setActiveCategoryPill;
 
 export const renderFlowerTabs = function(container) {
-    container.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 bg-[#ffffff] border-[#ff91a4] flex flex-wrap justify-center gap-2">${fTypes.map(f => `<button onclick="window.setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.fType === f ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4]' : 'bg-[#ffffff] text-[#1a1a1a] border-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">${f}</button>`).join('')}</div>`;
+    container.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 bg-[#ffffff] border-[var(--brand-primary)] flex flex-wrap justify-center gap-2">${fTypes.map(f => `<button onclick="window.setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.fType === f ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)]' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${f}</button>`).join('')}</div>`;
 };
 window.renderFlowerTabs = renderFlowerTabs;
 
-// 👑 نظام التحديث الجزئي للواجهة (Virtual Patcher) لمنع إعادة التحميل الكامل مدمج برمجياً داخل المحرك
 export const enforceCategoryRender = function(containerId, productsHTML) {
     const container = document.getElementById(containerId);
     if (container) {
@@ -530,7 +582,7 @@ export const renderMainDisplay = function() {
         catDescArea.classList.add('hidden');
     }
 
-    let breadcrumbHtml = `<nav class="flex items-center gap-2 text-sm font-bold text-[#1a1a1a] mb-6 justify-center w-full"><span class="cursor-pointer hover:text-[#ff91a4]" onclick="window.showHomeView ? window.showHomeView() : goToHome()">الرئيسية</span> <i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> <span class="text-[#ff91a4]">${state.activeCat}</span></nav>`;
+    let breadcrumbHtml = `<nav class="flex items-center gap-2 text-sm font-bold text-[var(--site-text)] mb-6 justify-center w-full"><span class="cursor-pointer hover:text-[var(--brand-primary)]" onclick="window.showHomeView ? window.showHomeView() : goToHome()">الرئيسية</span> <i data-lucide="chevron-left" class="w-4 h-4 text-[var(--brand-primary)]"></i> <span class="text-[var(--brand-primary)]">${state.activeCat}</span></nav>`;
 
     const container = document.getElementById('display-container'); 
     const subTabs = document.getElementById('sub-tabs-area');
@@ -544,7 +596,7 @@ export const renderMainDisplay = function() {
     
     if (state.activeCat === 'تورت') { 
         container.className = 'w-full animate-fade-in';
-        targetHTML = breadcrumbHtml + `<div id="cake-builder-steps-wrapper" class="w-full mt-6 rounded-[3rem] shadow-2xl border-2 overflow-hidden bg-[#ffffff] border-[#ff91a4]"></div>`; 
+        targetHTML = breadcrumbHtml + `<div id="cake-builder-steps-wrapper" class="w-full mt-6 rounded-[3rem] shadow-2xl border-2 overflow-hidden bg-[#ffffff] border-[var(--brand-primary)]"></div>`; 
         setTimeout(() => { if(window.renderMultiStepCakeBuilder) window.renderMultiStepCakeBuilder(); }, 10);
     } 
     else if (state.activeCat === 'ورد') {
@@ -554,7 +606,7 @@ export const renderMainDisplay = function() {
         fTypes.forEach(type => {
             const list = catalog.filter(p => p && p.category === 'ورد' && (p.flowerType === type || (p.desc && typeof p.desc === 'string' && p.desc.includes(type))));
             if(list.length > 0) { 
-                flowerHtml += `<div id="flower-group-${type.replace(/\s+/g, '-')}" class="space-y-6 animate-fade-in"><div class="flex items-center gap-4 mb-4"><h3 class="font-black text-xl text-[#ff91a4] shrink-0">${type}</h3><div class="h-[2px] w-full bg-[#ff91a4]"></div></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 items-stretch">${list.map(p => window.drawProductCard(p)).join('')}</div></div>`; 
+                flowerHtml += `<div id="flower-group-${type.replace(/\s+/g, '-')}" class="space-y-6 animate-fade-in"><div class="flex items-center gap-4 mb-4"><h3 class="font-black text-xl text-[var(--brand-primary)] shrink-0">${type}</h3><div class="h-[2px] w-full bg-[var(--brand-primary)]"></div></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 items-stretch">${list.map(p => window.drawProductCard(p)).join('')}</div></div>`; 
             }
         });
         flowerHtml += `</div>`; 
@@ -586,7 +638,7 @@ export const renderMainDisplay = function() {
         
         if (list.length === 0) {
             container.className = 'w-full animate-fade-in';
-            targetHTML = breadcrumbHtml + `<div class="text-center py-20"><i data-lucide="package-x" class="w-16 h-16 mx-auto mb-4 text-[#ff91a4]"></i><p class="font-bold text-[#1a1a1a]">جاري إعداد منتجات فاخرة في هذا القسم.</p></div>`;
+            targetHTML = breadcrumbHtml + `<div class="text-center py-20"><i data-lucide="package-x" class="w-16 h-16 mx-auto mb-4 text-[var(--brand-primary)]"></i><p class="font-bold text-[var(--site-text)]">جاري إعداد منتجات فاخرة في هذا القسم.</p></div>`;
         }
     }
 
@@ -597,7 +649,7 @@ export const renderMainDisplay = function() {
         subTabs.classList.remove('hidden');
         if (state.activeCat === 'ورد') renderFlowerTabs(subTabs);
         if (state.activeCat === 'ديسباسيتو') {
-            subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 flex justify-center gap-2 bg-[#ffffff] border-[#ff91a4]">${dSizes.map(s => `<button onclick="window.setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.dSize === s ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4]' : 'bg-[#ffffff] text-[#1a1a1a] border-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">${s}</button>`).join('')}</div>`;
+            subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 flex justify-center gap-2 bg-[#ffffff] border-[var(--brand-primary)]">${dSizes.map(s => `<button onclick="window.setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.dSize === s ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)]' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${s}</button>`).join('')}</div>`;
         }
     } else {
         subTabs.classList.add('hidden');
@@ -641,57 +693,57 @@ export const navigateToProduct = function(productId) {
     let imagesGalleryHtml = '';
     if (prod.images && prod.images.length > 1) {
         imagesGalleryHtml = `<div class="flex gap-2 mt-4 overflow-x-auto hide-scrollbar pb-2">
-            ${prod.images.map(img => `<img src="${optimizeCloudinaryUrl(img)}" onclick="document.getElementById('main-prod-img-${prod.id}').src='${optimizeCloudinaryUrl(img)}'" class="w-16 h-16 rounded-xl object-cover border-2 border-[#ff91a4] cursor-pointer hover:opacity-80 transition-opacity">`).join('')}
+            ${prod.images.map(img => `<img src="${optimizeCloudinaryUrl(img)}" onclick="document.getElementById('main-prod-img-${prod.id}').src='${optimizeCloudinaryUrl(img)}'" class="w-16 h-16 rounded-xl object-cover border-2 border-[var(--brand-primary)] cursor-pointer hover:opacity-80 transition-opacity">`).join('')}
         </div>`;
     }
     
     container.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start bg-[#ffffff] p-6 rounded-[2.5rem] border-2 border-[#ff91a4] shadow-sm max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start bg-[#ffffff] p-6 rounded-[2.5rem] border-2 border-[var(--brand-primary)] shadow-sm max-w-4xl mx-auto">
             <div class="flex flex-col">
-                <div class="rounded-2xl overflow-hidden bg-[#ffffff] border-2 border-[#ff91a4] h-64 md:h-[350px] relative" onclick="openGlobalLightbox(document.getElementById('main-prod-img-${prod.id}').src)">
+                <div class="rounded-2xl overflow-hidden bg-[#ffffff] border-2 border-[var(--brand-primary)] h-64 md:h-[350px] relative" onclick="openGlobalLightbox(document.getElementById('main-prod-img-${prod.id}').src)">
                     <img id="main-prod-img-${prod.id}" src="${imageUrl}" class="w-full h-full object-contain cursor-pointer transition-transform duration-300 hover:scale-105 ${isOutOfStock ? 'grayscale opacity-60' : ''}" alt="صنف ${escapeHTML(prod.name)} من قسم ${escapeHTML(prod.category)} - حلويات بوسي بمركز الفرافرة" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(prod.category)}');">
-                    ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/40 flex items-center justify-center"><span class="bg-[#ff91a4] text-[#ffffff] px-4 py-2 rounded-xl text-xs font-bold shadow border-2 border-[#ffffff]">نفدت الكمية</span></div>` : ''}
+                    ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/40 flex items-center justify-center"><span class="bg-[var(--brand-primary)] text-[#ffffff] px-4 py-2 rounded-xl text-xs font-bold shadow border-2 border-[#ffffff]">نفدت الكمية</span></div>` : ''}
                 </div>
                 ${imagesGalleryHtml}
             </div>
             <div class="space-y-4 text-right flex flex-col h-full justify-between">
                 <div class="space-y-2">
-                    <span class="inline-block px-3 py-1 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-md text-[11px] font-bold">${escapeHTML(prod.category)}</span>
-                    <h2 class="text-xl font-black text-[#1a1a1a]">${escapeHTML(prod.name)}</h2>
-                    <p class="text-[#1a1a1a] text-xs leading-relaxed font-bold">${escapeHTML(prod.desc || getFinalDescription(prod))}</p>
+                    <span class="inline-block px-3 py-1 bg-[#ffffff] border-2 border-[var(--brand-primary)] text-[var(--brand-primary)] rounded-md text-[11px] font-bold">${escapeHTML(prod.category)}</span>
+                    <h2 class="text-xl font-black text-[var(--site-text)]">${escapeHTML(prod.name)}</h2>
+                    <p class="text-[var(--site-text)] text-xs leading-relaxed font-bold">${escapeHTML(prod.desc || getFinalDescription(prod))}</p>
                 </div>
-                <div class="pt-4 border-t-2 border-[#ff91a4] space-y-4">
-                    <div class="flex justify-between items-center bg-[#ffffff] border-2 border-[#ff91a4] p-4 rounded-xl">
-                        <span class="text-xs font-bold text-[#1a1a1a]">السعر:</span>
-                        <span class="text-xl font-black text-[#ff91a4]">${prod.price > 0 ? prod.price + ' ج.م' : 'حسب الطلب'}</span>
+                <div class="pt-4 border-t-2 border-[var(--brand-primary)] space-y-4">
+                    <div class="flex justify-between items-center bg-[#ffffff] border-2 border-[var(--brand-primary)] p-4 rounded-xl">
+                        <span class="text-xs font-bold text-[var(--site-text)]">السعر:</span>
+                        <span class="text-xl font-black text-[var(--brand-primary)]">${prod.price > 0 ? prod.price + ' ج.م' : 'حسب الطلب'}</span>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="window.showMenuView ? window.showMenuView() : window.setCategory('${prod.category}')" class="px-4 py-3 bg-[#ffffff] text-[#1a1a1a] rounded-full font-bold text-xs active:scale-95 transition-all border-2 border-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff]">العودة للمنيو</button>
+                        <button onclick="window.showMenuView ? window.showMenuView() : window.setCategory('${prod.category}')" class="px-4 py-3 bg-[#ffffff] text-[var(--site-text)] rounded-full font-bold text-xs active:scale-95 transition-all border-2 border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]">العودة للمنيو</button>
                         ${isOutOfStock ? 
-                            `<button class="flex-1 py-3 bg-[#ffffff] text-[#1a1a1a] rounded-full font-black text-xs cursor-not-allowed text-center border-2 border-[#ff91a4]">غير متوفر حالياً</button>` : 
-                            `<button onclick="window.addWithQtyContext(this, '${prod.id}')" class="flex-1 py-3 bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4] rounded-full font-black text-xs text-center shadow-md hover:bg-[#ffffff] hover:text-[#ff91a4]">إضافة للسلة 🛍️</button>`
+                            `<button class="flex-1 py-3 bg-[#ffffff] text-[var(--site-text)] rounded-full font-black text-xs cursor-not-allowed text-center border-2 border-[var(--brand-primary)]">غير متوفر حالياً</button>` : 
+                            `<button onclick="window.addWithQtyContext(this, '${prod.id}')" class="flex-1 py-3 bg-[var(--brand-primary)] text-[#ffffff] border-2 border-[var(--brand-primary)] rounded-full font-black text-xs text-center shadow-md hover:bg-[#ffffff] hover:text-[var(--brand-primary)]">إضافة للسلة 🛍️</button>`
                         }
                     </div>
                 </div>
-                <div class="pt-6 mt-4 border-t-2 border-[#ff91a4] w-full">
-                    <h3 class="font-black text-[#1a1a1a] text-sm mb-4 flex items-center gap-2"><i data-lucide="star" class="w-4 h-4 text-[#ff91a4]"></i> آراء عملاء بوسي</h3>
+                <div class="pt-6 mt-4 border-t-2 border-[var(--brand-primary)] w-full">
+                    <h3 class="font-black text-[var(--site-text)] text-sm mb-4 flex items-center gap-2"><i data-lucide="star" class="w-4 h-4 text-[var(--brand-primary)]"></i> آراء عملاء بوسي</h3>
                     <div id="reviews-list-${prod.id}" class="space-y-3 min-h-[50px]">
-                        <p class="text-xs text-[#1a1a1a] font-bold text-center py-4">جاري تحميل الآراء...</p>
+                        <p class="text-xs text-[var(--site-text)] font-bold text-center py-4">جاري تحميل الآراء...</p>
                     </div>
-                    <div class="mt-6 bg-[#ffffff] p-4 rounded-[2rem] border-2 border-[#ff91a4]">
-                        <h4 class="font-black text-[#1a1a1a] text-xs mb-3 flex items-center gap-1.5"><i data-lucide="edit-3" class="w-4 h-4 text-[#ff91a4]"></i> رأيك بيفرق معانا.. شاركنا تجربتك مع طعم حلويات بوسي</h4>
+                    <div class="mt-6 bg-[#ffffff] p-4 rounded-[2rem] border-2 border-[var(--brand-primary)]">
+                        <h4 class="font-black text-[var(--site-text)] text-xs mb-3 flex items-center gap-1.5"><i data-lucide="edit-3" class="w-4 h-4 text-[var(--brand-primary)]"></i> رأيك بيفرق معانا.. شاركنا تجربتك مع طعم حلويات بوسي</h4>
                         <div class="space-y-3">
-                            <input type="text" id="review-cust-name-${prod.id}" placeholder="الاسم..." class="w-full p-3 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-xs font-bold focus:outline-none text-[#1a1a1a]">
-                            <textarea id="review-cust-comment-${prod.id}" rows="2" placeholder="رأيك في الطعم والجودة..." class="w-full p-3 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-xs font-bold focus:outline-none text-[#1a1a1a] resize-none"></textarea>
-                            <div class="flex justify-between items-center bg-[#ffffff] p-2 rounded-xl border-2 border-[#ff91a4]">
-                                <span class="text-[10px] font-bold text-[#1a1a1a]">التقييم:</span>
-                                <select id="review-cust-rating-${prod.id}" class="text-xs font-black text-[#ff91a4] bg-transparent focus:outline-none border-none">
+                            <input type="text" id="review-cust-name-${prod.id}" placeholder="الاسم..." class="w-full p-3 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl text-xs font-bold focus:outline-none text-[var(--site-text)]">
+                            <textarea id="review-cust-comment-${prod.id}" rows="2" placeholder="رأيك في الطعم والجودة..." class="w-full p-3 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl text-xs font-bold focus:outline-none text-[var(--site-text)] resize-none"></textarea>
+                            <div class="flex justify-between items-center bg-[#ffffff] p-2 rounded-xl border-2 border-[var(--brand-primary)]">
+                                <span class="text-[10px] font-bold text-[var(--site-text)]">التقييم:</span>
+                                <select id="review-cust-rating-${prod.id}" class="text-xs font-black text-[var(--brand-primary)] bg-transparent focus:outline-none border-none">
                                     <option value="5">⭐⭐⭐⭐⭐ (ممتاز)</option>
                                     <option value="4">⭐⭐⭐⭐ (جيد جداً)</option>
                                     <option value="3">⭐⭐⭐ (متوسط)</option>
                                 </select>
                             </div>
-                            <button id="review-submit-btn-${prod.id}" onclick="window.submitCustomerReviewLive('${prod.id}')" class="w-full py-2.5 bg-[#ff91a4] text-[#ffffff] rounded-xl text-xs font-black shadow-sm border-2 border-[#ff91a4] hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all">إرسال التقييم</button>
+                            <button id="review-submit-btn-${prod.id}" onclick="window.submitCustomerReviewLive('${prod.id}')" class="w-full py-2.5 bg-[var(--brand-primary)] text-[#ffffff] rounded-xl text-xs font-black shadow-sm border-2 border-[var(--brand-primary)] hover:bg-[#ffffff] hover:text-[var(--brand-primary)] transition-all">إرسال التقييم</button>
                         </div>
                     </div>
                 </div>
@@ -729,131 +781,131 @@ export const renderMultiStepCakeBuilder = function() {
 
     if (window.currentBuilderStep === 1) {
         stepContentHTML = `
-            <div class="relative w-full h-48 md:h-64 rounded-t-[3rem] overflow-hidden bg-[#ffffff] border-b-2 border-[#ff91a4]">
+            <div class="relative w-full h-48 md:h-64 rounded-t-[3rem] overflow-hidden bg-[#ffffff] border-b-2 border-[var(--brand-primary)]">
                 <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" class="w-full h-full object-cover opacity-90" alt="تصميم تورت حلويات بوسي">
                 <div class="absolute inset-0 bg-gradient-to-t from-[#ffffff] to-transparent"></div>
                 <div class="absolute bottom-6 w-full text-center px-4">
-                    <h2 class="text-3xl font-black uppercase tracking-tight text-[#ff91a4] drop-shadow-md">صمم تورتة مناسبتك السعيدة 👑</h2>
+                    <h2 class="text-3xl font-black uppercase tracking-tight text-[var(--brand-primary)] drop-shadow-md">صمم تورتة مناسبتك السعيدة 👑</h2>
                 </div>
             </div>
             <div class="cake-builder-step-panel step-active p-8 md:p-12 space-y-8 bg-[#ffffff]">
-                <div class="bg-[#ffffff] border-2 border-[#ff91a4] rounded-2xl p-4 text-center">
-                    <p class="text-xs font-bold text-[#1a1a1a]"><i data-lucide="info" class="w-4 h-4 inline text-[#ff91a4]"></i> تنويه احترافي: لضمان أعلى جودة، يُفضل تأكيد طلبات التورت المخصصة قبل الموعد بـ 48 ساعة.</p>
+                <div class="bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-2xl p-4 text-center">
+                    <p class="text-xs font-bold text-[var(--site-text)]"><i data-lucide="info" class="w-4 h-4 inline text-[var(--brand-primary)]"></i> تنويه احترافي: لضمان أعلى جودة، يُفضل تأكيد طلبات التورت المخصصة قبل الموعد بـ 48 ساعة.</p>
                 </div>
                 <div class="space-y-4">
-                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="calendar-heart" class="w-5 h-5 text-[#ff91a4]"></i> نوع المناسبة السعيدة</label>
-                    <input type="text" value="${escapeHTML(cakeState.occasion)}" oninput="cakeState.occasion = this.value" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-sm font-bold focus:outline-none" placeholder="مثال: عيد ميلاد، خطوبة، تخرج، ذكرى زواج...">
+                    <label class="block font-black text-lg text-[var(--site-text)] flex items-center gap-3"><i data-lucide="calendar-heart" class="w-5 h-5 text-[var(--brand-primary)]"></i> نوع المناسبة السعيدة</label>
+                    <input type="text" value="${escapeHTML(cakeState.occasion)}" oninput="cakeState.occasion = this.value" class="w-full p-4 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl text-sm font-bold focus:outline-none" placeholder="مثال: عيد ميلاد، خطوبة، تخرج، ذكرى زواج...">
                 </div>
-                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
-                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="cake" class="w-5 h-5 text-[#ff91a4]"></i> نكهة الكيك الأساسي</label>
+                <div class="space-y-4 pt-4 border-t-2 border-[var(--brand-primary)]">
+                    <label class="block font-black text-lg text-[var(--site-text)] flex items-center gap-3"><i data-lucide="cake" class="w-5 h-5 text-[var(--brand-primary)]"></i> نكهة الكيك الأساسي</label>
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         ${(siteSettings.cakeBuilder.flavors || ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت']).map(fl => `
-                            <button onclick="window.updateCakeBuilderField('flavor', '${fl}')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.flavor === fl ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">${fl}</button>
+                            <button onclick="window.updateCakeBuilderField('flavor', '${fl}')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.flavor === fl ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-md transform scale-105' : 'bg-[#ffffff] border-[var(--brand-primary)] text-[var(--site-text)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${fl}</button>
                         `).join('')}
                     </div>
                 </div>
-                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
-                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="box" class="w-5 h-5 text-[#ff91a4]"></i> التصميم والشكل الهندسي</label>
+                <div class="space-y-4 pt-4 border-t-2 border-[var(--brand-primary)]">
+                    <label class="block font-black text-lg text-[var(--site-text)] flex items-center gap-3"><i data-lucide="box" class="w-5 h-5 text-[var(--brand-primary)]"></i> التصميم والشكل الهندسي</label>
                     <div class="grid grid-cols-3 gap-4">
                         ${['دائري', 'مربع', 'مستطيل'].map(sh => `
-                            <button onclick="window.updateCakeBuilderField('shape', '${sh}')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.shape === sh ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">${sh}</button>
+                            <button onclick="window.updateCakeBuilderField('shape', '${sh}')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.shape === sh ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-md transform scale-105' : 'bg-[#ffffff] border-[var(--brand-primary)] text-[var(--site-text)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${sh}</button>
                         `).join('')}
                     </div>
                 </div>
                 <div class="flex justify-end pt-6 mt-4">
-                    <button onclick="window.changeBuilderStep(1)" class="px-8 py-4 bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4] font-black text-sm rounded-full shadow-lg hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all">التالي: الحجم والطباعة ⬅️</button>
+                    <button onclick="window.changeBuilderStep(1)" class="px-8 py-4 bg-[var(--brand-primary)] text-[#ffffff] border-2 border-[var(--brand-primary)] font-black text-sm rounded-full shadow-lg hover:bg-[#ffffff] hover:text-[var(--brand-primary)] transition-all">التالي: الحجم والطباعة ⬅️</button>
                 </div>
             </div>`;
     }
     else if (window.currentBuilderStep === 2) {
         stepContentHTML = `
-            <div class="p-10 text-center bg-[#ffffff] border-b-2 border-[#ff91a4] relative z-10 rounded-t-[3rem]">
-                <h2 class="text-3xl font-black mb-4 uppercase tracking-tight text-[#ff91a4]">الحجم وتفاصيل التصميم</h2>
+            <div class="p-10 text-center bg-[#ffffff] border-b-2 border-[var(--brand-primary)] relative z-10 rounded-t-[3rem]">
+                <h2 class="text-3xl font-black mb-4 uppercase tracking-tight text-[var(--brand-primary)]">الحجم وتفاصيل التصميم</h2>
             </div>
             <div class="cake-builder-step-panel step-active p-8 md:p-12 space-y-8 bg-[#ffffff]">
                 <div class="space-y-4">
-                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="users" class="w-5 h-5 text-[#ff91a4]"></i> عدد الأفراد (حجم التورتة)</label>
-                    <div class="flex items-center justify-between border-2 rounded-[2rem] p-4 bg-[#ffffff] border-[#ff91a4] max-w-md mx-auto">
-                        <button onclick="window.adjustBuilderPersons(-2)" class="p-3 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-2xl flex items-center justify-center font-black shadow-sm hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="minus" class="w-6 h-6"></i></button>
-                        <span class="text-4xl font-black text-[#1a1a1a]">${cakeState.persons}</span>
-                        <button onclick="window.adjustBuilderPersons(2)" class="p-3 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-2xl flex items-center justify-center font-black shadow-sm hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="plus" class="w-6 h-6"></i></button>
+                    <label class="block font-black text-lg text-[var(--site-text)] flex items-center gap-3"><i data-lucide="users" class="w-5 h-5 text-[var(--brand-primary)]"></i> عدد الأفراد (حجم التورتة)</label>
+                    <div class="flex items-center justify-between border-2 rounded-[2rem] p-4 bg-[#ffffff] border-[var(--brand-primary)] max-w-md mx-auto">
+                        <button onclick="window.adjustBuilderPersons(-2)" class="p-3 bg-[#ffffff] border-2 border-[var(--brand-primary)] text-[var(--brand-primary)] rounded-2xl flex items-center justify-center font-black shadow-sm hover:bg-[var(--brand-primary)] hover:text-[#ffffff] transition-all"><i data-lucide="minus" class="w-6 h-6"></i></button>
+                        <span class="text-4xl font-black text-[var(--site-text)]">${cakeState.persons}</span>
+                        <button onclick="window.adjustBuilderPersons(2)" class="p-3 bg-[#ffffff] border-2 border-[var(--brand-primary)] text-[var(--brand-primary)] rounded-2xl flex items-center justify-center font-black shadow-sm hover:bg-[var(--brand-primary)] hover:text-[#ffffff] transition-all"><i data-lucide="plus" class="w-6 h-6"></i></button>
                     </div>
                 </div>
-                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
-                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="palette" class="w-5 h-5 text-[#ff91a4]"></i> أسلوب التصميم</label>
+                <div class="space-y-4 pt-4 border-t-2 border-[var(--brand-primary)]">
+                    <label class="block font-black text-lg text-[var(--site-text)] flex items-center gap-3"><i data-lucide="palette" class="w-5 h-5 text-[var(--brand-primary)]"></i> أسلوب التصميم</label>
                     <div class="grid grid-cols-2 gap-4">
-                        <button onclick="window.updateCakeBuilderField('designStyle', 'تصميم محدد')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.designStyle === 'تصميم محدد' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">عندي تصميم محدد</button>
-                        <button onclick="window.updateCakeBuilderField('designStyle', 'على ذوق بوسي')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.designStyle === 'على ذوق بوسي' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">سيب الإبداع علينا</button>
+                        <button onclick="window.updateCakeBuilderField('designStyle', 'تصميم محدد')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.designStyle === 'تصميم محدد' ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-md transform scale-105' : 'bg-[#ffffff] border-[var(--brand-primary)] text-[var(--site-text)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">عندي تصميم محدد</button>
+                        <button onclick="window.updateCakeBuilderField('designStyle', 'على ذوق بوسي')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.designStyle === 'على ذوق بوسي' ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-md transform scale-105' : 'bg-[#ffffff] border-[var(--brand-primary)] text-[var(--site-text)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">سيب الإبداع علينا</button>
                     </div>
                 </div>
-                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
-                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="printer" class="w-5 h-5 text-[#ff91a4]"></i> دمج وطباعة الصور</label>
+                <div class="space-y-4 pt-4 border-t-2 border-[var(--brand-primary)]">
+                    <label class="block font-black text-lg text-[var(--site-text)] flex items-center gap-3"><i data-lucide="printer" class="w-5 h-5 text-[var(--brand-primary)]"></i> دمج وطباعة الصور</label>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <button onclick="window.updateCakeBuilderField('printing', 'بدون')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'بدون' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">بدون صورة</button>
-                        <button onclick="window.updateCakeBuilderField('printing', 'صورة قابلة للأكل')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'صورة قابلة للأكل' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">صورة قابلة للأكل (+${siteSettings.cakeBuilder.imagePrintingPrice || 60} ج)</button>
-                        <button onclick="window.updateCakeBuilderField('printing', 'صورة غير قابلة للأكل')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'صورة غير قابلة للأكل' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4] shadow-md transform scale-105' : 'bg-[#ffffff] border-[#ff91a4] text-[#1a1a1a] hover:bg-[#ff91a4] hover:text-[#ffffff]'}">صورة غير قابلة للأكل (+20 ج)</button>
+                        <button onclick="window.updateCakeBuilderField('printing', 'بدون')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'بدون' ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-md transform scale-105' : 'bg-[#ffffff] border-[var(--brand-primary)] text-[var(--site-text)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">بدون صورة</button>
+                        <button onclick="window.updateCakeBuilderField('printing', 'صورة قابلة للأكل')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'صورة قابلة للأكل' ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-md transform scale-105' : 'bg-[#ffffff] border-[var(--brand-primary)] text-[var(--site-text)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">صورة قابلة للأكل (+${siteSettings.cakeBuilder.imagePrintingPrice || 60} ج)</button>
+                        <button onclick="window.updateCakeBuilderField('printing', 'صورة غير قابلة للأكل')" class="py-4 rounded-2xl font-black text-sm transition-all border-2 ${cakeState.printing === 'صورة غير قابلة للأكل' ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-md transform scale-105' : 'bg-[#ffffff] border-[var(--brand-primary)] text-[var(--site-text)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">صورة غير قابلة للأكل (+20 ج)</button>
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row justify-between gap-4 pt-6 mt-4">
-                    <button onclick="window.changeBuilderStep(-1)" class="px-8 py-4 bg-[#ffffff] border-2 border-[#ff91a4] text-[#1a1a1a] font-black text-sm rounded-full active:scale-95 hover:bg-[#ff91a4] hover:text-[#ffffff]">➡️ السابق</button>
-                    <button onclick="window.changeBuilderStep(1)" class="px-8 py-4 bg-[#ff91a4] border-2 border-[#ff91a4] text-[#ffffff] font-black text-sm rounded-full shadow-lg hover:bg-[#ffffff] hover:text-[#ff91a4]">التالي: التخصيص النهائي ⬅️</button>
+                    <button onclick="window.changeBuilderStep(-1)" class="px-8 py-4 bg-[#ffffff] border-2 border-[var(--brand-primary)] text-[var(--site-text)] font-black text-sm rounded-full active:scale-95 hover:bg-[var(--brand-primary)] hover:text-[#ffffff]">➡️ السابق</button>
+                    <button onclick="window.changeBuilderStep(1)" class="px-8 py-4 bg-[var(--brand-primary)] border-2 border-[var(--brand-primary)] text-[#ffffff] font-black text-sm rounded-full shadow-lg hover:bg-[#ffffff] hover:text-[var(--brand-primary)]">التالي: التخصيص النهائي ⬅️</button>
                 </div>
             </div>`;
     }
     else if (window.currentBuilderStep === 3) {
         stepContentHTML = `
-            <div class="p-10 text-center bg-[#ffffff] border-b-2 border-[#ff91a4] relative z-10 rounded-t-[3rem]">
-                <h2 class="text-3xl font-black mb-4 uppercase tracking-tight text-[#ff91a4]">اللمسات الأخيرة والمراجعة</h2>
+            <div class="p-10 text-center bg-[#ffffff] border-b-2 border-[var(--brand-primary)] relative z-10 rounded-t-[3rem]">
+                <h2 class="text-3xl font-black mb-4 uppercase tracking-tight text-[var(--brand-primary)]">اللمسات الأخيرة والمراجعة</h2>
             </div>
             <div class="cake-builder-step-panel step-active p-8 md:p-12 space-y-8 bg-[#ffffff]">
                 
                 <div class="space-y-4">
-                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="image-plus" class="w-5 h-5 text-[#ff91a4]"></i> إرفاق صورة (للتصميم أو الطباعة)</label>
-                    <div class="border-2 border-dashed border-[#ff91a4] p-4 rounded-2xl text-center bg-[#ffffff]">
+                    <label class="block font-black text-lg text-[var(--site-text)] flex items-center gap-3"><i data-lucide="image-plus" class="w-5 h-5 text-[var(--brand-primary)]"></i> إرفاق صورة (للتصميم أو الطباعة)</label>
+                    <div class="border-2 border-dashed border-[var(--brand-primary)] p-4 rounded-2xl text-center bg-[#ffffff]">
                         <input type="file" id="cake-image-upload" accept="image/*" class="hidden" onchange="window.handleCakeImageUpload(this)">
-                        <label for="cake-image-upload" class="cursor-pointer inline-flex items-center gap-2 bg-[#ff91a4] text-[#ffffff] px-6 py-3 rounded-full font-bold text-sm hover:bg-[#ffffff] hover:text-[#ff91a4] border-2 border-[#ff91a4] transition-colors">
+                        <label for="cake-image-upload" class="cursor-pointer inline-flex items-center gap-2 bg-[var(--brand-primary)] text-[#ffffff] px-6 py-3 rounded-full font-bold text-sm hover:bg-[#ffffff] hover:text-[var(--brand-primary)] border-2 border-[var(--brand-primary)] transition-colors">
                             <i data-lucide="upload-cloud" class="w-4 h-4"></i> رفع صورة توضيحية
                         </label>
-                        <p class="text-[11px] font-bold text-[#1a1a1a] mt-3">يتم إرفاق نسخة مصغرة لتأكيد الطلب. للإدارة الحق في طلب الصورة الأصلية عالية الجودة عبر الواتساب لضمان دقة التنفيذ.</p>
+                        <p class="text-[11px] font-bold text-[var(--site-text)] mt-3">يتم إرفاق نسخة مصغرة لتأكيد الطلب. للإدارة الحق في طلب الصورة الأصلية عالية الجودة عبر الواتساب لضمان دقة التنفيذ.</p>
                         ${cakeState.refImage ? `<div class="mt-3 inline-block px-3 py-1 bg-green-100 text-green-700 text-xs font-bold border border-green-200 rounded-lg">تم إرفاق الصورة بنجاح ✅</div>` : ''}
                     </div>
                 </div>
 
-                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
+                <div class="space-y-4 pt-4 border-t-2 border-[var(--brand-primary)]">
                     <div class="flex items-center justify-between">
-                        <label class="font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="mail" class="w-5 h-5 text-[#ff91a4]"></i> كارت إهداء راقي (+40 ج.م)</label>
+                        <label class="font-black text-lg text-[var(--site-text)] flex items-center gap-3"><i data-lucide="mail" class="w-5 h-5 text-[var(--brand-primary)]"></i> كارت إهداء راقي (+40 ج.م)</label>
                         <label class="relative inline-flex items-center cursor-pointer">
                           <input type="checkbox" class="sr-only peer" ${cakeState.hasCard ? 'checked' : ''} onchange="window.updateCakeBuilderField('hasCard', this.checked)">
-                          <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#ff91a4]"></div>
+                          <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[var(--brand-primary)]"></div>
                         </label>
                     </div>
-                    ${cakeState.hasCard ? `<textarea rows="2" oninput="cakeState.cardText = this.value" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl font-bold text-[#1a1a1a] text-sm focus:outline-none resize-none" placeholder="اكتب رسالتك للإهداء هنا...">${escapeHTML(cakeState.cardText)}</textarea>` : ''}
+                    ${cakeState.hasCard ? `<textarea rows="2" oninput="cakeState.cardText = this.value" class="w-full p-4 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl font-bold text-[var(--site-text)] text-sm focus:outline-none resize-none" placeholder="اكتب رسالتك للإهداء هنا...">${escapeHTML(cakeState.cardText)}</textarea>` : ''}
                 </div>
 
-                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
-                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3 text-red-500"><i data-lucide="shield-alert" class="w-5 h-5 text-red-500"></i> موانع صحية أو حساسية (إن وجد)</label>
+                <div class="space-y-4 pt-4 border-t-2 border-[var(--brand-primary)]">
+                    <label class="block font-black text-lg text-[var(--site-text)] flex items-center gap-3 text-red-500"><i data-lucide="shield-alert" class="w-5 h-5 text-red-500"></i> موانع صحية أو حساسية (إن وجد)</label>
                     <input type="text" value="${escapeHTML(cakeState.allergies)}" oninput="cakeState.allergies = this.value" class="w-full p-4 bg-[#ffffff] border-2 border-red-300 rounded-xl text-sm font-bold focus:outline-none focus:border-red-500 placeholder-red-300" placeholder="مثال: حساسية مكسرات، حساسية فراولة، الخ...">
                 </div>
 
-                <div class="space-y-4 pt-4 border-t-2 border-[#ff91a4]">
-                    <label class="block font-black text-lg text-[#1a1a1a] flex items-center gap-3"><i data-lucide="edit-3" class="w-5 h-5 text-[#ff91a4]"></i> ملاحظات دقيقة للإدارة</label>
-                    <textarea rows="3" oninput="cakeState.notes = this.value" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl font-bold text-[#1a1a1a] text-sm focus:outline-none resize-none" placeholder="الاسم للكتابة على التورتة، السن، الألوان المفضلة...">${escapeHTML(cakeState.notes)}</textarea>
+                <div class="space-y-4 pt-4 border-t-2 border-[var(--brand-primary)]">
+                    <label class="block font-black text-lg text-[var(--site-text)] flex items-center gap-3"><i data-lucide="edit-3" class="w-5 h-5 text-[var(--brand-primary)]"></i> ملاحظات دقيقة للإدارة</label>
+                    <textarea rows="3" oninput="cakeState.notes = this.value" class="w-full p-4 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl font-bold text-[var(--site-text)] text-sm focus:outline-none resize-none" placeholder="الاسم للكتابة على التورتة، السن، الألوان المفضلة...">${escapeHTML(cakeState.notes)}</textarea>
                 </div>
                 
-                <div class="bg-[#ffffff] p-6 rounded-[2rem] border-2 border-[#ff91a4] space-y-3 mt-6">
-                    <h4 class="font-black text-[#1a1a1a] text-lg mb-4 border-b-2 border-[#ff91a4] pb-3 flex items-center gap-2"><i data-lucide="file-check-2" class="w-5 h-5 text-[#ff91a4]"></i> ملخص الاعتماد:</h4>
-                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[#1a1a1a]">النوع:</span><span class="font-black text-[#1a1a1a]">${cakeState.flavor} (${cakeState.shape})</span></div>
-                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[#1a1a1a]">تكفي:</span><span class="font-black text-[#1a1a1a]">${cakeState.persons} أفراد</span></div>
-                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[#1a1a1a]">إضافات:</span><span class="font-black text-[#1a1a1a]">${cakeState.printing}${cakeState.hasCard ? ' + كارت إهداء' : ''}</span></div>
-                    <div class="flex justify-between items-center pt-4 border-t-2 border-[#ff91a4] mt-4 text-lg font-black">
-                        <span class="text-[#1a1a1a]">القيمة التقديرية:</span>
-                        <span class="text-2xl text-[#ff91a4] font-mono">${currentPrice} ج.م</span>
+                <div class="bg-[#ffffff] p-6 rounded-[2rem] border-2 border-[var(--brand-primary)] space-y-3 mt-6">
+                    <h4 class="font-black text-[var(--site-text)] text-lg mb-4 border-b-2 border-[var(--brand-primary)] pb-3 flex items-center gap-2"><i data-lucide="file-check-2" class="w-5 h-5 text-[var(--brand-primary)]"></i> ملخص الاعتماد:</h4>
+                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[var(--site-text)]">النوع:</span><span class="font-black text-[var(--site-text)]">${cakeState.flavor} (${cakeState.shape})</span></div>
+                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[var(--site-text)]">تكفي:</span><span class="font-black text-[var(--site-text)]">${cakeState.persons} أفراد</span></div>
+                    <div class="flex justify-between items-center text-sm"><span class="font-bold text-[var(--site-text)]">إضافات:</span><span class="font-black text-[var(--site-text)]">${cakeState.printing}${cakeState.hasCard ? ' + كارت إهداء' : ''}</span></div>
+                    <div class="flex justify-between items-center pt-4 border-t-2 border-[var(--brand-primary)] mt-4 text-lg font-black">
+                        <span class="text-[var(--site-text)]">القيمة التقديرية:</span>
+                        <span class="text-2xl text-[var(--brand-primary)] font-mono">${currentPrice} ج.م</span>
                     </div>
                 </div>
 
                 <div class="flex flex-col sm:flex-row justify-between gap-4 pt-6 mt-4">
-                    <button onclick="window.changeBuilderStep(-1)" class="px-8 py-4 bg-[#ffffff] border-2 border-[#ff91a4] text-[#1a1a1a] font-black text-sm rounded-full active:scale-95 hover:bg-[#ff91a4] hover:text-[#ffffff]">➡️ تعديل البيانات</button>
-                    <button onclick="window.commitCakeBuilderToCart()" class="px-8 py-4 bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4] font-black text-lg rounded-full shadow-xl flex-1 text-center hover:bg-[#ffffff] hover:text-[#ff91a4]">اعتماد وإضافة للسلة 👑</button>
+                    <button onclick="window.changeBuilderStep(-1)" class="px-8 py-4 bg-[#ffffff] border-2 border-[var(--brand-primary)] text-[var(--site-text)] font-black text-sm rounded-full active:scale-95 hover:bg-[var(--brand-primary)] hover:text-[#ffffff]">➡️ تعديل البيانات</button>
+                    <button onclick="window.commitCakeBuilderToCart()" class="px-8 py-4 bg-[var(--brand-primary)] text-[#ffffff] border-2 border-[var(--brand-primary)] font-black text-lg rounded-full shadow-xl flex-1 text-center hover:bg-[#ffffff] hover:text-[var(--brand-primary)]">اعتماد وإضافة للسلة 👑</button>
                 </div>
             </div>`;
     }
@@ -863,7 +915,6 @@ export const renderMultiStepCakeBuilder = function() {
 };
 window.renderMultiStepCakeBuilder = renderMultiStepCakeBuilder;
 
-// دالة لمعالجة الصورة المرفوعة وربطها بالمحرك
 window.handleCakeImageUpload = async function(input) {
     if (input.files && input.files[0]) {
         try {
@@ -876,6 +927,7 @@ window.handleCakeImageUpload = async function(input) {
         }
     }
 };
+
 export const changeBuilderStep = function(delta) {
     window.currentBuilderStep += delta;
     if (window.currentBuilderStep < 1) window.currentBuilderStep = 1;
@@ -933,56 +985,50 @@ export const drawProductCard = function(p) {
     const currentP = Number(p.price);
     if (oldP && oldP > currentP) {
         const discountPercent = Math.round(((oldP - currentP) / oldP) * 100);
-        discountBadgeHtml = `<div class="text-[#ff91a4] text-sm font-black mb-2 px-3 py-1 bg-[#ffffff] rounded-full inline-block border-2 border-[#ff91a4]">خصم ${discountPercent}% 🔥</div>`;
+        discountBadgeHtml = `<div class="text-[var(--brand-primary)] text-sm font-black mb-2 px-3 py-1 bg-[#ffffff] rounded-full inline-block border-2 border-[var(--brand-primary)]">خصم ${discountPercent}% 🔥</div>`;
     } else if (p.badge) {
-        discountBadgeHtml = `<div class="text-[#ff91a4] text-sm font-black mb-2 px-3 py-1 bg-[#ffffff] rounded-full inline-block border-2 border-[#ff91a4]">${escapeHTML(p.badge)}</div>`;
+        discountBadgeHtml = `<div class="text-[var(--brand-primary)] text-sm font-black mb-2 px-3 py-1 bg-[#ffffff] rounded-full inline-block border-2 border-[var(--brand-primary)]">${escapeHTML(p.badge)}</div>`;
     }
 
     let cardHtml = `
     <div id="product-card-${pIdSafe}" class="product-card-premium">
         <div class="product-image-glow w-full aspect-square mb-4 relative overflow-hidden rounded-[2rem]" onclick="navigateToProduct('${pIdSafe}')">
             <img src="${displayImg}" class="${isOutOfStock ? 'grayscale opacity-70' : ''} blur-load w-full h-full object-contain transition-all duration-700 hover:scale-110 cursor-pointer" loading="lazy" decoding="async" alt="صنف ${escapeHTML(p.name)} من قسم ${escapeHTML(p.category)} - حلويات بوسي بمركز الفرافرة" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
-            ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/50 backdrop-blur-[4px] z-10 flex items-center justify-center"><span class="bg-[#ff91a4] text-[#ffffff] font-black px-4 py-2 rounded-xl shadow-lg border-2 border-[#ffffff]">نفدت الكمية</span></div>` : ''}
+            ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/50 backdrop-blur-[4px] z-10 flex items-center justify-center"><span class="bg-[var(--brand-primary)] text-[#ffffff] font-black px-4 py-2 rounded-xl shadow-lg border-2 border-[#ffffff]">نفدت الكمية</span></div>` : ''}
         </div>
         
         <div class="flex flex-col flex-1 text-center bg-[#ffffff] relative z-20">
             ${discountBadgeHtml}
-            <h4 class="text-xl font-black leading-tight text-[#1a1a1a] mb-2">${escapeHTML(p.name)}</h4>
-            <p class="text-sm font-bold text-[#1a1a1a] mb-4 line-clamp-3 leading-relaxed">${getFinalDescription(p)}</p>
+            <h4 class="text-xl font-black leading-tight text-[var(--site-text)] mb-2">${escapeHTML(p.name)}</h4>
+            <p class="text-sm font-bold text-[var(--site-text)] mb-4 line-clamp-3 leading-relaxed">${getFinalDescription(p)}</p>
             
-            <div class="mt-auto flex flex-col gap-4 w-full border-t-2 border-[#ff91a4] pt-4">
-                <div class="flex items-center justify-center rounded-full py-2 px-4 mx-auto min-w-[70%] bg-[#ffffff] border-2 border-[#ff91a4] shadow-sm">
-                    <span class="font-black text-2xl text-[#ff91a4]">${currentP > 0 ? currentP + ' ج.م' : 'حسب الطلب'}</span>
-                    ${(oldP && oldP > currentP) ? `<del class="text-sm text-[#1a1a1a] font-bold ml-2">${oldP}</del>` : ''}
+            <div class="mt-auto flex flex-col gap-4 w-full border-t-2 border-[var(--brand-primary)] pt-4">
+                <div class="flex items-center justify-center rounded-full py-2 px-4 mx-auto min-w-[70%] bg-[#ffffff] border-2 border-[var(--brand-primary)] shadow-sm">
+                    <span class="font-black text-2xl text-[var(--brand-primary)]">${currentP > 0 ? currentP + ' ج.م' : 'حسب الطلب'}</span>
+                    ${(oldP && oldP > currentP) ? `<del class="text-sm text-[var(--site-text)] font-bold ml-2">${oldP}</del>` : ''}
                 </div>
                 
                 <div class="flex flex-col gap-3 w-full">
                     <div class="flex items-center justify-between gap-3">
-                        <div class="flex items-center gap-2 bg-[#ffffff] rounded-full p-1 border-2 border-[#ff91a4] shadow-inner quantity-controls">
-                            <button onclick="updateTempQtyContext(this, -1)" class="w-10 h-10 flex items-center justify-center bg-[#ffffff] border-2 border-[#ff91a4] rounded-full shadow-sm text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] font-black transition-all"><i data-lucide="minus" class="w-4 h-4"></i></button>
-                            <span class="temp-qty-display text-lg font-black text-[#1a1a1a] w-6 text-center" data-prod-id="${pIdSafe}">1</span>
-                            <button onclick="updateTempQtyContext(this, 1)" class="w-10 h-10 flex items-center justify-center bg-[#ffffff] border-2 border-[#ff91a4] rounded-full shadow-sm text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] font-black transition-all"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                        <div class="flex items-center gap-2 bg-[#ffffff] rounded-full p-1 border-2 border-[var(--brand-primary)] shadow-inner quantity-controls">
+                            <button onclick="updateTempQtyContext(this, -1)" class="w-10 h-10 flex items-center justify-center bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-full shadow-sm text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] font-black transition-all"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                            <span class="temp-qty-display text-lg font-black text-[var(--site-text)] w-6 text-center" data-prod-id="${pIdSafe}">1</span>
+                            <button onclick="updateTempQtyContext(this, 1)" class="w-10 h-10 flex items-center justify-center bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-full shadow-sm text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] font-black transition-all"><i data-lucide="plus" class="w-4 h-4"></i></button>
                         </div>
                         ${isOutOfStock ? 
-                        `<button class="flex-1 py-3 bg-[#ffffff] text-[#1a1a1a] rounded-full font-black text-lg shadow-inner cursor-not-allowed border-2 border-[#ff91a4]">غير متوفر</button>` 
+                        `<button class="flex-1 py-3 bg-[#ffffff] text-[var(--site-text)] rounded-full font-black text-lg shadow-inner cursor-not-allowed border-2 border-[var(--brand-primary)]">غير متوفر</button>` 
                         : 
-                        `<button onclick="addWithQtyContext(this, '${pIdSafe}')" class="flex-1 py-3 bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4] rounded-full font-black text-lg btn-premium-action flex items-center justify-center gap-2 hover:bg-[#ffffff] hover:text-[#ff91a4]"><i data-lucide="shopping-bag" class="w-5 h-5"></i> إضافة للسلة</button>`
+                        `<button onclick="addWithQtyContext(this, '${pIdSafe}')" class="flex-1 py-3 bg-[var(--brand-primary)] text-[#ffffff] border-2 border-[var(--brand-primary)] rounded-full font-black text-lg btn-premium-action flex items-center justify-center gap-2 hover:bg-[#ffffff] hover:text-[var(--brand-primary)]"><i data-lucide="shopping-bag" class="w-5 h-5"></i> إضافة للسلة</button>`
                         }
                     </div>
                     <div class="flex gap-2 w-full">
-                        <button onclick="navigateToProduct('${pIdSafe}')" class="flex-1 py-2.5 bg-[#ffffff] text-[#1a1a1a] rounded-full font-bold text-sm hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors border-2 border-[#ff91a4]">استعراض التفاصيل</button>
-                        <button onclick="shareProduct('${pIdSafe}', '${escapeHTML(p.name)}')" class="px-3 bg-[#ffffff] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors border-2 border-[#ff91a4] flex items-center justify-center"><i data-lucide="share-2" class="w-4 h-4"></i></button>
+                        <button onclick="navigateToProduct('${pIdSafe}')" class="flex-1 py-2.5 bg-[#ffffff] text-[var(--site-text)] rounded-full font-bold text-sm hover:bg-[var(--brand-primary)] hover:text-[#ffffff] transition-colors border-2 border-[var(--brand-primary)]">استعراض التفاصيل</button>
+                        <button onclick="shareProduct('${pIdSafe}', '${escapeHTML(p.name)}')" class="px-3 bg-[#ffffff] text-[var(--brand-primary)] rounded-full hover:bg-[var(--brand-primary)] hover:text-[#ffffff] transition-colors border-2 border-[var(--brand-primary)] flex items-center justify-center"><i data-lucide="share-2" class="w-4 h-4"></i></button>
                     </div>
                 </div>
             </div>
         </div>
     </div>`;
-
-    // فلترة وضبط الألوان للحفاظ على هوية براند حلويات بوسي
-    cardHtml = cardHtml.replace(/#ff3377/g, '#ff91a4'); 
-    cardHtml = cardHtml.replace(/#4E342E/g, '#1a1a1a'); 
-    cardHtml = cardHtml.replace(/bg-red-50/g, 'bg-[#ffffff]'); 
-    cardHtml = cardHtml.replace(/text-red-500/g, 'text-[#ff91a4]'); 
 
     return cardHtml;
 };
@@ -1001,7 +1047,7 @@ export const renderCartList = function() {
     
     if (!container) return;
     if (state.cart.length === 0) {
-        container.innerHTML = `<div class="flex flex-col items-center py-20 px-6 text-center bg-[#ffffff] rounded-[2.5rem] border-2 border-dashed border-[#ff91a4]"><i data-lucide="shopping-bag" class="w-16 h-16 mb-6 text-[#ff91a4]"></i><h3 class="font-black text-2xl text-[#1a1a1a] mb-4">السلة فارغة حالياً.</h3><button onclick="window.showMenuView ? window.showMenuView() : (window.toggleCart && window.toggleCart(false))" class="text-[#ffffff] px-10 py-4 rounded-full font-black text-lg bg-[#ff91a4] border-2 border-[#ff91a4] hover:bg-[#ffffff] hover:text-[#ff91a4] btn-premium-action">استكشف المنيو</button></div>`;
+        container.innerHTML = `<div class="flex flex-col items-center py-20 px-6 text-center bg-[#ffffff] rounded-[2.5rem] border-2 border-dashed border-[var(--brand-primary)]"><i data-lucide="shopping-bag" class="w-16 h-16 mb-6 text-[var(--brand-primary)]"></i><h3 class="font-black text-2xl text-[var(--site-text)] mb-4">السلة فارغة حالياً.</h3><button onclick="window.showMenuView ? window.showMenuView() : (window.toggleCart && window.toggleCart(false))" class="text-[#ffffff] px-10 py-4 rounded-full font-black text-lg bg-[var(--brand-primary)] border-2 border-[var(--brand-primary)] hover:bg-[#ffffff] hover:text-[var(--brand-primary)] btn-premium-action">استكشف المنيو</button></div>`;
         if (totalDisplay) totalDisplay.innerText = "0 ج.م"; 
         if (window.lucide) lucide.createIcons(); 
         return;
@@ -1025,30 +1071,29 @@ export const renderCartList = function() {
         }
         const renderImg = optimizeCloudinaryUrl(rawImageUrl);
         
-        // هندسة الواجهة الجديدة: فصل السعر عن أزرار الكمية وعرض تصنيف المنتج بوضوح
         return `
-        <div class="cart-item-premium flex flex-col bg-[#ffffff] p-4 rounded-[2rem] border-2 border-[#ff91a4] shadow-sm relative mb-4">
+        <div class="cart-item-premium flex flex-col bg-[#ffffff] p-4 rounded-[2rem] border-2 border-[var(--brand-primary)] shadow-sm relative mb-4">
             <div class="absolute top-4 left-4 z-10">
-                <button onclick="window.modQ('${identifier}', 'remove')" class="p-2 text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] border-2 border-transparent hover:border-[#ff91a4] rounded-xl transition-all"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                <button onclick="window.modQ('${identifier}', 'remove')" class="p-2 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] border-2 border-transparent hover:border-[var(--brand-primary)] rounded-xl transition-all"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
             </div>
             
             <div class="flex items-start gap-4 mb-4">
-                <div class="w-20 h-20 md:w-24 md:h-24 rounded-[1.5rem] overflow-hidden shrink-0 bg-[#ffffff] border-2 border-[#ff91a4] p-1 flex items-center justify-center">
+                <div class="w-20 h-20 md:w-24 md:h-24 rounded-[1.5rem] overflow-hidden shrink-0 bg-[#ffffff] border-2 border-[var(--brand-primary)] p-1 flex items-center justify-center">
                     <img src="${renderImg}" class="w-full h-full object-contain" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(item.category)}');">
                 </div>
                 <div class="flex-1 text-right pr-2 pt-1 min-w-0">
-                    <span class="text-[10px] font-black text-[#ffffff] bg-[#ff91a4] px-3 py-1 rounded-full mb-2 inline-block shadow-sm">${escapeHTML(item.category)}</span>
-                    <h4 class="font-black text-sm md:text-base text-[#1a1a1a] mb-1 leading-tight pr-8 truncate">${escapeHTML(item.name)}</h4>
-                    ${item.isCustom ? `<p class="text-[11px] font-bold text-[#1a1a1a] leading-relaxed line-clamp-2">${escapeHTML(item.desc)}</p>` : ''}
+                    <span class="text-[10px] font-black text-[#ffffff] bg-[var(--brand-primary)] px-3 py-1 rounded-full mb-2 inline-block shadow-sm">${escapeHTML(item.category)}</span>
+                    <h4 class="font-black text-sm md:text-base text-[var(--site-text)] mb-1 leading-tight pr-8 truncate">${escapeHTML(item.name)}</h4>
+                    ${item.isCustom ? `<p class="text-[11px] font-bold text-[var(--site-text)] leading-relaxed line-clamp-2">${escapeHTML(item.desc)}</p>` : ''}
                 </div>
             </div>
             
-            <div class="flex justify-between items-center border-t-2 border-[#ff91a4] pt-4 mt-auto">
-                <div class="font-black text-[#ff91a4] text-xl font-mono">${p} ج.م</div>
-                <div class="flex items-center gap-3 bg-[#ffffff] rounded-full p-1 border-2 border-[#ff91a4] shadow-sm">
-                    <button class="w-8 h-8 flex justify-center items-center rounded-full text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] font-black transition-all" onclick="window.modQ('${identifier}', -1)"><i data-lucide="minus" class="w-4 h-4"></i></button>
-                    <span class="font-black text-base text-[#1a1a1a] w-6 text-center">${q}</span>
-                    <button class="w-8 h-8 flex justify-center items-center rounded-full text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] font-black transition-all" onclick="window.modQ('${identifier}', 1)"><i data-lucide="plus" class="w-4 h-4"></i></button>
+            <div class="flex justify-between items-center border-t-2 border-[var(--brand-primary)] pt-4 mt-auto">
+                <div class="font-black text-[var(--brand-primary)] text-xl font-mono">${p} ج.م</div>
+                <div class="flex items-center gap-3 bg-[#ffffff] rounded-full p-1 border-2 border-[var(--brand-primary)] shadow-sm">
+                    <button class="w-8 h-8 flex justify-center items-center rounded-full text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] font-black transition-all" onclick="window.modQ('${identifier}', -1)"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                    <span class="font-black text-base text-[var(--site-text)] w-6 text-center">${q}</span>
+                    <button class="w-8 h-8 flex justify-center items-center rounded-full text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] font-black transition-all" onclick="window.modQ('${identifier}', 1)"><i data-lucide="plus" class="w-4 h-4"></i></button>
                 </div>
             </div>
         </div>`;
@@ -1108,17 +1153,16 @@ export const renderSmartSuggestions = function(context = 'main') {
         }
         const img = optimizeCloudinaryUrl(rawImageUrl);
         
-        // استخدام object-cover حصرياً لهذا القسم لإبراز التفاصيل
-        return `<div class="shrink-0 w-[240px] snap-slide bg-[#ffffff] border-2 border-[#ff91a4] rounded-[2rem] p-4 shadow-sm flex flex-col group hover:-translate-y-2 transition-transform cursor-pointer" onclick="navigateToProduct('${p.id}')">
-            <div class="relative w-full aspect-square mb-4 rounded-xl overflow-hidden bg-[#ffffff] border-2 border-[#ff91a4] flex items-center justify-center p-0">
+        return `<div class="shrink-0 w-[240px] snap-slide bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-[2rem] p-4 shadow-sm flex flex-col group hover:-translate-y-2 transition-transform cursor-pointer" onclick="navigateToProduct('${p.id}')">
+            <div class="relative w-full aspect-square mb-4 rounded-xl overflow-hidden bg-[#ffffff] border-2 border-[var(--brand-primary)] flex items-center justify-center p-0">
                 <img src="${img}" class="w-full h-full object-cover drop-shadow-sm transition-transform duration-500 group-hover:scale-110" loading="lazy" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
             </div>
             <div class="flex-1 flex flex-col text-center">
-                <span class="text-[10px] bg-[#ff91a4] text-[#ffffff] px-3 py-1 rounded-full font-black mb-2 self-center shadow-sm">${escapeHTML(p.category)}</span>
-                <h5 class="text-[15px] font-black text-[#1a1a1a] mb-2 leading-tight line-clamp-1">${escapeHTML(p.name)}</h5>
+                <span class="text-[10px] bg-[var(--brand-primary)] text-[#ffffff] px-3 py-1 rounded-full font-black mb-2 self-center shadow-sm">${escapeHTML(p.category)}</span>
+                <h5 class="text-[15px] font-black text-[var(--site-text)] mb-2 leading-tight line-clamp-1">${escapeHTML(p.name)}</h5>
                 <div class="mt-auto">
-                    <span class="font-black text-[#ff91a4] block mb-3 text-lg font-mono">${p.price > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
-                    <button onclick="event.stopPropagation(); addWithQtyContext(this, '${p.id}')" class="w-full py-2.5 bg-[#ffffff] text-[#ff91a4] rounded-full font-black hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors border-2 border-[#ff91a4] flex items-center justify-center gap-1.5"><i data-lucide="plus" class="w-4 h-4"></i> إضافة</button>
+                    <span class="font-black text-[var(--brand-primary)] block mb-3 text-lg font-mono">${p.price > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
+                    <button onclick="event.stopPropagation(); addWithQtyContext(this, '${p.id}')" class="w-full py-2.5 bg-[#ffffff] text-[var(--brand-primary)] rounded-full font-black hover:bg-[var(--brand-primary)] hover:text-[#ffffff] transition-colors border-2 border-[var(--brand-primary)] flex items-center justify-center gap-1.5"><i data-lucide="plus" class="w-4 h-4"></i> إضافة</button>
                 </div>
             </div>
         </div>`;
@@ -1160,7 +1204,6 @@ export const submitCustomerReviewLive = async function(productId) {
 
     if (!nameInput || !commentInput || !ratingSelect) return;
 
-    // 👑 تعقيم وتأمين المدخلات لحماية قواعد البيانات من الحقن البرمجي
     const customerName = escapeHTML(nameInput.value.trim());
     const comment = escapeHTML(commentInput.value.trim());
     const rating = parseInt(ratingSelect.value) || 5;
@@ -1187,7 +1230,6 @@ export const submitCustomerReviewLive = async function(productId) {
     };
 
     try {
-        // 👑 الترقية السيادية: توجيه التقييم عبر محرك السحابة لتأمين الحفظ الأوفلاين
         const collectionPath = `catalog/${productId}/livereviews`;
         if (window.NetworkEngine && typeof window.NetworkEngine.safeWrite === 'function') {
             await window.NetworkEngine.safeWrite(collectionPath, reviewId, reviewPayload);
@@ -1244,7 +1286,6 @@ export const setCategory = function(c) {
 };
 window.setCategory = setCategory;
 
-/* محرك تصحيح التبويبات والأقسام - حلويات بوسي */
 document.addEventListener('DOMContentLoaded', () => {
     if (window.lucide) lucide.createIcons();
 

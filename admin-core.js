@@ -1,10 +1,10 @@
 /**
  * ============================================================================
- * محرك مركز قيادة حلويات بوسي السحابي | BoseSweets Admin Engine V19.0 Official
+ * محرك مركز قيادة حلويات بوسي السحابي | BoseSweets Admin Engine V20.0 Official
  * ============================================================================
- * 👑 التحديث الجذري (V19.0 + V7.0 ARCHITECTURAL FIX): 
- * تم تطبيق نظام العزل المعماري وإدارة الحالة الأحادية، مع إضافة إدارة وتوسيع 
- * قنوات السوشيال ميديا والتكوين السحابي الشامل والمستقر.
+ * 👑 التحديث السيادي للسيطرة المطلقة: 
+ * تم توسيع الذاكرة الأساسية لتستوعب (الأقسام الديناميكية، المراجعات الحية، 
+ * والروابط الشمولية المضافة)، مع ضمان عدم اختفاء أي بيانات عند تحديث اللوحة.
  * يعتمد أسلوب التوسيع والبناء دون أي حذف للمكونات الأساسية.
  */
 
@@ -165,17 +165,19 @@ const defaultSettings = {
     },
     seo: { title: "", desc: "", keywords: "" },
     
-    // ✅ تحديث قنوات التواصل الاجتماعي (إضافة واتساب)
+    // ✅ تحديث قنوات التواصل الاجتماعي مع الروابط الشمولية (التحديث السيادي V20)
     social: { 
         facebook: "https://facebook.com/BoseSweets", 
         tiktok: "https://tiktok.com/@BoseSweets", 
         instagram: "https://instagram.com/BoseSweets",
-        whatsapp: "201097238441" 
+        whatsapp: "201097238441",
+        customLinks: []
     },
     
     catDescriptions: {}, 
     goldenTips: [],      
     customerReviews: [], 
+    dynamicSections: [], // الأقسام الديناميكية المضافة في التحديث السيادي
     tickerActive: true, 
     tickerText: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب ✨", 
     tickerSpeed: 20, 
@@ -205,6 +207,7 @@ const defaultSettings = {
         layout_card_width: "100%",
         layout_card_height: "auto",
         layout_waterfall_img_height: "270px",
+        layout_waterfall_speed: 3000, // سرعة الشلال المضافة في V20
         layout_waterfall_img_width: "100%",
         layout_waterfall_img_objectFit: "cover" 
     },
@@ -225,12 +228,6 @@ const defaultSettings = {
             productPageMinHeight: "100vh"
         }
     },
-
-    ticker_isActive: true,
-    ticker_text: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب",
-    ticker_speed: 15,
-    ticker_bgColor: "#ff91a4", 
-    ticker_textColor: "#ffffff",
 
     Structure_Settings: {
         footer_sections: [],
@@ -304,7 +301,9 @@ function setupRealtimeOrders() {
 
         if (!isFirstOrderLoad && hasNewOrder) {
             playNotificationSound();
-            showSystemToast("🔔 طلب جديد وصل لمركز القيادة!", "success");
+            if (typeof showSystemToast === 'function') {
+                showSystemToast("🔔 طلب جديد وصل لمركز القيادة!", "success");
+            }
         }
 
         isFirstOrderLoad = false;
@@ -357,6 +356,14 @@ async function loadEngineMemory() {
                 
                 if(cloudData.customerReviews) siteSettings.customerReviews = [...cloudData.customerReviews];
                 else siteSettings.customerReviews = [...defaultSettings.customerReviews];
+
+                // 👑 دمج التوسعات الديناميكية في V20
+                if(cloudData.dynamicSections) siteSettings.dynamicSections = [...cloudData.dynamicSections];
+
+                if(cloudData.social) {
+                    siteSettings.social = { ...defaultSettings.social, ...cloudData.social };
+                    if(cloudData.social.customLinks) siteSettings.social.customLinks = [...cloudData.social.customLinks];
+                }
 
                 if(cloudData.cakeBuilder) {
                     siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };

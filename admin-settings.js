@@ -1,16 +1,34 @@
 /**
- * 👑 BoseSweets Admin Settings Engine - V20.0 (Royal Cake & Display Edition)
- * تم التوسيع ليشمل إدارة التورت الملكية، التحكم في أنماط العرض، وتوسيع روابط التواصل.
- * يلتزم الكود بالهوية البصرية (الوردي الناعم #ff91a4 والأبيض).
+ * 👑 BoseSweets Admin Settings Engine - V20.0 (Royal Cake & Sovereign Expansion Edition)
+ * تم التوسيع ليشمل: الأقسام الديناميكية، المراجعات، الروابط الشمولية، التحكم الحركي، وإدارة التورت الملكية.
+ * يلتزم الكود بالهوية البصرية (الوردي الناعم #ff91a4 والأبيض) وقواعد المزامنة اللحظية السيادية.
  */
+
+function ensureAdvancedControlsExist() {
+    // حقن حقول التحكم بالسرعات حركياً إذا لم تكن موجودة في هيكل الـ HTML
+    const homepageSection = document.getElementById('admin-homepage');
+    if (homepageSection && !document.getElementById('set-ticker-speed')) {
+        const advDiv = document.createElement('div');
+        advDiv.className = 'boosy-card mt-6';
+        advDiv.innerHTML = `
+            <h4 class="text-xs font-black text-[#ff91a4] mb-6 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4"></i> التحكم الحركي والسرعات السيادية</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><label class="block text-[10px] font-bold text-slate-500 mb-2">سرعة شريط الأخبار (Ticker Speed)</label><input type="number" id="set-ticker-speed" class="admin-input text-sm" placeholder="الافتراضي: 20"></div>
+                <div><label class="block text-[10px] font-bold text-slate-500 mb-2">سرعة الشلال (Waterfall Delay - ms)</label><input type="number" id="set-waterfall-speed" class="admin-input text-sm" placeholder="الافتراضي: 3000"></div>
+            </div>
+        `;
+        homepageSection.appendChild(advDiv);
+        if(window.lucide) lucide.createIcons();
+    }
+}
 
 function fillGlobalSettingsFormFields() {
     const phoneInput = document.getElementById('sett-phone-input');
     const addressInput = document.getElementById('sett-address-input');
     const fbInput = document.getElementById('sett-fb-input');
     const igInput = document.getElementById('sett-ig-input');
-    const ttInput = document.getElementById('sett-tiktok-input'); // حقل تيك توك الجديد
-    const waInput = document.getElementById('sett-whatsapp-input'); // حقل واتساب الأعمال الجديد
+    const ttInput = document.getElementById('sett-tiktok-input'); 
+    const waInput = document.getElementById('sett-whatsapp-input'); 
     const quoteText = document.getElementById('sett-quote-textarea');
     
     if (phoneInput) phoneInput.value = siteSettings.footerPhone || '';
@@ -21,7 +39,6 @@ function fillGlobalSettingsFormFields() {
     if (waInput) waInput.value = siteSettings.social?.whatsapp || '';
     if (quoteText) quoteText.value = siteSettings.footerQuote || '';
 
-    // ملء بيانات قسم إدارة التورت الملكية
     if (siteSettings.cakeBuilder) {
         if(document.getElementById('set-cake-base-price')) document.getElementById('set-cake-base-price').value = siteSettings.cakeBuilder.basePrice || 145;
         if(document.getElementById('set-cake-min-sq')) document.getElementById('set-cake-min-sq').value = siteSettings.cakeBuilder.minSquare || 16;
@@ -52,7 +69,8 @@ window.saveGlobalSettingsFromDashboard = async function() {
             facebook: fb !== undefined ? fb : siteSettings.social.facebook, 
             instagram: ig !== undefined ? ig : siteSettings.social.instagram, 
             tiktok: tt !== undefined ? tt : (siteSettings.social?.tiktok || ''),
-            whatsapp: wa !== undefined ? wa : (siteSettings.social?.whatsapp || '')
+            whatsapp: wa !== undefined ? wa : (siteSettings.social?.whatsapp || ''),
+            customLinks: siteSettings.social.customLinks || []
         }
     };
     
@@ -152,6 +170,8 @@ function importBackupJSON(e) {
 }
 
 function fillAdminSettingsForm() {
+    ensureAdvancedControlsExist();
+    
     if(!window.siteSettings) return;
     if(document.getElementById('set-brand')) document.getElementById('set-brand').value = siteSettings.brandName || 'حلويات بوسي';
     if(document.getElementById('set-hero-title')) document.getElementById('set-hero-title').value = siteSettings.heroTitle || '';
@@ -160,6 +180,8 @@ function fillAdminSettingsForm() {
     if(document.getElementById('set-footer-address')) document.getElementById('set-footer-address').value = (siteSettings.footerAddress || '').replace(/<br>/g, '');
     if(document.getElementById('set-ticker-active')) document.getElementById('set-ticker-active').checked = siteSettings.tickerActive !== false;
     if(document.getElementById('set-ticker-text')) document.getElementById('set-ticker-text').value = siteSettings.tickerText || siteSettings.announcement || '';
+    if(document.getElementById('set-ticker-speed')) document.getElementById('set-ticker-speed').value = siteSettings.tickerSpeed || 20;
+    if(document.getElementById('set-waterfall-speed')) document.getElementById('set-waterfall-speed').value = siteSettings.layout_settings?.layout_waterfall_speed || 3000;
 
     if(siteSettings.seo) {
         if(document.getElementById('set-seo-title')) document.getElementById('set-seo-title').value = siteSettings.seo.title || '';
@@ -214,6 +236,11 @@ function fillAdminSettingsForm() {
     if(siteSettings.Structure_Settings) {
         if(document.getElementById('set-you-may-like')) document.getElementById('set-you-may-like').checked = siteSettings.Structure_Settings.section_youMayAlsoLike_isActive !== false;
     }
+
+    // تفعيل رندر الأقسام الديناميكية، المراجعات، والروابط
+    if(typeof renderDynamicSectionsList === 'function') renderDynamicSectionsList();
+    if(typeof renderCustomSocialLinks === 'function') renderCustomSocialLinks();
+    if(typeof renderReviewsList === 'function') renderReviewsList();
 }
 
 window.saveAllSettings = async function() {
@@ -227,6 +254,7 @@ window.saveAllSettings = async function() {
         layout_card_height: document.getElementById('set-layout-card-height')?.value || "auto",
         layout_waterfall_img_width: document.getElementById('set-layout-wf-width')?.value || "100%",
         layout_waterfall_img_height: document.getElementById('set-layout-wf-height')?.value || "270px",
+        layout_waterfall_speed: parseInt(document.getElementById('set-waterfall-speed')?.value) || 3000,
         layout_waterfall_img_objectFit: "cover"
     };
 
@@ -270,6 +298,7 @@ window.saveAllSettings = async function() {
         footerAddress: document.getElementById('set-footer-address')?.value || "",
         tickerActive: document.getElementById('set-ticker-active')?.checked !== false,
         tickerText: document.getElementById('set-ticker-text')?.value || "",
+        tickerSpeed: parseInt(document.getElementById('set-ticker-speed')?.value) || 20,
         announcement: document.getElementById('set-ticker-text')?.value || "",
         
         seo: {
@@ -281,12 +310,15 @@ window.saveAllSettings = async function() {
             facebook: document.getElementById('set-social-fb')?.value || window.siteSettings.social?.facebook || '',
             instagram: document.getElementById('set-social-ig')?.value || window.siteSettings.social?.instagram || '',
             tiktok: document.getElementById('set-social-tt')?.value || window.siteSettings.social?.tiktok || '',
-            whatsapp: document.getElementById('set-social-wa')?.value || window.siteSettings.social?.whatsapp || ''
+            whatsapp: document.getElementById('set-social-wa')?.value || window.siteSettings.social?.whatsapp || '',
+            customLinks: window.siteSettings.social?.customLinks || []
         },
         visuals: {
             themeHex: document.getElementById('sys-brand-color')?.value || document.getElementById('set-visual-color-hex')?.value || window.siteSettings.visuals?.themeHex || '#ff91a4'
         },
         
+        dynamicSections: siteSettings.dynamicSections || [],
+        customerReviews: siteSettings.customerReviews || [],
         layout_settings: layout_settings_payload,
         UI_Settings: UI_Settings_payload,
         Structure_Settings: Structure_Settings_payload
@@ -312,6 +344,192 @@ window.saveAllSettings = async function() {
 
 window.triggerMasterSave = window.saveAllSettings;
 window.saveStoreSettings = window.saveAllSettings;
+
+// --- 👑 منظومة الأقسام الديناميكية للمناسبات ---
+window.renderDynamicSectionsList = function() {
+    const container = document.getElementById('dynamic-sections-list');
+    if(!container) return;
+    if(!siteSettings.dynamicSections) siteSettings.dynamicSections = [];
+    
+    siteSettings.dynamicSections.sort((a,b) => (a.order || 0) - (b.order || 0));
+    
+    if(siteSettings.dynamicSections.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-500 font-bold text-center py-4">لا توجد أقسام مخصصة للمناسبات حالياً.</p>`;
+        return;
+    }
+    
+    container.innerHTML = siteSettings.dynamicSections.map((sec, idx) => `
+        <div class="flex items-center justify-between p-3 bg-slate-900/80 border border-slate-800 rounded-2xl group ${!sec.active ? 'opacity-50 grayscale' : ''}">
+            <div class="flex items-center gap-3 w-2/3 truncate">
+                <span class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center font-black text-[10px] shrink-0 shadow-inner">${idx + 1}</span>
+                <div class="flex flex-col truncate">
+                    <span class="text-xs font-black text-white truncate">${escapeHTML(sec.title)}</span>
+                    <span class="text-[9px] font-bold text-[#ff91a4] uppercase mt-0.5">${sec.type === 'grid' ? 'شبكة عادية' : (sec.type === 'waterfall' ? 'شلال عرض' : 'شريط تمرير')}</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+                <button type="button" onclick="toggleSectionVisibility('${sec.id}')" class="p-1.5 rounded-lg border ${sec.active ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-800 text-slate-500 border-slate-700'} relative z-50 pointer-events-auto"><i data-lucide="${sec.active ? 'eye' : 'eye-off'}" class="w-3.5 h-3.5"></i></button>
+                <button type="button" onclick="deleteDynamicSection('${sec.id}')" class="p-1.5 rounded-lg border bg-slate-800 text-red-400 border-slate-700 hover:bg-red-500/20 relative z-50 pointer-events-auto"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            </div>
+        </div>
+    `).join('');
+    if(window.lucide) lucide.createIcons();
+};
+
+window.openAddSectionModal = function() {
+    const title = prompt("قرار إداري: يرجى إدخال اسم القسم الجديد (مثال: عروض العيد):");
+    if(!title) return;
+    const typeChoice = prompt("اختر طريقة العرض:\n1. شبكة (Grid)\n2. شريط تمرير (Slider)\n3. شلال (Waterfall)\n\nأدخل الرقم (1, 2, 3):", "1");
+    
+    let type = 'grid';
+    if(typeChoice === '2') type = 'slider';
+    if(typeChoice === '3') type = 'waterfall';
+    
+    if(!siteSettings.dynamicSections) siteSettings.dynamicSections = [];
+    siteSettings.dynamicSections.push({
+        id: 'sec_' + Date.now(),
+        title: title.trim(),
+        type: type,
+        active: true,
+        order: siteSettings.dynamicSections.length + 1
+    });
+    
+    renderDynamicSectionsList();
+    showSystemToast("تم إدراج القسم بالهيكل بنجاح 👑", "success");
+};
+
+window.toggleSectionVisibility = function(id) {
+    const sec = siteSettings.dynamicSections.find(s => s.id === id);
+    if(sec) { sec.active = !sec.active; renderDynamicSectionsList(); }
+};
+
+window.deleteDynamicSection = function(id) {
+    if(!confirm("هل توافقين على الحذف السيادي لهذا القسم من الواجهة؟")) return;
+    siteSettings.dynamicSections = siteSettings.dynamicSections.filter(s => s.id !== id);
+    renderDynamicSectionsList();
+};
+
+// --- 👑 منظومة الروابط والمنصات المخصصة ---
+window.renderCustomSocialLinks = function() {
+    const btnContainer = document.getElementById('new-link-url')?.parentElement;
+    let listContainer = document.getElementById('custom-social-list');
+    
+    if(!listContainer && btnContainer) {
+        listContainer = document.createElement('div');
+        listContainer.id = 'custom-social-list';
+        listContainer.className = 'mt-4 space-y-2 max-h-40 overflow-y-auto custom-scrollbar';
+        btnContainer.parentElement.appendChild(listContainer);
+    }
+    if(!listContainer) return;
+    
+    if(!siteSettings.social) siteSettings.social = {};
+    if(!siteSettings.social.customLinks) siteSettings.social.customLinks = [];
+    
+    if (siteSettings.social.customLinks.length === 0) {
+        listContainer.innerHTML = '';
+        return;
+    }
+
+    listContainer.innerHTML = siteSettings.social.customLinks.map((link, idx) => `
+        <div class="flex items-center justify-between p-2.5 bg-slate-800/80 border border-slate-700 rounded-xl group">
+            <div class="truncate pl-2">
+                <p class="text-[10px] font-black text-white">${escapeHTML(link.label)}</p>
+                <p class="text-[9px] text-[#ff91a4] font-mono truncate max-w-[200px] mt-0.5">${escapeHTML(link.url)}</p>
+            </div>
+            <button type="button" onclick="removeCustomSocialLink(${idx})" class="text-slate-500 hover:text-red-400 p-1.5 hover:bg-red-500/10 rounded-lg transition-colors pointer-events-auto relative z-50"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+        </div>
+    `).join('');
+    if(window.lucide) lucide.createIcons();
+};
+
+window.addNewSocialLink = function() {
+    const labelEl = document.getElementById('new-link-label');
+    const urlEl = document.getElementById('new-link-url');
+    const label = labelEl?.value.trim();
+    const url = urlEl?.value.trim();
+    if(!label || !url) { showSystemToast("قرار إداري: يجب إدخال اسم المنصة والرابط أولاً", "error"); return; }
+    
+    if(!siteSettings.social) siteSettings.social = {};
+    if(!siteSettings.social.customLinks) siteSettings.social.customLinks = [];
+    
+    siteSettings.social.customLinks.push({ label, url });
+    if(labelEl) labelEl.value = '';
+    if(urlEl) urlEl.value = '';
+    renderCustomSocialLinks();
+    showSystemToast("تم اعتماد المنصة الإضافية 👑", "success");
+};
+
+window.removeCustomSocialLink = function(idx) {
+    if(!confirm("حذف هذه المنصة من الروابط؟")) return;
+    siteSettings.social.customLinks.splice(idx, 1);
+    renderCustomSocialLinks();
+};
+
+// --- 👑 سجل مراجعات وتجارب العملاء ---
+window.renderReviewsList = function() {
+    const container = document.getElementById('admin-reviews-list');
+    if(!container) return;
+    if(!siteSettings.customerReviews) siteSettings.customerReviews = [];
+    
+    if(siteSettings.customerReviews.length === 0) {
+        container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-xs font-bold border border-dashed border-slate-700 rounded-3xl">سجل المراجعات فارغ حالياً.</div>`;
+        return;
+    }
+    
+    container.innerHTML = siteSettings.customerReviews.map((rev, idx) => `
+        <div class="bg-slate-900 p-4 rounded-3xl border border-slate-800 relative group transition-all duration-300 hover:border-[#ff91a4]/50 ${!rev.active ? 'opacity-40 grayscale' : ''}">
+            <div class="flex justify-between items-start mb-3 pr-8">
+                <div>
+                    <h5 class="text-xs font-black text-white">${escapeHTML(rev.name)}</h5>
+                    <p class="text-[8px] text-slate-500 font-bold mt-0.5">${escapeHTML(rev.date || '')}</p>
+                </div>
+                <div class="flex text-amber-400 gap-0.5">
+                    ${Array(rev.rating || 5).fill('<i data-lucide="star" class="w-3 h-3 fill-current"></i>').join('')}
+                </div>
+            </div>
+            <p class="text-[10px] text-slate-300 font-bold leading-relaxed line-clamp-3">${escapeHTML(rev.text)}</p>
+            
+            <div class="absolute top-3 right-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button type="button" onclick="toggleReviewStatus('${rev.id}')" class="p-1.5 bg-slate-800 text-[#ff91a4] rounded-lg shadow-lg hover:scale-110 transition-transform pointer-events-auto relative z-50"><i data-lucide="${rev.active ? 'eye-off' : 'eye'}" class="w-3.5 h-3.5"></i></button>
+                <button type="button" onclick="deleteReview('${rev.id}')" class="p-1.5 bg-red-500/20 text-red-400 rounded-lg shadow-lg hover:scale-110 transition-transform hover:bg-red-500 hover:text-white pointer-events-auto relative z-50"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            </div>
+        </div>
+    `).join('');
+    if(window.lucide) lucide.createIcons();
+};
+
+window.openAddReviewModal = function() {
+    const name = prompt("قرار إداري: يرجى كتابة اسم العميل:");
+    if(!name) return;
+    const text = prompt("الرجاء كتابة نص التقييم وتجربة العميل:");
+    if(!text) return;
+    const rating = prompt("تقييم العميل من 1 إلى 5 نجوم:", "5");
+    
+    if(!siteSettings.customerReviews) siteSettings.customerReviews = [];
+    siteSettings.customerReviews.unshift({
+        id: 'rev_' + Date.now(),
+        name: name.trim(),
+        text: text.trim(),
+        rating: parseInt(rating) || 5,
+        active: true,
+        date: new Date().toLocaleDateString('ar-EG')
+    });
+    
+    renderReviewsList();
+    showSystemToast("تم إدراج تقييم العميل واعتماده 👑", "success");
+};
+
+window.toggleReviewStatus = function(id) {
+    const rev = siteSettings.customerReviews.find(r => r.id === id);
+    if(rev) { rev.active = !rev.active; renderReviewsList(); }
+};
+
+window.deleteReview = function(id) {
+    if(!confirm("هل تودين حذف هذا التقييم نهائياً من سجل العملاء؟")) return;
+    siteSettings.customerReviews = siteSettings.customerReviews.filter(r => r.id !== id);
+    renderReviewsList();
+};
+
 
 window.renderCategoryDescAdmin = function() {
     let container = document.getElementById('dynamic-category-desc-container');
@@ -357,12 +575,13 @@ window.renderHomepageSelection = function() {
     catalog.forEach(prod => {
         const isNew = prod.badge === 'جديد 🌟' || prod.badge === 'جديد';
         const isBest = prod.badge === 'الأكثر مبيعاً 🔥' || prod.badge === 'مبيعاً';
+        const isOutOfStock = prod.inStock === false;
         
         html += `
             <div class="flex items-center justify-between bg-[#0a0f1c] p-3 rounded-2xl border border-slate-800 hover:border-[#ff91a4]/30 transition-colors">
                 <div class="flex items-center gap-3 w-1/2 truncate">
-                    <img src="${prod.img || 'https://via.placeholder.com/50'}" class="w-8 h-8 rounded-lg object-cover shrink-0">
-                    <span class="text-xs font-bold text-white truncate">${escapeHTML(prod.name)}</span>
+                    <img src="${prod.img || 'https://via.placeholder.com/50'}" class="w-8 h-8 rounded-lg object-cover shrink-0 ${isOutOfStock ? 'grayscale opacity-50' : ''}">
+                    <span class="text-xs font-bold text-white truncate ${isOutOfStock ? 'line-through text-slate-500' : ''}">${escapeHTML(prod.name)}</span>
                 </div>
                 <div class="flex gap-2 shrink-0">
                     <button onclick="toggleProductBadge('${prod.id}', 'جديد 🌟')" class="px-2 py-1 text-[9px] font-bold rounded-lg border ${isNew ? 'bg-[#ff91a4]/20 text-[#ff91a4] border-[#ff91a4]/50' : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'}">حديثاً</button>
