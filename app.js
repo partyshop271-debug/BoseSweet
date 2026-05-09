@@ -221,24 +221,29 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-// 👑 إضافة 3: محرك تسجيل تطبيقات الويب التقدمية (PWA Registration Engine)
+// التحديث الهندسي لدورة حياة محرك PWA لضمان الالتقاط الفوري
 function registerBoseSweetsPWA() {
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            // توحيد نطاق التشغيل مع الهيكل الرئيسي لمنع التداخلات البرمجية
+        const registerSW = () => {
             navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(registration => {
                 console.log('حلويات بوسي: تم تأكيد تسجيل محرك تطبيق الموبايل بنجاح.', registration.scope);
             }).catch(error => {
                 console.log('حلويات بوسي: تأخير في تسجيل محرك التطبيق، جاري المحاولة لاحقاً.', error);
             });
-        });
+        };
+
+        if (document.readyState === 'complete') {
+            registerSW();
+        } else {
+            window.addEventListener('load', registerSW);
+        }
     }
 }
 
 async function startBoseSweetsEngine() {
     if (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة') || document.getElementById('admin-orders-tbody')) { return; }
 
-    registerBoseSweetsPWA();        // 👑 تشغيل نظام التطبيق المكتبي/الموبايل
+    registerBoseSweetsPWA();        
     await bootSystemCore();         
     syncBoseSweetsLayout();         
     initUI();                       
@@ -255,7 +260,7 @@ if (document.readyState === 'loading') {
     startBoseSweetsEngine();
 }
 
-// 👑 إضافة 4: محرك تفويض الأحداث الشامل (Event Delegation Engine) لرفع الأداء
+// محرك تفويض الأحداث الشامل (Event Delegation Engine) لرفع الأداء
 document.addEventListener('click', function(event) {
     if (event.target && event.target.closest('.add-to-cart-btn')) {
         event.preventDefault();
