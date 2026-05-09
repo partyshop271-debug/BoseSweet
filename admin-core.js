@@ -133,7 +133,7 @@ const defaultSettings = {
     brandName: "حلويات بوسي", 
     announcement: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب",
     heroTitle: "أهلاً بكم في <br class='hidden md:block'/> <span class='text-white relative inline-block mt-1 md:mt-2 drop-shadow-md'>حلويات بوسي</span>",
-    heroDesc: "يسر إدارة حلويات بوسي استعراض تشكيلتها الحصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بذوقكم الرفيع ومناسباتكم Сعيدة.",
+    heroDesc: "يسر إدارة حلويات بوسي استعراض تشكيلتها الحصرية من الأصناف الفاخرة والمُعدة بعناية فائقة لتليق بذوقكم الرفيع ومناسباتكم السعيدة.",
     footerPhone: "01097238441", 
     footerAddress: "الكفاح، مركز الفرافرة، محافظة الوادي الجديد",
     footerQuote: "العلامة التجارية الرائدة في صناعة الحلويات الفاخرة وتصميم التورت الملكية بمركز الفرافرة منذ عام 2014.",
@@ -141,13 +141,13 @@ const defaultSettings = {
     
     // الهيكل القديم محتفظ به التزاماً بمعايير استقرار النظام
     visuals: {
-        themeHex: "#ff3377", 
+        themeHex: "#ff91a4", 
         bgHex: "#ffffff", 
-        textHex: "#475569",
+        textHex: "#1a1a1a",
         fontFamily: "'Cairo', sans-serif", 
-        loaderText: "أهلاً بكم في عالم حلويات بوسي ✨",
-        loaderBgColor: "#fff0f5",
-        loaderTextColor: "#ff3377",
+        loaderText: "أهلاً بكم في عالم حلويات بوسي",
+        loaderBgColor: "#ffffff",
+        loaderTextColor: "#ff91a4",
         fontSizeBase: "16px",
         fontWeightBold: "900"
     },
@@ -164,7 +164,15 @@ const defaultSettings = {
         innerPageFontSize: "16px"          
     },
     seo: { title: "", desc: "", keywords: "" },
-    social: { facebook: "https://facebook.com/BoseSweets", tiktok: "https://tiktok.com/@BoseSweets", instagram: "https://instagram.com/BoseSweets" },
+    
+    // ✅ تحديث قنوات التواصل الاجتماعي (إضافة واتساب)
+    social: { 
+        facebook: "https://facebook.com/BoseSweets", 
+        tiktok: "https://tiktok.com/@BoseSweets", 
+        instagram: "https://instagram.com/BoseSweets",
+        whatsapp: "201097238441" 
+    },
+    
     catDescriptions: {}, 
     goldenTips: [],      
     customerReviews: [], 
@@ -173,36 +181,44 @@ const defaultSettings = {
     tickerSpeed: 20, 
     tickerFont: "'Cairo', sans-serif", 
     tickerColor: "#ffffff",
-    cakeBuilder: { basePrice: 145, desc: "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة.", minSquare: 16, minRect: 20, flavors: ['فانيليا', 'شيكولاتة', ' نص ونص', 'ريد فيلفت'], images: [], imagePrinting: [{ label: 'بدون', price: 0 }, { label: 'صورة قابلة للأكل', price: 60 }, { label: 'صورة غير قابلة للأكل', price: 20 }] },
+
+    // ✅ تحديث قسم التورت (cakeBuilder)
+    cakeBuilder: { 
+        basePrice: 145, 
+        desc: "نمنحكم حرية اختيار أدق التفاصيل لتصميم تورتة المناسبة السعيدة.", 
+        minSquare: 16, 
+        minRect: 20, 
+        flavors: ['فانيليا', 'شيكولاتة', 'نص ونص', 'ريد فيلفت'], 
+        images: [], 
+        imagePrinting: [
+            { label: 'بدون', price: 0 },
+            { label: 'صورة قابلة للأكل', price: 60 }, 
+            { label: 'صورة غير قابلة للأكل', price: 20 }
+        ] 
+    },
 
     // 👑 التوسيع الهندسي الجديد المعتمد بوثيقة المواصفات الفنية
-    // 1. Ticker Settings
-    ticker_isActive: true,
-    ticker_text: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب",
-    ticker_speed: 15,
-    ticker_bgColor: "#D2386C", 
-    ticker_textColor: "#ffffff",
-
-    // 2. Layout Settings 
+    
+    // ✅ 1. إعدادات تخطيط العرض (Layout Settings)
     layout_settings: {
         layout_viewMode: "columns_2", 
-        layout_card_height: "auto",
         layout_card_width: "100%",
+        layout_card_height: "auto",
         layout_waterfall_img_height: "270px",
         layout_waterfall_img_width: "100%",
         layout_waterfall_img_objectFit: "cover" 
     },
 
-    // 3. UI Settings 
+    // ✅ 2. إعدادات واجهة المستخدم (UI Settings)
     UI_Settings: {
-        loader_bgColor: "#fff0f5",
-        loader_textColor: "#D2386C",
-        loader_text: "جاري تجهيز منصة حلويات بوسي لحضرتك...",
+        loader_text: "جاري تجهيز عالم بوسي السحري...", 
+        loader_bgColor: "#ffffff", 
+        loader_textColor: "#ff91a4",
         typography_config: {
             main_font_family: "'Cairo', sans-serif",
             global_font_size_base: "16px",
             global_font_weight_bold: "900",
-            global_text_color: "#475569"
+            global_text_color: "#1a1a1a"
         },
         page_dimensions: {
             productPageMaxHeight: "auto",
@@ -210,7 +226,12 @@ const defaultSettings = {
         }
     },
 
-    // 4. Structure Settings 
+    ticker_isActive: true,
+    ticker_text: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب",
+    ticker_speed: 15,
+    ticker_bgColor: "#ff91a4", 
+    ticker_textColor: "#ffffff",
+
     Structure_Settings: {
         footer_sections: [],
         section_youMayAlsoLike_isActive: true,

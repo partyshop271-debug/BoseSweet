@@ -290,6 +290,11 @@ NetworkEngine.safeWrite = async function(collectionName, docId, data) {
     return await OriginalSafeWrite.call(NetworkEngine, collectionName, docId, data);
 };
 
+// 👑 التحديث السيادي: إلحاق المحركات بجذر المتصفح (Window) لضمان توافرها الشامل لكافة ملفات النظام
+window.ReverseSyncEngine = ReverseSyncEngine;
+window.CloudQueueDB = CloudQueueDB;
+window.NetworkEngine = NetworkEngine;
+
 // تشغيل محرك المعالجة الخلفية تلقائياً عند عودة الاتصال بالإنترنت
 window.addEventListener('online', () => NetworkEngine.processQueue());
 

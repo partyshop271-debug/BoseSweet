@@ -2,105 +2,156 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BoseSweets | دخول الإدارة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>حلويات بوسي | دخول الإدارة الآمن</title>
     
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script> <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     
     <script src="firebase-config.js"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #0f172a; }
+        :root {
+            --brand-primary: #ff91a4;
+            --brand-bg: #ffffff;
+            --brand-text: #1a1a1a;
+            --brand-glow: rgba(255, 145, 164, 0.3);
+        }
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--brand-bg); 
+            color: var(--brand-text);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         @keyframes slideUp { from { transform: translate(-50%, 100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
-        .toast-animate { animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-        .glow-blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.4; z-index: 0; pointer-events: none; }
+        .toast-animate { animation: slideUp 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards; }
+        
+        .login-card {
+            border: 2px solid var(--brand-primary);
+            border-radius: 2.5rem;
+            box-shadow: 0 20px 50px var(--brand-glow);
+            background: #ffffff;
+        }
+        .admin-input {
+            border: 2px solid #f1f5f9;
+            border-radius: 1.25rem;
+            transition: all 0.3s ease;
+            font-size: 16px !important;
+        }
+        .admin-input:focus {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 4px var(--brand-glow);
+            outline: none;
+        }
+        .btn-login {
+            background-color: var(--brand-primary);
+            border: 2px solid var(--brand-primary);
+            border-radius: 1.25rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px var(--brand-glow);
+        }
+        .btn-login:hover {
+            background-color: #ffffff;
+            color: var(--brand-primary);
+            transform: translateY(-2px);
+        }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-5 relative overflow-hidden">
+<body>
 
-    <div class="glow-blob bg-pink-600 w-64 h-64 top-[-10%] right-[-10%]"></div>
-    <div class="glow-blob bg-purple-600 w-64 h-64 bottom-[-10%] left-[-10%]"></div>
-
-    <div id="login-toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[999] hidden items-center gap-3 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm max-w-[90%] text-center border transition-all w-full md:w-auto">
-        <i id="toast-icon" data-lucide="info" class="w-5 h-5 shrink-0"></i>
-        <span id="toast-msg" class="flex-1"></span>
-    </div>
-
-    <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-700/50 rounded-[2.5rem] p-8 md:p-10 w-full max-w-md shadow-2xl relative z-10">
-        
-        <div class="text-center mb-10">
-            <div class="w-20 h-20 bg-gradient-to-tr from-pink-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg shadow-pink-500/30">
-                <i data-lucide="lock-keyhole" class="text-white w-10 h-10"></i>
-            </div>
-            <h2 class="text-2xl font-black text-white mb-2 tracking-tight">بوابة القيادة 👑</h2>
-            <p class="text-slate-400 text-sm font-bold">النظام مشفر. مسموح فقط لإدارة حلويات بوسي.</p>
-        </div>
-        
-        <div class="space-y-5">
-            <div class="relative">
-                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none"><i data-lucide="mail" class="w-5 h-5 text-slate-500"></i></div>
-                <input type="email" id="admin-email" placeholder="البريد الإلكتروني" class="w-full py-4 pr-12 pl-4 bg-slate-950 border border-slate-700 rounded-2xl outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white font-bold transition-all shadow-inner text-left" dir="ltr">
+    <div class="w-full max-w-[420px] px-6">
+        <div class="login-card p-8 md:p-10 animate-fade-in">
+            <div class="text-center mb-10">
+                <div class="w-20 h-20 bg-[#ffffff] border-2 border-[#ff91a4] rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg overflow-hidden">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.png" class="w-full h-full object-cover" alt="حلويات بوسي">
+                </div>
+                <h1 class="text-2xl font-black text-[#ff91a4] tracking-tight">مركز قيادة حلويات بوسي</h1>
+                <p class="text-slate-500 font-bold text-sm mt-2">تسجيل دخول الإدارة المعتمد 🛡️</p>
             </div>
 
-            <div class="relative">
-                <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none"><i data-lucide="shield" class="w-5 h-5 text-slate-500"></i></div>
-                <input type="password" id="admin-pwd" placeholder="كلمة المرور السحابية" class="w-full py-4 pr-12 pl-4 bg-slate-950 border border-slate-700 rounded-2xl outline-none focus:border-pink-500 focus:ring-1 focus:ring-pink-500 text-white font-bold transition-all shadow-inner text-left" dir="ltr">
+            <div class="space-y-5">
+                <div class="space-y-2">
+                    <label class="block text-xs font-black text-slate-700 mr-2">بريد الإدارة الإلكتروني</label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                        <input type="email" id="admin-email" placeholder="admin@bosesweets.com" class="w-full admin-input py-4 pr-12 pl-4 font-bold text-[#1a1a1a]">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-xs font-black text-slate-700 mr-2">كلمة المرور المشفرة</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
+                        <input type="password" id="admin-pwd" placeholder="••••••••" class="w-full admin-input py-4 pr-12 pl-4 font-bold text-[#1a1a1a]">
+                    </div>
+                </div>
+
+                <button onclick="handleAdminLogin()" id="login-btn" class="w-full btn-login py-4 text-white font-black flex items-center justify-center gap-3 active:scale-95 mt-4">
+                    <span>دخول النظام</span>
+                    <i data-lucide="log-in" class="w-5 h-5"></i>
+                </button>
             </div>
 
-            <button onclick="loginAdmin()" id="login-btn" class="w-full bg-gradient-to-l from-pink-500 to-pink-600 text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-pink-500/25 active:scale-95 transition-all flex items-center justify-center gap-2 mt-4">
-                <span>تسجيل الدخول</span>
-                <i data-lucide="arrow-left" class="w-5 h-5"></i>
-            </button>
-        </div>
-
-        <div class="mt-8 text-center border-t border-slate-800 pt-6">
-            <a href="index.html" class="inline-flex items-center gap-2 text-slate-500 text-sm font-bold hover:text-white transition-colors">
-                <i data-lucide="store" class="w-4 h-4"></i> العودة لواجهة المتجر
-            </a>
+            <div class="mt-8 text-center">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">جميع الحقوق محفوظة لـ حلويات بوسي © 2026</p>
+            </div>
         </div>
     </div>
+
+    <div id="toast-container" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[1000] w-[90%] max-w-[350px]"></div>
 
     <script>
         lucide.createIcons();
 
-        function showToast(msg, type = 'error') {
-            const toast = document.getElementById('login-toast');
-            const toastMsg = document.getElementById('toast-msg');
-            const icon = document.getElementById('toast-icon');
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-emerald-500' : 'bg-red-500';
             
-            toastMsg.innerText = msg;
-            toast.className = `fixed bottom-8 left-1/2 -translate-x-1/2 z-[999] flex items-center gap-3 text-white px-6 py-4 rounded-2xl shadow-2xl font-bold text-sm w-[90%] md:w-max text-center border toast-animate ${type === 'error' ? 'bg-red-950 border-red-800/50 text-red-200' : 'bg-emerald-950 border-emerald-800/50 text-emerald-200'}`;
-            icon.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : 'check-circle');
-            lucide.createIcons();
-            setTimeout(() => { toast.classList.replace('flex', 'hidden'); toast.classList.remove('toast-animate'); }, 4000);
+            toast.className = `${bgColor} text-white px-6 py-4 rounded-2xl shadow-2xl font-black text-sm text-center toast-animate mb-3 border-2 border-white/20`;
+            toast.innerHTML = message;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 20px)';
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
         }
 
-        async function loginAdmin() {
-            // 🛡️ التنظيف العميق للمسافات المخفية وتوحيد حالة الحروف
-            const email = document.getElementById('admin-email').value.trim().toLowerCase();
-            const pwd = document.getElementById('admin-pwd').value.trim(); 
+        async function handleAdminLogin() {
+            const email = document.getElementById('admin-email').value.trim();
+            const pwd = document.getElementById('admin-pwd').value.trim();
             const btn = document.getElementById('login-btn');
-            
-            if(!email || !pwd) { showToast("يرجى كتابة البريد الإلكتروني وكلمة المرور 🌸", "error"); return; }
-            
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> جاري التحقق...`; 
+
+            if (!email || !pwd) {
+                showToast("يرجى إكمال بيانات الهوية الإدارية أولاً 🛡️", "error");
+                return;
+            }
+
             btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>جاري التحقق...</span>`;
             lucide.createIcons();
 
             try {
-                // الاتصال بحارس بوابة السحابة
-                await auth.signInWithEmailAndPassword(email, pwd);
-                showToast("تم التحقق بنجاح! جاري فتح اللوحة 👑", "success");
+                // استخدام نظام التوثيق السحابي لبراند حلويات بوسي
+                const userCredential = await firebase.auth().signInWithEmailAndPassword(email, pwd);
+                showToast("تم التحقق.. أهلاً بعودتك للإدارة 👑", "success");
+                
+                sessionStorage.setItem('bosy_admin_auth', 'true');
                 setTimeout(() => { window.location.href = 'admin.html'; }, 1000);
             } catch (error) {
-                console.error("🔥 تقرير تفصيلي لخطأ تسجيل الدخول:", error);
+                console.error("🔥 تقرير خطأ تسجيل الدخول:", error);
                 
-                // 👑 محرك تحليل الأخطاء الذكي الجديد لمعرفة السبب الحقيقي
                 if (error.code === 'auth/network-request-failed') {
                     showToast("شبكة الإنترنت ضعيفة جداً حالياً جربي تاني 📡", "error");
                 } else if (error.code === 'auth/too-many-requests') {
@@ -108,19 +159,19 @@
                 } else if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
                     showToast("الإيميل ده مش متسجل في إدارة بوسي راجعي الحروف 🛡️", "error");
                 } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                    showToast("الباسورد غلط يا فندم تأكدي من الحروف (الكابيتال والسمول) 🛡️", "error");
+                    showToast("الباسورد غلط يا فندم تأكدي من الحروف 🛡️", "error");
                 } else {
                     showToast(`عطل فني: ${error.message} 🛠️`, "error");
                 }
                 
-                btn.innerHTML = `<span>تسجيل الدخول</span><i data-lucide="arrow-left" class="w-5 h-5"></i>`; 
+                btn.innerHTML = `<span>دخول النظام</span><i data-lucide="log-in" class="w-5 h-5"></i>`; 
                 btn.disabled = false;
                 lucide.createIcons();
             }
         }
 
-        document.getElementById('admin-pwd').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') { loginAdmin(); }
+        document.getElementById('admin-pwd').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleAdminLogin();
         });
     </script>
 </body>

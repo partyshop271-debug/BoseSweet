@@ -5,8 +5,8 @@
     --bg-input: #1a2235;    
     --text-main: #f8fafc;   
     --text-muted: #8b9bb4;  
-    --brand-primary: #ff3377; /* البمبي الملكي المشبع */
-    --brand-glow: rgba(255, 51, 119, 0.5);
+    --brand-primary: #ff91a4; /* الوردي الملكي الناعم المعتمد */
+    --brand-glow: rgba(255, 145, 164, 0.5);
     --border-soft: rgba(255,255,255,0.05);
 }
 
@@ -88,8 +88,8 @@ body {
 }
 @keyframes float-pulse {
     0% { box-shadow: 0 0 0 0 var(--brand-glow); }
-    70% { box-shadow: 0 0 0 15px rgba(255, 51, 119, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(255, 51, 119, 0); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 145, 164, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 145, 164, 0); }
 }
 
 /* تبويبات النفيجيشن العلوية */

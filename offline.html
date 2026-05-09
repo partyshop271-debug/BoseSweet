@@ -2,13 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>حلويات بوسي - انقطاع الاتصال</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Cairo', sans-serif;
             background-color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -16,50 +16,60 @@
             justify-content: center;
             height: 100vh;
             text-align: center;
-            color: #333333;
+            color: #1a1a1a;
+            -webkit-tap-highlight-color: transparent;
         }
         .offline-container {
             padding: 40px 20px;
             max-width: 400px;
+            border: 2px solid #ff91a4;
+            border-radius: 2.5rem;
+            box-shadow: 0 10px 30px rgba(255, 145, 164, 0.2);
         }
         .brand-name {
             color: #ff91a4;
-            font-size: 28px;
-            font-weight: bold;
+            font-size: 32px;
+            font-weight: 900;
             margin-bottom: 20px;
         }
         h1 {
-            font-size: 22px;
+            font-size: 24px;
+            font-weight: 900;
             margin-bottom: 15px;
-            color: #333333;
+            color: #1a1a1a;
         }
         p {
             font-size: 16px;
-            line-height: 1.6;
+            font-weight: 700;
+            line-height: 1.7;
             margin-bottom: 35px;
-            color: #666666;
+            color: #1a1a1a;
         }
         .retry-btn {
             background-color: #ff91a4;
             color: #ffffff;
-            border: none;
-            padding: 12px 35px;
-            font-size: 16px;
+            border: 2px solid #ff91a4;
+            padding: 14px 40px;
+            font-size: 18px;
             border-radius: 25px;
             cursor: pointer;
-            font-weight: bold;
-            transition: opacity 0.3s ease;
+            font-weight: 900;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 145, 164, 0.3);
         }
-        .retry-btn:active {
-            opacity: 0.8;
+        .retry-btn:hover {
+            background-color: #ffffff;
+            color: #ff91a4;
+            transform: translateY(-2px);
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="offline-container">
         <div class="brand-name">حلويات بوسي</div>
-        <h1>عفواً، لا يوجد اتصال بالإنترنت</h1>
-        <p>يرجى التحقق من إعدادات الشبكة الخاصة بحضرتك والمحاولة مرة أخرى لاستكمال تجربة التسوق.</p>
+        <h1>عفواً، لا يوجد اتصال</h1>
+        <p>يرجى مراجعة حالة الاتصال بالإنترنت لدى حضرتك والمحاولة مرة أخرى للعودة إلى واجهة التسوق.</p>
         <button class="retry-btn" onclick="window.location.reload();">تحديث الصفحة</button>
     </div>
 </body>

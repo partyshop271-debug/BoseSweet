@@ -3,7 +3,7 @@ function renderAdminOrderFilters() {
     if(!filtersEl) return;
     const filters = [ { id: 'all', label: 'الكل' }, { id: 'pending', label: '🟡 مراجعة' }, { id: 'processing', label: '🟠 تجهيز' }, { id: 'completed', label: '🟢 مكتمل' }, { id: 'cancelled', label: '🔴 ملغي' } ];
     filtersEl.innerHTML = filters.map(f => `
-        <button onclick="setAdminOrderFilter('${f.id}')" class="whitespace-nowrap px-4 py-2 rounded-xl font-bold text-xs transition-all shadow-sm border ${adminOrderFilter === f.id ? 'bg-[#ff3377] text-white border-pink-400 scale-105' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border-slate-700'}">${f.label}</button>
+        <button onclick="setAdminOrderFilter('${f.id}')" class="whitespace-nowrap px-4 py-2 rounded-xl font-bold text-xs transition-all shadow-sm border ${adminOrderFilter === f.id ? 'bg-[#ff91a4] text-white border-[#ff91a4] scale-105' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white border-slate-700'}">${f.label}</button>
     `).join('');
 }
 
@@ -51,12 +51,12 @@ function renderAdminOrders() {
             if(s === 'cancelled') statusBadge = '<span class="bg-red-500/10 text-red-400 border border-red-500/20 px-2 py-1 rounded text-[10px] font-bold">ملغي</span>';
             return `
             <tr class="hover:bg-slate-800 transition-colors border-b border-slate-800/50 cursor-pointer group" onclick="openOrderDetails('${o.id}')">
-                <td class="p-4 font-mono text-[#ff3377] whitespace-nowrap font-bold text-xs">#${escapeHTML((o.id||'').substring(0,8))}</td>
+                <td class="p-4 font-mono text-[#ff91a4] whitespace-nowrap font-bold text-xs">#${escapeHTML((o.id||'').substring(0,8))}</td>
                 <td class="p-4 text-[11px] text-slate-400 whitespace-nowrap" dir="ltr">${escapeHTML(o.date || '')}</td>
                 <td class="p-4 min-w-[150px]"><p class="font-bold text-slate-200">${escapeHTML(o.name || 'عميل')}</p><p class="text-[10px] text-slate-500 mt-1 font-mono">${escapeHTML(o.phone || '')}</p></td>
                 <td class="p-4 font-black text-emerald-400 whitespace-nowrap">${escapeHTML((o.total||0).toString())} ج</td>
                 <td class="p-4 whitespace-nowrap">${statusBadge}</td>
-                <td class="p-4 text-center whitespace-nowrap"><button class="text-slate-400 group-hover:text-[#ff3377] p-2 bg-slate-900 group-hover:bg-pink-500/10 rounded-lg transition-colors border border-slate-700 group-hover:border-pink-500/30"><i data-lucide="eye" class="w-4 h-4"></i></button></td>
+                <td class="p-4 text-center whitespace-nowrap"><button class="text-slate-400 group-hover:text-[#ff91a4] p-2 bg-slate-900 group-hover:bg-[#ff91a4]/10 rounded-lg transition-colors border border-slate-700 group-hover:border-[#ff91a4]/30"><i data-lucide="eye" class="w-4 h-4"></i></button></td>
             </tr>
         `}).join('');
     }
@@ -73,12 +73,12 @@ function renderAdminOrders() {
             return `
             <div onclick="openOrderDetails('${o.id}')" class="bg-[#101726] border border-slate-800 rounded-[1.5rem] p-4 flex flex-col gap-3 active:scale-95 transition-transform cursor-pointer shadow-sm">
                 <div class="flex justify-between items-center">
-                    <span class="text-[10px] font-mono text-[#ff3377]">#${(o.id||'').substring(3, 9)}</span>
+                    <span class="text-[10px] font-mono text-[#ff91a4]">#${(o.id||'').substring(3, 9)}</span>
                     <span class="text-[9px] font-bold px-2 py-1 rounded-lg border ${statusColor}">${statusText}</span>
                 </div>
                 <div class="flex justify-between items-center">
                     <span class="text-xs font-black text-white truncate max-w-[60%]">${escapeHTML(o.name || 'عميل')}</span>
-                    <span class="text-sm font-black text-[#ff3377]">${escapeHTML((o.total||0).toString())} ج.م</span>
+                    <span class="text-sm font-black text-[#ff91a4]">${escapeHTML((o.total||0).toString())} ج.م</span>
                 </div>
                 <div class="text-[10px] text-slate-400 flex justify-between border-t border-slate-800/50 pt-2 mt-1">
                     <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${escapeHTML(o.area || 'غير محدد')}</span>
@@ -116,7 +116,7 @@ function openOrderDetails(orderId) {
         if (Array.isArray(order.itemsArray)) {
             itemsContainer.innerHTML = order.itemsArray.map(item => `
                 <div class="flex justify-between items-center bg-slate-800 p-3 rounded-xl border border-slate-700">
-                    <div class="flex items-center gap-3"><span class="w-6 h-6 flex items-center justify-center bg-slate-900 text-[#ff3377] font-bold rounded text-xs">${item.qty || item.quantity || 1}x</span><div><p class="text-sm font-bold text-white">${escapeHTML(item.name || '')}</p>${item.desc || item.notes ? `<p class="text-[10px] text-amber-400 mt-0.5">${escapeHTML(item.desc || item.notes)}</p>` : ''}</div></div>
+                    <div class="flex items-center gap-3"><span class="w-6 h-6 flex items-center justify-center bg-slate-900 text-[#ff91a4] font-bold rounded text-xs">${item.qty || item.quantity || 1}x</span><div><p class="text-sm font-bold text-white">${escapeHTML(item.name || '')}</p>${item.desc || item.notes ? `<p class="text-[10px] text-amber-400 mt-0.5">${escapeHTML(item.desc || item.notes)}</p>` : ''}</div></div>
                     <span class="text-sm font-mono text-emerald-400">${(item.price || 0) * (item.qty || item.quantity || 1)} ج</span>
                 </div>
             `).join('');
@@ -155,7 +155,11 @@ async function updateOrderStatus() {
         saveEngineMemory('ord');
         
         try {
-            if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('orders', String(id), globalOrders[orderIdx]);
+            if(typeof NetworkEngine !== 'undefined') {
+                await NetworkEngine.safeWrite('orders', String(id), globalOrders[orderIdx]);
+            } else if (typeof db !== 'undefined') {
+                await db.collection('orders').doc(String(id)).set(globalOrders[orderIdx], { merge: true });
+            }
             showSystemToast('تم تحديث حالة الطلب بقرار مهني بنجاح 👑', 'success');
 
             if (oldStatus !== newStatus && (newStatus === 'processing' || newStatus === 'completed')) {

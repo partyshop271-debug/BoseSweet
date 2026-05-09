@@ -295,6 +295,15 @@ export const applySettingsToUI = function() {
     if(areaSelect) areaSelect.innerHTML = `<option value="" disabled selected>اختار منطقة التوصيل...</option>` + shippingZones.map(z => `<option value="${z.id}">${escapeHTML(z.name)} (+${Number(z.fee)} ج.م توصيل)</option>`).join('');
     
     if(document.getElementById('sidebar-categories')) renderCustomerSidebarCategories();
+
+    // 👑 الترقية السيادية: نظام التوجيه الذكي للروابط المشتركة (Deep Link Router)
+    setTimeout(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('product');
+        if (productId && typeof window.navigateToProduct === 'function') {
+            window.navigateToProduct(productId);
+        }
+    }, 800);
 };
 window.applySettingsToUI = applySettingsToUI;
 
@@ -471,7 +480,6 @@ window.renderFlowerTabs = renderFlowerTabs;
 export const enforceCategoryRender = function(containerId, productsHTML) {
     const container = document.getElementById(containerId);
     if (container) {
-        // بناء شريحة تخيلية في الذاكرة أولاً
         const fragment = document.createDocumentFragment();
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = productsHTML;
@@ -603,7 +611,6 @@ export const navigateToProduct = function(productId) {
     const prod = catalog.find(p => String(p.id) === String(productId));
     if (!prod) return;
     
-    // 👑 تحليل البيانات الصامت: تسجيل اهتمامات العميل لترتيب الاقتراحات
     try {
         let userPrefs = JSON.parse(localStorage.getItem('bose_user_prefs')) || {};
         userPrefs[prod.category] = (userPrefs[prod.category] || 0) + 1;
@@ -1168,22 +1175,28 @@ export const submitCustomerReviewLive = async function(productId) {
     submitBtn.innerText = "جاري الحفظ...";
 
     const reviewId = 'rev_' + Date.now().toString(36);
+    const serverTime = (typeof firebase !== 'undefined' && firebase.firestore) ? firebase.firestore.FieldValue.serverTimestamp() : Date.now();
+    
     const reviewPayload = {
         reviewId: reviewId,
         customerName: customerName,
         rating: rating,
         comment: comment,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        timestamp: serverTime,
         isApproved: false 
     };
 
     try {
-        if (typeof db !== 'undefined') {
+        // 👑 الترقية السيادية: توجيه التقييم عبر محرك السحابة لتأمين الحفظ الأوفلاين
+        const collectionPath = `catalog/${productId}/livereviews`;
+        if (window.NetworkEngine && typeof window.NetworkEngine.safeWrite === 'function') {
+            await window.NetworkEngine.safeWrite(collectionPath, reviewId, reviewPayload);
+        } else if (typeof db !== 'undefined') {
             await db.collection('catalog').doc(String(productId)).collection('livereviews').doc(reviewId).set(reviewPayload);
-            showSystemToast("شكراً ليك! تم إرسال تقييمك بنجاح 👑", "success");
-            nameInput.value = '';
-            commentInput.value = '';
         }
+        showSystemToast("شكراً ليك! تم إرسال تقييمك بنجاح 👑", "success");
+        nameInput.value = '';
+        commentInput.value = '';
     } catch (e) {
         showSystemToast("حدث تأخير في الشبكة، تم الحفظ وجاري الإرسال", "info");
     } finally {

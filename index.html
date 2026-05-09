@@ -10,6 +10,11 @@
     <link rel="canonical" href="https://bose-sweet.vercel.app/" />
     <link rel="manifest" href="manifest.json">
     
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="حلويات بوسي">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.png">
+    
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -137,6 +142,36 @@
 </head>
 <body class="bg-[#ffffff] text-[#1a1a1a]">
 
+    <div id="network-status-banner" class="fixed top-0 left-0 w-full z-[100000] bg-[#1a1a1a] text-[#ffffff] text-center py-2.5 font-bold text-sm hidden transition-transform duration-300 -translate-y-full border-b-2 border-[#ff91a4] shadow-md flex justify-center items-center gap-2">
+        <i data-lucide="wifi-off" class="w-4 h-4 text-[#ff91a4]"></i>
+        <span>عفواً، لا يوجد اتصال بالإنترنت. تتصفح الآن النسخة المحفوظة.</span>
+    </div>
+
+    <div id="ios-install-prompt" class="fixed inset-0 z-[100000] hidden items-end sm:items-center justify-center bg-[#1a1a1a]/60 backdrop-blur-sm transition-opacity duration-300 pb-6 sm:pb-0 px-4">
+        <div class="bg-[#ffffff] w-full sm:w-[400px] rounded-[2.5rem] p-6 border-2 border-[#ff91a4] shadow-2xl relative animate-fade-in">
+            <button onclick="closeIosPrompt()" class="absolute top-4 left-4 p-2 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
+            
+            <div class="text-center mb-6 mt-4">
+                <div class="w-16 h-16 bg-[#ffffff] border-2 border-[#ff91a4] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg overflow-hidden">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.png" class="w-full h-full object-cover" alt="حلويات بوسي">
+                </div>
+                <h3 class="text-2xl font-black text-[#ff91a4] tracking-tighter mb-2">تطبيق حلويات بوسي</h3>
+                <p class="font-bold text-[#1a1a1a] text-sm leading-relaxed">أضف التطبيق للشاشة الرئيسية لتجربة تسوق أسرع وأسهل.</p>
+            </div>
+            
+            <div class="space-y-4 bg-[#ffffff] border-2 border-[#ff91a4] p-4 rounded-2xl text-right">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 flex items-center justify-center bg-[#ff91a4] text-[#ffffff] font-black rounded-full text-sm shrink-0">1</span>
+                    <p class="font-bold text-[#1a1a1a] text-sm">اضغط على زر المشاركة <i data-lucide="share" class="w-4 h-4 inline text-[#ff91a4]"></i> أسفل الشاشة.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 flex items-center justify-center bg-[#ff91a4] text-[#ffffff] font-black rounded-full text-sm shrink-0">2</span>
+                    <p class="font-bold text-[#1a1a1a] text-sm">اختر "إضافة للشاشة الرئيسية" <br><span dir="ltr" class="text-xs text-[#666666]">(Add to Home Screen)</span> <i data-lucide="plus-square" class="w-4 h-4 inline text-[#ff91a4]"></i>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="global-image-lightbox" class="fixed inset-0 z-[100000] hidden items-center justify-center bg-[#ffffff]/95 cursor-zoom-out transition-opacity duration-300" onclick="closeGlobalLightbox()">
         <img id="lightbox-main-img" src="" class="max-w-[95%] max-h-[95vh] object-contain rounded-[2.5rem] shadow-2xl transition-transform transform scale-95 duration-300 border-4 border-[#ff91a4]" alt="تفاصيل المنتج">
         <div class="absolute top-6 right-6 bg-[#ff91a4] p-3 rounded-full text-[#ffffff] hover:scale-110 transition-transform">
@@ -261,7 +296,7 @@
 
     <div id="advanced-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-[380px] bg-[#ffffff] translate-x-full flex flex-col border-l-2 border-[#ff91a4] z-[10000]">
         <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex justify-between items-center">
-<h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter">قائمة حلويات بوسي</h2>
+            <h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter">قائمة حلويات بوسي</h2>
             <button onclick="toggleSidebarMenu(false)" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] rounded-full text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
         <div class="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar bg-[#ffffff]">
@@ -269,6 +304,10 @@
                 <button onclick="goToHome(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-all"><i data-lucide="home" class="w-5 h-5 text-[#ff91a4]"></i> الرئيسية</button>
                 <button onclick="switchToMenuView(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-all"><i data-lucide="book-open" class="w-5 h-5 text-[#ff91a4]"></i> المنيو</button>
                 <button onclick="showGoldenTips(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-all"><i data-lucide="award" class="w-5 h-5 text-[#ff91a4]"></i> أسرار الطعم</button>
+                
+                <button id="custom-pwa-install-btn" class="hidden items-center gap-4 text-lg font-bold text-[#ff91a4] hover:text-[#1a1a1a] transition-all mt-4 p-3 border-2 border-[#ff91a4] rounded-2xl bg-[#ffffff]">
+                    <i data-lucide="download" class="w-5 h-5"></i> تثبيت التطبيق
+                </button>
             </nav>
             <div class="pt-8 border-t-2 border-[#ff91a4] text-center">
                 <h3 class="text-sm font-black text-[#1a1a1a] mb-5">تواصل معانا</h3>
@@ -528,8 +567,89 @@
                 }
             }, 600);
         });
+    </script>
 
-        console.log("حلويات بوسي: تم تطبيق التحديث بنجاح 👑✨");
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                    .then((registration) => {
+                        console.log('حلويات بوسي: تم تشغيل محرك الخلفية بنجاح', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.error('حلويات بوسي: فشل تشغيل المحرك', error);
+                    });
+            });
+        }
+
+        const networkBanner = document.getElementById('network-status-banner');
+        function updateNetworkStatus() {
+            if (navigator.onLine) {
+                networkBanner.style.transform = 'translateY(-100%)';
+                setTimeout(() => networkBanner.classList.add('hidden'), 300);
+            } else {
+                networkBanner.classList.remove('hidden');
+                setTimeout(() => networkBanner.style.transform = 'translateY(0)', 10);
+            }
+        }
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        if (!navigator.onLine) updateNetworkStatus();
+
+        let deferredPrompt;
+        const installBtn = document.getElementById('custom-pwa-install-btn');
+        
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            if (installBtn) {
+                installBtn.classList.remove('hidden');
+                installBtn.classList.add('flex');
+            }
+        });
+
+        if (installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        console.log('حلويات بوسي: تم تثبيت التطبيق بنجاح');
+                    }
+                    deferredPrompt = null;
+                    installBtn.classList.add('hidden');
+                    installBtn.classList.remove('flex');
+                }
+            });
+        }
+
+        window.addEventListener('appinstalled', () => {
+            if (installBtn) {
+                installBtn.classList.add('hidden');
+                installBtn.classList.remove('flex');
+            }
+            deferredPrompt = null;
+            console.log('حلويات بوسي: تم اكتمال التثبيت على الجهاز');
+        });
+
+        const iosPrompt = document.getElementById('ios-install-prompt');
+        window.closeIosPrompt = function() {
+            if (iosPrompt) iosPrompt.classList.replace('flex', 'hidden');
+        };
+
+        const isIos = () => {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            return /iphone|ipad|ipod/.test(userAgent);
+        };
+        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+        if (isIos() && !isInStandaloneMode()) {
+            setTimeout(() => {
+                if (iosPrompt) {
+                    iosPrompt.classList.replace('hidden', 'flex');
+                }
+            }, 3000); 
+        }
     </script>
 
     <script src="firebase-config.js"></script>

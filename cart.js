@@ -173,7 +173,7 @@ export async function submitOrderFinal() {
     }
     
     if (outOfStockItems.length > 0) {
-        showSystemToast(`نعتذر، المنتجات التالية غير متوفرة حالياً: ${outOfStockItems.join('، ')}. يرجى تحديث القائمة للاستمرار.`, 'error');
+        showSystemToast(`نعتذر لحضرتك، المنتجات التالية غير متوفرة حالياً: ${outOfStockItems.join('، ')}. يرجى تحديث القائمة للاستمرار.`, 'error');
         return;
     }
 
@@ -246,10 +246,8 @@ export async function submitOrderFinal() {
     
     state.cart.forEach((i, idx) => {
         const cost = i.price * i.quantity;
-        // دمج القسم مع الاسم لتأمين هوية المنتج
         m += `${idx + 1}. *${i.category} | ${i.name}*\n`;
         
-        // إزالة الوصف العشوائي والاكتفاء بالتخصيص للطلبات الخاصة أو الخصائص الفرعية
         if (i.isCustom) {
             m += `   - التخصيص: ${i.desc}\n`;
         } else {
@@ -276,10 +274,18 @@ export async function submitOrderFinal() {
     
     const orderData = { id: orderId, name: cName, phone: cPhone, area: deliveryMethod === 'pickup' ? 'استلام من الفرع' : cArea, address: cAddress, deliveryMethod: deliveryMethod, pickupDate: cDate, pickupTime: cTime, notes: cNotes, itemsArray: state.cart, subtotal: subtotal, shippingFee: shipFee, total: finalTotal, status: 'pending', timestamp: Date.now(), date: new Date().toLocaleString('ar-EG') };
 
+    // 👑 الترقية السيادية: تمرير حفظ الفاتورة عبر محرك السحابة الآمن (NetworkEngine) بدلاً من الإرسال المباشر
     try {
-        if(navigator.onLine && typeof db !== 'undefined') { db.collection('orders').doc(String(orderId)).set(orderData).catch(e => { ClientStorageEngine.queueOrder(orderData); }); } 
-        else { throw new Error("Offline"); }
-    } catch(e) { ClientStorageEngine.queueOrder(orderData); }
+        if (window.NetworkEngine && typeof window.NetworkEngine.safeWrite === 'function') {
+            window.NetworkEngine.safeWrite('orders', String(orderId), orderData);
+        } else if (navigator.onLine && typeof db !== 'undefined') { 
+            db.collection('orders').doc(String(orderId)).set(orderData).catch(e => { ClientStorageEngine.queueOrder(orderData); }); 
+        } else { 
+            throw new Error("Offline"); 
+        }
+    } catch(e) { 
+        ClientStorageEngine.queueOrder(orderData); 
+    }
 
     state.cart.length = 0; 
     clearCartStorage(); syncCartUI(); 
@@ -312,7 +318,6 @@ export function dispatchWhatsAppOrder() {
         const cost = item.price * item.quantity;
         subtotal += cost;
         
-        // دمج القسم مع الاسم لتأمين هوية المنتج
         orderMessage += `${index + 1}. *${item.category} | ${item.name}*\n`;
         
         if (item.isCustom) {
@@ -346,27 +351,41 @@ export function dispatchWhatsAppOrder() {
     showSystemToast('تم اعتماد المعاملة وتمرير بيانات الفاتورة لمركز العمليات بنجاح 👑', 'success');
 }
 
+// 👑 تصحيح مسار الدالة الاحتياطية لتتصل بالمصفوفة الرسمية للسلة بدلاً من التخزين المعزول
 export function processBoseSweetsOrder(id, name, price) {
-    let currentCart = JSON.parse(localStorage.getItem('boseSweetsCartData')) || [];
-    let existingItem = currentCart.find(item => item.id === id || item.name === name);
-    
-    if (existingItem) {
-        existingItem.quantity += 1;
+    const safeId = String(id);
+    const prod = catalogMap.get(safeId) || catalog.find(p => String(p.id) === safeId);
+
+    if (!prod) {
+        const exist = state.cart.find(i => String(i.id) === safeId && !i.isCustom);
+        if (exist) {
+            exist.quantity += 1;
+        } else {
+            state.cart.push({ id: safeId, name: name, price: price, quantity: 1, cartItemId: generateUniqueID() });
+        }
     } else {
-        currentCart.push({ id: id, name: name, price: price, quantity: 1 });
+        if (prod.inStock === false) {
+            showSystemToast('نأسف لحضرتك، هذا المنتج غير متوفر حالياً لتلبية الطلب.', 'error');
+            return;
+        }
+        const exist = state.cart.find(i => String(i.id) === safeId && !i.isCustom);
+        if (exist) {
+            exist.quantity += 1;
+        } else {
+            const newCartItem = JSON.parse(JSON.stringify(prod));
+            newCartItem.quantity = 1;
+            newCartItem.cartItemId = generateUniqueID();
+            state.cart.push(newCartItem);
+        }
     }
+
+    saveCartToStorage();
+    syncCartUI();
     
-    localStorage.setItem('boseSweetsCartData', JSON.stringify(currentCart));
-    updateCartDisplay();
+    showSystemToast(`تم إضافة (${name}) بنجاح لقائمة المشتريات 🛍️`, 'success');
 }
 
+// 👑 دالة التحديث أصبحت تشير للدالة الرسمية الموحدة لضمان عدم ازدواجية معالجة الواجهة
 export function updateCartDisplay() {
-    let currentCart = JSON.parse(localStorage.getItem('boseSweetsCartData')) || [];
-    let totalItems = currentCart.reduce((sum, item) => sum + item.quantity, 0);
-    
-    const cartCounters = document.querySelectorAll('.cart-counter, .cart-badge');
-    cartCounters.forEach(counter => {
-        counter.innerText = totalItems;
-        counter.style.display = totalItems > 0 ? 'flex' : 'none';
-    });
+    syncCartUI();
 }

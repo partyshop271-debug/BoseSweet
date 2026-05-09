@@ -174,18 +174,30 @@ function initUI() {
 }
 
 async function syncOfflineOrders() {
-    if (!navigator.onLine || !db || typeof ClientStorageEngine === 'undefined') return;
-    try {
-        const pendingOrders = await ClientStorageEngine.getQueuedOrders();
-        if (!pendingOrders || pendingOrders.length === 0) return;
-        
-        console.log(`حلويات بوسي: جاري مزامنة ${pendingOrders.length} طلبات معلقة من وضع الأوفلاين.`);
-        for (let order of pendingOrders) {
-            // 👑 استخدام محرك المزامنة الذكية الجديد بدلاً من الإرسال المباشر لضمان عدم ضياع الفاتورة
-            AdvancedNetworkEngine.syncWithRetry('orders', order);
-            await ClientStorageEngine.removeQueuedOrder(order.id);
-        }
-    } catch (e) {}
+    if (!navigator.onLine || !db) return;
+    
+    // دمج ذكي لتفريغ الطلبات المتراكمة في التخزين المحلي القديم وإحالتها للمحرك الشامل
+    if (typeof ClientStorageEngine !== 'undefined') {
+        try {
+            const pendingOrders = await ClientStorageEngine.getQueuedOrders();
+            if (pendingOrders && pendingOrders.length > 0) {
+                console.log(`حلويات بوسي: جاري تحويل وتأمين ${pendingOrders.length} طلبات معلقة من النظام القديم.`);
+                for (let order of pendingOrders) {
+                    if (window.NetworkEngine) {
+                        window.NetworkEngine.safeWrite('orders', order.id, order);
+                    } else if (typeof AdvancedNetworkEngine !== 'undefined') {
+                        AdvancedNetworkEngine.syncWithRetry('orders', order);
+                    }
+                    await ClientStorageEngine.removeQueuedOrder(order.id);
+                }
+            }
+        } catch (e) {}
+    }
+
+    // تفعيل محرك الطابور الذكي الرئيسي لمعالجة الدفعات المعلقة (Batches)
+    if (window.NetworkEngine && typeof window.NetworkEngine.processQueue === 'function') {
+        window.NetworkEngine.processQueue();
+    }
 }
 
 window.addEventListener('online', () => {
@@ -213,10 +225,11 @@ window.addEventListener('scroll', () => {
 function registerBoseSweetsPWA() {
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js').then(registration => {
-                console.log('حلويات بوسي: تم تسجيل محرك تطبيق الموبايل بنجاح.', registration.scope);
+            // توحيد نطاق التشغيل مع الهيكل الرئيسي لمنع التداخلات البرمجية
+            navigator.serviceWorker.register('/sw.js', { scope: '/' }).then(registration => {
+                console.log('حلويات بوسي: تم تأكيد تسجيل محرك تطبيق الموبايل بنجاح.', registration.scope);
             }).catch(error => {
-                console.log('حلويات بوسي: تجاوز تسجيل محرك التطبيق مؤقتاً.', error);
+                console.log('حلويات بوسي: تأخير في تسجيل محرك التطبيق، جاري المحاولة لاحقاً.', error);
             });
         });
     }
@@ -261,6 +274,8 @@ document.addEventListener('click', function(event) {
     // تسجيل النقرات للأقسام لخدمة التحليل السلوكي الصامت
     if (event.target && event.target.closest('.cat-pill')) {
         const btn = event.target.closest('.cat-pill');
-        BehavioralAnalytics.trackCategoryClick(btn.innerText.trim());
+        if(typeof BehavioralAnalytics !== 'undefined') {
+            BehavioralAnalytics.trackCategoryClick(btn.innerText.trim());
+        }
     }
 });

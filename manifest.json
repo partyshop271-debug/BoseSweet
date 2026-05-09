@@ -1,27 +1,30 @@
 {
   "id": "/bosesweets-app",
   "name": "حلويات بوسي",
-  "short_name": "BoseSweets",
+  "short_name": "حلويات بوسي",
   "description": "عقد من التميز في صناعة الحلويات بمركز الفرافرة والكفاح",
   "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "fullscreen", "minimal-ui"],
   "background_color": "#ffffff",
   "theme_color": "#ff91a4",
   "orientation": "portrait-primary",
   "dir": "rtl",
   "lang": "ar",
+  "categories": ["food", "shopping"],
   "icons": [
     {
-      "src": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg",
+      "src": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
-      "purpose": "any"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg",
+      "src": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
-      "purpose": "any"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }

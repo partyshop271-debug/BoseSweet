@@ -1,3 +1,4 @@
+// محرك إدارة معرض سابقة الأعمال (Gallery Engine) - حلويات بوسي
 window.renderAdminGalleryGridUI = function() {
     const grid = document.getElementById('admin-gallery-grid');
     if (!grid) return;
@@ -11,7 +12,7 @@ window.renderAdminGalleryGridUI = function() {
     grid.innerHTML = galleryData.map(img => `
         <div class="relative group rounded-xl overflow-hidden border border-slate-800 aspect-video bg-slate-900">
             <img src="${img.url || img.imgUrl || img}" class="w-full h-full object-cover">
-            <button onclick="window.deleteGalleryPhotoSecurely('${img.id}')" class="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-lg opacity-90 transition-transform active:scale-90 relative z-50 pointer-events-auto" title="حذف الصورة من الشلال">
+            <button onclick="window.deleteGalleryPhotoSecurely('${img.id}')" class="absolute top-2 right-2 p-1.5 bg-[#ff91a4] text-white rounded-lg opacity-90 transition-transform active:scale-90 relative z-50 pointer-events-auto" title="حذف الصورة من الشلال">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
             </button>
         </div>
@@ -25,28 +26,30 @@ window.uploadNewGalleryPhotoDirectly = async function() {
     const url = urlInput?.value.trim();
     
     if (!url) {
-        showSystemToast('برجاء توفير وإدخال رابط صورة معتمد وصحيح أولاً.', 'error');
+        showSystemToast('الرجاء إدراج رابط الصورة الفني أولاً 📸', 'error');
         return;
     }
-    
+
     const uniqueId = 'gal_' + Date.now();
     const payload = { id: uniqueId, url: url, timestamp: Date.now() };
-    
+
     try {
-        if (typeof db !== 'undefined') {
+        // 👑 الترقية السيادية: تمرير العملية عبر محرك السحابة الآمن
+        if (window.NetworkEngine && typeof window.NetworkEngine.safeWrite === 'function') {
+            await window.NetworkEngine.safeWrite('gallery', uniqueId, payload);
+        } else if (typeof db !== 'undefined') {
             await db.collection('gallery').doc(uniqueId).set(payload);
-        } else if(typeof NetworkEngine !== 'undefined') {
-            await NetworkEngine.safeWrite('gallery', uniqueId, payload);
         }
+        
         galleryData.push(payload);
-        saveEngineMemory('gal');
+        if (typeof saveEngineMemory === 'function') saveEngineMemory('gal');
         
         if (urlInput) urlInput.value = '';
         renderAdminGalleryGridUI();
         if(typeof updateAdminDashboardStatsUI === 'function') updateAdminDashboardStatsUI();
         showSystemToast('تم دمج ونشر الصورة الجديدة في محرك شلال العميل بنجاح باهر 📸👑', 'success');
     } catch (e) {
-        saveEngineMemory('gal');
+        if (typeof saveEngineMemory === 'function') saveEngineMemory('gal');
         showSystemToast('تم الحفظ محلياً لحين اتصال السحابة', 'info');
     }
 };
@@ -55,18 +58,20 @@ window.deleteGalleryPhotoSecurely = async function(photoId) {
     if (!confirm('هل تودين مسح هذه الصورة وسحبها من شلال سابقة الأعمال؟')) return;
     
     try {
-        if (typeof db !== 'undefined') {
+        // 👑 الترقية السيادية: استخدام محرك الحذف الآمن لضمان التزامن
+        if (window.NetworkEngine && typeof window.NetworkEngine.safeDelete === 'function') {
+            await window.NetworkEngine.safeDelete('gallery', photoId);
+        } else if (typeof db !== 'undefined') {
             await db.collection('gallery').doc(photoId).delete();
-        } else if(typeof NetworkEngine !== 'undefined') {
-            await NetworkEngine.safeDelete('gallery', photoId);
         }
+        
         galleryData = galleryData.filter(item => String(item.id) !== String(photoId));
-        saveEngineMemory('gal');
+        if (typeof saveEngineMemory === 'function') saveEngineMemory('gal');
         
         renderAdminGalleryGridUI();
         if(typeof updateAdminDashboardStatsUI === 'function') updateAdminDashboardStatsUI();
         showSystemToast('تم إقصاء وحذف الصورة سحابياً بنجاح 👑', 'success');
     } catch (e) {
-        showSystemToast(`فشل الحذف: ${e.message}`, 'error');
+        showSystemToast('حدث خطأ أثناء محاولة الحذف، يرجى المحاولة لاحقاً', 'error');
     }
 };

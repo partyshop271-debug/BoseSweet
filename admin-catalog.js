@@ -4,9 +4,9 @@ function renderAdminCatalogTabs() {
     
     const sortedCats = [...catMenu].sort((a, b) => a.order - b.order);
     
-    let html = `<button onclick=\"setAdminCat('all')\" class=\"whitespace-nowrap px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm border relative z-20 pointer-events-auto ${adminCurrentCat === 'all' ? 'bg-[#ff3377] text-white border-pink-400' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border-slate-700'}\">الكل</button>`;
+    let html = `<button onclick=\"setAdminCat('all')\" class=\"whitespace-nowrap px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm border relative z-20 pointer-events-auto ${adminCurrentCat === 'all' ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4]' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border-slate-700'}\">الكل</button>`;
     if(sortedCats && sortedCats.length > 0) {
-        sortedCats.forEach(c => { html += `<button onclick=\"setAdminCat('${escapeHTML(c.name)}')\" class=\"whitespace-nowrap px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm border relative z-20 pointer-events-auto ${adminCurrentCat === c.name ? 'bg-[#ff3377] text-white border-pink-400' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border-slate-700'}\">${escapeHTML(c.name)}</button>`; });
+        sortedCats.forEach(c => { html += `<button onclick=\"setAdminCat('${escapeHTML(c.name)}')\" class=\"whitespace-nowrap px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm border relative z-20 pointer-events-auto ${adminCurrentCat === c.name ? 'bg-[#ff91a4] text-[#ffffff] border-[#ff91a4]' : 'bg-slate-800 text-slate-400 hover:bg-slate-700 border-slate-700'}\">${escapeHTML(c.name)}</button>`; });
     }
     tabsEl.innerHTML = html;
 }
@@ -23,7 +23,7 @@ function renderAdminMenu(searchQuery = '') {
     if (!container) return; 
     container.innerHTML = '';
     if(!catalog || catalog.length === 0) {
-        container.innerHTML = `<div class=\"col-span-full flex flex-col items-center justify-center p-12 text-slate-500 bg-slate-900/50 rounded-[2.5rem] border border-dashed border-slate-700 relative z-10\"><i data-lucide=\"package-x\" class=\"w-12 h-12 mb-3 text-slate-600\"></i><p class=\"font-bold text-sm\">الكتالوج فارغ حالياً في متجر حلويات بوسي</p><button onclick=\"window.openProductFormModal()\" class=\"mt-4 px-5 py-2.5 bg-[#ff3377] text-white rounded-[1.5rem] text-xs font-black hover:bg-pink-600 transition-colors relative z-50 pointer-events-auto cursor-pointer shadow-lg shadow-pink-500/20\">إضافة أول منتج فاخر</button></div>`;
+        container.innerHTML = `<div class=\"col-span-full flex flex-col items-center justify-center p-12 text-slate-500 bg-slate-900/50 rounded-[2.5rem] border border-dashed border-slate-700 relative z-10\"><i data-lucide=\"package-x\" class=\"w-12 h-12 mb-3 text-slate-600\"></i><p class=\"font-bold text-sm\">الكتالوج فارغ حالياً في متجر حلويات بوسي</p><button onclick=\"window.openProductFormModal()\" class=\"mt-4 px-5 py-2.5 bg-[#ff91a4] text-white rounded-[1.5rem] text-xs font-black hover:opacity-90 transition-colors relative z-50 pointer-events-auto cursor-pointer shadow-lg shadow-[#ff91a4]/20\">إضافة أول منتج فاخر</button></div>`;
         if(window.lucide) lucide.createIcons(); return;
     }
 
@@ -52,16 +52,16 @@ function renderAdminMenu(searchQuery = '') {
         const oldPriceHtml = (prod.oldPrice && prod.oldPrice > prod.price) ? `<del class=\"text-[10px] text-slate-500 ml-1 font-normal\">${prod.oldPrice}</del>` : '';
         
         return `
-            <div class=\"admin-card flex flex-col md:flex-row gap-4 relative overflow-visible group transition-all duration-300 hover:border-pink-500/50 ${!isInstock ? 'opacity-60' : ''} p-4 bg-slate-900 rounded-[1.5rem] border border-slate-800\">
+            <div class=\"admin-card flex flex-col md:flex-row gap-4 relative overflow-visible group transition-all duration-300 hover:border-[#ff91a4]/50 ${!isInstock ? 'opacity-60' : ''} p-4 bg-slate-900 rounded-[1.5rem] border border-slate-800\">
                 <div class=\"w-full md:w-28 h-36 md:h-28 rounded-[1rem] bg-slate-800 shrink-0 overflow-hidden relative shadow-inner\">
                     <img src=\"${imageUrl}\" alt=\"${escapeHTML(prod.name || '')}\" class=\"w-full h-full object-cover group-hover:scale-110 transition-transform duration-500\" loading=\"lazy\" />
-                    ${prod.badge ? `<span class=\"absolute top-2 right-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-[9px] px-2 py-0.5 rounded shadow-lg font-bold z-10\">${prod.badge}</span>` : ''}
+                    ${prod.badge ? `<span class=\"absolute top-2 right-2 bg-[#ff91a4] text-white text-[9px] px-2 py-0.5 rounded shadow-lg font-bold z-10\">${prod.badge}</span>` : ''}
                     ${!isInstock ? `<div class=\"absolute inset-0 bg-slate-900/80 flex items-center justify-center backdrop-blur-sm z-10\"><span class=\"bg-red-500 text-white text-[10px] px-2 py-1 rounded font-bold\">نفذت الكمية</span></div>` : ''}
                 </div>
                 <div class=\"flex-1 flex flex-col justify-between py-1 relative z-20\">
                     <div>
                         <div class=\"flex justify-between items-start mb-1\">
-                            <p class=\"text-[10px] text-[#ff3377] font-bold uppercase tracking-wider bg-pink-500/10 px-2 py-0.5 rounded inline-block\">${escapeHTML(prod.category || '')}</p>
+                            <p class=\"text-[10px] text-[#ff91a4] font-bold uppercase tracking-wider bg-[#ff91a4]/10 px-2 py-0.5 rounded inline-block\">${escapeHTML(prod.category || '')}</p>
                             <p class=\"text-white font-black text-base bg-slate-900 px-2 py-0.5 rounded border border-slate-700\">${Number(prod.price) > 0 ? prod.price + '<span class=\"text-[9px] text-slate-400 ml-1\">ج.م</span>' + oldPriceHtml : 'متغير'}</p>
                         </div>
                         <h3 class=\"text-white font-bold text-sm leading-tight mb-1 line-clamp-2\">${escapeHTML(prod.name || '')}</h3>
@@ -102,7 +102,7 @@ window.renderAdminCatalogGridUI = function() {
                 </div>
                 <div class="min-w-0 flex-1 text-right">
                     <h4 class="text-xs font-bold text-white truncate">${escapeHTML(p.name)}</h4>
-                    <p class="text-[10px] text-pink-500 font-black font-mono mt-0.5">${p.price} ج.م | ${escapeHTML(p.category)}</p>
+                    <p class="text-[10px] text-[#ff91a4] font-black font-mono mt-0.5">${p.price} ج.م | ${escapeHTML(p.category)}</p>
                 </div>
             </div>
             <div class="pt-3 border-t border-slate-800 flex gap-2 justify-left relative z-50 pointer-events-auto">
@@ -117,7 +117,7 @@ window.renderAdminCatalogGridUI = function() {
 
 window.openProductFormModal = function(productId) {
     currentEditId = null; 
-    if(document.getElementById('prod-modal-title')) document.getElementById('prod-modal-title').innerHTML = `<i data-lucide=\"plus-circle\" class=\"w-6 h-6 text-[#ff3377]\"></i> إدراج منتج جديد`;
+    if(document.getElementById('prod-modal-title')) document.getElementById('prod-modal-title').innerHTML = `<i data-lucide=\"plus-circle\" class=\"w-6 h-6 text-[#ff91a4]\"></i> إدراج منتج جديد`;
     
     const fields = ['edit-prod-id','edit-prod-name','edit-prod-price','edit-prod-old-price','edit-prod-sub','edit-prod-sort','edit-prod-desc', 'form-product-id', 'form-product-name', 'form-product-price', 'form-product-image', 'form-product-desc'];
     fields.forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
@@ -151,7 +151,9 @@ window.deleteProductSecurelyFromCloud = async function(productId) {
     if (!confirm('هل حضرتك متأكدة تماماً من اتخاذ قرار حذف هذا الصنف نهائياً من قاعدة بيانات حلويات بوسي؟')) return;
     
     try {
-        if (typeof db !== 'undefined') {
+        if (typeof NetworkEngine !== 'undefined') {
+            await NetworkEngine.safeDelete('catalog', productId);
+        } else if (typeof db !== 'undefined') {
             await db.collection('catalog').doc(productId).delete();
         }
         catalog = catalog.filter(item => String(item.id) !== String(productId));
@@ -177,7 +179,7 @@ function renderAdminTempImages() {
     container.innerHTML = tempProdImages.map((url, idx) => `
         <div class=\"relative w-20 h-20 shrink-0 rounded-xl overflow-hidden border-2 border-slate-700 group\">
             <img src=\"${url.startsWith('offline_img_') ? 'https://via.placeholder.com/150?text=صورة+محلية' : url}\" class=\"w-full h-full object-cover\">
-            ${idx === 0 ? `<div class=\"absolute bottom-0 left-0 right-0 bg-[#ff3377]/90 text-white text-[9px] font-bold text-center py-0.5 backdrop-blur-sm z-10\">الرئيسية</div>` : ''}
+            ${idx === 0 ? `<div class=\"absolute bottom-0 left-0 right-0 bg-[#ff91a4]/90 text-white text-[9px] font-bold text-center py-0.5 backdrop-blur-sm z-10\">الرئيسية</div>` : ''}
             <button type="button" onclick=\"removeTempImage(${idx})\" class=\"absolute top-1 right-1 bg-red-500/80 text-white p-1 rounded-md hover:bg-red-500 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg backdrop-blur-sm cursor-pointer z-50 pointer-events-auto\"><i data-lucide=\"x\" class=\"w-3 h-3\"></i></button>
         </div>
     `).join('');
@@ -247,7 +249,7 @@ function editProduct(id) {
     if(!p && typeof catalogMap !== 'undefined') p = catalogMap.get(String(id)); 
     if (p) {
         currentEditId = String(id); 
-        if(document.getElementById('prod-modal-title')) document.getElementById('prod-modal-title').innerHTML = `<i data-lucide=\"edit-3\" class=\"w-6 h-6 text-[#ff3377]\"></i> التعديل الفني للمنتج`;
+        if(document.getElementById('prod-modal-title')) document.getElementById('prod-modal-title').innerHTML = `<i data-lucide=\"edit-3\" class=\"w-6 h-6 text-[#ff91a4]\"></i> التعديل الفني للمنتج`;
         
         const catSelect = document.getElementById('edit-prod-cat') || document.getElementById('form-product-cat');
         const sortedCats = [...catMenu].sort((a, b) => a.order - b.order);
@@ -289,7 +291,7 @@ function editProduct(id) {
                             <input type="text" placeholder="الحجم" value="${escapeHTML(sizeObj.name)}" class="size-name admin-input rounded-xl py-2 text-xs bg-[#1a2235]">
                         </div>
                         <div class="flex-1">
-                            <input type="number" placeholder="السعر" value="${sizeObj.price}" class="size-val admin-input rounded-xl py-2 font-black text-[#ff3377] text-center bg-[#1a2235]">
+                            <input type="number" placeholder="السعر" value="${sizeObj.price}" class="size-val admin-input rounded-xl py-2 font-black text-[#ff91a4] text-center bg-[#1a2235]">
                         </div>
                         <button type="button" onclick="this.parentElement.remove()" class="p-2 bg-red-500/10 text-red-400 rounded-xl active:scale-90 flex-shrink-0 transition-transform cursor-pointer pointer-events-auto relative z-50">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -306,7 +308,7 @@ function editProduct(id) {
                         <input type="text" placeholder="الحجم (مثال: وسط)" class="size-name admin-input rounded-xl py-2 text-xs bg-[#1a2235]">
                     </div>
                     <div class="flex-1">
-                        <input type="number" placeholder="السعر (ج.م)" class="size-val admin-input rounded-xl py-2 font-black text-[#ff3377] text-center bg-[#1a2235]">
+                        <input type="number" placeholder="السعر (ج.م)" class="size-val admin-input rounded-xl py-2 font-black text-[#ff91a4] text-center bg-[#1a2235]">
                     </div>
                     <button type="button" onclick="this.parentElement.remove()" class="p-2 bg-red-500/10 text-red-400 rounded-xl active:scale-90 flex-shrink-0 transition-transform cursor-pointer pointer-events-auto relative z-50">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
@@ -379,10 +381,10 @@ async function saveProductData() {
     
     syncCatalogMap(); 
     try { 
-        if(typeof db !== 'undefined') {
-            await db.collection('catalog').doc(prodObj.id).set(prodObj, { merge: true });
-        } else if(typeof NetworkEngine !== 'undefined') {
+        if(typeof NetworkEngine !== 'undefined') {
             await NetworkEngine.safeWrite('catalog', String(prodObj.id), prodObj); 
+        } else if(typeof db !== 'undefined') {
+            await db.collection('catalog').doc(prodObj.id).set(prodObj, { merge: true });
         }
         saveEngineMemory('cat'); 
         showSystemToast("تم الاعتماد الفني والحفظ في متجر حلويات بوسي بنجاح 👑☁️", "success"); 

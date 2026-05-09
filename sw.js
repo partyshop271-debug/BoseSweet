@@ -1,5 +1,6 @@
-const CACHE_NAME = 'bose-sweets-cache-v2';
-const DYNAMIC_CACHE = 'bose-sweets-dynamic-v2';
+const CACHE_NAME = 'bose-sweets-cache-v3';
+const DYNAMIC_CACHE = 'bose-sweets-dynamic-v3';
+const OFFLINE_URL = '/offline.html';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -11,7 +12,7 @@ const ASSETS_TO_CACHE = [
   '/utils.js',
   '/storage.js',
   '/search.js',
-  '/offline.html' 
+  OFFLINE_URL
 ];
 
 // تنصيب المحرك في المتصفح
@@ -40,40 +41,26 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// استراتيجية ذكية: الكاش للملفات الثابتة، والشبكة للبيانات
+// استراتيجية التعامل مع الطلبات: أولوية الذاكرة المخبأة، ثم الشبكة، ثم صفحة عدم الاتصال
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
-  const isStaticAsset = ASSETS_TO_CACHE.includes(new URL(event.request.url).pathname);
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      if (cachedResponse) {
+        return cachedResponse;
+      }
 
-  if (isStaticAsset) {
-    // أولوية الذاكرة المخبأة للملفات الأساسية لسرعة الفتح
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        return cachedResponse || fetch(event.request);
-      })
-    );
-  } else {
-    // أولوية الشبكة للمنتجات والبيانات المتغيرة مع توفير صفحة الأوفلاين
-    event.respondWith(
-      fetch(event.request)
-        .then((networkResponse) => {
-          return caches.open(DYNAMIC_CACHE).then((cache) => {
-            cache.put(event.request.url, networkResponse.clone());
-            return networkResponse;
-          });
-        })
-        .catch(() => {
-          return caches.match(event.request).then((cachedResponse) => {
-            if (cachedResponse) {
-              return cachedResponse;
-            }
-            // إذا انقطع الاتصال ولم تكن الصفحة مسجلة، نعرض صفحة انقطاع الاتصال
-            if (event.request.headers.get('accept').includes('text/html')) {
-              return caches.match('/offline.html');
-            }
-          });
-        })
-    );
-  }
+      return fetch(event.request).then((networkResponse) => {
+        return caches.open(DYNAMIC_CACHE).then((cache) => {
+          cache.put(event.request.url, networkResponse.clone());
+          return networkResponse;
+        });
+      }).catch(() => {
+        if (event.request.mode === 'navigate' || (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'))) {
+          return caches.match(OFFLINE_URL);
+        }
+      });
+    })
+  );
 });
