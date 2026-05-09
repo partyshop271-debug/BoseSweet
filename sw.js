@@ -1,5 +1,5 @@
-const CACHE_NAME 'bose-sweets-dynamic-v6';
-const DYNAMIC_CACHE ='bose-sweets-dynamic-v6';
+const CACHE_NAME = 'bose-sweets-cache-v7';
+const DYNAMIC_CACHE = 'bose-sweets-dynamic-v7';
 const OFFLINE_URL = '/offline.html';
 const ASSETS_TO_CACHE = [
   '/',
@@ -15,7 +15,6 @@ const ASSETS_TO_CACHE = [
   OFFLINE_URL
 ];
 
-// تنصيب المحرك في المتصفح
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -25,7 +24,6 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// تفعيل المحرك وتنظيف البيانات القديمة
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -41,7 +39,6 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// استراتيجية التعامل مع الطلبات: أولوية الذاكرة المخبأة، ثم الشبكة، ثم صفحة عدم الاتصال
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
 
@@ -57,7 +54,7 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         });
       }).catch(() => {
-        if (event.request.mode === 'navigate' || (event.request.headers.get('accept') && event.request.headers.get('accept').includes('text/html'))) {
+        if (event.request.mode === 'navigate') {
           return caches.match(OFFLINE_URL);
         }
       });

@@ -3,7 +3,7 @@
   "name": "حلويات بوسي",
   "short_name": "حلويات بوسي",
   "description": "عقد من التميز في صناعة الحلويات بمركز الفرافرة والكفاح",
-  "start_url": "/",
+  "start_url": "/?mode=standalone",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -18,13 +18,13 @@
   "icons": [
     {
       "src": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.png",
-      "sizes": "192x192",
+      "sizes": "192x192 512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
       "src": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.png",
-      "sizes": "512x512",
+      "sizes": "192x192 512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
