@@ -1,5 +1,5 @@
-const CACHE_NAME = 'bose-sweets-cache-v4';
-const DYNAMIC_CACHE = 'bose-sweets-dynamic-v4';
+const CACHE_NAME = 'bose-sweets-cache-v5';
+const DYNAMIC_CACHE = 'bose-sweets-dynamic-v5';
 const OFFLINE_URL = '/offline.html';
 const ASSETS_TO_CACHE = [
   '/',
