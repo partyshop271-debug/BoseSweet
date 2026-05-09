@@ -596,40 +596,46 @@
         window.addEventListener('offline', updateNetworkStatus);
         if (!navigator.onLine) updateNetworkStatus();
 
+        // المحرك المحدث لضمان ظهور زر التثبيت في حلويات بوسي
         let deferredPrompt;
-        const installBtn = document.getElementById('custom-pwa-install-btn');
         
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
+        window.addEventListener('load', () => {
+            const installBtn = document.getElementById('custom-pwa-install-btn');
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                console.log('حلويات بوسي: تم استقبال إشارة التثبيت ✅');
+                e.preventDefault();
+                deferredPrompt = e;
+                if (installBtn) {
+                    installBtn.classList.remove('hidden');
+                    installBtn.classList.add('flex');
+                }
+            });
+
             if (installBtn) {
-                installBtn.classList.remove('hidden');
-                installBtn.classList.add('flex');
+                installBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted') {
+                            console.log('حلويات بوسي: المستخدم وافق على التثبيت');
+                        }
+                        deferredPrompt = null;
+                        installBtn.classList.add('hidden');
+                        installBtn.classList.remove('flex');
+                    }
+                });
             }
         });
 
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        console.log('حلويات بوسي: تم تثبيت التطبيق بنجاح');
-                    }
-                    deferredPrompt = null;
-                    installBtn.classList.add('hidden');
-                    installBtn.classList.remove('flex');
-                }
-            });
-        }
-
         window.addEventListener('appinstalled', () => {
+            const installBtn = document.getElementById('custom-pwa-install-btn');
             if (installBtn) {
                 installBtn.classList.add('hidden');
                 installBtn.classList.remove('flex');
             }
             deferredPrompt = null;
-            console.log('حلويات بوسي: تم اكتمال التثبيت على الجهاز');
+            console.log('حلويات بوسي: تم التثبيت بنجاح');
         });
 
         const iosPrompt = document.getElementById('ios-install-prompt');
