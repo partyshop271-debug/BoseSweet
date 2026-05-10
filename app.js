@@ -104,28 +104,33 @@ async function startBoseSweetsEngine(isUpdate = false) {
             }
         } catch(e) { console.error("عطل في جلب الإعدادات:", e); }
 
-        // 2. جلب الكتالوج باستخدام المحرك المحدث (Catalog Sync)
+        // 2. جلب الكتالوج (التحديث السيادي لمنع اختفاء المنتجات)
         const catalogStatus = await fetchAndSyncBoseSweetsData(async () => {
             try {
-                const pSnap = await db.collection('catalog').where('isActive', '==', true).get();
+                // جلب الكتالوج بالكامل بدون شروط صارمة تؤدي لفقدان البيانات
+                const pSnap = await db.collection('catalog').get();
                 if (!pSnap.empty) {
-                    return pSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    return pSnap.docs.map(doc => {
+                        const data = doc.data();
+                        // تأمين برمجي: إذا لم يكن هناك حالة مسجلة، نعتبره نشطاً لمنع اختفائه
+                        if (typeof data.isActive === 'undefined') data.isActive = true;
+                        return { id: doc.id, ...data };
+                    }).filter(d => d.isActive !== false); // فلترة آمنة محلياً
                 } else {
-                    // محاولة ثانية في حال عدم وجود حقل isActive لضمان عدم توقف الخدمة
-                    const pSnap2 = await db.collection('catalog').get();
-                    return pSnap2.docs.filter(d => d.data().isActive !== false).map(d => ({ id: d.id, ...d.data() }));
+                    return [];
                 }
             } catch (err) {
                 throw err;
             }
         }, 'boseSweets_catalog');
 
-        // تحديث مصفوفة الكتالوج العالمية
-        if (catalogStatus) {
+        // تحديث مصفوفة الكتالوج العالمية وتأمينها
+        if (catalogStatus && catalogStatus.length > 0) {
             catalog.length = 0;
             catalog.push(...catalogStatus);
             console.log(`حلويات بوسي: تم مزامنة ${catalog.length} منتج بنجاح.`);
         } else {
+            console.warn("حلويات بوسي: الكتالوج السحابي فارغ أو لم يستجب، تفعيل الذاكرة الفولاذية.");
             fallbackToEmergencyData();
         }
 
@@ -145,12 +150,13 @@ async function startBoseSweetsEngine(isUpdate = false) {
 
         if (isUpdate) {
             // تحديث العناصر النشطة فقط دون إعادة تحميل كاملة
-            renderCategories();
+            if (typeof renderCategories === 'function') renderCategories();
+            
             if (state.activeCat === 'الرئيسية') {
-                initWaterfall();
-                initHomepageSections();
+                if (typeof initWaterfall === 'function' && catalog.length > 0) initWaterfall();
+                if (typeof initHomepageSections === 'function') initHomepageSections();
             } else {
-                renderMainDisplay();
+                if (typeof renderMainDisplay === 'function') renderMainDisplay();
             }
             if(typeof syncCartUI === 'function') syncCartUI();
             showSystemToast("تم تحديث القائمة بأحدث أصناف حلويات بوسي ✨", "success");

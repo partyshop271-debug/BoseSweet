@@ -647,8 +647,26 @@
         };
     </script>
 
+    <!-- منظومة المحركات السيادية (Sovereign Scripts Engine) -->
     <script src="firebase-config.js"></script>
+    <script type="module" src="config.js"></script>
+    <script type="module" src="utils.js"></script>
+    <script type="module" src="storage.js"></script>
+    <script type="module" src="state.js"></script>
+    <script type="module" src="ui.js"></script>
+    <script type="module" src="search.js"></script>
+    <script type="module" src="cart.js"></script>
     <script type="module" src="app.js"></script>
+    
+    <!-- تسجيل عامل الخدمة (Service Worker) لدعم التصفح دون اتصال -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('BoseSweets: ServiceWorker Active 👑', reg.scope))
+                    .catch(err => console.log('BoseSweets: ServiceWorker Error', err));
+            });
+        }
+    </script>
 </body>
 </html>
-

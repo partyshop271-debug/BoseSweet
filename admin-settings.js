@@ -1,10 +1,13 @@
 /**
- * 👑 BoseSweets Admin Settings Engine - V20.0 (Royal Cake & Sovereign Expansion Edition)
- * تم التوسيع ليشمل: الأقسام الديناميكية، المراجعات، الروابط الشمولية، التحكم الحركي، وإدارة التورت الملكية.
- * يلتزم الكود بالهوية البصرية (الوردي الناعم #ff91a4 والأبيض) وقواعد المزامنة اللحظية السيادية.
+ * ============================================================================
+ * 👑 BoseSweets Admin Settings Engine - V20.0 (Royal Sovereign Edition)
+ * ============================================================================
+ * محرك الإعدادات السيادية - حلويات بوسي
+ * تم التطوير والدمج الشامل لضمان السيطرة الكاملة على الهوية، سرعة الحركة، 
+ * النشاط السحابي، والمزامنة اللحظية مع جميع أجزاء النظام.
  */
 
-function ensureAdvancedControlsExist() {
+window.ensureAdvancedControlsExist = function() {
     const homepageSection = document.getElementById('admin-homepage');
     if (homepageSection && !document.getElementById('set-ticker-speed')) {
         const advDiv = document.createElement('div');
@@ -19,9 +22,9 @@ function ensureAdvancedControlsExist() {
         homepageSection.appendChild(advDiv);
         if(window.lucide) lucide.createIcons();
     }
-}
+};
 
-function fillGlobalSettingsFormFields() {
+window.fillGlobalSettingsFormFields = function() {
     const phoneInput = document.getElementById('sett-phone-input');
     const addressInput = document.getElementById('sett-address-input');
     const fbInput = document.getElementById('sett-fb-input');
@@ -47,7 +50,7 @@ function fillGlobalSettingsFormFields() {
         const edible = printing.find(p => p.label === 'صورة قابلة للأكل');
         if(document.getElementById('set-print-edible')) document.getElementById('set-print-edible').value = edible ? edible.price : 60;
     }
-}
+};
 
 window.saveGlobalSettingsFromDashboard = async function() {
     const phone = document.getElementById('sett-phone-input')?.value.trim();
@@ -76,119 +79,148 @@ window.saveGlobalSettingsFromDashboard = async function() {
     window.siteSettings = { ...window.siteSettings, ...updatedPayload };
 
     try {
-        if (typeof NetworkEngine !== 'undefined') {
-            await NetworkEngine.safeWrite('settings', 'main', window.siteSettings);
-            if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
-            showSystemToast('تم تحديث قنوات التواصل والتكوينات السيادية بنجاح 👑☁️', 'success');
+        if (typeof window.NetworkEngine !== 'undefined') {
+            await window.NetworkEngine.safeWrite('settings', 'main', window.siteSettings);
+            if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('set');
+            if(typeof window.showSystemToast === 'function') window.showSystemToast('تم تحديث قنوات التواصل والتكوينات السيادية لـ حلويات بوسي بنجاح 👑☁️', 'success');
         } else if (typeof window.db !== 'undefined') {
             await window.db.collection('settings').doc('main').set(window.siteSettings, { merge: true });
-            if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
-            showSystemToast('تم التزامن المباشر مع السحابة بنجاح 👑', 'success');
+            if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('set');
+            if(typeof window.showSystemToast === 'function') window.showSystemToast('تم التزامن المباشر مع السحابة بنجاح 👑', 'success');
         }
+        if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
     } catch (e) {
-        showSystemToast(`عطل في المزامنة السحابية: ${e.message}`, 'error');
+        if(typeof window.showSystemToast === 'function') window.showSystemToast(`عطل فني في المزامنة السحابية: ${e.message}`, 'error');
     }
     
-    if(typeof fillAdminSettingsForm === 'function') fillAdminSettingsForm();
+    if(typeof window.fillAdminSettingsForm === 'function') window.fillAdminSettingsForm();
 };
 
-async function applyGlobalPriceChange() {
+window.applyGlobalPriceChange = async function() {
     const percentStr = document.getElementById('global-price-percent')?.value;
     const percent = parseFloat(percentStr);
     const action = document.getElementById('global-price-action')?.value;
     
-    if(isNaN(percent) || percent <= 0) { showSystemToast("قرار إداري: يرجى إدخال نسبة صحيحة أكبر من 0", "error"); return; }
-    const msg = action === 'increase' ? `هل أنت متأكد من رفع جميع أسعار المنتجات بنسبة ${percent}%؟` : `هل أنت متأكد من تطبيق خصم بنسبة ${percent}%؟`;
+    if(isNaN(percent) || percent <= 0) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("قرار إداري: يرجى إدخال نسبة صحيحة أكبر من 0", "error"); 
+        return; 
+    }
+    const msg = action === 'increase' ? `هل توافق حضرتك على اعتماد رفع جميع أسعار المنتجات بنسبة ${percent}%؟` : `هل توافق حضرتك على تطبيق قرار الخصم الشامل بنسبة ${percent}%؟`;
     
-    openConfirmModal('تأكيد التعديل الجماعي', msg, async () => {
-        const multiplier = action === 'increase' ? (1 + (percent / 100)) : (1 - (percent / 100));
-        let updatedCount = 0;
-        
-        for (let p of window.catalog) {
-            if (p.price && !isNaN(p.price)) {
-                if (action === 'decrease') p.oldPrice = p.price; 
-                else p.oldPrice = null; 
-                
-                p.price = Math.round(p.price * multiplier);
-                updatedCount++;
-                try { if (typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(p.id), p); } catch (e) {}
+    if(typeof window.openConfirmModal === 'function') {
+        window.openConfirmModal('تأكيد التعديل الجماعي للأسعار', msg, async () => {
+            const multiplier = action === 'increase' ? (1 + (percent / 100)) : (1 - (percent / 100));
+            let updatedCount = 0;
+            
+            for (let p of window.catalog) {
+                if (p.price && !isNaN(p.price)) {
+                    if (action === 'decrease') p.oldPrice = p.price; 
+                    else p.oldPrice = null; 
+                    
+                    p.price = Math.round(p.price * multiplier);
+                    updatedCount++;
+                    try { if (typeof window.NetworkEngine !== 'undefined') await window.NetworkEngine.safeWrite('catalog', String(p.id), p); } catch (e) {}
+                }
             }
-        }
-        if (typeof saveEngineMemory === 'function') saveEngineMemory('cat');
-        syncCatalogMap();
-        const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
-        if(typeof renderAdminMenu === 'function') renderAdminMenu(currentSearch); 
-        if(typeof renderAdminOverview === 'function') renderAdminOverview();
-        if(typeof renderAdminCatalogGridUI === 'function') renderAdminCatalogGridUI(); 
-        showSystemToast(`تم تطبيق النسبة المهنية بنجاح على ${updatedCount} منتج 👑`, "success");
-        if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
-    });
-}
+            if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('cat');
+            if (typeof window.syncCatalogMap === 'function') window.syncCatalogMap();
+            
+            const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
+            if(typeof window.renderAdminMenu === 'function') window.renderAdminMenu(currentSearch); 
+            if(typeof window.renderAdminOverview === 'function') window.renderAdminOverview();
+            if(typeof window.renderAdminCatalogGridUI === 'function') window.renderAdminCatalogGridUI(); 
+            
+            if(typeof window.showSystemToast === 'function') window.showSystemToast(`تم تطبيق النسبة المهنية بنجاح على ${updatedCount} منتج 👑`, "success");
+            if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
+        });
+    }
+};
 
-function exportBackupJSON() {
+window.exportBackupJSON = function() {
     try {
         const backupData = { catalog: window.catalog, settings: window.siteSettings, shipping: window.shippingZones, orders: window.globalOrders, gallery: window.galleryData };
         const blob = new Blob([JSON.stringify(backupData)], { type: "application/json" });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a'); a.href = url; a.download = `BoseSweets_CloudBackup_${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a); a.click(); a.remove(); 
+        const a = document.createElement('a'); 
+        a.href = url; 
+        a.download = `BoseSweets_CloudBackup_${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a); 
+        a.click(); 
+        a.remove(); 
         setTimeout(() => URL.revokeObjectURL(url), 100);
-        showSystemToast("تم سحب نسخة سحابية شاملة لـ حلويات بوسي بنجاح ☁️", "success");
-    } catch (e) { showSystemToast("حدث خطأ تقني أثناء إعداد ملف النسخة", "error"); }
-}
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم سحب نسخة سحابية شاملة لـ حلويات بوسي بنجاح ☁️", "success");
+    } catch (e) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("حدث خطأ تقني أثناء إعداد ملف النسخة", "error"); 
+    }
+};
 
-function importBackupJSON(e) {
+window.importBackupJSON = function(e) {
     const file = e.target.files[0]; if (!file) return;
     const reader = new FileReader();
     reader.onload = async function(ev) {
         try {
             const data = JSON.parse(ev.target.result);
-            if (Array.isArray(data)) { window.catalog = data; if (typeof saveEngineMemory === 'function') saveEngineMemory('cat'); } 
-            else {
-                if(data.settings) { window.siteSettings = data.settings; if (typeof saveEngineMemory === 'function') saveEngineMemory('set'); }
-                if(data.shipping) { window.shippingZones = data.shipping; if (typeof saveEngineMemory === 'function') saveEngineMemory('ship'); }
-                if(data.catalog) { window.catalog = data.catalog; if (typeof saveEngineMemory === 'function') saveEngineMemory('cat'); }
-                if(data.orders) { window.globalOrders = data.orders; if (typeof saveEngineMemory === 'function') saveEngineMemory('ord'); }
-                if(data.gallery) { window.galleryData = data.gallery; if (typeof saveEngineMemory === 'function') saveEngineMemory('gal'); }
+            if (Array.isArray(data)) { 
+                window.catalog = data; 
+                if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('cat'); 
+            } else {
+                if(data.settings) { window.siteSettings = data.settings; if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('set'); }
+                if(data.shipping) { window.shippingZones = data.shipping; if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('ship'); }
+                if(data.catalog) { window.catalog = data.catalog; if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('cat'); }
+                if(data.orders) { window.globalOrders = data.orders; if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('ord'); }
+                if(data.gallery) { window.galleryData = data.gallery; if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('gal'); }
             }
             try {
-                if (typeof NetworkEngine !== 'undefined') {
-                    if (Array.isArray(data)) { for (let p of data) await NetworkEngine.safeWrite('catalog', String(p.id), p); } 
-                    else {
-                        if(data.settings) await NetworkEngine.safeWrite('settings', 'main', data.settings); 
-                        if(data.shipping) for (let z of data.shipping) await NetworkEngine.safeWrite('shipping', String(z.id), z); 
-                        if(data.catalog) for (let p of data.catalog) await NetworkEngine.safeWrite('catalog', String(p.id), p); 
-                        if(data.orders) for (let o of data.orders) await NetworkEngine.safeWrite('orders', String(o.id), o); 
+                if (typeof window.NetworkEngine !== 'undefined') {
+                    if (Array.isArray(data)) { 
+                        for (let p of data) await window.NetworkEngine.safeWrite('catalog', String(p.id), p); 
+                    } else {
+                        if(data.settings) await window.NetworkEngine.safeWrite('settings', 'main', data.settings); 
+                        if(data.shipping) for (let z of data.shipping) await window.NetworkEngine.safeWrite('shipping', String(z.id), z); 
+                        if(data.catalog) for (let p of data.catalog) await window.NetworkEngine.safeWrite('catalog', String(p.id), p); 
+                        if(data.orders) for (let o of data.orders) await window.NetworkEngine.safeWrite('orders', String(o.id), o); 
                     }
                 }
-            } catch(cloudErr) {}
-            showSystemToast("تم استرجاع بيانات حلويات بوسي بنجاح! جاري إعادة تهيئة النظام... 🚀", "success");
+            } catch(cloudErr) {
+                console.warn("Cloud sync delayed during import:", cloudErr);
+            }
+            if(typeof window.showSystemToast === 'function') window.showSystemToast("تم استرجاع بيانات حلويات بوسي بنجاح! جاري إعادة تهيئة النظام... 🚀", "success");
             setTimeout(() => location.reload(), 2000);
-        } catch(err) { showSystemToast("قرار فني: ملف JSON غير صالح للاستيراد!", "error"); }
+        } catch(err) { 
+            if(typeof window.showSystemToast === 'function') window.showSystemToast("قرار فني: ملف الوثيقة غير صالح للاستيراد!", "error"); 
+        }
     };
     reader.readAsText(file);
-}
+};
 
-function fillAdminSettingsForm() {
-    ensureAdvancedControlsExist();
+window.fillAdminSettingsForm = function() {
+    window.ensureAdvancedControlsExist();
     
     if(!window.siteSettings) return;
+    
+    // البيانات الأساسية
     if(document.getElementById('set-brand')) document.getElementById('set-brand').value = window.siteSettings.brandName || 'حلويات بوسي';
     if(document.getElementById('set-hero-title')) document.getElementById('set-hero-title').value = window.siteSettings.heroTitle || '';
     if(document.getElementById('set-hero-desc')) document.getElementById('set-hero-desc').value = window.siteSettings.heroDesc || '';
     if(document.getElementById('set-footer-phone')) document.getElementById('set-footer-phone').value = window.siteSettings.footerPhone || '';
     if(document.getElementById('set-footer-address')) document.getElementById('set-footer-address').value = (window.siteSettings.footerAddress || '').replace(/<br>/g, '');
+    
+    // شريط الأخبار والصيانة
     if(document.getElementById('set-ticker-active')) document.getElementById('set-ticker-active').checked = window.siteSettings.tickerActive !== false;
     if(document.getElementById('set-ticker-text')) document.getElementById('set-ticker-text').value = window.siteSettings.tickerText || window.siteSettings.announcement || '';
     if(document.getElementById('set-ticker-speed')) document.getElementById('set-ticker-speed').value = window.siteSettings.tickerSpeed || 20;
     if(document.getElementById('set-waterfall-speed')) document.getElementById('set-waterfall-speed').value = window.siteSettings.layout_settings?.layout_waterfall_speed || 3000;
+    if(document.getElementById('set-maintenance')) document.getElementById('set-maintenance').checked = window.siteSettings.maintenanceMode === true;
+    if(document.getElementById('set-whatsapp')) document.getElementById('set-whatsapp').value = window.siteSettings.whatsappNumber || window.siteSettings.social?.whatsapp || '';
 
+    // السيو
     if(window.siteSettings.seo) {
         if(document.getElementById('set-seo-title')) document.getElementById('set-seo-title').value = window.siteSettings.seo.title || '';
         if(document.getElementById('set-seo-desc')) document.getElementById('set-seo-desc').value = window.siteSettings.seo.desc || '';
         if(document.getElementById('set-seo-keywords')) document.getElementById('set-seo-keywords').value = window.siteSettings.seo.keywords || '';
     }
 
+    // منصات التواصل
     if(window.siteSettings.social) {
         if(document.getElementById('set-social-fb')) document.getElementById('set-social-fb').value = window.siteSettings.social.facebook || '';
         if(document.getElementById('set-social-ig')) document.getElementById('set-social-ig').value = window.siteSettings.social.instagram || '';
@@ -196,13 +228,17 @@ function fillAdminSettingsForm() {
         if(document.getElementById('set-social-wa')) document.getElementById('set-social-wa').value = window.siteSettings.social.whatsapp || '';
     }
 
-    const v = window.siteSettings.visuals || defaultSettings.visuals;
+    // الألوان
+    const v = window.siteSettings.visuals || (typeof defaultSettings !== 'undefined' ? defaultSettings.visuals : { themeHex: '#ff91a4' });
     if(document.getElementById('set-visual-color-hex')) {
         document.getElementById('set-visual-color-hex').value = v.themeHex || '#ff91a4';
     }
     
-    executeSafely('CategoryDesc', () => { if(typeof renderCategoryDescAdmin === 'function') renderCategoryDescAdmin(); });
+    if(typeof window.executeSafely === 'function') {
+        window.executeSafely('CategoryDesc', () => { if(typeof window.renderCategoryDescAdmin === 'function') window.renderCategoryDescAdmin(); });
+    }
 
+    // إعدادات هندسة الواجهة
     if(window.siteSettings.layout_settings) {
         const viewModeRadios = document.getElementsByName('layout_viewMode');
         if(viewModeRadios) {
@@ -216,6 +252,7 @@ function fillAdminSettingsForm() {
         if(document.getElementById('set-layout-wf-height')) document.getElementById('set-layout-wf-height').value = window.siteSettings.layout_settings.layout_waterfall_img_height || '';
     }
 
+    // إعدادات واجهة المستخدم المتقدمة
     if(window.siteSettings.UI_Settings) {
         if(document.getElementById('set-loader-text')) document.getElementById('set-loader-text').value = window.siteSettings.UI_Settings.loader_text || '';
         if(document.getElementById('set-loader-bg-color')) document.getElementById('set-loader-bg-color').value = window.siteSettings.UI_Settings.loader_bgColor || '#ffffff';
@@ -237,11 +274,15 @@ function fillAdminSettingsForm() {
         if(document.getElementById('set-you-may-like')) document.getElementById('set-you-may-like').checked = window.siteSettings.Structure_Settings.section_youMayAlsoLike_isActive !== false;
     }
 
-    if(typeof renderDynamicSectionsList === 'function') renderDynamicSectionsList();
-    if(typeof renderCustomSocialLinks === 'function') renderCustomSocialLinks();
-    if(typeof renderReviewsList === 'function') renderReviewsList();
-}
+    if(typeof window.renderDynamicSectionsList === 'function') window.renderDynamicSectionsList();
+    if(typeof window.renderCustomSocialLinks === 'function') window.renderCustomSocialLinks();
+    if(typeof window.renderReviewsList === 'function') window.renderReviewsList();
+};
 
+/**
+ * 👑 الاعتماد الشامل للإعدادات (Master Save Protocol)
+ * تم دمج كافة المتغيرات لضمان عدم فقدان أي بيانات أثناء التحديث السحابي.
+ */
 window.saveAllSettings = async function() {
     if(!window.siteSettings) window.siteSettings = {};
     
@@ -288,6 +329,7 @@ window.saveAllSettings = async function() {
         });
     }
 
+    // تجميع الحزمة السيادية الشاملة (تضمين المتغيرات القديمة والحديثة)
     const finalMasterPayload = {
         ...window.siteSettings,
         brandName: document.getElementById('set-brand')?.value || "حلويات بوسي",
@@ -299,6 +341,9 @@ window.saveAllSettings = async function() {
         tickerText: document.getElementById('set-ticker-text')?.value || "",
         tickerSpeed: parseInt(document.getElementById('set-ticker-speed')?.value) || 20,
         announcement: document.getElementById('set-ticker-text')?.value || "",
+        whatsappNumber: document.getElementById('set-whatsapp')?.value || document.getElementById('set-social-wa')?.value || "",
+        maintenanceMode: document.getElementById('set-maintenance')?.checked || false,
+        lastAdminAction: Date.now(),
         
         seo: {
             title: document.getElementById('set-seo-title')?.value || window.siteSettings.seo?.title || '',
@@ -309,7 +354,7 @@ window.saveAllSettings = async function() {
             facebook: document.getElementById('set-social-fb')?.value || window.siteSettings.social?.facebook || '',
             instagram: document.getElementById('set-social-ig')?.value || window.siteSettings.social?.instagram || '',
             tiktok: document.getElementById('set-social-tt')?.value || window.siteSettings.social?.tiktok || '',
-            whatsapp: document.getElementById('set-social-wa')?.value || window.siteSettings.social?.whatsapp || '',
+            whatsapp: document.getElementById('set-social-wa')?.value || document.getElementById('set-whatsapp')?.value || window.siteSettings.social?.whatsapp || '',
             customLinks: window.siteSettings.social?.customLinks || []
         },
         visuals: {
@@ -326,20 +371,21 @@ window.saveAllSettings = async function() {
     window.siteSettings = finalMasterPayload;
 
     try {
-        if(typeof NetworkEngine !== 'undefined') {
-            await NetworkEngine.safeWrite('settings', 'main', finalMasterPayload);
-            if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
-            showSystemToast("تم الاعتماد البرمجي وتحديث كامل قيم التكوين سحابياً بنجاح 👑☁️", "success");
+        if(typeof window.NetworkEngine !== 'undefined') {
+            await window.NetworkEngine.safeWrite('settings', 'main', finalMasterPayload);
+            if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('set');
+            if(typeof window.showSystemToast === 'function') window.showSystemToast("تم الاعتماد البرمجي وتحديث كامل قيم التكوين لـ حلويات بوسي سحابياً بنجاح 👑☁️", "success");
             if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
         } else if(typeof window.db !== 'undefined') {
             await window.db.collection('settings').doc('main').set(finalMasterPayload, { merge: true });
-            if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
-            showSystemToast("تم الاعتماد البرمجي وتحديث كامل قيم التكوين سحابياً بنجاح 👑☁️", "success");
+            if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('set');
+            if(typeof window.showSystemToast === 'function') window.showSystemToast("تم الاعتماد البرمجي وتحديث كامل قيم التكوين لـ حلويات بوسي سحابياً بنجاح 👑☁️", "success");
             if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
         }
     } catch(e) {
-        if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
-        showSystemToast(`عطل في المزامنة السحابية: ${e.message}`, "error");
+        console.error("عطل في المزامنة السيادية للإعدادات:", e);
+        if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('set');
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("تنويه إداري: تم الحفظ محلياً فقط.. يرجى التحقق من اتصال الشبكة", "info");
     }
 };
 
@@ -359,18 +405,20 @@ window.renderDynamicSectionsList = function() {
         return;
     }
     
+    const escapeHTMLSafe = typeof window.escapeHTML === 'function' ? window.escapeHTML : (str) => String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+    
     container.innerHTML = window.siteSettings.dynamicSections.map((sec, idx) => `
         <div class="flex items-center justify-between p-3 bg-slate-900/80 border border-slate-800 rounded-2xl group ${!sec.active ? 'opacity-50 grayscale' : ''}">
             <div class="flex items-center gap-3 w-2/3 truncate">
                 <span class="w-8 h-8 rounded-xl bg-slate-800 text-slate-400 flex items-center justify-center font-black text-[10px] shrink-0 shadow-inner">${idx + 1}</span>
                 <div class="flex flex-col truncate">
-                    <span class="text-xs font-black text-white truncate">${escapeHTML(sec.title)}</span>
+                    <span class="text-xs font-black text-white truncate">${escapeHTMLSafe(sec.title)}</span>
                     <span class="text-[9px] font-bold text-[#ff91a4] uppercase mt-0.5">${sec.type === 'grid' ? 'شبكة عادية' : (sec.type === 'waterfall' ? 'شلال عرض' : 'شريط تمرير')}</span>
                 </div>
             </div>
             <div class="flex items-center gap-2 shrink-0">
-                <button type="button" onclick="toggleSectionVisibility('${sec.id}')" class="p-1.5 rounded-lg border ${sec.active ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-800 text-slate-500 border-slate-700'} relative z-50 pointer-events-auto"><i data-lucide="${sec.active ? 'eye' : 'eye-off'}" class="w-3.5 h-3.5"></i></button>
-                <button type="button" onclick="deleteDynamicSection('${sec.id}')" class="p-1.5 rounded-lg border bg-slate-800 text-red-400 border-slate-700 hover:bg-red-500/20 relative z-50 pointer-events-auto"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                <button type="button" onclick="window.toggleSectionVisibility('${sec.id}')" class="p-1.5 rounded-lg border ${sec.active ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-slate-800 text-slate-500 border-slate-700'} relative z-50 pointer-events-auto"><i data-lucide="${sec.active ? 'eye' : 'eye-off'}" class="w-3.5 h-3.5"></i></button>
+                <button type="button" onclick="window.deleteDynamicSection('${sec.id}')" class="p-1.5 rounded-lg border bg-slate-800 text-red-400 border-slate-700 hover:bg-red-500/20 relative z-50 pointer-events-auto"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
             </div>
         </div>
     `).join('');
@@ -395,19 +443,19 @@ window.openAddSectionModal = function() {
         order: window.siteSettings.dynamicSections.length + 1
     });
     
-    renderDynamicSectionsList();
-    showSystemToast("تم إدراج القسم بالهيكل بنجاح 👑", "success");
+    window.renderDynamicSectionsList();
+    if(typeof window.showSystemToast === 'function') window.showSystemToast("تم إدراج القسم بالهيكل بنجاح 👑", "success");
 };
 
 window.toggleSectionVisibility = function(id) {
     const sec = window.siteSettings.dynamicSections.find(s => s.id === id);
-    if(sec) { sec.active = !sec.active; renderDynamicSectionsList(); }
+    if(sec) { sec.active = !sec.active; window.renderDynamicSectionsList(); }
 };
 
 window.deleteDynamicSection = function(id) {
-    if(!confirm("هل توافقين على الحذف السيادي لهذا القسم من الواجهة؟")) return;
+    if(!confirm("هل توافق حضرتك على الحذف السيادي لهذا القسم من واجهة حلويات بوسي؟")) return;
     window.siteSettings.dynamicSections = window.siteSettings.dynamicSections.filter(s => s.id !== id);
-    renderDynamicSectionsList();
+    window.renderDynamicSectionsList();
 };
 
 // --- 👑 منظومة الروابط والمنصات المخصصة ---
@@ -431,13 +479,15 @@ window.renderCustomSocialLinks = function() {
         return;
     }
 
+    const escapeHTMLSafe = typeof window.escapeHTML === 'function' ? window.escapeHTML : (str) => String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+
     listContainer.innerHTML = window.siteSettings.social.customLinks.map((link, idx) => `
         <div class="flex items-center justify-between p-2.5 bg-slate-800/80 border border-slate-700 rounded-xl group">
             <div class="truncate pl-2">
-                <p class="text-[10px] font-black text-white">${escapeHTML(link.label)}</p>
-                <p class="text-[9px] text-[#ff91a4] font-mono truncate max-w-[200px] mt-0.5">${escapeHTML(link.url)}</p>
+                <p class="text-[10px] font-black text-white">${escapeHTMLSafe(link.label)}</p>
+                <p class="text-[9px] text-[#ff91a4] font-mono truncate max-w-[200px] mt-0.5">${escapeHTMLSafe(link.url)}</p>
             </div>
-            <button type="button" onclick="removeCustomSocialLink(${idx})" class="text-slate-500 hover:text-red-400 p-1.5 hover:bg-red-500/10 rounded-lg transition-colors pointer-events-auto relative z-50"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            <button type="button" onclick="window.removeCustomSocialLink(${idx})" class="text-slate-500 hover:text-red-400 p-1.5 hover:bg-red-500/10 rounded-lg transition-colors pointer-events-auto relative z-50"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
         </div>
     `).join('');
     if(window.lucide) lucide.createIcons();
@@ -448,7 +498,10 @@ window.addNewSocialLink = function() {
     const urlEl = document.getElementById('new-link-url');
     const label = labelEl?.value.trim();
     const url = urlEl?.value.trim();
-    if(!label || !url) { showSystemToast("قرار إداري: يجب إدخال اسم المنصة والرابط أولاً", "error"); return; }
+    if(!label || !url) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("قرار إداري: يجب إدخال اسم المنصة والرابط أولاً", "error"); 
+        return; 
+    }
     
     if(!window.siteSettings.social) window.siteSettings.social = {};
     if(!window.siteSettings.social.customLinks) window.siteSettings.social.customLinks = [];
@@ -456,14 +509,14 @@ window.addNewSocialLink = function() {
     window.siteSettings.social.customLinks.push({ label, url });
     if(labelEl) labelEl.value = '';
     if(urlEl) urlEl.value = '';
-    renderCustomSocialLinks();
-    showSystemToast("تم اعتماد المنصة الإضافية 👑", "success");
+    window.renderCustomSocialLinks();
+    if(typeof window.showSystemToast === 'function') window.showSystemToast("تم اعتماد المنصة الإضافية 👑", "success");
 };
 
 window.removeCustomSocialLink = function(idx) {
-    if(!confirm("حذف هذه المنصة من الروابط؟")) return;
+    if(!confirm("إلغاء اعتماد هذه المنصة من الروابط؟")) return;
     window.siteSettings.social.customLinks.splice(idx, 1);
-    renderCustomSocialLinks();
+    window.renderCustomSocialLinks();
 };
 
 // --- 👑 سجل مراجعات وتجارب العملاء ---
@@ -473,26 +526,28 @@ window.renderReviewsList = function() {
     if(!window.siteSettings.customerReviews) window.siteSettings.customerReviews = [];
     
     if(window.siteSettings.customerReviews.length === 0) {
-        container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-xs font-bold border border-dashed border-slate-700 rounded-3xl">سجل المراجعات فارغ حالياً.</div>`;
+        container.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500 text-xs font-bold border border-dashed border-slate-700 rounded-3xl">سجل المراجعات لـ حلويات بوسي فارغ حالياً.</div>`;
         return;
     }
     
+    const escapeHTMLSafe = typeof window.escapeHTML === 'function' ? window.escapeHTML : (str) => String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+
     container.innerHTML = window.siteSettings.customerReviews.map((rev, idx) => `
         <div class="bg-slate-900 p-4 rounded-3xl border border-slate-800 relative group transition-all duration-300 hover:border-[#ff91a4]/50 ${!rev.active ? 'opacity-40 grayscale' : ''}">
             <div class="flex justify-between items-start mb-3 pr-8">
                 <div>
-                    <h5 class="text-xs font-black text-white">${escapeHTML(rev.name)}</h5>
-                    <p class="text-[8px] text-slate-500 font-bold mt-0.5">${escapeHTML(rev.date || '')}</p>
+                    <h5 class="text-xs font-black text-white">${escapeHTMLSafe(rev.name)}</h5>
+                    <p class="text-[8px] text-slate-500 font-bold mt-0.5">${escapeHTMLSafe(rev.date || '')}</p>
                 </div>
                 <div class="flex text-amber-400 gap-0.5">
                     ${Array(rev.rating || 5).fill('<i data-lucide="star" class="w-3 h-3 fill-current"></i>').join('')}
                 </div>
             </div>
-            <p class="text-[10px] text-slate-300 font-bold leading-relaxed line-clamp-3">${escapeHTML(rev.text)}</p>
+            <p class="text-[10px] text-slate-300 font-bold leading-relaxed line-clamp-3">${escapeHTMLSafe(rev.text)}</p>
             
             <div class="absolute top-3 right-3 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button type="button" onclick="toggleReviewStatus('${rev.id}')" class="p-1.5 bg-slate-800 text-[#ff91a4] rounded-lg shadow-lg hover:scale-110 transition-transform pointer-events-auto relative z-50"><i data-lucide="${rev.active ? 'eye-off' : 'eye'}" class="w-3.5 h-3.5"></i></button>
-                <button type="button" onclick="deleteReview('${rev.id}')" class="p-1.5 bg-red-500/20 text-red-400 rounded-lg shadow-lg hover:scale-110 transition-transform hover:bg-red-500 hover:text-white pointer-events-auto relative z-50"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                <button type="button" onclick="window.toggleReviewStatus('${rev.id}')" class="p-1.5 bg-slate-800 text-[#ff91a4] rounded-lg shadow-lg hover:scale-110 transition-transform pointer-events-auto relative z-50"><i data-lucide="${rev.active ? 'eye-off' : 'eye'}" class="w-3.5 h-3.5"></i></button>
+                <button type="button" onclick="window.deleteReview('${rev.id}')" class="p-1.5 bg-red-500/20 text-red-400 rounded-lg shadow-lg hover:scale-110 transition-transform hover:bg-red-500 hover:text-white pointer-events-auto relative z-50"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
             </div>
         </div>
     `).join('');
@@ -516,19 +571,19 @@ window.openAddReviewModal = function() {
         date: new Date().toLocaleDateString('ar-EG')
     });
     
-    renderReviewsList();
-    showSystemToast("تم إدراج تقييم العميل واعتماده 👑", "success");
+    window.renderReviewsList();
+    if(typeof window.showSystemToast === 'function') window.showSystemToast("تم إدراج تقييم العميل واعتماده 👑", "success");
 };
 
 window.toggleReviewStatus = function(id) {
     const rev = window.siteSettings.customerReviews.find(r => r.id === id);
-    if(rev) { rev.active = !rev.active; renderReviewsList(); }
+    if(rev) { rev.active = !rev.active; window.renderReviewsList(); }
 };
 
 window.deleteReview = function(id) {
-    if(!confirm("هل تودين حذف هذا التقييم نهائياً من سجل العملاء؟")) return;
+    if(!confirm("هل تود حضرتك حذف هذا التقييم نهائياً من سجل عملاء حلويات بوسي؟")) return;
     window.siteSettings.customerReviews = window.siteSettings.customerReviews.filter(r => r.id !== id);
-    renderReviewsList();
+    window.renderReviewsList();
 };
 
 
@@ -536,21 +591,24 @@ window.renderCategoryDescAdmin = function() {
     let container = document.getElementById('dynamic-category-desc-container');
     if (!container) return;
     
-    container.innerHTML = '<label class="block text-xs font-bold text-slate-300 mb-2">صياغة أوصاف الأقسام بأسلوب بوسي التفاعلي</label>';
+    container.innerHTML = '<label class="block text-xs font-bold text-slate-300 mb-2">صياغة أوصاف الأقسام بأسلوب حلويات بوسي التفاعلي</label>';
     const descriptions = window.siteSettings.catDescriptions || {};
+    const escapeHTMLSafe = typeof window.escapeHTML === 'function' ? window.escapeHTML : (str) => String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
     
-    window.catMenu.forEach(cat => {
-        const safeId = 'desc-cat-' + Array.from(cat.name).map(c => c.charCodeAt(0)).join('');
-        const currentVal = descriptions[cat.name] || '';
-        
-        const fieldHtml = `
-            <div class="relative mb-3">
-                <span class="absolute right-4 top-4 text-[10px] font-bold text-[#ff91a4] bg-[#ff91a4]/10 px-2 py-0.5 rounded">${escapeHTML(cat.name)}</span>
-                <textarea id="${safeId}" placeholder="مثال: وصف احترافي يبرز جودة وطعم ${escapeHTML(cat.name)}..." class="admin-input rounded-[1.5rem] pt-10 text-sm resize-none" rows="2">${escapeHTML(currentVal)}</textarea>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', fieldHtml);
-    });
+    if(Array.isArray(window.catMenu)) {
+        window.catMenu.forEach(cat => {
+            const safeId = 'desc-cat-' + Array.from(cat.name).map(c => c.charCodeAt(0)).join('');
+            const currentVal = descriptions[cat.name] || '';
+            
+            const fieldHtml = `
+                <div class="relative mb-3">
+                    <span class="absolute right-4 top-4 text-[10px] font-bold text-[#ff91a4] bg-[#ff91a4]/10 px-2 py-0.5 rounded">${escapeHTMLSafe(cat.name)}</span>
+                    <textarea id="${safeId}" placeholder="مثال: وصف احترافي يبرز جودة وطعم ${escapeHTMLSafe(cat.name)}..." class="admin-input rounded-[1.5rem] pt-10 text-sm resize-none" rows="2">${escapeHTMLSafe(currentVal)}</textarea>
+                </div>
+            `;
+            container.insertAdjacentHTML('beforeend', fieldHtml);
+        });
+    }
 };
 
 window.renderHomepageSelection = function() {
@@ -570,7 +628,9 @@ window.renderHomepageSelection = function() {
         return;
     }
     
-    let html = '<h3 class="text-sm font-black text-[#ff91a4] flex items-center gap-2 mb-4"><i data-lucide="layout-template" class="w-4 h-4"></i> هندسة واجهة العميل (الترشيحات)</h3>';
+    const escapeHTMLSafe = typeof window.escapeHTML === 'function' ? window.escapeHTML : (str) => String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+
+    let html = '<h3 class="text-sm font-black text-[#ff91a4] flex items-center gap-2 mb-4"><i data-lucide="layout-template" class="w-4 h-4"></i> هندسة واجهة العميل (الترشيحات السيادية)</h3>';
     html += '<div class="space-y-3 max-h-[300px] overflow-y-auto custom-scrollbar pr-2">';
     
     window.catalog.forEach(prod => {
@@ -582,11 +642,11 @@ window.renderHomepageSelection = function() {
             <div class="flex items-center justify-between bg-[#0a0f1c] p-3 rounded-2xl border border-slate-800 hover:border-[#ff91a4]/30 transition-colors">
                 <div class="flex items-center gap-3 w-1/2 truncate">
                     <img src="${prod.img || 'https://via.placeholder.com/50'}" class="w-8 h-8 rounded-lg object-cover shrink-0 ${isOutOfStock ? 'grayscale opacity-50' : ''}">
-                    <span class="text-xs font-bold text-white truncate ${isOutOfStock ? 'line-through text-slate-500' : ''}">${escapeHTML(prod.name)}</span>
+                    <span class="text-xs font-bold text-white truncate ${isOutOfStock ? 'line-through text-slate-500' : ''}">${escapeHTMLSafe(prod.name)}</span>
                 </div>
                 <div class="flex gap-2 shrink-0">
-                    <button onclick="toggleProductBadge('${prod.id}', 'جديد 🌟')" class="px-2 py-1 text-[9px] font-bold rounded-lg border ${isNew ? 'bg-[#ff91a4]/20 text-[#ff91a4] border-[#ff91a4]/50' : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'}">حديثاً</button>
-                    <button onclick="toggleProductBadge('${prod.id}', 'الأكثر مبيعاً 🔥')" class="px-2 py-1 text-[9px] font-bold rounded-lg border ${isBest ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'}">مبيعاً</button>
+                    <button onclick="window.toggleProductBadge('${prod.id}', 'جديد 🌟')" class="px-2 py-1 text-[9px] font-bold rounded-lg border ${isNew ? 'bg-[#ff91a4]/20 text-[#ff91a4] border-[#ff91a4]/50' : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'}">حديثاً</button>
+                    <button onclick="window.toggleProductBadge('${prod.id}', 'الأكثر مبيعاً 🔥')" class="px-2 py-1 text-[9px] font-bold rounded-lg border ${isBest ? 'bg-amber-500/20 text-amber-400 border-amber-500/50' : 'bg-slate-800 text-slate-400 border-slate-700 hover:bg-slate-700'}">مبيعاً</button>
                 </div>
             </div>
         `;
@@ -607,108 +667,132 @@ window.toggleProductBadge = async function(prodId, targetBadge) {
         window.catalog[idx].badge = targetBadge;
     }
     
-    syncCatalogMap();
+    if (typeof window.syncCatalogMap === 'function') window.syncCatalogMap();
     try {
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('catalog', String(window.catalog[idx].id), window.catalog[idx]);
-        if (typeof saveEngineMemory === 'function') saveEngineMemory('cat');
-        showSystemToast("تم تحديث تمييز المنتج للواجهة بنجاح", "success");
+        if(typeof window.NetworkEngine !== 'undefined') await window.NetworkEngine.safeWrite('catalog', String(window.catalog[idx].id), window.catalog[idx]);
+        if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('cat');
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم تحديث تمييز المنتج للواجهة بنجاح", "success");
     } catch(e) {
-        if (typeof saveEngineMemory === 'function') saveEngineMemory('cat');
+        if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('cat');
     }
     
-    if(typeof renderHomepageSelection === 'function') renderHomepageSelection();
+    if(typeof window.renderHomepageSelection === 'function') window.renderHomepageSelection();
     const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
-    if(typeof renderAdminMenu === 'function') renderAdminMenu(currentSearch);
-    if(typeof renderAdminCatalogGridUI === 'function') renderAdminCatalogGridUI();
+    if(typeof window.renderAdminMenu === 'function') window.renderAdminMenu(currentSearch);
+    if(typeof window.renderAdminCatalogGridUI === 'function') window.renderAdminCatalogGridUI();
 };
 
-async function changeAdminPassword() {
+window.changeAdminPassword = async function() {
     const currentInput = document.getElementById('sec-current-pwd').value;
     const newPwd = document.getElementById('sec-new-pwd').value;
     const confirmPwd = document.getElementById('sec-confirm-pwd').value;
-    if (!currentInput || !newPwd || !confirmPwd) { showSystemToast("قرار إداري: يرجى ملء جميع الحقول", "error"); return; }
-    if (newPwd !== confirmPwd) { showSystemToast("قرار إداري: كلمة المرور الجديدة غير متطابقة", "error"); return; }
-    if (newPwd.length < 6) { showSystemToast("الرمز السري للسحابة يجب أن يكون 6 أحرف/أرقام على الأقل", "error"); return; }
+    if (!currentInput || !newPwd || !confirmPwd) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("قرار إداري: يرجى ملء جميع الحقول", "error"); 
+        return; 
+    }
+    if (newPwd !== confirmPwd) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("قرار إداري: كلمة المرور الجديدة غير متطابقة", "error"); 
+        return; 
+    }
+    if (newPwd.length < 6) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("الرمز السري للسحابة يجب أن يكون 6 أحرف/أرقام على الأقل", "error"); 
+        return; 
+    }
 
     try {
-        const user = window.auth.currentUser;
-        if (!user) { showSystemToast("انتهت جلسة الإدارة، يرجى تسجيل الدخول مجدداً", "error"); return; }
+        const user = window.auth?.currentUser;
+        if (!user) { 
+            if(typeof window.showSystemToast === 'function') window.showSystemToast("انتهت جلسة الإدارة، يرجى تسجيل الدخول مجدداً", "error"); 
+            return; 
+        }
         const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentInput);
         await user.reauthenticateWithCredential(credential);
         await user.updatePassword(newPwd);
-        showSystemToast("تم تغيير الرمز السري وتشفيره سحابياً بنجاح 🛡️", "success");
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم تغيير الرمز السري وتشفيره سحابياً بنجاح 🛡️", "success");
         document.getElementById('sec-current-pwd').value = ''; document.getElementById('sec-new-pwd').value = ''; document.getElementById('sec-confirm-pwd').value = '';
     } catch(e) {
-        if (e.code === 'auth/wrong-password') showSystemToast("كلمة المرور الحالية غير صحيحة", "error");
-        else showSystemToast("حدث خطأ تقني أثناء تشفير كلمة المرور الجديدة", "error");
+        if (e.code === 'auth/wrong-password') {
+            if(typeof window.showSystemToast === 'function') window.showSystemToast("كلمة المرور الحالية غير صحيحة", "error");
+        } else {
+            if(typeof window.showSystemToast === 'function') window.showSystemToast("حدث خطأ تقني أثناء تشفير كلمة المرور الجديدة", "error");
+        }
     }
-}
+};
 
-function renderAdminShipping() {
+window.renderAdminShipping = function() {
     const tbody = document.getElementById('admin-shipping-tbody');
     if(!tbody) return;
     if(!window.shippingZones || window.shippingZones.length === 0) {
         tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-slate-500 font-bold text-xs">لا يوجد مناطق توصيل معتمدة</td></tr>`; return;
     }
+    const escapeHTMLSafe = typeof window.escapeHTML === 'function' ? window.escapeHTML : (str) => String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+
     tbody.innerHTML = window.shippingZones.map(z => `
         <tr class="hover:bg-slate-800 border-b border-slate-800/50 transition-colors">
-            <td class="p-3 font-bold text-slate-200 whitespace-nowrap">${escapeHTML(z.name || '')}</td>
+            <td class="p-3 font-bold text-slate-200 whitespace-nowrap">${escapeHTMLSafe(z.name || '')}</td>
             <td class="p-3 font-black text-emerald-400 whitespace-nowrap">${z.fee} ج.م</td>
             <td class="p-3 text-center whitespace-nowrap">
-                <button onclick="deleteShippingZoneConfirm('${z.id}', '${escapeHTML(z.name || '')}')" class="text-red-400 hover:text-white p-1.5 bg-slate-800 hover:bg-red-600 rounded-lg transition-colors relative z-50 pointer-events-auto"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                <button onclick="window.deleteShippingZoneConfirm('${z.id}', '${escapeHTMLSafe(z.name || '').replace(/'/g, "\\'")}')" class="text-red-400 hover:text-white p-1.5 bg-slate-800 hover:bg-red-600 rounded-lg transition-colors relative z-50 pointer-events-auto"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
             </td>
         </tr>
     `).join('');
     if(window.lucide) lucide.createIcons();
-}
+};
 
-function openAddShippingModal() { 
+window.openAddShippingModal = function() { 
     if(document.getElementById('ship-area-name')) document.getElementById('ship-area-name').value = '';
     if(document.getElementById('ship-area-fee')) document.getElementById('ship-area-fee').value = '';
     const modal = document.getElementById('admin-ship-modal');
     if(modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); setTimeout(() => modal.classList.remove('opacity-0'), 10); }
-}
+};
 
-function closeShipModal() { 
+window.closeShipModal = function() { 
     const modal = document.getElementById('admin-ship-modal');
     if(modal) { modal.classList.add('opacity-0'); setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300); }
-}
+};
 
-async function saveShippingZone() {
+window.saveShippingZone = async function() {
     const n = document.getElementById('ship-area-name').value.trim(); const f = parseInt(document.getElementById('ship-area-fee').value) || 0;
-    if(!n) { showSystemToast("الرجاء كتابة اسم المنطقة", "error"); return; }
+    if(!n) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("الرجاء كتابة اسم المنطقة", "error"); 
+        return; 
+    }
     const newZone = { id: 'sh_' + Date.now() + Math.floor(Math.random() * 100), name: n, fee: f };
     window.shippingZones.push(newZone);
     try { 
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('shipping', String(newZone.id), newZone);
-        if (typeof saveEngineMemory === 'function') saveEngineMemory('ship');
-        showSystemToast("تم إضافة منطقة التوصيل بنجاح", "success");
+        if(typeof window.NetworkEngine !== 'undefined') await window.NetworkEngine.safeWrite('shipping', String(newZone.id), newZone);
+        if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('ship');
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم إضافة منطقة التوصيل بنجاح", "success");
     } catch (e) { 
-        if (typeof saveEngineMemory === 'function') saveEngineMemory('ship');
-        showSystemToast("تم الإضافة محلياً", "info"); 
+        if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('ship');
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم الإضافة محلياً", "info"); 
     }
-    closeShipModal(); renderAdminShipping();
-}
+    window.closeShipModal(); window.renderAdminShipping();
+};
 
-function deleteShippingZoneConfirm(id, name) {
-    openConfirmModal('حذف منطقة توصيل', `هل أنت متأكد من حذف منطقة "${name}" من نطاق التغطية؟`, () => { executeDeleteShippingZone(id); });
-}
+window.deleteShippingZoneConfirm = function(id, name) {
+    if(typeof window.openConfirmModal === 'function') {
+        window.openConfirmModal('حذف منطقة توصيل', `هل توافق حضرتك على اعتماد حذف منطقة "${name}" من نطاق التغطية؟`, () => { window.executeDeleteShippingZone(id); });
+    } else {
+        if(confirm(`هل توافق حضرتك على اعتماد حذف منطقة "${name}" من نطاق التغطية؟`)) window.executeDeleteShippingZone(id);
+    }
+};
 
-async function executeDeleteShippingZone(id) {
+window.executeDeleteShippingZone = async function(id) {
     window.shippingZones = window.shippingZones.filter(z => String(z.id) !== String(id));
     try { 
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('shipping', String(id), null);
-        if (typeof saveEngineMemory === 'function') saveEngineMemory('ship');
-        showSystemToast("تم الحذف بنجاح", "success");
+        if(typeof window.NetworkEngine !== 'undefined') await window.NetworkEngine.safeWrite('shipping', String(id), null);
+        if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('ship');
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم الحذف بنجاح", "success");
     } catch(e) { 
-        if (typeof saveEngineMemory === 'function') saveEngineMemory('ship'); 
+        if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('ship'); 
     }
-    renderAdminShipping();
-}
+    window.renderAdminShipping();
+};
 
-async function saveCakeBuilderSettings() {
-    if(!window.siteSettings) window.siteSettings = { ...defaultSettings };
-    if(!window.siteSettings.cakeBuilder) window.siteSettings.cakeBuilder = { ...defaultSettings.cakeBuilder };
+window.saveCakeBuilderSettings = async function() {
+    if(!window.siteSettings) window.siteSettings = { ...(typeof defaultSettings !== 'undefined' ? defaultSettings : {}) };
+    if(!window.siteSettings.cakeBuilder) window.siteSettings.cakeBuilder = { ...(typeof defaultSettings !== 'undefined' && defaultSettings.cakeBuilder ? defaultSettings.cakeBuilder : {}) };
     
     const c = window.siteSettings.cakeBuilder;
     if(c) {
@@ -722,110 +806,170 @@ async function saveCakeBuilderSettings() {
         ];
     }
     try {
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', window.siteSettings);
-        if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
-        showSystemToast("تم اعتماد وإرسال إعدادات التورت الملكية 👑", "success");
+        if(typeof window.NetworkEngine !== 'undefined') await window.NetworkEngine.safeWrite('settings', 'main', window.siteSettings);
+        if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('set');
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم اعتماد وإرسال إعدادات التورت الملكية لـ حلويات بوسي 👑", "success");
     } catch(e) { 
-        if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
-        showSystemToast("تم الحفظ محلياً", "info"); 
+        if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('set');
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم الحفظ محلياً", "info"); 
     }
-}
+};
 
-function renderAdminCategories() {
+window.renderAdminCategories = function() {
     const listEl = document.getElementById('admin-categories-list');
     if (!listEl) return;
     
     const sortedCats = [...window.catMenu].sort((a, b) => a.order - b.order);
 
     if (sortedCats.length === 0) { listEl.innerHTML = `<p class="text-center text-slate-500 py-6 font-bold text-xs">لم يتم هندسة أي قسم للآن.</p>`; return; }
+    
+    const escapeHTMLSafe = typeof window.escapeHTML === 'function' ? window.escapeHTML : (str) => String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+
     listEl.innerHTML = sortedCats.map((cat, index) => `
         <div class="flex items-center justify-between p-3 bg-slate-800/50 border border-slate-700 rounded-[1rem] group hover:border-[#ff91a4]/50 transition-all mb-2">
-            <div class="flex items-center gap-3"><span class="w-6 h-6 flex items-center justify-center bg-slate-900 rounded-[0.5rem] text-[10px] text-slate-400 font-bold">${cat.order}</span><span class="font-bold text-slate-200 text-sm">${escapeHTML(cat.name)}</span></div>
-            <button onclick="removeCategory('${cat.name}')" class="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100 relative z-50 pointer-events-auto"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+            <div class="flex items-center gap-3"><span class="w-6 h-6 flex items-center justify-center bg-slate-900 rounded-[0.5rem] text-[10px] text-slate-400 font-bold">${cat.order}</span><span class="font-bold text-slate-200 text-sm">${escapeHTMLSafe(cat.name)}</span></div>
+            <button onclick="window.removeCategory('${escapeHTMLSafe(cat.name).replace(/'/g, "\\'")}')" class="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100 relative z-50 pointer-events-auto"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         </div>
     `).join('');
     if(window.lucide) lucide.createIcons();
+    
     const catSelect = document.getElementById('edit-prod-cat') || document.getElementById('form-product-cat');
-    if(catSelect) catSelect.innerHTML = sortedCats.map(c => `<option value="${escapeHTML(c.name)}">${escapeHTML(c.name)}</option>`).join('');
-}
+    if(catSelect) catSelect.innerHTML = sortedCats.map(c => `<option value="${escapeHTMLSafe(c.name)}">${escapeHTMLSafe(c.name)}</option>`).join('');
+};
 
-function addNewCategory() {
+window.addNewCategory = function() {
     const input = document.getElementById('new-category-input');
     const orderInput = document.getElementById('new-category-order');
     if(!input) return;
     const val = input.value.trim();
     const order = parseInt(orderInput?.value) || (window.catMenu.length + 1);
 
-    if (!val) { showSystemToast("قرار إداري: يرجى صياغة اسم القسم للاعتماد", "error"); return; }
-    if (window.catMenu.find(c => c.name === val)) { showSystemToast("هذا المسمى موجود بالفعل بالهيكل", "error"); return; }
+    if (!val) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("قرار إداري: يرجى صياغة اسم القسم للاعتماد", "error"); 
+        return; 
+    }
+    if (window.catMenu.find(c => c.name === val)) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("هذا المسمى موجود بالفعل بالهيكل", "error"); 
+        return; 
+    }
     
     window.catMenu.push({name: val, order: order});
     input.value = ''; if(orderInput) orderInput.value = '';
-    renderAdminCategories();
-    if(typeof renderAdminCatalogTabs === 'function') renderAdminCatalogTabs();
+    window.renderAdminCategories();
+    if(typeof window.renderAdminCatalogTabs === 'function') window.renderAdminCatalogTabs();
     
-    executeSafely('CategoryDesc', () => { if(typeof renderCategoryDescAdmin === 'function') renderCategoryDescAdmin(); });
+    if(typeof window.executeSafely === 'function') {
+        window.executeSafely('CategoryDesc', () => { if(typeof window.renderCategoryDescAdmin === 'function') window.renderCategoryDescAdmin(); });
+    }
     
-    showSystemToast(`تم إدراج القسم بالهيكل. لا تنسى تفعيل الحفظ الشامل.`, "success");
-}
+    if(typeof window.showSystemToast === 'function') window.showSystemToast(`تم إدراج القسم بالهيكل. يرجى تفعيل الحفظ الشامل لاعتماده.`, "success");
+};
 
-function removeCategory(catName) {
-    if (catName === 'تورت') { showSystemToast("قرار إداري: قسم التورت الملكية ذو طابع سيادي ولا يُمكن إزالته! 👑", "error"); return; }
-    openConfirmModal('استبعاد قسم', `هل توافق على استبعاد قسم "${catName}" نهائياً من الهيكل؟`, () => {
-        window.catMenu = window.catMenu.filter(c => c.name !== catName);
-        renderAdminCategories(); 
-        if(typeof renderAdminCatalogTabs === 'function') renderAdminCatalogTabs();
-        executeSafely('CategoryDesc', () => { if(typeof renderCategoryDescAdmin === 'function') renderCategoryDescAdmin(); });
-    });
-}
+window.removeCategory = function(catName) {
+    if (catName === 'تورت') { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("قرار إداري: قسم التورت الملكية لـ حلويات بوسي ذو طابع سيادي ولا يُمكن إزالته! 👑", "error"); 
+        return; 
+    }
+    if(typeof window.openConfirmModal === 'function') {
+        window.openConfirmModal('استبعاد قسم', `هل توافق حضرتك على اعتماد قرار استبعاد قسم "${catName}" نهائياً من الهيكل؟`, () => {
+            window.catMenu = window.catMenu.filter(c => c.name !== catName);
+            window.renderAdminCategories(); 
+            if(typeof window.renderAdminCatalogTabs === 'function') window.renderAdminCatalogTabs();
+            if(typeof window.executeSafely === 'function') {
+                window.executeSafely('CategoryDesc', () => { if(typeof window.renderCategoryDescAdmin === 'function') window.renderCategoryDescAdmin(); });
+            }
+        });
+    } else {
+        if(confirm(`هل توافق حضرتك على اعتماد قرار استبعاد قسم "${catName}" نهائياً من الهيكل؟`)) {
+            window.catMenu = window.catMenu.filter(c => c.name !== catName);
+            window.renderAdminCategories();
+        }
+    }
+};
 
-async function saveCategoriesToCloud() {
+window.saveCategoriesToCloud = async function() {
     try {
         if(!window.siteSettings) window.siteSettings = {};
         window.siteSettings.catMenu = window.catMenu;
-        if(typeof NetworkEngine !== 'undefined') await NetworkEngine.safeWrite('settings', 'main', window.siteSettings);
-        if (typeof saveEngineMemory === 'function') saveEngineMemory('set');
-        showSystemToast("تم هندسة الأقسام وحفظها سحابياً بنجاح! ✨", "success");
+        if(typeof window.NetworkEngine !== 'undefined') await window.NetworkEngine.safeWrite('settings', 'main', window.siteSettings);
+        if (typeof window.saveEngineMemory === 'function') window.saveEngineMemory('set');
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم هندسة الأقسام واعتمادها سحابياً بنجاح! ✨", "success");
         if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
-    } catch (e) { showSystemToast("فشل الاتصال السحابي أثناء اعتماد الأقسام", "error"); }
-}
+    } catch (e) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("فشل الاتصال السحابي أثناء اعتماد الأقسام", "error"); 
+    }
+};
 
-function initAdminPromoCodes() {
+// --- 👑 منظومة الخصومات والكوبونات التفاعلية المطورة ---
+window.initAdminPromoCodes = function() {
     if(!window.siteSettings) window.siteSettings = {};
     if(!window.siteSettings.promoCodes) window.siteSettings.promoCodes = [];
-    renderPromoCodes();
-}
+    window.renderPromoCodes();
+};
 
-function renderPromoCodes() {
-    const container = document.getElementById('promo-codes-list'); if(!container) return;
+window.renderPromoCodes = function() {
+    const container = document.getElementById('promo-codes-list'); 
+    if(!container) return;
+    
     const codes = window.siteSettings.promoCodes || [];
-    if(codes.length === 0) { container.innerHTML = `<p class="text-xs text-slate-500 text-center py-2">لا توجد كوبونات تفاعلية مفعلة حالياً</p>`; return; }
+    if(codes.length === 0) { 
+        container.innerHTML = `<div class="text-[10px] text-slate-600 font-bold py-4 text-center">لا يوجد أكواد خصم نشطة حالياً.</div>`; 
+        return; 
+    }
+    
+    const escapeHTMLSafe = typeof window.escapeHTML === 'function' ? window.escapeHTML : (str) => String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+
     container.innerHTML = codes.map((c, idx) => `
-        <div class="flex justify-between items-center bg-[#ff91a4]/5 border border-[#ff91a4]/20 p-2.5 rounded-[1rem] mb-2">
-            <div><span class="font-mono font-black text-[#ff91a4] uppercase">${escapeHTML(c.code)}</span><span class="text-[10px] text-slate-400 ml-2">خصم فني ${c.discount}%</span></div>
-            <button onclick="deletePromoCode(${idx})" class="text-red-400 hover:text-white p-1 rounded hover:bg-red-500/20 relative z-50 pointer-events-auto"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+        <div class="flex items-center justify-between p-3 bg-slate-800/50 rounded-xl border border-slate-700 mb-2 group transition-all hover:border-[#ff91a4]/50">
+            <div class="flex flex-col">
+                <span class="text-xs font-black text-white font-mono tracking-widest uppercase">${escapeHTMLSafe(c.code)}</span>
+                <span class="text-[10px] text-[#ff91a4] font-bold mt-1">خصم فني ${c.discount}%</span>
+            </div>
+            <button onclick="window.deletePromoCode(${idx})" class="w-8 h-8 flex items-center justify-center bg-slate-800 text-slate-500 rounded-lg hover:bg-red-500/20 hover:text-red-400 transition-all border border-slate-700 hover:border-red-500/30">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
         </div>
     `).join('');
     if(window.lucide) lucide.createIcons();
-}
+};
 
-function addPromoCode() {
-    const codeInput = document.getElementById('promo-code-input'); const discountInput = document.getElementById('promo-discount-input');
+window.addPromoCode = function() {
+    const codeInput = document.getElementById('promo-code-input'); 
+    const discountInput = document.getElementById('promo-discount-input');
     if(!codeInput || !discountInput) return;
-    const code = codeInput.value.trim().toUpperCase(); const discount = parseInt(discountInput.value) || 0;
-    if(!code || discount <= 0 || discount > 100) { showSystemToast("قرار إداري: يرجى اعتماد كود سليم ونسبة تتراوح بين 1 و 100", "error"); return; }
+    
+    const code = codeInput.value.trim().toUpperCase(); 
+    const discount = parseInt(discountInput.value) || 0;
+    
+    if(!code || discount <= 0 || discount > 100) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("قرار إداري: يرجى اعتماد كود سليم ونسبة تتراوح بين 1 و 100", "error"); 
+        return; 
+    }
+    
     if(!window.siteSettings) window.siteSettings = {};
     if(!window.siteSettings.promoCodes) window.siteSettings.promoCodes = [];
-    if(window.siteSettings.promoCodes.find(c => c.code === code)) { showSystemToast("هذا الكود مدرج مسبقاً بالنظام", "error"); return; }
+    
+    if(window.siteSettings.promoCodes.find(c => c.code === code)) { 
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("هذا الكود مُدرج مسبقاً بالنظام السيادي لـ حلويات بوسي", "error"); 
+        return; 
+    }
+    
     window.siteSettings.promoCodes.push({ code, discount });
-    codeInput.value = ''; discountInput.value = '';
-    renderPromoCodes();
-    if(typeof saveAllSettings === 'function') saveAllSettings();
-}
+    codeInput.value = ''; 
+    discountInput.value = '';
+    
+    window.renderPromoCodes();
+    
+    // حفظ مباشر للقرار المهني الجديد
+    if(typeof window.saveAllSettings === 'function') window.saveAllSettings();
+};
 
-function deletePromoCode(idx) {
-    if(!window.siteSettings.promoCodes) return;
-    window.siteSettings.promoCodes.splice(idx, 1);
-    renderPromoCodes();
-    if(typeof saveAllSettings === 'function') saveAllSettings();
-}
+window.deletePromoCode = function(idx) {
+    if(!window.siteSettings || !window.siteSettings.promoCodes) return;
+    
+    if(confirm("هل توافق حضرتك على اعتماد قرار إيقاف كود الخصم هذا؟")) {
+        window.siteSettings.promoCodes.splice(idx, 1);
+        window.renderPromoCodes();
+        if(typeof window.saveAllSettings === 'function') window.saveAllSettings();
+    }
+};

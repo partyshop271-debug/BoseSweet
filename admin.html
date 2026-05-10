@@ -899,15 +899,6 @@
         <span id="toast-message" class="text-sm font-black text-white tracking-wide"></span>
     </div>
 
-    <!-- الملفات البرمجية الدستورية (بدون مساس) -->
-    <script src="firebase-config.js"></script>
-    <script src="admin-core.js"></script>
-    <script src="admin-ui.js"></script>
-    <script src="admin-orders.js"></script>
-    <script src="admin-catalog.js"></script>
-    <script src="admin-settings.js"></script>
-    <script src="gallery.js"></script>
-
     <script>
         // دالة تبديل القائمة الجانبية (للموبايل)
         function toggleSovereignSidebar() {
@@ -1099,12 +1090,26 @@
                 if(term.includes('رابط') || term.includes('فيس')) showAdminTab('social');
             }
         });
+    </script>
 
+    <!-- منظومة المحركات السيادية لمركز القيادة (Sovereign Engine Connections) -->
+    <script src="firebase-config.js"></script>
+    <script src="admin-core.js"></script>
+    <script src="admin-ui.js"></script>
+    <script src="admin-settings.js"></script>
+    <script src="admin-orders.js"></script>
+    <script src="admin-catalog.js"></script>
+    <script src="gallery.js"></script>
+    
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // بروتوكول الإقلاع السيادي: لا نطلب البيانات إلا بعد بناء الواجهة
+            if(typeof bootBoseSweetsEngine === 'function') {
+                bootBoseSweetsEngine();
+            }
             if(window.lucide) lucide.createIcons();
             showAdminTab('overview');
         });
     </script>
 </body>
 </html>
-
