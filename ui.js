@@ -1,5 +1,5 @@
 /**
- * 👑 BoseSweets UI Engine (V21.1 - Sovereign Display Edition)
+ * 👑 BoseSweets UI Engine (V21.2 - Sovereign Display Edition)
  * محرك العرض والواجهات السيادي - حلويات بوسي
  * تم التطوير لضمان ثبات الواجهات، استقرار الشلال والأقسام، ومنع الاختفاء الفني للمكونات.
  * القرار المهني: تم تأمين كافة عمليات الإدراج (DOM) بحواجز حماية لضمان عدم توقف الموقع، وتم توحيد بروتوكولات التوجيه.
@@ -65,7 +65,7 @@ export const getCapsuleDescription = function(p) {
 window.getCapsuleDescription = getCapsuleDescription;
 
 // ============================================================================
-// هندسة التنقل بين الواجهات (Views Management)
+// هندسة التنقل بين الواجهات (Sovereign Views Management)
 // ============================================================================
 
 export const showHomeView = function() {
@@ -218,16 +218,16 @@ export const loadLiveReviews = async function(productId) {
     try {
         const snapshot = await db.collection('catalog').doc(String(productId)).collection('livereviews').where('isApproved', '==', true).orderBy('timestamp', 'desc').limit(10).get();
         if (snapshot.empty) {
-            reviewsContainer.innerHTML = '<p class="text-xs text-[#1a1a1a] font-bold text-center py-4 w-full">كن أول من يشارك تجربته مع الصنف ده... </p>';
+            reviewsContainer.innerHTML = '<p class="text-xs text-[#1a1a1a] font-bold text-center col-span-full py-4 w-full">كن أول من يشارك تجربته مع الصنف ده... </p>';
             return;
         }
         reviewsContainer.innerHTML = snapshot.docs.map(doc => {
             const data = doc.data();
             const stars = '⭐'.repeat(data.rating || 5);
-            return `<div class="bg-[#ffffff] p-4 rounded-[1.5rem] border-2 border-[#ff91a4] mb-3"><div class="flex justify-between items-center mb-2"><span class="font-black text-[#1a1a1a] text-xs">${escapeHTML(data.customerName)}</span><span class="text-[10px]">${stars}</span></div><p class="text-xs text-[#1a1a1a] leading-relaxed font-bold">${escapeHTML(data.comment)}</p></div>`;
+            return `<div class="bg-[#ffffff] p-4 rounded-[1.5rem] border-2 border-[var(--brand-primary)] mb-3"><div class="flex justify-between items-center mb-2"><span class="font-black text-[#1a1a1a] text-xs">${escapeHTML(data.customerName)}</span><span class="text-[10px]">${stars}</span></div><p class="text-xs text-[#1a1a1a] leading-relaxed font-bold">${escapeHTML(data.comment)}</p></div>`;
         }).join('');
     } catch (error) {
-        reviewsContainer.innerHTML = '<p class="text-xs text-[#1a1a1a] font-bold text-center py-4">جاري مزامنة الآراء...</p>';
+        reviewsContainer.innerHTML = '<p class="text-xs text-[#1a1a1a] font-bold text-center col-span-full py-4">جاري مزامنة الآراء...</p>';
     }
 };
 window.loadLiveReviews = loadLiveReviews;
@@ -308,12 +308,12 @@ export const applySettingsToUI = function() {
         const footerLinksContainer = document.getElementById('custom-social-links-container');
         if (footerLinksContainer) {
             let customHtml = '';
-            if (siteSettings.social.tiktok) customHtml += `<a href="${siteSettings.social.tiktok}" target="_blank" class="w-10 h-10 rounded-full bg-[#ff91a4]/10 text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] flex items-center justify-center transition-all" title="TikTok"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 15.68a6.34 6.34 0 0 0 6.27 6.36 6.33 6.33 0 0 0 6.27-6.36v-6.9a8.16 8.16 0 0 0 4.7 1.48v-3.4a4.85 4.85 0 0 1-2.65-.17z"/></svg></a>`;
-            if (siteSettings.social.whatsapp) customHtml += `<a href="https://wa.me/${siteSettings.social.whatsapp}" target="_blank" class="w-10 h-10 rounded-full bg-[#ff91a4]/10 text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] flex items-center justify-center transition-all" title="WhatsApp"><i data-lucide="message-circle" class="w-5 h-5"></i></a>`;
+            if (siteSettings.social.tiktok) customHtml += `<a href="${siteSettings.social.tiktok}" target="_blank" class="w-10 h-10 rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] flex items-center justify-center transition-all" title="TikTok"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 15.68a6.34 6.34 0 0 0 6.27 6.36 6.33 6.33 0 0 0 6.27-6.36v-6.9a8.16 8.16 0 0 0 4.7 1.48v-3.4a4.85 4.85 0 0 1-2.65-.17z"/></svg></a>`;
+            if (siteSettings.social.whatsapp) customHtml += `<a href="https://wa.me/${siteSettings.social.whatsapp}" target="_blank" class="w-10 h-10 rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] flex items-center justify-center transition-all" title="WhatsApp"><i data-lucide="message-circle" class="w-5 h-5"></i></a>`;
             
             if (siteSettings.social.customLinks && siteSettings.social.customLinks.length > 0) {
                 siteSettings.social.customLinks.forEach(link => {
-                    customHtml += `<a href="${escapeHTML(link.url)}" target="_blank" class="w-10 h-10 rounded-full bg-[#ff91a4]/10 text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] flex items-center justify-center transition-all" title="${escapeHTML(link.label)}"><i data-lucide="link-2" class="w-5 h-5"></i></a>`;
+                    customHtml += `<a href="${escapeHTML(link.url)}" target="_blank" class="w-10 h-10 rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] flex items-center justify-center transition-all" title="${escapeHTML(link.label)}"><i data-lucide="link-2" class="w-5 h-5"></i></a>`;
                 });
             }
             footerLinksContainer.innerHTML = customHtml;
@@ -407,7 +407,7 @@ export const initWaterfall = function() {
 
     const visualItems = catalog.filter(p => p && p.isActive !== false && (p.images && p.images.length > 0 || p.img));
     if (visualItems.length === 0) {
-        col1.innerHTML = `<div class="text-center py-10 text-[#1a1a1a] opacity-50 font-bold col-span-2">نجهز لكم أصنافاً جديدة فاخرة.. انتظرونا ✨</div>`;
+        col1.innerHTML = `<div class="text-center py-10 text-[var(--site-text)] opacity-50 font-bold col-span-2">نجهز لكم أصنافاً جديدة فاخرة.. انتظرونا ✨</div>`;
         col2.innerHTML = '';
         return;
     }
@@ -754,22 +754,28 @@ export const showProductDetails = function(productId) {
         localStorage.setItem('bose_user_prefs', JSON.stringify(userPrefs));
     } catch(e) {}
 
+    // تأمين حاوية العرض الداخلية للمنتج وإخفاء الشاشات النشطة لمنع التداخل
     const detailsContainer = document.getElementById('single-product-container') || document.getElementById('product-details-content');
-    if (!detailsContainer) return;
+    let vProd = document.getElementById('view-product-details') || document.getElementById('product-details-view'); 
+    
+    if (!vProd) {
+        vProd = document.createElement('div');
+        vProd.id = 'view-product-details';
+        vProd.className = 'w-full flex flex-col gap-8 overflow-x-hidden content-padding-top pb-24';
+        document.body.appendChild(vProd);
+    }
 
-    // إخفاء الواجهات الأساسية وإظهار واجهة التفاصيل
     ['view-home', 'view-menu', 'view-tips', 'view-cake-builder', 'home-view', 'menu-view'].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.classList.add('hidden');
     });
     
-    const vProd = document.getElementById('view-product-details') || document.getElementById('product-details-view'); 
-    if(vProd) {
-        vProd.classList.remove('hidden');
-        vProd.style.display = 'block';
-    }
+    vProd.classList.remove('hidden');
+    vProd.style.display = 'block';
 
+    const targetContainer = detailsContainer || vProd;
     const isOutOfStock = product.inStock === false || product.isActive === false;
+    
     const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
     let rawImageUrl = defaultFallbackImage;
     if (product.images && product.images.length > 0 && product.images[0] && String(product.images[0]).trim() !== '') {
@@ -788,55 +794,57 @@ export const showProductDetails = function(productId) {
         </div>`;
     }
 
+    const desc = product.desc || getFinalDescription(product);
+
     // هندسة وبناء شجرة العناصر (DOM) بأسلوب راقي ومريح بصرياً
-    detailsContainer.innerHTML = `
-        <div class="max-w-4xl mx-auto space-y-8 animate-fade-in pb-20">
+    targetContainer.innerHTML = `
+        <div class="max-w-4xl mx-auto space-y-8 animate-fade-in pb-20 px-4 w-full">
             
-            <button onclick="window.showMenuView()" class="flex items-center gap-2 text-[var(--site-text)] font-bold hover:text-[var(--brand-primary)] transition-colors bg-[#ffffff] border-2 border-[var(--brand-primary)] px-4 py-2 rounded-xl shadow-sm">
+            <button onclick="window.showMenuView()" class="flex items-center gap-2 text-[var(--site-text)] opacity-70 hover:opacity-100 hover:text-[var(--brand-primary)] font-bold transition-colors bg-[#ffffff] border-2 border-[var(--brand-primary)]/20 hover:border-[var(--brand-primary)] px-4 py-2 rounded-xl shadow-sm">
                 <i data-lucide="arrow-right" class="w-5 h-5"></i> العودة للمنيو
             </button>
 
-            <div class="text-center space-y-4 px-4">
-                <h1 class="text-3xl md:text-4xl font-black text-[var(--site-text)] tracking-tight">${escapeHTML(product.name)}</h1>
-                ${product.desc || getFinalDescription(product) ? `<p class="text-sm md:text-base text-[var(--site-text)] font-bold leading-relaxed max-w-2xl mx-auto">${escapeHTML(product.desc || getFinalDescription(product))}</p>` : ''}
+            <div class="text-center space-y-4">
+                <h1 class="text-3xl md:text-4xl font-black text-[var(--brand-primary)] tracking-tight">${escapeHTML(product.name)}</h1>
+                ${desc ? `<p class="text-sm md:text-base text-[var(--site-text)] font-bold leading-relaxed max-w-2xl mx-auto">${escapeHTML(desc)}</p>` : ''}
             </div>
 
-            <div class="bg-[#ffffff] rounded-[2rem] shadow-xl border-2 border-[var(--brand-primary)] overflow-hidden flex flex-col md:flex-row">
-                <div class="md:w-1/2 relative h-72 md:h-auto border-b-2 md:border-b-0 md:border-l-2 border-[var(--brand-primary)]" onclick="window.openGlobalLightbox(document.getElementById('main-prod-img-${product.id}').src)">
-                    <img id="main-prod-img-${product.id}" src="${imageUrl}" alt="${escapeHTML(product.name)}" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300 ${isOutOfStock ? 'grayscale opacity-60' : ''}">
+            <div class="bg-[#ffffff] rounded-[2.5rem] shadow-2xl shadow-[var(--brand-primary)]/20 border-2 border-[var(--brand-primary)] overflow-hidden flex flex-col md:flex-row mb-12">
+                <div class="md:w-1/2 relative h-72 md:h-auto border-b-2 md:border-b-0 md:border-l-2 border-[var(--brand-primary)]/20 cursor-zoom-in" onclick="window.openGlobalLightbox(document.getElementById('main-prod-img-${product.id}').src)">
+                    <img id="main-prod-img-${product.id}" src="${imageUrl}" alt="${escapeHTML(product.name)}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500 ${isOutOfStock ? 'grayscale opacity-60' : ''}">
                     ${product.badge ? `<span class="absolute top-4 right-4 bg-[var(--brand-primary)] text-[#ffffff] text-[10px] font-black px-3 py-1.5 rounded-lg shadow-md border border-[#ffffff]">${escapeHTML(product.badge)}</span>` : ''}
-                    ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/40 flex items-center justify-center"><span class="bg-[var(--brand-primary)] text-[#ffffff] px-4 py-2 rounded-xl text-xs font-bold shadow border-2 border-[#ffffff]">نفدت الكمية</span></div>` : ''}
+                    ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/40 flex items-center justify-center backdrop-blur-[2px]"><span class="bg-[var(--brand-primary)] text-[#ffffff] px-4 py-2 rounded-xl text-xs font-bold shadow-lg border-2 border-[#ffffff]">نفدت الكمية مؤقتاً</span></div>` : ''}
                 </div>
                 
-                <div class="p-6 md:p-8 md:w-1/2 flex flex-col justify-center space-y-6 bg-gradient-to-b from-[#ffffff] to-[#ffffff]/90">
+                <div class="p-6 md:p-8 md:w-1/2 flex flex-col justify-center space-y-6 bg-gradient-to-br from-[#ffffff] to-[var(--brand-primary)]/5">
                     <div>
-                        <h3 class="text-sm font-black text-[var(--brand-primary)] uppercase tracking-widest mb-2">التفاصيل الفنية</h3>
-                        <p class="text-xs text-[var(--site-text)] font-bold leading-relaxed">${product.category === 'ديسباسيتو' ? 'قاعدة فادج كيك غنية متوجة بأفضل الصوصات.' : (product.category === 'سينابون' ? 'عجينة خميرة طبيعية قطنية مخبوزة بعناية فائقة.' : 'أجود المكونات المختارة بعناية لضمان تجربة تذوق راقية ومرضية ذوقاً وحجماً.')}</p>
+                        <h3 class="text-sm font-black text-[var(--brand-primary)] uppercase tracking-widest mb-2 border-b-2 border-[var(--brand-primary)]/20 pb-2 inline-block">تفاصيل النكهة</h3>
+                        <p class="text-xs text-[var(--site-text)] font-bold leading-relaxed mt-2">${product.category === 'ديسباسيتو' ? 'قاعدة فادج كيك غنية متوجة بأفضل الصوصات.' : (product.category === 'سينابون' ? 'عجينة خميرة طبيعية قطنية مخبوزة بعناية فائقة.' : 'أجود المكونات المختارة بعناية لضمان تجربة تذوق راقية ومرضية ذوقاً وحجماً.')}</p>
                     </div>
                     
                     ${imagesGalleryHtml}
 
-                    <div class="flex items-center justify-between border-t-2 border-b-2 border-[var(--brand-primary)] py-4">
-                        <span class="text-2xl font-black text-[var(--site-text)]">${product.price > 0 ? Number(product.price).toLocaleString('ar-EG') + ' <span class="text-sm text-[var(--site-text)] opacity-70">ج.م</span>' : 'حسب الطلب'}</span>
+                    <div class="flex items-center justify-between border-t-2 border-b-2 border-[var(--brand-primary)]/10 py-4">
+                        <span class="text-2xl font-black text-[var(--site-text)]">${product.price > 0 ? Number(product.price).toLocaleString('ar-EG') + ' <span class="text-sm text-[var(--brand-primary)]">ج.م</span>' : 'حسب الطلب'}</span>
                         
-                        <div class="quantity-controls flex items-center gap-3 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl p-1 shadow-sm">
-                            <button onclick="window.updateTempQtyContext(this, -1)" class="w-8 h-8 flex items-center justify-center bg-[#ffffff] text-[var(--brand-primary)] rounded-lg hover:bg-[var(--brand-primary)] hover:text-[#ffffff] active:scale-95 transition-all"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                        <div class="quantity-controls flex items-center gap-4 bg-[#ffffff] border-2 border-[var(--brand-primary)]/30 rounded-2xl p-1 shadow-inner">
+                            <button onclick="window.updateTempQtyContext(this, -1)" class="w-8 h-8 flex items-center justify-center bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] rounded-xl hover:bg-[var(--brand-primary)] hover:text-[#ffffff] active:scale-95 transition-all"><i data-lucide="minus" class="w-4 h-4"></i></button>
                             <span class="temp-qty-display w-6 text-center font-black text-[var(--site-text)] text-sm" data-prod-id="${product.id}">1</span>
-                            <button onclick="window.updateTempQtyContext(this, 1)" class="w-8 h-8 flex items-center justify-center bg-[#ffffff] text-[var(--brand-primary)] rounded-lg hover:bg-[var(--brand-primary)] hover:text-[#ffffff] active:scale-95 transition-all"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                            <button onclick="window.updateTempQtyContext(this, 1)" class="w-8 h-8 flex items-center justify-center bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] rounded-xl hover:bg-[var(--brand-primary)] hover:text-[#ffffff] active:scale-95 transition-all"><i data-lucide="plus" class="w-4 h-4"></i></button>
                         </div>
                     </div>
 
-                    <button onclick="window.addWithQtyContext(this, '${product.id}')" class="${isOutOfStock ? 'bg-[#ffffff] text-[var(--site-text)] cursor-not-allowed border-2 border-[var(--brand-primary)]' : 'bg-[var(--brand-primary)] hover:-translate-y-1 hover:shadow-lg text-[#ffffff] border-2 border-[var(--brand-primary)] hover:bg-[#ffffff] hover:text-[var(--brand-primary)]'} w-full py-4 rounded-xl font-black text-base transition-all active:scale-95 flex items-center justify-center gap-3" ${isOutOfStock ? 'disabled' : ''}>
-                        <i data-lucide="${isOutOfStock ? 'x-circle' : 'shopping-bag'}" class="w-5 h-5"></i> 
+                    <button onclick="window.addWithQtyContext(this, '${product.id}')" class="${isOutOfStock ? 'bg-[var(--site-text)]/20 text-[var(--site-text)]/50 cursor-not-allowed border-none' : 'bg-[var(--brand-primary)] hover:-translate-y-1 hover:shadow-lg text-[#ffffff] border-2 border-[var(--brand-primary)] hover:bg-[#ffffff] hover:text-[var(--brand-primary)]'} w-full py-4 rounded-[1.5rem] font-black text-lg transition-all active:scale-95 flex items-center justify-center gap-3" ${isOutOfStock ? 'disabled' : ''}>
+                        <i data-lucide="${isOutOfStock ? 'x-circle' : 'shopping-bag'}" class="w-6 h-6"></i> 
                         ${isOutOfStock ? 'غير متوفر مؤقتاً' : 'إضافة إلى السلة 🛍️'}
                     </button>
                 </div>
             </div>
 
-            <div id="product-reviews-section" class="pt-8 mt-8 border-t-2 border-[var(--brand-primary)]">
-                <h3 class="text-lg font-black text-[var(--site-text)] mb-6 flex items-center gap-2"><i data-lucide="star" class="w-6 h-6 text-[var(--brand-primary)]"></i> آراء عملاء حلويات بوسي</h3>
+            <div id="product-reviews-section" class="pt-8 mb-12 border-t-2 border-[var(--brand-primary)]/20">
+                <h3 class="text-xl font-black text-[var(--site-text)] mb-6 flex items-center gap-2 border-b-2 border-[var(--brand-primary)]/20 pb-3"><i data-lucide="star" class="w-6 h-6 text-amber-400"></i> آراء عملاء حلويات بوسي</h3>
                 <div id="reviews-list-${product.id}" class="grid grid-cols-1 md:grid-cols-2 gap-4 min-h-[50px]">
-                    <p class="text-xs text-[var(--site-text)] font-bold text-center py-4 w-full">جاري تحميل الآراء...</p>
+                    <p class="text-xs text-[var(--site-text)] font-bold text-center py-4 w-full col-span-full">جاري استدعاء التقييمات المعتمدة...</p>
                 </div>
                 <div class="mt-6 bg-[#ffffff] p-6 rounded-[2rem] border-2 border-[var(--brand-primary)]">
                     <h4 class="font-black text-[var(--site-text)] text-sm mb-4 flex items-center gap-2"><i data-lucide="edit-3" class="w-5 h-5 text-[var(--brand-primary)]"></i> رأيك بيفرق معانا.. شاركنا تجربتك مع طعم حلويات بوسي</h4>
@@ -856,10 +864,10 @@ export const showProductDetails = function(productId) {
                 </div>
             </div>
 
-            <div id="product-related-section" class="pt-8 border-t-2 border-[var(--brand-primary)]">
-                <h3 class="text-lg font-black text-[var(--site-text)] mb-6 flex items-center gap-2"><i data-lucide="sparkles" class="w-6 h-6 text-[var(--brand-primary)]"></i> تشكيلات قد تنال إعجاب حضرتك</h3>
-                <div id="product-related-container" class="flex overflow-x-auto gap-4 hide-scrollbar pb-4">
-                    </div>
+            <div id="product-related-section" class="pt-8 border-t-2 border-[var(--brand-primary)]/20">
+                <h3 class="text-xl font-black text-[var(--site-text)] mb-6 flex items-center gap-2"><i data-lucide="sparkles" class="w-6 h-6 text-[var(--brand-primary)]"></i> تشكيلات قد تنال إعجاب حضرتك</h3>
+                <div id="product-related-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 hide-scrollbar pb-4">
+                </div>
             </div>
         </div>
     `;
@@ -867,14 +875,11 @@ export const showProductDetails = function(productId) {
     if(window.lucide) window.lucide.createIcons();
     if (window.loadLiveReviews) window.loadLiveReviews(product.id);
     
-    // استدعاء الترشيحات المرتبطة إذا كانت مدعومة في المحرك الذكي
-    if(typeof window.renderSmartSuggestions === 'function') {
-        const oldContainer = document.getElementById('related-products-container');
-        if (oldContainer) {
-            window.renderSmartSuggestions('main');
-            const newContainer = document.getElementById('product-related-container');
-            if(newContainer) newContainer.innerHTML = oldContainer.innerHTML;
-        }
+    // استدعاء الترشيحات المرتبطة باحترافية
+    if(window.renderRelatedProducts) {
+        window.renderRelatedProducts(product.category, product.id);
+    } else if(typeof window.renderSmartSuggestions === 'function') {
+        window.renderSmartSuggestions('main');
     }
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -884,6 +889,36 @@ window.showProductDetails = showProductDetails;
 // تعيين الدالة القديمة لتعمل من خلال المعمارية المحدثة حفاظاً على الترابط البرمجي
 export const navigateToProduct = window.showProductDetails;
 window.navigateToProduct = navigateToProduct;
+
+// 👑 محرك التوصيات الديناميكي المدمج بشكل آمن
+export const renderRelatedProducts = function(category, currentId) {
+    const container = document.getElementById('product-related-container') || document.getElementById('related-products-container');
+    if (!container) return;
+    
+    const related = window.catalog.filter(p => p.category === category && String(p.id) !== String(currentId) && p.isActive !== false).slice(0, 4);
+    
+    if (related.length === 0) {
+        container.innerHTML = '<p class="text-sm text-[var(--site-text)] font-bold col-span-full text-center">لا توجد ترشيحات إضافية حالياً في هذا القسم.</p>';
+        return;
+    }
+    
+    container.innerHTML = related.map(item => {
+        const imgUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || window.getImgFallback(item.category));
+        const safeUrl = window.optimizeCloudinaryUrl ? window.optimizeCloudinaryUrl(imgUrl) : imgUrl;
+        return `
+            <div class="bg-[#ffffff] rounded-2xl border-2 border-[var(--brand-primary)]/20 overflow-hidden cursor-pointer hover:border-[var(--brand-primary)] transition-colors btn-interactive group" onclick="window.navigateToProduct('${item.id}')">
+                <div class="w-full h-32 overflow-hidden">
+                    <img src="${safeUrl}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="${window.escapeHTML(item.name)}">
+                </div>
+                <div class="p-3 text-center">
+                    <h4 class="text-xs font-black text-[var(--site-text)] truncate mb-1">${window.escapeHTML(item.name)}</h4>
+                    <p class="text-sm font-black text-[var(--brand-primary)]">${Number(item.price)} ج.م</p>
+                </div>
+            </div>
+        `;
+    }).join('');
+};
+window.renderRelatedProducts = renderRelatedProducts;
 
 export const renderMultiStepCakeBuilder = function() {
     const wrapper = document.getElementById('cake-builder-steps-wrapper');
@@ -1121,7 +1156,7 @@ export const drawProductCard = function(p) {
     <div id="product-card-${pIdSafe}" class="product-card-premium">
         <div class="product-image-glow w-full aspect-square mb-4 relative overflow-hidden rounded-[2rem]" onclick="window.navigateToProduct('${pIdSafe}')">
             <img src="${displayImg}" class="${isOutOfStock ? 'grayscale opacity-70' : ''} blur-load w-full h-full object-contain transition-all duration-700 hover:scale-110 cursor-pointer" loading="lazy" decoding="async" alt="صنف ${escapeHTML(p.name)} من قسم ${escapeHTML(p.category)} - حلويات بوسي" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
-            ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/50 backdrop-blur-[4px] z-10 flex items-center justify-center"><span class="bg-[var(--brand-primary)] text-[#ffffff] font-black px-4 py-2 rounded-xl shadow-lg border-2 border-[#ffffff]">نفدت الكمية</span></div>` : ''}
+            ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/50 backdrop-blur-[4px] z-10 flex items-center justify-center"><span class="bg-[var(--brand-primary)] text-[#ffffff] font-black px-4 py-2 rounded-xl shadow-lg border-2 border-[#ffffff]">نفدت الكمية مؤقتاً</span></div>` : ''}
         </div>
         
         <div class="flex flex-col flex-1 text-center bg-[#ffffff] relative z-20">
@@ -1364,7 +1399,7 @@ export const submitCustomerReviewLive = async function(productId) {
         } else if (typeof db !== 'undefined' && db) {
             await db.collection('catalog').doc(String(productId)).collection('livereviews').doc(reviewId).set(reviewPayload);
         }
-        showSystemToast("شكراً ليك! تم إرسال تقييمك بنجاح 👑", "success");
+        showSystemToast("شكراً لحضرتك! تم إرسال التقييم بنجاح 👑", "success");
         nameInput.value = '';
         commentInput.value = '';
     } catch (e) {
