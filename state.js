@@ -72,13 +72,18 @@ export const catalogMap = new Map();
 
 /**
  * 👑 مزامنة خارطة المنتجات (Catalog Map) لسرعة البحث
- * تم إضافة إطلاق حدث (Event) لتنبيه الواجهة بتحديث المنتجات
+ * تم إضافة إطلاق حدث (Event) لتنبيه الواجهة بتحديث المنتجات ومنع اختفائها
  */
 export function syncCatalogMap() {
     catalogMap.clear();
     if (Array.isArray(catalog)) {
         catalog.forEach(p => {
-            if (p && p.id) catalogMap.set(String(p.id), p);
+            // تأمين إضافي: تعيين حالة النشاط الافتراضية لمنع استبعاد المنتجات بالخطأ
+            if (p && p.id) {
+                if (p.isActive === undefined) p.isActive = true;
+                if (p.inStock === undefined) p.inStock = true;
+                catalogMap.set(String(p.id), p);
+            }
         });
     }
     
@@ -159,7 +164,10 @@ export async function fetchAndSyncBoseSweetsData(fetchPromise, cacheKey = 'boseS
             // القرار المهني: التحقق الذكي من نوع البيانات لمنع الأخطاء
             if (Array.isArray(localData) && cacheKey.includes('catalog')) {
                 catalog.length = 0;
-                localData.forEach(item => catalog.push(item));
+                localData.forEach(item => {
+                    if (item.isActive === undefined) item.isActive = true;
+                    catalog.push(item);
+                });
                 syncCatalogMap();
                 return true;
             }
@@ -171,7 +179,10 @@ export async function fetchAndSyncBoseSweetsData(fetchPromise, cacheKey = 'boseS
             // معالجة ذكية: إذا كانت البيانات مصفوفة خاصة بالكتالوج
             if (Array.isArray(data) && cacheKey.includes('catalog')) {
                 catalog.length = 0;
-                data.forEach(item => catalog.push(item));
+                data.forEach(item => {
+                    if (item.isActive === undefined) item.isActive = true;
+                    catalog.push(item);
+                });
                 syncCatalogMap();
             }
             
@@ -189,11 +200,11 @@ export async function fetchAndSyncBoseSweetsData(fetchPromise, cacheKey = 'boseS
         console.warn('منظومة حلويات بوسي: جاري تفعيل وضع الاستدعاء المحلي لتأمين العرض ضد تقلبات الشبكة.');
         
         // البحث الموسع عن أي نسخة احتياطية لضمان عدم خلو الموقع من المنتجات
-        const localData = getFromLocalMemory(cacheKey) || getFromLocalMemory('bSweets_catalog') || getFromLocalMemory('boseSweets_catalog');
+        const fallbackData = getFromLocalMemory(cacheKey) || getFromLocalMemory('bSweets_catalog') || getFromLocalMemory('boseSweets_catalog');
         
-        if (localData && Array.isArray(localData) && cacheKey.includes('catalog')) {
+        if (fallbackData && Array.isArray(fallbackData) && cacheKey.includes('catalog')) {
             catalog.length = 0;
-            localData.forEach(item => catalog.push(item));
+            fallbackData.forEach(item => catalog.push(item));
             syncCatalogMap();
             return true;
         }

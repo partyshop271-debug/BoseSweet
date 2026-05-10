@@ -372,7 +372,7 @@ function playNotificationSound() {
 }
 
 /**
- * تحميل الذاكرة الكاملة للمحرك من كافة المصادر
+ * تحميل الذاكرة الكاملة للمحرك من كافة المصادر مع حماية حالة المنتجات
  */
 async function loadEngineMemory() {
     try {
@@ -381,11 +381,16 @@ async function loadEngineMemory() {
         window.catalog = localDefCat.length > 0 ? localDefCat : window.catalog;
         
         if (typeof window.db !== 'undefined' && window.db !== null) {
-            // 1. مزامنة الكتالوج
+            // 1. مزامنة الكتالوج والتأكد من استقرار حالة المنتجات
             const catSnap = await window.db.collection('catalog').get();
             if (!catSnap.empty) { 
                 window.catalog = []; 
-                catSnap.forEach(doc => window.catalog.push({ id: doc.id, ...doc.data() })); 
+                catSnap.forEach(doc => {
+                    let data = doc.data();
+                    if (data.isActive === undefined || data.isActive === null) data.isActive = true;
+                    if (data.inStock === undefined || data.inStock === null) data.inStock = true;
+                    window.catalog.push({ id: doc.id, ...data });
+                }); 
             }
             
             // 2. مزامنة الإعدادات (Main Settings)
@@ -671,10 +676,10 @@ function bootBoseSweetsEngine() {
     }
 }
 
-// البث السيادي لتحديث الواجهة لحظياً
+// البث السيادي الشامل لتحديث الواجهة لحظياً وفرض مسح الذاكرة عند العميل
 window.triggerSovereignSync = async function() {
     try {
-        // إضافة مؤشر forceRefresh لإجبار الواجهة على مسح الذاكرة المؤقتة القديمة
+        // إضافة مؤشر قوة التحديث لإجبار محرك العميل على إخلاء كافة ملفات الذاكرة المخبأة
         const flag = { 
             lastAdminUpdate: Date.now(), 
             adminId: window.auth?.currentUser?.uid || 'system',
@@ -685,7 +690,7 @@ window.triggerSovereignSync = async function() {
             await window.db.collection('system').doc('syncFlag').set(flag, { merge: true });
         }
         
-        // تحديث إجباري للمتغيرات في نفس الجهاز إذا كان المسؤول يختبر الموقع
+        // التطهير الإجباري للمتغيرات في نفس الجهاز إذا كان المسؤول يختبر الموقع
         localStorage.setItem('BoseSweets_Local_Sync_Force', Date.now().toString());
         
     } catch (error) {

@@ -48,7 +48,7 @@ let lastSyncTime = Date.now();
 
 /**
  * 👑 بروتوكول الاستماع السيادي (Sovereign Sync Listener)
- * يقوم بمراقبة "جرس التحديث" من لوحة إدارة حلويات بوسي لمزامنة البيانات فوراً.
+ * يقوم بمراقبة "جرس التحديث" من لوحة إدارة حلويات بوسي لمزامنة البيانات فوراً وبشكل قاطع.
  */
 function setupSovereignSyncListener() {
     if (!db) return;
@@ -56,16 +56,22 @@ function setupSovereignSyncListener() {
     db.collection('system').doc('syncFlag').onSnapshot(async doc => {
         if (doc.exists) {
             const data = doc.data();
-            // إذا كان التحديث القادم من الإدارة أحدث من وقت فتح العميل للموقع أو تم إرسال إشارة تحديث
             if (data.lastAdminUpdate > lastSyncTime || data.forceRefresh) {
-                console.log("👑 إشارة سيادية: تم رصد تحديث من مركز قيادة حلويات بوسي. جاري المزامنة اللحظية...");
+                console.log("👑 إشارة سيادية: تم رصد تحديث من مركز قيادة حلويات بوسي. جاري التطهير والمزامنة اللحظية...");
                 lastSyncTime = Date.now();
                 
-                // مسح الكاش المحلي لإجبار المحرك على جلب أحدث البيانات
+                // التطهير الشامل للذاكرة لضمان عدم تعليق المنتجات المختفية
                 localStorage.removeItem('boseSweets_catalog');
+                localStorage.removeItem('bSweets_catalog');
+                localStorage.removeItem('boseSweets_settings');
                 localStorage.removeItem('boseSweets_catalog_timestamp');
                 
-                // إعادة تشغيل المحرك لتحديث البيانات والواجهة
+                if (typeof ClientStorageEngine !== 'undefined' && ClientStorageEngine.remove) {
+                    await ClientStorageEngine.remove('catalog');
+                    await ClientStorageEngine.remove('settings');
+                }
+                
+                // إعادة تشغيل المحرك لتحديث البيانات والواجهة بشكل جذري
                 await startBoseSweetsEngine(true);
             }
         }
@@ -76,7 +82,7 @@ function setupSovereignSyncListener() {
 
 /**
  * 👑 محرك التشغيل الرئيسي (BoseSweets Engine)
- * المسؤول عن إقلاع النظام، جلب البيانات، وتنسيق الواجهة.
+ * المسؤول عن إقلاع النظام، جلب البيانات، وتنسيق الواجهة بتأمين كامل ضد فقدان البيانات.
  */
 async function startBoseSweetsEngine(isUpdate = false) {
     if (!isUpdate && (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة'))) return;
@@ -107,15 +113,19 @@ async function startBoseSweetsEngine(isUpdate = false) {
         // 2. جلب الكتالوج (التحديث السيادي لمنع اختفاء المنتجات)
         const catalogStatus = await fetchAndSyncBoseSweetsData(async () => {
             try {
-                // جلب الكتالوج بالكامل بدون شروط صارمة تؤدي لفقدان البيانات
                 const pSnap = await db.collection('catalog').get();
                 if (!pSnap.empty) {
                     return pSnap.docs.map(doc => {
                         const data = doc.data();
-                        // تأمين برمجي: إذا لم يكن هناك حالة مسجلة، نعتبره نشطاً لمنع اختفائه
-                        if (typeof data.isActive === 'undefined') data.isActive = true;
+                        // تأمين برمجي صارم: منع الاختفاء العشوائي للمنتجات بتعيين حالة نشطة افتراضياً
+                        if (data.isActive === undefined || data.isActive === null) {
+                            data.isActive = true;
+                        }
+                        if (data.inStock === undefined || data.inStock === null) {
+                            data.inStock = true;
+                        }
                         return { id: doc.id, ...data };
-                    }).filter(d => d.isActive !== false); // فلترة آمنة محلياً
+                    }).filter(d => d.isActive === true); // اعتماد المنتجات النشطة بشكل قاطع
                 } else {
                     return [];
                 }
@@ -128,7 +138,7 @@ async function startBoseSweetsEngine(isUpdate = false) {
         if (catalogStatus && catalogStatus.length > 0) {
             catalog.length = 0;
             catalog.push(...catalogStatus);
-            console.log(`حلويات بوسي: تم مزامنة ${catalog.length} منتج بنجاح.`);
+            console.log(`حلويات بوسي: تم مزامنة ${catalog.length} منتج بنجاح وبدقة متناهية.`);
         } else {
             console.warn("حلويات بوسي: الكتالوج السحابي فارغ أو لم يستجب، تفعيل الذاكرة الفولاذية.");
             fallbackToEmergencyData();
@@ -149,7 +159,7 @@ async function startBoseSweetsEngine(isUpdate = false) {
         if(state) state.isAppReady = true;
 
         if (isUpdate) {
-            // تحديث العناصر النشطة فقط دون إعادة تحميل كاملة
+            // تحديث جذري للعناصر المعروضة بعد التقاط إشارة الإدارة
             if (typeof renderCategories === 'function') renderCategories();
             
             if (state.activeCat === 'الرئيسية') {
@@ -159,7 +169,7 @@ async function startBoseSweetsEngine(isUpdate = false) {
                 if (typeof renderMainDisplay === 'function') renderMainDisplay();
             }
             if(typeof syncCartUI === 'function') syncCartUI();
-            showSystemToast("تم تحديث القائمة بأحدث أصناف حلويات بوسي ✨", "success");
+            showSystemToast("تم تحديث القائمة بأحدث إصدارات وأسعار حلويات بوسي 👑", "success");
         } else {
             // الإقلاع الأول
             initUI();
