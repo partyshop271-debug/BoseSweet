@@ -10,12 +10,17 @@
     <link rel="canonical" href="https://bose-sweet.vercel.app/" />
     <link rel="manifest" href="manifest.json">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="حلويات بوسي">
     <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.png">
+    <meta name="theme-color" content="#ffffff">
     
-    <!-- محرك التقاط التثبيت المبكر - تم النقل للرأس لضمان عدم ضياع الإشارة -->
     <script>
         window.deferredInstallPrompt = null;
         window.addEventListener('beforeinstallprompt', (e) => {
@@ -51,7 +56,7 @@
     }
     </script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -85,10 +90,10 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        h1, h2, h3, h4, h5, h6 { color: var(--site-text); font-weight: 900; }
+        h1, h2, h3, h4, h5, h6 { color: var(--site-text); font-weight: 800; }
         h1 { font-size: var(--h1-size); line-height: 1.2; color: var(--brand-primary); }
         h2 { font-size: var(--h2-size); line-height: 1.3; }
-        p { font-size: var(--p-size); font-weight: 700; line-height: 1.7; color: var(--site-text); }
+        p { font-size: var(--p-size); font-weight: 700; line-height: 1.8; color: var(--site-text); }
 
         .text-bose-primary { color: var(--brand-primary) !important; }
         .bg-bose-primary { background-color: var(--brand-primary) !important; }
@@ -113,6 +118,26 @@
 
         .suggestion-card { min-width: 160px; border-radius: 1.5rem; background: var(--site-bg); border: 2px solid var(--brand-primary); padding: 12px; transition: 0.3s; }
         .suggestion-card:hover { border-color: var(--brand-primary); transform: translateY(-3px); }
+
+        /* أزرار وتفاعلات راقية */
+        .btn-interactive {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .btn-interactive:active {
+            transform: scale(0.96);
+        }
+        
+        .link-hover-effect {
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .link-hover-effect:hover {
+            color: var(--brand-primary);
+            transform: translateX(-5px);
+        }
 
         .btn-premium-action {
             transition: all 0.3s ease;
@@ -145,38 +170,38 @@
         @keyframes ticker-scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .animate-ticker { display: inline-block; animation: ticker-scroll linear infinite; padding-right: 100%; }
         
+        /* التعديل الجذري لمنع تداخل الهيدر مع المحتوى */
         .content-padding-top {
-            padding-top: 15px !important; 
+            padding-top: 110px !important; 
         }
     </style>
 </head>
 <body class="bg-[#ffffff] text-[#1a1a1a]">
 
-    <div id="network-status-banner" class="fixed top-0 left-0 w-full z-[100000] bg-[#1a1a1a] text-[#ffffff] text-center py-2.5 font-bold text-sm hidden transition-transform duration-300 -translate-y-full border-b-2 border-[#ff91a4] shadow-md flex justify-center items-center gap-2">
+    <div id="network-status-banner" class="fixed top-0 left-0 w-full z-[100000] bg-[#1a1a1a] text-[#ffffff] text-center py-2.5 font-bold text-sm hidden transition-transform duration-300 -translate-y-full border-b-2 border-[#ff91a4] shadow-md flex justify-center items-center gap-2" role="alert">
         <i data-lucide="wifi-off" class="w-4 h-4 text-[#ff91a4]"></i>
         <span>عفواً، لا يوجد اتصال بالإنترنت. تتصفح الآن النسخة المحفوظة.</span>
     </div>
 
-    <!-- نافذة الطوارئ للتثبيت (تظهر فقط في أجهزة iOS أو عند فشل المتصفح) -->
     <div id="ios-install-prompt" class="fixed inset-0 z-[100000] hidden items-end sm:items-center justify-center bg-[#1a1a1a]/60 backdrop-blur-sm transition-opacity duration-300 pb-6 sm:pb-0 px-4">
         <div class="bg-[#ffffff] w-full sm:w-[400px] rounded-[2.5rem] p-6 border-2 border-[#ff91a4] shadow-2xl relative animate-fade-in">
-            <button onclick="closeIosPrompt()" class="absolute top-4 left-4 p-2 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors"><i data-lucide="x" class="w-4 h-4"></i></button>
+            <button onclick="closeIosPrompt()" aria-label="إغلاق نافذة التثبيت" class="absolute top-4 left-4 p-2 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors btn-interactive"><i data-lucide="x" class="w-4 h-4"></i></button>
             
             <div class="text-center mb-6 mt-4">
                 <div class="w-16 h-16 bg-[#ffffff] border-2 border-[#ff91a4] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg overflow-hidden">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.png" class="w-full h-full object-cover" alt="حلويات بوسي">
                 </div>
-                <h3 class="text-2xl font-black text-[#ff91a4] tracking-tighter mb-2">تطبيق حلويات بوسي</h3>
+                <h3 class="text-2xl font-bold text-[#ff91a4] tracking-tighter mb-2">تطبيق حلويات بوسي</h3>
                 <p class="font-bold text-[#1a1a1a] text-sm leading-relaxed">أضف التطبيق للشاشة الرئيسية لتجربة تسوق أسرع وأسهل.</p>
             </div>
             
             <div class="space-y-4 bg-[#ffffff] border-2 border-[#ff91a4] p-4 rounded-2xl text-right">
                 <div class="flex items-center gap-3">
-                    <span class="w-8 h-8 flex items-center justify-center bg-[#ff91a4] text-[#ffffff] font-black rounded-full text-sm shrink-0">1</span>
+                    <span class="w-8 h-8 flex items-center justify-center bg-[#ff91a4] text-[#ffffff] font-bold rounded-full text-sm shrink-0">1</span>
                     <p id="install-step-1-text" class="font-bold text-[#1a1a1a] text-sm">اضغط على زر المشاركة <i id="install-step-1-icon" data-lucide="share" class="w-4 h-4 inline text-[#ff91a4]"></i> أسفل الشاشة.</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span class="w-8 h-8 flex items-center justify-center bg-[#ff91a4] text-[#ffffff] font-black rounded-full text-sm shrink-0">2</span>
+                    <span class="w-8 h-8 flex items-center justify-center bg-[#ff91a4] text-[#ffffff] font-bold rounded-full text-sm shrink-0">2</span>
                     <p class="font-bold text-[#1a1a1a] text-sm">اختر "إضافة للشاشة الرئيسية" <i data-lucide="plus-square" class="w-4 h-4 inline text-[#ff91a4]"></i>.</p>
                 </div>
             </div>
@@ -184,41 +209,60 @@
     </div>
 
     <div id="global-image-lightbox" class="fixed inset-0 z-[100000] hidden items-center justify-center bg-[#ffffff]/95 cursor-zoom-out transition-opacity duration-300" onclick="closeGlobalLightbox()">
-        <img id="lightbox-main-img" src="" class="max-w-[95%] max-h-[95vh] object-contain rounded-[2.5rem] shadow-2xl transition-transform transform scale-95 duration-300 border-4 border-[#ff91a4]" alt="تفاصيل المنتج">
-        <div class="absolute top-6 right-6 bg-[#ff91a4] p-3 rounded-full text-[#ffffff] hover:scale-110 transition-transform">
+        <img id="lightbox-main-img" src="" class="max-w-[95%] max-h-[95vh] object-contain rounded-[2.5rem] shadow-2xl transition-transform transform scale-95 duration-300 border-4 border-[#ff91a4]" alt="تفاصيل المنتج المكبرة">
+        <button aria-label="إغلاق الصورة" class="absolute top-6 right-6 bg-[#ff91a4] p-3 rounded-full text-[#ffffff] hover:scale-110 transition-transform btn-interactive">
             <i data-lucide="x" class="w-8 h-8"></i>
-        </div>
+        </button>
     </div>
 
     <div id="global-loader" class="fixed inset-0 z-[100000] flex flex-col items-center justify-center bg-[#ffffff] transition-opacity duration-700">
         <div class="relative w-24 h-24 mb-6 text-[#ff91a4]">
             <i data-lucide="crown" class="w-24 h-24 animate-pulse"></i>
         </div>
-        <h1 class="font-black text-2xl text-[#ff91a4] tracking-tighter text-center px-4">حلويات بوسي...</h1>
+        <h1 class="font-bold text-2xl text-[#ff91a4] tracking-tighter text-center px-4">حلويات بوسي...</h1>
     </div>
 
-    <div id="system-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100000] hidden items-center gap-4 bg-[#ffffff] text-[#1a1a1a] px-8 py-4 rounded-[2.5rem] shadow-2xl font-bold border-2 border-[#ff91a4] animate-fade-in">
+    <div id="system-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100000] hidden items-center gap-4 bg-[#ffffff] text-[#1a1a1a] px-8 py-4 rounded-[2.5rem] shadow-2xl font-bold border-2 border-[#ff91a4] animate-fade-in" role="status">
         <i id="toast-icon" data-lucide="info" class="text-[#ff91a4] w-6 h-6"></i>
         <span id="toast-message" class="text-sm"></span>
     </div>
 
-    <nav id="navbar" class="absolute w-full z-[9999] transition-all duration-500 top-0 py-3 bg-[#ffffff] border-b-2 border-[#ff91a4] h-[80px]">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-full w-full">
+    <div id="search-overlay" class="fixed inset-0 bg-[#ffffff]/98 backdrop-blur-xl z-[100000] hidden flex-col transition-all duration-300">
+        <div class="container mx-auto px-4 py-8 max-w-3xl flex flex-col h-full mt-8">
+            <div class="flex justify-between items-center mb-10 pb-4 border-b-2 border-[#ff91a4]/20">
+                <h3 class="text-xl font-bold text-[#ff91a4] flex items-center gap-3"><i data-lucide="search" class="w-6 h-6"></i> البحث في المنيو</h3>
+                <button aria-label="إغلاق البحث" onclick="toggleLiveSearch()" class="p-2.5 bg-[#ffffff] text-[#1a1a1a] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] border-2 border-[#ff91a4]/30 btn-interactive"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            <div class="relative mb-8">
+                <input type="text" id="main-search-input" oninput="typeof performLiveSearchDebounced === 'function' ? performLiveSearchDebounced() : null" placeholder="ابحث عن منتج، قسم، أو نكهة..." class="w-full bg-[#ffffff] border-2 border-[#ff91a4] rounded-[2rem] py-4 px-12 text-lg font-bold text-[#1a1a1a] focus:outline-none focus:shadow-lg transition-all" autocomplete="off" aria-label="حقل البحث السريع">
+                <i data-lucide="search" class="absolute right-5 top-1/2 -translate-y-1/2 w-6 h-6 text-[#ff91a4]"></i>
+            </div>
+            <div id="search-results-container" class="flex-1 overflow-y-auto hide-scrollbar space-y-4 pb-10">
+                <div class="text-center text-[#1a1a1a] opacity-60 text-sm mt-12 font-bold">يرجى كتابة حرفين على الأقل للبحث...</div>
+            </div>
+        </div>
+    </div>
+
+    <nav id="navbar" class="fixed w-full z-[9999] transition-all duration-500 top-0 py-3 bg-[#ffffff] border-b-2 border-[#ff91a4] h-[80px]">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-full w-full gap-2">
             
-            <div class="w-1/3 flex justify-start"> 
-                <button onclick="toggleSidebarMenu(true)" class="p-2.5 rounded-xl border-2 border-[#ff91a4] text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all bg-[#ffffff]">
-                    <i data-lucide="layout-grid" class="w-6 h-6 md:w-7 md:h-7"></i>
+            <div class="flex items-center shrink-0"> 
+                <button aria-label="القائمة الجانبية" onclick="toggleSidebarMenu(true)" class="p-2.5 rounded-full border-2 border-[#ff91a4] text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all bg-[#ffffff] btn-interactive">
+                    <i data-lucide="menu" class="w-6 h-6 md:w-7 md:h-7"></i>
                 </button>
             </div>
             
-            <div id="brand-home-link" onclick="goToHome(event)" class="w-1/3 flex justify-center items-center cursor-pointer select-none">
-                <h1 class="text-2xl md:text-3xl font-black text-[#ff91a4] tracking-normal" style="white-space: nowrap;">حلويات بوسي</h1>
+            <div id="brand-home-link" onclick="goToHome(event)" class="flex-1 flex justify-center items-center cursor-pointer select-none min-w-0 px-2" role="button" tabindex="0" aria-label="العودة للصفحة الرئيسية حلويات بوسي">
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#ff91a4] tracking-normal truncate whitespace-nowrap transition-transform duration-300 hover:scale-105">حلويات بوسي</h1>
             </div>
 
-            <div class="w-1/3 flex justify-end">
-                <button onclick="toggleCart(true)" class="relative p-2.5 rounded-xl border-2 border-[#ff91a4] hover:scale-110 transition-transform bg-[#ffffff] text-[#ff91a4]">
-                    <i data-lucide="shopping-basket" class="w-6 h-6 md:w-7 md:h-7"></i>
-                    <span id="cart-count-badge" class="hidden absolute -top-2 -left-2 bg-[#ff91a4] text-[#ffffff] text-[10px] font-black w-5 h-5 md:w-6 md:h-6 flex items-center justify-center rounded-full border-2 border-[#ffffff]">0</span>
+            <div class="flex items-center justify-end shrink-0 gap-2 sm:gap-3">
+                <button aria-label="أيقونة البحث" onclick="toggleLiveSearch()" class="p-2.5 rounded-full border-2 border-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all bg-[#ffffff] text-[#ff91a4] btn-interactive">
+                    <i data-lucide="search" class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"></i>
+                </button>
+                <button aria-label="سلة المشتريات" onclick="toggleCart(true)" class="relative p-2.5 rounded-full border-2 border-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all bg-[#ffffff] text-[#ff91a4] btn-interactive">
+                    <i data-lucide="shopping-basket" class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"></i>
+                    <span id="cart-count-badge" class="hidden absolute -top-1 -left-1 bg-[#ff91a4] text-[#ffffff] text-[10px] font-bold w-5 h-5 md:w-6 md:h-6 flex items-center justify-center rounded-full border-2 border-[#ffffff]">0</span>
                 </button>
             </div>
         </div>
@@ -227,7 +271,7 @@
     <div id="view-home" class="w-full flex flex-col gap-10 overflow-x-hidden content-padding-top">
         
         <header class="px-4 text-center max-w-4xl mx-auto relative pt-4 pb-4">
-            <div class="inline-flex items-center gap-2 px-5 py-2 bg-[#ffffff] rounded-full text-[12px] font-bold text-[#ff91a4] mb-6 border-2 border-[#ff91a4]">
+            <div class="inline-flex items-center gap-2 px-5 py-2 bg-[#ffffff] rounded-full text-[12px] font-bold text-[#ff91a4] mb-6 border-2 border-[#ff91a4] shadow-sm">
                 <i data-lucide="crown" class="w-4 h-4"></i>
                 <span>عشر سنين من التميز في الفرافرة</span>
             </div>
@@ -240,8 +284,8 @@
                 بنختار خاماتنا بعناية شديدة وبنهتم بأدق التفاصيل، عشان نقدم طعم مميز وتجربة تذوق راقية تليق بيك وبكل مناسباتك السعيدة.
             </p>
 
-            <button onclick="switchToMenuView()" class="px-8 py-3 rounded-full bg-[#ff91a4] text-[#ffffff] font-bold text-base border-2 border-[#ff91a4] hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all">
-                استكشف المنيو
+            <button onclick="switchToMenuView()" class="px-10 py-4 rounded-full bg-[#ff91a4] text-[#ffffff] font-bold text-lg border-2 border-[#ff91a4] hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all btn-interactive shadow-md">
+                تصفح المنيو
             </button>
         </header>
 
@@ -269,9 +313,9 @@
 
     <div id="view-menu" class="hidden w-full flex-col animate-fade-in content-padding-top">
         
-        <section class="sticky top-0 bg-[#ffffff] z-[300] py-4 border-b-2 border-[#ff91a4]">
+        <section class="sticky top-[80px] bg-[#ffffff] z-[300] py-4 border-b-2 border-[#ff91a4]">
             <div class="max-w-7xl mx-auto px-4 md:px-6 flex flex-col gap-4">
-                <div id="categories-nav" class="flex overflow-x-auto hide-scrollbar gap-4 pb-2 snap-x"></div>
+                <div id="categories-nav" class="flex overflow-x-auto hide-scrollbar gap-4 pb-2 snap-x" role="navigation" aria-label="أقسام المنيو"></div>
                 <div id="sub-tabs-area" class="hidden w-full"></div>
             </div>
         </section>
@@ -298,51 +342,136 @@
     </div>
 
     <div id="view-tips" class="hidden w-full flex-col pb-32 px-4 animate-fade-in content-padding-top">
-        <header class="max-w-4xl mx-auto text-center mb-16">
-            <h1 class="text-[#ff91a4] mb-6 tracking-tighter text-4xl md:text-5xl">أسرار الطعم الأصلي</h1>
-            <p class="text-lg font-bold text-[#1a1a1a] leading-relaxed max-w-3xl mx-auto">نصائح من مطبخ حلويات بوسي عشان تحافظ على جودة وطعم المنتجات لأطول فترة ممكنة.</p>
+        <header class="max-w-4xl mx-auto text-center mb-16 mt-8">
+            <h1 class="text-[#ff91a4] mb-6 tracking-tighter text-3xl md:text-5xl">دليل التشغيل والتعامل الاحترافي</h1>
+            <p class="text-base md:text-lg font-bold text-[#1a1a1a] leading-relaxed max-w-3xl mx-auto">لضمان تجربة تذوق ترتقي لمستوى توقعات حضرتك، أعددنا هذا الدليل المرجعي. كل منتج من منتجات حلويات بوسي يتطلب معايير هندسية محددة في النقل والحفظ والتقديم، لضمان استمتاعك بالطعم الأصلي والجودة القصوى من لحظة الاستلام وحتى التقديم.</p>
         </header>
-        <div id="tips-grid" class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4"></div>
+        
+        <div id="tips-grid" class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
+            
+            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group md:col-span-2 lg:col-span-1">
+                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
+                    <i data-lucide="archive" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">القاعدة الشاملة لحفظ المنتجات</h3>
+                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">للاستهلاك خلال يوم أو يومين: تُحفظ المنتجات داخل علبتها الأصلية <strong>المُغلقة بإحكام</strong> في الثلاجة. أما للاحتفاظ بها لفترات أطول (أسبوع فأكثر): تُوضع العلبة المُحكمة في الفريزر. وعند الحاجة، تُنقل من الفريزر إلى الثلاجة قبل التقديم بمدة <strong>4 إلى 5 ساعات</strong> لتفك برودتها وتستعيد قوامها تدريجياً وبأمان تام. (يُستثنى السينابون من هذه القاعدة لاعتماده على تسخين الميكروويف).</p>
+            </div>
+
+            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
+                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
+                    <i data-lucide="package" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">قواعد حفظ وتقديم الدوناتس</h3>
+                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">تُحفظ الدوناتس حصرياً داخل علبتها المغلقة بإحكام في الثلاجة. نظراً لطبيعة حشواتنا الغنية وللارتفاع الشديد في درجات الحرارة، تُترك في درجة حرارة الغرفة من <strong>دقيقة إلى 4 دقائق فقط كحد أقصى</strong> قبل التقديم؛ لتستعيد العجينة قوامها القطني دون أن تذوب الحشوات أو تتعرض للتلف.</p>
+            </div>
+
+            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
+                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
+                    <i data-lucide="briefcase" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">التعامل الأمثل مع بوكس الروقان</h3>
+                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">أثناء النقل، يُرجى حمل البوكس بشكل أفقي تماماً لضمان ثبات المنتجات بداخله وعدم تداخل المكونات. فور الاستلام، يجب حفظه مباشرة في الثلاجة للحفاظ على القوام المثالي لموس الكريمة والشوكولاتة. يُقدم بارداً لضمان التناغم التام وتجربة الانتعاش المقصودة.</p>
+            </div>
+
+            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
+                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
+                    <i data-lucide="snowflake" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">درجة الحرارة المثالية للديسباسيتو</h3>
+                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">يعتمد هذا المنتج على حساسية طبقات الفادج وموس النوتيلا، مما يتطلب حفظه في درجة تبريد عالية ومستقرة. يُمنع منعاً باتاً تركه في درجة حرارة الغرفة لفترات طويلة. يجب أن يُقدم ويُستهلك بارداً جداً لضمان استقرار الطبقات وكثافة الطعم.</p>
+            </div>
+
+            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
+                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
+                    <i data-lucide="utensils" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">تقطيع وتقديم كيك الريد فيلفت</h3>
+                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">لضمان الحصول على قطع متساوية ومظهر احترافي لطبقات الريد فيلفت عند التقديم، يُنصح باستخدام سكين حاد يتم غمسه في ماء ساخن ثم تجفيفه جيداً قبل كل عملية تقطيع. تُحفظ التورتة في الثلاجة وتُقدم باردة للحفاظ على تماسك حشوة موس الجبن.</p>
+            </div>
+
+            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
+                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
+                    <i data-lucide="clock" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">معايير الجودة لكبات السعادة</h3>
+                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">صُممت هذه الكبات لتُستهلك باردة تماماً. يجب وضعها في الثلاجة فور الاستلام. لضمان أقصى درجات الجودة والمذاق، يُنصح باستهلاكها خلال ثمان وأربعين ساعة كحد أقصى، مع التأكيد على إحكام غلق العبوة بعد الفتح الجزئي لحماية موس الكريمة من التقاط أي روائح خارجية.</p>
+            </div>
+
+            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
+                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
+                    <i data-lucide="thermometer" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">حفظ وصلاحية القشطوطة الأصلية</h3>
+                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">نظراً لاعتماد القشطوطة الكامل على الحليب الطبيعي المشبع والكريمة الطازجة، تُعد من المنتجات شديدة الحساسية للحرارة. يجب حفظها في أبرد نقطة بالثلاجة فور الاستلام، ويُلزم استهلاكها خلال يومين (٤٨ ساعة) كحد أقصى لضمان سلامة وجودة المكونات.</p>
+            </div>
+
+            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
+                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
+                    <i data-lucide="car" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">القاعدة الذهبية لنقل وتقديم التورت</h3>
+                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">أثناء النقل بالسيارة، توضع العلبة على سطح مستوٍ (مثل أرضية السيارة وليس المقعد) مع تشغيل التكييف. تُحفظ فوراً في الثلاجة، وتُخرج قبل التقطيع والتقديم <strong>بخمس دقائق فقط لا غير</strong>؛ هذه المدة كافية جداً لاستعادة طراوة الكيك من الداخل دون الإضرار بتماسك الكريمة والتصميم الخارجي.</p>
+            </div>
+
+            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
+                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
+                    <i data-lucide="microwave" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">إعادة تسخين السينابون الاحترافي</h3>
+                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">للحصول على القوام الهش وذوبان صوص الجبنة المثالي وكأنه مخبوز للتو، يُوضع السينابون في الميكروويف لمدة تتراوح بين <strong>عشر إلى خمس عشرة ثانية كحد أقصى</strong> قبل الاستهلاك مباشرة. يُمنع منعاً باتاً تسخينه لفترات أطول لتفادي جفاف العجينة واحتراق الصوص.</p>
+            </div>
+            
+        </div>
     </div>
 
     <div id="advanced-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-[380px] bg-[#ffffff] translate-x-full flex flex-col border-l-2 border-[#ff91a4] z-[10000]">
-        <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex justify-between items-center">
+        <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex justify-between items-center shadow-sm">
             <h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter">قائمة حلويات بوسي</h2>
-            <button onclick="toggleSidebarMenu(false)" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] rounded-full text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="x" class="w-5 h-5"></i></button>
+            <button aria-label="إغلاق القائمة" onclick="toggleSidebarMenu(false)" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] rounded-full text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all btn-interactive"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
-        <div class="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar bg-[#ffffff]">
-            <nav class="flex flex-col gap-5">
-                <button onclick="goToHome(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-all"><i data-lucide="home" class="w-5 h-5 text-[#ff91a4]"></i> الرئيسية</button>
-                <button onclick="switchToMenuView(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-all"><i data-lucide="book-open" class="w-5 h-5 text-[#ff91a4]"></i> المنيو</button>
-                <button onclick="showGoldenTips(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-all"><i data-lucide="award" class="w-5 h-5 text-[#ff91a4]"></i> أسرار الطعم</button>
-                
-                <button id="custom-pwa-install-btn" class="flex items-center gap-4 text-lg font-bold text-[#ffffff] hover:text-[#ff91a4] hover:bg-[#ffffff] transition-all mt-4 p-3 border-2 border-[#ff91a4] rounded-2xl bg-[#ff91a4] shadow-md">
-                    <i data-lucide="download" class="w-5 h-5"></i> تثبيت التطبيق الأصلي
-                </button>
+        
+        <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar bg-[#ffffff]">
+            <nav class="flex flex-col gap-3">
+                <button onclick="goToHome(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] p-3 rounded-2xl hover:bg-[#ff91a4]/10 hover:text-[#ff91a4] transition-all btn-interactive text-right w-full"><i data-lucide="home" class="w-6 h-6 text-[#ff91a4]"></i> الواجهة الرئيسية</button>
+                <button onclick="switchToMenuView(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] p-3 rounded-2xl hover:bg-[#ff91a4]/10 hover:text-[#ff91a4] transition-all btn-interactive text-right w-full"><i data-lucide="layout-grid" class="w-6 h-6 text-[#ff91a4]"></i> تصفح المنيو الكامل</button>
+                <button onclick="showGoldenTips(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] p-3 rounded-2xl hover:bg-[#ff91a4]/10 hover:text-[#ff91a4] transition-all btn-interactive text-right w-full"><i data-lucide="star" class="w-6 h-6 text-[#ff91a4]"></i> دليل التعامل الاحترافي</button>
             </nav>
-            <div class="pt-8 border-t-2 border-[#ff91a4] text-center">
-                <h3 class="text-sm font-black text-[#1a1a1a] mb-5">تواصل معانا</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <a href="https://facebook.com/BoseSweets" target="_blank" class="flex items-center justify-center gap-2 p-4 bg-[#ffffff] border-2 border-[#ff91a4] text-[#1a1a1a] rounded-2xl font-black text-sm hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="facebook" class="w-4 h-4"></i> فيسبوك</a>
-                    <a href="https://instagram.com/BoseSweets" target="_blank" class="flex items-center justify-center gap-2 p-4 bg-[#ffffff] border-2 border-[#ff91a4] text-[#1a1a1a] rounded-2xl font-black text-sm hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all"><i data-lucide="instagram" class="w-4 h-4"></i> انستجرام</a>
+
+            <div class="pt-6 border-t-2 border-[#ff91a4]/20">
+                <h4 class="text-base font-black text-[#ff91a4] mb-4 px-3 flex items-center gap-2"><i data-lucide="compass" class="w-5 h-5"></i> الوصول السريع للأقسام</h4>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="navigateDirectlyToCat('تورت')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> تورت</button>
+                    <button onclick="navigateDirectlyToCat('جاتوه')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> جاتوه</button>
+                    <button onclick="navigateDirectlyToCat('ميني تورتة')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> ميني تورتة</button>
+                    <button onclick="navigateDirectlyToCat('ريد فيلفت')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> ريد فيلفت</button>
+                    <button onclick="navigateDirectlyToCat('ديسباسيتو')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> ديسباسيتو</button>
+                    <button onclick="navigateDirectlyToCat('سينابون')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> سينابون</button>
+                    <button onclick="navigateDirectlyToCat('دونتس')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> دونتس</button>
+                    <button onclick="navigateDirectlyToCat('كبات سعادة')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> كبات سعادة</button>
+                    <button onclick="navigateDirectlyToCat('بوكس روقان')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> بوكس روقان</button>
+                    <button onclick="navigateDirectlyToCat('قشطوطة')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> قشطوطة</button>
+                    <button onclick="navigateDirectlyToCat('ورد طبيعي')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> ورد طبيعي</button>
+                    <button onclick="navigateDirectlyToCat('كب كيك')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> كب كيك</button>
                 </div>
             </div>
-            <div class="pt-8 border-t-2 border-[#ff91a4] space-y-4">
-                <button onclick="showInfo('about')" class="block w-full text-right font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-colors text-base">عن حلويات بوسي</button>
-                <button onclick="showInfo('privacy')" class="block w-full text-right font-bold text-[#1a1a1a] hover:text-[#ff91a4] transition-colors text-base">سياسة الخصوصية</button>
+
+            <div class="pt-6 border-t-2 border-[#ff91a4]/20">
+                <button id="custom-pwa-install-btn" class="flex items-center justify-center gap-3 text-base font-bold text-[#ffffff] hover:text-[#ff91a4] hover:bg-[#ffffff] transition-all p-4 border-2 border-[#ff91a4] rounded-2xl bg-[#ff91a4] shadow-md btn-interactive w-full mb-6">
+                    <i data-lucide="download" class="w-5 h-5"></i> تثبيت التطبيق الأصلي
+                </button>
             </div>
         </div>
-        <div class="p-6 bg-[#ffffff] border-t-2 border-[#ff91a4] text-center">
-            <p class="text-[12px] font-black text-[#1a1a1a]">حلويات بوسي © 2026</p>
+        <div class="p-4 bg-[#ffffff] border-t-2 border-[#ff91a4]/20 text-center">
+            <p class="text-[12px] font-bold text-[#1a1a1a] opacity-60">حلويات بوسي © <span id="current-year">2026</span></p>
         </div>
     </div>
 
     <div id="cart-sidebar" class="fixed inset-y-0 left-0 w-full md:w-[500px] bg-[#ffffff] -translate-x-full flex flex-col border-r-2 border-[#ff91a4] transition-transform duration-500 z-[10000]">
         
         <div id="cart-step-1" class="flex flex-col h-full bg-[#ffffff]">
-            <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex justify-between items-center">
+            <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex justify-between items-center shadow-sm">
                 <h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter flex items-center gap-3"><i data-lucide="shopping-bag" class="w-6 h-6"></i> السلة</h2>
-                <button onclick="toggleCart(false)" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <button aria-label="إغلاق السلة" onclick="toggleCart(false)" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors btn-interactive"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             
             <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
@@ -356,137 +485,187 @@
             </div>
 
             <div class="p-6 bg-[#ffffff] border-t-2 border-[#ff91a4]">
-                <div class="flex justify-between items-center mb-6 px-4 bg-[#ffffff] border-2 border-[#ff91a4] p-4 rounded-2xl">
-                    <span class="font-black text-[#1a1a1a] text-base">الإجمالي</span>
+                <div class="flex justify-between items-center mb-6 px-4 bg-[#ffffff] border-2 border-[#ff91a4] p-4 rounded-2xl shadow-sm">
+                    <span class="font-bold text-[#1a1a1a] text-base">الإجمالي</span>
                     <span id="cart-total-display" class="text-2xl font-black text-[#ff91a4]">0 ج.م</span>
                 </div>
-                <button onclick="goToCheckout()" class="w-full py-3.5 rounded-2xl text-[#ffffff] font-bold text-lg bg-[#ff91a4] border-2 border-[#ff91a4]">متابعة الطلب</button>
+                <button onclick="goToCheckout()" class="w-full py-4 rounded-2xl text-[#ffffff] font-bold text-lg bg-[#ff91a4] border-2 border-[#ff91a4] hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all btn-interactive shadow-md">متابعة الطلب</button>
             </div>
         </div>
         
         <div id="cart-step-2" class="hidden flex flex-col h-full bg-[#ffffff] animate-fade-in">
-            <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex items-center gap-4">
-                <button onclick="backToCart()" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-transform"><i data-lucide="arrow-right" class="w-5 h-5"></i></button>
+            <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex items-center gap-4 shadow-sm">
+                <button aria-label="الرجوع للسلة" onclick="backToCart()" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-transform btn-interactive"><i data-lucide="arrow-right" class="w-5 h-5"></i></button>
                 <h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter">بيانات الاستلام</h2>
             </div>
             
             <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar text-right">
                 
-                <div class="bg-[#ffffff] p-5 rounded-2xl border-2 border-[#ff91a4]">
-                    <label class="block text-base font-black text-[#1a1a1a] mb-4">طريقة الاستلام <span class="text-[#ff91a4]">*</span></label>
+                <div class="bg-[#ffffff] p-5 rounded-2xl border-2 border-[#ff91a4] shadow-sm">
+                    <label class="block text-base font-bold text-[#1a1a1a] mb-4">طريقة الاستلام <span class="text-[#ff91a4]">*</span></label>
                     <div class="grid grid-cols-2 gap-3">
-                        <label class="relative flex flex-col items-center justify-center p-4 border-2 border-[#ff91a4] rounded-xl cursor-pointer hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all custom-radio-container bg-[#ffffff]">
+                        <label class="relative flex flex-col items-center justify-center p-4 border-2 border-[#ff91a4] rounded-xl cursor-pointer hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all custom-radio-container bg-[#ffffff] btn-interactive">
                             <input type="radio" name="delivery_method" value="delivery" class="absolute opacity-0" checked onchange="toggleDeliveryOptions()">
                             <i data-lucide="truck" class="w-6 h-6 mb-2 text-[#ff91a4] transition-colors"></i>
-                            <span class="font-black text-sm text-[#1a1a1a] transition-colors">توصيل للمنزل</span>
+                            <span class="font-bold text-sm text-[#1a1a1a] transition-colors">توصيل للمنزل</span>
                         </label>
-                        <label class="relative flex flex-col items-center justify-center p-4 border-2 border-[#ff91a4] rounded-xl cursor-pointer hover:bg-[#ff91a4] transition-all custom-radio-container bg-[#ffffff]">
+                        <label class="relative flex flex-col items-center justify-center p-4 border-2 border-[#ff91a4] rounded-xl cursor-pointer hover:bg-[#ff91a4] transition-all custom-radio-container bg-[#ffffff] btn-interactive">
                             <input type="radio" name="delivery_method" value="pickup" class="absolute opacity-0" onchange="toggleDeliveryOptions()">
                             <i data-lucide="store" class="w-6 h-6 mb-2 text-[#ff91a4] transition-colors"></i>
-                            <span class="font-black text-sm text-[#1a1a1a] transition-colors">استلام من الفرع</span>
+                            <span class="font-bold text-sm text-[#1a1a1a] transition-colors">استلام من الفرع</span>
                         </label>
                     </div>
                 </div>
 
-                <div id="pickup-address-box" class="hidden bg-[#ffffff] p-5 rounded-2xl border-2 border-[#ff91a4] text-center animate-fade-in">
+                <div id="pickup-address-box" class="hidden bg-[#ffffff] p-5 rounded-2xl border-2 border-[#ff91a4] text-center animate-fade-in shadow-sm">
                     <div class="w-12 h-12 bg-[#ffffff] border-2 border-[#ff91a4] rounded-full flex items-center justify-center mx-auto mb-3">
                         <i data-lucide="map-pin" class="w-6 h-6 text-[#ff91a4]"></i>
                     </div>
-                    <h3 class="font-black text-[#ff91a4] text-lg mb-2">عنوان الاستلام</h3>
+                    <h3 class="font-bold text-[#ff91a4] text-lg mb-2">عنوان الاستلام</h3>
                     <p class="font-bold text-[#1a1a1a] leading-relaxed text-sm">الكفاح شارع الوحدة المحلية<br>بجوار صيدلية د/ أحمد مجدي وعيادة د/ علي</p>
                 </div>
 
                 <div class="grid grid-cols-1 gap-5">
                     <div class="space-y-2">
-                        <label class="block font-black text-[#1a1a1a] text-sm">الاسم بالكامل</label>
-                        <input type="text" id="cust-name" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] focus:outline-none" placeholder="الاسم بالكامل...">
+                        <label class="block font-bold text-[#1a1a1a] text-sm">الاسم بالكامل</label>
+                        <input type="text" id="cust-name" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#ff91a4]/30 transition-all" placeholder="الاسم بالكامل...">
                     </div>
                     <div class="space-y-2">
-                        <label class="block font-black text-[#1a1a1a] text-sm">رقم الواتساب <span class="text-[#ff91a4]">*</span></label>
-                        <input type="tel" id="cust-phone" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] focus:outline-none" dir="ltr" placeholder="01xxxxxxxxx">
+                        <label class="block font-bold text-[#1a1a1a] text-sm">رقم الواتساب <span class="text-[#ff91a4]">*</span></label>
+                        <input type="tel" id="cust-phone" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] focus:outline-none focus:ring-2 focus:ring-[#ff91a4]/30 transition-all" dir="ltr" placeholder="01xxxxxxxxx">
                     </div>
                 </div>
 
                 <div id="delivery-address-box" class="space-y-5 animate-fade-in">
                     <div class="space-y-2">
-                        <label class="block font-black text-[#1a1a1a] text-sm">منطقة التوصيل <span class="text-[#ff91a4]">*</span></label>
-                        <select id="cust-area" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] outline-none"></select>
+                        <label class="block font-bold text-[#1a1a1a] text-sm">منطقة التوصيل <span class="text-[#ff91a4]">*</span></label>
+                        <select id="cust-area" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] outline-none focus:ring-2 focus:ring-[#ff91a4]/30 transition-all"></select>
                     </div>
                     <div class="space-y-2">
-                        <label class="block font-black text-[#1a1a1a] text-sm">العنوان التفصيلي <span class="text-[#ff91a4]">*</span></label>
-                        <textarea id="cust-address" rows="2" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] resize-none outline-none" placeholder="الشارع، رقم المنزل، علامة مميزة..."></textarea>
+                        <label class="block font-bold text-[#1a1a1a] text-sm">العنوان التفصيلي <span class="text-[#ff91a4]">*</span></label>
+                        <textarea id="cust-address" rows="2" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] resize-none outline-none focus:ring-2 focus:ring-[#ff91a4]/30 transition-all" placeholder="الشارع، رقم المنزل، علامة مميزة..."></textarea>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4 bg-[#ffffff] p-5 rounded-2xl border-2 border-[#ff91a4]">
+                <div class="grid grid-cols-2 gap-4 bg-[#ffffff] p-5 rounded-2xl border-2 border-[#ff91a4] shadow-sm">
                     <div class="space-y-2">
-                        <label class="block font-black text-[#1a1a1a] text-sm">تاريخ الاستلام <span class="text-[#ff91a4]">*</span></label>
-                        <input type="date" id="cust-date" class="w-full p-3 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-sm font-bold text-[#1a1a1a] outline-none">
+                        <label class="block font-bold text-[#1a1a1a] text-sm">تاريخ الاستلام <span class="text-[#ff91a4]">*</span></label>
+                        <input type="date" id="cust-date" class="w-full p-3 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-sm font-bold text-[#1a1a1a] outline-none focus:ring-2 focus:ring-[#ff91a4]/30">
                     </div>
                     <div class="space-y-2">
-                        <label class="block font-black text-[#1a1a1a] text-sm">الوقت <span class="text-[#ff91a4]">*</span></label>
-                        <input type="time" id="cust-time" class="w-full p-3 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-sm font-bold text-[#1a1a1a] outline-none">
+                        <label class="block font-bold text-[#1a1a1a] text-sm">الوقت <span class="text-[#ff91a4]">*</span></label>
+                        <input type="time" id="cust-time" class="w-full p-3 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-sm font-bold text-[#1a1a1a] outline-none focus:ring-2 focus:ring-[#ff91a4]/30">
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <label class="block font-black text-[#1a1a1a] text-sm">ملاحظات إضافية</label>
-                    <textarea id="cust-notes" rows="2" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] resize-none outline-none" placeholder="أي تفاصيل تحب تبلغنا بيها..."></textarea>
+                    <label class="block font-bold text-[#1a1a1a] text-sm">ملاحظات إضافية</label>
+                    <textarea id="cust-notes" rows="2" class="w-full p-4 bg-[#ffffff] border-2 border-[#ff91a4] rounded-xl text-base font-bold text-[#1a1a1a] resize-none outline-none focus:ring-2 focus:ring-[#ff91a4]/30 transition-all" placeholder="أي تفاصيل تحب تبلغنا بيها..."></textarea>
                 </div>
             </div>
             
             <div class="p-6 border-t-2 border-[#ff91a4] bg-[#ffffff]">
-                <button onclick="submitOrderFinal()" class="w-full py-3.5 rounded-2xl text-[#ffffff] font-bold text-lg bg-[#ff91a4] border-2 border-[#ff91a4] flex items-center justify-center gap-2">
+                <button onclick="submitOrderFinal()" class="w-full py-4 rounded-2xl text-[#ffffff] font-bold text-lg bg-[#ff91a4] border-2 border-[#ff91a4] flex items-center justify-center gap-2 hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all btn-interactive shadow-md">
                     <i data-lucide="send" class="w-5 h-5"></i> تأكيد الطلب
                 </button>
             </div>
         </div>
     </div>
 
-    <footer class="bg-[#ffffff] pt-20 pb-10 border-t-2 border-[#ff91a4]">
-        <div class="max-w-7xl mx-auto px-6 text-center md:text-right">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-                <div>
-                    <div class="flex items-center gap-3 justify-center md:justify-start mb-6">
-                        <i data-lucide="cake" class="w-8 h-8 text-[#ff91a4]"></i>
-                        <h3 class="text-3xl font-black text-[#ff91a4] tracking-tighter">حلويات بوسي</h3>
-                    </div>
-                    <p class="text-base font-bold text-[#1a1a1a] leading-relaxed">عقد من التميز في صناعة الحلويات بمركز الفرافرة.</p>
-                </div>
-                <div>
-                    <h4 class="font-black text-[#ff91a4] text-xl mb-6 text-center md:text-right">تواصل معانا</h4>
-                    <p class="text-base font-bold text-[#1a1a1a] mb-4 flex items-center justify-center md:justify-start gap-2">
-                        <i data-lucide="map-pin" class="w-5 h-5 text-[#ff91a4]"></i> الكفاح، الفرافرة، الوادي الجديد
-                    </p>
-                    <p class="text-2xl font-black text-[#ff91a4] tracking-tighter mb-6" dir="ltr">+20 109 723 8441</p>
-                </div>
-                <div>
-                    <h4 class="font-black text-[#ff91a4] text-xl mb-6 text-center md:text-right">روابط سريعة</h4>
-                    <nav class="flex flex-col gap-4 text-base font-bold text-[#1a1a1a] text-center md:text-right">
-                        <button onclick="goToHome()" class="hover:text-[#ff91a4] transition-colors">الرئيسية</button>
-                        <button onclick="switchToMenuView()" class="hover:text-[#ff91a4] transition-colors">المنيو</button>
-                    </nav>
+    <footer class="bg-[#ffffff] pt-24 pb-8 border-t-4 border-[#ff91a4]">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            
+            <div class="flex flex-col items-center justify-center mb-10">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" class="w-20 h-20 rounded-full border-4 border-[#ff91a4] object-cover shadow-lg mb-4" alt="لوجو حلويات بوسي">
+                <h3 class="text-4xl font-black text-[#ff91a4] tracking-tighter mb-4">حلويات بوسي</h3>
+                <p class="text-base font-bold text-[#1a1a1a] leading-relaxed max-w-lg mx-auto">عقد من التميز في صناعة الحلويات. نلتزم بتقديم أرقى مستويات الجودة والمذاق الأصلي في مركز الفرافرة، لتكون مناسباتكم ذكرى لا تُنسى.</p>
+            </div>
+
+            <div class="mb-10">
+                <a href="https://wa.me/201557845766" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 px-10 py-4 bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4] font-bold text-lg rounded-full hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all btn-interactive shadow-lg">
+                    <i data-lucide="headset" class="w-6 h-6"></i> تواصل مع خدمة العملاء
+                </a>
+            </div>
+
+            <div class="flex items-center justify-center gap-4 mb-12">
+                <a href="https://facebook.com/BoseSweets" aria-label="فيسبوك" target="_blank" rel="noopener noreferrer" class="text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all p-3.5 rounded-2xl border-2 border-[#ff91a4] bg-[#ffffff] btn-interactive shadow-sm"><i data-lucide="facebook" class="w-6 h-6"></i></a>
+                <a href="https://instagram.com/BoseSweets" aria-label="انستجرام" target="_blank" rel="noopener noreferrer" class="text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all p-3.5 rounded-2xl border-2 border-[#ff91a4] bg-[#ffffff] btn-interactive shadow-sm"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                <a href="https://youtube.com/@BoseSweets" aria-label="يوتيوب" target="_blank" rel="noopener noreferrer" class="text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all p-3.5 rounded-2xl border-2 border-[#ff91a4] bg-[#ffffff] btn-interactive shadow-sm"><i data-lucide="youtube" class="w-6 h-6"></i></a>
+                <a href="https://tiktok.com/@BoseSweets" aria-label="تيك توك" target="_blank" rel="noopener noreferrer" class="text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all p-3.5 rounded-2xl border-2 border-[#ff91a4] bg-[#ffffff] btn-interactive shadow-sm"><i data-lucide="video" class="w-6 h-6"></i></a>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 mb-12 border-t-2 border-[#ff91a4]/20 pt-10">
+                <button onclick="showInfo('about')" class="link-hover-effect font-bold text-[#1a1a1a] text-sm md:text-base">عن البراند</button>
+                <button onclick="showInfo('refund')" class="link-hover-effect font-bold text-[#1a1a1a] text-sm md:text-base">الاستبدال والاسترجاع</button>
+                <button onclick="showInfo('privacy')" class="link-hover-effect font-bold text-[#1a1a1a] text-sm md:text-base">الخصوصية والأمان</button>
+                <button onclick="showInfo('terms')" class="link-hover-effect font-bold text-[#1a1a1a] text-sm md:text-base">شروط الحجز</button>
+                <button onclick="showGoldenTips()" class="link-hover-effect font-bold text-[#ff91a4] text-sm md:text-base flex items-center gap-1"><i data-lucide="star" class="w-4 h-4"></i> دليل التعامل الاحترافي</button>
+            </div>
+
+            <div class="border-t-2 border-[#ff91a4]/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-[13px] font-bold text-[#1a1a1a] opacity-80">جميع الحقوق محفوظة ومسجلة لـ حلويات بوسي © <span id="current-year-footer">2026</span></p>
+                <div class="flex items-center gap-2 opacity-60">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-[#1a1a1a]"></i>
+                    <span class="text-[12px] font-bold text-[#1a1a1a]">تصفح آمن ومحمي بنسبة 100%</span>
                 </div>
             </div>
-            <div class="border-t-2 border-[#ff91a4] pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-                <p class="text-[12px] font-black text-[#1a1a1a]">جميع الحقوق محفوظة لـ حلويات بوسي © 2026</p>
-                <div class="flex gap-6">
-                    <a href="https://facebook.com/BoseSweets" class="text-[#ff91a4] hover:scale-110 transition-transform"><i data-lucide="facebook" class="w-6 h-6"></i></a>
-                    <a href="https://instagram.com/BoseSweets" class="text-[#ff91a4] hover:scale-110 transition-transform"><i data-lucide="instagram" class="w-6 h-6"></i></a>
-                </div>
-            </div>
+            
         </div>
     </footer>
 
+    <div id="info-modal" class="fixed inset-0 z-[100000] hidden items-center justify-center bg-[#1a1a1a]/60 backdrop-blur-md p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-[#ffffff] rounded-[2.5rem] w-full max-w-lg shadow-2xl overflow-hidden border-2 border-[#ff91a4] scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]">
+            <div class="p-6 border-b-2 border-[#ff91a4]/20 flex justify-between items-center bg-[#ffffff] shrink-0">
+                <button aria-label="إغلاق النافذة" onclick="closeInfo()" class="p-2 bg-[#ffffff] rounded-full text-[#1a1a1a] border-2 border-[#ff91a4]/30 hover:bg-[#ff91a4] hover:text-[#ffffff] btn-interactive"><i data-lucide="x" class="w-5 h-5"></i></button>
+                <h3 id="info-title" class="font-black text-2xl text-[#ff91a4] flex items-center gap-2"></h3>
+            </div>
+            <div class="p-6 sm:p-8 overflow-y-auto custom-scrollbar flex-1 bg-[#ffffff]">
+                <div id="info-body" class="text-[#1a1a1a] font-bold text-base leading-loose"></div>
+            </div>
+            <div class="p-6 border-t-2 border-[#ff91a4]/20 bg-[#ffffff] shrink-0 text-center">
+                <button onclick="closeInfo()" class="w-full py-4 bg-[#ff91a4] text-[#ffffff] font-bold text-lg rounded-2xl hover:bg-[#ffffff] hover:text-[#ff91a4] border-2 border-[#ff91a4] btn-interactive shadow-md flex items-center justify-center gap-2">
+                    إغلاق وتأكيد القراءة <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        lucide.createIcons();
+        if(typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+
+        const currentYearEl = document.getElementById('current-year');
+        const currentYearFooterEl = document.getElementById('current-year-footer');
+        const currentYear = new Date().getFullYear();
+        if(currentYearEl) currentYearEl.innerText = currentYear;
+        if(currentYearFooterEl) currentYearFooterEl.innerText = currentYear;
+
+        window.toggleLiveSearch = function() {
+            const overlay = document.getElementById('search-overlay');
+            const input = document.getElementById('main-search-input');
+            if(overlay) {
+                if (overlay.classList.contains('hidden')) {
+                    overlay.classList.remove('hidden');
+                    overlay.classList.add('flex');
+                    if(input) setTimeout(() => input.focus(), 100);
+                } else {
+                    overlay.classList.add('hidden');
+                    overlay.classList.remove('flex');
+                }
+            }
+        };
 
         window.toggleCart = function(open) {
             const sidebar = document.getElementById('cart-sidebar');
+            const step1 = document.getElementById('cart-step-1');
+            const step2 = document.getElementById('cart-step-2');
+            
             if (sidebar) sidebar.style.transform = open ? 'translateX(0)' : 'translateX(-100%)';
-            if (open) {
-                document.getElementById('cart-step-1').classList.remove('hidden');
-                document.getElementById('cart-step-2').classList.add('hidden');
+            
+            if (open && step1 && step2) {
+                step1.classList.remove('hidden');
+                step2.classList.add('hidden');
                 if(typeof renderSmartSuggestions === 'function') renderSmartSuggestions('cart');
             }
         };
@@ -497,13 +676,21 @@
         };
 
         window.goToCheckout = function() {
-            document.getElementById('cart-step-1').classList.add('hidden');
-            document.getElementById('cart-step-2').classList.remove('hidden');
+            const step1 = document.getElementById('cart-step-1');
+            const step2 = document.getElementById('cart-step-2');
+            if(step1 && step2) {
+                step1.classList.add('hidden');
+                step2.classList.remove('hidden');
+            }
         };
 
         window.backToCart = function() {
-            document.getElementById('cart-step-1').classList.remove('hidden');
-            document.getElementById('cart-step-2').classList.add('hidden');
+            const step1 = document.getElementById('cart-step-1');
+            const step2 = document.getElementById('cart-step-2');
+            if(step1 && step2) {
+                step1.classList.remove('hidden');
+                step2.classList.add('hidden');
+            }
         };
 
         window.toggleDeliveryOptions = function() {
@@ -514,19 +701,23 @@
             const delBox = document.getElementById('delivery-address-box');
             const pickBox = document.getElementById('pickup-address-box');
             
-            if (method === 'pickup') {
-                delBox.classList.add('hidden');
-                pickBox.classList.remove('hidden');
-            } else {
-                delBox.classList.remove('hidden');
-                pickBox.classList.add('hidden');
+            if (delBox && pickBox) {
+                if (method === 'pickup') {
+                    delBox.classList.add('hidden');
+                    pickBox.classList.remove('hidden');
+                } else {
+                    delBox.classList.remove('hidden');
+                    pickBox.classList.add('hidden');
+                }
             }
         };
 
         window.closeGlobalLightbox = function() {
             const lightbox = document.getElementById('global-image-lightbox');
+            const img = document.getElementById('lightbox-main-img');
             if (lightbox) {
                 lightbox.classList.replace('flex', 'hidden');
+                if(img) setTimeout(() => { img.src = ''; }, 300);
             }
         };
 
@@ -541,17 +732,27 @@
 
         window.goToHome = function(e) {
             if(e) e.preventDefault();
-            document.getElementById('view-menu').classList.add('hidden');
-            document.getElementById('view-tips').classList.add('hidden');
-            document.getElementById('view-home').classList.remove('hidden');
+            const viewMenu = document.getElementById('view-menu');
+            const viewTips = document.getElementById('view-tips');
+            const viewHome = document.getElementById('view-home');
+            
+            if(viewMenu) viewMenu.classList.add('hidden');
+            if(viewTips) viewTips.classList.add('hidden');
+            if(viewHome) viewHome.classList.remove('hidden');
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
             if(typeof state !== 'undefined') state.activeCat = 'الرئيسية';
         };
 
         window.switchToMenuView = function() {
-            document.getElementById('view-home').classList.add('hidden');
-            document.getElementById('view-tips').classList.add('hidden');
-            document.getElementById('view-menu').classList.remove('hidden');
+            const viewHome = document.getElementById('view-home');
+            const viewTips = document.getElementById('view-tips');
+            const viewMenu = document.getElementById('view-menu');
+            
+            if(viewHome) viewHome.classList.add('hidden');
+            if(viewTips) viewTips.classList.add('hidden');
+            if(viewMenu) viewMenu.classList.remove('hidden');
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
             if(typeof state !== 'undefined') {
                 if(state.activeCat === 'الرئيسية') {
@@ -562,21 +763,138 @@
             }
         };
 
+        window.navigateDirectlyToCat = function(categoryName) {
+            switchToMenuView();
+            if(typeof state !== 'undefined') state.activeCat = categoryName; 
+            setTimeout(() => {
+                if(typeof renderMainDisplay === 'function') renderMainDisplay();
+                if(typeof renderCategories === 'function') renderCategories();
+            }, 50);
+            toggleSidebarMenu(false); 
+        };
+
         window.showGoldenTips = function() {
-            document.getElementById('view-home').classList.add('hidden');
-            document.getElementById('view-menu').classList.add('hidden');
-            document.getElementById('view-tips').classList.remove('hidden');
+            const viewHome = document.getElementById('view-home');
+            const viewMenu = document.getElementById('view-menu');
+            const viewTips = document.getElementById('view-tips');
+            
+            if(viewHome) viewHome.classList.add('hidden');
+            if(viewMenu) viewMenu.classList.add('hidden');
+            if(viewTips) viewTips.classList.remove('hidden');
+            
             window.scrollTo({ top: 0, behavior: 'smooth' });
             if(typeof renderGoldenTips === 'function') renderGoldenTips();
         };
 
-        window.addEventListener('load', () => {
+        // محرك السياسات المبني تصميماً وهندسياً ليطابق الصور المرفقة
+        window.showInfo = function(type) {
+            const modal = document.getElementById('info-modal');
+            const title = document.getElementById('info-title');
+            const body = document.getElementById('info-body');
+            
+            if(!modal || !title || !body) return;
+            
+            if(type === 'privacy') {
+                title.innerHTML = `سياسة الخصوصية والأمان <i data-lucide="shield" class="w-6 h-6 shrink-0"></i>`;
+                body.innerHTML = `
+                    <div class="flex flex-col gap-6 text-right w-full">
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="check" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">حماية البيانات:</strong> <span class="text-[#1a1a1a]">جميع المعلومات المُدخلة (الاسم، العنوان، رقم الهاتف) يتم تشفيرها واستخدامها حصرياً لإتمام وتوصيل طلبك باحترافية.</span></div>
+                        </div>
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="check" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">سرية تامة:</strong> <span class="text-[#1a1a1a]">نلتزم التزاماً قاطعاً بعدم مشاركة، بيع، أو تداول بياناتك مع أي جهة خارجية أو طرف ثالث تحت أي ظرف.</span></div>
+                        </div>
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="check" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">تواصل هادف:</strong> <span class="text-[#1a1a1a]">تواصلنا معك يقتصر فقط على تأكيد الطلبات، أو إبلاغك بالعروض الحصرية التي تهمك بناءً على موافقتك.</span></div>
+                        </div>
+                    </div>
+                `;
+            } else if(type === 'about') {
+                title.innerHTML = `عن حلويات بوسي <i data-lucide="award" class="w-6 h-6 shrink-0"></i>`;
+                body.innerHTML = `
+                    <div class="flex flex-col gap-6 text-right w-full">
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="crown" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">من نحن:</strong> <span class="text-[#1a1a1a]">حلويات بوسي (BoseSweets) ليست مجرد متجر، بل هي رحلة امتدت لعقد كامل من الشغف والتميز في صناعة الحلويات بمركز الفرافرة.</span></div>
+                        </div>
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="star" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">رؤيتنا:</strong> <span class="text-[#1a1a1a]">تقديم منتجات بمواصفات عالمية وخامات فاخرة تليق بأهم اللحظات والمناسبات السعيدة لعملائنا.</span></div>
+                        </div>
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="heart" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">رسالتنا:</strong> <span class="text-[#1a1a1a]">دمج الاحترافية الهندسية في صناعة الكيك مع الطعم الأصلي الذي يخلق ذكريات لا تُنسى.</span></div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'refund') {
+                title.innerHTML = `سياسة الاسترجاع <i data-lucide="refresh-ccw" class="w-6 h-6 shrink-0"></i>`;
+                body.innerHTML = `
+                    <div class="flex flex-col gap-6 text-right w-full">
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="search" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">الفحص الفوري:</strong> <span class="text-[#1a1a1a]">يُرجى فحص الطلب والتأكد من مطابقته تماماً للمواصفات وقت الاستلام المباشر (داخل الفرع أو من مندوب التوصيل).</span></div>
+                        </div>
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="x-circle" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">الاسترجاع مغلق:</strong> <span class="text-[#1a1a1a]">بمجرد الاستلام النهائي ومغادرة الفرع أو مغادرة المندوب، نعتذر بشكل قاطع عن قبول أي طلبات استرجاع أو استبدال للحفاظ على معايير الصحة والسلامة.</span></div>
+                        </div>
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="check-circle" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">التعامل مع الملاحظات:</strong> <span class="text-[#1a1a1a]">في حال وجود أي خطأ جوهري من طرفنا (قبل استلامك النهائي)، سيتم معالجة الأمر فوراً باحترافية وبما يرضيك تماماً.</span></div>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'terms') {
+                title.innerHTML = `شروط وأحكام الحجز <i data-lucide="file-text" class="w-6 h-6 shrink-0"></i>`;
+                body.innerHTML = `
+                    <div class="flex flex-col gap-6 text-right w-full">
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="clock" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">وقت الحجز:</strong> <span class="text-[#1a1a1a]">أوردرات التورت الخاصة وطلبات المناسبات الكبرى يجب تأكيدها قبل الموعد بـ 48 ساعة على الأقل.</span></div>
+                        </div>
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="edit-3" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">تعديل التصميم:</strong> <span class="text-[#1a1a1a]">يُسمح بتعديل مواصفات التصميم أو النكهات قبل موعد التسليم بـ 24 ساعة كحد أقصى. لن نتمكن من قبول تعديلات بعد بدء التنفيذ الفعلي.</span></div>
+                        </div>
+                        <div class="flex flex-row-reverse items-start gap-3 w-full">
+                            <div class="shrink-0 mt-1"><i data-lucide="calendar-check" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                            <div class="flex-1"><strong class="text-[#1a1a1a]">تأكيد الموعد:</strong> <span class="text-[#1a1a1a]">الالتزام بموعد الاستلام المُتفق عليه يضمن لك استلام المنتج في أفضل حالة.</span></div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if(typeof lucide !== 'undefined') lucide.createIcons();
+            
+            modal.classList.replace('hidden', 'flex');
             setTimeout(() => {
-                const loader = document.getElementById('global-loader');
-                if(loader) {
+                modal.classList.remove('opacity-0');
+                if(modal.firstElementChild) modal.firstElementChild.classList.remove('scale-95');
+            }, 10);
+            toggleSidebarMenu(false);
+        };
+
+        window.closeInfo = function() {
+            const modal = document.getElementById('info-modal');
+            if(modal) {
+                modal.classList.add('opacity-0');
+                if(modal.firstElementChild) modal.firstElementChild.classList.add('scale-95');
+                setTimeout(() => modal.classList.replace('flex', 'hidden'), 300);
+            }
+        };
+
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('global-loader');
+            if(loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => {
                     loader.style.display = 'none';
-                }
-            }, 600);
+                }, 700); 
+            }
         });
     </script>
 
@@ -584,6 +902,8 @@
         // هندسة حالة الشبكة
         const networkBanner = document.getElementById('network-status-banner');
         function updateNetworkStatus() {
+            if(!networkBanner) return;
+            
             if (navigator.onLine) {
                 networkBanner.style.transform = 'translateY(-100%)';
                 setTimeout(() => networkBanner.classList.add('hidden'), 300);
@@ -596,13 +916,12 @@
         window.addEventListener('offline', updateNetworkStatus);
         if (!navigator.onLine) updateNetworkStatus();
 
-        // 👑 محرك التثبيت الشامل والحاسم المطور (Native PWA Trigger)
+        // 👑 محرك التثبيت
         const installBtn = document.getElementById('custom-pwa-install-btn');
 
         if (installBtn) {
             installBtn.addEventListener('click', async () => {
                 if (window.deferredInstallPrompt) {
-                    // الاعتماد المباشر للتثبيت المستقل (WebAPK)
                     window.deferredInstallPrompt.prompt();
                     const { outcome } = await window.deferredInstallPrompt.userChoice;
                     if (outcome === 'accepted') {
@@ -611,7 +930,6 @@
                     }
                     window.deferredInstallPrompt = null;
                 } else {
-                    // الدعم اليدوي في حال نظام iOS أو تجاوز المتصفح للإشارة
                     const promptModal = document.getElementById('ios-install-prompt');
                     if (promptModal) {
                         const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
@@ -621,10 +939,10 @@
                         if (!isIos && step1Text && step1Icon) {
                             step1Text.innerHTML = 'اضغط على علامة الثلاث نقاط بالمتصفح.';
                             step1Icon.setAttribute('data-lucide', 'more-vertical');
-                            lucide.createIcons();
+                            if(typeof lucide !== 'undefined') lucide.createIcons();
                         } else if (isIos && step1Text && step1Icon) {
                             step1Text.innerHTML = 'اضغط على زر المشاركة <i data-lucide="share" class="w-4 h-4 inline text-[#ff91a4]"></i> أسفل الشاشة.';
-                            lucide.createIcons();
+                            if(typeof lucide !== 'undefined') lucide.createIcons();
                         }
                         
                         promptModal.classList.replace('hidden', 'flex');
@@ -647,7 +965,6 @@
         };
     </script>
 
-    <!-- منظومة المحركات السيادية (Sovereign Scripts Engine) -->
     <script src="firebase-config.js"></script>
     <script type="module" src="config.js"></script>
     <script type="module" src="utils.js"></script>
@@ -658,7 +975,6 @@
     <script type="module" src="cart.js"></script>
     <script type="module" src="app.js"></script>
     
-    <!-- تسجيل عامل الخدمة (Service Worker) لدعم التصفح دون اتصال -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {

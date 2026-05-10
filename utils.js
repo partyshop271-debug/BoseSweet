@@ -1,6 +1,12 @@
 /**
- * 👑 المحرك المساعد والتقنيات السيادية - حلويات بوسي (نسخة التوسيع الشامل والمطور)
- * يتضمن: تفويض الأحداث، المزامنة الذكية المتقدمة، والتحليل السلوكي الصامت
+ * 👑 المحرك المساعد والتقنيات السيادية (V26.0 - Sovereign Iron-Clad Edition)
+ * الإدارة المرجعية: حلويات بوسي
+ * يتضمن: تفويض الأحداث المحكم، المزامنة الذكية المتقدمة، التحليل السلوكي الصامت، وتأكيد الهوية البصرية.
+ * * الترقيات الحالية:
+ * - معالجة التضارب البرمجي الجسيم ودمج النسخ لضمان استقرار العمليات.
+ * - إتاحة الدوال على المستوى الشامل (Global Window) لضمان عدم تعطل واجهات العميل.
+ * - تفعيل نظام الرصد الصامت لحماية تجربة العميل وإبلاغ الإدارة فوراً بأي خلل تقني.
+ * - تطبيق حاسم وصارم للألوان المعتمدة (البامبي والأبيض) في الإشعارات السيادية.
  */
 
 export const MemoryManager = {
@@ -11,7 +17,7 @@ export const MemoryManager = {
             try {
                 callback();
             } catch (e) {
-                console.error(`[BoseSweets Engine] MemoryManager Execution Error (${key}):`, e);
+                console.error(`BoseSweets Engine: خطأ معزول في مدير الذاكرة للعملية (${key}):`, e);
             }
             delete this.timers[key];
         }, delay);
@@ -72,39 +78,46 @@ export function generateSecureOrderId() {
 }
 
 export function showSystemToast(message, type = 'info') {
-    const toast = document.getElementById('system-toast');
-    if(!toast) return;
-    const msgEl = document.getElementById('toast-message');
-    const iconEl = document.getElementById('toast-icon');
-    msgEl.innerText = message;
-    
-    // تطبيق الهوية البصرية الصارمة (بامبي وأبيض فقط) وإزالة الألوان الدخيلة
-    let bgColor = 'bg-[#ffffff] text-[#ff91a4] border-2 border-[#ff91a4]';
-    let iconColor = '#ff91a4';
+    try {
+        const toast = document.getElementById('system-toast');
+        if(!toast) return;
+        const msgEl = document.getElementById('toast-message');
+        const iconEl = document.getElementById('toast-icon');
+        msgEl.innerText = message;
+        
+        // تطبيق حاسم وصارم للهوية البصرية لعلامة حلويات بوسي (بامبي وأبيض فقط)
+        let bgColor = 'bg-[#ffffff] text-[#ff91a4] border-2 border-[#ff91a4]';
+        let iconColor = '#ff91a4';
 
-    if(type === 'error') {
-        bgColor = 'bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4]';
-        iconColor = '#ffffff';
-    } else if(type === 'success') {
-        bgColor = 'bg-[#ffffff] text-[#ff91a4] border-2 border-[#ff91a4]';
-        iconColor = '#ff91a4';
+        if(type === 'error') {
+            bgColor = 'bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4]';
+            iconColor = '#ffffff';
+        } else if(type === 'success') {
+            bgColor = 'bg-[#ffffff] text-[#ff91a4] border-2 border-[#ff91a4]';
+            iconColor = '#ff91a4';
+        }
+
+        // تصميم متجاوب ليتناسب مع الموبايل والكمبيوتر باحترافية
+        toast.className = `fixed top-24 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-4 px-8 py-4 rounded-[2.5rem] shadow-2xl font-bold text-sm max-w-[90vw] text-center animate-fade-in ${bgColor}`;
+        iconEl.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : (type === 'success' ? 'check-circle' : 'info'));
+        iconEl.style.color = iconColor;
+        
+        if(window.lucide) lucide.createIcons();
+        
+        MemoryManager.set('toast_timer', () => {
+            if (toast) {
+                toast.classList.replace('flex', 'hidden'); 
+                toast.classList.remove('animate-fade-in');
+            }
+        }, 4000);
+    } catch (error) {
+        console.warn("BoseSweets: نظام الإشعارات غير متوفر في الواجهة الحالية.");
     }
-
-    toast.className = `fixed top-24 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-4 px-8 py-4 rounded-[2.5rem] shadow-2xl font-bold text-sm max-w-[90vw] text-center animate-fade-in ${bgColor}`;
-    iconEl.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : (type === 'success' ? 'check-circle' : 'info'));
-    iconEl.style.color = iconColor;
-    
-    if(window.lucide) lucide.createIcons();
-    
-    MemoryManager.set('toast_timer', () => {
-        toast.classList.replace('flex', 'hidden'); 
-        toast.classList.remove('animate-fade-in');
-    }, 4000);
 }
 
 export async function compressImageClientSide(file) {
     return new Promise((resolve, reject) => {
-        if (!file) return reject("No file provided");
+        if (!file) return reject("لم يتم تقديم أي ملف للضغط.");
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = (event) => {
@@ -124,13 +137,13 @@ export async function compressImageClientSide(file) {
                 ctx.drawImage(img, 0, 0, width, height);
                 resolve(canvas.toDataURL('image/jpeg', 0.8));
             };
-            img.onerror = () => reject("Image loading failed");
+            img.onerror = () => reject("فشل تحميل الصورة في محرك الضغط.");
         };
-        reader.onerror = () => reject("File reading failed");
+        reader.onerror = () => reject("فشل قراءة الملف.");
     });
 }
 
-// 👑 إضافة 1: محرك التحليل السلوكي الصامت لتخصيص تجربة العميل
+// 👑 محرك التحليل السلوكي الصامت لتخصيص تجربة العميل بصمت وبدون أي إعاقة للسرعة
 export const BehavioralAnalytics = {
     trackCategoryClick(categoryName) {
         try {
@@ -138,7 +151,8 @@ export const BehavioralAnalytics = {
             prefs[categoryName] = (prefs[categoryName] || 0) + 1;
             localStorage.setItem('boseSweets_behavior', JSON.stringify(prefs));
         } catch(e) {
-            // صمت متعمد لعدم إزعاج المستخدم في حال فشل التخزين المحلي
+            // صمت متعمد لعدم إزعاج المستخدم في حال امتلاء التخزين المحلي
+            console.warn("BoseSweets Analytics: تعذر تحديث السجل السلوكي بشكل مؤقت.");
         }
     },
     getTopPreferences() {
@@ -149,7 +163,7 @@ export const BehavioralAnalytics = {
     }
 };
 
-// 👑 إضافة 2: محرك المزامنة الذكية للطلبات (Exponential Backoff & Offline Queue)
+// 👑 محرك المزامنة الذكية للطلبات (Exponential Backoff & Offline Queue) مدعوم ضد الانقطاع
 export const AdvancedNetworkEngine = {
     async syncWithRetry(dbStore, dataPayload, maxRetries = 5, currentRetry = 0) {
         if (!navigator.onLine) {
@@ -162,6 +176,9 @@ export const AdvancedNetworkEngine = {
             if (db) {
                 await db.collection(dbStore).doc(String(dataPayload.id)).set(dataPayload);
                 this.removeFromOfflineQueue(dataPayload.id);
+                console.log(`BoseSweets Sync 👑: المزامنة الآمنة للمحرك المتقدم تمت بنجاح [${dbStore}].`);
+            } else {
+                throw new Error("تأخير في تحميل قاعدة البيانات السحابية.");
             }
         } catch (error) {
             this.saveToOfflineQueue(dbStore, dataPayload);
@@ -169,7 +186,10 @@ export const AdvancedNetworkEngine = {
         }
     },
     scheduleRetry(dbStore, dataPayload, maxRetries, currentRetry) {
-        if (currentRetry >= maxRetries) return;
+        if (currentRetry >= maxRetries) {
+            console.warn(`BoseSweets Sync: استنفاذ محاولات المزامنة للعملية، سيتم الاعتماد على طابور الطوارئ.`);
+            return;
+        }
         const delay = Math.pow(2, currentRetry) * 1000; 
         setTimeout(() => {
             this.syncWithRetry(dbStore, dataPayload, maxRetries, currentRetry + 1);
@@ -183,7 +203,9 @@ export const AdvancedNetworkEngine = {
                 queue.push({ dbStore, payload: dataPayload, timestamp: Date.now() });
                 localStorage.setItem('boseSweets_offline_queue', JSON.stringify(queue));
             }
-        } catch(e) {}
+        } catch(e) {
+            console.error("BoseSweets Sync Error: تعذر الحفظ في طابور المزامنة الذكي.");
+        }
     },
     removeFromOfflineQueue(id) {
         try {
@@ -194,15 +216,31 @@ export const AdvancedNetworkEngine = {
     }
 };
 
-window.addEventListener('error', function(e) {
-    const isAdmin = window.location.pathname.includes('admin') || document.title.includes('الإدارة');
-    if (isAdmin && typeof showSystemToast === 'function') {
-        showSystemToast(`تنبيه للإدارة: عطل في السطر ${e.lineno} - ${e.message}`, 'error');
-    }
-});
-window.addEventListener('unhandledrejection', function(e) {
-    const isAdmin = window.location.pathname.includes('admin') || document.title.includes('الإدارة');
-    if (isAdmin && typeof showSystemToast === 'function') {
-        showSystemToast(`تنبيه للإدارة: تأخير أو فشل مؤقت في الشبكة، المحرك يحاول المزامنة.`, 'error');
-    }
-});
+// أنظمة الرصد الإداري المتقدم (تظهر للإدارة فقط ولا تعيق تجربة العميل)
+if (typeof window !== 'undefined') {
+    window.addEventListener('error', function(e) {
+        const isAdmin = window.location.pathname.includes('admin') || document.title.includes('الإدارة');
+        if (isAdmin && typeof showSystemToast === 'function') {
+            showSystemToast(`تنبيه تقني سيادي: تم رصد تعارض في السطر ${e.lineno} - ${e.message}`, 'error');
+        }
+    });
+    
+    window.addEventListener('unhandledrejection', function(e) {
+        const isAdmin = window.location.pathname.includes('admin') || document.title.includes('الإدارة');
+        if (isAdmin && typeof showSystemToast === 'function') {
+            showSystemToast(`تنبيه للإدارة: تأخير أو فشل مؤقت في الشبكة، محرك حلويات بوسي يحاول المزامنة.`, 'error');
+        }
+    });
+
+    // 🛡️ التوافقية المطلقة: ربط كل الدوال بالواجهة لتكون متاحة لأي استدعاء مباشر من ملفات الـ HTML
+    window.MemoryManager = MemoryManager;
+    window.hexToMathHSL = hexToMathHSL;
+    window.escapeHTML = escapeHTML;
+    window.generateUniqueID = generateUniqueID;
+    window.optimizeCloudinaryUrl = optimizeCloudinaryUrl;
+    window.generateSecureOrderId = generateSecureOrderId;
+    window.showSystemToast = showSystemToast;
+    window.compressImageClientSide = compressImageClientSide;
+    window.BehavioralAnalytics = BehavioralAnalytics;
+    window.AdvancedNetworkEngine = AdvancedNetworkEngine;
+}
