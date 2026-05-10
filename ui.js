@@ -1,8 +1,8 @@
 /**
- * 👑 BoseSweets UI Engine (V21.0 - Sovereign Display Edition)
+ * 👑 BoseSweets UI Engine (V21.1 - Sovereign Display Edition)
  * محرك العرض والواجهات السيادي - حلويات بوسي
  * تم التطوير لضمان ثبات الواجهات، استقرار الشلال والأقسام، ومنع الاختفاء الفني للمكونات.
- * القرار المهني: تم تأمين كافة عمليات الإدراج (DOM) بحواجز حماية لضمان عدم توقف الموقع.
+ * القرار المهني: تم تأمين كافة عمليات الإدراج (DOM) بحواجز حماية لضمان عدم توقف الموقع، وتم توحيد بروتوكولات التوجيه.
  */
 
 import { detailedDescriptions, dSizes, fTypes } from './config.js';
@@ -70,11 +70,11 @@ window.getCapsuleDescription = getCapsuleDescription;
 
 export const showHomeView = function() {
     try {
-        ['view-menu', 'view-tips', 'view-cake-builder', 'view-product-details'].forEach(id => {
+        ['view-menu', 'view-tips', 'view-cake-builder', 'view-product-details', 'menu-view', 'product-details-view'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.classList.add('hidden');
         });
-        const vHome = document.getElementById('view-home'); 
+        const vHome = document.getElementById('view-home') || document.getElementById('home-view'); 
         if(vHome) {
             vHome.classList.remove('hidden');
             vHome.style.display = 'block'; // تأمين الظهور
@@ -88,14 +88,20 @@ window.showHomeView = showHomeView;
 
 export const showMenuView = function() {
     try {
-        ['view-home', 'view-tips', 'view-cake-builder', 'view-product-details'].forEach(id => {
+        ['view-home', 'view-tips', 'view-cake-builder', 'view-product-details', 'home-view', 'product-details-view'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.classList.add('hidden');
         });
-        const vMenu = document.getElementById('view-menu'); 
+        const vMenu = document.getElementById('view-menu') || document.getElementById('menu-view'); 
         if(vMenu) {
             vMenu.classList.remove('hidden');
             vMenu.style.display = 'block'; // تأمين الظهور
+        }
+        
+        // إجبار النظام على وضع العمودين لضمان الراحة البصرية
+        const menuGrid = document.getElementById('menu-grid-container');
+        if(menuGrid) {
+            menuGrid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 pb-24';
         }
         
         if(window.switchCategory) window.switchCategory('all');
@@ -106,7 +112,7 @@ window.showMenuView = showMenuView;
 
 export const showGoldenTips = function() {
     try {
-        ['view-home', 'view-menu', 'view-cake-builder', 'view-product-details'].forEach(id => {
+        ['view-home', 'view-menu', 'view-cake-builder', 'view-product-details', 'home-view', 'menu-view', 'product-details-view'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.classList.add('hidden');
         });
@@ -122,7 +128,7 @@ window.showGoldenTips = showGoldenTips;
 
 export const showCakeBuilderView = function() {
     try {
-        ['view-home', 'view-menu', 'view-tips', 'view-product-details'].forEach(id => {
+        ['view-home', 'view-menu', 'view-tips', 'view-product-details', 'home-view', 'menu-view', 'product-details-view'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.classList.add('hidden');
         });
@@ -206,13 +212,13 @@ export const renderTicker = function() {
 window.renderTicker = renderTicker;
 
 export const loadLiveReviews = async function(productId) {
-    const reviewsContainer = document.getElementById(`reviews-list-${productId}`);
+    const reviewsContainer = document.getElementById(`reviews-list-${productId}`) || document.getElementById('product-reviews-container');
     if (!reviewsContainer || typeof db === 'undefined') return;
 
     try {
         const snapshot = await db.collection('catalog').doc(String(productId)).collection('livereviews').where('isApproved', '==', true).orderBy('timestamp', 'desc').limit(10).get();
         if (snapshot.empty) {
-            reviewsContainer.innerHTML = '<p class="text-xs text-[#1a1a1a] font-bold text-center py-4">كن أول من يشارك تجربته مع الصنف ده... </p>';
+            reviewsContainer.innerHTML = '<p class="text-xs text-[#1a1a1a] font-bold text-center py-4 w-full">كن أول من يشارك تجربته مع الصنف ده... </p>';
             return;
         }
         reviewsContainer.innerHTML = snapshot.docs.map(doc => {
@@ -415,7 +421,7 @@ export const initWaterfall = function() {
     }
 
     const buildCardHTML = (item) => {
-        const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://via.placeholder.com/400x400/ffffff/ff91a4.png?text=BoseSweets';
+        const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
         let rawImageUrl = defaultFallbackImage;
         if (item.images && item.images.length > 0 && item.images[0] && String(item.images[0]).trim() !== '') {
             rawImageUrl = item.images[0];
@@ -472,7 +478,7 @@ export const initHomepageSections = function() {
     }
 
     let dynContainer = document.getElementById('dynamic-sections-container');
-    const homeView = document.getElementById('view-home');
+    const homeView = document.getElementById('view-home') || document.getElementById('home-view');
     
     if (homeView && siteSettings.dynamicSections && siteSettings.dynamicSections.length > 0) {
         if (!dynContainer) {
@@ -727,107 +733,156 @@ export const renderMainDisplay = function() {
 };
 window.renderMainDisplay = renderMainDisplay;
 
-export const navigateToProduct = function(productId) {
-    const prod = catalog.find(p => String(p.id) === String(productId));
-    if (!prod) return;
+/**
+ * 👑 محرك بناء صفحة تفاصيل المنتج (Product Details Architecture المدمج والمحدث)
+ * يبني الهيكل المطلوب حرفياً ويتوافق تماماً مع نظام التوجيه السيادي
+ */
+export const showProductDetails = function(productId) {
+    const safeId = String(productId);
+    const product = (window.catalogMap && typeof window.catalogMap.get === 'function') 
+                    ? window.catalogMap.get(safeId) 
+                    : catalog.find(p => String(p.id) === safeId);
     
+    if (!product) {
+        if(typeof window.showSystemToast === 'function') window.showSystemToast('نأسف لحضرتك، بيانات هذا المنتج قيد التحديث.', 'error');
+        return;
+    }
+
     try {
         let userPrefs = JSON.parse(localStorage.getItem('bose_user_prefs')) || {};
-        userPrefs[prod.category] = (userPrefs[prod.category] || 0) + 1;
+        userPrefs[product.category] = (userPrefs[product.category] || 0) + 1;
         localStorage.setItem('bose_user_prefs', JSON.stringify(userPrefs));
     } catch(e) {}
 
-    ['view-home', 'view-menu', 'view-tips', 'view-cake-builder'].forEach(id => {
+    const detailsContainer = document.getElementById('single-product-container') || document.getElementById('product-details-content');
+    if (!detailsContainer) return;
+
+    // إخفاء الواجهات الأساسية وإظهار واجهة التفاصيل
+    ['view-home', 'view-menu', 'view-tips', 'view-cake-builder', 'home-view', 'menu-view'].forEach(id => {
         const el = document.getElementById(id);
         if(el) el.classList.add('hidden');
     });
     
-    const container = document.getElementById('single-product-container');
-    if (!container) return;
-    
-    const isOutOfStock = prod.inStock === false || prod.isActive === false;
-    
-    const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://via.placeholder.com/400x400/ffffff/ff91a4.png?text=BoseSweets';
+    const vProd = document.getElementById('view-product-details') || document.getElementById('product-details-view'); 
+    if(vProd) {
+        vProd.classList.remove('hidden');
+        vProd.style.display = 'block';
+    }
+
+    const isOutOfStock = product.inStock === false || product.isActive === false;
+    const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
     let rawImageUrl = defaultFallbackImage;
-    if (prod.images && prod.images.length > 0 && prod.images[0] && String(prod.images[0]).trim() !== '') {
-        rawImageUrl = prod.images[0];
-    } else if (prod.img && String(prod.img).trim() !== '') {
-        rawImageUrl = prod.img;
+    if (product.images && product.images.length > 0 && product.images[0] && String(product.images[0]).trim() !== '') {
+        rawImageUrl = product.images[0];
+    } else if (product.img && String(product.img).trim() !== '') {
+        rawImageUrl = product.img;
     } else if (typeof window.getImgFallback === 'function') {
-        rawImageUrl = window.getImgFallback(prod.category) || defaultFallbackImage;
+        rawImageUrl = window.getImgFallback(product.category) || defaultFallbackImage;
     }
     const imageUrl = optimizeCloudinaryUrl(rawImageUrl);
 
     let imagesGalleryHtml = '';
-    if (prod.images && prod.images.length > 1) {
+    if (product.images && product.images.length > 1) {
         imagesGalleryHtml = `<div class="flex gap-2 mt-4 overflow-x-auto hide-scrollbar pb-2">
-            ${prod.images.map(img => `<img src="${optimizeCloudinaryUrl(img)}" onclick="document.getElementById('main-prod-img-${prod.id}').src='${optimizeCloudinaryUrl(img)}'" class="w-16 h-16 rounded-xl object-cover border-2 border-[var(--brand-primary)] cursor-pointer hover:opacity-80 transition-opacity">`).join('')}
+            ${product.images.map(img => `<img src="${optimizeCloudinaryUrl(img)}" onclick="document.getElementById('main-prod-img-${product.id}').src='${optimizeCloudinaryUrl(img)}'" class="w-16 h-16 rounded-xl object-cover border-2 border-[var(--brand-primary)] cursor-pointer hover:opacity-80 transition-opacity">`).join('')}
         </div>`;
     }
-    
-    container.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start bg-[#ffffff] p-6 rounded-[2.5rem] border-2 border-[var(--brand-primary)] shadow-sm max-w-4xl mx-auto">
-            <div class="flex flex-col">
-                <div class="rounded-2xl overflow-hidden bg-[#ffffff] border-2 border-[var(--brand-primary)] h-64 md:h-[350px] relative" onclick="openGlobalLightbox(document.getElementById('main-prod-img-${prod.id}').src)">
-                    <img id="main-prod-img-${prod.id}" src="${imageUrl}" class="w-full h-full object-contain cursor-pointer transition-transform duration-300 hover:scale-105 ${isOutOfStock ? 'grayscale opacity-60' : ''}" alt="صنف ${escapeHTML(prod.name)} من قسم ${escapeHTML(prod.category)} - حلويات بوسي" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(prod.category)}');">
+
+    // هندسة وبناء شجرة العناصر (DOM) بأسلوب راقي ومريح بصرياً
+    detailsContainer.innerHTML = `
+        <div class="max-w-4xl mx-auto space-y-8 animate-fade-in pb-20">
+            
+            <button onclick="window.showMenuView()" class="flex items-center gap-2 text-[var(--site-text)] font-bold hover:text-[var(--brand-primary)] transition-colors bg-[#ffffff] border-2 border-[var(--brand-primary)] px-4 py-2 rounded-xl shadow-sm">
+                <i data-lucide="arrow-right" class="w-5 h-5"></i> العودة للمنيو
+            </button>
+
+            <div class="text-center space-y-4 px-4">
+                <h1 class="text-3xl md:text-4xl font-black text-[var(--site-text)] tracking-tight">${escapeHTML(product.name)}</h1>
+                ${product.desc || getFinalDescription(product) ? `<p class="text-sm md:text-base text-[var(--site-text)] font-bold leading-relaxed max-w-2xl mx-auto">${escapeHTML(product.desc || getFinalDescription(product))}</p>` : ''}
+            </div>
+
+            <div class="bg-[#ffffff] rounded-[2rem] shadow-xl border-2 border-[var(--brand-primary)] overflow-hidden flex flex-col md:flex-row">
+                <div class="md:w-1/2 relative h-72 md:h-auto border-b-2 md:border-b-0 md:border-l-2 border-[var(--brand-primary)]" onclick="window.openGlobalLightbox(document.getElementById('main-prod-img-${product.id}').src)">
+                    <img id="main-prod-img-${product.id}" src="${imageUrl}" alt="${escapeHTML(product.name)}" class="w-full h-full object-cover cursor-pointer hover:scale-105 transition-transform duration-300 ${isOutOfStock ? 'grayscale opacity-60' : ''}">
+                    ${product.badge ? `<span class="absolute top-4 right-4 bg-[var(--brand-primary)] text-[#ffffff] text-[10px] font-black px-3 py-1.5 rounded-lg shadow-md border border-[#ffffff]">${escapeHTML(product.badge)}</span>` : ''}
                     ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/40 flex items-center justify-center"><span class="bg-[var(--brand-primary)] text-[#ffffff] px-4 py-2 rounded-xl text-xs font-bold shadow border-2 border-[#ffffff]">نفدت الكمية</span></div>` : ''}
                 </div>
-                ${imagesGalleryHtml}
-            </div>
-            <div class="space-y-4 text-right flex flex-col h-full justify-between">
-                <div class="space-y-2">
-                    <span class="inline-block px-3 py-1 bg-[#ffffff] border-2 border-[var(--brand-primary)] text-[var(--brand-primary)] rounded-md text-[11px] font-bold">${escapeHTML(prod.category)}</span>
-                    <h2 class="text-xl font-black text-[var(--site-text)]">${escapeHTML(prod.name)}</h2>
-                    <p class="text-[var(--site-text)] text-xs leading-relaxed font-bold">${escapeHTML(prod.desc || getFinalDescription(prod))}</p>
-                </div>
-                <div class="pt-4 border-t-2 border-[var(--brand-primary)] space-y-4">
-                    <div class="flex justify-between items-center bg-[#ffffff] border-2 border-[var(--brand-primary)] p-4 rounded-xl">
-                        <span class="text-xs font-bold text-[var(--site-text)]">السعر:</span>
-                        <span class="text-xl font-black text-[var(--brand-primary)]">${prod.price > 0 ? prod.price + ' ج.م' : 'حسب الطلب'}</span>
+                
+                <div class="p-6 md:p-8 md:w-1/2 flex flex-col justify-center space-y-6 bg-gradient-to-b from-[#ffffff] to-[#ffffff]/90">
+                    <div>
+                        <h3 class="text-sm font-black text-[var(--brand-primary)] uppercase tracking-widest mb-2">التفاصيل الفنية</h3>
+                        <p class="text-xs text-[var(--site-text)] font-bold leading-relaxed">${product.category === 'ديسباسيتو' ? 'قاعدة فادج كيك غنية متوجة بأفضل الصوصات.' : (product.category === 'سينابون' ? 'عجينة خميرة طبيعية قطنية مخبوزة بعناية فائقة.' : 'أجود المكونات المختارة بعناية لضمان تجربة تذوق راقية ومرضية ذوقاً وحجماً.')}</p>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="window.setCategory('${prod.category}')" class="px-4 py-3 bg-[#ffffff] text-[var(--site-text)] rounded-full font-bold text-xs active:scale-95 transition-all border-2 border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]">العودة للمنيو</button>
-                        ${isOutOfStock ? 
-                            `<button class="flex-1 py-3 bg-[#ffffff] text-[var(--site-text)] rounded-full font-black text-xs cursor-not-allowed text-center border-2 border-[var(--brand-primary)]">غير متوفر حالياً</button>` : 
-                            `<button onclick="window.addWithQtyContext(this, '${prod.id}')" class="flex-1 py-3 bg-[var(--brand-primary)] text-[#ffffff] border-2 border-[var(--brand-primary)] rounded-full font-black text-xs text-center shadow-md hover:bg-[#ffffff] hover:text-[var(--brand-primary)]">إضافة للسلة 🛍️</button>`
-                        }
-                    </div>
-                </div>
-                <div class="pt-6 mt-4 border-t-2 border-[var(--brand-primary)] w-full">
-                    <h3 class="font-black text-[var(--site-text)] text-sm mb-4 flex items-center gap-2"><i data-lucide="star" class="w-4 h-4 text-[var(--brand-primary)]"></i> آراء عملاء بوسي</h3>
-                    <div id="reviews-list-${prod.id}" class="space-y-3 min-h-[50px]">
-                        <p class="text-xs text-[var(--site-text)] font-bold text-center py-4">جاري تحميل الآراء...</p>
-                    </div>
-                    <div class="mt-6 bg-[#ffffff] p-4 rounded-[2rem] border-2 border-[var(--brand-primary)]">
-                        <h4 class="font-black text-[var(--site-text)] text-xs mb-3 flex items-center gap-1.5"><i data-lucide="edit-3" class="w-4 h-4 text-[var(--brand-primary)]"></i> رأيك بيفرق معانا.. شاركنا تجربتك مع طعم حلويات بوسي</h4>
-                        <div class="space-y-3">
-                            <input type="text" id="review-cust-name-${prod.id}" placeholder="الاسم..." class="w-full p-3 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl text-xs font-bold focus:outline-none text-[var(--site-text)]">
-                            <textarea id="review-cust-comment-${prod.id}" rows="2" placeholder="رأيك في الطعم والجودة..." class="w-full p-3 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl text-xs font-bold focus:outline-none text-[var(--site-text)] resize-none"></textarea>
-                            <div class="flex justify-between items-center bg-[#ffffff] p-2 rounded-xl border-2 border-[var(--brand-primary)]">
-                                <span class="text-[10px] font-bold text-[var(--site-text)]">التقييم:</span>
-                                <select id="review-cust-rating-${prod.id}" class="text-xs font-black text-[var(--brand-primary)] bg-transparent focus:outline-none border-none">
-                                    <option value="5">⭐⭐⭐⭐⭐ (ممتاز)</option>
-                                    <option value="4">⭐⭐⭐⭐ (جيد جداً)</option>
-                                    <option value="3">⭐⭐⭐ (متوسط)</option>
-                                </select>
-                            </div>
-                            <button id="review-submit-btn-${prod.id}" onclick="window.submitCustomerReviewLive('${prod.id}')" class="w-full py-2.5 bg-[var(--brand-primary)] text-[#ffffff] rounded-xl text-xs font-black shadow-sm border-2 border-[var(--brand-primary)] hover:bg-[#ffffff] hover:text-[var(--brand-primary)] transition-all">إرسال التقييم</button>
+                    
+                    ${imagesGalleryHtml}
+
+                    <div class="flex items-center justify-between border-t-2 border-b-2 border-[var(--brand-primary)] py-4">
+                        <span class="text-2xl font-black text-[var(--site-text)]">${product.price > 0 ? Number(product.price).toLocaleString('ar-EG') + ' <span class="text-sm text-[var(--site-text)] opacity-70">ج.م</span>' : 'حسب الطلب'}</span>
+                        
+                        <div class="quantity-controls flex items-center gap-3 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl p-1 shadow-sm">
+                            <button onclick="window.updateTempQtyContext(this, -1)" class="w-8 h-8 flex items-center justify-center bg-[#ffffff] text-[var(--brand-primary)] rounded-lg hover:bg-[var(--brand-primary)] hover:text-[#ffffff] active:scale-95 transition-all"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                            <span class="temp-qty-display w-6 text-center font-black text-[var(--site-text)] text-sm" data-prod-id="${product.id}">1</span>
+                            <button onclick="window.updateTempQtyContext(this, 1)" class="w-8 h-8 flex items-center justify-center bg-[#ffffff] text-[var(--brand-primary)] rounded-lg hover:bg-[var(--brand-primary)] hover:text-[#ffffff] active:scale-95 transition-all"><i data-lucide="plus" class="w-4 h-4"></i></button>
                         </div>
                     </div>
+
+                    <button onclick="window.addWithQtyContext(this, '${product.id}')" class="${isOutOfStock ? 'bg-[#ffffff] text-[var(--site-text)] cursor-not-allowed border-2 border-[var(--brand-primary)]' : 'bg-[var(--brand-primary)] hover:-translate-y-1 hover:shadow-lg text-[#ffffff] border-2 border-[var(--brand-primary)] hover:bg-[#ffffff] hover:text-[var(--brand-primary)]'} w-full py-4 rounded-xl font-black text-base transition-all active:scale-95 flex items-center justify-center gap-3" ${isOutOfStock ? 'disabled' : ''}>
+                        <i data-lucide="${isOutOfStock ? 'x-circle' : 'shopping-bag'}" class="w-5 h-5"></i> 
+                        ${isOutOfStock ? 'غير متوفر مؤقتاً' : 'إضافة إلى السلة 🛍️'}
+                    </button>
                 </div>
+            </div>
+
+            <div id="product-reviews-section" class="pt-8 mt-8 border-t-2 border-[var(--brand-primary)]">
+                <h3 class="text-lg font-black text-[var(--site-text)] mb-6 flex items-center gap-2"><i data-lucide="star" class="w-6 h-6 text-[var(--brand-primary)]"></i> آراء عملاء حلويات بوسي</h3>
+                <div id="reviews-list-${product.id}" class="grid grid-cols-1 md:grid-cols-2 gap-4 min-h-[50px]">
+                    <p class="text-xs text-[var(--site-text)] font-bold text-center py-4 w-full">جاري تحميل الآراء...</p>
+                </div>
+                <div class="mt-6 bg-[#ffffff] p-6 rounded-[2rem] border-2 border-[var(--brand-primary)]">
+                    <h4 class="font-black text-[var(--site-text)] text-sm mb-4 flex items-center gap-2"><i data-lucide="edit-3" class="w-5 h-5 text-[var(--brand-primary)]"></i> رأيك بيفرق معانا.. شاركنا تجربتك مع طعم حلويات بوسي</h4>
+                    <div class="space-y-4">
+                        <input type="text" id="review-cust-name-${product.id}" placeholder="الاسم..." class="w-full p-4 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl text-sm font-bold focus:outline-none text-[var(--site-text)]">
+                        <textarea id="review-cust-comment-${product.id}" rows="2" placeholder="رأيك في الطعم والجودة..." class="w-full p-4 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl text-sm font-bold focus:outline-none text-[var(--site-text)] resize-none"></textarea>
+                        <div class="flex justify-between items-center bg-[#ffffff] p-3 rounded-xl border-2 border-[var(--brand-primary)]">
+                            <span class="text-xs font-bold text-[var(--site-text)]">التقييم:</span>
+                            <select id="review-cust-rating-${product.id}" class="text-sm font-black text-[var(--brand-primary)] bg-transparent focus:outline-none border-none">
+                                <option value="5">⭐⭐⭐⭐⭐ (ممتاز)</option>
+                                <option value="4">⭐⭐⭐⭐ (جيد جداً)</option>
+                                <option value="3">⭐⭐⭐ (متوسط)</option>
+                            </select>
+                        </div>
+                        <button id="review-submit-btn-${product.id}" onclick="window.submitCustomerReviewLive('${product.id}')" class="w-full py-4 bg-[var(--brand-primary)] text-[#ffffff] rounded-xl text-sm font-black shadow-sm border-2 border-[var(--brand-primary)] hover:bg-[#ffffff] hover:text-[var(--brand-primary)] transition-all">إرسال التقييم</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="product-related-section" class="pt-8 border-t-2 border-[var(--brand-primary)]">
+                <h3 class="text-lg font-black text-[var(--site-text)] mb-6 flex items-center gap-2"><i data-lucide="sparkles" class="w-6 h-6 text-[var(--brand-primary)]"></i> تشكيلات قد تنال إعجاب حضرتك</h3>
+                <div id="product-related-container" class="flex overflow-x-auto gap-4 hide-scrollbar pb-4">
+                    </div>
             </div>
         </div>
     `;
+
+    if(window.lucide) window.lucide.createIcons();
+    if (window.loadLiveReviews) window.loadLiveReviews(product.id);
     
-    const vProd = document.getElementById('view-product-details'); 
-    if(vProd) {
-        vProd.classList.remove('hidden');
-        vProd.style.display = 'block'; // تأمين الظهور
+    // استدعاء الترشيحات المرتبطة إذا كانت مدعومة في المحرك الذكي
+    if(typeof window.renderSmartSuggestions === 'function') {
+        const oldContainer = document.getElementById('related-products-container');
+        if (oldContainer) {
+            window.renderSmartSuggestions('main');
+            const newContainer = document.getElementById('product-related-container');
+            if(newContainer) newContainer.innerHTML = oldContainer.innerHTML;
+        }
     }
-    if (window.lucide) lucide.createIcons();
-    if (window.loadLiveReviews) window.loadLiveReviews(prod.id);
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+window.showProductDetails = showProductDetails;
+
+// تعيين الدالة القديمة لتعمل من خلال المعمارية المحدثة حفاظاً على الترابط البرمجي
+export const navigateToProduct = window.showProductDetails;
 window.navigateToProduct = navigateToProduct;
 
 export const renderMultiStepCakeBuilder = function() {
@@ -1039,7 +1094,7 @@ export const drawProductCard = function(p) {
     const pIdSafe = String(p.id || ''); 
     const isOutOfStock = p.inStock === false || p.isActive === false;
     
-    const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://via.placeholder.com/400x400/ffffff/ff91a4.png?text=BoseSweets';
+    const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
     let rawImageUrl = defaultFallbackImage;
     
     if (p.images && p.images.length > 0 && p.images[0] && String(p.images[0]).trim() !== '') {
@@ -1133,7 +1188,7 @@ export const renderCartList = function() {
         const p = Number(item.price); 
         total += (p * q);
         
-        const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://via.placeholder.com/400x400/ffffff/ff91a4.png?text=BoseSweets';
+        const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
         let rawImageUrl = defaultFallbackImage;
         if (item.images && item.images.length > 0 && item.images[0] && String(item.images[0]).trim() !== '') {
             rawImageUrl = item.images[0];
@@ -1215,7 +1270,7 @@ export const renderSmartSuggestions = function(context = 'main') {
     const suggestions = sortedProducts.slice(0, context === 'cart' ? 4 : 8);
 
     container.innerHTML = suggestions.map(p => {
-        const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://via.placeholder.com/400x400/ffffff/ff91a4.png?text=BoseSweets';
+        const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
         let rawImageUrl = defaultFallbackImage;
         if (p.images && p.images.length > 0 && p.images[0] && String(p.images[0]).trim() !== '') {
             rawImageUrl = p.images[0];
