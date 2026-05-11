@@ -1,14 +1,14 @@
 /**
- * 👑 BoseSweets UI View Management (V21.6 - Production Protocol)
+ * 👑 BoseSweets UI View Management (V22.1 - Sovereign Navigation Protocol)
  * مهندس عرض الواجهات والتنقل - حلويات بوسي
- * تم التحديث: استجابة القوائم اللحظية مع تأمين المحركات الأساسية.
+ * تم التحصين الشامل: تصحيح الـ IDs لمنع انهيار الواجهات واعتماد نظام عرض قاطع.
  */
 
 import { dSizes, fTypes } from './config.js';
 import { siteSettings, catalog, catMenu, state } from './state.js';
 import { MemoryManager, escapeHTML, optimizeCloudinaryUrl } from './utils.js';
 
-// 👑 تبديل الواجهات الأساسي
+// 👑 تبديل الواجهات الأساسي (Sovereign Routing)
 export const showHomeView = function() {
     try {
         ['view-menu', 'view-tips', 'view-cake-builder', 'view-product-details', 'menu-view', 'product-details-view'].forEach(id => {
@@ -16,8 +16,11 @@ export const showHomeView = function() {
             if(el) el.classList.add('hidden');
         });
         const vHome = document.getElementById('view-home') || document.getElementById('home-view'); 
-        if(vHome) { vHome.classList.remove('hidden'); vHome.style.display = 'block'; }
-        if(window.setActiveCategoryPill) window.setActiveCategoryPill('all');
+        if(vHome) { 
+            vHome.classList.remove('hidden'); 
+            vHome.style.display = 'flex'; // Flex to match standard layout
+        }
+        if(window.setActiveCategoryPill) window.setActiveCategoryPill('الرئيسية');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch(e) { console.warn("حلويات بوسي: استثناء أثناء عرض الرئيسية", e); }
 };
@@ -30,12 +33,14 @@ export const showMenuView = function() {
             if(el) el.classList.add('hidden');
         });
         const vMenu = document.getElementById('view-menu') || document.getElementById('menu-view'); 
-        if(vMenu) { vMenu.classList.remove('hidden'); vMenu.style.display = 'block'; }
+        if(vMenu) { 
+            vMenu.classList.remove('hidden'); 
+            vMenu.style.display = 'flex'; // Flex to match layout
+        }
         
-        const menuGrid = document.getElementById('menu-grid-container');
-        if(menuGrid) menuGrid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 pb-24';
+        const menuGrid = document.getElementById('display-container');
+        if(menuGrid) menuGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 items-stretch w-full animate-fade-in';
         
-        if(window.switchCategory) window.switchCategory('all');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch(e) { console.warn("حلويات بوسي: استثناء أثناء عرض المنيو", e); }
 };
@@ -48,9 +53,12 @@ export const showGoldenTips = function() {
             if(el) el.classList.add('hidden');
         });
         const vTips = document.getElementById('view-tips'); 
-        if(vTips) { vTips.classList.remove('hidden'); vTips.style.display = 'block'; }
+        if(vTips) { 
+            vTips.classList.remove('hidden'); 
+            vTips.style.display = 'flex'; 
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(e) {}
+    } catch(e) { console.warn("حلويات بوسي: استثناء أثناء عرض الدليل", e); }
 };
 window.showGoldenTips = showGoldenTips;
 
@@ -94,114 +102,119 @@ export const closeGlobalLightbox = function() {
 };
 window.closeGlobalLightbox = closeGlobalLightbox;
 
-// 👑 هندسة الشلال (Waterfall)
+// 👑 هندسة الشلال (Waterfall - تم تأمين الـ ID)
 export const initWaterfall = function() {
-    const col1 = document.getElementById('waterfall-col-1');
-    const col2 = document.getElementById('waterfall-col-2');
-    const waterfallContainer = document.getElementById('waterfall-section') || document.getElementById('waterfall-container');
-    
-    if (waterfallContainer) {
-        waterfallContainer.classList.remove('hidden');
-        waterfallContainer.style.display = 'block';
-    }
+    try {
+        const col1 = document.getElementById('waterfall-col-1');
+        const col2 = document.getElementById('waterfall-col-2');
+        // تأمين صارم: تطابق معرف HTML مع JS
+        const waterfallContainer = document.getElementById('section-waterfall'); 
+        
+        if (waterfallContainer) {
+            waterfallContainer.classList.remove('hidden');
+            waterfallContainer.style.display = 'block';
+        }
 
-    if (!col1 || !col2) return;
+        if (!col1 || !col2) return;
 
-    const visualItems = catalog.filter(p => p && p.isActive !== false && (p.images && p.images.length > 0 || p.img));
-    if (visualItems.length === 0) {
-        col1.innerHTML = `<div class="text-center py-10 text-[var(--site-text)] opacity-50 font-bold col-span-2">نجهز لكم أصنافاً جديدة فاخرة.. انتظرونا ✨</div>`;
-        col2.innerHTML = '';
-        return;
-    }
+        const visualItems = catalog.filter(p => p && p.isActive !== false && (p.images && p.images.length > 0 || p.img));
+        if (visualItems.length === 0) {
+            col1.innerHTML = `<div class="text-center py-10 text-[var(--site-text)] opacity-50 font-bold col-span-2">نجهز لكم أصنافاً جديدة فاخرة.. انتظرونا ✨</div>`;
+            col2.innerHTML = '';
+            return;
+        }
 
-    const hourChunk = new Date().getHours() % Math.max(1, Math.floor(visualItems.length / 6));
-    const startIdx = hourChunk * 6;
-    const itemsToDisplay = visualItems.slice(startIdx, startIdx + 6);
-    
-    if(itemsToDisplay.length < 6) itemsToDisplay.push(...visualItems.slice(0, 6 - itemsToDisplay.length));
+        const hourChunk = new Date().getHours() % Math.max(1, Math.floor(visualItems.length / 6));
+        const startIdx = hourChunk * 6;
+        const itemsToDisplay = visualItems.slice(startIdx, startIdx + 6);
+        
+        if(itemsToDisplay.length < 6) itemsToDisplay.push(...visualItems.slice(0, 6 - itemsToDisplay.length));
 
-    const buildCardHTML = (item) => {
-        const rawImageUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || window.getImgFallback(item.category));
-        const url = optimizeCloudinaryUrl(rawImageUrl);
+        const buildCardHTML = (item) => {
+            const rawImageUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || window.getImgFallback(item.category));
+            const url = optimizeCloudinaryUrl(rawImageUrl);
 
-        return `
-            <div class="waterfall-card cursor-pointer group relative bg-[#ffffff] rounded-[2rem] overflow-hidden shadow-sm border border-[var(--brand-primary)]/10" onclick="window.navigateToProduct('${item.id}')" title="اضغط لاستعراض تفاصيل ${escapeHTML(item.name)}">
-                <img src="${url}" loading="lazy" decoding="async" class="transition-transform duration-500 group-hover:scale-105 w-full h-full object-cover" alt="صنف ${escapeHTML(item.name)} من قسم ${escapeHTML(item.category)} - حلويات بوسي" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(item.category)}');">
-                <div class="absolute inset-x-0 bottom-0 bg-[#ffffff]/90 backdrop-blur-sm p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start border-t-2 border-[var(--brand-primary)]">
-                    <span class="text-[var(--brand-primary)] text-xs font-bold truncate tracking-wide w-full">${escapeHTML(item.name)}</span>
-                </div>
-            </div>`;
-    };
+            return `
+                <div class="waterfall-card cursor-pointer group relative bg-[#ffffff] rounded-[2rem] overflow-hidden shadow-sm border border-[var(--brand-primary)]/10" onclick="window.navigateToProduct('${item.id}')" title="اضغط لاستعراض تفاصيل ${escapeHTML(item.name)}">
+                    <img src="${url}" loading="lazy" decoding="async" class="transition-transform duration-500 group-hover:scale-105 w-full h-full object-cover" alt="صنف ${escapeHTML(item.name)} من قسم ${escapeHTML(item.category)} - حلويات بوسي" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(item.category)}');">
+                    <div class="absolute inset-x-0 bottom-0 bg-[#ffffff]/90 backdrop-blur-sm p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start border-t-2 border-[var(--brand-primary)]">
+                        <span class="text-[var(--brand-primary)] text-xs font-bold truncate tracking-wide w-full">${escapeHTML(item.name)}</span>
+                    </div>
+                </div>`;
+        };
 
-    const htmlCol1 = itemsToDisplay.slice(0, 3).map(buildCardHTML).join('');
-    const htmlCol2 = itemsToDisplay.slice(3, 6).map(buildCardHTML).join('');
+        const htmlCol1 = itemsToDisplay.slice(0, 3).map(buildCardHTML).join('');
+        const htmlCol2 = itemsToDisplay.slice(3, 6).map(buildCardHTML).join('');
 
-    col1.innerHTML = htmlCol1 + htmlCol1;
-    col2.innerHTML = htmlCol2 + htmlCol2;
+        col1.innerHTML = htmlCol1 + htmlCol1;
+        col2.innerHTML = htmlCol2 + htmlCol2;
+    } catch(e) { console.error("BoseSweets: استثناء في محرك الشلال", e); }
 };
 window.initWaterfall = initWaterfall;
 
 export const initHomepageSections = function() {
-    const sectionBS = document.getElementById('section-bestsellers');
-    const sectionNA = document.getElementById('section-newarrivals');
-    const bsContainer = document.getElementById('bestsellers-container');
-    const naContainer = document.getElementById('newarrivals-container');
-    
-    if (bsContainer && naContainer) {
-        const bestSellers = catalog.filter(p => p.isActive !== false && p.badge && (p.badge.includes('مبيعاً') || p.badge.includes('مبيعات'))).slice(0, 8);
-        const newArrivals = catalog.filter(p => p.isActive !== false && p.badge && (p.badge.includes('جديد') || p.badge.includes('🌟'))).slice(0, 8);
+    try {
+        const sectionBS = document.getElementById('section-bestsellers');
+        const sectionNA = document.getElementById('section-newarrivals');
+        const bsContainer = document.getElementById('bestsellers-container');
+        const naContainer = document.getElementById('newarrivals-container');
+        
+        if (bsContainer && naContainer) {
+            const bestSellers = catalog.filter(p => p.isActive !== false && p.badge && (p.badge.includes('مبيعاً') || p.badge.includes('مبيعات'))).slice(0, 8);
+            const newArrivals = catalog.filter(p => p.isActive !== false && p.badge && (p.badge.includes('جديد') || p.badge.includes('🌟'))).slice(0, 8);
 
-        const fallbackBS = bestSellers.length > 0 ? bestSellers : catalog.filter(p => p.isActive !== false).slice(0, 6);
-        const fallbackNA = newArrivals.length > 0 ? newArrivals : catalog.filter(p => p.isActive !== false).slice().reverse().slice(0, 6);
+            const fallbackBS = bestSellers.length > 0 ? bestSellers : catalog.filter(p => p.isActive !== false).slice(0, 6);
+            const fallbackNA = newArrivals.length > 0 ? newArrivals : catalog.filter(p => p.isActive !== false).slice().reverse().slice(0, 6);
 
-        if (bsContainer && fallbackBS.length > 0) {
-            if(sectionBS) sectionBS.classList.remove('hidden');
-            bsContainer.innerHTML = fallbackBS.map(p => `<div class="shrink-0 w-[300px] snap-center">${window.drawProductCard(p)}</div>`).join('');
-        } else { if(sectionBS) sectionBS.classList.add('hidden'); }
+            if (bsContainer && fallbackBS.length > 0) {
+                if(sectionBS) sectionBS.classList.remove('hidden');
+                bsContainer.innerHTML = fallbackBS.map(p => `<div class="shrink-0 w-[300px] snap-center">${window.drawProductCard(p)}</div>`).join('');
+            } else { if(sectionBS) sectionBS.classList.add('hidden'); }
 
-        if (naContainer && fallbackNA.length > 0) {
-            if(sectionNA) sectionNA.classList.remove('hidden');
-            naContainer.innerHTML = fallbackNA.map(p => `<div class="shrink-0 w-[300px] snap-center">${window.drawProductCard(p)}</div>`).join('');
-        } else { if(sectionNA) sectionNA.classList.add('hidden'); }
-    }
-
-    let dynContainer = document.getElementById('dynamic-sections-container');
-    const homeView = document.getElementById('view-home') || document.getElementById('home-view');
-    
-    if (homeView && siteSettings.dynamicSections && siteSettings.dynamicSections.length > 0) {
-        if (!dynContainer) {
-            dynContainer = document.createElement('div');
-            dynContainer.id = 'dynamic-sections-container';
-            dynContainer.className = 'w-full flex flex-col gap-12 mt-12';
-            if (sectionNA && sectionNA.parentNode) sectionNA.parentNode.insertBefore(dynContainer, sectionNA.nextSibling);
-            else homeView.appendChild(dynContainer);
+            if (naContainer && fallbackNA.length > 0) {
+                if(sectionNA) sectionNA.classList.remove('hidden');
+                naContainer.innerHTML = fallbackNA.map(p => `<div class="shrink-0 w-[300px] snap-center">${window.drawProductCard(p)}</div>`).join('');
+            } else { if(sectionNA) sectionNA.classList.add('hidden'); }
         }
-        
-        const activeDynSections = siteSettings.dynamicSections.filter(s => s.active).sort((a,b) => (a.order || 0) - (b.order || 0));
-        
-        dynContainer.innerHTML = activeDynSections.map(sec => {
-            const sectionProducts = catalog.filter(p => p.isActive !== false && p.badge && p.badge.includes(sec.title)).slice(0, 8);
-            if (sectionProducts.length === 0) return ''; 
-            
-            let itemsHtml = (sec.type === 'slider') 
-                ? `<div class="relative w-full"><div id="dyn-slider-${sec.id}" class="flex overflow-x-auto gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scrollbar scroll-smooth pl-4">${sectionProducts.map(p => `<div class="shrink-0 w-[300px] snap-center">${window.drawProductCard(p)}</div>`).join('')}</div></div>`
-                : `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">${sectionProducts.map(p => window.drawProductCard(p)).join('')}</div>`;
 
-            return `
-            <section class="w-full relative z-10 animate-fade-in mb-8">
-                <div class="px-6 md:px-12 mb-8 flex justify-between items-end border-r-4 border-[var(--brand-primary)]">
-                    <div>
-                        <h2 class="text-3xl font-black text-[var(--site-text)] leading-tight">${escapeHTML(sec.title)}</h2>
-                        <p class="text-[var(--brand-primary)] text-sm font-bold mt-2 tracking-wide">أحدث الإضافات لعلامة حلويات بوسي</p>
+        let dynContainer = document.getElementById('dynamic-sections-container');
+        const homeView = document.getElementById('view-home') || document.getElementById('home-view');
+        
+        if (homeView && siteSettings.dynamicSections && siteSettings.dynamicSections.length > 0) {
+            if (!dynContainer) {
+                dynContainer = document.createElement('div');
+                dynContainer.id = 'dynamic-sections-container';
+                dynContainer.className = 'w-full flex flex-col gap-12 mt-12';
+                if (sectionNA && sectionNA.parentNode) sectionNA.parentNode.insertBefore(dynContainer, sectionNA.nextSibling);
+                else homeView.appendChild(dynContainer);
+            }
+            
+            const activeDynSections = siteSettings.dynamicSections.filter(s => s.active).sort((a,b) => (a.order || 0) - (b.order || 0));
+            
+            dynContainer.innerHTML = activeDynSections.map(sec => {
+                const sectionProducts = catalog.filter(p => p.isActive !== false && p.badge && p.badge.includes(sec.title)).slice(0, 8);
+                if (sectionProducts.length === 0) return ''; 
+                
+                let itemsHtml = (sec.type === 'slider') 
+                    ? `<div class="relative w-full"><div id="dyn-slider-${sec.id}" class="flex overflow-x-auto gap-6 pb-6 pt-2 snap-x snap-mandatory hide-scrollbar scroll-smooth pl-4">${sectionProducts.map(p => `<div class="shrink-0 w-[300px] snap-center">${window.drawProductCard(p)}</div>`).join('')}</div></div>`
+                    : `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">${sectionProducts.map(p => window.drawProductCard(p)).join('')}</div>`;
+
+                return `
+                <section class="w-full relative z-10 animate-fade-in mb-8">
+                    <div class="px-6 md:px-12 mb-8 flex justify-between items-end border-r-4 border-[var(--brand-primary)]">
+                        <div>
+                            <h2 class="text-3xl font-black text-[var(--site-text)] leading-tight">${escapeHTML(sec.title)}</h2>
+                            <p class="text-[var(--brand-primary)] text-sm font-bold mt-2 tracking-wide">أحدث الإضافات لعلامة حلويات بوسي</p>
+                        </div>
                     </div>
-                </div>
-                ${itemsHtml}
-            </section>`;
-        }).join('');
-    } else if (dynContainer) { dynContainer.innerHTML = ''; }
-    
-    if (window.lucide) lucide.createIcons();
-    if (typeof window.setupSliderButtons === 'function') window.setupSliderButtons();
+                    ${itemsHtml}
+                </section>`;
+            }).join('');
+        } else if (dynContainer) { dynContainer.innerHTML = ''; }
+        
+        if (window.lucide) lucide.createIcons();
+        if (typeof window.setupSliderButtons === 'function') window.setupSliderButtons();
+    } catch(e) { console.error("BoseSweets: استثناء في محرك الأقسام الديناميكية", e); }
 };
 window.initHomepageSections = initHomepageSections;
 
@@ -227,7 +240,7 @@ export const renderCategories = function() {
         if(!el) return;
         
         el.classList.remove('hidden');
-        el.style.display = 'block';
+        el.style.display = 'flex'; // Use flex to maintain layout
 
         const sortedCats = [...catMenu].sort((a, b) => (a.order || 99) - (b.order || 99));
 
@@ -247,21 +260,24 @@ export const renderCategories = function() {
 window.renderCategories = renderCategories;
 
 export const setActiveCategoryPill = function(catName) {
-    document.querySelectorAll('.cat-pill').forEach(btn => {
-        btn.classList.remove('bg-[var(--brand-primary)]', 'text-[#ffffff]', 'shadow-lg');
-        btn.classList.add('bg-[#ffffff]', 'text-[var(--site-text)]');
-    });
-    const safeId = String(catName).replace(/\s+/g, '-');
-    const activeBtn = document.getElementById(`cat-btn-${safeId}`);
-    if (activeBtn) {
-        activeBtn.classList.remove('bg-[#ffffff]', 'text-[var(--site-text)]');
-        activeBtn.classList.add('bg-[var(--brand-primary)]', 'text-[#ffffff]', 'shadow-lg');
-        activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-    }
+    try {
+        document.querySelectorAll('.cat-pill').forEach(btn => {
+            btn.classList.remove('bg-[var(--brand-primary)]', 'text-[#ffffff]', 'shadow-lg');
+            btn.classList.add('bg-[#ffffff]', 'text-[var(--site-text)]');
+        });
+        const safeId = String(catName).replace(/\s+/g, '-');
+        const activeBtn = document.getElementById(`cat-btn-${safeId}`);
+        if (activeBtn) {
+            activeBtn.classList.remove('bg-[#ffffff]', 'text-[var(--site-text)]');
+            activeBtn.classList.add('bg-[var(--brand-primary)]', 'text-[#ffffff]', 'shadow-lg');
+            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+    } catch(e) {}
 };
 window.setActiveCategoryPill = setActiveCategoryPill;
 
 export const renderFlowerTabs = function(container) {
+    if(!container) return;
     container.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 bg-[#ffffff] border-[var(--brand-primary)] flex flex-wrap justify-center gap-2">${fTypes.map(f => `<button onclick="window.setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.fType === f ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)]' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${f}</button>`).join('')}</div>`;
 };
 window.renderFlowerTabs = renderFlowerTabs;
@@ -311,7 +327,7 @@ export const renderMainDisplay = function() {
             if (catDescEl) catDescEl.innerText = desc;
         } else if (catDescArea) { catDescArea.classList.add('hidden'); }
 
-        let breadcrumbHtml = `<nav class="flex items-center gap-2 text-sm font-bold text-[var(--site-text)] mb-6 justify-center w-full"><span class="cursor-pointer hover:text-[var(--brand-primary)]" onclick="window.showHomeView ? window.showHomeView() : window.setCategory('الرئيسية')">الرئيسية</span> <i data-lucide="chevron-left" class="w-4 h-4 text-[var(--brand-primary)]"></i> <span class="text-[var(--brand-primary)]">${state.activeCat}</span></nav>`;
+        let breadcrumbHtml = `<nav class="flex items-center gap-2 text-sm font-bold text-[var(--site-text)] mb-6 justify-center w-full"><span class="cursor-pointer hover:text-[var(--brand-primary)]" onclick="window.setCategory('الرئيسية')">الرئيسية</span> <i data-lucide="chevron-left" class="w-4 h-4 text-[var(--brand-primary)]"></i> <span class="text-[var(--brand-primary)]">${state.activeCat}</span></nav>`;
 
         const container = document.getElementById('display-container'); 
         const subTabs = document.getElementById('sub-tabs-area');
@@ -381,44 +397,40 @@ export const renderMainDisplay = function() {
 };
 window.renderMainDisplay = renderMainDisplay;
 
+// 👑 هندسة توجيه الأقسام المنیعة (Sovereign Routing Control)
 export const setCategory = function(c) {
-    if (c === 'الرئيسية') {
-        if(window.showHomeView) window.showHomeView();
-        state.activeCat = 'الرئيسية';
-        const waterfallContainer = document.getElementById('waterfall-section') || document.getElementById('waterfall-container');
-        const mainContent = document.getElementById('main-display-area');
-        if(waterfallContainer) { waterfallContainer.classList.remove('hidden'); waterfallContainer.style.display = 'block'; }
-        if(mainContent) mainContent.classList.add('hidden');
-        if(window.initWaterfall) window.initWaterfall();
-    } else {
-        state.activeCat = c;
-        if(window.showMenuView) window.showMenuView();
-        const waterfallContainer = document.getElementById('waterfall-section') || document.getElementById('waterfall-container');
-        const mainContent = document.getElementById('main-display-area');
-        if(waterfallContainer) waterfallContainer.classList.add('hidden');
-        if(mainContent) { mainContent.classList.remove('hidden'); mainContent.style.display = 'block'; }
-        
-        if(window.renderMainDisplay) window.renderMainDisplay();
+    try {
+        if (c === 'الرئيسية') {
+            state.activeCat = 'الرئيسية';
+            if(window.showHomeView) window.showHomeView();
+            if(window.initWaterfall) window.initWaterfall();
+        } else {
+            state.activeCat = c;
+            if(window.showMenuView) window.showMenuView();
+            if(window.renderMainDisplay) window.renderMainDisplay();
 
-        MemoryManager.set('scroll_to_products', () => {
-            const displayContainer = document.getElementById('display-container');
-            const catDescArea = document.getElementById('category-description-area');
-            const targetElement = (catDescArea && !catDescArea.classList.contains('hidden')) ? catDescArea : displayContainer;
-            if (targetElement) {
-                const offsetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 140;
-                window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-            }
-        }, 100);
+            MemoryManager.set('scroll_to_products', () => {
+                const displayContainer = document.getElementById('display-container');
+                const catDescArea = document.getElementById('category-description-area');
+                const targetElement = (catDescArea && !catDescArea.classList.contains('hidden')) ? catDescArea : displayContainer;
+                if (targetElement) {
+                    const offsetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 140;
+                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                }
+            }, 100);
+        }
+        
+        if(window.renderCategories) window.renderCategories();
+        history.pushState({category: c}, '', `?category=${encodeURIComponent(c)}`);
+        
+        MemoryManager.set('scroll_cat', () => { 
+            const safeId = String(c).replace(/\s+/g, '-');
+            const activeBtn = document.getElementById(`cat-btn-${safeId}`); 
+            if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); 
+        }, 50);
+    } catch(e) {
+        console.error("BoseSweets: خطأ أثناء التوجيه للقسم", e);
     }
-    
-    if(window.renderCategories) window.renderCategories();
-    history.pushState({category: c}, '', `?category=${encodeURIComponent(c)}`);
-    
-    MemoryManager.set('scroll_cat', () => { 
-        const safeId = String(c).replace(/\s+/g, '-');
-        const activeBtn = document.getElementById(`cat-btn-${safeId}`); 
-        if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); 
-    }, 50);
 };
 window.setCategory = setCategory;
 

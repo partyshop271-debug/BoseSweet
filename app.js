@@ -1,8 +1,7 @@
 /**
- * 👑 BoseSweets Main Orchestrator (V20.0 - Sovereign Client Sync Edition)
+ * 👑 BoseSweets Main Orchestrator (V22.1 - Sovereign Shield Edition)
  * القلب النابض للمحرك الرئيسي - حلويات بوسي 
- * تم دمج بروتوكول "الاستماع السيادي" (Sovereign Sync Listener) ليقوم بمسح الكاش
- * وتحديث الواجهة لحظياً فور قيام الإدارة بحفظ أي تعديل، دون إجبار العميل على إعادة التحميل.
+ * التحصين الأخير: إجبار محرك البيانات على انتظار Firebase ومنع الانهيار الفوري.
  */
 
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
@@ -16,8 +15,8 @@ import { LiveSearchEngine, performLiveSearchDebounced, toggleLiveSearch, perform
 import { saveCartToStorage, clearCartStorage, calculateCartTotal, syncCartUI, updateTempQtyContext, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay } from './cart.js';
 import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay, initHomepageSections } from './ui.js';
 
-// تعريف قاعدة البيانات عالمياً لضمان التوافق مع كافة المحركات
-const db = window.firebase ? window.firebase.firestore() : undefined;
+// تعريف قاعدة البيانات عالمياً لضمان التوافق مع كافة المحركات (مع آلية تأخير آمنة)
+let db = window.firebase ? window.firebase.firestore() : undefined;
 window.db = db;
 
 // تصدير الوظائف للنافذة العالمية لضمان عمل الواجهة التفاعلية
@@ -48,7 +47,6 @@ let lastSyncTime = Date.now();
 
 /**
  * 👑 بروتوكول الاستماع السيادي (Sovereign Sync Listener)
- * يقوم بمراقبة "جرس التحديث" من لوحة إدارة حلويات بوسي لمزامنة البيانات فوراً وبشكل قاطع.
  */
 function setupSovereignSyncListener() {
     if (!db) return;
@@ -60,7 +58,6 @@ function setupSovereignSyncListener() {
                 console.log("👑 إشارة سيادية: تم رصد تحديث من مركز قيادة حلويات بوسي. جاري التطهير والمزامنة اللحظية...");
                 lastSyncTime = Date.now();
                 
-                // التطهير الشامل للذاكرة لضمان عدم تعليق المنتجات المختفية
                 localStorage.removeItem('boseSweets_catalog');
                 localStorage.removeItem('bSweets_catalog');
                 localStorage.removeItem('boseSweets_settings');
@@ -71,7 +68,6 @@ function setupSovereignSyncListener() {
                     await ClientStorageEngine.remove('settings');
                 }
                 
-                // إعادة تشغيل المحرك لتحديث البيانات والواجهة بشكل جذري
                 await startBoseSweetsEngine(true);
             }
         }
@@ -82,7 +78,6 @@ function setupSovereignSyncListener() {
 
 /**
  * 👑 محرك التشغيل الرئيسي (BoseSweets Engine)
- * المسؤول عن إقلاع النظام، جلب البيانات، وتنسيق الواجهة بتأمين كامل ضد فقدان البيانات.
  */
 async function startBoseSweetsEngine(isUpdate = false) {
     if (!isUpdate && (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة'))) return;
@@ -93,14 +88,19 @@ async function startBoseSweetsEngine(isUpdate = false) {
     }
 
     try {
+        // تأمين وتأكيد الاتصال بـ Firebase (تأخير مقصود لتجاوز defer)
+        if (!db && window.firebase) {
+             db = window.firebase.firestore();
+             window.db = db;
+        }
+
         if (!db) {
-            console.warn("حلويات بوسي: قاعدة البيانات غير متصلة، جاري تفعيل نظام الطوارئ.");
+            console.warn("حلويات بوسي: قاعدة البيانات غير متصلة، جاري تفعيل نظام الطوارئ الفولاذي.");
             fallbackToEmergencyData();
             initUI();
             return;
         }
 
-        // 1. جلب الإعدادات العامة (Settings)
         try {
             const sSnap = await db.collection('settings').doc('main').get();
             if (sSnap.exists) {
@@ -110,22 +110,16 @@ async function startBoseSweetsEngine(isUpdate = false) {
             }
         } catch(e) { console.error("عطل في جلب الإعدادات:", e); }
 
-        // 2. جلب الكتالوج (التحديث السيادي لمنع اختفاء المنتجات)
         const catalogStatus = await fetchAndSyncBoseSweetsData(async () => {
             try {
                 const pSnap = await db.collection('catalog').get();
                 if (!pSnap.empty) {
                     return pSnap.docs.map(doc => {
                         const data = doc.data();
-                        // تأمين برمجي صارم: منع الاختفاء العشوائي للمنتجات بتعيين حالة نشطة افتراضياً
-                        if (data.isActive === undefined || data.isActive === null) {
-                            data.isActive = true;
-                        }
-                        if (data.inStock === undefined || data.inStock === null) {
-                            data.inStock = true;
-                        }
+                        if (data.isActive === undefined || data.isActive === null) data.isActive = true;
+                        if (data.inStock === undefined || data.inStock === null) data.inStock = true;
                         return { id: doc.id, ...data };
-                    }).filter(d => d.isActive === true); // اعتماد المنتجات النشطة بشكل قاطع
+                    }).filter(d => d.isActive === true); 
                 } else {
                     return [];
                 }
@@ -134,7 +128,6 @@ async function startBoseSweetsEngine(isUpdate = false) {
             }
         }, 'boseSweets_catalog');
 
-        // تحديث مصفوفة الكتالوج العالمية وتأمينها
         if (catalogStatus && catalogStatus.length > 0) {
             catalog.length = 0;
             catalog.push(...catalogStatus);
@@ -144,22 +137,17 @@ async function startBoseSweetsEngine(isUpdate = false) {
             fallbackToEmergencyData();
         }
 
-        // 3. جلب بيانات المعرض (Gallery)
         try {
             const gSnap = await db.collection('gallery').orderBy('timestamp', 'desc').limit(15).get();
             galleryData.length = 0;
             gSnap.forEach(doc => galleryData.push({ id: doc.id, ...doc.data() }));
         } catch(e) { }
 
-        // 4. تحديث الخرائط المرجعية وتنسيق القائمة
         syncBoseSweetsLayout();
-        
-        // 5. إعداد الحالة وتحديث الواجهة
         setAppReady();
         if(state) state.isAppReady = true;
 
         if (isUpdate) {
-            // تحديث جذري للعناصر المعروضة بعد التقاط إشارة الإدارة
             if (typeof renderCategories === 'function') renderCategories();
             
             if (state.activeCat === 'الرئيسية') {
@@ -171,7 +159,6 @@ async function startBoseSweetsEngine(isUpdate = false) {
             if(typeof syncCartUI === 'function') syncCartUI();
             showSystemToast("تم تحديث القائمة بأحدث إصدارات وأسعار حلويات بوسي 👑", "success");
         } else {
-            // الإقلاع الأول
             initUI();
             recoverBoseSweetsCart();
             syncOfflineOrders();
@@ -187,9 +174,20 @@ async function startBoseSweetsEngine(isUpdate = false) {
 }
 
 function fallbackToEmergencyData() {
-    if (catalog.length === 0 && typeof defaultCatalog !== 'undefined') {
+    if (catalog.length === 0) {
         console.log("حلويات بوسي: تفعيل الكتالوج الاحتياطي لضمان استمرارية الخدمة.");
-        catalog.push(...defaultCatalog);
+        // محاولة الاعتماد على التخزين المحلي أولاً، ثم الملفات الثابتة
+        const localMemory = typeof window !== 'undefined' && localStorage.getItem('boseSweets_catalog');
+        if(localMemory) {
+            try {
+                const parsed = JSON.parse(localMemory);
+                if(Array.isArray(parsed) && parsed.length > 0) catalog.push(...parsed);
+            } catch(e){}
+        }
+        
+        if(catalog.length === 0 && typeof defaultCatalog !== 'undefined') {
+             catalog.push(...defaultCatalog);
+        }
     }
 }
 
@@ -232,19 +230,16 @@ async function recoverBoseSweetsCart() {
 }
 
 function initUI() {
+    if(typeof applySettingsToUI === 'function') applySettingsToUI();
+    
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('product');
     const routeCat = urlParams.get('category');
 
-    if(typeof applySettingsToUI === 'function') applySettingsToUI();
-    
-    // التوجيه السيادي المتقدم عند الإقلاع
     if (productId) {
         if (typeof window.showProductDetails === 'function') window.showProductDetails(productId);
     } else if (routeCat && catMenu.includes(routeCat)) {
-        state.activeCat = routeCat;
-        if (typeof window.showMenuView === 'function') window.showMenuView();
-        if (typeof renderMainDisplay === 'function') renderMainDisplay();
+        if (typeof window.setCategory === 'function') window.setCategory(routeCat);
     } else {
         state.activeCat = 'الرئيسية';
         if (typeof window.showHomeView === 'function') window.showHomeView();
@@ -252,12 +247,7 @@ function initUI() {
         if (typeof initHomepageSections === 'function') initHomepageSections();
     }
     
-    // التوافقية الصارمة: تأمين بقاء استدعاء الدوال الحيوية لضمان استقرار العرض
-    if (typeof window.renderCategories === 'function') {
-        window.renderCategories();
-    } else if (typeof renderCategories === 'function') {
-        renderCategories();
-    }
+    if (typeof window.renderCategories === 'function') window.renderCategories();
     
     if (document.getElementById('gallery-customer-section') && typeof renderCustomerGallery === 'function') {
         renderCustomerGallery();
@@ -266,7 +256,6 @@ function initUI() {
     if(typeof syncCartUI === 'function') syncCartUI();
     if (window.lucide) window.lucide.createIcons();
 
-    // التوافقية الصارمة: الحفاظ على نظام الاقتراحات الذكية 
     if (typeof window.renderSmartSuggestions === 'function') {
         window.renderSmartSuggestions('main');
     }
@@ -338,16 +327,16 @@ function registerBoseSweetsPWA() {
     }
 }
 
-// نقطة الانطلاق الرسمية للمنظومة
+// الانطلاق القاطع (مع مهلة صغيرة لضمان تحميل الـ Firebase)
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => startBoseSweetsEngine(false));
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => startBoseSweetsEngine(false), 200); // 200ms grace period
+    });
 } else {
-    startBoseSweetsEngine(false);
+    setTimeout(() => startBoseSweetsEngine(false), 200);
 }
 
-// إدارة الأحداث التفاعلية (Clicks Manager)
 document.addEventListener('click', function(event) {
-    // معالجة زر الإضافة للسلة
     if (event.target && event.target.closest('.add-to-cart-btn')) {
         event.preventDefault();
         const button = event.target.closest('.add-to-cart-btn');
@@ -362,7 +351,6 @@ document.addEventListener('click', function(event) {
         if(typeof processBoseSweetsOrder === 'function') processBoseSweetsOrder(productId, productName, productPrice);
     }
     
-    // تتبع نقرات الأقسام للتحليلات
     if (event.target && event.target.closest('.cat-pill')) {
         const btn = event.target.closest('.cat-pill');
         if(typeof BehavioralAnalytics !== 'undefined') {

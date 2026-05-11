@@ -1,7 +1,7 @@
 /**
- * 👑 BoseSweets UI Core Engine (V21.5 - Sovereign Core)
+ * 👑 BoseSweets UI Core Engine (V22.1 - Sovereign Core)
  * المحرك الأساسي والوظائف السيادية - حلويات بوسي
- * تم نقل جميع الأوصاف الذكية، معالجة الصور، والتقييمات الحية من الملف الأصلي بدقة.
+ * تم تحصين الدورة الرسومية لحماية الشلال والشريط من الانهيار إذا تأخرت السحابة.
  */
 
 import { detailedDescriptions } from './config.js';
@@ -55,123 +55,137 @@ window.getFinalDescription = getFinalDescription;
 export const getCapsuleDescription = (p) => getFinalDescription(p);
 window.getCapsuleDescription = getCapsuleDescription;
 
-// 👑 شريط الإعلانات (Ticker)
+// 👑 شريط الإعلانات (Ticker - تم تحصينه بالكامل)
 export const renderTicker = function() {
-    let container = document.getElementById('ticker-container');
-    const navbar = document.getElementById('navbar');
-    const isActive = siteSettings.ticker_isActive ?? siteSettings.tickerActive ?? true;
-    
-    if (!isActive) {
-        if(container) { container.classList.add('hidden'); container.classList.remove('flex'); }
-        if(navbar) navbar.style.top = '0';
-        return;
+    try {
+        let container = document.getElementById('ticker-container');
+        const navbar = document.getElementById('navbar');
+        
+        // التحصين الفولاذي: ضمان وجود siteSettings قبل الفحص
+        const settings = siteSettings || {};
+        const isActive = settings.ticker_isActive ?? settings.tickerActive ?? true;
+        
+        if (!isActive) {
+            if(container) { container.classList.add('hidden'); container.classList.remove('flex'); }
+            if(navbar) navbar.style.top = '0';
+            return;
+        }
+
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'ticker-container';
+            container.className = 'w-full py-1.5 overflow-hidden absolute top-0 left-0 right-0 border-b-2 border-[#ffffff]';
+            container.style.zIndex = '9999';
+            document.body.insertBefore(container, document.body.firstChild);
+        }
+
+        const text = settings.ticker_text || settings.tickerText || settings.announcement || 'حلويات بوسي: تجربة تذوق بتعكس الجودة الأصلية وتليق بمناسباتك السعيدة';
+        const speed = settings.ticker_speed || settings.tickerSpeed || 20;
+        const bgColor = settings.ticker_bgColor || '#ff91a4';
+        const textColor = settings.ticker_textColor || '#ffffff';
+
+        container.style.backgroundColor = bgColor;
+        container.classList.remove('hidden');
+        container.classList.add('flex', 'items-center');
+        container.innerHTML = `<span class="animate-ticker text-xs md:text-sm font-bold" style="white-space: nowrap; animation-duration: ${speed}s; color: ${textColor}; font-family: var(--brand-font);">${text} &nbsp;&nbsp;✨&nbsp;&nbsp; ${text} &nbsp;&nbsp;✨&nbsp;&nbsp; ${text}</span>`;
+        
+        if(navbar) navbar.style.top = '32px';
+    } catch (e) {
+        console.warn("BoseSweets: تم تجاوز خطأ في الشريط المتحرك لضمان سير الواجهة.", e);
     }
-
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'ticker-container';
-        container.className = 'w-full py-1.5 overflow-hidden absolute top-0 left-0 right-0 border-b-2 border-[#ffffff]';
-        container.style.zIndex = '9999';
-        document.body.insertBefore(container, document.body.firstChild);
-    }
-
-    const text = siteSettings.ticker_text || siteSettings.tickerText || siteSettings.announcement || 'حلويات بوسي: تجربة تذوق بتعكس الجودة الأصلية وتليق بمناسباتك السعيدة';
-    const speed = siteSettings.ticker_speed || siteSettings.tickerSpeed || 20;
-    const bgColor = siteSettings.ticker_bgColor || '#ff91a4';
-    const textColor = siteSettings.ticker_textColor || '#ffffff';
-
-    container.style.backgroundColor = bgColor;
-    container.classList.remove('hidden');
-    container.classList.add('flex', 'items-center');
-    container.innerHTML = `<span class="animate-ticker text-xs md:text-sm font-bold" style="white-space: nowrap; animation-duration: ${speed}s; color: ${textColor}; font-family: var(--brand-font);">${text} &nbsp;&nbsp;✨&nbsp;&nbsp; ${text} &nbsp;&nbsp;✨&nbsp;&nbsp; ${text}</span>`;
-    
-    if(navbar) navbar.style.top = '32px';
 };
 window.renderTicker = renderTicker;
 
 // 👑 تطبيق إعدادات الموقع والهوية البصرية على الواجهة
 export const applySettingsToUI = function() {
-    window.renderTicker(); 
-    if (!isAppReady) return; 
+    try {
+        window.renderTicker(); 
+        if (!isAppReady) return; 
 
-    const root = document.documentElement;
-    root.style.setProperty('--brand-font', (siteSettings.visuals && siteSettings.visuals.fontFamily) ? siteSettings.visuals.fontFamily : (siteSettings.fontFamily || "'Cairo', sans-serif"));
-    
-    const themeColor = (siteSettings.visuals && siteSettings.visuals.themeHex) ? siteSettings.visuals.themeHex : '#ff91a4';
-    root.style.setProperty('--brand-primary', themeColor);
-    root.style.setProperty('--site-bg', '#ffffff');
-    root.style.setProperty('--site-text', '#1a1a1a');
-
-    const loaderTextEl = document.getElementById('dyn-loader-text');
-    if (loaderTextEl) loaderTextEl.innerText = (siteSettings.UI_Settings && siteSettings.UI_Settings.loader_text) ? siteSettings.UI_Settings.loader_text : ((siteSettings.visuals && siteSettings.visuals.loaderText) ? siteSettings.visuals.loaderText : "حلويات بوسي ✨");
-
-    if (siteSettings.seo) {
-        document.title = (siteSettings.seo.title && siteSettings.seo.title.trim() !== '') ? siteSettings.seo.title.trim() : `${siteSettings.brandName} | المنصة الرسمية المعتمدة في الفرافرة`;
-        const titleEl = document.getElementById('dyn-page-title');
-        if(titleEl) titleEl.innerText = document.title;
+        const settings = siteSettings || {};
+        const root = document.documentElement;
         
-        let metaDesc = document.querySelector('meta[name="description"]');
-        if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.setAttribute('name', 'description'); document.head.appendChild(metaDesc); }
-        metaDesc.setAttribute('content', siteSettings.seo.desc || `الموقع الرسمي لبراند حلويات بوسي (BoseSweets). نتميز بصناعة التورت الملكية، السينابون الفاخر، والدوناتس المبتكرة في الفرافرة والكفاح.`);
-
-        let metaKeywords = document.querySelector('meta[name="keywords"]');
-        if (!metaKeywords) { metaKeywords = document.createElement('meta'); metaKeywords.setAttribute('name', 'keywords'); document.head.appendChild(metaKeywords); }
-        metaKeywords.setAttribute('content', siteSettings.seo.keywords || `حلويات بوسي, BoseSweets, تورت الفرافرة, حلويات الوادي الجديد, كيك الكفاح, سينابون بوسي`);
-    }
-
-    if (siteSettings.UI_Settings) {
-        const loader = document.getElementById('global-loader');
-        if (loader) {
-            loader.style.backgroundColor = siteSettings.UI_Settings.loader_bgColor || '#ffffff';
-            const loaderTextEl = loader.querySelector('h1');
-            if (loaderTextEl) loaderTextEl.style.color = siteSettings.UI_Settings.loader_textColor || '#ff91a4';
-            const loaderIcon = loader.querySelector('i');
-            if(loaderIcon) loaderIcon.style.color = siteSettings.UI_Settings.loader_textColor || '#ff91a4';
-        }
-    }
-
-    if (siteSettings.social) {
-        document.querySelectorAll('a[href*="facebook.com"]').forEach(a => a.href = siteSettings.social.facebook || 'https://facebook.com/BoseSweets');
-        document.querySelectorAll('a[href*="instagram.com"]').forEach(a => a.href = siteSettings.social.instagram || 'https://instagram.com/BoseSweets');
+        if(settings.visuals && settings.visuals.fontFamily) root.style.setProperty('--brand-font', settings.visuals.fontFamily);
+        else if(settings.fontFamily) root.style.setProperty('--brand-font', settings.fontFamily);
         
-        const footerLinksContainer = document.getElementById('custom-social-links-container');
-        if (footerLinksContainer) {
-            let customHtml = '';
-            if (siteSettings.social.tiktok) customHtml += `<a href="${siteSettings.social.tiktok}" target="_blank" class="w-10 h-10 rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] flex items-center justify-center transition-all" title="TikTok"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 15.68a6.34 6.34 0 0 0 6.27 6.36 6.33 6.33 0 0 0 6.27-6.36v-6.9a8.16 8.16 0 0 0 4.7 1.48v-3.4a4.85 4.85 0 0 1-2.65-.17z"/></svg></a>`;
-            if (siteSettings.social.whatsapp) customHtml += `<a href="https://wa.me/${siteSettings.social.whatsapp}" target="_blank" class="w-10 h-10 rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] flex items-center justify-center transition-all" title="WhatsApp"><i data-lucide="message-circle" class="w-5 h-5"></i></a>`;
+        const themeColor = (settings.visuals && settings.visuals.themeHex) ? settings.visuals.themeHex : '#ff91a4';
+        root.style.setProperty('--brand-primary', themeColor);
+        root.style.setProperty('--site-bg', '#ffffff');
+        root.style.setProperty('--site-text', '#1a1a1a');
+
+        const loaderTextEl = document.getElementById('dyn-loader-text');
+        if (loaderTextEl) loaderTextEl.innerText = (settings.UI_Settings && settings.UI_Settings.loader_text) ? settings.UI_Settings.loader_text : ((settings.visuals && settings.visuals.loaderText) ? settings.visuals.loaderText : "حلويات بوسي ✨");
+
+        if (settings.seo) {
+            document.title = (settings.seo.title && settings.seo.title.trim() !== '') ? settings.seo.title.trim() : `${settings.brandName || 'حلويات بوسي'} | المنصة الرسمية المعتمدة في الفرافرة`;
+            const titleEl = document.getElementById('dyn-page-title');
+            if(titleEl) titleEl.innerText = document.title;
             
-            if (siteSettings.social.customLinks && siteSettings.social.customLinks.length > 0) {
-                siteSettings.social.customLinks.forEach(link => {
-                    customHtml += `<a href="${escapeHTML(link.url)}" target="_blank" class="w-10 h-10 rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] flex items-center justify-center transition-all" title="${escapeHTML(link.label)}"><i data-lucide="link-2" class="w-5 h-5"></i></a>`;
-                });
-            }
-            footerLinksContainer.innerHTML = customHtml;
-            if(window.lucide) lucide.createIcons();
-        }
-    }
-    
-    if(document.getElementById('dyn-page-title')) document.getElementById('dyn-page-title').innerText = `${siteSettings.brandName} | القائمة الرسمية`;
-    if(document.getElementById('dyn-brand-name')) document.getElementById('dyn-brand-name').innerText = siteSettings.brandName;
-    
-    if(document.getElementById('dyn-hero-title')) { const title = document.getElementById('dyn-hero-title'); title.innerHTML = siteSettings.heroTitle; title.style.opacity = '1'; }
-    if(document.getElementById('dyn-hero-desc')) { const desc = document.getElementById('dyn-hero-desc'); desc.innerText = siteSettings.heroDesc; desc.style.opacity = '0.9'; }
-    if(document.getElementById('dyn-footer-brand')) document.getElementById('dyn-footer-brand').innerText = siteSettings.brandName;
-    if(document.getElementById('dyn-footer-quote')) document.getElementById('dyn-footer-quote').innerText = siteSettings.footerQuote;
-    if(document.getElementById('dyn-footer-phone')) document.getElementById('dyn-footer-phone').innerText = siteSettings.footerPhone;
-    if(document.getElementById('dyn-footer-address')) document.getElementById('dyn-footer-address').innerHTML = siteSettings.footerAddress;
-    
-    const areaSelect = document.getElementById('cust-area');
-    if(areaSelect && shippingZones) areaSelect.innerHTML = `<option value="" disabled selected>اختار منطقة التوصيل...</option>` + shippingZones.map(z => `<option value="${z.id}">${escapeHTML(z.name)} (+${Number(z.fee)} ج.م توصيل)</option>`).join('');
-    
-    if(typeof window.renderCustomerSidebarCategories === 'function') window.renderCustomerSidebarCategories();
+            let metaDesc = document.querySelector('meta[name="description"]');
+            if (!metaDesc) { metaDesc = document.createElement('meta'); metaDesc.setAttribute('name', 'description'); document.head.appendChild(metaDesc); }
+            metaDesc.setAttribute('content', settings.seo.desc || `الموقع الرسمي لبراند حلويات بوسي (BoseSweets). نتميز بصناعة التورت الملكية، السينابون الفاخر، والدوناتس المبتكرة في الفرافرة والكفاح.`);
 
-    setTimeout(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('product');
-        if (productId && typeof window.navigateToProduct === 'function') {
-            window.navigateToProduct(productId);
+            let metaKeywords = document.querySelector('meta[name="keywords"]');
+            if (!metaKeywords) { metaKeywords = document.createElement('meta'); metaKeywords.setAttribute('name', 'keywords'); document.head.appendChild(metaKeywords); }
+            metaKeywords.setAttribute('content', settings.seo.keywords || `حلويات بوسي, BoseSweets, تورت الفرافرة, حلويات الوادي الجديد, كيك الكفاح, سينابون بوسي`);
         }
-    }, 800);
+
+        if (settings.UI_Settings) {
+            const loader = document.getElementById('global-loader');
+            if (loader) {
+                loader.style.backgroundColor = settings.UI_Settings.loader_bgColor || '#ffffff';
+                const loaderTextEl = loader.querySelector('h1');
+                if (loaderTextEl) loaderTextEl.style.color = settings.UI_Settings.loader_textColor || '#ff91a4';
+                const loaderIcon = loader.querySelector('i');
+                if(loaderIcon) loaderIcon.style.color = settings.UI_Settings.loader_textColor || '#ff91a4';
+            }
+        }
+
+        if (settings.social) {
+            document.querySelectorAll('a[href*="facebook.com"]').forEach(a => a.href = settings.social.facebook || 'https://facebook.com/BoseSweets');
+            document.querySelectorAll('a[href*="instagram.com"]').forEach(a => a.href = settings.social.instagram || 'https://instagram.com/BoseSweets');
+            
+            const footerLinksContainer = document.getElementById('custom-social-links-container');
+            if (footerLinksContainer) {
+                let customHtml = '';
+                if (settings.social.tiktok) customHtml += `<a href="${settings.social.tiktok}" target="_blank" class="w-10 h-10 rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] flex items-center justify-center transition-all" title="TikTok"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 15.68a6.34 6.34 0 0 0 6.27 6.36 6.33 6.33 0 0 0 6.27-6.36v-6.9a8.16 8.16 0 0 0 4.7 1.48v-3.4a4.85 4.85 0 0 1-2.65-.17z"/></svg></a>`;
+                if (settings.social.whatsapp) customHtml += `<a href="https://wa.me/${settings.social.whatsapp}" target="_blank" class="w-10 h-10 rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] flex items-center justify-center transition-all" title="WhatsApp"><i data-lucide="message-circle" class="w-5 h-5"></i></a>`;
+                
+                if (settings.social.customLinks && settings.social.customLinks.length > 0) {
+                    settings.social.customLinks.forEach(link => {
+                        customHtml += `<a href="${escapeHTML(link.url)}" target="_blank" class="w-10 h-10 rounded-full bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] flex items-center justify-center transition-all" title="${escapeHTML(link.label)}"><i data-lucide="link-2" class="w-5 h-5"></i></a>`;
+                    });
+                }
+                footerLinksContainer.innerHTML = customHtml;
+                if(window.lucide) lucide.createIcons();
+            }
+        }
+        
+        if(document.getElementById('dyn-page-title')) document.getElementById('dyn-page-title').innerText = `${settings.brandName || 'حلويات بوسي'} | القائمة الرسمية`;
+        if(document.getElementById('dyn-brand-name')) document.getElementById('dyn-brand-name').innerText = settings.brandName || 'حلويات بوسي';
+        
+        if(document.getElementById('dyn-hero-title')) { const title = document.getElementById('dyn-hero-title'); title.innerHTML = settings.heroTitle || 'حلويات بوسي'; title.style.opacity = '1'; }
+        if(document.getElementById('dyn-hero-desc')) { const desc = document.getElementById('dyn-hero-desc'); desc.innerText = settings.heroDesc || 'الطعم الفاخر'; desc.style.opacity = '0.9'; }
+        if(document.getElementById('dyn-footer-brand')) document.getElementById('dyn-footer-brand').innerText = settings.brandName || 'حلويات بوسي';
+        if(document.getElementById('dyn-footer-quote')) document.getElementById('dyn-footer-quote').innerText = settings.footerQuote || 'عقد من التميز';
+        if(document.getElementById('dyn-footer-phone')) document.getElementById('dyn-footer-phone').innerText = settings.footerPhone || '';
+        if(document.getElementById('dyn-footer-address')) document.getElementById('dyn-footer-address').innerHTML = settings.footerAddress || '';
+        
+        const areaSelect = document.getElementById('cust-area');
+        if(areaSelect && shippingZones) areaSelect.innerHTML = `<option value="" disabled selected>اختار منطقة التوصيل...</option>` + shippingZones.map(z => `<option value="${z.id}">${escapeHTML(z.name)} (+${Number(z.fee)} ج.م توصيل)</option>`).join('');
+        
+        if(typeof window.renderCustomerSidebarCategories === 'function') window.renderCustomerSidebarCategories();
+
+        setTimeout(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('product');
+            if (productId && typeof window.navigateToProduct === 'function') {
+                window.navigateToProduct(productId);
+            }
+        }, 800);
+    } catch(e) {
+        console.error("BoseSweets: خطأ أثناء تطبيق الإعدادات الفنية", e);
+    }
 };
 window.applySettingsToUI = applySettingsToUI;
 
@@ -205,21 +219,21 @@ export const drawProductCard = function(p) {
     }
 
     return `
-    <div id="product-card-${pIdSafe}" class="product-card-premium">
-        <div class="product-image-glow w-full aspect-square mb-4 relative overflow-hidden rounded-[2rem]" onclick="window.navigateToProduct('${pIdSafe}')">
-            <img src="${displayImg}" class="${isOutOfStock ? 'grayscale opacity-70' : ''} blur-load w-full h-full object-contain transition-all duration-700 hover:scale-110 cursor-pointer" loading=\"lazy\" decoding=\"async\" alt="صنف ${escapeHTML(p.name)} من قسم ${escapeHTML(p.category)} - حلويات بوسي" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
+    <div id="product-card-${pIdSafe}" class="product-card-premium relative bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-[2rem] overflow-hidden shadow-sm hover:-translate-y-1 transition-all group flex flex-col p-4">
+        <div class="product-image-glow w-full aspect-square mb-4 relative overflow-hidden rounded-[1.5rem]" onclick="window.navigateToProduct('${pIdSafe}')">
+            <img src="${displayImg}" class="${isOutOfStock ? 'grayscale opacity-70' : ''} blur-load w-full h-full object-cover transition-all duration-700 group-hover:scale-110 cursor-pointer" loading=\"lazy\" decoding=\"async\" alt="صنف ${escapeHTML(p.name)} من قسم ${escapeHTML(p.category)} - حلويات بوسي" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
             ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/50 backdrop-blur-[4px] z-10 flex items-center justify-center"><span class="bg-[var(--brand-primary)] text-[#ffffff] font-black px-4 py-2 rounded-xl shadow-lg border-2 border-[#ffffff]">نفدت الكمية مؤقتاً</span></div>` : ''}
         </div>
         
-        <div class="flex flex-col flex-1 text-center bg-[#ffffff] relative z-20">
+        <div class="flex flex-col flex-1 text-center relative z-20">
             ${discountBadgeHtml}
             <h4 class="text-xl font-black leading-tight text-[var(--site-text)] mb-2">${escapeHTML(p.name)}</h4>
-            <p class="text-sm font-bold text-[var(--site-text)] mb-4 line-clamp-3 leading-relaxed">${getFinalDescription(p)}</p>
+            <p class="text-xs font-bold text-[var(--site-text)] mb-4 line-clamp-3 leading-relaxed opacity-80">${getFinalDescription(p)}</p>
             
-            <div class="mt-auto flex flex-col gap-4 w-full border-t-2 border-[var(--brand-primary)] pt-4">
+            <div class="mt-auto flex flex-col gap-4 w-full border-t-2 border-[var(--brand-primary)]/20 pt-4">
                 <div class="flex items-center justify-center rounded-full py-2 px-4 mx-auto min-w-[70%] bg-[#ffffff] border-2 border-[var(--brand-primary)] shadow-sm">
                     <span class="font-black text-2xl text-[var(--brand-primary)]">${currentP > 0 ? currentP + ' ج.م' : 'حسب الطلب'}</span>
-                    ${(oldP && oldP > currentP) ? `<del class="text-sm text-[var(--site-text)] font-bold ml-2">${oldP}</del>` : ''}
+                    ${(oldP && oldP > currentP) ? `<del class="text-sm text-[var(--site-text)] font-bold ml-2 opacity-50">${oldP}</del>` : ''}
                 </div>
                 
                 <div class="flex flex-col gap-3 w-full">
@@ -230,14 +244,14 @@ export const drawProductCard = function(p) {
                             <button onclick="window.updateTempQtyContext(this, 1)" class="w-10 h-10 flex items-center justify-center bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-full shadow-sm text-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff] font-black transition-all"><i data-lucide="plus" class="w-4 h-4"></i></button>
                         </div>
                         ${isOutOfStock ? 
-                        `<button class="flex-1 py-3 bg-[#ffffff] text-[var(--site-text)] rounded-full font-black text-lg shadow-inner cursor-not-allowed border-2 border-[var(--brand-primary)]">غير متوفر</button>` 
+                        `<button class="flex-1 py-3 bg-[var(--site-text)]/10 text-[var(--site-text)]/50 rounded-full font-black text-sm shadow-inner cursor-not-allowed border-2 border-transparent">غير متوفر</button>` 
                         : 
-                        `<button onclick="window.addWithQtyContext(this, '${pIdSafe}')" class="flex-1 py-3 bg-[var(--brand-primary)] text-[#ffffff] border-2 border-[var(--brand-primary)] rounded-full font-black text-lg btn-premium-action flex items-center justify-center gap-2 hover:bg-[#ffffff] hover:text-[var(--brand-primary)]"><i data-lucide="shopping-bag" class="w-5 h-5"></i> إضافة للسلة</button>`
+                        `<button onclick="window.addWithQtyContext(this, '${pIdSafe}')" class="flex-1 py-3 bg-[var(--brand-primary)] text-[#ffffff] border-2 border-[var(--brand-primary)] rounded-full font-black text-sm btn-premium-action flex items-center justify-center gap-2 hover:bg-[#ffffff] hover:text-[var(--brand-primary)]"><i data-lucide="shopping-bag" class="w-5 h-5"></i> إضافة للسلة</button>`
                         }
                     </div>
                     <div class="flex gap-2 w-full">
-                        <button onclick="window.navigateToProduct('${pIdSafe}')" class="flex-1 py-2.5 bg-[#ffffff] text-[var(--site-text)] rounded-full font-bold text-sm hover:bg-[var(--brand-primary)] hover:text-[#ffffff] transition-colors border-2 border-[var(--brand-primary)]">استعراض التفاصيل</button>
-                        <button onclick="window.shareProduct('${pIdSafe}', '${escapeHTML(p.name)}')" class="px-3 bg-[#ffffff] text-[var(--brand-primary)] rounded-full hover:bg-[var(--brand-primary)] hover:text-[#ffffff] transition-colors border-2 border-[var(--brand-primary)] flex items-center justify-center"><i data-lucide="share-2" class="w-4 h-4"></i></button>
+                        <button onclick="window.navigateToProduct('${pIdSafe}')" class="flex-1 py-2.5 bg-[#ffffff] text-[var(--site-text)] rounded-full font-bold text-sm hover:bg-[var(--brand-primary)] hover:text-[#ffffff] transition-colors border-2 border-[var(--brand-primary)]/50">التفاصيل</button>
+                        <button onclick="window.shareProduct('${pIdSafe}', '${escapeHTML(p.name)}')" class="px-4 bg-[#ffffff] text-[var(--brand-primary)] rounded-full hover:bg-[var(--brand-primary)] hover:text-[#ffffff] transition-colors border-2 border-[var(--brand-primary)]/50 flex items-center justify-center"><i data-lucide="share-2" class="w-4 h-4"></i></button>
                     </div>
                 </div>
             </div>

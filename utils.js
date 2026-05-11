@@ -85,7 +85,6 @@ export function showSystemToast(message, type = 'info') {
         const iconEl = document.getElementById('toast-icon');
         msgEl.innerText = message;
         
-        // تطبيق حاسم وصارم للهوية البصرية لعلامة حلويات بوسي (بامبي وأبيض فقط)
         let bgColor = 'bg-[#ffffff] text-[#ff91a4] border-2 border-[#ff91a4]';
         let iconColor = '#ff91a4';
 
@@ -97,7 +96,6 @@ export function showSystemToast(message, type = 'info') {
             iconColor = '#ff91a4';
         }
 
-        // تصميم متجاوب ليتناسب مع الموبايل والكمبيوتر باحترافية
         toast.className = `fixed top-24 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-4 px-8 py-4 rounded-[2.5rem] shadow-2xl font-bold text-sm max-w-[90vw] text-center animate-fade-in ${bgColor}`;
         iconEl.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : (type === 'success' ? 'check-circle' : 'info'));
         iconEl.style.color = iconColor;
@@ -143,7 +141,6 @@ export async function compressImageClientSide(file) {
     });
 }
 
-// 👑 محرك التحليل السلوكي الصامت لتخصيص تجربة العميل بصمت وبدون أي إعاقة للسرعة
 export const BehavioralAnalytics = {
     trackCategoryClick(categoryName) {
         try {
@@ -151,7 +148,6 @@ export const BehavioralAnalytics = {
             prefs[categoryName] = (prefs[categoryName] || 0) + 1;
             localStorage.setItem('boseSweets_behavior', JSON.stringify(prefs));
         } catch(e) {
-            // صمت متعمد لعدم إزعاج المستخدم في حال امتلاء التخزين المحلي
             console.warn("BoseSweets Analytics: تعذر تحديث السجل السلوكي بشكل مؤقت.");
         }
     },
@@ -163,7 +159,6 @@ export const BehavioralAnalytics = {
     }
 };
 
-// 👑 محرك المزامنة الذكية للطلبات (Exponential Backoff & Offline Queue) مدعوم ضد الانقطاع
 export const AdvancedNetworkEngine = {
     async syncWithRetry(dbStore, dataPayload, maxRetries = 5, currentRetry = 0) {
         if (!navigator.onLine) {
@@ -216,7 +211,6 @@ export const AdvancedNetworkEngine = {
     }
 };
 
-// أنظمة الرصد الإداري المتقدم (تظهر للإدارة فقط ولا تعيق تجربة العميل)
 if (typeof window !== 'undefined') {
     window.addEventListener('error', function(e) {
         const isAdmin = window.location.pathname.includes('admin') || document.title.includes('الإدارة');
@@ -232,7 +226,7 @@ if (typeof window !== 'undefined') {
         }
     });
 
-    // 🛡️ التوافقية المطلقة: ربط كل الدوال بالواجهة لتكون متاحة لأي استدعاء مباشر من ملفات الـ HTML
+    // 🛡️ التوافقية المطلقة
     window.MemoryManager = MemoryManager;
     window.hexToMathHSL = hexToMathHSL;
     window.escapeHTML = escapeHTML;
