@@ -233,30 +233,43 @@ async function recoverBoseSweetsCart() {
 
 function initUI() {
     const urlParams = new URLSearchParams(window.location.search);
+    const productId = urlParams.get('product');
     const routeCat = urlParams.get('category');
 
-    state.activeCat = (routeCat && catMenu.includes(routeCat)) ? routeCat : 'الرئيسية';
-
-    applySettingsToUI();
-    renderCategories();
-
-    if (state.activeCat === 'الرئيسية') {
-        if (typeof window.showHomeView === 'function') window.showHomeView();
-        initWaterfall();
-        initHomepageSections();
-    } else {
+    if(typeof applySettingsToUI === 'function') applySettingsToUI();
+    
+    // التوجيه السيادي المتقدم عند الإقلاع
+    if (productId) {
+        if (typeof window.showProductDetails === 'function') window.showProductDetails(productId);
+    } else if (routeCat && catMenu.includes(routeCat)) {
+        state.activeCat = routeCat;
         if (typeof window.showMenuView === 'function') window.showMenuView();
-        renderMainDisplay();
+        if (typeof renderMainDisplay === 'function') renderMainDisplay();
+    } else {
+        state.activeCat = 'الرئيسية';
+        if (typeof window.showHomeView === 'function') window.showHomeView();
+        if (typeof initWaterfall === 'function') initWaterfall();
+        if (typeof initHomepageSections === 'function') initHomepageSections();
     }
-
+    
+    // التوافقية الصارمة: تأمين بقاء استدعاء الدوال الحيوية لضمان استقرار العرض
+    if (typeof window.renderCategories === 'function') {
+        window.renderCategories();
+    } else if (typeof renderCategories === 'function') {
+        renderCategories();
+    }
+    
     if (document.getElementById('gallery-customer-section') && typeof renderCustomerGallery === 'function') {
         renderCustomerGallery();
     }
 
     if(typeof syncCartUI === 'function') syncCartUI();
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide) window.lucide.createIcons();
 
-    if (typeof window.renderSmartSuggestions === 'function') window.renderSmartSuggestions('main');
+    // التوافقية الصارمة: الحفاظ على نظام الاقتراحات الذكية 
+    if (typeof window.renderSmartSuggestions === 'function') {
+        window.renderSmartSuggestions('main');
+    }
 
     const phoneDisplay = document.getElementById('footer-phone-display');
     if (phoneDisplay && siteSettings) {
