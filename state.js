@@ -1,5 +1,5 @@
 // إدارة الحالة الديناميكية والمزامنة السيادية - براند حلويات بوسي
-import { defaultSettings, defaultShipping } from './config.js';
+import { defaultSettings, defaultShipping, defaultCatalog } from './config.js';
 
 // 👑 الترقية السيادية: توحيد مسار الذاكرة بين الإدارة والعميل لضمان مرجعية واحدة (Single Source of Truth)
 export let siteSettings = (typeof window !== 'undefined' && window.siteSettings) || { ...defaultSettings };
@@ -137,8 +137,7 @@ export function getFromLocalMemory(key) {
 
 /**
  * 👑 محرك الاستدعاء المركزي (BoseSweets Sync Engine)
- * يضمن سحب البيانات من السحابة وتحديث الذاكرة الحية فوراً مع حماية ضد انهيار الاتصال.
- * تم تحصينه بمرونة لتخطي الكاش في لوحة الإدارة وقبول كافة أنواع البيانات.
+ * تم دعمه لتأمين إشارة الجاهزية الإجبارية وضمان عدم توقف الواجهة أبداً.
  */
 export async function fetchAndSyncBoseSweetsData(fetchPromise, cacheKey = 'boseSweets_catalog', cacheDuration = 3600000) {
     const timeKey = `${cacheKey}_timestamp`;
@@ -150,14 +149,12 @@ export async function fetchAndSyncBoseSweetsData(fetchPromise, cacheKey = 'boseS
         const isAdminPath = typeof window !== 'undefined' && window.location.pathname.includes('admin');
         const forceRefresh = typeof window !== 'undefined' && localStorage.getItem('BoseSweets_Local_Sync_Force');
         
-        // مسح الكاش إجبارياً إذا طلبت الإدارة ذلك لضمان التحديث اللحظي
         if (forceRefresh) {
             if (typeof window !== 'undefined') {
                 localStorage.removeItem(timeKey);
                 localStorage.removeItem('BoseSweets_Local_Sync_Force');
             }
         } else if (!isAdminPath && localData && cacheTime && (currentTime - Number(cacheTime) < cacheDuration)) {
-            // القرار المهني: التحقق الذكي من نوع البيانات لمنع الأخطاء
             if (Array.isArray(localData) && cacheKey.includes('catalog')) {
                 catalog.length = 0;
                 localData.forEach(item => {
@@ -165,6 +162,7 @@ export async function fetchAndSyncBoseSweetsData(fetchPromise, cacheKey = 'boseS
                     catalog.push(item);
                 });
                 syncCatalogMap();
+                setAppReady(); // إشارة جاهزية فورية
                 return true;
             }
         }
@@ -172,7 +170,6 @@ export async function fetchAndSyncBoseSweetsData(fetchPromise, cacheKey = 'boseS
         const data = await fetchPromise(); 
         
         if (data) {
-            // معالجة ذكية: إذا كانت البيانات مصفوفة خاصة بالكتالوج
             if (Array.isArray(data) && cacheKey.includes('catalog')) {
                 catalog.length = 0;
                 data.forEach(item => {
@@ -182,12 +179,12 @@ export async function fetchAndSyncBoseSweetsData(fetchPromise, cacheKey = 'boseS
                 syncCatalogMap();
             }
             
-            // حفظ النسخة المحدثة في الخزنة المحلية
             saveToLocalMemory(cacheKey, (Array.isArray(data) && cacheKey.includes('catalog')) ? catalog : data); 
             
             if (typeof window !== 'undefined') {
                 localStorage.setItem(timeKey, currentTime.toString()); 
             }
+            setAppReady(); // تأكيد الجاهزية بعد المزامنة
             return true; 
         } else {
             throw new Error("بيانات الخادم غير صالحة أو فارغة");
@@ -195,15 +192,18 @@ export async function fetchAndSyncBoseSweetsData(fetchPromise, cacheKey = 'boseS
     } catch (error) {
         console.warn('منظومة حلويات بوسي: جاري تفعيل وضع الاستدعاء المحلي لتأمين العرض ضد تقلبات الشبكة.');
         
-        // البحث الموسع عن أي نسخة احتياطية لضمان عدم خلو الموقع من المنتجات
-        const fallbackData = getFromLocalMemory(cacheKey) || getFromLocalMemory('bSweets_catalog') || getFromLocalMemory('boseSweets_catalog');
+        // خط الدفاع السيادي الأخير لضمان عرض المنتجات الدائم
+        const fallbackData = getFromLocalMemory(cacheKey) || getFromLocalMemory('bSweets_catalog') || getFromLocalMemory('boseSweets_catalog') || (cacheKey.includes('catalog') ? defaultCatalog : null);
         
         if (fallbackData && Array.isArray(fallbackData) && cacheKey.includes('catalog')) {
             catalog.length = 0;
             fallbackData.forEach(item => catalog.push(item));
             syncCatalogMap();
+            setAppReady(); // إجبار الجاهزية لاستمرار العمل
             return true;
         }
+        
+        setAppReady(); // إجبار فك تجميد الواجهة في أسوأ الظروف
         return false;
     }
 }
