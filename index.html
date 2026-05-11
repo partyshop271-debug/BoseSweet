@@ -58,7 +58,7 @@
     }
     </script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     
     <!-- Core External Libraries -->
@@ -84,6 +84,10 @@
             --p-size: 0.95rem;
             --brand-glow: rgba(255, 145, 164, 0.3);
             --brand-glow-strong: rgba(255, 145, 164, 0.5);
+            
+            /* المتغيرات الهندسية الجديدة للمسافات */
+            --nav-height: 80px;
+            --ticker-height: 0px; 
         }
 
         body {
@@ -95,7 +99,7 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        h1, h2, h3, h4, h5, h6 { color: var(--site-text); font-weight: 800; }
+        h1, h2, h3, h4, h5, h6 { color: var(--site-text); font-weight: 900; }
         h1 { font-size: var(--h1-size); line-height: 1.2; color: var(--brand-primary); }
         h2 { font-size: var(--h2-size); line-height: 1.3; }
         p { font-size: var(--p-size); font-weight: 700; line-height: 1.8; color: var(--site-text); }
@@ -110,7 +114,7 @@
 
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: var(--site-bg); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--brand-primary); border-radius: 10px; }
 
@@ -176,15 +180,61 @@
         @keyframes ticker-scroll { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         .animate-ticker { display: inline-block; animation: ticker-scroll linear infinite; padding-right: 100%; }
         
-        .content-padding-top {
-            padding-top: 110px !important; 
+        /* نظام الهيدر المثبت ومنع التكدس */
+        #navbar {
+            position: fixed;
+            top: var(--ticker-height);
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            z-index: 9999;
+            background: var(--brand-light);
+            border-bottom: 2px solid var(--brand-primary);
+            transition: top 0.3s ease;
         }
+
+        #ticker-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 10000;
+            height: 32px;
+            display: none; 
+        }
+
+        .content-padding-top {
+            padding-top: calc(var(--nav-height) + var(--ticker-height) + 50px) !important;
+        }
+
+        /* أيقونات التواصل الاجتماعي الأصلية المحدثة */
+        .social-app-icon { 
+            width: 48px; 
+            height: 48px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .social-app-icon:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
+        .social-fb { background: #1877F2; }
+        .social-tiktok { background: #000000; }
+        .social-insta { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
+        
+        .footer-link { font-weight: 700; transition: all 0.3s ease; position: relative; display: inline-block; color: #1a1a1a; }
+        .footer-link:hover { color: var(--brand-primary); }
+
     </style>
 </head>
 <body class="bg-[#ffffff] text-[#1a1a1a]">
 
+    <!-- شريط التيكر العلوي المضاف -->
+    <div id="ticker-container" class="bg-[#ff91a4] text-[#ffffff] flex items-center overflow-hidden font-bold text-xs px-4"></div>
+
     <!-- شريط حالة الاتصال -->
-    <div id="network-status-banner" class="fixed top-0 left-0 w-full z-[100000] bg-[#1a1a1a] text-[#ffffff] text-center py-2.5 font-bold text-sm hidden transition-transform duration-300 -translate-y-full border-b-2 border-[#ff91a4] shadow-md flex justify-center items-center gap-2" role="alert">
+    <div id="network-status-banner" class="fixed top-[var(--ticker-height)] left-0 w-full z-[100000] bg-[#1a1a1a] text-[#ffffff] text-center py-2.5 font-bold text-sm hidden transition-transform duration-300 -translate-y-full border-b-2 border-[#ff91a4] shadow-md flex justify-center items-center gap-2" role="alert">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-[#ff91a4]"><line x1="2" y1="2" x2="22" y2="22"/><path d="M8.5 16.5a5 5 0 0 1 7 0"/><path d="M5 13a10 10 0 0 1 14 0"/><path d="M1.5 9.5a15 15 0 0 1 21 0"/></svg>
         <span>عفواً، لا يوجد اتصال بالإنترنت. تتصفح الآن النسخة المحفوظة.</span>
     </div>
@@ -226,106 +276,107 @@
     </div>
 
     <!-- شاشة التحميل -->
-    <div id="global-loader" class="fixed inset-0 z-[100000] flex flex-col items-center justify-center bg-[#ffffff] transition-opacity duration-700">
-        <div class="relative w-24 h-24 mb-6 text-[#ff91a4]">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-24 h-24 animate-pulse"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
+    <div id="global-loader" class="fixed inset-0 z-[100000] flex flex-col items-center justify-center bg-white transition-opacity duration-700">
+        <div class="relative w-24 h-24 mb-6">
+            <div class="absolute inset-0 border-4 border-[#ff91a4]/20 rounded-full"></div>
+            <div class="absolute inset-0 border-4 border-[#ff91a4] border-t-transparent rounded-full animate-spin"></div>
         </div>
         <h1 class="font-bold text-2xl text-[#ff91a4] tracking-tighter text-center px-4">حلويات بوسي...</h1>
     </div>
 
     <!-- الإشعارات المنبثقة -->
-    <div id="system-toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100000] hidden items-center gap-4 bg-[#ffffff] text-[#1a1a1a] px-8 py-4 rounded-[2.5rem] shadow-2xl font-bold border-2 border-[#ff91a4] animate-fade-in" role="status">
-        <i id="toast-icon" data-lucide="info" class="text-[#ff91a4] w-6 h-6"></i>
-        <span id="toast-message" class="text-sm"></span>
+    <div id="system-toast" class="fixed top-24 left-1/2 -translate-x-1/2 z-[100000] hidden items-center gap-4 bg-white px-8 py-4 rounded-full shadow-2xl border-2 border-[#ff91a4] animate-fade-in" role="status">
+        <i id="toast-icon" data-lucide="info" class="text-[#ff91a4] w-5 h-5"></i>
+        <span id="toast-message" class="font-bold text-sm text-[#1a1a1a]"></span>
     </div>
 
     <!-- محرك البحث السريع -->
-    <div id="search-overlay" class="fixed inset-0 bg-[#ffffff]/98 backdrop-blur-xl z-[100000] hidden flex-col transition-all duration-300">
+    <div id="search-overlay" class="fixed inset-0 bg-white/98 backdrop-blur-xl z-[100000] hidden flex-col transition-all duration-500">
         <div class="container mx-auto px-4 py-8 max-w-3xl flex flex-col h-full mt-8">
-            <div class="flex justify-between items-center mb-10 pb-4 border-b-2 border-[#ff91a4]/20">
+            <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-[#ff91a4]/20">
                 <h3 class="text-xl font-bold text-[#ff91a4] flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
-                    البحث في المنيو
+                    <i data-lucide="search" class="w-6 h-6"></i> البحث في المنيو
                 </h3>
-                <button aria-label="إغلاق البحث" onclick="toggleLiveSearch()" class="p-2.5 bg-[#ffffff] text-[#1a1a1a] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] border-2 border-[#ff91a4]/30 btn-interactive">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <button aria-label="إغلاق البحث" onclick="toggleLiveSearch()" class="p-2.5 bg-white text-[#1a1a1a] rounded-full border-2 border-[#ff91a4]/30 btn-interactive hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
             <div class="relative mb-8">
-                <input type="text" id="main-search-input" oninput="typeof performLiveSearchDebounced === 'function' ? performLiveSearchDebounced() : null" placeholder="ابحث عن منتج، قسم، أو نكهة..." class="w-full bg-[#ffffff] border-2 border-[#ff91a4] rounded-[2rem] py-4 px-12 text-lg font-bold text-[#1a1a1a] focus:outline-none focus:shadow-lg transition-all" autocomplete="off" aria-label="حقل البحث السريع">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute right-5 top-1/2 -translate-y-1/2 w-6 h-6 text-[#ff91a4]"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
+                <input type="text" id="main-search-input" oninput="typeof performLiveSearchDebounced === 'function' ? performLiveSearchDebounced() : null" placeholder="ابحث عن منتج، قسم، أو نكهة..." class="w-full bg-white border-2 border-[#ff91a4] rounded-[2rem] py-5 px-12 text-xl font-bold text-[#1a1a1a] focus:outline-none focus:shadow-xl transition-all" autocomplete="off" aria-label="حقل البحث السريع">
             </div>
-            <div id="search-results-container" class="flex-1 overflow-y-auto hide-scrollbar space-y-4 pb-10">
-                <div class="text-center text-[#1a1a1a] opacity-60 text-sm mt-12 font-bold">يرجى كتابة حرفين على الأقل للبحث...</div>
+            <div id="search-results-container" class="flex-1 overflow-y-auto hide-scrollbar space-y-4 pb-10 mt-8">
+                <div class="text-center text-[#1a1a1a] opacity-60 text-sm font-bold">يرجى كتابة حرفين على الأقل للبحث...</div>
             </div>
         </div>
     </div>
 
-    <!-- الشريط العلوي (Navbar) - تم دمج الأيقونات برمجياً لمنع مشكلة الدوائر -->
-    <nav id="navbar" class="fixed w-full z-[9999] transition-all duration-500 top-0 py-3 bg-[#ffffff] border-b-2 border-[#ff91a4] h-[80px]">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-full w-full gap-2">
-            
+    <!-- الشريط العلوي (Navbar) المحدث -->
+    <nav id="navbar">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center h-full gap-2">
             <div class="flex items-center shrink-0"> 
-                <button aria-label="القائمة الجانبية" onclick="toggleSidebarMenu(true)" class="p-2.5 rounded-full border-2 border-[#ff91a4] text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all bg-[#ffffff] btn-interactive">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 md:w-7 md:h-7"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                <button aria-label="القائمة الجانبية" onclick="toggleSidebarMenu(true)" class="p-2.5 rounded-full border-2 border-[#ff91a4] text-[#ff91a4] bg-white btn-interactive hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
                 </button>
             </div>
-            
-            <div id="brand-home-link" onclick="goToHome(event)" class="flex-1 flex justify-center items-center cursor-pointer select-none min-w-0 px-2" role="button" tabindex="0" aria-label="العودة للصفحة الرئيسية حلويات بوسي">
-                <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-[#ff91a4] tracking-normal truncate whitespace-nowrap transition-transform duration-300 hover:scale-105">حلويات بوسي</h1>
+            <div onclick="goToHome(event)" class="flex-1 flex justify-center items-center cursor-pointer select-none min-w-0 px-2" role="button" tabindex="0" aria-label="العودة للصفحة الرئيسية حلويات بوسي">
+                <h1 class="text-xl sm:text-2xl font-black text-[#ff91a4] tracking-tighter truncate whitespace-nowrap transition-transform duration-300 hover:scale-105">حلويات بوسي</h1>
             </div>
-
-            <div class="flex items-center justify-end shrink-0 gap-2 sm:gap-3">
-                <button aria-label="أيقونة البحث" onclick="toggleLiveSearch()" class="p-2.5 rounded-full border-2 border-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all bg-[#ffffff] text-[#ff91a4] btn-interactive">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg>
+            <div class="flex items-center justify-end shrink-0 gap-2">
+                <button aria-label="أيقونة البحث" onclick="toggleLiveSearch()" class="p-2.5 rounded-full border-2 border-[#ff91a4] text-[#ff91a4] bg-white btn-interactive hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all">
+                    <i data-lucide="search" class="w-5 h-5"></i>
                 </button>
-                <button aria-label="سلة المشتريات" onclick="toggleCart(true)" class="relative p-2.5 rounded-full border-2 border-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all bg-[#ffffff] text-[#ff91a4] btn-interactive">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7"><path d="m15 11-1 9"/><path d="m19 11-4-7"/><path d="M2 11h20"/><path d="m3.5 11 1.6 7.4a2 2 0 0 0 2 1.6h9.8a2 2 0 0 0 2-1.6l1.7-7.4"/><path d="M4.5 15.5h15"/><path d="m5 11 4-7"/><path d="m9 11 1 9"/></svg>
-                    <span id="cart-count-badge" class="hidden absolute -top-1 -left-1 bg-[#ff91a4] text-[#ffffff] text-[10px] font-bold w-5 h-5 md:w-6 md:h-6 flex items-center justify-center rounded-full border-2 border-[#ffffff]">0</span>
+                <button aria-label="سلة المشتريات" onclick="toggleCart(true)" class="relative p-2.5 rounded-full border-2 border-[#ff91a4] text-[#ff91a4] bg-white btn-interactive hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all">
+                    <i data-lucide="shopping-basket" class="w-5 h-5"></i>
+                    <span id="cart-count-badge" class="hidden absolute -top-1 -left-1 bg-[#ff91a4] text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-white font-bold">0</span>
                 </button>
             </div>
         </div>
     </nav>
 
     <!-- الواجهة الرئيسية -->
-    <div id="view-home" class="w-full flex flex-col gap-10 overflow-x-hidden content-padding-top">
+    <div id="view-home" class="w-full flex flex-col gap-12 sm:gap-16 overflow-x-hidden content-padding-top">
         
-        <header class="px-4 text-center max-w-4xl mx-auto relative pt-4 pb-4">
-            <div class="inline-flex items-center gap-2 px-5 py-2 bg-[#ffffff] rounded-full text-[12px] font-bold text-[#ff91a4] mb-6 border-2 border-[#ff91a4] shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>
-                <span>عشر سنين من التميز في الفرافرة</span>
+        <header class="px-4 text-center max-w-4xl mx-auto relative py-8 sm:py-12">
+            <!-- الهوك البصري المطور والمنسق للموبايل والكمبيوتر -->
+            <div class="inline-block mb-8 w-full">
+                <h1 class="text-[#1a1a1a] text-4xl sm:text-5xl md:text-7xl font-black mb-6 md:mb-8 tracking-tighter leading-tight drop-shadow-sm">
+                    حلويات <span class="text-[#ff91a4]">بوسي</span>
+                </h1>
+                
+                <div class="relative w-fit mx-auto">
+                    <div class="absolute inset-0 bg-[#ff91a4] blur-xl opacity-20 rounded-full"></div>
+                    <div class="relative bg-[#1a1a1a] text-white px-4 py-3 sm:px-8 md:px-10 sm:py-4 rounded-full flex items-center justify-center gap-2 sm:gap-4 shadow-2xl border-2 border-[#ff91a4]/40 w-full max-w-[95vw] sm:max-w-lg mx-auto">
+                        <i data-lucide="gem" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-[#ff91a4] shrink-0"></i>
+                        <span class="font-black text-[15px] sm:text-xl md:text-3xl tracking-wide whitespace-nowrap">الطعم الفاخر اللي تستحقه</span>
+                        <i data-lucide="gem" class="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 text-[#ff91a4] shrink-0"></i>
+                    </div>
+                </div>
             </div>
 
-            <h1 class="text-[#ff91a4] tracking-tight mb-5 text-3xl md:text-5xl font-bold leading-relaxed">
-                حلويات بوسي <br class="md:hidden"> الطعم الفاخر اللي تستحقه
-            </h1>
-
-            <p class="max-w-2xl mx-auto font-bold text-[#1a1a1a] mb-8 text-sm md:text-base leading-loose">
+            <p class="font-bold text-[#1a1a1a] mb-10 md:mb-12 text-sm sm:text-base md:text-lg leading-loose max-w-2xl mx-auto opacity-90 px-2">
                 بنختار خاماتنا بعناية شديدة وبنهتم بأدق التفاصيل، عشان نقدم طعم مميز وتجربة تذوق راقية تليق بيك وبكل مناسباتك السعيدة.
             </p>
 
-            <button onclick="window.showMenuView()" class="px-10 py-4 rounded-full bg-[#ff91a4] text-[#ffffff] font-bold text-lg border-2 border-[#ff91a4] hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all btn-interactive shadow-md">
-                تصفح المنيو
+            <button onclick="window.showMenuView()" class="px-8 py-4 sm:px-12 sm:py-5 rounded-full bg-[#ff91a4] text-white font-bold text-lg sm:text-xl shadow-xl btn-interactive border-2 border-[#ff91a4] hover:bg-white hover:text-[#ff91a4] transition-all">
+                تصفح المنيو الكامل
             </button>
         </header>
 
-        <section id="section-waterfall" class="w-full max-w-[1450px] mx-auto px-4 overflow-hidden relative mt-4">
-            <div class="flex gap-4 justify-center h-[500px] md:h-[600px] overflow-hidden">
+        <section id="section-waterfall" class="w-full max-w-[1450px] mx-auto px-4 overflow-hidden relative h-[450px] sm:h-[500px] md:h-[650px] mb-10">
+            <div class="flex gap-4 justify-center h-full overflow-hidden">
                 <div class="waterfall-col animate-waterfall-up" id="waterfall-col-1"></div>
                 <div class="waterfall-col animate-waterfall-down" id="waterfall-col-2"></div>
             </div>
         </section>
 
-        <section class="w-full flex flex-col gap-10 mb-16">
+        <section class="w-full flex flex-col gap-10 mb-20">
             <div id="section-bestsellers" class="max-w-7xl mx-auto w-full px-4 text-center hidden">
-                <h2 class="mb-4 text-[#ff91a4] tracking-tighter text-3xl md:text-5xl text-center">الأكثر مبيعاً</h2>
-                <p class="text-[#1a1a1a] mb-10 max-w-2xl mx-auto text-sm md:text-base font-bold">إبداعات حلويات بوسي اللي خطفت قلوب عملائنا، دايماً جاهزة تشاركك أجمل اللحظات.</p>
+                <h2 class="mb-8 md:mb-10 text-[#ff91a4] text-3xl md:text-5xl font-black tracking-tighter">الأكثر مبيعاً</h2>
                 <div id="bestsellers-container" class="flex overflow-x-auto gap-4 md:gap-8 hide-scrollbar snap-x py-6 px-4 justify-start sm:justify-center"></div>
             </div>
             
             <div id="section-newarrivals" class="max-w-7xl mx-auto w-full px-4 text-center hidden">
-                <h2 class="mb-4 text-[#ff91a4] tracking-tighter text-3xl md:text-5xl text-center">وصل حديثاً</h2>
-                <p class="text-[#1a1a1a] mb-10 max-w-2xl mx-auto text-sm md:text-base font-bold">أحدث إضافات حلويات بوسي، طعم جديد وتجربة مميزة تستحق تكتشفها.</p>
+                <h2 class="mb-8 md:mb-10 text-[#ff91a4] text-3xl md:text-5xl font-black tracking-tighter">وصل حديثاً</h2>
                 <div id="newarrivals-container" class="flex overflow-x-auto gap-4 md:gap-8 hide-scrollbar snap-x py-6 px-4 justify-start sm:justify-center"></div>
             </div>
         </section>
@@ -334,7 +385,7 @@
     <!-- واجهة المنيو -->
     <div id="view-menu" class="hidden w-full flex-col animate-fade-in content-padding-top">
         
-        <section class="sticky top-[80px] bg-[#ffffff] z-[300] py-4 border-b-2 border-[#ff91a4]">
+        <section class="sticky top-[calc(var(--nav-height)+var(--ticker-height))] bg-white z-[300] py-4 border-b-2 border-[#ff91a4] shadow-sm">
             <div class="max-w-7xl mx-auto px-4 md:px-6 flex flex-col gap-4">
                 <div id="categories-nav" class="flex overflow-x-auto hide-scrollbar gap-4 pb-2 snap-x" role="navigation" aria-label="أقسام المنيو"></div>
             </div>
@@ -342,20 +393,20 @@
 
         <main class="max-w-7xl mx-auto px-4 md:px-6 py-10 mb-20">
             <div id="category-description-area" class="mb-12 text-center max-w-5xl mx-auto hidden animate-fade-in">
-                <div class="p-8 bg-[#ffffff] rounded-[2.5rem] border-2 border-[#ff91a4] relative overflow-hidden">
-                    <h2 id="current-cat-name" class="text-[#ff91a4] mb-3 tracking-tighter uppercase text-2xl md:text-4xl">اسم القسم</h2>
+                <div class="p-8 bg-white rounded-[2.5rem] border-2 border-[#ff91a4] relative overflow-hidden shadow-sm">
+                    <h2 id="current-cat-name" class="text-[#ff91a4] mb-3 tracking-tighter uppercase text-2xl md:text-4xl font-black">اسم القسم</h2>
                     <p id="current-cat-desc" class="font-bold text-[#1a1a1a] leading-relaxed text-center text-base"></p>
                 </div>
             </div>
 
             <div id="sub-tabs-area" class="hidden w-full max-w-2xl mx-auto px-4 my-4 relative z-[200]"></div>
 
-            <div id="display-container" class="w-full min-h-[400px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"></div>
+            <div id="display-container" class="w-full min-h-[400px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12"></div>
 
             <div id="related-products-area" class="mt-24 pt-16 border-t-2 border-[#ff91a4] hidden animate-fade-in">
                 <div class="flex flex-col md:flex-row items-center justify-between mb-8 gap-4 text-center md:text-right">
-                    <h2 class="text-[#ff91a4] tracking-tighter text-2xl md:text-4xl">تشكيلة ممكن تعجبك</h2>
-                    <div class="h-1 flex-1 bg-[#ff91a4] mx-8 rounded-full hidden md:block"></div>
+                    <h2 class="text-[#ff91a4] tracking-tighter text-2xl md:text-4xl font-black">تشكيلة ممكن تعجبك</h2>
+                    <div class="h-1 flex-1 bg-[#ff91a4] mx-8 rounded-full hidden md:block opacity-20"></div>
                 </div>
                 <div id="related-products-container" class="flex overflow-x-auto gap-6 hide-scrollbar snap-x py-6">
                 </div>
@@ -363,151 +414,151 @@
         </main>
     </div>
 
-    <!-- واجهة دليل التشغيل -->
+    <!-- واجهة دليل التشغيل / النصائح الذهبية -->
     <div id="view-tips" class="hidden w-full flex-col pb-32 px-4 animate-fade-in content-padding-top">
         <header class="max-w-4xl mx-auto text-center mb-16 mt-8">
-            <h1 class="text-[#ff91a4] mb-6 tracking-tighter text-3xl md:text-5xl">دليل التشغيل والتعامل الاحترافي</h1>
-            <p class="text-base md:text-lg font-bold text-[#1a1a1a] leading-relaxed max-w-3xl mx-auto">لضمان تجربة تذوق ترتقي لمستوى توقعات حضرتك، أعددنا هذا الدليل المرجعي. كل منتج من منتجات حلويات بوسي يتطلب معايير هندسية محددة في النقل والحفظ والتقديم، لضمان استمتاعك بالطعم الأصلي والجودة القصوى من لحظة الاستلام وحتى التقديم.</p>
+            <div class="w-20 h-20 bg-[#ff91a4] text-white rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-lg rotate-3">
+                <i data-lucide="sparkles" class="w-10 h-10"></i>
+            </div>
+            <h1 class="text-[#ff91a4] mb-6 tracking-tighter text-3xl md:text-5xl font-black">دليل التعامل الاحترافي</h1>
+            <p class="text-base md:text-lg font-bold text-[#1a1a1a] leading-relaxed max-w-3xl mx-auto">لضمان تجربة تذوق ترتقي لمستوى توقعات حضرتك، أعددنا هذا الدليل المرجعي لكيفية الحفظ والتقديم لضمان استمتاعك بالطعم الأصلي والجودة القصوى من لحظة الاستلام وحتى التقديم.</p>
         </header>
         
         <div id="tips-grid" class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
             
-            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group md:col-span-2 lg:col-span-1">
-                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>
+            <div class="bg-white p-8 border-2 border-[#ff91a4] rounded-[2.5rem] shadow-sm group hover:shadow-2xl transition-all">
+                <div class="w-14 h-14 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
+                    <i data-lucide="package-search"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">القاعدة الشاملة لحفظ المنتجات</h3>
-                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">للاستهلاك خلال يوم أو يومين: تُحفظ المنتجات داخل علبتها الأصلية <strong>المُغلقة بإحكام</strong> في الثلاجة. أما للاحتفاظ بها لفترات أطول (أسبوع فأكثر): تُوضع العلبة المُحكمة في الفريزر. وعند الحاجة، تُنقل من الفريزر إلى الثلاجة قبل التقديم بمدة <strong>4 إلى 5 ساعات</strong> لتفك برودتها وتستعيد قوامها تدريجياً وبأمان تام. (يُستثنى السينابون من هذه القاعدة لاعتماده على تسخين الميكروويف).</p>
+                <h3 class="text-xl font-bold text-[#ff91a4] mb-4">القاعدة الشاملة لحفظ المنتجات</h3>
+                <p class="font-bold text-[#1a1a1a] text-sm leading-relaxed">للاستهلاك خلال يوم أو يومين: تُحفظ المنتجات داخل علبتها الأصلية المغلقة بإحكام في الثلاجة. للاحتفاظ بها لفترات أطول: تُوضع في الفريزر، وعند الحاجة تُنقل للثلاجة قبل التقديم بـ 4 إلى 5 ساعات لتفك برودتها وتستعيد قوامها تدريجياً.</p>
             </div>
 
-            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
-                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+            <div class="bg-white p-8 border-2 border-[#ff91a4] rounded-[2.5rem] shadow-sm group hover:shadow-2xl transition-all">
+                <div class="w-14 h-14 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
+                    <i data-lucide="donut"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">قواعد حفظ وتقديم الدوناتس</h3>
-                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">تُحفظ الدوناتس حصرياً داخل علبتها المغلقة بإحكام في الثلاجة. نظراً لطبيعة حشواتنا الغنية وللارتفاع الشديد في درجات الحرارة، تُترك في درجة حرارة الغرفة من <strong>دقيقة إلى 4 دقائق فقط كحد أقصى</strong> قبل التقديم؛ لتستعيد العجينة قوامها القطني دون أن تذوب الحشوات أو تتعرض للتلف.</p>
+                <h3 class="text-xl font-bold text-[#ff91a4] mb-4">قواعد حفظ وتقديم الدوناتس</h3>
+                <p class="font-bold text-[#1a1a1a] text-sm leading-relaxed">تُحفظ الدوناتس حصرياً داخل علبتها المغلقة بإحكام في الثلاجة. تُخرج وتُترك في درجة حرارة الغرفة من دقيقة إلى 4 دقائق فقط كحد أقصى قبل التقديم لتستعيد العجينة قوامها القطني دون أن تذوب الحشوات أو تتعرض للتلف.</p>
             </div>
 
-            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
-                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            <div class="bg-white p-8 border-2 border-[#ff91a4] rounded-[2.5rem] shadow-sm group hover:shadow-2xl transition-all">
+                <div class="w-14 h-14 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
+                    <i data-lucide="box"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">التعامل الأمثل مع بوكس الروقان</h3>
-                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">أثناء النقل، يُرجى حمل البوكس بشكل أفقي تماماً لضمان ثبات المنتجات بداخله وعدم تداخل المكونات. فور الاستلام، يجب حفظه مباشرة في الثلاجة للحفاظ على القوام المثالي لموس الكريمة والشوكولاتة. يُقدم بارداً لضمان التناغم التام وتجربة الانتعاش المقصودة.</p>
+                <h3 class="text-xl font-bold text-[#ff91a4] mb-4">التعامل الأمثل مع بوكس الروقان</h3>
+                <p class="font-bold text-[#1a1a1a] text-sm leading-relaxed">أثناء النقل، يُرجى حمل البوكس بشكل أفقي تماماً لضمان ثبات المنتجات بداخله. فور الاستلام، يجب حفظه مباشرة في الثلاجة للحفاظ على القوام المثالي لموس الكريمة والشوكولاتة. يُقدم بارداً لضمان التناغم التام وتجربة الانتعاش المقصودة.</p>
             </div>
 
-            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
-                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path d="m10 20-2.5-2.5"/><path d="m14 20 2.5-2.5"/><path d="m12 22v-6"/><path d="m12 8V2"/><path d="m20 10-2.5 2.5"/><path d="m20 14-2.5-2.5"/><path d="m22 12h-6"/><path d="m4 10 2.5 2.5"/><path d="m4 14 2.5-2.5"/><path d="m2 12h6"/></svg>
+            <div class="bg-white p-8 border-2 border-[#ff91a4] rounded-[2.5rem] shadow-sm group hover:shadow-2xl transition-all">
+                <div class="w-14 h-14 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
+                    <i data-lucide="thermometer-snowflake"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">درجة الحرارة المثالية للديسباسيتو</h3>
-                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">يعتمد هذا المنتج على حساسية طبقات الفادج وموس النوتيلا، مما يتطلب حفظه في درجة تبريد عالية ومستقرة. يُمنع منعاً باتاً تركه في درجة حرارة الغرفة لفترات طويلة. يجب أن يُقدم ويُستهلك بارداً جداً لضمان استقرار الطبقات وكثافة الطعم.</p>
+                <h3 class="text-xl font-bold text-[#ff91a4] mb-4">درجة الحرارة المثالية للديسباسيتو</h3>
+                <p class="font-bold text-[#1a1a1a] text-sm leading-relaxed">يعتمد هذا المنتج على حساسية طبقات الفادج وموس النوتيلا، مما يتطلب حفظه في درجة تبريد عالية ومستقرة. يُمنع منعاً باتاً تركه في درجة حرارة الغرفة لفترات طويلة. يجب أن يُقدم ويُستهلك بارداً جداً لضمان استقرار الطبقات وكثافة الطعم.</p>
             </div>
 
-            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
-                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+            <div class="bg-white p-8 border-2 border-[#ff91a4] rounded-[2.5rem] shadow-sm group hover:shadow-2xl transition-all">
+                <div class="w-14 h-14 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
+                    <i data-lucide="utensils"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">تقطيع وتقديم كيك الريد فيلفت</h3>
-                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">لضمان الحصول على قطع متساوية ومظهر احترافي لطبقات الريد فيلفت عند التقديم، يُنصح باستخدام سكين حاد يتم غمسه في ماء ساخن ثم تجفيفه جيداً قبل كل عملية تقطيع. تُحفظ التورتة في الثلاجة وتُقدم باردة للحفاظ على تماسك حشوة موس الجبن.</p>
+                <h3 class="text-xl font-bold text-[#ff91a4] mb-4">تقطيع وتقديم كيك الريد فيلفت</h3>
+                <p class="font-bold text-[#1a1a1a] text-sm leading-relaxed">لضمان الحصول على قطع متساوية ومظهر احترافي لطبقات الريد فيلفت عند التقديم، يُنصح باستخدام سكين حاد يتم غمسه في ماء ساخن ثم تجفيفه جيداً قبل كل عملية تقطيع. تُحفظ التورتة في الثلاجة وتُقدم باردة للحفاظ على تماسك حشوة موس الجبن.</p>
             </div>
 
-            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
-                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <div class="bg-white p-8 border-2 border-[#ff91a4] rounded-[2.5rem] shadow-sm group hover:shadow-2xl transition-all">
+                <div class="w-14 h-14 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
+                    <i data-lucide="clock"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">معايير الجودة لكبات السعادة</h3>
-                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">صُممت هذه الكبات لتُستهلك باردة تماماً. يجب وضعها في الثلاجة فور الاستلام. لضمان أقصى درجات الجودة والمذاق، يُنصح باستهلاكها خلال ثمان وأربعين ساعة كحد أقصى، مع التأكيد على إحكام غلق العبوة بعد الفتح الجزئي لحماية موس الكريمة من التقاط أي روائح خارجية.</p>
+                <h3 class="text-xl font-bold text-[#ff91a4] mb-4">معايير الجودة لكبات السعادة</h3>
+                <p class="font-bold text-[#1a1a1a] text-sm leading-relaxed">صُممت هذه الكبات لتُستهلك باردة تماماً. يجب وضعها في الثلاجة فور الاستلام. لضمان أقصى درجات الجودة والمذاق، يُنصح باستهلاكها خلال 48 ساعة كحد أقصى، مع التأكيد على إحكام غلق العبوة بعد الفتح الجزئي لحماية موس الكريمة من الروائح.</p>
             </div>
 
-            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
-                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/></svg>
+            <div class="bg-white p-8 border-2 border-[#ff91a4] rounded-[2.5rem] shadow-sm group hover:shadow-2xl transition-all">
+                <div class="w-14 h-14 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
+                    <i data-lucide="droplets"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">حفظ وصلاحية القشطوطة الأصلية</h3>
-                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">نظراً لاعتماد القشطوطة الكامل على الحليب الطبيعي المشبع والكريمة الطازجة، تُعد من المنتجات شديدة الحساسية للحرارة. يجب حفظها في أبرد نقطة بالثلاجة فور الاستلام، ويُلزم استهلاكها خلال يومين (٤٨ ساعة) كحد أقصى لضمان سلامة وجودة المكونات.</p>
+                <h3 class="text-xl font-bold text-[#ff91a4] mb-4">حفظ وصلاحية القشطوطة الأصلية</h3>
+                <p class="font-bold text-[#1a1a1a] text-sm leading-relaxed">نظراً لاعتماد القشطوطة الكامل على الحليب الطبيعي المشبع والكريمة الطازجة، تُعد من المنتجات شديدة الحساسية للحرارة. يجب حفظها في أبرد نقطة بالثلاجة فور الاستلام، ويُلزم استهلاكها خلال يومين (٤٨ ساعة) كحد أقصى لضمان سلامة وجودة المكونات.</p>
             </div>
 
-            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
-                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
+            <div class="bg-white p-8 border-2 border-[#ff91a4] rounded-[2.5rem] shadow-sm group hover:shadow-2xl transition-all">
+                <div class="w-14 h-14 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
+                    <i data-lucide="truck"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">القاعدة الذهبية لنقل وتقديم التورت</h3>
-                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">أثناء النقل بالسيارة، توضع العلبة على سطح مستوٍ (مثل أرضية السيارة وليس المقعد) مع تشغيل التكييف. تُحفظ فوراً في الثلاجة، وتُخرج قبل التقطيع والتقديم <strong>بخمس دقائق فقط لا غير</strong>؛ هذه المدة كافية جداً لاستعادة طراوة الكيك من الداخل دون الإضرار بتماسك الكريمة والتصميم الخارجي.</p>
+                <h3 class="text-xl font-bold text-[#ff91a4] mb-4">القاعدة الذهبية لنقل وتقديم التورت</h3>
+                <p class="font-bold text-[#1a1a1a] text-sm leading-relaxed">أثناء النقل بالسيارة، توضع العلبة على سطح مستوٍ مع تشغيل التكييف. تُحفظ فوراً في الثلاجة، وتُخرج قبل التقطيع والتقديم بخمس دقائق فقط لا غير؛ هذه المدة كافية لاستعادة طراوة الكيك من الداخل دون الإضرار بتماسك الكريمة والتصميم الخارجي.</p>
             </div>
 
-            <div class="bg-[#ffffff] p-8 md:p-10 border-2 border-[#ff91a4] rounded-[2.5rem] hover:shadow-2xl transition-all shadow-sm group">
-                <div class="w-16 h-16 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-[#ffffff] group-hover:scale-110 transition-transform">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><rect width="20" height="15" x="2" y="4" rx="2"/><rect width="8" height="7" x="6" y="8" rx="1"/><path d="M18 8v7"/><path d="M6 19v2"/><path d="M18 19v2"/></svg>
+            <div class="bg-white p-8 border-2 border-[#ff91a4] rounded-[2.5rem] shadow-sm group hover:shadow-2xl transition-all">
+                <div class="w-14 h-14 bg-[#ff91a4] rounded-2xl flex items-center justify-center mb-6 text-white group-hover:scale-110 transition-transform">
+                    <i data-lucide="microwave"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-[#ff91a4] mb-4">إعادة تسخين السينابون الاحترافي</h3>
-                <p class="font-bold text-[#1a1a1a] leading-relaxed text-base">للحصول على القوام الهش وذوبان صوص الجبنة المثالي وكأنه مخبوز للتو، يُوضع السينابون في الميكروويف لمدة تتراوح بين <strong>عشر إلى خمس عشرة ثانية كحد أقصى</strong> قبل الاستهلاك مباشرة. يُمنع منعاً باتاً تسخينه لفترات أطول لتفادي جفاف العجينة واحتراق الصوص.</p>
+                <h3 class="text-xl font-bold text-[#ff91a4] mb-4">إعادة تسخين السينابون الاحترافي</h3>
+                <p class="font-bold text-[#1a1a1a] text-sm leading-relaxed">للحصول على القوام الهش وذوبان صوص الجبنة المثالي، يُوضع السينابون في الميكروويف لمدة تتراوح بين عشر إلى خمس عشرة ثانية كحد أقصى قبل الاستهلاك مباشرة. يُمنع منعاً باتاً تسخينه لفترات أطول لتفادي جفاف العجينة واحتراق الصوص.</p>
             </div>
             
         </div>
     </div>
 
     <!-- القائمة الجانبية المتقدمة -->
-    <div id="advanced-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-[380px] bg-[#ffffff] translate-x-full flex flex-col border-l-2 border-[#ff91a4] z-[10000]">
-        <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex justify-between items-center shadow-sm">
-            <h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter">قائمة حلويات بوسي</h2>
-            <button aria-label="إغلاق القائمة" onclick="toggleSidebarMenu(false)" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] rounded-full text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all btn-interactive">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    <div id="advanced-sidebar" class="fixed inset-y-0 right-0 w-full sm:w-[400px] bg-white translate-x-full flex flex-col border-l-2 border-[#ff91a4] shadow-2xl z-[10000]">
+        <div class="p-8 bg-white border-b-2 border-[#ff91a4] flex justify-between items-center shadow-sm">
+            <h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter">حلويات بوسي</h2>
+            <button aria-label="إغلاق القائمة" onclick="toggleSidebarMenu(false)" class="p-2.5 border-2 border-[#ff91a4] rounded-full text-[#ff91a4] btn-interactive hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all bg-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
         
-        <div class="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar bg-[#ffffff]">
-            <nav class="flex flex-col gap-3">
-                <button onclick="goToHome(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] p-3 rounded-2xl hover:bg-[#ff91a4]/10 hover:text-[#ff91a4] transition-all btn-interactive text-right w-full"><i data-lucide="home" class="w-6 h-6 text-[#ff91a4]"></i> الواجهة الرئيسية</button>
-                <button onclick="switchToMenuView(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] p-3 rounded-2xl hover:bg-[#ff91a4]/10 hover:text-[#ff91a4] transition-all btn-interactive text-right w-full"><i data-lucide="layout-grid" class="w-6 h-6 text-[#ff91a4]"></i> تصفح المنيو الكامل</button>
-                <button onclick="showGoldenTips(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] p-3 rounded-2xl hover:bg-[#ff91a4]/10 hover:text-[#ff91a4] transition-all btn-interactive text-right w-full"><i data-lucide="star" class="w-6 h-6 text-[#ff91a4]"></i> دليل التعامل الاحترافي</button>
+        <div class="flex-1 overflow-y-auto p-8 space-y-10 bg-white custom-scrollbar">
+            <nav class="flex flex-col gap-4">
+                <button onclick="goToHome(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] p-4 rounded-2xl hover:bg-[#ff91a4]/10 transition-all btn-interactive text-right w-full">
+                    <i data-lucide="home" class="w-6 h-6 text-[#ff91a4]"></i> الواجهة الرئيسية
+                </button>
+                <button onclick="switchToMenuView(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] p-4 rounded-2xl hover:bg-[#ff91a4]/10 transition-all btn-interactive text-right w-full">
+                    <i data-lucide="layout-grid" class="w-6 h-6 text-[#ff91a4]"></i> تصفح المنيو الكامل
+                </button>
+                <button onclick="showGoldenTips(); toggleSidebarMenu(false)" class="flex items-center gap-4 text-lg font-bold text-[#1a1a1a] p-4 rounded-2xl hover:bg-[#ff91a4]/10 transition-all btn-interactive text-right w-full">
+                    <i data-lucide="sparkles" class="w-6 h-6 text-[#ff91a4]"></i> النصائح الذهبية للتقديم
+                </button>
             </nav>
 
-            <div class="pt-6 border-t-2 border-[#ff91a4]/20">
-                <h4 class="text-base font-black text-[#ff91a4] mb-4 px-3 flex items-center gap-2"><i data-lucide="compass" class="w-5 h-5"></i> الوصول السريع للأقسام</h4>
-                <div class="grid grid-cols-2 gap-2">
+            <div class="pt-8 border-t-2 border-[#ff91a4]/20">
+                <h4 class="text-sm font-black text-[#ff91a4] mb-6 flex items-center gap-2 uppercase tracking-widest"><i data-lucide="list" class="w-5 h-5"></i> أقسام المنيو السريعة</h4>
+                <div id="sidebar-categories-list" class="grid grid-cols-1 gap-2">
+                    <!-- يتم ملؤه برمجياً لسحب الأقسام وتسهيل الوصول (Fall back UI present if needed) -->
                     <button onclick="navigateDirectlyToCat('تورت')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> تورت</button>
                     <button onclick="navigateDirectlyToCat('جاتوه')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> جاتوه</button>
-                    <button onclick="navigateDirectlyToCat('ميني تورتة')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> ميني تورتة</button>
-                    <button onclick="navigateDirectlyToCat('ريد فيلفت')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> ريد فيلفت</button>
-                    <button onclick="navigateDirectlyToCat('ديسباسيتو')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> ديسباسيتو</button>
                     <button onclick="navigateDirectlyToCat('سينابون')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> سينابون</button>
                     <button onclick="navigateDirectlyToCat('دونتس')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> دونتس</button>
-                    <button onclick="navigateDirectlyToCat('كبات سعادة')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> كبات سعادة</button>
-                    <button onclick="navigateDirectlyToCat('بوكس روقان')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> بوكس روقان</button>
-                    <button onclick="navigateDirectlyToCat('قشطوطة')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> قشطوطة</button>
-                    <button onclick="navigateDirectlyToCat('ورد طبيعي')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> ورد طبيعي</button>
-                    <button onclick="navigateDirectlyToCat('كب كيك')" class="link-hover-effect flex items-center gap-2 font-bold text-[#1a1a1a] p-3 bg-[#ffffff] border-2 border-[#ff91a4]/10 rounded-xl hover:border-[#ff91a4] transition-all text-sm w-full text-right"><i data-lucide="chevron-left" class="w-4 h-4 text-[#ff91a4]"></i> كب كيك</button>
                 </div>
             </div>
 
-            <div class="pt-6 border-t-2 border-[#ff91a4]/20">
-                <button id="custom-pwa-install-btn" class="flex items-center justify-center gap-3 text-base font-bold text-[#ffffff] hover:text-[#ff91a4] hover:bg-[#ffffff] transition-all p-4 border-2 border-[#ff91a4] rounded-2xl bg-[#ff91a4] shadow-md btn-interactive w-full mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    تثبيت التطبيق الأصلي
+            <div class="pt-8 border-t-2 border-[#ff91a4]/20">
+                <button id="custom-pwa-install-btn" class="flex items-center justify-center gap-3 text-base font-bold text-white p-5 border-2 border-[#ff91a4] rounded-2xl bg-[#ff91a4] shadow-lg btn-interactive w-full">
+                    <i data-lucide="smartphone" class="w-5 h-5"></i> تثبيت التطبيق الأصلي
                 </button>
             </div>
         </div>
-        <div class="p-4 bg-[#ffffff] border-t-2 border-[#ff91a4]/20 text-center">
+        <div class="p-4 bg-white border-t-2 border-[#ff91a4]/20 text-center shrink-0">
             <p class="text-[12px] font-bold text-[#1a1a1a] opacity-60">حلويات بوسي © <span id="current-year">2026</span></p>
         </div>
     </div>
 
     <!-- سلة المشتريات (شريط جانبي) -->
-    <div id="cart-sidebar" class="fixed inset-y-0 left-0 w-full md:w-[500px] bg-[#ffffff] -translate-x-full flex flex-col border-r-2 border-[#ff91a4] transition-transform duration-500 z-[10000]">
+    <div id="cart-sidebar" class="fixed inset-y-0 left-0 w-full md:w-[500px] bg-white -translate-x-full flex flex-col border-r-2 border-[#ff91a4] shadow-2xl transition-transform duration-500 z-[10000]">
         
-        <div id="cart-step-1" class="flex flex-col h-full bg-[#ffffff]">
-            <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex justify-between items-center shadow-sm">
+        <div id="cart-step-1" class="flex flex-col h-full bg-white">
+            <div class="p-8 bg-white border-b-2 border-[#ff91a4] flex justify-between items-center shadow-sm">
                 <h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-                    السلة
+                    <i data-lucide="shopping-basket" class="w-6 h-6"></i> حقيبة المشتريات
                 </h2>
-                <button aria-label="إغلاق السلة" onclick="toggleCart(false)" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors btn-interactive">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                <button aria-label="إغلاق السلة" onclick="toggleCart(false)" class="p-2.5 bg-white border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors btn-interactive">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
             
-            <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+            <div class="flex-1 overflow-y-auto p-8 space-y-5 custom-scrollbar">
                 <div id="cart-items-list" class="space-y-4"></div>
                 
                 <div id="cart-suggestions-area" class="mt-8 pt-6 border-t-2 border-[#ff91a4] animate-fade-in hidden">
@@ -517,19 +568,20 @@
                 </div>
             </div>
 
-            <div class="p-6 bg-[#ffffff] border-t-2 border-[#ff91a4]">
-                <div class="flex justify-between items-center mb-6 px-4 bg-[#ffffff] border-2 border-[#ff91a4] p-4 rounded-2xl shadow-sm">
-                    <span class="font-bold text-[#1a1a1a] text-base">الإجمالي</span>
-                    <span id="cart-total-display" class="text-2xl font-black text-[#ff91a4]">0 ج.م</span>
+            <div class="p-8 bg-white border-t-2 border-[#ff91a4] shadow-xl">
+                <div class="flex justify-between items-center mb-8 bg-white border-2 border-[#ff91a4] p-5 rounded-[2rem] shadow-sm">
+                    <span class="font-bold text-lg text-[#1a1a1a]">إجمالي الطلب</span>
+                    <span id="cart-total-display" class="text-3xl font-black text-[#ff91a4]">0 ج.م</span>
                 </div>
-                <button onclick="goToCheckout()" class="w-full py-4 rounded-2xl text-[#ffffff] font-bold text-lg bg-[#ff91a4] border-2 border-[#ff91a4] hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all btn-interactive shadow-md">متابعة الطلب</button>
+                <button onclick="goToCheckout()" class="w-full py-5 rounded-[2rem] text-white font-bold text-xl bg-[#ff91a4] border-2 border-[#ff91a4] hover:bg-white hover:text-[#ff91a4] transition-all btn-interactive shadow-md">متابعة عملية الحجز</button>
             </div>
         </div>
         
+        <!-- خطوة إتمام الطلب المخفية (محتفظ بها لضمان التشغيل الكامل) -->
         <div id="cart-step-2" class="hidden flex flex-col h-full bg-[#ffffff] animate-fade-in">
             <div class="p-6 bg-[#ffffff] border-b-2 border-[#ff91a4] flex items-center gap-4 shadow-sm">
                 <button aria-label="الرجوع للسلة" onclick="backToCart()" class="p-2.5 bg-[#ffffff] border-2 border-[#ff91a4] text-[#ff91a4] rounded-full hover:bg-[#ff91a4] hover:text-[#ffffff] transition-transform btn-interactive">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
                 </button>
                 <h2 class="text-2xl font-black text-[#ff91a4] tracking-tighter">بيانات الاستلام</h2>
             </div>
@@ -541,12 +593,12 @@
                     <div class="grid grid-cols-2 gap-3">
                         <label class="relative flex flex-col items-center justify-center p-4 border-2 border-[#ff91a4] rounded-xl cursor-pointer hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all custom-radio-container bg-[#ffffff] btn-interactive">
                             <input type="radio" name="delivery_method" value="delivery" class="absolute opacity-0" checked onchange="toggleDeliveryOptions()">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mb-2 text-[#ff91a4] transition-colors"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                            <i data-lucide="home" class="w-6 h-6 mb-2 text-[#ff91a4] transition-colors"></i>
                             <span class="font-bold text-sm text-[#1a1a1a] transition-colors">توصيل للمنزل</span>
                         </label>
                         <label class="relative flex flex-col items-center justify-center p-4 border-2 border-[#ff91a4] rounded-xl cursor-pointer hover:bg-[#ff91a4] transition-all custom-radio-container bg-[#ffffff] btn-interactive">
                             <input type="radio" name="delivery_method" value="pickup" class="absolute opacity-0" onchange="toggleDeliveryOptions()">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 mb-2 text-[#ff91a4] transition-colors"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7"/></svg>
+                            <i data-lucide="store" class="w-6 h-6 mb-2 text-[#ff91a4] transition-colors"></i>
                             <span class="font-bold text-sm text-[#1a1a1a] transition-colors">استلام من الفرع</span>
                         </label>
                     </div>
@@ -554,7 +606,7 @@
 
                 <div id="pickup-address-box" class="hidden bg-[#ffffff] p-5 rounded-2xl border-2 border-[#ff91a4] text-center animate-fade-in shadow-sm">
                     <div class="w-12 h-12 bg-[#ffffff] border-2 border-[#ff91a4] rounded-full flex items-center justify-center mx-auto mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-[#ff91a4]"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <i data-lucide="map-pin" class="w-6 h-6 text-[#ff91a4]"></i>
                     </div>
                     <h3 class="font-bold text-[#ff91a4] text-lg mb-2">عنوان الاستلام</h3>
                     <p class="font-bold text-[#1a1a1a] leading-relaxed text-sm">الكفاح شارع الوحدة المحلية<br>بجوار صيدلية د/ أحمد مجدي وعيادة د/ علي</p>
@@ -601,103 +653,139 @@
             
             <div class="p-6 border-t-2 border-[#ff91a4] bg-[#ffffff]">
                 <button onclick="submitOrderFinal()" class="w-full py-4 rounded-2xl text-[#ffffff] font-bold text-lg bg-[#ff91a4] border-2 border-[#ff91a4] flex items-center justify-center gap-2 hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all btn-interactive shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                    تأكيد الطلب
+                    <i data-lucide="check-circle" class="w-5 h-5"></i> تأكيد الطلب
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- تذييل الصفحة المدمج بالأيقونات -->
-    <footer class="bg-[#ffffff] pt-24 pb-8 border-t-4 border-[#ff91a4]">
-        <div class="max-w-4xl mx-auto px-6 text-center">
+    <!-- تذييل الصفحة المطور (Footer) - النسخة الموسطة والراقية المدمجة -->
+    <footer class="bg-[#ffffff] pt-24 pb-12 border-t-4 border-[#ff91a4]">
+        <div class="max-w-7xl mx-auto px-6 text-center">
             
-            <div class="flex flex-col items-center justify-center mb-10">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" class="w-20 h-20 rounded-full border-4 border-[#ff91a4] object-cover shadow-lg mb-4" alt="لوجو حلويات بوسي">
-                <h3 class="text-4xl font-black text-[#ff91a4] tracking-tighter mb-4">حلويات بوسي</h3>
-                <p class="text-base font-bold text-[#1a1a1a] leading-relaxed max-w-lg mx-auto">عقد من التميز في صناعة الحلويات. نلتزم بتقديم أرقى مستويات الجودة والمذاق الأصلي في مركز الفرافرة، لتكون مناسباتكم ذكرى لا تُنسى.</p>
-            </div>
-
-            <div class="mb-10">
-                <a href="https://wa.me/201557845766" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-3 px-10 py-4 bg-[#ff91a4] text-[#ffffff] border-2 border-[#ff91a4] font-bold text-lg rounded-full hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all btn-interactive shadow-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
-                    تواصل مع خدمة العملاء
-                </a>
-            </div>
-
-            <!-- أزرار التواصل الاجتماعي المدمجة لضمان ظهورها -->
-            <div class="flex items-center justify-center gap-4 mb-12">
-                <a href="https://facebook.com/BoseSweets" aria-label="فيسبوك" target="_blank" rel="noopener noreferrer" class="text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all p-3.5 rounded-2xl border-2 border-[#ff91a4] bg-[#ffffff] btn-interactive shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                </a>
-                <a href="https://instagram.com/BoseSweets" aria-label="انستجرام" target="_blank" rel="noopener noreferrer" class="text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all p-3.5 rounded-2xl border-2 border-[#ff91a4] bg-[#ffffff] btn-interactive shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-                </a>
-                <a href="https://youtube.com/@BoseSweets" aria-label="يوتيوب" target="_blank" rel="noopener noreferrer" class="text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all p-3.5 rounded-2xl border-2 border-[#ff91a4] bg-[#ffffff] btn-interactive shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></svg>
-                </a>
-                <a href="https://tiktok.com/@BoseSweets" aria-label="تيك توك" target="_blank" rel="noopener noreferrer" class="text-[#ff91a4] hover:bg-[#ff91a4] hover:text-[#ffffff] transition-all p-3.5 rounded-2xl border-2 border-[#ff91a4] bg-[#ffffff] btn-interactive shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/><path d="M15 8v8a4 4 0 0 1-4 4"/><path d="M15 4v4a4 4 0 0 0 4 4v-4a4 4 0 0 1-4-4Z"/></svg>
-                </a>
-            </div>
-
-            <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-4 mb-12 border-t-2 border-[#ff91a4]/20 pt-10">
-                <button onclick="showInfo('about')" class="link-hover-effect font-bold text-[#1a1a1a] text-sm md:text-base">عن البراند</button>
-                <button onclick="showInfo('refund')" class="link-hover-effect font-bold text-[#1a1a1a] text-sm md:text-base">الاستبدال والاسترجاع</button>
-                <button onclick="showInfo('privacy')" class="link-hover-effect font-bold text-[#1a1a1a] text-sm md:text-base">الخصوصية والأمان</button>
-                <button onclick="showInfo('terms')" class="link-hover-effect font-bold text-[#1a1a1a] text-sm md:text-base">شروط الحجز</button>
-                <button onclick="showGoldenTips()" class="link-hover-effect font-bold text-[#ff91a4] text-sm md:text-base flex items-center gap-1"><i data-lucide="star" class="w-4 h-4"></i> دليل التعامل الاحترافي</button>
-            </div>
-
-            <div class="border-t-2 border-[#ff91a4]/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-[13px] font-bold text-[#1a1a1a] opacity-80">جميع الحقوق محفوظة ومسجلة لـ حلويات بوسي © <span id="current-year-footer">2026</span></p>
-                <div class="flex items-center gap-2 opacity-60">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-[#1a1a1a]"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-                    <span class="text-[12px] font-bold text-[#1a1a1a]">تصفح آمن ومحمي بنسبة 100%</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20 justify-items-center">
+                
+                <!-- براند حلويات بوسي -->
+                <div class="flex flex-col items-center gap-5 w-full">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" class="w-24 h-24 rounded-[2rem] border-4 border-[#ff91a4] object-cover shadow-xl" alt="حلويات بوسي">
+                    <h3 class="text-4xl font-black text-[#ff91a4] tracking-tighter">حلويات بوسي</h3>
+                    <p class="text-base font-bold text-[#1a1a1a] leading-relaxed opacity-80 max-w-sm">عقد من التميز في صناعة الحلويات الفاخرة. نلتزم بأعلى معايير الجودة لنكون شريككم الدائم في أجمل اللحظات والمناسبات السعيدة.</p>
+                    
+                    <div class="mt-6 w-full flex flex-col items-center bg-[#ff91a4]/5 p-4 rounded-3xl border border-[#ff91a4]/20">
+                        <p class="font-bold text-sm text-[#ff91a4] mb-4">تابعوا أحدث إبداعاتنا عبر منصاتنا الرسمية</p>
+                        <div class="flex items-center justify-center gap-5">
+                            <!-- Facebook Official SVG -->
+                            <a href="https://facebook.com/BoseSweets" aria-label="فيسبوك" target="_blank" rel="noopener noreferrer" class="social-app-icon social-fb text-white btn-interactive">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            </a>
+                            <!-- TikTok Official SVG -->
+                            <a href="https://tiktok.com/@BoseSweets" aria-label="تيك توك" target="_blank" rel="noopener noreferrer" class="social-app-icon social-tiktok text-white btn-interactive">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
+                            </a>
+                            <!-- Instagram Official SVG -->
+                            <a href="https://instagram.com/BoseSweets" aria-label="انستجرام" target="_blank" rel="noopener noreferrer" class="social-app-icon social-insta text-white btn-interactive">
+                                <svg viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- الروابط السريعة -->
+                <div class="flex flex-col items-center w-full">
+                    <h4 class="text-xl font-bold text-[#ff91a4] mb-8 pb-2 border-b-2 border-[#ff91a4]/20 inline-block">الوصول السريع</h4>
+                    <nav class="flex flex-col items-center gap-4 w-full">
+                        <button onclick="goToHome()" class="footer-link">الصفحة الرئيسية</button>
+                        <button onclick="showMenuView()" class="footer-link">تصفح المنيو</button>
+                        <button onclick="showGoldenTips()" class="footer-link">النصائح الذهبية للتقديم</button>
+                        <button onclick="showInfo('about')" class="footer-link">من نحن (عن البراند)</button>
+                        <a href="https://wa.me/201557845766" target="_blank" rel="noopener noreferrer" class="footer-link text-[#ff91a4]">خدمة العملاء (واتساب مباشر)</a>
+                    </nav>
+                </div>
+
+                <!-- السياسات -->
+                <div class="flex flex-col items-center w-full">
+                    <h4 class="text-xl font-bold text-[#ff91a4] mb-8 pb-2 border-b-2 border-[#ff91a4]/20 inline-block">السياسات والشروط</h4>
+                    <nav class="flex flex-col items-center gap-4 w-full">
+                        <button onclick="showInfo('privacy')" class="footer-link">سياسة الخصوصية والأمان</button>
+                        <button onclick="showInfo('refund')" class="footer-link">سياسة الاستبدال والاسترجاع</button>
+                        <button onclick="showInfo('communication')" class="footer-link">سياسة التواصل مع العملاء</button>
+                        <button onclick="showInfo('booking')" class="footer-link">شروط الحجز والمواعيد</button>
+                    </nav>
+                </div>
+
+                <!-- معلومات الاتصال -->
+                <div class="flex flex-col items-center w-full">
+                    <h4 class="text-xl font-bold text-[#ff91a4] mb-8 pb-2 border-b-2 border-[#ff91a4]/20 inline-block">مقرنا وعناويننا</h4>
+                    <div class="flex flex-col items-center gap-6 w-full text-center">
+                        <div class="flex flex-col items-center gap-3">
+                            <i data-lucide="map-pin" class="w-6 h-6 text-[#ff91a4]"></i>
+                            <p class="font-bold text-sm leading-relaxed text-[#1a1a1a]">الوادي الجديد - مركز الفرافرة<br>الكفاح - شارع الوحدة المحلية</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-3">
+                            <i data-lucide="clock" class="w-6 h-6 text-[#ff91a4]"></i>
+                            <p class="font-bold text-sm text-[#1a1a1a]">يومياً: 10:00 صباحاً - 11:00 مساءً</p>
+                        </div>
+                        <div class="flex flex-col items-center gap-3">
+                            <i data-lucide="phone-call" class="w-6 h-6 text-[#ff91a4]"></i>
+                            <p class="font-bold text-sm text-[#1a1a1a]" dir="ltr">+20 109 723 8441</p>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-            
+
+            <div class="border-t-2 border-[#ff91a4]/20 pt-10 flex flex-col items-center justify-center gap-6">
+                <div class="flex items-center gap-3 bg-white px-8 py-3 rounded-full border-2 border-[#ff91a4]/10 shadow-sm">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-[#ff91a4]"></i>
+                    <span class="text-[13px] font-bold text-[#1a1a1a]">تصفح آمن ومحمي بنسبة 100%</span>
+                </div>
+                <p class="text-[14px] font-bold text-[#1a1a1a] opacity-80 text-center">جميع الحقوق محفوظة ومسجلة لعلامة حلويات بوسي © <span id="footer-year">2026</span></p>
+            </div>
         </div>
     </footer>
 
     <!-- محرك السياسات والمعلومات (Modal) -->
-    <div id="info-modal" class="fixed inset-0 z-[100000] hidden items-center justify-center bg-[#1a1a1a]/60 backdrop-blur-md p-4 opacity-0 transition-opacity duration-300">
-        <div class="bg-[#ffffff] rounded-[2.5rem] w-full max-w-lg shadow-2xl overflow-hidden border-2 border-[#ff91a4] scale-95 transition-transform duration-300 flex flex-col max-h-[90vh]">
-            <div class="p-6 border-b-2 border-[#ff91a4]/20 flex justify-between items-center bg-[#ffffff] shrink-0">
-                <button aria-label="إغلاق النافذة" onclick="closeInfo()" class="p-2 bg-[#ffffff] rounded-full text-[#1a1a1a] border-2 border-[#ff91a4]/30 hover:bg-[#ff91a4] hover:text-[#ffffff] btn-interactive">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    <div id="info-modal" class="fixed inset-0 z-[100000] hidden items-center justify-center bg-[#1a1a1a]/60 backdrop-blur-md p-4 animate-fade-in opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-lg shadow-2xl overflow-hidden border-2 border-[#ff91a4] scale-95 transition-transform duration-300 flex flex-col max-h-[85vh]">
+            <div class="p-6 border-b-2 border-[#ff91a4]/20 flex justify-between items-center bg-white shrink-0">
+                <button aria-label="إغلاق النافذة" onclick="closeInfo()" class="p-2 bg-white rounded-full text-[#1a1a1a] border-2 border-[#ff91a4]/30 btn-interactive hover:bg-[#ff91a4] hover:text-[#ffffff] transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
                 <h3 id="info-title" class="font-black text-2xl text-[#ff91a4] flex items-center gap-2"></h3>
             </div>
-            <div class="p-6 sm:p-8 overflow-y-auto custom-scrollbar flex-1 bg-[#ffffff]">
-                <div id="info-body" class="text-[#1a1a1a] font-bold text-base leading-loose"></div>
-            </div>
-            <div class="p-6 border-t-2 border-[#ff91a4]/20 bg-[#ffffff] shrink-0 text-center">
-                <button onclick="closeInfo()" class="w-full py-4 bg-[#ff91a4] text-[#ffffff] font-bold text-lg rounded-2xl hover:bg-[#ffffff] hover:text-[#ff91a4] border-2 border-[#ff91a4] btn-interactive shadow-md flex items-center justify-center gap-2">
-                    إغلاق وتأكيد القراءة 
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+            <div id="info-body" class="p-8 overflow-y-auto custom-scrollbar flex-1 bg-white text-right leading-loose font-bold text-[#1a1a1a]"></div>
+            <div class="p-6 border-t-2 border-[#ff91a4]/20 bg-white shrink-0 text-center">
+                <button onclick="closeInfo()" class="w-full py-4 bg-[#ff91a4] text-white font-bold text-lg rounded-2xl btn-interactive shadow-md flex items-center justify-center gap-2 border-2 border-[#ff91a4] hover:bg-white hover:text-[#ff91a4] transition-all">
+                    إغلاق وتأكيد القراءة <i data-lucide="check" class="w-5 h-5"></i>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- الدوال العامة المُحصّنة هندسياً -->
+    <!-- الدوال العامة المُحصّنة هندسياً والمحدثة -->
     <script>
-        // تفعيل الأيقونات الثانوية (إن وُجدت لاحقاً) لضمان عدم حدوث أخطاء
+        // تفعيل الأيقونات الثانوية و Lucide بأسلوب آمن
         document.addEventListener("DOMContentLoaded", () => {
             if(typeof lucide !== 'undefined') {
                 lucide.createIcons();
             } else {
                 window.onload = () => { if(typeof lucide !== 'undefined') lucide.createIcons(); }
             }
-        });
+            
+            // معالجة التواريخ ديناميكياً للنسخة الجديدة والقديمة
+            const currentYearEl = document.getElementById('current-year');
+            const footerYearEl = document.getElementById('footer-year');
+            const currentYear = new Date().getFullYear();
+            if(currentYearEl) currentYearEl.innerText = currentYear;
+            if(footerYearEl) footerYearEl.innerText = currentYear;
 
-        // معالجة التواريخ ديناميكياً
-        const currentYearEl = document.getElementById('current-year');
-        const currentYearFooterEl = document.getElementById('current-year-footer');
-        const currentYear = new Date().getFullYear();
-        if(currentYearEl) currentYearEl.innerText = currentYear;
-        if(currentYearFooterEl) currentYearFooterEl.innerText = currentYear;
+            // إخفاء الـ Loader بشكل سلس
+            const loader = document.getElementById('global-loader');
+            if(loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => { loader.style.display = 'none'; }, 700); 
+            }
+        });
 
         // نظام النوافذ والـ Toggles
         window.toggleLiveSearch = function() {
@@ -806,8 +894,21 @@
             if(typeof state !== 'undefined') state.activeCat = 'الرئيسية';
         };
 
+        window.showMenuView = function() {
+            const viewHome = document.getElementById('view-home');
+            const viewTips = document.getElementById('view-tips');
+            const viewMenu = document.getElementById('view-menu');
+            
+            if(viewHome) viewHome.classList.add('hidden');
+            if(viewTips) viewTips.classList.add('hidden');
+            if(viewMenu) viewMenu.classList.remove('hidden');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        window.switchToMenuView = window.showMenuView;
+
         window.navigateDirectlyToCat = function(categoryName) {
-            switchToMenuView();
+            window.showMenuView();
             try {
                 if(typeof state !== 'undefined') state.activeCat = categoryName; 
                 setTimeout(() => {
@@ -834,7 +935,7 @@
             } catch(e) {}
         };
 
-        // محرك السياسات (مستقل برمجياً)
+        // محرك السياسات الموسع (يجمع الأصلي مع الجديد)
         window.showInfo = function(type) {
             const modal = document.getElementById('info-modal');
             const title = document.getElementById('info-title');
@@ -844,74 +945,95 @@
             
             const configs = {
                 'privacy': {
-                    title: `سياسة الخصوصية والأمان <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 shrink-0"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>`,
+                    title: `سياسة الخصوصية والأمان <i data-lucide="shield" class="w-6 h-6 shrink-0"></i>`,
                     content: `
                         <div class="flex flex-col gap-6 text-right w-full">
                             <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+                                <div class="shrink-0 mt-1"><i data-lucide="check" class="w-5 h-5 text-[#ff91a4]"></i></div>
                                 <div class="flex-1"><strong class="text-[#1a1a1a]">حماية البيانات:</strong> <span class="text-[#1a1a1a]">جميع المعلومات المُدخلة (الاسم، العنوان، رقم الهاتف) يتم تشفيرها واستخدامها حصرياً لإتمام وتوصيل طلبك باحترافية.</span></div>
                             </div>
                             <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+                                <div class="shrink-0 mt-1"><i data-lucide="check" class="w-5 h-5 text-[#ff91a4]"></i></div>
                                 <div class="flex-1"><strong class="text-[#1a1a1a]">سرية تامة:</strong> <span class="text-[#1a1a1a]">نلتزم التزاماً قاطعاً بعدم مشاركة، بيع، أو تداول بياناتك مع أي جهة خارجية أو طرف ثالث تحت أي ظرف.</span></div>
                             </div>
                             <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div>
+                                <div class="shrink-0 mt-1"><i data-lucide="check" class="w-5 h-5 text-[#ff91a4]"></i></div>
                                 <div class="flex-1"><strong class="text-[#1a1a1a]">تواصل هادف:</strong> <span class="text-[#1a1a1a]">تواصلنا معك يقتصر فقط على تأكيد الطلبات، أو إبلاغك بالعروض الحصرية التي تهمك بناءً على موافقتك.</span></div>
                             </div>
                         </div>`
                 },
                 'about': {
-                    title: `عن حلويات بوسي <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 shrink-0"><path d="M12 15c-3.87 0-7-3.13-7-7V4h14v4c0 3.87-3.13 7-7 7z"/><path d="M12 15v7"/><path d="M8 22h8"/><path d="M5 4H4a2 2 0 0 0-2 2v2c0 2.21 1.79 4 4 4h1"/><path d="M19 4h1a2 2 0 0 1 2 2v2c0 2.21-1.79 4-4 4h-1"/></svg>`,
+                    title: `عن حلويات بوسي <i data-lucide="info" class="w-6 h-6 shrink-0"></i>`,
                     content: `
                         <div class="flex flex-col gap-6 text-right w-full">
                             <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg></div>
-                                <div class="flex-1"><strong class="text-[#1a1a1a]">من نحن:</strong> <span class="text-[#1a1a1a]">حلويات بوسي (BoseSweets) ليست مجرد متجر، بل هي رحلة امتدت لعقد كامل من الشغف والتميز في صناعة الحلويات بمركز الفرافرة.</span></div>
+                                <div class="shrink-0 mt-1"><i data-lucide="award" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                                <div class="flex-1"><strong class="text-[#1a1a1a]">من نحن:</strong> <span class="text-[#1a1a1a]">حلويات بوسي (BoseSweets) ليست مجرد متجر، بل هي رحلة امتدت لعقد كامل من الشغف والتميز في صناعة الحلويات الفاخرة بمركز الفرافرة.</span></div>
                             </div>
                             <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+                                <div class="shrink-0 mt-1"><i data-lucide="target" class="w-5 h-5 text-[#ff91a4]"></i></div>
                                 <div class="flex-1"><strong class="text-[#1a1a1a]">رؤيتنا:</strong> <span class="text-[#1a1a1a]">تقديم منتجات بمواصفات عالمية وخامات فاخرة تليق بأهم اللحظات والمناسبات السعيدة لعملائنا.</span></div>
                             </div>
                             <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></div>
+                                <div class="shrink-0 mt-1"><i data-lucide="gem" class="w-5 h-5 text-[#ff91a4]"></i></div>
                                 <div class="flex-1"><strong class="text-[#1a1a1a]">رسالتنا:</strong> <span class="text-[#1a1a1a]">دمج الاحترافية الهندسية في صناعة الكيك مع الطعم الأصلي الذي يخلق ذكريات لا تُنسى.</span></div>
                             </div>
                         </div>`
                 },
                 'refund': {
-                    title: `سياسة الاسترجاع <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 shrink-0"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M3 22v-6h6"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/></svg>`,
+                    title: `سياسة الاسترجاع <i data-lucide="refresh-cw" class="w-6 h-6 shrink-0"></i>`,
                     content: `
                         <div class="flex flex-col gap-6 text-right w-full">
                             <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg></div>
+                                <div class="shrink-0 mt-1"><i data-lucide="search" class="w-5 h-5 text-[#ff91a4]"></i></div>
                                 <div class="flex-1"><strong class="text-[#1a1a1a]">الفحص الفوري:</strong> <span class="text-[#1a1a1a]">يُرجى فحص الطلب والتأكد من مطابقته تماماً للمواصفات وقت الاستلام المباشر (داخل الفرع أو من مندوب التوصيل).</span></div>
                             </div>
                             <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></div>
-                                <div class="flex-1"><strong class="text-[#1a1a1a]">الاسترجاع مغلق:</strong> <span class="text-[#1a1a1a]">بمجرد الاستلام النهائي ومغادرة الفرع أو مغادرة المندوب، نعتذر بشكل قاطع عن قبول أي طلبات استرجاع أو استبدال للحفاظ على معايير الصحة والسلامة.</span></div>
+                                <div class="shrink-0 mt-1"><i data-lucide="x-circle" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                                <div class="flex-1"><strong class="text-[#1a1a1a]">الاسترجاع مغلق:</strong> <span class="text-[#1a1a1a]">بمجرد الاستلام النهائي، نعتذر بشكل قاطع عن قبول أي طلبات استرجاع أو استبدال للحفاظ على معايير الصحة والسلامة.</span></div>
                             </div>
                             <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div>
+                                <div class="shrink-0 mt-1"><i data-lucide="alert-circle" class="w-5 h-5 text-[#ff91a4]"></i></div>
                                 <div class="flex-1"><strong class="text-[#1a1a1a]">التعامل مع الملاحظات:</strong> <span class="text-[#1a1a1a]">في حال وجود أي خطأ جوهري من طرفنا (قبل استلامك النهائي)، سيتم معالجة الأمر فوراً باحترافية وبما يرضيك تماماً.</span></div>
                             </div>
                         </div>`
                 },
-                'terms': {
-                    title: `شروط وأحكام الحجز <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 shrink-0"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>`,
+                'communication': {
+                    title: `سياسة التواصل مع العملاء <i data-lucide="message-square" class="w-6 h-6 shrink-0"></i>`,
                     content: `
                         <div class="flex flex-col gap-6 text-right w-full">
                             <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-                                <div class="flex-1"><strong class="text-[#1a1a1a]">وقت الحجز:</strong> <span class="text-[#1a1a1a]">أوردرات التورت الخاصة وطلبات المناسبات الكبرى يجب تأكيدها قبل الموعد بـ 48 ساعة على الأقل.</span></div>
+                                <div class="shrink-0 mt-1"><i data-lucide="phone" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                                <div class="flex-1"><strong class="text-[#1a1a1a]">القنوات الرسمية:</strong> <span class="text-[#1a1a1a]">تواصلنا مع حضراتكم يعتمد على المهنية والوضوح. يتم الرد على الاستفسارات وتأكيد الطلبات حصرياً عبر رقم الواتساب الرسمي وقنواتنا الموثقة.</span></div>
                             </div>
                             <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+                                <div class="shrink-0 mt-1"><i data-lucide="clock" class="w-5 h-5 text-[#ff91a4]"></i></div>
+                                <div class="flex-1"><strong class="text-[#1a1a1a]">ساعات العمل:</strong> <span class="text-[#1a1a1a]">ساعات التواصل تبدأ من 10 صباحاً وحتى 11 مساءً لضمان تقديم أفضل خدمة دعم لحضرتكم.</span></div>
+                            </div>
+                        </div>`
+                },
+                'booking': {
+                    title: `شروط وأحكام الحجز <i data-lucide="calendar" class="w-6 h-6 shrink-0"></i>`,
+                    content: `
+                        <div class="space-y-4 text-right">
+                            <div class="p-4 bg-[#ff91a4]/10 rounded-2xl border border-[#ff91a4]/20">
+                                <strong class="text-[#ff91a4] block mb-2"><i data-lucide="box" class="w-4 h-4 inline ml-1"></i>المنتجات العامة:</strong> 
+                                <p class="text-[#1a1a1a]">يجب تأكيد حجز كافة المنتجات (سينابون، دوناتس، كبات، قشطوطة) قبل الموعد بـ <strong>24 ساعة</strong> على الأقل.</p>
+                            </div>
+                            <div class="p-4 bg-[#ff91a4]/10 rounded-2xl border border-[#ff91a4]/20">
+                                <strong class="text-[#ff91a4] block mb-2"><i data-lucide="cake" class="w-4 h-4 inline ml-1"></i>التورت الملكية:</strong> 
+                                <p class="text-[#1a1a1a]">نظراً لدقة التصميم والتحضير، يجب حجز كافة أنواع التورت قبل موعد الاستلام بـ <strong>3 أيام (72 ساعة)</strong> كحد أدنى.</p>
+                            </div>
+                            <p class="text-sm font-bold text-[#1a1a1a] opacity-80 mt-4"><i data-lucide="check-circle" class="w-4 h-4 inline text-[#ff91a4] ml-1"></i> الالتزام بالمواعيد يضمن لحضرتكم استلام المنتج في أفضل حالاته الطازجة.</p>
+                        </div>`
+                },
+                'terms': {
+                    title: `شروط إضافية <i data-lucide="file-text" class="w-6 h-6 shrink-0"></i>`,
+                    content: `
+                        <div class="flex flex-col gap-6 text-right w-full">
+                            <div class="flex flex-row-reverse items-start gap-3 w-full">
+                                <div class="shrink-0 mt-1"><i data-lucide="edit" class="w-5 h-5 text-[#ff91a4]"></i></div>
                                 <div class="flex-1"><strong class="text-[#1a1a1a]">تعديل التصميم:</strong> <span class="text-[#1a1a1a]">يُسمح بتعديل مواصفات التصميم أو النكهات قبل موعد التسليم بـ 24 ساعة كحد أقصى. لن نتمكن من قبول تعديلات بعد بدء التنفيذ الفعلي.</span></div>
-                            </div>
-                            <div class="flex flex-row-reverse items-start gap-3 w-full">
-                                <div class="shrink-0 mt-1"><svg class="w-5 h-5 text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg></div>
-                                <div class="flex-1"><strong class="text-[#1a1a1a]">تأكيد الموعد:</strong> <span class="text-[#1a1a1a]">الالتزام بموعد الاستلام المُتفق عليه يضمن لك استلام المنتج في أفضل حالة.</span></div>
                             </div>
                         </div>`
                 }
@@ -920,6 +1042,7 @@
             if (configs[type]) {
                 title.innerHTML = configs[type].title;
                 body.innerHTML = configs[type].content;
+                if(typeof lucide !== 'undefined') lucide.createIcons();
             }
             
             modal.classList.replace('hidden', 'flex');
@@ -938,17 +1061,6 @@
                 setTimeout(() => modal.classList.replace('flex', 'hidden'), 300);
             }
         };
-
-        // إخفاء الـ Loader بشكل سلس
-        window.addEventListener('load', () => {
-            const loader = document.getElementById('global-loader');
-            if(loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => { loader.style.display = 'none'; }, 700); 
-            }
-        });
-        
-        window.switchToMenuView = window.showMenuView;
     </script>
 
     <script>
@@ -987,13 +1099,11 @@
                     if (promptModal) {
                         const isIos = /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
                         const step1Text = document.getElementById('install-step-1-text');
-                        const step1Icon = document.getElementById('install-step-1-icon');
                         
-                        if (!isIos && step1Text && step1Icon) {
+                        if (!isIos && step1Text) {
                             step1Text.innerHTML = 'اضغط على علامة الثلاث نقاط بالمتصفح.';
-                            step1Icon.outerHTML = '<svg class="w-4 h-4 inline text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>';
-                        } else if (isIos && step1Text && step1Icon) {
-                            step1Text.innerHTML = 'اضغط على زر المشاركة <svg class="w-4 h-4 inline text-[#ff91a4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> أسفل الشاشة.';
+                        } else if (isIos && step1Text) {
+                            step1Text.innerHTML = 'اضغط على زر المشاركة أسفل الشاشة.';
                         }
                         
                         promptModal.classList.replace('hidden', 'flex');
@@ -1040,3 +1150,4 @@
     </script>
 </body>
 </html>
+

@@ -1,7 +1,7 @@
 /**
- * 👑 BoseSweets UI View Management (V22.1 - Sovereign Navigation Protocol)
+ * 👑 BoseSweets UI View Management (V23.0 - Sovereign Navigation Protocol)
  * مهندس عرض الواجهات والتنقل - حلويات بوسي
- * تم التحصين الشامل: تصحيح الـ IDs لمنع انهيار الواجهات واعتماد نظام عرض قاطع.
+ * تم التحصين الشامل: تأمين الشلال ضد الاختفاء، تصحيح الـ IDs لمنع انهيار الواجهات واعتماد نظام عرض قاطع.
  */
 
 import { dSizes, fTypes } from './config.js';
@@ -22,7 +22,7 @@ export const showHomeView = function() {
         }
         if(window.setActiveCategoryPill) window.setActiveCategoryPill('الرئيسية');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(e) { console.warn("حلويات بوسي: استثناء أثناء عرض الرئيسية", e); }
+    } catch(e) { console.warn("BoseSweets: استثناء أثناء عرض الرئيسية", e); }
 };
 window.showHomeView = showHomeView;
 
@@ -42,7 +42,7 @@ export const showMenuView = function() {
         if(menuGrid) menuGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 items-stretch w-full animate-fade-in';
         
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(e) { console.warn("حلويات بوسي: استثناء أثناء عرض المنيو", e); }
+    } catch(e) { console.warn("BoseSweets: استثناء أثناء عرض المنيو", e); }
 };
 window.showMenuView = showMenuView;
 
@@ -58,7 +58,7 @@ export const showGoldenTips = function() {
             vTips.style.display = 'flex'; 
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(e) { console.warn("حلويات بوسي: استثناء أثناء عرض الدليل", e); }
+    } catch(e) { console.warn("BoseSweets: استثناء أثناء عرض الدليل", e); }
 };
 window.showGoldenTips = showGoldenTips;
 
@@ -74,7 +74,7 @@ export const showCakeBuilderView = function() {
         window.currentBuilderStep = 1;
         if(window.renderMultiStepCakeBuilder) window.renderMultiStepCakeBuilder();
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(e) {}
+    } catch(e) { console.warn("BoseSweets: استثناء أثناء عرض صانع التورت", e); }
 };
 window.showCakeBuilderView = showCakeBuilderView;
 
@@ -102,12 +102,11 @@ export const closeGlobalLightbox = function() {
 };
 window.closeGlobalLightbox = closeGlobalLightbox;
 
-// 👑 هندسة الشلال (Waterfall - تم تأمين الـ ID)
+// 👑 هندسة الشلال (Waterfall - تم التأمين ضد الاختفاء والمساحات البيضاء)
 export const initWaterfall = function() {
     try {
         const col1 = document.getElementById('waterfall-col-1');
         const col2 = document.getElementById('waterfall-col-2');
-        // تأمين صارم: تطابق معرف HTML مع JS
         const waterfallContainer = document.getElementById('section-waterfall'); 
         
         if (waterfallContainer) {
@@ -117,37 +116,36 @@ export const initWaterfall = function() {
 
         if (!col1 || !col2) return;
 
-        const visualItems = catalog.filter(p => p && p.isActive !== false && (p.images && p.images.length > 0 || p.img));
+        // جلب العناصر التي تحتوي على صور صالحة للعرض
+        const visualItems = catalog.filter(p => p && p.isActive !== false && (p.img || (p.images && p.images.length > 0)));
+        
         if (visualItems.length === 0) {
             col1.innerHTML = `<div class="text-center py-10 text-[var(--site-text)] opacity-50 font-bold col-span-2">نجهز لكم أصنافاً جديدة فاخرة.. انتظرونا ✨</div>`;
             col2.innerHTML = '';
             return;
         }
 
-        const hourChunk = new Date().getHours() % Math.max(1, Math.floor(visualItems.length / 6));
-        const startIdx = hourChunk * 6;
-        const itemsToDisplay = visualItems.slice(startIdx, startIdx + 6);
-        
-        if(itemsToDisplay.length < 6) itemsToDisplay.push(...visualItems.slice(0, 6 - itemsToDisplay.length));
+        // تقسيم العناصر لضمان عدم وجود مساحات بيضاء بالتساوي بين العمودين
+        const half = Math.ceil(visualItems.length / 2);
+        const leftItems = visualItems.slice(0, half);
+        const rightItems = visualItems.slice(half);
 
+        // الحفاظ على الهيكل البصري المقدس الذي يراه العميل
         const buildCardHTML = (item) => {
             const rawImageUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || window.getImgFallback(item.category));
             const url = optimizeCloudinaryUrl(rawImageUrl);
 
             return `
-                <div class="waterfall-card cursor-pointer group relative bg-[#ffffff] rounded-[2rem] overflow-hidden shadow-sm border border-[var(--brand-primary)]/10" onclick="window.navigateToProduct('${item.id}')" title="اضغط لاستعراض تفاصيل ${escapeHTML(item.name)}">
-                    <img src="${url}" loading="lazy" decoding="async" class="transition-transform duration-500 group-hover:scale-105 w-full h-full object-cover" alt="صنف ${escapeHTML(item.name)} من قسم ${escapeHTML(item.category)} - حلويات بوسي" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(item.category)}');">
+                <div class="waterfall-card cursor-pointer group relative bg-[#ffffff] rounded-[2rem] overflow-hidden shadow-sm border border-[var(--brand-primary)]/10 mb-4 animate-fade-in" onclick="window.navigateToProduct('${item.id}')" title="اضغط لاستعراض تفاصيل ${escapeHTML(item.name)}">
+                    <img src="${url}" loading="lazy" decoding="async" class="transition-transform duration-500 group-hover:scale-105 w-full h-auto object-cover" alt="صنف ${escapeHTML(item.name)} من قسم ${escapeHTML(item.category)} - حلويات بوسي" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(item.category)}');">
                     <div class="absolute inset-x-0 bottom-0 bg-[#ffffff]/90 backdrop-blur-sm p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-start border-t-2 border-[var(--brand-primary)]">
                         <span class="text-[var(--brand-primary)] text-xs font-bold truncate tracking-wide w-full">${escapeHTML(item.name)}</span>
                     </div>
                 </div>`;
         };
 
-        const htmlCol1 = itemsToDisplay.slice(0, 3).map(buildCardHTML).join('');
-        const htmlCol2 = itemsToDisplay.slice(3, 6).map(buildCardHTML).join('');
-
-        col1.innerHTML = htmlCol1 + htmlCol1;
-        col2.innerHTML = htmlCol2 + htmlCol2;
+        col1.innerHTML = leftItems.map(buildCardHTML).join('');
+        col2.innerHTML = rightItems.map(buildCardHTML).join('');
     } catch(e) { console.error("BoseSweets: استثناء في محرك الشلال", e); }
 };
 window.initWaterfall = initWaterfall;
@@ -233,7 +231,7 @@ export const setupSliderButtons = function() {
 };
 window.setupSliderButtons = setupSliderButtons;
 
-// 👑 معالجة التابات (Pills)
+// 👑 معالجة التابات (Pills) - مع الاحتفاظ بالديناميكية والتوافق مع لوحة التحكم
 export const renderCategories = function() {
     try {
         const el = document.getElementById('categories-nav') || document.getElementById('categories-scroll') || document.getElementById('categories-container');
@@ -242,6 +240,7 @@ export const renderCategories = function() {
         el.classList.remove('hidden');
         el.style.display = 'flex'; // Use flex to maintain layout
 
+        // دمج القوائم الديناميكية لضمان عدم تعطل الأقسام المضافة من لوحة التحكم
         const sortedCats = [...catMenu].sort((a, b) => (a.order || 99) - (b.order || 99));
 
         let html = `<button id="cat-btn-الرئيسية" onclick="window.setCategory('الرئيسية')" class="cat-pill whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === 'الرئيسية' ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-lg' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">الرئيسية</button>`;
@@ -251,11 +250,13 @@ export const renderCategories = function() {
             const safeId = String(catName).replace(/\s+/g, '-');
             const isActive = state.activeCat === catName;
             const displayName = catName === 'ورد' ? 'ورد وهدايا 💐' : (catName === 'تورت' ? 'تورت وتصميم 🎂' : catName);
+            
+            // الهيكل المدعوم بقوة الألوان الديناميكية للبراند
             return `<button id="cat-btn-${safeId}" onclick="window.setCategory('${catName}')" class="cat-pill whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${isActive ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-lg' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${displayName}</button>`;
         }).join('');
         
         el.innerHTML = html;
-    } catch(e) { console.error("حلويات بوسي: خطأ أثناء عرض الأقسام اللحظية", e); }
+    } catch(e) { console.error("BoseSweets: خطأ أثناء عرض الأقسام اللحظية", e); }
 };
 window.renderCategories = renderCategories;
 
@@ -294,7 +295,7 @@ export const enforceCategoryRender = function(containerId, productsHTML) {
             container.appendChild(fragment);
             container.classList.remove('hidden'); 
             container.style.display = container.className.includes('grid') ? 'grid' : 'block'; 
-        } catch(e) { console.error("حلويات بوسي: خطأ أثناء عرض المنتجات", e); }
+        } catch(e) { console.error("BoseSweets: خطأ أثناء عرض المنتجات", e); }
     }
 };
 window.enforceCategoryRender = enforceCategoryRender;
@@ -323,7 +324,7 @@ export const renderMainDisplay = function() {
                 'قشطوطة': 'كيك الحليب المشبع، عليه طبقة قشطة طبيعية لترطيب وتجربة تذوق ولا أروع.',
                 'جاتوه': 'قطع جاتوه كلاسيك من كيك إسفنجي خفيف مع كريمة غنية ونسبة سكر مظبوطة.'
             };
-            let desc = siteSettings.catDescriptions && siteSettings.catDescriptions[state.activeCat] ? siteSettings.catDescriptions[state.activeCat] : (defaultDescs[state.activeCat] || `أشهى الأصناف المميزة من قسم ${state.activeCat} محضرة بعناية عشان تضمن لك أعلى جودة.`);
+            let desc = siteSettings.catDescriptions && siteSettings.catDescriptions[state.activeCat] ? siteSettings.catDescriptions[state.activeCat] : (defaultDescs[state.activeCat] || `أشهى الأصناف المميزة من قسم ${state.activeCat} محضرة بعناية عشان تضمن لحضرتك أعلى جودة.`);
             if (catDescEl) catDescEl.innerText = desc;
         } else if (catDescArea) { catDescArea.classList.add('hidden'); }
 
@@ -393,7 +394,7 @@ export const renderMainDisplay = function() {
         } else { if(subTabs) subTabs.classList.add('hidden'); }
         
         if(window.renderSmartSuggestions) window.renderSmartSuggestions('main');
-    } catch(e) { console.error("حلويات بوسي: استثناء في محرك العرض الأساسي", e); }
+    } catch(e) { console.error("BoseSweets: استثناء في محرك العرض الأساسي", e); }
 };
 window.renderMainDisplay = renderMainDisplay;
 

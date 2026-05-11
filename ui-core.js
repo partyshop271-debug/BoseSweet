@@ -1,7 +1,8 @@
 /**
- * 👑 BoseSweets UI Core Engine (V22.1 - Sovereign Core)
+ * 👑 BoseSweets UI Core Engine (V23.0 - Sovereign Enhanced Core)
  * المحرك الأساسي والوظائف السيادية - حلويات بوسي
- * تم تحصين الدورة الرسومية لحماية الشلال والشريط من الانهيار إذا تأخرت السحابة.
+ * تم الدمج والترقية للإصدار 23.0: إصلاح مشكلة اختفاء الشريط المتحرك وتنسيق الهيدر،
+ * مع الحفاظ على دورة العمل الكاملة وحماية واجهة المستخدم من الانهيار.
  */
 
 import { detailedDescriptions } from './config.js';
@@ -55,22 +56,29 @@ window.getFinalDescription = getFinalDescription;
 export const getCapsuleDescription = (p) => getFinalDescription(p);
 window.getCapsuleDescription = getCapsuleDescription;
 
-// 👑 شريط الإعلانات (Ticker - تم تحصينه بالكامل)
+// 👑 شريط الإعلانات (Ticker - تم التحديث والدمج للإصدار 23.0)
 export const renderTicker = function() {
     try {
         let container = document.getElementById('ticker-container');
+        const root = document.documentElement;
         const navbar = document.getElementById('navbar');
         
         // التحصين الفولاذي: ضمان وجود siteSettings قبل الفحص
         const settings = siteSettings || {};
-        const isActive = settings.ticker_isActive ?? settings.tickerActive ?? true;
+        const isActive = settings.tickerActive ?? settings.ticker_isActive ?? true;
         
         if (!isActive) {
-            if(container) { container.classList.add('hidden'); container.classList.remove('flex'); }
-            if(navbar) navbar.style.top = '0';
+            if (container) { 
+                container.style.display = 'none';
+                container.classList.add('hidden'); 
+                container.classList.remove('flex'); 
+            }
+            root.style.setProperty('--ticker-height', '0px');
+            if (navbar) navbar.style.top = '0';
             return;
         }
 
+        // إنشاء الحاوية إن لم تكن موجودة (لحماية الهيكل)
         if (!container) {
             container = document.createElement('div');
             container.id = 'ticker-container';
@@ -79,40 +87,56 @@ export const renderTicker = function() {
             document.body.insertBefore(container, document.body.firstChild);
         }
 
-        const text = settings.ticker_text || settings.tickerText || settings.announcement || 'حلويات بوسي: تجربة تذوق بتعكس الجودة الأصلية وتليق بمناسباتك السعيدة';
-        const speed = settings.ticker_speed || settings.tickerSpeed || 20;
+        const text = settings.tickerText || settings.ticker_text || settings.announcement || 'حلويات بوسي: عقد من التميز في الفرافرة ✨';
+        const speed = settings.tickerSpeed || settings.ticker_speed || 20;
         const bgColor = settings.ticker_bgColor || '#ff91a4';
         const textColor = settings.ticker_textColor || '#ffffff';
 
+        // تطبيق التنسيقات الحديثة
         container.style.backgroundColor = bgColor;
+        container.style.display = 'flex';
+        container.style.height = '32px';
         container.classList.remove('hidden');
         container.classList.add('flex', 'items-center');
-        container.innerHTML = `<span class="animate-ticker text-xs md:text-sm font-bold" style="white-space: nowrap; animation-duration: ${speed}s; color: ${textColor}; font-family: var(--brand-font);">${text} &nbsp;&nbsp;✨&nbsp;&nbsp; ${text} &nbsp;&nbsp;✨&nbsp;&nbsp; ${text}</span>`;
         
-        if(navbar) navbar.style.top = '32px';
+        // ضبط المتغيرات العصبية
+        root.style.setProperty('--ticker-height', '32px');
+        if (navbar) navbar.style.top = '32px';
+
+        // ضخ المحتوى مع الفواصل الجديدة
+        container.innerHTML = `<span class="animate-ticker text-xs md:text-sm font-bold whitespace-nowrap" style="animation-duration: ${speed}s; color: ${textColor}; font-family: var(--brand-font);">${text} &nbsp;&nbsp;•&nbsp;&nbsp; ${text} &nbsp;&nbsp;•&nbsp;&nbsp; ${text}</span>`;
+        
     } catch (e) {
         console.warn("BoseSweets: تم تجاوز خطأ في الشريط المتحرك لضمان سير الواجهة.", e);
     }
 };
 window.renderTicker = renderTicker;
 
-// 👑 تطبيق إعدادات الموقع والهوية البصرية على الواجهة
+// 👑 تطبيق إعدادات الموقع والهوية البصرية على الواجهة (معززة للإصدار 23.0)
 export const applySettingsToUI = function() {
     try {
         window.renderTicker(); 
-        if (!isAppReady) return; 
-
+        
         const settings = siteSettings || {};
         const root = document.documentElement;
+
+        // تطبيق اللون الرئيسي الجديد (أولوية للـ brandColorHex ثم visuals)
+        if (settings.brandColorHex) {
+            root.style.setProperty('--brand-primary', settings.brandColorHex);
+        } else if (settings.visuals && settings.visuals.themeHex) {
+            root.style.setProperty('--brand-primary', settings.visuals.themeHex);
+        } else {
+            root.style.setProperty('--brand-primary', '#ff91a4');
+        }
+
+        root.style.setProperty('--site-bg', '#ffffff');
+        root.style.setProperty('--site-text', '#1a1a1a');
+
+        if (!isAppReady) return; 
         
         if(settings.visuals && settings.visuals.fontFamily) root.style.setProperty('--brand-font', settings.visuals.fontFamily);
         else if(settings.fontFamily) root.style.setProperty('--brand-font', settings.fontFamily);
         
-        const themeColor = (settings.visuals && settings.visuals.themeHex) ? settings.visuals.themeHex : '#ff91a4';
-        root.style.setProperty('--brand-primary', themeColor);
-        root.style.setProperty('--site-bg', '#ffffff');
-        root.style.setProperty('--site-text', '#1a1a1a');
-
         const loaderTextEl = document.getElementById('dyn-loader-text');
         if (loaderTextEl) loaderTextEl.innerText = (settings.UI_Settings && settings.UI_Settings.loader_text) ? settings.UI_Settings.loader_text : ((settings.visuals && settings.visuals.loaderText) ? settings.visuals.loaderText : "حلويات بوسي ✨");
 
@@ -135,9 +159,9 @@ export const applySettingsToUI = function() {
             if (loader) {
                 loader.style.backgroundColor = settings.UI_Settings.loader_bgColor || '#ffffff';
                 const loaderTextEl = loader.querySelector('h1');
-                if (loaderTextEl) loaderTextEl.style.color = settings.UI_Settings.loader_textColor || '#ff91a4';
+                if (loaderTextEl) loaderTextEl.style.color = settings.UI_Settings.loader_textColor || 'var(--brand-primary)';
                 const loaderIcon = loader.querySelector('i');
-                if(loaderIcon) loaderIcon.style.color = settings.UI_Settings.loader_textColor || '#ff91a4';
+                if(loaderIcon) loaderIcon.style.color = settings.UI_Settings.loader_textColor || 'var(--brand-primary)';
             }
         }
 
@@ -157,7 +181,6 @@ export const applySettingsToUI = function() {
                     });
                 }
                 footerLinksContainer.innerHTML = customHtml;
-                if(window.lucide) lucide.createIcons();
             }
         }
         
@@ -175,6 +198,9 @@ export const applySettingsToUI = function() {
         if(areaSelect && shippingZones) areaSelect.innerHTML = `<option value="" disabled selected>اختار منطقة التوصيل...</option>` + shippingZones.map(z => `<option value="${z.id}">${escapeHTML(z.name)} (+${Number(z.fee)} ج.م توصيل)</option>`).join('');
         
         if(typeof window.renderCustomerSidebarCategories === 'function') window.renderCustomerSidebarCategories();
+
+        // تفعيل الأيقونات
+        if (window.lucide) lucide.createIcons();
 
         setTimeout(() => {
             const urlParams = new URLSearchParams(window.location.search);

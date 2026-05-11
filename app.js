@@ -1,7 +1,8 @@
 /**
- * 👑 BoseSweets Main Orchestrator (V22.1 - Sovereign Shield Edition)
+ * 👑 BoseSweets Main Orchestrator (V23.0 - Sovereign Stability Edition)
  * القلب النابض للمحرك الرئيسي - حلويات بوسي 
- * التحصين الأخير: إجبار محرك البيانات على انتظار Firebase ومنع الانهيار الفوري.
+ * التحصين الأخير: دمج تسلسل الإقلاع المستقر لحل مشكلة اختفاء المحتوى وتنسيق الهيدر، 
+ * مع الحفاظ المطلق على أنظمة المزامنة، الطوارئ، والتخزين المحلي.
  */
 
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
@@ -77,13 +78,13 @@ function setupSovereignSyncListener() {
 }
 
 /**
- * 👑 محرك التشغيل الرئيسي (BoseSweets Engine)
+ * 👑 محرك التشغيل الرئيسي (BoseSweets Engine - V23.0 Boot Sequence)
  */
 async function startBoseSweetsEngine(isUpdate = false) {
     if (!isUpdate && (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة'))) return;
 
     if (!isUpdate) {
-        console.log("👑 حلويات بوسي: بدء تشغيل المحرك الرئيسي...");
+        console.log("👑 حلويات بوسي: بدء تشغيل المحرك الرئيسي المطور (V23.0)...");
         registerBoseSweetsPWA();
     }
 
@@ -101,6 +102,7 @@ async function startBoseSweetsEngine(isUpdate = false) {
             return;
         }
 
+        // 1. جلب الإعدادات أولاً لتنسيق الهيدر والشريط (تعديل الأولوية القصوى)
         try {
             const sSnap = await db.collection('settings').doc('main').get();
             if (sSnap.exists) {
@@ -110,6 +112,10 @@ async function startBoseSweetsEngine(isUpdate = false) {
             }
         } catch(e) { console.error("عطل في جلب الإعدادات:", e); }
 
+        // 2. تطبيق الواجهة الأولية (الهيدر والشريط) فوراً لمنع التغطية والاختفاء
+        if(typeof applySettingsToUI === 'function') applySettingsToUI();
+
+        // 3. المزامنة الاستراتيجية للكتالوج
         const catalogStatus = await fetchAndSyncBoseSweetsData(async () => {
             try {
                 const pSnap = await db.collection('catalog').get();
@@ -119,7 +125,7 @@ async function startBoseSweetsEngine(isUpdate = false) {
                         if (data.isActive === undefined || data.isActive === null) data.isActive = true;
                         if (data.inStock === undefined || data.inStock === null) data.inStock = true;
                         return { id: doc.id, ...data };
-                    }).filter(d => d.isActive === true); 
+                    }).filter(d => d.isActive !== false); // السماح بـ true أو undefined
                 } else {
                     return [];
                 }
@@ -137,16 +143,19 @@ async function startBoseSweetsEngine(isUpdate = false) {
             fallbackToEmergencyData();
         }
 
+        // جلب معرض الصور
         try {
             const gSnap = await db.collection('gallery').orderBy('timestamp', 'desc').limit(15).get();
             galleryData.length = 0;
             gSnap.forEach(doc => galleryData.push({ id: doc.id, ...doc.data() }));
         } catch(e) { }
 
+        // 4. بناء الخرائط وتأكيد الجاهزية
         syncBoseSweetsLayout();
         setAppReady();
         if(state) state.isAppReady = true;
 
+        // 5. الرندر النهائي والتوجيه
         if (isUpdate) {
             if (typeof renderCategories === 'function') renderCategories();
             
@@ -159,7 +168,7 @@ async function startBoseSweetsEngine(isUpdate = false) {
             if(typeof syncCartUI === 'function') syncCartUI();
             showSystemToast("تم تحديث القائمة بأحدث إصدارات وأسعار حلويات بوسي 👑", "success");
         } else {
-            initUI();
+            initUI(true); // تمرير true لتخطي الواجهة الأولية التي تم تطبيقها بالفعل
             recoverBoseSweetsCart();
             syncOfflineOrders();
             setupSovereignSyncListener();
@@ -169,6 +178,7 @@ async function startBoseSweetsEngine(isUpdate = false) {
     } catch (e) {
         console.error("عطل في إقلاع المحرك الرئيسي:", e);
         fallbackToEmergencyData();
+        setAppReady(); // إجبار الجاهزية لعرض الداتا المحلية
         initUI();
     }
 }
@@ -229,8 +239,9 @@ async function recoverBoseSweetsCart() {
     } catch(e) { }
 }
 
-function initUI() {
-    if(typeof applySettingsToUI === 'function') applySettingsToUI();
+function initUI(skipSettingsApply = false) {
+    // إذا لم نقم بتطبيق الإعدادات مسبقاً (في حالة الطوارئ مثلاً)، نقوم بتطبيقها هنا
+    if(!skipSettingsApply && typeof applySettingsToUI === 'function') applySettingsToUI();
     
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('product');
@@ -265,6 +276,7 @@ function initUI() {
         phoneDisplay.innerText = siteSettings.footerPhone || '';
     }
 
+    // إخفاء اللودر بشكل سلس
     const loader = document.getElementById('global-loader');
     if (loader) {
         loader.style.opacity = '0';
@@ -295,6 +307,38 @@ async function syncOfflineOrders() {
         window.NetworkEngine.processQueue();
     }
 }
+
+// ==========================================
+// مستمعات الأحداث العالمية ودوال التنقل الجديدة
+// ==========================================
+
+window.goToHome = () => {
+    state.activeCat = 'الرئيسية';
+    const viewMenu = document.getElementById('view-menu');
+    const viewHome = document.getElementById('view-home');
+    
+    if (viewMenu) viewMenu.classList.add('hidden');
+    if (viewHome) viewHome.classList.remove('hidden');
+    
+    if (typeof initWaterfall === 'function') initWaterfall();
+    if (typeof initHomepageSections === 'function') initHomepageSections();
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.showMenuView = () => {
+    state.activeCat = 'تورت'; // القسم الافتراضي للقائمة
+    const viewHome = document.getElementById('view-home');
+    const viewMenu = document.getElementById('view-menu');
+    
+    if (viewHome) viewHome.classList.add('hidden');
+    if (viewMenu) viewMenu.classList.remove('hidden');
+    
+    if (typeof renderMainDisplay === 'function') renderMainDisplay();
+    if (typeof renderCategories === 'function') renderCategories();
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
 window.addEventListener('online', () => {
     syncOfflineOrders();
@@ -330,10 +374,10 @@ function registerBoseSweetsPWA() {
 // الانطلاق القاطع (مع مهلة صغيرة لضمان تحميل الـ Firebase)
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => startBoseSweetsEngine(false), 200); // 200ms grace period
+        setTimeout(() => startBoseSweetsEngine(false), 300); // تم تعديلها لـ 300ms حسب التوجيه الجديد
     });
 } else {
-    setTimeout(() => startBoseSweetsEngine(false), 200);
+    setTimeout(() => startBoseSweetsEngine(false), 300);
 }
 
 document.addEventListener('click', function(event) {
