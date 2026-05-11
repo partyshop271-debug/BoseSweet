@@ -1,8 +1,8 @@
 /**
- * 👑 BoseSweets Main Orchestrator (V27.0 - Sovereign Boot Protocol)
+ * 👑 BoseSweets Main Orchestrator (V27.1 - Sovereign Boot Protocol & Error Free)
  * المحرك الرئيسي للإدارة المرجعية - حلويات بوسي
  * التحصين الشامل: دمج تسلسل الإقلاع المستقر لضمان استمرار عرض الواجهات والمنتجات تحت أي ظروف شبكية،
- * مع الحفاظ المطلق على أنظمة المزامنة، الطوارئ، والتخزين المحلي.
+ * مع الحفاظ المطلق على أنظمة المزامنة، الطوارئ، والتخزين المحلي وتم حل الثغرات القاتلة في الاستدعاءات.
  */
 
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
@@ -13,8 +13,10 @@ import {
 import { MemoryManager, hexToMathHSL, escapeHTML, generateUniqueID, optimizeCloudinaryUrl, generateSecureOrderId, showSystemToast, BehavioralAnalytics, AdvancedNetworkEngine } from './utils.js';
 import { ClientStorageEngine } from './storage.js';
 import { LiveSearchEngine, performLiveSearchDebounced, toggleLiveSearch, performLiveSearch } from './search.js';
-import { saveCartToStorage, clearCartStorage, calculateCartTotal, syncCartUI, updateTempQtyContext, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay, renderCartList } from './cart.js';
-import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay, initHomepageSections, renderTicker } from './ui.js';
+
+// 👑 تم تصحيح مسارات الاستدعاء وفصل دوال الواجهة عن دوال السلة بدقة احترافية
+import { saveCartToStorage, clearCartStorage, calculateCartTotal, syncCartUI, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay, renderCartList } from './cart.js';
+import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay, initHomepageSections, renderTicker, showHomeView, updateTempQtyContext } from './ui.js';
 
 // 👑 تعريف قاعدة البيانات عالمياً لضمان التوافق مع كافة المحركات
 let db = (typeof window !== 'undefined' && window.firebase) ? window.firebase.firestore() : undefined;
@@ -46,20 +48,20 @@ window.initWaterfall = initWaterfall;
 window.initHomepageSections = initHomepageSections;
 window.applySettingsToUI = applySettingsToUI;
 window.renderTicker = renderTicker;
-window.showHomeView = showHomeView;
+window.showHomeView = showHomeView; // الثغرة تم سدها وتأمينها
 window.syncCatalogMap = syncCatalogMap;
 
 let lastSyncTime = Date.now();
 
 /**
- * 👑 بروتوكول الإقلاع المصفح (V27.0)
+ * 👑 بروتوكول الإقلاع المصفح (V27.1)
  * يضمن عمل موقع حلويات بوسي تحت أي ظروف ويمنع الشاشات البيضاء
  */
 async function startBoseSweetsEngine(isUpdate = false) {
     if (!isUpdate && (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة'))) return;
 
     if (!isUpdate) {
-        console.log("👑 حلويات بوسي: بدء تشغيل محرك الإقلاع السيادي (V27.0)...");
+        console.log("👑 حلويات بوسي: بدء تشغيل محرك الإقلاع السيادي (V27.1)...");
         registerBoseSweetsPWA();
     }
 
@@ -385,7 +387,7 @@ window.showMenuView = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// 👑 الانطلاق القاطع المعتمد من V27
+// 👑 الانطلاق القاطع المعتمد
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => startBoseSweetsEngine(false));
 } else {
