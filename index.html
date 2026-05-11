@@ -304,7 +304,7 @@
                 بنختار خاماتنا بعناية شديدة وبنهتم بأدق التفاصيل، عشان نقدم طعم مميز وتجربة تذوق راقية تليق بيك وبكل مناسباتك السعيدة.
             </p>
 
-            <button onclick="switchToMenuView()" class="px-10 py-4 rounded-full bg-[#ff91a4] text-[#ffffff] font-bold text-lg border-2 border-[#ff91a4] hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all btn-interactive shadow-md">
+            <button onclick="window.showMenuView()" class="px-10 py-4 rounded-full bg-[#ff91a4] text-[#ffffff] font-bold text-lg border-2 border-[#ff91a4] hover:bg-[#ffffff] hover:text-[#ff91a4] transition-all btn-interactive shadow-md">
                 تصفح المنيو
             </button>
         </header>
@@ -337,7 +337,6 @@
         <section class="sticky top-[80px] bg-[#ffffff] z-[300] py-4 border-b-2 border-[#ff91a4]">
             <div class="max-w-7xl mx-auto px-4 md:px-6 flex flex-col gap-4">
                 <div id="categories-nav" class="flex overflow-x-auto hide-scrollbar gap-4 pb-2 snap-x" role="navigation" aria-label="أقسام المنيو"></div>
-                <div id="sub-tabs-area" class="hidden w-full"></div>
             </div>
         </section>
 
@@ -348,6 +347,8 @@
                     <p id="current-cat-desc" class="font-bold text-[#1a1a1a] leading-relaxed text-center text-base"></p>
                 </div>
             </div>
+
+            <div id="sub-tabs-area" class="hidden w-full max-w-2xl mx-auto px-4 my-4 relative z-[200]"></div>
 
             <div id="display-container" class="w-full min-h-[400px] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10"></div>
 
@@ -805,26 +806,6 @@
             if(typeof state !== 'undefined') state.activeCat = 'الرئيسية';
         };
 
-        window.switchToMenuView = function() {
-            const viewHome = document.getElementById('view-home');
-            const viewTips = document.getElementById('view-tips');
-            const viewMenu = document.getElementById('view-menu');
-            
-            if(viewHome) viewHome.classList.add('hidden');
-            if(viewTips) viewTips.classList.add('hidden');
-            if(viewMenu) viewMenu.classList.remove('hidden');
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            
-            try {
-                if(typeof state !== 'undefined') {
-                    if(state.activeCat === 'الرئيسية') state.activeCat = 'تورت';
-                    if(typeof renderMainDisplay === 'function') renderMainDisplay();
-                    if(typeof renderCategories === 'function') renderCategories();
-                }
-            } catch(e) { console.warn('Module states pending initialization.'); }
-        };
-
         window.navigateDirectlyToCat = function(categoryName) {
             switchToMenuView();
             try {
@@ -966,6 +947,8 @@
                 setTimeout(() => { loader.style.display = 'none'; }, 700); 
             }
         });
+        
+        window.switchToMenuView = window.showMenuView;
     </script>
 
     <script>
@@ -1035,7 +1018,7 @@
     </script>
 
     <!-- الربط المعماري مع وحدات المعالجة (ES Modules) -->
-<script src="firebase-config.js" defer></script>
+    <script src="firebase-config.js" defer></script>
     <script type="module" src="config.js"></script>
     <script type="module" src="utils.js"></script>
     <script type="module" src="storage.js"></script>
@@ -1057,4 +1040,3 @@
     </script>
 </body>
 </html>
-

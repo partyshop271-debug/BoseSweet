@@ -19,29 +19,25 @@ if (typeof window !== 'undefined') {
 }
 
 // 👑 هيكل الحالة الموحد (يضم كافة المتغيرات لضمان التوافق مع أي تعديلات سابقة أو لاحقة)
-export let state = { 
-    activeCat: 'الرئيسية', 
-    dSize: 'مثلث', 
-    fType: 'ورد طبيعي', 
-    cart: [], 
-    currentShippingFee: 0, 
-    cakeBuilder: { 
-        flv: 'فانيليا', 
-        ps: 4, 
-        sh: 'دائري', 
-        trd: false, 
-        img: 'بدون', 
-        msg: '', 
-        sp: '',
-        alg: '', // توافقية خلفية لطلبات الحساسية
-        occ: '', // توافقية خلفية للمناسبات
-        refImgUrl: '', // مسار الصورة المرجعية
-        hasRefImg: false,
-        crd: false, // كارت الإهداء
-        dlg: false,
-        isReady: false
-    },
-    isAppReady: false 
+export const state = {
+    activeCat: 'الرئيسية',
+    dSize: 'مثلث',
+    fType: 'بوكيه',
+    isAppReady: false,
+    cart: [],
+    cakeState: {
+        occasion: '',
+        flavor: 'فانيليا',
+        shape: 'دائري',
+        persons: 4,
+        designStyle: 'على ذوق بوسي',
+        printing: 'بدون',
+        hasCard: false,
+        cardText: '',
+        allergies: '',
+        notes: '',
+        refImage: null
+    }
 };
 
 // 👑 هيكل بناء التورتة الملكية مدمج بجميع الخصائص المطلوبة لضمان استقرار الواجهة
