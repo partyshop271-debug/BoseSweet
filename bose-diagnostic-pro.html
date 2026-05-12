@@ -59,6 +59,12 @@
         ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
 
+        /* سكرول داخلي مخصص للقوائم الصغيرة لتخفيف إرهاق العين */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 2px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+
         .sidebar-item {
             transition: all 0.2s ease;
             border-right: 3px solid transparent;
@@ -144,6 +150,11 @@
 
     <div id="toast-container"></div>
 
+    <!-- زر العودة للأعلى الذكي والمريح للعين -->
+    <button id="back-to-top" onclick="scrollToTop()" class="fixed bottom-6 left-6 md:left-10 z-[100] bg-gradient-to-t from-[#ff91a4] to-white text-black w-12 h-12 md:w-14 md:h-14 rounded-full shadow-[0_10px_30px_rgba(255,145,164,0.3)] flex items-center justify-center transform translate-y-24 opacity-0 transition-all duration-500 hover:scale-110 border border-[#ff91a4]">
+        <i data-lucide="arrow-up" class="w-6 h-6 md:w-7 md:h-7"></i>
+    </button>
+
     <div id="mobile-overlay" class="fixed inset-0 bg-black/80 z-30 md:hidden" onclick="toggleMobileMenu()"></div>
 
     <aside id="main-sidebar" class="sidebar-container fixed md:relative w-72 h-full bg-[var(--sidebar-bg)] border-l border-[var(--border-color)] flex flex-col flex-shrink-0 z-40 shadow-2xl transform translate-x-full md:translate-x-0">
@@ -222,7 +233,7 @@
             </div>
         </header>
 
-        <div class="flex-grow overflow-y-auto p-4 md:p-6 lg:p-8 relative" id="main-content-area">
+        <div class="flex-grow overflow-y-auto p-4 md:p-6 lg:p-8 relative scroll-smooth" id="main-content-area">
             
             <!-- Dashboard Tab -->
             <div id="tab-dashboard" class="tab-content flex flex-col gap-4 md:gap-6 pb-20">
@@ -437,6 +448,22 @@
     <script>
         lucide.createIcons();
 
+        // هندسة السكرول لزر العودة للأعلى
+        const mainContentArea = document.getElementById('main-content-area');
+        const backToTopBtn = document.getElementById('back-to-top');
+
+        mainContentArea.addEventListener('scroll', () => {
+            if (mainContentArea.scrollTop > 300) {
+                backToTopBtn.classList.remove('translate-y-24', 'opacity-0');
+            } else {
+                backToTopBtn.classList.add('translate-y-24', 'opacity-0');
+            }
+        });
+
+        function scrollToTop() {
+            mainContentArea.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
         // Custom Sovereign Toast Notification System
         function showSovereignToast(msg, type = 'info') {
             const container = document.getElementById('toast-container');
@@ -564,8 +591,8 @@
             }
         }
 
-        const DB_NAME = 'BoseSweetsEngineDB_V8';
-        const DB_VERSION = 2;
+        const DB_NAME = 'BoseSweetsEngineDB_V9';
+        const DB_VERSION = 3;
         const STORE_FILES = 'files_store';
         const STORE_VARS = 'vars_store';
 
@@ -736,24 +763,49 @@
             }
         }
 
-        // محرك الإصلاح وبناء الشيفرة الذهبية (كاملة دون حذف)
+        // محرك الإصلاح وبناء الشيفرة الذهبية (النسخة المحدثة بالقائمة البيضاء الشاملة)
         const engineWorkerCode = `
             self.onmessage = function(e) {
                 const { rawCode, globalVars, fileName } = e.data;
                 let report = [];
-                let patchedCode = rawCode; // الكود الأصلي كامل
+                let patchedCode = rawCode; 
                 let fixesCount = 0;
 
                 self.postMessage({ status: 'progress', msg: 'فحص التوافق المعماري الشامل...' });
                 
                 const cleanCode = rawCode.replace(/\\/\\*[\\s\\S]*?\\*\\/|([^\\\\:]|^)\\/\\/.*$/gm, '$1');
 
-                // 1. المستشعرات وبناء الاعتماديات
+                // القائمة البيضاء السيادية المحدثة (لتجنب اكتشاف الدوال الأصلية للغة أو الكلمات المحجوزة)
+                const safeBuiltins = [
+                    'if', 'for', 'while', 'switch', 'catch', 'function', 'return', 'typeof', 'new', 'async', 'await',
+                    'console', 'Math', 'Date', 'parseInt', 'parseFloat', 'String', 'Number', 'Array', 'Object', 'Boolean', 
+                    'require', 'fetch', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'alert', 'confirm', 'prompt', 
+                    'addEventListener', 'removeEventListener', 'getElementById', 'querySelector', 'querySelectorAll', 
+                    'map', 'filter', 'reduce', 'forEach', 'push', 'pop', 'split', 'join', 'replace', 'window', 'document', 
+                    'localStorage', 'sessionStorage', 'JSON', 'Promise', 'Error', 'Event', 'CustomEvent', 'navigator', 'location', 'history',
+                    'get', 'set', 'put', 'delete', 'add', 'remove', 'update', 'clear', 'keys', 'values', 'entries', 'find', 'findIndex', 
+                    'includes', 'indexOf', 'shift', 'unshift', 'splice', 'slice', 'match', 'test', 'exec', 'toString', 'toLocaleString', 
+                    'substring', 'substr', 'trim', 'toLowerCase', 'toUpperCase', 'parse', 'stringify', 'random', 'round', 'floor', 'ceil', 
+                    'max', 'min', 'now', 'getFullYear', 'getMonth', 'getDate', 'getDay', 'getHours', 'getMinutes', 'getSeconds', 
+                    'createElement', 'appendChild', 'removeChild', 'replaceChild', 'insertBefore', 'cloneNode', 'getAttribute', 
+                    'setAttribute', 'removeAttribute', 'classList', 'dispatchEvent', 'getContext', 'fillRect', 'drawImage', 'toDataURL', 
+                    'createObjectStore', 'transaction', 'objectStore', 'resolve', 'reject', 'then', 'finally', 'all', 'race', 
+                    'collection', 'doc', 'onSnapshot', 'orderBy', 'where', 'limit', 'getDocs', 'addDoc', 'updateDoc', 'deleteDoc', 'setDoc', 
+                    'signInAnonymously', 'onAuthStateChanged', 'signOut', 'initializeApp', 'getAuth', 'getFirestore', 'getStorage', 'ref', 
+                    'uploadBytes', 'getDownloadURL', 'createIcons', 'Item', 'getItem', 'setItem', 'removeItem', 'Audio', 'Image', 'FormData', 
+                    'AbortController', 'abort', 'vibrate', 'closest', 'encodeURIComponent', 'error', 'log', 'warn', 'info', 'table', 
+                    'isArray', 'isNaN', 'isFinite', 'RegExp', 'Map', 'Set', 'Symbol', 'eval', 'module', 'exports', 'screen', 'indexedDB', 
+                    'XMLHttpRequest', 'WebSocket', 'Worker', 'SharedWorker', 'ServiceWorker', 'caches', 'crypto', 'performance', 'URL', 
+                    'URLSearchParams', 'Blob', 'File', 'FileReader', 'createObjectURL', 'revokeObjectURL', 'Black', 'Bold', 'var', 'rgba', 
+                    'translateY', 'rotate', 'bezier', 'reload', 'normalizeArabic', 'calculatedDistance', 'randomUUID', 'safeWrite', 'safeLocalStore',
+                    'getFromFallbacks', 'queueOrder', 'getQueuedOrders', 'saveToOfflineQueue', 'scheduleRetry', 'removeFromOfflineQueue', 'pow', 'processQueue',
+                    'enablePersistence', 'triggerOrderWebhook', 'broadcastGlobalUpdate', 'isSupported', 'dispatch'
+                ];
+
                 self.postMessage({ status: 'progress', msg: 'تطوير وهندسة وتأمين الملف ليتوافق مع باقي أجزاء الموقع...' });
                 const functionCallsRegex = /([a-zA-Z0-9_]+)\\s*\\(/g;
                 let callMatch;
                 let suspiciousCalls = new Set();
-                const safeBuiltins = ['console', 'Math', 'Date', 'parseInt', 'parseFloat', 'String', 'Number', 'Array', 'Object', 'Boolean', 'require', 'fetch', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'alert', 'confirm', 'prompt', 'addEventListener', 'removeEventListener', 'getElementById', 'querySelector', 'querySelectorAll', 'map', 'filter', 'reduce', 'forEach', 'push', 'pop', 'split', 'join', 'replace', 'window', 'document', 'localStorage', 'sessionStorage', 'JSON', 'Promise', 'Error', 'Event', 'CustomEvent', 'navigator', 'location', 'history'];
 
                 while ((callMatch = functionCallsRegex.exec(cleanCode)) !== null) {
                     const callName = callMatch[1];
@@ -770,7 +822,6 @@
                     });
                 }
 
-                // 2. درع الوقاية لحلويات بوسي (يضاف في البداية مع الاحتفاظ بالكود كاملاً)
                 const hasProtector = patchedCode.includes('boseGlobalErrorHandler');
                 if (!hasProtector) {
                     const protectorCode = "/*\\n * ========================================================================\\n * 👑 درع الوقاية السيادي - حلويات بوسي\\n * يضمن هذا الدرع عدم اختفاء منتجات حلويات بوسي عند حدوث أخطاء خارجية.\\n * تم البناء والتوسيع دون المساس بالهيكل الأساسي.\\n * ========================================================================\\n */\\nif(typeof window !== 'undefined' && !window.boseGlobalErrorHandler) {\\n    window.boseGlobalErrorHandler = true;\\n    window.addEventListener('error', function(e) { console.error('حلويات بوسي [حماية واجهة المستخدم]: تم احتواء خطأ للحفاظ على التصفح', e); });\\n    window.addEventListener('unhandledrejection', function(e) { console.error('حلويات بوسي [حماية الاتصال]: تم احتواء فقدان الاتصال بالبيانات', e); });\\n}\\n\\n";
@@ -782,7 +833,6 @@
                     });
                 }
 
-                // 3. تأمين الروابط الشاملة لتتمكن بقية الملفات من قراءة هذا الملف
                 const funcRegex = /^(?:export\\s+)?(?:async\\s+)?function\\s+([a-zA-Z0-9_]+)\\s*\\(/gm;
                 let funcMatches;
                 let bindings = '\\n\\n/* 👑 تصدير الدوال الشامل التلقائي - حلويات بوسي (لضمان عمل كل الملفات ككيان واحد) */\\nif (typeof window !== "undefined") {\\n';
@@ -811,7 +861,6 @@
         `;
         let engineWorkerURL = null;
 
-        // الدالة الجديدة للإصلاح التلقائي بضغطة زر من صفحة الفحص
         async function autoFixFile(fileName) {
             const fileObj = await getFileFromDB(fileName);
             if(!fileObj) {
@@ -819,10 +868,7 @@
                 return;
             }
 
-            // وضع الكود الخام في المنطقة المخفية
             document.getElementById('raw-code-input').value = fileObj.content;
-            
-            // تحويل المستخدم لشاشة الكود الذهبي وتشغيل أداة التحليل
             switchTab('analysis');
             startDeepAnalysisWorker(fileName);
         }
@@ -918,12 +964,37 @@
 
 
         // -------------------------------------------------------------------------------------
-        // نظام الفحص الشامل المحدث ليدعم الإصلاح التلقائي لكل ملف
+        // نظام الفحص الشامل المحدث لتجنب النتائج الخاطئة تماماً
         // -------------------------------------------------------------------------------------
         const systemScannerWorkerCode = `
             self.onmessage = function(e) {
                 const { files, globalVars } = e.data;
-                const safeBuiltins = ['console', 'Math', 'Date', 'parseInt', 'parseFloat', 'String', 'Number', 'Array', 'Object', 'Boolean', 'require', 'fetch', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'alert', 'confirm', 'prompt', 'addEventListener', 'removeEventListener', 'getElementById', 'querySelector', 'querySelectorAll', 'map', 'filter', 'reduce', 'forEach', 'push', 'pop', 'split', 'join', 'replace', 'window', 'document', 'localStorage', 'sessionStorage', 'JSON', 'Promise', 'Error', 'Event', 'CustomEvent', 'navigator', 'location', 'history'];
+                // القائمة البيضاء السيادية المحدثة
+                const safeBuiltins = [
+                    'if', 'for', 'while', 'switch', 'catch', 'function', 'return', 'typeof', 'new', 'async', 'await',
+                    'console', 'Math', 'Date', 'parseInt', 'parseFloat', 'String', 'Number', 'Array', 'Object', 'Boolean', 
+                    'require', 'fetch', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'alert', 'confirm', 'prompt', 
+                    'addEventListener', 'removeEventListener', 'getElementById', 'querySelector', 'querySelectorAll', 
+                    'map', 'filter', 'reduce', 'forEach', 'push', 'pop', 'split', 'join', 'replace', 'window', 'document', 
+                    'localStorage', 'sessionStorage', 'JSON', 'Promise', 'Error', 'Event', 'CustomEvent', 'navigator', 'location', 'history',
+                    'get', 'set', 'put', 'delete', 'add', 'remove', 'update', 'clear', 'keys', 'values', 'entries', 'find', 'findIndex', 
+                    'includes', 'indexOf', 'shift', 'unshift', 'splice', 'slice', 'match', 'test', 'exec', 'toString', 'toLocaleString', 
+                    'substring', 'substr', 'trim', 'toLowerCase', 'toUpperCase', 'parse', 'stringify', 'random', 'round', 'floor', 'ceil', 
+                    'max', 'min', 'now', 'getFullYear', 'getMonth', 'getDate', 'getDay', 'getHours', 'getMinutes', 'getSeconds', 
+                    'createElement', 'appendChild', 'removeChild', 'replaceChild', 'insertBefore', 'cloneNode', 'getAttribute', 
+                    'setAttribute', 'removeAttribute', 'classList', 'dispatchEvent', 'getContext', 'fillRect', 'drawImage', 'toDataURL', 
+                    'createObjectStore', 'transaction', 'objectStore', 'resolve', 'reject', 'then', 'finally', 'all', 'race', 
+                    'collection', 'doc', 'onSnapshot', 'orderBy', 'where', 'limit', 'getDocs', 'addDoc', 'updateDoc', 'deleteDoc', 'setDoc', 
+                    'signInAnonymously', 'onAuthStateChanged', 'signOut', 'initializeApp', 'getAuth', 'getFirestore', 'getStorage', 'ref', 
+                    'uploadBytes', 'getDownloadURL', 'createIcons', 'Item', 'getItem', 'setItem', 'removeItem', 'Audio', 'Image', 'FormData', 
+                    'AbortController', 'abort', 'vibrate', 'closest', 'encodeURIComponent', 'error', 'log', 'warn', 'info', 'table', 
+                    'isArray', 'isNaN', 'isFinite', 'RegExp', 'Map', 'Set', 'Symbol', 'eval', 'module', 'exports', 'screen', 'indexedDB', 
+                    'XMLHttpRequest', 'WebSocket', 'Worker', 'SharedWorker', 'ServiceWorker', 'caches', 'crypto', 'performance', 'URL', 
+                    'URLSearchParams', 'Blob', 'File', 'FileReader', 'createObjectURL', 'revokeObjectURL', 'Black', 'Bold', 'var', 'rgba', 
+                    'translateY', 'rotate', 'bezier', 'reload', 'normalizeArabic', 'calculatedDistance', 'randomUUID', 'safeWrite', 'safeLocalStore',
+                    'getFromFallbacks', 'queueOrder', 'getQueuedOrders', 'saveToOfflineQueue', 'scheduleRetry', 'removeFromOfflineQueue', 'pow', 'processQueue',
+                    'enablePersistence', 'triggerOrderWebhook', 'broadcastGlobalUpdate', 'isSupported', 'dispatch'
+                ];
                 
                 let fullReport = [];
 
@@ -935,7 +1006,6 @@
                     let callMatch;
                     let missingDeps = new Set();
 
-                    // مستشعر الانهيار ومستشعر حماية الدوال
                     const hasProtector = file.content.includes('boseGlobalErrorHandler');
 
                     while ((callMatch = functionCallsRegex.exec(cleanCode)) !== null) {
@@ -952,7 +1022,6 @@
                         }
                     }
 
-                    // يتم إضافة الملف للتقرير إذا كان به دوال مفقودة أو إذا كان يفتقر لدرع الحماية
                     if(missingDeps.size > 0 || !hasProtector) {
                         fullReport.push({
                             fileName: file.name,
@@ -1001,7 +1070,7 @@
                         overlay.classList.add('hidden');
                         btnRun.disabled = false;
                         btnRun.classList.remove('opacity-50', 'cursor-not-allowed');
-                        showSovereignToast("القرار المهني: اكتمل الفحص الشامل وجاهزون للإصلاح التلقائي.", "success");
+                        showSovereignToast("القرار المهني: اكتمل الفحص الشامل بدقة متناهية.", "success");
                     }, 800);
                 }
             };
@@ -1012,13 +1081,13 @@
             let html = '';
 
             html += `
-            <div class="mb-4 bg-[#05080f] border border-[var(--border-color)] p-4 rounded-xl flex justify-between items-center">
+            <div class="mb-4 bg-[#05080f] border border-[var(--border-color)] p-4 rounded-xl flex justify-between items-center shadow-lg">
                 <div>
                     <span class="text-xs text-gray-400 font-bold block">إجمالي الملفات المفحوصة</span>
                     <span class="text-lg font-black text-white">${totalFiles} ملف</span>
                 </div>
                 <div class="text-left">
-                    <span class="text-xs text-gray-400 font-bold block">حالة توافق البيانات</span>
+                    <span class="text-xs text-gray-400 font-bold block">حالة التوافق النهائي</span>
                     <span class="text-lg font-black ${reportData.length === 0 ? 'text-emerald-400' : 'text-[#ff91a4]'}">
                         ${reportData.length === 0 ? 'استقرار تام' : 'يتطلب التطوير الفوري'}
                     </span>
@@ -1030,7 +1099,7 @@
                 <div class="p-6 bg-emerald-900/10 border border-emerald-500/30 rounded-xl text-center flex flex-col items-center justify-center gap-3">
                     <i data-lucide="shield-check" class="w-12 h-12 text-emerald-400"></i>
                     <h3 class="text-white font-black text-lg">القرار المهني: المنظومة مستقرة ومحمية بالكامل</h3>
-                    <p class="text-sm text-gray-400 font-bold">ملفات حلويات بوسي مترابطة تماماً، ومحمية بدرع الوقاية السيادي، ولا يوجد أي نقص يؤدي لاختفاء المنتجات.</p>
+                    <p class="text-sm text-gray-400 font-bold">ملفات حلويات بوسي مترابطة تماماً، ومحمية بدرع الوقاية السيادي، ولا يوجد أي نقص حقيقي.</p>
                 </div>`;
             } else {
                 html += `<div class="grid grid-cols-1 gap-4">`;
@@ -1056,7 +1125,8 @@
                         </div>
                         
                         ${item.missing.length > 0 ? `
-                        <div class="flex flex-wrap gap-2">
+                        <!-- حل مشكلة المساحة المفرطة: صندوق بتمرير داخلي لتخفيف إرهاق العين -->
+                        <div class="flex flex-wrap gap-2 max-h-32 overflow-y-auto custom-scrollbar p-2 bg-[#05080f] rounded-lg border border-[var(--border-color)]">
                             ${item.missing.map(m => `<span class="bg-[#151d2e] border border-[var(--border-color)] text-[#ff91a4] font-mono text-[10px] md:text-xs px-2 py-1 rounded shadow-inner">${m}()</span>`).join('')}
                         </div>` : ''}
 
@@ -1093,7 +1163,7 @@
 
         function downloadFinalCode() {
             const code = document.getElementById('patched-code-output').value;
-            const titleEl = document.getElementById('current-tab-title'); // لمحاولة معرفة اسم الملف
+            const titleEl = document.getElementById('current-tab-title');
             let fileName = `BoseSweets_Sovereign_Patched_${Date.now()}.js`;
             
             if(!code) return;
@@ -1113,5 +1183,4 @@
     </script>
 </body>
 </html>
-
 
