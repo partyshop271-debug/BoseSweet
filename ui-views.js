@@ -1,5 +1,5 @@
 /**
- * 👑 BoseSweets UI View Management (V24.1 - Sovereign Architecture Protocol)
+ * 👑 BoseSweets UI View Management (V24.3 - Sovereign Architecture Protocol)
  * مهندس عرض الواجهات والتنقل - علامة حلويات بوسي
  * تم التحصين الشامل: تطبيق التوجيهات الهندسية (Grid Protocol) وفرض نظام الكروت بصرامة،
  * حماية واجهات الشلال، وتأمين التبويبات الذكية لقسم الديسباسيتو ضد الشاشات الفارغة.
@@ -9,18 +9,24 @@ import { dSizes, fTypes } from './config.js';
 import { siteSettings, catalog, catMenu, state } from './state.js';
 import { MemoryManager, escapeHTML, optimizeCloudinaryUrl } from './utils.js';
 
-// 👑 تبديل الواجهات الأساسي (Sovereign Routing)
+// 👑 1. إصلاح اختفاء "الشلال" و"الشريط العلوي" (Sovereign Routing)
 export const showHomeView = function() {
     try {
-        // الإخفاء القاطع للواجهات الأخرى
+        // إخفاء الواجهات الفرعية فقط والإبقاء على الهيكل الأساسي
         ['view-menu', 'view-tips', 'view-cake-builder', 'view-product-details', 'menu-view', 'product-details-view'].forEach(id => {
             const el = document.getElementById(id);
-            if(el) { el.classList.add('hidden'); el.style.display = 'none'; el.style.opacity = '0'; }
+            if(el) { 
+                el.classList.add('hidden'); 
+                el.style.display = 'none'; 
+                el.style.opacity = '0'; 
+            }
         });
+        
+        // إظهار الصفحة الرئيسية والعناصر التابعة لها بصرامة
         const vHome = document.getElementById('view-home') || document.getElementById('home-view'); 
         if(vHome) { 
             vHome.classList.remove('hidden'); 
-            vHome.style.display = 'flex'; // تأكيد العرض المرن
+            vHome.style.display = 'block'; 
             vHome.style.opacity = '1';
         }
         
@@ -30,16 +36,19 @@ export const showHomeView = function() {
         if(reviewsSec) { reviewsSec.classList.add('hidden'); reviewsSec.style.display = 'none'; }
         if(relatedSec) { relatedSec.classList.add('hidden'); relatedSec.style.display = 'none'; }
 
-        if(window.setActiveCategoryPill) window.setActiveCategoryPill('الرئيسية');
+        // تفعيل المحركات الأساسية فوراً لضمان عدم الاختفاء (التحصين الشامل)
+        if(window.renderTicker) window.renderTicker();
         if(window.initWaterfall) window.initWaterfall();
+        if(window.initHomepageSections) window.initHomepageSections();
+        
+        if(window.setActiveCategoryPill) window.setActiveCategoryPill('الرئيسية');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(e) { console.warn("BoseSweets: استثناء أثناء عرض الرئيسية", e); }
+    } catch(e) { console.error("BoseSweets Error في عرض الرئيسية: ", e); }
 };
 window.showHomeView = showHomeView;
 
 export const showMenuView = function() {
     try {
-        // الإخفاء القاطع
         ['view-home', 'view-tips', 'view-cake-builder', 'view-product-details', 'home-view', 'product-details-view'].forEach(id => {
             const el = document.getElementById(id);
             if(el) { el.classList.add('hidden'); el.style.display = 'none'; el.style.opacity = '0'; }
@@ -51,7 +60,6 @@ export const showMenuView = function() {
             vMenu.style.opacity = '1';
         }
         
-        // إظهار التقييمات والترشيحات في المنيو إذا لزم الأمر
         const reviewsSec = document.getElementById('global-reviews-section');
         const relatedSec = document.getElementById('related-products-area');
         if(reviewsSec) { reviewsSec.classList.remove('hidden'); reviewsSec.style.display = 'block'; }
@@ -118,6 +126,15 @@ export const closeGlobalLightbox = function() {
     }
 };
 window.closeGlobalLightbox = closeGlobalLightbox;
+
+// 👑 3. تفعيل "تبويبات الديسباسيتو" (Sovereign State Control)
+export const setSub = function(type, val) {
+    if (type === 's') state.dSize = val;
+    if (type === 'f') state.fType = val;
+    // إجبار إعادة الرسم فوراً لتحديث الكروت بناءً على المقاس المختار
+    if(window.renderMainDisplay) window.renderMainDisplay();
+};
+window.setSub = setSub;
 
 // 👑 هندسة الشلال (Waterfall - التحصين ضد الاختفاء)
 export const initWaterfall = function() {
@@ -306,7 +323,6 @@ export const enforceCategoryRender = function(containerId, productsHTML) {
             container.innerHTML = ''; 
             container.appendChild(fragment);
             container.classList.remove('hidden'); 
-            // الإبقاء على خاصية الـ display المحددة من خلال الكلاسات لتجنب كسر الشبكة
             if (!container.className.includes('grid') && !container.className.includes('flex')) {
                 container.style.display = 'block'; 
             }
@@ -315,14 +331,7 @@ export const enforceCategoryRender = function(containerId, productsHTML) {
 };
 window.enforceCategoryRender = enforceCategoryRender;
 
-export const setSub = function(type, val) {
-    if (type === 's') state.dSize = val;
-    if (type === 'f') state.fType = val;
-    if(window.renderMainDisplay) window.renderMainDisplay();
-};
-window.setSub = setSub;
-
-// 👑 المحرك الأساسي لعرض الأقسام مع الحماية المطلقة وتطبيق الشبكة الهندسية (Grid Protocol)
+// 👑 2. تطبيق نظام "الكارتين" و"الكارت الواحد" (Grid Protocol المحسن)
 export const renderMainDisplay = function() {
     try {
         const catDescArea = document.getElementById('category-description-area');
@@ -356,13 +365,10 @@ export const renderMainDisplay = function() {
         let targetHTML = '';
         let showSubTabs = false;
         
-        // 👑 تطبيق هندسة الكروت القاطعة (Sovereign Grid Configuration)
+        // تطبيق رؤية الإدارة لتقسيم الكروت بصرامة
         const fullWidthCategories = ['تورت', 'جاتوه', 'جاتوهات', 'ريد فيلفت', 'بوكس الروقان', 'ميني تورته', 'تورتة ميني', 'ورد', 'كب كيك'];
         const twoColumnCategories = ['دوناتس', 'سينابون', 'ديسباسيتو', 'كبات السعاده', 'القشطوطه', 'قشطوطة'];
 
-        const isFullWidth = fullWidthCategories.includes(state.activeCat);
-        const isTwoColumns = twoColumnCategories.includes(state.activeCat);
-        
         if (state.activeCat === 'تورت') { 
             container.className = 'w-full animate-fade-in';
             targetHTML = breadcrumbHtml + `<div id="cake-builder-steps-wrapper" class="w-full mt-6 rounded-[3rem] shadow-2xl border-2 overflow-hidden bg-[#ffffff] border-[var(--brand-primary)]"></div>`; 
@@ -384,32 +390,27 @@ export const renderMainDisplay = function() {
         else {
             if (state.activeCat === 'ديسباسيتو') showSubTabs = true;
             
-            // 👑 تحديد شبكة العرض بصرامة لمنع تداخل الأحجام
-            if (isFullWidth) {
+            // تحديد كلاس الحاوية بناءً على التصنيف الهندسي
+            if (fullWidthCategories.includes(state.activeCat)) {
+                // كارت واحد مالي الشاشة (Full Width) لزيادة الفخامة
                 container.className = 'grid grid-cols-1 gap-10 items-stretch w-full animate-fade-in max-w-4xl mx-auto';
-            } else if (isTwoColumns) {
-                // فرض كارتين بجوار بعضهما بشكل دائم حسب التوجيهات
+            } else if (twoColumnCategories.includes(state.activeCat)) {
+                // كارتين جنب بعض (2 Columns) بصرامة كما طلبت الإدارة
                 container.className = 'grid grid-cols-2 gap-4 md:gap-6 items-stretch w-full animate-fade-in';
             } else {
+                // التقسيم الافتراضي لبقية الأصناف
                 container.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 items-stretch w-full animate-fade-in';
             }
             
             let list = catalog.filter(p => p && p.isActive !== false && p.category === state.activeCat);
             
-            // 👑 ترقية ذكاء التبويبات للديسباسيتو (المرونة لمنع الشاشات الفارغة)
-            if (state.activeCat === 'ديسباسيتو') {
-                if (state.dSize) {
-                    const filteredList = list.filter(p => {
-                        const matchSize = p.size === state.dSize || p.subType === state.dSize || (p.desc && typeof p.desc === 'string' && p.desc.includes(state.dSize)) || (p.name && p.name.includes(state.dSize));
-                        return matchSize;
-                    });
-                    // إذا كان التصفية ستؤدي لشاشة فارغة، تجاهلها لضمان استمرار عرض المنتجات
-                    if (filteredList.length > 0) {
-                        list = filteredList;
-                    } else {
-                        state.dSize = null; // إعادة تعيين لعدم إرباك العميل
-                    }
-                }
+            // ترقية ذكاء التبويبات للديسباسيتو (منع الشاشات الفارغة)
+            if (state.activeCat === 'ديسباسيتو' && state.dSize) {
+                const filteredList = list.filter(p => {
+                    return p.size === state.dSize || p.subType === state.dSize || (p.desc && typeof p.desc === 'string' && p.desc.includes(state.dSize)) || (p.name && p.name.includes(state.dSize));
+                });
+                if (filteredList.length > 0) list = filteredList;
+                else state.dSize = null; // تصفير الاختيار لضمان عدم ظهور شاشة بيضاء
             }
             
             if (list.length === 0) {
@@ -428,20 +429,18 @@ export const renderMainDisplay = function() {
             subTabs.style.display = 'block';
             if (state.activeCat === 'ورد') window.renderFlowerTabs(subTabs);
             if (state.activeCat === 'ديسباسيتو') {
-                subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 flex justify-center gap-2 bg-[#ffffff] border-[var(--brand-primary)] flex-wrap">${dSizes.map(s => `<button onclick="window.setSub('s', '${s}')" class="flex-1 min-w-[80px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.dSize === s ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)]' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${s}</button>`).join('')}</div>`;
+                subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 flex justify-center gap-2 bg-[#ffffff] border-[var(--brand-primary)] flex-wrap">${dSizes.map(s => `<button onclick="window.setSub('s', '${s}')" class="flex-1 min-w-[80px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.dSize === s ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-lg' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${s}</button>`).join('')}</div>`;
             }
         } else { if(subTabs) { subTabs.classList.add('hidden'); subTabs.style.display = 'none'; } }
         
         if(window.renderSmartSuggestions) window.renderSmartSuggestions('main');
-        
-        // استدعاء المراجعات العامة للقسم للتأكيد على دمجها الصحيح
         if(window.loadLiveReviews) window.loadLiveReviews('general_' + state.activeCat);
         
     } catch(e) { console.error("BoseSweets: استثناء في محرك العرض الأساسي", e); }
 };
 window.renderMainDisplay = renderMainDisplay;
 
-// 👑 هندسة توجيه الأقسام المنیعة (Sovereign Routing Control)
+// 👑 هندسة توجيه الأقسام المنيعة (Sovereign Routing Control)
 export const setCategory = function(c) {
     try {
         if (c === 'الرئيسية') {
@@ -471,9 +470,7 @@ export const setCategory = function(c) {
             const activeBtn = document.getElementById(`cat-btn-${safeId}`); 
             if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); 
         }, 50);
-    } catch(e) {
-        console.error("BoseSweets: خطأ أثناء التوجيه للقسم", e);
-    }
+    } catch(e) { console.error("BoseSweets: خطأ أثناء التوجيه للقسم", e); }
 };
 window.setCategory = setCategory;
 
