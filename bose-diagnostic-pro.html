@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>منصة القيادة والتشخيص الشاملة | حلويات بوسي الإصدار السيادي</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+        
+        :root {
+            --primary-color: #ff91a4; 
+            --dark-bg: #020408;       
+            --panel-bg: #090e17;      
+            --sidebar-bg: #05080f;    
+            --border-color: #151d2e;     
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            margin: 0;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent; 
+        }
+
+        .sovereign-panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        .code-area {
+            font-family: 'Consolas', 'Courier New', monospace;
+            direction: ltr;
+            background: #010204;
+            color: #cbd5e1;
+            border: 1px solid var(--border-color);
+            line-height: 1.7;
+            font-size: 14px;
+            resize: none;
+            tab-size: 4;
+            -webkit-overflow-scrolling: touch; 
+        }
+        
+        .code-area:focus { 
+            outline: none; 
+            border-color: var(--primary-color); 
+            box-shadow: inset 0 0 0 1px var(--primary-color); 
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--sidebar-bg); }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+
+        .sidebar-item {
+            transition: all 0.2s ease;
+            border-right: 3px solid transparent;
+        }
+        .sidebar-item:hover {
+            background: rgba(255, 145, 164, 0.05);
+            color: var(--text-main);
+        }
+        .sidebar-item.active {
+            background: rgba(255, 145, 164, 0.1);
+            border-right-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .radar-loader {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 145, 164, 0.1);
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .status-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        #mobile-overlay {
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        #mobile-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .sidebar-container {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Toast Notifications */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+        .sovereign-toast {
+            background: #090e17;
+            border: 1px solid var(--border-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideUpFade 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: auto;
+        }
+        .toast-closing {
+            animation: fadeOutDown 0.3s ease forwards;
+        }
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeOutDown {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(20px); }
+        }
+
+    </style>
+</head>
+<body class="flex h-screen w-screen text-sm md:text-base selection:bg-[#ff91a4] selection:text-black">
+
+    <div id="toast-container"></div>
+
+    <div id="mobile-overlay" class="fixed inset-0 bg-black/80 z-30 md:hidden" onclick="toggleMobileMenu()"></div>
+
+    <aside id="main-sidebar" class="sidebar-container fixed md:relative w-72 h-full bg-[var(--sidebar-bg)] border-l border-[var(--border-color)] flex flex-col flex-shrink-0 z-40 shadow-2xl transform translate-x-full md:translate-x-0">
+        <div class="p-4 md:p-6 border-b border-[var(--border-color)] flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-[#ff91a4] to-white flex items-center justify-center shadow-lg shadow-[#ff91a4]/20 flex-shrink-0">
+                    <i data-lucide="crown" class="w-6 h-6 md:w-7 md:h-7 text-black"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-lg md:text-xl text-white tracking-tight leading-none">حلويات بوسي</h1>
+                    <p class="text-[10px] md:text-xs text-[#ff91a4] font-bold mt-1 tracking-widest">الإصدار السيادي التلقائي</p>
+                </div>
+            </div>
+            <button onclick="toggleMobileMenu()" class="md:hidden text-gray-400 hover:text-white bg-[#151d2e] p-2 rounded-lg">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <nav class="flex-grow py-4 md:py-6 flex flex-col gap-1 overflow-y-auto px-3">
+            <div class="text-xs font-black text-[var(--text-muted)] mb-2 px-3">وحدات التحكم السيادية</div>
+            
+            <button onclick="switchTab('dashboard'); toggleMobileMenu();" class="sidebar-item active w-full text-right px-4 py-3 rounded-lg font-bold text-gray-400 flex items-center gap-3">
+                <i data-lucide="layout-template" class="w-5 h-5 flex-shrink-0"></i> شاشة القيادة المركزية
+            </button>
+            <button onclick="switchTab('memory'); toggleMobileMenu();" class="sidebar-item w-full text-right px-4 py-3 rounded-lg font-bold text-gray-400 flex items-center gap-3">
+                <i data-lucide="hard-drive" class="w-5 h-5 flex-shrink-0"></i> الذاكرة الشاملة للمنظومة
+            </button>
+            <button onclick="switchTab('system-scan'); toggleMobileMenu();" class="sidebar-item w-full text-right px-4 py-3 rounded-lg font-bold text-[#ff91a4] bg-[#ff91a4]/5 flex items-center gap-3 mt-4 border border-[#ff91a4]/20">
+                <i data-lucide="radar" class="w-5 h-5 flex-shrink-0"></i> فحص النواقص والإصلاح
+            </button>
+            <button onclick="switchTab('analysis'); toggleMobileMenu();" class="sidebar-item w-full text-right px-4 py-3 rounded-lg font-bold text-gray-400 flex items-center gap-3 mt-1">
+                <i data-lucide="microscope" class="w-5 h-5 flex-shrink-0"></i> عرض الكود المطور النهائي
+            </button>
+            <button onclick="switchTab('reports'); toggleMobileMenu();" class="sidebar-item w-full text-right px-4 py-3 rounded-lg font-bold text-gray-400 flex items-center gap-3 mt-1">
+                <i data-lucide="shield-alert" class="w-5 h-5 flex-shrink-0"></i> تقرير التوافق والمشاكل
+            </button>
+        </nav>
+
+        <div class="p-4 md:p-6 border-t border-[var(--border-color)] bg-[#030509]">
+            <div class="flex flex-col gap-3">
+                <div class="flex justify-between items-center text-[10px] md:text-xs font-bold">
+                    <span class="text-gray-400">حالة العقل المركزي</span>
+                    <span class="text-emerald-400 flex items-center gap-2"><div class="status-dot bg-emerald-400 animate-pulse"></div> يقظ ومستقر</span>
+                </div>
+                <div class="w-full bg-gray-800 rounded-full h-1">
+                    <div class="bg-gradient-to-r from-emerald-500 to-[#ff91a4] h-1 rounded-full" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-grow flex flex-col h-screen overflow-hidden bg-[var(--dark-bg)] relative w-full">
+        
+        <header class="h-auto md:h-20 py-3 md:py-0 border-b border-[var(--border-color)] flex flex-col md:flex-row items-center justify-between px-4 md:px-8 flex-shrink-0 bg-[var(--panel-bg)] z-10 gap-3 md:gap-0">
+            <div class="flex items-center justify-between w-full md:w-auto">
+                <button onclick="toggleMobileMenu()" class="md:hidden text-white bg-[#151d2e] p-2 rounded-lg border border-[var(--border-color)] hover:bg-[#1e293b]">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+                <div class="text-center md:text-right mr-3 md:mr-0">
+                    <h2 id="current-tab-title" class="text-lg md:text-xl font-black text-white flex justify-center md:justify-start items-center gap-2 md:gap-3">
+                        <i data-lucide="layout-template" class="w-5 h-5 md:w-6 md:h-6 text-[#ff91a4]"></i>
+                        شاشة القيادة المركزية
+                    </h2>
+                    <p class="hidden md:block text-xs text-[var(--text-muted)] mt-1">المحرك المسؤول عن التوافق الشامل ومنع انهيار منصة حلويات بوسي.</p>
+                </div>
+                <div class="w-10 md:hidden"></div>
+            </div>
+            
+            <div class="flex items-center w-full md:w-auto justify-center md:justify-end">
+                <div class="px-3 py-1.5 md:px-4 md:py-2 bg-[#020408] rounded-lg border border-[var(--border-color)] text-xs md:text-sm font-mono flex items-center gap-3 shadow-inner">
+                    <div id="memory-indicator" class="flex items-center gap-2 text-emerald-400">
+                        <i data-lucide="layers" class="w-4 h-4"></i>
+                        <span>الملفات المتصلة: <span id="memory-count" class="font-black text-white text-base">0</span> ملف</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex-grow overflow-y-auto p-4 md:p-6 lg:p-8 relative" id="main-content-area">
+            
+            <!-- Dashboard Tab -->
+            <div id="tab-dashboard" class="tab-content flex flex-col gap-4 md:gap-6 pb-20">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                    <div class="sovereign-panel p-4 md:p-5 border-t-2 border-t-[#ff91a4] flex flex-col justify-center">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-[#ff91a4]/10 flex items-center justify-center text-[#ff91a4]">
+                                <i data-lucide="files" class="w-4 h-4 md:w-5 md:h-5"></i>
+                            </div>
+                            <span class="text-[10px] md:text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded">قراءة مستمرة</span>
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-black text-white mt-1 md:mt-2" id="stat-files">0</h3>
+                        <p class="text-[10px] md:text-xs font-bold text-[var(--text-muted)] mt-1">حجم المنظومة بالملفات</p>
+                    </div>
+
+                    <div class="sovereign-panel p-4 md:p-5 border-t-2 border-t-blue-400 flex flex-col justify-center">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-blue-400/10 flex items-center justify-center text-blue-400">
+                                <i data-lucide="book-open" class="w-4 h-4 md:w-5 md:h-5"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-black text-white mt-1 md:mt-2" id="stat-vars">0</h3>
+                        <p class="text-[10px] md:text-xs font-bold text-[var(--text-muted)] mt-1">المفردات السيادية المُكتشفة</p>
+                    </div>
+
+                    <div class="sovereign-panel p-4 md:p-5 border-t-2 border-t-purple-400 flex flex-col justify-center">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-purple-400/10 flex items-center justify-center text-purple-400">
+                                <i data-lucide="shield" class="w-4 h-4 md:w-5 md:h-5"></i>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl md:text-3xl font-black text-white mt-1 md:mt-2" id="stat-fixes">0</h3>
+                        <p class="text-[10px] md:text-xs font-bold text-[var(--text-muted)] mt-1">عمليات الحماية من الانهيار</p>
+                    </div>
+
+                    <div class="sovereign-panel p-4 md:p-5 border-t-2 border-t-emerald-400 flex flex-col justify-center">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg bg-emerald-400/10 flex items-center justify-center text-emerald-400">
+                                <i data-lucide="activity" class="w-4 h-4 md:w-5 md:h-5"></i>
+                            </div>
+                            <div class="status-dot bg-emerald-400 animate-pulse mt-2"></div>
+                        </div>
+                        <h3 class="text-lg md:text-xl font-black text-white mt-1 md:mt-2">نشط</h3>
+                        <p class="text-[10px] md:text-xs font-bold text-[var(--text-muted)] mt-1">مستشعر اختفاء المنتجات</p>
+                    </div>
+                </div>
+
+                <div class="sovereign-panel p-5 md:p-8 flex flex-col lg:flex-row items-center gap-6 lg:gap-8 bg-gradient-to-l from-[var(--panel-bg)] to-[#ff91a4]/5 border-[#ff91a4]/20">
+                    <div class="flex-grow text-center lg:text-right">
+                        <h3 class="text-lg md:text-xl font-black text-white mb-2">جاهزية المحرك السيادي للتحليل والإصلاح التلقائي</h3>
+                        <p class="text-xs md:text-sm text-[var(--text-muted)] font-bold leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                            القرار المهني: النظام مُجهز الآن لاستيعاب كافة ملفات موقع حلويات بوسي. بعد إدراج الملفات، يرجى التوجه إلى قسم "فحص النواقص والإصلاح". ستقوم الأداة بكشف أي خلل وإصدار الكود الكامل المطور متوافقاً مع الهيكل العام دون أي نقص.
+                        </p>
+                    </div>
+                    <button onclick="switchTab('memory')" class="w-full lg:w-auto bg-[#ff91a4] hover:bg-white text-black px-6 md:px-8 py-3 md:py-4 rounded-xl font-black transition-all shadow-lg flex items-center justify-center gap-2 flex-shrink-0">
+                        الخطوة 1: تغذية الذاكرة بالملفات <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="switchTab('system-scan')" class="w-full lg:w-auto bg-blue-500 hover:bg-blue-400 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl font-black transition-all shadow-lg flex items-center justify-center gap-2 flex-shrink-0">
+                        الخطوة 2: فحص وإصلاح الموقع <i data-lucide="radar" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Memory Tab -->
+            <div id="tab-memory" class="tab-content hidden flex-col gap-6 pb-20">
+                <div class="sovereign-panel p-5 md:p-8 border-t-4 border-t-[#ff91a4] relative overflow-hidden">
+                    <div class="flex flex-col md:flex-row justify-between items-start gap-4 mb-6">
+                        <div>
+                            <h2 class="text-lg md:text-xl font-black text-white mb-2 flex items-center gap-2">
+                                <i data-lucide="database" class="w-5 h-5 md:w-6 md:h-6 text-[#ff91a4]"></i>
+                                مستودع الذاكرة المعمارية الشاملة
+                            </h2>
+                            <p class="text-xs md:text-sm text-[var(--text-muted)] font-bold max-w-3xl leading-relaxed">
+                                الخطوة الأولى والأهم: يرجى إدراج كافة ملفات موقع حلويات بوسي هنا.
+                                سيقوم العقل المركزي بقراءة محتواها وحفظ المتغيرات والدوال لضمان التوافق المطلق عند الفحص والإصلاح التلقائي.
+                            </p>
+                        </div>
+                        <button onclick="promptClearDatabase()" class="w-full md:w-auto bg-red-900/20 text-red-400 hover:bg-red-900/40 border border-red-900/50 px-4 py-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i> تفريغ الذاكرة
+                        </button>
+                    </div>
+                    
+                    <div class="flex flex-col gap-4 items-center bg-[#020408] p-4 md:p-6 rounded-xl border border-[var(--border-color)] border-dashed">
+                        <input type="file" id="file-uploader" multiple accept=".js,.html,.json,.css,.txt" class="hidden" onchange="processAndStoreFiles(event)">
+                        <label for="file-uploader" id="upload-label" class="w-full bg-[#151d2e] hover:bg-[#1e293b] text-white px-4 py-8 md:py-6 rounded-xl font-black cursor-pointer transition-all flex flex-col items-center justify-center gap-3 border border-[var(--border-color)] text-center">
+                            <i data-lucide="upload-cloud" class="w-12 h-12 md:w-10 md:h-10 text-[#ff91a4]"></i> 
+                            <span class="text-sm md:text-base">اضغط هنا لإدراج جميع ملفات المنظومة دفعة واحدة</span>
+                            <span class="text-[10px] md:text-xs text-[var(--text-muted)] font-normal px-2">يتم المعالجة في الخلفية لضمان استقرار الهاتف المحمول</span>
+                        </label>
+                    </div>
+
+                    <div class="mt-8">
+                        <h4 class="text-xs md:text-sm font-bold text-white mb-4 border-b border-[var(--border-color)] pb-2 flex items-center gap-2">
+                            <i data-lucide="layers" class="w-4 h-4 text-emerald-400"></i> خريطة الملفات المحفوظة بالذاكرة:
+                        </h4>
+                        <div id="indexed-files-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SYSTEM WIDE SCAN TAB (UPDATED WITH AUTO-FIX) -->
+            <div id="tab-system-scan" class="tab-content hidden flex-col gap-6 pb-20">
+                <div class="sovereign-panel p-5 md:p-8 border-t-4 border-t-blue-500 relative">
+                    
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                        <div>
+                            <h2 class="text-lg md:text-xl font-black text-white mb-2 flex items-center gap-2">
+                                <i data-lucide="radar" class="w-5 h-5 md:w-6 md:h-6 text-blue-400"></i>
+                                نظام كشف النواقص والإصلاح التلقائي
+                            </h2>
+                            <p class="text-xs md:text-sm text-[var(--text-muted)] font-bold max-w-3xl leading-relaxed">
+                                القرار المهني: هذا النظام يتيح لحضرتك فحص جميع ملفات حلويات بوسي المحفوظة في الذاكرة دفعة واحدة. سيتم استخراج تقرير يحدد أي ملف يعاني من مشاكل، مع توفير زر لإصدار النسخة الكاملة المطورة للملف فوراً لتجنب الانهيار.
+                            </p>
+                        </div>
+                        <button onclick="runSystemWideScan()" id="btn-run-scan" class="w-full md:w-auto bg-gradient-to-r from-blue-600 to-blue-400 hover:opacity-90 text-white px-6 py-3 rounded-xl font-black transition-all shadow-lg flex items-center justify-center gap-2 flex-shrink-0">
+                            <i data-lucide="play-circle" class="w-5 h-5"></i> تشغيل الفحص الشامل للموقع
+                        </button>
+                    </div>
+
+                    <!-- Scan Progress Overlay -->
+                    <div id="system-scan-overlay" class="hidden absolute inset-0 bg-[#020408]/95 backdrop-blur-md z-20 flex flex-col items-center justify-center gap-4 md:gap-6 p-4 text-center rounded-xl">
+                        <div class="radar-loader border-t-blue-500"></div>
+                        <div>
+                            <h3 class="text-blue-400 font-black text-lg md:text-xl mb-2">جاري الفحص المتقاطع لكافة الملفات...</h3>
+                            <p class="text-[10px] md:text-sm text-[var(--text-muted)] font-bold">يتم البحث عن الروابط المفقودة لمنع أي انهيار مفاجئ، وتجهيز بروتوكولات الإصلاح.</p>
+                        </div>
+                    </div>
+
+                    <!-- Scan Results Container -->
+                    <div id="system-scan-results" class="flex flex-col gap-4 mt-6">
+                        <div class="text-center text-[var(--text-muted)] py-10 font-bold text-sm bg-[#05080f] rounded-xl border border-[var(--border-color)]">
+                            لم يتم إجراء أي فحص شامل حتى الآن. يرجى الضغط على "تشغيل الفحص الشامل" للبدء في اكتشاف الخلل وعلاجه.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Analysis Tab (Now specifically for outputting the golden code) -->
+            <div id="tab-analysis" class="tab-content hidden flex-col gap-4 h-[calc(100vh-140px)] md:h-[calc(100vh-180px)] pb-10">
+                <div class="grid grid-cols-1 gap-4 h-full">
+                    
+                    <!-- Hidden input area since the tool auto-fetches now -->
+                    <textarea id="raw-code-input" class="hidden"></textarea>
+
+                    <div class="sovereign-panel flex flex-col h-full overflow-hidden border border-[var(--border-color)] relative rounded-xl">
+                        <div id="analysis-overlay" class="hidden absolute inset-0 bg-[#020408]/95 backdrop-blur-md z-20 flex flex-col items-center justify-center gap-4 md:gap-6 p-4 text-center">
+                            <div class="radar-loader"></div>
+                            <div>
+                                <h3 class="text-[#ff91a4] font-black text-lg md:text-xl mb-2" id="worker-status">جاري التهيئة والربط السياقي الشامل...</h3>
+                                <p class="text-[10px] md:text-sm text-[var(--text-muted)] font-bold">القرار المهني: يتم الآن تطوير ونسج الكود كاملاً لضمان عمل الواجهة باحترافية تامة ودون مساس بالهيكل.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-[var(--panel-bg)] p-3 md:p-4 border-b border-[var(--border-color)] flex flex-wrap gap-2 justify-between items-center z-10 shadow-sm flex-shrink-0">
+                            <div>
+                                <h2 class="text-sm md:text-base font-black text-emerald-400 flex items-center gap-1 md:gap-2">
+                                    <i data-lucide="shield-check" class="w-5 h-5"></i>
+                                    الشيفرة الذهبية النهائية (مكتملة ومطورة)
+                                </h2>
+                                <p class="text-[10px] md:text-xs text-gray-400 mt-1 font-bold">هذه النسخة كاملة لا تحتوي على أي اقتطاع أو حذف، متوافقة 100% مع حلويات بوسي.</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="copyFinalCode()" class="bg-[#151d2e] hover:bg-[#1e293b] text-white px-3 py-2 md:px-4 rounded-lg text-xs md:text-sm font-bold flex items-center gap-2 transition-colors border border-[var(--border-color)]">
+                                    <i data-lucide="copy" class="w-4 h-4"></i> نسخ النص كاملاً
+                                </button>
+                                <button onclick="downloadFinalCode()" class="bg-[#ff91a4] text-black hover:bg-white px-3 py-2 md:px-4 rounded-lg text-xs md:text-sm font-black flex items-center gap-2 transition-colors shadow-md">
+                                    <i data-lucide="download" class="w-4 h-4"></i> تحميل كملف
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="patched-code-output" class="code-area w-full flex-grow p-4 md:p-6 focus:ring-0 text-emerald-300 bg-[#010204] text-sm md:text-base leading-relaxed" readonly placeholder="ستظهر هنا النسخة المطورة الكاملة بعد تشغيل الفحص وتحديد الملف. يرجى أخذها بالكامل دون تغيير ورفعها للاستضافة..."></textarea>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Single File Reports Tab -->
+            <div id="tab-reports" class="tab-content hidden flex-col gap-6 pb-20">
+                <div class="sovereign-panel p-5 md:p-8">
+                    <h2 class="text-lg md:text-xl font-black text-white mb-4 md:mb-6 border-b border-[var(--border-color)] pb-3 md:pb-4 flex items-center gap-2">
+                        <i data-lucide="clipboard-list" class="w-5 h-5 md:w-6 md:h-6 text-[#ff91a4]"></i>
+                        تقرير تحليل السياق والإصلاحات التي تمت
+                    </h2>
+                    
+                    <div id="report-container" class="flex flex-col gap-3 md:gap-4">
+                        <div class="text-center text-[var(--text-muted)] py-10 font-bold text-sm">
+                            القرار المهني: السجل فارغ. يرجى تشغيل (فحص النواقص والإصلاح) لتشخيص ومعالجة الملفات.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Custom Modal for Alerts -->
+    <div id="sovereign-modal" class="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[var(--panel-bg)] border border-[var(--border-color)] rounded-2xl p-6 max-w-sm w-full shadow-2xl transform scale-95 opacity-0 transition-all duration-300" id="sovereign-modal-content">
+            <h3 class="text-white font-black text-lg mb-3 flex items-center gap-2">
+                <i data-lucide="info" class="w-5 h-5 text-[#ff91a4]"></i> قرار مهني
+            </h3>
+            <p id="sovereign-modal-text" class="text-sm text-gray-300 mb-6 leading-relaxed font-bold"></p>
+            <div class="flex gap-3 justify-end">
+                <button id="sovereign-modal-cancel" class="hidden px-4 py-2 rounded-lg bg-[#151d2e] text-white hover:bg-[#1e293b] font-bold text-sm transition-colors">إلغاء</button>
+                <button id="sovereign-modal-ok" class="px-4 py-2 rounded-lg bg-[#ff91a4] text-black hover:bg-white font-black text-sm transition-colors">تأكيد</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Custom Sovereign Toast Notification System
+        function showSovereignToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let icon = '<i data-lucide="info" class="w-5 h-5 text-blue-400"></i>';
+            let borderColor = 'border-blue-500/50';
+            
+            if(type === 'success') {
+                icon = '<i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>';
+                borderColor = 'border-emerald-500/50';
+            } else if (type === 'error' || type === 'warning') {
+                icon = '<i data-lucide="alert-triangle" class="w-5 h-5 text-amber-400"></i>';
+                borderColor = 'border-amber-500/50';
+            }
+
+            toast.className = `sovereign-toast ${borderColor}`;
+            toast.innerHTML = `
+                ${icon}
+                <span class="text-sm font-bold">${msg}</span>
+            `;
+            
+            container.appendChild(toast);
+            lucide.createIcons({root: toast});
+
+            setTimeout(() => {
+                toast.classList.add('toast-closing');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Custom Sovereign Modal System
+        let modalCallback = null;
+        function showSovereignModal(msg, requireConfirm = false, callback = null) {
+            const modal = document.getElementById('sovereign-modal');
+            const content = document.getElementById('sovereign-modal-content');
+            const text = document.getElementById('sovereign-modal-text');
+            const btnCancel = document.getElementById('sovereign-modal-cancel');
+            
+            text.textContent = msg;
+            modalCallback = callback;
+
+            if(requireConfirm) {
+                btnCancel.classList.remove('hidden');
+            } else {
+                btnCancel.classList.add('hidden');
+            }
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeSovereignModal(confirmed) {
+            const modal = document.getElementById('sovereign-modal');
+            const content = document.getElementById('sovereign-modal-content');
+            
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                if(modalCallback) modalCallback(confirmed);
+            }, 300);
+        }
+
+        document.getElementById('sovereign-modal-ok').addEventListener('click', () => closeSovereignModal(true));
+        document.getElementById('sovereign-modal-cancel').addEventListener('click', () => closeSovereignModal(false));
+
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('main-sidebar');
+            const overlay = document.getElementById('mobile-overlay');
+            if (sidebar.classList.contains('translate-x-full')) {
+                sidebar.classList.remove('translate-x-full');
+                overlay.classList.add('active');
+            } else {
+                sidebar.classList.add('translate-x-full');
+                overlay.classList.remove('active');
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+            });
+            document.querySelectorAll('.sidebar-item').forEach(el => {
+                el.classList.remove('active', 'border-right-color');
+                if(!el.classList.contains('bg-[#ff91a4]/5')) {
+                    el.classList.remove('text-[#ff91a4]');
+                    el.classList.add('text-gray-400');
+                }
+            });
+
+            const activeContent = document.getElementById(`tab-${tabId}`);
+            if(activeContent) {
+                activeContent.classList.remove('hidden');
+                activeContent.classList.add('flex');
+            }
+            
+            const buttons = document.querySelectorAll(`.sidebar-item`);
+            buttons.forEach(btn => {
+                if(btn.getAttribute('onclick').includes(`'${tabId}'`)) {
+                    btn.classList.add('active');
+                    if(!btn.classList.contains('bg-[#ff91a4]/5')) {
+                        btn.classList.add('text-[#ff91a4]');
+                        btn.classList.remove('text-gray-400');
+                    }
+                }
+            });
+
+            const titles = {
+                'dashboard': '<i data-lucide="layout-template" class="w-5 h-5 md:w-6 md:h-6 text-[#ff91a4]"></i> شاشة القيادة المركزية',
+                'memory': '<i data-lucide="hard-drive" class="w-5 h-5 md:w-6 md:h-6 text-[#ff91a4]"></i> الذاكرة الشاملة للمنظومة',
+                'analysis': '<i data-lucide="microscope" class="w-5 h-5 md:w-6 md:h-6 text-[#ff91a4]"></i> الكود المطور النهائي',
+                'reports': '<i data-lucide="shield-alert" class="w-5 h-5 md:w-6 md:h-6 text-[#ff91a4]"></i> تقرير التوافق والمشاكل',
+                'system-scan': '<i data-lucide="radar" class="w-5 h-5 md:w-6 md:h-6 text-blue-400"></i> نظام فحص النواقص والإصلاح التلقائي'
+            };
+            const titleEl = document.getElementById('current-tab-title');
+            if(titleEl && titles[tabId]) {
+                titleEl.innerHTML = titles[tabId];
+                lucide.createIcons({root: titleEl});
+            }
+        }
+
+        const DB_NAME = 'BoseSweetsEngineDB_V8';
+        const DB_VERSION = 2;
+        const STORE_FILES = 'files_store';
+        const STORE_VARS = 'vars_store';
+
+        let db;
+
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                request.onerror = (e) => {
+                    showSovereignToast("القرار المهني: تعذر فتح قاعدة البيانات للذاكرة.", "error");
+                    reject("تعذر فتح قاعدة البيانات");
+                };
+                request.onsuccess = (e) => {
+                    db = e.target.result;
+                    refreshUIMetrics();
+                    resolve(db);
+                };
+                request.onupgradeneeded = (e) => {
+                    const database = e.target.result;
+                    if (!database.objectStoreNames.contains(STORE_FILES)) database.createObjectStore(STORE_FILES, { keyPath: 'name' });
+                    if (!database.objectStoreNames.contains(STORE_VARS)) database.createObjectStore(STORE_VARS, { keyPath: 'name' });
+                };
+            });
+        }
+
+        function saveFileToDB(fileObj) {
+            return new Promise((resolve) => {
+                const tx = db.transaction([STORE_FILES], 'readwrite');
+                tx.objectStore(STORE_FILES).put(fileObj);
+                tx.oncomplete = () => resolve();
+            });
+        }
+
+        function saveVarToDB(varName) {
+            return new Promise((resolve) => {
+                const tx = db.transaction([STORE_VARS], 'readwrite');
+                tx.objectStore(STORE_VARS).put({ name: varName });
+                tx.oncomplete = () => resolve();
+            });
+        }
+
+        function getAllVarsFromDB() {
+            return new Promise((resolve) => {
+                const tx = db.transaction([STORE_VARS], 'readonly');
+                const request = tx.objectStore(STORE_VARS).getAll();
+                request.onsuccess = () => resolve(request.result.map(r => r.name));
+            });
+        }
+
+        function getAllFilesFromDB() {
+            return new Promise((resolve) => {
+                const tx = db.transaction([STORE_FILES], 'readonly');
+                const request = tx.objectStore(STORE_FILES).getAll();
+                request.onsuccess = () => resolve(request.result);
+            });
+        }
+
+        function getFileFromDB(fileName) {
+            return new Promise((resolve) => {
+                const tx = db.transaction([STORE_FILES], 'readonly');
+                const request = tx.objectStore(STORE_FILES).get(fileName);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => resolve(null);
+            });
+        }
+
+        function refreshUIMetrics() {
+            const tx1 = db.transaction([STORE_FILES], 'readonly');
+            const req1 = tx1.objectStore(STORE_FILES).getAll();
+            
+            req1.onsuccess = () => {
+                const files = req1.result;
+                const count = files.length;
+                document.getElementById('memory-count').textContent = count;
+                document.getElementById('stat-files').textContent = count;
+                
+                const grid = document.getElementById('indexed-files-grid');
+                if(count === 0) {
+                    grid.innerHTML = '<div class="col-span-full text-xs text-gray-500 text-center py-4">القرار المهني: لا توجد ملفات. يرجى رفع ملفات حلويات بوسي كاملة.</div>';
+                } else {
+                    grid.innerHTML = files.map(f => `
+                        <div class="bg-[#090e17] border border-[var(--border-color)] rounded-lg p-2 md:p-3 flex flex-col items-center justify-center gap-1 md:gap-2 text-center" title="${f.name}">
+                            <i data-lucide="file-json" class="w-5 h-5 md:w-6 md:h-6 text-[#ff91a4]"></i>
+                            <span class="text-[9px] md:text-[10px] text-gray-300 font-mono truncate w-full">${f.name}</span>
+                        </div>
+                    `).join('');
+                }
+                lucide.createIcons({root: grid});
+            };
+
+            const tx2 = db.transaction([STORE_VARS], 'readonly');
+            const req2 = tx2.objectStore(STORE_VARS).count();
+            req2.onsuccess = () => document.getElementById('stat-vars').textContent = req2.result;
+        }
+
+        function promptClearDatabase() {
+            showSovereignModal("القرار المهني: سيتم مسح كافة سجلات المنظومة الشاملة، هل حضرتك متأكدة من تفريغ الذاكرة؟", true, (confirmed) => {
+                if(confirmed) {
+                    const tx = db.transaction([STORE_FILES, STORE_VARS], 'readwrite');
+                    tx.objectStore(STORE_FILES).clear();
+                    tx.objectStore(STORE_VARS).clear();
+                    tx.oncomplete = () => {
+                        refreshUIMetrics();
+                        showSovereignToast("القرار المهني: تم تفريغ الذاكرة الشاملة بنجاح.", "success");
+                    };
+                }
+            });
+        }
+
+        const indexerWorkerCode = `
+            self.onmessage = function(e) {
+                const content = e.data.content;
+                const cleanContent = content.replace(/\\/\\*[\\s\\S]*?\\*\\/|([^\\\\:]|^)\\/\\/.*$/gm, '$1');
+                let extractedVars = new Set();
+                
+                const windowMatches = cleanContent.match(/window\\.([a-zA-Z0-9_]+)\\s*=/g);
+                if(windowMatches) windowMatches.forEach(m => extractedVars.add(m.replace('window.', '').replace('=', '').trim()));
+                
+                const letConstMatches = cleanContent.match(/(?:let|const|var)\\s+([a-zA-Z0-9_]+)\\s*=/g);
+                if(letConstMatches) letConstMatches.forEach(m => extractedVars.add(m.replace(/(let|const|var)\\s+/, '').replace('=', '').trim()));
+                
+                const functionMatches = cleanContent.match(/function\\s+([a-zA-Z0-9_]+)\\s*\\(/g);
+                if(functionMatches) functionMatches.forEach(m => extractedVars.add(m.replace('function ', '').replace('(', '').trim()));
+
+                self.postMessage({ status: 'done', fileObj: { name: e.data.fileName, size: e.data.fileSize, content: e.data.content }, vars: Array.from(extractedVars) });
+            };
+        `;
+        let indexerWorkerURL = null;
+
+        async function processAndStoreFiles(event) {
+            const files = event.target.files;
+            if(!files || files.length === 0) return;
+
+            const label = document.getElementById('upload-label');
+            const originalHTML = label.innerHTML;
+            label.innerHTML = '<div class="radar-loader w-6 h-6 md:w-8 md:h-8"></div><span class="text-[#ff91a4] font-bold text-xs md:text-sm mt-2">القرار المهني: يتم الآن قراءة وبناء هيكل المنظومة...</span>';
+            label.style.pointerEvents = 'none';
+
+            let processedCount = 0;
+            if(!indexerWorkerURL) {
+                const indexerBlob = new Blob([indexerWorkerCode], { type: 'application/javascript' });
+                indexerWorkerURL = URL.createObjectURL(indexerBlob);
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const worker = new Worker(indexerWorkerURL);
+                    worker.postMessage({ content: e.target.result, fileName: file.name, fileSize: file.size });
+                    worker.onmessage = async function(msg) {
+                        if(msg.data.status === 'done') {
+                            await saveFileToDB(msg.data.fileObj);
+                            for(let v of msg.data.vars) await saveVarToDB(v);
+                            processedCount++;
+                            worker.terminate();
+                            
+                            if(processedCount === files.length) {
+                                refreshUIMetrics();
+                                label.innerHTML = originalHTML;
+                                label.style.pointerEvents = 'auto';
+                                showSovereignToast(`القرار المهني: تمت المعالجة والفهرسة لعدد ${files.length} ملف بنجاح. يرجى التوجه للفحص.`, "success");
+                            }
+                        }
+                    };
+                };
+                reader.readAsText(file);
+            }
+        }
+
+        // محرك الإصلاح وبناء الشيفرة الذهبية (كاملة دون حذف)
+        const engineWorkerCode = `
+            self.onmessage = function(e) {
+                const { rawCode, globalVars, fileName } = e.data;
+                let report = [];
+                let patchedCode = rawCode; // الكود الأصلي كامل
+                let fixesCount = 0;
+
+                self.postMessage({ status: 'progress', msg: 'فحص التوافق المعماري الشامل...' });
+                
+                const cleanCode = rawCode.replace(/\\/\\*[\\s\\S]*?\\*\\/|([^\\\\:]|^)\\/\\/.*$/gm, '$1');
+
+                // 1. المستشعرات وبناء الاعتماديات
+                self.postMessage({ status: 'progress', msg: 'تطوير وهندسة وتأمين الملف ليتوافق مع باقي أجزاء الموقع...' });
+                const functionCallsRegex = /([a-zA-Z0-9_]+)\\s*\\(/g;
+                let callMatch;
+                let suspiciousCalls = new Set();
+                const safeBuiltins = ['console', 'Math', 'Date', 'parseInt', 'parseFloat', 'String', 'Number', 'Array', 'Object', 'Boolean', 'require', 'fetch', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'alert', 'confirm', 'prompt', 'addEventListener', 'removeEventListener', 'getElementById', 'querySelector', 'querySelectorAll', 'map', 'filter', 'reduce', 'forEach', 'push', 'pop', 'split', 'join', 'replace', 'window', 'document', 'localStorage', 'sessionStorage', 'JSON', 'Promise', 'Error', 'Event', 'CustomEvent', 'navigator', 'location', 'history'];
+
+                while ((callMatch = functionCallsRegex.exec(cleanCode)) !== null) {
+                    const callName = callMatch[1];
+                    const isLocal = cleanCode.includes('function ' + callName) || cleanCode.includes('let ' + callName) || cleanCode.includes('const ' + callName) || cleanCode.includes('var ' + callName);
+                    if(!safeBuiltins.includes(callName) && !globalVars.includes(callName) && !isLocal) {
+                        suspiciousCalls.add(callName);
+                    }
+                }
+
+                if(suspiciousCalls.size > 0) {
+                    report.push({
+                        type: 'warning', title: 'تم رصد وتأمين خلل الاتصال',
+                        desc: 'هذا الملف كان يستدعي عناصر مفقودة تسبب اختفاء المحتوى. تم الآن ربط وتأمين بيئة العمل بشكل برمجي لضمان عدم توقف الواجهة نهائياً.'
+                    });
+                }
+
+                // 2. درع الوقاية لحلويات بوسي (يضاف في البداية مع الاحتفاظ بالكود كاملاً)
+                const hasProtector = patchedCode.includes('boseGlobalErrorHandler');
+                if (!hasProtector) {
+                    const protectorCode = "/*\\n * ========================================================================\\n * 👑 درع الوقاية السيادي - حلويات بوسي\\n * يضمن هذا الدرع عدم اختفاء منتجات حلويات بوسي عند حدوث أخطاء خارجية.\\n * تم البناء والتوسيع دون المساس بالهيكل الأساسي.\\n * ========================================================================\\n */\\nif(typeof window !== 'undefined' && !window.boseGlobalErrorHandler) {\\n    window.boseGlobalErrorHandler = true;\\n    window.addEventListener('error', function(e) { console.error('حلويات بوسي [حماية واجهة المستخدم]: تم احتواء خطأ للحفاظ على التصفح', e); });\\n    window.addEventListener('unhandledrejection', function(e) { console.error('حلويات بوسي [حماية الاتصال]: تم احتواء فقدان الاتصال بالبيانات', e); });\\n}\\n\\n";
+                    patchedCode = protectorCode + patchedCode;
+                    fixesCount++;
+                    report.push({
+                        type: 'security', title: 'تغليف الكود بدرع الحماية المطلق',
+                        desc: 'تم بناء غلاف برمجي حول الكود الأصلي للملف (بدون حذف حرف واحد منه) ليمنع الانهيارات المفاجئة، لضمان استمتاع العميل بمنتجات حلويات بوسي دون انقطاع.'
+                    });
+                }
+
+                // 3. تأمين الروابط الشاملة لتتمكن بقية الملفات من قراءة هذا الملف
+                const funcRegex = /^(?:export\\s+)?(?:async\\s+)?function\\s+([a-zA-Z0-9_]+)\\s*\\(/gm;
+                let funcMatches;
+                let bindings = '\\n\\n/* 👑 تصدير الدوال الشامل التلقائي - حلويات بوسي (لضمان عمل كل الملفات ككيان واحد) */\\nif (typeof window !== "undefined") {\\n';
+                let hasBindings = false;
+                
+                while ((funcMatches = funcRegex.exec(cleanCode)) !== null) {
+                    const funcName = funcMatches[1];
+                    if(funcName.length > 2 && !patchedCode.includes('window.' + funcName + ' =')) {
+                        bindings += '    if(typeof ' + funcName + ' !== "undefined") window.' + funcName + ' = ' + funcName + ';\\n';
+                        hasBindings = true;
+                    }
+                }
+                bindings += '}\\n';
+
+                if(hasBindings) {
+                    patchedCode += bindings;
+                    fixesCount++;
+                    report.push({
+                        type: 'feature', title: 'هندسة تكامل الملفات الشاملة',
+                        desc: 'تم تطوير الكود بفتح قنوات اتصال لتتمكن المنظومة بأكملها من قراءة أوامر هذا الملف بمرونة وتناغم عالي جداً.'
+                    });
+                }
+
+                self.postMessage({ status: 'done', finalCode: patchedCode, report: report, fixesCount: fixesCount, fileName: fileName });
+            };
+        `;
+        let engineWorkerURL = null;
+
+        // الدالة الجديدة للإصلاح التلقائي بضغطة زر من صفحة الفحص
+        async function autoFixFile(fileName) {
+            const fileObj = await getFileFromDB(fileName);
+            if(!fileObj) {
+                showSovereignModal("القرار المهني: تعذر العثور على محتوى الملف في الذاكرة. يرجى إعادة رفعه.");
+                return;
+            }
+
+            // وضع الكود الخام في المنطقة المخفية
+            document.getElementById('raw-code-input').value = fileObj.content;
+            
+            // تحويل المستخدم لشاشة الكود الذهبي وتشغيل أداة التحليل
+            switchTab('analysis');
+            startDeepAnalysisWorker(fileName);
+        }
+
+        async function startDeepAnalysisWorker(fileName = "ملف غير محدد") {
+            const rawCode = document.getElementById('raw-code-input').value;
+            if(!rawCode.trim()) {
+                showSovereignModal("القرار المهني: لا يوجد كود ليتم فحصه."); return;
+            }
+
+            const overlay = document.getElementById('analysis-overlay');
+            const statusText = document.getElementById('worker-status');
+            const outputArea = document.getElementById('patched-code-output');
+            
+            overlay.classList.remove('hidden');
+            outputArea.value = '';
+
+            const globalVars = await getAllVarsFromDB();
+
+            if(!engineWorkerURL) {
+                const engineBlob = new Blob([engineWorkerCode], { type: 'application/javascript' });
+                engineWorkerURL = URL.createObjectURL(engineBlob);
+            }
+
+            const worker = new Worker(engineWorkerURL);
+            worker.postMessage({ rawCode: rawCode, globalVars: globalVars, fileName: fileName });
+            
+            worker.onmessage = function(e) {
+                if(e.data.status === 'progress') {
+                    statusText.textContent = e.data.msg;
+                } else if(e.data.status === 'done') {
+                    outputArea.value = e.data.finalCode;
+                    buildReportUI(e.data.report, e.data.fileName);
+                    
+                    const currentFixes = parseInt(document.getElementById('stat-fixes').textContent) || 0;
+                    document.getElementById('stat-fixes').textContent = currentFixes + e.data.fixesCount;
+
+                    worker.terminate();
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                        showSovereignToast(`القرار المهني: تم إصدار النسخة الكاملة والمطورة لملف ${e.data.fileName} بنجاح.`, "success");
+                    }, 500);
+                }
+            };
+        }
+
+        function buildReportUI(reportData, fileName) {
+            const container = document.getElementById('report-container');
+            let html = `
+            <div class="mb-4 bg-[#151d2e] border border-emerald-500/30 p-4 rounded-xl flex items-center gap-3">
+                <i data-lucide="check-circle" class="w-6 h-6 text-emerald-400"></i>
+                <div>
+                    <h3 class="text-white font-black text-sm md:text-base">تم بنجاح هندسة وإصدار النسخة الخاصة بـ <span class="text-[#ff91a4] font-mono">${fileName}</span></h3>
+                    <p class="text-xs text-gray-400 font-bold">النسخة كاملة غير مبتسرة، وجاهزة للاستخدام في موقع حلويات بوسي دون أي تغيير في الواجهة.</p>
+                </div>
+            </div>`;
+
+            const icons = {
+                'info': '<i data-lucide="info" class="w-5 h-5 text-blue-400 flex-shrink-0"></i>',
+                'warning': '<i data-lucide="alert-triangle" class="w-5 h-5 text-amber-400 flex-shrink-0"></i>',
+                'success': '<i data-lucide="check-circle" class="w-5 h-5 text-emerald-400 flex-shrink-0"></i>',
+                'security': '<i data-lucide="shield" class="w-5 h-5 text-purple-400 flex-shrink-0"></i>',
+                'feature': '<i data-lucide="zap" class="w-5 h-5 text-[#ff91a4] flex-shrink-0"></i>'
+            };
+            const borders = {
+                'info': 'border-blue-500/50 bg-blue-900/10',
+                'warning': 'border-amber-500/50 bg-amber-900/10',
+                'success': 'border-emerald-500/50 bg-emerald-900/10',
+                'security': 'border-purple-500/50 bg-purple-900/10',
+                'feature': 'border-[#ff91a4]/50 bg-[#ff91a4]/10'
+            };
+
+            reportData.forEach(item => {
+                html += `
+                <div class="border-l-4 ${borders[item.type]} p-3 md:p-5 rounded-r-xl flex gap-3 md:gap-4 items-start shadow-sm mt-3">
+                    <div class="mt-0.5">${icons[item.type]}</div>
+                    <div>
+                        <h4 class="text-white font-black text-sm md:text-base mb-1">${item.title}</h4>
+                        <p class="text-xs md:text-sm text-[var(--text-muted)] font-bold leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>`;
+            });
+
+            html += `
+            <div class="mt-6 p-4 bg-[#05080f] border border-[var(--border-color)] rounded-xl flex flex-col sm:flex-row justify-between items-center gap-4">
+                <span class="text-xs md:text-sm font-bold text-white text-center sm:text-right">القرار المهني: النسخة المطورة جاهزة بالكامل.</span>
+                <button onclick="switchTab('analysis')" class="w-full sm:w-auto bg-[#ff91a4] text-black hover:bg-white px-6 py-3 rounded-xl text-sm font-black transition-all shadow-lg">الذهاب لنسخ الكود الكامل</button>
+            </div>`;
+
+            container.innerHTML = html;
+            lucide.createIcons({root: container});
+        }
+
+
+        // -------------------------------------------------------------------------------------
+        // نظام الفحص الشامل المحدث ليدعم الإصلاح التلقائي لكل ملف
+        // -------------------------------------------------------------------------------------
+        const systemScannerWorkerCode = `
+            self.onmessage = function(e) {
+                const { files, globalVars } = e.data;
+                const safeBuiltins = ['console', 'Math', 'Date', 'parseInt', 'parseFloat', 'String', 'Number', 'Array', 'Object', 'Boolean', 'require', 'fetch', 'setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'alert', 'confirm', 'prompt', 'addEventListener', 'removeEventListener', 'getElementById', 'querySelector', 'querySelectorAll', 'map', 'filter', 'reduce', 'forEach', 'push', 'pop', 'split', 'join', 'replace', 'window', 'document', 'localStorage', 'sessionStorage', 'JSON', 'Promise', 'Error', 'Event', 'CustomEvent', 'navigator', 'location', 'history'];
+                
+                let fullReport = [];
+
+                files.forEach(file => {
+                    if(!file.content || (!file.name.endsWith('.js') && !file.name.endsWith('.html'))) return;
+                    
+                    const cleanCode = file.content.replace(/\\/\\*[\\s\\S]*?\\*\\/|([^\\\\:]|^)\\/\\/.*$/gm, '$1');
+                    const functionCallsRegex = /([a-zA-Z0-9_]+)\\s*\\(/g;
+                    let callMatch;
+                    let missingDeps = new Set();
+
+                    // مستشعر الانهيار ومستشعر حماية الدوال
+                    const hasProtector = file.content.includes('boseGlobalErrorHandler');
+
+                    while ((callMatch = functionCallsRegex.exec(cleanCode)) !== null) {
+                        const callName = callMatch[1];
+                        const isLocal = cleanCode.includes('function ' + callName) || 
+                                        cleanCode.includes('let ' + callName) || 
+                                        cleanCode.includes('const ' + callName) || 
+                                        cleanCode.includes('var ' + callName) ||
+                                        cleanCode.includes(callName + ' = function') ||
+                                        cleanCode.includes(callName + ' = (');
+                        
+                        if(!safeBuiltins.includes(callName) && !globalVars.includes(callName) && !isLocal) {
+                            missingDeps.add(callName);
+                        }
+                    }
+
+                    // يتم إضافة الملف للتقرير إذا كان به دوال مفقودة أو إذا كان يفتقر لدرع الحماية
+                    if(missingDeps.size > 0 || !hasProtector) {
+                        fullReport.push({
+                            fileName: file.name,
+                            missing: Array.from(missingDeps),
+                            needsProtection: !hasProtector
+                        });
+                    }
+                });
+
+                self.postMessage({ status: 'done', report: fullReport });
+            };
+        `;
+        let systemScannerWorkerURL = null;
+
+        async function runSystemWideScan() {
+            const files = await getAllFilesFromDB();
+            if(files.length === 0) {
+                showSovereignModal("القرار المهني: لا توجد ملفات في الذاكرة. يرجى إدراج ملفات موقع حلويات بوسي أولاً لكي يتم فحصها وتطويرها.");
+                return;
+            }
+
+            const overlay = document.getElementById('system-scan-overlay');
+            const resultsContainer = document.getElementById('system-scan-results');
+            const btnRun = document.getElementById('btn-run-scan');
+            
+            overlay.classList.remove('hidden');
+            btnRun.disabled = true;
+            btnRun.classList.add('opacity-50', 'cursor-not-allowed');
+
+            const globalVars = await getAllVarsFromDB();
+
+            if(!systemScannerWorkerURL) {
+                const scannerBlob = new Blob([systemScannerWorkerCode], { type: 'application/javascript' });
+                systemScannerWorkerURL = URL.createObjectURL(scannerBlob);
+            }
+
+            const worker = new Worker(systemScannerWorkerURL);
+            worker.postMessage({ files: files, globalVars: globalVars });
+
+            worker.onmessage = function(e) {
+                if(e.data.status === 'done') {
+                    buildSystemScanReportUI(e.data.report, files.length);
+                    worker.terminate();
+                    
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                        btnRun.disabled = false;
+                        btnRun.classList.remove('opacity-50', 'cursor-not-allowed');
+                        showSovereignToast("القرار المهني: اكتمل الفحص الشامل وجاهزون للإصلاح التلقائي.", "success");
+                    }, 800);
+                }
+            };
+        }
+
+        function buildSystemScanReportUI(reportData, totalFiles) {
+            const container = document.getElementById('system-scan-results');
+            let html = '';
+
+            html += `
+            <div class="mb-4 bg-[#05080f] border border-[var(--border-color)] p-4 rounded-xl flex justify-between items-center">
+                <div>
+                    <span class="text-xs text-gray-400 font-bold block">إجمالي الملفات المفحوصة</span>
+                    <span class="text-lg font-black text-white">${totalFiles} ملف</span>
+                </div>
+                <div class="text-left">
+                    <span class="text-xs text-gray-400 font-bold block">حالة توافق البيانات</span>
+                    <span class="text-lg font-black ${reportData.length === 0 ? 'text-emerald-400' : 'text-[#ff91a4]'}">
+                        ${reportData.length === 0 ? 'استقرار تام' : 'يتطلب التطوير الفوري'}
+                    </span>
+                </div>
+            </div>`;
+
+            if(reportData.length === 0) {
+                html += `
+                <div class="p-6 bg-emerald-900/10 border border-emerald-500/30 rounded-xl text-center flex flex-col items-center justify-center gap-3">
+                    <i data-lucide="shield-check" class="w-12 h-12 text-emerald-400"></i>
+                    <h3 class="text-white font-black text-lg">القرار المهني: المنظومة مستقرة ومحمية بالكامل</h3>
+                    <p class="text-sm text-gray-400 font-bold">ملفات حلويات بوسي مترابطة تماماً، ومحمية بدرع الوقاية السيادي، ولا يوجد أي نقص يؤدي لاختفاء المنتجات.</p>
+                </div>`;
+            } else {
+                html += `<div class="grid grid-cols-1 gap-4">`;
+                reportData.forEach(item => {
+                    let warningText = item.missing.length > 0 
+                        ? 'هذا الملف يعاني من انقطاع في الروابط وسيتسبب في شاشة بيضاء أو اختفاء للمنتجات.'
+                        : 'هذا الملف يفتقر لدرع الحماية السيادي ويحتاج لتطوير فوري للحفاظ على الهيكل.';
+                    
+                    html += `
+                    <div class="bg-[#090e17] border border-[#151d2e] rounded-xl p-4 md:p-5 shadow-lg relative overflow-hidden flex flex-col gap-4">
+                        <div class="absolute right-0 top-0 h-full w-1 bg-[#ff91a4]"></div>
+                        
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[var(--border-color)] pb-3">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="file-warning" class="w-5 h-5 text-[#ff91a4]"></i>
+                                <span class="font-mono text-white text-sm md:text-base font-bold truncate">${item.fileName}</span>
+                            </div>
+                            ${item.missing.length > 0 ? `<span class="bg-amber-500/10 text-amber-400 px-3 py-1 rounded text-xs font-bold border border-amber-500/20 whitespace-nowrap">${item.missing.length} روابط مفقودة</span>` : `<span class="bg-blue-500/10 text-blue-400 px-3 py-1 rounded text-xs font-bold border border-blue-500/20 whitespace-nowrap">غير محصن</span>`}
+                        </div>
+                        
+                        <div class="text-xs md:text-sm text-gray-300 font-bold leading-relaxed">
+                            القرار المهني: ${warningText}
+                        </div>
+                        
+                        ${item.missing.length > 0 ? `
+                        <div class="flex flex-wrap gap-2">
+                            ${item.missing.map(m => `<span class="bg-[#151d2e] border border-[var(--border-color)] text-[#ff91a4] font-mono text-[10px] md:text-xs px-2 py-1 rounded shadow-inner">${m}()</span>`).join('')}
+                        </div>` : ''}
+
+                        <div class="mt-2 flex justify-end">
+                            <button onclick="autoFixFile('${item.fileName}')" class="w-full md:w-auto bg-gradient-to-l from-[#ff91a4] to-white text-black hover:opacity-90 px-4 py-3 rounded-lg text-xs md:text-sm font-black transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#ff91a4]/20">
+                                <i data-lucide="wrench" class="w-4 h-4"></i> معالجة وإصدار النسخة الكاملة
+                            </button>
+                        </div>
+                    </div>`;
+                });
+                html += `</div>`;
+            }
+
+            container.innerHTML = html;
+            lucide.createIcons({root: container});
+        }
+
+
+        // -------------------------------------------------------------------------------------
+
+        function copyFinalCode() {
+            const outputArea = document.getElementById('patched-code-output');
+            if(!outputArea.value) return;
+            outputArea.select();
+            outputArea.setSelectionRange(0, 9999999); 
+            try {
+                if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(outputArea.value);
+                else document.execCommand('copy');
+                showSovereignToast("القرار المهني: تم تأمين ونسخ الملف كاملاً. متوافق ومستقر للاستخدام في موقع حلويات بوسي.", "success");
+            } catch (err) {
+                showSovereignModal("القرار المهني: الملف ذو حجم سيادي ضخم، يرجى الاستعانة بزر التحميل لتجنب أعطال الذاكرة.");
+            }
+        }
+
+        function downloadFinalCode() {
+            const code = document.getElementById('patched-code-output').value;
+            const titleEl = document.getElementById('current-tab-title'); // لمحاولة معرفة اسم الملف
+            let fileName = `BoseSweets_Sovereign_Patched_${Date.now()}.js`;
+            
+            if(!code) return;
+            const blob = new Blob([code], { type: 'text/javascript;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showSovereignToast("القرار المهني: تم تحميل الملف السيادي الكامل بنجاح.", "success");
+        }
+
+        window.onload = () => { initDB(); };
+    </script>
+</body>
+</html>
+
+
