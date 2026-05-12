@@ -1,8 +1,8 @@
 /**
- * 👑 BoseSweets Main Orchestrator (V27.2 - Sovereign Boot Protocol & Error Free)
+ * 👑 BoseSweets Main Orchestrator (V27.3 - Sovereign Execution Protocol)
  * المحرك الرئيسي للإدارة المرجعية - حلويات بوسي
- * التحصين الشامل: تم معالجة ثغرة الاستدعاء السحابي لضمان تدفق البيانات دون إعاقة،
- * مع الحفاظ المطلق على أنظمة المزامنة، الطوارئ، والتخزين المحلي.
+ * التحصين الشامل: تمت المعالجة الجذرية لثغرة الاستدعاءات (Import/Export Fatal Errors)
+ * التي أدت لتوقف محرك الجافا سكريبت بالكامل. تم ربط المسارات بشكل محكم لضمان الإقلاع.
  */
 
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
@@ -14,8 +14,11 @@ import { MemoryManager, hexToMathHSL, escapeHTML, generateUniqueID, optimizeClou
 import { ClientStorageEngine } from './storage.js';
 import { LiveSearchEngine, performLiveSearchDebounced, toggleLiveSearch, performLiveSearch } from './search.js';
 
-import { saveCartToStorage, clearCartStorage, calculateCartTotal, syncCartUI, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay, renderCartList } from './cart.js';
-import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay, initHomepageSections, renderTicker, showHomeView, updateTempQtyContext } from './ui.js';
+// 👑 التصحيح الجذري: إزالة renderCartList من استدعاءات السلة لأنها تخص هندسة الواجهة
+import { saveCartToStorage, clearCartStorage, calculateCartTotal, syncCartUI, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay } from './cart.js';
+
+// 👑 إدراج renderCartList في مسارها الصحيح من وحدة العرض
+import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay, initHomepageSections, renderTicker, showHomeView, updateTempQtyContext, renderCartList } from './ui.js';
 
 let db = (typeof window !== 'undefined' && window.firebase) ? window.firebase.firestore() : undefined;
 window.db = db;
@@ -54,7 +57,7 @@ async function startBoseSweetsEngine(isUpdate = false) {
     if (!isUpdate && (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة'))) return;
 
     if (!isUpdate) {
-        console.log("👑 حلويات بوسي: بدء تشغيل محرك الإقلاع السيادي (V27.2)...");
+        console.log("👑 حلويات بوسي: بدء تشغيل محرك الإقلاع السيادي (V27.3)...");
         registerBoseSweetsPWA();
     }
 
@@ -81,7 +84,6 @@ async function startBoseSweetsEngine(isUpdate = false) {
             } catch(e) { console.error("تجاوز: عطل في جلب الإعدادات المرجعية.", e); }
         }
 
-        // 👑 التعديل الجذري: سحب قيد الاستدعاء للسماح بتدفق البيانات، والاعتماد على ذكاء الواجهة في الفلترة
         const fetchPromise = async () => {
             if (!db) throw new Error("تأخير أو غياب في تهيئة محرك قواعد البيانات.");
             const snapshot = await db.collection('catalog').get(); 
