@@ -14,11 +14,11 @@ import { MemoryManager, hexToMathHSL, escapeHTML, generateUniqueID, optimizeClou
 import { ClientStorageEngine } from './storage.js';
 import { LiveSearchEngine, performLiveSearchDebounced, toggleLiveSearch, performLiveSearch } from './search.js';
 
-// 👑 التصحيح الجذري: إزالة renderCartList من استدعاءات السلة لأنها تخص هندسة الواجهة
-import { saveCartToStorage, clearCartStorage, calculateCartTotal, syncCartUI, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay } from './cart.js';
+// 👑 التصحيح الجذري: إزالة renderCartList و syncCartUI من استدعاءات السلة لأنها تخص هندسة الواجهة
+import { saveCartToStorage, clearCartStorage, calculateCartTotal, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay } from './cart.js';
 
-// 👑 إدراج renderCartList في مسارها الصحيح من وحدة العرض
-import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay, initHomepageSections, renderTicker, showHomeView, updateTempQtyContext, renderCartList } from './ui.js';
+// 👑 إدراج renderCartList و syncCartUI في مسارها الصحيح من وحدة العرض
+import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay, initHomepageSections, renderTicker, showHomeView, updateTempQtyContext, renderCartList, syncCartUI } from './ui.js';
 
 let db = (typeof window !== 'undefined' && window.firebase) ? window.firebase.firestore() : undefined;
 window.db = db;
@@ -31,15 +31,20 @@ window.galleryData = galleryData;
 window.performLiveSearchDebounced = performLiveSearchDebounced;
 window.toggleLiveSearch = toggleLiveSearch;
 window.performLiveSearch = performLiveSearch;
+
+// 👑 ربط الدوال الرئيسية بجذر المتصفح لضمان توافرها أثناء بناء الشلال
 window.updateTempQtyContext = updateTempQtyContext;
 window.addWithQtyContext = addWithQtyContext;
+window.renderCartList = renderCartList;
+window.showHomeView = showHomeView;
+window.syncCartUI = syncCartUI;
+
 window.modQ = modQ;
 window.commitCakeBuilderToCart = commitCakeBuilderToCart;
 window.submitOrderFinal = submitOrderFinal;
 window.dispatchWhatsAppOrder = dispatchWhatsAppOrder;
 window.processBoseSweetsOrder = processBoseSweetsOrder;
 window.updateCartDisplay = updateCartDisplay;
-window.renderCartList = renderCartList;
 window.MemoryManager = MemoryManager;
 window.LiveSearchEngine = LiveSearchEngine;
 window.renderMainDisplay = renderMainDisplay;
@@ -48,7 +53,6 @@ window.initWaterfall = initWaterfall;
 window.initHomepageSections = initHomepageSections;
 window.applySettingsToUI = applySettingsToUI;
 window.renderTicker = renderTicker;
-window.showHomeView = showHomeView; 
 window.syncCatalogMap = syncCatalogMap;
 
 let lastSyncTime = Date.now();
@@ -421,3 +425,4 @@ document.addEventListener('click', function(event) {
         }
     }
 });
+

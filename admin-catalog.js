@@ -9,32 +9,15 @@
  * * ⚠️ تحذير: هذا الملف هو النواة المركزية لإدارة حلويات بوسي.
  */
 
-// 🛡️ بروتوكول تتبع الأخطاء الإداري المركزي (Admin Error Tracking System)
-const AdminErrorTracker = {
-    log(context, error) {
-        try {
-            const errLog = { 
-                context, 
-                msg: error.message || String(error), 
-                time: new Date().toLocaleString('ar-EG'),
-                stack: error.stack || 'No Stack Trace'
-            };
-            let logs = JSON.parse(localStorage.getItem('BoseSweets_Admin_ErrorLogs') || '[]');
-            logs.unshift(errLog);
-            if(logs.length > 50) logs.pop(); 
-            localStorage.setItem('BoseSweets_Admin_ErrorLogs', JSON.stringify(logs));
-            console.warn(`BoseSweets Admin Vault: Error intercepted in [${context}]. 🛡️`);
-        } catch(e) {}
-    },
-    report(error, context) { this.log(context, error); } // توافق مع النسخ الجديدة
-};
+// تم حذف AdminErrorTracker من هذا الملف لمنع التصادم البرمجي.
+// يتم الاعتماد حصرياً على النسخة المحملة مسبقاً من admin-core.js.
 
 // ==========================================
 // 1. محركات البيانات والتخزين (Data & Storage Engines)
 // ==========================================
 
 // محرك التخزين الأساسي (IndexedDB)
-const StorageEngine = {
+window.StorageEngine = {
     dbName: 'BoseSweetsDB',
     storeName: 'DataCore',
     version: 1,
@@ -62,7 +45,7 @@ const StorageEngine = {
                 tx.onerror = () => reject(tx.error);
             });
         } catch (e) { 
-            AdminErrorTracker.log('StorageEngine_Set', e); 
+            if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('StorageEngine_Set', e); 
         }
     },
     async get(key) {
@@ -76,14 +59,14 @@ const StorageEngine = {
                 request.onerror = () => resolve(null); 
             });
         } catch (e) { 
-            AdminErrorTracker.log('StorageEngine_Get', e); 
+            if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('StorageEngine_Get', e); 
             return null; 
         }
     }
 };
 
 // محرك الصور والبيانات الثقيلة أوفلاين
-const OfflineStorageManager = {
+window.OfflineStorageManager = {
     dbName: 'BoseSweetsOfflineVault',
     storeName: 'ImagePayloads',
     version: 1,
@@ -110,7 +93,9 @@ const OfflineStorageManager = {
                 tx.oncomplete = () => resolve();
                 tx.onerror = () => reject(tx.error);
             });
-        } catch (e) { AdminErrorTracker.log('OfflineVault_Enqueue', e); }
+        } catch (e) { 
+            if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('OfflineVault_Enqueue', e); 
+        }
     },
     async getAllPayloads() {
         try {
@@ -141,7 +126,7 @@ const OfflineStorageManager = {
 // ==========================================
 // 2. كائن التكوين السحابي الشامل والمطور (Full Config)
 // ==========================================
-const defaultSettings = {
+window.defaultSettings = {
     brandName: "حلويات بوسي", 
     announcement: "حلويات بوسي: صنعناها بحب لتهديها لمن تحب",
     heroTitle: "أهلاً بكم في <br class='hidden md:block'/> <span class='text-white relative inline-block mt-1 md:mt-2 drop-shadow-md'>حلويات بوسي</span>",
@@ -241,7 +226,7 @@ const defaultSettings = {
     }
 };
 
-const defaultShipping = [ 
+window.defaultShipping = [ 
     { id: 'sh_1', name: 'الكفاح', fee: 0 }, 
     { id: 'sh_2', name: 'أبو منقار', fee: 50 }, 
     { id: 'sh_3', name: 'النهضة', fee: 30 }, 
@@ -253,8 +238,8 @@ const defaultShipping = [
 // ==========================================
 window.catalog = [];
 window.globalOrders = [];
-window.siteSettings = { ...defaultSettings };
-window.shippingZones = [ ...defaultShipping ];
+window.siteSettings = { ...window.defaultSettings };
+window.shippingZones = [ ...window.defaultShipping ];
 window.galleryData = [];
 window.catMenu = [];
 window.catalogMap = new Map();
@@ -267,21 +252,21 @@ window.currentEditId = null;
 window.salesChartInstance = null;
 window.confirmActionCallback = null;
 
-var isFirstOrderLoad = true;
-var ordersUnsubscribe = null; 
-var adminOrdersHash = '';
-var adminRenderDebounce = null;
+window.isFirstOrderLoad = true;
+window.ordersUnsubscribe = null; 
+window.adminOrdersHash = '';
+window.adminRenderDebounce = null;
 
 // ==========================================
 // 4. وظائف المحرك الأساسية (Core Logic)
 // ==========================================
 
-function syncCatalogMap() { 
+window.syncCatalogMap = function() { 
     window.catalogMap.clear(); 
     window.catalog.forEach(p => window.catalogMap.set(String(p.id), p)); 
-}
+};
 
-async function fetchDefaultCatalog() {
+window.fetchDefaultCatalog = async function() {
     try { 
         const response = await fetch('data.json'); 
         return await response.json(); 
@@ -289,12 +274,12 @@ async function fetchDefaultCatalog() {
         console.warn("BoseSweets: Catalog fallback to internal memory."); 
         return [];
     }
-}
+};
 
 /**
  * إعداد المزامنة اللحظية للطلبات مع حماية السحابة
  */
-function setupRealtimeOrders() {
+window.setupRealtimeOrders = function() {
     if (typeof window.db === 'undefined' || !window.db) return;
     
     if (window.__ordersListenerActive) {
@@ -303,9 +288,9 @@ function setupRealtimeOrders() {
     }
     window.__ordersListenerActive = true;
 
-    if (ordersUnsubscribe) ordersUnsubscribe();
+    if (window.ordersUnsubscribe) window.ordersUnsubscribe();
 
-    ordersUnsubscribe = window.db.collection('orders').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+    window.ordersUnsubscribe = window.db.collection('orders').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
         const freshOrders = [];
         let hasNewOrder = false;
 
@@ -318,15 +303,15 @@ function setupRealtimeOrders() {
         });
 
         const newHash = JSON.stringify(freshOrders);
-        if (newHash === adminOrdersHash && !isFirstOrderLoad) return; 
+        if (newHash === window.adminOrdersHash && !window.isFirstOrderLoad) return; 
         
-        adminOrdersHash = newHash;
+        window.adminOrdersHash = newHash;
         window.globalOrders = freshOrders; 
 
-        saveEngineMemory('ord');
+        window.saveEngineMemory('ord');
 
-        if (!isFirstOrderLoad && hasNewOrder) {
-            playNotificationSound();
+        if (!window.isFirstOrderLoad && hasNewOrder) {
+            window.playNotificationSound();
             if (typeof showSystemToast === 'function') {
                 showSystemToast("🔔 طلب جديد وصل لمركز القيادة!", "success");
             }
@@ -344,12 +329,12 @@ function setupRealtimeOrders() {
             }
         }
 
-        isFirstOrderLoad = false;
+        window.isFirstOrderLoad = false;
 
-        if(adminRenderDebounce) clearTimeout(adminRenderDebounce);
-        adminRenderDebounce = setTimeout(() => {
+        if(window.adminRenderDebounce) clearTimeout(window.adminRenderDebounce);
+        window.adminRenderDebounce = setTimeout(() => {
             window.requestAnimationFrame(() => {
-                executeSafely('OrdersSync', () => {
+                window.executeSafely('OrdersSync', () => {
                     if (typeof renderAdminOrders === 'function') renderAdminOrders();
                     if (typeof renderAdminOverview === 'function') renderAdminOverview();
                     if (typeof updateAdminDashboardStatsUI === 'function') updateAdminDashboardStatsUI();
@@ -358,26 +343,26 @@ function setupRealtimeOrders() {
         }, 300); 
 
     }, error => {
-        AdminErrorTracker.log('RealtimeOrdersSync', error);
+        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('RealtimeOrdersSync', error);
         window.__ordersListenerActive = false; 
     });
-}
+};
 
-function playNotificationSound() {
+window.playNotificationSound = function() {
     try {
         const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
         audio.volume = 0.6;
         audio.play().catch(() => {});
     } catch(e) {}
-}
+};
 
 /**
  * تحميل الذاكرة الكاملة للمحرك من كافة المصادر
  */
-async function loadEngineMemory() {
+window.loadEngineMemory = async function() {
     try {
         // تحميل الكتالوج الافتراضي أولاً
-        const localDefCat = await fetchDefaultCatalog();
+        const localDefCat = await window.fetchDefaultCatalog();
         window.catalog = localDefCat.length > 0 ? localDefCat : window.catalog;
         
         if (typeof window.db !== 'undefined' && window.db !== null) {
@@ -392,32 +377,32 @@ async function loadEngineMemory() {
             const settingsSnap = await window.db.collection('settings').doc('main').get();
             if (settingsSnap.exists) { 
                 const cloudData = settingsSnap.data();
-                window.siteSettings = { ...defaultSettings, ...cloudData };
+                window.siteSettings = { ...window.defaultSettings, ...cloudData };
                 
                 // دمج ذكي للقيم العميقة لضمان عدم فقدان أي خاصية
-                if(cloudData.visuals) window.siteSettings.visuals = { ...(defaultSettings.visuals || {}), ...cloudData.visuals };
-                if(cloudData.catDescriptions) window.siteSettings.catDescriptions = { ...(defaultSettings.catDescriptions || {}), ...cloudData.catDescriptions };
+                if(cloudData.visuals) window.siteSettings.visuals = { ...(window.defaultSettings.visuals || {}), ...cloudData.visuals };
+                if(cloudData.catDescriptions) window.siteSettings.catDescriptions = { ...(window.defaultSettings.catDescriptions || {}), ...cloudData.catDescriptions };
                 
-                window.siteSettings.goldenTips = cloudData.goldenTips || [...defaultSettings.goldenTips];
-                window.siteSettings.customerReviews = cloudData.customerReviews || [...defaultSettings.customerReviews];
+                window.siteSettings.goldenTips = cloudData.goldenTips || [...window.defaultSettings.goldenTips];
+                window.siteSettings.customerReviews = cloudData.customerReviews || [...window.defaultSettings.customerReviews];
                 window.siteSettings.dynamicSections = cloudData.dynamicSections || [];
 
                 if(cloudData.social) {
-                    window.siteSettings.social = { ...defaultSettings.social, ...cloudData.social };
+                    window.siteSettings.social = { ...window.defaultSettings.social, ...cloudData.social };
                     if(cloudData.social.customLinks) window.siteSettings.social.customLinks = [...cloudData.social.customLinks];
                 }
 
                 if(cloudData.cakeBuilder) {
-                    window.siteSettings.cakeBuilder = { ...(defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
+                    window.siteSettings.cakeBuilder = { ...(window.defaultSettings.cakeBuilder || {}), ...cloudData.cakeBuilder };
                     if(!window.siteSettings.cakeBuilder.flavors || window.siteSettings.cakeBuilder.flavors.length === 0) 
-                        window.siteSettings.cakeBuilder.flavors = defaultSettings.cakeBuilder.flavors;
+                        window.siteSettings.cakeBuilder.flavors = window.defaultSettings.cakeBuilder.flavors;
                 }
 
-                if(cloudData.layout_settings) window.siteSettings.layout_settings = { ...defaultSettings.layout_settings, ...cloudData.layout_settings };
+                if(cloudData.layout_settings) window.siteSettings.layout_settings = { ...window.defaultSettings.layout_settings, ...cloudData.layout_settings };
                 if(cloudData.UI_Settings) {
-                    window.siteSettings.UI_Settings = { ...defaultSettings.UI_Settings, ...cloudData.UI_Settings };
+                    window.siteSettings.UI_Settings = { ...window.defaultSettings.UI_Settings, ...cloudData.UI_Settings };
                     if(cloudData.UI_Settings.typography_config) 
-                        window.siteSettings.UI_Settings.typography_config = { ...defaultSettings.UI_Settings.typography_config, ...cloudData.UI_Settings.typography_config };
+                        window.siteSettings.UI_Settings.typography_config = { ...window.defaultSettings.UI_Settings.typography_config, ...cloudData.UI_Settings.typography_config };
                 }
             }
             
@@ -435,7 +420,7 @@ async function loadEngineMemory() {
                 gallerySnap.forEach(doc => window.galleryData.push(doc.data())); 
             }
             
-            setupRealtimeOrders();
+            window.setupRealtimeOrders();
             if (typeof updateAdminDashboardStatsUI === 'function') updateAdminDashboardStatsUI();
             if (typeof fillGlobalSettingsFormFields === 'function') fillGlobalSettingsFormFields();
 
@@ -444,11 +429,11 @@ async function loadEngineMemory() {
         }
     } catch(err) { 
         console.warn("BoseSweets: جاري التحميل من الذاكرة الفولاذية البديلة", err);
-        window.catalog = (await StorageEngine.get('boseSweets_catalog')) || JSON.parse(localStorage.getItem('bSweets_catalog')) || window.catalog; 
-        window.globalOrders = (await StorageEngine.get('boseSweets_admin_orders')) || JSON.parse(localStorage.getItem('bSweets_orders')) || [];
-        window.siteSettings = (await StorageEngine.get('boseSweets_settings')) || JSON.parse(localStorage.getItem('bSweets_settings')) || { ...defaultSettings };
-        window.shippingZones = (await StorageEngine.get('boseSweets_shipping')) || JSON.parse(localStorage.getItem('bSweets_shipping')) || [ ...defaultShipping ];
-        window.galleryData = (await StorageEngine.get('boseSweets_gallery')) || JSON.parse(localStorage.getItem('bSweets_gallery')) || [];
+        window.catalog = (await window.StorageEngine.get('boseSweets_catalog')) || JSON.parse(localStorage.getItem('bSweets_catalog')) || window.catalog; 
+        window.globalOrders = (await window.StorageEngine.get('boseSweets_admin_orders')) || JSON.parse(localStorage.getItem('bSweets_orders')) || [];
+        window.siteSettings = (await window.StorageEngine.get('boseSweets_settings')) || JSON.parse(localStorage.getItem('bSweets_settings')) || { ...window.defaultSettings };
+        window.shippingZones = (await window.StorageEngine.get('boseSweets_shipping')) || JSON.parse(localStorage.getItem('bSweets_shipping')) || [ ...window.defaultShipping ];
+        window.galleryData = (await window.StorageEngine.get('boseSweets_gallery')) || JSON.parse(localStorage.getItem('bSweets_gallery')) || [];
         
         if (typeof updateAdminDashboardStatsUI === 'function') updateAdminDashboardStatsUI();
         if (typeof fillGlobalSettingsFormFields === 'function') fillGlobalSettingsFormFields();
@@ -466,23 +451,23 @@ async function loadEngineMemory() {
     }
     
     if (!window.catMenu.find(c => c.name === 'تورت')) window.catMenu.unshift({name: 'تورت', order: 0});
-    syncCatalogMap(); 
-}
+    window.syncCatalogMap(); 
+};
 
-async function saveEngineMemory(type) {
+window.saveEngineMemory = async function(type) {
     try {
-        if (type === 'cat' || type === 'all') await StorageEngine.set('boseSweets_catalog', window.catalog);
-        if (type === 'set' || type === 'all') await StorageEngine.set('boseSweets_settings', window.siteSettings);
-        if (type === 'ship' || type === 'all') await StorageEngine.set('boseSweets_shipping', window.shippingZones);
-        if (type === 'gal' || type === 'all') await StorageEngine.set('boseSweets_gallery', window.galleryData);
-        if (type === 'ord' || type === 'all') await StorageEngine.set('boseSweets_admin_orders', window.globalOrders);
+        if (type === 'cat' || type === 'all') await window.StorageEngine.set('boseSweets_catalog', window.catalog);
+        if (type === 'set' || type === 'all') await window.StorageEngine.set('boseSweets_settings', window.siteSettings);
+        if (type === 'ship' || type === 'all') await window.StorageEngine.set('boseSweets_shipping', window.shippingZones);
+        if (type === 'gal' || type === 'all') await window.StorageEngine.set('boseSweets_gallery', window.galleryData);
+        if (type === 'ord' || type === 'all') await window.StorageEngine.set('boseSweets_admin_orders', window.globalOrders);
         
         // Fallback to LocalStorage for redundant safety
         localStorage.setItem(`bSweets_${type}`, JSON.stringify(type === 'cat' ? window.catalog : type === 'ord' ? window.globalOrders : window.siteSettings));
     } catch (e) { 
-        AdminErrorTracker.log('SaveEngineMemory', e);
+        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('SaveEngineMemory', e);
     }
-}
+};
 
 // ==========================================
 // 5. التحكم في واجهة الإدارة (Admin UI Controllers)
@@ -492,46 +477,46 @@ window.executeSafely = function(taskName, taskFunction) {
     try {
         if (typeof taskFunction === 'function') return taskFunction();
     } catch (error) {
-        AdminErrorTracker.log(taskName, error);
+        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log(taskName, error);
     }
 };
 
-function unfreezeAdminUI() {
+window.unfreezeAdminUI = function() {
     document.body.style.overflow = ''; 
     document.body.style.pointerEvents = 'auto';
     document.documentElement.style.overflow = '';
     document.body.classList.remove('overflow-hidden');
     document.documentElement.classList.remove('overflow-hidden');
-}
+};
 
-function openAdminDashboardDirectly() {
+window.openAdminDashboardDirectly = function() {
     try {
-        unfreezeAdminUI();
-        executeSafely('Tabs', () => { if(typeof renderAdminCatalogTabs === 'function') renderAdminCatalogTabs(); });
-        executeSafely('OrderFilters', () => { if(typeof renderAdminOrderFilters === 'function') renderAdminOrderFilters(); }); 
-        executeSafely('Overview', () => { if(typeof renderAdminOverview === 'function') renderAdminOverview(); }); 
-        executeSafely('Orders', () => { if(typeof renderAdminOrders === 'function') renderAdminOrders(); }); 
-        executeSafely('CatalogMenu', () => { if(typeof renderAdminMenu === 'function') renderAdminMenu(''); }); 
-        executeSafely('Shipping', () => { if(typeof renderAdminShipping === 'function') renderAdminShipping(); }); 
-        executeSafely('SettingsForm', () => { if(typeof fillAdminSettingsForm === 'function') fillAdminSettingsForm(); });
-        executeSafely('Gallery', () => { if(typeof renderAdminGallery === 'function') renderAdminGallery(); });
+        window.unfreezeAdminUI();
+        window.executeSafely('Tabs', () => { if(typeof renderAdminCatalogTabs === 'function') renderAdminCatalogTabs(); });
+        window.executeSafely('OrderFilters', () => { if(typeof renderAdminOrderFilters === 'function') renderAdminOrderFilters(); }); 
+        window.executeSafely('Overview', () => { if(typeof renderAdminOverview === 'function') renderAdminOverview(); }); 
+        window.executeSafely('Orders', () => { if(typeof renderAdminOrders === 'function') renderAdminOrders(); }); 
+        window.executeSafely('CatalogMenu', () => { if(typeof renderAdminMenu === 'function') renderAdminMenu(''); }); 
+        window.executeSafely('Shipping', () => { if(typeof renderAdminShipping === 'function') renderAdminShipping(); }); 
+        window.executeSafely('SettingsForm', () => { if(typeof fillAdminSettingsForm === 'function') fillAdminSettingsForm(); });
+        window.executeSafely('Gallery', () => { if(typeof renderAdminGallery === 'function') renderAdminGallery(); });
         
-        setTimeout(() => { executeSafely('Charts', () => { if(typeof initAdminCharts === 'function') initAdminCharts(); }); }, 500);
-        executeSafely('Icons', () => { if(window.lucide) lucide.createIcons(); });
+        setTimeout(() => { window.executeSafely('Charts', () => { if(typeof initAdminCharts === 'function') initAdminCharts(); }); }, 500);
+        window.executeSafely('Icons', () => { if(window.lucide) lucide.createIcons(); });
         
         // تحديث حالة السحابة في الواجهة
         const statusEl = document.getElementById('cloud-sync-status');
         if (statusEl) statusEl.innerHTML = '<i data-lucide="cloud-lightning" class="w-3 h-3"></i> متصل بالسحابة';
         
     } catch (error) {
-        AdminErrorTracker.log('DashboardInit', error);
+        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('DashboardInit', error);
     }
-}
+};
 
 window.logoutAdminSecurely = async function() {
     if (!confirm("هل تودين إغلاق جلسة الإدارة وتأمين مركز القيادة؟")) return;
     try {
-        if (ordersUnsubscribe) ordersUnsubscribe();
+        if (window.ordersUnsubscribe) window.ordersUnsubscribe();
         sessionStorage.removeItem('bosy_admin_auth');
         if(typeof window.auth !== 'undefined' && window.auth) await window.auth.signOut();
         window.location.href = 'index.html';
@@ -612,26 +597,26 @@ window.compressAndUploadMultiImage = async function(e) {
                             const data = await response.json();
                             
                             if (data.secure_url) { 
-                                tempProdImages.push(data.secure_url); 
+                                window.tempProdImages.push(data.secure_url); 
                                 successCount++;
                             } else throw new Error("استجابة الخادم غير صالحة");
                             
                         } catch (err) { 
                             // حفظ أوفلاين في حالة فشل الرفع أو انتهاء المهلة الزمنية
-                            AdminErrorTracker.log('ImageUploadFailure', err);
+                            if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('ImageUploadFailure', err);
                             const offlineId = 'offline_img_' + Date.now() + Math.random().toString(36).substr(2, 5);
-                            if(typeof OfflineStorageManager !== 'undefined') {
-                                await OfflineStorageManager.enqueuePayload({ offlineId: offlineId, base64: base64Str });
-                                tempProdImages.push(offlineId); 
+                            if(typeof window.OfflineStorageManager !== 'undefined') {
+                                await window.OfflineStorageManager.enqueuePayload({ offlineId: offlineId, base64: base64Str });
+                                window.tempProdImages.push(offlineId); 
                                 offlineSaved = true; 
                             }
                         } 
                     } else {
                         // حفظ أوفلاين فوراً عند انقطاع الشبكة
                         const offlineId = 'offline_img_' + Date.now() + Math.random().toString(36).substr(2, 5);
-                        if(typeof OfflineStorageManager !== 'undefined') {
-                            await OfflineStorageManager.enqueuePayload({ offlineId: offlineId, base64: base64Str });
-                            tempProdImages.push(offlineId); 
+                        if(typeof window.OfflineStorageManager !== 'undefined') {
+                            await window.OfflineStorageManager.enqueuePayload({ offlineId: offlineId, base64: base64Str });
+                            window.tempProdImages.push(offlineId); 
                             offlineSaved = true;
                         }
                     }
@@ -655,12 +640,12 @@ window.compressAndUploadMultiImage = async function(e) {
 /**
  * مزامنة الصور التي تم رفعها في وضع الأوفلاين
  */
-async function syncOfflineImages() {
+window.syncOfflineImages = async function() {
     if (!navigator.onLine) return; 
     let needsSync = false;
     
     try {
-        const payloads = await OfflineStorageManager.getAllPayloads();
+        const payloads = await window.OfflineStorageManager.getAllPayloads();
         if(payloads.length === 0) return;
 
         for (let payload of payloads) {
@@ -684,45 +669,45 @@ async function syncOfflineImages() {
                         if(window.db) window.db.collection('catalog').doc(String(p.id)).set(p, { merge: true });
                     }
                 });
-                await OfflineStorageManager.removePayload(payload.offlineId);
+                await window.OfflineStorageManager.removePayload(payload.offlineId);
             }
         }
 
         if (needsSync) {
-            saveEngineMemory('cat');
+            window.saveEngineMemory('cat');
             if(typeof renderAdminMenu === 'function') renderAdminMenu('');
             if(typeof showSystemToast === 'function') showSystemToast("تمت معالجة وتزامن الصور المؤجلة مع السحابة ☁️", "success");
         }
     } catch(e) {}
-}
+};
 
-window.addEventListener('online', syncOfflineImages);
+window.addEventListener('online', window.syncOfflineImages);
 
 // ==========================================
 // 6. تشغيل المحرك (Bootloader)
 // ==========================================
 
-function bootBoseSweetsEngine() {
+window.bootBoseSweetsEngine = function() {
     if (window.__BoseSweetsAdminBooted) return; 
     window.__BoseSweetsAdminBooted = true;
     
     console.log("👑 BoseSweets Admin: Initiating Sovereign Architecture...");
-    unfreezeAdminUI();
+    window.unfreezeAdminUI();
     
     if(typeof window.auth !== 'undefined' && window.auth !== null) {
         window.auth.onAuthStateChanged(async user => {
             if (user) { 
-                try { await loadEngineMemory(); } catch(e) { AdminErrorTracker.log('BootMemoryLoad', e); }
-                openAdminDashboardDirectly();
-                syncOfflineImages(); 
+                try { await window.loadEngineMemory(); } catch(e) { if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('BootMemoryLoad', e); }
+                window.openAdminDashboardDirectly();
+                window.syncOfflineImages(); 
             } else { 
                 window.location.href = 'login.html';
             }
         });
     } else {
-        loadEngineMemory().then(() => openAdminDashboardDirectly());
+        window.loadEngineMemory().then(() => window.openAdminDashboardDirectly());
     }
-}
+};
 
 // البث السيادي لتحديث الواجهة لحظياً
 window.triggerSovereignSync = async function() {
@@ -742,13 +727,68 @@ window.triggerSovereignSync = async function() {
         localStorage.setItem('BoseSweets_Local_Sync_Force', Date.now().toString());
         
     } catch (error) {
-        AdminErrorTracker.log('SovereignSyncTrigger', error);
+        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('SovereignSyncTrigger', error);
     }
 };
 
+
+// ==========================================
+// 7. دوال التحكم والسيطرة (Save & Delete)
+// ==========================================
+
+window.saveProductData = async function(productObj) {
+    try {
+        // 1. تحديث الكتالوج المحلي
+        const existingIndex = window.catalog.findIndex(p => p.id === productObj.id);
+        if (existingIndex > -1) {
+            window.catalog[existingIndex] = productObj;
+        } else {
+            window.catalog.push(productObj);
+        }
+        window.syncCatalogMap();
+        
+        // 2. تحديث السحابة والذاكرة المحلية
+        if (typeof window.db !== 'undefined' && window.db !== null) {
+            await window.db.collection('catalog').doc(String(productObj.id)).set(productObj, { merge: true });
+        }
+        await window.saveEngineMemory('cat');
+
+        if (typeof showSystemToast === 'function') showSystemToast("تم اعتماد المنتج في الكتالوج بنجاح", "success");
+
+        // 3. إجبار الموقع على التحديث اللحظي عند التعديل (البث السيادي)
+        if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
+        
+    } catch (error) {
+        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('saveProductData', error);
+    }
+};
+
+window.executeDeleteProduct = async function(productId) {
+    try {
+        // 1. الحذف من الكتالوج المحلي
+        window.catalog = window.catalog.filter(p => p.id !== productId);
+        window.syncCatalogMap();
+
+        // 2. الحذف من السحابة والذاكرة المحلية
+        if (typeof window.db !== 'undefined' && window.db !== null) {
+            await window.db.collection('catalog').doc(String(productId)).delete();
+        }
+        await window.saveEngineMemory('cat');
+
+        if (typeof showSystemToast === 'function') showSystemToast("تم إزالة المنتج نهائياً من سجلات حلويات بوسي", "success");
+
+        // 3. إجبار الموقع على التحديث اللحظي عند التعديل (البث السيادي)
+        if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
+
+    } catch (error) {
+        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('executeDeleteProduct', error);
+    }
+};
+
+
 // التشغيل النهائي
 if (document.readyState === 'loading') { 
-    document.addEventListener('DOMContentLoaded', bootBoseSweetsEngine); 
+    document.addEventListener('DOMContentLoaded', window.bootBoseSweetsEngine); 
 } else { 
-    bootBoseSweetsEngine(); 
+    window.bootBoseSweetsEngine(); 
 }

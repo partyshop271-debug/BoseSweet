@@ -1,16 +1,17 @@
 /**
- * 👑 BoseSweets Sovereign Service Worker (V26.0 - Sovereign Iron-Clad Edition)
+ * 👑 BoseSweets Sovereign Service Worker (V28.0 - Sovereign Iron-Clad Edition)
  * الإدارة المرجعية: حلويات بوسي
  * محرك التخزين الفائق والعمل دون اتصال
- * * الترقيات الحالية للنسخة 26.0 (النسخة المدمجة والمحصنة):
+ * * الترقيات الحالية للنسخة 28.0 (النسخة المدمجة والمحصنة):
+ * - ترقية إصدار الذاكرة المؤقتة لفرض تطهير شامل على أجهزة العملاء.
  * - دمج الهياكل البرمجية لمعالجة التضارب البرمجي وضمان التسجيل الناجح للمحرك.
  * - تفعيل التنظيف الذاتي اللحظي وقبول الأوامر لتخطي الانتظار وتحديث المتصفح فوراً.
  * - استراتيجية عزل ذكية وحاسمة لمنع تخزين استدعاءات الـ API و Firebase لضمان استقرار المعاملات الحية.
  * - نظام Stale-While-Revalidate لتحديث الملفات الصامت في الخلفية مع تحصين ضد أخطاء الشبكة.
  */
 
-const CACHE_NAME = 'bosesweets-sovereign-cache-v26';
-const DYNAMIC_CACHE = 'bosesweets-dynamic-v26';
+const CACHE_NAME = 'bosesweets-sovereign-cache-v28';
+const DYNAMIC_CACHE = 'bosesweets-dynamic-v28';
 const OFFLINE_URL = '/offline.html';
 
 // قائمة الملفات المقدسة التي يتم تخزينها مبدئياً لضمان الإقلاع الفوري
@@ -33,7 +34,7 @@ const ASSETS_TO_CACHE = [
 
 // 1. مرحلة التثبيت: حفظ أساسيات منصة حلويات بوسي
 self.addEventListener('install', (event) => {
-    console.log("BoseSweets SW 👑: بدء عملية التثبيت وتخزين الهيكل الأساسي (V26.0)...");
+    console.log("BoseSweets SW 👑: بدء عملية التثبيت وتخزين الهيكل الأساسي (V28.0)...");
     event.waitUntil(
         caches.open(CACHE_NAME).then((cache) => {
             return cache.addAll(ASSETS_TO_CACHE);
@@ -52,15 +53,19 @@ self.addEventListener('activate', (event) => {
         caches.keys().then((cacheNames) => {
             return Promise.all(
                 cacheNames.map((cacheName) => {
+                    // مسح أي ذاكرة لا تتطابق مع الإصدار الجديد V28
                     if (cacheName !== CACHE_NAME && cacheName !== DYNAMIC_CACHE) {
                         console.log(`BoseSweets SW: إزالة الذاكرة المتقادمة [${cacheName}] للحفاظ على أداء العلامة.`);
                         return caches.delete(cacheName);
                     }
                 })
             );
+        }).then(() => {
+            // تأكيد السيطرة على المتصفح بعد إتمام عملية التطهير الشاملة بنجاح
+            console.log("BoseSweets SW 👑: تمت عملية التطهير. إعلان السيطرة على المتصفح.");
+            return self.clients.claim();
         })
     );
-    self.clients.claim();
 });
 
 // 3. مرحلة استقبال الأوامر الإدارية: التحكم السيادي في محرك التخزين

@@ -5,7 +5,7 @@
  */
 
 import { siteSettings, catalog, state, cakeState, galleryData } from './state.js';
-import { escapeHTML, optimizeCloudinaryUrl, getFinalDescription } from './utils.js';
+import { escapeHTML, optimizeCloudinaryUrl } from './utils.js';
 
 // 👑 بناء صفحة تفاصيل المنتج (Sovereign Architecture)
 export const showProductDetails = function(productId) {
@@ -61,7 +61,9 @@ export const showProductDetails = function(productId) {
         </div>`;
     }
 
-    const desc = product.desc || (typeof window.getFinalDescription === 'function' ? window.getFinalDescription(product) : '');
+    // فك التصادم الدائري والاعتماد على النافذة العامة مع بديل آمن
+    const getDescFunc = window.getFinalDescription || function(p) { return escapeHTML(p.desc || ''); };
+    const finalDesc = getDescFunc(product);
 
     targetContainer.innerHTML = `
         <div class="max-w-4xl mx-auto space-y-8 animate-fade-in pb-20 px-4 w-full">
@@ -70,7 +72,7 @@ export const showProductDetails = function(productId) {
             </button>
             <div class="text-center space-y-4">
                 <h1 class="text-3xl md:text-4xl font-black text-[var(--brand-primary)] tracking-tight">${escapeHTML(product.name)}</h1>
-                ${desc ? `<p class="text-sm md:text-base text-[var(--site-text)] font-bold leading-relaxed max-w-2xl mx-auto">${escapeHTML(desc)}</p>` : ''}
+                ${finalDesc ? `<p class="text-sm md:text-base text-[var(--site-text)] font-bold leading-relaxed max-w-2xl mx-auto">${finalDesc}</p>` : ''}
             </div>
             <div class="bg-[#ffffff] rounded-[2.5rem] shadow-2xl shadow-[var(--brand-primary)]/20 border-2 border-[var(--brand-primary)] overflow-hidden flex flex-col md:flex-row mb-12">
                 <div class="md:w-1/2 relative h-72 md:h-auto border-b-2 md:border-b-0 md:border-l-2 border-[var(--brand-primary)]/20 cursor-zoom-in" onclick="window.openGlobalLightbox(document.getElementById('main-prod-img-${product.id}').src)">
