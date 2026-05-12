@@ -152,16 +152,23 @@ function forceRenderCoreUI() {
     }
 }
 
+/**
+ * 👑 إجبار ظهور الشلال والأقسام حتى لو لم تكتمل المزامنة 100%
+ * تم تعديل الدالة لضمان رسم المنتجات والعناصر الديناميكية فوراً
+ */
 function forceRenderDynamicUI() {
     try {
-        if (state.activeCat === 'الرئيسية') {
-            if (typeof window.initWaterfall === 'function') window.initWaterfall();
-            if (typeof window.initHomepageSections === 'function') window.initHomepageSections();
-        } else {
-            if (typeof window.renderMainDisplay === 'function') window.renderMainDisplay();
+        if (typeof window.initWaterfall === 'function') window.initWaterfall();
+        if (typeof window.initHomepageSections === 'function') window.initHomepageSections();
+        if (typeof window.renderTicker === 'function') window.renderTicker();
+        if (typeof window.renderCategories === 'function') window.renderCategories();
+        
+        // رسم المنتجات في حال لم نكن في الصفحة الرئيسية لضمان عدم اختفاء المحتوى
+        if (state.activeCat !== 'الرئيسية' && typeof window.renderMainDisplay === 'function') {
+            window.renderMainDisplay();
         }
     } catch (e) {
-        console.error("BoseSweets: خطأ في تمرير محرك الشلال أو الأقسام الديناميكية.", e);
+        console.error("Critical Render Error (BoseSweets):", e);
     }
 
     try {
