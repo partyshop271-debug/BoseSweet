@@ -1,13 +1,14 @@
 /**
- * 👑 BoseSweets UI Builders & Details (V21.5 - Production Protocol)
- * بناة المحتوى المتطور والعرض التفصيلي - حلويات بوسي
- * تم استعادة التصميم الراقي لتفاصيل المنتج ومصمم التورتات بالكامل من الملف الأصلي.
+ * 👑 BoseSweets UI Builders & Details (V24.1 - Sovereign Protocol)
+ * بناة المحتوى المتطور والعرض التفصيلي - إدارة حلويات بوسي
+ * تم التحصين الشامل: تصحيح مسار حقن الصفحات (DOM Injection) لتجنب كسر واجهة الفوتر،
+ * ودمج أقسام التقييمات والترشيحات كجزء هيكلي من صفحة التفاصيل بشكل آمن وقطعي.
  */
 
 import { siteSettings, catalog, state, cakeState, galleryData } from './state.js';
 import { escapeHTML, optimizeCloudinaryUrl } from './utils.js';
 
-// 👑 بناء صفحة تفاصيل المنتج (Sovereign Architecture)
+// 👑 بناء صفحة تفاصيل المنتج (Sovereign Architecture - Protected Injection)
 export const showProductDetails = function(productId) {
     const safeId = String(productId);
     const product = (window.catalogMap && typeof window.catalogMap.get === 'function') 
@@ -25,25 +26,27 @@ export const showProductDetails = function(productId) {
         localStorage.setItem('bose_user_prefs', JSON.stringify(userPrefs));
     } catch(e) {}
 
-    const detailsContainer = document.getElementById('single-product-container') || document.getElementById('product-details-content');
-    let vProd = document.getElementById('view-product-details') || document.getElementById('product-details-view'); 
+    // 👑 تصحيح مسار الإضافة: الاعتماد على حاوية المحتوى الرئيسية لعدم فصل الفوتر
+    const mainContentArea = document.getElementById('main-content') || document.querySelector('main') || document.body;
+    let vProd = document.getElementById('view-product-details');
     
     if (!vProd) {
         vProd = document.createElement('div');
         vProd.id = 'view-product-details';
-        vProd.className = 'w-full flex flex-col gap-8 overflow-x-hidden content-padding-top pb-24';
-        document.body.appendChild(vProd);
+        vProd.className = 'w-full flex flex-col gap-8 overflow-x-hidden content-padding-top pb-24 animate-fade-in';
+        mainContentArea.appendChild(vProd); // الحقن الآمن داخل الحاوية وليس في النهاية
     }
 
+    // الإخفاء القاطع للواجهات الأخرى
     ['view-home', 'view-menu', 'view-tips', 'view-cake-builder', 'home-view', 'menu-view'].forEach(id => {
         const el = document.getElementById(id);
-        if(el) el.classList.add('hidden');
+        if(el) { el.classList.add('hidden'); el.style.display = 'none'; el.style.opacity = '0'; }
     });
     
     vProd.classList.remove('hidden');
     vProd.style.display = 'block';
+    vProd.style.opacity = '1';
 
-    const targetContainer = detailsContainer || vProd;
     const isOutOfStock = product.inStock === false || product.isActive === false;
     
     const defaultFallbackImage = (siteSettings && siteSettings.brandLogo) ? siteSettings.brandLogo : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
@@ -61,13 +64,13 @@ export const showProductDetails = function(productId) {
         </div>`;
     }
 
-    // فك التصادم الدائري والاعتماد على النافذة العامة مع بديل آمن
     const getDescFunc = window.getFinalDescription || function(p) { return escapeHTML(p.desc || ''); };
     const finalDesc = getDescFunc(product);
 
-    targetContainer.innerHTML = `
-        <div class="max-w-4xl mx-auto space-y-8 animate-fade-in pb-20 px-4 w-full">
-            <button onclick="window.showMenuView()" class="flex items-center gap-2 text-[var(--site-text)] opacity-70 hover:opacity-100 hover:text-[var(--brand-primary)] font-bold transition-colors bg-[#ffffff] border-2 border-[var(--brand-primary)]/20 hover:border-[var(--brand-primary)] px-4 py-2 rounded-xl shadow-sm">
+    // 👑 دمج هيكل الصفحة ليكون كتلة واحدة صلبة مع التقييمات والترشيحات
+    vProd.innerHTML = `
+        <div class="max-w-4xl mx-auto space-y-8 pb-20 px-4 w-full">
+            <button onclick="window.showMenuView()" class="flex items-center gap-2 text-[var(--site-text)] opacity-70 hover:opacity-100 hover:text-[var(--brand-primary)] font-bold transition-colors bg-[#ffffff] border-2 border-[var(--brand-primary)]/20 hover:border-[var(--brand-primary)] px-4 py-2 rounded-xl shadow-sm w-fit">
                 <i data-lucide="arrow-right" class="w-5 h-5"></i> العودة للمنيو
             </button>
             <div class="text-center space-y-4">
@@ -100,12 +103,14 @@ export const showProductDetails = function(productId) {
                     </button>
                 </div>
             </div>
-            <div id="product-reviews-section" class="pt-8 mb-12 border-t-2 border-[var(--brand-primary)]/20">
+            
+            <!-- 👑 تم دمج المراجعات كجزء أساسي من الهيكل -->
+            <div id="product-reviews-section-internal" class="pt-8 mb-12 border-t-2 border-[var(--brand-primary)]/20">
                 <h3 class="text-xl font-black text-[var(--site-text)] mb-6 flex items-center gap-2 border-b-2 border-[var(--brand-primary)]/20 pb-3"><i data-lucide="star" class="w-6 h-6 text-amber-400"></i> آراء عملاء حلويات بوسي</h3>
                 <div id="reviews-list-${product.id}" class="grid grid-cols-1 md:grid-cols-2 gap-4 min-h-[50px]">
                     <p class="text-xs text-[var(--site-text)] font-bold text-center py-4 w-full col-span-full">جاري استدعاء التقييمات المعتمدة...</p>
                 </div>
-                <div class="mt-6 bg-[#ffffff] p-6 rounded-[2rem] border-2 border-[var(--brand-primary)]">
+                <div class="mt-6 bg-[#ffffff] p-6 rounded-[2rem] border-2 border-[var(--brand-primary)] shadow-sm">
                     <h4 class="font-black text-[var(--site-text)] text-sm mb-4 flex items-center gap-2"><i data-lucide="edit-3" class="w-5 h-5 text-[var(--brand-primary)]"></i> رأيك بيفرق معانا.. شاركنا تجربتك مع طعم حلويات بوسي</h4>
                     <div class="space-y-4">
                         <input type="text" id="review-cust-name-${product.id}" placeholder="الاسم..." class="w-full p-4 bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-xl text-sm font-bold focus:outline-none text-[var(--site-text)]">
@@ -122,17 +127,19 @@ export const showProductDetails = function(productId) {
                     </div>
                 </div>
             </div>
-            <div id="product-related-section" class="pt-8 border-t-2 border-[var(--brand-primary)]/20">
+
+            <!-- 👑 تم دمج الترشيحات كجزء أساسي من الهيكل -->
+            <div id="product-related-section-internal" class="pt-8 border-t-2 border-[var(--brand-primary)]/20">
                 <h3 class="text-xl font-black text-[var(--site-text)] mb-6 flex items-center gap-2"><i data-lucide="sparkles" class="w-6 h-6 text-[var(--brand-primary)]"></i> تشكيلات قد تنال إعجاب حضرتك</h3>
-                <div id="product-related-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 hide-scrollbar pb-4"></div>
+                <div id="product-related-container-internal" class="grid grid-cols-2 md:grid-cols-4 gap-4 hide-scrollbar pb-4"></div>
             </div>
         </div>`;
 
     if(window.lucide) window.lucide.createIcons();
-    if (window.loadLiveReviews) window.loadLiveReviews(product.id);
     
-    if(window.renderRelatedProducts) window.renderRelatedProducts(product.category, product.id);
-    else if(typeof window.renderSmartSuggestions === 'function') window.renderSmartSuggestions('main');
+    // استدعاء الدوال لملء الحاويات الداخلية المحصنة
+    if (window.loadLiveReviews) window.loadLiveReviews(product.id);
+    if (window.renderRelatedProducts) window.renderRelatedProducts(product.category, product.id, 'product-related-container-internal');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
@@ -140,22 +147,22 @@ window.showProductDetails = showProductDetails;
 export const navigateToProduct = window.showProductDetails;
 window.navigateToProduct = navigateToProduct;
 
-// 👑 محرك التوصيات المرتبطة
-export const renderRelatedProducts = function(category, currentId) {
-    const container = document.getElementById('product-related-container') || document.getElementById('related-products-container');
+// 👑 محرك التوصيات المرتبطة (تم تأمينه للعمل مع الحاويات الديناميكية)
+export const renderRelatedProducts = function(category, currentId, targetContainerId = 'related-products-container') {
+    const container = document.getElementById(targetContainerId);
     if (!container) return;
     const related = window.catalog.filter(p => p.category === category && String(p.id) !== String(currentId) && p.isActive !== false).slice(0, 4);
     if (related.length === 0) {
-        container.innerHTML = '<p class="text-sm text-[var(--site-text)] font-bold col-span-full text-center">لا توجد ترشيحات إضافية حالياً في هذا القسم.</p>';
+        container.innerHTML = '<p class="text-sm text-[var(--site-text)] font-bold col-span-full text-center py-4 bg-[#ffffff] rounded-2xl border-2 border-dashed border-[var(--brand-primary)]">لا توجد ترشيحات إضافية حالياً في هذا القسم.</p>';
         return;
     }
     container.innerHTML = related.map(item => {
         const imgUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || (typeof window.getImgFallback === 'function' ? window.getImgFallback(item.category) : ''));
         const safeUrl = window.optimizeCloudinaryUrl ? window.optimizeCloudinaryUrl(imgUrl) : imgUrl;
         return `
-            <div class="bg-[#ffffff] rounded-2xl border-2 border-[var(--brand-primary)]/20 overflow-hidden cursor-pointer hover:border-[var(--brand-primary)] transition-colors btn-interactive group" onclick="window.navigateToProduct('${item.id}')">
-                <div class="w-full h-32 overflow-hidden"><img src="${safeUrl}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="${window.escapeHTML(item.name)}"></div>
-                <div class="p-3 text-center">
+            <div class="bg-[#ffffff] rounded-2xl border-2 border-[var(--brand-primary)]/20 overflow-hidden cursor-pointer hover:border-[var(--brand-primary)] hover:-translate-y-1 transition-all btn-interactive group shadow-sm" onclick="window.navigateToProduct('${item.id}')">
+                <div class="w-full h-32 overflow-hidden bg-[#ffffff] p-1"><img src="${safeUrl}" class="w-full h-full object-cover rounded-xl group-hover:scale-110 transition-transform duration-500" alt="${window.escapeHTML(item.name)}"></div>
+                <div class="p-3 text-center border-t-2 border-[var(--brand-primary)]/10">
                     <h4 class="text-xs font-black text-[var(--site-text)] truncate mb-1">${window.escapeHTML(item.name)}</h4>
                     <p class="text-sm font-black text-[var(--brand-primary)]">${Number(item.price)} ج.م</p>
                 </div>
@@ -346,6 +353,7 @@ export const adjustBuilderPersons = function(delta) {
 };
 window.adjustBuilderPersons = adjustBuilderPersons;
 
+// 👑 عرض قائمة المنتجات في السلة
 export const renderCartList = function() {
     const container = document.getElementById('cart-items-list') || document.getElementById('cart-items-container'); 
     const totalDisplay = document.getElementById('cart-total-display') || document.getElementById('cart-total-price-display');
@@ -403,6 +411,7 @@ export const renderCartList = function() {
 };
 window.renderCartList = renderCartList;
 
+// 👑 عرض الترشيحات الذكية (في السلة أو الصفحة الرئيسية)
 export const renderSmartSuggestions = function(context = 'main') {
     if (context === 'main' && siteSettings.Structure_Settings && siteSettings.Structure_Settings.section_youMayAlsoLike_isActive === false) {
         const parentArea = document.getElementById('related-products-area');
@@ -418,7 +427,9 @@ export const renderSmartSuggestions = function(context = 'main') {
     const cartIds = state.cart.map(i => String(i.id));
     let availableProducts = catalog.filter(p => p && p.inStock !== false && p.isActive !== false && !cartIds.includes(String(p.id)) && p.category !== state.activeCat);
     if (availableProducts.length === 0) { parentArea.classList.add('hidden'); return; }
+    
     parentArea.classList.remove('hidden');
+    parentArea.style.display = 'block';
 
     let userPrefs = {};
     try { userPrefs = JSON.parse(localStorage.getItem('bose_user_prefs')) || {}; } catch(e) {}

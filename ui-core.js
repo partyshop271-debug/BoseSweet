@@ -1,9 +1,8 @@
 /**
- * 👑 BoseSweets UI Core Engine (V23.0 - Sovereign Enhanced Core)
+ * 👑 BoseSweets UI Core Engine (V24.1 - Sovereign Enhanced Core)
  * المحرك الأساسي والوظائف السيادية - حلويات بوسي
- * تم الدمج والترقية للإصدار 23.0: إصلاح مشكلة اختفاء الشريط المتحرك وتنسيق الهيدر،
- * مع الحفاظ على دورة العمل الكاملة وحماية واجهة المستخدم من الانهيار.
- * تم التأكيد على تحصين الدوال وربطها بالكائن العمومي (window) لكسر عزلة الـ Modules.
+ * تم الدمج والترقية: تم تحصين دوال رسم الشريط العلوي لضمان عدم اختفائه
+ * أو التسبب في تشوه واجهة المستخدم عند عرض أقسام معينة.
  */
 
 import { detailedDescriptions } from './config.js';
@@ -57,7 +56,7 @@ window.getFinalDescription = getFinalDescription;
 export const getCapsuleDescription = (p) => getFinalDescription(p);
 window.getCapsuleDescription = getCapsuleDescription;
 
-// 👑 شريط الإعلانات (Ticker - تم التحديث والدمج للإصدار 23.0)
+// 👑 شريط الإعلانات (Ticker - تم التحديث والدمج لحماية الهيدر)
 export const renderTicker = function() {
     try {
         let container = document.getElementById('ticker-container');
@@ -79,7 +78,7 @@ export const renderTicker = function() {
             return;
         }
 
-        // إنشاء الحاوية إن لم تكن موجودة (لحماية الهيكل)
+        // إنشاء الحاوية إن لم تكن موجودة ودمجها بسلام داخل الجسم لتجنب التخطي
         if (!container) {
             container = document.createElement('div');
             container.id = 'ticker-container';
@@ -100,9 +99,12 @@ export const renderTicker = function() {
         container.classList.remove('hidden');
         container.classList.add('flex', 'items-center');
         
-        // ضبط المتغيرات العصبية
+        // ضبط المتغيرات العصبية لحماية الناف بار من الاختفاء تحت الشريط
         root.style.setProperty('--ticker-height', '32px');
-        if (navbar) navbar.style.top = '32px';
+        if (navbar) {
+            navbar.style.top = '32px';
+            navbar.style.transition = 'top 0.3s ease';
+        }
 
         // ضخ المحتوى مع الفواصل الجديدة
         container.innerHTML = `<span class="animate-ticker text-xs md:text-sm font-bold whitespace-nowrap" style="animation-duration: ${speed}s; color: ${textColor}; font-family: var(--brand-font);">${text} &nbsp;&nbsp;•&nbsp;&nbsp; ${text} &nbsp;&nbsp;•&nbsp;&nbsp; ${text}</span>`;
@@ -113,7 +115,7 @@ export const renderTicker = function() {
 };
 window.renderTicker = renderTicker;
 
-// 👑 تطبيق إعدادات الموقع والهوية البصرية على الواجهة (معززة للإصدار 23.0)
+// 👑 تطبيق إعدادات الموقع والهوية البصرية على الواجهة (معززة للتحصين)
 export const applySettingsToUI = function() {
     try {
         window.renderTicker(); 
@@ -246,7 +248,7 @@ export const drawProductCard = function(p) {
     }
 
     return `
-    <div id="product-card-${pIdSafe}" class="product-card-premium relative bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-[2rem] overflow-hidden shadow-sm hover:-translate-y-1 transition-all group flex flex-col p-4">
+    <div id="product-card-${pIdSafe}" class="product-card-premium relative bg-[#ffffff] border-2 border-[var(--brand-primary)] rounded-[2rem] overflow-hidden shadow-sm hover:-translate-y-1 transition-all group flex flex-col p-4 h-full">
         <div class="product-image-glow w-full aspect-square mb-4 relative overflow-hidden rounded-[1.5rem]" onclick="window.navigateToProduct('${pIdSafe}')">
             <img src="${displayImg}" class="${isOutOfStock ? 'grayscale opacity-70' : ''} blur-load w-full h-full object-cover transition-all duration-700 group-hover:scale-110 cursor-pointer" loading=\"lazy\" decoding=\"async\" alt="صنف ${escapeHTML(p.name)} من قسم ${escapeHTML(p.category)} - حلويات بوسي" onerror="this.onerror=null; this.src=window.getImgFallback('${escapeHTML(p.category)}');">
             ${isOutOfStock ? `<div class="absolute inset-0 bg-[#ffffff]/50 backdrop-blur-[4px] z-10 flex items-center justify-center"><span class="bg-[var(--brand-primary)] text-[#ffffff] font-black px-4 py-2 rounded-xl shadow-lg border-2 border-[#ffffff]">نفدت الكمية مؤقتاً</span></div>` : ''}
@@ -339,16 +341,16 @@ export const loadLiveReviews = async function(productId) {
     try {
         const snapshot = await db.collection('catalog').doc(String(productId)).collection('livereviews').where('isApproved', '==', true).orderBy('timestamp', 'desc').limit(10).get();
         if (snapshot.empty) {
-            reviewsContainer.innerHTML = '<p class="text-xs text-[#1a1a1a] font-bold text-center col-span-full py-4 w-full">كن أول من يشارك تجربته مع الصنف ده... </p>';
+            reviewsContainer.innerHTML = '<p class="text-xs text-[var(--site-text)] font-bold text-center col-span-full py-4 w-full border-2 border-dashed border-[var(--brand-primary)] rounded-2xl">كن أول من يشارك تجربته مع الصنف ده... </p>';
             return;
         }
         reviewsContainer.innerHTML = snapshot.docs.map(doc => {
             const data = doc.data();
             const stars = '⭐'.repeat(data.rating || 5);
-            return `<div class="bg-[#ffffff] p-4 rounded-[1.5rem] border-2 border-[var(--brand-primary)] mb-3"><div class="flex justify-between items-center mb-2"><span class="font-black text-[#1a1a1a] text-xs">${escapeHTML(data.customerName)}</span><span class="text-[10px]">${stars}</span></div><p class="text-xs text-[#1a1a1a] leading-relaxed font-bold">${escapeHTML(data.comment)}</p></div>`;
+            return `<div class="bg-[#ffffff] p-4 rounded-[1.5rem] border-2 border-[var(--brand-primary)] mb-3 shadow-sm"><div class="flex justify-between items-center mb-2"><span class="font-black text-[var(--site-text)] text-xs">${escapeHTML(data.customerName)}</span><span class="text-[10px]">${stars}</span></div><p class="text-xs text-[var(--site-text)] leading-relaxed font-bold">${escapeHTML(data.comment)}</p></div>`;
         }).join('');
     } catch (error) {
-        reviewsContainer.innerHTML = '<p class="text-xs text-[#1a1a1a] font-bold text-center col-span-full py-4">جاري مزامنة الآراء...</p>';
+        reviewsContainer.innerHTML = '<p class="text-xs text-[var(--site-text)] font-bold text-center col-span-full py-4">جاري مزامنة الآراء...</p>';
     }
 };
 window.loadLiveReviews = loadLiveReviews;

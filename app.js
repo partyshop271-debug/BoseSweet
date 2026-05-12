@@ -1,8 +1,8 @@
 /**
- * 👑 BoseSweets Main Orchestrator (V27.3 - Sovereign Execution Protocol)
+ * 👑 BoseSweets Main Orchestrator (V28.1 - Sovereign Execution Protocol)
  * المحرك الرئيسي للإدارة المرجعية - حلويات بوسي
- * التحصين الشامل: تمت المعالجة الجذرية لثغرة الاستدعاءات (Import/Export Fatal Errors)
- * التي أدت لتوقف محرك الجافا سكريبت بالكامل. تم ربط المسارات بشكل محكم لضمان الإقلاع.
+ * تم التحصين الشامل: إزالة تعارضات التوجيه وتأمين مسارات التنقل (Routing Overrides)
+ * لضمان عدم اختفاء الأقسام أو تصادم الواجهات عند الإقلاع.
  */
 
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
@@ -13,12 +13,8 @@ import {
 import { MemoryManager, hexToMathHSL, escapeHTML, generateUniqueID, optimizeCloudinaryUrl, generateSecureOrderId, showSystemToast, BehavioralAnalytics, AdvancedNetworkEngine } from './utils.js';
 import { ClientStorageEngine } from './storage.js';
 import { LiveSearchEngine, performLiveSearchDebounced, toggleLiveSearch, performLiveSearch } from './search.js';
-
-// 👑 التصحيح الجذري: إزالة renderCartList و syncCartUI من استدعاءات السلة لأنها تخص هندسة الواجهة
 import { saveCartToStorage, clearCartStorage, calculateCartTotal, addWithQtyContext, modQ, commitCakeBuilderToCart, submitOrderFinal, dispatchWhatsAppOrder, processBoseSweetsOrder, updateCartDisplay } from './cart.js';
-
-// 👑 إدراج renderCartList و syncCartUI في مسارها الصحيح من وحدة العرض
-import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay, initHomepageSections, renderTicker, showHomeView, updateTempQtyContext, renderCartList, syncCartUI } from './ui.js';
+import { getCapsuleDescription, getFinalDescription, applySettingsToUI, toggleCustomerMenu, renderCustomerSidebarCategories, renderCustomerGallery, shareProduct, initWaterfall, setupSliderButtons, renderCategories, setActiveCategoryPill, renderFlowerTabs, renderMainDisplay, initHomepageSections, renderTicker, showHomeView, updateTempQtyContext, renderCartList, syncCartUI, showMenuView, setCategory } from './ui.js';
 
 let db = (typeof window !== 'undefined' && window.firebase) ? window.firebase.firestore() : undefined;
 window.db = db;
@@ -32,11 +28,13 @@ window.performLiveSearchDebounced = performLiveSearchDebounced;
 window.toggleLiveSearch = toggleLiveSearch;
 window.performLiveSearch = performLiveSearch;
 
-// 👑 ربط الدوال الرئيسية بجذر المتصفح لضمان توافرها أثناء بناء الشلال
+// 👑 ربط الدوال الرئيسية بجذر المتصفح لضمان توافرها أثناء البناء
 window.updateTempQtyContext = updateTempQtyContext;
 window.addWithQtyContext = addWithQtyContext;
 window.renderCartList = renderCartList;
 window.showHomeView = showHomeView;
+window.showMenuView = showMenuView;
+window.setCategory = setCategory;
 window.syncCartUI = syncCartUI;
 
 window.modQ = modQ;
@@ -61,7 +59,7 @@ async function startBoseSweetsEngine(isUpdate = false) {
     if (!isUpdate && (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة'))) return;
 
     if (!isUpdate) {
-        console.log("👑 حلويات بوسي: بدء تشغيل محرك الإقلاع السيادي (V27.3)...");
+        console.log("👑 حلويات بوسي: بدء تشغيل محرك الإقلاع السيادي (V28.1)...");
         registerBoseSweetsPWA();
     }
 
@@ -85,7 +83,7 @@ async function startBoseSweetsEngine(isUpdate = false) {
                     if(sSnap.data().dynamicSections) siteSettings.dynamicSections = sSnap.data().dynamicSections;
                     if(typeof applySettingsToUI === 'function') applySettingsToUI();
                 }
-            } catch(e) { console.error("تجاوز: عطل في جلب الإعدادات المرجعية.", e); }
+            } catch(e) { console.error("BoseSweets: عطل في جلب الإعدادات المرجعية.", e); }
         }
 
         const fetchPromise = async () => {
@@ -150,7 +148,7 @@ function forceRenderCoreUI() {
             phoneDisplay.innerText = siteSettings.footerPhone || '';
         }
     } catch (e) {
-        console.error("حلويات بوسي: تجاوز خطأ في رسم الهيكل الأساسي.");
+        console.error("BoseSweets: خطأ في رسم الهيكل الأساسي.", e);
     }
 }
 
@@ -163,14 +161,14 @@ function forceRenderDynamicUI() {
             if (typeof window.renderMainDisplay === 'function') window.renderMainDisplay();
         }
     } catch (e) {
-        console.error("حلويات بوسي: خطأ في تمرير محرك الشلال أو الأقسام الديناميكية.");
+        console.error("BoseSweets: خطأ في تمرير محرك الشلال أو الأقسام الديناميكية.", e);
     }
 
     try {
         if (typeof window.renderCartList === 'function') window.renderCartList();
         if (typeof window.syncCartUI === 'function') window.syncCartUI();
     } catch (e) {
-        console.error("حلويات بوسي: خطأ في رسم تفاصيل السلة.");
+        console.error("BoseSweets: خطأ في رسم تفاصيل السلة.", e);
     }
 }
 
@@ -190,6 +188,7 @@ function removeGlobalLoader() {
     }
 }
 
+// 👑 تأمين مسارات التوجيه الأولية لمنع تصادم الواجهات
 function handleInitialRouting() {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('product');
@@ -201,6 +200,7 @@ function handleInitialRouting() {
         window.setCategory(routeCat);
     } else {
         state.activeCat = 'الرئيسية';
+        if (typeof window.showHomeView === 'function') window.showHomeView();
     }
 
     if (document.getElementById('gallery-customer-section') && typeof renderCustomerGallery === 'function') {
@@ -216,7 +216,7 @@ function handleInitialRouting() {
 
 function fallbackToEmergencyData() {
     if (catalog.length === 0) {
-        console.log("حلويات بوسي: تفعيل الكتالوج الاحتياطي لضمان استمرارية الخدمة.");
+        console.log("BoseSweets: تفعيل الكتالوج الاحتياطي لضمان استمرارية الخدمة.");
         
         const fallbackData = typeof getFromLocalMemory === 'function' ? getFromLocalMemory('bosesweets_catalog') : null;
         
@@ -338,33 +338,8 @@ function registerBoseSweetsPWA() {
     }
 }
 
-window.goToHome = () => {
-    state.activeCat = 'الرئيسية';
-    const viewMenu = document.getElementById('view-menu');
-    const viewHome = document.getElementById('view-home');
-    
-    if (viewMenu) viewMenu.classList.add('hidden');
-    if (viewHome) viewHome.classList.remove('hidden');
-    
-    if (typeof initWaterfall === 'function') initWaterfall();
-    if (typeof initHomepageSections === 'function') initHomepageSections();
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-window.showMenuView = () => {
-    state.activeCat = 'تورت';
-    const viewHome = document.getElementById('view-home');
-    const viewMenu = document.getElementById('view-menu');
-    
-    if (viewHome) viewHome.classList.add('hidden');
-    if (viewMenu) viewMenu.classList.remove('hidden');
-    
-    if (typeof renderMainDisplay === 'function') renderMainDisplay();
-    if (typeof renderCategories === 'function') renderCategories();
-    
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+// 👑 دوال التوجيه الأساسية مأخوذة بشكل مباشر وآمن من الواجهة لعدم إحداث تصادم
+window.goToHome = () => { if(typeof window.setCategory === 'function') window.setCategory('الرئيسية'); };
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => startBoseSweetsEngine(false));
@@ -372,6 +347,7 @@ if (document.readyState === 'loading') {
     startBoseSweetsEngine(false);
 }
 
+// 👑 معالجة التوجيه الخلفي للأنظمة لضمان التوافق مع التعديلات الجديدة
 window.addEventListener('popstate', (event) => {
     if (event.state && event.state.category) {
         if (typeof window.setCategory === 'function') {
@@ -425,4 +401,3 @@ document.addEventListener('click', function(event) {
         }
     }
 });
-

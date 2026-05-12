@@ -1,7 +1,8 @@
 /**
- * 👑 BoseSweets UI View Management (V23.0 - Sovereign Navigation Protocol)
- * مهندس عرض الواجهات والتنقل - حلويات بوسي
- * تم التحصين الشامل: تأمين الشلال ضد الاختفاء، تصحيح الـ IDs لمنع انهيار الواجهات واعتماد نظام عرض قاطع.
+ * 👑 BoseSweets UI View Management (V24.1 - Sovereign Architecture Protocol)
+ * مهندس عرض الواجهات والتنقل - علامة حلويات بوسي
+ * تم التحصين الشامل: تطبيق التوجيهات الهندسية (Grid Protocol) وفرض نظام الكروت بصرامة،
+ * حماية واجهات الشلال، وتأمين التبويبات الذكية لقسم الديسباسيتو ضد الشاشات الفارغة.
  */
 
 import { dSizes, fTypes } from './config.js';
@@ -11,16 +12,26 @@ import { MemoryManager, escapeHTML, optimizeCloudinaryUrl } from './utils.js';
 // 👑 تبديل الواجهات الأساسي (Sovereign Routing)
 export const showHomeView = function() {
     try {
+        // الإخفاء القاطع للواجهات الأخرى
         ['view-menu', 'view-tips', 'view-cake-builder', 'view-product-details', 'menu-view', 'product-details-view'].forEach(id => {
             const el = document.getElementById(id);
-            if(el) el.classList.add('hidden');
+            if(el) { el.classList.add('hidden'); el.style.display = 'none'; el.style.opacity = '0'; }
         });
         const vHome = document.getElementById('view-home') || document.getElementById('home-view'); 
         if(vHome) { 
             vHome.classList.remove('hidden'); 
-            vHome.style.display = 'flex'; // Flex to match standard layout
+            vHome.style.display = 'flex'; // تأكيد العرض المرن
+            vHome.style.opacity = '1';
         }
+        
+        // إخفاء التقييمات والترشيحات من الصفحة الرئيسية لعدم التضارب
+        const reviewsSec = document.getElementById('global-reviews-section');
+        const relatedSec = document.getElementById('related-products-area');
+        if(reviewsSec) { reviewsSec.classList.add('hidden'); reviewsSec.style.display = 'none'; }
+        if(relatedSec) { relatedSec.classList.add('hidden'); relatedSec.style.display = 'none'; }
+
         if(window.setActiveCategoryPill) window.setActiveCategoryPill('الرئيسية');
+        if(window.initWaterfall) window.initWaterfall();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch(e) { console.warn("BoseSweets: استثناء أثناء عرض الرئيسية", e); }
 };
@@ -28,19 +39,24 @@ window.showHomeView = showHomeView;
 
 export const showMenuView = function() {
     try {
+        // الإخفاء القاطع
         ['view-home', 'view-tips', 'view-cake-builder', 'view-product-details', 'home-view', 'product-details-view'].forEach(id => {
             const el = document.getElementById(id);
-            if(el) el.classList.add('hidden');
+            if(el) { el.classList.add('hidden'); el.style.display = 'none'; el.style.opacity = '0'; }
         });
         const vMenu = document.getElementById('view-menu') || document.getElementById('menu-view'); 
         if(vMenu) { 
             vMenu.classList.remove('hidden'); 
-            vMenu.style.display = 'flex'; // Flex to match layout
+            vMenu.style.display = 'flex'; 
+            vMenu.style.opacity = '1';
         }
         
-        const menuGrid = document.getElementById('display-container');
-        if(menuGrid) menuGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 items-stretch w-full animate-fade-in';
-        
+        // إظهار التقييمات والترشيحات في المنيو إذا لزم الأمر
+        const reviewsSec = document.getElementById('global-reviews-section');
+        const relatedSec = document.getElementById('related-products-area');
+        if(reviewsSec) { reviewsSec.classList.remove('hidden'); reviewsSec.style.display = 'block'; }
+        if(relatedSec) { relatedSec.classList.remove('hidden'); relatedSec.style.display = 'block'; }
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch(e) { console.warn("BoseSweets: استثناء أثناء عرض المنيو", e); }
 };
@@ -50,7 +66,7 @@ export const showGoldenTips = function() {
     try {
         ['view-home', 'view-menu', 'view-cake-builder', 'view-product-details', 'home-view', 'menu-view', 'product-details-view'].forEach(id => {
             const el = document.getElementById(id);
-            if(el) el.classList.add('hidden');
+            if(el) { el.classList.add('hidden'); el.style.display = 'none'; }
         });
         const vTips = document.getElementById('view-tips'); 
         if(vTips) { 
@@ -66,7 +82,7 @@ export const showCakeBuilderView = function() {
     try {
         ['view-home', 'view-menu', 'view-tips', 'view-product-details', 'home-view', 'menu-view', 'product-details-view'].forEach(id => {
             const el = document.getElementById(id);
-            if(el) el.classList.add('hidden');
+            if(el) { el.classList.add('hidden'); el.style.display = 'none'; }
         });
         const vCake = document.getElementById('view-cake-builder'); 
         if(vCake) { vCake.classList.remove('hidden'); vCake.style.display = 'block'; }
@@ -85,6 +101,7 @@ export const openGlobalLightbox = function(imgUrl) {
         mainImg.src = imgUrl;
         lightbox.classList.remove('hidden');
         lightbox.classList.add('flex');
+        lightbox.style.display = 'flex';
         setTimeout(() => { lightbox.classList.remove('opacity-0'); mainImg.classList.remove('scale-95'); mainImg.classList.add('scale-100'); }, 10);
     }
 };
@@ -97,12 +114,12 @@ export const closeGlobalLightbox = function() {
         lightbox.classList.add('opacity-0');
         mainImg.classList.remove('scale-100');
         mainImg.classList.remove('scale-95');
-        setTimeout(() => { lightbox.classList.add('hidden'); lightbox.classList.remove('flex'); }, 300);
+        setTimeout(() => { lightbox.classList.add('hidden'); lightbox.classList.remove('flex'); lightbox.style.display = 'none'; }, 300);
     }
 };
 window.closeGlobalLightbox = closeGlobalLightbox;
 
-// 👑 هندسة الشلال (Waterfall - تم التأمين ضد الاختفاء والمساحات البيضاء)
+// 👑 هندسة الشلال (Waterfall - التحصين ضد الاختفاء)
 export const initWaterfall = function() {
     try {
         const col1 = document.getElementById('waterfall-col-1');
@@ -112,11 +129,11 @@ export const initWaterfall = function() {
         if (waterfallContainer) {
             waterfallContainer.classList.remove('hidden');
             waterfallContainer.style.display = 'block';
+            waterfallContainer.style.opacity = '1';
         }
 
         if (!col1 || !col2) return;
 
-        // جلب العناصر التي تحتوي على صور صالحة للعرض
         const visualItems = catalog.filter(p => p && p.isActive !== false && (p.img || (p.images && p.images.length > 0)));
         
         if (visualItems.length === 0) {
@@ -125,12 +142,10 @@ export const initWaterfall = function() {
             return;
         }
 
-        // تقسيم العناصر لضمان عدم وجود مساحات بيضاء بالتساوي بين العمودين
         const half = Math.ceil(visualItems.length / 2);
         const leftItems = visualItems.slice(0, half);
         const rightItems = visualItems.slice(half);
 
-        // الحفاظ على الهيكل البصري المقدس الذي يراه العميل
         const buildCardHTML = (item) => {
             const rawImageUrl = (item.images && item.images.length > 0) ? item.images[0] : (item.img || window.getImgFallback(item.category));
             const url = optimizeCloudinaryUrl(rawImageUrl);
@@ -165,14 +180,14 @@ export const initHomepageSections = function() {
             const fallbackNA = newArrivals.length > 0 ? newArrivals : catalog.filter(p => p.isActive !== false).slice().reverse().slice(0, 6);
 
             if (bsContainer && fallbackBS.length > 0) {
-                if(sectionBS) sectionBS.classList.remove('hidden');
+                if(sectionBS) { sectionBS.classList.remove('hidden'); sectionBS.style.display = 'block'; }
                 bsContainer.innerHTML = fallbackBS.map(p => `<div class="shrink-0 w-[300px] snap-center">${window.drawProductCard(p)}</div>`).join('');
-            } else { if(sectionBS) sectionBS.classList.add('hidden'); }
+            } else { if(sectionBS) { sectionBS.classList.add('hidden'); sectionBS.style.display = 'none'; } }
 
             if (naContainer && fallbackNA.length > 0) {
-                if(sectionNA) sectionNA.classList.remove('hidden');
+                if(sectionNA) { sectionNA.classList.remove('hidden'); sectionNA.style.display = 'block'; }
                 naContainer.innerHTML = fallbackNA.map(p => `<div class="shrink-0 w-[300px] snap-center">${window.drawProductCard(p)}</div>`).join('');
-            } else { if(sectionNA) sectionNA.classList.add('hidden'); }
+            } else { if(sectionNA) { sectionNA.classList.add('hidden'); sectionNA.style.display = 'none'; } }
         }
 
         let dynContainer = document.getElementById('dynamic-sections-container');
@@ -231,16 +246,14 @@ export const setupSliderButtons = function() {
 };
 window.setupSliderButtons = setupSliderButtons;
 
-// 👑 معالجة التابات (Pills) - مع الاحتفاظ بالديناميكية والتوافق مع لوحة التحكم
 export const renderCategories = function() {
     try {
         const el = document.getElementById('categories-nav') || document.getElementById('categories-scroll') || document.getElementById('categories-container');
         if(!el) return;
         
         el.classList.remove('hidden');
-        el.style.display = 'flex'; // Use flex to maintain layout
+        el.style.display = 'flex'; 
 
-        // دمج القوائم الديناميكية لضمان عدم تعطل الأقسام المضافة من لوحة التحكم
         const sortedCats = [...catMenu].sort((a, b) => (a.order || 99) - (b.order || 99));
 
         let html = `<button id="cat-btn-الرئيسية" onclick="window.setCategory('الرئيسية')" class="cat-pill whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${state.activeCat === 'الرئيسية' ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-lg' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">الرئيسية</button>`;
@@ -251,7 +264,6 @@ export const renderCategories = function() {
             const isActive = state.activeCat === catName;
             const displayName = catName === 'ورد' ? 'ورد وهدايا 💐' : (catName === 'تورت' ? 'تورت وتصميم 🎂' : catName);
             
-            // الهيكل المدعوم بقوة الألوان الديناميكية للبراند
             return `<button id="cat-btn-${safeId}" onclick="window.setCategory('${catName}')" class="cat-pill whitespace-nowrap px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl font-bold transition-all border-2 text-sm sm:text-base ${isActive ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-lg' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${displayName}</button>`;
         }).join('');
         
@@ -294,7 +306,10 @@ export const enforceCategoryRender = function(containerId, productsHTML) {
             container.innerHTML = ''; 
             container.appendChild(fragment);
             container.classList.remove('hidden'); 
-            container.style.display = container.className.includes('grid') ? 'grid' : 'block'; 
+            // الإبقاء على خاصية الـ display المحددة من خلال الكلاسات لتجنب كسر الشبكة
+            if (!container.className.includes('grid') && !container.className.includes('flex')) {
+                container.style.display = 'block'; 
+            }
         } catch(e) { console.error("BoseSweets: خطأ أثناء عرض المنتجات", e); }
     }
 };
@@ -307,7 +322,7 @@ export const setSub = function(type, val) {
 };
 window.setSub = setSub;
 
-// 👑 المحرك الأساسي لعرض الأقسام مع الحماية المطلقة
+// 👑 المحرك الأساسي لعرض الأقسام مع الحماية المطلقة وتطبيق الشبكة الهندسية (Grid Protocol)
 export const renderMainDisplay = function() {
     try {
         const catDescArea = document.getElementById('category-description-area');
@@ -316,6 +331,7 @@ export const renderMainDisplay = function() {
 
         if (catDescArea && state.activeCat !== 'الرئيسية' && state.activeCat !== 'تورت') {
             catDescArea.classList.remove('hidden');
+            catDescArea.style.display = 'block';
             if (catNameEl) catNameEl.innerText = state.activeCat === 'ورد' ? 'ورد وهدايا 💐' : state.activeCat;
             
             const defaultDescs = {
@@ -326,9 +342,12 @@ export const renderMainDisplay = function() {
             };
             let desc = siteSettings.catDescriptions && siteSettings.catDescriptions[state.activeCat] ? siteSettings.catDescriptions[state.activeCat] : (defaultDescs[state.activeCat] || `أشهى الأصناف المميزة من قسم ${state.activeCat} محضرة بعناية عشان تضمن لحضرتك أعلى جودة.`);
             if (catDescEl) catDescEl.innerText = desc;
-        } else if (catDescArea) { catDescArea.classList.add('hidden'); }
+        } else if (catDescArea) { 
+            catDescArea.classList.add('hidden'); 
+            catDescArea.style.display = 'none'; 
+        }
 
-        let breadcrumbHtml = `<nav class="flex items-center gap-2 text-sm font-bold text-[var(--site-text)] mb-6 justify-center w-full"><span class="cursor-pointer hover:text-[var(--brand-primary)]" onclick="window.setCategory('الرئيسية')">الرئيسية</span> <i data-lucide="chevron-left" class="w-4 h-4 text-[var(--brand-primary)]"></i> <span class="text-[var(--brand-primary)]">${state.activeCat}</span></nav>`;
+        let breadcrumbHtml = `<nav class="flex items-center gap-2 text-sm font-bold text-[var(--site-text)] mb-6 justify-center w-full col-span-full"><span class="cursor-pointer hover:text-[var(--brand-primary)]" onclick="window.setCategory('الرئيسية')">الرئيسية</span> <i data-lucide="chevron-left" class="w-4 h-4 text-[var(--brand-primary)]"></i> <span class="text-[var(--brand-primary)]">${state.activeCat}</span></nav>`;
 
         const container = document.getElementById('display-container'); 
         const subTabs = document.getElementById('sub-tabs-area');
@@ -336,8 +355,13 @@ export const renderMainDisplay = function() {
 
         let targetHTML = '';
         let showSubTabs = false;
-        const fullWidthCategories = ['تورت', 'تورتة ميني', 'جاتوه', 'ورد', 'ريد فيلفت', 'كب كيك', 'بوكس الروقان'];
+        
+        // 👑 تطبيق هندسة الكروت القاطعة (Sovereign Grid Configuration)
+        const fullWidthCategories = ['تورت', 'جاتوه', 'جاتوهات', 'ريد فيلفت', 'بوكس الروقان', 'ميني تورته', 'تورتة ميني', 'ورد', 'كب كيك'];
+        const twoColumnCategories = ['دوناتس', 'سينابون', 'ديسباسيتو', 'كبات السعاده', 'القشطوطه', 'قشطوطة'];
+
         const isFullWidth = fullWidthCategories.includes(state.activeCat);
+        const isTwoColumns = twoColumnCategories.includes(state.activeCat);
         
         if (state.activeCat === 'تورت') { 
             container.className = 'w-full animate-fade-in';
@@ -351,7 +375,7 @@ export const renderMainDisplay = function() {
             fTypes.forEach(type => {
                 const list = catalog.filter(p => p && p.isActive !== false && p.category === 'ورد' && (p.flowerType === type || (p.desc && typeof p.desc === 'string' && p.desc.includes(type))));
                 if(list.length > 0) { 
-                    flowerHtml += `<div id="flower-group-${type.replace(/\s+/g, '-')}" class="space-y-6 animate-fade-in"><div class="flex items-center gap-4 mb-4"><h3 class="font-black text-xl text-[var(--brand-primary)] shrink-0">${type}</h3><div class="h-[2px] w-full bg-[var(--brand-primary)]"></div></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 items-stretch">${list.map(p => window.drawProductCard(p)).join('')}</div></div>`; 
+                    flowerHtml += `<div id="flower-group-${type.replace(/\s+/g, '-')}" class="space-y-6 animate-fade-in"><div class="flex items-center gap-4 mb-4"><h3 class="font-black text-xl text-[var(--brand-primary)] shrink-0">${type}</h3><div class="h-[2px] w-full bg-[var(--brand-primary)]"></div></div><div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-stretch">${list.map(p => window.drawProductCard(p)).join('')}</div></div>`; 
                 }
             });
             flowerHtml += `</div>`; 
@@ -360,25 +384,39 @@ export const renderMainDisplay = function() {
         else {
             if (state.activeCat === 'ديسباسيتو') showSubTabs = true;
             
-            if (isFullWidth) container.className = 'grid grid-cols-1 gap-10 items-stretch w-full animate-fade-in max-w-4xl mx-auto';
-            else {
-                let baseGrid = (siteSettings.layout_settings && siteSettings.layout_settings.layout_viewMode === 'columns_2') ? 'grid-cols-2' : 'grid-cols-1';
-                container.className = `grid ${baseGrid} md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10 items-stretch w-full animate-fade-in`;
+            // 👑 تحديد شبكة العرض بصرامة لمنع تداخل الأحجام
+            if (isFullWidth) {
+                container.className = 'grid grid-cols-1 gap-10 items-stretch w-full animate-fade-in max-w-4xl mx-auto';
+            } else if (isTwoColumns) {
+                // فرض كارتين بجوار بعضهما بشكل دائم حسب التوجيهات
+                container.className = 'grid grid-cols-2 gap-4 md:gap-6 items-stretch w-full animate-fade-in';
+            } else {
+                container.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 items-stretch w-full animate-fade-in';
             }
             
             let list = catalog.filter(p => p && p.isActive !== false && p.category === state.activeCat);
+            
+            // 👑 ترقية ذكاء التبويبات للديسباسيتو (المرونة لمنع الشاشات الفارغة)
             if (state.activeCat === 'ديسباسيتو') {
-                list = list.filter(p => {
-                    const matchSize = p.size === state.dSize || p.subType === state.dSize || (p.desc && typeof p.desc === 'string' && p.desc.includes(state.dSize));
-                    return matchSize || (!p.size && !p.subType);
-                });
+                if (state.dSize) {
+                    const filteredList = list.filter(p => {
+                        const matchSize = p.size === state.dSize || p.subType === state.dSize || (p.desc && typeof p.desc === 'string' && p.desc.includes(state.dSize)) || (p.name && p.name.includes(state.dSize));
+                        return matchSize;
+                    });
+                    // إذا كان التصفية ستؤدي لشاشة فارغة، تجاهلها لضمان استمرار عرض المنتجات
+                    if (filteredList.length > 0) {
+                        list = filteredList;
+                    } else {
+                        state.dSize = null; // إعادة تعيين لعدم إرباك العميل
+                    }
+                }
             }
             
-            targetHTML = breadcrumbHtml + list.map(p => window.drawProductCard(p)).join('');
-            
             if (list.length === 0) {
-                container.className = 'w-full animate-fade-in';
-                targetHTML = breadcrumbHtml + `<div class="text-center py-20 bg-[#ffffff] rounded-[2rem] border-2 border-dashed border-[var(--brand-primary)]"><i data-lucide="package-search" class="w-16 h-16 mx-auto mb-4 text-[var(--brand-primary)]"></i><p class="font-bold text-[var(--site-text)] text-lg">جاري تجهيز أصناف فاخرة في هذا القسم.</p></div>`;
+                container.className = 'w-full animate-fade-in flex justify-center items-center';
+                targetHTML = breadcrumbHtml + `<div class="text-center w-full py-20 bg-[#ffffff] rounded-[2rem] border-2 border-dashed border-[var(--brand-primary)]"><i data-lucide="package-search" class="w-16 h-16 mx-auto mb-4 text-[var(--brand-primary)]"></i><p class="font-bold text-[var(--site-text)] text-lg">جاري تجهيز أصناف فاخرة في هذا القسم.</p></div>`;
+            } else {
+                targetHTML = breadcrumbHtml + list.map(p => window.drawProductCard(p)).join('');
             }
         }
 
@@ -387,13 +425,18 @@ export const renderMainDisplay = function() {
 
         if (showSubTabs) {
             subTabs.classList.remove('hidden');
+            subTabs.style.display = 'block';
             if (state.activeCat === 'ورد') window.renderFlowerTabs(subTabs);
             if (state.activeCat === 'ديسباسيتو') {
-                subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 flex justify-center gap-2 bg-[#ffffff] border-[var(--brand-primary)]">${dSizes.map(s => `<button onclick="window.setSub('s', '${s}')" class="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.dSize === s ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)]' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${s}</button>`).join('')}</div>`;
+                subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 flex justify-center gap-2 bg-[#ffffff] border-[var(--brand-primary)] flex-wrap">${dSizes.map(s => `<button onclick="window.setSub('s', '${s}')" class="flex-1 min-w-[80px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.dSize === s ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)]' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${s}</button>`).join('')}</div>`;
             }
-        } else { if(subTabs) subTabs.classList.add('hidden'); }
+        } else { if(subTabs) { subTabs.classList.add('hidden'); subTabs.style.display = 'none'; } }
         
         if(window.renderSmartSuggestions) window.renderSmartSuggestions('main');
+        
+        // استدعاء المراجعات العامة للقسم للتأكيد على دمجها الصحيح
+        if(window.loadLiveReviews) window.loadLiveReviews('general_' + state.activeCat);
+        
     } catch(e) { console.error("BoseSweets: استثناء في محرك العرض الأساسي", e); }
 };
 window.renderMainDisplay = renderMainDisplay;
@@ -404,7 +447,6 @@ export const setCategory = function(c) {
         if (c === 'الرئيسية') {
             state.activeCat = 'الرئيسية';
             if(window.showHomeView) window.showHomeView();
-            if(window.initWaterfall) window.initWaterfall();
         } else {
             state.activeCat = c;
             if(window.showMenuView) window.showMenuView();
@@ -444,21 +486,6 @@ export const handleDeepLinking = function() {
 };
 window.handleDeepLinking = handleDeepLinking;
 
-// 👑 تأمين مستمعات الأحداث (السر وراء استقرار واجهة بوسي)
 document.addEventListener('DOMContentLoaded', () => {
     if (window.lucide) lucide.createIcons();
-    document.body.addEventListener('click', function(e) {
-        const tabBtn = e.target.closest('.category-tab, .cat-btn, .cat-pill, [onclick*="Category"], [onclick*="Cat"]');
-        if (tabBtn) {
-            setTimeout(() => {
-                const productContainers = document.querySelectorAll('.products-grid, #products-container, .catalog-grid, [id*="grid"], #display-container');
-                productContainers.forEach(container => {
-                    if (container) {
-                        container.classList.remove('hidden'); 
-                        container.style.display = container.className.includes('grid') ? 'grid' : 'block'; 
-                    }
-                });
-            }, 150);
-        }
-    });
 });
