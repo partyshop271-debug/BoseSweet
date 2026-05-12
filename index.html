@@ -22,6 +22,25 @@
     <meta name="theme-color" content="#ffffff">
     
     <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            showErrorOnScreen("عطل برمجي أوقف العرض", message, source, lineno);
+        };
+        window.addEventListener('unhandledrejection', function(event) {
+            showErrorOnScreen("عطل في سحب بيانات المنتجات", event.reason);
+        });
+        function showErrorOnScreen(type, msg, src, line) {
+            var div = document.createElement('div');
+            div.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:#020408;color:#e2e8f0;z-index:999999;padding:20px;font-family:sans-serif;direction:ltr;text-align:left;font-weight:bold;font-size:14px;border-bottom:4px solid #ff91a4;box-shadow:0 10px 30px rgba(0,0,0,0.8);box-sizing:border-box;max-height:50vh;overflow-y:auto;';
+            var fileName = src ? src.split('/').pop() : 'غير محدد';
+            div.innerHTML = '<h3 style="margin:0 0 10px 0;color:#ff91a4;">رصد خلل سيادي: ' + type + '</h3>' +
+                            '<p style="margin:0 0 8px 0;word-wrap:break-word;"><b>التفاصيل:</b> ' + msg + '</p>' +
+                            (src ? '<p style="margin:0 0 8px 0;"><b>الملف المسئول:</b> ' + fileName + '</p>' : '') +
+                            (line ? '<p style="margin:0 0 15px 0;"><b>رقم السطر:</b> ' + line + '</p>' : '') +
+                            '<button onclick="this.parentElement.remove()" style="padding:8px 16px;background:#ff91a4;color:#000;border:none;font-weight:bold;border-radius:6px;cursor:pointer;width:100%;">إغلاق التشخيص</button>';
+            if (document.body) { document.body.appendChild(div); } 
+            else { window.addEventListener('DOMContentLoaded', function() { document.body.appendChild(div); }); }
+        }
+
         window.deferredInstallPrompt = null;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
