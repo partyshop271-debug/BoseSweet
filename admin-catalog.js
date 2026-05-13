@@ -1,10 +1,12 @@
 /**
  * ============================================================================
- * محرك مركز قيادة حلويات بوسي السحابي | BoseSweets Admin Engine V20.0 Official
+ * محرك مركز قيادة حلويات بوسي السحابي | BoseSweets Admin Engine V20.1 Official
  * ============================================================================
- * 👑 التحديث السيادي للسيطرة المطلقة: 
+ * 👑 التحديث السيادي للسيطرة المطلقة (Sovereign Correction Edition): 
  * تم معالجة تصادم التعريفات وتوحيد مسارات الذاكرة لضمان اتصال لوحة التحكم 
  * بالموقع وقاعدة البيانات لحظياً دون أي انقطاع.
+ * تم تحصين دالة حذف وحفظ المنتجات لتنفيذ "الحذف القاطع" من الكاش المحلي فوراً 
+ * لتجنب ظهور أي منتجات محذوفة للعملاء (Zero-Ghost Products).
  * تم دمج مستشعر الرصد العميق (BoseMonitor) لاصطياد الأخطاء وتوجيهها لغرفة العمليات.
  * يعتمد أسلوب التوسيع والبناء دون أي حذف للمكونات الأساسية.
  * * ⚠️ تحذير: هذا الملف هو النواة المركزية لإدارة حلويات بوسي.
@@ -459,6 +461,10 @@ window.loadEngineMemory = async function() {
     window.syncCatalogMap(); 
 };
 
+/**
+ * 👑 هندسة توحيد الذاكرة (Memory Unification Protocol)
+ * تم مطابقتها مع النواة المركزية (admin-core) لضمان عدم وجود مسارات مختلفة للتخزين.
+ */
 window.saveEngineMemory = async function(type) {
     try {
         if (type === 'cat' || type === 'all') await window.StorageEngine.set('boseSweets_catalog', window.catalog);
@@ -467,8 +473,20 @@ window.saveEngineMemory = async function(type) {
         if (type === 'gal' || type === 'all') await window.StorageEngine.set('boseSweets_gallery', window.galleryData);
         if (type === 'ord' || type === 'all') await window.StorageEngine.set('boseSweets_admin_orders', window.globalOrders);
         
-        // Fallback to LocalStorage for redundant safety
-        localStorage.setItem(`bSweets_${type}`, JSON.stringify(type === 'cat' ? window.catalog : type === 'ord' ? window.globalOrders : window.siteSettings));
+        // التحصين القاطع لمفاتيح الذاكرة للواجهة الأمامية
+        if (type === 'cat' || type === 'all') {
+            localStorage.setItem('boseSweets_catalog', JSON.stringify(window.catalog));
+            localStorage.setItem('bSweets_catalog', JSON.stringify(window.catalog));
+            localStorage.setItem('boseSweets_catalog_timestamp', Date.now().toString());
+        }
+        if (type === 'ord' || type === 'all') {
+            localStorage.setItem('boseSweets_admin_orders', JSON.stringify(window.globalOrders));
+            localStorage.setItem('bSweets_orders', JSON.stringify(window.globalOrders));
+        }
+        if (type === 'set' || type === 'all') {
+            localStorage.setItem('boseSweets_settings', JSON.stringify(window.siteSettings));
+            localStorage.setItem('bSweets_settings', JSON.stringify(window.siteSettings));
+        }
     } catch (e) { 
         if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog.js', null, null, 'saveEngineMemory');
     }
@@ -751,10 +769,14 @@ window.triggerSovereignSync = async function() {
 // 7. دوال التحكم والسيطرة (Save & Delete)
 // ==========================================
 
+/**
+ * 👑 حفظ وتحديث المنتجات (Sovereign Product Save Protocol)
+ * تم التحصين بتحديث مفاتيح الكاش المحلي فوراً قبل الاتصال بالسحابة.
+ */
 window.saveProductData = async function(productObj) {
     try {
         // 1. تحديث الكتالوج المحلي
-        const existingIndex = window.catalog.findIndex(p => p.id === productObj.id);
+        const existingIndex = window.catalog.findIndex(p => String(p.id) === String(productObj.id));
         if (existingIndex > -1) {
             window.catalog[existingIndex] = productObj;
         } else {
@@ -762,15 +784,20 @@ window.saveProductData = async function(productObj) {
         }
         window.syncCatalogMap();
         
-        // 2. تحديث السحابة والذاكرة المحلية
+        // 2. تحديث قاطع للكاش المحلي فوراً (Fortified Cache Update)
+        localStorage.setItem('boseSweets_catalog', JSON.stringify(window.catalog));
+        localStorage.setItem('bSweets_catalog', JSON.stringify(window.catalog));
+        localStorage.setItem('boseSweets_catalog_timestamp', Date.now().toString());
+        await window.saveEngineMemory('cat');
+
+        // 3. المزامنة السحابية
         if (typeof window.db !== 'undefined' && window.db !== null) {
             await window.db.collection('catalog').doc(String(productObj.id)).set(productObj, { merge: true });
         }
-        await window.saveEngineMemory('cat');
 
-        if (typeof showSystemToast === 'function') showSystemToast("تم اعتماد المنتج في الكتالوج بنجاح", "success");
+        if (typeof showSystemToast === 'function') showSystemToast("قرار سيادي: تم اعتماد وتحديث بيانات المنتج بنجاح", "success");
 
-        // 3. إجبار الموقع على التحديث اللحظي عند التعديل (البث السيادي)
+        // 4. البث السيادي اللحظي
         if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
         
     } catch (error) {
@@ -778,22 +805,40 @@ window.saveProductData = async function(productObj) {
     }
 };
 
+/**
+ * 👑 الحذف القاطع للمنتجات (Immediate Purge Protocol)
+ * تم هندستها لتقوم بمسح المنتج من الذاكرة المحلية والواجهة فوراً قبل السحابة 
+ * لتجنب ظهور أي منتجات محذوفة (أشباح) للعميل.
+ */
 window.executeDeleteProduct = async function(productId) {
     try {
-        // 1. الحذف من الكتالوج المحلي
-        window.catalog = window.catalog.filter(p => p.id !== productId);
+        // 1. الحذف الفوري من الكتالوج المحلي
+        window.catalog = window.catalog.filter(p => String(p.id) !== String(productId));
         window.syncCatalogMap();
 
-        // 2. الحذف من السحابة والذاكرة المحلية
+        // 2. مسح قاطع من الكاش المحلي فوراً لمنع ظهوره للعملاء (Zero-Ghost Prevention)
+        localStorage.setItem('boseSweets_catalog', JSON.stringify(window.catalog));
+        localStorage.setItem('bSweets_catalog', JSON.stringify(window.catalog));
+        localStorage.setItem('boseSweets_catalog_timestamp', Date.now().toString());
+        await window.saveEngineMemory('cat');
+
+        // 3. الحذف السحابي (في الخلفية)
         if (typeof window.db !== 'undefined' && window.db !== null) {
             await window.db.collection('catalog').doc(String(productId)).delete();
         }
-        await window.saveEngineMemory('cat');
 
-        if (typeof showSystemToast === 'function') showSystemToast("تم إزالة المنتج نهائياً من سجلات حلويات بوسي", "success");
+        if (typeof showSystemToast === 'function') {
+            showSystemToast("قرار سيادي: تم إزالة المنتج نهائياً وتطهير الكاش اللحظي", "success");
+        }
 
-        // 3. إجبار الموقع على التحديث اللحظي عند التعديل (البث السيادي)
+        // 4. البث السيادي لفرض التحديث على بقية الأجهزة
         if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
+        
+        // 5. إعادة رسم واجهة الإدارة لتعكس الحذف فوراً
+        if(typeof window.renderAdminMenu === 'function') {
+            const currentSearch = document.getElementById('admin-search-catalog') ? document.getElementById('admin-search-catalog').value : '';
+            window.renderAdminMenu(currentSearch);
+        }
 
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-catalog.js', null, null, 'executeDeleteProduct');
