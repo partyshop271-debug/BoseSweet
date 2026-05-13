@@ -14,8 +14,136 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script> 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     
-    <!-- ملف الربط مع قواعد البيانات -->
-    <script src="firebase-config.js"></script>
+    <!-- 👑 BoseSweets Deep Monitor (Black Box Protocol) - Login Portal Edition -->
+    <script>
+        (function() {
+            if (window.BoseMonitor) return;
+
+            window.BoseMonitor = {
+                logQueue: [],
+                diagnose: function(errorMsg) {
+                    const msg = String(errorMsg).toLowerCase();
+                    if (msg.includes('auth') || msg.includes('credential')) return "عائق توثيق (Auth Error): فشل في تأكيد الصلاحيات مع السحابة.";
+                    if (msg.includes('network') || msg.includes('fetch')) return "عطل اتصالي (Network): انقطاع في الشبكة تمنع بوابة الدخول من العمل.";
+                    if (msg.includes('null (reading') || msg.includes('undefined (reading')) return "انهيار الهيكل (DOM): الواجهة فقدت بعض الحقول الأساسية.";
+                    return "خلل منطقي عميق: يتطلب التدخل التقني.";
+                },
+                parseStackTrace: function(stack) {
+                    if (!stack) return { file: 'login.html', line: 'غير معروف', col: 'غير معروف' };
+                    const lines = stack.split('\n');
+                    for (let i = 1; i < lines.length; i++) {
+                        const match = lines[i].match(/(.*):(\d+):(\d+)/);
+                        if (match) return { file: match[1].split('/').pop(), line: match[2], col: match[3] };
+                    }
+                    return { file: 'معقد التحليل', line: 'N/A', col: 'N/A' };
+                },
+                report: async function(error, sourceFile = 'login.html', lineNo = null, colNo = null, functionName = 'رصد تلقائي') {
+                    try {
+                        const errorMessage = error && error.message ? error.message : String(error);
+                        const stackTrace = error && error.stack ? error.stack : 'لا يوجد تتبع برمجي متاح';
+                        const parsedStack = this.parseStackTrace(stackTrace);
+                        const finalFile = sourceFile || parsedStack.file;
+                        
+                        console.warn(`%c[رصد أمني - بوابة الدخول]%c تم رصد خلل في: ${finalFile} | دالة: ${functionName}`, "color: #ff91a4; font-weight: bold; background: #1a1a1a; padding: 2px 6px; border-radius: 4px;", "color: inherit;");
+
+                        const reportData = {
+                            fileName: finalFile,
+                            functionName: functionName,
+                            errorMessage: errorMessage,
+                            stackTrace: stackTrace,
+                            diagnosis: this.diagnose(errorMessage),
+                            timestamp: Date.now(),
+                            status: 'unresolved',
+                            clientDevice: typeof navigator !== 'undefined' ? navigator.userAgent : 'غير معروف',
+                            url: window.location.href,
+                            isLoginPortal: true
+                        };
+
+                        this.saveToDatabase(reportData);
+                    } catch (e) {
+                        console.error("فشل نظام الرصد العميق:", e);
+                    }
+                },
+                saveToDatabase: async function(reportData) {
+                    const db = window.db || (typeof window.firebase !== 'undefined' && window.firebase.firestore ? window.firebase.firestore() : null);
+                    if (db) {
+                        try {
+                            reportData.serverTime = window.firebase.firestore.FieldValue.serverTimestamp();
+                            await db.collection('system_logs').add(reportData);
+                            if (this.logQueue.length > 0) this.syncQueueToDatabase(db);
+                        } catch (dbError) {
+                            this.saveToLocalStorage(reportData);
+                        }
+                    } else {
+                        this.logQueue.push(reportData);
+                        this.saveToLocalStorage(reportData);
+                    }
+                },
+                syncQueueToDatabase: async function(db) {
+                    while (this.logQueue.length > 0) {
+                        const item = this.logQueue.shift();
+                        try { await db.collection('system_logs').add(item); } 
+                        catch (e) { this.logQueue.unshift(item); break; }
+                    }
+                },
+                saveToLocalStorage: function(reportData) {
+                    try {
+                        let localLogs = JSON.parse(localStorage.getItem('bose_blackbox_logs') || '[]');
+                        if (localLogs.length > 50) localLogs.shift();
+                        localLogs.push(reportData);
+                        localStorage.setItem('bose_blackbox_logs', JSON.stringify(localLogs));
+                    } catch(err) {}
+                },
+                initGlobalWatch: function() {
+                    window.addEventListener('error', (event) => {
+                        let fName = event.filename ? event.filename.split('/').pop() : 'login.html';
+                        this.report(event.error || event.message, fName, null, null, 'رصد تلقائي (Global Error)');
+                    });
+                    window.addEventListener('unhandledrejection', (event) => {
+                        this.report(event.reason || 'عملية خلفية تم رفضها ولم تعالج', 'login.html', null, null, 'عملية شبكية (Promise Rejection)');
+                    });
+                }
+            };
+
+            window.BoseMonitor.initGlobalWatch();
+        })();
+    </script>
+
+    <!-- تهيئة محرك قواعد البيانات المتكامل (تم دمج الإعدادات لضمان عدم انهيار العرض) -->
+    <script>
+        (function initFirebaseEngine() {
+            try {
+                // إعدادات الاتصال (يتم استبدالها ببيانات الاستضافة الفعلية لاحقاً)
+                const firebaseConfig = {
+                    // يتم الاعتماد على بيانات البيئة إن وجدت لضمان التوافق مع أنظمة المعاينة
+                    ...(typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+                        apiKey: "YOUR_API_KEY",
+                        authDomain: "YOUR_AUTH_DOMAIN",
+                        projectId: "YOUR_PROJECT_ID",
+                        storageBucket: "YOUR_STORAGE_BUCKET",
+                        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+                        appId: "YOUR_APP_ID"
+                    })
+                };
+
+                if (typeof window.firebase !== 'undefined' && !window.firebase.apps.length) {
+                    if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+                        window.firebase.initializeApp(firebaseConfig);
+                        window.auth = window.firebase.auth();
+                        window.db = window.firebase.firestore();
+                    } else {
+                        // نظام بديل (Mock System) لضمان عرض الواجهة وإمكانية العمل عليها بدون انهيار
+                        window.auth = {
+                            signInWithEmailAndPassword: async () => { throw { code: 'auth/network-request-failed', message: 'نظام المعاينة مفعل: يرجى وضع بيانات الاتصال الحقيقية في المحرك' }; },
+                            onAuthStateChanged: (cb) => { cb(null); }
+                        };
+                    }
+                }
+            } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'login.html', null, null, 'initFirebaseEngine');
+            }
+        })();
+    </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
@@ -24,8 +152,6 @@
             --brand-primary: #ff91a4;
             --brand-bg: #070b14;
             --brand-card: #101726;
-            --brand-glow: rgba(255, 145, 164, 0.25);
-            --input-bg: #1a2235;
         }
         
         body {
@@ -38,272 +164,335 @@
             min-height: 100vh;
             margin: 0;
             overflow: hidden;
-            background-image: radial-gradient(circle at 50% -20%, rgba(255, 145, 164, 0.08), transparent 60%);
+            position: relative;
+        }
+
+        /* مؤثرات الخلفية السيادية */
+        .bg-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255,145,164,0.05) 0%, rgba(7,11,20,0) 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* إصلاح هندسة الحركة لضمان ظهور الكارت */
+        @keyframes fadeInEngine {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
         .login-card {
-            background: var(--brand-card);
-            border: 1px solid rgba(255, 145, 164, 0.2);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px var(--brand-glow);
-            border-radius: 2rem;
-            padding: 3rem 2.5rem;
-            width: 100%;
-            max-width: 420px;
-            text-align: center;
+            background-color: var(--brand-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 2.5rem;
             position: relative;
             z-index: 10;
-        }
-
-        .input-group {
-            position: relative;
-            margin-bottom: 1.5rem;
+            width: 100%;
+            max-width: 440px;
+            padding: 3rem 2.5rem;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            animation: fadeInEngine 0.6s ease-out forwards;
         }
 
         .input-field {
-            background: var(--input-bg);
-            border: 1px solid rgba(255, 145, 164, 0.1);
-            color: #ffffff;
-            border-radius: 1.25rem;
-            padding: 1.25rem 1.5rem 1.25rem 3rem; /* مساحة للأيقونات */
             width: 100%;
-            outline: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: left;
-            direction: ltr;
+            background-color: rgba(3, 5, 10, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: white;
+            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            padding-right: 3rem;
+            font-size: 0.95rem;
             font-weight: 700;
-            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            outline: none;
         }
-
+        
         .input-field:focus {
             border-color: var(--brand-primary);
-            box-shadow: 0 0 15px var(--brand-glow);
-            background: #1e293b;
-        }
-
-        .input-field::placeholder {
-            color: #64748b;
-            font-weight: 600;
+            box-shadow: 0 0 0 2px rgba(255, 145, 164, 0.1);
         }
 
         .input-icon {
             position: absolute;
-            left: 1rem;
+            right: 1.25rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #64748b;
-            cursor: pointer;
+            color: #8b9bb4;
             transition: color 0.3s;
         }
 
-        .input-icon:hover {
+        .input-group:focus-within .input-icon {
             color: var(--brand-primary);
         }
 
-        .btn-primary {
-            background-color: var(--brand-primary);
-            color: #ffffff;
-            border: none;
-            border-radius: 1.25rem;
-            padding: 1.25rem;
+        .login-btn {
             width: 100%;
+            background-color: var(--brand-primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 1rem;
             font-weight: 900;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 1rem;
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             gap: 0.75rem;
-            box-shadow: 0 10px 25px var(--brand-glow);
+            transition: all 0.2s;
+            box-shadow: 0 10px 25px -5px rgba(255, 145, 164, 0.4);
         }
 
-        .btn-primary:active { 
-            transform: scale(0.96); 
-            box-shadow: 0 5px 15px var(--brand-glow);
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -5px rgba(255, 145, 164, 0.5);
         }
 
-        .btn-primary:disabled { 
-            opacity: 0.6; 
-            cursor: not-allowed; 
+        .login-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
             transform: none;
         }
 
-        @keyframes toastSlideDown {
-            from { transform: translate(-50%, -100%); opacity: 0; }
-            to { transform: translate(-50%, 0); opacity: 1; }
+        #login-toast {
+            position: absolute;
+            top: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            visibility: hidden;
+            z-index: 50;
+            width: max-content;
+            max-width: 90%;
         }
-
-        .toast-enter {
-            animation: toastSlideDown 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+        
+        #login-toast.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translate(-50%, 10px);
         }
     </style>
 </head>
 <body>
 
-    <!-- منظومة الإشعارات السيادية -->
-    <div id="toast-container" class="fixed top-6 left-1/2 -translate-x-1/2 z-[1000] hidden">
-        <div id="toast-body" class="bg-[#101726] border text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 transition-colors duration-300 min-w-[300px] justify-center">
-            <i id="toast-icon" data-lucide="info" class="w-5 h-5 shrink-0"></i>
-            <span id="toast-msg" class="font-bold text-sm tracking-wide"></span>
-        </div>
+    <div class="bg-glow"></div>
+
+    <!-- إشعار النظام (Toast) -->
+    <div id="login-toast" class="bg-[#101726]/95 backdrop-blur-xl border border-white/10 px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 text-center">
+        <i id="toast-icon" data-lucide="info" class="w-5 h-5 shrink-0"></i>
+        <span id="toast-msg" class="text-sm font-bold text-white tracking-wide leading-relaxed"></span>
     </div>
 
-    <div class="w-full px-6">
-        <div class="login-card mx-auto">
-            <div class="mb-8">
-                <div class="w-24 h-24 bg-[#ff91a4]/10 rounded-3xl flex items-center justify-center mx-auto border border-[#ff91a4]/30 mb-5 shadow-[0_0_25px_rgba(255,145,164,0.15)] relative overflow-hidden group">
-                    <div class="absolute inset-0 bg-gradient-to-tr from-[#ff91a4]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <i data-lucide="shield-check" class="w-12 h-12 text-[#ff91a4] relative z-10"></i>
-                </div>
-                <h1 class="text-3xl font-black text-white tracking-wide mb-1">حلويات بوسي</h1>
-                <p class="text-[#ff91a4] text-xs font-black tracking-widest uppercase bg-[#ff91a4]/10 inline-block px-3 py-1 rounded-lg border border-[#ff91a4]/20">مركز القيادة السيادي</p>
+    <div class="login-card mx-4">
+        
+        <div class="text-center mb-10">
+            <div class="w-20 h-20 bg-white rounded-2xl p-2 mx-auto mb-6 shadow-[0_0_30px_rgba(255,145,164,0.15)] flex items-center justify-center border border-white/10">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" class="w-full object-contain rounded-xl" alt="حلويات بوسي">
+            </div>
+            <h1 class="text-2xl font-black text-white tracking-wide">حلويات بوسي</h1>
+            <p class="text-xs font-bold text-[#ff91a4] mt-2 uppercase tracking-widest">بوابة الإدارة السيادية</p>
+        </div>
+
+        <div class="space-y-6">
+            <div class="relative input-group">
+                <i data-lucide="mail" class="w-5 h-5 input-icon"></i>
+                <input type="email" id="admin-email" class="input-field" placeholder="البريد الإلكتروني المعتمد" dir="ltr" autocomplete="email">
             </div>
 
-            <div class="space-y-4">
-                <div class="input-group">
-                    <input type="email" id="admin-email" class="input-field pr-4" placeholder="البريد الإلكتروني للإدارة" autocomplete="email">
-                    <i data-lucide="mail" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500"></i>
-                </div>
-                
-                <div class="input-group">
-                    <input type="password" id="admin-pwd" class="input-field pr-4" placeholder="الرمز السري المشفر" autocomplete="current-password">
-                    <i data-lucide="lock" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500"></i>
-                    <!-- زر إظهار وإخفاء الباسورد -->
-                    <div onclick="togglePasswordVisibility()" class="input-icon" title="عرض الرمز السري">
-                        <i id="toggle-pwd-icon" data-lucide="eye" class="w-5 h-5"></i>
-                    </div>
-                </div>
-                
-                <button id="login-btn" onclick="executeAdminLogin()" class="btn-primary mt-6">
-                    <span>اعتماد الدخول</span>
-                    <i data-lucide="log-in" class="w-5 h-5"></i>
+            <!-- تم التحديث: إضافة مساحة بالجهة اليسرى (pl-12) وتوظيف زر الإظهار/الإخفاء -->
+            <div class="relative input-group">
+                <i data-lucide="lock" class="w-5 h-5 input-icon"></i>
+                <input type="password" id="admin-pwd" class="input-field pl-12" placeholder="مفتاح التشفير السري" dir="ltr" autocomplete="current-password">
+                <button type="button" id="toggle-pwd-btn" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#8b9bb4] hover:text-[#ff91a4] transition-colors duration-300 focus:outline-none" title="إظهار/إخفاء مفتاح التشفير">
+                    <i data-lucide="eye" class="w-5 h-5"></i>
                 </button>
             </div>
-            
-            <div class="mt-8 pt-6 border-t border-slate-800/50">
-                <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest">جميع الحقوق محفوظة لـ حلويات بوسي ©</p>
-            </div>
+
+            <button id="login-btn" onclick="executeAdminLogin()" class="login-btn mt-4">
+                <span>اعتماد الدخول</span>
+                <i data-lucide="log-in" class="w-5 h-5"></i>
+            </button>
+        </div>
+        
+        <div class="mt-8 text-center border-t border-white/5 pt-6">
+            <p class="text-[10px] text-slate-500 font-bold">هذه البوابة مخصصة حصرياً لإدارة العلامة التجارية. يرجى الحفاظ على سرية بيانات الوصول.</p>
         </div>
     </div>
 
     <script>
-        // تهيئة الأيقونات
-        lucide.createIcons();
-        
-        let toastTimeout;
-
-        // نظام الإشعارات المهني المطور
-        function showToast(msg, type = 'info') {
-            const toast = document.getElementById('toast-container');
-            const toastBody = document.getElementById('toast-body');
-            const icon = document.getElementById('toast-icon');
-            const msgEl = document.getElementById('toast-msg');
-            
-            msgEl.innerText = msg;
-            
-            // تطبيق الألوان السيادية حسب الحالة
-            if(type === 'error') { 
-                icon.setAttribute('data-lucide', 'alert-triangle'); 
-                icon.className = "w-5 h-5 shrink-0 text-red-500"; 
-                toastBody.className = "bg-[#101726] border border-red-500/30 text-white px-6 py-4 rounded-2xl shadow-[0_10px_30px_rgba(239,68,68,0.2)] flex items-center gap-3 min-w-[300px] justify-center";
-            }
-            else { 
-                icon.setAttribute('data-lucide', 'check-circle'); 
-                icon.className = "w-5 h-5 shrink-0 text-emerald-500"; 
-                toastBody.className = "bg-[#101726] border border-emerald-500/30 text-white px-6 py-4 rounded-2xl shadow-[0_10px_30px_rgba(16,185,129,0.2)] flex items-center gap-3 min-w-[300px] justify-center";
-            }
-            
-            lucide.createIcons();
-            toast.classList.remove('hidden');
-            toast.classList.add('toast-enter');
-            
-            if(toastTimeout) clearTimeout(toastTimeout);
-            
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove('toast-enter');
-                toast.classList.add('hidden');
-            }, 4500); // زيادة مدة العرض قليلاً لقراءة الرسائل المهنية
-        }
-
-        // كشف وتغطية الرمز السري
-        function togglePasswordVisibility() {
-            const pwdInput = document.getElementById('admin-pwd');
-            const icon = document.getElementById('toggle-pwd-icon');
-            
-            if (pwdInput.type === 'password') {
-                pwdInput.type = 'text';
-                icon.setAttribute('data-lucide', 'eye-off');
-            } else {
-                pwdInput.type = 'password';
-                icon.setAttribute('data-lucide', 'eye');
-            }
-            lucide.createIcons();
-        }
-
-        // دالة الدخول السيادية المُحكمة
-        async function executeAdminLogin() {
-            const email = document.getElementById('admin-email').value.trim();
-            const pwd = document.getElementById('admin-pwd').value;
-            const btn = document.getElementById('login-btn');
-
-            if (!email || !pwd) { 
-                showToast("يرجى من حضرتك إدخال بيانات الهوية الإدارية كاملة للاعتماد.", "error"); 
-                return; 
-            }
-            
-            if (!navigator.onLine) { 
-                showToast("عذراً، لا يوجد اتصال ثابت بالشبكة لإتمام المصادقة السيادية.", "error"); 
-                return; 
-            }
-
-            if (typeof firebase === 'undefined' || !firebase.auth) {
-                showToast("عطل تقني: لم يتم تحميل محرك قواعد البيانات، يرجى تحديث الصفحة.", "error");
-                return;
-            }
-
-            // تأمين الواجهة أثناء معالجة البيانات
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i><span>جاري مصادقة البيانات...</span>`;
-            btn.disabled = true;
-            lucide.createIcons();
-
-            try {
-                // استخدام نظام التوثيق السحابي
-                await firebase.auth().signInWithEmailAndPassword(email, pwd);
-                sessionStorage.setItem('bosy_admin_auth', 'true');
-                showToast("تمت المصادقة بنجاح.. جاري توجيه حضرتك لمركز القيادة 👑", "success");
-                
-                // الانتقال المأمون للوحة التحكم
-                setTimeout(() => { window.location.replace('admin.html'); }, 1200);
-                
-            } catch (error) {
-                console.error("🔥 تقرير الرفض الأمني:", error);
-                
-                // رسائل أخطاء مهنية تحترم لغة البراند
-                if (error.code === 'auth/network-request-failed') {
-                    showToast("يبدو أن هناك ضعف في الاتصال بالإنترنت، يرجى تحقق حضرتك من الشبكة.", "error");
-                } else if (error.code === 'auth/too-many-requests') {
-                    showToast("تم رصد محاولات دخول متعددة، يرجى من حضرتك الانتظار قليلاً قبل المحاولة القادمة ⏳.", "error");
-                } else if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
-                    showToast("بيانات الهوية غير مسجلة في نظام حلويات بوسي، يرجى مراجعة البريد الإلكتروني 🛡️.", "error");
-                } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                    showToast("الرمز السري غير صحيح، يرجى من حضرتك التأكد من حالة الأحرف وإعادة المحاولة 🛡️.", "error");
-                } else {
-                    showToast(`تم رفض الدخول لسبب تقني: ${error.message} 🛠️`, "error");
-                }
-                
-                // إعادة الزر لحالته الأصلية
-                btn.innerHTML = `<span>اعتماد الدخول</span><i data-lucide="log-in" class="w-5 h-5"></i>`; 
-                btn.disabled = false;
+        // تهيئة الأيقونات بأمان بعد بناء الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
+        });
+
+        // هندسة وظيفة إظهار/إخفاء مفتاح التشفير
+        try {
+            const togglePwdBtn = document.getElementById('toggle-pwd-btn');
+            const pwdInput = document.getElementById('admin-pwd');
+
+            if (togglePwdBtn && pwdInput) {
+                togglePwdBtn.addEventListener('click', () => {
+                    const isPassword = pwdInput.type === 'password';
+                    pwdInput.type = isPassword ? 'text' : 'password';
+                    
+                    // تحديث الأيقونة بشكل ديناميكي
+                    togglePwdBtn.innerHTML = `<i data-lucide="${isPassword ? 'eye-off' : 'eye'}" class="w-5 h-5"></i>`;
+                    
+                    // إعادة تهيئة الأيقونة الجديدة فقط لضمان الأداء
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                });
+            }
+        } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'login.html', null, null, 'Password Toggle Engine');
         }
 
-        // دعم ضغطة زر الإدخال (Enter)
-        document.getElementById('admin-pwd').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') executeAdminLogin();
-        });
-        document.getElementById('admin-email').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('admin-pwd').focus();
+        let toastTimeout;
+        function showToast(msg, type = "info") {
+            try {
+                const toast = document.getElementById('login-toast');
+                const msgEl = document.getElementById('toast-msg');
+                const iconEl = document.getElementById('toast-icon');
+                
+                msgEl.innerText = msg;
+                toast.className = "bg-[#101726]/95 backdrop-blur-xl border px-6 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 text-center"; 
+                
+                if (type === "error") {
+                    iconEl.setAttribute('data-lucide', 'alert-circle');
+                    iconEl.className = "w-5 h-5 shrink-0 text-red-400";
+                    toast.classList.add('border-red-500/20');
+                } else if (type === "success") {
+                    iconEl.setAttribute('data-lucide', 'check-circle');
+                    iconEl.className = "w-5 h-5 shrink-0 text-emerald-400";
+                    toast.classList.add('border-emerald-500/20');
+                } else {
+                    iconEl.setAttribute('data-lucide', 'info');
+                    iconEl.className = "w-5 h-5 shrink-0 text-[#ff91a4]";
+                    toast.classList.add('border-white/10');
+                }
+                
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                toast.classList.add('show');
+                
+                clearTimeout(toastTimeout);
+                toastTimeout = setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 4000);
+            } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'login.html', null, null, 'showToast');
+            }
+        }
+
+        async function executeAdminLogin() {
+            try {
+                const email = document.getElementById('admin-email').value.trim();
+                const pwd = document.getElementById('admin-pwd').value.trim();
+                const btn = document.getElementById('login-btn');
+
+                if (!email || !pwd) {
+                    showToast("قرار إداري: يرجى استيفاء بيانات الدخول (البريد ومفتاح التشفير) للمتابعة.", "error");
+                    return;
+                }
+
+                // تغيير حالة الزر لـ "جاري التحقق"
+                btn.innerHTML = `<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> <span>جاري التوثيق السيادي...</span>`;
+                btn.disabled = true;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+
+                try {
+                    // الاعتماد على كائن auth المحمي
+                    if (typeof window.auth === 'undefined' || !window.auth) {
+                        throw new Error("محرك قاعدة البيانات غير متصل، يرجى تحديث الصفحة أو إكمال بيانات الربط.");
+                    }
+
+                    await window.auth.signInWithEmailAndPassword(email, pwd);
+                    
+                    showToast("تم التحقق بنجاح. جاري فتح أبواب مركز القيادة لـ حلويات بوسي 👑...", "success");
+                    sessionStorage.setItem('bosy_admin_auth', 'verified');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'admin.html';
+                    }, 1000);
+
+                } catch (error) {
+                    // إرسال الخطأ للصندوق الأسود للتحليل
+                    if(window.BoseMonitor) window.BoseMonitor.report(error, 'login.html', null, null, 'executeAdminLogin (Auth Execution)');
+
+                    console.error("Auth Guard:", error.code || error.message);
+                    
+                    // هندسة نصوص التفاعل المهنية (Micro-copy)
+                    if (error.code === 'auth/network-request-failed') {
+                        showToast(error.message || "عذراً، لا يوجد اتصال بالإنترنت، يرجى تحقق حضرتك من الشبكة.", "error");
+                    } else if (error.code === 'auth/too-many-requests') {
+                        showToast("تم رصد محاولات دخول متعددة، يرجى من حضرتك الانتظار قليلاً قبل المحاولة القادمة ⏳.", "error");
+                    } else if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') {
+                        showToast("بيانات الهوية غير مسجلة في نظام حلويات بوسي، يرجى مراجعة البريد الإلكتروني 🛡️.", "error");
+                    } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                        showToast("الرمز السري غير صحيح، يرجى من حضرتك التأكد من حالة الأحرف وإعادة المحاولة 🛡️.", "error");
+                    } else {
+                        showToast(`تم رفض الدخول لسبب تقني: ${error.message} 🛠️`, "error");
+                    }
+                    
+                    // إعادة الزر لحالته الأصلية
+                    btn.innerHTML = `<span>اعتماد الدخول</span><i data-lucide="log-in" class="w-5 h-5"></i>`; 
+                    btn.disabled = false;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+            } catch (masterError) {
+                if(window.BoseMonitor) window.BoseMonitor.report(masterError, 'login.html', null, null, 'executeAdminLogin (Master)');
+                
+                const btn = document.getElementById('login-btn');
+                if (btn) {
+                    btn.innerHTML = `<span>اعتماد الدخول</span><i data-lucide="log-in" class="w-5 h-5"></i>`; 
+                    btn.disabled = false;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+            }
+        }
+
+        // دعم ضغطة زر الإدخال (Enter) مع التحصين
+        try {
+            document.getElementById('admin-pwd').addEventListener('keypress', (e) => {
+                try { if (e.key === 'Enter') executeAdminLogin(); } 
+                catch (err) { if(window.BoseMonitor) window.BoseMonitor.report(err, 'login.html', null, null, 'Enter Key (Password)'); }
+            });
+            document.getElementById('admin-email').addEventListener('keypress', (e) => {
+                try { if (e.key === 'Enter') executeAdminLogin(); } 
+                catch (err) { if(window.BoseMonitor) window.BoseMonitor.report(err, 'login.html', null, null, 'Enter Key (Email)'); }
+            });
+        } catch (e) {
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'login.html', null, null, 'Attach Enter Listeners');
+        }
+
+        // الحماية والتوجيه التلقائي في حالة وجود جلسة سابقة (محصنة)
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                if (typeof window.auth !== 'undefined' && window.auth && window.auth.onAuthStateChanged) {
+                    window.auth.onAuthStateChanged(user => {
+                        try {
+                            if (user && sessionStorage.getItem('bosy_admin_auth') === 'verified') {
+                                window.location.href = 'admin.html';
+                            }
+                        } catch (innerError) {
+                            if(window.BoseMonitor) window.BoseMonitor.report(innerError, 'login.html', null, null, 'onAuthStateChanged Callback');
+                        }
+                    });
+                }
+            } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'login.html', null, null, 'DOMContentLoaded (Auth Check)');
+            }
         });
     </script>
 </body>

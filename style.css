@@ -1,7 +1,8 @@
 /* =========================================================== /
 / 👑 BoseSweets Sovereign Style & Visual Identity Engine      /
 / العلامة التجارية الرسمية المعتمدة: حلويات بوسي               /
-/ الإصدار السيادي الموحد (V24.0) - تطهير برمجي وتسريع عتادي    /
+/ الإصدار السيادي الموحد (V24.5 - Monitor UI Edition)         /
+/ تم دمج قواعد مستشعر BoseMonitor للهوية البصرية التشخيصية     /
 / =========================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
@@ -16,7 +17,7 @@
     --h3-size: 1.2rem;
     --p-size: 0.95rem;
     
-    /* 👑 الألوان السيادية الرسمية لعلامة حلويات بوسي (يُمنع الفوشيا أو البني) */
+    /* 👑 الألوان السيادية الرسمية لعلامة حلويات بوسي */
     --brand-primary: #ff91a4;
     --brand-secondary: #ff91a4;
     --brand-light: #ffffff;
@@ -39,10 +40,15 @@
     
     /* إضافات التطوير الحديثة للانسيابية */
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* 🛡️ متغيرات مستشعر BoseMonitor البصرية */
+    --monitor-bg: rgba(26, 26, 26, 0.95);
+    --monitor-border: #ff91a4;
+    --monitor-text: #ffffff;
 }
 
 /* =========================================================== /
-/ 🛠️ تصفير الحسابات وضبط القواعد الهيكلية الموحدة (تم الإصلاح) /
+/ 🛠️ تصفير الحسابات وضبط القواعد الهيكلية الموحدة             /
 / =========================================================== */
 
 *, *::before, *::after {
@@ -67,7 +73,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     padding-top: 110px !important;
-    padding-bottom: 80px; /* لحماية العناصر السفلية في الموبايل */
+    padding-bottom: 80px; 
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -99,6 +105,38 @@ a, span, label, div, td, th {
 .text-bose-primary { color: var(--brand-primary) !important; }
 .bg-bose-primary { background-color: var(--brand-primary) !important; }
 .border-bose-primary { border-color: var(--brand-primary) !important; }
+
+/* =========================================================== /
+/ 🛡️ قسم الهوية البصرية للمستشعر (BoseMonitor UI Core)         /
+/ =========================================================== */
+
+#bose-monitor-console {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--monitor-bg);
+    border-top: 3px solid var(--monitor-border);
+    color: var(--monitor-text);
+    z-index: 100001;
+    font-size: 12px;
+    max-height: 40vh;
+    overflow-y: auto;
+    direction: ltr; /* لسهولة قراءة الأكواد التقنية */
+    padding: 15px;
+    display: none;
+    backdrop-filter: blur(10px);
+}
+
+.monitor-log-entry {
+    border-bottom: 1px solid rgba(255, 145, 164, 0.2);
+    padding: 8px 0;
+    animation: fade-in 0.3s ease;
+}
+
+.monitor-log-error { color: #ff91a4; font-weight: bold; }
+.monitor-log-warn { color: #ffcc00; }
+.monitor-log-info { color: #00ccff; }
 
 /* =========================================================== /
 / 👑 أنظمة التحريك والمزامنة اللحظية (مدعومة بالـ GPU)         /
@@ -172,7 +210,7 @@ a, span, label, div, td, th {
     white-space: nowrap !important;
     will-change: transform;
     animation: ticker var(--ticker-speed) linear infinite;
-    transform: translateZ(0); /* تسريع عتادي */
+    transform: translateZ(0); 
 }
 
 @keyframes ticker {
@@ -228,6 +266,10 @@ a, span, label, div, td, th {
 /* طبقات الأمان البصري الفائقة */
 #system-toast {
     z-index: 99999 !important;
+    border: 2px solid var(--brand-primary) !important;
+    background: var(--bg-main) !important;
+    box-shadow: 0 10px 30px var(--brand-glow-strong) !important;
+    border-radius: 1.5rem !important;
 }
 
 main, .main-container, #main-content {
@@ -493,7 +535,7 @@ input[type="text"], input[type="tel"], input[type="date"], input[type="time"], t
     transition: all 0.3s ease;
     font-weight: 700;
     border-radius: 1rem !important;
-    font-size: 16px !important; /* يمنع التكبير التلقائي في الموبايل */
+    font-size: 16px !important; 
 }
 
 input[type="text"]:focus, input[type="tel"]:focus, input[type="date"]:focus, input[type="time"]:focus, textarea:focus, select:focus {
@@ -675,5 +717,11 @@ button, .main-nav-btn {
     
     body {
         padding-top: 105px !important;
+    }
+
+    /* تحسينات موبايل إضافية لضمان عدم اختفاء العناصر تحت المستشعر */
+    #bose-monitor-console {
+        font-size: 10px;
+        padding: 10px;
     }
 }

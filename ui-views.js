@@ -1,15 +1,18 @@
 /**
- * 👑 BoseSweets UI View Management (V24.3 - Sovereign Architecture Protocol)
+ * 👑 BoseSweets UI View Management (V24.5 - Sovereign Monitor Edition)
  * مهندس عرض الواجهات والتنقل - علامة حلويات بوسي
- * تم التحصين الشامل: تطبيق التوجيهات الهندسية (Grid Protocol) وفرض نظام الكروت بصرامة،
- * حماية واجهات الشلال، وتأمين التبويبات الذكية لقسم الديسباسيتو ضد الشاشات الفارغة.
+ * تم التحصين الشامل: تطبيق التوجيهات الهندسية (Grid Protocol) وفرض نظام الكروت بصرامة.
+ * 🛡️ التحديث الأمني: زراعة مستشعر BoseMonitor لمراقبة نزاهة التنقل واستقرار العرض البصري.
  */
 
 import { dSizes, fTypes } from './config.js';
 import { siteSettings, catalog, catMenu, state } from './state.js';
 import { MemoryManager, escapeHTML, optimizeCloudinaryUrl } from './utils.js';
 
-// 👑 1. إصلاح اختفاء "الشلال" و"الشريط العلوي" (Sovereign Routing)
+/**
+ * 👑 1. عرض الصفحة الرئيسية (Sovereign Home Routing)
+ * تم التحصين لضمان بقاء "الشلال" و"الشريط العلوي" في حالة تأهب قصوى.
+ */
 export const showHomeView = function() {
     try {
         // إخفاء الواجهات الفرعية فقط والإبقاء على الهيكل الأساسي
@@ -22,7 +25,7 @@ export const showHomeView = function() {
             }
         });
         
-        // إظهار الصفحة الرئيسية والعناصر التابعة لها بصرامة
+        // إظهار الصفحة الرئيسية بصرامة سيادية
         const vHome = document.getElementById('view-home') || document.getElementById('home-view'); 
         if(vHome) { 
             vHome.classList.remove('hidden'); 
@@ -30,29 +33,36 @@ export const showHomeView = function() {
             vHome.style.opacity = '1';
         }
         
-        // إخفاء التقييمات والترشيحات من الصفحة الرئيسية لعدم التضارب
+        // إخفاء المكونات المخصصة للمنيو فقط من واجهة الهوم
         const reviewsSec = document.getElementById('global-reviews-section');
         const relatedSec = document.getElementById('related-products-area');
         if(reviewsSec) { reviewsSec.classList.add('hidden'); reviewsSec.style.display = 'none'; }
         if(relatedSec) { relatedSec.classList.add('hidden'); relatedSec.style.display = 'none'; }
 
-        // تفعيل المحركات الأساسية فوراً لضمان عدم الاختفاء (التحصين الشامل)
+        // تفعيل المحركات الأساسية لضمان استقرار المشهد البصري
         if(window.renderTicker) window.renderTicker();
         if(window.initWaterfall) window.initWaterfall();
         if(window.initHomepageSections) window.initHomepageSections();
         
         if(window.setActiveCategoryPill) window.setActiveCategoryPill('الرئيسية');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(e) { console.error("BoseSweets Error في عرض الرئيسية: ", e); }
+    } catch(e) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'ui-views.js', null, null, 'showHomeView');
+        console.error("BoseSweets Error في عرض الرئيسية: ", e); 
+    }
 };
 window.showHomeView = showHomeView;
 
+/**
+ * 👑 عرض المنيو الرسمي (Sovereign Menu Navigation)
+ */
 export const showMenuView = function() {
     try {
         ['view-home', 'view-tips', 'view-cake-builder', 'view-product-details', 'home-view', 'product-details-view'].forEach(id => {
             const el = document.getElementById(id);
             if(el) { el.classList.add('hidden'); el.style.display = 'none'; el.style.opacity = '0'; }
         });
+        
         const vMenu = document.getElementById('view-menu') || document.getElementById('menu-view'); 
         if(vMenu) { 
             vMenu.classList.remove('hidden'); 
@@ -66,10 +76,16 @@ export const showMenuView = function() {
         if(relatedSec) { relatedSec.classList.remove('hidden'); relatedSec.style.display = 'block'; }
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(e) { console.warn("BoseSweets: استثناء أثناء عرض المنيو", e); }
+    } catch(e) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'ui-views.js', null, null, 'showMenuView');
+        console.warn("BoseSweets: استثناء أثناء عرض المنيو", e); 
+    }
 };
 window.showMenuView = showMenuView;
 
+/**
+ * 👑 عرض دليل بوسي الذهبي (Golden Tips View)
+ */
 export const showGoldenTips = function() {
     try {
         ['view-home', 'view-menu', 'view-cake-builder', 'view-product-details', 'home-view', 'menu-view', 'product-details-view'].forEach(id => {
@@ -82,10 +98,16 @@ export const showGoldenTips = function() {
             vTips.style.display = 'flex'; 
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(e) { console.warn("BoseSweets: استثناء أثناء عرض الدليل", e); }
+    } catch(e) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'ui-views.js', null, null, 'showGoldenTips');
+        console.warn("BoseSweets: استثناء أثناء عرض الدليل", e); 
+    }
 };
 window.showGoldenTips = showGoldenTips;
 
+/**
+ * 👑 عرض صانع التورتات الملكي (Cake Builder View)
+ */
 export const showCakeBuilderView = function() {
     try {
         ['view-home', 'view-menu', 'view-tips', 'view-product-details', 'home-view', 'menu-view', 'product-details-view'].forEach(id => {
@@ -98,45 +120,68 @@ export const showCakeBuilderView = function() {
         window.currentBuilderStep = 1;
         if(window.renderMultiStepCakeBuilder) window.renderMultiStepCakeBuilder();
         window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch(e) { console.warn("BoseSweets: استثناء أثناء عرض صانع التورت", e); }
+    } catch(e) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'ui-views.js', null, null, 'showCakeBuilderView');
+        console.warn("BoseSweets: استثناء أثناء عرض صانع التورت", e); 
+    }
 };
 window.showCakeBuilderView = showCakeBuilderView;
 
+/**
+ * 👑 محرك اللايت بوكس العالمي (Global Lightbox Engine)
+ */
 export const openGlobalLightbox = function(imgUrl) {
-    const lightbox = document.getElementById('global-image-lightbox');
-    const mainImg = document.getElementById('lightbox-main-img');
-    if(lightbox && mainImg) {
-        mainImg.src = imgUrl;
-        lightbox.classList.remove('hidden');
-        lightbox.classList.add('flex');
-        lightbox.style.display = 'flex';
-        setTimeout(() => { lightbox.classList.remove('opacity-0'); mainImg.classList.remove('scale-95'); mainImg.classList.add('scale-100'); }, 10);
+    try {
+        const lightbox = document.getElementById('global-image-lightbox');
+        const mainImg = document.getElementById('lightbox-main-img');
+        if(lightbox && mainImg) {
+            mainImg.src = imgUrl;
+            lightbox.classList.remove('hidden');
+            lightbox.classList.add('flex');
+            lightbox.style.display = 'flex';
+            setTimeout(() => { lightbox.classList.remove('opacity-0'); mainImg.classList.remove('scale-95'); mainImg.classList.add('scale-100'); }, 10);
+        }
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-views.js', null, null, 'openGlobalLightbox');
     }
 };
 window.openGlobalLightbox = openGlobalLightbox;
 
 export const closeGlobalLightbox = function() {
-    const lightbox = document.getElementById('global-image-lightbox');
-    const mainImg = document.getElementById('lightbox-main-img');
-    if(lightbox && mainImg) {
-        lightbox.classList.add('opacity-0');
-        mainImg.classList.remove('scale-100');
-        mainImg.classList.remove('scale-95');
-        setTimeout(() => { lightbox.classList.add('hidden'); lightbox.classList.remove('flex'); lightbox.style.display = 'none'; }, 300);
+    try {
+        const lightbox = document.getElementById('global-image-lightbox');
+        const mainImg = document.getElementById('lightbox-main-img');
+        if(lightbox && mainImg) {
+            lightbox.classList.add('opacity-0');
+            mainImg.classList.remove('scale-100');
+            mainImg.classList.remove('scale-95');
+            setTimeout(() => { lightbox.classList.add('hidden'); lightbox.classList.remove('flex'); lightbox.style.display = 'none'; }, 300);
+        }
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-views.js', null, null, 'closeGlobalLightbox');
     }
 };
 window.closeGlobalLightbox = closeGlobalLightbox;
 
-// 👑 3. تفعيل "تبويبات الديسباسيتو" (Sovereign State Control)
+/**
+ * 👑 تفعيل "تبويبات الديسباسيتو والورد" (Sovereign Sub-Category Control)
+ */
 export const setSub = function(type, val) {
-    if (type === 's') state.dSize = val;
-    if (type === 'f') state.fType = val;
-    // إجبار إعادة الرسم فوراً لتحديث الكروت بناءً على المقاس المختار
-    if(window.renderMainDisplay) window.renderMainDisplay();
+    try {
+        if (type === 's') state.dSize = val;
+        if (type === 'f') state.fType = val;
+        // إجبار إعادة الرسم فوراً لتحديث الكروت بناءً على المقاس المختار
+        if(window.renderMainDisplay) window.renderMainDisplay();
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-views.js', null, null, `setSub Type: ${type}`);
+    }
 };
 window.setSub = setSub;
 
-// 👑 هندسة الشلال (Waterfall - التحصين ضد الاختفاء)
+/**
+ * 👑 هندسة الشلال البصري (Waterfall Engine)
+ * تم التحصين ضد اختفاء الصور وضمان تسريع عتادي للحركات.
+ */
 export const initWaterfall = function() {
     try {
         const col1 = document.getElementById('waterfall-col-1');
@@ -178,10 +223,16 @@ export const initWaterfall = function() {
 
         col1.innerHTML = leftItems.map(buildCardHTML).join('');
         col2.innerHTML = rightItems.map(buildCardHTML).join('');
-    } catch(e) { console.error("BoseSweets: استثناء في محرك الشلال", e); }
+    } catch(e) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'ui-views.js', null, null, 'initWaterfall');
+        console.error("BoseSweets: استثناء في محرك الشلال", e); 
+    }
 };
 window.initWaterfall = initWaterfall;
 
+/**
+ * 👑 محرك الأقسام الديناميكية للصفحة الرئيسية (Homepage Section Handler)
+ */
 export const initHomepageSections = function() {
     try {
         const sectionBS = document.getElementById('section-bestsellers');
@@ -244,25 +295,38 @@ export const initHomepageSections = function() {
         
         if (window.lucide) lucide.createIcons();
         if (typeof window.setupSliderButtons === 'function') window.setupSliderButtons();
-    } catch(e) { console.error("BoseSweets: استثناء في محرك الأقسام الديناميكية", e); }
+    } catch(e) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'ui-views.js', null, null, 'initHomepageSections');
+        console.error("BoseSweets: استثناء في محرك الأقسام الديناميكية", e); 
+    }
 };
 window.initHomepageSections = initHomepageSections;
 
+/**
+ * 👑 إعداد أزرار التمرير للسلايدرات (Slider Controls)
+ */
 export const setupSliderButtons = function() {
-    const attachScroll = (btnId, sliderId, direction) => {
-        const btn = document.getElementById(btnId);
-        const slider = document.getElementById(sliderId);
-        if(btn && slider) {
-            btn.onclick = () => { slider.scrollBy({ left: direction === 'right' ? 300 : -300, behavior: 'smooth' }); };
-        }
-    };
-    attachScroll('bs-next', 'bestsellers-slider-home', 'left');
-    attachScroll('bs-prev', 'bestsellers-slider-home', 'right');
-    attachScroll('na-next', 'new-arrivals-slider-home', 'left');
-    attachScroll('na-prev', 'new-arrivals-slider-home', 'right');
+    try {
+        const attachScroll = (btnId, sliderId, direction) => {
+            const btn = document.getElementById(btnId);
+            const slider = document.getElementById(sliderId);
+            if(btn && slider) {
+                btn.onclick = () => { slider.scrollBy({ left: direction === 'right' ? 300 : -300, behavior: 'smooth' }); };
+            }
+        };
+        attachScroll('bs-next', 'bestsellers-slider-home', 'left');
+        attachScroll('bs-prev', 'bestsellers-slider-home', 'right');
+        attachScroll('na-next', 'new-arrivals-slider-home', 'left');
+        attachScroll('na-prev', 'new-arrivals-slider-home', 'right');
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-views.js', null, null, 'setupSliderButtons');
+    }
 };
 window.setupSliderButtons = setupSliderButtons;
 
+/**
+ * 👑 عرض قائمة الأقسام (Category Navigation Builder)
+ */
 export const renderCategories = function() {
     try {
         const el = document.getElementById('categories-nav') || document.getElementById('categories-scroll') || document.getElementById('categories-container');
@@ -285,10 +349,16 @@ export const renderCategories = function() {
         }).join('');
         
         el.innerHTML = html;
-    } catch(e) { console.error("BoseSweets: خطأ أثناء عرض الأقسام اللحظية", e); }
+    } catch(e) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'ui-views.js', null, null, 'renderCategories');
+        console.error("BoseSweets: خطأ أثناء عرض الأقسام اللحظية", e); 
+    }
 };
 window.renderCategories = renderCategories;
 
+/**
+ * 👑 تمييز القسم النشط (Active Pill UI)
+ */
 export const setActiveCategoryPill = function(catName) {
     try {
         document.querySelectorAll('.cat-pill').forEach(btn => {
@@ -302,20 +372,32 @@ export const setActiveCategoryPill = function(catName) {
             activeBtn.classList.add('bg-[var(--brand-primary)]', 'text-[#ffffff]', 'shadow-lg');
             activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
-    } catch(e) {}
+    } catch(e) {
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'ui-views.js', null, null, 'setActiveCategoryPill');
+    }
 };
 window.setActiveCategoryPill = setActiveCategoryPill;
 
+/**
+ * 👑 عرض تبويبات الورد (Flower Type Tabs)
+ */
 export const renderFlowerTabs = function(container) {
-    if(!container) return;
-    container.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 bg-[#ffffff] border-[var(--brand-primary)] flex flex-wrap justify-center gap-2">${fTypes.map(f => `<button onclick="window.setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.fType === f ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)]' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${f}</button>`).join('')}</div>`;
+    try {
+        if(!container) return;
+        container.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 bg-[#ffffff] border-[var(--brand-primary)] flex flex-wrap justify-center gap-2">${fTypes.map(f => `<button onclick="window.setSub('f', '${f}')" class="flex-1 min-w-[100px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.fType === f ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)]' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${f}</button>`).join('')}</div>`;
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-views.js', null, null, 'renderFlowerTabs');
+    }
 };
 window.renderFlowerTabs = renderFlowerTabs;
 
+/**
+ * 👑 محرك الحقن المنيع (Sovereign Injection Guard)
+ */
 export const enforceCategoryRender = function(containerId, productsHTML) {
-    const container = document.getElementById(containerId);
-    if (container) {
-        try {
+    try {
+        const container = document.getElementById(containerId);
+        if (container) {
             const fragment = document.createDocumentFragment();
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = productsHTML;
@@ -326,12 +408,18 @@ export const enforceCategoryRender = function(containerId, productsHTML) {
             if (!container.className.includes('grid') && !container.className.includes('flex')) {
                 container.style.display = 'block'; 
             }
-        } catch(e) { console.error("BoseSweets: خطأ أثناء عرض المنتجات", e); }
+        }
+    } catch(e) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'ui-views.js', null, null, 'enforceCategoryRender');
+        console.error("BoseSweets: خطأ أثناء عرض المنتجات", e); 
     }
 };
 window.enforceCategoryRender = enforceCategoryRender;
 
-// 👑 2. تطبيق نظام "الكارتين" و"الكارت الواحد" (Grid Protocol المحسن)
+/**
+ * 👑 2. تطبيق نظام "الجريد السيادي" (Grid Protocol المحسن)
+ * تم فرض نظام الكروت بصرامة بناءً على تصنيف الصنف لزيادة الفخامة أو الكفاءة.
+ */
 export const renderMainDisplay = function() {
     try {
         const catDescArea = document.getElementById('category-description-area');
@@ -365,7 +453,7 @@ export const renderMainDisplay = function() {
         let targetHTML = '';
         let showSubTabs = false;
         
-        // تطبيق رؤية الإدارة لتقسيم الكروت بصرامة
+        // بروتوكول تقسيم الكروت المعتمد سيادياً
         const fullWidthCategories = ['تورت', 'جاتوه', 'جاتوهات', 'ريد فيلفت', 'بوكس الروقان', 'ميني تورته', 'تورتة ميني', 'ورد', 'كب كيك'];
         const twoColumnCategories = ['دوناتس', 'سينابون', 'ديسباسيتو', 'كبات السعاده', 'القشطوطه', 'قشطوطة'];
 
@@ -390,27 +478,24 @@ export const renderMainDisplay = function() {
         else {
             if (state.activeCat === 'ديسباسيتو') showSubTabs = true;
             
-            // تحديد كلاس الحاوية بناءً على التصنيف الهندسي
+            // تطبيق هندسة الشبكة بصرامة
             if (fullWidthCategories.includes(state.activeCat)) {
-                // كارت واحد مالي الشاشة (Full Width) لزيادة الفخامة
                 container.className = 'grid grid-cols-1 gap-10 items-stretch w-full animate-fade-in max-w-4xl mx-auto';
             } else if (twoColumnCategories.includes(state.activeCat)) {
-                // كارتين جنب بعض (2 Columns) بصرامة كما طلبت الإدارة
                 container.className = 'grid grid-cols-2 gap-4 md:gap-6 items-stretch w-full animate-fade-in';
             } else {
-                // التقسيم الافتراضي لبقية الأصناف
                 container.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 items-stretch w-full animate-fade-in';
             }
             
             let list = catalog.filter(p => p && p.isActive !== false && p.category === state.activeCat);
             
-            // ترقية ذكاء التبويبات للديسباسيتو (منع الشاشات الفارغة)
+            // نظام حماية الديسباسيتو ضد الاختفاء
             if (state.activeCat === 'ديسباسيتو' && state.dSize) {
                 const filteredList = list.filter(p => {
                     return p.size === state.dSize || p.subType === state.dSize || (p.desc && typeof p.desc === 'string' && p.desc.includes(state.dSize)) || (p.name && p.name.includes(state.dSize));
                 });
                 if (filteredList.length > 0) list = filteredList;
-                else state.dSize = null; // تصفير الاختيار لضمان عدم ظهور شاشة بيضاء
+                else state.dSize = null; 
             }
             
             if (list.length === 0) {
@@ -425,22 +510,29 @@ export const renderMainDisplay = function() {
         if(window.lucide) lucide.createIcons();
 
         if (showSubTabs) {
-            subTabs.classList.remove('hidden');
-            subTabs.style.display = 'block';
-            if (state.activeCat === 'ورد') window.renderFlowerTabs(subTabs);
-            if (state.activeCat === 'ديسباسيتو') {
-                subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 flex justify-center gap-2 bg-[#ffffff] border-[var(--brand-primary)] flex-wrap">${dSizes.map(s => `<button onclick="window.setSub('s', '${s}')" class="flex-1 min-w-[80px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.dSize === s ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-lg' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${s}</button>`).join('')}</div>`;
+            if(subTabs) {
+                subTabs.classList.remove('hidden');
+                subTabs.style.display = 'block';
+                if (state.activeCat === 'ورد') window.renderFlowerTabs(subTabs);
+                if (state.activeCat === 'ديسباسيتو') {
+                    subTabs.innerHTML = `<div class="p-2 rounded-2xl shadow-sm border-2 flex justify-center gap-2 bg-[#ffffff] border-[var(--brand-primary)] flex-wrap">${dSizes.map(s => `<button onclick="window.setSub('s', '${s}')" class="flex-1 min-w-[80px] py-2.5 px-4 rounded-xl font-bold text-xs sm:text-sm transition-all border-2 ${state.dSize === s ? 'bg-[var(--brand-primary)] text-[#ffffff] border-[var(--brand-primary)] shadow-lg' : 'bg-[#ffffff] text-[var(--site-text)] border-[var(--brand-primary)] hover:bg-[var(--brand-primary)] hover:text-[#ffffff]'}">${s}</button>`).join('')}</div>`;
+                }
             }
         } else { if(subTabs) { subTabs.classList.add('hidden'); subTabs.style.display = 'none'; } }
         
         if(window.renderSmartSuggestions) window.renderSmartSuggestions('main');
         if(window.loadLiveReviews) window.loadLiveReviews('general_' + state.activeCat);
         
-    } catch(e) { console.error("BoseSweets: استثناء في محرك العرض الأساسي", e); }
+    } catch(e) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'ui-views.js', null, null, 'renderMainDisplay');
+        console.error("BoseSweets: استثناء في محرك العرض الأساسي", e); 
+    }
 };
 window.renderMainDisplay = renderMainDisplay;
 
-// 👑 هندسة توجيه الأقسام المنيعة (Sovereign Routing Control)
+/**
+ * 👑 هندسة التوجيه السيادي (Sovereign Routing Controller)
+ */
 export const setCategory = function(c) {
     try {
         if (c === 'الرئيسية') {
@@ -451,38 +543,77 @@ export const setCategory = function(c) {
             if(window.showMenuView) window.showMenuView();
             if(window.renderMainDisplay) window.renderMainDisplay();
 
-            MemoryManager.set('scroll_to_products', () => {
-                const displayContainer = document.getElementById('display-container');
-                const catDescArea = document.getElementById('category-description-area');
-                const targetElement = (catDescArea && !catDescArea.classList.contains('hidden')) ? catDescArea : displayContainer;
-                if (targetElement) {
-                    const offsetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 140;
-                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-                }
-            }, 100);
+            if(window.MemoryManager) {
+                window.MemoryManager.set('scroll_to_products', () => {
+                    const displayContainer = document.getElementById('display-container');
+                    const catDescArea = document.getElementById('category-description-area');
+                    const targetElement = (catDescArea && !catDescArea.classList.contains('hidden')) ? catDescArea : displayContainer;
+                    if (targetElement) {
+                        const offsetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 140;
+                        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                    }
+                }, 100);
+            }
         }
         
         if(window.renderCategories) window.renderCategories();
         history.pushState({category: c}, '', `?category=${encodeURIComponent(c)}`);
         
-        MemoryManager.set('scroll_cat', () => { 
-            const safeId = String(c).replace(/\s+/g, '-');
-            const activeBtn = document.getElementById(`cat-btn-${safeId}`); 
-            if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); 
-        }, 50);
-    } catch(e) { console.error("BoseSweets: خطأ أثناء التوجيه للقسم", e); }
+        if(window.MemoryManager) {
+            window.MemoryManager.set('scroll_cat', () => { 
+                const safeId = String(c).replace(/\s+/g, '-');
+                const activeBtn = document.getElementById(`cat-btn-${safeId}`); 
+                if (activeBtn) activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); 
+            }, 50);
+        }
+    } catch(e) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'ui-views.js', null, null, `setCategory: ${c}`);
+        console.error("BoseSweets: خطأ أثناء التوجيه للقسم", e); 
+    }
 };
 window.setCategory = setCategory;
 
+/**
+ * 👑 محرك اللينك العميق (Deep Linking Engine)
+ */
 export const handleDeepLinking = function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const productId = urlParams.get('product');
-    const categoryId = urlParams.get('category');
-    if (productId && typeof window.navigateToProduct === 'function') setTimeout(() => window.navigateToProduct(productId), 500);
-    else if (categoryId && typeof window.setCategory === 'function') setTimeout(() => window.setCategory(decodeURIComponent(categoryId)), 300);
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('product');
+        const categoryId = urlParams.get('category');
+        if (productId && typeof window.navigateToProduct === 'function') setTimeout(() => window.navigateToProduct(productId), 500);
+        else if (categoryId && typeof window.setCategory === 'function') setTimeout(() => window.setCategory(decodeURIComponent(categoryId)), 300);
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-views.js', null, null, 'handleDeepLinking');
+    }
 };
 window.handleDeepLinking = handleDeepLinking;
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (window.lucide) lucide.createIcons();
-});
+/**
+ * 👑 الربط السيادي بنطاق النافذة (Global Window Bindings)
+ */
+if (typeof window !== 'undefined') {
+    try {
+        window.showHomeView = showHomeView;
+        window.showMenuView = showMenuView;
+        window.showGoldenTips = showGoldenTips;
+        window.showCakeBuilderView = showCakeBuilderView;
+        window.openGlobalLightbox = openGlobalLightbox;
+        window.closeGlobalLightbox = closeGlobalLightbox;
+        window.setSub = setSub;
+        window.initWaterfall = initWaterfall;
+        window.initHomepageSections = initHomepageSections;
+        window.setupSliderButtons = setupSliderButtons;
+        window.renderCategories = renderCategories;
+        window.setActiveCategoryPill = setActiveCategoryPill;
+        window.renderFlowerTabs = renderFlowerTabs;
+        window.enforceCategoryRender = enforceCategoryRender;
+        window.renderMainDisplay = renderMainDisplay;
+        window.setCategory = setCategory;
+        window.handleDeepLinking = handleDeepLinking;
+        
+        console.log("👑 BoseSweets Engine: UI Views finalized with Sovereign Monitoring.");
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-views.js', null, null, 'Final Window Bindings Failure');
+    }
+}

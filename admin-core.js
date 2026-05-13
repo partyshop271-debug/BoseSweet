@@ -6,29 +6,36 @@
  * تم معالجة تصادم التعريفات وتوحيد مسارات الذاكرة لضمان اتصال لوحة التحكم 
  * بالموقع وقاعدة البيانات لحظياً دون أي انقطاع.
  * تم دمج بروتوكول رفع الصور المتعددة بنجاح مع تأمين مسارات التخزين السحابي والمحلي.
+ * 🛡️ التحديث الأمني الجديد: تم زراعة مستشعر BoseMonitor المركزي في النواة.
  * يعتمد أسلوب التوسيع والبناء دون أي حذف للمكونات الأساسية.
  * * ⚠️ تحذير: هذا الملف هو النواة المركزية لإدارة حلويات بوسي.
  */
 
 // 🛡️ بروتوكول تتبع الأخطاء الإداري المركزي (Admin Error Tracking System)
-// تم التحصين ضد تصادم النطاق العام
+// تم التحصين ضد تصادم النطاق العام وترقيته ليعمل كجسر عبور للمستشعر المركزي الجديد
 var AdminErrorTracker = window.AdminErrorTracker || {
     log(context, error) {
         try {
-            const errLog = { 
-                context, 
-                msg: error.message || String(error), 
-                time: new Date().toLocaleString('ar-EG'),
-                stack: error.stack || 'No Stack Trace'
-            };
-            let logs = JSON.parse(localStorage.getItem('BoseSweets_Admin_ErrorLogs') || '[]');
-            logs.unshift(errLog);
-            if(logs.length > 50) logs.pop(); 
-            localStorage.setItem('BoseSweets_Admin_ErrorLogs', JSON.stringify(logs));
-            console.warn(`BoseSweets Admin Vault: Error intercepted in [${context}]. 🛡️`);
+            // 👑 التوجيه الفوري نحو الصندوق الأسود المركزي (BoseMonitor)
+            if (window.BoseMonitor) {
+                window.BoseMonitor.report(error, 'admin-core.js', null, null, context);
+            } else {
+                // الجدار الناري الاحتياطي في حال تأخر تحميل المستشعر
+                const errLog = { 
+                    context, 
+                    msg: error.message || String(error), 
+                    time: new Date().toLocaleString('ar-EG'),
+                    stack: error.stack || 'No Stack Trace'
+                };
+                let logs = JSON.parse(localStorage.getItem('BoseSweets_Admin_ErrorLogs') || '[]');
+                logs.unshift(errLog);
+                if(logs.length > 50) logs.pop(); 
+                localStorage.setItem('BoseSweets_Admin_ErrorLogs', JSON.stringify(logs));
+                console.warn(`BoseSweets Admin Vault: Error intercepted in [${context}]. 🛡️`);
+            }
         } catch(e) {}
     },
-    report(error, context) { this.log(context, error); } // توافق مع النسخ الجديدة
+    report(error, context) { this.log(context, error); } // توافق مع النسخ الجديدة والقديمة
 };
 window.AdminErrorTracker = AdminErrorTracker;
 
@@ -65,7 +72,8 @@ var StorageEngine = window.StorageEngine || {
                 tx.onerror = () => reject(tx.error);
             });
         } catch (e) { 
-            AdminErrorTracker.log('StorageEngine_Set', e); 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-core.js', null, null, 'StorageEngine.set');
+            else AdminErrorTracker.log('StorageEngine_Set', e); 
         }
     },
     async get(key) {
@@ -79,7 +87,8 @@ var StorageEngine = window.StorageEngine || {
                 request.onerror = () => resolve(null); 
             });
         } catch (e) { 
-            AdminErrorTracker.log('StorageEngine_Get', e); 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-core.js', null, null, 'StorageEngine.get');
+            else AdminErrorTracker.log('StorageEngine_Get', e); 
             return null; 
         }
     }
@@ -114,7 +123,10 @@ var OfflineStorageManager = window.OfflineStorageManager || {
                 tx.oncomplete = () => resolve();
                 tx.onerror = () => reject(tx.error);
             });
-        } catch (e) { AdminErrorTracker.log('OfflineVault_Enqueue', e); }
+        } catch (e) { 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-core.js', null, null, 'OfflineStorageManager.enqueuePayload');
+            else AdminErrorTracker.log('OfflineVault_Enqueue', e); 
+        }
     },
     async getAllPayloads() {
         try {
@@ -126,7 +138,10 @@ var OfflineStorageManager = window.OfflineStorageManager || {
                 request.onsuccess = () => resolve(request.result || []);
                 request.onerror = () => resolve([]);
             });
-        } catch (e) { return []; }
+        } catch (e) { 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-core.js', null, null, 'OfflineStorageManager.getAllPayloads');
+            return []; 
+        }
     },
     async removePayload(offlineId) {
         try {
@@ -138,7 +153,9 @@ var OfflineStorageManager = window.OfflineStorageManager || {
                 tx.oncomplete = () => resolve();
                 tx.onerror = () => reject(tx.error);
             });
-        } catch (e) {}
+        } catch (e) {
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-core.js', null, null, 'OfflineStorageManager.removePayload');
+        }
     }
 };
 window.OfflineStorageManager = OfflineStorageManager;
@@ -300,6 +317,7 @@ window.fetchDefaultCatalog = async function fetchDefaultCatalog() {
         const response = await fetch('data.json'); 
         return await response.json(); 
     } catch (error) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-core.js', null, null, 'fetchDefaultCatalog');
         console.warn("BoseSweets: Catalog fallback to internal memory."); 
         return [];
     }
@@ -372,7 +390,8 @@ window.setupRealtimeOrders = function setupRealtimeOrders() {
         }, 300); 
 
     }, error => {
-        AdminErrorTracker.log('RealtimeOrdersSync', error);
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-core.js', null, null, 'setupRealtimeOrders (Snapshot)');
+        else AdminErrorTracker.log('RealtimeOrdersSync', error);
         window.__ordersListenerActive = false; 
     });
 };
@@ -462,6 +481,7 @@ window.loadEngineMemory = async function loadEngineMemory() {
             throw new Error("قاعدة البيانات غير متصلة بالنطاق الشامل.");
         }
     } catch(err) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(err, 'admin-core.js', null, null, 'loadEngineMemory');
         console.warn("BoseSweets: جاري التحميل من الذاكرة الفولاذية البديلة", err);
         window.catalog = (await StorageEngine.get('boseSweets_catalog')) || JSON.parse(localStorage.getItem('bSweets_catalog')) || window.catalog; 
         window.globalOrders = (await StorageEngine.get('boseSweets_admin_orders')) || JSON.parse(localStorage.getItem('bSweets_orders')) || [];
@@ -522,7 +542,8 @@ window.saveEngineMemory = async function saveEngineMemory(type) {
         }
         
     } catch (e) { 
-        AdminErrorTracker.log('SaveEngineMemory', e);
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-core.js', null, null, 'saveEngineMemory');
+        else AdminErrorTracker.log('SaveEngineMemory', e);
         console.warn("BoseSweets Guard: حدث خلل أثناء توحيد الذاكرة الفولاذية.", e);
     }
 };
@@ -535,7 +556,8 @@ window.executeSafely = function(taskName, taskFunction) {
     try {
         if (typeof taskFunction === 'function') return taskFunction();
     } catch (error) {
-        AdminErrorTracker.log(taskName, error);
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-core.js', null, null, `executeSafely: ${taskName}`);
+        else AdminErrorTracker.log(taskName, error);
     }
 };
 
@@ -566,7 +588,8 @@ window.openAdminDashboardDirectly = function openAdminDashboardDirectly() {
         if (statusEl) statusEl.innerHTML = '<i data-lucide="cloud-lightning" class="w-3 h-3"></i> متصل بالسحابة';
         
     } catch (error) {
-        AdminErrorTracker.log('DashboardInit', error);
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-core.js', null, null, 'openAdminDashboardDirectly');
+        else AdminErrorTracker.log('DashboardInit', error);
     }
 };
 
@@ -578,6 +601,7 @@ window.logoutAdminSecurely = async function() {
         if(typeof window.auth !== 'undefined' && window.auth) await window.auth.signOut();
         window.location.href = 'index.html';
     } catch (e) {
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-core.js', null, null, 'logoutAdminSecurely');
         window.location.href = 'login.html';
     }
 };
@@ -663,7 +687,9 @@ window.compressAndUploadMultiImage = async function(e) {
                                 }
                                 
                             } catch (err) { 
-                                window.AdminErrorTracker.log('ImageUpload_Cloud', err);
+                                if(window.BoseMonitor) window.BoseMonitor.report(err, 'admin-core.js', null, null, 'compressAndUploadMultiImage (Cloud Upload)');
+                                else window.AdminErrorTracker.log('ImageUpload_Cloud', err);
+                                
                                 const offlineId = 'offline_img_' + Date.now() + Math.random().toString(36).substr(2, 5);
                                 if(typeof window.OfflineStorageManager !== 'undefined') {
                                     await window.OfflineStorageManager.enqueuePayload({ offlineId: offlineId, base64: base64Str });
@@ -706,7 +732,9 @@ window.compressAndUploadMultiImage = async function(e) {
         }
 
     } catch (masterError) {
-        window.AdminErrorTracker.log('MultiImageUpload_Master', masterError);
+        if(window.BoseMonitor) window.BoseMonitor.report(masterError, 'admin-core.js', null, null, 'compressAndUploadMultiImage (Master)');
+        else window.AdminErrorTracker.log('MultiImageUpload_Master', masterError);
+        
         const spinner = document.getElementById('uploading-spinner'); 
         if(spinner) spinner.classList.add('hidden');
         if(typeof window.showSystemToast === 'function') {
@@ -742,7 +770,8 @@ window.syncOfflineImages = async function syncOfflineImages() {
                 const data = await res.json();
                 if (data.secure_url) uploadedUrl = data.secure_url;
             } catch (e) { 
-                AdminErrorTracker.log('OfflineImageSync', e);
+                if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-core.js', null, null, 'syncOfflineImages (Individual Upload)');
+                else AdminErrorTracker.log('OfflineImageSync', e);
                 continue; 
             }
 
@@ -782,7 +811,8 @@ window.syncOfflineImages = async function syncOfflineImages() {
             }
         }
     } catch(e) {
-        AdminErrorTracker.log('OfflineSyncMaster', e);
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-core.js', null, null, 'syncOfflineImages (Master)');
+        else AdminErrorTracker.log('OfflineSyncMaster', e);
     }
 };
 
@@ -802,7 +832,12 @@ window.bootBoseSweetsEngine = function bootBoseSweetsEngine() {
     if(typeof window.auth !== 'undefined' && window.auth !== null) {
         window.auth.onAuthStateChanged(async user => {
             if (user) { 
-                try { await loadEngineMemory(); } catch(e) { AdminErrorTracker.log('BootMemoryLoad', e); }
+                try { 
+                    await loadEngineMemory(); 
+                } catch(e) { 
+                    if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-core.js', null, null, 'bootBoseSweetsEngine (Memory Load)');
+                    else AdminErrorTracker.log('BootMemoryLoad', e); 
+                }
                 openAdminDashboardDirectly();
                 syncOfflineImages(); 
             } else { 
@@ -810,7 +845,11 @@ window.bootBoseSweetsEngine = function bootBoseSweetsEngine() {
             }
         });
     } else {
-        loadEngineMemory().then(() => openAdminDashboardDirectly());
+        loadEngineMemory()
+            .then(() => openAdminDashboardDirectly())
+            .catch(e => {
+                if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-core.js', null, null, 'bootBoseSweetsEngine (Fallback Load)');
+            });
     }
 };
 
@@ -829,7 +868,8 @@ window.triggerSovereignSync = async function() {
         localStorage.setItem('BoseSweets_Local_Sync_Force', Date.now().toString());
         
     } catch (error) {
-        AdminErrorTracker.log('SovereignSyncTrigger', error);
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-core.js', null, null, 'triggerSovereignSync');
+        else AdminErrorTracker.log('SovereignSyncTrigger', error);
     }
 };
 

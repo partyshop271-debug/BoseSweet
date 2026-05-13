@@ -22,49 +22,154 @@
     <meta name="theme-color" content="#ffffff">
     
     <script>
-        window.onerror = function(message, source, lineno, colno, error) {
-            showErrorOnScreen("عطل برمجي أوقف العرض", message, source, lineno);
-        };
-        window.addEventListener('unhandledrejection', function(event) {
-            showErrorOnScreen("عطل في سحب بيانات المنتجات", event.reason);
-        });
+        /**
+         * 👑 BoseSweets Deep Monitor (Black Box Protocol) - V2.0 Advanced
+         * نظام الرصد العميق والصندوق الأسود - الإدارة الاستراتيجية لبراند حلويات بوسي
+         * التحديث: استخراج رقم السطر، نظام المزامنة المتأخرة، وتصنيف دقيق للأخطاء.
+         */
+        (function() {
+            if (window.BoseMonitor) return;
 
-        function showErrorOnScreen(type, msg, src, line) {
-            var div = document.createElement('div');
-            // تحسين التصميم ليكون عالي الوضوح وسهل القراءة للإدارة
-            div.style.cssText = 'position:fixed;top:0;left:0;width:100%;background:#ffffff;color:#1a1a1a;z-index:999999;padding:25px;font-family:sans-serif;direction:rtl;text-align:right;font-weight:bold;font-size:16px;border-bottom:6px solid #ff91a4;box-shadow:0 15px 50px rgba(0,0,0,0.3);box-sizing:border-box;max-height:80vh;overflow-y:auto;';
-            
-            var fileName = src ? src.split('/').pop() : 'غير محدد';
-            var fullDetails = "النوع: " + type + "\nالتفاصيل: " + msg + "\nالملف: " + fileName + "\nالسطر: " + line;
+            window.BoseMonitor = {
+                logQueue: [], // طابور انتظار للأخطاء التي تحدث قبل تحميل قاعدة البيانات
 
-            div.innerHTML = '<h3 style="margin:0 0 15px 0;color:#ff91a4;font-size:20px;border-bottom:2px solid #eee;padding-bottom:10px;">⚠️ رصد خلل سيادي: ' + type + '</h3>' +
-                            '<div style="background:#f9f9f9;padding:15px;border-radius:12px;border:1px solid #ddd;margin-bottom:15px;">' +
-                            '<p style="margin:0 0 10px 0;line-height:1.6;"><b style="color:#ff91a4;">التفاصيل:</b> <span style="display:block;margin-top:5px;color:#d32f2f;font-family:monospace;direction:ltr;text-align:left;">' + msg + '</span></p>' +
-                            (src ? '<p style="margin:0 0 10px 0;"><b style="color:#ff91a4;">الملف المسؤول:</b> ' + fileName + '</p>' : '') +
-                            (line ? '<p style="margin:0 0 0 0;"><b style="color:#ff91a4;">رقم السطر:</b> ' + line + '</p>' : '') +
-                            '</div>' +
-                            '<div style="display:flex;gap:10px;">' +
-                            '<button id="copy-error-btn" style="flex:1;padding:12px;background:#1a1a1a;color:#fff;border:none;font-weight:bold;border-radius:10px;cursor:pointer;">نسخ تفاصيل العطل</button>' +
-                            '<button onclick="this.parentElement.parentElement.remove()" style="flex:1;padding:12px;background:#ff91a4;color:#fff;border:none;font-weight:bold;border-radius:10px;cursor:pointer;">إغلاق التقرير</button>' +
-                            '</div>';
+                diagnose: function(errorMsg) {
+                    const msg = String(errorMsg).toLowerCase();
+                    if (msg.includes('export') || msg.includes('import')) return "فجوة استيراد (Modules): الملف يطلب وظيفة غير موجودة في الملف المصدر.";
+                    if (msg.includes('is not defined')) return "متغير مفقود (ReferenceError): محاولة استخدام عنصر أو دالة لم يتم تعريفها في هذا الملف.";
+                    if (msg.includes('null (reading') || msg.includes('undefined (reading')) return "انهيار الهيكل (DOM/Data): الكود يبحث عن عنصر في الواجهة تم حذفه، أو بيانات غير مكتملة من قاعدة البيانات.";
+                    if (msg.includes('network') || msg.includes('fetch')) return "عطل اتصالي (Network): انقطاع في الشبكة أو تأخر في استجابة قاعدة البيانات.";
+                    if (msg.includes('syntax')) return "خطأ إملائي برمجي (SyntaxError): قوس مفقود، أو صياغة كود غير صحيحة تمنع قراءة الملف.";
+                    if (msg.includes('quota') || msg.includes('storage')) return "تكدس بيانات (Storage): الذاكرة المحلية للمتصفح ممتلئة ولا يمكن حفظ المزيد.";
+                    return "خلل منطقي عميق: يتطلب مراجعة السطر البرمجي المذكور في التقرير.";
+                },
 
-            if (document.body) { document.body.appendChild(div); } 
-            else { window.addEventListener('DOMContentLoaded', function() { document.body.appendChild(div); }); }
+                parseStackTrace: function(stack) {
+                    if (!stack) return { file: 'غير معروف', line: 'غير معروف', col: 'غير معروف' };
+                    // محاولة استخراج الملف والسطر من الـ Stack Trace الاحترافي
+                    const lines = stack.split('\n');
+                    for (let i = 1; i < lines.length; i++) {
+                        const match = lines[i].match(/(.*):(\d+):(\d+)/);
+                        if (match) {
+                            return { file: match[1].split('/').pop(), line: match[2], col: match[3] };
+                        }
+                    }
+                    return { file: 'معقد التحليل', line: 'N/A', col: 'N/A' };
+                },
 
-            // تفعيل خاصية النسخ
-            setTimeout(function() {
-                var btn = document.getElementById('copy-error-btn');
-                if(btn) {
-                    btn.onclick = function() {
-                        navigator.clipboard.writeText(fullDetails).then(function() {
-                            btn.innerText = "تم النسخ بنجاح ✅";
-                            btn.style.background = "#4CAF50";
-                        });
-                    };
+                report: async function(error, sourceFile = null, lineNo = null, colNo = null, functionName = 'رصد تلقائي') {
+                    try {
+                        const errorMessage = error && error.message ? error.message : String(error);
+                        const stackTrace = error && error.stack ? error.stack : 'لا يوجد تتبع برمجي متاح';
+                        
+                        // استخراج تفاصيل المكان إذا لم تكن ممررة مباشرة
+                        const parsedStack = this.parseStackTrace(stackTrace);
+                        const finalFile = sourceFile || parsedStack.file;
+                        const finalLine = lineNo || parsedStack.line;
+                        
+                        console.warn(`%c[رصد سيادي حلويات بوسي]%c تم رصد خلل في ملف: ${finalFile} | السطر: ${finalLine}`, "color: #ff91a4; font-weight: bold; background: #1a1a1a; padding: 2px 6px; border-radius: 4px;", "color: inherit;");
+
+                        const reportData = {
+                            fileName: finalFile,
+                            lineNumber: finalLine,
+                            columnNumber: colNo || parsedStack.col,
+                            functionName: functionName,
+                            errorMessage: errorMessage,
+                            stackTrace: stackTrace,
+                            diagnosis: this.diagnose(errorMessage),
+                            timestamp: Date.now(),
+                            status: 'unresolved', // سيتم تغييرها من لوحة التحكم لاحقاً
+                            clientDevice: typeof navigator !== 'undefined' ? navigator.userAgent : 'غير معروف',
+                            url: window.location.href
+                        };
+
+                        this.saveToDatabase(reportData);
+
+                    } catch (e) {
+                        console.error("فشل نظام الرصد العميق في توثيق الخطأ:", e);
+                    }
+                },
+
+                saveToDatabase: async function(reportData) {
+                    const db = window.db || (typeof window.firebase !== 'undefined' && window.firebase.firestore ? window.firebase.firestore() : null);
+                    
+                    if (db) {
+                        try {
+                            // إضافة التوقيت الدقيق لقاعدة البيانات إذا كانت متاحة
+                            reportData.serverTime = window.firebase.firestore.FieldValue.serverTimestamp();
+                            await db.collection('system_logs').add(reportData);
+                            
+                            // مزامنة الطابور المتأخر إن وجد
+                            if (this.logQueue.length > 0) {
+                                this.syncQueueToDatabase(db);
+                            }
+                        } catch (dbError) {
+                            this.saveToLocalStorage(reportData);
+                        }
+                    } else {
+                        // قاعدة البيانات لم تحمل بعد (الإنترنت بطيء أو بداية التحميل)
+                        this.logQueue.push(reportData);
+                        this.saveToLocalStorage(reportData);
+                    }
+                },
+
+                syncQueueToDatabase: async function(db) {
+                    console.log("🛡️ صندوق بوسي الأسود: جاري مزامنة الأخطاء المحفوظة مؤقتاً...");
+                    while (this.logQueue.length > 0) {
+                        const item = this.logQueue.shift();
+                        try {
+                            await db.collection('system_logs').add(item);
+                        } catch (e) {
+                            this.logQueue.unshift(item); // إعادته للطابور في حال الفشل
+                            break;
+                        }
+                    }
+                },
+
+                saveToLocalStorage: function(reportData) {
+                    try {
+                        let localLogs = JSON.parse(localStorage.getItem('bose_blackbox_logs') || '[]');
+                        // الاحتفاظ بآخر 50 خطأ فقط لتجنب امتلاء الذاكرة
+                        if (localLogs.length > 50) localLogs.shift();
+                        localLogs.push(reportData);
+                        localStorage.setItem('bose_blackbox_logs', JSON.stringify(localLogs));
+                    } catch(err) {
+                        // صمت عند امتلاء الذاكرة
+                    }
+                },
+
+                initGlobalWatch: function() {
+                    // اصطياد الأخطاء البرمجية المباشرة
+                    window.addEventListener('error', (event) => {
+                        let fName = event.filename ? event.filename.split('/').pop() : 'ملف الواجهة الرئيسي';
+                        this.report(event.error || event.message, fName, event.lineno, event.colno, 'رصد تلقائي (Global Error)');
+                    });
+
+                    // اصطياد أخطاء العمليات المتزامنة (مثل الفشل في جلب بيانات أو وعود لم تكتمل)
+                    window.addEventListener('unhandledrejection', (event) => {
+                        this.report(event.reason || 'عملية خلفية تم رفضها ولم تعالج', 'مزامنة أو قاعدة بيانات', null, null, 'عملية شبكية (Promise Rejection)');
+                    });
+                    
+                    console.log("%c🛡️ مستشعر حلويات بوسي المركزي: يعمل بكفاءة وجاهز لرفع التقارير.", "color: #28a745; font-weight: bold; font-size: 12px;");
                 }
-            }, 100);
-        }
+            };
 
+            window.BoseMonitor.initGlobalWatch();
+
+            // فحص دوري لمحاولة المزامنة إذا تم تحميل فايربيس لاحقاً
+            const syncInterval = setInterval(() => {
+                if (window.db || (typeof window.firebase !== 'undefined' && window.firebase.firestore)) {
+                    const activeDb = window.db || window.firebase.firestore();
+                    if (window.BoseMonitor.logQueue.length > 0) {
+                        window.BoseMonitor.syncQueueToDatabase(activeDb);
+                    }
+                    clearInterval(syncInterval);
+                }
+            }, 3000);
+
+        })();
+
+        // نظام التقاط تثبيت التطبيق الأصلي
         window.deferredInstallPrompt = null;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
@@ -645,3 +750,4 @@
     </script>
 </body>
 </html>
+

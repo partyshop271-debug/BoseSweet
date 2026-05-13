@@ -8,6 +8,7 @@
  * - نظام المزامنة العكسية (Reverse Sync Broadcast) يعمل اللحظة.
  * - معالجة متوازية (Parallel Processing) بخوارزمية التراجع المطرد (Exponential Backoff + Jitter).
  * - حماية مطلقة ضد تجميد المتصفح أثناء غياب الاتصال بالشبكة أو تلف الذاكرة المؤقتة.
+ * 🛡️ التحديث الأمني الجديد: تم زراعة مستشعر BoseMonitor لمراقبة كافة مسارات الاتصال والذاكرة الفولاذية.
  */
 
 const firebaseConfig = {
@@ -22,23 +23,28 @@ const firebaseConfig = {
 
 // 🛡️ التهيئة الآمنة المطلقة للنظام السحابي
 const initializeBoseSweetsEngine = () => {
-    const fb = typeof window !== 'undefined' && window.firebase ? window.firebase : (typeof firebase !== 'undefined' ? firebase : null);
-    
-    if (!fb) {
-        console.error("قرار إداري أمني: مكتبة Firebase الأساسية لم يتم تحميلها، يرجى مراجعة الخوادم فوراً لضمان استقرار علامة حلويات بوسي.");
+    try {
+        const fb = typeof window !== 'undefined' && window.firebase ? window.firebase : (typeof firebase !== 'undefined' ? firebase : null);
+        
+        if (!fb) {
+            console.error("قرار إداري أمني: مكتبة Firebase الأساسية لم يتم تحميلها، يرجى مراجعة الخوادم فوراً لضمان استقرار علامة حلويات بوسي.");
+            return null;
+        }
+
+        if (!fb.apps.length) {
+            fb.initializeApp(firebaseConfig);
+        }
+
+        // ربط المتغيرات بنطاق المتصفح لضمان عدم فقدان الاتصال والتوافق مع باقي أجزاء الموقع
+        window.firebase = fb;
+        window.db = fb.firestore();
+        window.auth = fb.auth();
+        
+        return { db: window.db, auth: window.auth };
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'firebase-config.js', null, null, 'initializeBoseSweetsEngine');
         return null;
     }
-
-    if (!fb.apps.length) {
-        fb.initializeApp(firebaseConfig);
-    }
-
-    // ربط المتغيرات بنطاق المتصفح لضمان عدم فقدان الاتصال والتوافق مع باقي أجزاء الموقع
-    window.firebase = fb;
-    window.db = fb.firestore();
-    window.auth = fb.auth();
-    
-    return { db: window.db, auth: window.auth };
 };
 
 const engineCores = initializeBoseSweetsEngine();
@@ -51,6 +57,7 @@ const auth = engineCores ? engineCores.auth : null;
  */
 if (db) {
     db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
+        if(window.BoseMonitor) window.BoseMonitor.report(err, 'firebase-config.js', null, null, 'db.enablePersistence');
         if (err.code === 'failed-precondition') {
             console.warn("تنويه هندسي: تعدد التبويبات يمنع وضع الأوفلاين المزدوج، سيتم تفعيله للتبويب الرئيسي فقط حفاظاً على استقرار البيانات.");
         } else if (err.code === 'unimplemented') {
@@ -87,10 +94,12 @@ const ReverseSyncEngine = {
                     if (!response.ok) throw new Error("Webhook Server Error");
                     console.log(`BoseSweets 👑: مسار الخطاف العكسي للطلب #${String(orderData.id).substring(0,6)} تم بنجاح.`);
                 }).catch(e => {
+                    if(window.BoseMonitor) window.BoseMonitor.report(e, 'firebase-config.js', null, null, 'ReverseSyncEngine.triggerOrderWebhook (Fetch)');
                     console.warn('تنويه هندسي: تم تأمين العملية عبر المسار البديل لحين استقرار الشبكة، تأخير غير مؤثر في بروتوكول الخطاف العكسي.', e.message);
                 });
             }
         } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'firebase-config.js', null, null, 'ReverseSyncEngine.triggerOrderWebhook (Master)');
             console.warn("BoseSweets 👑: واجه محرك المزامنة العكسية عائقاً خلفياً وتم تجاوزه بنجاح.", error);
         }
     },
@@ -106,10 +115,12 @@ const ReverseSyncEngine = {
                 }, { merge: true }).then(() => {
                     console.log("BoseSweets 👑: إشارة المزامنة الشاملة تم بثها بنجاح لكافة العملاء.");
                 }).catch(e => {
+                    if(window.BoseMonitor) window.BoseMonitor.report(e, 'firebase-config.js', null, null, 'ReverseSyncEngine.broadcastGlobalUpdate (Set)');
                     console.warn('تنويه هندسي: تأخير طفيف في بث إشارة المزامنة بسبب حالة الشبكة.', e.message);
                 });
             }
         } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'firebase-config.js', null, null, 'ReverseSyncEngine.broadcastGlobalUpdate (Master)');
             console.warn("BoseSweets 👑: فشل مؤقت في بث إشارة المزامنة الشاملة، سيتم إعادة المحاولة آلياً.", error);
         }
     }
@@ -133,6 +144,7 @@ const CloudQueueDB = {
         try {
             return JSON.parse(localStorage.getItem('BoseSweets_Emergency_Queue') || '[]');
         } catch (e) {
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'firebase-config.js', null, null, 'CloudQueueDB.getFallbackQueue');
             console.error("BoseSweets System Error: عطل في قراءة طابور الطوارئ، تم إعادة الضبط للحماية.");
             return [];
         }
@@ -143,6 +155,7 @@ const CloudQueueDB = {
         try {
             localStorage.setItem('BoseSweets_Emergency_Queue', JSON.stringify(queue));
         } catch (e) {
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'firebase-config.js', null, null, 'CloudQueueDB.setFallbackQueue');
             console.error("BoseSweets System Error: مساحة التخزين المؤقتة ممتلئة، سيتم الاعتماد على الذاكرة الحية فقط.");
         }
     },
@@ -163,6 +176,7 @@ const CloudQueueDB = {
                 request.onsuccess = () => resolve(request.result);
                 request.onerror = () => resolve(null); // تجاوز آمن حال الرفض
             } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'firebase-config.js', null, null, 'CloudQueueDB.init');
                 resolve(null);
             }
         });
@@ -192,6 +206,7 @@ const CloudQueueDB = {
                 tx.onerror = () => resolve(false);
             });
         } catch (e) { 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'firebase-config.js', null, null, 'CloudQueueDB.enqueue');
             return false;
         }
     },
@@ -215,6 +230,7 @@ const CloudQueueDB = {
                 request.onerror = () => resolve(results); 
             });
         } catch (e) { 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'firebase-config.js', null, null, 'CloudQueueDB.getAll');
             return []; 
         }
     },
@@ -240,6 +256,7 @@ const CloudQueueDB = {
                 tx.onerror = () => resolve(false);
             });
         } catch (e) { 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'firebase-config.js', null, null, 'CloudQueueDB.remove');
             return false;
         }
     }
@@ -277,6 +294,8 @@ const NetworkEngine = {
             
             return true;
         } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'firebase-config.js', null, null, `NetworkEngine.safeWrite (${collectionName})`);
+            
             if (error.message && error.message.includes("أمني")) {
                 return false; // رفض العملية فوراً في حال الاختراق الأمني
             }
@@ -300,6 +319,8 @@ const NetworkEngine = {
             
             return true;
         } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'firebase-config.js', null, null, `NetworkEngine.safeDelete (${collectionName})`);
+            
             console.warn(`تنويه هندسي: تم تحويل أمر الحذف في [${collectionName}] للطابور الخلفي.`);
             await CloudQueueDB.enqueue({ type: 'delete', collectionName, docId });
             return true;
@@ -345,6 +366,8 @@ const NetworkEngine = {
                         return true; 
                         
                     } catch (e) {
+                        if(window.BoseMonitor && retries === maxRetries - 1) window.BoseMonitor.report(e, 'firebase-config.js', null, null, `NetworkEngine.processQueue (Retry Failed: ${op.collectionName})`);
+                        
                         retries++;
                         if (retries < maxRetries) {
                             const jitter = Math.random() * 1000;
@@ -376,6 +399,7 @@ const NetworkEngine = {
                 console.log(`BoseSweets Engine 👑: تمت مزامنة ${processedCount} عملية خلفية بامتياز.`);
             }
         } catch (e) {
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'firebase-config.js', null, null, 'NetworkEngine.processQueue (Master)');
             console.error("BoseSweets Queue Error:", e);
         }
     }

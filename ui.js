@@ -1,8 +1,8 @@
 /**
- * 👑 BoseSweets UI Master Hub (V22.1 - Sovereign Integrated)
+ * 👑 BoseSweets UI Master Hub (V22.5 - Sovereign Monitor Edition)
  * الموزع السيادي لملفات الواجهة - حلويات بوسي
- * هذا الملف يعمل كنقطة تجميع مركزية تضمن قراءة الموقع لجميع الملفات المقسمة
- * مع تفعيل التحصين البرمجي لضمان التوافق الكامل مع كافة ملفات الموقع.
+ * يعمل كنقطة تجميع مركزية تضمن قراءة الموقع لجميع الملفات المقسمة.
+ * 🛡️ التحديث الأمني: زراعة مستشعر BoseMonitor لمراقبة نزاهة الربط العالمي وتكامل الواجهات.
  */
 
 // 1. استدعاء وتصدير وظائف المحرك الأساسي
@@ -41,11 +41,26 @@ import * as Builders from './ui-builders.js';
 import * as Interactions from './ui-interactions.js';
 import * as Cart from './cart.js';
 
-// تأكيد تسجيل جاهزية الواجهة في الذاكرة المركزية وتفعيل الربط الشامل
+/**
+ * بروتوكول الربط الشامل (Global Sovereign Binding)
+ * هذا الجزء هو المسؤول عن جعل كافة الدوال متاحة في نطاق الصفحة (Scope).
+ * تم تغليفه بالمستشعر لضمان رصد أي فشل في عملية دمج المكونات.
+ */
 if (typeof window !== 'undefined') {
-    // دمج كافة الوظائف المستوردة في كائن window لضمان الوصول إليها من أي مكان بالموقع
-    Object.assign(window, Core, Views, Builders, Interactions, Cart);
-    
-    window.BoseUI_Architecture = 'Modular_V22.1_Sovereign';
-    console.log("👑 حلويات بوسي: تم تفعيل البروتوكول السيادي وربط كافة الوظائف بجذر المتصفح بنجاح.");
+    try {
+        // دمج كافة الوظائف المستوردة في كائن window لضمان الوصول إليها من أي مكان بالموقع
+        Object.assign(window, Core, Views, Builders, Interactions, Cart);
+        
+        window.BoseUI_Architecture = 'Modular_V22.5_Sovereign_Monitor';
+        
+        // إشعار المستشعر بنجاح بناء الهيكل وتوافره للإدارة والعملاء
+        console.log("👑 حلويات بوسي: تم تفعيل البروتوكول السيادي وربط كافة الوظائف بجذر المتصفح بنجاح.");
+        
+    } catch (error) {
+        // التبليغ الفوري للمستشعر في حال حدوث تصادم برمج أو فشل في الحقن
+        if(window.BoseMonitor) {
+            window.BoseMonitor.report(error, 'ui.js', null, null, 'Global Binding Failure - Master Hub Injection');
+        }
+        console.error("BoseSweets Critical Error: فشل ربط وظائف الواجهة السيادية.", error);
+    }
 }

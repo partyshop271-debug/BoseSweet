@@ -14,6 +14,111 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
+    <!-- 👑 BoseSweets Deep Monitor (Black Box Protocol) - Admin Edition -->
+    <script>
+        (function() {
+            if (window.BoseMonitor) return;
+
+            window.BoseMonitor = {
+                logQueue: [],
+                diagnose: function(errorMsg) {
+                    const msg = String(errorMsg).toLowerCase();
+                    if (msg.includes('export') || msg.includes('import')) return "فجوة استيراد (Modules): الملف يطلب وظيفة غير موجودة في المصدر.";
+                    if (msg.includes('is not defined')) return "متغير مفقود (ReferenceError): محاولة استخدام دالة لم يتم تعريفها.";
+                    if (msg.includes('null (reading') || msg.includes('undefined (reading')) return "انهيار الهيكل (DOM): الكود يبحث عن عنصر في الواجهة تم حذفه.";
+                    if (msg.includes('network') || msg.includes('fetch')) return "عطل اتصالي (Network): انقطاع في الشبكة أو تأخر استجابة سحابية.";
+                    if (msg.includes('syntax')) return "خطأ إملائي برمجي (SyntaxError).";
+                    return "خلل منطقي عميق: يتطلب مراجعة السطر البرمجي المذكور.";
+                },
+                parseStackTrace: function(stack) {
+                    if (!stack) return { file: 'غير معروف', line: 'غير معروف', col: 'غير معروف' };
+                    const lines = stack.split('\n');
+                    for (let i = 1; i < lines.length; i++) {
+                        const match = lines[i].match(/(.*):(\d+):(\d+)/);
+                        if (match) return { file: match[1].split('/').pop(), line: match[2], col: match[3] };
+                    }
+                    return { file: 'معقد التحليل', line: 'N/A', col: 'N/A' };
+                },
+                report: async function(error, sourceFile = 'admin.html', lineNo = null, colNo = null, functionName = 'رصد تلقائي') {
+                    try {
+                        const errorMessage = error && error.message ? error.message : String(error);
+                        const stackTrace = error && error.stack ? error.stack : 'لا يوجد تتبع برمجي متاح';
+                        const parsedStack = this.parseStackTrace(stackTrace);
+                        const finalFile = sourceFile || parsedStack.file;
+                        
+                        console.warn(`%c[رصد سيادي حلويات بوسي - الإدارة]%c تم رصد خلل في: ${finalFile} | دالة: ${functionName}`, "color: #ff91a4; font-weight: bold; background: #1a1a1a; padding: 2px 6px; border-radius: 4px;", "color: inherit;");
+
+                        const reportData = {
+                            fileName: finalFile,
+                            functionName: functionName,
+                            errorMessage: errorMessage,
+                            stackTrace: stackTrace,
+                            diagnosis: this.diagnose(errorMessage),
+                            timestamp: Date.now(),
+                            status: 'unresolved',
+                            clientDevice: typeof navigator !== 'undefined' ? navigator.userAgent : 'غير معروف',
+                            url: window.location.href,
+                            dashboard: true
+                        };
+
+                        this.saveToDatabase(reportData);
+                    } catch (e) {
+                        console.error("فشل نظام الرصد العميق:", e);
+                    }
+                },
+                saveToDatabase: async function(reportData) {
+                    const db = window.db || (typeof window.firebase !== 'undefined' && window.firebase.firestore ? window.firebase.firestore() : null);
+                    if (db) {
+                        try {
+                            reportData.serverTime = window.firebase.firestore.FieldValue.serverTimestamp();
+                            await db.collection('system_logs').add(reportData);
+                            if (this.logQueue.length > 0) this.syncQueueToDatabase(db);
+                        } catch (dbError) {
+                            this.saveToLocalStorage(reportData);
+                        }
+                    } else {
+                        this.logQueue.push(reportData);
+                        this.saveToLocalStorage(reportData);
+                    }
+                },
+                syncQueueToDatabase: async function(db) {
+                    while (this.logQueue.length > 0) {
+                        const item = this.logQueue.shift();
+                        try { await db.collection('system_logs').add(item); } 
+                        catch (e) { this.logQueue.unshift(item); break; }
+                    }
+                },
+                saveToLocalStorage: function(reportData) {
+                    try {
+                        let localLogs = JSON.parse(localStorage.getItem('bose_blackbox_logs') || '[]');
+                        if (localLogs.length > 50) localLogs.shift();
+                        localLogs.push(reportData);
+                        localStorage.setItem('bose_blackbox_logs', JSON.stringify(localLogs));
+                    } catch(err) {}
+                },
+                initGlobalWatch: function() {
+                    window.addEventListener('error', (event) => {
+                        let fName = event.filename ? event.filename.split('/').pop() : 'admin.html';
+                        this.report(event.error || event.message, fName, null, null, 'رصد تلقائي (Global Error)');
+                    });
+                    window.addEventListener('unhandledrejection', (event) => {
+                        this.report(event.reason || 'عملية خلفية تم رفضها ولم تعالج', 'admin.html', null, null, 'عملية شبكية (Promise Rejection)');
+                    });
+                }
+            };
+
+            window.BoseMonitor.initGlobalWatch();
+
+            const syncInterval = setInterval(() => {
+                if (window.db || (typeof window.firebase !== 'undefined' && window.firebase.firestore)) {
+                    const activeDb = window.db || window.firebase.firestore();
+                    if (window.BoseMonitor.logQueue.length > 0) window.BoseMonitor.syncQueueToDatabase(activeDb);
+                    clearInterval(syncInterval);
+                }
+            }, 3000);
+        })();
+    </script>
+
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="admin-style.css">
     
@@ -770,7 +875,7 @@
                         <span class="text-sm font-black text-white flex items-center gap-3"><i data-lucide="tags" class="w-5 h-5 text-emerald-400"></i> هندسة الأحجام والأسعار (ديناميكي)</span>
                         <div class="flex gap-2">
                             <button type="button" class="text-xs bg-indigo-500/10 text-indigo-400 px-4 py-2.5 rounded-lg font-black hover:bg-indigo-500 hover:text-white transition-colors flex items-center gap-2" title="مولد حقول البيانات المتغيرة (مستقبلي)"><i data-lucide="plus-square" class="w-4 h-4"></i> حقل مخصص</button>
-                            <button type="button" onclick="addNewSizeRow()" class="text-xs bg-[#ff91a4]/10 text-[#ff91a4] px-4 py-2.5 rounded-lg font-black hover:bg-[#ff91a4] hover:text-[#03050a] transition-colors flex items-center gap-2 shadow-sm"><i data-lucide="plus" class="w-4 h-4"></i> إضافة حجم جديد</button>
+                            <button type="button" onclick="window.addNewSizeRow()" class="text-xs bg-[#ff91a4]/10 text-[#ff91a4] px-4 py-2.5 rounded-lg font-black hover:bg-[#ff91a4] hover:text-[#03050a] transition-colors flex items-center gap-2 shadow-sm"><i data-lucide="plus" class="w-4 h-4"></i> إضافة حجم جديد</button>
                         </div>
                     </div>
                     <div id="size-price-inputs" class="space-y-4">
@@ -901,195 +1006,241 @@
 
     <script>
         // دالة تبديل القائمة الجانبية (للموبايل)
-        function toggleSovereignSidebar() {
-            const sidebar = document.getElementById('admin-sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            if(sidebar.classList.contains('translate-x-full')) {
-                sidebar.classList.remove('translate-x-full');
-                overlay.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('translate-x-full');
-                overlay.classList.add('hidden');
+        window.toggleSovereignSidebar = function() {
+            try {
+                const sidebar = document.getElementById('admin-sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                if(sidebar.classList.contains('translate-x-full')) {
+                    sidebar.classList.remove('translate-x-full');
+                    overlay.classList.remove('hidden');
+                } else {
+                    sidebar.classList.add('translate-x-full');
+                    overlay.classList.add('hidden');
+                }
+            } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin.html', null, null, 'toggleSovereignSidebar');
             }
-        }
+        };
 
         // محرك الأقسام السيادي المتوافق كلياً مع نظام بوسي
         const originalSwitchAdminTab = window.switchAdminTab;
         window.showAdminTab = function(tabId) {
-            const titles = {
-                'overview': 'نظرة عامة على المتجر',
-                'orders': 'مركز إدارة الطلبات الحية',
-                'catalog': 'إدارة المنيو والتسعير',
-                'structure': 'إدارة هيكل المتجر (بدون كود)',
-                'cake-builder': 'قواعد التورت الملكية',
-                'gallery': 'عدسة بوسي (سابقة الأعمال)',
-                'marketing': 'العروض والنصائح الذهبية',
-                'social': 'المولد الديناميكي للروابط',
-                'reviews': 'سجل المراجعات المعتمد',
-                'homepage': 'الهوية والألوان',
-                'shipping': 'نطاقات الشحن والتوصيل',
-                'security': 'الخزنة السيادية والأمان'
-            };
-            const titleEl = document.getElementById('current-tab-title');
-            if(titleEl) titleEl.innerText = titles[tabId] || 'مركز القيادة';
+            try {
+                const titles = {
+                    'overview': 'نظرة عامة على المتجر',
+                    'orders': 'مركز إدارة الطلبات الحية',
+                    'catalog': 'إدارة المنيو والتسعير',
+                    'structure': 'إدارة هيكل المتجر (بدون كود)',
+                    'cake-builder': 'قواعد التورت الملكية',
+                    'gallery': 'عدسة بوسي (سابقة الأعمال)',
+                    'marketing': 'العروض والنصائح الذهبية',
+                    'social': 'المولد الديناميكي للروابط',
+                    'reviews': 'سجل المراجعات المعتمد',
+                    'homepage': 'الهوية والألوان',
+                    'shipping': 'نطاقات الشحن والتوصيل',
+                    'security': 'الخزنة السيادية والأمان'
+                };
+                const titleEl = document.getElementById('current-tab-title');
+                if(titleEl) titleEl.innerText = titles[tabId] || 'مركز القيادة';
 
-            document.querySelectorAll('.sidebar-link').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.id === `btn-${tabId}`) btn.classList.add('active');
-            });
+                document.querySelectorAll('.sidebar-link').forEach(btn => {
+                    btn.classList.remove('active');
+                    if(btn.id === `btn-${tabId}`) btn.classList.add('active');
+                });
 
-            document.querySelectorAll('.section-view').forEach(view => {
-                view.classList.remove('active');
-            });
-            const targetView = document.getElementById(`admin-${tabId}`);
-            if(targetView) targetView.classList.add('active');
+                document.querySelectorAll('.section-view').forEach(view => {
+                    view.classList.remove('active');
+                });
+                const targetView = document.getElementById(`admin-${tabId}`);
+                if(targetView) targetView.classList.add('active');
 
-            if(window.innerWidth < 1024) {
-                const sidebar = document.getElementById('admin-sidebar');
-                if(!sidebar.classList.contains('translate-x-full')) toggleSovereignSidebar();
+                if(window.innerWidth < 1024) {
+                    const sidebar = document.getElementById('admin-sidebar');
+                    if(sidebar && !sidebar.classList.contains('translate-x-full')) window.toggleSovereignSidebar();
+                }
+                
+                if(typeof originalSwitchAdminTab === 'function') {
+                    try { originalSwitchAdminTab(tabId); } catch(e) {}
+                }
+                
+                const scrollArea = document.getElementById('main-scroll-area');
+                if(scrollArea) scrollArea.scrollTop = 0;
+                
+                if(window.lucide) lucide.createIcons();
+            } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin.html', null, null, 'showAdminTab');
             }
-            
-            if(typeof originalSwitchAdminTab === 'function') {
-                try { originalSwitchAdminTab(tabId); } catch(e) {}
-            }
-            
-            const scrollArea = document.getElementById('main-scroll-area');
-            if(scrollArea) scrollArea.scrollTop = 0;
-            
-            if(window.lucide) lucide.createIcons();
         };
 
         window.switchAdminTab = window.showAdminTab;
 
         // دالة الحفظ الشامل المريحة (Toast الصامت)
         window.triggerMasterSave = function() {
-            if(typeof saveStoreSettings === 'function') saveStoreSettings();
-            if(typeof window.saveGlobalSettingsFromDashboard === 'function') window.saveGlobalSettingsFromDashboard();
-            
-            const toast = document.getElementById('system-toast');
-            const msg = document.getElementById('toast-message');
-            if(toast && msg) {
-                msg.textContent = "تم تنفيذ القرار المهني وحفظ كافة التكوينات السيادية بنجاح 👑";
-                toast.classList.remove('hidden');
-                toast.classList.add('flex');
-                setTimeout(() => { toast.classList.add('hidden'); toast.classList.remove('flex'); }, 4000);
+            try {
+                if(typeof saveStoreSettings === 'function') saveStoreSettings();
+                if(typeof window.saveGlobalSettingsFromDashboard === 'function') window.saveGlobalSettingsFromDashboard();
+                
+                const toast = document.getElementById('system-toast');
+                const msg = document.getElementById('toast-message');
+                if(toast && msg) {
+                    msg.textContent = "تم تنفيذ القرار المهني وحفظ كافة التكوينات السيادية بنجاح 👑";
+                    toast.classList.remove('hidden');
+                    toast.classList.add('flex');
+                    setTimeout(() => { toast.classList.add('hidden'); toast.classList.remove('flex'); }, 4000);
+                }
+            } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin.html', null, null, 'triggerMasterSave');
             }
         };
 
         // المساعدات الإدارية
         window.addSystemTip = function() {
-            document.getElementById('new-tip-title').value = '';
-            document.getElementById('new-tip-content').value = '';
-            alert('تم اعتماد النصيحة في السجل النظامي (جاهزة للربط مع Firebase)');
+            try {
+                document.getElementById('new-tip-title').value = '';
+                document.getElementById('new-tip-content').value = '';
+                alert('تم اعتماد النصيحة في السجل النظامي (جاهزة للربط مع Firebase)');
+            } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin.html', null, null, 'addSystemTip');
+            }
         };
 
         window.addSystemReview = function() {
-            document.getElementById('new-review-name').value = '';
-            document.getElementById('new-review-text').value = '';
-            alert('تم توثيق تجربة العميل بنجاح (جاهزة للربط مع Firebase)');
+            try {
+                document.getElementById('new-review-name').value = '';
+                document.getElementById('new-review-text').value = '';
+                alert('تم توثيق تجربة العميل بنجاح (جاهزة للربط مع Firebase)');
+            } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin.html', null, null, 'addSystemReview');
+            }
         };
 
         window.setBrandColor = function(hex) {
-            const hexInput = document.getElementById('sys-brand-color');
-            if(hexInput) {
-                hexInput.value = hex;
-                hexInput.dispatchEvent(new Event('change'));
+            try {
+                const hexInput = document.getElementById('sys-brand-color');
+                if(hexInput) {
+                    hexInput.value = hex;
+                    hexInput.dispatchEvent(new Event('change'));
+                }
+            } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin.html', null, null, 'setBrandColor');
             }
         };
 
         // إضافة صفوف الأحجام الديناميكية
         window.addNewSizeRow = function() {
-            const container = document.getElementById('size-price-inputs');
-            if(!container) return;
-            
-            const row = document.createElement('div');
-            row.className = 'flex gap-4 items-center bg-[#0b111d] p-4 rounded-xl border border-white/5 mt-3 shadow-inner';
-            row.innerHTML = `
-                <div class="flex-1">
-                    <input type="text" placeholder="الحجم (مثال: عائلي)" class="size-name admin-input rounded-lg py-3.5 text-xs bg-[#03050a] w-full">
-                </div>
-                <div class="flex-1">
-                    <input type="number" placeholder="السعر (ج.م)" class="size-val admin-input rounded-lg py-3.5 font-black text-[#ff91a4] text-center bg-[#03050a] w-full">
-                </div>
-                <button type="button" onclick="this.parentElement.remove()" class="p-3 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500 hover:text-white active:scale-90 flex-shrink-0 transition-colors">
-                    <i data-lucide="trash-2" class="w-5 h-5"></i>
-                </button>
-            `;
-            container.appendChild(row);
-            if(window.lucide) window.lucide.createIcons();
+            try {
+                const container = document.getElementById('size-price-inputs');
+                if(!container) return;
+                
+                const row = document.createElement('div');
+                row.className = 'flex gap-4 items-center bg-[#0b111d] p-4 rounded-xl border border-white/5 mt-3 shadow-inner';
+                row.innerHTML = `
+                    <div class="flex-1">
+                        <input type="text" placeholder="الحجم (مثال: عائلي)" class="size-name admin-input rounded-lg py-3.5 text-xs bg-[#03050a] w-full">
+                    </div>
+                    <div class="flex-1">
+                        <input type="number" placeholder="السعر (ج.م)" class="size-val admin-input rounded-lg py-3.5 font-black text-[#ff91a4] text-center bg-[#03050a] w-full">
+                    </div>
+                    <button type="button" onclick="this.parentElement.remove()" class="p-3 bg-red-500/10 text-red-400 rounded-lg hover:bg-red-500 hover:text-white active:scale-90 flex-shrink-0 transition-colors">
+                        <i data-lucide="trash-2" class="w-5 h-5"></i>
+                    </button>
+                `;
+                container.appendChild(row);
+                if(window.lucide) window.lucide.createIcons();
+            } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin.html', null, null, 'addNewSizeRow');
+            }
         };
 
-        document.getElementById('edit-prod-instock')?.addEventListener('change', function(e) {
-            const label = document.getElementById('instock-label-text');
-            if(e.target.checked) { label.innerHTML = 'متوفر بالمنيو'; } else { label.innerHTML = 'غير متوفر مؤقتاً'; }
-        });
+        try {
+            document.getElementById('edit-prod-instock')?.addEventListener('change', function(e) {
+                const label = document.getElementById('instock-label-text');
+                if(label) {
+                    if(e.target.checked) { label.innerHTML = 'متوفر بالمنيو'; } else { label.innerHTML = 'غير متوفر مؤقتاً'; }
+                }
+            });
+        } catch(e) {
+             if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin.html', null, null, 'EventListener(edit-prod-instock)');
+        }
 
         // محرك عرض الطلبات للموبايل
         const originalRenderOrders = window.renderAdminOrders;
         if(typeof originalRenderOrders === 'function') {
             window.renderAdminOrders = function(ordersArray) {
-                originalRenderOrders(ordersArray); 
-                const mobileContainer = document.getElementById('mobile-orders-container');
-                if(!mobileContainer) return;
-                
-                if (ordersArray.length === 0) {
-                    mobileContainer.innerHTML = `<div class="text-center text-slate-500 py-12 text-sm font-bold border border-dashed border-white/5 rounded-2xl bg-[#0b111d]">لا توجد طلبات لعرضها في هذا النطاق</div>`;
-                    return;
-                }
-
-                mobileContainer.innerHTML = ordersArray.map(o => {
-                    let statusColor = o.status === 'completed' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 
-                                      o.status === 'processing' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' :
-                                      o.status === 'cancelled' ? 'text-red-400 bg-red-500/10 border-red-500/20' : 
-                                      'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
-                    let statusText = o.status === 'completed' ? 'تم التسليم' : o.status === 'processing' ? 'قيد التجهيز' : o.status === 'cancelled' ? 'ملغي' : 'مراجعة';
+                try {
+                    originalRenderOrders(ordersArray); 
+                    const mobileContainer = document.getElementById('mobile-orders-container');
+                    if(!mobileContainer) return;
                     
-                    return `
-                    <div onclick="openOrderModal('${o.id}')" class="bg-[#0b111d] border border-white/5 rounded-[1.5rem] p-6 flex flex-col gap-5 active:scale-95 transition-transform cursor-pointer shadow-lg">
-                        <div class="flex justify-between items-center border-b border-white/5 pb-4">
-                            <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">#${o.id.substring(3, 9)}</span>
-                            <span class="text-[10px] font-black px-4 py-1.5 rounded-lg border ${statusColor}">${statusText}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-base font-black text-white truncate max-w-[60%]">${o.name}</span>
-                            <span class="text-lg font-black text-[#ff91a4]">${o.total} ج.م</span>
-                        </div>
-                        <div class="text-xs text-slate-500 flex justify-between pt-2">
-                            <span class="flex items-center gap-2 font-bold"><i data-lucide="map-pin" class="w-4 h-4 text-emerald-500/70"></i> ${o.area}</span>
-                            <span class="flex items-center gap-2 font-bold"><i data-lucide="clock" class="w-4 h-4 text-slate-400/70"></i> ${o.date.split(',')[0]}</span>
-                        </div>
-                    </div>`;
-                }).join('');
-                
-                if(window.lucide) window.lucide.createIcons();
+                    if (ordersArray.length === 0) {
+                        mobileContainer.innerHTML = `<div class="text-center text-slate-500 py-12 text-sm font-bold border border-dashed border-white/5 rounded-2xl bg-[#0b111d]">لا توجد طلبات لعرضها في هذا النطاق</div>`;
+                        return;
+                    }
+
+                    mobileContainer.innerHTML = ordersArray.map(o => {
+                        let statusColor = o.status === 'completed' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : 
+                                          o.status === 'processing' ? 'text-amber-400 bg-amber-500/10 border-amber-500/20' :
+                                          o.status === 'cancelled' ? 'text-red-400 bg-red-500/10 border-red-500/20' : 
+                                          'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
+                        let statusText = o.status === 'completed' ? 'تم التسليم' : o.status === 'processing' ? 'قيد التجهيز' : o.status === 'cancelled' ? 'ملغي' : 'مراجعة';
+                        
+                        return `
+                        <div onclick="openOrderModal('${o.id}')" class="bg-[#0b111d] border border-white/5 rounded-[1.5rem] p-6 flex flex-col gap-5 active:scale-95 transition-transform cursor-pointer shadow-lg">
+                            <div class="flex justify-between items-center border-b border-white/5 pb-4">
+                                <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">#${o.id.substring(3, 9)}</span>
+                                <span class="text-[10px] font-black px-4 py-1.5 rounded-lg border ${statusColor}">${statusText}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-base font-black text-white truncate max-w-[60%]">${o.name}</span>
+                                <span class="text-lg font-black text-[#ff91a4]">${o.total} ج.م</span>
+                            </div>
+                            <div class="text-xs text-slate-500 flex justify-between pt-2">
+                                <span class="flex items-center gap-2 font-bold"><i data-lucide="map-pin" class="w-4 h-4 text-emerald-500/70"></i> ${o.area}</span>
+                                <span class="flex items-center gap-2 font-bold"><i data-lucide="clock" class="w-4 h-4 text-slate-400/70"></i> ${o.date.split(',')[0]}</span>
+                            </div>
+                        </div>`;
+                    }).join('');
+                    
+                    if(window.lucide) window.lucide.createIcons();
+                } catch (error) {
+                    if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin.html', null, null, 'renderAdminOrders(MobileOverride)');
+                }
             };
         }
 
         // إغلاق أي Accordion آخر عند فتح واحد جديد لترتيب الشاشة (اختياري)
-        document.querySelectorAll('details.boosy-accordion').forEach((details) => {
-            details.addEventListener('toggle', (e) => {
-                if (details.open) {
-                    document.querySelectorAll('details.boosy-accordion').forEach((otherDetails) => {
-                        if (otherDetails !== details && otherDetails.open) {
-                            otherDetails.removeAttribute('open');
-                        }
-                    });
-                }
+        try {
+            document.querySelectorAll('details.boosy-accordion').forEach((details) => {
+                details.addEventListener('toggle', (e) => {
+                    if (details.open) {
+                        document.querySelectorAll('details.boosy-accordion').forEach((otherDetails) => {
+                            if (otherDetails !== details && otherDetails.open) {
+                                otherDetails.removeAttribute('open');
+                            }
+                        });
+                    }
+                });
             });
-        });
+        } catch (e) {
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin.html', null, null, 'AccordionListeners');
+        }
 
         // تشغيل محرك البحث اللحظي الصامت
-        document.getElementById('global-quick-search')?.addEventListener('input', function(e) {
-            const term = e.target.value.toLowerCase();
-            if(term.length > 2) {
-                // توجيه ذكي حسب الكلمة للقسم المناسب
-                if(term.includes('منتج') || term.includes('تورت')) showAdminTab('catalog');
-                if(term.includes('طلب')) showAdminTab('orders');
-                if(term.includes('لون') || term.includes('خط')) showAdminTab('homepage');
-                if(term.includes('باسورد')) showAdminTab('security');
-                if(term.includes('رابط') || term.includes('فيس')) showAdminTab('social');
-            }
-        });
+        try {
+            document.getElementById('global-quick-search')?.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase();
+                if(term.length > 2) {
+                    // توجيه ذكي حسب الكلمة للقسم المناسب
+                    if(term.includes('منتج') || term.includes('تورت')) window.showAdminTab('catalog');
+                    if(term.includes('طلب')) window.showAdminTab('orders');
+                    if(term.includes('لون') || term.includes('خط')) window.showAdminTab('homepage');
+                    if(term.includes('باسورد')) window.showAdminTab('security');
+                    if(term.includes('رابط') || term.includes('فيس')) window.showAdminTab('social');
+                }
+            });
+        } catch(e) {
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin.html', null, null, 'QuickSearchListener');
+        }
     </script>
 
     <!-- منظومة المحركات السيادية لمركز القيادة (Sovereign Engine Connections) -->
@@ -1103,12 +1254,16 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // بروتوكول الإقلاع السيادي: لا نطلب البيانات إلا بعد بناء الواجهة
-            if(typeof bootBoseSweetsEngine === 'function') {
-                bootBoseSweetsEngine();
+            try {
+                // بروتوكول الإقلاع السيادي: لا نطلب البيانات إلا بعد بناء الواجهة
+                if(typeof window.bootBoseSweetsEngine === 'function') {
+                    window.bootBoseSweetsEngine();
+                }
+                if(window.lucide) window.lucide.createIcons();
+                window.showAdminTab('overview');
+            } catch (error) {
+                if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin.html', null, null, 'DOMContentLoaded(Final)');
             }
-            if(window.lucide) lucide.createIcons();
-            showAdminTab('overview');
         });
     </script>
 </body>

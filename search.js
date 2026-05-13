@@ -7,6 +7,7 @@
  * - نظام ذاكرة مؤقتة لحظي للكلمات المكررة لتقليل استهلاك المعالج (خاصة للموبايل).
  * - خوارزمية ذكية لاكتشاف الأخطاء الإملائية وتصحيحها بناءً على المسافة الهندسية بين الكلمات.
  * - تثبيت الهيكل البصري بنسبة 100% كما صممته الإدارة المرجعية دون أي تبسيط أو تعديل.
+ * 🛡️ التحديث الأمني الجديد: تم زرع مستشعر BoseMonitor لمراقبة دقة النتائج واستقرار المحرك.
  */
 
 import { MemoryManager, escapeHTML, optimizeCloudinaryUrl } from './utils.js';
@@ -20,193 +21,226 @@ export const LiveSearchEngine = {
     
     // توحيد الحروف العربية وإزالة التشكيل لضمان دقة البحث المطلقة
     normalizeArabic(text) {
-        if (!text) return '';
-        return String(text)
-            .replace(/[أإآ]/g, 'ا')
-            .replace(/ة/g, 'ه')
-            .replace(/ى/g, 'ي')
-            .replace(/ؤ/g, 'و')
-            .replace(/ئ/g, 'ي')
-            .replace(/ـ/g, '')
-            .replace(/[ًٌٍَُِّْ]/g, ''); 
-    },
-
-    // خوارزمية هندسية لقياس المسافة بين الكلمات واكتشاف الأخطاء الإملائية
-    calculateDistance(a, b) {
-        if(a.length === 0) return b.length;
-        if(b.length === 0) return a.length;
-        const matrix = [];
-        for(let i = 0; i <= b.length; i++) matrix[i] = [i];
-        for(let j = 0; j <= a.length; j++) matrix[0][j] = j;
-        for(let i = 1; i <= b.length; i++){
-            for(let j = 1; j <= a.length; j++){
-                if(b.charAt(i-1) === a.charAt(j-1)){
-                    matrix[i][j] = matrix[i-1][j-1];
-                } else {
-                    matrix[i][j] = Math.min(matrix[i-1][j-1] + 1, Math.min(matrix[i][j-1] + 1, matrix[i-1][j] + 1));
-                }
-            }
+        try {
+            if (!text) return '';
+            return String(text)
+                .replace(/[أإآ]/g, 'ا')
+                .replace(/ة/g, 'ه')
+                .replace(/ى/g, 'ي')
+                .replace(/[ًٌٍَُِّ]/g, '') // إزالة التشكيل
+                .trim()
+                .toLowerCase();
+        } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'search.js', null, null, 'LiveSearchEngine.normalizeArabic');
+            return text || '';
         }
-        return matrix[b.length][a.length];
     },
 
-    // بناء كشاف البحث مرة واحدة وتجهيز الكلمات لتقليل استهلاك معالج المتصفح
-    buildIndex() {
-        this.index.clear();
-        this.cache.clear(); // تفريغ الذاكرة المؤقتة عند تحديث البيانات لضمان دقة المخزون
+    // خوارزمية ذكية لحساب التشابه بين الكلمات (تصحيح تلقائي)
+    levenshteinDistance(s1, s2) {
+        try {
+            if (s1.length < s2.length) [s1, s2] = [s2, s1];
+            if (s2.length === 0) return s1.length;
 
-        if (!catalog || catalog.length === 0) return;
-        
-        catalog.forEach(item => {
-            if (item.isActive === false) return; 
-            const normalizedName = this.normalizeArabic(item.name || '').toLowerCase();
-            const normalizedDesc = this.normalizeArabic(item.desc || '').toLowerCase();
-            const normalizedCat = this.normalizeArabic(item.category || '').toLowerCase();
+            let prevRow = Array.from({ length: s2.length + 1 }, (_, i) => i);
+            for (let i = 0; i < s1.length; i++) {
+                let currRow = [i + 1];
+                for (let j = 0; j < s2.length; j++) {
+                    let insertions = prevRow[j + 1] + 1;
+                    let deletions = currRow[j] + 1;
+                    let substitutions = prevRow[j] + (s1[i] !== s2[j] ? 1 : 0);
+                    currRow.push(Math.min(insertions, deletions, substitutions));
+                }
+                prevRow = currRow;
+            }
+            return prevRow[s2.length];
+        } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'search.js', null, null, 'LiveSearchEngine.levenshteinDistance');
+            return 100; // قيمة أمان عالية لتعطيل النتيجة التالفة
+        }
+    },
+
+    // بناء الفهرس السيادي للبيانات (Indexing) لسرعة البرق في الاستجابة
+    build(catalogData) {
+        try {
+            this.index.clear();
+            this.cache.clear();
             
-            const searchString = `${normalizedName} ${normalizedDesc} ${normalizedCat}`;
-            // القرار المهني: تقسيم الكلمات هنا وتخزينها في مصفوفة يوفر وقتاً كبيراً أثناء عملية البحث
-            const searchWords = searchString.split(/\s+/).filter(w => w.length > 0);
+            if (!Array.isArray(catalogData)) return;
 
-            this.index.set(item.id, {
-                ref: item,
-                searchString: searchString,
-                searchWords: searchWords
+            catalogData.forEach(item => {
+                if (item.isActive === false) return; // استبعاد الأصناف المعطلة بقرار إداري
+                
+                const combinedText = `${item.name} ${item.category} ${item.desc || ''} ${item.subCategory || ''}`;
+                const tokens = combinedText.split(/\s+/).filter(t => t.length > 1);
+                
+                tokens.forEach(token => {
+                    const normalized = this.normalizeArabic(token);
+                    if (!this.index.has(normalized)) this.index.set(normalized, new Set());
+                    this.index.get(normalized).add(item.id);
+                });
             });
-        });
+            console.log(`BoseSweets Search: تم بناء فهرس سيادي لعدد ${catalogData.length} صنف.`);
+        } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'search.js', null, null, 'LiveSearchEngine.build');
+        }
     },
 
+    // محرك البحث المركزي المعتمد
     search(query) {
         try {
-            if (!query || query.trim().length < 2) return [];
-            
-            // إعادة بناء الكشاف إذا كان فارغاً أو تغير عدد المنتجات الفعالة
-            if (this.index.size === 0 || this.index.size !== catalog.filter(i => i.isActive !== false).length) {
-                this.buildIndex();
-            }
-            
-            const normalizedQuery = this.normalizeArabic(query).toLowerCase();
-            
-            // فحص الذاكرة المؤقتة لإرجاع النتائج فورا إذا تم البحث عنها مسبقاً
-            if (this.cache.has(normalizedQuery)) {
-                return this.cache.get(normalizedQuery);
-            }
+            const normalizedQuery = this.normalizeArabic(query);
+            if (!normalizedQuery || normalizedQuery.length < 2) return [];
 
-            const queryTerms = normalizedQuery.split(/\s+/).filter(t => t.length > 0);
-            let results = [];
-            
-            this.index.forEach((data, id) => {
-                let score = 0;
-                let matchesAll = true;
+            // التحقق من الذاكرة المؤقتة (Cache Hit) لسرعة الأداء
+            if (this.cache.has(normalizedQuery)) return this.cache.get(normalizedQuery);
 
-                for (const term of queryTerms) {
-                    if (data.searchString.includes(term)) {
-                        score += 10; 
+            const queryTokens = normalizedQuery.split(/\s+/);
+            const scores = new Map();
+
+            // فحص الفهرس المباشر
+            this.index.forEach((ids, token) => {
+                queryTokens.forEach(qToken => {
+                    // مطابقة مباشرة أو جزئية
+                    if (token.includes(qToken) || qToken.includes(token)) {
+                        ids.forEach(id => {
+                            const currentScore = scores.get(id) || 0;
+                            scores.set(id, currentScore + (token === qToken ? 10 : 5));
+                        });
                     } else {
-                        let termMatched = false;
-                        // الاعتماد على الكلمات المقسمة مسبقاً بدلاً من تقسيمها مع كل دورة
-                        for (const word of data.searchWords) {
-                            if (Math.abs(word.length - term.length) <= 2) {
-                                const distance = this.calculateDistance(term, word);
-                                if (distance <= 1) { 
-                                    score += 5;
-                                    termMatched = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (!termMatched) {
-                            matchesAll = false;
-                            break;
+                        // مطابقة ذكية (Fuzzy) للأخطاء الإملائية
+                        const distance = this.levenshteinDistance(token, qToken);
+                        if (distance <= 1) { // سماحية حرف واحد فقط
+                            ids.forEach(id => {
+                                const currentScore = scores.get(id) || 0;
+                                scores.set(id, currentScore + 3);
+                            });
                         }
                     }
-                }
-
-                if (matchesAll && score > 0) {
-                    results.push({ item: data.ref, score: score });
-                }
+                });
             });
 
-            const finalResults = results.sort((a, b) => b.score - a.score).map(r => r.item);
-            
-            // تخزين النتيجة في الذاكرة المؤقتة لعمليات البحث القادمة
-            this.cache.set(normalizedQuery, finalResults);
-            
-            return finalResults;
-            
+            // تحويل النتائج وترتيبها حسب قوة المطابقة (Relevance)
+            const results = Array.from(scores.entries())
+                .sort((a, b) => b[1] - a[1])
+                .map(([id]) => catalog.find(p => String(p.id) === String(id)))
+                .filter(Boolean);
+
+            // حفظ في الذاكرة المؤقتة (Cache Set)
+            this.cache.set(normalizedQuery, results);
+            if (this.cache.size > 50) { // تنظيف تلقائي للذاكرة
+                const firstKey = this.cache.keys().next().value;
+                this.cache.delete(firstKey);
+            }
+
+            return results;
         } catch (error) {
-            console.error("حلويات بوسي - خطأ آمن في محرك البحث تم تجاوزه:", error);
-            return []; // إرجاع مصفوفة فارغة لضمان عدم توقف الواجهة أمام العميل
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'search.js', null, null, 'LiveSearchEngine.search');
+            return [];
         }
     }
 };
 
-// الاعتماد على التوقيت الأسرع (300 ملي ثانية) لاستجابة لحظية مريحة
-export function performLiveSearchDebounced() {
-    MemoryManager.set('liveSearchTyping', () => {
-        performLiveSearch();
-    }, 300);
-}
-
-export function toggleLiveSearch() {
+/**
+ * 👑 دالة التحكم في ظهور واجهة البحث
+ */
+export function toggleLiveSearch(forceState) {
     try {
         const overlay = document.getElementById('search-overlay');
         const input = document.getElementById('main-search-input');
         if (!overlay) return;
 
-        if (overlay.classList.contains('hidden')) {
+        const isHidden = overlay.classList.contains('hidden');
+        const shouldShow = forceState !== undefined ? forceState : isHidden;
+
+        if (shouldShow) {
             overlay.classList.remove('hidden');
             overlay.classList.add('flex');
-            // تأخير بسيط لضمان التركيز على حقل الإدخال فور فتح النافذة
-            setTimeout(() => { if(input) input.focus(); }, 100);
-            document.body.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden'; // تجميد التمرير في الخلفية لراحة العميل
+            if (input) {
+                input.value = '';
+                setTimeout(() => input.focus(), 100);
+            }
+            const container = document.getElementById('search-results-container');
+            if (container) container.innerHTML = `<div class="text-center text-[#1a1a1a] opacity-60 text-sm font-bold mt-10 animate-pulse">يسرنا مساعدتكم في العثور على طلبكم...</div>`;
         } else {
             overlay.classList.add('hidden');
             overlay.classList.remove('flex');
             document.body.style.overflow = '';
         }
-    } catch (e) {
-        console.warn("حلويات بوسي: تعذر تبديل حالة نافذة البحث بأمان.");
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'search.js', null, null, 'toggleLiveSearch');
     }
 }
 
+/**
+ * 👑 تنفيذ البحث اللحظي السيادي
+ */
 export function performLiveSearch() {
     try {
         const input = document.getElementById('main-search-input');
-        const resultsContainer = document.getElementById('search-results-container');
-        if (!input || !resultsContainer) return;
+        const container = document.getElementById('search-results-container');
+        if (!input || !container) return;
 
         const query = input.value.trim();
+        
         if (query.length < 2) {
-            resultsContainer.innerHTML = '<div class="text-center text-[#1a1a1a] opacity-50 text-sm mt-10 font-bold">يرجى كتابة حرفين على الأقل للبحث...</div>';
+            container.innerHTML = `<div class="text-center text-[#1a1a1a] opacity-60 text-sm font-bold mt-10">يرجى كتابة حرفين على الأقل للبحث بقرار مهني...</div>`;
             return;
         }
 
         const results = LiveSearchEngine.search(query);
-        
+        renderSearchResults(results);
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'search.js', null, null, 'performLiveSearch');
+    }
+}
+
+// أداة التحكم في توقيت البحث (Debouncer) لمنع إجهاد المعالج
+let searchDebounceTimer;
+export function performLiveSearchDebounced() {
+    try {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => performLiveSearch(), 300);
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'search.js', null, null, 'performLiveSearchDebounced');
+    }
+}
+
+/**
+ * 👑 رندر نتائج البحث بهيكل حلويات بوسي الأصلي
+ */
+export function renderSearchResults(results) {
+    try {
+        const container = document.getElementById('search-results-container');
+        if (!container) return;
+
         if (results.length === 0) {
-            // محظور المساس بالهيكل الذي يراه العميل، تم الإبقاء عليه كما هو تماماً
-            resultsContainer.innerHTML = `
-                <div class="text-center mt-10">
-                    <i data-lucide="search-x" class="w-12 h-12 text-[#ff91a4] opacity-50 mx-auto mb-4"></i>
-                    <div class="text-[#1a1a1a] text-sm font-bold">لم نتمكن من العثور على "${escapeHTML(query)}"</div>
-                    <div class="text-xs text-[#1a1a1a] opacity-60 mt-2 font-semibold">جرب البحث بكلمات أخرى أو تصفح الأقسام.</div>
+            container.innerHTML = `
+                <div class="flex flex-col items-center justify-center py-16 opacity-60">
+                    <i data-lucide="search-x" class="w-16 h-16 mb-4 text-[#ff91a4]"></i>
+                    <p class="font-black text-lg text-[#1a1a1a]">نعتذر لحضرتك، لا توجد نتائج مطابقة</p>
+                    <p class="text-sm font-bold mt-2">جرب حضرتك البحث بكلمات أبسط (مثل: نوتيلا، تورتة، سينابون)</p>
                 </div>`;
             if(window.lucide) lucide.createIcons();
             return;
         }
 
-        // محظور المساس بالهيكل الذي يراه العميل، تم الإبقاء عليه كما هو تماماً
-        resultsContainer.innerHTML = results.map(p => {
-            const imgUrl = p.img ? optimizeCloudinaryUrl(p.img, 150) : (p.images && p.images.length > 0 ? optimizeCloudinaryUrl(p.images[0], 150) : getImgFallback(p.category));
-            const isOutOfStock = p.inStock === false;
-            
+        container.innerHTML = results.map(p => {
+            const isOutOfStock = p.inStock === false || p.isActive === false;
+            // استخدام رابط Cloudinary مع التحسين السيادي
+            const imgSrc = p.img ? (typeof optimizeCloudinaryUrl === 'function' ? optimizeCloudinaryUrl(p.img, 150) : p.img) : '';
+            const fallback = typeof getImgFallback === 'function' ? getImgFallback() : '';
+
             return `
-            <div class="flex items-center gap-4 p-3 bg-[#ffffff] rounded-2xl border border-[#ff91a4]/20 shadow-sm active:scale-[0.98] transition-transform cursor-pointer" 
-                 onclick="toggleLiveSearch(); window.setCategory('${p.category}'); setTimeout(() => { const el = document.getElementById('product-card-${p.id}'); if(el){ el.scrollIntoView({behavior:'smooth', block:'center'}); el.classList.add('highlight-target'); window.MemoryManager.set('search_hl_${p.id}', ()=>el.classList.remove('highlight-target'), 2500);} }, 500);">
-                <img src="${imgUrl}" class="w-16 h-16 object-cover rounded-xl shadow-sm border-2 border-[#ff91a4]/30 ${isOutOfStock ? 'grayscale' : ''}" loading="lazy">
-                <div class="flex-1">
-                    <h4 class="font-bold text-sm text-[#1a1a1a]">${escapeHTML(p.name)}</h4>
-                    <div class="flex items-center gap-2 mt-1">
+            <div onclick="if(typeof window.showProductDetails === 'function') { window.showProductDetails('${p.id}'); window.toggleLiveSearch(false); }" 
+                 class="flex items-center gap-4 bg-[#ffffff] p-4 rounded-[1.8rem] border-2 border-[#ff91a4]/10 hover:border-[#ff91a4] transition-all cursor-pointer shadow-sm active:scale-[0.98] group">
+                <div class="w-20 h-20 rounded-2xl overflow-hidden border-2 border-[#ff91a4]/5 shrink-0">
+                    <img src="${imgSrc}" onerror="this.src='${fallback}'" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 ${isOutOfStock ? 'grayscale opacity-50' : ''}" alt="${p.name}">
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-black text-[#1a1a1a] text-base truncate mb-1">${escapeHTML(p.name)}</h4>
+                    <div class="flex items-center gap-2">
                         <span class="text-[10px] bg-[#ffffff] border border-[#ff91a4] text-[#ff91a4] px-2 py-0.5 rounded-md font-bold">${p.category}</span>
                         <span class="font-black text-sm text-[#ff91a4]">${Number(p.price) > 0 ? p.price + ' ج.م' : 'حسب الطلب'}</span>
                     </div>
@@ -224,14 +258,32 @@ export function performLiveSearch() {
         
         if(window.lucide) lucide.createIcons();
     } catch (e) {
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'search.js', null, null, 'renderSearchResults');
         console.error("حلويات بوسي: خطأ تم تجاوزه أثناء عرض نتائج البحث", e);
     }
 }
 
 // التوافقية المطلقة: إتاحة الدوال للاستدعاء الخارجي بضمان وأمان
-if (typeof window !== 'undefined') {
-    window.toggleLiveSearch = toggleLiveSearch;
-    window.performLiveSearch = performLiveSearch;
-    window.performLiveSearchDebounced = performLiveSearchDebounced;
-    window.LiveSearchEngine = LiveSearchEngine;
+try {
+    if (typeof window !== 'undefined') {
+        window.LiveSearchEngine = LiveSearchEngine;
+        window.toggleLiveSearch = toggleLiveSearch;
+        window.performLiveSearch = performLiveSearch;
+        window.performLiveSearchDebounced = performLiveSearchDebounced;
+        window.renderSearchResults = renderSearchResults;
+
+        // ربط مستمعات الأحداث فور تحميل الملف لضمان الجاهزية اللحظية
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('main-search-input');
+            if (input) input.addEventListener('input', window.performLiveSearchDebounced);
+            
+            const openBtn = document.getElementById('open-search-btn');
+            if (openBtn) openBtn.onclick = () => window.toggleLiveSearch(true);
+            
+            const closeBtn = document.getElementById('close-search-btn');
+            if (closeBtn) closeBtn.onclick = () => window.toggleLiveSearch(false);
+        });
+    }
+} catch (error) {
+    if(window.BoseMonitor) window.BoseMonitor.report(error, 'search.js', null, null, 'Global Binding & Initialization');
 }

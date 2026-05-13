@@ -1,39 +1,55 @@
 /**
- * 👑 المحرك المساعد والتقنيات السيادية (V26.0 - Sovereign Iron-Clad Edition)
+ * 👑 BoseSweets Helper Engine & Sovereign Utils (V26.5 - Sovereign Monitor Edition)
  * الإدارة المرجعية: حلويات بوسي
- * يتضمن: تفويض الأحداث المحكم، المزامنة الذكية المتقدمة، التحليل السلوكي الصامت، وتأكيد الهوية البصرية.
- * * الترقيات الحالية:
- * - معالجة التضارب البرمجي الجسيم ودمج النسخ لضمان استقرار العمليات.
- * - إتاحة الدوال على المستوى الشامل (Global Window) لضمان عدم تعطل واجهات العميل.
- * - تفعيل نظام الرصد الصامت لحماية تجربة العميل وإبلاغ الإدارة فوراً بأي خلل تقني.
- * - تطبيق حاسم وصارم للألوان المعتمدة (البامبي والأبيض) في الإشعارات السيادية.
+ * يتضمن: تفويض الأحداث، المزامنة الذكية، التحليل السلوكي، وتأكيد الهوية البصرية.
+ * 🛡️ التحديث الأمني: زراعة مستشعر BoseMonitor لمراقبة نزاهة العمليات العصبية للموقع.
  */
 
+/**
+ * 👑 مدير الذاكرة والعمليات المؤجلة (Memory & Lifecycle Manager)
+ * تم تحصينه لضمان عدم حدوث تسريب في الذاكرة أثناء التنقل السريع.
+ */
 export const MemoryManager = {
     timers: {},
     set(key, callback, delay) {
-        if (this.timers[key]) clearTimeout(this.timers[key]);
-        this.timers[key] = setTimeout(() => {
-            try {
-                callback();
-            } catch (e) {
-                console.error(`BoseSweets Engine: خطأ معزول في مدير الذاكرة للعملية (${key}):`, e);
-            }
-            delete this.timers[key];
-        }, delay);
+        try {
+            if (this.timers[key]) clearTimeout(this.timers[key]);
+            this.timers[key] = setTimeout(() => {
+                try {
+                    callback();
+                } catch (e) {
+                    if(window.BoseMonitor) window.BoseMonitor.report(e, 'utils.js', null, null, `MemoryManager.exec (${key})`);
+                    console.error(`BoseSweets Engine: خطأ معزول في مدير الذاكرة للعملية (${key}):`, e);
+                }
+                delete this.timers[key];
+            }, delay);
+        } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, 'MemoryManager.set');
+        }
     },
     clear(key) {
-        if (this.timers[key]) clearTimeout(this.timers[key]);
-        delete this.timers[key];
+        try {
+            if (this.timers[key]) clearTimeout(this.timers[key]);
+            delete this.timers[key];
+        } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, 'MemoryManager.clear');
+        }
     },
     flush() {
-        for (let key in this.timers) {
-            clearTimeout(this.timers[key]);
-            delete this.timers[key];
+        try {
+            for (let key in this.timers) {
+                clearTimeout(this.timers[key]);
+                delete this.timers[key];
+            }
+        } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, 'MemoryManager.flush');
         }
     }
 };
 
+/**
+ * محول الألوان الحسابي لضمان دقة الهوية البصرية
+ */
 export function hexToMathHSL(hex) {
     try {
         if (!hex || typeof hex !== 'string') return 340;
@@ -53,36 +69,71 @@ export function hexToMathHSL(hex) {
         else h = (r - g) / delta + 4;
         h = Math.round(h * 60); if (h < 0) h += 360;
         return isNaN(h) ? 340 : h;
-    } catch(e) { return 340; }
+    } catch(e) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'utils.js', null, null, 'hexToMathHSL');
+        return 340; 
+    }
 }
 
+/**
+ * تطهير النصوص لضمان أمن الواجهة (XSS Protection)
+ */
 export function escapeHTML(str) {
-    if (!str || typeof str !== 'string') return '';
-    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+    try {
+        if (!str || typeof str !== 'string') return '';
+        return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, 'escapeHTML');
+        return '';
+    }
 }
 
 export function generateUniqueID() { 
-    return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); 
+    try {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); 
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, 'generateUniqueID');
+        return 'ID_' + Math.random().toString(36).substr(2, 9);
+    }
 }
 
+/**
+ * معالج صور Cloudinary لضمان سرعة التحميل واستهلاك أقل للبيانات
+ */
 export function optimizeCloudinaryUrl(url) {
-    if (!url || typeof url !== 'string' || !url.includes('cloudinary.com')) return url;
-    if (url.includes('q_auto') || url.includes('f_auto')) return url; 
-    return url.replace('/upload/', '/upload/q_auto,f_auto,w_800/');
+    try {
+        if (!url || typeof url !== 'string' || !url.includes('cloudinary.com')) return url;
+        if (url.includes('q_auto') || url.includes('f_auto')) return url; 
+        return url.replace('/upload/', '/upload/q_auto,f_auto,w_800/');
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, 'optimizeCloudinaryUrl');
+        return url;
+    }
 }
 
 export function generateSecureOrderId() {
-    const timestamp = Date.now().toString(36).toUpperCase();
-    const cryptoRandom = Math.random().toString(36).substring(2, 6).toUpperCase();
-    return `BS-${timestamp}-${cryptoRandom}`;
+    try {
+        const timestamp = Date.now().toString(36).toUpperCase();
+        const cryptoRandom = Math.random().toString(36).substring(2, 6).toUpperCase();
+        return `BS-${timestamp}-${cryptoRandom}`;
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, 'generateSecureOrderId');
+        return `BS-ERR-${Date.now()}`;
+    }
 }
 
+/**
+ * 👑 الإشعارات السيادية (Sovereign Toast System)
+ * تم تحصينها ببروتوكول الألوان المعتمد لعلامة حلويات بوسي.
+ */
 export function showSystemToast(message, type = 'info') {
     try {
         const toast = document.getElementById('system-toast');
         if(!toast) return;
         const msgEl = document.getElementById('toast-message');
         const iconEl = document.getElementById('toast-icon');
+        if(!msgEl || !iconEl) return;
+
         msgEl.innerText = message;
         
         let bgColor = 'bg-[#ffffff] text-[#ff91a4] border-2 border-[#ff91a4]';
@@ -100,47 +151,65 @@ export function showSystemToast(message, type = 'info') {
         iconEl.setAttribute('data-lucide', type === 'error' ? 'alert-triangle' : (type === 'success' ? 'check-circle' : 'info'));
         iconEl.style.color = iconColor;
         
-        if(window.lucide) lucide.createIcons();
+        if(window.lucide) window.lucide.createIcons();
         
         MemoryManager.set('toast_timer', () => {
-            if (toast) {
-                toast.classList.replace('flex', 'hidden'); 
-                toast.classList.remove('animate-fade-in');
+            const currentToast = document.getElementById('system-toast');
+            if (currentToast) {
+                currentToast.classList.replace('flex', 'hidden'); 
+                currentToast.classList.remove('animate-fade-in');
             }
         }, 4000);
     } catch (error) {
-        console.warn("BoseSweets: نظام الإشعارات غير متوفر في الواجهة الحالية.");
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, 'showSystemToast');
+        console.warn("BoseSweets: نظام الإشعارات غير متوفر حالياً.");
     }
 }
 
+/**
+ * ضاغط الصور البرمجي لضمان تقليل حجم الطلبات المخصصة
+ */
 export async function compressImageClientSide(file) {
     return new Promise((resolve, reject) => {
-        if (!file) return reject("لم يتم تقديم أي ملف للضغط.");
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                const MAX_WIDTH = 400; const MAX_HEIGHT = 400;
-                let width = img.width; let height = img.height;
-                if (width > height) { 
-                    if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } 
-                } else { 
-                    if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } 
-                }
-                canvas.width = width; canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                resolve(canvas.toDataURL('image/jpeg', 0.8));
+        try {
+            if (!file) return reject("لم يتم تقديم أي ملف للضغط.");
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 400; const MAX_HEIGHT = 400;
+                        let width = img.width; let height = img.height;
+                        if (width > height) { 
+                            if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; } 
+                        } else { 
+                            if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; } 
+                        }
+                        canvas.width = width; canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', 0.8));
+                    } catch (canvasErr) {
+                        if(window.BoseMonitor) window.BoseMonitor.report(canvasErr, 'utils.js', null, null, 'compressImage - Canvas Logic');
+                        reject(canvasErr);
+                    }
+                };
+                img.onerror = () => reject("فشل تحميل الصورة في محرك الضغط.");
             };
-            img.onerror = () => reject("فشل تحميل الصورة في محرك الضغط.");
-        };
-        reader.onerror = () => reject("فشل قراءة الملف.");
+            reader.onerror = () => reject("فشل قراءة الملف.");
+        } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, 'compressImageClientSide');
+            reject(error);
+        }
     });
 }
 
+/**
+ * 👑 التحليل السلوكي الصامت (Behavioral Analytics)
+ */
 export const BehavioralAnalytics = {
     trackCategoryClick(categoryName) {
         try {
@@ -148,47 +217,60 @@ export const BehavioralAnalytics = {
             prefs[categoryName] = (prefs[categoryName] || 0) + 1;
             localStorage.setItem('boseSweets_behavior', JSON.stringify(prefs));
         } catch(e) {
-            console.warn("BoseSweets Analytics: تعذر تحديث السجل السلوكي بشكل مؤقت.");
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'utils.js', null, null, 'Analytics.trackCategoryClick');
+            console.warn("BoseSweets Analytics: تعذر تحديث السجل السلوكي.");
         }
     },
     getTopPreferences() {
         try {
             let prefs = JSON.parse(localStorage.getItem('boseSweets_behavior')) || {};
             return Object.keys(prefs).sort((a, b) => prefs[b] - prefs[a]);
-        } catch(e) { return []; }
+        } catch(e) { 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'utils.js', null, null, 'Analytics.getTopPreferences');
+            return []; 
+        }
     }
 };
 
+/**
+ * 👑 محرك الشبكة المتقدم (Advanced Network Engine)
+ * تم تدعيمه بالمستشعر لمراقبة نزاهة المزامنة السحابية.
+ */
 export const AdvancedNetworkEngine = {
     async syncWithRetry(dbStore, dataPayload, maxRetries = 5, currentRetry = 0) {
-        if (!navigator.onLine) {
-            this.saveToOfflineQueue(dbStore, dataPayload);
-            this.scheduleRetry(dbStore, dataPayload, maxRetries, currentRetry);
-            return;
-        }
         try {
-            const db = window.firebase ? window.firebase.firestore() : undefined;
+            if (!navigator.onLine) {
+                this.saveToOfflineQueue(dbStore, dataPayload);
+                this.scheduleRetry(dbStore, dataPayload, maxRetries, currentRetry);
+                return;
+            }
+            const db = window.firebase ? window.firebase.firestore() : (window.db || undefined);
             if (db) {
                 await db.collection(dbStore).doc(String(dataPayload.id)).set(dataPayload);
                 this.removeFromOfflineQueue(dataPayload.id);
-                console.log(`BoseSweets Sync 👑: المزامنة الآمنة للمحرك المتقدم تمت بنجاح [${dbStore}].`);
+                console.log(`BoseSweets Sync 👑: المزامنة الآمنة تمت بنجاح [${dbStore}].`);
             } else {
-                throw new Error("تأخير في تحميل قاعدة البيانات السحابية.");
+                throw new Error("Cloud Database Engine not found.");
             }
         } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, `syncWithRetry: ${dbStore}`);
             this.saveToOfflineQueue(dbStore, dataPayload);
             this.scheduleRetry(dbStore, dataPayload, maxRetries, currentRetry);
         }
     },
     scheduleRetry(dbStore, dataPayload, maxRetries, currentRetry) {
-        if (currentRetry >= maxRetries) {
-            console.warn(`BoseSweets Sync: استنفاذ محاولات المزامنة للعملية، سيتم الاعتماد على طابور الطوارئ.`);
-            return;
+        try {
+            if (currentRetry >= maxRetries) {
+                if(window.BoseMonitor) window.BoseMonitor.report("Exhausted sync retries", 'utils.js', null, null, `scheduleRetry: ${dbStore}`);
+                return;
+            }
+            const delay = Math.pow(2, currentRetry) * 1000; 
+            setTimeout(() => {
+                this.syncWithRetry(dbStore, dataPayload, maxRetries, currentRetry + 1);
+            }, delay);
+        } catch (error) {
+            if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, 'scheduleRetry');
         }
-        const delay = Math.pow(2, currentRetry) * 1000; 
-        setTimeout(() => {
-            this.syncWithRetry(dbStore, dataPayload, maxRetries, currentRetry + 1);
-        }, delay);
     },
     saveToOfflineQueue(dbStore, dataPayload) {
         try {
@@ -199,7 +281,7 @@ export const AdvancedNetworkEngine = {
                 localStorage.setItem('boseSweets_offline_queue', JSON.stringify(queue));
             }
         } catch(e) {
-            console.error("BoseSweets Sync Error: تعذر الحفظ في طابور المزامنة الذكي.");
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'utils.js', null, null, 'saveToOfflineQueue');
         }
     },
     removeFromOfflineQueue(id) {
@@ -207,34 +289,47 @@ export const AdvancedNetworkEngine = {
             let queue = JSON.parse(localStorage.getItem('boseSweets_offline_queue')) || [];
             queue = queue.filter(item => item.payload.id !== id);
             localStorage.setItem('boseSweets_offline_queue', JSON.stringify(queue));
-        } catch(e) {}
+        } catch(e) {
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'utils.js', null, null, 'removeFromOfflineQueue');
+        }
     }
 };
 
+/**
+ * 👑 بروتوكولات الأمان الشاملة (Global Security Listeners)
+ */
 if (typeof window !== 'undefined') {
-    window.addEventListener('error', function(e) {
-        const isAdmin = window.location.pathname.includes('admin') || document.title.includes('الإدارة');
-        if (isAdmin && typeof showSystemToast === 'function') {
-            showSystemToast(`تنبيه تقني سيادي: تم رصد تعارض في السطر ${e.lineno} - ${e.message}`, 'error');
-        }
-    });
-    
-    window.addEventListener('unhandledrejection', function(e) {
-        const isAdmin = window.location.pathname.includes('admin') || document.title.includes('الإدارة');
-        if (isAdmin && typeof showSystemToast === 'function') {
-            showSystemToast(`تنبيه للإدارة: تأخير أو فشل مؤقت في الشبكة، محرك حلويات بوسي يحاول المزامنة.`, 'error');
-        }
-    });
+    try {
+        window.addEventListener('error', function(e) {
+            const isAdmin = window.location.pathname.includes('admin') || document.title.includes('الإدارة');
+            if(window.BoseMonitor) window.BoseMonitor.report(e.error || e.message, 'Global/window', e.lineno, e.colno, 'Runtime Error');
+            if (isAdmin && typeof showSystemToast === 'function') {
+                showSystemToast(`تنبيه تقني سيادي: تم رصد تعارض في السطر ${e.lineno}`, 'error');
+            }
+        });
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            const isAdmin = window.location.pathname.includes('admin') || document.title.includes('الإدارة');
+            if(window.BoseMonitor) window.BoseMonitor.report(e.reason, 'Global/window', null, null, 'Unhandled Promise Rejection');
+            if (isAdmin && typeof showSystemToast === 'function') {
+                showSystemToast(`تنبيه للإدارة: فشل مؤقت في مزامنة البيانات السحابية.`, 'error');
+            }
+        });
 
-    // 🛡️ التوافقية المطلقة
-    window.MemoryManager = MemoryManager;
-    window.hexToMathHSL = hexToMathHSL;
-    window.escapeHTML = escapeHTML;
-    window.generateUniqueID = generateUniqueID;
-    window.optimizeCloudinaryUrl = optimizeCloudinaryUrl;
-    window.generateSecureOrderId = generateSecureOrderId;
-    window.showSystemToast = showSystemToast;
-    window.compressImageClientSide = compressImageClientSide;
-    window.BehavioralAnalytics = BehavioralAnalytics;
-    window.AdvancedNetworkEngine = AdvancedNetworkEngine;
+        // 🛡️ التوافقية المطلقة والربط بجذر المتصفح
+        window.MemoryManager = MemoryManager;
+        window.hexToMathHSL = hexToMathHSL;
+        window.escapeHTML = escapeHTML;
+        window.generateUniqueID = generateUniqueID;
+        window.optimizeCloudinaryUrl = optimizeCloudinaryUrl;
+        window.generateSecureOrderId = generateSecureOrderId;
+        window.showSystemToast = showSystemToast;
+        window.compressImageClientSide = compressImageClientSide;
+        window.BehavioralAnalytics = BehavioralAnalytics;
+        window.AdvancedNetworkEngine = AdvancedNetworkEngine;
+        
+        console.log("👑 BoseSweets Engine: Sovereign Utils finalized and monitored.");
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'utils.js', null, null, 'Final Global Bindings');
+    }
 }

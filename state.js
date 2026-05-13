@@ -1,4 +1,11 @@
-// إدارة الحالة الديناميكية والمزامنة السيادية - براند حلويات بوسي
+/**
+ * 👑 BoseSweets State & Sync Engine (V26.5 - Sovereign Monitor Edition)
+ * محرك إدارة الحالة الديناميكية والمزامنة السيادية - براند حلويات بوسي
+ * تم هندسة هذا الملف ليكون "النخاع الشوكي" للبيانات، لضمان استقرار المعلومات 
+ * بين المتصفح، الذاكرة المحلية، وقاعدة البيانات السحابية.
+ * 🛡️ التحديث الأمني المتقدم: تم زراعة مستشعر BoseMonitor في كافة الدوال الحيوية.
+ */
+
 import { defaultSettings, defaultShipping, defaultCatalog } from './config.js';
 
 // 👑 الترقية السيادية: توحيد مسار الذاكرة بين الإدارة والعميل لضمان مرجعية واحدة (Single Source of Truth)
@@ -9,235 +16,217 @@ export let galleryData = (typeof window !== 'undefined' && window.galleryData) |
 export let catMenu = (typeof window !== 'undefined' && window.catMenu) || [];
 export let isAppReady = false; 
 
-// 🛡️ ربط المتغيرات الأساسية بجذر المتصفح لضمان رؤية لوحة التحكم والسكربتات الخارجية لها دون تصادم
+/**
+ * 🛡️ بروتوكول الربط العالمي (Global Binding Protocol)
+ * ربط المتغيرات الأساسية بجذر المتصفح لضمان رؤية لوحة التحكم والسكربتات الخارجية لها دون تصادم
+ */
 if (typeof window !== 'undefined') {
-    window.siteSettings = siteSettings;
-    window.shippingZones = shippingZones;
-    window.catalog = catalog;
-    window.galleryData = galleryData;
-    window.catMenu = catMenu;
+    try {
+        window.siteSettings = siteSettings;
+        window.shippingZones = shippingZones;
+        window.catalog = catalog;
+        window.galleryData = galleryData;
+        window.catMenu = catMenu;
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'state.js', null, null, 'Global State Initialization Failure');
+    }
 }
 
-// 👑 هيكل الحالة الموحد (يضم كافة المتغيرات لضمان التوافق مع أي تعديلات سابقة أو لاحقة)
+/**
+ * 👑 هيكل الحالة الموحد (Unified State Structure)
+ * تم تصميمه ليكون المصدر الوحيد لاتخاذ القرارات البرمجية في الواجهة.
+ */
 export const state = {
     activeCat: 'الرئيسية',
     dSize: 'مثلث',
     fType: 'بوكيه',
     isAppReady: false,
     cart: [],
+    currentShippingFee: 0,
+    appliedPromo: null,
     cakeState: {
-        // تم دمج الخصائص الجديدة مع الخصائص الأساسية لضمان عدم توقف أي دوال بالواجهة
-        occasion: '',
-        flavor: '',
-        layerShape: '',
-        layers: 1,
-        printing: 'بدون',
-        size: 16,
-        uploadedImage: null,
-        total: 0,
+        flavor: 'فانيليا',
         shape: 'دائري',
         persons: 4,
-        designStyle: 'على ذوق بوسي',
+        printing: 'بدون',
+        notes: '',
+        refImage: null,
+        allergies: '',
         hasCard: false,
         cardText: '',
-        allergies: '',
-        notes: '',
-        refImage: null
-    }
+        occasion: '',
+        designStyle: 'تصميم محدد'
+    },
+    currentBuilderStep: 1
 };
 
-if (typeof window !== 'undefined') {
-    window.globalState = state;
-}
-
-// 👑 هيكل بناء التورتة الملكية المنفصل (تم الإبقاء عليه لدعم المكونات القديمة وتجنب أي انهيار)
-export const cakeState = {
-    flavors: [],
-    images: [],
-    shapes: [{ id: 'دائري', name: 'دائري' }, { id: 'مستطيل', name: 'مستطيل' }, { id: 'قلب', name: 'قلب' }, { id: 'مربع', name: 'مربع' }],
-    basePrice: 0,
-    sizePrice: 0,
-    imgPrice: 0,
-    total: 0,
-    flavor: 'فانيليا',
-    shape: 'دائري',
-    persons: 4,
-    printing: 'بدون',
-    notes: '',
-    refImage: null,
-    allergies: '',
-    hasCard: false,
-    cardText: '',
-    occasion: '',
-    designStyle: 'تصميم محدد'
-};
-
-export let currentBuilderStep = 1;
-export const catalogMap = new Map();
+export const cakeState = state.cakeState;
+export const currentBuilderStep = state.currentBuilderStep;
 
 /**
- * 👑 مزامنة خارطة المنتجات (Catalog Map) لسرعة البحث
- * تم دمج التحديث الجديد مع الاحتفاظ بإشارات التنبيه للواجهة
+ * 👑 محرك الوصول السريع (Fast Access Map)
+ * فهرسة الكتالوج لضمان جلب بيانات أي منتج في أجزاء من الثانية.
  */
+export const catalogMap = new Map();
 export function syncCatalogMap() {
-    catalogMap.clear();
-    if (Array.isArray(catalog)) {
-        catalog.forEach(p => {
-            // تأمين إضافي: تعيين حالة النشاط الافتراضية لمنع استبعاد المنتجات بالخطأ
-            if (p && p.id) {
-                if (p.isActive === undefined) p.isActive = true;
-                if (p.inStock === undefined) p.inStock = true;
-                catalogMap.set(String(p.id), p);
-            }
-        });
-    }
-    
-    if (typeof window !== 'undefined') {
-        window.catalogMap = catalogMap;
-        // إرسال إشارة سيادية لتحديث مكونات الواجهة تلقائياً دون إعادة تحميل (ميزة ضرورية للاستقرار)
-        const syncEvent = new CustomEvent('BoseSweets_Catalog_Synced', { 
-            detail: { count: catalogMap.size, timestamp: Date.now() } 
-        });
-        window.dispatchEvent(syncEvent);
+    try {
+        catalogMap.clear();
+        if (Array.isArray(catalog)) {
+            catalog.forEach(p => {
+                if (p && p.id) {
+                    catalogMap.set(String(p.id), p);
+                }
+            });
+        } else {
+            throw new Error("Catalog is not an array during syncCatalogMap call");
+        }
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'state.js', null, null, 'syncCatalogMap - Indexing Error');
     }
 }
 
 /**
- * إعلان جاهزية التطبيق للاستخدام وفك التجميد عن الواجهة
+ * إشارة الجاهزية السيادية لفك تجميد الواجهة الأمامية وتطهير شاشة التحميل
  */
 export function setAppReady() {
-    isAppReady = true;
-    state.isAppReady = true;
-    if (typeof window !== 'undefined') {
-        window.isAppReady = true;
+    try {
+        isAppReady = true;
+        state.isAppReady = true;
         
-        // فك تجميد الواجهة بعد تأكيد الجاهزية وإزالة أي شاشات تحميل عالقة
-        const loader = document.getElementById('bose-loader');
+        const loader = document.getElementById('global-loader');
         if (loader) {
             loader.style.opacity = '0';
-            setTimeout(() => {
-                loader.style.display = 'none';
-                document.body.classList.remove('overflow-hidden');
-            }, 500);
+            setTimeout(() => { 
+                loader.style.display = 'none'; 
+                const mainContent = document.getElementById('main-content');
+                if(mainContent) mainContent.style.opacity = '1';
+            }, 700);
         }
         
-        window.dispatchEvent(new CustomEvent('BoseSweets_App_Ready'));
+        // إطلاق حدث عالمي لجميع المكونات لبدء العمل الميداني
+        window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready', { detail: { timestamp: Date.now() } }));
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'state.js', null, null, 'setAppReady - UI Transition Failure');
     }
 }
 
-// ============================================================================
-// هندسة التخزين والاستدعاء المركزي والمحصن (Persistent Storage Engine)
-// ============================================================================
-
+/**
+ * 👑 محرك الذاكرة المحلية (Persistent Storage Handler)
+ * التعامل مع ذاكرة المتصفح لضمان عمل الموقع في وضع انقطاع الإنترنت أو التحميل السريع.
+ */
 export function saveToLocalMemory(key, data) {
     try {
         if (typeof window !== 'undefined' && window.localStorage) {
-            localStorage.setItem(key, JSON.stringify(data));
+            const serializedData = JSON.stringify(data);
+            localStorage.setItem(key, serializedData);
+            localStorage.setItem(`${key}_timestamp`, Date.now().toString());
         }
-    } catch (e) {
-        console.warn('تنبيه فني من نظام حلويات بوسي: تعذر الحفظ المحلي. يتم العمل بالذاكرة الحية لضمان استمرار الخدمة.');
-        // معالجة امتلاء الذاكرة للحفاظ على استقرار التطبيق
-        if(e.name === 'QuotaExceededError' && typeof window !== 'undefined' && window.localStorage) {
-            localStorage.removeItem('BoseSweets_Local_Sync_Force');
-        }
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'state.js', null, null, `saveToLocalMemory - Key: ${key}`);
+        console.warn("BoseSweets State: Local memory storage operation failed.");
     }
 }
 
 export function getFromLocalMemory(key) {
     try {
         if (typeof window !== 'undefined' && window.localStorage) {
-            const data = localStorage.getItem(key);
-            return data ? JSON.parse(data) : null;
+            const saved = localStorage.getItem(key);
+            if (saved) {
+                return JSON.parse(saved);
+            }
         }
-    } catch (e) {
-        console.warn("تنبيه فني من نظام حلويات بوسي: تعذر قراءة الذاكرة، سيتم جلب بيانات جديدة.");
+        return null;
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'state.js', null, null, `getFromLocalMemory - Key: ${key}`);
         return null;
     }
-    return null;
 }
 
 /**
- * 👑 الدالة السيادية لجلب ومزامنة البيانات بهندسة تمنع الانهيار (Firestore Integration)
- * تم دمجها لتقرأ مباشرة من محرك السحابة مع الاحتفاظ بقوة التحديث التلقائي للمصفوفات المحلية
+ * 👑 بروتوكول المزامنة السيادية الشاملة (The Master Sync Protocol)
+ * المحرك المسؤول عن التوازن بين البيانات السحابية والذاكرة المحلية الموثقة.
+ * تم تدعيمه بالمستشعر لمراقبة دقة البيانات المستلمة وضمان سلامة التدفق.
  */
-export async function fetchAndSyncBoseSweetsData(collectionName, cacheKey, updateCallback) {
+export async function fetchAndSyncBoseSweetsData(fetchPromise, cacheKey, updateCallback) {
     try {
-        const db = typeof window !== 'undefined' && window.db ? window.db : null;
-        if (!db) throw new Error("محرك السحابة غير متصل بنطاق المتصفح");
-
-        const snapshot = await db.collection(collectionName).get();
-        if (!snapshot.empty) {
-            const freshData = [];
-            snapshot.forEach(doc => {
-                const docData = doc.data();
-                if (collectionName === 'catalog') {
-                     // ضمان استمرار ظهور المنتجات القديمة
-                     if (docData.isActive === undefined) docData.isActive = true;
-                     freshData.push({ id: doc.id, ...docData });
-                } else {
-                     freshData.push(docData);
-                }
-            });
-            
-            // تحديث المصفوفة السيادية في حالة الكتالوج لمنع اختفاء المنتجات من الواجهة
-            // تم التعديل إلى splice للحفاظ على المرجع الفعلي للمصفوفة في الذاكرة
-            if (collectionName === 'catalog') {
-                catalog.splice(0, catalog.length);
-                freshData.forEach(item => catalog.push(item));
+        // 1. بروتوكول التحميل المتفائل (Optimistic Loading Phase)
+        const localData = getFromLocalMemory(cacheKey);
+        if (localData && Array.isArray(localData) && localData.length > 0) {
+            if (cacheKey === 'bosesweets_catalog') {
+                catalog.splice(0, catalog.length, ...localData);
                 syncCatalogMap();
             }
+            if (typeof updateCallback === 'function') updateCallback(localData);
+        }
 
-            saveToLocalMemory(cacheKey, freshData);
+        // 2. بروتوكول التحقق السحابي (Cloud Verification Phase)
+        try {
+            const freshData = await fetchPromise();
             
-            if (typeof updateCallback === 'function') {
-                updateCallback(freshData);
+            if (freshData && Array.isArray(freshData) && freshData.length > 0) {
+                // تحديث الذاكرة السيادية الموحدة مع الحفاظ على مراجع المصفوفات
+                if (cacheKey === 'bosesweets_catalog') {
+                    catalog.splice(0, catalog.length, ...freshData);
+                    syncCatalogMap();
+                }
+                
+                // حفظ النسخة الجديدة في الذاكرة الفولاذية
+                saveToLocalMemory(cacheKey, freshData);
+                
+                if (typeof updateCallback === 'function') {
+                    updateCallback(freshData);
+                }
+                
+                setAppReady();
+                return true;
+            } else if (freshData && freshData.length === 0) {
+                // تسجيل حالة البيانات الفارغة كمخاطرة محتملة
+                if(window.BoseMonitor) window.BoseMonitor.report("تم استلام مصفوفة فارغة من السحابة", 'state.js', null, null, `Empty Response: ${cacheKey}`);
+                throw new Error("Empty Cloud Response Received");
+            } else {
+                throw new Error("Non-Array Cloud Data Format Detected");
             }
+        } catch (cloudError) {
+            // فشل السحابة: التراجع الآمن للوضع المحلي
+            if(window.BoseMonitor) window.BoseMonitor.report(cloudError, 'state.js', null, null, `Cloud Sync Failure: ${cacheKey}`);
+            
+            if (catalog.length === 0 && cacheKey === 'bosesweets_catalog') {
+                catalog.push(...defaultCatalog);
+                syncCatalogMap();
+            }
+            
             setAppReady();
-            return true; 
-        } else {
-            throw new Error("بيانات الخادم غير صالحة أو فارغة");
+            return false;
         }
-    } catch (error) {
-        console.warn('منظومة حلويات بوسي: جاري تفعيل وضع الاستدعاء المحلي لتأمين العرض ضد تقلبات الشبكة.');
-        
-        // خط الدفاع السيادي الأخير لضمان عرض المنتجات الدائم
-        const fallbackData = getFromLocalMemory(cacheKey) || getFromLocalMemory('bSweets_catalog') || getFromLocalMemory('boseSweets_catalog') || (cacheKey && cacheKey.includes('catalog') ? defaultCatalog : null);
-        
-        if (fallbackData && Array.isArray(fallbackData) && cacheKey && cacheKey.includes('catalog')) {
-            // تم التعديل إلى splice للحفاظ على المرجع الفعلي للمصفوفة في وضع الاستدعاء المحلي أيضاً
-            catalog.splice(0, catalog.length);
-            fallbackData.forEach(item => {
-                if (item.isActive === undefined) item.isActive = true;
-                catalog.push(item);
-            });
-            syncCatalogMap();
-            setAppReady(); // إجبار الجاهزية لاستمرار العمل
-            return true;
-        } else if (fallbackData && typeof updateCallback === 'function') {
-            updateCallback(fallbackData);
-            setAppReady();
-            return true;
-        }
-        
-        setAppReady(); // إجبار فك تجميد الواجهة في أسوأ الظروف
+    } catch (masterError) {
+        // حماية الطبقة العليا لضمان تجربة مستخدم مستقرة (Fail-Safe)
+        if(window.BoseMonitor) window.BoseMonitor.report(masterError, 'state.js', null, null, 'Master Sync Guard Failure');
+        setAppReady();
         return false;
     }
 }
 
-// 👑 تأكيد التوافقية الشاملة والنهائية على نطاق المتصفح للسكربتات الخارجية واللوحة السيادية
+/**
+ * 👑 تأكيد التوافقية الشاملة والنهائية (Final Comprehensive Compatibility)
+ * ربط كافة الأدوات بنطاق window لضمان إمكانية الوصول السيادي من أي ملف آخر.
+ */
 if (typeof window !== 'undefined') {
-    // التصديرات الأساسية للوظائف والحالة
-    window.setAppReady = setAppReady;
-    window.saveToLocalMemory = saveToLocalMemory;
-    window.getFromLocalMemory = getFromLocalMemory;
-    window.state = state;
-    window.cakeState = cakeState;
-    window.currentBuilderStep = currentBuilderStep;
-    
-    // التصديرات الحيوية المطلوبة لتأمين المرجعية وضمان استقرار الواجهة
-    window.siteSettings = siteSettings;
-    window.catalog = catalog;
-    window.catalogMap = catalogMap;
-    window.fetchAndSyncBoseSweetsData = fetchAndSyncBoseSweetsData;
-    window.syncCatalogMap = syncCatalogMap;
+    try {
+        window.setAppReady = setAppReady;
+        window.saveToLocalMemory = saveToLocalMemory;
+        window.getFromLocalMemory = getFromLocalMemory;
+        window.state = state;
+        window.cakeState = cakeState;
+        window.currentBuilderStep = currentBuilderStep;
+        window.siteSettings = siteSettings;
+        window.catalog = catalog;
+        window.catalogMap = catalogMap;
+        window.fetchAndSyncBoseSweetsData = fetchAndSyncBoseSweetsData;
+        window.syncCatalogMap = syncCatalogMap;
+        
+        // إشعار المستشعر باكتمال تهيئة محرك الحالة
+        console.log("👑 BoseSweets Engine: State finalized and bound to window.");
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'state.js', null, null, 'Final Window Bindings Critical Error');
+    }
 }

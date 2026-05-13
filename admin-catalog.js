@@ -5,12 +5,10 @@
  * 👑 التحديث السيادي للسيطرة المطلقة: 
  * تم معالجة تصادم التعريفات وتوحيد مسارات الذاكرة لضمان اتصال لوحة التحكم 
  * بالموقع وقاعدة البيانات لحظياً دون أي انقطاع.
+ * تم دمج مستشعر الرصد العميق (BoseMonitor) لاصطياد الأخطاء وتوجيهها لغرفة العمليات.
  * يعتمد أسلوب التوسيع والبناء دون أي حذف للمكونات الأساسية.
  * * ⚠️ تحذير: هذا الملف هو النواة المركزية لإدارة حلويات بوسي.
  */
-
-// تم حذف AdminErrorTracker من هذا الملف لمنع التصادم البرمجي.
-// يتم الاعتماد حصرياً على النسخة المحملة مسبقاً من admin-core.js.
 
 // ==========================================
 // 1. محركات البيانات والتخزين (Data & Storage Engines)
@@ -45,7 +43,7 @@ window.StorageEngine = {
                 tx.onerror = () => reject(tx.error);
             });
         } catch (e) { 
-            if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('StorageEngine_Set', e); 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog.js', null, null, 'StorageEngine.set'); 
         }
     },
     async get(key) {
@@ -59,7 +57,7 @@ window.StorageEngine = {
                 request.onerror = () => resolve(null); 
             });
         } catch (e) { 
-            if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('StorageEngine_Get', e); 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog.js', null, null, 'StorageEngine.get'); 
             return null; 
         }
     }
@@ -94,7 +92,7 @@ window.OfflineStorageManager = {
                 tx.onerror = () => reject(tx.error);
             });
         } catch (e) { 
-            if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('OfflineVault_Enqueue', e); 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog.js', null, null, 'OfflineStorageManager.enqueuePayload'); 
         }
     },
     async getAllPayloads() {
@@ -107,7 +105,10 @@ window.OfflineStorageManager = {
                 request.onsuccess = () => resolve(request.result || []);
                 request.onerror = () => resolve([]);
             });
-        } catch (e) { return []; }
+        } catch (e) { 
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog.js', null, null, 'OfflineStorageManager.getAllPayloads');
+            return []; 
+        }
     },
     async removePayload(offlineId) {
         try {
@@ -119,7 +120,9 @@ window.OfflineStorageManager = {
                 tx.oncomplete = () => resolve();
                 tx.onerror = () => reject(tx.error);
             });
-        } catch (e) {}
+        } catch (e) {
+            if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog.js', null, null, 'OfflineStorageManager.removePayload');
+        }
     }
 };
 
@@ -271,6 +274,7 @@ window.fetchDefaultCatalog = async function() {
         const response = await fetch('data.json'); 
         return await response.json(); 
     } catch (error) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-catalog.js', null, null, 'fetchDefaultCatalog');
         console.warn("BoseSweets: Catalog fallback to internal memory."); 
         return [];
     }
@@ -343,7 +347,7 @@ window.setupRealtimeOrders = function() {
         }, 300); 
 
     }, error => {
-        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('RealtimeOrdersSync', error);
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-catalog.js', null, null, 'setupRealtimeOrders');
         window.__ordersListenerActive = false; 
     });
 };
@@ -428,6 +432,7 @@ window.loadEngineMemory = async function() {
             throw new Error("قاعدة البيانات غير متصلة بالنطاق الشامل.");
         }
     } catch(err) { 
+        if(window.BoseMonitor) window.BoseMonitor.report(err, 'admin-catalog.js', null, null, 'loadEngineMemory');
         console.warn("BoseSweets: جاري التحميل من الذاكرة الفولاذية البديلة", err);
         window.catalog = (await window.StorageEngine.get('boseSweets_catalog')) || JSON.parse(localStorage.getItem('bSweets_catalog')) || window.catalog; 
         window.globalOrders = (await window.StorageEngine.get('boseSweets_admin_orders')) || JSON.parse(localStorage.getItem('bSweets_orders')) || [];
@@ -465,7 +470,7 @@ window.saveEngineMemory = async function(type) {
         // Fallback to LocalStorage for redundant safety
         localStorage.setItem(`bSweets_${type}`, JSON.stringify(type === 'cat' ? window.catalog : type === 'ord' ? window.globalOrders : window.siteSettings));
     } catch (e) { 
-        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('SaveEngineMemory', e);
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog.js', null, null, 'saveEngineMemory');
     }
 };
 
@@ -477,7 +482,7 @@ window.executeSafely = function(taskName, taskFunction) {
     try {
         if (typeof taskFunction === 'function') return taskFunction();
     } catch (error) {
-        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log(taskName, error);
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-catalog.js', null, null, 'executeSafely: ' + taskName);
     }
 };
 
@@ -509,7 +514,7 @@ window.openAdminDashboardDirectly = function() {
         if (statusEl) statusEl.innerHTML = '<i data-lucide="cloud-lightning" class="w-3 h-3"></i> متصل بالسحابة';
         
     } catch (error) {
-        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('DashboardInit', error);
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-catalog.js', null, null, 'openAdminDashboardDirectly');
     }
 };
 
@@ -521,6 +526,7 @@ window.logoutAdminSecurely = async function() {
         if(typeof window.auth !== 'undefined' && window.auth) await window.auth.signOut();
         window.location.href = 'index.html';
     } catch (e) {
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog.js', null, null, 'logoutAdminSecurely');
         window.location.href = 'login.html';
     }
 };
@@ -603,7 +609,7 @@ window.compressAndUploadMultiImage = async function(e) {
                             
                         } catch (err) { 
                             // حفظ أوفلاين في حالة فشل الرفع أو انتهاء المهلة الزمنية
-                            if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('ImageUploadFailure', err);
+                            if(window.BoseMonitor) window.BoseMonitor.report(err, 'admin-catalog.js', null, null, 'compressAndUploadMultiImage (Upload Failure)');
                             const offlineId = 'offline_img_' + Date.now() + Math.random().toString(36).substr(2, 5);
                             if(typeof window.OfflineStorageManager !== 'undefined') {
                                 await window.OfflineStorageManager.enqueuePayload({ offlineId: offlineId, base64: base64Str });
@@ -658,7 +664,10 @@ window.syncOfflineImages = async function() {
                 const res = await fetch('https://api.cloudinary.com/v1_1/dyx4w0dr1/image/upload', { method: 'POST', body: formData });
                 const data = await res.json();
                 if (data.secure_url) uploadedUrl = data.secure_url;
-            } catch (e) { continue; }
+            } catch (e) { 
+                if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog.js', null, null, 'syncOfflineImages (Individual Upload)');
+                continue; 
+            }
 
             if(uploadedUrl) {
                 window.catalog.forEach(p => {
@@ -678,7 +687,9 @@ window.syncOfflineImages = async function() {
             if(typeof renderAdminMenu === 'function') renderAdminMenu('');
             if(typeof showSystemToast === 'function') showSystemToast("تمت معالجة وتزامن الصور المؤجلة مع السحابة ☁️", "success");
         }
-    } catch(e) {}
+    } catch(e) {
+        if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog.js', null, null, 'syncOfflineImages (General Failure)');
+    }
 };
 
 window.addEventListener('online', window.syncOfflineImages);
@@ -697,7 +708,11 @@ window.bootBoseSweetsEngine = function() {
     if(typeof window.auth !== 'undefined' && window.auth !== null) {
         window.auth.onAuthStateChanged(async user => {
             if (user) { 
-                try { await window.loadEngineMemory(); } catch(e) { if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('BootMemoryLoad', e); }
+                try { 
+                    await window.loadEngineMemory(); 
+                } catch(e) { 
+                    if(window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog.js', null, null, 'bootBoseSweetsEngine (Memory Load)'); 
+                }
                 window.openAdminDashboardDirectly();
                 window.syncOfflineImages(); 
             } else { 
@@ -727,7 +742,7 @@ window.triggerSovereignSync = async function() {
         localStorage.setItem('BoseSweets_Local_Sync_Force', Date.now().toString());
         
     } catch (error) {
-        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('SovereignSyncTrigger', error);
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-catalog.js', null, null, 'triggerSovereignSync');
     }
 };
 
@@ -759,7 +774,7 @@ window.saveProductData = async function(productObj) {
         if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
         
     } catch (error) {
-        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('saveProductData', error);
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-catalog.js', null, null, 'saveProductData');
     }
 };
 
@@ -781,7 +796,7 @@ window.executeDeleteProduct = async function(productId) {
         if(typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
 
     } catch (error) {
-        if(typeof AdminErrorTracker !== 'undefined') AdminErrorTracker.log('executeDeleteProduct', error);
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'admin-catalog.js', null, null, 'executeDeleteProduct');
     }
 };
 

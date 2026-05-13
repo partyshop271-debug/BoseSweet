@@ -104,3 +104,19 @@ export let defaultCatalog = [
 
 export const dSizes = ['مثلث', 'وسط', 'كبير']; 
 export const fTypes = ['ورد طبيعي', 'ورد صناعي', 'ورد ستان', 'ورد هدايا', 'ورد فلوس', 'ورد شيكولاتة'];
+
+/**
+ * 👑 مستشعر النزاهة وحماية البيانات (Integrity Sensor)
+ * يضمن تحميل كل البيانات المرجعية بشكل سليم وإبلاغ الصندوق الأسود عند تلف البيانات
+ */
+try {
+    if (!detailedDescriptions || !defaultSettings || !defaultShipping || !defaultCatalog || !dSizes || !fTypes) {
+        throw new Error("فقدان في هياكل التكوين الأساسية (Configuration Data Integrity Failure)");
+    }
+} catch (error) {
+    if (typeof window !== 'undefined' && window.BoseMonitor) {
+        window.BoseMonitor.report(error, 'config.js', null, null, 'Config Integrity Check');
+    } else {
+        console.warn("BoseSweets Guard: Error validating configuration data.", error);
+    }
+}
