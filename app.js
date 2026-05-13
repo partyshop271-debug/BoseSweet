@@ -1,8 +1,8 @@
 /**
- * 👑 BoseSweets Main Orchestrator (V28.1 - Sovereign Execution Protocol)
+ * 👑 BoseSweets Main Orchestrator (V28.2 - Recovery Edition)
  * المحرك الرئيسي للإدارة المرجعية - حلويات بوسي
- * تم التحصين الشامل: إزالة تعارضات التوجيه وتأمين مسارات التنقل (Routing Overrides)
- * لضمان عدم اختفاء الأقسام أو تصادم الواجهات عند الإقلاع.
+ * تم تفعيل بروتوكول الإقلاع اللحظي: رسم الهيكل البصري والشلال فوراً (Zero Latency)
+ * مع مزامنة البيانات السحابية في الخلفية لضمان أقصى سرعة وأداء.
  */
 
 import { defaultSettings, defaultShipping, defaultCatalog, detailedDescriptions, dSizes, fTypes } from './config.js';
@@ -58,17 +58,33 @@ let lastSyncTime = Date.now();
 async function startBoseSweetsEngine(isUpdate = false) {
     if (!isUpdate && (window.location.pathname.includes('admin.html') || document.title.includes('الإدارة'))) return;
 
+    console.log("👑 حلويات بوسي: بدء الإقلاع السيادي (V28.2 - Recovery Edition)...");
+
     if (!isUpdate) {
-        console.log("👑 حلويات بوسي: بدء تشغيل محرك الإقلاع السيادي (V28.1)...");
         registerBoseSweetsPWA();
+        
+        // 1. بروتوكول الإقلاع اللحظي: رسم الهيكل البصري فوراً (Zero Latency)
+        try {
+            if (typeof window.applySettingsToUI === 'function') window.applySettingsToUI();
+            if (typeof window.renderTicker === 'function') window.renderTicker();
+            if (typeof window.renderCategories === 'function') window.renderCategories();
+            if (typeof window.initWaterfall === 'function') window.initWaterfall();
+            if (typeof window.initHomepageSections === 'function') window.initHomepageSections();
+            
+            // تهيئة التوجيه الأولي لضمان عدم اختفاء المحتوى
+            handleInitialRouting();
+
+            const phoneDisplay = document.getElementById('footer-phone-display');
+            if (phoneDisplay && siteSettings) {
+                phoneDisplay.innerText = siteSettings.footerPhone || '';
+            }
+        } catch (e) {
+            console.error("BoseSweets: خطأ أثناء محاولة الرسم الفوري، جاري الاستمرار...", e);
+        }
     }
 
     try {
-        if (typeof window.applySettingsToUI === 'function') window.applySettingsToUI();
-        if (typeof window.renderTicker === 'function') window.renderTicker();
-        
-        if (!isUpdate) forceRenderCoreUI();
-
+        // 2. مزامنة البيانات من السحابة في الخلفية والتهيئة التقنية
         if (!db && typeof window !== 'undefined' && window.firebase) {
              db = window.firebase.firestore();
              window.db = db;
@@ -95,9 +111,7 @@ async function startBoseSweetsEngine(isUpdate = false) {
 
         const isDataSynced = await fetchAndSyncBoseSweetsData(fetchPromise, 'bosesweets_catalog');
 
-        if (isDataSynced) {
-            console.log(`👑 حلويات بوسي: تم التصديق على البيانات وضخها في المحرك بنجاح.`);
-        } else {
+        if (!isDataSynced) {
             throw new Error("فشل المزامنة المركزية، سيتم تفعيل الذاكرة الفولاذية.");
         }
 
@@ -109,17 +123,24 @@ async function startBoseSweetsEngine(isUpdate = false) {
             } catch(e) { }
         }
 
+        // 3. تحديث الواجهة بعد وصول البيانات الجديدة
         syncBoseSweetsLayout();
+        
+        // إعادة الرسم لضمان عرض أحدث البيانات
+        if (typeof window.renderCategories === 'function') window.renderCategories();
+        if (typeof window.initWaterfall === 'function') window.initWaterfall();
+        if (typeof window.initHomepageSections === 'function') window.initHomepageSections();
+        if (state.activeCat !== 'الرئيسية' && typeof window.renderMainDisplay === 'function') {
+            window.renderMainDisplay();
+        }
+        
         setAppReady();
         if(state) state.isAppReady = true;
 
-        forceRenderDynamicUI();
-        
         if (isUpdate) {
             if(typeof syncCartUI === 'function') syncCartUI();
             showSystemToast("تم تحديث القائمة بأحدث إصدارات وأسعار حلويات بوسي 👑", "success");
         } else {
-            handleInitialRouting();
             recoverBoseSweetsCart();
             syncOfflineOrders();
             setupSovereignSyncListener();
@@ -127,17 +148,17 @@ async function startBoseSweetsEngine(isUpdate = false) {
         }
 
     } catch (error) {
-        console.warn("تنبيه للإدارة: رصد تأخير أو خلل شبكي، تم تفعيل بروتوكول الطوارئ.", error);
+        console.warn("تنبيه للإدارة: رصد تأخير أو خلل شبكي، تم تفعيل وضع الطوارئ لاستمرار الخدمة.", error);
         fallbackToEmergencyData();
         syncBoseSweetsLayout();
         forceRenderDynamicUI();
-        setAppReady();
-        handleInitialRouting();
+        setAppReady(); // فك التجميد حتى في حالة الخطأ
     } finally {
         if (!isUpdate) removeGlobalLoader();
     }
 }
 
+// دالة احتياطية للمحافظة على التوافقية المعمارية للأنظمة القديمة إن وُجدت
 function forceRenderCoreUI() {
     try {
         if (typeof window.renderCategories === 'function') window.renderCategories();
@@ -152,10 +173,6 @@ function forceRenderCoreUI() {
     }
 }
 
-/**
- * 👑 إجبار ظهور الشلال والأقسام حتى لو لم تكتمل المزامنة 100%
- * تم تعديل الدالة لضمان رسم المنتجات والعناصر الديناميكية فوراً
- */
 function forceRenderDynamicUI() {
     try {
         if (typeof window.initWaterfall === 'function') window.initWaterfall();
@@ -163,7 +180,6 @@ function forceRenderDynamicUI() {
         if (typeof window.renderTicker === 'function') window.renderTicker();
         if (typeof window.renderCategories === 'function') window.renderCategories();
         
-        // رسم المنتجات في حال لم نكن في الصفحة الرئيسية لضمان عدم اختفاء المحتوى
         if (state.activeCat !== 'الرئيسية' && typeof window.renderMainDisplay === 'function') {
             window.renderMainDisplay();
         }
@@ -195,7 +211,6 @@ function removeGlobalLoader() {
     }
 }
 
-// 👑 تأمين مسارات التوجيه الأولية لمنع تصادم الواجهات
 function handleInitialRouting() {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('product');
@@ -345,16 +360,15 @@ function registerBoseSweetsPWA() {
     }
 }
 
-// 👑 دوال التوجيه الأساسية مأخوذة بشكل مباشر وآمن من الواجهة لعدم إحداث تصادم
 window.goToHome = () => { if(typeof window.setCategory === 'function') window.setCategory('الرئيسية'); };
 
+// تأمين عملية الإقلاع مع الأحداث لتجنب استدعاء المحرك مرتين أو عدم تشغيله
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => startBoseSweetsEngine(false));
 } else {
     startBoseSweetsEngine(false);
 }
 
-// 👑 معالجة التوجيه الخلفي للأنظمة لضمان التوافق مع التعديلات الجديدة
 window.addEventListener('popstate', (event) => {
     if (event.state && event.state.category) {
         if (typeof window.setCategory === 'function') {

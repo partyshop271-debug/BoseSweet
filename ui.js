@@ -1,8 +1,8 @@
 /**
- * 👑 BoseSweets UI Master Hub (V22.0 - Modular Architecture)
+ * 👑 BoseSweets UI Master Hub (V22.1 - Sovereign Integrated)
  * الموزع السيادي لملفات الواجهة - حلويات بوسي
  * هذا الملف يعمل كنقطة تجميع مركزية تضمن قراءة الموقع لجميع الملفات المقسمة
- * دون الحاجة لتعديل أي استدعاءات في ملفات HTML أو النواة.
+ * مع تفعيل التحصين البرمجي لضمان التوافق الكامل مع كافة ملفات الموقع.
  */
 
 // 1. استدعاء وتصدير وظائف المحرك الأساسي
@@ -34,8 +34,18 @@ export {
     dispatchWhatsAppOrder 
 } from './cart.js';
 
-// تأكيد أخير لضمان تسجيل جاهزية الواجهة في الذاكرة المركزية
+// 🛡️ التحصين السيادي: ربط كافة الدوال بـ window لضمان عمل أزرار HTML المباشرة
+import * as Core from './ui-core.js';
+import * as Views from './ui-views.js';
+import * as Builders from './ui-builders.js';
+import * as Interactions from './ui-interactions.js';
+import * as Cart from './cart.js';
+
+// تأكيد تسجيل جاهزية الواجهة في الذاكرة المركزية وتفعيل الربط الشامل
 if (typeof window !== 'undefined') {
-    window.BoseUI_Architecture = 'Modular_V22.0_Integrated';
-    console.log("👑 حلويات بوسي: تم تحميل معمارية الواجهات المقسمة وربط وظائف السلة بنجاح.");
+    // دمج كافة الوظائف المستوردة في كائن window لضمان الوصول إليها من أي مكان بالموقع
+    Object.assign(window, Core, Views, Builders, Interactions, Cart);
+    
+    window.BoseUI_Architecture = 'Modular_V22.1_Sovereign';
+    console.log("👑 حلويات بوسي: تم تفعيل البروتوكول السيادي وربط كافة الوظائف بجذر المتصفح بنجاح.");
 }
