@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إتمام الطلب | حلويات بوسي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* تنسيقات خاصة بصفحة إتمام الطلب */
+        .checkout-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--surface-light);
+            border-radius: var(--border-radius-card);
+            border: 1px solid rgba(255, 145, 164, 0.2);
+            padding: 40px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 145, 164, 0.1);
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4rem;
+            color: var(--primary-pink);
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(255, 145, 164, 0.2);
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            color: var(--text-main);
+            background: var(--bg-white);
+            transition: var(--transition-smooth);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary-pink);
+            box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.1);
+        }
+
+        .delivery-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        /* تصميم أزرار اختيار طريقة الاستلام */
+        .delivery-card {
+            border: 2px solid rgba(255, 145, 164, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            background: var(--bg-white);
+            position: relative;
+        }
+
+        .delivery-card input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .delivery-card.selected {
+            border-color: var(--primary-pink);
+            background: rgba(255, 145, 164, 0.05);
+        }
+
+        .delivery-card i {
+            width: 32px;
+            height: 32px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            transition: var(--transition-smooth);
+        }
+
+        .delivery-card.selected i {
+            color: var(--primary-pink);
+        }
+
+        .delivery-card-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .branch-info {
+            background: rgba(255, 145, 164, 0.05);
+            border: 1px dashed var(--primary-pink);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none; /* تظهر فقط عند اختيار الاستلام من الفرع */
+        }
+
+        .whatsapp-btn {
+            background-color: #25D366; /* لون واتساب الرسمي */
+            border-color: #25D366;
+            width: 100%;
+            padding: 18px;
+            font-size: 1.2rem;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .whatsapp-btn:hover {
+            background-color: var(--bg-white);
+            color: #25D366;
+            border-color: #25D366;
+        }
+
+        @media (max-width: 600px) {
+            .delivery-options { grid-template-columns: 1fr; }
+            .checkout-container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <button class="btn-icon" onclick="window.history.back()"><i data-lucide="arrow-right"></i></button>
+            <h2 style="margin: 0; color: var(--primary-pink); font-size: 1.6rem; text-align: center;">إتمام الطلب</h2>
+            <div style="width: 44px;"></div> </div>
+    </header>
+
+    <main class="container mt-section mb-section">
+        
+        <div class="checkout-container">
+            <form id="checkout-form" onsubmit="event.preventDefault();">
+                
+                <div class="form-section">
+                    <h3 class="section-title"><i data-lucide="truck"></i> طريقة الاستلام</h3>
+                    <div class="delivery-options">
+                        <label class="delivery-card selected" id="card-delivery" onclick="toggleDeliveryMode('delivery')">
+                            <input type="radio" name="deliveryMode" value="delivery" checked>
+                            <i data-lucide="map-pin"></i>
+                            <div class="delivery-card-title">توصيل للمنزل</div>
+                        </label>
+                        <label class="delivery-card" id="card-pickup" onclick="toggleDeliveryMode('pickup')">
+                            <input type="radio" name="deliveryMode" value="pickup">
+                            <i data-lucide="store"></i>
+                            <div class="delivery-card-title">استلام من الفرع</div>
+                        </label>
+                    </div>
+
+                    <div class="branch-info" id="branch-details">
+                        <h4 style="color: var(--primary-pink); margin-bottom: 10px;">عنوان الفرع:</h4>
+                        <p style="font-weight: 700; color: var(--text-main); margin-bottom: 5px;">الكفاح، شارع الوحدة المحلية</p>
+                        <p style="font-size: 0.95rem; color: var(--text-muted);">بجوار صيدلية د. أحمد مجدي وعيادة د. علي</p>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title"><i data-lucide="user"></i> البيانات الشخصية</h3>
+                    <div class="form-group">
+                        <label class="form-label">الاسم بالكامل <span style="color:red;">*</span></label>
+                        <input type="text" id="customer-name" class="form-input" placeholder="اكتب اسمك الثلاثي" required>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label class="form-label">رقم الواتساب <span style="color:red;">*</span></label>
+                            <input type="tel" id="whatsapp-phone" class="form-input" dir="ltr" placeholder="01xxxxxxxxx" required>
+                        </div>
+                        <div class="form-group" id="alt-phone-group">
+                            <label class="form-label">رقم هاتف بديل (للتوصيل) <span style="color:red;">*</span></label>
+                            <input type="tel" id="alt-phone" class="form-input" dir="ltr" placeholder="01xxxxxxxxx">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section" id="address-section">
+                    <h3 class="section-title"><i data-lucide="map"></i> عنوان التوصيل</h3>
+                    <div class="form-group">
+                        <label class="form-label">المنطقة <span style="color:red;">*</span></label>
+                        <select class="form-select" id="delivery-zone">
+                            <option value="">اختر المنطقة...</option>
+                            <option value="الكفاح">الكفاح</option>
+                            <option value="مركز الفرافرة">مركز الفرافرة</option>
+                            <option value="النهضة">النهضة</option>
+                            <option value="أبو منقار">أبو منقار</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">العنوان التفصيلي <span style="color:red;">*</span></label>
+                        <textarea id="detailed-address" class="form-textarea" rows="3" placeholder="الشارع، رقم المنزل، أقرب علامة مميزة..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3 class="section-title"><i data-lucide="calendar-clock"></i> موعد التسليم</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        <div class="form-group">
+                            <label class="form-label">التاريخ <span style="color:red;">*</span></label>
+                            <input type="date" id="order-date" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">الوقت <span style="color:red;">*</span></label>
+                            <input type="time" id="order-time" class="form-input" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 50px;">
+                    <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">
+                        بالضغط على تأكيد، سيتم تحويلك لواتساب لإرسال تفاصيل طلبك للإدارة.
+                    </p>
+                    <button type="submit" class="btn-primary whatsapp-btn" id="submit-order-btn">
+                        تأكيد وإرسال الطلب عبر واتساب <i data-lucide="send"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="main-footer" style="margin-top: 0;">
+        <div class="container" style="text-align: center; border-top: none; padding-top: 0;">
+            <p style="font-size: 0.85rem; color: #888;">نضمن لكم خصوصية بياناتكم وأعلى درجات الجودة.</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // واجهة برمجية بسيطة لتغيير شكل الصفحة بناءً على طريقة الاستلام
+        function toggleDeliveryMode(mode) {
+            const cardDelivery = document.getElementById('card-delivery');
+            const cardPickup = document.getElementById('card-pickup');
+            const addressSection = document.getElementById('address-section');
+            const branchDetails = document.getElementById('branch-details');
+            const altPhoneGroup = document.getElementById('alt-phone-group');
+            const altPhoneInput = document.getElementById('alt-phone');
+
+            if (mode === 'delivery') {
+                cardDelivery.classList.add('selected');
+                cardPickup.classList.remove('selected');
+                addressSection.style.display = 'block';
+                branchDetails.style.display = 'none';
+                altPhoneGroup.style.display = 'block';
+                // تفعيل الإلزام للعنوان ورقم الهاتف البديل
+                altPhoneInput.setAttribute('required', 'true');
+            } else {
+                cardPickup.classList.add('selected');
+                cardDelivery.classList.remove('selected');
+                addressSection.style.display = 'none';
+                branchDetails.style.display = 'block';
+                altPhoneGroup.style.display = 'none';
+                // إلغاء الإلزام لأن العميل سيستلم بنفسه
+                altPhoneInput.removeAttribute('required');
+            }
+        }
+    </script>
+</body>
+</html>

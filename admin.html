@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مركز القيادة | حلويات بوسي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin-style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="admin-body">
+
+    <aside class="admin-sidebar">
+        <div style="padding: 30px; text-align: center; border-bottom: 1px solid rgba(255,145,164,0.1);">
+            <h2 style="color: var(--primary-pink); margin: 0; font-size: 1.8rem; letter-spacing: -0.5px;">حلويات بوسي</h2>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 5px;">الإدارة العليا</p>
+        </div>
+        <nav style="margin-top: 30px; display: flex; flex-direction: column; gap: 5px;">
+            <a href="#" class="admin-nav-item active" id="nav-overview">
+                <i data-lucide="layout-dashboard"></i> نظرة عامة
+            </a>
+            <a href="#" class="admin-nav-item" id="nav-products">
+                <i data-lucide="package"></i> إدارة الكتالوج
+            </a>
+            <a href="#" class="admin-nav-item" id="nav-orders">
+                <i data-lucide="shopping-bag"></i> الطلبات الواردة
+                <span style="margin-right: auto; background: var(--primary-pink); color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; display: none;" id="new-orders-badge">جديد</span>
+            </a>
+            <a href="#" class="admin-nav-item" id="nav-settings">
+                <i data-lucide="settings"></i> إعدادات المتجر
+            </a>
+        </nav>
+    </aside>
+    
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1 style="font-size: 1.6rem; margin: 0; color: var(--text-main);" id="admin-page-title">نظرة عامة</h1>
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--text-muted);">
+                    <div style="width: 10px; height: 10px; background: #25D366; border-radius: 50%;"></div>
+                    <span style="font-size: 0.9rem; font-weight: 700;">متصل بالسحابة</span>
+                </div>
+                <button class="btn-icon" aria-label="تسجيل الخروج"><i data-lucide="log-out"></i></button>
+            </div>
+        </header>
+
+        <div id="admin-content-area">
+            
+            <div id="view-overview">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px;">
+                    <div class="stat-card">
+                        <span class="stat-title">طلبات اليوم</span>
+                        <span class="stat-value" id="stat-today-orders">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-title">المنتجات النشطة</span>
+                        <span class="stat-value" id="stat-active-products">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-title">زيارات اليوم (تقريبي)</span>
+                        <span class="stat-value">0</span>
+                    </div>
+                </div>
+
+                <div class="admin-panel">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                        <h2 style="margin: 0; font-size: 1.4rem;">أحدث الطلبات الواردة</h2>
+                        <button class="btn-primary" style="padding: 8px 20px; font-size: 1rem;">عرض الكل</button>
+                    </div>
+                    <div style="text-align: center; padding: 60px 0; color: var(--text-muted); border: 2px dashed rgba(255,145,164,0.3); border-radius: 16px;">
+                        <i data-lucide="inbox" style="width: 48px; height: 48px; color: rgba(255,145,164,0.5); margin-bottom: 15px;"></i>
+                        <p style="font-weight: 700; font-size: 1.1rem;">جاري جلب الطلبات من السحابة...</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    
+    <script>lucide.createIcons();</script>
+    <script type="module" src="admin-logic.js"></script>
+    <script type="module" src="admin-database.js"></script>
+    <script type="module" src="admin-catalog-manager.js"></script>
+    <script type="module" src="admin-catalog-view.js"></script>
+    <script type="module" src="admin-orders-manager.js"></script>
+</body>
+</html>

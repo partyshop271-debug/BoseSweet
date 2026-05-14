@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>حلويات بوسي | الطعم الفاخر</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <header style="position: sticky; top: 0; background: var(--bg-white); border-bottom: 1px solid rgba(255,145,164,0.2); z-index: 1000; padding: 15px 0;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <button class="btn-icon" id="menu-btn" aria-label="القائمة">
+                <i data-lucide="menu"></i>
+            </button>
+
+            <div style="text-align: center; cursor: pointer;">
+                <h2 style="margin: 0; color: var(--primary-pink); font-size: 1.5rem; letter-spacing: -0.5px;">حلويات بوسي</h2>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn-icon" id="search-btn" aria-label="بحث">
+                    <i data-lucide="search"></i>
+                </button>
+                <button class="btn-icon" id="cart-btn" aria-label="السلة" style="position: relative;">
+                    <i data-lucide="shopping-basket"></i>
+                    <span id="cart-badge" style="position: absolute; top: -5px; right: -5px; background: var(--text-dark); color: var(--bg-white); font-size: 10px; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: none; align-items: center; justify-content: center;">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <section class="mt-section text-center container">
+        <h1 style="font-size: 2.5rem; max-width: 800px; margin: 0 auto 20px;">عقد من <span class="text-pink">التميز والاتقان</span> في صناعة الحلويات</h1>
+        <p style="font-size: 1.1rem; max-width: 600px; margin: 0 auto 40px;">نقدم لكم مجموعتنا الفاخرة المخبوزة بشغف، لتمزج بين عراقة الطعم الشرقي والابتكار في كل قضمة.</p>
+        
+        <div class="waterfall-container">
+            <div class="waterfall-column waterfall-up" id="waterfall-col-1">
+                <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div>
+                <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div>
+                <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div>
+            </div>
+            <div class="waterfall-column waterfall-down" id="waterfall-col-2">
+                <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div>
+                <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div>
+                <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div>
+            </div>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <a href="menu.html" class="btn-primary">تصفح المنيو</a>
+        </div>
+    </section>
+
+    <section class="mt-section mb-section container text-center">
+        <h2>عقد من <span class="text-pink">الإتقان</span></h2>
+        <p style="margin-bottom: 30px;">منذ عام 2014، نكرس جهودنا لصنع حلويات تليق بمناسباتكم السعيدة.</p>
+        
+        <div style="position: relative; max-width: 800px; margin: 0 auto; border-radius: var(--border-radius-card); border: 2px solid var(--primary-pink); padding: 15px; background: var(--surface-light);">
+            <div id="mastery-slider-container" style="width: 100%; height: 400px; border-radius: 16px; overflow: hidden; background: #eee;">
+                </div>
+        </div>
+    </section>
+
+    <section class="mb-section container">
+        <h2 class="text-center">وصل <span class="text-pink">حديثاً</span></h2>
+        <div class="horizontal-scroll" id="new-arrivals-container">
+            <div class="product-card" style="width: 250px;">
+                <div class="product-img-wrapper"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="منتج جديد"></div>
+                <div class="product-info">
+                    <h3 class="product-title">ديسباسيتو نوتيلا</h3>
+                    <div class="product-price">66 ج.م</div>
+                </div>
+            </div>
+            </div>
+        <div id="new-arrivals-dots" style="display: flex; justify-content: center; gap: 8px; margin-top: 15px;"></div>
+    </section>
+
+    <section class="mb-section container">
+        <h2 class="text-center">الأكثر <span class="text-pink">مبيعاً</span></h2>
+        <div id="best-sellers-container" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+            </div>
+    </section>
+
+    <section class="mb-section container">
+        <div style="background: linear-gradient(135deg, var(--surface-light) 0%, rgba(255,145,164,0.1) 100%); border-radius: var(--border-radius-card); border: 1px solid rgba(255,145,164,0.2); padding: 40px 20px; text-align: center; box-shadow: var(--shadow-soft);">
+            <i data-lucide="flower-2" style="width: 48px; height: 48px; color: var(--primary-pink); margin-bottom: 15px;"></i>
+            <h2>تنسيقات <span class="text-pink">الورد الملكي</span></h2>
+            <p style="max-width: 500px; margin: 0 auto 30px;">انفراد حصري بمركز الفرافرة بتقديم الورد الطبيعي والصناعي بتنسيقات فنية تخطف القلوب.</p>
+            <a href="flowers.html" class="btn-primary">تصفح المزيد</a>
+        </div>
+    </section>
+
+    <section class="mb-section container text-center">
+        <h2>أرقام <span class="text-pink">نفخر بها</span></h2>
+        <div style="display: flex; justify-content: center; gap: 40px; margin-top: 30px; flex-wrap: wrap;">
+            <div>
+                <div style="font-size: 3rem; font-weight: 700; color: var(--text-dark);">14+</div>
+                <div style="color: var(--primary-pink); font-weight: 700;">عاماً من الخبرة</div>
+            </div>
+            <div>
+                <div style="font-size: 3rem; font-weight: 700; color: var(--text-dark);">10K+</div>
+                <div style="color: var(--primary-pink); font-weight: 700;">عميل نعتز بخدمتهم</div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background: var(--surface-light); border-top: 2px solid rgba(255,145,164,0.2); padding: 50px 0 20px;">
+        <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 40px; text-align: right;">
+            
+            <div>
+                <h3 class="text-pink" style="font-size: 1.5rem;">حلويات بوسي</h3>
+                <p>صنعناها بحب لتهديها لمن تحب. طعم فاخر يليق بمناسباتكم السعيدة.</p>
+            </div>
+
+            <div>
+                <h4 style="font-size: 1.1rem; margin-bottom: 15px;">الشركة</h4>
+                <ul style="list-style: none; padding: 0; line-height: 2;">
+                    <li><a href="#" style="color: var(--text-muted); text-decoration: none;">من نحن</a></li>
+                    <li><a href="#" style="color: var(--text-muted); text-decoration: none;">سياسة الخصوصية</a></li>
+                    <li><a href="#" style="color: var(--text-muted); text-decoration: none;">سياسة الاسترجاع</a></li>
+                    <li><a href="#" style="color: var(--text-muted); text-decoration: none;">طريقة الطلب والحجز</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 style="font-size: 1.1rem; margin-bottom: 15px;">اتصل بنا</h4>
+                <p style="margin-bottom: 10px;"><i data-lucide="map-pin" style="width: 16px; height: 16px; vertical-align: middle; color: var(--primary-pink);"></i> الكفاح، مركز الفرافرة</p>
+                <p><i data-lucide="phone" style="width: 16px; height: 16px; vertical-align: middle; color: var(--primary-pink);"></i> 01097238441</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 20px;">
+            <p style="font-size: 0.9rem;">جميع الحقوق محفوظة ومسجلة لعلامة حلويات بوسي © 2026</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+    <script type="module" src="core-engine.js"></script>
+    <script src="data-bridge.js"></script>
+    <script src="ui-logic.js"></script>
+    <script src="cart-system.js"></script>
+</body>
+</html>
