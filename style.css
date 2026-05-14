@@ -1,7 +1,7 @@
 /**
  * 👑 BoseSweets Pro Style Sheet | نظام الأناقة السيادي
- * الإصدار: V3.1 (Professional Upgrade)
- * التحديث: تطوير الهيدر، الفوتر، القائمة الجانبية، وتوسيط العناوين.
+ * الإصدار: V3.2 (Full Integration)
+ * التحديث: دمج التنسيقات الهيكلية (Containers, Cards, Waterfall) لمعالجة الانهيار البصري واستقرار الواجهة بالكامل.
  */
 
 :root {
@@ -9,9 +9,12 @@
     --text-main: #1a1a1a;
     --text-muted: #4a4a4a;
     --bg-white: #ffffff;
+    --surface-light: #fafafa;
     --glass-white: rgba(255, 255, 255, 0.85);
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --shadow-luxury: 0 10px 40px rgba(255, 145, 164, 0.12);
+    --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.05);
+    --border-radius-card: 16px;
 }
 
 * {
@@ -28,16 +31,60 @@ body {
     overflow-x: hidden;
 }
 
-/* 1. هندسة العناوين المركزية */
+/* --- 1. الهيكل الأساسي والمساعدات البصرية (Core Structure) --- */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.text-center { text-align: center; }
+.text-pink { color: var(--primary-pink); }
+.mt-section { margin-top: 60px; }
+.mb-section { margin-bottom: 60px; }
+
+/* هندسة العناوين المركزية */
 h1, h2, h3 {
     font-weight: 700;
-    text-align: center; /* توسيط دائم لكل العناوين */
+    text-align: center;
     color: var(--text-main);
     margin-bottom: 1.5rem;
     letter-spacing: -0.5px;
 }
 
-/* 2. الهيدر الاحترافي (Glassmorphism) */
+/* --- 2. الأزرار (Buttons) --- */
+.btn-icon {
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+}
+.btn-icon:hover { color: var(--primary-pink); }
+
+.btn-primary {
+    display: inline-block;
+    background: var(--primary-pink);
+    color: var(--bg-white);
+    padding: 12px 30px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    box-shadow: var(--shadow-luxury);
+}
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 45px rgba(255, 145, 164, 0.2);
+}
+
+/* --- 3. الهيدر الاحترافي (Glassmorphism) --- */
 .main-header {
     position: sticky;
     top: 0;
@@ -50,14 +97,105 @@ h1, h2, h3 {
     transition: var(--transition-smooth);
 }
 
-/* 3. القائمة الجانبية السيادية (Sidebar) */
+/* --- 4. شبكة الصور (Waterfall) --- */
+.waterfall-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 30px auto;
+    max-width: 800px;
+    height: 350px;
+    overflow: hidden;
+}
+.waterfall-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    flex: 1;
+}
+.waterfall-item {
+    border-radius: var(--border-radius-card);
+    overflow: hidden;
+    background: var(--surface-light);
+}
+.waterfall-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+/* --- 5. كروت المنتجات (Product Cards) --- */
+.product-card {
+    background: var(--bg-white);
+    border-radius: var(--border-radius-card);
+    border: 1px solid rgba(255,145,164,0.1);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-luxury);
+    border-color: rgba(255,145,164,0.3);
+}
+.product-img-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    overflow: hidden;
+    background: var(--surface-light);
+}
+.product-img-wrapper img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition-smooth);
+}
+.product-card:hover .product-img-wrapper img {
+    transform: scale(1.05);
+}
+.product-info {
+    padding: 15px;
+    text-align: center;
+}
+.product-title {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    color: var(--text-main);
+    font-weight: 700;
+}
+.product-price {
+    color: var(--primary-pink);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+/* --- 6. التمرير الأفقي (Horizontal Scroll) --- */
+.horizontal-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding-bottom: 20px;
+    scrollbar-width: none;
+}
+.horizontal-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/* --- 7. القائمة الجانبية السيادية (Sidebar) --- */
 .sidebar-overlay {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(4px);
     z-index: 2000;
-    display: none; /* تظهر عبر JS */
+    display: none;
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -65,7 +203,7 @@ h1, h2, h3 {
 .sidebar {
     position: fixed;
     top: 0;
-    right: -320px; /* مخفية لليمين */
+    right: -320px;
     width: 320px;
     height: 100%;
     background: var(--bg-white);
@@ -77,9 +215,7 @@ h1, h2, h3 {
     flex-direction: column;
 }
 
-.sidebar.active {
-    right: 0;
-}
+.sidebar.active { right: 0; }
 
 .sidebar-header {
     display: flex;
@@ -88,14 +224,8 @@ h1, h2, h3 {
     margin-bottom: 50px;
 }
 
-.sidebar-nav {
-    list-style: none;
-}
-
-.sidebar-nav li {
-    margin-bottom: 25px;
-}
-
+.sidebar-nav { list-style: none; }
+.sidebar-nav li { margin-bottom: 25px; }
 .sidebar-nav a {
     text-decoration: none;
     color: var(--text-main);
@@ -106,15 +236,14 @@ h1, h2, h3 {
     gap: 15px;
     transition: var(--transition-smooth);
 }
-
 .sidebar-nav a:hover {
     color: var(--primary-pink);
     transform: translateX(-10px);
 }
 
-/* 4. الفوتر المتطور (Professional Footer) */
+/* --- 8. الفوتر المتطور (Professional Footer) --- */
 .main-footer {
-    background: #fafafa;
+    background: var(--surface-light);
     border-top: 1px solid rgba(255, 145, 164, 0.1);
     padding: 80px 0 30px;
     margin-top: 100px;
@@ -152,21 +281,14 @@ h1, h2, h3 {
     background: var(--primary-pink);
 }
 
-.footer-links {
-    list-style: none;
-}
-
-.footer-links li {
-    margin-bottom: 12px;
-}
-
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 12px; }
 .footer-links a {
     text-decoration: none;
     color: var(--text-muted);
     font-weight: 400;
     transition: var(--transition-smooth);
 }
-
 .footer-links a:hover {
     color: var(--primary-pink);
     padding-right: 5px;
@@ -196,11 +318,9 @@ h1, h2, h3 {
     transform: translateY(-3px);
 }
 
-/* تحسينات الشاشات الصغيرة */
+/* --- الاستجابة للشاشات (Media Queries) --- */
 @media (max-width: 992px) {
-    .footer-grid {
-        grid-template-columns: 1fr 1fr;
-    }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 600px) {
@@ -208,14 +328,13 @@ h1, h2, h3 {
         grid-template-columns: 1fr;
         text-align: center;
     }
-    .footer-brand h3, .footer-col h4 {
-        text-align: center;
-    }
+    .footer-brand h3, .footer-col h4 { text-align: center; }
     .footer-col h4::after {
         right: 50%;
         transform: translateX(50%);
     }
-    .social-links {
-        justify-content: center;
-    }
+    .social-links { justify-content: center; }
+    
+    .waterfall-container { height: 250px; }
+    .product-card { min-width: 200px; }
 }
