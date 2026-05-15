@@ -357,28 +357,38 @@
     </footer>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        // استدعاء ملفات المنظومة الـ 18
-        import "./firebase-config.js";
-        import "./core-engine.js";
+        import coreExports from "./core-engine.js";
         import "./data-bridge.js";
         import "./ui-logic.js";
         import "./cart-system.js";
 
+        const { BoseState } = coreExports;
+
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
             
-            // مستشعر جاهزية البيانات السحابية
-            window.addEventListener('catalogDataReady', () => {
+            /**
+             * محرك التنفيذ الأساسي لتفاصيل المنتج
+             */
+            const initializeProductView = () => {
                 const params = new URLSearchParams(window.location.search);
-                const pId = params.get('id') || params.get('product'); // دعم كلا المسميين
+                const pId = params.get('id') || params.get('product'); 
                 
                 if (pId && window.showProductDetails) {
                     window.showProductDetails(pId);
-                    document.getElementById('loader-view').style.display = 'none';
-                    document.getElementById('product-content-area').style.display = 'block';
+                    const loader = document.getElementById('loader-view');
+                    const content = document.getElementById('product-content-area');
+                    if (loader) loader.style.display = 'none';
+                    if (content) content.style.display = 'block';
                 }
-            });
+            };
+
+            // فحص الجاهزية المزدوج (State + Event) لضمان عدم تجمد الواجهة
+            if (BoseState && BoseState.isAppReady) {
+                initializeProductView();
+            } else {
+                window.addEventListener('catalogDataReady', initializeProductView);
+            }
         });
     </script>
 </body>

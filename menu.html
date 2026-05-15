@@ -242,61 +242,33 @@
     </footer>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-        // الربط بالملفات المركزية لضمان وحدة البيانات
-        import "./firebase-config.js"; 
-        import "./core-engine.js";
+        import coreExports from "./core-engine.js";
+        // استيراد الجسر لضمان تفعيل الدوال العالمية (Global Functions)
+        import "./data-bridge.js";
+
+        const { BoseState } = coreExports;
 
         document.addEventListener('DOMContentLoaded', () => {
+            // تفعيل الأيقونات
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
-            const menuGrid = document.getElementById('menuGrid');
-            const excellenceGrid = document.getElementById('excellenceGrid');
             const categoryItems = document.querySelectorAll('.category-item');
 
-            // دالة الرندر السيادية - امتثالاً لبروتوكول "View More"
-            const renderProductCards = (products, container) => {
-                if (!container) return;
-                if (!products || products.length === 0) {
-                    container.innerHTML = `<div class="empty-state">نعتذر، هذا القسم غير متوفر حالياً لتلبية طلبات حضراتكم.</div>`;
-                    return;
+            /**
+             * دالة التحديث المركزية: تعتمد كلياً على محرك الرسم الموحد في data-bridge
+             */
+            const updateUI = () => {
+                if (window.distributeProductsToUI) {
+                    window.distributeProductsToUI(BoseState.catalog);
                 }
-
-                container.innerHTML = products.map(product => {
-                    // تحديد الصورة - الحفاظ على الطبيعة 100%
-                    const imgUrl = product.img || (product.images && product.images[0]) || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
-                    
-                    // بروتوكول التصفح: التورت والورد تتطلب تخصيصاً، لذا زر "استعرض المزيد" إلزامي
-                    const isCustomizable = ['تورت', 'الورد', 'ورد'].includes(product.category);
-                    const btnLabel = isCustomizable ? "تخصيص الطلب" : "استعراض التفاصيل";
-
-                    return `
-                        <div class="product-card">
-                            <div class="product-image-wrapper">
-                                <img src="${imgUrl}" alt="${product.name}" loading="lazy" 
-                                     onmouseenter="this.style.transform='scale(1.1)'" 
-                                     onmouseleave="this.style.transform='scale(1)'">
-                            </div>
-                            <div class="product-details">
-                                <div>
-                                    <h3 class="product-name">${product.name}</h3>
-                                    <div class="product-price">${product.price} ج.م</div>
-                                </div>
-                                <button onclick="window.location.href='product.html?id=${product.id}'" class="btn-action btn-view">
-                                    ${btnLabel}
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
             };
 
-            // تفعيل محرك البيانات
+            // مستشعر الجاهزية السحابية
             window.addEventListener('catalogDataReady', () => {
                 const urlParams = new URLSearchParams(window.location.search);
                 const initialCategory = urlParams.get('category') || 'all';
 
-                // مزامنة واجهة التبويبات مع الرابط
+                // مزامنة التبويبات مع معطيات الرابط
                 categoryItems.forEach(item => {
                     if (item.dataset.category === initialCategory) {
                         item.classList.add('active');
@@ -306,29 +278,23 @@
                     }
                 });
 
-                const refreshUI = (cat) => {
-                    if (!window.catalog) return;
-                    const filtered = cat === 'all' ? window.catalog : window.catalog.filter(p => p.category === cat || (cat === 'الورد' && p.category === 'ورد'));
-                    renderProductCards(filtered, menuGrid);
-                };
+                updateUI();
+            });
 
-                // التشغيل الأولي
-                refreshUI(initialCategory);
+            // صمام أمان: إذا دخل المستخدم والبيانات جاهزة مسبقاً في الذاكرة
+            if (BoseState.isAppReady) {
+                updateUI();
+            }
 
-                // تعبئة قسم التميز بمنتجات عشوائية من الكتالوج لضمان التنوع
-                if (window.catalog.length > 0) {
-                    const topPicks = [...window.catalog].sort(() => 0.5 - Math.random()).slice(0, 4);
-                    renderProductCards(topPicks, excellenceGrid);
-                }
-
-                // ربط مستمعات الأحداث
-                categoryItems.forEach(item => {
-                    item.addEventListener('click', () => {
-                        categoryItems.forEach(i => i.classList.remove('active'));
-                        item.classList.add('active');
-                        item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                        refreshUI(item.dataset.category);
-                    });
+            // محرك التفاعل مع الأقسام
+            categoryItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    categoryItems.forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    
+                    // استدعاء محرك التوزيع السيادي لتحديث الشبكة
+                    updateUI();
                 });
             });
         });
