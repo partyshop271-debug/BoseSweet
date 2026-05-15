@@ -1,37 +1,43 @@
 /**
- * 👑 BoseSweets Pro Style Sheet | نظام الأناقة السيادي
- * الإصدار: V3.2 (Full Integration)
- * التحديث: دمج التنسيقات الهيكلية (Containers, Cards, Waterfall) لمعالجة الانهيار البصري واستقرار الواجهة بالكامل.
+ * 👑 BoseSweets Pro Style Sheet | نظام الأناقة السيادي لعلامة حلويات بوسي
+ * الإصدار: V4.5 (Royal Unified & Full Integration)
+ * التحديث الإداري: فرض الهوية البصرية الصارمة (الوردي الناعم، الأبيض، الرمادي الداكن) والتحصين الكامل ضد الفوشيا والبني لتأكيد رقي العلامة التجارية.
+ * التطوير الفني: دمج شامل، إغلاق الثغرات الهيكلية، ودعم المرونة الكاملة للموبايل والكمبيوتر.
  */
 
 :root {
-    --primary-pink: #ff91a4;
-    --text-main: #1a1a1a;
-    --text-muted: #4a4a4a;
-    --bg-white: #ffffff;
-    --surface-light: #fafafa;
+    /* لوحة الألوان المعتمدة رسمياً وحصرياً من الإدارة المرجعية */
+    --primary-pink: #ff91a4;       /* الوردي الناعم الملكي */
+    --text-dark: #1a1a1a;          /* الرمادي الداكن الفاخر للنصوص */
+    --text-main: #1a1a1a;          /* توحيد المعرفات المرجعية للنصوص */
+    --text-muted: #4a4a4a;         /* الرمادي المعتدل للأوصاف والفقرات */
+    --bg-white: #ffffff;           /* الخلفية البيضاء النقية */
+    --surface-light: #faf8f5;      /* عاجي فاتح جداً هادئ مريح للعين */
     --glass-white: rgba(255, 255, 255, 0.85);
+    
+    /* المتغيرات الهيكلية والتأثيرات النعامة */
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow-luxury: 0 10px 40px rgba(255, 145, 164, 0.12);
-    --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.05);
-    --border-radius-card: 16px;
+    --shadow-luxury: 0 12px 35px rgba(255, 145, 164, 0.12);
+    --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.03);
+    --border-radius-card: 20px;
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
     font-family: 'Cairo', sans-serif;
     background-color: var(--bg-white);
-    color: var(--text-main);
+    color: var(--text-dark);
     line-height: 1.7;
     overflow-x: hidden;
 }
 
-/* --- 1. الهيكل الأساسي والمساعدات البصرية (Core Structure) --- */
+/* --- 1. الهياكل المركزية والحاويات المتجاوبة (Core Structure) --- */
 .container {
     width: 100%;
     max-width: 1200px;
@@ -40,51 +46,68 @@ body {
 }
 
 .text-center { text-align: center; }
-.text-pink { color: var(--primary-pink); }
-.mt-section { margin-top: 60px; }
-.mb-section { margin-bottom: 60px; }
+.text-pink { color: var(--primary-pink) !important; }
+.mt-section { margin-top: 50px; }
+.mb-section { margin-bottom: 50px; }
+.font-black { font-weight: 900; }
+.font-bold { font-weight: 700; }
+.hidden { display: none !important; }
 
-/* هندسة العناوين المركزية */
+/* هندسة العناوين المركزية السيادية */
 h1, h2, h3 {
     font-weight: 700;
     text-align: center;
-    color: var(--text-main);
+    color: var(--text-dark);
     margin-bottom: 1.5rem;
     letter-spacing: -0.5px;
 }
 
-/* --- 2. الأزرار (Buttons) --- */
+/* --- 2. الأزرار الملكية والتفاعلات الفاخرة (Buttons) --- */
 .btn-icon {
-    background: transparent;
-    border: none;
-    color: var(--text-main);
-    cursor: pointer;
+    background: var(--surface-light);
+    color: var(--text-dark);
+    border: 1px solid rgba(255, 145, 164, 0.15);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition-smooth);
-}
-.btn-icon:hover { color: var(--primary-pink); }
-
-.btn-primary {
-    display: inline-block;
-    background: var(--primary-pink);
-    color: var(--bg-white);
-    padding: 12px 30px;
-    border-radius: 30px;
-    text-decoration: none;
-    font-weight: 700;
-    border: none;
     cursor: pointer;
     transition: var(--transition-smooth);
-    box-shadow: var(--shadow-luxury);
-}
-.btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 15px 45px rgba(255, 145, 164, 0.2);
 }
 
-/* --- 3. الهيدر الاحترافي (Glassmorphism) --- */
+.btn-icon:hover {
+    color: var(--primary-pink);
+    border-color: var(--primary-pink);
+    background: var(--bg-white);
+    transform: scale(1.05);
+}
+
+.btn-primary {
+    display: inline-flex;
+    background: var(--primary-pink);
+    color: var(--bg-white);
+    border: 2px solid var(--primary-pink);
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    box-shadow: 0 6px 20px rgba(255, 145, 164, 0.25);
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.btn-primary:hover {
+    background: var(--bg-white);
+    color: var(--primary-pink);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 145, 164, 0.3);
+}
+
+/* --- 3. الهيدر الاحترافي (Glassmorphism Header) --- */
 .main-header {
     position: sticky;
     top: 0;
@@ -97,50 +120,66 @@ h1, h2, h3 {
     transition: var(--transition-smooth);
 }
 
-/* --- 4. شبكة الصور (Waterfall) --- */
+/* --- 4. تأثير الشلال البصري في الهيرو (Waterfall Grid) --- */
 .waterfall-container {
     display: flex;
-    gap: 15px;
     justify-content: center;
-    margin: 30px auto;
-    max-width: 800px;
-    height: 350px;
+    gap: 15px;
+    max-width: 700px;
+    margin: 40px auto;
+    height: 320px;
     overflow: hidden;
+    padding: 10px;
 }
+
 .waterfall-column {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    flex: 1;
-}
-.waterfall-item {
-    border-radius: var(--border-radius-card);
-    overflow: hidden;
-    background: var(--surface-light);
-}
-.waterfall-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
+    width: 50%;
 }
 
-/* --- 5. كروت المنتجات (Product Cards) --- */
-.product-card {
+.waterfall-item {
+    width: 100%;
+    height: 160px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 145, 164, 0.1);
+    box-shadow: var(--shadow-soft);
+    background: var(--surface-light);
+}
+
+.waterfall-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+    display: block;
+}
+
+.waterfall-item:hover img {
+    transform: scale(1.08);
+}
+
+/* --- 5. نظام الكروت الفاخرة لمنتجات حلويات بوسي (Product Cards) --- */
+.product-card, .royal-card {
     background: var(--bg-white);
+    border: 1px solid rgba(255, 145, 164, 0.15);
     border-radius: var(--border-radius-card);
-    border: 1px solid rgba(255,145,164,0.1);
     overflow: hidden;
     box-shadow: var(--shadow-soft);
     transition: var(--transition-smooth);
     display: flex;
     flex-direction: column;
+    position: relative;
 }
-.product-card:hover {
-    transform: translateY(-5px);
+
+.product-card:hover, .royal-card:hover {
+    transform: translateY(-6px);
     box-shadow: var(--shadow-luxury);
-    border-color: rgba(255,145,164,0.3);
+    border-color: var(--primary-pink);
 }
+
 .product-img-wrapper {
     position: relative;
     width: 100%;
@@ -148,6 +187,7 @@ h1, h2, h3 {
     overflow: hidden;
     background: var(--surface-light);
 }
+
 .product-img-wrapper img {
     position: absolute;
     top: 0;
@@ -157,38 +197,51 @@ h1, h2, h3 {
     object-fit: cover;
     transition: var(--transition-smooth);
 }
-.product-card:hover .product-img-wrapper img {
+
+.product-card:hover .product-img-wrapper img,
+.royal-card:hover .product-img-wrapper img {
     transform: scale(1.05);
 }
+
 .product-info {
     padding: 15px;
     text-align: center;
 }
+
 .product-title {
     font-size: 1.1rem;
     margin-bottom: 5px;
-    color: var(--text-main);
+    color: var(--text-dark);
     font-weight: 700;
 }
+
 .product-price {
     color: var(--primary-pink);
     font-weight: 700;
     font-size: 1.2rem;
 }
 
-/* --- 6. التمرير الأفقي (Horizontal Scroll) --- */
+/* --- 6. شريط التمرير الأفقي التفاعلي (Horizontal Scroll) --- */
 .horizontal-scroll {
     display: flex;
+    gap: 20px;
     overflow-x: auto;
-    gap: 15px;
-    padding-bottom: 20px;
-    scrollbar-width: none;
-}
-.horizontal-scroll::-webkit-scrollbar {
-    display: none;
+    padding: 10px 5px 20px 5px;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* إخفاء شريط التمرير في فايرفوكس */
 }
 
-/* --- 7. القائمة الجانبية السيادية (Sidebar) --- */
+.horizontal-scroll::-webkit-scrollbar {
+    display: none; /* إخفاء شريط التمرير في كروم وسفاري لمظهر أنيق */
+}
+
+.horizontal-scroll .product-card,
+.horizontal-scroll .royal-card {
+    min-width: 280px;
+    flex-shrink: 0;
+}
+
+/* --- 7. القائمة الجانبية السيادية (Sidebar Nav) --- */
 .sidebar-overlay {
     position: fixed;
     inset: 0;
@@ -228,7 +281,7 @@ h1, h2, h3 {
 .sidebar-nav li { margin-bottom: 25px; }
 .sidebar-nav a {
     text-decoration: none;
-    color: var(--text-main);
+    color: var(--text-dark);
     font-size: 1.2rem;
     font-weight: 700;
     display: flex;
@@ -236,12 +289,13 @@ h1, h2, h3 {
     gap: 15px;
     transition: var(--transition-smooth);
 }
+
 .sidebar-nav a:hover {
     color: var(--primary-pink);
     transform: translateX(-10px);
 }
 
-/* --- 8. الفوتر المتطور (Professional Footer) --- */
+/* --- 8. الفوتر المتطور الفاخر (Professional Footer) --- */
 .main-footer {
     background: var(--surface-light);
     border-top: 1px solid rgba(255, 145, 164, 0.1);
@@ -289,6 +343,7 @@ h1, h2, h3 {
     font-weight: 400;
     transition: var(--transition-smooth);
 }
+
 .footer-links a:hover {
     color: var(--primary-pink);
     padding-right: 5px;
@@ -318,9 +373,65 @@ h1, h2, h3 {
     transform: translateY(-3px);
 }
 
-/* --- الاستجابة للشاشات (Media Queries) --- */
+/* --- 9. مسارات وحقول النماذج المستقرة (Forms) --- */
+input[type="text"], input[type="tel"], input[type="date"], input[type="time"], select, textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 145, 164, 0.2);
+    border-radius: 12px;
+    font-family: 'Cairo', sans-serif;
+    color: var(--text-dark);
+    background-color: var(--bg-white);
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary-pink);
+    box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.15);
+}
+
+/* --- 10. التوافقية الشاملة مع كلاسات تايلوند القديمة (Tailwind Utility Bridge) --- */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.flex-1 { flex: 1 1 0%; }
+.gap-2 { gap: 0.5rem; }
+.p-4 { padding: 1rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.rounded-full { border-radius: 9999px; }
+.w-full { width: 100%; }
+.aspect-square { aspect-ratio: 1 / 1; }
+
+/* شارات التنقل الرقمية والخطية للعملاء */
+.dots-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 145, 164, 0.3);
+    transition: var(--transition-smooth);
+}
+
+.dots-indicator.active {
+    background: var(--primary-pink);
+    width: 24px;
+    border-radius: 4px;
+}
+
+/* --- 11. استجابة ومرونة الشاشات الكاملة (Media Queries) --- */
 @media (max-width: 992px) {
     .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 768px) {
+    h1 { font-size: 2rem !important; }
+    h2 { font-size: 1.6rem !important; }
+    .waterfall-container { height: 240px; }
+    .waterfall-item { height: 110px; }
+    .mt-section { margin-top: 35px; }
+    .mb-section { margin-bottom: 35px; }
 }
 
 @media (max-width: 600px) {
@@ -334,7 +445,5 @@ h1, h2, h3 {
         transform: translateX(50%);
     }
     .social-links { justify-content: center; }
-    
-    .waterfall-container { height: 250px; }
-    .product-card { min-width: 200px; }
+    .product-card, .royal-card { min-width: 200px; }
 }

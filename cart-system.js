@@ -1,373 +1,453 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Cart & Checkout Engine | محرك السلة وإتمام الطلبات المتطور
+ * 👑 BoseSweets Sovereign Cart & Checkout Engine | محرك السلة السيادي (V29.0)
  * ============================================================================
- * الإصدار: V3.0 - Sovereign Integration Edition
  * الإدارة المرجعية: حلويات بوسي
- * الوظيفة: إدارة حالة السلة محلياً، حساب الإجماليات، وربط خطوط الشحن بالواتساب.
+ * التحديث التقني: تصحيح بروتوكول التسعير لاعتماد السعر الإداري الأصلي بنسبة 100%.
+ * الوظيفة: تأمين السلة، حفظ الطلبات محلياً وسحابياً، دمج الطلبات المخصصة،
+ * وتوجيه الطلب النهائي لغرفة العمليات عبر واتساب بشكل منسق وموثق.
  */
 
-import boseConfig from './core-engine.js';
+import coreExports from './core-engine.js';
+const { boseConfig, BoseState } = coreExports;
 
-// رقم الإدارة المعتمد والرسمي لاستقبال الطلبات وحجز المناسبات
 const BUSINESS_WHATSAPP = "201097238441";
 
-// مناطق ومصاريف الشحن المعتمدة رسمياً لمركز الفرافرة وقراها
-const shippingZones = [
-    { id: 'sh_1', name: 'الكفاح (داخل القرية)', fee: 10 },
-    { id: 'sh_2', name: 'القرى المجاورة للكفاح (أبو منقار / عين غصين...)', fee: 20 },
-    { id: 'sh_3', name: 'قرية النهضة', fee: 30 },
-    { id: 'sh_4', name: 'مركز الفرافرة (المدينة)', fee: 25 }
-];
-
-document.addEventListener('DOMContentLoaded', () => {
-    updateCartBadge();
-    
-    // التعبئة الفورية للواجهة إذا كان المستخدم داخل صفحة السلة
-    if (document.getElementById('cart-items-list')) {
-        renderCartPage();
-    }
-
-    // ربط نموذج الحجز والطلب بمحرك التحقق قبل الإرسال للواتساب
-    const checkoutForm = document.getElementById('checkout-form');
-    if (checkoutForm) {
-        populateShippingZones();
-        checkoutForm.addEventListener('submit', handleCheckoutSubmit);
-    }
-});
-
 /**
- * 👑 جلب بيانات السلة الآمنة من الذاكرة المحلية
+ * 👑 محرك التسعير السيادي (Sovereign Pricing Engine)
+ * تم إلغاء أي زيادات آلية؛ السعر يُستمد حصرياً من قرارات الإدارة في لوحة التحكم.
  */
-export function getCartData() {
-    try {
-        const data = localStorage.getItem('BoseSweets_Cart');
-        return data ? JSON.parse(data) : [];
-    } catch (e) {
-        if (window.BoseMonitor) window.BoseMonitor.report(e, 'cart-system.js', null, null, 'getCartData');
-        return [];
-    }
-}
-window.getCartData = getCartData;
+export const getAdjustedPrice = function(basePrice) {
+    // تم الحفاظ على الدالة لضمان توافقية الاستدعاءات، مع إعادة السعر الأصلي دون تعديل.
+    return Math.round(parseFloat(basePrice));
+};
 
-/**
- * 👑 حفظ التعديلات وتحديث الشارات الرقمية فوراً
- */
-export function saveCartData(cartArray) {
-    try {
-        localStorage.setItem('BoseSweets_Cart', JSON.stringify(cartArray));
-        updateCartBadge();
-    } catch (e) {
-        if (window.BoseMonitor) window.BoseMonitor.report(e, 'cart-system.js', null, null, 'saveCartData');
-    }
-}
-window.saveCartData = saveCartData;
+// ============================================================================
+// 💾 أولاً: إدارة التخزين والذاكرة الفولاذية
+// ============================================================================
 
-/**
- * 👑 دالة إضافة المنتجات مع كميتها المختارة من الواجهة
- */
-export function addWithQtyContext(btnElement, productId) {
-    try {
-        const cardEl = document.getElementById(`product-card-${productId}`);
-        let qty = 1;
-        if (cardEl) {
-            const qtySpan = cardEl.querySelector('.temp-qty-display');
-            if (qtySpan) qty = parseInt(qtySpan.innerText) || 1;
+export const saveCartToStorage = function() { 
+    try { 
+        if (window.ClientStorageEngine && typeof window.ClientStorageEngine.set === 'function') {
+            window.ClientStorageEngine.set('bose_cart', BoseState.cart); 
         }
+        if (typeof window !== 'undefined' && window.localStorage) {
+            localStorage.setItem('boseSweets_cart_data', JSON.stringify(BoseState.cart)); 
+        }
+        updateCartDisplay();
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'saveCartToStorage');
+    } 
+};
+
+export const clearCartStorage = function() {
+    try {
+        BoseState.cart.length = 0;
+        saveCartToStorage();
+        syncCartUI();
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'clearCartStorage');
+    }
+};
+
+// ============================================================================
+// 🛒 ثانياً: العمليات الحسابية وعرض السلة (UI Sync)
+// ============================================================================
+
+export const calculateCartTotal = function(deliveryMode = 'pickup') {
+    let subtotal = 0;
+    
+    BoseState.cart.forEach(item => {
+        const product = BoseState.catalogMap ? BoseState.catalogMap.get(String(item.id)) : BoseState.catalog.find(p => String(p.id) === String(item.id));
+        let basePrice = product ? parseFloat(product.price) : parseFloat(item.price);
         
-        // البحث عن المنتج في الكتالوج العام الحقيقي أو المحلي الاحتياطي
-        const allProducts = window.catalog || [];
-        const product = allProducts.find(p => String(p.id) === String(productId));
+        let finalPrice = getAdjustedPrice(basePrice);
         
-        if (!product) {
-            if (typeof window.showSystemToast === 'function') {
-                window.showSystemToast('تعذر العثور على بيانات الصنف، جاري تحديث الصفحة.', 'error');
-            }
+        // حساب إضافات التورتة المخصصة (الإضافات الفنية المعتمدة)
+        let addonsPrice = 0;
+        if (item.isCustomCake) {
+            if (item.printing && item.printing.includes('أكل')) addonsPrice += 60;
+            else if (item.printing && item.printing.includes('غير قابلة')) addonsPrice += 20;
+        }
+
+        subtotal += ((finalPrice + addonsPrice) * item.quantity);
+    });
+
+    let shippingFee = 0;
+    if (deliveryMode !== 'pickup') {
+        const zone = BoseState.shippingZones.find(z => z.id === deliveryMode || z.name === deliveryMode);
+        if (zone) shippingFee = parseFloat(zone.fee);
+        else if (deliveryMode.includes('الفرافرة')) shippingFee = 25;
+        else if (deliveryMode.includes('الكفاح')) shippingFee = 10;
+        else shippingFee = 20; 
+    }
+
+    return {
+        subtotal: subtotal,
+        shippingFee: shippingFee,
+        total: subtotal + shippingFee
+    };
+};
+
+export const updateCartDisplay = function() {
+    try {
+        const countBadge = document.getElementById('cart-count-badge');
+        const countBadgeMobile = document.getElementById('mobile-cart-badge');
+        
+        const totalItems = BoseState.cart.reduce((sum, item) => sum + item.quantity, 0);
+        
+        if (countBadge) {
+            countBadge.innerText = totalItems;
+            countBadge.style.display = totalItems > 0 ? 'flex' : 'none';
+        }
+        if (countBadgeMobile) {
+            countBadgeMobile.innerText = totalItems;
+            countBadgeMobile.style.display = totalItems > 0 ? 'flex' : 'none';
+        }
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'updateCartDisplay');
+    }
+};
+
+export const syncCartUI = function() {
+    try {
+        const cartList = document.getElementById('cart-items-list');
+        const summarySubtotal = document.getElementById('summary-subtotal');
+        const summaryTotal = document.getElementById('summary-total');
+        
+        if (!cartList) return;
+
+        if (BoseState.cart.length === 0) {
+            cartList.innerHTML = `
+                <div class="empty-cart flex flex-col items-center justify-center p-12 text-center">
+                    <i data-lucide="shopping-bag" class="w-20 h-20 mb-4 opacity-20" style="color: ${boseConfig.branding.colors.pink};"></i>
+                    <h3 class="text-xl font-black mb-2" style="color: ${boseConfig.branding.colors.dark};">سلة المشتريات فارغة</h3>
+                    <p class="font-bold opacity-60">تصفح المنيو واكتشف أشهى الحلويات التي تليق بحضرتك.</p>
+                </div>`;
+            if (summarySubtotal) summarySubtotal.innerText = '0 ج.م';
+            if (summaryTotal) summaryTotal.innerText = '0 ج.م';
+            if (window.lucide) window.lucide.createIcons();
             return;
         }
 
-        let cart = getCartData();
-        const existingItem = cart.find(item => String(item.id) === String(productId));
+        let html = '';
+        BoseState.cart.forEach((item, index) => {
+            let finalPrice = getAdjustedPrice(item.price);
+            let addonsHtml = '';
+            
+            if (item.isCustomCake) {
+                if (item.printing && item.printing.includes('أكل')) finalPrice += 60;
+                else if (item.printing && item.printing.includes('غير قابلة')) finalPrice += 20;
+                
+                addonsHtml = `
+                    <div class="text-[10px] opacity-70 mt-1 font-bold">
+                        <span class="block">حجم: ${item.persons} أفراد | كيك: ${item.flavor}</span>
+                        ${item.printing && item.printing !== 'بدون' ? `<span class="block">طباعة: ${item.printing}</span>` : ''}
+                    </div>
+                `;
+            }
 
+            let itemImgUrl = item.image;
+            if (itemImgUrl && !itemImgUrl.startsWith('http')) {
+                itemImgUrl = `${boseConfig.cloudinary.baseDeliveryUrl}${itemImgUrl.replace(/^\//, '')}`;
+            }
+
+            html += `
+                <div class="cart-item bg-white p-4 rounded-2xl border mb-4 flex gap-4 items-center" style="border-color: ${boseConfig.branding.colors.pink}20; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                    <img src="${itemImgUrl}" alt="${item.name}" class="w-20 h-20 rounded-xl object-cover" onerror="this.onerror=null; this.src='${boseConfig.cloudinary.baseDeliveryUrl}v1712586716/logo_bose_gold.jpg';">
+                    <div class="flex-1">
+                        <h4 class="font-black text-sm" style="color: ${boseConfig.branding.colors.dark};">${item.name}</h4>
+                        ${addonsHtml}
+                        <div class="font-black mt-2" style="color: ${boseConfig.branding.colors.pink};">${finalPrice} ج.م</div>
+                    </div>
+                    <div class="flex flex-col items-center gap-2">
+                        <button onclick="window.modQ(${index}, 1)" class="w-8 h-8 rounded-full border bg-gray-50 font-black" style="color: ${boseConfig.branding.colors.pink}; border-color: ${boseConfig.branding.colors.pink}40;">+</button>
+                        <span class="font-black text-sm w-8 text-center">${item.quantity}</span>
+                        <button onclick="window.modQ(${index}, -1)" class="w-8 h-8 rounded-full border bg-gray-50 font-black" style="color: ${boseConfig.branding.colors.pink}; border-color: ${boseConfig.branding.colors.pink}40;">-</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        cartList.innerHTML = html;
+        
+        const currentZone = document.getElementById('checkout-area') ? document.getElementById('checkout-area').value : 'pickup';
+        const totals = calculateCartTotal(currentZone);
+        
+        if (summarySubtotal) summarySubtotal.innerText = `${totals.subtotal} ج.م`;
+        if (summaryTotal) summaryTotal.innerText = `${totals.total} ج.م`;
+
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'syncCartUI');
+    }
+};
+
+export const modQ = function(index, delta) {
+    try {
+        if (BoseState.cart[index]) {
+            BoseState.cart[index].quantity += delta;
+            if (BoseState.cart[index].quantity <= 0) {
+                BoseState.cart.splice(index, 1);
+            } else if (BoseState.cart[index].quantity > 50) {
+                if(typeof window.showSystemToast === 'function') window.showSystemToast("الكمية المطلوبة ضخمة، سيتم التنسيق مع الإدارة.", "info");
+                BoseState.cart[index].quantity = 50;
+            }
+            saveCartToStorage();
+            syncCartUI();
+        }
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'modQ');
+    }
+};
+
+// ============================================================================
+// 🛍️ ثالثاً: أوامر الإضافة والدمج (Cart Logic)
+// ============================================================================
+
+export const addWithQtyContext = function(btnElement, productId) {
+    try {
+        const container = btnElement.closest('.product-card') || btnElement.closest('.product-info-content') || btnElement.parentElement.parentElement;
+        if (!container) return;
+        
+        const displaySpan = container.querySelector('.temp-qty-display');
+        let qtyToAdd = 1;
+        if (displaySpan) {
+            qtyToAdd = parseInt(displaySpan.innerText) || 1;
+        }
+
+        const product = BoseState.catalogMap ? BoseState.catalogMap.get(String(productId)) : BoseState.catalog.find(p => String(p.id) === String(productId));
+        if (!product) return;
+
+        const existingItem = BoseState.cart.find(item => String(item.id) === String(productId) && !item.isCustomCake);
         if (existingItem) {
-            existingItem.quantity += qty;
+            existingItem.quantity += qtyToAdd;
         } else {
-            cart.push({
+            BoseState.cart.push({
                 id: product.id,
                 name: product.name,
                 price: product.price,
-                size: product.size || 'قطعة',
+                image: product.img || product.image || (product.images ? product.images[0] : null),
+                size: product.size || 'حجم قياسي',
+                quantity: qtyToAdd,
                 category: product.category,
-                img: product.img || '',
-                quantity: qty
+                isCustomCake: false
             });
         }
 
-        saveCartData(cart);
+        if (displaySpan) displaySpan.innerText = "1";
+        saveCartToStorage();
+        if(typeof window.showSystemToast === 'function') window.showSystemToast(`تم إضافة (${qtyToAdd}) من ${product.name} لسلة حضرتك بنجاح.`, 'success');
         
-        if (typeof window.showSystemToast === 'function') {
-            window.showSystemToast(`👑 تم إضافة ${qty} من (${product.name}) بنجاح لحقيبتك.`, 'success');
-        }
-        
-        // إعادة تعيين العداد بالكرت إلى 1 بعد الإضافة الناجحة
-        if (cardEl) {
-            const qtySpan = cardEl.querySelector('.temp-qty-display');
-            if (qtySpan) qtySpan.innerText = "1";
-        }
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'addWithQtyContext');
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'addWithQtyContext');
     }
-}
-window.addWithQtyContext = addWithQtyContext;
+};
 
-/**
- * 👑 تحديث الشارة الرقمية العلوية على أيقونة السلة لراحة العميل
- */
-export function updateCartBadge() {
-    const badge = document.getElementById('cart-badge');
-    if (!badge) return;
-    
-    const cart = getCartData();
-    const totalItems = cart.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
-    
-    if (totalItems > 0) {
-        badge.innerText = totalItems;
-        badge.style.display = 'flex';
-    } else {
-        badge.style.display = 'none';
-    }
-}
-window.updateCartBadge = updateCartBadge;
-
-/**
- * 👑 تعبئة خيارات التوصيل ديناميكياً بأسعار شحن الفرافرة
- */
-function populateShippingZones() {
-    const zoneSelect = document.getElementById('delivery-zone');
-    if (!zoneSelect) return;
-    
-    let optionsHtml = '<option value="" data-fee="0" disabled selected>اختر منطقة التوصيل الرسمية...</option>';
-    shippingZones.forEach(zone => {
-        optionsHtml += `<option value="${zone.name}" data-fee="${zone.fee}">${zone.name} (+${zone.fee} ج.م)</option>`;
-    });
-    zoneSelect.innerHTML = optionsHtml;
-    
-    zoneSelect.addEventListener('change', () => {
-        if (typeof calculateOrderTotal === 'function') calculateOrderTotal();
-    });
-}
-
-/**
- * 👑 رسم وتحديث مكونات صفحة السلة وجدول المشتريات
- */
-export function renderCartPage() {
-    const container = document.getElementById('cart-items-list');
-    const summaryContainer = document.getElementById('cart-summary-box');
-    if (!container) return;
-
-    const cart = getCartData();
-
-    if (cart.length === 0) {
-        container.innerHTML = `
-            <div style="text-align: center; padding: 40px 10px;">
-                <p style="font-weight: 700; opacity: 0.6; margin-bottom: 20px;">حقيبة المشتريات فارغة حالياً.. تصفح المنيو واحجز طلبك الآن ✨</p>
-                <a href="menu.html" class="btn-primary" style="display: inline-block; text-decoration: none;">الانتقال للمنيو الملكي</a>
-            </div>
-        `;
-        if (summaryContainer) summaryContainer.style.display = 'none';
-        return;
-    }
-
-    if (summaryContainer) summaryContainer.style.display = 'block';
-
-    let html = '';
-    cart.forEach(item => {
-        let finalImg = item.img || 'v1712586716/logo_bose_gold.jpg';
-        if (!finalImg.startsWith('http') && !finalImg.startsWith('https')) {
-            finalImg = `${boseConfig.cloudinary.baseDeliveryUrl}${finalImg}`;
+export const processBoseSweetsOrder = function(productId, productName, productPrice) {
+    try {
+        const existingItem = BoseState.cart.find(item => String(item.id) === String(productId) && !item.isCustomCake);
+        if (existingItem) existingItem.quantity += 1;
+        else {
+            const product = BoseState.catalogMap ? BoseState.catalogMap.get(String(productId)) : BoseState.catalog.find(p => String(p.id) === String(productId));
+            BoseState.cart.push({
+                id: productId,
+                name: productName,
+                price: productPrice,
+                image: product ? (product.img || product.image) : null,
+                quantity: 1,
+                size: product ? product.size : 'حجم قياسي',
+                isCustomCake: false
+            });
         }
-
-        html += `
-        <div class="flex items-center justify-between p-4 mb-3" style="background: ${boseConfig.branding.colors.white}; border: 1px solid rgba(255,145,164,0.15); border-radius: 12px; gap: 15px;">
-            <img src="${finalImg}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,145,164,0.1);" alt="${item.name}">
-            
-            <div class="flex-1">
-                <h4 class="font-black text-sm" style="color: ${boseConfig.branding.colors.dark}; margin:0;">${item.name}</h4>
-                <p class="text-xs opacity-70" style="margin:2px 0;">الحجم/النوع: ${item.size}</p>
-                <div class="font-bold text-xs" style="color: ${boseConfig.branding.colors.pink};">${item.price} ج.م</div>
-            </div>
-
-            <div class="flex items-center gap-2">
-                <div class="flex items-center gap-1 bg-gray-50 rounded-full p-0.5 border border-pink-100">
-                    <button onclick="updateCartItemQty('${item.id}', -1)" class="w-6 h-6 flex items-center justify-center bg-white rounded-full text-xs font-black" style="color: ${boseConfig.branding.colors.pink}; border:1px solid #eee;">-</button>
-                    <span class="font-black text-xs px-1" style="color: ${boseConfig.branding.colors.dark}; min-w:15px; text-align:center;">${item.quantity}</span>
-                    <button onclick="updateCartItemQty('${item.id}', 1)" class="w-6 h-6 flex items-center justify-center bg-white rounded-full text-xs font-black" style="color: ${boseConfig.branding.colors.pink}; border:1px solid #eee;">+</button>
-                </div>
-                
-                <button onclick="removeCartItem('${item.id}')" style="background: transparent; border: none; color: #ff4d4d; cursor: pointer; padding: 5px;" aria-label="حذف الصنف">
-                    💔
-                </button>
-            </div>
-        </div>
-        `;
-    });
-
-    container.innerHTML = html;
-    calculateOrderTotal();
-}
-window.renderCartPage = renderCartPage;
-
-/**
- * 👑 تحديث الكمية داخل صفحة السلة وإعادة حساب الأسعار
- */
-export function updateCartItemQty(productId, delta) {
-    let cart = getCartData();
-    const item = cart.find(i => String(i.id) === String(productId));
-    if (!item) return;
-
-    item.quantity = parseInt(item.quantity) + delta;
-    if (item.quantity < 1) {
-        cart = cart.filter(i => String(i.id) !== String(productId));
+        saveCartToStorage();
+        if(typeof window.showSystemToast === 'function') window.showSystemToast(`تم إضافة ${productName} للسلة بنجاح.`, 'success');
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'processBoseSweetsOrder');
     }
-    
-    saveCartData(cart);
-    renderCartPage();
-}
-window.updateCartItemQty = updateCartItemQty;
+};
 
-/**
- * 👑 حذف صنف تماماً من السلة
- */
-export function removeCartItem(productId) {
-    let cart = getCartData();
-    cart = cart.filter(i => String(i.id) !== String(productId));
-    saveCartData(cart);
-    renderCartPage();
-}
-window.removeCartItem = removeCartItem;
-
-/**
- * 👑 حساب الإجماليات بدقة متناهية متضمناً شحن الفرافرة
- */
-export function calculateOrderTotal() {
-    const cart = getCartData();
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    
-    let shippingFee = 0;
-    const deliveryModeEl = document.querySelector('input[name="delivery-mode"]:checked');
-    const zoneSelect = document.getElementById('delivery-zone');
-    
-    if (deliveryModeEl && deliveryModeEl.value === 'home' && zoneSelect) {
-        const selectedOption = zoneSelect.options[zoneSelect.selectedIndex];
-        if (selectedOption && selectedOption.value !== "") {
-            shippingFee = parseInt(selectedOption.getAttribute('data-fee')) || 0;
-        }
-    }
-
-    const total = subtotal + shippingFee;
-
-    // تحديث عناصر العرض بالـ HTML إن وُجدت
-    const subtotalEl = document.getElementById('summary-subtotal');
-    const shippingEl = document.getElementById('summary-shipping');
-    const totalEl = document.getElementById('summary-total');
-
-    if (subtotalEl) subtotalEl.innerText = `${subtotal} ج.م`;
-    if (shippingEl) shippingEl.innerText = shippingFee > 0 ? `${shippingFee} ج.م` : `0 ج.م`;
-    if (totalEl) totalEl.innerText = `${total} ج.م`;
-
-    return { subtotal, shippingFee, total };
-}
-window.calculateOrderTotal = calculateOrderTotal;
-
-/**
- * 👑 معالجة إرسال الطلب وصياغة الرسالة الرسمية للواتساب
- */
-async function handleCheckoutSubmit(e) {
-    e.preventDefault();
-    
-    const cart = getCartData();
-    if (cart.length === 0) {
-        if (typeof window.showSystemToast === 'function') window.showSystemToast('حقيبتك فارغة، لا يمكن إتمام الطلب.', 'error');
-        return;
-    }
-
-    const name = document.getElementById('customer-name').value.trim();
-    const phone = document.getElementById('customer-phone').value.trim();
-    const date = document.getElementById('delivery-date').value;
-    const time = document.getElementById('delivery-time').value;
-    const notes = document.getElementById('order-notes').value.trim();
-    
-    const deliveryModeEl = document.querySelector('input[name="delivery-mode"]:checked');
-    const deliveryMode = deliveryModeEl ? deliveryModeEl.value : 'pickup';
-
-    if (!name || !phone || !date || !time) {
-        if (typeof window.showSystemToast === 'function') window.showSystemToast('يرجى ملء جميع الحقول الأساسية لتأكيد الحجز.', 'error');
-        return;
-    }
-
-    let locationDetails = '';
-    if (deliveryMode === 'home') {
-        const zone = document.getElementById('delivery-zone').value;
-        const address = document.getElementById('detailed-address').value.trim();
-        const altPhone = document.getElementById('alt-phone').value.trim();
+export const commitCakeBuilderToCart = function() {
+    try {
+        const cState = BoseState.cakeState;
+        const cakeId = 'custom_cake_' + Date.now();
         
-        if (!zone || !address) {
-            if (typeof window.showSystemToast === 'function') window.showSystemToast('يرجى اختيار منطقة الشحن وكتابة العنوان التفصيلي بدقة.', 'error');
+        let basePrice = BoseState.siteSettings?.cakeBuilder?.basePrice || 145;
+        let finalPrice = basePrice + ((cState.persons - 4) * 15); 
+        
+        BoseState.cart.push({
+            id: cakeId,
+            name: `تورتة مخصصة (${cState.persons} أفراد)`,
+            price: finalPrice,
+            image: cState.refImage || `${boseConfig.cloudinary.baseDeliveryUrl}v1712586716/logo_bose_gold.jpg`,
+            quantity: 1,
+            isCustomCake: true,
+            flavor: cState.flavor,
+            printing: cState.printing,
+            notes: cState.notes
+        });
+
+        saveCartToStorage();
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم إضافة التورتة المخصصة للسلة بنجاح.", "success");
+        setTimeout(() => { window.location.href = 'cart.html'; }, 800);
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'commitCakeBuilderToCart');
+    }
+};
+
+// ============================================================================
+// 🚀 رابعاً: التوثيق السحابي والإرسال للإدارة (Checkout & Dispatch)
+// ============================================================================
+
+export const submitOrderFinal = async function() {
+    try {
+        if (BoseState.cart.length === 0) {
+            if(typeof window.showSystemToast === 'function') window.showSystemToast("سلة المشتريات فارغة.", "error");
             return;
         }
-        locationDetails = `📍 نوع الطلب: توصيل للمنزل\nالمنطقة: ${zone}\nالعنوان: ${address}${altPhone ? `\nرقم هاتف بديل: ${altPhone}` : ''}`;
-    } else {
-        locationDetails = `🏬 نوع الطلب: استلام من مقر البراند\nالموقع الفرعي: (الكفاح، شارع الوحدة المحلية، بجوار صيدلية د. أحمد مجدي)`;
-    }
 
-    // 👑 بناء النص المهني لرسالة الإدارة المرجعية لعلامة حلويات بوسي
-    let message = `👑 طلب حجز جديد - حلويات بوسي 👑\n\n`;
-    message += `👤 بيانات العميل الراقية:\nالاسم: ${name}\nرقم الاتصال: ${phone}\n\n`;
-    message += `${locationDetails}\n\n`;
-    message += `🕒 الموعد المطلوب المعتمد:\nالتاريخ: ${date}\nالوقت: ${time}\n\n`;
-    message += `🛍️ تفاصيل المشتريات الفاخرة:\n`;
-    
-    cart.forEach((item, index) => {
-        const itemTotal = item.price * item.quantity;
-        message += `${index + 1}. ${item.name} [${item.size}] | العدد: ${item.quantity} | القيمة: ${itemTotal} ج.م\n`;
-    });
+        const nameInput = document.getElementById('checkout-name');
+        const phoneInput = document.getElementById('checkout-phone');
+        const areaSelect = document.getElementById('checkout-area');
 
-    const totals = calculateOrderTotal();
-    message += `\n💰 الإجماليات المالية الدقيقة:\n`;
-    message += `- قيمة المنتجات الصافية: ${totals.subtotal} ج.م\n`;
-    message += `- مصاريف شحن المنطقة: ${totals.shippingFee} ج.م\n`;
-    message += `🔹 الإجمالي الكلي للطلب: ${totals.total} ج.م\n`;
+        if (!nameInput || !phoneInput || !nameInput.value.trim() || !phoneInput.value.trim()) {
+            if(typeof window.showSystemToast === 'function') window.showSystemToast("برجاء إدخال البيانات المطلوبة بشكل صحيح.", "error");
+            return;
+        }
 
-    if (notes) {
-        message += `\n📝 ملاحظات وتنسيقات مخصصة من العميل:\n"${notes}"\n`;
-    }
-    
-    message += `\nيرجى مراجعة الجدول الزمني وتأكيد الحجز والإفادة بالقبول الفوري للإدارة المرجعية.`;
+        const name = nameInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const area = areaSelect ? areaSelect.options[areaSelect.selectedIndex].text : 'غير محدد';
+        const areaValue = areaSelect ? areaSelect.value : 'pickup';
 
-    // المزامنة اللحظية مع الفايربيز لحفظ الطلب في الخزنة السحابية قبل التوجيه للواتساب
-    if (boseConfig.network && boseConfig.network.safeWrite) {
-        const orderId = 'order_' + Date.now();
-        await boseConfig.network.safeWrite('orders', orderId, {
-            id: orderId,
+        const totals = calculateCartTotal(areaValue);
+        
+        const secureOrderId = typeof window.generateSecureOrderId === 'function' ? window.generateSecureOrderId() : 'BS_' + Date.now().toString(36).toUpperCase();
+
+        const orderData = {
+            orderId: secureOrderId,
             customerName: name,
             customerPhone: phone,
-            deliveryDate: date,
-            deliveryTime: time,
-            deliveryMode: deliveryMode,
-            itemsArray: cart,
-            subtotal: totals.subtotal,
-            shippingFee: totals.shippingFee,
-            total: totals.total,
+            area: area,
+            itemsArray: BoseState.cart,
+            totals: totals,
             status: 'pending',
             timestamp: Date.now()
-        });
-    }
+        };
 
-    // تفريغ السلة وتوجيه العميل مباشرة إلى الواتساب الرسمي المعتمد
-    localStorage.removeItem('BoseSweets_Cart');
-    updateCartBadge();
-    
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${BUSINESS_WHATSAPP}?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
+        const checkoutBtn = document.getElementById('final-checkout-btn');
+        if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.innerHTML = 'جاري توثيق الطلب...'; }
+
+        await dispatchWhatsAppOrder(orderData, totals);
+
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'submitOrderFinal');
+        if(typeof window.showSystemToast === 'function') window.showSystemToast("حدث عطل مؤقت، يرجى المحاولة مرة أخرى.", "error");
+        const checkoutBtn = document.getElementById('final-checkout-btn');
+        if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.innerHTML = 'تأكيد وإرسال الطلب عبر واتساب'; }
+    }
+};
+
+export const dispatchWhatsAppOrder = async function(orderData, totals) {
+    try {
+        // 1. تسجيل الطلب سحابياً لتنبيه لوحة تحكم الإدارة فوراً
+        if (boseConfig.network && boseConfig.network.safeWrite) {
+            await boseConfig.network.safeWrite('orders', orderData.orderId, {
+                id: orderData.orderId,
+                customerName: orderData.customerName,
+                customerPhone: orderData.customerPhone,
+                area: orderData.area,
+                itemsArray: orderData.itemsArray,
+                total: totals.total,
+                status: 'pending',
+                timestamp: orderData.timestamp,
+                createdAt: new Date().toISOString()
+            });
+        } else {
+            window.dispatchEvent(new CustomEvent('secureOrderBackup', { detail: orderData }));
+        }
+
+        // 2. صياغة التقرير المرفق للإدارة
+        let msg = `مرحباً إدارة حلويات بوسي 👑،\n`;
+        msg += `طلب جديد قادم من الموقع الإلكتروني:\n`;
+        msg += `---------------------------\n`;
+        msg += `👤 العميل: ${orderData.customerName}\n`;
+        msg += `📞 الموبايل: ${orderData.customerPhone}\n`;
+        msg += `📍 المنطقة: ${orderData.area}\n`;
+        msg += `---------------------------\n`;
+        msg += `🛍️ التفاصيل:\n`;
+
+        orderData.itemsArray.forEach((item, index) => {
+            let itemFinalPrice = getAdjustedPrice(item.price);
+            let addonsDesc = '';
+            
+            if (item.isCustomCake) {
+                if (item.printing && item.printing.includes('أكل')) itemFinalPrice += 60;
+                else if (item.printing && item.printing.includes('غير قابلة')) itemFinalPrice += 20;
+                
+                addonsDesc = ` [نكهة: ${item.flavor} | طباعة: ${item.printing}]`;
+                if(item.notes) addonsDesc += `\n*ملاحظة العميل:* ${item.notes}`;
+            }
+
+            const itemTotal = itemFinalPrice * item.quantity;
+            msg += `${index + 1}. ${item.name}${addonsDesc}\n   العدد: ${item.quantity} | القيمة: ${itemTotal} ج.م\n`;
+        });
+
+        msg += `---------------------------\n`;
+        msg += `🧾 الإجماليات:\n`;
+        msg += `- الحساب: ${totals.subtotal} ج.م\n`;
+        if (totals.shippingFee > 0) {
+            msg += `- التوصيل: ${totals.shippingFee} ج.م\n`;
+        }
+        msg += `🔹 الإجمالي المطلوب: ${totals.total} ج.م\n`;
+        msg += `---------------------------\n`;
+        msg += `رقم الطلب المرجعي: #${orderData.orderId}\n`;
+
+        const encodedMsg = encodeURIComponent(msg);
+        const waLink = `https://wa.me/${BUSINESS_WHATSAPP}?text=${encodedMsg}`;
+        
+        clearCartStorage();
+        
+        if (typeof window.showSystemToast === 'function') {
+            window.showSystemToast('تم تأكيد الطلب، سيتم تحويل حضرتك للتواصل مع الإدارة الآن 👑', 'success');
+        }
+        
+        setTimeout(() => {
+            window.open(waLink, '_blank');
+            window.location.href = 'index.html';
+        }, 1500);
+
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'dispatchWhatsAppOrder');
+    }
+};
+
+// ============================================================================
+// 🔗 الربط السيادي (Global Window Bindings)
+// ============================================================================
+
+if (typeof window !== 'undefined') {
+    try {
+        window.saveCartToStorage = saveCartToStorage;
+        window.clearCartStorage = clearCartStorage;
+        window.calculateCartTotal = calculateCartTotal;
+        window.updateCartDisplay = updateCartDisplay;
+        window.syncCartUI = syncCartUI;
+        window.modQ = modQ;
+        window.addWithQtyContext = addWithQtyContext;
+        window.processBoseSweetsOrder = processBoseSweetsOrder;
+        window.commitCakeBuilderToCart = commitCakeBuilderToCart;
+        window.submitOrderFinal = submitOrderFinal;
+        window.dispatchWhatsAppOrder = dispatchWhatsAppOrder;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCartDisplay();
+            if (document.getElementById('cart-items-list')) {
+                syncCartUI();
+            }
+        });
+        
+        console.log("👑 BoseSweets Engine: تم تصحيح محرك السلة (V29.0) ليعتمد الأسعار السيادية للإدارة.");
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'Final Global Bindings');
+    }
 }

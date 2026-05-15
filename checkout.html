@@ -11,15 +11,15 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        /* تنسيقات خاصة بصفحة إتمام الطلب */
+        /* تنسيقات خاصة بصفحة إتمام الطلب - معتمدة بالهوية البصرية الرسمية */
         .checkout-container {
             max-width: 800px;
             margin: 0 auto;
-            background: var(--surface-light);
-            border-radius: var(--border-radius-card);
+            background: var(--surface-light, #ffffff);
+            border-radius: var(--border-radius-card, 16px);
             border: 1px solid rgba(255, 145, 164, 0.2);
             padding: 40px;
-            box-shadow: var(--shadow-soft);
+            box-shadow: var(--shadow-soft, 0 4px 20px rgba(0,0,0,0.05));
         }
 
         .form-section {
@@ -39,7 +39,7 @@
             align-items: center;
             gap: 10px;
             font-size: 1.4rem;
-            color: var(--primary-pink);
+            color: var(--primary-pink, #ff91a4);
             margin-bottom: 25px;
         }
 
@@ -51,7 +51,7 @@
             display: block;
             font-weight: 700;
             margin-bottom: 10px;
-            color: var(--text-main);
+            color: var(--text-main, #333333);
         }
 
         .form-input, .form-select, .form-textarea {
@@ -61,14 +61,14 @@
             border-radius: 12px;
             font-family: inherit;
             font-size: 1rem;
-            color: var(--text-main);
-            background: var(--bg-white);
-            transition: var(--transition-smooth);
+            color: var(--text-main, #333333);
+            background: var(--bg-white, #ffffff);
+            transition: var(--transition-smooth, all 0.3s ease);
         }
 
         .form-input:focus, .form-select:focus, .form-textarea:focus {
             outline: none;
-            border-color: var(--primary-pink);
+            border-color: var(--primary-pink, #ff91a4);
             box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.1);
         }
 
@@ -85,8 +85,8 @@
             padding: 20px;
             text-align: center;
             cursor: pointer;
-            transition: var(--transition-smooth);
-            background: var(--bg-white);
+            transition: var(--transition-smooth, all 0.3s ease);
+            background: var(--bg-white, #ffffff);
             position: relative;
         }
 
@@ -97,31 +97,31 @@
         }
 
         .delivery-card.selected {
-            border-color: var(--primary-pink);
+            border-color: var(--primary-pink, #ff91a4);
             background: rgba(255, 145, 164, 0.05);
         }
 
         .delivery-card i {
             width: 32px;
             height: 32px;
-            color: var(--text-muted);
+            color: var(--text-muted, #888888);
             margin-bottom: 10px;
-            transition: var(--transition-smooth);
+            transition: var(--transition-smooth, all 0.3s ease);
         }
 
         .delivery-card.selected i {
-            color: var(--primary-pink);
+            color: var(--primary-pink, #ff91a4);
         }
 
         .delivery-card-title {
             font-weight: 700;
             font-size: 1.1rem;
-            color: var(--text-main);
+            color: var(--text-main, #333333);
         }
 
         .branch-info {
             background: rgba(255, 145, 164, 0.05);
-            border: 1px dashed var(--primary-pink);
+            border: 1px dashed var(--primary-pink, #ff91a4);
             border-radius: 12px;
             padding: 20px;
             margin-top: 20px;
@@ -137,12 +137,26 @@
             display: flex;
             justify-content: center;
             gap: 12px;
+            cursor: pointer;
+            color: #fff;
+            border-radius: 12px;
+            border: 1px solid #25D366;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-weight: 700;
         }
 
-        .whatsapp-btn:hover {
-            background-color: var(--bg-white);
+        .whatsapp-btn:hover:not(:disabled) {
+            background-color: var(--bg-white, #ffffff);
             color: #25D366;
             border-color: #25D366;
+        }
+
+        .whatsapp-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            background-color: #ccc;
+            border-color: #ccc;
         }
 
         @media (max-width: 600px) {
@@ -156,24 +170,25 @@
     <header class="main-header">
         <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
             <button class="btn-icon" onclick="window.history.back()"><i data-lucide="arrow-right"></i></button>
-            <h2 style="margin: 0; color: var(--primary-pink); font-size: 1.6rem; text-align: center;">إتمام الطلب</h2>
-            <div style="width: 44px;"></div> </div>
+            <h2 style="margin: 0; color: var(--primary-pink, #ff91a4); font-size: 1.6rem; text-align: center;">إتمام الطلب</h2>
+            <div style="width: 44px;"></div>
+        </div>
     </header>
 
     <main class="container mt-section mb-section">
         
         <div class="checkout-container">
-            <form id="checkout-form" onsubmit="event.preventDefault();">
+            <form id="checkout-form">
                 
                 <div class="form-section">
                     <h3 class="section-title"><i data-lucide="truck"></i> طريقة الاستلام</h3>
                     <div class="delivery-options">
-                        <label class="delivery-card selected" id="card-delivery" onclick="toggleDeliveryMode('delivery')">
+                        <label class="delivery-card selected" id="card-delivery" onclick="window.toggleDeliveryMode('delivery')">
                             <input type="radio" name="deliveryMode" value="delivery" checked>
                             <i data-lucide="map-pin"></i>
                             <div class="delivery-card-title">توصيل للمنزل</div>
                         </label>
-                        <label class="delivery-card" id="card-pickup" onclick="toggleDeliveryMode('pickup')">
+                        <label class="delivery-card" id="card-pickup" onclick="window.toggleDeliveryMode('pickup')">
                             <input type="radio" name="deliveryMode" value="pickup">
                             <i data-lucide="store"></i>
                             <div class="delivery-card-title">استلام من الفرع</div>
@@ -181,9 +196,9 @@
                     </div>
 
                     <div class="branch-info" id="branch-details">
-                        <h4 style="color: var(--primary-pink); margin-bottom: 10px;">عنوان الفرع:</h4>
-                        <p style="font-weight: 700; color: var(--text-main); margin-bottom: 5px;">الكفاح، شارع الوحدة المحلية</p>
-                        <p style="font-size: 0.95rem; color: var(--text-muted);">بجوار صيدلية د. أحمد مجدي وعيادة د. علي</p>
+                        <h4 style="color: var(--primary-pink, #ff91a4); margin-bottom: 10px;">عنوان الفرع:</h4>
+                        <p style="font-weight: 700; color: var(--text-main, #333333); margin-bottom: 5px;">الكفاح، شارع الوحدة المحلية</p>
+                        <p style="font-size: 0.95rem; color: var(--text-muted, #888888);">بجوار صيدلية د. أحمد مجدي وعيادة د. علي</p>
                     </div>
                 </div>
 
@@ -200,7 +215,7 @@
                         </div>
                         <div class="form-group" id="alt-phone-group">
                             <label class="form-label">رقم هاتف بديل (للتوصيل) <span style="color:red;">*</span></label>
-                            <input type="tel" id="alt-phone" class="form-input" dir="ltr" placeholder="01xxxxxxxxx">
+                            <input type="tel" id="alt-phone" class="form-input" dir="ltr" placeholder="01xxxxxxxxx" required>
                         </div>
                     </div>
                 </div>
@@ -210,11 +225,15 @@
                     <div class="form-group">
                         <label class="form-label">المنطقة <span style="color:red;">*</span></label>
                         <select class="form-select" id="delivery-zone">
-                            <option value="">اختر المنطقة...</option>
-                            <option value="الكفاح">الكفاح</option>
-                            <option value="مركز الفرافرة">مركز الفرافرة</option>
-                            <option value="النهضة">النهضة</option>
-                            <option value="أبو منقار">أبو منقار</option>
+                            <option value="" disabled selected>اختر المنطقة المحددة...</option>
+                            <option value="الكفاح" data-fee="10">قرية الكفاح (10 ج.م)</option>
+                            <option value="مدينة الفرافرة" data-fee="25">مدينة الفرافرة (25 ج.م)</option>
+                            <option value="القرى المجاورة للكفاح" data-fee="20">القرى المجاورة للكفاح (20 ج.م)</option>
+                            <option value="أبو منقار" data-fee="45">أبو منقار (45 ج.م)</option>
+                            <option value="النهضة" data-fee="30">قرية النهضة (30 ج.م)</option>
+                            <option value="أبو هريرة" data-fee="25">قرية أبو هريرة (25 ج.م)</option>
+                            <option value="عثمان بن عفان" data-fee="30">قرية عثمان بن عفان (30 ج.م)</option>
+                            <option value="أخرى" data-fee="50">مناطق أخرى (تحدد الإدارة التكلفة)</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -238,10 +257,10 @@
                 </div>
 
                 <div style="margin-top: 50px;">
-                    <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px;">
-                        بالضغط على تأكيد، سيتم تحويلك لواتساب لإرسال تفاصيل طلبك للإدارة.
+                    <p style="text-align: center; color: var(--text-muted, #888888); font-size: 0.9rem; margin-bottom: 15px;">
+                        بالضغط على تأكيد، سيتم توثيق الطلب وتحويلك لواتساب للتواصل مع الإدارة.
                     </p>
-                    <button type="submit" class="btn-primary whatsapp-btn" id="submit-order-btn">
+                    <button type="submit" class="whatsapp-btn" id="submit-order-btn">
                         تأكيد وإرسال الطلب عبر واتساب <i data-lucide="send"></i>
                     </button>
                 </div>
@@ -255,17 +274,33 @@
         </div>
     </footer>
 
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="core-engine.js"></script>
+    <script type="module" src="data-bridge.js"></script>
+    <script type="module" src="cart-system.js"></script>
+    
     <script>
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            
+            // تعيين التاريخ الأدنى للطلب إلى اليوم لتنظيم المواعيد الإدارية
+            const dateInput = document.getElementById('order-date');
+            if (dateInput) {
+                const today = new Date().toISOString().split('T')[0];
+                dateInput.setAttribute('min', today);
+            }
+        });
 
-        // واجهة برمجية بسيطة لتغيير شكل الصفحة بناءً على طريقة الاستلام
-        function toggleDeliveryMode(mode) {
+        // توسيع وتطوير دالة التبديل لتشمل كافة متطلبات التحقق
+        window.toggleDeliveryMode = function(mode) {
             const cardDelivery = document.getElementById('card-delivery');
             const cardPickup = document.getElementById('card-pickup');
             const addressSection = document.getElementById('address-section');
             const branchDetails = document.getElementById('branch-details');
             const altPhoneGroup = document.getElementById('alt-phone-group');
             const altPhoneInput = document.getElementById('alt-phone');
+            const zoneSelect = document.getElementById('delivery-zone');
+            const addressInput = document.getElementById('detailed-address');
 
             if (mode === 'delivery') {
                 cardDelivery.classList.add('selected');
@@ -273,18 +308,168 @@
                 addressSection.style.display = 'block';
                 branchDetails.style.display = 'none';
                 altPhoneGroup.style.display = 'block';
-                // تفعيل الإلزام للعنوان ورقم الهاتف البديل
                 altPhoneInput.setAttribute('required', 'true');
+                zoneSelect.setAttribute('required', 'true');
+                addressInput.setAttribute('required', 'true');
             } else {
                 cardPickup.classList.add('selected');
                 cardDelivery.classList.remove('selected');
                 addressSection.style.display = 'none';
                 branchDetails.style.display = 'block';
                 altPhoneGroup.style.display = 'none';
-                // إلغاء الإلزام لأن العميل سيستلم بنفسه
                 altPhoneInput.removeAttribute('required');
+                zoneSelect.removeAttribute('required');
+                addressInput.removeAttribute('required');
             }
-        }
+            
+            // تحديث الإجماليات لحظياً في حال وجود محرك السلة
+            if (typeof window.calculateOrderTotal === 'function') {
+                window.calculateOrderTotal();
+            }
+        };
+
+        // هندسة متقدمة لوظيفة تأكيد الطلب والتوجيه اللحظي والحفظ السحابي السيادي
+        document.getElementById('checkout-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // التحقق من تفعيل معالجة الطلبات المركزية داخل cart-system
+            // إذا كان النظام المركزي محملاً سيتولى المهمة لتجنب الازدواجية
+            if (typeof window.handleCheckoutSubmit === 'function' && e.isTrusted) {
+                 // إيقاف المعالجة المحلية للاعتماد على الوحدة المركزية
+                 return;
+            }
+
+            const submitBtn = document.getElementById('submit-order-btn');
+            const originalBtnText = submitBtn.innerHTML;
+            
+            submitBtn.innerHTML = '<i data-lucide="loader" class="spin-animation"></i> جاري تأمين الطلب وتوثيقه سحابياً...';
+            submitBtn.disabled = true;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+
+            try {
+                // انتظار جلب الكتالوج الحي بالكامل لضمان التسعير الدقيق
+                if (window.catalogReady) {
+                    await window.catalogReady;
+                }
+
+                // جلب المنتجات بشكل آمن
+                let rawCart = JSON.parse(localStorage.getItem('BoseSweets_Cart')) || JSON.parse(localStorage.getItem('bose_cart_items')) || [];
+                if (rawCart.length === 0) {
+                    alert("نعتذر، يبدو أن حقيبة المشتريات فارغة. يرجى مراجعة القائمة.");
+                    window.location.href = 'menu.html';
+                    return;
+                }
+
+                // تجهيز المتغيرات والبيانات الإدارية
+                const deliveryMode = document.querySelector('input[name="deliveryMode"]:checked').value;
+                const customerName = document.getElementById('customer-name').value.trim();
+                const whatsappPhone = document.getElementById('whatsapp-phone').value.trim();
+                const orderDate = document.getElementById('order-date').value;
+                const orderTime = document.getElementById('order-time').value;
+                
+                let zone = '';
+                let address = '';
+                let altPhone = '';
+                let shippingFee = 0;
+
+                if (deliveryMode === 'delivery') {
+                    const zoneSelect = document.getElementById('delivery-zone');
+                    if (!zoneSelect.value) {
+                        alert("قرار إداري: يرجى تحديد المنطقة لاحتساب رسوم التوصيل بشكل صحيح.");
+                        submitBtn.innerHTML = originalBtnText;
+                        submitBtn.disabled = false;
+                        return;
+                    }
+                    zone = zoneSelect.options[zoneSelect.selectedIndex].text;
+                    shippingFee = parseFloat(zoneSelect.options[zoneSelect.selectedIndex].dataset.fee) || 0;
+                    address = document.getElementById('detailed-address').value.trim();
+                    altPhone = document.getElementById('alt-phone').value.trim();
+                }
+
+                let subtotal = 0;
+                let itemsListText = '';
+                let secureItemsData = [];
+                const liveCatalog = window.catalog || [];
+
+                // مطابقة الأسعار بقاعدة البيانات المركزية لضمان الاستقرار ومنع التلاعب
+                rawCart.forEach((item, index) => {
+                    const dbProduct = liveCatalog.find(p => String(p.id) === String(item.id));
+                    const securePrice = dbProduct ? parseFloat(dbProduct.price) : parseFloat(item.price);
+                    const productName = dbProduct ? dbProduct.name : item.name;
+                    const itemTotal = securePrice * item.quantity;
+                    subtotal += itemTotal;
+
+                    itemsListText += `${index + 1}. ${productName} [${item.size || 'أساسي'}]\n   العدد: ${item.quantity} | القيمة: ${itemTotal} ج.م\n`;
+                    secureItemsData.push({
+                        id: item.id,
+                        name: productName,
+                        price: securePrice,
+                        quantity: item.quantity,
+                        size: item.size || 'أساسي',
+                        total: itemTotal
+                    });
+                });
+
+                const finalTotal = subtotal + shippingFee;
+                const generatedOrderId = 'ORD-' + Math.floor(1000 + Math.random() * 9000) + '-' + Date.now().toString().slice(-4);
+
+                // تجهيز حزمة البيانات للسحابة السيادية بأقصى درجات التفصيل
+                const cloudOrderData = {
+                    orderId: generatedOrderId,
+                    timestamp: new Date().toISOString(),
+                    customerInfo: { name: customerName, whatsapp: whatsappPhone, altPhone: altPhone },
+                    deliveryDetails: { mode: deliveryMode, zone: zone, address: address, date: orderDate, time: orderTime },
+                    financials: { subtotal: subtotal, shippingFee: shippingFee, finalTotal: finalTotal },
+                    items: secureItemsData,
+                    status: 'جديد'
+                };
+
+                // إرسال نبضة للسحابة لحفظ الطلب عبر جسر البيانات
+                window.dispatchEvent(new CustomEvent('secureOrderBackup', { detail: cloudOrderData }));
+                
+                // صياغة رسالة الإدارة المهنية والدقيقة (خالية من الإيموجي المبالغ فيه ومصاغة بأسلوب القرار المهني)
+                let msg = `👑 طلب حجز جديد - حلويات بوسي 👑\n\n`;
+                msg += `رقم المرجع: ${generatedOrderId}\n\n`;
+                msg += `👤 بيانات العميل:\nالاسم: ${customerName}\nرقم الاتصال: ${whatsappPhone}\n\n`;
+                
+                if (deliveryMode === 'delivery') {
+                    msg += `📍 نوع الطلب: توصيل للمنزل\n`;
+                    msg += `المنطقة: ${zone}\n`;
+                    msg += `العنوان: ${address}\n`;
+                    if(altPhone) msg += `رقم هاتف الاستلام: ${altPhone}\n\n`;
+                } else {
+                    msg += `🏬 نوع الطلب: استلام من مقر البراند\nالموقع: الكفاح، شارع الوحدة المحلية\n\n`;
+                }
+                
+                msg += `🕒 الموعد المطلوب:\nالتاريخ: ${orderDate}\nالوقت: ${orderTime}\n\n`;
+                msg += `🛍️ تفاصيل المشتريات:\n${itemsListText}\n`;
+                msg += `💰 الإجماليات:\n`;
+                msg += `- المنتجات: ${subtotal} ج.م\n`;
+                if (deliveryMode === 'delivery') {
+                    msg += `- مصاريف الشحن: ${shippingFee} ج.م\n`;
+                }
+                msg += `🔹 الإجمالي المستحق: ${finalTotal} ج.م\n\n`;
+                msg += `بانتظار تأكيد الإدارة.`;
+
+                // تنظيف السلة محلياً بعد التأمين
+                localStorage.removeItem('BoseSweets_Cart');
+                localStorage.removeItem('bose_cart_items');
+                if (typeof window.updateCartBadge === 'function') window.updateCartBadge();
+                window.dispatchEvent(new Event('cartUpdated'));
+
+                // التوجيه النهائي والحاسم
+                const encodedMsg = encodeURIComponent(msg);
+                const adminPhone = window.adminWhatsAppNumber || "201097238441"; // رقم الإدارة المعتمد
+                window.location.href = `https://wa.me/${adminPhone}?text=${encodedMsg}`;
+
+            } catch (error) {
+                console.error("عطل تقني أثناء توثيق مسار الطلب:", error);
+                alert("تم رصد تذبذب في الاتصال. يرجى المحاولة مرة أخرى لضمان دقة توثيق الطلب.");
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        });
     </script>
 </body>
 </html>

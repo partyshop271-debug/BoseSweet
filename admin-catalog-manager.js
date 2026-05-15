@@ -2,10 +2,17 @@
  * ============================================================================
  * 👑 محرك إدارة الكتالوج السيادي | Catalog Manager Engine
  * ============================================================================
- * الوظيفة: تشغيل نافذة الإضافة/التعديل، جمع بيانات المنتج، وتمريرها لمحرك السحابة.
+ * الإدارة المرجعية: حلويات بوسي
+ * الوظيفة: تشغيل نافذة الإضافة/التعديل، جلب وتحديث بيانات المنتج، وتمريرها لمحرك السحابة.
+ * التحديث: دمج وظائف التعديل المباشر (Edit Mode) والتوافق مع V10 Modular.
  */
 
-import { saveNewProduct, fetchAllProducts } from './admin-database.js';
+import boseConfig from './core-engine.js';
+import { saveNewProduct, updateProductDetails } from './admin-database.js';
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+// متغير لتتبع حالة النافذة (هل هي إضافة منتج جديد أم تعديل منتج قائم؟)
+let currentEditingProductId = null;
 
 // ============================================================================
 // 1. بناء واجهة النافذة المنبثقة (Modal Injection)
@@ -36,6 +43,7 @@ function injectProductModal() {
                             <option value="ديسباسيتو">ديسباسيتو</option>
                             <option value="سينابون">سينابون</option>
                             <option value="قشطوطة">قشطوطة</option>
+                            <option value="دوناتس">دوناتس</option>
                             <option value="ورد">قسم الورد</option>
                         </select>
                     </div>
@@ -73,20 +81,73 @@ function injectProductModal() {
     `;
     
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    lucide.createIcons();
+    if (typeof lucide !== 'undefined') lucide.createIcons();
     
     // تفعيل أزرار الإغلاق والإرسال
-    document.getElementById('close-modal-btn').addEventListener('click', closeProductModal);
+    document.getElementById('close-modal-btn').addEventListener('click', window.closeProductModal);
     document.getElementById('product-form').addEventListener('submit', handleProductSubmit);
 }
 
 // ============================================================================
-// 2. دوال التحكم بالنافذة (Open & Close)
+// 2. دوال التحكم بالنافذة (Open & Close & Edit Logic)
 // ============================================================================
-window.openProductModal = function() {
+window.openProductModal = async function(productId = null) {
     const modal = document.getElementById('product-modal-overlay');
+    const form = document.getElementById('product-form');
+    const title = document.getElementById('modal-title');
+    const submitBtn = document.getElementById('save-product-btn');
+    
     if (!modal) return;
-    modal.style.display = 'flex';
+
+    // تعيين المعرف الحالي لتحديد ما إذا كانت العملية إضافة أم تعديل
+    currentEditingProductId = productId;
+
+    if (productId) {
+        // --- وضع التعديل (Edit Mode) ---
+        title.innerText = "تعديل بيانات المنتج";
+        submitBtn.innerHTML = '<i data-lucide="refresh-cw"></i> تحديث واعتماد التعديل';
+        form.style.opacity = '0.5'; // تأثير بصري أثناء جلب البيانات
+        modal.style.display = 'flex'; // إظهار النافذة مبكراً
+        
+        try {
+            const db = boseConfig.db;
+            if (!db) throw new Error("السحابة غير متصلة.");
+            
+            const docRef = doc(db, 'catalog', productId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                document.getElementById('prod-name').value = data.name || '';
+                document.getElementById('prod-category').value = data.category || 'تورت';
+                document.getElementById('prod-price').value = data.price || 0;
+                document.getElementById('prod-desc').value = data.description || data.desc || '';
+                document.getElementById('prod-image').value = data.image || data.img || '';
+                document.getElementById('prod-isNew').checked = !!data.isNew;
+                document.getElementById('prod-isBestSeller').checked = !!data.isBestSeller;
+            } else {
+                alert('قرار إداري: هذا المنتج لم يعد موجوداً في السحابة المركزية.');
+                window.closeProductModal();
+                return;
+            }
+        } catch (e) {
+            if (window.BoseMonitor) window.BoseMonitor.report(e, 'admin-catalog-manager.js', null, 'openProductModal');
+            alert('حدث خلل أثناء جلب بيانات المنتج.');
+            window.closeProductModal();
+            return;
+        } finally {
+            form.style.opacity = '1';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+    } else {
+        // --- وضع الإضافة (Add Mode) ---
+        title.innerText = "إضافة منتج جديد للكتالوج";
+        submitBtn.innerHTML = '<i data-lucide="upload-cloud"></i> رفع واعتماد المنتج';
+        form.reset();
+        modal.style.display = 'flex';
+    }
+
     // تفعيل الحركة الناعمة
     setTimeout(() => {
         modal.style.opacity = '1';
@@ -94,7 +155,7 @@ window.openProductModal = function() {
     }, 10);
 };
 
-function closeProductModal() {
+window.closeProductModal = function() {
     const modal = document.getElementById('product-modal-overlay');
     if (!modal) return;
     modal.style.opacity = '0';
@@ -102,11 +163,19 @@ function closeProductModal() {
     setTimeout(() => {
         modal.style.display = 'none';
         document.getElementById('product-form').reset();
+        currentEditingProductId = null; // تفريغ المعرف
     }, 300);
-}
+};
 
 // ============================================================================
-// 3. معالجة الإرسال للسحابة (Form Submission)
+// 3. دالة الاستدعاء الخارجي للتعديل (يتم استدعاؤها من admin-catalog-view.js)
+// ============================================================================
+window.initiateProductEdit = function(productId) {
+    window.openProductModal(productId);
+};
+
+// ============================================================================
+// 4. معالجة الإرسال للسحابة (Form Submission)
 // ============================================================================
 async function handleProductSubmit(e) {
     e.preventDefault();
@@ -115,57 +184,62 @@ async function handleProductSubmit(e) {
     const originalText = submitBtn.innerHTML;
     
     // تحويل الزر لحالة التحميل لمنع التكرار
-    submitBtn.innerHTML = '<i data-lucide="loader" class="spin-animation"></i> جاري الرفع للسحابة...';
+    submitBtn.innerHTML = '<i data-lucide="loader" class="spin-animation"></i> جاري مزامنة القرار الإداري...';
     submitBtn.disabled = true;
     submitBtn.style.opacity = '0.7';
 
     try {
         // جمع البيانات من الإدارة
         const productData = {
-            id: 'bose_' + Date.now(), // توليد معرف فريد
             name: document.getElementById('prod-name').value.trim(),
             category: document.getElementById('prod-category').value,
             price: parseFloat(document.getElementById('prod-price').value),
             description: document.getElementById('prod-desc').value.trim(),
             image: document.getElementById('prod-image').value.trim(),
-            size: 'أساسي', // الحجم الافتراضي (يمكن تغييره لاحقاً)
+            size: 'أساسي',
             isNew: document.getElementById('prod-isNew').checked,
             isBestSeller: document.getElementById('prod-isBestSeller').checked,
-            status: 'متاح'
+            status: 'متاح',
+            isActive: true // ضمان التوفر الدائم في واجهة العملاء فور الاعتماد
         };
 
-        // إرسال الأمر لمحرك قواعد البيانات
-        await saveNewProduct(productData);
+        if (currentEditingProductId) {
+            // تنفيذ التعديل
+            await updateProductDetails(currentEditingProductId, productData);
+            alert('قرار إداري: تم تحديث بيانات المنتج بنجاح وتوثيقها في السحابة السيادية.');
+        } else {
+            // تنفيذ الإضافة
+            productData.id = 'bose_' + Date.now();
+            await saveNewProduct(productData);
+            alert('قرار إداري: تم اعتماد المنتج الجديد بنجاح ورفعه لقاعدة البيانات السيادية.');
+        }
+
+        window.closeProductModal();
         
-        // إشعار الإدارة بالنجاح
-        alert('قرار إداري: تم اعتماد المنتج بنجاح ورفعه لقاعدة البيانات السيادية.');
-        closeProductModal();
-        
-        // سيتم إضافة دالة هنا لاحقاً لتحديث جدول المنتجات فوراً
+        // ملاحظة: لا حاجة لاستدعاء دالة تحديث الجدول يدوياً هنا، محرك (onSnapshot) سيتولى الأمر فوراً.
 
     } catch (error) {
-        alert('حدث خلل أثناء الرفع، راجعي سجل الصندوق الأسود لمزيد من التفاصيل.');
+        alert('حدث خلل أثناء التنفيذ، يرجى مراجعة سجل الصندوق الأسود لمزيد من التفاصيل.');
         if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-catalog-manager.js', null, 'handleProductSubmit');
     } finally {
         submitBtn.innerHTML = originalText;
         submitBtn.disabled = false;
         submitBtn.style.opacity = '1';
-        lucide.createIcons();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 }
 
 // ============================================================================
-// 4. التشغيل التلقائي عند التحميل
+// 5. التشغيل التلقائي عند التحميل
 // ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
     injectProductModal();
 
     // التقاط أي ضغطة على زر "إضافة منتج جديد" في لوحة التحكم وربطه بالنافذة
     document.body.addEventListener('click', (e) => {
-        // التحقق مما إذا كان العنصر المضغوط هو زر الإضافة
         const target = e.target.closest('button');
         if (target && target.innerText.includes('إضافة منتج جديد')) {
-            window.openProductModal();
+            window.openProductModal(null);
         }
     });
 });
