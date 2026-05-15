@@ -183,11 +183,10 @@
 
     <!-- شريط الإشعارات العلوي -->
     <div class="ticker-container py-2 text-white z-50 relative">
-        <div class="ticker-track text-sm font-semibold tracking-wide">
+        <div class="ticker-track text-sm font-semibold tracking-wide" id="global-ticker-track">
             <span class="px-8">حلويات بوسي: استكشف تشكيلتنا الجديدة من الحلويات الفاخرة ✨</span>
             <span class="px-8">مزايا خاصة لعملائنا في الفرافرة | جودة استثنائية وإتقان في كل خطوة</span>
-            <span class="px-8">حلويات بوسي: استكشف تشكيلتنا الجديدة من الحلويات الفاخرة ✨</span>
-            <span class="px-8">مزايا خاصة لعملائنا في الفرافرة | جودة استثنائية وإتقان في كل خطوة</span>
+            <span class="px-8">حلويات بوسي: طعم فاخر يليق بسيادتكم ✨</span>
         </div>
     </div>
 
@@ -221,9 +220,9 @@
                 </button>
                 <a href="cart.html" class="p-2 text-brand-dark hover:text-brand-pink transition-colors relative flex items-center">
                     <i data-lucide="shopping-bag" class="w-6 h-6"></i>
-                    <span id="cart-badge-header" class="absolute top-1 right-0 bg-brand-pink text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm">0</span>
+                    <!-- تم توحيد المعرف البرمجي للربط مع المحرك -->
+                    <span id="cart-count-badge" class="absolute top-1 right-0 bg-brand-pink text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow-sm" style="display: none;">0</span>
                 </a>
-                <!-- تم استبدال أيقونة المستخدم بأيقونة البحث -->
                 <a href="menu.html?action=search" class="p-2 text-brand-dark hover:text-brand-pink transition-colors">
                     <i data-lucide="search" class="w-6 h-6"></i>
                 </a>
@@ -232,7 +231,7 @@
     </header>
 
     <!-- ---------------------------------------------------- -->
-    <!-- القائمة الجانبية (Sidebar) مع لمسات اللون الوردي -->
+    <!-- القائمة الجانبية (Sidebar) -->
     <!-- ---------------------------------------------------- -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300" onclick="toggleSidebar()"></div>
     <aside id="sidebar" class="fixed top-0 right-0 w-[85%] max-w-[350px] h-full bg-white z-[70] transform translate-x-full transition-transform duration-400 ease-in-out flex flex-col shadow-2xl">
@@ -245,7 +244,6 @@
             </button>
         </div>
         <nav class="flex-grow overflow-y-auto p-4 flex flex-col gap-2 mt-4">
-            <!-- الروابط بتصميم جديد يعتمد على خلفيات وردية خفيفة وأيقونات -->
             <a href="index.html" class="flex items-center gap-4 text-lg font-bold text-brand-dark hover:text-brand-pink hover:bg-brand-pink/10 p-4 rounded-2xl transition-all">
                 <div class="bg-brand-pink/10 p-2 rounded-lg text-brand-pink"><i data-lucide="home" class="w-5 h-5"></i></div>
                 الصفحة الرئيسية
@@ -275,7 +273,7 @@
     <!-- ---------------------------------------------------- -->
     <!-- 1. قسم البطل (Hero Section) والشلال -->
     <!-- ---------------------------------------------------- -->
-    <main>
+    <main id="main-content" style="opacity: 0; transition: opacity 0.8s ease;">
         <section class="pt-12 pb-16 md:pt-20 md:pb-24">
             <div class="container mx-auto px-4 text-center max-w-4xl">
                 
@@ -288,27 +286,19 @@
                 </p>
 
                 <a href="menu.html" class="inline-block bg-brand-pink text-white font-bold text-lg py-3.5 px-10 rounded-full hover:bg-brand-dark transition-colors duration-300 mb-16 shadow-lg shadow-brand-pink/30">
-                    اطلب الآن
+                    استعرض المنيو
                 </a>
 
-                <!-- الشلال البصري (تم وضع صور افتراضية صلبة لمنع اختفائه قبل تحميل البيانات) -->
+                <!-- الشلال البصري (سيتم تحديث صوره ديناميكياً) -->
                 <div class="waterfall-mask w-full max-w-3xl mx-auto">
                     <div class="waterfall-col">
                         <div class="scroll-track scroll-up" id="waterfall-up-track">
-                            <!-- صور مبدئية لضمان عمل الشلال فوراً -->
-                            <div class="waterfall-img-container"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات"></div>
-                            <div class="waterfall-img-container"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات"></div>
-                            <div class="waterfall-img-container"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات"></div>
-                            <div class="waterfall-img-container"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات"></div>
+                            <!-- صور المحرك ستظهر هنا -->
                         </div>
                     </div>
                     <div class="waterfall-col" style="margin-top: 3rem;">
                         <div class="scroll-track scroll-down" id="waterfall-down-track">
-                            <!-- صور مبدئية لضمان عمل الشلال فوراً -->
-                            <div class="waterfall-img-container"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات"></div>
-                            <div class="waterfall-img-container"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات"></div>
-                            <div class="waterfall-img-container"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات"></div>
-                            <div class="waterfall-img-container"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات"></div>
+                            <!-- صور المحرك ستظهر هنا -->
                         </div>
                     </div>
                 </div>
@@ -316,7 +306,7 @@
         </section>
 
         <!-- ---------------------------------------------------- -->
-        <!-- 2. قسم الإرث (Brand Story) مع تكبير ارتفاع الصورة -->
+        <!-- 2. قسم الإرث (Brand Story) -->
         <!-- ---------------------------------------------------- -->
         <section class="bg-brand-light py-20 border-y border-gray-100">
             <div class="container mx-auto px-4 max-w-5xl text-center">
@@ -326,7 +316,6 @@
                     نكرس جهودنا لصنع حلويات فاخرة تجمع بين الأصالة والابتكار. شغفنا بالجودة والطعم الاستثنائي جعلنا الخيار الأول لعشاق التميز في الفرافرة.
                 </p>
                 
-                <!-- تعديل الارتفاع: استخدمنا aspect-[4/3] للموبايل و aspect-[16/8] للشاشات الكبيرة لزيادة الطول بشكل ملحوظ -->
                 <div class="rounded-3xl overflow-hidden aspect-[4/3] md:aspect-[16/8] bg-gray-200 shadow-premium relative group cursor-pointer border border-brand-pink/10" onclick="window.location.href='menu.html'">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="جودة حلويات بوسي" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                     <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center">
@@ -349,12 +338,12 @@
                 </div>
 
                 <div id="new-arrivals-container" class="flex gap-6 overflow-x-auto hide-scrollbar slider-container pb-8 pt-2 -mx-4 px-4">
-                    <!-- سيتم حقن الكروت الاحترافية هنا عبر JS -->
+                    <!-- سيتم حقن الكروت الاحترافية عبر JS -->
                 </div>
                 
                 <div class="text-center mt-6">
                     <a href="menu.html" class="inline-flex items-center gap-2 text-brand-dark font-bold hover:text-brand-pink transition-colors border border-gray-200 py-2.5 px-6 rounded-full hover:border-brand-pink">
-                        عرض الكل <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        عرض المنيو كاملاً <i data-lucide="arrow-left" class="w-4 h-4"></i>
                     </a>
                 </div>
             </div>
@@ -423,19 +412,17 @@
                 </div>
 
                 <div id="best-sellers-container" class="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-10 md:gap-x-6 md:gap-y-12">
-                    <!-- سيتم حقن كروت الأكثر مبيعاً هنا عبر JS -->
+                    <!-- سيتم حقن كروت الأكثر مبيعاً عبر JS -->
                 </div>
             </div>
         </section>
 
         <!-- ---------------------------------------------------- -->
-        <!-- 6. بانر تجربة الشراء (تم تحويل الخلفية البنية إلى وردي) -->
+        <!-- 6. بانر تجربة الشراء -->
         <!-- ---------------------------------------------------- -->
         <section class="py-10">
             <div class="container mx-auto px-4 max-w-5xl">
-                <!-- تم تغيير bg-brand-dark إلى bg-brand-pink -->
                 <div class="bg-brand-pink text-white rounded-3xl p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-10 overflow-hidden relative shadow-xl shadow-brand-pink/20">
-                    <!-- خلفية تزيينية مضيئة -->
                     <div class="absolute top-0 left-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
                     
                     <div class="z-10 text-center md:text-right md:w-1/2">
@@ -468,15 +455,11 @@
     </main>
 
     <!-- ---------------------------------------------------- -->
-    <!-- الفوتر الاحترافي (مُوسط وبدون النشرة البريدية) -->
+    <!-- الفوتر الاحترافي -->
     <!-- ---------------------------------------------------- -->
     <footer class="bg-white pt-16 pb-8 border-t border-gray-100 text-center">
         <div class="container mx-auto px-4 max-w-6xl">
-            
-            <!-- توزيع متناسق على 3 أعمدة مع التوسيط -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-                
-                <!-- عمود 1: روابط سريعة -->
                 <div class="flex flex-col items-center">
                     <h4 class="text-lg font-bold text-brand-dark mb-6 border-b-2 border-brand-pink/30 pb-2 inline-block px-4">روابط سريعة</h4>
                     <ul class="flex flex-col gap-4 text-brand-gray font-medium w-full items-center">
@@ -487,7 +470,6 @@
                     </ul>
                 </div>
 
-                <!-- عمود 2: الشركة -->
                 <div class="flex flex-col items-center">
                     <h4 class="text-lg font-bold text-brand-dark mb-6 border-b-2 border-brand-pink/30 pb-2 inline-block px-4">الشركة</h4>
                     <ul class="flex flex-col gap-4 text-brand-gray font-medium w-full items-center">
@@ -498,7 +480,6 @@
                     </ul>
                 </div>
 
-                <!-- عمود 3: اتصل بنا (مُوسط) -->
                 <div class="flex flex-col items-center">
                     <h4 class="text-lg font-bold text-brand-dark mb-6 border-b-2 border-brand-pink/30 pb-2 inline-block px-4">اتصل بنا</h4>
                     <ul class="flex flex-col gap-4 text-brand-gray font-medium items-center">
@@ -510,13 +491,7 @@
                             <i data-lucide="phone" class="w-5 h-5 text-brand-pink"></i>
                             <span dir="ltr" class="font-bold text-brand-dark">01097238441</span>
                         </li>
-                        <li class="flex items-center justify-center gap-2">
-                            <i data-lucide="mail" class="w-5 h-5 text-brand-pink"></i>
-                            <span>contact@bosesweets.com</span>
-                        </li>
                     </ul>
-                    
-                    <!-- أيقونات السوشيال ميديا مُوسطة أسفل جهات الاتصال -->
                     <div class="flex justify-center gap-4 mt-8">
                         <a href="#" class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-brand-gray hover:border-brand-pink hover:text-white hover:bg-brand-pink transition-all shadow-sm">
                             <i data-lucide="facebook" class="w-5 h-5"></i>
@@ -528,7 +503,6 @@
                 </div>
             </div>
 
-            <!-- القسم السفلي: الحقوق (مُوسط بالكامل) -->
             <div class="border-t border-gray-100 pt-8 flex flex-col items-center gap-3 text-sm font-medium text-brand-gray">
                 <div class="flex items-center justify-center gap-2">
                     <div class="text-brand-pink"><i data-lucide="gem" class="w-5 h-5"></i></div>
@@ -540,11 +514,26 @@
     </footer>
 
     <!-- ========================================================= -->
-    <!-- التكامل مع الجسر السيادي (data-bridge.js) وتوليد الكروت -->
+    <!-- الاستدعاء السيادي للمحرك الموحد (Unified Engine) -->
     <!-- ========================================================= -->
-    <script type="module">
-        if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+    <script type="module" src="unified-engine.js"></script>
 
+    <script type="module">
+        // انتظار تحميل المحرك السيادي
+        window.addEventListener('BoseSweets_Engine_Ready', () => {
+            console.log("👑 واجهة الاستقبال: المحرك الموحد في وضع التشغيل.");
+            
+            // تهيئة أيقونات لوسيد
+            if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+            
+            // تحديث عداد السلة من المحرك مباشرة
+            if (window.cartSystem) { window.cartSystem.updateCartDisplay(); }
+
+            // تفعيل الشلال البصري والحقن الديناميكي للمنتجات
+            handleCatalogData();
+        });
+
+        // وظيفة تصفح القائمة الجانبية
         window.toggleSidebar = function() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -561,12 +550,9 @@
             }
         };
 
+        // وظيفة بناء الكروت الفاخرة
         function createPremiumCard(product) {
-            const cloudinaryBaseUrl = "https://res.cloudinary.com/dyx4w0dr1/image/upload/";
-            const fallbackLogo = "v1712586716/logo_bose_gold.jpg";
-            const imgUrl = product.image ? 
-                (product.image.startsWith('http') ? product.image : cloudinaryBaseUrl + product.image.replace(/^\//, '')) 
-                : cloudinaryBaseUrl + fallbackLogo;
+            const imgUrl = window.processBoseImage ? window.processBoseImage(product.img || product.image) : (product.img || product.image);
 
             return `
                 <div class="royal-card slider-item group cursor-pointer" onclick="window.location.href='product.html?id=${product.id}'">
@@ -574,67 +560,73 @@
                         <img src="${imgUrl}" alt="${product.name}" loading="lazy">
                     </div>
                     <div class="flex flex-col flex-grow px-1">
-                        <h3 class="text-lg font-bold text-brand-dark group-hover:text-brand-pink transition-colors mb-1 truncate">${product.name}</h3>
-                        ${product.description ? `<p class="text-brand-gray text-sm mb-3 line-clamp-1">${product.description}</p>` : '<p class="text-brand-gray text-sm mb-3">تفاصيل راقية لطعم لا يُنسى.</p>'}
+                        <h3 class="text-lg font-bold text-brand-dark group-hover:text-brand-pink transition-colors mb-1 truncate text-right">${product.name}</h3>
+                        <p class="text-brand-gray text-sm mb-3 line-clamp-1 text-right">${product.description || 'تفاصيل راقية لطعم لا يُنسى.'}</p>
                         <div class="mt-auto flex justify-between items-center pt-2 border-t border-gray-100">
                             <span class="font-extrabold text-brand-dark text-lg">${product.price} ج.م</span>
-                            <button class="w-8 h-8 rounded-full bg-brand-light flex items-center justify-center text-brand-dark hover:bg-brand-pink hover:text-white transition-colors shadow-sm" onclick="event.stopPropagation(); /* Add to cart logic */">
-                                <i data-lucide="plus" class="w-4 h-4"></i>
-                            </button>
+                            <div class="flex items-center gap-2">
+                                <span class="temp-qty-display hidden">1</span> <!-- حقل مخفي للتوافق مع دالة الإضافة -->
+                                <button class="w-8 h-8 rounded-full bg-brand-light flex items-center justify-center text-brand-dark hover:bg-brand-pink hover:text-white transition-colors shadow-sm" 
+                                        onclick="event.stopPropagation(); window.cartSystem.addWithQtyContext(this, '${product.id}')">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             `;
         }
 
-        window.addEventListener('catalogDataReady', () => {
-            console.log("👑 الصفحة الرئيسية: تدفق البيانات لمعمارية الرقي الجديدة.");
+        // التعامل مع تدفق البيانات (الشلال والكروت)
+        function handleCatalogData() {
             if (!window.BoseState || !window.BoseState.catalog) return;
             const products = window.BoseState.catalog;
             if (products.length === 0) return;
 
-            // تحديث ديناميكي لصور الشلال مع استبدال الصور الافتراضية
-            const cloudinaryBaseUrl = "https://res.cloudinary.com/dyx4w0dr1/image/upload/";
-            const fallbackLogo = "v1712586716/logo_bose_gold.jpg";
+            // 1. تفعيل الشلال البصري بمنتجات حقيقية
+            const upTrack = document.getElementById('waterfall-up-track');
+            const downTrack = document.getElementById('waterfall-down-track');
             
-            let wfImages = products.slice(0, 8).map(p => p.image ? (p.image.startsWith('http') ? p.image : cloudinaryBaseUrl + p.image.replace(/^\//, '')) : cloudinaryBaseUrl + fallbackLogo);
-            while(wfImages.length < 4) { wfImages.push(...wfImages); }
+            if (upTrack && downTrack) {
+                // تصفية صور المنتجات للشلال
+                let wfImages = products.slice(0, 10).map(p => window.processBoseImage(p.img || p.image));
+                
+                // التأكد من وجود عدد كافٍ من الصور للحركة المستمرة
+                while(wfImages.length < 6) { wfImages.push(...wfImages); }
 
-            let upImagesHtml = '', downImagesHtml = '';
-            wfImages.forEach((url, i) => {
-                const imgTag = `<div class="waterfall-img-container"><img src="${url}" alt="فخامة بوسي" loading="lazy"></div>`;
-                if(i % 2 === 0) { upImagesHtml += imgTag; } else { downImagesHtml += imgTag; }
-            });
+                let upHtml = '', downHtml = '';
+                wfImages.forEach((url, i) => {
+                    const imgTag = `<div class="waterfall-img-container"><img src="${url}" alt="فخامة بوسي" loading="lazy"></div>`;
+                    if(i % 2 === 0) upHtml += imgTag; else downHtml += imgTag;
+                });
 
-            document.getElementById('waterfall-up-track').innerHTML = upImagesHtml + upImagesHtml;
-            document.getElementById('waterfall-down-track').innerHTML = downImagesHtml + downImagesHtml;
-
-            // حقن الكروت
-            const newArrivals = products.slice(0, 6);
-            const newArrivalsContainer = document.getElementById('new-arrivals-container');
-            if(newArrivalsContainer && newArrivals.length > 0) {
-                newArrivalsContainer.innerHTML = newArrivals.map(p => createPremiumCard(p)).join('');
+                // تكرار الصور لضمان سلاسة الأنيميشن
+                upTrack.innerHTML = upHtml + upHtml;
+                downTrack.innerHTML = downHtml + downHtml;
             }
 
-            const bestSellers = products.filter(p => p.isBestSeller).slice(0, 8);
-            const itemsToShow = bestSellers.length > 0 ? bestSellers : products.slice(0, 8);
+            // 2. حقن منتجات (وصل حديثاً)
+            const arrivalsContainer = document.getElementById('new-arrivals-container');
+            if (arrivalsContainer) {
+                arrivalsContainer.innerHTML = products.slice(0, 8).map(p => createPremiumCard(p)).join('');
+            }
+
+            // 3. حقن منتجات (الأكثر مبيعاً)
             const bestSellersContainer = document.getElementById('best-sellers-container');
-            if(bestSellersContainer && itemsToShow.length > 0) {
-                bestSellersContainer.innerHTML = itemsToShow.map(p => createPremiumCard(p)).join('');
+            if (bestSellersContainer) {
+                const bestSellers = products.filter(p => p.isBestSeller).slice(0, 8);
+                const toShow = bestSellers.length > 0 ? bestSellers : products.slice(0, 8);
+                bestSellersContainer.innerHTML = toShow.map(p => createPremiumCard(p)).join('');
             }
-            
+
+            // تحديث الأيقونات بعد الحقن
             if (typeof lucide !== 'undefined') { lucide.createIcons(); }
-        });
+        }
+
+        // الاستماع لتحديثات الكتالوج اللحظية من المحرك
+        window.addEventListener('catalogDataReady', handleCatalogData);
     </script>
-    
-    <script type="module" src="firebase-config.js"></script>
-    <script type="module" src="core-engine.js"></script>
-    <script type="module" src="data-bridge.js"></script>
-    <script type="module" src="ui-logic.js"></script>
-    <script type="module" src="cart-system.js"></script>
 
 </body>
 </html>
-
-
 

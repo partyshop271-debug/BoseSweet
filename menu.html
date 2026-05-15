@@ -11,8 +11,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="style.css">
-    
     <style id="bose-menu-architecture">
         :root {
             --site-color-theme: #ff91a4;
@@ -100,8 +98,8 @@
             }
         }
 
-        /* كارت المنتج الموحد */
-        .product-card {
+        /* كارت المنتج الموحد (تم التحسين ليتوافق مع وظائف المحرك) */
+        .royal-card {
             background: #ffffff;
             border-radius: 18px;
             overflow: hidden;
@@ -165,6 +163,10 @@
             cursor: pointer;
             transition: all 0.2s ease;
             font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-view {
@@ -174,6 +176,32 @@
         }
 
         .btn-view:active { transform: scale(0.96); }
+
+        .qty-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f5f5f5;
+            padding: 5px 12px;
+            border-radius: 50px;
+            margin-bottom: 10px;
+        }
+
+        .qty-btn {
+            background: none;
+            border: none;
+            font-weight: 900;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: var(--site-text);
+        }
+
+        .temp-qty-display {
+            font-weight: 900;
+            font-size: 0.9rem;
+            min-width: 20px;
+            text-align: center;
+        }
 
         /* حالة التحميل الفارغة */
         .empty-state {
@@ -201,13 +229,14 @@
             <div style="position: relative;">
                 <button onclick="window.location.href='cart.html'" style="border: none; background: transparent; cursor: pointer; padding: 5px;">
                     <i data-lucide="shopping-basket" style="width: 26px; height: 26px;"></i>
-                    <span id="cart-badge" style="position: absolute; top: -2px; right: -2px; background: var(--site-text); color: #fff; font-size: 10px; font-weight: 900; width: 20px; height: 20px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid #fff;">0</span>
+                    <!-- توحيد المعرف البرمجي للعداد السيادي -->
+                    <span id="cart-count-badge" style="position: absolute; top: -2px; right: -2px; background: var(--site-text); color: #fff; font-size: 10px; font-weight: 900; width: 20px; height: 20px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid #fff;">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="container" style="min-height: 80vh;">
+    <main class="container" style="min-height: 80vh; opacity: 0; transition: opacity 0.5s ease;" id="main-content">
         <div style="text-align: center; padding: 35px 20px 20px;">
             <h1 style="font-weight: 900; font-size: 2.2rem; color: var(--site-text); margin-bottom: 12px;">قائمة <span style="color: var(--site-color-theme);">التذوق الفاخر</span></h1>
             <p style="max-width: 600px; margin: 0 auto; font-weight: 700; opacity: 0.8; font-size: 1rem; line-height: 1.7;">نضع بين أيدي حضراتكم نتاج عقد من الإتقان، حيث تم انتقاء كل صنف بعناية ليناسب تطلعاتكم للتميز.</p>
@@ -220,7 +249,7 @@
             <div class="category-item" data-category="سينابون">السينابون</div>
             <div class="category-item" data-category="دوناتس">الدوناتس</div>
             <div class="category-item" data-category="قشطوطة">القشطوطة</div>
-            <div class="category-item" data-category="الورد">تنسيقات الورد</div>
+            <div class="category-item" data-category="ورد">تنسيقات الورد</div>
         </nav>
 
         <div class="menu-grid" id="menuGrid">
@@ -241,63 +270,130 @@
         <div style="font-weight: 900; opacity: 0.5; font-size: 0.8rem;">جميع الحقوق محفوظة وموثقة لعلامة حلويات بوسي © 2026</div>
     </footer>
 
+    <!-- الاستدعاء السيادي للمحرك الموحد -->
+    <script type="module" src="unified-engine.js"></script>
+
     <script type="module">
-        import coreExports from "./core-engine.js";
-        // استيراد الجسر لضمان تفعيل الدوال العالمية (Global Functions)
-        import "./data-bridge.js";
-
-        const { BoseState } = coreExports;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // تفعيل الأيقونات
+        // انتظار جاهزية المحرك السيادي
+        window.addEventListener('BoseSweets_Engine_Ready', () => {
+            console.log("👑 معرض المنتجات: تم الربط مع المحرك الموحد (V32.0).");
+            
             if (typeof lucide !== 'undefined') lucide.createIcons();
+            
+            const categoryNav = document.getElementById('categoryNav');
+            const menuGrid = document.getElementById('menuGrid');
+            const excellenceGrid = document.getElementById('excellenceGrid');
+            const mainContent = document.getElementById('main-content');
 
-            const categoryItems = document.querySelectorAll('.category-item');
+            // إظهار المحتوى بسلاسة
+            mainContent.style.opacity = '1';
 
             /**
-             * دالة التحديث المركزية: تعتمد كلياً على محرك الرسم الموحد في data-bridge
+             * دالة بناء الكروت المحسنة (Custom Renderer لصفحة المنيو)
+             * تضمن بناء روابط الصور من السحابة وتوفير عدادات الكمية.
              */
-            const updateUI = () => {
-                if (window.distributeProductsToUI) {
-                    window.distributeProductsToUI(BoseState.catalog);
-                }
+            const renderProductItem = (p) => {
+                const imgUrl = window.processBoseImage(p.img || p.image);
+                const isOut = p.inStock === false;
+
+                return `
+                    <div class="royal-card product-card group shadow-sm hover:shadow-md transition-all">
+                        <div class="product-image-wrapper cursor-pointer" onclick="window.location.href='product.html?id=${p.id}'">
+                            <img src="${imgUrl}" alt="${p.name}" class="${isOut ? 'grayscale' : ''}" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';">
+                        </div>
+                        <div class="product-details">
+                            <div>
+                                <h3 class="product-name text-right">${p.name}</h3>
+                                <div class="product-price text-right">${p.price} ج.م</div>
+                            </div>
+                            
+                            <div class="qty-control">
+                                <button class="qty-btn" onclick="window.updateTempQtyContext(this, 1)">+</button>
+                                <span class="temp-qty-display">1</span>
+                                <button class="qty-btn" onclick="window.updateTempQtyContext(this, -1)">-</button>
+                            </div>
+
+                            <button class="btn-action btn-view" ${isOut ? 'disabled' : ''} 
+                                    onclick="window.cartSystem.addWithQtyContext(this, '${p.id}')">
+                                <i data-lucide="shopping-cart" style="width: 16px; height: 16px;"></i>
+                                ${isOut ? 'نفدت الكمية' : 'إضافة للطلب'}
+                            </button>
+                        </div>
+                    </div>
+                `;
             };
 
-            // مستشعر الجاهزية السحابية
-            window.addEventListener('catalogDataReady', () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const initialCategory = urlParams.get('category') || 'all';
+            /**
+             * محرك الفلترة السيادي
+             */
+            const filterAndDisplay = (categoryName = 'all') => {
+                if (!window.BoseState || !window.BoseState.catalog) return;
+                
+                const catalog = window.BoseState.catalog;
+                
+                // تصفية المنتجات بناءً على القسم المختار
+                const filtered = categoryName === 'all' 
+                    ? catalog 
+                    : catalog.filter(p => p.category?.trim() === categoryName.trim());
 
-                // مزامنة التبويبات مع معطيات الرابط
-                categoryItems.forEach(item => {
-                    if (item.dataset.category === initialCategory) {
-                        item.classList.add('active');
-                        item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                    } else {
-                        item.classList.remove('active');
-                    }
-                });
+                if (filtered.length === 0) {
+                    menuGrid.innerHTML = `<div class="empty-state">نعتذر، لا توجد أصناف متاحة في هذا القسم حالياً.</div>`;
+                } else {
+                    menuGrid.innerHTML = filtered.map(p => renderProductItem(p)).join('');
+                }
 
-                updateUI();
+                // تحديث قسم "الأكثر طلباً" بمنتجات عشوائية أو مختارة
+                const bestSellers = catalog.filter(p => p.isBestSeller).slice(0, 4);
+                if (excellenceGrid) {
+                    excellenceGrid.innerHTML = bestSellers.length > 0 
+                        ? bestSellers.map(p => renderProductItem(p)).join('')
+                        : catalog.slice(0, 4).map(p => renderProductItem(p)).join('');
+                }
+
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            };
+
+            // التعامل مع معطيات الرابط (Deep Linking)
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialCat = urlParams.get('category') || 'all';
+
+            // تفعيل التبويب المختار مبدئياً
+            const tabs = document.querySelectorAll('.category-item');
+            tabs.forEach(tab => {
+                if (tab.dataset.category === initialCat) {
+                    tab.classList.add('active');
+                    tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } else {
+                    tab.classList.remove('active');
+                }
             });
 
-            // صمام أمان: إذا دخل المستخدم والبيانات جاهزة مسبقاً في الذاكرة
-            if (BoseState.isAppReady) {
-                updateUI();
-            }
+            // التشغيل الأول
+            filterAndDisplay(initialCat);
 
-            // محرك التفاعل مع الأقسام
-            categoryItems.forEach(item => {
-                item.addEventListener('click', () => {
-                    categoryItems.forEach(i => i.classList.remove('active'));
-                    item.classList.add('active');
-                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            // مستشعر الضغط على التبويبات
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                     
-                    // استدعاء محرك التوزيع السيادي لتحديث الشبكة
-                    updateUI();
+                    const cat = tab.dataset.category;
+                    filterAndDisplay(cat);
                 });
             });
+
+            // الاستماع لتحديثات قاعدة البيانات اللحظية (عبر المحرك)
+            window.addEventListener('catalogDataReady', () => {
+                const currentActive = document.querySelector('.category-item.active')?.dataset.category || 'all';
+                filterAndDisplay(currentActive);
+            });
+            
+            // تحديث عداد السلة فور الجاهزية
+            if (window.cartSystem) window.cartSystem.updateCartDisplay();
         });
     </script>
 </body>
 </html>
+
+

@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>حقيبة المشتريات | حلويات بوسي</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -100,7 +100,7 @@
 
         .text-pink { color: var(--primary-pink); }
 
-        /* كارت المنتج في السلة */
+        /* كارت المنتج في السلة (متوافق مع المحرك الموحد) */
         .cart-item {
             display: flex;
             gap: 20px;
@@ -112,6 +112,7 @@
             box-shadow: var(--shadow-soft);
             transition: var(--transition-smooth);
             position: relative;
+            align-items: center;
         }
 
         .cart-item:hover {
@@ -120,11 +121,12 @@
         }
 
         .cart-item-img {
-            width: 120px;
-            height: 120px;
+            width: 100px;
+            height: 100px;
             border-radius: 12px;
             object-fit: cover;
             background: #f9f9f9;
+            flex-shrink: 0;
         }
 
         .cart-item-info {
@@ -132,11 +134,12 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            text-align: right;
         }
 
         .cart-item-name {
             font-size: 1.1rem;
-            font-weight: 700;
+            font-weight: 900;
             margin: 0 0 5px 0;
         }
 
@@ -157,10 +160,10 @@
         }
 
         .qty-btn {
-            background: none;
+            background: white;
             border: 1px solid rgba(255,145,164,0.3);
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -193,6 +196,7 @@
             margin-bottom: 20px;
             border-right: 4px solid var(--primary-pink);
             padding-right: 12px;
+            text-align: right;
         }
 
         .summary-line {
@@ -304,7 +308,7 @@
         </div>
 
         <div class="cart-layout">
-            <!-- قائمة المنتجات -->
+            <!-- قائمة المنتجات - سيتم حقنها عبر المحرك -->
             <div id="cart-items-list">
                 <div style="text-align: center; padding: 60px 0;">
                     <i data-lucide="loader-2" class="spin text-pink" style="width: 40px; height: 40px; margin-bottom: 15px;"></i>
@@ -318,7 +322,7 @@
                     <h3 class="summary-title">ملخص الطلب</h3>
                     
                     <div class="summary-line">
-                        <span>إجمالي الوحدات</span>
+                        <span>وحدات الطلب</span>
                         <span id="summary-subtotal">0 ج.م</span>
                     </div>
                     
@@ -328,21 +332,21 @@
                     </div>
 
                     <div class="summary-line total-line">
-                        <span>الإجمالي</span>
+                        <span>الإجمالي الإداري</span>
                         <span id="summary-total">0 ج.م</span>
                     </div>
 
                     <a href="checkout.html" class="btn-checkout">
-                        متابعة الطلب <i data-lucide="chevron-left"></i>
+                        تأكيد البيانات والمتابعة <i data-lucide="chevron-left"></i>
                     </a>
                 </div>
             </aside>
         </div>
 
         <!-- اقتراحات ذكية -->
-        <section class="suggestions-section">
+        <section class="suggestions-section" id="suggestions-area" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h3 style="margin:0; font-weight: 900;">إضافات <span class="text-pink">مميزة</span></h3>
+                <h3 style="margin:0; font-weight: 900;">إضافات <span class="text-pink">تليق بسيادتكم</span></h3>
                 <a href="menu.html" style="color: var(--primary-pink); text-decoration: none; font-weight: 700;">عرض المنيو</a>
             </div>
             <div class="suggestions-grid" id="cart-suggestions-container"></div>
@@ -355,154 +359,134 @@
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 20px;">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
     </footer>
 
-    <!-- المحرك السيادي المدمج -->
+    <!-- الاستدعاء السيادي للمحرك الموحد -->
+    <script type="module" src="unified-engine.js"></script>
+
     <script type="module">
         /**
-         * 👑 BoseSweets Unified Cart Engine (V30.1)
-         * المحرك الموحد المدمج لإدارة السلة والعمليات الحسابية السيادية.
+         * 👑 واجهة التحكم السيادية لحقيبة المشتريات (V32.0)
+         * تعتمد كلياً على المحرك الموحد لضمان مزامنة البيانات السحابية.
          */
-        
-        // محاكاة الحالة في حال عدم وجود core-engine
-        const BoseState = window.BoseState || {
-            cart: JSON.parse(localStorage.getItem('BoseSweets_Cart')) || [],
-            catalog: [],
-            shippingZones: []
-        };
 
-        const cartSystem = {
-            getAdjustedPrice: (p) => Math.round(parseFloat(p)),
-
-            getCart: () => {
-                const local = localStorage.getItem('BoseSweets_Cart') || localStorage.getItem('bose_cart_items');
-                if (local) {
-                    const parsed = JSON.parse(local);
-                    BoseState.cart = parsed;
-                    return parsed;
-                }
-                return BoseState.cart || [];
-            },
-
-            save: () => {
-                localStorage.setItem('BoseSweets_Cart', JSON.stringify(BoseState.cart));
-                cartSystem.updateGlobalUI();
-            },
-
-            calculate: () => {
-                let subtotal = 0;
-                BoseState.cart.forEach(item => {
-                    let base = cartSystem.getAdjustedPrice(item.price);
-                    if (item.isCustomCake) {
-                        if (item.printing?.includes('أكل')) base += 60;
-                        else if (item.printing?.includes('غير')) base += 20;
-                    }
-                    subtotal += (base * item.quantity);
-                });
-                return { subtotal, total: subtotal };
-            },
-
-            syncUI: () => {
-                const list = document.getElementById('cart-items-list');
-                const summaryBox = document.getElementById('cart-summary-box');
-                const subEl = document.getElementById('summary-subtotal');
-                const totEl = document.getElementById('summary-total');
-
-                if (!list) return;
-
-                const items = cartSystem.getCart();
-
-                if (items.length === 0) {
-                    list.innerHTML = `
-                        <div style="text-align:center; padding: 50px 20px;">
-                            <i data-lucide="shopping-bag" style="width: 60px; height: 60px; opacity:0.1; margin-bottom: 15px;"></i>
-                            <p style="font-weight: 700; color: #999;">السلة فارغة حالياً</p>
-                            <a href="menu.html" class="btn-checkout" style="max-width: 200px; margin: 20px auto; font-size: 0.9rem; padding: 12px;">تصفح المنيو</a>
-                        </div>`;
-                    if (summaryBox) summaryBox.style.display = 'none';
-                    if (window.lucide) lucide.createIcons();
-                    return;
-                }
-
-                if (summaryBox) summaryBox.style.display = 'block';
-
-                let html = '';
-                items.forEach((item, idx) => {
-                    let img = item.image || 'https://res.cloudinary.com/dm965v1z0/image/upload/v1712586716/logo_bose_gold.jpg';
-                    if (img && !img.startsWith('http')) img = `https://res.cloudinary.com/dm965v1z0/image/upload/f_auto,q_auto/v1/${img}`;
-
-                    html += `
-                        <div class="cart-item">
-                            <img src="${img}" class="cart-item-img" alt="${item.name}">
-                            <div class="cart-item-info">
-                                <h4 class="cart-item-name">${item.name}</h4>
-                                <div class="cart-item-price">${item.price} ج.م</div>
-                                ${item.isCustomCake ? `<small style="font-weight:700; opacity:0.6;">نكهة: ${item.flavor}</small>` : ''}
-                            </div>
-                            <div class="qty-control">
-                                <button class="qty-btn" onclick="window.cartSystem.mod(${idx}, -1)">-</button>
-                                <span style="font-weight:900; min-width: 20px; text-align:center;">${item.quantity}</span>
-                                <button class="qty-btn" onclick="window.cartSystem.mod(${idx}, 1)">+</button>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                list.innerHTML = html;
-                const vals = cartSystem.calculate();
-                if (subEl) subEl.innerText = `${vals.subtotal} ج.م`;
-                if (totEl) totEl.innerText = `${vals.total} ج.م`;
-                if (window.lucide) lucide.createIcons();
-            },
-
-            mod: (idx, delta) => {
-                if (BoseState.cart[idx]) {
-                    BoseState.cart[idx].quantity += delta;
-                    if (BoseState.cart[idx].quantity <= 0) BoseState.cart.splice(idx, 1);
-                    cartSystem.save();
-                    cartSystem.syncUI();
-                }
-            },
-
-            updateGlobalUI: () => {
-                // تحديث العدادات إذا وجدت في الهيدر
-                const badge = document.getElementById('cart-count-badge');
-                if (badge) {
-                    const total = BoseState.cart.reduce((s, i) => s + i.quantity, 0);
-                    badge.innerText = total;
-                    badge.style.display = total > 0 ? 'flex' : 'none';
-                }
-            }
-        };
-
-        // الربط العالمي
-        window.cartSystem = cartSystem;
-
-        // تهيئة الصفحة
-        document.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('BoseSweets_Engine_Ready', () => {
+            console.log("👑 حقيبة المشتريات: تم الربط مع المحرك الموحد وبدء المزامنة.");
+            
             if (window.lucide) lucide.createIcons();
-            cartSystem.syncUI();
-            renderSuggestions();
+            
+            // تهيئة السلة فور الجاهزية
+            syncCartInterface();
+            renderSmartSuggestions();
         });
 
-        // محرك الاقتراحات
-        function renderSuggestions() {
-            const container = document.getElementById('cart-suggestions-container');
-            if (!container || !window.catalog) return;
+        /**
+         * دالة المزامنة بين واجهة المستخدم والمحرك المركزي
+         */
+        function syncCartInterface() {
+            const list = document.getElementById('cart-items-list');
+            const summaryBox = document.getElementById('cart-summary-box');
             
-            const currentIds = BoseState.cart.map(i => String(i.id));
-            const pool = window.catalog.filter(p => !currentIds.includes(String(p.id)));
+            if (!window.cartSystem || !window.BoseState) return;
+
+            // جلب بيانات السلة من الذاكرة المركزية
+            const items = window.cartSystem.getCart();
+
+            if (items.length === 0) {
+                list.innerHTML = `
+                    <div style="text-align:center; padding: 60px 20px;">
+                        <i data-lucide="shopping-bag" style="width: 80px; height: 80px; opacity:0.05; margin-bottom: 20px;"></i>
+                        <p style="font-weight: 900; color: #999; font-size: 1.2rem;">حقيبة المشتريات فارغة حالياً</p>
+                        <a href="menu.html" class="btn-checkout" style="max-width: 250px; margin: 25px auto; font-size: 0.95rem;">استعراض قائمة التذوق</a>
+                    </div>`;
+                if (summaryBox) summaryBox.style.display = 'none';
+                if (window.lucide) lucide.createIcons();
+                return;
+            }
+
+            if (summaryBox) summaryBox.style.display = 'block';
+
+            let html = '';
+            items.forEach((item, idx) => {
+                // استخدام معالج الصور السيادي لضمان استخدام dyx4w0dr1
+                const img = window.processBoseImage(item.image);
+                
+                // حساب السعر النهائي للصنف (بما في ذلك إضافات التورت المخصصة)
+                let displayPrice = item.price;
+                if (item.isCustomCake) {
+                    // السعر يأتي جاهزاً من باني التورتة في المحرك الجديد
+                    displayPrice = item.price;
+                }
+
+                html += `
+                    <div class="cart-item">
+                        <img src="${img}" class="cart-item-img" alt="${item.name}" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';">
+                        <div class="cart-item-info">
+                            <h4 class="cart-item-name">${item.name}</h4>
+                            <div class="cart-item-price">${displayPrice} ج.م</div>
+                            ${item.isCustomCake ? `<small style="font-weight:900; opacity:0.5; color: var(--primary-dark);">نكهة: ${item.flavor || 'فانيليا'}</small>` : ''}
+                        </div>
+                        <div class="qty-control">
+                            <button class="qty-btn" onclick="window.cartSystem.modQ(${idx}, 1)">+</button>
+                            <span style="font-weight:900; min-width: 25px; text-align:center; font-size: 1.1rem;">${item.quantity}</span>
+                            <button class="qty-btn" onclick="window.cartSystem.modQ(${idx}, -1)">-</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+
+            // تحديث الملخص المالي عبر دالة الحساب المركزية في المحرك
+            const totals = window.cartSystem.calculateCartTotal();
+            document.getElementById('summary-subtotal').innerText = `${totals.subtotal} ج.م`;
+            document.getElementById('summary-total').innerText = `${totals.total} ج.م`;
+
+            // تحديث العداد العلوي
+            window.cartSystem.updateCartDisplay();
+
+            if (window.lucide) lucide.createIcons();
+        }
+
+        /**
+         * محرك الاقتراحات الذكية (المرتبط بالكتالوج السحابي)
+         */
+        function renderSmartSuggestions() {
+            const container = document.getElementById('cart-suggestions-container');
+            const section = document.getElementById('suggestions-area');
+            
+            if (!container || !window.BoseState || !window.BoseState.catalog) return;
+            
+            const catalog = window.BoseState.catalog;
+            const cartIds = window.BoseState.cart.map(i => String(i.id));
+            
+            // اختيار منتجات عشوائية ليست موجودة في السلة حالياً
+            const pool = catalog.filter(p => !cartIds.includes(String(p.id)));
             const picked = pool.sort(() => 0.5 - Math.random()).slice(0, 4);
 
-            if (picked.length === 0) return;
-
-            container.innerHTML = picked.map(p => `
-                <div class="suggestion-card">
-                    <img src="${p.image}" class="suggestion-img" alt="${p.name}">
-                    <h4 style="font-size: 0.9rem; font-weight:700; margin: 10px 0;">${p.name}</h4>
-                    <div style="color:var(--primary-pink); font-weight:900; margin-bottom: 12px;">${p.price} ج.م</div>
-                    <button onclick="window.location.href='product.html?id=${p.id}'" class="btn-checkout" style="padding: 8px; font-size: 0.8rem; margin:0;">التفاصيل</button>
-                </div>
-            `).join('');
+            if (picked.length > 0) {
+                section.style.display = 'block';
+                container.innerHTML = picked.map(p => {
+                    const img = window.processBoseImage(p.img || p.image);
+                    return `
+                        <div class="suggestion-card">
+                            <img src="${img}" class="suggestion-img" alt="${p.name}">
+                            <h4 style="font-size: 0.95rem; font-weight:900; margin: 10px 0;">${p.name}</h4>
+                            <div style="color:var(--primary-pink); font-weight:900; margin-bottom: 12px;">${p.price} ج.م</div>
+                            <button onclick="window.location.href='product.html?id=${p.id}'" class="btn-checkout" style="padding: 10px; font-size: 0.85rem; margin:0;">التفاصيل</button>
+                        </div>
+                    `;
+                }).join('');
+            }
         }
+
+        // ربط أحداث التغيير في المحرك لإعادة رسم الواجهة تلقائياً
+        window.addEventListener('BoseSweets_Cart_Updated', syncCartInterface);
+        
+        // تعديل دالة modQ في المحرك لتنبيه الصفحة (في حال لم تكن موجودة)
+        const originalModQ = window.cartSystem.modQ;
+        window.cartSystem.modQ = function(idx, delta) {
+            originalModQ.call(this, idx, delta);
+            syncCartInterface();
+        };
     </script>
 </body>
 </html>

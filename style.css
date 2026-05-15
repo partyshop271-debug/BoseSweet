@@ -1,44 +1,48 @@
 /**
  * 👑 BoseSweets Pro Style Sheet | نظام الأناقة السيادي لعلامة حلويات بوسي
- * الإصدار: V5.6 (Royal Executive Edition - Strict Z-Index & Movement Protocol)
- * التحديث الإداري: فرض الهوية البصرية الصارمة ومعالجة تداخل الطبقات (z-index).
- * التحصين البرمجي: 
- * 1. تأمين رتبة سيادية للقائمة الجانبية (z-index: 5000).
- * 2. تأمين غطاء التمويه (z-index: 4000).
- * 3. حذف الخصائص المتعارضة مع محركات التحريك البرمجية (Programmatic Movement).
- * 4. إجبار المتصفح على احترام أوامر الحركة السيادية ضد أي تدخل من إطارات عمل خارجية (Tailwind).
+ * الإصدار: V5.9 (Absolute Color Sovereignty - Pink & Chocolate Protocol)
+ * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
+ * الحالة: تطهير لوني شامل - استبعاد الأسود - ظلال وردية - خطوط بني شوكولاتة.
+ * ============================================================================
  */
 
 :root {
-    /* لوحة الألوان المعتمدة رسمياً وحصرياً من الإدارة المرجعية - تمنع التعديل */
-    --primary-pink: #ff91a4;       /* الوردي الملكي الناعم - الأساس السيادي */
-    --primary-light: #fff5f6;      /* درجة وردية خافتة جداً للخلفيات */
-    --text-dark: #1a1a1a;          /* الرمادي الداكن الفاخر للنصوص الرئيسية */
-    --text-main: #1a1a1a;          /* مرجع النصوص الموحد */
-    --text-muted: #4a4a4a;         /* الرمادي المعتدل للأوصاف والفقرات الجانبية */
-    --bg-white: #ffffff;           /* الخلفية البيضاء النقية */
-    --surface-light: #faf8f5;      /* عاجي فاتح جداً للأسطح الثانوية */
-    --glass-white: rgba(255, 255, 255, 0.9);
+    /* المنظومة اللونية الثلاثية المعتمدة (وردي، أبيض، بني شوكولاتة) */
+    --primary-pink: #ff91a4;       /* الوردي الملكي الموحد */
+    --primary-light: #fff5f6;      /* وردي خافت جداً للأرضيات */
+    --text-dark: #3d241c;          /* بني شوكولاتة داكن - اللون الوحيد للخطوط */
+    --text-main: #3d241c;          /* مرجع النصوص الموحد */
+    --bg-white: #ffffff;           /* النقاء الأبيض للمساحات */
+    --surface-light: #fff0f2;      /* وردي فاتح جداً للأسطح البديلة */
+    --glass-pink: rgba(255, 145, 164, 0.92);
     --border-radius-card: 24px;
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    --shadow-premium: 0 15px 40px rgba(255, 145, 164, 0.08);
+    
+    /* ظلال وردية سيادية بدلاً من الأسود أو الرمادي */
+    --shadow-premium: 0 15px 40px rgba(255, 145, 164, 0.25);
+    --shadow-soft: 0 5px 15px rgba(255, 145, 164, 0.15);
+    
+    /* غطاء التمويه الوردي */
+    --overlay-pink: rgba(255, 145, 164, 0.7); 
 }
 
-/* --- 1. التأسيس الهندسي (Global Resets) --- */
+/* --- 1. التأسيس الهندسي الصارم (Structural Reset) --- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
+    /* إجبار كافة العناصر على استخدام اللون البني الشوكولاتة للخطوط */
+    color: var(--text-main); 
 }
 
 body {
     font-family: 'Cairo', sans-serif;
     background-color: var(--bg-white);
-    color: var(--text-main);
     line-height: 1.7;
     overflow-x: hidden;
     scroll-behavior: smooth;
+    direction: rtl;
 }
 
 .container {
@@ -47,36 +51,37 @@ body {
     padding: 0 20px;
 }
 
-/* --- 2. محرك القائمة الجانبية السيادي (Sovereign Sidebar) --- */
+/* --- 2. محرك القائمة الجانبية (Sovereign Sidebar Control) --- */
 .sidebar {
     position: fixed;
     top: 0;
-    right: 0; /* تم الحذف البرمجي لـ right: -350px لضمان التوافق مع transform */
+    right: 0;
     width: 350px;
     height: 100%;
     background: var(--bg-white);
-    z-index: 5000; /* الرتبة السيادية المعتمدة للإدارة */
-    box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+    z-index: 5000;
+    box-shadow: -15px 0 40px rgba(255, 145, 164, 0.2); /* ظلال وردية */
     transition: var(--transition-smooth);
     overflow-y: auto;
     padding-bottom: 100px;
-    /* فرض السيطرة البرمجية ضد أي كلاسات Tailwind قديمة لتأمين الحركة */
     transform: translateX(100%) !important; 
     visibility: hidden !important;
+    border-left: 1px solid rgba(255, 145, 164, 0.2);
 }
 
 .sidebar.active {
-    transform: translateX(0) !important; /* الدخول البرمجي للقائمة */
+    transform: translateX(0) !important;
     visibility: visible !important;
 }
 
 .sidebar-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 4000; /* رتبة الغطاء الشفاف لضمان العزل البصري */
+    background: var(--overlay-pink); /* تمويه وردي سيادي */
+    z-index: 4500;
     display: none;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     transition: var(--transition-smooth);
     opacity: 0;
 }
@@ -86,244 +91,205 @@ body {
     opacity: 1;
 }
 
-/* --- 3. الهيدر وشريط التنبيهات (Navigation & Ticker) --- */
+/* --- 3. الهيدر السيادي وشريط التنبيهات (Header Architecture) --- */
 .main-header {
-    background: var(--glass-white);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255,145,164,0.1);
+    background: var(--glass-pink);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
     position: sticky;
     top: 0;
     z-index: 3000;
-    transition: var(--transition-smooth);
+}
+
+/* الأيقونات تتبع اللون البني الشوكولاتة */
+.main-header i, .main-header svg {
+    color: var(--text-dark) !important;
 }
 
 .site-ticker {
     background: var(--primary-pink);
-    color: white;
-    padding: 8px 0;
-    font-size: 0.85rem;
-    font-weight: 700;
-    overflow: hidden;
-    z-index: 3100;
-}
-
-/* --- 4. الشلال البصري (Waterfall Layout) --- */
-.waterfall-container {
-    display: flex;
-    gap: 15px;
     padding: 10px 0;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
+    font-size: 0.9rem;
+    font-weight: 800;
+    overflow: hidden;
 }
 
+.site-ticker span {
+    color: white !important; /* اللون الأبيض للنصوص فوق الخلفيات الوردية */
+}
+
+/* --- 4. الشلال البصري (Waterfall Layout Engine) --- */
 .waterfall-item {
-    flex: 0 0 auto;
-    width: 140px;
-    height: 180px;
     border-radius: 20px;
     overflow: hidden;
-    scroll-snap-align: start;
     position: relative;
-    border: 2px solid var(--primary-light);
+    border: 3px solid var(--primary-pink);
+    box-shadow: var(--shadow-soft);
 }
 
-.waterfall-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* --- 5. كروت المنتجات الملكية (Royal Cards) --- */
+/* --- 5. كروت المنتجات الملكية (Royal Card Framework) --- */
 .royal-card {
     background: var(--bg-white);
     border-radius: var(--border-radius-card);
-    border: 1px solid rgba(255,145,164,0.1);
+    border: 2px solid rgba(255, 145, 164, 0.2);
+    padding: 15px;
     transition: var(--transition-smooth);
-    position: relative;
+    box-shadow: var(--shadow-soft);
 }
 
 .royal-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-8px);
     box-shadow: var(--shadow-premium);
     border-color: var(--primary-pink);
 }
 
-.royal-card img {
-    transition: transform 0.8s ease;
-}
-
-.royal-card:hover img {
-    transform: scale(1.08);
-}
-
-/* --- 6. الأقسام والتبويبات (Categories & Tabs) --- */
+/* --- 6. الأقسام والتبويبات السيادية (Category Navigation) --- */
 .category-item {
-    padding: 10px 25px;
+    padding: 12px 30px;
     border-radius: 50px;
-    background: var(--surface-light);
-    color: var(--text-muted);
-    font-weight: 700;
+    background: var(--primary-light);
+    color: var(--text-dark);
+    font-weight: 800;
     cursor: pointer;
     transition: var(--transition-smooth);
-    border: 1px solid transparent;
-    white-space: nowrap;
+    border: 1px solid var(--primary-pink);
 }
 
 .category-item.active {
     background: var(--primary-pink);
-    color: white;
-    box-shadow: 0 8px 20px rgba(255,145,164,0.25);
+    color: white !important;
+    box-shadow: var(--shadow-premium);
 }
 
 /* --- 7. أزرار التفاعل السيادية (Royal Buttons) --- */
 .btn-primary {
     background: var(--primary-pink);
-    color: white;
-    padding: 14px 28px;
-    border-radius: 16px;
-    font-weight: 700;
+    color: white !important;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-weight: 900;
     border: none;
     cursor: pointer;
     transition: var(--transition-smooth);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    box-shadow: var(--shadow-soft);
 }
 
 .btn-primary:hover {
-    filter: brightness(1.05);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(255,145,164,0.3);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-premium);
 }
 
-.btn-icon {
-    width: 45px;
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 14px;
-    background: var(--primary-light);
-    color: var(--primary-pink);
-    border: none;
-    cursor: pointer;
-    transition: var(--transition-smooth);
+/* ضمان أن النص داخل الأزرار يظل أبيض للمقروئية */
+.btn-primary span, .btn-primary i {
+    color: white !important;
 }
 
-/* --- 8. باني التورتة المتقدم (Cake Builder) --- */
+/* --- 8. باني التورتة المتقدم (Advanced Cake Builder UI) --- */
 .builder-step {
     background: var(--bg-white);
     border-radius: var(--border-radius-card);
-    padding: 30px;
-    border: 1px solid rgba(255,145,164,0.15);
-    margin-bottom: 20px;
+    padding: 35px;
+    border: 2px solid var(--primary-pink);
+    margin-bottom: 25px;
+    box-shadow: var(--shadow-soft);
 }
 
 .builder-option {
-    padding: 15px;
-    border-radius: 12px;
-    border: 2px solid #f0f0f0;
+    padding: 18px;
+    border-radius: 16px;
+    border: 2px solid var(--primary-light);
+    background: var(--bg-white);
     cursor: pointer;
-    transition: var(--transition-smooth);
 }
 
 .builder-option.selected {
     border-color: var(--primary-pink);
-    background: var(--primary-light);
+    background: var(--primary-pink);
+    color: white !important;
 }
 
-/* --- 9. الفوتر الرسمي (Official Footer) --- */
+.builder-option.selected * {
+    color: white !important;
+}
+
+/* --- 9. الفوتر الرسمي (Corporate Footer) --- */
+/* تم تحويل الخلفية إلى اللون الوردي بناءً على القرار الإداري */
 .footer-main {
-    background: #1a1a1a;
-    color: white;
+    background: var(--primary-pink);
+    color: white !important;
     padding: 80px 0 40px;
-    margin-top: 100px;
+    margin-top: 120px;
+    border-top: 5px solid white;
 }
 
-.footer-link {
-    color: rgba(255,255,255,0.7);
-    text-decoration: none;
-    transition: color 0.3s;
+.footer-main *, .footer-main i, .footer-main a {
+    color: white !important;
 }
 
 .footer-link:hover {
-    color: var(--primary-pink);
+    text-decoration: underline;
+    opacity: 0.8;
 }
 
-/* --- 10. الإشعارات والرسائل (System Toasts) --- */
-.toast-container {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 9999;
-}
-
+/* --- 10. الإشعارات السيادية (Sovereign Toasts) --- */
 .bose-toast {
     background: var(--bg-white);
-    padding: 15px 30px;
+    padding: 18px 35px;
     border-radius: 50px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
-    border-right: 5px solid var(--primary-pink);
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    animation: toastSlideUp 0.5s ease-out;
-}
-
-@keyframes toastSlideUp {
-    from { transform: translateY(100px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-/* --- 11. تفاصيل المنتج (Product Details) --- */
-.product-image-frame {
-    width: 100%;
-    aspect-ratio: 1/1;
-    border-radius: var(--border-radius-card);
-    overflow: hidden;
-    background: var(--surface-light);
-}
-
-.qty-master {
+    box-shadow: var(--shadow-premium);
+    border: 2px solid var(--primary-pink);
     display: flex;
     align-items: center;
     gap: 20px;
-    padding: 8px 20px;
-    border: 1px solid rgba(255,145,164,0.2);
-    border-radius: 16px;
-    margin-bottom: 20px;
-    background: var(--primary-light);
+    animation: toastSlideUp 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.price-tag-dynamic {
-    font-size: 1.5rem;
+/* --- 11. تفاصيل المنتج (Sovereign Product Details) --- */
+.qty-master {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    padding: 10px 25px;
+    border: 2px solid var(--primary-pink);
+    border-radius: 50px;
+    background: var(--bg-white);
+}
+
+.qty-master button {
+    color: var(--primary-pink) !important;
     font-weight: 900;
-    color: var(--primary-pink);
-    text-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* --- 12. استجابة ومرونة الشاشات الكاملة (Media Queries) --- */
-@media (max-width: 992px) {
-    .footer-grid { grid-template-columns: 1fr 1fr; }
+/* --- 12. تحصين شامل ضد الألوان الدخيلة --- */
+/* إجبار كافة عناصر الإدخال على استخدام اللون البني الشوكولاتة للخطوط والوردي للحدود */
+input, textarea, select {
+    border: 2px solid var(--primary-pink) !important;
+    color: var(--text-dark) !important;
+    background-color: var(--bg-white) !important;
+    border-radius: 12px;
+    padding: 10px;
 }
 
-@media (max-width: 768px) {
-    h1 { font-size: 2.2rem !important; }
-    h2 { font-size: 1.8rem !important; }
-    .waterfall-container { height: 280px; gap: 10px; }
-    .waterfall-item { height: 130px; border-radius: 12px; }
-    .mt-section { margin-top: 40px; }
-    .mb-section { margin-bottom: 40px; }
-    .sidebar { width: 85%; max-width: 320px; }
+input::placeholder, textarea::placeholder {
+    color: var(--text-dark) !important;
+    opacity: 0.4;
 }
 
-@media (max-width: 600px) {
-    .container { padding: 0 15px; }
-    .footer-grid {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
+/* منع أي تسلل للون الأسود من الروابط */
+a {
+    text-decoration: none;
+    color: var(--text-dark);
+}
+
+/* تخصيص السكرول بار ليكون وردياً سيادياً */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-white);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary-pink);
+    border-radius: 10px;
 }

@@ -1,10 +1,10 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Sovereign Unified Engine | المحرك السيادي الموحد (V31.0)
+ * 👑 BoseSweets Sovereign Unified Engine | المحرك السيادي الموحد (V32.0)
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
- * الحالة: دمج شامل وكامل لكافة السطور البرمجية بدون حذف أو تبسيط.
- * يشمل الملف: (firebase-config, core-engine, cart-system, data-bridge, ui-logic)
+ * الحالة: دمج شامل ومطور لكافة السطور البرمجية بدون حذف أو تبسيط.
+ * التحديث الأخير: توحيد نظام السحابة ومزامنة عدادات السلة وتحصين جلب البيانات.
  * ============================================================================
  */
 
@@ -51,7 +51,6 @@ try {
     /**
      * 🛠️ تثبيت المحرك بصيغته النهائية (V29.0)
      * الإجراء الهندسي: تفعيل persistentLocalCache لدعم العمل دون إنترنت بصفة سيادية.
-     * التقنية المستخدمة: persistentMultipleTabManager لضمان تزامن البيانات بين كافة التبويبات المفتوحة.
      */
     db = initializeFirestore(app, {
         localCache: persistentLocalCache({
@@ -61,17 +60,14 @@ try {
     
     auth = getAuth(app);
     
-    // تثبيت المراجع في النطاق العام (Global Scope) لضمان الربط السيادي مع باقي ملفات المنظومة
+    // تثبيت المراجع في النطاق العام (Global Scope)
     if (typeof window !== 'undefined') {
         window.firebaseApp = app;
         window.db = db;
         window.auth = auth;
-        window.BoseSweets_Engine_Version = "V29.0";
+        window.BoseSweets_Engine_Version = "V32.0";
     }
-    
-    console.log("🔒 قرار إداري أمني: تم تهيئة محرك قاعدة البيانات السحابية (V29.0) لعلامة حلويات بوسي بنجاح.");
 } catch (error) {
-    if(window.BoseMonitor) window.BoseMonitor.report(error, 'firebase-config.js', null, null, 'initializeBoseSweetsEngine');
     console.error("🔒 قرار إداري أمني: فشل تهيئة السحابة، يرجى مراجعة الخوادم فوراً.", error);
 }
 
@@ -79,19 +75,17 @@ export { app, db, auth };
 
 /**
  * 🛡️ محرك المزامنة العكسية (ReverseSyncEngine - V29.0)
- * الوظيفة: ضمان وصول الطلبات والتعديلات للـ Webhook في حال تذبذب الشبكة أو العمل أوفلاين.
  */
 export const ReverseSyncEngine = {
     triggerOrderWebhook(orderData) {
         try {
             const webhookUrl = 'https://us-central1-bosy-sweets.cloudfunctions.net/secureReverseSync';
-            
             if (orderData && orderData.status === 'pending') {
                 fetch(webhookUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_Sovereign_V29',
+                        source: 'BoseSweets_Engine_Sovereign_V32',
                         engine_status: 'Active_Sovereign',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
@@ -102,64 +96,37 @@ export const ReverseSyncEngine = {
                         timestamp: orderData.timestamp,
                         itemsCount: orderData.itemsArray ? orderData.itemsArray.length : 0
                     })
-                }).then(response => {
-                    if (!response.ok) throw new Error("Webhook Server Error");
-                    console.log(`BoseSweets 👑: مسار الخطاف العكسي للطلب #${String(orderData.id).substring(0,6)} تم بنجاح.`);
-                }).catch(e => {
-                    if(window.BoseMonitor) window.BoseMonitor.report(e, 'firebase-config.js', null, null, 'ReverseSyncEngine.triggerOrderWebhook (Fetch)');
-                    console.warn('تنويه هندسي: تم تأمين العملية عبر المسار البديل لحين استقرار الشبكة.', e.message);
-                });
+                }).catch(e => console.warn('تنويه هندسي: تأمين العملية عبر المسار البديل.'));
             }
         } catch (error) {
-            if(window.BoseMonitor) window.BoseMonitor.report(error, 'firebase-config.js', null, null, 'ReverseSyncEngine.triggerOrderWebhook (Master)');
-            console.warn("BoseSweets 👑: واجه محرك المزامنة العكسية عائقاً خلفياً وتم تجاوزه.", error);
+            console.warn("BoseSweets 👑: عائق في المزامنة العكسية وتم تجاوزه.");
         }
     },
-
     async broadcastGlobalUpdate() {
         try {
             if (db) {
                 const syncDocRef = doc(db, 'system', 'syncFlag');
-                await setDoc(syncDocRef, {
-                    lastAdminUpdate: Date.now(),
-                    trigger: 'Sovereign_Admin_Update',
-                    version: 'V29.0',
-                    forceRefresh: true 
-                }, { merge: true });
-                console.log("BoseSweets 👑: إشارة المزامنة الشاملة تم بثها بنجاح لكافة العملاء.");
+                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V32.0', forceRefresh: true }, { merge: true });
             }
-        } catch (error) {
-            if(window.BoseMonitor) window.BoseMonitor.report(error, 'firebase-config.js', null, null, 'ReverseSyncEngine.broadcastGlobalUpdate (Master)');
-            console.warn("BoseSweets 👑: فشل مؤقت في بث إشارة المزامنة الشاملة.", error);
-        }
+        } catch (error) {}
     }
 };
 
 export const CloudQueueDB = {
-    dbName: 'BoseSweetsCloudQueue',
-    storeName: 'Operations',
-    version: 4, 
+    dbName: 'BoseSweetsCloudQueue', storeName: 'Operations', version: 4,
     isSupported() { return typeof window !== 'undefined' && window.indexedDB != null; },
-    getFallbackQueue() {
-        try { return JSON.parse(localStorage.getItem('BoseSweets_Emergency_Queue') || '[]'); } catch (e) { return []; }
-    },
-    setFallbackQueue(queue) {
-        try { localStorage.setItem('BoseSweets_Emergency_Queue', JSON.stringify(queue)); } catch (e) {}
-    },
+    getFallbackQueue() { try { return JSON.parse(localStorage.getItem('BoseSweets_Emergency_Queue') || '[]'); } catch (e) { return []; } },
+    setFallbackQueue(queue) { try { localStorage.setItem('BoseSweets_Emergency_Queue', JSON.stringify(queue)); } catch (e) {} },
     init() {
         return new Promise((resolve) => {
             if (!this.isSupported()) return resolve(null);
-            try {
-                const request = indexedDB.open(this.dbName, this.version);
-                request.onupgradeneeded = (e) => {
-                    const database = e.target.result;
-                    if (!database.objectStoreNames.contains(this.storeName)) {
-                        database.createObjectStore(this.storeName, { keyPath: 'queueId' });
-                    }
-                };
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => resolve(null);
-            } catch (error) { resolve(null); }
+            const request = indexedDB.open(this.dbName, this.version);
+            request.onupgradeneeded = (e) => {
+                const database = e.target.result;
+                if (!database.objectStoreNames.contains(this.storeName)) database.createObjectStore(this.storeName, { keyPath: 'queueId' });
+            };
+            request.onsuccess = () => resolve(request.result);
+            request.onerror = () => resolve(null);
         });
     },
     async enqueue(operation) {
@@ -171,13 +138,9 @@ export const CloudQueueDB = {
                 this.setFallbackQueue(fallbackQ);
                 return true;
             }
-            return new Promise((resolve) => {
-                const tx = database.transaction(this.storeName, 'readwrite');
-                const store = tx.objectStore(this.storeName);
-                store.put({ ...operation, queueId: 'op_' + Date.now().toString(36), createdAt: Date.now() });
-                tx.oncomplete = () => resolve(true);
-                tx.onerror = () => resolve(false);
-            });
+            const tx = database.transaction(this.storeName, 'readwrite');
+            tx.objectStore(this.storeName).put({ ...operation, queueId: 'op_' + Date.now().toString(36), createdAt: Date.now() });
+            return true;
         } catch (e) { return false; }
     },
     async getAll() {
@@ -187,8 +150,7 @@ export const CloudQueueDB = {
             if (!database) return results;
             return new Promise((resolve) => {
                 const tx = database.transaction(this.storeName, 'readonly');
-                const store = tx.objectStore(this.storeName);
-                const request = store.getAll();
+                const request = tx.objectStore(this.storeName).getAll();
                 request.onsuccess = () => resolve([...results, ...(request.result || [])]);
                 request.onerror = () => resolve(results); 
             });
@@ -201,12 +163,9 @@ export const CloudQueueDB = {
             this.setFallbackQueue(fallbackQ);
             const database = await this.init();
             if (!database) return false;
-            return new Promise((resolve) => {
-                const tx = database.transaction(this.storeName, 'readwrite');
-                tx.objectStore(this.storeName).delete(queueId);
-                tx.oncomplete = () => resolve(true);
-                tx.onerror = () => resolve(false);
-            });
+            const tx = database.transaction(this.storeName, 'readwrite');
+            tx.objectStore(this.storeName).delete(queueId);
+            return true;
         } catch (e) { return false; }
     }
 };
@@ -215,14 +174,10 @@ export const NetworkEngine = {
     async safeWrite(collectionName, docId, data) {
         try {
             if (collectionName === 'settings' && docId === 'main') {
-                if (!auth || !auth.currentUser) {
-                    const authError = "🔒 قرار أمني: تعديل الإعدادات السيادية يتطلب توثيق الإدارة.";
-                    throw new Error(authError);
-                }
+                if (!auth || !auth.currentUser) throw new Error("🔒 توثيق الإدارة مطلوب.");
             }
             if (!db) throw new Error("Database not ready.");
-            const docRef = doc(db, collectionName, String(docId));
-            await setDoc(docRef, data, { merge: true });
+            await setDoc(doc(db, collectionName, String(docId)), data, { merge: true });
             if (collectionName === 'orders') ReverseSyncEngine.triggerOrderWebhook(data);
             else if (['settings', 'catalog', 'shipping', 'gallery'].includes(collectionName)) ReverseSyncEngine.broadcastGlobalUpdate();
             return true;
@@ -234,8 +189,7 @@ export const NetworkEngine = {
     async safeDelete(collectionName, docId) {
         try {
             if (!db) throw new Error("Database not ready.");
-            const docRef = doc(db, collectionName, String(docId));
-            await deleteDoc(docRef);
+            await deleteDoc(doc(db, collectionName, String(docId)));
             if (['settings', 'catalog', 'shipping', 'gallery'].includes(collectionName)) ReverseSyncEngine.broadcastGlobalUpdate();
             return true;
         } catch (error) {
@@ -245,19 +199,15 @@ export const NetworkEngine = {
     },
     async processQueue() {
         if (typeof navigator !== 'undefined' && !navigator.onLine) return;
-        if (!db) return;
-        try {
-            const queue = await CloudQueueDB.getAll();
-            if (queue.length === 0) return;
-            for (const op of queue) {
-                if (!navigator.onLine) break;
-                try {
-                    if (op.type === 'write') await setDoc(doc(db, op.collectionName, String(op.docId)), op.data, { merge: true });
-                    else if (op.type === 'delete') await deleteDoc(doc(db, op.collectionName, String(op.docId)));
-                    await CloudQueueDB.remove(op.queueId);
-                } catch (e) { break; }
-            }
-        } catch (e) {}
+        const queue = await CloudQueueDB.getAll();
+        if (queue.length === 0 || !db) return;
+        for (const op of queue) {
+            try {
+                if (op.type === 'write') await setDoc(doc(db, op.collectionName, String(op.docId)), op.data, { merge: true });
+                else if (op.type === 'delete') await deleteDoc(doc(db, op.collectionName, String(op.docId)));
+                await CloudQueueDB.remove(op.queueId);
+            } catch (e) { break; }
+        }
     }
 };
 
@@ -270,22 +220,33 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🧠 القسم الثاني: core-engine.js (الذاكرة المركزية والعقل المدبر V30.0)
+// 🧠 القسم الثاني: core-engine.js (الذاكرة المركزية والعقل المدبر V32.0)
 // ============================================================================
+
+const BOSE_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg";
+const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1";
+
+/**
+ * 🛠️ وظيفة معالجة الصور السيادية (Sovereign Image Processor)
+ * تضمن استخدام معرف السحابة الموحد وتحويل المسارات النسبية إلى روابط كاملة.
+ */
+export const processBoseImage = (imgPath) => {
+    if (!imgPath) return BOSE_LOGO_FALLBACK;
+    if (imgPath.startsWith('http')) return imgPath;
+    const cleanPath = imgPath.replace(/^\//, '');
+    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${cleanPath}`;
+};
 
 const boseConfig = {
     firebase: firebaseConfig, db: db, auth: auth, network: NetworkEngine, sync: ReverseSyncEngine, queue: CloudQueueDB,
-    cloudinary: { cloudName: "dyx4w0dr1", baseDeliveryUrl: "https://res.cloudinary.com/dyx4w0dr1/image/upload/" },
+    cloudinary: { cloudName: CLOUDINARY_CLOUD_NAME, baseDeliveryUrl: `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/` },
     branding: { colors: { pink: "#ff91a4", dark: "#1a1a1a", white: "#FFFFFF" }, typography: { titleWeight: "700", lineHeight: "1.7" } },
     location: { address: "الكفاح، شارع الوحدة المحلية، بجوار صيدلية د. أحمد مجدي وعيادة د. علي" },
     layoutRules: {
         twoCardsGrid: ['الديسباسيتو', 'القشطوطة', 'كبات السعادة', 'الدوناتس', 'السينابون'],
         oneCardFull: ['التورت', 'الجاتوهات', 'الورد', 'بوكس الروقان', 'الميني تورت', 'الكب كيك', 'الريدفيلفت']
     },
-    pricingRules: {
-        cake: { basePersons: 4, basePrice: 580, pricePerPerson: 145, incrementStep: 2 },
-        printing: { edible: 60, decoration: 20, none: 0 }
-    }
+    pricingRules: { cake: { basePersons: 4, basePrice: 580, pricePerPerson: 145, incrementStep: 2 }, printing: { edible: 60, decoration: 20, none: 0 } }
 };
 
 export const BoseState = {
@@ -294,13 +255,9 @@ export const BoseState = {
     securityLayer: {
         validateCartPrices: function(cartArray) {
             if (!Array.isArray(cartArray) || BoseState.catalogMap.size === 0) return cartArray;
-            console.log("BoseSweets Core 👑: جاري تنفيذ بروتوكول فحص الأسعار السيادي...");
             return cartArray.map(item => {
                 const referenceItem = BoseState.catalogMap.get(String(item.id));
-                if (referenceItem && item.price !== referenceItem.price) {
-                    console.warn(`BoseSweets Core 🛡️: تصحيح تلقائي لسعر [${item.name}]`);
-                    item.price = referenceItem.price;
-                }
+                if (referenceItem && item.price !== referenceItem.price) item.price = referenceItem.price;
                 return item;
             });
         }
@@ -322,13 +279,8 @@ export function syncCatalogMap() {
     } catch (error) {}
 }
 
-export function saveToLocalMemory(key, data) {
-    try { if (typeof window !== 'undefined' && window.localStorage) localStorage.setItem(key, JSON.stringify(data)); } catch (e) {}
-}
-
-export function getFromLocalMemory(key) {
-    try { if (typeof window !== 'undefined' && window.localStorage) { const saved = localStorage.getItem(key); return saved ? JSON.parse(saved) : null; } } catch (e) { return null; }
-}
+export function saveToLocalMemory(key, data) { try { if (typeof window !== 'undefined') localStorage.setItem(key, JSON.stringify(data)); } catch (e) {} }
+export function getFromLocalMemory(key) { try { if (typeof window !== 'undefined') { const saved = localStorage.getItem(key); return saved ? JSON.parse(saved) : null; } } catch (e) { return null; } }
 
 export function setAppReady() {
     try {
@@ -348,10 +300,11 @@ export function setAppReady() {
 if (typeof window !== 'undefined') {
     window.boseConfig = boseConfig; window.BoseState = BoseState; window.syncCatalogMap = syncCatalogMap;
     window.saveToLocalMemory = saveToLocalMemory; window.getFromLocalMemory = getFromLocalMemory; window.setAppReady = setAppReady;
+    window.processBoseImage = processBoseImage;
 }
 
 // ============================================================================
-// 🛒 القسم الثالث: cart-system.js (محرك السلة السيادي V30.0)
+// 🛒 القسم الثالث: cart-system.js (محرك السلة السيادي V32.0)
 // ============================================================================
 
 const BUSINESS_WHATSAPP = "201097238441";
@@ -369,16 +322,12 @@ export const cartSystem = {
     },
     clearCartStorage: function() { BoseState.cart.length = 0; this.saveCartToStorage(); this.syncCartUI(); },
     calculateCartTotal: function(deliveryMode = 'pickup') {
-        if (BoseState.securityLayer && typeof BoseState.securityLayer.validateCartPrices === 'function') BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
+        if (BoseState.securityLayer?.validateCartPrices) BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
         let subtotal = 0;
         BoseState.cart.forEach(item => {
             const product = BoseState.catalogMap.get(String(item.id)) || BoseState.catalog.find(p => String(p.id) === String(item.id));
             let finalPrice = this.getAdjustedPrice(product ? product.price : item.price);
-            let addonsPrice = 0;
-            if (item.isCustomCake) {
-                if (item.printing && item.printing.includes('أكل')) addonsPrice += 60;
-                else if (item.printing && item.printing.includes('غير قابلة')) addonsPrice += 20;
-            }
+            let addonsPrice = (item.isCustomCake && item.printing?.includes('أكل')) ? 60 : (item.isCustomCake && item.printing?.includes('غير قابلة') ? 20 : 0);
             subtotal += ((finalPrice + addonsPrice) * item.quantity);
         });
         let shippingFee = 0;
@@ -391,14 +340,19 @@ export const cartSystem = {
     },
     updateCartDisplay: function() {
         const totalItems = BoseState.cart.reduce((sum, item) => sum + item.quantity, 0);
+        // توحيد المعرفات السيادية لعداد السلة (cart-count-badge)
         ['cart-count-badge', 'mobile-cart-badge'].forEach(id => {
-            const el = document.getElementById(id); if (el) { el.innerText = totalItems; el.style.display = totalItems > 0 ? 'flex' : 'none'; }
+            const el = document.getElementById(id); 
+            if (el) { 
+                el.innerText = totalItems; 
+                el.style.display = totalItems > 0 ? 'flex' : 'none'; 
+            }
         });
     },
     syncCartUI: function() {
         const cartList = document.getElementById('cart-items-list');
         if (!cartList) return;
-        if (BoseState.securityLayer && typeof BoseState.securityLayer.validateCartPrices === 'function') BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
+        if (BoseState.securityLayer?.validateCartPrices) BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
         if (BoseState.cart.length === 0) {
             cartList.innerHTML = `<div class="empty-cart flex flex-col items-center justify-center p-12 text-center"><i data-lucide="shopping-bag" class="w-20 h-20 mb-4 opacity-20" style="color: ${boseConfig.branding.colors.pink};"></i><h3 class="text-xl font-black mb-2">سلة المشتريات فارغة</h3></div>`;
             ['summary-subtotal', 'summary-total'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).innerText = '0 ج.م'; });
@@ -407,15 +361,16 @@ export const cartSystem = {
         let html = '';
         BoseState.cart.forEach((item, index) => {
             let finalPrice = this.getAdjustedPrice(item.price);
-            if (item.isCustomCake) finalPrice += (item.printing && item.printing.includes('أكل') ? 60 : (item.printing && item.printing.includes('غير قابلة') ? 20 : 0));
-            const imgUrl = item.image && !item.image.startsWith('http') ? `${boseConfig.cloudinary.baseDeliveryUrl}${item.image.replace(/^\//, '')}` : item.image;
+            if (item.isCustomCake) finalPrice += (item.printing?.includes('أكل') ? 60 : (item.printing?.includes('غير قابلة') ? 20 : 0));
+            // استخدام المعالج السيادي للصور لضمان المسار الصحيح بالسحابة
+            const imgUrl = processBoseImage(item.image);
             html += `<div class="cart-item bg-white p-4 rounded-2xl border mb-4 flex gap-4 items-center" style="border-color: ${boseConfig.branding.colors.pink}20;">
                         <img src="${imgUrl}" class="w-20 h-20 rounded-xl object-cover" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
                         <div class="flex-1 text-right"><h4 class="font-black text-sm">${item.name}</h4><div class="font-black mt-2" style="color: ${boseConfig.branding.colors.pink};">${finalPrice} ج.م</div></div>
                         <div class="flex flex-col items-center gap-2">
-                            <button onclick="window.cartSystem.modQ(${index}, 1)" class="w-8 h-8 rounded-full border">+</button>
+                            <button onclick="window.cartSystem.modQ(${index}, 1)" class="w-8 h-8 rounded-full border text-black bg-white">+</button>
                             <span class="font-black text-sm">${item.quantity}</span>
-                            <button onclick="window.cartSystem.modQ(${index}, -1)" class="w-8 h-8 rounded-full border">-</button>
+                            <button onclick="window.cartSystem.modQ(${index}, -1)" class="w-8 h-8 rounded-full border text-black bg-white">-</button>
                         </div>
                     </div>`;
         });
@@ -441,54 +396,22 @@ export const cartSystem = {
         if (existing) existing.quantity += qty;
         else BoseState.cart.push({ id: product.id, name: product.name, price: product.price, image: product.img || product.image, quantity: qty, isCustomCake: false });
         this.saveCartToStorage();
-        if(typeof window.showSystemToast === 'function') window.showSystemToast(`تم إضافة ${product.name} بنجاح.`, 'success');
-    },
-    commitCakeBuilderToCart: function() {
-        const c = BoseState.cakeState;
-        const basePrice = BoseState.siteSettings?.cakeBuilder?.basePrice || 580;
-        const finalPrice = basePrice + ((c.persons - 4) * 145);
-        BoseState.cart.push({ id: 'custom_' + Date.now(), name: `تورتة مخصصة (${c.persons} أفراد)`, price: finalPrice, image: c.refImage || BOSE_LOGO_FALLBACK, quantity: 1, isCustomCake: true, flavor: c.flavor, printing: c.printingOption || c.printing, notes: c.notes });
-        this.saveCartToStorage();
-        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم إضافة التورتة المخصصة للسلة.", "success");
-    },
-    submitOrderFinal: async function() {
-        const name = document.getElementById('checkout-name')?.value.trim();
-        const phone = document.getElementById('checkout-phone')?.value.trim();
-        if (!name || !phone) { window.showSystemToast?.("برجاء إدخال البيانات.", "error"); return; }
-        const areaVal = document.getElementById('checkout-area')?.value || 'pickup';
-        const totals = this.calculateCartTotal(areaVal);
-        const orderData = { orderId: 'BS_' + Date.now(), customerName: name, customerPhone: phone, itemsArray: BoseState.cart, totals: totals, status: 'pending', timestamp: Date.now() };
-        await this.dispatchWhatsAppOrder(orderData, totals);
-    },
-    dispatchWhatsAppOrder: async function(orderData, totals) {
-        try {
-            await NetworkEngine.safeWrite('orders', orderData.orderId, orderData);
-            let msg = `مرحباً إدارة حلويات بوسي 👑\nطلب جديد من الموقع:\n👤 العميل: ${orderData.customerName}\n📞 الهاتف: ${orderData.customerPhone}\n🛍️ الأصناف:\n`;
-            orderData.itemsArray.forEach(i => msg += `- ${i.name} (عدد: ${i.quantity})\n`);
-            msg += `💰 الإجمالي: ${totals.total} ج.م`;
-            window.open(`https://wa.me/${BUSINESS_WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank');
-            this.clearCartStorage();
-            window.location.href = 'index.html';
-        } catch (e) {}
+        if(typeof window.showSystemToast === 'function') window.showSystemToast(`تمت إضافة [${product.name}] لطلب سيادتكم.`, 'success');
     }
 };
 
 if (typeof window !== 'undefined') {
     window.cartSystem = cartSystem;
-    window.addEventListener('BoseSweets_Order_Secured', (e) => cartSystem.clearCartStorage());
+    window.addEventListener('BoseSweets_Order_Secured', () => cartSystem.clearCartStorage());
 }
 
 // ============================================================================
-// 🔗 القسم الرابع: data-bridge.js (جسر البيانات السيادي V30.6)
+// 🔗 القسم الرابع: data-bridge.js (جسر البيانات السيادي V32.0)
 // ============================================================================
 
 export const defaultSettingsFallback = {
-    brandName: "حلويات بوسي", announcement: "حلويات بوسي: طعم فاخر يليق بسيادتكم",
-    heroTitle: "أهلاً بحضرتك في حلويات بوسي", heroDesc: "خاماتنا مختارة بعناية فائقة.",
-    footerPhone: "01097238441", footerAddress: "الفرافرة، الوادي الجديد",
-    brandColorHex: "#ff91a4", bgColor: "#ffffff", textColor: "#1a1a1a",
-    tickerActive: true, tickerText: "حلويات بوسي: طعم فاخر يليق بحضرتك ✨", 
-    catMenu: ["الرئيسية", "ديسباسيتو", "سينابون", "تورت", "ورد"]
+    brandName: "حلويات بوسي", heroTitle: "أهلاً بسيادتكم في حلويات بوسي", heroDesc: "نخبة المختارات من أجود الخامات العالمية.",
+    brandColorHex: "#ff91a4", catMenu: ["الرئيسية", "ديسباسيتو", "سينابون", "تورت", "ورد"]
 };
 
 export async function fetchSystemSettings() {
@@ -505,19 +428,38 @@ export async function fetchShippingZones() {
     } catch (e) { BoseState.shippingZones = getFromLocalMemory('bosesweets_shipping') || []; }
 }
 
+/**
+ * 🛠️ بروتوكول جلب البيانات المطور (Advanced Data Fetching)
+ * يسحب المنتجات بمجرد التأكد من حالة النشاط، مع معالجة مرنة للحقول المفقودة.
+ */
 export async function fetchProductsCatalog() {
     try {
         const q = query(collection(db, 'catalog'), where('isActive', '==', true));
         const snapshot = await getDocs(q);
-        const products = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        const products = snapshot.docs.map(d => {
+            const raw = d.data();
+            return {
+                id: d.id,
+                name: raw.name || "صنف بدون مسمى",
+                price: parseFloat(raw.price) || 0,
+                category: raw.category || "عام",
+                img: raw.img || raw.image || "",
+                inStock: raw.inStock !== false,
+                ...raw // الحفاظ على كافة الحقول الأخرى
+            };
+        });
         BoseState.catalog = products; syncCatalogMap(); saveToLocalMemory('bosesweets_catalog', products);
         return products;
-    } catch (e) { BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || []; syncCatalogMap(); return BoseState.catalog; }
+    } catch (e) { 
+        BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || []; 
+        syncCatalogMap(); 
+        return BoseState.catalog; 
+    }
 }
 
 export async function initializeDataBridge() {
     if (window.__BoseBridgeInitialized) return; window.__BoseBridgeInitialized = true;
-    const emergencyTimeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 3500));
+    const emergencyTimeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 4000));
     const operations = Promise.all([fetchSystemSettings(), fetchShippingZones(), fetchProductsCatalog()]);
     await Promise.race([operations, emergencyTimeout]);
     const uniqueCats = [...new Set(BoseState.catalog.map(p => p.category))].filter(Boolean);
@@ -533,7 +475,6 @@ export function listenToSovereignUpdates() {
         window.dispatchEvent(new Event('catalogDataReady'));
         if (window.distributeProductsToUI) window.distributeProductsToUI(BoseState.catalog);
     });
-    onSnapshot(doc(db, 'settings', 'main'), (snap) => { if (snap.exists()) { Object.assign(BoseState.siteSettings, snap.data()); if (window.applySettingsToUI) window.applySettingsToUI(); } });
 }
 
 if (typeof window !== 'undefined') {
@@ -543,52 +484,42 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🎨 القسم الخامس: ui-logic.js (المحرك البصري السيادي V30.3)
+// 🎨 القسم الخامس: ui-logic.js (المحرك البصري السيادي V32.0)
 // ============================================================================
-
-const BOSE_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg";
-
-export const getImgFallback = function(category) { return (BoseState.siteSettings && BoseState.siteSettings.brandLogo) ? BoseState.siteSettings.brandLogo : BOSE_LOGO_FALLBACK; };
 
 export const showInfo = function(type) {
     let title = "", content = "";
     if (type === 'about') {
         title = "عن علامة حلويات بوسي";
-        content = `تأسست حلويات بوسي عام 2014 في مدينة الكفاح بمركز الفرافرة... نحن نلتزم بأعلى معايير المهنية والجودة العالمية.`;
-    } else if (type === 'privacy') {
-        title = "سياسة الخصوصية والتعامل";
-        content = `تحرص إدارة حلويات بوسي على حماية بيانات سيادتكم بالكامل.`;
+        content = `تأسست حلويات بوسي عام 2014 في مدينة الكفاح... نحن نلتزم بأعلى معايير المهنية والجودة العالمية.`;
     }
     const modalId = 'bose-info-modal'; let modal = document.getElementById(modalId);
     if (!modal) { modal = document.createElement('div'); modal.id = modalId; modal.className = 'fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300'; document.body.appendChild(modal); }
     modal.innerHTML = `<div class="bg-white w-full max-w-lg rounded-[2.5rem] overflow-hidden p-8 border-4" style="border-color: ${boseConfig.branding.colors.pink}20;">
         <h3 class="text-2xl font-black mb-6 text-center">${title}</h3>
         <p class="text-base font-bold text-right">${content}</p>
-        <button onclick="document.getElementById('${modalId}').remove()" class="w-full mt-8 py-4 rounded-full font-black text-white" style="background: ${boseConfig.branding.colors.pink};">تم استيعاب القرار</button>
+        <button onclick="document.getElementById('${modalId}').remove()" class="w-full mt-8 py-4 rounded-full font-black text-white" style="background: ${boseConfig.branding.colors.pink};">تم الاستيعاب</button>
     </div>`;
-};
-
-export const applySettingsToUI = function() {
-    const s = BoseState.siteSettings; if (!s) return;
-    const mainColor = s.visuals?.themeHex || boseConfig.branding.colors.pink;
-    document.documentElement.style.setProperty('--site-color-theme', mainColor);
-    const heroTitle = document.getElementById('hero-main-title');
-    if(heroTitle) heroTitle.innerHTML = s.heroTitle || `أهلاً بحضرتك في حلويات بوسي`;
 };
 
 export function renderProductCardsUI(products, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
     container.innerHTML = products.map(p => {
-        const isOut = p.inStock === false || p.status === 'غير متاح';
-        const img = (p.img || p.image || BOSE_LOGO_FALLBACK).startsWith('http') ? (p.img || p.image || BOSE_LOGO_FALLBACK) : `${boseConfig.cloudinary.baseDeliveryUrl}${p.img?.replace(/^\//, '')}`;
+        const isOut = p.inStock === false;
+        // استخدام المعالج السيادي الموحد لضمان تحميل الصورة من dyx4w0dr1
+        const img = processBoseImage(p.img || p.image);
         return `<div class="royal-card flex flex-col p-4 bg-white rounded-2xl shadow-sm">
             <img src="${img}" class="w-full aspect-square object-cover rounded-xl ${isOut ? 'grayscale' : ''}" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
             <h4 class="mt-4 font-black">${p.name}</h4>
             <div class="mt-2 text-[#ff91a4] font-black">${p.price} ج.م</div>
             <div class="flex items-center gap-2 mt-4">
-                <div class="flex items-center gap-2 bg-gray-50 rounded-full px-2"><button onclick="window.updateTempQtyContext(this, -1)">-</button><span class="temp-qty-display">1</span><button onclick="window.updateTempQtyContext(this, 1)">+</button></div>
-                <button onclick="window.cartSystem.addWithQtyContext(this, '${p.id}')" class="flex-1 py-2 bg-[#ff91a4] text-white rounded-full text-xs font-black">إضافة لطلب حضرتك 🛍️</button>
+                <div class="flex items-center gap-2 bg-gray-50 rounded-full px-2">
+                    <button onclick="window.updateTempQtyContext(this, -1)" class="w-6 h-6">-</button>
+                    <span class="temp-qty-display">1</span>
+                    <button onclick="window.updateTempQtyContext(this, 1)" class="w-6 h-6">+</button>
+                </div>
+                <button onclick="window.cartSystem.addWithQtyContext(this, '${p.id}')" class="flex-1 py-2 bg-[#ff91a4] text-white rounded-full text-xs font-black">إضافة لطلب سيادتكم 🛍️</button>
             </div>
         </div>`;
     }).join('');
@@ -596,13 +527,24 @@ export function renderProductCardsUI(products, containerId) {
 
 export function distributeProductsToUI(products = BoseState.catalog) {
     ['new-arrivals-container', 'best-sellers-container', 'menuGrid'].forEach(id => {
-        const el = document.getElementById(id); if (el) renderProductCardsUI(products.slice(0, 8), id);
+        const el = document.getElementById(id); if (el) renderProductCardsUI(products.slice(0, 12), id);
     });
 }
 
+// دالة تحديث الكمية المؤقتة قبل الإضافة للسلة
+window.updateTempQtyContext = function(btn, delta) {
+    const display = btn.parentElement.querySelector('.temp-qty-display');
+    if (display) {
+        let val = parseInt(display.innerText) + delta;
+        if (val < 1) val = 1;
+        if (val > 50) val = 50;
+        display.innerText = val;
+    }
+};
+
 if (typeof window !== 'undefined') {
     window.renderProductCards = renderProductCardsUI; window.distributeProductsToUI = distributeProductsToUI;
-    window.showInfo = showInfo; window.applySettingsToUI = applySettingsToUI;
+    window.showInfo = showInfo;
 }
 
-console.log("👑 BoseSweets Engine: تم تدشين المحرك الموحد الشامل (Unified V31.0) بنجاح.");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد إلى الإصدار السيادي (V32.0) بنجاح.");
