@@ -2,42 +2,104 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>تفاصيل المنتج | حلويات بوسي</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        .size-tabs {
+        /* التنسيقات السيادية لصفحة المنتج وتطبيق التنفس البصري */
+        :root {
+            --primary-pink: #ff91a4;
+            --bg-white: #ffffff;
+            --surface-light: #fafafa;
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --border-radius-card: 20px;
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.03);
+            --shadow-hover: 0 10px 30px rgba(255,145,164,0.15);
+            --transition-smooth: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-white);
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+
+        /* الشريط العلوي الثابت */
+        .main-header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255,145,164,0.2);
+            z-index: 1000;
+            padding: 15px 0;
+            box-shadow: var(--shadow-soft);
+        }
+
+        /* حاوية المنتج الرئيسية */
+        #product-details-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding-top: 20px;
+        }
+
+        /* نظام التوزيع المتغير (Grid Logic) حسب الدستور */
+        .grid-cols-1 {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+        
+        .grid-cols-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+        }
+
+        /* التبويبات الديناميكية للمقاسات والأنواع */
+        .size-tabs, .dynamic-tabs {
             display: flex;
             justify-content: center;
+            flex-wrap: wrap;
             gap: 15px;
             margin: 30px 0 50px;
         }
-        .size-tab {
-            padding: 12px 30px;
+
+        .size-tab, .dynamic-tab {
+            padding: 12px 35px;
             border-radius: 50px;
             border: 2px solid var(--primary-pink);
             background: var(--bg-white);
             color: var(--primary-pink);
-            font-weight: 700;
+            font-weight: 900;
             font-size: 1.1rem;
             cursor: pointer;
             transition: var(--transition-smooth);
         }
-        .size-tab.active, .size-tab:hover {
+
+        .size-tab.active, .size-tab:hover, .dynamic-tab.active, .dynamic-tab:hover {
             background: var(--primary-pink);
             color: var(--bg-white);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255,145,164,0.2);
         }
-        .flavors-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
-            margin-bottom: 80px;
-        }
+
+        /* كروت المنتجات والنكهات */
         .flavor-card {
             background: var(--surface-light);
             border-radius: var(--border-radius-card);
@@ -47,22 +109,28 @@
             transition: var(--transition-smooth);
             display: flex;
             flex-direction: column;
+            height: 100%;
         }
+
         .flavor-card:hover {
             box-shadow: var(--shadow-hover);
             transform: translateY(-5px);
         }
+
         .flavor-img {
             width: 100%;
-            height: 250px;
-            object-fit: cover;
+            height: 280px;
+            object-fit: cover; /* لضمان عرض المنتج بحجمه الطبيعي بدون تشويه */
         }
+
         .flavor-content {
             padding: 25px 20px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
         }
+
+        /* أزرار التحكم بالكمية */
         .qty-control {
             display: flex;
             align-items: center;
@@ -70,9 +138,10 @@
             background: var(--bg-white);
             border: 2px solid rgba(255, 145, 164, 0.2);
             border-radius: 50px;
-            padding: 5px 15px;
+            padding: 8px 20px;
             margin: 20px 0;
         }
+
         .qty-btn {
             background: none;
             border: none;
@@ -81,132 +150,208 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: var(--transition-smooth);
         }
+
+        .qty-btn:hover {
+            transform: scale(1.1);
+        }
+
         .qty-number {
-            font-weight: 700;
-            font-size: 1.2rem;
+            font-weight: 900;
+            font-size: 1.3rem;
             color: var(--text-main);
         }
+
+        /* أزرار الإضافة للسلة */
         .add-to-cart-btn {
             width: 100%;
             border-radius: 50px;
-            padding: 12px;
+            padding: 15px;
             font-size: 1.1rem;
+            font-weight: 900;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 10px;
+            background: var(--text-main);
+            color: var(--bg-white);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-smooth);
         }
+
+        .add-to-cart-btn:hover {
+            background: var(--primary-pink);
+            transform: translateY(-2px);
+        }
+
+        /* تنسيقات باني التورتة (Wizard) */
+        .cake-wizard-container {
+            background: var(--surface-light);
+            border: 2px solid rgba(255,145,164,0.15);
+            border-radius: var(--border-radius-card);
+            padding: 40px;
+            margin-top: 30px;
+        }
+
+        .wizard-step {
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255,145,164,0.1);
+        }
+
+        .wizard-step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .wizard-step-title {
+            font-weight: 900;
+            font-size: 1.4rem;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .wizard-input, .wizard-select, .wizard-textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 15px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: var(--transition-smooth);
+            background: var(--bg-white);
+        }
+
+        .wizard-input:focus, .wizard-select:focus, .wizard-textarea:focus {
+            outline: none;
+            border-color: var(--primary-pink);
+        }
+
+        /* تنسيقات قسم التقييمات */
+        .reviews-section {
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255,145,164,0.05) 100%);
+            border-radius: 30px;
+            padding: 50px 30px;
+            text-align: center;
+            border: 2px solid rgba(255,145,164,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            margin-top: 60px;
+        }
+
+        .horizontal-scroll {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+            scrollbar-width: none;
+            scroll-snap-type: x mandatory;
+        }
+
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <header class="main-header">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <button class="btn-icon" onclick="window.history.back()"><i data-lucide="arrow-right"></i></button>
-            <div style="cursor: pointer;" onclick="window.location.href='index.html'">
-                <h2 style="margin: 0; color: var(--primary-pink); font-size: 1.6rem;">حلويات بوسي</h2>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0 15px;">
+            <button class="btn-icon" onclick="window.history.back()" style="border: none; background: #fafafa; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">
+                <i data-lucide="arrow-right" style="color: var(--text-main);"></i>
+            </button>
+            <div style="cursor: pointer; text-align: center;" onclick="window.location.href='index.html'">
+                <h2 style="margin: 0; color: var(--primary-pink); font-size: 1.8rem; font-weight: 900;">حلويات بوسي</h2>
             </div>
             <div style="display: flex; gap: 12px;">
-                <button class="btn-icon" style="position: relative;">
-                    <i data-lucide="shopping-basket"></i>
-                    <span id="cartCount" style="position: absolute; top:-5px; right:-5px; background:var(--primary-pink); color:white; font-size:10px; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; display:none;">0</span>
+                <button class="btn-icon" onclick="window.location.href='cart.html'" style="position: relative; border: none; background: transparent; cursor: pointer; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="shopping-basket" style="width: 26px; height: 26px; color: var(--text-main);"></i>
+                    <span id="cart-badge" style="position: absolute; top: -2px; right: -2px; background: var(--text-main); color: #ffffff; font-size: 11px; font-weight: 900; width: 22px; height: 22px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid #ffffff;">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="container mt-section">
-        <section class="text-center" style="max-width: 800px; margin: 0 auto;">
-            <h1 id="product-main-title" style="font-size: 2.8rem; margin-bottom: 15px;">الديسباسيتو</h1>
-            <p id="product-main-desc" style="font-size: 1.1rem; color: var(--text-muted); line-height: 1.8;">
-                كيك فادج غني، محشو بطبقة من الشيكولاتة، ومغطى بطبقة كثيفة من صوص الشيكولاتة الأصلي عشان تعيش تجربة تذوق استثنائية.
-            </p>
-        </section>
-
-        <section class="size-tabs" id="product-size-tabs">
-            <button class="size-tab active">مثلث</button>
-            <button class="size-tab">وسط</button>
-            <button class="size-tab">كبير</button>
-        </section>
-
-        <section class="flavors-grid" id="flavors-container">
-            
-            <div class="flavor-card">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="ديسباسيتو نوتيلا" class="flavor-img">
-                <div class="flavor-content">
-                    <h3 style="font-size: 1.4rem; text-align: right; margin-bottom: 10px;">ديسباسيتو نوتيلا</h3>
-                    <p style="font-size: 0.95rem; text-align: right; margin-bottom: 15px; flex-grow: 1;">قاعدة كثيفة من فادج كيك الشيكولاتة الغني، تعلوها طبقة سميكة وسخية من صوص النوتيلا الأصلي.</p>
-                    
-                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-pink); text-align: right;">
-                        66 ج.م
-                    </div>
-
-                    <div class="qty-control">
-                        <button class="qty-btn"><i data-lucide="plus"></i></button>
-                        <span class="qty-number">1</span>
-                        <button class="qty-btn"><i data-lucide="minus"></i></button>
-                    </div>
-
-                    <button class="btn-primary add-to-cart-btn">
-                        <i data-lucide="shopping-basket"></i> إضافة للسلة
-                    </button>
+    <main class="container mt-section mb-section" style="padding: 0 15px;">
+        
+        <div id="product-details-view" class="view-section">
+            <div id="product-details-container">
+                <div style="text-align: center; padding: 80px 20px; font-weight: 900;">
+                    <i data-lucide="loader" style="width: 50px; height: 50px; color: var(--primary-pink); animation: spin 2s linear infinite; margin: 0 auto 20px;"></i>
+                    <p style="font-size: 1.3rem; color: var(--text-muted);">جاري تحضير تفاصيل المنتج لحضرتك...</p>
                 </div>
             </div>
-            
-            <div class="flavor-card">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="ديسباسيتو لوتس" class="flavor-img">
-                <div class="flavor-content">
-                    <h3 style="font-size: 1.4rem; text-align: right; margin-bottom: 10px;">ديسباسيتو لوتس</h3>
-                    <p style="font-size: 0.95rem; text-align: right; margin-bottom: 15px; flex-grow: 1;">مزيج فاخر يجمع بين كيك الفادج المشبع وزبدة اللوتس الكثيفة، مع قطع البسكويت المقرمشة.</p>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-pink); text-align: right;">
-                        66 ج.م
-                    </div>
-                    <div class="qty-control">
-                        <button class="qty-btn"><i data-lucide="plus"></i></button>
-                        <span class="qty-number">1</span>
-                        <button class="qty-btn"><i data-lucide="minus"></i></button>
-                    </div>
-                    <button class="btn-primary add-to-cart-btn">
-                        <i data-lucide="shopping-basket"></i> إضافة للسلة
-                    </button>
-                </div>
-            </div>
+        </div>
 
-        </section>
-
-        <section class="mb-section" style="background: rgba(255, 145, 164, 0.05); border-radius: var(--border-radius-card); padding: 50px 30px; text-align: center; border: 1px solid rgba(255,145,164,0.1);">
-            <i data-lucide="message-circle-heart" style="width: 50px; height: 50px; color: var(--primary-pink); margin-bottom: 20px;"></i>
-            <h2>رأيك <span class="text-pink">يُهمنا</span></h2>
-            <p style="max-width: 600px; margin: 0 auto 30px;">نحن نصنع الحلويات بحب، ونسعد جداً بسماع تجربتك. تقييمك هو الدافع لنا لنستمر في تقديم الأفضل.</p>
+        <section class="reviews-section mb-section">
+            <i data-lucide="message-circle-heart" style="width: 60px; height: 60px; color: var(--primary-pink); margin-bottom: 20px;"></i>
+            <h2 style="font-weight: 900; font-size: 2.2rem; color: var(--text-main); margin-bottom: 15px;">رأي حضرتك <span style="color: var(--primary-pink);">يُهمنا جداً</span></h2>
+            <p style="max-width: 650px; margin: 0 auto 30px; font-weight: 700; color: var(--text-muted); font-size: 1.1rem; line-height: 1.8;">نحن في حلويات بوسي نصنع كل قطعة بحب وإتقان، ونسعد جداً بسماع تجربتك. تقييمك هو الدافع لنا لنستمر في تقديم الفخامة التي تستحقها.</p>
             
-            <div id="reviews-container" style="display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none;">
+            <div id="reviews-container" class="horizontal-scroll">
                 </div>
 
-            <button class="btn-primary" style="margin-top: 20px;">
-                <i data-lucide="pen-line" style="margin-left: 8px;"></i> اكتب تقييمك
+            <button style="margin-top: 30px; font-weight: 900; font-size: 1.1rem; padding: 15px 45px; background: var(--text-main); color: #fff; border-radius: 50px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                <i data-lucide="pen-line"></i> اكتب تقييمك
             </button>
         </section>
 
         <section class="mb-section">
-            <h2 style="text-align: right; border-bottom: 2px solid rgba(255,145,164,0.2); padding-bottom: 15px; margin-bottom: 30px;">
-                قد <span class="text-pink">يعجبك أيضاً</span>
+            <h2 style="text-align: right; border-bottom: 2px solid rgba(255,145,164,0.15); padding-bottom: 15px; margin-bottom: 30px; font-weight: 900; font-size: 1.8rem; color: var(--text-main);">
+                قد <span style="color: var(--primary-pink);">يعجبك أيضاً</span>
             </h2>
-            <div class="horizontal-scroll" id="suggested-products-container">
+            <div id="related-products-container" class="grid-cols-2">
                 </div>
         </section>
+        
     </main>
 
-    <footer class="main-footer">
-        <div class="container">
-            <div style="text-align: center; padding-top: 30px; border-top: 1px solid rgba(0,0,0,0.05);">
-                <p style="font-size: 0.85rem; color: #888;">جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية © 2026</p>
-            </div>
+    <footer class="main-footer" style="background: var(--surface-light); border-top: 2px solid rgba(255,145,164,0.15); padding: 40px 0 20px;">
+        <div class="container" style="text-align: center;">
+            <p style="font-weight: 900; color: var(--text-muted); font-size: 1rem;">جميع الحقوق محفوظة ومسجلة لعلامة حلويات بوسي التجارية © 2026</p>
         </div>
     </footer>
 
+    <script type="module" src="firebase-config.js"></script>
+    <script type="module" src="core-engine.js"></script>
+    <script type="module" src="data-bridge.js"></script>
+    <script type="module" src="ui-logic.js"></script>
+    <script type="module" src="cart-system.js"></script>
+    
     <script>
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+
+            // مستشعر لجلب المنتج المراد عرضه فور تحميل البيانات
+            window.addEventListener('catalogDataReady', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const productId = urlParams.get('product');
+                
+                if (productId && window.showProductDetails) {
+                    window.showProductDetails(productId);
+                } else {
+                    document.getElementById('product-details-container').innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px;">
+                            <i data-lucide="alert-circle" style="width: 60px; height: 60px; color: var(--primary-pink); margin: 0 auto 20px;"></i>
+                            <h3 style="font-weight: 900; font-size: 1.8rem; margin-bottom: 15px; color: var(--text-main);">عذراً لحضرتك</h3>
+                            <p style="font-weight: 700; color: var(--text-muted); font-size: 1.1rem;">لم يتم العثور على تفاصيل المنتج المطلوب، يرجى تصفح المنيو لاختيار صنف آخر.</p>
+                            <button onclick="window.location.href='menu.html'" style="margin-top: 30px; padding: 15px 40px; border-radius: 50px; background: var(--text-main); color: #fff; font-weight: 900; font-size: 1.1rem; border: none; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='var(--primary-pink)'" onmouseout="this.style.background='var(--text-main)'">العودة للمنيو</button>
+                        </div>
+                    `;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+            });
+        });
     </script>
 </body>
 </html>

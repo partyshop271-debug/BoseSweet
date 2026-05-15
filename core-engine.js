@@ -1,10 +1,10 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Core Engine - الذاكرة المركزية والعقل المدبر (V28.0 - Sovereign Edition)
+ * 👑 BoseSweets Core Engine - الذاكرة المركزية والعقل المدبر (V29.0 - Sovereign Edition)
  * ============================================================================
  * الإدارة المرجعية: حلويات بوسي
  * الوظيفة: هذا الملف هو "النخاع الشوكي" للموقع. يحتفظ بالحالة اللحظية للبيانات، 
- * الإعدادات السيادية، والذاكرة المحلية، دون التدخل في جلب البيانات (الذي يتولاه الجسر).
+ * الإعدادات السيادية، والذاكرة المحلية، مع التوافق التام مع الدستور الهندسي والبرمجي.
  */
 
 import { firebaseConfig, NetworkEngine, ReverseSyncEngine, CloudQueueDB, db, auth } from './firebase-config.js';
@@ -37,11 +37,31 @@ const boseConfig = {
 
     location: {
         address: "الكفاح، شارع الوحدة المحلية، بجوار صيدلية د. أحمد مجدي وعيادة د. علي",
+    },
+
+    // 👑 قواعد العرض الهندسي (Grid Logic) المحددة في الدستور
+    layoutRules: {
+        twoCardsGrid: ['الديسباسيتو', 'القشطوطة', 'كبات السعادة', 'الدوناتس', 'السينابون'],
+        oneCardFull: ['التورت', 'الجاتوهات', 'الورد', 'بوكس الروقان', 'الميني تورت', 'الكب كيك', 'الريدفيلفت']
+    },
+
+    // 👑 قواعد التسعير الثابتة لباني التورتة
+    pricingRules: {
+        cake: {
+            basePersons: 4,
+            basePrice: 580,
+            pricePerPerson: 145,
+            incrementStep: 2
+        },
+        printing: {
+            edible: 60,     // للأكل
+            decoration: 20, // للزينة
+            none: 0
+        }
     }
 };
 
 // 👑 هيكل الحالة الموحد (Unified Dynamic State)
-// هذا الهيكل هو الذاكرة الحية التي تتغير بناءً على توجيهات لوحة الإدارة وتفاعل العميل
 export const BoseState = {
     siteSettings: {},          // ستُملأ من الجسر السحابي
     shippingZones: [],         // ستُملأ من الجسر السحابي
@@ -55,19 +75,32 @@ export const BoseState = {
     currentShippingFee: 0,
     appliedPromo: null,
     
-    // ذاكرة بناء التورت المخصصة
+    // ذاكرة إتمام الطلب واللوجستيات (Checkout State)
+    checkoutState: {
+        deliveryMethod: 'الاستلام من المقر', // القيم: 'الاستلام من المقر' أو 'الشحن للمنزل'
+        deliveryDate: null,
+        deliveryTime: null,
+        customerName: '',
+        primaryPhone: '',
+        secondaryPhone: '',
+        detailedAddress: '',
+        nearestLandmark: ''
+    },
+    
+    // ذاكرة بناء التورت المخصصة (محدثة وفق الدستور المرجعي)
     cakeState: {
         flavor: 'فانيليا',
         shape: 'دائري',
-        persons: 4,
-        printing: 'بدون',
+        persons: 4,             // يبدأ من 4 أفراد كحد أدنى
+        printingOption: 'بدون', // القيم: 'للأكل', 'للزينة', 'بدون'
         notes: '',
         refImage: null,
-        allergies: '',
+        allergies: '',          // حقل إلزامي
         hasCard: false,
         cardText: '',
-        occasion: '',
-        designStyle: 'تصميم محدد'
+        occasionTheme: '',      // لتحديد الشخصية والاهتمامات
+        designStyle: 'تصميم محدد',
+        currentCalculatedPrice: 580 // يتم تحديثه ديناميكياً
     },
     currentBuilderStep: 1,
     
@@ -167,13 +200,14 @@ if (typeof window !== 'undefined') {
         window.galleryData = BoseState.galleryData;
         window.catMenu = BoseState.catMenu;
         window.cakeState = BoseState.cakeState;
+        window.checkoutState = BoseState.checkoutState;
         
         window.syncCatalogMap = syncCatalogMap;
         window.saveToLocalMemory = saveToLocalMemory;
         window.getFromLocalMemory = getFromLocalMemory;
         window.setAppReady = setAppReady;
 
-        console.log("👑 النواة المركزية لعلامة حلويات بوسي (V28.0): تم تفعيل الذاكرة بنجاح وربطها بالشبكة العالمية.");
+        console.log("👑 النواة المركزية لعلامة حلويات بوسي (V29.0): تم تفعيل الذاكرة بنجاح وربطها بالشبكة العالمية وفقاً للدستور الهندسي.");
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'core-engine.js', null, null, 'Global Core Bindings Critical Error');
     }

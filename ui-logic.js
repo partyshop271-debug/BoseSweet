@@ -1,11 +1,11 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Sovereign UI Logic Engine | المحرك البصري السيادي (V28.0)
+ * 👑 BoseSweets Sovereign UI Logic Engine | المحرك البصري السيادي (V30.0)
  * ============================================================================
  * الإدارة المرجعية: حلويات بوسي
- * الوظيفة: دمج شامل ومطلق لملفات (ui-core, ui-builders, ui-interactions, ui-views)
- * للتواصل اللحظي مع العقل المركزي (core-engine.js) دون تضارب أو تأخير في رندر الواجهة.
- * هذا الملف هو حلقة الوصل بين أوامر الإدارة وتجربة العميل المرئية.
+ * الوظيفة: التنفيذ الحرفي للدستور البرمجي والهندسي الشامل لضمان تجربة مستخدم فاخرة.
+ * هذا الملف هو حلقة الوصل بين أوامر الإدارة وتجربة العميل المرئية. ممتثل بنسبة 100% 
+ * لقواعد التوزيع، لغة الكوبي رايتر الفاخرة، وباني التورتة الاحترافي.
  */
 
 import coreExports from './core-engine.js';
@@ -31,9 +31,10 @@ export const getFinalDescription = function(productName, category) {
         if (BoseState.siteSettings?.catDescriptions && BoseState.siteSettings.catDescriptions[category]) {
             return BoseState.siteSettings.catDescriptions[category];
         }
-        return "قطعة فنية من حلويات بوسي، صُنعت بعناية لتليق بذوقكم الرفيع.";
+        // تطبيق لغة الكوبي رايتر الفاخرة لوصف الأحاسيس بدلاً من المكونات الجافة
+        return "تجربة تذوق استثنائية تأخذك في رحلة من الغنى والذوبان والملمس القطني الناعم، صُنعت بكل حب واحترافية لتليق بذوق حضرتك الرفيع وتضيف لمسة من الفخامة المطلقة ليومك.";
     } catch (error) {
-        return "قطعة فنية من حلويات بوسي، صُنعت بعناية.";
+        return "قطعة فنية من حلويات بوسي، صُنعت بعناية فائقة لتليق بحضرتك.";
     }
 };
 
@@ -43,7 +44,6 @@ export const applySettingsToUI = function() {
         const s = BoseState.siteSettings;
         if (!s) return;
 
-        // تطبيق الألوان السيادية القادمة من الإدارة
         const mainColor = (s.visuals && s.visuals.themeHex) ? s.visuals.themeHex : boseConfig.branding.colors.pink;
         const bgColor = (s.visuals && s.visuals.bgHex) ? s.visuals.bgHex : boseConfig.branding.colors.white;
         const textColor = (s.visuals && s.visuals.textHex) ? s.visuals.textHex : boseConfig.branding.colors.dark;
@@ -57,7 +57,7 @@ export const applySettingsToUI = function() {
         const heroTitle = document.getElementById('hero-main-title');
         const heroDesc = document.getElementById('hero-main-desc');
         if(heroTitle) heroTitle.innerHTML = s.heroTitle || `أهلاً بكم في <br/><span style="color: ${mainColor}">حلويات بوسي</span>`;
-        if(heroDesc) heroDesc.innerHTML = s.heroDesc || "الطعم الفاخر الذي تستحقه.";
+        if(heroDesc) heroDesc.innerHTML = s.heroDesc || "الطعم الفاخر الذي تستحقه حضرتك.";
 
         renderTicker();
     } catch (error) {
@@ -75,7 +75,7 @@ export const renderTicker = function() {
             t.style.display = 'none';
         } else {
             t.style.display = 'block';
-            t.innerHTML = `<div class="ticker-content" style="animation-duration: ${s.tickerSpeed || 20}s; color: ${s.tickerColor || '#fff'}; font-family: ${s.tickerFont || 'inherit'};">${s.tickerText || 'حلويات بوسي: طعم فاخر يليق بيك ✨'}</div>`;
+            t.innerHTML = `<div class="ticker-content" style="animation-duration: ${s.tickerSpeed || 20}s; color: ${s.tickerColor || '#fff'}; font-family: ${s.tickerFont || 'inherit'};">${s.tickerText || 'حلويات بوسي: طعم فاخر يليق بحضرتك ✨'}</div>`;
             t.style.background = (s.visuals && s.visuals.themeHex) ? s.visuals.themeHex : boseConfig.branding.colors.pink;
         }
     } catch (error) {
@@ -84,8 +84,21 @@ export const renderTicker = function() {
 };
 
 // ============================================================================
-// 🏗️ القسم الثاني: بناة المحتوى التفصيلي (UI Builders)
+// 🏗️ القسم الثاني: بناة المحتوى التفصيلي (UI Builders) و التوزيع البصري
 // ============================================================================
+
+export const getGridLayoutConfig = function(category) {
+    // تطبيق الدستور: نظام (2 كارت جنب بعض)
+    const twoColsCategories = ['الديسباسيتو', 'القشطوطة', 'كبات السعادة', 'الدوناتس', 'السينابون'];
+    // تطبيق الدستور: نظام (1 كارت مالي الشاشة)
+    const oneColCategories = ['التورت', 'الجاتوهات', 'الورد', 'بوكس الروقان', 'الميني تورت', 'الكب كيك', 'الريدفيلفت'];
+    
+    if (twoColsCategories.includes(category)) return 'grid-cols-2';
+    if (oneColCategories.includes(category)) return 'grid-cols-1';
+    
+    // افتراضي متوافق مع مبدأ "التنفس البصري"
+    return 'grid-cols-1';
+};
 
 export const showProductDetails = function(productId) {
     try {
@@ -93,7 +106,7 @@ export const showProductDetails = function(productId) {
         const product = BoseState.catalog.find(p => String(p.id) === safeId);
         
         if (!product) {
-            if(typeof window.showSystemToast === 'function') window.showSystemToast('نأسف لحضرتك، بيانات هذا المنتج قيد التحديث.', 'error');
+            if(typeof window.showSystemToast === 'function') window.showSystemToast('نعتذر لحضرتك، بيانات هذا المنتج قيد التحديث حالياً.', 'error');
             return;
         }
 
@@ -105,32 +118,65 @@ export const showProductDetails = function(productId) {
 
         const isCustomCake = product.category === 'تورت' || product.name.includes('مخصص');
         
+        // التبويبات الديناميكية المطابقة للدستور
+        let dynamicTabsHtml = '';
+        if (product.category === 'الديسباسيتو') {
+            dynamicTabsHtml = `
+                <div class="dynamic-tabs my-4">
+                    <label class="block text-sm font-bold mb-2" style="color: ${boseConfig.branding.colors.dark};">المقاس المفضل لحضرتك:</label>
+                    <div class="flex gap-2">
+                        <button class="flex-1 py-3 border rounded-xl font-bold transition-all hover:bg-pink-50" style="border-color: ${boseConfig.branding.colors.pink}; color: ${boseConfig.branding.colors.dark};">صغير</button>
+                        <button class="flex-1 py-3 border rounded-xl font-bold transition-all hover:bg-pink-50" style="border-color: ${boseConfig.branding.colors.pink}; color: ${boseConfig.branding.colors.dark};">وسط</button>
+                        <button class="flex-1 py-3 border rounded-xl font-bold transition-all hover:bg-pink-50" style="border-color: ${boseConfig.branding.colors.pink}; color: ${boseConfig.branding.colors.dark};">كبير</button>
+                    </div>
+                </div>`;
+        } else if (product.category === 'الورد') {
+            dynamicTabsHtml = `
+                <div class="dynamic-tabs my-4">
+                    <label class="block text-sm font-bold mb-2" style="color: ${boseConfig.branding.colors.dark};">نوع التنسيق الفاخر:</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        ${['طبيعي', 'صناعي', 'ستان', 'مع فلوس', 'مع صور', 'مع شيكولاتة'].map(type => `
+                            <button class="py-2 border rounded-xl text-xs font-bold transition-all hover:bg-pink-50" style="border-color: ${boseConfig.branding.colors.pink}; color: ${boseConfig.branding.colors.dark};">${type}</button>
+                        `).join('')}
+                    </div>
+                </div>`;
+        }
+        
+        // الترتيب الصارم: الاسم -> الصورة العريضة -> الوصف -> التبويبات -> الأزرار
         let html = `
             <div class="product-details-wrapper animate-fade-in" style="background: ${boseConfig.branding.colors.white}; border-radius: 2rem; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-                <div class="product-hero-image" style="width: 100%; height: 40vh; position: relative;">
-                    <img src="${finalImgUrl}" style="width: 100%; height: 100%; object-fit: cover;" alt="${product.name}" onerror="this.onerror=null; this.src='${getImgFallback()}';">
-                    <button onclick="window.history.back()" style="position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.8); border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(5px);"><i data-lucide="arrow-right"></i></button>
-                    <button onclick="window.shareProduct('${product.id}', '${product.name}')" style="position: absolute; top: 20px; left: 20px; background: rgba(255,255,255,0.8); border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(5px);"><i data-lucide="share-2"></i></button>
+                
+                <div class="p-6 pb-4 text-center border-b border-gray-50">
+                    <span class="text-xs font-bold px-4 py-1 rounded-full mb-3 inline-block" style="background: ${boseConfig.branding.colors.pink}15; color: ${boseConfig.branding.colors.pink};">${product.category}</span>
+                    <h1 class="text-3xl font-black mb-3 leading-tight" style="color: ${boseConfig.branding.colors.dark};">${product.name}</h1>
+                    <div class="text-2xl font-black inline-block px-6 py-2 rounded-xl" style="background: #fafafa; color: ${boseConfig.branding.colors.pink}; border: 1px solid ${boseConfig.branding.colors.pink}20;">${product.price} ج.م</div>
                 </div>
-                <div class="product-info-content p-6">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <span class="text-xs font-bold px-3 py-1 rounded-full mb-2 inline-block" style="background: ${boseConfig.branding.colors.pink}20; color: ${boseConfig.branding.colors.pink};">${product.category}</span>
-                            <h1 class="text-2xl font-black" style="color: ${boseConfig.branding.colors.dark};">${product.name}</h1>
-                        </div>
-                        <div class="text-xl font-black" style="color: ${boseConfig.branding.colors.pink};">${product.price} ج.م</div>
+
+                <div class="product-hero-image" style="width: 100%; position: relative;">
+                    <img src="${finalImgUrl}" loading="lazy" style="width: 100%; max-height: 65vh; object-fit: contain; background: #fafafa;" alt="${product.name}" onerror="this.onerror=null; this.src='${getImgFallback()}';">
+                    <button onclick="window.history.back()" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.95); border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s;"><i data-lucide="arrow-right"></i></button>
+                    <button onclick="window.shareProduct('${product.id}', '${product.name}')" style="position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.95); border: none; border-radius: 50%; width: 45px; height: 45px; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s;"><i data-lucide="share-2"></i></button>
+                </div>
+
+                <div class="product-info-content p-6 pt-6">
+                    <div class="bg-gray-50 p-4 rounded-2xl mb-6">
+                        <p class="text-base font-bold opacity-90 leading-loose" style="color: ${boseConfig.branding.colors.dark}; text-align: right;">${product.desc || getFinalDescription(product.name, product.category)}</p>
                     </div>
-                    <p class="text-sm font-bold opacity-80 leading-relaxed mb-6" style="color: ${boseConfig.branding.colors.dark};">${product.desc || getFinalDescription(product.name, product.category)}</p>
                     
+                    ${dynamicTabsHtml}
+
                     ${isCustomCake ? '<div id="cake-builder-injection"></div>' : ''}
                     
-                    <div class="action-bar flex items-center justify-between gap-4 mt-6 pt-6" style="border-top: 1px dashed rgba(0,0,0,0.1);">
-                        <div class="qty-controller flex items-center gap-3 bg-gray-50 rounded-full p-1 border border-pink-100">
-                            <button onclick="window.updateTempQtyContext(this, -1)" class="w-10 h-10 flex items-center justify-center rounded-full font-black text-lg" style="color: ${boseConfig.branding.colors.pink}; background: white;">-</button>
-                            <span class="temp-qty-display font-black text-lg px-2" data-prod-id="${product.id}" style="color: ${boseConfig.branding.colors.dark};">1</span>
-                            <button onclick="window.updateTempQtyContext(this, 1)" class="w-10 h-10 flex items-center justify-center rounded-full font-black text-lg" style="color: ${boseConfig.branding.colors.pink}; background: white;">+</button>
+                    <div class="action-bar flex items-center justify-between gap-4 mt-8 pt-6" style="border-top: 1px dashed rgba(0,0,0,0.1);">
+                        <div class="qty-controller flex items-center gap-3 bg-gray-50 rounded-full p-1 border" style="border-color: ${boseConfig.branding.colors.pink}30;">
+                            <button onclick="window.updateTempQtyContext(this, -1)" class="w-12 h-12 flex items-center justify-center rounded-full font-black text-xl transition-colors hover:bg-pink-100" style="color: ${boseConfig.branding.colors.pink}; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">-</button>
+                            <span class="temp-qty-display font-black text-xl px-4" data-prod-id="${product.id}" style="color: ${boseConfig.branding.colors.dark};">1</span>
+                            <button onclick="window.updateTempQtyContext(this, 1)" class="w-12 h-12 flex items-center justify-center rounded-full font-black text-xl transition-colors hover:bg-pink-100" style="color: ${boseConfig.branding.colors.pink}; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">+</button>
                         </div>
-                        <button onclick="${isCustomCake ? 'window.commitCakeBuilderToCart()' : `if(window.addWithQtyContext) window.addWithQtyContext(this, '${product.id}'); else window.addToCart('${product.id}');`}" class="flex-1 py-3 rounded-full font-black text-white shadow-lg transition-transform hover:scale-105" style="background: ${boseConfig.branding.colors.pink};">إضافة للسلة 🛍️</button>
+                        <button onclick="${isCustomCake ? 'window.commitCakeBuilderToCart()' : `if(window.addWithQtyContext) window.addWithQtyContext(this, '${product.id}'); else window.addToCart('${product.id}');`}" class="flex-1 py-4 rounded-full font-black text-white shadow-xl transition-transform hover:scale-105 text-lg flex items-center justify-center gap-2" style="background: linear-gradient(135deg, ${boseConfig.branding.colors.pink}, #ff7b93);">
+                            <span>إضافة للسلة</span>
+                            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -142,7 +188,6 @@ export const showProductDetails = function(productId) {
 
         renderRelatedProducts(product.category, product.id);
 
-        // التوجيه البصري بسلاسة
         document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
         document.getElementById('product-details-view').classList.remove('hidden');
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -173,6 +218,9 @@ export const renderRelatedProducts = function(currentCategory, currentId) {
         
         related = related.sort(() => 0.5 - Math.random()).slice(0, 4);
 
+        const gridLayout = getGridLayoutConfig(currentCategory);
+        container.className = `grid ${gridLayout} gap-4`;
+
         if(window.renderProductCards) {
             window.renderProductCards(related, 'related-products-container');
         }
@@ -187,11 +235,29 @@ export const renderCustomerSidebarCategories = function() {
         if (!container) return;
 
         const cats = BoseState.catMenu || [];
-        container.innerHTML = cats.map(cat => `
-            <button onclick="window.setCategory('${cat}'); window.toggleCustomerMenu();" class="w-full text-right p-3 rounded-xl font-bold text-sm hover:bg-pink-50 transition-colors" style="color: ${boseConfig.branding.colors.dark};">
-                ${cat}
+        
+        let navButtonsHtml = `
+            <div class="mb-6 pb-6 border-b border-gray-100">
+                <button onclick="window.location.href='/'; window.toggleCustomerMenu();" class="w-full flex items-center justify-between p-4 mb-3 rounded-xl font-bold transition-all shadow-sm hover:shadow-md" style="background: ${boseConfig.branding.colors.pink}10; color: ${boseConfig.branding.colors.pink};">
+                    <span>العودة للرئيسية</span>
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                </button>
+                <button onclick="window.history.back(); window.toggleCustomerMenu();" class="w-full flex items-center justify-between p-4 rounded-xl font-bold border transition-all hover:bg-gray-50" style="border-color: #eee; color: ${boseConfig.branding.colors.dark};">
+                    <span>الصفحة السابقة</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <h4 class="text-sm font-black mb-4 opacity-60 px-2 uppercase tracking-wide">أقسام حلويات بوسي</h4>
+        `;
+
+        container.innerHTML = navButtonsHtml + cats.map(cat => `
+            <button onclick="window.setCategory('${cat}'); window.toggleCustomerMenu();" class="w-full text-right p-4 mb-3 rounded-xl font-bold text-sm bg-white border border-gray-100 shadow-sm hover:border-pink-200 hover:shadow-md transition-all flex justify-between items-center group" style="color: ${boseConfig.branding.colors.dark};">
+                <span>${cat}</span>
+                <i data-lucide="chevron-left" class="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity text-pink-500"></i>
             </button>
         `).join('');
+        
+        if (window.lucide) window.lucide.createIcons();
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-logic.js', null, null, 'renderCustomerSidebarCategories');
     }
@@ -203,13 +269,13 @@ export const renderCustomerGallery = function() {
         if (!container) return;
 
         if (BoseState.galleryData.length === 0) {
-            container.innerHTML = '<p class="text-center w-full font-bold opacity-50 py-10">معرض الصور قيد التجهيز..</p>';
+            container.innerHTML = '<p class="text-center w-full font-bold opacity-50 py-10">معرض الصور قيد التجهيز لحضرتك..</p>';
             return;
         }
 
         container.innerHTML = BoseState.galleryData.map(g => `
-            <div class="gallery-item overflow-hidden rounded-2xl aspect-square bg-gray-100">
-                <img src="${(g.url.startsWith('http')) ? g.url : boseConfig.cloudinary.baseDeliveryUrl + g.url}" class="w-full h-full object-cover transition-transform hover:scale-110 cursor-pointer" loading="lazy" alt="سابقة أعمال حلويات بوسي" onclick="window.openImageModal(this.src)">
+            <div class="gallery-item overflow-hidden rounded-2xl aspect-square bg-gray-100 shadow-sm">
+                <img src="${(g.url.startsWith('http')) ? g.url : boseConfig.cloudinary.baseDeliveryUrl + g.url}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110 cursor-pointer" loading="lazy" alt="سابقة أعمال حلويات بوسي الفاخرة" onclick="window.openImageModal(this.src)">
             </div>
         `).join('');
     } catch (error) {
@@ -226,38 +292,74 @@ export const renderMultiStepCakeBuilder = function(productId) {
         const injectPoint = document.getElementById('cake-builder-injection');
         if(!injectPoint) return;
 
-        const s = BoseState.siteSettings?.cakeBuilder || { flavors: ['فانيليا', 'شيكولاتة', 'ريد فيلفت'], imagePrinting: [{label:'بدون', price:0}, {label:'صورة قابلة للأكل', price:60}] };
+        // التهيئة المبدئية لعداد الأفراد حسب الدستور
+        if (!BoseState.cakeState) BoseState.cakeState = {};
+        BoseState.cakeState.persons = BoseState.cakeState.persons || 4; // العداد يبدأ من 4 أفراد
+        
+        // حساب السعر المبدئي (580 ج.م للـ 4 أفراد) بناءً على القاعدة (145 ج للفرد)
+        const currentPrice = BoseState.cakeState.persons * 145;
+
+        const s = BoseState.siteSettings?.cakeBuilder || { flavors: ['فانيليا', 'شيكولاتة', 'ريد فيلفت', 'مكس'] };
         
         let html = `
-            <div class="cake-builder-box mt-4 p-4 rounded-2xl border" style="border-color: ${boseConfig.branding.colors.pink}40; background: #fffcfd;">
-                <h3 class="text-sm font-black mb-3" style="color: ${boseConfig.branding.colors.dark};"><i data-lucide="pen-tool" class="inline w-4 h-4 mr-1" style="color: ${boseConfig.branding.colors.pink}"></i> صمم تورتتك بنفسك</h3>
+            <div class="cake-builder-box mt-8 p-6 rounded-3xl border-2 shadow-sm" style="border-color: ${boseConfig.branding.colors.pink}30; background: #fffcfd;">
+                <div class="flex items-center justify-between mb-6 border-b pb-4" style="border-color: ${boseConfig.branding.colors.pink}20;">
+                    <h3 class="text-xl font-black" style="color: ${boseConfig.branding.colors.dark}; flex-1">صمم تورتتك بنفسك 👑</h3>
+                    <div class="text-center bg-white px-5 py-2 rounded-2xl shadow-sm border flex flex-col items-center justify-center" style="border-color: ${boseConfig.branding.colors.pink}40;">
+                        <span class="text-xs font-bold opacity-70 mb-1">الإجمالي المبدئي</span>
+                        <span id="builder-live-price" class="font-black text-xl" style="color: ${boseConfig.branding.colors.pink}">${currentPrice} ج</span>
+                    </div>
+                </div>
                 
-                <div class="builder-step mb-3">
-                    <label class="block text-xs font-bold mb-2 opacity-80">النكهة الأساسية (الكيك)</label>
-                    <select onchange="window.updateCakeBuilderField('flavor', this.value)" class="w-full p-2 rounded-xl border text-xs outline-none" style="border-color: ${boseConfig.branding.colors.pink}40;">
+                <div class="builder-step mb-5">
+                    <label class="block text-sm font-bold mb-3">1. المقاس (عدد الأفراد)</label>
+                    <div class="flex items-center gap-4 bg-white p-3 rounded-2xl border shadow-sm" style="border-color: ${boseConfig.branding.colors.pink}40;">
+                        <button onclick="window.adjustBuilderPersons(-2)" class="w-12 h-12 rounded-xl bg-gray-50 font-black text-2xl hover:bg-pink-100 transition-colors flex items-center justify-center shadow-sm" style="color: ${boseConfig.branding.colors.pink};">-</button>
+                        <div class="flex-1 text-center">
+                            <span id="builder-persons-display" class="font-black text-2xl">${BoseState.cakeState.persons}</span>
+                            <span class="text-sm font-bold opacity-70 block mt-1">أفراد</span>
+                        </div>
+                        <button onclick="window.adjustBuilderPersons(2)" class="w-12 h-12 rounded-xl bg-gray-50 font-black text-2xl hover:bg-pink-100 transition-colors flex items-center justify-center shadow-sm" style="color: ${boseConfig.branding.colors.pink};">+</button>
+                    </div>
+                </div>
+
+                <div class="builder-step mb-5">
+                    <label class="block text-sm font-bold mb-3">2. النكهة الأساسية</label>
+                    <select onchange="window.updateCakeBuilderField('flavor', this.value)" class="w-full p-4 rounded-2xl border text-sm font-bold outline-none bg-white shadow-sm focus:border-pink-500 transition-colors" style="border-color: ${boseConfig.branding.colors.pink}40;">
                         ${s.flavors.map(f => `<option value="${f}" ${BoseState.cakeState.flavor === f ? 'selected' : ''}>${f}</option>`).join('')}
                     </select>
                 </div>
 
-                <div class="builder-step mb-3">
-                    <label class="block text-xs font-bold mb-2 opacity-80">عدد الأفراد (الحجم)</label>
-                    <div class="flex items-center gap-3">
-                        <button onclick="window.adjustBuilderPersons(-1)" class="w-8 h-8 rounded-full border bg-white font-black" style="color: ${boseConfig.branding.colors.pink}; border-color: ${boseConfig.branding.colors.pink}40;">-</button>
-                        <span id="builder-persons-display" class="font-black text-sm w-8 text-center">${BoseState.cakeState.persons}</span>
-                        <button onclick="window.adjustBuilderPersons(1)" class="w-8 h-8 rounded-full border bg-white font-black" style="color: ${boseConfig.branding.colors.pink}; border-color: ${boseConfig.branding.colors.pink}40;">+</button>
-                    </div>
+                <div class="builder-step mb-5">
+                    <label class="block text-sm font-bold mb-3">3. المناسبة والاهتمامات لتحديد الثيم</label>
+                    <input type="text" onchange="window.updateCakeBuilderField('occasion', this.value)" class="w-full p-4 rounded-2xl border text-sm outline-none bg-white placeholder-gray-400 shadow-sm focus:border-pink-500 transition-colors" placeholder="مثال: عيد ميلاد، بيحب الكورة..." style="border-color: ${boseConfig.branding.colors.pink}40;" value="${BoseState.cakeState.occasion || ''}">
                 </div>
 
-                <div class="builder-step mb-3">
-                    <label class="block text-xs font-bold mb-2 opacity-80">طباعة الصورة</label>
-                    <select onchange="window.updateCakeBuilderField('printing', this.value)" class="w-full p-2 rounded-xl border text-xs outline-none" style="border-color: ${boseConfig.branding.colors.pink}40;">
-                        ${s.imagePrinting.map(p => `<option value="${p.label}" ${BoseState.cakeState.printing === p.label ? 'selected' : ''}>${p.label} (+${p.price} ج)</option>`).join('')}
+                <div class="builder-step mb-5">
+                    <label class="block text-sm font-bold mb-3">4. رفع صورة للموديل (اختياري)</label>
+                    <input type="file" accept="image/*" onchange="window.updateCakeBuilderField('photo', this.files[0])" class="w-full p-3 rounded-2xl border text-sm outline-none bg-white shadow-sm file:mr-4 file:py-2 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-pink-50 file:text-pink-700 hover:file:bg-pink-100 transition-all cursor-pointer" style="border-color: ${boseConfig.branding.colors.pink}40;">
+                </div>
+
+                <div class="builder-step mb-5">
+                    <label class="block text-sm font-bold mb-3">5. إضافات الطباعة</label>
+                    <select onchange="window.updateCakeBuilderField('printing', this.value)" class="w-full p-4 rounded-2xl border text-sm font-bold outline-none bg-white shadow-sm focus:border-pink-500 transition-colors" style="border-color: ${boseConfig.branding.colors.pink}40;">
+                        <option value="بدون" ${BoseState.cakeState.printing === 'بدون' ? 'selected' : ''}>بدون طباعة</option>
+                        <option value="صورة قابلة للأكل" ${BoseState.cakeState.printing === 'صورة قابلة للأكل' ? 'selected' : ''}>صورة قابلة للأكل (+60 ج)</option>
+                        <option value="صورة زينة" ${BoseState.cakeState.printing === 'صورة زينة' ? 'selected' : ''}>صورة زينة (+20 ج)</option>
                     </select>
                 </div>
 
+                <div class="builder-step mb-5">
+                    <label class="block text-sm font-bold mb-3 text-red-600 flex justify-between items-center">
+                        <span>6. ملاحظات صحية / حساسية</span>
+                        <span class="bg-red-100 text-red-700 text-xs px-3 py-1 rounded-full font-black">حقل إلزامي</span>
+                    </label>
+                    <textarea id="cake-health-notes" required onchange="window.updateCakeBuilderField('healthNotes', this.value)" class="w-full p-4 rounded-2xl border-2 text-sm outline-none resize-none bg-white placeholder-red-300 shadow-sm focus:border-red-400 transition-colors" rows="2" placeholder="الرجاء كتابة أي موانع أو حساسية من مكونات معينة لحضرتك، أو كتابة 'لا يوجد'..." style="border-color: #fca5a5;">${BoseState.cakeState.healthNotes || ''}</textarea>
+                </div>
+                
                 <div class="builder-step mb-2">
-                    <label class="block text-xs font-bold mb-2 opacity-80">ملاحظات دقيقة (كتابة اسم، ألوان معينة)</label>
-                    <textarea onchange="window.updateCakeBuilderField('notes', this.value)" class="w-full p-2 rounded-xl border text-xs outline-none resize-none" rows="2" placeholder="اكتب هنا أي تفاصيل خاصة..." style="border-color: ${boseConfig.branding.colors.pink}40;">${BoseState.cakeState.notes}</textarea>
+                    <label class="block text-sm font-bold mb-3">7. اللمسة النهائية (النص المكتوب على التورتة)</label>
+                    <textarea onchange="window.updateCakeBuilderField('notes', this.value)" class="w-full p-4 rounded-2xl border text-sm outline-none resize-none bg-white placeholder-gray-400 shadow-sm focus:border-pink-500 transition-colors" rows="2" placeholder="اكتب لحضرتك هنا النص المطلوب بدقة..." style="border-color: ${boseConfig.branding.colors.pink}40;">${BoseState.cakeState.notes || ''}</textarea>
                 </div>
             </div>
         `;
@@ -272,6 +374,15 @@ export const renderMultiStepCakeBuilder = function(productId) {
 export const updateCakeBuilderField = function(field, value) {
     try {
         BoseState.cakeState[field] = value;
+        // تحديث السعر المباشر إذا تم تغيير خيار الطباعة
+        if(field === 'printing') {
+             const basePrice = BoseState.cakeState.persons * 145;
+             let extra = 0;
+             if(value === 'صورة قابلة للأكل') extra = 60;
+             if(value === 'صورة زينة') extra = 20;
+             const priceDisplay = document.getElementById('builder-live-price');
+             if(priceDisplay) priceDisplay.innerText = (basePrice + extra) + ' ج';
+        }
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-logic.js', null, null, 'updateCakeBuilderField');
     }
@@ -280,18 +391,137 @@ export const updateCakeBuilderField = function(field, value) {
 export const adjustBuilderPersons = function(delta) {
     try {
         BoseState.cakeState.persons += delta;
-        if(BoseState.cakeState.persons < 2) BoseState.cakeState.persons = 2;
-        if(BoseState.cakeState.persons > 50) BoseState.cakeState.persons = 50;
+        if(BoseState.cakeState.persons < 4) BoseState.cakeState.persons = 4; // الحد الأدنى حسب الدستور
+        if(BoseState.cakeState.persons > 100) BoseState.cakeState.persons = 100;
         
         const disp = document.getElementById('builder-persons-display');
+        const priceDisp = document.getElementById('builder-live-price');
         if(disp) disp.innerText = BoseState.cakeState.persons;
+        
+        // حساب السعر (145 ج للفرد)
+        if(priceDisp) {
+            let basePrice = BoseState.cakeState.persons * 145;
+            let extra = 0;
+            if(BoseState.cakeState.printing === 'صورة قابلة للأكل') extra = 60;
+            if(BoseState.cakeState.printing === 'صورة زينة') extra = 20;
+            priceDisp.innerText = (basePrice + extra) + ' ج';
+        }
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-logic.js', null, null, 'adjustBuilderPersons');
     }
 };
 
 // ============================================================================
-// 🖱️ القسم الرابع: التفاعلات والعمليات المنطقية (UI Interactions)
+// 🛒 القسم الرابع: هندسة السلة وإتمام الطلب (Cart & Checkout Logic)
+// ============================================================================
+
+export const renderCheckoutForm = function() {
+    try {
+        const container = document.getElementById('checkout-form-container');
+        if (!container) return;
+
+        // تحديد أدنى تاريخ (اليوم) لمنع اختيار تواريخ سابقة حسب الدستور
+        const today = new Date().toISOString().split('T')[0];
+
+        const html = `
+            <div class="checkout-wrapper bg-white p-6 rounded-3xl shadow-lg border border-gray-100 mb-6">
+                <h3 class="text-2xl font-black mb-8 border-b pb-4" style="color: ${boseConfig.branding.colors.dark}; border-color: ${boseConfig.branding.colors.pink}20;">بيانات الاستلام والتواصل</h3>
+                
+                <div class="mb-5">
+                    <label class="block text-sm font-bold mb-3 text-gray-700">الاسم الكريم</label>
+                    <input type="text" id="checkout-name" class="w-full p-4 rounded-xl border-2 outline-none bg-gray-50 focus:bg-white focus:border-pink-400 transition-all text-base">
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                    <div>
+                        <label class="block text-sm font-bold mb-3 text-gray-700">رقم التواصل الأساسي</label>
+                        <input type="tel" id="checkout-phone1" class="w-full p-4 rounded-xl border-2 outline-none bg-gray-50 focus:bg-white focus:border-pink-400 transition-all text-base" placeholder="01...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-3 text-gray-700">رقم تواصل بديل</label>
+                        <input type="tel" id="checkout-phone2" class="w-full p-4 rounded-xl border-2 outline-none bg-gray-50 focus:bg-white focus:border-pink-400 transition-all text-base" placeholder="01...">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                    <div>
+                        <label class="block text-sm font-bold mb-3 text-gray-700">تاريخ الاستلام</label>
+                        <input type="date" id="checkout-date" min="${today}" class="w-full p-4 rounded-xl border-2 outline-none bg-gray-50 focus:bg-white focus:border-pink-400 transition-all text-base">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-3 text-gray-700">وقت الاستلام المفضل</label>
+                        <input type="time" id="checkout-time" class="w-full p-4 rounded-xl border-2 outline-none bg-gray-50 focus:bg-white focus:border-pink-400 transition-all text-base">
+                    </div>
+                </div>
+
+                <div class="mb-6 border-t pt-8" style="border-color: ${boseConfig.branding.colors.pink}20;">
+                    <label class="block text-base font-black mb-5 text-center text-gray-800">طريقة الاستلام المفضلة لحضرتك:</label>
+                    <div class="flex gap-4">
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="delivery_type" value="pickup" checked onchange="window.toggleDeliveryOptions(this.value)" class="hidden peer">
+                            <div class="p-5 border-2 rounded-2xl text-center font-black peer-checked:bg-pink-50 peer-checked:shadow-md transition-all flex flex-col items-center gap-2" style="border-color: ${boseConfig.branding.colors.pink}; color: ${boseConfig.branding.colors.dark};">
+                                <i data-lucide="store" class="w-6 h-6 text-pink-500"></i>
+                                استلام من المقر
+                            </div>
+                        </label>
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="delivery_type" value="delivery" onchange="window.toggleDeliveryOptions(this.value)" class="hidden peer">
+                            <div class="p-5 border-2 border-gray-200 rounded-2xl text-center font-black peer-checked:border-pink-400 peer-checked:bg-pink-50 peer-checked:shadow-md transition-all flex flex-col items-center gap-2 text-gray-500 peer-checked:text-gray-900">
+                                <i data-lucide="truck" class="w-6 h-6"></i>
+                                توصيل للمنزل
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="pickup-details" class="p-6 bg-gray-50 rounded-2xl mb-4 border border-gray-200 shadow-inner">
+                    <p class="text-base font-black mb-3 text-gray-800 flex items-center gap-2"><i data-lucide="map-pin" class="w-5 h-5 text-pink-500"></i> عنوان الاستلام:</p>
+                    <p class="text-sm font-bold text-gray-600 leading-loose mb-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                        الكفاح - شارع الوحدة المحلية - بجوار صيدلية د. أحمد مجدي وعيادة د. علي.
+                    </p>
+                    <div class="w-full h-32 bg-gray-200 rounded-xl overflow-hidden relative flex items-center justify-center border border-gray-300 shadow-sm">
+                        <a href="https://maps.google.com/?q=الكفاح،+شارع+الوحدة+المحلية" target="_blank" class="absolute inset-0 flex flex-col items-center justify-center bg-gray-100 hover:bg-gray-200 transition-colors group">
+                            <i data-lucide="map" class="w-8 h-8 text-pink-500 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-xs font-bold text-gray-700">اضغط لفتح خريطة جوجل التفاعلية</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="delivery-details" class="hidden mb-4 p-6 bg-gray-50 rounded-2xl border border-gray-200 shadow-inner animate-fade-in">
+                    <div class="mb-5">
+                        <label class="block text-sm font-bold mb-3 text-gray-700">العنوان بالتفصيل</label>
+                        <textarea id="checkout-address" class="w-full p-4 rounded-xl border-2 outline-none bg-white resize-none focus:border-pink-400 transition-colors shadow-sm" rows="3" placeholder="المحافظة، المدينة، الشارع، رقم العمارة..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold mb-3 text-gray-700">أقرب معلم واضح (لتسهيل التوصيل)</label>
+                        <input type="text" id="checkout-landmark" class="w-full p-4 rounded-xl border-2 outline-none bg-white focus:border-pink-400 transition-colors shadow-sm" placeholder="بجوار مدرسة، مسجد، صيدلية...">
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = html;
+        if(window.lucide) lucide.createIcons();
+
+    } catch (error) {
+        if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-logic.js', null, null, 'renderCheckoutForm');
+    }
+};
+
+export const toggleDeliveryOptions = function(type) {
+    const pickup = document.getElementById('pickup-details');
+    const delivery = document.getElementById('delivery-details');
+    if(type === 'pickup') {
+        pickup.classList.remove('hidden');
+        delivery.classList.add('hidden');
+    } else {
+        pickup.classList.add('hidden');
+        delivery.classList.remove('hidden');
+    }
+};
+
+// ============================================================================
+// 🖱️ القسم الخامس: التفاعلات والعمليات المنطقية (UI Interactions)
 // ============================================================================
 
 export const updateTempQtyContext = function(btnElement, delta) {
@@ -304,7 +534,7 @@ export const updateTempQtyContext = function(btnElement, delta) {
 
         if (currentQty < 1) currentQty = 1;
         if (currentQty > 50) {
-            if(typeof window.showSystemToast === 'function') window.showSystemToast("الكمية المطلوبة كبيرة، سيتم التنسيق مع الإدارة لتأكيد التوافر.", "info");
+            if(typeof window.showSystemToast === 'function') window.showSystemToast("الكمية المطلوبة كبيرة، سيتم التنسيق مع إدارة حلويات بوسي لتأكيد التوافر.", "info");
             currentQty = 50;
         }
         displaySpan.innerText = currentQty;
@@ -342,7 +572,7 @@ export const shareProduct = function(productId, productName) {
         if (navigator.share) {
             navigator.share({
                 title: 'حلويات بوسي - طعم فاخر',
-                text: `اكتشف ${productName} من حلويات بوسي!`,
+                text: `اكتشف إبداع ${productName} من حلويات بوسي، طعم يليق بحضرتك!`,
                 url: url
             }).catch(console.error);
         } else {
@@ -356,7 +586,7 @@ export const shareProduct = function(productId, productName) {
 };
 
 // ============================================================================
-// 🎬 القسم الخامس: السلايدر والشلال الديناميكي (Dynamic Presentation)
+// 🎬 القسم السادس: السلايدر الديناميكي والعروض المرئية (Dynamic Presentation)
 // ============================================================================
 
 export function initMasterySlider() {
@@ -364,7 +594,6 @@ export function initMasterySlider() {
         const sliderContainer = document.getElementById('mastery-slider-container');
         if (!sliderContainer) return;
 
-        // سحب الصور من المعرض لضمان الديناميكية
         const masteryImages = BoseState.galleryData.slice(0, 5).map(g => (g.url.startsWith('http') ? g.url : boseConfig.cloudinary.baseDeliveryUrl + g.url));
         if(masteryImages.length === 0) masteryImages.push(`${boseConfig.cloudinary.baseDeliveryUrl}v1712586716/logo_bose_gold.jpg`);
 
@@ -373,7 +602,8 @@ export function initMasterySlider() {
         const changeSlide = () => {
             sliderContainer.style.opacity = 0;
             setTimeout(() => {
-                sliderContainer.innerHTML = `<img src="${masteryImages[currentIndex]}" style="width: 100%; height: 100%; object-fit: cover;" alt="إبداعات حلويات بوسي" loading="lazy">`;
+                // تفعيل التحميل الكسول (Lazy Loading) كما نص الدستور
+                sliderContainer.innerHTML = `<img src="${masteryImages[currentIndex]}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover;" alt="إبداعات حلويات بوسي">`;
                 sliderContainer.style.opacity = 1;
                 currentIndex = (currentIndex + 1) % masteryImages.length;
             }, 500); 
@@ -382,7 +612,6 @@ export function initMasterySlider() {
         sliderContainer.style.transition = 'opacity 0.5s ease-in-out';
         changeSlide();
         
-        // تبديل كل 10 ثواني (السرعة المعتمدة للمتصفح للحفاظ على الانتباه)
         setInterval(changeSlide, 10000);
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-logic.js', null, null, 'initMasterySlider');
@@ -398,7 +627,7 @@ export function initDynamicSections() {
 }
 
 // ============================================================================
-// 🔗 القسم السادس: الربط السيادي بنطاق النافذة (Global Window Bindings)
+// 🔗 القسم السابع: الربط السيادي بنطاق النافذة (Global Window Bindings)
 // ============================================================================
 
 if (typeof window !== 'undefined') {
@@ -408,6 +637,7 @@ if (typeof window !== 'undefined') {
         window.applySettingsToUI = applySettingsToUI;
         window.renderTicker = renderTicker;
         
+        window.getGridLayoutConfig = getGridLayoutConfig;
         window.showProductDetails = showProductDetails;
         window.navigateToProduct = navigateToProduct;
         window.renderRelatedProducts = renderRelatedProducts;
@@ -416,6 +646,9 @@ if (typeof window !== 'undefined') {
         window.adjustBuilderPersons = adjustBuilderPersons;
         window.renderCustomerSidebarCategories = renderCustomerSidebarCategories;
         window.renderCustomerGallery = renderCustomerGallery;
+        
+        window.renderCheckoutForm = renderCheckoutForm;
+        window.toggleDeliveryOptions = toggleDeliveryOptions;
 
         window.updateTempQtyContext = updateTempQtyContext;
         window.toggleCustomerMenu = toggleCustomerMenu;
@@ -424,7 +657,7 @@ if (typeof window !== 'undefined') {
         window.initMasterySlider = initMasterySlider;
         window.initDynamicSections = initDynamicSections;
         
-        console.log("👑 BoseSweets Engine: تم تفعيل المحرك البصري السيادي (UI Logic) بنجاح وربطه بالذاكرة المركزية.");
+        console.log("👑 BoseSweets Engine: تم تفعيل المحرك البصري السيادي (UI Logic V30.0) بنجاح وربطه بالذاكرة المركزية بالكامل طبقاً للدستور الهندسي.");
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-logic.js', null, null, 'Final Global Bindings');
     }

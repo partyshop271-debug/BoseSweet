@@ -2,16 +2,32 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منيو حلويات بوسي | BoseSweets</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>منيو حلويات بوسي | الطعم الفاخر</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
-        /* تنسيقات خاصة بصفحة المنيو لضمان الراحة والتنقل السلس */
+        /* تنسيقات سيادية لصفحة المنيو لضمان الراحة والتنقل السلس */
+        body {
+            background-color: var(--site-bg, #ffffff);
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .main-header {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255,145,164,0.2);
+            z-index: 1000;
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        }
+
         .category-nav {
             display: flex;
             overflow-x: auto;
@@ -21,30 +37,36 @@
             scrollbar-width: none;
             border-bottom: 1px solid rgba(255, 145, 164, 0.1);
             position: sticky;
-            top: 75px; /* يلتصق أسفل الهيدر الزجاجي */
-            background: var(--bg-white);
+            top: 68px; /* يلتصق أسفل الهيدر الزجاجي */
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
             z-index: 900;
+            scroll-snap-type: x mandatory;
         }
         .category-nav::-webkit-scrollbar { display: none; }
         
         .category-item {
-            padding: 10px 25px;
+            padding: 12px 28px;
             border-radius: 50px;
-            background: var(--surface-light);
-            color: var(--text-main);
-            font-weight: 700;
+            background: #fafafa;
+            color: var(--site-text, #1a1a1a);
+            font-weight: 900;
             white-space: nowrap;
             cursor: pointer;
-            transition: var(--transition-smooth);
-            border: 1px solid transparent;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+            scroll-snap-align: start;
         }
         
         .category-item.active {
-            background: var(--primary-pink);
-            color: var(--bg-white);
+            background: var(--site-color-theme, #ff91a4);
+            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(255,145,164,0.3);
+            border-color: transparent;
+            transform: scale(1.05);
         }
 
-        /* شبكة المنيو: كارتين جنب بعض في الموبايل */
+        /* شبكة المنيو: كارتين جنب بعض في الموبايل بشكل صارم حسب الدستور */
         .menu-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -70,42 +92,62 @@
 
     <header class="main-header">
         <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <button class="btn-icon" id="openSidebar" onclick="window.history.back()"><i data-lucide="arrow-right"></i></button>
-            <div style="cursor: pointer;" onclick="window.location.href='index.html'">
-                <h2 style="margin: 0; color: var(--primary-pink); font-size: 1.6rem;">حلويات بوسي</h2>
+            <button class="btn-icon" id="openSidebar" onclick="window.history.back()" style="border: none; background: transparent; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: #fafafa; border-radius: 50%;">
+                <i data-lucide="arrow-right"></i>
+            </button>
+            <div style="cursor: pointer; text-align: center;" onclick="window.location.href='index.html'">
+                <h2 style="margin: 0; color: var(--site-color-theme, #ff91a4); font-size: 1.8rem; font-weight: 900;">حلويات بوسي</h2>
             </div>
             <div style="display: flex; gap: 12px;">
-                <button class="btn-icon" onclick="window.location.href='cart.html'" style="position: relative;">
-                    <i data-lucide="shopping-basket"></i>
-                    <span id="cart-badge" style="position: absolute; top:-5px; right:-5px; background:var(--primary-pink); color:white; font-size:10px; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; display:none;">0</span>
+                <button class="btn-icon" onclick="window.location.href='cart.html'" style="position: relative; border: none; background: transparent; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                    <i data-lucide="shopping-basket" style="width: 24px; height: 24px;"></i>
+                    <span id="cart-badge" style="position: absolute; top: 0px; right: 0px; background: var(--site-text, #1a1a1a); color: #ffffff; font-size: 11px; font-weight: 900; width: 20px; height: 20px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid #ffffff;">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="container mt-section mb-section">
-        <h1 style="margin-bottom: 10px;">قائمة <span class="text-pink">المنتجات</span></h1>
-        <p class="text-center" style="max-width: 600px; margin: 0 auto 30px; color: var(--text-muted);">
-            تصفح إبداعاتنا المختارة بعناية لتناسب ذوقكم الرفيع، من التورت الملكية إلى المخبوزات الطازجة يومياً.
-        </p>
+    <main class="container mt-section mb-section" style="padding-top: 30px;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h1 style="margin-bottom: 15px; font-weight: 900; font-size: 2.4rem; color: var(--site-text, #1a1a1a);">قائمة <span style="color: var(--site-color-theme, #ff91a4);">المنتجات</span></h1>
+            <p style="max-width: 650px; margin: 0 auto; font-weight: 700; opacity: 0.85; font-size: 1.1rem; color: var(--site-text, #1a1a1a); line-height: 1.8;">
+                تصفح إبداعات حلويات بوسي المختارة بعناية لتليق بذوق حضرتك الرفيع، تشكيلة فاخرة تُخبز بشغف لتمنحك تجربة تذوق استثنائية.
+            </p>
+        </div>
 
         <nav class="category-nav" id="categoryNav">
             <div class="category-item active" data-category="all">الكل</div>
-            <div class="category-item" data-category="تورت">التورت</div>
+            <div class="category-item" data-category="تورت">التورت الملكية</div>
             <div class="category-item" data-category="ديسباسيتو">الديسباسيتو</div>
             <div class="category-item" data-category="سينابون">السينابون</div>
             <div class="category-item" data-category="دوناتس">الدوناتس</div>
             <div class="category-item" data-category="قشطوطة">القشطوطة</div>
-            <div class="category-item" data-category="ورد">ركن الورد</div>
+            <div class="category-item" data-category="الورد">تنسيقات الورد</div>
         </nav>
 
-        <div class="menu-grid" id="menuGrid">
+        <div class="menu-grid" id="menuGrid" style="min-height: 400px;">
             </div>
+
+        <section class="excellence-section mt-section mb-section" style="margin-top: 60px; background: linear-gradient(135deg, #ffffff 0%, rgba(255,145,164,0.1) 100%); border-radius: 30px; padding: 40px 20px; text-align: center; border: 2px solid rgba(255,145,164,0.2); box-shadow: 0 15px 40px rgba(0,0,0,0.04);">
+            <div style="display: inline-flex; align-items: center; justify-content: center; background: var(--site-color-theme, #ff91a4); color: white; padding: 6px 20px; border-radius: 50px; font-weight: 900; font-size: 0.95rem; margin-bottom: 20px; box-shadow: 0 8px 15px rgba(255,145,164,0.3);">
+                <i data-lucide="star" style="width: 16px; height: 16px; margin-left: 6px; fill: white;"></i> نجم المبيعات
+            </div>
+            <h2 style="font-weight: 900; font-size: 2.2rem; color: var(--site-text, #1a1a1a); margin-bottom: 20px;">الأكثر <span style="color: var(--site-color-theme, #ff91a4);">طلباً وتكراراً</span></h2>
+            <p style="font-weight: 700; opacity: 0.85; font-size: 1.1rem; max-width: 600px; margin: 0 auto 40px; line-height: 1.8; color: var(--site-text, #1a1a1a);">
+                المنتجات التي أسرت قلوب عملاء حلويات بوسي وأصبحت الخيار الأول في كل مناسبة. لا تفوت على حضرتك تجربة هذا السحر!
+            </p>
+            <div class="menu-grid" id="excellenceGrid">
+                </div>
+        </section>
     </main>
 
-    <footer class="main-footer">
-        <div class="container" style="text-align: center; border-top: 1px solid rgba(0,0,0,0.05); padding-top: 30px;">
-            <p style="font-size: 0.85rem; color: #888;">جميع الحقوق محفوظة ومسجلة لعلامة حلويات بوسي © 2026</p>
+    <footer class="main-footer" style="background: #fafafa; border-top: 2px solid rgba(255,145,164,0.15); padding: 40px 0 20px;">
+        <div class="container" style="text-align: center;">
+            <h3 style="color: var(--site-color-theme, #ff91a4); font-size: 1.6rem; font-weight: 900; margin-bottom: 15px;">حلويات بوسي</h3>
+            <p style="font-weight: 700; opacity: 0.8; margin-bottom: 30px; font-size: 1rem; color: var(--site-text, #1a1a1a);">الطعم الفاخر الذي تستحقه حضرتك</p>
+            <div style="border-top: 1px solid rgba(0,0,0,0.05); padding-top: 20px; font-weight: 900; color: var(--site-text, #1a1a1a); opacity: 0.6;">
+                <p style="font-size: 0.9rem;">جميع الحقوق محفوظة ومسجلة لعلامة حلويات بوسي © 2026</p>
+            </div>
         </div>
     </footer>
 
@@ -116,54 +158,92 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // تفعيل نظام الأيقونات
             if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             }
 
             const menuGrid = document.getElementById('menuGrid');
+            const excellenceGrid = document.getElementById('excellenceGrid');
             const categoryItems = document.querySelectorAll('.category-item');
             
-            // مستشعر تحميل البيانات من السحابة لضمان التزامن ومنع ظهور الشاشة الفارغة
+            // دالة الرندر المحلية لضمان تنفيذ الدستور (صورة طبيعية + زر استعرض المزيد)
+            const renderMenuCardsLocal = (products, containerElement) => {
+                if (!containerElement) return;
+                
+                if(products.length === 0) {
+                    containerElement.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; font-weight: 900; opacity: 0.5;">جاري تجهيز هذا القسم لحضرتك...</div>`;
+                    return;
+                }
+
+                containerElement.innerHTML = products.map(product => {
+                    let rawImg = product.img || product.image || (product.images && product.images.length > 0 ? product.images[0] : null);
+                    let finalImgUrl = rawImg ? (rawImg.startsWith('http') ? rawImg : `https://res.cloudinary.com/dyx4w0dr1/image/upload/${rawImg.replace(/^\//, '')}`) : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
+                    
+                    return `
+                    <div class="product-card" style="background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.04); display: flex; flex-direction: column; border: 1px solid rgba(255,145,164,0.15); transition: transform 0.3s ease;">
+                        <div style="width: 100%; aspect-ratio: 1/1; position: relative; background: #fafafa; overflow: hidden;">
+                            <img src="${finalImgUrl}" loading="lazy" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;" alt="${product.name}" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+                        </div>
+                        <div style="padding: 15px; display: flex; flex-direction: column; flex-grow: 1; justify-content: space-between; text-align: right;">
+                            <div style="margin-bottom: 15px;">
+                                <h3 style="font-size: 1.1rem; font-weight: 900; margin-bottom: 8px; color: var(--site-text, #1a1a1a); line-height: 1.4;">${product.name}</h3>
+                                <div style="color: var(--site-color-theme, #ff91a4); font-weight: 900; font-size: 1.2rem;">${product.price} ج.م</div>
+                            </div>
+                            <button onclick="window.location.href='product.html?product=${product.id}'" style="width: 100%; padding: 12px; border-radius: 50px; background: var(--site-color-theme, #ff91a4); color: #fff; font-weight: 900; font-size: 1rem; border: none; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(255,145,164,0.3);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">استعرض المزيد</button>
+                        </div>
+                    </div>
+                    `;
+                }).join('');
+            };
+
+            const renderCategory = (category) => {
+                if (window.catalog) {
+                    let filteredProducts = window.catalog;
+                    if (category && category !== 'all') {
+                        filteredProducts = window.catalog.filter(p => p.category === category || (category === 'الورد' && p.category === 'ورد'));
+                    }
+                    renderMenuCardsLocal(filteredProducts, menuGrid);
+                }
+            };
+
+            const populateExcellenceSection = () => {
+                if (window.catalog && window.catalog.length > 0) {
+                    // اختيار عشوائي لـ 4 منتجات كأكثر مبيعاً مؤقتاً لحين ربطها بإحصائيات المبيعات الحقيقية
+                    const topItems = [...window.catalog].sort(() => 0.5 - Math.random()).slice(0, 4);
+                    renderMenuCardsLocal(topItems, excellenceGrid);
+                }
+            };
+
             window.addEventListener('catalogDataReady', () => {
-                const activeItem = document.querySelector('.category-item.active');
-                const activeCategory = activeItem ? activeItem.dataset.category : 'all';
+                const urlParams = new URLSearchParams(window.location.search);
+                const requestedCategory = urlParams.get('category');
+                
+                let activeCategory = 'all';
+                if(requestedCategory) {
+                    const matchedItem = Array.from(categoryItems).find(item => item.dataset.category === requestedCategory);
+                    if(matchedItem) {
+                        categoryItems.forEach(i => i.classList.remove('active'));
+                        matchedItem.classList.add('active');
+                        activeCategory = requestedCategory;
+                        
+                        // تمرير شريط التبويبات ليظهر القسم النشط
+                        matchedItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                    }
+                }
+
                 renderCategory(activeCategory);
+                populateExcellenceSection();
             });
 
-            // تفعيل الفلترة الديناميكية المباشرة
             categoryItems.forEach(item => {
                 item.addEventListener('click', () => {
                     categoryItems.forEach(i => i.classList.remove('active'));
                     item.classList.add('active');
+                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                     
-                    const activeCategory = item.dataset.category;
-                    console.log(`تم تنفيذ قرار العرض: قسم ${activeCategory}`);
-                    
-                    renderCategory(activeCategory);
+                    renderCategory(item.dataset.category);
                 });
             });
-
-            // دالة المعالجة المستقلة للتأكد من استقرار الأداء
-            function renderCategory(category) {
-                if (window.catalog && typeof window.renderProductCards === 'function') {
-                    let filteredProducts = window.catalog;
-                    if (category && category !== 'all') {
-                        filteredProducts = window.catalog.filter(p => p.category === category);
-                    }
-                    
-                    // تحديث الشبكة بالبيانات المفلترة
-                    menuGrid.innerHTML = '';
-                    window.renderProductCards(filteredProducts, 'menuGrid');
-                    
-                    // إعادة تشغيل الأيقونات للعناصر الجديدة المضافة
-                    if (typeof lucide !== 'undefined') {
-                        lucide.createIcons();
-                    }
-                } else {
-                    console.warn('جاري تهيئة البيانات والمزامنة مع محرك حلويات بوسي...');
-                }
-            }
         });
     </script>
 </body>

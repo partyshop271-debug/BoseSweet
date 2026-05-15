@@ -1,9 +1,10 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Sovereign Cart & Checkout Engine | محرك السلة السيادي (V29.0)
+ * 👑 BoseSweets Sovereign Cart & Checkout Engine | محرك السلة السيادي (V30.0)
  * ============================================================================
  * الإدارة المرجعية: حلويات بوسي
- * التحديث التقني: تصحيح بروتوكول التسعير لاعتماد السعر الإداري الأصلي بنسبة 100%.
+ * التحديث التقني: إلغاء التحويل الإجباري للسلة بعد تصميم التورتة، للسماح للعميل
+ * باستكمال التسوق وإضافة منتجات مكملة، مع الحفاظ على بروتوكول التسعير الإداري.
  * الوظيفة: تأمين السلة، حفظ الطلبات محلياً وسحابياً، دمج الطلبات المخصصة،
  * وتوجيه الطلب النهائي لغرفة العمليات عبر واتساب بشكل منسق وموثق.
  */
@@ -287,8 +288,14 @@ export const commitCakeBuilderToCart = function() {
         });
 
         saveCartToStorage();
-        if(typeof window.showSystemToast === 'function') window.showSystemToast("تم إضافة التورتة المخصصة للسلة بنجاح.", "success");
-        setTimeout(() => { window.location.href = 'cart.html'; }, 800);
+        
+        // تطبيق قرار الإدارة: توجيه رسالة مريحة للعميل تتيح له الاستمرار في التسوق بدلاً من التحويل الإجباري
+        if(typeof window.showSystemToast === 'function') {
+            window.showSystemToast("تم إضافة التورتة المخصصة للسلة بنجاح. يمكن لحضرتك متابعة التسوق.", "success");
+        }
+        
+        // تمت إزالة سطر التحويل الإجباري (window.location.href = 'cart.html') لضمان بقاء العميل في الصفحة
+        
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'commitCakeBuilderToCart');
     }
@@ -446,7 +453,7 @@ if (typeof window !== 'undefined') {
             }
         });
         
-        console.log("👑 BoseSweets Engine: تم تصحيح محرك السلة (V29.0) ليعتمد الأسعار السيادية للإدارة.");
+        console.log("👑 BoseSweets Engine: تم تحديث محرك السلة (V30.0) لمنح العميل مرونة الاستمرار في التسوق.");
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'cart-system.js', null, null, 'Final Global Bindings');
     }
