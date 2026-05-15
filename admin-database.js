@@ -1,15 +1,26 @@
 /**
  * ============================================================================
- * 👑 محرك قواعد البيانات السيادي للوحة التحكم | Admin Database Engine (V28.0)
+ * 👑 محرك قواعد البيانات السيادي للوحة التحكم | Admin Database Engine (V30.0)
  * ============================================================================
- * الإدارة المرجعية: حلويات بوسي
- * الوظيفة: هذا الملف هو القناة الشرعية والوحيدة المسؤولة عن رفع، تعديل، وحذف 
- * البيانات السحابية (منتجات، إعدادات، طلبات، شحن) من لوحة تحكم الإدارة.
- * تم سحب كافة العمليات المتناثرة في النسخ القديمة ودمجها هنا لضمان السيطرة المطلقة.
+ * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
+ * الوظيفة: القناة الشرعية الوحيدة للتحكم في البيانات السحابية (الكتالوج، الإعدادات، الطلبات).
+ * التحديث: تطبيق سجلات التدقيق (Audit Log) وفلتر الأداء للطلبات الملغاة قديماً.
  */
 
 import coreExports from './core-engine.js';
-import { collection, addDoc, getDocs, updateDoc, setDoc, deleteDoc, doc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { 
+    collection, 
+    addDoc, 
+    getDocs, 
+    updateDoc, 
+    setDoc, 
+    deleteDoc, 
+    doc, 
+    onSnapshot, 
+    query, 
+    orderBy, 
+    serverTimestamp 
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 // استدعاء محرك قاعدة البيانات من النواة المركزية المعتمدة
 const db = coreExports.boseConfig.db;
@@ -18,50 +29,79 @@ const db = coreExports.boseConfig.db;
 // 📦 أولاً: منظومة الكتالوج والمنتجات (Catalog Management)
 // ============================================================================
 
+/**
+ * حفظ منتج جديد في السحابة السيادية
+ */
 export async function saveNewProduct(productData) {
     try {
         if (!db) throw new Error("قاعدة البيانات السحابية غير متصلة.");
+        
         const docRef = await addDoc(collection(db, "catalog"), {
             ...productData,
-            createdAt: new Date().toISOString()
+            createdAt: serverTimestamp(),
+            lastUpdated: serverTimestamp(),
+            systemStatus: 'active'
         });
-        console.log(`🛡️ BoseSweets Admin: تم إضافة المنتج بنجاح. المعرف السحابي: ${docRef.id}`);
+        
+        console.log(`🛡️ BoseSweets Admin: تم إدراج المنتج بنجاح. المعرف السيادي: ${docRef.id}`);
         return docRef.id;
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'saveNewProduct');
+        if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'saveNewProduct');
         throw error;
     }
 }
 
-export async function updateProductDetails(productId, updatedData) {
+/**
+ * تحديث بيانات منتج (تحديث جزئي آمن مع فرض بروتوكول سجلات التدقيق)
+ */
+export async function updateProductDetails(productId, updatedData, adminId = 'الإدارة العليا') {
     try {
         if (!db) throw new Error("قاعدة البيانات السحابية غير متصلة.");
+        
         const productRef = doc(db, "catalog", String(productId));
-        // نستخدم setDoc مع merge لضمان الحفاظ على البيانات القديمة وتحديث الجديدة فقط بأمان
-        await setDoc(productRef, updatedData, { merge: true });
-        console.log(`🛡️ BoseSweets Admin: تم تحديث بيانات المنتج سيادياً: ${productId}`);
+        
+        // 👑 بروتوكول سجلات التدقيق (Audit Log Protocol)
+        const auditData = {
+            ...updatedData,
+            lastUpdated: serverTimestamp(),
+            lastModifiedBy: adminId,
+            lastModifiedTimestamp: Date.now()
+        };
+        
+        // 👑 بروتوكول الحماية: استخدام setDoc مع merge لضمان عدم فقدان الحقول غير المذكورة
+        await setDoc(productRef, auditData, { merge: true });
+        
+        console.log(`🛡️ BoseSweets Admin: تم تحديث البيانات السيادية للمنتج: ${productId} بواسطة ${adminId}`);
         return true;
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'updateProductDetails');
+        if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'updateProductDetails');
         throw error;
     }
 }
 
+/**
+ * الحذف القاطع لمنتج من الكتالوج
+ */
 export async function executeDeleteProduct(productId) {
     try {
         if (!db) throw new Error("قاعدة البيانات السحابية غير متصلة.");
+        
         await deleteDoc(doc(db, "catalog", String(productId)));
-        console.log(`🛡️ BoseSweets Admin: قرار سيادي، تم الحذف القاطع للمنتج: ${productId}`);
+        console.log(`🛡️ BoseSweets Admin: قرار إداري نهائي، تم حذف المنتج: ${productId}`);
         return true;
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'executeDeleteProduct');
+        if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'executeDeleteProduct');
         throw error;
     }
 }
 
+/**
+ * الاستماع اللحظي لتغيرات الكتالوج
+ */
 export function listenToAllProducts(callback) {
     try {
         if (!db) return null;
+        
         const q = query(collection(db, "catalog"));
         return onSnapshot(q, (querySnapshot) => {
             let products = [];
@@ -70,10 +110,10 @@ export function listenToAllProducts(callback) {
             });
             if (callback) callback(products);
         }, (error) => {
-            if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'listenToAllProducts');
+            if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'listenToAllProducts (Snapshot)');
         });
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'listenToAllProducts (Master)');
+        if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'listenToAllProducts (Master)');
         return null;
     }
 }
@@ -82,15 +122,25 @@ export function listenToAllProducts(callback) {
 // ⚙️ ثانياً: منظومة الإعدادات العامة للموقع (Settings & Config)
 // ============================================================================
 
+/**
+ * حفظ الإعدادات المركزية وتكوينات "حلويات بوسي"
+ */
 export async function saveSettingsToCloud(settingsData) {
     try {
         if (!db) throw new Error("قاعدة البيانات السحابية غير متصلة.");
+        
         const settingsRef = doc(db, 'settings', 'main');
-        await setDoc(settingsRef, settingsData, { merge: true });
-        console.log(`🛡️ BoseSweets Admin: تم اعتماد التكوينات والإعدادات السحابية بنجاح.`);
+        
+        // الحفاظ على تكوينات الأقسام أثناء تحديث الإعدادات الأخرى
+        await setDoc(settingsRef, {
+            ...settingsData,
+            updatedAt: serverTimestamp()
+        }, { merge: true });
+        
+        console.log(`🛡️ BoseSweets Admin: تم تأمين الإعدادات السحابية بنجاح.`);
         return true;
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'saveSettingsToCloud');
+        if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'saveSettingsToCloud');
         throw error;
     }
 }
@@ -102,12 +152,17 @@ export async function saveSettingsToCloud(settingsData) {
 export async function saveShippingZoneCloud(zoneData) {
     try {
         if (!db) throw new Error("قاعدة البيانات السحابية غير متصلة.");
+        
         const zoneRef = doc(db, 'shipping', String(zoneData.id));
-        await setDoc(zoneRef, zoneData, { merge: true });
-        console.log(`🛡️ BoseSweets Admin: تم تأمين نطاق التوصيل: ${zoneData.name}`);
+        await setDoc(zoneRef, {
+            ...zoneData,
+            lastAudit: serverTimestamp()
+        }, { merge: true });
+        
+        console.log(`🛡️ BoseSweets Admin: تم اعتماد نطاق التوصيل: ${zoneData.name}`);
         return true;
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'saveShippingZoneCloud');
+        if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'saveShippingZoneCloud');
         throw error;
     }
 }
@@ -115,11 +170,12 @@ export async function saveShippingZoneCloud(zoneData) {
 export async function deleteShippingZoneCloud(zoneId) {
     try {
         if (!db) throw new Error("قاعدة البيانات السحابية غير متصلة.");
+        
         await deleteDoc(doc(db, 'shipping', String(zoneId)));
-        console.log(`🛡️ BoseSweets Admin: تم حذف نطاق التوصيل: ${zoneId}`);
+        console.log(`🛡️ BoseSweets Admin: تم إلغاء نطاق التوصيل: ${zoneId}`);
         return true;
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'deleteShippingZoneCloud');
+        if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'deleteShippingZoneCloud');
         throw error;
     }
 }
@@ -128,42 +184,70 @@ export async function deleteShippingZoneCloud(zoneId) {
 // 🛒 رابعاً: منظومة الطلبات (Orders Management)
 // ============================================================================
 
+/**
+ * تحديث حالة الطلب في مسار التجهيز
+ */
 export async function updateOrderStatusCloud(orderId, newStatus) {
     try {
         if (!db) throw new Error("قاعدة البيانات السحابية غير متصلة.");
+        
         const orderRef = doc(db, 'orders', String(orderId));
-        await setDoc(orderRef, { status: newStatus }, { merge: true });
-        console.log(`🛡️ BoseSweets Admin: تم اعتماد قرار تغيير حالة الطلب ${orderId} إلى ${newStatus}`);
+        
+        // تحديث الحالة مع الحفاظ على كافة بيانات العميل والمنتجات المطلوبة
+        await setDoc(orderRef, { 
+            status: newStatus,
+            statusUpdatedAt: serverTimestamp() 
+        }, { merge: true });
+        
+        console.log(`🛡️ BoseSweets Admin: تم تغيير حالة الطلب ${orderId} إلى ${newStatus}`);
         return true;
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'updateOrderStatusCloud');
+        if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'updateOrderStatusCloud');
         throw error;
     }
 }
 
+/**
+ * الاستماع اللحظي للطلبات الواردة لمركز القيادة مع فلتر الأداء
+ */
 export function listenToAdminOrders(callback) {
     try {
         if (!db) return null;
-        // جلب الطلبات مرتبة زمنياً (الأحدث أولاً)
+        
         const q = query(collection(db, 'orders'), orderBy('timestamp', 'desc'));
         return onSnapshot(q, (snapshot) => {
             const freshOrders = [];
             let hasNewOrder = false;
+            
+            // مرجع زمني لحساب عمر الطلب (7 أيام كحد أقصى للطلبات الملغاة)
+            const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+            const currentTime = Date.now();
 
             snapshot.forEach(document => {
-                freshOrders.push({ id: document.id, ...document.data() });
+                const orderData = document.data();
+                
+                // 🛡️ فلتر الأداء البرمجي: استبعاد الطلبات الملغاة التي مر عليها وقت طويل
+                const isCancelled = orderData.status === 'cancelled' || orderData.status === 'ملغى' || orderData.status === 'تم الإلغاء';
+                const orderAge = currentTime - (orderData.timestamp || 0);
+                
+                if (isCancelled && orderAge > SEVEN_DAYS_MS) {
+                    return; // استبعاد السجل من الذاكرة لتسريع أداء لوحة التحكم على الموبايل
+                }
+                
+                freshOrders.push({ id: document.id, ...orderData });
             });
 
             snapshot.docChanges().forEach(change => {
+                // رصد الطلبات الجديدة فقط لإطلاق التنبيهات الصوتية أو المرئية
                 if (change.type === 'added') hasNewOrder = true;
             });
 
             if (callback) callback(freshOrders, hasNewOrder);
         }, error => {
-            if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'listenToAdminOrders (Snapshot Error)');
+            if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'listenToAdminOrders (Snapshot)');
         });
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'listenToAdminOrders (Master)');
+        if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'listenToAdminOrders (Master)');
         return null;
     }
 }
@@ -172,25 +256,31 @@ export function listenToAdminOrders(callback) {
 // 🔄 خامساً: إشارة التحديث السيادية (Sovereign Sync Broadcast)
 // ============================================================================
 
+/**
+ * بث نبضة التحديث لإجبار كافة واجهات العملاء على المزامنة
+ */
 export async function triggerSovereignSyncCloud(adminId = 'system') {
     try {
         if (!db) throw new Error("قاعدة البيانات السحابية غير متصلة.");
+        
         const syncRef = doc(db, 'system', 'syncFlag');
         const flag = { 
             lastAdminUpdate: Date.now(), 
             adminId: adminId,
-            forceRefresh: true 
+            forceRefresh: true,
+            broadcastTime: serverTimestamp()
         };
+        
         await setDoc(syncRef, flag, { merge: true });
-        console.log(`🛡️ BoseSweets Admin: تم بث إشارة التحديث السيادية لإجبار جميع أجهزة العملاء على التحديث.`);
+        console.log(`🛡️ BoseSweets Admin: تم بث إشارة التحديث السيادية لضمان توافق كافة الأجهزة.`);
         return true;
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-database.js', null, null, 'triggerSovereignSyncCloud');
+        if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'triggerSovereignSyncCloud');
         throw error;
     }
 }
 
-// تصدير كافة الدوال لربطها بالمنطق التشغيلي للوحة الإدارة
+// تصدير الكيان البرمجي الموحد
 export default {
     saveNewProduct,
     updateProductDetails,

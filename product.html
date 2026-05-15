@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>تفاصيل المنتج | حلويات بوسي</title>
+    
+    <title>تفاصيل المنتج | حلويات بوسي - معيار الفخامة</title>
+    <meta name="description" content="استعرض التفاصيل الفنية والمكونات الفاخرة لمنتجات حلويات بوسي، مع إمكانية التخصيص الكامل لطلباتكم.">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <style>
+    <style id="bose-product-architecture">
         /* التنسيقات السيادية لصفحة المنتج وتطبيق التنفس البصري */
         :root {
             --primary-pink: #ff91a4;
@@ -18,10 +22,10 @@
             --surface-light: #fafafa;
             --text-main: #1a1a1a;
             --text-muted: #666666;
-            --border-radius-card: 20px;
-            --shadow-soft: 0 4px 20px rgba(0,0,0,0.03);
-            --shadow-hover: 0 10px 30px rgba(255,145,164,0.15);
-            --transition-smooth: all 0.3s ease;
+            --border-radius-card: 24px;
+            --shadow-soft: 0 4px 25px rgba(0,0,0,0.03);
+            --shadow-hover: 0 15px 35px rgba(255,145,164,0.15);
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
@@ -30,325 +34,349 @@
             margin: 0;
             padding: 0;
             color: var(--text-main);
+            overflow-x: hidden;
         }
 
-        /* الشريط العلوي الثابت */
+        /* الهيدر الزجاجي المطور */
         .main-header {
             position: sticky;
             top: 0;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 2px solid rgba(255,145,164,0.2);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 2px solid rgba(255,145,164,0.15);
             z-index: 1000;
             padding: 15px 0;
             box-shadow: var(--shadow-soft);
         }
 
-        /* حاوية المنتج الرئيسية */
+        /* حاوية المنتج الرئيسية (التنفس البصري) */
         #product-details-container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding-top: 20px;
+            padding: 30px 20px;
         }
 
-        /* نظام التوزيع المتغير (Grid Logic) حسب الدستور */
-        .grid-cols-1 {
+        .product-hero-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 40px;
         }
-        
-        .grid-cols-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-        }
 
-        @media (max-width: 768px) {
-            .grid-cols-2 {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
+        @media (min-width: 992px) {
+            .product-hero-grid {
+                grid-template-columns: 1.2fr 1fr;
+                align-items: start;
             }
         }
 
-        /* التبويبات الديناميكية للمقاسات والأنواع */
-        .size-tabs, .dynamic-tabs {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin: 30px 0 50px;
+        /* عرض الصور الطبيعية 100% */
+        .product-gallery {
+            position: sticky;
+            top: 100px;
         }
 
-        .size-tab, .dynamic-tab {
-            padding: 12px 35px;
-            border-radius: 50px;
-            border: 2px solid var(--primary-pink);
-            background: var(--bg-white);
-            color: var(--primary-pink);
-            font-weight: 900;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-
-        .size-tab.active, .size-tab:hover, .dynamic-tab.active, .dynamic-tab:hover {
-            background: var(--primary-pink);
-            color: var(--bg-white);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(255,145,164,0.2);
-        }
-
-        /* كروت المنتجات والنكهات */
-        .flavor-card {
+        .main-image-frame {
+            width: 100%;
+            aspect-ratio: 1 / 1;
             background: var(--surface-light);
             border-radius: var(--border-radius-card);
-            border: 1px solid rgba(255, 145, 164, 0.1);
             overflow: hidden;
+            border: 2px solid rgba(255,145,164,0.1);
             box-shadow: var(--shadow-soft);
-            transition: var(--transition-smooth);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
         }
 
-        .flavor-card:hover {
-            box-shadow: var(--shadow-hover);
-            transform: translateY(-5px);
-        }
-
-        .flavor-img {
+        .main-image-frame img {
             width: 100%;
-            height: 280px;
-            object-fit: cover; /* لضمان عرض المنتج بحجمه الطبيعي بدون تشويه */
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
         }
 
-        .flavor-content {
-            padding: 25px 20px;
+        /* نظام التبويبات والمقاسات */
+        .size-tabs {
+            display: flex;
+            gap: 12px;
+            margin: 25px 0;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+        .size-tabs::-webkit-scrollbar { display: none; }
+
+        .size-tab {
+            padding: 10px 28px;
+            border-radius: 50px;
+            border: 2px solid rgba(255,145,164,0.2);
+            background: var(--bg-white);
+            color: var(--text-main);
+            font-weight: 900;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition-smooth);
+        }
+
+        .size-tab.active {
+            background: var(--primary-pink);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 8px 15px rgba(255,145,164,0.25);
+            transform: translateY(-2px);
+        }
+
+        /* هندسة باني التورتة (Wizard Structure) */
+        .cake-builder-engine {
+            background: var(--surface-light);
+            border: 2px solid rgba(255,145,164,0.15);
+            border-radius: var(--border-radius-card);
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .wizard-field-group {
+            margin-bottom: 25px;
+        }
+
+        .field-label {
+            display: block;
+            font-weight: 900;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .wizard-input, .wizard-select, .wizard-textarea {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid rgba(0,0,0,0.06);
+            border-radius: 16px;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 700;
+            background: var(--bg-white);
+            transition: var(--transition-smooth);
+            box-sizing: border-box;
+        }
+
+        .wizard-input:focus, .wizard-textarea:focus {
+            outline: none;
+            border-color: var(--primary-pink);
+            box-shadow: 0 0 0 4px rgba(255,145,164,0.1);
+        }
+
+        /* أزرار التحكم والعمليات */
+        .control-panel {
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
+            gap: 15px;
+            margin-top: 35px;
         }
 
-        /* أزرار التحكم بالكمية */
-        .qty-control {
+        .qty-stepper {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: var(--bg-white);
-            border: 2px solid rgba(255, 145, 164, 0.2);
+            background: #ffffff;
+            border: 2px solid rgba(255,145,164,0.15);
             border-radius: 50px;
-            padding: 8px 20px;
-            margin: 20px 0;
+            padding: 10px 25px;
         }
 
-        .qty-btn {
+        .btn-stepper {
             background: none;
             border: none;
             color: var(--primary-pink);
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: var(--transition-smooth);
+            padding: 5px;
         }
 
-        .qty-btn:hover {
-            transform: scale(1.1);
-        }
+        .btn-stepper:active { transform: scale(1.2); }
 
-        .qty-number {
-            font-weight: 900;
-            font-size: 1.3rem;
-            color: var(--text-main);
-        }
-
-        /* أزرار الإضافة للسلة */
-        .add-to-cart-btn {
+        .btn-main-action {
             width: 100%;
+            padding: 20px;
             border-radius: 50px;
-            padding: 15px;
-            font-size: 1.1rem;
             font-weight: 900;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            background: var(--text-main);
-            color: var(--bg-white);
+            font-size: 1.2rem;
             border: none;
             cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-
-        .add-to-cart-btn:hover {
-            background: var(--primary-pink);
-            transform: translateY(-2px);
-        }
-
-        /* تنسيقات باني التورتة (Wizard) */
-        .cake-wizard-container {
-            background: var(--surface-light);
-            border: 2px solid rgba(255,145,164,0.15);
-            border-radius: var(--border-radius-card);
-            padding: 40px;
-            margin-top: 30px;
-        }
-
-        .wizard-step {
-            margin-bottom: 30px;
-            padding-bottom: 30px;
-            border-bottom: 1px solid rgba(255,145,164,0.1);
-        }
-
-        .wizard-step:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .wizard-step-title {
-            font-weight: 900;
-            font-size: 1.4rem;
-            color: var(--text-main);
-            margin-bottom: 15px;
             display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
-        }
-
-        .wizard-input, .wizard-select, .wizard-textarea {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid rgba(0,0,0,0.1);
-            border-radius: 15px;
-            font-family: 'Cairo', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
+            gap: 12px;
             transition: var(--transition-smooth);
-            background: var(--bg-white);
+            background: var(--text-main);
+            color: #ffffff;
         }
 
-        .wizard-input:focus, .wizard-select:focus, .wizard-textarea:focus {
-            outline: none;
-            border-color: var(--primary-pink);
+        .btn-main-action:hover {
+            background: var(--primary-pink);
+            box-shadow: 0 10px 25px rgba(255,145,164,0.3);
         }
 
-        /* تنسيقات قسم التقييمات */
-        .reviews-section {
-            background: linear-gradient(135deg, #ffffff 0%, rgba(255,145,164,0.05) 100%);
+        /* قسم المراجعات (Professional Review Section) */
+        .quality-reports-section {
+            background: linear-gradient(135deg, #ffffff 0%, rgba(255,145,164,0.06) 100%);
             border-radius: 30px;
-            padding: 50px 30px;
+            padding: 60px 20px;
             text-align: center;
             border: 2px solid rgba(255,145,164,0.1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-            margin-top: 60px;
+            margin-top: 80px;
         }
 
-        .horizontal-scroll {
+        .scroll-viewport {
             display: flex;
             gap: 20px;
             overflow-x: auto;
-            padding-bottom: 20px;
+            padding: 20px 5%;
             scrollbar-width: none;
             scroll-snap-type: x mandatory;
         }
+        .scroll-viewport::-webkit-scrollbar { display: none; }
 
-        .horizontal-scroll::-webkit-scrollbar {
-            display: none;
+        .report-card {
+            min-width: 280px;
+            max-width: 350px;
+            background: #fff;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(0,0,0,0.04);
+            scroll-snap-align: center;
+            text-align: right;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.02);
         }
-        
+
         @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-spin { animation: spin 2s linear infinite; }
     </style>
 </head>
 <body>
 
     <header class="main-header">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0 15px;">
-            <button class="btn-icon" onclick="window.history.back()" style="border: none; background: #fafafa; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease;">
-                <i data-lucide="arrow-right" style="color: var(--text-main);"></i>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; padding: 0 5%;">
+            <button onclick="window.history.back()" style="border: none; background: #fafafa; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(0,0,0,0.05);">
+                <i data-lucide="arrow-right"></i>
             </button>
-            <div style="cursor: pointer; text-align: center;" onclick="window.location.href='index.html'">
+            <div style="cursor: pointer;" onclick="window.location.href='index.html'">
                 <h2 style="margin: 0; color: var(--primary-pink); font-size: 1.8rem; font-weight: 900;">حلويات بوسي</h2>
             </div>
-            <div style="display: flex; gap: 12px;">
-                <button class="btn-icon" onclick="window.location.href='cart.html'" style="position: relative; border: none; background: transparent; cursor: pointer; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
-                    <i data-lucide="shopping-basket" style="width: 26px; height: 26px; color: var(--text-main);"></i>
-                    <span id="cart-badge" style="position: absolute; top: -2px; right: -2px; background: var(--text-main); color: #ffffff; font-size: 11px; font-weight: 900; width: 22px; height: 22px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid #ffffff;">0</span>
+            <div style="position: relative;">
+                <button onclick="window.location.href='cart.html'" style="border: none; background: transparent; cursor: pointer; padding: 5px;">
+                    <i data-lucide="shopping-basket" style="width: 28px; height: 28px;"></i>
+                    <span id="cart-badge" style="position: absolute; top: -5px; right: -5px; background: var(--text-main); color: #fff; font-size: 10px; font-weight: 900; width: 22px; height: 22px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid #fff;">0</span>
                 </button>
             </div>
         </div>
     </header>
 
-    <main class="container mt-section mb-section" style="padding: 0 15px;">
-        
-        <div id="product-details-view" class="view-section">
-            <div id="product-details-container">
-                <div style="text-align: center; padding: 80px 20px; font-weight: 900;">
-                    <i data-lucide="loader" style="width: 50px; height: 50px; color: var(--primary-pink); animation: spin 2s linear infinite; margin: 0 auto 20px;"></i>
-                    <p style="font-size: 1.3rem; color: var(--text-muted);">جاري تحضير تفاصيل المنتج لحضرتك...</p>
+    <main id="product-details-container">
+        <div id="loader-view" style="text-align: center; padding: 100px 20px;">
+            <i data-lucide="loader" class="loader-spin" style="width: 60px; height: 60px; color: var(--primary-pink); margin-bottom: 25px;"></i>
+            <p style="font-weight: 900; font-size: 1.4rem; color: var(--text-muted);">جاري استرجاع التفاصيل الفنية للمنتج...</p>
+        </div>
+
+        <div id="product-content-area" style="display: none;">
+            <div class="product-hero-grid">
+                <div class="product-gallery">
+                    <div class="main-image-frame" id="main-product-image">
+                        </div>
+                </div>
+
+                <div class="product-info-panel">
+                    <div id="product-header">
+                        <div id="product-category-tag" style="background: rgba(255,145,164,0.1); color: var(--primary-pink); display: inline-block; padding: 4px 15px; border-radius: 50px; font-weight: 900; font-size: 0.85rem; margin-bottom: 15px;">قائمة التميز</div>
+                        <h1 id="product-title" style="font-size: 2.4rem; font-weight: 900; margin: 0 0 10px; line-height: 1.2;"></h1>
+                        <div id="product-price-display" style="font-size: 2rem; font-weight: 900; color: var(--primary-pink); margin-bottom: 25px;"></div>
+                        <p id="product-description" style="font-weight: 700; color: var(--text-muted); line-height: 1.8; font-size: 1.1rem; margin-bottom: 30px;"></p>
+                    </div>
+
+                    <div id="customization-engine">
+                        <div class="field-label">تحديد القياس / السعة:</div>
+                        <div class="size-tabs" id="size-options-container">
+                            </div>
+
+                        <div class="cake-builder-engine" id="cake-builder-ui" style="display: none;">
+                            <div style="border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 20px; padding-bottom: 10px;">
+                                <h3 style="margin: 0; font-weight: 900; font-size: 1.3rem;">تخصيص المواصفات الفنية</h3>
+                            </div>
+                            
+                            <div class="wizard-field-group">
+                                <label class="field-label" for="num-persons">عدد الأفراد المستهدف:</label>
+                                <input type="number" id="num-persons" class="wizard-input" placeholder="مثال: 10" min="1" 
+                                       oninput="if(window.updateCakeBuilderField) window.updateCakeBuilderField('persons', this.value)">
+                            </div>
+
+                            <div class="wizard-field-group">
+                                <label class="field-label" for="health-notes">الملاحظات الصحية أو الحساسية:</label>
+                                <textarea id="health-notes" class="wizard-textarea" rows="3" placeholder="برجاء ذكر أي ملاحظات تهم سلامتكم (سكر قليل، حساسية مكسرات...)" 
+                                          oninput="if(window.updateCakeBuilderField) window.updateCakeBuilderField('health', this.value)"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="control-panel">
+                            <div class="field-label">الكمية المطلوبة:</div>
+                            <div class="qty-stepper">
+                                <button class="btn-stepper" id="qty-minus"><i data-lucide="minus-circle"></i></button>
+                                <span id="qty-value" style="font-weight: 900; font-size: 1.5rem;">1</span>
+                                <button class="btn-stepper" id="qty-plus"><i data-lucide="plus-circle"></i></button>
+                            </div>
+                            
+                            <button id="add-to-cart-trigger" class="btn-main-action">
+                                <i data-lucide="shopping-cart"></i>
+                                <span>اعتماد الطلب وإضافته للسلة</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <section class="reviews-section mb-section">
-            <i data-lucide="message-circle-heart" style="width: 60px; height: 60px; color: var(--primary-pink); margin-bottom: 20px;"></i>
-            <h2 style="font-weight: 900; font-size: 2.2rem; color: var(--text-main); margin-bottom: 15px;">رأي حضرتك <span style="color: var(--primary-pink);">يُهمنا جداً</span></h2>
-            <p style="max-width: 650px; margin: 0 auto 30px; font-weight: 700; color: var(--text-muted); font-size: 1.1rem; line-height: 1.8;">نحن في حلويات بوسي نصنع كل قطعة بحب وإتقان، ونسعد جداً بسماع تجربتك. تقييمك هو الدافع لنا لنستمر في تقديم الفخامة التي تستحقها.</p>
+        <section class="quality-reports-section">
+            <h2 style="font-weight: 900; font-size: 2.2rem; margin-bottom: 15px;">تقييمات <span style="color: var(--primary-pink);">الأداء والجودة</span></h2>
+            <p style="max-width: 600px; margin: 0 auto 40px; font-weight: 700; color: var(--text-muted); font-size: 1.1rem;">نعتز بآراء حضراتكم المهنية حول تجربتكم مع منتجاتنا الفاخرة.</p>
             
-            <div id="reviews-container" class="horizontal-scroll">
+            <div class="scroll-viewport" id="reviews-viewport">
                 </div>
 
-            <button style="margin-top: 30px; font-weight: 900; font-size: 1.1rem; padding: 15px 45px; background: var(--text-main); color: #fff; border-radius: 50px; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 10px; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                <i data-lucide="pen-line"></i> اكتب تقييمك
+            <button style="margin-top: 40px; padding: 15px 40px; border-radius: 50px; background: var(--text-main); color: #fff; font-weight: 900; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 10px;">
+                <i data-lucide="edit-3"></i> إضافة تقرير جودة جديد
             </button>
         </section>
 
-        <section class="mb-section">
-            <h2 style="text-align: right; border-bottom: 2px solid rgba(255,145,164,0.15); padding-bottom: 15px; margin-bottom: 30px; font-weight: 900; font-size: 1.8rem; color: var(--text-main);">
-                قد <span style="color: var(--primary-pink);">يعجبك أيضاً</span>
-            </h2>
-            <div id="related-products-container" class="grid-cols-2">
+        <section style="margin: 80px 0 40px;">
+            <h2 style="font-weight: 900; font-size: 1.8rem; border-right: 5px solid var(--primary-pink); padding-right: 15px; margin-bottom: 35px;">اقتراحات <span style="color: var(--primary-pink);">إضافية</span> لحضرتكم</h2>
+            <div id="related-products-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
                 </div>
         </section>
-        
     </main>
 
-    <footer class="main-footer" style="background: var(--surface-light); border-top: 2px solid rgba(255,145,164,0.15); padding: 40px 0 20px;">
-        <div class="container" style="text-align: center;">
-            <p style="font-weight: 900; color: var(--text-muted); font-size: 1rem;">جميع الحقوق محفوظة ومسجلة لعلامة حلويات بوسي التجارية © 2026</p>
-        </div>
+    <footer style="background: var(--surface-light); border-top: 1px solid rgba(0,0,0,0.05); padding: 50px 20px; text-align: center; margin-top: 60px;">
+        <p style="font-weight: 900; color: var(--text-muted); font-size: 1rem; margin: 0;">جميع الحقوق الفنية ومواصفات الإنتاج محفوظة لعلامة حلويات بوسي © 2026</p>
     </footer>
 
-    <script type="module" src="firebase-config.js"></script>
-    <script type="module" src="core-engine.js"></script>
-    <script type="module" src="data-bridge.js"></script>
-    <script type="module" src="ui-logic.js"></script>
-    <script type="module" src="cart-system.js"></script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') {
-                lucide.createIcons();
-            }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        // استدعاء ملفات المنظومة الـ 18
+        import "./firebase-config.js";
+        import "./core-engine.js";
+        import "./data-bridge.js";
+        import "./ui-logic.js";
+        import "./cart-system.js";
 
-            // مستشعر لجلب المنتج المراد عرضه فور تحميل البيانات
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            
+            // مستشعر جاهزية البيانات السحابية
             window.addEventListener('catalogDataReady', () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const productId = urlParams.get('product');
+                const params = new URLSearchParams(window.location.search);
+                const pId = params.get('id') || params.get('product'); // دعم كلا المسميين
                 
-                if (productId && window.showProductDetails) {
-                    window.showProductDetails(productId);
-                } else {
-                    document.getElementById('product-details-container').innerHTML = `
-                        <div style="text-align: center; padding: 60px 20px;">
-                            <i data-lucide="alert-circle" style="width: 60px; height: 60px; color: var(--primary-pink); margin: 0 auto 20px;"></i>
-                            <h3 style="font-weight: 900; font-size: 1.8rem; margin-bottom: 15px; color: var(--text-main);">عذراً لحضرتك</h3>
-                            <p style="font-weight: 700; color: var(--text-muted); font-size: 1.1rem;">لم يتم العثور على تفاصيل المنتج المطلوب، يرجى تصفح المنيو لاختيار صنف آخر.</p>
-                            <button onclick="window.location.href='menu.html'" style="margin-top: 30px; padding: 15px 40px; border-radius: 50px; background: var(--text-main); color: #fff; font-weight: 900; font-size: 1.1rem; border: none; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='var(--primary-pink)'" onmouseout="this.style.background='var(--text-main)'">العودة للمنيو</button>
-                        </div>
-                    `;
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                if (pId && window.showProductDetails) {
+                    window.showProductDetails(pId);
+                    document.getElementById('loader-view').style.display = 'none';
+                    document.getElementById('product-content-area').style.display = 'block';
                 }
             });
         });

@@ -1,106 +1,240 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Admin Stylesheet | تنسيقات مركز القيادة
+ * 👑 BoseSweets Sovereign Admin Stylesheet | التنسيقات السيادية لمركز القيادة (V28.1)
  * ============================================================================
+ * الإدارة المرجعية: حلويات بوسي
+ * الوظيفة: التنسيق البصري الشامل، دعم الأجهزة، والوضع الليلي الخفيف.
+ * التوافق: متوافق مع كافة محركات (Manager, View, Database).
  */
 
-@import url('style.css'); /* استدعاء الألوان والخطوط الأساسية */
+@import url('style.css'); /* استدعاء الألوان والخطوط الأساسية لـ حلويات بوسي */
 
-.admin-body {
-    background-color: #f4f6f8;
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
+:root {
+    --admin-pink: #ff91a4;
+    --admin-pink-light: rgba(255, 145, 164, 0.1);
+    --admin-bg-light: #f8fafc;
+    --admin-card-bg: #ffffff;
+    --admin-text-main: #1e293b;
+    --admin-text-muted: #64748b;
+    --admin-border: rgba(255, 145, 164, 0.15);
+    --shadow-premium: 0 10px 30px -5px rgba(255, 145, 164, 0.1);
 }
 
-/* القائمة الجانبية للإدارة */
+/* 🌙 إعدادات الوضع الليلي الخفيف (Light Night Mode) */
+.night-mode {
+    --admin-bg-light: #0f172a;
+    --admin-card-bg: #1e293b;
+    --admin-text-main: #f1f5f9;
+    --admin-text-muted: #94a3b8;
+    --admin-border: rgba(255, 145, 164, 0.2);
+    --shadow-premium: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* 🏗️ الهيكل التنظيمي الأساسي */
+.admin-body {
+    background-color: var(--admin-bg-light);
+    color: var(--admin-text-main);
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    font-family: 'Cairo', sans-serif;
+    transition: background-color 0.4s ease;
+}
+
+/* 🧭 القائمة الجانبية السيادية */
 .admin-sidebar {
     width: 280px;
-    background: var(--bg-white);
-    border-left: 1px solid rgba(255, 145, 164, 0.2);
+    background: var(--admin-card-bg);
+    border-left: 1px solid var(--admin-border);
     display: flex;
     flex-direction: column;
-    z-index: 100;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.02);
+    z-index: 1000;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.02);
 }
 
 .admin-nav-item {
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 16px 30px;
-    color: var(--text-muted);
+    padding: 18px 30px;
+    color: var(--admin-text-muted);
     text-decoration: none;
     font-weight: 700;
-    font-size: 1.1rem;
-    transition: var(--transition-smooth);
+    font-size: 1rem;
+    transition: all 0.3s ease;
     border-right: 4px solid transparent;
 }
 
-.admin-nav-item:hover, .admin-nav-item.active {
-    background: rgba(255, 145, 164, 0.08);
-    color: var(--primary-pink);
-    border-right-color: var(--primary-pink);
+.admin-nav-item i {
+    width: 20px;
+    transition: transform 0.3s ease;
 }
 
-/* مساحة العمل المركزية */
+.admin-nav-item:hover {
+    background: var(--admin-pink-light);
+    color: var(--admin-pink);
+}
+
+.admin-nav-item.active {
+    background: var(--admin-pink-light);
+    color: var(--admin-pink);
+    border-right-color: var(--admin-pink);
+}
+
+.admin-nav-item.active i {
+    transform: scale(1.1);
+}
+
+/* 💻 مساحة العمل المركزية */
 .admin-main {
     flex: 1;
     overflow-y: auto;
     padding: 40px;
+    scroll-behavior: smooth;
 }
 
 .admin-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: var(--bg-white);
-    padding: 20px 30px;
-    border-radius: var(--border-radius-card);
-    box-shadow: var(--shadow-soft);
+    background: var(--admin-card-bg);
+    padding: 25px 35px;
+    border-radius: 20px;
+    box-shadow: var(--shadow-premium);
     margin-bottom: 40px;
+    border: 1px solid var(--admin-border);
 }
 
-/* كروت الإحصائيات */
+/* 📊 كروت الإحصائيات المتقدمة */
 .stat-card {
-    background: var(--bg-white);
+    background: var(--admin-card-bg);
     padding: 30px;
-    border-radius: var(--border-radius-card);
-    box-shadow: var(--shadow-soft);
-    border-right: 4px solid var(--primary-pink);
+    border-radius: 24px;
+    box-shadow: var(--shadow-premium);
+    border-right: 5px solid var(--admin-pink);
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    transition: var(--transition-smooth);
+    gap: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-hover);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px -10px rgba(255, 145, 164, 0.2);
 }
 
 .stat-title {
-    color: var(--text-muted);
-    font-size: 1.1rem;
+    color: var(--admin-text-muted);
+    font-size: 1rem;
     font-weight: 700;
 }
 
 .stat-value {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--text-main);
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--admin-pink);
+    letter-spacing: -1px;
 }
 
-/* الحاويات البيضاء لمساحة العمل */
+/* 📋 جداول البيانات السيادية */
 .admin-panel {
-    background: var(--bg-white);
-    border-radius: var(--border-radius-card);
-    padding: 30px;
-    box-shadow: var(--shadow-soft);
+    background: var(--admin-card-bg);
+    border-radius: 24px;
+    padding: 35px;
+    box-shadow: var(--shadow-premium);
+    border: 1px solid var(--admin-border);
     margin-bottom: 30px;
 }
 
-@media (max-width: 992px) {
-    .admin-sidebar { display: none; /* سيتم برمجتها لتفتح بزر في الموبايل */ }
-    .admin-main { padding: 20px; }
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+th {
+    text-align: right;
+    padding: 15px 20px;
+    color: var(--admin-text-muted);
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-bottom: 2px solid var(--admin-pink-light);
+}
+
+.admin-table-row:hover {
+    background: var(--admin-pink-light);
+}
+
+/* 🪟 هندسة النوافذ المنبثقة (Modals) */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.admin-modal {
+    background: var(--admin-card-bg);
+    width: 100%;
+    max-width: 650px;
+    border-radius: 28px;
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+    border: 1px solid var(--admin-border);
+    animation: modalSlideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* 🎞️ محرك الرسوم المتحركة */
+@keyframes modalSlideUp {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes spin-animation {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.spin-animation {
+    animation: spin-animation 1.5s linear infinite;
+}
+
+/* 📱 هندسة التجاوب (Responsiveness) */
+@media (max-width: 1024px) {
+    .admin-sidebar {
+        position: fixed;
+        right: -280px;
+        height: 100%;
+    }
+    
+    .admin-sidebar.mobile-open {
+        right: 0;
+    }
+    
+    .admin-main {
+        padding: 20px;
+    }
+    
+    .stat-value {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .admin-panel {
+        padding: 20px;
+        overflow-x: auto;
+    }
 }

@@ -1,10 +1,11 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Core Engine - الذاكرة المركزية والعقل المدبر (V29.0 - Sovereign Edition)
+ * 👑 BoseSweets Core Engine - الذاكرة المركزية والعقل المدبر (V30.0 - Sovereign Edition)
  * ============================================================================
- * الإدارة المرجعية: حلويات بوسي
+ * الإدارة المرجعية: حلويات بوسي (The Management)
  * الوظيفة: هذا الملف هو "النخاع الشوكي" للموقع. يحتفظ بالحالة اللحظية للبيانات، 
  * الإعدادات السيادية، والذاكرة المحلية، مع التوافق التام مع الدستور الهندسي والبرمجي.
+ * التعديل الحالي: توحيد مسميات الحالة (State Alignment) وإضافة محرك التدقيق الأمني للأسعار.
  */
 
 import { firebaseConfig, NetworkEngine, ReverseSyncEngine, CloudQueueDB, db, auth } from './firebase-config.js';
@@ -25,7 +26,7 @@ const boseConfig = {
 
     branding: {
         colors: {
-            pink: "#ff91a4",        
+            pink: "#ff91a4", // الوردي الملكي المعتمد       
             dark: "#1a1a1a",   
             white: "#FFFFFF"        
         },
@@ -75,16 +76,57 @@ export const BoseState = {
     currentShippingFee: 0,
     appliedPromo: null,
     
-    // ذاكرة إتمام الطلب واللوجستيات (Checkout State)
+    // 🛡️ محرك الفحص والتدقيق السيادي (Security & Validation Layer)
+    securityLayer: {
+        validateCartPrices: function(cartArray) {
+            if (!Array.isArray(cartArray) || BoseState.catalogMap.size === 0) {
+                return cartArray;
+            }
+            
+            console.log("BoseSweets Core 👑: جاري تنفيذ بروتوكول فحص الأسعار السيادي...");
+            
+            const validatedCart = cartArray.map(item => {
+                const referenceItem = BoseState.catalogMap.get(String(item.id));
+                
+                if (referenceItem) {
+                    // التحقق الصارم من السعر الأساسي للمنتج
+                    if (item.price !== referenceItem.price) {
+                        console.warn(`BoseSweets Core 🛡️: تم رصد عدم تطابق في سعر المنتج [${item.name}]. السعر الممرر: ${item.price}، السعر السيادي المعتمد: ${referenceItem.price}. تم التصحيح التلقائي.`);
+                        item.price = referenceItem.price; // التصحيح الإجباري
+                    }
+                }
+                return item;
+            });
+            
+            return validatedCart;
+        }
+    },
+
+    // 🛡️ ذاكرة إتمام الطلب واللوجستيات (Checkout State) - تم التوحيد وفقاً للقرار المهني
     checkoutState: {
-        deliveryMethod: 'الاستلام من المقر', // القيم: 'الاستلام من المقر' أو 'الشحن للمنزل'
+        /**
+         * الإجراء البرمجي: توحيد مسميات الحالة (State Alignment).
+         * يتم تحويل القيم الآلية (pickup/delivery) إلى نصوص عربية سيادية لضمان دقة القراءة في لوحة الإدارة.
+         * القيم المعتمدة: 'الاستلام من المقر' أو 'الشحن للمنزل'.
+         */
+        deliveryMethod: 'الاستلام من المقر', 
         deliveryDate: null,
         deliveryTime: null,
         customerName: '',
         primaryPhone: '',
         secondaryPhone: '',
         detailedAddress: '',
-        nearestLandmark: ''
+        nearestLandmark: '',
+        
+        // محرك التحويل الداخلي لضمان الربط السيادي مع صفحة الدفع
+        setDeliveryMethod(method) {
+            const mapping = {
+                'pickup': 'الاستلام من المقر',
+                'delivery': 'الشحن للمنزل'
+            };
+            this.deliveryMethod = mapping[method] || method;
+            console.log(`BoseSweets Core 👑: تم توحيد وسيلة الاستلام إلى [${this.deliveryMethod}]`);
+        }
     },
     
     // ذاكرة بناء التورت المخصصة (محدثة وفق الدستور المرجعي)
@@ -207,7 +249,7 @@ if (typeof window !== 'undefined') {
         window.getFromLocalMemory = getFromLocalMemory;
         window.setAppReady = setAppReady;
 
-        console.log("👑 النواة المركزية لعلامة حلويات بوسي (V29.0): تم تفعيل الذاكرة بنجاح وربطها بالشبكة العالمية وفقاً للدستور الهندسي.");
+        console.log("👑 النواة المركزية لعلامة حلويات بوسي (V30.0): تم تفعيل الذاكرة بنجاح وربطها بالشبكة العالمية وفقاً للدستور الهندسي.");
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'core-engine.js', null, null, 'Global Core Bindings Critical Error');
     }

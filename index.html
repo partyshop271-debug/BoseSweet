@@ -6,15 +6,15 @@
     
     <meta name="google-site-verification" content="bose-site-verification-active-2026" />
     
-    <title>حلويات بوسي | الطعم الفاخر الذي تستحقه</title>
-    <meta name="description" content="الموقع الرسمي لبراند حلويات بوسي. نتميز بصناعة التورت الملكية، السينابون الفاخر، والدوناتس المبتكرة وتنسيقات الورد في الفرافرة والكفاح.">
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <title>حلويات بوسي | المنصة الرسمية للتذوق الفاخر</title>
+    <meta name="description" content="المقر الرقمي الرسمي لعلامة حلويات بوسي التجارية. متخصصون في صياغة التورت الملكية، السينابون بعجينة الخميرة الفاخرة، وتنسيقات الورد الطبيعي في الفرافرة.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
     <link rel="canonical" href="https://bosesweets.com/">
     
     <meta property="og:locale" content="ar_EG">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="حلويات بوسي | الطعم الفاخر الذي تستحقه">
-    <meta property="og:description" content="الموقع الرسمي لبراند حلويات بوسي. نتميز بصناعة التورت الملكية، السينابون الفاخر، والدوناتس المبتكرة وتنسيقات الورد في الفرافرة والكفاح.">
+    <meta property="og:title" content="حلويات بوسي | معيار الجودة في عالم الحلويات">
+    <meta property="og:description" content="نقدم معايير جديدة للفخامة في صناعة الحلويات والورد. اكتشفوا تشكيلتنا الحصرية المصممة لتناسب تطلعاتكم.">
     <meta property="og:url" content="https://bosesweets.com/">
     <meta property="og:site_name" content="حلويات بوسي">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg">
@@ -30,7 +30,7 @@
       "telephone": "01097238441",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "شارع الوحدة المحلية، بجوار صيدلية د. أحمد مجدي وعيادة د. علي",
+        "streetAddress": "شارع الوحدة المحلية، بجوار صيدلية د. أحمد مجدي",
         "addressLocality": "الكفاح، مركز الفرافرة",
         "addressRegion": "محافظة الوادي الجديد",
         "addressCountry": "EG"
@@ -54,6 +54,11 @@
     <link rel="stylesheet" href="style.css">
 
     <style id="bose-interactive-styles">
+        :root {
+            --site-color-theme: #ff91a4;
+            --site-text: #1a1a1a;
+            --site-bg: #ffffff;
+        }
         @keyframes ticker-scroll {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
@@ -82,7 +87,7 @@
             padding: 15px;
             border-radius: 12px;
             font-weight: 900;
-            color: var(--site-text, #1a1a1a);
+            color: var(--site-text);
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -97,55 +102,67 @@
             transform: scale(0.97);
             background: rgba(255,145,164,0.05);
         }
+        /* إخفاء السكرول بار مع الحفاظ على الوظيفة */
+        .horizontal-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .horizontal-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
-<body style="background-color: var(--site-bg, #ffffff);">
+<body style="background-color: var(--site-bg);">
 
-    <div id="site-ticker" style="display: none; width: 100%; overflow: hidden; white-space: nowrap; padding: 12px 0; text-align: center; font-weight: 900; z-index: 1002; position: relative; background-color: var(--site-color-theme, #ff91a4); color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <div id="site-ticker" style="display: none; width: 100%; overflow: hidden; white-space: nowrap; padding: 12px 0; text-align: center; font-weight: 900; z-index: 1002; position: relative; background-color: var(--site-color-theme); color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
         <div class="bose-ticker-content" id="ticker-inner-text">
+            جاري تحميل أحدث العروض والتحسينات لخدمة تطلعات حضراتكم...
         </div>
     </div>
 
-    <div id="mobile-sidebar-overlay" class="hidden opacity-0" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 2000; transition: opacity 0.3s ease; backdrop-filter: blur(3px);" onclick="if(window.toggleCustomerMenu) window.toggleCustomerMenu()"></div>
+    <div id="menu-overlay" class="fixed inset-0 bg-black/50 opacity-0 pointer-events-none z-[90] transition-opacity duration-300" onclick="if(window.toggleCustomerMenu) window.toggleCustomerMenu()"></div>
     
-    <div id="mobile-sidebar-menu" class="translate-x-full" style="position: fixed; top: 0; right: 0; height: 100vh; width: 85%; max-width: 380px; background: #ffffff; z-index: 2001; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); overflow-y: auto; padding: 25px; box-shadow: -10px 0 30px rgba(0,0,0,0.15);">
+    <div id="side-menu" class="fixed inset-y-0 right-0 w-[85%] max-w-[400px] bg-white z-[100] transform translate-x-full transition-transform duration-300 ease-in-out shadow-2xl" style="overflow-y: auto; padding: 25px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 2px solid rgba(255,145,164,0.1); padding-bottom: 15px;">
-            <h3 style="color: var(--site-color-theme, #ff91a4); font-weight: 900; font-size: 1.8rem; margin: 0;">حلويات بوسي</h3>
+            <h3 style="color: var(--site-color-theme); font-weight: 900; font-size: 1.8rem; margin: 0;">حلويات بوسي</h3>
             <button onclick="if(window.toggleCustomerMenu) window.toggleCustomerMenu()" class="btn-icon interactive-scale" style="background: #f8f8f8; border: none; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer;"><i data-lucide="x"></i></button>
         </div>
         
         <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 25px; border-bottom: 2px solid rgba(255,145,164,0.1); padding-bottom: 20px;">
             <button onclick="window.location.href='index.html'" class="sidebar-btn-interactive">
-                <i data-lucide="home" style="width: 22px; height: 22px; color: var(--site-color-theme, #ff91a4);"></i> الصفحة الرئيسية
+                <i data-lucide="home" style="width: 22px; height: 22px; color: var(--site-color-theme);"></i> الصفحة الرئيسية
+            </button>
+            <button onclick="window.location.href='menu.html'" class="sidebar-btn-interactive">
+                <i data-lucide="layout-grid" style="width: 22px; height: 22px; color: var(--site-color-theme);"></i> تصفح المنيو
             </button>
             <button onclick="window.history.back()" class="sidebar-btn-interactive">
-                <i data-lucide="arrow-right" style="width: 22px; height: 22px; color: var(--site-color-theme, #ff91a4);"></i> العودة للصفحة السابقة
+                <i data-lucide="arrow-right" style="width: 22px; height: 22px; color: var(--site-color-theme);"></i> العودة للسابق
             </button>
         </div>
 
         <div id="sidebar-categories-list">
-        </div>
+            </div>
     </div>
 
     <header style="position: sticky; top: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 2px solid rgba(255,145,164,0.2); z-index: 1000; padding: 15px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
         <div class="container" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-            <button class="btn-icon interactive-scale" id="menu-btn" aria-label="القائمة التفاعلية" onclick="if(window.toggleCustomerMenu) window.toggleCustomerMenu()" style="border: none; background: transparent; cursor: pointer; padding: 5px;">
+            <button class="btn-icon interactive-scale" id="menu-btn" aria-label="القائمة" onclick="if(window.toggleCustomerMenu) window.toggleCustomerMenu()" style="border: none; background: transparent; cursor: pointer; padding: 5px;">
                 <i data-lucide="menu" style="width: 28px; height: 28px;"></i>
             </button>
 
             <div style="text-align: center; cursor: pointer;" onclick="window.location.reload();" class="interactive-scale">
-                <h2 style="margin: 0; color: var(--site-color-theme, #ff91a4); font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px;">حلويات بوسي</h2>
+                <h2 style="margin: 0; color: var(--site-color-theme); font-size: 1.8rem; font-weight: 900; letter-spacing: -0.5px;">حلويات بوسي</h2>
             </div>
 
             <div style="display: flex; gap: 15px;">
-                <button class="btn-icon interactive-scale" id="search-btn" aria-label="البحث في المنيو" style="border: none; background: transparent; cursor: pointer; padding: 5px;">
+                <button class="btn-icon interactive-scale" id="search-btn" aria-label="البحث" onclick="window.location.href='menu.html?action=search'" style="border: none; background: transparent; cursor: pointer; padding: 5px;">
                     <i data-lucide="search" style="width: 24px; height: 24px;"></i>
                 </button>
-                <button class="btn-icon interactive-scale" id="cart-btn" aria-label="حقيبة المشتريات" style="position: relative; border: none; background: transparent; cursor: pointer; padding: 5px;" onclick="window.location.href='cart.html'">
+                <button class="btn-icon interactive-scale" id="cart-btn" aria-label="السلة" style="position: relative; border: none; background: transparent; cursor: pointer; padding: 5px;" onclick="window.location.href='cart.html'">
                     <i data-lucide="shopping-basket" style="width: 24px; height: 24px;"></i>
-                    <span id="cart-badge" style="position: absolute; top: -2px; right: -2px; background: var(--site-text, #1a1a1a); color: #ffffff; font-size: 11px; font-weight: 900; width: 22px; height: 22px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">0</span>
+                    <span id="cart-badge" style="position: absolute; top: -2px; right: -2px; background: var(--site-text); color: #ffffff; font-size: 11px; font-weight: 900; width: 22px; height: 22px; border-radius: 50%; display: none; align-items: center; justify-content: center; border: 2px solid #ffffff; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">0</span>
                 </button>
             </div>
         </div>
@@ -153,72 +170,62 @@
 
     <section class="mt-section text-center container" style="padding-top: 40px;">
         <div id="hero-main-title">
-            <h1 style="font-size: 2.8rem; font-weight: 900; max-width: 800px; margin: 0 auto 20px; line-height: 1.3; color: var(--site-text, #1a1a1a);">عقد من <span style="color: var(--site-color-theme, #ff91a4);">التميز والإتقان</span> في صناعة الحلويات</h1>
+            <h1 style="font-size: 2.8rem; font-weight: 900; max-width: 800px; margin: 0 auto 20px; line-height: 1.3; color: var(--site-text);">عقد من <span style="color: var(--site-color-theme);">التميز الهندسي</span> في عالم الحلويات</h1>
         </div>
         <div id="hero-main-desc">
-            <p style="font-size: 1.2rem; font-weight: 700; max-width: 600px; margin: 0 auto 40px; opacity: 0.85; color: var(--site-text, #1a1a1a); line-height: 1.8;">نقدم لحضرتكم مجموعتنا الفاخرة المخبوزة بشغف، لتمزج بين عراقة الطعم الأصيل والابتكار في كل قضمة تليق بذوقكم الرفيع.</p>
+            <p style="font-size: 1.2rem; font-weight: 700; max-width: 600px; margin: 0 auto 40px; opacity: 0.85; color: var(--site-text); line-height: 1.8;">نضع بين أيدي حضراتكم نتاج خبراتنا الممتدة منذ 2014، حيث تجتمع دقة التنفيذ مع فخامة المكونات لتقديم تجربة تليق بمكانتكم.</p>
         </div>
         
         <div class="waterfall-container" style="margin-top: 30px;">
             <div class="waterfall-column waterfall-up" id="waterfall-col-1">
-                <div class="waterfall-item interactive-scale"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" loading="lazy" alt="إبداعات حلويات بوسي بالفرافرة" style="border-radius: 16px; width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.05); display: block;"></div>
-                <div class="waterfall-item interactive-scale"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" loading="lazy" alt="حلويات بوسي - طعم فاخر" style="border-radius: 16px; width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.05); display: block;"></div>
-                <div class="waterfall-item interactive-scale"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" loading="lazy" alt="أرقى أصناف المنيو" style="border-radius: 16px; width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.05); display: block;"></div>
+                <div class="waterfall-item interactive-scale"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" loading="lazy" alt="جودة حلويات بوسي" style="border-radius: 16px; width: 100%; display: block;"></div>
             </div>
             <div class="waterfall-column waterfall-down" id="waterfall-col-2">
-                <div class="waterfall-item interactive-scale"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" loading="lazy" alt="سينابون حلويات بوسي الأصلي" style="border-radius: 16px; width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.05); display: block;"></div>
-                <div class="waterfall-item interactive-scale"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" loading="lazy" alt="ديسباسيتو فادج كيك الفاخر" style="border-radius: 16px; width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.05); display: block;"></div>
-                <div class="waterfall-item interactive-scale"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" loading="lazy" alt="تورت ملكية ومخصصة" style="border-radius: 16px; width: 100%; box-shadow: 0 10px 20px rgba(0,0,0,0.05); display: block;"></div>
+                <div class="waterfall-item interactive-scale"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" loading="lazy" alt="فخامة حلويات بوسي" style="border-radius: 16px; width: 100%; display: block;"></div>
             </div>
         </div>
 
         <div style="margin-top: 50px; margin-bottom: 20px;">
-            <a href="menu.html" class="btn-primary interactive-scale" style="font-weight: 900; font-size: 1.2rem; padding: 18px 50px; background: var(--site-color-theme, #ff91a4); color: #fff; border-radius: 50px; text-decoration: none; display: inline-block; box-shadow: 0 10px 25px rgba(255,145,164,0.3);">تصفح المنيو الكامل</a>
+            <a href="menu.html" class="btn-primary interactive-scale" style="font-weight: 900; font-size: 1.2rem; padding: 18px 50px; background: var(--site-color-theme); color: #fff; border-radius: 50px; text-decoration: none; display: inline-block; box-shadow: 0 10px 25px rgba(255,145,164,0.3);">بدء تجربة التسوق</a>
         </div>
     </section>
 
     <section class="mt-section mb-section container text-center">
-        <h2 style="font-weight: 900; font-size: 2.2rem; color: var(--site-text, #1a1a1a);">عقد من <span style="color: var(--site-color-theme, #ff91a4);">الإتقان</span></h2>
-        <p style="margin-bottom: 40px; font-weight: 700; opacity: 0.85; font-size: 1.1rem;">منذ عام 2014، نكرس جهودنا لصنع حلويات وتورت ملكية تليق بمناسباتكم السعيدة وتوثق أحلى الأوقات.</p>
+        <h2 style="font-weight: 900; font-size: 2.2rem; color: var(--site-text);">عراقة <span style="color: var(--site-color-theme);">الإتقان</span></h2>
+        <p style="margin-bottom: 40px; font-weight: 700; opacity: 0.85; font-size: 1.1rem;">منذ تأسيس البراند عام 2014، التزمنا بتقديم معايير ملكية تليق بكافة مناسباتكم السعيدة.</p>
         
         <div style="position: relative; max-width: 900px; margin: 0 auto; border-radius: 24px; border: 2px solid rgba(255,145,164,0.3); padding: 10px; background: #ffffff; box-shadow: 0 20px 40px rgba(0,0,0,0.05);">
             <div id="mastery-slider-container" style="width: 100%; height: 450px; border-radius: 16px; overflow: hidden; background: #fafafa; transition: opacity 0.5s ease-in-out;">
-            </div>
+                </div>
         </div>
     </section>
 
     <section class="mb-section container">
-        <h2 class="text-center" style="font-weight: 900; font-size: 2rem; margin-bottom: 40px; color: var(--site-text, #1a1a1a);">وصل <span style="color: var(--site-color-theme, #ff91a4);">حديثاً</span></h2>
+        <h2 class="text-center" style="font-weight: 900; font-size: 2rem; margin-bottom: 40px; color: var(--site-text);">إضافات <span style="color: var(--site-color-theme);">حصرية</span></h2>
         <div class="horizontal-scroll" id="new-arrivals-container" style="display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;">
-        </div>
+            </div>
         <div id="new-arrivals-dots" style="display: flex; justify-content: center; gap: 8px; margin-top: 20px;"></div>
     </section>
 
     <section class="mb-section container">
-        <h2 class="text-center" style="font-weight: 900; font-size: 2rem; margin-bottom: 40px; color: var(--site-text, #1a1a1a);">الأكثر <span style="color: var(--site-color-theme, #ff91a4);">مبيعاً</span></h2>
-        <div id="best-sellers-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;">
-        </div>
-    </section>
-
-    <section class="mb-section container">
         <div class="interactive-scale" style="background: linear-gradient(135deg, #ffffff 0%, rgba(255,145,164,0.08) 100%); border-radius: 24px; border: 2px solid rgba(255,145,164,0.2); padding: 50px 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.03);">
-            <i data-lucide="flower-2" style="width: 56px; height: 56px; color: var(--site-color-theme, #ff91a4); margin-bottom: 20px;"></i>
-            <h2 style="font-weight: 900; font-size: 2.2rem; color: var(--site-text, #1a1a1a); margin-bottom: 15px;">تنسيقات <span style="color: var(--site-color-theme, #ff91a4);">الورد الملكي</span></h2>
-            <p style="max-width: 600px; margin: 0 auto 35px; font-weight: 700; opacity: 0.85; line-height: 1.8; font-size: 1.1rem;">انفراد حصري بتقديم الورد الطبيعي، الصناعي، والستان بتنسيقات فنية فاخرة تخطف القلوب وتناسب هداياكم النقدية وشيكولاتة البراند.</p>
-            <a href="menu.html?category=الورد" class="btn-primary" style="font-weight: 900; font-size: 1.1rem; padding: 15px 40px; background: var(--site-text, #1a1a1a); color: #fff; border-radius: 50px; text-decoration: none; display: inline-block; transition: all 0.3s ease;">تصفح قسم الورد والهدايا</a>
+            <i data-lucide="flower-2" style="width: 56px; height: 56px; color: var(--site-color-theme); margin-bottom: 20px;"></i>
+            <h2 style="font-weight: 900; font-size: 2.2rem; color: var(--site-text); margin-bottom: 15px;">تنسيقات <span style="color: var(--site-color-theme);">الورد السيادي</span></h2>
+            <p style="max-width: 600px; margin: 0 auto 35px; font-weight: 700; opacity: 0.85; line-height: 1.8; font-size: 1.1rem;">انفراد تام في مركز الفرافرة بتقديم أرقى تنسيقات الورد الطبيعي والستان، المصممة خصيصاً لتتكامل مع هداياكم النقدية ومنتجاتنا الفاخرة.</p>
+            <a href="menu.html?category=الورد" class="btn-primary" style="font-weight: 900; font-size: 1.1rem; padding: 15px 40px; background: var(--site-text); color: #fff; border-radius: 50px; text-decoration: none; display: inline-block;">استعراض قسم الهدايا</a>
         </div>
     </section>
 
     <section class="mb-section container text-center">
-        <h2 style="font-weight: 900; font-size: 2rem; color: var(--site-text, #1a1a1a);">أرقام <span style="color: var(--site-color-theme, #ff91a4);">نفخر بها</span></h2>
+        <h2 style="font-weight: 900; font-size: 2rem; color: var(--site-text);">أرقام <span style="color: var(--site-color-theme);">الريادة</span></h2>
         <div style="display: flex; justify-content: center; gap: 60px; margin-top: 40px; flex-wrap: wrap;">
             <div class="interactive-scale">
-                <div style="font-size: 3.5rem; font-weight: 900; color: var(--site-text, #1a1a1a); line-height: 1;">12</div>
-                <div style="color: var(--site-color-theme, #ff91a4); font-weight: 900; margin-top: 10px; font-size: 1.1rem;">عاماً من التميز الفعلي</div>
+                <div style="font-size: 3.5rem; font-weight: 900; color: var(--site-text); line-height: 1;">12</div>
+                <div style="color: var(--site-color-theme); font-weight: 900; margin-top: 10px; font-size: 1.1rem;">عاماً من الخبرة الفعلية</div>
             </div>
             <div class="interactive-scale">
-                <div style="font-size: 3.5rem; font-weight: 900; color: var(--site-text, #1a1a1a); line-height: 1;">23K+</div>
-                <div style="color: var(--site-color-theme, #ff91a4); font-weight: 900; margin-top: 10px; font-size: 1.1rem;">متابع نعتز بثقتهم</div>
+                <div style="font-size: 3.5rem; font-weight: 900; color: var(--site-text); line-height: 1;">23K+</div>
+                <div style="color: var(--site-color-theme); font-weight: 900; margin-top: 10px; font-size: 1.1rem;">متابع في مجتمعنا الرقمي</div>
             </div>
         </div>
     </section>
@@ -227,36 +234,46 @@
         <div class="container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 40px; text-align: right;">
             
             <div>
-                <h3 style="color: var(--site-color-theme, #ff91a4); font-size: 1.8rem; font-weight: 900; margin-bottom: 20px;">حلويات بوسي</h3>
-                <p style="font-weight: 700; opacity: 0.85; line-height: 1.9; font-size: 1rem; color: var(--site-text, #1a1a1a);">صنعناها بعناية شديدة وبأدق التفاصيل لتستمتع بطعم مميز وتجربة تذوق راقية تليق بحضرتك وبكل مناسباتك السعيدة.</p>
+                <h3 style="color: var(--site-color-theme); font-size: 1.8rem; font-weight: 900; margin-bottom: 20px;">حلويات بوسي</h3>
+                <p style="font-weight: 700; opacity: 0.85; line-height: 1.9; font-size: 1rem; color: var(--site-text);">تلتزم إدارة علامة حلويات بوسي بتقديم أعلى معايير الجودة في التصنيع والخدمة، لضمان تجربة تذوق استثنائية لحضراتكم في كل طلب.</p>
             </div>
 
             <div>
-                <h4 style="font-size: 1.2rem; margin-bottom: 20px; font-weight: 900; color: var(--site-text, #1a1a1a);">الدليل والسياسات</h4>
+                <h4 style="font-size: 1.2rem; margin-bottom: 20px; font-weight: 900; color: var(--site-text);">المعلومات القانونية والسياسات</h4>
                 <ul style="list-style: none; padding: 0; line-height: 2.4; font-weight: 700;">
-                    <li><a href="#" style="color: var(--site-text, #1a1a1a); text-decoration: none; opacity: 0.8; transition: opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8" onclick="if(window.showInfo) window.showInfo('about');">عن البراند</a></li>
-                    <li><a href="#" style="color: var(--site-text, #1a1a1a); text-decoration: none; opacity: 0.8; transition: opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8" onclick="if(window.showInfo) window.showInfo('privacy');">سياسة حماية البيانات</a></li>
-                    <li><a href="#" style="color: var(--site-text, #1a1a1a); text-decoration: none; opacity: 0.8; transition: opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8" onclick="if(window.showInfo) window.showInfo('refund');">سياسة الاستبدال والاسترجاع</a></li>
-                    <li><a href="tips.html" style="color: var(--site-text, #1a1a1a); text-decoration: none; opacity: 0.8; transition: opacity 0.3s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">الدليل الذهبي للحفظ والتقديم</a></li>
+                    <li><a href="javascript:void(0)" style="color: var(--site-text); text-decoration: none; opacity: 0.8;" onclick="if(window.showInfo) window.showInfo('about');">عن العلامة التجارية</a></li>
+                    <li><a href="javascript:void(0)" style="color: var(--site-text); text-decoration: none; opacity: 0.8;" onclick="if(window.showInfo) window.showInfo('privacy');">خصوصية البيانات</a></li>
+                    <li><a href="javascript:void(0)" style="color: var(--site-text); text-decoration: none; opacity: 0.8;" onclick="if(window.showInfo) window.showInfo('refund');">سياسة التعامل مع الطلبات</a></li>
+                    <li><a href="tips.html" style="color: var(--site-text); text-decoration: none; opacity: 0.8;">الدليل الفني للحفظ والتقديم</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 style="font-size: 1.2rem; margin-bottom: 20px; font-weight: 900; color: var(--site-text, #1a1a1a);">العنوان والمقر الرسمي</h4>
-                <p style="margin-bottom: 15px; font-weight: 700; color: var(--site-text, #1a1a1a); opacity: 0.9; line-height: 1.6;"><i data-lucide="map-pin" style="width: 18px; height: 18px; vertical-align: middle; color: var(--site-color-theme, #ff91a4); margin-left: 8px;"></i> محافظة الوادي الجديد - مركز الفرافرة - الكفاح - شارع الوحدة المحلية - بجوار صيدلية د. أحمد مجدي وعيادة د. علي.</p>
-                <p style="font-weight: 900; color: var(--site-text, #1a1a1a); font-size: 1.1rem;"><i data-lucide="phone" style="width: 18px; height: 18px; vertical-align: middle; color: var(--site-color-theme, #ff91a4); margin-left: 8px;"></i> 01097238441</p>
+                <h4 style="font-size: 1.2rem; margin-bottom: 20px; font-weight: 900; color: var(--site-text);">المقر والتواصل الرسمي</h4>
+                <p style="margin-bottom: 15px; font-weight: 700; color: var(--site-text); opacity: 0.9; line-height: 1.6;"><i data-lucide="map-pin" style="width: 18px; height: 18px; vertical-align: middle; color: var(--site-color-theme); margin-left: 8px;"></i> الوادي الجديد - مركز الفرافرة - الكفاح - شارع الوحدة المحلية.</p>
+                <p style="font-weight: 900; color: var(--site-text); font-size: 1.1rem;"><i data-lucide="phone" style="width: 18px; height: 18px; vertical-align: middle; color: var(--site-color-theme); margin-left: 8px;"></i> 01097238441</p>
             </div>
         </div>
 
-        <div style="text-align: center; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 25px; font-weight: 900; color: var(--site-text, #1a1a1a); opacity: 0.7;">
-            <p style="font-size: 0.95rem;">جميع الحقوق محفوظة ومسجلة لعلامة حلويات بوسي © 2026</p>
+        <div style="text-align: center; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 25px; font-weight: 900; color: var(--site-text); opacity: 0.7;">
+            <p style="font-size: 0.95rem;">جميع الحقوق الفنية والادارية محفوظة لعلامة حلويات بوسي © 2026</p>
         </div>
     </footer>
 
     <script>
-        if (typeof lucide !== 'undefined') {
-            lucide.createIcons();
-        }
+        // تفعيل الأيقونات فوراً
+        if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+
+        // الاستماع لجاهزية المحرك المركزي
+        window.addEventListener('BoseSweets_Engine_Ready', () => {
+            console.log("👑 BoseSweets Engine: تم تفعيل الواجهة الرئيسية بنجاح.");
+            
+            // استدعاء الوظائف الحيوية
+            if (typeof window.initMasterySlider === 'function') window.initMasterySlider();
+            if (typeof window.initDynamicSections === 'function') window.initDynamicSections();
+            if (typeof window.updateCartDisplay === 'function') window.updateCartDisplay();
+            if (typeof window.applySettingsToUI === 'function') window.applySettingsToUI();
+        });
     </script>
     
     <script type="module" src="firebase-config.js"></script>

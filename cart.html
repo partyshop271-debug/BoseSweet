@@ -38,6 +38,7 @@
         @media (max-width: 992px) {
             .cart-container {
                 grid-template-columns: 1fr;
+                gap: 25px;
             }
         }
 
@@ -49,15 +50,18 @@
             background: var(--surface-light);
             border-radius: var(--border-radius-card);
             border: 1px solid rgba(255, 145, 164, 0.15);
-            padding: 20px;
+            padding: 24px;
             margin-bottom: 20px;
             box-shadow: var(--shadow-soft);
             transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
         }
 
         @media (max-width: 768px) {
             .cart-item {
-                flex-direction: column; /* عرض رأسي على الموبايل لمنع التكدس */
+                flex-direction: column; 
+                padding: 15px;
             }
         }
 
@@ -66,21 +70,22 @@
             border-color: var(--primary-pink);
         }
 
-        /* صورة مربعة ضخمة بنسبة 1/1 لا تتقلص أبداً */
+        /* صورة المنتج السيادية */
         .cart-item-img {
-            width: 180px;
-            height: 180px;
+            width: 160px;
+            height: 160px;
             aspect-ratio: 1 / 1;
-            border-radius: var(--border-radius-card);
+            border-radius: 12px;
             object-fit: cover;
             flex-shrink: 0;
             border: 1px solid rgba(0,0,0,0.03);
+            background: #f9f9f9;
         }
 
         @media (max-width: 768px) {
             .cart-item-img {
                 width: 100%;
-                height: auto; /* السماح للصورة بأخذ كامل العرض على الموبايل */
+                height: 220px;
             }
         }
 
@@ -95,14 +100,15 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
+            gap: 15px;
         }
 
         .cart-item-title {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: var(--text-main);
-            margin-bottom: 8px;
-            line-height: 1.4;
+            margin-bottom: 5px;
+            line-height: 1.3;
         }
 
         .cart-item-meta {
@@ -114,17 +120,20 @@
 
         /* تنسيق بيانات باني التورتة المخصصة */
         .cake-state-details {
-            background: rgba(255, 145, 164, 0.05);
-            border: 1px solid rgba(255, 145, 164, 0.2);
-            border-radius: 8px;
-            padding: 10px 15px;
+            background: rgba(255, 145, 164, 0.04);
+            border: 1px solid rgba(255, 145, 164, 0.15);
+            border-radius: 10px;
+            padding: 12px 15px;
             margin-bottom: 15px;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--text-main);
         }
 
         .cake-state-details div {
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: flex-start;
+            gap: 5px;
         }
         .cake-state-details div:last-child {
             margin-bottom: 0;
@@ -132,191 +141,216 @@
         .cake-state-details span.label {
             font-weight: 700;
             color: var(--primary-pink);
-            margin-left: 5px;
+            min-width: 100px;
         }
 
         /* زر الحذف الأنيق */
         .remove-btn {
-            background: rgba(255, 0, 0, 0.05);
+            background: rgba(211, 47, 47, 0.05);
             color: #d32f2f;
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: var(--transition-smooth);
+            flex-shrink: 0;
         }
 
         .remove-btn:hover {
             background: #d32f2f;
             color: white;
-            transform: scale(1.05);
         }
 
         .cart-item-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 15px;
-            border-top: 1px dashed rgba(0,0,0,0.05);
+            margin-top: 20px;
+            border-top: 1px solid rgba(0,0,0,0.05);
             padding-top: 15px;
         }
 
-        /* ملخص الطلب */
+        /* ضوابط الكمية الاحترافية */
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f8f8f8;
+            border-radius: 12px;
+            padding: 5px 15px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .qty-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+        }
+
+        .qty-btn:hover {
+            color: var(--primary-pink);
+        }
+
+        /* ملخص الطلب السيادي */
         .order-summary {
             background: var(--surface-light);
             border-radius: var(--border-radius-card);
             border: 2px solid var(--primary-pink);
             padding: 30px;
             position: sticky;
-            top: 100px;
+            top: 110px;
             box-shadow: var(--shadow-soft);
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 18px;
-            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-size: 1.05rem;
             color: var(--text-main);
         }
 
         .summary-total {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
+            margin-top: 25px;
             padding-top: 20px;
-            border-top: 2px solid rgba(255, 145, 164, 0.3);
-            font-size: 1.5rem;
+            border-top: 2px dashed rgba(255, 145, 164, 0.3);
+            font-size: 1.6rem;
             font-weight: 700;
             color: var(--primary-pink);
         }
 
-        /* زر الإجراء الرئيسي */
         .btn-primary {
             background-color: var(--primary-pink);
             color: var(--bg-white);
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-family: 'Cairo', sans-serif;
             font-weight: 700;
             cursor: pointer;
             transition: var(--transition-smooth);
             text-decoration: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 18px;
+            width: 100%;
         }
 
         .btn-primary:hover {
             background-color: #e67d90;
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 145, 164, 0.3);
         }
 
-        /* شبكة الاقتراحات (Grid Logic: 2 كارت جنب بعض عالموبايل) */
+        /* شبكة الاقتراحات (Grid Logic: 2 كارت دائماً عالموبايل) */
         .suggestions-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 كارت جنب بعض دائماً للموبايل */
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            padding-bottom: 20px;
         }
 
         @media (min-width: 768px) {
             .suggestions-grid {
-                grid-template-columns: repeat(4, 1fr); /* 4 كروت للديسكتوب */
+                grid-template-columns: repeat(4, 1fr);
                 gap: 25px;
             }
         }
 
         .suggestion-card {
             background: var(--bg-white);
-            border: 1px solid rgba(255, 145, 164, 0.15);
+            border: 1px solid rgba(255, 145, 164, 0.12);
             border-radius: var(--border-radius-card);
-            padding: 15px;
+            padding: 12px;
             text-align: center;
-            box-shadow: var(--shadow-soft);
             transition: var(--transition-smooth);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
         .suggestion-card:hover {
-            box-shadow: var(--shadow-hover);
-            transform: translateY(-5px);
             border-color: var(--primary-pink);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
         }
 
         .suggestion-img {
             width: 100%;
-            aspect-ratio: 1 / 1;
+            aspect-ratio: 1/1;
             object-fit: cover;
-            border-radius: 12px;
+            border-radius: 10px;
             margin-bottom: 12px;
         }
 
+        .spin-animation {
+            animation: spin 2s linear infinite;
+        }
+        @keyframes spin { 100% { transform: rotate(-360deg); } }
+
         /* الفوتر الرسمي للعلامة التجارية */
         .official-footer {
-            background-color: var(--surface-light);
-            border-top: 2px solid rgba(255, 145, 164, 0.2);
-            padding: 40px 20px;
+            background-color: #fffafb;
+            border-top: 2px solid rgba(255, 145, 164, 0.1);
+            padding: 60px 20px 40px;
             text-align: center;
-            margin-top: 60px;
-        }
-
-        .official-footer h3 {
-            color: var(--primary-pink);
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-        }
-
-        .official-footer p {
-            color: var(--text-muted);
-            font-size: 1rem;
-            line-height: 1.6;
-            margin-bottom: 10px;
+            margin-top: 80px;
         }
     </style>
 </head>
 <body>
 
-    <header class="main-header" style="background: var(--surface-light); box-shadow: var(--shadow-soft); padding: 15px 0; position: sticky; top: 0; z-index: 100;">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+    <header class="main-header" style="background: var(--surface-light); box-shadow: var(--shadow-soft); padding: 18px 0; position: sticky; top: 0; z-index: 1000;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
             <button class="btn-icon" onclick="window.history.back()" style="background: none; border: none; cursor: pointer; color: var(--text-main);"><i data-lucide="arrow-right"></i></button>
             <div style="cursor: pointer;" onclick="window.location.href='index.html'">
-                <h2 style="margin: 0; color: var(--primary-pink); font-size: 1.6rem; font-weight: 700;">حلويات بوسي</h2>
+                <h2 style="margin: 0; color: var(--primary-pink); font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px;">حلويات بوسي</h2>
             </div>
-            <div style="display: flex; gap: 12px;">
+            <div style="display: flex; gap: 15px;">
                 <button class="btn-icon" onclick="window.location.href='menu.html'" style="background: none; border: none; cursor: pointer; color: var(--text-main);"><i data-lucide="layout-grid"></i></button>
             </div>
         </div>
     </header>
 
-    <main class="container mt-section mb-section" style="padding: 40px 15px;">
-        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 40px; border-bottom: 2px solid rgba(255,145,164,0.2); padding-bottom: 20px;">
-            <i data-lucide="shopping-basket" style="width: 36px; height: 36px; color: var(--primary-pink);"></i>
-            <h1 style="margin: 0; text-align: right; font-size: 2rem;">حقيبة مشتريات <span class="text-pink">حضرتك</span></h1>
+    <main class="container" style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+        <div style="display: flex; align-items: center; gap: 18px; margin-bottom: 45px; border-bottom: 2px solid rgba(255,145,164,0.1); padding-bottom: 25px;">
+            <div style="background: rgba(255,145,164,0.1); padding: 12px; border-radius: 12px;">
+                <i data-lucide="shopping-basket" style="width: 32px; height: 32px; color: var(--primary-pink);"></i>
+            </div>
+            <h1 style="margin: 0; font-size: 2.2rem; font-weight: 700;">حقيبة مشتريات <span class="text-pink">حضرتك</span></h1>
         </div>
 
         <div class="cart-container">
-            
             <div id="cart-items-list">
-                <div style="text-align: center; padding: 40px 10px;">
-                    <i data-lucide="loader" class="spin-animation" style="color: var(--primary-pink); margin-bottom: 15px;"></i>
-                    <p style="font-weight: 700; opacity: 0.6; color: var(--text-main);">جاري مزامنة بيانات الحقيبة وتأمين الأسعار...</p>
+                <div style="text-align: center; padding: 60px 20px;">
+                    <i data-lucide="loader-2" class="spin-animation" style="width: 48px; height: 48px; color: var(--primary-pink); margin-bottom: 20px;"></i>
+                    <p style="font-weight: 700; color: var(--text-muted); font-size: 1.1rem;">جاري مزامنة بيانات الحقيبة وتأمين الأسعار السيادية...</p>
                 </div>
             </div>
 
-            <div>
+            <aside>
                 <div class="order-summary" id="cart-summary-box" style="display: none;">
-                    <h3 style="text-align: right; margin-bottom: 25px; color: var(--text-main); font-size: 1.3rem;">ملخص طلب حضرتك</h3>
+                    <h3 style="margin-bottom: 25px; color: var(--text-main); font-size: 1.4rem; font-weight: 700; border-right: 4px solid var(--primary-pink); padding-right: 15px;">ملخص طلب حضرتك</h3>
                     
                     <div class="summary-row">
-                        <span>المجموع الفرعي</span>
+                        <span>المجموع الفرعي لجميع الوحدات</span>
                         <span id="summary-subtotal" style="font-weight: 700;">0 ج.م</span>
                     </div>
                     <div class="summary-row" style="color: var(--text-muted); font-size: 0.95rem;">
-                        <span>رسوم التوصيل</span>
+                        <span>تقدير رسوم التوصيل</span>
                         <span id="summary-shipping">تُحدد في الخطوة القادمة</span>
                     </div>
                     
@@ -325,31 +359,35 @@
                         <span id="summary-total">0 ج.م</span>
                     </div>
 
-                    <a href="checkout.html" class="btn-primary" style="width: 100%; margin-top: 30px; display: flex; justify-content: center; align-items: center; gap: 10px; padding: 18px; font-size: 1.1rem;">
-                        متابعة لإتمام طلب حضرتك <i data-lucide="arrow-left"></i>
+                    <a href="checkout.html" class="btn-primary" style="margin-top: 35px; font-size: 1.15rem;">
+                        متابعة لإتمام طلب حضرتك <i data-lucide="chevron-left"></i>
                     </a>
                     
-                    <p style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 20px; line-height: 1.5;">
-                        <i data-lucide="shield-check" style="width: 16px; display: inline-block; vertical-align: middle; color: var(--primary-pink);"></i> المعاملة آمنة وتخضع للسياسات المركزية لإدارة العلامة التجارية.
-                    </p>
+                    <div style="text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-top: 25px; line-height: 1.6; background: #fafafa; padding: 15px; border-radius: 10px;">
+                        <i data-lucide="shield-check" style="width: 18px; color: #2e7d32; vertical-align: middle; margin-left: 5px;"></i> 
+                        نظام مشتريات آمن ومحمي بالكامل لموثوقية التعامل.
+                    </div>
                 </div>
-            </div>
+            </aside>
         </div>
 
-        <section style="margin-top: 80px; border-top: 2px solid rgba(255,145,164,0.2); padding-top: 40px;">
-            <h2 style="text-align: right; margin-bottom: 30px; font-size: 1.8rem;">إبداعات <span class="text-pink">قد تنال إعجاب حضرتك</span></h2>
-            <div class="suggestions-grid" id="cart-suggestions-container">
+        <section style="margin-top: 100px; padding-top: 50px; border-top: 1px solid rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px;">
+                <h2 style="margin: 0; font-size: 1.8rem; font-weight: 700;">إبداعات <span class="text-pink">قد تنال إعجاب حضرتك</span></h2>
+                <a href="menu.html" style="color: var(--primary-pink); text-decoration: none; font-weight: 700; font-size: 0.95rem;">عرض المنيو بالكامل</a>
             </div>
+            <div class="suggestions-grid" id="cart-suggestions-container">
+                </div>
         </section>
-
     </main>
 
     <footer class="official-footer">
-        <div class="container">
-            <h3>حلويات بوسي</h3>
-            <p>محافظة الوادي الجديد - مركز الفرافرة - الكفاح</p>
-            <p>شارع الوحدة المحلية - بجوار صيدلية د. أحمد مجدي وعيادة د. علي</p>
-            <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.7;">&copy; 2026 جميع الحقوق محفوظة لإدارة العلامة التجارية حلويات بوسي.</p>
+        <div class="container" style="max-width: 1200px; margin: 0 auto;">
+            <h3 style="color: var(--primary-pink); font-size: 1.6rem; margin-bottom: 20px; font-weight: 700;">حلويات بوسي</h3>
+            <p style="color: var(--text-main); font-weight: 700; margin-bottom: 8px;">محافظة الوادي الجديد - مركز الفرافرة - الكفاح</p>
+            <p style="color: var(--text-muted); margin-bottom: 30px;">شارع الوحدة المحلية - بجوار صيدلية د. أحمد مجدي وعيادة د. علي</p>
+            <div style="width: 40px; height: 2px; background: var(--primary-pink); margin: 0 auto 30px; opacity: 0.3;"></div>
+            <p style="font-size: 0.9rem; opacity: 0.8; color: var(--text-muted);">&copy; 2026 جميع الحقوق محفوظة لإدارة العلامة التجارية حلويات بوسي.</p>
         </div>
     </footer>
 
@@ -362,161 +400,43 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
-            // الاستماع للنواة المركزية للتأكد من توفر الكتالوج المحدث لحماية الأسعار
+            // الاستماع لمستشعر الكتالوج المركزي لضمان حماية الأسعار السيادية
             window.addEventListener('catalogDataReady', () => {
-                console.log('🛡️ مستشعر المشتريات: الكتالوج جاهز، بدء مزامنة الأسعار الحية للمنتجات.');
-                renderCartUI();
+                console.log('🛡️ مستشعر المشتريات: تم الاعتماد بالكامل على محرك السلة السيادي.');
+                if (window.cartSystem && typeof window.cartSystem.syncCartUI === 'function') {
+                    window.cartSystem.syncCartUI();
+                }
                 renderCartSuggestions();
             });
 
-            // معالجة حالة إذا كانت البيانات جاهزة بالفعل عند فتح الصفحة
+            // دعم حالة البيانات المحملة مسبقاً
             if (window.catalog && window.catalog.length > 0) {
-                renderCartUI();
+                if (window.cartSystem && typeof window.cartSystem.syncCartUI === 'function') {
+                    window.cartSystem.syncCartUI();
+                }
                 renderCartSuggestions();
             }
         });
 
-        // الهندسة الوظيفية لبناء الواجهة وحساب الإجمالي من الكتالوج المركزي (منع اختراق الأسعار)
-        window.renderCartUI = function() {
-            const cartList = document.getElementById('cart-items-list');
-            const summaryBox = document.getElementById('cart-summary-box');
-            
-            // جلب بيانات السلة المبدئية
+        // محرك الاقتراحات الذكية (Grid Logic: 2 columns mobile) يعتمد على الذاكرة الآمنة
+        window.renderCartSuggestions = function() {
+            const suggestionsContainer = document.getElementById('cart-suggestions-container');
+            if (!window.catalog || window.catalog.length === 0) return;
+
             let rawCart = [];
             if (window.cartSystem && typeof window.cartSystem.getCart === 'function') {
                 rawCart = window.cartSystem.getCart();
             } else {
                 rawCart = JSON.parse(localStorage.getItem('bose_cart_items')) || [];
             }
-
-            if (!rawCart || rawCart.length === 0) {
-                cartList.innerHTML = `
-                    <div style="text-align: center; padding: 60px 20px; background: var(--surface-light); border-radius: var(--border-radius-card); border: 1px dashed rgba(255,145,164,0.5);">
-                        <i data-lucide="shopping-cart" style="width: 72px; height: 72px; color: var(--text-muted); margin-bottom: 20px; opacity: 0.3;"></i>
-                        <h3 style="color: var(--text-main); margin-bottom: 10px; font-size: 1.4rem;">حقيبة مشتريات حضرتك فارغة</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem;">لم تقم بإضافة أي من إبداعاتنا حتى الآن.</p>
-                        <a href="menu.html" class="btn-primary" style="padding: 15px 40px; display: inline-block; font-size: 1.1rem;">تصفح المنيو</a>
-                    </div>
-                `;
-                summaryBox.style.display = 'none';
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-                return;
-            }
-
-            let htmlContent = '';
-            let subtotal = 0;
-
-            rawCart.forEach(item => {
-                // المطابقة الحتمية مع الكتالوج لضمان السعر والتفاصيل
-                const originalProduct = window.catalog.find(p => String(p.id) === String(item.id));
-                if (originalProduct) {
-                    // الاعتماد على السعر المخصص إذا وجد (نتيجة لتغيير الحجم في باني التورتة)، وإلا السعر الأصلي
-                    const securePrice = parseFloat(item.customPrice || originalProduct.price) || 0;
-                    const itemQuantity = parseInt(item.quantity) || 1;
-                    const itemTotal = securePrice * itemQuantity;
-                    subtotal += itemTotal;
-
-                    // استخراج تفاصيل باني التورتة (Cake State) إن وجدت
-                    let cakeStateHtml = '';
-                    const options = item.cakeState || item.options;
-                    if (options && typeof options === 'object' && Object.keys(options).length > 0) {
-                        cakeStateHtml = `<div class="cake-state-details">`;
-                        if (options.size) cakeStateHtml += `<div><span class="label">الحجم/المقاس:</span> ${options.size}</div>`;
-                        if (options.flavor) cakeStateHtml += `<div><span class="label">النكهة/النوع:</span> ${options.flavor}</div>`;
-                        if (options.print) cakeStateHtml += `<div><span class="label">تخصيص الطباعة:</span> ${options.print}</div>`;
-                        if (options.notes) cakeStateHtml += `<div><span class="label">ملاحظات:</span> ${options.notes}</div>`;
-                        cakeStateHtml += `</div>`;
-                    }
-
-                    htmlContent += `
-                        <div class="cart-item">
-                            <img src="${originalProduct.image || 'assets/default-product.jpg'}" alt="${originalProduct.name}" class="cart-item-img">
-                            <div class="cart-item-details">
-                                <div class="cart-item-header">
-                                    <div style="flex-grow: 1; padding-left: 15px;">
-                                        <h3 class="cart-item-title">${originalProduct.name}</h3>
-                                        <span class="cart-item-meta">${securePrice} ج.م / للوحدة</span>
-                                        ${cakeStateHtml}
-                                    </div>
-                                    <button class="remove-btn" onclick="handleRemoveFromCart('${item.cartItemId || originalProduct.id}')" title="حذف من الحقيبة">
-                                        <i data-lucide="trash-2" style="width: 20px; height: 20px;"></i>
-                                    </button>
-                                </div>
-                                <div class="cart-item-actions">
-                                    <div class="quantity-controls" style="display: flex; align-items: center; gap: 20px; background: rgba(0,0,0,0.03); border-radius: 50px; padding: 8px 20px; border: 1px solid rgba(0,0,0,0.05);">
-                                        <button onclick="handleUpdateQuantity('${item.cartItemId || originalProduct.id}', 1)" style="border:none; background:none; cursor:pointer; color:var(--primary-pink); font-size: 1.4rem; font-weight: 700; display:flex; align-items:center;">+</button>
-                                        <span style="font-weight: 700; width: 25px; text-align: center; color: var(--text-main); font-size: 1.1rem;">${itemQuantity}</span>
-                                        <button onclick="handleUpdateQuantity('${item.cartItemId || originalProduct.id}', -1)" style="border:none; background:none; cursor:pointer; color:var(--text-main); font-size: 1.6rem; line-height: 1; display:flex; align-items:center;">-</button>
-                                    </div>
-                                    <div style="font-weight: 700; color: var(--primary-pink); font-size: 1.3rem;">
-                                        ${itemTotal} ج.م
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            cartList.innerHTML = htmlContent;
             
-            // تحديث نافذة الدفع
-            document.getElementById('summary-subtotal').textContent = subtotal + ' ج.م';
-            document.getElementById('summary-total').textContent = subtotal + ' ج.م';
-            summaryBox.style.display = 'block';
-
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        };
-
-        // وظائف التحديث اللحظي للكميات
-        window.handleUpdateQuantity = function(identifier, change) {
-            if (window.cartSystem && typeof window.cartSystem.updateQuantity === 'function') {
-                window.cartSystem.updateQuantity(identifier, change);
-            } else {
-                let cart = JSON.parse(localStorage.getItem('bose_cart_items')) || [];
-                // البحث باستخدام cartItemId لتفادي مشكلة تكرار نفس المنتج بخيارات مختلفة
-                let itemIndex = cart.findIndex(i => String(i.cartItemId || i.id) === String(identifier));
-                if (itemIndex !== -1) {
-                    cart[itemIndex].quantity += change;
-                    if (cart[itemIndex].quantity <= 0) {
-                        cart.splice(itemIndex, 1);
-                    }
-                    localStorage.setItem('bose_cart_items', JSON.stringify(cart));
-                    window.dispatchEvent(new Event('cartUpdated'));
-                }
-            }
-            renderCartUI();
-        };
-
-        // وظيفة الإزالة المباشرة
-        window.handleRemoveFromCart = function(identifier) {
-            if (window.cartSystem && typeof window.cartSystem.removeItem === 'function') {
-                window.cartSystem.removeItem(identifier);
-            } else {
-                let cart = JSON.parse(localStorage.getItem('bose_cart_items')) || [];
-                cart = cart.filter(i => String(i.cartItemId || i.id) !== String(identifier));
-                localStorage.setItem('bose_cart_items', JSON.stringify(cart));
-                window.dispatchEvent(new Event('cartUpdated'));
-            }
-            renderCartUI();
-        };
-
-        // نظام الاقتراحات الذكية للبيع المتقاطع (Cross-Selling) مع تطبيق Grid Logic
-        window.renderCartSuggestions = function() {
-            const suggestionsContainer = document.getElementById('cart-suggestions-container');
-            if (!window.catalog || window.catalog.length === 0) return;
-
-            let rawCart = JSON.parse(localStorage.getItem('bose_cart_items')) || [];
             const cartIds = rawCart.map(item => String(item.id));
 
-            // استبعاد المنتجات الموجودة بالفعل في السلة
             let availableSuggestions = window.catalog.filter(p => !cartIds.includes(String(p.id)));
-            
-            // انتقاء عشوائي لأربع منتجات
             availableSuggestions = availableSuggestions.sort(() => 0.5 - Math.random()).slice(0, 4);
 
             if (availableSuggestions.length === 0) {
-                suggestionsContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted); grid-column: 1 / -1; padding: 20px;">لقد أضفت معظم إبداعاتنا المميزة لسلة حضرتك!</p>';
+                suggestionsContainer.innerHTML = '<p style="text-align:center; color:var(--text-muted); grid-column: 1 / -1; padding: 20px;">لقد اخترتِ أفضل ما لدينا بالفعل!</p>';
                 return;
             }
 
@@ -526,9 +446,9 @@
                     <div class="suggestion-card">
                         <img src="${product.image || 'assets/default-product.jpg'}" alt="${product.name}" class="suggestion-img">
                         <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                            <h4 style="margin: 0 0 10px; font-size: 1.1rem; color: var(--text-main); font-weight: 700; line-height: 1.3;">${product.name}</h4>
-                            <p style="margin: 0 0 15px; color: var(--primary-pink); font-weight: 700; font-size: 1.15rem;">${product.price} ج.م</p>
-                            <button onclick="window.location.href='product.html?id=${product.id}'" class="btn-primary" style="padding: 12px; width: 100%; font-size: 1rem; border-radius: 8px;">استعرض المزيد</button>
+                            <h4 style="margin: 0 0 10px; font-size: 1rem; color: var(--text-main); font-weight: 700; line-height: 1.3;">${product.name}</h4>
+                            <p style="margin: 0 0 15px; color: var(--primary-pink); font-weight: 700; font-size: 1.1rem;">${product.price} ج.م</p>
+                            <button onclick="window.location.href='product.html?id=${product.id}'" class="btn-primary" style="padding: 12px; font-size: 0.9rem; border-radius: 10px;">التفاصيل</button>
                         </div>
                     </div>
                 `;

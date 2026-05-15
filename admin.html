@@ -40,15 +40,17 @@
             <h1 style="font-size: 1.6rem; margin: 0; color: var(--text-main);" id="admin-page-title">نظرة عامة</h1>
             <div style="display: flex; gap: 20px; align-items: center;">
                 <div style="display: flex; align-items: center; gap: 8px; color: var(--text-muted);">
-                    <div style="width: 10px; height: 10px; background: #25D366; border-radius: 50%;"></div>
-                    <span style="font-size: 0.9rem; font-weight: 700;">متصل بالسحابة السيادية</span>
+                    <div id="cloud-status-indicator" style="width: 10px; height: 10px; background: #25D366; border-radius: 50%;"></div>
+                    <span id="cloud-status-text" style="font-size: 0.9rem; font-weight: 700;">متصل بالسحابة السيادية</span>
                 </div>
-                <button class="btn-icon" aria-label="تسجيل الخروج"><i data-lucide="log-out"></i></button>
+                <button class="btn-icon" id="admin-logout-btn" aria-label="تسجيل الخروج">
+                    <i data-lucide="log-out"></i>
+                </button>
             </div>
         </header>
 
         <div id="admin-content-area">
-            <div id="view-overview">
+            <div id="view-overview" class="admin-section">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px;">
                     <div class="stat-card">
                         <span class="stat-title">طلبات اليوم</span>
@@ -59,24 +61,33 @@
                         <span class="stat-value" id="stat-active-products">0</span>
                     </div>
                     <div class="stat-card">
-                        <span class="stat-title">زيارات اليوم (تقريبي)</span>
-                        <span class="stat-value">0</span>
+                        <span class="stat-title">زيارات النظام</span>
+                        <span class="stat-value" id="stat-daily-visits">0</span>
                     </div>
                 </div>
 
                 <div class="admin-panel">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                        <h2 style="margin: 0; font-size: 1.4rem;">أحدث الطلبات الواردة</h2>
-                        <button class="btn-primary" id="view-all-orders-btn" style="padding: 8px 20px; font-size: 1rem;">عرض الكل</button>
+                        <h2 style="margin: 0; font-size: 1.4rem;">أحدث العمليات الواردة</h2>
+                        <button class="btn-primary" id="view-all-orders-btn" style="padding: 8px 20px; font-size: 1rem;">عرض كافة الطلبات</button>
                     </div>
-                    <div style="text-align: center; padding: 60px 0; color: var(--text-muted); border: 2px dashed rgba(255,145,164,0.3); border-radius: 16px;">
+                    <div id="latest-orders-container" style="text-align: center; padding: 60px 0; color: var(--text-muted); border: 2px dashed rgba(255,145,164,0.3); border-radius: 16px;">
                         <i data-lucide="inbox" style="width: 48px; height: 48px; color: rgba(255,145,164,0.5); margin-bottom: 15px;"></i>
-                        <p style="font-weight: 700; font-size: 1.1rem;">جاري جلب الطلبات من السحابة...</p>
+                        <p style="font-weight: 700; font-size: 1.1rem;">جاري جلب البيانات من السحابة السيادية...</p>
                     </div>
                 </div>
             </div>
+
+            <div id="view-products" class="admin-section" style="display: none;"></div>
+            <div id="view-orders" class="admin-section" style="display: none;"></div>
+            <div id="view-settings" class="admin-section" style="display: none;"></div>
         </div>
     </main>
+
+    <div id="admin-modal-overlay" class="modal-overlay" style="display: none;">
+        <div id="admin-modal-content" class="admin-modal">
+            </div>
+    </div>
     
     <script>lucide.createIcons();</script>
     

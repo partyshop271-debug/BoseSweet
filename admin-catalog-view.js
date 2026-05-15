@@ -1,8 +1,10 @@
 /**
  * ============================================================================
- * 👑 محرك عرض الكتالوج السيادي | Admin Catalog View Engine
+ * 👑 محرك عرض الكتالوج السيادي | Admin Catalog View Engine (V28.1)
  * ============================================================================
- * الوظيفة: الاستماع اللحظي للمنتجات من السحابة، رسم جدول الإدارة، وتفعيل قرارات الحذف.
+ * الإدارة المرجعية: حلويات بوسي
+ * الوظيفة: الاستماع اللحظي للمنتجات، رسم جداول الإدارة، وتفعيل قرارات الحذف والتعديل.
+ * التوافق: مرتبط برمجياً بـ (admin-catalog-manager) و (admin-logic).
  */
 
 import { listenToAllProducts, executeDeleteProduct } from './admin-database.js';
@@ -10,37 +12,42 @@ import { listenToAllProducts, executeDeleteProduct } from './admin-database.js';
 let catalogListenerUnsubscribe = null;
 
 // ============================================================================
-// 1. دالة البناء والرسم اللحظي (Live Table Renderer)
+// 📊 1. دالة البناء والرسم اللحظي (Live Table Renderer)
 // ============================================================================
 export async function renderCatalogTable() {
     const tableBody = document.getElementById('admin-catalog-list');
-    if (!tableBody) return; // تأكد من أننا في شاشة الكتالوج
+    // البحث عن الحاوية البديلة في حال تغير الهيكل برمجياً
+    const targetContainer = tableBody || document.querySelector('[data-admin-target="catalog-list"]');
+    
+    if (!targetContainer) return; 
 
-    // إظهار حالة التحميل الاحترافية مبدئياً
-    tableBody.innerHTML = `
+    // إظهار حالة التحميل الاحترافية (بصمة الإدارة العليا)
+    targetContainer.innerHTML = `
         <tr>
-            <td colspan="5" style="padding: 40px; text-align: center; color: var(--text-muted);">
-                <i data-lucide="loader-2" class="spin-animation" style="width: 32px; height: 32px; color: var(--primary-pink); margin-bottom: 10px;"></i>
-                <p style="font-weight: 700;">جاري فتح مسار المزامنة الحية مع السحابة السيادية...</p>
+            <td colspan="5" style="padding: 60px; text-align: center; color: var(--text-muted);">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                    <i data-lucide="loader-2" class="spin-animation" style="width: 40px; height: 40px; color: var(--primary-pink);"></i>
+                    <p style="font-weight: 700; font-size: 1.1rem; letter-spacing: 0.5px;">جاري فتح مسار المزامنة الحية مع السحابة السيادية لـ "حلويات بوسي"...</p>
+                </div>
             </td>
         </tr>
     `;
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
-    // إغلاق أي استماع قديم لمنع التكرار (Memory Leak Protection)
+    // حماية الذاكرة من التكرار (Memory Leak Protection)
     if (catalogListenerUnsubscribe) {
         catalogListenerUnsubscribe();
     }
 
     try {
-        // تفعيل الاستماع اللحظي من السحابة
+        // تفعيل الاستماع اللحظي (onSnapshot)
         catalogListenerUnsubscribe = listenToAllProducts((products) => {
-            if (products.length === 0) {
-                tableBody.innerHTML = `
+            if (!products || products.length === 0) {
+                targetContainer.innerHTML = `
                     <tr>
-                        <td colspan="5" style="padding: 40px; text-align: center; color: var(--text-muted);">
-                            <i data-lucide="package-open" style="width: 48px; height: 48px; opacity: 0.5; margin-bottom: 10px;"></i>
-                            <p style="font-weight: 700;">الكتالوج فارغ حالياً. يمكنك إضافة منتجات جديدة.</p>
+                        <td colspan="5" style="padding: 80px; text-align: center; color: var(--text-muted);">
+                            <i data-lucide="package-search" style="width: 60px; height: 60px; opacity: 0.3; margin-bottom: 20px;"></i>
+                            <p style="font-weight: 700; font-size: 1.2rem;">الكتالوج السيادي فارغ حالياً. يرجى البدء بإضافة منتجات جديدة.</p>
                         </td>
                     </tr>
                 `;
@@ -48,96 +55,132 @@ export async function renderCatalogTable() {
                 return;
             }
 
-            // بناء صفوف الجدول
+            // فرز المنتجات (الأحدث في الإضافة يظهر أولاً)
+            const sortedProducts = [...products].sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
             let html = '';
-            products.forEach(product => {
-                const statusBadge = product.status === 'متاح' || product.isActive !== false
-                    ? `<span style="background: #e8f5e9; color: #2e7d32; padding: 5px 12px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;">متاح</span>`
-                    : `<span style="background: #ffebee; color: #c62828; padding: 5px 12px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;">غير متاح</span>`;
+            sortedProducts.forEach(product => {
+                // تحديد الحالة المهنية للمنتج
+                const isActive = product.isActive !== false;
+                const statusBadge = isActive
+                    ? `<span style="background: rgba(46, 125, 50, 0.1); color: #2e7d32; padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(46, 125, 50, 0.2);">متاح للعرض</span>`
+                    : `<span style="background: rgba(198, 40, 40, 0.1); color: #c62828; padding: 6px 14px; border-radius: 50px; font-size: 0.85rem; font-weight: 700; border: 1px solid rgba(198, 40, 40, 0.2);">مخفي حالياً</span>`;
 
                 html += `
-                    <tr style="border-bottom: 1px solid rgba(255,145,164,0.1); transition: background 0.3s;" id="row-${product.id}">
+                    <tr style="border-bottom: 1px solid rgba(255,145,164,0.08); transition: all 0.3s;" id="row-${product.id}" class="admin-table-row">
                         <td style="padding: 20px;">
-                            <div style="display: flex; align-items: center; gap: 15px;">
-                                <img src="${product.image || product.img || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'}" alt="${product.name}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid rgba(255,145,164,0.2);">
-                                <span style="font-weight: 700;">${product.name}</span>
+                            <div style="display: flex; align-items: center; gap: 18px;">
+                                <div style="position: relative;">
+                                    <img src="${product.image || product.img || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'}" 
+                                         alt="${product.name}" 
+                                         style="width: 55px; height: 55px; border-radius: 12px; object-fit: cover; border: 2px solid rgba(255,145,164,0.15); box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                                    ${product.isBestSeller ? '<div style="position: absolute; -top: 8px; -right: 8px; background: #FFD700; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white;" title="الأكثر مبيعاً"></div>' : ''}
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                    <span style="font-weight: 700; color: var(--text-main); font-size: 1rem;">${product.name}</span>
+                                    <span style="font-size: 0.8rem; color: var(--text-muted);">ID: ${product.id.substring(0, 8)}...</span>
+                                </div>
                             </div>
                         </td>
-                        <td style="padding: 20px;">${product.category}</td>
-                        <td style="padding: 20px; color: var(--primary-pink); font-weight: 700;">${product.price} ج.م</td>
+                        <td style="padding: 20px; font-weight: 600; color: var(--text-muted);">${product.category}</td>
+                        <td style="padding: 20px;">
+                            <div style="display: flex; flex-direction: column;">
+                                <span style="color: var(--primary-pink); font-weight: 800; font-size: 1.1rem;">${product.price} ج.م</span>
+                                ${product.oldPrice ? `<span style="text-decoration: line-through; font-size: 0.85rem; color: #999;">${product.oldPrice} ج.م</span>` : ''}
+                            </div>
+                        </td>
                         <td style="padding: 20px;">${statusBadge}</td>
                         <td style="padding: 20px; text-align: center;">
-                            <button onclick="window.initiateProductEdit('${product.id}')" style="background: none; border: none; color: var(--primary-pink); cursor: pointer; margin-left: 15px;" title="تعديل">
-                                <i data-lucide="edit-3"></i>
-                            </button>
-                            <button onclick="window.initiateProductDelete('${product.id}', '${product.name.replace(/'/g, "\\'")}')" style="background: none; border: none; color: #d32f2f; cursor: pointer;" title="حذف قاطع">
-                                <i data-lucide="trash-2"></i>
-                            </button>
+                            <div style="display: flex; gap: 10px; justify-content: center;">
+                                <button onclick="window.initiateProductEdit('${product.id}')" 
+                                        style="width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(255,145,164,0.2); background: white; color: var(--primary-pink); cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center;" 
+                                        title="تعديل البيانات"
+                                        onmouseover="this.style.background='rgba(255,145,164,0.05)'" 
+                                        onmouseout="this.style.background='white'">
+                                    <i data-lucide="edit-3" style="width: 18px;"></i>
+                                </button>
+                                <button onclick="window.initiateProductDelete('${product.id}', '${product.name.replace(/'/g, "\\'")}')" 
+                                        style="width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(211, 47, 47, 0.1); background: white; color: #d32f2f; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center;" 
+                                        title="حذف نهائي"
+                                        onmouseover="this.style.background='rgba(211, 47, 47, 0.05)'" 
+                                        onmouseout="this.style.background='white'">
+                                    <i data-lucide="trash-2" style="width: 18px;"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `;
             });
 
-            tableBody.innerHTML = html;
+            targetContainer.innerHTML = html;
             if (typeof lucide !== 'undefined') lucide.createIcons();
         });
 
     } catch (error) {
-        tableBody.innerHTML = `
+        targetContainer.innerHTML = `
             <tr>
-                <td colspan="5" style="padding: 30px; text-align: center; color: #d32f2f; font-weight: 700;">
-                    حدث خلل في الاتصال بالسحابة. يرجى مراجعة الصندوق الأسود.
+                <td colspan="5" style="padding: 40px; text-align: center; color: #d32f2f;">
+                    <i data-lucide="alert-triangle" style="width: 40px; height: 40px; margin-bottom: 10px;"></i>
+                    <p style="font-weight: 700;">فشل الاتصال بمركز البيانات السيادي. يرجى مراجعة الصندوق الأسود.</p>
                 </td>
             </tr>
         `;
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-catalog-view.js', null, 'renderCatalogTable');
+        if (window.AdminErrorTracker) window.AdminErrorTracker.report(error, 'renderCatalogTable');
     }
 }
 
 // ============================================================================
-// 2. دالة الحذف القاطع (Sovereign Deletion)
+// 🗑️ 2. دالة الحذف السيادي (Sovereign Deletion Protocol)
 // ============================================================================
 window.initiateProductDelete = async function(productId, productName) {
-    // رسالة تأكيد إدارية حازمة
-    const isConfirmed = confirm(`قرار سيادي:\nهل أنت متأكد من الحذف القاطع لمنتج "${productName}" من قاعدة البيانات؟\n(هذا الإجراء لا يمكن التراجع عنه وسيتم إخفاؤه من واجهة العملاء فوراً)`);
+    // استخدام نافذة القرار السيادي (Confirm Modal) بدلاً من confirm التقليدية
+    const message = `هل أنت متأكد من الحذف القاطع للمنتج "${productName}"؟\nهذا الإجراء سيقوم بإزالة المنتج نهائياً من كافة واجهات العرض السحابية.`;
     
-    if (!isConfirmed) return;
-
-    try {
-        // تغيير شكل الزر أو الصف كدليل بصري أثناء الحذف
-        const row = document.getElementById(`row-${productId}`);
-        if (row) row.style.opacity = '0.5';
-
-        // تنفيذ الحذف السحابي (الجدول سيحدث نفسه تلقائياً بفضل الاستماع اللحظي)
-        await executeDeleteProduct(productId);
-        
-        // إشعار الإدارة
-        alert(`تمت إزالة "${productName}" بنجاح.`);
-
-    } catch (error) {
-        alert('فشل الحذف. يرجى المحاولة مرة أخرى.');
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-catalog-view.js', null, 'initiateProductDelete');
+    if (typeof window.openConfirmModal === 'function') {
+        window.openConfirmModal("قرار حذف سيادي", message, async () => {
+            try {
+                const row = document.getElementById(`row-${productId}`);
+                if (row) row.style.opacity = '0.3';
+                
+                await executeDeleteProduct(productId);
+                window.showSystemToast(`تم تنفيذ قرار الحذف لـ "${productName}" بنجاح.`, "success");
+                if (typeof window.triggerSovereignSync === 'function') window.triggerSovereignSync();
+            } catch (error) {
+                window.showSystemToast("تعذر تنفيذ قرار الحذف. يرجى مراجعة سجلات النظام.", "error");
+                if (row) row.style.opacity = '1';
+            }
+        });
+    } else {
+        // Fallback في حال عدم توفر المودال
+        if (confirm(`قرار سيادي:\n${message}`)) {
+            await executeDeleteProduct(productId);
+            window.showSystemToast("تم الحذف بنجاح.", "success");
+        }
     }
 };
 
+// ============================================================================
+// ✏️ 3. تفعيل وظيفة التعديل (Edit Engine Connection)
+// ============================================================================
 window.initiateProductEdit = function(productId) {
-    // سيتم برمجتها لاحقاً لفتح نافذة التعديل
-    alert('قسم التعديل قيد التجهيز الهندسي وسيتم إرفاقه قريباً.');
+    // الربط المباشر مع محرك (admin-catalog-manager)
+    if (typeof window.openProductModal === 'function') {
+        window.openProductModal(productId);
+    } else {
+        window.showSystemToast("تنبيه نظام: محرك إدارة المنتجات غير مفعل حالياً.", "error");
+    }
 };
 
 // ============================================================================
-// 3. مستشعرات التشغيل اللحظي
+// 🔌 4. مستشعرات التشغيل اللحظي (Event Listeners)
 // ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // عند الضغط على تبويب "إدارة الكتالوج" في القائمة الجانبية، قم برسم الجدول فوراً
+    // ربط التنقل السلس من القائمة الجانبية
     const catalogNavBtn = document.getElementById('nav-products');
     if (catalogNavBtn) {
         catalogNavBtn.addEventListener('click', () => {
-            // ننتظر قليلاً حتى يقوم محرك SPA برسم الهيكل الفارغ، ثم نملأه
-            setTimeout(renderCatalogTable, 350); 
+            // انتظار تأكيد محرك SPA برسم منطقة العمل
+            setTimeout(renderCatalogTable, 300); 
         });
     }
-
-    // إزالة السطر الخاص بإعادة رسم الجدول بعد إضافة منتج جديد
-    // لأن محرك onSnapshot سيكتشف الإضافة الجديدة ويرسمها لحظياً بدون تدخل منا!
 });

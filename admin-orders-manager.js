@@ -1,171 +1,190 @@
 /**
  * ============================================================================
- * 👑 محرك إدارة الطلبات السيادي | Admin Orders Engine
+ * 👑 محرك إدارة الطلبات السيادي | Admin Orders Engine (V28.1)
  * ============================================================================
- * الإدارة: حلويات بوسي
- * الوظيفة: جلب الطلبات السحابية، تنظيمها حسب الحالة، وتحديث مسار التجهيز.
+ * الإدارة المرجعية: حلويات بوسي
+ * الوظيفة: إدارة مسار التجهيز، التنظيم اللحظي للطلبات، وتوثيق حالات التسليم.
+ * التحديث: الربط الكامل مع (admin-database) وإلغاء التكرار البرمجي للـ Firebase.
  */
 
-import boseConfig from './core-engine.js';
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, getDocs, updateDoc, doc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
-// تهيئة الاتصال
-const app = initializeApp(boseConfig.firebase);
-const db = getFirestore(app);
+import adminDB from './admin-database.js';
 
 // ============================================================================
-// 1. محرك جلب الطلبات (Fetch Engine)
-// ============================================================================
-export async function fetchOrders(statusFilter = 'جديد') {
-    try {
-        const ordersRef = collection(db, "orders");
-        // جلب الطلبات مرتبة من الأحدث للأقدم حسب الحالة
-        const q = query(ordersRef, where("status", "==", statusFilter), orderBy("createdAt", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        let orders = [];
-        querySnapshot.forEach((doc) => {
-            orders.push({ id: doc.id, ...doc.data() });
-        });
-        return orders;
-    } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-orders-manager.js', null, 'fetchOrders');
-        return [];
-    }
-}
-
-// ============================================================================
-// 2. تحديث حالة الطلب (Status Updater)
+// 🛒 1. محرك تحديث مسار التجهيز (Status Master)
 // ============================================================================
 window.updateOrderStatus = async function(orderId, newStatus) {
-    const isConfirmed = confirm(`تأكيد إداري:\nهل تريد تغيير حالة الطلب إلى "${newStatus}"؟`);
-    if (!isConfirmed) return;
+    const statusText = newStatus === 'مكتمل' ? 'اكتمال التجهيز والتسليم' : 'قيد المعالجة';
+    const message = `هل أنت متأكد من اعتماد قرار "${statusText}" للطلب رقم #${orderId.slice(-6).toUpperCase()}؟`;
 
-    try {
-        const orderRef = doc(db, "orders", orderId);
-        await updateDoc(orderRef, { status: newStatus });
-        
-        alert(`تم تحديث حالة الطلب إلى: ${newStatus}`);
-        // إعادة رسم واجهة الطلبات بعد التحديث
-        window.renderAdminOrders('جديد'); 
-    } catch (error) {
-        alert('حدث خلل أثناء تحديث الحالة. يرجى مراجعة الصندوق الأسود.');
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'admin-orders-manager.js', null, 'updateOrderStatus');
+    // استخدام نافذة القرار السيادي الموحدة
+    if (typeof window.openConfirmModal === 'function') {
+        window.openConfirmModal("قرار إداري: تحديث مسار الطلب", message, async () => {
+            try {
+                // تنفيذ التحديث عبر الذراع السحابي
+                await adminDB.updateOrderStatusCloud(orderId, newStatus);
+                
+                window.showSystemToast(`قرار نظام: تم توثيق حالة الطلب كـ (${newStatus}) بنجاح.`, "success");
+                
+                // إرسال نبضة تحديث سيادية لضمان مزامنة كافة الأجهزة
+                if (typeof window.triggerSovereignSync === 'function') {
+                    window.triggerSovereignSync();
+                }
+            } catch (error) {
+                window.AdminErrorTracker.report(error, 'updateOrderStatus');
+                window.showSystemToast("فشل في مسار التحديث السحابي. يرجى مراجعة الصندوق الأسود.", "error");
+            }
+        });
     }
 };
 
 // ============================================================================
-// 3. محرك الرسم البياني (UI Renderer)
+// 📊 2. محرك الرسم البصري للطلبات (UI Rendering Engine)
 // ============================================================================
-window.renderAdminOrders = async function(activeTab = 'جديد') {
-    // هذه الدالة ستقوم بحقن الكود داخل الحاوية التي أنشأناها في admin-logic.js
+window.renderAdminOrders = function(activeTab = 'جديد') {
     const contentArea = document.getElementById('admin-content-area');
     if (!contentArea) return;
 
-    // رسم الهيكل الأساسي لصفحة الطلبات مع التبويبات
+    // رسم الهيكل التنظيمي لقسم الطلبات (بصمة الإدارة العليا)
     contentArea.innerHTML = `
-        <div class="admin-panel">
-            <div style="display: flex; gap: 15px; margin-bottom: 30px; border-bottom: 2px solid rgba(255,145,164,0.1); padding-bottom: 15px;">
-                <button onclick="window.renderAdminOrders('جديد')" style="background:none; border:none; cursor:pointer; color:${activeTab === 'جديد' ? 'var(--primary-pink)' : 'var(--text-muted)'}; font-weight:700; font-size:1.1rem; border-bottom:${activeTab === 'جديد' ? '3px solid var(--primary-pink)' : 'none'}; padding-bottom:10px; transition: all 0.3s;">الطلبات الجديدة</button>
-                
-                <button onclick="window.renderAdminOrders('مكتمل')" style="background:none; border:none; cursor:pointer; color:${activeTab === 'مكتمل' ? 'var(--primary-pink)' : 'var(--text-muted)'}; font-weight:700; font-size:1.1rem; border-bottom:${activeTab === 'مكتمل' ? '3px solid var(--primary-pink)' : 'none'}; padding-bottom:10px; transition: all 0.3s;">المكتملة</button>
+        <div class="admin-panel" style="animation: fadeIn 0.4s ease-out;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; border-bottom: 2px solid rgba(255,145,164,0.1); padding-bottom: 20px;">
+                <div style="display: flex; gap: 25px;">
+                    <button onclick="window.renderAdminOrders('جديد')" 
+                            style="background:none; border:none; cursor:pointer; color:${activeTab === 'جديد' ? 'var(--primary-pink)' : 'var(--text-muted)'}; font-weight:700; font-size:1.2rem; position:relative; padding-bottom:15px; transition: all 0.3s;">
+                        الطلبات الواردة
+                        ${activeTab === 'جديد' ? '<div style="position:absolute; bottom:-2px; left:0; width:100%; height:4px; background:var(--primary-pink); border-radius:10px;"></div>' : ''}
+                    </button>
+                    
+                    <button onclick="window.renderAdminOrders('مكتمل')" 
+                            style="background:none; border:none; cursor:pointer; color:${activeTab === 'مكتمل' ? 'var(--primary-pink)' : 'var(--text-muted)'}; font-weight:700; font-size:1.2rem; position:relative; padding-bottom:15px; transition: all 0.3s;">
+                        الأرشيف المكتمل
+                        ${activeTab === 'مكتمل' ? '<div style="position:absolute; bottom:-2px; left:0; width:100%; height:4px; background:var(--primary-pink); border-radius:10px;"></div>' : ''}
+                    </button>
+                </div>
+                <div style="background: rgba(255,145,164,0.05); padding: 8px 15px; border-radius: 10px; border: 1px solid rgba(255,145,164,0.1);">
+                    <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 700;">إجمالي الحالات: </span>
+                    <span style="color: var(--primary-pink); font-weight: 800;" id="order-count-display">...</span>
+                </div>
             </div>
             
-            <div id="orders-list-container" style="display: flex; flex-direction: column; gap: 20px;">
-                <div style="text-align: center; padding: 40px; color: var(--text-muted);">
-                    <i data-lucide="loader" class="spin-animation" style="width: 32px; height: 32px; color: var(--primary-pink); margin-bottom: 10px;"></i>
-                    <p style="font-weight: 700;">جاري مزامنة الطلبات من السحابة...</p>
+            <div id="orders-list-container" style="display: grid; grid-template-columns: 1fr; gap: 25px;">
+                <div style="text-align: center; padding: 80px 0;">
+                    <i data-lucide="loader" class="spin-animation" style="width: 45px; height: 45px; color: var(--primary-pink); margin-bottom: 15px;"></i>
+                    <p style="font-weight: 700; font-size: 1.1rem; color: var(--text-muted);">جاري استدعاء سجلات السحابة السيادية...</p>
                 </div>
             </div>
         </div>
     `;
-    lucide.createIcons();
+    if (window.lucide) lucide.createIcons();
 
-    // جلب البيانات
-    const ordersListContainer = document.getElementById('orders-list-container');
-    const orders = await fetchOrders(activeTab);
+    // الاعتماد على الذاكرة العالمية (window.globalOrders) التي يحدثها admin-logic لحظياً
+    const filteredOrders = window.globalOrders.filter(o => {
+        if (activeTab === 'جديد') return o.status === 'pending' || !o.status || o.status === 'جديد';
+        return o.status === 'مكتمل' || o.status === 'completed';
+    });
 
-    if (orders.length === 0) {
-        ordersListContainer.innerHTML = `
-            <div style="text-align: center; padding: 60px 0; color: var(--text-muted);">
-                <i data-lucide="${activeTab === 'جديد' ? 'inbox' : 'check-circle'}" style="width: 48px; height: 48px; color: rgba(255,145,164,0.5); margin-bottom: 15px;"></i>
-                <p style="font-weight: 700; font-size: 1.1rem;">لا توجد طلبات في قسم "${activeTab}".</p>
+    document.getElementById('order-count-display').innerText = filteredOrders.length;
+    const container = document.getElementById('orders-list-container');
+
+    if (filteredOrders.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 100px 0; background: rgba(255,145,164,0.02); border-radius: 20px; border: 2px dashed rgba(255,145,164,0.1);">
+                <i data-lucide="${activeTab === 'جديد' ? 'inbox' : 'archive'}" style="width: 60px; height: 60px; color: rgba(255,145,164,0.3); margin-bottom: 20px;"></i>
+                <p style="font-weight: 700; font-size: 1.3rem; color: var(--text-muted);">قسم "${activeTab === 'جديد' ? 'الواردة' : 'المكتملة'}" لا يحتوي على سجلات حالياً.</p>
             </div>
         `;
-        lucide.createIcons();
+        if (window.lucide) lucide.createIcons();
         return;
     }
 
-    // بناء كروت الطلبات
+    // بناء مصفوفة الكروت الاحترافية
     let html = '';
-    orders.forEach(order => {
+    filteredOrders.forEach(order => {
         let itemsHtml = '';
         if (order.items && Array.isArray(order.items)) {
             order.items.forEach(item => {
-                itemsHtml += `<div style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 5px;">- ${item.name} (الكمية: ${item.quantity})</div>`;
+                itemsHtml += `
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.05);">
+                        <span style="font-weight: 700; color: var(--text-main); font-size: 1rem;">• ${item.name}</span>
+                        <span style="background: rgba(255,145,164,0.1); color: var(--primary-pink); padding: 2px 10px; border-radius: 15px; font-weight: 800; font-size: 0.9rem;">×${item.quantity}</span>
+                    </div>`;
             });
         }
 
-        const actionButton = activeTab === 'جديد' 
-            ? `<button onclick="window.updateOrderStatus('${order.id}', 'مكتمل')" class="btn-primary" style="padding: 8px 20px; font-size: 0.95rem; border-radius: 8px;"><i data-lucide="check" style="width: 16px; margin-left: 5px;"></i> إنهاء الطلب</button>`
-            : `<span style="color: #2e7d32; font-weight: 700; display: flex; align-items: center; gap: 5px;"><i data-lucide="check-circle" style="width: 18px;"></i> تم التسليم</span>`;
+        const actionSection = activeTab === 'جديد' 
+            ? `<button onclick="window.updateOrderStatus('${order.id}', 'مكتمل')" class="btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem; border-radius: 14px; font-weight: 700; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i data-lucide="shield-check" style="width: 20px;"></i> اعتماد اكتمال التجهيز
+               </button>`
+            : `<div style="width: 100%; padding: 15px; background: rgba(46, 125, 50, 0.05); color: #2e7d32; border: 1px solid rgba(46, 125, 50, 0.2); border-radius: 14px; font-weight: 800; text-align: center; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <i data-lucide="check-circle" style="width: 20px;"></i> تم التسليم والتوثيق سيادياً
+               </div>`;
 
         html += `
-            <div style="border: 2px solid rgba(255,145,164,0.15); border-radius: 12px; padding: 25px; background: var(--surface-light); display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
-                <div style="flex: 1; min-width: 250px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
-                        <h3 style="margin: 0; color: var(--primary-pink); font-size: 1.2rem;">طلب #${order.id.slice(-6).toUpperCase()}</h3>
-                        <span style="color: var(--text-muted); font-size: 0.9rem; font-weight: 700;">${order.createdAt ? new Date(order.createdAt).toLocaleString('ar-EG') : 'وقت غير معروف'}</span>
-                    </div>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; background: var(--bg-white); padding: 15px; border-radius: 8px; border: 1px dashed rgba(0,0,0,0.1);">
-                        <div>
-                            <span style="color: var(--text-muted); font-size: 0.85rem; display: block;">اسم العميل</span>
-                            <span style="font-weight: 700;">${order.customerName || 'غير مسجل'}</span>
-                        </div>
-                        <div>
-                            <span style="color: var(--text-muted); font-size: 0.85rem; display: block;">رقم التواصل</span>
-                            <span style="font-weight: 700; direction: ltr; display: inline-block;">${order.phone || 'غير مسجل'}</span>
-                        </div>
-                        <div style="grid-column: 1 / -1;">
-                            <span style="color: var(--text-muted); font-size: 0.85rem; display: block;">تفاصيل الاستلام</span>
-                            <span style="font-weight: 700;">${order.deliveryDetails || 'استلام من الفرع'}</span>
-                        </div>
-                    </div>
-
+            <div class="stat-card" style="display: flex; flex-direction: column; padding: 30px; border: 1px solid rgba(255,145,164,0.15); box-shadow: 0 10px 25px -5px rgba(255,145,164,0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
                     <div>
-                        <h4 style="font-size: 1rem; margin-bottom: 10px;">المنتجات المطلوبة:</h4>
-                        ${itemsHtml}
+                        <span style="background: var(--primary-pink); color: white; padding: 5px 15px; border-radius: 50px; font-size: 0.85rem; font-weight: 800; letter-spacing: 1px;">طلب #${order.id.slice(-6).toUpperCase()}</span>
+                        <h3 style="margin: 15px 0 5px; color: var(--text-main); font-size: 1.4rem;">${order.customerName || 'عميل مجهول'}</h3>
+                        <div style="display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 0.95rem;">
+                            <i data-lucide="clock" style="width: 16px;"></i>
+                            <span>${order.timestamp ? new Date(order.timestamp).toLocaleString('ar-EG') : 'توقيت غير موثق'}</span>
+                        </div>
+                    </div>
+                    <div style="text-align: left;">
+                        <span style="color: var(--text-muted); font-size: 0.9rem; display: block; margin-bottom: 5px;">إجمالي القيمة المالية</span>
+                        <span style="color: var(--primary-pink); font-size: 1.8rem; font-weight: 900;">${order.total || 0} <small style="font-size: 0.9rem;">ج.م</small></span>
                     </div>
                 </div>
 
-                <div style="display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; min-width: 150px; height: 100%;">
-                    <div style="text-align: left; margin-bottom: 20px;">
-                        <span style="color: var(--text-muted); font-size: 0.9rem; display: block;">الإجمالي</span>
-                        <span style="color: var(--primary-pink); font-size: 1.5rem; font-weight: 700;">${order.total || 0} ج.م</span>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; background: #fafafa; padding: 20px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #f0f0f0;">
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 0.85rem; display: block; margin-bottom: 5px;">رقم التواصل السيادي</label>
+                        <a href="tel:${order.phone}" style="font-weight: 800; color: var(--text-main); text-decoration: none; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                            <i data-lucide="phone" style="width: 18px; color: #25D366;"></i>
+                            <span style="direction: ltr;">${order.phone || 'غير متاح'}</span>
+                        </a>
                     </div>
-                    ${actionButton}
+                    <div>
+                        <label style="color: var(--text-muted); font-size: 0.85rem; display: block; margin-bottom: 5px;">طريقة الاستلام</label>
+                        <span style="font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                            <i data-lucide="map-pin" style="width: 18px; color: var(--primary-pink);"></i>
+                            ${order.deliveryMethod === 'delivery' ? 'توصيل للمقر' : 'استلام من الفرع (الكفاح)'}
+                        </span>
+                    </div>
+                    <div style="grid-column: 1 / -1;">
+                        <label style="color: var(--text-muted); font-size: 0.85rem; display: block; margin-bottom: 5px;">العنوان التفصيلي / ملاحظات الإدارة</label>
+                        <span style="font-weight: 700; color: var(--text-main); line-height: 1.5;">${order.address || order.deliveryDetails || 'لا توجد ملاحظات إضافية.'}</span>
+                    </div>
                 </div>
+
+                <div style="background: white; border: 1px solid rgba(255,145,164,0.1); border-radius: 16px; padding: 20px;">
+                    <h4 style="margin: 0 0 15px; font-size: 1.1rem; color: var(--text-main); display: flex; align-items: center; gap: 10px;">
+                        <i data-lucide="shopping-bag" style="width: 20px; color: var(--primary-pink);"></i>
+                        قائمة المحتويات المطلوبة
+                    </h4>
+                    ${itemsHtml}
+                </div>
+
+                ${actionSection}
             </div>
         `;
     });
 
-    ordersListContainer.innerHTML = html;
-    lucide.createIcons();
+    container.innerHTML = html;
+    if (window.lucide) lucide.createIcons();
 };
 
 // ============================================================================
-// 4. ربط المحرك بالقائمة الجانبية
+// 🔌 3. الإقلاع والربط (Bootloader)
 // ============================================================================
 document.addEventListener('DOMContentLoaded', () => {
     const ordersNavBtn = document.getElementById('nav-orders');
     if (ordersNavBtn) {
         ordersNavBtn.addEventListener('click', () => {
-            // ننتظر التحميل البصري للمحرك الأساسي ثم نفرض رسم واجهة الطلبات الخاصة بنا
+            // انتظار تهيئة الـ SPA ثم تفعيل الرندر
             setTimeout(() => {
                 window.renderAdminOrders('جديد');
-            }, 350);
+            }, 300);
         });
     }
 });

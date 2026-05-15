@@ -1,11 +1,10 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Sovereign Admin Logic | العقل التشغيلي للوحة القيادة (V28.0)
+ * 👑 BoseSweets Sovereign Admin Logic | العقل التشغيلي للوحة القيادة (V30.0)
  * ============================================================================
- * الإدارة المرجعية: حلويات بوسي
- * الوظيفة: هذا الملف هو "المايسترو". يمتص كافة مهام (admin-core و admin-ui).
- * يتولى إدارة التنقل (SPA)، الإشعارات، الذاكرة المحلية، الإقلاع السحابي،
- * وتوجيه الأوامر إلى الذراع السحابي (admin-database.js).
+ * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
+ * الوظيفة: المايسترو المحرك للتنقل الديناميكي (SPA)، إدارة الذاكرة، والمزامنة السحابية.
+ * التوافق: تم تأسيس محركات الرسم المفقودة لضمان استقرار رفع الوسائط والبحث.
  */
 
 import coreExports from './core-engine.js';
@@ -91,7 +90,7 @@ window.unfreezeAdminUI = function() {
 };
 
 // ============================================================================
-// ⚖️ 3. نوافذ القرار السيادي (Confirmation Modals)
+// ⚖️ 3. نوافذ القرار السيادي (Confirmation & Modals)
 // ============================================================================
 window.confirmActionCallback = null;
 
@@ -131,6 +130,21 @@ window.executeConfirmedAction = function() {
         window.confirmActionCallback();
     }
     window.closeConfirmModal();
+};
+
+window.openAdminModal = function(contentHTML) {
+    const overlay = document.getElementById('admin-modal-overlay');
+    const content = document.getElementById('admin-modal-content');
+    if (overlay && content) {
+        content.innerHTML = contentHTML;
+        overlay.style.display = 'flex';
+        if (window.lucide) lucide.createIcons();
+    }
+};
+
+window.closeAdminModal = function() {
+    const overlay = document.getElementById('admin-modal-overlay');
+    if (overlay) overlay.style.display = 'none';
 };
 
 // ============================================================================
@@ -255,7 +269,6 @@ window.saveEngineMemory = async function(type) {
         if (type === 'gal' || type === 'all') await window.StorageEngine.set('boseSweets_gallery', window.galleryData);
         if (type === 'ord' || type === 'all') await window.StorageEngine.set('boseSweets_admin_orders', window.globalOrders);
         
-        // تأمين الكاش المحلي (Cross-Tab Sync Backup)
         if (type === 'cat' || type === 'all') localStorage.setItem('boseSweets_catalog', JSON.stringify(window.catalog));
         if (type === 'set' || type === 'all') localStorage.setItem('boseSweets_settings', JSON.stringify(window.siteSettings));
     } catch (e) { window.AdminErrorTracker.log('SaveEngineMemory', e); }
@@ -267,7 +280,6 @@ window.setupRealtimeOrders = function() {
 
     if (window.ordersUnsubscribe) window.ordersUnsubscribe();
 
-    // 👑 استخدام الذراع السحابي الجديد (admin-database) بدلاً من الاتصال المباشر
     window.ordersUnsubscribe = adminDB.listenToAdminOrders((freshOrders, hasNewOrder) => {
         const newHash = JSON.stringify(freshOrders);
         if (newHash === window.adminOrdersHash && !window.isFirstOrderLoad) return; 
@@ -281,12 +293,15 @@ window.setupRealtimeOrders = function() {
             window.showSystemToast("تنبيه نظام: طلب جديد قيد الانتظار بمركز القيادة.", "success");
         }
 
-        // تحديث الشارات (Badges)
         const pendingCount = window.globalOrders.filter(o => o.status === 'pending').length;
-        const badge = document.getElementById('nav-order-badge');
+        const badge = document.getElementById('new-orders-badge');
         if (badge) {
-            if (pendingCount > 0) { badge.classList.remove('hidden'); badge.innerText = pendingCount > 9 ? '+9' : pendingCount; } 
-            else { badge.classList.add('hidden'); }
+            if (pendingCount > 0) { 
+                badge.style.display = 'block'; 
+                badge.innerText = pendingCount > 9 ? '+9' : pendingCount; 
+            } else { 
+                badge.style.display = 'none'; 
+            }
         }
 
         window.isFirstOrderLoad = false;
@@ -312,7 +327,6 @@ window.playNotificationSound = function() {
 window.loadEngineMemory = async function() {
     try {
         if (db) {
-            // مزامنة الكتالوج السحابي
             const catSnap = await db.collection('catalog').get();
             if (!catSnap.empty) { 
                 window.catalog = []; 
@@ -323,11 +337,9 @@ window.loadEngineMemory = async function() {
                 }); 
             }
             
-            // مزامنة الإعدادات
             const settingsSnap = await db.collection('settings').doc('main').get();
             if (settingsSnap.exists) { window.siteSettings = settingsSnap.data(); }
             
-            // مزامنة الشحن والمعرض
             const shipSnap = await db.collection('shipping').get();
             if (!shipSnap.empty) { window.shippingZones = []; shipSnap.forEach(doc => window.shippingZones.push(doc.data())); }
             
@@ -336,7 +348,6 @@ window.loadEngineMemory = async function() {
             
             window.setupRealtimeOrders();
             if (typeof window.updateAdminDashboardStatsUI === 'function') window.updateAdminDashboardStatsUI();
-            if (typeof window.fillGlobalSettingsFormFields === 'function') window.fillGlobalSettingsFormFields();
 
         } else {
             throw new Error("قاعدة البيانات السحابية غير متصلة.");
@@ -361,29 +372,24 @@ window.loadEngineMemory = async function() {
 // ============================================================================
 class AdminRouter {
     constructor() {
-        this.navItems = document.querySelectorAll('.admin-nav-item, .main-nav-btn, .admin-nav-btn');
-        this.contentArea = document.getElementById('admin-content-area') || document.getElementById('main-scroll-area');
+        this.navItems = document.querySelectorAll('.admin-nav-item');
         this.pageTitle = document.getElementById('admin-page-title');
+        this.sections = document.querySelectorAll('.admin-section');
         this.init();
     }
 
     init() {
-        // ربط أزرار التنقل بالروتر السيادي
         this.navItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
-                let targetId = item.id.replace('nav-', '');
-                if(item.getAttribute('onclick')) {
-                    const match = item.getAttribute('onclick').match(/'([^']+)'/);
-                    if(match) targetId = match[1];
-                }
+                const targetId = item.id.replace('nav-', '');
                 this.switchView(targetId, item);
             });
         });
 
         document.body.addEventListener('click', (e) => {
             if (e.target && e.target.id === 'view-all-orders-btn') {
-                const ordersNav = document.getElementById('nav-orders') || document.querySelector('[onclick*="orders"]');
+                const ordersNav = document.getElementById('nav-orders');
                 if (ordersNav) ordersNav.click();
             }
         });
@@ -391,42 +397,41 @@ class AdminRouter {
 
     switchView(viewId, activeNavItem) {
         try {
-            // التوافق مع الكود القديم للواجهات
-            document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.add('hidden'));
-            const target = document.getElementById(`admin-${viewId}`) || document.getElementById(`tab-${viewId}`);
-            if(target) target.classList.remove('hidden');
+            this.sections.forEach(sec => sec.style.display = 'none');
+            const target = document.getElementById(`view-${viewId}`);
+            if (target) {
+                target.style.display = 'block';
+            } else {
+                console.warn(`[حلويات بوسي] القسم view-${viewId} غير موجود في الهيكل.`);
+            }
 
-            this.navItems.forEach(nav => nav.classList.remove('active', 'active-tab', 'text-[#ff91a4]', 'bg-[#ff91a4]/10'));
-            activeNavItem.classList.add('active', 'active-tab', 'text-[#ff91a4]', 'bg-[#ff91a4]/10');
+            this.navItems.forEach(nav => nav.classList.remove('active'));
+            activeNavItem.classList.add('active');
             
             if(this.pageTitle) this.pageTitle.innerText = activeNavItem.innerText.trim();
 
-            // تنفيذ بروتوكولات الرندر لكل قسم
-            if(viewId === 'overview' && typeof window.renderAdminOverview === 'function') {
-                window.renderAdminOverview();
-                if(typeof window.initAdminCharts === 'function') window.initAdminCharts();
-                if(typeof window.renderHomepageSelection === 'function') window.renderHomepageSelection();
+            if(viewId === 'overview') {
+                if(typeof window.renderAdminOverview === 'function') window.renderAdminOverview();
+                if(typeof window.updateAdminDashboardStatsUI === 'function') window.updateAdminDashboardStatsUI();
             }
-            if(viewId === 'catalog' && typeof window.renderAdminCatalogTabs === 'function') {
-                window.renderAdminCatalogTabs();
-                const term = document.getElementById('admin-search-catalog')?.value || '';
-                if(typeof window.renderAdminMenu === 'function') window.renderAdminMenu(term);
+            
+            if(viewId === 'products') {
+                if(typeof window.renderCatalogTable === 'function') {
+                    window.renderCatalogTable();
+                }
             }
-            if(viewId === 'orders' && typeof window.renderAdminOrders === 'function') {
-                if(typeof window.renderAdminOrderFilters === 'function') window.renderAdminOrderFilters();
-                window.renderAdminOrders();
+            
+            if(viewId === 'orders') {
+                if(typeof window.renderAdminOrders === 'function') window.renderAdminOrders();
             }
-            if(viewId === 'settings' && typeof window.fillAdminSettingsForm === 'function') {
-                window.fillAdminSettingsForm();
+            
+            if(viewId === 'settings') {
+                if(typeof window.fillAdminSettingsForm === 'function') window.fillAdminSettingsForm();
                 if(typeof window.renderAdminCategories === 'function') window.renderAdminCategories();
-            }
-            if(viewId === 'shipping' && typeof window.renderAdminShipping === 'function') {
-                window.renderAdminShipping();
             }
 
             if(window.lucide) lucide.createIcons();
-            if(this.contentArea) this.contentArea.scrollTop = 0;
-            else window.scrollTo(0, 0);
+            window.scrollTo(0, 0);
 
         } catch (error) {
             window.AdminErrorTracker.log('AdminRouter_switchView', error);
@@ -439,18 +444,64 @@ class AdminRouter {
 // ============================================================================
 window.triggerSovereignSync = async function() {
     try {
-        // 👑 استخدام الذراع السحابي لإطلاق نبضة التحديث
         await adminDB.triggerSovereignSyncCloud(boseConfig.auth?.currentUser?.uid || 'system');
-        
-        // التحديث المحلي الفوري لضمان سرعة الواجهة الأمامية
         const currentTime = Date.now().toString();
         localStorage.setItem('BoseSweets_Local_Sync_Force', currentTime);
-        localStorage.setItem('BoseSweets_Admin_LastUpdate', currentTime);
-        
-        window.dispatchEvent(new CustomEvent('BoseSweets_Admin_Update_Triggered', { detail: { timestamp: currentTime } }));
         window.showSystemToast("قرار نظام: تم بث التحديثات السيادية بنجاح.", "success");
     } catch (error) {
         window.AdminErrorTracker.log('SovereignSyncTrigger', error);
+    }
+};
+
+/**
+ * 👑 محرك العرض المؤقت للصور (Sovereign Image Previewer)
+ * الإجراء: تم تأسيس هذه الدالة لسد الفجوة في تجربة رفع الوسائط.
+ * الوظيفة: رسم واجهة بصرية تسمح للإدارة بمراجعة الصور المرفوعة سحابياً قبل اعتماد المنتج.
+ */
+window.renderAdminTempImages = function() {
+    const container = document.getElementById('temp-images-grid');
+    if (!container) return;
+
+    if (!window.tempProdImages || window.tempProdImages.length === 0) {
+        container.innerHTML = '<p class="text-center py-4 opacity-50 font-bold">لم يتم رفع صور جديدة حالياً.</p>';
+        return;
+    }
+
+    let html = '';
+    window.tempProdImages.forEach((url, idx) => {
+        const isOffline = url.startsWith('offline_');
+        html += `
+            <div class="relative group aspect-square rounded-xl overflow-hidden border-2" style="border-color: ${isOffline ? '#fca5a5' : '#ff91a4'}40;">
+                <img src="${isOffline ? '#' : url}" class="w-full h-full object-cover" alt="Moot" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';">
+                ${isOffline ? '<div class="absolute inset-0 bg-black/40 flex items-center justify-center text-[10px] text-white font-black">انتظار الشبكة</div>' : ''}
+                <button onclick="window.tempProdImages.splice(${idx}, 1); window.renderAdminTempImages();" class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <i data-lucide="trash-2" style="width:12px; height:12px;"></i>
+                </button>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+    if(window.lucide) lucide.createIcons();
+};
+
+/**
+ * 👑 محرك البحث والفلترة اللحظي (Sovereign Menu Filter)
+ * الإجراء: تم تأسيس المحرك لضمان قدرة الإدارة على العثور على المنتجات بسرعة فائقة.
+ */
+window.renderAdminMenu = function(searchTerm = '') {
+    const tableBody = document.getElementById('admin-catalog-list');
+    if (!tableBody) return;
+
+    // تفعيل بروتوكول البحث السيادي
+    const filtered = window.catalog.filter(p => 
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        p.category.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // إعادة توجيه مسار الرسم لمحرك العرض السيادي (admin-catalog-view) المتاح عالمياً
+    if (typeof window.renderCatalogTable === 'function') {
+        // نمرر البيانات المفلترة في حال دعم المحرك لذلك، أو نعتمد على محرك SPA لإعادة التحديث
+        window.renderCatalogTable(filtered);
     }
 };
 
@@ -517,9 +568,9 @@ window.compressAndUploadMultiImage = async function(e) {
             });
         }
         
+        // استدعاء محرك الرسم المؤسس حديثاً
         if (typeof window.renderAdminTempImages === 'function') window.renderAdminTempImages(); 
         if(spinner) spinner.classList.add('hidden'); 
-        if(document.getElementById('prod-img-upload')) document.getElementById('prod-img-upload').value = '';
         
         if (offlineSaved) window.showSystemToast("تم إدراج الصور في الخزنة المؤقتة. ستتم المزامنة عند الاتصال.", "info");
         else if (successCount > 0) window.showSystemToast(`تحديث مسار: تم رفع (${successCount}) صورة بنجاح.`, "success");
@@ -559,7 +610,6 @@ window.syncOfflineImages = async function() {
                     
                     if (updated) {
                         needsSync = true;
-                        // الاعتماد على الذراع السحابي لتأكيد حفظ المنتج بعد تحديث صورته
                         await adminDB.updateProductDetails(p.id, p);
                     }
                 }
@@ -582,7 +632,87 @@ window.syncOfflineImages = async function() {
 window.addEventListener('online', window.syncOfflineImages);
 
 // ============================================================================
-// 🔌 8. الإقلاع السيادي (System Bootloader)
+// 📊 8. محركات رسم واجهات الإدارة (Admin UI Renderers)
+// ============================================================================
+window.updateAdminDashboardStatsUI = function() {
+    const totalOrders = window.globalOrders ? window.globalOrders.length : 0;
+    const pendingOrders = window.globalOrders ? window.globalOrders.filter(o => o.status === 'pending').length : 0;
+    const totalProducts = window.catalog ? window.catalog.length : 0;
+    const activeProducts = window.catalog ? window.catalog.filter(p => p.isActive !== false).length : 0;
+
+    const elTotalOrders = document.getElementById('stat-total-orders');
+    const elPendingOrders = document.getElementById('stat-pending-orders');
+    const elTotalProducts = document.getElementById('stat-total-products');
+    const elActiveProducts = document.getElementById('stat-active-products');
+
+    if(elTotalOrders) elTotalOrders.innerText = totalOrders;
+    if(elPendingOrders) elPendingOrders.innerText = pendingOrders;
+    if(elTotalProducts) elTotalProducts.innerText = totalProducts;
+    if(elActiveProducts) elActiveProducts.innerText = activeProducts;
+};
+
+window.renderAdminOverview = function() {
+    const recentList = document.getElementById('overview-recent-orders-list');
+    if(!recentList) return;
+
+    if(!window.globalOrders || window.globalOrders.length === 0) {
+        recentList.innerHTML = `<div style="text-align: center; padding: 25px; color: var(--text-muted); font-weight: 700;">لا توجد طلبات مسجلة حتى الآن.</div>`;
+        return;
+    }
+
+    const recent = [...window.globalOrders].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)).slice(0, 5);
+    
+    let html = '';
+    recent.forEach(order => {
+        const statusColor = order.status === 'pending' ? '#ff91a4' : (order.status === 'completed' ? '#2e7d32' : '#666666');
+        const statusText = order.status === 'pending' ? 'قيد الانتظار' : (order.status === 'completed' ? 'مكتمل' : 'مرفوض');
+        
+        html += `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 18px; border-bottom: 1px solid rgba(0,0,0,0.05);">
+            <div>
+                <h4 style="margin: 0; font-weight: 700; color: var(--text-main); font-size: 1.1rem;">طلب #${order.id || order.orderId}</h4>
+                <span style="font-size: 0.9rem; color: var(--text-muted);">${order.customerName || 'عميل'}</span>
+            </div>
+            <div style="text-align: left;">
+                <span style="display: inline-block; padding: 6px 12px; background: ${statusColor}15; color: ${statusColor}; border-radius: 8px; font-size: 0.85rem; font-weight: 700;">${statusText}</span>
+                <div style="font-weight: 700; margin-top: 8px; color: var(--text-main); font-size: 1.1rem;">${order.total} ج.م</div>
+            </div>
+        </div>`;
+    });
+    recentList.innerHTML = html;
+};
+
+window.renderAdminCategories = function() {
+    const catList = document.getElementById('admin-categories-list');
+    if(!catList) return;
+    
+    if(!window.catMenu || window.catMenu.length === 0) {
+        catList.innerHTML = `<p style="color: var(--text-muted); text-align: center; font-weight: 700;">لم يتم إضافة أقسام بعد.</p>`;
+        return;
+    }
+
+    let html = '';
+    window.catMenu.forEach(cat => {
+        html += `<div style="padding: 15px; background: #ffffff; border: 1px solid rgba(255,145,164,0.2); border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.02);">
+            <span style="font-weight: 700; color: var(--text-main); font-size: 1.05rem;">${cat.name}</span>
+            <span style="color: var(--primary-pink); font-size: 0.9rem; font-weight: 700; background: rgba(255,145,164,0.1); padding: 5px 12px; border-radius: 6px;">ترتيب: ${cat.order}</span>
+        </div>`;
+    });
+    catList.innerHTML = html;
+};
+
+window.fillAdminSettingsForm = function() {
+    const storeNameInput = document.getElementById('setting-store-name');
+    const deliveryFeeInput = document.getElementById('setting-delivery-fee');
+    
+    if(window.siteSettings) {
+        if(storeNameInput) storeNameInput.value = window.siteSettings.storeName || 'حلويات بوسي';
+        if(deliveryFeeInput) deliveryFeeInput.value = window.siteSettings.defaultDeliveryFee || 0;
+    }
+};
+
+// ============================================================================
+// 🔌 9. الإقلاع السيادي (System Bootloader)
 // ============================================================================
 window.bootBoseSweetsEngine = function() {
     if (window.__BoseSweetsAdminBooted) return; 
@@ -591,7 +721,6 @@ window.bootBoseSweetsEngine = function() {
     console.log("👑 BoseSweets Admin: Initiating Sovereign Brain...");
     window.unfreezeAdminUI();
     
-    // تهيئة محرك التنقل الديناميكي
     window.BoseAdminRouter = new AdminRouter();
 
     if(boseConfig.auth) {
@@ -600,7 +729,6 @@ window.bootBoseSweetsEngine = function() {
                 await window.loadEngineMemory(); 
                 window.syncOfflineImages(); 
                 
-                // البحث اللحظي
                 const searchCatalogInput = document.getElementById('admin-search-catalog');
                 if(searchCatalogInput) {
                     searchCatalogInput.addEventListener('input', (e) => {

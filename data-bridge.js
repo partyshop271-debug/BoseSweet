@@ -1,11 +1,12 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Data Bridge | جسر البيانات السيادي (V29.0 - Sovereign Integration)
+ * 👑 BoseSweets Data Bridge | جسر البيانات السيادي (V30.0 - Sovereign Integration)
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي التجارية
  * الحالة الفنية: مراجعة شاملة | تحليل ثغرات | توافقية كاملة
  * الوظيفة: المحرك الرسمي والوحيد لنقل وتوطين البيانات بين Firestore والذاكرة المركزية.
- * التوافق: متوافق كلياً مع (core-engine.js) وأنظمة العرض على الموبايل والكمبيوتر.
+ * التعديل: تأمين مستشعر (secureOrderBackup) بتقنية (Atomic Write) وتصحيح مسارات الصور.
+ * التوافقية: مصمم للعمل بتناغم مع (ui-logic.js) و (core-engine.js).
  * ============================================================================
  */
 
@@ -23,7 +24,7 @@ import {
 import { db } from './firebase-config.js';
 import coreExports from './core-engine.js';
 
-// استخراج المراجع السيادية من النواة المركزية
+// استخراج المراجع السيادية من النواة المركزية لضمان وحدة المصدر
 const { boseConfig, BoseState } = coreExports;
 const syncCatalogMap = window.syncCatalogMap;
 const saveToLocalMemory = window.saveToLocalMemory;
@@ -113,7 +114,7 @@ export async function fetchShippingZones() {
 }
 
 /**
- * 3. جلب كتالوج المنتجات وتدشين الفهرسة الشاملة
+ * 3. جلب كتالوج المنتجات وتدشين الفهرسة الشاملة مع المعالجة الاستباقية للصور
  */
 export async function fetchProductsCatalog() {
     try {
@@ -124,7 +125,16 @@ export async function fetchProductsCatalog() {
         if (snapshot.empty) throw new Error("Cloud catalog is empty");
 
         const products = [];
-        snapshot.forEach(d => products.push({ id: d.id, ...d.data() }));
+        snapshot.forEach(d => {
+            let productData = d.data();
+            
+            // بروتوكول المعالجة الاستباقية (Error Handling) لصور المنتجات وتصحيح المسارات
+            if (!productData.img && !productData.image && (!productData.images || productData.images.length === 0)) {
+                productData.img = BOSE_LOGO_FALLBACK;
+            }
+
+            products.push({ id: d.id, ...productData });
+        });
 
         BoseState.catalog.length = 0;
         BoseState.catalog.push(...products);
@@ -151,16 +161,16 @@ export async function fetchProductsCatalog() {
  * 👑 المنسق المركزي: تفعيل الجسر وإطلاق إشارة الجاهزية القصوى
  */
 export async function initializeDataBridge() {
-    console.log("👑 Data Bridge V29: بدء تدفق البيانات السيادية...");
+    console.log("👑 Data Bridge V30: بدء تدفق البيانات السيادية...");
     
-    // تنفيذ الجلب المتوازي لسرعة الاستجابة
+    // تنفيذ الجلب المتوازي لسرعة الاستجابة تحت بروتوكول BoseSweets الفني
     await Promise.all([
         fetchSystemSettings(),
         fetchShippingZones(),
         fetchProductsCatalog()
     ]);
 
-    // معالجة تصنيفات القائمة بناءً على التوافر الفعلي
+    // معالجة تصنيفات القائمة بناءً على التوافر الفعلي لضمان تجربة مستخدم خالية من الأخطاء
     const uniqueCats = [...new Set(BoseState.catalog.map(p => p.category))].filter(Boolean);
     BoseState.catMenu.length = 0;
     
@@ -183,20 +193,28 @@ window.initializeDataBridge = initializeDataBridge;
 export function listenToSovereignUpdates() {
     if (!db) return;
 
-    // مزامنة الكتالوج اللحظية
+    // مزامنة الكتالوج اللحظية لضمان تحديث الأسعار والتوفر فوراً لدى العميل
     onSnapshot(query(collection(db, 'catalog'), where('isActive', '==', true)), (snap) => {
         const products = [];
-        snap.forEach(d => products.push({ id: d.id, ...d.data() }));
+        snap.forEach(d => {
+            let productData = d.data();
+            if (!productData.img && !productData.image && (!productData.images || productData.images.length === 0)) {
+                productData.img = BOSE_LOGO_FALLBACK;
+            }
+            products.push({ id: d.id, ...productData });
+        });
+        
         BoseState.catalog.length = 0;
         BoseState.catalog.push(...products);
         if (typeof syncCatalogMap === 'function') syncCatalogMap();
         saveToLocalMemory('bosesweets_catalog', products);
         
         window.dispatchEvent(new Event('catalogDataReady'));
+        // استدعاء محرك التوزيع السيادي لتحديث الواجهة تلقائياً
         if (window.distributeProductsToUI) window.distributeProductsToUI(BoseState.catalog);
     });
 
-    // مزامنة الإعدادات اللحظية (الهوية البصرية)
+    // مزامنة الإعدادات اللحظية لضمان استجابة الهوية البصرية (اللون الوردي والأبيض) لأي تعديل إداري
     onSnapshot(doc(db, 'settings', 'main'), (snap) => {
         if (snap.exists()) {
             Object.assign(BoseState.siteSettings, snap.data());
@@ -207,23 +225,53 @@ export function listenToSovereignUpdates() {
 window.listenToSovereignUpdates = listenToSovereignUpdates;
 
 // ============================================================================
-// 🛡️ مستشعر تأمين الطلبات (The Vault)
+// 🛡️ مستشعر تأمين الطلبات (The Vault - V30.0 Atomic Write)
 // ============================================================================
+/**
+ * الإجراء الهندسي: تطبيق تقنية (Atomic Write) وتوثيق الإشارات السيادية.
+ * تم تدعيم هذا المستشعر ليعمل كحلقة وصل قطعية بين عملية الدفع وتوثيق البيانات.
+ */
 window.addEventListener('secureOrderBackup', async (e) => {
     const orderData = e.detail;
+    
+    // تحليل البنية الهيكلية لضمان عدم وجود ثغرات في البيانات الصادرة
+    if (!orderData || !orderData.orderId) {
+        console.error("🔒 ثغرة أمنية: تم رصد محاولة نسخ احتياطي لطلب غير مكتمل الهوية.");
+        window.dispatchEvent(new CustomEvent('BoseSweets_Order_Backup_Failed', { detail: { reason: 'Missing Order ID' } }));
+        return;
+    }
+
     try {
-        if (db && orderData?.orderId) {
-            await setDoc(doc(db, 'orders', orderData.orderId), orderData);
-            console.log(`✅ BoseSweets Guard: تم توثيق الطلب [${orderData.orderId}] سحابياً.`);
+        if (db) {
+            // توطين البيانات في السحابة مع تقنية المزامنة القسرية (Merge Integration)
+            await setDoc(doc(db, 'orders', String(orderData.orderId)), {
+                ...orderData,
+                backupTimestamp: Date.now(),
+                engineVersion: 'V30.0_Sovereign_Atomic',
+                securityStatus: 'Secured'
+            }, { merge: true });
+
+            console.log(`✅ BoseSweets Vault: تم تأمين الطلب رقم [${orderData.orderId}] بنجاح سيادي.`);
+            
+            // إطلاق إشارة التوثيق الناجحة (Atomic Write Confirmation) لتفريغ السلة بأمان
+            window.dispatchEvent(new CustomEvent('BoseSweets_Order_Secured', { 
+                detail: { orderId: orderData.orderId } 
+            }));
         }
     } catch (error) {
-        console.error("⚠️ فشل التوثيق السحابي، الاعتماد على النسخ الاحتياطي المحلي.");
+        if (window.BoseMonitor) window.BoseMonitor.report(error, 'data-bridge.js', null, null, 'secureOrderBackup - Storage Failure');
+        console.error("⚠️ فشل التوثيق السحابي للطلب، سيتم الاعتماد على محرك المزامنة العكسية التلقائي.");
+        window.dispatchEvent(new CustomEvent('BoseSweets_Order_Backup_Failed', { detail: { reason: 'Cloud Storage Error', error: error } }));
     }
 });
 
 // ============================================================================
 // 👑 محرك العرض البصري (Royal Product Renderer)
 // ============================================================================
+/**
+ * تم الحفاظ على الدوال وتطويرها هندسياً لتتوافق مع (ui-logic.js)
+ * مع تشديد الرقابة على الهوية البصرية والرموز التعبيرية المعتمدة.
+ */
 export function renderProductCards(products, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -233,14 +281,21 @@ export function renderProductCards(products, containerId) {
         return;
     }
 
-    const pinkColor = "#ff91a4";
+    // الألوان الملكية المعتمدة من إدارة حلويات بوسي
+    const pinkColor = "#ff91a4"; 
     const whiteColor = "#ffffff";
     const darkColor = "#1a1a1a";
 
     container.innerHTML = products.map(p => {
         const isOutOfStock = p.inStock === false || p.status === 'غير متاح';
+        
+        // تصحيح هندسي لمسارات الصور وضمان جلبها من Cloudinary أو الـ Fallback
         const rawImg = p.img || p.image || (p.images?.[0]) || BOSE_LOGO_FALLBACK;
-        const finalImgUrl = rawImg.startsWith('http') ? rawImg : `${boseConfig.cloudinary.baseDeliveryUrl}/${rawImg.replace(/^\//, '')}`;
+        let finalImgUrl = rawImg;
+        
+        if (!rawImg.startsWith('http') && boseConfig.cloudinary && boseConfig.cloudinary.baseDeliveryUrl) {
+            finalImgUrl = `${boseConfig.cloudinary.baseDeliveryUrl}/${rawImg.replace(/^\//, '')}`;
+        }
         
         const badgeHtml = p.badge ? `
             <div style="position: absolute; top: 15px; right: 15px; z-index: 10; background: ${whiteColor}; color: ${pinkColor}; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 900; border: 2px solid ${pinkColor}; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
@@ -287,13 +342,13 @@ export function renderProductCards(products, containerId) {
 window.renderProductCards = renderProductCards;
 
 /**
- * توزيع المنتجات على واجهات الموقع المختلفة
+ * توزيع المنتجات على واجهات الموقع المختلفة (توزيع سيادي)
  */
 export function distributeProductsToUI(products = BoseState.catalog) {
     const containers = {
         'new-arrivals-container': p => p.isNew || p.badge?.includes('جديد') || p.badge?.includes('🌟'),
         'best-sellers-container': p => p.isBestSeller || p.badge?.includes('مبيعاً') || p.badge?.includes('🔥'),
-        'menuGrid': () => true // الفلترة تتم برمجياً داخل قسم المنيو
+        'menuGrid': () => true 
     };
 
     Object.entries(containers).forEach(([id, filterFn]) => {
@@ -306,6 +361,7 @@ export function distributeProductsToUI(products = BoseState.catalog) {
             renderProductCards(filtered, id);
         } else {
             const filtered = products.filter(filterFn);
+            // في حالة عدم وجود منتجات مطابقة للفلتر، يتم عرض أول 4 منتجات لضمان عدم فراغ الواجهة
             renderProductCards(filtered.length > 0 ? filtered : products.slice(0, 4), id);
         }
     });
