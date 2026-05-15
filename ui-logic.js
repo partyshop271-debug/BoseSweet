@@ -1,10 +1,13 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Sovereign UI Logic Engine | المحرك البصري السيادي (V30.1)
+ * 👑 BoseSweets Sovereign UI Logic Engine | المحرك البصري السيادي (V30.3)
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الوظيفة: التنفيذ الحرفي للدستور البرمجي والهندسي الشامل لضمان تجربة مستخدم فاخرة.
- * التعديل: استضافة دوال الرسم المركزية المنقولة من جسر البيانات لضمان فصل الاختصاصات.
+ * التعديل الحالي (V30.3): 
+ * 1. الربط الصارم مع كلاسات CSS السيادية (.active) وإلغاء الاعتمادية على Tailwind في الحركة.
+ * 2. إضافة صمامات أمان لمحركات الرسم (DOM Readiness Check) لمنع التكدس والأخطاء.
+ * التوافقية: يعمل بتناغم مطلق مع (data-bridge.js) و (core-engine.js) و (style.css).
  * ============================================================================
  */
 
@@ -144,15 +147,19 @@ export const renderTicker = function() {
 
 /**
  * 👑 محرك كروت المنتجات الملكي (Royal Product Renderer)
- * الإجراء: تم نقل هذه الدالة من data-bridge وتطويرها هندسياً.
- * الوظيفة: رسم الكروت بأسلوب بوسي الحصري مع معالجة الصور الطبيعية.
+ * التعديل الهندسي (V30.3): إضافة صمام أمان للتحقق من وجود الحاوية (Container) قبل المعالجة.
  */
-export function renderProductCards(products, containerId) {
+export function renderProductCards(products, containerId, config = {}) {
+    // صمام الأمان: التحقق من وجود الحاوية في شجرة الـ DOM
     const container = document.getElementById(containerId);
-    if (!container) return;
+    if (!container) {
+        console.warn(`👑 UI Engine: تعذر العثور على حاوية الرسم [${containerId}]. تم إيقاف عملية الرسم مؤقتاً لحين بناء الصفحة.`);
+        return;
+    }
 
     if (!products || products.length === 0) {
-        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; font-weight: bold; opacity: 0.6; padding: 40px;">نجهز لحضرتك أصنافاً جديدة فاخرة.. انتظرونا ✨</p>`;
+        const emptyMsg = config.emptyMsg || "نجهز لحضرتك أصنافاً جديدة فاخرة.. انتظرونا ✨";
+        container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; font-weight: bold; opacity: 0.6; padding: 40px;">${emptyMsg}</p>`;
         return;
     }
 
@@ -171,7 +178,7 @@ export function renderProductCards(products, containerId) {
             </div>` : '';
 
         return `
-        <div class="royal-card flex flex-col p-4 relative" style="background: ${whiteColor}; min-height: 420px; border-radius: 2rem; box-shadow: 0 15px 35px rgba(0,0,0,0.03);">
+        <div class="royal-card flex flex-col p-4 relative animate-fade-in" style="background: ${whiteColor}; min-height: 420px; border-radius: 2rem; box-shadow: 0 15px 35px rgba(0,0,0,0.03);">
             ${badgeHtml}
             <div class="w-full aspect-square overflow-hidden rounded-[1.5rem] relative mb-4 cursor-pointer" onclick="window.navigateToProduct('${p.id}')">
                 <img src="${finalImgUrl}" 
@@ -210,9 +217,16 @@ export function renderProductCards(products, containerId) {
 
 /**
  * 👑 محرك توزيع المنتجات السيادي (Distribution Engine)
- * الإجراء: تم نقله من data-bridge لتوحيد منطق العرض في مكان واحد.
+ * التعديل الهندسي (V30.3): تأجيل الرسم (Defer Rendering) إذا لم يكتمل بناء الصفحة.
  */
 export function distributeProductsToUI(products = BoseState.catalog) {
+    // صمام الأمان: منع محاولة الرسم إذا لم يكن هيكل الصفحة جاهزاً بالكامل لتفادي الأخطاء.
+    if (document.readyState === 'loading') {
+        console.log("👑 UI Engine: تم تأجيل محرك التوزيع لحين اكتمال البناء الهيكلي للصفحة.");
+        document.addEventListener('DOMContentLoaded', () => distributeProductsToUI(products), { once: true });
+        return;
+    }
+
     const containers = {
         'new-arrivals-container': p => p.isNew || p.badge?.includes('جديد') || p.badge?.includes('🌟'),
         'best-sellers-container': p => p.isBestSeller || p.badge?.includes('مبيعاً') || p.badge?.includes('🔥'),
@@ -226,13 +240,24 @@ export function distributeProductsToUI(products = BoseState.catalog) {
         if (id === 'menuGrid') {
             const activeCat = document.querySelector('.category-item.active')?.dataset.category || 'all';
             const filtered = activeCat === 'all' ? products : products.filter(p => p.category === activeCat);
-            renderProductCards(filtered, id);
+            renderProductCards(filtered, id, { emptyMsg: "نعتذر لحضرتك، لا توجد أصناف متاحة في هذا القسم حالياً." });
         } else {
             const filtered = products.filter(filterFn);
             renderProductCards(filtered.length > 0 ? filtered : products.slice(0, 4), id);
         }
     });
 }
+
+/**
+ * 👑 صمام الأمان لإعادة الرسم التلقائي (Auto Re-render Trigger)
+ */
+window.addEventListener('BoseSweets_Catalog_Updated', () => {
+    console.log("👑 UI Engine: تم رصد تحديث في الكتالوج، جاري إعادة الرسم التلقائي...");
+    // استخدام requestAnimationFrame لضمان سلاسة الأداء أثناء إعادة الرسم
+    requestAnimationFrame(() => {
+        distributeProductsToUI(BoseState.catalog);
+    });
+});
 
 export const getGridLayoutConfig = function(category) {
     const twoColsCategories = ['الديسباسيتو', 'القشطوطة', 'كبات السعادة', 'الدوناتس', 'السينابون'];
@@ -554,7 +579,7 @@ export const validateAndCommitCakeBuilder = function() {
         const notes = BoseState.cakeState.healthNotes || '';
         if (!notes.trim()) {
             if(typeof window.showSystemToast === 'function') {
-                window.showSystemToast("القرار المهني يقتضي التأكد من سلامتكم أولاً. يرجى ملء حقل الملاحظات الصحية لحضرتك.", "error");
+                window.showSystemToast("القرار المهني يقتضي التأكد من سلامتكم أولاً. يرجى ملء حقل الملاحظات الصحية لحضرتكم.", "error");
             }
             const noteInput = document.getElementById('cake-health-notes');
             if(noteInput) {
@@ -685,7 +710,7 @@ export const toggleDeliveryOptions = function(type) {
 };
 
 // ============================================================================
-// 🖱️ القسم الخامس: التفاعلات والعمليات المنطقية (UI Interactions)
+// 👑 القسم الخامس: التفاعلات والعمليات المنطقية (UI Interactions)
 // ============================================================================
 
 export const updateTempQtyContext = function(btnElement, delta) {
@@ -707,24 +732,33 @@ export const updateTempQtyContext = function(btnElement, delta) {
     }
 };
 
+/**
+ * 👑 محرك تشغيل القائمة الجانبية
+ * التعديل الهندسي (V30.3): إحلال نظام Tailwind المتغير والاعتماد الكامل على الكلاس السيادي (.active).
+ */
 export const toggleCustomerMenu = function() {
     try {
         const menu = document.getElementById('side-menu') || document.getElementById('mobile-sidebar-menu');
         const overlay = document.getElementById('menu-overlay') || document.getElementById('mobile-sidebar-overlay');
-        if (!menu || !overlay) return;
+        
+        // صمام الأمان: التأكد من وجود العناصر قبل التعديل عليها
+        if (!menu || !overlay) {
+            console.warn("👑 UI Engine: الحاويات الجانبية غير متوفرة في الـ DOM حالياً.");
+            return;
+        }
 
-        if (menu.classList.contains('translate-x-full')) {
-            menu.classList.remove('translate-x-full');
-            overlay.classList.remove('hidden', 'pointer-events-none');
-            overlay.style.opacity = '1';
+        // الاعتماد الكلي على الكلاس (.active) المبرمج في style.css
+        if (menu.classList.contains('active')) {
+            // إغلاق القائمة
+            menu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        } else {
+            // فتح القائمة
+            menu.classList.add('active');
+            overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
             renderCustomerSidebarCategories();
-        } else {
-            menu.classList.add('translate-x-full');
-            overlay.style.opacity = '0';
-            overlay.classList.add('pointer-events-none');
-            setTimeout(() => overlay.classList.add('hidden'), 300);
-            document.body.style.overflow = '';
         }
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-logic.js', null, null, 'toggleCustomerMenu');
@@ -847,11 +881,8 @@ if (typeof window !== 'undefined') {
         window.getFinalDescription = getFinalDescription;
         window.applySettingsToUI = applySettingsToUI;
         window.renderTicker = renderTicker;
-        
-        // ربط الدوال الجديدة (المنقولة)
         window.renderProductCards = renderProductCards;
         window.distributeProductsToUI = distributeProductsToUI;
-        
         window.getGridLayoutConfig = getGridLayoutConfig;
         window.showProductDetails = showProductDetails;
         window.navigateToProduct = navigateToProduct;
@@ -859,11 +890,9 @@ if (typeof window !== 'undefined') {
         window.renderMultiStepCakeBuilder = renderMultiStepCakeBuilder;
         window.updateCakeBuilderField = updateCakeBuilderField;
         window.adjustBuilderPersons = adjustBuilderPersons;
-        
         window.validateAndCommitCakeBuilder = validateAndCommitCakeBuilder;
         window.renderCustomerSidebarCategories = renderCustomerSidebarCategories;
         window.renderCustomerGallery = renderCustomerGallery;
-        
         window.renderCheckoutForm = renderCheckoutForm;
         window.toggleDeliveryOptions = toggleDeliveryOptions;
         window.updateTempQtyContext = updateTempQtyContext;
@@ -873,7 +902,7 @@ if (typeof window !== 'undefined') {
         window.initMasterySlider = initMasterySlider;
         window.initDynamicSections = initDynamicSections;
         
-        console.log("👑 BoseSweets Engine: تم تفعيل المحرك البصري السيادي (UI Logic V30.1) بنجاح وربطه بالذاكرة المركزية بالكامل.");
+        console.log("👑 BoseSweets Engine: تم تفعيل المحرك البصري السيادي المحدث (UI Logic V30.3) بنجاح.");
     } catch (error) {
         if(window.BoseMonitor) window.BoseMonitor.report(error, 'ui-logic.js', null, null, 'Final Global Bindings');
     }
