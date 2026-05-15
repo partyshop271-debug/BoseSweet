@@ -434,8 +434,10 @@ export async function fetchShippingZones() {
  */
 export async function fetchProductsCatalog() {
     try {
-        const q = query(collection(db, 'catalog'), where('isActive', '==', true));
+        // تم إزالة شرط (isActive) لسحب الكتالوج بالكامل
+        const q = query(collection(db, 'catalog'));
         const snapshot = await getDocs(q);
+        
         const products = snapshot.docs.map(d => {
             const raw = d.data();
             return {
@@ -445,12 +447,17 @@ export async function fetchProductsCatalog() {
                 category: raw.category || "عام",
                 img: raw.img || raw.image || "",
                 inStock: raw.inStock !== false,
-                ...raw // الحفاظ على كافة الحقول الأخرى
+                ...raw 
             };
         });
-        BoseState.catalog = products; syncCatalogMap(); saveToLocalMemory('bosesweets_catalog', products);
+
+        BoseState.catalog = products; 
+        syncCatalogMap(); 
+        saveToLocalMemory('bosesweets_catalog', products);
         return products;
+
     } catch (e) { 
+        console.error("خطأ في جلب البيانات:", e);
         BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || []; 
         syncCatalogMap(); 
         return BoseState.catalog; 
