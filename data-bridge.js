@@ -1,12 +1,14 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Data Bridge | جسر البيانات السيادي (V30.0 - Sovereign Integration)
+ * 👑 BoseSweets Data Bridge | جسر البيانات السيادي (V30.5 - Emergency Recovery)
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي التجارية
- * الحالة الفنية: مراجعة شاملة | تحليل ثغرات | توافقية كاملة
+ * الحالة الفنية: إصلاح شامل | فك حالة التجمد | تفعيل المزامنة المستقلة
  * الوظيفة: المحرك الرسمي والوحيد لنقل وتوطين البيانات بين Firestore والذاكرة المركزية.
- * التعديل: تأمين مستشعر (secureOrderBackup) بتقنية (Atomic Write) وتصحيح مسارات الصور.
- * التوافقية: مصمم للعمل بتناغم مع (ui-logic.js) و (core-engine.js).
+ * التعديل الحالي (V30.5): 
+ * 1. فصل العمليات البرمجية لضمان عدم تأثر الموقع بتأخر استجابة السحابة.
+ * 2. إضافة صمام أمان "الجاهزية الإجبارية" (Forced Ready) لفك تجميد الواجهة.
+ * 3. تفعيل البيانات الاحتياطية (Fallbacks) فوراً في حال مسح الكاش أو ضعف الشبكة.
  * ============================================================================
  */
 
@@ -52,15 +54,15 @@ export const defaultSettingsFallback = {
 };
 
 export const defaultShippingFallback = [
-    { id: 'sh_1', name: 'الكفاح (داخل القرية)', fee: 0 }, 
-    { id: 'sh_2', name: 'مركز الفرافرة', fee: 20 }, 
+    { id: 'sh_1', name: 'الكفاح (داخل القرية)', fee: 10 }, 
+    { id: 'sh_2', name: 'مركز الفرافرة', fee: 25 }, 
     { id: 'sh_3', name: 'النهضة', fee: 30 },
     { id: 'sh_4', name: 'أبو منقار', fee: 50 }
 ];
 
 export const defaultCatalogFallback = [
-    { id: 'dp_nutella', name: 'ديسباسيتو نوتيلا', category: 'ديسباسيتو', desc: 'فادج كيك غني يعلوه صوص نوتيلا أصلي مع توازن مثالي للنكهات.', price: 73, size: 'مثلث', img: BOSE_LOGO_FALLBACK, badge: 'الأكثر مبيعاً 🔥', inStock: true, isActive: true },
-    { id: 'cn_classic', name: 'سينابون كلاسيك', category: 'سينابون', desc: 'عجينة خميرة قطنية محضرة يدوياً بصوص الجبن الكريمي المخصوص.', price: 50, size: 'قطعة', img: BOSE_LOGO_FALLBACK, badge: 'وصل حديثاً 🌟', inStock: true, isActive: true }
+    { id: 'dp_nutella', name: 'ديسباسيتو نوتيلا', category: 'ديسباسيتو', description: 'فادج كيك غني يعلوه صوص نوتيلا أصلي مع توازن مثالي للنكهات.', price: 75, size: 'مثلث', image: BOSE_LOGO_FALLBACK, badge: 'الأكثر مبيعاً 🔥', inStock: true, isActive: true },
+    { id: 'cn_classic', name: 'سينابون كلاسيك', category: 'سينابون', description: 'عجينة خميرة قطنية محضرة يدوياً بصوص الجبن الكريمي المخصوص.', price: 50, size: 'قطعة', image: BOSE_LOGO_FALLBACK, badge: 'وصل حديثاً 🌟', inStock: true, isActive: true }
 ];
 
 // ============================================================================
@@ -109,12 +111,13 @@ export async function fetchShippingZones() {
         console.warn("🛡️ BoseSweets Guard: استخدام قاعدة بيانات الشحن الاحتياطية.");
         const local = getFromLocalMemory('bosesweets_shipping');
         BoseState.shippingZones.length = 0;
-        BoseState.shippingZones.push(...(local && local.length > 0 ? local : defaultShippingFallback));
+        const fallbackData = (local && local.length > 0) ? local : defaultShippingFallback;
+        BoseState.shippingZones.push(...fallbackData);
     }
 }
 
 /**
- * 3. جلب كتالوج المنتجات وتدشين الفهرسة الشاملة مع المعالجة الاستباقية للصور
+ * 3. جلب كتالوج المنتجات وتدشين الفهرسة الشاملة
  */
 export async function fetchProductsCatalog() {
     try {
@@ -127,12 +130,8 @@ export async function fetchProductsCatalog() {
         const products = [];
         snapshot.forEach(d => {
             let productData = d.data();
-            
-            // بروتوكول المعالجة الاستباقية (Error Handling) لصور المنتجات وتصحيح المسارات
-            if (!productData.img && !productData.image && (!productData.images || productData.images.length === 0)) {
-                productData.img = BOSE_LOGO_FALLBACK;
-            }
-
+            // توحيد مرجع الصورة لضمان الظهور الفوري
+            if (!productData.image && !productData.img) productData.image = BOSE_LOGO_FALLBACK;
             products.push({ id: d.id, ...productData });
         });
 
@@ -150,7 +149,8 @@ export async function fetchProductsCatalog() {
         
         const local = getFromLocalMemory('bosesweets_catalog');
         BoseState.catalog.length = 0;
-        BoseState.catalog.push(...(local && local.length > 0 ? local : defaultCatalogFallback));
+        const fallbackData = (local && local.length > 0) ? local : defaultCatalogFallback;
+        BoseState.catalog.push(...fallbackData);
         
         if (typeof syncCatalogMap === 'function') syncCatalogMap();
         return BoseState.catalog;
@@ -159,30 +159,46 @@ export async function fetchProductsCatalog() {
 
 /**
  * 👑 المنسق المركزي: تفعيل الجسر وإطلاق إشارة الجاهزية القصوى
+ * تم التعديل لمنع "التجمد اللانهائي" عبر استخدام try/catch مستقل لكل عملية.
  */
 export async function initializeDataBridge() {
-    console.log("👑 Data Bridge V30: بدء تدفق البيانات السيادية...");
-    
-    // تنفيذ الجلب المتوازي لسرعة الاستجابة تحت بروتوكول BoseSweets الفني
-    await Promise.all([
-        fetchSystemSettings(),
-        fetchShippingZones(),
-        fetchProductsCatalog()
-    ]);
+    if (window.__BoseBridgeInitialized) return;
+    window.__BoseBridgeInitialized = true;
 
-    // معالجة تصنيفات القائمة بناءً على التوافر الفعلي لضمان تجربة مستخدم خالية من الأخطاء
-    const uniqueCats = [...new Set(BoseState.catalog.map(p => p.category))].filter(Boolean);
-    BoseState.catMenu.length = 0;
+    console.log("👑 Data Bridge V30.5: بدء تدفق البيانات السيادية فائق السرعة...");
     
-    if (BoseState.siteSettings.catMenu && BoseState.siteSettings.catMenu.length > 0) {
-        BoseState.catMenu.push(...BoseState.siteSettings.catMenu.map(c => c.name || c));
-    } else {
-        const priority = ['الرئيسية', 'تورت', 'ورد'];
-        priority.forEach(c => BoseState.catMenu.push(c));
-        uniqueCats.forEach(c => { if (!priority.includes(c)) BoseState.catMenu.push(c); });
+    // تنفيذ العمليات بشكل يضمن عدم توقف المحرك في حال فشل إحداها
+    const operations = [
+        fetchSystemSettings().catch(e => console.error("Bridge Fail: Settings", e)),
+        fetchShippingZones().catch(e => console.error("Bridge Fail: Shipping", e)),
+        fetchProductsCatalog().catch(e => console.error("Bridge Fail: Catalog", e))
+    ];
+
+    await Promise.all(operations);
+
+    // بناء قائمة الأقسام السيادية
+    try {
+        const uniqueCats = [...new Set(BoseState.catalog.map(p => p.category))].filter(Boolean);
+        BoseState.catMenu.length = 0;
+        
+        if (BoseState.siteSettings.catMenu && BoseState.siteSettings.catMenu.length > 0) {
+            BoseState.catMenu.push(...BoseState.siteSettings.catMenu.map(c => c.name || c));
+        } else {
+            const priority = ['الرئيسية', 'تورت', 'ورد'];
+            priority.forEach(c => BoseState.catMenu.push(c));
+            uniqueCats.forEach(c => { if (!priority.includes(c)) BoseState.catMenu.push(c); });
+        }
+    } catch (e) {
+        console.error("Bridge Fail: Menu Mapping", e);
     }
 
-    if (typeof setAppReady === 'function') setAppReady();
+    // 🛡️ صمام الأمان القاطع: إطلاق الجاهزية مهما كانت النتائج لفك تجميد الموقع للعميل
+    if (typeof setAppReady === 'function') {
+        setAppReady();
+    } else if (window.setAppReady) {
+        window.setAppReady();
+    }
+    
     window.dispatchEvent(new CustomEvent('catalogDataReady'));
 }
 window.initializeDataBridge = initializeDataBridge;
@@ -190,17 +206,20 @@ window.initializeDataBridge = initializeDataBridge;
 // ============================================================================
 // 👑 الاستماع اللحظي (Sovereign Real-time Sync)
 // ============================================================================
+let catalogUnsubscribe = null;
+let settingsUnsubscribe = null;
+
 export function listenToSovereignUpdates() {
     if (!db) return;
+    
+    if (catalogUnsubscribe) catalogUnsubscribe();
+    if (settingsUnsubscribe) settingsUnsubscribe();
 
-    // مزامنة الكتالوج اللحظية لضمان تحديث الأسعار والتوفر فوراً لدى العميل
-    onSnapshot(query(collection(db, 'catalog'), where('isActive', '==', true)), (snap) => {
+    catalogUnsubscribe = onSnapshot(query(collection(db, 'catalog'), where('isActive', '==', true)), (snap) => {
         const products = [];
         snap.forEach(d => {
             let productData = d.data();
-            if (!productData.img && !productData.image && (!productData.images || productData.images.length === 0)) {
-                productData.img = BOSE_LOGO_FALLBACK;
-            }
+            if (!productData.img && !productData.image) productData.image = BOSE_LOGO_FALLBACK;
             products.push({ id: d.id, ...productData });
         });
         
@@ -210,12 +229,10 @@ export function listenToSovereignUpdates() {
         saveToLocalMemory('bosesweets_catalog', products);
         
         window.dispatchEvent(new Event('catalogDataReady'));
-        // استدعاء محرك التوزيع السيادي لتحديث الواجهة تلقائياً
         if (window.distributeProductsToUI) window.distributeProductsToUI(BoseState.catalog);
     });
 
-    // مزامنة الإعدادات اللحظية لضمان استجابة الهوية البصرية (اللون الوردي والأبيض) لأي تعديل إداري
-    onSnapshot(doc(db, 'settings', 'main'), (snap) => {
+    settingsUnsubscribe = onSnapshot(doc(db, 'settings', 'main'), (snap) => {
         if (snap.exists()) {
             Object.assign(BoseState.siteSettings, snap.data());
             if (window.applySettingsToUI) window.applySettingsToUI();
@@ -225,53 +242,32 @@ export function listenToSovereignUpdates() {
 window.listenToSovereignUpdates = listenToSovereignUpdates;
 
 // ============================================================================
-// 🛡️ مستشعر تأمين الطلبات (The Vault - V30.0 Atomic Write)
+// 🛡️ مستشعر تأمين الطلبات (The Vault - Atomic Write)
 // ============================================================================
-/**
- * الإجراء الهندسي: تطبيق تقنية (Atomic Write) وتوثيق الإشارات السيادية.
- * تم تدعيم هذا المستشعر ليعمل كحلقة وصل قطعية بين عملية الدفع وتوثيق البيانات.
- */
 window.addEventListener('secureOrderBackup', async (e) => {
     const orderData = e.detail;
-    
-    // تحليل البنية الهيكلية لضمان عدم وجود ثغرات في البيانات الصادرة
-    if (!orderData || !orderData.orderId) {
-        console.error("🔒 ثغرة أمنية: تم رصد محاولة نسخ احتياطي لطلب غير مكتمل الهوية.");
-        window.dispatchEvent(new CustomEvent('BoseSweets_Order_Backup_Failed', { detail: { reason: 'Missing Order ID' } }));
-        return;
-    }
+    if (!orderData || !orderData.orderId) return;
 
     try {
         if (db) {
-            // توطين البيانات في السحابة مع تقنية المزامنة القسرية (Merge Integration)
             await setDoc(doc(db, 'orders', String(orderData.orderId)), {
                 ...orderData,
                 backupTimestamp: Date.now(),
-                engineVersion: 'V30.0_Sovereign_Atomic',
+                engineVersion: 'V30.5_Atomic',
                 securityStatus: 'Secured'
             }, { merge: true });
 
-            console.log(`✅ BoseSweets Vault: تم تأمين الطلب رقم [${orderData.orderId}] بنجاح سيادي.`);
-            
-            // إطلاق إشارة التوثيق الناجحة (Atomic Write Confirmation) لتفريغ السلة بأمان
-            window.dispatchEvent(new CustomEvent('BoseSweets_Order_Secured', { 
-                detail: { orderId: orderData.orderId } 
-            }));
+            console.log(`✅ BoseSweets Vault: تم تأمين الطلب رقم [${orderData.orderId}] بنجاح.`);
+            window.dispatchEvent(new CustomEvent('BoseSweets_Order_Secured', { detail: { orderId: orderData.orderId } }));
         }
     } catch (error) {
-        if (window.BoseMonitor) window.BoseMonitor.report(error, 'data-bridge.js', null, null, 'secureOrderBackup - Storage Failure');
-        console.error("⚠️ فشل التوثيق السحابي للطلب، سيتم الاعتماد على محرك المزامنة العكسية التلقائي.");
-        window.dispatchEvent(new CustomEvent('BoseSweets_Order_Backup_Failed', { detail: { reason: 'Cloud Storage Error', error: error } }));
+        if (window.BoseMonitor) window.BoseMonitor.report(error, 'data-bridge.js', null, null, 'secureOrderBackup');
     }
 });
 
 // ============================================================================
 // 👑 محرك العرض البصري (Royal Product Renderer)
 // ============================================================================
-/**
- * تم الحفاظ على الدوال وتطويرها هندسياً لتتوافق مع (ui-logic.js)
- * مع تشديد الرقابة على الهوية البصرية والرموز التعبيرية المعتمدة.
- */
 export function renderProductCards(products, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -281,56 +277,37 @@ export function renderProductCards(products, containerId) {
         return;
     }
 
-    // الألوان الملكية المعتمدة من إدارة حلويات بوسي
-    const pinkColor = "#ff91a4"; 
-    const whiteColor = "#ffffff";
-    const darkColor = "#1a1a1a";
-
     container.innerHTML = products.map(p => {
         const isOutOfStock = p.inStock === false || p.status === 'غير متاح';
-        
-        // تصحيح هندسي لمسارات الصور وضمان جلبها من Cloudinary أو الـ Fallback
-        const rawImg = p.img || p.image || (p.images?.[0]) || BOSE_LOGO_FALLBACK;
-        let finalImgUrl = rawImg;
-        
-        if (!rawImg.startsWith('http') && boseConfig.cloudinary && boseConfig.cloudinary.baseDeliveryUrl) {
-            finalImgUrl = `${boseConfig.cloudinary.baseDeliveryUrl}/${rawImg.replace(/^\//, '')}`;
-        }
+        const rawImg = p.image || p.img || BOSE_LOGO_FALLBACK;
+        let finalImgUrl = rawImg.startsWith('http') ? rawImg : `${boseConfig.cloudinary.baseDeliveryUrl}${rawImg.replace(/^\//, '')}`;
         
         const badgeHtml = p.badge ? `
-            <div style="position: absolute; top: 15px; right: 15px; z-index: 10; background: ${whiteColor}; color: ${pinkColor}; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 900; border: 2px solid ${pinkColor}; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+            <div style="position: absolute; top: 15px; right: 15px; z-index: 10; background: white; color: #ff91a4; padding: 4px 12px; border-radius: 12px; font-size: 0.75rem; font-weight: 900; border: 2px solid #ff91a4; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                 ${p.badge}
             </div>` : '';
 
         return `
-        <div class="royal-card flex flex-col p-4 relative" style="background: ${whiteColor}; min-height: 420px; border-radius: 2rem; box-shadow: 0 15px 35px rgba(0,0,0,0.03);">
+        <div class="royal-card flex flex-col p-4 relative" style="background: white; min-height: 420px; border-radius: 2rem; box-shadow: 0 15px 35px rgba(0,0,0,0.03);">
             ${badgeHtml}
             <div class="w-full aspect-square overflow-hidden rounded-[1.5rem] relative mb-4 cursor-pointer" onclick="window.navigateToProduct('${p.id}')">
-                <img src="${finalImgUrl}" 
-                     onerror="this.onerror=null; this.src='${BOSE_LOGO_FALLBACK}';" 
-                     class="w-full h-full object-cover transition-transform duration-700 hover:scale-110 ${isOutOfStock ? 'grayscale opacity-60' : ''}" 
-                     alt="${p.name} - حلويات بوسي" loading="lazy">
-                ${isOutOfStock ? `<div style="position: absolute; inset:0; background: rgba(255,255,255,0.5); display:flex; align-items:center; justify-content:center; backdrop-filter: blur(2px);"><span style="background: ${pinkColor}; color: ${whiteColor}; padding: 8px 20px; border-radius: 10px; font-weight: 900; border: 2px solid ${whiteColor};">نفدت مؤقتاً</span></div>` : ''}
+                <img src="${finalImgUrl}" onerror="this.src='${BOSE_LOGO_FALLBACK}';" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110 ${isOutOfStock ? 'grayscale opacity-60' : ''}" alt="${p.name}" loading="lazy">
+                ${isOutOfStock ? `<div style="position: absolute; inset:0; background: rgba(255,255,255,0.5); display:flex; align-items:center; justify-content:center; backdrop-filter: blur(2px);"><span style="background: #ff91a4; color: white; padding: 8px 20px; border-radius: 10px; font-weight: 900; border: 2px solid white;">نفدت مؤقتاً</span></div>` : ''}
             </div>
-
             <div class="flex flex-col flex-1 text-center justify-between">
                 <div>
-                    <h4 class="text-xl font-black" style="color: ${darkColor};">${p.name}</h4>
-                    <p class="text-xs font-bold opacity-70 mt-2 line-clamp-2" style="line-height: 1.6;">${p.desc || ''}</p>
+                    <h4 class="text-xl font-black" style="color: #1a1a1a;">${p.name}</h4>
+                    <p class="text-xs font-bold opacity-70 mt-2 line-clamp-2">${p.description || p.desc || ''}</p>
                 </div>
-
                 <div class="mt-4 pt-4" style="border-top: 1px dashed rgba(255,145,164,0.2);">
-                    <div class="font-black text-2xl mb-4" style="color: ${pinkColor};">${p.price} ج.م</div>
+                    <div class="font-black text-2xl mb-4" style="color: #ff91a4;">${p.price} ج.م</div>
                     <div class="flex items-center gap-2">
                         <div class="flex items-center gap-1 bg-gray-50 rounded-full p-1 border border-pink-50">
                             <button onclick="window.updateTempQtyContext(this, -1)" class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#ff91a4] border border-pink-100 font-black">-</button>
                             <span class="temp-qty-display font-black text-sm px-2" data-prod-id="${p.id}">1</span>
                             <button onclick="window.updateTempQtyContext(this, 1)" class="w-9 h-9 flex items-center justify-center rounded-full bg-white text-[#ff91a4] border border-pink-100 font-black">+</button>
                         </div>
-                        <button onclick="window.addWithQtyContext(this, '${p.id}')" 
-                                class="flex-1 py-3 rounded-full font-black text-white text-sm transition-all active:scale-95" 
-                                style="background: ${pinkColor}; box-shadow: 0 8px 20px rgba(255,145,164,0.2);"
-                                ${isOutOfStock ? 'disabled' : ''}>
+                        <button onclick="window.addWithQtyContext(this, '${p.id}')" class="flex-1 py-3 rounded-full font-black text-white text-sm transition-all active:scale-95" style="background: #ff91a4; box-shadow: 0 8px 20px rgba(255,145,164,0.2);" ${isOutOfStock ? 'disabled' : ''}>
                             ${isOutOfStock ? 'غير متوفر' : 'إضافة لطلب حضرتك 🛍️'}
                         </button>
                     </div>
@@ -342,7 +319,7 @@ export function renderProductCards(products, containerId) {
 window.renderProductCards = renderProductCards;
 
 /**
- * توزيع المنتجات على واجهات الموقع المختلفة (توزيع سيادي)
+ * توزيع المنتجات السيادي: تصفية المنتجات ورسمها في الحاويات المخصصة.
  */
 export function distributeProductsToUI(products = BoseState.catalog) {
     const containers = {
@@ -361,7 +338,6 @@ export function distributeProductsToUI(products = BoseState.catalog) {
             renderProductCards(filtered, id);
         } else {
             const filtered = products.filter(filterFn);
-            // في حالة عدم وجود منتجات مطابقة للفلتر، يتم عرض أول 4 منتجات لضمان عدم فراغ الواجهة
             renderProductCards(filtered.length > 0 ? filtered : products.slice(0, 4), id);
         }
     });
@@ -369,12 +345,19 @@ export function distributeProductsToUI(products = BoseState.catalog) {
 window.distributeProductsToUI = distributeProductsToUI;
 
 // ============================================================================
-// 🎬 التشغيل التلقائي السيادي
+// 🎬 الإقلاع السيادي (Master Bootloader)
 // ============================================================================
-document.addEventListener('DOMContentLoaded', () => {
+const startBridge = () => {
     const isNotAdmin = !window.location.pathname.includes('admin') && !document.title.includes('الإدارة');
     if (isNotAdmin) {
         initializeDataBridge();
         listenToSovereignUpdates();
     }
-});
+};
+
+// فحص الحالة قبل تفعيل المستمعات لضمان عدم حدوث تجمد في الواجهة
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    startBridge();
+} else {
+    document.addEventListener('DOMContentLoaded', startBridge);
+}
