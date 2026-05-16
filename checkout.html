@@ -9,7 +9,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,7 +22,7 @@
                     colors: { 
                         brand: { 
                             pink: '#ff91a4', 
-                            pinkLight: '#fffafb', 
+                            pinkLight: '#fff5f6', 
                             brown: '#3d241c', 
                             white: '#ffffff' 
                         } 
@@ -36,172 +36,285 @@
     </script>
     
     <style>
-        /* 🛡️ درع التحصين البصري - منع تجاوز وزن الخط 700 */
-        body { background-color: #fffafb; color: #3d241c; -webkit-tap-highlight-color: transparent; }
-        * { font-family: 'Cairo', sans-serif; }
-        .font-bold, h1, h2, h3, h4, .btn-solid, .ticker-item, .double-btn-inner { font-weight: 700 !important; }
-        .font-black, .font-extrabold { font-weight: 700 !important; } 
+        /* 🛡️ درع التحصين البصري واللوني الموحد */
+        body { background-color: #ffffff; color: #3d241c; -webkit-tap-highlight-color: transparent; font-family: 'Cairo', sans-serif; }
+        * { font-weight: 400; color: inherit; box-sizing: border-box; }
+        .font-bold, h1, h2, h3, h4, .btn-solid, .ticker-item { font-weight: 700 !important; }
+        .font-black { font-weight: 900 !important; } 
 
-        /* حسم عطل القائمة الجانبية (توحيد سيادي نقي بدون بني) */
+        /* الشريط المتحرك (Ticker) الموحد */
+        .ticker-wrap {
+            width: 100%; overflow: hidden; background-color: #ff91a4;
+            display: flex; direction: rtl; border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .ticker-scroll { display: flex; width: max-content; animation: seamlessTicker 40s linear infinite; }
+        .ticker-wrap:hover .ticker-scroll { animation-play-state: paused; }
+        .ticker-item { padding: 10px 40px; color: #ffffff !important; font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+        @keyframes seamlessTicker { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
+
+        /* القائمة الجانبية السيادية الموحدة */
         .sidebar {
             position: fixed !important; top: 0 !important; right: -100% !important; 
-            width: 320px !important; max-width: 85% !important; height: 100% !important;
+            width: 340px !important; max-width: 85% !important; height: 100% !important;
             z-index: 9999 !important; transition: right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
-            background: #ffffff !important; box-shadow: -15px 0 40px rgba(255, 145, 164, 0.15);
-            display: flex; flex-direction: column; border-left: 2px solid rgba(255, 145, 164, 0.1);
+            background: #ffffff !important; box-shadow: -20px 0 50px rgba(255, 145, 164, 0.2);
+            display: flex; flex-direction: column; overflow-y: auto; border-left: 2px solid rgba(255, 145, 164, 0.3);
         }
         .sidebar.active { right: 0 !important; }
         .sidebar-overlay {
-            position: fixed !important; inset: 0 !important; background: rgba(61, 36, 28, 0.5) !important;
-            backdrop-filter: blur(5px) !important; z-index: 9998 !important; display: none; opacity: 0;
+            position: fixed !important; inset: 0 !important; background: rgba(255, 145, 164, 0.8) !important;
+            backdrop-filter: blur(4px) !important; z-index: 9998 !important; display: none; opacity: 0;
             transition: opacity 0.4s ease;
         }
         .sidebar-overlay.active { display: block !important; opacity: 1 !important; }
+        details > summary { list-style: none; cursor: pointer; outline: none;}
+        details > summary::-webkit-details-marker { display: none; }
 
-        /* نموذج إتمام الطلب (Sovereign Form) */
+        /* الإطار المزدوج - هندسة المساحات الواسعة */
+        .bose-double-wrap {
+            background: #ffffff; border-radius: 40px; border: 2px solid #ff91a4; padding: 8px;
+            transition: all 0.4s ease; display: flex; flex-direction: column;
+            box-shadow: 0 10px 40px rgba(255, 145, 164, 0.08);
+        }
+        .bose-double-inner {
+            background: #ffffff; border-radius: 32px; border: 2px solid #ff91a4;
+            overflow: hidden; position: relative;
+        }
+
+        /* حقول الإدخال (الدرع البصري والمساحات الواسعة) */
         .form-input {
-            width: 100%; padding: 18px 20px;
-            border: 2px solid rgba(255, 145, 164, 0.2); border-radius: 20px;
-            font-family: inherit; font-weight: 700; color: #3d241c;
-            background: #fffafb; transition: all 0.3s ease; outline: none;
+            width: 100%; padding: 22px 26px;
+            border: 2px solid rgba(255, 145, 164, 0.3) !important; border-radius: 24px;
+            font-family: inherit; font-weight: 700; color: #3d241c !important; font-size: 1.1rem;
+            background: #ffffff !important; transition: all 0.3s ease; outline: none;
         }
-        .form-input:focus { border-color: #ff91a4; background: #ffffff; box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.1); }
-        .form-input::placeholder { color: rgba(61, 36, 28, 0.4); }
+        .form-input:focus { border-color: #ff91a4 !important; box-shadow: 0 0 0 5px rgba(255, 145, 164, 0.1); transform: translateY(-2px); }
+        .form-input::placeholder { color: rgba(61, 36, 28, 0.4) !important; font-weight: 700; }
+        select.form-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ff91a4'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: left 1.5rem center; background-size: 1.5em; }
 
+        /* أزرار طرق الاستلام */
         .delivery-btn {
-            border: 2px solid rgba(255, 145, 164, 0.2); border-radius: 20px;
-            padding: 20px; text-align: center; cursor: pointer;
-            transition: all 0.3s ease; background: #ffffff; font-weight: 700;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+            border: 2px solid rgba(255, 145, 164, 0.3); border-radius: 24px;
+            padding: 30px 20px; text-align: center; cursor: pointer;
+            transition: all 0.3s ease; background: #ffffff; font-weight: 700; font-size: 1.1rem;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;
         }
-        .delivery-btn.selected { border-color: #ff91a4; background: #ffe6ea; }
+        .delivery-btn:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(255,145,164,0.1); border-color: #ff91a4; }
+        .delivery-btn.selected { border-color: #ff91a4; background: #fff5f6; color: #ff91a4; box-shadow: 0 10px 25px rgba(255,145,164,0.2); }
+
+        /* النوافذ المنبثقة السيادية */
+        .bose-modal-overlay {
+            position: fixed; inset: 0; background: rgba(255, 145, 164, 0.85); backdrop-filter: blur(5px);
+            z-index: 10000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .bose-modal-overlay.active { display: flex; opacity: 1; }
+        .bose-modal-content {
+            background: #ffffff; border: 4px solid #ff91a4; border-radius: 40px; padding: 60px 40px;
+            width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 50px rgba(255, 145, 164, 0.3);
+            transform: scale(0.9); transition: transform 0.3s ease; position: relative;
+        }
+        .bose-modal-overlay.active .bose-modal-content { transform: scale(1); }
+
+        /* نافذة التنبيهات */
+        .bose-toast {
+            position: fixed; top: 90px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 420px; background: #ffffff; border: 2px solid #ff91a4; padding: 16px 24px;
+            border-radius: 20px; z-index: 10001; box-shadow: 0 15px 40px rgba(255, 145, 164, 0.2);
+            display: none; align-items: center; justify-content: center; gap: 15px;
+            font-weight: 700; color: #3d241c; text-align: center; line-height: 1.6; font-size: 1.1rem;
+            animation: slideDownToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .bose-toast i { flex-shrink: 0; }
+        @keyframes slideDownToast { from { top: -50px; opacity: 0; } to { top: 90px; opacity: 1; } }
 
         .spin-animation { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(-360deg); } }
-        .animate-fade { animation: fade 0.5s ease forwards; }
-        @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fade 0.6s ease forwards; }
+        @keyframes fade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-pink selection:text-white">
 
-    <!-- شريط الإشعارات -->
-    <div class="ticker-wrap w-full overflow-hidden bg-brand-pink text-white py-2 shadow-sm">
-        <div class="ticker-track whitespace-nowrap inline-flex gap-12" style="animation: ticker 25s linear infinite;">
-            <div class="font-bold text-sm tracking-wide">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
-            <div class="font-bold text-sm tracking-wide">توصيل آمن وسريع يضمن لك جودة المنتج</div>
-            <div class="font-bold text-sm tracking-wide">كل طلب بيتجهز مخصوص عشانك بكل إتقان</div>
+    <!-- نافذة الإشعارات السيادية الموحدة -->
+    <div id="bose-toast" class="bose-toast">
+        <i data-lucide="alert-circle" class="w-7 h-7 text-brand-pink"></i>
+        <span id="bose-toast-msg">تنبيه النظام</span>
+    </div>
+
+    <!-- نافذة النجاح الفاخرة (Post-Order Modal) -->
+    <div id="success-modal" class="bose-modal-overlay">
+        <div class="bose-modal-content">
+            <div class="w-32 h-32 bg-brand-pinkLight rounded-full flex items-center justify-center border-4 border-brand-pink mx-auto mb-8 shadow-inner">
+                <i data-lucide="check-circle" class="w-16 h-16 text-brand-pink"></i>
+            </div>
+            <h3 class="text-4xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تم استلام طلبك بنجاح</h3>
+            <p class="font-bold text-brand-brown/80 mb-8 text-xl">
+                رقم الطلب: <span id="success-order-id" class="text-brand-pink font-black px-2" dir="ltr"></span>
+            </p>
+            <div class="bg-brand-pinkLight py-5 px-6 rounded-2xl border border-brand-pink/20">
+                <p class="font-bold text-brand-brown/70 text-base">
+                    جاري توجيهك للصفحة الرئيسية لضمان استمرار التصفح... <span id="redirect-timer" class="text-brand-pink font-black text-lg mx-1">5</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- شريط الإشعارات العلوي المؤسسي الموحد -->
+    <div class="ticker-wrap shadow-sm">
+        <div class="ticker-scroll">
+            <div class="ticker-item">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
+            <div class="ticker-item">خبرة عشر سنين في صناعة السعادة بالفرافرة</div>
+            <div class="ticker-item">أرقى باقات الورد الطبيعي المنسقة لمناسباتكم السعيدة</div>
+            <div class="ticker-item">طازجة من فرننا إلى مائدتك مخبوزة بحب وشغف</div>
+            <div class="ticker-item">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
+            <div class="ticker-item">خبرة عشر سنين في صناعة السعادة بالفرافرة</div>
+            <div class="ticker-item">أرقى باقات الورد الطبيعي المنسقة لمناسباتكم السعيدة</div>
+            <div class="ticker-item">طازجة من فرننا إلى مائدتك مخبوزة بحب وشغف</div>
         </div>
     </div>
 
     <!-- الهيدر الرسمي الموحد -->
-    <header class="main-header border-b border-brand-pink/10 sticky top-0 z-[100] bg-white/95 backdrop-blur-md shadow-sm">
-        <div class="container mx-auto px-4 flex justify-between items-center py-3">
-            <div class="w-1/4 flex justify-start">
-                <button onclick="window.history.back()" class="p-2 rounded-full border border-brand-pink/20 hover:bg-brand-pinkLight text-brand-brown transition-all cursor-pointer">
-                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+    <header class="border-b border-brand-pink/20 sticky top-0 z-[100] bg-white/95 backdrop-blur-md transition-all py-4 shadow-sm">
+        <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
+            <div class="w-1/3 flex justify-start">
+                <button onclick="window.toggleSidebar()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
+                    <i data-lucide="menu" class="w-7 h-7 text-brand-pink"></i>
                 </button>
             </div>
-            <div class="w-2/4 flex justify-center text-center">
-                <a href="index.html" class="flex items-center justify-center gap-2 group">
-                    <i data-lucide="gem" class="w-6 h-6 text-brand-pink group-hover:scale-110 transition-transform"></i>
-                    <h1 class="text-xl font-bold text-brand-brown tracking-tighter uppercase">حلويات بوسي</h1>
+            <div class="w-1/3 flex justify-center">
+                <a href="index.html" class="flex flex-col items-center justify-center group text-decoration-none">
+                    <i data-lucide="gem" class="w-8 h-8 text-brand-pink mb-1 group-hover:scale-110 transition-transform"></i>
+                    <h1 class="text-xl font-black text-brand-brown tracking-tight uppercase">حلويات بوسي</h1>
                 </a>
             </div>
-            <div class="w-1/4 flex justify-end gap-3">
-                <button onclick="window.toggleSidebar()" class="p-2 rounded-full border border-brand-pink/20 hover:bg-brand-pinkLight text-brand-brown transition-all cursor-pointer">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
+            <div class="w-1/3 flex justify-end items-center gap-5">
+                <button class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" onclick="window.CheckoutEngine.showToast('خاصية البحث تحت التطوير حالياً لضمان أفضل تجربة.')">
+                    <i data-lucide="search" class="w-6 h-6 text-brand-pink"></i>
                 </button>
+                <a href="cart.html" class="relative text-brand-pink hover:text-brand-brown transition-colors cursor-pointer text-decoration-none">
+                    <i data-lucide="shopping-bag" class="w-6 h-6 text-brand-pink"></i>
+                    <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-brand-pink text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border border-white">0</span>
+                </a>
             </div>
         </div>
     </header>
 
-    <!-- القائمة الجانبية السيادية -->
+    <!-- القائمة الجانبية الاحترافية الموحدة -->
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
     <aside id="sidebar" class="sidebar">
-        <div class="p-6 flex justify-between items-center border-b-2 border-brand-pink/10 bg-brand-pinkLight/50">
-            <span class="text-xl font-bold text-brand-pink flex items-center gap-2"><i data-lucide="gem" class="w-5 h-5"></i> حلويات بوسي</span>
-            <button onclick="window.toggleSidebar()" class="text-brand-brown bg-white border border-brand-pink/20 rounded-full p-2 hover:bg-brand-pink hover:text-white transition-all cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <div class="p-6 flex justify-between items-center border-b border-brand-pink/20 bg-brand-pinkLight">
+            <span class="text-xl font-bold text-brand-brown flex items-center gap-2">
+                <i data-lucide="gem" class="w-5 h-5 text-brand-pink"></i> قائمة حلويات بوسي
+            </span>
+            <button onclick="window.toggleSidebar()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
+                <i data-lucide="x" class="w-6 h-6 text-brand-pink"></i>
+            </button>
         </div>
-        <nav id="sidebar-nav-container" class="flex-grow overflow-y-auto p-6 flex flex-col gap-3 text-right">
-            <a href="index.html" class="p-3 rounded-xl border border-brand-pink/10 bg-white font-bold text-brand-brown hover:bg-brand-pinkLight flex items-center gap-3 transition-colors"><i data-lucide="home" class="w-5 h-5 text-brand-pink"></i> الرئيسية</a>
-            <a href="menu.html" class="p-3 rounded-xl border border-brand-pink/10 bg-white font-bold text-brand-brown hover:bg-brand-pinkLight flex items-center gap-3 transition-colors"><i data-lucide="layout-grid" class="w-5 h-5 text-brand-pink"></i> تصفح المنيو</a>
-            <a href="cart.html" class="p-3 rounded-xl border border-brand-pink/10 bg-white font-bold text-brand-brown hover:bg-brand-pinkLight flex items-center gap-3 transition-colors"><i data-lucide="shopping-basket" class="w-5 h-5 text-brand-pink"></i> راجع طلبك</a>
+        <nav class="flex-grow p-6 flex flex-col gap-2">
+            <a href="index.html" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
+                <i data-lucide="home" class="w-5 h-5 text-brand-pink"></i> الصفحة الرئيسية
+            </a>
+            <details class="group">
+                <summary class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center justify-between outline-none cursor-pointer">
+                    <div class="flex items-center gap-3"><i data-lucide="layout-grid" class="w-5 h-5 text-brand-pink"></i> تصفح المنيو</div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180 text-brand-pink"></i>
+                </summary>
+                <div class="flex flex-col gap-1 pl-12 pr-4 pt-2 pb-4 border-l-2 border-brand-pink/20 ml-4 mr-2">
+                    <a href="menu.html" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">عرض كل المنيو</a>
+                    <a href="product.html?category=التورت" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">التورت الفاخرة</a>
+                    <a href="product.html?category=الجاتوهات" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">الجاتوهات</a>
+                </div>
+            </details>
+            <a href="product.html?action=build_cake" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
+                <i data-lucide="cake" class="w-5 h-5 text-brand-pink"></i> صمم تورتة مناسبتك
+            </a>
+            <a href="product.html?category=ورد" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
+                <i data-lucide="flower-2" class="w-5 h-5 text-brand-pink"></i> قسم الورد الطبيعي
+            </a>
         </nav>
+        <div class="p-6 border-t border-brand-pink/20 bg-brand-pinkLight/50">
+            <a href="cart.html" class="w-full py-4 bg-brand-pink text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white hover:text-brand-pink border-2 border-brand-pink transition-colors cursor-pointer text-decoration-none shadow-sm">
+                <i data-lucide="shopping-basket" class="w-5 h-5"></i> <span>مراجعة السلة</span>
+            </a>
+        </div>
     </aside>
 
-    <main class="container mx-auto px-4 py-12 md:py-20 max-w-4xl">
+    <!-- هندسة المساحات الواسعة (Breathing Room) -->
+    <main class="container mx-auto px-4 py-16 md:py-24 max-w-5xl min-h-[70vh]">
         
-        <div class="text-center mb-16 px-4">
-            <h2 class="text-3xl md:text-5xl font-bold text-brand-brown mb-3 tracking-tighter uppercase">أكد طلبك</h2>
-            <p class="font-bold text-brand-brown/60 text-base">كمل بياناتك عشان نوصلك في أسرع وقت</p>
+        <div class="text-center mb-20 px-4">
+            <h2 class="text-4xl md:text-6xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تأكيد الطلب</h2>
+            <p class="font-bold text-brand-brown/60 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">أكمل البيانات الآتية لضمان تحضير وتسليم طلبك بأعلى معايير الجودة.</p>
         </div>
 
-        <form id="checkout-form" class="bose-double-wrap animate-fade shadow-xl">
-            <div class="bose-double-inner p-6 md:p-12 bg-white">
+        <form id="checkout-form" class="bose-double-wrap animate-fade">
+            <div class="bose-double-inner p-8 md:p-16 bg-white">
                 
                 <!-- ١. طريقة الاستلام -->
-                <div class="mb-12 border-b-2 border-brand-pink/10 pb-12">
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-bold text-xl">١</div>
-                        <h3 class="font-bold text-2xl text-brand-brown tracking-tighter">هتستلم إزاي؟</h3>
+                <div class="mb-16 border-b-2 border-brand-pink/10 pb-16">
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="w-14 h-14 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-black text-2xl border-2 border-brand-pink/30 shadow-sm">١</div>
+                        <h3 class="font-black text-3xl text-brand-brown tracking-tighter">طريقة الاستلام المفضلة</h3>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <label class="delivery-btn selected" id="card-delivery" onclick="window.CheckoutUI.setDeliveryMode('توصيل')">
-                            <i data-lucide="map-pin" class="w-8 h-8 mx-auto text-brand-pink"></i>
-                            <span>توصيل للبيت</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <label class="delivery-btn selected" id="card-delivery" onclick="window.CheckoutEngine.setDeliveryMode('توصيل')">
+                            <i data-lucide="map-pin" class="w-10 h-10 mx-auto mb-2 text-brand-pink"></i>
+                            <span class="text-xl">توصيل للعنوان</span>
                         </label>
-                        <label class="delivery-btn" id="card-pickup" onclick="window.CheckoutUI.setDeliveryMode('استلام')">
-                            <i data-lucide="store" class="w-8 h-8 mx-auto text-brand-pink"></i>
-                            <span>استلام من المقر</span>
+                        <label class="delivery-btn" id="card-pickup" onclick="window.CheckoutEngine.setDeliveryMode('استلام')">
+                            <i data-lucide="store" class="w-10 h-10 mx-auto mb-2 text-brand-pink"></i>
+                            <span class="text-xl">استلام من المقر</span>
                         </label>
                     </div>
 
-                    <!-- تفاصيل الفرع (تظهر في حالة الاستلام فقط) -->
-                    <div id="branch-details" class="hidden mt-6 bg-brand-pinkLight/30 border-2 border-dashed border-brand-pink/30 rounded-3xl p-8 text-center animate-fade">
-                        <p class="font-bold text-brand-brown text-lg mb-2">مقر حلويات بوسي المعتمد:</p>
-                        <p class="font-bold text-brand-pink text-xl mb-2">الكفاح، شارع الوحدة المحلية</p>
-                        <p class="font-bold text-brand-brown/60 text-sm mb-6">بجوار صيدلية د. أحمد مجدي وعيادة د. علي</p>
-                        <a href="https://www.google.com/maps/search/?api=1&query=الكفاح،+الفرافرة،+الوادي+الجديد" target="_blank" class="inline-flex items-center gap-2 bg-white border-2 border-brand-pink text-brand-pink px-8 py-3 rounded-full font-bold hover:bg-brand-pink hover:text-white transition-colors shadow-sm">
-                            <i data-lucide="navigation" class="w-5 h-5"></i> افتح الخريطة
+                    <!-- تفاصيل الفرع -->
+                    <div id="branch-details" class="hidden mt-10 bg-brand-pinkLight/50 border-2 border-dashed border-brand-pink/30 rounded-[30px] p-10 text-center animate-fade">
+                        <p class="font-bold text-brand-brown text-xl mb-4">مقر حلويات بوسي المعتمد:</p>
+                        <p class="font-black text-brand-pink text-3xl mb-4">الكفاح، شارع الوحدة المحلية</p>
+                        <p class="font-bold text-brand-brown/60 text-base mb-8">بجوار صيدلية د. أحمد مجدي وعيادة د. علي</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=الكفاح،+الفرافرة،+الوادي+الجديد" target="_blank" class="inline-flex items-center gap-3 bg-white border-2 border-brand-pink text-brand-pink px-10 py-4 rounded-full font-bold hover:bg-brand-pink hover:text-white transition-colors shadow-sm text-decoration-none text-lg">
+                            <i data-lucide="navigation" class="w-6 h-6"></i> فتح الموقع على الخريطة
                         </a>
                     </div>
                 </div>
 
                 <!-- ٢. بيانات العميل -->
-                <div class="mb-12 border-b-2 border-brand-pink/10 pb-12">
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-bold text-xl">٢</div>
-                        <h3 class="font-bold text-2xl text-brand-brown tracking-tighter">بياناتك</h3>
+                <div class="mb-16 border-b-2 border-brand-pink/10 pb-16">
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="w-14 h-14 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-black text-2xl border-2 border-brand-pink/30 shadow-sm">٢</div>
+                        <h3 class="font-black text-3xl text-brand-brown tracking-tighter">بيانات التواصل</h3>
                     </div>
-                    <div class="space-y-6">
+                    <div class="space-y-8">
                         <div>
-                            <label class="block font-bold text-brand-brown mb-3">الاسم بالكامل <span class="text-brand-pink">*</span></label>
-                            <input type="text" id="customer-name" class="form-input" placeholder="اكتب اسمك هنا..." required>
+                            <label class="block font-bold text-brand-brown mb-4 text-lg">الاسم بالكامل <span class="text-brand-pink">*</span></label>
+                            <input type="text" id="customer-name" class="form-input" placeholder="يرجى كتابة الاسم الثنائي..." required>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
-                                <label class="block font-bold text-brand-brown mb-3">رقم الواتساب <span class="text-brand-pink">*</span></label>
-                                <input type="tel" id="whatsapp-phone" class="form-input text-left" dir="ltr" placeholder="01xxxxxxxxx" required>
+                                <label class="block font-bold text-brand-brown mb-4 text-lg">رقم الواتساب <span class="text-brand-pink">*</span></label>
+                                <input type="tel" id="whatsapp-phone" class="form-input text-left" dir="ltr" placeholder="01xxxxxxxxx" maxlength="11" required>
+                                <p class="text-sm font-bold text-brand-brown/50 mt-2 px-2">يُستخدم لتأكيد الطلب وإرسال الفاتورة.</p>
                             </div>
                             <div id="alt-phone-container">
-                                <label class="block font-bold text-brand-brown mb-3">رقم موبايل تاني للتوصيل <span class="text-brand-pink">*</span></label>
-                                <input type="tel" id="alt-phone" class="form-input text-left" dir="ltr" placeholder="01xxxxxxxxx" required>
+                                <label class="block font-bold text-brand-brown mb-4 text-lg">رقم إضافي (أثناء التوصيل) <span class="text-brand-pink">*</span></label>
+                                <input type="tel" id="alt-phone" class="form-input text-left" dir="ltr" placeholder="01xxxxxxxxx" maxlength="11" required>
+                                <p class="text-sm font-bold text-brand-brown/50 mt-2 px-2">لضمان سرعة التواصل وقت التسليم.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- ٣. عنوان التوصيل -->
-                <div id="address-section" class="mb-12 border-b-2 border-brand-pink/10 pb-12 animate-fade">
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-bold text-xl">٣</div>
-                        <h3 class="font-bold text-2xl text-brand-brown tracking-tighter">هنوصلك فين؟</h3>
+                <div id="address-section" class="mb-16 border-b-2 border-brand-pink/10 pb-16 animate-fade">
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="w-14 h-14 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-black text-2xl border-2 border-brand-pink/30 shadow-sm">٣</div>
+                        <h3 class="font-black text-3xl text-brand-brown tracking-tighter">تفاصيل العنوان</h3>
                     </div>
-                    <div class="space-y-6">
+                    <div class="space-y-8">
                         <div>
-                            <label class="block font-bold text-brand-brown mb-3">المنطقة <span class="text-brand-pink">*</span></label>
-                            <select id="delivery-zone" class="form-input bg-white cursor-pointer" required onchange="window.CheckoutUI.updateTotals()">
-                                <option value="" disabled selected>اختار منطقتك...</option>
+                            <label class="block font-bold text-brand-brown mb-4 text-lg">المنطقة السكنية <span class="text-brand-pink">*</span></label>
+                            <select id="delivery-zone" class="form-input cursor-pointer" required onchange="window.CheckoutEngine.updateTotals()">
+                                <option value="" disabled selected>يرجى اختيار المنطقة...</option>
                                 <option value="الكفاح" data-fee="10">قرية الكفاح (+١٠ ج.م توصيل)</option>
                                 <option value="مدينة الفرافرة" data-fee="25">مدينة الفرافرة (+٢٥ ج.م توصيل)</option>
                                 <option value="القرى المجاورة للكفاح" data-fee="20">القرى المجاورة للكفاح (+٢٠ ج.م توصيل)</option>
@@ -209,78 +322,111 @@
                                 <option value="النهضة" data-fee="30">قرية النهضة (+٣٠ ج.م توصيل)</option>
                                 <option value="أبو هريرة" data-fee="25">قرية أبو هريرة (+٢٥ ج.م توصيل)</option>
                                 <option value="عثمان بن عفان" data-fee="30">قرية عثمان بن عفان (+٣٠ ج.م توصيل)</option>
-                                <option value="أخرى" data-fee="50">مناطق تانية (رسوم تقريبية ٥٠ ج.م)</option>
+                                <option value="أخرى" data-fee="50">مناطق أخرى (رسوم تقريبية ٥٠ ج.م)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block font-bold text-brand-brown mb-3">العنوان بالتفصيل <span class="text-brand-pink">*</span></label>
-                            <textarea id="detailed-address" class="form-input h-28 resize-none" placeholder="الشارع، رقم البيت، الدور..." required></textarea>
-                        </div>
-                        <div>
-                            <label class="block font-bold text-brand-brown mb-3">أقرب مكان مشهور ليك <span class="text-brand-pink">*</span></label>
-                            <input type="text" id="nearest-landmark" class="form-input" placeholder="جنب مسجد، مدرسة، صيدلية..." required>
+                            <label class="block font-bold text-brand-brown mb-4 text-lg">العنوان التفصيلي <span class="text-brand-pink">*</span></label>
+                            <textarea id="detailed-address" class="form-input h-36 resize-none" placeholder="اسم الشارع، المجاورة، رقم المنزل، وأقرب علامة مميزة..." required></textarea>
                         </div>
                     </div>
                 </div>
 
                 <!-- ٤. الميعاد والملخص -->
                 <div class="mb-4">
-                    <div class="flex items-center gap-3 mb-8">
-                        <div class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-bold text-xl">٤</div>
-                        <h3 class="font-bold text-2xl text-brand-brown tracking-tighter">ميعاد الاستلام</h3>
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="w-14 h-14 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-black text-2xl border-2 border-brand-pink/30 shadow-sm">٤</div>
+                        <h3 class="font-black text-3xl text-brand-brown tracking-tighter">موعد التسليم والمراجعة</h3>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
                         <div>
-                            <label class="block font-bold text-brand-brown mb-3">يوم الاستلام <span class="text-brand-pink">*</span></label>
-                            <input type="date" id="order-date" class="form-input" required>
+                            <label class="block font-bold text-brand-brown mb-4 text-lg">تاريخ الاستلام <span class="text-brand-pink">*</span></label>
+                            <input type="date" id="order-date" class="form-input cursor-pointer text-center" required>
+                            <p class="text-sm font-bold text-brand-pink mt-2 px-2">التوصيل أو الاستلام متاح بداية من الغد.</p>
                         </div>
                         <div>
-                            <label class="block font-bold text-brand-brown mb-3">الساعة <span class="text-brand-pink">*</span></label>
-                            <input type="time" id="order-time" class="form-input" required>
+                            <label class="block font-bold text-brand-brown mb-4 text-lg">وقت الاستلام المفضل <span class="text-brand-pink">*</span></label>
+                            <input type="time" id="order-time" class="form-input cursor-pointer text-center" required>
                         </div>
                     </div>
 
-                    <!-- الفاتورة (الملخص المالي) -->
-                    <div class="bg-brand-pinkLight/50 p-8 rounded-[35px] border-2 border-brand-pink/20 mb-10">
-                        <div class="flex justify-between font-bold mb-4 text-brand-brown text-lg">
-                            <span>حساب المنتجات:</span>
-                            <span id="summary-subtotal">0 ج.م</span>
+                    <!-- الفاتورة الختامية الفاخرة -->
+                    <div class="bg-brand-pinkLight p-8 md:p-12 rounded-[40px] border-2 border-brand-pink/20 mb-12 shadow-sm">
+                        <h4 class="font-black text-brand-brown text-2xl mb-8 border-b-2 border-brand-pink/10 pb-6 uppercase tracking-widest text-center">ملخص المشتريات</h4>
+                        
+                        <!-- حقن المنتجات من السلة -->
+                        <div id="checkout-items-list" class="mb-10 space-y-4">
+                            <!-- Items Injected Here -->
                         </div>
-                        <div class="flex justify-between font-bold mb-6 text-brand-brown text-lg" id="shipping-fee-row">
-                            <span>التوصيل:</span>
-                            <span id="summary-shipping">0 ج.م</span>
-                        </div>
-                        <div class="flex justify-between items-center font-bold text-4xl text-brand-pink border-t-2 border-dashed border-brand-pink/30 pt-6 tracking-tighter">
-                            <span>الإجمالي:</span>
-                            <span id="summary-total">0 ج.م</span>
+
+                        <div class="border-t-2 border-brand-pink/10 pt-8 space-y-6">
+                            <div class="flex justify-between font-bold text-brand-brown/80 text-xl">
+                                <span>قيمة المنتجات:</span>
+                                <span id="summary-subtotal">0 ج.م</span>
+                            </div>
+                            <div class="flex justify-between font-bold text-brand-brown/80 text-xl" id="shipping-fee-row">
+                                <span>رسوم التوصيل:</span>
+                                <span id="summary-shipping">0 ج.م</span>
+                            </div>
+                            <div class="flex justify-between items-center font-black text-5xl text-brand-pink border-t-2 border-dashed border-brand-pink/30 pt-8 tracking-tighter mt-4">
+                                <span class="text-2xl text-brand-brown">الإجمالي:</span>
+                                <span id="summary-total">0 ج.م</span>
+                            </div>
                         </div>
                     </div>
 
-                    <button type="submit" id="submit-order-btn" class="w-full bg-[#25D366] text-white py-6 rounded-full font-bold text-2xl shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer">
-                        أكد الطلب وابعت واتساب <i data-lucide="send" class="w-7 h-7"></i>
+                    <!-- زر التأكيد -->
+                    <button type="submit" id="submit-order-btn" class="w-full bg-brand-pink text-white py-6 rounded-full font-black text-2xl shadow-premium hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-4 cursor-pointer border-none">
+                        تأكيد وإرسال الطلب للإدارة <i data-lucide="check-circle" class="w-8 h-8"></i>
                     </button>
-                    <p class="text-center font-bold text-brand-brown/50 text-sm mt-6">بمجرد الضغط هيتم تحويلك للواتساب الخاص بالإدارة لتأكيد طلبك.</p>
+                    <p class="text-center font-bold text-brand-brown/60 text-base mt-8 text-balance">تأكيدك للطلب يمثل موافقة على بدء تحضير المنتجات خصيصاً لك بأعلى معايير الجودة.</p>
                 </div>
 
             </div>
         </form>
     </main>
 
-    <!-- الفوتر الرسمي המوحد -->
-    <footer class="bg-white pt-20 pb-10 border-t-4 border-brand-pink text-center relative overflow-hidden mt-10">
-        <div class="container mx-auto px-4 relative z-10">
-            <div class="mb-10 inline-block p-5 rounded-full bg-brand-pinkLight text-brand-pink border border-brand-pink/20 shadow-md"><i data-lucide="gem" class="w-8 h-8"></i></div>
-            <p class="text-brand-brown/90 font-bold text-xl mb-10 max-w-xl mx-auto leading-relaxed px-4 text-balance">
-                طازجة من فرننا لمائدتك، بنعمل كل صنف بحب وإتقان. الالتزام بالجودة هو دايماً شعار حلويات بوسي.
-            </p>
-            <div class="mb-10 text-brand-brown">
-                <p class="font-bold text-2xl mb-2 tracking-widest font-sans" dir="ltr">+20 109 723 8441</p>
-                <p class="font-bold text-lg opacity-80">الكفاح، الفرافرة، الوادي الجديد</p>
+    <!-- الفوتر الرسمي الموحد -->
+    <footer class="bg-white pt-20 pb-8 border-t-4 border-brand-pink mt-10">
+        <div class="container mx-auto px-4 md:px-8 max-w-6xl text-center">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-b border-brand-pink/10 pb-16">
+                <div class="flex flex-col items-center justify-center">
+                    <div class="mb-6 inline-flex items-center justify-center w-16 h-16 bg-brand-pinkLight text-brand-pink rounded-2xl border-brand-pink/20 shadow-sm border-2">
+                        <i data-lucide="gem" class="w-8 h-8 text-brand-pink"></i>
+                    </div>
+                    <p class="text-brand-brown font-bold text-base leading-loose max-w-xs opacity-90 mx-auto">
+                        طازجة من فرننا إلى مائدتك، مخبوزاتنا مصنوعة بحب وشغف. الالتزام بالجودة وإرضاء عملائنا هو أساس كل ما نقدمه في حلويات بوسي.
+                    </p>
+                </div>
+                <div class="flex flex-col items-center justify-center">
+                    <h4 class="text-brand-brown font-black text-xl mb-6">الشركة</h4>
+                    <ul class="space-y-4">
+                        <li><a href="about.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">عن المتجر</a></li>
+                        <li><a href="refund.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">الإرجاع والاستبدال</a></li>
+                        <li><a href="privacy.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">سياسة الخصوصية</a></li>
+                    </ul>
+                </div>
+                <div class="flex flex-col items-center justify-center">
+                    <h4 class="text-brand-brown font-black text-xl mb-6">تواصل الإدارة</h4>
+                    <ul class="space-y-4 flex flex-col items-center">
+                        <li>
+                            <a href="contact.html" class="inline-flex items-center justify-center gap-2 bg-brand-pink text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-brand-pinkLight hover:text-brand-pink border-2 border-brand-pink transition-colors text-decoration-none shadow-sm">
+                                <i data-lucide="message-square" class="w-4 h-4"></i> <span>تواصل معنا المباشر</span>
+                            </a>
+                        </li>
+                        <li><span class="text-brand-brown font-bold text-sm block mt-4" dir="ltr">bosesweets3@gmail.com</span></li>
+                        <li><span class="text-brand-brown opacity-80 font-bold text-xs block flex items-center justify-center gap-2 mt-2"><i data-lucide="map-pin" class="w-4 h-4 shrink-0 text-brand-pink"></i> الكفاح، الفرافرة، الوادي الجديد</span></li>
+                    </ul>
+                </div>
             </div>
-            <div class="border-t border-brand-pink/15 pt-8 mt-4">
-                <p class="font-bold text-sm md:text-base text-brand-brown opacity-60 tracking-tight">
-                    &copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.
-                </p>
+            <div class="flex flex-col items-center justify-center gap-6">
+                <div class="flex gap-5 justify-center">
+                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-facebook-f text-xl"></i></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-instagram text-xl"></i></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-tiktok text-xl"></i></a>
+                </div>
+                <p class="text-brand-brown opacity-70 font-bold text-sm text-center">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
             </div>
         </div>
     </footer>
@@ -290,21 +436,90 @@
 
     <script type="module">
         /**
-         * 👑 واجهة إتمام الطلب (Checkout Engine)
+         * 👑 محرك إتمام الطلب الشامل والموحد - مع تأمين التواريخ (24h Rule)
          */
 
-        window.CheckoutUI = {
+        window.CheckoutEngine = {
             deliveryMode: 'توصيل',
             cartTotal: 0,
             shippingFee: 0,
+            cartItems: [],
 
             init: function() {
+                // 🛡️ درع قاعدة الـ 24 ساعة (قفل النتيجة للغد كحد أدنى)
                 const dateInput = document.getElementById('order-date');
                 if (dateInput) {
-                    const today = new Date().toISOString().split('T')[0];
-                    dateInput.setAttribute('min', today);
+                    const today = new Date();
+                    // إضافة يوم (24 ساعة) للحصول على تاريخ الغد
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    
+                    // تحويل الصيغة لتناسب حقل الإدخال YYYY-MM-DD
+                    const localTomorrowStr = tomorrow.toLocaleDateString('en-CA'); // en-CA gives YYYY-MM-DD reliably
+                    dateInput.setAttribute('min', localTomorrowStr);
+                    
+                    // مراقب لحقل التاريخ تحسباً للكتابة اليدوية (Real-time Validation)
+                    dateInput.addEventListener('change', function() {
+                        const selectedDate = new Date(this.value);
+                        const now = new Date();
+                        
+                        // تصفية التواريخ من الساعات والدقائق لمقارنة الأيام بشكل دقيق
+                        const selectedDateOnly = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+                        const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                        const tomorrowOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+
+                        if (selectedDateOnly < todayOnly) {
+                            window.CheckoutEngine.showToast("غير متاح اختيار تاريخ سابق. يرجى تحديد موعد قادم.");
+                            this.value = ''; // إجبار العميل على إعادة الاختيار
+                        } else if (selectedDateOnly < tomorrowOnly) {
+                            window.CheckoutEngine.showToast("لضمان الجودة والإتقان، يتطلب تحضير الطلب 24 ساعة مسبقاً. يرجى اختيار موعد بداية من الغد.");
+                            this.value = ''; // إجبار العميل على إعادة الاختيار
+                        }
+                    });
                 }
+
+                // سحب المشتريات (Cart Hydration)
+                this.cartItems = window.cartSystem ? window.cartSystem.getCart() : (JSON.parse(localStorage.getItem('BoseSweets_Cart')) || []);
+                
+                if (this.cartItems.length === 0) {
+                    this.showToast("حقيبة الطلبات فارغة، جاري تحويلك للمنيو.");
+                    setTimeout(() => { window.location.href = 'menu.html'; }, 2000);
+                    return;
+                }
+
+                // استعادة تفضيل التوصيل إذا وجد
+                const savedPref = localStorage.getItem('Bose_Shipping_Preference');
+                if (savedPref === 'pickup') {
+                    this.setDeliveryMode('استلام');
+                } else {
+                    this.setDeliveryMode('توصيل');
+                }
+
+                this.renderOrderItems();
                 this.updateTotals();
+                this.syncCartBadge();
+            },
+
+            showToast: function(msg) {
+                const toast = document.getElementById('bose-toast');
+                const text = document.getElementById('bose-toast-msg');
+                if(toast && text) {
+                    text.innerText = msg;
+                    toast.style.display = 'flex';
+                    setTimeout(() => { toast.style.display = 'none'; }, 5000);
+                } else {
+                    alert(msg);
+                }
+            },
+
+            // دالة تحديث عداد السلة في الهيدر
+            syncCartBadge: function() {
+                const count = this.cartItems.reduce((acc, item) => acc + (item.quantity || item.qty || 1), 0) || 0;
+                const badge = document.getElementById('cart-count-badge');
+                if (badge) { 
+                    badge.innerText = count; 
+                    badge.style.display = count > 0 ? 'flex' : 'none'; 
+                }
             },
 
             setDeliveryMode: function(mode) {
@@ -317,7 +532,6 @@
                 const altPhoneInput = document.getElementById('alt-phone');
                 const zoneSelect = document.getElementById('delivery-zone');
                 const addressInput = document.getElementById('detailed-address');
-                const landmarkInput = document.getElementById('nearest-landmark');
 
                 if (mode === 'توصيل') {
                     cardDelivery.classList.add('selected');
@@ -329,7 +543,6 @@
                     altPhoneInput.setAttribute('required', 'true');
                     zoneSelect.setAttribute('required', 'true');
                     addressInput.setAttribute('required', 'true');
-                    landmarkInput.setAttribute('required', 'true');
                 } else {
                     cardPickup.classList.add('selected');
                     cardDelivery.classList.remove('selected');
@@ -340,19 +553,42 @@
                     altPhoneInput.removeAttribute('required');
                     zoneSelect.removeAttribute('required');
                     addressInput.removeAttribute('required');
-                    landmarkInput.removeAttribute('required');
-                    
                     zoneSelect.value = "";
                 }
                 this.updateTotals();
             },
 
+            renderOrderItems: function() {
+                const listContainer = document.getElementById('checkout-items-list');
+                if (!listContainer) return;
+
+                let html = '';
+                this.cartItems.forEach(item => {
+                    const price = parseFloat(item.price) || 0;
+                    const qty = parseInt(item.quantity || item.qty) || 1;
+                    const total = price * qty;
+
+                    let detailsStr = '';
+                    if (item.isCustom && item.details) {
+                        detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold line-clamp-1 border-t border-brand-pink/10 pt-2 inline-block">تفاصيل خاصة: ${item.details.shape === 'round' ? 'دائري' : 'حسب الاختيار'} - ${item.details.people} أفراد</p>`;
+                    }
+
+                    html += `
+                        <div class="flex justify-between items-center bg-white p-5 rounded-2xl border-2 border-brand-pink/10 shadow-sm">
+                            <div class="flex-grow pl-4">
+                                <p class="font-black text-brand-brown text-lg">${item.name} <span class="text-white bg-brand-pink rounded-full px-2 py-0.5 text-xs mx-2">x${qty}</span></p>
+                                ${detailsStr}
+                            </div>
+                            <div class="font-black text-brand-pink text-xl shrink-0">${total} ج.م</div>
+                        </div>
+                    `;
+                });
+                listContainer.innerHTML = html;
+            },
+
             updateTotals: function() {
-                // سحب المشتريات من السلة لتجنب أي حسابات معقدة مكررة
-                const cart = JSON.parse(localStorage.getItem('BoseSweets_Cart')) || (window.BoseState ? window.BoseState.cart : []);
-                
                 this.cartTotal = 0;
-                cart.forEach(item => {
+                this.cartItems.forEach(item => {
                     const price = parseFloat(item.price) || 0;
                     const qty = parseInt(item.quantity || item.qty) || 1;
                     this.cartTotal += (price * qty);
@@ -385,6 +621,122 @@
                 const datePart = Date.now().toString(36).toUpperCase();
                 const randomPart = Math.random().toString(36).substring(2, 5).toUpperCase();
                 return `BS-${datePart}-${randomPart}`;
+            },
+
+            // 🛡️ الدرع الأمني للبيانات
+            validateForm: function() {
+                const name = document.getElementById('customer-name').value.trim();
+                const whatsappPhone = document.getElementById('whatsapp-phone').value.trim();
+                const altPhone = document.getElementById('alt-phone').value.trim();
+                const dateVal = document.getElementById('order-date').value;
+                
+                // تحقق إضافي للتاريخ وقت الإرسال
+                if(!dateVal) {
+                    this.showToast("يرجى تحديد تاريخ الاستلام أولاً.");
+                    return false;
+                }
+
+                if (/\d/.test(name)) {
+                    this.showToast("الاسم يجب أن يحتوي على حروف فقط لضمان جدية الطلب.");
+                    return false;
+                }
+                
+                const egyPhoneRegex = /^(010|011|012|015)\d{8}$/;
+                
+                if (!egyPhoneRegex.test(whatsappPhone)) {
+                    this.showToast("يرجى كتابة رقم واتساب مصري صحيح (11 رقم يبدأ بـ 010, 011, 012, أو 015).");
+                    return false;
+                }
+                
+                if (this.deliveryMode === 'توصيل') {
+                    if (altPhone && !egyPhoneRegex.test(altPhone)) {
+                        this.showToast("رقم الهاتف الإضافي غير صحيح. تأكد من إدخال 11 رقماً بشكل سليم.");
+                        return false;
+                    }
+                    const zone = document.getElementById('delivery-zone').value;
+                    const address = document.getElementById('detailed-address').value.trim();
+                    if (!zone || address.length < 10) {
+                        this.showToast("العنوان التفصيلي ضروري جداً لضمان دقة وسرعة التوصيل.");
+                        return false;
+                    }
+                }
+                return true;
+            },
+
+            // تنفيذ الحقن السحابي وما بعد الطلب
+            processOrder: async function(submitBtn, originalBtnText) {
+                const customerName = document.getElementById('customer-name').value.trim();
+                const orderDate = document.getElementById('order-date').value;
+                const orderTime = document.getElementById('order-time').value;
+                const orderId = this.generateOrderId();
+
+                let deliveryData = { mode: this.deliveryMode };
+                if (this.deliveryMode === 'توصيل') {
+                    const zoneSelect = document.getElementById('delivery-zone');
+                    deliveryData.zone = zoneSelect.options[zoneSelect.selectedIndex].text;
+                    deliveryData.address = document.getElementById('detailed-address').value.trim();
+                    deliveryData.altPhone = document.getElementById('alt-phone').value.trim();
+                }
+
+                const payload = {
+                    orderId: orderId,
+                    customer: {
+                        name: customerName,
+                        whatsapp: document.getElementById('whatsapp-phone').value.trim()
+                    },
+                    delivery: deliveryData,
+                    schedule: { date: orderDate, time: orderTime },
+                    items: this.cartItems,
+                    financials: {
+                        subtotal: this.cartTotal,
+                        shipping: this.shippingFee,
+                        total: this.cartTotal + this.shippingFee
+                    },
+                    status: 'pending',
+                    timestamp: Date.now()
+                };
+
+                try {
+                    // محاولة الحقن السحابي عبر Firebase إذا تم إعداده مسبقاً
+                    if (window.db) {
+                        const appId = window.__app_id || 'bosy-sweets';
+                        const fs = await import('https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js');
+                        await fs.addDoc(fs.collection(window.db, 'artifacts', appId, 'public', 'data', 'orders'), payload);
+                    }
+
+                    // ما بعد الطلب (Post-Order Routing)
+                    // 1. تفريغ السلة
+                    if (window.cartSystem && window.cartSystem.clearCartStorage) {
+                        window.cartSystem.clearCartStorage();
+                    } else {
+                        localStorage.removeItem('BoseSweets_Cart');
+                        if (window.BoseState && window.BoseState.cart) window.BoseState.cart.length = 0;
+                    }
+
+                    // 2. إظهار نافذة النجاح الفاخرة
+                    const modal = document.getElementById('success-modal');
+                    document.getElementById('success-order-id').innerText = orderId;
+                    modal.classList.add('active');
+
+                    // 3. التوجيه التلقائي
+                    let countdown = 5;
+                    const timerEl = document.getElementById('redirect-timer');
+                    const interval = setInterval(() => {
+                        countdown--;
+                        if(timerEl) timerEl.innerText = countdown;
+                        if (countdown <= 0) {
+                            clearInterval(interval);
+                            window.location.replace('index.html');
+                        }
+                    }, 1000);
+
+                } catch (error) {
+                    console.error("عطل أثناء توثيق الطلب:", error);
+                    this.showToast("واجهنا صعوبة تقنية أثناء المعالجة، يرجى المحاولة مرة أخرى.");
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                    if (window.lucide) lucide.createIcons();
+                }
             }
         };
 
@@ -399,117 +751,27 @@
             }
         };
 
-        // هندسة إرسال الطلب (Submit Order)
-        document.getElementById('checkout-form').addEventListener('submit', async function(e) {
+        // اعتراض زر الإرسال وتفعيل الخوارزميات
+        document.getElementById('checkout-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            if (!window.CheckoutEngine.validateForm()) return;
+
             const submitBtn = document.getElementById('submit-order-btn');
             const originalBtnText = submitBtn.innerHTML;
             
-            const whatsappPhone = document.getElementById('whatsapp-phone').value.trim();
-            const altPhone = document.getElementById('alt-phone').value.trim();
-            
-            // 🛡️ التحصين الأمني لأرقام الهواتف
-            const egyPhoneRegex = /^(010|011|012|015)\d{8}$/;
-            
-            if (!egyPhoneRegex.test(whatsappPhone)) {
-                alert("رجاء كتابة رقم واتساب مصري صحيح (11 رقم بيبدأ بـ 010 أو 011 أو 012 أو 015).");
-                return;
-            }
-            
-            if (window.CheckoutUI.deliveryMode === 'توصيل' && altPhone && !egyPhoneRegex.test(altPhone)) {
-                alert("رجاء كتابة رقم هاتف بديل مصري صحيح لضمان التواصل السريع وقت التوصيل.");
-                return;
-            }
-
-            const cart = JSON.parse(localStorage.getItem('BoseSweets_Cart')) || (window.BoseState ? window.BoseState.cart : []);
-            if (!cart || cart.length === 0) {
-                alert("سلتك فاضية لسه! ضيف منتجات عشان تقدر تأكد الطلب.");
-                window.location.href = 'menu.html';
-                return;
-            }
-
-            submitBtn.innerHTML = '<i data-lucide="loader-2" class="spin-animation w-6 h-6"></i> جاري تأكيد الطلب...';
+            submitBtn.innerHTML = '<i data-lucide="loader-2" class="spin-animation w-8 h-8"></i> جاري تأمين وإرسال الطلب...';
             submitBtn.disabled = true;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
+            if (window.lucide) lucide.createIcons();
 
-            try {
-                const customerName = document.getElementById('customer-name').value.trim();
-                const orderDate = document.getElementById('order-date').value;
-                const orderTime = document.getElementById('order-time').value;
-                
-                let zone = ''; let address = ''; let landmark = '';
-
-                if (window.CheckoutUI.deliveryMode === 'توصيل') {
-                    const zoneSelect = document.getElementById('delivery-zone');
-                    zone = zoneSelect.options[zoneSelect.selectedIndex].text;
-                    address = document.getElementById('detailed-address').value.trim();
-                    landmark = document.getElementById('nearest-landmark').value.trim();
-                }
-
-                let itemsListText = '';
-                cart.forEach((item, index) => {
-                    const qty = item.quantity || item.qty || 1;
-                    const itemTotal = parseFloat(item.price) * qty;
-                    
-                    itemsListText += `${index + 1}. ${item.name}\n   العدد: ${qty} | السعر: ${itemTotal} ج.م\n`;
-                    
-                    if (item.isCustom) {
-                        if (item.details?.occasion) itemsListText += `   🎉 المناسبة: ${item.details.occasion}\n`;
-                        if (item.details?.shape) itemsListText += `   🎂 الشكل: ${item.details.shape === 'round' ? 'دائري' : item.details.shape === 'heart' ? 'قلب' : item.details.shape === 'rectangle' ? 'مستطيل' : 'مربع'}\n`;
-                        if (item.details?.print && item.details.print !== 'none') itemsListText += `   🖼️ الطباعة: ${item.details.print === 'edible' ? 'قابلة للأكل' : 'ديكور غير قابل للأكل'}\n`;
-                        if (item.details?.health) itemsListText += `   ⚠️ ملاحظات صحية: ${item.details.health}\n`;
-                        if (item.details?.gift) itemsListText += `   💌 نص الكارت: ${item.details.gift_text || 'مطلوب إرفاق كارت إهداء'}\n`;
-                    }
-                });
-
-                const finalTotal = window.CheckoutUI.cartTotal + window.CheckoutUI.shippingFee;
-                const orderId = window.CheckoutUI.generateOrderId();
-                
-                // صياغة الرسالة بأسلوب قاطع ومنظم
-                let msg = `👑 طلب جديد - حلويات بوسي 👑\n\n`;
-                msg += `رقم الطلب: #${orderId}\n\n`;
-                msg += `👤 بيانات العميل:\nالاسم: ${customerName}\nواتساب: ${whatsappPhone}\n\n`;
-                
-                if (window.CheckoutUI.deliveryMode === 'توصيل') {
-                    msg += `📍 توصيل للبيت:\nالمنطقة: ${zone}\nالعنوان: ${address}\nأقرب مكان: ${landmark}\n`;
-                    if(altPhone) msg += `موبايل تاني: ${altPhone}\n\n`;
-                } else {
-                    msg += `🏬 استلام من المقر (الكفاح)\n\n`;
-                }
-                
-                msg += `🕒 ميعاد الاستلام:\nالتاريخ: ${orderDate}\nالساعة: ${orderTime}\n\n`;
-                msg += `🛍️ التفاصيل:\n${itemsListText}\n`;
-                msg += `💰 الحساب:\nالمنتجات: ${window.CheckoutUI.cartTotal} ج.م\n`;
-                if (window.CheckoutUI.deliveryMode === 'توصيل') {
-                    msg += `التوصيل: ${window.CheckoutUI.shippingFee} ج.م\n`;
-                }
-                msg += `الإجمالي النهائي: ${finalTotal} ج.م\n`;
-
-                // تفريغ السلة لضمان عدم التكرار
-                localStorage.removeItem('BoseSweets_Cart');
-                if (window.BoseState && window.BoseState.cart) window.BoseState.cart.length = 0;
-
-                // تحويل العميل للواتساب المعتمد
-                const encodedMsg = encodeURIComponent(msg);
-                const adminPhone = "201097238441";
-                window.location.href = `https://wa.me/${adminPhone}?text=${encodedMsg}`;
-
-            } catch (error) {
-                console.error("عطل أثناء توجيه الطلب:", error);
-                alert("حصلت مشكلة وقت تجهيز طلبك. يرجى المحاولة مرة تانية.");
-                submitBtn.innerHTML = originalBtnText;
-                submitBtn.disabled = false;
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-            }
+            window.CheckoutEngine.processOrder(submitBtn, originalBtnText);
         });
 
         document.addEventListener('DOMContentLoaded', () => {
             if(window.lucide) lucide.createIcons();
-            window.CheckoutUI.init();
+            setTimeout(() => { window.CheckoutEngine.init(); }, 300);
         });
     </script>
 </body>
 </html>
-
 
