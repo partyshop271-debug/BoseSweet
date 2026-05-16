@@ -133,7 +133,7 @@
             background: #ff91a4; color: #ffffff; border-color: #ff91a4; box-shadow: 0 5px 15px rgba(255, 145, 164, 0.3);
         }
 
-        /* النوافذ المنبثقة السيادية (Custom Modals) */
+        /* النوافذ المنبثقة السيادية */
         .bose-modal-overlay {
             position: fixed; inset: 0; background: rgba(255, 145, 164, 0.85); backdrop-filter: blur(5px);
             z-index: 10000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
@@ -177,7 +177,7 @@
         <span id="bose-toast-msg">تمت العملية بنجاح</span>
     </div>
 
-    <!-- نافذة إضافة تقييم سيادية (تصحيح صارم لاسم العلامة التجارية) -->
+    <!-- نافذة إضافة تقييم سيادية -->
     <div id="review-modal" class="bose-modal-overlay">
         <div class="bose-modal-content text-right">
             <button onclick="window.ProductUI.closeReviewModal()" class="absolute top-4 right-4 text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
@@ -193,7 +193,6 @@
             <label class="block font-bold text-brand-brown mb-2">تفاصيل التجربة:</label>
             <textarea id="review-text" class="w-full h-32 resize-none mb-6" placeholder="يسعدنا قراءة تقييمك لمستوى الجودة والطعم..."></textarea>
             
-            <!-- الزر السيادي بالاسم المعتمد الكامل -->
             <button onclick="window.ProductUI.submitReview()" class="btn-solid w-full rounded-full py-4 text-lg cursor-pointer">إرسال التقييم لإدارة حلويات بوسي</button>
         </div>
     </div>
@@ -284,7 +283,7 @@
         <section id="category-viewer" class="container mx-auto px-4 hidden">
             <!-- الهيدر الخاص بالقسم (البوستر والوصف) -->
             <div id="category-header-container" class="max-w-6xl mx-auto mb-16 animate-fade">
-                <!-- يُحقن آلياً ببوستر أصلي من المنتجات -->
+                <!-- يُحقن آلياً ببوستر من المنتجات الحقيقية للمتجر -->
             </div>
 
             <!-- تبويبات الأحجام (للديسباسيتو ومثيلاتها) -->
@@ -297,18 +296,31 @@
 
             <!-- شبكة المنتجات السيادية -->
             <div id="category-grid" class="grid gap-8 max-w-6xl mx-auto">
-                <!-- يُحقن آلياً بتخطيط ذكي (كارت أو كارتين) -->
+                <!-- يُحقن آلياً بتخطيط ذكي (كارت أو كارتين) مع عرض الوصف كاملاً -->
             </div>
         </section>
 
-        <!-- التوجيه الذكي 2: أداة باني التورتة الفاخرة -->
+        <!-- التوجيه الذكي 2: أداة باني التورتة الفاخرة (مع البوستر السيادي المضاف حديثاً) -->
         <section id="builder-container" class="container mx-auto px-4 hidden">
-            <div class="max-w-4xl mx-auto animate-fade">
-                <div class="text-center mb-16 px-4">
-                    <h2 class="text-3xl md:text-5xl font-bold text-brand-brown mb-4 tracking-tighter uppercase">جهز تورتة مناسبتك</h2>
-                    <p class="font-bold text-brand-pink uppercase tracking-widest text-sm text-balance">بنعمل لك اللي في خيالك بأحسن جودة</p>
+            
+            <!-- الهيدر والبوستر الخاص بقسم تصميم التورتة (يحاكي باقي الأقسام لمنع التكدس) -->
+            <div class="max-w-6xl mx-auto mb-16 animate-fade">
+                <div class="rounded-[40px] overflow-hidden shadow-sm border border-brand-pink/20 bg-white">
+                    <div class="w-full h-[30vh] md:h-[45vh] relative bg-brand-pinkLight">
+                        <!-- صورة أنيقة تعبر عن تصميم التورتة والتحضير -->
+                        <img src="https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="تصميم تورتة حلويات بوسي">
+                    </div>
+                    <div class="p-8 md:p-16 text-center bg-brand-pinkLight/30">
+                        <h2 class="text-4xl md:text-5xl font-bold text-brand-brown mb-6 tracking-tighter">صمم تورتة مناسبتك</h2>
+                        <p class="text-lg md:text-xl font-bold text-brand-brown/80 max-w-4xl mx-auto leading-relaxed text-balance">
+                            اختر الحجم، الشكل، والتفاصيل التي تناسب ذوقك. نحن في حلويات بوسي نحول خيالك إلى واقع ملموس بجودة لا تُضاهى لتكتمل سعادتك.
+                        </p>
+                    </div>
                 </div>
-                
+            </div>
+
+            <!-- أداة البناء الفاخرة -->
+            <div class="max-w-4xl mx-auto animate-fade">
                 <div class="bose-double-wrap shadow-premium overflow-hidden">
                     <div class="bose-double-inner p-8 md:p-14 bg-white">
                         <!-- الخطوة ١ -->
@@ -387,7 +399,7 @@
             </div>
         </section>
 
-        <!-- 🏷️ مساحة التقييمات وصفحات المراجعات (تم تعديل ترتيبها لتصبح قبل الاقتراحات) -->
+        <!-- 🏷️ مساحة التقييمات وصفحات المراجعات -->
         <section id="reviews-section" class="py-24 mt-20 border-t border-brand-pink/10 bg-brand-pinkLight/20">
             <div class="container mx-auto px-4 text-center max-w-6xl">
                 <h3 class="text-3xl md:text-5xl font-bold text-brand-brown mb-6 tracking-tighter">نفخر بتجاربكم معنا</h3>
@@ -396,16 +408,12 @@
                 </p>
                 
                 <div id="reviews-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                    <!-- سيتم حقن 3 مراجعات لكل صفحة هنا -->
                     <div class="col-span-full py-10 w-full font-bold text-brand-brown/40 italic">جاري عرض تجارب عملائنا...</div>
                 </div>
 
-                <!-- أزرار التنقل بين صفحات المراجعات -->
                 <div class="flex items-center justify-center gap-6 mb-16" id="reviews-pagination" style="display: none;">
                     <button onclick="window.ProductUI.changeReviewPage(-1)" class="w-12 h-12 rounded-full bg-white border-2 border-brand-pink flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
-                    <div id="reviews-dots" class="flex gap-3">
-                        <!-- النقاط -->
-                    </div>
+                    <div id="reviews-dots" class="flex gap-3"></div>
                     <button onclick="window.ProductUI.changeReviewPage(1)" class="w-12 h-12 rounded-full bg-white border-2 border-brand-pink flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
                 </div>
 
@@ -416,7 +424,7 @@
             </div>
         </section>
 
-        <!-- 🛍️ قسم مختارات صُممت لك (تم نقلها للنهاية وتكبير حجم الكروت بنسبة 50%) -->
+        <!-- 🛍️ قسم مختارات صُممت لك -->
         <section id="suggestions-area" class="py-24 border-t border-brand-pink/10 bg-white hidden animate-fade">
             <div class="text-center mb-16 flex flex-col items-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-brand-pinkLight text-brand-pink rounded-full mb-6 border border-brand-pink/20">
@@ -430,7 +438,7 @@
             
             <div class="relative group max-w-6xl mx-auto">
                 <div id="dynamic-suggestions-slider" class="flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-8 pb-8 px-4 pt-2">
-                    <!-- سيتم الحقن آلياً بكروت التوصيات الشخصية بحجم كبير (420px) -->
+                    <!-- سيتم الحقن آلياً بكروت التوصيات الشخصية بحجم ضخم (450px) -->
                 </div>
             </div>
         </section>
@@ -483,7 +491,7 @@
 
     <!-- قوالب الحقن السيادية للواجهة -->
     
-    <!-- 1. قالب الكارت المزدوج (كارتين في الصف) -->
+    <!-- 1. قالب الكارت المزدوج (كارتين في الصف مع عرض الوصف كاملاً) -->
     <template id="template-card-grid">
         <div class="bose-double-wrap group animate-fade h-full block text-decoration-none">
             <div class="bose-double-inner bg-white h-full flex flex-col">
@@ -539,9 +547,9 @@
         </div>
     </template>
 
-    <!-- 3. قالب كارت السلايدر المصغر (لقسم مختارات صُممت لك - الحجم الأكبر 420px) -->
+    <!-- 3. قالب كارت السلايدر المصغر (لقسم مختارات صُممت لك - الحجم الأكبر 450px) -->
     <template id="bose-suggestion-card-template">
-        <div class="snap-start flex-shrink-0 w-[85%] md:w-[420px]">
+        <div class="snap-start flex-shrink-0 w-[85%] md:w-[450px]">
             <div class="bose-double-wrap group animate-fade h-full block text-decoration-none">
                 <div class="bose-double-inner bg-white h-full flex flex-col">
                     <div class="aspect-[4/3] w-full overflow-hidden bg-brand-pinkLight border-b border-brand-pink/20 relative">
@@ -549,7 +557,7 @@
                     </div>
                     <div class="p-6 flex flex-col flex-grow text-right bg-white">
                         <h3 class="font-bold text-xl text-brand-brown mb-2 leading-tight">{PRODUCT_NAME}</h3>
-                        <p class="text-sm text-brand-brown opacity-60 font-bold mb-6 whitespace-normal">{CAT_NAME}</p>
+                        <p class="text-sm text-brand-brown opacity-60 font-bold mb-6 whitespace-normal leading-relaxed">{PRODUCT_DESC}</p>
                         <div class="mt-auto flex justify-between items-center border-t border-brand-pink/10 pt-4">
                             <span class="font-bold text-2xl text-brand-pink">{PRODUCT_PRICE} ج.م</span>
                             <button onclick="event.preventDefault(); event.stopPropagation(); window.ProductUI.addFromCard(this, '{PRODUCT_ID}')" class="w-12 h-12 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center hover:bg-brand-pink hover:text-white border border-brand-pink/20 transition-colors shadow-sm cursor-pointer">
@@ -568,7 +576,7 @@
     <script>
         lucide.createIcons();
 
-        // 🧠 محرك التوجيه الذكي وهندسة الواجهة للصفحات الداخلية
+        // 🧠 محرك الواجهة الموحد لصفحة المنتج
         window.ProductUI = {
             currentCategory: '',
             allCategoryProducts: [],
@@ -578,19 +586,20 @@
             
             // قاعدة البيانات المعرفية للأقسام
             categoryData: {
-                "التورت": { layout: "full", hasSizes: false, desc: "التورتة عندنا مش مجرد كيك، دي قطعة فنية بتشاركك أسعد لحظاتك. بنخبزها من أجود أنواع الدقيق، وبنحشيها طبقات غنية من الكريمة والمكسرات والفواكه الطازجة. بنهتم بكل تفصيلة عشان تليق بمناسبتك وتبهج ضيوفك." },
-                "الميني تورت": { layout: "full", hasSizes: false, desc: "كل طعم التورتة الفاخرة بس في حجم مناسب يشاركك لحظة روقان سريعة. كيك إسفنجي هش، وحشوات طبيعية بتدوب في البق. الاختيار المثالي لو عايز تدلع نفسك أو تهادي حد غالي عليك بحاجة مميزة." },
-                "الجاتوهات": { layout: "full", hasSizes: false, desc: "قطع فنية من الكيك الإسفنجي الخفيف، بنقدمها بتشكيلة واسعة من النكهات. من الشوكولاتة الغنية لحد الفواكه المنعشة. القطعة الواحدة كفيلة تفصلك عن دوشة اليوم وتعيشك تجربة تذوق استثنائية." },
-                "الكب كيك": { layout: "full", hasSizes: false, desc: "كب كيك مخبوز بشغف، هش جداً وغني بالنكهة. متغطي بطبقة كريمة غنية بتكمل الطعم. إضافة مثالية لأعياد الميلاد والتجمعات، بتعجب الكبار والصغيرين." },
-                "الورد": { layout: "full", hasSizes: false, desc: "لأن الهدايا بتكمل بالورد، وفرنا لك تشكيلة من أرقى باقات الورد الطبيعي المنسقة بعناية فائقة. اختيارك الأول للتعبير عن مشاعرك لمن تحب بكل رقي وفخامة." },
-                "بوكس الروقان": { layout: "full", hasSizes: false, desc: "صندوق السعادة المليان بتشكيلة من أحلى المخبوزات والحلويات. متصمم مخصوص عشان يظبط مزاجك أو يكون هدية قيمة جداً تشاركها مع اللي بتحبهم في قعدة صفا." },
-                "الريدڤيلڤت": { layout: "full", hasSizes: false, desc: "ملكة الكيك الكلاسيكي. طبقات من الكيك المخملي الأحمر الغني، محشية ومتغطية بصوص الجبنة الكريمي الأصلي اللي بيكسر الحلاوة ويديك توازن طعم ملوش مثيل." },
+                "تورت": { layout: "full", hasSizes: false, desc: "التورتة عندنا مش مجرد كيك، دي قطعة فنية بتشاركك أسعد لحظاتك. بنخبزها من أجود أنواع الدقيق، وبنحشيها طبقات غنية من الكريمة والمكسرات والفواكه الطازجة. بنهتم بكل تفصيلة عشان تليق بمناسبتك وتبهج ضيوفك." },
+                "ميني تورت": { layout: "full", hasSizes: false, desc: "كل طعم التورتة الفاخرة بس في حجم مناسب يشاركك لحظة روقان سريعة. كيك إسفنجي هش، وحشوات طبيعية بتدوب في البق. الاختيار المثالي لو عايز تدلع نفسك أو تهادي حد غالي عليك بحاجة مميزة." },
+                "جاتوه": { layout: "full", hasSizes: false, desc: "قطع فنية من الكيك الإسفنجي الخفيف، بنقدمها بتشكيلة واسعة من النكهات. من الشوكولاتة الغنية لحد الفواكه المنعشة. القطعة الواحدة كفيلة تفصلك عن دوشة اليوم وتعيشك تجربة تذوق استثنائية." },
+                "كب كيك": { layout: "full", hasSizes: false, desc: "كب كيك مخبوز بشغف، هش جداً وغني بالنكهة. متغطي بطبقة كريمة غنية بتكمل الطعم. إضافة مثالية لأعياد الميلاد والتجمعات، بتعجب الكبار والصغيرين." },
+                "ورد": { layout: "full", hasSizes: false, desc: "لأن الهدايا بتكمل بالورد، وفرنا لك تشكيلة من أرقى باقات الورد الطبيعي المنسقة بعناية فائقة. اختيارك الأول للتعبير عن مشاعرك لمن تحب بكل رقي وفخامة." },
+                "روقان": { layout: "full", hasSizes: false, desc: "صندوق السعادة المليان بتشكيلة من أحلى المخبوزات والحلويات. متصمم مخصوص عشان يظبط مزاجك أو يكون هدية قيمة جداً تشاركها مع اللي بتحبهم في قعدة صفا." },
+                "ريدفيلفت": { layout: "full", hasSizes: false, desc: "ملكة الكيك الكلاسيكي. طبقات من الكيك المخملي الأحمر الغني، محشية ومتغطية بصوص الجبنة الكريمي الأصلي اللي بيكسر الحلاوة ويديك توازن طعم ملوش مثيل." },
+                "ريدڤيلڤت": { layout: "full", hasSizes: false, desc: "ملكة الكيك الكلاسيكي. طبقات من الكيك المخملي الأحمر الغني، محشية ومتغطية بصوص الجبنة الكريمي الأصلي اللي بيكسر الحلاوة ويديك توازن طعم ملوش مثيل." },
                 
-                "الدوناتس": { layout: "grid", hasSizes: false, desc: "عجينة قطنية هشة جداً، بنقليها بحرفية عشان تطلع خفيفة ومش شاربة زيت. بنغطيها بصوصات طبيعية غنية من الشوكولاتة والكراميل اللي بتدوب مع أول قطمة." },
-                "السينابون": { layout: "grid", hasSizes: false, desc: "لفائف من العجينة القطنية الهشة المخبوزة طازة، محشية بقرفة أصلية وسكر بني، وغرقانة في صوص الجبنة الكريمي الناعم. الاختيار المثالي لعشاق الدفا والطعم المميز." },
-                "القشطوطة": { layout: "grid", hasSizes: false, desc: "كيكة إسفنجية هشة غرقانة في مزيج حليب غني، متغطية بطبقة كريمة خفيفة وصوصات طبيعية (زي الكراميل أو الفستق). توازن مثالي بين السكر المضبوط والطعم اللي بيدوب." },
-                "كبات السعادة": { layout: "grid", hasSizes: false, desc: "كاسات مليانة بطبقات من الكيك، الكريمة، والمكسرات والصوصات الغنية. كل معلقة منها بتاخدك في رحلة طعم مختلفة. متوفرة بنكهات ترضي كل الأذواق." },
-                "الديسباسيتو": { layout: "grid", hasSizes: true, desc: "طبقات من كيك الشوكولاتة الغني المخبوز بعناية، متغطي بطبقة موس شوكولاتة ناعم ونوتيلا أصلية. الاختيار المفضل لعشاق الشوكولاتة القوية. متوفرة بأحجام مختلفة تناسبك إنت وعيلتك." },
+                "دونات": { layout: "grid", hasSizes: false, desc: "عجينة قطنية هشة جداً، بنقليها بحرفية عشان تطلع خفيفة ومش شاربة زيت. بنغطيها بصوصات طبيعية غنية من الشوكولاتة والكراميل اللي بتدوب مع أول قطمة." },
+                "سينابون": { layout: "grid", hasSizes: false, desc: "لفائف من العجينة القطنية الهشة المخبوزة طازة، محشية بقرفة أصلية وسكر بني، وغرقانة في صوص الجبنة الكريمي الناعم. الاختيار المثالي لعشاق الدفا والطعم المميز." },
+                "قشطوطة": { layout: "grid", hasSizes: false, desc: "كيكة إسفنجية هشة غرقانة في مزيج حليب غني، متغطية بطبقة كريمة خفيفة وصوصات طبيعية (زي الكراميل أو الفستق). توازن مثالي بين السكر المضبوط والطعم اللي بيدوب." },
+                "كبات": { layout: "grid", hasSizes: false, desc: "كاسات مليانة بطبقات من الكيك، الكريمة، والمكسرات والصوصات الغنية. كل معلقة منها بتاخدك في رحلة طعم مختلفة. متوفرة بنكهات ترضي كل الأذواق." },
+                "ديسباسيتو": { layout: "grid", hasSizes: true, desc: "طبقات من كيك الشوكولاتة الغني المخبوز بعناية، متغطي بطبقة موس شوكولاتة ناعم ونوتيلا أصلية. الاختيار المفضل لعشاق الشوكولاتة القوية. متوفرة بأحجام مختلفة تناسبك إنت وعيلتك." },
                 
                 "default": { layout: "grid", hasSizes: false, desc: "منتجات حلويات بوسي الفاخرة، تُحضر يومياً من أجود المكونات لضمان تقديم تجربة تذوق استثنائية تليق بكم." }
             },
@@ -640,14 +649,20 @@
                 const catalog = window.BoseState?.catalog || [];
                 this.allCategoryProducts = catName === 'all' ? catalog : catalog.filter(p => p.category === catName);
 
-                const data = this.categoryData[catName] || this.categoryData["default"];
+                let matchedKey = "default";
+                Object.keys(this.categoryData).forEach(key => {
+                    if (catName.includes(key) || key.includes(catName)) {
+                        matchedKey = key;
+                    }
+                });
+                const data = this.categoryData[matchedKey];
+
                 const headerContainer = document.getElementById('category-header-container');
                 const tabsContainer = document.getElementById('size-tabs-container');
                 const gridContainer = document.getElementById('category-grid');
 
                 const displayName = catName === 'all' ? 'منتجات حلويات بوسي' : catName;
                 
-                // سحب الصورة الحقيقية للقسم من منتجاتنا في الكتالوج لمنع العشوائية
                 let dynamicPoster = 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
                 if (this.allCategoryProducts.length > 0) {
                     let firstProdImg = this.allCategoryProducts[0].img || this.allCategoryProducts[0].image;
@@ -698,7 +713,12 @@
                     filtered = this.allCategoryProducts.filter(p => p.name.includes(sizeQuery));
                 }
 
-                const data = this.categoryData[this.currentCategory] || this.categoryData["default"];
+                let matchedKey = "default";
+                Object.keys(this.categoryData).forEach(key => {
+                    if (this.currentCategory.includes(key) || key.includes(this.currentCategory)) { matchedKey = key; }
+                });
+                const data = this.categoryData[matchedKey];
+                
                 this.renderCards(filtered, data.layout);
             },
 
@@ -724,7 +744,7 @@
                 lucide.createIcons();
             },
 
-            // --- التوصيات الشخصية المبنية على السلوك (Smart Suggestions) ---
+            // --- التوصيات الشخصية المبنية على السلوك ---
             renderSmartSuggestions: function() {
                 const catalog = window.BoseState?.catalog || [];
                 const container = document.getElementById('suggestions-area');
@@ -763,6 +783,7 @@
                             .replace(/{PRODUCT_NAME}/g, p.name)
                             .replace(/{CAT_NAME}/g, p.category || 'صنف فاخر')
                             .replace(/{PRODUCT_IMAGE}/g, window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image))
+                            .replace(/{PRODUCT_DESC}/g, p.description || p.desc || 'يتم التحضير بأجود المكونات لضمان تجربة تذوق استثنائية.')
                             .replace(/{PRODUCT_PRICE}/g, parseFloat(p.price) || 0);
                     }).join('');
                     lucide.createIcons();
@@ -856,7 +877,6 @@
                 this.renderReviewsPage();
             },
 
-            // نوافذ التقييم السيادية
             openReviewModal: function() {
                 const modal = document.getElementById('review-modal');
                 if(modal) modal.classList.add('active');
@@ -934,7 +954,6 @@
             }
         };
 
-        // إدارة القائمة الجانبية السيادية
         window.toggleSidebar = function() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -951,13 +970,6 @@
             }
         };
 
-        window.slideSuggestions = function(dir) {
-            const slider = document.getElementById('dynamic-suggestions-slider');
-            // عرض الكارت 420px + الفجوة 32px تقريباً
-            if(slider) slider.scrollBy({ left: 450 * dir * -1, behavior: 'smooth' });
-        };
-
-        // الاستماع للمحرك السيادي
         window.addEventListener('BoseSweets_Engine_Ready', () => {
             window.ProductUI.initRouter();
             window.ProductUI.syncCartBadge();
@@ -969,11 +981,11 @@
 
         window.addEventListener('BoseSweets_Cart_Updated', () => window.ProductUI.syncCartBadge());
 
-        // ضمان التشغيل
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => { if(window.BoseState?.isAppReady) window.ProductUI.initRouter(); }, 1500);
         });
     </script>
 </body>
 </html>
+
 
