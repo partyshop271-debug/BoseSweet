@@ -373,6 +373,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- الزر الخاص بالانتقال للمرحلة التانية -->
                             <button onclick="window.ProductUI.nextStep(2)" class="btn-solid w-full text-xl py-5 rounded-full mt-8 cursor-pointer shadow-md hover:shadow-lg">متابعة للمرحلة التانية <i data-lucide="arrow-left" class="mr-2 inline"></i></button>
                         </div>
 
@@ -1037,15 +1038,19 @@
                     return;
                 }
                 this.state.shape = sh;
-                btn.parentElement.querySelectorAll('.builder-option-card').forEach(b => b.classList.remove('selected'));
+                btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
             },
 
             syncShapeUI: function() {
-                const btns = document.querySelectorAll('#step-2 .builder-option-card');
+                // تعديل بسيط هنا لاستهداف الأزرار الصحيحة في المرحلة الأولى كما في الكود الأصلي
+                const btns = document.querySelectorAll('#builder-step-1 .option-btn');
                 btns.forEach(b => {
                     b.classList.remove('selected');
-                    if(b.getAttribute('onclick').includes(`'${this.state.shape}'`)) b.classList.add('selected');
+                    const onclickValue = b.getAttribute('onclick');
+                    if(onclickValue && onclickValue.includes('setShape') && onclickValue.includes(`'${this.state.shape}'`)) {
+                        b.classList.add('selected');
+                    }
                 });
             },
 
@@ -1060,8 +1065,14 @@
             },
 
             nextStep: function(n) {
+                // تم حل المشكلة هنا من خلال تعديل 'step-${n}' إلى 'builder-step-${n}'
                 document.querySelectorAll('.builder-step-content').forEach(s => s.classList.add('hidden'));
-                document.getElementById(`step-${n}`).classList.remove('hidden');
+                
+                const targetStep = document.getElementById(`builder-step-${n}`);
+                if(targetStep) {
+                    targetStep.classList.remove('hidden');
+                }
+
                 const builderSection = document.getElementById('builder-container');
                 if(builderSection) {
                     const y = builderSection.getBoundingClientRect().top + window.pageYOffset - 100;
@@ -1071,7 +1082,7 @@
 
             setPrint: function(type, btn) {
                 this.state.print = type;
-                btn.parentElement.querySelectorAll('.builder-option-card').forEach(b => {
+                btn.parentElement.querySelectorAll('.option-btn').forEach(b => {
                     b.classList.remove('selected');
                     const icon = b.querySelector('i');
                     if(icon) { icon.classList.remove('lucide-check-circle', 'text-brand-pink'); icon.classList.add('lucide-circle', 'text-gray-300'); }
@@ -1088,7 +1099,7 @@
 
             setGift: function(val, btn) {
                 this.state.gift = val;
-                btn.parentElement.querySelectorAll('.builder-option-card').forEach(b => b.classList.remove('selected'));
+                btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
                 const ga = document.getElementById('gift-card-area');
                 if(val) ga.classList.remove('hidden'); else ga.classList.add('hidden');
