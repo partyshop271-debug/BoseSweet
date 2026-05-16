@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <title>راجع طلبك | حلويات بوسي</title>
-    <meta name="description" content="سلة مشتريات حلويات بوسي. جودة وإتقان في كل تفصيلة لضمان تجربة تذوق استثنائية.">
+    <title>مراجعة الطلب | حلويات بوسي</title>
+    <meta name="description" content="سلة مشتريات حلويات بوسي. التزام تام بأعلى معايير الجودة والإتقان.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,22 +27,18 @@
                             white: '#ffffff' 
                         } 
                     },
-                    fontFamily: {
-                        sans: ['Cairo', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Cairo', 'sans-serif'] }
                 } 
             } 
         }
     </script>
     
     <style>
-        /* 🛡️ درع التحصين البصري واللوني الموحد */
-        body { background-color: #ffffff; color: #3d241c; -webkit-tap-highlight-color: transparent; font-family: 'Cairo', sans-serif; }
+        body { background-color: #ffffff; color: #3d241c; -webkit-tap-highlight-color: transparent; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
         * { font-weight: 400; color: inherit; box-sizing: border-box; }
         .font-bold, h1, h2, h3, h4, .btn-solid, .ticker-item { font-weight: 700 !important; }
-        .font-black { font-weight: 900 !important; } 
+        .font-black { font-weight: 900 !important; }
 
-        /* الشريط المتحرك (Ticker) الموحد */
         .ticker-wrap {
             width: 100%; overflow: hidden; background-color: #ff91a4;
             display: flex; direction: rtl; border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -52,7 +48,6 @@
         .ticker-item { padding: 10px 40px; color: #ffffff !important; font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
         @keyframes seamlessTicker { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
 
-        /* القائمة الجانبية السيادية الموحدة */
         .sidebar {
             position: fixed !important; top: 0 !important; right: -100% !important; 
             width: 340px !important; max-width: 85% !important; height: 100% !important;
@@ -70,52 +65,16 @@
         details > summary { list-style: none; cursor: pointer; outline: none;}
         details > summary::-webkit-details-marker { display: none; }
 
-        /* الإطار المزدوج - هندسة المساحات الواسعة */
         .bose-double-wrap {
             background: #ffffff; border-radius: 40px; border: 2px solid #ff91a4; padding: 8px;
             transition: all 0.4s ease; display: flex; flex-direction: column;
             box-shadow: 0 10px 40px rgba(255, 145, 164, 0.08);
         }
         .bose-double-inner {
-            background: #ffffff; border-radius: 32px; border: 2px solid #ff91a4; /* توكيد الإطار 2px */
+            background: #ffffff; border-radius: 32px; border: 2px solid #ff91a4;
             overflow: hidden; position: relative;
         }
 
-        /* حقول الإدخال (الدرع البصري والمساحات الواسعة) */
-        .form-input {
-            width: 100%; padding: 22px 26px;
-            border: 2px solid rgba(255, 145, 164, 0.3) !important; border-radius: 24px;
-            font-family: inherit; font-weight: 700; color: #3d241c !important; font-size: 1.1rem;
-            background: #ffffff !important; transition: all 0.3s ease; outline: none;
-        }
-        .form-input:focus { border-color: #ff91a4 !important; box-shadow: 0 0 0 5px rgba(255, 145, 164, 0.1); transform: translateY(-2px); }
-        .form-input::placeholder { color: rgba(61, 36, 28, 0.4) !important; font-weight: 700; }
-        select.form-input { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ff91a4'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: left 1.5rem center; background-size: 1.5em; }
-
-        /* أزرار طرق الاستلام */
-        .delivery-btn {
-            border: 2px solid rgba(255, 145, 164, 0.3); border-radius: 24px;
-            padding: 30px 20px; text-align: center; cursor: pointer;
-            transition: all 0.3s ease; background: #ffffff; font-weight: 700; font-size: 1.1rem;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;
-        }
-        .delivery-btn:hover { transform: translateY(-4px); box-shadow: 0 10px 25px rgba(255,145,164,0.1); border-color: #ff91a4; }
-        .delivery-btn.selected { border-color: #ff91a4; background: #fff5f6; color: #ff91a4; box-shadow: 0 10px 25px rgba(255,145,164,0.2); }
-
-        /* النوافذ المنبثقة السيادية */
-        .bose-modal-overlay {
-            position: fixed; inset: 0; background: rgba(255, 145, 164, 0.85); backdrop-filter: blur(5px);
-            z-index: 10000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
-        }
-        .bose-modal-overlay.active { display: flex; opacity: 1; }
-        .bose-modal-content {
-            background: #ffffff; border: 4px solid #ff91a4; border-radius: 40px; padding: 60px 40px;
-            width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 50px rgba(255, 145, 164, 0.3);
-            transform: scale(0.9); transition: transform 0.3s ease; position: relative;
-        }
-        .bose-modal-overlay.active .bose-modal-content { transform: scale(1); }
-
-        /* 🚀 نافذة التنبيهات (الكبسولة الذكية الفاخرة المعتمدة لحلويات بوسي) */
         .bose-toast {
             position: fixed; top: 90px; left: 50%; transform: translateX(-50%);
             width: 90%; max-width: 420px; background: #ffffff; border: 2px solid #ff91a4; padding: 14px 24px;
@@ -127,66 +86,33 @@
         .bose-toast i { flex-shrink: 0; }
         @keyframes slideDownToast { from { top: -50px; opacity: 0; } to { top: 90px; opacity: 1; } }
 
-        /* تخصيص أزرار الراديو لخيارات الاستلام */
-        .delivery-radio-input { display: none; }
-        .delivery-radio-label {
-            display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 14px;
-            border-radius: 16px; border: 2px solid rgba(255, 145, 164, 0.2); background: #ffffff;
-            transition: all 0.3s ease;
-        }
-        .delivery-radio-input:checked + .delivery-radio-label {
-            border-color: #ff91a4; background: #fff5f6;
-        }
-        .delivery-radio-circle {
-            width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255, 145, 164, 0.5);
-            display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;
-        }
-        .delivery-radio-input:checked + .delivery-radio-label .delivery-radio-circle {
-            border-color: #ff91a4;
-        }
-        .delivery-radio-circle::after {
-            content: ''; width: 10px; height: 10px; border-radius: 50%; background: #ff91a4;
-            transform: scale(0); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .delivery-radio-input:checked + .delivery-radio-label .delivery-radio-circle::after {
-            transform: scale(1);
-        }
-
         .spin-animation { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(-360deg); } }
         .animate-fade { animation: fade 0.5s ease forwards; }
         @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .suggestions-slider {
-            display: flex; overflow-x: auto; gap: 24px; scroll-snap-type: x mandatory;
-            padding-bottom: 20px; padding-top: 10px; -ms-overflow-style: none; scrollbar-width: none;
-        }
-        .suggestion-item { min-width: 280px; max-width: 280px; scroll-snap-align: center; }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-pink selection:text-white">
 
-    <!-- نافذة الإشعارات السيادية המوحدة (الكبسولة الذكية) -->
     <div id="bose-toast" class="bose-toast">
         <i data-lucide="check-circle" class="w-6 h-6 text-brand-pink"></i>
-        <span id="bose-toast-msg">تمت العملية بنجاح</span>
+        <span id="bose-toast-msg">تنبيه</span>
     </div>
 
-    <!-- شريط الإشعارات العلوي المؤسسي -->
     <div class="ticker-wrap shadow-sm">
         <div class="ticker-scroll">
-            <div class="ticker-item">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
-            <div class="ticker-item">خبرة عشر سنين في صناعة السعادة بالفرافرة</div>
-            <div class="ticker-item">أرقى باقات الورد الطبيعي المنسقة لمناسباتكم السعيدة</div>
-            <div class="ticker-item">طازجة من فرننا إلى مائدتك مخبوزة بحب وشغف</div>
-            <div class="ticker-item">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
-            <div class="ticker-item">خبرة عشر سنين في صناعة السعادة بالفرافرة</div>
-            <div class="ticker-item">أرقى باقات الورد الطبيعي المنسقة لمناسباتكم السعيدة</div>
-            <div class="ticker-item">طازجة من فرننا إلى مائدتك مخبوزة بحب وشغف</div>
+            <div class="ticker-item">الجودة والإتقان في كل تفصيلة من حلويات بوسي</div>
+            <div class="ticker-item">عشر سنوات من الشغف في صناعة الحلويات</div>
+            <div class="ticker-item">مخبوزات طازجة يومياً بأعلى معايير الجودة</div>
+            <div class="ticker-item">اختيارك الأول للمناسبات واللحظات المهمة</div>
+            <div class="ticker-item">الجودة والإتقان في كل تفصيلة من حلويات بوسي</div>
+            <div class="ticker-item">عشر سنوات من الشغف في صناعة الحلويات</div>
+            <div class="ticker-item">مخبوزات طازجة يومياً بأعلى معايير الجودة</div>
+            <div class="ticker-item">اختيارك الأول للمناسبات واللحظات المهمة</div>
         </div>
     </div>
 
-    <!-- الهيدر الرسمي الموحد -->
     <header class="border-b border-brand-pink/20 sticky top-0 z-[100] bg-white/95 backdrop-blur-md transition-all py-4 shadow-sm main-header">
         <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
             <div class="w-1/3 flex justify-start">
@@ -201,7 +127,7 @@
                 </a>
             </div>
             <div class="w-1/3 flex justify-end items-center gap-5">
-                <button class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" onclick="window.ProductUI.showToast('خاصية البحث تحت التطوير حالياً لضمان أفضل تجربة.')">
+                <button class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" onclick="window.ProductUI.showToast('خاصية البحث سيتم تفعيلها قريباً')">
                     <i data-lucide="search" class="w-6 h-6 text-brand-pink"></i>
                 </button>
                 <a href="cart.html" class="relative text-brand-pink hover:text-brand-brown transition-colors cursor-pointer text-decoration-none">
@@ -212,7 +138,6 @@
         </div>
     </header>
 
-    <!-- القائمة الجانبية الاحترافية -->
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
     <aside id="sidebar" class="sidebar">
         <div class="p-6 flex justify-between items-center border-b border-brand-pink/20 bg-brand-pinkLight">
@@ -232,98 +157,68 @@
                     <div class="flex items-center gap-3"><i data-lucide="layout-grid" class="w-5 h-5 text-brand-pink"></i> تصفح المنيو</div>
                     <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180 text-brand-pink"></i>
                 </summary>
-                <div class="flex flex-col gap-1 pl-12 pr-4 pt-2 pb-4 border-l-2 border-brand-pink/20 ml-4 mr-2" id="sidebar-dynamic-categories">
+                <div class="flex flex-col gap-1 pl-12 pr-4 pt-2 pb-4 border-l-2 border-brand-pink/20 ml-4 mr-2">
                     <a href="menu.html" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">عرض كل المنيو</a>
-                    <a href="product.html?category=التورت" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">التورت الفاخرة</a>
+                    <a href="product.html?category=التورت" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">التورت</a>
                     <a href="product.html?category=الجاتوهات" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">الجاتوهات</a>
                 </div>
             </details>
             <a href="product.html?action=build_cake" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
-                <i data-lucide="cake" class="w-5 h-5 text-brand-pink"></i> صمم تورتة مناسبتك
+                <i data-lucide="cake" class="w-5 h-5 text-brand-pink"></i> تصميم تورتة خاصة
             </a>
             <a href="product.html?category=ورد" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
-                <i data-lucide="flower-2" class="w-5 h-5 text-brand-pink"></i> قسم الورد الطبيعي
+                <i data-lucide="flower-2" class="w-5 h-5 text-brand-pink"></i> الورد الطبيعي
             </a>
         </nav>
-        <div class="p-6 border-t border-brand-pink/20 bg-brand-pinkLight/50">
-            <a href="cart.html" class="w-full py-4 bg-brand-pink text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white hover:text-brand-pink border-2 border-brand-pink transition-colors cursor-pointer text-decoration-none shadow-sm">
-                <i data-lucide="shopping-basket" class="w-5 h-5"></i> <span>مراجعة السلة</span>
-            </a>
-        </div>
     </aside>
 
-    <main class="container mx-auto px-4 py-12 max-w-6xl min-h-[60vh]">
+    <main class="container mx-auto px-4 py-16 md:py-24 max-w-6xl min-h-[60vh]">
         <div class="text-center mb-16">
-            <h2 class="text-3xl md:text-5xl font-black text-brand-brown mb-3 tracking-tighter uppercase">راجع طلبك</h2>
-            <p class="font-bold text-brand-brown/60 text-base">خطوة واحدة وتكتمل تفاصيل مناسبتك السعيدة</p>
+            <h2 class="text-4xl md:text-6xl font-black text-brand-brown mb-4 tracking-tighter uppercase">مراجعة الطلب</h2>
+            <p class="font-bold text-brand-brown/60 text-lg">راجع تفاصيل المشتريات قبل الانتقال لصفحة التأكيد.</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            
+            <!-- قائمة المنتجات (أفقية ومريحة للعين) -->
             <div class="lg:col-span-2 space-y-6" id="cart-items-list">
                 <div class="text-center py-20 opacity-50 font-black">
-                    <i data-lucide="loader-2" class="spin-animation w-12 h-12 mx-auto mb-4 text-brand-pink"></i> جاري عرض وتجهيز الطلب...
+                    <i data-lucide="loader-2" class="spin-animation w-12 h-12 mx-auto mb-4 text-brand-pink"></i> جاري عرض تفاصيل السلة...
                 </div>
             </div>
 
+            <!-- ملخص السلة (مبسط ومطهر من خيارات الشحن) -->
             <div class="lg:col-span-1">
                 <div class="bose-double-wrap sticky top-28" id="cart-summary-box" style="display: none;">
                     <div class="bose-double-inner p-8 bg-white">
-                        <h3 class="text-2xl font-black text-brand-brown mb-6 border-b-2 border-brand-pink/10 pb-4 tracking-tighter uppercase">ملخص الطلب</h3>
-                        
-                        <div class="flex justify-between font-bold mb-5 text-lg text-brand-brown">
-                            <span>حساب المنتجات</span>
-                            <span id="summary-subtotal" class="font-black text-brand-pink">0 ج.م</span>
-                        </div>
-                        
-                        <div class="mb-6 pt-4 border-t border-brand-pink/10">
-                            <p class="font-bold text-brand-brown text-sm mb-3 opacity-80">آلية استلام الطلب المفضلة:</p>
-                            <div class="flex flex-col gap-3">
-                                <div>
-                                    <input type="radio" id="delivery_option" name="shipping_method" value="delivery" class="delivery-radio-input" checked onchange="window.updateShippingUI()">
-                                    <label for="delivery_option" class="delivery-radio-label">
-                                        <div class="delivery-radio-circle"></div>
-                                        <span class="font-bold text-brand-brown text-sm">توصيل للعنوان المذكور</span>
-                                    </label>
-                                </div>
-                                <div>
-                                    <input type="radio" id="pickup_option" name="shipping_method" value="pickup" class="delivery-radio-input" onchange="window.updateShippingUI()">
-                                    <label for="pickup_option" class="delivery-radio-label">
-                                        <div class="delivery-radio-circle"></div>
-                                        <span class="font-bold text-brand-brown text-sm">استلام من مقر الفرع (الفرافرة)</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
+                        <h3 class="text-2xl font-black text-brand-brown mb-6 border-b-2 border-brand-pink/10 pb-4 tracking-tighter uppercase">ملخص السلة</h3>
 
-                        <div class="flex justify-between font-bold mb-8 text-sm text-brand-brown bg-brand-pinkLight p-4 rounded-xl border border-brand-pink/20">
-                            <span>تكلفة التوصيل</span>
-                            <span id="shipping-cost-display" class="text-brand-pink font-black">تحدد لاحقاً</span>
-                        </div>
-
-                        <div class="flex justify-between items-center font-black text-3xl text-brand-pink border-t-2 border-dashed border-brand-pink/30 pt-6 mb-10 tracking-tighter">
-                            <span class="text-xl text-brand-brown">الإجمالي النهائي</span>
+                        <div class="flex justify-between items-center font-black text-3xl text-brand-pink mb-8 tracking-tighter">
+                            <span class="text-xl text-brand-brown">الإجمالي المبدئي</span>
                             <span id="summary-total">0 ج.م</span>
                         </div>
 
                         <button onclick="window.proceedToCheckout()" class="btn-solid w-full py-5 rounded-full text-2xl cursor-pointer shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3 border-none">
-                            تأكيد الطلب <i data-lucide="check-circle" class="w-6 h-6"></i>
+                            متابعة لإتمام الطلب <i data-lucide="arrow-left" class="w-6 h-6"></i>
                         </button>
+                        
+                        <p class="text-center font-bold text-brand-brown/60 text-sm mt-5 text-balance px-2">يتم تحديد طريقة الاستلام وتكلفة التوصيل في الخطوة القادمة.</p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- 🛍️ قسم التوصيات والمقترحات (تم تفعيل شبكة الأخطبوط عليه بالكامل) -->
+    <!-- 🛍️ قسم التوصيات والمقترحات -->
     <section class="py-24 bg-brand-pinkLight/20 border-t border-brand-pink/10 mt-10" id="suggestions-area" style="display: none;">
         <div class="container mx-auto px-4 text-center max-w-6xl">
-            <h3 class="text-3xl font-black text-brand-brown mb-12 tracking-tighter uppercase">منتجات قد تنال إعجابكم</h3>
+            <h3 class="text-3xl font-black text-brand-brown mb-12 tracking-tighter uppercase">منتجات بنرشحها لك</h3>
             
             <div class="relative group">
                 <button onclick="slideSuggestions(-1)" class="absolute top-1/2 -translate-y-1/2 -right-4 z-20 w-12 h-12 rounded-full bg-white border-2 border-brand-pink/30 text-brand-pink flex items-center justify-center shadow-lg hover:bg-brand-pink hover:text-white transition-all opacity-0 group-hover:opacity-100 hidden md:flex cursor-pointer"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
                 <button onclick="slideSuggestions(1)" class="absolute top-1/2 -translate-y-1/2 -left-4 z-20 w-12 h-12 rounded-full bg-white border-2 border-brand-pink/30 text-brand-pink flex items-center justify-center shadow-lg hover:bg-brand-pink hover:text-white transition-all opacity-0 group-hover:opacity-100 hidden md:flex cursor-pointer"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
 
-                <div id="cart-suggestions-slider" class="suggestions-slider px-2">
+                <div id="cart-suggestions-slider" class="flex overflow-x-auto snap-x snap-mandatory no-scrollbar gap-8 pb-8 px-4 pt-2">
                     <!-- يحقن آلياً -->
                 </div>
             </div>
@@ -338,7 +233,7 @@
                     <div class="mb-6 inline-flex items-center justify-center w-16 h-16 bg-brand-pinkLight text-brand-pink rounded-2xl border-brand-pink/20 shadow-sm border-2">
                         <i data-lucide="gem" class="w-8 h-8 text-brand-pink"></i>
                     </div>
-                    <p class="text-brand-brown font-bold text-base leading-loose max-w-xs opacity-90 mx-auto">طازجة من فرننا إلى مائدتك، مخبوزاتنا مصنوعة بحب وشغف. الالتزام بالجودة وإرضاء عملائنا هو أساس كل ما نقدمه في حلويات بوسي.</p>
+                    <p class="text-brand-brown font-bold text-base leading-loose max-w-xs opacity-90 mx-auto">الجودة في حلويات بوسي مش مجرد كلمة، دي التزام. شغفنا بيبدأ من اختيار أجود الخامات عشان نوصلك طعم بيفضل في الذاكرة.</p>
                 </div>
                 <div class="flex flex-col items-center justify-center">
                     <h4 class="text-brand-brown font-black text-xl mb-6">الشركة</h4>
@@ -372,14 +267,9 @@
         </div>
     </footer>
 
-    <!-- ربط المحرك السيادي الموحد -->
     <script type="module" src="unified-engine.js"></script>
 
     <script type="module">
-        /**
-         * 👑 واجهة التحكم لحقيبة المشتريات (الإصدار السيادي)
-         */
-
         window.ProductUI = {
             showToast: function(msg) {
                 const toast = document.getElementById('bose-toast');
@@ -387,15 +277,15 @@
                 if(!toast || !text) return;
                 text.innerText = msg;
                 toast.style.display = 'flex';
-                // إجبار الأنيميشن على العمل في الكبسولة الفاخرة الجديدة
                 toast.style.animation = 'none';
                 toast.offsetHeight; 
                 toast.style.animation = 'slideDownToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
-                setTimeout(() => { toast.style.display = 'none'; }, 4000);
+                setTimeout(() => { toast.style.display = 'none'; }, 3000);
             }
         };
 
         window.showToastMessage = window.ProductUI.showToast;
+        window.showSystemToast = window.ProductUI.showToast; 
 
         window.syncCartBadge = function() {
             const count = window.BoseState?.cart?.reduce((acc, item) => acc + (item.quantity || item.qty || 1), 0) || 0;
@@ -417,30 +307,23 @@
             window.cartSystem.saveCartToStorage();
             syncCartInterface();
             window.syncCartBadge();
-            window.showToastMessage(`تم إزالة [${itemName}] من حقيبة المشتريات.`);
+            window.showToastMessage(`تم إزالة [${itemName}] من السلة.`);
             const event = new CustomEvent('BoseSweets_Cart_Updated');
             window.dispatchEvent(event);
         };
 
-        window.updateShippingUI = function() {
-            const isPickup = document.getElementById('pickup_option').checked;
-            const shippingDisplay = document.getElementById('shipping-cost-display');
-            
-            if (isPickup) {
-                shippingDisplay.innerText = "مجاناً";
-                shippingDisplay.classList.remove('text-brand-pink');
-                shippingDisplay.classList.add('text-green-600');
-            } else {
-                shippingDisplay.innerText = "تحدد في الخطوة القادمة";
-                shippingDisplay.classList.add('text-brand-pink');
-                shippingDisplay.classList.remove('text-green-600');
-            }
-            localStorage.setItem('Bose_Shipping_Preference', isPickup ? 'pickup' : 'delivery');
+        window.proceedToCheckout = function() {
+            window.location.href = 'checkout.html';
         };
 
-        window.proceedToCheckout = function() {
-            window.updateShippingUI();
-            window.location.href = 'checkout.html';
+        window.updateTempQtyContext = function(btn, delta) {
+            const display = btn.parentElement.querySelector('.temp-qty-display');
+            if (display) {
+                let val = parseInt(display.innerText) + delta;
+                if (val < 1) val = 1;
+                if (val > 50) val = 50;
+                display.innerText = val;
+            }
         };
 
         function syncCartInterface() {
@@ -455,9 +338,9 @@
                         <div class="w-24 h-24 mx-auto rounded-full bg-brand-pinkLight flex items-center justify-center mb-6 border border-brand-pink/20">
                             <i data-lucide="shopping-basket" class="w-12 h-12 text-brand-pink opacity-80"></i>
                         </div>
-                        <h4 class="font-black text-brand-brown text-3xl mb-4">حقيبة الطلبات فارغة حالياً</h4>
-                        <p class="font-bold text-brand-brown/60 text-lg mb-10 text-balance px-4">يسعدنا تصفحكم للمنيو واختيار ما يناسب ذوقكم الراقي من منتجاتنا الفاخرة.</p>
-                        <a href="menu.html" class="btn-solid inline-block cursor-pointer text-decoration-none">تصفح المنيو الآن</a>
+                        <h4 class="font-black text-brand-brown text-3xl mb-4">سلة المشتريات فارغة</h4>
+                        <p class="font-bold text-brand-brown/60 text-lg mb-10 text-balance px-4">تقدر تتصفح المنيو وتختار من منتجاتنا.</p>
+                        <a href="menu.html" class="btn-solid inline-block cursor-pointer text-decoration-none">تصفح المنيو</a>
                     </div>`;
                 if (summaryBox) summaryBox.style.display = 'none';
                 if (window.lucide) lucide.createIcons();
@@ -475,73 +358,72 @@
                 let qty = parseInt(item.quantity || item.qty) || 1;
                 actualSubtotal += (displayPrice * qty);
 
-                // استنباط القسم لتفعيل شبكة الأخطبوط
                 let catName = 'all';
                 if (!item.isCustom) {
-                    const productRef = BoseState.catalogMap.get(String(item.id)) || BoseState.catalog.find(p => String(p.id) === String(item.id));
+                    const productRef = window.BoseState?.catalogMap?.get(String(item.id)) || window.BoseState?.catalog?.find(p => String(p.id) === String(item.id));
                     if (productRef && productRef.category) catName = productRef.category;
+                    else if (item.category) catName = item.category;
                 }
                 
-                let linkWrapperStart = item.isCustom ? '<div>' : `<a href="product.html?category=${catName}" class="cursor-pointer text-decoration-none block group-hover:opacity-80 transition-opacity">`;
+                let linkWrapperStart = item.isCustom ? '<div>' : `<a href="product.html?category=${encodeURIComponent(catName)}" class="cursor-pointer text-decoration-none block group-hover:opacity-80 transition-opacity">`;
                 let linkWrapperEnd = item.isCustom ? '</div>' : `</a>`;
 
                 let customDetailsHtml = '';
                 if (item.isCustom && item.details) {
                     let shapeText = item.details.shape === 'round' ? 'دائري' : (item.details.shape === 'heart' ? 'قلب' : (item.details.shape === 'square' ? 'مربع' : 'مستطيل'));
                     customDetailsHtml = `
-                        <div class="mt-4 bg-brand-pinkLight p-4 rounded-2xl border border-brand-pink/20 text-right">
-                            <p class="text-xs font-black text-brand-pink mb-2 uppercase tracking-widest border-b border-brand-pink/10 pb-2">تفاصيل التصميم الخاص</p>
-                            <ul class="text-sm font-bold text-brand-brown/80 space-y-2">
-                                <li class="flex items-center gap-2"><i data-lucide="users" class="w-4 h-4 text-brand-pink/70"></i> أساس التورتة: <span>${item.details.people} أفراد (${shapeText})</span></li>
-                                ${item.details.print === 'edible' ? `<li class="flex items-center gap-2"><i data-lucide="image" class="w-4 h-4 text-brand-pink/70"></i> صورة قابلة للأكل (+٦٠ ج.م)</li>` : ''}
-                                ${item.details.print === 'non_edible' ? `<li class="flex items-center gap-2"><i data-lucide="frame" class="w-4 h-4 text-brand-pink/70"></i> صورة ديكور (+٢٠ ج.م)</li>` : ''}
-                                ${item.details.gift ? `<li class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-brand-pink/70"></i> كارت إهداء خاص (+٤٠ ج.م)</li>` : ''}
-                                ${item.details.healthNotes && item.details.healthNotes !== 'لا يوجد' && item.details.healthNotes !== 'لا توجد' ? `<li class="flex items-start gap-2 text-red-500/80"><i data-lucide="alert-circle" class="w-4 h-4 shrink-0 mt-0.5"></i> <span>ملاحظة صحية: ${item.details.healthNotes}</span></li>` : ''}
-                            </ul>
+                        <div class="mt-4 pt-4 border-t border-brand-pink/10">
+                            <p class="text-xs font-black text-brand-pink mb-2 uppercase tracking-widest text-right">التفاصيل</p>
+                            <div class="flex flex-wrap gap-2 text-xs font-bold text-brand-brown/80 justify-start">
+                                <span class="bg-brand-pinkLight px-3 py-1.5 rounded-lg border border-brand-pink/20"><i data-lucide="users" class="w-4 h-4 inline ml-1 text-brand-pink align-middle"></i>${item.details.people} أفراد (${shapeText})</span>
+                                ${item.details.print === 'edible' ? `<span class="bg-brand-pinkLight px-3 py-1.5 rounded-lg border border-brand-pink/20"><i data-lucide="image" class="w-4 h-4 inline ml-1 text-brand-pink align-middle"></i>صورة للأكل</span>` : ''}
+                                ${item.details.print === 'non_edible' ? `<span class="bg-brand-pinkLight px-3 py-1.5 rounded-lg border border-brand-pink/20"><i data-lucide="frame" class="w-4 h-4 inline ml-1 text-brand-pink align-middle"></i>صورة ديكور</span>` : ''}
+                                ${item.details.gift ? `<span class="bg-brand-pinkLight px-3 py-1.5 rounded-lg border border-brand-pink/20"><i data-lucide="mail" class="w-4 h-4 inline ml-1 text-brand-pink align-middle"></i>كارت هدية</span>` : ''}
+                            </div>
+                            ${item.details.healthNotes && item.details.healthNotes !== 'لا يوجد' && item.details.healthNotes !== 'لا توجد' ? `<p class="mt-3 text-sm text-red-500 font-bold bg-red-50 p-3 rounded-lg text-right border border-red-100"><i data-lucide="alert-circle" class="w-4 h-4 inline ml-1 align-middle"></i>${item.details.healthNotes}</p>` : ''}
                         </div>
                     `;
                 }
 
                 html += `
                     <div class="bose-double-wrap mb-6 animate-fade group">
-                        <div class="bose-double-inner p-5 flex flex-col md:flex-row gap-6 items-start bg-white relative">
-                            <button onclick="window.removeSpecificItem(${idx})" class="absolute top-4 left-4 w-10 h-10 rounded-full bg-white border border-brand-pink/20 text-brand-pink/50 hover:bg-brand-pinkLight hover:text-brand-pink flex items-center justify-center transition-all cursor-pointer z-20 shadow-sm">
+                        <div class="bose-double-inner p-4 md:p-6 bg-white relative">
+                            <button onclick="window.removeSpecificItem(${idx})" class="absolute top-4 left-4 w-10 h-10 rounded-full bg-brand-pinkLight border border-brand-pink/20 text-brand-pink hover:bg-brand-pink hover:text-white flex items-center justify-center transition-all cursor-pointer z-10 shadow-sm">
                                 <i data-lucide="trash-2" class="w-5 h-5"></i>
                             </button>
-                            
-                            ${linkWrapperStart}
-                            <div class="relative shrink-0 w-full md:w-auto flex justify-center">
-                                <img src="${img}" class="w-32 h-32 md:w-40 md:h-40 rounded-2xl object-cover bg-brand-pinkLight/50 border border-brand-pink/20 group-hover:scale-105 transition-transform shadow-sm" alt="${item.name}" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';">
-                            </div>
-                            ${linkWrapperEnd}
-                            
-                            <div class="flex-grow text-right w-full">
+
+                            <div class="flex flex-row gap-5 items-center">
                                 ${linkWrapperStart}
-                                <h4 class="text-xl md:text-2xl font-black mb-2 text-brand-brown tracking-tighter pl-12 hover:text-brand-pink transition-colors">${item.name}</h4>
+                                <div class="relative shrink-0 w-28 h-28 md:w-40 md:h-40">
+                                    <img src="${img}" class="w-full h-full rounded-2xl object-cover bg-brand-pinkLight/50 border border-brand-pink/20 group-hover:scale-105 transition-transform shadow-sm" alt="${item.name}" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';">
+                                </div>
                                 ${linkWrapperEnd}
                                 
-                                <div class="font-black mt-2 mb-4 text-brand-pink text-2xl md:text-3xl">${displayPrice} <span class="text-base font-bold text-brand-brown/60">ج.م</span></div>
-                                
-                                <div class="flex items-center gap-4 bg-brand-pinkLight p-2 rounded-full border border-brand-pink/20 w-fit">
-                                    <button class="w-10 h-10 rounded-full bg-white border border-brand-pink/30 text-brand-pink flex items-center justify-center font-black active:scale-90 transition-all shadow-sm text-xl cursor-pointer hover:bg-brand-pink hover:text-white" onclick="window.cartSystem.modQ(${idx}, 1)"><i data-lucide="plus" class="w-5 h-5"></i></button>
-                                    <span class="font-black min-w-[30px] text-center text-xl text-brand-brown">${qty}</span>
-                                    <button class="w-10 h-10 rounded-full bg-white border border-brand-pink/30 text-brand-pink flex items-center justify-center font-black active:scale-90 transition-all shadow-sm text-xl cursor-pointer hover:bg-brand-pink hover:text-white" onclick="window.cartSystem.modQ(${idx}, -1)"><i data-lucide="minus" class="w-5 h-5"></i></button>
+                                <div class="flex-grow text-right pr-2 min-w-0">
+                                    ${linkWrapperStart}
+                                    <h4 class="text-lg md:text-2xl font-black text-brand-brown tracking-tighter hover:text-brand-pink transition-colors truncate mb-2 pl-12">
+                                        ${!item.isCustom && catName && catName !== 'all' ? `<span class="bg-brand-pinkLight border border-brand-pink/20 text-brand-pink px-2 py-0.5 rounded text-xs font-black ml-2 align-middle">${catName}</span>` : ''}
+                                        ${item.name}
+                                    </h4>
+                                    ${linkWrapperEnd}
+                                    
+                                    <div class="font-black text-brand-pink text-xl md:text-3xl mb-4">${displayPrice} <span class="text-sm font-bold text-brand-brown/60">ج.م</span></div>
+                                    
+                                    <div class="flex items-center gap-4 bg-brand-pinkLight/50 px-2 py-1.5 rounded-full border border-brand-pink/20 w-max">
+                                        <button class="w-8 h-8 rounded-full bg-white border border-brand-pink/30 text-brand-pink flex items-center justify-center font-black active:scale-90 transition-all shadow-sm cursor-pointer hover:bg-brand-pink hover:text-white" onclick="window.cartSystem.modQ(${idx}, 1)"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                                        <span class="font-black min-w-[30px] text-center text-base md:text-lg text-brand-brown">${qty}</span>
+                                        <button class="w-8 h-8 rounded-full bg-white border border-brand-pink/30 text-brand-pink flex items-center justify-center font-black active:scale-90 transition-all shadow-sm cursor-pointer hover:bg-brand-pink hover:text-white" onclick="window.cartSystem.modQ(${idx}, -1)"><i data-lucide="minus" class="w-4 h-4"></i></button>
+                                    </div>
                                 </div>
-                                ${customDetailsHtml}
                             </div>
+                            ${customDetailsHtml}
                         </div>
                     </div>
                 `;
             });
 
             list.innerHTML = html;
-            document.getElementById('summary-subtotal').innerText = `${actualSubtotal} ج.م`;
             document.getElementById('summary-total').innerText = `${actualSubtotal} ج.م`;
-
-            const savedPref = localStorage.getItem('Bose_Shipping_Preference');
-            if (savedPref === 'pickup') { document.getElementById('pickup_option').checked = true; } 
-            else { document.getElementById('delivery_option').checked = true; }
-            window.updateShippingUI();
 
             if(window.cartSystem.updateCartDisplay) window.cartSystem.updateCartDisplay();
             window.syncCartBadge();
@@ -561,28 +443,30 @@
                 section.style.display = 'block';
                 container.innerHTML = picked.map(p => {
                     const img = window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image);
-                    const catName = p.category || 'صنف فاخر';
+                    const catName = p.category || 'حلويات بوسي';
                     return `
-                        <div class="suggestion-item">
-                            <div class="bose-double-wrap group animate-fade h-full block text-decoration-none cursor-pointer" onclick="window.location.href='product.html?category=${catName}'">
+                        <div class="snap-start flex-shrink-0 w-[85%] md:w-[340px]">
+                            <div class="bose-double-wrap group animate-fade h-full block text-decoration-none cursor-pointer" onclick="window.location.href='product.html?category=${encodeURIComponent(catName)}'">
                                 <div class="bose-double-inner bg-white h-full flex flex-col">
                                     <div class="aspect-[4/3] w-full overflow-hidden bg-brand-pinkLight border-b border-brand-pink/20 relative">
                                         <img src="${img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="${p.name}" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
                                     </div>
                                     <div class="p-6 text-right flex flex-col justify-between flex-grow">
-                                        <p class="text-xs text-brand-pink mb-1 uppercase tracking-widest font-black">${catName}</p>
-                                        <h4 class="font-bold text-lg text-brand-brown mb-2 tracking-tight group-hover:text-brand-pink transition-colors">${p.name}</h4>
+                                        <div>
+                                            <p class="text-xs text-brand-pink mb-1 uppercase tracking-widest font-black">${catName}</p>
+                                            <h4 class="font-bold text-xl text-brand-brown mb-2 tracking-tight group-hover:text-brand-pink transition-colors">${p.name}</h4>
+                                        </div>
                                         
                                         <div class="mt-auto border-t border-brand-pink/10 pt-4" onclick="event.preventDefault(); event.stopPropagation();">
-                                            <div class="flex items-center justify-between mb-4">
-                                                <span class="font-black text-2xl text-brand-pink">${p.price} ج.م</span>
+                                            <div class="flex items-center justify-between mb-5">
+                                                <span class="font-black text-2xl text-brand-pink">${p.price} <span class="text-sm font-bold text-brand-brown/60">ج.م</span></span>
                                                 <div class="flex items-center gap-2 bg-brand-pinkLight rounded-full px-2 py-1 border border-brand-pink/20">
-                                                    <button onclick="window.updateTempQtyContext(this, 1)" class="w-7 h-7 rounded-full bg-white text-brand-brown font-black text-lg hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm">+</button>
-                                                    <span class="temp-qty-display font-black text-brand-brown min-w-[16px] text-center text-sm">1</span>
-                                                    <button onclick="window.updateTempQtyContext(this, -1)" class="w-7 h-7 rounded-full bg-white text-brand-brown font-black text-lg hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm">-</button>
+                                                    <button onclick="window.updateTempQtyContext(this, 1)" class="w-8 h-8 rounded-full bg-white text-brand-brown font-black text-lg hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm">+</button>
+                                                    <span class="temp-qty-display font-black text-brand-brown min-w-[20px] text-center text-base">1</span>
+                                                    <button onclick="window.updateTempQtyContext(this, -1)" class="w-8 h-8 rounded-full bg-white text-brand-brown font-black text-lg hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm">-</button>
                                                 </div>
                                             </div>
-                                            <button onclick="window.cartSystem.addWithQtyContext(this, '${p.id}')" class="btn-solid w-full py-3 rounded-full text-sm font-black cursor-pointer shadow-sm hover:shadow-md transition-all">إضافة لطلب سيادتكم <i data-lucide="shopping-bag" class="inline w-4 h-4 mr-1"></i></button>
+                                            <button onclick="window.cartSystem.addWithQtyContext(this, '${p.id}')" class="btn-solid w-full py-3.5 rounded-full text-base font-black cursor-pointer shadow-sm hover:shadow-md transition-all">إضافة للسلة <i data-lucide="shopping-bag" class="inline w-5 h-5 mr-1"></i></button>
                                         </div>
                                     </div>
                                 </div>
@@ -596,10 +480,9 @@
 
         window.slideSuggestions = function(dir) {
             const slider = document.getElementById('cart-suggestions-slider');
-            if(slider) slider.scrollBy({ left: 284 * dir * -1, behavior: 'smooth' });
+            if(slider) slider.scrollBy({ left: 340 * dir * -1, behavior: 'smooth' });
         };
 
-        // التحكم في القائمة الجانبية
         window.toggleSidebar = function() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -616,10 +499,9 @@
         if (window.cartSystem && window.cartSystem.modQ) {
             const originalModQ = window.cartSystem.modQ;
             window.cartSystem.modQ = function(idx, delta) {
-                // منع الكمية من الوصول للصفر عن طريق أزرار الجمع والطرح، يجب استخدام زر الحذف
                 const currentQty = parseInt(window.BoseState.cart[idx].quantity || window.BoseState.cart[idx].qty);
                 if (currentQty === 1 && delta === -1) {
-                    window.showToastMessage("لحذف الصنف، يرجى استخدام أيقونة سلة المهملات.");
+                    window.showToastMessage("لحذف الصنف برجاء الضغط على أيقونة سلة المهملات.");
                     return;
                 }
                 originalModQ.call(this, idx, delta);
@@ -631,14 +513,13 @@
             if(window.lucide) lucide.createIcons();
             setTimeout(() => { 
                 if(window.cartSystem && window.cartSystem.getCart) {
-                    syncCartInterface(); 
+                    syncCartInterface();
                     window.syncCartBadge();
                     if(window.BoseState?.isAppReady) renderSmartSuggestions();
                 }
-            }, 300);
+            }, 500);
         });
     </script>
 </body>
 </html>
-
 

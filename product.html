@@ -4,20 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <title>تفاصيل المنتجات | حلويات بوسي</title>
-    <meta name="description" content="تصفح منتجات حلويات بوسي الفاخرة أو صمم تورتة مناسبتك بنفسك. جودة وخبرة عشر سنين في الفرافرة.">
+    <title>المنتجات | حلويات بوسي</title>
+    <meta name="description" content="تصفح منتجات حلويات بوسي أو صمم تورتة مناسبتك بنفسك. جودة وإتقان في كل تفصيلة.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
-    <!-- مكتبات الأيقونات الرسمية -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- ربط ملف الأناقة الموحد -->
     <link rel="stylesheet" href="style.css">
 
     <script>
@@ -40,7 +38,6 @@
         }
     </script>
     <style>
-        /* 🛡️ درع التحصين البصري واللوني */
         body {
             background-color: #ffffff;
             color: #3d241c; 
@@ -52,7 +49,6 @@
         .font-bold, h1, h2, h3, h4, .btn-solid, .ticker-item { font-weight: 700 !important; }
         .font-black { font-weight: 900 !important; }
 
-        /* محرك الشريط المتحرك المستمر */
         .ticker-wrap {
             width: 100%; overflow: hidden; background-color: #ff91a4;
             display: flex; direction: rtl; border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -65,7 +61,6 @@
         .hide-scroll::-webkit-scrollbar { display: none; }
         .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* هندسة القائمة الجانبية السيادية */
         .sidebar {
             position: fixed !important; top: 0 !important; right: -100% !important; 
             width: 340px !important; max-width: 85% !important; height: 100% !important;
@@ -84,7 +79,6 @@
         details > summary { list-style: none; cursor: pointer; outline: none;}
         details > summary::-webkit-details-marker { display: none; }
 
-        /* الأزرار السيادية */
         .btn-solid {
             background-color: #ff91a4; color: #ffffff !important; border-radius: 50px; 
             padding: 14px 40px; font-weight: 700; font-size: 1.1rem; display: inline-flex; 
@@ -99,7 +93,6 @@
         }
         .btn-outline:hover { background-color: #ff91a4; color: #ffffff !important; }
 
-        /* 👑 نظام الإطار المزدوج السيادي - تم توحيد الإطارات هنا لتطابق style.css */
         .bose-double-wrap {
             background: #ffffff; border-radius: 32px; border: 2px solid #ff91a4; padding: 6px;
             transition: all 0.4s ease; display: flex; flex-direction: column; height: 100%; text-decoration: none;
@@ -107,11 +100,10 @@
         }
         .bose-double-wrap:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(255, 145, 164, 0.15); border-color: #e67e91; }
         .bose-double-inner {
-            background: #ffffff; border-radius: 26px; border: 2px solid #ff91a4; /* الإطار الداخلي المزدوج الواضح */
+            background: #ffffff; border-radius: 26px; border: 2px solid #ff91a4;
             overflow: hidden; display: flex; flex-direction: column; height: 100%; position: relative;
         }
 
-        /* تنسيقات باني التورتة والمدخلات */
         .option-btn {
             border: 2px solid rgba(255, 145, 164, 0.3); border-radius: 20px; padding: 15px;
             text-align: center; cursor: pointer; transition: all 0.3s ease; font-weight: 700; background: #ffffff;
@@ -134,14 +126,12 @@
         input:focus, textarea:focus { border-color: #ff91a4 !important; box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.1); }
         input::placeholder, textarea::placeholder { color: rgba(61, 36, 28, 0.4) !important; }
 
-        /* تبويبات الأحجام */
         .size-tab {
             padding: 12px 30px; font-weight: 700; border-radius: 50px; cursor: pointer; transition: all 0.3s ease;
             border: 2px solid rgba(255, 145, 164, 0.3); color: #3d241c; background: #ffffff;
         }
         .size-tab.active { background: #ff91a4; color: #ffffff; border-color: #ff91a4; box-shadow: 0 5px 15px rgba(255, 145, 164, 0.3); }
 
-        /* النوافذ المنبثقة السيادية */
         .bose-modal-overlay {
             position: fixed; inset: 0; background: rgba(255, 145, 164, 0.85); backdrop-filter: blur(5px);
             z-index: 10000; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease;
@@ -154,21 +144,17 @@
         }
         .bose-modal-overlay.active .bose-modal-content { transform: scale(1); }
         
-        /* 🛠️ حل هندسي لإشعار التنبيه (Toast) - أنيق ومقاوم للتمدد العمودي */
         .bose-toast {
             position: fixed; top: 90px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 420px; /* تحديد العرض لمنع التشوه */
-            background: #ffffff; border: 2px solid #ff91a4; padding: 14px 20px; /* تقليل المسافات الداخلية */
-            border-radius: 16px; /* حواف متوافقة مع النصوص الطويلة */
-            z-index: 10001; box-shadow: 0 10px 30px rgba(255, 145, 164, 0.2);
+            width: 90%; max-width: 420px; background: #ffffff; border: 2px solid #ff91a4; padding: 14px 20px;
+            border-radius: 16px; z-index: 10001; box-shadow: 0 10px 30px rgba(255, 145, 164, 0.2);
             display: none; align-items: center; justify-content: center; gap: 12px;
             font-weight: 700; color: #3d241c; text-align: center; line-height: 1.5;
             animation: slideDownToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .bose-toast i { flex-shrink: 0; } /* حماية الأيقونة من الانضغاط */
+        .bose-toast i { flex-shrink: 0; }
         @keyframes slideDownToast { from { top: -50px; opacity: 0; } to { top: 90px; opacity: 1; } }
 
-        /* صفحات التقييمات */
         .review-card {
             background: #ffffff; border: 2px solid rgba(255, 145, 164, 0.2); border-radius: 32px; padding: 35px; 
             box-shadow: 0 10px 30px rgba(255, 145, 164, 0.05); text-align: right; display: flex; flex-direction: column; justify-content: space-between;
@@ -184,47 +170,43 @@
 </head>
 <body class="antialiased selection:bg-brand-pink selection:text-white">
 
-    <!-- نافذة الإشعارات السيادية (النسخة المطورة) -->
     <div id="bose-toast" class="bose-toast">
         <i data-lucide="check-circle" class="w-6 h-6 text-brand-pink"></i>
-        <span id="bose-toast-msg">تمت العملية بنجاح</span>
+        <span id="bose-toast-msg">تم</span>
     </div>
 
-    <!-- نافذة إضافة تقييم سيادية -->
     <div id="review-modal" class="bose-modal-overlay">
         <div class="bose-modal-content text-right">
             <button onclick="window.ProductUI.closeReviewModal()" class="absolute top-4 right-4 text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
                 <i data-lucide="x" class="w-6 h-6"></i>
             </button>
             <div class="flex justify-center mb-4"><div class="w-16 h-16 bg-brand-pinkLight rounded-full flex items-center justify-center border-2 border-brand-pink"><i data-lucide="star" class="w-8 h-8 text-brand-pink"></i></div></div>
-            <h3 class="text-2xl font-bold text-brand-brown mb-2 text-center">شاركنا تجربتك الفاخرة</h3>
-            <p class="text-brand-brown/70 font-bold text-sm mb-6 text-center text-balance">رأيك يمثل قيمة كبيرة لنا ويساعدنا على تقديم الأفضل دائماً.</p>
+            <h3 class="text-2xl font-bold text-brand-brown mb-2 text-center">شاركنا رأيك</h3>
+            <p class="text-brand-brown/70 font-bold text-sm mb-6 text-center text-balance">رأيك بيساعدنا نحافظ على مستوى الجودة اللي بنقدمه.</p>
             
-            <label class="block font-bold text-brand-brown mb-2">الاسم الكريم:</label>
-            <input type="text" id="review-name" class="w-full mb-4" placeholder="اكتب اسمك هنا...">
+            <label class="block font-bold text-brand-brown mb-2">الاسم:</label>
+            <input type="text" id="review-name" class="w-full mb-4" placeholder="الاسم...">
             
-            <label class="block font-bold text-brand-brown mb-2">تفاصيل التجربة:</label>
-            <textarea id="review-text" class="w-full h-32 resize-none mb-6" placeholder="يسعدنا قراءة تقييمك لمستوى الجودة والطعم..."></textarea>
+            <label class="block font-bold text-brand-brown mb-2">رأيك:</label>
+            <textarea id="review-text" class="w-full h-32 resize-none mb-6" placeholder="اكتب رأيك هنا..."></textarea>
             
-            <button onclick="window.ProductUI.submitReview()" class="btn-solid w-full rounded-full py-4 text-lg cursor-pointer">إرسال التقييم لإدارة حلويات بوسي</button>
+            <button onclick="window.ProductUI.submitReview()" class="btn-solid w-full rounded-full py-4 text-lg cursor-pointer">إرسال التقييم</button>
         </div>
     </div>
 
-    <!-- شريط الإشعارات العلوي المؤسسي -->
     <div class="ticker-wrap shadow-sm">
         <div class="ticker-scroll">
-            <div class="ticker-item">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
-            <div class="ticker-item">خبرة عشر سنين في صناعة السعادة بالفرافرة</div>
-            <div class="ticker-item">أرقى باقات الورد الطبيعي المنسقة لمناسباتكم السعيدة</div>
-            <div class="ticker-item">طازجة من فرننا إلى مائدتك مخبوزة بحب وشغف</div>
-            <div class="ticker-item">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
-            <div class="ticker-item">خبرة عشر سنين في صناعة السعادة بالفرافرة</div>
-            <div class="ticker-item">أرقى باقات الورد الطبيعي المنسقة لمناسباتكم السعيدة</div>
-            <div class="ticker-item">طازجة من فرننا إلى مائدتك مخبوزة بحب وشغف</div>
+            <div class="ticker-item">الجودة والإتقان في كل تفصيلة من حلويات بوسي</div>
+            <div class="ticker-item">عشر سنوات من الشغف في صناعة الحلويات</div>
+            <div class="ticker-item">مخبوزات طازجة يومياً بأعلى معايير الجودة</div>
+            <div class="ticker-item">اختيارك الأول للمناسبات واللحظات المهمة</div>
+            <div class="ticker-item">الجودة والإتقان في كل تفصيلة من حلويات بوسي</div>
+            <div class="ticker-item">عشر سنوات من الشغف في صناعة الحلويات</div>
+            <div class="ticker-item">مخبوزات طازجة يومياً بأعلى معايير الجودة</div>
+            <div class="ticker-item">اختيارك الأول للمناسبات واللحظات المهمة</div>
         </div>
     </div>
 
-    <!-- الهيدر الرسمي الموحد -->
     <header class="border-b border-brand-pink/20 sticky top-0 z-[100] bg-white/95 backdrop-blur-md transition-all py-4 shadow-sm">
         <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
             <div class="w-1/3 flex justify-start">
@@ -239,7 +221,7 @@
                 </a>
             </div>
             <div class="w-1/3 flex justify-end items-center gap-5">
-                <button class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" onclick="window.ProductUI.showToast('خاصية البحث تحت التطوير حالياً لضمان أفضل تجربة.')">
+                <button class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" onclick="window.ProductUI.showToast('خاصية البحث سيتم تفعيلها قريباً.')">
                     <i data-lucide="search" class="w-6 h-6 text-brand-pink"></i>
                 </button>
                 <a href="cart.html" class="relative text-brand-pink hover:text-brand-brown transition-colors cursor-pointer text-decoration-none">
@@ -250,7 +232,6 @@
         </div>
     </header>
 
-    <!-- القائمة الجانبية الاحترافية -->
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
     <aside id="sidebar" class="sidebar">
         <div class="p-6 flex justify-between items-center border-b border-brand-pink/20 bg-brand-pinkLight">
@@ -272,36 +253,30 @@
                 </summary>
                 <div class="flex flex-col gap-1 pl-12 pr-4 pt-2 pb-4 border-l-2 border-brand-pink/20 ml-4 mr-2" id="sidebar-dynamic-categories">
                     <a href="menu.html" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">عرض كل المنيو</a>
-                    <a href="product.html?category=التورت" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">التورت الفاخرة</a>
+                    <a href="product.html?category=التورت" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">التورت</a>
                     <a href="product.html?category=الجاتوهات" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">الجاتوهات</a>
                 </div>
             </details>
             <a href="product.html?action=build_cake" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
-                <i data-lucide="cake" class="w-5 h-5 text-brand-pink"></i> صمم تورتة مناسبتك
+                <i data-lucide="cake" class="w-5 h-5 text-brand-pink"></i> تصميم تورتة خاصة
             </a>
             <a href="product.html?category=ورد" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
-                <i data-lucide="flower-2" class="w-5 h-5 text-brand-pink"></i> قسم الورد الطبيعي
+                <i data-lucide="flower-2" class="w-5 h-5 text-brand-pink"></i> الورد الطبيعي
             </a>
         </nav>
         <div class="p-6 border-t border-brand-pink/20 bg-brand-pinkLight/50">
             <a href="cart.html" class="w-full py-4 bg-brand-pink text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white hover:text-brand-pink border-2 border-brand-pink transition-colors cursor-pointer text-decoration-none shadow-sm">
-                <i data-lucide="shopping-basket" class="w-5 h-5"></i> <span>مراجعة السلة</span>
+                <i data-lucide="shopping-basket" class="w-5 h-5"></i> <span>مراجعة الطلب</span>
             </a>
         </div>
     </aside>
 
     <main class="py-12 md:py-20 min-h-[60vh]">
         
-        <!-- ========================================== -->
-        <!-- التوجيه الذكي 1: عرض منتجات الأقسام العادية  -->
-        <!-- ========================================== -->
         <section id="category-viewer" class="container mx-auto px-4 hidden">
-            <!-- الهيدر الخاص بالقسم -->
             <div id="category-header-container" class="max-w-6xl mx-auto mb-16 animate-fade">
-                <!-- يُحقن آلياً ببوستر من المنتجات الحقيقية للمتجر -->
             </div>
 
-            <!-- تبويبات الأحجام (للديسباسيتو ومثيلاتها) -->
             <div id="size-tabs-container" class="flex justify-center gap-4 mb-12 hidden animate-fade">
                 <button class="size-tab active" onclick="window.ProductUI.filterBySize('all', this)">عرض الكل</button>
                 <button class="size-tab" onclick="window.ProductUI.filterBySize('صغير', this)">صغير</button>
@@ -309,27 +284,21 @@
                 <button class="size-tab" onclick="window.ProductUI.filterBySize('كبير', this)">كبير / عائلي</button>
             </div>
 
-            <!-- شبكة المنتجات السيادية -->
             <div id="category-grid" class="grid gap-8 max-w-6xl mx-auto">
-                <!-- يُحقن آلياً بتخطيط ذكي (كارت أو كارتين) مع عرض الوصف كاملاً -->
             </div>
         </section>
 
-        <!-- ========================================== -->
-        <!-- التوجيه الذكي 2: أداة باني التورتة الفاخرة -->
-        <!-- ========================================== -->
         <section id="builder-container" class="container mx-auto px-4 hidden">
             
-            <!-- البوستر السيادي لباني التورتة (يسحب صورة تورتة حقيقية من الكتالوج) -->
             <div id="builder-header-container" class="max-w-6xl mx-auto mb-16 animate-fade">
                 <div class="rounded-[40px] overflow-hidden shadow-sm border border-brand-pink/20 bg-white">
                     <div class="w-full h-[30vh] md:h-[45vh] relative bg-brand-pinkLight">
                         <img id="builder-poster-img" src="" class="w-full h-full object-cover" alt="تصميم تورتة حلويات بوسي" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
                     </div>
                     <div class="p-8 md:p-16 text-center bg-brand-pinkLight/30">
-                        <h2 class="text-4xl md:text-5xl font-black text-brand-brown mb-6 tracking-tighter">صمم تورتة مناسبتك</h2>
+                        <h2 class="text-4xl md:text-5xl font-black text-brand-brown mb-6 tracking-tighter">تصميم تورتة خاصة</h2>
                         <p class="text-lg md:text-xl font-bold text-brand-brown/80 max-w-4xl mx-auto leading-relaxed text-balance">
-                            التورتة عندنا مش مجرد كيك، دي قطعة فنية بتشاركك أسعد لحظاتك. بنحول خيالك لواقع ملموس بجودة لا تُضاهى لتكتمل سعادتك.
+                            في حلويات بوسي بنهتم بتفاصيل تورتتك عشان تكون جزء مميز من مناسبتك. الجودة والإتقان هما الأساس.
                         </p>
                     </div>
                 </div>
@@ -339,16 +308,15 @@
                 <div class="bose-double-wrap shadow-premium overflow-hidden">
                     <div class="bose-double-inner p-8 md:p-14 bg-white">
                         
-                        <!-- 🎂 المرحلة الأولى: الأساسيات -->
                         <div id="builder-step-1" class="builder-step-content space-y-12 text-right">
                             <div class="text-center mb-10 border-b border-brand-pink/10 pb-6">
                                 <h3 class="text-2xl font-bold text-brand-brown mb-2">المرحلة الأولى: الأساسيات</h3>
-                                <p class="text-sm font-bold text-brand-brown/60">عشان تورتتك تطلع قطعة فنية بتعبر عنك، هنحدد مع بعض الأساسيات اللي هنبني عليها.</p>
+                                <p class="text-sm font-bold text-brand-brown/60">خطوات بسيطة لتحديد تفاصيل التورتة المطلوبة.</p>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
                                 <div>
-                                    <label class="block font-bold text-xl mb-4 text-brand-brown">١. التورتة دي لكام فرد؟</label>
+                                    <label class="block font-bold text-xl mb-4 text-brand-brown">عدد الأفراد:</label>
                                     <div class="flex items-center justify-center md:justify-start gap-8 bg-brand-pinkLight rounded-[24px] p-4 border-2 border-brand-pink/30 shadow-sm max-w-sm mb-6">
                                         <button onclick="window.ProductUI.modQty(2)" class="w-14 h-14 rounded-full bg-white border-2 border-brand-pink text-brand-pink text-3xl font-black active:scale-90 shadow-sm flex items-center justify-center cursor-pointer">+</button>
                                         <div class="flex flex-col items-center w-24">
@@ -358,12 +326,12 @@
                                         <button onclick="window.ProductUI.modQty(-2)" class="w-14 h-14 rounded-full bg-white border-2 border-brand-pink text-brand-pink text-3xl font-black active:scale-90 shadow-sm flex items-center justify-center cursor-pointer">-</button>
                                     </div>
                                     
-                                    <label class="block font-bold text-xl mb-4 text-brand-brown">٢. إيه هي المناسبة السعيدة؟</label>
-                                    <input type="text" id="cake-occasion-input" placeholder="مثلاً: عيد ميلاد، فرح، خطوبة..." class="w-full">
+                                    <label class="block font-bold text-xl mb-4 text-brand-brown">نوع المناسبة:</label>
+                                    <input type="text" id="cake-occasion-input" placeholder="مثال: عيد ميلاد، خطوبة..." class="w-full">
                                 </div>
                                 
                                 <div>
-                                    <label class="block font-bold text-xl mb-4 text-brand-brown">٣. تحب شكل التورتة يكون إيه؟</label>
+                                    <label class="block font-bold text-xl mb-4 text-brand-brown">شكل التورتة:</label>
                                     <div class="grid grid-cols-2 gap-4">
                                         <div class="option-btn selected flex-col" onclick="window.ProductUI.setShape('round', this)">
                                             <i data-lucide="circle" class="w-6 h-6"></i><span>دائري</span>
@@ -372,36 +340,34 @@
                                             <i data-lucide="heart" class="w-6 h-6"></i><span>قلب</span>
                                         </div>
                                         <div class="option-btn flex-col" onclick="window.ProductUI.setShape('square', this)">
-                                            <i data-lucide="square" class="w-6 h-6"></i><span class="text-xs">مربع (من ١٦ فرد)</span>
+                                            <i data-lucide="square" class="w-6 h-6"></i><span class="text-xs">مربع (من 16 فرد)</span>
                                         </div>
                                         <div class="option-btn flex-col" onclick="window.ProductUI.setShape('rectangle', this)">
-                                            <i data-lucide="rectangle-horizontal" class="w-6 h-6"></i><span class="text-xs">مستطيل (من ٢٠ فرد)</span>
+                                            <i data-lucide="rectangle-horizontal" class="w-6 h-6"></i><span class="text-xs">مستطيل (من 20 فرد)</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <button onclick="window.ProductUI.nextStep(2)" class="btn-solid w-full text-xl py-5 rounded-full mt-8 cursor-pointer shadow-md hover:shadow-lg">متابعة للمرحلة التانية <i data-lucide="arrow-left" class="mr-2 inline"></i></button>
+                            <button onclick="window.ProductUI.nextStep(2)" class="btn-solid w-full text-xl py-5 rounded-full mt-8 cursor-pointer shadow-md hover:shadow-lg">متابعة للخطوة التالية <i data-lucide="arrow-left" class="mr-2 inline"></i></button>
                         </div>
 
-                        <!-- 🎨 المرحلة الثانية: التفاصيل والذوق الخاص -->
                         <div id="builder-step-2" class="builder-step-content space-y-12 hidden text-right">
                             <div class="text-center mb-10 border-b border-brand-pink/10 pb-6">
-                                <h3 class="text-2xl font-bold text-brand-brown mb-2">المرحلة التانية: التفاصيل والذوق الخاص</h3>
-                                <p class="text-sm font-bold text-brand-brown/60">صحتك تهمنا، وتخيلك للتصميم هو دليلنا. شاركنا تفاصيلك عشان نوصل لأقرب شكل في خيالك.</p>
+                                <h3 class="text-2xl font-bold text-brand-brown mb-2">المرحلة الثانية: التفاصيل الخاصة</h3>
+                                <p class="text-sm font-bold text-brand-brown/60">تقدر تضيف أي ملاحظات أو ترفع صورة للتصميم المطلوب.</p>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
                                 <div>
-                                    <label class="block font-bold text-xl mb-4 text-brand-brown">٤. فيه أي حاجة تتعبك؟ (ملاحظات صحية)</label>
-                                    <textarea id="cake-health" placeholder="عشان صحتك تهمنا، اكتب لو فيه أي حساسية من مكونات معينة (مكسرات، فاكهة، الخ)..." class="w-full h-32 resize-none"></textarea>
+                                    <label class="block font-bold text-xl mb-4 text-brand-brown">ملاحظات إضافية (حساسية أو تفضيلات):</label>
+                                    <textarea id="cake-health" placeholder="لو في حساسية من مكونات معينة يرجى كتابتها هنا..." class="w-full h-32 resize-none"></textarea>
                                 </div>
                                 <div>
-                                    <label class="block font-bold text-xl mb-4 text-brand-brown">٥. لو عندك صورة لتصميم معين ارفعها:</label>
+                                    <label class="block font-bold text-xl mb-4 text-brand-brown">صورة للتصميم المطلوب (اختياري):</label>
                                     <div class="upload-zone group" onclick="document.getElementById('cake-ref-file').click()">
                                         <input type="file" id="cake-ref-file" class="hidden" onchange="window.ProductUI.handleFile(this, 'ref-file-status')">
                                         <i data-lucide="image-plus" class="w-10 h-10 mx-auto text-brand-pink mb-3 group-hover:scale-110 transition-transform"></i>
-                                        <span id="ref-file-status" class="font-bold text-brand-brown text-sm block">اضغط هنا وارفع صورة الشكل اللي تحبه</span>
-                                        <span class="text-xs font-bold text-brand-brown/50 mt-2 block">(اختياري)</span>
+                                        <span id="ref-file-status" class="font-bold text-brand-brown text-sm block">اضغط لرفع الصورة</span>
                                     </div>
                                 </div>
                             </div>
@@ -411,54 +377,51 @@
                             </div>
                         </div>
 
-                        <!-- 💖 المرحلة الثالثة: اللمسات الفنية والتسعير -->
                         <div id="builder-step-3" class="builder-step-content space-y-10 hidden text-right">
                             <div class="text-center mb-10 border-b border-brand-pink/10 pb-6">
-                                <h3 class="text-2xl font-bold text-brand-brown mb-2">المرحلة الأخيرة: اللمسات الفنية والتسعير</h3>
-                                <p class="text-sm font-bold text-brand-brown/60">اللمسات الأخيرة هي اللي بتبرز الفخامة. حدد إضافاتك وراجع السعر الإجمالي لطلبك.</p>
+                                <h3 class="text-2xl font-bold text-brand-brown mb-2">المرحلة الأخيرة: المراجعة</h3>
+                                <p class="text-sm font-bold text-brand-brown/60">اختيار الإضافات ومراجعة إجمالي الطلب.</p>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                                 <div>
-                                    <label class="block font-bold text-xl mb-4 text-brand-brown">٦. تحب تطبع صورة على التورتة؟</label>
+                                    <label class="block font-bold text-xl mb-4 text-brand-brown">طباعة صورة:</label>
                                     <div class="flex flex-col gap-3">
                                         <div class="option-btn selected justify-between w-full" onclick="window.ProductUI.setPrint('none', this)">
-                                            <span>تزيين يدوي (من غير صورة)</span><i data-lucide="check-circle" class="w-5 h-5 text-brand-pink"></i>
+                                            <span>تزيين يدوي (بدون صورة)</span><i data-lucide="check-circle" class="w-5 h-5 text-brand-pink"></i>
                                         </div>
                                         <div class="option-btn justify-between w-full" onclick="window.ProductUI.setPrint('edible', this)">
-                                            <span>صورة تتاكل مع التورتة (+٦٠ ج.م)</span><i data-lucide="circle" class="w-5 h-5 text-brand-brown/30"></i>
+                                            <span>صورة قابلة للأكل (+60 ج.م)</span><i data-lucide="circle" class="w-5 h-5 text-brand-brown/30"></i>
                                         </div>
                                         <div class="option-btn justify-between w-full" onclick="window.ProductUI.setPrint('non_edible', this)">
-                                            <span>صورة ديكور غير قابلة للأكل (+٢٠ ج.م)</span><i data-lucide="circle" class="w-5 h-5 text-brand-brown/30"></i>
+                                            <span>صورة ديكور غير قابلة للأكل (+20 ج.م)</span><i data-lucide="circle" class="w-5 h-5 text-brand-brown/30"></i>
                                         </div>
                                     </div>
-                                    <!-- حقل رفع صورة الطباعة (يظهر فقط عند الاختيار) -->
                                     <div id="print-upload-area" class="mt-4 hidden animate-fade">
                                         <div class="upload-zone !py-4 group" onclick="document.getElementById('print-file').click()">
                                             <input type="file" id="print-file" class="hidden" onchange="window.ProductUI.handleFile(this, 'print-status')">
-                                            <span id="print-status" class="font-bold text-brand-pink text-sm block">ارفع الصورة اللي عايز تطبعها هنا <i data-lucide="upload" class="w-4 h-4 inline ml-1"></i></span>
+                                            <span id="print-status" class="font-bold text-brand-pink text-sm block">اضغط لرفع الصورة المراد طباعتها <i data-lucide="upload" class="w-4 h-4 inline ml-1"></i></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div>
-                                    <label class="block font-bold text-xl mb-4 text-brand-brown">٧. تحب تبعت كارت هدية معاها؟ (+٤٠ ج.م)</label>
+                                    <label class="block font-bold text-xl mb-4 text-brand-brown">إضافة كارت إهداء (+40 ج.م)</label>
                                     <div class="flex gap-4 mb-4">
-                                        <button onclick="window.ProductUI.setGift(true, this)" class="option-btn flex-1">أيوة</button>
-                                        <button onclick="window.ProductUI.setGift(false, this)" class="option-btn selected flex-1">لأ</button>
+                                        <button onclick="window.ProductUI.setGift(true, this)" class="option-btn flex-1">نعم</button>
+                                        <button onclick="window.ProductUI.setGift(false, this)" class="option-btn selected flex-1">لا</button>
                                     </div>
                                     <div id="gift-card-area" class="hidden animate-fade">
-                                        <input type="text" id="gift-text" placeholder="اكتب اللي عايز تقوله في الكارت..." class="w-full">
+                                        <input type="text" id="gift-text" placeholder="محتوى الكارت..." class="w-full">
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- الفاتورة السيادية -->
                             <div class="mt-12 bg-brand-pinkLight border-2 border-brand-pink/30 p-10 rounded-[40px] text-center shadow-inner relative overflow-hidden">
                                 <i data-lucide="gem" class="absolute -left-10 -bottom-10 w-48 h-48 text-brand-pink opacity-5"></i>
-                                <p class="font-bold mb-2 text-brand-brown/70 uppercase tracking-widest text-sm relative z-10">سعر الطلب الإجمالي</p>
+                                <p class="font-bold mb-2 text-brand-brown/70 uppercase tracking-widest text-sm relative z-10">إجمالي الطلب</p>
                                 <div id="final-price-display" class="text-6xl font-black mb-10 text-brand-pink tracking-tighter relative z-10">580 ج.م</div>
                                 <button onclick="window.ProductUI.addCustomCakeToCart()" class="btn-solid w-full py-5 rounded-full text-2xl cursor-pointer shadow-lg hover:shadow-xl relative z-10">
-                                    أضف لطلب سيادتكم <i data-lucide="shopping-basket" class="w-6 h-6 mr-2 inline"></i>
+                                    إضافة للسلة <i data-lucide="shopping-basket" class="w-6 h-6 mr-2 inline"></i>
                                 </button>
                             </div>
                             <div class="text-center mt-4">
@@ -471,21 +434,18 @@
             </div>
         </section>
 
-        <!-- ========================================== -->
-        <!-- 🏷️ مساحة التقييمات وصفحات المراجعات (بعد المنتجات مباشرة) -->
-        <!-- ========================================== -->
         <section id="reviews-section" class="py-24 mt-20 border-t border-brand-pink/10 bg-brand-pinkLight/20">
             <div class="container mx-auto px-4 text-center max-w-6xl">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-white text-brand-pink rounded-full mb-6 border border-brand-pink/20 shadow-sm">
                     <i data-lucide="message-square-heart" class="w-8 h-8 text-brand-pink"></i>
                 </div>
-                <h3 class="text-3xl md:text-5xl font-black text-brand-brown mb-6 tracking-tighter">نفخر بتجاربكم معنا</h3>
+                <h3 class="text-3xl md:text-5xl font-black text-brand-brown mb-6 tracking-tighter">آراء عملائنا</h3>
                 <p class="text-lg font-bold text-brand-brown/70 mb-16 max-w-3xl mx-auto leading-relaxed px-6 text-balance">
-                    شهادة عملائنا هي رصيدنا الحقيقي. استعرض تجارب من سبقوك، وشاركنا رأيك لنستمر في تقديم الأفضل دائماً.
+                    رأيك بيساعدنا نحافظ على مستوى الجودة اللي بنقدمه.
                 </p>
                 
                 <div id="reviews-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-                    <div class="col-span-full py-10 w-full font-bold text-brand-brown/40 italic">جاري عرض تجارب عملائنا...</div>
+                    <div class="col-span-full py-10 w-full font-bold text-brand-brown/40 italic">جاري عرض التقييمات...</div>
                 </div>
 
                 <div class="flex items-center justify-center gap-6 mb-16" id="reviews-pagination" style="display: none;">
@@ -495,45 +455,37 @@
                 </div>
 
                 <div class="mt-10 flex flex-col items-center gap-6 text-center border-t border-brand-pink/20 pt-12 max-w-2xl mx-auto">
-                    <p class="font-bold text-brand-brown text-xl tracking-wide">جربت حلوياتنا قريب؟</p>
-                    <button onclick="window.ProductUI.openReviewModal()" class="btn-solid px-12 py-4 shadow-lg text-lg rounded-full cursor-pointer">شاركنا تجربتك الآن</button>
+                    <button onclick="window.ProductUI.openReviewModal()" class="btn-solid px-12 py-4 shadow-lg text-lg rounded-full cursor-pointer">إضافة تقييم</button>
                 </div>
             </div>
         </section>
 
-        <!-- ========================================== -->
-        <!-- 🛍️ قسم مختارات صُممت لك (في نهاية الصفحة للإغلاق البيعي) -->
-        <!-- ========================================== -->
         <section id="suggestions-area" class="py-24 border-t border-brand-pink/10 bg-white hidden animate-fade">
             <div class="text-center mb-16 flex flex-col items-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-brand-pinkLight text-brand-pink rounded-full mb-6 border border-brand-pink/20">
                     <i data-lucide="sparkles" class="w-8 h-8 text-brand-pink"></i>
                 </div>
-                <h3 class="text-3xl md:text-5xl font-black text-brand-brown tracking-tighter mb-4">مختارات صُممت لك</h3>
-                <p class="font-bold text-brand-brown/70 text-lg max-w-2xl mx-auto leading-relaxed text-balance">
-                    بناءً على ذوقك الراقي واختياراتك السابقة، نرشح لك هذه المجموعة الاستثنائية لتكمل بها طلبك.
-                </p>
+                <h3 class="text-3xl md:text-5xl font-black text-brand-brown tracking-tighter mb-4">منتجات بنرشحها لك</h3>
             </div>
             
             <div class="relative group max-w-6xl mx-auto">
                 <div id="dynamic-suggestions-slider" class="flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-8 pb-8 px-4 pt-2">
-                    <!-- سيتم الحقن آلياً بكروت التوصيات الشخصية -->
+                    <!-- سيتم الحقن آلياً -->
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- الفوتر الاحترافي الموحد (متمركز في المنتصف) -->
     <footer class="bg-white pt-20 pb-8 border-t-4 border-brand-pink">
         <div class="container mx-auto px-4 md:px-8 max-w-6xl text-center">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-b border-brand-pink/10 pb-16">
                 <div class="flex flex-col items-center justify-center">
-                    <div class="mb-6 inline-flex items-center justify-center w-16 h-16 bg-brand-pinkLight text-brand-pink rounded-2xl border border-brand-pink/20 shadow-sm">
+                    <div class="mb-6 inline-flex items-center justify-center w-16 h-16 bg-brand-pinkLight text-brand-pink rounded-2xl border-brand-pink/20 shadow-sm border-2">
                         <i data-lucide="gem" class="w-8 h-8 text-brand-pink"></i>
                     </div>
                     <p class="text-brand-brown font-bold text-base leading-loose max-w-xs opacity-90 mx-auto">
-                        طازجة من فرننا إلى مائدتك، مخبوزاتنا مصنوعة بحب وشغف. الالتزام بالجودة وإرضاء عملائنا هو أساس كل ما نقدمه في حلويات بوسي.
+                        الجودة في حلويات بوسي مش مجرد كلمة، دي التزام. شغفنا بيبدأ من اختيار أجود الخامات عشان نوصلك طعم بيفضل في الذاكرة.
                     </p>
                 </div>
                 <div class="flex flex-col items-center justify-center">
@@ -568,95 +520,11 @@
         </div>
     </footer>
 
-    <!-- قوالب الحقن السيادية للواجهة -->
-    
-    <!-- 1. قالب الكارت المزدوج (تم تفعيل شبكة الأخطبوط عليه) -->
-    <template id="template-card-grid">
-        <div class="bose-double-wrap group animate-fade h-full block text-decoration-none">
-            <div class="bose-double-inner bg-white h-full flex flex-col">
-                <div class="aspect-[4/3] w-full overflow-hidden bg-brand-pinkLight border-b border-brand-pink/20 relative cursor-pointer" onclick="window.location.href='product.html?category={CAT_NAME}'">
-                    <img src="{PRODUCT_IMAGE}" alt="{PRODUCT_NAME}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
-                </div>
-                <div class="p-6 flex flex-col flex-grow text-right bg-white">
-                    <p class="text-xs text-brand-pink mb-1 uppercase tracking-widest font-black">{CAT_NAME}</p>
-                    <h3 class="font-black text-2xl text-brand-brown mb-3 leading-tight cursor-pointer hover:text-brand-pink transition-colors" onclick="window.location.href='product.html?category={CAT_NAME}'">{PRODUCT_NAME}</h3>
-                    <p class="text-sm text-brand-brown opacity-80 font-bold mb-6 leading-relaxed whitespace-normal flex-grow">{PRODUCT_DESC}</p>
-                    
-                    <div class="border-t border-brand-pink/10 pt-4 mt-auto">
-                        <div class="flex items-center justify-between mb-5">
-                            <span class="font-black text-3xl text-brand-pink">{PRODUCT_PRICE} ج.م</span>
-                            <div class="flex items-center gap-3 bg-brand-pinkLight rounded-full px-2 py-1 border border-brand-pink/20">
-                                <button onclick="window.ProductUI.changeCardQty(this, 1)" class="w-8 h-8 rounded-full bg-white text-brand-brown font-black text-xl hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm">+</button>
-                                <span class="card-qty-display font-black text-brand-brown min-w-[20px] text-center">1</span>
-                                <button onclick="window.ProductUI.changeCardQty(this, -1)" class="w-8 h-8 rounded-full bg-white text-brand-brown font-black text-xl hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm">-</button>
-                            </div>
-                        </div>
-                        <button onclick="window.ProductUI.addFromCard(this, '{PRODUCT_ID}')" class="btn-solid w-full py-3 rounded-full text-lg cursor-pointer">إضافة لطلب سيادتكم</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </template>
-
-    <!-- 2. قالب الكارت المنفرد (تم تفعيل شبكة الأخطبوط عليه) -->
-    <template id="template-card-full">
-        <div class="bose-double-wrap group animate-fade h-full block text-decoration-none">
-            <div class="bose-double-inner bg-white h-full flex flex-col md:flex-row">
-                <div class="w-full md:w-5/12 aspect-[4/3] md:aspect-auto md:h-full overflow-hidden bg-brand-pinkLight border-b md:border-b-0 md:border-l border-brand-pink/20 relative shrink-0 cursor-pointer" onclick="window.location.href='product.html?category={CAT_NAME}'">
-                    <img src="{PRODUCT_IMAGE}" alt="{PRODUCT_NAME}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
-                </div>
-                <div class="w-full md:w-7/12 p-8 md:p-12 flex flex-col text-right bg-white justify-center">
-                    <p class="text-sm text-brand-pink mb-2 uppercase tracking-widest font-black">{CAT_NAME}</p>
-                    <h3 class="font-black text-3xl md:text-4xl text-brand-brown mb-4 leading-tight cursor-pointer hover:text-brand-pink transition-colors" onclick="window.location.href='product.html?category={CAT_NAME}'">{PRODUCT_NAME}</h3>
-                    <p class="text-base md:text-lg text-brand-brown opacity-80 font-bold mb-8 leading-relaxed whitespace-normal">{PRODUCT_DESC}</p>
-                    
-                    <div class="mt-auto border-t border-brand-pink/10 pt-6">
-                        <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
-                            <span class="font-black text-4xl text-brand-pink">{PRODUCT_PRICE} ج.م</span>
-                            <div class="flex items-center gap-4 bg-brand-pinkLight rounded-full px-3 py-1 border border-brand-pink/20">
-                                <button onclick="window.ProductUI.changeCardQty(this, 1)" class="w-10 h-10 rounded-full bg-white text-brand-brown font-black text-2xl hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm">+</button>
-                                <span class="card-qty-display font-black text-brand-brown text-xl min-w-[24px] text-center">1</span>
-                                <button onclick="window.ProductUI.changeCardQty(this, -1)" class="w-10 h-10 rounded-full bg-white text-brand-brown font-black text-2xl hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm">-</button>
-                            </div>
-                        </div>
-                        <button onclick="window.ProductUI.addFromCard(this, '{PRODUCT_ID}')" class="btn-solid w-full py-4 rounded-full text-xl cursor-pointer">إضافة لطلب سيادتكم</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </template>
-
-    <!-- 3. قالب كارت السلايدر المصغر (تم إضافة اسم القسم والربط) -->
-    <template id="bose-suggestion-card-template">
-        <div class="snap-start flex-shrink-0 w-[85%] md:w-[450px]">
-            <div class="bose-double-wrap group animate-fade h-full block text-decoration-none cursor-pointer" onclick="window.location.href='product.html?category={CAT_NAME}'">
-                <div class="bose-double-inner bg-white h-full flex flex-col">
-                    <div class="aspect-[4/3] w-full overflow-hidden bg-brand-pinkLight border-b border-brand-pink/20 relative">
-                        <img src="{PRODUCT_IMAGE}" alt="{PRODUCT_NAME}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow text-right bg-white">
-                        <p class="text-xs text-brand-pink mb-1 uppercase tracking-widest font-black">{CAT_NAME}</p>
-                        <h3 class="font-black text-xl text-brand-brown mb-2 leading-tight group-hover:text-brand-pink transition-colors">{PRODUCT_NAME}</h3>
-                        <p class="text-sm text-brand-brown opacity-60 font-bold mb-6 whitespace-normal leading-relaxed">{PRODUCT_DESC}</p>
-                        <div class="mt-auto flex justify-between items-center border-t border-brand-pink/10 pt-4">
-                            <span class="font-black text-2xl text-brand-pink">{PRODUCT_PRICE} ج.م</span>
-                            <button onclick="event.preventDefault(); event.stopPropagation(); window.ProductUI.addFromCard(this, '{PRODUCT_ID}')" class="w-12 h-12 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center hover:bg-brand-pink hover:text-white border border-brand-pink/20 transition-colors shadow-sm cursor-pointer z-10">
-                                <i data-lucide="plus" class="w-6 h-6"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </template>
-
-    <!-- ربط المحرك السيادي الموحد -->
     <script type="module" src="unified-engine.js"></script>
 
     <script>
         lucide.createIcons();
 
-        // 🧠 محرك الواجهة الموحد لصفحة المنتج
         window.ProductUI = {
             currentCategory: '',
             allCategoryProducts: [],
@@ -665,22 +533,22 @@
             reviewsPerPage: 3,
             
             categoryData: {
-                "تورت": { layout: "full", hasSizes: false, desc: "التورتة عندنا مش مجرد كيك، دي قطعة فنية بتشاركك أسعد لحظاتك. بنخبزها من أجود أنواع الدقيق، وبنحشيها طبقات غنية من الكريمة والمكسرات والفواكه الطازجة. بنهتم بكل تفصيلة عشان تليق بمناسبتك وتبهج ضيوفك." },
-                "ميني تورت": { layout: "full", hasSizes: false, desc: "كل طعم التورتة الفاخرة بس في حجم مناسب يشاركك لحظة روقان سريعة. كيك إسفنجي هش، وحشوات طبيعية بتدوب في البق. الاختيار المثالي لو عايز تدلع نفسك أو تهادي حد غالي عليك بحاجة مميزة." },
-                "جاتوه": { layout: "full", hasSizes: false, desc: "قطع فنية من الكيك الإسفنجي الخفيف، بنقدمها بتشكيلة واسعة من النكهات. من الشوكولاتة الغنية لحد الفواكه المنعشة. القطعة الواحدة كفيلة تفصلك عن دوشة اليوم وتعيشك تجربة تذوق استثنائية." },
-                "كب كيك": { layout: "full", hasSizes: false, desc: "كب كيك مخبوز بشغف، هش جداً وغني بالنكهة. متغطي بطبقة كريمة غنية بتكمل الطعم. إضافة مثالية لأعياد الميلاد والتجمعات، بتعجب الكبار والصغيرين." },
-                "ورد": { layout: "full", hasSizes: false, desc: "لأن الهدايا بتكمل بالورد، وفرنا لك تشكيلة من أرقى باقات الورد الطبيعي المنسقة بعناية فائقة. اختيارك الأول للتعبير عن مشاعرك لمن تحب بكل رقي وفخامة." },
-                "روقان": { layout: "full", hasSizes: false, desc: "صندوق السعادة المليان بتشكيلة من أحلى المخبوزات والحلويات. متصمم مخصوص عشان يظبط مزاجك أو يكون هدية قيمة جداً تشاركها مع اللي بتحبهم في قعدة صفا." },
-                "ريدفيلفت": { layout: "full", hasSizes: false, desc: "ملكة الكيك الكلاسيكي. طبقات من الكيك المخملي الأحمر الغني، محشية ومتغطية بصوص الجبنة الكريمي الأصلي اللي بيكسر الحلاوة ويديك توازن طعم ملوش مثيل." },
-                "ريدڤيلڤت": { layout: "full", hasSizes: false, desc: "ملكة الكيك الكلاسيكي. طبقات من الكيك المخملي الأحمر الغني، محشية ومتغطية بصوص الجبنة الكريمي الأصلي اللي بيكسر الحلاوة ويديك توازن طعم ملوش مثيل." },
+                "تورت": { layout: "full", hasSizes: false, desc: "التورتة في حلويات بوسي مش مجرد كيك، بنهتم بأدق التفاصيل عشان تناسب مناسبتك. بنخبزها من أفضل أنواع الدقيق مع حشوات غنية لضمان تجربة مميزة." },
+                "ميني تورت": { layout: "full", hasSizes: false, desc: "نفس جودة التورتة الفاخرة بحجم مناسب. كيك إسفنجي هش بحشوات طبيعية." },
+                "جاتوه": { layout: "full", hasSizes: false, desc: "قطع من الكيك الإسفنجي الخفيف بنكهات متعددة. الجودة والإتقان في كل قطعة." },
+                "كب كيك": { layout: "full", hasSizes: false, desc: "كب كيك هش وغني بالنكهة. إضافة ممتازة لأعياد الميلاد والتجمعات." },
+                "ورد": { layout: "full", hasSizes: false, desc: "باقات ورد طبيعي منسقة بعناية لتعبر عن مشاعرك بكل رقي." },
+                "روقان": { layout: "full", hasSizes: false, desc: "صندوق متكامل من المخبوزات والحلويات، مثالي للمشاركة أو كهدية قيمة." },
+                "ريدفيلفت": { layout: "full", hasSizes: false, desc: "طبقات من الكيك المخملي الأحمر مع صوص الجبنة الكريمي لمذاق متوازن." },
+                "ريدڤيلڤت": { layout: "full", hasSizes: false, desc: "طبقات من الكيك المخملي الأحمر مع صوص الجبنة الكريمي لمذاق متوازن." },
                 
-                "دونات": { layout: "grid", hasSizes: false, desc: "عجينة قطنية هشة جداً، بنقليها بحرفية عشان تطلع خفيفة ومش شاربة زيت. بنغطيها بصوصات طبيعية غنية من الشوكولاتة والكراميل اللي بتدوب مع أول قطمة." },
-                "سينابون": { layout: "grid", hasSizes: false, desc: "لفائف من العجينة القطنية الهشة المخبوزة طازة، محشية بقرفة أصلية وسكر بني، وغرقانة في صوص الجبنة الكريمي الناعم. الاختيار المثالي لعشاق الدفا والطعم المميز." },
-                "قشطوطة": { layout: "grid", hasSizes: false, desc: "كيكة إسفنجية هشة غرقانة في مزيج حليب غني، متغطية بطبقة كريمة خفيفة وصوصات طبيعية (زي الكراميل أو الفستق). توازن مثالي بين السكر المضبوط والطعم اللي بيدوب." },
-                "كبات": { layout: "grid", hasSizes: false, desc: "كاسات مليانة بطبقات من الكيك، الكريمة، والمكسرات والصوصات الغنية. كل معلقة منها بتاخدك في رحلة طعم مختلفة. متوفرة بنكهات ترضي كل الأذواق." },
-                "ديسباسيتو": { layout: "grid", hasSizes: true, desc: "طبقات من كيك الشوكولاتة الغني المخبوز بعناية، متغطي بطبقة موس شوكولاتة ناعم ونوتيلا أصلية. الاختيار المفضل لعشاق الشوكولاتة القوية. متوفرة بأحجام مختلفة تناسبك إنت وعيلتك." },
+                "دونات": { layout: "grid", hasSizes: false, desc: "عجينة قطنية هشة، مغطاة بصوصات طبيعية ومحضرة بعناية." },
+                "سينابون": { layout: "grid", hasSizes: false, desc: "لفائف العجينة الهشة المحشية بالقرفة والمغطاة بصوص الجبنة الكريمي." },
+                "قشطوطة": { layout: "grid", hasSizes: false, desc: "كيكة غنية بالحليب ومغطاة بطبقة كريمة وصوصات طبيعية لتوازن مثالي." },
+                "كبات": { layout: "grid", hasSizes: false, desc: "كاسات من طبقات الكيك والكريمة بنكهات ترضي كافة الأذواق." },
+                "ديسباسيتو": { layout: "grid", hasSizes: true, desc: "كيك شوكولاتة غني مغطى بطبقة موس ونوتيلا. متوفرة بأحجام مختلفة." },
                 
-                "default": { layout: "grid", hasSizes: false, desc: "منتجات حلويات بوسي الفاخرة، تُحضر يومياً من أجود المكونات لضمان تقديم تجربة تذوق استثنائية تليق بكم." }
+                "default": { layout: "grid", hasSizes: false, desc: "منتجاتنا تُحضر يومياً من أجود المكونات لضمان تقديم أعلى معايير الجودة." }
             },
 
             showToast: function(msg) {
@@ -823,14 +691,13 @@
                         .replace(/{CAT_NAME}/g, p.category || 'حلويات بوسي')
                         .replace(/{PRODUCT_NAME}/g, p.name)
                         .replace(/{PRODUCT_IMAGE}/g, window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image))
-                        .replace(/{PRODUCT_DESC}/g, p.description || p.desc || 'يتم التحضير بأجود المكونات لضمان تجربة تذوق استثنائية تليق بكم.')
+                        .replace(/{PRODUCT_DESC}/g, p.description || p.desc || 'يتم التحضير بأجود المكونات لضمان أعلى معايير الجودة.')
                         .replace(/{PRODUCT_PRICE}/g, parseFloat(p.price) || 0);
                 }).join('');
                 
                 lucide.createIcons();
             },
 
-            // --- التوصيات الشخصية المبنية على السلوك (Smart Suggestions) ---
             renderSmartSuggestions: function() {
                 const catalog = window.BoseState?.catalog || [];
                 const container = document.getElementById('suggestions-area');
@@ -867,16 +734,15 @@
                         return tmpl
                             .replace(/{PRODUCT_ID}/g, p.id)
                             .replace(/{PRODUCT_NAME}/g, p.name)
-                            .replace(/{CAT_NAME}/g, p.category || 'صنف فاخر')
+                            .replace(/{CAT_NAME}/g, p.category || 'حلويات بوسي')
                             .replace(/{PRODUCT_IMAGE}/g, window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image))
-                            .replace(/{PRODUCT_DESC}/g, p.description || p.desc || 'يتم التحضير بأجود المكونات لضمان تجربة تذوق استثنائية.')
+                            .replace(/{PRODUCT_DESC}/g, p.description || p.desc || 'يتم التحضير بأجود المكونات لضمان أعلى معايير الجودة.')
                             .replace(/{PRODUCT_PRICE}/g, parseFloat(p.price) || 0);
                     }).join('');
                     lucide.createIcons();
                 }
             },
 
-            // --- المراجعات (نظام التصفح بالصفحات) ---
             fetchReviews: function() {
                 const db = window.db;
                 if (!db) return;
@@ -891,9 +757,9 @@
                         if(this.reviewsData.length === 0) {
                             this.reviewsData = [
                                 { name: "أحمد", text: "جودة ممتازة وطعم ولا أروع، التورتة كانت حديث الحفلة." },
-                                { name: "منى", text: "تعامل راقي والتوصيل في الميعاد بالضبط. السينابون وهمي." },
-                                { name: "د. خالد", text: "خامات نظيفة جداً والسكر مضبوط. أفضل مكان للحلويات في الفرافرة بلا منازع." },
-                                { name: "سارة", text: "بوكس الروقان كان هدية مثالية. شكراً لإدارة حلويات بوسي على الإبداع." }
+                                { name: "منى", text: "تعامل راقي والتوصيل في الميعاد بالضبط." },
+                                { name: "د. خالد", text: "خامات نظيفة جداً والسكر مضبوط. مكان مميز فعلاً." },
+                                { name: "سارة", text: "بوكس الروقان ممتاز. شكراً لكم." }
                             ];
                         }
                         
@@ -928,8 +794,8 @@
                             <div class="flex items-center gap-4 border-t border-brand-pink/10 pt-6">
                                 <div class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center font-bold text-brand-pink text-lg border border-brand-pink/20 shrink-0">${(d.name || 'ب').charAt(0)}</div>
                                 <div>
-                                    <h5 class="font-bold text-base text-brand-brown">${d.name || 'عميل واثق'}</h5>
-                                    <span class="text-[10px] opacity-60 uppercase tracking-widest font-bold text-brand-brown">تجربة حقيقية</span>
+                                    <h5 class="font-bold text-base text-brand-brown">${d.name || 'عميل'}</h5>
+                                    <span class="text-[10px] opacity-60 uppercase tracking-widest font-bold text-brand-brown">تجربة مؤكدة</span>
                                 </div>
                             </div>
                         </div>`;
@@ -976,7 +842,7 @@
                 const review = document.getElementById('review-text').value;
                 
                 if (!name || !review) {
-                    this.showToast("عفواً، يرجى ملء كافة البيانات لنتمكن من نشر تقييمك.");
+                    this.showToast("برجاء استكمال البيانات المطلوبة.");
                     return;
                 }
 
@@ -989,27 +855,26 @@
                             this.closeReviewModal();
                             document.getElementById('review-name').value = '';
                             document.getElementById('review-text').value = '';
-                            this.showToast("نقدر وقتك. تم استلام تقييمك وسيعرض قريباً.");
+                            this.showToast("شكراً لمشاركتك. تم استلام تقييمك.");
                         });
                     });
                 } else {
                     this.closeReviewModal();
-                    this.showToast("نقدر وقتك. تم استلام تقييمك وسيعرض قريباً.");
+                    this.showToast("شكراً لمشاركتك. تم استلام تقييمك.");
                 }
             },
 
-            // --- دوال باني التورتة السيادي (Premium Cake Builder) ---
             modQty: function(val) {
                 const newVal = this.state.people + val;
                 if (newVal < 4 || newVal > 250) return;
                 
                 if (val < 0) {
                     if (this.state.shape === 'rectangle' && newVal < 20) {
-                        this.showToast("الشكل المستطيل بيحتاج ٢٠ فرد على الأقل.. هنغير الشكل لـ (دائري) مؤقتاً.");
+                        this.showToast("الشكل المستطيل يتطلب 20 فرد على الأقل. سيتم تغيير الشكل إلى دائري مؤقتاً.");
                         this.state.shape = 'round';
                         this.syncShapeUI();
                     } else if (this.state.shape === 'square' && newVal < 16) {
-                        this.showToast("الشكل المربع بيحتاج ١٦ فرد على الأقل.. هنغير الشكل لـ (دائري) مؤقتاً.");
+                        this.showToast("الشكل المربع يتطلب 16 فرد على الأقل. سيتم تغيير الشكل إلى دائري مؤقتاً.");
                         this.state.shape = 'round';
                         this.syncShapeUI();
                     }
@@ -1022,23 +887,26 @@
 
             setShape: function(sh, btn) {
                 if (sh === 'rectangle' && this.state.people < 20) {
-                    this.showToast("الشكل المستطيل بيحتاج ٢٠ فرد على الأقل. ياريت تزود العدد.");
+                    this.showToast("الشكل المستطيل يتطلب 20 فرد على الأقل.");
                     return;
                 }
                 if (sh === 'square' && this.state.people < 16) {
-                    this.showToast("الشكل المربع بيحتاج ١٦ فرد على الأقل. ياريت تزود العدد.");
+                    this.showToast("الشكل المربع يتطلب 16 فرد على الأقل.");
                     return;
                 }
                 this.state.shape = sh;
-                btn.parentElement.querySelectorAll('.builder-option-card').forEach(b => b.classList.remove('selected'));
+                btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
             },
 
             syncShapeUI: function() {
-                const btns = document.querySelectorAll('#step-2 .builder-option-card');
+                const btns = document.querySelectorAll('#builder-step-1 .option-btn');
                 btns.forEach(b => {
                     b.classList.remove('selected');
-                    if(b.getAttribute('onclick').includes(`'${this.state.shape}'`)) b.classList.add('selected');
+                    const onclickValue = b.getAttribute('onclick');
+                    if(onclickValue && onclickValue.includes('setShape') && onclickValue.includes(`'${this.state.shape}'`)) {
+                        b.classList.add('selected');
+                    }
                 });
             },
 
@@ -1054,7 +922,12 @@
 
             nextStep: function(n) {
                 document.querySelectorAll('.builder-step-content').forEach(s => s.classList.add('hidden'));
-                document.getElementById(`step-${n}`).classList.remove('hidden');
+                
+                const targetStep = document.getElementById(`builder-step-${n}`);
+                if(targetStep) {
+                    targetStep.classList.remove('hidden');
+                }
+
                 const builderSection = document.getElementById('builder-container');
                 if(builderSection) {
                     const y = builderSection.getBoundingClientRect().top + window.pageYOffset - 100;
@@ -1064,7 +937,7 @@
 
             setPrint: function(type, btn) {
                 this.state.print = type;
-                btn.parentElement.querySelectorAll('.builder-option-card').forEach(b => {
+                btn.parentElement.querySelectorAll('.option-btn').forEach(b => {
                     b.classList.remove('selected');
                     const icon = b.querySelector('i');
                     if(icon) { icon.classList.remove('lucide-check-circle', 'text-brand-pink'); icon.classList.add('lucide-circle', 'text-gray-300'); }
@@ -1081,7 +954,7 @@
 
             setGift: function(val, btn) {
                 this.state.gift = val;
-                btn.parentElement.querySelectorAll('.builder-option-card').forEach(b => b.classList.remove('selected'));
+                btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
                 const ga = document.getElementById('gift-card-area');
                 if(val) ga.classList.remove('hidden'); else ga.classList.add('hidden');
@@ -1100,13 +973,11 @@
 
             addCustomCakeToCart: function() {
                 const finalPrice = this.updatePrices();
-                
-                // جمع الملاحظات الصحية للمطبخ
                 const healthNotes = document.getElementById('cake-health')?.value || 'لا توجد';
                 this.state.healthNotes = healthNotes;
 
                 const item = {
-                    id: `custom-cake-${Date.now()}`, name: 'تورتة ملكية عمولة', price: finalPrice, quantity: 1, isCustom: true,
+                    id: `custom-cake-${Date.now()}`, name: 'تورتة بتصميم خاص', price: finalPrice, quantity: 1, isCustom: true,
                     details: { ...this.state, occasion: document.getElementById('cake-occasion-input')?.value || 'تفضيل خاص' }
                 };
                 
@@ -1117,7 +988,6 @@
                 }
             },
 
-            // --- دوال الكروت والسلة للأقسام العادية ---
             changeCardQty: function(btn, delta) {
                 const display = btn.parentElement.querySelector('.card-qty-display');
                 if (display) {
@@ -1147,7 +1017,7 @@
                         });
                     }
                     window.cartSystem.saveCartToStorage();
-                    this.showToast(`تمت إضافة [${product.name}] لطلب سيادتكم بنجاح.`);
+                    this.showToast(`تمت إضافة [${product.name}] للسلة.`);
                     if(display) display.innerText = '1';
                 }
             },
@@ -1192,8 +1062,4 @@
     </script>
 </body>
 </html>
-`
-}
-
-
 
