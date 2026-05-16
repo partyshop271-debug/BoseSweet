@@ -4,17 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <title>حلويات بوسي | عقد من التميز في صناعة الحلويات</title>
+    <title>حلويات بوسي | إرث من الإتقان في صناعة الحلويات</title>
     <meta name="description" content="المقر الرسمي لعلامة حلويات بوسي. الجودة والإتقان في صناعة الحلويات بمركز الفرافرة منذ عام 2014.">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة الأيقونات الرسمية -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- المرجع البصري السيادي V7.0 -->
+    <!-- ربط ملف الأناقة الموحد -->
     <link rel="stylesheet" href="style.css">
 
     <script>
@@ -24,8 +27,8 @@
                     colors: {
                         brand: {
                             pink: '#ff91a4',
-                            pinkLight: '#ffe6ea',
-                            brown: '#3d241c',
+                            pinkLight: '#fff5f6',
+                            brown: '#3d241c', /* البني الشوكولاتة المعتمد للخطوط فقط */
                             white: '#ffffff'
                         }
                     },
@@ -37,370 +40,292 @@
         }
     </script>
     <style>
-        /* 🛡️ درع التحصين البصري - منع تجاوز وزن الخط 700 */
-        * {
-            font-weight: 400;
-            color: #3d241c;
+        /* 🛡️ درع التحصين البصري واللوني (3 ألوان فقط) */
+        body {
+            background-color: #ffffff;
+            color: #3d241c; /* تطبيق البني الشوكولاتة كمرجع أساسي للنصوص فقط */
             -webkit-tap-highlight-color: transparent;
+            font-family: 'Cairo', sans-serif;
         }
-        .font-bold, h1, h2, h3, h4, .btn-solid, .ticker-item, .double-btn-inner, .bose-heavy {
-            font-weight: 700 !important;
-        }
-        .font-black, .font-extrabold {
-            font-weight: 700 !important;
-        }
+        
+        * { font-weight: 400; color: inherit; }
+        .font-bold, h1, h2, h3, h4, .btn-solid { font-weight: 700 !important; }
 
-        /* حسم عطل القائمة الجانبية (Sidebar) نهائياً لضمان عدم التداخل */
-        .sidebar {
-            position: fixed !important;
-            top: 0 !important;
-            right: -100% !important; /* مخفية تماماً خلف حدود الشاشة */
-            width: 310px !important;
-            max-width: 85% !important;
-            height: 100% !important;
-            z-index: 9999 !important;
-            transition: right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
-            background: #ffffff !important;
-            box-shadow: -15px 0 40px rgba(255, 145, 164, 0.15);
+        /* محرك الشريط المتحرك المستمر (Seamless Infinite Ticker) */
+        .ticker-wrap {
+            width: 100%;
+            overflow: hidden;
+            background-color: #ff91a4;
             display: flex;
-            flex-direction: column;
-            border-left: 2px solid rgba(255, 145, 164, 0.1);
+            direction: rtl;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .ticker-scroll {
+            display: flex;
+            width: max-content;
+            animation: seamlessTicker 40s linear infinite;
+        }
+        .ticker-wrap:hover .ticker-scroll {
+            animation-play-state: paused; /* توقف الشريط عند وقوف العميل ليقرأ */
+        }
+        .ticker-item {
+            padding: 10px 40px;
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+        /* تحريك 50% من العرض الإجمالي يعادل إزاحة مجموعة كاملة واحدة، لتبدأ الثانية بنعومة تامة */
+        @keyframes seamlessTicker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(50%); }
         }
 
-        .sidebar.active {
-            right: 0 !important; /* تظهر فقط عند الضغط على الزر */
-        }
+        /* إخفاء شريط التمرير للسلايدرز مع الحفاظ على الانسيابية */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 
+        /* هندسة القائمة الجانبية السيادية المتقدمة (بدون أي ألوان سوداء أو رمادية) */
+        .sidebar {
+            position: fixed !important; top: 0 !important; right: -100% !important; 
+            width: 340px !important; max-width: 85% !important; height: 100% !important;
+            z-index: 9999 !important; transition: right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+            background: #ffffff !important; box-shadow: -20px 0 50px rgba(255, 145, 164, 0.2); /* ظل وردي فقط */
+            display: flex; flex-direction: column; overflow-y: auto;
+            border-left: 2px solid rgba(255, 145, 164, 0.3);
+        }
+        .sidebar.active { right: 0 !important; }
+        
         .sidebar-overlay {
-            position: fixed !important;
-            inset: 0 !important;
-            background: rgba(61, 36, 28, 0.7) !important;
-            backdrop-filter: blur(8px) !important;
-            -webkit-backdrop-filter: blur(8px) !important;
-            z-index: 9998 !important;
-            display: none;
-            opacity: 0;
+            position: fixed !important; inset: 0 !important; 
+            background: rgba(255, 145, 164, 0.8) !important; /* وردي شفاف بدلاً من الأسود والبني */
+            backdrop-filter: blur(4px) !important; z-index: 9998 !important; display: none; opacity: 0;
             transition: opacity 0.4s ease;
         }
+        .sidebar-overlay.active { display: block !important; opacity: 1 !important; }
 
-        .sidebar-overlay.active {
-            display: block !important;
-            opacity: 1 !important;
+        details > summary { list-style: none; cursor: pointer; }
+        details > summary::-webkit-details-marker { display: none; }
+        
+        /* الأزرار السيادية الفاخرة */
+        .btn-solid {
+            background-color: #ff91a4; color: #ffffff !important; border-radius: 50px; 
+            padding: 14px 40px; font-weight: 700; font-size: 1.1rem; display: inline-flex; 
+            align-items: center; justify-content: center; transition: all 0.3s ease; border: 2px solid #ff91a4; text-decoration: none;
+        }
+        .btn-solid:hover { background-color: #ffffff; color: #ff91a4 !important; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255,145,164,0.3); }
+        
+        .btn-outline {
+            background-color: transparent; color: #ff91a4 !important; border: 2px solid #ff91a4; 
+            border-radius: 50px; padding: 12px 35px; font-weight: 700; font-size: 1rem; 
+            display: inline-flex; align-items: center; justify-content: center; transition: all 0.3s ease; text-decoration: none;
+        }
+        .btn-outline:hover { background-color: #ff91a4; color: #ffffff !important; }
+
+        /* نظام الإطار المزدوج */
+        .bose-double-wrap {
+            background: #ffffff; border-radius: 32px; border: 2px solid #ff91a4; padding: 6px;
+            transition: all 0.4s ease; display: flex; flex-direction: column; height: 100%; text-decoration: none;
+        }
+        .bose-double-wrap:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(255, 145, 164, 0.15); }
+        .bose-double-inner {
+            background: #ffffff; border-radius: 26px; border: 1px solid rgba(255, 145, 164, 0.3);
+            overflow: hidden; display: flex; flex-direction: column; height: 100%; position: relative;
         }
 
+        /* محرك الشلال البصري */
+        .waterfall-mask { mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%); }
         @keyframes scrollUpLoop { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
         @keyframes scrollDownLoop { 0% { transform: translateY(-50%); } 100% { transform: translateY(0); } }
+
+        .animate-fade { animation: fade 0.6s ease forwards; }
+        @keyframes fade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="antialiased bg-white selection:bg-brand-pink selection:text-white">
+<body class="antialiased selection:bg-brand-pink selection:text-white">
 
-    <!-- شريط المعلومات (Sovereign Ticker) -->
-    <div class="ticker-wrap">
-        <div class="ticker-track">
-            <div class="ticker-item">أحدث عروض الحلويات الفاخرة | حلويات بوسي</div>
-            <div class="ticker-item">الجودة والإتقان في كل قطعة | حلويات بوسي</div>
-            <div class="ticker-item">خبرة عشر سنوات في صناعة السعادة بالفرافرة | حلويات بوسي</div>
-            <div class="ticker-item">توصيل سريع وآمن لكافة المناطق | حلويات بوسي</div>
+    <!-- شريط الإشعارات العلوي المؤسسي (الشريط المستمر بلا انقطاع) -->
+    <div class="ticker-wrap shadow-sm">
+        <div class="ticker-scroll">
+            <!-- المجموعة الأولى -->
+            <div class="ticker-item">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
+            <div class="ticker-item">خبرة عشر سنين في صناعة السعادة بالفرافرة</div>
+            <div class="ticker-item">أرقى باقات الورد الطبيعي المنسقة لمناسباتكم السعيدة</div>
+            <div class="ticker-item">طازجة من فرننا إلى مائدتك مخبوزة بحب وشغف</div>
+            <!-- المجموعة الثانية (لضمان الاستمرار بدون أي انقطاع) -->
+            <div class="ticker-item">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
+            <div class="ticker-item">خبرة عشر سنين في صناعة السعادة بالفرافرة</div>
+            <div class="ticker-item">أرقى باقات الورد الطبيعي المنسقة لمناسباتكم السعيدة</div>
+            <div class="ticker-item">طازجة من فرننا إلى مائدتك مخبوزة بحب وشغف</div>
         </div>
     </div>
 
-    <!-- الهيدر الرسمي (Sovereign Header) -->
-    <header class="main-header border-b border-brand-pink/10 sticky top-0 z-[100] bg-white/95 backdrop-blur-md">
-        <div class="container mx-auto px-4 flex justify-between items-center py-3">
+    <!-- الهيدر الرسمي (تصميم نقي ومؤسسي بالألوان الثلاثة فقط) -->
+    <header class="border-b border-brand-pink/20 sticky top-0 z-[100] bg-white/95 backdrop-blur-md transition-all py-4 shadow-sm">
+        <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
             
-            <div class="w-1/4 flex justify-start">
-                <button onclick="window.toggleSidebar()" class="p-2 rounded-full border-2 border-brand-pink/20 hover:border-brand-pink transition-all">
-                    <i data-lucide="menu" class="w-7 h-7 text-brand-brown"></i>
+            <!-- القائمة الجانبية -->
+            <div class="w-1/3 flex justify-start">
+                <button onclick="window.toggleSidebar()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
+                    <i data-lucide="menu" class="w-7 h-7 text-brand-pink"></i>
                 </button>
             </div>
             
-            <div class="w-2/4 flex justify-center">
-                <a href="index.html" class="flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2 group">
-                    <span class="text-brand-pink group-hover:scale-110 transition-transform duration-500">
-                        <i data-lucide="gem" class="w-7 h-7"></i>
-                    </span>
-                    <h1 class="text-xl md:text-2xl font-bold text-brand-brown tracking-tighter uppercase">حلويات بوسي</h1>
+            <!-- الشعار -->
+            <div class="w-1/3 flex justify-center">
+                <a href="index.html" class="flex flex-col items-center justify-center group text-decoration-none">
+                    <i data-lucide="gem" class="w-8 h-8 text-brand-pink mb-1 group-hover:scale-110 transition-transform"></i>
+                    <h1 class="text-xl font-bold text-brand-brown tracking-tight uppercase">حلويات بوسي</h1>
                 </a>
             </div>
             
-            <div class="w-1/4 flex justify-end items-center gap-3">
-                <a href="cart.html" class="relative p-1 rounded-2xl border-2 border-brand-pink flex items-center justify-center hover:bg-brand-pink group transition-all bg-white">
-                    <div class="border-2 border-brand-pink rounded-xl p-1.5 w-10 h-10 flex items-center justify-center bg-white group-hover:border-white transition-colors">
-                         <i data-lucide="shopping-bag" class="w-6 h-6 text-brand-pink"></i>
-                    </div>
-                    <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-brand-pink text-white text-[11px] font-bold w-6 h-6 rounded-full flex items-center justify-center border-2 border-white hidden">0</span>
+            <!-- أيقونات التحكم (بحث + سلة) -->
+            <div class="w-1/3 flex justify-end items-center gap-5">
+                <button class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" onclick="alert('خاصية البحث سيتم تفعيلها قريباً')">
+                    <i data-lucide="search" class="w-6 h-6 text-brand-pink"></i>
+                </button>
+                <a href="cart.html" class="relative text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
+                    <i data-lucide="shopping-bag" class="w-6 h-6 text-brand-pink"></i>
+                    <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-brand-pink text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border border-white">0</span>
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- القائمة الجانبية (Sovereign Sidebar) -->
+    <!-- القائمة الجانبية الاحترافية (خالية من أي لون سوى الوردي والأبيض والبني للنصوص) -->
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
     <aside id="sidebar" class="sidebar">
-        <div class="p-6 flex justify-between items-center border-b-2 border-brand-pink/10 bg-brand-pinkLight/30">
-            <span class="text-2xl font-bold text-brand-pink flex items-center gap-2">
-                <i data-lucide="gem" class="w-6 h-6"></i> حلويات بوسي
+        <div class="p-6 flex justify-between items-center border-b border-brand-pink/20 bg-brand-pinkLight">
+            <span class="text-xl font-bold text-brand-brown flex items-center gap-2">
+                <i data-lucide="gem" class="w-5 h-5 text-brand-pink"></i> قائمة بوسي
             </span>
-            <button onclick="window.toggleSidebar()" class="text-brand-brown bg-white border-2 border-brand-pink/20 rounded-full p-2 hover:bg-brand-pink hover:text-white transition-all">
-                <i data-lucide="x" class="w-6 h-6"></i>
+            <button onclick="window.toggleSidebar()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
+                <i data-lucide="x" class="w-6 h-6 text-brand-pink"></i>
             </button>
         </div>
         
-        <nav class="flex-grow overflow-y-auto p-6 flex flex-col gap-4">
-            <a href="index.html" class="double-btn-wrap">
-                <div class="double-btn-inner">
-                    <i data-lucide="home" class="w-6 h-6"></i> الصفحة الرئيسية
-                </div>
-            </a>
-            <a href="menu.html" class="double-btn-wrap">
-                <div class="double-btn-inner">
-                    <i data-lucide="layout-grid" class="w-6 h-6"></i> تصفح المنيو
-                </div>
+        <nav class="flex-grow p-6 flex flex-col gap-2">
+            <a href="index.html" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
+                <i data-lucide="home" class="w-5 h-5 text-brand-pink"></i> الصفحة الرئيسية
             </a>
             
-            <div class="my-4 border-t border-brand-pink/10 mx-2"></div>
-            <p class="text-sm font-bold text-brand-pink mb-2 px-2 uppercase tracking-widest">أقسام الحلويات</p>
-            
-            <a href="product.html?category=cakes" class="double-btn-wrap">
-                <div class="double-btn-inner text-base">
-                    <i data-lucide="cake" class="w-5 h-5"></i> التورت الفاخرة
+            <details class="group">
+                <summary class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center justify-between outline-none cursor-pointer">
+                    <div class="flex items-center gap-3"><i data-lucide="layout-grid" class="w-5 h-5 text-brand-pink"></i> تصفح المنيو</div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180 text-brand-pink"></i>
+                </summary>
+                <div class="flex flex-col gap-1 pl-12 pr-4 pt-2 pb-4 border-l-2 border-brand-pink/20 ml-4 mr-2">
+                    <a href="menu.html" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">عرض كل المنيو</a>
+                    <a href="product.html?category=التورت" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">التورت الفاخرة</a>
+                    <a href="product.html?category=الجاتوهات" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">الجاتوهات</a>
+                    <a href="product.html?category=السينابون" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">السينابون</a>
                 </div>
+            </details>
+
+            <a href="product.html?action=build_cake" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
+                <i data-lucide="cake" class="w-5 h-5 text-brand-pink"></i> صمم تورتة مناسبتك
             </a>
-            <a href="product.html?category=cinnabon" class="double-btn-wrap">
-                <div class="double-btn-inner text-base">
-                    <i data-lucide="coffee" class="w-5 h-5"></i> السينابون
-                </div>
-            </a>
-            <a href="product.html?category=flowers" class="double-btn-wrap">
-                <div class="double-btn-inner text-base">
-                    <i data-lucide="flower-2" class="w-5 h-5"></i> الورد الطبيعي
-                </div>
+            <a href="product.html?category=ورد" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
+                <i data-lucide="flower-2" class="w-5 h-5 text-brand-pink"></i> قسم الورد الطبيعي
             </a>
         </nav>
         
-        <div class="p-6 border-t border-brand-pink/10">
-            <a href="cart.html" class="btn-solid w-full text-center">
-                <i data-lucide="shopping-basket" class="w-6 h-6 ml-2 inline"></i> مراجعة السلة
+        <div class="p-6 border-t border-brand-pink/20 bg-brand-pinkLight/50">
+            <a href="cart.html" class="w-full py-4 bg-brand-pink text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white hover:text-brand-pink border-2 border-brand-pink transition-colors cursor-pointer text-decoration-none shadow-sm">
+                <i data-lucide="shopping-basket" class="w-5 h-5"></i> <span>مراجعة السلة</span>
             </a>
         </div>
     </aside>
 
     <main>
-        <!-- 1. قسم البطولة (Hero Section) -->
-        <section class="pt-20 pb-16 relative overflow-hidden">
-            <div class="container mx-auto px-4 text-center">
-                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-brand-brown mb-8 leading-[1.1] tracking-tighter">
-                    عقد من التميز في<br><span class="text-brand-pink">صناعة الحلويات</span>
-                </h1>
-                <p class="text-brand-brown/80 font-bold text-lg md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed">
-                    نحن لا نصنع مجرد حلويات، بل نقدم تجربة طعم استثنائية تجمع بين الخبرة الطويلة والجودة العالية التي تليق بكم.
+        <!-- 1. قسم البطولة -->
+        <section class="pt-24 pb-12 px-4 text-center">
+            <div class="container mx-auto max-w-4xl">
+                <h2 class="text-4xl md:text-6xl lg:text-7xl font-bold text-brand-brown mb-6 leading-tight tracking-tight">
+                    عقد من <span class="text-brand-pink font-bold">التميز</span> في<br>صناعة الحلويات
+                </h2>
+                <p class="text-brand-brown font-bold text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed opacity-90">
+                    استمتع بمجموعتنا الفاخرة من الحلويات. المزيج الفريد من التقاليد والإتقان في كل قطعة، مخبوزة بشغف في قلب الفرافرة.
                 </p>
-                <div class="flex justify-center">
-                    <a href="menu.html" class="btn-solid px-12">تصفح المنيو الآن</a>
-                </div>
+                <a href="menu.html" class="btn-solid">تصفح المنيو الآن</a>
+            </div>
+        </section>
 
-                <!-- محرك الصور المتحركة (Visual Waterfall) -->
-                <div class="waterfall-mask w-full max-w-5xl mx-auto flex gap-6 justify-center mt-20 h-[60vh] min-h-[500px] overflow-hidden">
-                    <div class="flex flex-col w-1/2 max-w-[340px] overflow-hidden">
-                        <div class="flex flex-col gap-6 animate-[scrollUpLoop_40s_linear_infinite]">
-                            <div class="waterfall-item"><div class="waterfall-item-inner"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي الفاخرة"></div></div>
-                            <div class="waterfall-item"><div class="waterfall-item-inner"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div></div>
-                            <div class="waterfall-item"><div class="waterfall-item-inner"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div></div>
-                            <div class="waterfall-item"><div class="waterfall-item-inner"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div></div>
-                        </div>
+        <!-- 2. محرك الشلال الذكي -->
+        <section class="pb-24 relative overflow-hidden">
+            <div class="waterfall-mask w-full max-w-5xl mx-auto flex gap-6 justify-center h-[60vh] min-h-[500px] overflow-hidden">
+                <div class="flex flex-col w-1/2 max-w-[340px] overflow-hidden">
+                    <div id="waterfall-col-1" class="flex flex-col gap-6 animate-[scrollUpLoop_40s_linear_infinite]">
+                        <!-- يحقن آلياً بروابط ذكية -->
                     </div>
-                    <div class="flex flex-col w-1/2 max-w-[340px] overflow-hidden mt-24">
-                        <div class="flex flex-col gap-6 animate-[scrollDownLoop_40s_linear_infinite]">
-                            <div class="waterfall-item"><div class="waterfall-item-inner"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div></div>
-                            <div class="waterfall-item"><div class="waterfall-item-inner"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div></div>
-                            <div class="waterfall-item"><div class="waterfall-item-inner"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div></div>
-                            <div class="waterfall-item"><div class="waterfall-item-inner"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي"></div></div>
-                        </div>
+                </div>
+                <div class="flex flex-col w-1/2 max-w-[340px] overflow-hidden mt-24">
+                    <div id="waterfall-col-2" class="flex flex-col gap-6 animate-[scrollDownLoop_40s_linear_infinite]">
+                        <!-- يحقن آلياً بروابط ذكية -->
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 2. تاريخنا (The History) -->
-        <section class="py-24 bg-white border-y-4 border-brand-pink/10 text-center">
-            <div class="container mx-auto px-4 max-w-4xl">
-                <p class="text-brand-pink font-bold text-xl mb-4 tracking-[0.3em] uppercase">تاريخنا وقيمتنا</p>
-                <h2 class="text-4xl md:text-5xl font-bold text-brand-brown mb-8 tracking-tighter">خبرة في كل قطعة</h2>
-                <p class="text-brand-brown/90 font-bold text-xl md:text-2xl leading-relaxed">
-                    تعتمد علامة حلويات بوسي على أفضل المكونات لتقديم حلويات فاخرة تناسب ذوقكم. التزامنا بالجودة جعلنا الاسم الأول في الفرافرة لكل من يبحث عن الطعم الأصيل والتميز الحقيقي.
-                </p>
-            </div>
-        </section>
-
-        <!-- 3. معرض المنتجات (Showcase) -->
-        <section class="py-24 bg-white">
-            <div class="container mx-auto px-4 text-center">
-                <h2 class="text-4xl font-bold text-brand-brown mb-4 tracking-tighter">معرض حلويات بوسي</h2>
-                <p class="text-brand-brown/70 font-bold text-lg max-w-2xl mx-auto mb-16">
-                    استمتع بمشاهدة أرقى ما نقدمه. جودة واضحة قبل تجربة الطعم.
-                </p>
-
-                <div class="relative max-w-6xl mx-auto group">
-                    <button class="absolute top-1/2 -translate-y-1/2 -right-6 md:-right-10 z-20 w-14 h-14 rounded-full bg-white border-2 border-brand-pink text-brand-pink flex items-center justify-center shadow-premium hover:bg-brand-pink hover:text-white transition-all opacity-0 group-hover:opacity-100" onclick="window.slideDir('main-slider', 1)">
-                        <i data-lucide="chevron-right" class="w-8 h-8"></i>
-                    </button>
-                    <button class="absolute top-1/2 -translate-y-1/2 -left-6 md:-left-10 z-20 w-14 h-14 rounded-full bg-white border-2 border-brand-pink text-brand-pink flex items-center justify-center shadow-premium hover:bg-brand-pink hover:text-white transition-all opacity-0 group-hover:opacity-100" onclick="window.slideDir('main-slider', -1)">
-                        <i data-lucide="chevron-left" class="w-8 h-8"></i>
-                    </button>
-                    
-                    <div class="bose-double-wrap shadow-premium overflow-hidden">
-                        <div class="bose-double-inner bg-white">
-                            <div id="main-slider" class="flex overflow-x-auto snap-x snap-mandatory hide-scroll bg-white">
-                                <div class="w-full flex-shrink-0 snap-center aspect-[16/9] bg-white relative">
-                                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي" class="w-full h-full object-cover">
-                                </div>
-                                <div class="w-full flex-shrink-0 snap-center aspect-[16/9] bg-white relative">
-                                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="حلويات بوسي" class="w-full h-full object-cover">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="main-slider-dots" class="flex justify-center gap-3 mt-8"></div>
+        <!-- 3. شبكة منتجاتنا -->
+        <section class="py-24 px-4 bg-brand-pinkLight border-y border-brand-pink/10">
+            <div class="container mx-auto max-w-6xl text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-brown mb-12">منتجاتنا</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" id="creative-grid-container">
+                    <!-- يحقن آلياً بمنتجات لا تتكرر -->
                 </div>
             </div>
         </section>
 
-        <!-- 4. الجديد لدينا (New Arrivals) -->
-        <section class="py-24 bg-brand-pinkLight/20 border-y-2 border-brand-pink/10">
-            <div class="container mx-auto px-4 text-center">
-                <div class="inline-flex items-center gap-3 text-brand-pink mb-4">
-                    <i data-lucide="sparkles" class="w-6 h-6"></i>
-                    <p class="font-bold text-xl tracking-widest uppercase">جديد حلويات بوسي</p>
-                    <i data-lucide="sparkles" class="w-6 h-6"></i>
-                </div>
-                <h2 class="text-4xl md:text-5xl font-bold text-brand-brown mb-6 tracking-tighter">وصل حديثاً</h2>
-                <p class="text-brand-brown/70 font-bold text-xl max-w-3xl mx-auto mb-20 leading-relaxed">
-                    نقدم لكم أحدث ما وصلنا من حلويات فاخرة صُنعت خصيصاً لتناسب ذوقكم.
-                </p>
-
-                <div id="dynamic-new-arrivals" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-6 md:gap-10">
-                    <!-- الحقن اللحظي من المحرك -->
-                </div>
-                
-                <div class="mt-16">
-                    <a href="menu.html" class="btn-outline">استعرض المنيو بالكامل <i data-lucide="arrow-left" class="mr-2 inline"></i></a>
-                </div>
-            </div>
-        </section>
-
-        <!-- 5. أقسام المنتجات (Product Categories) -->
-        <section class="py-24 bg-white">
-            <div class="container mx-auto px-4 text-center">
-                <h2 class="text-4xl font-bold text-brand-brown mb-6 tracking-tighter">أقسام المنتجات</h2>
-                <p class="text-brand-brown/70 font-bold text-xl max-w-3xl mx-auto mb-20">
-                    اكتشف أفضل أنواع الحلويات في كل قسم. اختيارات متنوعة تناسب كافة الأذواق والمناسبات.
-                </p>
-
-                <div id="cat-slider" class="flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-8 pb-10 px-2">
-                    <a href="product.html?category=cakes" class="bose-double-wrap snap-start flex-shrink-0 w-[85%] md:w-[31%] group">
-                        <div class="bose-double-inner p-4 bg-white">
-                            <div class="bose-image-wrap rounded-2xl mb-6">
-                                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="التورت الفاخرة">
-                            </div>
-                            <h3 class="text-2xl font-bold text-brand-brown group-hover:text-brand-pink transition-colors">التورت الفاخرة</h3>
-                            <div class="flex justify-center items-center gap-2 mt-4 text-brand-pink font-bold">
-                                <span class="text-lg">تصفح القسم</span><i data-lucide="chevron-left" class="w-5 h-5 group-hover:-translate-x-2 transition-transform"></i>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="product.html?category=cinnabon" class="bose-double-wrap snap-start flex-shrink-0 w-[85%] md:w-[31%] group">
-                        <div class="bose-double-inner p-4 bg-white">
-                            <div class="bose-image-wrap rounded-2xl mb-6">
-                                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="السينابون">
-                            </div>
-                            <h3 class="text-2xl font-bold text-brand-brown group-hover:text-brand-pink transition-colors">السينابون</h3>
-                            <div class="flex justify-center items-center gap-2 mt-4 text-brand-pink font-bold">
-                                <span class="text-lg">تصفح القسم</span><i data-lucide="chevron-left" class="w-5 h-5 group-hover:-translate-x-2 transition-transform"></i>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="product.html?category=flowers" class="bose-double-wrap snap-start flex-shrink-0 w-[85%] md:w-[31%] group">
-                        <div class="bose-double-inner p-4 bg-white">
-                            <div class="bose-image-wrap rounded-2xl mb-6">
-                                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="الورد الطبيعي">
-                            </div>
-                            <h3 class="text-2xl font-bold text-brand-brown group-hover:text-brand-pink transition-colors">الورد الطبيعي</h3>
-                            <div class="flex justify-center items-center gap-2 mt-4 text-brand-pink font-bold">
-                                <span class="text-lg">تصفح القسم</span><i data-lucide="chevron-left" class="w-5 h-5 group-hover:-translate-x-2 transition-transform"></i>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </section>
-
-        <!-- 6. قسم الورد (Flowers Section) -->
+        <!-- 4. وصل حديثاً -->
         <section class="py-24 px-4 bg-white">
             <div class="container mx-auto max-w-6xl">
-                <div class="bose-double-wrap shadow-premium hover:translate-y-0">
-                    <div class="bose-double-inner flower-poster-bg text-white px-8 py-20 md:py-32 text-center flex flex-col items-center">
-                        <div class="bg-white/20 backdrop-blur-md border border-white/50 rounded-full py-2 px-8 flex items-center gap-3 mb-10">
-                            <i data-lucide="gift" class="w-6 h-6 text-white"></i>
-                            <span class="font-bold text-sm tracking-widest uppercase">أفضل خيار للهدايا</span>
+                <div class="text-center mb-12 flex flex-col items-center">
+                    <div class="inline-flex items-center gap-2 text-brand-pink mb-2">
+                        <i data-lucide="sparkles" class="w-5 h-5 text-brand-pink"></i><span class="font-bold tracking-widest text-sm text-brand-pink">جديد حلويات بوسي</span><i data-lucide="sparkles" class="w-5 h-5 text-brand-pink"></i>
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-brown">وصل حديثاً</h2>
+                </div>
+
+                <div class="relative">
+                    <div id="dynamic-new-arrivals" class="flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-6 pb-8 px-2 pt-2">
+                        <!-- يحقن آلياً -->
+                    </div>
+                </div>
+                <div class="text-center mt-4"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
+            </div>
+        </section>
+
+        <!-- 5. قسم الورد الطبيعي -->
+        <section class="py-16 px-4 bg-white border-y border-brand-pink/10">
+            <div class="container mx-auto max-w-5xl">
+                <div class="bg-brand-pink rounded-[40px] p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-12 shadow-lg relative overflow-hidden border-2 border-brand-pink/20">
+                    <div class="absolute -right-20 -top-20 opacity-20"><i data-lucide="flower-2" class="w-64 h-64 text-white"></i></div>
+                    
+                    <div class="text-center md:text-right text-white z-10 md:w-1/2">
+                        <div class="inline-flex items-center gap-2 bg-white/30 backdrop-blur-sm px-4 py-1.5 rounded-full mb-6 border border-white/50 text-white">
+                            <i data-lucide="gift" class="w-4 h-4"></i>
+                            <span class="text-sm font-bold tracking-wide">أفضل خيار للهدايا</span>
                         </div>
-                        <h2 class="text-4xl md:text-7xl font-bold mb-8 leading-tight text-white drop-shadow-2xl tracking-tighter">
-                            أجمل أنواع الورد الطبيعي<br>تجدونها فقط لدينا
-                        </h2>
-                        <p class="text-xl md:text-2xl font-bold opacity-95 max-w-3xl mx-auto leading-relaxed mb-12 drop-shadow-lg text-white">
-                            تنفرد حلويات بوسي بكونها المكان الوحيد في الفرافرة لتقديم أرقى باقات الورد الطبيعي، المنسقة خصيصاً لتناسب مناسباتكم السعيدة.
+                        <h2 class="text-3xl md:text-5xl font-bold mb-6 leading-tight tracking-tight text-white">أهدِ اختياراً مميزاً</h2>
+                        <p class="text-lg font-bold opacity-100 mb-8 leading-relaxed text-white">
+                            شارك الفرحة مع أحبابك. باقات الورد الطبيعي المنسقة بعناية لدينا مثالية لأي مناسبة لتكتمل بها لحظاتكم السعيدة.
                         </p>
-                        <a href="product.html?category=flowers" class="bg-white text-brand-pink rounded-full px-12 py-5 font-bold text-xl flex items-center gap-3 shadow-premium hover:bg-brand-pink hover:text-white transition-all duration-500 scale-105 active:scale-95">
-                            استكشف قسم الورد <i data-lucide="arrow-left" class="w-6 h-6"></i>
+                        <a href="product.html?category=ورد" class="bg-white text-brand-pink px-8 py-4 rounded-full font-bold text-lg inline-flex items-center gap-2 hover:bg-brand-pinkLight transition-all shadow-md text-decoration-none border border-brand-pink/20">
+                            تسوق باقات الورد <i data-lucide="arrow-left" class="w-5 h-5 text-brand-pink"></i>
                         </a>
                     </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- 7. الثقة (Trust Section) -->
-        <section class="py-32 relative overflow-hidden bg-brand-pinkLight/10 border-y-4 border-brand-pink/20 text-center">
-            <div class="container mx-auto px-4 relative z-10">
-                <div class="max-w-6xl mx-auto bose-double-wrap bg-white/90 backdrop-blur-sm shadow-premium hover:translate-y-0">
-                    <div class="bose-double-inner px-6 py-20 bg-white flex flex-col items-center">
-                        <div class="inline-flex items-center gap-3 text-brand-pink mb-6">
-                            <i data-lucide="award" class="w-8 h-8"></i>
-                            <p class="font-bold text-2xl tracking-widest uppercase">عشر سنوات من الثقة</p>
-                            <i data-lucide="award" class="w-8 h-8"></i>
+                    <div class="z-10 md:w-1/2 flex justify-center relative w-full h-64 md:h-80">
+                        <div class="absolute top-0 right-4 md:right-10 w-40 md:w-48 h-56 bg-white rounded-3xl p-3 shadow-lg transform rotate-6 border border-brand-pink/20">
+                            <div class="w-full h-full bg-brand-pinkLight rounded-2xl overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover opacity-90" alt="ورد طبيعي">
+                            </div>
                         </div>
-                        <h2 class="text-4xl md:text-6xl font-bold text-brand-brown mb-10 leading-tight tracking-tighter">
-                            شركاء في كافة <span class="text-brand-pink">مناسباتكم</span>
-                        </h2>
-                        <p class="text-xl md:text-2xl font-bold text-brand-brown/80 max-w-5xl mx-auto leading-relaxed mb-20">
-                            على مدار أكثر من عقد، خدمنا أكثر من 10,000 عميل، وكنا الاختيار الأول في تخليد ذكرياتهم السعيدة. نفخر بسجلنا الخالي تماماً من أي ملاحظات سلبية، مما يؤكد جودة ما نقدمه.
-                        </p>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-12 w-full max-w-5xl">
-                            <div class="flex flex-col items-center group">
-                                <div class="w-20 h-20 rounded-full bg-brand-pinkLight border-2 border-brand-pink flex items-center justify-center mb-6 text-brand-pink shadow-md">
-                                    <i data-lucide="calendar-days" class="w-10 h-10"></i>
-                                </div>
-                                <h3 class="text-4xl md:text-5xl font-bold text-brand-brown mb-2 tracking-tighter">+10</h3>
-                                <p class="font-bold text-brand-brown/60 uppercase text-sm tracking-widest">سنوات خبرة</p>
-                            </div>
-                            <div class="flex flex-col items-center group">
-                                <div class="w-20 h-20 rounded-full bg-brand-pinkLight border-2 border-brand-pink flex items-center justify-center mb-6 text-brand-pink shadow-md">
-                                    <i data-lucide="users" class="w-10 h-10"></i>
-                                </div>
-                                <h3 class="text-4xl md:text-5xl font-bold text-brand-brown mb-2 tracking-tighter">+10,000</h3>
-                                <p class="font-bold text-brand-brown/60 uppercase text-sm tracking-widest">عميل واثق</p>
-                            </div>
-                            <div class="flex flex-col items-center group">
-                                <div class="w-20 h-20 rounded-full bg-brand-pinkLight border-2 border-brand-pink flex items-center justify-center mb-6 text-brand-pink shadow-md">
-                                    <i data-lucide="heart-handshake" class="w-10 h-10"></i>
-                                </div>
-                                <h3 class="text-4xl md:text-5xl font-bold text-brand-brown mb-2 tracking-tighter">آلاف</h3>
-                                <p class="font-bold text-brand-brown/60 uppercase text-sm tracking-widest">الذكريات السعيدة</p>
-                            </div>
-                            <div class="flex flex-col items-center group">
-                                <div class="w-20 h-20 rounded-full bg-brand-pinkLight border-2 border-brand-pink flex items-center justify-center mb-6 text-brand-pink shadow-md">
-                                    <i data-lucide="shield-check" class="w-10 h-10"></i>
-                                </div>
-                                <h3 class="text-4xl md:text-5xl font-bold text-brand-brown mb-2 tracking-tighter">0%</h3>
-                                <p class="font-bold text-brand-brown/60 uppercase text-sm tracking-widest">ملاحظات سلبية</p>
+                        <div class="absolute top-8 left-4 md:left-10 w-40 md:w-48 h-56 bg-white rounded-3xl p-3 shadow-xl transform -rotate-3 border border-brand-pink/20">
+                            <div class="w-full h-full bg-brand-pinkLight rounded-2xl overflow-hidden flex flex-col items-center justify-center text-brand-pink">
+                                <i data-lucide="gem" class="w-10 h-10 mb-2 text-brand-pink"></i>
+                                <span class="font-bold text-center leading-tight text-brand-pink">حلويات<br>بوسي</span>
                             </div>
                         </div>
                     </div>
@@ -408,79 +333,189 @@
             </div>
         </section>
 
-        <!-- 8. الأكثر طلباً (Best Sellers) -->
-        <section class="py-24 bg-white">
-            <div class="container mx-auto px-4 text-center">
-                <h2 class="text-4xl font-bold text-brand-brown mb-4 tracking-tighter">الأكثر طلباً</h2>
-                <p class="text-brand-brown/70 font-bold text-lg max-w-2xl mx-auto mb-16">
-                    اكتشف المبتكرات التي حازت على ثقة عملائنا. اختيارات مميزة تجمع بين الطعم والقيمة.
-                </p>
-                <div id="dynamic-best-sellers" class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-                    <!-- الحقن اللحظي من المحرك -->
+        <!-- 6. الأكثر مبيعاً -->
+        <section class="py-24 px-4 bg-white">
+            <div class="container mx-auto max-w-6xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-brand-brown mb-4">الأكثر مبيعاً</h2>
+                    <p class="text-brand-brown font-bold text-lg opacity-80">اكتشف أشهى وأشهر حلوياتنا التي يحبها عملاؤنا.</p>
+                </div>
+
+                <div class="relative">
+                    <div id="dynamic-best-sellers" class="flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-6 pb-8 px-2 pt-2">
+                        <!-- يحقن آلياً -->
+                    </div>
+                </div>
+                <div class="text-center mt-4"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
+            </div>
+        </section>
+
+        <!-- 7. تسوق حسب الفئة -->
+        <section class="py-24 px-4 bg-brand-pinkLight border-t border-brand-pink/10">
+            <div class="container mx-auto max-w-6xl text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-brand-brown mb-4">تسوق حسب الفئة</h2>
+                <p class="text-brand-brown font-bold text-lg mb-12 opacity-80">اكتشف مصدر السعادة في كل قطعة تتذوقها، ماذا تنتظر؟</p>
+
+                <div class="relative">
+                    <!-- الحاوية خالية وتنتظر الحقن الديناميكي بنسبة تكبير 50% -->
+                    <div id="dynamic-categories-container" class="flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-8 pb-10 px-2 pt-2">
+                        <!-- سيتم الحقن آلياً هنا بواسطة المحرك -->
+                    </div>
                 </div>
             </div>
         </section>
+
+        <!-- 8. الثقة والفخر -->
+        <section class="py-24 bg-white text-center">
+            <div class="container mx-auto px-4">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-brand-pinkLight text-brand-pink rounded-full mb-8 border-2 border-brand-pink/20">
+                    <i data-lucide="award" class="w-10 h-10 text-brand-pink"></i>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-bold text-brand-brown mb-6 tracking-tighter">عشر سنوات من الثقة</h2>
+                <p class="text-lg md:text-xl font-bold text-brand-brown max-w-4xl mx-auto leading-relaxed mb-16 opacity-90">
+                    على مدار أكثر من عقد، كنا الاختيار الأول في تخليد ذكرياتكم السعيدة. نفخر بسجلنا الخالي تماماً من أي ملاحظات سلبية.
+                </p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+                    <div><h3 class="text-4xl font-bold text-brand-brown mb-2">+10</h3><p class="font-bold text-brand-brown opacity-60 text-sm">سنوات خبرة</p></div>
+                    <div><h3 class="text-4xl font-bold text-brand-brown mb-2">+10,000</h3><p class="font-bold text-brand-brown opacity-60 text-sm">عميل واثق</p></div>
+                    <div><h3 class="text-4xl font-bold text-brand-brown mb-2">آلاف</h3><p class="font-bold text-brand-brown opacity-60 text-sm">الذكريات السعيدة</p></div>
+                    <div><h3 class="text-4xl font-bold text-brand-brown mb-2">0%</h3><p class="font-bold text-brand-brown opacity-60 text-sm">ملاحظات سلبية</p></div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- الفوتر (Footer) -->
-    <footer class="footer-main border-t-4 border-brand-pink bg-white pt-24 pb-12">
-        <div class="container mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 text-right mb-20">
-                <div class="col-span-1 md:col-span-2 flex flex-col items-start">
-                    <div class="text-brand-pink mb-8"><i data-lucide="gem" class="w-16 h-16"></i></div>
-                    <p class="text-brand-brown/90 font-bold text-xl leading-relaxed max-w-md">
-                        طازجة من فرننا إلى مائدتكم، صُنعت كافة الحلويات بشغف وإتقان. الالتزام بالجودة هو شعار حلويات بوسي الدائم.
+    <!-- 9. الفوتر الاحترافي (متمركز في المنتصف 100%) -->
+    <footer class="bg-brand-pinkLight pt-20 pb-8 border-t-4 border-brand-pink mt-10">
+        <div class="container mx-auto px-4 md:px-8 max-w-6xl text-center">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-b border-brand-pink/20 pb-16">
+                
+                <!-- الشعار والنبذة -->
+                <div class="flex flex-col items-center justify-center">
+                    <div class="mb-6 inline-flex items-center justify-center w-16 h-16 bg-white text-brand-pink rounded-2xl border border-brand-pink/20 shadow-sm">
+                        <i data-lucide="gem" class="w-8 h-8 text-brand-pink"></i>
+                    </div>
+                    <p class="text-brand-brown font-bold text-base leading-loose max-w-xs opacity-90 mx-auto">
+                        طازجة من فرننا إلى مائدتك، مخبوزاتنا مصنوعة بحب وشغف. الالتزام بالجودة وإرضاء عملائنا هو أساس كل ما نقدمه في حلويات بوسي.
                     </p>
                 </div>
-                <div>
-                    <h4 class="text-2xl font-bold text-brand-brown mb-8 border-b-2 border-brand-pink inline-block pb-2 tracking-tighter">روابط سريعة</h4>
+
+                <!-- الشركة -->
+                <div class="flex flex-col items-center justify-center">
+                    <h4 class="text-brand-brown font-bold text-xl mb-6">الشركة</h4>
                     <ul class="space-y-4">
-                        <li><a href="menu.html" class="text-brand-brown/70 hover:text-brand-pink transition-colors font-bold text-lg">تصفح المنيو</a></li>
-                        <li><a href="#" class="text-brand-brown/70 hover:text-brand-pink transition-colors font-bold text-lg">الأكثر طلباً</a></li>
+                        <li><a href="about.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">عن المتجر</a></li>
+                        <li><a href="refund.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">الإرجاع والاستبدال</a></li>
+                        <li><a href="privacy.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">سياسة الخصوصية</a></li>
                     </ul>
                 </div>
-                <div>
-                    <h4 class="text-2xl font-bold text-brand-brown mb-8 border-b-2 border-brand-pink inline-block pb-2 tracking-tighter">تواصل معنا</h4>
-                    <p class="text-brand-brown font-bold text-2xl mb-2 tracking-widest" dir="ltr">+20 109 723 8441</p>
-                    <p class="text-brand-brown font-bold text-lg opacity-80">الكفاح، الفرافرة، الوادي الجديد</p>
+
+                <!-- تواصل معنا المباشر -->
+                <div class="flex flex-col items-center justify-center">
+                    <h4 class="text-brand-brown font-bold text-xl mb-6">تواصل الإدارة</h4>
+                    <ul class="space-y-4 flex flex-col items-center">
+                        <li>
+                            <a href="contact.html" class="inline-flex items-center justify-center gap-2 bg-brand-pink text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-white hover:text-brand-pink border-2 border-brand-pink transition-colors text-decoration-none shadow-sm">
+                                <i data-lucide="message-square" class="w-4 h-4 text-white hover:text-brand-pink transition-colors"></i> <span>تواصل معنا المباشر</span>
+                            </a>
+                        </li>
+                        <li><span class="text-brand-brown font-bold text-sm block mt-4" dir="ltr">bosesweets3@gmail.com</span></li>
+                        <li><span class="text-brand-brown opacity-80 font-bold text-xs block flex items-center justify-center gap-2 mt-2"><i data-lucide="map-pin" class="w-4 h-4 shrink-0 text-brand-pink"></i> الكفاح، الفرافرة، الوادي الجديد</span></li>
+                    </ul>
                 </div>
             </div>
-            <div class="border-t border-brand-pink/10 pt-10 text-center">
-                <p class="font-bold text-lg text-brand-brown opacity-60 tracking-tight">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
+
+            <!-- وسائل التواصل والحقوق -->
+            <div class="flex flex-col items-center justify-center gap-6">
+                <div class="flex gap-5 justify-center">
+                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm">
+                        <i class="fa-brands fa-facebook-f text-xl"></i>
+                    </a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm">
+                        <i class="fa-brands fa-instagram text-xl"></i>
+                    </a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm">
+                        <i class="fa-brands fa-tiktok text-xl"></i>
+                    </a>
+                </div>
+                <p class="text-brand-brown opacity-70 font-bold text-sm text-center">
+                    &copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.
+                </p>
             </div>
+            
         </div>
     </footer>
 
-    <!-- قالب كارت المنتج -->
+    <!-- قوالب الحقن السيادية (Templates) -->
+    
+    <!-- 1. قالب عنصر الشلال -->
+    <template id="waterfall-item-template">
+        <a href="product.html?category={CAT_NAME}" class="waterfall-item block text-decoration-none border border-brand-pink/20">
+            <div class="bose-double-inner">
+                <img src="{PRODUCT_IMAGE}" alt="حلويات بوسي" loading="lazy" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+            </div>
+        </a>
+    </template>
+
+    <!-- 2. قالب كارت المنتج العادي (لـ وصل حديثاً والأكثر مبيعاً) -->
     <template id="bose-product-card-template">
-        <div class="bose-double-wrap group">
-            <div class="bose-double-inner bg-white">
-                <div class="bose-image-wrap">
-                    <img src="{PRODUCT_IMAGE}" alt="{PRODUCT_NAME}" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
-                </div>
-                <div class="p-5 flex flex-col flex-grow text-right bg-white">
-                    <h3 class="font-bold text-lg text-brand-brown mb-2 group-hover:text-brand-pink transition-colors tracking-tighter leading-tight">{PRODUCT_NAME}</h3>
-                    <p class="text-sm text-brand-brown/70 mb-4 h-12 overflow-hidden leading-relaxed font-bold">{PRODUCT_DESC}</p>
-                    <div class="mt-auto pt-4 border-t-2 border-dashed border-brand-pink/20 flex justify-between items-center">
-                        <span class="font-bold text-2xl text-brand-pink tracking-tighter">{PRODUCT_PRICE} ج.م</span>
-                        <button onclick="window.cartSystem.addWithQtyContext(this, '{PRODUCT_ID}')" class="w-11 h-11 rounded-full bg-brand-pink text-white flex items-center justify-center hover:bg-brand-brown transition-all shadow-md active:scale-90">
-                            <i data-lucide="plus" class="w-6 h-6"></i>
-                        </button>
+        <div class="snap-start flex-shrink-0 w-[80%] md:w-[280px]">
+            <a href="product.html?category={CAT_NAME}" class="bose-double-wrap group animate-fade h-full text-decoration-none block">
+                <div class="bose-double-inner bg-white h-full flex flex-col">
+                    <div class="aspect-[4/3] w-full overflow-hidden bg-brand-pinkLight border-b border-brand-pink/20 relative">
+                        <img src="{PRODUCT_IMAGE}" alt="{PRODUCT_NAME}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow text-right bg-white">
+                        <h3 class="font-bold text-lg text-brand-brown mb-1 truncate group-hover:text-brand-pink transition-colors">{PRODUCT_NAME}</h3>
+                        <p class="text-xs text-brand-brown opacity-60 font-bold mb-4 truncate">{CAT_NAME}</p>
+                        <div class="mt-auto flex justify-between items-center border-t border-brand-pink/10 pt-4">
+                            <span class="font-bold text-xl text-brand-pink">{PRODUCT_PRICE} ج.م</span>
+                            <button onclick="event.preventDefault(); event.stopPropagation(); window.cartSystem.addWithQtyContext(this, '{PRODUCT_ID}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center hover:bg-brand-pink hover:text-white border border-brand-pink/20 transition-colors shadow-sm cursor-pointer">
+                                <i data-lucide="plus" class="w-5 h-5"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
         </div>
     </template>
 
-    <!-- ربط المحرك السيادي الموحد -->
+    <!-- 3. قالب شبكة منتجاتنا -->
+    <template id="creative-grid-template">
+        <a href="product.html?category={CAT_NAME}" class="{GRID_CLASS} rounded-3xl overflow-hidden border-2 border-brand-pink/30 shadow-sm group block text-decoration-none">
+            <img src="{PRODUCT_IMAGE}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="{PRODUCT_NAME}" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+        </a>
+    </template>
+
+    <!-- 4. قالب كارت قسم "تسوق حسب الفئة" (أكبر بنسبة 50% مع عرض 450px وخط 3xl) -->
+    <template id="bose-category-card-template">
+        <div class="snap-start flex-shrink-0 w-[85%] md:w-[450px]">
+            <a href="product.html?category={CAT_NAME}" class="bose-double-wrap group animate-fade h-full text-decoration-none block">
+                <div class="bose-double-inner bg-white h-full flex flex-col">
+                    <div class="aspect-[4/5] w-full overflow-hidden bg-brand-pinkLight border-b border-brand-pink/20 relative">
+                        <img src="{CAT_IMAGE}" alt="{CAT_NAME}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+                    </div>
+                    <div class="p-8 flex items-center justify-center bg-white border-t border-brand-pink/10">
+                        <h3 class="font-bold text-3xl text-brand-brown group-hover:text-brand-pink transition-colors">{CAT_NAME}</h3>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </template>
+
+    <!-- ربط المحرك السيادي -->
     <script type="module" src="unified-engine.js"></script>
 
     <script>
         lucide.createIcons();
 
+        // 🧠 محرك التوزيع الذكي السيادي
         const UIController = {
             syncCartBadge: function() {
-                const count = window.BoseState?.cart?.reduce((acc, item) => acc + (item.quantity || 1), 0) || 0;
+                const count = window.BoseState?.cart?.reduce((acc, item) => acc + (item.quantity || item.qty || 1), 0) || 0;
                 const badge = document.getElementById('cart-count-badge');
                 if (badge) {
                     badge.innerText = count;
@@ -489,38 +524,86 @@
             },
 
             distributeProducts: function() {
-                const catalog = window.BoseState?.catalog || [];
-                if (catalog.length === 0) return;
+                let availableCatalog = [...(window.BoseState?.catalog || [])];
+                if (availableCatalog.length === 0) return;
 
+                // 1. خلط المنتجات عشوائياً لضمان التجدد
+                availableCatalog = availableCatalog.sort(() => 0.5 - Math.random());
+
+                // 2. توزيع عناصر الشلال
+                const waterfallItems = availableCatalog.splice(0, 8);
+                const waterfall1 = document.getElementById('waterfall-col-1');
+                const waterfall2 = document.getElementById('waterfall-col-2');
+                if(waterfall1 && waterfall2 && waterfallItems.length >= 8) {
+                    const tmpl = document.getElementById('waterfall-item-template').innerHTML;
+                    waterfall1.innerHTML = waterfallItems.slice(0,4).map(p => this.renderTemplate(tmpl, p)).join('');
+                    waterfall2.innerHTML = waterfallItems.slice(4,8).map(p => this.renderTemplate(tmpl, p)).join('');
+                }
+
+                // 3. شبكة منتجاتنا
+                const gridItems = availableCatalog.splice(0, 4);
+                const gridContainer = document.getElementById('creative-grid-container');
+                if (gridContainer && gridItems.length >= 4) {
+                    const tmpl = document.getElementById('creative-grid-template').innerHTML;
+                    const gridClasses = [
+                        "col-span-2 md:col-span-2 row-span-2 aspect-square md:aspect-auto md:h-[500px]",
+                        "aspect-square",
+                        "aspect-square",
+                        "col-span-2 aspect-[2/1]"
+                    ];
+                    gridContainer.innerHTML = gridItems.map((p, i) => this.renderTemplate(tmpl, p).replace('{GRID_CLASS}', gridClasses[i])).join('');
+                }
+
+                // 4. وصل حديثاً
+                const newArrivals = availableCatalog.splice(0, 6);
                 const arrivalsContainer = document.getElementById('dynamic-new-arrivals');
-                const bestSellersContainer = document.getElementById('dynamic-best-sellers');
+                if (arrivalsContainer) arrivalsContainer.innerHTML = newArrivals.map(p => this.renderTemplate(document.getElementById('bose-product-card-template').innerHTML, p)).join('');
 
-                if (arrivalsContainer) arrivalsContainer.innerHTML = catalog.slice(0, 8).map(p => this.renderTemplate(p)).join('');
-                if (bestSellersContainer) bestSellersContainer.innerHTML = catalog.slice(0, 4).map(p => this.renderTemplate(p)).join('');
+                // 5. الأكثر مبيعاً
+                const bestSellers = availableCatalog.splice(0, 6);
+                const bestSellersContainer = document.getElementById('dynamic-best-sellers');
+                if (bestSellersContainer) bestSellersContainer.innerHTML = bestSellers.map(p => this.renderTemplate(document.getElementById('bose-product-card-template').innerHTML, p)).join('');
                 
+                // 6. تسوق حسب الفئة (استخلاص ديناميكي وحقن في الكروت الأكبر بنسبة 50%)
+                const categoriesMap = new Map();
+                // نستخدم الكتالوج الأصلي لنستخرج كل الأقسام المتاحة
+                (window.BoseState?.catalog || []).forEach(p => {
+                    if(p.category && !categoriesMap.has(p.category)) {
+                        categoriesMap.set(p.category, p); // نحتفظ بأول منتج لنأخذ صورته كغلاف للقسم
+                    }
+                });
+                const categoriesContainer = document.getElementById('dynamic-categories-container');
+                if (categoriesContainer && categoriesMap.size > 0) {
+                    const catTmpl = document.getElementById('bose-category-card-template').innerHTML;
+                    let catHtml = '';
+                    Array.from(categoriesMap.values()).slice(0, 6).forEach(p => {
+                        catHtml += catTmpl
+                            .replace(/{CAT_NAME}/g, p.category)
+                            .replace(/{CAT_IMAGE}/g, window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image));
+                    });
+                    categoriesContainer.innerHTML = catHtml;
+                }
+
                 lucide.createIcons();
             },
 
-            renderTemplate: function(product) {
-                let html = document.getElementById('bose-product-card-template').innerHTML;
-                return html
+            renderTemplate: function(htmlStr, product) {
+                return htmlStr
                     .replace(/{PRODUCT_ID}/g, product.id)
                     .replace(/{PRODUCT_NAME}/g, product.name)
-                    .replace(/{PRODUCT_IMAGE}/g, product.img || product.image)
-                    .replace(/{PRODUCT_DESC}/g, product.description || 'جودة عالية تناسب ذوقكم.')
-                    .replace(/{PRODUCT_PRICE}/g, product.price);
+                    .replace(/{CAT_NAME}/g, product.category || 'صنف فاخر')
+                    .replace(/{PRODUCT_IMAGE}/g, window.processBoseImage ? window.processBoseImage(product.img || product.image) : (product.img || product.image))
+                    .replace(/{PRODUCT_PRICE}/g, parseFloat(product.price) || 0);
             }
         };
 
-        // التحكم في القائمة الجانبية
+        // إدارة القائمة الجانبية المنسدلة
         window.toggleSidebar = function() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
             if (!sidebar || !overlay) return;
 
-            const isActive = sidebar.classList.contains('active');
-            
-            if (isActive) {
+            if (sidebar.classList.contains('active')) {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
                 document.body.style.overflow = '';
@@ -534,9 +617,24 @@
         window.addEventListener('BoseSweets_Engine_Ready', () => {
             UIController.syncCartBadge();
             UIController.distributeProducts();
+            
+            // مؤقت زمني لخلط المنتجات كل 5 ساعات (18 مليون مللي ثانية)
+            setInterval(() => {
+                console.log("👑 BoseSweets Engine: إعادة الخلط التلقائي لمعروضات الواجهة.");
+                UIController.distributeProducts();
+            }, 18000000); 
         });
 
         window.addEventListener('BoseSweets_Cart_Updated', () => UIController.syncCartBadge());
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                if(window.BoseState && window.BoseState.catalog.length > 0) {
+                    UIController.distributeProducts();
+                    UIController.syncCartBadge();
+                }
+            }, 1500);
+        });
     </script>
 </body>
 </html>
