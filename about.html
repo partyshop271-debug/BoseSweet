@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>قصة الإتقان | حلويات بوسي</title>
+    <meta name="description" content="تعرف على رحلة حلويات بوسي في عالم الإبداع والتميز منذ عام 2014 بمركز الفرافرة.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { brand: { pink: '#ff91a4', pinkLight: '#fff5f6', brown: '#3d241c', white: '#ffffff' } },
+                    fontFamily: { sans: ['Cairo', 'sans-serif'] }
+                } 
+            } 
+        }
+    </script>
+    
+    <style>
+        body { background-color: #ffffff; color: #3d241c; -webkit-tap-highlight-color: transparent; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
+        * { font-weight: 400; color: inherit; box-sizing: border-box; }
+        .font-bold, h1, h2, h3, h4, .btn-solid, .ticker-item { font-weight: 700 !important; }
+        .font-black { font-weight: 900 !important; }
+
+        .ticker-wrap { width: 100%; overflow: hidden; background-color: #ff91a4; display: flex; direction: rtl; border-bottom: 1px solid rgba(255, 255, 255, 0.2); }
+        .ticker-scroll { display: flex; width: max-content; animation: seamlessTicker 40s linear infinite; }
+        .ticker-item { padding: 10px 40px; color: #ffffff !important; font-weight: 700; font-size: 0.95rem; white-space: nowrap; }
+        @keyframes seamlessTicker { 0% { transform: translateX(0); } 100% { transform: translateX(50%); } }
+
+        .sidebar { position: fixed !important; top: 0 !important; right: -100% !important; width: 340px !important; max-width: 85% !important; height: 100% !important; z-index: 9999 !important; transition: right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) !important; background: #ffffff !important; box-shadow: -20px 0 50px rgba(255, 145, 164, 0.2); display: flex; flex-direction: column; overflow-y: auto; border-left: 2px solid rgba(255, 145, 164, 0.3); }
+        .sidebar.active { right: 0 !important; }
+        .sidebar-overlay { position: fixed !important; inset: 0 !important; background: rgba(255, 145, 164, 0.8) !important; backdrop-filter: blur(4px) !important; z-index: 9998 !important; display: none; opacity: 0; transition: opacity 0.4s ease; }
+        .sidebar-overlay.active { display: block !important; opacity: 1 !important; }
+        details > summary { list-style: none; cursor: pointer; outline: none;}
+        details > summary::-webkit-details-marker { display: none; }
+
+        .bose-double-wrap { background: #ffffff; border-radius: 40px; border: 2px solid #ff91a4; padding: 8px; transition: all 0.4s ease; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(255, 145, 164, 0.08); }
+        .bose-double-inner { background: #ffffff; border-radius: 32px; border: 2px solid #ff91a4; overflow: hidden; position: relative; padding: 40px; }
+
+        .bose-toast { position: fixed; top: 90px; left: 50%; transform: translateX(-50%); width: max-content; max-width: 90%; background: #ffffff; border: 2px solid #ff91a4; padding: 12px 28px; border-radius: 50px; z-index: 10001; box-shadow: 0 10px 30px rgba(255, 145, 164, 0.2); display: none; align-items: center; justify-content: center; gap: 12px; font-weight: 700; color: #3d241c; text-align: center; line-height: 1.6; font-size: 1.1rem; animation: slideDownToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes slideDownToast { from { top: -50px; opacity: 0; } to { top: 90px; opacity: 1; } }
+        .animate-fade { animation: fade 0.6s ease forwards; }
+        @keyframes fade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="antialiased selection:bg-brand-pink selection:text-white">
+
+    <div id="bose-toast" class="bose-toast">
+        <i data-lucide="check-circle" class="w-6 h-6 text-brand-pink"></i>
+        <span id="bose-toast-msg">تنبيه</span>
+    </div>
+
+    <div class="ticker-wrap shadow-sm">
+        <div class="ticker-scroll">
+            <div class="ticker-item">الجودة والإتقان في كل تفصيلة من حلويات بوسي</div>
+            <div class="ticker-item">عشر سنوات من الشغف في صناعة الحلويات</div>
+            <div class="ticker-item">مخبوزات طازجة يومياً بأعلى معايير الجودة</div>
+            <div class="ticker-item">اختيارك الأول للمناسبات واللحظات المهمة</div>
+        </div>
+    </div>
+
+    <header class="border-b border-brand-pink/20 sticky top-0 z-[100] bg-white/95 backdrop-blur-md transition-all py-4 shadow-sm">
+        <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
+            <div class="w-1/3 flex justify-start">
+                <button onclick="window.toggleSidebar()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
+                    <i data-lucide="menu" class="w-7 h-7 text-brand-pink"></i>
+                </button>
+            </div>
+            <div class="w-1/3 flex justify-center text-center">
+                <a href="index.html" class="flex flex-col items-center justify-center group text-decoration-none">
+                    <i data-lucide="gem" class="w-8 h-8 text-brand-pink mb-1 group-hover:scale-110 transition-transform"></i>
+                    <h1 class="text-xl font-black text-brand-brown tracking-tight uppercase">حلويات بوسي</h1>
+                </a>
+            </div>
+            <div class="w-1/3 flex justify-end items-center gap-5">
+                <button class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" onclick="window.ProductUI.showToast('خاصية البحث سيتم تفعيلها قريباً')">
+                    <i data-lucide="search" class="w-6 h-6 text-brand-pink"></i>
+                </button>
+                <a href="cart.html" class="relative text-brand-pink hover:text-brand-brown transition-colors cursor-pointer text-decoration-none">
+                    <i data-lucide="shopping-bag" class="w-6 h-6 text-brand-pink"></i>
+                    <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-brand-pink text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border border-white">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
+    <aside id="sidebar" class="sidebar text-right">
+        <div class="p-6 flex justify-between items-center border-b border-brand-pink/20 bg-brand-pinkLight">
+            <span class="text-xl font-bold text-brand-brown flex items-center gap-2 uppercase">
+                <i data-lucide="gem" class="w-5 h-5 text-brand-pink"></i> حلويات بوسي
+            </span>
+            <button onclick="window.toggleSidebar()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
+                <i data-lucide="x" class="w-6 h-6 text-brand-pink"></i>
+            </button>
+        </div>
+        <nav class="flex-grow p-6 flex flex-col gap-2">
+            <a href="index.html" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
+                <i data-lucide="home" class="w-5 h-5 text-brand-pink"></i> الصفحة الرئيسية
+            </a>
+            <details class="group">
+                <summary class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center justify-between outline-none cursor-pointer">
+                    <div class="flex items-center gap-3"><i data-lucide="layout-grid" class="w-5 h-5 text-brand-pink"></i> تصفح المنيو</div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180 text-brand-pink"></i>
+                </summary>
+                <div class="flex flex-col gap-1 pl-12 pr-4 pt-2 pb-4 border-l-2 border-brand-pink/20 ml-4 mr-2">
+                    <a href="menu.html" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">عرض كل المنيو</a>
+                    <a href="product.html?category=التورت" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">التورت الفاخرة</a>
+                    <a href="product.html?category=الجاتوهات" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">الجاتوهات</a>
+                </div>
+            </details>
+            <a href="product.html?action=build_cake" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
+                <i data-lucide="cake" class="w-5 h-5 text-brand-pink"></i> صمم تورتة مناسبتك
+            </a>
+        </nav>
+        <div class="p-6 border-t border-brand-pink/20 bg-brand-pinkLight/50">
+            <a href="cart.html" class="w-full py-4 bg-brand-pink text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-white hover:text-brand-pink border-2 border-brand-pink transition-colors cursor-pointer text-decoration-none shadow-sm">
+                <i data-lucide="shopping-basket" class="w-5 h-5"></i> <span>مراجعة الطلب</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="container mx-auto px-4 py-16 md:py-24 max-w-4xl min-h-[60vh]">
+        <div class="text-center mb-16 px-4">
+            <h2 class="text-4xl md:text-6xl font-black text-brand-brown mb-6 tracking-tighter uppercase">قصة الإتقان</h2>
+            <p class="font-bold text-brand-brown/60 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">في حلويات بوسي، نصنع السعادة من أجود المكونات وبشغف يمتد لسنوات.</p>
+        </div>
+
+        <div class="bose-double-wrap animate-fade">
+            <div class="bose-double-inner bg-white text-right space-y-8 leading-loose">
+                <div class="flex justify-center mb-8">
+                    <div class="w-20 h-20 bg-brand-pinkLight rounded-3xl flex items-center justify-center border-2 border-brand-pink shadow-sm">
+                        <i data-lucide="award" class="w-10 h-10 text-brand-pink"></i>
+                    </div>
+                </div>
+                
+                <h3 class="text-2xl font-black text-brand-brown border-b border-brand-pink/10 pb-4 tracking-tight">البداية والرؤية</h3>
+                <p class="font-bold text-brand-brown/80 text-lg">
+                    بدأت رحلة حلويات بوسي في عام 2014 بقرية الكفاح التابعة لمركز الفرافرة بمحافظة الوادي الجديد. لم تكن البداية مجرد مشروع تجاري، بل كانت رغبة في تقديم معايير جديدة للجودة والطعم المظبوط في قلب الواحات.
+                </p>
+
+                <h3 class="text-2xl font-black text-brand-brown border-b border-brand-pink/10 pb-4 tracking-tight">لماذا حلويات بوسي؟</h3>
+                <p class="font-bold text-brand-brown/80 text-lg">
+                    نؤمن أن الحلويات ليست مجرد طعام، بل هي وسيلة للتعبير عن المحبة والاحتفال باللحظات المهمة. لذلك، نلتزم باختيار أجود الخامات الطبيعية، ونحرص على التحضير اليومي لضمان وصول المنتج طازجاً وبكامل جودته لكل عميل.
+                </p>
+
+                <h3 class="text-2xl font-black text-brand-brown border-b border-brand-pink/10 pb-4 tracking-tight">التزامنا تجاهكم</h3>
+                <p class="font-bold text-brand-brown/80 text-lg">
+                    كل طلب يخرج من مقرنا هو أمانة في أعناقنا. نعدكم بالاستمرار في تطوير مهاراتنا وتقديم تشكيلات عالمية بلمسات محلية راقية، لتظل حلويات بوسي هي شريككم الدائم في كل مناسبة سعيدة.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white pt-20 pb-8 border-t-4 border-brand-pink mt-10">
+        <div class="container mx-auto px-4 md:px-8 max-w-6xl text-center">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-b border-brand-pink/10 pb-16">
+                <div class="flex flex-col items-center justify-center">
+                    <div class="mb-6 inline-flex items-center justify-center w-16 h-16 bg-brand-pinkLight text-brand-pink rounded-2xl border-brand-pink/20 shadow-sm border-2">
+                        <i data-lucide="gem" class="w-8 h-8 text-brand-pink"></i>
+                    </div>
+                    <p class="text-brand-brown font-bold text-base leading-loose max-w-xs opacity-90 mx-auto">طازجة من فرننا إلى مائدتك، مخبوزاتنا مصنوعة بحب وشغف. الالتزام بالجودة هو أساس حلويات بوسي.</p>
+                </div>
+                <div class="flex flex-col items-center justify-center">
+                    <h4 class="text-brand-brown font-black text-xl mb-6 uppercase">الشركة</h4>
+                    <ul class="space-y-4">
+                        <li><a href="about.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">عن المتجر</a></li>
+                        <li><a href="refund.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">الإرجاع والاستبدال</a></li>
+                        <li><a href="privacy.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">سياسة الخصوصية</a></li>
+                    </ul>
+                </div>
+                <div class="flex flex-col items-center justify-center">
+                    <h4 class="text-brand-brown font-black text-xl mb-6 uppercase">تواصل الإدارة</h4>
+                    <ul class="space-y-4 flex flex-col items-center">
+                        <li>
+                            <a href="contact.html" class="inline-flex items-center justify-center gap-2 bg-brand-pink text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-brand-pinkLight hover:text-brand-pink border-2 border-brand-pink transition-colors text-decoration-none shadow-sm">
+                                <i data-lucide="message-square" class="w-4 h-4"></i> <span>تواصل معنا المباشر</span>
+                            </a>
+                        </li>
+                        <li><span class="text-brand-brown font-bold text-sm block mt-4" dir="ltr">bosesweets3@gmail.com</span></li>
+                        <li><span class="text-brand-brown opacity-80 font-bold text-xs block flex items-center justify-center gap-2 mt-2"><i data-lucide="map-pin" class="w-4 h-4 shrink-0 text-brand-pink"></i> الكفاح، الفرافرة، الوادي الجديد</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex flex-col items-center justify-center gap-6">
+                <div class="flex gap-5 justify-center">
+                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="text-brand-pink hover:text-brand-brown transition-colors text-2xl"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="text-brand-pink hover:text-brand-brown transition-colors text-2xl"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="text-brand-pink hover:text-brand-brown transition-colors text-2xl"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+                <p class="text-brand-brown opacity-70 font-bold text-sm text-center">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="unified-engine.js"></script>
+    <script type="module">
+        window.ProductUI = {
+            showToast: function(msg) {
+                const toast = document.getElementById('bose-toast');
+                const text = document.getElementById('bose-toast-msg');
+                if(!toast || !text) return;
+                text.innerText = msg;
+                toast.style.display = 'flex';
+                toast.style.animation = 'none';
+                toast.offsetHeight; 
+                toast.style.animation = 'slideDownToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+                setTimeout(() => { toast.style.display = 'none'; }, 3000);
+            }
+        };
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('active'); overlay.classList.toggle('active');
+            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+        };
+        window.syncCartBadge = function() {
+            const count = window.BoseState?.cart?.reduce((acc, item) => acc + (item.quantity || 1), 0) || 0;
+            const badge = document.getElementById('cart-count-badge');
+            if (badge) { badge.innerText = count; badge.style.display = count > 0 ? 'flex' : 'none'; }
+        };
+        window.addEventListener('BoseSweets_Engine_Ready', () => { lucide.createIcons(); window.syncCartBadge(); });
+        window.addEventListener('BoseSweets_Cart_Updated', () => window.syncCartBadge());
+        document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready')); }, 500); });
+    </script>
+</body>
+</html>
+
