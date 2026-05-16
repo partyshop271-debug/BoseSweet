@@ -11,13 +11,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- مكتبات الأيقونات الرسمية -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- ربط ملف الأناقة الموحد -->
     <link rel="stylesheet" href="style.css">
 
     <script>
@@ -109,16 +107,18 @@
             overflow: hidden; display: flex; flex-direction: column; height: 100%; position: relative;
         }
 
-        /* تنسيقات باني التورتة والمدخلات */
-        .option-btn {
-            border: 2px solid rgba(255, 145, 164, 0.3); border-radius: 20px; padding: 15px;
-            text-align: center; cursor: pointer; transition: all 0.3s ease; font-weight: 700; background: #ffffff;
+        /* تنسيقات باني التورتة المطور (Premium Builder) */
+        .builder-option-card {
+            border: 2px solid rgba(255, 145, 164, 0.2); border-radius: 24px; padding: 25px 15px;
+            text-align: center; cursor: pointer; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            font-weight: 700; background: #ffffff; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
         }
-        .option-btn.selected { border-color: #ff91a4; background: #fff5f6; }
+        .builder-option-card:hover { border-color: #ff91a4; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255, 145, 164, 0.1); }
+        .builder-option-card.selected { border-color: #ff91a4; background: #fff5f6; box-shadow: 0 10px 20px rgba(255, 145, 164, 0.2); color: #ff91a4 !important; }
         
         input, textarea {
             border: 2px solid rgba(255, 145, 164, 0.3) !important; color: #3d241c !important;
-            background-color: #ffffff !important; border-radius: 18px; padding: 14px 18px;
+            background-color: #ffffff !important; border-radius: 20px; padding: 18px 22px;
             font-family: inherit; font-weight: 700; outline: none; transition: all 0.3s ease;
         }
         input:focus, textarea:focus { border-color: #ff91a4 !important; box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.1); }
@@ -171,13 +171,11 @@
 </head>
 <body class="antialiased selection:bg-brand-pink selection:text-white">
 
-    <!-- نافذة الإشعارات السيادية -->
     <div id="bose-toast" class="bose-toast">
         <i data-lucide="check-circle" class="w-6 h-6 text-brand-pink"></i>
         <span id="bose-toast-msg">تمت العملية بنجاح</span>
     </div>
 
-    <!-- نافذة إضافة تقييم سيادية -->
     <div id="review-modal" class="bose-modal-overlay">
         <div class="bose-modal-content text-right">
             <button onclick="window.ProductUI.closeReviewModal()" class="absolute top-4 right-4 text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
@@ -197,7 +195,6 @@
         </div>
     </div>
 
-    <!-- شريط الإشعارات العلوي المؤسسي -->
     <div class="ticker-wrap shadow-sm">
         <div class="ticker-scroll">
             <div class="ticker-item">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
@@ -211,7 +208,6 @@
         </div>
     </div>
 
-    <!-- الهيدر الرسمي الموحد -->
     <header class="border-b border-brand-pink/20 sticky top-0 z-[100] bg-white/95 backdrop-blur-md transition-all py-4 shadow-sm">
         <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
             <div class="w-1/3 flex justify-start">
@@ -237,7 +233,6 @@
         </div>
     </header>
 
-    <!-- القائمة الجانبية الاحترافية -->
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
     <aside id="sidebar" class="sidebar">
         <div class="p-6 flex justify-between items-center border-b border-brand-pink/20 bg-brand-pinkLight">
@@ -279,14 +274,10 @@
 
     <main class="py-12 md:py-20 min-h-[60vh]">
         
-        <!-- التوجيه الذكي 1: عرض منتجات القسم -->
         <section id="category-viewer" class="container mx-auto px-4 hidden">
-            <!-- الهيدر الخاص بالقسم (البوستر والوصف) -->
             <div id="category-header-container" class="max-w-6xl mx-auto mb-16 animate-fade">
-                <!-- يُحقن آلياً ببوستر من المنتجات الحقيقية للمتجر -->
-            </div>
+                </div>
 
-            <!-- تبويبات الأحجام (للديسباسيتو ومثيلاتها) -->
             <div id="size-tabs-container" class="flex justify-center gap-4 mb-12 hidden animate-fade">
                 <button class="size-tab active" onclick="window.ProductUI.filterBySize('all', this)">عرض الكل</button>
                 <button class="size-tab" onclick="window.ProductUI.filterBySize('صغير', this)">صغير</button>
@@ -294,21 +285,16 @@
                 <button class="size-tab" onclick="window.ProductUI.filterBySize('كبير', this)">كبير / عائلي</button>
             </div>
 
-            <!-- شبكة المنتجات السيادية -->
             <div id="category-grid" class="grid gap-8 max-w-6xl mx-auto">
-                <!-- يُحقن آلياً بتخطيط ذكي (كارت أو كارتين) مع عرض الوصف كاملاً -->
-            </div>
+                </div>
         </section>
 
-        <!-- التوجيه الذكي 2: أداة باني التورتة الفاخرة (مع البوستر السيادي المضاف حديثاً) -->
         <section id="builder-container" class="container mx-auto px-4 hidden">
             
-            <!-- الهيدر والبوستر الخاص بقسم تصميم التورتة (يحاكي باقي الأقسام لمنع التكدس) -->
-            <div class="max-w-6xl mx-auto mb-16 animate-fade">
+            <div id="builder-header-container" class="max-w-6xl mx-auto mb-16 animate-fade">
                 <div class="rounded-[40px] overflow-hidden shadow-sm border border-brand-pink/20 bg-white">
                     <div class="w-full h-[30vh] md:h-[45vh] relative bg-brand-pinkLight">
-                        <!-- صورة أنيقة تعبر عن تصميم التورتة والتحضير -->
-                        <img src="https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover" alt="تصميم تورتة حلويات بوسي">
+                        <img id="builder-poster-img" src="" class="w-full h-full object-cover" alt="تصميم تورتة حلويات بوسي" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
                     </div>
                     <div class="p-8 md:p-16 text-center bg-brand-pinkLight/30">
                         <h2 class="text-4xl md:text-5xl font-bold text-brand-brown mb-6 tracking-tighter">صمم تورتة مناسبتك</h2>
@@ -319,22 +305,21 @@
                 </div>
             </div>
 
-            <!-- أداة البناء الفاخرة -->
             <div class="max-w-4xl mx-auto animate-fade">
                 <div class="bose-double-wrap shadow-premium overflow-hidden">
                     <div class="bose-double-inner p-8 md:p-14 bg-white">
-                        <!-- الخطوة ١ -->
+                        
                         <div id="step-1" class="builder-step-content space-y-12 text-right">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                                 <div>
                                     <label class="block font-bold text-xl mb-6 text-brand-brown">١. التورتة دي لكام فرد؟</label>
-                                    <div class="flex items-center justify-center md:justify-start gap-8 bg-brand-pinkLight rounded-full p-4 border-2 border-brand-pink/30 shadow-inner max-w-sm">
-                                        <button onclick="window.ProductUI.modQty(2)" class="w-12 h-12 rounded-full bg-white border-2 border-brand-pink text-brand-pink text-2xl font-bold active:scale-90 shadow-md flex items-center justify-center cursor-pointer">+</button>
+                                    <div class="flex items-center justify-center md:justify-start gap-8 bg-brand-pinkLight rounded-full p-4 border-2 border-brand-pink/30 shadow-sm max-w-sm">
+                                        <button onclick="window.ProductUI.modQty(2)" class="w-12 h-12 rounded-full bg-white border-2 border-brand-pink text-brand-pink text-2xl font-bold active:scale-90 shadow-sm flex items-center justify-center cursor-pointer">+</button>
                                         <div class="flex flex-col items-center w-20">
                                             <span id="people-display" class="text-4xl font-bold text-brand-brown">4</span>
                                             <span class="text-xs font-bold text-brand-brown/50 uppercase tracking-widest mt-1">أفراد</span>
                                         </div>
-                                        <button onclick="window.ProductUI.modQty(-2)" class="w-12 h-12 rounded-full bg-white border-2 border-brand-pink text-brand-pink text-2xl font-bold active:scale-90 shadow-md flex items-center justify-center cursor-pointer">-</button>
+                                        <button onclick="window.ProductUI.modQty(-2)" class="w-12 h-12 rounded-full bg-white border-2 border-brand-pink text-brand-pink text-2xl font-bold active:scale-90 shadow-sm flex items-center justify-center cursor-pointer">-</button>
                                     </div>
                                 </div>
                                 <div>
@@ -342,17 +327,28 @@
                                     <input type="text" id="cake-occasion-input" placeholder="مثلاً: عيد ميلاد، فرح، خطوبة..." class="w-full">
                                 </div>
                             </div>
-                            <button onclick="window.ProductUI.nextStep(2)" class="btn-solid w-full text-xl py-6 rounded-full mt-8 cursor-pointer">الخطوة اللي بعدها <i data-lucide="chevron-left" class="mr-2 inline"></i></button>
+                            <button onclick="window.ProductUI.nextStep(2)" class="btn-solid w-full text-xl py-6 rounded-full mt-8 cursor-pointer shadow-md">الخطوة اللي بعدها <i data-lucide="chevron-left" class="mr-2 inline"></i></button>
                         </div>
 
-                        <!-- الخطوة ٢ -->
                         <div id="step-2" class="builder-step-content space-y-12 hidden text-center">
                             <label class="block font-bold text-xl mb-10 text-brand-brown">٣. تحب شكل التورتة يكون إيه؟</label>
                             <div class="grid grid-cols-2 md:grid-cols-4 gap-6 px-4">
-                                <div class="option-btn selected" onclick="window.ProductUI.setShape('round', this)">دائري</div>
-                                <div class="option-btn" onclick="window.ProductUI.setShape('heart', this)">قلب</div>
-                                <div class="option-btn" onclick="window.ProductUI.setShape('square', this)">مربع (من ١٦ فرد)</div>
-                                <div class="option-btn" onclick="window.ProductUI.setShape('rectangle', this)">مستطيل (من ٢٠ فرد)</div>
+                                <div class="builder-option-card selected" onclick="window.ProductUI.setShape('round', this)">
+                                    <i data-lucide="circle" class="w-8 h-8 mb-2"></i>
+                                    <span>دائري</span>
+                                </div>
+                                <div class="builder-option-card" onclick="window.ProductUI.setShape('heart', this)">
+                                    <i data-lucide="heart" class="w-8 h-8 mb-2"></i>
+                                    <span>قلب</span>
+                                </div>
+                                <div class="builder-option-card" onclick="window.ProductUI.setShape('square', this)">
+                                    <i data-lucide="square" class="w-8 h-8 mb-2"></i>
+                                    <span class="text-sm">مربع<br>(من ١٦ فرد)</span>
+                                </div>
+                                <div class="builder-option-card" onclick="window.ProductUI.setShape('rectangle', this)">
+                                    <i data-lucide="rectangle-horizontal" class="w-8 h-8 mb-2"></i>
+                                    <span class="text-sm">مستطيل<br>(من ٢٠ فرد)</span>
+                                </div>
                             </div>
                             <div class="flex gap-4 pt-10">
                                 <button onclick="window.ProductUI.nextStep(3)" class="btn-solid flex-1 rounded-full text-lg cursor-pointer">التالي</button>
@@ -360,21 +356,24 @@
                             </div>
                         </div>
 
-                        <!-- الخطوة ٣ -->
                         <div id="step-3" class="builder-step-content space-y-10 hidden text-right">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                                 <div>
                                     <label class="block font-bold text-xl mb-6 text-brand-brown">٤. تحب تطبع صورة على التورتة؟</label>
                                     <div class="flex flex-col gap-4">
-                                        <div class="option-btn selected text-right py-4 px-6 flex justify-between items-center" onclick="window.ProductUI.setPrint('none', this)"><span>تزيين يدوي (من غير صورة)</span></div>
-                                        <div class="option-btn text-right py-4 px-6 flex justify-between items-center" onclick="window.ProductUI.setPrint('edible', this)"><span>صورة تتاكل مع التورتة (+٦٠ ج.م)</span></div>
+                                        <div class="builder-option-card selected !flex-row justify-between w-full" onclick="window.ProductUI.setPrint('none', this)">
+                                            <span>تزيين يدوي (من غير صورة)</span><i data-lucide="check-circle" class="w-5 h-5 text-brand-pink"></i>
+                                        </div>
+                                        <div class="builder-option-card !flex-row justify-between w-full" onclick="window.ProductUI.setPrint('edible', this)">
+                                            <span>صورة تتاكل مع التورتة (+٦٠ ج.م)</span><i data-lucide="circle" class="w-5 h-5 text-gray-300"></i>
+                                        </div>
                                     </div>
                                 </div>
                                 <div>
                                     <label class="block font-bold text-xl mb-6 text-brand-brown">٥. تحب تبعت كارت هدية معاها؟ (+٤٠ ج.م):</label>
                                     <div class="flex gap-4 mb-6">
-                                        <button onclick="window.ProductUI.setGift(true, this)" class="option-btn flex-1">أيوة</button>
-                                        <button onclick="window.ProductUI.setGift(false, this)" class="option-btn selected flex-1">لأ</button>
+                                        <button onclick="window.ProductUI.setGift(true, this)" class="builder-option-card flex-1 !flex-row justify-center">أيوة</button>
+                                        <button onclick="window.ProductUI.setGift(false, this)" class="builder-option-card selected flex-1 !flex-row justify-center">لأ</button>
                                     </div>
                                     <div id="gift-card-area" class="hidden animate-fade">
                                         <input type="text" id="gift-text" placeholder="اكتب اللي عايز تقوله في الكارت..." class="w-full">
@@ -382,10 +381,10 @@
                                 </div>
                             </div>
 
-                            <div class="mt-12 bg-brand-pinkLight border-2 border-brand-pink/30 p-10 rounded-[40px] text-center">
+                            <div class="mt-12 bg-brand-pinkLight border-2 border-brand-pink/30 p-10 rounded-[40px] text-center shadow-inner">
                                 <p class="font-bold mb-2 text-brand-brown/70 uppercase tracking-widest text-sm">سعر الطلب الإجمالي</p>
                                 <div id="final-price-display" class="text-6xl font-bold mb-10 text-brand-pink">580 ج.م</div>
-                                <button onclick="window.ProductUI.addToCart()" class="btn-solid w-full py-5 rounded-full text-2xl cursor-pointer">
+                                <button onclick="window.ProductUI.addToCart()" class="btn-solid w-full py-5 rounded-full text-2xl cursor-pointer shadow-lg hover:shadow-xl">
                                     أضف لطلب سيادتكم <i data-lucide="shopping-basket" class="w-6 h-6 mr-2 inline"></i>
                                 </button>
                             </div>
@@ -399,7 +398,6 @@
             </div>
         </section>
 
-        <!-- 🏷️ مساحة التقييمات وصفحات المراجعات -->
         <section id="reviews-section" class="py-24 mt-20 border-t border-brand-pink/10 bg-brand-pinkLight/20">
             <div class="container mx-auto px-4 text-center max-w-6xl">
                 <h3 class="text-3xl md:text-5xl font-bold text-brand-brown mb-6 tracking-tighter">نفخر بتجاربكم معنا</h3>
@@ -424,7 +422,6 @@
             </div>
         </section>
 
-        <!-- 🛍️ قسم مختارات صُممت لك -->
         <section id="suggestions-area" class="py-24 border-t border-brand-pink/10 bg-white hidden animate-fade">
             <div class="text-center mb-16 flex flex-col items-center">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-brand-pinkLight text-brand-pink rounded-full mb-6 border border-brand-pink/20">
@@ -438,14 +435,12 @@
             
             <div class="relative group max-w-6xl mx-auto">
                 <div id="dynamic-suggestions-slider" class="flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-8 pb-8 px-4 pt-2">
-                    <!-- سيتم الحقن آلياً بكروت التوصيات الشخصية بحجم ضخم (450px) -->
-                </div>
+                    </div>
             </div>
         </section>
 
     </main>
 
-    <!-- الفوتر الاحترافي الموحد -->
     <footer class="bg-white pt-20 pb-8 border-t-4 border-brand-pink">
         <div class="container mx-auto px-4 md:px-8 max-w-6xl text-center">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-b border-brand-pink/10 pb-16">
@@ -489,18 +484,14 @@
         </div>
     </footer>
 
-    <!-- قوالب الحقن السيادية للواجهة -->
-    
-    <!-- 1. قالب الكارت المزدوج (كارتين في الصف مع عرض الوصف كاملاً) -->
     <template id="template-card-grid">
         <div class="bose-double-wrap group animate-fade h-full block text-decoration-none">
             <div class="bose-double-inner bg-white h-full flex flex-col">
-                <div class="aspect-square w-full overflow-hidden bg-brand-pinkLight border-b border-brand-pink/20 relative">
+                <div class="aspect-[4/3] w-full overflow-hidden bg-brand-pinkLight border-b border-brand-pink/20 relative">
                     <img src="{PRODUCT_IMAGE}" alt="{PRODUCT_NAME}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
                 </div>
                 <div class="p-6 flex flex-col flex-grow text-right bg-white">
                     <h3 class="font-bold text-2xl text-brand-brown mb-3 leading-tight">{PRODUCT_NAME}</h3>
-                    <!-- الوصف كامل غير مقصوص لضمان توضيح المكونات للعميل -->
                     <p class="text-sm text-brand-brown opacity-80 font-bold mb-6 leading-relaxed whitespace-normal flex-grow">{PRODUCT_DESC}</p>
                     
                     <div class="border-t border-brand-pink/10 pt-4 mt-auto">
@@ -519,7 +510,6 @@
         </div>
     </template>
 
-    <!-- 2. قالب الكارت المنفرد (كارت واحد يملأ الشاشة للتورت والبوكسات) -->
     <template id="template-card-full">
         <div class="bose-double-wrap group animate-fade h-full block text-decoration-none">
             <div class="bose-double-inner bg-white h-full flex flex-col md:flex-row">
@@ -528,7 +518,6 @@
                 </div>
                 <div class="w-full md:w-7/12 p-8 md:p-12 flex flex-col text-right bg-white justify-center">
                     <h3 class="font-bold text-3xl md:text-4xl text-brand-brown mb-4 leading-tight">{PRODUCT_NAME}</h3>
-                    <!-- الوصف كامل غير مقصوص -->
                     <p class="text-base md:text-lg text-brand-brown opacity-80 font-bold mb-8 leading-relaxed whitespace-normal">{PRODUCT_DESC}</p>
                     
                     <div class="mt-auto border-t border-brand-pink/10 pt-6">
@@ -547,7 +536,6 @@
         </div>
     </template>
 
-    <!-- 3. قالب كارت السلايدر المصغر (لقسم مختارات صُممت لك - الحجم الأكبر 450px) -->
     <template id="bose-suggestion-card-template">
         <div class="snap-start flex-shrink-0 w-[85%] md:w-[450px]">
             <div class="bose-double-wrap group animate-fade h-full block text-decoration-none">
@@ -570,7 +558,6 @@
         </div>
     </template>
 
-    <!-- ربط المحرك السيادي الموحد -->
     <script type="module" src="unified-engine.js"></script>
 
     <script>
@@ -629,6 +616,9 @@
                 if (action === 'build_cake') {
                     document.getElementById('builder-container').classList.remove('hidden');
                     this.state = { people: 4, print: 'none', gift: false, shape: 'round' };
+                    
+                    // سحب صورة التورتة الحقيقية من الداتابيز لبوستر باني التورتة
+                    this.setupBuilderPoster();
                     this.updatePrices();
                 } else if (category) {
                     this.currentCategory = category;
@@ -643,6 +633,22 @@
                 
                 this.fetchReviews();
                 setTimeout(() => this.renderSmartSuggestions(), 500);
+            },
+
+            setupBuilderPoster: function() {
+                const catalog = window.BoseState?.catalog || [];
+                const cakeProducts = catalog.filter(p => p.category && (p.category.includes('تورت') || p.category.includes('كيك')));
+                let builderPoster = 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'; // fallback
+                
+                if(cakeProducts.length > 0) {
+                    let img = cakeProducts[0].img || cakeProducts[0].image;
+                    if(img) {
+                        builderPoster = window.processBoseImage ? window.processBoseImage(img) : img;
+                    }
+                }
+                
+                const posterEl = document.getElementById('builder-poster-img');
+                if(posterEl) posterEl.src = builderPoster;
             },
 
             setupCategoryView: function(catName) {
@@ -663,6 +669,7 @@
 
                 const displayName = catName === 'all' ? 'منتجات حلويات بوسي' : catName;
                 
+                // سحب الصورة الحقيقية لأول منتج في القسم من قاعدة بياناتك (منع أي صورة عشوائية)
                 let dynamicPoster = 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
                 if (this.allCategoryProducts.length > 0) {
                     let firstProdImg = this.allCategoryProducts[0].img || this.allCategoryProducts[0].image;
@@ -744,7 +751,7 @@
                 lucide.createIcons();
             },
 
-            // --- التوصيات الشخصية المبنية على السلوك ---
+            // --- التوصيات الشخصية المبنية على السلوك (Smart Suggestions) ---
             renderSmartSuggestions: function() {
                 const catalog = window.BoseState?.catalog || [];
                 const container = document.getElementById('suggestions-area');
@@ -912,7 +919,118 @@
                 }
             },
 
-            // --- دوال الكروت والسلة ---
+            // --- دوال الكروت والسلة (باني التورتة) ---
+            modQty: function(val) {
+                const newVal = this.state.people + val;
+                if (newVal < 4 || newVal > 250) return;
+                
+                if (val < 0) {
+                    if (this.state.shape === 'rectangle' && newVal < 20) {
+                        this.showAlert("عشان نطلع التورتة بشكل مظبوط، المستطيل بيبدأ من ٢٠ فرد.. هنغير الشكل لـ (دائري) مؤقتاً.");
+                        this.state.shape = 'round';
+                        this.syncShapeUI();
+                    } else if (this.state.shape === 'square' && newVal < 16) {
+                        this.showAlert("عشان نطلع التورتة بشكل مظبوط، المربع بيبدأ من ١٦ فرد.. هنغير الشكل لـ (دائري) مؤقتاً.");
+                        this.state.shape = 'round';
+                        this.syncShapeUI();
+                    }
+                }
+                
+                this.state.people = newVal;
+                document.getElementById('people-display').innerText = this.state.people;
+                this.updatePrices();
+            },
+
+            setShape: function(sh, btn) {
+                if (sh === 'rectangle' && this.state.people < 20) {
+                    this.showAlert("الشكل المستطيل بيحتاج ٢٠ فرد على الأقل. ياريت تزود العدد.");
+                    return;
+                }
+                if (sh === 'square' && this.state.people < 16) {
+                    this.showAlert("الشكل المربع بيحتاج ١٦ فرد على الأقل. ياريت تزود العدد.");
+                    return;
+                }
+                this.state.shape = sh;
+                btn.parentElement.querySelectorAll('.builder-option-card').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            },
+
+            syncShapeUI: function() {
+                const btns = document.querySelectorAll('#step-2 .builder-option-card');
+                btns.forEach(b => {
+                    b.classList.remove('selected');
+                    if(b.getAttribute('onclick').includes(`'${this.state.shape}'`)) b.classList.add('selected');
+                });
+            },
+
+            updatePrices: function() {
+                let total = this.state.people * 145;
+                if (this.state.print === 'edible') total += 60;
+                if (this.state.print === 'non_edible') total += 20;
+                if (this.state.gift) total += 40;
+                const fin = document.getElementById('final-price-display');
+                if (fin) fin.innerText = `${total} ج.م`;
+                return total;
+            },
+
+            nextStep: function(n) {
+                document.querySelectorAll('.builder-step-content').forEach(s => s.classList.add('hidden'));
+                document.getElementById(`step-${n}`).classList.remove('hidden');
+                const builderSection = document.getElementById('builder-container');
+                if(builderSection) {
+                    const y = builderSection.getBoundingClientRect().top + window.pageYOffset - 100;
+                    window.scrollTo({top: y, behavior: 'smooth'});
+                }
+            },
+
+            setPrint: function(type, btn) {
+                this.state.print = type;
+                btn.parentElement.querySelectorAll('.builder-option-card').forEach(b => {
+                    b.classList.remove('selected');
+                    const icon = b.querySelector('i');
+                    if(icon) { icon.classList.remove('lucide-check-circle', 'text-brand-pink'); icon.classList.add('lucide-circle', 'text-gray-300'); }
+                });
+                btn.classList.add('selected');
+                const selectedIcon = btn.querySelector('i');
+                if(selectedIcon) { selectedIcon.classList.remove('lucide-circle', 'text-gray-300'); selectedIcon.classList.add('lucide-check-circle', 'text-brand-pink'); }
+                
+                const up = document.getElementById('print-upload-area');
+                if(type !== 'none') up.classList.remove('hidden'); else up.classList.add('hidden');
+                this.updatePrices();
+                lucide.createIcons();
+            },
+
+            setGift: function(val, btn) {
+                this.state.gift = val;
+                btn.parentElement.querySelectorAll('.builder-option-card').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                const ga = document.getElementById('gift-card-area');
+                if(val) ga.classList.remove('hidden'); else ga.classList.add('hidden');
+                this.updatePrices();
+            },
+
+            handleFile: function(input, targetId) {
+                const status = document.getElementById(targetId);
+                if (input.files && input.files[0]) {
+                    status.innerText = `تم اختيار: ${input.files[0].name}`;
+                    status.classList.add('text-brand-pink');
+                }
+            },
+
+            addToCart: function() {
+                const finalPrice = this.updatePrices();
+                const item = {
+                    id: `custom-cake-${Date.now()}`, name: 'تورتة ملكية عمولة', price: finalPrice, quantity: 1, isCustom: true,
+                    details: { ...this.state, occasion: document.getElementById('cake-occasion-input')?.value || 'تفضيل خاص' }
+                };
+                if (window.BoseState && window.cartSystem) {
+                    window.BoseState.cart.push(item);
+                    window.cartSystem.saveCartToStorage();
+                    window.location.href = 'cart.html';
+                }
+            },
+
+            // --- دوال الكروت والسلة للمنتجات العادية ---
             changeCardQty: function(btn, delta) {
                 const display = btn.parentElement.querySelector('.card-qty-display');
                 if (display) {
@@ -987,5 +1105,3 @@
     </script>
 </body>
 </html>
-
-
