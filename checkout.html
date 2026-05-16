@@ -135,7 +135,7 @@
 </head>
 <body class="antialiased selection:bg-brand-pink selection:text-white">
 
-    <!-- نافذة الإشعارات السيادية الموحدة -->
+    <!-- نافذة الإشعارات السيادية המوحدة -->
     <div id="bose-toast" class="bose-toast">
         <i data-lucide="alert-circle" class="w-7 h-7 text-brand-pink"></i>
         <span id="bose-toast-msg">تنبيه النظام</span>
@@ -147,7 +147,7 @@
             <div class="w-32 h-32 bg-brand-pinkLight rounded-full flex items-center justify-center border-4 border-brand-pink mx-auto mb-8 shadow-inner">
                 <i data-lucide="check-circle" class="w-16 h-16 text-brand-pink"></i>
             </div>
-            <h3 class="text-4xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تم تجهيز طلبك بنجاح</h3>
+            <h3 class="text-4xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تم استلام طلبك بنجاح</h3>
             <p class="font-bold text-brand-brown/80 mb-8 text-xl">
                 رقم الطلب: <span id="success-order-id" class="text-brand-pink font-black px-2" dir="ltr"></span>
             </p>
@@ -159,7 +159,7 @@
         </div>
     </div>
 
-    <!-- شريط الإشعارات العلوي المؤسسي الموحد -->
+    <!-- شريط الإشعارات العلوي المؤسسي המوحد -->
     <div class="ticker-wrap shadow-sm">
         <div class="ticker-scroll">
             <div class="ticker-item">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
@@ -173,7 +173,7 @@
         </div>
     </div>
 
-    <!-- الهيدر الرسمي الموحد -->
+    <!-- الهيدر الرسمي המوحد -->
     <header class="border-b border-brand-pink/20 sticky top-0 z-[100] bg-white/95 backdrop-blur-md transition-all py-4 shadow-sm">
         <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
             <div class="w-1/3 flex justify-start">
@@ -195,7 +195,7 @@
         </div>
     </header>
 
-    <!-- القائمة الجانبية الاحترافية الموحدة -->
+    <!-- القائمة الجانبية الاحترافية המوحدة -->
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
     <aside id="sidebar" class="sidebar">
         <div class="p-6 flex justify-between items-center border-b border-brand-pink/20 bg-brand-pinkLight">
@@ -432,7 +432,7 @@
 
     <script type="module">
         /**
-         * 👑 محرك إتمام الطلب الشامل والموحد - التوجيه المباشر للواتساب (Hybrid Routing) + تأمين 24 ساعة
+         * 👑 محرك إتمام الطلب الشامل والموحد - مع تأمين التواريخ (24h Rule) وتصنيف الطلبات للمطبخ
          */
 
         window.CheckoutEngine = {
@@ -446,25 +446,30 @@
                 const dateInput = document.getElementById('order-date');
                 if (dateInput) {
                     const today = new Date();
+                    // إضافة يوم (24 ساعة) للحصول على تاريخ الغد
                     const tomorrow = new Date(today);
                     tomorrow.setDate(tomorrow.getDate() + 1);
-                    const localTomorrowStr = tomorrow.toLocaleDateString('en-CA'); 
+                    
+                    // تحويل الصيغة لتناسب حقل الإدخال YYYY-MM-DD
+                    const localTomorrowStr = tomorrow.toLocaleDateString('en-CA'); // en-CA gives YYYY-MM-DD reliably
                     dateInput.setAttribute('min', localTomorrowStr);
                     
                     // مراقب لحقل التاريخ تحسباً للكتابة اليدوية (Real-time Validation)
                     dateInput.addEventListener('change', function() {
                         const selectedDate = new Date(this.value);
                         const now = new Date();
+                        
+                        // تصفية التواريخ من الساعات والدقائق لمقارنة الأيام بشكل دقيق
                         const selectedDateOnly = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
                         const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                         const tomorrowOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
                         if (selectedDateOnly < todayOnly) {
                             window.CheckoutEngine.showToast("غير متاح اختيار تاريخ سابق. يرجى تحديد موعد قادم.");
-                            this.value = ''; 
+                            this.value = ''; // إجبار العميل على إعادة الاختيار
                         } else if (selectedDateOnly < tomorrowOnly) {
                             window.CheckoutEngine.showToast("لضمان الجودة والإتقان، يتطلب تحضير الطلب 24 ساعة مسبقاً. يرجى اختيار موعد بداية من الغد.");
-                            this.value = ''; 
+                            this.value = ''; // إجبار العميل على إعادة الاختيار
                         }
                     });
                 }
@@ -601,7 +606,7 @@
                 return true;
             },
 
-            // 🚀 التوجيه المباشر للواتساب لضمان عدم توقف الطلبات
+            // 🚀 التوجيه المباشر للواتساب لضمان عدم توقف الطلبات مع توضيح القسم لتسهيل عمل المطبخ
             processOrder: function(submitBtn, originalBtnText) {
                 const customerName = document.getElementById('customer-name').value.trim();
                 const whatsappPhone = document.getElementById('whatsapp-phone').value.trim();
@@ -619,7 +624,7 @@
                     deliveryText = `📍 استلام من مقر الفرع بالكفاح`;
                 }
 
-                // صياغة فاتورة الواتساب الفاخرة والواضحة
+                // صياغة فاتورة الواتساب الفاخرة والواضحة للمطبخ
                 let msg = `*طلب جديد من حلويات بوسي* 👑\n\n`;
                 msg += `👤 الاسم: ${customerName}\n`;
                 msg += `📱 الواتساب: ${whatsappPhone}\n`;
@@ -628,7 +633,18 @@
                 msg += `🛍️ *قائمة المشتريات:*\n`;
                 
                 this.cartItems.forEach(item => {
-                    msg += `▫️ ${item.name} (x${item.quantity || item.qty})\n`;
+                    // استنباط القسم من الكتالوج لضمان وضوح الطلب للمطبخ ومنع الخلط (مثال: [ديسباسيتو] نوتيلا)
+                    let catName = "";
+                    if (!item.isCustom) {
+                        const productRef = window.BoseState?.catalogMap?.get(String(item.id)) || window.BoseState?.catalog?.find(p => String(p.id) === String(item.id));
+                        if (productRef && productRef.category) {
+                            catName = `[${productRef.category}] `;
+                        } else if (item.category) {
+                            catName = `[${item.category}] `;
+                        }
+                    }
+
+                    msg += `▫️ ${catName}${item.name} (x${item.quantity || item.qty})\n`;
                     if (item.isCustom && item.details) {
                          const shape = item.details.shape === 'round' ? 'دائري' : (item.details.shape === 'heart' ? 'قلب' : 'محدد مسبقاً');
                          msg += `   [يكفي ${item.details.people} أفراد - شكل ${shape}]\n`;
@@ -693,5 +709,6 @@
     </script>
 </body>
 </html>
+
 
 
