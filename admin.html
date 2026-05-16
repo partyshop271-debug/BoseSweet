@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>حلويات بوسي | بوابة الدخول السيادية</title>
     
-    <!-- مكتبات الواجهة والأيقونات -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -174,7 +173,6 @@
 
     <div class="bg-glow"></div>
 
-    <!-- إشعار النظام (Toast) -->
     <div id="login-toast" class="bg-[#101726]/95 backdrop-blur-xl border border-white/10 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 text-center">
         <i id="toast-icon" data-lucide="info" class="w-6 h-6 shrink-0 text-brand-primary"></i>
         <span id="toast-msg" class="text-sm md:text-base font-bold text-white tracking-wide leading-relaxed"></span>
@@ -215,13 +213,12 @@
         </div>
     </div>
 
-    <!-- 🧠 المحرك السيادي للتوثيق والاتصال بخوادم بوسي (V10 Modular) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // 👑 الإعدادات الرسمية لعلامة حلويات بوسي
+        // الإعدادات الرسمية لعلامة حلويات بوسي
         const firebaseConfig = {
             apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
             authDomain: "bosy-sweets.firebaseapp.com",
@@ -239,32 +236,7 @@
         // تفعيل الأيقونات
         lucide.createIcons();
 
-        // 🛡️ الصندوق الأسود (BoseMonitor) للإدارة المتقدمة
-        const BoseMonitor = {
-            diagnose: function(errorMsg) {
-                const msg = String(errorMsg).toLowerCase();
-                if (msg.includes('auth') || msg.includes('credential')) return "عائق توثيق: فشل في تأكيد الصلاحيات مع السحابة.";
-                if (msg.includes('network') || msg.includes('fetch')) return "عطل اتصالي: انقطاع في الشبكة يمنع التوثيق.";
-                return "خلل تقني يتطلب المراجعة.";
-            },
-            report: async function(error, context = 'بوابة الدخول') {
-                try {
-                    const errorMessage = error.message || String(error);
-                    console.warn(`[رصد أمني] تم رصد خلل في ${context}:`, errorMessage);
-                    await addDoc(collection(db, 'system_logs'), {
-                        context: context,
-                        errorMessage: errorMessage,
-                        diagnosis: this.diagnose(errorMessage),
-                        timestamp: serverTimestamp(),
-                        userAgent: navigator.userAgent
-                    });
-                } catch (e) {
-                    console.error("فشل تسجيل الخطأ في السحابة.");
-                }
-            }
-        };
-
-        // 🔔 محرك الإشعارات السيادي
+        // محرك الإشعارات السيادي
         let toastTimeout;
         const showToast = (msg, type = "info") => {
             const toast = document.getElementById('login-toast');
@@ -295,7 +267,32 @@
             toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 4000);
         };
 
-        // 👁️ التحكم في إظهار كلمة المرور
+        // الصندوق الأسود (BoseMonitor) للإدارة المتقدمة
+        const BoseMonitor = {
+            diagnose: function(errorMsg) {
+                const msg = String(errorMsg).toLowerCase();
+                if (msg.includes('auth') || msg.includes('credential')) return "عائق توثيق: فشل في تأكيد الصلاحيات مع السحابة.";
+                if (msg.includes('network') || msg.includes('fetch')) return "عطل اتصالي: انقطاع في الشبكة يمنع التوثيق.";
+                return "خلل تقني يتطلب المراجعة.";
+            },
+            report: async function(error, context = 'بوابة الدخول') {
+                try {
+                    const errorMessage = error.message || String(error);
+                    console.warn(`[رصد أمني] تم رصد خلل في ${context}:`, errorMessage);
+                    await addDoc(collection(db, 'system_logs'), {
+                        context: context,
+                        errorMessage: errorMessage,
+                        diagnosis: this.diagnose(errorMessage),
+                        timestamp: serverTimestamp(),
+                        userAgent: navigator.userAgent
+                    });
+                } catch (e) {
+                    console.error("تعذر إرسال التقرير للسحابة.");
+                }
+            }
+        };
+
+        // التحكم في إظهار مفتاح التشفير
         const togglePwdBtn = document.getElementById('toggle-pwd-btn');
         const pwdInput = document.getElementById('admin-pwd');
         const togglePwdIcon = document.getElementById('toggle-pwd-icon');
@@ -309,7 +306,7 @@
             });
         }
 
-        // 🚀 تنفيذ الدخول والتوثيق السيادي
+        // تنفيذ الدخول مع آلية كسر التعليق اللانهائي والـ Timeout
         const executeAdminLogin = async () => {
             const email = document.getElementById('admin-email').value.trim();
             const pwd = document.getElementById('admin-pwd').value.trim();
@@ -320,44 +317,52 @@
                 return;
             }
 
-            // تأمين الزر أثناء الاتصال
+            // تأمين وتغيير حالة الزر فوراً
             btn.innerHTML = `<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> <span>جاري التوثيق مع السحابة...</span>`;
             btn.disabled = true;
             lucide.createIcons();
 
+            // إعداد مؤقت زمني لكسر التعليق اللانهائي إذا تأخرت الاستجابة من الخوادم عن 12 ثانية
+            const timeoutTrigger = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error("المؤقت الزمني انتهى: الخوادم استغرقت وقتاً طويلاً للاستجابة.")), 12000)
+            );
+
             try {
-                // الاتصال بـ Firebase Authentication
-                await signInWithEmailAndPassword(auth, email, pwd);
+                // دمج طلب الدخول مع المؤقت الزمني لضمان عدم التعليق اللانهائي
+                await Promise.race([
+                    signInWithEmailAndPassword(auth, email, pwd),
+                    timeoutTrigger
+                ]);
                 
                 showToast("تم التحقق بنجاح. جاري توجيهكم لمركز القيادة الرئيسي.", "success");
                 sessionStorage.setItem('bosy_admin_auth', 'verified');
                 
-                // التوجيه إلى المحرك السيادي للواجهة
                 setTimeout(() => {
                     window.location.href = 'admin-theme.html';
                 }, 1500);
 
             } catch (error) {
-                BoseMonitor.report(error, 'محاولة توثيق الدخول');
-                
-                // هندسة الردود الإدارية للأخطاء
-                const errCode = error.code;
-                if (errCode === 'auth/network-request-failed') {
-                    showToast("تعذر الاتصال بخوادم بوسي، يرجى التحقق من جودة اتصال الإنترنت لديكم.", "error");
-                } else if (errCode === 'auth/too-many-requests') {
-                    showToast("تم رصد محاولات متكررة. يرجى الانتظار قليلاً لضمان أمان البوابة.", "error");
-                } else if (errCode === 'auth/user-not-found' || errCode === 'auth/invalid-email') {
-                    showToast("بيانات الهوية غير مدرجة في سجلات الإدارة. يرجى مراجعة البريد الإلكتروني.", "error");
-                } else if (errCode === 'auth/wrong-password' || errCode === 'auth/invalid-credential') {
-                    showToast("مفتاح التشفير غير صحيح. يرجى التأكد من حالة الأحرف والمحاولة مجدداً.", "error");
-                } else {
-                    showToast("تم إيقاف العملية لسبب تقني، تمت إحالة العطل لنظام المراقبة.", "error");
-                }
-                
-                // استعادة الزر
+                // استعادة الزر فوراً في أول كتلة الخطأ لمنع استمرار حالة الدوران المعلقة
                 btn.innerHTML = `<span>اعتماد الدخول</span><i data-lucide="log-in" class="w-6 h-6"></i>`; 
                 btn.disabled = false;
                 lucide.createIcons();
+
+                const errCode = error.code || '';
+                const errMsg = error.message || String(error);
+
+                // إظهار سبب المشكلة الفعلي مباشرة على شاشة الموبايل للتشخيص الفوري
+                if (errMsg.includes("المؤقت الزمني")) {
+                    showToast("تنبيه: تم إلغاء العملية بسبب تأخر استجابة السحابة. يرجى مراجعة تفعيل خيار البريد في فايربيز.", "error");
+                } else if (errCode === 'auth/network-request-failed') {
+                    showToast("تعذر الاتصال بخوادم بوسي، يرجى التحقق من جودة اتصال الإنترنت.", "error");
+                } else if (errCode === 'auth/user-not-found' || errCode === 'auth/wrong-password' || errCode === 'auth/invalid-credential') {
+                    showToast("البيانات المدخلة غير مطابقة لسجلات الإدارة. يرجى مراجعة مفتاح التشفير والبريد.", "error");
+                } else {
+                    showToast(`فشل التتوثيق: ${errCode || errMsg}`, "error");
+                }
+
+                // محاولة تسجيل التقرير في الخلفية دون تعطيل واجهة المستخدم
+                BoseMonitor.report(error, 'محاولة توثيق الدخول').catch(() => {});
             }
         };
 
@@ -368,14 +373,12 @@
         document.getElementById('admin-email').addEventListener('keypress', handleEnterKey);
         document.getElementById('admin-pwd').addEventListener('keypress', handleEnterKey);
 
-        // 🛡️ الحماية والتوجيه التلقائي (Session Guard)
+        // الحماية والتوجيه التلقائي
         onAuthStateChanged(auth, (user) => {
             if (user && sessionStorage.getItem('bosy_admin_auth') === 'verified') {
                 window.location.href = 'admin-theme.html';
             }
         });
-
     </script>
 </body>
 </html>
-
