@@ -3,399 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>حقيبة المشتريات | حلويات بوسي</title>
+    
+    <title>راجع طلبك | حلويات بوسي</title>
+    <meta name="description" content="سلة مشتريات حلويات بوسي. جودة وإتقان في كل تفصيلة.">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        brand: { 
+                            pink: '#ff91a4', 
+                            pinkLight: '#fffafb', 
+                            brown: '#3d241c', 
+                            white: '#ffffff' 
+                        } 
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    }
+                } 
+            } 
+        }
+    </script>
     
     <style>
-        /* الهوية البصرية الصارمة لعلامة حلويات بوسي */
-        :root {
-            --primary-pink: #ff91a4;
-            --primary-dark: #222222;
-            --surface-light: #ffffff;
-            --bg-soft: #fffafb;
-            --text-main: #222222;
-            --text-muted: #666666;
-            --border-radius-card: 16px;
-            --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.05);
-            --shadow-hover: 0 8px 25px rgba(255, 145, 164, 0.15);
-            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        /* 🛡️ درع التحصين البصري - منع تجاوز وزن الخط 700 للمحتوى، و 900 للعناوين */
+        body { background-color: #fffafb; color: #3d241c; -webkit-tap-highlight-color: transparent; }
+        * { font-family: 'Cairo', sans-serif; font-weight: 700; }
+        .font-black { font-weight: 900 !important; }
+
+        /* نظام الإطار المزدوج */
+        .bose-double-wrap {
+            background: #ffffff;
+            border-radius: 32px;
+            border: 2px solid #ff91a4;
+            padding: 6px;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 15px rgba(255, 145, 164, 0.05);
+        }
+        .bose-double-inner {
+            background: #ffffff;
+            border-radius: 26px;
+            border: 2px solid rgba(255, 145, 164, 0.3);
+            overflow: hidden;
         }
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        /* حسم عطل القائمة الجانبية (توحيد سيادي نقي بدون بني) */
+        .sidebar {
+            position: fixed !important; top: 0 !important; right: -100% !important; 
+            width: 320px !important; max-width: 85% !important; height: 100% !important;
+            z-index: 9999 !important; transition: right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+            background: #ffffff !important; box-shadow: -15px 0 40px rgba(255, 145, 164, 0.15);
+            display: flex; flex-direction: column; border-left: 2px solid rgba(255, 145, 164, 0.1);
         }
-
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-soft);
-            color: var(--text-main);
-            margin: 0;
-            line-height: 1.6;
+        .sidebar.active { right: 0 !important; }
+        .sidebar-overlay {
+            position: fixed !important; inset: 0 !important; background: rgba(61, 36, 28, 0.5) !important;
+            backdrop-filter: blur(5px) !important; z-index: 9998 !important; display: none; opacity: 0;
+            transition: opacity 0.4s ease;
         }
+        .sidebar-overlay.active { display: block !important; opacity: 1 !important; }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        /* سلايدر الاقتراحات */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .suggestions-slider {
+            display: flex; overflow-x: auto; gap: 24px; scroll-snap-type: x mandatory;
+            padding-bottom: 20px; padding-top: 10px; -ms-overflow-style: none; scrollbar-width: none;
         }
+        .suggestion-item { min-width: 260px; max-width: 260px; scroll-snap-align: center; }
 
-        /* الهيدر السيادي */
-        .main-header {
-            background: var(--surface-light);
-            box-shadow: var(--shadow-soft);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .brand-title {
-            margin: 0;
-            color: var(--primary-pink);
-            font-size: 1.5rem;
-            font-weight: 900;
-            cursor: pointer;
-            letter-spacing: -0.5px;
-        }
-
-        /* تصميم صفحة السلة */
-        .cart-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 40px;
-            margin-top: 40px;
-        }
-        
-        @media (max-width: 992px) {
-            .cart-layout {
-                grid-template-columns: 1fr;
-                gap: 25px;
-            }
-        }
-
-        .page-title-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 40px;
-            border-bottom: 2px solid rgba(255, 145, 164, 0.1);
-            padding-bottom: 20px;
-        }
-
-        .page-title {
-            margin: 0;
-            font-size: 2rem;
-            font-weight: 900;
-        }
-
-        .text-pink { color: var(--primary-pink); }
-
-        /* كارت المنتج في السلة (متوافق مع المحرك الموحد) */
-        .cart-item {
-            display: flex;
-            gap: 20px;
-            background: var(--surface-light);
-            border-radius: var(--border-radius-card);
-            border: 1px solid rgba(255, 145, 164, 0.1);
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow-soft);
-            transition: var(--transition-smooth);
-            position: relative;
-            align-items: center;
-        }
-
-        .cart-item:hover {
-            border-color: var(--primary-pink);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .cart-item-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 12px;
-            object-fit: cover;
-            background: #f9f9f9;
-            flex-shrink: 0;
-        }
-
-        .cart-item-info {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: right;
-        }
-
-        .cart-item-name {
-            font-size: 1.1rem;
-            font-weight: 900;
-            margin: 0 0 5px 0;
-        }
-
-        .cart-item-price {
-            color: var(--primary-pink);
-            font-weight: 900;
-            font-size: 1.1rem;
-        }
-
-        /* التحكم في الكمية */
-        .qty-control {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #f8f8f8;
-            padding: 8px 12px;
-            border-radius: 10px;
-        }
-
-        .qty-btn {
-            background: white;
-            border: 1px solid rgba(255,145,164,0.3);
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--primary-pink);
-            font-weight: 900;
-            transition: var(--transition-smooth);
-        }
-
-        .qty-btn:hover {
-            background: var(--primary-pink);
-            color: white;
-        }
-
-        /* ملخص الطلب */
-        .summary-card {
-            background: var(--surface-light);
-            border-radius: var(--border-radius-card);
-            border: 2px solid var(--primary-pink);
-            padding: 25px;
-            position: sticky;
-            top: 100px;
-            box-shadow: var(--shadow-soft);
-        }
-
-        .summary-title {
-            font-size: 1.3rem;
-            font-weight: 900;
-            margin-bottom: 20px;
-            border-right: 4px solid var(--primary-pink);
-            padding-right: 12px;
-            text-align: right;
-        }
-
-        .summary-line {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-
-        .total-line {
-            border-top: 2px dashed rgba(255, 145, 164, 0.2);
-            margin-top: 20px;
-            padding-top: 15px;
-            font-size: 1.4rem;
-            color: var(--primary-pink);
-        }
-
-        .btn-checkout {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: var(--primary-pink);
-            color: white;
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            font-family: 'Cairo', sans-serif;
-            font-weight: 900;
-            font-size: 1.1rem;
-            cursor: pointer;
-            text-decoration: none;
-            transition: var(--transition-smooth);
-            margin-top: 25px;
-        }
-
-        .btn-checkout:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 145, 164, 0.3);
-        }
-
-        /* الاقتراحات */
-        .suggestions-section {
-            margin-top: 80px;
-            padding-bottom: 60px;
-        }
-
-        .suggestions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        @media (max-width: 600px) {
-            .suggestions-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-        }
-
-        .suggestion-card {
-            background: white;
-            border-radius: 12px;
-            padding: 10px;
-            border: 1px solid rgba(255,145,164,0.1);
-            text-align: center;
-            transition: var(--transition-smooth);
-        }
-
-        .suggestion-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-pink);
-        }
-
-        .suggestion-img {
-            width: 100%;
-            aspect-ratio: 1/1;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-        .spin { animation: spin 1s linear infinite; }
+        .spin-animation { animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(-360deg); } }
-
-        .footer {
-            background: #fffafb;
-            padding: 50px 0;
-            text-align: center;
-            border-top: 1px solid rgba(255,145,164,0.1);
-        }
+        @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fade 0.5s ease forwards; }
     </style>
 </head>
-<body>
+<body class="antialiased selection:bg-brand-pink selection:text-white">
 
-    <header class="main-header">
-        <div class="container header-content">
-            <button onclick="window.history.back()" style="background:none; border:none; cursor:pointer;"><i data-lucide="arrow-right"></i></button>
-            <h1 class="brand-title" onclick="window.location.href='index.html'">حلويات بوسي</h1>
-            <button onclick="window.location.href='menu.html'" style="background:none; border:none; cursor:pointer;"><i data-lucide="layout-grid"></i></button>
+    <!-- شريط الإشعارات -->
+    <div class="ticker-wrap w-full overflow-hidden bg-brand-pink text-white py-2 shadow-sm">
+        <div class="ticker-track whitespace-nowrap inline-flex gap-12" style="animation: ticker 25s linear infinite;">
+            <div class="font-bold text-sm tracking-wide">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
+            <div class="font-bold text-sm tracking-wide">خبرة عشر سنين في صناعة السعادة بالفرافرة</div>
+            <div class="font-bold text-sm tracking-wide">تورتة مناسبتك بنعملها لك مخصوص بكل إتقان</div>
+        </div>
+    </div>
+
+    <!-- الهيدر الرسمي الموحد -->
+    <header class="main-header border-b border-brand-pink/10 sticky top-0 z-[100] bg-white/95 backdrop-blur-md shadow-sm">
+        <div class="container mx-auto px-4 flex justify-between items-center py-3">
+            <div class="w-1/4 flex justify-start">
+                <button onclick="window.toggleSidebar()" class="p-2 rounded-full border border-brand-pink/20 hover:bg-brand-pinkLight text-brand-brown transition-all cursor-pointer">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="w-2/4 flex justify-center text-center">
+                <a href="index.html" class="flex items-center justify-center gap-2 group">
+                    <i data-lucide="gem" class="w-6 h-6 text-brand-pink group-hover:scale-110 transition-transform"></i>
+                    <h1 class="text-xl font-black text-brand-brown tracking-tighter uppercase">حلويات بوسي</h1>
+                </a>
+            </div>
+            <div class="w-1/4 flex justify-end gap-3">
+                <a href="cart.html" class="relative p-2 rounded-xl border border-brand-pink/20 bg-brand-pink text-white transition-all shadow-md">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                </a>
+            </div>
         </div>
     </header>
 
-    <main class="container">
-        <div class="page-title-section">
-            <i data-lucide="shopping-basket" class="text-pink" style="width: 35px; height: 35px;"></i>
-            <h2 class="page-title">حقيبة <span class="text-pink">المشتريات</span></h2>
+    <!-- القائمة الجانبية الموحدة (مطهرة من اللون البني) -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
+    <aside id="sidebar" class="sidebar">
+        <div class="p-6 flex justify-between items-center border-b border-brand-pink/10 bg-brand-pinkLight/50">
+            <span class="text-xl font-black text-brand-pink flex items-center gap-2"><i data-lucide="gem" class="w-5 h-5"></i> حلويات بوسي</span>
+            <button onclick="window.toggleSidebar()" class="text-brand-brown bg-white border border-brand-pink/20 rounded-full p-2 hover:bg-brand-pink hover:text-white transition-all cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <nav id="sidebar-nav-container" class="flex-grow overflow-y-auto p-6 flex flex-col gap-3 text-right">
+            <a href="index.html" class="p-3 rounded-xl border border-brand-pink/10 bg-white font-bold text-brand-brown hover:bg-brand-pinkLight flex items-center gap-3 transition-colors"><i data-lucide="home" class="w-5 h-5 text-brand-pink"></i> الرئيسية</a>
+            <a href="menu.html" class="p-3 rounded-xl border border-brand-pink/10 bg-white font-bold text-brand-brown hover:bg-brand-pinkLight flex items-center gap-3 transition-colors"><i data-lucide="layout-grid" class="w-5 h-5 text-brand-pink"></i> تصفح المنيو</a>
+            <div class="my-2 border-t border-brand-pink/10 mx-2"></div>
+            <p class="text-xs font-black text-brand-pink mb-1 px-2 uppercase tracking-widest">أقسام المنيو</p>
+            <a href="product.html?category=cakes" class="p-3 rounded-xl border border-brand-pink/10 bg-white font-bold text-brand-brown hover:bg-brand-pinkLight flex items-center gap-3 transition-colors"><i data-lucide="chevron-left" class="w-4 h-4 text-brand-pink"></i> التورت الفاخرة</a>
+            <a href="product.html?category=cinnabon" class="p-3 rounded-xl border border-brand-pink/10 bg-white font-bold text-brand-brown hover:bg-brand-pinkLight flex items-center gap-3 transition-colors"><i data-lucide="chevron-left" class="w-4 h-4 text-brand-pink"></i> السينابون</a>
+            <a href="product.html?category=flowers" class="p-3 rounded-xl border border-brand-pink/10 bg-white font-bold text-brand-brown hover:bg-brand-pinkLight flex items-center gap-3 transition-colors"><i data-lucide="chevron-left" class="w-4 h-4 text-brand-pink"></i> الورد الطبيعي</a>
+        </nav>
+    </aside>
+
+    <main class="container mx-auto px-4 py-12 max-w-6xl">
+        
+        <!-- عنوان السلة المباشر -->
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-5xl font-black text-brand-brown mb-3 tracking-tighter uppercase">راجع طلبك</h2>
+            <p class="font-bold text-brand-brown/60 text-base">خطوة واحدة وتكمل سعادتك</p>
         </div>
 
-        <div class="cart-layout">
-            <!-- قائمة المنتجات - سيتم حقنها عبر المحرك -->
-            <div id="cart-items-list">
-                <div style="text-align: center; padding: 60px 0;">
-                    <i data-lucide="loader-2" class="spin text-pink" style="width: 40px; height: 40px; margin-bottom: 15px;"></i>
-                    <p style="font-weight: 700; color: var(--text-muted);">تأمين بيانات السلة السيادية...</p>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            
+            <!-- قائمة المنتجات -->
+            <div class="lg:col-span-2 space-y-6" id="cart-items-list">
+                <div class="text-center py-20 opacity-50 font-black">
+                    <i data-lucide="loader-2" class="spin-animation w-12 h-12 mx-auto mb-4 text-brand-pink"></i> 
+                    جاري تجهيز طلبك...
                 </div>
             </div>
 
-            <!-- ملخص الحساب -->
-            <aside>
-                <div class="summary-card" id="cart-summary-box" style="display: none;">
-                    <h3 class="summary-title">ملخص الطلب</h3>
-                    
-                    <div class="summary-line">
-                        <span>وحدات الطلب</span>
-                        <span id="summary-subtotal">0 ج.م</span>
-                    </div>
-                    
-                    <div class="summary-line" style="color: var(--text-muted); font-size: 0.9rem;">
-                        <span>رسوم التوصيل</span>
-                        <span>تُحدد لاحقاً</span>
-                    </div>
+            <!-- ملخص الإدارة (الفاتورة) -->
+            <div class="lg:col-span-1">
+                <div class="bose-double-wrap sticky top-28" id="cart-summary-box" style="display: none;">
+                    <div class="bose-double-inner p-8 bg-white">
+                        <h3 class="text-2xl font-black text-brand-brown mb-6 border-b-2 border-brand-pink/10 pb-4 tracking-tighter uppercase">ملخص الطلب</h3>
+                        
+                        <div class="flex justify-between font-bold mb-5 text-lg text-brand-brown">
+                            <span>حساب المنتجات</span>
+                            <span id="summary-subtotal" class="font-black text-brand-pink">0 ج.م</span>
+                        </div>
+                        
+                        <div class="flex justify-between font-bold mb-8 text-sm opacity-60 text-brand-brown bg-brand-pinkLight/50 p-3 rounded-xl">
+                            <span>مصاريف التوصيل</span>
+                            <span>تحدد في الخطوة الجاية</span>
+                        </div>
 
-                    <div class="summary-line total-line">
-                        <span>الإجمالي الإداري</span>
-                        <span id="summary-total">0 ج.م</span>
-                    </div>
+                        <div class="flex justify-between items-center font-black text-3xl text-brand-pink border-t-2 border-dashed border-brand-pink/30 pt-6 mb-10 tracking-tighter">
+                            <span class="text-xl text-brand-brown">الإجمالي</span>
+                            <span id="summary-total">0 ج.م</span>
+                        </div>
 
-                    <a href="checkout.html" class="btn-checkout">
-                        تأكيد البيانات والمتابعة <i data-lucide="chevron-left"></i>
-                    </a>
+                        <a href="checkout.html" class="bg-brand-pink text-white w-full py-5 rounded-full font-black text-2xl shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer">
+                            تأكيد الطلب <i data-lucide="check-circle" class="w-6 h-6"></i>
+                        </a>
+                    </div>
                 </div>
-            </aside>
+            </div>
         </div>
 
-        <!-- اقتراحات ذكية -->
-        <section class="suggestions-section" id="suggestions-area" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-                <h3 style="margin:0; font-weight: 900;">إضافات <span class="text-pink">تليق بسيادتكم</span></h3>
-                <a href="menu.html" style="color: var(--primary-pink); text-decoration: none; font-weight: 700;">عرض المنيو</a>
-            </div>
-            <div class="suggestions-grid" id="cart-suggestions-container"></div>
-        </section>
     </main>
 
-    <footer class="footer">
-        <h3 class="text-pink" style="font-weight: 900; margin-bottom: 15px;">حلويات بوسي</h3>
-        <p style="font-weight: 700;">مركز الفرافرة - الكفاح - الوادي الجديد</p>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 20px;">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
+    <!-- 🛍️ سلايدر قد يعجبك أيضاً (متوافق مع product.html) -->
+    <section class="py-24 bg-brand-pinkLight/20 border-t border-brand-pink/10 mt-10" id="suggestions-area" style="display: none;">
+        <div class="container mx-auto px-4 text-center max-w-6xl">
+            <h3 class="text-3xl font-black text-brand-brown mb-12 tracking-tighter uppercase">قد يعجبك أيضاً</h3>
+            
+            <div class="relative group">
+                <button onclick="slideSuggestions(-1)" class="absolute top-1/2 -translate-y-1/2 -right-4 z-20 w-12 h-12 rounded-full bg-white border-2 border-brand-pink/30 text-brand-pink flex items-center justify-center shadow-lg hover:bg-brand-pink hover:text-white transition-all opacity-0 group-hover:opacity-100 hidden md:flex cursor-pointer"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
+                <button onclick="slideSuggestions(1)" class="absolute top-1/2 -translate-y-1/2 -left-4 z-20 w-12 h-12 rounded-full bg-white border-2 border-brand-pink/30 text-brand-pink flex items-center justify-center shadow-lg hover:bg-brand-pink hover:text-white transition-all opacity-0 group-hover:opacity-100 hidden md:flex cursor-pointer"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
+
+                <div id="cart-suggestions-slider" class="suggestions-slider px-2">
+                    <!-- يحقن آلياً -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- الفوتر الموحد -->
+    <footer class="bg-white pt-16 pb-8 border-t-4 border-brand-pink text-center relative overflow-hidden">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="mb-12 inline-block p-5 rounded-full bg-brand-pinkLight text-brand-pink border border-brand-pink/20 shadow-md"><i data-lucide="gem" class="w-8 h-8"></i></div>
+            <p class="text-brand-brown/80 font-bold text-xl mb-10 max-w-xl mx-auto leading-relaxed px-4">
+                طازجة من فرننا لمائدتك، بنعمل كل صنف بحب وإتقان. الالتزام بالجودة هو دايماً شعار حلويات بوسي.
+            </p>
+            <div class="mb-10 text-brand-brown">
+                <p class="font-black text-2xl mb-2 tracking-widest font-sans" dir="ltr">+20 109 723 8441</p>
+                <p class="font-bold text-lg opacity-80">الكفاح، الفرافرة، الوادي الجديد</p>
+            </div>
+            <div class="border-t border-brand-pink/15 pt-8 mt-4">
+                <p class="font-bold text-sm md:text-base text-brand-brown opacity-60 tracking-tight">
+                    &copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.
+                </p>
+            </div>
+        </div>
     </footer>
 
-    <!-- الاستدعاء السيادي للمحرك الموحد -->
+    <!-- ربط المحرك السيادي الموحد -->
     <script type="module" src="unified-engine.js"></script>
 
     <script type="module">
         /**
-         * 👑 واجهة التحكم السيادية لحقيبة المشتريات (V32.0)
-         * تعتمد كلياً على المحرك الموحد لضمان مزامنة البيانات السحابية.
+         * 👑 واجهة التحكم لحقيبة المشتريات (الإصدار السيادي المباشر)
          */
 
         window.addEventListener('BoseSweets_Engine_Ready', () => {
-            console.log("👑 حقيبة المشتريات: تم الربط مع المحرك الموحد وبدء المزامنة.");
-            
             if (window.lucide) lucide.createIcons();
-            
-            // تهيئة السلة فور الجاهزية
             syncCartInterface();
             renderSmartSuggestions();
         });
 
-        /**
-         * دالة المزامنة بين واجهة المستخدم والمحرك المركزي
-         */
         function syncCartInterface() {
             const list = document.getElementById('cart-items-list');
             const summaryBox = document.getElementById('cart-summary-box');
             
             if (!window.cartSystem || !window.BoseState) return;
 
-            // جلب بيانات السلة من الذاكرة المركزية
             const items = window.cartSystem.getCart();
 
             if (items.length === 0) {
                 list.innerHTML = `
-                    <div style="text-align:center; padding: 60px 20px;">
-                        <i data-lucide="shopping-bag" style="width: 80px; height: 80px; opacity:0.05; margin-bottom: 20px;"></i>
-                        <p style="font-weight: 900; color: #999; font-size: 1.2rem;">حقيبة المشتريات فارغة حالياً</p>
-                        <a href="menu.html" class="btn-checkout" style="max-width: 250px; margin: 25px auto; font-size: 0.95rem;">استعراض قائمة التذوق</a>
+                    <div class="text-center py-24 bg-white rounded-[40px] border-2 border-brand-pink/10 shadow-sm animate-fade max-w-2xl mx-auto">
+                        <i data-lucide="shopping-cart" class="w-24 h-24 mx-auto opacity-20 mb-6 text-brand-brown"></i>
+                        <p class="font-black text-brand-brown/60 text-2xl mb-10">سلتك فاضية لسه</p>
+                        <a href="menu.html" class="bg-brand-pink text-white px-12 py-5 rounded-full font-black text-xl shadow-xl hover:shadow-2xl active:scale-95 transition-all inline-block cursor-pointer">تصفح المنيو</a>
                     </div>`;
                 if (summaryBox) summaryBox.style.display = 'none';
                 if (window.lucide) lucide.createIcons();
@@ -405,29 +259,35 @@
             if (summaryBox) summaryBox.style.display = 'block';
 
             let html = '';
+            let actualSubtotal = 0;
+
             items.forEach((item, idx) => {
-                // استخدام معالج الصور السيادي لضمان استخدام dyx4w0dr1
-                const img = window.processBoseImage(item.image);
+                const img = window.processBoseImage ? window.processBoseImage(item.image || item.img) : (item.image || item.img);
                 
-                // حساب السعر النهائي للصنف (بما في ذلك إضافات التورت المخصصة)
-                let displayPrice = item.price;
-                if (item.isCustomCake) {
-                    // السعر يأتي جاهزاً من باني التورتة في المحرك الجديد
-                    displayPrice = item.price;
-                }
+                // الاعتماد على السعر المحفوظ مباشرة لمنع أي ازدواجية في الحساب من المحركات القديمة
+                let displayPrice = parseFloat(item.price) || 0;
+                let qty = parseInt(item.quantity || item.qty) || 1;
+                
+                actualSubtotal += (displayPrice * qty);
 
                 html += `
-                    <div class="cart-item">
-                        <img src="${img}" class="cart-item-img" alt="${item.name}" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';">
-                        <div class="cart-item-info">
-                            <h4 class="cart-item-name">${item.name}</h4>
-                            <div class="cart-item-price">${displayPrice} ج.م</div>
-                            ${item.isCustomCake ? `<small style="font-weight:900; opacity:0.5; color: var(--primary-dark);">نكهة: ${item.flavor || 'فانيليا'}</small>` : ''}
-                        </div>
-                        <div class="qty-control">
-                            <button class="qty-btn" onclick="window.cartSystem.modQ(${idx}, 1)">+</button>
-                            <span style="font-weight:900; min-width: 25px; text-align:center; font-size: 1.1rem;">${item.quantity}</span>
-                            <button class="qty-btn" onclick="window.cartSystem.modQ(${idx}, -1)">-</button>
+                    <div class="bose-double-wrap mb-6 animate-fade group">
+                        <div class="bose-double-inner p-4 md:p-6 flex flex-col md:flex-row gap-6 items-center bg-white">
+                            <div class="relative shrink-0">
+                                <img src="${img}" class="w-32 h-32 rounded-2xl object-cover bg-brand-pinkLight/50 border border-brand-pink/20 group-hover:scale-105 transition-transform" alt="${item.name}" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';">
+                            </div>
+                            
+                            <div class="flex-grow text-center md:text-right w-full">
+                                <h4 class="text-xl font-black mb-2 text-brand-brown tracking-tighter">${item.name}</h4>
+                                <div class="text-brand-pink font-black text-3xl mb-3">${displayPrice} <span class="text-base">ج.م</span></div>
+                                ${item.isCustom ? `<span class="font-bold text-xs text-brand-brown bg-brand-pinkLight px-4 py-1.5 rounded-full border border-brand-pink/20">تصميم مخصوص</span>` : ''}
+                            </div>
+
+                            <div class="flex items-center gap-5 bg-brand-pinkLight/40 p-2.5 rounded-full border-2 border-brand-pink/20 shrink-0">
+                                <button class="w-12 h-12 rounded-full bg-white border-2 border-brand-pink text-brand-pink flex items-center justify-center font-black active:scale-90 transition-all shadow-sm text-2xl cursor-pointer" onclick="window.cartSystem.modQ(${idx}, 1)">+</button>
+                                <span class="font-black min-w-[30px] text-center text-2xl text-brand-brown">${qty}</span>
+                                <button class="w-12 h-12 rounded-full bg-white border-2 border-brand-pink text-brand-pink flex items-center justify-center font-black active:scale-90 transition-all shadow-sm text-3xl pb-1 cursor-pointer" onclick="window.cartSystem.modQ(${idx}, -1)">-</button>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -435,59 +295,89 @@
 
             list.innerHTML = html;
 
-            // تحديث الملخص المالي عبر دالة الحساب المركزية في المحرك
-            const totals = window.cartSystem.calculateCartTotal();
-            document.getElementById('summary-subtotal').innerText = `${totals.subtotal} ج.م`;
-            document.getElementById('summary-total').innerText = `${totals.total} ج.م`;
+            document.getElementById('summary-subtotal').innerText = `${actualSubtotal} ج.م`;
+            document.getElementById('summary-total').innerText = `${actualSubtotal} ج.م`;
 
-            // تحديث العداد العلوي
-            window.cartSystem.updateCartDisplay();
-
+            if(window.cartSystem.updateCartDisplay) window.cartSystem.updateCartDisplay();
             if (window.lucide) lucide.createIcons();
         }
 
         /**
-         * محرك الاقتراحات الذكية (المرتبط بالكتالوج السحابي)
+         * محرك السلايدر التفاعلي (قد يعجبك أيضاً)
          */
         function renderSmartSuggestions() {
-            const container = document.getElementById('cart-suggestions-container');
+            const container = document.getElementById('cart-suggestions-slider');
             const section = document.getElementById('suggestions-area');
             
             if (!container || !window.BoseState || !window.BoseState.catalog) return;
             
             const catalog = window.BoseState.catalog;
-            const cartIds = window.BoseState.cart.map(i => String(i.id));
+            const cartIds = window.BoseState.cart ? window.BoseState.cart.map(i => String(i.id)) : [];
             
-            // اختيار منتجات عشوائية ليست موجودة في السلة حالياً
             const pool = catalog.filter(p => !cartIds.includes(String(p.id)));
-            const picked = pool.sort(() => 0.5 - Math.random()).slice(0, 4);
+            const picked = pool.sort(() => 0.5 - Math.random()).slice(0, 8);
 
             if (picked.length > 0) {
                 section.style.display = 'block';
                 container.innerHTML = picked.map(p => {
-                    const img = window.processBoseImage(p.img || p.image);
+                    const img = window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image);
                     return `
-                        <div class="suggestion-card">
-                            <img src="${img}" class="suggestion-img" alt="${p.name}">
-                            <h4 style="font-size: 0.95rem; font-weight:900; margin: 10px 0;">${p.name}</h4>
-                            <div style="color:var(--primary-pink); font-weight:900; margin-bottom: 12px;">${p.price} ج.م</div>
-                            <button onclick="window.location.href='product.html?id=${p.id}'" class="btn-checkout" style="padding: 10px; font-size: 0.85rem; margin:0;">التفاصيل</button>
+                        <div class="suggestion-item">
+                            <div class="bg-white border-2 border-brand-pink/20 rounded-[30px] p-4 h-full flex flex-col hover:border-brand-pink transition-colors group shadow-sm hover:shadow-xl cursor-pointer" onclick="window.location.href='product.html?category=${p.category}'">
+                                <div class="aspect-square rounded-2xl overflow-hidden mb-4 bg-brand-pinkLight/50">
+                                    <img src="${img}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="${p.name}" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+                                </div>
+                                <div class="text-center flex flex-col justify-between flex-grow">
+                                    <h4 class="font-bold text-base text-brand-brown mb-2 tracking-tight">${p.name}</h4>
+                                    <div class="font-black text-brand-pink text-xl mb-4">${p.price} ج.م</div>
+                                    <button class="w-full py-3 bg-brand-pinkLight text-brand-pink rounded-xl font-bold text-sm hover:bg-brand-pink hover:text-white transition-colors block border border-transparent hover:border-brand-pink/30">التفاصيل</button>
+                                </div>
+                            </div>
                         </div>
                     `;
                 }).join('');
+                if (window.lucide) lucide.createIcons();
             }
         }
 
-        // ربط أحداث التغيير في المحرك لإعادة رسم الواجهة تلقائياً
+        window.slideSuggestions = function(dir) {
+            const slider = document.getElementById('cart-suggestions-slider');
+            if(slider) slider.scrollBy({ left: 284 * dir * -1, behavior: 'smooth' });
+        };
+
+        // التحكم في القائمة الجانبية
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (!sidebar || !overlay) return;
+            if (sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.style.overflow = '';
+            } else {
+                sidebar.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow = 'hidden';
+            }
+        };
+
         window.addEventListener('BoseSweets_Cart_Updated', syncCartInterface);
         
-        // تعديل دالة modQ في المحرك لتنبيه الصفحة (في حال لم تكن موجودة)
-        const originalModQ = window.cartSystem.modQ;
-        window.cartSystem.modQ = function(idx, delta) {
-            originalModQ.call(this, idx, delta);
-            syncCartInterface();
-        };
+        if (window.cartSystem && window.cartSystem.modQ) {
+            const originalModQ = window.cartSystem.modQ;
+            window.cartSystem.modQ = function(idx, delta) {
+                originalModQ.call(this, idx, delta);
+                syncCartInterface();
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if(window.lucide) lucide.createIcons();
+            setTimeout(() => { 
+                if(window.cartSystem && window.cartSystem.getCart) {
+                    syncCartInterface(); 
+                    if(window.BoseState?.isAppReady) renderSmartSuggestions();
+                }
+            }, 300);
+        });
     </script>
 </body>
 </html>
+
 

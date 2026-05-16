@@ -1,15 +1,15 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Sovereign Unified Engine | المحرك السيادي الموحد (V32.0)
+ * 👑 BoseSweets Sovereign Unified Engine | المحرك السيادي الموحد (V33.0)
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
- * الحالة: دمج شامل ومطور لكافة السطور البرمجية بدون حذف أو تبسيط.
- * التحديث الأخير: توحيد نظام السحابة ومزامنة عدادات السلة وتحصين جلب البيانات.
+ * الحالة: دمج شامل، توحيد مسارات الفايربيز، ودعم كامل للهوية البصرية الموحدة.
+ * التحديث الأخير: الترقية الكاملة للإصدار 33 مع الاحتفاظ الشامل بكافة وظائف السحابة والمزامنة.
  * ============================================================================
  */
 
 // ============================================================================
-// 🔒 القسم الأول: firebase-config.js (الموتور الرسمي والنهائي V29.0)
+// 🔒 القسم الأول: التهيئة السحابية (V33.0)
 // ============================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -48,10 +48,6 @@ let app, db, auth;
 try {
     app = initializeApp(firebaseConfig);
     
-    /**
-     * 🛠️ تثبيت المحرك بصيغته النهائية (V29.0)
-     * الإجراء الهندسي: تفعيل persistentLocalCache لدعم العمل دون إنترنت بصفة سيادية.
-     */
     db = initializeFirestore(app, {
         localCache: persistentLocalCache({
             tabManager: persistentMultipleTabManager()
@@ -60,12 +56,12 @@ try {
     
     auth = getAuth(app);
     
-    // تثبيت المراجع في النطاق العام (Global Scope)
+    // تثبيت المراجع في النطاق العام
     if (typeof window !== 'undefined') {
         window.firebaseApp = app;
         window.db = db;
         window.auth = auth;
-        window.BoseSweets_Engine_Version = "V32.0";
+        window.BoseSweets_Engine_Version = "V33.0";
     }
 } catch (error) {
     console.error("🔒 قرار إداري أمني: فشل تهيئة السحابة، يرجى مراجعة الخوادم فوراً.", error);
@@ -73,9 +69,10 @@ try {
 
 export { app, db, auth };
 
-/**
- * 🛡️ محرك المزامنة العكسية (ReverseSyncEngine - V29.0)
- */
+// ============================================================================
+// 🛡️ القسم الثاني: محركات المزامنة والطوارئ (ReverseSync & CloudQueue)
+// ============================================================================
+
 export const ReverseSyncEngine = {
     triggerOrderWebhook(orderData) {
         try {
@@ -85,7 +82,7 @@ export const ReverseSyncEngine = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_Sovereign_V32',
+                        source: 'BoseSweets_Engine_Sovereign_V33',
                         engine_status: 'Active_Sovereign',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
@@ -106,7 +103,7 @@ export const ReverseSyncEngine = {
         try {
             if (db) {
                 const syncDocRef = doc(db, 'system', 'syncFlag');
-                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V32.0', forceRefresh: true }, { merge: true });
+                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V33.0', forceRefresh: true }, { merge: true });
             }
         } catch (error) {}
     }
@@ -220,19 +217,15 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🧠 القسم الثاني: core-engine.js (الذاكرة المركزية والعقل المدبر V32.0)
+// 🧠 القسم الثالث: الذاكرة المركزية والعقل المدبر 
 // ============================================================================
 
 const BOSE_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg";
 const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1";
 
-/**
- * 🛠️ وظيفة معالجة الصور السيادية (Sovereign Image Processor)
- * تضمن استخدام معرف السحابة الموحد وتحويل المسارات النسبية إلى روابط كاملة.
- */
 export const processBoseImage = (imgPath) => {
     if (!imgPath) return BOSE_LOGO_FALLBACK;
-    if (imgPath.startsWith('http')) return imgPath;
+    if (imgPath.startsWith('http') || imgPath.startsWith('data:')) return imgPath;
     const cleanPath = imgPath.replace(/^\//, '');
     return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${cleanPath}`;
 };
@@ -252,6 +245,7 @@ const boseConfig = {
 export const BoseState = {
     siteSettings: {}, shippingZones: [], catalog: [], galleryData: [], catMenu: [], activeCat: 'الرئيسية', isAppReady: false,         
     cart: [], currentShippingFee: 0, appliedPromo: null,
+    catalogMap: new Map(),
     securityLayer: {
         validateCartPrices: function(cartArray) {
             if (!Array.isArray(cartArray) || BoseState.catalogMap.size === 0) return cartArray;
@@ -267,7 +261,7 @@ export const BoseState = {
         setDeliveryMethod(method) { const mapping = { 'pickup': 'الاستلام من المقر', 'delivery': 'الشحن للمنزل' }; this.deliveryMethod = mapping[method] || method; }
     },
     cakeState: { flavor: 'فانيليا', shape: 'دائري', persons: 4, printingOption: 'بدون', notes: '', refImage: null, allergies: '', hasCard: false, cardText: '', occasionTheme: '', designStyle: 'تصميم محدد', currentCalculatedPrice: 580 },
-    currentBuilderStep: 1, catalogMap: new Map()
+    currentBuilderStep: 1
 };
 
 export function syncCatalogMap() {
@@ -304,50 +298,73 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🛒 القسم الثالث: cart-system.js (محرك السلة السيادي V32.0)
+// 🛒 القسم الرابع: محرك السلة السيادي (Cart System)
 // ============================================================================
 
-const BUSINESS_WHATSAPP = "201097238441";
 export const cartSystem = {
     getAdjustedPrice: function(basePrice) { return Math.round(parseFloat(basePrice)); },
     getCart: function() {
-        if (BoseState.cart && BoseState.cart.length > 0) return BoseState.cart;
         const localCart = localStorage.getItem('BoseSweets_Cart') || localStorage.getItem('bose_cart_items');
-        if (localCart) { const parsed = JSON.parse(localCart); BoseState.cart = parsed; return parsed; }
-        return [];
+        if (localCart) { 
+            const parsed = JSON.parse(localCart); 
+            BoseState.cart = parsed; 
+            return parsed; 
+        }
+        return BoseState.cart || [];
     },
     saveCartToStorage: function() { 
         saveToLocalMemory('BoseSweets_Cart', BoseState.cart);
         this.updateCartDisplay();
+        if(typeof window !== 'undefined') window.dispatchEvent(new Event('BoseSweets_Cart_Updated'));
     },
-    clearCartStorage: function() { BoseState.cart.length = 0; this.saveCartToStorage(); this.syncCartUI(); },
-    calculateCartTotal: function(deliveryMode = 'pickup') {
+    clearCartStorage: function() { 
+        BoseState.cart = []; 
+        this.saveCartToStorage(); 
+        if(typeof this.syncCartUI === 'function') this.syncCartUI(); 
+    },
+    calculateCartTotal: function(deliveryMode = 'الاستلام من المقر') {
+        this.getCart();
         if (BoseState.securityLayer?.validateCartPrices) BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
         let subtotal = 0;
+        
         BoseState.cart.forEach(item => {
             const product = BoseState.catalogMap.get(String(item.id)) || BoseState.catalog.find(p => String(p.id) === String(item.id));
             let finalPrice = this.getAdjustedPrice(product ? product.price : item.price);
-            let addonsPrice = (item.isCustomCake && item.printing?.includes('أكل')) ? 60 : (item.isCustomCake && item.printing?.includes('غير قابلة') ? 20 : 0);
-            subtotal += ((finalPrice + addonsPrice) * item.quantity);
+            let qty = parseInt(item.quantity || item.qty) || 1;
+            let addonsPrice = 0;
+            if (item.isCustomCake || item.isCustom) {
+                if (item.printing?.includes('أكل') || item.details?.printType === 'edible') addonsPrice = 60;
+                else if (item.printing?.includes('غير قابلة') || item.details?.printType === 'non_edible') addonsPrice = 20;
+            }
+            subtotal += ((finalPrice + addonsPrice) * qty);
         });
+
         let shippingFee = 0;
-        const isPickup = deliveryMode === 'pickup' || deliveryMode === 'الاستلام من المقر';
+        const isPickup = deliveryMode === 'pickup' || deliveryMode === 'الاستلام من المقر' || deliveryMode === 'استلام';
         if (!isPickup) {
             const zone = BoseState.shippingZones.find(z => z.id === deliveryMode || z.name === deliveryMode);
             shippingFee = zone ? parseFloat(zone.fee) : (deliveryMode.includes('الفرافرة') ? 25 : (deliveryMode.includes('الكفاح') ? 10 : 20));
         }
+        
         return { subtotal, shippingFee, total: subtotal + shippingFee };
     },
     updateCartDisplay: function() {
-        const totalItems = BoseState.cart.reduce((sum, item) => sum + item.quantity, 0);
-        // توحيد المعرفات السيادية لعداد السلة (cart-count-badge)
-        ['cart-count-badge', 'mobile-cart-badge'].forEach(id => {
-            const el = document.getElementById(id); 
-            if (el) { 
-                el.innerText = totalItems; 
-                el.style.display = totalItems > 0 ? 'flex' : 'none'; 
-            }
-        });
+        this.getCart();
+        const totalItems = BoseState.cart.reduce((sum, item) => sum + (item.quantity || item.qty || 1), 0);
+        
+        if (typeof document !== 'undefined') {
+            const badges = document.querySelectorAll('#cart-count-badge, #mobile-cart-badge, .cart-badge-global');
+            badges.forEach(el => {
+                el.innerText = totalItems;
+                if(totalItems > 0) {
+                    el.classList.remove('hidden');
+                    el.style.display = 'flex';
+                } else {
+                    el.classList.add('hidden');
+                    el.style.display = 'none';
+                }
+            });
+        }
     },
     syncCartUI: function() {
         const cartList = document.getElementById('cart-items-list');
@@ -361,15 +378,17 @@ export const cartSystem = {
         let html = '';
         BoseState.cart.forEach((item, index) => {
             let finalPrice = this.getAdjustedPrice(item.price);
-            if (item.isCustomCake) finalPrice += (item.printing?.includes('أكل') ? 60 : (item.printing?.includes('غير قابلة') ? 20 : 0));
-            // استخدام المعالج السيادي للصور لضمان المسار الصحيح بالسحابة
+            let qty = parseInt(item.quantity || item.qty) || 1;
+            if (item.isCustomCake || item.isCustom) {
+                finalPrice += (item.printing?.includes('أكل') || item.details?.printType === 'edible') ? 60 : ((item.printing?.includes('غير قابلة') || item.details?.printType === 'non_edible') ? 20 : 0);
+            }
             const imgUrl = processBoseImage(item.image);
             html += `<div class="cart-item bg-white p-4 rounded-2xl border mb-4 flex gap-4 items-center" style="border-color: ${boseConfig.branding.colors.pink}20;">
                         <img src="${imgUrl}" class="w-20 h-20 rounded-xl object-cover" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
                         <div class="flex-1 text-right"><h4 class="font-black text-sm">${item.name}</h4><div class="font-black mt-2" style="color: ${boseConfig.branding.colors.pink};">${finalPrice} ج.م</div></div>
                         <div class="flex flex-col items-center gap-2">
                             <button onclick="window.cartSystem.modQ(${index}, 1)" class="w-8 h-8 rounded-full border text-black bg-white">+</button>
-                            <span class="font-black text-sm">${item.quantity}</span>
+                            <span class="font-black text-sm">${qty}</span>
                             <button onclick="window.cartSystem.modQ(${index}, -1)" class="w-8 h-8 rounded-full border text-black bg-white">-</button>
                         </div>
                     </div>`;
@@ -380,11 +399,19 @@ export const cartSystem = {
         if(document.getElementById('summary-total')) document.getElementById('summary-total').innerText = `${totals.total} ج.م`;
     },
     modQ: function(index, delta) {
+        this.getCart();
         if (BoseState.cart[index]) {
-            BoseState.cart[index].quantity += delta;
-            if (BoseState.cart[index].quantity <= 0) BoseState.cart.splice(index, 1);
-            else if (BoseState.cart[index].quantity > 50) BoseState.cart[index].quantity = 50;
-            this.saveCartToStorage(); this.syncCartUI();
+            let qty = BoseState.cart[index].quantity || BoseState.cart[index].qty || 1;
+            qty += delta;
+            if (qty <= 0) {
+                BoseState.cart.splice(index, 1);
+            } else {
+                if (qty > 50) qty = 50;
+                BoseState.cart[index].quantity = qty;
+                BoseState.cart[index].qty = qty; 
+            }
+            this.saveCartToStorage(); 
+            this.syncCartUI();
         }
     },
     addWithQtyContext: function(btn, productId) {
@@ -392,9 +419,13 @@ export const cartSystem = {
         const qty = parseInt(container.querySelector('.temp-qty-display')?.innerText) || 1;
         const product = BoseState.catalogMap.get(String(productId));
         if (!product) return;
-        const existing = BoseState.cart.find(i => String(i.id) === String(productId) && !i.isCustomCake);
-        if (existing) existing.quantity += qty;
-        else BoseState.cart.push({ id: product.id, name: product.name, price: product.price, image: product.img || product.image, quantity: qty, isCustomCake: false });
+        const existing = BoseState.cart.find(i => String(i.id) === String(productId) && !i.isCustomCake && !i.isCustom);
+        if (existing) {
+            existing.quantity = (existing.quantity || existing.qty || 1) + qty;
+            existing.qty = existing.quantity;
+        } else {
+            BoseState.cart.push({ id: product.id, name: product.name, price: product.price, image: product.img || product.image, quantity: qty, qty: qty, isCustomCake: false, isCustom: false });
+        }
         this.saveCartToStorage();
         if(typeof window.showSystemToast === 'function') window.showSystemToast(`تمت إضافة [${product.name}] لطلب سيادتكم.`, 'success');
     }
@@ -403,10 +434,12 @@ export const cartSystem = {
 if (typeof window !== 'undefined') {
     window.cartSystem = cartSystem;
     window.addEventListener('BoseSweets_Order_Secured', () => cartSystem.clearCartStorage());
+    document.addEventListener('DOMContentLoaded', () => cartSystem.updateCartDisplay());
+    window.addEventListener('BoseSweets_Cart_Updated', () => cartSystem.updateCartDisplay());
 }
 
 // ============================================================================
-// 🔗 القسم الرابع: data-bridge.js (جسر البيانات السيادي V32.0)
+// 🔗 القسم الخامس: جسر البيانات السيادي (Data Bridge)
 // ============================================================================
 
 export const defaultSettingsFallback = {
@@ -428,13 +461,8 @@ export async function fetchShippingZones() {
     } catch (e) { BoseState.shippingZones = getFromLocalMemory('bosesweets_shipping') || []; }
 }
 
-/**
- * 🛠️ بروتوكول جلب البيانات المطور (Advanced Data Fetching)
- * يسحب المنتجات بمجرد التأكد من حالة النشاط، مع معالجة مرنة للحقول المفقودة.
- */
 export async function fetchProductsCatalog() {
     try {
-        // تم إزالة شرط (isActive) لسحب الكتالوج بالكامل
         const q = query(collection(db, 'catalog'));
         const snapshot = await getDocs(q);
         
@@ -442,10 +470,11 @@ export async function fetchProductsCatalog() {
             const raw = d.data();
             return {
                 id: d.id,
-                name: raw.name || "صنف بدون مسمى",
+                name: raw.name || "صنف فاخر",
                 price: parseFloat(raw.price) || 0,
                 category: raw.category || "عام",
                 img: raw.img || raw.image || "",
+                description: raw.description || raw.desc || "",
                 inStock: raw.inStock !== false,
                 ...raw 
             };
@@ -454,12 +483,14 @@ export async function fetchProductsCatalog() {
         BoseState.catalog = products; 
         syncCatalogMap(); 
         saveToLocalMemory('bosesweets_catalog', products);
+        if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('catalogDataReady', { detail: products }));
         return products;
 
     } catch (e) { 
-        console.error("خطأ في جلب البيانات:", e);
+        console.error("اعتماد الذاكرة المحلية بسبب انقطاع الاتصال:", e);
         BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || []; 
         syncCatalogMap(); 
+        if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('catalogDataReady', { detail: BoseState.catalog }));
         return BoseState.catalog; 
     }
 }
@@ -487,12 +518,35 @@ export function listenToSovereignUpdates() {
 if (typeof window !== 'undefined') {
     window.initializeDataBridge = initializeDataBridge; window.listenToSovereignUpdates = listenToSovereignUpdates;
     const startBridge = () => { if (!window.location.pathname.includes('admin')) { initializeDataBridge(); listenToSovereignUpdates(); } };
-    if (document.readyState === 'complete') startBridge(); else document.addEventListener('DOMContentLoaded', startBridge);
+    if (document.readyState === 'complete') {
+        startBridge();
+        fetchProductsCatalog();
+    } else {
+        document.addEventListener('DOMContentLoaded', () => { startBridge(); fetchProductsCatalog(); });
+    }
 }
 
 // ============================================================================
-// 🎨 القسم الخامس: ui-logic.js (المحرك البصري السيادي V32.0)
+// 🎨 القسم السادس: واجهة المستخدم والتحكم البصري (UI Logic)
 // ============================================================================
+
+window.toggleSidebar = function() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (!sidebar || !overlay) return;
+    
+    if (sidebar.classList.contains('translate-x-full')) {
+        sidebar.classList.remove('translate-x-full');
+        overlay.classList.remove('hidden');
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+        document.body.style.overflow = 'hidden'; 
+    } else {
+        sidebar.classList.add('translate-x-full');
+        overlay.classList.add('opacity-0');
+        setTimeout(() => overlay.classList.add('hidden'), 300); 
+        document.body.style.overflow = '';
+    }
+};
 
 export const showInfo = function(type) {
     let title = "", content = "";
@@ -514,7 +568,6 @@ export function renderProductCardsUI(products, containerId) {
     if (!container) return;
     container.innerHTML = products.map(p => {
         const isOut = p.inStock === false;
-        // استخدام المعالج السيادي الموحد لضمان تحميل الصورة من dyx4w0dr1
         const img = processBoseImage(p.img || p.image);
         return `<div class="royal-card flex flex-col p-4 bg-white rounded-2xl shadow-sm">
             <img src="${img}" class="w-full aspect-square object-cover rounded-xl ${isOut ? 'grayscale' : ''}" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
@@ -538,7 +591,6 @@ export function distributeProductsToUI(products = BoseState.catalog) {
     });
 }
 
-// دالة تحديث الكمية المؤقتة قبل الإضافة للسلة
 window.updateTempQtyContext = function(btn, delta) {
     const display = btn.parentElement.querySelector('.temp-qty-display');
     if (display) {
@@ -554,4 +606,4 @@ if (typeof window !== 'undefined') {
     window.showInfo = showInfo;
 }
 
-console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد إلى الإصدار السيادي (V32.0) بنجاح.");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد إلى الإصدار السيادي (V33.0) بنجاح والمزامنة التامة مفعلة.");

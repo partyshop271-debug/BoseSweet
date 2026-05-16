@@ -2,571 +2,514 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إتمام الطلب | حلويات بوسي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>أكد طلبك | حلويات بوسي</title>
+    <meta name="description" content="إتمام الطلب من حلويات بوسي. جودة وإتقان في كل تفصيلة.">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        brand: { 
+                            pink: '#ff91a4', 
+                            pinkLight: '#fffafb', 
+                            brown: '#3d241c', 
+                            white: '#ffffff' 
+                        } 
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    }
+                } 
+            } 
+        }
+    </script>
     
     <style>
-        /* تنسيقات خاصة بصفحة إتمام الطلب - معتمدة بالهوية البصرية الرسمية لبراند حلويات بوسي */
-        .checkout-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: var(--surface-light, #ffffff);
-            border-radius: var(--border-radius-card, 16px);
-            border: 1px solid rgba(255, 145, 164, 0.2);
-            padding: 40px;
-            box-shadow: var(--shadow-soft, 0 4px 20px rgba(0,0,0,0.05));
-        }
+        /* 🛡️ درع التحصين البصري - منع تجاوز وزن الخط 700 */
+        body { background-color: #fffafb; color: #3d241c; -webkit-tap-highlight-color: transparent; }
+        * { font-family: 'Cairo', sans-serif; }
+        .font-bold, h1, h2, h3, h4, .btn-solid, .ticker-item, .double-btn-inner { font-weight: 700 !important; }
+        .font-black, .font-extrabold { font-weight: 700 !important; } 
 
-        .form-section {
-            margin-bottom: 40px;
-            padding-bottom: 30px;
-            border-bottom: 1px solid rgba(255, 145, 164, 0.1);
+        /* حسم عطل القائمة الجانبية (توحيد سيادي نقي بدون بني) */
+        .sidebar {
+            position: fixed !important; top: 0 !important; right: -100% !important; 
+            width: 320px !important; max-width: 85% !important; height: 100% !important;
+            z-index: 9999 !important; transition: right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+            background: #ffffff !important; box-shadow: -15px 0 40px rgba(255, 145, 164, 0.15);
+            display: flex; flex-direction: column; border-left: 2px solid rgba(255, 145, 164, 0.1);
         }
+        .sidebar.active { right: 0 !important; }
+        .sidebar-overlay {
+            position: fixed !important; inset: 0 !important; background: rgba(61, 36, 28, 0.5) !important;
+            backdrop-filter: blur(5px) !important; z-index: 9998 !important; display: none; opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .sidebar-overlay.active { display: block !important; opacity: 1 !important; }
 
-        .form-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
+        /* نموذج إتمام الطلب (Sovereign Form) */
+        .form-input {
+            width: 100%; padding: 18px 20px;
+            border: 2px solid rgba(255, 145, 164, 0.2); border-radius: 20px;
+            font-family: inherit; font-weight: 700; color: #3d241c;
+            background: #fffafb; transition: all 0.3s ease; outline: none;
         }
+        .form-input:focus { border-color: #ff91a4; background: #ffffff; box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.1); }
+        .form-input::placeholder { color: rgba(61, 36, 28, 0.4); }
 
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.4rem;
-            color: var(--primary-pink, #ff91a4);
-            margin-bottom: 25px;
-            font-weight: 900;
+        .delivery-btn {
+            border: 2px solid rgba(255, 145, 164, 0.2); border-radius: 20px;
+            padding: 20px; text-align: center; cursor: pointer;
+            transition: all 0.3s ease; background: #ffffff; font-weight: 700;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
         }
+        .delivery-btn.selected { border-color: #ff91a4; background: #ffe6ea; }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            font-weight: 900;
-            margin-bottom: 10px;
-            color: var(--text-main, #333333);
-        }
-
-        .form-input, .form-select, .form-textarea {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid rgba(255, 145, 164, 0.2);
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 1rem;
-            color: var(--text-main, #333333);
-            background: var(--bg-white, #ffffff);
-            transition: var(--transition-smooth, all 0.3s ease);
-            font-weight: 700;
-        }
-
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            outline: none;
-            border-color: var(--primary-pink, #ff91a4);
-            box-shadow: 0 0 0 3px rgba(255, 145, 164, 0.1);
-        }
-
-        .delivery-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        /* تصميم أزرار اختيار طريقة الاستلام */
-        .delivery-card {
-            border: 2px solid rgba(255, 145, 164, 0.2);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition-smooth, all 0.3s ease);
-            background: var(--bg-white, #ffffff);
-            position: relative;
-        }
-
-        .delivery-card input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .delivery-card.selected {
-            border-color: var(--primary-pink, #ff91a4);
-            background: rgba(255, 145, 164, 0.05);
-        }
-
-        .delivery-card i {
-            width: 32px;
-            height: 32px;
-            color: var(--text-muted, #888888);
-            margin-bottom: 10px;
-            transition: var(--transition-smooth, all 0.3s ease);
-        }
-
-        .delivery-card.selected i {
-            color: var(--primary-pink, #ff91a4);
-        }
-
-        .delivery-card-title {
-            font-weight: 900;
-            font-size: 1.1rem;
-            color: var(--text-main, #333333);
-        }
-
-        .branch-info {
-            background: rgba(255, 145, 164, 0.05);
-            border: 1px dashed var(--primary-pink, #ff91a4);
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 20px;
-            display: none; /* تظهر فقط عند اختيار الاستلام من الفرع */
-        }
-
-        .whatsapp-btn {
-            background-color: #25D366; /* لون واتساب الرسمي */
-            border-color: #25D366;
-            width: 100%;
-            padding: 18px;
-            font-size: 1.2rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            color: #fff;
-            border-radius: 12px;
-            border: 1px solid #25D366;
-            transition: all 0.3s ease;
-            font-family: inherit;
-            font-weight: 900;
-        }
-
-        .whatsapp-btn:hover:not(:disabled) {
-            background-color: var(--bg-white, #ffffff);
-            color: #25D366;
-            border-color: #25D366;
-        }
-
-        .whatsapp-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            background-color: #ccc;
-            border-color: #ccc;
-        }
-
-        .map-container {
-            margin-top: 15px;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255, 145, 164, 0.2);
-            height: 250px;
-            position: relative;
-        }
-
-        .interactive-map-btn {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            background: var(--primary-pink, #ff91a4);
-            color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 900;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            transition: transform 0.2s ease;
-            border: 2px solid #ffffff;
-        }
-        
-        .interactive-map-btn:hover {
-            transform: scale(1.05);
-            color: #ffffff;
-        }
-
-        @media (max-width: 600px) {
-            .delivery-options { grid-template-columns: 1fr; }
-            .checkout-container { padding: 20px; }
-        }
+        .spin-animation { animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(-360deg); } }
+        .animate-fade { animation: fade 0.5s ease forwards; }
+        @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body>
+<body class="antialiased selection:bg-brand-pink selection:text-white">
 
-    <header class="main-header">
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
-            <button class="btn-icon" onclick="window.history.back()"><i data-lucide="arrow-right"></i></button>
-            <h2 style="margin: 0; color: var(--primary-pink, #ff91a4); font-size: 1.6rem; text-align: center; font-weight: 900;">إتمام الطلب</h2>
-            <div style="width: 44px;"></div>
+    <!-- شريط الإشعارات -->
+    <div class="ticker-wrap w-full overflow-hidden bg-brand-pink text-white py-2 shadow-sm">
+        <div class="ticker-track whitespace-nowrap inline-flex gap-12" style="animation: ticker 25s linear infinite;">
+            <div class="font-bold text-sm tracking-wide">أصل الطعم المظبوط والجودة العالية تلاقيها عندنا</div>
+            <div class="font-bold text-sm tracking-wide">توصيل آمن وسريع يضمن لك جودة المنتج</div>
+            <div class="font-bold text-sm tracking-wide">كل طلب بيتجهز مخصوص عشانك بكل إتقان</div>
+        </div>
+    </div>
+
+    <!-- الهيدر الرسمي الموحد -->
+    <header class="main-header border-b border-brand-pink/10 sticky top-0 z-[100] bg-white/95 backdrop-blur-md shadow-sm">
+        <div class="container mx-auto px-4 flex justify-between items-center py-3">
+            <div class="w-1/4 flex justify-start">
+                <button onclick="window.history.back()" class="p-2 rounded-full border border-brand-pink/20 hover:bg-brand-pinkLight text-brand-brown transition-all cursor-pointer">
+                    <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="w-2/4 flex justify-center text-center">
+                <a href="index.html" class="flex items-center justify-center gap-2 group">
+                    <i data-lucide="gem" class="w-6 h-6 text-brand-pink group-hover:scale-110 transition-transform"></i>
+                    <h1 class="text-xl font-bold text-brand-brown tracking-tighter uppercase">حلويات بوسي</h1>
+                </a>
+            </div>
+            <div class="w-1/4 flex justify-end gap-3">
+                <button onclick="window.toggleSidebar()" class="p-2 rounded-full border border-brand-pink/20 hover:bg-brand-pinkLight text-brand-brown transition-all cursor-pointer">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
         </div>
     </header>
 
-    <main class="container mt-section mb-section">
+    <!-- القائمة الجانبية السيادية -->
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
+    <aside id="sidebar" class="sidebar">
+        <div class="p-6 flex justify-between items-center border-b-2 border-brand-pink/10 bg-brand-pinkLight/50">
+            <span class="text-xl font-bold text-brand-pink flex items-center gap-2"><i data-lucide="gem" class="w-5 h-5"></i> حلويات بوسي</span>
+            <button onclick="window.toggleSidebar()" class="text-brand-brown bg-white border border-brand-pink/20 rounded-full p-2 hover:bg-brand-pink hover:text-white transition-all cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
+        </div>
+        <nav id="sidebar-nav-container" class="flex-grow overflow-y-auto p-6 flex flex-col gap-3 text-right">
+            <a href="index.html" class="p-3 rounded-xl border border-brand-pink/10 bg-white font-bold text-brand-brown hover:bg-brand-pinkLight flex items-center gap-3 transition-colors"><i data-lucide="home" class="w-5 h-5 text-brand-pink"></i> الرئيسية</a>
+            <a href="menu.html" class="p-3 rounded-xl border border-brand-pink/10 bg-white font-bold text-brand-brown hover:bg-brand-pinkLight flex items-center gap-3 transition-colors"><i data-lucide="layout-grid" class="w-5 h-5 text-brand-pink"></i> تصفح المنيو</a>
+            <a href="cart.html" class="p-3 rounded-xl border border-brand-pink/10 bg-white font-bold text-brand-brown hover:bg-brand-pinkLight flex items-center gap-3 transition-colors"><i data-lucide="shopping-basket" class="w-5 h-5 text-brand-pink"></i> راجع طلبك</a>
+        </nav>
+    </aside>
+
+    <main class="container mx-auto px-4 py-12 md:py-20 max-w-4xl">
         
-        <div class="checkout-container">
-            <form id="checkout-form">
+        <div class="text-center mb-16 px-4">
+            <h2 class="text-3xl md:text-5xl font-bold text-brand-brown mb-3 tracking-tighter uppercase">أكد طلبك</h2>
+            <p class="font-bold text-brand-brown/60 text-base">كمل بياناتك عشان نوصلك في أسرع وقت</p>
+        </div>
+
+        <form id="checkout-form" class="bose-double-wrap animate-fade shadow-xl">
+            <div class="bose-double-inner p-6 md:p-12 bg-white">
                 
-                <div class="form-section">
-                    <h3 class="section-title"><i data-lucide="truck"></i> طريقة الاستلام</h3>
-                    <div class="delivery-options">
-                        <label class="delivery-card selected" id="card-delivery" onclick="window.toggleDeliveryMode('توصيل')">
-                            <input type="radio" name="deliveryMode" value="توصيل" checked>
-                            <i data-lucide="map-pin"></i>
-                            <div class="delivery-card-title">توصيل للمنزل</div>
+                <!-- ١. طريقة الاستلام -->
+                <div class="mb-12 border-b-2 border-brand-pink/10 pb-12">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-bold text-xl">١</div>
+                        <h3 class="font-bold text-2xl text-brand-brown tracking-tighter">هتستلم إزاي؟</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="delivery-btn selected" id="card-delivery" onclick="window.CheckoutUI.setDeliveryMode('توصيل')">
+                            <i data-lucide="map-pin" class="w-8 h-8 mx-auto text-brand-pink"></i>
+                            <span>توصيل للبيت</span>
                         </label>
-                        <label class="delivery-card" id="card-pickup" onclick="window.toggleDeliveryMode('استلام')">
-                            <input type="radio" name="deliveryMode" value="استلام">
-                            <i data-lucide="store"></i>
-                            <div class="delivery-card-title">استلام من المقر</div>
+                        <label class="delivery-btn" id="card-pickup" onclick="window.CheckoutUI.setDeliveryMode('استلام')">
+                            <i data-lucide="store" class="w-8 h-8 mx-auto text-brand-pink"></i>
+                            <span>استلام من المقر</span>
                         </label>
                     </div>
 
-                    <div class="branch-info" id="branch-details">
-                        <h4 style="color: var(--primary-pink, #ff91a4); margin-bottom: 10px; font-weight: 900;">العنوان المعتمد للمقر:</h4>
-                        <p style="font-weight: 900; color: var(--text-main, #333333); margin-bottom: 5px;">الكفاح، شارع الوحدة المحلية</p>
-                        <p style="font-size: 0.95rem; color: var(--text-muted, #888888); font-weight: 700;">بجوار صيدلية د. أحمد مجدي وعيادة د. علي</p>
-                        
-                        <div class="map-container">
-                            <iframe src="https://maps.google.com/maps?q=الكفاح،+الفرافرة،+الوادي+الجديد&t=&z=16&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                            <a href="https://www.google.com/maps/search/?api=1&query=الكفاح،+الفرافرة،+الوادي+الجديد" target="_blank" class="interactive-map-btn">
-                                <i data-lucide="navigation"></i> تفعيل مسار الوصول المباشر
-                            </a>
+                    <!-- تفاصيل الفرع (تظهر في حالة الاستلام فقط) -->
+                    <div id="branch-details" class="hidden mt-6 bg-brand-pinkLight/30 border-2 border-dashed border-brand-pink/30 rounded-3xl p-8 text-center animate-fade">
+                        <p class="font-bold text-brand-brown text-lg mb-2">مقر حلويات بوسي المعتمد:</p>
+                        <p class="font-bold text-brand-pink text-xl mb-2">الكفاح، شارع الوحدة المحلية</p>
+                        <p class="font-bold text-brand-brown/60 text-sm mb-6">بجوار صيدلية د. أحمد مجدي وعيادة د. علي</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=الكفاح،+الفرافرة،+الوادي+الجديد" target="_blank" class="inline-flex items-center gap-2 bg-white border-2 border-brand-pink text-brand-pink px-8 py-3 rounded-full font-bold hover:bg-brand-pink hover:text-white transition-colors shadow-sm">
+                            <i data-lucide="navigation" class="w-5 h-5"></i> افتح الخريطة
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ٢. بيانات العميل -->
+                <div class="mb-12 border-b-2 border-brand-pink/10 pb-12">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-bold text-xl">٢</div>
+                        <h3 class="font-bold text-2xl text-brand-brown tracking-tighter">بياناتك</h3>
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block font-bold text-brand-brown mb-3">الاسم بالكامل <span class="text-brand-pink">*</span></label>
+                            <input type="text" id="customer-name" class="form-input" placeholder="اكتب اسمك هنا..." required>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block font-bold text-brand-brown mb-3">رقم الواتساب <span class="text-brand-pink">*</span></label>
+                                <input type="tel" id="whatsapp-phone" class="form-input text-left" dir="ltr" placeholder="01xxxxxxxxx" required>
+                            </div>
+                            <div id="alt-phone-container">
+                                <label class="block font-bold text-brand-brown mb-3">رقم موبايل تاني للتوصيل <span class="text-brand-pink">*</span></label>
+                                <input type="tel" id="alt-phone" class="form-input text-left" dir="ltr" placeholder="01xxxxxxxxx" required>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-section">
-                    <h3 class="section-title"><i data-lucide="user"></i> بيانات سيادتكم</h3>
-                    <div class="form-group">
-                        <label class="form-label">الاسم الكريم لحضرتك <span style="color:red;">*</span></label>
-                        <input type="text" id="customer-name" class="form-input" placeholder="يرجى كتابة الاسم بوضوح..." required>
+                <!-- ٣. عنوان التوصيل -->
+                <div id="address-section" class="mb-12 border-b-2 border-brand-pink/10 pb-12 animate-fade">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-bold text-xl">٣</div>
+                        <h3 class="font-bold text-2xl text-brand-brown tracking-tighter">هنوصلك فين؟</h3>
                     </div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                        <div class="form-group">
-                            <label class="form-label">رقم الواتساب الخاص بحضرتك <span style="color:red;">*</span></label>
-                            <input type="tel" id="whatsapp-phone" class="form-input" dir="ltr" placeholder="01xxxxxxxxx" required>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block font-bold text-brand-brown mb-3">المنطقة <span class="text-brand-pink">*</span></label>
+                            <select id="delivery-zone" class="form-input bg-white cursor-pointer" required onchange="window.CheckoutUI.updateTotals()">
+                                <option value="" disabled selected>اختار منطقتك...</option>
+                                <option value="الكفاح" data-fee="10">قرية الكفاح (+١٠ ج.م توصيل)</option>
+                                <option value="مدينة الفرافرة" data-fee="25">مدينة الفرافرة (+٢٥ ج.م توصيل)</option>
+                                <option value="القرى المجاورة للكفاح" data-fee="20">القرى المجاورة للكفاح (+٢٠ ج.م توصيل)</option>
+                                <option value="أبو منقار" data-fee="45">أبو منقار (+٤٥ ج.م توصيل)</option>
+                                <option value="النهضة" data-fee="30">قرية النهضة (+٣٠ ج.م توصيل)</option>
+                                <option value="أبو هريرة" data-fee="25">قرية أبو هريرة (+٢٥ ج.م توصيل)</option>
+                                <option value="عثمان بن عفان" data-fee="30">قرية عثمان بن عفان (+٣٠ ج.م توصيل)</option>
+                                <option value="أخرى" data-fee="50">مناطق تانية (رسوم تقريبية ٥٠ ج.م)</option>
+                            </select>
                         </div>
-                        <div class="form-group" id="alt-phone-group">
-                            <label class="form-label">رقم هاتف بديل للتواصل السريع <span style="color:red;">*</span></label>
-                            <input type="tel" id="alt-phone" class="form-input" dir="ltr" placeholder="01xxxxxxxxx" required>
+                        <div>
+                            <label class="block font-bold text-brand-brown mb-3">العنوان بالتفصيل <span class="text-brand-pink">*</span></label>
+                            <textarea id="detailed-address" class="form-input h-28 resize-none" placeholder="الشارع، رقم البيت، الدور..." required></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-bold text-brand-brown mb-3">أقرب مكان مشهور ليك <span class="text-brand-pink">*</span></label>
+                            <input type="text" id="nearest-landmark" class="form-input" placeholder="جنب مسجد، مدرسة، صيدلية..." required>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-section" id="address-section">
-                    <h3 class="section-title"><i data-lucide="map"></i> عنوان التوصيل</h3>
-                    <div class="form-group">
-                        <label class="form-label">المنطقة <span style="color:red;">*</span></label>
-                        <select class="form-select" id="delivery-zone">
-                            <option value="" disabled selected>يرجى اختيار النطاق الجغرافي لحضرتك...</option>
-                            <option value="الكفاح" data-fee="10">قرية الكفاح (10 ج.م)</option>
-                            <option value="مدينة الفرافرة" data-fee="25">مدينة الفرافرة (25 ج.م)</option>
-                            <option value="القرى المجاورة للكفاح" data-fee="20">القرى المجاورة للكفاح (20 ج.م)</option>
-                            <option value="أبو منقار" data-fee="45">أبو منقار (45 ج.م)</option>
-                            <option value="النهضة" data-fee="30">قرية النهضة (30 ج.م)</option>
-                            <option value="أبو هريرة" data-fee="25">قرية أبو هريرة (25 ج.م)</option>
-                            <option value="عثمان بن عفان" data-fee="30">قرية عثمان بن عفان (30 ج.م)</option>
-                            <option value="أخرى" data-fee="50">مناطق أخرى (سيتم التنسيق الإداري للتكلفة)</option>
-                        </select>
+                <!-- ٤. الميعاد والملخص -->
+                <div class="mb-4">
+                    <div class="flex items-center gap-3 mb-8">
+                        <div class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-bold text-xl">٤</div>
+                        <h3 class="font-bold text-2xl text-brand-brown tracking-tighter">ميعاد الاستلام</h3>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">العنوان التفصيلي <span style="color:red;">*</span></label>
-                        <textarea id="detailed-address" class="form-textarea" rows="2" placeholder="المحافظة، المركز، الشارع، رقم المنزل..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">أقرب معلم واضح لتسهيل الوصول <span style="color:red;">*</span></label>
-                        <input type="text" id="nearest-landmark" class="form-input" placeholder="بجوار مسجد، مدرسة، صيدلية، أو محل تجاري معروف..." required>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h3 class="section-title"><i data-lucide="calendar-clock"></i> تنسيق موعد التسليم</h3>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                        <div class="form-group">
-                            <label class="form-label">التاريخ المفضل لحضرتك <span style="color:red;">*</span></label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                        <div>
+                            <label class="block font-bold text-brand-brown mb-3">يوم الاستلام <span class="text-brand-pink">*</span></label>
                             <input type="date" id="order-date" class="form-input" required>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">الوقت المناسب للتسليم <span style="color:red;">*</span></label>
+                        <div>
+                            <label class="block font-bold text-brand-brown mb-3">الساعة <span class="text-brand-pink">*</span></label>
                             <input type="time" id="order-time" class="form-input" required>
                         </div>
                     </div>
+
+                    <!-- الفاتورة (الملخص المالي) -->
+                    <div class="bg-brand-pinkLight/50 p-8 rounded-[35px] border-2 border-brand-pink/20 mb-10">
+                        <div class="flex justify-between font-bold mb-4 text-brand-brown text-lg">
+                            <span>حساب المنتجات:</span>
+                            <span id="summary-subtotal">0 ج.م</span>
+                        </div>
+                        <div class="flex justify-between font-bold mb-6 text-brand-brown text-lg" id="shipping-fee-row">
+                            <span>التوصيل:</span>
+                            <span id="summary-shipping">0 ج.م</span>
+                        </div>
+                        <div class="flex justify-between items-center font-bold text-4xl text-brand-pink border-t-2 border-dashed border-brand-pink/30 pt-6 tracking-tighter">
+                            <span>الإجمالي:</span>
+                            <span id="summary-total">0 ج.م</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submit-order-btn" class="w-full bg-[#25D366] text-white py-6 rounded-full font-bold text-2xl shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3 cursor-pointer">
+                        أكد الطلب وابعت واتساب <i data-lucide="send" class="w-7 h-7"></i>
+                    </button>
+                    <p class="text-center font-bold text-brand-brown/50 text-sm mt-6">بمجرد الضغط هيتم تحويلك للواتساب الخاص بالإدارة لتأكيد طلبك.</p>
                 </div>
 
-                <div style="margin-top: 50px;">
-                    <p style="text-align: center; color: var(--text-muted, #888888); font-size: 0.95rem; margin-bottom: 15px; font-weight: 700;">
-                        تأكيد الطلب يخضع لمراجعة إدارة حلويات بوسي. سيتم تحويل سيادتكم لواتساب فور التأكيد المبدئي.
-                    </p>
-                    <button type="submit" class="whatsapp-btn" id="submit-order-btn">
-                        تأكيد وإرسال الطلب للإدارة المرجعية عبر واتساب <i data-lucide="send"></i>
-                    </button>
-                </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </main>
 
-    <footer class="main-footer" style="margin-top: 0;">
-        <div class="container" style="text-align: center; border-top: none; padding-top: 0;">
-            <p style="font-size: 0.9rem; color: #888; font-weight: 700;">إدارة حلويات بوسي تضمن لسيادتكم أعلى درجات الخصوصية والجودة الفائقة.</p>
+    <!-- الفوتر الرسمي המوحد -->
+    <footer class="bg-white pt-20 pb-10 border-t-4 border-brand-pink text-center relative overflow-hidden mt-10">
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="mb-10 inline-block p-5 rounded-full bg-brand-pinkLight text-brand-pink border border-brand-pink/20 shadow-md"><i data-lucide="gem" class="w-8 h-8"></i></div>
+            <p class="text-brand-brown/90 font-bold text-xl mb-10 max-w-xl mx-auto leading-relaxed px-4 text-balance">
+                طازجة من فرننا لمائدتك، بنعمل كل صنف بحب وإتقان. الالتزام بالجودة هو دايماً شعار حلويات بوسي.
+            </p>
+            <div class="mb-10 text-brand-brown">
+                <p class="font-bold text-2xl mb-2 tracking-widest font-sans" dir="ltr">+20 109 723 8441</p>
+                <p class="font-bold text-lg opacity-80">الكفاح، الفرافرة، الوادي الجديد</p>
+            </div>
+            <div class="border-t border-brand-pink/15 pt-8 mt-4">
+                <p class="font-bold text-sm md:text-base text-brand-brown opacity-60 tracking-tight">
+                    &copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.
+                </p>
+            </div>
         </div>
     </footer>
 
-    <script type="module" src="firebase-config.js"></script>
-    <script type="module" src="core-engine.js"></script>
-    <script type="module" src="data-bridge.js"></script>
-    <script type="module" src="cart-system.js"></script>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            
-            // تعيين التاريخ الأدنى للطلب إلى اليوم لتنظيم المواعيد بشكل منضبط
-            const dateInput = document.getElementById('order-date');
-            if (dateInput) {
-                const today = new Date().toISOString().split('T')[0];
-                dateInput.setAttribute('min', today);
+    <!-- ربط المحرك السيادي -->
+    <script type="module" src="unified-engine.js"></script>
+
+    <script type="module">
+        /**
+         * 👑 واجهة إتمام الطلب (Checkout Engine)
+         */
+
+        window.CheckoutUI = {
+            deliveryMode: 'توصيل',
+            cartTotal: 0,
+            shippingFee: 0,
+
+            init: function() {
+                const dateInput = document.getElementById('order-date');
+                if (dateInput) {
+                    const today = new Date().toISOString().split('T')[0];
+                    dateInput.setAttribute('min', today);
+                }
+                this.updateTotals();
+            },
+
+            setDeliveryMode: function(mode) {
+                this.deliveryMode = mode;
+                const cardDelivery = document.getElementById('card-delivery');
+                const cardPickup = document.getElementById('card-pickup');
+                const addressSection = document.getElementById('address-section');
+                const branchDetails = document.getElementById('branch-details');
+                const altPhoneContainer = document.getElementById('alt-phone-container');
+                const altPhoneInput = document.getElementById('alt-phone');
+                const zoneSelect = document.getElementById('delivery-zone');
+                const addressInput = document.getElementById('detailed-address');
+                const landmarkInput = document.getElementById('nearest-landmark');
+
+                if (mode === 'توصيل') {
+                    cardDelivery.classList.add('selected');
+                    cardPickup.classList.remove('selected');
+                    addressSection.classList.remove('hidden');
+                    branchDetails.classList.add('hidden');
+                    altPhoneContainer.classList.remove('hidden');
+                    
+                    altPhoneInput.setAttribute('required', 'true');
+                    zoneSelect.setAttribute('required', 'true');
+                    addressInput.setAttribute('required', 'true');
+                    landmarkInput.setAttribute('required', 'true');
+                } else {
+                    cardPickup.classList.add('selected');
+                    cardDelivery.classList.remove('selected');
+                    addressSection.classList.add('hidden');
+                    branchDetails.classList.remove('hidden');
+                    altPhoneContainer.classList.add('hidden');
+                    
+                    altPhoneInput.removeAttribute('required');
+                    zoneSelect.removeAttribute('required');
+                    addressInput.removeAttribute('required');
+                    landmarkInput.removeAttribute('required');
+                    
+                    zoneSelect.value = "";
+                }
+                this.updateTotals();
+            },
+
+            updateTotals: function() {
+                // سحب المشتريات من السلة لتجنب أي حسابات معقدة مكررة
+                const cart = JSON.parse(localStorage.getItem('BoseSweets_Cart')) || (window.BoseState ? window.BoseState.cart : []);
+                
+                this.cartTotal = 0;
+                cart.forEach(item => {
+                    const price = parseFloat(item.price) || 0;
+                    const qty = parseInt(item.quantity || item.qty) || 1;
+                    this.cartTotal += (price * qty);
+                });
+
+                this.shippingFee = 0;
+                if (this.deliveryMode === 'توصيل') {
+                    const zoneSelect = document.getElementById('delivery-zone');
+                    if (zoneSelect && zoneSelect.value) {
+                        this.shippingFee = parseFloat(zoneSelect.options[zoneSelect.selectedIndex].dataset.fee) || 0;
+                    }
+                }
+
+                document.getElementById('summary-subtotal').innerText = `${this.cartTotal} ج.م`;
+                
+                const shipRow = document.getElementById('shipping-fee-row');
+                const shipVal = document.getElementById('summary-shipping');
+                
+                if (this.deliveryMode === 'توصيل') {
+                    shipRow.classList.remove('hidden');
+                    shipVal.innerText = `${this.shippingFee} ج.م`;
+                } else {
+                    shipRow.classList.add('hidden');
+                }
+
+                document.getElementById('summary-total').innerText = `${this.cartTotal + this.shippingFee} ج.م`;
+            },
+
+            generateOrderId: function() {
+                const datePart = Date.now().toString(36).toUpperCase();
+                const randomPart = Math.random().toString(36).substring(2, 5).toUpperCase();
+                return `BS-${datePart}-${randomPart}`;
             }
-        });
+        };
 
-        // توسيع وتطوير دالة التبديل لتشمل كافة متطلبات التحقق الجديدة
-        window.toggleDeliveryMode = function(mode) {
-            const cardDelivery = document.getElementById('card-delivery');
-            const cardPickup = document.getElementById('card-pickup');
-            const addressSection = document.getElementById('address-section');
-            const branchDetails = document.getElementById('branch-details');
-            const altPhoneGroup = document.getElementById('alt-phone-group');
-            const altPhoneInput = document.getElementById('alt-phone');
-            const zoneSelect = document.getElementById('delivery-zone');
-            const addressInput = document.getElementById('detailed-address');
-            const landmarkInput = document.getElementById('nearest-landmark');
-
-            // تم تعديل الشرط ليتوافق مع نصوص الذاكرة المركزية باللغة العربية
-            if (mode === 'توصيل') {
-                cardDelivery.classList.add('selected');
-                cardPickup.classList.remove('selected');
-                addressSection.style.display = 'block';
-                branchDetails.style.display = 'none';
-                altPhoneGroup.style.display = 'block';
-                altPhoneInput.setAttribute('required', 'true');
-                zoneSelect.setAttribute('required', 'true');
-                addressInput.setAttribute('required', 'true');
-                if(landmarkInput) landmarkInput.setAttribute('required', 'true');
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (!sidebar || !overlay) return;
+            if (sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active'); overlay.classList.remove('active'); document.body.style.overflow = '';
             } else {
-                cardPickup.classList.add('selected');
-                cardDelivery.classList.remove('selected');
-                addressSection.style.display = 'none';
-                branchDetails.style.display = 'block';
-                altPhoneGroup.style.display = 'none';
-                altPhoneInput.removeAttribute('required');
-                zoneSelect.removeAttribute('required');
-                addressInput.removeAttribute('required');
-                if(landmarkInput) landmarkInput.removeAttribute('required');
-            }
-            
-            // التوافقية مع المحرك الكائني لبراند حلويات بوسي
-            if (window.cartSystem && typeof window.cartSystem.calculateCartTotal === 'function') {
-                window.cartSystem.calculateCartTotal();
-            } else if (typeof window.calculateCartTotal === 'function') {
-                window.calculateCartTotal();
+                sidebar.classList.add('active'); overlay.classList.add('active'); document.body.style.overflow = 'hidden';
             }
         };
 
-        // الدالة السيادية لتوليد أرقام الطلبات بشكل احترافي
-        window.generateSecureOrderId = function() {
-            const datePart = Date.now().toString(36).toUpperCase();
-            const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
-            return 'Bose-' + datePart + '-' + randomPart;
-        };
-
-        // هندسة متقدمة لوظيفة تأكيد الطلب والتوجيه اللحظي والحفظ السحابي السيادي
+        // هندسة إرسال الطلب (Submit Order)
         document.getElementById('checkout-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // التحقق من تفعيل معالجة الطلبات المركزية داخل cart-system لتجنب التكرار
-            if (typeof window.handleCheckoutSubmit === 'function' && e.isTrusted) {
-                 return;
-            }
-
             const submitBtn = document.getElementById('submit-order-btn');
             const originalBtnText = submitBtn.innerHTML;
             
             const whatsappPhone = document.getElementById('whatsapp-phone').value.trim();
             const altPhone = document.getElementById('alt-phone').value.trim();
-            const deliveryMode = document.querySelector('input[name="deliveryMode"]:checked').value;
             
-            // 🛡️ التعديل السيادي: تطبيق محرك التدقيق (Regex) لأرقام الموبايل المصرية
+            // 🛡️ التحصين الأمني لأرقام الهواتف
             const egyPhoneRegex = /^(010|011|012|015)\d{8}$/;
             
             if (!egyPhoneRegex.test(whatsappPhone)) {
-                alert("إدارة حلويات بوسي تعتذر لحضرتك، يرجى التأكد من إدخال رقم واتساب مصري صحيح (يبدأ بـ 010 أو 011 أو 012 أو 015 ومكون من 11 رقم).");
+                alert("رجاء كتابة رقم واتساب مصري صحيح (11 رقم بيبدأ بـ 010 أو 011 أو 012 أو 015).");
                 return;
             }
             
-            if (deliveryMode === 'توصيل' && altPhone && !egyPhoneRegex.test(altPhone)) {
-                alert("إدارة حلويات بوسي تعتذر لحضرتك، يرجى التأكد من إدخال رقم هاتف بديل مصري صحيح لضمان التواصل السريع.");
+            if (window.CheckoutUI.deliveryMode === 'توصيل' && altPhone && !egyPhoneRegex.test(altPhone)) {
+                alert("رجاء كتابة رقم هاتف بديل مصري صحيح لضمان التواصل السريع وقت التوصيل.");
                 return;
             }
 
-            submitBtn.innerHTML = '<i data-lucide="loader" class="spin-animation"></i> جاري تأمين الطلب وتوثيقه سحابياً...';
+            const cart = JSON.parse(localStorage.getItem('BoseSweets_Cart')) || (window.BoseState ? window.BoseState.cart : []);
+            if (!cart || cart.length === 0) {
+                alert("سلتك فاضية لسه! ضيف منتجات عشان تقدر تأكد الطلب.");
+                window.location.href = 'menu.html';
+                return;
+            }
+
+            submitBtn.innerHTML = '<i data-lucide="loader-2" class="spin-animation w-6 h-6"></i> جاري تأكيد الطلب...';
             submitBtn.disabled = true;
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
             try {
-                if (window.catalogReady) {
-                    await window.catalogReady;
-                }
-
-                let rawCart = JSON.parse(localStorage.getItem('BoseSweets_Cart')) || JSON.parse(localStorage.getItem('bose_cart_items')) || (window.BoseState ? window.BoseState.cart : []);
-                if (!rawCart || rawCart.length === 0) {
-                    alert("نعتذر لحضرتك، يبدو أن حقيبة المشتريات فارغة. يرجى مراجعة القائمة.");
-                    window.location.href = 'menu.html';
-                    return;
-                }
-
                 const customerName = document.getElementById('customer-name').value.trim();
                 const orderDate = document.getElementById('order-date').value;
                 const orderTime = document.getElementById('order-time').value;
                 
-                let zone = '';
-                let address = '';
-                let landmark = '';
-                let shippingFee = 0;
+                let zone = ''; let address = ''; let landmark = '';
 
-                if (deliveryMode === 'توصيل') {
+                if (window.CheckoutUI.deliveryMode === 'توصيل') {
                     const zoneSelect = document.getElementById('delivery-zone');
-                    if (!zoneSelect.value) {
-                        alert("عذراً لحضرتك، يرجى تحديد المنطقة لاحتساب رسوم التوصيل بشكل دقيق.");
-                        submitBtn.innerHTML = originalBtnText;
-                        submitBtn.disabled = false;
-                        return;
-                    }
                     zone = zoneSelect.options[zoneSelect.selectedIndex].text;
-                    shippingFee = parseFloat(zoneSelect.options[zoneSelect.selectedIndex].dataset.fee) || 0;
                     address = document.getElementById('detailed-address').value.trim();
                     landmark = document.getElementById('nearest-landmark').value.trim();
                 }
 
-                let subtotal = 0;
                 let itemsListText = '';
-                let secureItemsData = [];
-                const liveCatalog = (window.BoseState ? window.BoseState.catalog : window.catalog) || [];
-
-                // مطابقة الأسعار واستخراج تفاصيل باني التورتة من الكتالوج السحابي
-                rawCart.forEach((item, index) => {
-                    const dbProduct = liveCatalog.find(p => String(p.id) === String(item.id));
-                    const securePrice = dbProduct ? parseFloat(dbProduct.price) : parseFloat(item.price);
-                    const productName = dbProduct ? dbProduct.name : item.name;
+                cart.forEach((item, index) => {
+                    const qty = item.quantity || item.qty || 1;
+                    const itemTotal = parseFloat(item.price) * qty;
                     
-                    let finalItemPrice = securePrice;
-                    let addonsDesc = '';
+                    itemsListText += `${index + 1}. ${item.name}\n   العدد: ${qty} | السعر: ${itemTotal} ج.م\n`;
                     
-                    // التوافقية مع باني التورتة وحساب الإضافات
-                    if (item.isCustomCake) {
-                        if (item.printing && item.printing.includes('أكل')) finalItemPrice += 60;
-                        else if (item.printing && item.printing.includes('غير قابلة')) finalItemPrice += 20;
-                        
-                        addonsDesc = ` [نكهة: ${item.flavor || 'غير محدد'} | طباعة: ${item.printing || 'بدون'}]`;
+                    if (item.isCustom) {
+                        if (item.details?.occasion) itemsListText += `   🎉 المناسبة: ${item.details.occasion}\n`;
+                        if (item.details?.shape) itemsListText += `   🎂 الشكل: ${item.details.shape === 'round' ? 'دائري' : item.details.shape === 'heart' ? 'قلب' : item.details.shape === 'rectangle' ? 'مستطيل' : 'مربع'}\n`;
+                        if (item.details?.print && item.details.print !== 'none') itemsListText += `   🖼️ الطباعة: ${item.details.print === 'edible' ? 'قابلة للأكل' : 'ديكور غير قابل للأكل'}\n`;
+                        if (item.details?.health) itemsListText += `   ⚠️ ملاحظات صحية: ${item.details.health}\n`;
+                        if (item.details?.gift) itemsListText += `   💌 نص الكارت: ${item.details.gift_text || 'مطلوب إرفاق كارت إهداء'}\n`;
                     }
-                    
-                    const itemTotal = finalItemPrice * item.quantity;
-                    subtotal += itemTotal;
-
-                    itemsListText += `${index + 1}. ${productName} ${addonsDesc}\n   العدد: ${item.quantity} | القيمة: ${itemTotal} ج.م\n`;
-                    
-                    // تضمين تفاصيل باني التورتة أو الملاحظات الإضافية المخصصة
-                    if (item.healthNotes) itemsListText += `   ⚠️ ملاحظات صحية: ${item.healthNotes}\n`;
-                    if (item.notes) itemsListText += `   📝 النص المطلوب: ${item.notes}\n`;
-                    if (item.occasion) itemsListText += `   🎉 المناسبة/الثيم: ${item.occasion}\n`;
-
-                    secureItemsData.push({
-                        id: item.id,
-                        name: productName,
-                        price: finalItemPrice,
-                        quantity: item.quantity,
-                        isCustomCake: item.isCustomCake || false,
-                        healthNotes: item.healthNotes || '',
-                        notes: item.notes || '',
-                        occasion: item.occasion || '',
-                        total: itemTotal
-                    });
                 });
 
-                const finalTotal = subtotal + shippingFee;
-                const generatedOrderId = window.generateSecureOrderId();
-
-                const cloudOrderData = {
-                    orderId: generatedOrderId,
-                    timestamp: new Date().toISOString(),
-                    customerInfo: { name: customerName, whatsapp: whatsappPhone, altPhone: altPhone },
-                    deliveryDetails: { mode: deliveryMode, zone: zone, address: address, landmark: landmark, date: orderDate, time: orderTime },
-                    financials: { subtotal: subtotal, shippingFee: shippingFee, finalTotal: finalTotal },
-                    items: secureItemsData,
-                    status: 'pending' // متوافق مع نظام الإدارة
-                };
-
-                // إرسال نبضة للسحابة لحفظ الطلب عبر جسر البيانات (Atomic Write Listener)
-                window.dispatchEvent(new CustomEvent('secureOrderBackup', { detail: cloudOrderData }));
+                const finalTotal = window.CheckoutUI.cartTotal + window.CheckoutUI.shippingFee;
+                const orderId = window.CheckoutUI.generateOrderId();
                 
-                // صياغة رسالة مهنية ودقيقة بلهجة "القرار المهني" المعتمدة لحلويات بوسي
-                let msg = `👑 طلب حجز جديد - إدارة حلويات بوسي 👑\n\n`;
-                msg += `رقم المرجع السيادي: #${generatedOrderId}\n\n`;
-                msg += `👤 بيانات سيادتكم:\nالاسم الكريم: ${customerName}\nرقم التواصل: ${whatsappPhone}\n\n`;
+                // صياغة الرسالة بأسلوب قاطع ومنظم
+                let msg = `👑 طلب جديد - حلويات بوسي 👑\n\n`;
+                msg += `رقم الطلب: #${orderId}\n\n`;
+                msg += `👤 بيانات العميل:\nالاسم: ${customerName}\nواتساب: ${whatsappPhone}\n\n`;
                 
-                if (deliveryMode === 'توصيل') {
-                    msg += `📍 نوع الطلب: الشحن للمنزل\n`;
-                    msg += `المنطقة: ${zone}\n`;
-                    msg += `العنوان: ${address}\n`;
-                    msg += `أقرب معلم للوصول السريع: ${landmark}\n`;
-                    if(altPhone) msg += `رقم هاتف بديل: ${altPhone}\n\n`;
+                if (window.CheckoutUI.deliveryMode === 'توصيل') {
+                    msg += `📍 توصيل للبيت:\nالمنطقة: ${zone}\nالعنوان: ${address}\nأقرب مكان: ${landmark}\n`;
+                    if(altPhone) msg += `موبايل تاني: ${altPhone}\n\n`;
                 } else {
-                    msg += `🏬 نوع الطلب: الاستلام من المقر\nالموقع: الكفاح، شارع الوحدة المحلية\n\n`;
+                    msg += `🏬 استلام من المقر (الكفاح)\n\n`;
                 }
                 
-                msg += `🕒 الموعد المفضل لحضرتك:\nالتاريخ: ${orderDate}\nالوقت: ${orderTime}\n\n`;
-                msg += `🛍️ التفاصيل الفنية للمشتريات:\n${itemsListText}\n`;
-                msg += `💰 الإجماليات:\n`;
-                msg += `- حساب المنتجات: ${subtotal} ج.م\n`;
-                if (deliveryMode === 'توصيل') {
-                    msg += `- التوصيل اللوجستي: ${shippingFee} ج.م\n`;
+                msg += `🕒 ميعاد الاستلام:\nالتاريخ: ${orderDate}\nالساعة: ${orderTime}\n\n`;
+                msg += `🛍️ التفاصيل:\n${itemsListText}\n`;
+                msg += `💰 الحساب:\nالمنتجات: ${window.CheckoutUI.cartTotal} ج.م\n`;
+                if (window.CheckoutUI.deliveryMode === 'توصيل') {
+                    msg += `التوصيل: ${window.CheckoutUI.shippingFee} ج.م\n`;
                 }
-                msg += `🔹 الإجمالي المطلوب: ${finalTotal} ج.م\n\n`;
-                msg += `تخضع كافة الطلبات لمراجعة الإدارة لضمان الجودة الفائقة.`;
+                msg += `الإجمالي النهائي: ${finalTotal} ج.م\n`;
 
-                // 🛡️ التعديل السيادي: التوافقية مع محرك السلة لتفريغها بأمان
-                if (window.cartSystem && typeof window.cartSystem.clearCartStorage === 'function') {
-                    window.cartSystem.clearCartStorage();
-                } else {
-                    localStorage.removeItem('BoseSweets_Cart');
-                    localStorage.removeItem('bose_cart_items');
-                    if (window.BoseState && window.BoseState.cart) window.BoseState.cart.length = 0;
-                }
-                
-                if (typeof window.updateCartDisplay === 'function') window.updateCartDisplay();
-                if (window.cartSystem && typeof window.cartSystem.updateCartDisplay === 'function') window.cartSystem.updateCartDisplay();
+                // تفريغ السلة لضمان عدم التكرار
+                localStorage.removeItem('BoseSweets_Cart');
+                if (window.BoseState && window.BoseState.cart) window.BoseState.cart.length = 0;
 
-                // التوجيه النهائي لخدمة واتساب الإدارية
+                // تحويل العميل للواتساب المعتمد
                 const encodedMsg = encodeURIComponent(msg);
-                const adminPhone = window.adminWhatsAppNumber || "201097238441";
+                const adminPhone = "201097238441";
                 window.location.href = `https://wa.me/${adminPhone}?text=${encodedMsg}`;
 
             } catch (error) {
-                console.error("عطل تقني أثناء توثيق مسار الطلب:", error);
-                alert("تم رصد تذبذب في الاتصال. يرجى المحاولة مرة أخرى لضمان دقة توثيق الطلب لحضرتك.");
+                console.error("عطل أثناء توجيه الطلب:", error);
+                alert("حصلت مشكلة وقت تجهيز طلبك. يرجى المحاولة مرة تانية.");
                 submitBtn.innerHTML = originalBtnText;
                 submitBtn.disabled = false;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
         });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if(window.lucide) lucide.createIcons();
+            window.CheckoutUI.init();
+        });
     </script>
 </body>
 </html>
+
+
