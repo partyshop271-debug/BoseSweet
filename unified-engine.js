@@ -1,15 +1,15 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Sovereign Unified Engine | المحرك السيادي الموحد (V33.0)
+ * 👑 BoseSweets Sovereign Unified Engine | المحرك السيادي الموحد (V37.0)
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: دمج شامل، توحيد مسارات الفايربيز، ودعم كامل للهوية البصرية الموحدة.
- * التحديث الأخير: الترقية الكاملة للإصدار 33 مع الاحتفاظ الشامل بكافة وظائف السحابة والمزامنة.
+ * التحديث الأخير: الاحتفاظ الشامل بكافة وظائف السحابة والمزامنة (V33) + حل جذري لتعارض القائمة الجانبية.
  * ============================================================================
  */
 
 // ============================================================================
-// 🔒 القسم الأول: التهيئة السحابية (V33.0)
+// 🔒 القسم الأول: التهيئة السحابية (V37.0)
 // ============================================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
@@ -61,7 +61,7 @@ try {
         window.firebaseApp = app;
         window.db = db;
         window.auth = auth;
-        window.BoseSweets_Engine_Version = "V33.0";
+        window.BoseSweets_Engine_Version = "V37.0";
     }
 } catch (error) {
     console.error("🔒 قرار إداري أمني: فشل تهيئة السحابة، يرجى مراجعة الخوادم فوراً.", error);
@@ -82,7 +82,7 @@ export const ReverseSyncEngine = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_Sovereign_V33',
+                        source: 'BoseSweets_Engine_Sovereign_V37',
                         engine_status: 'Active_Sovereign',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
@@ -103,7 +103,7 @@ export const ReverseSyncEngine = {
         try {
             if (db) {
                 const syncDocRef = doc(db, 'system', 'syncFlag');
-                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V33.0', forceRefresh: true }, { merge: true });
+                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V37.0', forceRefresh: true }, { merge: true });
             }
         } catch (error) {}
     }
@@ -530,21 +530,31 @@ if (typeof window !== 'undefined') {
 // 🎨 القسم السادس: واجهة المستخدم والتحكم البصري (UI Logic)
 // ============================================================================
 
+// 🛡️ الحسم الجذري لمشكلة القائمة الجانبية: تم بناء الدالة لتتوافق مع كل الواجهات وتمنع أي تعارض
 window.toggleSidebar = function() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-    if (!sidebar || !overlay) return;
-    
-    if (sidebar.classList.contains('translate-x-full')) {
-        sidebar.classList.remove('translate-x-full');
-        overlay.classList.remove('hidden');
-        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
-        document.body.style.overflow = 'hidden'; 
-    } else {
-        sidebar.classList.add('translate-x-full');
-        overlay.classList.add('opacity-0');
-        setTimeout(() => overlay.classList.add('hidden'), 300); 
-        document.body.style.overflow = '';
+    try {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        
+        // حماية صارمة: إذا لم يجد العناصر لا يفعل شيئاً حتى لا يتسبب في خطأ يعطل الموقع
+        if (!sidebar || !overlay) return;
+
+        // الاعتماد على كلاس active بدلاً من كلاسات تيلويند المتضاربة
+        const isActive = sidebar.classList.contains('active');
+        
+        if (isActive) {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+            // إعادة السماح بالتمرير
+            document.body.style.overflow = '';
+        } else {
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+            // تجميد الخلفية بانسيابية
+            document.body.style.overflow = 'hidden';
+        }
+    } catch (error) {
+        console.error("تم السيطرة على خطأ في القائمة الجانبية:", error);
     }
 };
 
@@ -606,4 +616,4 @@ if (typeof window !== 'undefined') {
     window.showInfo = showInfo;
 }
 
-console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد إلى الإصدار السيادي (V33.0) بنجاح والمزامنة التامة مفعلة.");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد إلى الإصدار السيادي (V37.0) بنجاح والمزامنة التامة مفعلة، وتم تأمين القائمة الجانبية ضد الشلل والتصادم.");
