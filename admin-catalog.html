@@ -127,7 +127,7 @@
                 </div>
                 <h1 class="text-2xl font-black text-brand-textMain tracking-tight">إدارة بوسي</h1>
             </div>
-            <button onclick="toggleSidebar()" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
+            <button onclick="toggleSidebar(false)" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
         </div>
 
         <nav class="flex-grow p-6 space-y-2">
@@ -169,7 +169,7 @@
     <main class="main-content">
         <header class="bg-[#2a1b1f] border-b border-brand-border sticky top-0 z-40 px-8 py-5 flex items-center justify-between shadow-lg">
             <div class="flex items-center gap-5">
-                <button onclick="toggleSidebar()" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
+                <button onclick="toggleSidebar(true)" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
                 <h2 id="current-section-title" class="text-2xl font-black text-white">شاشة الاستقرار</h2>
             </div>
             <div class="flex items-center gap-4">
@@ -316,14 +316,14 @@
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-8">
-                            <div class="bg-[#110a0b] border-2 border-brand-border rounded-2xl p-6 text-center flex flex-col h-full">
+                            <div class="bg-[#110a0b] border-2 border-brand-border rounded-2xl p-6 text-center flex flex-col h-full shadow-inner">
                                 <span class="font-bold text-brand-textMuted mb-4">معاينة الكارت</span>
                                 <div class="w-full flex-grow rounded-xl overflow-hidden bg-brand-bg relative flex items-center justify-center min-h-[180px]">
                                     <i data-lucide="image" class="w-12 h-12 text-brand-border absolute" id="img-placeholder"></i>
                                     <img id="img-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('img-preview', 'img-placeholder')">
                                 </div>
                             </div>
-                            <div class="bg-[#110a0b] border-2 border-brand-border rounded-2xl p-6 text-center flex flex-col h-full">
+                            <div class="bg-[#110a0b] border-2 border-brand-border rounded-2xl p-6 text-center flex flex-col h-full shadow-inner">
                                 <span class="font-bold text-brand-textMuted mb-4">معاينة البوستر</span>
                                 <div class="w-full flex-grow rounded-xl overflow-hidden bg-brand-bg relative flex items-center justify-center min-h-[180px]">
                                     <i data-lucide="monitor" class="w-12 h-12 text-brand-border absolute" id="hero-placeholder"></i>
@@ -343,7 +343,7 @@
                     </div>
                 </div>
 
-                <!-- 4. التحكم الهندسي وعرض الكروت (معدل صراحة بناءً على الطلب) -->
+                <!-- 4. الهندسة -->
                 <div class="admin-card mb-8">
                     <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3"><i data-lucide="layout" class="w-8 h-8"></i> 4. التحكم الهندسي بظهور الكارت</h4>
                     
@@ -390,14 +390,23 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         
         const firebaseConfig = { apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc", authDomain: "bosy-sweets.firebaseapp.com", projectId: "bosy-sweets" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
         
         lucide.createIcons();
 
-        // 🔒 إعدادات الرفع السحابي لـ Cloudinary
+        // 🔒 حماية البوابة والتأكد التام من هوية المسؤول
+        onAuthStateChanged(auth, (user) => {
+            if (!user && sessionStorage.getItem('bosy_admin_auth') !== 'verified') {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // 🔒 إعدادات الرفع السحابي لـ Cloudinary المعتمدة لعلامة حلويات بوسي
         const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1"; 
         const CLOUDINARY_UPLOAD_PRESET = "gct8i28h"; 
         const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
@@ -405,20 +414,46 @@
         let catalogData = [];
         let selectedCategory = ''; 
 
-        window.toggleSidebar = function() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('sidebar-overlay').classList.toggle('active');
+        // 🛡️ دالة التبديل المحصنة إجبارياً لمنع التكرار الشللي للقائمة الجانبية
+        window.toggleSidebar = function(forceState) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (!sidebar || !overlay) return;
+
+            if (typeof forceState === 'boolean') {
+                if (forceState) {
+                    sidebar.classList.add('active');
+                    overlay.classList.add('active');
+                } else {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            } else {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+            }
         };
 
+        // 🛡️ دالة التنقل المحصنة: تغلق القائمة الجانبية دوماً في شاشات الموبايل لمنع الحجب
         window.switchSection = function(sectionId, element) {
             document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
-            if(element && element.id !== 'menu-item-dash' && element.id !== 'menu-item-editor') element.classList.add('active');
-            else if (element) element.classList.add('active');
+            
+            if (element) {
+                element.classList.add('active');
+            } else {
+                // تظليل التبويب المناسب تلقائياً بالمعرف
+                const fallbackItem = document.getElementById(sectionId === 'product-editor' ? 'menu-item-editor' : 'menu-item-dash');
+                if (fallbackItem) fallbackItem.classList.add('active');
+            }
 
             document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
+            const targetSec = document.getElementById(sectionId);
+            if (targetSec) targetSec.classList.add('active');
             
-            if(window.innerWidth <= 1024) toggleSidebar();
+            // إغلاق إجباري للقائمة الجانبية في الشاشات الصغيرة لتتمكني من مباشرة التعديل
+            if (window.innerWidth <= 1024) {
+                window.toggleSidebar(false); 
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -450,11 +485,15 @@
             const file = fileInput.files[0];
             if (!file) return;
 
-            const btn = fileInput.nextElementSibling;
-            const originalBtnHtml = btn.innerHTML;
+            // تحديد زر الرفع ديناميكياً لتجنب التعارض البنيوي
+            const btn = fileInput.parentElement.querySelector('button');
+            const originalBtnHtml = btn ? btn.innerHTML : 'رفع';
             
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> <span class="font-black text-base">جاري الرفع والضغط...</span>';
-            btn.disabled = true; lucide.createIcons();
+            if (btn) {
+                btn.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> <span class="font-black text-base">جاري الرفع والضغط...</span>';
+                btn.disabled = true;
+            }
+            lucide.createIcons();
             showToast("جاري معالجة ورفع الصورة الفاخرة للسحابة...", "info");
 
             const formData = new FormData();
@@ -473,7 +512,11 @@
             } catch (error) {
                 showToast("عائق تقني أثناء الرفع.", "error");
             } finally {
-                btn.innerHTML = originalBtnHtml; btn.disabled = false; lucide.createIcons();
+                if (btn) {
+                    btn.innerHTML = originalBtnHtml;
+                    btn.disabled = false;
+                }
+                lucide.createIcons();
                 fileInput.value = ''; 
             }
         };
@@ -530,7 +573,7 @@
             document.getElementById('bulk-title-target').innerText = catName;
 
             renderCatalogGridForSection(catName);
-            switchSection('product-list');
+            switchSection('product-list', element);
         };
 
         function renderCatalogGridForSection(catName) {
@@ -571,7 +614,7 @@
                                     <span class="font-black text-2xl ${hasDiscount ? 'text-brand-discount' : 'text-white'}">${displayPrice} <span class="text-base">ج.م</span></span>
                                 </div>
                             </div>
-                            <h4 class="font-bold text-2xl text-white mb-3 leading-tight">${p.name}</h4>
+                            <h4 class="font-bold text-2xl text-white mb-3 leading-tight">${p.name || 'بدون اسم'}</h4>
                             <p class="text-base text-brand-textMuted font-bold line-clamp-2 mb-8 flex-grow opacity-80">${p.description || p.desc || 'لا يوجد وصف تسويقي رسمي'}</p>
                             
                             <div class="flex items-center gap-4 pt-6 border-t border-brand-border">
@@ -660,7 +703,7 @@
         window.editProduct = function(pJsonEncoded) {
             const p = JSON.parse(decodeURIComponent(pJsonEncoded));
             
-            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-id').value = p.id || '';
             document.getElementById('prod-name').value = p.name || '';
             document.getElementById('prod-cat').value = p.category || '';
             document.getElementById('prod-price').value = parseFloat(p.price) || 0;
@@ -687,6 +730,8 @@
             
             document.getElementById('editor-title').innerHTML = '<i data-lucide="edit" class="text-brand-pink w-8 h-8"></i> تعديل هندسة المنتج المعزول';
             lucide.createIcons();
+            
+            // فتح قسم المحرر والتوجه التلقائي لضمان المزامنة
             switchSection('product-editor', document.getElementById('menu-item-editor'));
         };
 
@@ -736,9 +781,11 @@
             const category = document.getElementById('prod-cat').value.trim();
             const price = parseFloat(document.getElementById('prod-price').value) || 0;
             const oldPrice = parseFloat(document.getElementById('prod-old-price').value) || 0;
+            const img = document.getElementById('prod-img').value.trim();
             
-            if(!name || !category || price <= 0) {
-                showToast("الاسم، القسم، والسعر محددات إلزامية لتوثيق الصنف.", "error");
+            // تأمين الفراغات المانعة لظهور المنتجات undefined في المعرض
+            if(!name || !category || price <= 0 || !img) {
+                showToast("الاسم، القسم، السعر، ورابط الصورة محددات إلزامية لتوثيق الصنف.", "error");
                 return;
             }
 
@@ -747,7 +794,7 @@
                 hasDiscount: document.getElementById('prod-has-discount').checked,
                 description: document.getElementById('prod-desc').value.trim(),
                 flavors: document.getElementById('prod-flavors').value.trim(),
-                img: document.getElementById('prod-img').value.trim(),
+                img: img,
                 heroImg: document.getElementById('prod-hero-img').value.trim(),
                 gridSpan: document.getElementById('prod-grid-span').value,
                 cardWidth: parseInt(document.getElementById('prod-card-w').value),
@@ -820,3 +867,5 @@
     </script>
 </body>
 </html>
+
+
