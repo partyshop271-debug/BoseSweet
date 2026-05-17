@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>المحرك السيادي للوجستيات | حلويات بوسي</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        brand: { pink: '#ff91a4', bg: '#1a1012', surface: '#2a1b1f', border: '#42282d', textMain: '#ffffff', textMuted: '#e0c8cc' } 
+                    },
+                    fontFamily: { sans: ['Cairo', 'sans-serif'] }
+                } 
+            } 
+        }
+    </script>
+    
+    <style>
+        :root {
+            --bose-bg: #1a1012; --bose-surface: #2a1b1f; --bose-border: #42282d;
+            --bose-pink: #ff91a4; --bose-text: #ffffff; --bose-muted: #e0c8cc;
+        }
+
+        body { background-color: var(--bose-bg) !important; color: var(--bose-text) !important; font-family: 'Cairo', sans-serif; overflow-x: hidden; margin: 0; padding: 0; font-size: 16px; }
+        * { box-sizing: border-box; outline: none; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bose-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--bose-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--bose-pink); }
+
+        .sidebar { background-color: var(--bose-surface) !important; border-left: 2px solid var(--bose-border) !important; transition: right 0.4s ease; z-index: 100; height: 100vh; position: fixed; top: 0; right: 0; width: 340px; overflow-y: auto; display: flex; flex-direction: column; }
+        .sidebar-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); z-index: 90; display: none; opacity: 0; transition: opacity 0.4s ease; }
+        .sidebar-overlay.active { display: block; opacity: 1; }
+        @media (max-width: 1024px) { .sidebar { right: -100%; max-width: 85%; } .sidebar.active { right: 0; } .main-content { margin-right: 0 !important; width: 100%; } }
+        
+        details > summary { list-style: none; cursor: pointer; padding: 18px 20px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; font-weight: 900; transition: all 0.3s ease; color: var(--bose-text); font-size: 1.1rem; }
+        details > summary::-webkit-details-marker { display: none; }
+        details > summary:hover, details[open] > summary { background-color: rgba(255, 145, 164, 0.1); color: var(--bose-pink); }
+        
+        .submenu-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px 14px 16px; margin: 6px 16px 6px 0; border-radius: 12px; color: var(--bose-muted); font-size: 1rem; transition: all 0.3s ease; font-weight: 700; cursor: pointer; border-right: 3px solid transparent; }
+        .submenu-item:hover, .submenu-item.active { background-color: rgba(255, 145, 164, 0.15); color: var(--bose-text); border-right-color: var(--bose-pink); font-weight: 900; }
+
+        .main-content { margin-right: 340px; min-h: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
+        .admin-section { display: none; animation: fadeIn 0.4s ease forwards; }
+        .admin-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .admin-card { background-color: var(--bose-surface) !important; border: 2px solid var(--bose-border) !important; border-radius: 24px; padding: 40px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .form-label { display: block; color: var(--bose-text) !important; font-weight: 900; margin-bottom: 8px; font-size: 1.05rem; }
+        .bose-helper-text { display: flex; align-items: start; gap: 6px; color: var(--bose-muted); font-size: 0.85rem; font-weight: 700; margin-top: 8px; line-height: 1.5; opacity: 0.8; }
+        .bose-helper-text i { flex-shrink: 0; margin-top: 2px; color: var(--bose-pink); }
+        
+        .form-input { width: 100%; background-color: #110a0b !important; border: 2px solid var(--bose-border) !important; color: var(--bose-text) !important; border-radius: 14px; padding: 18px; font-family: inherit; font-weight: 900; font-size: 1.1rem; transition: all 0.3s ease; }
+        .form-input:focus { border-color: var(--bose-pink) !important; box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.15); }
+        
+        .toggle-switch { position: relative; width: 60px; height: 32px; display: inline-block; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #110a0b; transition: .4s; border-radius: 34px; border: 2px solid var(--bose-border); }
+        .toggle-slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: var(--bose-muted); transition: .4s; border-radius: 50%; }
+        input:checked + .toggle-slider { background-color: rgba(255, 145, 164, 0.2); border-color: var(--bose-pink); }
+        input:checked + .toggle-slider:before { transform: translateX(28px); background-color: var(--bose-pink); }
+
+        .btn-solid { background-color: var(--bose-pink) !important; color: var(--bose-bg) !important; border: none; border-radius: 14px; padding: 18px 36px; font-weight: 900; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 12px; width: 100%; box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25); }
+        .btn-solid:hover { background-color: var(--bose-text) !important; color: var(--bose-pink) !important; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255, 145, 164, 0.4); }
+        
+        .btn-action { background-color: var(--bose-bg) !important; color: var(--bose-text) !important; border: 2px solid var(--bose-border) !important; border-radius: 12px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
+        .btn-action:hover { background-color: var(--bose-pink) !important; color: var(--bose-bg) !important; border-color: var(--bose-pink) !important; }
+        .btn-action.danger:hover { background-color: #ef4444 !important; color: var(--bose-text) !important; border-color: #ef4444 !important; }
+
+        .admin-toast { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); background: var(--bose-surface) !important; border: 2px solid var(--bose-pink) !important; color: var(--bose-text) !important; padding: 18px 40px; border-radius: 50px; z-index: 10000; font-weight: 900; font-size: 1.2rem; display: none; align-items: center; gap: 14px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        .admin-toast.active { display: flex; animation: toastIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes toastIn { from { top: -60px; opacity: 0; } to { top: 30px; opacity: 1; } }
+
+        .shipping-zone-item { background-color: var(--bose-bg); border: 2px solid var(--bose-border); border-radius: 16px; padding: 20px; display: flex; align-items: center; justify-content: space-between; transition: all 0.3s ease; }
+        .shipping-zone-item:hover { border-color: var(--bose-pink); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: translateX(-5px); }
+    </style>
+</head>
+<body>
+
+    <div id="admin-toast" class="admin-toast">
+        <i data-lucide="check-circle" class="w-8 h-8 text-brand-pink"></i>
+        <span id="toast-msg">تم التنفيذ بنجاح</span>
+    </div>
+
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <aside id="sidebar" class="sidebar">
+        <div class="p-8 border-b border-brand-border flex items-center justify-between sticky top-0 bg-[#2a1b1f] z-10">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-brand-bg border border-brand-pink/40 flex items-center justify-center shadow-lg">
+                    <i data-lucide="gem" class="w-7 h-7 text-brand-pink"></i>
+                </div>
+                <h1 class="text-2xl font-black text-brand-textMain tracking-tight">إدارة بوسي</h1>
+            </div>
+            <button onclick="toggleSidebar()" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
+        </div>
+
+        <nav class="flex-grow p-6 space-y-2">
+            <div class="submenu-item active" onclick="switchSection('dashboard', this)">
+                <i data-lucide="calculator" class="w-6 h-6"></i> شاشة اللوجستيات
+            </div>
+
+            <details class="group mt-6" open>
+                <summary>
+                    <div class="flex items-center gap-3"><i data-lucide="truck" class="w-6 h-6"></i> التسعير والطلبات</div>
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                </summary>
+                <div class="flex flex-col mt-3 space-y-1">
+                    <div class="submenu-item" onclick="switchSection('store-settings', this)"><i data-lucide="store" class="w-5 h-5"></i> حالة المتجر وقواعد الطلب</div>
+                    <div class="submenu-item" onclick="switchSection('pricing-engine', this)"><i data-lucide="cake" class="w-5 h-5"></i> تسعير باني التورت المخصوصة</div>
+                    <div class="submenu-item" onclick="switchSection('shipping-zones', this)"><i data-lucide="map-pin" class="w-5 h-5"></i> مناطق الشحن وتكلفة المندوب</div>
+                </div>
+            </details>
+
+            <details class="group mt-4">
+                <summary>
+                    <div class="flex items-center gap-3"><i data-lucide="settings" class="w-6 h-6"></i> المحركات المركزية</div>
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                </summary>
+                <div class="flex flex-col mt-3 space-y-1">
+                    <a href="admin-theme.html" class="submenu-item text-decoration-none"><i data-lucide="monitor-smartphone" class="w-5 h-5"></i> محرك الواجهة والفوتر</a>
+                    <a href="admin-catalog.html" class="submenu-item text-decoration-none"><i data-lucide="box" class="w-5 h-5"></i> محرك الكتالوج والمنتجات</a>
+                </div>
+            </details>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="bg-[#2a1b1f] border-b border-brand-border sticky top-0 z-40 px-8 py-5 flex items-center justify-between shadow-lg">
+            <div class="flex items-center gap-5">
+                <button onclick="toggleSidebar()" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
+                <h2 id="current-section-title" class="text-2xl font-black text-brand-textMain">شاشة اللوجستيات</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 bg-[#1a1012] px-5 py-2.5 rounded-full border border-brand-border shadow-inner">
+                    <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                    <span class="text-sm font-bold text-brand-textMuted">قاعدة البيانات متصلة</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-6 md:p-12 max-w-7xl mx-auto w-full">
+
+            <!-- 1. شاشة الاستقرار -->
+            <section id="dashboard" class="admin-section active">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div class="admin-card !p-8 flex flex-col items-center justify-center text-center">
+                        <div class="w-20 h-20 rounded-full bg-brand-bg border-2 border-brand-border flex items-center justify-center text-brand-pink mb-4"><i data-lucide="map" class="w-10 h-10"></i></div>
+                        <h3 class="text-5xl font-black text-white mb-2" id="stat-zones">0</h3>
+                        <p class="text-brand-textMuted font-bold text-lg">مناطق شحن معتمدة</p>
+                    </div>
+                    <div class="admin-card !p-8 flex flex-col items-center justify-center text-center">
+                        <div class="w-20 h-20 rounded-full bg-brand-bg border-2 border-brand-border flex items-center justify-center text-brand-pink mb-4"><i data-lucide="store" class="w-10 h-10"></i></div>
+                        <h3 class="text-5xl font-black text-white mb-2" id="stat-store-status">مفتوح</h3>
+                        <p class="text-brand-textMuted font-bold text-lg">حالة استقبال الطلبات</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. حالة المتجر والقواعد العامة -->
+            <section id="store-settings" class="admin-section">
+                <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
+                    <div>
+                        <h3 class="text-3xl font-black text-white flex items-center gap-3"><i data-lucide="store" class="text-brand-pink w-8 h-8"></i> حالة المتجر وقواعد الطلب</h3>
+                        <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
+                            التحكم الكامل في فتح أو إغلاق استقبال الطلبات، وتحديد خيارات الاستلام.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="admin-card mb-8">
+                    <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3"><i data-lucide="sliders" class="w-8 h-8"></i> قواعد استقبال الطلبات</h4>
+                    
+                    <div class="space-y-8">
+                        <div>
+                            <label class="form-label mb-4">حالة المتجر (استقبال الطلبات الجديدة)</label>
+                            <div class="flex items-center justify-between bg-[#110a0b] p-5 rounded-xl border-2 border-brand-border w-full md:w-1/2">
+                                <span class="font-bold text-xl text-white" id="store-open-text">المتجر مفتوح للطلبات</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="store-is-open" checked onchange="updateStoreStatusLabel(this)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <p class="bose-helper-text mt-3"><i data-lucide="alert-circle" class="w-4 h-4 text-brand-pink"></i> إغلاق المفتاح سيمنع العملاء من إتمام أي طلبات جديدة حتى إعادة فتحه.</p>
+                        </div>
+
+                        <div class="pt-6 border-t border-brand-border">
+                            <label class="form-label mb-4">إتاحة خيار (الاستلام من مقر الفرع)</label>
+                            <div class="flex items-center justify-between bg-[#110a0b] p-5 rounded-xl border-2 border-brand-border w-full md:w-1/2">
+                                <span class="font-bold text-xl text-white" id="pickup-status-text">متاح للعملاء</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="store-allow-pickup" checked onchange="updatePickupStatusLabel(this)">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="pt-6 border-t border-brand-border w-full md:w-1/2">
+                            <label class="form-label">الحد الأدنى لقيمة الطلب (ج.م)</label>
+                            <input type="number" id="store-min-order" class="form-input text-2xl font-black text-brand-pink text-center" placeholder="مثال: 100">
+                            <p class="bose-helper-text mt-3"><i data-lucide="info" class="w-4 h-4"></i> لن يتمكن العميل من إتمام الطلب إذا كانت قيمة السلة أقل من هذا المبلغ.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="pt-4">
+                    <button onclick="saveStoreSettings()" class="btn-solid py-6 text-2xl w-full shadow-2xl hover:shadow-brand-pink/30"><i data-lucide="upload-cloud" class="w-8 h-8"></i> اعتماد قواعد المتجر</button>
+                </div>
+            </section>
+
+            <!-- 3. تسعير باني التورت -->
+            <section id="pricing-engine" class="admin-section">
+                <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
+                    <div>
+                        <h3 class="text-3xl font-black text-white flex items-center gap-3"><i data-lucide="cake" class="text-brand-pink w-8 h-8"></i> تسعير باني التورت المخصوصة</h3>
+                        <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
+                            هذه الأرقام هي المحرك الأساسي للآلة الحاسبة داخل صفحة تفصيل التورت للعميل.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="admin-card mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <div class="bg-[#110a0b] p-10 rounded-3xl border-2 border-brand-pink/30 shadow-inner">
+                            <label class="form-label text-2xl mb-6 text-brand-pink text-center">التسعير الأساسي للفرد الواحد</label>
+                            <div class="flex items-center justify-center gap-4">
+                                <input type="number" id="price-per-person" class="form-input text-4xl font-black text-white text-center w-full" placeholder="145">
+                                <span class="text-2xl font-black text-brand-textMuted">ج.م</span>
+                            </div>
+                            <p class="bose-helper-text mt-6 text-center justify-center"><i data-lucide="calculator" class="w-5 h-5"></i> يُضرب هذا الرقم آلياً في عدد الأفراد الذي يحدده العميل.</p>
+                        </div>
+
+                        <div class="space-y-8 flex flex-col justify-center">
+                            <div>
+                                <label class="form-label">تكلفة الإضافة: صورة قابلة للأكل</label>
+                                <div class="flex items-center gap-4">
+                                    <input type="number" id="price-edible" class="form-input text-xl font-bold" placeholder="60">
+                                    <span class="font-black text-brand-textMuted">ج.م</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label">تكلفة الإضافة: صورة ديكور (غير قابلة للأكل)</label>
+                                <div class="flex items-center gap-4">
+                                    <input type="number" id="price-non-edible" class="form-input text-xl font-bold" placeholder="20">
+                                    <span class="font-black text-brand-textMuted">ج.م</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label">تكلفة الإضافة: كارت إهداء خاص</label>
+                                <div class="flex items-center gap-4">
+                                    <input type="number" id="price-gift-card" class="form-input text-xl font-bold" placeholder="40">
+                                    <span class="font-black text-brand-textMuted">ج.م</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button onclick="savePricingRules()" class="btn-solid py-6 text-2xl w-full shadow-2xl hover:shadow-brand-pink/30"><i data-lucide="save" class="w-8 h-8"></i> اعتماد تسعير التورت</button>
+                </div>
+            </section>
+
+            <!-- 4. مناطق الشحن واللوجستيات -->
+            <section id="shipping-zones" class="admin-section">
+                <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
+                    <div>
+                        <h3 class="text-3xl font-black text-white flex items-center gap-3"><i data-lucide="map-pin" class="text-brand-pink w-8 h-8"></i> مناطق الشحن وتكلفة المندوب</h3>
+                        <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
+                            إدارة المناطق المتاحة للتوصيل. تظهر هذه المناطق للعميل في صفحة إتمام الطلب كقائمة منسدلة ليختار منها.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
+                    <div class="xl:col-span-1">
+                        <div class="admin-card sticky top-28 bg-[#110a0b]">
+                            <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3" id="zone-editor-title"><i data-lucide="plus-circle" class="w-8 h-8"></i> إضافة منطقة</h4>
+                            <input type="hidden" id="zone-id">
+                            
+                            <div class="space-y-8">
+                                <div>
+                                    <label class="form-label">اسم المنطقة / القرية</label>
+                                    <input type="text" id="zone-name" class="form-input bg-brand-surface" placeholder="مثال: أبو منقار...">
+                                </div>
+                                <div>
+                                    <label class="form-label">تكلفة التوصيل (ج.م)</label>
+                                    <input type="number" id="zone-fee" class="form-input font-black text-brand-pink text-2xl bg-brand-surface" placeholder="0">
+                                </div>
+                                
+                                <div class="pt-6 flex flex-col gap-4">
+                                    <button onclick="saveZone()" class="btn-solid py-4"><i data-lucide="save" class="w-6 h-6"></i> اعتماد المنطقة</button>
+                                    <button onclick="clearZoneForm()" class="bg-transparent border-2 border-brand-border text-brand-textMuted hover:text-white font-bold py-4 rounded-xl transition-all">إفراغ الحقول</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="xl:col-span-2">
+                        <div class="admin-card !bg-[#110a0b] !border-none">
+                            <h4 class="text-white font-black text-2xl mb-8 flex items-center gap-3"><i data-lucide="list-ordered" class="w-8 h-8 text-brand-pink"></i> المناطق المعتمدة بالنظام</h4>
+                            <div id="zones-list" class="space-y-4">
+                                <div class="text-center py-20 text-brand-textMuted font-bold text-xl"><i data-lucide="loader-2" class="w-12 h-12 animate-spin mx-auto mb-4 text-brand-pink"></i> جاري استدعاء المناطق...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        
+        const firebaseConfig = { apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc", authDomain: "bosy-sweets.firebaseapp.com", projectId: "bosy-sweets" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        lucide.createIcons();
+
+        window.toggleSidebar = function() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
+        };
+
+        window.switchSection = function(sectionId, element) {
+            document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+            
+            document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            const titles = { 'dashboard': 'شاشة اللوجستيات', 'store-settings': 'حالة المتجر وقواعد الطلب', 'pricing-engine': 'تسعير باني التورت', 'shipping-zones': 'مناطق الشحن وتكلفة المندوب' };
+            document.getElementById('current-section-title').innerText = titles[sectionId];
+            if(window.innerWidth <= 1024) toggleSidebar();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.showToast = function(msg, type="success") {
+            const toast = document.getElementById('admin-toast');
+            document.getElementById('toast-msg').innerText = msg;
+            
+            if(type === 'error') {
+                toast.style.borderColor = '#ef4444';
+                toast.querySelector('i').setAttribute('data-lucide', 'alert-circle');
+                toast.querySelector('i').classList.replace('text-brand-pink', 'text-red-400');
+            } else {
+                toast.style.borderColor = 'var(--bose-pink)';
+                toast.querySelector('i').setAttribute('data-lucide', 'check-circle');
+                toast.querySelector('i').classList.replace('text-red-400', 'text-brand-pink');
+            }
+            lucide.createIcons();
+
+            toast.classList.remove('active'); void toast.offsetWidth; toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 4000);
+        };
+
+        window.updateStoreStatusLabel = function(checkbox) {
+            const label = document.getElementById('store-open-text');
+            if(checkbox.checked) {
+                label.innerText = "المتجر مفتوح لاستقبال الطلبات";
+                label.classList.replace('text-red-400', 'text-white');
+            } else {
+                label.innerText = "المتجر مغلق حالياً (لا يمكن الطلب)";
+                label.classList.replace('text-white', 'text-red-400');
+            }
+        };
+
+        window.updatePickupStatusLabel = function(checkbox) {
+            const label = document.getElementById('pickup-status-text');
+            if(checkbox.checked) {
+                label.innerText = "الاستلام من المقر متاح";
+                label.classList.replace('text-red-400', 'text-white');
+            } else {
+                label.innerText = "الاستلام من المقر غير متاح";
+                label.classList.replace('text-white', 'text-red-400');
+            }
+        };
+
+        // ---------------------------------------------------------
+        // ☁️ تحميل بيانات اللوجستيات
+        // ---------------------------------------------------------
+        async function loadLogisticsData() {
+            try {
+                // 1. إعدادات المتجر العامة
+                const storeSnap = await getDoc(doc(db, 'settings', 'logistics'));
+                if (storeSnap.exists()) {
+                    const storeData = storeSnap.data();
+                    
+                    const storeOpenCheck = document.getElementById('store-is-open');
+                    storeOpenCheck.checked = storeData.isOpen !== false;
+                    updateStoreStatusLabel(storeOpenCheck);
+                    
+                    const pickupCheck = document.getElementById('store-allow-pickup');
+                    pickupCheck.checked = storeData.allowPickup !== false;
+                    updatePickupStatusLabel(pickupCheck);
+
+                    document.getElementById('store-min-order').value = storeData.minOrder || 0;
+                    document.getElementById('stat-store-status').innerText = storeData.isOpen !== false ? "مفتوح" : "مغلق";
+                    document.getElementById('stat-store-status').style.color = storeData.isOpen !== false ? "#ffffff" : "#ef4444";
+                }
+
+                // 2. إعدادات التسعير
+                const priceSnap = await getDoc(doc(db, 'settings', 'pricingRules'));
+                if (priceSnap.exists()) {
+                    const priceData = priceSnap.data();
+                    document.getElementById('price-per-person').value = priceData.pricePerPerson || 145;
+                    document.getElementById('price-edible').value = priceData.printEdible || 60;
+                    document.getElementById('price-non-edible').value = priceData.printNonEdible || 20;
+                    document.getElementById('price-gift-card').value = priceData.giftCardPrice || 40;
+                }
+
+                // 3. مناطق الشحن
+                const querySnapshot = await getDocs(collection(db, 'shipping'));
+                const list = document.getElementById('zones-list');
+                let html = '';
+                let count = 0;
+
+                querySnapshot.forEach((doc) => {
+                    count++;
+                    const z = doc.data();
+                    const feeText = z.fee === 0 ? "توصيل مجاني" : `+ ${z.fee} ج.م`;
+                    
+                    html += `
+                        <div class="shipping-zone-item">
+                            <div>
+                                <h5 class="text-2xl font-black text-white mb-2">${z.name}</h5>
+                                <span class="bg-brand-surface border border-brand-border text-brand-pink px-4 py-1.5 rounded-lg text-sm font-black shadow-sm">${feeText}</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <button onclick="editZone('${doc.id}', '${z.name}', ${z.fee})" class="btn-action" title="تعديل التسعيرة"><i data-lucide="edit-2" class="w-5 h-5"></i></button>
+                                <button onclick="deleteZone('${doc.id}', '${z.name}')" class="btn-action danger" title="إلغاء التوصيل"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('stat-zones').innerText = count;
+                list.innerHTML = count === 0 ? '<div class="text-center py-20 text-brand-textMuted font-bold text-xl">لم يتم تسجيل أي مناطق شحن بعد.</div>' : html;
+                lucide.createIcons();
+
+            } catch (error) {
+                console.error(error);
+                showToast("فشل الاتصال بقاعدة البيانات.", "error");
+            }
+        }
+
+        // ---------------------------------------------------------
+        // 💾 دوال الحفظ والاعتماد
+        // ---------------------------------------------------------
+        
+        window.saveStoreSettings = async function() {
+            try {
+                await setDoc(doc(db, 'settings', 'logistics'), {
+                    isOpen: document.getElementById('store-is-open').checked,
+                    allowPickup: document.getElementById('store-allow-pickup').checked,
+                    minOrder: parseFloat(document.getElementById('store-min-order').value) || 0,
+                    updatedAt: Date.now()
+                }, { merge: true });
+                
+                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                
+                document.getElementById('stat-store-status').innerText = document.getElementById('store-is-open').checked ? "مفتوح" : "مغلق";
+                document.getElementById('stat-store-status').style.color = document.getElementById('store-is-open').checked ? "#ffffff" : "#ef4444";
+                
+                showToast("تم اعتماد قواعد المتجر وتطبيقها بنجاح.");
+            } catch (e) { showToast("تعذر الحفظ في السحابة.", "error"); }
+        };
+
+        window.savePricingRules = async function() {
+            const basePrice = parseFloat(document.getElementById('price-per-person').value) || 0;
+            if (basePrice <= 0) { showToast("السعر الأساسي يجب أن يكون صالحاً.", "error"); return; }
+
+            try {
+                await setDoc(doc(db, 'settings', 'pricingRules'), {
+                    pricePerPerson: basePrice,
+                    printEdible: parseFloat(document.getElementById('price-edible').value) || 0,
+                    printNonEdible: parseFloat(document.getElementById('price-non-edible').value) || 0,
+                    giftCardPrice: parseFloat(document.getElementById('price-gift-card').value) || 0,
+                    updatedAt: Date.now()
+                }, { merge: true });
+                
+                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                showToast("تم اعتماد أسعار باني التورت وتحديثها للعملاء.");
+            } catch (e) { showToast("تعذر حفظ الأسعار.", "error"); }
+        };
+
+        window.clearZoneForm = function() {
+            document.getElementById('zone-id').value = '';
+            document.getElementById('zone-name').value = '';
+            document.getElementById('zone-fee').value = '';
+            document.getElementById('zone-editor-title').innerHTML = '<i data-lucide="plus-circle" class="w-8 h-8 text-brand-pink"></i> إضافة منطقة';
+            lucide.createIcons();
+        };
+
+        window.editZone = function(id, name, fee) {
+            document.getElementById('zone-id').value = id;
+            document.getElementById('zone-name').value = name;
+            document.getElementById('zone-fee').value = fee;
+            document.getElementById('zone-editor-title').innerHTML = '<i data-lucide="edit-2" class="w-8 h-8 text-brand-pink"></i> تعديل التسعيرة';
+            lucide.createIcons();
+            switchSection('shipping-zones', document.querySelectorAll('.submenu-item')[3]);
+            document.getElementById('zone-name').focus();
+        };
+
+        window.saveZone = async function() {
+            const idInput = document.getElementById('zone-id').value;
+            const name = document.getElementById('zone-name').value.trim();
+            const fee = parseFloat(document.getElementById('zone-fee').value) || 0;
+
+            if (!name) { showToast("يرجى كتابة اسم المنطقة.", "error"); return; }
+
+            try {
+                const zoneData = { name: name, fee: fee, updatedAt: Date.now() };
+                if (idInput) {
+                    await setDoc(doc(db, 'shipping', idInput), zoneData, { merge: true });
+                } else {
+                    await setDoc(doc(collection(db, 'shipping')), zoneData);
+                }
+                
+                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                showToast("تم اعتماد المنطقة ورسومها بنجاح.");
+                clearZoneForm();
+                loadLogisticsData();
+            } catch (e) { showToast("تعذر حفظ بيانات المنطقة.", "error"); }
+        };
+
+        window.deleteZone = async function(id, name) {
+            if (confirm(`قرار سيادي: هل أنتِ متأكدة من إيقاف خدمة التوصيل لمنطقة [${name}] وإزالتها؟`)) {
+                try {
+                    await deleteDoc(doc(db, 'shipping', id));
+                    await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                    showToast(`تم إيقاف الشحن لمنطقة [${name}].`);
+                    loadLogisticsData();
+                } catch (e) { showToast("عائق فني أثناء الحذف.", "error"); }
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', loadLogisticsData);
+    </script>
+</body>
+</html>
+

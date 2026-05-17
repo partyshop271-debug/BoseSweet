@@ -3,373 +3,959 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>حلويات بوسي | بوابة الدخول السيادية</title>
     
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>المحرك السيادي للواجهة | حلويات بوسي</title>
     
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
-    
+    <!-- خطوط واضحة وقوية مخصصة للقراءة المريحة -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
-    <style>
-        :root {
-            --brand-primary: #ff91a4;
-            --brand-bg: #070b14;
-            --brand-card: #101726;
-        }
-        
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--brand-bg);
-            color: #f8fafc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            position: relative;
-        }
-
-        /* مؤثرات الخلفية السيادية */
-        .bg-glow {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(255,145,164,0.05) 0%, rgba(7,11,20,0) 70%);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        @keyframes fadeInEngine {
-            0% { opacity: 0; transform: translateY(20px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .login-card {
-            background-color: var(--brand-card);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            border-radius: 2.5rem;
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 440px;
-            padding: 3rem 2.5rem;
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            animation: fadeInEngine 0.6s ease-out forwards;
-        }
-
-        .input-field {
-            width: 100%;
-            background-color: rgba(3, 5, 10, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            color: white;
-            border-radius: 1rem;
-            padding: 1.25rem;
-            padding-right: 3.5rem;
-            padding-left: 3.5rem;
-            font-size: 0.95rem;
-            font-weight: 700;
-            transition: all 0.3s;
-            outline: none;
-        }
-        
-        .input-field:focus {
-            border-color: var(--brand-primary);
-            box-shadow: 0 0 0 2px rgba(255, 145, 164, 0.1);
-        }
-
-        .input-icon-right {
-            position: absolute;
-            right: 1.25rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8b9bb4;
-            transition: color 0.3s;
-        }
-
-        .input-icon-left {
-            position: absolute;
-            left: 1.25rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8b9bb4;
-            transition: color 0.3s;
-            cursor: pointer;
-            border: none;
-            background: none;
-            padding: 0;
-        }
-
-        .input-icon-left:hover {
-            color: var(--brand-primary);
-        }
-
-        .input-group:focus-within .input-icon-right {
-            color: var(--brand-primary);
-        }
-
-        .login-btn {
-            width: 100%;
-            background-color: var(--brand-primary);
-            color: #070b14;
-            padding: 1.15rem;
-            border-radius: 1rem;
-            font-weight: 900;
-            font-size: 1.05rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.75rem;
-            transition: all 0.3s;
-            box-shadow: 0 10px 25px -5px rgba(255, 145, 164, 0.3);
-            border: none;
-            cursor: pointer;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            background-color: white;
-            color: var(--brand-primary);
-            box-shadow: 0 15px 30px -5px rgba(255, 145, 164, 0.4);
-        }
-
-        .login-btn:active {
-            transform: translateY(0) scale(0.98);
-        }
-
-        .login-btn:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        #login-toast {
-            position: absolute;
-            top: 1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 0;
-            visibility: hidden;
-            z-index: 50;
-            width: max-content;
-            max-width: 90%;
-        }
-        
-        #login-toast.show {
-            opacity: 1;
-            visibility: visible;
-            transform: translate(-50%, 10px);
-        }
-    </style>
-</head>
-<body>
-
-    <div class="bg-glow"></div>
-
-    <div id="login-toast" class="bg-[#101726]/95 backdrop-blur-xl border border-white/10 px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 text-center">
-        <i id="toast-icon" data-lucide="info" class="w-6 h-6 shrink-0 text-brand-primary"></i>
-        <span id="toast-msg" class="text-sm md:text-base font-bold text-white tracking-wide leading-relaxed"></span>
-    </div>
-
-    <div class="login-card mx-4">
-        
-        <div class="text-center mb-10">
-            <div class="w-20 h-20 bg-white rounded-2xl p-2 mx-auto mb-6 shadow-[0_0_30px_rgba(255,145,164,0.15)] flex items-center justify-center border border-white/10">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" class="w-full object-contain rounded-xl" alt="حلويات بوسي" onerror="this.style.display='none'">
-            </div>
-            <h1 class="text-3xl font-black text-white tracking-tight">حلويات بوسي</h1>
-            <p class="text-xs font-bold text-[#ff91a4] mt-3 uppercase tracking-widest">بوابة الإدارة السيادية</p>
-        </div>
-
-        <div class="space-y-6">
-            <div class="relative input-group">
-                <i data-lucide="mail" class="w-5 h-5 input-icon-right"></i>
-                <input type="email" id="admin-email" class="input-field" placeholder="البريد الإلكتروني المعتمد" dir="ltr" autocomplete="email">
-            </div>
-
-            <div class="relative input-group">
-                <i data-lucide="lock" class="w-5 h-5 input-icon-right"></i>
-                <input type="password" id="admin-pwd" class="input-field" placeholder="مفتاح التشفير السري" dir="ltr" autocomplete="current-password">
-                <button type="button" id="toggle-pwd-btn" class="input-icon-left focus:outline-none" title="إظهار/إخفاء مفتاح التشفير">
-                    <i data-lucide="eye" class="w-5 h-5" id="toggle-pwd-icon"></i>
-                </button>
-            </div>
-
-            <button id="login-btn" class="login-btn mt-6">
-                <span>اعتماد الدخول</span>
-                <i data-lucide="log-in" class="w-6 h-6"></i>
-            </button>
-        </div>
-        
-        <div class="mt-8 text-center border-t border-white/5 pt-6">
-            <p class="text-[11px] text-slate-500 font-bold leading-relaxed px-4">هذه البوابة مخصصة حصرياً لإدارة العلامة التجارية. يرجى الحفاظ على سرية بيانات الوصول لضمان أمان الخوادم.</p>
-        </div>
-    </div>
+    <!-- مكتبات الأيقونات والتصميم المعتمدة -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
-        // تفعيل الأيقونات الأساسية
-        if (typeof lucide !== 'undefined') lucide.createIcons();
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        brand: { 
+                            pink: '#ff91a4', 
+                            bg: '#1a1012',       
+                            surface: '#2a1b1f',  
+                            border: '#42282d',   
+                            textMain: '#ffffff', 
+                            textMuted: '#e0c8cc' 
+                        } 
+                    },
+                    fontFamily: { sans: ['Cairo', 'sans-serif'] }
+                } 
+            } 
+        }
+    </script>
+    
+    <style>
+        /* تحصين صلب لمنظومة الألوان لمنع أي انهيار بصري على الموبايل والكمبيوتر */
+        :root {
+            --bose-bg: #1a1012;
+            --bose-surface: #2a1b1f;
+            --bose-border: #42282d;
+            --bose-pink: #ff91a4;
+            --bose-text: #ffffff;
+            --bose-muted: #e0c8cc;
+        }
 
-        // 🔔 محرك الإشعارات السيادي المدعم
-        let toastTimeout;
-        const showToast = (msg, type = "info") => {
-            const toast = document.getElementById('login-toast');
-            const msgEl = document.getElementById('toast-msg');
-            const iconEl = document.getElementById('toast-icon');
-            
-            if (!toast || !msgEl || !iconEl) return;
+        body { 
+            background-color: var(--bose-bg) !important; 
+            color: var(--bose-text) !important; 
+            font-family: 'Cairo', sans-serif; 
+            overflow-x: hidden; 
+            margin: 0; 
+            padding: 0; 
+            font-size: 16px; 
+        }
+        
+        * { box-sizing: border-box; outline: none; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bose-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--bose-border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--bose-pink); }
 
-            msgEl.innerText = msg;
-            toast.className = "bg-[#101726]/95 backdrop-blur-xl border px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 text-center"; 
-            
-            if (type === "error") {
-                iconEl.setAttribute('data-lucide', 'alert-circle');
-                iconEl.className = "w-6 h-6 shrink-0 text-red-400";
-                toast.classList.add('border-red-500/30');
-            } else if (type === "success") {
-                iconEl.setAttribute('data-lucide', 'check-circle');
-                iconEl.className = "w-6 h-6 shrink-0 text-emerald-400";
-                toast.classList.add('border-emerald-500/30');
-            } else {
-                iconEl.setAttribute('data-lucide', 'info');
-                iconEl.className = "w-6 h-6 shrink-0 text-[#ff91a4]";
-                toast.classList.add('border-white/10');
-            }
-            
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            toast.classList.add('show');
-            
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 5000);
+        /* القائمة الجانبية السيادية */
+        .sidebar { 
+            background-color: var(--bose-surface) !important; 
+            border-left: 2px solid var(--bose-border) !important; 
+            transition: right 0.4s ease; 
+            z-index: 100; 
+            height: 100vh; 
+            position: fixed; 
+            top: 0; 
+            right: 0; 
+            width: 340px; 
+            overflow-y: auto; 
+            display: flex; 
+            flex-direction: column; 
+        }
+        
+        .sidebar-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0, 0, 0, 0.85); 
+            backdrop-filter: blur(5px); 
+            z-index: 90; 
+            display: none; 
+            opacity: 0; 
+            transition: opacity 0.4s ease; 
+        }
+        
+        .sidebar-overlay.active { display: block; opacity: 1; }
+        
+        @media (max-width: 1024px) { 
+            .sidebar { right: -100%; max-width: 85%; } 
+            .sidebar.active { right: 0; } 
+            .main-content { margin-right: 0 !important; width: 100%; } 
+        }
+        
+        details > summary { 
+            list-style: none; 
+            cursor: pointer; 
+            padding: 18px 20px; 
+            border-radius: 14px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+            font-weight: 900; 
+            transition: all 0.3s ease; 
+            color: var(--bose-text); 
+            font-size: 1.1rem; 
+        }
+        
+        details > summary::-webkit-details-marker { display: none; }
+        details > summary:hover, details[open] > summary { background-color: rgba(255, 145, 164, 0.1); color: var(--bose-pink); }
+        
+        .submenu-item { 
+            display: flex; 
+            align-items: center; 
+            gap: 14px; 
+            padding: 14px 20px 14px 16px; 
+            margin: 6px 16px 6px 0; 
+            border-radius: 12px; 
+            color: var(--bose-muted); 
+            font-size: 1rem; 
+            transition: all 0.3s ease; 
+            font-weight: 700; 
+            cursor: pointer; 
+            border-right: 3px solid transparent; 
+        }
+        
+        .submenu-item:hover, .submenu-item.active { 
+            background-color: rgba(255, 145, 164, 0.15); 
+            color: var(--bose-text); 
+            border-right-color: var(--bose-pink); 
+            font-weight: 900; 
+        }
+
+        .main-content { margin-right: 340px; min-h: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
+        
+        .admin-section { display: none; animation: fadeIn 0.4s ease forwards; }
+        .admin-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* تباين كامل للبطاقات وحقول الإدخال */
+        .admin-card { 
+            background-color: var(--bose-surface) !important; 
+            border: 2px solid var(--bose-border) !important; 
+            border-radius: 24px; 
+            padding: 40px; 
+            margin-bottom: 30px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+        }
+        
+        .builder-block { 
+            background-color: var(--bose-bg) !important; 
+            border: 2px solid var(--bose-border) !important; 
+            border-radius: 20px; 
+            padding: 30px; 
+            margin-bottom: 24px; 
+            position: relative; 
+            transition: all 0.3s ease; 
+            border-right: 8px solid var(--bose-border) !important; 
+        }
+        
+        .builder-block:hover { 
+            border-color: var(--bose-pink) !important; 
+            border-right-color: var(--bose-pink) !important; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5); 
+        }
+        
+        .builder-block.hidden-section { 
+            opacity: 0.5; 
+            border-right-color: #555 !important; 
+            filter: grayscale(30%); 
+        }
+        
+        .form-label { 
+            display: block; 
+            color: var(--bose-text) !important; 
+            font-weight: 900; 
+            margin-bottom: 10px; 
+            font-size: 1.05rem; 
+        }
+        
+        /* نصوص المساعدة والتعليمات المجهرية */
+        .bose-helper-text { 
+            display: flex; 
+            align-items: start; 
+            gap: 8px; 
+            color: var(--bose-muted) !important; 
+            font-size: 0.9rem; 
+            font-weight: 700; 
+            margin-top: 10px; 
+            line-height: 1.6; 
+        }
+        
+        .bose-helper-text i { 
+            flex-shrink: 0; 
+            margin-top: 3px; 
+            color: var(--bose-pink); 
+        }
+        
+        .form-input, .form-select, .form-textarea { 
+            width: 100%; 
+            background-color: #110a0b !important; 
+            border: 2px solid var(--bose-border) !important; 
+            color: var(--bose-text) !important; 
+            border-radius: 14px; 
+            padding: 18px; 
+            font-family: inherit; 
+            font-weight: 900; 
+            font-size: 1.1rem; 
+            transition: all 0.3s ease; 
+        }
+        
+        .form-select { 
+            appearance: none; 
+            cursor: pointer; 
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ff91a4'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); 
+            background-repeat: no-repeat; 
+            background-position: left 16px center; 
+            background-size: 20px; 
+            padding-left: 45px; 
+        }
+        
+        .form-select option { 
+            background-color: var(--bose-surface) !important; 
+            color: var(--bose-text) !important; 
+            font-weight: 700; 
+            padding: 15px; 
+        }
+        
+        .form-input:focus, .form-select:focus, .form-textarea:focus { 
+            border-color: var(--bose-pink) !important; 
+            box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.15); 
+        }
+        
+        .form-input::placeholder, .form-textarea::placeholder { 
+            color: #6b4c53 !important; 
+            font-weight: 600; 
+        }
+        
+        .form-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+        
+        /* مؤشرات التحكم المنزلقة الدقيقة */
+        input[type=range] { 
+            -webkit-appearance: none; 
+            width: 100%; 
+            background: transparent; 
+            padding: 0; 
+            border: none; 
+            height: 30px;
+        }
+        
+        input[type=range]:focus { outline: none; }
+        
+        input[type=range]::-webkit-slider-runnable-track { 
+            width: 100%; 
+            height: 8px; 
+            cursor: pointer; 
+            background: var(--bose-border); 
+            border-radius: 4px; 
+        }
+        
+        input[type=range]::-webkit-slider-thumb { 
+            height: 26px; 
+            width: 26px; 
+            border-radius: 50%; 
+            background: var(--bose-pink); 
+            cursor: pointer; 
+            -webkit-appearance: none; 
+            margin-top: -9px; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.8); 
+            border: 4px solid var(--bose-bg); 
+        }
+        
+        /* مفتاح التفعيل اللامع */
+        .toggle-switch { position: relative; width: 60px; height: 32px; display: inline-block; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { 
+            position: absolute; 
+            cursor: pointer; 
+            top: 0; left: 0; right: 0; bottom: 0; 
+            background-color: #110a0b; 
+            transition: .4s; 
+            border-radius: 34px; 
+            border: 2px solid var(--bose-border); 
+        }
+        
+        .toggle-slider:before { 
+            position: absolute; 
+            content: ""; 
+            height: 20px; 
+            width: 20px; 
+            left: 4px; 
+            bottom: 4px; 
+            background-color: var(--bose-muted); 
+            transition: .4s; 
+            border-radius: 50%; 
+        }
+        
+        input:checked + .toggle-slider { background-color: rgba(255, 145, 164, 0.2); border-color: var(--bose-pink); }
+        input:checked + .toggle-slider:before { transform: translateX(28px); background-color: var(--bose-pink); }
+
+        /* الأزرار السيادية */
+        .btn-solid { 
+            background-color: var(--bose-pink) !important; 
+            color: var(--bose-bg) !important; 
+            border: none; 
+            border-radius: 14px; 
+            padding: 18px 36px; 
+            font-weight: 900; 
+            font-size: 1.2rem; 
+            cursor: pointer; 
+            transition: all 0.3s ease; 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 12px; 
+            width: 100%; 
+            box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25); 
+        }
+        
+        .btn-solid:hover { 
+            background-color: var(--bose-text) !important; 
+            color: var(--bose-pink) !important; 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 25px rgba(255, 145, 164, 0.4); 
+        }
+        
+        .btn-action { 
+            background-color: var(--bose-surface) !important; 
+            color: var(--bose-text) !important; 
+            border: 2px solid var(--bose-border) !important; 
+            border-radius: 12px; 
+            width: 48px; 
+            height: 48px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        
+        .btn-action:hover { background-color: var(--bose-pink) !important; color: var(--bose-bg) !important; border-color: var(--bose-pink) !important; }
+        .btn-action.danger:hover { background-color: #ef4444 !important; color: var(--bose-text) !important; border-color: #ef4444 !important; }
+
+        .admin-toast { 
+            position: fixed; 
+            top: 30px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            background: var(--bose-surface) !important; 
+            border: 2px solid var(--bose-pink) !important; 
+            color: var(--bose-text) !important; 
+            padding: 18px 40px; 
+            border-radius: 50px; 
+            z-index: 10000; 
+            font-weight: 900; 
+            font-size: 1.2rem; 
+            display: none; 
+            align-items: center; 
+            gap: 14px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
+        }
+        
+        .admin-toast.active { display: flex; animation: toastIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes toastIn { from { top: -60px; opacity: 0; } to { top: 30px; opacity: 1; } }
+    </style>
+</head>
+<body class="bg-brand-bg">
+
+    <div id="admin-toast" class="admin-toast">
+        <i data-lucide="check-circle" class="w-8 h-8 text-brand-pink"></i>
+        <span id="toast-msg">تم التنفيذ بنجاح</span>
+    </div>
+
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- القائمة الجانبية السيادية -->
+    <aside id="sidebar" class="sidebar">
+        <div class="p-8 border-b border-brand-border flex items-center justify-between sticky top-0 bg-[#2a1b1f] z-10">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-brand-bg border border-brand-pink/40 flex items-center justify-center shadow-lg">
+                    <i data-lucide="gem" class="w-7 h-7 text-brand-pink"></i>
+                </div>
+                <h1 class="text-2xl font-black text-brand-textMain tracking-tight">إدارة بوسي</h1>
+            </div>
+            <button onclick="toggleSidebar()" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
+        </div>
+
+        <nav class="flex-grow p-6 space-y-2">
+            <div class="submenu-item active" onclick="switchSection('dashboard', this)">
+                <i data-lucide="layout-dashboard" class="w-6 h-6"></i> شاشة الاستقرار والإحصاء
+            </div>
+
+            <details class="group mt-6" open>
+                <summary>
+                    <div class="flex items-center gap-3"><i data-lucide="monitor-smartphone" class="w-6 h-6"></i> الواجهة الرئيسية</div>
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                </summary>
+                <div class="flex flex-col mt-3 space-y-1">
+                    <div class="submenu-item" onclick="switchSection('ui-builder', this)"><i data-lucide="ruler" class="w-5 h-5"></i> محرك بناء واجهة الموقع بدقة</div>
+                    <div class="submenu-item" onclick="switchSection('ui-header', this)"><i data-lucide="panel-top" class="w-5 h-5"></i> الهيدر والقوائم العلوية</div>
+                    <div class="submenu-item" onclick="switchSection('ui-ticker', this)"><i data-lucide="radio" class="w-5 h-5"></i> الشريط المتحرك الإعلاني</div>
+                    <div class="submenu-item" onclick="switchSection('ui-footer', this)"><i data-lucide="panel-bottom" class="w-5 h-5"></i> الفوتر وبيانات التواصل</div>
+                </div>
+            </details>
+
+            <details class="group mt-4">
+                <summary>
+                    <div class="flex items-center gap-3"><i data-lucide="box" class="w-6 h-6"></i> إدارة الكتالوج</div>
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
+                </summary>
+                <div class="flex flex-col mt-3 space-y-1">
+                    <a href="admin-catalog.html" class="submenu-item text-decoration-none"><i data-lucide="folder" class="w-5 h-5"></i> المنتجات والأقسام</a>
+                    <a href="admin-logistics.html" class="submenu-item text-decoration-none"><i data-lucide="truck" class="w-5 h-5"></i> التسعير واللوجستيات</a>
+                </div>
+            </details>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="bg-[#2a1b1f] border-b border-brand-border sticky top-0 z-40 px-8 py-5 flex items-center justify-between shadow-lg">
+            <div class="flex items-center gap-5">
+                <button onclick="toggleSidebar()" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
+                <h2 id="current-section-title" class="text-2xl font-black text-brand-textMain">شاشة الاستقرار والإحصاء</h2>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3 bg-[#1a1012] px-5 py-2.5 rounded-full border border-brand-border shadow-inner">
+                    <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
+                    <span class="text-sm font-bold text-brand-textMuted">المحرك السيادي متصل</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="p-6 md:p-12 max-w-7xl mx-auto w-full">
+
+            <!-- شاشة الاستقرار النظيفة -->
+            <section id="dashboard" class="admin-section active">
+                <div class="admin-card flex flex-col items-center justify-center py-32 border-2 border-dashed border-brand-border bg-transparent shadow-none">
+                    <div class="w-28 h-28 rounded-full bg-[#1a1012] border-2 border-brand-border flex items-center justify-center mb-6 shadow-xl">
+                        <i data-lucide="shield-check" class="w-14 h-14 text-brand-pink"></i>
+                    </div>
+                    <h3 class="text-4xl font-black text-white mb-6 tracking-tight text-center">البيئة الإدارية مستقرة وجاهزة</h3>
+                    <p class="font-bold text-xl text-brand-textMuted text-center max-w-3xl leading-relaxed">
+                        يرجى اختيار الجزء المراد إدارته من القائمة الجانبية. تم تحسين بيئة الألوان لراحة العين، وتوفير أدوات دقيقة بالبيكسل لهندسة وتشكيل الواجهة بالكامل.
+                    </p>
+                </div>
+            </section>
+
+            <!-- محرك البناء الهندسي الدقيق -->
+            <section id="ui-builder" class="admin-section">
+                <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
+                    <div>
+                        <h3 class="text-3xl font-black text-brand-textMain flex items-center gap-3"><i data-lucide="ruler" class="text-brand-pink w-8 h-8"></i> محرك البناء والتحكم بالأبعاد</h3>
+                        <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
+                            صلاحيات سيادية مطلقة. أضف، انسخ، عطل، أو رتب أي قسم من أقسام الموقع بالكامل مع تحديد الأبعاد والسرعات بدقة تامة.
+                        </p>
+                    </div>
+                    <button onclick="addBuilderBlock()" class="bg-[#1a1012] border-2 border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#1a1012] font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 whitespace-nowrap text-xl shadow-lg">
+                        <i data-lucide="plus-square" class="w-6 h-6"></i> بناء قسم جديد
+                    </button>
+                </div>
+
+                <!-- مسرح عمليات رسم المكعبات -->
+                <div id="builder-container" class="space-y-8">
+                    <div class="text-center py-20 text-brand-textMuted font-bold text-xl"><i data-lucide="loader-2" class="w-12 h-12 animate-spin mx-auto mb-4 text-brand-pink"></i> جاري استدعاء الهيكل السيادي...</div>
+                </div>
+
+                <div class="mt-12 pt-10 border-t border-brand-border">
+                    <button onclick="saveBuilderLayout()" class="btn-solid py-5 text-xl"><i data-lucide="upload-cloud" class="w-7 h-7"></i> حفظ الهيكل وتطبيق التعديلات للعملاء فوراً</button>
+                </div>
+            </section>
+
+            <!-- إدارة الهيدر واللوجو -->
+            <section id="ui-header" class="admin-section">
+                <div class="admin-card">
+                    <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-top" class="text-brand-pink w-8 h-8"></i> إدارة الهيدر واللوجو</h3>
+                    <div class="space-y-8">
+                        <div>
+                            <label class="form-label">الاسم المعروض في أعلى الموقع (اللوجو النصي)</label>
+                            <input type="text" id="header-logo-text" class="form-input" placeholder="حلويات بوسي">
+                            <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يظهر هذا النص في الزاوية العلوية لجميع صفحات المتجر بجوار الماسة الرسمية للعلامة التجارية.</p>
+                        </div>
+                        <button onclick="saveHeaderData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> حفظ إعدادات الهيدر</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- الشريط المتحرك -->
+            <section id="ui-ticker" class="admin-section">
+                <div class="admin-card">
+                    <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="radio" class="text-brand-pink w-8 h-8"></i> الشريط الإعلاني المتحرك</h3>
+                    <div class="space-y-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div><label class="form-label">رسالة الجذب 1</label><input type="text" id="ticker-1" class="form-input" placeholder="اكتب الجملة هنا..."></div>
+                            <div><label class="form-label">رسالة الجذب 2</label><input type="text" id="ticker-2" class="form-input" placeholder="اكتب الجملة هنا..."></div>
+                            <div><label class="form-label">رسالة الجذب 3</label><input type="text" id="ticker-3" class="form-input"></div>
+                            <div><label class="form-label">رسالة الجذب 4</label><input type="text" id="ticker-4" class="form-input"></div>
+                        </div>
+                        <div class="pt-6 border-t border-brand-border w-full md:w-1/2">
+                            <label class="form-label text-brand-pink">سرعة تحرك الشريط (بالثواني)</label>
+                            <input type="number" id="ticker-speed" class="form-input text-2xl font-black text-center" value="40" min="10" max="120">
+                            <p class="bose-helper-text"><i data-lucide="alert-circle" class="w-5 h-5"></i> العلاقة عكسية: تقليل الرقم (مثال: 20 ثانية) يجعل الحركة أسرع للفت الانتباه بشكل مكثف. زيادة الرقم (مثال: 60 ثانية) تبطئ الحركة لتكون هادئة وسهلة القراءة.</p>
+                        </div>
+                        <button onclick="saveTickerData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> حفظ وتحديث الشريط</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- الفوتر والتواصل -->
+            <section id="ui-footer" class="admin-section">
+                <div class="admin-card">
+                    <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-bottom" class="text-brand-pink w-8 h-8"></i> الإعدادات الشاملة للفوتر والتواصل</h3>
+                    <div class="space-y-8">
+                        <div>
+                            <label class="form-label text-xl">نبذة تعريفية في ذيل الموقع</label>
+                            <textarea id="footer-desc" class="form-textarea text-lg" placeholder="اكتب نبذة راقية عن جودة وإتقان حلويات بوسي..."></textarea>
+                            <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> تظهر هذه النبذة في أسفل الصفحات لتعكس إرث العلامة التجارية وجودتها العالية.</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-brand-border">
+                            <div>
+                                <label class="form-label">رقم الهاتف الرسمي</label>
+                                <input type="text" id="footer-phone" class="form-input text-left font-black tracking-widest" dir="ltr" placeholder="01xxxxxxxxx">
+                            </div>
+                            <div>
+                                <label class="form-label">البريد الإلكتروني للطلبات</label>
+                                <input type="email" id="footer-email" class="form-input text-left" dir="ltr" placeholder="info@bosysweets.com">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="form-label">العنوان الرسمي التفصيلي</label>
+                                <input type="text" id="footer-address" class="form-input text-lg" placeholder="الكفاح، الفرافرة، الوادي الجديد">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-brand-border bg-[#1a1012] p-8 rounded-2xl border-2">
+                            <div><label class="form-label">رابط صفحة الفيسبوك</label><input type="text" id="footer-fb" class="form-input text-left" dir="ltr"></div>
+                            <div><label class="form-label">رابط حساب الإنستجرام</label><input type="text" id="footer-ig" class="form-input text-left" dir="ltr"></div>
+                            <div><label class="form-label">رابط حساب التيك توك</label><input type="text" id="footer-tiktok" class="form-input text-left" dir="ltr"></div>
+                        </div>
+                        <button onclick="saveFooterData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> اعتماد وتحديث بيانات الفوتر</button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- المحرك البرمجي للاتصال بقاعدة البيانات -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        
+        const firebaseConfig = { apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc", authDomain: "bosy-sweets.firebaseapp.com", projectId: "bosy-sweets" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        lucide.createIcons();
+
+        let builderBlocks = [];
+
+        // الهيكل المرجعي الافتراضي الذي يطابق معطيات الموقع الحالية بدقة بالغة
+        const defaultLayout = [
+            { id: 'sec_1', type: 'hero', title: 'عقد من التميز في صناعة الحلويات', subtitle: 'استمتع بمجموعتنا الفاخرة التي نعدها بشغف وإتقان.', isVisible: true },
+            { id: 'sec_2', type: 'waterfall', title: 'شلال الصور البصري', waterfallSpeed: 40, isVisible: true },
+            { id: 'sec_3', type: 'grid', title: 'منتجاتنا', dataSource: 'all', cardWidth: 280, cardHeight: 350, gridCols: 4, isVisible: true },
+            { id: 'sec_4', type: 'slider', title: 'وصل حديثاً', dataSource: 'latest', cardWidth: 280, cardHeight: 350, isVisible: true },
+            { id: 'sec_5', type: 'featured_promo', title: 'أهد اختياراً مميزاً', subtitle: 'شارك الفرحة مع أحبابك. باقات الورد الطبيعي المنسقة بعناية لدينا مثالية لأي مناسبة لتكتمل بها لحظاتكم السعيدة.', targetCategory: 'ورد', btnText: 'تسوق باقات الورد', promoImage: 'https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?q=80&w=600&auto=format&fit=crop', isVisible: true },
+            { id: 'sec_6', type: 'slider', title: 'الأكثر مبيعاً', dataSource: 'bestsellers', cardWidth: 280, cardHeight: 350, isVisible: true },
+            { id: 'sec_7', type: 'categories_slider', title: 'تسوق حسب الفئة', subtitle: 'اكتشف مصدر السعادة في كل قطعة تتذوقها.', cardWidth: 450, cardHeight: 560, isVisible: true },
+            { id: 'sec_8', type: 'stats', title: 'عشر سنوات من الثقة', subtitle: 'على مدار أكثر من عقد، كنا الاختيار الأول في تخليد ذكرياتكم السعيدة. نفخر بسجلنا الخالي تماماً من أي ملاحظات سلبية.', isVisible: true }
+        ];
+
+        window.toggleSidebar = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
         };
 
-        // 👑 تهيئة محرك قواعد البيانات المتوافق بالكامل مع الهواتف (Compat)
-        try {
-            const firebaseConfig = {
-                apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
-                authDomain: "bosy-sweets.firebaseapp.com",
-                projectId: "bosy-sweets",
-                storageBucket: "bosy-sweets.firebasestorage.app",
-                messagingSenderId: "473615735083",
-                appId: "1:473615735083:web:f09c6001c72640b2588d6e"
+        window.switchSection = function(sectionId, element) {
+            document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+            
+            document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            const titles = { 
+                'dashboard': 'شاشة الاستقرار والإحصاء', 
+                'ui-builder': 'محرك البناء الهندسي للواجهة', 
+                'ui-header': 'إدارة الهيدر واللوجو', 
+                'ui-ticker': 'إدارة الشريط الإعلاني المتحرك', 
+                'ui-footer': 'الإعدادات الشاملة للفوتر' 
             };
+            document.getElementById('current-section-title').innerText = titles[sectionId];
+            if(window.innerWidth <= 1024) toggleSidebar();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
 
-            // منع تكرار التهيئة
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
+        window.showToast = function(msg, type="success") {
+            const toast = document.getElementById('admin-toast');
+            document.getElementById('toast-msg').innerText = msg;
+            
+            if(type === 'error') {
+                toast.style.borderColor = '#ef4444';
+                toast.querySelector('i').setAttribute('data-lucide', 'alert-circle');
+            } else {
+                toast.style.borderColor = 'var(--bose-pink)';
+                toast.querySelector('i').setAttribute('data-lucide', 'check-circle');
             }
-        } catch (initError) {
-            console.error("خطأ في تهيئة الخوادم:", initError);
-            showToast("حدث خطأ في تحميل بيئة العمل السحابية.", "error");
-        }
+            lucide.createIcons();
 
-        // 👁️ التحكم في إظهار مفتاح التشفير
-        const togglePwdBtn = document.getElementById('toggle-pwd-btn');
-        const pwdInput = document.getElementById('admin-pwd');
-        const togglePwdIcon = document.getElementById('toggle-pwd-icon');
+            toast.classList.remove('active'); 
+            void toast.offsetWidth; 
+            toast.classList.add('active');
+            setTimeout(() => toast.classList.remove('active'), 4000);
+        };
 
-        if (togglePwdBtn && pwdInput) {
-            togglePwdBtn.addEventListener('click', () => {
-                const isPassword = pwdInput.type === 'password';
-                pwdInput.type = isPassword ? 'text' : 'password';
-                togglePwdIcon.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye');
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-            });
-        }
-
-        // 🚀 محرك الدخول السيادي المستقر
-        const executeAdminLogin = async () => {
-            const email = document.getElementById('admin-email').value.trim();
-            const pwd = document.getElementById('admin-pwd').value.trim();
-            const btn = document.getElementById('login-btn');
-
-            if (!email || !pwd) {
-                showToast("قرار إداري: يرجى استيفاء كافة بيانات الدخول للمتابعة.", "error");
+        // ---------------------------------------------------------
+        // 🏗️ محرك هندسة رسم كتل البناء (Rendering UI Blocks)
+        // ---------------------------------------------------------
+        
+        function renderBuilderUI() {
+            const container = document.getElementById('builder-container');
+            container.innerHTML = '';
+            
+            if(!builderBlocks || builderBlocks.length === 0) {
+                container.innerHTML = `<div class="text-center py-20 text-brand-textMuted font-bold text-xl">الموقع فارغ تماماً. اضغط على إضافة قسم لبدء البناء.</div>`;
                 return;
             }
 
-            // تأمين الزر
-            btn.innerHTML = `<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> <span>جاري التوثيق مع السحابة...</span>`;
-            btn.disabled = true;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-
-            // ضبط مؤقت زمني قوي يعمل خارج نظام Promise لضمان كسر التعليق
-            let isResolved = false;
-            const timeoutFallback = setTimeout(() => {
-                if (!isResolved) {
-                    btn.innerHTML = `<span>اعتماد الدخول</span><i data-lucide="log-in" class="w-6 h-6"></i>`; 
-                    btn.disabled = false;
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
-                    showToast("انتهى وقت الاتصال. يرجى التأكد من جودة الإنترنت أو إعدادات قاعدة البيانات.", "error");
+            builderBlocks.forEach((block, index) => {
+                const isHidden = !block.isVisible;
+                let specificSettingsHTML = '';
+                
+                // 1. إعدادات الشلال البصري المستقلة
+                if (block.type === 'waterfall') {
+                    specificSettingsHTML = `
+                        <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
+                            <h4 class="text-brand-pink font-black text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="settings-2" class="w-6 h-6"></i> التحكم الحركي لقسم الشلال</h4>
+                            <div class="w-full md:w-1/2">
+                                <div class="flex justify-between items-center mb-3">
+                                    <label class="form-label mb-0">سرعة حركة الصور بالشلال</label>
+                                    <span class="text-brand-pink font-black text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-water-${index}">${block.waterfallSpeed || 40} ثانية</span>
+                                </div>
+                                <input type="range" min="10" max="100" step="5" value="${block.waterfallSpeed || 40}" 
+                                    oninput="document.getElementById('w-val-water-${index}').innerText = this.value + ' ثانية'" 
+                                    onchange="updateBlockData(${index}, 'waterfallSpeed', parseInt(this.value))">
+                                <p class="bose-helper-text mt-3"><i data-lucide="alert-circle" class="w-4 h-4"></i> تقليل الرقم يزيد من سرعة صعود الصور للفت الانتباه السريع. زيادة الرقم يجعل الحركة بطيئة وانسيابية مريحة لعين المتصفح.</p>
+                            </div>
+                        </div>
+                    `;
                 }
-            }, 12000);
+                // 2. إعدادات كروت المنتجات بالأبعاد المطلقة
+                else if (block.type === 'slider' || block.type === 'grid') {
+                    specificSettingsHTML = `
+                        <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
+                            <h4 class="text-brand-pink font-black text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="settings-2" class="w-6 h-6"></i> أبعاد وهندسة كروت المنتجات</h4>
+                            
+                            <div class="mb-8 pb-8 border-b border-brand-border/50">
+                                <label class="form-label">مصدر تغذية المنتجات لهذا القسم</label>
+                                <select class="form-select w-full md:w-1/2" onchange="updateBlockData(${index}, 'dataSource', this.value)">
+                                    <option value="all" ${block.dataSource === 'all' ? 'selected' : ''}>كافة الكتالوج المعتمد (مختلط)</option>
+                                    <option value="latest" ${block.dataSource === 'latest' ? 'selected' : ''}>وصل حديثاً (أحدث المنتجات المضافة)</option>
+                                    <option value="bestsellers" ${block.dataSource === 'bestsellers' ? 'selected' : ''}>الأكثر مبيعاً ورواجاً</option>
+                                    <option value="category:تورت" ${block.dataSource === 'category:تورت' ? 'selected' : ''}>تصفية: المنتجات من قسم التورت فقط</option>
+                                    <option value="category:جاتوهات" ${block.dataSource === 'category:جاتوهات' ? 'selected' : ''}>تصفية: المنتجات من قسم الجاتوهات فقط</option>
+                                    <option value="category:ورد" ${block.dataSource === 'category:ورد' ? 'selected' : ''}>تصفية: المنتجات من قسم الورد فقط</option>
+                                    <option value="category:سينابون" ${block.dataSource === 'category:سينابون' ? 'selected' : ''}>تصفية: المنتجات من قسم السينابون فقط</option>
+                                </select>
+                                <p class="bose-helper-text"><i data-lucide="info" class="w-4 h-4"></i> يحدد للمحرك من أي تصنيف في الكتالوج يتم سحب معروضات هذا القسم تلقائياً.</p>
+                            </div>
 
-            try {
-                // استخدام نظام التوثيق المتوافق
-                const auth = firebase.auth();
-                await auth.signInWithEmailAndPassword(email, pwd);
-                
-                isResolved = true;
-                clearTimeout(timeoutFallback);
-                
-                showToast("تم التحقق بنجاح. جاري توجيهكم لمركز القيادة الرئيسي.", "success");
-                sessionStorage.setItem('bosy_admin_auth', 'verified');
-                
-                setTimeout(() => {
-                    window.location.href = 'admin-theme.html';
-                }, 1000);
-
-            } catch (error) {
-                isResolved = true;
-                clearTimeout(timeoutFallback);
-                
-                // استعادة الواجهة فوراً
-                btn.innerHTML = `<span>اعتماد الدخول</span><i data-lucide="log-in" class="w-6 h-6"></i>`; 
-                btn.disabled = false;
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-
-                const errCode = error.code || '';
-                
-                if (errCode === 'auth/network-request-failed') {
-                    showToast("تعذر الاتصال بخوادم بوسي، يرجى التحقق من جودة اتصال الإنترنت لديكم.", "error");
-                } else if (errCode === 'auth/user-not-found' || errCode === 'auth/wrong-password' || errCode === 'auth/invalid-credential') {
-                    showToast("البيانات المدخلة غير صحيحة. يرجى مراجعة مفتاح التشفير والبريد.", "error");
-                } else if (errCode === 'auth/too-many-requests') {
-                    showToast("تم رصد محاولات متكررة. يرجى الانتظار قليلاً لضمان الأمان.", "error");
-                } else {
-                    showToast(`تم إيقاف العملية: ${error.message || 'خطأ غير معروف'}`, "error");
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                                <div>
+                                    <div class="flex justify-between items-center mb-3">
+                                        <label class="form-label mb-0 text-brand-pink">عرض كارت المنتج بالكامل (Width)</label>
+                                        <span class="text-brand-pink font-black text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-w-${index}">${block.cardWidth || 280}px</span>
+                                    </div>
+                                    <input type="range" min="150" max="600" step="10" value="${block.cardWidth || 280}" 
+                                        oninput="document.getElementById('w-val-w-${index}').innerText = this.value + 'px'" 
+                                        onchange="updateBlockData(${index}, 'cardWidth', parseInt(this.value))">
+                                    <p class="bose-helper-text"><i data-lucide="move-horizontal" class="w-4 h-4"></i> لتحديد عرض الكارت. زيادة العرض تمنح الصور مساحة أفقية أكبر وتبرز التفاصيل بدقة.</p>
+                                </div>
+                                
+                                <div>
+                                    <div class="flex justify-between items-center mb-3">
+                                        <label class="form-label mb-0 text-brand-pink">ارتفاع كارت المنتج بالكامل (Height)</label>
+                                        <span class="text-brand-pink font-black text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-h-${index}">${block.cardHeight || 350}px</span>
+                                    </div>
+                                    <input type="range" min="150" max="800" step="10" value="${block.cardHeight || 350}" 
+                                        oninput="document.getElementById('w-val-h-${index}').innerText = this.value + 'px'" 
+                                        onchange="updateBlockData(${index}, 'cardHeight', parseInt(this.value))">
+                                    <p class="bose-helper-text"><i data-lucide="move-vertical" class="w-4 h-4"></i> لتغيير الارتفاع الرأسي لصورة المنتج في الكارت بشكل حر تماماً للتحكم بنسبة الطول.</p>
+                                </div>
+                            </div>
+                            
+                            ${block.type === 'grid' ? `
+                            <div class="mt-8 pt-8 border-t border-brand-border/50">
+                                <label class="form-label">عدد الأعمدة في الشبكة لمتصفحي الكمبيوتر</label>
+                                <select class="form-select w-full md:w-1/2" onchange="updateBlockData(${index}, 'gridCols', parseInt(this.value))">
+                                    <option value="2" ${block.gridCols === 2 ? 'selected' : ''}>2 عمود (عرض كروت ضخمة ومميزة)</option>
+                                    <option value="3" ${block.gridCols === 3 ? 'selected' : ''}>3 أعمدة (توازن مثالي للرؤية)</option>
+                                    <option value="4" ${block.gridCols === 4 ? 'selected' : ''}>4 أعمدة (الحجم القياسي لمتجر حلويات بوسي)</option>
+                                </select>
+                            </div>` : ''}
+                        </div>
+                    `;
+                } 
+                // 3. إعدادات قسم العرض الترويجي (الورد والمناسبات)
+                else if (block.type === 'featured_promo') {
+                    specificSettingsHTML = `
+                        <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
+                            <h4 class="text-brand-pink font-black text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="image" class="w-6 h-6"></i> محتوى وتفاصيل العرض الترويجي</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="md:col-span-2">
+                                    <label class="form-label">النص التسويقي الطويل للقسم</label>
+                                    <textarea class="form-textarea h-28" onchange="updateBlockData(${index}, 'subtitle', this.value)" placeholder="اكتب النص التسويقي الجذاب هنا...">${block.subtitle || ''}</textarea>
+                                </div>
+                                <div>
+                                    <label class="form-label">رابط صورة العرض البانر (URL)</label>
+                                    <input type="text" class="form-input text-left" dir="ltr" value="${block.promoImage || ''}" onchange="updateBlockData(${index}, 'promoImage', this.value)">
+                                    <p class="bose-helper-text"><i data-lucide="link" class="w-4 h-4"></i> يفضل وضع رابط لصورة بانورامية عالية الجودة لتبهر المتصفح فوراً.</p>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><label class="form-label">نص زر التوجيه</label><input type="text" class="form-input" value="${block.btnText || ''}" onchange="updateBlockData(${index}, 'btnText', this.value)"></div>
+                                    <div>
+                                        <label class="form-label text-brand-pink">القسم المستهدف للتوجيه عند الضغط</label>
+                                        <input type="text" class="form-input border-brand-pink/50 text-brand-pink font-bold" value="${block.targetCategory || ''}" onchange="updateBlockData(${index}, 'targetCategory', this.value)" placeholder="مثال: ورد">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } 
+                // 4. إعدادات أبعاد كروت الأقسام والتصنيفات
+                else if (block.type === 'categories_slider') {
+                    specificSettingsHTML = `
+                        <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
+                            <h4 class="text-brand-pink font-black text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="layers" class="w-6 h-6"></i> الأبعاد الهندسية لكروت التصنيفات (الفئات)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                                <div>
+                                    <div class="flex justify-between items-center mb-3">
+                                        <label class="form-label mb-0 text-brand-pink">عرض كارت القسم بالبيكسل</label>
+                                        <span class="text-brand-pink font-black text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-cat-w-${index}">${block.cardWidth || 450}px</span>
+                                    </div>
+                                    <input type="range" min="200" max="800" step="10" value="${block.cardWidth || 450}" 
+                                        oninput="document.getElementById('w-val-cat-w-${index}').innerText = this.value + 'px'" 
+                                        onchange="updateBlockData(${index}, 'cardWidth', parseInt(this.value))">
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-3">
+                                        <label class="form-label mb-0 text-brand-pink">ارتفاع كارت القسم بالبيكسل</label>
+                                        <span class="text-brand-pink font-black text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-cat-h-${index}">${block.cardHeight || 560}px</span>
+                                    </div>
+                                    <input type="range" min="200" max="800" step="10" value="${block.cardHeight || 560}" 
+                                        oninput="document.getElementById('w-val-cat-h-${index}').innerText = this.value + 'px'" 
+                                        onchange="updateBlockData(${index}, 'cardHeight', parseInt(this.value))">
+                                    <p class="bose-helper-text"><i data-lucide="info" class="w-4 h-4"></i> تتيح لكِ إعطاء كروت المنيو حجماً مستقلاً لتبرز بوضوح فئات المنتجات للعملاء.</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } 
+                // 5. أقسام النصوص والمقالات والافتتاحية
+                else if (block.type === 'hero' || block.type === 'stats') {
+                    specificSettingsHTML = `
+                        <div class="mt-6">
+                            <label class="form-label">المحتوى النصي التفصيلي للقسم</label>
+                            <textarea class="form-textarea" onchange="updateBlockData(${index}, 'subtitle', this.value)" placeholder="اكتب النص التعريفي الكامل هنا...">${block.subtitle || ''}</textarea>
+                        </div>
+                    `;
                 }
+
+                const html = `
+                    <div class="builder-block ${isHidden ? 'hidden-section' : ''}" id="block-${index}">
+                        <div class="flex flex-col lg:flex-row items-start justify-between gap-8">
+                            
+                            <div class="flex-1 w-full space-y-6">
+                                <div class="flex items-center gap-4 mb-2">
+                                    <span class="bg-brand-surface text-brand-pink px-4 py-2 rounded-xl text-base font-black border-2 border-brand-border">قسم رقم: ${index + 1}</span>
+                                    ${isHidden ? '<span class="bg-red-900/30 text-red-400 px-4 py-2 rounded-xl text-base font-bold border border-red-900/50">القسم مخفي حالياً عن العملاء</span>' : ''}
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div>
+                                        <label class="form-label text-brand-pink">الهيكل التصميمي للقسم</label>
+                                        <select class="form-select border-brand-pink text-brand-pink" onchange="updateBlockData(${index}, 'type', this.value)">
+                                            <option value="slider" ${block.type === 'slider' ? 'selected' : ''}>شريط منتجات متحرك أفقي (Slider)</option>
+                                            <option value="grid" ${block.type === 'grid' ? 'selected' : ''}>شبكة منتجات ثابتة (Grid)</option>
+                                            <option value="featured_promo" ${block.type === 'featured_promo' ? 'selected' : ''}>عرض ترويجي لمنتج/قسم خاص (كالورد)</option>
+                                            <option value="categories_slider" ${block.type === 'categories_slider' ? 'selected' : ''}>استعراض التصنيفات وفئات المنيو</option>
+                                            <option value="waterfall" ${block.type === 'waterfall' ? 'selected' : ''}>شلال الصور البصري الجمالي</option>
+                                            <option value="hero" ${block.type === 'hero' ? 'selected' : ''}>رسالة الترحيب والافتتاحية (Hero)</option>
+                                            <option value="stats" ${block.type === 'stats' ? 'selected' : ''}>إحصاءات الثقة والمقالات النصية</option>
+                                        </select>
+                                        <p class="bose-helper-text"><i data-lucide="layout" class="w-4 h-4"></i> تبديل الهيكل يغير شكل القسم فوراً ويفتح خيارات التحكم بالأبعاد الخاصة به بالأسفل.</p>
+                                    </div>
+                                    <div>
+                                        <label class="form-label">العنوان الرئيسي البارز للعميل</label>
+                                        <input type="text" class="form-input" value="${block.title || ''}" onchange="updateBlockData(${index}, 'title', this.value)" placeholder="مثال: الأكثر مبيعاً، إبداعاتنا...">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-row lg:flex-col gap-3 shrink-0 bg-brand-surface p-4 rounded-3xl border-2 border-brand-border w-full lg:w-auto justify-center shadow-lg">
+                                <div class="flex gap-3 justify-center">
+                                    <button onclick="moveBlock(${index}, -1)" class="btn-action" title="رفع لأعلى خطوة" ${index === 0 ? 'disabled style="opacity:0.3"' : ''}><i data-lucide="arrow-up" class="w-6 h-6"></i></button>
+                                    <button onclick="moveBlock(${index}, 1)" class="btn-action" title="تنزيل لأسفل خطوة" ${index === builderBlocks.length - 1 ? 'disabled style="opacity:0.3"' : ''}><i data-lucide="arrow-down" class="w-6 h-6"></i></button>
+                                </div>
+                                <div class="flex gap-3 justify-center">
+                                    <button onclick="toggleVisibility(${index})" class="btn-action ${isHidden ? 'bg-brand-pink/20 text-brand-pink border-brand-pink' : ''}" title="${isHidden ? 'إظهار القسم للمستخدمين' : 'إخفاء القسم مؤقتاً'}"><i data-lucide="${isHidden ? 'eye-off' : 'eye'}" class="w-6 h-6"></i></button>
+                                    <button onclick="duplicateBlock(${index})" class="btn-action" title="نسخ القسم بكافة إعداداته"><i data-lucide="copy" class="w-6 h-6"></i></button>
+                                    <button onclick="deleteBlock(${index})" class="btn-action danger" title="هدم وحذف نهائي للقسم"><i data-lucide="trash-2" class="w-6 h-6"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${specificSettingsHTML}
+                        
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+            lucide.createIcons();
+        }
+
+        window.addBuilderBlock = function() {
+            builderBlocks.push({ id: 'sec_' + Date.now(), type: 'slider', title: 'قسم جديد', dataSource: 'latest', cardWidth: 280, cardHeight: 350, isVisible: true });
+            renderBuilderUI();
+            setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
+        };
+
+        window.updateBlockData = function(index, key, value) {
+            builderBlocks[index][key] = value;
+            if(key === 'type') renderBuilderUI(); 
+        };
+
+        window.moveBlock = function(index, direction) {
+            if (index + direction < 0 || index + direction >= builderBlocks.length) return;
+            const temp = builderBlocks[index];
+            builderBlocks[index] = builderBlocks[index + direction];
+            builderBlocks[index + direction] = temp;
+            renderBuilderUI();
+        };
+
+        window.duplicateBlock = function(index) {
+            const copy = JSON.parse(JSON.stringify(builderBlocks[index]));
+            copy.id = 'sec_' + Date.now(); 
+            copy.title = copy.title ? copy.title + ' (نسخة)' : 'نسخة';
+            builderBlocks.splice(index + 1, 0, copy);
+            renderBuilderUI();
+        };
+
+        window.deleteBlock = function(index) {
+            if(confirm("تأكيد سيادي: هل ترغب بحذف هذا القسم نهائياً من الموقع وهدمه؟")) {
+                builderBlocks.splice(index, 1);
+                renderBuilderUI();
             }
         };
 
-        // ربط الأحداث
-        const loginBtn = document.getElementById('login-btn');
-        if (loginBtn) loginBtn.addEventListener('click', executeAdminLogin);
-        
-        const handleEnterKey = (e) => { if (e.key === 'Enter') executeAdminLogin(); };
-        document.getElementById('admin-email').addEventListener('keypress', handleEnterKey);
-        document.getElementById('admin-pwd').addEventListener('keypress', handleEnterKey);
+        window.toggleVisibility = function(index) {
+            builderBlocks[index].isVisible = !builderBlocks[index].isVisible;
+            renderBuilderUI();
+        };
 
-        // 🛡️ توجيه الجلسة النشطة
-        document.addEventListener('DOMContentLoaded', () => {
+        // ---------------------------------------------------------
+        // ☁️ الاتصال بقاعدة البيانات السحابية (Firebase SDK V10)
+        // ---------------------------------------------------------
+
+        async function loadAdminData() {
             try {
-                firebase.auth().onAuthStateChanged((user) => {
-                    if (user && sessionStorage.getItem('bosy_admin_auth') === 'verified') {
-                        window.location.href = 'admin-theme.html';
+                const snap = await getDoc(doc(db, 'settings', 'theme'));
+                if(snap.exists()) {
+                    const data = snap.data();
+                    
+                    if(data.builderLayout && Array.isArray(data.builderLayout) && data.builderLayout.length > 0) {
+                        builderBlocks = data.builderLayout;
+                    } else {
+                        builderBlocks = JSON.parse(JSON.stringify(defaultLayout));
                     }
-                });
-            } catch (e) {}
-        });
+                    renderBuilderUI();
+
+                    if(data.header) { document.getElementById('header-logo-text').value = data.header.logoText || ''; }
+
+                    if(data.ticker) {
+                        document.getElementById('ticker-1').value = data.ticker[0] || '';
+                        document.getElementById('ticker-2').value = data.ticker[1] || '';
+                        document.getElementById('ticker-3').value = data.ticker[2] || '';
+                        document.getElementById('ticker-4').value = data.ticker[3] || '';
+                        document.getElementById('ticker-speed').value = data.tickerSpeed || 40;
+                    }
+
+                    if(data.footer) {
+                        document.getElementById('footer-desc').value = data.footer.desc || '';
+                        document.getElementById('footer-phone').value = data.footer.phone || '';
+                        document.getElementById('footer-email').value = data.footer.email || '';
+                        document.getElementById('footer-address').value = data.footer.address || '';
+                        document.getElementById('footer-fb').value = data.footer.facebook || '';
+                        document.getElementById('footer-ig').value = data.footer.instagram || '';
+                        document.getElementById('footer-tiktok').value = data.footer.tiktok || '';
+                    }
+                } else {
+                    builderBlocks = JSON.parse(JSON.stringify(defaultLayout));
+                    renderBuilderUI();
+                }
+            } catch (error) { 
+                console.error("خطأ قراءة السحابة:", error); 
+                document.getElementById('builder-container').innerHTML = '<div class="text-red-500 font-black text-center py-10 bg-red-900/20 rounded-xl border-2 border-red-500/50">فشل الاتصال بقاعدة البيانات. يرجى مراجعة الخادم والتحقق من جودة الاتصال.</div>';
+            }
+        }
+
+        window.saveBuilderLayout = async function() {
+            try {
+                await setDoc(doc(db, 'settings', 'theme'), { builderLayout: builderBlocks, updatedAt: Date.now() }, { merge: true });
+                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                showToast("تم اعتماد البناء الهندسي الجديد بنجاح وبث التحديثات للعملاء.");
+            } catch(e) { alert("حدث خطأ أثناء الاتصال بالخادم."); }
+        }
+
+        window.saveHeaderData = async function() {
+            try {
+                await setDoc(doc(db, 'settings', 'theme'), { header: { logoText: document.getElementById('header-logo-text').value.trim() }, updatedAt: Date.now() }, { merge: true });
+                showToast("تم تحديث وحفظ لوجو الهيدر.");
+            } catch(e) {}
+        }
+
+        window.saveTickerData = async function() {
+            const tickerArr = [ document.getElementById('ticker-1').value.trim(), document.getElementById('ticker-2').value.trim(), document.getElementById('ticker-3').value.trim(), document.getElementById('ticker-4').value.trim() ].filter(t => t !== '');
+            try {
+                await setDoc(doc(db, 'settings', 'theme'), { ticker: tickerArr, tickerSpeed: parseInt(document.getElementById('ticker-speed').value) || 40, updatedAt: Date.now() }, { merge: true });
+                showToast("تم تحديث نصوص الشريط وسرعة الحركة.");
+            } catch(e) {}
+        }
+
+        window.saveFooterData = async function() {
+            try {
+                await setDoc(doc(db, 'settings', 'theme'), { 
+                    footer: {
+                        desc: document.getElementById('footer-desc').value.trim(),
+                        phone: document.getElementById('footer-phone').value.trim(),
+                        email: document.getElementById('footer-email').value.trim(),
+                        address: document.getElementById('footer-address').value.trim(),
+                        facebook: document.getElementById('footer-fb').value.trim(),
+                        instagram: document.getElementById('footer-ig').value.trim(),
+                        tiktok: document.getElementById('footer-tiktok').value.trim()
+                    },
+                    updatedAt: Date.now()
+                }, { merge: true });
+                showToast("تم توثيق بيانات الفوتر ومنافذ التواصل بنجاح.");
+            } catch(e) {}
+        }
+
+        document.addEventListener('DOMContentLoaded', loadAdminData);
+
     </script>
 </body>
 </html>
+
