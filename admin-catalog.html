@@ -48,17 +48,20 @@
         ::-webkit-scrollbar-thumb { background: var(--bose-border); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--bose-pink); }
 
+        /* القائمة الجانبية السيادية المنسدلة بعمق */
         .sidebar { background-color: var(--bose-surface) !important; border-left: 2px solid var(--bose-border) !important; transition: right 0.4s ease; z-index: 100; height: 100vh; position: fixed; top: 0; right: 0; width: 340px; overflow-y: auto; display: flex; flex-direction: column; }
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); z-index: 90; display: none; opacity: 0; transition: opacity 0.4s ease; }
         .sidebar-overlay.active { display: block; opacity: 1; }
         @media (max-width: 1024px) { .sidebar { right: -100%; max-width: 85%; } .sidebar.active { right: 0; } .main-content { margin-right: 0 !important; width: 100%; } }
         
+        /* هندسة القوائم الفرعية المنسدلة بدقة تمنع التمرير اللانهائي */
         details > summary { list-style: none; cursor: pointer; padding: 18px 20px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; font-weight: 900; transition: all 0.3s ease; color: var(--bose-text); font-size: 1.1rem; }
         details > summary::-webkit-details-marker { display: none; }
         details > summary:hover, details[open] > summary { background-color: rgba(255, 145, 164, 0.1); color: var(--bose-pink); }
         
-        .submenu-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px 14px 16px; margin: 6px 16px 6px 0; border-radius: 12px; color: var(--bose-muted); font-size: 1rem; transition: all 0.3s ease; font-weight: 700; cursor: pointer; border-right: 3px solid transparent; }
-        .submenu-item:hover, .submenu-item.active { background-color: rgba(255, 145, 164, 0.15); color: var(--bose-text); border-right-color: var(--bose-pink); font-weight: 900; }
+        .submenu-scroll-container { max-height: 250px; overflow-y: auto; border-right: 2px solid var(--bose-border); margin-right: 20px; padding-right: 5px; }
+        .submenu-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin: 4px 0; border-radius: 10px; color: var(--bose-muted); font-size: 0.95rem; transition: all 0.3s ease; font-weight: 700; cursor: pointer; }
+        .submenu-item:hover, .submenu-item.active { background-color: rgba(255, 145, 164, 0.15); color: var(--bose-text); font-weight: 900; }
 
         .main-content { margin-right: 340px; min-h: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
         .admin-section { display: none; animation: fadeIn 0.4s ease forwards; }
@@ -92,7 +95,7 @@
         .btn-solid { background-color: var(--bose-pink) !important; color: var(--bose-bg) !important; border: none; border-radius: 14px; padding: 18px 36px; font-weight: 900; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 12px; width: 100%; box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25); }
         .btn-solid:hover { background-color: var(--bose-text) !important; color: var(--bose-pink) !important; transform: translateY(-3px); box-shadow: 0 8px 25px rgba(255, 145, 164, 0.4); }
         
-        .btn-action { background-color: var(--bose-surface) !important; color: var(--bose-text) !important; border: 2px solid var(--bose-border) !important; border-radius: 12px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
+        .btn-action { background-color: var(--bose-surface) !important; border: 2px solid var(--bose-border) !important; color: var(--bose-text) !important; border-radius: 12px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
         .btn-action:hover { background-color: var(--bose-pink) !important; color: var(--bose-bg) !important; border-color: var(--bose-pink) !important; }
         .btn-action.danger:hover { background-color: #ef4444 !important; color: var(--bose-text) !important; border-color: #ef4444 !important; }
 
@@ -106,7 +109,7 @@
         .catalog-item .discount-badge { position: absolute; top: 16px; right: 16px; background-color: var(--bose-pink); color: #1a1012; font-weight: 900; padding: 6px 12px; border-radius: 8px; font-size: 0.85rem; z-index: 20; box-shadow: 0 4px 10px rgba(255,145,164,0.3); }
     </style>
 </head>
-<body>
+<body class="bg-brand-bg">
 
     <div id="admin-toast" class="admin-toast">
         <i data-lucide="check-circle" class="w-8 h-8 text-brand-pink"></i>
@@ -115,7 +118,7 @@
 
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <!-- 👑 القائمة الجانبية -->
+    <!-- 👑 القائمة الجانبية المنسدلة بعمق وعزل كامل للأقسام -->
     <aside id="sidebar" class="sidebar">
         <div class="p-8 border-b border-brand-border flex items-center justify-between sticky top-0 bg-[#2a1b1f] z-10">
             <div class="flex items-center gap-4">
@@ -128,24 +131,31 @@
         </div>
 
         <nav class="flex-grow p-6 space-y-2">
-            <div class="submenu-item active" onclick="switchSection('dashboard', this)">
-                <i data-lucide="bar-chart-2" class="w-6 h-6"></i> إحصاءات الكتالوج
+            <div class="submenu-item active" id="menu-item-dash" onclick="switchSection('dashboard', this)">
+                <i data-lucide="bar-chart-2" class="w-6 h-6"></i> شاشة الاستقرار النظيفة
             </div>
 
+            <!-- قائمة إدارة الكتالوج المنسدلة تفصيلياً لعزل المنتجات لقسمها فقط -->
             <details class="group mt-6" open>
                 <summary>
                     <div class="flex items-center gap-3"><i data-lucide="box" class="w-6 h-6"></i> إدارة الكتالوج</div>
                     <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
                 </summary>
-                <div class="flex flex-col mt-3 space-y-1">
-                    <div class="submenu-item" onclick="switchSection('product-editor', this)"><i data-lucide="plus-square" class="w-5 h-5"></i> المهندس الشامل للمنتج</div>
-                    <div class="submenu-item" onclick="switchSection('product-list', this)"><i data-lucide="list" class="w-5 h-5"></i> أدوات التسعير واستعراض الكتالوج</div>
+                
+                <!-- حاوية الأقسام الديناميكية المنسدلة لمنع السكرول الطويل -->
+                <div class="submenu-scroll-container mt-3" id="sidebar-dynamic-categories">
+                    <div class="text-center py-4 text-xs text-brand-textMuted font-bold">جاري تحميل الأقسام...</div>
                 </div>
             </details>
 
+            <!-- محرك إضافة منتج مستقل -->
+            <div class="submenu-item mt-4" id="menu-item-editor" onclick="switchSection('product-editor', this)">
+                <i data-lucide="plus-square" class="w-6 h-6"></i> إضافة منتج جديد
+            </div>
+
             <details class="group mt-4">
                 <summary>
-                    <div class="flex items-center gap-3"><i data-lucide="monitor-smartphone" class="w-6 h-6"></i> الواجهة الرئيسية</div>
+                    <div class="flex items-center gap-3"><i data-lucide="monitor-smartphone" class="w-6 h-6"></i> باقي الواجهات</div>
                     <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
                 </summary>
                 <div class="flex flex-col mt-3 space-y-1">
@@ -160,7 +170,7 @@
         <header class="bg-[#2a1b1f] border-b border-brand-border sticky top-0 z-40 px-8 py-5 flex items-center justify-between shadow-lg">
             <div class="flex items-center gap-5">
                 <button onclick="toggleSidebar()" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
-                <h2 id="current-section-title" class="text-2xl font-black text-brand-textMain">إحصاءات الكتالوج</h2>
+                <h2 id="current-section-title" class="text-2xl font-black text-white">شاشة الاستقرار</h2>
             </div>
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-3 bg-[#1a1012] px-5 py-2.5 rounded-full border border-brand-border shadow-inner">
@@ -172,51 +182,72 @@
 
         <div class="p-6 md:p-12 max-w-7xl mx-auto w-full">
 
-            <!-- 1. شاشة الإحصاءات -->
+            <!-- 1. شاشة الاستقرار النظيفة تماماً -->
             <section id="dashboard" class="admin-section active">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-                    <div class="admin-card !p-8 flex flex-col items-center justify-center text-center">
-                        <div class="w-20 h-20 rounded-full bg-brand-bg border-2 border-brand-border flex items-center justify-center text-brand-pink mb-4"><i data-lucide="package" class="w-10 h-10"></i></div>
-                        <h3 class="text-5xl font-black text-white mb-2" id="stat-total-products">0</h3>
-                        <p class="text-brand-textMuted font-bold text-lg">إجمالي المنتجات</p>
+                <div class="admin-card flex flex-col items-center justify-center py-32 border-dashed border-2 border-brand-border bg-transparent shadow-none">
+                    <div class="w-24 h-24 rounded-full bg-brand-surface border border-brand-border flex items-center justify-center mb-6 shadow-lg">
+                        <i data-lucide="shield-check" class="w-12 h-12 text-brand-pink"></i>
                     </div>
-                    <div class="admin-card !p-8 flex flex-col items-center justify-center text-center">
-                        <div class="w-20 h-20 rounded-full bg-brand-bg border-2 border-brand-border flex items-center justify-center text-brand-pink mb-4"><i data-lucide="layers" class="w-10 h-10"></i></div>
-                        <h3 class="text-5xl font-black text-white mb-2" id="stat-total-categories">0</h3>
-                        <p class="text-brand-textMuted font-bold text-lg">الأقسام النشطة</p>
-                    </div>
-                    <div class="admin-card !p-8 flex flex-col items-center justify-center text-center border-red-900/50">
-                        <div class="w-20 h-20 rounded-full bg-brand-bg border-2 border-red-900/50 flex items-center justify-center text-red-400 mb-4"><i data-lucide="alert-triangle" class="w-10 h-10"></i></div>
-                        <h3 class="text-5xl font-black text-red-400 mb-2" id="stat-out-of-stock">0</h3>
-                        <p class="text-brand-textMuted font-bold text-lg">منتجات نفذت كميتها</p>
-                    </div>
+                    <h3 class="text-3xl font-black text-white mb-4">البيئة الإدارية مستقرة وجاهزة</h3>
+                    <p class="font-bold text-xl text-brand-textMuted text-center max-w-2xl leading-relaxed">
+                        الشاشة الآن نظيفة وخالية من أي فوضى بصرية. يرجى فتح القائمة الجانبية واختيار القسم المحدد المراد استعراضه وتعديل منتجاته دون المرور بمنتجات الأقسام الأخرى.
+                    </p>
                 </div>
             </section>
 
-            <!-- 2. المهندس الشامل للمنتج -->
+            <!-- 2. محرك الكتالوج المصفى حسب القسم المحدد (عزل تام) -->
+            <section id="product-list" class="admin-section">
+                
+                <!-- أدوات التسعير المجمع للقسم المختار حصرياً -->
+                <div class="admin-card mb-12 bg-[#1a1012] border-brand-pink/30">
+                    <h4 class="text-brand-pink font-black text-2xl mb-4 flex items-center gap-3"><i data-lucide="calculator" class="w-8 h-8"></i> التعديل المجمع لأسعار قسم: <span id="bulk-title-target" class="text-white"></span></h4>
+                    <p class="text-brand-textMuted font-bold mb-6">تطبيق زيادة أو خصم بنسبة مئوية على جميع المنتجات المعروضة في هذا القسم حالياً دفعة واحدة.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+                        <div>
+                            <label class="form-label">النسبة المئوية الحسابية (%)</label>
+                            <input type="number" id="bulk-percent" class="form-input text-xl font-black text-center" placeholder="مثال: 10" min="1" max="100">
+                        </div>
+                        <div>
+                            <button onclick="applyBulkPricing('increase')" id="btn-bulk-increase" class="btn-solid !bg-green-600 !text-white hover:!bg-white hover:!text-green-600 !py-4"><i data-lucide="trending-up" class="w-5 h-5"></i> تطبيق زيادة مئوية</button>
+                        </div>
+                        <div>
+                            <button onclick="applyBulkPricing('decrease')" id="btn-bulk-decrease" class="btn-solid !bg-brand-discount !text-white hover:!bg-white hover:!text-brand-discount !py-4"><i data-lucide="trending-down" class="w-5 h-5"></i> تطبيق خصم مئوي</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-10 gap-6 border-b border-brand-border pb-6">
+                    <div>
+                        <h3 class="text-3xl font-black text-white flex items-center gap-3">استعراض منتجات: <span id="current-filtered-cat-title" class="text-brand-pink"></span></h3>
+                    </div>
+                    <button onclick="openEditorForCurrentCat()" class="bg-brand-surface border-2 border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#1a1012] font-black py-3 px-6 rounded-xl transition-all flex items-center gap-2 shadow-md">
+                        <i data-lucide="plus-circle"></i> إضافة صنف جديد لهذا القسم
+                    </button>
+                </div>
+                
+                <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    <!-- يحقن آلياً بمنتجات القسم المختار فقط -->
+                </div>
+            </section>
+
+            <!-- 3. المهندس الشامل للمنتج -->
             <section id="product-editor" class="admin-section">
                 <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
                     <div>
                         <h3 class="text-3xl font-black text-white flex items-center gap-3" id="editor-title"><i data-lucide="plus-square" class="text-brand-pink w-8 h-8"></i> هندسة منتج جديد</h3>
-                        <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
-                            أدخلي تفاصيل المنتج. يمكن تحديد عروض وخصومات خاصة تظهر للعميل بشكل احترافي.
-                        </p>
                     </div>
-                    <button onclick="clearForm()" class="bg-[#1a1012] border-2 border-brand-border text-white hover:border-brand-pink hover:text-brand-pink font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 whitespace-nowrap shadow-lg text-lg">
-                        <i data-lucide="refresh-cw" class="w-6 h-6"></i> إفراغ الحقول
-                    </button>
                 </div>
 
                 <input type="hidden" id="prod-id">
 
                 <!-- 1. الهوية، السعر، والخصومات -->
                 <div class="admin-card mb-8">
-                    <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3"><i data-lucide="tag" class="w-8 h-8"></i> 1. الهوية، التسعير، وهندسة العروض</h4>
-                    
+                    <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3"><i data-lucide="tag" class="w-8 h-8"></i> 1. الهوية الأساسية والتسعير</h4>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-8">
                         <div>
                             <label class="form-label">الاسم التجاري للمنتج</label>
-                            <input type="text" id="prod-name" class="form-input" placeholder="مثال: تورتة الشوكولاتة الفاخرة...">
+                            <input type="text" id="prod-name" class="form-input" placeholder="مثال: تورتة شوكولاتة فاخرة...">
                         </div>
                         <div>
                             <label class="form-label">القسم المخصص</label>
@@ -230,14 +261,12 @@
                             <label class="form-label text-brand-pink">السعر النهائي للعميل (الجديد)</label>
                             <input type="number" id="prod-price" class="form-input text-3xl font-black text-brand-pink text-center" placeholder="0">
                         </div>
-                        
                         <div>
-                            <label class="form-label">السعر القديم (قبل الخصم)</label>
-                            <input type="number" id="prod-old-price" class="form-input text-2xl font-bold text-center line-through opacity-70" placeholder="0">
+                            <label class="form-label">السعر القديم المشطوب (قبل الخصم)</label>
+                            <input type="number" id="prod-old-price" class="form-input text-2xl font-bold text-center opacity-70" placeholder="0">
                         </div>
-
                         <div>
-                            <label class="form-label mb-4 text-brand-discount">حالة العرض والتخفيض</label>
+                            <label class="form-label mb-4 text-brand-discount">بروزة وشارة العرض الخاص</label>
                             <div class="flex items-center justify-between bg-brand-surface p-4 rounded-xl border border-brand-border">
                                 <span class="font-bold text-base text-white" id="discount-status-text">لا يوجد عرض</span>
                                 <label class="toggle-switch">
@@ -246,7 +275,6 @@
                                 </label>
                             </div>
                         </div>
-                        <p class="bose-helper-text lg:col-span-3 mt-0"><i data-lucide="info" class="w-4 h-4 text-brand-discount"></i> عند تفعيل العرض ووضع سعر قديم، سيتم شطب السعر القديم وإبراز كلمة "عرض خاص" للعميل.</p>
                     </div>
 
                     <div class="mt-8 pt-8 border-t border-brand-border">
@@ -263,26 +291,26 @@
 
                 <!-- 2. الميديا -->
                 <div class="admin-card mb-8">
-                    <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3"><i data-lucide="upload-cloud" class="w-8 h-8"></i> 2. رفع الصور المباشر</h4>
+                    <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3"><i data-lucide="upload-cloud" class="w-8 h-8"></i> 2. رفع الصور المباشر (Cloudinary)</h4>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         <div class="space-y-10">
                             <div>
                                 <label class="form-label">صورة الكارت الأساسية</label>
                                 <div class="flex gap-4">
-                                    <input type="text" id="prod-img" class="form-input text-left flex-1" dir="ltr" placeholder="الرابط..." oninput="previewImage('img-preview', 'img-placeholder', this.value)">
+                                    <input type="text" id="prod-img" class="form-input text-left flex-1" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('img-preview', 'img-placeholder', this.value)">
                                     <input type="file" id="file-prod-img" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder')">
                                     <button type="button" onclick="document.getElementById('file-prod-img').click()" class="btn-action w-auto px-8 gap-3 shrink-0">
-                                        <i data-lucide="image-plus" class="w-6 h-6"></i> <span class="font-black">رفع</span>
+                                        <i data-lucide="image-plus" class="w-6 h-6"></i> <span class="font-black">رفع صورة الكارت</span>
                                     </button>
                                 </div>
                             </div>
                             <div>
                                 <label class="form-label">صورة البوستر التفصيلي (البانر الداخلي)</label>
                                 <div class="flex gap-4">
-                                    <input type="text" id="prod-hero-img" class="form-input text-left flex-1" dir="ltr" placeholder="الرابط..." oninput="previewImage('hero-preview', 'hero-placeholder', this.value)">
+                                    <input type="text" id="prod-hero-img" class="form-input text-left flex-1" dir="ltr" placeholder="رابط البوستر السحابي..." oninput="previewImage('hero-preview', 'hero-placeholder', this.value)">
                                     <input type="file" id="file-prod-hero" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-hero-img', 'hero-preview', 'hero-placeholder')">
                                     <button type="button" onclick="document.getElementById('file-prod-hero').click()" class="btn-action w-auto px-8 gap-3 shrink-0">
-                                        <i data-lucide="image-plus" class="w-6 h-6"></i> <span class="font-black">رفع</span>
+                                        <i data-lucide="image-plus" class="w-6 h-6"></i> <span class="font-black">رفع صورة البوستر</span>
                                     </button>
                                 </div>
                             </div>
@@ -310,90 +338,55 @@
                 <div class="admin-card mb-8">
                     <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3"><i data-lucide="align-right" class="w-8 h-8"></i> 3. الصياغة والنكهات</h4>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                        <div><label class="form-label">الوصف التسويقي</label><textarea id="prod-desc" class="form-textarea" placeholder="وصف جذاب..."></textarea></div>
-                        <div><label class="form-label">وصف النكهات (التفاصيل)</label><textarea id="prod-flavors" class="form-textarea" placeholder="طبقات من الإسفنج..."></textarea></div>
+                        <div><label class="form-label">الوصف التسويقي الرئيسي</label><textarea id="prod-desc" class="form-textarea" placeholder="وصف جذاب للمنتج..."></textarea></div>
+                        <div><label class="form-label">الوصف العميق وتفاصيل النكهات</label><textarea id="prod-flavors" class="form-textarea" placeholder="اشرح تفاصيل المكونات والحشوات..."></textarea></div>
                     </div>
                 </div>
 
-                <!-- 4. الهندسة -->
+                <!-- 4. التحكم الهندسي وعرض الكروت (معدل صراحة بناءً على الطلب) -->
                 <div class="admin-card mb-8">
-                    <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3"><i data-lucide="layout" class="w-8 h-8"></i> 4. التحكم الهندسي</h4>
-                    <div class="mb-10">
-                        <label class="form-label">المساحة في الشاشة</label>
-                        <select id="prod-grid-span" class="form-select w-full lg:w-1/2">
-                            <option value="half">نصف المساحة (كارت عادي)</option>
-                            <option value="full">مساحة كاملة (بانر عريض)</option>
+                    <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3"><i data-lucide="layout" class="w-8 h-8"></i> 4. التحكم الهندسي بظهور الكارت</h4>
+                    
+                    <div class="mb-10 bg-[#110a0b] p-8 rounded-3xl border-2 border-brand-border shadow-inner">
+                        <label class="form-label text-brand-pink text-xl mb-4"><i data-lucide="grid" class="inline w-6 h-6 ml-2"></i> هندسة ظهور الكروت على شاشة العميل</label>
+                        <select id="prod-grid-span" class="form-select text-lg font-black text-white">
+                            <option value="half">كارتين متجاورين في الصف (كل كارت يأخذ نصف عرض الشاشة)</option>
+                            <option value="full">كارت واحد كامل مفرداً (يملأ عرض الشاشة بالكامل)</option>
                         </select>
+                        <p class="bose-helper-text mt-4">
+                            <i data-lucide="info" class="w-5 h-5"></i> 💡 توجيه إداري: حددي ما إذا كان هذا المنتج سيعرض بشكل منفصل ليملأ الشاشة لجذب الانتباه الكامل، أم يظهر بجواره كارت آخر (كارتين متجاورين في الموبايل والكمبيوتر).
+                        </p>
                     </div>
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-12 bg-[#110a0b] p-10 rounded-3xl border-2 border-brand-border shadow-inner">
                         <div>
                             <div class="flex justify-between items-center mb-4">
-                                <label class="form-label mb-0">عرض الكارت (Width)</label>
+                                <label class="form-label mb-0 text-brand-pink">عرض صورة المنتج المستقلة (Width)</label>
                                 <span class="text-brand-pink font-black text-xl bg-brand-surface px-4 py-1.5 rounded-lg border border-brand-border" id="val-custom-w">تلقائي</span>
                             </div>
                             <input type="range" id="prod-card-w" min="150" max="800" step="10" value="280" oninput="document.getElementById('val-custom-w').innerText = this.value + 'px'">
+                            <p class="bose-helper-text mt-3"><i data-lucide="move-horizontal" class="w-4 h-4"></i> لتحديد المساحة الأفقية المخصصة للصورة في هذا الكارت.</p>
                         </div>
                         <div>
                             <div class="flex justify-between items-center mb-4">
-                                <label class="form-label mb-0">طول الكارت (Height)</label>
+                                <label class="form-label mb-0 text-brand-pink">طول صورة المنتج المستقلة (Height)</label>
                                 <span class="text-brand-pink font-black text-xl bg-brand-surface px-4 py-1.5 rounded-lg border border-brand-border" id="val-custom-h">تلقائي</span>
                             </div>
                             <input type="range" id="prod-card-h" min="150" max="800" step="10" value="350" oninput="document.getElementById('val-custom-h').innerText = this.value + 'px'">
+                            <p class="bose-helper-text mt-3"><i data-lucide="move-vertical" class="w-4 h-4"></i> لتحديد الارتفاع الرأسي لضمان عدم طمس أبعاد وتفاصيل المنتج الطبيعية.</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="pt-6">
-                    <button onclick="saveProduct()" class="btn-solid py-6 text-2xl w-full shadow-2xl hover:shadow-brand-pink/30"><i data-lucide="upload-cloud" class="w-8 h-8"></i> اعتماد المنتج ورفعه لقاعدة البيانات السيادية</button>
-                </div>
-            </section>
-
-            <!-- 3. الكتالوج والتسعير الشامل -->
-            <section id="product-list" class="admin-section">
-                
-                <!-- أدوات التسعير السيادية الشاملة (Bulk Pricing) -->
-                <div class="admin-card mb-12 bg-[#1a1012] border-brand-pink/30">
-                    <h4 class="text-brand-pink font-black text-2xl mb-6 flex items-center gap-3"><i data-lucide="calculator" class="w-8 h-8"></i> أدوات التسعير السيادية (تعديل الأسعار الشامل)</h4>
-                    <p class="text-brand-textMuted font-bold mb-8">يمكنكِ زيادة أو خفض أسعار قسم بالكامل، أو أسعار الكتالوج كله دفعة واحدة وبضغطة زر بناءً على نسبة مئوية.</p>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                        <div class="md:col-span-1">
-                            <label class="form-label">القسم المستهدف</label>
-                            <select id="bulk-category" class="form-select">
-                                <option value="all">كافة المنتجات (الكتالوج بالكامل)</option>
-                            </select>
-                        </div>
-                        <div class="md:col-span-1">
-                            <label class="form-label">النسبة المئوية (%)</label>
-                            <input type="number" id="bulk-percent" class="form-input text-xl font-black text-center" placeholder="مثال: 10" min="1" max="100">
-                        </div>
-                        <div class="md:col-span-1">
-                            <button onclick="applyBulkPricing('increase')" id="btn-bulk-increase" class="btn-solid !bg-green-600 !text-white hover:!bg-white hover:!text-green-600 !py-4"><i data-lucide="trending-up" class="w-5 h-5"></i> زيادة السعر</button>
-                        </div>
-                        <div class="md:col-span-1">
-                            <button onclick="applyBulkPricing('decrease')" id="btn-bulk-decrease" class="btn-solid !bg-brand-discount !text-white hover:!bg-white hover:!text-brand-discount !py-4"><i data-lucide="trending-down" class="w-5 h-5"></i> عمل خصم</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
-                    <div>
-                        <h3 class="text-3xl font-black text-white flex items-center gap-3"><i data-lucide="list" class="text-brand-pink w-8 h-8"></i> استعراض الكتالوج</h3>
-                    </div>
-                    <div class="relative w-full xl:w-96">
-                        <i data-lucide="search" class="absolute right-5 top-1/2 -translate-y-1/2 w-6 h-6 text-brand-pink"></i>
-                        <input type="text" id="search-catalog" class="form-input pl-4 pr-14 py-4 bg-[#110a0b] text-lg" placeholder="ابحث باسم المنتج أو القسم..." oninput="filterCatalog(this.value)">
-                    </div>
-                </div>
-                
-                <div id="catalog-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                    <div class="col-span-full text-center py-24 text-brand-textMuted font-bold text-2xl"><i data-lucide="loader-2" class="w-16 h-16 animate-spin mx-auto mb-6 text-brand-pink"></i> جاري استدعاء الكتالوج...</div>
+                    <button onclick="saveProduct()" class="btn-solid py-6 text-2xl w-full shadow-2xl hover:shadow-brand-pink/30"><i data-lucide="upload-cloud" class="w-8 h-8"></i> اعتماد وتخزين صنف الكتالوج السيادي</button>
                 </div>
             </section>
 
         </div>
     </main>
 
+    <!-- المحرك البرمجي المتكامل مع الفايربيز و Cloudinary -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -404,26 +397,27 @@
         
         lucide.createIcons();
 
+        // 🔒 إعدادات الرفع السحابي لـ Cloudinary
         const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1"; 
         const CLOUDINARY_UPLOAD_PRESET = "gct8i28h"; 
         const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
         let catalogData = [];
+        let selectedCategory = ''; 
 
         window.toggleSidebar = function() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            sidebar.classList.toggle('active'); overlay.classList.toggle('active');
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebar-overlay').classList.toggle('active');
         };
 
         window.switchSection = function(sectionId, element) {
             document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
-            if(element) element.classList.add('active');
+            if(element && element.id !== 'menu-item-dash' && element.id !== 'menu-item-editor') element.classList.add('active');
+            else if (element) element.classList.add('active');
+
             document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
             document.getElementById(sectionId).classList.add('active');
             
-            const titles = { 'dashboard': 'إحصاءات الكتالوج', 'product-editor': 'المهندس الشامل للمنتج', 'product-list': 'أدوات التسعير واستعراض الكتالوج' };
-            document.getElementById('current-section-title').innerText = titles[sectionId];
             if(window.innerWidth <= 1024) toggleSidebar();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
@@ -451,7 +445,7 @@
             setTimeout(() => toast.classList.remove('active'), 4000);
         };
 
-        // الرفع السحابي للصور
+        // محرك رفع الصور لـ Cloudinary
         window.uploadToCloudinary = async function(fileInput, urlInputId, previewId, placeholderId) {
             const file = fileInput.files[0];
             if (!file) return;
@@ -459,10 +453,9 @@
             const btn = fileInput.nextElementSibling;
             const originalBtnHtml = btn.innerHTML;
             
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> <span class="font-black text-base">جاري الرفع...</span>';
-            btn.disabled = true;
-            lucide.createIcons();
-            showToast("جاري رفع وضغط الصورة...", "info");
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> <span class="font-black text-base">جاري الرفع والضغط...</span>';
+            btn.disabled = true; lucide.createIcons();
+            showToast("جاري معالجة ورفع الصورة الفاخرة للسحابة...", "info");
 
             const formData = new FormData();
             formData.append('file', file);
@@ -475,61 +468,87 @@
                 if (data.secure_url) {
                     document.getElementById(urlInputId).value = data.secure_url;
                     window.previewImage(previewId, placeholderId, data.secure_url);
-                    showToast("تم الاعتماد بنجاح.");
-                } else throw new Error("No URL returned");
+                    showToast("تم اعتماد الصورة وحفظ الرابط المستقر بنجاح.");
+                } else throw new Error("No URL");
             } catch (error) {
                 showToast("عائق تقني أثناء الرفع.", "error");
             } finally {
-                btn.innerHTML = originalBtnHtml;
-                btn.disabled = false;
-                lucide.createIcons();
+                btn.innerHTML = originalBtnHtml; btn.disabled = false; lucide.createIcons();
                 fileInput.value = ''; 
             }
         };
 
-        // الكتالوج
+        // جلب وبناء شجرة الأقسام الديناميكية المنسدلة
         async function loadCatalog() {
             try {
                 const querySnapshot = await getDocs(collection(db, 'catalog'));
                 catalogData = [];
                 let categoriesSet = new Set();
-                let outOfStockCount = 0;
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    const product = { id: doc.id, ...data };
-                    catalogData.push(product);
-                    if(product.category) categoriesSet.add(product.category);
-                    if(product.inStock === false) outOfStockCount++;
+                    catalogData.push({ id: doc.id, ...data });
+                    if(data.category) categoriesSet.add(data.category);
                 });
 
-                document.getElementById('stat-total-products').innerText = catalogData.length;
-                document.getElementById('stat-total-categories').innerText = categoriesSet.size;
-                document.getElementById('stat-out-of-stock').innerText = outOfStockCount;
+                const datalist = document.getElementById('categories-list');
+                datalist.innerHTML = Array.from(categoriesSet).map(cat => `<option value="${cat}">`).join('');
 
-                const datalistHTML = Array.from(categoriesSet).map(cat => `<option value="${cat}">`).join('');
-                document.getElementById('categories-list').innerHTML = datalistHTML;
+                const sidebarNav = document.getElementById('sidebar-dynamic-categories');
+                let sidebarHtml = '';
                 
-                // ملء قائمة التسعير المجمع
-                const bulkCatSelect = document.getElementById('bulk-category');
-                bulkCatSelect.innerHTML = '<option value="all">كافة المنتجات (الكتالوج بالكامل)</option>' + 
-                    Array.from(categoriesSet).map(cat => `<option value="${cat}">قسم: ${cat}</option>`).join('');
+                Array.from(categoriesSet).forEach(catName => {
+                    sidebarHtml += `
+                        <div class="submenu-item" onclick="filterCatalogBySection('${catName}', this)">
+                            <i data-lucide="folder" class="w-4 h-4 text-brand-pink"></i>
+                            <span>قسم ${catName}</span>
+                        </div>
+                    `;
+                });
+                
+                sidebarNav.innerHTML = sidebarHtml || '<div class="text-xs text-brand-textMuted p-2">لا توجد أقسام مسجلة.</div>';
+                lucide.createIcons();
 
-                renderCatalogGrid(catalogData);
+                if(selectedCategory) {
+                    renderCatalogGridForSection(selectedCategory);
+                }
+
             } catch (error) {
-                document.getElementById('catalog-grid').innerHTML = '<div class="col-span-full text-red-500 font-black text-center py-10">فشل الاتصال بقاعدة البيانات.</div>';
+                console.error(error);
+                showToast("عطل في سحب بيانات الكتالوج.", "error");
             }
         }
 
-        function renderCatalogGrid(productsToRender) {
+        window.filterCatalogBySection = function(catName, element) {
+            selectedCategory = catName;
+            
+            document.querySelectorAll('.submenu-scroll-container .submenu-item').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+
+            document.getElementById('current-section-title').innerText = `إدارة قسم: ${catName}`;
+            document.getElementById('current-filtered-cat-title').innerText = catName;
+            document.getElementById('bulk-title-target').innerText = catName;
+
+            renderCatalogGridForSection(catName);
+            switchSection('product-list');
+        };
+
+        function renderCatalogGridForSection(catName) {
             const grid = document.getElementById('catalog-grid');
-            if(productsToRender.length === 0) {
-                grid.innerHTML = '<div class="col-span-full text-center py-20 text-brand-textMuted font-bold text-xl">لا توجد منتجات.</div>';
+            const filteredProducts = catalogData.filter(p => p.category === catName);
+
+            if(filteredProducts.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-20 text-brand-textMuted font-bold">
+                        <i data-lucide="folder-open" class="w-12 h-12 mx-auto mb-4 opacity-40"></i>
+                        <span>هذا القسم لا يحتوي على أي منتجات حالياً. يمكنكِ الضغط على الزر بالأعلى لإضافة منتج له.</span>
+                    </div>`;
+                lucide.createIcons();
                 return;
             }
 
             let html = '';
-            productsToRender.forEach(p => {
+            filteredProducts.forEach(p => {
                 const isOut = p.inStock === false;
                 const imgSrc = p.img || p.image || '';
                 const displayPrice = parseFloat(p.price) || 0;
@@ -546,19 +565,19 @@
                         </div>
                         <div class="p-8 flex flex-col flex-grow">
                             <div class="flex justify-between items-start mb-4">
-                                <span class="bg-brand-bg border border-brand-border text-brand-pink px-3 py-1 rounded-lg text-sm font-black">${p.category || 'بدون قسم'}</span>
+                                <span class="bg-brand-bg border border-brand-border text-brand-pink px-3 py-1 rounded-lg text-sm font-black">العرض: ${isFullWidth ? 'كارت واحد كامل (Full)' : 'كارتين جنب بعض'}</span>
                                 <div class="text-right">
                                     ${hasDiscount ? `<span class="block text-brand-textMuted line-through text-sm font-bold opacity-70 mb-1">${p.oldPrice} ج.م</span>` : ''}
                                     <span class="font-black text-2xl ${hasDiscount ? 'text-brand-discount' : 'text-white'}">${displayPrice} <span class="text-base">ج.م</span></span>
                                 </div>
                             </div>
                             <h4 class="font-bold text-2xl text-white mb-3 leading-tight">${p.name}</h4>
-                            <p class="text-base text-brand-textMuted font-bold line-clamp-2 mb-8 flex-grow opacity-80">${p.description || p.desc || 'لا يوجد وصف تسويقي'}</p>
+                            <p class="text-base text-brand-textMuted font-bold line-clamp-2 mb-8 flex-grow opacity-80">${p.description || p.desc || 'لا يوجد وصف تسويقي رسمي'}</p>
                             
                             <div class="flex items-center gap-4 pt-6 border-t border-brand-border">
                                 <button onclick="editProduct('${pJson}')" class="btn-action flex-1" title="تعديل"><i data-lucide="edit-3" class="w-6 h-6"></i></button>
                                 <button onclick="duplicateProduct('${pJson}')" class="btn-action flex-1" title="استنساخ"><i data-lucide="copy" class="w-6 h-6"></i></button>
-                                <button onclick="deleteProduct('${p.id}', '${p.name}')" class="btn-action danger flex-1" title="حذف نهائي"><i data-lucide="trash-2" class="w-6 h-6"></i></button>
+                                <button onclick="deleteProduct('${p.id}', '${p.name}')" class="btn-action danger flex-1" title="حذف نهائي قاطع"><i data-lucide="trash-2" class="w-6 h-6"></i></button>
                             </div>
                         </div>
                     </div>
@@ -568,11 +587,10 @@
             lucide.createIcons();
         }
 
-        window.filterCatalog = function(query) {
-            if(!query) { renderCatalogGrid(catalogData); return; }
-            const lowerQ = query.toLowerCase();
-            const filtered = catalogData.filter(p => (p.name && p.name.toLowerCase().includes(lowerQ)) || (p.category && p.category.toLowerCase().includes(lowerQ)));
-            renderCatalogGrid(filtered);
+        window.openEditorForCurrentCat = function() {
+            clearForm();
+            document.getElementById('prod-cat').value = selectedCategory;
+            switchSection('product-editor', document.getElementById('menu-item-editor'));
         };
 
         window.updateStockLabel = function(checkbox) {
@@ -589,7 +607,7 @@
         window.updateDiscountLabel = function(checkbox) {
             const label = document.getElementById('discount-status-text');
             if(checkbox.checked) {
-                label.innerText = "عرض خاص مفعل";
+                label.innerText = "عرض خاص ومبروز";
                 label.classList.replace('text-white', 'text-brand-discount');
             } else {
                 label.innerText = "لا يوجد عرض";
@@ -667,9 +685,9 @@
             const discountCheck = document.getElementById('prod-has-discount');
             discountCheck.checked = p.hasDiscount === true; updateDiscountLabel(discountCheck);
             
-            document.getElementById('editor-title').innerHTML = '<i data-lucide="edit" class="text-brand-pink w-8 h-8"></i> تعديل هندسة المنتج';
+            document.getElementById('editor-title').innerHTML = '<i data-lucide="edit" class="text-brand-pink w-8 h-8"></i> تعديل هندسة المنتج المعزول';
             lucide.createIcons();
-            switchSection('product-editor', document.querySelector('.submenu-item:nth-child(2)'));
+            switchSection('product-editor', document.getElementById('menu-item-editor'));
         };
 
         window.duplicateProduct = function(pJsonEncoded) {
@@ -694,20 +712,21 @@
             const stockCheck = document.getElementById('prod-stock'); stockCheck.checked = p.inStock !== false; updateStockLabel(stockCheck);
             const discountCheck = document.getElementById('prod-has-discount'); discountCheck.checked = p.hasDiscount === true; updateDiscountLabel(discountCheck);
             
-            document.getElementById('editor-title').innerHTML = '<i data-lucide="copy" class="text-brand-pink w-8 h-8"></i> استنساخ هندسة منتج';
+            document.getElementById('editor-title').innerHTML = '<i data-lucide="copy" class="text-brand-pink w-8 h-8"></i> استنساخ صنف للقسم النشط';
             lucide.createIcons();
-            switchSection('product-editor', document.querySelector('.submenu-item:nth-child(2)'));
-            showToast("تم استنساخ البيانات.");
+            switchSection('product-editor', document.getElementById('menu-item-editor'));
+            showToast("تم سحب كافة الأبعاد والتوصيفات للاستنساخ السريع.");
         };
 
         window.deleteProduct = async function(id, name) {
-            if(confirm(`قرار سيادي: هل أنت متأكد من هدم وإزالة المنتج [${name}] نهائياً؟`)) {
+            if(confirm(`قرار سيادي قاطع: حذف وإزالة [${name}] نهائياً وتطهير الكاش الفوري؟`)) {
                 try {
                     await deleteDoc(doc(db, 'catalog', id));
                     await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                    showToast(`تم مسح المنتج [${name}] بنجاح.`);
-                    loadCatalog(); 
-                } catch(e) { showToast("حدث عائق فني أثناء الحذف.", "error"); }
+                    showToast(`تم مسح المنتج من السحابة والكاش اللحظي.`);
+                    await loadCatalog(); 
+                    renderCatalogGridForSection(selectedCategory);
+                } catch(e) { showToast("عائق فني في خادم السحابة.", "error"); }
             }
         };
 
@@ -719,7 +738,7 @@
             const oldPrice = parseFloat(document.getElementById('prod-old-price').value) || 0;
             
             if(!name || !category || price <= 0) {
-                showToast("الاسم، القسم، والسعر بيانات أساسية.", "error");
+                showToast("الاسم، القسم، والسعر محددات إلزامية لتوثيق الصنف.", "error");
                 return;
             }
 
@@ -739,106 +758,65 @@
             };
 
             try {
-                const btn = document.querySelector('button[onclick="saveProduct()"]');
-                const originalHtml = btn.innerHTML;
-                btn.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i> جاري الاعتماد...';
-                btn.disabled = true; lucide.createIcons();
-
                 if(idInput) { await setDoc(doc(db, 'catalog', idInput), productData, { merge: true }); } 
                 else { await setDoc(doc(collection(db, 'catalog')), productData); }
                 
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 
-                btn.innerHTML = originalHtml; btn.disabled = false; lucide.createIcons();
-                showToast("تم الاعتماد بنجاح.");
-                clearForm(); loadCatalog(); 
-                setTimeout(() => { switchSection('product-list', document.querySelectorAll('.submenu-item')[3]); }, 1000);
-            } catch(e) { showToast("عائق تقني في السحابة.", "error"); }
+                showToast("تم الحفظ والاعتماد السحابي الفوري للمنتج.");
+                clearForm(); 
+                selectedCategory = category; 
+                await loadCatalog();
+                renderCatalogGridForSection(category);
+                switchSection('product-list');
+            } catch(e) { showToast("عطل اتصالي منع التخزين.", "error"); }
         };
 
-        // ---------------------------------------------------------
-        // 🚀 محرك التسعير السيادي الشامل (Bulk Pricing Engine)
-        // ---------------------------------------------------------
         window.applyBulkPricing = async function(actionType) {
             const percent = parseFloat(document.getElementById('bulk-percent').value);
-            const targetCat = document.getElementById('bulk-category').value;
-            
             if(!percent || percent <= 0 || percent > 100) {
-                showToast("يرجى تحديد نسبة مئوية صحيحة (من 1 إلى 100).", "error");
-                return;
+                showToast("يرجى تحديد نسبة حسابية صحيحة (1-100).", "error"); return;
             }
 
             const isIncrease = actionType === 'increase';
-            const actionText = isIncrease ? 'رفع أسعار' : 'تطبيق خصم على';
-            const catText = targetCat === 'all' ? 'كافة منتجات الكتالوج' : `قسم (${targetCat})`;
-
-            if(!confirm(`قرار سيادي لا يمكن التراجع عنه: هل أنتِ متأكدة من ${actionText} ${catText} بنسبة ${percent}%؟`)) return;
+            if(!confirm(`قرار سيادي قاطع: تعديل أسعار كافة منتجات قسم (${selectedCategory}) بنسبة ${percent}%؟`)) return;
 
             const btnId = isIncrease ? 'btn-bulk-increase' : 'btn-bulk-decrease';
-            const btn = document.getElementById(btnId);
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> جاري التنفيذ...';
-            btn.disabled = true;
-            lucide.createIcons();
+            const btn = document.getElementById(btnId); const originalHtml = btn.innerHTML;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> جاري الحساب...'; btn.disabled = true; lucide.createIcons();
 
             try {
-                // استخدام Firebase Batch لتنفيذ التعديلات دفعة واحدة لضمان استقرار الخادم
                 const batch = writeBatch(db);
+                const targetProducts = catalogData.filter(p => p.category === selectedCategory);
                 let updateCount = 0;
 
-                catalogData.forEach(p => {
-                    if(targetCat === 'all' || p.category === targetCat) {
-                        const currentPrice = parseFloat(p.price);
-                        if(currentPrice > 0) {
-                            let newPrice;
-                            if (isIncrease) {
-                                newPrice = currentPrice * (1 + (percent / 100));
-                            } else {
-                                newPrice = currentPrice * (1 - (percent / 100));
-                            }
-                            
-                            // تقريب السعر لأقرب رقم صحيح لضمان أناقة الأسعار (بدون كسور)
-                            newPrice = Math.round(newPrice);
-                            
-                            const pRef = doc(db, 'catalog', p.id);
-                            
-                            // في حالة التخفيض، يمكننا أتمتة وضع السعر القديم وشارة الخصم
-                            let updatePayload = { price: newPrice, updatedAt: Date.now() };
-                            if (!isIncrease) {
-                                updatePayload.oldPrice = currentPrice;
-                                updatePayload.hasDiscount = true;
-                            }
-
-                            batch.update(pRef, updatePayload);
-                            updateCount++;
-                        }
+                targetProducts.forEach(p => {
+                    const currentPrice = parseFloat(p.price);
+                    if(currentPrice > 0) {
+                        let newPrice = isIncrease ? currentPrice * (1 + (percent / 100)) : currentPrice * (1 - (percent / 100));
+                        newPrice = Math.round(newPrice);
+                        
+                        let payload = { price: newPrice, updatedAt: Date.now() };
+                        if (!isIncrease) { payload.oldPrice = currentPrice; payload.hasDiscount = true; }
+                        
+                        batch.update(doc(db, 'catalog', p.id), payload);
+                        updateCount++;
                     }
                 });
 
                 if(updateCount > 0) {
                     await batch.commit();
                     await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                    showToast(`نجاح سيادي: تم تعديل أسعار ${updateCount} منتج.`);
-                    loadCatalog(); // إعادة تحميل الكتالوج ليعكس الأسعار الجديدة
-                } else {
-                    showToast("لم يتم العثور على منتجات مطابقة لهذا القسم.", "info");
+                    showToast(`تم تحديث وتعديل أسعار ${updateCount} صنف بالقسم.`);
+                    await loadCatalog();
+                    renderCatalogGridForSection(selectedCategory);
                 }
-
-            } catch (error) {
-                console.error("Bulk Update Error:", error);
-                showToast("عائق تقني أثناء التعديل الشامل. يرجى مراجعة الخادم.", "error");
-            } finally {
-                btn.innerHTML = originalHtml;
-                btn.disabled = false;
-                lucide.createIcons();
+            } catch (error) { showToast("خطأ في المزامنة المجمعة.", "error"); } finally {
+                btn.innerHTML = originalHtml; btn.disabled = false; lucide.createIcons();
             }
         };
 
         document.addEventListener('DOMContentLoaded', loadCatalog);
-
     </script>
 </body>
 </html>
-
-
-
