@@ -1,11 +1,12 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Sovereign Unified Engine | المحرك السيادي الموحد (V38.5)
+ * 👑 BoseSweets Sovereign Unified Engine | المحرك السيادي الموحد (V39.0)
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: دمج شامل، توحيد مسارات الفايربيز، ودعم كامل للهوية البصرية الموحدة.
- * التحديث الأخير: الاحتفاظ الشامل بكافة وظائف السحابة والمزامنة (V33) + حل جذري لتعارض القائمة الجانبية.
- * معالجة الأبعاد الهندسية الحرة وخيارات توزيع الكروت (gridSpan) والخصومات لحظياً دون أي حذف أو اختصار.
+ * التحديث الأخير (V39.0): التوافق الرجعي (Backward Compatibility) لاستعادة 
+ * المنتجات القديمة التي لا تملك بصمة (isActive) وعرضها تلقائياً مع الاحتفاظ 
+ * الشامل بكافة وظائف السحابة ومحركات الطوارئ دون أي حذف أو اختصار.
  * ============================================================================
  */
 
@@ -62,7 +63,7 @@ try {
         window.firebaseApp = app;
         window.db = db;
         window.auth = auth;
-        window.BoseSweets_Engine_Version = "V38.5";
+        window.BoseSweets_Engine_Version = "V39.0";
     }
 } catch (error) {
     console.error("🔒 قرار إداري أمني: فشل تهيئة السحابة، يرجى مراجعة الخوادم فوراً.", error);
@@ -79,9 +80,12 @@ export { app, db, auth };
         diagnose: function(errorMsg) {
             const msg = String(errorMsg).toLowerCase();
             if (msg.includes('auth') || msg.includes('credential')) return "عائق توثيق (Auth Error): فشل في تأكيد الصلاحيات مع السحابة.";
-            if (msg.includes('network') || msg.includes('fetch')) return "عطل اتصالي (Network): انقطاع في الشبكة تمنع بوابة الدخول من العمل.";
-            if (msg.includes('null (reading') || msg.includes('undefined (reading')) return "انهيار الهيكل (DOM): الواجهة فقدت بعض الحقول الأساسية.";
-            return "خلل منطقي عميق: يتطلب التدخل التقني.";
+            if (msg.includes('network') || msg.includes('fetch') || msg.includes('offline')) return "عطل اتصالي (Network): المحرك فقد الاتصال بالسحابة المركزية.";
+            if (msg.includes('permission') || msg.includes('access-denied')) return "رفض سيادي (Permission): محاولة الوصول لبيانات غير مصرح بها.";
+            if (msg.includes('quota') || msg.includes('exceeded')) return "اختناق سحابي (Quota): تجاوز الحد الأقصى لعمليات السحابة المسموح بها.";
+            if (msg.includes('null (reading') || msg.includes('undefined (reading')) return "انهيار هيكلي (DOM): محاولة قراءة بيانات مفقودة أو الواجهة فقدت حقول أساسية.";
+            if (msg.includes('firebase')) return "خلل في قلب المحرك (Firebase Core Error).";
+            return "خلل تقني مجهول يتطلب تحليلاً برمجياً عميقاً.";
         },
         parseStackTrace: function(stack) {
             if (!stack) return { file: 'unified-engine.js', line: 'غير معروف', col: 'غير معروف' };
@@ -90,16 +94,16 @@ export { app, db, auth };
                 const match = lines[i].match(/(.*):(\d+):(\d+)/);
                 if (match) return { file: match[1].split('/').pop(), line: match[2], col: match[3] };
             }
-            return { file: 'معقد التحليل', line: 'N/A', col: 'N/A' };
+            return { file: 'تحليل معقد', line: 'N/A', col: 'N/A' };
         },
-        report: async function(error, sourceFile = 'unified-engine.js', lineNo = null, colNo = null, functionName = 'رصد تلقائي') {
+        report: async function(error, sourceFile = 'unified-engine.js', lineNo = null, colNo = null, functionName = 'رصد تلقائي (Auto-Detect)') {
             try {
                 const errorMessage = error && error.message ? error.message : String(error);
-                const stackTrace = error && error.stack ? error.stack : 'لا يوجد تتبع برمجي متاح';
+                const stackTrace = error && error.stack ? error.stack : 'لا يوجد تتبع برمجي متاح (No Stack Trace)';
                 const parsedStack = this.parseStackTrace(stackTrace);
                 const finalFile = sourceFile || parsedStack.file;
                 
-                console.warn(`%c[رصد أمني]%c تم رصد خلل في: ${finalFile} | دالة: ${functionName}`, "color: #ff91a4; font-weight: bold; background: #1a1012; padding: 2px 6px; border-radius: 4px;", "color: inherit;");
+                console.warn(`%c[BoseMonitor - رصد أمني]%c تم رصد خلل في: ${finalFile} | دالة: ${functionName}`, "color: #ff91a4; font-weight: bold; background: #1a1012; padding: 2px 6px; border-radius: 4px;", "color: inherit;");
 
                 const reportData = {
                     fileName: finalFile,
@@ -109,14 +113,15 @@ export { app, db, auth };
                     diagnosis: this.diagnose(errorMessage),
                     timestamp: Date.now(),
                     status: 'unresolved',
-                    clientDevice: typeof navigator !== 'undefined' ? navigator.userAgent : 'غير معروف',
+                    clientDevice: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown Device',
                     url: window.location.href,
-                    isLoginPortal: false
+                    isLoginPortal: false,
+                    engineVersion: 'V39.0'
                 };
 
                 this.saveToDatabase(reportData);
             } catch (e) {
-                console.error("فشل نظام الرصد العميق:", e);
+                console.error("👑 BoseMonitor: فشل نظام الرصد العميق في تسجيل الخطأ:", e);
             }
         },
         saveToDatabase: async function(reportData) {
@@ -147,7 +152,7 @@ export { app, db, auth };
         saveToLocalStorage: function(reportData) {
             try {
                 let localLogs = JSON.parse(localStorage.getItem('bose_blackbox_logs') || '[]');
-                if (localLogs.length > 50) localLogs.shift();
+                if (localLogs.length > 100) localLogs.shift();
                 localLogs.push(reportData);
                 localStorage.setItem('bose_blackbox_logs', JSON.stringify(localLogs));
             } catch(err) {}
@@ -278,7 +283,7 @@ export const ReverseSyncEngine = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_Sovereign_V38.5',
+                        source: 'BoseSweets_Engine_Sovereign_V39.0',
                         engine_status: 'Active_Sovereign',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
@@ -299,7 +304,7 @@ export const ReverseSyncEngine = {
         try {
             if (db) {
                 const syncDocRef = doc(db, 'system', 'syncFlag');
-                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V38.5', forceRefresh: true }, { merge: true });
+                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V39.0', forceRefresh: true }, { merge: true });
             }
         } catch (error) {}
     }
@@ -683,7 +688,7 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🔗 القسم السادس: جسر البيانات السيادي (Data Bridge)
+// 🔗 القسم السادس: جسر البيانات السيادي (Data Bridge) ودعم التوافق الرجعي
 // ============================================================================
 
 export const defaultSettingsFallback = {
@@ -713,18 +718,23 @@ export async function fetchProductsCatalog() {
         const q = query(collection(db, 'catalog'));
         const snapshot = await getDocs(q);
         
-        const products = snapshot.docs.map(d => {
+        const products = [];
+        snapshot.docs.forEach(d => {
             const raw = d.data();
-            return {
-                id: d.id,
-                name: raw.name || "صنف فاخر",
-                price: parseFloat(raw.price) || 0,
-                category: raw.category || "عام",
-                img: raw.img || raw.image || "",
-                description: raw.description || raw.desc || "",
-                inStock: raw.inStock !== false,
-                ...raw 
-            };
+            // 🚨 تطبيق التوافق الرجعي (V39.0 Backward Compatibility)
+            // المنتجات المرفوعة قديماً بدون بصمة isActive ستظهر تلقائياً لمنع اختفائها
+            if (raw.isActive !== false) {
+                products.push({
+                    id: d.id,
+                    name: raw.name || "صنف فاخر",
+                    price: parseFloat(raw.price) || 0,
+                    category: raw.category || "عام",
+                    img: raw.img || raw.image || "",
+                    description: raw.description || raw.desc || "",
+                    inStock: raw.inStock !== false,
+                    ...raw 
+                });
+            }
         });
 
         BoseState.catalog = products; 
@@ -754,9 +764,19 @@ export async function initializeDataBridge() {
 
 export function listenToSovereignUpdates() {
     if (!db || window.__BoseListenersActive) return; window.__BoseListenersActive = true;
-    onSnapshot(query(collection(db, 'catalog'), where('isActive', '==', true)), (snap) => {
-        BoseState.catalog = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        syncCatalogMap(); saveToLocalMemory('bosesweets_catalog', BoseState.catalog);
+    
+    // 🚨 استبدال شرط where('isActive', '==', true) بالفلترة الديناميكية لدعم التوافق الرجعي V39.0
+    onSnapshot(collection(db, 'catalog'), (snap) => {
+        const list = [];
+        snap.forEach(d => {
+            const data = d.data();
+            if (data.isActive !== false) {
+                list.push({ id: d.id, ...data });
+            }
+        });
+        BoseState.catalog = list;
+        syncCatalogMap(); 
+        saveToLocalMemory('bosesweets_catalog', BoseState.catalog);
         window.dispatchEvent(new Event('catalogDataReady'));
         if (window.distributeProductsToUI) window.distributeProductsToUI(BoseState.catalog);
     });
@@ -774,13 +794,13 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🔒 القسم السابع: مستمعي المزامنة الفورية السحابية (Firebase Real-time Sync V38.5)
+// 🔒 القسم السابع: مستمعي المزامنة الفورية السحابية (Firebase Real-time Sync V39.0)
 // ============================================================================
 
 export function initializeSovereignSync() {
     if (!db) return;
 
-    // 1. الاستماع للكتالوج والمنتجات لحظياً
+    // 1. الاستماع للكتالوج والمنتجات لحظياً (بدعم التوافق الرجعي V39.0)
     onSnapshot(collection(db, 'catalog'), (snap) => {
         const list = [];
         snap.forEach(d => {
@@ -1054,4 +1074,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
 });
 
-console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد إلى الإصدار السيادي المتطور (V38.5) بنجاح والمزامنة التامة مفعلة، وتم تأمين القائمة الجانبية والأبعاد الحرة.");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد إلى الإصدار السيادي المتطور (V39.0) بنجاح ليدعم التوافق الرجعي واستعادة المنتجات القديمة مع الاحتفاظ بالقوة الهيكلية التامة.");

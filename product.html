@@ -608,25 +608,6 @@
             currentReviewPage: 0,
             reviewsPerPage: 3,
             
-            categoryData: {
-                "تورت": { layout: "full", hasSizes: false, desc: "التورتة في حلويات بوسي مش مجرد كيك، بنهتم بأدق التفاصيل عشان تناسب مناسبتك. بنخبزها من أفضل أنواع الدقيق مع حشوات غنية لضمان تجربة مميزة." },
-                "ميني تورت": { layout: "full", hasSizes: false, desc: "نفس جودة التورتة الفاخرة بحجم مناسب. كيك إسفنجي هش بحشوات طبيعية." },
-                "جاتوه": { layout: "full", hasSizes: false, desc: "قطع من الكيك الإسفنجي الخفيف بنكهات متعددة. الجودة والإتقان في كل قطعة." },
-                "كب كيك": { layout: "full", hasSizes: false, desc: "كب كيك هش وغني بالنكهة. إضافة ممتازة لأعياد الميلاد والتجمعات." },
-                "ورد": { layout: "full", hasSizes: false, desc: "باقات ورد طبيعي منسقة بعناية لتعبر عن مشاعرك بكل رقي." },
-                "روقان": { layout: "full", hasSizes: false, desc: "صندوق متكامل من المخبوزات والحلويات، مثالي للمشاركة أو كهدية قيمة." },
-                "ريدفيلفت": { layout: "full", hasSizes: false, desc: "طبقات من الكيك المخملي الأحمر مع صوص الجبنة الكريمي لمذاق متوازن." },
-                "ريدڤيلڤت": { layout: "full", hasSizes: false, desc: "طبقات من الكيك المخملي الأحمر مع صوص الجبنة الكريمي لمذاق متوازن." },
-                
-                "دونات": { layout: "grid", hasSizes: false, desc: "عجينة قطنية هشة، مغطاة بصوصات طبيعية ومحضرة بعناية." },
-                "سينابون": { layout: "grid", hasSizes: false, desc: "لفائف العجينة الهشة المحشية بالقرفة والمغطاة بصوص الجبنة الكريمي." },
-                "قشطوطة": { layout: "grid", hasSizes: false, desc: "كيكة غنية بالحليب ومغطاة بطبقة كريمة وصوصات طبيعية لتوازن مثالي." },
-                "كبات": { layout: "grid", hasSizes: false, desc: "كاسات من طبقات الكيك والكريمة بنكهات ترضي كافة الأذواق." },
-                "ديسباسيتو": { layout: "grid", hasSizes: true, desc: "كيك شوكولاتة غني مغطى بطبقة موس ونوتيلا. متوفرة بأحجام مختلفة." },
-                
-                "default": { layout: "grid", hasSizes: false, desc: "منتجاتنا تُحضر يومياً من أجود المكونات لضمان تقديم أعلى معايير الجودة." }
-            },
-
             // دالة موحدة لتنظيف وتوحيد الكلمات العربية لضمان المطابقة الكاملة ومنع مشاكل الـ التعريف أو اختلاف الحروف
             normalizeArabic: function(str) {
                 if (!str) return '';
@@ -697,7 +678,7 @@
                 const catalog = window.BoseState?.catalog || [];
                 const normalizedSearch = this.normalizeArabic(catName);
 
-                // مقارنة مرنة وذكية وموحدة تمنع اختفاء الأقسام والمنتجات تماماً
+                // تصفية ذكية ومرنة لمنع اختفاء الأقسام
                 this.allCategoryProducts = catName === 'all' ? catalog : catalog.filter(p => {
                     if (!p.category) return false;
                     const normalizedCat = this.normalizeArabic(p.category);
@@ -706,21 +687,11 @@
                            normalizedCat.includes(normalizedSearch);
                 });
 
-                let matchedKey = "default";
-                Object.keys(this.categoryData).forEach(key => {
-                    const normalizedKey = this.normalizeArabic(key);
-                    if (normalizedSearch.includes(normalizedKey) || normalizedKey.includes(normalizedSearch)) { 
-                        matchedKey = key; 
-                    }
-                });
-                const data = this.categoryData[matchedKey];
-
                 const headerContainer = document.getElementById('category-header-container');
                 const tabsContainer = document.getElementById('size-tabs-container');
                 const gridContainer = document.getElementById('category-grid');
-
                 const displayName = catName === 'all' ? 'منتجات حلويات بوسي' : catName;
-                
+
                 let dynamicPoster = 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
                 if (this.allCategoryProducts.length > 0) {
                     let firstProdImg = this.allCategoryProducts[0].img || this.allCategoryProducts[0].image;
@@ -734,25 +705,25 @@
                         </div>
                         <div class="p-8 md:p-16 text-center bg-brand-pinkLight/30">
                             <h2 class="text-4xl md:text-5xl font-black text-brand-brown mb-6 tracking-tighter">${displayName}</h2>
-                            <p class="text-lg md:text-xl font-bold text-brand-brown/80 max-w-4xl mx-auto leading-relaxed text-balance">${data.desc}</p>
                         </div>
                     </div>
                 `;
 
-                gridContainer.className = data.layout === 'full' 
-                    ? "grid grid-cols-1 gap-10 max-w-5xl mx-auto" 
-                    : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-5xl mx-auto";
-
-                if (data.hasSizes) {
+                // اكتشاف تلقائي لوجود أحجام متباينة في قائمة المنتجات المعروضة
+                const hasSizes = this.allCategoryProducts.some(p => p.name.includes('صغير') || p.name.includes('وسط') || p.name.includes('كبير') || p.name.includes('عائلي'));
+                
+                if (hasSizes) {
                     tabsContainer.classList.remove('hidden');
                     const btns = tabsContainer.querySelectorAll('.size-tab');
                     btns.forEach(b => b.classList.remove('active'));
                     if(btns[0]) btns[0].classList.add('active');
-                    this.renderCards(this.allCategoryProducts, data.layout);
                 } else {
                     tabsContainer.classList.add('hidden');
-                    this.renderCards(this.allCategoryProducts, data.layout);
                 }
+
+                // توحيد الشبكة لتستوعب التمدد والانكماش آلياً
+                gridContainer.className = "grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto";
+                this.renderCards(this.allCategoryProducts);
             },
 
             filterBySize: function(sizeQuery, btn) {
@@ -765,38 +736,37 @@
                 else if (sizeQuery === 'كبير') { filtered = this.allCategoryProducts.filter(p => p.name.includes('كبير') || p.name.includes('عائلي') || p.name.includes('لارج')); } 
                 else { filtered = this.allCategoryProducts.filter(p => p.name.includes(sizeQuery)); }
 
-                let matchedKey = "default";
-                Object.keys(this.categoryData).forEach(key => {
-                    const normalizedSearchKey = this.normalizeArabic(this.currentCategory);
-                    const normalizedKey = this.normalizeArabic(key);
-                    if (normalizedSearchKey.includes(normalizedKey) || normalizedKey.includes(normalizedSearchKey)) { matchedKey = key; }
-                });
-                const data = this.categoryData[matchedKey];
-                
-                this.renderCards(filtered, data.layout);
+                this.renderCards(filtered);
             },
 
-            renderCards: function(products, layoutType) {
+            renderCards: function(products) {
                 const grid = document.getElementById('category-grid');
                 if (products.length === 0) {
                     grid.innerHTML = '<div class="col-span-full py-16 font-bold text-brand-brown opacity-50 text-xl text-center">لا توجد منتجات مطابقة لهذا الاختيار حالياً.</div>';
                     return;
                 }
 
-                const tmplId = layoutType === 'full' ? 'template-card-full' : 'template-card-grid';
-                const template = document.getElementById(tmplId).innerHTML;
-
                 grid.innerHTML = products.map(p => {
+                    // قراءة الأمر السيادي مباشرة من قاعدة البيانات لكل منتج لضمان التوافق المطلق
+                    const isFullSpan = p.gridSpan === 'full';
+                    const tmplId = isFullSpan ? 'template-card-full' : 'template-card-grid';
+                    let template = document.getElementById(tmplId).innerHTML;
+
+                    // تطبيق الأبعاد هندسياً لمنع انهيار الـ CSS
+                    const spanClass = isFullSpan ? 'col-span-1 md:col-span-2' : 'col-span-1';
                     const catName = p.category || 'حلويات بوسي';
-                    return template
+
+                    let cardHtml = template
                         .replace(/{PRODUCT_ID}/g, p.id)
                         .replace(/{CAT_NAME}/g, catName)
                         .replace(/{PRODUCT_NAME}/g, p.name)
                         .replace(/{PRODUCT_IMAGE}/g, window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image))
                         .replace(/{PRODUCT_DESC}/g, p.description || p.desc || 'يتم التحضير بأجود المكونات لضمان أعلى معايير الجودة.')
                         .replace(/{PRODUCT_PRICE}/g, parseFloat(p.price) || 0);
+
+                    return `<div class="${spanClass} w-full">${cardHtml}</div>`;
                 }).join('');
-                
+
                 lucide.createIcons();
             },
 
