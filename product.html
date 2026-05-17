@@ -252,9 +252,9 @@
                     <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180 text-brand-pink"></i>
                 </summary>
                 <div class="flex flex-col gap-1 pl-12 pr-4 pt-2 pb-4 border-l-2 border-brand-pink/20 ml-4 mr-2" id="sidebar-dynamic-categories">
-                    <a href="menu.html" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">عرض كل المنيو</a>
-                    <a href="product.html?category=التورت" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">التورت الفاخرة</a>
-                    <a href="product.html?category=الجاتوهات" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none">الجاتوهات</a>
+                    <a href="menu.html" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none block">عرض كل المنيو</a>
+                    <a href="product.html?category=التورت" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none block text-decoration-none">التورت الفاخرة</a>
+                    <a href="product.html?category=الجاتوهات" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none block text-decoration-none">الجاتوهات</a>
                 </div>
             </details>
             <a href="product.html?action=build_cake" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
@@ -470,7 +470,7 @@
             
             <div class="relative group max-w-6xl mx-auto">
                 <div id="dynamic-suggestions-slider" class="flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-8 pb-8 px-4 pt-2">
-                    </div>
+                </div>
             </div>
         </section>
 
@@ -627,6 +627,17 @@
                 "default": { layout: "grid", hasSizes: false, desc: "منتجاتنا تُحضر يومياً من أجود المكونات لضمان تقديم أعلى معايير الجودة." }
             },
 
+            // دالة موحدة لتنظيف وتوحيد الكلمات العربية لضمان المطابقة الكاملة ومنع مشاكل الـ التعريف أو اختلاف الحروف
+            normalizeArabic: function(str) {
+                if (!str) return '';
+                return str.trim()
+                    .replace(/^ال/, '')       // إزالة الـ التعريف في بداية الكلمة
+                    .replace(/[أإآا]/g, 'ا')   // توحيد الألف بكافة أشكالها
+                    .replace(/ة/g, 'ه')        // توحيد التاء المربوطة والهاء
+                    .replace(/ى/g, 'ي')        // توحيد الألف المقصورة والياء
+                    .replace(/\s+/g, '');      // إزالة أي مسافات زائدة تماماً لضمان المطابقة الأمنية
+            },
+
             showToast: function(msg) {
                 const toast = document.getElementById('bose-toast');
                 const text = document.getElementById('bose-toast-msg');
@@ -684,11 +695,23 @@
 
             setupCategoryView: function(catName) {
                 const catalog = window.BoseState?.catalog || [];
-                this.allCategoryProducts = catName === 'all' ? catalog : catalog.filter(p => p.category === catName);
+                const normalizedSearch = this.normalizeArabic(catName);
+
+                // مقارنة مرنة وذكية وموحدة تمنع اختفاء الأقسام والمنتجات تماماً
+                this.allCategoryProducts = catName === 'all' ? catalog : catalog.filter(p => {
+                    if (!p.category) return false;
+                    const normalizedCat = this.normalizeArabic(p.category);
+                    return normalizedCat === normalizedSearch || 
+                           normalizedSearch.includes(normalizedCat) || 
+                           normalizedCat.includes(normalizedSearch);
+                });
 
                 let matchedKey = "default";
                 Object.keys(this.categoryData).forEach(key => {
-                    if (catName.includes(key) || key.includes(catName)) { matchedKey = key; }
+                    const normalizedKey = this.normalizeArabic(key);
+                    if (normalizedSearch.includes(normalizedKey) || normalizedKey.includes(normalizedSearch)) { 
+                        matchedKey = key; 
+                    }
                 });
                 const data = this.categoryData[matchedKey];
 
@@ -744,7 +767,9 @@
 
                 let matchedKey = "default";
                 Object.keys(this.categoryData).forEach(key => {
-                    if (this.currentCategory.includes(key) || key.includes(this.currentCategory)) { matchedKey = key; }
+                    const normalizedSearchKey = this.normalizeArabic(this.currentCategory);
+                    const normalizedKey = this.normalizeArabic(key);
+                    if (normalizedSearchKey.includes(normalizedKey) || normalizedKey.includes(normalizedSearchKey)) { matchedKey = key; }
                 });
                 const data = this.categoryData[matchedKey];
                 
@@ -777,9 +802,9 @@
 
             renderSmartSuggestions: function() {
                 const catalog = window.BoseState?.catalog || [];
-                const container = document.getElementById('cart-suggestions-slider');
+                const container = document.getElementById('dynamic-suggestions-slider');
                 const section = document.getElementById('suggestions-area');
-                if (catalog.length === 0 || !container || !slider) return;
+                if (catalog.length === 0 || !container) return;
 
                 let history = JSON.parse(localStorage.getItem('Bose_Behavior_History') || '[]');
                 let preferredCats = [];
@@ -792,7 +817,11 @@
                 
                 let suggestions = [];
                 for(let cat of preferredCats) {
-                    let catProds = catalog.filter(p => p.category === cat && !cartIds.includes(String(p.id)));
+                    const normalizedCat = this.normalizeArabic(cat);
+                    let catProds = catalog.filter(p => {
+                        if (!p.category) return false;
+                        return this.normalizeArabic(p.category) === normalizedCat && !cartIds.includes(String(p.id));
+                    });
                     suggestions.push(...catProds);
                 }
 
@@ -1141,3 +1170,4 @@
     </script>
 </body>
 </html>
+

@@ -43,7 +43,7 @@ export const firebaseConfig = {
     measurementId: "G-6S8EXY7Y4P" 
 };
 
-// 🛡️ التهيئة الآمنة والمطلقة للنظام السحابي (Modern V10 Architecture)
+// 🛡️ التهيئة الآمنة والملطقة للنظام السحابي (Modern V10 Architecture)
 let app, db, auth;
 
 try {
@@ -167,7 +167,7 @@ export { app, db, auth };
 })();
 
 // ============================================================================
-// 🔒 القسم الثاني: نظام حفظ الذاكرة ومحرك التخزين المحلي (IndexedDB) للسرعة والطوارئ
+// 🔒 القسم الثاني: نظام حفظ الذاكرة ومحرك التخزين المحلي (IndexedDB)
 // ============================================================================
 
 export const StorageEngine = {
@@ -223,7 +223,7 @@ if (typeof window !== 'undefined') {
     window.StorageEngine = StorageEngine;
 }
 
-// تهيئة محرك التخزين المحلي فور التحميل المباشر للمتصفح لضمان استقرار التشغيل السريع
+// تهيئة محرك التخزين المحلي فور التحميل المباشر للمتصفح لضمان استقرار التشغيل
 StorageEngine.init().then(() => {
     if (typeof window !== 'undefined' && typeof window.loadEngineMemory === 'function') {
         window.loadEngineMemory();
@@ -266,7 +266,7 @@ window.loadEngineMemory = async function() {
 };
 
 // ============================================================================
-// 🔒 القسم الثالث: محركات المزامنة والطوارئ (ReverseSync & CloudQueue)
+// 🛡️ القسم الثالث: محركات المزامنة والطوارئ (ReverseSync & CloudQueue)
 // ============================================================================
 
 export const ReverseSyncEngine = {
@@ -413,7 +413,7 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🧠 القسم الرابع: الذاكرة المركزية وكائن الحالة للعميل (BoseState)
+// 🧠 القسم الرابع: الذاكرة المركزية والعقل المدبر (BoseState)
 // ============================================================================
 
 const BOSE_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg";
@@ -439,13 +439,11 @@ const boseConfig = {
 };
 
 export const BoseState = {
-    // الهيكل الموسع للإدارة المتزامنة
     catalog: [],
     theme: {},
     logistics: { isOpen: true, allowPickup: true, minOrder: 0 },
     pricingRules: { pricePerPerson: 145, printEdible: 60, printNonEdible: 20, giftCardPrice: 40 },
     
-    // الميزات والأحوال التفصيلية من المحرك السابق
     siteSettings: {}, 
     shippingZones: [], 
     galleryData: [], 
@@ -484,6 +482,17 @@ export function syncCatalogMap() {
     } catch (error) {}
 }
 
+// دالة موحدة لتنظيف وتوحيد الكلمات العربية لضمان المطابقة الكاملة ومنع مشاكل الـ التعريف أو اختلاف الحروف
+export function normalizeArabic(str) {
+    if (!str) return '';
+    return str.trim()
+        .replace(/^ال/, '')       // إزالة الـ التعريف في بداية الكلمة
+        .replace(/[أإآا]/g, 'ا')   // توحيد الألف بكافة أشكالها
+        .replace(/ة/g, 'ه')        // توحيد التاء المربوطة والهاء
+        .replace(/ى/g, 'ي')        // توحيد الألف المقصورة والياء
+        .replace(/\s+/g, '');      // إزالة أي مسافات زائدة تماماً لضمان المطابقة الأمنية
+}
+
 export function saveToLocalMemory(key, data) { try { if (typeof window !== 'undefined') localStorage.setItem(key, JSON.stringify(data)); } catch (e) {} }
 export function getFromLocalMemory(key) { try { if (typeof window !== 'undefined') { const saved = localStorage.getItem(key); return saved ? JSON.parse(saved) : null; } } catch (e) { return null; } }
 
@@ -505,11 +514,11 @@ export function setAppReady() {
 if (typeof window !== 'undefined') {
     window.boseConfig = boseConfig; window.BoseState = BoseState; window.syncCatalogMap = syncCatalogMap;
     window.saveToLocalMemory = saveToLocalMemory; window.getFromLocalMemory = getFromLocalMemory; window.setAppReady = setAppReady;
-    window.processBoseImage = processBoseImage;
+    window.processBoseImage = processBoseImage; window.normalizeArabic = normalizeArabic;
 }
 
 // ============================================================================
-// 🛒 القسم الخامس: محرك السلة الحسابي المعتمد للعميل (Cart System)
+// 🛒 القسم الخامس: محرك السلة السيادي (Cart System)
 // ============================================================================
 
 export const cartSystem = {
@@ -674,7 +683,7 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🔗 القسم السادس: جسر البيانات السحابي التقليدي للاحتياط (Data Bridge)
+// 🔗 القسم السادس: جسر البيانات السيادي (Data Bridge)
 // ============================================================================
 
 export const defaultSettingsFallback = {
@@ -912,7 +921,9 @@ export function distributeProductsToUI(products = BoseState.catalog) {
             if (block && block.dataSource) {
                 if (block.dataSource.startsWith('category:')) {
                     const catName = block.dataSource.split(':')[1];
-                    filteredList = products.filter(p => p.category === catName);
+                    // دمج محرك الفلترة والمقارنة لتطبيق فحص الحروف الذكي والآمن لمنع اختفاء المنتجات عند تعديل الكروت
+                    const normalizedCatName = normalizeArabic(catName);
+                    filteredList = products.filter(p => p.category && normalizeArabic(p.category) === normalizedCatName);
                 } else if (block.dataSource === 'latest') {
                     filteredList = [...products].sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 12);
                 } else if (block.dataSource === 'bestsellers') {
