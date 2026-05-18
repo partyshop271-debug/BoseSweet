@@ -117,12 +117,12 @@
         }
         .upload-zone:hover { border-color: #ff91a4; background: #ffffff; box-shadow: 0 10px 25px rgba(255,145,164,0.1); }
 
-        input, textarea {
+        input, textarea, select {
             border: 2px solid rgba(255, 145, 164, 0.3) !important; color: #3d241c !important;
             background-color: #ffffff !important; border-radius: 20px; padding: 18px 24px;
             font-family: inherit; font-weight: 700; font-size: 1.05rem; outline: none; transition: all 0.3s ease;
         }
-        input:focus, textarea:focus { border-color: #ff91a4 !important; box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.1); }
+        input:focus, textarea:focus, select:focus { border-color: #ff91a4 !important; box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.1); }
         input::placeholder, textarea::placeholder { color: rgba(61, 36, 28, 0.4) !important; }
 
         .size-tab {
@@ -289,6 +289,17 @@
             <div id="category-grid" class="grid gap-12 max-w-6xl mx-auto"></div>
         </section>
 
+        <!-- واجهة التفاعل العائمة (Floating Cart Container) للتنسيق الفاخر -->
+        <div class="floating-cart-container flex justify-between items-center gap-4 md:px-8 z-[9999] hidden" id="bose-floating-cart" style="display: none;">
+            <div class="flex flex-col text-right">
+                <span class="text-xs font-bold text-brand-brown/70">إجمالي التنسيق</span>
+                <span id="floating-total-price" class="text-2xl font-black text-brand-pink tracking-tighter">0 ج.م</span>
+            </div>
+            <button id="add-to-cart-btn" class="btn-solid flex-grow md:flex-grow-0 md:w-1/2 py-3 text-xl shadow-lg" onclick="window.ProductUI.addCustomFlowerToCart()">
+                إضافة إلى السلة <i data-lucide="shopping-basket" class="w-6 h-6 inline mr-2"></i>
+            </button>
+        </div>
+
         <section id="flower-customizer-container" class="container mx-auto px-4 hidden">
             <div class="max-w-5xl mx-auto animate-fade mt-10">
                 <div class="text-center mb-12">
@@ -300,7 +311,7 @@
 
                 <div class="main-product-wrapper grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
                     
-                    <div class="simulator-visual-area bose-visual-simulator" id="visual-simulator-container" style="position: relative; overflow: hidden; width: 100%; border-radius: 24px; background-color: #ffffff; min-height: 485px; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(255, 145, 164, 0.15); border: 2px solid rgba(255,145,164,0.2); padding: 20px;">
+                    <div class="simulator-visual-area bose-visual-simulator" id="visual-simulator-container" style="position: sticky; top: 100px; overflow: hidden; width: 100%; border-radius: 24px; background-color: #ffffff; min-height: 485px; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(255, 145, 164, 0.15); border: 2px solid rgba(255,145,164,0.2); padding: 20px;">
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="تنسيق حلويات بوسي" id="main-product-image" class="visible-base-layer" style="width: 100%; height: auto; max-width: 360px; display: block; position: relative; z-index: 1; border-radius: 12px; transition: transform 0.4s ease-in-out;">
                         
                         <div id="layer-flowers" class="simulator-layer" style="position: absolute; inset: 0; background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 10; transition: all 0.4s ease-in-out; display: flex; align-items: center; justify-content: center;"></div>
@@ -330,18 +341,32 @@
                         </div>
 
                         <div class="journey-step" id="step-1" style="display: block; animation: fadeIn 0.4s ease-in-out;">
-                            <h3 class="text-2xl font-black text-brand-brown mb-6">المرحلة الأولى: الخامة الأساسية</h3>
-                            <div class="options-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px;">
-                                <button class="bose-btn-option active font-bold" data-type="material" data-value="natural" onclick="window.ProductUI.setFlowerMaterial('natural', this)" style="background-color: #ff91a4; color: #ffffff; border: 2px solid #ff91a4; padding: 16px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                                    <i data-lucide="flower" class="w-6 h-6"></i> ورد طبيعي
+                            <h3 class="text-2xl font-black text-brand-brown mb-6">المرحلة الأولى: حدد مسار البوكيه (نوع التنسيق)</h3>
+                            
+                            <!-- هندسة التبويبات المتقدمة لتحديد المسار مباشرة كما طلبت الإدارة -->
+                            <div class="flower-tabs-container grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                                <button class="flower-tab option-btn selected flex-col py-4 gap-2" data-target="natural" onclick="window.ProductUI.setFlowerMaterial('natural', this)">
+                                    <i data-lucide="flower" class="w-7 h-7 text-brand-pink"></i><span class="text-sm font-black">ورد طبيعي</span>
                                 </button>
-                                <button class="bose-btn-option font-bold" data-type="material" data-value="artificial" onclick="window.ProductUI.setFlowerMaterial('artificial', this)" style="background-color: #ffffff; color: #ff91a4; border: 2px solid rgba(255,145,164,0.3); padding: 16px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                                    <i data-lucide="flower-2" class="w-6 h-6"></i> ورد صناعي
+                                <button class="flower-tab option-btn flex-col py-4 gap-2" data-target="artificial" onclick="window.ProductUI.setFlowerMaterial('artificial', this)">
+                                    <i data-lucide="flower-2" class="w-7 h-7 text-brand-pink"></i><span class="text-sm font-black">ورد صناعي</span>
                                 </button>
-                                <button class="bose-btn-option font-bold" data-type="material" data-value="satin" onclick="window.ProductUI.setFlowerMaterial('satin', this)" style="background-color: #ffffff; color: #ff91a4; border: 2px solid rgba(255,145,164,0.3); padding: 16px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px;">
-                                    <i data-lucide="sparkles" class="w-6 h-6"></i> ورد ستان
+                                <button class="flower-tab option-btn flex-col py-4 gap-2" data-target="chocolate" onclick="window.ProductUI.setFlowerPathCombo('chocolate', this)">
+                                    <i data-lucide="gift" class="w-7 h-7 text-brand-pink"></i><span class="text-sm font-black">مع شوكولاتة</span>
+                                </button>
+                                <button class="flower-tab option-btn flex-col py-4 gap-2" data-target="cash" onclick="window.ProductUI.setFlowerPathCombo('cash', this)">
+                                    <i data-lucide="banknote" class="w-7 h-7 text-brand-pink"></i><span class="text-sm font-black">مع كاش (نقود)</span>
                                 </button>
                             </div>
+
+                            <!-- الحفاظ على خيار الستان كخيار فرعي للورد لضمان عدم الحذف (Zero Deletion Policy) -->
+                            <div class="mb-8 p-4 bg-brand-pinkLight/50 rounded-2xl border border-brand-pink/20">
+                                <p class="text-sm font-bold text-brand-brown mb-3 flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4 text-brand-pink"></i> خيار إضافي للخامة الأساسية:</p>
+                                <button class="option-btn w-full py-3" data-target="satin" onclick="window.ProductUI.setFlowerMaterial('satin', this)">
+                                    اعتماد ورد الستان الحريري المخصص
+                                </button>
+                            </div>
+
                             <div style="text-align: left; margin-top: 30px;">
                                 <button type="button" class="btn-solid" onclick="window.ProductUI.nextJourneyStep(2)" style="padding: 12px 35px; border-radius: 50px; cursor: pointer;">التالي <i data-lucide="arrow-left" class="w-5 h-5 inline mr-2"></i></button>
                             </div>
@@ -438,13 +463,30 @@
                                     <label style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; width: 100%;">
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink"><i data-lucide="banknote" class="w-5 h-5"></i></div>
-                                            <span class="font-bold text-brand-brown text-lg">تغليف وتنسيق مبالغ نقدية</span>
+                                            <span class="font-bold text-brand-brown text-lg">تغليف وتنسيق مبالغ نقدية (كاش)</span>
                                         </div>
                                         <input type="checkbox" id="addon-cash" onchange="window.ProductUI.toggleFlowerGiftCash(this.checked)" style="accent-color: #ff91a4; transform: scale(1.4); cursor: pointer;">
                                     </label>
+                                    
+                                    <!-- دمج خيارات وتصنيفات المبالغ النقدية بأسلوب الإدارة المطلوب -->
                                     <div id="cash-amount-input" class="hidden mt-4 pt-4 border-t border-dashed border-brand-pink/30 animate-fade">
-                                        <label class="block text-sm font-bold text-brand-brown mb-2">القيمة النقدية الإجمالية للتغليف (بالجنيه المصري):</label>
-                                        <input type="number" id="flower-cash-amount" placeholder="أدخل القيمة بالجنيه المصري..." class="w-full" min="0" oninput="window.ProductUI.updateFlowerPrices(); window.ProductUI.updateVisualSimulator();">
+                                        <div id="cash-options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-sm font-bold text-brand-brown mb-2">المبلغ الإجمالي المطلوب إضافته (ج.م):</label>
+                                                <input type="number" id="cash-amount" placeholder="مثال: 500" class="w-full" min="0" oninput="window.ProductUI.updateCashDetails(); window.ProductUI.updateVisualSimulator();">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-bold text-brand-brown mb-2">فئة النقود المطلوبة للتنسيق:</label>
+                                                <select id="cash-denomination" class="w-full bg-white border-2 border-brand-pink/30 rounded-[20px] p-[18px] text-brand-brown font-bold outline-none focus:border-brand-pink transition-all appearance-none" style="background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ff91a4%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E'); background-repeat: no-repeat; background-position: left 15px center; background-size: 20px;">
+                                                    <option value="5">خمسات (5 ج.م)</option>
+                                                    <option value="10">عشرات (10 ج.م)</option>
+                                                    <option value="20">عشرينات (20 ج.م)</option>
+                                                    <option value="50">خمسينات (50 ج.م)</option>
+                                                    <option value="100">ميات (100 ج.م)</option>
+                                                    <option value="200" selected>ميتينات (200 ج.م)</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -813,3 +855,4 @@
     <script src="product-logic.js" defer></script>
 </body>
 </html>
+

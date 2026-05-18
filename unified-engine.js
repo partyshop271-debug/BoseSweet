@@ -1,12 +1,12 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Sovereign Unified Engine | المحرك السيادي الموحد (V39.0)
+ * 👑 BoseSweets Sovereign Unified Engine | المحرك السيادي الموحد (V39.1)
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: دمج شامل، توحيد مسارات الفايربيز، ودعم كامل للهوية البصرية الموحدة.
- * التحديث الأخير (V39.0): التوافق الرجعي (Backward Compatibility) لاستعادة 
- * المنتجات القديمة التي لا تملك بصمة (isActive) وعرضها تلقائياً مع الاحتفاظ 
- * الشامل بكافة وظائف السحابة ومحركات الطوارئ دون أي حذف أو اختصار.
+ * التحديث الأخير (V39.1): فصل محرك الشريط المتحرك (Slider Engine) عن الشبكة،
+ * وتطبيق الختم الزمني الذكي (Smart Cache-Busting) لضمان التحديث اللحظي للصور 
+ * بأعلى أداء وأقل استهلاك للبيانات، مع التوافق التام وتجنب التداخل الهندسي.
  * ============================================================================
  */
 
@@ -63,7 +63,7 @@ try {
         window.firebaseApp = app;
         window.db = db;
         window.auth = auth;
-        window.BoseSweets_Engine_Version = "V39.0";
+        window.BoseSweets_Engine_Version = "V39.1";
     }
 } catch (error) {
     console.error("🔒 قرار إداري أمني: فشل تهيئة السحابة، يرجى مراجعة الخوادم فوراً.", error);
@@ -135,7 +135,7 @@ function handleConnectionDrop(retryFunction) {
                     clientDevice: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown Device',
                     url: window.location.href,
                     isLoginPortal: false,
-                    engineVersion: 'V39.0'
+                    engineVersion: 'V39.1'
                 };
 
                 this.saveToDatabase(reportData);
@@ -302,7 +302,7 @@ export const ReverseSyncEngine = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_Sovereign_V39.0',
+                        source: 'BoseSweets_Engine_Sovereign_V39.1',
                         engine_status: 'Active_Sovereign',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
@@ -323,7 +323,7 @@ export const ReverseSyncEngine = {
         try {
             if (db) {
                 const syncDocRef = doc(db, 'system', 'syncFlag');
-                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V39.0', forceRefresh: true }, { merge: true });
+                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V39.1', forceRefresh: true }, { merge: true });
             }
         } catch (error) {}
     }
@@ -437,7 +437,7 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🧠 القسم الرابع: ال الذاكرة المركزية والعقل المدبر (BoseState)
+// 🧠 القسم الرابع: الذاكرة المركزية والعقل المدبر (BoseState)
 // ============================================================================
 
 const BOSE_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg";
@@ -830,13 +830,13 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🔒 القسم السابع: مستمعي المزامنة الفورية السحابية (Firebase Real-time Sync V39.0)
+// 🔒 القسم السابع: مستمعي المزامنة الفورية السحابية (Firebase Real-time Sync V39.1)
 // ============================================================================
 
 export function initializeSovereignSync() {
     if (!db) return;
 
-    // 1. الاستماع للكتالوج والمنتجات لحظياً (بدعم التوافق الرجعي V39.0)
+    // 1. الاستماع للكتالوج والمنتجات لحظياً (بدعم التوافق الرجعي V39.1)
     onSnapshot(collection(db, 'catalog'), (snap) => {
         const list = [];
         snap.forEach(d => {
@@ -1027,6 +1027,11 @@ export function applyThemeConfigUI() {
             fPhone.innerText = themeData.footer.phone || '';
         }
     }
+
+    // 4. تشغيل محرك السلايدر المستقل لضمان التحديث اللحظي للصور (تمت الإضافة في V39.1)
+    if (typeof window.loadSliderImages === 'function') {
+        window.loadSliderImages();
+    }
 }
 
 // 🛡️ الحسم الجذري لمشكلة القائمة الجانبية: متوافقة مع كل الواجهات وتمنع أي تعارض
@@ -1091,7 +1096,79 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🔒 القسم التاسع: جاهزية النظام والتشغيل التلقائي (Bootloader)
+// 🖼️ القسم التاسع: محرك العرض المرئي والشريط المتحرك (Slider Engine) - التحديث V39.1
+// ============================================================================
+
+// دالة مساعدة لاستخراج بيانات السلايدر بأقل استهلاك بيانات وأعلى استقرار
+export async function fetchSliderRecords() {
+    try {
+        if (!db) return [];
+        // التوجيه الأول: فحص الإعدادات المحملة مسبقاً لتوفير استهلاك البيانات
+        if (BoseState.theme && BoseState.theme.sliderImages && Array.isArray(BoseState.theme.sliderImages)) {
+            return BoseState.theme.sliderImages;
+        }
+        // التوجيه البديل: طلب البيانات من المجموعة المخصصة
+        const sliderSnap = await getDocs(collection(db, 'sliders'));
+        if (!sliderSnap.empty) {
+            return sliderSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
+        return [];
+    } catch (error) {
+        if (window.BoseMonitor) window.BoseMonitor.report(error, 'unified-engine.js', null, null, 'fetchSliderRecords');
+        return [];
+    }
+}
+
+// الدالة المخصصة لجلب وعرض السلايدر فقط منعاً للتداخل الهندسي مع شبكة الكروت
+export async function loadSliderImages() {
+    const sliderContainer = document.getElementById('main-slider');
+    if (!sliderContainer) return;
+
+    try {
+        const sliderData = await fetchSliderRecords(); 
+        
+        // تفريغ الحاوية لمنع التكرار واستقلالية البناء
+        sliderContainer.innerHTML = ''; 
+
+        if (sliderData && sliderData.length > 0) {
+            sliderData.forEach(slide => {
+                const slideItem = document.createElement('div');
+                slideItem.className = 'slider-item-exclusive h-full w-full flex-shrink-0 relative';
+
+                const sourceUrl = slide.imageUrl || slide.image || slide.img || '';
+                if (!sourceUrl) return;
+
+                const processedUrl = typeof window.processBoseImage === 'function' ? window.processBoseImage(sourceUrl) : sourceUrl;
+                
+                // 💡 الختم الزمني الذكي: نستخدم وقت التحديث السحابي لكسر الذاكرة المؤقتة فقط عند تغيير الإدارة للصورة،
+                // لتقليل استهلاك البيانات للعملاء. وإن لم يتوفر نستخدم الوقت الحالي كقوة كسر فورية.
+                const smartTimeStamp = slide.updatedAt || (BoseState.theme && BoseState.theme.lastAdminUpdate) || new Date().getTime();
+                const separator = processedUrl.includes('?') ? '&' : '?';
+                const finalImageUrl = `${processedUrl}${separator}v=${smartTimeStamp}`;
+
+                slideItem.innerHTML = `<img src="${finalImageUrl}" alt="${slide.alt || 'عرض حلويات بوسي'}" class="w-full h-full object-cover rounded-[24px]">`;
+                sliderContainer.appendChild(slideItem);
+            });
+
+            // تشغيل تأثيرات الشريط المتحرك بعد اكتمال البناء بشكل هندسي متين
+            if (typeof window.initSliderEffects === 'function') {
+                window.initSliderEffects();
+            }
+        }
+    } catch (error) {
+        console.error('BoseSweets Engine: واجه المحرك عائقاً في بناء الشريط المتحرك', error);
+        if (window.BoseMonitor) window.BoseMonitor.report(error, 'unified-engine.js', null, null, 'loadSliderImages');
+    }
+}
+
+// دمج دوال المحرك المرئي في النطاق العام للتجاوب اللحظي
+if (typeof window !== 'undefined') {
+    window.fetchSliderRecords = fetchSliderRecords;
+    window.loadSliderImages = loadSliderImages;
+}
+
+// ============================================================================
+// 🔒 القسم العاشر: جاهزية النظام والتشغيل التلقائي (Bootloader)
 // ============================================================================
 
 // تهيئة وتصدير كافة النوافذ للواجهات الخارجية بشكل سيادي
@@ -1106,13 +1183,16 @@ if (typeof window !== 'undefined') {
 document.addEventListener('DOMContentLoaded', () => {
     initializeSovereignSync();
     setTimeout(() => {
+        // تشغيل الشريط المتحرك من المحرك المخصص
+        if (typeof window.loadSliderImages === 'function') window.loadSliderImages();
+
         BoseState.isAppReady = true;
         setAppReady();
         window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready'));
     }, 500);
 });
 
-console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد إلى الإصدار السيادي المتطور (V39.0) بنجاح ليدعم التوافق الرجعي واستعادة المنتجات القديمة مع الاحتفاظ بالقوة الهيكلية التامة.");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد إلى الإصدار السيادي المتطور (V39.1) بنجاح ليدعم محرك العرض المرئي المستقل والتحديث اللحظي للصور.");
 
 /* ==========================================================================
    ربط وتكامل محاكي التنسيق البصري مع المحرك الموحد - حلويات بوسي

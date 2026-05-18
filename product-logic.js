@@ -6,10 +6,13 @@ window.ProductUI = {
     reviewsData: [],
     currentReviewPage: 0,
     reviewsPerPage: 3,
-    
+    currentFlowerProduct: null, // تم إضافته لحمل بيانات الورد ديناميكياً
+    _pendingSimulatorFrame: null, // مؤشر جدولة الإطارات الرسومية لتفادي أعباء المعالجة الفائقة
+
     flowerState: {
         qty: 15,
         material: 'natural',
+        pathType: 'natural', // المسار المختار من التبويبات الذكية
         color: 'أحمر',
         customColorText: '',
         sampleRoseImgData: null,
@@ -20,6 +23,7 @@ window.ProductUI = {
         chocolatePreferences: '',
         hasCash: false,
         cashAmount: 0,
+        cashDenomination: '200', // فئة النقود (عشرات، ميات، إلخ)
         hasRibbon: false,
         ribbonText: '',
         hasGift: false,
@@ -56,13 +60,6 @@ window.ProductUI = {
     },
 
     setupFlowerPoster: function() {
-        // تم إلغاء تحميل أي صورة ثابتة أو افتراضية للبوكيه لتهيئة مساحة عمل نظيفة تماماً
-        const posterEl = document.getElementById('main-product-image');
-        if (posterEl) {
-            posterEl.style.display = 'none'; 
-            posterEl.src = '';
-        }
-        // تهيئة واجهة التنسيق الفارغة بأسلوب راقٍ
         const layerFlowers = document.getElementById('layer-flowers');
         if (layerFlowers) {
             layerFlowers.innerHTML = `
@@ -78,33 +75,127 @@ window.ProductUI = {
         }
     },
 
+    // 👑 الخوارزمية السيادية لمراقبة التبويبات وربطها بالصور والفئات النقدية (V39.2)
+    initFlowerTabs: function() {
+        const flowerTabs = document.querySelectorAll('.flower-tab');
+        const mainProductImg = document.getElementById('main-product-image');
+        const cashOptions = document.getElementById('cash-options-container');
+
+        // جلب المنتج المخصص للورد من الذاكرة المركزية
+        const catalog = window.BoseState?.catalog || [];
+        this.currentFlowerProduct = catalog.find(p => p.category && this.normalizeArabic(p.category) === this.normalizeArabic('ورد')) || {};
+        
+        // تجهيز خريطة الصور للتبديل الفوري
+        const defaultImg = this.currentFlowerProduct.img || this.currentFlowerProduct.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
+        const imagesMap = {
+            'natural': this.currentFlowerProduct.imgNatural || defaultImg,
+            'artificial': this.currentFlowerProduct.imgArtificial || defaultImg,
+            'chocolate': this.currentFlowerProduct.imgChoco || defaultImg,
+            'cash': this.currentFlowerProduct.imgCash || defaultImg
+        };
+
+        // تفعيل الصورة الأولى تلقائيا لكسر الجمود
+        if (mainProductImg && imagesMap['natural']) {
+            mainProductImg.src = window.processBoseImage ? window.processBoseImage(imagesMap['natural']) : imagesMap['natural'];
+            mainProductImg.style.display = 'block';
+            const placeholder = document.getElementById('bose-canvas-placeholder');
+            if (placeholder) placeholder.style.display = 'none';
+        }
+
+        // مراقبة نقرات العميل وتوجيه المسار بذكاء
+        flowerTabs.forEach(tab => {
+            tab.removeAttribute('onclick'); // منع أي تعارض مع الـ HTML القديم
+            
+            tab.addEventListener('click', () => {
+                const target = tab.getAttribute('data-target');
+                this.flowerState.pathType = target;
+                
+                // 1. تبديل الصورة فورا حسب الاختيار
+                if(imagesMap[target] && mainProductImg) {
+                    mainProductImg.src = window.processBoseImage ? window.processBoseImage(imagesMap[target]) : imagesMap[target];
+                    mainProductImg.style.display = 'block';
+                    const placeholder = document.getElementById('bose-canvas-placeholder');
+                    if (placeholder) placeholder.style.display = 'none';
+                }
+
+                // 2. إظهار أو إخفاء قسم النقود وتنشيط الإضافات بناء على الاختيار
+                if (target === 'cash') {
+                    if (cashOptions) cashOptions.style.display = 'flex';
+                    this.toggleFlowerGiftCash(true);
+                    this.toggleFlowerChocolate(false);
+                } else if (target === 'chocolate') {
+                    if (cashOptions) cashOptions.style.display = 'none';
+                    this.toggleFlowerGiftCash(false);
+                    this.toggleFlowerChocolate(true);
+                } else {
+                    if (cashOptions) cashOptions.style.display = 'none';
+                    this.toggleFlowerGiftCash(false);
+                    this.toggleFlowerChocolate(false);
+                    this.flowerState.material = target; // طبيعي أو صناعي
+                }
+
+                // 3. تمييز التبويب النشط بصريا بشكل راقٍ
+                flowerTabs.forEach(t => {
+                    t.classList.remove('active', 'selected');
+                    t.style.backgroundColor = '#ffffff';
+                });
+                tab.classList.add('active', 'selected');
+                tab.style.backgroundColor = '#fff5f6';
+                
+                this.updateFlowerPrices();
+                this.updateVisualSimulator();
+            });
+        });
+    },
+
+    // 👑 العقل المفكر لشبكة التوجيه - فصل تام بين محاكي الورد وقسم استعراض التورت (V39.2)
     initRouter: function() {
         const params = new URLSearchParams(window.location.search);
         const category = params.get('category');
         const action = params.get('action');
 
-        document.getElementById('builder-container').classList.add('hidden');
-        document.getElementById('category-viewer').classList.add('hidden');
-        document.getElementById('flower-customizer-container').classList.add('hidden');
+        // إخفاء كل الحاويات لتهيئة المشهد بشكل نظيف ومنع التبادل أو التداخل البصري
+        const builderContainer = document.getElementById('builder-container');
+        const categoryViewer = document.getElementById('category-viewer');
+        const flowerCustomizer = document.getElementById('flower-customizer-container');
+        const floatingCart = document.getElementById('bose-floating-cart');
+
+        if (builderContainer) builderContainer.classList.add('hidden');
+        if (categoryViewer) categoryViewer.classList.add('hidden');
+        if (flowerCustomizer) flowerCustomizer.classList.add('hidden');
+        if (floatingCart) floatingCart.style.display = 'none';
+
+        // تطبيع المسار الحالي لفحص الأقسام بدقة
+        const normalizedCat = category ? this.normalizeArabic(category) : '';
 
         if (action === 'build_cake') {
-            document.getElementById('builder-container').classList.remove('hidden');
+            // 1. مسار محاكي وتصميم التورتات المخصص بالكامل (Cake Builder)
+            if (builderContainer) builderContainer.classList.remove('hidden');
             this.state = { people: 4, print: 'none', gift: false, shape: 'round', healthNotes: '', refImageName: '', printImageName: '' };
             this.setupBuilderPoster();
             this.updatePrices();
-        } else if (category && this.normalizeArabic(category) === this.normalizeArabic('ورد')) {
-            document.getElementById('flower-customizer-container').classList.remove('hidden');
+        } 
+        else if (category && (normalizedCat === 'ورد' || normalizedCat === 'ورود' || normalizedCat === 'زهور')) {
+            // 2. مسار محاكي وتصميم بوكيهات الورد الخاص (Flower Simulator) - مستقل ومعزول كلياً
+            if (flowerCustomizer) flowerCustomizer.classList.remove('hidden');
+            if (floatingCart) floatingCart.style.display = 'flex';
+            
             this.setupFlowerPoster(); 
+            this.initFlowerTabs(); 
             this.updateFlowerPrices();
             this.updateVisualSimulator();
-        } else if (category) {
+        } 
+        else if (category) {
+            // 3. مسار استعراض المنتجات العادية والجاهزة (بما في ذلك قسم التورت، الجاتوهات، وغيرها)
             this.currentCategory = category;
-            document.getElementById('category-viewer').classList.remove('hidden');
+            if (categoryViewer) categoryViewer.classList.remove('hidden');
             this.trackBehavior(category); 
             this.setupCategoryView(category);
-        } else {
+        } 
+        else {
+            // 4. المسار الافتراضي للموقع (استعراض كافة المنتجات)
             this.currentCategory = 'all';
-            document.getElementById('category-viewer').classList.remove('hidden');
+            if (categoryViewer) categoryViewer.classList.remove('hidden');
             this.setupCategoryView('all');
         }
         
@@ -159,16 +250,19 @@ window.ProductUI = {
 
     setFlowerMaterial: function(mat, btn) {
         this.flowerState.material = mat;
-        btn.parentElement.querySelectorAll('.bose-btn-option').forEach(b => {
-            b.classList.remove('active');
-            b.style.backgroundColor = '#ffffff';
-            b.style.color = '#ff91a4';
-            b.style.borderColor = 'rgba(255,145,164,0.3)';
-        });
-        btn.classList.add('active');
-        btn.style.backgroundColor = '#ff91a4';
-        btn.style.color = '#ffffff';
-        btn.style.borderColor = '#ff91a4';
+        if (btn && btn.parentElement) {
+            btn.parentElement.querySelectorAll('.bose-btn-option').forEach(b => {
+                b.classList.remove('active');
+                b.style.backgroundColor = '#ffffff';
+                b.style.color = '#ff91a4';
+                b.style.borderColor = 'rgba(255,145,164,0.3)';
+            });
+            btn.classList.add('active');
+            btn.style.backgroundColor = '#ff91a4';
+            btn.style.color = '#ffffff';
+            btn.style.borderColor = '#ff91a4';
+        }
+        this.updateFlowerPrices();
         this.updateVisualSimulator();
     },
 
@@ -204,7 +298,6 @@ window.ProductUI = {
         this.flowerState.color = 'درجة مخصصة';
         this.flowerState.customColorText = val;
         
-        // إلغاء تحديد الدوائر اللونية القياسية لتأكيد تفعيل اللون الحر المكتوب
         const circlesContainer = document.getElementById('flower-circles-wrap');
         if (circlesContainer) {
             circlesContainer.querySelectorAll('.color-circle').forEach(b => {
@@ -257,6 +350,15 @@ window.ProductUI = {
         }
         this.updateFlowerPrices();
         this.updateVisualSimulator();
+    },
+
+    // 👑 استشعار التعديلات النقدية من القوائم
+    updateCashDetails: function() {
+        const cashAmount = parseFloat(document.getElementById('cash-amount')?.value) || 0;
+        const denomination = document.getElementById('cash-denomination')?.value || '200';
+        this.flowerState.cashAmount = cashAmount;
+        this.flowerState.cashDenomination = denomination;
+        this.updateFlowerPrices();
     },
 
     toggleFlowerRibbonPrint: function(isChecked) {
@@ -319,235 +421,249 @@ window.ProductUI = {
 
     updateFlowerPrices: function() {
         let basePrice = 400; 
-        if(this.flowerState.qty > 15) {
-            basePrice += (this.flowerState.qty - 15) * 35;
+        
+        const pricing = window.BoseState?.pricingRules || {};
+        
+        if (this.flowerState.material === 'natural' && pricing.priceNatural) basePrice = this.flowerState.qty * pricing.priceNatural;
+        else if (this.flowerState.material === 'artificial' && pricing.priceArtificial) basePrice = this.flowerState.qty * pricing.priceArtificial;
+        else if (this.flowerState.material === 'satin' && pricing.priceSatin) basePrice = this.flowerState.qty * pricing.priceSatin;
+        else {
+             if(this.flowerState.qty > 15) {
+                basePrice += (this.flowerState.qty - 15) * 35;
+             }
         }
 
         let totalPrice = basePrice;
-        if(this.flowerState.hasGift) totalPrice += 25; 
+        if(this.flowerState.hasGift) totalPrice += (pricing.priceCard || 25); 
         if(this.flowerState.hasRibbon) totalPrice += 50; 
-        totalPrice += this.flowerState.photoCount * 15; 
+        totalPrice += this.flowerState.photoCount * (pricing.pricePhoto || 15); 
 
         const chocoBudget = parseFloat(document.getElementById('flower-chocolate-budget')?.value) || 0;
-        const cashAmount = parseFloat(document.getElementById('flower-cash-amount')?.value) || 0;
+        const cashAmount = parseFloat(document.getElementById('cash-amount')?.value) || 0;
         
-        totalPrice += chocoBudget;
-        totalPrice += cashAmount;
+        if (this.flowerState.hasChocolate || this.flowerState.pathType === 'chocolate') totalPrice += chocoBudget;
+        if (this.flowerState.hasCash || this.flowerState.pathType === 'cash') totalPrice += cashAmount;
 
         const pDisplay = document.getElementById('live-total-price');
         if(pDisplay) pDisplay.innerText = `${totalPrice} ج.م`;
 
+        const floatPrice = document.getElementById('floating-total-price');
+        if(floatPrice) floatPrice.innerText = `${totalPrice} ج.م`;
+
         return totalPrice;
     },
 
+    // 👑 تغليف وتأمين محرك المحاكاة الرسومية بجدولة متزامنة لتجنب انهيار الشاشات (V39.2)
     updateVisualSimulator: function() {
-        const layerFlowers = document.getElementById('layer-flowers');
-        const layerChocolate = document.getElementById('layer-chocolate');
-        const layerCash = document.getElementById('layer-cash');
-        const layerRibbon = document.getElementById('layer-ribbon');
-        const layerCard = document.getElementById('layer-card');
-        
-        if (!layerFlowers) return;
-
-        // إزالة عنصر الترحيب البدائي بمجرد بدء التفاعل الحقيقي للمستعمل مع خيارات التنسيق
-        const placeholder = document.getElementById('bose-canvas-placeholder');
-        if (placeholder) placeholder.remove();
-
-        // 1. هندسة وتخليق بوكيه الورد إجرائياً بالكامل (Procedural Cluster Generation)
-        let clusterHtml = '';
-        const totalRoses = this.flowerState.qty;
-        
-        // المنظومة اللونية والتأثير البصري لكل خامة معتمدة لمنع الألوان الداكنة أو المظهر الرمادي
-        let bgStyle = 'radial-gradient(circle, #ff2e55 0%, #b80c2f 100%)'; 
-        let borderStyle = 'border: 2px solid rgba(255,255,255,0.45);';
-        let textureClass = 'shadow-md';
-
-        if (this.flowerState.color === 'أبيض') {
-            bgStyle = 'radial-gradient(circle, #ffffff 0%, #f1e4e6 100%)';
-            borderStyle = 'border: 2px solid rgba(255,145,164,0.25);';
-        } else if (this.flowerState.color === 'وردي') {
-            bgStyle = 'radial-gradient(circle, #ffb3c1 0%, #ff758f 100%)';
-        } else if (this.flowerState.color === 'مشكل') {
-            bgStyle = 'linear-gradient(135deg, #ff2e55 0%, #ffffff 50%, #ff758f 100%)';
-        } else if (this.flowerState.color === 'درجة مخصصة' && this.flowerState.customColorText) {
-            bgStyle = 'radial-gradient(circle, #ff8095 0%, #8c2334 100%)'; 
+        if (window.ProductUI._pendingSimulatorFrame) {
+            cancelAnimationFrame(window.ProductUI._pendingSimulatorFrame);
         }
 
-        // تطبيق لمعان ملمس الستان أو نعومة الصناعي تكنولوجياً عبر خصائص الـ CSS الفاخرة
-        if (this.flowerState.material === 'satin') {
-            borderStyle += 'box-shadow: inset 0 0 12px rgba(255,255,255,0.85), 0 4px 10px rgba(0,0,0,0.1);';
-        } else if (this.flowerState.material === 'artificial') {
-            borderStyle += 'box-shadow: inset 0 0 6px rgba(0,0,0,0.12);';
-        }
-
-        // في حال رفع العميل صورة مخصصة لوردة عجبته، يتم استبدال الكساء اللوني فوراً بدفق الصورة المرفوعة حياً
-        if (this.flowerState.sampleRoseImgData) {
-            bgStyle = `url('${this.flowerState.sampleRoseImgData}') center/cover no-repeat`;
-            borderStyle = 'border: 3px solid #ff91a4;';
-        }
-
-        // خوارزمية التوزيع اللولبي الدائري (Fermat's Spiral Optimization) لبناء شكل البوكيه العضوي الطبيعي 100%
-        const baseCenterX = 50;
-        const baseCenterY = 48;
-
-        for (let i = 0; i < totalRoses; i++) {
-            const phi = i * 137.5 * (Math.PI / 180); 
-            const c = 3.6; 
-            const radius = c * Math.sqrt(i); 
+        window.ProductUI._pendingSimulatorFrame = requestAnimationFrame(() => {
+            const layerFlowers = document.getElementById('layer-flowers');
+            const layerChocolate = document.getElementById('layer-chocolate');
+            const layerCash = document.getElementById('layer-cash');
+            const layerRibbon = document.getElementById('layer-ribbon');
+            const layerCard = document.getElementById('layer-card');
             
-            const left = baseCenterX + radius * Math.cos(phi);
-            const top = baseCenterY + radius * Math.sin(phi) * 0.95; 
+            if (!layerFlowers) {
+                window.ProductUI._pendingSimulatorFrame = null;
+                return;
+            }
+
+            const placeholder = document.getElementById('bose-canvas-placeholder');
+            if (placeholder) placeholder.remove();
+
+            let clusterHtml = '';
+            const self = window.ProductUI;
+            const totalRoses = self.flowerState.qty;
             
-            // تفاوت أحجام الورد العشوائي الطبيعي لمحاكاة الواقع بدقة فائقة
-            const roseSize = 34 + (i % 3 * 3) - (i > 30 ? 4 : 0); 
+            let bgStyle = 'radial-gradient(circle, #ff2e55 0%, #b80c2f 100%)'; 
+            let borderStyle = 'border: 2px solid rgba(255,255,255,0.45);';
+            let textureClass = 'shadow-md';
+
+            if (self.flowerState.color === 'أبيض') {
+                bgStyle = 'radial-gradient(circle, #ffffff 0%, #f1e4e6 100%)';
+                borderStyle = 'border: 2px solid rgba(255,145,164,0.25);';
+            } else if (self.flowerState.color === 'وردي') {
+                bgStyle = 'radial-gradient(circle, #ffb3c1 0%, #ff758f 100%)';
+            } else if (self.flowerState.color === 'مشكل') {
+                bgStyle = 'linear-gradient(135deg, #ff2e55 0%, #ffffff 50%, #ff758f 100%)';
+            } else if (self.flowerState.color === 'درجة مخصصة' && self.flowerState.customColorText) {
+                bgStyle = 'radial-gradient(circle, #ff8095 0%, #8c2334 100%)'; 
+            }
+
+            if (self.flowerState.material === 'satin') {
+                borderStyle += 'box-shadow: inset 0 0 12px rgba(255,255,255,0.85), 0 4px 10px rgba(0,0,0,0.1);';
+            } else if (self.flowerState.material === 'artificial') {
+                borderStyle += 'box-shadow: inset 0 0 6px rgba(0,0,0,0.12);';
+            }
+
+            if (self.flowerState.sampleRoseImgData) {
+                bgStyle = `url('${self.flowerState.sampleRoseImgData}') center/cover no-repeat`;
+                borderStyle = 'border: 3px solid #ff91a4;';
+            }
+
+            const baseCenterX = 50;
+            const baseCenterY = 48;
+
+            for (let i = 0; i < totalRoses; i++) {
+                const phi = i * 137.5 * (Math.PI / 180); 
+                const c = 3.6; 
+                const radius = c * Math.sqrt(i); 
+                
+                const left = baseCenterX + radius * Math.cos(phi);
+                const top = baseCenterY + radius * Math.sin(phi) * 0.95; 
+                
+                const roseSize = 34 + (i % 3 * 3) - (i > 30 ? 4 : 0); 
+
+                clusterHtml += `
+                    <div class="absolute rounded-full transition-all duration-500 hover:scale-110 ${textureClass} animate-fade"
+                         style="left: ${left}%; top: ${top}%; width: ${roseSize}px; height: ${roseSize}px; margin-left: -${roseSize/2}px; margin-top: -${roseSize/2}px; background: ${bgStyle}; ${borderStyle} z-20">
+                    </div>
+                `;
+            }
+
+            let matText = "طبيعي";
+            if (self.flowerState.material === 'artificial') matText = "صناعي";
+            if (self.flowerState.material === 'satin') matText = "ستان";
+
+            let descLabel = `${totalRoses} وردة (${matText}) - ${self.flowerState.color === 'درجة مخصصة' ? self.flowerState.customColorText : self.flowerState.color}`;
+            if (self.flowerState.color === 'مشكل' && self.flowerState.mixDetails) {
+                descLabel += ` (${self.flowerState.mixDetails})`;
+            }
+            if (self.flowerState.sampleRoseImgData) {
+                descLabel += ` [مستنسخ من صورتك المرفوعة]`;
+            }
 
             clusterHtml += `
-                <div class="absolute rounded-full transition-all duration-500 hover:scale-110 ${textureClass} animate-fade"
-                     style="left: ${left}%; top: ${top}%; width: ${roseSize}px; height: ${roseSize}px; margin-left: -${roseSize/2}px; margin-top: -${roseSize/2}px; background: ${bgStyle}; ${borderStyle} z-20">
+                <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-md border border-brand-pink text-brand-brown px-5 py-2.5 rounded-full font-black text-xs shadow-md z-40 text-center whitespace-nowrap">
+                    💐 ${descLabel}
                 </div>
             `;
-        }
+            layerFlowers.innerHTML = clusterHtml;
 
-        // كبسولة التسمية النصية الذكية المدمجة بأسفل الواجهة
-        let matText = "طبيعي";
-        if (this.flowerState.material === 'artificial') matText = "صناعي";
-        if (this.flowerState.material === 'satin') matText = "ستان";
-
-        let descLabel = `${totalRoses} وردة (${matText}) - ${this.flowerState.color === 'درجة مخصصة' ? this.flowerState.customColorText : this.flowerState.color}`;
-        if (this.flowerState.color === 'مشكل' && this.flowerState.mixDetails) {
-            descLabel += ` (${this.flowerState.mixDetails})`;
-        }
-        if (this.flowerState.sampleRoseImgData) {
-            descLabel += ` [مستنسخ من صورتك المرفوعة]`;
-        }
-
-        clusterHtml += `
-            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-md border border-brand-pink text-brand-brown px-5 py-2.5 rounded-full font-black text-xs shadow-md z-40 text-center whitespace-nowrap">
-                💐 ${descLabel}
-            </div>
-        `;
-        layerFlowers.innerHTML = clusterHtml;
-
-        // 2. توزيع قطع الشوكولاتة الفاخرة بشكل متناسق ومتداخل بين خلايا الورد
-        if (layerChocolate) {
-            if (this.flowerState.hasChocolate) {
-                layerChocolate.style.opacity = '1';
-                const budget = parseFloat(document.getElementById('flower-chocolate-budget')?.value) || 0;
-                const chocoCount = Math.min(Math.max(Math.floor(budget / 20), 2), 14);
-                let chocoHtml = '';
-                
-                for (let i = 0; i < chocoCount; i++) {
-                    const angle = (i / chocoCount) * 2 * Math.PI + 0.7;
-                    const radius = 12 + (i % 2 ? 8 : 0); 
-                    const left = baseCenterX + radius * Math.cos(angle);
-                    const top = baseCenterY + radius * Math.sin(angle);
+            if (layerChocolate) {
+                if (self.flowerState.hasChocolate || self.flowerState.pathType === 'chocolate') {
+                    layerChocolate.style.opacity = '1';
+                    const budget = parseFloat(document.getElementById('flower-chocolate-budget')?.value) || 0;
+                    const chocoCount = Math.min(Math.max(Math.floor(budget / 20), 2), 14);
+                    let chocoHtml = '';
                     
-                    chocoHtml += `
-                        <div class="absolute w-8 h-8 -ml-4 -mt-4 rounded-xl shadow-lg z-30 flex items-center justify-center animate-fade"
-                             style="left: ${left}%; top: ${top}%; background: linear-gradient(135deg, #ebd197 0%, #b4934c 50%, #846424 100%); border: 2px solid #ffffff;">
-                             <span class="text-[11px]">🍫</span>
-                        </div>`;
+                    for (let i = 0; i < chocoCount; i++) {
+                        const angle = (i / chocoCount) * 2 * Math.PI + 0.7;
+                        const radius = 12 + (i % 2 ? 8 : 0); 
+                        const left = baseCenterX + radius * Math.cos(angle);
+                        const top = baseCenterY + radius * Math.sin(angle);
+                        
+                        chocoHtml += `
+                            <div class="absolute w-8 h-8 -ml-4 -mt-4 rounded-xl shadow-lg z-30 flex items-center justify-center animate-fade"
+                                 style="left: ${left}%; top: ${top}%; background: linear-gradient(135deg, #ebd197 0%, #b4934c 50%, #846424 100%); border: 2px solid #ffffff;">
+                                 <span class="text-[11px]">🍫</span>
+                            </div>`;
+                    }
+                    layerChocolate.innerHTML = chocoHtml;
+                } else {
+                    layerChocolate.style.opacity = '0';
+                    layerChocolate.innerHTML = '';
                 }
-                layerChocolate.innerHTML = chocoHtml;
-            } else {
-                layerChocolate.style.opacity = '0';
-                layerChocolate.innerHTML = '';
             }
-        }
 
-        // 3. محاكاة وتوزيع لفائف الكاش النقدية المدمجة حياً داخل البوكيه
-        if (layerCash) {
-            if (this.flowerState.hasCash) {
-                layerCash.style.opacity = '1';
-                const cashAmount = parseFloat(document.getElementById('flower-cash-amount')?.value) || 0;
-                const notesCount = Math.min(Math.max(Math.floor(cashAmount / 150), 2), 10);
-                let cashHtml = '';
-                
-                for (let i = 0; i < notesCount; i++) {
-                    const angle = (i / notesCount) * 2 * Math.PI + 1.4;
-                    const radius = 20 - (i % 2 ? 6 : 0);
-                    const left = baseCenterX + radius * Math.cos(angle);
-                    const top = baseCenterY + radius * Math.sin(angle);
-                    const rotation = (angle * 180 / Math.PI) + 90;
+            if (layerCash) {
+                if (self.flowerState.hasCash || self.flowerState.pathType === 'cash') {
+                    layerCash.style.opacity = '1';
+                    const cashAmount = parseFloat(document.getElementById('cash-amount')?.value) || 0;
+                    const notesCount = Math.min(Math.max(Math.floor(cashAmount / 150), 2), 10);
+                    let cashHtml = '';
                     
-                    cashHtml += `
-                        <div class="absolute w-9 h-5 -ml-4.5 -mt-2.5 bg-emerald-700 border-2 border-emerald-100 rounded-sm shadow-md z-30 flex items-center justify-center text-[9px] text-white font-black animate-fade"
-                             style="left: ${left}%; top: ${top}%; transform: rotate(${rotation}deg);">
-                             💵
-                        </div>`;
+                    for (let i = 0; i < notesCount; i++) {
+                        const angle = (i / notesCount) * 2 * Math.PI + 1.4;
+                        const radius = 20 - (i % 2 ? 6 : 0);
+                        const left = baseCenterX + radius * Math.cos(angle);
+                        const top = baseCenterY + radius * Math.sin(angle);
+                        const rotation = (angle * 180 / Math.PI) + 90;
+                        
+                        cashHtml += `
+                            <div class="absolute w-9 h-5 -ml-4.5 -mt-2.5 bg-emerald-700 border-2 border-emerald-100 rounded-sm shadow-md z-30 flex items-center justify-center text-[9px] text-white font-black animate-fade"
+                                 style="left: ${left}%; top: ${top}%; transform: rotate(${rotation}deg);">
+                                 💵
+                            </div>`;
+                    }
+                    layerCash.innerHTML = cashHtml;
+                } else {
+                    layerCash.style.opacity = '0';
+                    layerCash.innerHTML = '';
                 }
-                layerCash.innerHTML = cashHtml;
-            } else {
-                layerCash.style.opacity = '0';
-                layerCash.innerHTML = '';
             }
-        }
 
-        // 4. محاكاة الصور المرافقة (تخليد الذكريات) وتأطيرها هندسياً فوق التنسيق
-        const layerCustomPhoto = document.getElementById('layer-custom-photo');
-        if (layerCustomPhoto) {
-            if (this.flowerState.photoCount > 0 && this.flowerState.photoFiles.length > 0) {
-                layerCustomPhoto.style.opacity = '1';
-                const renderImg = document.getElementById('custom-photo-render');
-                if (renderImg) {
-                    renderImg.style.display = 'block';
-                    renderImg.className = "w-24 h-28 p-2 bg-white shadow-2xl border-2 border-brand-pink/20 rounded-sm transform rotate-[-4deg] absolute z-30 left-[20%] top-[26%] object-cover animate-fade";
+            const layerCustomPhoto = document.getElementById('layer-custom-photo');
+            if (layerCustomPhoto) {
+                if (self.flowerState.photoCount > 0 && self.flowerState.photoFiles.length > 0) {
+                    layerCustomPhoto.style.opacity = '1';
+                    const renderImg = document.getElementById('custom-photo-render');
+                    if (renderImg) {
+                        renderImg.style.display = 'block';
+                        renderImg.className = "w-24 h-28 p-2 bg-white shadow-2xl border-2 border-brand-pink/20 rounded-sm transform rotate-[-4deg] absolute z-30 left-[20%] top-[26%] object-cover animate-fade";
+                    }
+                } else {
+                    layerCustomPhoto.style.opacity = '0';
+                    const renderImg = document.getElementById('custom-photo-render');
+                    if (renderImg) renderImg.style.display = 'none';
                 }
-            } else {
-                layerCustomPhoto.style.opacity = '0';
-                const renderImg = document.getElementById('custom-photo-render');
-                if (renderImg) renderImg.style.display = 'none';
             }
-        }
 
-        // 5. لف شريط الستان المطبوع بعناية وانسيابية أسفل البوكيه
-        if (layerRibbon) {
-            const ribbonText = document.getElementById('flower-ribbon-text')?.value || '';
-            if (this.flowerState.hasRibbon && ribbonText.trim() !== '') {
-                layerRibbon.style.opacity = '1';
-                layerRibbon.innerHTML = `
-                    <div class="absolute bottom-16 left-1/2 -translate-x-1/2 bg-brand-pink text-white text-[11px] font-black px-5 py-2 rounded-sm shadow-md border-y border-white/30 z-30 max-w-[240px] text-center whitespace-nowrap tracking-wider animate-fade">
-                        🎀 ${ribbonText} 🎀
-                    </div>
-                `;
-            } else {
-                layerRibbon.style.opacity = '0';
-                layerRibbon.innerHTML = '';
+            if (layerRibbon) {
+                const ribbonText = document.getElementById('flower-ribbon-text')?.value || '';
+                if (self.flowerState.hasRibbon && ribbonText.trim() !== '') {
+                    layerRibbon.style.opacity = '1';
+                    layerRibbon.innerHTML = `
+                        <div class="absolute bottom-16 left-1/2 -translate-x-1/2 bg-brand-pink text-white text-[11px] font-black px-5 py-2 rounded-sm shadow-md border-y border-white/30 z-30 max-w-[240px] text-center whitespace-nowrap tracking-wider animate-fade">
+                            🎀 ${ribbonText} 🎀
+                        </div>
+                    `;
+                } else {
+                    layerRibbon.style.opacity = '0';
+                    layerRibbon.innerHTML = '';
+                }
             }
-        }
 
-        // 6. حقن كارت الإهداء وتثبيته في زاوية البوكيه العلوية
-        if (layerCard) {
-            const giftText = document.getElementById('flower-gift-text')?.value || '';
-            if (this.flowerState.hasGift && giftText.trim() !== '') {
-                layerCard.style.opacity = '1';
-                layerCard.innerHTML = `
-                    <div class="absolute top-6 right-6 bg-white border border-brand-pink/40 text-brand-brown px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-md z-30 max-w-[150px] truncate animate-fade">
-                        ✉️ كارت: "${giftText}"
-                    </div>
-                `;
-            } else {
-                layerCard.style.opacity = '0';
-                layerCard.innerHTML = '';
+            if (layerCard) {
+                const giftText = document.getElementById('flower-gift-text')?.value || '';
+                if (self.flowerState.hasGift && giftText.trim() !== '') {
+                    layerCard.style.opacity = '1';
+                    layerCard.innerHTML = `
+                        <div class="absolute top-6 right-6 bg-white border border-brand-pink/40 text-brand-brown px-3 py-1.5 rounded-lg text-[10px] font-bold shadow-md z-30 max-w-[150px] truncate animate-fade">
+                            ✉️ كارت: "${giftText}"
+                        </div>
+                    `;
+                } else {
+                    layerCard.style.opacity = '0';
+                    layerCard.innerHTML = '';
+                }
             }
-        }
+
+            window.ProductUI._pendingSimulatorFrame = null;
+        });
     },
 
+    // 👑 دالة الاعتماد وجمع البيانات لإرسالها للسلة (تم دمج منطق الفئات النقدية بدقة)
     addCustomFlowerToCart: function() {
         const finalPrice = this.updateFlowerPrices();
-        const giftText = document.getElementById('flower-gift-text')?.value || '';
-        const ribbonText = document.getElementById('flower-ribbon-text')?.value || '';
         
-        const chocoBudget = parseFloat(document.getElementById('flower-chocolate-budget')?.value) || 0;
-        const chocoPref = document.getElementById('flower-chocolate-pref')?.value || 'تفضيل قياسي';
-        const cashAmount = parseFloat(document.getElementById('flower-cash-amount')?.value) || 0;
-
-        const item = {
-            id: `custom-flower-${Date.now()}`,
-            name: 'بوكيه ورد بتصميم خاص',
+        // استخلاص المسار النشط بذكاء
+        const activeTabEl = document.querySelector('.flower-tab.active') || document.querySelector('.flower-tab.selected');
+        const activeTab = activeTabEl ? activeTabEl.getAttribute('data-target') : (this.flowerState.pathType || 'natural');
+        
+        const ribbonText = document.getElementById('flower-ribbon-text')?.value || '';
+        const giftText = document.getElementById('flower-gift-text')?.value || '';
+        
+        let orderDetails = {
+            productId: (this.currentFlowerProduct && this.currentFlowerProduct.id) ? this.currentFlowerProduct.id : `custom-flower-${Date.now()}`,
+            name: (this.currentFlowerProduct && this.currentFlowerProduct.name) ? `بوكيه: ${this.currentFlowerProduct.name}` : 'بوكيه ورد بتصميم خاص',
             price: finalPrice,
             quantity: 1,
             isCustom: true,
+            type: activeTab, // تحديد المسار بدقة كما طلبت الإدارة
             details: {
                 category: 'ورد',
                 qty: this.flowerState.qty,
@@ -560,20 +676,27 @@ window.ProductUI = {
                 hasRibbon: this.flowerState.hasRibbon,
                 ribbonText: ribbonText,
                 photoCount: this.flowerState.photoCount,
-                chocolateBudget: chocoBudget,
-                chocolatePreferences: chocoPref,
-                cashAmount: cashAmount,
+                chocolateBudget: parseFloat(document.getElementById('flower-chocolate-budget')?.value) || 0,
+                chocolatePreferences: document.getElementById('flower-chocolate-pref')?.value || 'تفضيل قياسي',
                 photoFilesNames: this.flowerState.photoFiles.map(f => f.name)
             }
         };
 
+        // تغليف وإضافة تفاصيل الفلوس والفئات لو العميل اختار مسار الكاش
+        if (activeTab === 'cash' || this.flowerState.hasCash) {
+            orderDetails.details.cashAmount = document.getElementById('cash-amount')?.value || 0;
+            orderDetails.details.cashDenomination = document.getElementById('cash-denomination')?.value || '200';
+        }
+
+        // إرسال البيانات النهائية والمنسقة لسلة المشتريات
         if (window.BoseState && window.cartSystem) {
-            window.BoseState.cart.push(item);
+            window.BoseState.cart.push(orderDetails);
             window.cartSystem.saveCartToStorage();
             window.location.href = 'cart.html';
         }
     },
 
+    // 👑 الخوارزمية الحصرية لعرض المنتجات مع استبعاد تام لأي تداخل بين الأقسام (V39.2)
     setupCategoryView: function(catName) {
         const catalog = window.BoseState?.catalog || [];
         const normalizedSearch = this.normalizeArabic(catName);
@@ -581,9 +704,20 @@ window.ProductUI = {
         this.allCategoryProducts = catName === 'all' ? catalog : catalog.filter(p => {
             if (!p.category) return false;
             const normalizedCat = this.normalizeArabic(p.category);
+            
+            // مقارنة صارمة تضمن عدم خلط تصفح التورت مع الورد تحت أي ظرف من الظروف
+            if (normalizedSearch === 'ورد' || normalizedSearch === 'ورود') {
+                return normalizedCat === 'ورد' || normalizedCat === 'ورود' || normalizedCat === 'زهور';
+            }
+            if (normalizedSearch === 'تورت' || normalizedSearch === 'تورته' || normalizedSearch === 'تورتات') {
+                return normalizedCat === 'تورت' || normalizedCat === 'تورته' || normalizedCat === 'تورتات' || normalizedCat === 'حلويات' || normalizedCat === 'كيك';
+            }
+            
             return normalizedCat === normalizedSearch || 
-                   normalizedSearch.includes(normalizedCat) || 
-                   normalizedCat.includes(normalizedSearch);
+                   normalizedCat === normalizedSearch + 'ه' || 
+                   normalizedSearch === normalizedCat + 'ه' ||
+                   (normalizedCat.endsWith('ات') && normalizedCat.slice(0, -2) === normalizedSearch) ||
+                   (normalizedSearch.endsWith('ات') && normalizedSearch.slice(0, -2) === normalizedCat);
         });
 
         const headerContainer = document.getElementById('category-header-container');
@@ -701,7 +835,8 @@ window.ProductUI = {
         if (suggestions.length > 0) {
             section.classList.remove('hidden');
             section.style.display = 'block';
-            const tmpl = document.getElementById('bose-suggestion-card-template').innerHTML;
+            const tmpl = document.getElementById('bose-suggestion-card-template') ? document.getElementById('bose-suggestion-card-template').innerHTML : '';
+            if(!tmpl) return;
             container.innerHTML = suggestions.map(p => {
                 const catName = p.category || 'حلويات بوسي';
                 return tmpl

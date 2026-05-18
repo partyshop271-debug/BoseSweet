@@ -339,6 +339,84 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <!-- بداية قسم رفع صور الورد والمحاكي البصري -->
+                        <div class="mt-16 pt-16 border-t border-brand-border">
+                            <h4 class="text-brand-pink font-black text-2xl mb-4 flex items-center gap-3">
+                                <i data-lucide="flower" class="w-8 h-8"></i> مرفقات قسم الورد والمحاكي البصري
+                            </h4>
+                            <p class="text-brand-textMuted font-bold text-lg mb-8 leading-relaxed opacity-90">
+                                هذه الحقول مخصصة فقط لبوكيهات الورد. تُستخدم لعرض الخيارات المتنوعة أمام العميل داخل المحاكي البصري لتخصيص البوكيه.
+                            </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <!-- الورد الطبيعي -->
+                                <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
+                                    <div class="w-full">
+                                        <label class="form-label text-xl mb-4">صورة الورد الطبيعي</label>
+                                        <input type="text" id="prod-img-natural" class="form-input text-left text-sm mb-4" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-natural', 'placeholder-natural', this.value)">
+                                        <input type="file" id="file-img-natural" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-natural', 'preview-natural', 'placeholder-natural')">
+                                        <button type="button" onclick="document.getElementById('file-img-natural').click()" class="btn-action w-full h-auto py-3 rounded-xl gap-2">
+                                            <i data-lucide="upload" class="w-5 h-5"></i> <span class="font-bold">رفع الطبيعي</span>
+                                        </button>
+                                    </div>
+                                    <div class="w-32 h-32 shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center">
+                                        <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-natural"></i>
+                                        <img id="preview-natural" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-natural', 'placeholder-natural')">
+                                    </div>
+                                </div>
+
+                                <!-- الورد الصناعي -->
+                                <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
+                                    <div class="w-full">
+                                        <label class="form-label text-xl mb-4">صورة الورد الصناعي</label>
+                                        <input type="text" id="prod-img-artificial" class="form-input text-left text-sm mb-4" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-artificial', 'placeholder-artificial', this.value)">
+                                        <input type="file" id="file-img-artificial" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-artificial', 'preview-artificial', 'placeholder-artificial')">
+                                        <button type="button" onclick="document.getElementById('file-img-artificial').click()" class="btn-action w-full h-auto py-3 rounded-xl gap-2">
+                                            <i data-lucide="upload" class="w-5 h-5"></i> <span class="font-bold">رفع الصناعي</span>
+                                        </button>
+                                    </div>
+                                    <div class="w-32 h-32 shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center">
+                                        <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-artificial"></i>
+                                        <img id="preview-artificial" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-artificial', 'placeholder-artificial')">
+                                    </div>
+                                </div>
+
+                                <!-- البوكيه مع النقود -->
+                                <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
+                                    <div class="w-full">
+                                        <label class="form-label text-xl mb-4">صورة بوكيه مع النقود (كاش)</label>
+                                        <input type="text" id="prod-img-cash" class="form-input text-left text-sm mb-4" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-cash', 'placeholder-cash', this.value)">
+                                        <input type="file" id="file-img-cash" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-cash', 'preview-cash', 'placeholder-cash')">
+                                        <button type="button" onclick="document.getElementById('file-img-cash').click()" class="btn-action w-full h-auto py-3 rounded-xl gap-2">
+                                            <i data-lucide="upload" class="w-5 h-5"></i> <span class="font-bold">رفع صورة النقود</span>
+                                        </button>
+                                    </div>
+                                    <div class="w-32 h-32 shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center">
+                                        <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-cash"></i>
+                                        <img id="preview-cash" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-cash', 'placeholder-cash')">
+                                    </div>
+                                </div>
+
+                                <!-- البوكيه مع الشوكولاتة -->
+                                <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
+                                    <div class="w-full">
+                                        <label class="form-label text-xl mb-4">صورة بوكيه الشوكولاتة</label>
+                                        <input type="text" id="prod-img-choco" class="form-input text-left text-sm mb-4" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-choco', 'placeholder-choco', this.value)">
+                                        <input type="file" id="file-img-choco" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-choco', 'preview-choco', 'placeholder-choco')">
+                                        <button type="button" onclick="document.getElementById('file-img-choco').click()" class="btn-action w-full h-auto py-3 rounded-xl gap-2">
+                                            <i data-lucide="upload" class="w-5 h-5"></i> <span class="font-bold">رفع الشوكولاتة</span>
+                                        </button>
+                                    </div>
+                                    <div class="w-32 h-32 shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center">
+                                        <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-choco"></i>
+                                        <img id="preview-choco" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-choco', 'placeholder-choco')">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- نهاية قسم الورد -->
+
                     </div>
                 </div>
 
@@ -800,6 +878,7 @@
             document.getElementById(previewId).classList.add('hidden'); document.getElementById(iconId).classList.remove('hidden');
         };
 
+        // تحديث دالة مسح البيانات لتشمل حقول الورد الجديدة
         window.clearForm = function() {
             document.getElementById('prod-id').value = '';
             document.getElementById('prod-name').value = '';
@@ -813,6 +892,12 @@
             document.getElementById('prod-grid-span').value = 'half';
             document.getElementById('productDisplayStyle').value = 'full'; 
             
+            // تفريغ حقول صور الورد
+            document.getElementById('prod-img-natural').value = '';
+            document.getElementById('prod-img-artificial').value = '';
+            document.getElementById('prod-img-cash').value = '';
+            document.getElementById('prod-img-choco').value = '';
+            
             document.getElementById('prod-card-w').value = 280; document.getElementById('val-custom-w').innerText = 'تلقائي';
             document.getElementById('prod-card-h').value = 350; document.getElementById('val-custom-h').innerText = 'تلقائي';
             
@@ -821,8 +906,15 @@
             
             previewImage('img-preview', 'img-placeholder', '');
             previewImage('hero-preview', 'hero-placeholder', '');
+            
+            // إخفاء معاينات صور الورد
+            previewImage('preview-natural', 'placeholder-natural', '');
+            previewImage('preview-artificial', 'placeholder-artificial', '');
+            previewImage('preview-cash', 'placeholder-cash', '');
+            previewImage('preview-choco', 'placeholder-choco', '');
         };
 
+        // تحديث دالة استدعاء التعديل لتشمل حقول الورد الجديدة
         window.editProduct = function(pJsonEncoded) {
             const p = JSON.parse(decodeURIComponent(pJsonEncoded));
             
@@ -840,6 +932,19 @@
 
             document.getElementById('prod-hero-img').value = p.heroImg || '';
             previewImage('hero-preview', 'hero-placeholder', p.heroImg || '');
+
+            // استدعاء صور الورد (إن وجدت)
+            document.getElementById('prod-img-natural').value = p.imgNatural || '';
+            previewImage('preview-natural', 'placeholder-natural', p.imgNatural || '');
+
+            document.getElementById('prod-img-artificial').value = p.imgArtificial || '';
+            previewImage('preview-artificial', 'placeholder-artificial', p.imgArtificial || '');
+
+            document.getElementById('prod-img-cash').value = p.imgCash || '';
+            previewImage('preview-cash', 'placeholder-cash', p.imgCash || '');
+
+            document.getElementById('prod-img-choco').value = p.imgChoco || '';
+            previewImage('preview-choco', 'placeholder-choco', p.imgChoco || '');
 
             document.getElementById('prod-grid-span').value = p.gridSpan || 'half';
             document.getElementById('productDisplayStyle').value = p.displayStyle || 'full'; 
@@ -890,7 +995,7 @@
             }
         };
 
-        // تحصين دالة الحفظ بالكامل لضمان عدم حدوث تكرار للبيانات وحماية الاتصال
+        // تحديث دالة الحفظ لتشمل وتوثيق صور الورد في السحابة
         window.saveProduct = async function() {
             if(!window.db) {
                 showToast("عائق في الاتصال بالسحابة. يرجى التأكد من استقرار الشبكة.", "error");
@@ -918,6 +1023,13 @@
                 description: document.getElementById('prod-desc').value.trim(),
                 flavors: document.getElementById('prod-flavors').value.trim(),
                 img: img, heroImg: document.getElementById('prod-hero-img').value.trim(),
+                
+                // ربط وحفظ خيارات صور الورد
+                imgNatural: document.getElementById('prod-img-natural').value.trim(),
+                imgArtificial: document.getElementById('prod-img-artificial').value.trim(),
+                imgCash: document.getElementById('prod-img-cash').value.trim(),
+                imgChoco: document.getElementById('prod-img-choco').value.trim(),
+
                 gridSpan: document.getElementById('prod-grid-span').value,
                 displayStyle: document.getElementById('productDisplayStyle').value, 
                 cardWidth: parseInt(document.getElementById('prod-card-w').value),
@@ -1063,3 +1175,4 @@
     </script>
 </body>
 </html>
+

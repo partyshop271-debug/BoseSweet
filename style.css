@@ -1,8 +1,9 @@
 /**
  * 👑 BoseSweets Pro Style Sheet | نظام الأناقة السيادي لعلامة حلويات بوسي
- * الإصدار الموحد: V39.0 (Complete Edition + Responsive Mobile Button Fix)
+ * الإصدار الموحد: V39.1 (Complete Edition + Floating Cart & Slider Independence)
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: ملف كامل وشامل لجميع مكونات الموقع دون أي حذف أو اختصار.
+ * التحديث الأخير: فصل السلايدر هندسياً عن الشبكة، وتثبيت زر السلة العائم.
  * ============================================================================
  */
 
@@ -46,6 +47,8 @@ body {
     overflow-x: hidden;
     scroll-behavior: smooth;
     direction: rtl;
+    /* إعطاء مساحة تنفس أسفل الصفحة كي لا يغطي الزر العائم على المحتوى (تحديث V39.1) */
+    padding-bottom: 90px; 
 }
 
 .container {
@@ -531,6 +534,13 @@ input::placeholder, textarea::placeholder {
     justify-content: space-between;
 }
 
+/* إعادة توازن شبكة المنتجات العادية لمنع الانهيار وضمان استقرار الأعمدة (تحديث V39.1) */
+.main-product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* عمودين بانتظام للمنتجات الدائمة */
+    gap: 15px;
+}
+
 /* حالة العرض الطبيعي (يملأ الشاشة) */
 .layout-full {
     width: 100%;
@@ -741,4 +751,32 @@ input::placeholder, textarea::placeholder {
         margin-top: 24px;
         padding-bottom: 48px !important;
     }
+}
+
+/* ==========================================================================
+   12. محرك العرض المرئي المستقل (Slider Engine V39.1)
+   ========================================================================== */
+
+/* فصل الشريط المتحرك تماماً عن نظام الشبكة لضمان عدم تأثره بالقواعد الهندسية الأخرى */
+.slider-item-exclusive {
+    display: block;
+    width: 100%;
+    flex: 0 0 auto;
+}
+
+/* ==========================================================================
+   13. واجهة التفاعل العائمة (Floating Action UI V39.1)
+   ========================================================================== */
+
+/* التثبيت الدائم لزر الإضافة للسلة أسفل الشاشة لحماية أولوية التفاعل والمبيعات */
+.floating-cart-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-white);
+    padding: 15px;
+    box-shadow: 0 -4px 15px rgba(255, 145, 164, 0.15); /* ظل ناعم يعكس الرقي */
+    z-index: 9999; /* لضمان بقائه فوق كل العناصر باستمرار */
+    border-top: 2px solid var(--primary-pink); /* لون حلويات بوسي الرسمي للسيادة البصرية */
 }
