@@ -11,11 +11,14 @@ window.ProductUI = {
         qty: 15,
         material: 'natural',
         color: 'أحمر',
+        mixDetails: '',
         hasChocolate: false,
         chocolateBudget: 0,
         chocolatePreferences: '',
         hasCash: false,
         cashAmount: 0,
+        hasRibbon: false,
+        ribbonText: '',
         hasGift: false,
         giftText: '',
         photoCount: 0,
@@ -132,7 +135,7 @@ window.ProductUI = {
     modFlowerQty: function(val) {
         const currentQty = this.flowerState.qty + val;
         if(currentQty < 15) {
-            this.showToast("أقل عدد للحفاظ على جودة وشكل التنسيق المعتمد هو 15 وردة.");
+            this.showToast("أقل عدد لتنسيق البوكيه بشكل احترافي هو 15 وردة.");
             return;
         }
         this.flowerState.qty = currentQty;
@@ -166,13 +169,30 @@ window.ProductUI = {
         btn.classList.add('active');
         btn.style.borderWidth = '3px';
         btn.style.borderColor = '#ff91a4';
+
+        const mixContainer = document.getElementById('mix-colors-specifier');
+        if(col === 'مشكل') {
+            if(mixContainer) mixContainer.classList.remove('hidden');
+        } else {
+            if(mixContainer) mixContainer.classList.add('hidden');
+            this.flowerState.mixDetails = '';
+            const mixInput = document.getElementById('flower-mix-details');
+            if(mixInput) mixInput.value = '';
+        }
+
         this.updateVisualSimulator();
     },
 
     toggleFlowerChocolate: function(isChecked) {
         this.flowerState.hasChocolate = isChecked;
         const inputsWrap = document.getElementById('chocolate-details-inputs');
-        if (isChecked) inputsWrap.classList.remove('hidden'); else inputsWrap.classList.add('hidden');
+        if (isChecked) { if(inputsWrap) inputsWrap.classList.remove('hidden'); } else { if(inputsWrap) inputsWrap.classList.add('hidden'); }
+        if(!isChecked) {
+            const budgetInput = document.getElementById('flower-chocolate-budget');
+            const prefInput = document.getElementById('flower-chocolate-pref');
+            if(budgetInput) budgetInput.value = 0;
+            if(prefInput) prefInput.value = '';
+        }
         this.updateFlowerPrices();
         this.updateVisualSimulator();
     },
@@ -180,15 +200,35 @@ window.ProductUI = {
     toggleFlowerGiftCash: function(isChecked) {
         this.flowerState.hasCash = isChecked;
         const inputWrap = document.getElementById('cash-amount-input');
-        if (isChecked) inputWrap.classList.remove('hidden'); else inputWrap.classList.add('hidden');
+        if (isChecked) { if(inputWrap) inputWrap.classList.remove('hidden'); } else { if(inputWrap) inputWrap.classList.add('hidden'); }
+        if(!isChecked) {
+            const cashInput = document.getElementById('flower-cash-amount');
+            if(cashInput) cashInput.value = 0;
+        }
         this.updateFlowerPrices();
         this.updateVisualSimulator();
     },
 
-    toggleFlowerGift: function(val, btn) {
-        this.flowerState.hasGift = val;
+    toggleFlowerRibbonPrint: function(isChecked) {
+        this.flowerState.hasRibbon = isChecked;
+        const container = document.getElementById('ribbon-text-input-container');
+        if (isChecked) { if(container) container.classList.remove('hidden'); } else { if(container) container.classList.add('hidden'); }
+        if(!isChecked) {
+            const ribbonInput = document.getElementById('flower-ribbon-text');
+            if(ribbonInput) ribbonInput.value = '';
+        }
+        this.updateFlowerPrices();
+        this.updateVisualSimulator();
+    },
+
+    toggleFlowerGift: function(isChecked) {
+        this.flowerState.hasGift = isChecked;
         const area = document.getElementById('flower-gift-area');
-        if(val) area.classList.remove('hidden'); else area.classList.add('hidden');
+        if(isChecked) { if(area) area.classList.remove('hidden'); } else { if(area) area.classList.add('hidden'); }
+        if(!isChecked) {
+            const giftInput = document.getElementById('flower-gift-text');
+            if(giftInput) giftInput.value = '';
+        }
         this.updateFlowerPrices();
         this.updateVisualSimulator();
     },
@@ -237,13 +277,14 @@ window.ProductUI = {
     },
 
     updateFlowerPrices: function() {
-        let basePrice = 400;
+        let basePrice = 400; 
         if(this.flowerState.qty > 15) {
             basePrice += (this.flowerState.qty - 15) * 35;
         }
 
         let totalPrice = basePrice;
         if(this.flowerState.hasGift) totalPrice += 25; 
+        if(this.flowerState.hasRibbon) totalPrice += 50; 
         totalPrice += this.flowerState.photoCount * 15; 
 
         const chocoBudget = parseFloat(document.getElementById('flower-chocolate-budget')?.value) || 0;
@@ -262,24 +303,37 @@ window.ProductUI = {
         const layerFlowers = document.getElementById('layer-flowers');
         const layerChocolate = document.getElementById('layer-chocolate');
         const layerCash = document.getElementById('layer-cash');
+        const layerRibbon = document.getElementById('layer-ribbon');
         const layerCard = document.getElementById('layer-card');
         
         let colorHex = '#d32f2f';
-        if (this.flowerState.color === 'أبيض') colorHex = '#f5f5f5';
+        if (this.flowerState.color === 'أبيض') colorHex = '#e2e8f0';
         if (this.flowerState.color === 'وردي') colorHex = '#ff91a4';
-        if (this.flowerState.color === 'مشكل') colorHex = 'linear-gradient(45deg, #d32f2f, #ffffff)';
+        if (this.flowerState.color === 'مشكل') colorHex = 'linear-gradient(45deg, #d32f2f, #ffffff, #ff91a4)';
+
+        let materialLabel = "طبيعي";
+        if (this.flowerState.material === 'artificial') materialLabel = "صناعي";
+        if (this.flowerState.material === 'satin') materialLabel = "ستان";
+
+        if (this.flowerState.color === 'مشكل') {
+            this.flowerState.mixDetails = document.getElementById('flower-mix-details')?.value || '';
+        }
 
         if (layerFlowers) {
-            layerFlowers.innerHTML = `<div style="width: 130px; height: 130px; border-radius: 50%; background: ${colorHex}; border: 4px solid #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center; font-weight: 900; color: #3d241c; text-align: center; font-size: 13px; padding: 10px;">${this.flowerState.qty} وردة<br>${this.flowerState.color}</div>`;
-            const scaleValue = 1 + ((this.flowerState.qty - 15) * 0.02);
-            layerFlowers.style.transform = `scale(${Math.min(scaleValue, 1.4)})`;
+            let labelText = `${this.flowerState.qty} وردة (${materialLabel})<br>${this.flowerState.color}`;
+            if (this.flowerState.color === 'مشكل' && this.flowerState.mixDetails) {
+                labelText += `<br><span style="font-size:10px; opacity:0.9;">[${this.flowerState.mixDetails}]</span>`;
+            }
+            layerFlowers.innerHTML = `<div class="animate-fade" style="width: 170px; height: 170px; border-radius: 50%; background: ${colorHex}; border: 4px solid #ffffff; box-shadow: 0 8px 25px rgba(255,145,164,0.3); display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 900; color: #3d241c; text-align: center; font-size: 13px; padding: 12px; line-height: 1.4;">${labelText}</div>`;
+            const scaleValue = 1 + ((this.flowerState.qty - 15) * 0.015);
+            layerFlowers.style.transform = `scale(${Math.min(scaleValue, 1.35)})`;
         }
 
         if (layerChocolate) {
             if (this.flowerState.hasChocolate) {
                 layerChocolate.style.opacity = '1';
                 const budget = document.getElementById('flower-chocolate-budget')?.value || 0;
-                layerChocolate.innerHTML = `<div class="animate-fade" style="background: #3d241c; color: #fff; padding: 8px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 2px solid #ff91a4; margin-top: -80px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">+ شوكولاتة بقيمة ${budget} ج.م</div>`;
+                layerChocolate.innerHTML = `<div class="animate-fade" style="background: #3d241c; color: #ffffff; padding: 8px 16px; border-radius: 14px; font-size: 11px; font-weight: 700; border: 2px solid #ff91a4; transform: translateY(-90px); box-shadow: 0 6px 15px rgba(0,0,0,0.15);">🍫 شوكولاتة مدمجة بقيمة ${budget} ج.م</div>`;
             } else {
                 layerChocolate.style.opacity = '0';
                 layerChocolate.innerHTML = '';
@@ -290,18 +344,29 @@ window.ProductUI = {
             if (this.flowerState.hasCash) {
                 layerCash.style.opacity = '1';
                 const amount = document.getElementById('flower-cash-amount')?.value || 0;
-                layerCash.innerHTML = `<div class="animate-fade" style="background: #2e7d32; color: #fff; padding: 8px 14px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 2px solid #fff; margin-bottom: -120px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">+ مبالغ نقدية ${amount} ج.م</div>`;
+                layerCash.innerHTML = `<div class="animate-fade" style="background: #15803d; color: #ffffff; padding: 8px 16px; border-radius: 14px; font-size: 11px; font-weight: 700; border: 2px solid #ffffff; transform: translateY(90px); box-shadow: 0 6px 15px rgba(0,0,0,0.15);">💵 لفائف نقدية بقيمة ${amount} ج.م</div>`;
             } else {
                 layerCash.style.opacity = '0';
                 layerCash.innerHTML = '';
             }
         }
 
+        if (layerRibbon) {
+            if (this.flowerState.hasRibbon) {
+                layerRibbon.style.opacity = '1';
+                const text = document.getElementById('flower-ribbon-text')?.value || 'عبارة فارغة';
+                layerRibbon.innerHTML = `<div class="animate-fade" style="background: #fff5f6; color: #ff91a4; padding: 6px 14px; border: 2px solid #ff91a4; border-radius: 4px; font-size: 11px; font-weight: 900; transform: rotate(-5deg) translateY(45px); max-width: 180px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; box-shadow: 0 4px 10px rgba(255,145,164,0.2);">🎀 شريط مطبوع: "${text}"</div>`;
+            } else {
+                layerRibbon.style.opacity = '0';
+                layerRibbon.innerHTML = '';
+            }
+        }
+
         if (layerCard) {
             if (this.flowerState.hasGift) {
                 layerCard.style.opacity = '1';
-                const msg = document.getElementById('flower-gift-text')?.value || 'رسالة بيضاء';
-                layerCard.innerHTML = `<div class="animate-fade" style="background: #fff5f6; color: #3d241c; padding: 6px 12px; border-radius: 6px; font-size: 10px; font-weight: 700; border: 1px solid #ff91a4; margin-right: -10px; max-width: 140px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">💌 "${msg}"</div>`;
+                const msg = document.getElementById('flower-gift-text')?.value || 'رسالة فارغة';
+                layerCard.innerHTML = `<div class="animate-fade" style="background: #ffffff; color: #3d241c; padding: 8px 14px; border-radius: 8px; font-size: 10px; font-weight: 700; border: 1px solid rgba(255,145,164,0.4); transform: translateX(80px) translateY(-40px); max-width: 140px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">✉️ كارت: "${msg}"</div>`;
             } else {
                 layerCard.style.opacity = '0';
                 layerCard.innerHTML = '';
@@ -312,10 +377,10 @@ window.ProductUI = {
     addCustomFlowerToCart: function() {
         const finalPrice = this.updateFlowerPrices();
         const giftText = document.getElementById('flower-gift-text')?.value || '';
-        this.flowerState.giftText = giftText;
+        const ribbonText = document.getElementById('flower-ribbon-text')?.value || '';
         
         const chocoBudget = parseFloat(document.getElementById('flower-chocolate-budget')?.value) || 0;
-        const chocoPref = document.getElementById('flower-chocolate-pref')?.value || 'تنسيق غني مخصص';
+        const chocoPref = document.getElementById('flower-chocolate-pref')?.value || 'تفضيل قياسي';
         const cashAmount = parseFloat(document.getElementById('flower-cash-amount')?.value) || 0;
 
         const item = {
@@ -329,8 +394,11 @@ window.ProductUI = {
                 qty: this.flowerState.qty,
                 material: this.flowerState.material,
                 color: this.flowerState.color,
+                mixDetails: this.flowerState.mixDetails,
                 hasGift: this.flowerState.hasGift,
                 giftText: giftText,
+                hasRibbon: this.flowerState.hasRibbon,
+                ribbonText: ribbonText,
                 photoCount: this.flowerState.photoCount,
                 chocolateBudget: chocoBudget,
                 chocolatePreferences: chocoPref,
