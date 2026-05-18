@@ -137,7 +137,7 @@
             <div class="w-32 h-32 bg-brand-pinkLight rounded-full flex items-center justify-center border-4 border-brand-pink mx-auto mb-8 shadow-inner">
                 <i data-lucide="check-circle" class="w-16 h-16 text-brand-pink"></i>
             </div>
-            <h3 class="text-4xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تم استلال الطلب</h3>
+            <h3 class="text-4xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تم استلام الطلب</h3>
             <div class="bg-brand-pinkLight py-5 px-6 rounded-2xl border border-brand-pink/20">
                 <p class="font-bold text-brand-brown/70 text-base">
                     جاري تحويلك للواتساب لتأكيد الطلب...
@@ -400,20 +400,6 @@
         </div>
     </footer>
 
-    <div id="success-modal" class="bose-modal-overlay">
-        <div class="bose-modal-content">
-            <div class="w-32 h-32 bg-brand-pinkLight rounded-full flex items-center justify-center border-4 border-brand-pink mx-auto mb-8 shadow-inner">
-                <i data-lucide="check-circle" class="w-16 h-16 text-brand-pink"></i>
-            </div>
-            <h3 class="text-4xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تم استلام الطلب</h3>
-            <div class="bg-brand-pinkLight py-5 px-6 rounded-2xl border border-brand-pink/20">
-                <p class="font-bold text-brand-brown/70 text-base">
-                    جاري تحويلك للواتساب لتأكيد الطلب...
-                </p>
-            </div>
-        </div>
-    </div>
-
     <script type="module" src="unified-engine.js"></script>
 
     <script type="module">
@@ -553,7 +539,13 @@
                     if (item.isCustom && item.details) {
                         if (item.details.category === 'ورد') {
                             let matText = item.details.material === 'natural' ? 'ورد طبيعي' : (item.details.material === 'artificial' ? 'ورد صناعي' : 'ورد ستان');
-                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: ${item.details.qty} وردة (${matText}) - اللون: ${item.details.color}</p>`;
+                            let addonsSummary = [];
+                            if (item.details.hasGift) addonsSummary.push("كارت إهداء");
+                            if (item.details.hasRibbon) addonsSummary.push("شريط ستان مطبوع");
+                            if (item.details.chocolateBudget > 0) addonsSummary.push("شوكولاتة فاخرة");
+                            if (item.details.cashAmount > 0) addonsSummary.push("مبلغ كاش");
+                            let addonsText = addonsSummary.length > 0 ? ` - الإضافات: (${addonsSummary.join('، ')})` : '';
+                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: ${item.details.qty} وردة (${matText}) - اللون: ${item.details.color}${addonsText}</p>`;
                         } else {
                             detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: ${item.details.shape === 'round' ? 'دائري' : 'حسب الاختيار'} - ${item.details.people} أفراد</p>`;
                         }
@@ -657,6 +649,7 @@
                             let matText = item.details.material === 'natural' ? 'ورد طبيعي' : (item.details.material === 'artificial' ? 'ورد صناعي' : 'ورد ستان');
                             msg += `  (التنسيق: ${item.details.qty} وردة خامة ${matText} - لون ${item.details.color})\n`;
                             if (item.details.hasGift) msg += `  (كارت إهداء: "${item.details.giftText}")\n`;
+                            if (item.details.hasRibbon) msg += `  (شريط ستان مطبوع: "${item.details.ribbonText}")\n`;
                             if (item.details.photoCount > 0) msg += `  (طباعة صور: عدد ${item.details.photoCount} صورة مرافقة)\n`;
                             if (item.details.chocolateBudget > 0) msg += `  (إضافة شوكولاتة بميزانية: ${item.details.chocolateBudget} ج.م - الأنواع: ${item.details.chocolatePreferences})\n`;
                             if (item.details.cashAmount > 0) msg += `  (تنسيق مبالغ نقدية كاش: ${item.details.cashAmount} ج.م داخل البوكيه)\n`;
@@ -673,7 +666,6 @@
                 if(this.deliveryMode === 'توصيل') msg += `التوصيل: ${this.shippingFee} ج.م\n`;
                 msg += `الإجمالي النهائي: ${this.cartTotal + this.shippingFee} ج.م\n`;
 
-                // خطوة إرسال البيانات بشكل متكامل إلى قاعدة بيانات Firebase Firestore [cite: 2-05-10]
                 if (window.db) {
                     const appId = window.__app_id || 'bosy-sweets';
                     import('https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js').then(fs => {

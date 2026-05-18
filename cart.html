@@ -113,7 +113,7 @@
     <div class="ticker-wrap shadow-sm">
         <div class="ticker-scroll">
             <div class="ticker-item">الجودة والإتقان في كل تفصيلة من حلويات بوسي</div>
-            <div class="ticker-item">عشر سنوات من الشغف in صناعة الحلويات</div>
+            <div class="ticker-item">عشر سنوات من الشغف في صناعة الحلويات</div>
             <div class="ticker-item">مخبوزات طازجة يومياً بأعلى معايير الجودة</div>
             <div class="ticker-item">اختيارك الأول للمناسبات واللحظات المهمة</div>
             <div class="ticker-item">الجودة والإتقان في كل تفصيلة من حلويات بوسي</div>
@@ -380,9 +380,9 @@
 
                 let customDetailsHtml = '';
                 if (item.isCustom && item.details) {
-                    // فرز وتدقيق نوع المنتج المخصص (تورتة خاصة أم بوكيه ورد) لمنع اختلاط حقول البيانات [cite: 2-04-23]
                     if (item.details.category === 'ورد') {
                         let materialText = item.details.material === 'natural' ? 'ورد طبيعي' : (item.details.material === 'artificial' ? 'ورد صناعي' : 'ورد ستان');
+                        // ربط ومعالجة بيانات شريط الستان المفقودة لضمان إحكام التوافق البرمجي والتنسيقي بالسلة
                         customDetailsHtml = `
                             <div class="mt-4 pt-3 border-t border-brand-pink/10">
                                 <p class="text-[10px] font-black text-brand-pink mb-2 uppercase tracking-widest text-right">مواصفات التنسيق الخاص بالبوكيه</p>
@@ -390,16 +390,17 @@
                                     <span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="flower" class="w-3 h-3 inline ml-1 text-brand-pink"></i>${item.details.qty} وردة (${materialText})</span>
                                     <span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="palette" class="w-3 h-3 inline ml-1 text-brand-pink"></i>اللون: ${item.details.color}</span>
                                     ${item.details.hasGift ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="mail" class="w-3 h-3 inline ml-1 text-brand-pink"></i>كارت إهداء (+25)</span>` : ''}
+                                    ${item.details.hasRibbon ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="printer" class="w-3 h-3 inline ml-1 text-brand-pink"></i>شريط ستان مطبوع (+50)</span>` : ''}
                                     ${item.details.photoCount > 0 ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="image" class="w-3 h-3 inline ml-1 text-brand-pink"></i>عدد الصور: ${item.details.photoCount} (+15 للصورة)</span>` : ''}
                                     ${item.details.chocolateBudget > 0 ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="candy" class="w-3 h-3 inline ml-1 text-brand-pink"></i>شوكولاتة: ${item.details.chocolateBudget} ج.م</span>` : ''}
                                     ${item.details.cashAmount > 0 ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="banknote" class="w-3 h-3 inline ml-1 text-brand-pink"></i>مبلغ كاش: ${item.details.cashAmount} ج.م</span>` : ''}
                                 </div>
                                 ${item.details.hasGift ? `<p class="mt-2 text-xs text-brand-brown font-bold bg-brand-pinkLight/40 p-2 rounded-md text-right"><i data-lucide="pencil" class="w-3 h-3 inline ml-1 text-brand-pink"></i>رسالة الكارت: <span class="italic opacity-80">"${item.details.giftText}"</span></p>` : ''}
+                                ${item.details.hasRibbon ? `<p class="mt-1 text-xs text-brand-brown font-bold bg-brand-pinkLight/40 p-2 rounded-md text-right"><i data-lucide="printer" class="w-3 h-3 inline ml-1 text-brand-pink"></i>نص شريط الستان: <span class="opacity-80">"${item.details.ribbonText}"</span></p>` : ''}
                                 ${item.details.chocolateBudget > 0 ? `<p class="mt-1 text-xs text-brand-brown font-bold bg-brand-pinkLight/40 p-2 rounded-md text-right"><i data-lucide="heart" class="w-3 h-3 inline ml-1 text-brand-pink"></i>التفضيلات: <span class="opacity-80">"${item.details.chocolatePreferences}"</span></p>` : ''}
                             </div>
                         `;
                     } else {
-                        // الحفاظ الكامل والآمن على تورتة التصميم الخاص المعتمدة سابقاً [cite: 2-04-01]
                         let shapeText = item.details.shape === 'round' ? 'دائري' : (item.details.shape === 'heart' ? 'قلب' : (item.details.shape === 'square' ? 'مربع' : 'مستطيل'));
                         customDetailsHtml = `
                             <div class="mt-4 pt-3 border-t border-brand-pink/10">
@@ -416,6 +417,7 @@
                     }
                 }
 
+                // إلغاء محددات اقتطاع وبتر النصوص الجافة "truncate" لتمكين الواجهة من إظهار اسم المنتج كاملاً بأريحية تامة للمستعمل
                 html += `
                     <div class="bose-double-wrap-cart mb-4 animate-fade group">
                         <div class="bose-double-inner-cart bg-white relative">
@@ -432,7 +434,7 @@
                                 
                                 <div class="flex-grow text-right min-w-0 pr-1">
                                     ${linkWrapperStart}
-                                    <h4 class="text-base md:text-xl font-black text-brand-brown tracking-tighter hover:text-brand-pink transition-colors truncate pl-8">
+                                    <h4 class="text-base md:text-xl font-black text-brand-brown tracking-tighter hover:text-brand-pink transition-colors whitespace-normal break-words pl-8">
                                         ${!item.isCustom && catName && catName !== 'all' ? `<span class="bg-brand-pinkLight border border-brand-pink/20 text-brand-pink px-1.5 py-0.5 rounded text-[10px] md:text-xs font-black ml-1 align-middle">${catName}</span>` : ''}
                                         ${item.name}
                                     </h4>
