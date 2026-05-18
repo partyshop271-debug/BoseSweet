@@ -137,13 +137,10 @@
             <div class="w-32 h-32 bg-brand-pinkLight rounded-full flex items-center justify-center border-4 border-brand-pink mx-auto mb-8 shadow-inner">
                 <i data-lucide="check-circle" class="w-16 h-16 text-brand-pink"></i>
             </div>
-            <h3 class="text-4xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تم استلام الطلب</h3>
-            <p class="font-bold text-brand-brown/80 mb-8 text-xl">
-                رقم الطلب: <span id="success-order-id" class="text-brand-pink font-black px-2" dir="ltr"></span>
-            </p>
+            <h3 class="text-4xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تم استلال الطلب</h3>
             <div class="bg-brand-pinkLight py-5 px-6 rounded-2xl border border-brand-pink/20">
                 <p class="font-bold text-brand-brown/70 text-base">
-                    جاري تحويلك للواتساب لتأكيد الطلب... <span id="redirect-timer" class="text-brand-pink font-black text-lg mx-1">5</span>
+                    جاري تحويلك للواتساب لتأكيد الطلب...
                 </p>
             </div>
         </div>
@@ -232,7 +229,6 @@
         <form id="checkout-form" class="bose-double-wrap animate-fade">
             <div class="bose-double-inner p-8 md:p-16 bg-white">
                 
-                <!-- ١. طريقة الاستلام -->
                 <div class="mb-16 border-b-2 border-brand-pink/10 pb-16">
                     <div class="flex items-center gap-4 mb-10">
                         <div class="w-14 h-14 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-black text-2xl border-2 border-brand-pink/30 shadow-sm">١</div>
@@ -249,7 +245,6 @@
                         </label>
                     </div>
 
-                    <!-- تفاصيل الفرع -->
                     <div id="branch-details" class="hidden mt-10 bg-brand-pinkLight/50 border-2 border-dashed border-brand-pink/30 rounded-[30px] p-10 text-center animate-fade">
                         <p class="font-bold text-brand-brown text-xl mb-4">مقر حلويات بوسي:</p>
                         <p class="font-black text-brand-pink text-3xl mb-4">الكفاح، شارع الوحدة المحلية</p>
@@ -260,7 +255,6 @@
                     </div>
                 </div>
 
-                <!-- ٢. بيانات العميل -->
                 <div class="mb-16 border-b-2 border-brand-pink/10 pb-16">
                     <div class="flex items-center gap-4 mb-10">
                         <div class="w-14 h-14 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-black text-2xl border-2 border-brand-pink/30 shadow-sm">٢</div>
@@ -286,7 +280,6 @@
                     </div>
                 </div>
 
-                <!-- ٣. عنوان التوصيل -->
                 <div id="address-section" class="mb-16 border-b-2 border-brand-pink/10 pb-16 animate-fade">
                     <div class="flex items-center gap-4 mb-10">
                         <div class="w-14 h-14 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-black text-2xl border-2 border-brand-pink/30 shadow-sm">٣</div>
@@ -314,7 +307,6 @@
                     </div>
                 </div>
 
-                <!-- ٤. الميعاد والملخص -->
                 <div class="mb-4">
                     <div class="flex items-center gap-4 mb-10">
                         <div class="w-14 h-14 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center font-black text-2xl border-2 border-brand-pink/30 shadow-sm">٤</div>
@@ -337,7 +329,6 @@
                         <h4 class="font-black text-brand-brown text-2xl mb-8 border-b-2 border-brand-pink/10 pb-6 uppercase tracking-widest text-center">ملخص الطلب</h4>
                         
                         <div id="checkout-items-list" class="mb-10 space-y-4">
-                            <!-- Items Injected Here -->
                         </div>
 
                         <div class="border-t-2 border-brand-pink/10 pt-8 space-y-6">
@@ -400,14 +391,28 @@
             </div>
             <div class="flex flex-col items-center justify-center gap-6">
                 <div class="flex gap-5 justify-center">
-                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-facebook-f text-xl"></i></a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-instagram text-xl"></i></a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-tiktok text-xl"></i></a>
+                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-facebook-f text-xl"></i></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-instagram text-xl"></i></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-tiktok text-xl"></i></a>
                 </div>
-                <p class="text-brand-brown opacity-70 font-bold text-sm text-center">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
+                <p class="text-brand-brown opacity-70 font-bold text-sm text-center">© 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
             </div>
         </div>
     </footer>
+
+    <div id="success-modal" class="bose-modal-overlay">
+        <div class="bose-modal-content">
+            <div class="w-32 h-32 bg-brand-pinkLight rounded-full flex items-center justify-center border-4 border-brand-pink mx-auto mb-8 shadow-inner">
+                <i data-lucide="check-circle" class="w-16 h-16 text-brand-pink"></i>
+            </div>
+            <h3 class="text-4xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تم استلام الطلب</h3>
+            <div class="bg-brand-pinkLight py-5 px-6 rounded-2xl border border-brand-pink/20">
+                <p class="font-bold text-brand-brown/70 text-base">
+                    جاري تحويلك للواتساب لتأكيد الطلب...
+                </p>
+            </div>
+        </div>
+    </div>
 
     <script type="module" src="unified-engine.js"></script>
 
@@ -501,42 +506,33 @@
                 this.updateTotals();
             },
 
-            // 🛡️ الجدار الأمني اللحظي: دالة مطابقة الأسعار الحية من قاعدة البيانات
             validateLivePrices: function(cartItemsArray) {
                 let verifiedTotal = 0;
                 let priceMismatch = false;
                 
                 cartItemsArray.forEach(cartItem => {
-                    // استثناء المنتجات المصممة يدوياً لأن تسعيرها ديناميكي حسب الاختيار
                     if (cartItem.isCustom) {
                         verifiedTotal += (parseFloat(cartItem.price) * (parseInt(cartItem.quantity || cartItem.qty) || 1));
                         return;
                     }
 
-                    // البحث عن المنتج اللحظي في بيانات المحرك الموحد
                     const liveProduct = window.BoseState?.catalog?.find(p => String(p.id) === String(cartItem.id));
                     
                     if (liveProduct) {
                         const livePrice = parseFloat(liveProduct.price);
                         const cartPrice = parseFloat(cartItem.price);
                         
-                        // تحديث صامت للسعر لو حصل أي تعديل في اللوحة أثناء تواجد العميل
                         if (livePrice !== cartPrice) {
-                            console.warn(`تحديث أمني للسعر [${cartItem.name}]: من ${cartPrice} إلى ${livePrice}`);
                             cartItem.price = livePrice;
                             priceMismatch = true;
                         }
                         
-                        // الاعتماد على السعر الحي لضمان دقة الحسابات
                         verifiedTotal += (livePrice * (parseInt(cartItem.quantity || cartItem.qty) || 1));
                     } else {
-                        console.warn(`المنتج ${cartItem.name} غير متاح حالياً أو تم إيقافه.`);
-                        // في حالة الحذف من اللوحة، نعتمد آخر سعر مسجل كإجراء احتياطي لعدم ضياع حق الشركة
                         verifiedTotal += (parseFloat(cartItem.price) * (parseInt(cartItem.quantity || cartItem.qty) || 1));
                     }
                 });
                 
-                // لو تم اكتشاف تلاعب أو تغيير، بنحفظ السلة بالأسعار الموثقة الجديدة
                 if (priceMismatch && window.cartSystem) {
                     window.cartSystem.saveCartToStorage();
                 }
@@ -553,16 +549,22 @@
                     const qty = parseInt(item.quantity || item.qty) || 1;
                     const total = price * qty;
                     let detailsStr = '';
+                    
                     if (item.isCustom && item.details) {
-                        detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold line-clamp-1 border-t border-brand-pink/10 pt-2 inline-block">التفاصيل: ${item.details.shape === 'round' ? 'دائري' : 'حسب الاختيار'} - ${item.details.people} أفراد</p>`;
+                        if (item.details.category === 'ورد') {
+                            let matText = item.details.material === 'natural' ? 'ورد طبيعي' : (item.details.material === 'artificial' ? 'ورد صناعي' : 'ورد ستان');
+                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: ${item.details.qty} وردة (${matText}) - اللون: ${item.details.color}</p>`;
+                        } else {
+                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: ${item.details.shape === 'round' ? 'دائري' : 'حسب الاختيار'} - ${item.details.people} أفراد</p>`;
+                        }
                     }
                     html += `
-                        <div class="flex justify-between items-center bg-white p-5 rounded-2xl border-2 border-brand-pink/10 shadow-sm">
-                            <div class="flex-grow pl-4">
+                        <div class="flex flex-col text-right bg-white p-5 rounded-2xl border-2 border-brand-pink/10 shadow-sm">
+                            <div class="flex justify-between items-center w-full">
                                 <p class="font-black text-brand-brown text-lg">${item.name} <span class="text-white bg-brand-pink rounded-full px-2 py-0.5 text-xs mx-2">x${qty}</span></p>
-                                ${detailsStr}
+                                <div class="font-black text-brand-pink text-xl shrink-0">${total} ج.م</div>
                             </div>
-                            <div class="font-black text-brand-pink text-xl shrink-0">${total} ج.م</div>
+                            ${detailsStr}
                         </div>
                     `;
                 });
@@ -570,7 +572,6 @@
             },
 
             updateTotals: function() {
-                // الاعتماد على دالة التحقق اللحظي بدلاً من الجمع المباشر الأعمى
                 this.cartTotal = this.validateLivePrices(this.cartItems);
 
                 this.shippingFee = 0;
@@ -613,7 +614,6 @@
             },
 
             processOrder: function(submitBtn, originalBtnText) {
-                // إعادة التأكيد الأمني النهائي قبل المعالجة
                 this.cartTotal = this.validateLivePrices(this.cartItems);
                 
                 const customerName = document.getElementById('customer-name').value.trim();
@@ -650,13 +650,21 @@
                         }
                     }
 
-                    // الاعتماد على السعر المؤكد والموثق من الدالة الأمنية
-                    const itemPrice = parseFloat(item.price) || 0;
-                    
                     msg += `- ${catName}${item.name} (x${item.quantity || item.qty})\n`;
+                    
                     if (item.isCustom && item.details) {
-                         const shape = item.details.shape === 'round' ? 'دائري' : (item.details.shape === 'heart' ? 'قلب' : 'حسب الاختيار');
-                         msg += `  (يكفي ${item.details.people} أفراد - شكل ${shape})\n`;
+                        if (item.details.category === 'ورد') {
+                            let matText = item.details.material === 'natural' ? 'ورد طبيعي' : (item.details.material === 'artificial' ? 'ورد صناعي' : 'ورد ستان');
+                            msg += `  (التنسيق: ${item.details.qty} وردة خامة ${matText} - لون ${item.details.color})\n`;
+                            if (item.details.hasGift) msg += `  (كارت إهداء: "${item.details.giftText}")\n`;
+                            if (item.details.photoCount > 0) msg += `  (طباعة صور: عدد ${item.details.photoCount} صورة مرافقة)\n`;
+                            if (item.details.chocolateBudget > 0) msg += `  (إضافة شوكولاتة بميزانية: ${item.details.chocolateBudget} ج.م - الأنواع: ${item.details.chocolatePreferences})\n`;
+                            if (item.details.cashAmount > 0) msg += `  (تنسيق مبالغ نقدية كاش: ${item.details.cashAmount} ج.م داخل البوكيه)\n`;
+                        } else {
+                            const shape = item.details.shape === 'round' ? 'دائري' : (item.details.shape === 'heart' ? 'قلب' : (item.details.shape === 'square' ? 'مربع' : 'مستطيل'));
+                            msg += `  (تورتة مخصصة: تكفي ${item.details.people} أفراد - شكل ${shape})\n`;
+                            if (item.details.healthNotes && item.details.healthNotes !== 'لا يوجد') msg += `  (ملاحظات: ${item.details.healthNotes})\n`;
+                        }
                     }
                 });
                 
@@ -664,6 +672,25 @@
                 msg += `المنتجات: ${this.cartTotal} ج.م\n`;
                 if(this.deliveryMode === 'توصيل') msg += `التوصيل: ${this.shippingFee} ج.م\n`;
                 msg += `الإجمالي النهائي: ${this.cartTotal + this.shippingFee} ج.م\n`;
+
+                // خطوة إرسال البيانات بشكل متكامل إلى قاعدة بيانات Firebase Firestore [cite: 2-05-10]
+                if (window.db) {
+                    const appId = window.__app_id || 'bosy-sweets';
+                    import('https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js').then(fs => {
+                        fs.addDoc(fs.collection(window.db, 'artifacts', appId, 'public', 'data', 'orders'), {
+                            customerName,
+                            whatsappPhone,
+                            deliveryMode: this.deliveryMode,
+                            shippingFee: this.shippingFee,
+                            cartTotal: this.cartTotal,
+                            grandTotal: this.cartTotal + this.shippingFee,
+                            orderDate,
+                            orderTime,
+                            items: this.cartItems,
+                            timestamp: Date.now()
+                        }).catch(err => console.error("خطأ أثناء الحفظ الاحتياطي في Firebase:", err));
+                    });
+                }
 
                 const modal = document.getElementById('success-modal');
                 modal.classList.add('active');
@@ -714,4 +741,3 @@
     </script>
 </body>
 </html>
-

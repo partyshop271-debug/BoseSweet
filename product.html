@@ -166,6 +166,12 @@
 
         .animate-fade { animation: fade 0.6s ease forwards; }
         @keyframes fade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .bose-sticky-bar {
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px); border-top: 2px solid #ff91a4; padding: 16px 24px;
+            z-index: 999; box-shadow: 0 -10px 30px rgba(255, 145, 164, 0.15);
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-brand-pink selection:text-white">
@@ -253,8 +259,8 @@
                 </summary>
                 <div class="flex flex-col gap-1 pl-12 pr-4 pt-2 pb-4 border-l-2 border-brand-pink/20 ml-4 mr-2" id="sidebar-dynamic-categories">
                     <a href="menu.html" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none block">عرض كل المنيو</a>
-                    <a href="product.html?category=التورت" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none block text-decoration-none">التورت الفاخرة</a>
-                    <a href="product.html?category=الجاتوهات" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none block text-decoration-none">الجاتوهات</a>
+                    <a href="product.html?category=التورت" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none block">التورت الفاخرة</a>
+                    <a href="product.html?category=الجاتوهات" class="py-2 text-brand-brown hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none block">الجاتوهات</a>
                 </div>
             </details>
             <a href="product.html?action=build_cake" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none">
@@ -271,7 +277,7 @@
         </div>
     </aside>
 
-    <main class="py-12 md:py-20 min-h-[60vh]">
+    <main class="py-12 md:py-20 min-h-[60vh] pb-32">
         
         <section id="category-viewer" class="container mx-auto px-4 hidden">
             <div id="category-header-container" class="max-w-6xl mx-auto mb-16 animate-fade">
@@ -285,6 +291,110 @@
             </div>
 
             <div id="category-grid" class="grid gap-8 max-w-6xl mx-auto">
+            </div>
+        </section>
+
+        <section id="flower-customizer-container" class="container mx-auto px-4 hidden">
+            <div class="max-w-6xl mx-auto mb-16 animate-fade">
+                <div class="rounded-[40px] overflow-hidden shadow-sm border border-brand-pink/20 bg-white">
+                    <div class="w-full h-[30vh] md:h-[45vh] relative bg-brand-pinkLight">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" id="flower-poster-img" class="w-full h-full object-cover" alt="تنسيق بوكيهات ورد حلويات بوسي">
+                    </div>
+                    <div class="p-8 md:p-16 text-center bg-brand-pinkLight/30">
+                        <h2 class="text-4xl md:text-5xl font-black text-brand-brown mb-6 tracking-tighter">تنسيق وتخصيص البوكيهات</h2>
+                        <p class="text-lg md:text-xl font-bold text-brand-brown/80 max-w-4xl mx-auto leading-relaxed text-balance">
+                            صمم باقة الورد الخاصة بك بخطوات بسيطة وتحكم كامل في حجم وجودة التنسيق ومكوناته المكملة.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-4xl mx-auto animate-fade">
+                <div class="bose-double-wrap shadow-premium overflow-hidden">
+                    <div class="bose-double-inner p-8 md:p-14 bg-white space-y-12 text-right">
+                        
+                        <div class="space-y-6">
+                            <label class="block font-bold text-xl text-brand-brown">حجم البوكيه (عدد الورد):</label>
+                            <div class="flex items-center justify-between bg-brand-pinkLight rounded-[24px] p-6 border-2 border-brand-pink/30 shadow-inner max-w-md mx-auto md:mx-0">
+                                <button onclick="window.ProductUI.modFlowerQty(1)" class="w-14 h-14 rounded-full bg-white border-2 border-brand-pink text-brand-pink text-3xl font-black active:scale-90 shadow-sm flex items-center justify-center cursor-pointer">+</button>
+                                <div class="flex flex-col items-center">
+                                    <span id="flower-count-display" class="text-5xl font-black text-brand-brown tracking-tighter">15</span>
+                                    <span id="flower-price-display" class="text-lg font-bold text-brand-pink mt-1">400 ج.م</span>
+                                </div>
+                                <button onclick="window.ProductUI.modFlowerQty(-1)" class="w-14 h-14 rounded-full bg-white border-2 border-brand-pink text-brand-pink text-3xl font-black active:scale-90 shadow-sm flex items-center justify-center cursor-pointer">-</button>
+                            </div>
+                            <p class="text-sm font-bold text-brand-brown/60 leading-relaxed">
+                                السعر يشمل تكلفة تجهيز وتوفير الخامات الفاخرة، والتنسيق الاحترافي المناسب لحجم البوكيه
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4 border-t border-brand-pink/10">
+                            <div>
+                                <label class="block font-bold text-xl mb-4 text-brand-brown">خامة الورد المفضل:</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div class="option-btn selected text-sm" onclick="window.ProductUI.setFlowerMaterial('natural', this)"><span>ورد طبيعي</span></div>
+                                    <div class="option-btn text-sm" onclick="window.ProductUI.setFlowerMaterial('artificial', this)"><span>ورد صناعي</span></div>
+                                    <div class="option-btn text-sm" onclick="window.ProductUI.setFlowerMaterial('satin', this)"><span>ورد ستان</span></div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-xl mb-4 text-brand-brown">اللون الأساسي للتنسيق:</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="option-btn selected text-sm" onclick="window.ProductUI.setFlowerColor('أحمر', this)"><span>أحمر</span></div>
+                                    <div class="option-btn text-sm" onclick="window.ProductUI.setFlowerColor('أبيض', this)"><span>أبيض</span></div>
+                                    <div class="option-btn text-sm" onclick="window.ProductUI.setFlowerColor('وردي ناعم', this)"><span>وردي ناعم</span></div>
+                                    <div class="option-btn text-sm" onclick="window.ProductUI.setFlowerColor('أزرق', this)"><span>أزرق</span></div>
+                                    <div class="option-btn text-sm col-span-2" onclick="window.ProductUI.setFlowerColor('دمج ألوان', this)"><span>دمج ألوان مخصصة</span></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-brand-pink/10">
+                            <div>
+                                <label class="block font-bold text-xl mb-4 text-brand-brown">كارت إهداء (+25 ج.م):</label>
+                                <div class="flex gap-4 mb-4">
+                                    <button onclick="window.ProductUI.toggleFlowerGift(true, this)" class="option-btn flex-1">نعم</button>
+                                    <button onclick="window.ProductUI.toggleFlowerGift(false, this)" class="option-btn selected flex-1">لا</button>
+                                </div>
+                                <div id="flower-gift-area" class="hidden animate-fade">
+                                    <input type="text" id="flower-gift-text" placeholder="اكتب رسالة الكارت هنا..." class="w-full">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-xl mb-4 text-brand-brown">إرفاق صور (+15 ج.م للصورة):</label>
+                                <div class="flex items-center gap-6 bg-brand-pinkLight rounded-[18px] p-3 border-2 border-brand-pink/20 max-w-xs mb-4">
+                                    <button onclick="window.ProductUI.modFlowerPhotos(1)" class="w-10 h-10 rounded-full bg-white border border-brand-pink text-brand-pink text-xl font-black flex items-center justify-center cursor-pointer">+</button>
+                                    <div class="flex flex-col items-center min-w-[60px]">
+                                        <span id="flower-photo-count" class="text-2xl font-black text-brand-brown">0</span>
+                                        <span class="text-[10px] font-bold text-brand-brown/50">صور</span>
+                                    </div>
+                                    <button onclick="window.ProductUI.modFlowerPhotos(-1)" class="w-10 h-10 rounded-full bg-white border border-brand-pink text-brand-pink text-xl font-black flex items-center justify-center cursor-pointer">-</button>
+                                </div>
+                                <div id="flower-photo-upload-container" class="space-y-3 hidden animate-fade">
+                                    <div class="upload-zone !py-4 group" onclick="document.getElementById('flower-photos-files').click()">
+                                        <input type="file" id="flower-photos-files" class="hidden" multiple onchange="window.ProductUI.handleFlowerPhotos(this)">
+                                        <i data-lucide="upload-cloud" class="w-5 h-5 mx-auto text-brand-pink mb-1"></i>
+                                        <span id="flower-photos-status" class="font-bold text-brand-brown text-xs block">اضغط لرفع الملفات</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-brand-pink/10">
+                            <div>
+                                <label class="block font-bold text-xl mb-2 text-brand-brown">ميزانية الشوكولاتة المضافة (اختياري):</label>
+                                <input type="number" id="flower-chocolate-budget" min="0" placeholder="اكتب المبلغ بالجنيه..." class="w-full mb-3" oninput="window.ProductUI.updateFlowerPrices()">
+                                <input type="text" id="flower-chocolate-pref" placeholder="الأنواع والماركات المفضلة..." class="w-full text-sm">
+                            </div>
+                            <div>
+                                <label class="block font-bold text-xl mb-2 text-brand-brown">تغليف مبالغ مالية داخل البوكيه (اختياري):</label>
+                                <input type="number" id="flower-cash-amount" min="0" placeholder="اكتب قيمة المبلغ النقدي بالجنيه..." class="w-full" oninput="window.ProductUI.updateFlowerPrices()">
+                                <p class="text-[11px] font-bold text-brand-brown/50 mt-2">المبلغ المكتوب سيتم تنسيقه كاش داخل البوكيه وإضافته للفاتورة.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -476,6 +586,18 @@
 
     </main>
 
+    <div id="bose-sticky-action-bar" class="bose-sticky-bar hidden animate-fade">
+        <div class="container mx-auto max-w-4xl flex items-center justify-between gap-6">
+            <div class="text-right">
+                <p class="text-xs font-black text-brand-pink uppercase tracking-widest">السعر الإجمالي الحالي</p>
+                <div id="sticky-bar-price" class="text-3xl font-black text-brand-brown tracking-tighter">400 ج.م</div>
+            </div>
+            <button id="sticky-bar-add-btn" onclick="window.ProductUI.addCustomFlowerToCart()" class="btn-solid py-4 px-10 text-xl rounded-full shadow-md flex-grow md:flex-grow-0">
+                إضافة للسلة <i data-lucide="shopping-basket" class="w-5 h-5 mr-2 inline"></i>
+            </button>
+        </div>
+    </div>
+
     <footer class="bg-white pt-20 pb-8 border-t-4 border-brand-pink">
         <div class="container mx-auto px-4 md:px-8 max-w-6xl text-center">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-b border-brand-pink/10 pb-16">
@@ -490,9 +612,9 @@
                 <div class="flex flex-col items-center justify-center">
                     <h4 class="text-brand-brown font-black text-xl mb-6">الشركة</h4>
                     <ul class="space-y-4">
-                        <li><a href="#" onclick="event.preventDefault(); window.ProductUI.showToast('سيتم تفعيل هذه الصفحة قريباً.')" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">عن المتجر</a></li>
-                        <li><a href="#" onclick="event.preventDefault(); window.ProductUI.showToast('سيتم تفعيل هذه الصفحة قريباً.')" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">الإرجاع والاستبدال</a></li>
-                        <li><a href="#" onclick="event.preventDefault(); window.ProductUI.showToast('سيتم تفعيل هذه الصفحة قريباً.')" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">سياسة الخصوصية</a></li>
+                        <li><a href="#" onclick="event.preventDefault(); window.ProductUI.showToast('سيتم تفعيل هذه الصفحة قريباً.')" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm block">عن المتجر</a></li>
+                        <li><a href="#" onclick="event.preventDefault(); window.ProductUI.showToast('سيتم تفعيل هذه الصفحة قريباً.')" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm block">الإرجاع والاستبدال</a></li>
+                        <li><a href="#" onclick="event.preventDefault(); window.ProductUI.showToast('سيتم تفعيل هذه الصفحة قريباً.')" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm block">سياسة الخصوصية</a></li>
                     </ul>
                 </div>
                 <div class="flex flex-col items-center justify-center">
@@ -510,9 +632,9 @@
             </div>
             <div class="flex flex-col items-center justify-center gap-6">
                 <div class="flex gap-5 justify-center">
-                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-facebook-f text-xl"></i></a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-instagram text-xl"></i></a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-tiktok text-xl"></i></a>
+                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-facebook-f text-xl"></i></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-instagram text-xl"></i></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-tiktok text-xl"></i></a>
                 </div>
                 <p class="text-brand-brown opacity-70 font-bold text-sm text-center">© 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
             </div>
@@ -608,15 +730,25 @@
             currentReviewPage: 0,
             reviewsPerPage: 3,
             
-            // دالة موحدة لتنظيف وتوحيد الكلمات العربية لضمان المطابقة الكاملة ومنع مشاكل الـ التعريف أو اختلاف الحروف
+            // تهيئة بيانات قسم الورد التفاعلي الموحد
+            flowerState: {
+                qty: 15,
+                material: 'natural',
+                color: 'أحمر',
+                hasGift: false,
+                giftText: '',
+                photoCount: 0,
+                photoFiles: []
+            },
+
             normalizeArabic: function(str) {
                 if (!str) return '';
                 return str.trim()
-                    .replace(/^ال/, '')       // إزالة الـ التعريف في بداية الكلمة
-                    .replace(/[أإآا]/g, 'ا')   // توحيد الألف بكافة أشكالها
-                    .replace(/ة/g, 'ه')        // توحيد التاء المربوطة والهاء
-                    .replace(/ى/g, 'ي')        // توحيد الألف المقصورة والياء
-                    .replace(/\s+/g, '');      // إزالة أي مسافات زائدة تماماً لضمان المطابقة الأمنية
+                    .replace(/^ال/, '')       
+                    .replace(/[أإآا]/g, 'ا')   
+                    .replace(/ة/g, 'ه')        
+                    .replace(/ى/g, 'ي')        
+                    .replace(/\s+/g, '');      
             },
 
             showToast: function(msg) {
@@ -641,11 +773,22 @@
                 const category = params.get('category');
                 const action = params.get('action');
 
+                // إخفاء كافة الأقسام الديناميكية كخطوة تمهيدية أساسية للـ Router
+                document.getElementById('builder-container').classList.add('hidden');
+                document.getElementById('category-viewer').classList.add('hidden');
+                document.getElementById('flower-customizer-container').classList.add('hidden');
+                document.getElementById('bose-sticky-action-bar').classList.add('hidden');
+
                 if (action === 'build_cake') {
                     document.getElementById('builder-container').classList.remove('hidden');
                     this.state = { people: 4, print: 'none', gift: false, shape: 'round', healthNotes: '', refImageName: '', printImageName: '' };
                     this.setupBuilderPoster();
                     this.updatePrices();
+                } else if (category && this.normalizeArabic(category) === this.normalizeArabic('ورد')) {
+                    // تشغيل سيستم التخصيص المستقل للورد
+                    document.getElementById('flower-customizer-container').classList.remove('hidden');
+                    document.getElementById('bose-sticky-action-bar').classList.remove('hidden');
+                    this.updateFlowerPrices();
                 } else if (category) {
                     this.currentCategory = category;
                     document.getElementById('category-viewer').classList.remove('hidden');
@@ -674,11 +817,132 @@
                 if(posterEl) posterEl.src = builderPoster;
             },
 
+            // دوال التحكم وإدارة الحسابات الخاصة بقسم الورد التفاعلي المطور
+            modFlowerQty: function(val) {
+                const currentQty = this.flowerState.qty + val;
+                if(currentQty < 15) {
+                    this.showToast("أقل حجم لتنسيق بوكيه هو 15 وردة للحفاظ على جودة وشكل التصميم المعتمد.");
+                    return;
+                }
+                this.flowerState.qty = currentQty;
+                document.getElementById('flower-count-display').innerText = currentQty;
+                this.updateFlowerPrices();
+            },
+
+            setFlowerMaterial: function(mat, btn) {
+                this.flowerState.material = mat;
+                btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            },
+
+            setFlowerColor: function(col, btn) {
+                this.flowerState.color = col;
+                btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+            },
+
+            toggleFlowerGift: function(val, btn) {
+                this.flowerState.hasGift = val;
+                btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                
+                const area = document.getElementById('flower-gift-area');
+                if(val) area.classList.remove('hidden'); else area.classList.add('hidden');
+                this.updateFlowerPrices();
+            },
+
+            modFlowerPhotos: function(val) {
+                const currentCount = this.flowerState.photoCount + val;
+                if(currentCount < 0) return;
+                this.flowerState.photoCount = currentCount;
+                document.getElementById('flower-photo-count').innerText = currentCount;
+                
+                const uploadContainer = document.getElementById('flower-photo-upload-container');
+                if(currentCount > 0) uploadContainer.classList.remove('hidden'); else uploadContainer.classList.add('hidden');
+                
+                this.updateFlowerPrices();
+            },
+
+            handleFlowerPhotos: function(input) {
+                const status = document.getElementById('flower-photos-status');
+                if(input.files && input.files.length > 0) {
+                    this.flowerState.photoFiles = Array.from(input.files);
+                    status.innerText = `تم اختيار ${input.files.length} صورة بنجاح`;
+                    status.classList.add('text-brand-pink');
+                }
+            },
+
+            updateFlowerPrices: function() {
+                // القاعدة الأساسية الثابتة: 15 وردة بـ 400 جنيه، وزيادة 35 جنيهاً لكل وردة إضافية
+                let basePrice = 400;
+                if(this.flowerState.qty > 15) {
+                    basePrice += (this.flowerState.qty - 15) * 35;
+                }
+
+                // عرض سعر البوكيه الأساسي المحدث داخل كتل العداد
+                const pDisplay = document.getElementById('flower-price-display');
+                if(pDisplay) pDisplay.innerText = `${basePrice} ج.م`;
+
+                // حساب تكلفة الإضافات الثابتة والمرنة المتبقية
+                let totalPrice = basePrice;
+                if(this.flowerState.hasGift) totalPrice += 25; // كارت الإهداء بـ 25 جنيهاً
+                totalPrice += this.flowerState.photoCount * 15; // الصور بـ 15 جنيهاً للصورة الواحدة
+
+                const chocoBudget = parseFloat(document.getElementById('flower-chocolate-budget')?.value) || 0;
+                const cashAmount = parseFloat(document.getElementById('flower-cash-amount')?.value) || 0;
+                
+                totalPrice += chocoBudget;
+                totalPrice += cashAmount;
+
+                // تحديث السعر النهائي المعروض في الشريط السفلي العائم
+                const barPrice = document.getElementById('sticky-bar-price');
+                if(barPrice) barPrice.innerText = `${totalPrice} ج.م`;
+
+                return totalPrice;
+            },
+
+            addCustomFlowerToCart: function() {
+                const finalPrice = this.updateFlowerPrices();
+                const giftText = document.getElementById('flower-gift-text')?.value || '';
+                this.flowerState.giftText = giftText;
+                
+                const chocoBudget = parseFloat(document.getElementById('flower-chocolate-budget')?.value) || 0;
+                const chocoPref = document.getElementById('flower-chocolate-pref')?.value || 'لا توجد تفضيلات محددة';
+                const cashAmount = parseFloat(document.getElementById('flower-cash-amount')?.value) || 0;
+
+                // هيكلة كائن البيانات لترحيله كاملاً وبدقة لوحدة تحكم الإدارة وقاعدة البيانات
+                const item = {
+                    id: `custom-flower-${Date.now()}`,
+                    name: 'بوكيه ورد بتصميم خاص',
+                    price: finalPrice,
+                    quantity: 1,
+                    isCustom: true,
+                    details: {
+                        category: 'ورد',
+                        qty: this.flowerState.qty,
+                        material: this.flowerState.material,
+                        color: this.flowerState.color,
+                        hasGift: this.flowerState.hasGift,
+                        giftText: giftText,
+                        photoCount: this.flowerState.photoCount,
+                        chocolateBudget: chocoBudget,
+                        chocolatePreferences: chocoPref,
+                        cashAmount: cashAmount,
+                        photoFilesNames: this.flowerState.photoFiles.map(f => f.name)
+                    }
+                };
+
+                if (window.BoseState && window.cartSystem) {
+                    window.BoseState.cart.push(item);
+                    window.cartSystem.saveCartToStorage();
+                    window.location.href = 'cart.html';
+                }
+            },
+
             setupCategoryView: function(catName) {
                 const catalog = window.BoseState?.catalog || [];
                 const normalizedSearch = this.normalizeArabic(catName);
 
-                // تصفية ذكية ومرنة لمنع اختفاء الأقسام
                 this.allCategoryProducts = catName === 'all' ? catalog : catalog.filter(p => {
                     if (!p.category) return false;
                     const normalizedCat = this.normalizeArabic(p.category);
@@ -709,7 +973,6 @@
                     </div>
                 `;
 
-                // اكتشاف تلقائي لوجود أحجام متباينة في قائمة المنتجات المعروضة
                 const hasSizes = this.allCategoryProducts.some(p => p.name.includes('صغير') || p.name.includes('وسط') || p.name.includes('كبير') || p.name.includes('عائلي'));
                 
                 if (hasSizes) {
@@ -721,7 +984,6 @@
                     tabsContainer.classList.add('hidden');
                 }
 
-                // توحيد الشبكة لتستوعب التمدد والانكماش آلياً
                 gridContainer.className = "grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto";
                 this.renderCards(this.allCategoryProducts);
             },
@@ -747,12 +1009,10 @@
                 }
 
                 grid.innerHTML = products.map(p => {
-                    // قراءة الأمر السيادي مباشرة من قاعدة البيانات لكل منتج لضمان التوافق المطلق
                     const isFullSpan = p.gridSpan === 'full';
                     const tmplId = isFullSpan ? 'template-card-full' : 'template-card-grid';
                     let template = document.getElementById(tmplId).innerHTML;
 
-                    // تطبيق الأبعاد هندسياً لمنع انهيار الـ CSS
                     const spanClass = isFullSpan ? 'col-span-1 md:col-span-2' : 'col-span-1';
                     const catName = p.category || 'حلويات بوسي';
 
@@ -1140,4 +1400,3 @@
     </script>
 </body>
 </html>
-

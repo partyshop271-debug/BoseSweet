@@ -65,7 +65,6 @@
         details > summary { list-style: none; cursor: pointer; outline: none;}
         details > summary::-webkit-details-marker { display: none; }
 
-        /* 🛡️ الإطار المزدوج الخاص بالسلة (بدون height 100% لمنع التمدد الرأسي البشع) */
         .bose-double-wrap-cart {
             background: #ffffff; border-radius: 32px; border: 2px solid #ff91a4; padding: 6px;
             transition: all 0.4s ease; display: flex; flex-direction: column;
@@ -114,7 +113,7 @@
     <div class="ticker-wrap shadow-sm">
         <div class="ticker-scroll">
             <div class="ticker-item">الجودة والإتقان في كل تفصيلة من حلويات بوسي</div>
-            <div class="ticker-item">عشر سنوات من الشغف في صناعة الحلويات</div>
+            <div class="ticker-item">عشر سنوات من الشغف in صناعة الحلويات</div>
             <div class="ticker-item">مخبوزات طازجة يومياً بأعلى معايير الجودة</div>
             <div class="ticker-item">اختيارك الأول للمناسبات واللحظات المهمة</div>
             <div class="ticker-item">الجودة والإتقان في كل تفصيلة من حلويات بوسي</div>
@@ -196,14 +195,12 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
             
-            <!-- تم التأكد من عدم وجود كلاس products-grid للحفاظ على التصميم الطولي الأنيق للسلة -->
             <div class="lg:col-span-2 space-y-5" id="cart-items-list">
                 <div class="text-center py-20 opacity-50 font-black">
                     <i data-lucide="loader-2" class="spin-animation w-12 h-12 mx-auto mb-4 text-brand-pink"></i> جاري عرض تفاصيل السلة...
                 </div>
             </div>
 
-            <!-- ملخص السلة المطهر والمبسط -->
             <div class="lg:col-span-1">
                 <div class="bose-double-wrap-cart sticky top-28" id="cart-summary-box" style="display: none;">
                     <div class="bose-double-inner-cart bg-white">
@@ -225,7 +222,6 @@
         </div>
     </main>
 
-    <!-- 🛍️ قسم التوصيات والمقترحات (شبكة الأخطبوط) -->
     <section class="py-24 bg-brand-pinkLight/20 border-t border-brand-pink/10 mt-10" id="suggestions-area" style="display: none;">
         <div class="container mx-auto px-4 text-center max-w-6xl">
             <h3 class="text-3xl font-black text-brand-brown mb-12 tracking-tighter uppercase">منتجات بنرشحها لك</h3>
@@ -235,13 +231,11 @@
                 <button onclick="slideSuggestions(1)" class="absolute top-1/2 -translate-y-1/2 -left-4 z-20 w-12 h-12 rounded-full bg-white border-2 border-brand-pink/30 text-brand-pink flex items-center justify-center shadow-lg hover:bg-brand-pink hover:text-white transition-all opacity-0 group-hover:opacity-100 hidden md:flex cursor-pointer"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
 
                 <div id="cart-suggestions-slider" class="suggestions-slider">
-                    <!-- يحقن آلياً -->
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- الفوتر الرسمي -->
     <footer class="bg-white pt-20 pb-8 border-t-4 border-brand-pink">
         <div class="container mx-auto px-4 md:px-8 max-w-6xl text-center">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-b border-brand-pink/10 pb-16">
@@ -254,9 +248,9 @@
                 <div class="flex flex-col items-center justify-center">
                     <h4 class="text-brand-brown font-black text-xl mb-6">الشركة</h4>
                     <ul class="space-y-4">
-                        <li><a href="about.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">عن المتجر</a></li>
-                        <li><a href="refund.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">الإرجاع والاستبدال</a></li>
-                        <li><a href="privacy.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm text-decoration-none block">سياسة الخصوصية</a></li>
+                        <li><a href="about.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm block">عن المتجر</a></li>
+                        <li><a href="refund.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm block">الإرجاع والاستبدال</a></li>
+                        <li><a href="privacy.html" class="text-brand-brown opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm block">سياسة الخصوصية</a></li>
                     </ul>
                 </div>
                 <div class="flex flex-col items-center justify-center">
@@ -274,9 +268,9 @@
             </div>
             <div class="flex flex-col items-center justify-center gap-6">
                 <div class="flex gap-5 justify-center">
-                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-facebook-f text-xl"></i></a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-instagram text-xl"></i></a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-tiktok text-xl"></i></a>
+                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-facebook-f text-xl"></i></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-instagram text-xl"></i></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-tiktok text-xl"></i></a>
                 </div>
                 <p class="text-brand-brown opacity-70 font-bold text-sm text-center">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
             </div>
@@ -386,22 +380,42 @@
 
                 let customDetailsHtml = '';
                 if (item.isCustom && item.details) {
-                    let shapeText = item.details.shape === 'round' ? 'دائري' : (item.details.shape === 'heart' ? 'قلب' : (item.details.shape === 'square' ? 'مربع' : 'مستطيل'));
-                    customDetailsHtml = `
-                        <div class="mt-4 pt-3 border-t border-brand-pink/10">
-                            <p class="text-[10px] font-black text-brand-pink mb-2 uppercase tracking-widest text-right">التفاصيل</p>
-                            <div class="flex flex-wrap gap-2 text-xs font-bold text-brand-brown/80 justify-end">
-                                <span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="users" class="w-3 h-3 inline ml-1 text-brand-pink"></i>${item.details.people} أفراد (${shapeText})</span>
-                                ${item.details.print === 'edible' ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="image" class="w-3 h-3 inline ml-1 text-brand-pink"></i>صورة للأكل (+60)</span>` : ''}
-                                ${item.details.print === 'non_edible' ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="frame" class="w-3 h-3 inline ml-1 text-brand-pink"></i>صورة ديكور (+20)</span>` : ''}
-                                ${item.details.gift ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="mail" class="w-3 h-3 inline ml-1 text-brand-pink"></i>كارت هدية (+40)</span>` : ''}
+                    // فرز وتدقيق نوع المنتج المخصص (تورتة خاصة أم بوكيه ورد) لمنع اختلاط حقول البيانات [cite: 2-04-23]
+                    if (item.details.category === 'ورد') {
+                        let materialText = item.details.material === 'natural' ? 'ورد طبيعي' : (item.details.material === 'artificial' ? 'ورد صناعي' : 'ورد ستان');
+                        customDetailsHtml = `
+                            <div class="mt-4 pt-3 border-t border-brand-pink/10">
+                                <p class="text-[10px] font-black text-brand-pink mb-2 uppercase tracking-widest text-right">مواصفات التنسيق الخاص بالبوكيه</p>
+                                <div class="flex flex-wrap gap-2 text-xs font-bold text-brand-brown/80 justify-end mb-2">
+                                    <span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="flower" class="w-3 h-3 inline ml-1 text-brand-pink"></i>${item.details.qty} وردة (${materialText})</span>
+                                    <span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="palette" class="w-3 h-3 inline ml-1 text-brand-pink"></i>اللون: ${item.details.color}</span>
+                                    ${item.details.hasGift ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="mail" class="w-3 h-3 inline ml-1 text-brand-pink"></i>كارت إهداء (+25)</span>` : ''}
+                                    ${item.details.photoCount > 0 ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="image" class="w-3 h-3 inline ml-1 text-brand-pink"></i>عدد الصور: ${item.details.photoCount} (+15 للصورة)</span>` : ''}
+                                    ${item.details.chocolateBudget > 0 ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="candy" class="w-3 h-3 inline ml-1 text-brand-pink"></i>شوكولاتة: ${item.details.chocolateBudget} ج.م</span>` : ''}
+                                    ${item.details.cashAmount > 0 ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="banknote" class="w-3 h-3 inline ml-1 text-brand-pink"></i>مبلغ كاش: ${item.details.cashAmount} ج.م</span>` : ''}
+                                </div>
+                                ${item.details.hasGift ? `<p class="mt-2 text-xs text-brand-brown font-bold bg-brand-pinkLight/40 p-2 rounded-md text-right"><i data-lucide="pencil" class="w-3 h-3 inline ml-1 text-brand-pink"></i>رسالة الكارت: <span class="italic opacity-80">"${item.details.giftText}"</span></p>` : ''}
+                                ${item.details.chocolateBudget > 0 ? `<p class="mt-1 text-xs text-brand-brown font-bold bg-brand-pinkLight/40 p-2 rounded-md text-right"><i data-lucide="heart" class="w-3 h-3 inline ml-1 text-brand-pink"></i>التفضيلات: <span class="opacity-80">"${item.details.chocolatePreferences}"</span></p>` : ''}
                             </div>
-                            ${item.details.healthNotes && item.details.healthNotes !== 'لا يوجد' && item.details.healthNotes !== 'لا توجد' ? `<p class="mt-2 text-xs text-red-500 font-bold bg-red-50 p-2 rounded-md text-right"><i data-lucide="alert-circle" class="w-3 h-3 inline ml-1"></i>${item.details.healthNotes}</p>` : ''}
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        // الحفاظ الكامل والآمن على تورتة التصميم الخاص المعتمدة سابقاً [cite: 2-04-01]
+                        let shapeText = item.details.shape === 'round' ? 'دائري' : (item.details.shape === 'heart' ? 'قلب' : (item.details.shape === 'square' ? 'مربع' : 'مستطيل'));
+                        customDetailsHtml = `
+                            <div class="mt-4 pt-3 border-t border-brand-pink/10">
+                                <p class="text-[10px] font-black text-brand-pink mb-2 uppercase tracking-widest text-right">التفاصيل</p>
+                                <div class="flex flex-wrap gap-2 text-xs font-bold text-brand-brown/80 justify-end">
+                                    <span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="users" class="w-3 h-3 inline ml-1 text-brand-pink"></i>${item.details.people} أفراد (${shapeText})</span>
+                                    ${item.details.print === 'edible' ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="image" class="w-3 h-3 inline ml-1 text-brand-pink"></i>صورة للأكل (+60)</span>` : ''}
+                                    ${item.details.print === 'non_edible' ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="frame" class="w-3 h-3 inline ml-1 text-brand-pink"></i>صورة ديكور (+20)</span>` : ''}
+                                    ${item.details.gift ? `<span class="bg-brand-pinkLight px-2 py-1 rounded-md border border-brand-pink/10"><i data-lucide="mail" class="w-3 h-3 inline ml-1 text-brand-pink"></i>كارت هدية (+40)</span>` : ''}
+                                </div>
+                                ${item.details.healthNotes && item.details.healthNotes !== 'لا يوجد' && item.details.healthNotes !== 'لا توجد' ? `<p class="mt-2 text-xs text-red-500 font-bold bg-red-50 p-2 rounded-md text-right"><i data-lucide="alert-circle" class="w-3 h-3 inline ml-1"></i>${item.details.healthNotes}</p>` : ''}
+                            </div>
+                        `;
+                    }
                 }
 
-                /* 🚀 تصميم أفقي مدمج فاخر (Strip Layout) - يمنع السكرول البشع والتمدد نهائياً */
                 html += `
                     <div class="bose-double-wrap-cart mb-4 animate-fade group">
                         <div class="bose-double-inner-cart bg-white relative">
@@ -539,4 +553,3 @@
     </script>
 </body>
 </html>
-

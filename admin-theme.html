@@ -6,12 +6,10 @@
     
     <title>المحرك السيادي للواجهة | حلويات بوسي</title>
     
-    <!-- خطوط واضحة وقوية مخصصة للقراءة المريحة -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     
-    <!-- مكتبات الأيقونات والتصميم المعتمدة -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -36,7 +34,6 @@
     </script>
     
     <style>
-        /* تحصين صلب لمنظومة الألوان لمنع أي انهيار بصري على الموبايل والكمبيوتر */
         :root {
             --bose-bg: #1a1012;
             --bose-surface: #2a1b1f;
@@ -63,7 +60,6 @@
         ::-webkit-scrollbar-thumb { background: var(--bose-border); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--bose-pink); }
 
-        /* القائمة الجانبية السيادية */
         .sidebar { 
             background-color: var(--bose-surface) !important; 
             border-left: 2px solid var(--bose-border) !important; 
@@ -139,7 +135,6 @@
 
         .main-content { margin-right: 340px; min-h: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
         
-        /* 🛡️ نظام التبويبات (Tabs) لإنهاء التمرير اللانهائي */
         .admin-tabs-nav {
             display: flex; gap: 12px; background-color: var(--bose-surface); padding: 12px; border-radius: 20px; border: 2px solid var(--bose-border); margin-bottom: 30px; overflow-x: auto;
             -ms-overflow-style: none; scrollbar-width: none;
@@ -155,11 +150,9 @@
         .admin-tab-content { display: none; animation: fadeIn 0.4s ease forwards; }
         .admin-tab-content.active-tab { display: block; }
         
-        /* تعديل الأقسام القديمة لتخضع لنظام التبويبات الجديد */
         .admin-section { display: block !important; margin-bottom: 40px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* تباين كامل للبطاقات وحقول الإدخال */
         .admin-card { 
             background-color: var(--bose-surface) !important; 
             border: 2px solid var(--bose-border) !important; 
@@ -200,7 +193,6 @@
             font-size: 1.05rem; 
         }
         
-        /* نصوص المساعدة والتعليمات المجهرية */
         .bose-helper-text { 
             display: flex; 
             align-items: start; 
@@ -260,7 +252,6 @@
         
         .form-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
         
-        /* مؤشرات التحكم المنزلقة الدقيقة */
         input[type=range] { 
             -webkit-appearance: none; 
             width: 100%; 
@@ -292,7 +283,6 @@
             border: 4px solid var(--bose-bg); 
         }
         
-        /* مفتاح التفعيل اللامع */
         .toggle-switch { position: relative; width: 60px; height: 32px; display: inline-block; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
         .toggle-slider { 
@@ -320,7 +310,6 @@
         input:checked + .toggle-slider { background-color: rgba(255, 145, 164, 0.2); border-color: var(--bose-pink); }
         input:checked + .toggle-slider:before { transform: translateX(28px); background-color: var(--bose-pink); }
 
-        /* الأزرار السيادية */
         .btn-solid { 
             background-color: var(--bose-pink) !important; 
             color: var(--bose-bg) !important; 
@@ -395,7 +384,6 @@
 
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-    <!-- القائمة الجانبية السيادية -->
     <aside id="sidebar" class="sidebar">
         <div class="p-8 border-b border-brand-border flex items-center justify-between sticky top-0 bg-[#2a1b1f] z-10">
             <div class="flex items-center gap-4">
@@ -422,6 +410,7 @@
                     <div class="submenu-item" onclick="switchSection('ui-header', this)"><i data-lucide="panel-top" class="w-5 h-5"></i> الهيدر والقوائم العلوية</div>
                     <div class="submenu-item" onclick="switchSection('ui-ticker', this)"><i data-lucide="radio" class="w-5 h-5"></i> الشريط المتحرك الإعلاني</div>
                     <div class="submenu-item" onclick="switchSection('ui-footer', this)"><i data-lucide="panel-bottom" class="w-5 h-5"></i> الفوتر وبيانات التواصل</div>
+                    <div class="submenu-item" onclick="switchSection('ui-flowers-logistics', this)"><i data-lucide="flower" class="w-5 h-5"></i> تسعير ولوجستيات الورد</div>
                 </div>
             </details>
 
@@ -454,17 +443,15 @@
 
         <div class="p-6 md:p-12 max-w-7xl mx-auto w-full">
 
-            <!-- 🛡️ لوحة التحكم العلوية: نظام التبويبات الجديد -->
             <div class="admin-tabs-nav">
                 <button type="button" class="admin-tab-btn active" onclick="switchAdminTab(event, 'tab-colors')">1. الألوان والهوية</button>
                 <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-typography')">2. الخطوط والنصوص</button>
                 <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-layout')">3. تخطيط الواجهة</button>
+                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-flowers')">4. تسعير الورد</button>
             </div>
 
-            <!-- تغليف قسم (الألوان والهوية) -->
             <div id="tab-colors" class="admin-tab-content active-tab">
                 
-                <!-- إدارة الهيدر واللوجو -->
                 <section id="ui-header" class="admin-section">
                     <div class="admin-card">
                         <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-top" class="text-brand-pink w-8 h-8"></i> إدارة الهيدر واللوجو</h3>
@@ -479,7 +466,6 @@
                     </div>
                 </section>
 
-                <!-- الفوتر والتواصل -->
                 <section id="ui-footer" class="admin-section">
                     <div class="admin-card">
                         <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-bottom" class="text-brand-pink w-8 h-8"></i> الإعدادات الشاملة للفوتر والتواصل</h3>
@@ -515,9 +501,7 @@
                 
             </div>
 
-            <!-- تغليف قسم (الخطوط والنصوص) -->
             <div id="tab-typography" class="admin-tab-content">
-                <!-- الشريط المتحرك -->
                 <section id="ui-ticker" class="admin-section">
                     <div class="admin-card">
                         <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="radio" class="text-brand-pink w-8 h-8"></i> الشريط الإعلاني المتحرك</h3>
@@ -539,10 +523,7 @@
                 </section>
             </div>
 
-            <!-- تغليف قسم (تخطيط الواجهة) -->
             <div id="tab-layout" class="admin-tab-content">
-                
-                <!-- شاشة الاستقرار النظيفة -->
                 <section id="dashboard" class="admin-section">
                     <div class="admin-card flex flex-col items-center justify-center py-32 border-2 border-dashed border-brand-border bg-transparent shadow-none">
                         <div class="w-28 h-28 rounded-full bg-[#1a1012] border-2 border-brand-border flex items-center justify-center mb-6 shadow-xl">
@@ -555,7 +536,6 @@
                     </div>
                 </section>
 
-                <!-- محرك البناء الهندسي الدقيق -->
                 <section id="ui-builder" class="admin-section">
                     <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
                         <div>
@@ -569,7 +549,6 @@
                         </button>
                     </div>
 
-                    <!-- مسرح عمليات رسم المكعبات -->
                     <div id="builder-container" class="space-y-8">
                         <div class="text-center py-20 text-brand-textMuted font-bold text-xl"><i data-lucide="loader-2" class="w-12 h-12 animate-spin mx-auto mb-4 text-brand-pink"></i> جاري استدعاء الهيكل السيادي...</div>
                     </div>
@@ -578,13 +557,42 @@
                         <button onclick="saveBuilderLayout()" class="btn-solid py-5 text-xl"><i data-lucide="upload-cloud" class="w-7 h-7"></i> حفظ الهيكل وتطبيق التعديلات للعملاء فوراً</button>
                     </div>
                 </section>
-                
+            </div>
+
+            <div id="tab-flowers" class="admin-tab-content">
+                <section id="ui-flowers-logistics" class="admin-section">
+                    <div class="admin-card">
+                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
+                            <i data-lucide="flower" class="text-brand-pink w-8 h-8"></i> التحكم السحابي في أسعار ولوجستيات الورد
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <label class="form-label">الحد الأدنى لسعر البوكيه الأساسي (15 وردة)</label>
+                                <input type="number" id="flower-base-price" class="form-input text-2xl text-brand-pink font-black" placeholder="400">
+                            </div>
+                            <div>
+                                <label class="form-label">تكلفة الزيادة للوردة الواحدة (شاملة التغليف والشحن الداخلي)</label>
+                                <input type="number" id="flower-step-price" class="form-input text-2xl text-white font-black" placeholder="35">
+                            </div>
+                            <div>
+                                <label class="form-label">سعر كارت الإهداء المخطوط</label>
+                                <input type="number" id="flower-card-price" class="form-input text-2xl text-white font-black" placeholder="25">
+                            </div>
+                            <div>
+                                <label class="form-label">سعر طباعة الصورة المرفقة الواحدة</label>
+                                <input type="number" id="flower-photo-price" class="form-input text-2xl text-white font-black" placeholder="15">
+                            </div>
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-brand-border">
+                            <button type="button" onclick="window.saveFlowerLogistics()" class="btn-solid"><i data-lucide="upload-cloud" class="w-6 h-6"></i> اعتماد وحفظ تسعير الورد سحابياً</button>
+                        </div>
+                    </div>
+                </section>
             </div>
 
         </div>
     </main>
 
-    <!-- المحرك البرمجي للاتصال بقاعدة البيانات وإدارة التبويبات -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -597,7 +605,6 @@
 
         let builderBlocks = [];
 
-        // الهيكل المرجعي الافتراضي
         const defaultLayout = [
             { id: 'sec_1', type: 'hero', title: 'عقد من التميز في صناعة الحلويات', subtitle: 'استمتع بمجموعتنا الفاخرة التي نعدها بشغف وإتقان.', isVisible: true },
             { id: 'sec_2', type: 'waterfall', title: 'شلال الصور البصري', waterfallSpeed: 40, isVisible: true },
@@ -616,7 +623,6 @@
             overlay.classList.toggle('active');
         };
 
-        // 🛡️ دالة التبديل الذكية للتبويبات الجديدة (Tabs)
         window.switchAdminTab = function(event, tabId) {
             const nav = event.currentTarget.closest('.admin-tabs-nav');
             if (nav) {
@@ -631,22 +637,20 @@
             lucide.createIcons();
         };
 
-        // تحديث دالة التوجيه من القائمة الجانبية لتتواصل مع التبويبات
         window.switchSection = function(sectionId, element) {
             document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
             
-            // تحديد التبويب (Tab) المرتبط بالقسم المختار لفتحه آلياً
             let targetTab = 'tab-layout'; 
             if(sectionId === 'ui-header' || sectionId === 'ui-footer') targetTab = 'tab-colors';
             else if(sectionId === 'ui-ticker') targetTab = 'tab-typography';
+            else if(sectionId === 'ui-flowers-logistics') targetTab = 'tab-flowers';
 
             const tabBtn = document.querySelector(`.admin-tab-btn[onclick*="${targetTab}"]`);
             if(tabBtn) {
                 tabBtn.click();
             }
             
-            // التمرير السلس للقسم الداخلي المطلوب بعد فتح التبويب الخاص به
             setTimeout(() => {
                 const targetSection = document.getElementById(sectionId);
                 if(targetSection) targetSection.scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -657,7 +661,8 @@
                 'ui-builder': 'محرك البناء الهندسي للواجهة', 
                 'ui-header': 'إدارة الهيدر واللوجو', 
                 'ui-ticker': 'إدارة الشريط الإعلاني المتحرك', 
-                'ui-footer': 'الإعدادات الشاملة للفوتر' 
+                'ui-footer': 'الإعدادات الشاملة للفوتر',
+                'ui-flowers-logistics': 'تسعير ولوجستيات الورد'
             };
             document.getElementById('current-section-title').innerText = titles[sectionId] || '';
             if(window.innerWidth <= 1024) toggleSidebar();
@@ -681,10 +686,6 @@
             toast.classList.add('active');
             setTimeout(() => toast.classList.remove('active'), 4000);
         };
-
-        // ---------------------------------------------------------
-        // 🏗️ محرك هندسة رسم كتل البناء (Rendering UI Blocks)
-        // ---------------------------------------------------------
         
         function renderBuilderUI() {
             const container = document.getElementById('builder-container');
@@ -925,10 +926,6 @@
             renderBuilderUI();
         };
 
-        // ---------------------------------------------------------
-        // ☁️ الاتصال بقاعدة البيانات السحابية (Firebase SDK V10)
-        // ---------------------------------------------------------
-
         async function loadAdminData() {
             try {
                 const snap = await getDoc(doc(db, 'settings', 'theme'));
@@ -964,6 +961,16 @@
                 } else {
                     builderBlocks = JSON.parse(JSON.stringify(defaultLayout));
                     renderBuilderUI();
+                }
+
+                // سحب أسعار ولوجستيات الورد
+                const flowerSnap = await getDoc(doc(db, 'settings', 'flowers'));
+                if(flowerSnap.exists()) {
+                    const fData = flowerSnap.data();
+                    document.getElementById('flower-base-price').value = fData.basePrice || 400;
+                    document.getElementById('flower-step-price').value = fData.stepPrice || 35;
+                    document.getElementById('flower-card-price').value = fData.cardPrice || 25;
+                    document.getElementById('flower-photo-price').value = fData.photoPrice || 15;
                 }
             } catch (error) { 
                 console.error("خطأ قراءة السحابة:", error); 
@@ -1012,9 +1019,23 @@
             } catch(e) {}
         }
 
+        // دالة حفظ واعتماد أسعار ولوجستيات الورد المحقونة
+        window.saveFlowerLogistics = async function() {
+            const basePrice = parseFloat(document.getElementById('flower-base-price').value) || 400;
+            const stepPrice = parseFloat(document.getElementById('flower-step-price').value) || 35;
+            const cardPrice = parseFloat(document.getElementById('flower-card-price').value) || 25;
+            const photoPrice = parseFloat(document.getElementById('flower-photo-price').value) || 15;
+
+            try {
+                await setDoc(doc(db, 'settings', 'flowers'), { basePrice, stepPrice, cardPrice, photoPrice, updatedAt: Date.now() }, { merge: true });
+                showToast("تم توثيق وحفظ لوجستيات وأسعار الورد سحابياً بنجاح.");
+            } catch (err) { 
+                alert("عطل اتصالي منع الحفظ السحابي للورد."); 
+            }
+        };
+
         document.addEventListener('DOMContentLoaded', loadAdminData);
 
     </script>
 </body>
 </html>
-
