@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="stylesheet" href="style.css">
 
     <script>
@@ -167,10 +166,10 @@
         .animate-fade { animation: fade 0.6s ease forwards; }
         @keyframes fade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .bose-sticky-bar {
-            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px); border-top: 2px solid #ff91a4; padding: 16px 24px;
-            z-index: 999; box-shadow: 0 -10px 30px rgba(255, 145, 164, 0.15);
+        .step-dot.active {
+            background-color: #ff91a4 !important;
+            color: #ffffff !important;
+            border-color: #ff91a4 !important;
         }
     </style>
 </head>
@@ -280,18 +279,14 @@
     <main class="py-12 md:py-24 min-h-[60vh] pb-36">
         
         <section id="category-viewer" class="container mx-auto px-4 hidden">
-            <div id="category-header-container" class="max-w-6xl mx-auto mb-16 animate-fade">
-            </div>
-
+            <div id="category-header-container" class="max-w-6xl mx-auto mb-16 animate-fade"></div>
             <div id="size-tabs-container" class="flex justify-center gap-4 mb-16 hidden animate-fade">
                 <button class="size-tab active" onclick="window.ProductUI.filterBySize('all', this)">عرض الكل</button>
                 <button class="size-tab" onclick="window.ProductUI.filterBySize('صغير', this)">صغير</button>
                 <button class="size-tab" onclick="window.ProductUI.filterBySize('وسط', this)">وسط</button>
                 <button class="size-tab" onclick="window.ProductUI.filterBySize('كبير', this)">كبير / عائلي</button>
             </div>
-
-            <div id="category-grid" class="grid gap-12 max-w-6xl mx-auto">
-            </div>
+            <div id="category-grid" class="grid gap-12 max-w-6xl mx-auto"></div>
         </section>
 
         <section id="flower-customizer-container" class="container mx-auto px-4 hidden">
@@ -305,15 +300,10 @@
 
                 <div class="bose-visual-simulator" id="visual-simulator-container" style="position: relative; overflow: hidden; width: 100%; border-radius: 24px; background-color: #ffffff; min-height: 450px; display: flex; justify-content: center; align-items: center; box-shadow: 0 10px 30px rgba(255, 145, 164, 0.15); margin-bottom: 30px; border: 2px solid rgba(255,145,164,0.2);">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" alt="تنسيق حلويات بوسي" id="main-product-image" class="visible-base-layer" style="width: 100%; height: auto; max-width: 400px; display: block; position: relative; z-index: 1; border-radius: 12px; transition: transform 0.4s ease-in-out;">
-
-                    <div id="layer-flowers" class="simulator-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 10; transition: all 0.4s ease-in-out;"></div>
-
-                    <div id="layer-chocolate" class="simulator-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 20; opacity: 0; transition: opacity 0.4s ease-in-out;"></div>
-
-                    <div id="layer-cash" class="simulator-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 30; opacity: 0; transition: opacity 0.4s ease-in-out;"></div>
-
-                    <div id="layer-card" class="simulator-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 40; opacity: 0; transition: opacity 0.4s ease-in-out;"></div>
-
+                    <div id="layer-flowers" class="simulator-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 10; transition: all 0.4s ease-in-out; display: flex; align-items: center; justify-content: center;"></div>
+                    <div id="layer-chocolate" class="simulator-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 20; opacity: 0; transition: opacity 0.4s ease-in-out; display: flex; align-items: center; justify-content: center;"></div>
+                    <div id="layer-cash" class="simulator-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 30; opacity: 0; transition: opacity 0.4s ease-in-out; display: flex; align-items: center; justify-content: center;"></div>
+                    <div id="layer-card" class="simulator-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: contain; background-repeat: no-repeat; background-position: center; z-index: 40; opacity: 0; transition: opacity 0.4s ease-in-out; display: flex; align-items: center; justify-content: center; padding: 20px;"></div>
                     <div id="layer-custom-photo" class="simulator-layer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; opacity: 0; display: flex; align-items: center; justify-content: center; perspective: 1000px; transition: opacity 0.4s ease-in-out;">
                         <div id="custom-photo-wrapper" style="transform: rotateX(15deg) rotateY(-5deg) translateY(-25px); box-shadow: 0 8px 16px rgba(0,0,0,0.15); transition: transform 0.4s ease-in-out; background: #ffffff; padding: 6px; border-radius: 8px;">
                            <img id="custom-photo-render" src="" alt="صورة تذكارية" style="max-width: 110px; max-height: 110px; display: none; border-radius: 4px;">
@@ -322,10 +312,9 @@
                 </div>
 
                 <div class="bose-customization-journey text-right" id="customization-journey-container" style="background-color: #ffffff; border-radius: 24px; padding: 30px; box-shadow: 0 10px 30px rgba(255, 145, 164, 0.1); border: 2px solid rgba(255,145,164,0.2);">
-                    
                     <div class="progress-indicator" style="display: flex; justify-content: space-between; margin-bottom: 30px; position: relative; flex-direction: row-reverse;">
                         <div style="position: absolute; top: 50%; right: 0; width: 100%; height: 3px; background-color: #fce4e8; z-index: 1;"></div>
-                        <div class="step-dot active" data-step="1" style="width: 32px; height: 32px; border-radius: 50%; background-color: #ff91a4; color: #fff; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; z-index: 2; box-shadow: 0 0 0 6px #ffffff; transition: 0.3s;">1</div>
+                        <div class="step-dot active" data-step="1" style="width: 32px; height: 32px; border-radius: 50%; background-color: #fce4e8; color: #ff91a4; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; z-index: 2; box-shadow: 0 0 0 6px #ffffff; transition: 0.3s;">1</div>
                         <div class="step-dot" data-step="2" style="width: 32px; height: 32px; border-radius: 50%; background-color: #fce4e8; color: #ff91a4; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; z-index: 2; box-shadow: 0 0 0 6px #ffffff; transition: 0.3s;">2</div>
                         <div class="step-dot" data-step="3" style="width: 32px; height: 32px; border-radius: 50%; background-color: #fce4e8; color: #ff91a4; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; z-index: 2; box-shadow: 0 0 0 6px #ffffff; transition: 0.3s;">3</div>
                         <div class="step-dot" data-step="4" style="width: 32px; height: 32px; border-radius: 50%; background-color: #fce4e8; color: #ff91a4; display: flex; justify-content: center; align-items: center; font-size: 14px; font-weight: bold; z-index: 2; box-shadow: 0 0 0 6px #ffffff; transition: 0.3s;">4</div>
@@ -334,49 +323,48 @@
                     <div class="journey-step" id="step-1" style="display: block; animation: fadeIn 0.4s ease-in-out;">
                         <h3 class="text-2xl font-black text-brand-brown mb-6">المرحلة الأولى: الخامة الأساسية</h3>
                         <div class="options-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px;">
-                            <button class="bose-btn-option active font-bold" data-type="material" data-value="natural" style="background-color: #ff91a4; color: #ffffff; border: 2px solid #ff91a4; padding: 16px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                            <button class="bose-btn-option active font-bold" data-type="material" data-value="natural" onclick="window.ProductUI.setFlowerMaterial('natural', this)" style="background-color: #ff91a4; color: #ffffff; border: 2px solid #ff91a4; padding: 16px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px;">
                                 <i data-lucide="flower" class="w-6 h-6"></i> ورد طبيعي
                             </button>
-                            <button class="bose-btn-option font-bold" data-type="material" data-value="artificial" style="background-color: #ffffff; color: #ff91a4; border: 2px solid rgba(255,145,164,0.3); padding: 16px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                            <button class="bose-btn-option font-bold" data-type="material" data-value="artificial" onclick="window.ProductUI.setFlowerMaterial('artificial', this)" style="background-color: #ffffff; color: #ff91a4; border: 2px solid rgba(255,145,164,0.3); padding: 16px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px;">
                                 <i data-lucide="flower-2" class="w-6 h-6"></i> ورد صناعي
                             </button>
-                            <button class="bose-btn-option font-bold" data-type="material" data-value="satin" style="background-color: #ffffff; color: #ff91a4; border: 2px solid rgba(255,145,164,0.3); padding: 16px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                            <button class="bose-btn-option font-bold" data-type="material" data-value="satin" onclick="window.ProductUI.setFlowerMaterial('satin', this)" style="background-color: #ffffff; color: #ff91a4; border: 2px solid rgba(255,145,164,0.3); padding: 16px; border-radius: 12px; font-size: 16px; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 8px;">
                                 <i data-lucide="sparkles" class="w-6 h-6"></i> ورد ستان
                             </button>
                         </div>
                         <div style="text-align: left; margin-top: 30px;">
-                            <button class="btn-solid" onclick="nextJourneyStep(2)" style="padding: 12px 35px; border-radius: 50px; cursor: pointer;">التالي <i data-lucide="arrow-left" class="w-5 h-5 inline mr-2"></i></button>
+                            <button type="button" class="btn-solid" onclick="window.ProductUI.nextJourneyStep(2)" style="padding: 12px 35px; border-radius: 50px; cursor: pointer;">التالي <i data-lucide="arrow-left" class="w-5 h-5 inline mr-2"></i></button>
                         </div>
                     </div>
 
                     <div class="journey-step" id="step-2" style="display: none; animation: fadeIn 0.4s ease-in-out;">
                         <h3 class="text-2xl font-black text-brand-brown mb-6">المرحلة الثانية: الكثافة واللون</h3>
-                        
                         <div style="margin-bottom: 25px;">
                             <p class="font-bold text-brand-brown mb-4 text-lg">اللون الأساسي:</p>
                             <div style="display: flex; gap: 20px; justify-content: flex-start;">
-                                <div class="color-circle active" data-color="red" style="width: 45px; height: 45px; border-radius: 50%; background-color: #d32f2f; cursor: pointer; border: 3px solid #ff91a4; box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3); transition: 0.3s;"></div>
-                                <div class="color-circle" data-color="white" style="width: 45px; height: 45px; border-radius: 50%; background-color: #ffffff; cursor: pointer; border: 2px solid rgba(255,145,164,0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s;"></div>
-                                <div class="color-circle" data-color="pink" style="width: 45px; height: 45px; border-radius: 50%; background-color: #ffb6c1; cursor: pointer; border: 2px solid rgba(255,145,164,0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s;"></div>
-                                <div class="color-circle" data-color="mixed" style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(45deg, #d32f2f, #ffffff); cursor: pointer; border: 2px solid rgba(255,145,164,0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s;"></div>
+                                <div class="color-circle active" data-color="red" onclick="window.ProductUI.setFlowerColor('أمر', this)" style="width: 45px; height: 45px; border-radius: 50%; background-color: #d32f2f; cursor: pointer; border: 3px solid #ff91a4; box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3); transition: 0.3s;"></div>
+                                <div class="color-circle" data-color="white" onclick="window.ProductUI.setFlowerColor('أبيض', this)" style="width: 45px; height: 45px; border-radius: 50%; background-color: #ffffff; cursor: pointer; border: 2px solid rgba(255,145,164,0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s;"></div>
+                                <div class="color-circle" data-color="pink" onclick="window.ProductUI.setFlowerColor('وردي', this)" style="width: 45px; height: 45px; border-radius: 50%; background-color: #ffb6c1; cursor: pointer; border: 2px solid rgba(255,145,164,0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s;"></div>
+                                <div class="color-circle" data-color="mixed" onclick="window.ProductUI.setFlowerColor('مشكل', this)" style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(45deg, #d32f2f, #ffffff); cursor: pointer; border: 2px solid rgba(255,145,164,0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: 0.3s;"></div>
                             </div>
                         </div>
 
                         <div>
                             <p class="font-bold text-brand-brown mb-4 text-lg">كثافة التنسيق (حجم البوكيه):</p>
                             <div style="display: flex; align-items: center; justify-content: center; gap: 25px; background: #fff5f6; border: 2px solid rgba(255,145,164,0.3); border-radius: 20px; padding: 15px; max-width: 300px; margin: 0 auto;">
-                                <button onclick="updateBouquetDensity(5)" style="background-color: #ffffff; border: 2px solid #ff91a4; width: 45px; height: 45px; border-radius: 50%; color: #ff91a4; font-size: 24px; font-weight: black; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(255,145,164,0.1);">+</button>
+                                <button type="button" onclick="window.ProductUI.modFlowerQty(1)" style="background-color: #ffffff; border: 2px solid #ff91a4; width: 45px; height: 45px; border-radius: 50%; color: #ff91a4; font-size: 24px; font-weight: black; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(255,145,164,0.1);">+</button>
                                 <div style="display: flex; flex-direction: column; align-items: center;">
                                     <span id="bouquet-density-count" style="font-size: 32px; font-weight: 900; color: #3d241c; line-height: 1;">15</span>
                                     <span style="font-size: 12px; color: #ff91a4; font-weight: bold;">وردة</span>
                                 </div>
-                                <button onclick="updateBouquetDensity(-5)" style="background-color: #ffffff; border: 2px solid #ff91a4; width: 45px; height: 45px; border-radius: 50%; color: #ff91a4; font-size: 24px; font-weight: black; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(255,145,164,0.1);">-</button>
+                                <button type="button" onclick="window.ProductUI.modFlowerQty(-1)" style="background-color: #ffffff; border: 2px solid #ff91a4; width: 45px; height: 45px; border-radius: 50%; color: #ff91a4; font-size: 24px; font-weight: black; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(255,145,164,0.1);">-</button>
                             </div>
                         </div>
 
                         <div style="display: flex; justify-content: space-between; margin-top: 35px;">
-                            <button class="btn-outline" onclick="prevJourneyStep(1)" style="padding: 12px 30px; border-radius: 50px; cursor: pointer;"><i data-lucide="arrow-right" class="w-5 h-5 inline ml-2"></i> السابق</button>
-                            <button class="btn-solid" onclick="nextJourneyStep(3)" style="padding: 12px 35px; border-radius: 50px; cursor: pointer;">التالي <i data-lucide="arrow-left" class="w-5 h-5 inline mr-2"></i></button>
+                            <button type="button" class="btn-outline" onclick="window.ProductUI.prevJourneyStep(1)" style="padding: 12px 30px; border-radius: 50px; cursor: pointer;"><i data-lucide="arrow-right" class="w-5 h-5 inline ml-2"></i> السابق</button>
+                            <button type="button" class="btn-solid" onclick="window.ProductUI.nextJourneyStep(3)" style="padding: 12px 35px; border-radius: 50px; cursor: pointer;">التالي <i data-lucide="arrow-left" class="w-5 h-5 inline mr-2"></i></button>
                         </div>
                     </div>
 
@@ -385,60 +373,85 @@
                         <p class="font-bold text-brand-brown/70 mb-6 text-sm">إضافات اختيارية لتطوير شكل وقيمة الهدية.</p>
                         
                         <div class="premium-addons space-y-4">
-                            <div class="addon-item bg-white border-2 border-brand-pink/20 p-4 rounded-xl hover:border-brand-pink transition-colors">
+                            <div class="addon-item bg-white border-2 border-brand-pink/20 p-6 rounded-2xl hover:border-brand-pink transition-all">
                                 <label style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; width: 100%;">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink"><i data-lucide="gift" class="w-5 h-5"></i></div>
                                         <span class="font-bold text-brand-brown text-lg">إضافة شوكولاتة فاخرة</span>
                                     </div>
-                                    <input type="checkbox" id="addon-chocolate" onchange="toggleAddonLayer('chocolate', this.checked)" style="accent-color: #ff91a4; transform: scale(1.4); cursor: pointer;">
+                                    <input type="checkbox" id="addon-chocolate" onchange="window.ProductUI.toggleFlowerChocolate(this.checked)" style="accent-color: #ff91a4; transform: scale(1.4); cursor: pointer;">
                                 </label>
+                                <div id="chocolate-details-inputs" class="hidden mt-4 pt-4 border-t border-dashed border-brand-pink/30 space-y-4 animate-fade">
+                                    <div>
+                                        <label class="block text-sm font-bold text-brand-brown mb-2">الميزانية المخصصة للشوكولاتة (ج.م):</label>
+                                        <input type="number" id="flower-chocolate-budget" class="w-full" placeholder="أدخل قيمة الشوكولاتة..." min="0" oninput="window.ProductUI.updateFlowerPrices()">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-bold text-brand-brown mb-2">أنواع الشوكولاتة المفضلة للعميل:</label>
+                                        <input type="text" id="flower-chocolate-pref" class="w-full" placeholder="مثال: شوكولاتة داكنة، مكسرات، قطع متنوعة...">
+                                    </div>
+                                </div>
                             </div>
                             
-                            <div class="addon-item bg-white border-2 border-brand-pink/20 p-4 rounded-xl hover:border-brand-pink transition-colors">
+                            <div class="addon-item bg-white border-2 border-brand-pink/20 p-6 rounded-2xl hover:border-brand-pink transition-all">
                                 <label style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; width: 100%;">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink"><i data-lucide="banknote" class="w-5 h-5"></i></div>
                                         <span class="font-bold text-brand-brown text-lg">تغليف مبالغ نقدية</span>
                                     </div>
-                                    <input type="checkbox" id="addon-cash" onchange="toggleAddonLayer('cash', this.checked); document.getElementById('cash-amount-input').style.display = this.checked ? 'block' : 'none';" style="accent-color: #ff91a4; transform: scale(1.4); cursor: pointer;">
+                                    <input type="checkbox" id="addon-cash" onchange="window.ProductUI.toggleFlowerGiftCash(this.checked)" style="accent-color: #ff91a4; transform: scale(1.4); cursor: pointer;">
                                 </label>
-                                <div id="cash-amount-input" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,145,164,0.3);">
-                                    <input type="number" placeholder="أدخل القيمة النقدية المطلوب تنسيقها بالجنيه..." class="w-full">
+                                <div id="cash-amount-input" class="hidden mt-4 pt-4 border-t border-dashed border-brand-pink/30 animate-fade">
+                                    <label class="block text-sm font-bold text-brand-brown mb-2">القيمة النقدية المراد إدراجها (ج.م):</label>
+                                    <input type="number" id="flower-cash-amount" placeholder="أدخل القيمة النقدية المطلوب تنسيقها بالجنيه..." class="w-full" min="0" oninput="window.ProductUI.updateFlowerPrices()">
                                 </div>
                             </div>
 
-                            <div class="addon-item bg-white border-2 border-brand-pink/20 p-4 rounded-xl hover:border-brand-pink transition-colors">
-                                <label style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; width: 100%;">
+                            <div class="addon-item bg-white border-2 border-brand-pink/20 p-6 rounded-2xl hover:border-brand-pink transition-all">
+                                <label style="display: flex; justify-between; align-items: center; cursor: pointer; width: 100%;">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink"><i data-lucide="mail" class="w-5 h-5"></i></div>
                                         <span class="font-bold text-brand-brown text-lg">إرفاق كارت إهداء مخطوط</span>
                                     </div>
-                                    <input type="checkbox" id="addon-card" onchange="toggleAddonLayer('card', this.checked)" style="accent-color: #ff91a4; transform: scale(1.4); cursor: pointer;">
+                                    <input type="checkbox" id="addon-card" onchange="window.ProductUI.toggleFlowerGift(this.checked, this)" style="accent-color: #ff91a4; transform: scale(1.4); cursor: pointer;">
                                 </label>
+                                <div id="flower-gift-area" class="hidden mt-4 pt-4 border-t border-dashed border-brand-pink/30 animate-fade">
+                                    <label class="block text-sm font-bold text-brand-brown mb-2">رسالة الكارت:</label>
+                                    <input type="text" id="flower-gift-text" placeholder="اكتب محتوى الرسالة المرفقة..." class="w-full" oninput="window.ProductUI.updateVisualSimulator()">
+                                </div>
                             </div>
 
-                            <div class="addon-item bg-white border-2 border-brand-pink/20 p-4 rounded-xl hover:border-brand-pink transition-colors">
+                            <div class="addon-item bg-white border-2 border-brand-pink/20 p-6 rounded-2xl hover:border-brand-pink transition-all">
                                 <label style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; width: 100%;">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink"><i data-lucide="camera" class="w-5 h-5"></i></div>
                                         <span class="font-bold text-brand-brown text-lg">تخليد الذكريات (صور)</span>
                                     </div>
-                                    <input type="checkbox" id="addon-photo" onchange="document.getElementById('photo-upload-area').style.display = this.checked ? 'block' : 'none';" style="accent-color: #ff91a4; transform: scale(1.4); cursor: pointer;">
+                                    <input type="checkbox" id="addon-photo" onchange="window.ProductUI.toggleFlowerPhotoAddon(this.checked)" style="accent-color: #ff91a4; transform: scale(1.4); cursor: pointer;">
                                 </label>
-                                <div id="photo-upload-area" style="display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed rgba(255,145,164,0.3);">
-                                    <div class="upload-zone !py-6 group" onclick="document.getElementById('custom-photo-input').click()">
-                                        <input type="file" id="custom-photo-input" accept="image/*" class="hidden" onchange="handlePhotoUpload(event)">
-                                        <i data-lucide="upload-cloud" class="w-8 h-8 mx-auto text-brand-pink mb-2 group-hover:-translate-y-1 transition-transform"></i>
-                                        <span class="font-bold text-brand-brown text-sm block">اضغط لرفع الصورة التذكارية</span>
+                                <div id="photo-upload-area" class="hidden mt-4 pt-4 border-t border-dashed border-brand-pink/30 space-y-4 animate-fade">
+                                    <div class="flex items-center justify-between bg-brand-pinkLight/50 p-3 rounded-xl border border-brand-pink/20">
+                                        <span class="font-bold text-sm text-brand-brown">عدد الصور المرافقة:</span>
+                                        <div class="flex items-center gap-3 bg-white border border-brand-pink/30 rounded-full px-2 py-1">
+                                            <button type="button" onclick="window.ProductUI.modFlowerPhotos(1)" class="w-6 h-6 rounded-full bg-brand-pinkLight text-brand-pink font-black text-sm flex items-center justify-center">+</button>
+                                            <span id="flower-photo-count" class="font-black text-brand-brown min-w-[20px] text-center text-sm">0</span>
+                                            <button type="button" onclick="window.ProductUI.modFlowerPhotos(-1)" class="w-6 h-6 rounded-full bg-brand-pinkLight text-brand-pink font-black text-sm flex items-center justify-center">-</button>
+                                        </div>
+                                    </div>
+                                    <div id="flower-photo-upload-container" class="hidden">
+                                        <div class="upload-zone !py-6 group" onclick="document.getElementById('custom-photo-input').click()">
+                                            <input type="file" id="custom-photo-input" accept="image/*" class="hidden" multiple onchange="window.ProductUI.handleFlowerPhotos(this)">
+                                            <i data-lucide="upload-cloud" class="w-8 h-8 mx-auto text-brand-pink mb-2 group-hover:-translate-y-1 transition-transform"></i>
+                                            <span id="flower-photos-status" class="font-bold text-brand-brown text-sm block">اضغط لرفع الصورة التذكارية</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div style="display: flex; justify-content: space-between; margin-top: 35px;">
-                            <button class="btn-outline" onclick="prevJourneyStep(2)" style="padding: 12px 30px; border-radius: 50px; cursor: pointer;"><i data-lucide="arrow-right" class="w-5 h-5 inline ml-2"></i> السابق</button>
-                            <button class="btn-solid" onclick="nextJourneyStep(4)" style="padding: 12px 35px; border-radius: 50px; cursor: pointer;">التالي <i data-lucide="arrow-left" class="w-5 h-5 inline mr-2"></i></button>
+                            <button type="button" class="btn-outline" onclick="window.ProductUI.prevJourneyStep(2)" style="padding: 12px 30px; border-radius: 50px; cursor: pointer;"><i data-lucide="arrow-right" class="w-5 h-5 inline ml-2"></i> السابق</button>
+                            <button type="button" class="btn-solid" onclick="window.ProductUI.nextJourneyStep(4)" style="padding: 12px 35px; border-radius: 50px; cursor: pointer;">التالي <i data-lucide="arrow-left" class="w-5 h-5 inline mr-2"></i></button>
                         </div>
                     </div>
 
@@ -448,13 +461,13 @@
                         
                         <div class="bg-brand-pinkLight border-2 border-brand-pink/30 p-8 rounded-[30px] text-center shadow-inner relative overflow-hidden mb-8">
                             <i data-lucide="gem" class="absolute -right-8 -bottom-8 w-32 h-32 text-brand-pink opacity-5"></i>
-                            <span class="text-brand-brown font-black text-lg block mb-2">التكلفة الإجمالية المبدئية:</span>
+                            <span class="text-brand-brown font-black text-lg block mb-2">التكلفة الإجمالية الحالية للتنسيق:</span>
                             <span id="live-total-price" class="text-5xl font-black text-brand-pink block relative z-10">400 ج.م</span>
                         </div>
 
                         <div style="display: flex; justify-content: space-between; margin-top: 25px; align-items: center; gap: 15px;">
-                            <button class="btn-outline" onclick="prevJourneyStep(3)" style="padding: 16px 25px; border-radius: 50px; cursor: pointer; flex-shrink: 0;"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
-                            <button class="btn-solid flex-grow" onclick="window.ProductUI.addCustomFlowerToCart()" style="padding: 16px; border-radius: 50px; font-size: 20px; cursor: pointer; width: 100%;">
+                            <button type="button" class="btn-outline" onclick="window.ProductUI.prevJourneyStep(3)" style="padding: 16px 25px; border-radius: 50px; cursor: pointer; flex-shrink: 0;"><i data-lucide="edit-3" class="w-5 h-5"></i></button>
+                            <button type="button" class="btn-solid flex-grow" onclick="window.ProductUI.addCustomFlowerToCart()" style="padding: 16px; border-radius: 50px; font-size: 20px; cursor: pointer; width: 100%;">
                                 إضافة للسلة <i data-lucide="shopping-basket" class="w-6 h-6 inline mr-2"></i>
                             </button>
                         </div>
@@ -617,17 +630,14 @@
                 <p class="text-lg font-bold text-brand-brown/70 mb-16 max-w-3xl mx-auto leading-relaxed px-6 text-balance">
                     رأيك بيساعدنا نحافظ على مستوى الجودة اللي بنقدمه.
                 </p>
-                
                 <div id="reviews-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                     <div class="col-span-full py-10 w-full font-bold text-brand-brown/40 italic">جاري عرض التقييمات...</div>
                 </div>
-
                 <div class="flex items-center justify-center gap-6 mb-16" id="reviews-pagination" style="display: none;">
                     <button onclick="window.ProductUI.changeReviewPage(-1)" class="w-12 h-12 rounded-full bg-white border-2 border-brand-pink flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
                     <div id="reviews-dots" class="flex gap-3"></div>
                     <button onclick="window.ProductUI.changeReviewPage(1)" class="w-12 h-12 rounded-full bg-white border-2 border-brand-pink flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors cursor-pointer shadow-sm"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
                 </div>
-
                 <div class="mt-10 flex flex-col items-center gap-6 text-center border-t border-brand-pink/20 pt-12 max-w-2xl mx-auto">
                     <button onclick="window.ProductUI.openReviewModal()" class="btn-solid px-12 py-4 shadow-lg text-lg rounded-full cursor-pointer">إضافة تقييم</button>
                 </div>
@@ -641,26 +651,12 @@
                 </div>
                 <h3 class="text-3xl md:text-5xl font-black text-brand-brown tracking-tighter mb-4">منتجات بنرشحها لك</h3>
             </div>
-            
             <div class="relative group max-w-6xl mx-auto">
-                <div id="dynamic-suggestions-slider" class="flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-8 pb-8 px-4 pt-2">
-                </div>
+                <div id="dynamic-suggestions-slider" class="flex overflow-x-auto snap-x snap-mandatory hide-scroll gap-8 pb-8 px-4 pt-2"></div>
             </div>
         </section>
 
     </main>
-
-    <div id="bose-sticky-action-bar" class="bose-sticky-bar hidden animate-fade">
-        <div class="container mx-auto max-w-4xl flex items-center justify-between gap-6">
-            <div class="text-right">
-                <p class="text-xs font-black text-brand-pink uppercase tracking-widest">التكلفة الإجمالية الحالية</p>
-                <div id="sticky-bar-price" class="text-3xl md:text-4xl font-black text-brand-brown tracking-tighter">400 ج.م</div>
-            </div>
-            <button id="sticky-bar-add-btn" onclick="window.ProductUI.addCustomFlowerToCart()" class="btn-solid py-4 px-10 text-xl rounded-full shadow-md flex-grow md:flex-grow-0">
-                إضافة للسلة <i data-lucide="shopping-basket" class="w-5 h-5 mr-2 inline"></i>
-            </button>
-        </div>
-    </div>
 
     <footer class="bg-white pt-20 pb-8 border-t-4 border-brand-pink">
         <div class="container mx-auto px-4 md:px-8 max-w-6xl text-center">
@@ -715,7 +711,6 @@
                     <p class="text-xs text-brand-pink mb-1 uppercase tracking-widest font-black">{CAT_NAME}</p>
                     <h3 class="font-black text-2xl text-brand-brown mb-3 leading-tight">{PRODUCT_NAME}</h3>
                     <p class="text-sm text-brand-brown opacity-80 font-bold mb-6 leading-relaxed whitespace-normal flex-grow">{PRODUCT_DESC}</p>
-                    
                     <div class="border-t border-brand-pink/10 pt-4 mt-auto">
                         <div class="flex items-center justify-between mb-5">
                             <span class="font-black text-3xl text-brand-pink">{PRODUCT_PRICE} ج.م</span>
@@ -742,7 +737,6 @@
                     <p class="text-sm text-brand-pink mb-2 uppercase tracking-widest font-black">{CAT_NAME}</p>
                     <h3 class="font-black text-3xl md:text-4xl text-brand-brown mb-4 leading-tight">{PRODUCT_NAME}</h3>
                     <p class="text-base md:text-lg text-brand-brown opacity-80 font-bold mb-8 leading-relaxed whitespace-normal">{PRODUCT_DESC}</p>
-                    
                     <div class="mt-auto border-t border-brand-pink/10 pt-6">
                         <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
                             <span class="font-black text-4xl text-brand-pink">{PRODUCT_PRICE} ج.م</span>
@@ -761,100 +755,5 @@
 
     <script type="module" src="unified-engine.js"></script>
     <script src="product-logic.js" defer></script>
-    
-    <script>
-        // إعدادات التحكم برحلة الاستمارة البصرية للورد
-        function nextJourneyStep(step) {
-            document.querySelectorAll('.journey-step').forEach(el => el.style.display = 'none');
-            document.getElementById('step-' + step).style.display = 'block';
-            document.querySelectorAll('.step-dot').forEach(el => {
-                let s = parseInt(el.getAttribute('data-step'));
-                if(s <= step) {
-                    el.classList.add('active');
-                    el.style.backgroundColor = '#ff91a4';
-                    el.style.color = '#fff';
-                    el.style.borderColor = '#ff91a4';
-                } else {
-                    el.classList.remove('active');
-                    el.style.backgroundColor = '#fce4e8';
-                    el.style.color = '#ff91a4';
-                }
-            });
-            if(window.lucide) window.lucide.createIcons();
-        }
-
-        function prevJourneyStep(step) {
-            nextJourneyStep(step);
-        }
-
-        function updateBouquetDensity(change) {
-            let el = document.getElementById('bouquet-density-count');
-            let current = parseInt(el.innerText);
-            let newVal = Math.max(5, current + change); // أقل كمية 5 وردات
-            el.innerText = newVal;
-            
-            // تحديث مبدئي للسعر لحين ربطه بالمحرك الأساسي
-            let basePrice = 250;
-            let currentPrice = basePrice + (newVal * 10);
-            document.getElementById('live-total-price').innerText = currentPrice + ' ج.م';
-        }
-
-        function toggleAddonLayer(addon, isChecked) {
-            let layer = document.getElementById('layer-' + addon);
-            if(layer) {
-                layer.style.opacity = isChecked ? '1' : '0';
-            }
-        }
-
-        function handlePhotoUpload(event) {
-            let file = event.target.files[0];
-            if(file) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    let layer = document.getElementById('layer-custom-photo');
-                    let img = document.getElementById('custom-photo-render');
-                    img.src = e.target.result;
-                    img.style.display = 'block';
-                    layer.style.opacity = '1';
-                };
-                reader.readAsDataURL(file);
-            } else {
-                document.getElementById('layer-custom-photo').style.opacity = '0';
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.bose-btn-option').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    let parent = this.parentElement;
-                    parent.querySelectorAll('.bose-btn-option').forEach(b => {
-                        b.classList.remove('active');
-                        b.style.backgroundColor = '#ffffff';
-                        b.style.color = '#ff91a4';
-                        b.style.borderColor = 'rgba(255,145,164,0.3)';
-                    });
-                    this.classList.add('active');
-                    this.style.backgroundColor = '#ff91a4';
-                    this.style.color = '#ffffff';
-                    this.style.borderColor = '#ff91a4';
-                });
-            });
-
-            document.querySelectorAll('.color-circle').forEach(circle => {
-                circle.addEventListener('click', function() {
-                    let parent = this.parentElement;
-                    parent.querySelectorAll('.color-circle').forEach(c => {
-                        c.classList.remove('active');
-                        c.style.borderWidth = '2px';
-                        c.style.borderColor = 'rgba(255,145,164,0.3)';
-                    });
-                    this.classList.add('active');
-                    this.style.borderWidth = '3px';
-                    this.style.borderColor = '#ff91a4';
-                });
-            });
-        });
-    </script>
 </body>
 </html>
-
