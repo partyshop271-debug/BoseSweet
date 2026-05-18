@@ -99,10 +99,12 @@
 
         .btn-solid { background-color: var(--bose-pink) !important; color: var(--bose-bg) !important; border: none; border-radius: 20px; padding: 22px 40px; font-weight: 900; font-size: 1.3rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 14px; width: 100%; box-shadow: 0 10px 30px -5px rgba(255, 145, 164, 0.3); }
         .btn-solid:hover { background-color: var(--bose-text) !important; color: var(--bose-pink) !important; transform: translateY(-3px); box-shadow: 0 15px 35px -5px rgba(255, 145, 164, 0.4); }
+        .btn-solid:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
         
         .btn-action { background-color: var(--bose-surface) !important; border: 2px solid var(--bose-border) !important; color: var(--bose-text) !important; border-radius: 16px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; flex-shrink: 0; }
         .btn-action:hover { background-color: var(--bose-pink) !important; color: var(--bose-bg) !important; border-color: var(--bose-pink) !important; transform: translateY(-3px); }
         .btn-action.danger:hover { background-color: #ef4444 !important; color: var(--bose-text) !important; border-color: #ef4444 !important; }
+        .btn-action:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; hover: border-color: var(--bose-border) !important; }
 
         .admin-toast { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); background: var(--bose-surface) !important; border: 2px solid var(--bose-pink) !important; color: var(--bose-text) !important; padding: 20px 48px; border-radius: 50px; z-index: 10000; font-weight: 900; font-size: 1.25rem; display: none; align-items: center; gap: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
         .admin-toast.active { display: flex; animation: toastIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -135,7 +137,7 @@
 <body>
 
     <div id="admin-toast" class="admin-toast">
-        <i data-lucide="check-circle" class="w-8 h-8 text-brand-pink"></i>
+        <i data-lucide="check-circle" class="w-8 h-8 text-brand-pink shrink-0"></i>
         <span id="toast-msg">تم التنفيذ بنجاح</span>
     </div>
 
@@ -214,7 +216,7 @@
                             <i data-lucide="folder-open" class="text-brand-pink w-10 h-10"></i> 
                             إدارة قسم: <span id="current-filtered-cat-title" class="text-brand-pink"></span>
                         </h3>
-                        <p class="text-xl text-brand-textMuted font-bold">أنتِ الآن تديرين هذا القسم بمعزل تام عن باقي أقسام الموقع.</p>
+                        <p class="text-xl text-brand-textMuted font-bold">يتم إدارة هذا القسم بمعزل تام عن باقي أقسام الموقع.</p>
                     </div>
                     <button onclick="openIsolatedEditor()" class="bg-brand-surface border-2 border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-black text-xl py-5 px-10 rounded-2xl transition-all flex items-center gap-3 shadow-xl">
                         <i data-lucide="plus" class="w-7 h-7"></i> إضافة منتج جديد لهذا القسم
@@ -399,7 +401,7 @@
                 </div>
 
                 <div class="pt-8 mb-20">
-                    <button onclick="saveProduct()" class="btn-solid py-8 text-3xl w-full shadow-2xl hover:shadow-brand-pink/40 rounded-3xl">
+                    <button id="btn-save-product" onclick="saveProduct()" class="btn-solid py-8 text-3xl w-full shadow-2xl hover:shadow-brand-pink/40 rounded-3xl">
                         <i data-lucide="check-circle" class="w-10 h-10"></i> اعتماد التحديثات وإرسالها للسحابة فوراً
                     </button>
                 </div>
@@ -489,49 +491,63 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
+        // التحديث الجذري والسيادي لدالة الإشعارات لتفادي التعارض البصري
         window.showToast = function(msg, type="success") {
             const toast = document.getElementById('admin-toast');
             document.getElementById('toast-msg').innerText = msg;
             
-            const icon = toast.querySelector('i');
+            // 1. مسح الأيقونة القديمة تماماً لتنظيف البيئة
+            const oldIcon = toast.querySelector('i, svg');
+            if (oldIcon) oldIcon.remove();
+
+            // 2. بناء أيقونة جديدة ونظيفة تتناسب مع نوع الإشعار
+            let iconHtml = '';
             if(type === 'error') {
                 toast.style.borderColor = '#ef4444';
-                icon.setAttribute('data-lucide', 'alert-circle');
-                icon.className = "w-8 h-8 text-red-400 shrink-0";
+                iconHtml = '<i data-lucide="alert-circle" class="w-8 h-8 text-red-400 shrink-0"></i>';
             } else if (type === 'info') {
                 toast.style.borderColor = '#3b82f6';
-                icon.setAttribute('data-lucide', 'info');
-                icon.className = "w-8 h-8 text-blue-400 shrink-0";
+                iconHtml = '<i data-lucide="info" class="w-8 h-8 text-blue-400 shrink-0"></i>';
             } else {
                 toast.style.borderColor = 'var(--bose-pink)';
-                icon.setAttribute('data-lucide', 'check-circle');
-                icon.className = "w-8 h-8 text-brand-pink shrink-0";
+                iconHtml = '<i data-lucide="check-circle" class="w-8 h-8 text-brand-pink shrink-0"></i>';
             }
+
+            // 3. حقن الأيقونة وتفعيلها
+            toast.insertAdjacentHTML('afterbegin', iconHtml);
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
-            toast.classList.remove('active'); void toast.offsetWidth; toast.classList.add('active');
-            setTimeout(() => toast.classList.remove('active'), 4000);
+            // 4. هندسة حركة الظهور والإخفاء بشكل مستقر
+            toast.classList.remove('active'); 
+            void toast.offsetWidth; // تفريغ الذاكرة المؤقتة للحركة
+            toast.classList.add('active');
+            
+            if(window.toastTimer) clearTimeout(window.toastTimer);
+            window.toastTimer = setTimeout(() => toast.classList.remove('active'), 4000);
         };
 
+        // تطوير وتحصين دالة الرفع السحابي لضمان استقرار المركز الإداري
         window.uploadToCloudinary = async function(fileInput, urlInputId, previewId, placeholderId) {
             const file = fileInput.files[0];
             if (!file) return;
 
             const btn = fileInput.parentElement.querySelector('button');
             const originalBtnHtml = btn ? btn.innerHTML : 'رفع';
-            
-            if (btn) {
-                btn.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i> <span class="font-black text-xl">جاري الرفع...</span>';
-                btn.disabled = true;
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-            }
-            showToast("جاري المعالجة والرفع للسحابة...", "info");
 
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-
+            // إدخال دورة العمل بالكامل داخل نظام الحماية (try) لتفادي أي تعليق
             try {
+                if (btn) {
+                    btn.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i> <span class="font-black text-xl">جاري الرفع...</span>';
+                    btn.disabled = true;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+                
+                showToast("جاري المعالجة والرفع للسحابة...", "info");
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
                 const response = await fetch(CLOUDINARY_URL, { method: 'POST', body: formData });
                 const data = await response.json();
                 
@@ -539,11 +555,18 @@
                     document.getElementById(urlInputId).value = data.secure_url;
                     window.previewImage(previewId, placeholderId, data.secure_url);
                     showToast("تم اعتماد الصورة بنجاح.");
-                } else throw new Error("No URL");
+                } else {
+                    throw new Error("لم يتم إرجاع رابط سليم من السحابة");
+                }
             } catch (error) {
-                showToast("عائق تقني أثناء الرفع.", "error");
+                console.error("عائق تقني مفصل:", error);
+                showToast("عائق تقني أثناء الرفع. يرجى مراجعة الاتصال.", "error");
             } finally {
-                if (btn) { btn.innerHTML = originalBtnHtml; btn.disabled = false; }
+                // أمر سيادي بإعادة الزرار لحالته الطبيعية مهما كانت النتيجة
+                if (btn) { 
+                    btn.innerHTML = originalBtnHtml; 
+                    btn.disabled = false; 
+                }
                 if (typeof lucide !== 'undefined') lucide.createIcons();
                 fileInput.value = ''; 
             }
@@ -608,7 +631,7 @@
                 grid.innerHTML = `
                     <div class="col-span-full text-center py-32 text-brand-textMuted font-bold border-2 border-dashed border-brand-border rounded-3xl">
                         <i data-lucide="inbox" class="w-20 h-20 mx-auto mb-6 opacity-30"></i>
-                        <span class="text-2xl block">القسم فارغ حالياً. يمكنكِ إضافة منتجات جديدة الآن.</span>
+                        <span class="text-2xl block">القسم فارغ حالياً. يمكن إضافة منتجات جديدة الآن.</span>
                     </div>`;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
                 return;
@@ -648,7 +671,7 @@
                                 <button onclick="editProduct('${pJson}')" class="btn-action flex-1 py-4 h-auto rounded-2xl bg-[#0c0709] hover:bg-brand-pink" title="فتح غرفة العمليات والتعديل">
                                     <i data-lucide="edit-3" class="w-8 h-8"></i>
                                 </button>
-                                <button onclick="deleteProduct('${p.id}', '${p.name}')" class="btn-action danger flex-none w-16 h-auto py-4 rounded-2xl" title="حذف نهائي">
+                                <button onclick="deleteProduct('${p.id}', '${p.name}', this)" class="btn-action danger flex-none w-16 h-auto py-4 rounded-2xl" title="حذف نهائي">
                                     <i data-lucide="trash-2" class="w-8 h-8"></i>
                                 </button>
                             </div>
@@ -762,21 +785,49 @@
             switchSection('product-editor');
         };
 
-        window.deleteProduct = async function(id, name) {
+        // تحصين دالة الحذف وتغليفها بمنظومة Try/Catch كاملة لتأمين الاستقرار
+        window.deleteProduct = async function(id, name, btnElement) {
             if(!window.db) return;
-            if(confirm(`قرار سيادي قاطع: هل أنتِ متأكدة من إزالة [${name}] نهائياً؟`)) {
+            
+            if(confirm(`قرار سيادي قاطع: هل التأكيد على إزالة [${name}] نهائياً؟`)) {
+                const originalHtml = btnElement ? btnElement.innerHTML : '';
                 try {
+                    if(btnElement) {
+                        btnElement.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i>';
+                        btnElement.disabled = true;
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+                    
                     await window.db.collection('catalog').doc(id).delete();
                     await window.db.collection('system').doc('syncFlag').set({ forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                    showToast(`تم مسح المنتج نهائياً.`);
+                    
+                    showToast(`تم مسح المنتج نهائياً بنجاح.`);
                     await loadCatalog(); 
                     renderCatalogGridForSection(selectedCategory);
-                } catch(e) { showToast("عائق فني في السحابة.", "error"); }
+                    
+                } catch(e) { 
+                    console.error("عطل فني مفصل أثناء الحذف:", e);
+                    showToast("عائق فني في السحابة. يرجى المحاولة لاحقاً.", "error"); 
+                } finally {
+                    if(btnElement) {
+                        btnElement.innerHTML = originalHtml;
+                        btnElement.disabled = false;
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+                }
             }
         };
 
+        // تحصين دالة الحفظ بالكامل لضمان عدم حدوث تكرار للبيانات وحماية الاتصال
         window.saveProduct = async function() {
-            if(!window.db) return;
+            if(!window.db) {
+                showToast("عائق في الاتصال بالسحابة. يرجى التأكد من استقرار الشبكة.", "error");
+                return;
+            }
+            
+            const btnSave = document.getElementById('btn-save-product');
+            const originalBtnHtml = btnSave ? btnSave.innerHTML : 'اعتماد التحديثات وإرسالها للسحابة فوراً';
+
             const idInput = document.getElementById('prod-id').value;
             const name = document.getElementById('prod-name').value.trim();
             const category = document.getElementById('prod-cat').value.trim(); 
@@ -804,6 +855,12 @@
             };
 
             try {
+                if(btnSave) {
+                    btnSave.innerHTML = '<i data-lucide="loader-2" class="w-10 h-10 animate-spin"></i> <span class="font-black">جاري المعالجة والاعتماد السحابي...</span>';
+                    btnSave.disabled = true;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+
                 if(idInput) { 
                     await window.db.collection('catalog').doc(idInput).set(productData, { merge: true }); 
                 } else { 
@@ -816,10 +873,20 @@
                 await loadCatalog();
                 renderCatalogGridForSection(category);
                 switchSection('product-list'); 
-            } catch(e) { showToast("عطل اتصالي منع التخزين.", "error"); }
+                
+            } catch(e) { 
+                console.error("عطل فني مفصل أثناء الحفظ:", e);
+                showToast("عطل اتصالي منع التخزين. يرجى المحاولة لاحقاً.", "error"); 
+            } finally {
+                if(btnSave) {
+                    btnSave.innerHTML = originalBtnHtml;
+                    btnSave.disabled = false;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                }
+            }
         };
 
-        // دالة السحب من الداتابيز المخصصة للطلبات (تم بناء الدالة بالكامل وحقن كود الفحص التفصيلي بداخلها)
+        // دالة السحب من الداتابيز المخصصة للطلبات (محمية ومستقرة)
         window.fetchAdminOrders = async function() {
             if(!window.db) return;
             try {
@@ -876,3 +943,4 @@
     </script>
 </body>
 </html>
+
