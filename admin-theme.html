@@ -139,8 +139,24 @@
 
         .main-content { margin-right: 340px; min-h: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
         
-        .admin-section { display: none; animation: fadeIn 0.4s ease forwards; }
-        .admin-section.active { display: block; }
+        /* 🛡️ نظام التبويبات (Tabs) لإنهاء التمرير اللانهائي */
+        .admin-tabs-nav {
+            display: flex; gap: 12px; background-color: var(--bose-surface); padding: 12px; border-radius: 20px; border: 2px solid var(--bose-border); margin-bottom: 30px; overflow-x: auto;
+            -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .admin-tabs-nav::-webkit-scrollbar { display: none; }
+        .admin-tab-btn {
+            background: transparent; color: var(--bose-muted); border: 2px solid transparent; padding: 14px 28px; border-radius: 14px; font-weight: 900; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; font-size: 1.1rem; flex-shrink: 0;
+        }
+        .admin-tab-btn:hover { color: var(--bose-text); background: rgba(255, 145, 164, 0.1); }
+        .admin-tab-btn.active {
+            background: var(--bose-pink); color: var(--bose-bg); border-color: var(--bose-pink); box-shadow: 0 4px 15px rgba(255, 145, 164, 0.3);
+        }
+        .admin-tab-content { display: none; animation: fadeIn 0.4s ease forwards; }
+        .admin-tab-content.active-tab { display: block; }
+        
+        /* تعديل الأقسام القديمة لتخضع لنظام التبويبات الجديد */
+        .admin-section { display: block !important; margin-bottom: 40px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* تباين كامل للبطاقات وحقول الإدخال */
@@ -426,7 +442,7 @@
         <header class="bg-[#2a1b1f] border-b border-brand-border sticky top-0 z-40 px-8 py-5 flex items-center justify-between shadow-lg">
             <div class="flex items-center gap-5">
                 <button onclick="toggleSidebar()" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
-                <h2 id="current-section-title" class="text-2xl font-black text-brand-textMain">شاشة الاستقرار والإحصاء</h2>
+                <h2 id="current-section-title" class="text-2xl font-black text-brand-textMain">إدارة المظهر والواجهة</h2>
             </div>
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-3 bg-[#1a1012] px-5 py-2.5 rounded-full border border-brand-border shadow-inner">
@@ -438,117 +454,137 @@
 
         <div class="p-6 md:p-12 max-w-7xl mx-auto w-full">
 
-            <!-- شاشة الاستقرار النظيفة -->
-            <section id="dashboard" class="admin-section active">
-                <div class="admin-card flex flex-col items-center justify-center py-32 border-2 border-dashed border-brand-border bg-transparent shadow-none">
-                    <div class="w-28 h-28 rounded-full bg-[#1a1012] border-2 border-brand-border flex items-center justify-center mb-6 shadow-xl">
-                        <i data-lucide="shield-check" class="w-14 h-14 text-brand-pink"></i>
-                    </div>
-                    <h3 class="text-4xl font-black text-white mb-6 tracking-tight text-center">البيئة الإدارية مستقرة وجاهزة</h3>
-                    <p class="font-bold text-xl text-brand-textMuted text-center max-w-3xl leading-relaxed">
-                        يرجى اختيار الجزء المراد إدارته من القائمة الجانبية. تم تحسين بيئة الألوان لراحة العين، وتوفير أدوات دقيقة بالبيكسل لهندسة وتشكيل الواجهة بالكامل.
-                    </p>
-                </div>
-            </section>
+            <!-- 🛡️ لوحة التحكم العلوية: نظام التبويبات الجديد -->
+            <div class="admin-tabs-nav">
+                <button type="button" class="admin-tab-btn active" onclick="switchAdminTab(event, 'tab-colors')">1. الألوان والهوية</button>
+                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-typography')">2. الخطوط والنصوص</button>
+                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-layout')">3. تخطيط الواجهة</button>
+            </div>
 
-            <!-- محرك البناء الهندسي الدقيق -->
-            <section id="ui-builder" class="admin-section">
-                <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
-                    <div>
-                        <h3 class="text-3xl font-black text-brand-textMain flex items-center gap-3"><i data-lucide="ruler" class="text-brand-pink w-8 h-8"></i> محرك البناء والتحكم بالأبعاد</h3>
-                        <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
-                            صلاحيات سيادية مطلقة. أضف، انسخ، عطل، أو رتب أي قسم من أقسام الموقع بالكامل مع تحديد الأبعاد والسرعات بدقة تامة.
+            <!-- تغليف قسم (الألوان والهوية) -->
+            <div id="tab-colors" class="admin-tab-content active-tab">
+                
+                <!-- إدارة الهيدر واللوجو -->
+                <section id="ui-header" class="admin-section">
+                    <div class="admin-card">
+                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-top" class="text-brand-pink w-8 h-8"></i> إدارة الهيدر واللوجو</h3>
+                        <div class="space-y-8">
+                            <div>
+                                <label class="form-label">الاسم المعروض في أعلى الموقع (اللوجو النصي)</label>
+                                <input type="text" id="header-logo-text" class="form-input" placeholder="حلويات بوسي">
+                                <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يظهر هذا النص في الزاوية العلوية لجميع صفحات المتجر بجوار الماسة الرسمية للعلامة التجارية.</p>
+                            </div>
+                            <button onclick="saveHeaderData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> حفظ إعدادات الهيدر</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- الفوتر والتواصل -->
+                <section id="ui-footer" class="admin-section">
+                    <div class="admin-card">
+                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-bottom" class="text-brand-pink w-8 h-8"></i> الإعدادات الشاملة للفوتر والتواصل</h3>
+                        <div class="space-y-8">
+                            <div>
+                                <label class="form-label text-xl">نبذة تعريفية في ذيل الموقع</label>
+                                <textarea id="footer-desc" class="form-textarea text-lg" placeholder="اكتب نبذة راقية عن جودة وإتقان حلويات بوسي..."></textarea>
+                                <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> تظهر هذه النبذة في أسفل الصفحات لتعكس إرث العلامة التجارية وجودتها العالية.</p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-brand-border">
+                                <div>
+                                    <label class="form-label">رقم الهاتف الرسمي</label>
+                                    <input type="text" id="footer-phone" class="form-input text-left font-black tracking-widest" dir="ltr" placeholder="01xxxxxxxxx">
+                                </div>
+                                <div>
+                                    <label class="form-label">البريد الإلكتروني للطلبات</label>
+                                    <input type="email" id="footer-email" class="form-input text-left" dir="ltr" placeholder="info@bosysweets.com">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="form-label">العنوان الرسمي التفصيلي</label>
+                                    <input type="text" id="footer-address" class="form-input text-lg" placeholder="الكفاح، الفرافرة، الوادي الجديد">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-brand-border bg-[#1a1012] p-8 rounded-2xl border-2">
+                                <div><label class="form-label">رابط صفحة الفيسبوك</label><input type="text" id="footer-fb" class="form-input text-left" dir="ltr"></div>
+                                <div><label class="form-label">رابط حساب الإنستجرام</label><input type="text" id="footer-ig" class="form-input text-left" dir="ltr"></div>
+                                <div><label class="form-label">رابط حساب التيك توك</label><input type="text" id="footer-tiktok" class="form-input text-left" dir="ltr"></div>
+                            </div>
+                            <button onclick="saveFooterData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> اعتماد وتحديث بيانات الفوتر</button>
+                        </div>
+                    </div>
+                </section>
+                
+            </div>
+
+            <!-- تغليف قسم (الخطوط والنصوص) -->
+            <div id="tab-typography" class="admin-tab-content">
+                <!-- الشريط المتحرك -->
+                <section id="ui-ticker" class="admin-section">
+                    <div class="admin-card">
+                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="radio" class="text-brand-pink w-8 h-8"></i> الشريط الإعلاني المتحرك</h3>
+                        <div class="space-y-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div><label class="form-label">رسالة الجذب 1</label><input type="text" id="ticker-1" class="form-input" placeholder="اكتب الجملة هنا..."></div>
+                                <div><label class="form-label">رسالة الجذب 2</label><input type="text" id="ticker-2" class="form-input" placeholder="اكتب الجملة هنا..."></div>
+                                <div><label class="form-label">رسالة الجذب 3</label><input type="text" id="ticker-3" class="form-input"></div>
+                                <div><label class="form-label">رسالة الجذب 4</label><input type="text" id="ticker-4" class="form-input"></div>
+                            </div>
+                            <div class="pt-6 border-t border-brand-border w-full md:w-1/2">
+                                <label class="form-label text-brand-pink">سرعة تحرك الشريط (بالثواني)</label>
+                                <input type="number" id="ticker-speed" class="form-input text-2xl font-black text-center" value="40" min="10" max="120">
+                                <p class="bose-helper-text"><i data-lucide="alert-circle" class="w-5 h-5"></i> العلاقة عكسية: تقليل الرقم (مثال: 20 ثانية) يجعل الحركة أسرع للفت الانتباه بشكل مكثف. زيادة الرقم (مثال: 60 ثانية) تبطئ الحركة لتكون هادئة وسهلة القراءة.</p>
+                            </div>
+                            <button onclick="saveTickerData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> حفظ وتحديث الشريط</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- تغليف قسم (تخطيط الواجهة) -->
+            <div id="tab-layout" class="admin-tab-content">
+                
+                <!-- شاشة الاستقرار النظيفة -->
+                <section id="dashboard" class="admin-section">
+                    <div class="admin-card flex flex-col items-center justify-center py-32 border-2 border-dashed border-brand-border bg-transparent shadow-none">
+                        <div class="w-28 h-28 rounded-full bg-[#1a1012] border-2 border-brand-border flex items-center justify-center mb-6 shadow-xl">
+                            <i data-lucide="shield-check" class="w-14 h-14 text-brand-pink"></i>
+                        </div>
+                        <h3 class="text-4xl font-black text-white mb-6 tracking-tight text-center">البيئة الإدارية مستقرة وجاهزة</h3>
+                        <p class="font-bold text-xl text-brand-textMuted text-center max-w-3xl leading-relaxed">
+                            مرحباً بكِ في المركز المتقدم لإدارة تخطيط الموقع. الأقسام والمكونات أصبحت الآن مرتبة بنظام التبويبات الذكية لتوفير وقتك ولإنهاء أزمة التمرير المستمر.
                         </p>
                     </div>
-                    <button onclick="addBuilderBlock()" class="bg-[#1a1012] border-2 border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#1a1012] font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 whitespace-nowrap text-xl shadow-lg">
-                        <i data-lucide="plus-square" class="w-6 h-6"></i> بناء قسم جديد
-                    </button>
-                </div>
+                </section>
 
-                <!-- مسرح عمليات رسم المكعبات -->
-                <div id="builder-container" class="space-y-8">
-                    <div class="text-center py-20 text-brand-textMuted font-bold text-xl"><i data-lucide="loader-2" class="w-12 h-12 animate-spin mx-auto mb-4 text-brand-pink"></i> جاري استدعاء الهيكل السيادي...</div>
-                </div>
-
-                <div class="mt-12 pt-10 border-t border-brand-border">
-                    <button onclick="saveBuilderLayout()" class="btn-solid py-5 text-xl"><i data-lucide="upload-cloud" class="w-7 h-7"></i> حفظ الهيكل وتطبيق التعديلات للعملاء فوراً</button>
-                </div>
-            </section>
-
-            <!-- إدارة الهيدر واللوجو -->
-            <section id="ui-header" class="admin-section">
-                <div class="admin-card">
-                    <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-top" class="text-brand-pink w-8 h-8"></i> إدارة الهيدر واللوجو</h3>
-                    <div class="space-y-8">
+                <!-- محرك البناء الهندسي الدقيق -->
+                <section id="ui-builder" class="admin-section">
+                    <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
                         <div>
-                            <label class="form-label">الاسم المعروض في أعلى الموقع (اللوجو النصي)</label>
-                            <input type="text" id="header-logo-text" class="form-input" placeholder="حلويات بوسي">
-                            <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يظهر هذا النص في الزاوية العلوية لجميع صفحات المتجر بجوار الماسة الرسمية للعلامة التجارية.</p>
+                            <h3 class="text-3xl font-black text-brand-textMain flex items-center gap-3"><i data-lucide="ruler" class="text-brand-pink w-8 h-8"></i> محرك البناء والتحكم بالأبعاد</h3>
+                            <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
+                                صلاحيات سيادية مطلقة. أضف، انسخ، عطل، أو رتب أي قسم من أقسام الموقع بالكامل مع تحديد الأبعاد والسرعات بدقة تامة.
+                            </p>
                         </div>
-                        <button onclick="saveHeaderData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> حفظ إعدادات الهيدر</button>
+                        <button onclick="addBuilderBlock()" class="bg-[#1a1012] border-2 border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#1a1012] font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 whitespace-nowrap text-xl shadow-lg">
+                            <i data-lucide="plus-square" class="w-6 h-6"></i> بناء قسم جديد
+                        </button>
                     </div>
-                </div>
-            </section>
 
-            <!-- الشريط المتحرك -->
-            <section id="ui-ticker" class="admin-section">
-                <div class="admin-card">
-                    <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="radio" class="text-brand-pink w-8 h-8"></i> الشريط الإعلاني المتحرك</h3>
-                    <div class="space-y-8">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div><label class="form-label">رسالة الجذب 1</label><input type="text" id="ticker-1" class="form-input" placeholder="اكتب الجملة هنا..."></div>
-                            <div><label class="form-label">رسالة الجذب 2</label><input type="text" id="ticker-2" class="form-input" placeholder="اكتب الجملة هنا..."></div>
-                            <div><label class="form-label">رسالة الجذب 3</label><input type="text" id="ticker-3" class="form-input"></div>
-                            <div><label class="form-label">رسالة الجذب 4</label><input type="text" id="ticker-4" class="form-input"></div>
-                        </div>
-                        <div class="pt-6 border-t border-brand-border w-full md:w-1/2">
-                            <label class="form-label text-brand-pink">سرعة تحرك الشريط (بالثواني)</label>
-                            <input type="number" id="ticker-speed" class="form-input text-2xl font-black text-center" value="40" min="10" max="120">
-                            <p class="bose-helper-text"><i data-lucide="alert-circle" class="w-5 h-5"></i> العلاقة عكسية: تقليل الرقم (مثال: 20 ثانية) يجعل الحركة أسرع للفت الانتباه بشكل مكثف. زيادة الرقم (مثال: 60 ثانية) تبطئ الحركة لتكون هادئة وسهلة القراءة.</p>
-                        </div>
-                        <button onclick="saveTickerData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> حفظ وتحديث الشريط</button>
+                    <!-- مسرح عمليات رسم المكعبات -->
+                    <div id="builder-container" class="space-y-8">
+                        <div class="text-center py-20 text-brand-textMuted font-bold text-xl"><i data-lucide="loader-2" class="w-12 h-12 animate-spin mx-auto mb-4 text-brand-pink"></i> جاري استدعاء الهيكل السيادي...</div>
                     </div>
-                </div>
-            </section>
 
-            <!-- الفوتر والتواصل -->
-            <section id="ui-footer" class="admin-section">
-                <div class="admin-card">
-                    <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-bottom" class="text-brand-pink w-8 h-8"></i> الإعدادات الشاملة للفوتر والتواصل</h3>
-                    <div class="space-y-8">
-                        <div>
-                            <label class="form-label text-xl">نبذة تعريفية في ذيل الموقع</label>
-                            <textarea id="footer-desc" class="form-textarea text-lg" placeholder="اكتب نبذة راقية عن جودة وإتقان حلويات بوسي..."></textarea>
-                            <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> تظهر هذه النبذة في أسفل الصفحات لتعكس إرث العلامة التجارية وجودتها العالية.</p>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-brand-border">
-                            <div>
-                                <label class="form-label">رقم الهاتف الرسمي</label>
-                                <input type="text" id="footer-phone" class="form-input text-left font-black tracking-widest" dir="ltr" placeholder="01xxxxxxxxx">
-                            </div>
-                            <div>
-                                <label class="form-label">البريد الإلكتروني للطلبات</label>
-                                <input type="email" id="footer-email" class="form-input text-left" dir="ltr" placeholder="info@bosysweets.com">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="form-label">العنوان الرسمي التفصيلي</label>
-                                <input type="text" id="footer-address" class="form-input text-lg" placeholder="الكفاح، الفرافرة، الوادي الجديد">
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-brand-border bg-[#1a1012] p-8 rounded-2xl border-2">
-                            <div><label class="form-label">رابط صفحة الفيسبوك</label><input type="text" id="footer-fb" class="form-input text-left" dir="ltr"></div>
-                            <div><label class="form-label">رابط حساب الإنستجرام</label><input type="text" id="footer-ig" class="form-input text-left" dir="ltr"></div>
-                            <div><label class="form-label">رابط حساب التيك توك</label><input type="text" id="footer-tiktok" class="form-input text-left" dir="ltr"></div>
-                        </div>
-                        <button onclick="saveFooterData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> اعتماد وتحديث بيانات الفوتر</button>
+                    <div class="mt-12 pt-10 border-t border-brand-border">
+                        <button onclick="saveBuilderLayout()" class="btn-solid py-5 text-xl"><i data-lucide="upload-cloud" class="w-7 h-7"></i> حفظ الهيكل وتطبيق التعديلات للعملاء فوراً</button>
                     </div>
-                </div>
-            </section>
+                </section>
+                
+            </div>
 
         </div>
     </main>
 
-    <!-- المحرك البرمجي للاتصال بقاعدة البيانات -->
+    <!-- المحرك البرمجي للاتصال بقاعدة البيانات وإدارة التبويبات -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -561,7 +597,7 @@
 
         let builderBlocks = [];
 
-        // الهيكل المرجعي الافتراضي الذي يطابق معطيات الموقع الحالية بدقة بالغة
+        // الهيكل المرجعي الافتراضي
         const defaultLayout = [
             { id: 'sec_1', type: 'hero', title: 'عقد من التميز في صناعة الحلويات', subtitle: 'استمتع بمجموعتنا الفاخرة التي نعدها بشغف وإتقان.', isVisible: true },
             { id: 'sec_2', type: 'waterfall', title: 'شلال الصور البصري', waterfallSpeed: 40, isVisible: true },
@@ -580,12 +616,41 @@
             overlay.classList.toggle('active');
         };
 
+        // 🛡️ دالة التبديل الذكية للتبويبات الجديدة (Tabs)
+        window.switchAdminTab = function(event, tabId) {
+            const nav = event.currentTarget.closest('.admin-tabs-nav');
+            if (nav) {
+                nav.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+            }
+            
+            document.querySelectorAll('.admin-tab-content').forEach(tab => tab.classList.remove('active-tab'));
+            const target = document.getElementById(tabId);
+            if(target) target.classList.add('active-tab');
+            
+            lucide.createIcons();
+        };
+
+        // تحديث دالة التوجيه من القائمة الجانبية لتتواصل مع التبويبات
         window.switchSection = function(sectionId, element) {
             document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
             
-            document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
+            // تحديد التبويب (Tab) المرتبط بالقسم المختار لفتحه آلياً
+            let targetTab = 'tab-layout'; 
+            if(sectionId === 'ui-header' || sectionId === 'ui-footer') targetTab = 'tab-colors';
+            else if(sectionId === 'ui-ticker') targetTab = 'tab-typography';
+
+            const tabBtn = document.querySelector(`.admin-tab-btn[onclick*="${targetTab}"]`);
+            if(tabBtn) {
+                tabBtn.click();
+            }
+            
+            // التمرير السلس للقسم الداخلي المطلوب بعد فتح التبويب الخاص به
+            setTimeout(() => {
+                const targetSection = document.getElementById(sectionId);
+                if(targetSection) targetSection.scrollIntoView({behavior: 'smooth', block: 'start'});
+            }, 100);
             
             const titles = { 
                 'dashboard': 'شاشة الاستقرار والإحصاء', 
@@ -594,9 +659,8 @@
                 'ui-ticker': 'إدارة الشريط الإعلاني المتحرك', 
                 'ui-footer': 'الإعدادات الشاملة للفوتر' 
             };
-            document.getElementById('current-section-title').innerText = titles[sectionId];
+            document.getElementById('current-section-title').innerText = titles[sectionId] || '';
             if(window.innerWidth <= 1024) toggleSidebar();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.showToast = function(msg, type="success") {
@@ -635,7 +699,6 @@
                 const isHidden = !block.isVisible;
                 let specificSettingsHTML = '';
                 
-                // 1. إعدادات الشلال البصري المستقلة
                 if (block.type === 'waterfall') {
                     specificSettingsHTML = `
                         <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
@@ -653,7 +716,6 @@
                         </div>
                     `;
                 }
-                // 2. إعدادات كروت المنتجات بالأبعاد المطلقة
                 else if (block.type === 'slider' || block.type === 'grid') {
                     specificSettingsHTML = `
                         <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
@@ -709,7 +771,6 @@
                         </div>
                     `;
                 } 
-                // 3. إعدادات قسم العرض الترويجي (الورد والمناسبات)
                 else if (block.type === 'featured_promo') {
                     specificSettingsHTML = `
                         <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
@@ -735,7 +796,6 @@
                         </div>
                     `;
                 } 
-                // 4. إعدادات أبعاد كروت الأقسام والتصنيفات
                 else if (block.type === 'categories_slider') {
                     specificSettingsHTML = `
                         <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
@@ -764,7 +824,6 @@
                         </div>
                     `;
                 } 
-                // 5. أقسام النصوص والمقالات والافتتاحية
                 else if (block.type === 'hero' || block.type === 'stats') {
                     specificSettingsHTML = `
                         <div class="mt-6">

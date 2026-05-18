@@ -53,8 +53,25 @@
         .submenu-item:hover, .submenu-item.active { background-color: rgba(255, 145, 164, 0.15); color: var(--bose-text); border-right-color: var(--bose-pink); font-weight: 900; }
 
         .main-content { margin-right: 340px; min-h: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
-        .admin-section { display: none; animation: fadeIn 0.4s ease forwards; }
-        .admin-section.active { display: block; }
+        
+        /* 🛡️ نظام التبويبات (Tabs) لإنهاء التمرير اللانهائي */
+        .admin-tabs-nav {
+            display: flex; gap: 12px; background-color: var(--bose-surface); padding: 12px; border-radius: 20px; border: 2px solid var(--bose-border); margin-bottom: 30px; overflow-x: auto;
+            -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .admin-tabs-nav::-webkit-scrollbar { display: none; }
+        .admin-tab-btn {
+            background: transparent; color: var(--bose-muted); border: 2px solid transparent; padding: 14px 28px; border-radius: 14px; font-weight: 900; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; font-size: 1.1rem; flex-shrink: 0;
+        }
+        .admin-tab-btn:hover { color: var(--bose-text); background: rgba(255, 145, 164, 0.1); }
+        .admin-tab-btn.active {
+            background: var(--bose-pink); color: var(--bose-bg); border-color: var(--bose-pink); box-shadow: 0 4px 15px rgba(255, 145, 164, 0.3);
+        }
+        .admin-tab-content { display: none; animation: fadeIn 0.4s ease forwards; }
+        .admin-tab-content.active-tab { display: block; }
+        
+        /* تعديل الأقسام القديمة لتخضع لنظام التبويبات الجديد */
+        .admin-section { display: block !important; margin-bottom: 40px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         .admin-card { background-color: var(--bose-surface) !important; border: 2px solid var(--bose-border) !important; border-radius: 24px; padding: 40px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
@@ -142,7 +159,7 @@
         <header class="bg-[#2a1b1f] border-b border-brand-border sticky top-0 z-40 px-8 py-5 flex items-center justify-between shadow-lg">
             <div class="flex items-center gap-5">
                 <button onclick="toggleSidebar()" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
-                <h2 id="current-section-title" class="text-2xl font-black text-brand-textMain">شاشة اللوجستيات</h2>
+                <h2 id="current-section-title" class="text-2xl font-black text-brand-textMain">إدارة اللوجستيات والتسعير</h2>
             </div>
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-3 bg-[#1a1012] px-5 py-2.5 rounded-full border border-brand-border shadow-inner">
@@ -154,171 +171,193 @@
 
         <div class="p-6 md:p-12 max-w-7xl mx-auto w-full">
 
-            <!-- 1. شاشة الاستقرار -->
-            <section id="dashboard" class="admin-section active">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                    <div class="admin-card !p-8 flex flex-col items-center justify-center text-center">
-                        <div class="w-20 h-20 rounded-full bg-brand-bg border-2 border-brand-border flex items-center justify-center text-brand-pink mb-4"><i data-lucide="map" class="w-10 h-10"></i></div>
-                        <h3 class="text-5xl font-black text-white mb-2" id="stat-zones">0</h3>
-                        <p class="text-brand-textMuted font-bold text-lg">مناطق شحن معتمدة</p>
-                    </div>
-                    <div class="admin-card !p-8 flex flex-col items-center justify-center text-center">
-                        <div class="w-20 h-20 rounded-full bg-brand-bg border-2 border-brand-border flex items-center justify-center text-brand-pink mb-4"><i data-lucide="store" class="w-10 h-10"></i></div>
-                        <h3 class="text-5xl font-black text-white mb-2" id="stat-store-status">مفتوح</h3>
-                        <p class="text-brand-textMuted font-bold text-lg">حالة استقبال الطلبات</p>
-                    </div>
-                </div>
-            </section>
+            <!-- 🛡️ لوحة التحكم العلوية: نظام التبويبات الجديد -->
+            <div class="admin-tabs-nav">
+                <button type="button" class="admin-tab-btn active" onclick="switchAdminTab(event, 'tab-orders')">1. إدارة الطلبات اللحظية</button>
+                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-shipping')">2. مناطق ومصاريف التوصيل</button>
+                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-reports')">3. التقارير المالية والتسعير</button>
+            </div>
 
-            <!-- 2. حالة المتجر والقواعد العامة -->
-            <section id="store-settings" class="admin-section">
-                <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
-                    <div>
-                        <h3 class="text-3xl font-black text-white flex items-center gap-3"><i data-lucide="store" class="text-brand-pink w-8 h-8"></i> حالة المتجر وقواعد الطلب</h3>
-                        <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
-                            التحكم الكامل في فتح أو إغلاق استقبال الطلبات، وتحديد خيارات الاستلام.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="admin-card mb-8">
-                    <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3"><i data-lucide="sliders" class="w-8 h-8"></i> قواعد استقبال الطلبات</h4>
-                    
-                    <div class="space-y-8">
-                        <div>
-                            <label class="form-label mb-4">حالة المتجر (استقبال الطلبات الجديدة)</label>
-                            <div class="flex items-center justify-between bg-[#110a0b] p-5 rounded-xl border-2 border-brand-border w-full md:w-1/2">
-                                <span class="font-bold text-xl text-white" id="store-open-text">المتجر مفتوح للطلبات</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="store-is-open" checked onchange="updateStoreStatusLabel(this)">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                            <p class="bose-helper-text mt-3"><i data-lucide="alert-circle" class="w-4 h-4 text-brand-pink"></i> إغلاق المفتاح سيمنع العملاء من إتمام أي طلبات جديدة حتى إعادة فتحه.</p>
-                        </div>
-
-                        <div class="pt-6 border-t border-brand-border">
-                            <label class="form-label mb-4">إتاحة خيار (الاستلام من مقر الفرع)</label>
-                            <div class="flex items-center justify-between bg-[#110a0b] p-5 rounded-xl border-2 border-brand-border w-full md:w-1/2">
-                                <span class="font-bold text-xl text-white" id="pickup-status-text">متاح للعملاء</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="store-allow-pickup" checked onchange="updatePickupStatusLabel(this)">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="pt-6 border-t border-brand-border w-full md:w-1/2">
-                            <label class="form-label">الحد الأدنى لقيمة الطلب (ج.م)</label>
-                            <input type="number" id="store-min-order" class="form-input text-2xl font-black text-brand-pink text-center" placeholder="مثال: 100">
-                            <p class="bose-helper-text mt-3"><i data-lucide="info" class="w-4 h-4"></i> لن يتمكن العميل من إتمام الطلب إذا كانت قيمة السلة أقل من هذا المبلغ.</p>
-                        </div>
-                    </div>
-                </div>
+            <!-- تغليف قسم (الطلبات وحالة المتجر) -->
+            <div id="tab-orders" class="admin-tab-content active-tab">
                 
-                <div class="pt-4">
-                    <button onclick="saveStoreSettings()" class="btn-solid py-6 text-2xl w-full shadow-2xl hover:shadow-brand-pink/30"><i data-lucide="upload-cloud" class="w-8 h-8"></i> اعتماد قواعد المتجر</button>
-                </div>
-            </section>
-
-            <!-- 3. تسعير باني التورت -->
-            <section id="pricing-engine" class="admin-section">
-                <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
-                    <div>
-                        <h3 class="text-3xl font-black text-white flex items-center gap-3"><i data-lucide="cake" class="text-brand-pink w-8 h-8"></i> تسعير باني التورت المخصوصة</h3>
-                        <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
-                            هذه الأرقام هي المحرك الأساسي للآلة الحاسبة داخل صفحة تفصيل التورت للعميل.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="admin-card mb-8">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                        <div class="bg-[#110a0b] p-10 rounded-3xl border-2 border-brand-pink/30 shadow-inner">
-                            <label class="form-label text-2xl mb-6 text-brand-pink text-center">التسعير الأساسي للفرد الواحد</label>
-                            <div class="flex items-center justify-center gap-4">
-                                <input type="number" id="price-per-person" class="form-input text-4xl font-black text-white text-center w-full" placeholder="145">
-                                <span class="text-2xl font-black text-brand-textMuted">ج.م</span>
-                            </div>
-                            <p class="bose-helper-text mt-6 text-center justify-center"><i data-lucide="calculator" class="w-5 h-5"></i> يُضرب هذا الرقم آلياً في عدد الأفراد الذي يحدده العميل.</p>
+                <!-- 1. شاشة الاستقرار -->
+                <section id="dashboard" class="admin-section">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                        <div class="admin-card !p-8 flex flex-col items-center justify-center text-center">
+                            <div class="w-20 h-20 rounded-full bg-brand-bg border-2 border-brand-border flex items-center justify-center text-brand-pink mb-4"><i data-lucide="map" class="w-10 h-10"></i></div>
+                            <h3 class="text-5xl font-black text-white mb-2" id="stat-zones">0</h3>
+                            <p class="text-brand-textMuted font-bold text-lg">مناطق شحن معتمدة</p>
                         </div>
-
-                        <div class="space-y-8 flex flex-col justify-center">
-                            <div>
-                                <label class="form-label">تكلفة الإضافة: صورة قابلة للأكل</label>
-                                <div class="flex items-center gap-4">
-                                    <input type="number" id="price-edible" class="form-input text-xl font-bold" placeholder="60">
-                                    <span class="font-black text-brand-textMuted">ج.م</span>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="form-label">تكلفة الإضافة: صورة ديكور (غير قابلة للأكل)</label>
-                                <div class="flex items-center gap-4">
-                                    <input type="number" id="price-non-edible" class="form-input text-xl font-bold" placeholder="20">
-                                    <span class="font-black text-brand-textMuted">ج.م</span>
-                                </div>
-                            </div>
-                            <div>
-                                <label class="form-label">تكلفة الإضافة: كارت إهداء خاص</label>
-                                <div class="flex items-center gap-4">
-                                    <input type="number" id="price-gift-card" class="form-input text-xl font-bold" placeholder="40">
-                                    <span class="font-black text-brand-textMuted">ج.م</span>
-                                </div>
-                            </div>
+                        <div class="admin-card !p-8 flex flex-col items-center justify-center text-center">
+                            <div class="w-20 h-20 rounded-full bg-brand-bg border-2 border-brand-border flex items-center justify-center text-brand-pink mb-4"><i data-lucide="store" class="w-10 h-10"></i></div>
+                            <h3 class="text-5xl font-black text-white mb-2" id="stat-store-status">مفتوح</h3>
+                            <p class="text-brand-textMuted font-bold text-lg">حالة استقبال الطلبات</p>
                         </div>
                     </div>
-                </div>
+                </section>
 
-                <div class="pt-4">
-                    <button onclick="savePricingRules()" class="btn-solid py-6 text-2xl w-full shadow-2xl hover:shadow-brand-pink/30"><i data-lucide="save" class="w-8 h-8"></i> اعتماد تسعير التورت</button>
-                </div>
-            </section>
-
-            <!-- 4. مناطق الشحن واللوجستيات -->
-            <section id="shipping-zones" class="admin-section">
-                <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
-                    <div>
-                        <h3 class="text-3xl font-black text-white flex items-center gap-3"><i data-lucide="map-pin" class="text-brand-pink w-8 h-8"></i> مناطق الشحن وتكلفة المندوب</h3>
-                        <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
-                            إدارة المناطق المتاحة للتوصيل. تظهر هذه المناطق للعميل في صفحة إتمام الطلب كقائمة منسدلة ليختار منها.
-                        </p>
+                <!-- 2. حالة المتجر والقواعد العامة -->
+                <section id="store-settings" class="admin-section">
+                    <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
+                        <div>
+                            <h3 class="text-3xl font-black text-white flex items-center gap-3"><i data-lucide="store" class="text-brand-pink w-8 h-8"></i> حالة المتجر وقواعد الطلب</h3>
+                            <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
+                                التحكم الكامل في فتح أو إغلاق استقبال الطلبات، وتحديد خيارات الاستلام.
+                            </p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
-                    <div class="xl:col-span-1">
-                        <div class="admin-card sticky top-28 bg-[#110a0b]">
-                            <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3" id="zone-editor-title"><i data-lucide="plus-circle" class="w-8 h-8"></i> إضافة منطقة</h4>
-                            <input type="hidden" id="zone-id">
-                            
-                            <div class="space-y-8">
-                                <div>
-                                    <label class="form-label">اسم المنطقة / القرية</label>
-                                    <input type="text" id="zone-name" class="form-input bg-brand-surface" placeholder="مثال: أبو منقار...">
+                    <div class="admin-card mb-8">
+                        <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3"><i data-lucide="sliders" class="w-8 h-8"></i> قواعد استقبال الطلبات</h4>
+                        
+                        <div class="space-y-8">
+                            <div>
+                                <label class="form-label mb-4">حالة المتجر (استقبال الطلبات الجديدة)</label>
+                                <div class="flex items-center justify-between bg-[#110a0b] p-5 rounded-xl border-2 border-brand-border w-full md:w-1/2">
+                                    <span class="font-bold text-xl text-white" id="store-open-text">المتجر مفتوح للطلبات</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="store-is-open" checked onchange="updateStoreStatusLabel(this)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </div>
-                                <div>
-                                    <label class="form-label">تكلفة التوصيل (ج.م)</label>
-                                    <input type="number" id="zone-fee" class="form-input font-black text-brand-pink text-2xl bg-brand-surface" placeholder="0">
+                                <p class="bose-helper-text mt-3"><i data-lucide="alert-circle" class="w-4 h-4 text-brand-pink"></i> إغلاق المفتاح سيمنع العملاء من إتمام أي طلبات جديدة حتى إعادة فتحه.</p>
+                            </div>
+
+                            <div class="pt-6 border-t border-brand-border">
+                                <label class="form-label mb-4">إتاحة خيار (الاستلام من مقر الفرع)</label>
+                                <div class="flex items-center justify-between bg-[#110a0b] p-5 rounded-xl border-2 border-brand-border w-full md:w-1/2">
+                                    <span class="font-bold text-xl text-white" id="pickup-status-text">متاح للعملاء</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="store-allow-pickup" checked onchange="updatePickupStatusLabel(this)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
                                 </div>
+                            </div>
+
+                            <div class="pt-6 border-t border-brand-border w-full md:w-1/2">
+                                <label class="form-label">الحد الأدنى لقيمة الطلب (ج.م)</label>
+                                <input type="number" id="store-min-order" class="form-input text-2xl font-black text-brand-pink text-center" placeholder="مثال: 100">
+                                <p class="bose-helper-text mt-3"><i data-lucide="info" class="w-4 h-4"></i> لن يتمكن العميل من إتمام الطلب إذا كانت قيمة السلة أقل من هذا المبلغ.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-4">
+                        <button onclick="saveStoreSettings()" class="btn-solid py-6 text-2xl w-full shadow-2xl hover:shadow-brand-pink/30"><i data-lucide="upload-cloud" class="w-8 h-8"></i> اعتماد قواعد المتجر</button>
+                    </div>
+                </section>
+                
+            </div>
+
+            <!-- تغليف قسم (مناطق ومصاريف التوصيل) -->
+            <div id="tab-shipping" class="admin-tab-content">
+                
+                <!-- 4. مناطق الشحن واللوجستيات -->
+                <section id="shipping-zones" class="admin-section">
+                    <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
+                        <div>
+                            <h3 class="text-3xl font-black text-white flex items-center gap-3"><i data-lucide="map-pin" class="text-brand-pink w-8 h-8"></i> مناطق الشحن وتكلفة المندوب</h3>
+                            <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
+                                إدارة المناطق المتاحة للتوصيل. تظهر هذه المناطق للعميل في صفحة إتمام الطلب كقائمة منسدلة ليختار منها.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
+                        <div class="xl:col-span-1">
+                            <div class="admin-card sticky top-28 bg-[#110a0b]">
+                                <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3" id="zone-editor-title"><i data-lucide="plus-circle" class="w-8 h-8"></i> إضافة منطقة</h4>
+                                <input type="hidden" id="zone-id">
                                 
-                                <div class="pt-6 flex flex-col gap-4">
-                                    <button onclick="saveZone()" class="btn-solid py-4"><i data-lucide="save" class="w-6 h-6"></i> اعتماد المنطقة</button>
-                                    <button onclick="clearZoneForm()" class="bg-transparent border-2 border-brand-border text-brand-textMuted hover:text-white font-bold py-4 rounded-xl transition-all">إفراغ الحقول</button>
+                                <div class="space-y-8">
+                                    <div>
+                                        <label class="form-label">اسم المنطقة / القرية</label>
+                                        <input type="text" id="zone-name" class="form-input bg-brand-surface" placeholder="مثال: أبو منقار...">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">تكلفة التوصيل (ج.م)</label>
+                                        <input type="number" id="zone-fee" class="form-input font-black text-brand-pink text-2xl bg-brand-surface" placeholder="0">
+                                    </div>
+                                    
+                                    <div class="pt-6 flex flex-col gap-4">
+                                        <button onclick="saveZone()" class="btn-solid py-4"><i data-lucide="save" class="w-6 h-6"></i> اعتماد المنطقة</button>
+                                        <button onclick="clearZoneForm()" class="bg-transparent border-2 border-brand-border text-brand-textMuted hover:text-white font-bold py-4 rounded-xl transition-all">إفراغ الحقول</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="xl:col-span-2">
+                            <div class="admin-card !bg-[#110a0b] !border-none">
+                                <h4 class="text-white font-black text-2xl mb-8 flex items-center gap-3"><i data-lucide="list-ordered" class="w-8 h-8 text-brand-pink"></i> المناطق المعتمدة بالنظام</h4>
+                                <div id="zones-list" class="space-y-4">
+                                    <div class="text-center py-20 text-brand-textMuted font-bold text-xl"><i data-lucide="loader-2" class="w-12 h-12 animate-spin mx-auto mb-4 text-brand-pink"></i> جاري استدعاء المناطق...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+            </div>
+
+            <!-- تغليف قسم (التسعير والتقارير) -->
+            <div id="tab-reports" class="admin-tab-content">
+                
+                <!-- 3. تسعير باني التورت -->
+                <section id="pricing-engine" class="admin-section">
+                    <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
+                        <div>
+                            <h3 class="text-3xl font-black text-white flex items-center gap-3"><i data-lucide="cake" class="text-brand-pink w-8 h-8"></i> تسعير باني التورت المخصوصة</h3>
+                            <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
+                                هذه الأرقام هي المحرك الأساسي للآلة الحاسبة داخل صفحة تفصيل التورت للعميل.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="admin-card mb-8">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                            <div class="bg-[#110a0b] p-10 rounded-3xl border-2 border-brand-pink/30 shadow-inner">
+                                <label class="form-label text-2xl mb-6 text-brand-pink text-center">التسعير الأساسي للفرد الواحد</label>
+                                <div class="flex items-center justify-center gap-4">
+                                    <input type="number" id="price-per-person" class="form-input text-4xl font-black text-white text-center w-full" placeholder="145">
+                                    <span class="text-2xl font-black text-brand-textMuted">ج.م</span>
+                                </div>
+                                <p class="bose-helper-text mt-6 text-center justify-center"><i data-lucide="calculator" class="w-5 h-5"></i> يُضرب هذا الرقم آلياً في عدد الأفراد الذي يحدده العميل.</p>
+                            </div>
+
+                            <div class="space-y-8 flex flex-col justify-center">
+                                <div>
+                                    <label class="form-label">تكلفة الإضافة: صورة قابلة للأكل</label>
+                                    <div class="flex items-center gap-4">
+                                        <input type="number" id="price-edible" class="form-input text-xl font-bold" placeholder="60">
+                                        <span class="font-black text-brand-textMuted">ج.م</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="form-label">تكلفة الإضافة: صورة ديكور (غير قابلة للأكل)</label>
+                                    <div class="flex items-center gap-4">
+                                        <input type="number" id="price-non-edible" class="form-input text-xl font-bold" placeholder="20">
+                                        <span class="font-black text-brand-textMuted">ج.م</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="form-label">تكلفة الإضافة: كارت إهداء خاص</label>
+                                    <div class="flex items-center gap-4">
+                                        <input type="number" id="price-gift-card" class="form-input text-xl font-bold" placeholder="40">
+                                        <span class="font-black text-brand-textMuted">ج.م</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="xl:col-span-2">
-                        <div class="admin-card !bg-[#110a0b] !border-none">
-                            <h4 class="text-white font-black text-2xl mb-8 flex items-center gap-3"><i data-lucide="list-ordered" class="w-8 h-8 text-brand-pink"></i> المناطق المعتمدة بالنظام</h4>
-                            <div id="zones-list" class="space-y-4">
-                                <div class="text-center py-20 text-brand-textMuted font-bold text-xl"><i data-lucide="loader-2" class="w-12 h-12 animate-spin mx-auto mb-4 text-brand-pink"></i> جاري استدعاء المناطق...</div>
-                            </div>
-                        </div>
+                    <div class="pt-4">
+                        <button onclick="savePricingRules()" class="btn-solid py-6 text-2xl w-full shadow-2xl hover:shadow-brand-pink/30"><i data-lucide="save" class="w-8 h-8"></i> اعتماد تسعير التورت</button>
                     </div>
-                </div>
-            </section>
+                </section>
+                
+            </div>
 
         </div>
     </main>
@@ -338,17 +377,45 @@
             document.getElementById('sidebar-overlay').classList.toggle('active');
         };
 
+        // 🛡️ دالة التبديل الذكية للتبويبات الجديدة (Tabs)
+        window.switchAdminTab = function(event, tabId) {
+            const nav = event.currentTarget.closest('.admin-tabs-nav');
+            if (nav) {
+                nav.querySelectorAll('.admin-tab-btn').forEach(btn => btn.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+            }
+            
+            document.querySelectorAll('.admin-tab-content').forEach(tab => tab.classList.remove('active-tab'));
+            const target = document.getElementById(tabId);
+            if(target) target.classList.add('active-tab');
+            
+            lucide.createIcons();
+        };
+
+        // تحديث دالة التوجيه من القائمة الجانبية لتتواصل مع التبويبات
         window.switchSection = function(sectionId, element) {
             document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
             
-            document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(sectionId).classList.add('active');
+            // تحديد التبويب (Tab) المرتبط بالقسم المختار لفتحه آلياً
+            let targetTab = 'tab-orders'; 
+            if(sectionId === 'shipping-zones') targetTab = 'tab-shipping';
+            else if(sectionId === 'pricing-engine') targetTab = 'tab-reports';
+
+            const tabBtn = document.querySelector(`.admin-tab-btn[onclick*="${targetTab}"]`);
+            if(tabBtn) {
+                tabBtn.click();
+            }
+            
+            // التمرير السلس للقسم الداخلي المطلوب بعد فتح التبويب الخاص به
+            setTimeout(() => {
+                const targetSection = document.getElementById(sectionId);
+                if(targetSection) targetSection.scrollIntoView({behavior: 'smooth', block: 'start'});
+            }, 100);
             
             const titles = { 'dashboard': 'شاشة اللوجستيات', 'store-settings': 'حالة المتجر وقواعد الطلب', 'pricing-engine': 'تسعير باني التورت', 'shipping-zones': 'مناطق الشحن وتكلفة المندوب' };
-            document.getElementById('current-section-title').innerText = titles[sectionId];
+            document.getElementById('current-section-title').innerText = titles[sectionId] || '';
             if(window.innerWidth <= 1024) toggleSidebar();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.showToast = function(msg, type="success") {
@@ -397,7 +464,6 @@
         // ---------------------------------------------------------
         async function loadLogisticsData() {
             try {
-                // 1. إعدادات المتجر العامة
                 const storeSnap = await getDoc(doc(db, 'settings', 'logistics'));
                 if (storeSnap.exists()) {
                     const storeData = storeSnap.data();
@@ -415,7 +481,6 @@
                     document.getElementById('stat-store-status').style.color = storeData.isOpen !== false ? "#ffffff" : "#ef4444";
                 }
 
-                // 2. إعدادات التسعير
                 const priceSnap = await getDoc(doc(db, 'settings', 'pricingRules'));
                 if (priceSnap.exists()) {
                     const priceData = priceSnap.data();
@@ -425,7 +490,6 @@
                     document.getElementById('price-gift-card').value = priceData.giftCardPrice || 40;
                 }
 
-                // 3. مناطق الشحن
                 const querySnapshot = await getDocs(collection(db, 'shipping'));
                 const list = document.getElementById('zones-list');
                 let html = '';
@@ -514,8 +578,13 @@
             document.getElementById('zone-fee').value = fee;
             document.getElementById('zone-editor-title').innerHTML = '<i data-lucide="edit-2" class="w-8 h-8 text-brand-pink"></i> تعديل التسعيرة';
             lucide.createIcons();
-            switchSection('shipping-zones', document.querySelectorAll('.submenu-item')[3]);
+            
+            // فتح التبويب الخاص بمناطق الشحن آلياً عند الضغط على تعديل
+            const tabBtn = document.querySelector(`.admin-tab-btn[onclick*="tab-shipping"]`);
+            if(tabBtn) tabBtn.click();
+            
             document.getElementById('zone-name').focus();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.saveZone = async function() {

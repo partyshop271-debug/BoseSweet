@@ -71,6 +71,25 @@ try {
 
 export { app, db, auth };
 
+// 🛡️ نظام دعم استقرار الاتصال وحماية البيانات (Connection Guard)
+const ConnectionGuard = {
+    maxRetries: 5,
+    retryDelay: 2000,
+    active: false,
+    retryCount: 0
+};
+
+function handleConnectionDrop(retryFunction) {
+    ConnectionGuard.active = false;
+    console.error("رصد تذبذب في الاتصال، جاري تفعيل الحماية والمحاولة من جديد...");
+    if (ConnectionGuard.retryCount < ConnectionGuard.maxRetries) {
+        ConnectionGuard.retryCount++;
+        setTimeout(retryFunction, ConnectionGuard.retryDelay);
+    } else {
+        console.error("فشل الاتصال اللحظي بعد استنفاد المحاولات.");
+    }
+}
+
 // 🛡️ الصندوق الأسود (BoseMonitor) لرصد وتحليل الأعطال بالموقع تلقائياً
 (function() {
     if (typeof window === 'undefined' || window.BoseMonitor) return;
@@ -418,7 +437,7 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🧠 القسم الرابع: الذاكرة المركزية والعقل المدبر (BoseState)
+// 🧠 القسم الرابع: ال الذاكرة المركزية والعقل المدبر (BoseState)
 // ============================================================================
 
 const BOSE_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg";
@@ -701,7 +720,13 @@ export async function fetchSystemSettings() {
         if (!db) return;
         const sSnap = await getDoc(doc(db, 'settings', 'main'));
         if (sSnap.exists()) { Object.assign(BoseState.siteSettings, sSnap.data()); saveToLocalMemory('bosesweets_settings', BoseState.siteSettings); }
-    } catch (e) { Object.assign(BoseState.siteSettings, getFromLocalMemory('bosesweets_settings') || defaultSettingsFallback); }
+        
+        ConnectionGuard.active = true;
+        ConnectionGuard.retryCount = 0; // تصفير العداد عند نجاح الاتصال
+    } catch (e) { 
+        handleConnectionDrop(fetchSystemSettings);
+        Object.assign(BoseState.siteSettings, getFromLocalMemory('bosesweets_settings') || defaultSettingsFallback); 
+    }
 }
 
 export async function fetchShippingZones() {
@@ -709,7 +734,13 @@ export async function fetchShippingZones() {
         if (!db) return;
         const shipSnap = await getDocs(collection(db, 'shipping'));
         if (!shipSnap.empty) { BoseState.shippingZones = shipSnap.docs.map(d => ({id: d.id, ...d.data()})); saveToLocalMemory('bosesweets_shipping', BoseState.shippingZones); }
-    } catch (e) { BoseState.shippingZones = getFromLocalMemory('bosesweets_shipping') || []; }
+        
+        ConnectionGuard.active = true;
+        ConnectionGuard.retryCount = 0; // تصفير العداد عند نجاح الاتصال
+    } catch (e) { 
+        handleConnectionDrop(fetchShippingZones);
+        BoseState.shippingZones = getFromLocalMemory('bosesweets_shipping') || []; 
+    }
 }
 
 export async function fetchProductsCatalog() {
@@ -741,9 +772,14 @@ export async function fetchProductsCatalog() {
         syncCatalogMap(); 
         saveToLocalMemory('bosesweets_catalog', products);
         if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('catalogDataReady', { detail: products }));
+        
+        ConnectionGuard.active = true;
+        ConnectionGuard.retryCount = 0; // تصفير العداد عند نجاح الاتصال
+        
         return products;
 
     } catch (e) { 
+        handleConnectionDrop(fetchProductsCatalog);
         console.error("اعتماد الذاكرة المحلية بسبب انقطاع الاتصال:", e);
         BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || []; 
         syncCatalogMap(); 
@@ -886,12 +922,14 @@ export function renderProductCardsUI(products, containerId) {
         const isFullSpan = p.gridSpan === 'full';
         const spanClass = isFullSpan ? 'col-span-full w-full' : 'col-span-1 w-full sm:w-auto';
         
+        const displayMode = (p.displayStyle === 'half') ? 'layout-half' : 'layout-full';
+        
         const hasDiscount = p.hasDiscount === true && p.oldPrice > p.price;
         const currentPrice = parseFloat(p.price) || 0;
         const img = processBoseImage(p.img || p.image);
 
         return `
-            <div class="catalog-card-wrapper ${spanClass} p-3" style="max-width: ${isFullSpan ? '100%' : customWidth + 'px'}; width: 100%;">
+            <div class="catalog-card-wrapper ${spanClass} p-3 ${displayMode}" data-id="${p.id}" style="max-width: ${isFullSpan ? '100%' : customWidth + 'px'}; width: 100%;">
                 <div class="catalog-item royal-card ${isOut ? 'out-of-stock opacity-60 grayscale' : ''} bg-white border border-[#fff5f6] rounded-[24px] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 relative flex flex-col h-full">
                     ${hasDiscount && !isOut ? `<div class="absolute top-4 right-4 bg-[#ff91a4] text-white font-black text-xs px-3 py-1.5 rounded-lg shadow-sm z-10">عرض خاص 🔥</div>` : ''}
                     

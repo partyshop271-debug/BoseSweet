@@ -501,6 +501,49 @@
                 this.updateTotals();
             },
 
+            // 🛡️ الجدار الأمني اللحظي: دالة مطابقة الأسعار الحية من قاعدة البيانات
+            validateLivePrices: function(cartItemsArray) {
+                let verifiedTotal = 0;
+                let priceMismatch = false;
+                
+                cartItemsArray.forEach(cartItem => {
+                    // استثناء المنتجات المصممة يدوياً لأن تسعيرها ديناميكي حسب الاختيار
+                    if (cartItem.isCustom) {
+                        verifiedTotal += (parseFloat(cartItem.price) * (parseInt(cartItem.quantity || cartItem.qty) || 1));
+                        return;
+                    }
+
+                    // البحث عن المنتج اللحظي في بيانات المحرك الموحد
+                    const liveProduct = window.BoseState?.catalog?.find(p => String(p.id) === String(cartItem.id));
+                    
+                    if (liveProduct) {
+                        const livePrice = parseFloat(liveProduct.price);
+                        const cartPrice = parseFloat(cartItem.price);
+                        
+                        // تحديث صامت للسعر لو حصل أي تعديل في اللوحة أثناء تواجد العميل
+                        if (livePrice !== cartPrice) {
+                            console.warn(`تحديث أمني للسعر [${cartItem.name}]: من ${cartPrice} إلى ${livePrice}`);
+                            cartItem.price = livePrice;
+                            priceMismatch = true;
+                        }
+                        
+                        // الاعتماد على السعر الحي لضمان دقة الحسابات
+                        verifiedTotal += (livePrice * (parseInt(cartItem.quantity || cartItem.qty) || 1));
+                    } else {
+                        console.warn(`المنتج ${cartItem.name} غير متاح حالياً أو تم إيقافه.`);
+                        // في حالة الحذف من اللوحة، نعتمد آخر سعر مسجل كإجراء احتياطي لعدم ضياع حق الشركة
+                        verifiedTotal += (parseFloat(cartItem.price) * (parseInt(cartItem.quantity || cartItem.qty) || 1));
+                    }
+                });
+                
+                // لو تم اكتشاف تلاعب أو تغيير، بنحفظ السلة بالأسعار الموثقة الجديدة
+                if (priceMismatch && window.cartSystem) {
+                    window.cartSystem.saveCartToStorage();
+                }
+                
+                return verifiedTotal;
+            },
+
             renderOrderItems: function() {
                 const listContainer = document.getElementById('checkout-items-list');
                 if (!listContainer) return;
@@ -527,12 +570,8 @@
             },
 
             updateTotals: function() {
-                this.cartTotal = 0;
-                this.cartItems.forEach(item => {
-                    const price = parseFloat(item.price) || 0;
-                    const qty = parseInt(item.quantity || item.qty) || 1;
-                    this.cartTotal += (price * qty);
-                });
+                // الاعتماد على دالة التحقق اللحظي بدلاً من الجمع المباشر الأعمى
+                this.cartTotal = this.validateLivePrices(this.cartItems);
 
                 this.shippingFee = 0;
                 if (this.deliveryMode === 'توصيل') {
@@ -574,6 +613,9 @@
             },
 
             processOrder: function(submitBtn, originalBtnText) {
+                // إعادة التأكيد الأمني النهائي قبل المعالجة
+                this.cartTotal = this.validateLivePrices(this.cartItems);
+                
                 const customerName = document.getElementById('customer-name').value.trim();
                 const whatsappPhone = document.getElementById('whatsapp-phone').value.trim();
                 const orderDate = document.getElementById('order-date').value;
@@ -608,6 +650,9 @@
                         }
                     }
 
+                    // الاعتماد على السعر المؤكد والموثق من الدالة الأمنية
+                    const itemPrice = parseFloat(item.price) || 0;
+                    
                     msg += `- ${catName}${item.name} (x${item.quantity || item.qty})\n`;
                     if (item.isCustom && item.details) {
                          const shape = item.details.shape === 'round' ? 'دائري' : (item.details.shape === 'heart' ? 'قلب' : 'حسب الاختيار');
@@ -669,5 +714,4 @@
     </script>
 </body>
 </html>
-
 

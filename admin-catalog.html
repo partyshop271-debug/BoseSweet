@@ -122,6 +122,22 @@
         .catalog-item:hover { border-color: var(--bose-pink); box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: translateY(-5px); }
         .catalog-item.out-of-stock { opacity: 0.6; border-color: #555; filter: grayscale(50%); }
         .catalog-item .discount-badge { position: absolute; top: 20px; right: 20px; background-color: var(--bose-pink); color: #0c0709; font-weight: 900; padding: 8px 16px; border-radius: 12px; font-size: 1rem; z-index: 20; box-shadow: 0 8px 20px rgba(255,145,164,0.4); }
+
+        /* 👑 تنسيقات نظام التبويبات الجديد 👑 */
+        .admin-tabs-nav { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 40px; border-bottom: 2px solid var(--bose-border); padding-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
+        .admin-tabs-nav::-webkit-scrollbar { display: none; }
+        .admin-tab-btn { background-color: var(--bose-bg); color: var(--bose-muted); border: 2px solid var(--bose-border); padding: 16px 28px; border-radius: 20px; font-weight: 900; font-size: 1.15rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); white-space: nowrap; flex-shrink: 0; }
+        .admin-tab-btn:hover { border-color: var(--bose-pink); color: var(--bose-text); transform: translateY(-2px); }
+        .admin-tab-btn.active { background-color: var(--bose-pink); color: var(--bose-bg); border-color: var(--bose-pink); box-shadow: 0 8px 25px rgba(255,145,164,0.3); }
+        .admin-tab-content { display: none; animation: fadeInTab 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        .admin-tab-content.active-tab { display: block; }
+        @keyframes fadeInTab { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* تنسيقات حقل تحكم الهندسة المرئية المضاف حديثاً */
+        .admin-control-group { background-color: #0c0709; padding: 40px; border-radius: 24px; border: 1px solid var(--bose-border); margin-top: 24px; }
+        .admin-label { display: block; color: var(--bose-pink); font-weight: 900; margin-bottom: 16px; font-size: 1.25rem; }
+        .admin-select { width: 100%; background-color: var(--bose-surface); border: 2px solid var(--bose-border); color: var(--bose-text); border-radius: 16px; padding: 20px 24px; font-family: inherit; font-weight: 900; font-size: 1.15rem; appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ff91a4'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: left 20px center; background-size: 24px; transition: all 0.3s ease; }
+        .admin-select:focus { border-color: var(--bose-pink); outline: none; box-shadow: inset 0 4px 10px rgba(0,0,0,0.2), 0 0 0 4px rgba(255, 145, 164, 0.15); }
     </style>
 </head>
 <body>
@@ -193,11 +209,12 @@
 
             <!-- 1. شاشة الاستقرار النظيفة -->
             <section id="dashboard" class="admin-section active">
-                <div class="admin-card flex flex-col items-center justify-center py-40 border-dashed border-2 border-brand-border bg-transparent shadow-none">
+                <!-- تم التعديل هنا لتقليل التمدد الطولي على الموبايل (py-20 بدلاً من py-40) -->
+                <div class="admin-card flex flex-col items-center justify-center py-20 md:py-40 border-dashed border-2 border-brand-border bg-transparent shadow-none">
                     <div class="w-32 h-32 rounded-full bg-brand-surface border border-brand-border flex items-center justify-center mb-10 shadow-2xl">
                         <i data-lucide="wind" class="w-16 h-16 text-brand-pink opacity-80"></i>
                     </div>
-                    <h3 class="text-4xl font-black text-white mb-6">مساحة عمل نظيفة وهادئة</h3>
+                    <h3 class="text-4xl font-black text-white mb-6 text-center">مساحة عمل نظيفة وهادئة</h3>
                     <p class="font-bold text-2xl text-brand-textMuted text-center max-w-3xl leading-relaxed opacity-80">
                         لا توجد فوضى هنا. يرجى فتح القائمة الجانبية واختيار القسم المراد إدارته، ليتم عزل باقي الأقسام تماماً وفتح مساحة عمل خاصة بهذا القسم فقط.
                     </p>
@@ -244,145 +261,180 @@
                     <p class="text-xl text-brand-textMuted font-bold mt-4">التعديلات هنا تطبق على هذا المنتج فقط، داخل قسمه الخاص، ولن تؤثر على أي منتج أو قسم آخر في الكتالوج.</p>
                 </div>
 
+                <!-- شريط أزرار التنقل بين التبويبات -->
+                <div class="admin-tabs-nav">
+                    <button type="button" class="admin-tab-btn active" onclick="switchAdminTab(event, 'tab-identity')">1. الهوية الرسمية</button>
+                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-pricing')">2. التسعير والمخزون</button>
+                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-media')">3. المحتوى البصري</button>
+                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-marketing')">4. الصياغة والنكهات</button>
+                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-engineering')">5. الهندسة المرئية</button>
+                </div>
+
                 <input type="hidden" id="prod-id">
 
-                <!-- 1. الهوية الأساسية (محصنة) -->
-                <div class="admin-card">
-                    <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="fingerprint" class="w-10 h-10"></i> 1. الهوية الرسمية</h4>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                        <div>
-                            <label class="form-label">الاسم التجاري للمنتج</label>
-                            <input type="text" id="prod-name" class="form-input" placeholder="مثال: قشطوطة مانجا فريش">
-                        </div>
-                        <div>
-                            <label class="form-label">القسم المنتمي إليه (مغلق ومحمي للحفاظ على العزل)</label>
-                            <!-- الحقل للقراءة فقط لضمان عدم ترحيل المنتج لقسم آخر بالخطأ -->
-                            <input type="text" id="prod-cat" class="form-input text-brand-pink" readonly placeholder="اسم القسم">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. التسعير والتوفر -->
-                <div class="admin-card">
-                    <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="tags" class="w-10 h-10"></i> 2. التسعير وحالة المخزون</h4>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-end">
-                        <div>
-                            <label class="form-label text-brand-pink">السعر النهائي للعميل</label>
-                            <input type="number" id="prod-price" class="form-input text-4xl font-black text-brand-pink text-center py-6" placeholder="0">
-                        </div>
-                        <div>
-                            <label class="form-label">السعر القديم (لإظهار الخصم)</label>
-                            <input type="number" id="prod-old-price" class="form-input text-3xl font-bold text-center py-6 opacity-70" placeholder="0">
-                        </div>
-                        <div class="space-y-8">
-                            <div class="flex items-center justify-between bg-[#0c0709] p-6 rounded-2xl border border-brand-border">
-                                <span class="font-bold text-xl text-white" id="discount-status-text">لا يوجد عرض</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="prod-has-discount" onchange="updateDiscountLabel(this)">
-                                    <span class="toggle-slider"></span>
-                                </label>
+                <!-- القسم الأول: الهوية الرسمية -->
+                <div id="tab-identity" class="admin-tab-content active-tab">
+                    <!-- 1. الهوية الأساسية (محصنة) -->
+                    <div class="admin-card">
+                        <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="fingerprint" class="w-10 h-10"></i> 1. الهوية الرسمية</h4>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                            <div>
+                                <label class="form-label">الاسم التجاري للمنتج</label>
+                                <input type="text" id="prod-name" class="form-input" placeholder="مثال: قشطوطة مانجا فريش">
                             </div>
-                            <div class="flex items-center justify-between bg-[#0c0709] p-6 rounded-2xl border border-brand-border">
-                                <span class="font-bold text-xl text-white" id="stock-status-text">متوفر للطلب</span>
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="prod-stock" checked onchange="updateStockLabel(this)">
-                                    <span class="toggle-slider"></span>
-                                </label>
+                            <div>
+                                <label class="form-label">القسم المنتمي إليه (مغلق ومحمي للحفاظ على العزل)</label>
+                                <!-- الحقل للقراءة فقط لضمان عدم ترحيل المنتج لقسم آخر بالخطأ -->
+                                <input type="text" id="prod-cat" class="form-input text-brand-pink" readonly placeholder="اسم القسم">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. المحتوى البصري (كبير وواضح) -->
-                <div class="admin-card">
-                    <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="image" class="w-10 h-10"></i> 3. المحتوى البصري (الميديا)</h4>
-                    
-                    <div class="space-y-16">
-                        <!-- صورة الكارت الأساسية -->
-                        <div class="bg-[#0c0709] p-10 rounded-3xl border border-brand-border flex flex-col xl:flex-row gap-12 items-start">
-                            <div class="flex-1 w-full space-y-6">
-                                <label class="form-label text-2xl">صورة الكارت الأساسية</label>
-                                <p class="bose-helper-text text-base mb-6">هذه هي الصورة التي تظهر في المنيو الخارجي للقسم.</p>
-                                <input type="text" id="prod-img" class="form-input text-left" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('img-preview', 'img-placeholder', this.value)">
-                                <input type="file" id="file-prod-img" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder')">
-                                <button type="button" onclick="document.getElementById('file-prod-img').click()" class="btn-action w-full h-auto py-5 rounded-2xl gap-4">
-                                    <i data-lucide="upload-cloud" class="w-8 h-8"></i> <span class="font-black text-xl">رفع صورة من الجهاز للسحابة</span>
-                                </button>
+                <!-- القسم الثاني: التسعير وحالة المخزون -->
+                <div id="tab-pricing" class="admin-tab-content">
+                    <!-- 2. التسعير والتوفر -->
+                    <div class="admin-card">
+                        <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="tags" class="w-10 h-10"></i> 2. التسعير وحالة المخزون</h4>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-end">
+                            <div>
+                                <label class="form-label text-brand-pink">السعر النهائي للعميل</label>
+                                <input type="number" id="prod-price" class="form-input text-4xl font-black text-brand-pink text-center py-6" placeholder="0">
                             </div>
-                            <div class="w-full xl:w-[400px] h-[400px] shrink-0 bg-brand-surface rounded-2xl border-2 border-brand-border overflow-hidden relative flex items-center justify-center shadow-xl">
-                                <i data-lucide="camera" class="w-20 h-20 text-brand-border absolute" id="img-placeholder"></i>
-                                <img id="img-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('img-preview', 'img-placeholder')">
+                            <div>
+                                <label class="form-label">السعر القديم (لإظهار الخصم)</label>
+                                <input type="number" id="prod-old-price" class="form-input text-3xl font-bold text-center py-6 opacity-70" placeholder="0">
                             </div>
-                        </div>
-
-                        <!-- صورة البوستر التفصيلي -->
-                        <div class="bg-[#0c0709] p-10 rounded-3xl border border-brand-border flex flex-col xl:flex-row gap-12 items-start">
-                            <div class="flex-1 w-full space-y-6">
-                                <label class="form-label text-2xl">صورة البوستر الداخلي (اختياري)</label>
-                                <p class="bose-helper-text text-base mb-6">تظهر عند فتح العميل لصفحة تفاصيل المنتج العميقة.</p>
-                                <input type="text" id="prod-hero-img" class="form-input text-left" dir="ltr" placeholder="رابط البوستر السحابي..." oninput="previewImage('hero-preview', 'hero-placeholder', this.value)">
-                                <input type="file" id="file-prod-hero" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-hero-img', 'hero-preview', 'hero-placeholder')">
-                                <button type="button" onclick="document.getElementById('file-prod-hero').click()" class="btn-action w-full h-auto py-5 rounded-2xl gap-4">
-                                    <i data-lucide="upload-cloud" class="w-8 h-8"></i> <span class="font-black text-xl">رفع بوستر داخلي</span>
-                                </button>
-                            </div>
-                            <div class="w-full xl:w-[400px] h-[250px] shrink-0 bg-brand-surface rounded-2xl border-2 border-brand-border overflow-hidden relative flex items-center justify-center shadow-xl">
-                                <i data-lucide="monitor" class="w-20 h-20 text-brand-border absolute" id="hero-placeholder"></i>
-                                <img id="hero-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('hero-preview', 'hero-placeholder')">
+                            <div class="space-y-8">
+                                <div class="flex items-center justify-between bg-[#0c0709] p-6 rounded-2xl border border-brand-border">
+                                    <span class="font-bold text-xl text-white" id="discount-status-text">لا يوجد عرض</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="prod-has-discount" onchange="updateDiscountLabel(this)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between bg-[#0c0709] p-6 rounded-2xl border border-brand-border">
+                                    <span class="font-bold text-xl text-white" id="stock-status-text">متوفر للطلب</span>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="prod-stock" checked onchange="updateStockLabel(this)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 4. الوصف التسويقي -->
-                <div class="admin-card">
-                    <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="file-text" class="w-10 h-10"></i> 4. الصياغة والنكهات</h4>
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                        <div>
-                            <label class="form-label text-xl">الوصف التسويقي الرئيسي</label>
-                            <textarea id="prod-desc" class="form-textarea" placeholder="وصف راقٍ وجذاب يبرز قيمة المنتج..."></textarea>
-                        </div>
-                        <div>
-                            <label class="form-label text-xl">التفاصيل العميقة والمكونات</label>
-                            <textarea id="prod-flavors" class="form-textarea" placeholder="اشرح تفاصيل المكونات، الحشوات، والجودة..."></textarea>
+                <!-- القسم الثالث: المحتوى البصري (الميديا) -->
+                <div id="tab-media" class="admin-tab-content">
+                    <!-- 3. المحتوى البصري (كبير وواضح) -->
+                    <div class="admin-card">
+                        <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="image" class="w-10 h-10"></i> 3. المحتوى البصري (الميديا)</h4>
+                        
+                        <div class="space-y-16">
+                            <!-- صورة الكارت الأساسية -->
+                            <div class="bg-[#0c0709] p-10 rounded-3xl border border-brand-border flex flex-col xl:flex-row gap-12 items-start">
+                                <div class="flex-1 w-full space-y-6">
+                                    <label class="form-label text-2xl">صورة الكارت الأساسية</label>
+                                    <p class="bose-helper-text text-base mb-6">هذه هي الصورة التي تظهر في المنيو الخارجي للقسم.</p>
+                                    <input type="text" id="prod-img" class="form-input text-left" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('img-preview', 'img-placeholder', this.value)">
+                                    <input type="file" id="file-prod-img" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder')">
+                                    <button type="button" onclick="document.getElementById('file-prod-img').click()" class="btn-action w-full h-auto py-5 rounded-2xl gap-4">
+                                        <i data-lucide="upload-cloud" class="w-8 h-8"></i> <span class="font-black text-xl">رفع صورة من الجهاز للسحابة</span>
+                                    </button>
+                                </div>
+                                <!-- تم التعديل هنا للقضاء على التمدد الطولي: aspect-square -->
+                                <div class="w-full aspect-square xl:w-[400px] xl:h-[400px] shrink-0 bg-brand-surface rounded-2xl border-2 border-brand-border overflow-hidden relative flex items-center justify-center shadow-xl">
+                                    <i data-lucide="camera" class="w-20 h-20 text-brand-border absolute" id="img-placeholder"></i>
+                                    <img id="img-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('img-preview', 'img-placeholder')">
+                                </div>
+                            </div>
+
+                            <!-- صورة البوستر التفصيلي -->
+                            <div class="bg-[#0c0709] p-10 rounded-3xl border border-brand-border flex flex-col xl:flex-row gap-12 items-start">
+                                <div class="flex-1 w-full space-y-6">
+                                    <label class="form-label text-2xl">صورة البوستر الداخلي (اختياري)</label>
+                                    <p class="bose-helper-text text-base mb-6">تظهر عند فتح العميل لصفحة تفاصيل المنتج العميقة.</p>
+                                    <input type="text" id="prod-hero-img" class="form-input text-left" dir="ltr" placeholder="رابط البوستر السحابي..." oninput="previewImage('hero-preview', 'hero-placeholder', this.value)">
+                                    <input type="file" id="file-prod-hero" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-hero-img', 'hero-preview', 'hero-placeholder')">
+                                    <button type="button" onclick="document.getElementById('file-prod-hero').click()" class="btn-action w-full h-auto py-5 rounded-2xl gap-4">
+                                        <i data-lucide="upload-cloud" class="w-8 h-8"></i> <span class="font-black text-xl">رفع بوستر داخلي</span>
+                                    </button>
+                                </div>
+                                <!-- تم التعديل هنا ليكون العرض متناسق 16:9 بدون تمدد طولي: aspect-video -->
+                                <div class="w-full aspect-video xl:w-[400px] xl:h-auto shrink-0 bg-brand-surface rounded-2xl border-2 border-brand-border overflow-hidden relative flex items-center justify-center shadow-xl">
+                                    <i data-lucide="monitor" class="w-20 h-20 text-brand-border absolute" id="hero-placeholder"></i>
+                                    <img id="hero-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('hero-preview', 'hero-placeholder')">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 5. الهندسة المرئية للمنتج المستقل -->
-                <div class="admin-card">
-                    <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="sliders" class="w-10 h-10"></i> 5. الهندسة المرئية المستقلة</h4>
-                    <p class="text-brand-textMuted font-bold text-lg mb-10 leading-relaxed border-r-4 border-brand-pink pr-4">
-                        التحكم هنا يخص <span class="text-brand-pink">هذا المنتج فقط</span>. يمكنك تمييز هذا المنتج بجعله يملأ الشاشة وحده، أو تركه بحجمه الطبيعي ليظهر بجوار منتج آخر، دون أن تتأثر باقي منتجات المنيو.
-                    </p>
-
-                    <div class="mb-12 bg-[#0c0709] p-10 rounded-3xl border border-brand-border">
-                        <label class="form-label text-brand-pink text-2xl mb-6">نمط عرض الكارت في قسمه</label>
-                        <select id="prod-grid-span" class="form-select text-xl font-black text-white">
-                            <option value="half">كارت عادي (يأخذ نصف الشاشة ويسمح بتواجد كارت آخر بجواره)</option>
-                            <option value="full">كارت سيادي ممتد (يملأ عرض الشاشة بالكامل للفت الانتباه القوي)</option>
-                        </select>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-16 bg-[#0c0709] p-10 rounded-3xl border border-brand-border">
-                        <div>
-                            <div class="flex justify-between items-center mb-6">
-                                <label class="form-label mb-0 text-brand-pink text-xl">عرض صورة المنتج</label>
-                                <span class="text-brand-bg font-black text-2xl bg-brand-pink px-5 py-2 rounded-xl" id="val-custom-w">تلقائي</span>
+                <!-- القسم الرابع: الصياغة والنكهات -->
+                <div id="tab-marketing" class="admin-tab-content">
+                    <!-- 4. الوصف التسويقي -->
+                    <div class="admin-card">
+                        <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="file-text" class="w-10 h-10"></i> 4. الصياغة والنكهات</h4>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                            <div>
+                                <label class="form-label text-xl">الوصف التسويقي الرئيسي</label>
+                                <textarea id="prod-desc" class="form-textarea" placeholder="وصف راقٍ وجذاب يبرز قيمة المنتج..."></textarea>
                             </div>
-                            <input type="range" id="prod-card-w" min="150" max="800" step="10" value="280" oninput="document.getElementById('val-custom-w').innerText = this.value + 'px'">
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-center mb-6">
-                                <label class="form-label mb-0 text-brand-pink text-xl">ارتفاع صورة المنتج</label>
-                                <span class="text-brand-bg font-black text-2xl bg-brand-pink px-5 py-2 rounded-xl" id="val-custom-h">تلقائي</span>
+                            <div>
+                                <label class="form-label text-xl">التفاصيل العميقة والمكونات</label>
+                                <textarea id="prod-flavors" class="form-textarea" placeholder="اشرح تفاصيل المكونات، الحشوات، والجودة..."></textarea>
                             </div>
-                            <input type="range" id="prod-card-h" min="150" max="800" step="10" value="350" oninput="document.getElementById('val-custom-h').innerText = this.value + 'px'">
                         </div>
                     </div>
                 </div>
 
-                <!-- زر الحفظ السيادي الضخم -->
+                <!-- القسم الخامس: الهندسة المرئية -->
+                <div id="tab-engineering" class="admin-tab-content">
+                    <!-- 5. الهندسة المرئية للمنتج المستقل -->
+                    <div class="admin-card">
+                        <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="sliders" class="w-10 h-10"></i> 5. الهندسة المرئية المستقلة</h4>
+                        <p class="text-brand-textMuted font-bold text-lg mb-10 leading-relaxed border-r-4 border-brand-pink pr-4">
+                            التحكم هنا يخص <span class="text-brand-pink">هذا المنتج فقط</span>. يمكنك تمييز هذا المنتج بجعله يملأ الشاشة وحده، أو تركه بحجمه الطبيعي ليظهر بجوار منتج آخر، دون أن تتأثر باقي منتجات المنيو.
+                        </p>
+
+                        <div class="mb-12 bg-[#0c0709] p-10 rounded-3xl border border-brand-border">
+                            <label class="form-label text-brand-pink text-2xl mb-6">نمط عرض الكارت في قسمه</label>
+                            <select id="prod-grid-span" class="form-select text-xl font-black text-white">
+                                <option value="half">كارت عادي (يأخذ نصف الشاشة ويسمح بتواجد كارت آخر بجواره)</option>
+                                <option value="full">كارت سيادي ممتد (يملأ عرض الشاشة بالكامل للفت الانتباه القوي)</option>
+                            </select>
+                        </div>
+
+                        <!-- الحقل الجديد: مفتاح التحكم في حجم العرض الشامل -->
+                        <div class="admin-control-group">
+                            <label class="admin-label">حجم عرض المنتج في المتجر:</label>
+                            <select id="productDisplayStyle" class="admin-select" name="displayStyle">
+                                <option value="full">كارت عادي (يملأ الشاشة)</option>
+                                <option value="half">نصف الشاشة (كارتين متجاورين)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 bg-[#0c0709] p-10 rounded-3xl border border-brand-border mt-12">
+                            <div>
+                                <div class="flex justify-between items-center mb-6">
+                                    <label class="form-label mb-0 text-brand-pink text-xl">عرض صورة المنتج</label>
+                                    <span class="text-brand-bg font-black text-2xl bg-brand-pink px-5 py-2 rounded-xl" id="val-custom-w">تلقائي</span>
+                                </div>
+                                <input type="range" id="prod-card-w" min="150" max="800" step="10" value="280" oninput="document.getElementById('val-custom-w').innerText = this.value + 'px'">
+                            </div>
+                            <div>
+                                <div class="flex justify-between items-center mb-6">
+                                    <label class="form-label mb-0 text-brand-pink text-xl">ارتفاع صورة المنتج</label>
+                                    <span class="text-brand-bg font-black text-2xl bg-brand-pink px-5 py-2 rounded-xl" id="val-custom-h">تلقائي</span>
+                                </div>
+                                <input type="range" id="prod-card-h" min="150" max="800" step="10" value="350" oninput="document.getElementById('val-custom-h').innerText = this.value + 'px'">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- زر الحفظ السيادي الضخم (متاح دائماً خارج التبويبات) -->
                 <div class="pt-8 mb-20">
                     <button onclick="saveProduct()" class="btn-solid py-8 text-3xl w-full shadow-2xl hover:shadow-brand-pink/40 rounded-3xl">
                         <i data-lucide="check-circle" class="w-10 h-10"></i> اعتماد التحديثات وإرسالها للسحابة فوراً
@@ -395,6 +447,27 @@
 
     <!-- المحرك البرمجي المستقر (Compat Mode Firebase) -->
     <script>
+        // دالة تفعيل التبويبات المتطورة
+        window.switchAdminTab = function(event, tabId) {
+            // إخفاء كافة التبويبات
+            const contents = document.querySelectorAll('.admin-tab-content');
+            contents.forEach(content => content.classList.remove('active-tab'));
+            
+            // إلغاء تفعيل كافة الأزرار
+            const buttons = document.querySelectorAll('.admin-tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // إظهار التبويب المطلوب وتفعيل الزر الخاص به
+            document.getElementById(tabId).classList.add('active-tab');
+            if(event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            } else {
+                // تفعيل الزر برمجياً في حال عدم وجود ضغطة ماوس (لتهيئة الواجهة)
+                const activeBtn = document.querySelector(`button[onclick*="${tabId}"]`);
+                if(activeBtn) activeBtn.classList.add('active');
+            }
+        };
+
         // تفعيل الأيقونات
         if (typeof lucide !== 'undefined') lucide.createIcons();
 
@@ -643,6 +716,7 @@
             // إجبار وتثبيت القسم لمنع الخطأ
             document.getElementById('prod-cat').value = selectedCategory;
             document.getElementById('editor-title').innerHTML = `<i data-lucide="plus-square" class="text-brand-pink w-10 h-10"></i> هندسة منتج جديد في: ${selectedCategory}`;
+            switchAdminTab(null, 'tab-identity'); // إعادة الواجهة للتبويب الأول كوضع افتراضي
             switchSection('product-editor');
             if (typeof lucide !== 'undefined') lucide.createIcons();
         };
@@ -694,6 +768,7 @@
             document.getElementById('prod-img').value = '';
             document.getElementById('prod-hero-img').value = '';
             document.getElementById('prod-grid-span').value = 'half';
+            document.getElementById('productDisplayStyle').value = 'full'; // إعادة ضبط الإعداد الجديد الافتراضي
             
             document.getElementById('prod-card-w').value = 280; document.getElementById('val-custom-w').innerText = 'تلقائي';
             document.getElementById('prod-card-h').value = 350; document.getElementById('val-custom-h').innerText = 'تلقائي';
@@ -724,6 +799,8 @@
             previewImage('hero-preview', 'hero-placeholder', p.heroImg || '');
 
             document.getElementById('prod-grid-span').value = p.gridSpan || 'half';
+            document.getElementById('productDisplayStyle').value = p.displayStyle || 'full'; // تغذية الحقل الجديد السحابي
+            
             document.getElementById('prod-card-w').value = p.cardWidth || 280; document.getElementById('val-custom-w').innerText = (p.cardWidth ? p.cardWidth + 'px' : 'تلقائي');
             document.getElementById('prod-card-h').value = p.cardHeight || 350; document.getElementById('val-custom-h').innerText = (p.cardHeight ? p.cardHeight + 'px' : 'تلقائي');
             
@@ -733,6 +810,7 @@
             document.getElementById('editor-title').innerHTML = `<i data-lucide="edit-3" class="text-brand-pink w-10 h-10"></i> هندسة منتج: ${p.name || ''}`;
             if (typeof lucide !== 'undefined') lucide.createIcons();
             
+            switchAdminTab(null, 'tab-identity'); // إرجاع الواجهة للتبويب الأول تلقائياً
             switchSection('product-editor');
         };
 
@@ -770,6 +848,7 @@
                 flavors: document.getElementById('prod-flavors').value.trim(),
                 img: img, heroImg: document.getElementById('prod-hero-img').value.trim(),
                 gridSpan: document.getElementById('prod-grid-span').value,
+                displayStyle: document.getElementById('productDisplayStyle').value, // تسجيل الحقل البرمجي الجديد
                 cardWidth: parseInt(document.getElementById('prod-card-w').value),
                 cardHeight: parseInt(document.getElementById('prod-card-h').value),
                 inStock: document.getElementById('prod-stock').checked,
@@ -794,4 +873,6 @@
     </script>
 </body>
 </html>
+
+
 
