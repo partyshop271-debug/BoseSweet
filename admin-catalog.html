@@ -407,6 +407,77 @@
                 </div>
             </section>
 
+            <div class="mt-8 bg-brand-surface rounded-2xl border border-brand-border p-6 space-y-6">
+                <div class="border-b border-brand-border pb-4">
+                    <h3 class="text-xl font-black text-white flex items-center gap-2">
+                        <i data-lucide="sliders" class="text-brand-pink"></i>
+                        إدارة ومحرك قسم التنسيق الفاخر (المحاكي البصري)
+                    </h3>
+                    <p class="text-xs text-brand-textMuted mt-1">التحكم المطلق في أسعار الخامات، روابط الطبقات السحابية، وتفكيك بنود طلبات الهدايا</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-brand-bg p-4 rounded-xl border border-brand-border space-y-3">
+                        <h4 class="text-xs font-bold text-brand-pink flex items-center gap-1">
+                            <i data-lucide="dollar-sign" class="w-4 h-4"></i> تسعير الخامات الأساسية (لكل وردة)
+                        </h4>
+                        <div>
+                            <label class="block text-[11px] text-brand-textMuted mb-1">الورد الطبيعي (ج.م):</label>
+                            <input type="number" id="adm-price-natural" class="w-full bg-brand-surface border border-brand-border rounded-lg p-2 text-white text-sm outline-none" value="20">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-brand-textMuted mb-1">الورد الصناعي الفاخر (ج.م):</label>
+                            <input type="number" id="adm-price-artificial" class="w-full bg-brand-surface border border-brand-border rounded-lg p-2 text-white text-sm outline-none" value="15">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-brand-textMuted mb-1">ورد الستان الحريري (ج.م):</label>
+                            <input type="number" id="adm-price-satin" class="w-full bg-brand-surface border border-brand-border rounded-lg p-2 text-white text-sm outline-none" value="25">
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-bg p-4 rounded-xl border border-brand-border space-y-3">
+                        <h4 class="text-xs font-bold text-brand-pink flex items-center gap-1">
+                            <i data-lucide="gift" class="w-4 h-4"></i> تسعير اللمسات والإضافات الفاخرة
+                        </h4>
+                        <div>
+                            <label class="block text-[11px] text-brand-textMuted mb-1">إضافة الشوكولاتة الفاخرة (ج.م):</label>
+                            <input type="number" id="adm-price-chocolate" class="w-full bg-brand-surface border border-brand-border rounded-lg p-2 text-white text-sm outline-none" value="250">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-brand-textMuted mb-1">تغليف وتنسيق المبالغ النقدية (ج.م):</label>
+                            <input type="number" id="adm-price-cash" class="w-full bg-brand-surface border border-brand-border rounded-lg p-2 text-white text-sm outline-none" value="100">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-[11px] text-brand-textMuted mb-1">كارت الإهداء:</label>
+                                <input type="number" id="adm-price-card" class="w-full bg-brand-surface border border-brand-border rounded-lg p-2 text-white text-sm outline-none" value="25">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-brand-textMuted mb-1">الصورة المرفوعة:</label>
+                                <input type="number" id="adm-price-photo" class="w-full bg-brand-surface border border-brand-border rounded-lg p-2 text-white text-sm outline-none" value="15">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-bg p-4 rounded-xl border border-brand-border space-y-2">
+                        <h4 class="text-xs font-bold text-brand-pink flex items-center gap-1">
+                            <i data-lucide="image" class="w-4 h-4"></i> روابط صور الطبقات (Cloudinary)
+                        </h4>
+                        <div>
+                            <label class="block text-[11px] text-brand-textMuted mb-1">رابط طبقة الشوكولاتة المفرغة:</label>
+                            <input type="text" id="adm-layer-chocolate-url" class="w-full bg-brand-surface border border-brand-border rounded-lg p-1.5 text-white text-xs outline-none" placeholder="https://res.cloudinary.com/...">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-brand-textMuted mb-1">رابط طبقة التغليف النقدي المفرغة:</label>
+                            <input type="text" id="adm-layer-cash-url" class="w-full bg-brand-surface border border-brand-border rounded-lg p-1.5 text-white text-xs outline-none" placeholder="https://res.cloudinary.com/...">
+                        </div>
+                        <button onclick="window.saveBoseSimulatorSettings()" class="w-full mt-2 bg-brand-pink text-white font-bold text-xs py-2.5 rounded-xl hover:opacity-90 transition-all cursor-pointer">
+                            اعتماد وتوثيق الإعدادات سحابياً
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
@@ -457,6 +528,7 @@
                 });
             }
             loadCatalog();
+            loadBoseSimulatorSettings();
         });
 
         const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1"; 
@@ -940,7 +1012,54 @@
             }
         };
 
+        // 🧠 محرك التحكم السحابي في أسعار خامات وطبقات المحاكي البصري لعلامة حلويات بوسي
+        window.saveBoseSimulatorSettings = async function() {
+            if(!window.db) {
+                showToast("عائق في الاتصال بالسحابة. يرجى التأكد من استقرار الشبكة.", "error");
+                return;
+            }
+            try {
+                const pricingData = {
+                    priceNatural: parseFloat(document.getElementById('adm-price-natural').value) || 20,
+                    priceArtificial: parseFloat(document.getElementById('adm-price-artificial').value) || 15,
+                    priceSatin: parseFloat(document.getElementById('adm-price-satin').value) || 25,
+                    priceChocolate: parseFloat(document.getElementById('adm-price-chocolate').value) || 250,
+                    priceCash: parseFloat(document.getElementById('adm-price-cash').value) || 100,
+                    priceCard: parseFloat(document.getElementById('adm-price-card').value) || 25,
+                    pricePhoto: parseFloat(document.getElementById('adm-price-photo').value) || 15,
+                    layerChocolateUrl: document.getElementById('adm-layer-chocolate-url').value.trim(),
+                    layerCashUrl: document.getElementById('adm-layer-cash-url').value.trim(),
+                    updatedAt: Date.now()
+                };
+                await window.db.collection('settings').doc('pricingRules').set(pricingData, { merge: true });
+                await window.db.collection('system').doc('syncFlag').set({ forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                showToast("تم حفظ واعتماد إعدادات المحاكي البصري سحابياً.");
+            } catch(e) {
+                console.error("عطل أثناء حفظ إعدادات المحاكي:", e);
+                showToast("عطل اتصالي منع تخزين الإعدادات.", "error");
+            }
+        };
+
+        async function loadBoseSimulatorSettings() {
+            if(!window.db) return;
+            try {
+                const snap = await window.db.collection('settings').doc('pricingRules').get();
+                if(snap.exists) {
+                    const data = snap.data();
+                    if(data.priceNatural !== undefined) document.getElementById('adm-price-natural').value = data.priceNatural;
+                    if(data.priceArtificial !== undefined) document.getElementById('adm-price-artificial').value = data.priceArtificial;
+                    if(data.priceSatin !== undefined) document.getElementById('adm-price-satin').value = data.priceSatin;
+                    if(data.priceChocolate !== undefined) document.getElementById('adm-price-chocolate').value = data.priceChocolate;
+                    if(data.priceCash !== undefined) document.getElementById('adm-price-cash').value = data.priceCash;
+                    if(data.priceCard !== undefined) document.getElementById('adm-price-card').value = data.priceCard;
+                    if(data.pricePhoto !== undefined) document.getElementById('adm-price-photo').value = data.pricePhoto;
+                    if(data.layerChocolateUrl !== undefined) document.getElementById('adm-layer-chocolate-url').value = data.layerChocolateUrl;
+                    if(data.layerCashUrl !== undefined) document.getElementById('adm-layer-cash-url').value = data.layerCashUrl;
+                }
+            } catch(e) {
+                console.error("خطأ أثناء تحميل إعدادات المحاكي:", e);
+            }
+        }
     </script>
 </body>
 </html>
-

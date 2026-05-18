@@ -614,3 +614,83 @@ input::placeholder, textarea::placeholder {
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ==========================================================================
+   هندسة وتأثيرات المحاكي البصري - حلويات بوسي
+   ========================================================================== */
+
+/* حركة الظهور الانسيابي لخطوات رحلة التخصيص */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* حماية الطبقات المتراكبة من اعتراض نقرات المستخدم */
+.simulator-layer {
+    pointer-events: none;
+}
+
+/* تأثيرات التفاعل مع أزرار الخيارات الأساسية */
+.bose-btn-option {
+    outline: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.bose-btn-option:hover {
+    background-color: #ff91a4 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(255, 145, 164, 0.25);
+    transform: translateY(-1px);
+}
+
+/* تأثيرات التفاعل مع الدوائر اللونية */
+.color-circle {
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease;
+}
+
+.color-circle:hover {
+    transform: scale(1.12);
+}
+
+.color-circle.active {
+    transform: scale(1.18);
+    box-shadow: 0 4px 10px rgba(255, 145, 164, 0.35) !important;
+}
+
+/* تحسين حركة بنود اللمسات الفاخرة عند التمرير */
+.addon-item {
+    transition: all 0.2s ease-in-out;
+}
+
+.addon-item:hover {
+    background-color: #fff9fa;
+    padding-right: 8px;
+    border-radius: 8px;
+}
+
+/* تأثيرات شريط التقدم الرقمي */
+.step-dot {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.step-dot.active {
+    box-shadow: 0 0 0 5px #ffffff, 0 4px 12px rgba(255, 145, 164, 0.45) !important;
+}
+
+/* ملاءمة أبعاد شاشات الموبايل لضمان ثبات التنسيق البصري */
+@media (max-width: 768px) {
+    .bose-visual-simulator {
+        min-height: 280px !important;
+    }
+    
+    #custom-photo-wrapper img {
+        max-width: 85px !important;
+        max-height: 85px !important;
+    }
+}

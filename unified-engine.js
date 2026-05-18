@@ -1113,3 +1113,148 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد إلى الإصدار السيادي المتطور (V39.0) بنجاح ليدعم التوافق الرجعي واستعادة المنتجات القديمة مع الاحتفاظ بالقوة الهيكلية التامة.");
+
+/* ==========================================================================
+   ربط وتكامل محاكي التنسيق البصري مع المحرك الموحد - حلويات بوسي
+   ========================================================================== */
+
+// 1. تسجيل وحدة التنسيق المخصص داخل دورة حياة المحرك لضمان التوافق
+if (typeof boseEngineRegistry !== 'undefined') {
+    boseEngineRegistry.registerModule('bouquetSimulator', {
+        init: function() {
+            console.log("تمت تهيئة وحدة محاكي التنسيق الفاخر بنجاح.");
+        },
+        validate: function(data) {
+            return data && data.material && data.density >= 10;
+        }
+    });
+}
+
+// 2. الدالة المركزية لدمج خيارات المحاكي مع نظام السلة الموحد
+function integrateSimulatorWithCart(simulatorData) {
+    // التحقق من سلامة البيانات ومطابقتها لمعايير الجودة قبل المعالجة
+    if (!simulatorData || !simulatorData.totalPrice) {
+        console.error("خطأ: بيانات التنسيق غير مكتملة أو غير متوافقة مع محرك الموقع.");
+        return false;
+    }
+
+    // صياغة بنية المنتج الموحدة وتفكيك السعر اللحظي بدقة
+    const cartItem = {
+        id: `bouquet-${Date.now()}`,
+        name: simulatorData.productName,
+        price: parseFloat(simulatorData.totalPrice.replace(/[^\d.]/g, '')),
+        quantity: 1,
+        options: {
+            "الخامة الأساسية": simulatorData.material,
+            "اللون الأساسي": simulatorData.color,
+            "كثافة التنسيق": `${simulatorData.density} وردة`,
+            "اللمسات الفاخرة": [
+                simulatorData.hasChocolate ? "شوكولاتة فاخرة" : null,
+                simulatorData.hasCash ? "تغليف مبالغ نقدية" : null,
+                simulatorData.hasCard ? "كارت إهداء مخطوط" : null,
+                simulatorData.hasPhoto ? "صورة تذكارية مصورة" : null
+            ].filter(Boolean)
+        },
+        metadata: {
+            source: "visual-simulator",
+            timestamp: new Date().toISOString()
+        }
+    };
+
+    // تمرير المنتج إلى محرك السلة الرئيسي للموقع
+    if (typeof boseCartEngine !== 'undefined' && typeof boseCartEngine.addItem === 'function') {
+        boseCartEngine.addItem(cartItem);
+    } else if (typeof globalCart !== 'undefined' && Array.isArray(globalCart)) {
+        globalCart.push(cartItem);
+        if (typeof updateCartUI === 'function') updateCartUI();
+    } else {
+        // آلية تخزين احتياطية سريعة لضمان استقرار الطلب وحفظه على جهاز العميل
+        let localCart = JSON.parse(localStorage.getItem('bose_cart')) || [];
+        localCart.push(cartItem);
+        localStorage.setItem('bose_cart', JSON.stringify(localCart));
+    }
+
+    // توجيه انسيابي مباشر إلى صفحة السلة لمعاينة الطلب الفاخر وتأكيده
+    window.location.href = 'cart.html';
+    return true;
+}
+
+// 3. ربط وتفعيل الدالة عالمياً لتستجيب لها وحدة التحكم اللحظية فوراً
+if (typeof window !== 'undefined') {
+    window.addToCart = integrateSimulatorWithCart;
+}
+
+/* ==========================================================================
+   المحرك الإداري للوحة التحكم وتفكيك طلبات التنسيق - حلويات بوسي
+   ========================================================================== */
+
+// 1. دالة الحفظ المركزي للإعدادات والأسعار سحابياً
+window.saveBoseSimulatorSettings = async function() {
+    if (typeof db === 'undefined') {
+        console.error("عطل اتصالي: قاعدة بيانات فايربيز غير معرفة في هذا النطاق.");
+        return;
+    }
+
+    const simulatorSettings = {
+        prices: {
+            natural: parseFloat(document.getElementById('adm-price-natural').value) || 20,
+            artificial: parseFloat(document.getElementById('adm-price-artificial').value) || 15,
+            satin: parseFloat(document.getElementById('adm-price-satin').value) || 25,
+            chocolate: parseFloat(document.getElementById('adm-price-chocolate').value) || 250,
+            cash: parseFloat(document.getElementById('adm-price-cash').value) || 100,
+            card: parseFloat(document.getElementById('adm-price-card').value) || 25,
+            photo: parseFloat(document.getElementById('adm-price-photo').value) || 15
+        },
+        layers: {
+            chocolateUrl: document.getElementById('adm-layer-chocolate-url').value.trim(),
+            cashUrl: document.getElementById('adm-layer-cash-url').value.trim()
+        },
+        updatedAt: Date.now()
+    };
+
+    try {
+        // توثيق وحفظ الإعدادات في مجموعة الإعدادات الخاصة بموقع حلويات بوسي
+        if (typeof firebase !== 'undefined' && firebase.firestore) {
+            await firebase.firestore().collection('settings').doc('simulator_config').set(simulatorSettings, { merge: true });
+            alert("تم توثيق وحفظ لوجستيات وأسعار محاكي التنسيق سحابياً بنجاح.");
+        } else {
+            localStorage.setItem('bose_simulator_config', JSON.stringify(simulatorSettings));
+            alert("تم حفظ الإعدادات محلياً بنجاح (وضع الحفظ الاحتياطي).");
+        }
+    } catch (error) {
+        console.error("فشل الحفظ السحابي لقسم التنسيق:", error);
+    }
+};
+
+// 2. محرك تفكيك هيكل طلبات البوكيهات الفاخرة الموجه للإدارة
+window.parseCustomBouquetOrder = function(item) {
+    if (!item || item.metadata?.source !== "visual-simulator") return '';
+
+    const opts = item.options || {};
+    const additionals = Array.isArray(opts["اللمسات الفاخرة"]) ? opts["اللمسات الفاخرة"].join(' | ') : 'لا يوجد';
+    
+    // بناء بطاقة تفكيك هندسية تظهر بدقة داخل تفاصيل الطلب في لوحة التحكم
+    return `
+        <div class="mt-3 p-4 bg-[#1a1012] rounded-xl border border-[#42282d] text-xs text-[#e0c8cc] space-y-2">
+            <p class="text-[#ff91a4] font-black flex items-center gap-1">
+                💐 تفكيك بنود بوكيه التنسيق المخصص (دقة التنفيذ):
+            </p>
+            <div class="grid grid-cols-2 gap-y-1 text-[11px]">
+                <p>• الخامة الأساسية: <span class="text-white font-bold">${opts["الخامة الأساسية"] || 'طبيعي'}</span></p>
+                <p>• اللون المطلوب: <span class="text-white font-bold">${opts["اللون الأساسي"] || 'أحمر'}</span></p>
+                <p>• الكثافة والعدد: <span class="text-white font-bold">${opts["كثافة التنسيق"] || '15 وردة'}</span></p>
+                <p>• السعر الإجمالي المعتمد: <span class="text-[#ff91a4] font-bold">${item.price} ج.م</span></p>
+            </div>
+            <p class="text-[11px] border-t border-[#42282d] pt-1 mt-1">
+                • اللمسات الفاخرة المرفقة: <span class="text-white">${additionals}</span>
+            </p>
+            ${opts["رابط_الصورة_التذكارية"] ? `
+                <div class="pt-2">
+                    <a href="${opts["رابط_الصورة_التذكارية"]}" target="_blank" class="inline-flex items-center gap-1 bg-[#ff91a4] text-white px-3 py-1 rounded-lg text-[10px] font-bold hover:opacity-90 transition-all">
+                        عرض وتحميل الصورة التذكارية المرفوعة بدقة الطباعة
+                    </a>
+                </div>
+            ` : ''}
+        </div>
+    `;
+};
