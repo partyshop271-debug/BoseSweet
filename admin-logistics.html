@@ -52,9 +52,8 @@
         .submenu-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px 14px 16px; margin: 6px 16px 6px 0; border-radius: 12px; color: var(--bose-muted); font-size: 1rem; transition: all 0.3s ease; font-weight: 700; cursor: pointer; border-right: 3px solid transparent; }
         .submenu-item:hover, .submenu-item.active { background-color: rgba(255, 145, 164, 0.15); color: var(--bose-text); border-right-color: var(--bose-pink); font-weight: 900; }
 
-        .main-content { margin-right: 340px; min-h: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
+        .main-content { margin-right: 340px; min-height: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
         
-        /* 🛡️ نظام التبويبات (Tabs) لإنهاء التمرير اللانهائي */
         .admin-tabs-nav {
             display: flex; gap: 12px; background-color: var(--bose-surface); padding: 12px; border-radius: 20px; border: 2px solid var(--bose-border); margin-bottom: 30px; overflow-x: auto;
             -ms-overflow-style: none; scrollbar-width: none;
@@ -70,7 +69,6 @@
         .admin-tab-content { display: none; animation: fadeIn 0.4s ease forwards; }
         .admin-tab-content.active-tab { display: block; }
         
-        /* تعديل الأقسام القديمة لتخضع لنظام التبويبات الجديد */
         .admin-section { display: block !important; margin-bottom: 40px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -112,6 +110,20 @@
         <span id="toast-msg">تم التنفيذ بنجاح</span>
     </div>
 
+    <div id="bose-confirm-modal" class="fixed inset-0 z-[20000] hidden items-center justify-center p-4 bg-black/85 backdrop-filter blur-sm">
+        <div class="bg-brand-surface border-2 border-brand-border rounded-3xl p-8 max-w-md w-full shadow-2xl text-center">
+            <div class="w-16 h-16 rounded-full bg-red-900/20 border-2 border-red-500/50 flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="alert-triangle" class="w-8 h-8 text-red-400"></i>
+            </div>
+            <h4 class="text-2xl font-black text-white mb-4">هل ترغب بالاستمرار؟</h4>
+            <p id="bose-confirm-message" class="text-brand-textMuted font-bold text-lg mb-8 leading-relaxed">سيتم تعديل لوجستيات الشحن والتوصيل للموقع.</p>
+            <div class="flex gap-4">
+                <button id="bose-confirm-yes" class="btn-solid bg-red-500 hover:bg-red-600 text-white font-black py-4 rounded-xl flex-1 text-lg">نعم، متأكد</button>
+                <button id="bose-confirm-no" class="bg-brand-bg border-2 border-brand-border text-brand-textMuted hover:bg-brand-surface font-black py-4 rounded-xl flex-1 text-lg">تراجع</button>
+            </div>
+        </div>
+    </div>
+
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <aside id="sidebar" class="sidebar">
@@ -120,7 +132,7 @@
                 <div class="w-12 h-12 rounded-xl bg-brand-bg border border-brand-pink/40 flex items-center justify-center shadow-lg">
                     <i data-lucide="gem" class="w-7 h-7 text-brand-pink"></i>
                 </div>
-                <h1 class="text-2xl font-black text-brand-textMain tracking-tight">إدارة بوسي</h1>
+                <h1 class="text-2xl font-black text-brand-textMain tracking-tight">إدارة حلويات بوسي</h1>
             </div>
             <button onclick="toggleSidebar()" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
         </div>
@@ -171,17 +183,14 @@
 
         <div class="p-6 md:p-12 max-w-7xl mx-auto w-full">
 
-            <!-- 🛡️ لوحة التحكم العلوية: نظام التبويبات الجديد -->
             <div class="admin-tabs-nav">
                 <button type="button" class="admin-tab-btn active" onclick="switchAdminTab(event, 'tab-orders')">1. إدارة الطلبات اللحظية</button>
                 <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-shipping')">2. مناطق ومصاريف التوصيل</button>
                 <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-reports')">3. التقارير المالية والتسعير</button>
             </div>
 
-            <!-- تغليف قسم (الطلبات وحالة المتجر) -->
             <div id="tab-orders" class="admin-tab-content active-tab">
                 
-                <!-- 1. شاشة الاستقرار -->
                 <section id="dashboard" class="admin-section">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
                         <div class="admin-card !p-8 flex flex-col items-center justify-center text-center">
@@ -197,7 +206,6 @@
                     </div>
                 </section>
 
-                <!-- 2. حالة المتجر والقواعد العامة -->
                 <section id="store-settings" class="admin-section">
                     <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
                         <div>
@@ -250,10 +258,8 @@
                 
             </div>
 
-            <!-- تغليف قسم (مناطق ومصاريف التوصيل) -->
             <div id="tab-shipping" class="admin-tab-content">
                 
-                <!-- 4. مناطق الشحن واللوجستيات -->
                 <section id="shipping-zones" class="admin-section">
                     <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
                         <div>
@@ -267,7 +273,7 @@
                     <div class="grid grid-cols-1 xl:grid-cols-3 gap-10">
                         <div class="xl:col-span-1">
                             <div class="admin-card sticky top-28 bg-[#110a0b]">
-                                <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3" id="zone-editor-title"><i data-lucide="plus-circle" class="w-8 h-8"></i> إضافة منطقة</h4>
+                                <h4 class="text-brand-pink font-black text-2xl mb-8 border-b border-brand-border pb-4 flex items-center gap-3" id="zone-editor-title"><i data-lucide="plus-circle" class="w-8 h-8 text-brand-pink"></i> إضافة منطقة</h4>
                                 <input type="hidden" id="zone-id">
                                 
                                 <div class="space-y-8">
@@ -301,10 +307,8 @@
                 
             </div>
 
-            <!-- تغليف قسم (التسعير والتقارير) -->
             <div id="tab-reports" class="admin-tab-content">
                 
-                <!-- 3. تسعير باني التورت -->
                 <section id="pricing-engine" class="admin-section">
                     <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
                         <div>
@@ -372,12 +376,38 @@
         
         lucide.createIcons();
 
+        // 🛡️ تفعيل محرك نافذة التأكيد السيادي المخصص
+        let confirmCallback = null;
+        window.showConfirm = function(message, callback) {
+            const modal = document.getElementById('bose-confirm-modal');
+            document.getElementById('bose-confirm-message').innerText = message;
+            confirmCallback = callback;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        };
+
+        document.getElementById('bose-confirm-yes').addEventListener('click', () => {
+            if (confirmCallback) confirmCallback();
+            closeConfirmModal();
+        });
+
+        document.getElementById('bose-confirm-no').addEventListener('click', () => {
+            closeConfirmModal();
+        });
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('bose-confirm-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            confirmCallback = null;
+        }
+
         window.toggleSidebar = function() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('sidebar-overlay').classList.toggle('active');
         };
 
-        // 🛡️ دالة التبديل الذكية للتبويبات الجديدة (Tabs)
         window.switchAdminTab = function(event, tabId) {
             const nav = event.currentTarget.closest('.admin-tabs-nav');
             if (nav) {
@@ -392,12 +422,10 @@
             lucide.createIcons();
         };
 
-        // تحديث دالة التوجيه من القائمة الجانبية لتتواصل مع التبويبات
         window.switchSection = function(sectionId, element) {
             document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
             
-            // تحديد التبويب (Tab) المرتبط بالقسم المختار لفتحه آلياً
             let targetTab = 'tab-orders'; 
             if(sectionId === 'shipping-zones') targetTab = 'tab-shipping';
             else if(sectionId === 'pricing-engine') targetTab = 'tab-reports';
@@ -407,7 +435,6 @@
                 tabBtn.click();
             }
             
-            // التمرير السلس للقسم الداخلي المطلوب بعد فتح التبويب الخاص به
             setTimeout(() => {
                 const targetSection = document.getElementById(sectionId);
                 if(targetSection) targetSection.scrollIntoView({behavior: 'smooth', block: 'start'});
@@ -425,11 +452,9 @@
             if(type === 'error') {
                 toast.style.borderColor = '#ef4444';
                 toast.querySelector('i').setAttribute('data-lucide', 'alert-circle');
-                toast.querySelector('i').classList.replace('text-brand-pink', 'text-red-400');
             } else {
                 toast.style.borderColor = 'var(--bose-pink)';
                 toast.querySelector('i').setAttribute('data-lucide', 'check-circle');
-                toast.querySelector('i').classList.replace('text-red-400', 'text-brand-pink');
             }
             lucide.createIcons();
 
@@ -441,10 +466,10 @@
             const label = document.getElementById('store-open-text');
             if(checkbox.checked) {
                 label.innerText = "المتجر مفتوح لاستقبال الطلبات";
-                label.classList.replace('text-red-400', 'text-white');
+                label.className = "font-bold text-xl text-white";
             } else {
                 label.innerText = "المتجر مغلق حالياً (لا يمكن الطلب)";
-                label.classList.replace('text-white', 'text-red-400');
+                label.className = "font-bold text-xl text-red-400";
             }
         };
 
@@ -452,16 +477,11 @@
             const label = document.getElementById('pickup-status-text');
             if(checkbox.checked) {
                 label.innerText = "الاستلام من المقر متاح";
-                label.classList.replace('text-red-400', 'text-white');
             } else {
                 label.innerText = "الاستلام من المقر غير متاح";
-                label.classList.replace('text-white', 'text-red-400');
             }
         };
 
-        // ---------------------------------------------------------
-        // ☁️ تحميل بيانات اللوجستيات
-        // ---------------------------------------------------------
         async function loadLogisticsData() {
             try {
                 const storeSnap = await getDoc(doc(db, 'settings', 'logistics'));
@@ -485,9 +505,11 @@
                 if (priceSnap.exists()) {
                     const priceData = priceSnap.data();
                     document.getElementById('price-per-person').value = priceData.pricePerPerson || 145;
-                    document.getElementById('price-edible').value = priceData.printEdible || 60;
-                    document.getElementById('price-non-edible').value = priceData.printNonEdible || 20;
-                    document.getElementById('price-gift-card').value = priceData.giftCardPrice || 40;
+                    
+                    // تحصين قراءة حقول الأسعار بكلا التسميتين المتاحتين لمنع التضارب السحابي
+                    document.getElementById('price-edible').value = priceData.printEdible || priceData.cakePriceEdible || 60;
+                    document.getElementById('price-non-edible').value = priceData.printNonEdible || priceData.cakePriceNonEdible || 20;
+                    document.getElementById('price-gift-card').value = priceData.giftCardPrice || priceData.cakeGiftCardPrice || 40;
                 }
 
                 const querySnapshot = await getDocs(collection(db, 'shipping'));
@@ -523,10 +545,6 @@
                 showToast("فشل الاتصال بقاعدة البيانات.", "error");
             }
         }
-
-        // ---------------------------------------------------------
-        // 💾 دوال الحفظ والاعتماد
-        // ---------------------------------------------------------
         
         window.saveStoreSettings = async function() {
             try {
@@ -537,12 +555,14 @@
                     updatedAt: Date.now()
                 }, { merge: true });
                 
+                // تأمين مزامنة المحرك السحابي اللحظية مع العميل
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 
                 document.getElementById('stat-store-status').innerText = document.getElementById('store-is-open').checked ? "مفتوح" : "مغلق";
                 document.getElementById('stat-store-status').style.color = document.getElementById('store-is-open').checked ? "#ffffff" : "#ef4444";
                 
                 showToast("تم اعتماد قواعد المتجر وتطبيقها بنجاح.");
+                loadLogisticsData();
             } catch (e) { showToast("تعذر الحفظ في السحابة.", "error"); }
         };
 
@@ -551,16 +571,24 @@
             if (basePrice <= 0) { showToast("السعر الأساسي يجب أن يكون صالحاً.", "error"); return; }
 
             try {
-                await setDoc(doc(db, 'settings', 'pricingRules'), {
+                // حفظ البيانات بالمسميات المزدوجة لضمان توافق باني التورت والكتالوج كاملاً دون ثغرات
+                const updatedPricingObj = {
                     pricePerPerson: basePrice,
                     printEdible: parseFloat(document.getElementById('price-edible').value) || 0,
+                    cakePriceEdible: parseFloat(document.getElementById('price-edible').value) || 0,
                     printNonEdible: parseFloat(document.getElementById('price-non-edible').value) || 0,
+                    cakePriceNonEdible: parseFloat(document.getElementById('price-non-edible').value) || 0,
                     giftCardPrice: parseFloat(document.getElementById('price-gift-card').value) || 0,
+                    cakeGiftCardPrice: parseFloat(document.getElementById('price-gift-card').value) || 0,
                     updatedAt: Date.now()
-                }, { merge: true });
+                };
+
+                await setDoc(doc(db, 'settings', 'pricingRules'), updatedPricingObj, { merge: true });
                 
+                // تأمين مزامنة المحرك السحابي اللحظية مع العميل
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 showToast("تم اعتماد أسعار باني التورت وتحديثها للعملاء.");
+                loadLogisticsData();
             } catch (e) { showToast("تعذر حفظ الأسعار.", "error"); }
         };
 
@@ -579,7 +607,6 @@
             document.getElementById('zone-editor-title').innerHTML = '<i data-lucide="edit-2" class="w-8 h-8 text-brand-pink"></i> تعديل التسعيرة';
             lucide.createIcons();
             
-            // فتح التبويب الخاص بمناطق الشحن آلياً عند الضغط على تعديل
             const tabBtn = document.querySelector(`.admin-tab-btn[onclick*="tab-shipping"]`);
             if(tabBtn) tabBtn.click();
             
@@ -602,6 +629,7 @@
                     await setDoc(doc(collection(db, 'shipping')), zoneData);
                 }
                 
+                // تأمين مزامنة المحرك السحابي اللحظية مع العميل
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 showToast("تم اعتماد المنطقة ورسومها بنجاح.");
                 clearZoneForm();
@@ -610,18 +638,18 @@
         };
 
         window.deleteZone = async function(id, name) {
-            if (confirm(`قرار سيادي: هل أنتِ متأكدة من إيقاف خدمة التوصيل لمنطقة [${name}] وإزالتها؟`)) {
+            window.showConfirm(`قرار سيادي: هل ترغبين في إيقاف خدمة التوصيل لمنطقة [${name}] وإزالتها نهائياً؟`, async () => {
                 try {
-                    await deleteDoc(doc(db, 'shipping', id));
+                    await deleteDoc(doc(doc(db, 'shipping', id)));
+                    // تأمين مزامنة المحرك السحابي اللحظية مع العميل
                     await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                     showToast(`تم إيقاف الشحن لمنطقة [${name}].`);
                     loadLogisticsData();
                 } catch (e) { showToast("عائق فني أثناء الحذف.", "error"); }
-            }
+            });
         };
 
         document.addEventListener('DOMContentLoaded', loadLogisticsData);
     </script>
 </body>
 </html>
-

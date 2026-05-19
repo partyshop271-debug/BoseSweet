@@ -123,7 +123,7 @@
         .admin-tabs-nav::-webkit-scrollbar { display: none; }
         .admin-tab-btn { background-color: var(--bose-bg); color: var(--bose-muted); border: 2px solid var(--bose-border); padding: 16px 28px; border-radius: 20px; font-weight: 900; font-size: 1.15rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); white-space: nowrap; flex-shrink: 0; }
         .admin-tab-btn:hover { border-color: var(--bose-pink); color: var(--bose-text); transform: translateY(-2px); }
-        .admin-tab-btn.active { background-color: var(--bose-pink); color: var(--bose-bg); border-color: var(--bose-pink); box-shadow: 0 8px 25px rgba(255,145,164,0.3); }
+        .admin-tab-btn.active { background-color: var(--bose-pink); color: var(--bose-bg); border-color: var(--bose-pink); box-shadow: 0 8px 25px rgba(255, 145, 164, 0.3); }
         .admin-tab-content { display: none; animation: fadeInTab 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         .admin-tab-content.active-tab { display: block; }
         @keyframes fadeInTab { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
@@ -141,7 +141,6 @@
         <span id="toast-msg">تم التنفيذ بنجاح</span>
     </div>
 
-    <!-- نافذة تأكيد سيادية مخصصة بديلة ومقاومة لانهيار المتصفحات في iframes أو تطبيقات الهواتف -->
     <div id="bose-confirm-modal" class="fixed inset-0 z-[20000] hidden items-center justify-center p-4 bg-black/80 backdrop-filter blur-sm">
         <div class="bg-brand-surface border-2 border-brand-border rounded-3xl p-8 max-w-md w-full shadow-2xl text-center">
             <div class="w-16 h-16 rounded-full bg-red-900/20 border-2 border-red-500/50 flex items-center justify-center mx-auto mb-6">
@@ -228,7 +227,6 @@
                 </div>
             </section>
 
-            <!-- واجهة إدارة ومطابقة طلبات العملاء الحية وسد فجوات المطبخ -->
             <section id="orders-section" class="admin-section">
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-16 gap-8 border-b-2 border-brand-border pb-10">
                     <div>
@@ -242,9 +240,7 @@
                         <i data-lucide="refresh-cw" class="w-7 h-7"></i> تحديث الطلبات الحية
                     </button>
                 </div>
-                <div id="orders-container" class="space-y-8">
-                    <!-- ستنزل الطلبات والطلبيات الحية والملكية هنا -->
-                </div>
+                <div id="orders-container" class="space-y-8"></div>
             </section>
 
             <section id="product-list" class="admin-section">
@@ -261,8 +257,7 @@
                     </button>
                 </div>
                 
-                <div id="catalog-grid" class="catalog-grid">
-                </div>
+                <div id="catalog-grid" class="catalog-grid"></div>
             </section>
 
             <section id="product-editor" class="admin-section">
@@ -378,8 +373,7 @@
                             </div>
                         </div>
                         
-                        <!-- بداية قسم رفع صور الورد والمحاكي البصري -->
-                        <div class="mt-16 pt-16 border-t border-brand-border">
+                        <div id="flower-exclusive-fields" class="mt-16 pt-16 border-t border-brand-border" style="display: none;">
                             <h4 class="text-brand-pink font-black text-2xl mb-4 flex items-center gap-3">
                                 <i data-lucide="flower" class="w-8 h-8"></i> مرفقات قسم الورد والمحاكي البصري
                             </h4>
@@ -388,7 +382,6 @@
                             </p>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <!-- الورد الطبيعي -->
                                 <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-xl mb-4">صورة الورد الطبيعي</label>
@@ -404,7 +397,6 @@
                                     </div>
                                 </div>
 
-                                <!-- الورد الصناعي -->
                                 <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-xl mb-4">صورة الورد الصناعي</label>
@@ -420,7 +412,6 @@
                                     </div>
                                 </div>
 
-                                <!-- البوكيه مع النقود -->
                                 <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-xl mb-4">صورة بوكيه مع النقود (كاش)</label>
@@ -436,7 +427,6 @@
                                     </div>
                                 </div>
 
-                                <!-- البوكيه مع الشوكولاتة -->
                                 <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-xl mb-4">صورة بوكيه الشوكولاتة</label>
@@ -453,8 +443,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- نهاية قسم الورد -->
-
                     </div>
                 </div>
 
@@ -482,18 +470,10 @@
                         </p>
 
                         <div class="mb-12 bg-[#0c0709] p-10 rounded-3xl border border-brand-border">
-                            <label class="form-label text-brand-pink text-2xl mb-6">نمط عرض الكارت في قسمه</label>
-                            <select id="prod-grid-span" class="form-select text-xl font-black text-white">
-                                <option value="half">كارت عادي (يأخذ نصف الشاشة ويسمح بتواجد كارت آخر بجواره)</option>
+                            <label class="form-label text-brand-pink text-2xl mb-6">نمط عرض الكارت في قسمه للعميل (قواعد العرض المقسم)</label>
+                            <select id="productDisplayStyle" class="form-select text-xl font-black text-white">
                                 <option value="full">كارت سيادي ممتد (يملأ عرض الشاشة بالكامل للفت الانتباه القوي)</option>
-                            </select>
-                        </div>
-
-                        <div class="admin-control-group">
-                            <label class="admin-label">حجم عرض المنتج في المتجر:</label>
-                            <select id="productDisplayStyle" class="admin-select" name="displayStyle">
-                                <option value="full">كارت عادي (يملأ الشاشة)</option>
-                                <option value="half">نصف الشاشة (كارتين متجاورين)</option>
+                                <option value="half">كارت عادي (يأخذ نصف الشاشة ويسمح بتواجد كارت آخر بجواره)</option>
                             </select>
                         </div>
 
@@ -598,6 +578,17 @@
     </main>
 
     <script>
+        window.toggleFlowerFields = function(categoryName) {
+            const flowerSection = document.getElementById('flower-exclusive-fields');
+            if (flowerSection) {
+                if (categoryName && (categoryName.includes('ورد') || categoryName.includes('الورد'))) {
+                    flowerSection.style.display = 'block';
+                } else {
+                    flowerSection.style.display = 'none';
+                }
+            }
+        };
+
         window.switchAdminTab = function(event, tabId) {
             const contents = document.querySelectorAll('.admin-tab-content');
             contents.forEach(content => content.classList.remove('active-tab'));
@@ -654,7 +645,6 @@
         let catalogData = [];
         let selectedCategory = ''; 
 
-        // نظام التأكيد المخصص (Custom Confirmation Modal)
         let confirmCallback = null;
         window.showConfirm = function(message, callback) {
             const modal = document.getElementById('bose-confirm-modal');
@@ -725,7 +715,7 @@
                 iconHtml = '<i data-lucide="check-circle" class="w-8 h-8 text-brand-pink shrink-0"></i>';
             }
 
-            toast.insertAdjacentHTML('afterbegin', iconHtml);
+            toast.appendChild(document.createRange().createContextualFragment(iconHtml));
             if (typeof lucide !== 'undefined') lucide.createIcons();
 
             toast.classList.remove('active'); 
@@ -784,7 +774,7 @@
             try {
                 const querySnapshot = await window.db.collection('catalog').get();
                 catalogData = [];
-                let categoriesSet = new Set();
+                let categoriesSet = new Set(['التورت', 'الجاتوهات', 'السينابون', 'الدوناتس', 'ورد', 'الديسباسيتو', 'القشطوطة', 'كبات السعادة']);
 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
@@ -804,7 +794,7 @@
                     `;
                 });
                 
-                sidebarNav.innerHTML = sidebarHtml || '<div class="text-sm text-brand-textMuted p-4 text-center">لا توجد أقسام.</div>';
+                sidebarNav.innerHTML = sidebarHtml;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
 
                 if(selectedCategory) {
@@ -820,7 +810,7 @@
         window.filterCatalogBySection = function(catName, element) {
             selectedCategory = catName;
             
-            document.querySelectorAll('.submenu-scroll-container .submenu-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#sidebar-dynamic-categories .submenu-item').forEach(el => el.classList.remove('active'));
             if(element) element.classList.add('active');
 
             document.getElementById('current-filtered-cat-title').innerText = catName;
@@ -850,8 +840,9 @@
                 const imgSrc = p.img || p.image || '';
                 const displayPrice = parseFloat(p.price) || 0;
                 const pJson = encodeURIComponent(JSON.stringify(p));
-                const isFullWidth = p.gridSpan === 'full';
+                const isFullWidth = p.displayStyle === 'full' || p.gridSpan === 'full';
                 const hasDiscount = p.hasDiscount === true && p.oldPrice > p.price;
+                const finalDesc = p.description || p.desc || 'لا يوجد وصف تسويقي رسمي';
 
                 html += `
                     <div class="catalog-item ${isOut ? 'out-of-stock' : ''} ${isFullWidth ? 'md:col-span-2 xl:col-span-3' : ''}">
@@ -872,7 +863,7 @@
                                 </div>
                             </div>
                             <h4 class="font-black text-3xl text-white mb-4 leading-tight">${p.name || 'بدون اسم'}</h4>
-                            <p class="text-lg text-brand-textMuted font-bold line-clamp-2 mb-10 flex-grow opacity-80">${p.description || p.desc || 'لا يوجد وصف تسويقي رسمي'}</p>
+                            <p class="text-lg text-brand-textMuted font-bold line-clamp-2 mb-10 flex-grow opacity-80">${finalDesc}</p>
                             
                             <div class="flex items-center gap-6 pt-8 border-t border-brand-border">
                                 <button onclick="editProduct('${pJson}')" class="btn-action flex-1 py-4 h-auto rounded-2xl bg-[#0c0709] hover:bg-brand-pink" title="فتح غرفة العمليات والتعديل">
@@ -894,6 +885,7 @@
             clearForm();
             document.getElementById('prod-cat').value = selectedCategory;
             document.getElementById('editor-title').innerHTML = `<i data-lucide="plus-square" class="text-brand-pink w-10 h-10"></i> هندسة منتج جديد في: ${selectedCategory}`;
+            toggleFlowerFields(selectedCategory);
             switchAdminTab(null, 'tab-identity'); 
             switchSection('product-editor');
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -906,18 +898,18 @@
         window.updateStockLabel = function(checkbox) {
             const label = document.getElementById('stock-status-text');
             if(checkbox.checked) {
-                label.innerText = "متوفر للطلب"; label.classList.replace('text-red-400', 'text-white');
+                label.innerText = "متوفر للطلب"; label.className = "font-bold text-xl text-white";
             } else {
-                label.innerText = "الكمية نفذت (مغلق)"; label.classList.replace('text-white', 'text-red-400');
+                label.innerText = "الكمية نفذت (مغلق)"; label.className = "font-bold text-xl text-red-400";
             }
         };
 
         window.updateDiscountLabel = function(checkbox) {
             const label = document.getElementById('discount-status-text');
             if(checkbox.checked) {
-                label.innerText = "عرض خاص ومبروز"; label.classList.replace('text-white', 'text-brand-discount');
+                label.innerText = "عرض خاص ومبروز"; label.className = "font-bold text-xl text-brand-discount";
             } else {
-                label.innerText = "لا يوجد عرض"; label.classList.replace('text-brand-discount', 'text-white');
+                label.innerText = "لا يوجد عرض"; label.className = "font-bold text-xl text-white";
             }
         };
 
@@ -945,8 +937,7 @@
             document.getElementById('prod-flavors').value = '';
             document.getElementById('prod-img').value = '';
             document.getElementById('prod-hero-img').value = '';
-            document.getElementById('prod-grid-span').value = 'half';
-            document.getElementById('productDisplayStyle').value = 'full'; 
+            document.getElementById('productDisplayStyle').value = 'half'; 
             
             document.getElementById('prod-img-natural').value = '';
             document.getElementById('prod-img-artificial').value = '';
@@ -961,11 +952,12 @@
             
             previewImage('img-preview', 'img-placeholder', '');
             previewImage('hero-preview', 'hero-placeholder', '');
-            
             previewImage('preview-natural', 'placeholder-natural', '');
             previewImage('preview-artificial', 'placeholder-artificial', '');
             previewImage('preview-cash', 'placeholder-cash', '');
             previewImage('preview-choco', 'placeholder-choco', '');
+
+            toggleFlowerFields(selectedCategory);
         };
 
         window.editProduct = function(pJsonEncoded) {
@@ -976,7 +968,9 @@
             document.getElementById('prod-cat').value = p.category || selectedCategory; 
             document.getElementById('prod-price').value = parseFloat(p.price) || 0;
             document.getElementById('prod-old-price').value = parseFloat(p.oldPrice) || '';
-            document.getElementById('prod-desc').value = p.description || p.desc || '';
+            
+            const finalDesc = p.description || p.desc || '';
+            document.getElementById('prod-desc').value = finalDesc;
             document.getElementById('prod-flavors').value = p.flavors || '';
             
             const imgSrc = p.img || p.image || '';
@@ -998,8 +992,7 @@
             document.getElementById('prod-img-choco').value = p.imgChoco || '';
             previewImage('preview-choco', 'placeholder-choco', p.imgChoco || '');
 
-            document.getElementById('prod-grid-span').value = p.gridSpan || 'half';
-            document.getElementById('productDisplayStyle').value = p.displayStyle || 'full'; 
+            document.getElementById('productDisplayStyle').value = p.displayStyle || p.gridSpan || 'half'; 
             
             document.getElementById('prod-card-w').value = p.cardWidth || 280; document.getElementById('val-custom-w').innerText = (p.cardWidth ? p.cardWidth + 'px' : 'تلقائي');
             document.getElementById('prod-card-h').value = p.cardHeight || 350; document.getElementById('val-custom-h').innerText = (p.cardHeight ? p.cardHeight + 'px' : 'تلقائي');
@@ -1010,6 +1003,7 @@
             document.getElementById('editor-title').innerHTML = `<i data-lucide="edit-3" class="text-brand-pink w-10 h-10"></i> هندسة منتج: ${p.name || ''}`;
             if (typeof lucide !== 'undefined') lucide.createIcons();
             
+            toggleFlowerFields(p.category || selectedCategory);
             switchAdminTab(null, 'tab-identity'); 
             switchSection('product-editor');
         };
@@ -1031,8 +1025,6 @@
                     
                     showToast(`تم مسح المنتج نهائياً بنجاح.`);
                     await loadCatalog(); 
-                    renderCatalogGridForSection(selectedCategory);
-                    
                 } catch(e) { 
                     console.error("عطل فني مفصل أثناء الحذف:", e);
                     showToast("عائق فني في السحابة. يرجى المحاولة لاحقاً.", "error"); 
@@ -1067,20 +1059,23 @@
                 return;
             }
 
+            const finalStyle = document.getElementById('productDisplayStyle').value;
+
             const productData = {
                 name: name, category: category, price: price, oldPrice: oldPrice,
                 hasDiscount: document.getElementById('prod-has-discount').checked,
                 description: document.getElementById('prod-desc').value.trim(),
+                desc: document.getElementById('prod-desc').value.trim(),
                 flavors: document.getElementById('prod-flavors').value.trim(),
-                img: img, heroImg: document.getElementById('prod-hero-img').value.trim(),
+                img: img, image: img, heroImg: document.getElementById('prod-hero-img').value.trim(),
                 
                 imgNatural: document.getElementById('prod-img-natural').value.trim(),
                 imgArtificial: document.getElementById('prod-img-artificial').value.trim(),
                 imgCash: document.getElementById('prod-img-cash').value.trim(),
                 imgChoco: document.getElementById('prod-img-choco').value.trim(),
 
-                gridSpan: document.getElementById('prod-grid-span').value,
-                displayStyle: document.getElementById('productDisplayStyle').value, 
+                gridSpan: finalStyle,
+                displayStyle: finalStyle, 
                 cardWidth: parseInt(document.getElementById('prod-card-w').value),
                 cardHeight: parseInt(document.getElementById('prod-card-h').value),
                 inStock: document.getElementById('prod-stock').checked,
@@ -1104,7 +1099,6 @@
                 
                 showToast("تم الحفظ والاعتماد السحابي الفوري بنجاح.");
                 await loadCatalog();
-                renderCatalogGridForSection(category);
                 switchSection('product-list'); 
                 
             } catch(e) { 
@@ -1260,7 +1254,7 @@
                                             <p class="text-sm font-bold text-brand-textMuted">🏠 العنوان بالتفصيل: <span class="text-white font-black">${order.detailedAddress || order.address || 'العنوان غير مدرج'}</span></p>
                                             <p class="text-sm font-bold text-brand-textMuted">📞 هاتف بديل للتواصل: <span class="text-white font-black">${order.altPhone || 'غير مدرج'}</span></p>
                                         ` : `
-                                            <p class="text-sm font-bold text-brand-textMuted">🏢 المقر: العميل سيأتي لاستلام الطلب من فرع الكفاح.</p>
+                                            <p class="text-sm font-bold text-brand-textMuted">🏢 المقر: فرع الكفاح.</p>
                                         `}
                                         <p class="text-sm font-bold text-brand-textMuted">📅 موعد الاستلام المطلوب: <span class="text-brand-pink font-black text-lg">${formattedDate} - الساعة ${formattedTime}</span></p>
                                     </div>
@@ -1291,13 +1285,7 @@
                     if (typeof lucide !== 'undefined') lucide.createIcons();
                 }
             } catch (error) {
-                console.error("عطل فني في قراءة طلبات السحابة المعزولة:", error);
-                if(container) {
-                    container.innerHTML = `
-                        <div class="text-red-500 font-black text-center py-10 bg-red-900/20 rounded-xl border-2 border-red-500/50">
-                            فشل سحب طلبات العملاء من السحابة. يرجى مراجعة اتصالك.
-                        </div>`;
-                }
+                console.error(error);
             }
         };
 
@@ -1315,7 +1303,6 @@
                     showToast("تم مسح وأرشفة الطلب بنجاح.");
                     fetchAdminOrders();
                 } catch(e) {
-                    console.error("فشل حذف الطلب:", e);
                     showToast("عطل اتصالي منع حذف الطلب.", "error");
                 } finally {
                     if(btnElement) {
@@ -1328,10 +1315,7 @@
         };
 
         window.saveBoseSimulatorSettings = async function() {
-            if(!window.db) {
-                showToast("عائق في الاتصال بالسحابة. يرجى التأكد من استقرار الشبكة.", "error");
-                return;
-            }
+            if(!window.db) return;
             try {
                 const pricingData = {
                     priceNatural: parseFloat(document.getElementById('adm-price-natural').value) || 20,
@@ -1349,7 +1333,6 @@
                 await window.db.collection('system').doc('syncFlag').set({ forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 showToast("تم حفظ واعتماد إعدادات المحاكي البصري سحابياً.");
             } catch(e) {
-                console.error("عطل أثناء حفظ إعدادات المحاكي:", e);
                 showToast("عطل اتصالي منع تخزين الإعدادات.", "error");
             }
         };
@@ -1371,7 +1354,7 @@
                     if(data.layerCashUrl !== undefined) document.getElementById('adm-layer-cash-url').value = data.layerCashUrl;
                 }
             } catch(e) {
-                console.error("خطأ أثناء تحميل إعدادات المحاكي:", e);
+                console.error(e);
             }
         }
     </script>

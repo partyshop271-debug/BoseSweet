@@ -323,8 +323,7 @@
             display: inline-flex; 
             align-items: center; 
             justify-content: center; 
-            gap: 12px; 
-            width: 100%; 
+            gap: 12px; width: 100%; 
             box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25); 
         }
         
@@ -382,7 +381,6 @@
         <span id="toast-msg">تم التنفيذ بنجاح</span>
     </div>
 
-    <!-- نافذة تأكيد سيادية مخصصة بديلة ومقاومة لانهيار المتصفحات -->
     <div id="bose-confirm-modal" class="fixed inset-0 z-[20000] hidden items-center justify-center p-4 bg-black/80 backdrop-filter blur-sm">
         <div class="bg-brand-surface border-2 border-brand-border rounded-3xl p-8 max-w-md w-full shadow-2xl text-center">
             <div class="w-16 h-16 rounded-full bg-red-900/20 border-2 border-red-500/50 flex items-center justify-center mx-auto mb-6">
@@ -524,8 +522,8 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div><label class="form-label">رسالة الجذب 1</label><input type="text" id="ticker-1" class="form-input" placeholder="اكتب الجملة هنا..."></div>
                                 <div><label class="form-label">رسالة الجذب 2</label><input type="text" id="ticker-2" class="form-input" placeholder="اكتب الجملة هنا..."></div>
-                                <div><label class="form-label">رسالة الجذب 3</label><input type="text" id="ticker-3" class="form-input"></div>
-                                <div><label class="form-label">رسالة الجذب 4</label><input type="text" id="ticker-4" class="form-input"></div>
+                                <div><label class="form-label">رسالة الجذب 3</label><input type="text" id="ticker-3" class="form-input" placeholder="اكتب الجملة هنا..."></div>
+                                <div><label class="form-label">رسالة الجذب 4</label><input type="text" id="ticker-4" class="form-input" placeholder="اكتب الجملة هنا..."></div>
                             </div>
                             <div class="pt-6 border-t border-brand-border w-full md:w-1/2">
                                 <label class="form-label text-brand-pink">سرعة تحرك الشريط (بالثواني)</label>
@@ -641,7 +639,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         
-        // استخدام الإعدادات الكاملة لضمان الاستقرار الكلي والاتصال الآمن
         const firebaseConfig = {
             apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
             authDomain: "bosy-sweets.firebaseapp.com",
@@ -670,7 +667,6 @@
             { id: 'sec_8', type: 'stats', title: 'عشر سنوات من الثقة', subtitle: 'على مدار أكثر من عقد، كنا الاختيار الأول في تخليد ذكرياتكم السعيدة. نفخر بسجلنا الخالي تماماً من أي ملاحظات سلبية.', isVisible: true }
         ];
 
-        // نظام التأكيد المخصص (Custom Confirmation Modal)
         let confirmCallback = null;
         window.showConfirm = function(message, callback) {
             const modal = document.getElementById('bose-confirm-modal');
@@ -1045,7 +1041,6 @@
                     renderBuilderUI();
                 }
 
-                // جلب أسعار ولوجستيات الورد
                 const flowerSnap = await getDoc(doc(db, 'settings', 'flowers'));
                 if(flowerSnap.exists()) {
                     const fData = flowerSnap.data();
@@ -1055,14 +1050,13 @@
                     document.getElementById('flower-photo-price').value = fData.photoPrice || 15;
                 }
 
-                // جلب أسعار وضوابط باني التورت المخصصة
                 const pricingRulesSnap = await getDoc(doc(db, 'settings', 'pricingRules'));
                 if(pricingRulesSnap.exists()) {
                     const prData = pricingRulesSnap.data();
                     document.getElementById('cake-price-per-person').value = prData.pricePerPerson !== undefined ? prData.pricePerPerson : 145;
-                    document.getElementById('cake-print-edible').value = prData.printEdible !== undefined ? prData.printEdible : 60;
-                    document.getElementById('cake-print-non-edible').value = prData.printNonEdible !== undefined ? prData.printNonEdible : 20;
-                    document.getElementById('cake-gift-card-price').value = prData.giftCardPrice !== undefined ? prData.giftCardPrice : 40;
+                    document.getElementById('cake-print-edible').value = prData.printEdible || prData.cakePriceEdible || 60;
+                    document.getElementById('cake-print-non-edible').value = prData.printNonEdible || prData.cakePriceNonEdible || 20;
+                    document.getElementById('cake-gift-card-price').value = prData.giftCardPrice || prData.cakeGiftCardPrice || 40;
                 }
             } catch (error) { 
                 console.error("خطأ قراءة السحابة:", error); 
@@ -1074,7 +1068,7 @@
             try {
                 await setDoc(doc(db, 'settings', 'theme'), { builderLayout: builderBlocks, updatedAt: Date.now() }, { merge: true });
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                showToast("تم اعتماد البناء الهندسي الجديد بنجاح وبث التحديثات للعملاء.");
+                showToast("تم اعتماد البناء الهندسي الجديد بنجاح وبث Tحديثات للعملاء.");
             } catch(e) { 
                 showToast("حدث خطأ غير متوقع أثناء الاتصال بالخادم السحابي.", "error");
             }
@@ -1090,7 +1084,12 @@
         }
 
         window.saveTickerData = async function() {
-            const tickerArr = [ document.getElementById('ticker-1').value.trim(), document.getElementById('ticker-2').value.trim(), document.getElementById('ticker-3').value.trim(), document.getElementById('ticker-4').value.trim() ].filter(t => t !== '');
+            const tickerArr = [ 
+                document.getElementById('ticker-1').value.trim(), 
+                document.getElementById('ticker-2').value.trim(),
+                document.getElementById('ticker-3').value.trim(),
+                document.getElementById('ticker-4').value.trim()
+            ].filter(t => t !== '');
             try {
                 await setDoc(doc(db, 'settings', 'theme'), { ticker: tickerArr, tickerSpeed: parseInt(document.getElementById('ticker-speed').value) || 40, updatedAt: Date.now() }, { merge: true });
                 showToast("تم تحديث نصوص الشريط وسرعة الحركة.");
@@ -1140,9 +1139,17 @@
             const giftCardPrice = parseFloat(document.getElementById('cake-gift-card-price').value) || 40;
 
             try {
-                await setDoc(doc(db, 'settings', 'pricingRules'), { pricePerPerson, printEdible, printNonEdible, giftCardPrice, updatedAt: Date.now() }, { merge: true });
+                const pricingRulesObj = {
+                    pricePerPerson,
+                    printEdible, cakePriceEdible: printEdible,
+                    printNonEdible, cakePriceNonEdible: printNonEdible,
+                    giftCardPrice, cakeGiftCardPrice: giftCardPrice,
+                    updatedAt: Date.now()
+                };
+                await setDoc(doc(db, 'settings', 'pricingRules'), pricingRulesObj, { merge: true });
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 showToast("تم توثيق وحفظ أسعار التورت المخصصة سحابياً بنجاح.");
+                loadAdminData();
             } catch (err) { 
                 showToast("عطل اتصالي منع الحفظ السحابي لأسعار التورت المخصصة.", "error"); 
             }
@@ -1153,4 +1160,3 @@
     </script>
 </body>
 </html>
-
