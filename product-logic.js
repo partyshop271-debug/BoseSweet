@@ -8,6 +8,18 @@ window.ProductUI = {
     reviewsPerPage: 3,
     currentFlowerProduct: null, 
     _pendingSimulatorFrame: null, 
+    _reviewsUnsubscribe: null, // معالج إلغاء الاشتراك لمنع استهلاك البيانات والتكرار المفرط
+
+    // تهيئة حالة التصميم الخاص بالتورتات لحمايتها من الانهيار عند الاستدعاء المباشر
+    state: {
+        people: 4,
+        print: 'none',
+        gift: false,
+        shape: 'round',
+        healthNotes: '',
+        refImageName: '',
+        printImageName: ''
+    },
 
     flowerState: {
         qty: 15,
@@ -53,10 +65,14 @@ window.ProductUI = {
 
     trackBehavior: function(catName) {
         if(!catName || catName === 'all') return;
-        let history = JSON.parse(localStorage.getItem('Bose_Behavior_History') || '[]');
-        history.push(catName);
-        if(history.length > 15) history.shift();
-        localStorage.setItem('Bose_Behavior_History', JSON.stringify(history));
+        try {
+            let history = JSON.parse(localStorage.getItem('Bose_Behavior_History') || '[]');
+            history.push(catName);
+            if(history.length > 15) history.shift();
+            localStorage.setItem('Bose_Behavior_History', JSON.stringify(history));
+        } catch(e) {
+            console.warn("فشل حفظ سجل السلوك المحركي:", e);
+        }
     },
 
     setupFlowerPoster: function() {
@@ -77,31 +93,18 @@ window.ProductUI = {
 
     initFlowerTabs: function() {
         const flowerTabs = document.querySelectorAll('.flower-tab');
-        const mainProductImg = document.getElementById('main-product-image');
-        const cashOptions = document.getElementById('cash-options-container');
-
-        const catalog = window.BoseState?.catalog || [];
-        this.currentFlowerProduct = catalog.find(p => p.category && this.normalizeArabic(p.category) === this.normalizeArabic('ورد')) || {};
         
-        const defaultImg = this.currentFlowerProduct.img || this.currentFlowerProduct.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
-        const imagesMap = {
-            'natural': this.currentFlowerProduct.imgNatural || defaultImg,
-            'artificial': this.currentFlowerProduct.imgArtificial || defaultImg,
-            'chocolate': this.currentFlowerProduct.imgChoco || defaultImg,
-            'cash': this.currentFlowerProduct.imgCash || defaultImg,
-            'satin': this.currentFlowerProduct.imgSatin || defaultImg
-        };
-
-        if (mainProductImg && imagesMap[this.flowerState.pathType || 'natural']) {
-            mainProductImg.src = window.processBoseImage ? window.processBoseImage(imagesMap[this.flowerState.pathType || 'natural']) : imagesMap[this.flowerState.pathType || 'natural'];
-            mainProductImg.style.display = 'block';
-            const placeholder = document.getElementById('bose-canvas-placeholder');
-            if (placeholder) placeholder.style.display = 'none';
-        }
-
+        // تفادي تكرار مستمعي الأحداث عند إعادة الاستدعاء المتكرر لروتر التصفح
         flowerTabs.forEach(tab => {
             tab.removeAttribute('onclick'); 
-            
+            const newTab = tab.cloneNode(true);
+            tab.parentNode.replaceChild(newTab, tab);
+        });
+
+        const refreshedTabs = document.querySelectorAll('.flower-tab');
+        this.updateSelectedFlowerImage();
+
+        refreshedTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const target = tab.getAttribute('data-target');
                 this.setFlowerPathCombo(target, tab);
@@ -111,30 +114,13 @@ window.ProductUI = {
 
     setFlowerPathCombo: function(target, btnElement) {
         this.flowerState.pathType = target;
-        const mainProductImg = document.getElementById('main-product-image');
+        this.flowerState.material = target; // الحفاظ على المزامنة الكاملة للخامة والمسار المختار
+
         const cashOptions = document.getElementById('cash-options-container');
         
-        const catalog = window.BoseState?.catalog || [];
-        if (!this.currentFlowerProduct || !this.currentFlowerProduct.id) {
-            this.currentFlowerProduct = catalog.find(p => p.category && this.normalizeArabic(p.category) === this.normalizeArabic('ورد')) || {};
-        }
+        this.updateSelectedFlowerImage();
 
-        const defaultImg = this.currentFlowerProduct.img || this.currentFlowerProduct.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
-        const imagesMap = {
-            'natural': this.currentFlowerProduct.imgNatural || defaultImg,
-            'artificial': this.currentFlowerProduct.imgArtificial || defaultImg,
-            'chocolate': this.currentFlowerProduct.imgChoco || defaultImg,
-            'cash': this.currentFlowerProduct.imgCash || defaultImg,
-            'satin': this.currentFlowerProduct.imgSatin || defaultImg
-        };
-
-        if(imagesMap[target] && mainProductImg) {
-            mainProductImg.src = window.processBoseImage ? window.processBoseImage(imagesMap[target]) : imagesMap[target];
-            mainProductImg.style.display = 'block';
-            const placeholder = document.getElementById('bose-canvas-placeholder');
-            if (placeholder) placeholder.style.display = 'none';
-        }
-
+        // التبديل الديناميكي الفوري للخيارات الإضافية بناء على المسار المحدد
         if (target === 'cash') {
             if (cashOptions) cashOptions.style.display = 'flex';
             this.toggleFlowerGiftCash(true);
@@ -147,7 +133,6 @@ window.ProductUI = {
             if (cashOptions) cashOptions.style.display = 'none';
             this.toggleFlowerGiftCash(false);
             this.toggleFlowerChocolate(false);
-            this.flowerState.material = target; 
         }
 
         const flowerTabs = document.querySelectorAll('.flower-tab');
@@ -166,6 +151,37 @@ window.ProductUI = {
         this.updateVisualSimulator();
     },
 
+    updateSelectedFlowerImage: function() {
+        const mainProductImg = document.getElementById('main-product-image');
+        if (!mainProductImg) return;
+
+        const catalog = window.BoseState?.catalog || [];
+        if (!this.currentFlowerProduct || !this.currentFlowerProduct.id) {
+            this.currentFlowerProduct = catalog.find(p => p.category && this.normalizeArabic(p.category) === this.normalizeArabic('ورد')) || {};
+        }
+
+        const defaultImg = this.currentFlowerProduct.img || this.currentFlowerProduct.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
+        
+        const imagesMap = {
+            'natural': this.currentFlowerProduct.imgNatural || defaultImg,
+            'artificial': this.currentFlowerProduct.imgArtificial || defaultImg,
+            'satin': this.currentFlowerProduct.imgSatin || defaultImg,
+            'chocolate': this.currentFlowerProduct.imgChoco || defaultImg,
+            'cash': this.currentFlowerProduct.imgCash || defaultImg,
+            'photo': this.currentFlowerProduct.imgPhoto || defaultImg
+        };
+
+        const currentPath = this.flowerState.pathType || 'natural';
+        let targetSrc = imagesMap[currentPath] || defaultImg;
+
+        mainProductImg.src = window.processBoseImage ? window.processBoseImage(targetSrc) : targetSrc;
+        mainProductImg.style.display = 'block';
+
+        const placeholder = document.getElementById('bose-canvas-placeholder');
+        if (placeholder) placeholder.style.display = 'none';
+    },
+
+    // 👑 آلية العزل المطلق الفوري لمنع تداخل الصفحات ومسح بقايا الصفحات الأخرى نهائياً
     initRouter: function() {
         const params = new URLSearchParams(window.location.search);
         const category = params.get('category');
@@ -174,39 +190,47 @@ window.ProductUI = {
         const builderContainer = document.getElementById('builder-container');
         const categoryViewer = document.getElementById('category-viewer');
         const flowerCustomizer = document.getElementById('flower-customizer-container');
+        const reviewsSection = document.getElementById('reviews-section');
+        const suggestionsArea = document.getElementById('suggestions-area');
         const floatingCart = document.getElementById('bose-floating-cart');
 
-        if (builderContainer) builderContainer.classList.add('hidden');
-        if (categoryViewer) categoryViewer.classList.add('hidden');
-        if (flowerCustomizer) flowerCustomizer.classList.add('hidden');
+        // فرض إخفاء تام وكامل لكافة عناصر الحاويات برمجياً لضمان عدم الدمج
+        if (builderContainer) builderContainer.style.display = 'none';
+        if (categoryViewer) categoryViewer.style.display = 'none';
+        if (flowerCustomizer) flowerCustomizer.style.display = 'none';
+        if (reviewsSection) reviewsSection.style.display = 'none';
+        if (suggestionsArea) suggestionsArea.style.display = 'none';
         if (floatingCart) floatingCart.style.display = 'none';
 
         const normalizedCat = category ? this.normalizeArabic(category) : '';
 
         if (action === 'build_cake') {
-            if (builderContainer) builderContainer.classList.remove('hidden');
+            if (builderContainer) builderContainer.style.display = 'block';
             this.state = { people: 4, print: 'none', gift: false, shape: 'round', healthNotes: '', refImageName: '', printImageName: '' };
             this.setupBuilderPoster();
             this.updatePrices();
         } 
         else if (category && (normalizedCat === 'ورد' || normalizedCat === 'ورود' || normalizedCat === 'زهور')) {
-            if (flowerCustomizer) flowerCustomizer.classList.remove('hidden');
+            if (flowerCustomizer) flowerCustomizer.style.display = 'block';
             if (floatingCart) floatingCart.style.display = 'flex';
-            
-            this.setupFlowerPoster(); 
-            this.initFlowerTabs(); 
+            this.setupFlowerPoster();
+            this.initFlowerTabs();
             this.updateFlowerPrices();
             this.updateVisualSimulator();
         } 
         else if (category) {
             this.currentCategory = category;
-            if (categoryViewer) categoryViewer.classList.remove('hidden');
+            if (categoryViewer) categoryViewer.style.display = 'block';
+            if (reviewsSection) reviewsSection.style.display = 'block';
+            if (suggestionsArea) suggestionsArea.style.display = 'block';
             this.trackBehavior(category); 
             this.setupCategoryView(category);
         } 
         else {
             this.currentCategory = 'all';
-            if (categoryViewer) categoryViewer.classList.remove('hidden');
+            if (categoryViewer) categoryViewer.style.display = 'block';
+            if (reviewsSection) reviewsSection.style.display = 'block';
+            if (suggestionsArea) suggestionsArea.style.display = 'block';
             this.setupCategoryView('all');
         }
         
@@ -259,8 +283,10 @@ window.ProductUI = {
             return;
         }
         this.flowerState.qty = currentQty;
-        document.getElementById('bouquet-density-count').innerText = currentQty;
         
+        const countEl = document.getElementById('bouquet-density-count');
+        if (countEl) countEl.innerText = currentQty;
+
         const labelEl = document.getElementById('bouquet-density-label');
         if (labelEl) {
             labelEl.innerText = "وردة";
@@ -351,7 +377,11 @@ window.ProductUI = {
     toggleFlowerChocolate: function(isChecked) {
         this.flowerState.hasChocolate = isChecked;
         const inputsWrap = document.getElementById('chocolate-details-inputs');
-        if (isChecked) { if(inputsWrap) inputsWrap.classList.remove('hidden'); } else { if(inputsWrap) inputsWrap.classList.add('hidden'); }
+        if (isChecked) { 
+            if(inputsWrap) inputsWrap.classList.remove('hidden'); 
+        } else { 
+            if(inputsWrap) inputsWrap.classList.add('hidden'); 
+        }
         if(!isChecked) {
             const budgetInput = document.getElementById('flower-chocolate-budget');
             const prefInput = document.getElementById('flower-chocolate-pref');
@@ -365,7 +395,11 @@ window.ProductUI = {
     toggleFlowerGiftCash: function(isChecked) {
         this.flowerState.hasCash = isChecked;
         const inputWrap = document.getElementById('cash-amount-input');
-        if (isChecked) { if(inputWrap) inputWrap.classList.remove('hidden'); } else { if(inputWrap) inputWrap.classList.add('hidden'); }
+        if (isChecked) { 
+            if(inputWrap) inputWrap.classList.remove('hidden'); 
+        } else { 
+            if(inputWrap) inputWrap.classList.add('hidden'); 
+        }
         if(!isChecked) {
             const cashInput = document.getElementById('cash-amount');
             if(cashInput) cashInput.value = 0;
@@ -385,7 +419,11 @@ window.ProductUI = {
     toggleFlowerRibbonPrint: function(isChecked) {
         this.flowerState.hasRibbon = isChecked;
         const container = document.getElementById('ribbon-text-input-container');
-        if (isChecked) { if(container) container.classList.remove('hidden'); } else { if(container) container.classList.add('hidden'); }
+        if (isChecked) { 
+            if(container) container.classList.remove('hidden'); 
+        } else { 
+            if(container) container.classList.add('hidden'); 
+        }
         if(!isChecked) {
             const ribbonInput = document.getElementById('flower-ribbon-text');
             if(ribbonInput) ribbonInput.value = '';
@@ -397,7 +435,11 @@ window.ProductUI = {
     toggleFlowerGift: function(isChecked) {
         this.flowerState.hasGift = isChecked;
         const area = document.getElementById('flower-gift-area');
-        if(isChecked) { if(area) area.classList.remove('hidden'); } else { if(area) area.classList.add('hidden'); }
+        if(isChecked) { 
+            if(area) area.classList.remove('hidden'); 
+        } else { 
+            if(area) area.classList.add('hidden'); 
+        }
         if(!isChecked) {
             const giftInput = document.getElementById('flower-gift-text');
             if(giftInput) giftInput.value = '';
@@ -408,10 +450,15 @@ window.ProductUI = {
 
     toggleFlowerPhotoAddon: function(isChecked) {
         const uploadArea = document.getElementById('photo-upload-area');
-        if (isChecked) uploadArea.classList.remove('hidden'); else uploadArea.classList.add('hidden');
+        if (isChecked) {
+            if (uploadArea) uploadArea.classList.remove('hidden');
+        } else {
+            if (uploadArea) uploadArea.classList.add('hidden');
+        }
         if (!isChecked) {
             this.flowerState.photoCount = 0;
-            document.getElementById('flower-photo-count').innerText = '0';
+            const countDisplay = document.getElementById('flower-photo-count');
+            if (countDisplay) countDisplay.innerText = '0';
             this.flowerState.photoFiles = [];
         }
         this.updateFlowerPrices();
@@ -422,10 +469,14 @@ window.ProductUI = {
         const currentCount = this.flowerState.photoCount + val;
         if(currentCount < 0) return;
         this.flowerState.photoCount = currentCount;
-        document.getElementById('flower-photo-count').innerText = currentCount;
+        
+        const countDisplay = document.getElementById('flower-photo-count');
+        if (countDisplay) countDisplay.innerText = currentCount;
         
         const uploadContainer = document.getElementById('flower-photo-upload-container');
-        if(currentCount > 0) uploadContainer.classList.remove('hidden'); else uploadContainer.classList.add('hidden');
+        if (uploadContainer) {
+            if(currentCount > 0) uploadContainer.classList.remove('hidden'); else uploadContainer.classList.add('hidden');
+        }
         
         this.updateFlowerPrices();
         this.updateVisualSimulator();
@@ -435,7 +486,9 @@ window.ProductUI = {
         const status = document.getElementById('flower-photos-status');
         if(input.files && input.files.length > 0) {
             this.flowerState.photoFiles = Array.from(input.files);
-            status.innerText = `تم استلام ${input.files.length} صورة بدقة عالية`;
+            this.flowerState.photoCount = input.files.length;
+            if (status) status.innerText = `تم استلام ${input.files.length} صورة بدقة عالية`;
+            this.updateFlowerPrices();
             this.updateVisualSimulator();
         }
     },
@@ -454,15 +507,20 @@ window.ProductUI = {
         }
 
         let totalPrice = basePrice;
-        if(this.flowerState.hasGift) totalPrice += (pricing.priceCard || 25); 
-        if(this.flowerState.hasRibbon) totalPrice += 50; 
+        
+        const ribbonText = document.getElementById('flower-ribbon-text')?.value || '';
+        if (this.flowerState.hasRibbon || ribbonText.trim() !== '') totalPrice += 50;
+
+        const giftText = document.getElementById('flower-gift-text')?.value || '';
+        if (this.flowerState.hasGift || giftText.trim() !== '') totalPrice += (pricing.priceCard || 25);
+
         totalPrice += this.flowerState.photoCount * (pricing.pricePhoto || 15); 
 
         const chocoBudget = parseFloat(document.getElementById('flower-chocolate-budget')?.value) || 0;
         const cashAmount = parseFloat(document.getElementById('cash-amount')?.value) || 0;
         
-        if (this.flowerState.hasChocolate || this.flowerState.pathType === 'chocolate') totalPrice += chocoBudget;
-        if (this.flowerState.hasCash || this.flowerState.pathType === 'cash') totalPrice += cashAmount;
+        totalPrice += chocoBudget;
+        totalPrice += cashAmount;
 
         const pDisplay = document.getElementById('live-total-price');
         if(pDisplay) pDisplay.innerText = `${totalPrice} ج.م`;
@@ -621,9 +679,6 @@ window.ProductUI = {
 
     addCustomFlowerToCart: function() {
         const finalPrice = this.updateFlowerPrices();
-        const activeTabEl = document.querySelector('.flower-tab.active') || document.querySelector('.flower-tab.selected');
-        const activeTab = activeTabEl ? activeTabEl.getAttribute('data-target') : (this.flowerState.pathType || 'natural');
-        
         const ribbonText = document.getElementById('flower-ribbon-text')?.value || '';
         const giftText = document.getElementById('flower-gift-text')?.value || '';
         
@@ -633,7 +688,7 @@ window.ProductUI = {
             price: finalPrice,
             quantity: 1,
             isCustom: true,
-            type: activeTab, 
+            type: this.flowerState.pathType || 'natural', 
             details: {
                 category: 'ورد',
                 qty: this.flowerState.qty,
@@ -648,14 +703,11 @@ window.ProductUI = {
                 photoCount: this.flowerState.photoCount,
                 chocolateBudget: parseFloat(document.getElementById('flower-chocolate-budget')?.value) || 0,
                 chocolatePreferences: document.getElementById('flower-chocolate-pref')?.value || 'تفضيل قياسي',
+                cashAmount: this.flowerState.cashAmount,
+                cashDenomination: this.flowerState.cashDenomination,
                 photoFilesNames: this.flowerState.photoFiles.map(f => f.name)
             }
         };
-
-        if (activeTab === 'cash' || this.flowerState.hasCash) {
-            orderDetails.details.cashAmount = document.getElementById('cash-amount')?.value || 0;
-            orderDetails.details.cashDenomination = document.getElementById('cash-denomination')?.value || '200';
-        }
 
         if (window.BoseState && window.cartSystem) {
             window.BoseState.cart.push(orderDetails);
@@ -664,7 +716,7 @@ window.ProductUI = {
         }
     },
 
-    // الخوارزمية السيادية لعزل وتوجيه تصنيفات المنتجات (V40.0)
+    // 👑 الخوارزمية السيادية لعزل وتوجيه تصنيفات المنتجات (V40.0)
     // تضمن الفصل الكامل والحاسم لمنع خلط أقسام الورد، الميني تورت، والتورت القياسية
     setupCategoryView: function(catName) {
         const catalog = window.BoseState?.catalog || [];
@@ -681,7 +733,7 @@ window.ProductUI = {
             const isFlowerProduct = (normalizedCat === 'ورد' || normalizedCat === 'ورود' || normalizedCat === 'زهور' || normalizedName.includes('ورد') || normalizedName.includes('زهور'));
 
             // فحص كينونة الميني تورت لمنع خلطها مع التورت القياسية
-            const isMiniSearch = (normalizedSearch === 'ميني تورت' || normalizedSearch === 'ميني تورته' || normalizedSearch === 'ميني تورتات' || normalizedSearch.includes('ميني'));
+            const isMiniSearch = (normalizedSearch === 'مينيتورت' || normalizedSearch === 'مينيتورته' || normalizedSearch === 'مينيتورتات' || normalizedSearch.includes('ميني'));
             const isMiniProduct = (normalizedCat.includes('ميني') || normalizedName.includes('ميني') || normalizedCat.includes('mini') || normalizedName.includes('mini'));
 
             // 1. عزل قسم الورد والزهور بشكل كامل
@@ -716,7 +768,13 @@ window.ProductUI = {
         const headerContainer = document.getElementById('category-header-container');
         const tabsContainer = document.getElementById('size-tabs-container');
         const gridContainer = document.getElementById('category-grid');
-        const displayName = catName === 'all' ? 'منتجات حلويات بوسي' : catName;
+        
+        let displayName = catName === 'all' ? 'منتجات حلويات بوسي' : catName;
+        if (normalizedSearch === 'تورت' || normalizedSearch === 'تورته' || normalizedSearch === 'تورتات') {
+            displayName = 'التورت الفاخرة المعتمدة';
+        } else if (normalizedSearch === 'مينيتورت' || normalizedSearch === 'مينيتورته') {
+            displayName = 'قسم الميني تورت الفاخرة';
+        }
 
         let dynamicPoster = 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
         if (this.allCategoryProducts.length > 0) {
@@ -737,7 +795,7 @@ window.ProductUI = {
 
         const hasSizes = this.allCategoryProducts.some(p => p.name.includes('صغير') || p.name.includes('وسط') || p.name.includes('كبير') || p.name.includes('عائلي'));
         
-        if (hasSizes) {
+        if (hasSizes && normalizedSearch !== 'مينيتورت' && normalizedSearch !== 'مينيتورته') {
             tabsContainer.classList.remove('hidden');
             const btns = tabsContainer.querySelectorAll('.size-tab');
             btns.forEach(b => b.classList.remove('active'));
@@ -796,36 +854,38 @@ window.ProductUI = {
         const catalog = window.BoseState?.catalog || [];
         const container = document.getElementById('dynamic-suggestions-slider');
         const section = document.getElementById('suggestions-area');
-        if (catalog.length === 0 || !container) return;
+        if (catalog.length === 0 || !container || !section) return;
 
-        let history = JSON.parse(localStorage.getItem('Bose_Behavior_History') || '[]');
-        let preferredCats = [];
-        if(history.length > 0) {
-            const counts = history.reduce((acc, val) => { acc[val] = (acc[val] || 0) + 1; return acc; }, {});
-            preferredCats = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
-        }
-
+        const currentNormalized = this.normalizeArabic(this.currentCategory || 'all');
         const cartIds = window.BoseState?.cart?.map(i => String(i.id)) || [];
-        
-        let suggestions = [];
-        for(let cat of preferredCats) {
-            const normalizedCat = this.normalizeArabic(cat);
-            let catProds = catalog.filter(p => {
-                if (!p.category) return false;
-                return this.normalizeArabic(p.category) === normalizedCat && !cartIds.includes(String(p.id));
-            });
-            suggestions.push(...catProds);
+
+        let filteredCatalog = catalog.filter(p => {
+            if (!p.category) return false;
+            const prodNorm = this.normalizeArabic(p.category);
+
+            if (currentNormalized === 'ورد' || currentNormalized === 'ورود') {
+                return prodNorm === 'ورد' || prodNorm === 'ورود' || prodNorm === 'زهور';
+            }
+            if (currentNormalized === 'مينيتورت' || currentNormalized === 'مينيتورته') {
+                return prodNorm === 'مينيتورت' || prodNorm === 'مينيتورته' || prodNorm === 'مينيتورتات';
+            }
+            if (currentNormalized === 'تورت' || currentNormalized === 'تورتات') {
+                return (prodNorm === 'تورت' || prodNorm === 'تورته' || prodNorm === 'تورتات') && !prodNorm.includes('ميني');
+            }
+            if (currentNormalized === 'all') {
+                return true;
+            }
+            return prodNorm === currentNormalized;
+        });
+
+        let suggestions = filteredCatalog.filter(p => !cartIds.includes(String(p.id)));
+        if (suggestions.length === 0) {
+            suggestions = filteredCatalog.slice(0, 8);
+        } else {
+            suggestions = suggestions.sort(() => 0.5 - Math.random()).slice(0, 8);
         }
 
-        if(suggestions.length < 8) {
-            let randomProds = catalog.filter(p => !cartIds.includes(String(p.id)) && !suggestions.find(sp => sp.id === p.id));
-            randomProds = randomProds.sort(() => 0.5 - Math.random());
-            suggestions.push(...randomProds);
-        }
-
-        suggestions = suggestions.slice(0, 8);
-
-        if (suggestions.length > 0) {
+        if (suggestions.length > 0 && currentNormalized !== 'all') {
             section.classList.remove('hidden');
             section.style.display = 'block';
             const tmpl = document.getElementById('bose-suggestion-card-template') ? document.getElementById('bose-suggestion-card-template').innerHTML : '';
@@ -841,6 +901,9 @@ window.ProductUI = {
                     .replace(/{PRODUCT_PRICE}/g, parseFloat(p.price) || 0);
             }).join('');
             lucide.createIcons();
+        } else {
+            section.classList.add('hidden');
+            section.style.display = 'none';
         }
     },
 
@@ -848,10 +911,20 @@ window.ProductUI = {
         const db = window.db;
         if (!db) return;
         
+        // منع تراكم مستمعي الأحداث غير النشطين لخفض استهلاك البيانات والذاكرة
+        if (this._reviewsUnsubscribe) {
+            try {
+                this._reviewsUnsubscribe();
+            } catch(e) {
+                console.warn("فشل إغلاق مستمع التقييمات القديم:", e);
+            }
+        }
+
         import('https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js').then(fs => {
             const appId = window.__app_id || 'bosy-sweets';
             const reviewsRef = fs.collection(db, 'artifacts', appId, 'public', 'data', 'reviews');
-            fs.onSnapshot(fs.query(reviewsRef), (snap) => {
+            
+            this._reviewsUnsubscribe = fs.onSnapshot(fs.query(reviewsRef), (snap) => {
                 this.reviewsData = [];
                 snap.docs.forEach(doc => this.reviewsData.push({id: doc.id, ...doc.data()}));
                 
@@ -866,7 +939,7 @@ window.ProductUI = {
                 
                 this.currentReviewPage = 0;
                 this.renderReviewsPage();
-            }, (error) => { console.warn("تعذر جلب التقييمات:", error); });
+            }, (error) => { console.warn("تعذر جلب التقييمات من السيرفر:", error); });
         });
     },
 
@@ -904,14 +977,14 @@ window.ProductUI = {
         grid.innerHTML = html;
 
         if (totalPages > 1) {
-            pagContainer.style.display = 'flex';
+            if (pagContainer) pagContainer.style.display = 'flex';
             let dotsHtml = '';
             for(let i=0; i<totalPages; i++) {
                 dotsHtml += `<div onclick="window.ProductUI.goToReviewPage(${i})" class="pagination-dot ${i === this.currentReviewPage ? 'active' : ''}"></div>`;
             }
-            dotsContainer.innerHTML = dotsHtml;
+            if (dotsContainer) dotsContainer.innerHTML = dotsHtml;
         } else {
-            pagContainer.style.display = 'none';
+            if (pagContainer) pagContainer.style.display = 'none';
         }
         
         lucide.createIcons();
@@ -1048,7 +1121,11 @@ window.ProductUI = {
         if(selectedIcon) { selectedIcon.classList.remove('lucide-circle', 'text-gray-300'); selectedIcon.classList.add('lucide-check-circle', 'text-brand-pink'); }
         
         const up = document.getElementById('print-upload-area');
-        if(type !== 'none') up.classList.remove('hidden'); else up.classList.add('hidden');
+        if(type !== 'none') {
+            if (up) up.classList.remove('hidden');
+        } else {
+            if (up) up.classList.add('hidden');
+        }
         this.updatePrices();
         lucide.createIcons();
     },
@@ -1058,7 +1135,11 @@ window.ProductUI = {
         btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         const ga = document.getElementById('gift-card-area');
-        if(val) ga.classList.remove('hidden'); else ga.classList.add('hidden');
+        if(val) {
+            if (ga) ga.classList.remove('hidden');
+        } else {
+            if (ga) ga.classList.add('hidden');
+        }
         this.updatePrices();
     },
 
@@ -1146,6 +1227,7 @@ window.toggleSidebar = function() {
     }
 };
 
+// تهيئة المحرك وتنسيق التوافق الكامل مع جميع مستندات التطبيق
 window.addEventListener('BoseSweets_Engine_Ready', () => {
     window.ProductUI.initRouter();
     window.ProductUI.syncCartBadge();
