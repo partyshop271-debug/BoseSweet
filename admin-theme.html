@@ -133,7 +133,7 @@
             font-weight: 900; 
         }
 
-        .main-content { margin-right: 340px; min-h: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
+        .main-content { margin-right: 340px; min-height: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
         
         .admin-tabs-nav {
             display: flex; gap: 12px; background-color: var(--bose-surface); padding: 12px; border-radius: 20px; border: 2px solid var(--bose-border); margin-bottom: 30px; overflow-x: auto;
@@ -382,6 +382,21 @@
         <span id="toast-msg">تم التنفيذ بنجاح</span>
     </div>
 
+    <!-- نافذة تأكيد سيادية مخصصة بديلة ومقاومة لانهيار المتصفحات -->
+    <div id="bose-confirm-modal" class="fixed inset-0 z-[20000] hidden items-center justify-center p-4 bg-black/80 backdrop-filter blur-sm">
+        <div class="bg-brand-surface border-2 border-brand-border rounded-3xl p-8 max-w-md w-full shadow-2xl text-center">
+            <div class="w-16 h-16 rounded-full bg-red-900/20 border-2 border-red-500/50 flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="alert-triangle" class="w-8 h-8 text-red-400"></i>
+            </div>
+            <h4 class="text-2xl font-black text-white mb-4">هل ترغب بالاستمرار؟</h4>
+            <p id="bose-confirm-message" class="text-brand-textMuted font-bold text-lg mb-8 leading-relaxed">سيتم إجراء تعديل هندسي حساس على الهيكل.</p>
+            <div class="flex gap-4">
+                <button id="bose-confirm-yes" class="btn-solid bg-red-500 hover:bg-red-600 text-white font-black py-4 rounded-xl flex-1 text-lg">نعم، متأكد</button>
+                <button id="bose-confirm-no" class="bg-brand-bg border-2 border-brand-border text-brand-textMuted hover:bg-brand-surface font-black py-4 rounded-xl flex-1 text-lg">تراجع</button>
+            </div>
+        </div>
+    </div>
+
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <aside id="sidebar" class="sidebar">
@@ -390,7 +405,7 @@
                 <div class="w-12 h-12 rounded-xl bg-brand-bg border border-brand-pink/40 flex items-center justify-center shadow-lg">
                     <i data-lucide="gem" class="w-7 h-7 text-brand-pink"></i>
                 </div>
-                <h1 class="text-2xl font-black text-brand-textMain tracking-tight">إدارة بوسي</h1>
+                <h1 class="text-2xl font-black text-brand-textMain tracking-tight">إدارة حلويات بوسي</h1>
             </div>
             <button onclick="toggleSidebar()" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
         </div>
@@ -410,7 +425,7 @@
                     <div class="submenu-item" onclick="switchSection('ui-header', this)"><i data-lucide="panel-top" class="w-5 h-5"></i> الهيدر والقوائم العلوية</div>
                     <div class="submenu-item" onclick="switchSection('ui-ticker', this)"><i data-lucide="radio" class="w-5 h-5"></i> الشريط المتحرك الإعلاني</div>
                     <div class="submenu-item" onclick="switchSection('ui-footer', this)"><i data-lucide="panel-bottom" class="w-5 h-5"></i> الفوتر وبيانات التواصل</div>
-                    <div class="submenu-item" onclick="switchSection('ui-flowers-logistics', this)"><i data-lucide="flower" class="w-5 h-5"></i> تسعير ولوجستيات الورد</div>
+                    <div class="submenu-item" onclick="switchSection('ui-flowers-logistics', this)"><i data-lucide="flower" class="w-5 h-5"></i> تسعير ولوجستيات الورد والتورت</div>
                 </div>
             </details>
 
@@ -447,7 +462,7 @@
                 <button type="button" class="admin-tab-btn active" onclick="switchAdminTab(event, 'tab-colors')">1. الألوان والهوية</button>
                 <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-typography')">2. الخطوط والنصوص</button>
                 <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-layout')">3. تخطيط الواجهة</button>
-                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-flowers')">4. تسعير الورد</button>
+                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-flowers')">4. تسعير الورد والتورت</button>
             </div>
 
             <div id="tab-colors" class="admin-tab-content active-tab">
@@ -525,13 +540,13 @@
 
             <div id="tab-layout" class="admin-tab-content">
                 <section id="dashboard" class="admin-section">
-                    <div class="admin-card flex flex-col items-center justify-center py-32 border-2 border-dashed border-brand-border bg-transparent shadow-none">
-                        <div class="w-28 h-28 rounded-full bg-[#1a1012] border-2 border-brand-border flex items-center justify-center mb-6 shadow-xl">
-                            <i data-lucide="shield-check" class="w-14 h-14 text-brand-pink"></i>
+                    <div class="admin-card flex flex-col items-center justify-center py-24 border-2 border-dashed border-brand-border bg-transparent shadow-none">
+                        <div class="w-24 h-24 rounded-full bg-[#1a1012] border-2 border-brand-border flex items-center justify-center mb-6 shadow-xl">
+                            <i data-lucide="shield-check" class="w-12 h-12 text-brand-pink"></i>
                         </div>
-                        <h3 class="text-4xl font-black text-white mb-6 tracking-tight text-center">البيئة الإدارية مستقرة وجاهزة</h3>
-                        <p class="font-bold text-xl text-brand-textMuted text-center max-w-3xl leading-relaxed">
-                            مرحباً بكِ في المركز المتقدم لإدارة تخطيط الموقع. الأقسام والمكونات أصبحت الآن مرتبة بنظام التبويبات الذكية لتوفير وقتك ولإنهاء أزمة التمرير المستمر.
+                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight text-center">المنصة الإدارية مستقرة وجاهزة للعمل</h3>
+                        <p class="font-bold text-lg text-brand-textMuted text-center max-w-3xl leading-relaxed">
+                            نرحب بكم في المركز المتقدم لإدارة تخطيط الموقع لعلامة حلويات بوسي. تم ترتيب الأقسام والمكونات بنظام التبويبات الذكية لتوفير الوقت وسهولة المتابعة الفورية.
                         </p>
                     </div>
                 </section>
@@ -563,7 +578,7 @@
                 <section id="ui-flowers-logistics" class="admin-section">
                     <div class="admin-card">
                         <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
-                            <i data-lucide="flower" class="text-brand-pink w-8 h-8"></i> التحكم السحابي في أسعار ولوجستيات الورد
+                            <i data-lucide="flower" class="text-brand-pink w-8 h-8"></i> التحكم السحابي في لوجستيات الورد الأساسي
                         </h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div>
@@ -588,6 +603,35 @@
                         </div>
                     </div>
                 </section>
+
+                <section id="ui-cake-pricing" class="admin-section">
+                    <div class="admin-card">
+                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
+                            <i data-lucide="cake" class="text-brand-pink w-8 h-8"></i> التحكم السحابي في أسعار وثوابت باني تورت حلويات بوسي المخصصة
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <label class="form-label">سعر الفرد الأساسي في التورت (ج.م)</label>
+                                <input type="number" id="cake-price-per-person" class="form-input text-2xl text-brand-pink font-black" placeholder="145">
+                            </div>
+                            <div>
+                                <label class="form-label">تكلفة إضافة صورة قابلة للأكل (ج.م)</label>
+                                <input type="number" id="cake-print-edible" class="form-input text-2xl text-white font-black" placeholder="60">
+                            </div>
+                            <div>
+                                <label class="form-label">تكلفة إضافة صورة ديكور غير قابلة للأكل (ج.م)</label>
+                                <input type="number" id="cake-print-non-edible" class="form-input text-2xl text-white font-black" placeholder="20">
+                            </div>
+                            <div>
+                                <label class="form-label">سعر كارت الهدية الفاخر للتورت (ج.م)</label>
+                                <input type="number" id="cake-gift-card-price" class="form-input text-2xl text-white font-black" placeholder="40">
+                            </div>
+                        </div>
+                        <div class="mt-8 pt-6 border-t border-brand-border">
+                            <button type="button" onclick="window.saveCakePricingRules()" class="btn-solid"><i data-lucide="upload-cloud" class="w-6 h-6"></i> اعتماد وتوثيق أسعار التورت سحابياً فوراً</button>
+                        </div>
+                    </div>
+                </section>
             </div>
 
         </div>
@@ -597,7 +641,17 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         
-        const firebaseConfig = { apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc", authDomain: "bosy-sweets.firebaseapp.com", projectId: "bosy-sweets" };
+        // استخدام الإعدادات الكاملة لضمان الاستقرار الكلي والاتصال الآمن
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
+            authDomain: "bosy-sweets.firebaseapp.com",
+            projectId: "bosy-sweets",
+            storageBucket: "bosy-sweets.firebasestorage.app",
+            messagingSenderId: "473615735083",
+            appId: "1:473615735083:web:f09c6001c72640b2588d6e",
+            measurementId: "G-6S8EXY7Y4P"
+        };
+
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
@@ -615,6 +669,33 @@
             { id: 'sec_7', type: 'categories_slider', title: 'تسوق حسب الفئة', subtitle: 'اكتشف مصدر السعادة في كل قطعة تتذوقها.', cardWidth: 450, cardHeight: 560, isVisible: true },
             { id: 'sec_8', type: 'stats', title: 'عشر سنوات من الثقة', subtitle: 'على مدار أكثر من عقد، كنا الاختيار الأول في تخليد ذكرياتكم السعيدة. نفخر بسجلنا الخالي تماماً من أي ملاحظات سلبية.', isVisible: true }
         ];
+
+        // نظام التأكيد المخصص (Custom Confirmation Modal)
+        let confirmCallback = null;
+        window.showConfirm = function(message, callback) {
+            const modal = document.getElementById('bose-confirm-modal');
+            document.getElementById('bose-confirm-message').innerText = message;
+            confirmCallback = callback;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        };
+
+        document.getElementById('bose-confirm-yes').addEventListener('click', () => {
+            if (confirmCallback) confirmCallback();
+            closeConfirmModal();
+        });
+
+        document.getElementById('bose-confirm-no').addEventListener('click', () => {
+            closeConfirmModal();
+        });
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('bose-confirm-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            confirmCallback = null;
+        }
 
         window.toggleSidebar = function() {
             const sidebar = document.getElementById('sidebar');
@@ -644,7 +725,7 @@
             let targetTab = 'tab-layout'; 
             if(sectionId === 'ui-header' || sectionId === 'ui-footer') targetTab = 'tab-colors';
             else if(sectionId === 'ui-ticker') targetTab = 'tab-typography';
-            else if(sectionId === 'ui-flowers-logistics') targetTab = 'tab-flowers';
+            else if(sectionId === 'ui-flowers-logistics' || sectionId === 'ui-cake-pricing') targetTab = 'tab-flowers';
 
             const tabBtn = document.querySelector(`.admin-tab-btn[onclick*="${targetTab}"]`);
             if(tabBtn) {
@@ -662,7 +743,8 @@
                 'ui-header': 'إدارة الهيدر واللوجو', 
                 'ui-ticker': 'إدارة الشريط الإعلاني المتحرك', 
                 'ui-footer': 'الإعدادات الشاملة للفوتر',
-                'ui-flowers-logistics': 'تسعير ولوجستيات الورد'
+                'ui-flowers-logistics': 'تسعير ولوجستيات الورد',
+                'ui-cake-pricing': 'أسعار وثوابت باني التورت'
             };
             document.getElementById('current-section-title').innerText = titles[sectionId] || '';
             if(window.innerWidth <= 1024) toggleSidebar();
@@ -915,10 +997,10 @@
         };
 
         window.deleteBlock = function(index) {
-            if(confirm("تأكيد سيادي: هل ترغب بحذف هذا القسم نهائياً من الموقع وهدمه؟")) {
+            window.showConfirm("تأكيد سيادي: هل ترغب بحذف هذا القسم نهائياً من الموقع وهدمه؟", () => {
                 builderBlocks.splice(index, 1);
                 renderBuilderUI();
-            }
+            });
         };
 
         window.toggleVisibility = function(index) {
@@ -963,7 +1045,7 @@
                     renderBuilderUI();
                 }
 
-                // سحب أسعار ولوجستيات الورد
+                // جلب أسعار ولوجستيات الورد
                 const flowerSnap = await getDoc(doc(db, 'settings', 'flowers'));
                 if(flowerSnap.exists()) {
                     const fData = flowerSnap.data();
@@ -971,6 +1053,16 @@
                     document.getElementById('flower-step-price').value = fData.stepPrice || 35;
                     document.getElementById('flower-card-price').value = fData.cardPrice || 25;
                     document.getElementById('flower-photo-price').value = fData.photoPrice || 15;
+                }
+
+                // جلب أسعار وضوابط باني التورت المخصصة
+                const pricingRulesSnap = await getDoc(doc(db, 'settings', 'pricingRules'));
+                if(pricingRulesSnap.exists()) {
+                    const prData = pricingRulesSnap.data();
+                    document.getElementById('cake-price-per-person').value = prData.pricePerPerson !== undefined ? prData.pricePerPerson : 145;
+                    document.getElementById('cake-print-edible').value = prData.printEdible !== undefined ? prData.printEdible : 60;
+                    document.getElementById('cake-print-non-edible').value = prData.printNonEdible !== undefined ? prData.printNonEdible : 20;
+                    document.getElementById('cake-gift-card-price').value = prData.giftCardPrice !== undefined ? prData.giftCardPrice : 40;
                 }
             } catch (error) { 
                 console.error("خطأ قراءة السحابة:", error); 
@@ -983,14 +1075,18 @@
                 await setDoc(doc(db, 'settings', 'theme'), { builderLayout: builderBlocks, updatedAt: Date.now() }, { merge: true });
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 showToast("تم اعتماد البناء الهندسي الجديد بنجاح وبث التحديثات للعملاء.");
-            } catch(e) { alert("حدث خطأ أثناء الاتصال بالخادم."); }
+            } catch(e) { 
+                showToast("حدث خطأ غير متوقع أثناء الاتصال بالخادم السحابي.", "error");
+            }
         }
 
         window.saveHeaderData = async function() {
             try {
                 await setDoc(doc(db, 'settings', 'theme'), { header: { logoText: document.getElementById('header-logo-text').value.trim() }, updatedAt: Date.now() }, { merge: true });
                 showToast("تم تحديث وحفظ لوجو الهيدر.");
-            } catch(e) {}
+            } catch(e) {
+                showToast("عطل اتصالي منع الحفظ السحابي للهيدر.", "error");
+            }
         }
 
         window.saveTickerData = async function() {
@@ -998,7 +1094,9 @@
             try {
                 await setDoc(doc(db, 'settings', 'theme'), { ticker: tickerArr, tickerSpeed: parseInt(document.getElementById('ticker-speed').value) || 40, updatedAt: Date.now() }, { merge: true });
                 showToast("تم تحديث نصوص الشريط وسرعة الحركة.");
-            } catch(e) {}
+            } catch(e) {
+                showToast("عطل اتصالي منع الحفظ السحابي للشريط الإعلاني.", "error");
+            }
         }
 
         window.saveFooterData = async function() {
@@ -1016,10 +1114,11 @@
                     updatedAt: Date.now()
                 }, { merge: true });
                 showToast("تم توثيق بيانات الفوتر ومنافذ التواصل بنجاح.");
-            } catch(e) {}
+            } catch(e) {
+                showToast("عطل اتصالي منع الحفظ السحابي لبيانات الفوتر.", "error");
+            }
         }
 
-        // دالة حفظ واعتماد أسعار ولوجستيات الورد المحقونة
         window.saveFlowerLogistics = async function() {
             const basePrice = parseFloat(document.getElementById('flower-base-price').value) || 400;
             const stepPrice = parseFloat(document.getElementById('flower-step-price').value) || 35;
@@ -1030,7 +1129,22 @@
                 await setDoc(doc(db, 'settings', 'flowers'), { basePrice, stepPrice, cardPrice, photoPrice, updatedAt: Date.now() }, { merge: true });
                 showToast("تم توثيق وحفظ لوجستيات وأسعار الورد سحابياً بنجاح.");
             } catch (err) { 
-                alert("عطل اتصالي منع الحفظ السحابي للورد."); 
+                showToast("عطل اتصالي منع الحفظ السحابي للورد.", "error"); 
+            }
+        };
+
+        window.saveCakePricingRules = async function() {
+            const pricePerPerson = parseFloat(document.getElementById('cake-price-per-person').value) || 145;
+            const printEdible = parseFloat(document.getElementById('cake-print-edible').value) || 60;
+            const printNonEdible = parseFloat(document.getElementById('cake-print-non-edible').value) || 20;
+            const giftCardPrice = parseFloat(document.getElementById('cake-gift-card-price').value) || 40;
+
+            try {
+                await setDoc(doc(db, 'settings', 'pricingRules'), { pricePerPerson, printEdible, printNonEdible, giftCardPrice, updatedAt: Date.now() }, { merge: true });
+                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                showToast("تم توثيق وحفظ أسعار التورت المخصصة سحابياً بنجاح.");
+            } catch (err) { 
+                showToast("عطل اتصالي منع الحفظ السحابي لأسعار التورت المخصصة.", "error"); 
             }
         };
 
@@ -1039,3 +1153,4 @@
     </script>
 </body>
 </html>
+

@@ -139,9 +139,7 @@
             </div>
             <h3 class="text-4xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تم استلام الطلب</h3>
             <div class="bg-brand-pinkLight py-5 px-6 rounded-2xl border border-brand-pink/20">
-                <p class="font-bold text-brand-brown/70 text-base">
-                    جاري تحويلك للواتساب لتأكيد الطلب...
-                </p>
+                <p class="font-bold text-brand-brown/70 text-base">جاري تحويلك للواتساب لتأكيد الطلب...</p>
             </div>
         </div>
     </div>
@@ -236,11 +234,11 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <label class="delivery-btn selected" id="card-delivery" onclick="window.CheckoutEngine.setDeliveryMode('توصيل')">
-                            <i data-lucide="map-pin" class="w-10 h-10 mx-auto mb-2 text-brand-pink"></i>
+                            <i data-lucide="map-pin" class="w-10 h-10 text-brand-pink"></i>
                             <span class="text-xl">توصيل للعنوان</span>
                         </label>
                         <label class="delivery-btn" id="card-pickup" onclick="window.CheckoutEngine.setDeliveryMode('استلام')">
-                            <i data-lucide="store" class="w-10 h-10 mx-auto mb-2 text-brand-pink"></i>
+                            <i data-lucide="store" class="w-10 h-10 text-brand-pink"></i>
                             <span class="text-xl">استلام من المقر</span>
                         </label>
                     </div>
@@ -326,7 +324,7 @@
                     </div>
 
                     <div class="bg-brand-pinkLight p-8 md:p-12 rounded-[40px] border-2 border-brand-pink/20 mb-12 shadow-sm">
-                        <h4 class="font-black text-brand-brown text-2xl mb-8 border-b-2 border-brand-pink/10 pb-6 uppercase tracking-widest text-center">ملخص الطلب</h4>
+                        <h4 class="font-black text-brand-brown text-2xl mb-8 border-b-2 border-brand-pink/10 pb-6 text-center">ملخص الطلب</h4>
                         
                         <div id="checkout-items-list" class="mb-10 space-y-4">
                         </div>
@@ -340,7 +338,7 @@
                                 <span>التوصيل:</span>
                                 <span id="summary-shipping">0 ج.م</span>
                             </div>
-                            <div class="flex justify-between items-center font-black text-5xl text-brand-pink border-t-2 border-dashed border-brand-pink/30 pt-8 tracking-tighter mt-4">
+                            <div class="flex justify-between items-center font-black text-5xl text-brand-pink border-t-2 border-dashed border-brand-pink/30 pt-8 mt-4">
                                 <span class="text-2xl text-brand-brown">الإجمالي:</span>
                                 <span id="summary-total">0 ج.م</span>
                             </div>
@@ -478,16 +476,28 @@
                 const addressInput = document.getElementById('detailed-address');
 
                 if (mode === 'توصيل') {
-                    cardDelivery.classList.add('selected'); cardPickup.classList.remove('selected');
-                    addressSection.classList.remove('hidden'); branchDetails.classList.add('hidden');
-                    altPhoneContainer.classList.remove('hidden');
-                    altPhoneInput.setAttribute('required', 'true'); zoneSelect.setAttribute('required', 'true'); addressInput.setAttribute('required', 'true');
+                    if (cardDelivery) cardDelivery.classList.add('selected');
+                    if (cardPickup) cardPickup.classList.remove('selected');
+                    if (addressSection) addressSection.classList.remove('hidden');
+                    if (branchDetails) branchDetails.classList.add('hidden');
+                    if (altPhoneContainer) altPhoneContainer.classList.remove('hidden');
+                    
+                    if (altPhoneInput) altPhoneInput.setAttribute('required', 'true');
+                    if (zoneSelect) zoneSelect.setAttribute('required', 'true');
+                    if (addressInput) addressInput.setAttribute('required', 'true');
                 } else {
-                    cardPickup.classList.add('selected'); cardDelivery.classList.remove('selected');
-                    addressSection.classList.add('hidden'); branchDetails.classList.remove('hidden');
-                    altPhoneContainer.classList.add('hidden');
-                    altPhoneInput.removeAttribute('required'); zoneSelect.removeAttribute('required'); addressInput.removeAttribute('required');
-                    zoneSelect.value = "";
+                    if (cardPickup) cardPickup.classList.add('selected');
+                    if (cardDelivery) cardDelivery.classList.remove('selected');
+                    if (addressSection) addressSection.classList.add('hidden');
+                    if (branchDetails) branchDetails.classList.remove('hidden');
+                    if (altPhoneContainer) altPhoneContainer.classList.add('hidden');
+                    
+                    if (altPhoneInput) altPhoneInput.removeAttribute('required');
+                    if (zoneSelect) {
+                        zoneSelect.removeAttribute('required');
+                        zoneSelect.value = "";
+                    }
+                    if (addressInput) addressInput.removeAttribute('required');
                 }
                 this.updateTotals();
             },
@@ -539,15 +549,42 @@
                     if (item.isCustom && item.details) {
                         if (item.details.category === 'ورد') {
                             let matText = item.details.material === 'natural' ? 'ورد طبيعي' : (item.details.material === 'artificial' ? 'ورد صناعي' : 'ورد ستان');
-                            let addonsSummary = [];
-                            if (item.details.hasGift) addonsSummary.push("كارت إهداء");
-                            if (item.details.hasRibbon) addonsSummary.push("شريط ستان مطبوع");
-                            if (item.details.chocolateBudget > 0) addonsSummary.push("شوكولاتة فاخرة");
-                            if (item.details.cashAmount > 0) addonsSummary.push("مبلغ كاش");
-                            let addonsText = addonsSummary.length > 0 ? ` - الإضافات: (${addonsSummary.join('، ')})` : '';
-                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: ${item.details.qty} وردة (${matText}) - اللون: ${item.details.color}${addonsText}</p>`;
+                            let addons = [];
+                            if (item.details.hasGift) {
+                                addons.push(`كارت إهداء مخطوط ("${item.details.giftText || ''}")`);
+                            }
+                            if (item.details.hasRibbon) {
+                                addons.push(`شريط ستان مطبوع عليه ("${item.details.ribbonText || ''}")`);
+                            }
+                            if (item.details.photoCount > 0) {
+                                addons.push(`طباعة صور عدد ${item.details.photoCount} صورة`);
+                            }
+                            if (item.details.chocolateBudget > 0) {
+                                addons.push(`شوكولاتة فاخرة بميزانية ${item.details.chocolateBudget} ج.م`);
+                            }
+                            if (item.details.cashAmount > 0) {
+                                addons.push(`مبلغ كاش ملفوف ${item.details.cashAmount} ج.م`);
+                            }
+                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: بوكيه ورد يحتوي على ${item.details.qty || 15} وردة (${matText}) - اللون المطلوب: ${item.details.color || 'أحمر'}${addons.length > 0 ? ` - الإضافات الفاخرة: (${addons.join('، ')})` : ''}</p>`;
                         } else {
-                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: ${item.details.shape === 'round' ? 'دائري' : 'حسب الاختيار'} - ${item.details.people} أفراد</p>`;
+                            // 🎂 سد الفجوة البيانية المفقودة لتورت باني التورتة في كارت المراجعة المعروض للعميل
+                            let shapeText = item.details.shape === 'round' ? 'شكل دائري' : (item.details.shape === 'heart' ? 'شكل قلب' : (item.details.shape === 'square' ? 'شكل مربع' : 'شكل مستطيل'));
+                            let printText = 'بدون طباعة صوره';
+                            if (item.details.print === 'edible') printText = 'طباعة صورة قابلة للأكل مدمجة';
+                            else if (item.details.print === 'non_edible') printText = 'صورة ديكور كرتونية غير قابلة للأكل';
+                            
+                            let addons = [];
+                            if (item.details.gift) {
+                                addons.push(`كارت هدية فاخر مبروز ومكتوب عليه ("${item.details.cardText || ''}")`);
+                            }
+                            if (item.details.occasionTheme) {
+                                addons.push(`مناسبة التورتة: ${item.details.occasionTheme}`);
+                            }
+                            if (item.details.healthNotes && item.details.healthNotes !== 'لا يوجد') {
+                                addons.push(`تعليمات صحية أو حساسية: ${item.details.healthNotes}`);
+                            }
+                            
+                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: تورتة مخصصة تكفي ${item.details.people || 4} أفراد (${shapeText}) - النكهة المطلوبة: ${item.details.flavor || 'فانيليا'} - المظهر الفني: ${printText}${addons.length > 0 ? ` - الإضافات والتعليمات: (${addons.join('، ')})` : ''}</p>`;
                         }
                     }
                     html += `
@@ -577,9 +614,10 @@
                 const shipVal = document.getElementById('summary-shipping');
                 
                 if (this.deliveryMode === 'توصيل') {
-                    shipRow.classList.remove('hidden'); shipVal.innerText = `${this.shippingFee} ج.م`;
+                    if (shipRow) shipRow.classList.remove('hidden');
+                    if (shipVal) shipVal.innerText = `${this.shippingFee} ج.م`;
                 } else {
-                    shipRow.classList.add('hidden');
+                    if (shipRow) shipRow.classList.add('hidden');
                 }
                 document.getElementById('summary-total').innerText = `${this.cartTotal + this.shippingFee} ج.م`;
             },
@@ -587,7 +625,8 @@
             validateForm: function() {
                 const name = document.getElementById('customer-name').value.trim();
                 const whatsappPhone = document.getElementById('whatsapp-phone').value.trim();
-                const altPhone = document.getElementById('alt-phone').value.trim();
+                const altPhoneInput = document.getElementById('alt-phone');
+                const altPhone = altPhoneInput ? altPhoneInput.value.trim() : '';
                 const dateVal = document.getElementById('order-date').value;
                 
                 if(!dateVal) { this.showToast("برجاء تحديد تاريخ الاستلام."); return false; }
@@ -619,17 +658,17 @@
                     const zoneText = zoneSelect.options[zoneSelect.selectedIndex].text;
                     const address = document.getElementById('detailed-address').value.trim();
                     const altPhone = document.getElementById('alt-phone').value.trim();
-                    deliveryText = `التوصيل (${zoneText})\nالعنوان: ${address}\nرقم المندوب: ${altPhone}`;
+                    deliveryText = `التوصيل لعنوان المشتري (${zoneText})\nالعنوان بالتفصيل: ${address}\nرقم بديل للمندوب: ${altPhone}`;
                 } else {
                     deliveryText = `الاستلام من مقر الفرع بالكفاح`;
                 }
 
                 let msg = `طلب جديد - حلويات بوسي\n\n`;
-                msg += `الاسم: ${customerName}\n`;
-                msg += `الواتساب: ${whatsappPhone}\n`;
+                msg += `الاسم بالتفصيل: ${customerName}\n`;
+                msg += `رقم الواتساب: ${whatsappPhone}\n`;
                 msg += `${deliveryText}\n`;
-                msg += `موعد الاستلام: ${orderDate} - الساعة ${orderTime}\n\n`;
-                msg += `الطلبات:\n`;
+                msg += `موعد الاستلام المحدد: ${orderDate} - الساعة ${orderTime}\n\n`;
+                msg += `قائمة الطلبات:\n`;
                 
                 this.cartItems.forEach(item => {
                     let catName = "";
@@ -642,29 +681,36 @@
                         }
                     }
 
-                    msg += `- ${catName}${item.name} (x${item.quantity || item.qty})\n`;
+                    msg += `- ${catName}${item.name} (العدد: ${item.quantity || item.qty})\n`;
                     
                     if (item.isCustom && item.details) {
                         if (item.details.category === 'ورد') {
                             let matText = item.details.material === 'natural' ? 'ورد طبيعي' : (item.details.material === 'artificial' ? 'ورد صناعي' : 'ورد ستان');
-                            msg += `  (التنسيق: ${item.details.qty} وردة خامة ${matText} - لون ${item.details.color})\n`;
-                            if (item.details.hasGift) msg += `  (كارت إهداء: "${item.details.giftText}")\n`;
-                            if (item.details.hasRibbon) msg += `  (شريط ستان مطبوع: "${item.details.ribbonText}")\n`;
-                            if (item.details.photoCount > 0) msg += `  (طباعة صور: عدد ${item.details.photoCount} صورة مرافقة)\n`;
-                            if (item.details.chocolateBudget > 0) msg += `  (إضافة شوكولاتة بميزانية: ${item.details.chocolateBudget} ج.م - الأنواع: ${item.details.chocolatePreferences})\n`;
-                            if (item.details.cashAmount > 0) msg += `  (تنسيق مبالغ نقدية كاش: ${item.details.cashAmount} ج.م داخل البوكيه)\n`;
+                            msg += `  (التنسيق الهندسي: بوكيه يحتوي على ${item.details.qty || 15} وردة خامة ${matText} - اللون المطلوب: ${item.details.color || 'أحمر'})\n`;
+                            if (item.details.hasGift) msg += `  (كارت إهداء مخطوط بنص: "${item.details.giftText || ''}")\n`;
+                            if (item.details.hasRibbon) msg += `  (شريط ستان مطبوع عليه: "${item.details.ribbonText || ''}")\n`;
+                            if (item.details.photoCount > 0) msg += `  (طباعة صور إضافية: عدد ${item.details.photoCount} صورة مرافقة للبوكيه)\n`;
+                            if (item.details.chocolateBudget > 0) msg += `  (شوكولاتة مضافة بميزانية: ${item.details.chocolateBudget} ج.م - التفضيل: ${item.details.chocolatePreferences || 'مشكل'})\n`;
+                            if (item.details.cashAmount > 0) msg += `  (تنسيق مبالغ كاش نقدية داخل البوكيه بقيمة: ${item.details.cashAmount} ج.م)\n`;
                         } else {
-                            const shape = item.details.shape === 'round' ? 'دائري' : (item.details.shape === 'heart' ? 'قلب' : (item.details.shape === 'square' ? 'مربع' : 'مستطيل'));
-                            msg += `  (تورتة مخصصة: تكفي ${item.details.people} أفراد - شكل ${shape})\n`;
-                            if (item.details.healthNotes && item.details.healthNotes !== 'لا يوجد') msg += `  (ملاحظات: ${item.details.healthNotes})\n`;
+                            // 🎂 سد فجوة إسقاط بيانات صياغة نصوص تورت باني التورتة المتوجهة لواتساب الفرع السحابي
+                            const shape = item.details.shape === 'round' ? 'دائري' : (item.details.shape === 'heart' ? 'شكل قلب' : (item.details.shape === 'square' ? 'شكل مربع' : 'شكل مستطيل'));
+                            msg += `  (تورتة مخصصة: تكفي ${item.details.people || 4} أفراد - شكل ${shape} - النكهة المطلوبة: ${item.details.flavor || 'فانيليا'})\n`;
+                            if (item.details.print === 'edible') msg += `  (مظهر التورتة: صورة غذائية قابلة للأكل مدمجة)\n`;
+                            else if (item.details.print === 'non_edible') msg += `  (مظهر التورتة: صورة ديكور كرتونية غير قابلة للأكل)\n`;
+                            else msg += `  (مظهر التورتة: تزيين يدوي كلاسيكي بدون طباعة صور)\n`;
+                            
+                            if (item.details.gift) msg += `  (إضافة كارت هدية فاخر مكتوب عليه: "${item.details.cardText || ''}")\n`;
+                            if (item.details.occasionTheme) msg += `  (مناسبة التصميم المطلوبة: ${item.details.occasionTheme})\n`;
+                            if (item.details.healthNotes && item.details.healthNotes !== 'لا يوجد') msg += `  (ملاحظات الحساسية أو تعليمات صحية: ${item.details.healthNotes})\n`;
                         }
                     }
                 });
                 
-                msg += `\nملخص الحساب:\n`;
-                msg += `المنتجات: ${this.cartTotal} ج.م\n`;
-                if(this.deliveryMode === 'توصيل') msg += `التوصيل: ${this.shippingFee} ج.م\n`;
-                msg += `الإجمالي النهائي: ${this.cartTotal + this.shippingFee} ج.م\n`;
+                msg += `\nملخص الحساب الكلي:\n`;
+                msg += `المنتجات الأساسية: ${this.cartTotal} ج.م\n`;
+                if(this.deliveryMode === 'توصيل') msg += `قيمة التوصيل: ${this.shippingFee} ج.م\n`;
+                msg += `الإجمالي النهائي المستحق: ${this.cartTotal + this.shippingFee} ج.م\n`;
 
                 if (window.db) {
                     const appId = window.__app_id || 'bosy-sweets';
@@ -685,7 +731,7 @@
                 }
 
                 const modal = document.getElementById('success-modal');
-                modal.classList.add('active');
+                if (modal) modal.classList.add('active');
 
                 if (window.cartSystem && window.cartSystem.clearCartStorage) {
                     window.cartSystem.clearCartStorage();

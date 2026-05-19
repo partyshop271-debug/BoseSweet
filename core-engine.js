@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Core Data Engine | المحرك المركزي للبيانات (V39.2 - مطور)
+ * 👑 BoseSweets Core Data Engine | المحرك المركزي للبيانات (V39.3 - مطور وسيادي)
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي
  * الحالة: دمج شامل، أداء فائق، تقليل استهلاك البيانات، وتوافق تام مع الهيكل.
@@ -47,7 +47,6 @@ let app, db, auth;
 try {
     app = initializeApp(firebaseConfig);
     
-    // تفعيل التخزين المؤقت المحلي لتقليل استهلاك البيانات وتسريع الأداء
     db = initializeFirestore(app, {
         localCache: persistentLocalCache({
             tabManager: persistentMultipleTabManager()
@@ -56,12 +55,11 @@ try {
     
     auth = getAuth(app);
     
-    // تثبيت المراجع في النطاق العام للتشغيل المتوافق
     if (typeof window !== 'undefined') {
         window.firebaseApp = app;
         window.db = db;
         window.auth = auth;
-        window.BoseSweets_Engine_Version = "V39.2";
+        window.BoseSweets_Engine_Version = "V39.3";
     }
 } catch (error) {
     console.error("🔒 قرار إداري أمني: فشل تهيئة السحابة، يرجى مراجعة الخوادم فوراً.", error);
@@ -69,7 +67,6 @@ try {
 
 export { app, db, auth };
 
-// 🛡️ نظام دعم استقرار الاتصال وحماية البيانات (Connection Guard)
 const ConnectionGuard = {
     maxRetries: 5,
     retryDelay: 2000,
@@ -94,6 +91,7 @@ function handleConnectionDrop(retryFunction) {
 
     window.BoseMonitor = {
         logQueue: [],
+        isReporting: false, // صمام أمان لمنع الدوران المتبادل عند حدوث أخطاء الاتصال
         diagnose: function(errorMsg) {
             const msg = String(errorMsg).toLowerCase();
             if (msg.includes('auth') || msg.includes('credential')) return "عائق توثيق (Auth Error): فشل في تأكيد الصلاحيات مع السحابة.";
@@ -114,6 +112,8 @@ function handleConnectionDrop(retryFunction) {
             return { file: 'تحليل معقد', line: 'N/A', col: 'N/A' };
         },
         report: async function(error, sourceFile = 'core-engine.js', lineNo = null, colNo = null, functionName = 'رصد تلقائي (Auto-Detect)') {
+            if (this.isReporting) return; 
+            this.isReporting = true;
             try {
                 const errorMessage = error && error.message ? error.message : String(error);
                 const stackTrace = error && error.stack ? error.stack : 'لا يوجد تتبع برمجي متاح (No Stack Trace)';
@@ -133,12 +133,14 @@ function handleConnectionDrop(retryFunction) {
                     clientDevice: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown Device',
                     url: window.location.href,
                     isLoginPortal: false,
-                    engineVersion: 'V39.2'
+                    engineVersion: 'V39.3'
                 };
 
-                this.saveToDatabase(reportData);
+                await this.saveToDatabase(reportData);
             } catch (e) {
                 console.error("👑 BoseMonitor: فشل نظام الرصد العميق في تسجيل الخطأ:", e);
+            } finally {
+                this.isReporting = false;
             }
         },
         saveToDatabase: async function(reportData) {
@@ -147,7 +149,7 @@ function handleConnectionDrop(retryFunction) {
                 if (db) {
                     const logsRef = collection(db, 'system_logs');
                     await setDoc(doc(logsRef), reportData);
-                    if (this.logQueue.length > 0) this.syncQueueToDatabase();
+                    if (this.logQueue.length > 0) await this.syncQueueToDatabase();
                 } else {
                     this.saveToLocalStorage(reportData);
                 }
@@ -203,40 +205,52 @@ export const StorageEngine = {
                 resolve(null);
                 return;
             }
-            const request = indexedDB.open(this.dbName, this.version);
-            request.onupgradeneeded = (e) => {
-                const database = e.target.result;
-                if (!database.objectStoreNames.contains(this.storeName)) {
-                    database.createObjectStore(this.storeName);
-                }
-            };
-            request.onsuccess = (e) => {
-                this.db = e.target.result;
-                resolve(this.db);
-            };
-            request.onerror = (e) => {
-                reject(e.target.error);
-            };
+            try {
+                const request = indexedDB.open(this.dbName, this.version);
+                request.onupgradeneeded = (e) => {
+                    const database = e.target.result;
+                    if (!database.objectStoreNames.contains(this.storeName)) {
+                        database.createObjectStore(this.storeName);
+                    }
+                };
+                request.onsuccess = (e) => {
+                    this.db = e.target.result;
+                    resolve(this.db);
+                };
+                request.onerror = (e) => {
+                    reject(e.target.error);
+                };
+            } catch (err) {
+                reject(err);
+            }
         });
     },
     set(key, value) {
         return new Promise((resolve, reject) => {
             if (!this.db) { resolve(null); return; }
-            const transaction = this.db.transaction([this.storeName], 'readwrite');
-            const store = transaction.objectStore(this.storeName);
-            const request = store.put(value, key);
-            request.onsuccess = () => resolve(true);
-            request.onerror = (e) => reject(e.target.error);
+            try {
+                const transaction = this.db.transaction([this.storeName], 'readwrite');
+                const store = transaction.objectStore(this.storeName);
+                const request = store.put(value, key);
+                request.onsuccess = () => resolve(true);
+                request.onerror = (e) => reject(e.target.error);
+            } catch (err) {
+                reject(err);
+            }
         });
     },
     get(key) {
         return new Promise((resolve, reject) => {
             if (!this.db) { resolve(null); return; }
-            const transaction = this.db.transaction([this.storeName], 'readonly');
-            const store = transaction.objectStore(this.storeName);
-            const request = store.get(key);
-            request.onsuccess = (e) => resolve(e.target.result);
-            request.onerror = (e) => reject(e.target.error);
+            try {
+                const transaction = this.db.transaction([this.storeName], 'readonly');
+                const store = transaction.objectStore(this.storeName);
+                const request = store.get(key);
+                request.onsuccess = (e) => resolve(e.target.result);
+                request.onerror = (e) => reject(e.target.error);
+            } catch (err) {
+                reject(err);
+            }
         });
     }
 };
@@ -245,7 +259,6 @@ if (typeof window !== 'undefined') {
     window.StorageEngine = StorageEngine;
 }
 
-// تهيئة محرك التخزين المحلي فور التحميل المباشر للمتصفح لضمان استقرار التشغيل
 StorageEngine.init().then(() => {
     if (typeof window !== 'undefined' && typeof window.loadEngineMemory === 'function') {
         window.loadEngineMemory();
@@ -254,7 +267,6 @@ StorageEngine.init().then(() => {
     if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'StorageEngine.init');
 });
 
-// حفظ حالة المعطيات محلياً لضمان سرعة التصفح في حالة ضعف الشبكة
 window.saveEngineMemory = async function(type) {
     try {
         if (type === 'cat') {
@@ -267,7 +279,6 @@ window.saveEngineMemory = async function(type) {
     }
 };
 
-// استعادة البيانات المخزنة محلياً عند الطوارئ
 window.loadEngineMemory = async function() {
     try {
         const cachedCatalog = await StorageEngine.get('bose_catalog');
@@ -300,7 +311,7 @@ export const ReverseSyncEngine = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_V39.2',
+                        source: 'BoseSweets_Engine_V39.3',
                         engine_status: 'Active',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
@@ -321,7 +332,7 @@ export const ReverseSyncEngine = {
         try {
             if (db) {
                 const syncDocRef = doc(db, 'system', 'syncFlag');
-                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V39.2', forceRefresh: true }, { merge: true });
+                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V39.3', forceRefresh: true }, { merge: true });
             }
         } catch (error) {}
     }
@@ -576,6 +587,12 @@ export async function fetchShippingZones() {
 export async function fetchProductsCatalog() {
     try {
         if (!db) throw new Error("المحرك غير متصل.");
+        
+        // تقليص الاستهلاك: إذا كانت البيانات مستمعاً إليها فاعلياً والذاكرة ممتلئة، يتم تجاوز طلب القراءة السحابي المباشر
+        if (BoseState.catalog.length > 0 && window.__BoseListenersActive) {
+            return BoseState.catalog;
+        }
+
         const q = query(collection(db, 'catalog'));
         const snapshot = await getDocs(q);
         
@@ -629,6 +646,7 @@ export async function initializeDataBridge() {
 export function listenToSovereignUpdates() {
     if (!db || window.__BoseListenersActive) return; window.__BoseListenersActive = true;
     
+    // مستمع سحابي واحد فائق الأداء والسرعة، يقوم بكامل المهام اللازمة للقوائم وواجهة المستخدم والفرز
     onSnapshot(collection(db, 'catalog'), (snap) => {
         const list = [];
         snap.forEach(d => {
@@ -640,7 +658,10 @@ export function listenToSovereignUpdates() {
         BoseState.catalog = list;
         syncCatalogMap(); 
         saveToLocalMemory('bosesweets_catalog', BoseState.catalog);
+        window.saveEngineMemory('cat'); 
+        
         window.dispatchEvent(new Event('catalogDataReady'));
+        window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
         if (window.distributeProductsToUI) window.distributeProductsToUI(BoseState.catalog);
     }, (err) => {
         if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'listenToSovereignUpdates Error');
@@ -659,69 +680,67 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🔒 القسم السابع: مستمعي المزامنة الفورية السحابية (Firebase Real-time Sync V39.2)
+// 🔒 القسم السابع: مستمعي المزامنة الفورية السحابية (Firebase Real-time Sync V39.3)
 // ============================================================================
 
 export function initializeSovereignSync() {
     if (!db) return;
 
-    onSnapshot(collection(db, 'catalog'), (snap) => {
-        const list = [];
-        snap.forEach(d => {
-            const data = d.data();
-            if (data.isActive !== false) {
-                list.push({ id: d.id, ...data });
+    // تم دمج وتوجيه مستمع القائمة ليكون واحداً فقط لتفادي التكرار واستهلاك الكوتة السحابية بلا داعي
+    listenToSovereignUpdates();
+
+    // تأمين تفعيل مستمعي البيانات الآخرين لضمان عدم إنشاء قنوات اتصال متكررة
+    if (!window.__BoseSovereignSyncActive) {
+        window.__BoseSovereignSyncActive = true;
+
+        onSnapshot(doc(db, 'settings', 'theme'), (snap) => {
+            if(snap.exists()) {
+                const themeData = snap.data();
+                BoseState.theme = themeData;
+                window.saveEngineMemory('theme');
+                if(window.applyThemeConfigUI) window.applyThemeConfigUI();
+                if(window.distributeProductsToUI) window.distributeProductsToUI();
             }
+        }, (err) => {
+            if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'Theme SnapshotListener');
         });
-        BoseState.catalog = list;
-        syncCatalogMap();
-        window.saveEngineMemory('cat'); 
-        if(window.distributeProductsToUI) window.distributeProductsToUI();
-        window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
-    }, (err) => {
-        if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'Catalog SnapshotListener');
-    });
 
-    onSnapshot(doc(db, 'settings', 'theme'), (snap) => {
-        if(snap.exists()) {
-            const themeData = snap.data();
-            BoseState.theme = themeData;
-            window.saveEngineMemory('theme');
-            if(window.applyThemeConfigUI) window.applyThemeConfigUI();
-            if(window.distributeProductsToUI) window.distributeProductsToUI();
-        }
-    }, (err) => {
-        if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'Theme SnapshotListener');
-    });
-
-    onSnapshot(doc(db, 'settings', 'logistics'), (snap) => {
-        if(snap.exists()) {
-            BoseState.logistics = snap.data();
-            window.dispatchEvent(new CustomEvent('BoseSweets_Logistics_Updated'));
-        }
-    }, (err) => {
-        if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'Logistics SnapshotListener');
-    });
-
-    onSnapshot(doc(db, 'settings', 'pricingRules'), (snap) => {
-        if(snap.exists()) {
-            BoseState.pricingRules = snap.data();
-            window.dispatchEvent(new CustomEvent('BoseSweets_Pricing_Updated'));
-        }
-    }, (err) => {
-        if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'Pricing SnapshotListener');
-    });
-
-    onSnapshot(doc(db, 'system', 'syncFlag'), (snap) => {
-        if (snap.exists()) {
-            const data = snap.data();
-            const lastUpdate = parseInt(localStorage.getItem('bose_last_local_sync') || '0');
-            if (data.lastAdminUpdate > lastUpdate && data.forceRefresh === true) {
-                localStorage.setItem('bose_last_local_sync', data.lastAdminUpdate.toString());
-                window.location.reload();
+        onSnapshot(doc(db, 'settings', 'logistics'), (snap) => {
+            if(snap.exists()) {
+                BoseState.logistics = snap.data();
+                window.dispatchEvent(new CustomEvent('BoseSweets_Logistics_Updated'));
             }
-        }
-    }, (err) => {
-        if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'SyncFlag SnapshotListener');
-    });
+        }, (err) => {
+            if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'Logistics SnapshotListener');
+        });
+
+        onSnapshot(doc(db, 'settings', 'pricingRules'), (snap) => {
+            if(snap.exists()) {
+                const data = snap.data();
+                BoseState.pricingRules = {
+                    pricePerPerson: data.pricePerPerson !== undefined ? data.pricePerPerson : 145,
+                    printEdible: data.printEdible !== undefined ? data.printEdible : 60,
+                    printNonEdible: data.printNonEdible !== undefined ? data.printNonEdible : 20,
+                    giftCardPrice: data.giftCardPrice !== undefined ? data.giftCardPrice : 40,
+                    ...data
+                };
+                window.dispatchEvent(new CustomEvent('BoseSweets_Pricing_Updated'));
+            }
+        }, (err) => {
+            if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'Pricing SnapshotListener');
+        });
+
+        onSnapshot(doc(db, 'system', 'syncFlag'), (snap) => {
+            if (snap.exists()) {
+                const data = snap.data();
+                const lastUpdate = parseInt(localStorage.getItem('bose_last_local_sync') || '0');
+                if (data.lastAdminUpdate > lastUpdate && data.forceRefresh === true) {
+                    localStorage.setItem('bose_last_local_sync', data.lastAdminUpdate.toString());
+                    window.location.reload();
+                }
+            }
+        }, (err) => {
+            if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'SyncFlag SnapshotListener');
+        });
+    }
 }
