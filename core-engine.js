@@ -1,9 +1,9 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Core Data Engine | المحرك المركزي للبيانات (V39.3 - مطور وسيادي)
+ * 👑 BoseSweets Core Data Engine | المحرك المركزي للبيانات (V39.4 - سيادي ومسيطر)
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي
- * الحالة: دمج شامل، أداء فائق، تقليل استهلاك البيانات، وتوافق تام مع الهيكل.
+ * الحالة: دمج شامل، أداء فائق، كسر إجباري للذاكرة المؤقتة لضمان التحديث اللحظي للصور.
  * ============================================================================
  */
 
@@ -59,7 +59,7 @@ try {
         window.firebaseApp = app;
         window.db = db;
         window.auth = auth;
-        window.BoseSweets_Engine_Version = "V39.3";
+        window.BoseSweets_Engine_Version = "V39.4";
     }
 } catch (error) {
     console.error("🔒 قرار إداري أمني: فشل تهيئة السحابة، يرجى مراجعة الخوادم فوراً.", error);
@@ -91,7 +91,7 @@ function handleConnectionDrop(retryFunction) {
 
     window.BoseMonitor = {
         logQueue: [],
-        isReporting: false, // صمام أمان لمنع الدوران المتبادل عند حدوث أخطاء الاتصال
+        isReporting: false, 
         diagnose: function(errorMsg) {
             const msg = String(errorMsg).toLowerCase();
             if (msg.includes('auth') || msg.includes('credential')) return "عائق توثيق (Auth Error): فشل في تأكيد الصلاحيات مع السحابة.";
@@ -133,7 +133,7 @@ function handleConnectionDrop(retryFunction) {
                     clientDevice: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown Device',
                     url: window.location.href,
                     isLoginPortal: false,
-                    engineVersion: 'V39.3'
+                    engineVersion: 'V39.4'
                 };
 
                 await this.saveToDatabase(reportData);
@@ -311,7 +311,7 @@ export const ReverseSyncEngine = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_V39.3',
+                        source: 'BoseSweets_Engine_V39.4',
                         engine_status: 'Active',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
@@ -332,7 +332,7 @@ export const ReverseSyncEngine = {
         try {
             if (db) {
                 const syncDocRef = doc(db, 'system', 'syncFlag');
-                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V39.3', forceRefresh: true }, { merge: true });
+                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V39.4', forceRefresh: true }, { merge: true });
             }
         } catch (error) {}
     }
@@ -452,11 +452,30 @@ if (typeof window !== 'undefined') {
 const BOSE_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg";
 const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1";
 
+// 🔥 تطبيق الختم الزمني السيادي لكسر الذاكرة المؤقتة (Dynamic Cache Buster)
 export const processBoseImage = (imgPath) => {
     if (!imgPath) return BOSE_LOGO_FALLBACK;
-    if (imgPath.startsWith('http') || imgPath.startsWith('data:')) return imgPath;
-    const cleanPath = imgPath.replace(/^\//, '');
-    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${cleanPath}`;
+    
+    let finalUrl = imgPath;
+    if (!imgPath.startsWith('http') && !imgPath.startsWith('data:')) {
+        const cleanPath = imgPath.replace(/^\//, '');
+        finalUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${cleanPath}`;
+    }
+    
+    // جلب توقيت آخر تحديث سيادي، لضمان عرض أحدث نسخة وتجاهل الذاكرة القديمة للمتصفح أو الخادم
+    const state = typeof window !== 'undefined' ? (window.BoseState || {}) : {};
+    const syncStamp = (state.theme && state.theme.lastAdminUpdate) 
+        ? state.theme.lastAdminUpdate 
+        : (typeof localStorage !== 'undefined' ? (localStorage.getItem('bose_last_local_sync') || Date.now()) : Date.now());
+
+    if (finalUrl.startsWith('http') && !finalUrl.includes('data:')) {
+        // تنظيف الرابط من أي ختم زمني قديم لتفادي تراكم المتغيرات
+        finalUrl = finalUrl.split('?v=')[0].split('&v=')[0];
+        const separator = finalUrl.includes('?') ? '&' : '?';
+        finalUrl = `${finalUrl}${separator}v=${syncStamp}`;
+    }
+    
+    return finalUrl;
 };
 
 const boseConfig = {
@@ -588,7 +607,6 @@ export async function fetchProductsCatalog() {
     try {
         if (!db) throw new Error("المحرك غير متصل.");
         
-        // تقليص الاستهلاك: إذا كانت البيانات مستمعاً إليها فاعلياً والذاكرة ممتلئة، يتم تجاوز طلب القراءة السحابي المباشر
         if (BoseState.catalog.length > 0 && window.__BoseListenersActive) {
             return BoseState.catalog;
         }
@@ -646,7 +664,6 @@ export async function initializeDataBridge() {
 export function listenToSovereignUpdates() {
     if (!db || window.__BoseListenersActive) return; window.__BoseListenersActive = true;
     
-    // مستمع سحابي واحد فائق الأداء والسرعة، يقوم بكامل المهام اللازمة للقوائم وواجهة المستخدم والفرز
     onSnapshot(collection(db, 'catalog'), (snap) => {
         const list = [];
         snap.forEach(d => {
@@ -680,16 +697,14 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🔒 القسم السابع: مستمعي المزامنة الفورية السحابية (Firebase Real-time Sync V39.3)
+// 🔒 القسم السابع: مستمعي المزامنة الفورية السحابية (Firebase Real-time Sync V39.4)
 // ============================================================================
 
 export function initializeSovereignSync() {
     if (!db) return;
 
-    // تم دمج وتوجيه مستمع القائمة ليكون واحداً فقط لتفادي التكرار واستهلاك الكوتة السحابية بلا داعي
     listenToSovereignUpdates();
 
-    // تأمين تفعيل مستمعي البيانات الآخرين لضمان عدم إنشاء قنوات اتصال متكررة
     if (!window.__BoseSovereignSyncActive) {
         window.__BoseSovereignSyncActive = true;
 
