@@ -165,13 +165,6 @@
         .animate-fade { animation: fade 0.6s ease forwards; }
         @keyframes fade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .step-dot.active {
-            background-color: #ff91a4 !important;
-            color: #ffffff !important;
-            border-color: #ff91a4 !important;
-        }
-
-        /* تنسيقات إضافية لمعرض الصور (الجليري) */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -194,7 +187,6 @@
         }
         .gallery-item:hover::after { opacity: 1; }
 
-        /* نافذة عرض الصور بكامل الشاشة */
         #lightbox {
             position: fixed; inset: 0; background: rgba(10, 10, 10, 0.95); z-index: 100000;
             display: none; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease;
@@ -213,7 +205,6 @@
         <span id="bose-toast-msg">تم</span>
     </div>
 
-    <!-- نافذة عرض الصور المكبرة -->
     <div id="lightbox" onclick="window.ProductUI.closeLightbox()">
         <button class="lightbox-close"><i data-lucide="x" class="w-8 h-8"></i></button>
         <img id="lightbox-img" src="" alt="صورة مكبرة" onclick="event.stopPropagation()">
@@ -322,162 +313,177 @@
             <div id="category-grid" class="grid gap-8 max-w-6xl mx-auto"></div>
         </section>
 
-        <!-- قسم الورد: تصميم محسن وواضح خالي من التكدس -->
         <section id="flower-customizer-container" class="container mx-auto px-4" style="display: none;">
-            <div class="max-w-6xl mx-auto animate-fade mt-4">
-                <div class="text-center mb-8">
-                    <h2 class="text-3xl md:text-4xl font-black text-brand-brown mb-3 tracking-tight">تنسيق وتخصيص البوكيهات</h2>
-                    <p class="text-base md:text-lg font-bold text-brand-brown/70 max-w-2xl mx-auto leading-relaxed">
-                        اختر التفاصيل بعناية للحصول على بوكيه يعكس ذوقك الراقي. الصورة تتحدث تلقائياً بناءً على اختياراتك لضمان أعلى درجات الدقة.
+            <div class="max-w-7xl mx-auto animate-fade mt-4">
+                <div class="text-center mb-12 border-b-2 border-brand-pink/10 pb-8">
+                    <h2 class="text-4xl md:text-5xl font-black text-brand-brown mb-4 tracking-tight">محاكي تنسيق البوكيهات</h2>
+                    <p class="text-lg md:text-xl font-bold text-brand-brown/70 max-w-3xl mx-auto leading-relaxed">
+                        صمم بوكيه يعكس ذوقك بدقة. الخيارات المتوفرة تُحدث الصورة فوراً لضمان أفضل تجربة تسوق ورؤية واضحة للتفاصيل.
                     </p>
                 </div>
 
-                <div class="flex justify-center items-center gap-4 mb-10 max-w-md mx-auto">
-                    <div id="flower-step-1-indicator" class="step-dot active w-12 h-12 rounded-full border-4 border-brand-pink flex items-center justify-center font-black text-xl transition-all duration-300">١</div>
-                    <div class="h-1.5 bg-brand-pink/20 flex-grow max-w-[120px] rounded-full"></div>
-                    <div id="flower-step-2-indicator" class="step-dot w-12 h-12 rounded-full border-4 border-brand-pink flex items-center justify-center font-black text-xl transition-all duration-300 bg-white text-brand-pink">٢</div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
                     
-                    <!-- العرض المرئي للبوكيه (بدون طبقات مزعجة أو نصوص زائدة) -->
-                    <div class="bg-brand-pinkLight/30 rounded-[40px] p-4 flex justify-center items-center shadow-sm border-2 border-brand-pink/10 lg:sticky lg:top-28">
-                        <div class="relative w-full aspect-square md:aspect-auto md:h-[600px] flex justify-center items-center overflow-hidden rounded-[32px]">
-                            <!-- سيتم تبديل هذه الصورة كلياً بالصورة المناسبة من الكتالوج -->
-                            <img src="" alt="صورة البوكيه الحية" id="main-product-image" class="w-full h-full object-cover transition-opacity duration-500 rounded-[32px] shadow-lg border-4 border-brand-pink/20">
+                    <div class="lg:col-span-5 bg-brand-pinkLight/40 rounded-[40px] p-4 flex flex-col justify-center items-center shadow-sm border-2 border-brand-pink/10 lg:sticky lg:top-28">
+                        <div class="relative w-full aspect-square md:aspect-[4/5] flex justify-center items-center overflow-hidden rounded-[32px] mb-6">
+                            <img src="" alt="صورة البوكيه الحية" id="main-product-image" class="w-full h-full object-cover transition-all duration-500 rounded-[32px] shadow-lg border-4 border-brand-pink/20">
                             
-                            <div id="bose-canvas-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 bg-brand-pinkLight/80 backdrop-blur-sm z-10">
+                            <div id="bose-canvas-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 bg-brand-pinkLight/90 backdrop-blur-md z-10">
                                 <div class="w-20 h-20 rounded-full bg-white flex items-center justify-center mb-6 border-4 border-brand-pink/40 animate-pulse shadow-lg">
                                     <i data-lucide="camera" class="w-10 h-10 text-brand-pink"></i>
                                 </div>
-                                <p class="font-black text-brand-brown text-xl">جاري تحضير المعاينة البصرية</p>
+                                <p class="font-black text-brand-brown text-2xl">جاري تهيئة المحاكي</p>
                             </div>
+                        </div>
+
+                        <div class="w-full bg-white border-3 border-brand-pink/30 p-6 rounded-3xl text-center shadow-md">
+                            <p class="font-black mb-2 text-brand-brown/70 uppercase tracking-widest text-sm">قيمة هذا التنسيق الإجمالية</p>
+                            <div id="live-total-price" class="text-4xl font-black text-brand-pink tracking-tighter">400 ج.م</div>
                         </div>
                     </div>
 
-                    <!-- خيارات التخصيص -->
-                    <div class="bg-white border-4 border-brand-pink/20 rounded-[40px] p-8 shadow-sm space-y-8">
+                    <div class="lg:col-span-7 bg-white border-4 border-brand-pink/10 rounded-[40px] p-8 md:p-12 shadow-sm space-y-12">
                         
-                        <!-- الخطوة 1 -->
-                        <div id="flower-customizer-step-1" class="space-y-8 animate-fade">
-                            
-                            <div class="pb-2">
-                                <h3 class="text-xl font-black text-brand-brown mb-4 flex items-center gap-3">
-                                    <span class="w-8 h-8 rounded-full bg-brand-pink text-white text-sm flex items-center justify-center font-black shrink-0">١</span>
-                                    خامة وتنسيق الورد الأساسي:
-                                </h3>
-                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                    <button class="flower-tab option-btn selected flex-col py-6 gap-3" data-target="natural" onclick="window.ProductUI.setFlowerMaterial('natural', this)">
-                                        <i data-lucide="flower" class="w-8 h-8 text-brand-pink"></i><span>ورد طبيعي فريش</span>
-                                    </button>
-                                    <button class="flower-tab option-btn flex-col py-6 gap-3" data-target="artificial" onclick="window.ProductUI.setFlowerMaterial('artificial', this)">
-                                        <i data-lucide="flower-2" class="w-8 h-8 text-brand-pink"></i><span>ورد صناعي فاخر</span>
-                                    </button>
-                                    <button class="flower-tab option-btn flex-col py-6 gap-3" data-target="satin" onclick="window.ProductUI.setFlowerMaterial('satin', this)">
-                                        <i data-lucide="sparkles" class="w-8 h-8 text-brand-pink"></i><span>ورد ستان دائم</span>
-                                    </button>
-                                </div>
+                        <div>
+                            <h3 class="text-2xl font-black text-brand-brown mb-6 border-r-4 border-brand-pink pr-4">1. الخامة الأساسية للورد</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <button class="flower-material-btn option-btn selected flex-col py-6 gap-3" data-mat="natural" onclick="window.ProductUI.setBaseMaterial('natural', this)">
+                                    <i data-lucide="flower" class="w-8 h-8 text-brand-pink"></i><span>ورد طبيعي فريش</span>
+                                </button>
+                                <button class="flower-material-btn option-btn flex-col py-6 gap-3" data-mat="artificial" onclick="window.ProductUI.setBaseMaterial('artificial', this)">
+                                    <i data-lucide="flower-2" class="w-8 h-8 text-brand-pink"></i><span>ورد صناعي فاخر</span>
+                                </button>
+                                <button class="flower-material-btn option-btn flex-col py-6 gap-3" data-mat="satin" onclick="window.ProductUI.setBaseMaterial('satin', this)">
+                                    <i data-lucide="sparkles" class="w-8 h-8 text-brand-pink"></i><span>ورد ستان دائم</span>
+                                </button>
                             </div>
-
-                            <div class="pb-2">
-                                <h3 class="text-xl font-black text-brand-brown mb-4 flex items-center gap-3">
-                                    <span class="w-8 h-8 rounded-full bg-brand-pink text-white text-sm flex items-center justify-center font-black shrink-0">٢</span>
-                                    ألوان الورد والتغليف:
-                                </h3>
-                                
-                                <div class="space-y-5">
-                                    <!-- حقل اللون المطور -->
-                                    <div>
-                                        <label class="block font-black text-lg mb-3 text-brand-brown">لون الورد المفضل:</label>
-                                        <input type="text" id="flower-color-input" class="w-full" placeholder="اكتب درجة اللون المطلوبة بدقة (مثال: أحمر غامق، أو أبيض مع أطراف وردي)..." oninput="window.ProductUI.flowerState.color = this.value; window.ProductUI.updateVisualSimulator();">
-                                        <p class="text-sm font-bold text-brand-brown/60 mt-2"><i data-lucide="info" class="w-4 h-4 inline mr-1"></i> يرجى كتابة الألوان المطلوبة وسيقوم المصمم بمطابقتها باحترافية.</p>
-                                    </div>
-
-                                    <!-- حقل التغليف -->
-                                    <div class="pt-2">
-                                        <label class="block font-black text-lg mb-3 text-brand-brown">لون ورق التغليف:</label>
-                                        <div class="flex flex-col gap-3">
-                                            <input type="text" id="flower-wrap-color" class="w-full" placeholder="اكتب لون التغليف المفضل للبوكيه..." oninput="window.ProductUI.resetWrappingBtn(this)">
-                                            <button id="designer-choice-btn" class="option-btn text-base py-4 flex-row justify-center gap-2 border-brand-pink/30 hover:border-brand-pink bg-brand-pinkLight/30" onclick="window.ProductUI.setWrappingToTaste(this)">
-                                                <i data-lucide="palette" class="w-5 h-5 text-brand-pink"></i> ترك اختيار التغليف المناسب لذوق مصممي حلويات بوسي
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="button" class="btn-solid w-full py-5 text-xl font-black flex items-center justify-center gap-3 shadow-lg" onclick="window.ProductUI.nextFlowerStep()">
-                                <span>متابعة لتحديد الإضافات الفاخرة</span>
-                                <i data-lucide="arrow-left" class="w-6 h-6 shrink-0"></i>
-                            </button>
                         </div>
 
-                        <!-- الخطوة 2 -->
-                        <div id="flower-customizer-step-2" class="space-y-8 hidden animate-fade">
-                            <div class="pb-2 space-y-6">
-                                <h3 class="text-xl font-black text-brand-brown flex items-center gap-3 mb-6">
-                                    <span class="w-8 h-8 rounded-full bg-brand-pink text-white text-sm flex items-center justify-center font-black shrink-0">٣</span>
-                                    إضافات التزيين الحصرية:
-                                </h3>
-
-                                <!-- الخيارات بتصميم واضح ومتباين -->
-                                <div class="bg-white p-5 rounded-2xl border-3 border-brand-brown/10 hover:border-brand-pink/50 transition-colors space-y-4">
-                                    <label class="flex items-center gap-4 font-black text-lg text-brand-brown cursor-pointer">
-                                        <input type="checkbox" class="w-6 h-6 accent-brand-pink cursor-pointer" onchange="window.ProductUI.toggleFlowerChocolate(this.checked)">
-                                        <span>إضافة شوكولاتة فاخرة داخل التنسيق</span>
-                                    </label>
-                                    <div id="chocolate-details-inputs" class="hidden space-y-4 animate-fade pl-10 border-r-4 border-brand-pink/30 mr-2">
-                                        <input type="number" id="flower-chocolate-budget" class="w-full" placeholder="الميزانية المخصصة للشوكولاتة (ج.م)..." oninput="window.ProductUI.updateFlowerPrices()">
-                                        <input type="text" id="flower-chocolate-pref" class="w-full" placeholder="أنواع أو ماركات الشوكولاتة المفضلة لديك...">
-                                    </div>
-                                </div>
-
-                                <div class="bg-white p-5 rounded-2xl border-3 border-brand-brown/10 hover:border-brand-pink/50 transition-colors space-y-4">
-                                    <label class="flex items-center gap-4 font-black text-lg text-brand-brown cursor-pointer">
-                                        <input type="checkbox" class="w-6 h-6 accent-brand-pink cursor-pointer" onchange="window.ProductUI.toggleFlowerGiftCash(this.checked)">
-                                        <span>تنسيق لفافات مالية (كاش) مع الورد</span>
-                                    </label>
-                                    <div id="cash-amount-input" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-4 animate-fade pl-10 border-r-4 border-brand-pink/30 mr-2">
-                                        <input type="number" id="cash-amount" class="w-full" placeholder="المبلغ المراد إضافته كاش (ج.م)..." oninput="window.ProductUI.updateCashDetails()">
-                                        <select id="cash-denomination" class="w-full bg-white border-3 border-brand-pink !text-brand-brown" onchange="window.ProductUI.updateCashDetails()">
-                                            <option value="50">فئة ٥٠ جنيه</option>
-                                            <option value="100">فئة ١٠٠ جنيه</option>
-                                            <option value="200" selected>فئة ٢٠٠ جنيه</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="bg-white p-5 rounded-2xl border-3 border-brand-brown/10 hover:border-brand-pink/50 transition-colors space-y-4">
-                                    <label class="flex items-center gap-4 font-black text-lg text-brand-brown cursor-pointer">
-                                        <input type="checkbox" class="w-6 h-6 accent-brand-pink cursor-pointer" onchange="window.ProductUI.toggleFlowerGift(this.checked)">
-                                        <span>إرفاق كارت إهداء كلاسيكي فاخر</span>
-                                    </label>
-                                    <div id="flower-gift-area" class="hidden animate-fade pl-10 border-r-4 border-brand-pink/30 mr-2">
-                                        <input type="text" id="flower-gift-text" class="w-full" placeholder="نص الرسالة المراد تدوينها داخل الكارت..." oninput="window.ProductUI.updateFlowerPrices()">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mt-8 bg-brand-pinkLight border-3 border-brand-pink/30 p-8 rounded-3xl text-center shadow-inner relative overflow-hidden">
-                                <p class="font-black mb-3 text-brand-brown/80 uppercase tracking-widest text-lg">قيمة هذا التنسيق المبدئية</p>
-                                <div id="live-total-price" class="text-5xl font-black mb-8 text-brand-pink tracking-tighter">400 ج.م</div>
-                                <button type="button" class="btn-solid w-full py-5 text-xl font-black shadow-lg" onclick="window.ProductUI.addCustomFlowerToCart()">
-                                    اعتماد وإضافة للسلة <i data-lucide="shopping-basket" class="w-6 h-6 inline mr-2"></i>
+                        <div class="pt-8 border-t-2 border-brand-pink/10">
+                            <h3 class="text-2xl font-black text-brand-brown mb-6 border-r-4 border-brand-pink pr-4">2. طابع البوكيه والدمج</h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <button class="flower-theme-btn option-btn selected flex-row py-5 gap-3 justify-start px-6" data-theme="classic" onclick="window.ProductUI.setFlowerTheme('classic', this)">
+                                    <i data-lucide="gem" class="w-6 h-6 text-brand-pink shrink-0"></i><span class="text-right">كلاسيكي (ورد فقط)</span>
+                                </button>
+                                <button class="flower-theme-btn option-btn flex-row py-5 gap-3 justify-start px-6" data-theme="cash" onclick="window.ProductUI.setFlowerTheme('cash', this)">
+                                    <i data-lucide="banknote" class="w-6 h-6 text-brand-pink shrink-0"></i><span class="text-right">تنسيق مع نقود (كاش)</span>
+                                </button>
+                                <button class="flower-theme-btn option-btn flex-row py-5 gap-3 justify-start px-6" data-theme="chocolate" onclick="window.ProductUI.setFlowerTheme('chocolate', this)">
+                                    <i data-lucide="gift" class="w-6 h-6 text-brand-pink shrink-0"></i><span class="text-right">تنسيق مع شوكولاتة</span>
+                                </button>
+                                <button class="flower-theme-btn option-btn flex-row py-5 gap-3 justify-start px-6" data-theme="photos" onclick="window.ProductUI.setFlowerTheme('photos', this)">
+                                    <i data-lucide="camera" class="w-6 h-6 text-brand-pink shrink-0"></i><span class="text-right">تنسيق مع طباعة صور</span>
                                 </button>
                             </div>
 
-                            <button type="button" class="btn-outline w-full py-4 text-lg rounded-full font-black flex items-center justify-center gap-2" onclick="window.ProductUI.prevFlowerStep()">
-                                <i data-lucide="arrow-right" class="w-5 h-5 shrink-0"></i>
-                                <span>العودة للمرحلة الأولى (تعديل الورد والألوان)</span>
-                            </button>
+                            <div id="theme-dynamic-container" class="mt-6">
+                                
+                                <div id="theme-settings-cash" class="hidden bg-brand-pinkLight/30 p-6 rounded-2xl border-2 border-brand-pink/20 space-y-4 animate-fade">
+                                    <h4 class="font-black text-lg text-brand-brown flex items-center gap-2"><i data-lucide="wallet" class="w-5 h-5 text-brand-pink"></i> تفاصيل النقود المدمجة</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block font-black text-sm mb-2 text-brand-brown">إجمالي المبلغ المراد إضافته (ج.م):</label>
+                                            <input type="number" id="cash-amount" class="w-full text-lg py-3" placeholder="مثال: 1000" oninput="window.ProductUI.updateFlowerPrices()">
+                                        </div>
+                                        <div>
+                                            <label class="block font-black text-sm mb-2 text-brand-brown">فئة الورق النقدي:</label>
+                                            <select id="cash-denomination" class="w-full bg-white text-lg py-3" onchange="window.ProductUI.updateFlowerPrices()">
+                                                <option value="5">فئة ٥ جنيه</option>
+                                                <option value="10">فئة ١٠ جنيه</option>
+                                                <option value="20">فئة ٢٠ جنيه</option>
+                                                <option value="50">فئة ٥٠ جنيه</option>
+                                                <option value="100">فئة ١٠٠ جنيه</option>
+                                                <option value="200" selected>فئة ٢٠٠ جنيه</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="theme-settings-chocolate" class="hidden bg-brand-pinkLight/30 p-6 rounded-2xl border-2 border-brand-pink/20 space-y-4 animate-fade">
+                                    <h4 class="font-black text-lg text-brand-brown flex items-center gap-2"><i data-lucide="cookie" class="w-5 h-5 text-brand-pink"></i> تفاصيل الشوكولاتة</h4>
+                                    <div class="grid grid-cols-1 gap-4">
+                                        <div>
+                                            <label class="block font-black text-sm mb-2 text-brand-brown">الميزانية المخصصة للشوكولاتة (ج.م):</label>
+                                            <input type="number" id="flower-chocolate-budget" class="w-full text-lg py-3" placeholder="مثال: 500" oninput="window.ProductUI.updateFlowerPrices()">
+                                        </div>
+                                        <div>
+                                            <label class="block font-black text-sm mb-2 text-brand-brown">أنواع أو ماركات مفضلة (اختياري):</label>
+                                            <input type="text" id="flower-chocolate-pref" class="w-full text-lg py-3" placeholder="مثال: فيريرو روشيه، كيندر...">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="theme-settings-photos" class="hidden bg-brand-pinkLight/30 p-6 rounded-2xl border-2 border-brand-pink/20 space-y-4 animate-fade">
+                                    <h4 class="font-black text-lg text-brand-brown flex items-center gap-2"><i data-lucide="images" class="w-5 h-5 text-brand-pink"></i> تفاصيل الصور المطبوعة</h4>
+                                    <div class="flex items-center justify-between bg-white rounded-2xl p-4 border-2 border-brand-pink/20 shadow-sm max-w-xs mx-auto">
+                                        <button onclick="window.ProductUI.modFlowerPhotos(1)" class="w-12 h-12 rounded-full bg-brand-pinkLight text-brand-pink font-black text-2xl hover:bg-brand-pink hover:text-white transition-colors">+</button>
+                                        <div class="text-center">
+                                            <span class="block text-xs font-bold text-brand-brown/60 mb-1">عدد الصور</span>
+                                            <span id="flower-photo-count" class="text-3xl font-black text-brand-brown">1</span>
+                                        </div>
+                                        <button onclick="window.ProductUI.modFlowerPhotos(-1)" class="w-12 h-12 rounded-full bg-brand-pinkLight text-brand-pink font-black text-2xl hover:bg-brand-pink hover:text-white transition-colors">-</button>
+                                    </div>
+                                    <div id="flower-photo-upload-container" class="mt-4">
+                                        <div class="upload-zone !py-6 group" onclick="document.getElementById('flower-photo-files').click()">
+                                            <input type="file" id="flower-photo-files" multiple accept="image/*" class="hidden" onchange="window.ProductUI.handleFlowerPhotos(this)">
+                                            <i data-lucide="upload-cloud" class="w-8 h-8 mx-auto text-brand-pink mb-2 group-hover:-translate-y-1 transition-transform"></i>
+                                            <span id="flower-photos-status" class="font-bold text-brand-brown text-base block">اضغط هنا لرفع الصور بجودة عالية</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
 
+                        <div class="pt-8 border-t-2 border-brand-pink/10">
+                            <h3 class="text-2xl font-black text-brand-brown mb-6 border-r-4 border-brand-pink pr-4">3. حجم التنسيق وكثافة البوكيه</h3>
+                            <div class="flex flex-col sm:flex-row items-center gap-8 bg-brand-pinkLight/20 p-6 rounded-3xl border-2 border-brand-pink/20">
+                                <div class="flex-1 text-center sm:text-right">
+                                    <p class="font-black text-xl text-brand-brown mb-2">عدد الورد في البوكيه</p>
+                                    <p class="text-sm font-bold text-brand-brown/70 leading-relaxed">
+                                        الحد الأدنى لبوكيه احترافي هو ١٥ وردة بقيمة تبدأ من ٤٠٠ ج.م. كل وردة إضافية يتم حساب قيمتها وتغليفها وتنسيقها بـ ٣٥ ج.م.
+                                    </p>
+                                </div>
+                                <div class="flex items-center justify-between bg-white rounded-3xl p-3 border-3 border-brand-pink/30 shadow-inner min-w-[200px]">
+                                    <button onclick="window.ProductUI.modFlowerQty(1)" class="w-14 h-14 rounded-full bg-brand-pinkLight border-2 border-brand-pink text-brand-pink text-3xl font-black flex items-center justify-center cursor-pointer hover:bg-brand-pink hover:text-white transition-colors">+</button>
+                                    <div class="flex flex-col items-center px-4">
+                                        <span id="bouquet-density-count" class="text-4xl font-black text-brand-brown tracking-tighter">15</span>
+                                        <span class="text-xs font-black text-brand-pink tracking-widest uppercase">وردة</span>
+                                    </div>
+                                    <button onclick="window.ProductUI.modFlowerQty(-1)" class="w-14 h-14 rounded-full bg-brand-pinkLight border-2 border-brand-pink text-brand-pink text-3xl font-black flex items-center justify-center cursor-pointer hover:bg-brand-pink hover:text-white transition-colors">-</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-8 border-t-2 border-brand-pink/10 space-y-8">
+                            <div>
+                                <h3 class="text-2xl font-black text-brand-brown mb-6 border-r-4 border-brand-pink pr-4">4. اللون وكارت الإهداء</h3>
+                                <label class="block font-black text-lg mb-3 text-brand-brown">لون الورد وورق التغليف المفضل:</label>
+                                <input type="text" id="flower-color-input" class="w-full text-lg py-4" placeholder="مثال: ورد أحمر داكن مع تغليف أسود ملكي..." oninput="window.ProductUI.flowerState.color = this.value;">
+                            </div>
+                            
+                            <div class="bg-white p-6 rounded-3xl border-3 border-brand-brown/10 focus-within:border-brand-pink/50 transition-colors">
+                                <label class="flex items-center gap-4 font-black text-lg text-brand-brown cursor-pointer mb-4">
+                                    <input type="checkbox" class="w-6 h-6 accent-brand-pink cursor-pointer" onchange="window.ProductUI.toggleFlowerGift(this.checked)">
+                                    <span>إرفاق كارت إهداء كلاسيكي فاخر (+25 ج.م)</span>
+                                </label>
+                                <div id="flower-gift-area" class="hidden animate-fade pl-8 border-r-4 border-brand-pink/30 mr-2 mt-2">
+                                    <input type="text" id="flower-gift-text" class="w-full text-lg py-3" placeholder="نص الرسالة المراد تدوينها بخط احترافي..." oninput="window.ProductUI.updateFlowerPrices()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pt-8 border-t-2 border-brand-pink/20">
+                            <button type="button" class="btn-solid w-full py-6 text-2xl font-black flex items-center justify-center gap-3 shadow-xl hover:shadow-brand-pink/40 rounded-[24px]" onclick="window.ProductUI.addCustomFlowerToCart()">
+                                <span>اعتماد التصميم وإضافة للسلة</span>
+                                <i data-lucide="shopping-basket" class="w-7 h-7 shrink-0"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- قسم بناء التورتة: تصميم مدمج وشبكي خالي من الإرهاق البصري -->
         <section id="builder-container" class="container mx-auto px-4" style="display: none;">
             
             <div id="builder-header-container" class="max-w-6xl mx-auto mb-16 animate-fade">
@@ -495,15 +501,12 @@
                 </div>
             </div>
 
-            <!-- معرض سابقة الأعمال (الجليري) -->
             <div class="max-w-6xl mx-auto mb-16 animate-fade">
                 <div class="text-center mb-8">
                     <h3 class="text-3xl font-black text-brand-brown mb-2 tracking-tight">لمحة من سابقة أعمالنا</h3>
                     <p class="text-lg font-bold text-brand-brown/70">اضغطي على أي تصميم لتكبيره وتأمل دقة التفاصيل وجودة التنفيذ.</p>
                 </div>
-                <div id="cake-gallery-grid" class="gallery-grid">
-                    <!-- سيتم حقن الصور هنا بواسطة الجافاسكربت -->
-                </div>
+                <div id="cake-gallery-grid" class="gallery-grid"></div>
             </div>
 
             <div class="max-w-5xl mx-auto animate-fade">
@@ -515,9 +518,7 @@
                             <p class="text-lg font-bold text-brand-brown/70">اختيارات دقيقة لبناء الأساس المثالي للتورتة.</p>
                         </div>
 
-                        <!-- التخطيط الشبكي المدمج -->
                         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                            <!-- العمود الأول -->
                             <div class="space-y-10">
                                 <div>
                                     <label class="block font-black text-2xl mb-4 text-brand-brown">العدد المطلوب (أفراد):</label>
@@ -540,7 +541,6 @@
                                 </div>
                             </div>
                             
-                            <!-- العمود الثاني -->
                             <div class="space-y-10">
                                 <div>
                                     <label class="block font-black text-2xl mb-4 text-brand-brown">نوع المناسبة:</label>
@@ -574,7 +574,6 @@
                         </div>
                     </div>
 
-                    <!-- الخطوات 2 و 3 مدمجة وسريعة -->
                     <div id="builder-step-2" class="builder-step-content space-y-12 hidden">
                         <div class="text-center border-b-2 border-brand-pink/10 pb-8">
                             <h3 class="text-3xl font-black text-brand-brown mb-3">المرحلة الثانية: اللمسات الفنية وتأكيد الطلب</h3>
@@ -646,19 +645,7 @@
             </div>
         </section>
 
-        <div id="bose-floating-cart" class="fixed bottom-6 left-6 z-50 bg-white border-4 border-brand-pink text-brand-brown rounded-full px-6 py-4 shadow-2xl flex items-center gap-4 transition-transform duration-300 hover:scale-105 active:scale-95" style="display: none;">
-            <a href="cart.html" class="flex items-center gap-3 text-decoration-none">
-                <div class="relative">
-                    <i data-lucide="shopping-bag" class="w-7 h-7 text-brand-pink pb-0.5"></i>
-                    <span class="absolute -top-2 -right-2 bg-brand-pink text-white text-xs font-black w-6 h-6 rounded-full flex items-center justify-center border-2 border-white shadow-sm">0</span>
-                </div>
-                <span class="font-black text-lg text-brand-brown">السلة</span>
-                <span id="floating-total-price" class="font-black text-lg text-brand-pink border-r-2 border-brand-pink/30 pr-3 mr-1">0 ج.م</span>
-            </a>
-        </div>
-
         <section id="reviews-section" class="py-16 mt-12 border-t-2 border-brand-pink/10 bg-brand-pinkLight/20" style="display: none;">
-            <!-- القسم محتفظ بكوده الجمالي السابق، وتم ترقية الخطوط فيه عبر CSS العام -->
             <div class="container mx-auto px-4 text-center max-w-6xl">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-white text-brand-pink rounded-full mb-6 border-2 border-brand-pink/20 shadow-sm">
                     <i data-lucide="message-square-heart" class="w-8 h-8 text-brand-pink"></i>
@@ -790,8 +777,25 @@
         </div>
     </template>
 
+    <template id="bose-suggestion-card-template">
+        <div class="snap-center shrink-0 w-[280px] bose-double-wrap group block text-decoration-none">
+            <div class="bose-double-inner bg-white h-full flex flex-col p-3">
+                <div class="aspect-[4/3] w-full overflow-hidden rounded-xl bg-brand-pinkLight relative">
+                    <img src="{PRODUCT_IMAGE}" alt="{PRODUCT_NAME}" loading="lazy" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+                </div>
+                <div class="pt-4 flex flex-col flex-grow text-right bg-white">
+                    <p class="text-[10px] text-brand-pink mb-1 uppercase tracking-widest font-black">{CAT_NAME}</p>
+                    <h4 class="font-black text-lg text-brand-brown mb-1 truncate">{PRODUCT_NAME}</h4>
+                    <div class="border-t-2 border-brand-pink/10 pt-3 mt-auto flex items-center justify-between">
+                        <span class="font-black text-xl text-brand-pink">{PRODUCT_PRICE} ج.م</span>
+                        <button onclick="window.ProductUI.addFromCard(this, '{PRODUCT_ID}')" class="w-10 h-10 rounded-full bg-brand-pink text-white flex items-center justify-center hover:bg-brand-brown transition-colors shadow-sm"><i data-lucide="plus" class="w-5 h-5"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
     <script type="module" src="unified-engine.js"></script>
     <script src="product-logic.js" defer></script>
 </body>
 </html>
-
