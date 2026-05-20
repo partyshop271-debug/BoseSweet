@@ -5,7 +5,7 @@
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: التحكم الكامل في الهيكل البصري وتوزيع المحتوى والربط مع المحرك الأساسي.
- * الترقية: V40.1 Premium - معالجة انهيار الشبكة، ومزامنة السلة العائمة، ومحاكي التورتات الفاخر.
+ * الترقية: V40.2 Premium - معالجة تكرار السلايدر، هيكلة الكروت الموحدة الفاخرة، وتكبير السلايدر 40%
  * ============================================================================
  */
 
@@ -40,15 +40,13 @@ export function renderProductCardsUI(products, containerId) {
     const isSliderContainer = container.classList.contains('bose-horizontal-slider') || 
                               container.classList.contains('snap-x') || 
                               [
-                                'new-arrivals-container', 
-                                'best-sellers-container', 
-                                'dynamic-categories-container',
                                 'dynamic-new-arrivals',
-                                'dynamic-best-sellers'
+                                'dynamic-best-sellers',
+                                'dynamic-categories-container'
                               ].includes(container.id);
 
     const sectionTitle = container.dataset.sectionTitle || '';
-    const currentLayoutBlock = BoseState?.theme?.builderLayout?.find(b => b.title === sectionTitle);
+    const currentLayoutBlock = BoseState?.theme?.builderLayout?.find(b => (b.containerId && b.containerId === containerId) || (b.title && b.title === sectionTitle));
     const defaultWidth = currentLayoutBlock?.cardWidth || 280;
     const defaultHeight = currentLayoutBlock?.cardHeight || 350;
 
@@ -86,7 +84,7 @@ export function renderProductCardsUI(products, containerId) {
         let widthStyle = '';
         
         if (isSliderContainer) {
-            // تكبير كروت السلايدر الفاخر بنسبة 40% لزيادة الجاذبية والوضوح البصري للمنتجات
+            // تكبير كروت السلايدر الفاخر بنسبة 40% لزيادة الجاذبية والوضوح البصري للمنتجات لعلامة حلويات بوسي
             customWidth = Math.round(customWidth * 1.4);
             customHeight = Math.round(customHeight * 1.4);
 
@@ -100,7 +98,7 @@ export function renderProductCardsUI(products, containerId) {
         const hasDiscount = p.hasDiscount === true && p.oldPrice > p.price;
         const img = processBoseImage(p.img || p.image) || BOSE_LOGO_FALLBACK;
 
-        // تطبيق هيكلة الكارت الموحدة الفاخرة لعلامة حلويات بوسي
+        // تطبيق هيكلة الكارت الموحدة الفاخرة المعتمدة (الاسم ← النكهة ← الوصف ← السعر ← ± زر الكمية)
         return `
             <div class="catalog-card-wrapper ${spanClass} p-2 transition-transform duration-300 hover:-translate-y-1" style="${widthStyle}">
                 <div class="bose-double-wrap group h-full flex flex-col bg-white rounded-[32px] border-2 border-[#ff91a4] p-1.5 shadow-sm hover:shadow-md transition-all duration-300 relative">
@@ -112,29 +110,35 @@ export function renderProductCardsUI(products, containerId) {
                         </div>
                         <div class="p-5 flex flex-col flex-grow text-right bg-white justify-between">
                             <div>
+                                <!-- 1. الاسم -->
                                 <h3 class="font-bold text-lg text-[#3d241c] mb-1">${p.name}</h3>
                                 
-                                <p class="text-xs text-[#ff91a4] font-black mb-2">${p.category || 'صنف فاخر'}</p>
+                                <!-- 2. التصنيف والنكهة -->
+                                <p class="text-xs text-[#ff91a4] font-black mb-1">${p.category || 'صنف فاخر'}</p>
+                                ${p.flavors ? `<p class="text-[11px] text-[#ff91a4] font-bold border-t border-dashed border-[#fff5f6] pt-1 mb-2 leading-relaxed">${p.flavors}</p>` : ''}
                                 
+                                <!-- 3. الوصف الموحد بخصائصه المانعة للاقتطاع -->
                                 <p class="text-xs text-gray-500 mb-4 leading-relaxed product-desc" style="white-space: normal; overflow-wrap: anywhere; word-break: break-word;">
                                     ${p.description || p.desc || ''}
                                 </p>
-                                
-                                ${p.flavors ? `<p class="text-[11px] text-[#ff91a4] font-bold border-t border-dashed border-[#fff5f6] pt-2 mb-4 leading-relaxed">${p.flavors}</p>` : ''}
                             </div>
                             
+                            <!-- 4 & 5. السعر وأدوات التحكم في الكمية والإضافة -->
                             <div class="mt-auto flex justify-between items-center border-t border-[#ff91a4]/10 pt-4">
+                                <!-- أزرار التحكم في الكمية والعدّاد -->
                                 <div class="flex items-center gap-1.5 bg-gray-50 rounded-full px-2 py-1 border border-gray-100">
                                     <button onclick="window.updateTempQtyContext(this, -1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200" ${isOut ? 'disabled' : ''}>-</button>
                                     <span class="temp-qty-display text-xs font-bold w-4 text-center">1</span>
                                     <button onclick="window.updateTempQtyContext(this, 1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200" ${isOut ? 'disabled' : ''}>+</button>
                                 </div>
                                 
+                                <!-- حقل السعر -->
                                 <div class="flex flex-col text-center items-center justify-center">
                                     ${hasDiscount ? `<span class="text-[10px] text-gray-400 line-through font-bold mb-0.5">${p.oldPrice} ج.م</span>` : ''}
                                     <span class="font-black text-lg text-[#ff91a4] leading-none">${p.price} <span class="text-xs">ج.م</span></span>
                                 </div>
                                 
+                                <!-- زر إضافة الموحد -->
                                 <button onclick="window.addWithQtyContextAndSync(this, '${p.id}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-[#ff91a4] flex items-center justify-center hover:bg-[#ff91a4] hover:text-white border border-[#ff91a4]/20 transition-colors shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" ${isOut ? 'disabled' : ''}>
                                     <i data-lucide="plus" class="w-5 h-5"></i>
                                 </button>
@@ -144,6 +148,16 @@ export function renderProductCardsUI(products, containerId) {
                 </div>
             </div>`;
     }).join('');
+
+    // فرض وتأمين التكبير الهندسي بنسبة 40% لبطاقات السلايدر لضمان التناسق البصري المطلق
+    if (isSliderContainer) {
+        const appliedWidth = Math.round(defaultWidth * 1.4);
+        container.querySelectorAll('.catalog-card-wrapper').forEach(card => {
+            card.style.width = `${appliedWidth}px`;
+            card.style.flexShrink = '0';
+        });
+    }
+
     if (window.lucide) lucide.createIcons();
 }
 
@@ -161,12 +175,21 @@ export function distributeProductsToUI(products) {
     
     window.uiRenderDebounceTimer = setTimeout(() => {
         // تحديث جميع الحاويات المستهدفة مع تفادي تكرار المنتجات نهائياً بالفلترة الصارمة طبقاً للـ dataSource
-        ['new-arrivals-container', 'best-sellers-container', 'menuGrid', 'dynamic-new-arrivals', 'dynamic-best-sellers', 'dynamic-categories-container'].forEach(id => {
+        const sections = [
+            'new-arrivals-container',
+            'best-sellers-container',
+            'menuGrid',
+            'dynamic-new-arrivals',
+            'dynamic-best-sellers',
+            'dynamic-categories-container'
+        ];
+
+        sections.forEach(id => {
             const el = document.getElementById(id);
             if (!el) return;
 
             const sectionTitle = el.dataset.sectionTitle || '';
-            const block = BoseState?.theme?.builderLayout?.find(b => b.title === sectionTitle);
+            const block = BoseState?.theme?.builderLayout?.find(b => (b.containerId && b.containerId === id) || (b.title && b.title === sectionTitle));
             
             // ✅ منع أي قسم ليس له مصدر بيانات (dataSource) من عرض المنتجات نهائياً لمنع التكرار والحفاظ على ثبات البناء البصري
             if (!block || !block.dataSource) return;
@@ -719,6 +742,6 @@ window.addEventListener('BoseSweets_Logistics_Updated', () => {
     }
 });
 
-console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد وفصله تقنياً بنجاح إلى (Core) و (UI) للإصدار السيادي (V40.1 Premium) مع هيكلة الكروت الموحدة ومنع تكرارها وتكبير السلايدر.");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد وفصله تقنياً بنجاح إلى (Core) و (UI) للإصدار السيادي (V40.2 Premium) مع هيكلة الكروت الموحدة ومنع تكرارها وتكبير السلايدر بنسبة 40%.");
 
 ```

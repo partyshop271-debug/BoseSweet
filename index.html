@@ -207,7 +207,7 @@
             <a href="index.html" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-black transition-colors flex items-center gap-3 text-decoration-none text-lg">
                 <i data-lucide="home" class="w-5 h-5 text-brand-pink"></i> الصفحة الرئيسية
             </a>
-            </nav>
+        </nav>
         
         <div class="p-6 border-t border-brand-pink/20 bg-brand-pinkLight/50">
             <a href="cart.html" class="w-full py-4 bg-brand-pink text-white rounded-xl font-black text-lg flex items-center justify-center gap-2 hover:bg-white hover:text-brand-pink border-2 border-brand-pink transition-colors cursor-pointer text-decoration-none shadow-sm">
@@ -234,11 +234,11 @@
                 <div class="waterfall-mask w-full max-w-5xl mx-auto flex gap-6 justify-center h-[60vh] min-h-[500px] overflow-hidden">
                     <div class="flex flex-col w-1/2 max-w-[340px] overflow-hidden">
                         <div id="waterfall-col-1" class="flex flex-col gap-6 animate-[scrollUpLoop_40s_linear_infinite]">
-                            </div>
+                        </div>
                     </div>
                     <div class="flex flex-col w-1/2 max-w-[340px] overflow-hidden mt-24">
                         <div id="waterfall-col-2" class="flex flex-col gap-6 animate-[scrollDownLoop_40s_linear_infinite]">
-                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -246,8 +246,6 @@
             <section class="py-24 px-4 bg-brand-pinkLight border-y border-brand-pink/10">
                 <div class="container mx-auto max-w-6xl text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-brand-brown mb-12">منتجاتنا الفاخرة</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 products-grid mb-12" id="creative-grid-container"></div>
-                    
                     <div id="menuGrid" class="main-product-grid grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" data-section-title="Menu"></div>
                 </div>
             </section>
@@ -262,9 +260,7 @@
                     </div>
 
                     <div class="relative">
-                        <div id="dynamic-new-arrivals" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory"></div>
-                        
-                        <div id="new-arrivals-container" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory" data-section-title="New Arrivals"></div>
+                        <div id="dynamic-new-arrivals" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory" data-section-title="New Arrivals"></div>
                     </div>
                     <div class="text-center mt-4"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
                 </div>
@@ -314,9 +310,7 @@
                     </div>
 
                     <div class="relative">
-                        <div id="dynamic-best-sellers" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory"></div>
-                        
-                        <div id="best-sellers-container" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory" data-section-title="Best Sellers"></div>
+                        <div id="dynamic-best-sellers" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory" data-section-title="Best Sellers"></div>
                     </div>
                     <div class="text-center mt-4"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
                 </div>
@@ -328,7 +322,7 @@
                     <p class="text-brand-brown font-bold text-lg mb-12 opacity-80">تذوق متعة المذاق الفاخر مع تشكيلاتنا المتنوعة.</p>
 
                     <div class="relative">
-                        <div id="dynamic-categories-container" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory"></div>
+                        <div id="dynamic-categories-container" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory" data-section-title="Categories"></div>
                     </div>
                 </div>
             </section>
@@ -354,7 +348,7 @@
         </div>
 
         <div id="dynamic-layout" class="space-y-24 pb-24 hidden">
-            </div>
+        </div>
     </main>
 
     <footer class="bg-brand-pinkLight pt-20 pb-8 border-t-4 border-brand-pink mt-10">
@@ -741,21 +735,7 @@
                     waterfall2.innerHTML = waterfallItems.slice(4,8).map(p => this.renderTemplate(tmpl, p)).join('');
                 }
 
-                // 2. توزيع شبكة منتجاتنا الكلاسيكية الفاخرة وتغذية الحاويات الموحدة
-                const gridItems = [...availableCatalog].slice(0, 4);
-                const gridContainer = document.getElementById('creative-grid-container');
-                if (gridContainer && gridItems.length >= 4) {
-                    const tmpl = document.getElementById('creative-grid-template').innerHTML;
-                    const gridClasses = [
-                        "col-span-2 md:col-span-2 row-span-2 aspect-square md:aspect-auto md:h-[500px]",
-                        "aspect-square",
-                        "aspect-square",
-                        "col-span-2 aspect-[2/1]"
-                    ];
-                    gridContainer.innerHTML = gridItems.map((p, i) => this.renderTemplate(tmpl, p).replace('{GRID_CLASS}', gridClasses[i])).join('');
-                }
-
-                // تغذية حاوية المنيو الموحدة الجديدة (menuGrid) مع ضبط الفئات لملء الفراغات دون انهيار كـ Grid
+                // 2. تغذية حاوية المنيو الموحدة الجديدة (menuGrid) مع ضبط الفئات لملء الفراغات دون انهيار كـ Grid
                 const menuGrid = document.getElementById('menuGrid');
                 if (menuGrid) {
                     const productCardTmpl = document.getElementById('bose-product-card-template').innerHTML;
@@ -765,43 +745,22 @@
                         // استبدال فئات الانزلاق بفئات التمدد الشبكي المرن لضمان المظهر المتناسق
                         return cardHtml.replace('snap-start flex-shrink-0 w-[80%] md:w-[280px]', 'w-full');
                     }).join('');
-
-                    // إخفاء الشبكة القديمة لتجنب التكرار والازدواجية البصرية عند التغذية الناجحة
-                    if (gridContainer) gridContainer.style.display = 'none';
                 }
 
-                // 3. قسم أحدث المنتجات الافتراضية وتغذية الحاويات الموحدة
+                // 3. قسم أحدث المنتجات الافتراضية وتغذية الحاويات الموحدة كـ Slider منزلق
                 const newArrivals = [...availableCatalog].slice(0, 6);
                 const arrivalsContainer = document.getElementById('dynamic-new-arrivals');
                 if (arrivalsContainer && newArrivals.length > 0) {
-                    arrivalsContainer.innerHTML = newArrivals.map(p => this.renderTemplate(document.getElementById('bose-product-card-template').innerHTML, p)).join('');
-                }
-
-                // تغذية حاوية أحدث المنتجات الموحدة الجديدة كـ Slider منزلق (new-arrivals-container)
-                const newArrivalsContainer = document.getElementById('new-arrivals-container');
-                if (newArrivalsContainer && newArrivals.length > 0) {
                     const productCardTmpl = document.getElementById('bose-product-card-template').innerHTML;
-                    newArrivalsContainer.innerHTML = newArrivals.map(p => this.renderTemplate(productCardTmpl, p)).join('');
-
-                    // تفعيل إخفاء شريط التمرير الكلاسيكي والاعتماد على الحاوية الموحدة المستقرة
-                    if (arrivalsContainer) arrivalsContainer.style.display = 'none';
+                    arrivalsContainer.innerHTML = newArrivals.map(p => this.renderTemplate(productCardTmpl, p)).join('');
                 }
 
-                // 4. الأكثر طلباً وتغذية الحاويات الموحدة
+                // 4. الأكثر طلباً وتغذية الحاويات الموحدة كـ Slider منزلق
                 const bestSellers = [...availableCatalog].sort(() => 0.5 - Math.random()).slice(0, 6);
                 const bestSellersContainer = document.getElementById('dynamic-best-sellers');
                 if (bestSellersContainer && bestSellers.length > 0) {
-                    bestSellersContainer.innerHTML = bestSellers.map(p => this.renderTemplate(document.getElementById('bose-product-card-template').innerHTML, p)).join('');
-                }
-
-                // تغذية حاوية الأكثر طلباً الموحدة الجديدة كـ Slider منزلق (best-sellers-container)
-                const bestSellersContainerNew = document.getElementById('best-sellers-container');
-                if (bestSellersContainerNew && bestSellers.length > 0) {
                     const productCardTmpl = document.getElementById('bose-product-card-template').innerHTML;
-                    bestSellersContainerNew.innerHTML = bestSellers.map(p => this.renderTemplate(productCardTmpl, p)).join('');
-
-                    // تفعيل إخفاء شريط التمرير الكلاسيكي والاعتماد على الحاوية الموحدة المستقرة
-                    if (bestSellersContainer) bestSellersContainer.style.display = 'none';
+                    bestSellersContainer.innerHTML = bestSellers.map(p => this.renderTemplate(productCardTmpl, p)).join('');
                 }
                 
                 // 5. تصفح حسب الفئة الكلاسيكية كـ Slider منزلق
@@ -865,47 +824,3 @@
                 toast.id = 'bose-custom-toast';
                 toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-[99999] bg-brand-brown text-white font-bold px-6 py-4 rounded-2xl shadow-xl transition-all duration-500 opacity-0 scale-95 flex items-center gap-3 border border-brand-pink/30';
                 document.body.appendChild(toast);
-            }
-            toast.innerHTML = `<i data-lucide="info" class="w-5 h-5 text-brand-pink"></i> <span>ميزة البحث ستتوفر قريباً لتسهيل تصفح منتجاتنا الفاخرة</span>`;
-            lucide.createIcons();
-            
-            toast.classList.remove('hidden', 'opacity-0', 'scale-95');
-            toast.classList.add('opacity-100', 'scale-100');
-            
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'scale-100');
-                toast.classList.add('opacity-0', 'scale-95');
-            }, 3500);
-        };
-
-        // تم توحيد مستمعات الأحداث للاعتماد الكلي على المصدة الزمنية (Debounce) لضمان الأداء
-        window.addEventListener('BoseSweets_Engine_Ready', () => {
-            UIController.syncCartBadge();
-            UIController.buildLayoutDynamically();
-            
-            // مؤقت زمني لخلط المنتجات وتحديث المعروضات كل 5 ساعات (18 مليون مللي ثانية) لضمان التفاعل الدائم مع طباعة السجلات
-            setInterval(() => {
-                console.log("👑 BoseSweets Engine: إعادة خلط وتحديث معروضات الواجهة.");
-                UIController.buildLayoutDynamically();
-            }, 18000000); 
-        });
-
-        window.addEventListener('catalogDataReady', () => { 
-            UIController.buildLayoutDynamically(); 
-        });
-
-        window.addEventListener('BoseSweets_Cart_Updated', () => {
-            UIController.syncCartBadge();
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                if(window.BoseState && window.BoseState.catalog.length > 0) {
-                    UIController.buildLayoutDynamically();
-                    UIController.syncCartBadge();
-                }
-            }, 1500);
-        });
-    </script>
-</body>
-</html>

@@ -1,3 +1,4 @@
+```javascript
 /**
  * ============================================================================
  * 👑 BoseSweets Sovereign Core Engine | المحرك الأساسي السيادي (القلب النابض)
@@ -5,6 +6,7 @@
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: مركز البيانات، تهيئة السحابة، نظام المراقبة، ومحرك السلة.
  * التوافق الكامل: معالجة فورية لتحديثات المخزون والتزامن اللحظي دون اهتزازات.
+ * الترقية: V40.2 Premium - التوافق المطلق والمزامنة الهندسية مع محرك الواجهة.
  * ============================================================================
  */
 
@@ -57,7 +59,7 @@ try {
         window.firebaseApp = app;
         window.db = db;
         window.auth = auth;
-        window.BoseSweets_Engine_Version = "V39.7_Premium";
+        window.BoseSweets_Engine_Version = "V40.2_Premium";
     }
 } catch (error) {
     console.error("🔒 قرار إداري أمني: فشل تهيئة السحابة، يرجى مراجعة الخوادم فوراً.", error);
@@ -122,7 +124,7 @@ function handleConnectionDrop(retryFunction) {
                     clientDevice: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown Device',
                     url: window.location.href,
                     isLoginPortal: false,
-                    engineVersion: 'V39.7_Premium'
+                    engineVersion: 'V40.2_Premium'
                 };
                 this.saveToDatabase(reportData);
             } catch (e) {}
@@ -314,7 +316,7 @@ export const ReverseSyncEngine = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_Sovereign_V39.7_Premium',
+                        source: 'BoseSweets_Engine_Sovereign_V40.2_Premium',
                         engine_status: 'Active_Sovereign',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
@@ -333,7 +335,7 @@ export const ReverseSyncEngine = {
         try {
             if (db) {
                 const syncDocRef = doc(db, 'system', 'syncFlag');
-                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V39.7_Premium', forceRefresh: true }, { merge: true });
+                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V40.2_Premium', forceRefresh: true }, { merge: true });
             }
         } catch (error) {}
     }
@@ -433,7 +435,7 @@ export const NetworkEngine = {
                 if (op.type === 'write') await setDoc(doc(db, op.collectionName, String(op.docId)), op.data, { merge: true });
                 else if (op.type === 'delete') await deleteDoc(doc(db, op.collectionName, String(op.docId)));
                 await CloudQueueDB.remove(op.queueId);
-            } catch (e) { break; }
+            } catch (e) break;
         }
     }
 };
@@ -966,7 +968,7 @@ export function initializeSovereignSync() {
         syncCatalogMap();
         window.saveEngineMemory('cat');
         
-        // التحصين اللحظي: مراءعة الأسعار في سلة العميل فوراً وتعديلها إذا تم تغييرها من لوحة الإدارة
+        // التحصين اللحظي: مراجعة الأسعار في سلة العميل فوراً وتعديلها إذا تم تغييرها من لوحة الإدارة
         if (BoseState.cart.length > 0 && typeof window.cartSystem !== 'undefined') {
             BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
             window.cartSystem.saveCartToStorage();
@@ -1058,3 +1060,5 @@ if (typeof window !== 'undefined') {
         }
     });
 }
+
+```

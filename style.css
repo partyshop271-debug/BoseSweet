@@ -402,8 +402,7 @@ input::placeholder, textarea::placeholder {
 .waterfall-item-inner {
     border-radius: 18px;
     border: 2px solid var(--primary-pink);
-    width: 100%; 
-    height: 100%;
+    width: 100%; height: 100%;
     overflow: hidden;
 }
 
@@ -726,7 +725,7 @@ input::placeholder, textarea::placeholder {
 
 /* ==========================================================================
    11. محسنات هيكل تخصيص الورد ومنع بتر الأزرار (Mobile View Port Optimization)
-   ========================================================================== */
+   ========================================================================= */
 
 /* ضبط مرونة حاوية التخصيص الكاملة ومنحها هامش أمان سفلي متكامل */
 #flower-customizer-container {
@@ -776,7 +775,7 @@ input::placeholder, textarea::placeholder {
    12. محرك العرض المرئي المستقل (Slider Engine V39.2)
    ========================================================================= */
 
-/* فصل الشريط المتحرك تماماً عن نظام الشبكة وتطبيق التكبير السيادي بنسبة 40% */
+/* فصل الشريط المتحرك تماماً عن نظام الشبكة وتطبيق التكبير السيادي بنسبة 40% مع دعم flex و scroll-snap المطور */
 .slider-item-exclusive,
 .bose-horizontal-slider > div {
     display: block;
