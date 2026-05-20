@@ -1,4 +1,3 @@
-```javascript
 /**
  * ============================================================================
  * 👑 BoseSweets Sovereign Core Engine | المحرك الأساسي السيادي (القلب النابض)
@@ -517,12 +516,10 @@ try {
 }
 
 export function syncCatalogMap() {
-    try {
-        BoseState.catalogMap.clear();
-        if (Array.isArray(BoseState.catalog)) {
-            BoseState.catalog.forEach(p => { if (p && p.id) BoseState.catalogMap.set(String(p.id), p); });
-        }
-    } catch (error) {}
+    BoseState.catalogMap.clear();
+    BoseState.catalog.forEach(p => {
+        if (p && p.id) BoseState.catalogMap.set(String(p.id), p);
+    });
 }
 
 export function normalizeArabic(str) {
@@ -820,12 +817,19 @@ export async function fetchProductsCatalog() {
         saveToLocalMemory('bosesweets_catalog', BoseState.catalog);
         window.saveEngineMemory('cat');
         
+        if (typeof window.distributeProductsToUI === 'function') {
+            window.distributeProductsToUI(BoseState.catalog);
+        }
+        
         // إطلاق الحدث السيادي لتأكيد الجاهزية والتحديث في الواجهة
         window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
         return BoseState.catalog;
     } catch (e) {
         BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || [];
         syncCatalogMap();
+        if (typeof window.distributeProductsToUI === 'function') {
+            window.distributeProductsToUI(BoseState.catalog);
+        }
         window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
         return BoseState.catalog;
     }
@@ -835,6 +839,10 @@ export async function initializeDataBridge() {
     if (window.__BoseBridgeInitialized) return;
     window.__BoseBridgeInitialized = true;
     await Promise.all([fetchSystemSettings(), fetchThemeSettings(), fetchShippingZones(), fetchProductsCatalog()]);
+    syncCatalogMap();
+    if (typeof window.distributeProductsToUI === 'function') {
+        window.distributeProductsToUI(BoseState.catalog);
+    }
     const uniqueCats = [...new Set(BoseState.catalog.map(p => p.category))].filter(Boolean);
     BoseState.catMenu = BoseState.siteSettings.catMenu?.map(c => c.name || c) || uniqueCats;
     setAppReady();
@@ -1040,5 +1048,3 @@ if (typeof window !== 'undefined') {
         }
     });
 }
-
-```

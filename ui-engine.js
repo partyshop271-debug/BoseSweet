@@ -1,4 +1,3 @@
-```javascript
 /**
  * ============================================================================
  * 👑 BoseSweets Sovereign UI Engine | محرك الواجهة البصرية السيادي
@@ -137,8 +136,8 @@ export function distributeProductsToUI(products) {
     const BoseState = window.BoseState;
     const normalizeArabic = window.normalizeArabic || normalizeArabicText;
     
-    // تأمين جلب المنتجات إذا لم يتم تمريرها
-    const currentProducts = products || (BoseState ? BoseState.catalog : []);
+    // تأمين جلب المنتجات وضمان استخدام البيانات الموجودة فقط بعد التأكد من اكتمال التحميل
+    const currentProducts = products || window.BoseState?.catalog || [];
     
     if (uiRenderDebounceTimer) clearTimeout(uiRenderDebounceTimer);
     
@@ -653,12 +652,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
 });
 
-// 👑 مستمع البث اللحظي لإعادة رسم المنتجات فور تعديلها من لوحة الإدارة
+// 👑 مستمع البث اللحظي لإعادة رسم المنتجات فور تعديلها من لوحة الإدارة لضمان تحديث الكتالوج مباشرة من فايربيز بعد اكتمال التحميل
 window.addEventListener('BoseSweets_Catalog_Updated', () => {
-    if (window.BoseState && Array.isArray(window.BoseState.catalog)) {
-        if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(window.BoseState.catalog);
-        }
+    if (typeof window.distributeProductsToUI === 'function') {
+        window.distributeProductsToUI(window.BoseState?.catalog);
     }
 });
 
@@ -670,5 +667,3 @@ window.addEventListener('BoseSweets_Logistics_Updated', () => {
 });
 
 console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد وفصله تقنياً بنجاح إلى (Core) و (UI) للإصدار السيادي (V40.0 Premium).");
-
-```
