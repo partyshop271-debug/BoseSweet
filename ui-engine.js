@@ -29,7 +29,7 @@ function normalizeArabicText(text) {
 
 export function renderProductCardsUI(products, containerId) {
     const container = document.getElementById(containerId);
-    if (!container) return;
+    if (!container || !Array.isArray(products)) return;
 
     const boseConfig = window.boseConfig;
     const processBoseImage = window.processBoseImage || ((img) => img || '');
@@ -50,8 +50,14 @@ export function renderProductCardsUI(products, containerId) {
     const defaultHeight = currentLayoutBlock?.cardHeight || 350;
 
     container.innerHTML = products.map(p => {
-        // إدارة علامة حلويات بوسي: السماح بعرض المنتجات حتى لو انتهت الكمية مع عرض علامة نفذت الكمية بوضوح
+        // حماية البيانات وتحصينها ضد النقص لضمان ظهور الكارت مهما كانت الظروف
+        const img = processBoseImage(p.img || p.image) || BOSE_LOGO_FALLBACK;
+        const name = p.name || 'منتج حلويات بوسي';
+        const category = p.category || 'صنف فاخر';
+        const description = p.description || p.desc || '';
+        const price = p.price || 'يحدد عند الطلب';
         const isOut = p.inStock === false || p.stock === 0;
+
         let customWidth = p.cardWidth || defaultWidth;
         let customHeight = p.cardHeight || defaultHeight;
         
@@ -95,27 +101,24 @@ export function renderProductCardsUI(products, containerId) {
         }
 
         const hasDiscount = p.hasDiscount === true && p.oldPrice > p.price;
-        const img = processBoseImage(p.img || p.image) || BOSE_LOGO_FALLBACK;
 
-        // تطبيق هيكلة الكارت الموحدة الفاخرة المعتمدة (الاسم ← النكهة ← الوصف ← السعر ← ± زر الكمية) لعلامة حلويات بوسي
+        // تطبيق هيكلة الكارت الموحدة الفاخرة المحصنة لعلامة حلويات بوسي
         return `
             <div class="catalog-card-wrapper ${spanClass} p-2 transition-transform duration-300 hover:-translate-y-1" style="${widthStyle}">
                 <div class="bose-double-wrap group h-full flex flex-col bg-white rounded-[32px] border-2 border-[#ff91a4] p-1.5 shadow-sm hover:shadow-md transition-all duration-300 relative">
                     <div class="bose-double-inner bg-white h-full flex flex-col rounded-[26px] overflow-hidden">
-                        <div class="w-full overflow-hidden bg-brand-pinkLight border-b border-[#ff91a4]/20 relative" style="height: ${customHeight}px">
+                        <div class="w-full overflow-hidden bg-brand-pinkLight border-b border-[#ff91a4]/20 relative" style="height: ${isSliderContainer ? customHeight + 'px' : '280px'}">
                             <img src="${img}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
                             ${hasDiscount && !isOut ? `<div class="absolute top-4 right-4 bg-[#ff91a4] text-white font-black text-xs px-3 py-1.5 rounded-lg shadow-sm z-10">عرض خاص 🔥</div>` : ''}
                             ${isOut ? '<div class="absolute inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center text-white font-black text-lg z-10 select-none">نفذت الكمية 🚫</div>' : ''}
                         </div>
                         <div class="p-5 flex flex-col flex-grow text-right bg-white justify-between">
                             <div>
-                                <h3 class="font-bold text-lg text-[#3d241c] mb-1">${p.name}</h3>
-                                
-                                <p class="text-xs text-[#ff91a4] font-black mb-1">${p.category || 'صنف فاخر'}</p>
+                                <h3 class="font-bold text-lg text-[#3d241c] mb-1">${name}</h3>
+                                <p class="text-xs text-[#ff91a4] font-black mb-1">${category}</p>
                                 ${p.flavors ? `<p class="text-[11px] text-[#ff91a4] font-bold border-t border-dashed border-[#fff5f6] pt-1 mb-2 leading-relaxed">${p.flavors}</p>` : ''}
-                                
                                 <p class="text-xs text-gray-500 mb-4 leading-relaxed product-desc" style="white-space: normal; overflow-wrap: anywhere; word-break: break-word;">
-                                    ${p.description || p.desc || ''}
+                                    ${description}
                                 </p>
                             </div>
                             
@@ -128,7 +131,9 @@ export function renderProductCardsUI(products, containerId) {
                                 
                                 <div class="flex flex-col text-center items-center justify-center">
                                     ${hasDiscount ? `<span class="text-[10px] text-gray-400 line-through font-bold mb-0.5">${p.oldPrice} ج.م</span>` : ''}
-                                    <span class="font-black text-lg text-[#ff91a4] leading-none">${p.price} <span class="text-xs">ج.م</span></span>
+                                    <span class="font-black text-lg text-[#ff91a4] leading-none">
+                                        ${price}${typeof price === 'number' ? ' <span class="text-xs">ج.م</span>' : ''}
+                                    </span>
                                 </div>
                                 
                                 <button onclick="window.addWithQtyContextAndSync(this, '${p.id}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-[#ff91a4] flex items-center justify-center hover:bg-[#ff91a4] hover:text-white border border-[#ff91a4]/20 transition-colors shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" ${isOut ? 'disabled' : ''}>
@@ -281,10 +286,10 @@ export const showInfo = function(type) {
     }
     const modalId = 'bose-info-modal'; let modal = document.getElementById(modalId);
     if (!modal) { 
-        modal = document.createElement('div'); 
-        modal.id = modalId; 
-        modal.className = 'fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300'; 
-        document.body.appendChild(modal); 
+        modal = document.createElement('div');
+        modal.id = modalId;
+        modal.className = 'fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300';
+        document.body.appendChild(modal);
     }
     modal.innerHTML = `<div class="bg-white w-full max-w-lg rounded-[2.5rem] overflow-hidden p-8 border-4 text-right" style="border-color: ${pinkColor}20;">
         <h3 class="text-2xl font-black mb-6 text-center">${title}</h3>
@@ -341,7 +346,7 @@ window.addWithQtyContextAndSync = function(btn, productId) {
     const qty = qtyDisplay ? parseInt(qtyDisplay.innerText) : 1;
 
     if (window.cartSystem && typeof window.cartSystem.addWithQtyContext === 'function') {
-        // استخدام نظام الإضافة الأساسي الخاص بالمحرك لعلامة حلويات بوسي
+        // Verwendung des primären Hinzufügungssystems des Hauptantriebs für BoseSweets
         window.cartSystem.addWithQtyContext(btn, productId);
         
         // التدخل لضمان الكمية المحددة بدقة ثم مزامنة السلة العائمة
@@ -682,7 +687,7 @@ window.parseCustomBouquetOrder = function(item) {
 // ============================================================================
 
 if (typeof window !== 'undefined') {
-    window.renderProductCards = renderProductCardsUI; 
+    window.renderProductCards = renderProductCardsUI;
     window.distributeProductsToUI = distributeProductsToUI;
     
     // تأكيد استدعاء المتغيرات من المحرك الأساسي لضمان التوافق المطلق

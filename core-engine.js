@@ -255,6 +255,26 @@ if (typeof window !== 'undefined') {
     window.StorageEngine = StorageEngine;
 }
 
+// 🛒 دالة تهيئة وتحميل الكتالوج وحمايته من الاختفاء العشوائي قبل بناء عناصر الواجهة
+export async function initProducts() {
+    try {
+        await StorageEngine.init();
+        const catalog = await StorageEngine.get('bose_catalog') || [];
+        window.BoseState = window.BoseState || {};
+        window.BoseState.catalog = catalog;
+
+        const container = document.getElementById('product-container');
+        if (container && typeof window.renderProductCardsUI === 'function') {
+            window.renderProductCardsUI(catalog, 'product-container');
+        }
+    } catch (err) {
+        console.error("حدث خطأ أثناء تحميل الكتالوج:", err);
+        if (window.BoseMonitor) {
+            window.BoseMonitor.report(err, 'core-engine.js', null, null, 'initProducts');
+        }
+    }
+}
+
 // تشغيل وتهيئة التخزين المحلي واستدعاء تحميل الذاكرة فوراً لضمان الجاهزية قبل بناء الواجهة
 StorageEngine.init().then(() => {
     if (typeof window !== 'undefined') {
@@ -264,6 +284,8 @@ StorageEngine.init().then(() => {
             loadEngineMemory();
         }
     }
+    // تنفيـذ التحميـل السيادي الفـوري للكتالـوج من الذاكـرة المحصنـة
+    initProducts();
 }).catch(err => {
     if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'StorageEngine.init');
 });
@@ -1138,4 +1160,7 @@ if (typeof window !== 'undefined') {
 if (typeof window !== 'undefined') {
     window.addEventListener('BoseSweets_Catalog_Updated', () => {
         if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(
+            window.distributeProductsToUI(window.BoseState.catalog);
+        }
+    });
+}
