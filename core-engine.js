@@ -261,11 +261,29 @@ export async function initProducts() {
         await StorageEngine.init();
         const catalog = await StorageEngine.get('bose_catalog') || [];
         window.BoseState = window.BoseState || {};
+        
+        // التحصين الاستباقي: التأكد من سلامة وصحة خصائص كل صنف لمنع حدوث أي اختفاء للبيانات
+        catalog.forEach(p => {
+            p.id = p.id || `prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+            p.category = p.category || 'صنف فاخر';
+            p.stock = p.stock != null ? p.stock : 1;
+            p.inStock = p.stock !== 0;
+            p.price = p.price || 0;
+        });
+        
         window.BoseState.catalog = catalog;
 
-        const container = document.getElementById('product-container');
-        if (container && typeof window.renderProductCardsUI === 'function') {
-            window.renderProductCardsUI(catalog, 'product-container');
+        // حارس الواجهة البصرية: التحقق من وجود الحاويات قبل بدء العرض والتوزيع الذكي لجميع الأقسام
+        const requiredSections = ['menuGrid', 'dynamic-new-arrivals', 'dynamic-best-sellers', 'dynamic-categories-container'];
+        requiredSections.forEach(id => {
+            if (!document.getElementById(id) && typeof console !== 'undefined') {
+                console.warn(`عنصر DOM مفقود للقسم السيادي: ${id}`);
+            }
+        });
+
+        // ✅ استدعاء التوزيع الذكي والموحد لكافة الحاويات المخصصة والمستقبلية بالموقع
+        if (typeof window.distributeProductsToUI === 'function') {
+            window.distributeProductsToUI(window.BoseState.catalog);
         }
     } catch (err) {
         console.error("حدث خطأ أثناء تحميل الكتالوج:", err);
