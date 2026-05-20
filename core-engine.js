@@ -254,8 +254,12 @@ if (typeof window !== 'undefined') {
 }
 
 StorageEngine.init().then(() => {
-    if (typeof window !== 'undefined' && typeof window.loadEngineMemory === 'function') {
-        window.loadEngineMemory();
+    if (typeof window !== 'undefined') {
+        if (typeof window.loadEngineMemory === 'function') {
+            window.loadEngineMemory();
+        } else if (typeof loadEngineMemory === 'function') {
+            loadEngineMemory();
+        }
     }
 }).catch(err => {
     if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'StorageEngine.init');
@@ -288,7 +292,9 @@ window.loadEngineMemory = async function() {
         }
         if (cachedTheme && Object.keys(cachedTheme).length > 0 && Object.keys(BoseState.theme).length === 0) {
             BoseState.theme = cachedTheme;
-            if (typeof window.applyThemeConfigUI === 'function') window.applyThemeConfigUI();
+            if (typeof window.applyThemeConfigUI === 'function') {
+                window.applyThemeConfigUI();
+            }
         }
     } catch (e) {
         if (window.BoseMonitor) window.BoseMonitor.report(e, 'core-engine.js', null, null, 'loadEngineMemory');
@@ -772,7 +778,9 @@ export async function fetchThemeSettings() {
             BoseState.theme = tSnap.data();
             saveToLocalMemory('bosesweets_theme', BoseState.theme);
             window.saveEngineMemory('theme');
-            if (typeof window.applyThemeConfigUI === 'function') window.applyThemeConfigUI();
+            if (typeof window.applyThemeConfigUI === 'function') {
+                window.applyThemeConfigUI();
+            }
         }
     } catch (e) {
         BoseState.theme = getFromLocalMemory('bosesweets_theme') || {};
@@ -958,7 +966,7 @@ export function initializeSovereignSync() {
         syncCatalogMap();
         window.saveEngineMemory('cat');
         
-        // التحصين اللحظي: مراجعة الأسعار في سلة العميل فوراً وتعديلها إذا تم تغييرها من لوحة الإدارة
+        // التحصين اللحظي: مراءعة الأسعار في سلة العميل فوراً وتعديلها إذا تم تغييرها من لوحة الإدارة
         if (BoseState.cart.length > 0 && typeof window.cartSystem !== 'undefined') {
             BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
             window.cartSystem.saveCartToStorage();
@@ -978,7 +986,9 @@ export function initializeSovereignSync() {
             BoseState.theme = snap.data();
             saveToLocalMemory('bosesweets_theme', BoseState.theme);
             window.saveEngineMemory('theme');
-            if (typeof window.applyThemeConfigUI === 'function') window.applyThemeConfigUI();
+            if (typeof window.applyThemeConfigUI === 'function') {
+                window.applyThemeConfigUI();
+            }
             if (typeof window.distributeProductsToUI === 'function') {
                 window.distributeProductsToUI(BoseState.catalog);
             }

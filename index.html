@@ -224,7 +224,7 @@
                         عقد من <span class="text-brand-pink font-bold">التميز</span> في<br>صناعة الحلويات
                     </h2>
                     <p class="text-brand-brown font-bold text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed opacity-90">
-                        ndعوكم لاستكشاف تشكيلة حلويات بوسي الفاخرة. نمزج بين عراقة التقاليد والاحترافية العالية في تقديم كل قطعة بمقرنا بمركز الفرافرة.
+                        ندعوكم لاستكشاف تشكيلة حلويات بوسي الفاخرة. نمزج بين عراقة التقاليد والاحترافية العالية في تقديم كل قطعة بمقرنا بمركز الفرافرة.
                     </p>
                     <a href="menu.html" class="btn-solid">تصفح القائمة الفاخرة</a>
                 </div>
@@ -246,10 +246,8 @@
             <section class="py-24 px-4 bg-brand-pinkLight border-y border-brand-pink/10">
                 <div class="container mx-auto max-w-6xl text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-brand-brown mb-12">منتجاتنا الفاخرة</h2>
-                    <!-- شبكة توزيع المنتجات المخصصة -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 products-grid mb-12" id="creative-grid-container"></div>
                     
-                    <!-- الحاوية الموحدة للمنتجات لضمان التوافق المطلق مع محرك التشغيل -->
                     <div id="menuGrid" class="main-product-grid grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" data-section-title="Menu"></div>
                 </div>
             </section>
@@ -264,11 +262,9 @@
                     </div>
 
                     <div class="relative">
-                        <!-- شريط العرض المنزلق لأحدث المنتجات -->
                         <div id="dynamic-new-arrivals" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory"></div>
                         
-                        <!-- الحاوية الموحدة لأحدث المنتجات لضمان التوافق المطلق مع محرك التشغيل والشبكات المستقرة -->
-                        <div id="new-arrivals-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" data-section-title="New Arrivals"></div>
+                        <div id="new-arrivals-container" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory" data-section-title="New Arrivals"></div>
                     </div>
                     <div class="text-center mt-4"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
                 </div>
@@ -318,11 +314,9 @@
                     </div>
 
                     <div class="relative">
-                        <!-- شريط العرض المنزلق للأكثر طلباً الكلاسيكي -->
                         <div id="dynamic-best-sellers" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory"></div>
                         
-                        <!-- الحاوية الموحدة للمنتجات الأكثر طلباً لضمان التوافق مع محرك التشغيل والشبكات المستقرة -->
-                        <div id="best-sellers-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" data-section-title="Best Sellers"></div>
+                        <div id="best-sellers-container" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory" data-section-title="Best Sellers"></div>
                     </div>
                     <div class="text-center mt-4"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
                 </div>
@@ -334,8 +328,7 @@
                     <p class="text-brand-brown font-bold text-lg mb-12 opacity-80">تذوق متعة المذاق الفاخر مع تشكيلاتنا المتنوعة.</p>
 
                     <div class="relative">
-                        <div id="dynamic-categories-container" class="bose-horizontal-slider gap-8 pb-10 px-2 pt-2 snap-x snap-mandatory">
-                            </div>
+                        <div id="dynamic-categories-container" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory"></div>
                     </div>
                 </div>
             </section>
@@ -472,10 +465,8 @@
         </div>
     </template>
 
-    <!-- أولاً: المحرك الأساسي (القلب النابض لربط البيانات السحابية) -->
     <script type="module" src="core-engine.js"></script>
 
-    <!-- ثانياً: محرك الواجهة البصرية (تنظيم وبناء الشاشات وتفاعل المستخدم) -->
     <script type="module" src="ui-engine.js"></script>
 
     <script>
@@ -764,7 +755,7 @@
                     gridContainer.innerHTML = gridItems.map((p, i) => this.renderTemplate(tmpl, p).replace('{GRID_CLASS}', gridClasses[i])).join('');
                 }
 
-                // تغذية حاوية المنيو الموحدة الجديدة (menuGrid) مع ضبط الفئات لملء الفراغات دون انهيار
+                // تغذية حاوية المنيو الموحدة الجديدة (menuGrid) مع ضبط الفئات لملء الفراغات دون انهيار كـ Grid
                 const menuGrid = document.getElementById('menuGrid');
                 if (menuGrid) {
                     const productCardTmpl = document.getElementById('bose-product-card-template').innerHTML;
@@ -786,16 +777,13 @@
                     arrivalsContainer.innerHTML = newArrivals.map(p => this.renderTemplate(document.getElementById('bose-product-card-template').innerHTML, p)).join('');
                 }
 
-                // تغذية حاوية أحدث المنتجات الموحدة الجديدة (new-arrivals-container)
+                // تغذية حاوية أحدث المنتجات الموحدة الجديدة كـ Slider منزلق (new-arrivals-container)
                 const newArrivalsContainer = document.getElementById('new-arrivals-container');
                 if (newArrivalsContainer && newArrivals.length > 0) {
                     const productCardTmpl = document.getElementById('bose-product-card-template').innerHTML;
-                    newArrivalsContainer.innerHTML = newArrivals.map(p => {
-                        let cardHtml = this.renderTemplate(productCardTmpl, p);
-                        return cardHtml.replace('snap-start flex-shrink-0 w-[80%] md:w-[280px]', 'w-full');
-                    }).join('');
+                    newArrivalsContainer.innerHTML = newArrivals.map(p => this.renderTemplate(productCardTmpl, p)).join('');
 
-                    // تفعيل إخفاء شريط التمرير الكلاسيكي والاعتماد على الحاوية الشبكية المستقرة
+                    // تفعيل إخفاء شريط التمرير الكلاسيكي والاعتماد على الحاوية الموحدة المستقرة
                     if (arrivalsContainer) arrivalsContainer.style.display = 'none';
                 }
 
@@ -806,20 +794,17 @@
                     bestSellersContainer.innerHTML = bestSellers.map(p => this.renderTemplate(document.getElementById('bose-product-card-template').innerHTML, p)).join('');
                 }
 
-                // تغذية حاوية الأكثر طلباً الموحدة الجديدة (best-sellers-container)
+                // تغذية حاوية الأكثر طلباً الموحدة الجديدة كـ Slider منزلق (best-sellers-container)
                 const bestSellersContainerNew = document.getElementById('best-sellers-container');
                 if (bestSellersContainerNew && bestSellers.length > 0) {
                     const productCardTmpl = document.getElementById('bose-product-card-template').innerHTML;
-                    bestSellersContainerNew.innerHTML = bestSellers.map(p => {
-                        let cardHtml = this.renderTemplate(productCardTmpl, p);
-                        return cardHtml.replace('snap-start flex-shrink-0 w-[80%] md:w-[280px]', 'w-full');
-                    }).join('');
+                    bestSellersContainerNew.innerHTML = bestSellers.map(p => this.renderTemplate(productCardTmpl, p)).join('');
 
-                    // تفعيل إخفاء شريط التمرير الكلاسيكي والاعتماد على الحاوية الشبكية المستقرة
+                    // تفعيل إخفاء شريط التمرير الكلاسيكي والاعتماد على الحاوية الموحدة المستقرة
                     if (bestSellersContainer) bestSellersContainer.style.display = 'none';
                 }
                 
-                // 5. تصفح حسب الفئة الكلاسيكية
+                // 5. تصفح حسب الفئة الكلاسيكية كـ Slider منزلق
                 const categoriesMap = new Map();
                 (window.BoseState?.catalog || []).forEach(p => {
                     if(p.category && !categoriesMap.has(p.category)) {

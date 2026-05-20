@@ -35,11 +35,12 @@ export function renderProductCardsUI(products, containerId) {
     const processBoseImage = window.processBoseImage || ((img) => img || '');
     const BoseState = window.BoseState;
 
-    // رصد بيئة الحاوية بذكاء لتحديد نوع الهندسة المطلوبة (سلايدر أفقي أم شبكة رأسية)
+    // رصد بيئة الحاوية بذكاء لتحديد نوع الهندسة المطلوبة وتوسيع النطاق ليشمل الحاويات الديناميكية المحددة
     const isSliderContainer = container.classList.contains('bose-horizontal-slider') || 
                               container.classList.contains('snap-x') || 
                               container.id === 'new-arrivals-container' || 
-                              container.id === 'best-sellers-container';
+                              container.id === 'best-sellers-container' ||
+                              container.id === 'dynamic-categories-container';
 
     const sectionTitle = container.dataset.sectionTitle || '';
     const currentLayoutBlock = BoseState?.theme?.builderLayout?.find(b => b.title === sectionTitle);
@@ -109,7 +110,7 @@ export function renderProductCardsUI(products, containerId) {
                                 
                                 <p class="text-xs text-[#ff91a4] font-black mb-2">${p.category || 'صنف فاخر'}</p>
                                 
-                                <p class="text-xs text-gray-500 mb-4 leading-relaxed product-desc" style="white-space: normal; overflow-wrap: break-word; word-break: break-word;">
+                                <p class="text-xs text-gray-500 mb-4 leading-relaxed product-desc" style="white-space: normal; overflow-wrap: anywhere; word-break: break-word;">
                                     ${p.description || p.desc || ''}
                                 </p>
                                 
@@ -173,6 +174,9 @@ export function distributeProductsToUI(products) {
                 filteredList = [...currentProducts].sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 12);
             } else if (block.dataSource === 'bestsellers') {
                 filteredList = currentProducts.filter(p => p.hasDiscount === true).slice(0, 12);
+            } else if (block.dataSource === 'menu') {
+                // فلترة مخصصة لقسم المنيو والـ menuGrid لضمان سحب المنتجات المرتبطة بالمنيو بدقة
+                filteredList = currentProducts.filter(p => p.category && normalizeArabic(p.category).includes('menu')).slice(0, 12);
             }
             
             // عرض المنتجات وتحديد حالة النفاد برمجياً للسماح بعرضها دائماً بالموقع في السلايدر والشبكة
@@ -658,13 +662,13 @@ if (typeof window !== 'undefined') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // حقن وتوثيق خصائص التنسيق الخاصة لضمان منع اقتطاع النصوص في المتصفح تلقائياً
+    // حقن وتوثيق خصائص التنسيق الخاصة لضمان منع اقتطاع النصوص في المتصفح تلقائياً باستخدام النطاق المطلق
     try {
         const style = document.createElement('style');
         style.textContent = `
             .product-desc {
                 white-space: normal !important;
-                overflow-wrap: break-word !important;
+                overflow-wrap: anywhere !important;
                 word-break: break-word !important;
                 line-clamp: unset !important;
                 -webkit-line-clamp: unset !important;
