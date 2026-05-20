@@ -1,17 +1,22 @@
-<!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
-    <title>المحرك السيادي للكتالوج | حلويات بوسي</title>
+    <title>المركز الإداري | حلويات بوسي</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- تم تقييد أوزان الخطوط لأقصى حد 700 فقط -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
     <script>
         tailwind.config = { 
@@ -43,25 +48,34 @@
         body { background-color: var(--bose-bg) !important; color: var(--bose-text) !important; font-family: 'Cairo', sans-serif; overflow-x: hidden; margin: 0; padding: 0; font-size: 16px; }
         * { box-sizing: border-box; outline: none; }
         
-        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bose-bg); }
         ::-webkit-scrollbar-thumb { background: var(--bose-border); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--bose-pink); }
 
-        .sidebar { background-color: var(--bose-surface) !important; border-left: 1px solid var(--bose-border) !important; transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; height: 100vh; position: fixed; top: 0; right: 0; width: 320px; overflow-y: auto; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
+        .sidebar { background-color: var(--bose-surface) !important; border-left: 1px solid var(--bose-border) !important; transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; height: 100vh; position: fixed; top: 0; right: 0; width: 340px; overflow-y: auto; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.5); }
         .sidebar-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 90; display: none; opacity: 0; transition: opacity 0.4s ease; }
         .sidebar-overlay.active { display: block; opacity: 1; }
         @media (max-width: 1024px) { .sidebar { right: -100%; width: 85%; max-width: 380px; } .sidebar.active { right: 0; } .main-content { margin-right: 0 !important; width: 100%; } }
         
-        details > summary { list-style: none; cursor: pointer; padding: 20px 24px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; font-weight: 900; transition: all 0.3s ease; color: var(--bose-text); font-size: 1.15rem; margin-bottom: 8px; }
-        details > summary::-webkit-details-marker { display: none; }
-        details > summary:hover, details[open] > summary { background-color: rgba(255, 145, 164, 0.08); color: var(--bose-pink); }
+        details.main-menu > summary { list-style: none; cursor: pointer; padding: 20px 24px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; font-weight: 700; transition: all 0.3s ease; color: var(--bose-text); font-size: 1.15rem; margin-bottom: 8px; background-color: transparent; }
+        details.main-menu > summary::-webkit-details-marker { display: none; }
+        details.main-menu > summary:hover, details.main-menu[open] > summary { background-color: rgba(255, 145, 164, 0.08); color: var(--bose-pink); }
         
-        .submenu-scroll-container { max-height: 40vh; overflow-y: auto; padding-right: 10px; margin-right: 14px; border-right: 2px solid var(--bose-border); }
-        .submenu-item { display: flex; align-items: center; gap: 16px; padding: 16px 20px; margin: 8px 0; border-radius: 14px; color: var(--bose-muted); font-size: 1.05rem; transition: all 0.3s ease; font-weight: 700; cursor: pointer; }
-        .submenu-item:hover, .submenu-item.active { background-color: rgba(255, 145, 164, 0.12); color: var(--bose-text); font-weight: 900; transform: translateX(-5px); }
+        details.sub-menu { margin-right: 12px; margin-bottom: 8px; border-right: 2px solid var(--bose-border); padding-right: 12px; }
+        details.sub-menu > summary { list-style: none; cursor: pointer; padding: 14px 18px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; font-weight: 600; transition: all 0.3s ease; color: var(--bose-muted); font-size: 1.05rem; background-color: rgba(0,0,0,0.2); border: 1px solid transparent; }
+        details.sub-menu > summary::-webkit-details-marker { display: none; }
+        details.sub-menu > summary:hover, details.sub-menu[open] > summary { border-color: var(--bose-pink); color: var(--bose-text); background-color: rgba(255, 145, 164, 0.05); }
+        
+        .submenu-scroll-container { max-height: calc(100vh - 350px); overflow-y: auto; padding-right: 4px; }
+        .submenu-scroll-container::-webkit-scrollbar { width: 4px; }
+        
+        .submenu-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin: 4px 0; border-radius: 12px; color: var(--bose-muted); font-size: 1rem; transition: all 0.3s ease; font-weight: 600; cursor: pointer; background: transparent; }
+        .submenu-item:hover, .submenu-item.active { background-color: rgba(255, 145, 164, 0.12); color: var(--bose-text); font-weight: 700; transform: translateX(-5px); }
+        .submenu-item.nested-item { padding-right: 24px; font-size: 0.95rem; border-right: 2px solid transparent; }
+        .submenu-item.nested-item:hover, .submenu-item.nested-item.active { border-right-color: var(--bose-pink); transform: translateX(-3px); }
 
-        .main-content { margin-right: 320px; min-height: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
+        .main-content { margin-right: 340px; min-height: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
         .admin-section { display: none; animation: fadeInWorkspace 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         .admin-section.active { display: block; }
         @keyframes fadeInWorkspace { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -69,14 +83,15 @@
         .admin-card { background-color: var(--bose-surface) !important; border: 1px solid var(--bose-border) !important; border-radius: 32px; padding: 48px; margin-bottom: 40px; box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
         @media (max-width: 768px) { .admin-card { padding: 32px 24px; border-radius: 24px; } }
         
-        .form-label { display: block; color: var(--bose-text) !important; font-weight: 900; margin-bottom: 12px; font-size: 1.15rem; }
-        .bose-helper-text { display: flex; align-items: start; gap: 8px; color: var(--bose-muted); font-size: 0.95rem; font-weight: 700; margin-top: 12px; line-height: 1.6; opacity: 0.85; }
+        .form-label { display: block; color: var(--bose-text) !important; font-weight: 700; margin-bottom: 12px; font-size: 1.15rem; }
+        .bose-helper-text { display: flex; align-items: start; gap: 8px; color: var(--bose-muted); font-size: 0.95rem; font-weight: 600; margin-top: 12px; line-height: 1.6; opacity: 0.85; }
         .bose-helper-text i { flex-shrink: 0; margin-top: 3px; color: var(--bose-pink); }
         
-        .form-input, .form-select, .form-textarea { width: 100%; background-color: #0c0709 !important; border: 2px solid var(--bose-border) !important; color: var(--bose-text) !important; border-radius: 20px; padding: 22px 28px; font-family: inherit; font-weight: 900; font-size: 1.2rem; transition: all 0.3s ease; box-shadow: inset 0 4px 10px rgba(0,0,0,0.2); }
+        /* تقييد أوزان الخطوط إلى 700 في الإدخالات */
+        .form-input, .form-select, .form-textarea { width: 100%; background-color: #0c0709 !important; border: 2px solid var(--bose-border) !important; color: var(--bose-text) !important; border-radius: 20px; padding: 22px 28px; font-family: inherit; font-weight: 700; font-size: 1.15rem; transition: all 0.3s ease; box-shadow: inset 0 4px 10px rgba(0,0,0,0.2); }
         .form-input[readonly] { opacity: 0.7; cursor: not-allowed; background-color: #1a1012 !important; border-style: dashed; }
         .form-select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ff91a4'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: left 24px center; background-size: 24px; padding-left: 60px; }
-        .form-select option { background-color: var(--bose-surface) !important; color: var(--bose-text) !important; font-weight: 700; padding: 20px; }
+        .form-select option { background-color: var(--bose-surface) !important; color: var(--bose-text) !important; font-weight: 600; padding: 20px; }
         .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--bose-pink) !important; box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.15), inset 0 4px 10px rgba(0,0,0,0.2); }
         .form-textarea { resize: vertical; min-height: 160px; line-height: 1.8; }
         
@@ -93,7 +108,7 @@
         input:checked + .toggle-slider { background-color: rgba(255, 145, 164, 0.15); border-color: var(--bose-pink); }
         input:checked + .toggle-slider:before { transform: translateX(32px); background-color: var(--bose-pink); box-shadow: 0 0 15px rgba(255,145,164,0.5); }
 
-        .btn-solid { background-color: var(--bose-pink) !important; color: var(--bose-bg) !important; border: none; border-radius: 20px; padding: 22px 40px; font-weight: 900; font-size: 1.3rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 14px; width: 100%; box-shadow: 0 10px 30px -5px rgba(255, 145, 164, 0.3); }
+        .btn-solid { background-color: var(--bose-pink) !important; color: var(--bose-bg) !important; border: none; border-radius: 20px; padding: 22px 40px; font-weight: 700; font-size: 1.25rem; cursor: pointer; transition: all 0.3s ease; display: inline-flex; align-items: center; justify-content: center; gap: 14px; width: 100%; box-shadow: 0 10px 30px -5px rgba(255, 145, 164, 0.3); }
         .btn-solid:hover { background-color: var(--bose-text) !important; color: var(--bose-pink) !important; transform: translateY(-3px); box-shadow: 0 15px 35px -5px rgba(255, 145, 164, 0.4); }
         .btn-solid:disabled { opacity: 0.7; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
         
@@ -102,7 +117,7 @@
         .btn-action.danger:hover { background-color: #ef4444 !important; color: var(--bose-text) !important; border-color: #ef4444 !important; }
         .btn-action:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; border-color: var(--bose-border) !important; }
 
-        .admin-toast { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); background: var(--bose-surface) !important; border: 2px solid var(--bose-pink) !important; color: var(--bose-text) !important; padding: 20px 48px; border-radius: 50px; z-index: 10000; font-weight: 900; font-size: 1.25rem; display: none; align-items: center; gap: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
+        .admin-toast { position: fixed; top: 40px; left: 50%; transform: translateX(-50%); background: var(--bose-surface) !important; border: 2px solid var(--bose-pink) !important; color: var(--bose-text) !important; padding: 20px 48px; border-radius: 50px; z-index: 10000; font-weight: 700; font-size: 1.15rem; display: none; align-items: center; gap: 16px; box-shadow: 0 25px 60px rgba(0,0,0,0.8); }
         .admin-toast.active { display: flex; animation: toastIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes toastIn { from { top: -80px; opacity: 0; } to { top: 40px; opacity: 1; } }
 
@@ -113,11 +128,11 @@
         .catalog-item { background: var(--bose-surface); border: 2px solid var(--bose-border); border-radius: 32px; overflow: hidden; transition: all 0.4s ease; display: flex; flex-direction: column; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .catalog-item:hover { border-color: var(--bose-pink); box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: translateY(-5px); }
         .catalog-item.out-of-stock { opacity: 0.6; border-color: #555; filter: grayscale(50%); }
-        .catalog-item .discount-badge { position: absolute; top: 20px; right: 20px; background-color: var(--bose-pink); color: #0c0709; font-weight: 900; padding: 8px 16px; border-radius: 12px; font-size: 1rem; z-index: 20; box-shadow: 0 8px 20px rgba(255,145,164,0.4); }
+        .catalog-item .discount-badge { position: absolute; top: 20px; right: 20px; background-color: var(--bose-pink); color: #0c0709; font-weight: 700; padding: 8px 16px; border-radius: 12px; font-size: 1rem; z-index: 20; box-shadow: 0 8px 20px rgba(255,145,164,0.4); }
 
         .admin-tabs-nav { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 40px; border-bottom: 2px solid var(--bose-border); padding-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
         .admin-tabs-nav::-webkit-scrollbar { display: none; }
-        .admin-tab-btn { background-color: var(--bose-bg); color: var(--bose-muted); border: 2px solid var(--bose-border); padding: 16px 28px; border-radius: 20px; font-weight: 900; font-size: 1.15rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); white-space: nowrap; flex-shrink: 0; }
+        .admin-tab-btn { background-color: var(--bose-bg); color: var(--bose-muted); border: 2px solid var(--bose-border); padding: 16px 28px; border-radius: 20px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); white-space: nowrap; flex-shrink: 0; }
         .admin-tab-btn:hover { border-color: var(--bose-pink); color: var(--bose-text); transform: translateY(-2px); }
         .admin-tab-btn.active { background-color: var(--bose-pink); color: var(--bose-bg); border-color: var(--bose-pink); box-shadow: 0 8px 25px rgba(255, 145, 164, 0.3); }
         .admin-tab-content { display: none; animation: fadeInTab 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
@@ -129,7 +144,7 @@
 
     <div id="admin-toast" class="admin-toast">
         <i data-lucide="check-circle" class="w-8 h-8 text-brand-pink shrink-0"></i>
-        <span id="toast-msg">تم التنفيذ بنجاح</span>
+        <span id="toast-msg">تم الإجراء بنجاح</span>
     </div>
 
     <div id="bose-confirm-modal" class="fixed inset-0 z-[20000] hidden items-center justify-center p-4 bg-black/80 backdrop-filter blur-sm">
@@ -137,56 +152,94 @@
             <div class="w-16 h-16 rounded-full bg-red-900/20 border-2 border-red-500/50 flex items-center justify-center mx-auto mb-6">
                 <i data-lucide="alert-triangle" class="w-8 h-8 text-red-400"></i>
             </div>
-            <h4 class="text-2xl font-black text-white mb-4">هل ترغب بالاستمرار؟</h4>
-            <p id="bose-confirm-message" class="text-brand-textMuted font-bold text-lg mb-8 leading-relaxed">سيتم إجراء تعديل هندسي حساس على الهيكل.</p>
+            <h4 class="text-2xl font-bold text-white mb-4">تأكيد الإجراء</h4>
+            <p id="bose-confirm-message" class="text-brand-textMuted font-semibold text-lg mb-8 leading-relaxed">يُرجى التأكيد قبل تطبيق هذا التعديل على النظام.</p>
             <div class="flex gap-4">
-                <button id="bose-confirm-yes" class="btn-solid bg-red-500 hover:bg-red-600 text-white font-black py-4 rounded-xl flex-1 text-lg">نعم، متأكد</button>
-                <button id="bose-confirm-no" class="bg-brand-bg border-2 border-brand-border text-brand-textMuted hover:bg-brand-surface font-black py-4 rounded-xl flex-1 text-lg">تراجع</button>
+                <button id="bose-confirm-yes" class="btn-solid bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl flex-1 text-lg shadow-none">تأكيد</button>
+                <button id="bose-confirm-no" class="bg-brand-bg border-2 border-brand-border text-brand-textMuted hover:bg-brand-surface font-bold py-4 rounded-xl flex-1 text-lg transition-colors">تراجع</button>
             </div>
         </div>
     </div>
 
-    <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <aside id="sidebar" class="sidebar">
         <div class="p-8 border-b border-brand-border flex items-center justify-between sticky top-0 bg-[#1a1012] z-10">
-            <div class="flex items-center gap-5">
-                <div class="w-14 h-14 rounded-2xl bg-brand-bg border border-brand-pink/30 flex items-center justify-center shadow-lg">
-                    <i data-lucide="gem" class="w-8 h-8 text-brand-pink"></i>
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-brand-bg border border-brand-pink/30 flex items-center justify-center shadow-lg">
+                    <i data-lucide="gem" class="w-6 h-6 text-brand-pink"></i>
                 </div>
-                <h1 class="text-2xl font-black text-brand-textMain tracking-tight">إدارة حلويات بوسي</h1>
+                <h1 class="text-xl font-bold text-brand-textMain tracking-tight">إدارة حلويات بوسي</h1>
             </div>
-            <button onclick="window.toggleSidebar(false)" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
+            <button onclick="toggleSidebar(false)" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
         </div>
 
-        <nav class="flex-grow p-6 space-y-4">
-            <div class="submenu-item active" id="menu-item-dash" onclick="window.switchSection('dashboard', this)">
-                <i data-lucide="shield-check" class="w-7 h-7"></i> شاشة الاستقرار النظيفة
+        <nav class="flex-grow p-6 space-y-2">
+            <div class="submenu-item active" id="menu-item-dash" onclick="switchSection('dashboard', this)">
+                <i data-lucide="layout-dashboard" class="w-6 h-6"></i> لوحة القيادة
             </div>
             
-            <div class="submenu-item" id="menu-item-orders" onclick="window.switchSection('orders-section', this); window.fetchAdminOrders();">
-                <i data-lucide="shopping-bag" class="w-7 h-7"></i> طلبات العملاء الحية
+            <div class="submenu-item" id="menu-item-orders" onclick="switchSection('orders-section', this); fetchAdminOrders();">
+                <i data-lucide="shopping-bag" class="w-6 h-6"></i> متابعة الطلبات الحية
             </div>
 
-            <details class="group mt-6" open>
+            <details class="main-menu mt-6 bose-accordion" open>
                 <summary>
-                    <div class="flex items-center gap-4"><i data-lucide="layers" class="w-7 h-7"></i> إدارة الكتالوج</div>
-                    <i data-lucide="chevron-down" class="w-6 h-6 transition-transform group-open:rotate-180"></i>
+                    <div class="flex items-center gap-4"><i data-lucide="layers" class="w-6 h-6"></i> إدارة الكتالوج</div>
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform"></i>
                 </summary>
                 
-                <div class="submenu-scroll-container mt-4" id="sidebar-dynamic-categories">
-                    <div class="text-center py-6 text-sm text-brand-textMuted font-bold">جاري تحميل الأقسام السحابية...</div>
+                <div class="submenu-scroll-container mt-2" id="sidebar-dynamic-categories">
+                    
+                    <details class="sub-menu bose-sub-accordion">
+                        <summary>
+                            <span class="flex items-center gap-3"><i data-lucide="cake" class="w-5 h-5"></i> الكيك والتورت</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
+                        </summary>
+                        <div class="mt-1">
+                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('تورت الزفاف')">تورت الزفاف الفاخرة</div>
+                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('تورت المناسبات')">تورت أعياد الميلاد</div>
+                        </div>
+                    </details>
+
+                    <details class="sub-menu bose-sub-accordion">
+                        <summary>
+                            <span class="flex items-center gap-3"><i data-lucide="flower" class="w-5 h-5"></i> الورد والهدايا</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
+                        </summary>
+                        <div class="mt-1">
+                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('بوكيهات طبيعية')">البوكيهات الطبيعية</div>
+                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('بوكيهات صناعية')">البوكيهات الصناعية</div>
+                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('تنسيقات الشوكولاتة')">تنسيقات الشوكولاتة والكاش</div>
+                            
+                            <!-- الرابط الجديد المخصص لإعدادات المحاكي المعزولة -->
+                            <div class="submenu-item nested-item mt-2 pt-2 border-t border-brand-border/50 text-brand-pink hover:text-white" onclick="switchSection('simulator-settings-section', this)">
+                                <i data-lucide="sliders-horizontal" class="w-4 h-4"></i> إعدادات محاكي التنسيق
+                            </div>
+                        </div>
+                    </details>
+
+                    <details class="sub-menu bose-sub-accordion">
+                        <summary>
+                            <span class="flex items-center gap-3"><i data-lucide="croissant" class="w-5 h-5"></i> الحلويات المخبوزة</span>
+                            <i data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
+                        </summary>
+                        <div class="mt-1">
+                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('الحلويات الشرقية')">الحلويات الشرقية</div>
+                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('المخبوزات الغربية')">المخبوزات الغربية</div>
+                        </div>
+                    </details>
                 </div>
             </details>
 
-            <details class="group mt-8">
+            <details class="main-menu mt-4 bose-accordion">
                 <summary>
-                    <div class="flex items-center gap-4"><i data-lucide="monitor-smartphone" class="w-7 h-7"></i> الإعدادات الشاملة</div>
-                    <i data-lucide="chevron-down" class="w-6 h-6 transition-transform group-open:rotate-180"></i>
+                    <div class="flex items-center gap-4"><i data-lucide="monitor-smartphone" class="w-6 h-6"></i> الإعدادات الشاملة</div>
+                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform"></i>
                 </summary>
-                <div class="flex flex-col mt-4 space-y-2">
-                    <a href="admin-theme.html" class="submenu-item text-decoration-none"><i data-lucide="layout-template" class="w-6 h-6"></i> الواجهة الرئيسية والفوتر</a>
-                    <a href="admin-logistics.html" class="submenu-item text-decoration-none"><i data-lucide="map-pin" class="w-6 h-6"></i> مناطق ومصاريف التوصيل</a>
+                <div class="flex flex-col mt-2 pr-2 border-r-2 border-brand-border mr-3">
+                    <a href="admin-theme.html" class="submenu-item nested-item text-decoration-none"><i data-lucide="layout-template" class="w-5 h-5"></i> الواجهة والفوتر</a>
+                    <a href="admin-logistics.html" class="submenu-item nested-item text-decoration-none"><i data-lucide="map-pin" class="w-5 h-5"></i> مناطق التوصيل</a>
                 </div>
             </details>
         </nav>
@@ -195,56 +248,57 @@
     <main class="main-content">
         <header class="bg-[#1a1012] border-b border-brand-border sticky top-0 z-40 px-10 py-6 flex items-center justify-between shadow-xl">
             <div class="flex items-center gap-6">
-                <button onclick="window.toggleSidebar(true)" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-10 h-10"></i></button>
-                <h2 id="current-section-title" class="text-3xl font-black text-white tracking-wide">المركز الإداري لحلويات بوسي</h2>
+                <button onclick="toggleSidebar(true)" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
+                <h2 id="current-section-title" class="text-xl font-bold text-white tracking-wide">المركز الإداري لحلويات بوسي</h2>
             </div>
             <div class="hidden md:flex items-center gap-4 bg-[#0c0709] px-6 py-3 rounded-full border border-brand-border shadow-inner">
                 <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
-                <span class="text-base font-black text-brand-textMuted">السحابة متصلة ومستقرة</span>
+                <span class="text-sm font-bold text-brand-textMuted">السحابة متصلة ومستقرة</span>
             </div>
         </header>
 
         <div class="p-8 md:p-16 max-w-[1600px] mx-auto w-full">
 
+            <!-- شاشة الاستقبال بعد إعادة التصميم والصياغة وتعديل الأوزان -->
             <section id="dashboard" class="admin-section active">
-                <div class="admin-card flex flex-col items-center justify-center py-20 md:py-40 border-dashed border-2 border-brand-border bg-transparent shadow-none">
-                    <div class="w-32 h-32 rounded-full bg-brand-surface border border-brand-border flex items-center justify-center mb-10 shadow-2xl">
-                        <i data-lucide="wind" class="w-16 h-16 text-brand-pink opacity-80"></i>
+                <div class="admin-card flex flex-col items-center justify-center py-24 md:py-32 border-dashed border-2 border-brand-border bg-transparent shadow-none">
+                    <div class="w-24 h-24 rounded-3xl bg-brand-surface border border-brand-border flex items-center justify-center mb-8 shadow-xl">
+                        <i data-lucide="layout-dashboard" class="w-10 h-10 text-brand-pink"></i>
                     </div>
-                    <h3 class="text-4xl font-black text-white mb-6 text-center">مساحة عمل نظيفة وهادئة</h3>
-                    <p class="font-bold text-2xl text-brand-textMuted text-center max-w-3xl leading-relaxed opacity-80">
-                        لا توجد فوضى هنا. يرجى فتح القائمة الجانبية واختيار القسم المراد إدارته، ليتم عزل باقي الأقسام تماماً وفتح مساحة عمل خاصة بهذا القسم فقط.
+                    <h3 class="text-3xl font-bold text-white mb-4 text-center tracking-wide">منظومة الإدارة المركزية</h3>
+                    <p class="font-semibold text-lg text-brand-textMuted text-center max-w-2xl leading-relaxed opacity-90">
+                        للعلامة التجارية <span class="text-brand-pink font-bold">حلويات بوسي</span>. تم تهيئة بيئة العمل لتوفير أقصى درجات الاستقرار والتركيز. من هنا يمكنك إدارة الكتالوج، متابعة الطلبات الحية، وضبط إعدادات النظام. يُرجى تحديد القسم المطلوب من القائمة الجانبية للبدء.
                     </p>
                 </div>
             </section>
 
             <section id="orders-section" class="admin-section">
-                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-16 gap-8 border-b-2 border-brand-border pb-10">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-16 gap-8 border-b border-brand-border pb-10">
                     <div>
-                        <h3 class="text-4xl font-black text-white flex items-center gap-4 mb-3">
-                            <i data-lucide="shopping-bag" class="text-brand-pink w-10 h-10"></i> 
-                            طلبات العملاء الحية
+                        <h3 class="text-2xl font-bold text-white flex items-center gap-4 mb-3">
+                            <i data-lucide="shopping-bag" class="text-brand-pink w-8 h-8"></i> 
+                            متابعة الطلبات الحية
                         </h3>
-                        <p class="text-xl text-brand-textMuted font-bold">متابعة وفحص الطلبات الواردة من المتجر وتفكيك كافة تفاصيل الورد والتورت المخصصة.</p>
+                        <p class="text-base text-brand-textMuted font-semibold">استعراض ومتابعة الطلبات الواردة من العملاء بتفاصيلها الكاملة.</p>
                     </div>
-                    <button onclick="window.fetchAdminOrders()" class="bg-brand-surface border-2 border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-black text-xl py-5 px-10 rounded-2xl transition-all flex items-center gap-3 shadow-xl">
-                        <i data-lucide="refresh-cw" class="w-7 h-7"></i> تحديث الطلبات الحية
+                    <button onclick="fetchAdminOrders()" class="bg-brand-surface border border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-bold text-base py-3 px-6 rounded-xl transition-all flex items-center gap-3 shadow-lg">
+                        <i data-lucide="refresh-cw" class="w-5 h-5"></i> تحديث قائمة الطلبات
                     </button>
                 </div>
                 <div id="orders-container" class="space-y-8"></div>
             </section>
 
             <section id="product-list" class="admin-section">
-                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-16 gap-8 border-b-2 border-brand-border pb-10">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-16 gap-8 border-b border-brand-border pb-10">
                     <div>
-                        <h3 class="text-4xl font-black text-white flex items-center gap-4 mb-3">
-                            <i data-lucide="folder-open" class="text-brand-pink w-10 h-10"></i> 
+                        <h3 class="text-2xl font-bold text-white flex items-center gap-4 mb-3">
+                            <i data-lucide="folder-open" class="text-brand-pink w-8 h-8"></i> 
                             إدارة قسم: <span id="current-filtered-cat-title" class="text-brand-pink"></span>
                         </h3>
-                        <p class="text-xl text-brand-textMuted font-bold">يتم إدارة هذا القسم بمعزل تام عن باقي أقسام الموقع.</p>
+                        <p class="text-base text-brand-textMuted font-semibold">إدارة منتجات هذا القسم بمعزل عن باقي أقسام الكتالوج لضمان الدقة.</p>
                     </div>
-                    <button onclick="window.openIsolatedEditor()" class="bg-brand-surface border-2 border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-black text-xl py-5 px-10 rounded-2xl transition-all flex items-center gap-3 shadow-xl">
-                        <i data-lucide="plus" class="w-7 h-7"></i> إضافة منتج جديد لهذا القسم
+                    <button onclick="openIsolatedEditor()" class="bg-brand-surface border border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-bold text-base py-3 px-6 rounded-xl transition-all flex items-center gap-3 shadow-lg">
+                        <i data-lucide="plus" class="w-5 h-5"></i> إضافة منتج جديد
                     </button>
                 </div>
                 
@@ -252,42 +306,42 @@
             </section>
 
             <section id="product-editor" class="admin-section">
-                <div class="mb-12 flex items-center justify-between bg-brand-surface border border-brand-border p-6 rounded-3xl shadow-lg">
-                    <button onclick="window.returnToIsolatedSection()" class="flex items-center gap-3 text-brand-textMuted hover:text-brand-pink font-black text-xl transition-colors">
-                        <i data-lucide="arrow-right" class="w-8 h-8"></i> العودة لقسم: <span id="back-cat-name" class="text-white"></span>
+                <div class="mb-12 flex items-center justify-between bg-brand-surface border border-brand-border p-6 rounded-3xl shadow-md">
+                    <button onclick="returnToIsolatedSection()" class="flex items-center gap-3 text-brand-textMuted hover:text-brand-pink font-bold text-lg transition-colors">
+                        <i data-lucide="arrow-right" class="w-6 h-6"></i> العودة لقسم: <span id="back-cat-name" class="text-white"></span>
                     </button>
-                    <div class="px-6 py-2 bg-[#0c0709] rounded-xl border border-brand-border">
-                        <span class="text-brand-pink font-black text-lg">غرفة العمليات المعزولة</span>
+                    <div class="px-5 py-2 bg-[#0c0709] rounded-xl border border-brand-border">
+                        <span class="text-brand-pink font-bold text-sm">غرفة عمليات معزولة</span>
                     </div>
                 </div>
 
                 <div class="mb-16">
-                    <h3 class="text-4xl font-black text-white flex items-center gap-4" id="editor-title">
-                        <i data-lucide="pen-tool" class="text-brand-pink w-10 h-10"></i> تصميم وهندسة المنتج
+                    <h3 class="text-2xl font-bold text-white flex items-center gap-4" id="editor-title">
+                        <i data-lucide="pen-tool" class="text-brand-pink w-8 h-8"></i> إعداد وتنسيق المنتج
                     </h3>
-                    <p class="text-xl text-brand-textMuted font-bold mt-4">التعديلات هنا تطبق على هذا المنتج فقط، داخل قسمه الخاص، ولن تؤثر على أي منتج أو قسم آخر في الكتالوج.</p>
+                    <p class="text-base text-brand-textMuted font-semibold mt-3">تُطبق التعديلات هنا على هذا المنتج بشكل مستقل، ولن تؤثر على باقي الكتالوج.</p>
                 </div>
 
                 <div class="admin-tabs-nav">
-                    <button type="button" class="admin-tab-btn active" onclick="window.switchAdminTab(event, 'tab-identity')">1. الهوية الرسمية</button>
-                    <button type="button" class="admin-tab-btn" onclick="window.switchAdminTab(event, 'tab-pricing')">2. التسعير والمخزون</button>
-                    <button type="button" class="admin-tab-btn" onclick="window.switchAdminTab(event, 'tab-media')">3. المحتوى البصري</button>
-                    <button type="button" class="admin-tab-btn" onclick="window.switchAdminTab(event, 'tab-marketing')">4. الصياغة والنكهات</button>
-                    <button type="button" class="admin-tab-btn" onclick="window.switchAdminTab(event, 'tab-engineering')">5. الهندسة المرئية</button>
+                    <button type="button" class="admin-tab-btn active" onclick="switchAdminTab(event, 'tab-identity')">1. الهوية الأساسية</button>
+                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-pricing')">2. التسعير والمخزون</button>
+                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-media')">3. المحتوى المرئي</button>
+                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-marketing')">4. الوصف والتفاصيل</button>
+                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-engineering')">5. قواعد العرض</button>
                 </div>
 
                 <input type="hidden" id="prod-id">
 
                 <div id="tab-identity" class="admin-tab-content active-tab">
                     <div class="admin-card">
-                        <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="fingerprint" class="w-10 h-10"></i> 1. الهوية الرسمية</h4>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <h4 class="text-brand-pink font-bold text-xl mb-10 flex items-center gap-3"><i data-lucide="fingerprint" class="w-6 h-6"></i> 1. الهوية الأساسية</h4>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             <div>
                                 <label class="form-label">الاسم التجاري للمنتج</label>
                                 <input type="text" id="prod-name" class="form-input" placeholder="مثال: قشطوطة مانجا فريش">
                             </div>
                             <div>
-                                <label class="form-label">القسم المنتمي إليه (مغلق ومحمي للحفاظ على العزل)</label>
+                                <label class="form-label">القسم المنتمي إليه</label>
                                 <input type="text" id="prod-cat" class="form-input text-brand-pink" readonly placeholder="اسم القسم">
                             </div>
                         </div>
@@ -296,28 +350,28 @@
 
                 <div id="tab-pricing" class="admin-tab-content">
                     <div class="admin-card">
-                        <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="tags" class="w-10 h-10"></i> 2. التسعير وحالة المخزون</h4>
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 items-end">
+                        <h4 class="text-brand-pink font-bold text-xl mb-10 flex items-center gap-3"><i data-lucide="tags" class="w-6 h-6"></i> 2. التسعير وحالة التوفر</h4>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-end">
                             <div>
                                 <label class="form-label text-brand-pink">السعر النهائي للعميل</label>
-                                <input type="number" id="prod-price" class="form-input text-4xl font-black text-brand-pink text-center py-6" placeholder="0">
+                                <input type="number" id="prod-price" class="form-input text-2xl font-bold text-brand-pink text-center py-4" placeholder="0">
                             </div>
                             <div>
                                 <label class="form-label">السعر القديم (لإظهار الخصم)</label>
-                                <input type="number" id="prod-old-price" class="form-input text-3xl font-bold text-center py-6 opacity-70" placeholder="0">
+                                <input type="number" id="prod-old-price" class="form-input text-xl font-semibold text-center py-4 opacity-70" placeholder="0">
                             </div>
-                            <div class="space-y-8">
-                                <div class="flex items-center justify-between bg-[#0c0709] p-6 rounded-2xl border border-brand-border">
-                                    <span class="font-bold text-xl text-white" id="discount-status-text">لا يوجد عرض</span>
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between bg-[#0c0709] p-5 rounded-2xl border border-brand-border">
+                                    <span class="font-semibold text-base text-white" id="discount-status-text">لا يوجد عرض</span>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" id="prod-has-discount" onchange="window.updateDiscountLabel(this)">
+                                        <input type="checkbox" id="prod-has-discount" onchange="updateDiscountLabel(this)">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
-                                <div class="flex items-center justify-between bg-[#0c0709] p-6 rounded-2xl border border-brand-border">
-                                    <span class="font-bold text-xl text-white" id="stock-status-text">متوفر للطلب</span>
+                                <div class="flex items-center justify-between bg-[#0c0709] p-5 rounded-2xl border border-brand-border">
+                                    <span class="font-semibold text-base text-white" id="stock-status-text">متوفر للطلب</span>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" id="prod-stock" checked onchange="window.updateStockLabel(this)">
+                                        <input type="checkbox" id="prod-stock" checked onchange="updateStockLabel(this)">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
@@ -328,108 +382,108 @@
 
                 <div id="tab-media" class="admin-tab-content">
                     <div class="admin-card">
-                        <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="image" class="w-10 h-10"></i> 3. المحتوى البصري (الميديا)</h4>
+                        <h4 class="text-brand-pink font-bold text-xl mb-10 flex items-center gap-3"><i data-lucide="image" class="w-6 h-6"></i> 3. المحتوى المرئي</h4>
                         
-                        <div class="space-y-16">
-                            <div class="bg-[#0c0709] p-10 rounded-3xl border border-brand-border flex flex-col xl:flex-row gap-12 items-start">
-                                <div class="flex-1 w-full space-y-6">
-                                    <label class="form-label text-2xl">صورة الكارت الأساسية</label>
-                                    <p class="bose-helper-text text-base mb-6">هذه هي الصورة التي تظهر في المنيو الخارجي للقسم.</p>
-                                    <input type="text" id="prod-img" class="form-input text-left" dir="ltr" placeholder="الرابط السحابي..." oninput="window.previewImage('img-preview', 'img-placeholder', this.value)">
-                                    <input type="file" id="file-prod-img" class="hidden" accept="image/*" onchange="window.uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder')">
-                                    <button type="button" onclick="document.getElementById('file-prod-img').click()" class="btn-action w-full h-auto py-5 rounded-2xl gap-4">
-                                        <i data-lucide="upload-cloud" class="w-8 h-8"></i> <span class="font-black text-xl">رفع صورة من الجهاز للسحابة</span>
+                        <div class="space-y-12">
+                            <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col xl:flex-row gap-10 items-start">
+                                <div class="flex-1 w-full space-y-5">
+                                    <label class="form-label text-lg">صورة المنتج الأساسية</label>
+                                    <p class="bose-helper-text text-sm mb-5">الصورة المعروضة في الكتالوج الرئيسي للقسم.</p>
+                                    <input type="text" id="prod-img" class="form-input text-left text-sm" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('img-preview', 'img-placeholder', this.value)">
+                                    <input type="file" id="file-prod-img" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder')">
+                                    <button type="button" onclick="document.getElementById('file-prod-img').click()" class="btn-action w-full h-auto py-4 rounded-xl gap-3">
+                                        <i data-lucide="upload-cloud" class="w-6 h-6"></i> <span class="font-bold text-base">رفع صورة للسحابة</span>
                                     </button>
                                 </div>
-                                <div class="w-full aspect-square xl:w-[400px] xl:h-[400px] shrink-0 bg-brand-surface rounded-2xl border-2 border-brand-border overflow-hidden relative flex items-center justify-center shadow-xl">
-                                    <i data-lucide="camera" class="w-20 h-20 text-brand-border absolute" id="img-placeholder"></i>
-                                    <img id="img-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="window.handlePreviewError('img-preview', 'img-placeholder')">
+                                <div class="w-full aspect-square xl:w-[300px] xl:h-[300px] shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center shadow-md">
+                                    <i data-lucide="camera" class="w-12 h-12 text-brand-border absolute" id="img-placeholder"></i>
+                                    <img id="img-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('img-preview', 'img-placeholder')">
                                 </div>
                             </div>
 
-                            <div class="bg-[#0c0709] p-10 rounded-3xl border border-brand-border flex flex-col xl:flex-row gap-12 items-start">
-                                <div class="flex-1 w-full space-y-6">
-                                    <label class="form-label text-2xl">صورة البوستر الداخلي (اختياري)</label>
-                                    <p class="bose-helper-text text-base mb-6">تظهر عند فتح العميل لصفحة تفاصيل المنتج العميقة.</p>
-                                    <input type="text" id="prod-hero-img" class="form-input text-left" dir="ltr" placeholder="رابط البوستر السحابي..." oninput="window.previewImage('hero-preview', 'hero-placeholder', this.value)">
-                                    <input type="file" id="file-prod-hero" class="hidden" accept="image/*" onchange="window.uploadToCloudinary(this, 'prod-hero-img', 'hero-preview', 'hero-placeholder')">
-                                    <button type="button" onclick="document.getElementById('file-prod-hero').click()" class="btn-action w-full h-auto py-5 rounded-2xl gap-4">
-                                        <i data-lucide="upload-cloud" class="w-8 h-8"></i> <span class="font-black text-xl">رفع بوستر داخلي</span>
+                            <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col xl:flex-row gap-10 items-start">
+                                <div class="flex-1 w-full space-y-5">
+                                    <label class="form-label text-lg">صورة البوستر الداخلي (اختياري)</label>
+                                    <p class="bose-helper-text text-sm mb-5">تظهر عند استعراض التفاصيل الكاملة للمنتج.</p>
+                                    <input type="text" id="prod-hero-img" class="form-input text-left text-sm" dir="ltr" placeholder="رابط البوستر السحابي..." oninput="previewImage('hero-preview', 'hero-placeholder', this.value)">
+                                    <input type="file" id="file-prod-hero" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-hero-img', 'hero-preview', 'hero-placeholder')">
+                                    <button type="button" onclick="document.getElementById('file-prod-hero').click()" class="btn-action w-full h-auto py-4 rounded-xl gap-3">
+                                        <i data-lucide="upload-cloud" class="w-6 h-6"></i> <span class="font-bold text-base">رفع بوستر داخلي</span>
                                     </button>
                                 </div>
-                                <div class="w-full aspect-video xl:w-[400px] xl:h-auto shrink-0 bg-brand-surface rounded-2xl border-2 border-brand-border overflow-hidden relative flex items-center justify-center shadow-xl">
-                                    <i data-lucide="monitor" class="w-20 h-20 text-brand-border absolute" id="hero-placeholder"></i>
-                                    <img id="hero-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="window.handlePreviewError('hero-preview', 'hero-placeholder')">
+                                <div class="w-full aspect-video xl:w-[300px] xl:h-auto shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center shadow-md">
+                                    <i data-lucide="monitor" class="w-12 h-12 text-brand-border absolute" id="hero-placeholder"></i>
+                                    <img id="hero-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('hero-preview', 'hero-placeholder')">
                                 </div>
                             </div>
                         </div>
                         
-                        <div id="flower-exclusive-fields" class="mt-16 pt-16 border-t border-brand-border" style="display: none;">
-                            <h4 class="text-brand-pink font-black text-2xl mb-4 flex items-center gap-3">
-                                <i data-lucide="flower" class="w-8 h-8"></i> مرفقات قسم الورد والمحاكي البصري
+                        <div id="flower-exclusive-fields" class="mt-12 pt-12 border-t border-brand-border" style="display: none;">
+                            <h4 class="text-brand-pink font-bold text-lg mb-4 flex items-center gap-3">
+                                <i data-lucide="flower" class="w-5 h-5"></i> إعدادات المحاكي البصري للورد
                             </h4>
-                            <p class="text-brand-textMuted font-bold text-lg mb-8 leading-relaxed opacity-90">
-                                هذه الحقول مخصصة فقط لبوكيهات الورد. تُستخدم لعرض الخيارات المتنوعة أمام العميل داخل المحاكي البصري لتخصيص البوكيه.
+                            <p class="text-brand-textMuted font-semibold text-sm mb-8 leading-relaxed opacity-90">
+                                الحقول المخصصة لتمكين خيارات التخصيص المتنوعة أمام العميل داخل محاكي البوكيهات.
                             </p>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
-                                        <label class="form-label text-xl mb-4">صورة الورد الطبيعي</label>
-                                        <input type="text" id="prod-img-natural" class="form-input text-left text-sm mb-4" dir="ltr" placeholder="الرابط السحابي..." oninput="window.previewImage('preview-natural', 'placeholder-natural', this.value)">
-                                        <input type="file" id="file-img-natural" class="hidden" accept="image/*" onchange="window.uploadToCloudinary(this, 'prod-img-natural', 'preview-natural', 'placeholder-natural')">
-                                        <button type="button" onclick="document.getElementById('file-img-natural').click()" class="btn-action w-full h-auto py-3 rounded-xl gap-2">
-                                            <i data-lucide="upload" class="w-5 h-5"></i> <span class="font-bold">رفع الطبيعي</span>
+                                        <label class="form-label text-base mb-3">صورة الورد الطبيعي</label>
+                                        <input type="text" id="prod-img-natural" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-natural', 'placeholder-natural', this.value)">
+                                        <input type="file" id="file-img-natural" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-natural', 'preview-natural', 'placeholder-natural')">
+                                        <button type="button" onclick="document.getElementById('file-img-natural').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
+                                            <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع الطبيعي</span>
                                         </button>
                                     </div>
-                                    <div class="w-32 h-32 shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center">
+                                    <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-natural"></i>
-                                        <img id="preview-natural" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="window.handlePreviewError('preview-natural', 'placeholder-natural')">
+                                        <img id="preview-natural" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-natural', 'placeholder-natural')">
                                     </div>
                                 </div>
 
-                                <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
+                                <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
-                                        <label class="form-label text-xl mb-4">صورة الورد الصناعي</label>
-                                        <input type="text" id="prod-img-artificial" class="form-input text-left text-sm mb-4" dir="ltr" placeholder="الرابط السحابي..." oninput="window.previewImage('preview-artificial', 'placeholder-artificial', this.value)">
-                                        <input type="file" id="file-img-artificial" class="hidden" accept="image/*" onchange="window.uploadToCloudinary(this, 'prod-img-artificial', 'preview-artificial', 'placeholder-artificial')">
-                                        <button type="button" onclick="document.getElementById('file-img-artificial').click()" class="btn-action w-full h-auto py-3 rounded-xl gap-2">
-                                            <i data-lucide="upload" class="w-5 h-5"></i> <span class="font-bold">رفع الصناعي</span>
+                                        <label class="form-label text-base mb-3">صورة الورد الصناعي</label>
+                                        <input type="text" id="prod-img-artificial" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-artificial', 'placeholder-artificial', this.value)">
+                                        <input type="file" id="file-img-artificial" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-artificial', 'preview-artificial', 'placeholder-artificial')">
+                                        <button type="button" onclick="document.getElementById('file-img-artificial').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
+                                            <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع الصناعي</span>
                                         </button>
                                     </div>
-                                    <div class="w-32 h-32 shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center">
+                                    <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-artificial"></i>
-                                        <img id="preview-artificial" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="window.handlePreviewError('preview-artificial', 'placeholder-artificial')">
+                                        <img id="preview-artificial" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-artificial', 'placeholder-artificial')">
                                     </div>
                                 </div>
 
-                                <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
+                                <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
-                                        <label class="form-label text-xl mb-4">صورة بوكيه مع النقود (كاش)</label>
-                                        <input type="text" id="prod-img-cash" class="form-input text-left text-sm mb-4" dir="ltr" placeholder="الرابط السحابي..." oninput="window.previewImage('preview-cash', 'placeholder-cash', this.value)">
-                                        <input type="file" id="file-img-cash" class="hidden" accept="image/*" onchange="window.uploadToCloudinary(this, 'prod-img-cash', 'preview-cash', 'placeholder-cash')">
-                                        <button type="button" onclick="document.getElementById('file-img-cash').click()" class="btn-action w-full h-auto py-3 rounded-xl gap-2">
-                                            <i data-lucide="upload" class="w-5 h-5"></i> <span class="font-bold">رفع صورة النقود</span>
+                                        <label class="form-label text-base mb-3">صورة النقود المنسقة</label>
+                                        <input type="text" id="prod-img-cash" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-cash', 'placeholder-cash', this.value)">
+                                        <input type="file" id="file-img-cash" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-cash', 'preview-cash', 'placeholder-cash')">
+                                        <button type="button" onclick="document.getElementById('file-img-cash').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
+                                            <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع صورة النقود</span>
                                         </button>
                                     </div>
-                                    <div class="w-32 h-32 shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center">
+                                    <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-cash"></i>
-                                        <img id="preview-cash" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="window.handlePreviewError('preview-cash', 'placeholder-cash')">
+                                        <img id="preview-cash" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-cash', 'placeholder-cash')">
                                     </div>
                                 </div>
 
-                                <div class="bg-[#0c0709] p-8 rounded-3xl border border-brand-border flex flex-col gap-6 items-center text-center">
+                                <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
-                                        <label class="form-label text-xl mb-4">صورة بوكيه الشوكولاتة</label>
-                                        <input type="text" id="prod-img-choco" class="form-input text-left text-sm mb-4" dir="ltr" placeholder="الرابط السحابي..." oninput="window.previewImage('preview-choco', 'placeholder-choco', this.value)">
-                                        <input type="file" id="file-img-choco" class="hidden" accept="image/*" onchange="window.uploadToCloudinary(this, 'prod-img-choco', 'preview-choco', 'placeholder-choco')">
-                                        <button type="button" onclick="document.getElementById('file-img-choco').click()" class="btn-action w-full h-auto py-3 rounded-xl gap-2">
-                                            <i data-lucide="upload" class="w-5 h-5"></i> <span class="font-bold">رفع الشوكولاتة</span>
+                                        <label class="form-label text-base mb-3">صورة تنسيق الشوكولاتة</label>
+                                        <input type="text" id="prod-img-choco" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-choco', 'placeholder-choco', this.value)">
+                                        <input type="file" id="file-img-choco" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-choco', 'preview-choco', 'placeholder-choco')">
+                                        <button type="button" onclick="document.getElementById('file-img-choco').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
+                                            <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع الشوكولاتة</span>
                                         </button>
                                     </div>
-                                    <div class="w-32 h-32 shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center">
+                                    <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-choco"></i>
-                                        <img id="preview-choco" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="window.handlePreviewError('preview-choco', 'placeholder-choco')">
+                                        <img id="preview-choco" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-choco', 'placeholder-choco')">
                                     </div>
                                 </div>
                             </div>
@@ -439,15 +493,15 @@
 
                 <div id="tab-marketing" class="admin-tab-content">
                     <div class="admin-card">
-                        <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="file-text" class="w-10 h-10"></i> 4. الصياغة والنكهات</h4>
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                        <h4 class="text-brand-pink font-bold text-xl mb-10 flex items-center gap-3"><i data-lucide="file-text" class="w-6 h-6"></i> 4. الوصف والتفاصيل</h4>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
                             <div>
-                                <label class="form-label text-xl">الوصف التسويقي الرئيسي</label>
-                                <textarea id="prod-desc" class="form-textarea" placeholder="وصف راقٍ وجذاب يبرز قيمة المنتج..."></textarea>
+                                <label class="form-label text-base">الوصف التسويقي</label>
+                                <textarea id="prod-desc" class="form-textarea text-base" placeholder="وصف راقٍ يبرز جودة وقيمة المنتج..."></textarea>
                             </div>
                             <div>
-                                <label class="form-label text-xl">التفاصيل العميقة والمكونات</label>
-                                <textarea id="prod-flavors" class="form-textarea" placeholder="اشرح تفاصيل المكونات، الحشوات، والجودة..."></textarea>
+                                <label class="form-label text-base">التفاصيل العميقة والمكونات</label>
+                                <textarea id="prod-flavors" class="form-textarea text-base" placeholder="توضيح دقيق للمكونات، الحشوات، وتفاصيل الصنع..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -455,31 +509,31 @@
 
                 <div id="tab-engineering" class="admin-tab-content">
                     <div class="admin-card">
-                        <h4 class="text-brand-pink font-black text-3xl mb-12 flex items-center gap-4"><i data-lucide="sliders" class="w-10 h-10"></i> 5. الهندسة المرئية المستقلة</h4>
-                        <p class="text-brand-textMuted font-bold text-lg mb-10 leading-relaxed border-r-4 border-brand-pink pr-4">
-                            التحكم هنا يخص <span class="text-brand-pink">هذا المنتج فقط</span>. يمكنك تمييز هذا المنتج بجعله يملأ الشاشة وحده، أو تركه بحجمه الطبيعي ليظهر بجوار منتج آخر، دون أن تتأثر باقي منتجات المنيو.
+                        <h4 class="text-brand-pink font-bold text-xl mb-10 flex items-center gap-3"><i data-lucide="sliders" class="w-6 h-6"></i> 5. قواعد العرض المستقلة</h4>
+                        <p class="text-brand-textMuted font-semibold text-sm mb-8 leading-relaxed border-r-4 border-brand-pink pr-4">
+                            التحكم هنا يخص <span class="text-brand-pink">هذا المنتج فقط</span> لتنسيق ظهوره داخل الكتالوج بالشكل الأمثل، سواء بتخصيص مساحة كاملة له أو مساحة قياسية.
                         </p>
 
-                        <div class="mb-12 bg-[#0c0709] p-10 rounded-3xl border border-brand-border">
-                            <label class="form-label text-brand-pink text-2xl mb-6">نمط عرض الكارت في قسمه للعميل (قواعد العرض المقسم)</label>
-                            <select id="productDisplayStyle" class="form-select text-xl font-black text-white">
-                                <option value="full">كارت سيادي ممتد (يملأ عرض الشاشة بالكامل للفت الانتباه القوي)</option>
-                                <option value="half">كارت عادي (يأخذ نصف الشاشة ويسمح بتواجد كارت آخر بجواره)</option>
+                        <div class="mb-10 bg-[#0c0709] p-8 rounded-3xl border border-brand-border">
+                            <label class="form-label text-brand-pink text-lg mb-5">نمط عرض كارت المنتج للعميل</label>
+                            <select id="productDisplayStyle" class="form-select text-base font-bold text-white">
+                                <option value="full">كارت ممتد (يملأ عرض الشاشة للفت الانتباه)</option>
+                                <option value="half">كارت قياسي (يسمح بتواجد كارت آخر بجواره)</option>
                             </select>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-16 bg-[#0c0709] p-10 rounded-3xl border border-brand-border mt-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 bg-[#0c0709] p-8 rounded-3xl border border-brand-border mt-8">
                             <div>
-                                <div class="flex justify-between items-center mb-6">
-                                    <label class="form-label mb-0 text-brand-pink text-xl">عرض صورة المنتج</label>
-                                    <span class="text-brand-bg font-black text-2xl bg-brand-pink px-5 py-2 rounded-xl" id="val-custom-w">تلقائي</span>
+                                <div class="flex justify-between items-center mb-5">
+                                    <label class="form-label mb-0 text-brand-pink text-base">العرض</label>
+                                    <span class="text-brand-bg font-bold text-base bg-brand-pink px-3 py-1 rounded-lg" id="val-custom-w">تلقائي</span>
                                 </div>
                                 <input type="range" id="prod-card-w" min="150" max="800" step="10" value="280" oninput="document.getElementById('val-custom-w').innerText = this.value + 'px'">
                             </div>
                             <div>
-                                <div class="flex justify-between items-center mb-6">
-                                    <label class="form-label mb-0 text-brand-pink text-xl">ارتفاع صورة المنتج</label>
-                                    <span class="text-brand-bg font-black text-2xl bg-brand-pink px-5 py-2 rounded-xl" id="val-custom-h">تلقائي</span>
+                                <div class="flex justify-between items-center mb-5">
+                                    <label class="form-label mb-0 text-brand-pink text-base">الارتفاع</label>
+                                    <span class="text-brand-bg font-bold text-base bg-brand-pink px-3 py-1 rounded-lg" id="val-custom-h">تلقائي</span>
                                 </div>
                                 <input type="range" id="prod-card-h" min="150" max="800" step="10" value="350" oninput="document.getElementById('val-custom-h').innerText = this.value + 'px'">
                             </div>
@@ -487,16 +541,130 @@
                     </div>
                 </div>
 
-                <div class="pt-8 mb-20">
-                    <button id="btn-save-product" onclick="window.saveProduct()" class="btn-solid py-8 text-3xl w-full shadow-2xl hover:shadow-brand-pink/40 rounded-3xl">
-                        <i data-lucide="check-circle" class="w-10 h-10"></i> اعتماد التحديثات وإرسالها للسحابة فوراً
+                <div class="pt-6 mb-16">
+                    <button id="btn-save-product" onclick="saveProduct()" class="btn-solid py-5 text-xl w-full rounded-2xl">
+                        <i data-lucide="check-circle" class="w-6 h-6"></i> اعتماد التحديثات السحابية
                     </button>
+                </div>
+            </section>
+
+            <!-- عزل إعدادات المحاكي في قسم مستقل مخصص لها فقط (تم إخفاؤها من التواجد العشوائي) -->
+            <section id="simulator-settings-section" class="admin-section">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-12 gap-8 border-b border-brand-border pb-8">
+                    <div>
+                        <h3 class="text-2xl font-bold text-white flex items-center gap-4 mb-2">
+                            <i data-lucide="sliders-horizontal" class="text-brand-pink w-8 h-8"></i> 
+                            محرك التنسيق الفاخر
+                        </h3>
+                        <p class="text-base text-brand-textMuted font-semibold">إدارة مركزية لأسعار الخامات والروابط السحابية لطبقات محاكي البوكيهات.</p>
+                    </div>
+                </div>
+
+                <div class="bg-brand-surface rounded-3xl border border-brand-border p-8 shadow-lg">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border space-y-5">
+                            <h4 class="text-base font-bold text-brand-pink flex items-center gap-2 border-b border-brand-border pb-3">
+                                <i data-lucide="dollar-sign" class="w-5 h-5"></i> تسعير الخامات (للوحدة)
+                            </h4>
+                            <div>
+                                <label class="block text-sm font-semibold text-brand-textMuted mb-2">الورد الطبيعي (ج.م):</label>
+                                <input type="number" id="adm-price-natural" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-base outline-none focus:border-brand-pink transition-colors" value="20">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-brand-textMuted mb-2">الورد الصناعي الفاخر (ج.م):</label>
+                                <input type="number" id="adm-price-artificial" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-base outline-none focus:border-brand-pink transition-colors" value="15">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-brand-textMuted mb-2">ورد الستان الحريري (ج.م):</label>
+                                <input type="number" id="adm-price-satin" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-base outline-none focus:border-brand-pink transition-colors" value="25">
+                            </div>
+                        </div>
+
+                        <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border space-y-5">
+                            <h4 class="text-base font-bold text-brand-pink flex items-center gap-2 border-b border-brand-border pb-3">
+                                <i data-lucide="gift" class="w-5 h-5"></i> تسعير الإضافات الفاخرة
+                            </h4>
+                            <div>
+                                <label class="block text-sm font-semibold text-brand-textMuted mb-2">إضافة الشوكولاتة (ج.م):</label>
+                                <input type="number" id="adm-price-chocolate" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-base outline-none focus:border-brand-pink transition-colors" value="250">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-brand-textMuted mb-2">تنسيق المبالغ النقدية (ج.م):</label>
+                                <input type="number" id="adm-price-cash" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-base outline-none focus:border-brand-pink transition-colors" value="100">
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-brand-textMuted mb-2">كارت الإهداء:</label>
+                                    <input type="number" id="adm-price-card" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-base outline-none focus:border-brand-pink transition-colors" value="25">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-brand-textMuted mb-2">الصورة المرفوعة:</label>
+                                    <input type="number" id="adm-price-photo" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-base outline-none focus:border-brand-pink transition-colors" value="15">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col h-full">
+                            <h4 class="text-base font-bold text-brand-pink flex items-center gap-2 mb-5 border-b border-brand-border pb-3">
+                                <i data-lucide="image" class="w-5 h-5"></i> الروابط السحابية للطبقات
+                            </h4>
+                            <div class="space-y-5 flex-grow">
+                                <div>
+                                    <label class="block text-sm font-semibold text-brand-textMuted mb-2">رابط طبقة الشوكولاتة:</label>
+                                    <input type="text" id="adm-layer-chocolate-url" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-sm outline-none focus:border-brand-pink transition-colors" dir="ltr" placeholder="https://res.cloudinary.com/...">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-brand-textMuted mb-2">رابط طبقة التغليف النقدي:</label>
+                                    <input type="text" id="adm-layer-cash-url" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-sm outline-none focus:border-brand-pink transition-colors" dir="ltr" placeholder="https://res.cloudinary.com/...">
+                                </div>
+                            </div>
+                            <button onclick="window.saveBoseSimulatorSettings()" class="w-full mt-6 bg-brand-pink text-brand-bg font-bold text-base py-4 rounded-xl hover:bg-white hover:text-brand-pink transition-colors cursor-pointer flex items-center justify-center gap-2">
+                                <i data-lucide="cloud-upload" class="w-5 h-5"></i> اعتماد الإعدادات سحابياً
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
         </div>
     </main>
 
-    <script type="module" src="admin-catalog.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainAccordions = document.querySelectorAll('.bose-accordion');
+            mainAccordions.forEach((accordion) => {
+                accordion.addEventListener('click', (e) => {
+                    if(e.target.closest('summary')) {
+                        mainAccordions.forEach((otherAccordion) => {
+                            if (otherAccordion !== accordion) {
+                                otherAccordion.removeAttribute('open');
+                            }
+                        });
+                    }
+                });
+            });
+
+            const subAccordions = document.querySelectorAll('.bose-sub-accordion');
+            subAccordions.forEach((subAccordion) => {
+                subAccordion.addEventListener('click', (e) => {
+                    if(e.target.closest('summary')) {
+                        subAccordions.forEach((otherSub) => {
+                            if (otherSub !== subAccordion) {
+                                otherSub.removeAttribute('open');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="admin-catalog.js" defer></script>
 </body>
 </html>
+
+
+
