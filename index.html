@@ -158,7 +158,7 @@
     <div class="ticker-wrap shadow-sm" id="dynamic-ticker-wrap">
         <div class="ticker-scroll" id="dynamic-ticker-scroll">
             <div class="ticker-item">الطعم المظبوط والجودة العالية تجدونها دائماً في حلويات بوسي</div>
-            <div class="ticker-item">عقد كامل من التميز في تقديم أرقى أصناف الحلويات بمركز الفرافرة</div>
+            <div class="ticker-item">عقد كامل من التميز in تقديم أرقى أصناف الحلويات بمركز الفرافرة</div>
             <div class="ticker-item">أرقى باقات الورد الطبيعي المنسقة لتزيين مناسباتكم السعيدة</div>
             <div class="ticker-item">مخبوزات طازجة تقدم من أفراننا مباشرة بأعلى معايير الإتقان</div>
         </div>
@@ -168,23 +168,23 @@
         <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
             
             <div class="w-1/3 flex justify-start">
-                <button onclick="window.toggleSidebar()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
+                <button onclick="window.toggleSidebar()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" aria-label="فتح القائمة الجانبية" aria-expanded="false">
                     <i data-lucide="menu" class="w-7 h-7 text-brand-pink"></i>
                 </button>
             </div>
             
             <div class="w-1/3 flex justify-center">
-                <a href="index.html" class="flex flex-col items-center justify-center group text-decoration-none">
+                <a href="index.html" class="flex flex-col items-center justify-center group text-decoration-none" aria-label="الصفحة الرئيسية لحلويات بوسي">
                     <i data-lucide="gem" class="w-8 h-8 text-brand-pink mb-1 group-hover:scale-110 transition-transform"></i>
                     <h1 id="header-logo-title" class="text-xl font-black text-brand-brown tracking-tight uppercase">حلويات بوسي</h1>
                 </a>
             </div>
             
             <div class="w-1/3 flex justify-end items-center gap-5">
-                <button onclick="window.showBoseSearchToast()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
+                <button onclick="window.showBoseSearchToast()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" aria-label="البحث في الموقع">
                     <i data-lucide="search" class="w-6 h-6 text-brand-pink"></i>
                 </button>
-                <a href="cart.html" class="relative text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
+                <a href="cart.html" class="relative text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" aria-label="عرض سلة التسوق">
                     <i data-lucide="shopping-bag" class="w-6 h-6 text-brand-pink"></i>
                     <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-brand-pink text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center hidden border border-white">0</span>
                 </a>
@@ -193,12 +193,12 @@
     </header>
 
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
-    <aside id="sidebar" class="sidebar">
+    <aside id="sidebar" class="sidebar" aria-label="قائمة التنقل الجانبية">
         <div class="p-6 flex justify-between items-center border-b border-brand-pink/20 bg-brand-pinkLight">
             <span class="text-xl font-black text-brand-brown flex items-center gap-2">
                 <i data-lucide="gem" class="w-5 h-5 text-brand-pink"></i> قائمة بوسي
             </span>
-            <button onclick="window.toggleSidebar()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer">
+            <button onclick="window.toggleSidebar()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" aria-label="إغلاق القائمة الجانبية">
                 <i data-lucide="x" class="w-6 h-6 text-brand-pink"></i>
             </button>
         </div>
@@ -288,7 +288,7 @@
                         <div class="z-10 md:w-1/2 flex justify-center relative w-full h-64 md:h-80">
                             <div class="absolute top-0 right-4 md:right-10 w-40 md:w-48 h-56 bg-white rounded-3xl p-3 shadow-lg transform rotate-6 border border-brand-pink/20">
                                 <div class="w-full h-full bg-brand-pinkLight rounded-2xl overflow-hidden">
-                                    <img src="https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover opacity-90" alt="ورد طبيعي">
+                                    <img src="https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover opacity-90" alt="ورد طبيعي" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
                                 </div>
                             </div>
                             <div class="absolute top-8 left-4 md:left-10 w-40 md:w-48 h-56 bg-white rounded-3xl p-3 shadow-xl transform -rotate-3 border border-brand-pink/20">
@@ -390,13 +390,13 @@
 
             <div class="flex flex-col items-center justify-center gap-6">
                 <div class="flex gap-5 justify-center" id="footer-dynamic-socials">
-                    <a id="link-fb" href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm">
+                    <a id="link-fb" href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm" aria-label="تابعنا على فيسبوك">
                         <i class="fa-brands fa-facebook-f text-xl"></i>
                     </a>
-                    <a id="link-ig" href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm">
+                    <a id="link-ig" href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm" aria-label="تابعنا على إنستغرام">
                         <i class="fa-brands fa-instagram text-xl"></i>
                     </a>
-                    <a id="link-tt" href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm">
+                    <a id="link-tt" href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/20 shadow-sm" aria-label="تابعنا على تيك توك">
                         <i class="fa-brands fa-tiktok text-xl"></i>
                     </a>
                 </div>
@@ -428,7 +428,7 @@
                         <p class="text-xs text-brand-pink font-black mb-4 truncate">{CAT_NAME}</p>
                         <div class="mt-auto flex justify-between items-center border-t border-brand-pink/10 pt-4">
                             <span class="font-black text-xl text-brand-pink">{PRODUCT_PRICE} ج.م</span>
-                            <button onclick="event.preventDefault(); event.stopPropagation(); window.cartSystem.addWithQtyContext(this, '{PRODUCT_ID}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center hover:bg-brand-pink hover:text-white border border-brand-pink/20 transition-colors shadow-sm cursor-pointer">
+                            <button onclick="event.preventDefault(); event.stopPropagation(); window.cartSystem.addWithQtyContext(this, '{PRODUCT_ID}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center hover:bg-brand-pink hover:text-white border border-brand-pink/20 transition-colors shadow-sm cursor-pointer" aria-label="إضافة المنتج للسلة">
                                 <i data-lucide="plus" class="w-5 h-5"></i>
                             </button>
                         </div>
@@ -552,10 +552,10 @@
                                 if(waterfallItems.length >= 4) {
                                     let col1 = '', col2 = '';
                                     waterfallItems.slice(0,4).forEach(p => {
-                                        col1 += `<a href="product.html?category=${p.category}" class="block border border-brand-pink/20 rounded-2xl overflow-hidden aspect-square"><img src="${window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image)}" class="w-full h-full object-cover"></a>`;
+                                        col1 += `<a href="product.html?category=${p.category}" class="block border border-brand-pink/20 rounded-2xl overflow-hidden aspect-square"><img src="${window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image)}" class="w-full h-full object-cover" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'"></a>`;
                                     });
                                     waterfallItems.slice(4,8).forEach(p => {
-                                        col2 += `<a href="product.html?category=${p.category}" class="block border border-brand-pink/20 rounded-2xl overflow-hidden aspect-square"><img src="${window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image)}" class="w-full h-full object-cover"></a>`;
+                                        col2 += `<a href="product.html?category=${p.category}" class="block border border-brand-pink/20 rounded-2xl overflow-hidden aspect-square"><img src="${window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image)}" class="w-full h-full object-cover" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'"></a>`;
                                     });
 
                                     finalHTML += `
@@ -590,14 +590,14 @@
                                             <a href="product.html?category=${p.category}" class="bose-double-wrap group h-full block text-decoration-none">
                                                 <div class="bose-double-inner bg-white h-full flex flex-col">
                                                     <div class="w-full overflow-hidden bg-brand-pinkLight border-b border-brand-pink/20 relative" style="height: ${cHeight}px">
-                                                        <img src="${window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                                        <img src="${window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image)}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
                                                     </div>
                                                     <div class="p-5 flex flex-col flex-grow text-right bg-white">
                                                         <h3 class="font-bold text-lg text-brand-brown mb-1 truncate">${p.name}</h3>
                                                         <p class="text-xs text-brand-pink font-black mb-4">${p.category || 'صنف فاخر'}</p>
                                                         <div class="mt-auto flex justify-between items-center border-t border-brand-pink/10 pt-4">
                                                             <span class="font-black text-xl text-brand-pink">${p.price} ج.م</span>
-                                                            <button onclick="event.preventDefault(); event.stopPropagation(); window.cartSystem.addWithQtyContext(this, '${p.id}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center hover:bg-brand-pink hover:text-white border border-brand-pink/20 transition-colors cursor-pointer">
+                                                            <button onclick="event.preventDefault(); event.stopPropagation(); window.cartSystem.addWithQtyContext(this, '${p.id}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-brand-pink flex items-center justify-center hover:bg-brand-pink hover:text-white border border-brand-pink/20 transition-colors cursor-pointer" aria-label="إضافة للمنتج للسلة">
                                                                 <i data-lucide="plus" class="w-5 h-5"></i>
                                                             </button>
                                                         </div>
@@ -636,7 +636,7 @@
                                             </div>
                                             <div class="z-10 md:w-1/2 flex justify-center relative w-full h-64 md:h-80">
                                                 <div class="w-full h-full bg-brand-pinkLight rounded-3xl overflow-hidden border-4 border-white shadow-2xl">
-                                                    <img src="${window.processBoseImage ? window.processBoseImage(block.promoImage) : block.promoImage}" class="w-full h-full object-cover" alt="عرض حلويات بوسي">
+                                                    <img src="${window.processBoseImage ? window.processBoseImage(block.promoImage) : block.promoImage}" class="w-full h-full object-cover" alt="عرض حلويات بوسي" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
                                                 </div>
                                             </div>
                                         </div>
@@ -656,7 +656,7 @@
                                             <a href="product.html?category=${p.category}" class="bose-double-wrap group h-full text-decoration-none block">
                                                 <div class="bose-double-inner bg-white h-full flex flex-col">
                                                     <div class="w-full overflow-hidden bg-brand-pinkLight border-b border-brand-pink/20 relative" style="height: ${cHeight}px">
-                                                        <img src="${window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image)}" alt="${p.category}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                                        <img src="${window.processBoseImage ? window.processBoseImage(p.img || p.image) : (p.img || p.image)}" alt="${p.category}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
                                                     </div>
                                                     <div class="p-8 flex items-center justify-center bg-white">
                                                         <h3 class="font-black text-3xl text-brand-brown group-hover:text-brand-pink transition-colors">${p.category}</h3>
@@ -809,10 +809,12 @@
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
                 document.body.style.overflow = '';
+                document.querySelector('button[onclick="window.toggleSidebar()"]').setAttribute('aria-expanded', 'false');
             } else {
                 sidebar.classList.add('active');
                 overlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
+                document.querySelector('button[onclick="window.toggleSidebar()"]').setAttribute('aria-expanded', 'true');
             }
         };
 
@@ -824,3 +826,34 @@
                 toast.id = 'bose-custom-toast';
                 toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-[99999] bg-brand-brown text-white font-bold px-6 py-4 rounded-2xl shadow-xl transition-all duration-500 opacity-0 scale-95 flex items-center gap-3 border border-brand-pink/30';
                 document.body.appendChild(toast);
+            }
+            
+            toast.innerHTML = `<i data-lucide="search" class="w-5 h-5 text-brand-pink"></i> <span>نظام البحث المتقدم قيد التفعيل الفوري...</span>`;
+            lucide.createIcons();
+            
+            toast.classList.remove('opacity-0', 'scale-95');
+            toast.classList.add('opacity-100', 'scale-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'scale-100');
+                toast.classList.add('opacity-0', 'scale-95');
+            }, 3000);
+        };
+
+        // المراقبة والهندسة العكسية لأحداث النظام الموحد
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.BoseState) {
+                UIController.buildLayoutDynamically();
+            }
+            
+            document.addEventListener('boseStateUpdated', () => {
+                UIController.buildLayoutDynamically();
+                UIController.syncCartBadge();
+            });
+            
+            // تحصين أولي لضمان تزامن السلة فور القراءة الأولى للمحرك
+            setTimeout(() => UIController.syncCartBadge(), 300);
+        });
+    </script>
+</body>
+</html>

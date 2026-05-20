@@ -255,6 +255,7 @@ if (typeof window !== 'undefined') {
     window.StorageEngine = StorageEngine;
 }
 
+// تشغيل وتهيئة التخزين المحلي واستدعاء تحميل الذاكرة فوراً لضمان الجاهزية قبل بناء الواجهة
 StorageEngine.init().then(() => {
     if (typeof window !== 'undefined') {
         if (typeof window.loadEngineMemory === 'function') {
@@ -285,6 +286,15 @@ window.loadEngineMemory = async function() {
         const cachedTheme = await StorageEngine.get('bose_theme');
         
         if (cachedCatalog && cachedCatalog.length > 0 && BoseState.catalog.length === 0) {
+            // التحقق من توافر وصحة الخصائص الأساسية لكل صنف في الكتالوج لمنع حدوث أي اختفاء للبيانات
+            cachedCatalog.forEach(p => {
+                p.id = p.id || `prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+                p.category = p.category || 'صنف فاخر';
+                p.stock = p.stock != null ? p.stock : 1;
+                p.inStock = p.stock !== 0;
+                p.price = p.price || 0;
+            });
+
             BoseState.catalog = cachedCatalog;
             syncCatalogMap();
             if (typeof window.distributeProductsToUI === 'function') {
@@ -359,18 +369,25 @@ export const CloudQueueDB = {
         });
     },
     async enqueue(operation) {
+        const opWithId = { ...operation, queueId: 'op_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5), createdAt: Date.now() };
+        
+        // حفظ العمليات في LocalStorage بشكل فوري ومتوازٍ ومؤقت كحارس أمان إضافي عند فقدان الاتصال بالشبكة
+        try {
+            let fallbackQ = this.getFallbackQueue();
+            fallbackQ.push(opWithId);
+            this.setFallbackQueue(fallbackQ);
+        } catch (e) {}
+
         try {
             const database = await this.init();
-            if (!database) {
-                let fallbackQ = this.getFallbackQueue();
-                fallbackQ.push({ ...operation, queueId: 'op_' + Date.now().toString(36), createdAt: Date.now() });
-                this.setFallbackQueue(fallbackQ);
-                return true;
+            if (database) {
+                const tx = database.transaction(this.storeName, 'readwrite');
+                tx.objectStore(this.storeName).put(opWithId);
             }
-            const tx = database.transaction(this.storeName, 'readwrite');
-            tx.objectStore(this.storeName).put({ ...operation, queueId: 'op_' + Date.now().toString(36), createdAt: Date.now() });
             return true;
-        } catch (e) { return false; }
+        } catch (e) { 
+            return true; 
+        }
     },
     async getAll() {
         try {
@@ -380,7 +397,16 @@ export const CloudQueueDB = {
             return new Promise((resolve) => {
                 const tx = database.transaction(this.storeName, 'readonly');
                 const request = tx.objectStore(this.storeName).getAll();
-                request.onsuccess = () => resolve([...results, ...(request.result || [])]);
+                request.onsuccess = () => {
+                    const merged = [...results];
+                    const dbResults = request.result || [];
+                    dbResults.forEach(item => {
+                        if (!merged.some(m => m.queueId === item.queueId)) {
+                            merged.push(item);
+                        }
+                    });
+                    resolve(merged);
+                };
                 request.onerror = () => resolve(results); 
             });
         } catch (e) { return []; }
@@ -390,12 +416,37 @@ export const CloudQueueDB = {
             let fallbackQ = this.getFallbackQueue();
             fallbackQ = fallbackQ.filter(op => op.queueId !== queueId);
             this.setFallbackQueue(fallbackQ);
+        } catch (e) {}
+
+        try {
             const database = await this.init();
-            if (!database) return false;
-            const tx = database.transaction(this.storeName, 'readwrite');
-            tx.objectStore(this.storeName).delete(queueId);
+            if (database) {
+                const tx = database.transaction(this.storeName, 'readwrite');
+                tx.objectStore(this.storeName).delete(queueId);
+            }
             return true;
-        } catch (e) { return false; }
+        } catch (e) { 
+            return false; 
+        }
+    }
+};
+
+// محرك المحاولة الذكي مع التراجع الأسي (Exponential Backoff) لإعادة العمليات الشبكية بثبات تام
+const executeWithBackoff = async (operationFunction, retries = 3, delay = 1000) => {
+    try {
+        return await operationFunction();
+    } catch (err) {
+        const isNetworkErr = err.message && (
+            err.message.toLowerCase().includes('network') ||
+            err.message.toLowerCase().includes('fetch') ||
+            err.message.toLowerCase().includes('offline') ||
+            err.message.toLowerCase().includes('failed to get')
+        );
+        if (retries > 0 && isNetworkErr) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            return executeWithBackoff(operationFunction, retries - 1, delay * 2);
+        }
+        throw err;
     }
 };
 
@@ -406,7 +457,12 @@ export const NetworkEngine = {
                 if (!auth || !auth.currentUser) throw new Error("🔒 توثيق الإدارة مطلوب.");
             }
             if (!db) throw new Error("Database not ready.");
-            await setDoc(doc(db, collectionName, String(docId)), data, { merge: true });
+            
+            // تنفيذ الكتابة الآمنة مع المحاولات المتكررة الذكية قبل التحول لوضع عدم الاتصال
+            await executeWithBackoff(async () => {
+                await setDoc(doc(db, collectionName, String(docId)), data, { merge: true });
+            }, 3, 1000);
+
             if (collectionName === 'orders') ReverseSyncEngine.triggerOrderWebhook(data);
             else if (['settings', 'catalog', 'shipping', 'gallery'].includes(collectionName)) ReverseSyncEngine.broadcastGlobalUpdate();
             return true;
@@ -418,7 +474,12 @@ export const NetworkEngine = {
     async safeDelete(collectionName, docId) {
         try {
             if (!db) throw new Error("Database not ready.");
-            await deleteDoc(doc(db, collectionName, String(docId)));
+
+            // تنفيذ الحذف الآمن مع المحاولات المتكررة الذكية قبل التحول لوضع عدم الاتصال
+            await executeWithBackoff(async () => {
+                await deleteDoc(doc(db, collectionName, String(docId)));
+            }, 3, 1000);
+
             if (['settings', 'catalog', 'shipping', 'gallery'].includes(collectionName)) ReverseSyncEngine.broadcastGlobalUpdate();
             return true;
         } catch (error) {
@@ -432,10 +493,19 @@ export const NetworkEngine = {
         if (queue.length === 0 || !db) return;
         for (const op of queue) {
             try {
-                if (op.type === 'write') await setDoc(doc(db, op.collectionName, String(op.docId)), op.data, { merge: true });
-                else if (op.type === 'delete') await deleteDoc(doc(db, op.collectionName, String(op.docId)));
+                if (op.type === 'write') {
+                    await executeWithBackoff(async () => {
+                        await setDoc(doc(db, op.collectionName, String(op.docId)), op.data, { merge: true });
+                    }, 2, 1000);
+                } else if (op.type === 'delete') {
+                    await executeWithBackoff(async () => {
+                        await deleteDoc(doc(db, op.collectionName, String(op.docId)));
+                    }, 2, 1000);
+                }
                 await CloudQueueDB.remove(op.queueId);
-            } catch (e) break;
+            } catch (e) {
+                break;
+            }
         }
     }
 };
@@ -444,7 +514,10 @@ if (typeof window !== 'undefined') {
     window.ReverseSyncEngine = ReverseSyncEngine;
     window.CloudQueueDB = CloudQueueDB;
     window.NetworkEngine = NetworkEngine;
-    window.addEventListener('online', () => NetworkEngine.processQueue());
+    window.addEventListener('online', () => {
+        console.log("🌐 BoseSync: الاتصال بالإنترنت عاد مجدداً، جاري معالجة العمليات المتراكمة...");
+        NetworkEngine.processQueue();
+    });
     setTimeout(() => NetworkEngine.processQueue(), 5000);
 }
 
@@ -514,7 +587,7 @@ export const BoseState = {
     currentBuilderStep: 1
 };
 
-// قراءة السلة بأمان بعد استيفاء تهيئة الهياكل المرجعية
+// قراءة سلة المشتريات بشكل آمن ومنظم يشمل كافة مفاتيح التخزين لتوافق كامل مع الملفات الأخرى
 try {
     if (typeof window !== 'undefined') {
         BoseState.cart = JSON.parse(localStorage.getItem('bose_cart_storage') || localStorage.getItem('BoseSweets_Cart') || localStorage.getItem('bose_cart') || '[]');
@@ -595,7 +668,7 @@ if (typeof window !== 'undefined') {
 export const cartSystem = {
     getAdjustedPrice: function(basePrice) { return Math.round(parseFloat(basePrice)); },
     getCart: function() {
-        const localCart = localStorage.getItem('BoseSweets_Cart') || localStorage.getItem('bose_cart_storage') || localStorage.getItem('bose_cart');
+        const localCart = localStorage.getItem('bose_cart_storage') || localStorage.getItem('BoseSweets_Cart') || localStorage.getItem('bose_cart');
         if (localCart) { 
             const parsed = JSON.parse(localCart); 
             BoseState.cart = parsed; 
@@ -810,16 +883,18 @@ export async function fetchProductsCatalog() {
         snapshot.docs.forEach(d => {
             const raw = d.data();
             if (raw.isActive !== false) {
-                products.push({
-                    id: d.id,
+                const parsedProduct = {
+                    id: d.id || `prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
                     name: raw.name || "صنف فاخر",
                     price: parseFloat(raw.price) || 0,
                     category: raw.category || "عام",
                     img: raw.img || raw.image || "",
                     description: raw.description || raw.desc || "",
-                    inStock: raw.inStock !== false,
+                    stock: raw.stock != null ? raw.stock : 1,
+                    inStock: raw.stock !== 0,
                     ...raw 
-                });
+                };
+                products.push(parsedProduct);
             }
         });
         BoseState.catalog = products;
@@ -836,6 +911,16 @@ export async function fetchProductsCatalog() {
         return BoseState.catalog;
     } catch (e) {
         BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || [];
+        
+        // التحقق الإضافي لسلامة البيانات عند استرداد الكتالوج محلياً بعد فشل الاتصال بالشبكة
+        BoseState.catalog.forEach(p => {
+            p.id = p.id || `prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
+            p.category = p.category || 'صنف فاخر';
+            p.stock = p.stock != null ? p.stock : 1;
+            p.inStock = p.stock !== 0;
+            p.price = p.price || 0;
+        });
+
         syncCatalogMap();
         if (typeof window.distributeProductsToUI === 'function') {
             window.distributeProductsToUI(BoseState.catalog);
@@ -867,16 +952,18 @@ export function listenToSovereignUpdates() {
         snap.forEach(d => {
             const data = d.data();
             if (data.isActive !== false) {
-                list.push({
-                    id: d.id,
+                const parsedProduct = {
+                    id: d.id || `prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
                     name: data.name || "صنف فاخر",
                     price: parseFloat(data.price) || 0,
                     category: data.category || "عام",
                     img: data.img || data.image || "",
                     description: data.description || data.desc || "",
-                    inStock: data.inStock !== false,
+                    stock: data.stock != null ? data.stock : 1,
+                    inStock: data.stock !== 0,
                     ...data 
-                });
+                };
+                list.push(parsedProduct);
             }
         });
         BoseState.catalog = list;
@@ -952,16 +1039,18 @@ export function initializeSovereignSync() {
         snap.forEach(d => {
             const data = d.data();
             if (data.isActive !== false) {
-                list.push({
-                    id: d.id,
+                const parsedProduct = {
+                    id: d.id || `prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
                     name: data.name || "صنف فاخر",
                     price: parseFloat(data.price) || 0,
                     category: data.category || "عام",
                     img: data.img || data.image || "",
                     description: data.description || data.desc || "",
-                    inStock: data.inStock !== false,
+                    stock: data.stock != null ? data.stock : 1,
+                    inStock: data.stock !== 0,
                     ...data 
-                });
+                };
+                list.push(parsedProduct);
             }
         });
         BoseState.catalog = list;

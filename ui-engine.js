@@ -5,7 +5,7 @@
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: التحكم الكامل في الهيكل البصري وتوزيع المحتوى والربط مع المحرك الأساسي.
- * الترقية: V40.2 Premium - معالجة تكرار السلايدر، هيكلة الكروت الموحدة الفاخرة، وتكبير السلايدر 40%
+ * الترقية: V40.3 Premium - دعم مرونة التوزيع التلقائي، وتأمين السلايدر الدائري، وإعادة تعيين عداد السلة
  * ============================================================================
  */
 
@@ -51,12 +51,12 @@ export function renderProductCardsUI(products, containerId) {
     const defaultHeight = currentLayoutBlock?.cardHeight || 350;
 
     container.innerHTML = products.map(p => {
-        // العميل طلب: السماح بعرض المنتجات حتى لو انتهت الكمية مع عرض علامة نفذت الكمية
-        const isOut = p.inStock === false;
+        // إدارة علامة حلويات بوسي: السماح بعرض المنتجات حتى لو انتهت الكمية مع عرض علامة نفذت الكمية بوضوح
+        const isOut = p.inStock === false || p.stock === 0;
         let customWidth = p.cardWidth || defaultWidth;
         let customHeight = p.cardHeight || defaultHeight;
         
-        // التحقق الدقيق والموسع من تصنيفات المنتجات الخاصة لضمان ثبات الهيكل البصري
+        // التحقق الدقيق والموسع من تصنيفات المنتجات الخاصة لضمان ثبات الهيكل البصري لعلامة حلويات بوسي
         const categoryNormalized = p.category ? normalizeArabicText(p.category) : '';
         const nameNormalized = p.name ? normalizeArabicText(p.name) : '';
 
@@ -84,11 +84,11 @@ export function renderProductCardsUI(products, containerId) {
         let widthStyle = '';
         
         if (isSliderContainer) {
-            // تكبير كروت السلايدر الفاخر بنسبة 40% لزيادة الجاذبية والوضوح البصري للمنتجات لعلامة حلويات بوسي
+            // تكبير كروت السلايدر الفاخر بنسبة 40% لزيادة الجاذبية والوضوح البصري لمنتجات علامة حلويات بوسي
             customWidth = Math.round(customWidth * 1.4);
             customHeight = Math.round(customHeight * 1.4);
 
-            spanClass = 'snap-start flex-shrink-0'; // يمنع الانكماش ويسمح بالتمرير
+            spanClass = 'snap-start flex-shrink-0'; // يمنع الانكماش ويسمح بالتمرير المغناطيسي السلس
             widthStyle = `width: ${customWidth}px; max-width: 85vw;`;
         } else {
             spanClass = isFullSpan ? 'col-span-full w-full' : 'col-span-1 w-full';
@@ -98,7 +98,7 @@ export function renderProductCardsUI(products, containerId) {
         const hasDiscount = p.hasDiscount === true && p.oldPrice > p.price;
         const img = processBoseImage(p.img || p.image) || BOSE_LOGO_FALLBACK;
 
-        // تطبيق هيكلة الكارت الموحدة الفاخرة المعتمدة (الاسم ← النكهة ← الوصف ← السعر ← ± زر الكمية)
+        // تطبيق هيكلة الكارت الموحدة الفاخرة المعتمدة (الاسم ← النكهة ← الوصف ← السعر ← ± زر الكمية) لعلامة حلويات بوسي
         return `
             <div class="catalog-card-wrapper ${spanClass} p-2 transition-transform duration-300 hover:-translate-y-1" style="${widthStyle}">
                 <div class="bose-double-wrap group h-full flex flex-col bg-white rounded-[32px] border-2 border-[#ff91a4] p-1.5 shadow-sm hover:shadow-md transition-all duration-300 relative">
@@ -149,12 +149,13 @@ export function renderProductCardsUI(products, containerId) {
             </div>`;
     }).join('');
 
-    // فرض وتأمين التكبير الهندسي بنسبة 40% لبطاقات السلايدر لضمان التناسق البصري المطلق
+    // فرض وتأمين التكبير الهندسي بنسبة 40% لبطاقات السلايدر لضمان التناسق البصري المطلق وتجنب انهيار العرض
     if (isSliderContainer) {
         const appliedWidth = Math.round(defaultWidth * 1.4);
         container.querySelectorAll('.catalog-card-wrapper').forEach(card => {
             card.style.width = `${appliedWidth}px`;
             card.style.flexShrink = '0';
+            card.style.maxWidth = '85vw';
         });
     }
 
@@ -174,7 +175,7 @@ export function distributeProductsToUI(products) {
     if (window.uiRenderDebounceTimer) clearTimeout(window.uiRenderDebounceTimer);
     
     window.uiRenderDebounceTimer = setTimeout(() => {
-        // تحديث جميع الحاويات المستهدفة مع تفادي تكرار المنتجات نهائياً بالفلترة الصارمة طبقاً للـ dataSource
+        // تحديث جميع الحاويات المستهدفة وتأمين المعرفات لعلامة حلويات بوسي
         const sections = [
             'new-arrivals-container',
             'best-sellers-container',
@@ -191,25 +192,28 @@ export function distributeProductsToUI(products) {
             const sectionTitle = el.dataset.sectionTitle || '';
             const block = BoseState?.theme?.builderLayout?.find(b => (b.containerId && b.containerId === id) || (b.title && b.title === sectionTitle));
             
-            // ✅ منع أي قسم ليس له مصدر بيانات (dataSource) من عرض المنتجات نهائياً لمنع التكرار والحفاظ على ثبات البناء البصري
-            if (!block || !block.dataSource) return;
-
             let filteredList = [...currentProducts];
             
-            if (block.dataSource.startsWith('category:')) {
-                const catName = block.dataSource.split(':')[1];
-                const normalizedCatName = normalizeArabic(catName);
-                filteredList = currentProducts.filter(p => p.category && normalizeArabic(p.category).includes(normalizedCatName));
-            } else if (block.dataSource === 'latest') {
-                filteredList = [...currentProducts].sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 12);
-            } else if (block.dataSource === 'bestsellers') {
-                filteredList = currentProducts.filter(p => p.hasDiscount === true).slice(0, 12);
-            } else if (block.dataSource === 'menu') {
-                // فلترة مخصصة لقسم المنيو والـ menuGrid لضمان سحب المنتجات المرتبطة بالمنيو بدقة
-                filteredList = currentProducts.filter(p => p.category && normalizeArabic(p.category).includes('menu')).slice(0, 12);
+            // ✅ تعديل هندسي مرن: السماح بعرض المنتجات باستخدام كامل الكتالوج في حال عدم وجود block أو عدم تعريف dataSource
+            if (block && block.dataSource) {
+                if (block.dataSource.startsWith('category:')) {
+                    const catName = block.dataSource.split(':')[1];
+                    const normalizedCatName = normalizeArabic(catName);
+                    filteredList = currentProducts.filter(p => p.category && normalizeArabic(p.category).includes(normalizedCatName));
+                } else if (block.dataSource === 'latest') {
+                    filteredList = [...currentProducts].sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 12);
+                } else if (block.dataSource === 'bestsellers') {
+                    filteredList = currentProducts.filter(p => p.hasDiscount === true).slice(0, 12);
+                } else if (block.dataSource === 'menu') {
+                    // فلترة مخصصة لقسم المنيو والـ menuGrid لضمان سحب المنتجات المرتبطة بالمنيو بدقة
+                    filteredList = currentProducts.filter(p => p.category && normalizeArabic(p.category).includes('menu')).slice(0, 12);
+                }
+            } else {
+                // بديل احتياطي ذكي لمنع تجميد أو إفراغ الواجهة البصرية للموقع
+                filteredList = [...currentProducts];
             }
             
-            // عرض المنتجات وتحديد حالة النفاد برمجياً للسماح بعرضها دائماً بالموقع في السلايدر والشبكة
+            // عرض المنتجات وتأمين الخصائص البرمجية
             filteredList = filteredList.map(p => ({
                 ...p,
                 inStock: p.inStock !== false && p.stock !== 0
@@ -344,7 +348,7 @@ window.addWithQtyContextAndSync = function(btn, productId) {
     const qty = qtyDisplay ? parseInt(qtyDisplay.innerText) : 1;
 
     if (window.cartSystem && typeof window.cartSystem.addWithQtyContext === 'function') {
-        // استخدام نظام الإضافة الأساسي الخاص بالمحرك
+        // استخدام نظام الإضافة الأساسي الخاص بالمحرك لعلامة حلويات بوسي
         window.cartSystem.addWithQtyContext(btn, productId);
         
         // التدخل لضمان الكمية المحددة بدقة ثم مزامنة السلة العائمة
@@ -357,6 +361,8 @@ window.addWithQtyContextAndSync = function(btn, productId) {
                 }
                 window.syncBoseCartUI();
             }
+            // إعادة تعيين شاشة اختيار الكمية المؤقتة إلى 1 بعد الإضافة والمزامنة لثبات الواجهة البصرية
+            if (qtyDisplay) qtyDisplay.innerText = "1";
         }, 80);
     } else {
         // نظام حماية بديل فوري في حال لم يكن المحرك الأساسي قد تم تحميله بالكامل
@@ -381,10 +387,10 @@ window.addWithQtyContextAndSync = function(btn, productId) {
 
         if (BoseState) BoseState.cart = cart;
         window.syncBoseCartUI();
-    }
 
-    // إعادة تعيين شاشة اختيار الكمية المؤقتة إلى 1 بعد الإضافة الناجحة
-    if (qtyDisplay) qtyDisplay.innerText = "1";
+        // إعادة تعيين شاشة اختيار الكمية المؤقتة إلى 1 بعد الإضافة الناجحة
+        if (qtyDisplay) qtyDisplay.innerText = "1";
+    }
 };
 
 if (typeof window !== 'undefined') {
@@ -406,7 +412,7 @@ export async function fetchSliderRecords() {
         if (BoseState && BoseState.theme && BoseState.theme.sliderImages && Array.isArray(BoseState.theme.sliderImages)) {
             return BoseState.theme.sliderImages;
         }
-        // استخدام استيراد ديناميكي تفادياً لأي مشاكل في الاستدعاء للواجهة
+        // استخدام استيراد ديناميكي تفادياً لأي مشاكل في الاستدعاء للواجهة البصرية لعلامة حلويات بوسي
         const { getDocs, collection } = await import("https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js");
         const sliderSnap = await getDocs(collection(db, 'sliders'));
         if (!sliderSnap.empty) {
@@ -462,7 +468,7 @@ if (typeof window !== 'undefined') {
 if (typeof window.boseEngineRegistry !== 'undefined') {
     window.boseEngineRegistry.registerModule('bouquetSimulator', {
         init: function() {
-            console.log("تمت تهيئة وحدة محاكي التنسيق الفاخر بنجاح.");
+            console.log("تمت تهيئة وحدة محاكي التنسيق الفاخر بنجاح لعلامة حلويات بوسي.");
         },
         validate: function(data) {
             return data && data.material && data.density >= 10;
@@ -526,7 +532,7 @@ function integrateSimulatorWithCart(simulatorData) {
 
 export function integrateCakeSimulatorWithCart(cakeData) {
     if (!cakeData || !cakeData.totalPrice) {
-        console.error("خطأ: بيانات تصميم التورتة غير متوافقة مع محرك الموقع.");
+        console.error("خطأ: بيانات تصميم التورتة غير متوافقة مع محرك الموقع الخاص بـ BoseSweets.");
         return false;
     }
 
@@ -709,10 +715,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 scroll-snap-align: start;
                 width: auto;
             }
+            /* تأمين السلايدر ليكون مغناطيسياً، مع إخفاء شريط التمرير المزعج برمجياً لتأمين تجربة مستخدم فاخرة */
+            .bose-horizontal-slider {
+                display: flex !important;
+                overflow-x: auto !important;
+                scroll-snap-type: x mandatory !important;
+                -webkit-overflow-scrolling: touch !important;
+                scrollbar-width: none !important;
+            }
+            .bose-horizontal-slider::-webkit-scrollbar {
+                display: none !important;
+            }
         `;
         document.head.appendChild(style);
     } catch (e) {
-        console.error("فشل حقن التنسيقات الإضافية لحماية النصوص وهندسة السلايدر:", e);
+        console.error("فشل حقن التنسيقات الإضافية لحماية النصوص وهندسة السلايدر لعلامة حلويات بوسي:", e);
     }
 
     // استدعاء دالة التهيئة المربوطة من المحرك الأساسي
@@ -735,13 +752,13 @@ window.addEventListener('BoseSweets_Catalog_Updated', () => {
     }
 });
 
-// مستمع إضافي لضمان تحديث الأقسام واللوجستيات فوراً في الواجهة البصرية
+// مستمع إضافي لضمان تحديث الأقسام واللوجستيات فوراً في الواجهة البصرية لـ BoseSweets
 window.addEventListener('BoseSweets_Logistics_Updated', () => {
     if (typeof window.applyLogisticsRulesUI === 'function') {
         window.applyLogisticsRulesUI();
     }
 });
 
-console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد وفصله تقنياً بنجاح إلى (Core) و (UI) للإصدار السيادي (V40.2 Premium) مع هيكلة الكروت الموحدة ومنع تكرارها وتكبير السلايدر بنسبة 40%.");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد بنجاح للإصدار السيادي (V40.3 Premium) مع تأمين السلايدر، ومرونة توزيع الفئات، وتصفير العداد التلقائي.");
 
 ```
