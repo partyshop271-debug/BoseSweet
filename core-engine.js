@@ -1,4 +1,3 @@
-```javascript
 /**
  * ============================================================================
  * 👑 BoseSweets Sovereign Core Engine | المحرك الأساسي السيادي (القلب النابض)
@@ -7,6 +6,7 @@
  * الحالة: مركز البيانات، تهيئة السحابة، نظام المراقبة، ومحرك السلة.
  * التوافق الكامل: معالجة فورية لتحديثات المخزون والتزامن اللحظي دون اهتزازات.
  * الترقية: V40.2 Premium - التوافق المطلق والمزامنة الهندسية مع محرك الواجهة.
+ * نسخة مطورة ومحصنة: تضمن تدفق وعرض كافة المنتجات دون أي اختفاء أو تعليق.
  * ============================================================================
  */
 
@@ -271,9 +271,9 @@ StorageEngine.init().then(() => {
 window.saveEngineMemory = async function(type) {
     try {
         if (type === 'cat') {
-            await StorageEngine.set('bose_catalog', BoseState.catalog);
+            await StorageEngine.set('bose_catalog', window.BoseState.catalog);
         } else if (type === 'theme') {
-            await StorageEngine.set('bose_theme', BoseState.theme);
+            await StorageEngine.set('bose_theme', window.BoseState.theme);
         }
     } catch (e) {
         if (window.BoseMonitor) window.BoseMonitor.report(e, 'core-engine.js', null, null, 'saveEngineMemory');
@@ -285,7 +285,12 @@ window.loadEngineMemory = async function() {
         const cachedCatalog = await StorageEngine.get('bose_catalog');
         const cachedTheme = await StorageEngine.get('bose_theme');
         
-        if (cachedCatalog && cachedCatalog.length > 0 && BoseState.catalog.length === 0) {
+        // التحقق من تهيئة النطاق العام للمغير الأساسي لمنع أي انهيار مفاجئ
+        if (typeof window !== 'undefined' && !window.BoseState) {
+            window.BoseState = { catalog: [], cart: [] };
+        }
+
+        if (cachedCatalog && cachedCatalog.length > 0) {
             // التحقق من توافر وصحة الخصائص الأساسية لكل صنف في الكتالوج لمنع حدوث أي اختفاء للبيانات
             cachedCatalog.forEach(p => {
                 p.id = p.id || `prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
@@ -295,15 +300,15 @@ window.loadEngineMemory = async function() {
                 p.price = p.price || 0;
             });
 
-            BoseState.catalog = cachedCatalog;
-            syncCatalogMap();
+            window.BoseState.catalog = cachedCatalog;
+            if (typeof syncCatalogMap === 'function') syncCatalogMap();
             if (typeof window.distributeProductsToUI === 'function') {
-                window.distributeProductsToUI(BoseState.catalog);
+                window.distributeProductsToUI(window.BoseState.catalog);
             }
             window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
         }
-        if (cachedTheme && Object.keys(cachedTheme).length > 0 && Object.keys(BoseState.theme).length === 0) {
-            BoseState.theme = cachedTheme;
+        if (cachedTheme && Object.keys(cachedTheme).length > 0) {
+            window.BoseState.theme = cachedTheme;
             if (typeof window.applyThemeConfigUI === 'function') {
                 window.applyThemeConfigUI();
             }
@@ -571,9 +576,9 @@ export const BoseState = {
     catalogMap: new Map(),
     securityLayer: {
         validateCartPrices: function(cartArray) {
-            if (!Array.isArray(cartArray) || BoseState.catalogMap.size === 0) return cartArray;
+            if (!Array.isArray(cartArray) || window.BoseState.catalogMap.size === 0) return cartArray;
             return cartArray.map(item => {
-                const referenceItem = BoseState.catalogMap.get(String(item.id));
+                const referenceItem = window.BoseState.catalogMap.get(String(item.id));
                 if (referenceItem && item.price !== referenceItem.price) item.price = referenceItem.price;
                 return item;
             });
@@ -597,9 +602,9 @@ try {
 }
 
 export function syncCatalogMap() {
-    BoseState.catalogMap.clear();
-    BoseState.catalog.forEach(p => {
-        if (p && p.id) BoseState.catalogMap.set(String(p.id), p);
+    window.BoseState.catalogMap.clear();
+    window.BoseState.catalog.forEach(p => {
+        if (p && p.id) window.BoseState.catalogMap.set(String(p.id), p);
     });
 }
 
@@ -618,7 +623,7 @@ export function getFromLocalMemory(key) { try { if (typeof window !== 'undefined
 
 export function setAppReady() {
     try {
-        BoseState.isAppReady = true;
+        window.BoseState.isAppReady = true;
         
         const executeReadyLogic = () => {
             const loader = document.getElementById('global-loader');
@@ -671,30 +676,30 @@ export const cartSystem = {
         const localCart = localStorage.getItem('bose_cart_storage') || localStorage.getItem('BoseSweets_Cart') || localStorage.getItem('bose_cart');
         if (localCart) { 
             const parsed = JSON.parse(localCart); 
-            BoseState.cart = parsed; 
+            window.BoseState.cart = parsed; 
             return parsed; 
         }
-        return BoseState.cart || [];
+        return window.BoseState.cart || [];
     },
     saveCartToStorage: function() { 
-        saveToLocalMemory('BoseSweets_Cart', BoseState.cart);
-        saveToLocalMemory('bose_cart_storage', BoseState.cart);
-        saveToLocalMemory('bose_cart', BoseState.cart);
+        saveToLocalMemory('BoseSweets_Cart', window.BoseState.cart);
+        saveToLocalMemory('bose_cart_storage', window.BoseState.cart);
+        saveToLocalMemory('bose_cart', window.BoseState.cart);
         this.updateCartDisplay();
         if (typeof window !== 'undefined') window.dispatchEvent(new Event('BoseSweets_Cart_Updated'));
     },
     save: function() { this.saveCartToStorage(); },
     clearCartStorage: function() { 
-        BoseState.cart = []; 
+        window.BoseState.cart = []; 
         this.saveCartToStorage(); 
         if (typeof this.syncCartUI === 'function') this.syncCartUI(); 
     },
     calculateCartTotal: function(deliveryMode = 'الاستلام من المقر') {
         this.getCart();
-        if (BoseState.securityLayer?.validateCartPrices) BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
+        if (window.BoseState.securityLayer?.validateCartPrices) window.BoseState.cart = window.BoseState.securityLayer.validateCartPrices(window.BoseState.cart);
         let subtotal = 0;
-        BoseState.cart.forEach(item => {
-            const product = BoseState.catalogMap.get(String(item.id)) || BoseState.catalog.find(p => String(p.id) === String(item.id));
+        window.BoseState.cart.forEach(item => {
+            const product = window.BoseState.catalogMap.get(String(item.id)) || window.BoseState.catalog.find(p => String(p.id) === String(item.id));
             let finalPrice = this.getAdjustedPrice(product ? product.price : item.price);
             let qty = parseInt(item.quantity || item.qty) || 1;
             let addonsPrice = 0;
@@ -707,14 +712,14 @@ export const cartSystem = {
         let shippingFee = 0;
         const isPickup = deliveryMode === 'pickup' || deliveryMode === 'الاستلام من المقر' || deliveryMode === 'استلام';
         if (!isPickup) {
-            const zone = BoseState.shippingZones.find(z => z.id === deliveryMode || z.name === deliveryMode);
+            const zone = window.BoseState.shippingZones.find(z => z.id === deliveryMode || z.name === deliveryMode);
             shippingFee = zone ? parseFloat(zone.fee) : (deliveryMode.includes('الفرافرة') ? 25 : (deliveryMode.includes('الكفاح') ? 10 : 20));
         }
         return { subtotal, shippingFee, total: subtotal + shippingFee };
     },
     updateCartDisplay: function() {
         this.getCart();
-        const totalItems = BoseState.cart.reduce((sum, item) => sum + (item.quantity || item.qty || 1), 0);
+        const totalItems = window.BoseState.cart.reduce((sum, item) => sum + (item.quantity || item.qty || 1), 0);
         if (typeof document !== 'undefined') {
             const applyBadge = () => {
                 const badges = document.querySelectorAll('#cart-count-badge, #mobile-cart-badge, .cart-badge-global');
@@ -738,14 +743,14 @@ export const cartSystem = {
         const applySync = () => {
             const cartList = document.getElementById('cart-items-list');
             if (!cartList) return;
-            if (BoseState.securityLayer?.validateCartPrices) BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
-            if (BoseState.cart.length === 0) {
+            if (window.BoseState.securityLayer?.validateCartPrices) window.BoseState.cart = window.BoseState.securityLayer.validateCartPrices(window.BoseState.cart);
+            if (window.BoseState.cart.length === 0) {
                 cartList.innerHTML = `<div class="empty-cart flex flex-col items-center justify-center p-12 text-center"><i data-lucide="shopping-bag" class="w-20 h-20 mb-4 opacity-20" style="color: ${boseConfig.branding.colors.pink};"></i><h3 class="text-xl font-black mb-2">سلة المشتريات فارغة</h3></div>`;
                 ['summary-subtotal', 'summary-total'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).innerText = '0 ج.م'; });
                 if (window.lucide) window.lucide.createIcons(); return;
             }
             let html = '';
-            BoseState.cart.forEach((item, index) => {
+            window.BoseState.cart.forEach((item, index) => {
                 let finalPrice = this.getAdjustedPrice(item.price);
                 let qty = parseInt(item.quantity || item.qty) || 1;
                 if (item.isCustomCake || item.isCustom) {
@@ -763,7 +768,7 @@ export const cartSystem = {
                         </div>`;
             });
             cartList.innerHTML = html;
-            const totals = this.calculateCartTotal(document.getElementById('checkout-area')?.value || BoseState.checkoutState.deliveryMethod);
+            const totals = this.calculateCartTotal(document.getElementById('checkout-area')?.value || window.BoseState.checkoutState.deliveryMethod);
             if (document.getElementById('summary-subtotal')) document.getElementById('summary-subtotal').innerText = `${totals.subtotal} ج.م`;
             if (document.getElementById('summary-total')) document.getElementById('summary-total').innerText = `${totals.total} ج.م`;
         };
@@ -776,12 +781,12 @@ export const cartSystem = {
     },
     modQ: function(index, delta) {
         this.getCart();
-        if (BoseState.cart[index]) {
-            let qty = BoseState.cart[index].quantity || BoseState.cart[index].qty || 1;
+        if (window.BoseState.cart[index]) {
+            let qty = window.BoseState.cart[index].quantity || window.BoseState.cart[index].qty || 1;
             qty += delta;
-            if (qty <= 0) BoseState.cart.splice(index, 1);
-            else BoseState.cart[index].quantity = Math.min(50, qty);
-            BoseState.cart[index].qty = BoseState.cart[index].quantity;
+            if (qty <= 0) window.BoseState.cart.splice(index, 1);
+            else window.BoseState.cart[index].quantity = Math.min(50, qty);
+            window.BoseState.cart[index].qty = window.BoseState.cart[index].quantity;
             this.saveCartToStorage();
             this.syncCartUI();
         }
@@ -796,15 +801,15 @@ export const cartSystem = {
                         btn.parentElement.parentElement;
         const qtyDisplay = wrapper ? wrapper.querySelector('.temp-qty-display, .card-qty-display') : null;
         const qty = qtyDisplay ? parseInt(qtyDisplay.innerText) : 1;
-        const product = BoseState.catalogMap.get(String(productId)) || BoseState.catalog.find(p => String(p.id) === String(productId));
+        const product = window.BoseState.catalogMap.get(String(productId)) || window.BoseState.catalog.find(p => String(p.id) === String(productId));
         if (!product) return;
 
-        const existingItemIdx = BoseState.cart.findIndex(item => String(item.id) === String(productId) && !item.isCustomCake && !item.isCustom);
+        const existingItemIdx = window.BoseState.cart.findIndex(item => String(item.id) === String(productId) && !item.isCustomCake && !item.isCustom);
         if (existingItemIdx > -1) {
-            BoseState.cart[existingItemIdx].quantity = (BoseState.cart[existingItemIdx].quantity || 1) + qty;
-            BoseState.cart[existingItemIdx].qty = BoseState.cart[existingItemIdx].quantity;
+            window.BoseState.cart[existingItemIdx].quantity = (window.BoseState.cart[existingItemIdx].quantity || 1) + qty;
+            window.BoseState.cart[existingItemIdx].qty = window.BoseState.cart[existingItemIdx].quantity;
         } else {
-            BoseState.cart.push({ 
+            window.BoseState.cart.push({ 
                 id: product.id, name: product.name, price: parseFloat(product.price) || 0, 
                 image: product.img || product.image || "", quantity: qty, qty: qty, 
                 isCustomCake: false, isCustom: false, category: product.category || ''
@@ -837,11 +842,11 @@ export async function fetchSystemSettings() {
         if (!db) return;
         const sSnap = await getDoc(doc(db, 'settings', 'main'));
         if (sSnap.exists()) {
-            Object.assign(BoseState.siteSettings, sSnap.data());
-            saveToLocalMemory('bosesweets_settings', BoseState.siteSettings);
+            Object.assign(window.BoseState.siteSettings, sSnap.data());
+            saveToLocalMemory('bosesweets_settings', window.BoseState.siteSettings);
         }
     } catch (e) {
-        Object.assign(BoseState.siteSettings, getFromLocalMemory('bosesweets_settings') || {});
+        Object.assign(window.BoseState.siteSettings, getFromLocalMemory('bosesweets_settings') || {});
     }
 }
 
@@ -850,15 +855,15 @@ export async function fetchThemeSettings() {
         if (!db) return;
         const tSnap = await getDoc(doc(db, 'settings', 'theme'));
         if (tSnap.exists()) {
-            BoseState.theme = tSnap.data();
-            saveToLocalMemory('bosesweets_theme', BoseState.theme);
+            window.BoseState.theme = tSnap.data();
+            saveToLocalMemory('bosesweets_theme', window.BoseState.theme);
             window.saveEngineMemory('theme');
             if (typeof window.applyThemeConfigUI === 'function') {
                 window.applyThemeConfigUI();
             }
         }
     } catch (e) {
-        BoseState.theme = getFromLocalMemory('bosesweets_theme') || {};
+        window.BoseState.theme = getFromLocalMemory('bosesweets_theme') || {};
     }
 }
 
@@ -867,11 +872,11 @@ export async function fetchShippingZones() {
         if (!db) return;
         const shipSnap = await getDocs(collection(db, 'shipping'));
         if (!shipSnap.empty) {
-            BoseState.shippingZones = shipSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-            saveToLocalMemory('bosesweets_shipping', BoseState.shippingZones);
+            window.BoseState.shippingZones = shipSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            saveToLocalMemory('bosesweets_shipping', window.BoseState.shippingZones);
         }
     } catch (e) {
-        BoseState.shippingZones = getFromLocalMemory('bosesweets_shipping') || [];
+        window.BoseState.shippingZones = getFromLocalMemory('bosesweets_shipping') || [];
     }
 }
 
@@ -897,23 +902,23 @@ export async function fetchProductsCatalog() {
                 products.push(parsedProduct);
             }
         });
-        BoseState.catalog = products;
+        window.BoseState.catalog = products;
         syncCatalogMap();
-        saveToLocalMemory('bosesweets_catalog', BoseState.catalog);
+        saveToLocalMemory('bosesweets_catalog', window.BoseState.catalog);
         window.saveEngineMemory('cat');
         
         if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(BoseState.catalog);
+            window.distributeProductsToUI(window.BoseState.catalog);
         }
         
         // إطلاق الحدث السيادي لتأكيد الجاهزية والتحديث في الواجهة
         window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
-        return BoseState.catalog;
+        return window.BoseState.catalog;
     } catch (e) {
-        BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || [];
+        window.BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || [];
         
         // التحقق الإضافي لسلامة البيانات عند استرداد الكتالوج محلياً بعد فشل الاتصال بالشبكة
-        BoseState.catalog.forEach(p => {
+        window.BoseState.catalog.forEach(p => {
             p.id = p.id || `prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
             p.category = p.category || 'صنف فاخر';
             p.stock = p.stock != null ? p.stock : 1;
@@ -923,10 +928,10 @@ export async function fetchProductsCatalog() {
 
         syncCatalogMap();
         if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(BoseState.catalog);
+            window.distributeProductsToUI(window.BoseState.catalog);
         }
         window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
-        return BoseState.catalog;
+        return window.BoseState.catalog;
     }
 }
 
@@ -936,10 +941,10 @@ export async function initializeDataBridge() {
     await Promise.all([fetchSystemSettings(), fetchThemeSettings(), fetchShippingZones(), fetchProductsCatalog()]);
     syncCatalogMap();
     if (typeof window.distributeProductsToUI === 'function') {
-        window.distributeProductsToUI(BoseState.catalog);
+        window.distributeProductsToUI(window.BoseState.catalog);
     }
-    const uniqueCats = [...new Set(BoseState.catalog.map(p => p.category))].filter(Boolean);
-    BoseState.catMenu = BoseState.siteSettings.catMenu?.map(c => c.name || c) || uniqueCats;
+    const uniqueCats = [...new Set(window.BoseState.catalog.map(p => p.category))].filter(Boolean);
+    window.BoseState.catMenu = window.BoseState.siteSettings.catMenu?.map(c => c.name || c) || uniqueCats;
     setAppReady();
 }
 
@@ -966,13 +971,13 @@ export function listenToSovereignUpdates() {
                 list.push(parsedProduct);
             }
         });
-        BoseState.catalog = list;
+        window.BoseState.catalog = list;
         syncCatalogMap(); 
-        saveToLocalMemory('bosesweets_catalog', BoseState.catalog);
+        saveToLocalMemory('bosesweets_catalog', window.BoseState.catalog);
         window.dispatchEvent(new Event('catalogDataReady'));
         window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
         if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(BoseState.catalog);
+            window.distributeProductsToUI(window.BoseState.catalog);
         }
     });
 }
@@ -1029,7 +1034,7 @@ export function initializeSovereignSync() {
     // مراقب جاهزية المحرك لإعطاء إشارة البدء للواجهة البصرية
     function checkEngineStatus() {
         if (isCatalogLoaded && isThemeLoaded && isLogisticsLoaded && isPricingLoaded) {
-            BoseState.isAppReady = true;
+            window.BoseState.isAppReady = true;
             window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready'));
         }
     }
@@ -1053,13 +1058,13 @@ export function initializeSovereignSync() {
                 list.push(parsedProduct);
             }
         });
-        BoseState.catalog = list;
+        window.BoseState.catalog = list;
         syncCatalogMap();
         window.saveEngineMemory('cat');
         
         // التحصين اللحظي: مراجعة الأسعار في سلة العميل فوراً وتعديلها إذا تم تغييرها من لوحة الإدارة
-        if (BoseState.cart.length > 0 && typeof window.cartSystem !== 'undefined') {
-            BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
+        if (window.BoseState.cart.length > 0 && typeof window.cartSystem !== 'undefined') {
+            window.BoseState.cart = window.BoseState.securityLayer.validateCartPrices(window.BoseState.cart);
             window.cartSystem.saveCartToStorage();
         }
         
@@ -1067,21 +1072,21 @@ export function initializeSovereignSync() {
         checkEngineStatus();
         
         if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(BoseState.catalog);
+            window.distributeProductsToUI(window.BoseState.catalog);
         }
         window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
     });
 
     onSnapshot(doc(db, 'settings', 'theme'), (snap) => {
         if (snap.exists()) {
-            BoseState.theme = snap.data();
-            saveToLocalMemory('bosesweets_theme', BoseState.theme);
+            window.BoseState.theme = snap.data();
+            saveToLocalMemory('bosesweets_theme', window.BoseState.theme);
             window.saveEngineMemory('theme');
             if (typeof window.applyThemeConfigUI === 'function') {
                 window.applyThemeConfigUI();
             }
             if (typeof window.distributeProductsToUI === 'function') {
-                window.distributeProductsToUI(BoseState.catalog);
+                window.distributeProductsToUI(window.BoseState.catalog);
             }
         }
         isThemeLoaded = true;
@@ -1091,7 +1096,7 @@ export function initializeSovereignSync() {
 
     onSnapshot(doc(db, 'settings', 'logistics'), (snap) => {
         if (snap.exists()) {
-            BoseState.logistics = snap.data();
+            window.BoseState.logistics = snap.data();
             window.dispatchEvent(new CustomEvent('BoseSweets_Logistics_Updated'));
         }
         isLogisticsLoaded = true;
@@ -1100,7 +1105,7 @@ export function initializeSovereignSync() {
 
     onSnapshot(doc(db, 'settings', 'pricingRules'), (snap) => {
         if (snap.exists()) {
-            BoseState.pricingRules = snap.data();
+            window.BoseState.pricingRules = snap.data();
             window.dispatchEvent(new CustomEvent('BoseSweets_Pricing_Updated'));
         }
         isPricingLoaded = true;
@@ -1133,21 +1138,4 @@ if (typeof window !== 'undefined') {
 if (typeof window !== 'undefined') {
     window.addEventListener('BoseSweets_Catalog_Updated', () => {
         if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(window.BoseState.catalog);
-        }
-    });
-
-    window.addEventListener('BoseSweets_Logistics_Updated', () => {
-        if (typeof window.applyLogisticsRulesUI === 'function') {
-            window.applyLogisticsRulesUI();
-        }
-    });
-    
-    window.addEventListener('BoseSweets_Pricing_Updated', () => {
-        if (typeof window.applyPricingRulesUI === 'function') {
-            window.applyPricingRulesUI();
-        }
-    });
-}
-
-```
+            window.distributeProductsToUI(

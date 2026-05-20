@@ -1,11 +1,10 @@
-```javascript
 /**
  * ============================================================================
  * 👑 BoseSweets Sovereign UI Engine | محرك الواجهة البصرية السيادي
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: التحكم الكامل في الهيكل البصري وتوزيع المحتوى والربط مع المحرك الأساسي.
- * الترقية: V40.3 Premium - دعم مرونة التوزيع التلقائي، وتأمين السلايدر الدائري، وإعادة تعيين عداد السلة
+ * الترقية: V40.3 Premium - دعم مرونة التوزيع التلقائي وعرض كامل المنتجات وتأمين السلايدر
  * ============================================================================
  */
 
@@ -110,35 +109,28 @@ export function renderProductCardsUI(products, containerId) {
                         </div>
                         <div class="p-5 flex flex-col flex-grow text-right bg-white justify-between">
                             <div>
-                                <!-- 1. الاسم -->
                                 <h3 class="font-bold text-lg text-[#3d241c] mb-1">${p.name}</h3>
                                 
-                                <!-- 2. التصنيف والنكهة -->
                                 <p class="text-xs text-[#ff91a4] font-black mb-1">${p.category || 'صنف فاخر'}</p>
                                 ${p.flavors ? `<p class="text-[11px] text-[#ff91a4] font-bold border-t border-dashed border-[#fff5f6] pt-1 mb-2 leading-relaxed">${p.flavors}</p>` : ''}
                                 
-                                <!-- 3. الوصف الموحد بخصائصه المانعة للاقتطاع -->
                                 <p class="text-xs text-gray-500 mb-4 leading-relaxed product-desc" style="white-space: normal; overflow-wrap: anywhere; word-break: break-word;">
                                     ${p.description || p.desc || ''}
                                 </p>
                             </div>
                             
-                            <!-- 4 & 5. السعر وأدوات التحكم في الكمية والإضافة -->
                             <div class="mt-auto flex justify-between items-center border-t border-[#ff91a4]/10 pt-4">
-                                <!-- أزرار التحكم في الكمية والعدّاد -->
                                 <div class="flex items-center gap-1.5 bg-gray-50 rounded-full px-2 py-1 border border-gray-100">
                                     <button onclick="window.updateTempQtyContext(this, -1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200" ${isOut ? 'disabled' : ''}>-</button>
                                     <span class="temp-qty-display text-xs font-bold w-4 text-center">1</span>
                                     <button onclick="window.updateTempQtyContext(this, 1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200" ${isOut ? 'disabled' : ''}>+</button>
                                 </div>
                                 
-                                <!-- حقل السعر -->
                                 <div class="flex flex-col text-center items-center justify-center">
                                     ${hasDiscount ? `<span class="text-[10px] text-gray-400 line-through font-bold mb-0.5">${p.oldPrice} ج.م</span>` : ''}
                                     <span class="font-black text-lg text-[#ff91a4] leading-none">${p.price} <span class="text-xs">ج.م</span></span>
                                 </div>
                                 
-                                <!-- زر إضافة الموحد -->
                                 <button onclick="window.addWithQtyContextAndSync(this, '${p.id}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-[#ff91a4] flex items-center justify-center hover:bg-[#ff91a4] hover:text-white border border-[#ff91a4]/20 transition-colors shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" ${isOut ? 'disabled' : ''}>
                                     <i data-lucide="plus" class="w-5 h-5"></i>
                                 </button>
@@ -192,9 +184,10 @@ export function distributeProductsToUI(products) {
             const sectionTitle = el.dataset.sectionTitle || '';
             const block = BoseState?.theme?.builderLayout?.find(b => (b.containerId && b.containerId === id) || (b.title && b.title === sectionTitle));
             
+            // تعديل هندسي موسع: إتاحة كامل الكتالوج ليعرض كافة المنتجات كخيار أساسي ومثالي للأقسام
             let filteredList = [...currentProducts];
             
-            // ✅ تعديل هندسي مرن: السماح بعرض المنتجات باستخدام كامل الكتالوج في حال عدم وجود block أو عدم تعريف dataSource
+            // التوزيع والتأكد الفني من الفلترة الذكية إن وجدت تخصيصات محددة بالبلوك
             if (block && block.dataSource) {
                 if (block.dataSource.startsWith('category:')) {
                     const catName = block.dataSource.split(':')[1];
@@ -209,11 +202,11 @@ export function distributeProductsToUI(products) {
                     filteredList = currentProducts.filter(p => p.category && normalizeArabic(p.category).includes('menu')).slice(0, 12);
                 }
             } else {
-                // بديل احتياطي ذكي لمنع تجميد أو إفراغ الواجهة البصرية للموقع
+                // بديل احتياطي ذكي يعرض كامل الكتالوج لمنع تجميد أو إفراغ الواجهة البصرية للموقع
                 filteredList = [...currentProducts];
             }
             
-            // عرض المنتجات وتأمين الخصائص البرمجية
+            // عرض كافة المنتجات وتأمين الخصائص البرمجية
             filteredList = filteredList.map(p => ({
                 ...p,
                 inStock: p.inStock !== false && p.stock !== 0
@@ -760,5 +753,3 @@ window.addEventListener('BoseSweets_Logistics_Updated', () => {
 });
 
 console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد بنجاح للإصدار السيادي (V40.3 Premium) مع تأمين السلايدر، ومرونة توزيع الفئات، وتصفير العداد التلقائي.");
-
-```
