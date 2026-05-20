@@ -1,3 +1,4 @@
+```javascript
 /**
  * ============================================================================
  * 👑 BoseSweets Sovereign Core Engine | المحرك الأساسي السيادي (القلب النابض)
@@ -171,7 +172,6 @@ function handleConnectionDrop(retryFunction) {
         initPerformanceWatch: function() {
             if (typeof window === 'undefined' || !window.PerformanceObserver) return;
             try {
-                // مستشعر الاختناق: رصد أي عملية تسبب بطء للموقع لأكثر من نصف ثانية
                 const observer = new PerformanceObserver((list) => {
                     for (const entry of list.getEntries()) {
                         if (entry.duration > 500) { 
@@ -181,7 +181,6 @@ function handleConnectionDrop(retryFunction) {
                 });
                 observer.observe({entryTypes: ['longtask']});
 
-                // مستشعر البيانات: رصد أي صورة أو ملف يتجاوز حجمه 500 كيلوبايت لحماية باقة العميل
                 const resObserver = new PerformanceObserver((list) => {
                     for (const entry of list.getEntries()) {
                         if (entry.initiatorType === 'img' && entry.transferSize > 500000) { 
@@ -919,9 +918,12 @@ export function initializeSovereignSync() {
         if (snap.exists()) {
             const data = snap.data();
             const lastUpdate = parseInt(localStorage.getItem('bose_last_local_sync') || '0');
+            
+            // التعديل: إرسال حدث تحديث للسماح بالتحديث السلس دون إغلاق المتصفح
             if (data.lastAdminUpdate > lastUpdate && data.forceRefresh === true) {
                 localStorage.setItem('bose_last_local_sync', data.lastAdminUpdate.toString());
-                window.location.reload();
+                console.log("👑 BoseSync: تم استقبال تحديث البيانات، جاري المزامنة السلسة...");
+                window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
             }
         }
     });
@@ -931,3 +933,5 @@ export function initializeSovereignSync() {
 if (typeof window !== 'undefined') {
     window.initializeSovereignSync = initializeSovereignSync;
 }
+
+```

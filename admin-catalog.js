@@ -1,3 +1,19 @@
+```javascript
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
+    authDomain: "bosy-sweets.firebaseapp.com",
+    projectId: "bosy-sweets",
+    storageBucket: "bosy-sweets.firebasestorage.app",
+    messagingSenderId: "473615735083",
+    appId: "1:473615735083:web:f09c6001c72640b2588d6e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 window.toggleFlowerFields = function(categoryName) {
     const flowerSection = document.getElementById('flower-exclusive-fields');
     if (flowerSection) {
@@ -5,7 +21,6 @@ window.toggleFlowerFields = function(categoryName) {
             flowerSection.style.display = 'block';
         } else {
             flowerSection.style.display = 'none';
-            // تفريغ صارم للذاكرة لضمان عدم تعليق إعدادات الورد في أقسام أخرى
             const inputs = flowerSection.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
                 if(input.type === 'checkbox' || input.type === 'radio') {
@@ -36,42 +51,8 @@ window.switchAdminTab = function(event, tabId) {
 
 if (typeof lucide !== 'undefined') lucide.createIcons();
 
-// 👑 تم التعديل السيادي هنا: توجيه الإدارة للقراءة والكتابة من نفس مسار الموقع
-const MAIN_DB_COLLECTION = 'catalog'; 
-
-try {
-    const firebaseConfig = {
-        apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
-        authDomain: "bosy-sweets.firebaseapp.com",
-        projectId: "bosy-sweets",
-        storageBucket: "bosy-sweets.firebasestorage.app",
-        messagingSenderId: "473615735083",
-        appId: "1:473615735083:web:f09c6001c72640b2588d6e"
-    };
-
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    window.db = firebase.firestore();
-    window.auth = firebase.auth();
-} catch (initError) {
-    console.error("خطأ تهيئة السحابة:", initError);
-}
-
 document.addEventListener('DOMContentLoaded', () => {
-    if(window.auth) {
-        window.auth.onAuthStateChanged((user) => {
-            if (!user && sessionStorage.getItem('bosy_admin_auth') !== 'verified') {
-                window.location.href = 'login.html';
-            } else {
-                loadCatalog();
-                loadBoseSimulatorSettings();
-            }
-        });
-    } else {
-        loadCatalog();
-        loadBoseSimulatorSettings();
-    }
+    loadCatalog();
 });
 
 const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1"; 
@@ -80,7 +61,6 @@ const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}
 
 let catalogData = [];
 let selectedCategory = ''; 
-
 let confirmCallback = null;
 
 window.showConfirm = function(message, callback) {
@@ -207,15 +187,14 @@ window.uploadToCloudinary = async function(fileInput, urlInputId, previewId, pla
 };
 
 async function loadCatalog() {
-    if(!window.db) return;
     try {
-        const querySnapshot = await window.db.collection(MAIN_DB_COLLECTION).get();
+        const querySnapshot = await getDocs(collection(db, 'catalog'));
         catalogData = [];
         let categoriesSet = new Set(['التورت', 'الجاتوهات', 'السينابون', 'الدوناتس', 'ورد', 'الديسباسيتو', 'القشطوطة', 'كبات السعادة']);
 
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            catalogData.push({ id: doc.id, ...data });
+        querySnapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            catalogData.push({ id: docSnap.id, ...data });
             if(data.category) categoriesSet.add(data.category);
         });
 
@@ -224,7 +203,7 @@ async function loadCatalog() {
         
         Array.from(categoriesSet).forEach(catName => {
             sidebarHtml += `
-                <div class="submenu-item" onclick="filterCatalogBySection('${catName}', this)">
+                <div class="submenu-item" onclick="window.filterCatalogBySection('${catName}', this)">
                     <i data-lucide="folder" class="w-6 h-6 text-brand-pink"></i>
                     <span>${catName}</span>
                 </div>
@@ -303,10 +282,10 @@ function renderCatalogGridForSection(catName) {
                     <p class="text-lg text-brand-textMuted font-bold line-clamp-2 mb-10 flex-grow opacity-80">${finalDesc}</p>
                     
                     <div class="flex items-center gap-6 pt-8 border-t border-brand-border">
-                        <button onclick="editProduct('${pJson}')" class="btn-action flex-1 py-4 h-auto rounded-2xl bg-[#0c0709] hover:bg-brand-pink" title="فتح غرفة العمليات والتعديل">
+                        <button onclick="window.editProduct('${pJson}')" class="btn-action flex-1 py-4 h-auto rounded-2xl bg-[#0c0709] hover:bg-brand-pink" title="فتح غرفة العمليات والتعديل">
                             <i data-lucide="edit-3" class="w-8 h-8"></i>
                         </button>
-                        <button onclick="deleteProduct('${p.id}', '${p.name}', this)" class="btn-action danger flex-none w-16 h-auto py-4 rounded-2xl" title="حذف نهائي">
+                        <button onclick="window.deleteProduct('${p.id}', '${p.name}', this)" class="btn-action danger flex-none w-16 h-auto py-4 rounded-2xl" title="حذف نهائي">
                             <i data-lucide="trash-2" class="w-8 h-8"></i>
                         </button>
                     </div>
@@ -446,8 +425,6 @@ window.editProduct = function(pJsonEncoded) {
 };
 
 window.deleteProduct = async function(id, name, btnElement) {
-    if(!window.db) return;
-    
     window.showConfirm(`قرار سيادي قاطع: هل التأكيد على إزالة [${name}] نهائياً؟`, async () => {
         const originalHtml = btnElement ? btnElement.innerHTML : '';
         try {
@@ -457,8 +434,14 @@ window.deleteProduct = async function(id, name, btnElement) {
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
             
-            await window.db.collection(MAIN_DB_COLLECTION).doc(id).delete();
-            // تم تعطيل إشارة التحديث الإجباري والاعتماد على محرك البث اللحظي الصامت
+            await deleteDoc(doc(db, 'catalog', id));
+            
+            // إرسال إشارة التحديث للمحرك بعد مسح المنتج
+            await setDoc(doc(db, 'system', 'syncFlag'), { 
+                forceRefresh: true, 
+                lastAdminUpdate: Date.now(),
+                updateSource: 'admin_catalog_delete' 
+            }, { merge: true });
             
             window.showToast(`تم مسح المنتج نهائياً بنجاح.`);
             await loadCatalog(); 
@@ -476,11 +459,6 @@ window.deleteProduct = async function(id, name, btnElement) {
 };
 
 window.saveProduct = async function() {
-    if(!window.db) {
-        window.showToast("عائق في الاتصال بالسحابة. يرجى التأكد من استقرار الشبكة.", "error");
-        return;
-    }
-    
     const btnSave = document.getElementById('btn-save-product');
     const originalBtnHtml = btnSave ? btnSave.innerHTML : 'اعتماد التحديثات وإرسالها للسحابة فوراً';
 
@@ -527,12 +505,17 @@ window.saveProduct = async function() {
         }
 
         if(idInput) { 
-            await window.db.collection(MAIN_DB_COLLECTION).doc(idInput).set(productData, { merge: true }); 
+            await setDoc(doc(db, 'catalog', idInput), productData, { merge: true }); 
         } else { 
-            await window.db.collection(MAIN_DB_COLLECTION).add(productData); 
+            await setDoc(doc(collection(db, 'catalog')), productData); 
         }
         
-        // تم تعطيل التحديث الإجباري لحماية سلة العميل أثناء التصفح
+        // إرسال إشارة التحديث للمحرك بعد حفظ التعديلات أو إضافة منتج جديد
+        await setDoc(doc(db, 'system', 'syncFlag'), { 
+            forceRefresh: true, 
+            lastAdminUpdate: Date.now(),
+            updateSource: 'admin_catalog_save'
+        }, { merge: true });
         
         window.showToast("تم الحفظ والاعتماد السحابي الفوري بنجاح.");
         await loadCatalog();
@@ -551,7 +534,6 @@ window.saveProduct = async function() {
 };
 
 window.fetchAdminOrders = async function() {
-    if(!window.db) return;
     const container = document.getElementById('orders-container');
     if(container) {
         container.innerHTML = `
@@ -563,10 +545,10 @@ window.fetchAdminOrders = async function() {
     }
 
     try {
-        const ordersSnapshot = await window.db.collection('orders').get();
+        const ordersSnapshot = await getDocs(collection(db, 'orders'));
         let ordersArray = [];
-        ordersSnapshot.forEach((doc) => {
-            ordersArray.push({ id: doc.id, ...doc.data() });
+        ordersSnapshot.forEach((docSnap) => {
+            ordersArray.push({ id: docSnap.id, ...docSnap.data() });
         });
 
         ordersArray.sort((a, b) => {
@@ -738,7 +720,6 @@ window.fetchAdminOrders = async function() {
 };
 
 window.deleteAdminOrder = async function(orderId, btnElement) {
-    if(!window.db) return;
     window.showConfirm("تأكيد سيادي: هل ترغب بحذف وأرشفة هذا الطلب نهائياً من السجلات؟", async () => {
         const originalHtml = btnElement ? btnElement.innerHTML : '';
         try {
@@ -747,7 +728,15 @@ window.deleteAdminOrder = async function(orderId, btnElement) {
                 btnElement.disabled = true;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
-            await window.db.collection('orders').doc(orderId).delete();
+            await deleteDoc(doc(db, 'orders', orderId));
+            
+            // إرسال إشارة التحديث للمحرك حتى بعد أرشفة الطلبات لضمان تزامن كامل البيانات
+            await setDoc(doc(db, 'system', 'syncFlag'), { 
+                forceRefresh: true, 
+                lastAdminUpdate: Date.now(),
+                updateSource: 'admin_order_delete'
+            }, { merge: true });
+
             window.showToast("تم مسح وأرشفة الطلب بنجاح.");
             window.fetchAdminOrders();
         } catch(e) {
@@ -762,46 +751,4 @@ window.deleteAdminOrder = async function(orderId, btnElement) {
     });
 };
 
-window.saveBoseSimulatorSettings = async function() {
-    if(!window.db) return;
-    try {
-        const pricingData = {
-            priceNatural: parseFloat(document.getElementById('adm-price-natural').value) || 20,
-            priceArtificial: parseFloat(document.getElementById('adm-price-artificial').value) || 15,
-            priceSatin: parseFloat(document.getElementById('adm-price-satin').value) || 25,
-            priceChocolate: parseFloat(document.getElementById('adm-price-chocolate').value) || 250,
-            priceCash: parseFloat(document.getElementById('adm-price-cash').value) || 100,
-            priceCard: parseFloat(document.getElementById('adm-price-card').value) || 25,
-            pricePhoto: parseFloat(document.getElementById('adm-price-photo').value) || 15,
-            layerChocolateUrl: document.getElementById('adm-layer-chocolate-url').value.trim(),
-            layerCashUrl: document.getElementById('adm-layer-cash-url').value.trim(),
-            updatedAt: Date.now()
-        };
-        await window.db.collection('settings').doc('pricingRules').set(pricingData, { merge: true });
-        
-        window.showToast("تم حفظ واعتماد إعدادات المحاكي البصري سحابياً.");
-    } catch(e) {
-        window.showToast("عطل اتصالي منع تخزين الإعدادات.", "error");
-    }
-};
-
-async function loadBoseSimulatorSettings() {
-    if(!window.db) return;
-    try {
-        const snap = await window.db.collection('settings').doc('pricingRules').get();
-        if(snap.exists) {
-            const data = snap.data();
-            if(data.priceNatural !== undefined) document.getElementById('adm-price-natural').value = data.priceNatural;
-            if(data.priceArtificial !== undefined) document.getElementById('adm-price-artificial').value = data.priceArtificial;
-            if(data.priceSatin !== undefined) document.getElementById('adm-price-satin').value = data.priceSatin;
-            if(data.priceChocolate !== undefined) document.getElementById('adm-price-chocolate').value = data.priceChocolate;
-            if(data.priceCash !== undefined) document.getElementById('adm-price-cash').value = data.priceCash;
-            if(data.priceCard !== undefined) document.getElementById('adm-price-card').value = data.priceCard;
-            if(data.pricePhoto !== undefined) document.getElementById('adm-price-photo').value = data.pricePhoto;
-            if(data.layerChocolateUrl !== undefined) document.getElementById('adm-layer-chocolate-url').value = data.layerChocolateUrl;
-            if(data.layerCashUrl !== undefined) document.getElementById('adm-layer-cash-url').value = data.layerCashUrl;
-        }
-    } catch(e) {
-        console.error(e);
-    }
-}
+```
