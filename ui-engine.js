@@ -1,3 +1,4 @@
+```javascript
 /**
  * ============================================================================
  * 👑 BoseSweets Sovereign UI Engine | محرك الواجهة البصرية السيادي
@@ -35,12 +36,16 @@ export function renderProductCardsUI(products, containerId) {
     const processBoseImage = window.processBoseImage || ((img) => img || '');
     const BoseState = window.BoseState;
 
-    // رصد بيئة الحاوية بذكاء لتحديد نوع الهندسة المطلوبة وتوسيع النطاق ليشمل الحاويات الديناميكية المحددة
+    // رصد بيئة الحاوية بذكاء لتحديد نوع الهندسة المطلوبة وتوسيع النطاق ليشمل الحاويات الديناميكية والسلايدرات
     const isSliderContainer = container.classList.contains('bose-horizontal-slider') || 
                               container.classList.contains('snap-x') || 
-                              container.id === 'new-arrivals-container' || 
-                              container.id === 'best-sellers-container' ||
-                              container.id === 'dynamic-categories-container';
+                              [
+                                'new-arrivals-container', 
+                                'best-sellers-container', 
+                                'dynamic-categories-container',
+                                'dynamic-new-arrivals',
+                                'dynamic-best-sellers'
+                              ].includes(container.id);
 
     const sectionTitle = container.dataset.sectionTitle || '';
     const currentLayoutBlock = BoseState?.theme?.builderLayout?.find(b => b.title === sectionTitle);
@@ -86,7 +91,7 @@ export function renderProductCardsUI(products, containerId) {
             customHeight = Math.round(customHeight * 1.4);
 
             spanClass = 'snap-start flex-shrink-0'; // يمنع الانكماش ويسمح بالتمرير
-            widthStyle = `width: ${isFullSpan ? '320px' : customWidth + 'px'}; max-width: 85vw;`;
+            widthStyle = `width: ${customWidth}px; max-width: 85vw;`;
         } else {
             spanClass = isFullSpan ? 'col-span-full w-full' : 'col-span-1 w-full';
             widthStyle = `max-width: ${isFullSpan ? '100%' : customWidth + 'px'}; margin: 0 auto; width: 100%;`;
@@ -95,9 +100,10 @@ export function renderProductCardsUI(products, containerId) {
         const hasDiscount = p.hasDiscount === true && p.oldPrice > p.price;
         const img = processBoseImage(p.img || p.image) || BOSE_LOGO_FALLBACK;
 
+        // تطبيق هيكلة الكارت الموحدة الفاخرة لعلامة حلويات بوسي
         return `
             <div class="catalog-card-wrapper ${spanClass} p-2 transition-transform duration-300 hover:-translate-y-1" style="${widthStyle}">
-                <div class="bose-double-wrap group h-full block text-decoration-none relative bg-white rounded-[32px] border-2 border-[#ff91a4] p-1.5 shadow-sm hover:shadow-md transition-all duration-300">
+                <div class="bose-double-wrap group h-full flex flex-col bg-white rounded-[32px] border-2 border-[#ff91a4] p-1.5 shadow-sm hover:shadow-md transition-all duration-300 relative">
                     <div class="bose-double-inner bg-white h-full flex flex-col rounded-[26px] overflow-hidden">
                         <div class="w-full overflow-hidden bg-brand-pinkLight border-b border-[#ff91a4]/20 relative" style="height: ${customHeight}px">
                             <img src="${img}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
@@ -146,7 +152,7 @@ let uiRenderDebounceTimer = null;
 
 export function distributeProductsToUI(products) {
     const BoseState = window.BoseState;
-    const normalizeArabic = window.normalizeArabic || ((text) => text ? text.toString().replace(/[أإآا]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/[ًٌٍَُِّ]/g, '').trim() : '');
+    const normalizeArabic = window.normalizeArabic || normalizeArabicText;
     
     // تأمين جلب المنتجات وضمان استخدام البيانات الموجودة فقط بعد التأكد من اكتمال التحميل
     const currentProducts = Array.isArray(products) && products.length ? products : (BoseState?.catalog || []);
@@ -154,7 +160,8 @@ export function distributeProductsToUI(products) {
     if (window.uiRenderDebounceTimer) clearTimeout(window.uiRenderDebounceTimer);
     
     window.uiRenderDebounceTimer = setTimeout(() => {
-        ['new-arrivals-container', 'best-sellers-container', 'menuGrid'].forEach(id => {
+        // تحديث جميع الحاويات المستهدفة مع تفادي تكرار المنتجات نهائياً بالفلترة الصارمة طبقاً للـ dataSource
+        ['new-arrivals-container', 'best-sellers-container', 'menuGrid', 'dynamic-new-arrivals', 'dynamic-best-sellers', 'dynamic-categories-container'].forEach(id => {
             const el = document.getElementById(id);
             if (!el) return;
 
@@ -662,7 +669,7 @@ if (typeof window !== 'undefined') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // حقن وتوثيق خصائص التنسيق الخاصة لضمان منع اقتطاع النصوص في المتصفح تلقائياً باستخدام النطاق المطلق
+    // حقن وتوثيق خصائص التنسيق الخاصة لضمان منع اقتطاع النصوص في المتصفح تلقائياً وحماية السلايدرات
     try {
         const style = document.createElement('style');
         style.textContent = `
@@ -674,10 +681,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 -webkit-line-clamp: unset !important;
                 height: auto !important;
             }
+            .bose-horizontal-slider > div {
+                flex: 0 0 auto !important;
+                scroll-snap-align: start;
+                width: auto;
+            }
         `;
         document.head.appendChild(style);
     } catch (e) {
-        console.error("فشل حقن التنسيقات الإضافية لحماية النصوص:", e);
+        console.error("فشل حقن التنسيقات الإضافية لحماية النصوص وهندسة السلايدر:", e);
     }
 
     // استدعاء دالة التهيئة المربوطة من المحرك الأساسي
@@ -707,4 +719,6 @@ window.addEventListener('BoseSweets_Logistics_Updated', () => {
     }
 });
 
-console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد وفصله تقنياً بنجاح إلى (Core) و (UI) للإصدار السيادي (V40.1 Premium).");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد وفصله تقنياً بنجاح إلى (Core) و (UI) للإصدار السيادي (V40.1 Premium) مع هيكلة الكروت الموحدة ومنع تكرارها وتكبير السلايدر.");
+
+```
