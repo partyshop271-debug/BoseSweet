@@ -1,7 +1,9 @@
-```javascript
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+// ==========================================
+// 1. التكوين والتهيئة السحابية (Firebase Configuration)
+// ==========================================
 const firebaseConfig = {
     apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
     authDomain: "bosy-sweets.firebaseapp.com",
@@ -14,16 +16,95 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1"; 
+const CLOUDINARY_UPLOAD_PRESET = "gct8i28h"; 
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
+// الحالات والمتغيرات المركزية للمحرك
+let catalogData = [];
+let selectedCategory = ''; 
+let confirmCallback = null;
+let toastTimer = null;
+
+// ==========================================
+// 2. إدارة التفاعل والتبويبات (DOM Toggles & Tabs)
+// ==========================================
+window.toggleSidebar = function(forceState) {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    if (!sidebar || !overlay) return;
+
+    if (typeof forceState === 'boolean') {
+        if (forceState) { 
+            sidebar.classList.add('active'); 
+            overlay.classList.add('active'); 
+        } else { 
+            sidebar.classList.remove('active'); 
+            overlay.classList.remove('active'); 
+        }
+    } else {
+        sidebar.classList.toggle('active'); 
+        overlay.classList.toggle('active');
+    }
+};
+
+window.switchSection = function(sectionId, element = null) {
+    document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
+    if (element) element.classList.add('active');
+
+    document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
+    const targetSec = document.getElementById(sectionId);
+    if (targetSec) targetSec.classList.add('active');
+    
+    // المسميات والعناوين الاستراتيجية للأقسام
+    const titles = {
+        'dashboard': 'المركز الإداري لحلويات بوسي',
+        'orders-section': 'متابعة الطلبات الحية | حلويات بوسي',
+        'product-list': 'إدارة الكتالوج | حلويات بوسي',
+        'product-editor': 'غرفة تعديل وتصميم المنتجات المعزولة | حلويات بوسي',
+        'simulator-settings-section': 'محرك التنسيق والطبقات الفاخرة | حلويات بوسي'
+    };
+    
+    const currentTitle = titles[sectionId] || 'المركز الإداري لحلويات بوسي';
+    const textTitle = document.getElementById('current-section-title');
+    if (textTitle) textTitle.innerText = currentTitle;
+
+    if (window.innerWidth <= 1024) window.toggleSidebar(false); 
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (sectionId === 'simulator-settings-section') {
+        loadSimulatorSettings();
+    }
+};
+
+window.switchAdminTab = function(tabId, targetBtn = null) {
+    const contents = document.querySelectorAll('.admin-tab-content');
+    contents.forEach(content => content.classList.remove('active-tab'));
+    
+    const buttons = document.querySelectorAll('.admin-tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    const targetPanel = document.getElementById(tabId);
+    if (targetPanel) targetPanel.classList.add('active-tab');
+    
+    if (targetBtn) {
+        targetBtn.classList.add('active');
+    } else {
+        const activeBtn = document.querySelector(`.admin-tab-btn[data-target="${tabId}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
+    }
+};
+
 window.toggleFlowerFields = function(categoryName) {
     const flowerSection = document.getElementById('flower-exclusive-fields');
     if (flowerSection) {
-        if (categoryName && (categoryName.includes('ورد') || categoryName.includes('الورد'))) {
+        if (categoryName && (categoryName.includes('ورد') || categoryName.includes('الورد') || categoryName.includes('بوكيه') || categoryName.includes('تنسيق'))) {
             flowerSection.style.display = 'block';
         } else {
             flowerSection.style.display = 'none';
             const inputs = flowerSection.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
-                if(input.type === 'checkbox' || input.type === 'radio') {
+                if (input.type === 'checkbox' || input.type === 'radio') {
                     input.checked = false;
                 } else {
                     input.value = '';
@@ -33,35 +114,65 @@ window.toggleFlowerFields = function(categoryName) {
     }
 };
 
-window.switchAdminTab = function(event, tabId) {
-    const contents = document.querySelectorAll('.admin-tab-content');
-    contents.forEach(content => content.classList.remove('active-tab'));
-    
-    const buttons = document.querySelectorAll('.admin-tab-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    
-    document.getElementById(tabId).classList.add('active-tab');
-    if(event && event.currentTarget) {
-        event.currentTarget.classList.add('active');
+window.updateStockLabel = function(checkbox) {
+    const label = document.getElementById('stock-status-text');
+    if (!label) return;
+    if (checkbox.checked) {
+        label.innerText = "متوفر للطلب"; 
+        label.className = "font-semibold text-base text-white";
     } else {
-        const activeBtn = document.querySelector(`button[onclick*="${tabId}"]`);
-        if(activeBtn) activeBtn.classList.add('active');
+        label.innerText = "نفذت الكمية"; 
+        label.className = "font-semibold text-base text-red-400";
     }
 };
 
-if (typeof lucide !== 'undefined') lucide.createIcons();
+window.updateDiscountLabel = function(checkbox) {
+    const label = document.getElementById('discount-status-text');
+    if (!label) return;
+    if (checkbox.checked) {
+        label.innerText = "خصم مفعّل"; 
+        label.className = "font-semibold text-base text-brand-discount";
+    } else {
+        label.innerText = "لا يوجد عرض"; 
+        label.className = "font-semibold text-base text-white";
+    }
+};
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadCatalog();
-});
+// ==========================================
+// 3. التنبيهات ونوافذ التأكيد السيادية (Modals & Toasts)
+// ==========================================
+window.showToast = function(msg, type = "success") {
+    const toast = document.getElementById('admin-toast');
+    const toastMsg = document.getElementById('toast-msg');
+    if (!toast || !toastMsg) return;
 
-const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1"; 
-const CLOUDINARY_UPLOAD_PRESET = "gct8i28h"; 
-const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+    toastMsg.innerText = msg;
+    
+    const icon = document.getElementById('toast-icon');
+    if (icon) {
+        if (type === 'error') {
+            toast.style.borderColor = '#ef4444';
+            icon.className = "w-8 h-8 text-rose-500 shrink-0";
+            icon.setAttribute('data-lucide', 'alert-circle');
+        } else if (type === 'info') {
+            toast.style.borderColor = '#3b82f6';
+            icon.className = "w-8 h-8 text-blue-400 shrink-0";
+            icon.setAttribute('data-lucide', 'info');
+        } else {
+            toast.style.borderColor = 'var(--bose-pink)';
+            icon.className = "w-8 h-8 text-brand-pink shrink-0";
+            icon.setAttribute('data-lucide', 'check-circle');
+        }
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
 
-let catalogData = [];
-let selectedCategory = ''; 
-let confirmCallback = null;
+    toast.classList.remove('active'); 
+    void toast.offsetWidth; 
+    toast.classList.add('active');
+    
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('active'), 4000);
+};
 
 window.showConfirm = function(message, callback) {
     const modal = document.getElementById('bose-confirm-modal');
@@ -74,73 +185,38 @@ window.showConfirm = function(message, callback) {
 
 window.closeConfirmModal = function() {
     const modal = document.getElementById('bose-confirm-modal');
+    if (!modal) return;
     modal.classList.remove('flex');
     modal.classList.add('hidden');
     confirmCallback = null;
 };
 
-document.getElementById('bose-confirm-yes').addEventListener('click', () => {
-    if (confirmCallback) confirmCallback();
-    window.closeConfirmModal();
-});
+// ==========================================
+// 4. محرك رفع الصور والبوسترات (Cloudinary Multi-Upload)
+// ==========================================
+window.previewImage = function(previewId, iconId, url) {
+    const preview = document.getElementById(previewId);
+    const icon = document.getElementById(iconId);
+    if (!preview || !icon) return;
 
-document.getElementById('bose-confirm-no').addEventListener('click', () => {
-    window.closeConfirmModal();
-});
-
-window.toggleSidebar = function(forceState) {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-    if (!sidebar || !overlay) return;
-
-    if (typeof forceState === 'boolean') {
-        if (forceState) { sidebar.classList.add('active'); overlay.classList.add('active'); } 
-        else { sidebar.classList.remove('active'); overlay.classList.remove('active'); }
+    if (url && url.length > 5) {
+        preview.src = url; 
+        preview.classList.remove('hidden'); 
+        icon.classList.add('hidden');
     } else {
-        sidebar.classList.toggle('active'); overlay.classList.toggle('active');
+        preview.src = "";
+        preview.classList.add('hidden'); 
+        icon.classList.remove('hidden');
     }
 };
 
-window.switchSection = function(sectionId, element) {
-    document.querySelectorAll('.submenu-item').forEach(el => el.classList.remove('active'));
-    if (element) element.classList.add('active');
-
-    document.querySelectorAll('.admin-section').forEach(el => el.classList.remove('active'));
-    const targetSec = document.getElementById(sectionId);
-    if (targetSec) targetSec.classList.add('active');
-    
-    if (window.innerWidth <= 1024) window.toggleSidebar(false); 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-};
-
-window.showToast = function(msg, type="success") {
-    const toast = document.getElementById('admin-toast');
-    document.getElementById('toast-msg').innerText = msg;
-    
-    const oldIcon = toast.querySelector('i, svg');
-    if (oldIcon) oldIcon.remove();
-
-    let iconHtml = '';
-    if(type === 'error') {
-        toast.style.borderColor = '#ef4444';
-        iconHtml = '<i data-lucide="alert-circle" class="w-8 h-8 text-red-400 shrink-0"></i>';
-    } else if (type === 'info') {
-        toast.style.borderColor = '#3b82f6';
-        iconHtml = '<i data-lucide="info" class="w-8 h-8 text-blue-400 shrink-0"></i>';
-    } else {
-        toast.style.borderColor = 'var(--bose-pink)';
-        iconHtml = '<i data-lucide="check-circle" class="w-8 h-8 text-brand-pink shrink-0"></i>';
+window.handlePreviewError = function(previewId, iconId) {
+    const preview = document.getElementById(previewId);
+    const icon = document.getElementById(iconId);
+    if (preview && icon) {
+        preview.classList.add('hidden'); 
+        icon.classList.remove('hidden');
     }
-
-    toast.appendChild(document.createRange().createContextualFragment(iconHtml));
-    if (typeof lucide !== 'undefined') lucide.createIcons();
-
-    toast.classList.remove('active'); 
-    void toast.offsetWidth; 
-    toast.classList.add('active');
-    
-    if(window.toastTimer) clearTimeout(window.toastTimer);
-    window.toastTimer = setTimeout(() => toast.classList.remove('active'), 4000);
 };
 
 window.uploadToCloudinary = async function(fileInput, urlInputId, previewId, placeholderId) {
@@ -152,7 +228,7 @@ window.uploadToCloudinary = async function(fileInput, urlInputId, previewId, pla
 
     try {
         if (btn) {
-            btn.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i> <span class="font-black text-xl">جاري الرفع...</span>';
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i> <span class="font-bold text-base">جاري الرفع...</span>';
             btn.disabled = true;
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
@@ -186,36 +262,32 @@ window.uploadToCloudinary = async function(fileInput, urlInputId, previewId, pla
     }
 };
 
+// ==========================================
+// 5. إدارة بيانات الكتالوج والبث السحابي الحي (Catalog CRUD)
+// ==========================================
 async function loadCatalog() {
     try {
-        const querySnapshot = await getDocs(collection(db, 'catalog'));
-        catalogData = [];
-        let categoriesSet = new Set(['التورت', 'الجاتوهات', 'السينابون', 'الدوناتس', 'ورد', 'الديسباسيتو', 'القشطوطة', 'كبات السعادة']);
+        // تفعيل المراقبة الحية (Realtime Stream) لضمان اتساق تام وفوري للبيانات
+        onSnapshot(collection(db, 'catalog'), (querySnapshot) => {
+            catalogData = [];
+            let categoriesSet = new Set(['التورت', 'الجاتوهات', 'السينابون', 'الدوناتس', 'ورد', 'الديسباسيتو', 'القشطوطة', 'كبات السعادة']);
 
-        querySnapshot.forEach((docSnap) => {
-            const data = docSnap.data();
-            catalogData.push({ id: docSnap.id, ...data });
-            if(data.category) categoriesSet.add(data.category);
+            querySnapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                catalogData.push({ id: docSnap.id, ...data });
+                if (data.category) categoriesSet.add(data.category);
+            });
+
+            renderDynamicSidebarCategories(categoriesSet);
+            populateCategoryDatalist(categoriesSet);
+
+            if (selectedCategory) {
+                renderCatalogGridForSection(selectedCategory);
+            }
+        }, (error) => {
+            console.error("Firestore Catalog Stream Error:", error);
+            window.showToast("خطأ أثناء مزامنة الكتالوج سحابياً", "error");
         });
-
-        const sidebarNav = document.getElementById('sidebar-dynamic-categories');
-        let sidebarHtml = '';
-        
-        Array.from(categoriesSet).forEach(catName => {
-            sidebarHtml += `
-                <div class="submenu-item" onclick="window.filterCatalogBySection('${catName}', this)">
-                    <i data-lucide="folder" class="w-6 h-6 text-brand-pink"></i>
-                    <span>${catName}</span>
-                </div>
-            `;
-        });
-        
-        sidebarNav.innerHTML = sidebarHtml;
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-
-        if(selectedCategory) {
-            renderCatalogGridForSection(selectedCategory);
-        }
 
     } catch (error) {
         console.error(error);
@@ -223,14 +295,76 @@ async function loadCatalog() {
     }
 }
 
-window.filterCatalogBySection = function(catName, element) {
+function renderDynamicSidebarCategories(categoriesSet) {
+    const sidebarNav = document.getElementById('sidebar-dynamic-categories');
+    if (!sidebarNav) return;
+
+    let sidebarHtml = '';
+    Array.from(categoriesSet).forEach(catName => {
+        const isActive = (selectedCategory === catName) ? 'active' : '';
+        sidebarHtml += `
+            <div class="submenu-item ${isActive}" data-category="${catName}">
+                <i data-lucide="folder" class="w-5 h-5 text-brand-pink shrink-0"></i>
+                <span class="truncate">${catName}</span>
+            </div>
+        `;
+    });
+    
+    sidebarNav.innerHTML = sidebarHtml;
+
+    // المراقبة الحية للورد لتمكين إعدادات محرك التنسيق تلقائياً
+    const hasFlowers = Array.from(categoriesSet).some(cat => cat.includes('ورد') || cat.includes('بوكيه') || cat.includes('تنسيق'));
+    if (hasFlowers) {
+        const simulatorItemHtml = `
+            <div id="btn-goto-simulator" class="submenu-item mt-4 pt-4 border-t border-brand-border/30 text-brand-pink hover:text-white">
+                <i data-lucide="sliders-horizontal" class="w-5 h-5"></i> إعدادات محاكي التنسيق
+            </div>
+        `;
+        sidebarNav.insertAdjacentHTML('beforeend', simulatorItemHtml);
+        
+        document.getElementById('btn-goto-simulator').addEventListener('click', () => {
+            window.switchSection('simulator-settings-section');
+            window.toggleSidebar(false);
+        });
+    }
+
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // ربط مستمعي الأحداث للأقسام المتولدة ديناميكياً
+    sidebarNav.querySelectorAll('.submenu-item[data-category]').forEach(item => {
+        item.addEventListener('click', function() {
+            const cat = this.getAttribute('data-category');
+            window.filterCatalogBySection(cat, this);
+        });
+    });
+}
+
+function populateCategoryDatalist(categoriesSet) {
+    const datalist = document.getElementById('existing-categories');
+    if (!datalist) return;
+    datalist.innerHTML = "";
+    categoriesSet.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        datalist.appendChild(option);
+    });
+}
+
+window.filterCatalogBySection = function(catName, element = null) {
     selectedCategory = catName;
     
     document.querySelectorAll('#sidebar-dynamic-categories .submenu-item').forEach(el => el.classList.remove('active'));
-    if(element) element.classList.add('active');
+    if (element) {
+        element.classList.add('active');
+    } else {
+        const target = document.querySelector(`#sidebar-dynamic-categories .submenu-item[data-category="${catName}"]`);
+        if (target) target.classList.add('active');
+    }
 
-    document.getElementById('current-filtered-cat-title').innerText = catName;
-    document.getElementById('back-cat-name').innerText = catName; 
+    const txtFilter = document.getElementById('current-filtered-cat-title');
+    const txtBack = document.getElementById('back-cat-name');
+    if (txtFilter) txtFilter.innerText = catName;
+    if (txtBack) txtBack.innerText = catName; 
 
     renderCatalogGridForSection(catName);
     window.switchSection('product-list');
@@ -238,9 +372,11 @@ window.filterCatalogBySection = function(catName, element) {
 
 function renderCatalogGridForSection(catName) {
     const grid = document.getElementById('catalog-grid');
+    if (!grid) return;
+
     const filteredProducts = catalogData.filter(p => p.category === catName);
 
-    if(filteredProducts.length === 0) {
+    if (filteredProducts.length === 0) {
         grid.innerHTML = `
             <div class="col-span-full text-center py-32 text-brand-textMuted font-bold border-2 border-dashed border-brand-border rounded-3xl">
                 <i data-lucide="inbox" class="w-20 h-20 mx-auto mb-6 opacity-30"></i>
@@ -263,8 +399,8 @@ function renderCatalogGridForSection(catName) {
         html += `
             <div class="catalog-item ${isOut ? 'out-of-stock' : ''} ${isFullWidth ? 'md:col-span-2 xl:col-span-3' : ''}">
                 ${hasDiscount && !isOut ? `<div class="discount-badge">عرض خاص 🔥</div>` : ''}
-                <div class="aspect-video w-full overflow-hidden bg-[#0c0709] relative border-b border-brand-border">
-                    <img src="${imgSrc}" class="w-full h-full object-cover">
+                <div class="aspect-video w-full overflow-hidden bg-[#0c0709] relative border-b border-brand-border" style="height: 180px;">
+                    <img src="${imgSrc}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/300x180?text=BoseSweets'">
                     ${isOut ? '<div class="absolute top-6 left-6 bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-black shadow-lg z-20">نفذت الكمية</div>' : ''}
                 </div>
                 <div class="p-10 flex flex-col flex-grow">
@@ -282,10 +418,10 @@ function renderCatalogGridForSection(catName) {
                     <p class="text-lg text-brand-textMuted font-bold line-clamp-2 mb-10 flex-grow opacity-80">${finalDesc}</p>
                     
                     <div class="flex items-center gap-6 pt-8 border-t border-brand-border">
-                        <button onclick="window.editProduct('${pJson}')" class="btn-action flex-1 py-4 h-auto rounded-2xl bg-[#0c0709] hover:bg-brand-pink" title="فتح غرفة العمليات والتعديل">
+                        <button data-edit-json="${pJson}" class="btn-edit-product btn-action flex-1 py-4 h-auto rounded-2xl bg-[#0c0709] hover:bg-brand-pink" title="فتح غرفة العمليات والتعديل">
                             <i data-lucide="edit-3" class="w-8 h-8"></i>
                         </button>
-                        <button onclick="window.deleteProduct('${p.id}', '${p.name}', this)" class="btn-action danger flex-none w-16 h-auto py-4 rounded-2xl" title="حذف نهائي">
+                        <button data-delete-id="${p.id}" data-delete-name="${p.name}" class="btn-delete-product btn-action danger flex-none w-16 h-auto py-4 rounded-2xl" title="حذف نهائي">
                             <i data-lucide="trash-2" class="w-8 h-8"></i>
                         </button>
                     </div>
@@ -295,6 +431,21 @@ function renderCatalogGridForSection(catName) {
     });
     grid.innerHTML = html;
     if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    // ربط ميكانيكي آمن للمستمعات بدون استخدام دالات مدمجة داخل الكروت
+    grid.querySelectorAll('.btn-edit-product').forEach(btn => {
+        btn.addEventListener('click', function() {
+            window.editProduct(this.getAttribute('data-edit-json'));
+        });
+    });
+
+    grid.querySelectorAll('.btn-delete-product').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-delete-id');
+            const name = this.getAttribute('data-delete-name');
+            window.deleteProduct(id, name, this);
+        });
+    });
 }
 
 window.openIsolatedEditor = function() {
@@ -302,45 +453,13 @@ window.openIsolatedEditor = function() {
     document.getElementById('prod-cat').value = selectedCategory;
     document.getElementById('editor-title').innerHTML = `<i data-lucide="plus-square" class="text-brand-pink w-10 h-10"></i> هندسة منتج جديد في: ${selectedCategory}`;
     window.toggleFlowerFields(selectedCategory);
-    window.switchAdminTab(null, 'tab-identity'); 
+    window.switchAdminTab('tab-identity'); 
     window.switchSection('product-editor');
     if (typeof lucide !== 'undefined') lucide.createIcons();
 };
 
 window.returnToIsolatedSection = function() {
     window.switchSection('product-list');
-};
-
-window.updateStockLabel = function(checkbox) {
-    const label = document.getElementById('stock-status-text');
-    if(checkbox.checked) {
-        label.innerText = "متوفر للطلب"; label.className = "font-bold text-xl text-white";
-    } else {
-        label.innerText = "الكمية نفذت (مغلق)"; label.className = "font-bold text-xl text-red-400";
-    }
-};
-
-window.updateDiscountLabel = function(checkbox) {
-    const label = document.getElementById('discount-status-text');
-    if(checkbox.checked) {
-        label.innerText = "عرض خاص ومبروز"; label.className = "font-bold text-xl text-brand-discount";
-    } else {
-        label.innerText = "لا يوجد عرض"; label.className = "font-bold text-xl text-white";
-    }
-};
-
-window.previewImage = function(previewId, iconId, url) {
-    const preview = document.getElementById(previewId);
-    const icon = document.getElementById(iconId);
-    if(url && url.length > 5) {
-        preview.src = url; preview.classList.remove('hidden'); icon.classList.add('hidden');
-    } else {
-        preview.classList.add('hidden'); icon.classList.remove('hidden');
-    }
-};
-
-window.handlePreviewError = function(previewId, iconId) {
-    document.getElementById(previewId).classList.add('hidden'); document.getElementById(iconId).classList.remove('hidden');
 };
 
 window.clearForm = function() {
@@ -360,11 +479,18 @@ window.clearForm = function() {
     document.getElementById('prod-img-cash').value = '';
     document.getElementById('prod-img-choco').value = '';
     
-    document.getElementById('prod-card-w').value = 280; document.getElementById('val-custom-w').innerText = 'تلقائي';
-    document.getElementById('prod-card-h').value = 350; document.getElementById('val-custom-h').innerText = 'تلقائي';
+    document.getElementById('prod-card-w').value = 280; 
+    document.getElementById('val-custom-w').innerText = 'تلقائي';
+    document.getElementById('prod-card-h').value = 350; 
+    document.getElementById('val-custom-h').innerText = 'تلقائي';
     
-    const stockCheck = document.getElementById('prod-stock'); stockCheck.checked = true; window.updateStockLabel(stockCheck);
-    const discountCheck = document.getElementById('prod-has-discount'); discountCheck.checked = false; window.updateDiscountLabel(discountCheck);
+    const stockCheck = document.getElementById('prod-stock'); 
+    stockCheck.checked = true; 
+    window.updateStockLabel(stockCheck);
+    
+    const discountCheck = document.getElementById('prod-has-discount'); 
+    discountCheck.checked = false; 
+    window.updateDiscountLabel(discountCheck);
     
     window.previewImage('img-preview', 'img-placeholder', '');
     window.previewImage('hero-preview', 'hero-placeholder', '');
@@ -393,34 +519,41 @@ window.editProduct = function(pJsonEncoded) {
     document.getElementById('prod-img').value = imgSrc;
     window.previewImage('img-preview', 'img-placeholder', imgSrc);
 
-    document.getElementById('prod-hero-img').value = p.heroImg || '';
-    window.previewImage('hero-preview', 'hero-placeholder', p.heroImg || '');
+    document.getElementById('prod-hero-img').value = p.heroImg || p.heroImage || '';
+    window.previewImage('hero-preview', 'hero-placeholder', p.heroImg || p.heroImage || '');
 
-    document.getElementById('prod-img-natural').value = p.imgNatural || '';
-    window.previewImage('preview-natural', 'placeholder-natural', p.imgNatural || '');
+    document.getElementById('prod-img-natural').value = p.imgNatural || p.naturalImage || '';
+    window.previewImage('preview-natural', 'placeholder-natural', p.imgNatural || p.naturalImage || '');
 
-    document.getElementById('prod-img-artificial').value = p.imgArtificial || '';
-    window.previewImage('preview-artificial', 'placeholder-artificial', p.imgArtificial || '');
+    document.getElementById('prod-img-artificial').value = p.imgArtificial || p.artificialImage || '';
+    window.previewImage('preview-artificial', 'placeholder-artificial', p.imgArtificial || p.artificialImage || '');
 
-    document.getElementById('prod-img-cash').value = p.imgCash || '';
-    window.previewImage('preview-cash', 'placeholder-cash', p.imgCash || '');
+    document.getElementById('prod-img-cash').value = p.imgCash || p.cashImage || '';
+    window.previewImage('preview-cash', 'placeholder-cash', p.imgCash || p.cashImage || '');
 
-    document.getElementById('prod-img-choco').value = p.imgChoco || '';
-    window.previewImage('preview-choco', 'placeholder-choco', p.imgChoco || '');
+    document.getElementById('prod-img-choco').value = p.imgChoco || p.chocoImage || '';
+    window.previewImage('preview-choco', 'placeholder-choco', p.imgChoco || p.chocoImage || '');
 
     document.getElementById('productDisplayStyle').value = p.displayStyle || p.gridSpan || 'half'; 
     
-    document.getElementById('prod-card-w').value = p.cardWidth || 280; document.getElementById('val-custom-w').innerText = (p.cardWidth ? p.cardWidth + 'px' : 'تلقائي');
-    document.getElementById('prod-card-h').value = p.cardHeight || 350; document.getElementById('val-custom-h').innerText = (p.cardHeight ? p.cardHeight + 'px' : 'تلقائي');
+    document.getElementById('prod-card-w').value = p.cardWidth || 280; 
+    document.getElementById('val-custom-w').innerText = (p.cardWidth ? p.cardWidth + 'px' : 'تلقائي');
+    document.getElementById('prod-card-h').value = p.cardHeight || 350; 
+    document.getElementById('val-custom-h').innerText = (p.cardHeight ? p.cardHeight + 'px' : 'تلقائي');
     
-    const stockCheck = document.getElementById('prod-stock'); stockCheck.checked = p.inStock !== false; window.updateStockLabel(stockCheck);
-    const discountCheck = document.getElementById('prod-has-discount'); discountCheck.checked = p.hasDiscount === true; window.updateDiscountLabel(discountCheck);
+    const stockCheck = document.getElementById('prod-stock'); 
+    stockCheck.checked = p.inStock !== false && p.stock !== false; 
+    window.updateStockLabel(stockCheck);
+    
+    const discountCheck = document.getElementById('prod-has-discount'); 
+    discountCheck.checked = p.hasDiscount === true; 
+    window.updateDiscountLabel(discountCheck);
     
     document.getElementById('editor-title').innerHTML = `<i data-lucide="edit-3" class="text-brand-pink w-10 h-10"></i> هندسة منتج: ${p.name || ''}`;
     if (typeof lucide !== 'undefined') lucide.createIcons();
     
     window.toggleFlowerFields(p.category || selectedCategory);
-    window.switchAdminTab(null, 'tab-identity'); 
+    window.switchAdminTab('tab-identity'); 
     window.switchSection('product-editor');
 };
 
@@ -428,15 +561,14 @@ window.deleteProduct = async function(id, name, btnElement) {
     window.showConfirm(`قرار سيادي قاطع: هل التأكيد على إزالة [${name}] نهائياً؟`, async () => {
         const originalHtml = btnElement ? btnElement.innerHTML : '';
         try {
-            if(btnElement) {
-                btnElement.innerHTML = '<i data-lucide="loader-2" class="w-8 h-8 animate-spin"></i>';
+            if (btnElement) {
+                btnElement.innerHTML = '<i data-lucide="loader-2" class="w-6 h-6 animate-spin"></i>';
                 btnElement.disabled = true;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
             
             await deleteDoc(doc(db, 'catalog', id));
             
-            // إرسال إشارة التحديث للمحرك بعد مسح المنتج
             await setDoc(doc(db, 'system', 'syncFlag'), { 
                 forceRefresh: true, 
                 lastAdminUpdate: Date.now(),
@@ -444,12 +576,11 @@ window.deleteProduct = async function(id, name, btnElement) {
             }, { merge: true });
             
             window.showToast(`تم مسح المنتج نهائياً بنجاح.`);
-            await loadCatalog(); 
-        } catch(e) { 
-            console.error("عطل فني مفصل أثناء الحذف:", e);
+        } catch (error) { 
+            console.error("عطل فني مفصل أثناء الحذف:", error);
             window.showToast("عائق فني في السحابة. يرجى المحاولة لاحقاً.", "error"); 
         } finally {
-            if(btnElement) {
+            if (btnElement) {
                 btnElement.innerHTML = originalHtml;
                 btnElement.disabled = false;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -469,7 +600,7 @@ window.saveProduct = async function() {
     const oldPrice = parseFloat(document.getElementById('prod-old-price').value) || 0;
     const img = document.getElementById('prod-img').value.trim();
     
-    if(!name || !category || price <= 0 || !img) {
+    if (!name || !category || price <= 0 || !img) {
         window.showToast("الاسم، القسم، السعر، ورابط الصورة شروط أساسية للاعتماد.", "error");
         return;
     }
@@ -483,34 +614,39 @@ window.saveProduct = async function() {
         desc: document.getElementById('prod-desc').value.trim(),
         flavors: document.getElementById('prod-flavors').value.trim(),
         img: img, image: img, heroImg: document.getElementById('prod-hero-img').value.trim(),
+        heroImage: document.getElementById('prod-hero-img').value.trim(),
         
         imgNatural: document.getElementById('prod-img-natural').value.trim(),
+        naturalImage: document.getElementById('prod-img-natural').value.trim(),
         imgArtificial: document.getElementById('prod-img-artificial').value.trim(),
+        artificialImage: document.getElementById('prod-img-artificial').value.trim(),
         imgCash: document.getElementById('prod-img-cash').value.trim(),
+        cashImage: document.getElementById('prod-img-cash').value.trim(),
         imgChoco: document.getElementById('prod-img-choco').value.trim(),
+        chocoImage: document.getElementById('prod-img-choco').value.trim(),
 
         gridSpan: finalStyle,
         displayStyle: finalStyle, 
         cardWidth: parseInt(document.getElementById('prod-card-w').value),
         cardHeight: parseInt(document.getElementById('prod-card-h').value),
         inStock: document.getElementById('prod-stock').checked,
+        stock: document.getElementById('prod-stock').checked,
         updatedAt: Date.now(), isActive: true
     };
 
     try {
-        if(btnSave) {
+        if (btnSave) {
             btnSave.innerHTML = '<i data-lucide="loader-2" class="w-10 h-10 animate-spin"></i> <span class="font-black">جاري المعالجة والاعتماد السحابي...</span>';
             btnSave.disabled = true;
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        if(idInput) { 
+        if (idInput) { 
             await setDoc(doc(db, 'catalog', idInput), productData, { merge: true }); 
         } else { 
             await setDoc(doc(collection(db, 'catalog')), productData); 
         }
         
-        // إرسال إشارة التحديث للمحرك بعد حفظ التعديلات أو إضافة منتج جديد
         await setDoc(doc(db, 'system', 'syncFlag'), { 
             forceRefresh: true, 
             lastAdminUpdate: Date.now(),
@@ -518,14 +654,13 @@ window.saveProduct = async function() {
         }, { merge: true });
         
         window.showToast("تم الحفظ والاعتماد السحابي الفوري بنجاح.");
-        await loadCatalog();
-        window.switchSection('product-list'); 
+        window.filterCatalogBySection(category);
         
-    } catch(e) { 
-        console.error("عطل فني مفصل أثناء الحفظ:", e);
+    } catch (error) { 
+        console.error("عطل فني مفصل أثناء الحفظ:", error);
         window.showToast("عطل اتصالي منع التخزين. يرجى المحاولة لاحقاً.", "error"); 
     } finally {
-        if(btnSave) {
+        if (btnSave) {
             btnSave.innerHTML = originalBtnHtml;
             btnSave.disabled = false;
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -533,9 +668,12 @@ window.saveProduct = async function() {
     }
 };
 
+// ==========================================
+// 6. مراقبة وإدارة طلبات العملاء الحية (Live Orders Tracking)
+// ==========================================
 window.fetchAdminOrders = async function() {
     const container = document.getElementById('orders-container');
-    if(container) {
+    if (container) {
         container.innerHTML = `
             <div class="text-center py-20 text-brand-textMuted font-bold text-xl">
                 <i data-lucide="loader-2" class="w-12 h-12 animate-spin mx-auto mb-4 text-brand-pink"></i> 
@@ -545,177 +683,225 @@ window.fetchAdminOrders = async function() {
     }
 
     try {
-        const ordersSnapshot = await getDocs(collection(db, 'orders'));
-        let ordersArray = [];
-        ordersSnapshot.forEach((docSnap) => {
-            ordersArray.push({ id: docSnap.id, ...docSnap.data() });
-        });
-
-        ordersArray.sort((a, b) => {
-            const timeA = new Date(a.createdAt || a.timestamp || 0).getTime();
-            const timeB = new Date(b.createdAt || b.timestamp || 0).getTime();
-            return timeB - timeA;
-        });
-
-        let ordersHtml = '';
-        
-        if (ordersArray.length === 0) {
-            ordersHtml = `
-                <div class="text-center py-20 text-brand-textMuted font-bold text-xl border-2 border-dashed border-brand-border rounded-3xl">
-                    <i data-lucide="package-open" class="w-16 h-16 mx-auto mb-4 text-brand-pink opacity-40"></i>
-                    لا توجد طلبات واردة حالياً في السجل.
-                </div>`;
-        } else {
-            ordersArray.forEach((orderData) => {
-                const orderId = orderData.id;
-                const order = orderData;
-                let itemsHtml = '';
-                
-                if(order.items && Array.isArray(order.items)) {
-                    order.items.forEach(item => {
-                        let itemDetailsHtml = '';
-                        
-                        if (item.isCustom && item.details) {
-                            if (item.details.category === 'ورد') {
-                                let matText = item.details.material === 'natural' ? 'ورد طبيعي' : (item.details.material === 'artificial' ? 'ورد صناعي فاخر' : 'ورد ستان حريري');
-                                let addonsList = [];
-                                if (item.details.hasGift) addonsList.push(`<span class="text-brand-pink">كارت إهداء مخطوط ("${item.details.giftText || ''}")</span>`);
-                                if (item.details.hasRibbon) addonsList.push(`<span class="text-emerald-400">🎀 شريط ستان مطبوع عليه: ("${item.details.ribbonText || ''}")</span>`);
-                                if (item.details.photoCount > 0) addonsList.push(`<span class="text-blue-400">📸 صور مطبوعة عدد (${item.details.photoCount})</span>`);
-                                if (item.details.chocolateBudget > 0) addonsList.push(`<span class="text-yellow-500">🍫 شوكولاتة فاخرة بميزانية ${item.details.chocolateBudget} ج.م (تفضيلات: ${item.details.chocolatePreferences || 'مشكل'})</span>`);
-                                if (item.details.cashAmount > 0) addonsList.push(`<span class="text-emerald-300 font-black">💵 كاش نقدي منسق بقيمة ${item.details.cashAmount} ج.م</span>`);
-                                
-                                itemDetailsHtml = `
-                                    <div class="mt-4 p-5 bg-brand-bg rounded-2xl border border-brand-border text-sm text-brand-textMuted space-y-2">
-                                        <p class="text-brand-pink font-black text-base flex items-center gap-2">
-                                            <i data-lucide="flower" class="w-5 h-5"></i> مواصفات تنسيق بوكيه الورد الفاخر:
-                                        </p>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                                            <p>• الحجم المعتمد والنوع: <span class="text-white font-black">${item.details.qty || 15} وردة</span> (${matText})</p>
-                                            <p>• درجة لون الورد: <span class="text-white font-bold">${item.details.color || 'أحمر'}</span></p>
-                                        </div>
-                                        ${addonsList.length > 0 ? `
-                                        <div class="mt-3 pt-3 border-t border-brand-border/40 text-xs space-y-2">
-                                            <p class="font-bold text-white mb-2">🎁 الإضافات والمرفقات اللوجستية للطلب:</p>
-                                            <ul class="list-disc pr-5 space-y-1">
-                                                ${addonsList.map(addon => `<li>${addon}</li>`).join('')}
-                                            </ul>
-                                        </div>` : ''}
-                                    </div>
-                                `;
-                            } else {
-                                let shapeText = item.details.shape === 'round' ? 'شكل دائري' : (item.details.shape === 'heart' ? 'شكل قلب' : (item.details.shape === 'square' ? 'شكل مربع' : 'شكل مستطيل'));
-                                let printText = 'تزيين يدوي كلاسيكي بدون طباعة صور';
-                                if (item.details.print === 'edible') {
-                                    printText = '<span class="text-emerald-400 font-black">🖼️ صورة غذائية قابلة للأكل مدمجة (Edible Photo Overlay)</span>';
-                                } else if (item.details.print === 'non_edible') {
-                                    printText = '<span class="text-yellow-500 font-bold">🖼️ صورة كرتونية ديكور غير قابلة للأكل (Decor Image)</span>';
-                                }
-                                
-                                let addonsList = [];
-                                if (item.details.gift) {
-                                    addonsList.push(`<span class="text-emerald-400">✉️ كارت هدية مخصص فاخر مكتوب عليه: "${item.details.cardText || ''}"</span>`);
-                                }
-                                if (item.details.occasionTheme) {
-                                    addonsList.push(`<span>🎈 مناسبة التورتة الإنشائية: ${item.details.occasionTheme}</span>`);
-                                }
-                                if (item.details.healthNotes && item.details.healthNotes !== 'لا يوجد') {
-                                    addonsList.push(`<span class="text-red-400 font-bold">⚠️ تنبيهات الحساسية والنظام الطبي: ${item.details.healthNotes}</span>`);
-                                }
-
-                                itemDetailsHtml = `
-                                    <div class="mt-4 p-5 bg-brand-bg rounded-2xl border border-brand-border text-sm text-brand-textMuted space-y-2">
-                                        <p class="text-brand-pink font-black text-base flex items-center gap-2">
-                                            <i data-lucide="cake" class="w-5 h-5"></i> مواصفات التورتة الملكية المصممة:
-                                        </p>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                                            <p>• المقاس الهندسي والشكل: تكفي <span class="text-white font-black">${item.details.people || 4} أفراد</span> (${shapeText})</p>
-                                            <p>• نكهة الكيك وحشو الكريمة: <span class="text-brand-pink font-black">${item.details.flavor || 'فانيليا فريش'}</span></p>
-                                        </div>
-                                        <p class="text-xs">• المظهر الخارجي والطباعة: ${printText}</p>
-                                        ${addonsList.length > 0 ? `
-                                        <div class="mt-3 pt-3 border-t border-brand-border/40 text-xs space-y-2">
-                                            <p class="font-bold text-white mb-2">🎁 تفاصيل التخصيص والملاحظات لخطوط المطبخ:</p>
-                                            <ul class="list-disc pr-5 space-y-1">
-                                                ${addonsList.map(addon => `<li>${addon}</li>`).join('')}
-                                            </ul>
-                                        </div>` : ''}
-                                    </div>
-                                `;
-                            }
-                        }
-                        
-                        itemsHtml += `
-                            <div class="border-b border-brand-border/50 last:border-b-0 py-4">
-                                <div class="flex justify-between items-center">
-                                    <p class="font-black text-xl text-white">${item.name}</p>
-                                    <span class="bg-brand-pink text-[#0c0709] font-black text-sm px-3 py-1 rounded-full">العدد: ${item.quantity || item.qty || 1}</span>
-                                </div>
-                                ${itemDetailsHtml}
-                            </div>
-                        `;
-                    });
-                }
-
-                const formattedDate = order.orderDate || 'غير محدد';
-                const formattedTime = order.orderTime || 'غير محدد';
-                const orderDateObj = order.createdAt || order.timestamp;
-                const clientTimeStr = orderDateObj ? new Date(orderDateObj).toLocaleString('ar-EG', { hour12: true }) : 'وقت الاستلام غير معروف';
-
-                ordersHtml += `
-                    <div class="bg-brand-surface border border-brand-border rounded-3xl p-8 shadow-xl" id="order-card-${orderId}">
-                        <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 border-b border-brand-border pb-6 mb-6">
-                            <div>
-                                <span class="bg-[#0c0709] border border-brand-border text-brand-pink px-4 py-2 rounded-xl text-xs font-black mb-3 inline-block">رقم الطلب: ${orderId}</span>
-                                <h4 class="text-3xl font-black text-white">${order.customerName || 'عميل مجهول'}</h4>
-                                <p class="text-sm font-bold text-brand-textMuted mt-1">تاريخ تقديم الطلب: ${clientTimeStr}</p>
-                            </div>
-                            <div class="text-right">
-                                <span class="block text-brand-textMuted font-bold text-sm mb-1">طريقة الاستلام: ${order.deliveryMode || 'استلام'}</span>
-                                <span class="font-black text-4xl text-brand-pink">${order.grandTotal || order.cartTotal || 0} <span class="text-xl">ج.م</span></span>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 xl:grid-cols-2 gap-12 mb-8">
-                            <div class="space-y-4">
-                                <h5 class="font-black text-xl text-white border-b border-brand-border/50 pb-2"><i data-lucide="user" class="w-5 h-5 inline mr-1 text-brand-pink"></i> بيانات الاتصال والتوصيل</h5>
-                                <p class="text-sm font-bold text-brand-textMuted">📞 رقم الواتساب الأساسي: <span class="text-white select-all font-mono tracking-widest">${order.whatsappPhone || 'غير مدرج'}</span></p>
-                                ${order.deliveryMode === 'توصيل' ? `
-                                    <p class="text-sm font-bold text-brand-textMuted">🏠 العنوان بالتفصيل: <span class="text-white font-black">${order.detailedAddress || order.address || 'العنوان غير مدرج'}</span></p>
-                                    <p class="text-sm font-bold text-brand-textMuted">📞 هاتف بديل للتواصل: <span class="text-white font-black">${order.altPhone || 'غير مدرج'}</span></p>
-                                ` : `
-                                    <p class="text-sm font-bold text-brand-textMuted">🏢 المقر: فرع الكفاح.</p>
-                                `}
-                                <p class="text-sm font-bold text-brand-textMuted">📅 موعد الاستلام المطلوب: <span class="text-brand-pink font-black text-lg">${formattedDate} - الساعة ${formattedTime}</span></p>
-                            </div>
-
-                            <div class="space-y-4">
-                                <h5 class="font-black text-xl text-white border-b border-brand-border/50 pb-2"><i data-lucide="cookie" class="w-5 h-5 inline mr-1 text-brand-pink"></i> تفاصيل المأكولات والمصنفات</h5>
-                                <div class="divide-y divide-brand-border/30 bg-[#0c0709] p-6 rounded-2xl border border-brand-border">
-                                    ${itemsHtml}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap gap-4 pt-6 border-t border-brand-border">
-                            <a href="https://wa.me/20${order.whatsappPhone ? order.whatsappPhone.replace(/^0/, '') : ''}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 text-lg">
-                                <i data-lucide="message-circle" class="w-6 h-6"></i> تواصل مع العميل وتأكيد الطلب
-                            </a>
-                            <button onclick="window.deleteAdminOrder('${orderId}', this)" class="bg-[#0c0709] border-2 border-red-900 text-red-500 hover:bg-red-900/20 font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 text-lg">
-                                <i data-lucide="trash-2" class="w-6 h-6"></i> أرشفة ومسح الطلب نهائياً
-                            </button>
-                        </div>
-                    </div>
-                `;
+        // تحويل استدعاء الطلبات إلى Snapshot لمتابعة التحديثات تلقائياً وحياً
+        onSnapshot(collection(db, 'orders'), (ordersSnapshot) => {
+            if (document.getElementById('orders-section').classList.contains('active') === false && container.innerHTML !== "") {
+                // منع تشويه العرض الفوري إذا لم يكن الإداري داخل التبويب
+            }
+            
+            let ordersArray = [];
+            ordersSnapshot.forEach((docSnap) => {
+                ordersArray.push({ id: docSnap.id, ...docSnap.data() });
             });
-        }
-        
-        if(container) {
-            container.innerHTML = ordersHtml;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
+
+            ordersArray.sort((a, b) => {
+                const timeA = new Date(a.createdAt || a.timestamp || 0).getTime();
+                const timeB = new Date(b.createdAt || b.timestamp || 0).getTime();
+                return timeB - timeA;
+            });
+
+            let ordersHtml = '';
+            
+            if (ordersArray.length === 0) {
+                ordersHtml = `
+                    <div class="text-center py-20 text-brand-textMuted font-bold text-xl border-2 border-dashed border-brand-border rounded-3xl">
+                        <i data-lucide="package-open" class="w-16 h-16 mx-auto mb-4 text-brand-pink opacity-40"></i>
+                        لا توجد طلبات واردة حالياً في السجل.
+                    </div>`;
+            } else {
+                ordersArray.forEach((orderData) => {
+                    const orderId = orderData.id;
+                    const order = orderData;
+                    let itemsHtml = '';
+                    
+                    if (order.items && Array.isArray(order.items)) {
+                        order.items.forEach(item => {
+                            let itemDetailsHtml = '';
+                            
+                            if (item.isCustom && item.details) {
+                                if (item.details.category === 'ورد') {
+                                    let matText = item.details.material === 'natural' ? 'ورد طبيعي' : (item.details.material === 'artificial' ? 'ورد صناعي فاخر' : 'ورد ستان حريري');
+                                    let addonsList = [];
+                                    if (item.details.hasGift) addonsList.push(`<span class="text-brand-pink">كارت إهداء مخطوط ("${item.details.giftText || ''}")</span>`);
+                                    if (item.details.hasRibbon) addonsList.push(`<span class="text-emerald-400">🎀 شريط ستان مطبوع عليه: ("${item.details.ribbonText || ''}")</span>`);
+                                    if (item.details.photoCount > 0) addonsList.push(`<span class="text-blue-400">📸 صور مطبوعة عدد (${item.details.photoCount})</span>`);
+                                    if (item.details.chocolateBudget > 0) addonsList.push(`<span class="text-yellow-500">🍫 شوكولاتة فاخرة بميزانية ${item.details.chocolateBudget} ج.م (تفضيلات: ${item.details.chocolatePreferences || 'مشكل'})</span>`);
+                                    if (item.details.cashAmount > 0) addonsList.push(`<span class="text-emerald-300 font-black">💵 كاش نقدي منسق بقيمة ${item.details.cashAmount} ج.م</span>`);
+                                    
+                                    itemDetailsHtml = `
+                                        <div class="mt-4 p-5 bg-brand-bg rounded-2xl border border-brand-border text-sm text-brand-textMuted space-y-2">
+                                            <p class="text-brand-pink font-black text-base flex items-center gap-2">
+                                                <i data-lucide="flower" class="w-5 h-5"></i> مواصفات تنسيق بوكيه الورد الفاخر:
+                                            </p>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                                <p>• الحجم المعتمد والنوع: <span class="text-white font-black">${item.details.qty || 15} وردة</span> (${matText})</p>
+                                                <p>• درجة لون الورد: <span class="text-white font-bold">${item.details.color || 'أحمر'}</span></p>
+                                            </div>
+                                            ${addonsList.length > 0 ? `
+                                            <div class="mt-3 pt-3 border-t border-brand-border/40 text-xs space-y-2">
+                                                <p class="font-bold text-white mb-2">🎁 الإضافات والمرفقات اللوجستية للطلب:</p>
+                                                <ul class="list-disc pr-5 space-y-1">
+                                                    ${addonsList.map(addon => `<li>${addon}</li>`).join('')}
+                                                </ul>
+                                            </div>` : ''}
+                                        </div>
+                                    `;
+                                } else {
+                                    let shapeText = item.details.shape === 'round' ? 'شكل دائري' : (item.details.shape === 'heart' ? 'شكل قلب' : (item.details.shape === 'square' ? 'شكل مربع' : 'شكل مستطيل'));
+                                    let printText = 'تزيين يدوي كلاسيكي بدون طباعة صور';
+                                    if (item.details.print === 'edible') {
+                                        printText = '<span class="text-emerald-400 font-black">🖼️ صورة غذائية قابلة للأكل مدمجة (Edible Photo Overlay)</span>';
+                                    } else if (item.details.print === 'non_edible') {
+                                        printText = '<span class="text-yellow-500 font-bold">🖼️ صورة كرتونية ديكور غير قابلة للأكل (Decor Image)</span>';
+                                    }
+                                    
+                                    let addonsList = [];
+                                    if (item.details.gift) {
+                                        addonsList.push(`<span class="text-emerald-400">✉️ كارت هدية مخصص فاخر مكتوب عليه: "${item.details.cardText || ''}"</span>`);
+                                    }
+                                    if (item.details.occasionTheme) {
+                                        addonsList.push(`<span>🎈 مناسبة التورتة الإنشائية: ${item.details.occasionTheme}</span>`);
+                                    }
+                                    if (item.details.healthNotes && item.details.healthNotes !== 'لا يوجد') {
+                                        addonsList.push(`<span class="text-red-400 font-bold">⚠️ تنبيهات الحساسية والنظام الطبي: ${item.details.healthNotes}</span>`);
+                                    }
+
+                                    itemDetailsHtml = `
+                                        <div class="mt-4 p-5 bg-brand-bg rounded-2xl border border-brand-border text-sm text-brand-textMuted space-y-2">
+                                            <p class="text-brand-pink font-black text-base flex items-center gap-2">
+                                                <i data-lucide="cake" class="w-5 h-5"></i> مواصفات التورتة الملكية المصممة:
+                                            </p>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                                <p>• المقاس الهندسي والشكل: تكفي <span class="text-white font-black">${item.details.people || 4} أفراد</span> (${shapeText})</p>
+                                                <p>• نكهة الكيك وحشو الكريمة: <span class="text-brand-pink font-black">${item.details.flavor || 'فانيليا فريش'}</span></p>
+                                            </div>
+                                            <p class="text-xs">• المظهر الخارجي والطباعة: ${printText}</p>
+                                            ${addonsList.length > 0 ? `
+                                            <div class="mt-3 pt-3 border-t border-brand-border/40 text-xs space-y-2">
+                                                <p class="font-bold text-white mb-2">🎁 تفاصيل التخصيص والملاحظات لخطوط المطبخ:</p>
+                                                <ul class="list-disc pr-5 space-y-1">
+                                                    ${addonsList.map(addon => `<li>${addon}</li>`).join('')}
+                                                </ul>
+                                            </div>` : ''}
+                                        </div>
+                                    `;
+                                }
+                            }
+                            
+                            itemsHtml += `
+                                <div class="border-b border-brand-border/50 last:border-b-0 py-4">
+                                    <div class="flex justify-between items-center">
+                                        <p class="font-black text-xl text-white">${item.name}</p>
+                                        <span class="bg-brand-pink text-[#0c0709] font-black text-sm px-3 py-1 rounded-full">العدد: ${item.quantity || item.qty || 1}</span>
+                                    </div>
+                                    ${itemDetailsHtml}
+                                </div>
+                            `;
+                        });
+                    }
+
+                    const formattedDate = order.orderDate || 'غير محدد';
+                    const formattedTime = order.orderTime || 'غير محدد';
+                    const orderDateObj = order.createdAt || order.timestamp;
+                    const clientTimeStr = orderDateObj ? new Date(orderDateObj).toLocaleString('ar-EG', { hour12: true }) : 'وقت الاستلام غير معروف';
+                    
+                    const statusColors = {
+                        'pending': 'border-amber-500 text-amber-500 bg-amber-500/10',
+                        'preparing': 'border-blue-500 text-blue-500 bg-blue-500/10',
+                        'completed': 'border-emerald-500 text-emerald-500 bg-emerald-500/10',
+                        'cancelled': 'border-rose-500 text-rose-500 bg-rose-500/10'
+                    };
+                    const status = order.status || 'pending';
+                    const statusClass = statusColors[status] || statusColors['pending'];
+
+                    ordersHtml += `
+                        <div class="bg-brand-surface border border-brand-border rounded-3xl p-8 shadow-xl" id="order-card-${orderId}">
+                            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 border-b border-brand-border pb-6 mb-6">
+                                <div>
+                                    <span class="bg-[#0c0709] border border-brand-border text-brand-pink px-4 py-2 rounded-xl text-xs font-black mb-3 inline-block">رقم الطلب: ${orderId}</span>
+                                    <h4 class="text-3xl font-black text-white">${order.customerName || 'عميل مجهول'}</h4>
+                                    <p class="text-sm font-bold text-brand-textMuted mt-1">تاريخ تقديم الطلب: ${clientTimeStr}</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="block text-brand-textMuted font-bold text-sm mb-1">طريقة الاستلام: ${order.deliveryMode || 'استلام'}</span>
+                                    <span class="font-black text-4xl text-brand-pink">${order.grandTotal || order.cartTotal || 0} <span class="text-xl">ج.م</span></span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 xl:grid-cols-2 gap-12 mb-8">
+                                <div class="space-y-4">
+                                    <h5 class="font-black text-xl text-white border-b border-brand-border/50 pb-2"><i data-lucide="user" class="w-5 h-5 inline mr-1 text-brand-pink"></i> بيانات الاتصال والتوصيل</h5>
+                                    <p class="text-sm font-bold text-brand-textMuted">📞 رقم الواتساب الأساسي: <span class="text-white select-all font-mono tracking-widest">${order.whatsappPhone || 'غير مدرج'}</span></p>
+                                    ${order.deliveryMode === 'توصيل' ? `
+                                        <p class="text-sm font-bold text-brand-textMuted">🏠 العنوان بالتفصيل: <span class="text-white font-black">${order.detailedAddress || order.address || 'العنوان غير مدرج'}</span></p>
+                                        <p class="text-sm font-bold text-brand-textMuted">📞 هاتف بديل للتواصل: <span class="text-white font-black">${order.altPhone || 'غير مدرج'}</span></p>
+                                    ` : `
+                                        <p class="text-sm font-bold text-brand-textMuted">🏢 المقر: فرع الكفاح.</p>
+                                    `}
+                                    <p class="text-sm font-bold text-brand-textMuted">📅 موعد الاستلام المطلوب: <span class="text-brand-pink font-black text-lg">${formattedDate} - الساعة ${formattedTime}</span></p>
+                                    <div class="pt-4 flex items-center gap-3">
+                                        <label class="text-white font-bold text-sm">تعديل الحالة اللوجستية:</label>
+                                        <select data-order-select-id="${orderId}" class="bg-[#0c0709] border border-brand-border text-white text-base rounded-xl px-4 py-2 font-bold outline-none cursor-pointer focus:border-brand-pink transition-all">
+                                            <option value="pending" ${status === 'pending' ? 'selected' : ''}>قيد الانتظار</option>
+                                            <option value="preparing" ${status === 'preparing' ? 'selected' : ''}>جاري التحضير</option>
+                                            <option value="completed" ${status === 'completed' ? 'selected' : ''}>تم التسليم</option>
+                                            <option value="cancelled" ${status === 'cancelled' ? 'selected' : ''}>إلغاء الطلب</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <h5 class="font-black text-xl text-white border-b border-brand-border/50 pb-2"><i data-lucide="cookie" class="w-5 h-5 inline mr-1 text-brand-pink"></i> تفاصيل المأكولات والمصنفات</h5>
+                                    <div class="divide-y divide-brand-border/30 bg-[#0c0709] p-6 rounded-2xl border border-brand-border">
+                                        ${itemsHtml}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex flex-wrap gap-4 pt-6 border-t border-brand-border">
+                                <a href="https://wa.me/20${order.whatsappPhone ? order.whatsappPhone.replace(/^0/, '') : ''}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 text-lg">
+                                    <i data-lucide="message-circle" class="w-6 h-6"></i> تواصل مع العميل وتأكيد الطلب
+                                </a>
+                                <button data-archive-id="${orderId}" class="btn-archive-order bg-[#0c0709] border-2 border-red-900 text-red-500 hover:bg-red-900/20 font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 text-lg">
+                                    <i data-lucide="trash-2" class="w-6 h-6"></i> أرشفة ومسح الطلب نهائياً
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            
+            if (container) {
+                container.innerHTML = ordersHtml;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+
+                // ربط الأحداث ميكانيكياً لعناصر الطلبات الحية
+                container.querySelectorAll('select[data-order-select-id]').forEach(select => {
+                    select.addEventListener('change', function() {
+                        window.updateOrderStatus(this.getAttribute('data-order-select-id'), this.value);
+                    });
+                });
+
+                container.querySelectorAll('.btn-archive-order').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        window.deleteAdminOrder(this.getAttribute('data-archive-id'), this);
+                    });
+                });
+            }
+        });
     } catch (error) {
         console.error(error);
+        window.showToast("فشل تحديث الطلبات الحية سحابياً", "error");
+    }
+};
+
+window.updateOrderStatus = async function(orderId, newStatus) {
+    try {
+        await setDoc(doc(db, 'orders', orderId), { status: newStatus }, { merge: true });
+        window.showToast("تم تحديث حالة الطلب بنجاح");
+    } catch (error) {
+        console.error("Order status update failed:", error);
+        window.showToast("تعذر تحديث حالة الطلب حالياً", "error");
     }
 };
 
@@ -723,14 +909,13 @@ window.deleteAdminOrder = async function(orderId, btnElement) {
     window.showConfirm("تأكيد سيادي: هل ترغب بحذف وأرشفة هذا الطلب نهائياً من السجلات؟", async () => {
         const originalHtml = btnElement ? btnElement.innerHTML : '';
         try {
-            if(btnElement) {
+            if (btnElement) {
                 btnElement.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> جاري الحذف...';
                 btnElement.disabled = true;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
             await deleteDoc(doc(db, 'orders', orderId));
             
-            // إرسال إشارة التحديث للمحرك حتى بعد أرشفة الطلبات لضمان تزامن كامل البيانات
             await setDoc(doc(db, 'system', 'syncFlag'), { 
                 forceRefresh: true, 
                 lastAdminUpdate: Date.now(),
@@ -738,11 +923,10 @@ window.deleteAdminOrder = async function(orderId, btnElement) {
             }, { merge: true });
 
             window.showToast("تم مسح وأرشفة الطلب بنجاح.");
-            window.fetchAdminOrders();
-        } catch(e) {
+        } catch (e) {
             window.showToast("عطل اتصالي منع حذف الطلب.", "error");
         } finally {
-            if(btnElement) {
+            if (btnElement) {
                 btnElement.innerHTML = originalHtml;
                 btnElement.disabled = false;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -751,4 +935,187 @@ window.deleteAdminOrder = async function(orderId, btnElement) {
     });
 };
 
-```
+// ==========================================
+// 7. محرك التنسيق الفاخر (Simulator Pricing Engine)
+// ==========================================
+window.saveBoseSimulatorSettings = async function() {
+    const btn = document.getElementById('btn-save-simulator-settings');
+    const originalHtml = btn ? btn.innerHTML : 'اعتماد الإعدادات سحابياً';
+
+    const settingsData = {
+        priceNatural: parseFloat(document.getElementById('adm-price-natural').value) || 0,
+        priceArtificial: parseFloat(document.getElementById('adm-price-artificial').value) || 0,
+        priceSatin: parseFloat(document.getElementById('adm-price-satin').value) || 0,
+        priceChocolate: parseFloat(document.getElementById('adm-price-chocolate').value) || 0,
+        priceCash: parseFloat(document.getElementById('adm-price-cash').value) || 0,
+        priceCard: parseFloat(document.getElementById('adm-price-card').value) || 0,
+        pricePhoto: parseFloat(document.getElementById('adm-price-photo').value) || 0,
+        layerChocolateUrl: document.getElementById('adm-layer-chocolate-url').value.trim(),
+        layerCashUrl: document.getElementById('adm-layer-cash-url').value.trim(),
+        updatedAt: Date.now()
+    };
+
+    try {
+        if (btn) {
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i> جاري الحفظ والاعتماد...';
+            btn.disabled = true;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        const configDoc = doc(db, 'simulator-settings', 'config');
+        await setDoc(configDoc, settingsData, { merge: true });
+        
+        await setDoc(doc(db, 'system', 'syncFlag'), { 
+            forceRefresh: true, 
+            lastAdminUpdate: Date.now(),
+            updateSource: 'admin_simulator_save'
+        }, { merge: true });
+
+        window.showToast("تم اعتماد إعدادات المحاكي بنجاح");
+    } catch (error) {
+        console.error("Save simulator parameters error:", error);
+        window.showToast("تعذر تخزين معلمات المحاكي", "error");
+    } finally {
+        if (btn) {
+            btn.innerHTML = originalHtml;
+            btn.disabled = false;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+    }
+};
+
+async function loadSimulatorSettings() {
+    try {
+        const configDoc = doc(db, 'simulator-settings', 'config');
+        const docSnap = await getDocs(collection(db, 'simulator-settings'));
+        
+        docSnap.forEach(d => {
+            if (d.id === 'config') {
+                const data = d.data();
+                if (data.priceNatural !== undefined) document.getElementById('adm-price-natural').value = data.priceNatural;
+                if (data.priceArtificial !== undefined) document.getElementById('adm-price-artificial').value = data.priceArtificial;
+                if (data.priceSatin !== undefined) document.getElementById('adm-price-satin').value = data.priceSatin;
+                if (data.priceChocolate !== undefined) document.getElementById('adm-price-chocolate').value = data.priceChocolate;
+                if (data.priceCash !== undefined) document.getElementById('adm-price-cash').value = data.priceCash;
+                if (data.priceCard !== undefined) document.getElementById('adm-price-card').value = data.priceCard;
+                if (data.pricePhoto !== undefined) document.getElementById('adm-price-photo').value = data.pricePhoto;
+                if (data.layerChocolateUrl !== undefined) document.getElementById('adm-layer-chocolate-url').value = data.layerChocolateUrl;
+                if (data.layerCashUrl !== undefined) document.getElementById('adm-layer-cash-url').value = data.layerCashUrl;
+            }
+        });
+    } catch (error) {
+        console.error("Load simulator settings failed:", error);
+    }
+}
+
+// ==========================================
+// 8. تهيئة خطوط مستمعي الأحداث المركزية (Central DOM Event Listeners)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    // تشغيل جلب بيانات الكتالوج فورياً وبثها
+    loadCatalog();
+
+    // 1. مستمعات التبويبات الفاخرة (Tabs configuration)
+    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const targetId = btn.getAttribute('data-target');
+            window.switchAdminTab(targetId, btn);
+        });
+    });
+
+    // 2. مستمعات القائمة الجانبية والهيدر
+    document.getElementById('btn-open-sidebar')?.addEventListener('click', () => window.toggleSidebar(true));
+    document.getElementById('btn-close-sidebar')?.addEventListener('click', () => window.toggleSidebar(false));
+    document.getElementById('sidebar-overlay')?.addEventListener('click', () => window.toggleSidebar(false));
+
+    // 3. مستمعات التبديل الاستراتيجي للأقسام الرئيسية
+    document.getElementById('menu-item-dash')?.addEventListener('click', function() {
+        window.switchSection('dashboard', this);
+    });
+    document.getElementById('menu-item-orders')?.addEventListener('click', function() {
+        window.switchSection('orders-section', this);
+        window.fetchAdminOrders();
+    });
+    document.getElementById('btn-refresh-orders')?.addEventListener('click', () => {
+        window.fetchAdminOrders();
+    });
+
+    // 4. مستمعات إضافة المنتجات والعودة منها
+    document.getElementById('btn-dash-add-product')?.addEventListener('click', () => {
+        window.openIsolatedEditor();
+    });
+    document.getElementById('btn-list-add-product')?.addEventListener('click', () => {
+        window.openIsolatedEditor();
+    });
+    document.getElementById('btn-editor-back')?.addEventListener('click', () => {
+        window.returnToIsolatedSection();
+    });
+    document.getElementById('btn-save-product')?.addEventListener('click', () => {
+        window.saveProduct();
+    });
+
+    // 5. مستمعات التحديث الفوري للـ Labels وحجم الكروت والمدخلات
+    document.getElementById('prod-stock')?.addEventListener('change', function() {
+        window.updateStockLabel(this);
+    });
+    document.getElementById('prod-has-discount')?.addEventListener('change', function() {
+        window.updateDiscountLabel(this);
+    });
+    document.getElementById('prod-cat')?.addEventListener('input', function() {
+        window.toggleFlowerFields(this.value);
+    });
+
+    // محددات أبعاد الكروت التلقائية والمطاطية
+    const cardW = document.getElementById('prod-card-w');
+    if (cardW) {
+        cardW.addEventListener('input', function() {
+            document.getElementById('val-custom-w').innerText = this.value + 'px';
+        });
+    }
+    const cardH = document.getElementById('prod-card-h');
+    if (cardH) {
+        cardH.addEventListener('input', function() {
+            document.getElementById('val-custom-h').innerText = this.value + 'px';
+        });
+    }
+
+    // ربط مخرجات الروابط المباشرة مع المعاينة البصرية الفورية
+    document.getElementById('prod-img')?.addEventListener('input', function() {
+        window.previewImage('img-preview', 'img-placeholder', this.value);
+    });
+    document.getElementById('prod-hero-img')?.addEventListener('input', function() {
+        window.previewImage('hero-preview', 'hero-placeholder', this.value);
+    });
+    document.getElementById('prod-img-natural')?.addEventListener('input', function() {
+        window.previewImage('preview-natural', 'placeholder-natural', this.value);
+    });
+    document.getElementById('prod-img-artificial')?.addEventListener('input', function() {
+        window.previewImage('preview-artificial', 'placeholder-artificial', this.value);
+    });
+    document.getElementById('prod-img-cash')?.addEventListener('input', function() {
+        window.previewImage('preview-cash', 'placeholder-cash', this.value);
+    });
+    document.getElementById('prod-img-choco')?.addEventListener('input', function() {
+        window.previewImage('preview-choco', 'placeholder-choco', this.value);
+    });
+
+    // ربط أزرار الرفع المستقلة (Cloudinary Triggers)
+    document.getElementById('btn-upload-prod-img')?.addEventListener('click', () => document.getElementById('file-prod-img').click());
+    document.getElementById('btn-upload-prod-hero')?.addEventListener('click', () => document.getElementById('file-prod-hero').click());
+    document.getElementById('btn-upload-img-natural')?.addEventListener('click', () => document.getElementById('file-img-natural').click());
+    document.getElementById('btn-upload-img-artificial')?.addEventListener('click', () => document.getElementById('file-img-artificial').click());
+    document.getElementById('btn-upload-img-cash')?.addEventListener('click', () => document.getElementById('file-img-cash').click());
+    document.getElementById('btn-upload-img-choco')?.addEventListener('click', () => document.getElementById('file-img-choco').click());
+
+    // ربط الأحداث الفعلية لملفات الرفع لعدم استخدام onchange مضمن
+    document.getElementById('file-prod-img')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder');
+    });
+    document.getElementById('file-prod-hero')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-hero-img', 'hero-preview', 'hero-placeholder');
+    });
+    document.getElementById('file-img-natural')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-img-natural', 'preview-natural', 'placeholder-natural');
+    });
+    document.getElementById('file-img-artificial')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-img-artificial', 'preview-artificial', '

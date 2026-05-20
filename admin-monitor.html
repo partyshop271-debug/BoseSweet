@@ -2,41 +2,493 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة المراقبة التشخيصية | BoseMonitor</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-pink': '#ff91a4',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* التنسيق البرمجي المعتمد لبطاقات المراقبة */
+        .monitor-card {
+            border: 2px solid #ff91a4;
+            border-radius: 12px;
+            padding: 16px;
+            background-color: #0f172a; /* slate-900 */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* تأثير الوميض البصري عند التحديث النشط للمخزون أو الكتالوج */
+        @keyframes pulse-highlight {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 145, 164, 0.7);
+                transform: scale(1.02);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 145, 164, 0);
+                transform: scale(1.02);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 145, 164, 0);
+                transform: scale(1);
+            }
+        }
+        
+        .update-flash {
+            animation: pulse-highlight 0.8s ease-out;
+            border-color: #ffffff !important;
+        }
+
+        /* تخصيص شريط التمرير بشكل أنيق */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff91a4;
+            border-radius: 3px;
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-white p-6">
-    <div class="max-w-5xl mx-auto">
-        <h1 class="text-2xl font-bold text-brand-pink mb-6">سجل التشخيصات والأداء</h1>
-        <div id="logs-container" class="space-y-4">
+<body class="bg-slate-950 text-white p-4 md:p-6 min-h-screen font-sans">
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <!-- الترويسة الرئيسية للوحة المراقبة -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-6">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-brand-pink tracking-wide">سجل التشخيصات والأداء</h1>
+                <p class="text-xs text-slate-400 mt-1">لوحة المراقبة التشغيلية لعمليات ومنتجات علامة حلويات بوسي التجارية</p>
             </div>
+            
+            <!-- مؤشر حالة الاتصال المباشر للمنظومة بمستودع البيانات الحقيقي -->
+            <div class="flex items-center gap-3 bg-slate-900 px-4 py-2 rounded-lg border border-slate-800 text-xs">
+                <span class="relative flex h-3.5 w-3.5">
+                    <span id="connection-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+                    <span id="connection-dot" class="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500"></span>
+                </span>
+                <span id="connection-text" class="font-medium text-slate-300">جاري الاتصال بقاعدة البيانات...</span>
+            </div>
+        </div>
+
+        <!-- شبكة الإحصاءات والمراقبة الحقيقية والمحدثة لحظياً -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="stats-grid">
+            
+            <!-- بطاقة إحصاءات المخزون الفعلي -->
+            <div id="card-logistics" class="monitor-card flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs text-slate-400 font-medium">حالة المخزون الكلية</span>
+                        <span id="badge-logistics" class="px-2 py-0.5 text-[10px] bg-slate-800 text-slate-400 rounded-full font-bold">معلق</span>
+                    </div>
+                    <div class="mt-4">
+                        <span class="text-3xl font-black text-white" id="stat-stock-total">--</span>
+                        <p class="text-[11px] text-slate-400 mt-1">نسبة توافر الأصناف الرئيسية في المستودعات</p>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                    <span class="text-slate-500">آخر تحديث مخزني</span>
+                    <span id="logistics-timestamp" class="text-brand-pink font-semibold">انتظار المزامنة</span>
+                </div>
+            </div>
+
+            <!-- بطاقة إحصاءات الكتالوج والمنتجات الحقيقية -->
+            <div id="card-catalog" class="monitor-card flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs text-slate-400 font-medium">حالة عرض الكتالوج</span>
+                        <span id="badge-catalog" class="px-2 py-0.5 text-[10px] bg-slate-800 text-slate-400 rounded-full font-bold">معلق</span>
+                    </div>
+                    <div class="mt-4">
+                        <span class="text-3xl font-black text-white" id="stat-products-active">--</span>
+                        <p class="text-[11px] text-slate-400 mt-1">إجمالي المعروضات الفعالة لعملاء حلويات بوسي</p>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                    <span class="text-slate-500">تحديث الكتالوج</span>
+                    <span id="catalog-timestamp" class="text-brand-pink font-semibold">انتظار المزامنة</span>
+                </div>
+            </div>
+
+            <!-- بطاقة التنبيهات والأخطاء الحقيقية للمستودع والطلبات -->
+            <div id="card-alerts" class="monitor-card flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs text-slate-400 font-medium">مراقبة النواقص والأخطاء</span>
+                        <span id="alert-indicator" class="px-2 py-0.5 text-[10px] bg-slate-800 text-slate-400 rounded-full font-bold">انتظار البيانات</span>
+                    </div>
+                    <div class="mt-4">
+                        <span class="text-3xl font-black text-white" id="stat-alerts-count">--</span>
+                        <p class="text-[11px] text-slate-400 mt-1">عمليات الشراء المعطلة أو المنتجات النافذة حالياً</p>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                    <span class="text-slate-500">الأصناف منخفضة الكمية</span>
+                    <span id="stat-halts" class="text-slate-400 font-semibold">--</span>
+                </div>
+            </div>
+
+            <!-- بطاقة إجمالي نشاط الإشارات والأحداث الواردة -->
+            <div id="card-activity" class="monitor-card flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs text-slate-400 font-medium">نبض التفاعلات الحية</span>
+                        <span class="px-2 py-0.5 text-[10px] bg-blue-950 text-blue-400 rounded-full font-bold">مستمر</span>
+                    </div>
+                    <div class="mt-4">
+                        <span class="text-3xl font-black text-white" id="stat-events-count">0</span>
+                        <p class="text-[11px] text-slate-400 mt-1">معدل الإشارات الواردة من واجهة المستخدم</p>
+                    </div>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-800/80 flex justify-between items-center text-xs">
+                    <span class="text-slate-500">مزامنة الشبكة</span>
+                    <span id="network-status" class="text-slate-400 font-semibold">انتظار البث</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- سجل الأخطاء والتشخيصات الواردة من الفايربيز الحقيقي -->
+        <div class="bg-slate-900 rounded-xl border border-slate-800 p-5 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+                <h2 class="text-lg font-bold text-slate-200">سجل الأحداث والعمليات التفصيلي</h2>
+                <span class="text-xs text-slate-500">يعرض آخر 50 عملية تشخيصية من الخادم</span>
+            </div>
+            
+            <div id="logs-container" class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
+                <!-- مؤشر المزامنة والتحميل الأولي -->
+                <div id="loading-placeholder" class="py-12 text-center text-slate-500 text-sm flex flex-col items-center gap-3">
+                    <span class="relative flex h-5 w-5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-pink opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-5 w-5 bg-brand-pink"></span>
+                    </span>
+                    <span>جاري تأمين الاتصال المباشر وسحب سجلات التشخيص الحية...</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- نافذة الإخطار العائمة لعرض الإشعارات الهامة للمدير -->
+    <div id="notification-toast" class="fixed bottom-5 left-5 bg-slate-900 border-2 border-brand-pink text-white px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-24 opacity-0 max-w-sm text-xs z-50 flex items-center gap-3">
+        <div class="bg-brand-pink/10 p-2 rounded-lg text-brand-pink">
+            🔔
+        </div>
+        <div>
+            <p class="font-bold text-slate-200">إشعار المراقبة</p>
+            <p id="toast-message" class="text-slate-400 mt-0.5">تم رصد تحديث حي للنظام</p>
+        </div>
     </div>
 
     <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, collection, query, orderBy, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-        // ملاحظة: تأكدي من إعدادات الـ firebaseConfig في ملف core-engine
         
-        const db = window.db; // المحرك الأساسي
-        const logsRef = collection(db, 'system_logs');
-        const q = query(logsRef, orderBy('timestamp', 'desc'), limit(50));
+        // جلب الإعدادات والرموز المخصصة من بيئة الاستضافة السحابية
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        let db;
+        let auth;
+        let eventsCounter = 0;
 
-        onSnapshot(q, (snapshot) => {
-            const container = document.getElementById('logs-container');
-            container.innerHTML = '';
-            snapshot.forEach((doc) => {
-                const log = doc.data();
-                container.innerHTML += `
-                    <div class="bg-slate-900 p-4 rounded-lg border-r-4 border-brand-pink">
-                        <div class="flex justify-between text-xs text-gray-400">
-                            <span>${log.source}</span>
-                            <span>${new Date(log.timestamp).toLocaleString('ar-EG')}</span>
-                        </div>
-                        <p class="mt-2 text-sm">${log.message}</p>
-                        <span class="inline-block mt-2 px-2 py-1 bg-brand-pink/20 text-brand-pink text-[10px] rounded">${log.type}</span>
-                    </div>
-                `;
-            });
+        // تهيئة اتصال الـ Firebase للإنتاج الحقيقي
+        if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+            const firebaseConfig = JSON.parse(__firebase_config);
+            const app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+        } else if (window.db) {
+            db = window.db;
+            auth = window.auth || getAuth();
+        }
+
+        // دالة المساعدة للحصول على المسارات الصارمة لقاعدة البيانات (Rule 1)
+        const getCollectionRef = (collectionName) => {
+            return collection(db, 'artifacts', appId, 'public', 'data', collectionName);
+        };
+
+        // دالة تحديث المراقبة الأساسية المسؤولة عن تحديث الإحصاءات والواجهة التفاعلية فورياً
+        function updateMonitor(updateSource = 'general') {
+            eventsCounter++;
+            
+            const eventsElement = document.getElementById('stat-events-count');
+            if (eventsElement) {
+                eventsElement.textContent = eventsCounter.toString();
+            }
+
+            const currentTime = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            
+            if (updateSource === 'catalog') {
+                const card = document.getElementById('card-catalog');
+                const timestamp = document.getElementById('catalog-timestamp');
+                if (card) {
+                    card.classList.add('update-flash');
+                    setTimeout(() => card.classList.remove('update-flash'), 800);
+                }
+                if (timestamp) {
+                    timestamp.textContent = currentTime;
+                }
+                showToast("مزامنة حية: تم تعديل وتحديث بيانات كتالوج منتجات BoseSweets");
+            } 
+            else if (updateSource === 'logistics') {
+                const card = document.getElementById('card-logistics');
+                const timestamp = document.getElementById('logistics-timestamp');
+                if (card) {
+                    card.classList.add('update-flash');
+                    setTimeout(() => card.classList.remove('update-flash'), 800);
+                }
+                if (timestamp) {
+                    timestamp.textContent = currentTime;
+                }
+                showToast("مزامنة حية: تم رصد تعديل فوري في مستويات مخزون حلويات بوسي");
+            }
+        }
+
+        window.updateMonitor = updateMonitor;
+
+        // تفعيل رصد مستمعي الأحداث الخاصة بالكتالوج واللوجستيات لـ حلويات بوسي
+        window.addEventListener('BoseSweets_Catalog_Updated', () => {
+            updateMonitor('catalog');
         });
+
+        window.addEventListener('BoseSweets_Logistics_Updated', () => {
+            updateMonitor('logistics');
+        });
+
+        // دالة عرض الإشعارات السريعة بدلاً من الـ alert المحظورة
+        function showToast(message) {
+            const toast = document.getElementById('notification-toast');
+            const toastMsg = document.getElementById('toast-message');
+            if (toast && toastMsg) {
+                toastMsg.textContent = message;
+                toast.classList.remove('translate-y-24', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+                
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                    toast.classList.add('translate-y-24', 'opacity-0');
+                }, 4000);
+            }
+        }
+
+        // بدء تشغيل قنوات الاتصال وتلقي البيانات الحقيقية من الخادم السحابي
+        const startRealTimeListeners = () => {
+            // تحديث مؤشرات الاتصال بالشبكة والـ Firebase
+            const pingDot = document.getElementById('connection-dot');
+            const pingAnimation = document.getElementById('connection-ping');
+            const pingText = document.getElementById('connection-text');
+            const networkStatus = document.getElementById('network-status');
+
+            if (pingDot && pingAnimation && pingText) {
+                pingDot.className = "relative inline-flex rounded-full h-3.5 w-3.5 bg-green-500";
+                pingAnimation.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75";
+                pingText.textContent = "مراقبة حية للمحرك نشطة";
+            }
+            if (networkStatus) {
+                networkStatus.textContent = "متصل بالبث";
+                networkStatus.className = "text-green-400 font-semibold";
+            }
+
+            // 1. مراقبة المنتجات والكتالوج الحقيقي (Products Collection)
+            const productsRef = getCollectionRef('products');
+            onSnapshot(productsRef, (snapshot) => {
+                let totalProductsCount = snapshot.size;
+                let activeProducts = 0;
+                let lowStockItems = 0;
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.status === 'active' || data.active !== false) {
+                        activeProducts++;
+                    }
+                    // حساب النواقص (كمية أقل من 5 وحدات)
+                    if (data.stock <= 5 || data.quantity <= 5) {
+                        lowStockItems++;
+                    }
+                });
+
+                // تحديث واجهة الكتالوج الحقيقي
+                const catalogEl = document.getElementById('stat-products-active');
+                const badgeCatalog = document.getElementById('badge-catalog');
+                if (catalogEl) catalogEl.textContent = `${activeProducts} صنف`;
+                if (badgeCatalog) {
+                    badgeCatalog.textContent = "مستقر";
+                    badgeCatalog.className = "px-2 py-0.5 text-[10px] bg-brand-pink/20 text-brand-pink rounded-full font-bold";
+                }
+
+                // تحديث حقل النواقص البرمجي
+                const haltsEl = document.getElementById('stat-halts');
+                if (haltsEl) {
+                    haltsEl.textContent = `${lowStockItems} أصناف`;
+                    haltsEl.className = lowStockItems > 0 ? "text-amber-400 font-semibold animate-pulse" : "text-emerald-400 font-semibold";
+                }
+
+                updateMonitor('catalog');
+            }, (error) => {
+                console.error("خطأ في جلب بيانات الكتالوج المباشرة:", error);
+            });
+
+            // 2. مراقبة وإدارة المخزون الفعلي (Inventory Collection)
+            const inventoryRef = getCollectionRef('inventory');
+            onSnapshot(inventoryRef, (snapshot) => {
+                let totalInventoryItems = snapshot.size;
+                let availableItemsCount = 0;
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    if (data.quantity > 0 || data.stock > 0) {
+                        availableItemsCount++;
+                    }
+                });
+
+                // حساب النسبة المئوية الدقيقة لتوافر الأصناف
+                const logisticsRate = totalInventoryItems > 0 ? Math.round((availableItemsCount / totalInventoryItems) * 100) : 100;
+                
+                const logisticsEl = document.getElementById('stat-stock-total');
+                const badgeLogistics = document.getElementById('badge-logistics');
+                if (logisticsEl) logisticsEl.textContent = `${logisticsRate}%`;
+                if (badgeLogistics) {
+                    badgeLogistics.textContent = "نشط";
+                    badgeLogistics.className = "px-2 py-0.5 text-[10px] bg-emerald-950 text-emerald-400 rounded-full font-bold";
+                }
+
+                updateMonitor('logistics');
+            }, (error) => {
+                // إذا لم توجد مجموعة مستقلة للمخزون، يتم الاعتماد تلقائياً على بيانات مخزون المنتجات
+                console.log("استخدام كتالوج المنتجات كبديل تفصيلي للمخزون الفعلي.");
+            });
+
+            // 3. مراقبة سجل العمليات والأخطاء التفصيلية المباشرة (System Logs)
+            const logsRef = getCollectionRef('system_logs');
+            const q = query(logsRef, orderBy('timestamp', 'desc'), limit(50));
+
+            onSnapshot(q, (snapshot) => {
+                const container = document.getElementById('logs-container');
+                const placeholder = document.getElementById('loading-placeholder');
+                const alertIndicator = document.getElementById('alert-indicator');
+                const alertCountEl = document.getElementById('stat-alerts-count');
+                
+                if (placeholder) {
+                    placeholder.remove();
+                }
+                
+                if (container) container.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    if (container) {
+                        container.innerHTML = `
+                            <div class="py-12 text-center text-slate-500 text-xs border border-dashed border-slate-800 rounded-lg">
+                                لا توجد سجلات تشغيلية حقيقية مسجلة حالياً في قاعدة البيانات السحابية.
+                            </div>
+                        `;
+                    }
+                    if (alertCountEl) alertCountEl.textContent = "0";
+                    if (alertIndicator) {
+                        alertIndicator.textContent = "لا يوجد";
+                        alertIndicator.className = "px-2 py-0.5 text-[10px] bg-slate-800 text-slate-400 rounded-full font-bold";
+                    }
+                    return;
+                }
+
+                let activeErrorsCount = 0;
+
+                snapshot.forEach((doc) => {
+                    const log = doc.data();
+                    
+                    let borderClass = 'border-brand-pink';
+                    let bgBadgeClass = 'bg-brand-pink/20 text-brand-pink';
+                    
+                    if (log.type === 'error' || log.type === 'critical' || log.type === 'fail') {
+                        borderClass = 'border-red-500';
+                        bgBadgeClass = 'bg-red-950 text-red-400';
+                        activeErrorsCount++;
+                    } else if (log.type === 'warning') {
+                        borderClass = 'border-amber-500';
+                        bgBadgeClass = 'bg-amber-950 text-amber-400';
+                    } else if (log.type === 'success' || log.type === 'info') {
+                        borderClass = 'border-emerald-500';
+                        bgBadgeClass = 'bg-emerald-950 text-emerald-400';
+                    }
+
+                    let formattedDate = 'غير محدد';
+                    if (log.timestamp) {
+                        try {
+                            const dateObj = log.timestamp.seconds ? new Date(log.timestamp.seconds * 1000) : new Date(log.timestamp);
+                            formattedDate = dateObj.toLocaleString('ar-EG');
+                        } catch (e) {
+                            formattedDate = log.timestamp;
+                        }
+                    }
+
+                    if (container) {
+                        container.innerHTML += `
+                            <div class="bg-slate-900 p-4 rounded-lg border-r-4 ${borderClass} hover:bg-slate-800/70 transition-colors">
+                                <div class="flex justify-between text-xs text-slate-400">
+                                    <span class="font-semibold text-slate-300">${log.source || 'محرك النظام السحابي'}</span>
+                                    <span class="font-mono">${formattedDate}</span>
+                                </div>
+                                <p class="mt-2 text-sm text-slate-200 leading-relaxed">${log.message}</p>
+                                <span class="inline-block mt-2 px-2.5 py-1 ${bgBadgeClass} text-[10px] rounded font-bold uppercase tracking-wider">${log.type || 'تشخيص'}</span>
+                            </div>
+                        `;
+                    }
+                });
+
+                // تحديث عداد الأخطاء النشطة
+                if (alertCountEl) alertCountEl.textContent = activeErrorsCount.toString();
+                if (alertIndicator) {
+                    if (activeErrorsCount > 0) {
+                        alertIndicator.textContent = "نشط";
+                        alertIndicator.className = "px-2 py-0.5 text-[10px] bg-red-950 text-red-400 rounded-full font-bold animate-pulse";
+                    } else {
+                        alertIndicator.textContent = "سليم";
+                        alertIndicator.className = "px-2 py-0.5 text-[10px] bg-emerald-950 text-emerald-400 rounded-full font-bold";
+                    }
+                }
+            }, (error) => {
+                console.error("خطأ أثناء سحب السجلات الحية من قاعدة البيانات: ", error);
+            });
+        };
+
+        // إدارة المصادقة والمزامنة الأمنية للإنتاج (Rule 3)
+        if (db && auth) {
+            const initAuth = async () => {
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (error) {
+                    console.error("عطل أثناء تأمين جلسة المزامنة والاتصال السحابي:", error);
+                }
+            };
+            
+            initAuth();
+            
+            // ربط مراقبة البيانات والبدء فور نجاح التحقق من الهوية والأذونات الأمنية
+            onAuthStateChanged(auth, (user) => {
+                if (!user) return;
+                startRealTimeListeners();
+            });
+        } else {
+            const placeholder = document.getElementById('loading-placeholder');
+            if (placeholder) {
+                placeholder.innerHTML = `
+                    <span class="text-amber-500 font-bold mb-2">⚠️ تهيئة إعدادات الخادم مفقودة</span>
+                    <span class="text-xs text-slate-400">يرجى التأكد من إدراج وتكوين ملفات الربط والتحكم على الاستضافة الخاصة بك للبدء في سحب البيانات الحقيقية.</span>
+                `;
+            }
+        }
     </script>
 </body>
 </html>

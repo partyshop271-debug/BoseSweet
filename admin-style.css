@@ -1,0 +1,252 @@
+/* BoseSweets Admin Core Stylesheet
+  Focus: Dark Mode, Eye Comfort, Double Border Cards, Balanced Typography
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+:root {
+    /* الوضع الليلي العميق والمريح للعين */
+    --bose-bg: #0c0c0c;
+    --bose-surface: #151515;
+    --bose-surface-glass: rgba(21, 21, 21, 0.85);
+    --bose-border: #2a2a2a;
+    --bose-border-light: #3a3a3a;
+    
+    /* هوية العلامة التجارية */
+    --bose-pink: #ff91a4;
+    --bose-pink-muted: rgba(255, 145, 164, 0.12);
+    
+    /* تدرجات النصوص المريحة للقراءة الطويلة */
+    --bose-text-main: #f0f0f0;
+    --bose-text-muted: #a8a8a8;
+    
+    /* أحجام الخطوط المتزنة (بدون تضخيم) */
+    --font-base: 15px;
+    --font-md: 16px;
+    --font-lg: 18px;
+    --font-xl: 22px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    outline: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    background-color: var(--bose-bg);
+    color: var(--bose-text-main);
+    font-family: 'Cairo', sans-serif;
+    font-size: var(--font-base);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* شريط التمرير (Scrollbar) هادئ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bose-bg); }
+::-webkit-scrollbar-thumb { background: var(--bose-border-light); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bose-pink); }
+
+/* =========================================
+   تخطيط القائمة الجانبية الشجرية (Sidebar)
+========================================= */
+.bose-sidebar {
+    background-color: var(--bose-surface);
+    border-left: 1px solid var(--bose-border);
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    height: 100vh;
+    z-index: 100;
+    overflow-y: auto;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bose-sidebar-header {
+    padding: 24px;
+    border-b: 1px solid var(--bose-border);
+    position: sticky;
+    top: 0;
+    background-color: var(--bose-surface-glass);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+}
+
+.bose-sidebar-nav {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* القوائم المنسدلة */
+details {
+    width: 100%;
+}
+
+details > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 14px 18px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 700;
+    color: var(--bose-text-main);
+    font-size: var(--font-md);
+    transition: all 0.3s ease;
+    user-select: none;
+}
+
+details > summary::-webkit-details-marker { display: none; }
+
+details > summary:hover {
+    background-color: var(--bose-pink-muted);
+    color: var(--bose-pink);
+}
+
+details[open] > summary {
+    background-color: transparent;
+    color: var(--bose-pink);
+    border-bottom: 1px solid var(--bose-border);
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 8px;
+}
+
+.submenu-container {
+    padding-right: 16px;
+    border-right: 2px solid var(--bose-border);
+    margin-right: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menu-item {
+    padding: 12px 16px;
+    border-radius: 10px;
+    color: var(--bose-text-muted);
+    font-size: var(--font-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.menu-item:hover, .menu-item.active {
+    background-color: var(--bose-pink-muted);
+    color: var(--bose-text-main);
+    transform: translateX(-4px);
+}
+
+/* =========================================
+   مساحة العمل المركزية (Main Workspace)
+========================================= */
+.bose-main-content {
+    margin-right: 320px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: margin 0.4s ease;
+}
+
+.bose-header {
+    background-color: var(--bose-surface-glass);
+    backdrop-filter: blur(12px);
+    border-b: 1px solid var(--bose-border);
+    padding: 20px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.bose-workspace {
+    padding: 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* =========================================
+   الكروت مزدوجة الإطار (Double Border Cards)
+========================================= */
+.bose-card {
+    background-color: var(--bose-surface);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 30px;
+    /* تطبيق الإطار المزدوج باستخدام ظلال الصندوق المتعددة للنعومة والحدة */
+    box-shadow: 0 0 0 2px var(--bose-bg), 0 0 0 4px var(--bose-pink), 0 10px 30px rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--bose-pink);
+    transition: transform 0.3s ease;
+}
+
+.form-label {
+    display: block;
+    color: var(--bose-text-muted);
+    font-weight: 700;
+    margin-bottom: 10px;
+    font-size: var(--font-base);
+}
+
+.form-input, .form-select, .form-textarea {
+    width: 100%;
+    background-color: var(--bose-bg);
+    border: 1px solid var(--bose-border-light);
+    color: var(--bose-text-main);
+    border-radius: 12px;
+    padding: 14px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: var(--font-md);
+    transition: all 0.3s ease;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--bose-pink);
+    box-shadow: 0 0 0 3px var(--bose-pink-muted);
+}
+
+/* =========================================
+   الأزرار (Buttons)
+========================================= */
+.btn-primary {
+    background-color: var(--bose-pink);
+    color: var(--bose-bg);
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    font-weight: 700;
+    font-size: var(--font-md);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-primary:hover {
+    background-color: var(--bose-text-main);
+    color: var(--bose-pink);
+    transform: translateY(-2px);
+}
+
+/* التجاوب مع شاشات الموبايل */
+@media (max-width: 1024px) {
+    .bose-sidebar { right: -100%; width: 85%; max-width: 340px; }
+    .bose-sidebar.active { right: 0; }
+    .bose-main-content { margin-right: 0; }
+    .bose-workspace { padding: 20px; }
+    .bose-card { padding: 24px; margin-bottom: 24px; }
+}

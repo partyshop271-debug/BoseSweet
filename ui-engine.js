@@ -1,15 +1,28 @@
+```javascript
 /**
  * ============================================================================
  * 👑 BoseSweets Sovereign UI Engine | محرك الواجهة البصرية السيادي
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: التحكم الكامل في الهيكل البصري وتوزيع المحتوى والربط مع المحرك الأساسي.
+ * الترقية: V40.0 Premium - معالجة انهيار الشبكة، ومزامنة السلة العائمة، ومحاكي التورتات الفاخر.
  * ============================================================================
  */
 
 // 🔗 جسر الربط السيادي مع المحرك الأساسي (Core Bridge)
 // نعتمد على استدعاء هذا الملف بعد core-engine.js لضمان توفر البيانات
 const BOSE_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg";
+
+// دالة داخلية لتسوية النصوص العربية لضمان المطابقة الكاملة للأقسام والأصناف الفاخرة
+function normalizeArabicText(text) {
+    if (!text) return '';
+    return text.toString()
+        .replace(/[أإآا]/g, 'ا')
+        .replace(/ة/g, 'ه')
+        .replace(/ى/g, 'ي')
+        .replace(/[ًٌٍَُِّ]/g, '') // إزالة الحركات تماماً لضمان دقة الفلترة
+        .trim();
+}
 
 // ============================================================================
 // 🎨 القسم الثامن: واجهة المستخدم والتحكم البصري والرسم الهندسي (UI Logic)
@@ -24,20 +37,40 @@ export function renderProductCardsUI(products, containerId) {
     const BoseState = window.BoseState;
 
     // رصد بيئة الحاوية بذكاء لتحديد نوع الهندسة المطلوبة (سلايدر أفقي أم شبكة رأسية)
-    const isSliderContainer = container.classList.contains('bose-horizontal-slider') || container.classList.contains('snap-x');
+    const isSliderContainer = container.classList.contains('bose-horizontal-slider') || 
+                              container.classList.contains('snap-x') || 
+                              container.id === 'new-arrivals-container' || 
+                              container.id === 'best-sellers-container';
 
     const sectionTitle = container.dataset.sectionTitle || '';
-    const currentLayoutBlock = BoseState.theme.builderLayout?.find(b => b.title === sectionTitle);
+    const currentLayoutBlock = BoseState?.theme?.builderLayout?.find(b => b.title === sectionTitle);
     const defaultWidth = currentLayoutBlock?.cardWidth || 280;
     const defaultHeight = currentLayoutBlock?.cardHeight || 350;
 
     container.innerHTML = products.map(p => {
-        const isOut = p.inStock === false;
+        const isOut = p.inStock === false || p.stock === 0;
         const customWidth = p.cardWidth || defaultWidth;
         const customHeight = p.cardHeight || defaultHeight;
         
-        const isDonutOrCinnabon = p.category && (p.category.includes('دوناتس') || p.category.includes('سينابون') || p.category.includes('ديسباسيتو') || p.category.includes('قشطوطة') || p.category.includes('كبات السعادة'));
-        const isRoyalItem = p.category && (p.category.includes('تورت') || p.category.includes('جاتوهات') || p.category.includes('ورد'));
+        // التحقق الدقيق والموسع من تصنيفات المنتجات الخاصة لضمان ثبات الهيكل البصري
+        const categoryNormalized = p.category ? normalizeArabicText(p.category) : '';
+        const nameNormalized = p.name ? normalizeArabicText(p.name) : '';
+
+        const isDonutOrCinnabon = categoryNormalized.includes('دوناتس') || 
+                                  categoryNormalized.includes('سينابون') || 
+                                  categoryNormalized.includes('ديسباسيتو') || 
+                                  categoryNormalized.includes('قشطوطه') || 
+                                  categoryNormalized.includes('كبات السعاده') ||
+                                  nameNormalized.includes('دونات') ||
+                                  nameNormalized.includes('سينابون');
+
+        const isRoyalItem = categoryNormalized.includes('تورت') || 
+                            categoryNormalized.includes('جاتوه') || 
+                            categoryNormalized.includes('ورد') || 
+                            categoryNormalized.includes('بوكيه') ||
+                            nameNormalized.includes('تورته') ||
+                            nameNormalized.includes('جاتوه') ||
+                            nameNormalized.includes('بوكيه');
         
         let isFullSpan = p.gridSpan === 'full' || p.displayStyle === 'full' || isRoyalItem;
         if (isDonutOrCinnabon) isFullSpan = false;
@@ -48,7 +81,7 @@ export function renderProductCardsUI(products, containerId) {
         
         if (isSliderContainer) {
             spanClass = 'snap-start flex-shrink-0'; // يمنع الانكماش ويسمح بالتمرير
-            widthStyle = `width: ${isFullSpan ? '85vw' : customWidth + 'px'}; max-width: 100%; margin: 0 auto;`;
+            widthStyle = `width: ${isFullSpan ? '320px' : customWidth + 'px'}; max-width: 85vw;`;
         } else {
             spanClass = isFullSpan ? 'col-span-full w-full' : 'col-span-1 w-full';
             widthStyle = `max-width: ${isFullSpan ? '100%' : customWidth + 'px'}; margin: 0 auto; width: 100%;`;
@@ -58,19 +91,19 @@ export function renderProductCardsUI(products, containerId) {
         const img = processBoseImage ? processBoseImage(p.img || p.image) : (p.img || p.image || BOSE_LOGO_FALLBACK);
 
         return `
-            <div class="catalog-card-wrapper ${spanClass} p-2" style="${widthStyle}">
+            <div class="catalog-card-wrapper ${spanClass} p-2 transition-transform duration-300 hover:-translate-y-1" style="${widthStyle}">
                 <div class="bose-double-wrap group h-full block text-decoration-none relative bg-white rounded-[32px] border-2 border-[#ff91a4] p-1.5 shadow-sm hover:shadow-md transition-all duration-300">
                     <div class="bose-double-inner bg-white h-full flex flex-col rounded-[26px] overflow-hidden">
                         <div class="w-full overflow-hidden bg-brand-pinkLight border-b border-[#ff91a4]/20 relative" style="height: ${customHeight}px">
-                            <img src="${img}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
+                            <img src="${img}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
                             ${hasDiscount && !isOut ? `<div class="absolute top-4 right-4 bg-[#ff91a4] text-white font-black text-xs px-3 py-1.5 rounded-lg shadow-sm z-10">عرض خاص 🔥</div>` : ''}
-                            ${isOut ? '<div class="absolute inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center text-white font-black text-lg">نفذت الكمية 🚫</div>' : ''}
+                            ${isOut ? '<div class="absolute inset-0 bg-black/50 backdrop-blur-xs flex items-center justify-center text-white font-black text-lg z-10 select-none">نفذت الكمية 🚫</div>' : ''}
                         </div>
                         <div class="p-5 flex flex-col flex-grow text-right bg-white justify-between">
                             <div>
                                 <h3 class="font-bold text-lg text-[#3d241c] mb-1 truncate">${p.name}</h3>
                                 <p class="text-xs text-[#ff91a4] font-black mb-2">${p.category || 'صنف فاخر'}</p>
-                                <p class="text-xs text-gray-500 line-clamp-2 mb-4">${p.description || p.desc || ''}</p>
+                                <p class="text-xs text-gray-500 line-clamp-2 mb-4 h-8">${p.description || p.desc || ''}</p>
                                 ${p.flavors ? `<p class="text-[11px] text-[#ff91a4] font-bold border-t border-dashed border-[#fff5f6] pt-2 mb-4 leading-relaxed">${p.flavors}</p>` : ''}
                             </div>
                             <div class="mt-auto flex justify-between items-center border-t border-[#ff91a4]/10 pt-4">
@@ -80,11 +113,11 @@ export function renderProductCardsUI(products, containerId) {
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <div class="flex items-center gap-1.5 bg-gray-50 rounded-full px-2 py-1 border border-gray-100">
-                                        <button onclick="window.updateTempQtyContext(this, -1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200">-</button>
+                                        <button onclick="window.updateTempQtyContext(this, -1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200" ${isOut ? 'disabled' : ''}>-</button>
                                         <span class="temp-qty-display text-xs font-bold w-4 text-center">1</span>
-                                        <button onclick="window.updateTempQtyContext(this, 1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200">+</button>
+                                        <button onclick="window.updateTempQtyContext(this, 1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200" ${isOut ? 'disabled' : ''}>+</button>
                                     </div>
-                                    <button onclick="window.cartSystem.addWithQtyContext(this, '${p.id}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-[#ff91a4] flex items-center justify-center hover:bg-[#ff91a4] hover:text-white border border-[#ff91a4]/20 transition-colors shadow-sm cursor-pointer" ${isOut ? 'disabled' : ''}>
+                                    <button onclick="window.addWithQtyContextAndSync(this, '${p.id}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-[#ff91a4] flex items-center justify-center hover:bg-[#ff91a4] hover:text-white border border-[#ff91a4]/20 transition-colors shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" ${isOut ? 'disabled' : ''}>
                                         <i data-lucide="plus" class="w-5 h-5"></i>
                                     </button>
                                 </div>
@@ -102,7 +135,7 @@ let uiRenderDebounceTimer = null;
 
 export function distributeProductsToUI(products) {
     const BoseState = window.BoseState;
-    const normalizeArabic = window.normalizeArabic;
+    const normalizeArabic = window.normalizeArabic || normalizeArabicText;
     
     // تأمين جلب المنتجات إذا لم يتم تمريرها
     const currentProducts = products || (BoseState ? BoseState.catalog : []);
@@ -116,17 +149,19 @@ export function distributeProductsToUI(products) {
                 const sectionTitle = el.dataset.sectionTitle || '';
                 const block = BoseState?.theme?.builderLayout?.find(b => b.title === sectionTitle);
                 let filteredList = [...currentProducts];
+                
                 if (block && block.dataSource) {
                     if (block.dataSource.startsWith('category:')) {
                         const catName = block.dataSource.split(':')[1];
-                        const normalizedCatName = normalizeArabic ? normalizeArabic(catName) : catName;
-                        filteredList = currentProducts.filter(p => p.category && (normalizeArabic ? normalizeArabic(p.category) : p.category) === normalizedCatName);
+                        const normalizedCatName = normalizeArabic(catName);
+                        filteredList = currentProducts.filter(p => p.category && normalizeArabic(p.category) === normalizedCatName);
                     } else if (block.dataSource === 'latest') {
                         filteredList = [...currentProducts].sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 12);
                     } else if (block.dataSource === 'bestsellers') {
                         filteredList = currentProducts.filter(p => p.hasDiscount === true).slice(0, 12);
                     }
                 }
+                
                 renderProductCardsUI(filteredList, id);
             }
         });
@@ -193,7 +228,7 @@ export const showInfo = function(type) {
     let title = "", content = "";
     if (type === 'about') {
         title = "عن علامة حلويات بوسي";
-        content = `تأسست حلويات بوسي عام 2014 في مدينة الكفاح... نحن نلتزم بأعلى معايير المهنية والجودة العالمية لتوفير أفخر المخبوزات والحلويات الغربية والشرقية المصنوعة يدوياً وبأعلى مقاييس الفخامة.`;
+        content = `تأسست حلويات بوسي في مدينة الكفاح بمركز الفرافرة... نحن نلتزم بأعلى معايير المهنية والجودة العالمية لتوفير أفخر المخبوزات والحلويات الغربية والشرقية المصنوعة يدوياً وبأعلى مقاييس الفخامة.`;
     }
     const modalId = 'bose-info-modal'; let modal = document.getElementById(modalId);
     if (!modal) { 
@@ -217,6 +252,87 @@ window.updateTempQtyContext = function(btn, delta) {
         if (val > 50) val = 50;
         display.innerText = val;
     }
+};
+
+// ============================================================================
+// 🛒 ترقية نظام السلة العائمة والمزامنة اللحظية
+// ============================================================================
+
+window.syncBoseCartUI = function() {
+    const BoseState = window.BoseState;
+    
+    // حفظ السلة الحالية في الذاكرة المحلية والاحتياطية لضمان الاستمرارية
+    if (BoseState && BoseState.cart) {
+        if (window.saveToLocalMemory) {
+            window.saveToLocalMemory('BoseSweets_Cart', BoseState.cart);
+            window.saveToLocalMemory('bose_cart_storage', BoseState.cart);
+            window.saveToLocalMemory('bose_cart', BoseState.cart);
+        } else {
+            localStorage.setItem('bose_cart_storage', JSON.stringify(BoseState.cart));
+            localStorage.setItem('bose_cart', JSON.stringify(BoseState.cart));
+        }
+    }
+
+    // إطلاق حدث التحديث المتزامن لتنبيه السلة العائمة
+    window.dispatchEvent(new CustomEvent('BoseSweets_Cart_Updated', { detail: BoseState?.cart }));
+    window.dispatchEvent(new CustomEvent('cart_updated'));
+
+    // استدعاء دوال التحديث المباشرة إن كانت معرفة في المحرك الرئيسي
+    if (typeof window.updateCartUI === 'function') {
+        window.updateCartUI();
+    }
+    if (window.cartSystem && typeof window.cartSystem.render === 'function') {
+        window.cartSystem.render();
+    }
+};
+
+window.addWithQtyContextAndSync = function(btn, productId) {
+    const cardWrapper = btn.closest('.catalog-card-wrapper');
+    const qtyDisplay = cardWrapper ? cardWrapper.querySelector('.temp-qty-display') : null;
+    const qty = qtyDisplay ? parseInt(qtyDisplay.innerText) : 1;
+
+    if (window.cartSystem && typeof window.cartSystem.addWithQtyContext === 'function') {
+        // استخدام نظام الإضافة الأساسي الخاص بالمحرك
+        window.cartSystem.addWithQtyContext(btn, productId);
+        
+        // التدخل لضمان الكمية المحددة بدقة ثم مزامنة السلة العائمة
+        setTimeout(() => {
+            const BoseState = window.BoseState;
+            if (BoseState && Array.isArray(BoseState.cart)) {
+                const targetItem = BoseState.cart.find(item => item.id === productId);
+                if (targetItem) {
+                    targetItem.quantity = qty;
+                }
+                window.syncBoseCartUI();
+            }
+        }, 80);
+    } else {
+        // نظام حماية بديل فوري في حال لم يكن المحرك الأساسي قد تم تحميله بالكامل
+        const BoseState = window.BoseState;
+        const product = BoseState?.catalog?.find(p => p.id === productId);
+        if (!product) return;
+
+        let cart = BoseState?.cart || [];
+        const existingIdx = cart.findIndex(item => item.id === productId);
+
+        if (existingIdx > -1) {
+            cart[existingIdx].quantity += qty;
+        } else {
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: parseFloat(product.price),
+                quantity: qty,
+                image: product.image || product.img || BOSE_LOGO_FALLBACK
+            });
+        }
+
+        if (BoseState) BoseState.cart = cart;
+        window.syncBoseCartUI();
+    }
+
+    // إعادة تعيين شاشة اختيار الكمية المؤقتة إلى 1 بعد الإضافة الناجحة
+    if (qtyDisplay) qtyDisplay.innerText = "1";
 };
 
 if (typeof window !== 'undefined') {
@@ -336,27 +452,104 @@ function integrateSimulatorWithCart(simulatorData) {
         window.boseCartEngine.addItem(cartItem);
     } else if (typeof window.globalCart !== 'undefined' && Array.isArray(window.globalCart)) {
         window.globalCart.push(cartItem);
-        if (typeof window.updateCartUI === 'function') window.updateCartUI();
+        window.syncBoseCartUI();
     } else if (BoseState && Array.isArray(BoseState.cart)) {
         BoseState.cart.push(cartItem);
-        if(window.saveToLocalMemory) {
-            window.saveToLocalMemory('BoseSweets_Cart', BoseState.cart);
-            window.saveToLocalMemory('bose_cart_storage', BoseState.cart);
-            window.saveToLocalMemory('bose_cart', BoseState.cart);
-        }
+        window.syncBoseCartUI();
     } else {
         let localCart = JSON.parse(localStorage.getItem('bose_cart_storage') || localStorage.getItem('bose_cart') || '[]');
         localCart.push(cartItem);
         localStorage.setItem('bose_cart_storage', JSON.stringify(localCart));
         localStorage.setItem('bose_cart', JSON.stringify(localCart));
+        window.dispatchEvent(new CustomEvent('BoseSweets_Cart_Updated'));
     }
 
     window.location.href = 'cart.html';
     return true;
 }
 
+// ============================================================================
+// 🎂 ربط محاكي التورتات المخصص بالسلة مباشرة ومزامنة الخيارات
+// ============================================================================
+
+export function integrateCakeSimulatorWithCart(cakeData) {
+    if (!cakeData || !cakeData.totalPrice) {
+        console.error("خطأ: بيانات تصميم التورتة غير متوافقة مع محرك الموقع.");
+        return false;
+    }
+
+    const cartItem = {
+        id: `cake-custom-${Date.now()}`,
+        name: cakeData.productName || "تورتة من تصميمك المخصص",
+        price: parseFloat(cakeData.totalPrice.replace(/[^\d.]/g, '')),
+        quantity: cakeData.quantity || 1,
+        options: {
+            "الحجم والأدوار": cakeData.sizeLabel || "دور واحد متناسق",
+            "نوع الكيك والسبونج": cakeData.spongeType || "فانيليا هشة",
+            "الحشو والطبقات الداخلية": cakeData.filling || "كريمة غنية",
+            "التغطية الخارجية": cakeData.topping || "كريمة شوكولاتة فاخرة",
+            "عبارة الإهداء المكتوبة": cakeData.writtenMessage || "بدون كتابة",
+            "إضافات تزيينية مخصصة": [
+                cakeData.hasFruits ? "قطع فواكه موسمية طازجة" : null,
+                cakeData.hasMacarons ? "قطع ماكرون فرنسي" : null,
+                cakeData.hasFlowers ? "ورود طبيعية منسقة" : null,
+                cakeData.hasCandles ? "شمع احتفالي فاخر" : null
+            ].filter(Boolean)
+        },
+        metadata: {
+            source: "cake-simulator",
+            timestamp: new Date().toISOString()
+        }
+    };
+
+    const BoseState = window.BoseState;
+
+    if (BoseState && Array.isArray(BoseState.cart)) {
+        BoseState.cart.push(cartItem);
+        window.syncBoseCartUI();
+    } else {
+        let localCart = JSON.parse(localStorage.getItem('bose_cart_storage') || localStorage.getItem('bose_cart') || '[]');
+        localCart.push(cartItem);
+        localStorage.setItem('bose_cart_storage', JSON.stringify(localCart));
+        localStorage.setItem('bose_cart', JSON.stringify(localCart));
+        if (BoseState) BoseState.cart = localCart;
+        window.syncBoseCartUI();
+    }
+
+    window.location.href = 'cart.html';
+    return true;
+}
+
+window.parseCustomCakeOrder = function(item) {
+    if (!item || item.metadata?.source !== "cake-simulator") return '';
+
+    const opts = item.options || {};
+    const additionals = Array.isArray(opts["إضافات تزيينية مخصصة"]) ? opts["إضافات تزيينية مخصصة"].join(' | ') : 'لا يوجد';
+    
+    return `
+        <div class="mt-3 p-4 bg-[#1a1012] rounded-xl border border-[#42282d] text-xs text-[#e0c8cc] space-y-2 text-right">
+            <p class="text-[#ff91a4] font-black flex items-center justify-end gap-1">
+                🎂 تفاصيل تصميم التورتة المخصصة (دقة التنفيذ):
+            </p>
+            <div class="grid grid-cols-2 gap-y-1 text-[11px] direction-rtl">
+                <p>• الحجم والطبقات: <span class="text-white font-bold">${opts["الحجم والأدوار"] || 'دور واحد'}</span></p>
+                <p>• نوع الكيك: <span class="text-white font-bold">${opts["نوع الكيك والسبونج"] || 'فانيليا'}</span></p>
+                <p>• الحشو المعتمد: <span class="text-white font-bold">${opts["الحشو والطبقات الداخلية"] || 'كريمة'}</span></p>
+                <p>• التغطية الخارجية: <span class="text-white font-bold">${opts["التغطية الخارجية"] || 'كريمة'}</span></p>
+            </div>
+            <p class="text-[11px] border-t border-[#42282d] pt-1 mt-1">
+                • الكتابة المطلوبة: <span class="text-[#ff91a4] font-bold">${opts["عبارة الإهداء المكتوبة"] || 'لا يوجد'}</span>
+            </p>
+            <p class="text-[11px] pt-1">
+                • الإضافات الفاخرة المرفقة: <span class="text-white">${additionals}</span>
+            </p>
+        </div>
+    `;
+};
+
 if (typeof window !== 'undefined') {
     window.addToCart = integrateSimulatorWithCart;
+    window.addCakeToCart = integrateCakeSimulatorWithCart;
 }
 
 window.saveBoseSimulatorSettings = async function() {
@@ -476,4 +669,6 @@ window.addEventListener('BoseSweets_Logistics_Updated', () => {
     }
 });
 
-console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد وفصله تقنياً بنجاح إلى (Core) و (UI) للإصدار السيادي (V39.7 Premium).");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد وفصله تقنياً بنجاح إلى (Core) و (UI) للإصدار السيادي (V40.0 Premium).");
+
+```

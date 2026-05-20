@@ -5,6 +5,7 @@
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: مركز البيانات، تهيئة السحابة، نظام المراقبة، ومحرك السلة.
+ * التوافق الكامل: معالجة فورية لتحديثات المخزون والتزامن اللحظي دون اهتزازات.
  * ============================================================================
  */
 
@@ -281,7 +282,10 @@ window.loadEngineMemory = async function() {
         if (cachedCatalog && cachedCatalog.length > 0 && BoseState.catalog.length === 0) {
             BoseState.catalog = cachedCatalog;
             syncCatalogMap();
-            if (typeof window.distributeProductsToUI === 'function') window.distributeProductsToUI();
+            if (typeof window.distributeProductsToUI === 'function') {
+                window.distributeProductsToUI(BoseState.catalog);
+            }
+            window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
         }
         if (cachedTheme && Object.keys(cachedTheme).length > 0 && Object.keys(BoseState.theme).length === 0) {
             BoseState.theme = cachedTheme;
@@ -463,6 +467,13 @@ const boseConfig = {
     pricingRules: { cake: { basePersons: 4, basePrice: 580, pricePerPerson: 145, incrementStep: 2 }, printing: { edible: 60, decoration: 20, none: 0 } }
 };
 
+// 👑 تأكيد تهيئة متغير الحالة الأساسي مبكراً على النطاق العام لمنع أي أخطاء برمجية
+if (typeof window !== 'undefined') {
+    if (!window.BoseState) {
+        window.BoseState = { catalog: [], cart: [] };
+    }
+}
+
 export const BoseState = {
     catalog: [],
     theme: {},
@@ -474,7 +485,7 @@ export const BoseState = {
     catMenu: [], 
     activeCat: 'الرئيسية', 
     isAppReady: false,         
-    cart: JSON.parse(localStorage.getItem('bose_cart_storage') || localStorage.getItem('BoseSweets_Cart') || localStorage.getItem('bose_cart') || '[]'), 
+    cart: [], 
     currentShippingFee: 0, 
     appliedPromo: null,
     catalogMap: new Map(),
@@ -495,6 +506,15 @@ export const BoseState = {
     cakeState: { flavor: 'فانيليا', shape: 'دائري', persons: 4, printingOption: 'بدون', notes: '', refImage: null, allergies: '', hasCard: false, cardText: '', occasionTheme: '', designStyle: 'تصميم محدد', currentCalculatedPrice: 580 },
     currentBuilderStep: 1
 };
+
+// قراءة السلة بأمان بعد استيفاء تهيئة الهياكل المرجعية
+try {
+    if (typeof window !== 'undefined') {
+        BoseState.cart = JSON.parse(localStorage.getItem('bose_cart_storage') || localStorage.getItem('BoseSweets_Cart') || localStorage.getItem('bose_cart') || '[]');
+    }
+} catch (e) {
+    BoseState.cart = [];
+}
 
 export function syncCatalogMap() {
     try {
@@ -521,22 +541,46 @@ export function getFromLocalMemory(key) { try { if (typeof window !== 'undefined
 export function setAppReady() {
     try {
         BoseState.isAppReady = true;
-        const loader = document.getElementById('global-loader');
-        if (loader) {
-            loader.style.opacity = '0';
-            setTimeout(() => { 
-                loader.style.display = 'none'; 
-                const mc = document.getElementById('main-content'); if(mc) mc.style.opacity = '1';
-            }, 700);
+        
+        const executeReadyLogic = () => {
+            const loader = document.getElementById('global-loader');
+            if (loader) {
+                loader.style.opacity = '0';
+                setTimeout(() => { 
+                    loader.style.display = 'none'; 
+                    const mc = document.getElementById('main-content'); 
+                    if (mc) mc.style.opacity = '1';
+                }, 700);
+            }
+            window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready', { 
+                detail: { timestamp: Date.now(), status: 'Sovereign_Ready' } 
+            }));
+        };
+
+        // حارس التفاعل: تأمين التلاعب بعناصر DOM لضمان جاهزية الصفحة بنسبة 100%
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', executeReadyLogic);
+        } else {
+            executeReadyLogic();
         }
-        window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready', { detail: { timestamp: Date.now(), status: 'Sovereign_Ready' } }));
-    } catch (e) {}
+    } catch (e) {
+        if (window.BoseMonitor) window.BoseMonitor.report(e, 'core-engine.js', null, null, 'setAppReady');
+    }
 }
 
 if (typeof window !== 'undefined') {
-    window.boseConfig = boseConfig; window.BoseState = BoseState; window.syncCatalogMap = syncCatalogMap;
-    window.saveToLocalMemory = saveToLocalMemory; window.getFromLocalMemory = getFromLocalMemory; window.setAppReady = setAppReady;
-    window.processBoseImage = processBoseImage; window.normalizeArabic = normalizeArabic;
+    window.boseConfig = boseConfig; 
+    window.BoseState = BoseState; 
+    window.syncCatalogMap = syncCatalogMap;
+    window.saveToLocalMemory = saveToLocalMemory; 
+    window.getFromLocalMemory = getFromLocalMemory; 
+    window.setAppReady = setAppReady;
+    window.processBoseImage = processBoseImage; 
+    window.normalizeArabic = normalizeArabic;
+    
+    // ربط مراجع الحالة بالنافذة العامة لضمان عدم وجود انفصال نسبي بين العناصر
+    Object.assign(window.BoseState, BoseState);
+    window.BoseState = BoseState;
 }
 
 // ============================================================================
@@ -559,13 +603,13 @@ export const cartSystem = {
         saveToLocalMemory('bose_cart_storage', BoseState.cart);
         saveToLocalMemory('bose_cart', BoseState.cart);
         this.updateCartDisplay();
-        if(typeof window !== 'undefined') window.dispatchEvent(new Event('BoseSweets_Cart_Updated'));
+        if (typeof window !== 'undefined') window.dispatchEvent(new Event('BoseSweets_Cart_Updated'));
     },
     save: function() { this.saveCartToStorage(); },
     clearCartStorage: function() { 
         BoseState.cart = []; 
         this.saveCartToStorage(); 
-        if(typeof this.syncCartUI === 'function') this.syncCartUI(); 
+        if (typeof this.syncCartUI === 'function') this.syncCartUI(); 
     },
     calculateCartTotal: function(deliveryMode = 'الاستلام من المقر') {
         this.getCart();
@@ -594,45 +638,63 @@ export const cartSystem = {
         this.getCart();
         const totalItems = BoseState.cart.reduce((sum, item) => sum + (item.quantity || item.qty || 1), 0);
         if (typeof document !== 'undefined') {
-            const badges = document.querySelectorAll('#cart-count-badge, #mobile-cart-badge, .cart-badge-global');
-            badges.forEach(el => {
-                el.innerText = totalItems;
-                el.style.display = totalItems > 0 ? 'flex' : 'none';
-                if(totalItems > 0) el.classList.remove('hidden'); else el.classList.add('hidden');
-            });
+            const applyBadge = () => {
+                const badges = document.querySelectorAll('#cart-count-badge, #mobile-cart-badge, .cart-badge-global');
+                badges.forEach(el => {
+                    el.innerText = totalItems;
+                    el.style.display = totalItems > 0 ? 'flex' : 'none';
+                    if (totalItems > 0) el.classList.remove('hidden'); else el.classList.add('hidden');
+                });
+            };
+            
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', applyBadge);
+            } else {
+                applyBadge();
+            }
         }
     },
     syncCartUI: function() {
-        const cartList = document.getElementById('cart-items-list');
-        if (!cartList) return;
-        if (BoseState.securityLayer?.validateCartPrices) BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
-        if (BoseState.cart.length === 0) {
-            cartList.innerHTML = `<div class="empty-cart flex flex-col items-center justify-center p-12 text-center"><i data-lucide="shopping-bag" class="w-20 h-20 mb-4 opacity-20" style="color: ${boseConfig.branding.colors.pink};"></i><h3 class="text-xl font-black mb-2">سلة المشتريات فارغة</h3></div>`;
-            ['summary-subtotal', 'summary-total'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).innerText = '0 ج.م'; });
-            if (window.lucide) window.lucide.createIcons(); return;
-        }
-        let html = '';
-        BoseState.cart.forEach((item, index) => {
-            let finalPrice = this.getAdjustedPrice(item.price);
-            let qty = parseInt(item.quantity || item.qty) || 1;
-            if (item.isCustomCake || item.isCustom) {
-                finalPrice += (item.printing?.includes('أكل') || item.details?.printType === 'edible') ? 60 : ((item.printing?.includes('غير قابلة') || item.details?.printType === 'non_edible') ? 20 : 0);
+        if (typeof document === 'undefined') return;
+        
+        const applySync = () => {
+            const cartList = document.getElementById('cart-items-list');
+            if (!cartList) return;
+            if (BoseState.securityLayer?.validateCartPrices) BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
+            if (BoseState.cart.length === 0) {
+                cartList.innerHTML = `<div class="empty-cart flex flex-col items-center justify-center p-12 text-center"><i data-lucide="shopping-bag" class="w-20 h-20 mb-4 opacity-20" style="color: ${boseConfig.branding.colors.pink};"></i><h3 class="text-xl font-black mb-2">سلة المشتريات فارغة</h3></div>`;
+                ['summary-subtotal', 'summary-total'].forEach(id => { if (document.getElementById(id)) document.getElementById(id).innerText = '0 ج.م'; });
+                if (window.lucide) window.lucide.createIcons(); return;
             }
-            const imgUrl = processBoseImage(item.image || item.img);
-            html += `<div class="cart-item bg-white p-4 rounded-2xl border mb-4 flex gap-4 items-center" style="border-color: ${boseConfig.branding.colors.pink}20;">
-                        <img src="${imgUrl}" class="w-20 h-20 rounded-xl object-cover" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
-                        <div class="flex-1 text-right"><h4 class="font-black text-sm">${item.name}</h4><div class="font-black mt-2" style="color: ${boseConfig.branding.colors.pink};">${finalPrice} ج.م</div></div>
-                        <div class="flex flex-col items-center gap-2">
-                            <button onclick="window.cartSystem.modQ(${index}, 1)" class="w-8 h-8 rounded-full border text-black bg-white">+</button>
-                            <span class="font-black text-sm">${qty}</span>
-                            <button onclick="window.cartSystem.modQ(${index}, -1)" class="w-8 h-8 rounded-full border text-black bg-white">-</button>
-                        </div>
-                    </div>`;
-        });
-        cartList.innerHTML = html;
-        const totals = this.calculateCartTotal(document.getElementById('checkout-area')?.value || BoseState.checkoutState.deliveryMethod);
-        if(document.getElementById('summary-subtotal')) document.getElementById('summary-subtotal').innerText = `${totals.subtotal} ج.م`;
-        if(document.getElementById('summary-total')) document.getElementById('summary-total').innerText = `${totals.total} ج.م`;
+            let html = '';
+            BoseState.cart.forEach((item, index) => {
+                let finalPrice = this.getAdjustedPrice(item.price);
+                let qty = parseInt(item.quantity || item.qty) || 1;
+                if (item.isCustomCake || item.isCustom) {
+                    finalPrice += (item.printing?.includes('أكل') || item.details?.printType === 'edible') ? 60 : ((item.printing?.includes('غير قابلة') || item.details?.printType === 'non_edible') ? 20 : 0);
+                }
+                const imgUrl = processBoseImage(item.image || item.img);
+                html += `<div class="cart-item bg-white p-4 rounded-2xl border mb-4 flex gap-4 items-center" style="border-color: ${boseConfig.branding.colors.pink}20;">
+                            <img src="${imgUrl}" class="w-20 h-20 rounded-xl object-cover" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
+                            <div class="flex-1 text-right"><h4 class="font-black text-sm">${item.name}</h4><div class="font-black mt-2" style="color: ${boseConfig.branding.colors.pink};">${finalPrice} ج.م</div></div>
+                            <div class="flex flex-col items-center gap-2">
+                                <button onclick="window.cartSystem.modQ(${index}, 1)" class="w-8 h-8 rounded-full border text-black bg-white">+</button>
+                                <span class="font-black text-sm">${qty}</span>
+                                <button onclick="window.cartSystem.modQ(${index}, -1)" class="w-8 h-8 rounded-full border text-black bg-white">-</button>
+                            </div>
+                        </div>`;
+            });
+            cartList.innerHTML = html;
+            const totals = this.calculateCartTotal(document.getElementById('checkout-area')?.value || BoseState.checkoutState.deliveryMethod);
+            if (document.getElementById('summary-subtotal')) document.getElementById('summary-subtotal').innerText = `${totals.subtotal} ج.م`;
+            if (document.getElementById('summary-total')) document.getElementById('summary-total').innerText = `${totals.total} ج.م`;
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', applySync);
+        } else {
+            applySync();
+        }
     },
     modQ: function(index, delta) {
         this.getCart();
@@ -671,7 +733,7 @@ export const cartSystem = {
             });
         }
         this.saveCartToStorage();
-        if(qtyDisplay) qtyDisplay.innerText = "1";
+        if (qtyDisplay) qtyDisplay.innerText = "1";
         
         if (typeof window.showBoseToast === 'function') {
             window.showBoseToast(`تم إضافة [${product.name}] للسلة بنجاح.`);
@@ -680,7 +742,7 @@ export const cartSystem = {
         } else {
             console.log(`تم إضافة [${product.name}] للسلة بنجاح.`);
         }
-        if(typeof window !== 'undefined') window.dispatchEvent(new Event('BoseSweets_Cart_Updated'));
+        if (typeof window !== 'undefined') window.dispatchEvent(new Event('BoseSweets_Cart_Updated'));
     }
 };
 
@@ -725,7 +787,7 @@ export async function fetchShippingZones() {
         if (!db) return;
         const shipSnap = await getDocs(collection(db, 'shipping'));
         if (!shipSnap.empty) {
-            BoseState.shippingZones = shipSnap.docs.map(d => ({id: d.id, ...d.data()}));
+            BoseState.shippingZones = shipSnap.docs.map(d => ({ id: d.id, ...d.data() }));
             saveToLocalMemory('bosesweets_shipping', BoseState.shippingZones);
         }
     } catch (e) {
@@ -757,10 +819,14 @@ export async function fetchProductsCatalog() {
         syncCatalogMap();
         saveToLocalMemory('bosesweets_catalog', BoseState.catalog);
         window.saveEngineMemory('cat');
+        
+        // إطلاق الحدث السيادي لتأكيد الجاهزية والتحديث في الواجهة
+        window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
         return BoseState.catalog;
     } catch (e) {
         BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || [];
         syncCatalogMap();
+        window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
         return BoseState.catalog;
     }
 }
@@ -775,7 +841,8 @@ export async function initializeDataBridge() {
 }
 
 export function listenToSovereignUpdates() {
-    if (!db || window.__BoseListenersActive) return; window.__BoseListenersActive = true;
+    if (!db || window.__BoseListenersActive) return; 
+    window.__BoseListenersActive = true;
     
     onSnapshot(collection(db, 'catalog'), (snap) => {
         const list = [];
@@ -798,7 +865,10 @@ export function listenToSovereignUpdates() {
         syncCatalogMap(); 
         saveToLocalMemory('bosesweets_catalog', BoseState.catalog);
         window.dispatchEvent(new Event('catalogDataReady'));
-        if (typeof window.distributeProductsToUI === 'function') window.distributeProductsToUI(BoseState.catalog);
+        window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
+        if (typeof window.distributeProductsToUI === 'function') {
+            window.distributeProductsToUI(BoseState.catalog);
+        }
     });
 }
 
@@ -809,8 +879,20 @@ if (typeof window !== 'undefined') {
         if (!window.location.pathname.includes('admin')) { 
             initializeDataBridge(); 
             listenToSovereignUpdates(); 
+            // تشغيل المحرك التزامني اللحظي لضمان تدفق التحديثات وتجنب الاختفاء
+            if (typeof initializeSovereignSync === 'function') {
+                initializeSovereignSync();
+            }
         } 
     };
+    
+    // ضمان إرسال أحداث الجاهزية التامة لتنظيم التدفق البرمجي دون اهتزاز أو فقدان عناصر
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready'));
+        }, 500);
+    });
+
     if (document.readyState === 'complete') {
         startBridge();
         fetchProductsCatalog();
@@ -831,6 +913,8 @@ export function initializeSovereignSync() {
         if (window.BoseMonitor) window.BoseMonitor.report("Sync_Activation", 'core-engine.js', null, null, 'قاعدة البيانات غير مهيأة بالشكل الصحيح');
         return;
     }
+    if (window.__BoseSovereignSyncActive) return;
+    window.__BoseSovereignSyncActive = true;
 
     let isCatalogLoaded = false;
     let isThemeLoaded = false;
@@ -897,7 +981,7 @@ export function initializeSovereignSync() {
     });
 
     onSnapshot(doc(db, 'settings', 'logistics'), (snap) => {
-        if(snap.exists()) {
+        if (snap.exists()) {
             BoseState.logistics = snap.data();
             window.dispatchEvent(new CustomEvent('BoseSweets_Logistics_Updated'));
         }
@@ -906,7 +990,7 @@ export function initializeSovereignSync() {
     });
 
     onSnapshot(doc(db, 'settings', 'pricingRules'), (snap) => {
-        if(snap.exists()) {
+        if (snap.exists()) {
             BoseState.pricingRules = snap.data();
             window.dispatchEvent(new CustomEvent('BoseSweets_Pricing_Updated'));
         }
@@ -932,6 +1016,29 @@ export function initializeSovereignSync() {
 // تصدير دالة التهيئة لتكون متاحة للواجهة
 if (typeof window !== 'undefined') {
     window.initializeSovereignSync = initializeSovereignSync;
+}
+
+// ============================================================================
+// 🛡️ القسم الثامن: مستمعي الأحداث السيادية لتوجيه الواجهات وتحديث العرض تلقائياً
+// ============================================================================
+if (typeof window !== 'undefined') {
+    window.addEventListener('BoseSweets_Catalog_Updated', () => {
+        if (typeof window.distributeProductsToUI === 'function') {
+            window.distributeProductsToUI(window.BoseState.catalog);
+        }
+    });
+
+    window.addEventListener('BoseSweets_Logistics_Updated', () => {
+        if (typeof window.applyLogisticsRulesUI === 'function') {
+            window.applyLogisticsRulesUI();
+        }
+    });
+    
+    window.addEventListener('BoseSweets_Pricing_Updated', () => {
+        if (typeof window.applyPricingRulesUI === 'function') {
+            window.applyPricingRulesUI();
+        }
+    });
 }
 
 ```

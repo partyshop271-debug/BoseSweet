@@ -224,7 +224,7 @@
                         عقد من <span class="text-brand-pink font-bold">التميز</span> في<br>صناعة الحلويات
                     </h2>
                     <p class="text-brand-brown font-bold text-lg md:text-xl mb-10 max-w-2xl mx-auto leading-relaxed opacity-90">
-                        ندعوكم لاستكشاف تشكيلة حلويات بوسي الفاخرة. نمزج بين عراقة التقاليد والاحترافية العالية في تقديم كل قطعة بمقرنا بمركز الفرافرة.
+                        ndعوكم لاستكشاف تشكيلة حلويات بوسي الفاخرة. نمزج بين عراقة التقاليد والاحترافية العالية في تقديم كل قطعة بمقرنا بمركز الفرافرة.
                     </p>
                     <a href="menu.html" class="btn-solid">تصفح القائمة الفاخرة</a>
                 </div>
@@ -246,8 +246,11 @@
             <section class="py-24 px-4 bg-brand-pinkLight border-y border-brand-pink/10">
                 <div class="container mx-auto max-w-6xl text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-brand-brown mb-12">منتجاتنا الفاخرة</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 products-grid" id="creative-grid-container">
-                        </div>
+                    <!-- شبكة توزيع المنتجات المخصصة -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 products-grid mb-12" id="creative-grid-container"></div>
+                    
+                    <!-- الحاوية الموحدة للمنتجات لضمان التوافق المطلق مع محرك التشغيل -->
+                    <div id="menuGrid" class="main-product-grid grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" data-section-title="Menu"></div>
                 </div>
             </section>
 
@@ -261,8 +264,11 @@
                     </div>
 
                     <div class="relative">
-                        <div id="dynamic-new-arrivals" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory">
-                            </div>
+                        <!-- شريط العرض المنزلق لأحدث المنتجات -->
+                        <div id="dynamic-new-arrivals" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory"></div>
+                        
+                        <!-- الحاوية الموحدة لأحدث المنتجات لضمان التوافق المطلق مع محرك التشغيل والشبكات المستقرة -->
+                        <div id="new-arrivals-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" data-section-title="New Arrivals"></div>
                     </div>
                     <div class="text-center mt-4"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
                 </div>
@@ -312,8 +318,11 @@
                     </div>
 
                     <div class="relative">
-                        <div id="dynamic-best-sellers" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory">
-                            </div>
+                        <!-- شريط العرض المنزلق للأكثر طلباً الكلاسيكي -->
+                        <div id="dynamic-best-sellers" class="bose-horizontal-slider gap-6 pb-8 px-2 pt-2 snap-x snap-mandatory"></div>
+                        
+                        <!-- الحاوية الموحدة للمنتجات الأكثر طلباً لضمان التوافق مع محرك التشغيل والشبكات المستقرة -->
+                        <div id="best-sellers-container" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" data-section-title="Best Sellers"></div>
                     </div>
                     <div class="text-center mt-4"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
                 </div>
@@ -463,10 +472,10 @@
         </div>
     </template>
 
-    <!-- أولاً: المحرك الأساسي (القلب النابض) -->
+    <!-- أولاً: المحرك الأساسي (القلب النابض لربط البيانات السحابية) -->
     <script type="module" src="core-engine.js"></script>
 
-    <!-- ثانياً: محرك الواجهة البصرية -->
+    <!-- ثانياً: محرك الواجهة البصرية (تنظيم وبناء الشاشات وتفاعل المستخدم) -->
     <script type="module" src="ui-engine.js"></script>
 
     <script>
@@ -741,7 +750,7 @@
                     waterfall2.innerHTML = waterfallItems.slice(4,8).map(p => this.renderTemplate(tmpl, p)).join('');
                 }
 
-                // 2. توزيع شبكة منتجاتنا الكلاسيكية الفاخرة
+                // 2. توزيع شبكة منتجاتنا الكلاسيكية الفاخرة وتغذية الحاويات الموحدة
                 const gridItems = [...availableCatalog].slice(0, 4);
                 const gridContainer = document.getElementById('creative-grid-container');
                 if (gridContainer && gridItems.length >= 4) {
@@ -755,18 +764,59 @@
                     gridContainer.innerHTML = gridItems.map((p, i) => this.renderTemplate(tmpl, p).replace('{GRID_CLASS}', gridClasses[i])).join('');
                 }
 
-                // 3. قسم أحدث المنتجات الافتراضية
+                // تغذية حاوية المنيو الموحدة الجديدة (menuGrid) مع ضبط الفئات لملء الفراغات دون انهيار
+                const menuGrid = document.getElementById('menuGrid');
+                if (menuGrid) {
+                    const productCardTmpl = document.getElementById('bose-product-card-template').innerHTML;
+                    // تصفية وعرض المنتجات بالشبكة الموحدة
+                    menuGrid.innerHTML = availableCatalog.slice(0, 8).map(p => {
+                        let cardHtml = this.renderTemplate(productCardTmpl, p);
+                        // استبدال فئات الانزلاق بفئات التمدد الشبكي المرن لضمان المظهر المتناسق
+                        return cardHtml.replace('snap-start flex-shrink-0 w-[80%] md:w-[280px]', 'w-full');
+                    }).join('');
+
+                    // إخفاء الشبكة القديمة لتجنب التكرار والازدواجية البصرية عند التغذية الناجحة
+                    if (gridContainer) gridContainer.style.display = 'none';
+                }
+
+                // 3. قسم أحدث المنتجات الافتراضية وتغذية الحاويات الموحدة
                 const newArrivals = [...availableCatalog].slice(0, 6);
                 const arrivalsContainer = document.getElementById('dynamic-new-arrivals');
                 if (arrivalsContainer && newArrivals.length > 0) {
                     arrivalsContainer.innerHTML = newArrivals.map(p => this.renderTemplate(document.getElementById('bose-product-card-template').innerHTML, p)).join('');
                 }
 
-                // 4. الأكثر طلباً
+                // تغذية حاوية أحدث المنتجات الموحدة الجديدة (new-arrivals-container)
+                const newArrivalsContainer = document.getElementById('new-arrivals-container');
+                if (newArrivalsContainer && newArrivals.length > 0) {
+                    const productCardTmpl = document.getElementById('bose-product-card-template').innerHTML;
+                    newArrivalsContainer.innerHTML = newArrivals.map(p => {
+                        let cardHtml = this.renderTemplate(productCardTmpl, p);
+                        return cardHtml.replace('snap-start flex-shrink-0 w-[80%] md:w-[280px]', 'w-full');
+                    }).join('');
+
+                    // تفعيل إخفاء شريط التمرير الكلاسيكي والاعتماد على الحاوية الشبكية المستقرة
+                    if (arrivalsContainer) arrivalsContainer.style.display = 'none';
+                }
+
+                // 4. الأكثر طلباً وتغذية الحاويات الموحدة
                 const bestSellers = [...availableCatalog].sort(() => 0.5 - Math.random()).slice(0, 6);
                 const bestSellersContainer = document.getElementById('dynamic-best-sellers');
                 if (bestSellersContainer && bestSellers.length > 0) {
                     bestSellersContainer.innerHTML = bestSellers.map(p => this.renderTemplate(document.getElementById('bose-product-card-template').innerHTML, p)).join('');
+                }
+
+                // تغذية حاوية الأكثر طلباً الموحدة الجديدة (best-sellers-container)
+                const bestSellersContainerNew = document.getElementById('best-sellers-container');
+                if (bestSellersContainerNew && bestSellers.length > 0) {
+                    const productCardTmpl = document.getElementById('bose-product-card-template').innerHTML;
+                    bestSellersContainerNew.innerHTML = bestSellers.map(p => {
+                        let cardHtml = this.renderTemplate(productCardTmpl, p);
+                        return cardHtml.replace('snap-start flex-shrink-0 w-[80%] md:w-[280px]', 'w-full');
+                    }).join('');
+
+                    // تفعيل إخفاء شريط التمرير الكلاسيكي والاعتماد على الحاوية الشبكية المستقرة
+                    if (bestSellersContainer) bestSellersContainer.style.display = 'none';
                 }
                 
                 // 5. تصفح حسب الفئة الكلاسيكية

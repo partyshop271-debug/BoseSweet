@@ -8,7 +8,8 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- استدعاء كافة الخطوط العربية الراقية لضمان عمل المعاينة الحية بكفاءة -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&family=Almarai:wght@400;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -19,10 +20,10 @@
                 extend: { 
                     colors: { 
                         brand: { 
-                            pink: '#ff91a4', 
-                            bg: '#1a1012',       
-                            surface: '#2a1b1f',  
-                            border: '#42282d',   
+                            pink: 'var(--bose-pink, #ff91a4)', 
+                            bg: 'var(--bose-bg, #1a1012)',       
+                            surface: 'var(--bose-surface, #2a1b1f)',  
+                            border: 'var(--bose-border, #42282d)',   
                             textMain: '#ffffff', 
                             textMuted: '#e0c8cc' 
                         } 
@@ -51,6 +52,7 @@
             margin: 0; 
             padding: 0; 
             font-size: 16px; 
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         * { box-sizing: border-box; outline: none; }
@@ -63,7 +65,7 @@
         .sidebar { 
             background-color: var(--bose-surface) !important; 
             border-left: 2px solid var(--bose-border) !important; 
-            transition: right 0.4s ease; 
+            transition: right 0.4s ease, background-color 0.3s ease, border-color 0.3s ease; 
             z-index: 100; 
             height: 100vh; 
             position: fixed; 
@@ -138,6 +140,7 @@
         .admin-tabs-nav {
             display: flex; gap: 12px; background-color: var(--bose-surface); padding: 12px; border-radius: 20px; border: 2px solid var(--bose-border); margin-bottom: 30px; overflow-x: auto;
             -ms-overflow-style: none; scrollbar-width: none;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
         .admin-tabs-nav::-webkit-scrollbar { display: none; }
         .admin-tab-btn {
@@ -160,6 +163,7 @@
             padding: 40px; 
             margin-bottom: 30px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
         
         .builder-block { 
@@ -403,7 +407,8 @@
                 <div class="w-12 h-12 rounded-xl bg-brand-bg border border-brand-pink/40 flex items-center justify-center shadow-lg">
                     <i data-lucide="gem" class="w-7 h-7 text-brand-pink"></i>
                 </div>
-                <h1 class="text-2xl font-black text-brand-textMain tracking-tight">إدارة حلويات بوسي</h1>
+                <!-- الفئة bose-logo-text مضافة لربط تغيير الاسم اللحظي بالرأس واللوجو المكتوب -->
+                <h1 class="text-2xl font-black text-brand-textMain tracking-tight bose-logo-text">حلويات بوسي</h1>
             </div>
             <button onclick="toggleSidebar()" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
         </div>
@@ -421,9 +426,10 @@
                 <div class="flex flex-col mt-3 space-y-1">
                     <div class="submenu-item" onclick="switchSection('ui-builder', this)"><i data-lucide="ruler" class="w-5 h-5"></i> محرك بناء واجهة الموقع بدقة</div>
                     <div class="submenu-item" onclick="switchSection('ui-header', this)"><i data-lucide="panel-top" class="w-5 h-5"></i> الهيدر والقوائم العلوية</div>
+                    <div class="submenu-item" onclick="switchSection('ui-colors', this)"><i data-lucide="palette" class="w-5 h-5"></i> تخصيص الألوان والهوية</div>
+                    <div class="submenu-item" onclick="switchSection('ui-fonts', this)"><i data-lucide="type" class="w-5 h-5"></i> الخطوط الرسمية والارتفاعات</div>
                     <div class="submenu-item" onclick="switchSection('ui-ticker', this)"><i data-lucide="radio" class="w-5 h-5"></i> الشريط المتحرك الإعلاني</div>
                     <div class="submenu-item" onclick="switchSection('ui-footer', this)"><i data-lucide="panel-bottom" class="w-5 h-5"></i> الفوتر وبيانات التواصل</div>
-                    <div class="submenu-item" onclick="switchSection('ui-flowers-logistics', this)"><i data-lucide="flower" class="w-5 h-5"></i> تسعير ولوجستيات الورد والتورت</div>
                 </div>
             </details>
 
@@ -457,12 +463,12 @@
         <div class="p-6 md:p-12 max-w-7xl mx-auto w-full">
 
             <div class="admin-tabs-nav">
-                <button type="button" class="admin-tab-btn active" onclick="switchAdminTab(event, 'tab-colors')">1. الألوان والهوية</button>
-                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-typography')">2. الخطوط والنصوص</button>
-                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-layout')">3. تخطيط الواجهة</button>
-                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-flowers')">4. تسعير الورد والتورت</button>
+                <button type="button" class="admin-tab-btn active" onclick="switchAdminTab(event, 'tab-colors')">1. الهوية والألوان الفاخرة</button>
+                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-typography')">2. الخطوط والنصوص الإعلانية</button>
+                <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-layout')">3. تخطيط الواجهة والبناء المباشر</button>
             </div>
 
+            <!-- التبويب الأول: الهوية والألوان الفاخرة -->
             <div id="tab-colors" class="admin-tab-content active-tab">
                 
                 <section id="ui-header" class="admin-section">
@@ -471,10 +477,60 @@
                         <div class="space-y-8">
                             <div>
                                 <label class="form-label">الاسم المعروض في أعلى الموقع (اللوجو النصي)</label>
-                                <input type="text" id="header-logo-text" class="form-input" placeholder="حلويات بوسي">
+                                <input type="text" id="header-logo-text" class="form-input text-lg font-black" placeholder="حلويات بوسي">
                                 <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يظهر هذا النص في الزاوية العلوية لجميع صفحات المتجر بجوار الماسة الرسمية للعلامة التجارية.</p>
                             </div>
+                            
+                            <!-- صندوق المعاينة اللحظية للهيدر والشعار -->
+                            <div class="mt-4 bg-[#1a1012] p-6 rounded-2xl border border-brand-border flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                                <span class="text-brand-textMuted font-bold text-base">معاينة حية لشكل شعار المتجر:</span>
+                                <div class="flex items-center gap-3 bg-brand-surface px-6 py-3 rounded-xl border border-brand-pink/30 shadow-md">
+                                    <i data-lucide="gem" class="w-6 h-6 text-brand-pink"></i>
+                                    <span class="bose-logo-text font-black text-white text-xl">حلويات بوسي</span>
+                                </div>
+                            </div>
+                            
                             <button onclick="saveHeaderData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> حفظ إعدادات الهيدر</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- قسم تخصيص لوحة الألوان والهوية البصرية -->
+                <section id="ui-colors" class="admin-section">
+                    <div class="admin-card">
+                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
+                            <i data-lucide="palette" class="text-brand-pink w-8 h-8"></i> تخصيص لوحة الألوان السحرية للمتجر
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            
+                            <div class="bg-[#1a1012] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
+                                <label class="form-label mb-4 text-center">اللون الوردي الرئيسي</label>
+                                <input type="color" id="color-pink" class="w-24 h-24 rounded-full border-4 border-brand-border cursor-pointer bg-transparent transition-transform hover:scale-105" value="#ff91a4">
+                                <span class="text-brand-textMuted font-mono font-bold mt-4" id="color-pink-hex">#FF91A4</span>
+                            </div>
+                            
+                            <div class="bg-[#1a1012] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
+                                <label class="form-label mb-4 text-center">لون الخلفية الأساسية</label>
+                                <input type="color" id="color-bg" class="w-24 h-24 rounded-full border-4 border-brand-border cursor-pointer bg-transparent transition-transform hover:scale-105" value="#1a1012">
+                                <span class="text-brand-textMuted font-mono font-bold mt-4" id="color-bg-hex">#1A1012</span>
+                            </div>
+                            
+                            <div class="bg-[#1a1012] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
+                                <label class="form-label mb-4 text-center">لون الأسطح والبطاقات</label>
+                                <input type="color" id="color-surface" class="w-24 h-24 rounded-full border-4 border-brand-border cursor-pointer bg-transparent transition-transform hover:scale-105" value="#2a1b1f">
+                                <span class="text-brand-textMuted font-mono font-bold mt-4" id="color-surface-hex">#2A1B1F</span>
+                            </div>
+                            
+                            <div class="bg-[#1a1012] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
+                                <label class="form-label mb-4 text-center">لون الحدود والفواصل</label>
+                                <input type="color" id="color-border" class="w-24 h-24 rounded-full border-4 border-brand-border cursor-pointer bg-transparent transition-transform hover:scale-105" value="#42282d">
+                                <span class="text-brand-textMuted font-mono font-bold mt-4" id="color-border-hex">#42282D</span>
+                            </div>
+                            
+                        </div>
+                        <p class="bose-helper-text mt-6"><i data-lucide="sparkles" class="w-5 h-5"></i> تغيير الألوان يتم تطبيقه فوراً على لوحة التحكم الحالية لتجربة المظهر، وبمجرد الضغط على الحفظ سيتم تعميمه لجميع عملاء موقع حلويات بوسي.</p>
+                        <div class="mt-8">
+                            <button onclick="saveColorData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> اعتماد وتثبيت لوحة الألوان</button>
                         </div>
                     </div>
                 </section>
@@ -495,7 +551,7 @@
                                 </div>
                                 <div>
                                     <label class="form-label">البريد الإلكتروني للطلبات</label>
-                                    <input type="email" id="footer-email" class="form-input text-left" dir="ltr" placeholder="info@bosysweets.com">
+                                    <input type="email" id="footer-email" class="form-input text-left text-lg font-bold" dir="ltr" placeholder="info@bosysweets.com">
                                 </div>
                                 <div class="md:col-span-2">
                                     <label class="form-label">العنوان الرسمي التفصيلي</label>
@@ -507,6 +563,23 @@
                                 <div><label class="form-label">رابط حساب الإنستجرام</label><input type="text" id="footer-ig" class="form-input text-left" dir="ltr"></div>
                                 <div><label class="form-label">رابط حساب التيك توك</label><input type="text" id="footer-tiktok" class="form-input text-left" dir="ltr"></div>
                             </div>
+                            
+                            <!-- صندوق المعاينة الحية للفوتر الرقمي ومنافذ الاتصال -->
+                            <div class="bg-[#1a1012] p-8 rounded-2xl border border-brand-border space-y-5">
+                                <h4 class="text-brand-pink font-black text-lg border-b border-brand-border pb-3 flex items-center gap-2">
+                                    <i data-lucide="layout" class="w-5 h-5"></i> معاينة حية لقسم الفوتر (ذيل الموقع)
+                                </h4>
+                                <div class="space-y-3">
+                                    <h5 class="text-white font-black text-2xl bose-logo-text">حلويات بوسي</h5>
+                                    <p id="footer-brand-desc" class="text-brand-textMuted text-base font-bold leading-relaxed">نبذة الفوتر ستظهر هنا عند الكتابة...</p>
+                                </div>
+                                <div class="flex flex-wrap gap-6 text-sm font-bold text-brand-textMuted pt-4 border-t border-brand-border/40">
+                                    <span class="flex items-center gap-2"><i data-lucide="phone" class="w-5 h-5 text-brand-pink"></i> <span id="footer-phone-preview">-</span></span>
+                                    <span class="flex items-center gap-2"><i data-lucide="mail" class="w-5 h-5 text-brand-pink"></i> <span id="footer-email-preview">-</span></span>
+                                    <span class="flex items-center gap-2"><i data-lucide="map-pin" class="w-5 h-5 text-brand-pink"></i> <span id="footer-address-preview">-</span></span>
+                                </div>
+                            </div>
+
                             <button onclick="saveFooterData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> اعتماد وتحديث بيانات الفوتر</button>
                         </div>
                     </div>
@@ -514,7 +587,41 @@
                 
             </div>
 
+            <!-- التبويب الثاني: الخطوط والنصوص الإعلانية -->
             <div id="tab-typography" class="admin-tab-content">
+                
+                <!-- قسم تخصيص الخط العربي الرسمي للموقع -->
+                <section id="ui-fonts" class="admin-section">
+                    <div class="admin-card">
+                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
+                            <i data-lucide="type" class="text-brand-pink w-8 h-8"></i> الخط العربي المعتمد للعلامة التجارية
+                        </h3>
+                        <div class="space-y-8">
+                            <div>
+                                <label class="form-label">اختر الخط العربي الرسمي</label>
+                                <select id="font-family-select" class="form-select w-full md:w-1/2" onchange="previewFont(this.value)">
+                                    <option value="Cairo">خط كايْرو (Cairo) - حاد، عصري وفاخر جداً للعناوين</option>
+                                    <option value="Tajawal">خط تجوّل (Tajawal) - انسيابي، مريح وقراءة هادئة</option>
+                                    <option value="Almarai">خط المراعي (Almarai) - هندسي متوازن وممتاز لشاشات الموبايل</option>
+                                    <option value="Amiri">خط أميري (Amiri) - تراثي كلاسيكي يعكس العراقة والأصالة</option>
+                                </select>
+                                <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يؤثر هذا الاختيار مباشرة على مظهر جميع العناوين، الفقرات، والأسعار لعملاء متجر حلويات بوسي.</p>
+                            </div>
+
+                            <!-- منطقة محاكاة ومعاينة الخطوط الحية -->
+                            <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border">
+                                <span class="text-xs font-black text-brand-pink tracking-wider block mb-4 uppercase">معاينة حية للنصوص بالخط المحدد:</span>
+                                <div id="typography-preview-box" class="space-y-4">
+                                    <h4 class="text-3xl font-black text-white">حلويات بوسي - عراقة الطعم وجودة الصنع</h4>
+                                    <p class="text-brand-textMuted text-lg font-bold leading-relaxed">استمتع بتشكيلاتنا الفاخرة التي نعدها بشغف وإتقان دائم. باقات الورد الطبيعي المنسقة بعناية لدينا مثالية لتكتمل بها لحظاتكم السعيدة.</p>
+                                </div>
+                            </div>
+
+                            <button onclick="saveFontData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> اعتماد وتثبيت الخط الرسمي</button>
+                        </div>
+                    </div>
+                </section>
+
                 <section id="ui-ticker" class="admin-section">
                     <div class="admin-card">
                         <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="radio" class="text-brand-pink w-8 h-8"></i> الشريط الإعلاني المتحرك</h3>
@@ -536,6 +643,7 @@
                 </section>
             </div>
 
+            <!-- التبويب الثالث: تخطيط الواجهة والبناء المباشر -->
             <div id="tab-layout" class="admin-tab-content">
                 <section id="dashboard" class="admin-section">
                     <div class="admin-card flex flex-col items-center justify-center py-24 border-2 border-dashed border-brand-border bg-transparent shadow-none">
@@ -572,66 +680,6 @@
                 </section>
             </div>
 
-            <div id="tab-flowers" class="admin-tab-content">
-                <section id="ui-flowers-logistics" class="admin-section">
-                    <div class="admin-card">
-                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
-                            <i data-lucide="flower" class="text-brand-pink w-8 h-8"></i> التحكم السحابي في لوجستيات الورد الأساسي
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div>
-                                <label class="form-label">الحد الأدنى لسعر البوكيه الأساسي (15 وردة)</label>
-                                <input type="number" id="flower-base-price" class="form-input text-2xl text-brand-pink font-black" placeholder="400">
-                            </div>
-                            <div>
-                                <label class="form-label">تكلفة الزيادة للوردة الواحدة (شاملة التغليف والشحن الداخلي)</label>
-                                <input type="number" id="flower-step-price" class="form-input text-2xl text-white font-black" placeholder="35">
-                            </div>
-                            <div>
-                                <label class="form-label">سعر كارت الإهداء المخطوط</label>
-                                <input type="number" id="flower-card-price" class="form-input text-2xl text-white font-black" placeholder="25">
-                            </div>
-                            <div>
-                                <label class="form-label">سعر طباعة الصورة المرفقة الواحدة</label>
-                                <input type="number" id="flower-photo-price" class="form-input text-2xl text-white font-black" placeholder="15">
-                            </div>
-                        </div>
-                        <div class="mt-8 pt-6 border-t border-brand-border">
-                            <button type="button" onclick="window.saveFlowerLogistics()" class="btn-solid"><i data-lucide="upload-cloud" class="w-6 h-6"></i> اعتماد وحفظ تسعير الورد سحابياً</button>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="ui-cake-pricing" class="admin-section">
-                    <div class="admin-card">
-                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
-                            <i data-lucide="cake" class="text-brand-pink w-8 h-8"></i> التحكم السحابي في أسعار وثوابت باني تورت حلويات بوسي المخصصة
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div>
-                                <label class="form-label">سعر الفرد الأساسي في التورت (ج.م)</label>
-                                <input type="number" id="cake-price-per-person" class="form-input text-2xl text-brand-pink font-black" placeholder="145">
-                            </div>
-                            <div>
-                                <label class="form-label">تكلفة إضافة صورة قابلة للأكل (ج.م)</label>
-                                <input type="number" id="cake-print-edible" class="form-input text-2xl text-white font-black" placeholder="60">
-                            </div>
-                            <div>
-                                <label class="form-label">تكلفة إضافة صورة ديكور غير قابلة للأكل (ج.م)</label>
-                                <input type="number" id="cake-print-non-edible" class="form-input text-2xl text-white font-black" placeholder="20">
-                            </div>
-                            <div>
-                                <label class="form-label">سعر كارت الهدية الفاخر للتورت (ج.م)</label>
-                                <input type="number" id="cake-gift-card-price" class="form-input text-2xl text-white font-black" placeholder="40">
-                            </div>
-                        </div>
-                        <div class="mt-8 pt-6 border-t border-brand-border">
-                            <button type="button" onclick="window.saveCakePricingRules()" class="btn-solid"><i data-lucide="upload-cloud" class="w-6 h-6"></i> اعتماد وتوثيق أسعار التورت سحابياً فوراً</button>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
         </div>
     </main>
 
@@ -645,8 +693,7 @@
             projectId: "bosy-sweets",
             storageBucket: "bosy-sweets.firebasestorage.app",
             messagingSenderId: "473615735083",
-            appId: "1:473615735083:web:f09c6001c72640b2588d6e",
-            measurementId: "G-6S8EXY7Y4P"
+            appId: "1:473615735083:web:f09c6001c72640b2588d6e"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -719,9 +766,8 @@
             if(element) element.classList.add('active');
             
             let targetTab = 'tab-layout'; 
-            if(sectionId === 'ui-header' || sectionId === 'ui-footer') targetTab = 'tab-colors';
-            else if(sectionId === 'ui-ticker') targetTab = 'tab-typography';
-            else if(sectionId === 'ui-flowers-logistics' || sectionId === 'ui-cake-pricing') targetTab = 'tab-flowers';
+            if(sectionId === 'ui-header' || sectionId === 'ui-footer' || sectionId === 'ui-colors') targetTab = 'tab-colors';
+            else if(sectionId === 'ui-ticker' || sectionId === 'ui-fonts') targetTab = 'tab-typography';
 
             const tabBtn = document.querySelector(`.admin-tab-btn[onclick*="${targetTab}"]`);
             if(tabBtn) {
@@ -737,10 +783,10 @@
                 'dashboard': 'شاشة الاستقرار والإحصاء', 
                 'ui-builder': 'محرك البناء الهندسي للواجهة', 
                 'ui-header': 'إدارة الهيدر واللوجو', 
+                'ui-colors': 'تخصيص الألوان والهوية البصرية',
+                'ui-fonts': 'إدارة الخطوط المعتمدة للموقع',
                 'ui-ticker': 'إدارة الشريط الإعلاني المتحرك', 
-                'ui-footer': 'الإعدادات الشاملة للفوتر',
-                'ui-flowers-logistics': 'تسعير ولوجستيات الورد',
-                'ui-cake-pricing': 'أسعار وثوابت باني التورت'
+                'ui-footer': 'الإعدادات الشاملة للفوتر'
             };
             document.getElementById('current-section-title').innerText = titles[sectionId] || '';
             if(window.innerWidth <= 1024) toggleSidebar();
@@ -1004,6 +1050,47 @@
             renderBuilderUI();
         };
 
+        // دالة تطبيق الألوان فوراً على المتغيرات الأساسية للمتصفح
+        const applyColorsToAdmin = (colors) => {
+            if (!colors) return;
+            if (colors.pink) {
+                document.documentElement.style.setProperty('--bose-pink', colors.pink);
+                const valEl = document.getElementById('color-pink-hex');
+                if (valEl) valEl.innerText = colors.pink.toUpperCase();
+                const inpEl = document.getElementById('color-pink');
+                if (inpEl) inpEl.value = colors.pink;
+            }
+            if (colors.bg) {
+                document.documentElement.style.setProperty('--bose-bg', colors.bg);
+                const valEl = document.getElementById('color-bg-hex');
+                if (valEl) valEl.innerText = colors.bg.toUpperCase();
+                const inpEl = document.getElementById('color-bg');
+                if (inpEl) inpEl.value = colors.bg;
+            }
+            if (colors.surface) {
+                document.documentElement.style.setProperty('--bose-surface', colors.surface);
+                const valEl = document.getElementById('color-surface-hex');
+                if (valEl) valEl.innerText = colors.surface.toUpperCase();
+                const inpEl = document.getElementById('color-surface');
+                if (inpEl) inpEl.value = colors.surface;
+            }
+            if (colors.border) {
+                document.documentElement.style.setProperty('--bose-border', colors.border);
+                const valEl = document.getElementById('color-border-hex');
+                if (valEl) valEl.innerText = colors.border.toUpperCase();
+                const inpEl = document.getElementById('color-border');
+                if (inpEl) inpEl.value = colors.border;
+            }
+        };
+
+        // دالة تغيير ومعاينة الخط المحدد حياً
+        window.previewFont = function(fontName) {
+            const previewBox = document.getElementById('typography-preview-box');
+            if (previewBox) {
+                previewBox.style.fontFamily = `'${fontName}', 'Cairo', sans-serif`;
+            }
+        };
+
         async function loadAdminData() {
             try {
                 const snap = await getDoc(doc(db, 'settings', 'theme'));
@@ -1017,7 +1104,22 @@
                     }
                     renderBuilderUI();
 
-                    if(data.header) { document.getElementById('header-logo-text').value = data.header.logoText || ''; }
+                    if(data.header) { 
+                        const logoText = data.header.logoText || 'حلويات بوسي';
+                        document.getElementById('header-logo-text').value = logoText; 
+                        document.querySelectorAll('.bose-logo-text').forEach(el => el.innerText = logoText);
+                    }
+
+                    if(data.colors) {
+                        applyColorsToAdmin(data.colors);
+                    }
+
+                    if(data.font) {
+                        const fontSelect = document.getElementById('font-family-select');
+                        if (fontSelect) fontSelect.value = data.font;
+                        previewFont(data.font);
+                        document.body.style.fontFamily = `'${data.font}', 'Cairo', sans-serif`;
+                    }
 
                     if(data.ticker) {
                         document.getElementById('ticker-1').value = data.ticker[0] || '';
@@ -1035,28 +1137,16 @@
                         document.getElementById('footer-fb').value = data.footer.facebook || '';
                         document.getElementById('footer-ig').value = data.footer.instagram || '';
                         document.getElementById('footer-tiktok').value = data.footer.tiktok || '';
+                        
+                        // تحديث المعاينات الحية للفوتر
+                        document.getElementById('footer-brand-desc').innerText = data.footer.desc || 'نبذة الفوتر ستظهر هنا عند الكتابة...';
+                        document.getElementById('footer-phone-preview').innerText = data.footer.phone || '-';
+                        document.getElementById('footer-email-preview').innerText = data.footer.email || '-';
+                        document.getElementById('footer-address-preview').innerText = data.footer.address || '-';
                     }
                 } else {
                     builderBlocks = JSON.parse(JSON.stringify(defaultLayout));
                     renderBuilderUI();
-                }
-
-                const flowerSnap = await getDoc(doc(db, 'settings', 'flowers'));
-                if(flowerSnap.exists()) {
-                    const fData = flowerSnap.data();
-                    document.getElementById('flower-base-price').value = fData.basePrice || 400;
-                    document.getElementById('flower-step-price').value = fData.stepPrice || 35;
-                    document.getElementById('flower-card-price').value = fData.cardPrice || 25;
-                    document.getElementById('flower-photo-price').value = fData.photoPrice || 15;
-                }
-
-                const pricingRulesSnap = await getDoc(doc(db, 'settings', 'pricingRules'));
-                if(pricingRulesSnap.exists()) {
-                    const prData = pricingRulesSnap.data();
-                    document.getElementById('cake-price-per-person').value = prData.pricePerPerson !== undefined ? prData.pricePerPerson : 145;
-                    document.getElementById('cake-print-edible').value = prData.printEdible || prData.cakePriceEdible || 60;
-                    document.getElementById('cake-print-non-edible').value = prData.printNonEdible || prData.cakePriceNonEdible || 20;
-                    document.getElementById('cake-gift-card-price').value = prData.giftCardPrice || prData.cakeGiftCardPrice || 40;
                 }
             } catch (error) { 
                 console.error("خطأ قراءة السحابة:", error); 
@@ -1068,18 +1158,52 @@
             try {
                 await setDoc(doc(db, 'settings', 'theme'), { builderLayout: builderBlocks, updatedAt: Date.now() }, { merge: true });
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                showToast("تم اعتماد البناء الهندسي الجديد بنجاح وبث Tحديثات للعملاء.");
+                showToast("تم اعتماد البناء الهندسي الجديد بنجاح وبث التحديثات للعملاء.");
             } catch(e) { 
                 showToast("حدث خطأ غير متوقع أثناء الاتصال بالخادم السحابي.", "error");
             }
         }
 
         window.saveHeaderData = async function() {
+            const val = document.getElementById('header-logo-text').value.trim();
             try {
-                await setDoc(doc(db, 'settings', 'theme'), { header: { logoText: document.getElementById('header-logo-text').value.trim() }, updatedAt: Date.now() }, { merge: true });
-                showToast("تم تحديث وحفظ لوجو الهيدر.");
+                await setDoc(doc(db, 'settings', 'theme'), { header: { logoText: val }, updatedAt: Date.now() }, { merge: true });
+                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                document.querySelectorAll('.bose-logo-text').forEach(el => el.innerText = val || 'حلويات بوسي');
+                showToast("تم تحديث وحفظ لوجو الهيدر وبثه للعملاء.");
             } catch(e) {
                 showToast("عطل اتصالي منع الحفظ السحابي للهيدر.", "error");
+            }
+        }
+
+        window.saveColorData = async function() {
+            const colors = {
+                pink: document.getElementById('color-pink').value,
+                bg: document.getElementById('color-bg').value,
+                surface: document.getElementById('color-surface').value,
+                border: document.getElementById('color-border').value,
+                textMain: '#ffffff',
+                textMuted: '#e0c8cc'
+            };
+            try {
+                await setDoc(doc(db, 'settings', 'theme'), { colors: colors, updatedAt: Date.now() }, { merge: true });
+                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                applyColorsToAdmin(colors);
+                showToast("تم اعتماد وتوثيق ألوان الهوية البصرية للمتجر.");
+            } catch(e) {
+                showToast("عطل اتصالي منع الحفظ السحابي للألوان.", "error");
+            }
+        }
+
+        window.saveFontData = async function() {
+            const font = document.getElementById('font-family-select').value;
+            try {
+                await setDoc(doc(db, 'settings', 'theme'), { font: font, updatedAt: Date.now() }, { merge: true });
+                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                document.body.style.fontFamily = `'${font}', 'Cairo', sans-serif`;
+                showToast("تم تثبيت الخط المختار رسمياً لجميع الواجهات.");
+            } catch(e) {
+                showToast("عطل اتصالي منع الحفظ السحابي للخطوط.", "error");
             }
         }
 
@@ -1092,6 +1216,7 @@
             ].filter(t => t !== '');
             try {
                 await setDoc(doc(db, 'settings', 'theme'), { ticker: tickerArr, tickerSpeed: parseInt(document.getElementById('ticker-speed').value) || 40, updatedAt: Date.now() }, { merge: true });
+                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 showToast("تم تحديث نصوص الشريط وسرعة الحركة.");
             } catch(e) {
                 showToast("عطل اتصالي منع الحفظ السحابي للشريط الإعلاني.", "error");
@@ -1099,64 +1224,78 @@
         }
 
         window.saveFooterData = async function() {
+            const footerObj = {
+                desc: document.getElementById('footer-desc').value.trim(),
+                phone: document.getElementById('footer-phone').value.trim(),
+                email: document.getElementById('footer-email').value.trim(),
+                address: document.getElementById('footer-address').value.trim(),
+                facebook: document.getElementById('footer-fb').value.trim(),
+                instagram: document.getElementById('footer-ig').value.trim(),
+                tiktok: document.getElementById('footer-tiktok').value.trim()
+            };
             try {
                 await setDoc(doc(db, 'settings', 'theme'), { 
-                    footer: {
-                        desc: document.getElementById('footer-desc').value.trim(),
-                        phone: document.getElementById('footer-phone').value.trim(),
-                        email: document.getElementById('footer-email').value.trim(),
-                        address: document.getElementById('footer-address').value.trim(),
-                        facebook: document.getElementById('footer-fb').value.trim(),
-                        instagram: document.getElementById('footer-ig').value.trim(),
-                        tiktok: document.getElementById('footer-tiktok').value.trim()
-                    },
+                    footer: footerObj,
                     updatedAt: Date.now()
                 }, { merge: true });
+                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                
+                // تحديث المعاينات الحية
+                document.getElementById('footer-brand-desc').innerText = footerObj.desc || 'نبذة الفوتر ستظهر هنا عند الكتابة...';
+                document.getElementById('footer-phone-preview').innerText = footerObj.phone || '-';
+                document.getElementById('footer-email-preview').innerText = footerObj.email || '-';
+                document.getElementById('footer-address-preview').innerText = footerObj.address || '-';
+                
                 showToast("تم توثيق بيانات الفوتر ومنافذ التواصل بنجاح.");
             } catch(e) {
                 showToast("عطل اتصالي منع الحفظ السحابي لبيانات الفوتر.", "error");
             }
         }
 
-        window.saveFlowerLogistics = async function() {
-            const basePrice = parseFloat(document.getElementById('flower-base-price').value) || 400;
-            const stepPrice = parseFloat(document.getElementById('flower-step-price').value) || 35;
-            const cardPrice = parseFloat(document.getElementById('flower-card-price').value) || 25;
-            const photoPrice = parseFloat(document.getElementById('flower-photo-price').value) || 15;
+        // إرفاق مستمعي الأحداث الحية لمزامنة المدخلات على لوحة التحكم فوراً أثناء الكتابة أو السحب
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAdminData();
 
-            try {
-                await setDoc(doc(db, 'settings', 'flowers'), { basePrice, stepPrice, cardPrice, photoPrice, updatedAt: Date.now() }, { merge: true });
-                showToast("تم توثيق وحفظ لوجستيات وأسعار الورد سحابياً بنجاح.");
-            } catch (err) { 
-                showToast("عطل اتصالي منع الحفظ السحابي للورد.", "error"); 
-            }
-        };
+            // اللوجو النصي
+            document.getElementById('header-logo-text').addEventListener('input', (e) => {
+                const val = e.target.value.trim() || 'حلويات بوسي';
+                document.querySelectorAll('.bose-logo-text').forEach(el => el.innerText = val);
+            });
 
-        window.saveCakePricingRules = async function() {
-            const pricePerPerson = parseFloat(document.getElementById('cake-price-per-person').value) || 145;
-            const printEdible = parseFloat(document.getElementById('cake-print-edible').value) || 60;
-            const printNonEdible = parseFloat(document.getElementById('cake-print-non-edible').value) || 20;
-            const giftCardPrice = parseFloat(document.getElementById('cake-gift-card-price').value) || 40;
+            // الألوان السحرية
+            document.getElementById('color-pink').addEventListener('input', (e) => {
+                document.documentElement.style.setProperty('--bose-pink', e.target.value);
+                document.getElementById('color-pink-hex').innerText = e.target.value.toUpperCase();
+            });
+            document.getElementById('color-bg').addEventListener('input', (e) => {
+                document.documentElement.style.setProperty('--bose-bg', e.target.value);
+                document.getElementById('color-bg-hex').innerText = e.target.value.toUpperCase();
+            });
+            document.getElementById('color-surface').addEventListener('input', (e) => {
+                document.documentElement.style.setProperty('--bose-surface', e.target.value);
+                document.getElementById('color-surface-hex').innerText = e.target.value.toUpperCase();
+            });
+            document.getElementById('color-border').addEventListener('input', (e) => {
+                document.documentElement.style.setProperty('--bose-border', e.target.value);
+                document.getElementById('color-border-hex').innerText = e.target.value.toUpperCase();
+            });
 
-            try {
-                const pricingRulesObj = {
-                    pricePerPerson,
-                    printEdible, cakePriceEdible: printEdible,
-                    printNonEdible, cakePriceNonEdible: printNonEdible,
-                    giftCardPrice, cakeGiftCardPrice: giftCardPrice,
-                    updatedAt: Date.now()
-                };
-                await setDoc(doc(db, 'settings', 'pricingRules'), pricingRulesObj, { merge: true });
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                showToast("تم توثيق وحفظ أسعار التورت المخصصة سحابياً بنجاح.");
-                loadAdminData();
-            } catch (err) { 
-                showToast("عطل اتصالي منع الحفظ السحابي لأسعار التورت المخصصة.", "error"); 
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', loadAdminData);
+            // الفوتر الرقمي
+            document.getElementById('footer-desc').addEventListener('input', (e) => {
+                document.getElementById('footer-brand-desc').innerText = e.target.value.trim() || 'نبذة الفوتر ستظهر هنا عند الكتابة...';
+            });
+            document.getElementById('footer-phone').addEventListener('input', (e) => {
+                document.getElementById('footer-phone-preview').innerText = e.target.value.trim() || '-';
+            });
+            document.getElementById('footer-email').addEventListener('input', (e) => {
+                document.getElementById('footer-email-preview').innerText = e.target.value.trim() || '-';
+            });
+            document.getElementById('footer-address').addEventListener('input', (e) => {
+                document.getElementById('footer-address-preview').innerText = e.target.value.trim() || '-';
+            });
+        });
 
     </script>
 </body>
 </html>
+

@@ -133,15 +133,22 @@
         .admin-tab-btn { background-color: var(--bose-bg); color: var(--bose-muted); border: 2px solid var(--bose-border); padding: 16px 28px; border-radius: 20px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2); white-space: nowrap; flex-shrink: 0; }
         .admin-tab-btn:hover { border-color: var(--bose-pink); color: var(--bose-text); transform: translateY(-2px); }
         .admin-tab-btn.active { background-color: var(--bose-pink); color: var(--bose-bg); border-color: var(--bose-pink); box-shadow: 0 8px 25px rgba(255, 145, 164, 0.3); }
+        
         .admin-tab-content { display: none; animation: fadeInTab 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
         .admin-tab-content.active-tab { display: block; }
         @keyframes fadeInTab { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .admin-panel img, .catalog-item img, #img-preview, #hero-preview {
+            width: 100%;
+            height: 180px;
+            object-fit: cover !important;
+        }
     </style>
 </head>
 <body>
 
     <div id="admin-toast" class="admin-toast">
-        <i data-lucide="check-circle" class="w-8 h-8 text-brand-pink shrink-0"></i>
+        <i id="toast-icon" data-lucide="check-circle" class="w-8 h-8 text-brand-pink shrink-0"></i>
         <span id="toast-msg">تم الإجراء بنجاح</span>
     </div>
 
@@ -159,7 +166,7 @@
         </div>
     </div>
 
-    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
     <aside id="sidebar" class="sidebar">
         <div class="p-8 border-b border-brand-border flex items-center justify-between sticky top-0 bg-[#1a1012] z-10">
@@ -169,67 +176,28 @@
                 </div>
                 <h1 class="text-xl font-bold text-brand-textMain tracking-tight">إدارة حلويات بوسي</h1>
             </div>
-            <button onclick="toggleSidebar(false)" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
+            <button id="btn-close-sidebar" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
         </div>
 
         <nav class="flex-grow p-6 space-y-2">
-            <div class="submenu-item active" id="menu-item-dash" onclick="typeof switchSection === 'function' ? switchSection('dashboard', this) : null; toggleSidebar(false);">
+            <div class="submenu-item active" id="menu-item-dash">
                 <i data-lucide="layout-dashboard" class="w-6 h-6"></i> لوحة القيادة
             </div>
             
-            <div class="submenu-item" id="menu-item-orders" onclick="typeof switchSection === 'function' ? switchSection('orders-section', this) : null; typeof fetchAdminOrders === 'function' ? fetchAdminOrders() : null; toggleSidebar(false);">
+            <div class="submenu-item" id="menu-item-orders">
                 <i data-lucide="shopping-bag" class="w-6 h-6"></i> متابعة الطلبات الحية
             </div>
 
-            <details class="main-menu mt-6 bose-accordion" open>
+            <details id="menu-accordion-catalog" class="main-menu mt-6 bose-accordion" open>
                 <summary>
                     <div class="flex items-center gap-4"><i data-lucide="layers" class="w-6 h-6"></i> إدارة الكتالوج</div>
                     <i data-lucide="chevron-down" class="w-5 h-5 transition-transform"></i>
                 </summary>
                 
-                <div class="submenu-scroll-container mt-2" id="sidebar-dynamic-categories">
-                    
-                    <details class="sub-menu bose-sub-accordion">
-                        <summary>
-                            <span class="flex items-center gap-3"><i data-lucide="cake" class="w-5 h-5"></i> الكيك والتورت</span>
-                            <i data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
-                        </summary>
-                        <div class="mt-1">
-                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('تورت الزفاف') : null; toggleSidebar(false);">تورت الزفاف الفاخرة</div>
-                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('تورت المناسبات') : null; toggleSidebar(false);">تورت أعياد الميلاد</div>
-                        </div>
-                    </details>
-
-                    <details class="sub-menu bose-sub-accordion">
-                        <summary>
-                            <span class="flex items-center gap-3"><i data-lucide="flower" class="w-5 h-5"></i> الورد والهدايا</span>
-                            <i data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
-                        </summary>
-                        <div class="mt-1">
-                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('بوكيهات طبيعية') : null; toggleSidebar(false);">البوكيهات الطبيعية</div>
-                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('بوكيهات صناعية') : null; toggleSidebar(false);">البوكيهات الصناعية</div>
-                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('تنسيقات الشوكولاتة') : null; toggleSidebar(false);">تنسيقات الشوكولاتة والكاش</div>
-                            
-                            <div class="submenu-item nested-item mt-2 pt-2 border-t border-brand-border/50 text-brand-pink hover:text-white" onclick="typeof switchSection === 'function' ? switchSection('simulator-settings-section', this) : null; toggleSidebar(false);">
-                                <i data-lucide="sliders-horizontal" class="w-4 h-4"></i> إعدادات محاكي التنسيق
-                            </div>
-                        </div>
-                    </details>
-
-                    <details class="sub-menu bose-sub-accordion">
-                        <summary>
-                            <span class="flex items-center gap-3"><i data-lucide="croissant" class="w-5 h-5"></i> الحلويات المخبوزة</span>
-                            <i data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
-                        </summary>
-                        <div class="mt-1">
-                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('الحلويات الشرقية') : null; toggleSidebar(false);">الحلويات الشرقية</div>
-                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('المخبوزات الغربية') : null; toggleSidebar(false);">المخبوزات الغربية</div>
-                        </div>
-                    </details>
-                </div>
+                <div class="submenu-scroll-container mt-2 space-y-1" id="sidebar-dynamic-categories"></div>
             </details>
 
-            <details class="main-menu mt-4 bose-accordion">
+            <details id="menu-accordion-settings" class="main-menu mt-4 bose-accordion">
                 <summary>
                     <div class="flex items-center gap-4"><i data-lucide="monitor-smartphone" class="w-6 h-6"></i> الإعدادات الشاملة</div>
                     <i data-lucide="chevron-down" class="w-5 h-5 transition-transform"></i>
@@ -245,7 +213,7 @@
     <main class="main-content">
         <header class="bg-[#1a1012] border-b border-brand-border sticky top-0 z-40 px-10 py-6 flex items-center justify-between shadow-xl">
             <div class="flex items-center gap-6">
-                <button onclick="toggleSidebar(true)" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
+                <button id="btn-open-sidebar" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
                 <h2 id="current-section-title" class="text-xl font-bold text-white tracking-wide">المركز الإداري لحلويات بوسي</h2>
             </div>
             <div class="hidden md:flex items-center gap-4 bg-[#0c0709] px-6 py-3 rounded-full border border-brand-border shadow-inner">
@@ -265,6 +233,9 @@
                     <p class="font-semibold text-lg text-brand-textMuted text-center max-w-2xl leading-relaxed opacity-90">
                         للعلامة التجارية <span class="text-brand-pink font-bold">حلويات بوسي</span>. تم تهيئة بيئة العمل لتوفير أقصى درجات الاستقرار والتركيز. من هنا يمكنك إدارة الكتالوج، متابعة الطلبات الحية، وضبط إعدادات النظام. يُرجى تحديد القسم المطلوب من القائمة الجانبية للبدء.
                     </p>
+                    <button id="btn-dash-add-product" class="mt-8 bg-brand-pink text-brand-bg font-bold text-base py-4 px-8 rounded-2xl hover:bg-white hover:text-brand-pink transition-all inline-flex items-center gap-3 shadow-lg">
+                        <i data-lucide="plus-circle" class="w-6 h-6"></i> إضافة منتج وقسم جديد
+                    </button>
                 </div>
             </section>
 
@@ -277,12 +248,11 @@
                         </h3>
                         <p class="text-base text-brand-textMuted font-semibold">استعراض ومتابعة الطلبات الواردة من العملاء بتفاصيلها الكاملة.</p>
                     </div>
-                    <button onclick="typeof fetchAdminOrders === 'function' ? fetchAdminOrders() : null" class="bg-brand-surface border border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-bold text-base py-3 px-6 rounded-xl transition-all flex items-center gap-3 shadow-lg">
+                    <button id="btn-refresh-orders" class="bg-brand-surface border border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-bold text-base py-3 px-6 rounded-xl transition-all flex items-center gap-3 shadow-lg">
                         <i data-lucide="refresh-cw" class="w-5 h-5"></i> تحديث قائمة الطلبات
                     </button>
                 </div>
                 
-                <!-- حاوية الطلبات الفارغة والجاهزة للسحب من فايربيز -->
                 <div id="orders-container" class="space-y-8"></div>
             </section>
 
@@ -295,18 +265,17 @@
                         </h3>
                         <p class="text-base text-brand-textMuted font-semibold">إدارة منتجات هذا القسم بمعزل عن باقي أقسام الكتالوج لضمان الدقة.</p>
                     </div>
-                    <button onclick="typeof openIsolatedEditor === 'function' ? openIsolatedEditor() : null" class="bg-brand-surface border border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-bold text-base py-3 px-6 rounded-xl transition-all flex items-center gap-3 shadow-lg">
+                    <button id="btn-list-add-product" class="bg-brand-surface border border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-bold text-base py-3 px-6 rounded-xl transition-all flex items-center gap-3 shadow-lg">
                         <i data-lucide="plus" class="w-5 h-5"></i> إضافة منتج جديد
                     </button>
                 </div>
                 
-                <!-- شبكة المنتجات الفارغة والجاهزة للسحب من فايربيز -->
                 <div id="catalog-grid" class="catalog-grid"></div>
             </section>
 
             <section id="product-editor" class="admin-section">
                 <div class="mb-12 flex items-center justify-between bg-brand-surface border border-brand-border p-6 rounded-3xl shadow-md">
-                    <button onclick="typeof returnToIsolatedSection === 'function' ? returnToIsolatedSection() : null" class="flex items-center gap-3 text-brand-textMuted hover:text-brand-pink font-bold text-lg transition-colors">
+                    <button id="btn-editor-back" class="flex items-center gap-3 text-brand-textMuted hover:text-brand-pink font-bold text-lg transition-colors">
                         <i data-lucide="arrow-right" class="w-6 h-6"></i> العودة لقسم: <span id="back-cat-name" class="text-white"></span>
                     </button>
                     <div class="px-5 py-2 bg-[#0c0709] rounded-xl border border-brand-border">
@@ -322,11 +291,11 @@
                 </div>
 
                 <div class="admin-tabs-nav">
-                    <button type="button" class="admin-tab-btn active" onclick="typeof switchAdminTab === 'function' ? switchAdminTab(event, 'tab-identity') : null">1. الهوية الأساسية</button>
-                    <button type="button" class="admin-tab-btn" onclick="typeof switchAdminTab === 'function' ? switchAdminTab(event, 'tab-pricing') : null">2. التسعير والمخزون</button>
-                    <button type="button" class="admin-tab-btn" onclick="typeof switchAdminTab === 'function' ? switchAdminTab(event, 'tab-media') : null">3. المحتوى المرئي</button>
-                    <button type="button" class="admin-tab-btn" onclick="typeof switchAdminTab === 'function' ? switchAdminTab(event, 'tab-marketing') : null">4. الوصف والتفاصيل</button>
-                    <button type="button" class="admin-tab-btn" onclick="typeof switchAdminTab === 'function' ? switchAdminTab(event, 'tab-engineering') : null">5. قواعد العرض</button>
+                    <button type="button" class="admin-tab-btn active" data-target="tab-identity">1. الهوية الأساسية</button>
+                    <button type="button" class="admin-tab-btn" data-target="tab-pricing">2. التسعير والمخزون</button>
+                    <button type="button" class="admin-tab-btn" data-target="tab-media">3. المحتوى المرئي</button>
+                    <button type="button" class="admin-tab-btn" data-target="tab-marketing">4. الوصف والتفاصيل</button>
+                    <button type="button" class="admin-tab-btn" data-target="tab-engineering">5. قواعد العرض</button>
                 </div>
 
                 <input type="hidden" id="prod-id">
@@ -341,7 +310,8 @@
                             </div>
                             <div>
                                 <label class="form-label">القسم المنتمي إليه</label>
-                                <input type="text" id="prod-cat" class="form-input text-brand-pink" readonly placeholder="اسم القسم">
+                                <input type="text" id="prod-cat" list="existing-categories" class="form-input text-brand-pink" placeholder="اختر القسم الحالي أو اكتب قسماً جديداً...">
+                                <datalist id="existing-categories"></datalist>
                             </div>
                         </div>
                     </div>
@@ -363,14 +333,14 @@
                                 <div class="flex items-center justify-between bg-[#0c0709] p-5 rounded-2xl border border-brand-border">
                                     <span class="font-semibold text-base text-white" id="discount-status-text">لا يوجد عرض</span>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" id="prod-has-discount" onchange="typeof updateDiscountLabel === 'function' ? updateDiscountLabel(this) : null">
+                                        <input type="checkbox" id="prod-has-discount">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
                                 <div class="flex items-center justify-between bg-[#0c0709] p-5 rounded-2xl border border-brand-border">
                                     <span class="font-semibold text-base text-white" id="stock-status-text">متوفر للطلب</span>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" id="prod-stock" checked onchange="typeof updateStockLabel === 'function' ? updateStockLabel(this) : null">
+                                        <input type="checkbox" id="prod-stock" checked>
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
@@ -388,15 +358,15 @@
                                 <div class="flex-1 w-full space-y-5">
                                     <label class="form-label text-lg">صورة المنتج الأساسية</label>
                                     <p class="bose-helper-text text-sm mb-5">الصورة المعروضة في الكتالوج الرئيسي للقسم.</p>
-                                    <input type="text" id="prod-img" class="form-input text-left text-sm" dir="ltr" placeholder="الرابط السحابي..." oninput="typeof previewImage === 'function' ? previewImage('img-preview', 'img-placeholder', this.value) : null">
-                                    <input type="file" id="file-prod-img" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder') : null">
-                                    <button type="button" onclick="document.getElementById('file-prod-img').click()" class="btn-action w-full h-auto py-4 rounded-xl gap-3">
+                                    <input type="text" id="prod-img" class="form-input text-left text-sm" dir="ltr" placeholder="الرابط السحابي...">
+                                    <input type="file" id="file-prod-img" class="hidden" accept="image/*">
+                                    <button type="button" id="btn-upload-prod-img" class="btn-action w-full h-auto py-4 rounded-xl gap-3">
                                         <i data-lucide="upload-cloud" class="w-6 h-6"></i> <span class="font-bold text-base">رفع صورة للسحابة</span>
                                     </button>
                                 </div>
                                 <div class="w-full aspect-square xl:w-[300px] xl:h-[300px] shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center shadow-md">
                                     <i data-lucide="camera" class="w-12 h-12 text-brand-border absolute" id="img-placeholder"></i>
-                                    <img id="img-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('img-preview', 'img-placeholder') : null">
+                                    <img id="img-preview" src="" class="w-full h-full object-cover relative z-10 hidden">
                                 </div>
                             </div>
 
@@ -404,15 +374,15 @@
                                 <div class="flex-1 w-full space-y-5">
                                     <label class="form-label text-lg">صورة البوستر الداخلي (اختياري)</label>
                                     <p class="bose-helper-text text-sm mb-5">تظهر عند استعراض التفاصيل الكاملة للمنتج.</p>
-                                    <input type="text" id="prod-hero-img" class="form-input text-left text-sm" dir="ltr" placeholder="رابط البوستر السحابي..." oninput="typeof previewImage === 'function' ? previewImage('hero-preview', 'hero-placeholder', this.value) : null">
-                                    <input type="file" id="file-prod-hero" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-hero-img', 'hero-preview', 'hero-placeholder') : null">
-                                    <button type="button" onclick="document.getElementById('file-prod-hero').click()" class="btn-action w-full h-auto py-4 rounded-xl gap-3">
+                                    <input type="text" id="prod-hero-img" class="form-input text-left text-sm" dir="ltr" placeholder="رابط البوستر السحابي...">
+                                    <input type="file" id="file-prod-hero" class="hidden" accept="image/*">
+                                    <button type="button" id="btn-upload-prod-hero" class="btn-action w-full h-auto py-4 rounded-xl gap-3">
                                         <i data-lucide="upload-cloud" class="w-6 h-6"></i> <span class="font-bold text-base">رفع بوستر داخلي</span>
                                     </button>
                                 </div>
                                 <div class="w-full aspect-video xl:w-[300px] xl:h-auto shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center shadow-md">
                                     <i data-lucide="monitor" class="w-12 h-12 text-brand-border absolute" id="hero-placeholder"></i>
-                                    <img id="hero-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('hero-preview', 'hero-placeholder') : null">
+                                    <img id="hero-preview" src="" class="w-full h-full object-cover relative z-10 hidden">
                                 </div>
                             </div>
                         </div>
@@ -429,60 +399,60 @@
                                 <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-base mb-3">صورة الورد الطبيعي</label>
-                                        <input type="text" id="prod-img-natural" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="typeof previewImage === 'function' ? previewImage('preview-natural', 'placeholder-natural', this.value) : null">
-                                        <input type="file" id="file-img-natural" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-img-natural', 'preview-natural', 'placeholder-natural') : null">
-                                        <button type="button" onclick="document.getElementById('file-img-natural').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
+                                        <input type="text" id="prod-img-natural" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي...">
+                                        <input type="file" id="file-img-natural" class="hidden" accept="image/*">
+                                        <button type="button" id="btn-upload-img-natural" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
                                             <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع الطبيعي</span>
                                         </button>
                                     </div>
                                     <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-natural"></i>
-                                        <img id="preview-natural" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('preview-natural', 'placeholder-natural') : null">
+                                        <img id="preview-natural" src="" class="w-full h-full object-cover relative z-10 hidden">
                                     </div>
                                 </div>
 
                                 <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-base mb-3">صورة الورد الصناعي</label>
-                                        <input type="text" id="prod-img-artificial" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="typeof previewImage === 'function' ? previewImage('preview-artificial', 'placeholder-artificial', this.value) : null">
-                                        <input type="file" id="file-img-artificial" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-img-artificial', 'preview-artificial', 'placeholder-artificial') : null">
-                                        <button type="button" onclick="document.getElementById('file-img-artificial').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
+                                        <input type="text" id="prod-img-artificial" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي...">
+                                        <input type="file" id="file-img-artificial" class="hidden" accept="image/*">
+                                        <button type="button" id="btn-upload-img-artificial" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
                                             <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع الصناعي</span>
                                         </button>
                                     </div>
                                     <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-artificial"></i>
-                                        <img id="preview-artificial" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('preview-artificial', 'placeholder-artificial') : null">
+                                        <img id="preview-artificial" src="" class="w-full h-full object-cover relative z-10 hidden">
                                     </div>
                                 </div>
 
                                 <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-base mb-3">صورة النقود المنسقة</label>
-                                        <input type="text" id="prod-img-cash" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="typeof previewImage === 'function' ? previewImage('preview-cash', 'placeholder-cash', this.value) : null">
-                                        <input type="file" id="file-img-cash" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-img-cash', 'preview-cash', 'placeholder-cash') : null">
-                                        <button type="button" onclick="document.getElementById('file-img-cash').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
+                                        <input type="text" id="prod-img-cash" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي...">
+                                        <input type="file" id="file-img-cash" class="hidden" accept="image/*">
+                                        <button type="button" id="btn-upload-img-cash" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
                                             <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع صورة النقود</span>
                                         </button>
                                     </div>
                                     <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-cash"></i>
-                                        <img id="preview-cash" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('preview-cash', 'placeholder-cash') : null">
+                                        <img id="preview-cash" src="" class="w-full h-full object-cover relative z-10 hidden">
                                     </div>
                                 </div>
 
                                 <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-base mb-3">صورة تنسيق الشوكولاتة</label>
-                                        <input type="text" id="prod-img-choco" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="typeof previewImage === 'function' ? previewImage('preview-choco', 'placeholder-choco', this.value) : null">
-                                        <input type="file" id="file-img-choco" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-img-choco', 'preview-choco', 'placeholder-choco') : null">
-                                        <button type="button" onclick="document.getElementById('file-img-choco').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
+                                        <input type="text" id="prod-img-choco" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي...">
+                                        <input type="file" id="file-img-choco" class="hidden" accept="image/*">
+                                        <button type="button" id="btn-upload-img-choco" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
                                             <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع الشوكولاتة</span>
                                         </button>
                                     </div>
                                     <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-choco"></i>
-                                        <img id="preview-choco" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('preview-choco', 'placeholder-choco') : null">
+                                        <img id="preview-choco" src="" class="w-full h-full object-cover relative z-10 hidden">
                                     </div>
                                 </div>
                             </div>
@@ -508,7 +478,7 @@
 
                 <div id="tab-engineering" class="admin-tab-content">
                     <div class="admin-card">
-                        <h4 class="text-brand-pink font-bold text-xl mb-10 flex items-center gap-3"><i data-lucide="sliders" class="w-6 h-6"></i> 5. قواعد العرض المستقلة</h4>
+                        <h4 class="text-brand-pink font-bold text-xl mb-10 flex items-center gap-3"><i data-lucide="sliders" class="w-6 h-6"></i> 5. قواعد العرض</h4>
                         <p class="text-brand-textMuted font-semibold text-sm mb-8 leading-relaxed border-r-4 border-brand-pink pr-4">
                             التحكم هنا يخص <span class="text-brand-pink">هذا المنتج فقط</span> لتنسيق ظهوره داخل الكتالوج بالشكل الأمثل، سواء بتخصيص مساحة كاملة له أو مساحة قياسية.
                         </p>
@@ -527,21 +497,21 @@
                                     <label class="form-label mb-0 text-brand-pink text-base">العرض</label>
                                     <span class="text-brand-bg font-bold text-base bg-brand-pink px-3 py-1 rounded-lg" id="val-custom-w">تلقائي</span>
                                 </div>
-                                <input type="range" id="prod-card-w" min="150" max="800" step="10" value="280" oninput="document.getElementById('val-custom-w').innerText = this.value + 'px'">
+                                <input type="range" id="prod-card-w" min="150" max="800" step="10" value="280">
                             </div>
                             <div>
                                 <div class="flex justify-between items-center mb-5">
                                     <label class="form-label mb-0 text-brand-pink text-base">الارتفاع</label>
                                     <span class="text-brand-bg font-bold text-base bg-brand-pink px-3 py-1 rounded-lg" id="val-custom-h">تلقائي</span>
                                 </div>
-                                <input type="range" id="prod-card-h" min="150" max="800" step="10" value="350" oninput="document.getElementById('val-custom-h').innerText = this.value + 'px'">
+                                <input type="range" id="prod-card-h" min="150" max="800" step="10" value="350">
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="pt-6 mb-16">
-                    <button id="btn-save-product" onclick="typeof saveProduct === 'function' ? saveProduct() : null" class="btn-solid py-5 text-xl w-full rounded-2xl">
+                    <button id="btn-save-product" class="btn-solid py-5 text-xl w-full rounded-2xl">
                         <i data-lucide="check-circle" class="w-6 h-6"></i> اعتماد التحديثات السحابية
                     </button>
                 </div>
@@ -616,7 +586,7 @@
                                     <input type="text" id="adm-layer-cash-url" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-sm outline-none focus:border-brand-pink transition-colors" dir="ltr" placeholder="https://res.cloudinary.com/...">
                                 </div>
                             </div>
-                            <button onclick="typeof window.saveBoseSimulatorSettings === 'function' ? window.saveBoseSimulatorSettings() : null" class="w-full mt-6 bg-brand-pink text-brand-bg font-bold text-base py-4 rounded-xl hover:bg-white hover:text-brand-pink transition-colors cursor-pointer flex items-center justify-center gap-2">
+                            <button id="btn-save-simulator-settings" class="w-full mt-6 bg-brand-pink text-brand-bg font-bold text-base py-4 rounded-xl hover:bg-white hover:text-brand-pink transition-colors cursor-pointer flex items-center justify-center gap-2">
                                 <i data-lucide="cloud-upload" class="w-5 h-5"></i> اعتماد الإعدادات سحابياً
                             </button>
                         </div>
@@ -627,70 +597,6 @@
         </div>
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            window.toggleSidebar = function(forceState) {
-                const sidebar = document.getElementById('sidebar');
-                const overlay = document.getElementById('sidebar-overlay');
-                
-                if (typeof forceState !== 'undefined') {
-                    if (forceState) {
-                        sidebar.classList.add('active');
-                        overlay.classList.add('active');
-                    } else {
-                        sidebar.classList.remove('active');
-                        overlay.classList.remove('active');
-                    }
-                } else {
-                    sidebar.classList.toggle('active');
-                    overlay.classList.toggle('active');
-                }
-            };
-
-            const mainSummaries = document.querySelectorAll('.bose-accordion > summary');
-            mainSummaries.forEach((summary) => {
-                summary.addEventListener('click', function(e) {
-                    e.preventDefault(); 
-                    const currentDetails = this.parentElement;
-                    const isOpen = currentDetails.hasAttribute('open');
-
-                    document.querySelectorAll('.bose-accordion').forEach(details => {
-                        details.removeAttribute('open');
-                    });
-
-                    if (!isOpen) {
-                        currentDetails.setAttribute('open', '');
-                    }
-                });
-            });
-
-            const subSummaries = document.querySelectorAll('.bose-sub-accordion > summary');
-            subSummaries.forEach((summary) => {
-                summary.addEventListener('click', function(e) {
-                    e.preventDefault(); 
-                    const currentDetails = this.parentElement;
-                    const isOpen = currentDetails.hasAttribute('open');
-
-                    const siblingDetails = currentDetails.parentElement.querySelectorAll('.bose-sub-accordion');
-                    siblingDetails.forEach(details => {
-                        details.removeAttribute('open');
-                    });
-
-                    if (!isOpen) {
-                        currentDetails.setAttribute('open', '');
-                    }
-                });
-            });
-            
-        });
-    </script>
-    
-    <script>
-        lucide.createIcons();
-    </script>
     <script src="admin-catalog.js" defer></script>
 </body>
 </html>
-
-
