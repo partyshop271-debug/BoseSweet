@@ -203,7 +203,11 @@
         </div>
     </footer>
 
-    <script type="module" src="unified-engine.js"></script>
+<!-- أولاً: المحرك الأساسي (القلب النابض) -->
+<script type="module" src="core-engine.js"></script>
+
+<!-- ثانياً: محرك الواجهة البصرية -->
+<script type="module" src="ui-engine.js"></script>
     <script type="module">
         window.ProductUI = {
             showToast: function(msg) {

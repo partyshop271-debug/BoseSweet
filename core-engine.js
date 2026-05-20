@@ -1,9 +1,9 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Core Data Engine | المحرك المركزي للبيانات (V39.4 - سيادي ومسيطر)
+ * 👑 BoseSweets Sovereign Core Engine | المحرك الأساسي السيادي (القلب النابض)
  * ============================================================================
- * الإدارة المرجعية: إدارة علامة حلويات بوسي
- * الحالة: دمج شامل، أداء فائق، كسر إجباري للذاكرة المؤقتة لضمان التحديث اللحظي للصور.
+ * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
+ * الحالة: مركز البيانات، تهيئة السحابة، نظام المراقبة، ومحرك السلة.
  * ============================================================================
  */
 
@@ -41,25 +41,22 @@ export const firebaseConfig = {
     measurementId: "G-6S8EXY7Y4P" 
 };
 
-// 🛡️ التهيئة الآمنة والملطقة للنظام السحابي (Modern Architecture)
 let app, db, auth;
 
 try {
     app = initializeApp(firebaseConfig);
-    
     db = initializeFirestore(app, {
         localCache: persistentLocalCache({
             tabManager: persistentMultipleTabManager()
         })
     });
-    
     auth = getAuth(app);
     
     if (typeof window !== 'undefined') {
         window.firebaseApp = app;
         window.db = db;
         window.auth = auth;
-        window.BoseSweets_Engine_Version = "V39.4";
+        window.BoseSweets_Engine_Version = "V39.7_Premium";
     }
 } catch (error) {
     console.error("🔒 قرار إداري أمني: فشل تهيئة السحابة، يرجى مراجعة الخوادم فوراً.", error);
@@ -76,12 +73,9 @@ const ConnectionGuard = {
 
 function handleConnectionDrop(retryFunction) {
     ConnectionGuard.active = false;
-    console.error("رصد تذبذب في الاتصال، جاري تفعيل الحماية والمحاولة من جديد...");
     if (ConnectionGuard.retryCount < ConnectionGuard.maxRetries) {
         ConnectionGuard.retryCount++;
         setTimeout(retryFunction, ConnectionGuard.retryDelay);
-    } else {
-        console.error("فشل الاتصال اللحظي بعد استنفاد المحاولات.");
     }
 }
 
@@ -91,7 +85,6 @@ function handleConnectionDrop(retryFunction) {
 
     window.BoseMonitor = {
         logQueue: [],
-        isReporting: false, 
         diagnose: function(errorMsg) {
             const msg = String(errorMsg).toLowerCase();
             if (msg.includes('auth') || msg.includes('credential')) return "عائق توثيق (Auth Error): فشل في تأكيد الصلاحيات مع السحابة.";
@@ -99,7 +92,6 @@ function handleConnectionDrop(retryFunction) {
             if (msg.includes('permission') || msg.includes('access-denied')) return "رفض سيادي (Permission): محاولة الوصول لبيانات غير مصرح بها.";
             if (msg.includes('quota') || msg.includes('exceeded')) return "اختناق سحابي (Quota): تجاوز الحد الأقصى لعمليات السحابة المسموح بها.";
             if (msg.includes('null (reading') || msg.includes('undefined (reading')) return "انهيار هيكلي (DOM): محاولة قراءة بيانات مفقودة أو الواجهة فقدت حقول أساسية.";
-            if (msg.includes('firebase')) return "خلل في قلب المحرك (Firebase Core Error).";
             return "خلل تقني مجهول يتطلب تحليلاً برمجياً عميقاً.";
         },
         parseStackTrace: function(stack) {
@@ -112,16 +104,12 @@ function handleConnectionDrop(retryFunction) {
             return { file: 'تحليل معقد', line: 'N/A', col: 'N/A' };
         },
         report: async function(error, sourceFile = 'core-engine.js', lineNo = null, colNo = null, functionName = 'رصد تلقائي (Auto-Detect)') {
-            if (this.isReporting) return; 
-            this.isReporting = true;
             try {
                 const errorMessage = error && error.message ? error.message : String(error);
-                const stackTrace = error && error.stack ? error.stack : 'لا يوجد تتبع برمجي متاح (No Stack Trace)';
+                const stackTrace = error && error.stack ? error.stack : 'لا يوجد تتبع برمجي متاح';
                 const parsedStack = this.parseStackTrace(stackTrace);
                 const finalFile = sourceFile || parsedStack.file;
                 
-                console.warn(`%c[BoseMonitor - رصد أمني]%c تم رصد خلل في: ${finalFile} | دالة: ${functionName}`, "color: #ff91a4; font-weight: bold; background: #1a1012; padding: 2px 6px; border-radius: 4px;", "color: inherit;");
-
                 const reportData = {
                     fileName: finalFile,
                     functionName: functionName,
@@ -133,15 +121,10 @@ function handleConnectionDrop(retryFunction) {
                     clientDevice: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown Device',
                     url: window.location.href,
                     isLoginPortal: false,
-                    engineVersion: 'V39.4'
+                    engineVersion: 'V39.7_Premium'
                 };
-
-                await this.saveToDatabase(reportData);
-            } catch (e) {
-                console.error("👑 BoseMonitor: فشل نظام الرصد العميق في تسجيل الخطأ:", e);
-            } finally {
-                this.isReporting = false;
-            }
+                this.saveToDatabase(reportData);
+            } catch (e) {}
         },
         saveToDatabase: async function(reportData) {
             try {
@@ -149,7 +132,7 @@ function handleConnectionDrop(retryFunction) {
                 if (db) {
                     const logsRef = collection(db, 'system_logs');
                     await setDoc(doc(logsRef), reportData);
-                    if (this.logQueue.length > 0) await this.syncQueueToDatabase();
+                    if (this.logQueue.length > 0) this.syncQueueToDatabase();
                 } else {
                     this.saveToLocalStorage(reportData);
                 }
@@ -179,15 +162,39 @@ function handleConnectionDrop(retryFunction) {
         initGlobalWatch: function() {
             window.addEventListener('error', (event) => {
                 let fName = event.filename ? event.filename.split('/').pop() : 'core-engine.js';
-                this.report(event.error || event.message, fName, null, null, 'رصد تلقائي للواجهة (Global Error)');
+                this.report(event.error || event.message, fName, null, null, 'رصد تلقائي (Global Error)');
             });
             window.addEventListener('unhandledrejection', (event) => {
-                this.report(event.reason || 'عملية خلفية تم رفضها ولم تعالج', 'core-engine.js', null, null, 'عملية شبكية غير مكتملة (Promise Rejection)');
+                this.report(event.reason || 'عملية خلفية تم رفضها ولم تعالج', 'core-engine.js', null, null, 'عملية شبكية (Promise Rejection)');
             });
+        },
+        initPerformanceWatch: function() {
+            if (typeof window === 'undefined' || !window.PerformanceObserver) return;
+            try {
+                // مستشعر الاختناق: رصد أي عملية تسبب بطء للموقع لأكثر من نصف ثانية
+                const observer = new PerformanceObserver((list) => {
+                    for (const entry of list.getEntries()) {
+                        if (entry.duration > 500) { 
+                            this.report(`اختناق في الأداء: عملية استغرقت ${Math.round(entry.duration)}ms`, 'معالج الواجهة', null, null, 'مستشعر النبض (Performance)');
+                        }
+                    }
+                });
+                observer.observe({entryTypes: ['longtask']});
+
+                // مستشعر البيانات: رصد أي صورة أو ملف يتجاوز حجمه 500 كيلوبايت لحماية باقة العميل
+                const resObserver = new PerformanceObserver((list) => {
+                    for (const entry of list.getEntries()) {
+                        if (entry.initiatorType === 'img' && entry.transferSize > 500000) { 
+                            this.report(`استهلاك بيانات زائد: صورة بحجم ${Math.round(entry.transferSize / 1024)}KB - الرابط: ${entry.name}`, 'شبكة الوسائط', null, null, 'مستشعر النبض (Network)');
+                        }
+                    }
+                });
+                resObserver.observe({entryTypes: ['resource']});
+            } catch(e) {}
         }
     };
-
     window.BoseMonitor.initGlobalWatch();
+    window.BoseMonitor.initPerformanceWatch();
 })();
 
 // ============================================================================
@@ -205,52 +212,40 @@ export const StorageEngine = {
                 resolve(null);
                 return;
             }
-            try {
-                const request = indexedDB.open(this.dbName, this.version);
-                request.onupgradeneeded = (e) => {
-                    const database = e.target.result;
-                    if (!database.objectStoreNames.contains(this.storeName)) {
-                        database.createObjectStore(this.storeName);
-                    }
-                };
-                request.onsuccess = (e) => {
-                    this.db = e.target.result;
-                    resolve(this.db);
-                };
-                request.onerror = (e) => {
-                    reject(e.target.error);
-                };
-            } catch (err) {
-                reject(err);
-            }
+            const request = indexedDB.open(this.dbName, this.version);
+            request.onupgradeneeded = (e) => {
+                const database = e.target.result;
+                if (!database.objectStoreNames.contains(this.storeName)) {
+                    database.createObjectStore(this.storeName);
+                }
+            };
+            request.onsuccess = (e) => {
+                this.db = e.target.result;
+                resolve(this.db);
+            };
+            request.onerror = (e) => {
+                reject(e.target.error);
+            };
         });
     },
     set(key, value) {
         return new Promise((resolve, reject) => {
             if (!this.db) { resolve(null); return; }
-            try {
-                const transaction = this.db.transaction([this.storeName], 'readwrite');
-                const store = transaction.objectStore(this.storeName);
-                const request = store.put(value, key);
-                request.onsuccess = () => resolve(true);
-                request.onerror = (e) => reject(e.target.error);
-            } catch (err) {
-                reject(err);
-            }
+            const transaction = this.db.transaction([this.storeName], 'readwrite');
+            const store = transaction.objectStore(this.storeName);
+            const request = store.put(value, key);
+            request.onsuccess = () => resolve(true);
+            request.onerror = (e) => reject(e.target.error);
         });
     },
     get(key) {
         return new Promise((resolve, reject) => {
             if (!this.db) { resolve(null); return; }
-            try {
-                const transaction = this.db.transaction([this.storeName], 'readonly');
-                const store = transaction.objectStore(this.storeName);
-                const request = store.get(key);
-                request.onsuccess = (e) => resolve(e.target.result);
-                request.onerror = (e) => reject(e.target.error);
-            } catch (err) {
-                reject(err);
-            }
+            const transaction = this.db.transaction([this.storeName], 'readonly');
+            const store = transaction.objectStore(this.storeName);
+            const request = store.get(key);
+            request.onsuccess = (e) => resolve(e.target.result);
+            request.onerror = (e) => reject(e.target.error);
         });
     }
 };
@@ -287,11 +282,11 @@ window.loadEngineMemory = async function() {
         if (cachedCatalog && cachedCatalog.length > 0 && BoseState.catalog.length === 0) {
             BoseState.catalog = cachedCatalog;
             syncCatalogMap();
-            if(window.distributeProductsToUI) window.distributeProductsToUI();
+            if (typeof window.distributeProductsToUI === 'function') window.distributeProductsToUI();
         }
         if (cachedTheme && Object.keys(cachedTheme).length > 0 && Object.keys(BoseState.theme).length === 0) {
             BoseState.theme = cachedTheme;
-            if(window.applyThemeConfigUI) window.applyThemeConfigUI();
+            if (typeof window.applyThemeConfigUI === 'function') window.applyThemeConfigUI();
         }
     } catch (e) {
         if (window.BoseMonitor) window.BoseMonitor.report(e, 'core-engine.js', null, null, 'loadEngineMemory');
@@ -311,8 +306,8 @@ export const ReverseSyncEngine = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_V39.4',
-                        engine_status: 'Active',
+                        source: 'BoseSweets_Engine_Sovereign_V39.7_Premium',
+                        engine_status: 'Active_Sovereign',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
                         customerName: orderData.customerName || orderData.name,
@@ -322,17 +317,15 @@ export const ReverseSyncEngine = {
                         timestamp: orderData.timestamp,
                         itemsCount: orderData.itemsArray ? orderData.itemsArray.length : 0
                     })
-                }).catch(e => console.warn('تنويه هندسي: تأمين العملية عبر المسار البديل.'));
+                }).catch(() => {});
             }
-        } catch (error) {
-            console.warn("حلويات بوسي 👑: عائق في المزامنة العكسية وتم تجاوزه.");
-        }
+        } catch (error) {}
     },
     async broadcastGlobalUpdate() {
         try {
             if (db) {
                 const syncDocRef = doc(db, 'system', 'syncFlag');
-                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V39.4', forceRefresh: true }, { merge: true });
+                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V39.7_Premium', forceRefresh: true }, { merge: true });
             }
         } catch (error) {}
     }
@@ -402,7 +395,7 @@ export const NetworkEngine = {
             if (collectionName === 'settings' && docId === 'main') {
                 if (!auth || !auth.currentUser) throw new Error("🔒 توثيق الإدارة مطلوب.");
             }
-            if (!db) throw new Error("المحرك غير متصل.");
+            if (!db) throw new Error("Database not ready.");
             await setDoc(doc(db, collectionName, String(docId)), data, { merge: true });
             if (collectionName === 'orders') ReverseSyncEngine.triggerOrderWebhook(data);
             else if (['settings', 'catalog', 'shipping', 'gallery'].includes(collectionName)) ReverseSyncEngine.broadcastGlobalUpdate();
@@ -414,7 +407,7 @@ export const NetworkEngine = {
     },
     async safeDelete(collectionName, docId) {
         try {
-            if (!db) throw new Error("المحرك غير متصل.");
+            if (!db) throw new Error("Database not ready.");
             await deleteDoc(doc(db, collectionName, String(docId)));
             if (['settings', 'catalog', 'shipping', 'gallery'].includes(collectionName)) ReverseSyncEngine.broadcastGlobalUpdate();
             return true;
@@ -452,30 +445,11 @@ if (typeof window !== 'undefined') {
 const BOSE_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg";
 const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1";
 
-// 🔥 تطبيق الختم الزمني السيادي لكسر الذاكرة المؤقتة (Dynamic Cache Buster)
 export const processBoseImage = (imgPath) => {
     if (!imgPath) return BOSE_LOGO_FALLBACK;
-    
-    let finalUrl = imgPath;
-    if (!imgPath.startsWith('http') && !imgPath.startsWith('data:')) {
-        const cleanPath = imgPath.replace(/^\//, '');
-        finalUrl = `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${cleanPath}`;
-    }
-    
-    // جلب توقيت آخر تحديث سيادي، لضمان عرض أحدث نسخة وتجاهل الذاكرة القديمة للمتصفح أو الخادم
-    const state = typeof window !== 'undefined' ? (window.BoseState || {}) : {};
-    const syncStamp = (state.theme && state.theme.lastAdminUpdate) 
-        ? state.theme.lastAdminUpdate 
-        : (typeof localStorage !== 'undefined' ? (localStorage.getItem('bose_last_local_sync') || Date.now()) : Date.now());
-
-    if (finalUrl.startsWith('http') && !finalUrl.includes('data:')) {
-        // تنظيف الرابط من أي ختم زمني قديم لتفادي تراكم المتغيرات
-        finalUrl = finalUrl.split('?v=')[0].split('&v=')[0];
-        const separator = finalUrl.includes('?') ? '&' : '?';
-        finalUrl = `${finalUrl}${separator}v=${syncStamp}`;
-    }
-    
-    return finalUrl;
+    if (imgPath.startsWith('http') || imgPath.startsWith('data:')) return imgPath;
+    const cleanPath = imgPath.replace(/^\//, '');
+    return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${cleanPath}`;
 };
 
 const boseConfig = {
@@ -501,7 +475,7 @@ export const BoseState = {
     catMenu: [], 
     activeCat: 'الرئيسية', 
     isAppReady: false,         
-    cart: (typeof localStorage !== 'undefined') ? JSON.parse(localStorage.getItem('bose_cart_storage') || localStorage.getItem('BoseSweets_Cart') || '[]') : [], 
+    cart: JSON.parse(localStorage.getItem('bose_cart_storage') || localStorage.getItem('BoseSweets_Cart') || localStorage.getItem('bose_cart') || '[]'), 
     currentShippingFee: 0, 
     appliedPromo: null,
     catalogMap: new Map(),
@@ -556,7 +530,7 @@ export function setAppReady() {
                 const mc = document.getElementById('main-content'); if(mc) mc.style.opacity = '1';
             }, 700);
         }
-        window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready', { detail: { timestamp: Date.now(), status: 'Ready' } }));
+        window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready', { detail: { timestamp: Date.now(), status: 'Sovereign_Ready' } }));
     } catch (e) {}
 }
 
@@ -567,25 +541,183 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🔗 القسم السادس: جسر البيانات السيادي (Data Bridge) ودعم التوافق الرجعي
+// 🛒 القسم الخامس: محرك السلة السيادي (Cart System)
 // ============================================================================
 
-export const defaultSettingsFallback = {
-    brandName: "حلويات بوسي", heroTitle: "أهلاً بالجميع في حلويات بوسي", heroDesc: "نخبة المختارات من أجود الخامات العالمية.",
-    brandColorHex: "#ff91a4", catMenu: ["الرئيسية", "ديسباسيتو", "سينابون", "تورت", "ورد"]
+export const cartSystem = {
+    getAdjustedPrice: function(basePrice) { return Math.round(parseFloat(basePrice)); },
+    getCart: function() {
+        const localCart = localStorage.getItem('BoseSweets_Cart') || localStorage.getItem('bose_cart_storage') || localStorage.getItem('bose_cart');
+        if (localCart) { 
+            const parsed = JSON.parse(localCart); 
+            BoseState.cart = parsed; 
+            return parsed; 
+        }
+        return BoseState.cart || [];
+    },
+    saveCartToStorage: function() { 
+        saveToLocalMemory('BoseSweets_Cart', BoseState.cart);
+        saveToLocalMemory('bose_cart_storage', BoseState.cart);
+        saveToLocalMemory('bose_cart', BoseState.cart);
+        this.updateCartDisplay();
+        if(typeof window !== 'undefined') window.dispatchEvent(new Event('BoseSweets_Cart_Updated'));
+    },
+    save: function() { this.saveCartToStorage(); },
+    clearCartStorage: function() { 
+        BoseState.cart = []; 
+        this.saveCartToStorage(); 
+        if(typeof this.syncCartUI === 'function') this.syncCartUI(); 
+    },
+    calculateCartTotal: function(deliveryMode = 'الاستلام من المقر') {
+        this.getCart();
+        if (BoseState.securityLayer?.validateCartPrices) BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
+        let subtotal = 0;
+        BoseState.cart.forEach(item => {
+            const product = BoseState.catalogMap.get(String(item.id)) || BoseState.catalog.find(p => String(p.id) === String(item.id));
+            let finalPrice = this.getAdjustedPrice(product ? product.price : item.price);
+            let qty = parseInt(item.quantity || item.qty) || 1;
+            let addonsPrice = 0;
+            if (item.isCustomCake || item.isCustom) {
+                if (item.printing?.includes('أكل') || item.details?.printType === 'edible') addonsPrice = 60;
+                else if (item.printing?.includes('غير قابلة') || item.details?.printType === 'non_edible') addonsPrice = 20;
+            }
+            subtotal += ((finalPrice + addonsPrice) * qty);
+        });
+        let shippingFee = 0;
+        const isPickup = deliveryMode === 'pickup' || deliveryMode === 'الاستلام من المقر' || deliveryMode === 'استلام';
+        if (!isPickup) {
+            const zone = BoseState.shippingZones.find(z => z.id === deliveryMode || z.name === deliveryMode);
+            shippingFee = zone ? parseFloat(zone.fee) : (deliveryMode.includes('الفرافرة') ? 25 : (deliveryMode.includes('الكفاح') ? 10 : 20));
+        }
+        return { subtotal, shippingFee, total: subtotal + shippingFee };
+    },
+    updateCartDisplay: function() {
+        this.getCart();
+        const totalItems = BoseState.cart.reduce((sum, item) => sum + (item.quantity || item.qty || 1), 0);
+        if (typeof document !== 'undefined') {
+            const badges = document.querySelectorAll('#cart-count-badge, #mobile-cart-badge, .cart-badge-global');
+            badges.forEach(el => {
+                el.innerText = totalItems;
+                el.style.display = totalItems > 0 ? 'flex' : 'none';
+                if(totalItems > 0) el.classList.remove('hidden'); else el.classList.add('hidden');
+            });
+        }
+    },
+    syncCartUI: function() {
+        const cartList = document.getElementById('cart-items-list');
+        if (!cartList) return;
+        if (BoseState.securityLayer?.validateCartPrices) BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
+        if (BoseState.cart.length === 0) {
+            cartList.innerHTML = `<div class="empty-cart flex flex-col items-center justify-center p-12 text-center"><i data-lucide="shopping-bag" class="w-20 h-20 mb-4 opacity-20" style="color: ${boseConfig.branding.colors.pink};"></i><h3 class="text-xl font-black mb-2">سلة المشتريات فارغة</h3></div>`;
+            ['summary-subtotal', 'summary-total'].forEach(id => { if(document.getElementById(id)) document.getElementById(id).innerText = '0 ج.م'; });
+            if (window.lucide) window.lucide.createIcons(); return;
+        }
+        let html = '';
+        BoseState.cart.forEach((item, index) => {
+            let finalPrice = this.getAdjustedPrice(item.price);
+            let qty = parseInt(item.quantity || item.qty) || 1;
+            if (item.isCustomCake || item.isCustom) {
+                finalPrice += (item.printing?.includes('أكل') || item.details?.printType === 'edible') ? 60 : ((item.printing?.includes('غير قابلة') || item.details?.printType === 'non_edible') ? 20 : 0);
+            }
+            const imgUrl = processBoseImage(item.image || item.img);
+            html += `<div class="cart-item bg-white p-4 rounded-2xl border mb-4 flex gap-4 items-center" style="border-color: ${boseConfig.branding.colors.pink}20;">
+                        <img src="${imgUrl}" class="w-20 h-20 rounded-xl object-cover" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
+                        <div class="flex-1 text-right"><h4 class="font-black text-sm">${item.name}</h4><div class="font-black mt-2" style="color: ${boseConfig.branding.colors.pink};">${finalPrice} ج.م</div></div>
+                        <div class="flex flex-col items-center gap-2">
+                            <button onclick="window.cartSystem.modQ(${index}, 1)" class="w-8 h-8 rounded-full border text-black bg-white">+</button>
+                            <span class="font-black text-sm">${qty}</span>
+                            <button onclick="window.cartSystem.modQ(${index}, -1)" class="w-8 h-8 rounded-full border text-black bg-white">-</button>
+                        </div>
+                    </div>`;
+        });
+        cartList.innerHTML = html;
+        const totals = this.calculateCartTotal(document.getElementById('checkout-area')?.value || BoseState.checkoutState.deliveryMethod);
+        if(document.getElementById('summary-subtotal')) document.getElementById('summary-subtotal').innerText = `${totals.subtotal} ج.م`;
+        if(document.getElementById('summary-total')) document.getElementById('summary-total').innerText = `${totals.total} ج.م`;
+    },
+    modQ: function(index, delta) {
+        this.getCart();
+        if (BoseState.cart[index]) {
+            let qty = BoseState.cart[index].quantity || BoseState.cart[index].qty || 1;
+            qty += delta;
+            if (qty <= 0) BoseState.cart.splice(index, 1);
+            else BoseState.cart[index].quantity = Math.min(50, qty);
+            BoseState.cart[index].qty = BoseState.cart[index].quantity;
+            this.saveCartToStorage();
+            this.syncCartUI();
+        }
+    },
+    addWithQtyContext: function(btn, productId) {
+        const wrapper = btn.closest('.catalog-item') || 
+                        btn.closest('.catalog-card-wrapper') || 
+                        btn.closest('.bose-double-wrap') || 
+                        btn.closest('.royal-card') || 
+                        btn.closest('.product-card') || 
+                        btn.closest('.product-info-content') || 
+                        btn.parentElement.parentElement;
+        const qtyDisplay = wrapper ? wrapper.querySelector('.temp-qty-display, .card-qty-display') : null;
+        const qty = qtyDisplay ? parseInt(qtyDisplay.innerText) : 1;
+        const product = BoseState.catalogMap.get(String(productId)) || BoseState.catalog.find(p => String(p.id) === String(productId));
+        if (!product) return;
+
+        const existingItemIdx = BoseState.cart.findIndex(item => String(item.id) === String(productId) && !item.isCustomCake && !item.isCustom);
+        if (existingItemIdx > -1) {
+            BoseState.cart[existingItemIdx].quantity = (BoseState.cart[existingItemIdx].quantity || 1) + qty;
+            BoseState.cart[existingItemIdx].qty = BoseState.cart[existingItemIdx].quantity;
+        } else {
+            BoseState.cart.push({ 
+                id: product.id, name: product.name, price: parseFloat(product.price) || 0, 
+                image: product.img || product.image || "", quantity: qty, qty: qty, 
+                isCustomCake: false, isCustom: false, category: product.category || ''
+            });
+        }
+        this.saveCartToStorage();
+        if(qtyDisplay) qtyDisplay.innerText = "1";
+        
+        if (typeof window.showBoseToast === 'function') {
+            window.showBoseToast(`تم إضافة [${product.name}] للسلة بنجاح.`);
+        } else if (typeof window.showSystemToast === 'function') {
+            window.showSystemToast(`تم إضافة [${product.name}] للسلة بنجاح.`, 'success');
+        } else {
+            console.log(`تم إضافة [${product.name}] للسلة بنجاح.`);
+        }
+        if(typeof window !== 'undefined') window.dispatchEvent(new Event('BoseSweets_Cart_Updated'));
+    }
 };
+
+if (typeof window !== 'undefined') {
+    window.cartSystem = cartSystem;
+}
+
+// ============================================================================
+// 🔗 القسم السادس: جسر البيانات السيادي (Data Bridge) ودعم التوافق الرجعي
+// ============================================================================
 
 export async function fetchSystemSettings() {
     try {
         if (!db) return;
         const sSnap = await getDoc(doc(db, 'settings', 'main'));
-        if (sSnap.exists()) { Object.assign(BoseState.siteSettings, sSnap.data()); saveToLocalMemory('bosesweets_settings', BoseState.siteSettings); }
-        
-        ConnectionGuard.active = true;
-        ConnectionGuard.retryCount = 0; 
-    } catch (e) { 
-        handleConnectionDrop(fetchSystemSettings);
-        Object.assign(BoseState.siteSettings, getFromLocalMemory('bosesweets_settings') || defaultSettingsFallback); 
+        if (sSnap.exists()) {
+            Object.assign(BoseState.siteSettings, sSnap.data());
+            saveToLocalMemory('bosesweets_settings', BoseState.siteSettings);
+        }
+    } catch (e) {
+        Object.assign(BoseState.siteSettings, getFromLocalMemory('bosesweets_settings') || {});
+    }
+}
+
+export async function fetchThemeSettings() {
+    try {
+        if (!db) return;
+        const tSnap = await getDoc(doc(db, 'settings', 'theme'));
+        if (tSnap.exists()) {
+            BoseState.theme = tSnap.data();
+            saveToLocalMemory('bosesweets_theme', BoseState.theme);
+            window.saveEngineMemory('theme');
+            if (typeof window.applyThemeConfigUI === 'function') window.applyThemeConfigUI();
+        }
+    } catch (e) {
+        BoseState.theme = getFromLocalMemory('bosesweets_theme') || {};
     }
 }
 
@@ -593,27 +725,19 @@ export async function fetchShippingZones() {
     try {
         if (!db) return;
         const shipSnap = await getDocs(collection(db, 'shipping'));
-        if (!shipSnap.empty) { BoseState.shippingZones = shipSnap.docs.map(d => ({id: d.id, ...d.data()})); saveToLocalMemory('bosesweets_shipping', BoseState.shippingZones); }
-        
-        ConnectionGuard.active = true;
-        ConnectionGuard.retryCount = 0; 
-    } catch (e) { 
-        handleConnectionDrop(fetchShippingZones);
-        BoseState.shippingZones = getFromLocalMemory('bosesweets_shipping') || []; 
+        if (!shipSnap.empty) {
+            BoseState.shippingZones = shipSnap.docs.map(d => ({id: d.id, ...d.data()}));
+            saveToLocalMemory('bosesweets_shipping', BoseState.shippingZones);
+        }
+    } catch (e) {
+        BoseState.shippingZones = getFromLocalMemory('bosesweets_shipping') || [];
     }
 }
 
 export async function fetchProductsCatalog() {
     try {
-        if (!db) throw new Error("المحرك غير متصل.");
-        
-        if (BoseState.catalog.length > 0 && window.__BoseListenersActive) {
-            return BoseState.catalog;
-        }
-
-        const q = query(collection(db, 'catalog'));
-        const snapshot = await getDocs(q);
-        
+        if (!db) throw new Error("Database not ready.");
+        const snapshot = await getDocs(query(collection(db, 'catalog')));
         const products = [];
         snapshot.docs.forEach(d => {
             const raw = d.data();
@@ -630,35 +754,25 @@ export async function fetchProductsCatalog() {
                 });
             }
         });
-
-        BoseState.catalog = products; 
-        syncCatalogMap(); 
-        saveToLocalMemory('bosesweets_catalog', products);
-        if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('catalogDataReady', { detail: products }));
-        
-        ConnectionGuard.active = true;
-        ConnectionGuard.retryCount = 0; 
-        
-        return products;
-
-    } catch (e) { 
-        handleConnectionDrop(fetchProductsCatalog);
-        console.error("اعتماد الذاكرة المحلية بسبب انقطاع الاتصال:", e);
-        BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || []; 
-        syncCatalogMap(); 
-        if (typeof window !== 'undefined') window.dispatchEvent(new CustomEvent('catalogDataReady', { detail: BoseState.catalog }));
-        return BoseState.catalog; 
+        BoseState.catalog = products;
+        syncCatalogMap();
+        saveToLocalMemory('bosesweets_catalog', BoseState.catalog);
+        window.saveEngineMemory('cat');
+        return BoseState.catalog;
+    } catch (e) {
+        BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || [];
+        syncCatalogMap();
+        return BoseState.catalog;
     }
 }
 
 export async function initializeDataBridge() {
-    if (window.__BoseBridgeInitialized) return; window.__BoseBridgeInitialized = true;
-    const emergencyTimeout = new Promise(resolve => setTimeout(() => resolve('timeout'), 4000));
-    const operations = Promise.all([fetchSystemSettings(), fetchShippingZones(), fetchProductsCatalog()]);
-    await Promise.race([operations, emergencyTimeout]);
+    if (window.__BoseBridgeInitialized) return;
+    window.__BoseBridgeInitialized = true;
+    await Promise.all([fetchSystemSettings(), fetchThemeSettings(), fetchShippingZones(), fetchProductsCatalog()]);
     const uniqueCats = [...new Set(BoseState.catalog.map(p => p.category))].filter(Boolean);
     BoseState.catMenu = BoseState.siteSettings.catMenu?.map(c => c.name || c) || uniqueCats;
-    setAppReady(); window.dispatchEvent(new CustomEvent('catalogDataReady'));
+    setAppReady();
 }
 
 export function listenToSovereignUpdates() {
@@ -669,93 +783,151 @@ export function listenToSovereignUpdates() {
         snap.forEach(d => {
             const data = d.data();
             if (data.isActive !== false) {
-                list.push({ id: d.id, ...data });
+                list.push({
+                    id: d.id,
+                    name: data.name || "صنف فاخر",
+                    price: parseFloat(data.price) || 0,
+                    category: data.category || "عام",
+                    img: data.img || data.image || "",
+                    description: data.description || data.desc || "",
+                    inStock: data.inStock !== false,
+                    ...data 
+                });
             }
         });
         BoseState.catalog = list;
         syncCatalogMap(); 
         saveToLocalMemory('bosesweets_catalog', BoseState.catalog);
-        window.saveEngineMemory('cat'); 
-        
         window.dispatchEvent(new Event('catalogDataReady'));
-        window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
-        if (window.distributeProductsToUI) window.distributeProductsToUI(BoseState.catalog);
-    }, (err) => {
-        if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'listenToSovereignUpdates Error');
+        if (typeof window.distributeProductsToUI === 'function') window.distributeProductsToUI(BoseState.catalog);
     });
 }
 
 if (typeof window !== 'undefined') {
-    window.initializeDataBridge = initializeDataBridge; window.listenToSovereignUpdates = listenToSovereignUpdates;
-    const startBridge = () => { if (!window.location.pathname.includes('admin')) { initializeDataBridge(); listenToSovereignUpdates(); } };
+    window.initializeDataBridge = initializeDataBridge;
+    window.listenToSovereignUpdates = listenToSovereignUpdates;
+    const startBridge = () => { 
+        if (!window.location.pathname.includes('admin')) { 
+            initializeDataBridge(); 
+            listenToSovereignUpdates(); 
+        } 
+    };
     if (document.readyState === 'complete') {
         startBridge();
         fetchProductsCatalog();
     } else {
-        document.addEventListener('DOMContentLoaded', () => { startBridge(); fetchProductsCatalog(); });
+        document.addEventListener('DOMContentLoaded', () => { 
+            startBridge(); 
+            fetchProductsCatalog(); 
+        });
     }
 }
 
 // ============================================================================
-// 🔒 القسم السابع: مستمعي المزامنة الفورية السحابية (Firebase Real-time Sync V39.4)
+// 🔒 القسم السابع: مستمعي المزامنة الفورية السحابية (Firebase Real-time Sync)
 // ============================================================================
 
 export function initializeSovereignSync() {
-    if (!db) return;
-
-    listenToSovereignUpdates();
-
-    if (!window.__BoseSovereignSyncActive) {
-        window.__BoseSovereignSyncActive = true;
-
-        onSnapshot(doc(db, 'settings', 'theme'), (snap) => {
-            if(snap.exists()) {
-                const themeData = snap.data();
-                BoseState.theme = themeData;
-                window.saveEngineMemory('theme');
-                if(window.applyThemeConfigUI) window.applyThemeConfigUI();
-                if(window.distributeProductsToUI) window.distributeProductsToUI();
-            }
-        }, (err) => {
-            if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'Theme SnapshotListener');
-        });
-
-        onSnapshot(doc(db, 'settings', 'logistics'), (snap) => {
-            if(snap.exists()) {
-                BoseState.logistics = snap.data();
-                window.dispatchEvent(new CustomEvent('BoseSweets_Logistics_Updated'));
-            }
-        }, (err) => {
-            if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'Logistics SnapshotListener');
-        });
-
-        onSnapshot(doc(db, 'settings', 'pricingRules'), (snap) => {
-            if(snap.exists()) {
-                const data = snap.data();
-                BoseState.pricingRules = {
-                    pricePerPerson: data.pricePerPerson !== undefined ? data.pricePerPerson : 145,
-                    printEdible: data.printEdible !== undefined ? data.printEdible : 60,
-                    printNonEdible: data.printNonEdible !== undefined ? data.printNonEdible : 20,
-                    giftCardPrice: data.giftCardPrice !== undefined ? data.giftCardPrice : 40,
-                    ...data
-                };
-                window.dispatchEvent(new CustomEvent('BoseSweets_Pricing_Updated'));
-            }
-        }, (err) => {
-            if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'Pricing SnapshotListener');
-        });
-
-        onSnapshot(doc(db, 'system', 'syncFlag'), (snap) => {
-            if (snap.exists()) {
-                const data = snap.data();
-                const lastUpdate = parseInt(localStorage.getItem('bose_last_local_sync') || '0');
-                if (data.lastAdminUpdate > lastUpdate && data.forceRefresh === true) {
-                    localStorage.setItem('bose_last_local_sync', data.lastAdminUpdate.toString());
-                    window.location.reload();
-                }
-            }
-        }, (err) => {
-            if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'SyncFlag SnapshotListener');
-        });
+    if (!db) {
+        if (window.BoseMonitor) window.BoseMonitor.report("Sync_Activation", 'core-engine.js', null, null, 'قاعدة البيانات غير مهيأة بالشكل الصحيح');
+        return;
     }
+
+    let isCatalogLoaded = false;
+    let isThemeLoaded = false;
+    let isLogisticsLoaded = false;
+    let isPricingLoaded = false;
+
+    // مراقب جاهزية المحرك لإعطاء إشارة البدء للواجهة البصرية
+    function checkEngineStatus() {
+        if (isCatalogLoaded && isThemeLoaded && isLogisticsLoaded && isPricingLoaded) {
+            BoseState.isAppReady = true;
+            window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready'));
+        }
+    }
+
+    onSnapshot(collection(db, 'catalog'), (snap) => {
+        const list = [];
+        snap.forEach(d => {
+            const data = d.data();
+            if (data.isActive !== false) {
+                list.push({
+                    id: d.id,
+                    name: data.name || "صنف فاخر",
+                    price: parseFloat(data.price) || 0,
+                    category: data.category || "عام",
+                    img: data.img || data.image || "",
+                    description: data.description || data.desc || "",
+                    inStock: data.inStock !== false,
+                    ...data 
+                });
+            }
+        });
+        BoseState.catalog = list;
+        syncCatalogMap();
+        window.saveEngineMemory('cat');
+        
+        // التحصين اللحظي: مراجعة الأسعار في سلة العميل فوراً وتعديلها إذا تم تغييرها من لوحة الإدارة
+        if (BoseState.cart.length > 0 && typeof window.cartSystem !== 'undefined') {
+            BoseState.cart = BoseState.securityLayer.validateCartPrices(BoseState.cart);
+            window.cartSystem.saveCartToStorage();
+        }
+        
+        isCatalogLoaded = true;
+        checkEngineStatus();
+        
+        if (typeof window.distributeProductsToUI === 'function') {
+            window.distributeProductsToUI(BoseState.catalog);
+        }
+        window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
+    });
+
+    onSnapshot(doc(db, 'settings', 'theme'), (snap) => {
+        if (snap.exists()) {
+            BoseState.theme = snap.data();
+            saveToLocalMemory('bosesweets_theme', BoseState.theme);
+            window.saveEngineMemory('theme');
+            if (typeof window.applyThemeConfigUI === 'function') window.applyThemeConfigUI();
+            if (typeof window.distributeProductsToUI === 'function') {
+                window.distributeProductsToUI(BoseState.catalog);
+            }
+        }
+        isThemeLoaded = true;
+        checkEngineStatus();
+        window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
+    });
+
+    onSnapshot(doc(db, 'settings', 'logistics'), (snap) => {
+        if(snap.exists()) {
+            BoseState.logistics = snap.data();
+            window.dispatchEvent(new CustomEvent('BoseSweets_Logistics_Updated'));
+        }
+        isLogisticsLoaded = true;
+        checkEngineStatus();
+    });
+
+    onSnapshot(doc(db, 'settings', 'pricingRules'), (snap) => {
+        if(snap.exists()) {
+            BoseState.pricingRules = snap.data();
+            window.dispatchEvent(new CustomEvent('BoseSweets_Pricing_Updated'));
+        }
+        isPricingLoaded = true;
+        checkEngineStatus();
+    });
+
+    onSnapshot(doc(db, 'system', 'syncFlag'), (snap) => {
+        if (snap.exists()) {
+            const data = snap.data();
+            const lastUpdate = parseInt(localStorage.getItem('bose_last_local_sync') || '0');
+            if (data.lastAdminUpdate > lastUpdate && data.forceRefresh === true) {
+                localStorage.setItem('bose_last_local_sync', data.lastAdminUpdate.toString());
+                window.location.reload();
+            }
+        }
+    });
+}
+
+// تصدير دالة التهيئة لتكون متاحة للواجهة
+if (typeof window !== 'undefined') {
+    window.initializeSovereignSync = initializeSovereignSync;
 }

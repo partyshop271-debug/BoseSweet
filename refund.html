@@ -101,7 +101,11 @@
         <p class="text-brand-brown opacity-70 font-bold text-sm">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
     </footer>
 
-    <script type="module" src="unified-engine.js"></script>
+<!-- أولاً: المحرك الأساسي (القلب النابض) -->
+<script type="module" src="core-engine.js"></script>
+
+<!-- ثانياً: محرك الواجهة البصرية -->
+<script type="module" src="ui-engine.js"></script>
     <script type="module">
         window.toggleSidebar = function() {
             const sidebar = document.getElementById('sidebar');

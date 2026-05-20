@@ -102,7 +102,7 @@
         }
         .bose-modal-overlay.active { display: flex; opacity: 1; }
         .bose-modal-content {
-            background: #ffffff; border: 4px solid #ff91a4; border-radius: 40px; padding: 60px 40px;
+            background: #ffffff; border: 4px solid #ff91a4; border-radius: 40px; padding: 50px 40px;
             width: 90%; max-width: 500px; text-align: center; box-shadow: 0 20px 50px rgba(255, 145, 164, 0.3);
             transform: scale(0.9); transition: transform 0.3s ease; position: relative;
         }
@@ -134,13 +134,20 @@
 
     <div id="success-modal" class="bose-modal-overlay">
         <div class="bose-modal-content">
-            <div class="w-32 h-32 bg-brand-pinkLight rounded-full flex items-center justify-center border-4 border-brand-pink mx-auto mb-8 shadow-inner">
-                <i data-lucide="check-circle" class="w-16 h-16 text-brand-pink"></i>
+            <div class="w-28 h-28 bg-brand-pinkLight rounded-full flex items-center justify-center border-4 border-brand-pink mx-auto mb-6 shadow-inner">
+                <i data-lucide="check-circle" class="w-14 h-14 text-brand-pink"></i>
             </div>
-            <h3 class="text-4xl font-black text-brand-brown mb-6 tracking-tighter uppercase">تم استلام الطلب</h3>
-            <div class="bg-brand-pinkLight py-5 px-6 rounded-2xl border border-brand-pink/20">
-                <p class="font-bold text-brand-brown/70 text-base">جاري تحويلك للواتساب لتأكيد الطلب...</p>
+            <h3 class="text-3xl font-black text-brand-brown mb-2 tracking-tighter uppercase">تم تسجيل الطلب بنجاح</h3>
+            <p class="text-lg font-black text-brand-pink mb-6" id="order-reference-display">رقم مرجعي: <span dir="ltr">...</span></p>
+            
+            <div class="bg-brand-pinkLight py-4 px-6 rounded-2xl border border-brand-pink/20 mb-6 text-right">
+                <p class="font-bold text-brand-brown text-base mb-2"><i data-lucide="loader" class="inline w-4 h-4 animate-spin text-brand-pink ml-1"></i> جاري تحويلك لتطبيق الواتساب...</p>
+                <p class="text-xs font-bold text-brand-brown/70 leading-relaxed">في حال عدم التحويل التلقائي، اضغط على الزر بالأسفل لنسخ الطلب وإرساله يدوياً للإدارة.</p>
             </div>
+            
+            <button id="fallback-copy-btn" class="w-full bg-white border-2 border-brand-pink text-brand-pink py-4 rounded-xl font-black text-lg hover:bg-brand-pink hover:text-white transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm">
+                <i data-lucide="copy" class="w-5 h-5"></i> نسخ تفاصيل الطلب
+            </button>
         </div>
     </div>
 
@@ -389,16 +396,20 @@
             </div>
             <div class="flex flex-col items-center justify-center gap-6">
                 <div class="flex gap-5 justify-center">
-                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-facebook-f text-xl"></i></a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-instagram text-xl"></i></a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm"><i class="fa-brands fa-tiktok text-xl"></i></a>
+                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm text-decoration-none"><i class="fa-brands fa-facebook-f text-xl"></i></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm text-decoration-none"><i class="fa-brands fa-instagram text-xl"></i></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm text-decoration-none"><i class="fa-brands fa-tiktok text-xl"></i></a>
                 </div>
                 <p class="text-brand-brown opacity-70 font-bold text-sm text-center">© 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
             </div>
         </div>
     </footer>
 
-    <script type="module" src="unified-engine.js"></script>
+<!-- أولاً: المحرك الأساسي (القلب النابض) -->
+<script type="module" src="core-engine.js"></script>
+
+<!-- ثانياً: محرك الواجهة البصرية -->
+<script type="module" src="ui-engine.js"></script>
 
     <script type="module">
         window.CheckoutEngine = {
@@ -427,7 +438,7 @@
                             window.CheckoutEngine.showToast("تاريخ الاستلام غير صحيح، برجاء اختيار تاريخ قادم.");
                             this.value = ''; 
                         } else if (selectedDateOnly < tomorrowOnly) {
-                            window.CheckoutEngine.showToast("لضمان أعلى جودة، بنحتاج 24 ساعة لتحضير الطلب. برجاء اختيار موعد بداية من بكرة.");
+                            window.CheckoutEngine.showToast("لضمان أعلى جودة، بنحتاج 24 ساعة لتحضير الطلب. برجاء اختيار موعد بداية من الغد.");
                             this.value = ''; 
                         }
                     });
@@ -502,6 +513,7 @@
                 this.updateTotals();
             },
 
+            // 🔒 طبقة حماية الأسعار اللحظية (تأكيد التطابق مع السحابة المركزية)
             validateLivePrices: function(cartItemsArray) {
                 let verifiedTotal = 0;
                 let priceMismatch = false;
@@ -550,41 +562,24 @@
                         if (item.details.category === 'ورد') {
                             let matText = item.details.material === 'natural' ? 'ورد طبيعي' : (item.details.material === 'artificial' ? 'ورد صناعي' : 'ورد ستان');
                             let addons = [];
-                            if (item.details.hasGift) {
-                                addons.push(`كارت إهداء مخطوط ("${item.details.giftText || ''}")`);
-                            }
-                            if (item.details.hasRibbon) {
-                                addons.push(`شريط ستان مطبوع عليه ("${item.details.ribbonText || ''}")`);
-                            }
-                            if (item.details.photoCount > 0) {
-                                addons.push(`طباعة صور عدد ${item.details.photoCount} صورة`);
-                            }
-                            if (item.details.chocolateBudget > 0) {
-                                addons.push(`شوكولاتة فاخرة بميزانية ${item.details.chocolateBudget} ج.م`);
-                            }
-                            if (item.details.cashAmount > 0) {
-                                addons.push(`مبلغ كاش ملفوف ${item.details.cashAmount} ج.م`);
-                            }
-                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: بوكيه ورد يحتوي على ${item.details.qty || 15} وردة (${matText}) - اللون المطلوب: ${item.details.color || 'أحمر'}${addons.length > 0 ? ` - الإضافات الفاخرة: (${addons.join('، ')})` : ''}</p>`;
+                            if (item.details.hasGift) addons.push(`كارت إهداء مخطوط`);
+                            if (item.details.hasRibbon) addons.push(`شريط ستان مطبوع`);
+                            if (item.details.photoCount > 0) addons.push(`طباعة ${item.details.photoCount} صور`);
+                            if (item.details.chocolateBudget > 0) addons.push(`شوكولاتة مضافة`);
+                            if (item.details.cashAmount > 0) addons.push(`مبلغ كاش ملفوف`);
+                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: ${item.details.qty} وردة (${matText}) - اللون: ${item.details.color}${addons.length > 0 ? ` - الملحقات: (${addons.join('، ')})` : ''}</p>`;
                         } else {
-                            // 🎂 سد الفجوة البيانية المفقودة لتورت باني التورتة في كارت المراجعة المعروض للعميل
                             let shapeText = item.details.shape === 'round' ? 'شكل دائري' : (item.details.shape === 'heart' ? 'شكل قلب' : (item.details.shape === 'square' ? 'شكل مربع' : 'شكل مستطيل'));
                             let printText = 'بدون طباعة صوره';
-                            if (item.details.print === 'edible') printText = 'طباعة صورة قابلة للأكل مدمجة';
-                            else if (item.details.print === 'non_edible') printText = 'صورة ديكور كرتونية غير قابلة للأكل';
+                            if (item.details.print === 'edible') printText = 'صورة قابلة للأكل';
+                            else if (item.details.print === 'non_edible') printText = 'صورة ديكور كرتونية';
                             
                             let addons = [];
-                            if (item.details.gift) {
-                                addons.push(`كارت هدية فاخر مبروز ومكتوب عليه ("${item.details.cardText || ''}")`);
-                            }
-                            if (item.details.occasionTheme) {
-                                addons.push(`مناسبة التورتة: ${item.details.occasionTheme}`);
-                            }
-                            if (item.details.healthNotes && item.details.healthNotes !== 'لا يوجد') {
-                                addons.push(`تعليمات صحية أو حساسية: ${item.details.healthNotes}`);
-                            }
+                            if (item.details.gift) addons.push(`كارت هدية فاخر`);
+                            if (item.details.occasionTheme) addons.push(`المناسبة: ${item.details.occasionTheme}`);
+                            if (item.details.healthNotes && item.details.healthNotes !== 'لا يوجد') addons.push(`تنبيهات صحية`);
                             
-                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: تورتة مخصصة تكفي ${item.details.people || 4} أفراد (${shapeText}) - النكهة المطلوبة: ${item.details.flavor || 'فانيليا'} - المظهر الفني: ${printText}${addons.length > 0 ? ` - الإضافات والتعليمات: (${addons.join('، ')})` : ''}</p>`;
+                            detailsStr = `<p class="text-sm text-brand-brown/60 mt-2 font-bold border-t border-brand-pink/10 pt-2 block">المواصفات: تكفي ${item.details.people} أفراد (${shapeText}) - النكهة: ${item.details.flavor} - المظهر: ${printText}${addons.length > 0 ? ` - الإضافات: (${addons.join('، ')})` : ''}</p>`;
                         }
                     }
                     html += `
@@ -644,13 +639,16 @@
                 return true;
             },
 
-            processOrder: function(submitBtn, originalBtnText) {
+            processOrder: async function(submitBtn, originalBtnText) {
                 this.cartTotal = this.validateLivePrices(this.cartItems);
                 
                 const customerName = document.getElementById('customer-name').value.trim();
                 const whatsappPhone = document.getElementById('whatsapp-phone').value.trim();
                 const orderDate = document.getElementById('order-date').value;
                 const orderTime = document.getElementById('order-time').value;
+
+                // 🛡️ إنشاء رقم مرجعي سيادي للطلب
+                const orderRefNumber = `ORD-${Date.now().toString().slice(-6)}`;
 
                 let deliveryText = "";
                 if (this.deliveryMode === 'توصيل') {
@@ -663,7 +661,7 @@
                     deliveryText = `الاستلام من مقر الفرع بالكفاح`;
                 }
 
-                let msg = `طلب جديد - حلويات بوسي\n\n`;
+                let msg = `طلب جديد - حلويات بوسي\nالرقم المرجعي: ${orderRefNumber}\n\n`;
                 msg += `الاسم بالتفصيل: ${customerName}\n`;
                 msg += `رقم الواتساب: ${whatsappPhone}\n`;
                 msg += `${deliveryText}\n`;
@@ -674,11 +672,8 @@
                     let catName = "";
                     if (!item.isCustom) {
                         const productRef = window.BoseState?.catalogMap?.get(String(item.id)) || window.BoseState?.catalog?.find(p => String(p.id) === String(item.id));
-                        if (productRef && productRef.category) {
-                            catName = `[${productRef.category}] `;
-                        } else if (item.category) {
-                            catName = `[${item.category}] `;
-                        }
+                        if (productRef && productRef.category) catName = `[${productRef.category}] `;
+                        else if (item.category) catName = `[${item.category}] `;
                     }
 
                     msg += `- ${catName}${item.name} (العدد: ${item.quantity || item.qty})\n`;
@@ -693,7 +688,6 @@
                             if (item.details.chocolateBudget > 0) msg += `  (شوكولاتة مضافة بميزانية: ${item.details.chocolateBudget} ج.م - التفضيل: ${item.details.chocolatePreferences || 'مشكل'})\n`;
                             if (item.details.cashAmount > 0) msg += `  (تنسيق مبالغ كاش نقدية داخل البوكيه بقيمة: ${item.details.cashAmount} ج.م)\n`;
                         } else {
-                            // 🎂 سد فجوة إسقاط بيانات صياغة نصوص تورت باني التورتة المتوجهة لواتساب الفرع السحابي
                             const shape = item.details.shape === 'round' ? 'دائري' : (item.details.shape === 'heart' ? 'شكل قلب' : (item.details.shape === 'square' ? 'شكل مربع' : 'شكل مستطيل'));
                             msg += `  (تورتة مخصصة: تكفي ${item.details.people || 4} أفراد - شكل ${shape} - النكهة المطلوبة: ${item.details.flavor || 'فانيليا'})\n`;
                             if (item.details.print === 'edible') msg += `  (مظهر التورتة: صورة غذائية قابلة للأكل مدمجة)\n`;
@@ -712,25 +706,54 @@
                 if(this.deliveryMode === 'توصيل') msg += `قيمة التوصيل: ${this.shippingFee} ج.م\n`;
                 msg += `الإجمالي النهائي المستحق: ${this.cartTotal + this.shippingFee} ج.م\n`;
 
-                if (window.db) {
-                    const appId = window.__app_id || 'bosy-sweets';
-                    import('https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js').then(fs => {
-                        fs.addDoc(fs.collection(window.db, 'artifacts', appId, 'public', 'data', 'orders'), {
-                            customerName,
-                            whatsappPhone,
-                            deliveryMode: this.deliveryMode,
-                            shippingFee: this.shippingFee,
-                            cartTotal: this.cartTotal,
-                            grandTotal: this.cartTotal + this.shippingFee,
-                            orderDate,
-                            orderTime,
-                            items: this.cartItems,
-                            timestamp: Date.now()
-                        }).catch(err => console.error("خطأ أثناء الحفظ الاحتياطي في Firebase:", err));
-                    });
+                const orderDataObj = {
+                    orderId: orderRefNumber,
+                    customerName,
+                    whatsappPhone,
+                    altPhone: document.getElementById('alt-phone')?.value.trim() || '',
+                    address: document.getElementById('detailed-address')?.value.trim() || '',
+                    deliveryMode: this.deliveryMode,
+                    shippingFee: this.shippingFee,
+                    cartTotal: this.cartTotal,
+                    grandTotal: this.cartTotal + this.shippingFee,
+                    orderDate,
+                    orderTime,
+                    items: this.cartItems,
+                    timestamp: Date.now(),
+                    createdAt: new Date().toISOString()
+                };
+
+                // 🛡️ توثيق الطلب في السجل المركزي الموحد باستخدام المحرك السيادي
+                if (window.NetworkEngine && window.NetworkEngine.safeWrite) {
+                    try {
+                        await window.NetworkEngine.safeWrite('orders', orderRefNumber, orderDataObj);
+                    } catch (err) {
+                        console.error("اعتماد الحفظ الاحتياطي:", err);
+                    }
+                } else if (window.db) {
+                    try {
+                        const fs = await import('https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js');
+                        await fs.setDoc(fs.doc(window.db, 'orders', orderRefNumber), orderDataObj);
+                    } catch (err) {
+                        console.error("خطأ التخزين:", err);
+                    }
                 }
 
                 const modal = document.getElementById('success-modal');
+                const refDisplay = document.getElementById('order-reference-display');
+                if (refDisplay) refDisplay.innerHTML = `رقم مرجعي: <span dir="ltr" class="bg-white px-2 py-1 rounded text-brand-brown ml-2 border border-brand-pink/30">${orderRefNumber}</span>`;
+                
+                // 🛡️ تفعيل زر النسخ الاحتياطي في حال فشل المتصفح في التحويل
+                const fallbackBtn = document.getElementById('fallback-copy-btn');
+                if(fallbackBtn) {
+                    fallbackBtn.onclick = () => {
+                        navigator.clipboard.writeText(msg).then(() => {
+                            fallbackBtn.innerHTML = `<i data-lucide="check" class="w-5 h-5"></i> تم النسخ بنجاح`;
+                            if (window.lucide) lucide.createIcons();
+                        });
+                    };
+                }
+
                 if (modal) modal.classList.add('active');
 
                 if (window.cartSystem && window.cartSystem.clearCartStorage) {
@@ -743,7 +766,7 @@
                 setTimeout(() => {
                     const encodedMsg = encodeURIComponent(msg);
                     window.location.href = `https://wa.me/201097238441?text=${encodedMsg}`;
-                }, 2000);
+                }, 2500);
             }
         };
 
@@ -765,11 +788,11 @@
             const submitBtn = document.getElementById('submit-order-btn');
             const originalBtnText = submitBtn.innerHTML;
             
-            submitBtn.innerHTML = '<i data-lucide="loader-2" class="spin-animation w-8 h-8"></i> جاري تجهيز الطلب...';
+            submitBtn.innerHTML = '<i data-lucide="loader-2" class="spin-animation w-8 h-8"></i> جاري استخراج الرقم المرجعي...';
             submitBtn.disabled = true;
             if (window.lucide) lucide.createIcons();
             
-            setTimeout(() => { window.CheckoutEngine.processOrder(submitBtn, originalBtnText); }, 1000);
+            setTimeout(() => { window.CheckoutEngine.processOrder(submitBtn, originalBtnText); }, 800);
         });
 
         document.addEventListener('DOMContentLoaded', () => {
