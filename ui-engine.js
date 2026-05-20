@@ -1,10 +1,11 @@
+```javascript
 /**
  * ============================================================================
  * 👑 BoseSweets Sovereign UI Engine | محرك الواجهة البصرية السيادي
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: التحكم الكامل في الهيكل البصري وتوزيع المحتوى والربط مع المحرك الأساسي.
- * الترقية: V40.0 Premium - معالجة انهيار الشبكة، ومزامنة السلة العائمة، ومحاكي التورتات الفاخر.
+ * الترقية: V40.1 Premium - معالجة انهيار الشبكة، ومزامنة السلة العائمة، ومحاكي التورتات الفاخر.
  * ============================================================================
  */
 
@@ -48,8 +49,8 @@ export function renderProductCardsUI(products, containerId) {
 
     container.innerHTML = products.map(p => {
         const isOut = p.inStock === false || p.stock === 0;
-        const customWidth = p.cardWidth || defaultWidth;
-        const customHeight = p.cardHeight || defaultHeight;
+        let customWidth = p.cardWidth || defaultWidth;
+        let customHeight = p.cardHeight || defaultHeight;
         
         // التحقق الدقيق والموسع من تصنيفات المنتجات الخاصة لضمان ثبات الهيكل البصري
         const categoryNormalized = p.category ? normalizeArabicText(p.category) : '';
@@ -74,11 +75,15 @@ export function renderProductCardsUI(products, containerId) {
         let isFullSpan = p.gridSpan === 'full' || p.displayStyle === 'full' || isRoyalItem;
         if (isDonutOrCinnabon) isFullSpan = false;
 
-        // التدخل الهندسي الحاسم: فصل مسار السلايدر عن مسار الشبكة لمنع انهيار التصميم
+        // التدخل الهندسي الحاسم: فصل مسار السلايدر عن مسار الشبكة لمنع انهيار التصميم مع تطبيق ترقية التكبير
         let spanClass = '';
         let widthStyle = '';
         
         if (isSliderContainer) {
+            // تكبير كروت السلايدر الفاخر بنسبة 40% لزيادة الجاذبية والوضوح البصري للمنتجات
+            customWidth = Math.round(customWidth * 1.4);
+            customHeight = Math.round(customHeight * 1.4);
+
             spanClass = 'snap-start flex-shrink-0'; // يمنع الانكماش ويسمح بالتمرير
             widthStyle = `width: ${isFullSpan ? '320px' : customWidth + 'px'}; max-width: 85vw;`;
         } else {
@@ -100,26 +105,39 @@ export function renderProductCardsUI(products, containerId) {
                         </div>
                         <div class="p-5 flex flex-col flex-grow text-right bg-white justify-between">
                             <div>
-                                <h3 class="font-bold text-lg text-[#3d241c] mb-1 truncate">${p.name}</h3>
+                                <!-- الاسم أولًا بدون تقطيع وبشكل كامل ومستقر -->
+                                <h3 class="font-bold text-lg text-[#3d241c] mb-1">${p.name}</h3>
+                                
+                                <!-- النكهة أو النوع مباشرة أسفل الاسم -->
                                 <p class="text-xs text-[#ff91a4] font-black mb-2">${p.category || 'صنف فاخر'}</p>
-                                <p class="text-xs text-gray-500 line-clamp-2 mb-4 h-8">${p.description || p.desc || ''}</p>
+                                
+                                <!-- الوصف الكامل بأسلوب احترافي ممتد وبدون تقطيع أو قيود على الطول -->
+                                <p class="text-xs text-gray-500 mb-4 leading-relaxed product-desc" style="white-space: normal; overflow-wrap: break-word; word-break: break-word;">
+                                    ${p.description || p.desc || ''}
+                                </p>
+                                
                                 ${p.flavors ? `<p class="text-[11px] text-[#ff91a4] font-bold border-t border-dashed border-[#fff5f6] pt-2 mb-4 leading-relaxed">${p.flavors}</p>` : ''}
                             </div>
+                            
+                            <!-- شريط التفاعل السفلي: أزرار التعديل على اليسار، السعر في الوسط، وزر الإضافة على اليمين -->
                             <div class="mt-auto flex justify-between items-center border-t border-[#ff91a4]/10 pt-4">
-                                <div class="flex flex-col">
-                                    ${hasDiscount ? `<span class="text-xs text-gray-400 line-through font-bold mb-0.5">${p.oldPrice} ج.م</span>` : ''}
-                                    <span class="font-black text-xl text-[#ff91a4]">${p.price} <span class="text-xs">ج.م</span></span>
+                                <!-- أزرار التحكم في الكمية (اليسار) -->
+                                <div class="flex items-center gap-1.5 bg-gray-50 rounded-full px-2 py-1 border border-gray-100">
+                                    <button onclick="window.updateTempQtyContext(this, -1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200" ${isOut ? 'disabled' : ''}>-</button>
+                                    <span class="temp-qty-display text-xs font-bold w-4 text-center">1</span>
+                                    <button onclick="window.updateTempQtyContext(this, 1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200" ${isOut ? 'disabled' : ''}>+</button>
                                 </div>
-                                <div class="flex items-center gap-2">
-                                    <div class="flex items-center gap-1.5 bg-gray-50 rounded-full px-2 py-1 border border-gray-100">
-                                        <button onclick="window.updateTempQtyContext(this, -1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200" ${isOut ? 'disabled' : ''}>-</button>
-                                        <span class="temp-qty-display text-xs font-bold w-4 text-center">1</span>
-                                        <button onclick="window.updateTempQtyContext(this, 1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold text-gray-500 bg-white rounded-full border border-gray-200" ${isOut ? 'disabled' : ''}>+</button>
-                                    </div>
-                                    <button onclick="window.addWithQtyContextAndSync(this, '${p.id}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-[#ff91a4] flex items-center justify-center hover:bg-[#ff91a4] hover:text-white border border-[#ff91a4]/20 transition-colors shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" ${isOut ? 'disabled' : ''}>
-                                        <i data-lucide="plus" class="w-5 h-5"></i>
-                                    </button>
+                                
+                                <!-- عرض السعر الإجمالي في الوسط بدقة تامة -->
+                                <div class="flex flex-col text-center items-center justify-center">
+                                    ${hasDiscount ? `<span class="text-[10px] text-gray-400 line-through font-bold mb-0.5">${p.oldPrice} ج.م</span>` : ''}
+                                    <span class="font-black text-lg text-[#ff91a4] leading-none">${p.price} <span class="text-xs">ج.م</span></span>
                                 </div>
+                                
+                                <!-- زر الإضافة الفورية إلى سلة التسوق (اليمين) -->
+                                <button onclick="window.addWithQtyContextAndSync(this, '${p.id}')" class="w-10 h-10 rounded-full bg-brand-pinkLight text-[#ff91a4] flex items-center justify-center hover:bg-[#ff91a4] hover:text-white border border-[#ff91a4]/20 transition-colors shadow-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" ${isOut ? 'disabled' : ''}>
+                                    <i data-lucide="plus" class="w-5 h-5"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -144,25 +162,27 @@ export function distributeProductsToUI(products) {
     uiRenderDebounceTimer = setTimeout(() => {
         ['new-arrivals-container', 'best-sellers-container', 'menuGrid'].forEach(id => {
             const el = document.getElementById(id);
-            if (el) {
-                const sectionTitle = el.dataset.sectionTitle || '';
-                const block = BoseState?.theme?.builderLayout?.find(b => b.title === sectionTitle);
-                let filteredList = [...currentProducts];
-                
-                if (block && block.dataSource) {
-                    if (block.dataSource.startsWith('category:')) {
-                        const catName = block.dataSource.split(':')[1];
-                        const normalizedCatName = normalizeArabic(catName);
-                        filteredList = currentProducts.filter(p => p.category && normalizeArabic(p.category) === normalizedCatName);
-                    } else if (block.dataSource === 'latest') {
-                        filteredList = [...currentProducts].sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 12);
-                    } else if (block.dataSource === 'bestsellers') {
-                        filteredList = currentProducts.filter(p => p.hasDiscount === true).slice(0, 12);
-                    }
-                }
-                
-                renderProductCardsUI(filteredList, id);
+            if (!el) return;
+
+            const sectionTitle = el.dataset.sectionTitle || '';
+            const block = BoseState?.theme?.builderLayout?.find(b => b.title === sectionTitle);
+            
+            // ✅ منع أي قسم ليس له مصدر بيانات (dataSource) من عرض المنتجات نهائياً لمنع التكرار والحفاظ على ثبات البناء البصري
+            if (!block || !block.dataSource) return;
+
+            let filteredList = [...currentProducts];
+            
+            if (block.dataSource.startsWith('category:')) {
+                const catName = block.dataSource.split(':')[1];
+                const normalizedCatName = normalizeArabic(catName);
+                filteredList = currentProducts.filter(p => p.category && normalizeArabic(p.category) === normalizedCatName);
+            } else if (block.dataSource === 'latest') {
+                filteredList = [...currentProducts].sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 12);
+            } else if (block.dataSource === 'bestsellers') {
+                filteredList = currentProducts.filter(p => p.hasDiscount === true).slice(0, 12);
             }
+            
+            renderProductCardsUI(filteredList, id);
         });
     }, 150); // تأخير متعمد ومدروس 150 مللي ثانية لمنع الاستدعاءات المتضاربة
 }
@@ -639,6 +659,24 @@ if (typeof window !== 'undefined') {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // حقن وتوثيق خصائص التنسيق الخاصة لضمان منع اقتطاع النصوص في المتصفح تلقائياً
+    try {
+        const style = document.createElement('style');
+        style.textContent = `
+            .product-desc {
+                white-space: normal !important;
+                overflow-wrap: break-word !important;
+                word-break: break-word !important;
+                line-clamp: unset !important;
+                -webkit-line-clamp: unset !important;
+                height: auto !important;
+            }
+        `;
+        document.head.appendChild(style);
+    } catch (e) {
+        console.error("فشل حقن التنسيقات الإضافية لحماية النصوص:", e);
+    }
+
     // استدعاء دالة التهيئة المربوطة من المحرك الأساسي
     if (typeof window.initializeSovereignSync === 'function') {
         window.initializeSovereignSync();
@@ -666,4 +704,6 @@ window.addEventListener('BoseSweets_Logistics_Updated', () => {
     }
 });
 
-console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد وفصله تقنياً بنجاح إلى (Core) و (UI) للإصدار السيادي (V40.0 Premium).");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد وفصله تقنياً بنجاح إلى (Core) و (UI) للإصدار السيادي (V40.1 Premium).");
+
+```
