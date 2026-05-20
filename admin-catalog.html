@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -8,7 +8,6 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- تم تقييد أوزان الخطوط لأقصى حد 700 فقط -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -70,7 +69,7 @@
         .submenu-scroll-container { max-height: calc(100vh - 350px); overflow-y: auto; padding-right: 4px; }
         .submenu-scroll-container::-webkit-scrollbar { width: 4px; }
         
-        .submenu-item { display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin: 4px 0; border-radius: 12px; color: var(--bose-muted); font-size: 1rem; transition: all 0.3s ease; font-weight: 600; cursor: pointer; background: transparent; }
+        .submenu-item { display: block; align-items: center; gap: 14px; padding: 14px 18px; margin: 4px 0; border-radius: 12px; color: var(--bose-muted); font-size: 1rem; transition: all 0.3s ease; font-weight: 600; cursor: pointer; background: transparent; display: flex; }
         .submenu-item:hover, .submenu-item.active { background-color: rgba(255, 145, 164, 0.12); color: var(--bose-text); font-weight: 700; transform: translateX(-5px); }
         .submenu-item.nested-item { padding-right: 24px; font-size: 0.95rem; border-right: 2px solid transparent; }
         .submenu-item.nested-item:hover, .submenu-item.nested-item.active { border-right-color: var(--bose-pink); transform: translateX(-3px); }
@@ -87,7 +86,6 @@
         .bose-helper-text { display: flex; align-items: start; gap: 8px; color: var(--bose-muted); font-size: 0.95rem; font-weight: 600; margin-top: 12px; line-height: 1.6; opacity: 0.85; }
         .bose-helper-text i { flex-shrink: 0; margin-top: 3px; color: var(--bose-pink); }
         
-        /* تقييد أوزان الخطوط إلى 700 في الإدخالات */
         .form-input, .form-select, .form-textarea { width: 100%; background-color: #0c0709 !important; border: 2px solid var(--bose-border) !important; color: var(--bose-text) !important; border-radius: 20px; padding: 22px 28px; font-family: inherit; font-weight: 700; font-size: 1.15rem; transition: all 0.3s ease; box-shadow: inset 0 4px 10px rgba(0,0,0,0.2); }
         .form-input[readonly] { opacity: 0.7; cursor: not-allowed; background-color: #1a1012 !important; border-style: dashed; }
         .form-select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23ff91a4'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: left 24px center; background-size: 24px; padding-left: 60px; }
@@ -161,7 +159,7 @@
         </div>
     </div>
 
-    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar(false)"></div>
 
     <aside id="sidebar" class="sidebar">
         <div class="p-8 border-b border-brand-border flex items-center justify-between sticky top-0 bg-[#1a1012] z-10">
@@ -175,11 +173,11 @@
         </div>
 
         <nav class="flex-grow p-6 space-y-2">
-            <div class="submenu-item active" id="menu-item-dash" onclick="switchSection('dashboard', this)">
+            <div class="submenu-item active" id="menu-item-dash" onclick="typeof switchSection === 'function' ? switchSection('dashboard', this) : null; toggleSidebar(false);">
                 <i data-lucide="layout-dashboard" class="w-6 h-6"></i> لوحة القيادة
             </div>
             
-            <div class="submenu-item" id="menu-item-orders" onclick="switchSection('orders-section', this); fetchAdminOrders();">
+            <div class="submenu-item" id="menu-item-orders" onclick="typeof switchSection === 'function' ? switchSection('orders-section', this) : null; typeof fetchAdminOrders === 'function' ? fetchAdminOrders() : null; toggleSidebar(false);">
                 <i data-lucide="shopping-bag" class="w-6 h-6"></i> متابعة الطلبات الحية
             </div>
 
@@ -197,8 +195,8 @@
                             <i data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
                         </summary>
                         <div class="mt-1">
-                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('تورت الزفاف')">تورت الزفاف الفاخرة</div>
-                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('تورت المناسبات')">تورت أعياد الميلاد</div>
+                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('تورت الزفاف') : null; toggleSidebar(false);">تورت الزفاف الفاخرة</div>
+                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('تورت المناسبات') : null; toggleSidebar(false);">تورت أعياد الميلاد</div>
                         </div>
                     </details>
 
@@ -208,12 +206,11 @@
                             <i data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
                         </summary>
                         <div class="mt-1">
-                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('بوكيهات طبيعية')">البوكيهات الطبيعية</div>
-                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('بوكيهات صناعية')">البوكيهات الصناعية</div>
-                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('تنسيقات الشوكولاتة')">تنسيقات الشوكولاتة والكاش</div>
+                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('بوكيهات طبيعية') : null; toggleSidebar(false);">البوكيهات الطبيعية</div>
+                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('بوكيهات صناعية') : null; toggleSidebar(false);">البوكيهات الصناعية</div>
+                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('تنسيقات الشوكولاتة') : null; toggleSidebar(false);">تنسيقات الشوكولاتة والكاش</div>
                             
-                            <!-- الرابط الجديد المخصص لإعدادات المحاكي المعزولة -->
-                            <div class="submenu-item nested-item mt-2 pt-2 border-t border-brand-border/50 text-brand-pink hover:text-white" onclick="switchSection('simulator-settings-section', this)">
+                            <div class="submenu-item nested-item mt-2 pt-2 border-t border-brand-border/50 text-brand-pink hover:text-white" onclick="typeof switchSection === 'function' ? switchSection('simulator-settings-section', this) : null; toggleSidebar(false);">
                                 <i data-lucide="sliders-horizontal" class="w-4 h-4"></i> إعدادات محاكي التنسيق
                             </div>
                         </div>
@@ -225,8 +222,8 @@
                             <i data-lucide="chevron-down" class="w-4 h-4 transition-transform"></i>
                         </summary>
                         <div class="mt-1">
-                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('الحلويات الشرقية')">الحلويات الشرقية</div>
-                            <div class="submenu-item nested-item" onclick="switchSection('product-list', this); loadCategory('المخبوزات الغربية')">المخبوزات الغربية</div>
+                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('الحلويات الشرقية') : null; toggleSidebar(false);">الحلويات الشرقية</div>
+                            <div class="submenu-item nested-item" onclick="typeof switchSection === 'function' ? switchSection('product-list', this) : null; typeof loadCategory === 'function' ? loadCategory('المخبوزات الغربية') : null; toggleSidebar(false);">المخبوزات الغربية</div>
                         </div>
                     </details>
                 </div>
@@ -259,7 +256,6 @@
 
         <div class="p-8 md:p-16 max-w-[1600px] mx-auto w-full">
 
-            <!-- شاشة الاستقبال بعد إعادة التصميم والصياغة وتعديل الأوزان -->
             <section id="dashboard" class="admin-section active">
                 <div class="admin-card flex flex-col items-center justify-center py-24 md:py-32 border-dashed border-2 border-brand-border bg-transparent shadow-none">
                     <div class="w-24 h-24 rounded-3xl bg-brand-surface border border-brand-border flex items-center justify-center mb-8 shadow-xl">
@@ -281,10 +277,12 @@
                         </h3>
                         <p class="text-base text-brand-textMuted font-semibold">استعراض ومتابعة الطلبات الواردة من العملاء بتفاصيلها الكاملة.</p>
                     </div>
-                    <button onclick="fetchAdminOrders()" class="bg-brand-surface border border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-bold text-base py-3 px-6 rounded-xl transition-all flex items-center gap-3 shadow-lg">
+                    <button onclick="typeof fetchAdminOrders === 'function' ? fetchAdminOrders() : null" class="bg-brand-surface border border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-bold text-base py-3 px-6 rounded-xl transition-all flex items-center gap-3 shadow-lg">
                         <i data-lucide="refresh-cw" class="w-5 h-5"></i> تحديث قائمة الطلبات
                     </button>
                 </div>
+                
+                <!-- حاوية الطلبات الفارغة والجاهزة للسحب من فايربيز -->
                 <div id="orders-container" class="space-y-8"></div>
             </section>
 
@@ -297,17 +295,18 @@
                         </h3>
                         <p class="text-base text-brand-textMuted font-semibold">إدارة منتجات هذا القسم بمعزل عن باقي أقسام الكتالوج لضمان الدقة.</p>
                     </div>
-                    <button onclick="openIsolatedEditor()" class="bg-brand-surface border border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-bold text-base py-3 px-6 rounded-xl transition-all flex items-center gap-3 shadow-lg">
+                    <button onclick="typeof openIsolatedEditor === 'function' ? openIsolatedEditor() : null" class="bg-brand-surface border border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#0c0709] font-bold text-base py-3 px-6 rounded-xl transition-all flex items-center gap-3 shadow-lg">
                         <i data-lucide="plus" class="w-5 h-5"></i> إضافة منتج جديد
                     </button>
                 </div>
                 
+                <!-- شبكة المنتجات الفارغة والجاهزة للسحب من فايربيز -->
                 <div id="catalog-grid" class="catalog-grid"></div>
             </section>
 
             <section id="product-editor" class="admin-section">
                 <div class="mb-12 flex items-center justify-between bg-brand-surface border border-brand-border p-6 rounded-3xl shadow-md">
-                    <button onclick="returnToIsolatedSection()" class="flex items-center gap-3 text-brand-textMuted hover:text-brand-pink font-bold text-lg transition-colors">
+                    <button onclick="typeof returnToIsolatedSection === 'function' ? returnToIsolatedSection() : null" class="flex items-center gap-3 text-brand-textMuted hover:text-brand-pink font-bold text-lg transition-colors">
                         <i data-lucide="arrow-right" class="w-6 h-6"></i> العودة لقسم: <span id="back-cat-name" class="text-white"></span>
                     </button>
                     <div class="px-5 py-2 bg-[#0c0709] rounded-xl border border-brand-border">
@@ -323,11 +322,11 @@
                 </div>
 
                 <div class="admin-tabs-nav">
-                    <button type="button" class="admin-tab-btn active" onclick="switchAdminTab(event, 'tab-identity')">1. الهوية الأساسية</button>
-                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-pricing')">2. التسعير والمخزون</button>
-                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-media')">3. المحتوى المرئي</button>
-                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-marketing')">4. الوصف والتفاصيل</button>
-                    <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-engineering')">5. قواعد العرض</button>
+                    <button type="button" class="admin-tab-btn active" onclick="typeof switchAdminTab === 'function' ? switchAdminTab(event, 'tab-identity') : null">1. الهوية الأساسية</button>
+                    <button type="button" class="admin-tab-btn" onclick="typeof switchAdminTab === 'function' ? switchAdminTab(event, 'tab-pricing') : null">2. التسعير والمخزون</button>
+                    <button type="button" class="admin-tab-btn" onclick="typeof switchAdminTab === 'function' ? switchAdminTab(event, 'tab-media') : null">3. المحتوى المرئي</button>
+                    <button type="button" class="admin-tab-btn" onclick="typeof switchAdminTab === 'function' ? switchAdminTab(event, 'tab-marketing') : null">4. الوصف والتفاصيل</button>
+                    <button type="button" class="admin-tab-btn" onclick="typeof switchAdminTab === 'function' ? switchAdminTab(event, 'tab-engineering') : null">5. قواعد العرض</button>
                 </div>
 
                 <input type="hidden" id="prod-id">
@@ -364,14 +363,14 @@
                                 <div class="flex items-center justify-between bg-[#0c0709] p-5 rounded-2xl border border-brand-border">
                                     <span class="font-semibold text-base text-white" id="discount-status-text">لا يوجد عرض</span>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" id="prod-has-discount" onchange="updateDiscountLabel(this)">
+                                        <input type="checkbox" id="prod-has-discount" onchange="typeof updateDiscountLabel === 'function' ? updateDiscountLabel(this) : null">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
                                 <div class="flex items-center justify-between bg-[#0c0709] p-5 rounded-2xl border border-brand-border">
                                     <span class="font-semibold text-base text-white" id="stock-status-text">متوفر للطلب</span>
                                     <label class="toggle-switch">
-                                        <input type="checkbox" id="prod-stock" checked onchange="updateStockLabel(this)">
+                                        <input type="checkbox" id="prod-stock" checked onchange="typeof updateStockLabel === 'function' ? updateStockLabel(this) : null">
                                         <span class="toggle-slider"></span>
                                     </label>
                                 </div>
@@ -389,15 +388,15 @@
                                 <div class="flex-1 w-full space-y-5">
                                     <label class="form-label text-lg">صورة المنتج الأساسية</label>
                                     <p class="bose-helper-text text-sm mb-5">الصورة المعروضة في الكتالوج الرئيسي للقسم.</p>
-                                    <input type="text" id="prod-img" class="form-input text-left text-sm" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('img-preview', 'img-placeholder', this.value)">
-                                    <input type="file" id="file-prod-img" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder')">
+                                    <input type="text" id="prod-img" class="form-input text-left text-sm" dir="ltr" placeholder="الرابط السحابي..." oninput="typeof previewImage === 'function' ? previewImage('img-preview', 'img-placeholder', this.value) : null">
+                                    <input type="file" id="file-prod-img" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder') : null">
                                     <button type="button" onclick="document.getElementById('file-prod-img').click()" class="btn-action w-full h-auto py-4 rounded-xl gap-3">
                                         <i data-lucide="upload-cloud" class="w-6 h-6"></i> <span class="font-bold text-base">رفع صورة للسحابة</span>
                                     </button>
                                 </div>
                                 <div class="w-full aspect-square xl:w-[300px] xl:h-[300px] shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center shadow-md">
                                     <i data-lucide="camera" class="w-12 h-12 text-brand-border absolute" id="img-placeholder"></i>
-                                    <img id="img-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('img-preview', 'img-placeholder')">
+                                    <img id="img-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('img-preview', 'img-placeholder') : null">
                                 </div>
                             </div>
 
@@ -405,15 +404,15 @@
                                 <div class="flex-1 w-full space-y-5">
                                     <label class="form-label text-lg">صورة البوستر الداخلي (اختياري)</label>
                                     <p class="bose-helper-text text-sm mb-5">تظهر عند استعراض التفاصيل الكاملة للمنتج.</p>
-                                    <input type="text" id="prod-hero-img" class="form-input text-left text-sm" dir="ltr" placeholder="رابط البوستر السحابي..." oninput="previewImage('hero-preview', 'hero-placeholder', this.value)">
-                                    <input type="file" id="file-prod-hero" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-hero-img', 'hero-preview', 'hero-placeholder')">
+                                    <input type="text" id="prod-hero-img" class="form-input text-left text-sm" dir="ltr" placeholder="رابط البوستر السحابي..." oninput="typeof previewImage === 'function' ? previewImage('hero-preview', 'hero-placeholder', this.value) : null">
+                                    <input type="file" id="file-prod-hero" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-hero-img', 'hero-preview', 'hero-placeholder') : null">
                                     <button type="button" onclick="document.getElementById('file-prod-hero').click()" class="btn-action w-full h-auto py-4 rounded-xl gap-3">
                                         <i data-lucide="upload-cloud" class="w-6 h-6"></i> <span class="font-bold text-base">رفع بوستر داخلي</span>
                                     </button>
                                 </div>
                                 <div class="w-full aspect-video xl:w-[300px] xl:h-auto shrink-0 bg-brand-surface rounded-2xl border border-brand-border overflow-hidden relative flex items-center justify-center shadow-md">
                                     <i data-lucide="monitor" class="w-12 h-12 text-brand-border absolute" id="hero-placeholder"></i>
-                                    <img id="hero-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('hero-preview', 'hero-placeholder')">
+                                    <img id="hero-preview" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('hero-preview', 'hero-placeholder') : null">
                                 </div>
                             </div>
                         </div>
@@ -430,60 +429,60 @@
                                 <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-base mb-3">صورة الورد الطبيعي</label>
-                                        <input type="text" id="prod-img-natural" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-natural', 'placeholder-natural', this.value)">
-                                        <input type="file" id="file-img-natural" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-natural', 'preview-natural', 'placeholder-natural')">
+                                        <input type="text" id="prod-img-natural" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="typeof previewImage === 'function' ? previewImage('preview-natural', 'placeholder-natural', this.value) : null">
+                                        <input type="file" id="file-img-natural" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-img-natural', 'preview-natural', 'placeholder-natural') : null">
                                         <button type="button" onclick="document.getElementById('file-img-natural').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
                                             <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع الطبيعي</span>
                                         </button>
                                     </div>
                                     <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-natural"></i>
-                                        <img id="preview-natural" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-natural', 'placeholder-natural')">
+                                        <img id="preview-natural" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('preview-natural', 'placeholder-natural') : null">
                                     </div>
                                 </div>
 
                                 <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-base mb-3">صورة الورد الصناعي</label>
-                                        <input type="text" id="prod-img-artificial" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-artificial', 'placeholder-artificial', this.value)">
-                                        <input type="file" id="file-img-artificial" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-artificial', 'preview-artificial', 'placeholder-artificial')">
+                                        <input type="text" id="prod-img-artificial" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="typeof previewImage === 'function' ? previewImage('preview-artificial', 'placeholder-artificial', this.value) : null">
+                                        <input type="file" id="file-img-artificial" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-img-artificial', 'preview-artificial', 'placeholder-artificial') : null">
                                         <button type="button" onclick="document.getElementById('file-img-artificial').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
                                             <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع الصناعي</span>
                                         </button>
                                     </div>
                                     <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-artificial"></i>
-                                        <img id="preview-artificial" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-artificial', 'placeholder-artificial')">
+                                        <img id="preview-artificial" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('preview-artificial', 'placeholder-artificial') : null">
                                     </div>
                                 </div>
 
                                 <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-base mb-3">صورة النقود المنسقة</label>
-                                        <input type="text" id="prod-img-cash" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-cash', 'placeholder-cash', this.value)">
-                                        <input type="file" id="file-img-cash" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-cash', 'preview-cash', 'placeholder-cash')">
+                                        <input type="text" id="prod-img-cash" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="typeof previewImage === 'function' ? previewImage('preview-cash', 'placeholder-cash', this.value) : null">
+                                        <input type="file" id="file-img-cash" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-img-cash', 'preview-cash', 'placeholder-cash') : null">
                                         <button type="button" onclick="document.getElementById('file-img-cash').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
                                             <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع صورة النقود</span>
                                         </button>
                                     </div>
                                     <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-cash"></i>
-                                        <img id="preview-cash" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-cash', 'placeholder-cash')">
+                                        <img id="preview-cash" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('preview-cash', 'placeholder-cash') : null">
                                     </div>
                                 </div>
 
                                 <div class="bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col gap-5 items-center text-center">
                                     <div class="w-full">
                                         <label class="form-label text-base mb-3">صورة تنسيق الشوكولاتة</label>
-                                        <input type="text" id="prod-img-choco" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="previewImage('preview-choco', 'placeholder-choco', this.value)">
-                                        <input type="file" id="file-img-choco" class="hidden" accept="image/*" onchange="uploadToCloudinary(this, 'prod-img-choco', 'preview-choco', 'placeholder-choco')">
+                                        <input type="text" id="prod-img-choco" class="form-input text-left text-sm mb-3 py-3" dir="ltr" placeholder="الرابط السحابي..." oninput="typeof previewImage === 'function' ? previewImage('preview-choco', 'placeholder-choco', this.value) : null">
+                                        <input type="file" id="file-img-choco" class="hidden" accept="image/*" onchange="typeof uploadToCloudinary === 'function' ? uploadToCloudinary(this, 'prod-img-choco', 'preview-choco', 'placeholder-choco') : null">
                                         <button type="button" onclick="document.getElementById('file-img-choco').click()" class="btn-action w-full h-auto py-3 rounded-lg gap-2">
                                             <i data-lucide="upload" class="w-4 h-4"></i> <span class="font-bold text-sm">رفع الشوكولاتة</span>
                                         </button>
                                     </div>
                                     <div class="w-24 h-24 shrink-0 bg-brand-surface rounded-xl border border-brand-border overflow-hidden relative flex items-center justify-center">
                                         <i data-lucide="camera" class="w-8 h-8 text-brand-border absolute" id="placeholder-choco"></i>
-                                        <img id="preview-choco" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="handlePreviewError('preview-choco', 'placeholder-choco')">
+                                        <img id="preview-choco" src="" class="w-full h-full object-cover relative z-10 hidden" onerror="typeof handlePreviewError === 'function' ? handlePreviewError('preview-choco', 'placeholder-choco') : null">
                                     </div>
                                 </div>
                             </div>
@@ -542,13 +541,12 @@
                 </div>
 
                 <div class="pt-6 mb-16">
-                    <button id="btn-save-product" onclick="saveProduct()" class="btn-solid py-5 text-xl w-full rounded-2xl">
+                    <button id="btn-save-product" onclick="typeof saveProduct === 'function' ? saveProduct() : null" class="btn-solid py-5 text-xl w-full rounded-2xl">
                         <i data-lucide="check-circle" class="w-6 h-6"></i> اعتماد التحديثات السحابية
                     </button>
                 </div>
             </section>
 
-            <!-- عزل إعدادات المحاكي في قسم مستقل مخصص لها فقط (تم إخفاؤها من التواجد العشوائي) -->
             <section id="simulator-settings-section" class="admin-section">
                 <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-12 gap-8 border-b border-brand-border pb-8">
                     <div>
@@ -618,7 +616,7 @@
                                     <input type="text" id="adm-layer-cash-url" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-sm outline-none focus:border-brand-pink transition-colors" dir="ltr" placeholder="https://res.cloudinary.com/...">
                                 </div>
                             </div>
-                            <button onclick="window.saveBoseSimulatorSettings()" class="w-full mt-6 bg-brand-pink text-brand-bg font-bold text-base py-4 rounded-xl hover:bg-white hover:text-brand-pink transition-colors cursor-pointer flex items-center justify-center gap-2">
+                            <button onclick="typeof window.saveBoseSimulatorSettings === 'function' ? window.saveBoseSimulatorSettings() : null" class="w-full mt-6 bg-brand-pink text-brand-bg font-bold text-base py-4 rounded-xl hover:bg-white hover:text-brand-pink transition-colors cursor-pointer flex items-center justify-center gap-2">
                                 <i data-lucide="cloud-upload" class="w-5 h-5"></i> اعتماد الإعدادات سحابياً
                             </button>
                         </div>
@@ -631,31 +629,60 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const mainAccordions = document.querySelectorAll('.bose-accordion');
-            mainAccordions.forEach((accordion) => {
-                accordion.addEventListener('click', (e) => {
-                    if(e.target.closest('summary')) {
-                        mainAccordions.forEach((otherAccordion) => {
-                            if (otherAccordion !== accordion) {
-                                otherAccordion.removeAttribute('open');
-                            }
-                        });
+            
+            window.toggleSidebar = function(forceState) {
+                const sidebar = document.getElementById('sidebar');
+                const overlay = document.getElementById('sidebar-overlay');
+                
+                if (typeof forceState !== 'undefined') {
+                    if (forceState) {
+                        sidebar.classList.add('active');
+                        overlay.classList.add('active');
+                    } else {
+                        sidebar.classList.remove('active');
+                        overlay.classList.remove('active');
+                    }
+                } else {
+                    sidebar.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                }
+            };
+
+            const mainSummaries = document.querySelectorAll('.bose-accordion > summary');
+            mainSummaries.forEach((summary) => {
+                summary.addEventListener('click', function(e) {
+                    e.preventDefault(); 
+                    const currentDetails = this.parentElement;
+                    const isOpen = currentDetails.hasAttribute('open');
+
+                    document.querySelectorAll('.bose-accordion').forEach(details => {
+                        details.removeAttribute('open');
+                    });
+
+                    if (!isOpen) {
+                        currentDetails.setAttribute('open', '');
                     }
                 });
             });
 
-            const subAccordions = document.querySelectorAll('.bose-sub-accordion');
-            subAccordions.forEach((subAccordion) => {
-                subAccordion.addEventListener('click', (e) => {
-                    if(e.target.closest('summary')) {
-                        subAccordions.forEach((otherSub) => {
-                            if (otherSub !== subAccordion) {
-                                otherSub.removeAttribute('open');
-                            }
-                        });
+            const subSummaries = document.querySelectorAll('.bose-sub-accordion > summary');
+            subSummaries.forEach((summary) => {
+                summary.addEventListener('click', function(e) {
+                    e.preventDefault(); 
+                    const currentDetails = this.parentElement;
+                    const isOpen = currentDetails.hasAttribute('open');
+
+                    const siblingDetails = currentDetails.parentElement.querySelectorAll('.bose-sub-accordion');
+                    siblingDetails.forEach(details => {
+                        details.removeAttribute('open');
+                    });
+
+                    if (!isOpen) {
+                        currentDetails.setAttribute('open', '');
                     }
                 });
             });
+            
         });
     </script>
     
@@ -665,6 +692,5 @@
     <script src="admin-catalog.js" defer></script>
 </body>
 </html>
-
 
 
