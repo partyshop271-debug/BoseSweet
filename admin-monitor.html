@@ -778,12 +778,29 @@
                     reader.onload = async (e) => {
                         try {
                             const backupData = JSON.parse(e.target.result);
+                            let productsArray = [];
+
+                            // طبقة الاستكشاف الهيكلي الذكية لاستخراج مصفوفة الأصناف ديناميكياً
+                            if (Array.isArray(backupData)) {
+                                productsArray = backupData;
+                            } else if (typeof backupData === 'object' && backupData !== null) {
+                                // 1. فحص التفرعات الكلاسيكية مباشرة
+                                if (Array.isArray(backupData.products)) productsArray = backupData.products;
+                                else if (Array.isArray(backupData.catalog)) productsArray = backupData.catalog;
+                                else if (Array.isArray(backupData.menu)) productsArray = backupData.menu;
+                                else if (Array.isArray(backupData.items)) productsArray = backupData.items;
+                                else {
+                                    // 2. فحص ديناميكي شامل للبحث عن أول مصفوفة داخل الكائن (مهما كان اسمها)
+                                    for (let key in backupData) {
+                                        if (Array.isArray(backupData[key])) {
+                                            productsArray = backupData[key];
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
                             
-                            const productsArray = Array.isArray(backupData) 
-                                ? backupData 
-                                : (backupData.products || backupData.catalog || []);
-                            
-                            if (productsArray.length === 0) {
+                            if (!productsArray || productsArray.length === 0) {
                                 throw new Error("ملف النسخة الاحتياطية فارغ أو يحتوي على بنية غير متوافقة مع قنوات قراءة النظام.");
                             }
 
@@ -835,16 +852,4 @@
                         startLiveStreamListeners();
                     } else {
                         sessionStorage.removeItem('bosy_admin_auth');
-                        window.location.href = 'login.html';
-                    }
-                });
-            } else {
-                const placeholder = document.getElementById('loading-placeholder');
-                if (placeholder) {
-                    placeholder.innerHTML = `<span class="text-brand-discount font-bold">⚠️ عطل حرج: محرك السحابة غير متصل بالمتصفح حالياً.</span>`;
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+                        window.
