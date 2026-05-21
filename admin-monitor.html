@@ -745,7 +745,7 @@
                 clearTimeout(fallbackTimeout);
             });
 
-            // 5. ربط آلية زر الاستعادة المركزي وقراءة محتوى ملف الـ JSON المرفوع
+            // 5. هندسة ربط آلية زر الاستعادة المركزي بشكل متوافق تماماً ومؤمن ضد أخطاء التزامن على الموبايل
             const btnRollback = document.getElementById('btn-trigger-rollback');
             const fileInput = document.getElementById('bose-backup-file');
             
@@ -771,9 +771,17 @@
                     btnRollback.disabled = true;
 
                     const reader = new FileReader();
-                    reader.onload = async (e) => {
+                    
+                    // الحل التوافقي الحاسم: ربط معالج التحميل الكامل وضمان عدم استباق قراءة النتيجة
+                    reader.onload = async () => {
                         try {
-                            const backupData = JSON.parse(e.target.result);
+                            // جلب البيانات من القارئ الثابت والمستقر مباشرة لمنع خطأ الـ Result Undefined
+                            const fileContent = reader.result;
+                            if (!fileContent) {
+                                throw new Error("تعذر تحميل محتوى الملف بالشكل السليم، يرجى المحاولة مجدداً.");
+                            }
+
+                            const backupData = JSON.parse(fileContent);
                             
                             // التحقق من بنية المصفوفة داخل الـ JSON المرفوع
                             const productsArray = Array.isArray(backupData) ? backupData : (backupData.catalog || []);
@@ -793,7 +801,6 @@
                             // ب) حقن وإعادة بناء المنتجات والروابط الـ 120 من جديد
                             const batchInsert = window.db.batch();
                             productsArray.forEach((product) => {
-                                // توليد معرف فرعي للمنتج أو الحفاظ على معرفه الأصلي
                                 const docId = product.id || product.productId || window.db.collection('catalog').doc().id;
                                 const docRef = window.db.collection('catalog').doc(docId);
                                 batchInsert.set(docRef, product);
@@ -807,7 +814,7 @@
                             }, { merge: true });
 
                             alert(`تمت استعادة كتالوج المنتجات بنجاح! إجمالي الأصناف المحقونة: ${productsArray.length}`);
-                            fileInput.value = ""; // تصفير حقل الملف
+                            fileInput.value = ""; 
 
                         } catch (err) {
                             console.error("Rollback Process Error:", err);
@@ -820,6 +827,17 @@
                             btnRollback.disabled = false;
                         }
                     };
+
+                    reader.onerror = () => {
+                        alert("حدث عطل أثناء محاولة المتصفح لقراءة الملف، يرجى إعادة المحاولة.");
+                        if (textBtn && iconBtn) {
+                            textBtn.textContent = "بدء استعادة الأصناف والمنتجات فورياً";
+                            iconBtn.classList.remove('animate-spin');
+                        }
+                        btnRollback.disabled = false;
+                    };
+
+                    // بدء التشغيل بعد ربط كافة معالجات الأحداث الوقائية
                     reader.readAsText(selectedFile);
                 });
             }
