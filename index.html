@@ -140,6 +140,15 @@
             object-fit: cover;
             transition: opacity 0.5s ease;
         }
+        @media (max-width: 767px) {
+            .bose-waterfall-wrapper {
+                height: 380px;
+            }
+            .bose-waterfall-item {
+                width: 130px;
+                height: 180px;
+            }
+        }
         @keyframes waterfallScrollUp {
             0% { transform: translateY(0); }
             100% { transform: translateY(-33.333%); }
@@ -301,9 +310,9 @@
     <script type="importmap">
       {
         "imports": {
-          "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
-          "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
-          "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"
+          "firebase/app": "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js",
+          "firebase/auth": "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js",
+          "firebase/firestore": "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js"
         }
       }
     </script>
@@ -477,6 +486,7 @@
                     <div class="relative">
                         <div id="best-sellers-slider-container" class="bose-horizontal-slider gap-4 pb-6 px-2 snap-x snap-mandatory" data-section-title="Best Sellers"></div>
                     </div>
+                    <div id="dynamic-best-sellers" class="hidden"></div>
                     <div class="text-center mt-6"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
                 </div>
             </section>
@@ -516,6 +526,7 @@
                     <div class="relative">
                         <div id="arrival-section-container" class="bose-horizontal-slider gap-4 pb-6 px-2 snap-x snap-mandatory" data-section-title="New Arrivals"></div>
                     </div>
+                    <div id="dynamic-new-arrivals" class="hidden"></div>
                     <div class="text-center mt-6"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
                 </div>
             </section>
@@ -639,7 +650,7 @@
                             return runBoseAuthentication(retries - 1, delay * 2);
                         } else {
                             console.error("خطأ الاتصال بقواعد البيانات السحابية:", err);
-                            window.showBoseToast("نواجه مشكلة في الاتصال بالخادم السحابي حالياً");
+                            window.showBoseToast("نواجه مشكلة في الاتصال بالخادف السحابي حالياً");
                         }
                     }
                 };
@@ -741,6 +752,17 @@
 
     <script>
         lucide.createIcons();
+
+        // محرك الشريط الإعلاني اللامتناهي من الإدارة المعتمد سحابياً
+        function applyDynamicTickerConfig() {
+            const theme = window.BoseState?.theme || {};
+            if (theme.ticker && Array.isArray(theme.ticker) && theme.ticker.length > 0) {
+                const tickerScroll = document.getElementById('dynamic-ticker-scroll');
+                if (tickerScroll) {
+                    tickerScroll.innerHTML = theme.ticker.map(t => `<div class="ticker-item">${t}</div>`).join('');
+                }
+            }
+        }
 
         // محرك الشلال البصري المزدوج
         function initializeBoseWaterfall(products) {
@@ -1053,8 +1075,9 @@
                 const availableCatalog = [...(window.BoseState?.catalog || [])];
                 const isLoaded = window.BoseState?.catalogLoaded || false;
 
-                // تطبيق الهوية والتحديثات الجمالية القادمة من السحابة للفوتر والهيدر
+                // تطبيق الهوية والتحديثات الجمالية القادمة من السحابة للفوتر والهيدر والشريط الإعلاني
                 this.applyTheme();
+                applyDynamicTickerConfig();
 
                 // تفعيل معالجة مظهر التحميل (Skeleton Loader) لحين وصول البيانات الحية
                 if (!isLoaded) {
@@ -1144,82 +1167,3 @@
                 if (arrivalsContainer) {
                     const arrivals = [...availableCatalog].reverse();
                     arrivalsContainer.innerHTML = arrivals.map(p => this.renderProductCardHTML(p, 'slider')).join('');
-                }
-
-                // تحديث روابط وتفريعات القائمة الجانبية
-                const uniqueCats = [...new Set(availableCatalog.map(p => p.category))].filter(Boolean);
-                const sidebarNav = document.getElementById('sidebar-dynamic-nav');
-                if (sidebarNav) {
-                    let navHtml = `<a href="index.html" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none text-base"><i data-lucide="home" class="w-5 h-5 text-brand-pink"></i> الصفحة الرئيسية</a>`;
-                    uniqueCats.forEach(cat => {
-                        navHtml += `<a href="product.html?category=${cat}" class="py-2.5 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown text-sm transition-colors flex items-center gap-2 text-decoration-none pl-8">• ${cat}</a>`;
-                    });
-                    navHtml += `<a href="product.html?action=build_cake" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none text-base"><i data-lucide="cake" class="w-5 h-5 text-brand-pink"></i> صمم تورتة مناسبتك</a>`;
-                    sidebarNav.innerHTML = navHtml;
-                }
-
-                lucide.createIcons();
-            },
-
-            // سحب وتطبيق إعدادات الهوية والتكست من السحابة للفوتر والهيدر
-            applyTheme: function() {
-                const theme = window.BoseState?.theme || {};
-                const logoText = theme.header?.logoText || "حلويات بوسي";
-                const footerDesc = theme.footer?.desc || "إن الالتزام الصارم بأعلى معايير الجودة وتقديم منتج فاخر يسعد عملائنا هو الركيزة الأساسية لاسم علامة حلويات بوسي التجارية.";
-                const footerEmail = theme.footer?.email || "bosesweets3@gmail.com";
-                const footerAddress = theme.footer?.address || "الكفاح، مركز الفرافرة، محافظة الوادي الجديد";
-
-                const elLogo = document.getElementById('header-logo-title');
-                if (elLogo) elLogo.innerText = logoText;
-
-                const elDesc = document.getElementById('footer-dynamic-desc');
-                if (elDesc) elDesc.innerText = footerDesc;
-
-                const elEmail = document.getElementById('footer-dynamic-email');
-                if (elEmail) elEmail.innerText = footerEmail;
-
-                const elAddress = document.getElementById('footer-dynamic-address');
-                if (elAddress) {
-                    elAddress.innerHTML = `<i data-lucide="map-pin" class="w-4 h-4 shrink-0 text-brand-pink"></i> ${footerAddress}`;
-                }
-            },
-
-            // مزامنة شارة عدد عناصر السلة في الهيدر
-            syncCartBadge: function() {
-                const count = window.BoseState?.cart?.reduce((acc, item) => acc + (item.quantity || 1), 0) || 0;
-                const badge = document.getElementById('cart-count-badge');
-                if (badge) {
-                    badge.innerText = count;
-                    badge.style.display = count > 0 ? 'flex' : 'none';
-                }
-            }
-        };
-
-        window.toggleSidebar = function() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            if (!sidebar || !overlay) return;
-
-            if (sidebar.classList.contains('active')) {
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            } else {
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            UIController.distributeProducts();
-            
-            document.addEventListener('boseStateUpdated', () => {
-                UIController.distributeProducts();
-                UIController.syncCartBadge();
-            });
-            setTimeout(() => UIController.syncCartBadge(), 350);
-        });
-    </script>
-</body>
-</html>

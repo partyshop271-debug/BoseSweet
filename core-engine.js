@@ -1,11 +1,11 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Sovereign Core Engine | المحرك الأساسي السيادي (القلب النابض)
+ * 👑 BoseSweets Sovereign Core Engine | المحرك الأساسي السيادي لعلامة حلويات بوسي
  * ============================================================================
- * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
+ * الإدارة المرجعية: إدارة علامة حلويات بوسي التجاريّة (The Management)
  * الحالة: مركز البيانات، تهيئة السحابة، نظام المراقبة، ومحرك السلة.
  * التوافق الكامل: معالجة فورية لتحديثات المخزون والتزامن اللحظي دون اهتزازات.
- * الترقية: V40.2 Premium - التوافق المطلق والمزامنة الهندسية مع محرك الواجهة.
+ * الترقية: V42.0 Premium - التوافق المطلق والمزامنة الهندسية الشاملة.
  * نسخة مطورة ومحصنة: تضمن تدفق وعرض كافة المنتجات دون أي اختفاء أو تعليق.
  * ============================================================================
  */
@@ -33,7 +33,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 
-// 👑 الإعدادات السيادية والمفاتيح الخاصة بقاعدة بيانات حلويات بوسي
+// 👑 الإعدادات السيادية والمفاتيح الخاصة بقاعدة بيانات علامة حلويات بوسي التجارية
 export const firebaseConfig = {
     apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
     authDomain: "bosy-sweets.firebaseapp.com",
@@ -59,7 +59,7 @@ try {
         window.firebaseApp = app;
         window.db = db;
         window.auth = auth;
-        window.BoseSweets_Engine_Version = "V40.2_Premium";
+        window.BoseSweets_Engine_Version = "V42.0_Premium";
     }
 } catch (error) {
     console.error("🔒 قرار إداري أمني: فشل تهيئة السحابة، يرجى مراجعة الخوادم فوراً.", error);
@@ -68,8 +68,8 @@ try {
 export { app, db, auth };
 
 const ConnectionGuard = {
-    maxRetries: 5,
-    retryDelay: 2000,
+    maxRetries: 7,
+    retryDelay: 1500,
     active: false,
     retryCount: 0
 };
@@ -124,7 +124,7 @@ function handleConnectionDrop(retryFunction) {
                     clientDevice: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown Device',
                     url: window.location.href,
                     isLoginPortal: false,
-                    engineVersion: 'V40.2_Premium'
+                    engineVersion: 'V42.0_Premium'
                 };
                 this.saveToDatabase(reportData);
             } catch (e) {}
@@ -255,14 +255,12 @@ if (typeof window !== 'undefined') {
     window.StorageEngine = StorageEngine;
 }
 
-// 🛒 دالة تهيئة وتحميل الكتالوج وحمايته من الاختفاء العشوائي قبل بناء عناصر الواجهة
 export async function initProducts() {
     try {
-        await StorageEngine.init();
+        await StorageEngine.init(); 
         const catalog = await StorageEngine.get('bose_catalog') || [];
         window.BoseState = window.BoseState || {};
         
-        // التحصين الاستباقي: التأكد من سلامة وصحة خصائص كل صنف لمنع حدوث أي اختفاء للبيانات
         catalog.forEach(p => {
             p.id = p.id || `prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
             p.category = p.category || 'صنف فاخر';
@@ -273,18 +271,32 @@ export async function initProducts() {
         
         window.BoseState.catalog = catalog;
 
-        // حارس الواجهة البصرية: التحقق من وجود الحاويات قبل بدء العرض والتوزيع الذكي لجميع الأقسام
-        const requiredSections = ['menuGrid', 'dynamic-new-arrivals', 'dynamic-best-sellers', 'dynamic-categories-container'];
+        const requiredSections = [
+            'menuGrid', 
+            'dynamic-new-arrivals', 
+            'dynamic-best-sellers', 
+            'dynamic-categories-container', 
+            'best-sellers-slider-container', 
+            'arrival-section-container'
+        ];
         requiredSections.forEach(id => {
             if (!document.getElementById(id) && typeof console !== 'undefined') {
                 console.warn(`عنصر DOM مفقود للقسم السيادي: ${id}`);
             }
         });
 
-        // ✅ استدعاء التوزيع الذكي والموحد لكافة الحاويات المخصصة والمستقبلية بالموقع
-        if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(window.BoseState.catalog);
+        const triggerUIDistribution = () => {
+            if (typeof window.distributeProductsToUI === 'function') {
+                window.distributeProductsToUI(window.BoseState.catalog);
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', triggerUIDistribution);
+        } else {
+            triggerUIDistribution();
         }
+
     } catch (err) {
         console.error("حدث خطأ أثناء تحميل الكتالوج:", err);
         if (window.BoseMonitor) {
@@ -293,7 +305,6 @@ export async function initProducts() {
     }
 }
 
-// تشغيل وتهيئة التخزين المحلي واستدعاء تحميل الذاكرة فوراً لضمان الجاهزية قبل بناء الواجهة
 StorageEngine.init().then(() => {
     if (typeof window !== 'undefined') {
         if (typeof window.loadEngineMemory === 'function') {
@@ -302,7 +313,6 @@ StorageEngine.init().then(() => {
             loadEngineMemory();
         }
     }
-    // تنفيـذ التحميـل السيادي الفـوري للكتالـوج من الذاكـرة المحصنـة
     initProducts();
 }).catch(err => {
     if (window.BoseMonitor) window.BoseMonitor.report(err, 'core-engine.js', null, null, 'StorageEngine.init');
@@ -325,13 +335,11 @@ window.loadEngineMemory = async function() {
         const cachedCatalog = await StorageEngine.get('bose_catalog');
         const cachedTheme = await StorageEngine.get('bose_theme');
         
-        // التحقق من تهيئة النطاق العام للمغير الأساسي لمنع أي انهيار مفاجئ
         if (typeof window !== 'undefined' && !window.BoseState) {
             window.BoseState = { catalog: [], cart: [] };
         }
 
         if (cachedCatalog && cachedCatalog.length > 0) {
-            // التحقق من توافر وصحة الخصائص الأساسية لكل صنف في الكتالوج لمنع حدوث أي اختفاء للبيانات
             cachedCatalog.forEach(p => {
                 p.id = p.id || `prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
                 p.category = p.category || 'صنف فاخر';
@@ -342,9 +350,19 @@ window.loadEngineMemory = async function() {
 
             window.BoseState.catalog = cachedCatalog;
             if (typeof syncCatalogMap === 'function') syncCatalogMap();
-            if (typeof window.distributeProductsToUI === 'function') {
-                window.distributeProductsToUI(window.BoseState.catalog);
+            
+            const triggerUIDistribution = () => {
+                if (typeof window.distributeProductsToUI === 'function') {
+                    window.distributeProductsToUI(window.BoseState.catalog);
+                }
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', triggerUIDistribution);
+            } else {
+                triggerUIDistribution();
             }
+
             window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
         }
         if (cachedTheme && Object.keys(cachedTheme).length > 0) {
@@ -371,7 +389,7 @@ export const ReverseSyncEngine = {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        source: 'BoseSweets_Engine_Sovereign_V40.2_Premium',
+                        source: 'BoseSweets_Engine_Sovereign_V42.0_Premium',
                         engine_status: 'Active_Sovereign',
                         type: 'new_order_fallback',
                         orderId: orderData.id,
@@ -390,7 +408,7 @@ export const ReverseSyncEngine = {
         try {
             if (db) {
                 const syncDocRef = doc(db, 'system', 'syncFlag');
-                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V40.2_Premium', forceRefresh: true }, { merge: true });
+                await setDoc(syncDocRef, { lastAdminUpdate: Date.now(), version: 'V42.0_Premium', forceRefresh: true }, { merge: true });
             }
         } catch (error) {}
     }
@@ -415,8 +433,6 @@ export const CloudQueueDB = {
     },
     async enqueue(operation) {
         const opWithId = { ...operation, queueId: 'op_' + Date.now().toString(36) + '_' + Math.random().toString(36).substr(2, 5), createdAt: Date.now() };
-        
-        // حفظ العمليات في LocalStorage بشكل فوري ومتوازٍ ومؤقت كحارس أمان إضافي عند فقدان الاتصال بالشبكة
         try {
             let fallbackQ = this.getFallbackQueue();
             fallbackQ.push(opWithId);
@@ -476,8 +492,7 @@ export const CloudQueueDB = {
     }
 };
 
-// محرك المحاولة الذكي مع التراجع الأسي (Exponential Backoff) لإعادة العمليات الشبكية بثبات تام
-const executeWithBackoff = async (operationFunction, retries = 3, delay = 1000) => {
+const executeWithBackoff = async (operationFunction, retries = 4, delay = 1000) => {
     try {
         return await operationFunction();
     } catch (err) {
@@ -503,7 +518,6 @@ export const NetworkEngine = {
             }
             if (!db) throw new Error("Database not ready.");
             
-            // تنفيذ الكتابة الآمنة مع المحاولات المتكررة الذكية قبل التحول لوضع عدم الاتصال
             await executeWithBackoff(async () => {
                 await setDoc(doc(db, collectionName, String(docId)), data, { merge: true });
             }, 3, 1000);
@@ -520,7 +534,6 @@ export const NetworkEngine = {
         try {
             if (!db) throw new Error("Database not ready.");
 
-            // تنفيذ الحذف الآمن مع المحاولات المتكررة الذكية قبل التحول لوضع عدم الاتصال
             await executeWithBackoff(async () => {
                 await deleteDoc(doc(db, collectionName, String(docId)));
             }, 3, 1000);
@@ -560,7 +573,7 @@ if (typeof window !== 'undefined') {
     window.CloudQueueDB = CloudQueueDB;
     window.NetworkEngine = NetworkEngine;
     window.addEventListener('online', () => {
-        console.log("🌐 BoseSync: الاتصال بالإنترنت عاد مجدداً، جاري معالجة العمليات المتراكمة...");
+        console.log("🌐 BoseSweets_Sync: الاتصال بالإنترنت عاد مجدداً، جاري معالجة العمليات المتراكمة...");
         NetworkEngine.processQueue();
     });
     setTimeout(() => NetworkEngine.processQueue(), 5000);
@@ -592,7 +605,6 @@ const boseConfig = {
     pricingRules: { cake: { basePersons: 4, basePrice: 580, pricePerPerson: 145, incrementStep: 2 }, printing: { edible: 60, decoration: 20, none: 0 } }
 };
 
-// 👑 تأكيد تهيئة متغير الحالة الأساسي مبكراً على النطاق العام لمنع أي أخطاء برمجية
 if (typeof window !== 'undefined') {
     if (!window.BoseState) {
         window.BoseState = { catalog: [], cart: [] };
@@ -632,7 +644,6 @@ export const BoseState = {
     currentBuilderStep: 1
 };
 
-// قراءة سلة المشتريات بشكل آمن ومنظم يشمل كافة مفاتيح التخزين لتوافق كامل مع الملفات الأخرى
 try {
     if (typeof window !== 'undefined') {
         BoseState.cart = JSON.parse(localStorage.getItem('bose_cart_storage') || localStorage.getItem('BoseSweets_Cart') || localStorage.getItem('bose_cart') || '[]');
@@ -664,7 +675,6 @@ export function getFromLocalMemory(key) { try { if (typeof window !== 'undefined
 export function setAppReady() {
     try {
         window.BoseState.isAppReady = true;
-        
         const executeReadyLogic = () => {
             const loader = document.getElementById('global-loader');
             if (loader) {
@@ -680,7 +690,6 @@ export function setAppReady() {
             }));
         };
 
-        // حارس التفاعل: تأمين التلاعب بعناصر DOM لضمان جاهزية الصفحة بنسبة 100%
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', executeReadyLogic);
         } else {
@@ -700,10 +709,7 @@ if (typeof window !== 'undefined') {
     window.setAppReady = setAppReady;
     window.processBoseImage = processBoseImage; 
     window.normalizeArabic = normalizeArabic;
-    
-    // ربط مراجع الحالة بالنافذة العامة لضمان عدم وجود انفصال نسبي بين العناصر
     Object.assign(window.BoseState, BoseState);
-    window.BoseState = BoseState;
 }
 
 // ============================================================================
@@ -769,7 +775,6 @@ export const cartSystem = {
                     if (totalItems > 0) el.classList.remove('hidden'); else el.classList.add('hidden');
                 });
             };
-            
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', applyBadge);
             } else {
@@ -779,7 +784,6 @@ export const cartSystem = {
     },
     syncCartUI: function() {
         if (typeof document === 'undefined') return;
-        
         const applySync = () => {
             const cartList = document.getElementById('cart-items-list');
             if (!cartList) return;
@@ -862,8 +866,6 @@ export const cartSystem = {
             window.showBoseToast(`تم إضافة [${product.name}] للسلة بنجاح.`);
         } else if (typeof window.showSystemToast === 'function') {
             window.showSystemToast(`تم إضافة [${product.name}] للسلة بنجاح.`, 'success');
-        } else {
-            console.log(`تم إضافة [${product.name}] للسلة بنجاح.`);
         }
         if (typeof window !== 'undefined') window.dispatchEvent(new Event('BoseSweets_Cart_Updated'));
     }
@@ -947,17 +949,22 @@ export async function fetchProductsCatalog() {
         saveToLocalMemory('bosesweets_catalog', window.BoseState.catalog);
         window.saveEngineMemory('cat');
         
-        if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(window.BoseState.catalog);
+        const triggerUIDistribution = () => {
+            if (typeof window.distributeProductsToUI === 'function') {
+                window.distributeProductsToUI(window.BoseState.catalog);
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', triggerUIDistribution);
+        } else {
+            triggerUIDistribution();
         }
         
-        // إطلاق الحدث السيادي لتأكيد الجاهزية والتحديث في الواجهة
         window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
         return window.BoseState.catalog;
     } catch (e) {
         window.BoseState.catalog = getFromLocalMemory('bosesweets_catalog') || [];
-        
-        // التحقق الإضافي لسلامة البيانات عند استرداد الكتالوج محلياً بعد فشل الاتصال بالشبكة
         window.BoseState.catalog.forEach(p => {
             p.id = p.id || `prod_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
             p.category = p.category || 'صنف فاخر';
@@ -965,10 +972,18 @@ export async function fetchProductsCatalog() {
             p.inStock = p.stock !== 0;
             p.price = p.price || 0;
         });
-
         syncCatalogMap();
-        if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(window.BoseState.catalog);
+        
+        const triggerUIDistribution = () => {
+            if (typeof window.distributeProductsToUI === 'function') {
+                window.distributeProductsToUI(window.BoseState.catalog);
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', triggerUIDistribution);
+        } else {
+            triggerUIDistribution();
         }
         window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
         return window.BoseState.catalog;
@@ -980,9 +995,19 @@ export async function initializeDataBridge() {
     window.__BoseBridgeInitialized = true;
     await Promise.all([fetchSystemSettings(), fetchThemeSettings(), fetchShippingZones(), fetchProductsCatalog()]);
     syncCatalogMap();
-    if (typeof window.distributeProductsToUI === 'function') {
-        window.distributeProductsToUI(window.BoseState.catalog);
+    
+    const triggerUIDistribution = () => {
+        if (typeof window.distributeProductsToUI === 'function') {
+            window.distributeProductsToUI(window.BoseState.catalog);
+        }
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', triggerUIDistribution);
+    } else {
+        triggerUIDistribution();
     }
+
     const uniqueCats = [...new Set(window.BoseState.catalog.map(p => p.category))].filter(Boolean);
     window.BoseState.catMenu = window.BoseState.siteSettings.catMenu?.map(c => c.name || c) || uniqueCats;
     setAppReady();
@@ -1016,8 +1041,17 @@ export function listenToSovereignUpdates() {
         saveToLocalMemory('bosesweets_catalog', window.BoseState.catalog);
         window.dispatchEvent(new Event('catalogDataReady'));
         window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
-        if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(window.BoseState.catalog);
+        
+        const triggerUIDistribution = () => {
+            if (typeof window.distributeProductsToUI === 'function') {
+                window.distributeProductsToUI(window.BoseState.catalog);
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', triggerUIDistribution);
+        } else {
+            triggerUIDistribution();
         }
     });
 }
@@ -1029,14 +1063,12 @@ if (typeof window !== 'undefined') {
         if (!window.location.pathname.includes('admin')) { 
             initializeDataBridge(); 
             listenToSovereignUpdates(); 
-            // تشغيل المحرك التزامني اللحظي لضمان تدفق التحديثات وتجنب الاختفاء
             if (typeof initializeSovereignSync === 'function') {
                 initializeSovereignSync();
             }
         } 
     };
     
-    // ضمان إرسال أحداث الجاهزية التامة لتنظيم التدفق البرمجي دون اهتزاز أو فقدان عناصر
     document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready'));
@@ -1071,7 +1103,6 @@ export function initializeSovereignSync() {
     let isLogisticsLoaded = false;
     let isPricingLoaded = false;
 
-    // مراقب جاهزية المحرك لإعطاء إشارة البدء للواجهة البصرية
     function checkEngineStatus() {
         if (isCatalogLoaded && isThemeLoaded && isLogisticsLoaded && isPricingLoaded) {
             window.BoseState.isAppReady = true;
@@ -1102,7 +1133,6 @@ export function initializeSovereignSync() {
         syncCatalogMap();
         window.saveEngineMemory('cat');
         
-        // التحصين اللحظي: مراجعة الأسعار في سلة العميل فوراً وتعديلها إذا تم تغييرها من لوحة الإدارة
         if (window.BoseState.cart.length > 0 && typeof window.cartSystem !== 'undefined') {
             window.BoseState.cart = window.BoseState.securityLayer.validateCartPrices(window.BoseState.cart);
             window.cartSystem.saveCartToStorage();
@@ -1111,8 +1141,16 @@ export function initializeSovereignSync() {
         isCatalogLoaded = true;
         checkEngineStatus();
         
-        if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(window.BoseState.catalog);
+        const triggerUIDistribution = () => {
+            if (typeof window.distributeProductsToUI === 'function') {
+                window.distributeProductsToUI(window.BoseState.catalog);
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', triggerUIDistribution);
+        } else {
+            triggerUIDistribution();
         }
         window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
     });
@@ -1125,8 +1163,16 @@ export function initializeSovereignSync() {
             if (typeof window.applyThemeConfigUI === 'function') {
                 window.applyThemeConfigUI();
             }
-            if (typeof window.distributeProductsToUI === 'function') {
-                window.distributeProductsToUI(window.BoseState.catalog);
+            const triggerUIDistribution = () => {
+                if (typeof window.distributeProductsToUI === 'function') {
+                    window.distributeProductsToUI(window.BoseState.catalog);
+                }
+            };
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', triggerUIDistribution);
+            } else {
+                triggerUIDistribution();
             }
         }
         isThemeLoaded = true;
@@ -1156,18 +1202,15 @@ export function initializeSovereignSync() {
         if (snap.exists()) {
             const data = snap.data();
             const lastUpdate = parseInt(localStorage.getItem('bose_last_local_sync') || '0');
-            
-            // التعديل: إرسال حدث تحديث للسماح بالتحديث السلس دون إغلاق المتصفح
             if (data.lastAdminUpdate > lastUpdate && data.forceRefresh === true) {
                 localStorage.setItem('bose_last_local_sync', data.lastAdminUpdate.toString());
-                console.log("👑 BoseSync: تم استقبال تحديث البيانات، جاري المزامنة السلسة...");
+                console.log("👑 BoseSweets_Sync: تم استقبال تحديث البيانات، جاري المزامنة السلسة...");
                 window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
             }
         }
     });
 }
 
-// تصدير دالة التهيئة لتكون متاحة للواجهة
 if (typeof window !== 'undefined') {
     window.initializeSovereignSync = initializeSovereignSync;
 }
@@ -1177,8 +1220,16 @@ if (typeof window !== 'undefined') {
 // ============================================================================
 if (typeof window !== 'undefined') {
     window.addEventListener('BoseSweets_Catalog_Updated', () => {
-        if (typeof window.distributeProductsToUI === 'function') {
-            window.distributeProductsToUI(window.BoseState.catalog);
+        const triggerUIDistribution = () => {
+            if (typeof window.distributeProductsToUI === 'function') {
+                window.distributeProductsToUI(window.BoseState.catalog);
+            }
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', triggerUIDistribution);
+        } else {
+            triggerUIDistribution();
         }
     });
 }

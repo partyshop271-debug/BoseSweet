@@ -1,10 +1,10 @@
 /**
  * ============================================================================
- * 👑 BoseSweets Sovereign UI Engine | محرك الواجهة البصرية السيادي
+ * 👑 BoseSweets Sovereign UI Engine | محرك الواجهة البصرية السيادي لعلامة حلويات بوسي
  * ============================================================================
- * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
+ * الإدارة المرجعية: إدارة علامة حلويات بوسي التجاريّة (The Management)
  * الهوية البصرية المعتمدة: الوردي الفاخر (#ff91a4) | الأبيض النقي | النصوص الشوكولاتية
- * الترقية: V41.0 Ultra Premium - إعادة الهندسة البصرية الشاملة وفقاً للنموذج الاسترشادي
+ * الترقية: V42.0 Ultra Premium - التوافق التام والأداء المتزن مع النواة الأساسية
  * الحالة: التحكم الكامل في الهيكل البصري، التنفس، الراحة البصرية، السلايدرات المتصلة، وتوزيع الأقسام السيادية.
  * ============================================================================
  */
@@ -41,7 +41,8 @@ export function renderProductCardsUI(products, containerId) {
                                 'dynamic-new-arrivals',
                                 'dynamic-best-sellers',
                                 'dynamic-categories-container',
-                                'best-sellers-slider-container'
+                                'best-sellers-slider-container',
+                                'arrival-section-container'
                               ].includes(container.id);
 
     const sectionTitle = container.dataset.sectionTitle || '';
@@ -53,7 +54,7 @@ export function renderProductCardsUI(products, containerId) {
         const img = processBoseImage(p.img || p.image) || BOSE_LOGO_FALLBACK;
         const name = p.name || 'منتج حلويات بوسي';
         const category = p.category || 'صنف فاخر';
-        const description = p.description || p.desc || '';
+        const description = p.description || p.desc || 'نهتم بأدق التفاصيل لنقدم لكم تجربة تذوق استثنائية تعكس الجودة المطلقة لمنتجاتنا المخبوزة طازجاً.';
         const price = p.price || 'يحدد عند الطلب';
         const isOut = p.inStock === false || p.stock === 0;
 
@@ -171,15 +172,15 @@ export function distributeProductsToUI(products) {
     if (window.uiRenderDebounceTimer) clearTimeout(window.uiRenderDebounceTimer);
     
     window.uiRenderDebounceTimer = setTimeout(() => {
-        // تحديث وتأمين توزيع المنتجات على الأقسام المحددة بالترتيب الهندسي الجديد للواجهة
+        // تحديث وتأمين توزيع المنتجات على الحاويات المعتمدة هندسياً وضمان توافقها الكامل مع ملف الـ HTML
         const sections = [
-            'new-arrivals-container',
-            'best-sellers-container',
             'menuGrid',
             'dynamic-new-arrivals',
             'dynamic-best-sellers',
             'best-sellers-slider-container',
             'dynamic-categories-container',
+            'new-arrivals-container',
+            'best-sellers-container',
             'arrival-section-container'
         ];
 
@@ -190,7 +191,7 @@ export function distributeProductsToUI(products) {
             const sectionTitle = el.dataset.sectionTitle || '';
             const block = BoseState?.theme?.builderLayout?.find(b => (b.containerId && b.containerId === id) || (b.title && b.title === sectionTitle));
             
-            let filteredList = [...currentProducts];
+            let filteredList = [];
             
             if (block && block.dataSource) {
                 if (block.dataSource.startsWith('category:')) {
@@ -210,16 +211,26 @@ export function distributeProductsToUI(products) {
                     filteredList = currentProducts.filter(p => p.hasDiscount === true || p.starRating >= 4.8).slice(0, 10);
                 } else if (id.includes('new-arrivals') || id.includes('arrival')) {
                     filteredList = [...currentProducts].sort((a,b) => (b.id > a.id ? 1 : -1)).slice(0, 10);
+                } else {
+                    filteredList = [...currentProducts];
                 }
             }
             
+            // التحصين وكسر ثغرة الاختفاء: إذا كانت المصفوفة المفلترة فارغة، نرتد لعرض الكتالوج المتاح كـ Fallback آمن
+            if (filteredList.length === 0) {
+                filteredList = [...currentProducts];
+            }
+            
+            // مزامنة حالة المخزون بدقة كاملة بالتوافق المباشر مع محددات المحرك الأساسي (Core Engine)
             filteredList = filteredList.map(p => ({
                 ...p,
-                inStock: p.inStock !== false && p.stock !== 0
+                inStock: p.inStock !== false && p.stock !== 0 && p.stock != null
             }));
             
             renderProductCardsUI(filteredList, id);
         });
+
+        if (typeof applyThemeConfigUI === 'function') applyThemeConfigUI();
     }, 150);
 }
 
@@ -235,7 +246,7 @@ export function applyThemeConfigUI() {
     }
 
     if (themeData.ticker && themeData.ticker.length > 0) {
-        const tickerContainer = document.getElementById('sovereign-ticker-inner');
+        const tickerContainer = document.getElementById('sovereign-ticker-inner') || document.getElementById('dynamic-ticker-scroll');
         if (tickerContainer) {
             tickerContainer.innerHTML = themeData.ticker.map(t => `<span class="mx-10 inline-block font-black">${t}</span>`).join('');
         }
@@ -508,10 +519,11 @@ function initBoseSovereignSliderEffects(slider, dotsContainer) {
 if (typeof window !== 'undefined') {
     window.loadSliderImages = loadSliderImages;
     window.fetchSliderRecords = fetchSliderRecords;
+    window.distributeProductsToUI = distributeProductsToUI;
 }
 
 // ============================================================================
-// 💐 القسم العاشر: محاكي التنسيق الفاخر وتكاملات السلة (Simulator Integration)
+// 🔒 القسم العاشر: محاكي التنسيق الفاخر وتكاملات السلة (Simulator Integration)
 // ============================================================================
 
 if (typeof window.boseEngineRegistry !== 'undefined') {
@@ -820,4 +832,4 @@ window.addEventListener('BoseSweets_Logistics_Updated', () => {
     }
 });
 
-console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد بنجاح للإصدار (V41.0) المبرز لأقسام العرض وهيكلية الكروت الثنائية وسلايدر الشاشة الكاملة المستمر.");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد بنجاح للإصدار (V42.0) المبرز لأقسام العرض وهيكلية الكروت الثنائية وسلايدر الشاشة الكاملة المستمر.");
