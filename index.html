@@ -47,7 +47,7 @@
         * { font-weight: 600; color: inherit; box-sizing: border-box; }
         .font-bold, h1, h2, h3, h4, .btn-solid { font-weight: 700 !important; }
 
-        /* تفعيل الانزلاق الأفقي المحكم للسلايدرز الجانبية */
+        /* تفعيل الانزلاق الأفقي المحكم للسلايدرز الجانبية مع التمرير الناعم */
         .bose-horizontal-slider {
             display: flex !important;
             flex-direction: row !important;
@@ -56,6 +56,7 @@
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
             scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
         }
         .bose-horizontal-slider::-webkit-scrollbar {
             display: none;
@@ -89,14 +90,15 @@
         /* كارت المنيو الفاخر المستوحى من دراسة حركة الرول مودل */
         .bose-luxury-card {
             background-color: #ffffff;
-            border: 1px solid rgba(255, 145, 164, 0.2);
+            border: 1px solid rgba(255, 145, 164, 0.15);
             border-radius: 20px;
             padding: 12px;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
         .bose-luxury-card:hover {
             border-color: #ff91a4;
-            box-shadow: 0 8px 20px rgba(255, 145, 164, 0.08);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(255, 145, 164, 0.1);
         }
 
         /* هندسة هيكل الشلال البصري ذو الحركة العكسية اللامتناهية */
@@ -114,16 +116,17 @@
             height: max-content;
         }
         .bose-waterfall-up {
-            animation: waterfallScrollUp 25s linear infinite;
+            animation: waterfallScrollUp 30s linear infinite;
         }
         .bose-waterfall-down {
-            animation: waterfallScrollDown 25s linear infinite;
+            animation: waterfallScrollDown 30s linear infinite;
         }
         .bose-waterfall-item {
             width: 165px;
             height: 220px;
             border-radius: 24px;
             overflow: hidden;
+            transition: transform 0.3s ease;
         }
         @media (min-width: 768px) {
             .bose-waterfall-item {
@@ -135,13 +138,14 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: opacity 0.5s ease;
         }
         @keyframes waterfallScrollUp {
             0% { transform: translateY(0); }
-            100% { transform: translateY(-33.33%); }
+            100% { transform: translateY(-33.333%); }
         }
         @keyframes waterfallScrollDown {
-            0% { transform: translateY(-33.33%); }
+            0% { transform: translateY(-33.333%); }
             100% { transform: translateY(0); }
         }
 
@@ -152,6 +156,7 @@
             height: 50vh;
             min-height: 380px;
             overflow: hidden;
+            border-radius: 24px;
         }
         .bose-slide {
             position: absolute;
@@ -159,7 +164,7 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1);
             z-index: 0;
         }
         .bose-slide.active {
@@ -179,7 +184,7 @@
         .ticker-scroll {
             display: flex;
             width: max-content;
-            animation: seamlessTicker 40s linear infinite;
+            animation: seamlessTicker 45s linear infinite;
         }
         .ticker-wrap:hover .ticker-scroll {
             animation-play-state: paused;
@@ -233,19 +238,64 @@
         }
         .btn-outline:hover { background-color: #ff91a4; color: #ffffff !important; }
 
-        /* نظام الإطار المزدوج */
+        /* نظام الإطار المزدوج للفئات */
         .bose-double-wrap {
             background: #ffffff; border-radius: 24px; border: 1px solid #ff91a4; padding: 4px;
-            transition: all 0.3s ease; display: flex; flex-direction: column; height: 100%; text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); display: flex; flex-direction: column; height: 100%; text-decoration: none;
         }
-        .bose-double-wrap:hover { box-shadow: 0 10px 20px rgba(255, 145, 164, 0.08); }
+        .bose-double-wrap:hover { box-shadow: 0 12px 24px rgba(255, 145, 164, 0.12); transform: translateY(-3px); }
         .bose-double-inner {
             background: #ffffff; border-radius: 18px; border: 1px solid rgba(255, 145, 164, 0.15);
             overflow: hidden; display: flex; flex-direction: column; height: 100%; position: relative;
         }
 
         .animate-fade { animation: fade 0.6s ease forwards; }
-        @keyframes fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fade { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* نبض شارة العربة عند الإضافة للسلة */
+        @keyframes boseBadgePulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        .bose-pulse {
+            animation: boseBadgePulse 0.4s ease-out;
+        }
+
+        /* تنسيق غلاف التحميل المسبق شيمر */
+        .bose-skeleton {
+            background: linear-gradient(90deg, #f3f3f3 25%, #ececec 50%, #f3f3f3 75%);
+            background-size: 200% 100%;
+            animation: skeletonLoading 1.5s infinite;
+        }
+        @keyframes skeletonLoading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* توستر التنبيه المخصص الراقي */
+        #bose-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: #3d241c;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(61, 36, 28, 0.25);
+            font-size: 0.9rem;
+            font-weight: 700;
+            z-index: 10000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid rgba(255, 145, 164, 0.2);
+        }
+        #bose-toast.active {
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 
     <script type="importmap">
@@ -259,6 +309,11 @@
     </script>
 </head>
 <body class="antialiased selection:bg-brand-pink selection:text-white">
+
+    <div id="bose-toast" class="pointer-events-none">
+        <i data-lucide="info" class="w-4 h-4 text-brand-pink"></i>
+        <span id="bose-toast-text">جاري الاتصال بقواعد البيانات...</span>
+    </div>
 
     <div class="ticker-wrap" id="dynamic-ticker-wrap">
         <div class="ticker-scroll" id="dynamic-ticker-scroll">
@@ -282,16 +337,33 @@
                 </a>
             </div>
             <div class="w-1/3 flex justify-end items-center gap-5">
-                <button onclick="window.showBoseSearchToast()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" aria-label="البحث في الموقع">
+                <button onclick="window.openBoseSearchModal()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" aria-label="البحث في الموقع">
                     <i data-lucide="search" class="w-6 h-6 text-brand-pink"></i>
                 </button>
-                <a href="cart.html" class="relative text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" aria-label="عرض سلة التسوق">
+                <a href="cart.html" id="cart-badge-container" class="relative text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" aria-label="عرض سلة التسوق">
                     <i data-lucide="shopping-bag" class="w-6 h-6 text-brand-pink"></i>
                     <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-brand-pink text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border border-white">0</span>
                 </a>
             </div>
         </div>
     </header>
+
+    <div id="bose-search-modal" class="fixed inset-0 bg-[#3d241c]/40 backdrop-blur-md z-[1000] flex items-start justify-center pt-20 px-4 opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden border border-brand-pink/20 max-h-[75vh] flex flex-col scale-95 transition-transform duration-300" id="bose-search-card">
+            <div class="p-6 border-b border-brand-pink/10 flex items-center justify-between gap-4">
+                <div class="relative flex-grow">
+                    <i data-lucide="search" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-pink"></i>
+                    <input type="text" id="bose-search-input" placeholder="اكتب اسم المنتج أو النكهة لاستكشاف حلويات بوسي..." class="w-full bg-brand-pinkLight py-3.5 pr-12 pl-4 rounded-xl font-bold text-sm text-brand-brown placeholder-brand-brown/50 border border-brand-pink/10 focus:outline-none focus:border-brand-pink focus:ring-1 focus:ring-brand-pink transition-all">
+                </div>
+                <button onclick="window.closeBoseSearchModal()" class="text-brand-pink hover:text-brand-brown transition-colors cursor-pointer" aria-label="إغلاق البحث">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto flex-grow" id="bose-search-results">
+                <p class="text-center text-brand-brown/50 text-sm py-8 font-bold">ابدأ بالكتابة لاستكشاف أشهى إبداعاتنا...</p>
+            </div>
+        </div>
+    </div>
 
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
     <aside id="sidebar" class="sidebar" aria-label="قائمة التنقل الجانبية">
@@ -304,9 +376,9 @@
             </button>
         </div>
         <nav class="flex-grow p-6 flex flex-col gap-2" id="sidebar-dynamic-nav">
-            <a href="index.html" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-brown font-bold transition-colors flex items-center gap-3 text-decoration-none text-base">
-                <i data-lucide="home" class="w-5 h-5 text-brand-pink"></i> الصفحة الرئيسية
-            </a>
+            <div class="w-full h-8 bose-skeleton rounded-xl mb-2"></div>
+            <div class="w-full h-8 bose-skeleton rounded-xl mb-2"></div>
+            <div class="w-full h-8 bose-skeleton rounded-xl mb-2"></div>
         </nav>
         <div class="p-6 border-t border-brand-pink/10 bg-brand-pinkLight/50">
             <a href="cart.html" class="w-full py-4 bg-brand-pink text-white rounded-xl font-bold text-base flex items-center justify-center gap-2 hover:bg-white hover:text-brand-pink border border-brand-pink transition-colors cursor-pointer text-decoration-none">
@@ -320,21 +392,27 @@
             
             <section id="section-hero" class="pt-20 pb-10 px-4 text-center">
                 <div class="container mx-auto max-w-3xl">
-                    <h2 class="text-3xl md:text-5xl font-bold text-brand-brown mb-4 leading-tight">
+                    <h2 class="text-3xl md:text-5xl font-bold text-brand-brown mb-4 leading-tight animate-fade">
                         عقد من التميز في صناعة الحلويات
                     </h2>
-                    <p class="text-brand-brown/80 font-bold text-base md:text-lg mb-8 max-w-xl mx-auto leading-relaxed">
+                    <p class="text-brand-brown/80 font-bold text-base md:text-lg mb-8 max-w-xl mx-auto leading-relaxed animate-fade" style="animation-delay: 150ms">
                         استمتعوا بمجموعتنا الفاخرة من الحلويات، من المعجنات الفرنسية الكلاسيكية إلى الحلويات الشرقية اللذيذة. جربوا المزيج الفريد من التقاليد والابتكار في كل قضمة.
                     </p>
-                    <a href="menu.html" class="btn-solid">اطلب الآن</a>
+                    <a href="menu.html" class="btn-solid animate-fade" style="animation-delay: 300ms">تصفح المنيو</a>
                 </div>
             </section>
 
             <section id="section-waterfall" class="pb-16 px-4 overflow-hidden">
                 <div class="container mx-auto max-w-5xl">
                     <div class="bose-waterfall-wrapper">
-                        <div class="bose-waterfall-column bose-waterfall-up" id="waterfall-col-1"></div>
-                        <div class="bose-waterfall-column bose-waterfall-down" id="waterfall-col-2"></div>
+                        <div class="bose-waterfall-column bose-waterfall-up" id="waterfall-col-1">
+                            <div class="bose-waterfall-item bose-skeleton"></div>
+                            <div class="bose-waterfall-item bose-skeleton"></div>
+                        </div>
+                        <div class="bose-waterfall-column bose-waterfall-down" id="waterfall-col-2">
+                            <div class="bose-waterfall-item bose-skeleton"></div>
+                            <div class="bose-waterfall-item bose-skeleton"></div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -343,7 +421,7 @@
                 <div class="container mx-auto max-w-4xl text-center">
                     <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2">عقد من الإتقان</h2>
                     <p class="text-brand-brown/70 text-sm mb-8">عشر سنوات نكرس فيها جهودنا لصنع قطع فنية غنية بالجودة والمذاق الأصيل</p>
-                    <div id="main-slider" class="bose-full-slider-container"></div>
+                    <div id="main-slider" class="bose-full-slider-container bose-skeleton"></div>
                     <div id="slider-dots-container" class="flex justify-center gap-2 mt-4"></div>
                 </div>
             </section>
@@ -378,7 +456,7 @@
                         <div class="z-10 md:w-1/2 flex justify-center relative w-full h-64 md:h-80">
                             <div class="absolute top-0 right-4 md:right-10 w-40 md:w-44 h-56 bg-white rounded-2xl p-2 shadow-md transform rotate-6">
                                 <div class="w-full h-full bg-brand-pinkLight rounded-xl overflow-hidden">
-                                    <img src="https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover" alt="ورد طبيعي" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+                                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg" class="w-full h-full object-cover" alt="ورد طبيعي">
                                 </div>
                             </div>
                             <div class="absolute top-8 left-4 md:left-10 w-40 md:w-44 h-56 bg-white rounded-2xl p-2 shadow-lg transform -rotate-3">
@@ -405,7 +483,7 @@
 
             <section id="section-categories" class="py-24 px-4 bg-brand-pinkLight/40 border-t border-brand-pink/5">
                 <div class="container mx-auto max-w-6xl text-center">
-                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2">الفئة تسوق حسب</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2">تسوق حسب الفئة</h2>
                     <p class="text-brand-brown/70 text-sm mb-12">اكتشف مصدر السعادة في كل قطعة تتذوقها، ماذا تنتظر؟</p>
                     <div class="relative">
                         <div id="dynamic-categories-container" class="bose-horizontal-slider gap-6 pb-6 px-2 snap-x snap-mandatory" data-section-title="Categories"></div>
@@ -500,7 +578,7 @@
             <a href="product.html?category={CAT_NAME}" class="bose-double-wrap group animate-fade h-full text-decoration-none block">
                 <div class="bose-double-inner bg-white h-full flex flex-col">
                     <div class="aspect-square w-full overflow-hidden bg-brand-pinkLight relative">
-                        <img src="{CAT_IMAGE}" alt="{CAT_NAME}" loading="lazy" class="w-full h-full object-cover" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+                        <img src="{CAT_IMAGE}" alt="{CAT_NAME}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
                     </div>
                     <div class="p-6 flex items-center justify-center bg-white border-t border-brand-pink/5">
                         <h3 class="font-bold text-xl text-brand-brown group-hover:text-brand-pink transition-colors">{CAT_NAME}</h3>
@@ -510,19 +588,32 @@
         </div>
     </template>
 
-    <script type="module" src="core-engine.js"></script>
-    <script type="module" src="ui-engine.js"></script>
-
     <script type="module">
         import { initializeApp } from "firebase/app";
         import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "firebase/auth";
         import { getFirestore, collection, doc, onSnapshot, setDoc } from "firebase/firestore";
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        window.BoseState = window.BoseState || { catalog: [], cart: [], theme: {} };
+        
+        // إعداد حالة بوسي السحابية ورفع مؤشر حالة الاتصال ومزامنة التحميل
+        window.BoseState = window.BoseState || { catalog: [], cart: [], theme: {}, catalogLoaded: false };
 
         let dbRef = null;
         let authRef = null;
+
+        // إدارة إرسال الإشعارات البديلة
+        window.showBoseToast = function(message, duration = 3000) {
+            const toast = document.getElementById('bose-toast');
+            const toastText = document.getElementById('bose-toast-text');
+            if (!toast || !toastText) return;
+
+            toastText.innerText = message;
+            toast.classList.add('active');
+
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, duration);
+        };
 
         if (typeof __firebase_config !== 'undefined' && __firebase_config) {
             try {
@@ -534,21 +625,31 @@
                 authRef = auth;
                 dbRef = db;
 
-                const runBoseAuthentication = async () => {
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
+                // التوثيق السحابي الاحترافي مع استراتيجية المحاولات المتكررة
+                const runBoseAuthentication = async (retries = 5, delay = 1000) => {
+                    try {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await signInAnonymously(auth);
+                        }
+                    } catch (err) {
+                        if (retries > 0) {
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            return runBoseAuthentication(retries - 1, delay * 2);
+                        } else {
+                            console.error("خطأ الاتصال بقواعد البيانات السحابية:", err);
+                            window.showBoseToast("نواجه مشكلة في الاتصال بالخادم السحابي حالياً");
+                        }
                     }
                 };
 
-                runBoseAuthentication().catch(err => {
-                    console.error("خطأ التوثيق السحابي لحلويات بوسي:", err);
-                });
+                runBoseAuthentication();
 
                 onAuthStateChanged(auth, (user) => {
                     if (!user) return;
 
+                    // سحب المنتجات المعتمدة والحقيقية من الفايربيز بشكل مباشر
                     const catalogPath = collection(db, 'artifacts', appId, 'public', 'data', 'catalog');
                     onSnapshot(catalogPath, (snapshot) => {
                         const srvProducts = [];
@@ -556,11 +657,15 @@
                             srvProducts.push({ id: doc.id, ...doc.data() });
                         });
                         window.BoseState.catalog = srvProducts;
+                        window.BoseState.catalogLoaded = true;
                         document.dispatchEvent(new CustomEvent('boseStateUpdated'));
                     }, (error) => {
-                        console.error("خطأ الكتالوج السحابي لعلامة حلويات بوسي:", error);
+                        console.error("فشل مزامنة المنتجات السحابية:", error);
+                        window.BoseState.catalogLoaded = true;
+                        document.dispatchEvent(new CustomEvent('boseStateUpdated'));
                     });
 
+                    // سحب وتهيئة إعدادات الهوية البصرية من الفايرستور
                     const themePath = doc(db, 'artifacts', appId, 'public', 'data', 'theme', 'config');
                     onSnapshot(themePath, (docSnap) => {
                         if (docSnap.exists()) {
@@ -577,9 +682,10 @@
                         }
                         document.dispatchEvent(new CustomEvent('boseStateUpdated'));
                     }, (error) => {
-                        console.error("خطأ قراءة إعدادات السحابة:", error);
+                        console.error("فشل مزامنة الهوية السحابية:", error);
                     });
 
+                    // مزامنة عربة التسوق الخاصة بالعميل
                     const cartPath = collection(db, 'artifacts', appId, 'users', user.uid, 'cart');
                     onSnapshot(cartPath, (snapshot) => {
                         const srvCart = [];
@@ -589,15 +695,16 @@
                         window.BoseState.cart = srvCart;
                         document.dispatchEvent(new CustomEvent('boseStateUpdated'));
                     }, (error) => {
-                        console.error("خطأ مزامنة سلة المشتريات:", error);
+                        console.error("فشل مزامنة سلة المشتريات:", error);
                     });
                 });
 
             } catch (err) {
-                console.error("فشل الربط السحابي:", err);
+                console.error("فشل تهيئة الأنظمة السحابية لعلامة حلويات بوسي:", err);
             }
         }
 
+        // نظام تحديث وإضافة المنتجات للسلة بمزامنة الفاير بيز
         window.cartSystem = {
             add: async function(productId, quantity) {
                 if (!authRef || !authRef.currentUser || !dbRef) {
@@ -625,7 +732,8 @@
                     }, { merge: true });
 
                 } catch (err) {
-                    console.error("خطأ تحديث السلة السحابية لعلامة حلويات بوسي:", err);
+                    console.error("خطأ مزامنة السلة السحابية:", err);
+                    window.showBoseToast("لم نتمكن من تحديث السلة، يرجى إعادة المحاولة");
                 }
             }
         };
@@ -634,26 +742,22 @@
     <script>
         lucide.createIcons();
 
-        // محرك توليد حركة الشلال اللامحدود (صور حقيقية بكامل تفاصيلها مأخوذة من الكتالوج السحابي)
+        // محرك الشلال البصري المزدوج
         function initializeBoseWaterfall(products) {
             const col1 = document.getElementById('waterfall-col-1');
             const col2 = document.getElementById('waterfall-col-2');
             if (!col1 || !col2) return;
 
-            // استخدام داتا حقيقية من الكتالوج أو صور افتراضية عالية الجودة وغير مضغوطة
             const waterfallImages = products.length >= 4 ? products.map(p => p.img || p.image) : [
-                "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=600&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=600&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1548907040-4d42b52125ca?q=80&w=600&auto=format&fit=crop",
-                "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=600&auto=format&fit=crop"
+                "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg",
+                "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg"
             ];
 
-            // مضاعفة الصور 3 مرات لضمان استمرارية الحركة الدائرية بدون انقطاع بصري
             const tripledImages = [...waterfallImages, ...waterfallImages, ...waterfallImages];
 
             const htmlContent = tripledImages.map(img => `
                 <div class="bose-waterfall-item">
-                    <img src="${img}" loading="lazy" alt="شلال حلويات بوسي الفاخر" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+                    <img src="${img}" loading="lazy" class="opacity-0" onload="this.classList.remove('opacity-0')" alt="حلويات بوسي" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
                 </div>
             `).join('');
 
@@ -661,21 +765,19 @@
             col2.innerHTML = htmlContent;
         }
 
-        // محرك تشغيل سلايدر "عقد من الإتقان" الجانبي المطور بالكامل ملء الشاشة
+        // محرك تشغيل سلايدر "عقد من الإتقان" المعتمد على منتجات حقيقية
         function loadSliderImages(products) {
             const slider = document.getElementById('main-slider');
             const dotsContainer = document.getElementById('slider-dots-container');
             if (!slider) return;
 
-            const slidesData = products.length >= 3 ? products.slice(0, 5).map((p, i) => ({
+            slider.classList.remove('bose-skeleton');
+
+            const slidesData = products.length >= 1 ? products.slice(0, 5).map((p, i) => ({
                 img: p.img || p.image,
                 title: p.name || "إتقان فريد من نوعه"
             })) : [
-                { img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=800&auto=format&fit=crop", title: "تورتات المناسبات الفاخرة" },
-                { img: "https://images.unsplash.com/photo-1582794543139-8ac9cb0f7b11?q=80&w=800&auto=format&fit=crop", title: "أرقى باقات الورد الطبيعي" },
-                { img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800&auto=format&fit=crop", title: "مخبوزات طازجة يومياً" },
-                { img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=800&auto=format&fit=crop", title: "حلويات شرقية بريميوم" },
-                { img: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?q=80&w=800&auto=format&fit=crop", title: "قطع كاب كيك مخملية" }
+                { img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg", title: "حلويات بوسي الفاخرة" }
             ];
 
             let slidesHtml = '';
@@ -684,22 +786,26 @@
             slidesData.forEach((slide, index) => {
                 slidesHtml += `
                     <div class="bose-slide absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out opacity-0 z-0 ${index === 0 ? 'opacity-100 z-10' : ''}" data-index="${index}">
-                        <img src="${slide.img}" class="w-full h-full object-cover" alt="${slide.title}">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#3d241c]/70 via-transparent to-transparent flex items-end p-8 text-right">
+                        <img src="${slide.img}" class="w-full h-full object-cover" alt="${slide.title}" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#3d241c]/80 via-transparent to-transparent flex items-end p-8 text-right">
                             <div>
                                 <h3 class="text-white text-xl md:text-2xl font-bold mb-1">${slide.title}</h3>
-                                <p class="text-brand-pink font-bold text-xs md:text-sm">تميز وإتقان حقيقي ممتد منذ عام 2014 بمركز الفرافرة</p>
+                                <p class="text-brand-pink font-bold text-xs md:text-sm">تميز وإتقان ممتد منذ عام 2014 بمركز الفرافرة</p>
                             </div>
                         </div>
                     </div>
                 `;
-                dotsHtml += `
-                    <button onclick="window.setBoseSlide(${index})" class="bose-dot w-2 h-2 rounded-full bg-[#ff91a4]/30 hover:bg-[#ff91a4] transition-all cursor-pointer ${index === 0 ? 'bg-[#ff91a4] !w-5' : ''}" data-index="${index}" aria-label="عرض الشريحة ${index + 1}"></button>
-                `;
+                if (slidesData.length > 1) {
+                    dotsHtml += `
+                        <button onclick="window.setBoseSlide(${index})" class="bose-dot w-2.5 h-2.5 rounded-full bg-[#ff91a4]/30 hover:bg-[#ff91a4] transition-all cursor-pointer ${index === 0 ? 'bg-[#ff91a4] !w-6' : ''}" data-index="${index}" aria-label="عرض الشريحة ${index + 1}"></button>
+                    `;
+                }
             });
 
             slider.innerHTML = slidesHtml;
             if (dotsContainer) dotsContainer.innerHTML = dotsHtml;
+
+            if (slidesData.length <= 1) return;
 
             let currentSlide = 0;
             if (window.boseSlideInterval) clearInterval(window.boseSlideInterval);
@@ -707,7 +813,7 @@
             window.boseSlideInterval = setInterval(() => {
                 let next = (currentSlide + 1) % slidesData.length;
                 window.setBoseSlide(next);
-            }, 4000);
+            }, 4500);
 
             window.setBoseSlide = function(index) {
                 currentSlide = index;
@@ -726,10 +832,10 @@
 
                 dots.forEach((dot, i) => {
                     if (i === index) {
-                        dot.classList.add('bg-[#ff91a4]', '!w-5');
+                        dot.classList.add('bg-[#ff91a4]', '!w-6');
                         dot.classList.remove('bg-[#ff91a4]/30');
                     } else {
-                        dot.classList.remove('bg-[#ff91a4]', '!w-5');
+                        dot.classList.remove('bg-[#ff91a4]', '!w-6');
                         dot.classList.add('bg-[#ff91a4]/30');
                     }
                 });
@@ -753,10 +859,21 @@
             const qty = qtyDisplay ? parseInt(qtyDisplay.innerText) || 1 : 1;
 
             const originalText = btn.innerText;
-            btn.innerText = "تم التحديث ✓";
+            btn.innerHTML = `<i class="fa-solid fa-check ml-1.5"></i> تم التحديث`;
+            btn.classList.remove('bg-brand-pink');
+            btn.classList.add('bg-brand-brown');
             
+            const badgeContainer = document.getElementById('cart-badge-container');
+            if (badgeContainer) {
+                badgeContainer.classList.remove('bose-pulse');
+                void badgeContainer.offsetWidth; 
+                badgeContainer.classList.add('bose-pulse');
+            }
+
             setTimeout(() => {
                 btn.innerText = originalText;
+                btn.classList.remove('bg-brand-brown');
+                btn.classList.add('bg-brand-pink');
             }, 1200);
 
             if (window.cartSystem && typeof window.cartSystem.add === 'function') {
@@ -764,17 +881,79 @@
             }
         };
 
-        // هندسة وتوزيع محتوى الكروت وقنوات العرض الفاخرة المربوطة سحابياً بالكامل
+        // إدارة واجهة البحث السحابي المباشر
+        window.openBoseSearchModal = function() {
+            const modal = document.getElementById('bose-search-modal');
+            const card = document.getElementById('bose-search-card');
+            const input = document.getElementById('bose-search-input');
+            if (!modal || !card) return;
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            card.classList.remove('scale-95');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => input.focus(), 100);
+        };
+
+        window.closeBoseSearchModal = function() {
+            const modal = document.getElementById('bose-search-modal');
+            const card = document.getElementById('bose-search-card');
+            if (!modal || !card) return;
+
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            card.classList.add('scale-95');
+            document.body.style.overflow = '';
+        };
+
+        // فلترة المنتجات لحظياً عند الكتابة في خانة البحث
+        document.getElementById('bose-search-input')?.addEventListener('input', function(e) {
+            const query = e.target.value.trim().toLowerCase();
+            const resultsContainer = document.getElementById('bose-search-results');
+            if (!resultsContainer) return;
+
+            if (!query) {
+                resultsContainer.innerHTML = `<p class="text-center text-brand-brown/50 text-sm py-8 font-bold">ابدأ بالكتابة لاستكشاف أشهى إبداعاتنا...</p>`;
+                return;
+            }
+
+            const catalog = window.BoseState?.catalog || [];
+            const filtered = catalog.filter(p => 
+                (p.name && p.name.toLowerCase().includes(query)) || 
+                (p.flavor && p.flavor.toLowerCase().includes(query)) ||
+                (p.category && p.category.toLowerCase().includes(query))
+            );
+
+            if (filtered.length === 0) {
+                resultsContainer.innerHTML = `<p class="text-center text-brand-brown/60 text-sm py-8 font-bold">لم نجد نتائج مطابقة لـ "${query}"، استمر بالبحث...</p>`;
+                return;
+            }
+
+            resultsContainer.innerHTML = `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    ${filtered.map(p => `
+                        <div class="flex items-center gap-4 p-3 rounded-2xl border border-brand-pink/10 hover:border-brand-pink/30 bg-brand-pinkLight/20 transition-all">
+                            <img src="${p.img || p.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'}" class="w-16 h-16 rounded-xl object-cover shrink-0" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+                            <div class="flex-grow min-w-0">
+                                <h4 class="font-bold text-sm text-brand-brown truncate">${p.name}</h4>
+                                <p class="text-xs text-brand-pink font-bold truncate">${p.flavor || 'النكهة المعتمدة'}</p>
+                                <span class="text-xs font-bold text-brand-brown/80">${p.price} ج.م</span>
+                            </div>
+                            <button onclick="window.closeBoseSearchModal(); window.location.href='product.html?id=${p.id}'" class="w-8 h-8 rounded-full bg-brand-pink/10 hover:bg-brand-pink text-brand-pink hover:text-white flex items-center justify-center transition-colors shrink-0">
+                                <i class="fa-solid fa-chevron-left text-xs"></i>
+                            </button>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        });
+
+        // محرك الواجهة المطور وتوزيع كروت المعروضات بموجب البيانات الحية
         const UIController = {
             renderProductCardHTML: function(product, type = 'grid') {
                 const id = product.id;
                 const name = product.name;
-                const category = product.category || 'صنف فاخر';
                 const description = product.description || 'نهتم بأدق التفاصيل لنقدم لكم تجربة تذوق استثنائية تعكس الجودة المطلقة لمنتجاتنا المخبوزة طازجاً.';
                 const price = parseFloat(product.price) || 0;
                 const img = product.img || product.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
-
-                // معالجة شكل النكهات كاسم فرعي فريد أسفل اسم المنتج الرئيسي مباشرة بناءً على البيانات المستلمة
                 const flavorName = product.flavor || 'النكهة الأصلية الفاخرة';
                 const widthStyle = type === 'slider' ? 'flex-shrink-0 w-[70%] md:w-[260px]' : 'col-span-1';
 
@@ -783,7 +962,7 @@
                         <div class="bose-luxury-card group h-full flex flex-col bg-white text-center">
                             
                             <div class="w-full overflow-hidden bg-brand-pinkLight rounded-xl aspect-square mb-3 relative">
-                                <img src="${img}" loading="lazy" class="w-full h-full object-cover" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+                                <img src="${img}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 opacity-0" onload="this.classList.remove('opacity-0')" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
                             </div>
                             
                             <div class="flex flex-col flex-grow px-1">
@@ -816,36 +995,126 @@
                 `;
             },
 
+            // إنشاء الهيكل العظمي للمنتج (الشيمر التفاعلي الفاخر)
+            renderSkeletonCardHTML: function(type = 'grid') {
+                const widthStyle = type === 'slider' ? 'flex-shrink-0 w-[70%] md:w-[260px]' : 'col-span-1';
+                return `
+                    <div class="${widthStyle} p-1">
+                        <div class="bose-luxury-card h-full flex flex-col bg-white text-center">
+                            <div class="w-full rounded-xl aspect-square mb-3 bose-skeleton"></div>
+                            <div class="flex flex-col flex-grow px-1">
+                                <div class="h-4 bg-brand-pinkLight/50 rounded w-3/4 mx-auto mb-2 bose-skeleton"></div>
+                                <div class="h-3 bg-brand-pinkLight/30 rounded w-1/2 mx-auto mb-4 bose-skeleton"></div>
+                                <div class="h-3 bg-brand-pinkLight/20 rounded w-5/6 mx-auto mb-1 bose-skeleton"></div>
+                                <div class="h-3 bg-brand-pinkLight/20 rounded w-2/3 mx-auto mb-4 bose-skeleton"></div>
+                                <div class="mt-auto pt-2 border-t border-brand-pink/5">
+                                    <div class="h-8 bg-brand-pinkLight/40 rounded-full w-full bose-skeleton mb-2"></div>
+                                    <div class="h-8 bg-brand-pinkLight/60 rounded-full w-full bose-skeleton"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            // شيمر مخصص للفئات
+            renderSkeletonCategoryHTML: function() {
+                return `
+                    <div class="snap-start flex-shrink-0 w-[80%] md:w-[320px] p-1">
+                        <div class="bose-double-wrap h-full">
+                            <div class="bose-double-inner bg-white h-full flex flex-col">
+                                <div class="aspect-square w-full bose-skeleton"></div>
+                                <div class="p-6 flex items-center justify-center bg-white border-t border-brand-pink/5">
+                                    <div class="h-5 bg-brand-pinkLight/50 rounded w-1/2 bose-skeleton"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            },
+
+            // واجهة مخصصة في حال خلو قاعدة البيانات من المنتجات
+            renderEmptyStateHTML: function() {
+                return `
+                    <div class="col-span-full py-16 px-4 text-center">
+                        <div class="inline-flex items-center justify-center w-16 h-16 bg-brand-pinkLight text-brand-pink rounded-full mb-4">
+                            <i data-lucide="cookie" class="w-8 h-8 text-brand-pink"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-brand-brown mb-2">قائمة المنتجات قيد التحديث</h3>
+                        <p class="text-sm text-brand-brown/70 max-w-md mx-auto leading-relaxed">
+                            يقوم المطبخ وإدارة المعرض الآن بتحديث وإدراج أصنافنا الطازجة على السيرفر، يرجى تصفح الموقع لاحقاً أو طلب الإبداعات المخصصة بالتواصل المباشر.
+                        </p>
+                    </div>
+                `;
+            },
+
+            // سحب البيانات من الفايربيز وتوزيعها بذكاء على كافه الاقسام
             distributeProducts: function() {
-                let availableCatalog = [...(window.BoseState?.catalog || [])];
-                
-                // تغذية البيانات الاحتياطية الفاخرة والمطابقة لمعايير الجودة لتجنب الفراغ اللحظي أثناء جلب البيانات السحابية
-                if (availableCatalog.length === 0) {
-                    availableCatalog = [
-                        { id: "bose_1", name: "سينابون القرفة الغني", flavor: "صوص السيجنتشر والكراميل", price: 65, description: "عجينة هشة وطرية مخبوزة بخلطة القرفة المميزة ومغطاة بصوص الجبن السويسري الفاخر." },
-                        { id: "bose_2", name: "دوناتس بريميوم محشوة", flavor: "نوتيلا بلجيكية أصلية", price: 45, description: "حبات الدوناتس الخفيفة والمحشوة بكريمة الشوكولاتة الغنية ومزينة بحبيبات البندق المحمص." },
-                        { id: "bose_3", name: "قشطوطة الحليب الملكية", flavor: "ميكس مكسرات وقشطة طازجة", price: 80, description: "كيكة الحليب الإسفنجية الغنية بالكريمة الناعمة وطبقة من السمن والقشطة البلدية الفاخرة." },
-                        { id: "bose_4", name: "تورتة الفراولة والكراميل", flavor: "كريمة طازجة وفراولة برية", price: 350, description: "طبقات من الكيك الخفيف المحشو بالكريمة الغنية وصوص الفراولة الطبيعي المجهز داخل مطبخنا." },
-                        { id: "bose_5", name: "بوكس السعادة المشكل", flavor: "شرقيات بالسمن البلدي", price: 280, description: "تشكيلة فاخرة تضم البقلاوة المقرمشة، الكنافة الناعمة، والبسبوسة الذهبية المحضرة يومياً للعملاء." },
-                        { id: "bose_6", name: "كاب كيك الفانيليا المخملي", flavor: "كريمة سويسرية ناعمة", price: 35, description: "قطع الكاب كيك الخفيفة والهشة المزينة بوردة من الكريمة السويسرية الغنية والمحضرة بأعلى دقة الجودة." }
-                    ];
-                    window.BoseState = window.BoseState || {};
-                    window.BoseState.catalog = availableCatalog;
+                const availableCatalog = [...(window.BoseState?.catalog || [])];
+                const isLoaded = window.BoseState?.catalogLoaded || false;
+
+                // تطبيق الهوية والتحديثات الجمالية القادمة من السحابة للفوتر والهيدر
+                this.applyTheme();
+
+                // تفعيل معالجة مظهر التحميل (Skeleton Loader) لحين وصول البيانات الحية
+                if (!isLoaded) {
+                    const menuGrid = document.getElementById('menuGrid');
+                    if (menuGrid) {
+                        menuGrid.innerHTML = Array(4).fill(this.renderSkeletonCardHTML('grid')).join('');
+                    }
+
+                    const bestSellersContainer = document.getElementById('best-sellers-slider-container');
+                    if (bestSellersContainer) {
+                        bestSellersContainer.innerHTML = Array(3).fill(this.renderSkeletonCardHTML('slider')).join('');
+                    }
+
+                    const categoriesContainer = document.getElementById('dynamic-categories-container');
+                    if (categoriesContainer) {
+                        categoriesContainer.innerHTML = Array(3).fill(this.renderSkeletonCategoryHTML()).join('');
+                    }
+
+                    const arrivalsContainer = document.getElementById('arrival-section-container');
+                    if (arrivalsContainer) {
+                        arrivalsContainer.innerHTML = Array(3).fill(this.renderSkeletonCardHTML('slider')).join('');
+                    }
+                    
+                    lucide.createIcons();
+                    return;
                 }
 
-                // 1. تشغيل وتغذية قسم الشلال البصري
+                // 1. نظام شلال الصور
                 initializeBoseWaterfall(availableCatalog);
 
-                // 2. تشغيل السلايدر ملء الشاشة لعقد من الإتقان
+                // 2. سلايدر عقد من الإتقان
                 loadSliderImages(availableCatalog);
 
-                // 3. تغذية قسم منتجاتنا الكلي (كارتين جنب بعض على الموبايل و 4 على الكمبيوتر)
+                // إذا انتهى التحميل وكانت قاعدة البيانات فارغة تماماً
+                if (availableCatalog.length === 0) {
+                    const menuGrid = document.getElementById('menuGrid');
+                    if (menuGrid) menuGrid.innerHTML = this.renderEmptyStateHTML();
+
+                    const bestSellersContainer = document.getElementById('best-sellers-slider-container');
+                    if (bestSellersContainer) bestSellersContainer.innerHTML = this.renderEmptyStateHTML();
+
+                    const arrivalsContainer = document.getElementById('arrival-section-container');
+                    if (arrivalsContainer) arrivalsContainer.innerHTML = this.renderEmptyStateHTML();
+
+                    const categoriesContainer = document.getElementById('dynamic-categories-container');
+                    if (categoriesContainer) {
+                        categoriesContainer.innerHTML = this.renderEmptyStateHTML();
+                    }
+                    
+                    lucide.createIcons();
+                    return;
+                }
+
+                // 3. تغذية قسم منتجاتنا الكلي
                 const menuGrid = document.getElementById('menuGrid');
                 if (menuGrid) {
                     menuGrid.innerHTML = availableCatalog.map(p => this.renderProductCardHTML(p, 'grid')).join('');
                 }
 
-                // 4. تغذية سلايدر قسم الأكثر مبيعاً المطور
+                // 4. تغذية سلايدر قسم الأكثر مبيعاً
                 const bestSellersContainer = document.getElementById('best-sellers-slider-container');
                 if (bestSellersContainer) {
                     const bestSellers = [...availableCatalog].sort(() => 0.5 - Math.random());
@@ -854,26 +1123,19 @@
 
                 // 5. تغذية سلايدر الفئات والشرائح (تسوق حسب الفئة)
                 const categoriesMap = new Map();
-                availableCatalog.forEach(p => { if(p.category && !categoriesMap.has(p.category)) categoriesMap.set(p.category, p); });
+                availableCatalog.forEach(p => { 
+                    if(p.category && !categoriesMap.has(p.category)) {
+                        categoriesMap.set(p.category, p); 
+                    }
+                });
+                
                 const categoriesContainer = document.getElementById('dynamic-categories-container');
-                if (categoriesContainer) {
+                if (categoriesContainer && categoriesMap.size > 0) {
                     const catTmpl = document.getElementById('bose-category-card-template').innerHTML;
                     let catHtml = '';
-                    if (categoriesMap.size > 0) {
-                        Array.from(categoriesMap.values()).forEach(p => {
-                            catHtml += catTmpl.replace(/{CAT_NAME}/g, p.category).replace(/{CAT_IMAGE}/g, p.img || p.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg');
-                        });
-                    } else {
-                        // فئات افتراضية لحفظ البنية التنفسية في حال خلو قاعدة البيانات مؤقتاً
-                        const defaultCats = [
-                            { name: "سينابون ودوناتس", img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=400&auto=format&fit=crop" },
-                            { name: "تورتات فاخرة", img: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=400&auto=format&fit=crop" },
-                            { name: "قشطوطة وحلويات", img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?q=80&w=400&auto=format&fit=crop" }
-                        ];
-                        defaultCats.forEach(c => {
-                            catHtml += catTmpl.replace(/{CAT_NAME}/g, c.name).replace(/{CAT_IMAGE}/g, c.img);
-                        });
-                    }
+                    Array.from(categoriesMap.values()).forEach(p => {
+                        catHtml += catTmpl.replace(/{CAT_NAME}/g, p.category).replace(/{CAT_IMAGE}/g, p.img || p.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg');
+                    });
                     categoriesContainer.innerHTML = catHtml;
                 }
 
@@ -884,7 +1146,7 @@
                     arrivalsContainer.innerHTML = arrivals.map(p => this.renderProductCardHTML(p, 'slider')).join('');
                 }
 
-                // تحديث روابط وتفريعات القائمة الجانبية بشكل آلي ذكي ومتنفس
+                // تحديث روابط وتفريعات القائمة الجانبية
                 const uniqueCats = [...new Set(availableCatalog.map(p => p.category))].filter(Boolean);
                 const sidebarNav = document.getElementById('sidebar-dynamic-nav');
                 if (sidebarNav) {
@@ -899,6 +1161,30 @@
                 lucide.createIcons();
             },
 
+            // سحب وتطبيق إعدادات الهوية والتكست من السحابة للفوتر والهيدر
+            applyTheme: function() {
+                const theme = window.BoseState?.theme || {};
+                const logoText = theme.header?.logoText || "حلويات بوسي";
+                const footerDesc = theme.footer?.desc || "إن الالتزام الصارم بأعلى معايير الجودة وتقديم منتج فاخر يسعد عملائنا هو الركيزة الأساسية لاسم علامة حلويات بوسي التجارية.";
+                const footerEmail = theme.footer?.email || "bosesweets3@gmail.com";
+                const footerAddress = theme.footer?.address || "الكفاح، مركز الفرافرة، محافظة الوادي الجديد";
+
+                const elLogo = document.getElementById('header-logo-title');
+                if (elLogo) elLogo.innerText = logoText;
+
+                const elDesc = document.getElementById('footer-dynamic-desc');
+                if (elDesc) elDesc.innerText = footerDesc;
+
+                const elEmail = document.getElementById('footer-dynamic-email');
+                if (elEmail) elEmail.innerText = footerEmail;
+
+                const elAddress = document.getElementById('footer-dynamic-address');
+                if (elAddress) {
+                    elAddress.innerHTML = `<i data-lucide="map-pin" class="w-4 h-4 shrink-0 text-brand-pink"></i> ${footerAddress}`;
+                }
+            },
+
+            // مزامنة شارة عدد عناصر السلة في الهيدر
             syncCartBadge: function() {
                 const count = window.BoseState?.cart?.reduce((acc, item) => acc + (item.quantity || 1), 0) || 0;
                 const badge = document.getElementById('cart-count-badge');
@@ -923,24 +1209,6 @@
                 overlay.classList.add('active');
                 document.body.style.overflow = 'hidden';
             }
-        };
-
-        window.showBoseSearchToast = function() {
-            let toast = document.getElementById('bose-custom-toast');
-            if(!toast) {
-                toast = document.createElement('div');
-                toast.id = 'bose-custom-toast';
-                toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-[99999] bg-brand-brown text-white px-5 py-3.5 rounded-xl shadow-xl transition-all duration-500 opacity-0 scale-95 flex items-center gap-3 border border-brand-pink/20 text-sm font-bold';
-                document.body.appendChild(toast);
-            }
-            toast.innerHTML = `<i data-lucide="search" class="w-4 h-4 text-brand-pink"></i> <span>نظام البحث المتقدم قيد التفعيل الفوري...</span>`;
-            lucide.createIcons();
-            toast.classList.remove('opacity-0', 'scale-95');
-            toast.classList.add('opacity-100', 'scale-100');
-            setTimeout(() => {
-                toast.classList.remove('opacity-100', 'scale-100');
-                toast.classList.add('opacity-0', 'scale-95');
-            }, 2500);
         };
 
         document.addEventListener('DOMContentLoaded', () => {
