@@ -197,7 +197,7 @@
                                 <i data-lucide="radio" class="w-5 h-5"></i>
                             </div>
                         </div>
-                        <p class="text-[11px] text-brand-textMuted/60 leading-relaxed font-medium">معدل تحديث فوري متزامن مع Firebase Firestore عبر الويب وموبايل العميل.</p>
+                        <p class="text-[11px] text-brand-textMuted/60 leading-relaxed font-medium">معدل تحديث فوري متزامن مع Firebase Firestore عبر הويب وموبايل العميل.</p>
                     </div>
 
                     <div id="card-events" class="p-6 bg-brand-surface border border-brand-border/40 rounded-2xl relative overflow-hidden group hover:border-brand-border transition-all">
@@ -778,28 +778,43 @@
                     reader.onload = async (e) => {
                         try {
                             const backupData = JSON.parse(e.target.result);
-                            let productsArray = [];
+                            let rawProductsArray = [];
 
                             if (Array.isArray(backupData)) {
-                                productsArray = backupData;
+                                rawProductsArray = backupData;
                             } else if (typeof backupData === 'object' && backupData !== null) {
-                                if (Array.isArray(backupData.products)) productsArray = backupData.products;
-                                else if (Array.isArray(backupData.catalog)) productsArray = backupData.catalog;
-                                else if (Array.isArray(backupData.menu)) productsArray = backupData.menu;
-                                else if (Array.isArray(backupData.items)) productsArray = backupData.items;
+                                if (Array.isArray(backupData.products)) rawProductsArray = backupData.products;
+                                else if (Array.isArray(backupData.catalog)) rawProductsArray = backupData.catalog;
+                                else if (Array.isArray(backupData.menu)) rawProductsArray = backupData.menu;
+                                else if (Array.isArray(backupData.items)) rawProductsArray = backupData.items;
                                 else {
                                     for (let key in backupData) {
                                         if (Array.isArray(backupData[key])) {
-                                            productsArray = backupData[key];
+                                            rawProductsArray = backupData[key];
                                             break;
                                         }
                                     }
                                 }
                             }
                             
-                            if (!productsArray || productsArray.length === 0) {
+                            if (!rawProductsArray || rawProductsArray.length === 0) {
                                 throw new Error("ملف النسخة الاحتياطية فارغ أو يحتوي على بنية غير متوافقة مع قنوات قراءة النظام.");
                             }
+
+                            // محرك التصفية والاستخلاص الذكي الجديد المتوافق مع متطلبات الإدارة
+                            const sanitizedProductsArray = rawProductsArray.map((product) => {
+                                const generatedId = product.id || product.productId || window.db.collection('catalog').doc().id;
+                                
+                                return {
+                                    id: generatedId,
+                                    name: product.name || "صنف غير مسمى الفرافرة",
+                                    price: product.price !== undefined ? parseFloat(product.price) : 0,
+                                    image: product.image || product.imageUrl || "",
+                                    category: product.category || "عام",
+                                    inStock: product.inStock !== undefined ? parseInt(product.inStock) : 10,
+                                    isActive: product.isActive !== undefined ? product.isActive : true
+                                };
+                            });
 
                             const currentSnapshot = await window.db.collection('catalog').get();
                             const batchDelete = window.db.batch();
@@ -809,9 +824,8 @@
                             await batchDelete.commit();
 
                             const batchInsert = window.db.batch();
-                            productsArray.forEach((product) => {
-                                const docId = product.id || product.productId || window.db.collection('catalog').doc().id;
-                                const docRef = window.db.collection('catalog').doc(docId);
+                            sanitizedProductsArray.forEach((product) => {
+                                const docRef = window.db.collection('catalog').doc(product.id);
                                 batchInsert.set(docRef, product);
                             });
                             await batchInsert.commit();
@@ -821,7 +835,7 @@
                                 updateSource: 'admin_catalog_rollback'
                             }, { merge: true });
 
-                            alert(`تمت استعادة كتالوج المنتجات بنجاح! إجمالي الأصناف المحقونة سحابياً: ${productsArray.length}`);
+                            alert(`تمت استعادة كتالوج المنتجات بنجاح! إجمالي الأصناف الآمنة المحقونة سحابياً: ${sanitizedProductsArray.length}`);
                             fileInput.value = ""; 
 
                         } catch (err) {
@@ -845,7 +859,6 @@
             
             if (typeof window.auth !== 'undefined' && window.auth) {
                 window.auth.onAuthStateChanged((user) => {
-                    // مسار عبور وقائي ديناميكي: إذا تم التحقق من الحساب سحابياً، يتم بدء قنوات الاستماع فوراً
                     if (user) {
                         startLiveStreamListeners();
                     } else {
