@@ -1,8 +1,8 @@
-// ==========================================
-// BoseSweets Admin Core Engine Engine (admin-catalog.js)
+// ==========================================================================
+// BoseSweets Admin Core Engine (admin-catalog.js)
 // Focus: Stable Cloud Connection, Realtime Streams, Cloudinary Direct Upload
 // Strict Constraint: Fully compatible with admin UI panels, NO code truncations.
-// ==========================================
+// ==========================================================================
 
 // التكوين والتهيئة السحابية المتوافقة مع المنظومة الإدارية المشتركة لمتجر حلويات بوسي
 const firebaseConfig = {
@@ -280,13 +280,19 @@ function loadCatalog() {
             querySnapshot.forEach((docSnap) => {
                 const data = docSnap.data();
                 catalogData.push({ id: docSnap.id, ...data });
-                if (data.category) categoriesSet.add(data.category);
+                if (data.category) categoriesSet.add(data.category.trim());
             });
 
             renderDynamicSidebarCategories(categoriesSet);
             populateCategoryDatalist(categoriesSet);
 
-            if (selectedCategory) {
+            // التحقق والتحكم عند القفز المباشر من المونيتور برابط مصفى
+            const urlParams = new URLSearchParams(window.location.search);
+            const sectionParam = urlParams.get('section');
+            if (sectionParam && categoriesSet.has(sectionParam.trim()) && !selectedCategory) {
+                selectedCategory = sectionParam.trim();
+                window.filterCatalogBySection(selectedCategory);
+            } else if (selectedCategory) {
                 renderCatalogGridForSection(selectedCategory);
             }
         }, (error) => {
@@ -811,12 +817,6 @@ window.fetchAdminOrders = async function() {
                     const orderDateObj = order.createdAt || order.timestamp;
                     const clientTimeStr = orderDateObj ? new Date(orderDateObj).toLocaleString('ar-EG', { hour12: true }) : 'وقت الاستلام غير معروف';
                     
-                    const statusColors = {
-                        'pending': 'border-amber-500 text-amber-500 bg-amber-500/10',
-                        'preparing': 'border-blue-500 text-blue-500 bg-blue-500/10',
-                        'completed': 'border-emerald-500 text-emerald-500 bg-emerald-500/10',
-                        'cancelled': 'border-rose-500 text-rose-500 bg-rose-500/10'
-                    };
                     const status = order.status || 'pending';
 
                     ordersHtml += `
@@ -1069,4 +1069,47 @@ document.addEventListener('DOMContentLoaded', () => {
         window.previewImage('preview-natural', 'placeholder-natural', this.value);
     });
     document.getElementById('prod-img-artificial')?.addEventListener('input', function() {
-        window.previewImage('preview
+        window.previewImage('preview-artificial', 'placeholder-artificial', this.value);
+    });
+    document.getElementById('prod-img-cash')?.addEventListener('input', function() {
+        window.previewImage('preview-cash', 'placeholder-cash', this.value);
+    });
+    document.getElementById('prod-img-choco')?.addEventListener('input', function() {
+        window.previewImage('preview-choco', 'placeholder-choco', this.value);
+    });
+
+    // تهيئة مستمعات الرفع المباشر لملفات الصور عبر السحابة لـ Cloudinary
+    document.getElementById('btn-upload-prod-img')?.addEventListener('click', () => document.getElementById('file-prod-img')?.click());
+    document.getElementById('file-prod-img')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder');
+    });
+
+    document.getElementById('btn-upload-prod-hero')?.addEventListener('click', () => document.getElementById('file-prod-hero')?.click());
+    document.getElementById('file-prod-hero')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-hero-img', 'hero-preview', 'hero-placeholder');
+    });
+
+    document.getElementById('btn-upload-img-natural')?.addEventListener('click', () => document.getElementById('file-img-natural')?.click());
+    document.getElementById('file-img-natural')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-img-natural', 'preview-natural', 'placeholder-natural');
+    });
+
+    document.getElementById('btn-upload-img-artificial')?.addEventListener('click', () => document.getElementById('file-img-artificial')?.click());
+    document.getElementById('file-img-artificial')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-img-artificial', 'preview-artificial', 'placeholder-artificial');
+    });
+
+    document.getElementById('btn-upload-img-cash')?.addEventListener('click', () => document.getElementById('file-img-cash')?.click());
+    document.getElementById('file-img-cash')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-img-cash', 'preview-cash', 'placeholder-cash');
+    });
+
+    document.getElementById('btn-upload-img-choco')?.addEventListener('click', () => document.getElementById('file-img-choco')?.click());
+    document.getElementById('file-img-choco')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-img-choco', 'preview-choco', 'placeholder-choco');
+    });
+
+    document.getElementById('btn-save-simulator-settings')?.addEventListener('click', () => {
+        window.saveBoseSimulatorSettings();
+    });
+});
