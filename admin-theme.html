@@ -13,6 +13,10 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
     <script>
         tailwind.config = { 
             theme: { 
@@ -20,9 +24,9 @@
                     colors: { 
                         brand: { 
                             pink: 'var(--bose-pink, #ff91a4)', 
-                            bg: 'var(--bose-bg, #1a1012)',       
-                            surface: 'var(--bose-surface, #2a1b1f)',  
-                            border: 'var(--bose-border, #42282d)',   
+                            bg: 'var(--bose-bg, #0c0709)',       
+                            surface: 'var(--bose-surface, #1a1012)',  
+                            border: 'var(--bose-border, #3a2026)',   
                             textMain: '#ffffff', 
                             textMuted: '#e0c8cc' 
                         } 
@@ -35,9 +39,9 @@
     
     <style>
         :root {
-            --bose-bg: #1a1012;
-            --bose-surface: #2a1b1f;
-            --bose-border: #42282d;
+            --bose-bg: #0c0709;
+            --bose-surface: #1a1012;
+            --bose-border: #3a2026;
             --bose-pink: #ff91a4;
             --bose-text: #ffffff;
             --bose-muted: #e0c8cc;
@@ -103,7 +107,6 @@
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            font-weight: 700; 
             transition: all 0.3s ease; 
             color: var(--bose-text); 
             font-size: 1.1rem; 
@@ -122,7 +125,6 @@
             color: var(--bose-muted); 
             font-size: 1rem; 
             transition: all 0.3s ease; 
-            font-weight: 700; 
             cursor: pointer; 
             border-right: 3px solid transparent; 
         }
@@ -131,7 +133,6 @@
             background-color: rgba(255, 145, 164, 0.15); 
             color: var(--bose-text); 
             border-right-color: var(--bose-pink); 
-            font-weight: 700; 
         }
 
         .main-content { margin-right: 340px; min-height: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
@@ -143,7 +144,7 @@
         }
         .admin-tabs-nav::-webkit-scrollbar { display: none; }
         .admin-tab-btn {
-            background: transparent; color: var(--bose-muted); border: 2px solid transparent; padding: 14px 28px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; font-size: 1.1rem; flex-shrink: 0;
+            background: transparent; color: var(--bose-muted); border: 2px solid transparent; padding: 14px 28px; border-radius: 14px; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; font-size: 1.1rem; flex-shrink: 0;
         }
         .admin-tab-btn:hover { color: var(--bose-text); background: rgba(255, 145, 164, 0.1); }
         .admin-tab-btn.active {
@@ -191,7 +192,6 @@
         .form-label { 
             display: block; 
             color: var(--bose-text) !important; 
-            font-weight: 700; 
             margin-bottom: 10px; 
             font-size: 1.05rem; 
         }
@@ -202,7 +202,6 @@
             gap: 8px; 
             color: var(--bose-muted) !important; 
             font-size: 0.9rem; 
-            font-weight: 700; 
             margin-top: 10px; 
             line-height: 1.6; 
         }
@@ -215,13 +214,12 @@
         
         .form-input, .form-select, .form-textarea { 
             width: 100%; 
-            background-color: #110a0b !important; 
+            background-color: #0c0709 !important; 
             border: 2px solid var(--bose-border) !important; 
             color: var(--bose-text) !important; 
             border-radius: 14px; 
             padding: 18px; 
             font-family: inherit; 
-            font-weight: 700; 
             font-size: 1.1rem; 
             transition: all 0.3s ease; 
         }
@@ -239,7 +237,6 @@
         .form-select option { 
             background-color: var(--bose-surface) !important; 
             color: var(--bose-text) !important; 
-            font-weight: 700; 
             padding: 15px; 
         }
         
@@ -250,7 +247,6 @@
         
         .form-input::placeholder, .form-textarea::placeholder { 
             color: #6b4c53 !important; 
-            font-weight: 600; 
         }
         
         .form-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
@@ -292,7 +288,7 @@
             position: absolute; 
             cursor: pointer; 
             top: 0; left: 0; right: 0; bottom: 0; 
-            background-color: #110a0b; 
+            background-color: #0c0709; 
             transition: .4s; 
             border-radius: 34px; 
             border: 2px solid var(--bose-border); 
@@ -319,7 +315,6 @@
             border: none; 
             border-radius: 14px; 
             padding: 18px 36px; 
-            font-weight: 700; 
             font-size: 1.2rem; 
             cursor: pointer; 
             transition: all 0.3s ease; 
@@ -365,7 +360,6 @@
             padding: 18px 40px; 
             border-radius: 50px; 
             z-index: 10000; 
-            font-weight: 700; 
             font-size: 1.2rem; 
             display: none; 
             align-items: center; 
@@ -375,6 +369,14 @@
         
         .admin-toast.active { display: flex; animation: toastIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         @keyframes toastIn { from { top: -60px; opacity: 0; } to { top: 30px; opacity: 1; } }
+
+        /* فرض قيود سيادية صارمة مانعة نهائياً لتجاوز أوزان الخطوط الحاكمة بالموقع */
+        h1, h2, h3, h4, h5, h6, font, span, label, p, button, input, select, textarea, summary {
+            font-weight: 700 !important;
+        }
+        .submenu-item, .bose-helper-text {
+            font-weight: 600 !important;
+        }
     </style>
 </head>
 <body class="bg-brand-bg">
@@ -401,7 +403,7 @@
     <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
 
     <aside id="sidebar" class="sidebar">
-        <div class="p-8 border-b border-brand-border flex items-center justify-between sticky top-0 bg-[#2a1b1f] z-10">
+        <div class="p-8 border-b border-brand-border flex items-center justify-between sticky top-0 bg-[#1a1012] z-10">
             <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-brand-bg border border-brand-pink/40 flex items-center justify-center shadow-lg">
                     <i data-lucide="gem" class="w-7 h-7 text-brand-pink"></i>
@@ -412,9 +414,9 @@
         </div>
 
         <nav class="flex-grow p-6 space-y-2">
-            <div class="submenu-item active" onclick="switchSection('dashboard', this)">
-                <i data-lucide="layout-dashboard" class="w-6 h-6"></i> شاشة الاستقرار والإحصاء
-            </div>
+            <a href="admin-monitor.html" class="submenu-item text-decoration-none">
+                <i data-lucide="activity" class="w-6 h-6"></i> شاشة الاستقرار والإحصاء
+            </a>
 
             <details class="group mt-6" open>
                 <summary>
@@ -422,7 +424,7 @@
                     <i data-lucide="chevron-down" class="w-5 h-5 transition-transform group-open:rotate-180"></i>
                 </summary>
                 <div class="flex flex-col mt-3 space-y-1">
-                    <div class="submenu-item" onclick="switchSection('ui-builder', this)"><i data-lucide="ruler" class="w-5 h-5"></i> محرك بناء واجهة الموقع بدقة</div>
+                    <div class="submenu-item active" onclick="switchSection('ui-builder', this)"><i data-lucide="ruler" class="w-5 h-5"></i> محرك بناء واجهة الموقع بدقة</div>
                     <div class="submenu-item" onclick="switchSection('ui-header', this)"><i data-lucide="panel-top" class="w-5 h-5"></i> الهيدر والقوائم العلوية</div>
                     <div class="submenu-item" onclick="switchSection('ui-colors', this)"><i data-lucide="palette" class="w-5 h-5"></i> تخصيص الألوان والهوية</div>
                     <div class="submenu-item" onclick="switchSection('ui-fonts', this)"><i data-lucide="type" class="w-5 h-5"></i> الخطوط الرسمية والارتفاعات</div>
@@ -445,13 +447,13 @@
     </aside>
 
     <main class="main-content">
-        <header class="bg-[#2a1b1f] border-b border-brand-border sticky top-0 z-40 px-8 py-5 flex items-center justify-between shadow-lg">
+        <header class="bg-[#1a1012] border-b border-brand-border sticky top-0 z-40 px-8 py-5 flex items-center justify-between shadow-lg">
             <div class="flex items-center gap-5">
                 <button onclick="toggleSidebar()" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
                 <h2 id="current-section-title" class="text-2xl font-bold text-brand-textMain">إدارة المظهر والواجهة</h2>
             </div>
             <div class="flex items-center gap-4">
-                <div class="flex items-center gap-3 bg-[#1a1012] px-5 py-2.5 rounded-full border border-brand-border shadow-inner">
+                <div class="flex items-center gap-3 bg-[#0c0709] px-5 py-2.5 rounded-full border border-brand-border shadow-inner">
                     <div class="w-3 h-3 rounded-full bg-green-500 animate-pulse"></div>
                     <span class="text-sm font-bold text-brand-textMuted">المحرك السيادي متصل</span>
                 </div>
@@ -478,7 +480,7 @@
                                 <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يظهر هذا النص في الزاوية العلوية لجميع صفحات المتجر بجوار الماسة الرسمية للعلامة التجارية.</p>
                             </div>
                             
-                            <div class="mt-4 bg-[#1a1012] p-6 rounded-2xl border border-brand-border flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                            <div class="mt-4 bg-[#0c0709] p-6 rounded-2xl border border-brand-border flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                                 <span class="text-brand-textMuted font-bold text-base">معاينة حية لشكل شعار المتجر:</span>
                                 <div class="flex items-center gap-3 bg-brand-surface px-6 py-3 rounded-xl border border-brand-pink/30 shadow-md">
                                     <i data-lucide="gem" class="w-6 h-6 text-brand-pink"></i>
@@ -498,28 +500,28 @@
                         </h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                             
-                            <div class="bg-[#1a1012] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
+                            <div class="bg-[#0c0709] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
                                 <label class="form-label mb-4 text-center">اللون الوردي الرئيسي</label>
                                 <input type="color" id="color-pink" class="w-24 h-24 rounded-full border-4 border-brand-border cursor-pointer bg-transparent transition-transform hover:scale-105" value="#ff91a4">
                                 <span class="text-brand-textMuted font-mono font-bold mt-4" id="color-pink-hex">#FF91A4</span>
                             </div>
                             
-                            <div class="bg-[#1a1012] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
+                            <div class="bg-[#0c0709] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
                                 <label class="form-label mb-4 text-center">لون الخلفية الأساسية</label>
-                                <input type="color" id="color-bg" class="w-24 h-24 rounded-full border-4 border-brand-border cursor-pointer bg-transparent transition-transform hover:scale-105" value="#1a1012">
-                                <span class="text-brand-textMuted font-mono font-bold mt-4" id="color-bg-hex">#1A1012</span>
+                                <input type="color" id="color-bg" class="w-24 h-24 rounded-full border-4 border-brand-border cursor-pointer bg-transparent transition-transform hover:scale-105" value="#0c0709">
+                                <span class="text-brand-textMuted font-mono font-bold mt-4" id="color-bg-hex">#0C0709</span>
                             </div>
                             
-                            <div class="bg-[#1a1012] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
+                            <div class="bg-[#0c0709] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
                                 <label class="form-label mb-4 text-center">لون الأسطح والبطاقات</label>
-                                <input type="color" id="color-surface" class="w-24 h-24 rounded-full border-4 border-brand-border cursor-pointer bg-transparent transition-transform hover:scale-105" value="#2a1b1f">
-                                <span class="text-brand-textMuted font-mono font-bold mt-4" id="color-surface-hex">#2A1B1F</span>
+                                <input type="color" id="color-surface" class="w-24 h-24 rounded-full border-4 border-brand-border cursor-pointer bg-transparent transition-transform hover:scale-105" value="#1a1012">
+                                <span class="text-brand-textMuted font-mono font-bold mt-4" id="color-surface-hex">#1A1012</span>
                             </div>
                             
-                            <div class="bg-[#1a1012] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
+                            <div class="bg-[#0c0709] p-6 rounded-2xl border-2 border-brand-border flex flex-col items-center">
                                 <label class="form-label mb-4 text-center">لون الحدود والفواصل</label>
-                                <input type="color" id="color-border" class="w-24 h-24 rounded-full border-4 border-brand-border cursor-pointer bg-transparent transition-transform hover:scale-105" value="#42282d">
-                                <span class="text-brand-textMuted font-mono font-bold mt-4" id="color-border-hex">#42282D</span>
+                                <input type="color" id="color-border" class="w-24 h-24 rounded-full border-4 border-brand-border cursor-pointer bg-transparent transition-transform hover:scale-105" value="#3a2026">
+                                <span class="text-brand-textMuted font-mono font-bold mt-4" id="color-border-hex">#3A2026</span>
                             </div>
                             
                         </div>
@@ -553,15 +555,15 @@
                                     <input type="text" id="footer-address" class="form-input text-lg" placeholder="الكفاح، الفرافرة، الوادي الجديد">
                                 </div>
                             </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-brand-border bg-[#1a1012] p-8 rounded-2xl border-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-brand-border bg-[#0c0709] p-8 rounded-2xl border-2 border-brand-border">
                                 <div><label class="form-label">رابط صفحة الفيسبوك</label><input type="text" id="footer-fb" class="form-input text-left" dir="ltr"></div>
                                 <div><label class="form-label">رابط حساب الإنستجرام</label><input type="text" id="footer-ig" class="form-input text-left" dir="ltr"></div>
                                 <div><label class="form-label">رابط حساب التيك توك</label><input type="text" id="footer-tiktok" class="form-input text-left" dir="ltr"></div>
                             </div>
                             
-                            <div class="bg-[#1a1012] p-8 rounded-2xl border border-brand-border space-y-5">
+                            <div class="bg-[#0c0709] p-8 rounded-2xl border border-brand-border space-y-5">
                                 <h4 class="text-brand-pink font-bold text-lg border-b border-brand-border pb-3 flex items-center gap-2">
-                                    <i data-lucide="layout" class="w-5 h-5"></i> معاينة حية لقسم الفوتر (ذيل الموقع)
+                                    <i data-lucide="layout" class="w-5 h-5"></i> لقاء ومقر علامة حلويات بوسي
                                 </h4>
                                 <div class="space-y-3">
                                     <h5 class="text-white font-bold text-2xl bose-logo-text">حلويات بوسي</h5>
@@ -600,7 +602,7 @@
                                 <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يؤثر هذا الاختيار مباشرة على مظهر جميع العناوين، الفقرات، والأسعار لعملاء متجر حلويات بوسي.</p>
                             </div>
 
-                            <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border">
+                            <div class="bg-[#0c0709] p-8 rounded-2xl border-2 border-brand-border">
                                 <span class="text-xs font-bold text-brand-pink tracking-wider block mb-4 uppercase">معاينة حية للنصوص بالخط المحدد:</span>
                                 <div id="typography-preview-box" class="space-y-4">
                                     <h4 class="text-3xl font-bold text-white">حلويات بوسي - عراقة الطعم وجودة الصنع</h4>
@@ -608,7 +610,7 @@
                                 </div>
                             </div>
 
-                            <button onclick="saveFontData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> اعتماد وتتبيث الخط الرسمي</button>
+                            <button onclick="saveFontData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> adenocarcinoma اعتماد وتثبيت الخط الرسمي</button>
                         </div>
                     </div>
                 </section>
@@ -626,7 +628,7 @@
                             <div class="pt-6 border-t border-brand-border w-full md:w-1/2">
                                 <label class="form-label text-brand-pink">سرعة تحرك الشريط (بالثواني)</label>
                                 <input type="number" id="ticker-speed" class="form-input text-2xl font-bold text-center" value="40" min="10" max="120">
-                                <p class="bose-helper-text"><i data-lucide="alert-circle" class="w-5 h-5"></i>  العلاقة عكسية: تقليل الرقم (مثال: 20 ثانية) يجعل الحركة أسرع للفت الانتباه بشكل مكثف. زيادة الرقم (مثال: 60 ثانية) تبطئ الحركة لتكون هادئة وسهلة القراءة.</p>
+                                <p class="bose-helper-text"><i data-lucide="alert-circle" class="w-5 h-5"></i> العلاقة عكسية: تقليل الرقم (مثال: 20 ثانية) يجعل الحركة أسرع للفت الانتباه بشكل مكثف. زيادة الرقم (مثال: 60 ثانية) تبطئ الحركة لتكون هادئة وسهلة القراءة.</p>
                             </div>
                             <button onclick="saveTickerData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> حفظ وتحديث الشريط</button>
                         </div>
@@ -673,11 +675,9 @@
         </div>
     </main>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-        
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+    <script>
+        // التكوين والتهيئة السحابية المتوافقة مع المنظومة الإدارية المشتركة لمتجر حلويات بوسي
+        const firebaseConfig = {
             apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
             authDomain: "bosy-sweets.firebaseapp.com",
             projectId: "bosy-sweets",
@@ -686,8 +686,11 @@
             appId: "1:473615735083:web:f09c6001c72640b2588d6e"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+        const db = firebase.firestore();
         
         lucide.createIcons();
 
@@ -982,4 +985,285 @@
                             <div class="flex flex-row lg:flex-col gap-3 shrink-0 bg-brand-surface p-4 rounded-3xl border-2 border-brand-border w-full lg:w-auto justify-center shadow-lg">
                                 <div class="flex gap-3 justify-center">
                                     <button onclick="window.moveBlock(${index}, -1)" class="btn-action" title="رفع لأعلى خطوة" ${index === 0 ? 'disabled style="opacity:0.3"' : ''}><i data-lucide="arrow-up" class="w-6 h-6"></i></button>
-                                    <button onclick="window.moveBlock(${index
+                                    <button onclick="window.moveBlock(${index}, 1)" class="btn-action" title="إنزال لأسفل خطوة" ${index === builderBlocks.length - 1 ? 'disabled style="opacity:0.3"' : ''}><i data-lucide="arrow-down" class="w-6 h-6"></i></button>
+                                </div>
+                                <div class="flex gap-3 justify-center lg:mt-3">
+                                    <button onclick="window.toggleBlockVisibility(${index})" class="btn-action" title="${block.isVisible ? 'إخفاء القسم عن العملاء' : 'إظهار القسم للجمهور'}">
+                                        <i data-lucide="${block.isVisible ? 'eye' : 'eye-off'}" class="${block.isVisible ? 'text-emerald-400' : 'text-slate-400'} w-6 h-6"></i>
+                                    </button>
+                                    <button onclick="window.deleteBuilderBlock(${index})" class="btn-action danger" title="حذف نهائي للقسم من الهيكل"><i data-lucide="trash-2" class="w-6 h-6"></i></button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        ${specificSettingsHTML}
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+            
+            lucide.createIcons();
+        }
+
+        window.updateBlockData = function(index, field, value) {
+            if(builderBlocks[index]) {
+                builderBlocks[index][field] = value;
+                
+                // إعادة التهيئة لملء المدخلات المناسبة للأنماط الجديدة تلقائياً
+                if(field === 'type') {
+                    if(value === 'waterfall' && !builderBlocks[index].waterfallSpeed) builderBlocks[index].waterfallSpeed = 40;
+                    if((value === 'slider' || value === 'grid') && !builderBlocks[index].dataSource) {
+                        builderBlocks[index].dataSource = 'all';
+                        builderBlocks[index].cardWidth = 280;
+                        builderBlocks[index].cardHeight = 350;
+                        if(value === 'grid') builderBlocks[index].gridCols = 4;
+                    }
+                    if(value === 'categories_slider') {
+                        builderBlocks[index].cardWidth = 450;
+                        builderBlocks[index].cardHeight = 560;
+                    }
+                    renderBuilderUI();
+                }
+            }
+        };
+
+        window.moveBlock = function(index, direction) {
+            const targetIndex = index + direction;
+            if (targetIndex >= 0 && targetIndex < builderBlocks.length) {
+                const temp = builderBlocks[index];
+                builderBlocks[index] = builderBlocks[targetIndex];
+                builderBlocks[targetIndex] = temp;
+                renderBuilderUI();
+                
+                const element = document.getElementById(`block-${targetIndex}`);
+                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        };
+
+        window.toggleBlockVisibility = function(index) {
+            if(builderBlocks[index]) {
+                builderBlocks[index].isVisible = !builderBlocks[index].isVisible;
+                renderBuilderUI();
+            }
+        };
+
+        window.deleteBuilderBlock = function(index) {
+            window.showConfirm("قرار إداري: هل أنت متأكد من حذف هذا القسم نهائياً من هيكل الصفحة؟", () => {
+                builderBlocks.splice(index, 1);
+                renderBuilderUI();
+                window.showToast("تم إقصاء القسم من هيكل البناء المؤقت.");
+            });
+        };
+
+        window.addBuilderBlock = function() {
+            const newBlock = {
+                id: 'sec_' + (Date.now()),
+                type: 'slider',
+                title: 'عنوان جديد',
+                dataSource: 'all',
+                cardWidth: 280,
+                cardHeight: 350,
+                isVisible: true
+            };
+            builderBlocks.push(newBlock);
+            renderBuilderUI();
+            window.showToast("تم إنشاء كتلة هيكلية جديدة بنجاح بالأسفل.");
+            
+            setTimeout(() => {
+                const el = document.getElementById(`block-${builderBlocks.length - 1}`);
+                if(el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        };
+
+        window.previewFont = function(fontName) {
+            const box = document.getElementById('typography-preview-box');
+            if (box) box.style.fontFamily = fontName + ', sans-serif';
+        };
+
+        // دالة جلب البيانات الشاملة من السحابة للمحرك السيادي للواجهة
+        async function fetchSystemThemeData() {
+            try {
+                // 1. جلب إعدادات الهوية والألوان الفاخرة
+                const colorSnap = await db.collection('settings').doc('colors').get();
+                if(colorSnap.exists) {
+                    const c = colorSnap.data();
+                    if(c.pink) { document.getElementById('color-pink').value = c.pink; document.getElementById('color pink-hex').innerText = c.pink.toUpperCase(); }
+                    if(c.bg) { document.getElementById('color-bg').value = c.bg; document.getElementById('color-bg-hex').innerText = c.bg.toUpperCase(); }
+                    if(c.surface) { document.getElementById('color-surface').value = c.surface; document.getElementById('color-surface-hex').innerText = c.surface.toUpperCase(); }
+                    if(c.border) { document.getElementById('color-border').value = c.border; document.getElementById('color-border-hex').innerText = c.border.toUpperCase(); }
+                }
+
+                // 2. جلب إعدادات الهيدر واللوجو
+                const headerSnap = await db.collection('settings').doc('header').get();
+                if(headerSnap.exists) {
+                    const h = headerSnap.data();
+                    if(h.logoText) {
+                        document.getElementById('header-logo-text').value = h.logoText;
+                        document.querySelectorAll('.bose-logo-text').forEach(el => el.innerText = h.logoText);
+                    }
+                }
+
+                // 3. جلب إعدادات الفوتر والنبذة والاتصال
+                const footerSnap = await db.collection('settings').doc('footer').get();
+                if(footerSnap.exists) {
+                    const f = footerSnap.data();
+                    document.getElementById('footer-desc').value = f.brandDesc || '';
+                    document.getElementById('footer-brand-desc').innerText = f.brandDesc || 'نبذة الفوتر ستظهر هنا عند الكتابة...';
+                    
+                    document.getElementById('footer-phone').value = f.phone || '';
+                    document.getElementById('footer-phone-preview').innerText = f.phone || '-';
+                    
+                    document.getElementById('footer-email').value = f.email || '';
+                    document.getElementById('footer-email-preview').innerText = f.email || '-';
+                    
+                    document.getElementById('footer-address').value = f.address || '';
+                    document.getElementById('footer-address-preview').innerText = f.address || '-';
+                    
+                    document.getElementById('footer-fb').value = f.facebookUrl || '';
+                    document.getElementById('footer-ig').value = f.instagramUrl || '';
+                    document.getElementById('footer-tiktok').value = f.tiktokUrl || '';
+                }
+
+                // 4. جلب إعدادات الخط العربي المعتمد
+                const fontSnap = await db.collection('settings').doc('typography').get();
+                if(fontSnap.exists) {
+                    const t = fontSnap.data();
+                    if(t.fontFamily) {
+                        document.getElementById('font-family-select').value = t.fontFamily;
+                        window.previewFont(t.fontFamily);
+                    }
+                }
+
+                // 5. جلب إعدادات الشريط الإعلاني المتحرك
+                const tickerSnap = await db.collection('settings').doc('ticker').get();
+                if(tickerSnap.exists) {
+                    const tk = tickerSnap.data();
+                    if(tk.messages && Array.isArray(tk.messages)) {
+                        for(let i=0; i<4; i++) {
+                            if(tk.messages[i]) document.getElementById(`ticker-${i+1}`).value = tk.messages[i];
+                        }
+                    }
+                    document.getElementById('ticker-speed').value = tk.speed || 40;
+                }
+
+                // 6. جلب الهيكل والبناء الهندسي لـ builderLayout سحابياً
+                const layoutSnap = await db.collection('settings').doc('builderLayout').get();
+                if(layoutSnap.exists && layoutSnap.data().blocks) {
+                    builderBlocks = layoutSnap.data().blocks;
+                } else {
+                    builderBlocks = JSON.parse(JSON.stringify(defaultLayout));
+                }
+                
+                renderBuilderUI();
+
+            } catch (err) {
+                console.error("Critical Theme Fetch Error:", err);
+                window.showToast("عذراً، فشل جلب بعض إعدادات المظهر من السحابة", "error");
+            }
+        }
+
+        // دوال الحفظ والاعتماد السحابي المنفصلة
+        window.saveHeaderData = async function() {
+            try {
+                const logoText = document.getElementById('header-logo-text').value.trim() || "حلويات بوسي";
+                await db.collection('settings').doc('header').set({ logoText, updatedAt: Date.now() }, { merge: true });
+                document.querySelectorAll('.bose-logo-text').forEach(el => el.innerText = logoText);
+                
+                await db.collection('system').doc('syncFlag').set({ forceRefresh: true, lastAdminUpdate: Date.now(), updateSource: 'admin_theme_save' }, { merge: true });
+                window.showToast("تم اعتماد وحفظ إعدادات هيدر المتجر بنجاح.");
+            } catch(e) { window.showToast("تعذر الاتصال بالسحابة لحفظ الهيدر", "error"); }
+        };
+
+        window.saveColorData = async function() {
+            try {
+                const pink = document.getElementById('color-pink').value;
+                const bg = document.getElementById('color-bg').value;
+                const surface = document.getElementById('color-surface').value;
+                const border = document.getElementById('color-border').value;
+
+                await db.collection('settings').doc('colors').set({ pink, bg, surface, border, updatedAt: Date.now() }, { merge: true });
+                document.getElementById('color-pink-hex').innerText = pink.toUpperCase();
+                document.getElementById('color-bg-hex').innerText = bg.toUpperCase();
+                document.getElementById('color-surface-hex').innerText = surface.toUpperCase();
+                document.getElementById('color-border-hex').innerText = border.toUpperCase();
+
+                await db.collection('system').doc('syncFlag').set({ forceRefresh: true, lastAdminUpdate: Date.now(), updateSource: 'admin_theme_save' }, { merge: true });
+                window.showToast("تم تجميد لوحة الألوان السحرية وتعميمها للموقع.");
+            } catch(e) { window.showToast("تعذر حفظ سمة الألوان.", "error"); }
+        };
+
+        window.saveFooterData = async function() {
+            try {
+                const brandDesc = document.getElementById('footer-desc').value.trim();
+                const phone = document.getElementById('footer-phone').value.trim();
+                const email = document.getElementById('footer-email').value.trim();
+                const address = document.getElementById('footer-address').value.trim();
+                const facebookUrl = document.getElementById('footer-fb').value.trim();
+                const instagramUrl = document.getElementById('footer-ig').value.trim();
+                const tiktokUrl = document.getElementById('footer-tiktok').value.trim();
+
+                const footerObj = { brandDesc, phone, email, address, facebookUrl, instagramUrl, tiktokUrl, updatedAt: Date.now() };
+                await db.collection('settings').doc('footer').set(footerObj, { merge: true });
+
+                document.getElementById('footer-brand-desc').innerText = brandDesc || 'نبذة الفوتر ستظهر هنا عند الكتابة...';
+                document.getElementById('footer-phone-preview').innerText = phone || '-';
+                document.getElementById('footer-email-preview').innerText = email || '-';
+                document.getElementById('footer-address-preview').innerText = address || '-';
+
+                await db.collection('system').doc('syncFlag').set({ forceRefresh: true, lastAdminUpdate: Date.now(), updateSource: 'admin_theme_save' }, { merge: true });
+                window.showToast("تم حفظ بيانات الفوتر والمقر بنجاح سحابياً.");
+            } catch(e) { window.showToast("تعذر أرشفة بيانات الفوتر.", "error"); }
+        };
+
+        window.saveFontData = async function() {
+            try {
+                const fontFamily = document.getElementById('font-family-select').value;
+                await db.collection('settings').doc('typography').set({ fontFamily, updatedAt: Date.now() }, { merge: true });
+                
+                await db.collection('system').doc('syncFlag').set({ forceRefresh: true, lastAdminUpdate: Date.now(), updateSource: 'admin_theme_save' }, { merge: true });
+                window.showToast("تم اعتماد وتعميم الخط الرسمي للمتجر بنجاح.");
+            } catch(e) { window.showToast("تعذر تثبيت الخط.", "error"); }
+        };
+
+        window.saveTickerData = async function() {
+            try {
+                const messages = [
+                    document.getElementById('ticker-1').value.trim(),
+                    document.getElementById('ticker-2').value.trim(),
+                    document.getElementById('ticker-3').value.trim(),
+                    document.getElementById('ticker-4').value.trim()
+                ].filter(m => m !== "");
+                
+                const speed = parseInt(document.getElementById('ticker-speed').value) || 40;
+
+                await db.collection('settings').doc('ticker').set({ messages, speed, updatedAt: Date.now() }, { merge: true });
+                
+                await db.collection('system').doc('syncFlag').set({ forceRefresh: true, lastAdminUpdate: Date.now(), updateSource: 'admin_theme_save' }, { merge: true });
+                window.showToast("تم تحديث الشريط المتحرك وإرساله للعملاء.");
+            } catch(e) { window.showToast("فشل حفظ معطيات الشريط الإعلاني.", "error"); }
+        };
+
+        window.saveBuilderLayout = async function() {
+            try {
+                window.showConfirm("تأكيد هندسي: هل أنت متأكد من حفظ وتطبيق الهيكل الحالي على الموقع مباشرة؟", async () => {
+                    await db.collection('settings').doc('builderLayout').set({ blocks: builderBlocks, updatedAt: Date.now() }, { merge: true });
+                    
+                    // وميض التزامن السحابي الموجه لصفحة المراقبة admin-monitor
+                    await db.collection('system').doc('syncFlag').set({ 
+                        forceRefresh: true, 
+                        lastAdminUpdate: Date.now(), 
+                        updateSource: 'admin_theme_save' 
+                    }, { merge: true });
+                    
+                    window.showToast("عظيم! تم حفظ وحقن مصفوفة الأبعاد الجديدة في قاعدة البيانات بنجاح تام.");
+                });
+            } catch(err) { window.showToast("فشل في مزامنة الهيكل سحابياً", "error"); }
+        };
+
+        // بدء التشغيل الفوري والربط عند تحميل الجلسة الحية للوحة
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchSystemThemeData();
+            
+            // ربط تفاعلي لمستمعي ألوان مدخلات الـ HEX
+            document.getElementById('color-pink')?.addEventListener('input', (e) => document.getElementById('color-pink-hex').innerText = e
