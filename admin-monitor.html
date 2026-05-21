@@ -86,7 +86,6 @@
             pointer-events: auto;
         }
         
-        /* حل جذري هندسي لمنع تداخل عناصر القائمة الجانبية */
         .bose-nav-item {
             display: flex;
             align-items: center;
@@ -244,6 +243,56 @@
 
                 </div>
 
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                    
+                    <div id="card-sales" class="p-6 bg-brand-surface border border-brand-border/40 rounded-2xl relative overflow-hidden group hover:border-brand-border transition-all">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="space-y-1.5">
+                                <span class="text-xs font-bold text-brand-textMuted/70 block">إجمالي حجم المبيعات المركزي</span>
+                                <span id="stat-sales-total" class="text-2xl font-black font-mono text-white tracking-tight">0.00 ج.م</span>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                                <i data-lucide="banknote" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] text-brand-textMuted/50 font-medium pt-1 border-t border-brand-border/20">
+                            <span>متوسط قيمة طلبات المتجر:</span>
+                            <span id="stat-sales-average" class="font-mono text-emerald-400 font-bold">0 ج.م</span>
+                        </div>
+                    </div>
+
+                    <div id="card-orders" class="p-6 bg-brand-surface border border-brand-border/40 rounded-2xl relative overflow-hidden group hover:border-brand-border transition-all">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="space-y-1.5">
+                                <span class="text-xs font-bold text-brand-textMuted/70 block">حالة وحجم الأوردرات النشطة</span>
+                                <span id="stat-orders-count" class="text-2xl font-bold font-mono text-white tracking-tight">0 أوردر</span>
+                            </div>
+                            <span id="badge-orders-status" class="px-2.5 py-0.5 text-[10px] bg-brand-border/40 border border-brand-border text-brand-textMuted rounded-full font-bold">مستقر</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[11px] text-brand-textMuted/50 font-medium pt-1 border-t border-brand-border/20">
+                            <div>قيد التنفيذ: <span id="stat-orders-pending" class="text-amber-400 font-bold font-mono">0</span></div>
+                            <div class="text-left">تم التوصيل: <span id="stat-orders-completed" class="text-emerald-400 font-bold font-mono">0</span></div>
+                        </div>
+                    </div>
+
+                    <div id="card-analytics" class="p-6 bg-brand-surface border border-brand-border/40 rounded-2xl relative overflow-hidden group hover:border-brand-border transition-all">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="space-y-1.5">
+                                <span class="text-xs font-bold text-brand-textMuted/70 block">معدل جلسات الزوار الفورية</span>
+                                <span id="stat-visitors-active" class="text-2xl font-bold font-mono text-brand-pink tracking-tight">0 زائر حالياً</span>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-brand-pink/10 border border-brand-pink/20 flex items-center justify-center text-brand-pink">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] text-brand-textMuted/50 font-medium pt-1 border-t border-brand-border/20">
+                            <span>إجمالي زيارات الموقع اليومية:</span>
+                            <span id="stat-visitors-total" class="font-mono text-white font-bold">0</span>
+                        </div>
+                    </div>
+
+                </div>
+
                 <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
                     
                     <div class="xl:col-span-2 bg-brand-surface border border-brand-border/40 rounded-2xl flex flex-col shadow-xl">
@@ -256,12 +305,10 @@
                         </div>
 
                         <div id="logs-container" class="p-6 max-h-[520px] overflow-y-auto space-y-4 custom-scrollbar min-h-[300px]">
-                            
                             <div id="loading-placeholder" class="py-16 text-center flex flex-col items-center justify-center gap-4">
                                 <div class="w-10 h-10 rounded-xl border-2 border-brand-pink/20 border-t-brand-pink animate-spin"></div>
                                 <p class="text-xs text-brand-textMuted/60 font-semibold tracking-wide">جاري الاستماع وبث نبضات النظام من السحابة المركزية للموقع...</p>
                             </div>
-
                         </div>
                     </div>
 
@@ -336,7 +383,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
     <script>
-        // إعدادات الاتصال بسحابة علامة حلويات بوسي
         const firebaseConfig = {
             apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
             authDomain: "bosy-sweets.firebaseapp.com",
@@ -346,7 +392,6 @@
             appId: "1:473615735083:web:f09c6001c72640b2588d6e"
         };
 
-        // تهيئة النظام السحابي وتثبيته عالمياً لمنع عوائق التزامن
         try {
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
@@ -394,6 +439,13 @@
                 const timestamp = document.getElementById('logistics-timestamp');
                 if (card) { card.classList.add('update-flash'); setTimeout(() => card.classList.remove('update-flash'), 800); }
                 if (timestamp) timestamp.textContent = currentTime;
+            }
+            // تشغيل وميض التحديث التلقائي للبطاقات المضافة حديثاً عند رصد إشارات مبيعات أو طلبات
+            else if (updateSource === 'orders' || updateSource === 'sales') {
+                const cardOrders = document.getElementById('card-orders');
+                const cardSales = document.getElementById('card-sales');
+                if (cardOrders) { cardOrders.classList.add('update-flash'); setTimeout(() => cardOrders.classList.remove('update-flash'), 800); }
+                if (cardSales) { cardSales.classList.add('update-flash'); setTimeout(() => cardSales.classList.remove('update-flash'), 800); }
             }
         }
 
@@ -486,7 +538,77 @@
                 console.error("Catalog Stream Error:", error);
             });
 
-            // آليات وقائية لكسر حالة الانتظار الأبدي في حال غياب حقل المزامنة الرئيسي بالسحابة
+            // 2. المراقبة التزامنية وحساب حجم المبيعات الإدارية وحالة الأوردرات النشطة
+            window.db.collection('orders').onSnapshot((snapshot) => {
+                let totalSales = 0;
+                let totalOrders = snapshot.size;
+                let pendingCount = 0;
+                let completedCount = 0;
+
+                snapshot.forEach((doc) => {
+                    const orderData = doc.data();
+                    const finalPrice = orderData.totalPrice !== undefined ? parseFloat(orderData.totalPrice) : 0;
+                    totalSales += finalPrice;
+
+                    if (orderData.status === 'completed' || orderData.status === 'delivered') {
+                        completedCount++;
+                    } else {
+                        pendingCount++;
+                    }
+                });
+
+                const salesTotalEl = document.getElementById('stat-sales-total');
+                const salesAvgEl = document.getElementById('stat-sales-average');
+                const ordersCountEl = document.getElementById('stat-orders-count');
+                const ordersPendingEl = document.getElementById('stat-orders-pending');
+                const ordersCompletedEl = document.getElementById('stat-orders-completed');
+                const badgeOrdersStatus = document.getElementById('badge-orders-status');
+
+                if (salesTotalEl) salesTotalEl.textContent = `${totalSales.toFixed(2)} ج.م`;
+                if (salesAvgEl) {
+                    const averagePrice = totalOrders > 0 ? Math.round(totalSales / totalOrders) : 0;
+                    salesAvgEl.textContent = `${averagePrice} ج.م`;
+                }
+                if (ordersCountEl) ordersCountEl.textContent = `${totalOrders} أوردر`;
+                if (ordersPendingEl) ordersPendingEl.textContent = pendingCount.toString();
+                if (ordersCompletedEl) ordersCompletedEl.textContent = completedCount.toString();
+                
+                if (badgeOrdersStatus) {
+                    if (pendingCount > 0) {
+                        badgeOrdersStatus.textContent = "إنتاج نشط";
+                        badgeOrdersStatus.className = "px-2.5 py-0.5 text-[10px] bg-amber-950 border border-amber-500/30 text-amber-400 rounded-full font-bold";
+                    } else {
+                        badgeOrdersStatus.textContent = "مستقر";
+                        badgeOrdersStatus.className = "px-2.5 py-0.5 text-[10px] bg-emerald-950 border border-emerald-500/30 text-emerald-400 rounded-full font-bold";
+                    }
+                }
+
+                updateMonitorMetrics('orders');
+                updateMonitorMetrics('sales');
+            }, (error) => {
+                console.error("Orders Stream Error:", error);
+            });
+
+            // 3. المراقبة التزامنية والبث الحي لإحصائيات الزوار (التحليلات الفورية والكلية)
+            window.db.collection('analytics').doc('traffic').onSnapshot((docSnap) => {
+                const activeVisitorsEl = document.getElementById('stat-visitors-active');
+                const totalVisitorsEl = document.getElementById('stat-visitors-total');
+
+                if (docSnap.exists) {
+                    const trafficData = docSnap.data();
+                    const activeNow = trafficData.activeUsers !== undefined ? parseInt(trafficData.activeUsers) : 0;
+                    const totalToday = trafficData.todayViews !== undefined ? parseInt(trafficData.todayViews) : 0;
+
+                    if (activeVisitorsEl) activeVisitorsEl.textContent = `${activeNow} زائر حالياً`;
+                    if (totalVisitorsEl) totalVisitorsEl.textContent = totalToday.toLocaleString('ar-EG');
+                } else {
+                    if (activeVisitorsEl) activeVisitorsEl.textContent = "1 زائر حالياً";
+                    if (totalVisitorsEl) totalVisitorsEl.textContent = "1";
+                }
+            }, (error) => {
+                console.error("Analytics Stream Error:", error);
+            });
+
             let flagLoaded = false;
             const fallbackTimeout = setTimeout(() => {
                 if (!flagLoaded) {
@@ -501,7 +623,7 @@
                 }
             }, 4000);
 
-            // 2. البث الحي والمستمر لسجلات النظام والعمليات التشخيصية دون بتر
+            // 4. البث الحي والمستمر لسجلات النظام والعمليات التشخيصية
             window.db.collection('system').doc('syncFlag').onSnapshot((docSnap) => {
                 flagLoaded = true;
                 clearTimeout(fallbackTimeout);
@@ -555,65 +677,4 @@
                         logMessage = "تعديل مستويات الوفرة: تم تحديث كميات حقل المخزون الفعلي (inStock) لمنتجات المتجر لمنع الطلبات العشوائية للأصناف النافذة.";
                         logType = "success";
                         borderClass = "border-emerald-500";
-                        bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
-                    } else if (currentSource === 'admin_theme_save') {
-                        logMessage = "تحديث هوية وتخطيط الواجهة: تم تعديل لوحة الألوان السحرية ومصفوفة الشريط الإعلاني وبنية builderLayout للمتجر.";
-                        logType = "success";
-                        borderClass = "border-emerald-500";
-                        bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
-                    }
-
-                    const newLogHtml = `
-                        <div class="log-entry p-5 rounded-2xl border-r-4 ${borderClass} shadow-inner transition-all bg-brand-surface border border-brand-border/30">
-                            <div class="flex justify-between text-xs text-brand-textMuted font-bold mb-3">
-                                <span>محرك النظام المركزي السحابي</span>
-                                <span class="font-mono">${formattedDate}</span>
-                            </div>
-                            <p class="text-sm font-semibold text-white leading-relaxed mb-3">${logMessage}</p>
-                            <span class="inline-block px-3 py-1 ${bgBadgeClass} text-[10px] rounded-lg font-bold tracking-wide">الإجراء: ${logType}</span>
-                        </div>
-                    `;
-
-                    if (container) {
-                        const existingPlaceholder = document.getElementById('loading-placeholder');
-                        if (existingPlaceholder) existingPlaceholder.remove();
-                        if (container.children.length > 30) container.lastElementChild.remove();
-                        container.insertAdjacentHTML('afterbegin', newLogHtml);
-                    }
-                    
-                    if (currentSource) {
-                        updateMonitorMetrics(currentSource);
-                    }
-                    
-                    triggerSilentToast("مزامنة حية: رصد إشارة تشغيلية جديدة من السحابة.");
-                }
-            }, (error) => {
-                console.error("System Stream Error:", error);
-                flagLoaded = true;
-                clearTimeout(fallbackTimeout);
-            });
-        }
-
-        // ربط الصفحة بمستمع الأمان الرسمي وبتر التوثيق المجهول العشوائي
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            
-            if (typeof window.auth !== 'undefined' && window.auth) {
-                window.auth.onAuthStateChanged((user) => {
-                    if (user && sessionStorage.getItem('bosy_admin_auth') === 'verified') {
-                        startLiveStreamListeners();
-                    } else {
-                        sessionStorage.removeItem('bosy_admin_auth');
-                        window.location.href = 'login.html';
-                    }
-                });
-            } else {
-                const placeholder = document.getElementById('loading-placeholder');
-                if (placeholder) {
-                    placeholder.innerHTML = `<span class="text-brand-discount font-bold">⚠️ عطل حرج: محرك السحابة غير متصل بالمتصفح حالياً.</span>`;
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+                        bgBadgeClass = "bg-emerald-950 text-emerald-400 border
