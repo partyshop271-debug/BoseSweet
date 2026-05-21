@@ -859,7 +859,7 @@
                         } catch (err) {
                             console.error("Rollback Process Error:", err);
                             alert(`فشلت عملية الاستعادة: ${err.message || "تنسيق ملف JSON غير صحيح"}`);
-                        } final {
+                        } finally {
                             if (textBtn && iconBtn) {
                                 textBtn.textContent = "بدء استعادة الأصناف والمنتجات فورياً";
                                 iconBtn.classList.remove('animate-spin');
