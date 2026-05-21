@@ -26,8 +26,7 @@
                             textMuted: '#e0c8cc',
                             discount: '#f43f5e'
                         }
-                    },
-                    fontFamily: { sans: ['Cairo', 'sans-serif'] }
+                    },\n                    fontFamily: { sans: ['Cairo', 'sans-serif'] }
                 }
             }
         }
@@ -35,328 +34,296 @@
     
     <style>
         :root {
-            --bose-bg: #0c0709; 
-            --bose-surface: #1a1012; 
-            --bose-border: #3a2026;
-            --bose-pink: #ff91a4; 
-            --bose-text: #ffffff; 
-            --bose-muted: #e0c8cc;
+            --bose-bg: #0c0709;
+            --bose-pink: #ff91a4;
         }
-
-        body { 
-            background-color: var(--bose-bg) !important; 
-            color: var(--bose-text) !important; 
-            font-family: 'Cairo', sans-serif; 
-            overflow-x: hidden; 
-            margin: 0; 
-            padding: 0; 
-            font-size: 16px; 
+        body {
+            background-color: var(--bose-bg);
+            font-family: 'Cairo', sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
         }
-        * { box-sizing: border-box; outline: none; }
-        
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bose-bg); }
-        ::-webkit-scrollbar-thumb { background: var(--bose-border); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--bose-pink); }
-
-        .sidebar { 
-            background-color: var(--bose-surface) !important; 
-            border-left: 1px solid var(--bose-border) !important; 
-            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-            z-index: 100; 
-            height: 100vh; 
-            position: fixed; 
-            top: 0; 
-            right: 0; 
-            width: 340px; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5); 
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
         }
-        .sidebar-overlay { 
-            position: fixed; 
-            inset: 0; 
-            background: rgba(0, 0, 0, 0.85); 
-            backdrop-filter: blur(8px); 
-            z-index: 90; 
-            display: none; 
-            opacity: 0; 
-            transition: opacity 0.4s ease; 
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1a1012;
         }
-        .sidebar-overlay.active { display: block; opacity: 1; }
-        
-        @media (max-width: 1024px) { 
-            .sidebar { right: -100%; width: 85%; max-width: 380px; } 
-            .sidebar.active { right: 0; } 
-            .main-content { margin-right: 0 !important; width: 100%; } 
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #3a2026;
+            border-radius: 10px;
         }
-        
-        details.main-menu > summary { 
-            list-style: none; 
-            cursor: pointer; 
-            padding: 16px 20px; 
-            border-radius: 14px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            transition: all 0.3s ease; 
-            color: var(--bose-text); 
-            font-size: 1.1rem; 
-            margin-bottom: 4px; 
-            background-color: transparent; 
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #ff91a4;
         }
-        details.main-menu > summary::-webkit-details-marker { display: none; }
-        details.main-menu > summary:hover, details.main-menu[open] > summary { 
-            background-color: rgba(255, 145, 164, 0.08); 
-            color: var(--bose-pink); 
+        @keyframes pulse-ring {
+            0% { transform: scale(0.33); opacity: 1; }
+            80%, 100% { opacity: 0; }
         }
-        
-        .submenu-container {
-            margin-right: 12px;
-            margin-bottom: 6px;
-            border-right: 2px solid var(--bose-border);
-            padding-right: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
+        @keyframes pulse-dot {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1); }
+            100% { transform: scale(0.8); }
         }
-        
-        .submenu-item { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            padding: 12px 16px; 
-            margin: 2px 0; 
-            border-radius: 10px; 
-            color: var(--bose-muted); 
-            font-size: 0.95rem; 
-            transition: all 0.3s ease; 
-            cursor: pointer; 
-            background: transparent; 
+        .update-flash {
+            animation: flash-bg 0.8s ease-out;
         }
-        .submenu-item:hover, .submenu-item.active { 
-            background-color: rgba(255, 145, 164, 0.12); 
-            color: var(--bose-text); 
-            transform: translateX(-4px); 
+        @keyframes flash-bg {
+            0% { background-color: rgba(255, 145, 164, 0.2); border-color: #ff91a4; }
+            100% { background-color: #1a1012; border-color: #3a2026; }
         }
-        .submenu-item.nested-item { 
-            padding-right: 20px; 
-            font-size: 0.9rem; 
+        #sidebar {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .main-content { margin-right: 340px; min-height: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
-        
-        .monitor-card {
-            border: 2px solid var(--bose-border);
-            border-radius: 24px;
-            padding: 28px;
-            background-color: var(--bose-surface);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        @media (max-width: 1023px) {
+            #sidebar {
+                transform: translateX(100%);
+            }
+            #sidebar.active {
+                transform: translateX(0);
+            }
         }
-        .monitor-card:hover {
-            border-color: var(--bose-pink);
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        #sidebar-overlay {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
         }
-        
-        @keyframes pulse-highlight {
-            0% { box-shadow: 0 0 0 0 rgba(255, 145, 164, 0.6); transform: scale(1.01); }
-            70% { box-shadow: 0 0 0 12px rgba(255, 145, 164, 0); transform: scale(1.01); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 145, 164, 0); transform: scale(1); }
-        }
-        .update-flash { animation: pulse-highlight 0.8s ease-out; border-color: var(--bose-pink) !important; }
-
-        .log-entry {
-            background-color: var(--bose-surface);
-            border: 1px solid var(--bose-border);
-            transition: all 0.2s ease;
-        }
-        .log-entry:hover {
-            background-color: rgba(255, 145, 164, 0.02);
-            border-color: rgba(255, 145, 164, 0.2);
-        }
-
-        h1, h2, h3, h4, h5, h6, font, span, label, p, button, input, select, textarea, summary {
-            font-weight: 700 !important;
-        }
-        .submenu-item, .log-entry p {
-            font-weight: 600 !important;
+        #sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
         }
     </style>
 </head>
-<body class="bg-brand-bg">
+<body class="bg-brand-bg text-white min-h-screen antialiased select-none selection:bg-brand-pink/30 selection:text-white">
 
-    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/60 z-40 lg:hidden"></div>
 
-    <aside id="sidebar" class="sidebar">
-        <div class="p-8 border-b border-brand-border flex items-center justify-between sticky top-0 bg-[#1a1012] z-10">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-brand-bg border border-brand-pink/30 flex items-center justify-center shadow-lg">
-                    <i data-lucide="gem" class="w-6 h-6 text-brand-pink"></i>
+    <div class="flex min-h-screen relative">
+        <aside id="sidebar" class="w-[280px] bg-brand-surface border-l border-brand-border/40 fixed top-0 bottom-0 right-0 z-50 lg:z-30 lg:translate-x-0 flex flex-col justify-between">
+            <div>
+                <div class="p-6 border-b border-brand-border/30 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-brand-pink/10 border border-brand-pink/30 flex items-center justify-center text-brand-pink">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-sm font-bold tracking-wide">لوحة الإدارة</h2>
+                            <p class="text-[10px] text-brand-textMuted/60 font-medium">علامة حلويات بوسي</p>
+                        </div>
+                    </div>
+                    <button id="btn-close-sidebar" class="lg:hidden w-8 h-8 rounded-lg hover:bg-brand-border/30 flex items-center justify-center text-brand-textMuted transition-all">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
-                <h1 class="text-xl font-bold text-brand-textMain tracking-tight">إدارة حلويات بوسي</h1>
-            </div>
-            <button id="btn-close-sidebar" class="lg:hidden text-brand-textMuted hover:text-brand-pink">
-                <i data-lucide="x" class="w-8 h-8"></i>
-            </button>
-        </div>
 
-        <nav class="flex-grow p-6 space-y-3">
-            <a href="admin-monitor.html" class="submenu-item active text-decoration-none">
-                <i data-lucide="activity" class="w-6 h-6 text-brand-pink"></i> سجل التشخيصات والأداء
-            </a>
+                <nav class="p-4 space-y-1.5">
+                    <a href="admin-monitor.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-brand-pink/10 text-brand-pink font-bold text-sm border border-brand-pink/20 transition-all">
+                        <i data-lucide="activity" class="w-4 h-4"></i>
+                        <span>شاشة المراقبة BoseMonitor</span>
+                    </a>
+                    <a href="admin-catalog.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brand-textMuted hover:text-white hover:bg-brand-border/20 font-medium text-sm transition-all">
+                        <i data-lucide="layers" class="w-4 h-4"></i>
+                        <span>إدارة كتالوج المنتجات</span>
+                    </a>
+                    <a href="admin-orders.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brand-textMuted hover:text-white hover:bg-brand-border/20 font-medium text-sm transition-all">
+                        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                        <span>متابعة الطلبات والأوردرات</span>
+                    </a>
+                    <a href="admin-simulator.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brand-textMuted hover:text-white hover:bg-brand-border/20 font-medium text-sm transition-all">
+                        <i data-lucide="sliders" class="w-4 h-4"></i>
+                        <span>محاكي تسعير الكيك المخصص</span>
+                    </a>
+                    <a href="admin-theme.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brand-textMuted hover:text-white hover:bg-brand-border/20 font-medium text-sm transition-all">
+                        <i data-lucide="palette" class="w-4 h-4"></i>
+                        <span>التحكم في الهوية البصرية</span>
+                    </a>
+                    <a href="admin-logistics.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brand-textMuted hover:text-white hover:bg-brand-border/20 font-medium text-sm transition-all">
+                        <i data-lucide="package" class="w-4 h-4"></i>
+                        <span>المخزون واللوجستيات</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="p-4 border-t border-brand-border/20 bg-brand-bg/40">
+                <div class="flex items-center gap-3 px-2 py-1.5">
+                    <div class="w-2 h-2 rounded-full bg-brand-pink animate-pulse"></div>
+                    <div class="text-xs">
+                        <p class="font-bold text-white">BoseMonitor Engine</p>
+                        <p class="text-[10px] text-brand-textMuted/50 font-mono mt-0.5">v2.4.0-production</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 lg:pr-[280px] min-h-screen flex flex-col">
             
-            <a href="admin-catalog.html" class="submenu-item text-decoration-none">
-                <i data-lucide="shopping-bag" class="w-6 h-6"></i> متابعة الطلبات والكتالوج
-            </a>
-
-            <details class="main-menu bose-accordion" open>
-                <summary>
-                    <div class="flex items-center gap-4"><i data-lucide="layers" class="w-6 h-6"></i> الفئات والأقسام</div>
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform"></i>
-                </summary>
-                <div class="submenu-container">
-                    <a href="admin-catalog.html" class="submenu-item nested-item"><i data-lucide="cake" class="w-4 h-4"></i> استعراض أقسام الكتالوج</a>
-                </div>
-            </details>
-
-            <details class="main-menu bose-accordion">
-                <summary>
-                    <div class="flex items-center gap-4"><i data-lucide="monitor-smartphone" class="w-6 h-6"></i> الإعدادات الشاملة</div>
-                    <i data-lucide="chevron-down" class="w-5 h-5 transition-transform"></i>
-                </summary>
-                <div class="submenu-container">
-                    <a href="admin-theme.html" class="submenu-item nested-item"><i data-lucide="layout-template" class="w-5 h-5"></i> محرك الواجهة والفوتر</a>
-                    <a href="admin-logistics.html" class="submenu-item nested-item"><i data-lucide="truck" class="w-5 h-5"></i> التسعير واللوجستيات</a>
-                    <a href="admin-logistics.html" class="submenu-item nested-item"><i data-lucide="package" class="w-5 h-5"></i> إدارة كميات المخزون</a>
-                </div>
-            </details>
-        </nav>
-    </aside>
-
-    <main class="main-content">
-        <header class="bg-[#1a1012] border-b border-brand-border sticky top-0 z-40 px-10 py-6 flex items-center justify-between shadow-xl">
-            <div class="flex items-center gap-6">
-                <button id="btn-open-sidebar" class="lg:hidden text-white hover:text-brand-pink transition-colors">
-                    <i data-lucide="menu" class="w-8 h-8"></i>
-                </button>
-                <h2 class="text-xl font-bold text-white tracking-wide">لوحة المراقبة التشخيصية | BoseMonitor</h2>
-            </div>
-            
-            <div class="flex items-center gap-3 bg-[#0c0709] px-5 py-2.5 rounded-full border border-brand-border text-xs">
-                <span class="relative flex h-3.5 w-3.5">
-                    <span id="connection-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
-                    <span id="connection-dot" class="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500"></span>
-                </span>
-                <span id="connection-text" class="font-bold text-brand-textMuted">جاري فحص الجلسة والاتصال...</span>
-            </div>
-        </header>
-
-        <div class="p-8 md:p-12 max-w-[1500px] mx-auto w-full space-y-8">
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                
-                <div id="card-logistics" class="monitor-card flex flex-col justify-between">
+            <header class="h-20 bg-brand-surface/60 border-b border-brand-border/30 px-6 lg:px-8 flex items-center justify-between sticky top-0 backdrop-blur-md z-30">
+                <div class="flex items-center gap-4">
+                    <button id="btn-open-sidebar" class="lg:hidden w-10 h-10 rounded-xl bg-brand-surface border border-brand-border/60 flex items-center justify-center text-brand-textMuted hover:text-white transition-all">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
                     <div>
-                        <div class="flex justify-between items-start">
-                            <span class="text-sm text-brand-textMuted font-bold">حالة المخزون الكلية</span>
-                            <span id="badge-logistics" class="px-3 py-1 text-xs bg-brand-bg border border-brand-border text-brand-textMuted rounded-full font-bold">فحص</span>
-                        </div>
-                        <div class="mt-5">
-                            <span class="text-4xl font-black text-white" id="stat-stock-total">--</span>
-                            <p class="text-xs text-brand-textMuted mt-2 leading-relaxed">نسبة توافر المنتجات المباشرة في القائمة للمستهلكين.</p>
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-brand-border flex justify-between items-center text-xs">
-                        <span class="text-brand-textMuted">آخر موازنة مخزنية</span>
-                        <span id="logistics-timestamp" class="text-brand-pink font-bold">مزامنة حية</span>
+                        <h1 class="text-lg font-bold text-white tracking-tight">شاشة المراقبة التشخيصية الكلية</h1>
+                        <p class="text-xs text-brand-textMuted font-medium mt-0.5 hidden sm:block">بث واستماع حي لكافة أحداث قاعدة البيانات والعمليات السيادية للموقع</p>
                     </div>
                 </div>
 
-                <div id="card-catalog" class="monitor-card flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-start">
-                            <span class="text-sm text-brand-textMuted font-bold">حالة عرض الكتالوج</span>
-                            <span id="badge-catalog" class="px-3 py-1 text-xs bg-brand-bg border border-brand-border text-brand-textMuted rounded-full font-bold">فحص</span>
-                        </div>
-                        <div class="mt-5">
-                            <span class="text-4xl font-black text-white" id="stat-products-active">--</span>
-                            <p class="text-xs text-brand-textMuted mt-2 leading-relaxed">إجمالي الأصناف المعتمدة والنشطة حالياً في الموقع للجمهور.</p>
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-brand-border flex justify-between items-center text-xs">
-                        <span class="text-brand-textMuted">تحديث المعروضات</span>
-                        <span id="catalog-timestamp" class="text-brand-pink font-bold">مزامنة حية</span>
-                    </div>
-                </div>
-
-                <div id="card-alerts" class="monitor-card flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-start">
-                            <span class="text-sm text-brand-textMuted font-bold">النواقص والتحذيرات</span>
-                            <span id="alert-indicator" class="px-3 py-1 text-xs bg-brand-bg border border-brand-border text-brand-textMuted rounded-full font-bold">تحليل</span>
-                        </div>
-                        <div class="mt-5">
-                            <span class="text-4xl font-black text-white" id="stat-alerts-count">--</span>
-                            <p class="text-xs text-brand-textMuted mt-2 leading-relaxed">الأصناف النافذة أو منخفضة الكمية (أقل من 5 قطع) حالياً.</p>
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-brand-border flex justify-between items-center text-xs">
-                        <span class="text-brand-textMuted">أصناف منخفضة الوفرة</span>
-                        <span id="stat-halts" class="text-amber-400 font-bold">--</span>
-                    </div>
-                </div>
-
-                <div id="card-activity" class="monitor-card flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-start">
-                            <span class="text-sm text-brand-textMuted font-bold">إشارات الاتصال الإداري</span>
-                            <span class="px-3 py-1 text-xs bg-emerald-950/50 border border-emerald-500/30 text-emerald-400 rounded-full font-bold">نشط</span>
-                        </div>
-                        <div class="mt-5">
-                            <span class="text-4xl font-black text-white" id="stat-events-count">0</span>
-                            <p class="text-xs text-brand-textMuted mt-2 leading-relaxed">معدل العمليات والإشارات الواردة والمتبادلة مع الخادم السحابي.</p>
-                        </div>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-brand-border flex justify-between items-center text-xs">
-                        <span class="text-brand-textMuted">مزامنة الشبكة</span>
-                        <span id="network-status" class="text-brand-textMuted font-bold">بث مستمر</span>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="bg-brand-surface rounded-3xl border border-brand-border p-8 space-y-6 shadow-xl">
-                <div class="flex justify-between items-center border-b border-brand-border pb-5">
-                    <h3 class="text-lg font-bold text-white flex items-center gap-3">
-                        <i data-lucide="terminal" class="text-brand-pink w-6 h-6"></i> سجل العمليات المباشر والتحديثات الفورية
-                    </h3>
-                    <span class="text-xs text-brand-textMuted font-bold">يستعرض تلقائياً آخر الأحداث التشغيلية للمنظومة</span>
-                </div>
-                
-                <div id="logs-container" class="space-y-4 max-h-[550px] overflow-y-auto pr-2">
-                    <div id="loading-placeholder" class="py-20 text-center text-brand-textMuted font-bold text-sm flex flex-col items-center gap-4">
-                        <span class="relative flex h-6 w-6">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-pink opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-6 w-6 bg-brand-pink"></span>
+                <div class="flex items-center gap-4">
+                    <div class="bg-brand-bg/90 border border-brand-border/50 px-4 py-2 rounded-xl flex items-center gap-3 shadow-sm select-none">
+                        <span class="flex h-3.5 w-3.5 relative">
+                            <span id="connection-ping" class="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                            <span id="connection-dot" class="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500"></span>
                         </span>
-                        <span>جاري التحقق من الصلاحيات وربط قنوات البث الحي...</span>
+                        <span id="connection-text" class="text-xs font-bold text-brand-textMuted/90 tracking-wide font-mono">جاري تهيئة قنوات الاتصال السحابي...</span>
                     </div>
                 </div>
+            </header>
+
+            <div class="p-6 lg:p-8 space-y-8 flex-1">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+                    
+                    <div class="p-6 bg-brand-surface border border-brand-border/40 rounded-2xl relative overflow-hidden group hover:border-brand-border transition-all">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="space-y-1.5">
+                                <span class="text-xs font-bold text-brand-textMuted/70 block">قنوات البث الحي</span>
+                                <span id="network-status" class="text-xl font-bold text-amber-400 font-mono tracking-tight animate-pulse">جاري الربط</span>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                                <i data-lucide="radio" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-brand-textMuted/60 leading-relaxed font-medium">معدل تحديث فوري متزامن مع Firebase Firestore عبر الويب وموبايل العميل.</p>
+                    </div>
+
+                    <div id="card-events" class="p-6 bg-brand-surface border border-brand-border/40 rounded-2xl relative overflow-hidden group hover:border-brand-border transition-all">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="space-y-1.5">
+                                <span class="text-xs font-bold text-brand-textMuted/70 block">الإشارات التشغيلية المستلمة</span>
+                                <span id="stat-events-count" class="text-2xl font-bold font-mono tracking-tight text-white">0</span>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-brand-pink/10 border border-brand-pink/20 flex items-center justify-center text-brand-pink">
+                                <i data-lucide="git-commit" class="w-5 h-5"></i>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-brand-textMuted/60 leading-relaxed font-medium">مجموع التغييرات، الإضافات، الحذوفات، والتحديثات المكتشفة منذ فتح الجلسة.</p>
+                    </div>
+
+                    <div id="card-catalog" class="p-6 bg-brand-surface border border-brand-border/40 rounded-2xl relative overflow-hidden group hover:border-brand-border transition-all">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="space-y-1.5">
+                                <span class="text-xs font-bold text-brand-textMuted/70 block">حالة كتالوج المنتجات الأصلي</span>
+                                <span id="stat-products-active" class="text-xl font-bold text-white">0 أصناف</span>
+                            </div>
+                            <span id="badge-catalog" class="px-2.5 py-0.5 text-[10px] bg-brand-border/40 border border-brand-border text-brand-textMuted rounded-full font-bold">معلق</span>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] text-brand-textMuted/50 font-medium pt-1 border-t border-brand-border/20">
+                            <span>آخر نبضة تحديث للكتالوج:</span>
+                            <span id="catalog-timestamp" class="font-mono text-brand-textMuted/80 font-bold">- : -</span>
+                        </div>
+                    </div>
+
+                    <div id="card-logistics" class="p-6 bg-brand-surface border border-brand-border/40 rounded-2xl relative overflow-hidden group hover:border-brand-border transition-all">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="space-y-1.5">
+                                <span class="text-xs font-bold text-brand-textMuted/70 block">سلامة ووفرة خطوط المخزون</span>
+                                <span id="stat-stock-total" class="text-xl font-bold text-white">0%</span>
+                            </div>
+                            <span id="badge-logistics" class="px-2.5 py-0.5 text-[10px] bg-brand-border/40 border border-brand-border text-brand-textMuted rounded-full font-bold">معلق</span>
+                        </div>
+                        <div class="flex items-center justify-between text-[11px] text-brand-textMuted/50 font-medium pt-1 border-t border-brand-border/20">
+                            <span>آخر نبضة لمستويات المخزون:</span>
+                            <span id="logistics-timestamp" class="font-mono text-brand-textMuted/80 font-bold">- : -</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+                    
+                    <div class="xl:col-span-2 bg-brand-surface border border-brand-border/40 rounded-2xl flex flex-col shadow-xl">
+                        <div class="p-6 border-b border-brand-border/30 flex justify-between items-center bg-brand-surface/40 rounded-t-2xl">
+                            <div class="flex items-center gap-3">
+                                <div class="w-2.5 h-2.5 rounded-full bg-brand-pink animate-ping"></div>
+                                <h3 class="text-sm font-bold tracking-tight text-white">شريط تدفق السجلات والعمليات الحية</h3>
+                            </div>
+                            <span class="text-[10px] font-mono font-bold bg-brand-bg px-3 py-1.5 rounded-lg border border-brand-border/60 text-brand-textMuted/80">محدث تلقائياً</span>
+                        </div>
+
+                        <div id="logs-container" class="p-6 max-h-[520px] overflow-y-auto space-y-4 custom-scrollbar min-h-[300px]">
+                            
+                            <div id="loading-placeholder" class="py-16 text-center flex flex-col items-center justify-center gap-4">
+                                <div class="w-10 h-10 rounded-xl border-2 border-brand-pink/20 border-t-brand-pink animate-spin"></div>
+                                <p class="text-xs text-brand-textMuted/60 font-semibold tracking-wide">جاري الاستماع وبث نبضات النظام من السحابة المركزية للموقع...</p>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        
+                        <div class="bg-brand-surface border border-brand-border/40 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                            <div class="flex items-center justify-between mb-5 pb-4 border-b border-brand-border/20">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+                                        <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                    </div>
+                                    <h3 class="text-xs font-bold text-white">الإنذار المبكر لنقص المخزون</h3>
+                                </div>
+                                <span id="alert-indicator" class="px-2.5 py-0.5 text-[10px] bg-brand-border/40 border border-brand-border text-brand-textMuted rounded-full font-bold">جاري الفحص</span>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center p-3.5 bg-brand-bg/50 border border-brand-border/30 rounded-xl">
+                                    <div class="space-y-1">
+                                        <span class="text-[11px] font-bold text-brand-textMuted/70 block leading-none">أصناف شارفت على النفاد</span>
+                                        <span class="text-[10px] text-brand-textMuted/40 block font-medium">الكمية المتبقية الحالية أقل من أو تساوي 5 قطع</span>
+                                    </div>
+                                    <span id="stat-halts" class="text-lg font-mono font-bold text-white">-</span>
+                                </div>
+
+                                <div class="flex justify-between items-center p-3.5 bg-brand-bg/50 border border-brand-border/30 rounded-xl">
+                                    <div class="space-y-1">
+                                        <span class="text-[11px] font-bold text-brand-textMuted/70 block leading-none">تنبيهات المزامنة النشطة</span>
+                                        <span class="text-[10px] text-brand-textMuted/40 block font-medium">تنبيهات حية موجهة لإدارة العمليات والإنتاج بالفرافرة</span>
+                                    </div>
+                                    <span id="stat-alerts-count" class="text-sm font-bold text-brand-textMuted/80 font-mono">-</span>
+                                </div>
+                            </div>
+                            
+                            <p class="text-[10px] text-brand-textMuted/40 leading-relaxed font-medium mt-5 border-t border-brand-border/10 pt-3 text-center">يقوم المحرك المركزي بإطلاق وميض أحمر فوري وتنبيه حي بمجرد انخفاض وفرة أي صنف.</p>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-brand-surface to-brand-bg border border-brand-border/30 rounded-2xl p-5 relative overflow-hidden">
+                            <h4 class="text-xs font-bold text-white mb-2 flex items-center gap-2">
+                                <i data-lucide="info" class="w-3.5 h-3.5 text-brand-pink"></i>
+                                <span>دليل تشغيل لوحة الطوارئ الإدارية</span>
+                            </h4>
+                            <p class="text-[11px] text-brand-textMuted/60 leading-relaxed font-medium">
+                                شاشة BoseMonitor لا تتطلب عمداً أي تدخل يدوي للتحديث. بمجرد حدوث تعديل على أصناف الكيك المخصص، السينابون، الدونات، أو أرشفة طلبات التوصيل للعملاء، يتم التقاط الإشارة التشغيلية سحابياً وبثها للوحة الإدارة فوراً وبشكل صامت تماماً لحفظ استقرار المتجر.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
 
-        </div>
-    </main>
+            <footer class="h-14 bg-brand-surface/20 border-t border-brand-border/20 px-6 lg:px-8 flex items-center justify-between text-[11px] text-brand-textMuted/40 font-medium">
+                <span>حقوق المحرك الإداري محفوظة لعلامة حلويات بوسي © 2026</span>
+                <span class="font-mono tracking-wider">BoseSweets Operations Control Hub</span>
+            </footer>
 
-    <div id="notification-toast" class="fixed bottom-6 left-6 bg-brand-surface border-2 border-brand-pink text-white px-5 py-4 rounded-2xl shadow-2xl transition-all duration-300 transform translate-y-32 opacity-0 max-w-sm text-sm z-50 flex items-center gap-4">
-        <div class="bg-brand-pink/10 p-2.5 rounded-xl text-brand-pink shrink-0">
-            <i data-lucide="bell" class="w-5 h-5"></i>
-        </div>
-        <div>
-            <p class="font-bold text-white">إشعار المراقبة</p>
-            <p id="toast-message" class="text-xs text-brand-textMuted mt-1">تم رصد تحديث حي للنظام</p>
+        </main>
+    </div>
+
+    <div id="notification-toast" class="fixed bottom-6 left-6 z-50 transform translate-y-32 opacity-0 transition-all duration-500 cubic-bezier(0.175, 0.885, 0.32, 1.275)">
+        <div class="bg-brand-surface/95 border border-brand-pink/30 shadow-2xl shadow-brand-pink/5 backdrop-blur-md px-5 py-3.5 rounded-xl flex items-center gap-3.5">
+            <div class="w-7 h-7 rounded-lg bg-brand-pink/10 border border-brand-pink/20 flex items-center justify-center text-brand-pink animate-pulse">
+                <i data-lucide="bell" class="w-4 h-4"></i>
+            </div>
+            <p id="toast-message" class="text-xs font-bold text-white tracking-wide">مزامنة حية: رصد إشارة تشغيلية جديدة من السحابة.</p>
         </div>
     </div>
 
@@ -365,6 +332,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
     <script>
+        // إعدادات الاتصال بسحابة علامة حلويات بوسي
         const firebaseConfig = {
             apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
             authDomain: "bosy-sweets.firebaseapp.com",
@@ -374,12 +342,17 @@
             appId: "1:473615735083:web:f09c6001c72640b2588d6e"
         };
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
+        // تهيئة النظام السحابي وتثبيته عالمياً لمنع عوائق التزامن
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            window.db = firebase.firestore();
+            window.auth = firebase.auth();
+        } catch (initError) {
+            console.error("Firebase Init Error inside Monitor:", initError);
         }
         
-        const db = firebase.firestore();
-        const auth = firebase.auth();
         let eventsCounter = 0;
 
         const sidebar = document.getElementById('sidebar');
@@ -435,6 +408,8 @@
         }
 
         function startLiveStreamListeners() {
+            if (!window.db) return;
+            
             const pingDot = document.getElementById('connection-dot');
             const pingAnimation = document.getElementById('connection-ping');
             const pingText = document.getElementById('connection-text');
@@ -451,7 +426,7 @@
             }
 
             // 1. المراقبة التزامنية لبيانات الكتالوج والمخزون الموحد
-            db.collection('catalog').onSnapshot((snapshot) => {
+            window.db.collection('catalog').onSnapshot((snapshot) => {
                 let totalProducts = snapshot.size;
                 let activeProducts = 0;
                 let lowStockItems = 0;
@@ -508,7 +483,7 @@
             });
 
             // 2. البث الحي والمستمر لسجلات النظام والعمليات التشخيصية دون بتر
-            db.collection('system').doc('syncFlag').onSnapshot((docSnap) => {
+            window.db.collection('system').doc('syncFlag').onSnapshot((docSnap) => {
                 if (docSnap.exists) {
                     const flagData = docSnap.data();
                     const container = document.getElementById('logs-container');
