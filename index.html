@@ -44,6 +44,7 @@
             overflow-x: hidden;
         }
         
+        /* تثبيت سقف وزن الخطوط الاحترافي عند 700 لضمان الاتزان البصري المطلق */
         * { font-weight: 600; color: inherit; box-sizing: border-box; }
         .font-bold, h1, h2, h3, h4, .btn-solid { font-weight: 700 !important; }
 
@@ -65,9 +66,10 @@
             scroll-snap-align: start;
         }
 
+        /* الحفاظ الصارم على مساحات التنفس المعماري والراحة البصرية للعميل */
         .bose-breathing-space {
-            margin-top: 5rem;
-            margin-bottom: 5rem;
+            margin-top: 4.5rem;
+            margin-bottom: 4.5rem;
         }
 
         .bose-grid-two-columns {
@@ -97,6 +99,7 @@
             box-shadow: 0 12px 24px rgba(255, 145, 164, 0.1);
         }
 
+        /* تهدئة حركة شلال الصور ليعرض الفخامة بانسيابية بالغة دون تشتيت العميل */
         .bose-waterfall-wrapper {
             display: flex;
             gap: 16px;
@@ -110,8 +113,8 @@
             gap: 16px;
             height: max-content;
         }
-        .bose-waterfall-up { animation: waterfallScrollUp 30s linear infinite; }
-        .bose-waterfall-down { animation: waterfallScrollDown 30s linear infinite; }
+        .bose-waterfall-up { animation: waterfallScrollUp 75s linear infinite !important; }
+        .bose-waterfall-down { animation: waterfallScrollDown 75s linear infinite !important; }
         
         .bose-waterfall-item {
             width: 165px;
@@ -344,22 +347,16 @@
             <section id="section-waterfall" class="pb-16 px-4 overflow-hidden">
                 <div class="container mx-auto max-w-5xl">
                     <div class="bose-waterfall-wrapper">
-                        <div class="bose-waterfall-column bose-waterfall-up" id="waterfall-col-1">
-                            <div class="bose-waterfall-item bose-skeleton"></div>
-                            <div class="bose-waterfall-item bose-skeleton"></div>
-                        </div>
-                        <div class="bose-waterfall-column bose-waterfall-down" id="waterfall-col-2">
-                            <div class="bose-waterfall-item bose-skeleton"></div>
-                            <div class="bose-waterfall-item bose-skeleton"></div>
-                        </div>
+                        <div class="bose-waterfall-column bose-waterfall-up" id="waterfall-col-1"></div>
+                        <div class="bose-waterfall-column bose-waterfall-down" id="waterfall-col-2"></div>
                     </div>
                 </div>
             </section>
 
             <section id="section-horizontal-slider" class="py-16 bg-brand-pinkLight/30 border-y border-brand-pink/5">
                 <div class="container mx-auto max-w-4xl text-center">
-                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2">عقد من الإتقان</h2>
-                    <p class="text-brand-brown/70 text-sm mb-8">عشر سنوات نكرس فيها جهودنا لصنع قطع فنية غنية بالجودة والمذاق الأصيل</p>
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2 text-center">عقد من الإتقان</h2>
+                    <p class="text-brand-brown/70 text-sm mb-8 text-center">عشر سنوات نكرس فيها جهودنا لصنع قطع فنية غنية بالجودة والمذاق الأصيل</p>
                     <div id="main-slider" class="bose-full-slider-container bose-skeleton"></div>
                     <div id="slider-dots-container" class="flex justify-center gap-2 mt-4"></div>
                 </div>
@@ -367,9 +364,13 @@
 
             <section id="section-products" class="py-24 px-4 bg-white">
                 <div class="container mx-auto max-w-6xl text-center">
-                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2">منتجاتنا</h2>
-                    <p class="text-brand-brown/70 text-sm mb-12">اكتشف سحر حلوياتنا مع هذه المنتجات المميزة المصنوعة بإتقان</p>
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2 text-center">منتجاتنا</h2>
+                    <p class="text-brand-brown/70 text-sm mb-12 text-center">اكتشف سحر حلوياتنا مع هذه المنتجات المميزة المصنوعة بإتقان</p>
                     <div id="menuGrid" class="bose-grid-two-columns" data-section-title="Menu"></div>
+                    
+                    <div class="text-center mt-8">
+                        <button id="bose-view-more-btn" onclick="window.boseExpandMenuGrid()" class="btn-solid hidden">تصفح المزيد</button>
+                    </div>
                 </div>
             </section>
 
@@ -387,7 +388,7 @@
                             <p class="text-sm opacity-90 mb-6 leading-relaxed text-white">
                                 يسعدنا تزيين لحظاتكم الجميلة. نوفر أرقى تشكيلات الورد الطبيعي المنسق بعناية لتناسب كافّة المناسبات السعيدة.
                             </p>
-                            <a href="product.html?category=ورد" class="bg-white text-brand-pink px-6 py-3 rounded-full font-bold text-sm inline-flex items-center gap-2 hover:bg-brand-pinkLight transition-all text-decoration-none">
+                            <a href="product.html?category=%D9%88%D8%B1%D8%AF" class="bg-white text-brand-pink px-6 py-3 rounded-full font-bold text-sm inline-flex items-center gap-2 hover:bg-brand-pinkLight transition-all text-decoration-none">
                                 استعراض باقات الورد <i data-lucide="arrow-left" class="w-4 h-4 text-brand-pink"></i>
                             </a>
                         </div>
@@ -411,22 +412,20 @@
 
             <section id="section-bestsellers" class="py-24 px-4 bg-white">
                 <div class="container mx-auto max-w-6xl text-center">
-                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2">الأكثر مبيعاً</h2>
-                    <p class="text-brand-brown/70 text-sm mb-12">اكتشف أشهر وأشهى حلوياتنا التي يحبها عملاؤنا دائماً</p>
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2 text-center">الأكثر مبيعاً</h2>
+                    <p class="text-brand-brown/70 text-sm mb-12 text-center">اكتشف أشهر وأشهى حلوياتنا التي يحبها عملاؤنا دائماً</p>
                     <div class="relative">
                         <div id="best-sellers-slider-container" class="bose-horizontal-slider gap-4 pb-6 px-2 snap-x snap-mandatory" data-section-title="Best Sellers"></div>
+                        <div id="bestsellers-dots-container" class="flex justify-center gap-2 mt-4"></div>
                     </div>
-                    <div class="text-center mt-6"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
                 </div>
             </section>
 
             <section id="section-categories" class="py-24 px-4 bg-brand-pinkLight/40 border-t border-brand-pink/5">
                 <div class="container mx-auto max-w-6xl text-center">
-                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2">تسوق حسب الفئة</h2>
-                    <p class="text-brand-brown/70 text-sm mb-12">اكتشف مصدر السعادة في كل قطعة تتذوقها، ماذا تنتظر؟</p>
-                    <div class="relative">
-                        <div id="dynamic-categories-container" class="bose-horizontal-slider gap-6 pb-6 px-2 snap-x snap-mandatory" data-section-title="Categories"></div>
-                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2 text-center">تسوق حسب الفئة</h2>
+                    <p class="text-brand-brown/70 text-sm mb-12 text-center">اكتشف مصدر السعادة في كل قطعة تتذوقها، ماذا تنتظر؟</p>
+                    <div id="dynamic-categories-container" class="bose-grid-two-columns"></div>
                 </div>
             </section>
 
@@ -435,8 +434,8 @@
                     <div class="inline-flex items-center justify-center w-16 h-16 bg-brand-pinkLight text-brand-pink rounded-full mb-6">
                         <i data-lucide="award" class="w-8 h-8 text-brand-pink"></i>
                     </div>
-                    <h2 class="text-2xl md:text-4xl font-bold text-brand-brown mb-4">عقد كامل من الثقة المتبادلة</h2>
-                    <p class="text-base md:text-lg font-bold text-brand-brown/90 max-w-3xl mx-auto leading-relaxed mb-12">
+                    <h2 class="text-2xl md:text-4xl font-bold text-brand-brown mb-4 text-center">عقد كامل من الثقة المتبادلة</h2>
+                    <p class="text-base md:text-lg font-bold text-brand-brown/90 max-w-3xl mx-auto leading-relaxed mb-12 text-center">
                         على مدار عشر سنوات، حظينا بشرف مشاركتكم مناسباتكم السعيدة كخيار أول. نفخر دائماً بالتزامنا بتقديم الجودة المطلقة لعملائنا بمركز الفرافرة.
                     </p>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
@@ -450,12 +449,11 @@
 
             <section id="section-arrivals" class="py-24 px-4 bg-white border-t border-brand-pink/5">
                 <div class="container mx-auto max-w-6xl text-center">
-                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2">وصل حديثاً</h2>
-                    <p class="text-brand-brown/70 text-sm mb-12">أحدث الإضافات الفاخرة المحضرة يومياً من أفراننا إليكم مباشرة</p>
+                    <h2 class="text-2xl md:text-3xl font-bold text-brand-brown mb-2 text-center">وصل حديثاً</h2>
+                    <p class="text-brand-brown/70 text-sm mb-12 text-center">أحدث الإضافات الفاخرة المحضرة يومياً من أفراننا إليكم مباشرة</p>
                     <div class="relative">
                         <div id="arrival-section-container" class="bose-horizontal-slider gap-4 pb-6 px-2 snap-x snap-mandatory" data-section-title="New Arrivals"></div>
                     </div>
-                    <div class="text-center mt-6"><a href="menu.html" class="btn-outline">عرض الكل</a></div>
                 </div>
             </section>
         </div>
@@ -495,63 +493,33 @@
             </div>
             <div class="flex flex-col items-center justify-center gap-4">
                 <div class="flex gap-4 justify-center" id="footer-dynamic-socials">
-                    <a id="link-fb" href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/10 shadow-sm">
-                        <i class="fa-brands fa-facebook-f text-base"></i>
-                    </a>
-                    <a id="link-ig" href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/10 shadow-sm">
-                        <i class="fa-brands fa-instagram text-base"></i>
-                    </a>
-                    <a id="link-tt" href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors text-decoration-none border border-brand-pink/10 shadow-sm">
-                        <i class="fa-brands fa-tiktok text-base"></i>
-                    </a>
+                    <a id="link-fb" href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/10 shadow-sm"><i class="fa-brands fa-facebook-f text-base"></i></a>
+                    <a id="link-ig" href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/10 shadow-sm"><i class="fa-brands fa-instagram text-base"></i></a>
+                    <a id="link-tt" href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/10 shadow-sm"><i class="fa-brands fa-tiktok text-base"></i></a>
                 </div>
-                <p class="text-brand-brown/70 text-xs text-center">
-                    &copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية.
-                </p>
+                <p class="text-brand-brown/70 text-xs text-center">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية.</p>
             </div>
         </div>
     </footer>
-
-    <template id="bose-category-card-template">
-        <div class="snap-start flex-shrink-0 w-[80%] md:w-[320px]">
-            <a href="product.html?category={CAT_NAME}" class="bose-double-wrap group animate-fade h-full text-decoration-none block">
-                <div class="bose-double-inner bg-white h-full flex flex-col">
-                    <div class="aspect-square w-full overflow-hidden bg-brand-pinkLight relative">
-                        <img src="{CAT_IMAGE}" alt="{CAT_NAME}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
-                    </div>
-                    <div class="p-6 flex items-center justify-center bg-white border-t border-brand-pink/5">
-                        <h3 class="font-bold text-xl text-brand-brown group-hover:text-brand-pink transition-colors">{CAT_NAME}</h3>
-                    </div>
-                </div>
-            </a>
-        </div>
-    </template>
 
     <script type="module">
         import { initializeApp } from "firebase/app";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
         import { getFirestore, collection, doc, onSnapshot } from "firebase/firestore";
-        import { distributeProductsToUI } from "./ui-engine.js";
+        import { distributeProductsToUI, renderProductCardsUI } from "./ui-engine.js";
 
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         window.BoseState = window.BoseState || { catalog: [], cart: [], theme: {}, catalogLoaded: false };
 
-        const showSkeletons = () => {
-            const menuGrid = document.getElementById('menuGrid');
-            if (menuGrid) {
-                menuGrid.innerHTML = Array(4).fill(`
-                    <div class="col-span-1 p-1">
-                        <div class="bose-luxury-card h-full flex flex-col bg-white text-center">
-                            <div class="w-full rounded-xl aspect-square mb-3 bose-skeleton"></div>
-                            <div class="h-4 bg-brand-pinkLight rounded w-3/4 mx-auto mb-2 bose-skeleton"></div>
-                            <div class="h-3 bg-brand-pinkLight rounded w-1/2 mx-auto mb-4 bose-skeleton"></div>
-                        </div>
-                    </div>
-                `).join('');
+        // تفعيل زر تصفح المزيد وقصر المصفوفة على 8 منتجات كحد أقصى في الواجهة الرئيسية
+        window.boseFullMenuProducts = [];
+        window.boseExpandMenuGrid = function() {
+            if (window.boseFullMenuProducts.length > 4) {
+                renderProductCardsUI(window.boseFullMenuProducts, 'menuGrid');
+                const btn = document.getElementById('bose-view-more-btn');
+                if (btn) btn.classList.add('hidden');
             }
         };
-
-        showSkeletons();
 
         window.initializeBoseWaterfall = function(products) {
             const col1 = document.getElementById('waterfall-col-1');
@@ -574,15 +542,46 @@
             col2.innerHTML = htmlContent;
         };
 
-        function triggerSovereignDistribution() {
-            if (window.BoseState && window.BoseState.catalog && window.BoseState.catalog.length > 0) {
-                distributeProductsToUI(window.BoseState.catalog);
-            }
-        }
+        // تصفح الفئات بروابط ذكية مخصصة تقود لصفحة المنتج الداخلية التفصيلية طبقاً للأقسام الفاخرة
+        window.initializeBoseCategories = function() {
+            const container = document.getElementById('dynamic-categories-container');
+            if (!container) return;
 
-        window.addEventListener('BoseSweets_Engine_Ready', () => {
-            triggerSovereignDistribution();
-        });
+            const staticCategories = [
+                { name: "التورت", slug: "تورت", img: BOSE_LOGO_FALLBACK },
+                { name: "الجاتوهات", slug: "جاتوه", img: BOSE_LOGO_FALLBACK },
+                { name: "القشطوطه", slug: "قشطوطه", img: BOSE_LOGO_FALLBACK },
+                { name: "الديسباسيتو", slug: "ديسباسيتو", img: BOSE_LOGO_FALLBACK },
+                { name: "الكب كيك", slug: "كب كيك", img: BOSE_LOGO_FALLBACK },
+                { name: "الريدڤيلڤت", slug: "ريدفيلفت", img: BOSE_LOGO_FALLBACK },
+                { name: "الدوناتس", slug: "دوناتس", img: BOSE_LOGO_FALLBACK },
+                { name: "بوكس الروقان", slug: "روقان", img: BOSE_LOGO_FALLBACK },
+                { name: "السينابون", slug: "سينابون", img: BOSE_LOGO_FALLBACK },
+                { name: "الميني تورت", slug: "تورت", img: BOSE_LOGO_FALLBACK },
+                { name: "كبات السعادة", slug: "كبات السعاده", img: BOSE_LOGO_FALLBACK },
+                { name: "الورد", slug: "ورد", img: BOSE_LOGO_FALLBACK }
+            ];
+
+            const catalog = window.BoseState?.catalog || [];
+            
+            container.innerHTML = staticCategories.map(cat => {
+                const foundItem = catalog.find(p => p.category && p.category.toLowerCase().includes(cat.slug) && (p.img || p.image));
+                const finalImg = foundItem ? (foundItem.img || foundItem.image) : cat.img;
+                
+                return `
+                    <div class="col-span-1 p-1">
+                        <a href="product.html?category=${encodeURIComponent(cat.slug)}" class="bose-double-wrap group animate-fade h-full text-decoration-none block">
+                            <div class="bose-double-inner bg-white h-full flex flex-col p-2 border rounded-xl text-center">
+                                <div class="aspect-square w-full overflow-hidden bg-brand-pinkLight relative rounded-xl mb-2">
+                                    <img src="${finalImg}" alt="${cat.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'">
+                                </div>
+                                <h3 class="font-bold text-sm text-brand-brown group-hover:text-brand-pink transition-colors py-1">${cat.name}</h3>
+                            </div>
+                        </a>
+                    </div>
+                `;
+            }).join('');
+        };
 
         if (typeof __firebase_config !== 'undefined' && __firebase_config) {
             try {
@@ -592,8 +591,7 @@
                 const db = getFirestore(app);
 
                 window.db = db;
-
-                signInAnonymously(auth).catch(err => console.error("فشل التوثيق السحابي الآمن للعميل:", err));
+                signInAnonymously(auth).catch(() => {});
 
                 onAuthStateChanged(auth, (user) => {
                     if (!user) return;
@@ -604,113 +602,34 @@
                         snapshot.forEach(doc => {
                             srvProducts.push({ id: doc.id, ...doc.data() });
                         });
-                        
                         window.BoseState.catalog = srvProducts;
                         window.BoseState.catalogLoaded = true;
-
-                        // استدعاء فوري ولحظي بمجرد استقبال الكتالوج السحابي لضمان ملء الأقسام ومنع اختفائها
                         distributeProductsToUI(srvProducts);
-                        
-                    }, (error) => {
-                        console.error("فشل مزامنة الكتالوج:", error);
-                        distributeProductsToUI([]);
-                    });
-
-                    const themePath = doc(db, 'artifacts', appId, 'public', 'data', 'theme', 'config');
-                    onSnapshot(themePath, (docSnap) => {
-                        if (docSnap.exists()) {
-                            window.BoseState.theme = docSnap.data();
-                        }
                     });
                 });
-
             } catch (err) {
-                console.error("عطل في إعدادات فايربيز:", err);
                 distributeProductsToUI([]);
             }
-        } else {
-            setTimeout(() => {
-                if (window.BoseState && window.BoseState.catalog && window.BoseState.catalog.length > 0) {
-                    distributeProductsToUI(window.BoseState.catalog);
-                }
-            }, 600);
         }
-
-        window.cartSystem = {
-            add: function(productId, quantity) {
-                if (!window.BoseState.cart) window.BoseState.cart = [];
-                const localItem = window.BoseState.cart.find(item => item.id === productId);
-                if (localItem) {
-                    localItem.quantity = (localItem.quantity || 1) + quantity;
-                } else {
-                    window.BoseState.cart.push({ id: productId, quantity: quantity });
-                }
-                if (typeof window.syncBoseCartUI === 'function') window.syncBoseCartUI();
-            }
-        };
     </script>
 
     <script>
         lucide.createIcons();
-
         window.openBoseSearchModal = function() {
             const modal = document.getElementById('bose-search-modal');
             const card = document.getElementById('bose-search-card');
-            const input = document.getElementById('bose-search-input');
             if (!modal || !card) return;
             modal.classList.remove('opacity-0', 'pointer-events-none');
             card.classList.remove('scale-95');
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => input.focus(), 100);
         };
-
         window.closeBoseSearchModal = function() {
             const modal = document.getElementById('bose-search-modal');
             const card = document.getElementById('bose-search-card');
             if (!modal || !card) return;
             modal.classList.add('opacity-0', 'pointer-events-none');
             card.classList.add('scale-95');
-            document.body.style.overflow = '';
         };
-
-        document.getElementById('bose-search-input')?.addEventListener('input', function(e) {
-            const query = e.target.value.trim().toLowerCase();
-            const resultsContainer = document.getElementById('bose-search-results');
-            if (!resultsContainer) return;
-
-            if (!query) {
-                resultsContainer.innerHTML = `<p class="text-center text-brand-brown/50 text-sm py-8 font-bold">ابدأ بالكتابة لاستكشاف أشهى إبداعاتنا...</p>`;
-                return;
-            }
-
-            const catalog = window.BoseState?.catalog || [];
-            const filtered = catalog.filter(p => 
-                (p.name && p.name.toLowerCase().includes(query)) || 
-                (p.category && p.category.toLowerCase().includes(query))
-            );
-
-            if (filtered.length === 0) {
-                resultsContainer.innerHTML = `<p class="text-center text-brand-brown/60 text-sm py-8 font-bold">لم نجد نتائج مطابقة...</p>`;
-                return;
-            }
-
-            resultsContainer.innerHTML = `
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    ${filtered.map(p => `
-                        <div class="flex items-center gap-4 p-3 rounded-2xl border border-brand-pink/10 bg-brand-pinkLight/20">
-                            <img src="${p.img || p.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg'}" class="w-16 h-16 rounded-xl object-cover shrink-0">
-                            <div class="flex-grow min-w-0">
-                                <h4 class="font-bold text-sm text-brand-brown truncate">${p.name}</h4>
-                                <span class="text-xs font-bold text-brand-brown/80">${p.price} ج.م</span>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        });
     </script>
-
-    <script type="module" src="core-engine.js"></script>
     <script type="module" src="ui-engine.js"></script>
 </body>
 </html>
