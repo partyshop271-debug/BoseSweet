@@ -358,15 +358,18 @@
         </div>
     </main>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+    <script>
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc", authDomain: "bosy-sweets.firebaseapp.com", projectId: "bosy-sweets" };
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const auth = firebase.auth();
+        const db = firebase.firestore();
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
         window.BoseState = window.BoseState || { catalog: [] };
@@ -376,22 +379,23 @@
 
         const initAuth = async () => {
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                try {
-                    const userCredential = await signInWithCustomToken(auth, __initial_auth_token);
+                auth.signInWithCustomToken(__initial_auth_token).then((userCredential) => {
                     currentUser = userCredential.user;
-                } catch (e) {
-                    const userCredential = await signInAnonymously(auth);
-                    currentUser = userCredential.user;
-                }
+                }).catch(() => {
+                    auth.signInAnonymously().then((userCredential) => {
+                        currentUser = userCredential.user;
+                    });
+                });
             } else {
-                const userCredential = await signInAnonymously(auth);
-                currentUser = userCredential.user;
+                auth.signInAnonymously().then((userCredential) => {
+                    currentUser = userCredential.user;
+                });
             }
         };
 
         initAuth();
 
-        onAuthStateChanged(auth, (user) => {
+        auth.onAuthStateChanged((user) => {
             currentUser = user;
             if (user) {
                 loadLogisticsData();
@@ -508,36 +512,17 @@
                 product.inStock = qty;
             }
 
-            const event = new CustomEvent('BoseSweets_Logistics_Updated', {
-                detail: { productId, inStock: qty }
-            });
-            window.dispatchEvent(event);
-
             try {
-                try {
-                    await setDoc(doc(db, 'catalog', productId), {
-                        inStock: qty,
-                        updatedAt: Date.now()
-                    }, { merge: true });
-                } catch(err) {
-                    console.error("Direct update on catalog collection failed:", err);
-                }
+                await db.collection('catalog').doc(productId).set({
+                    inStock: qty,
+                    updatedAt: Date.now()
+                }, { merge: true });
 
-                try {
-                    await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', productId), {
-                        inStock: qty,
-                        updatedAt: Date.now()
-                    }, { merge: true });
-                } catch(err) {}
-
-                try {
-                    await setDoc(doc(db, 'products', productId), {
-                        inStock: qty,
-                        updatedAt: Date.now()
-                    }, { merge: true });
-                } catch(err) {}
-
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                await db.collection('system').doc('syncFlag').set({ 
+                    forceRefresh: true, 
+                    lastAdminUpdate: Date.now(),
+                    updateSource: 'admin_logistics_inventory'
+                }, { merge: true });
 
                 const badge = document.getElementById(`stock-badge-${productId}`);
                 if (badge) {
@@ -570,24 +555,7 @@
 
             try {
                 let productsList = [];
-                let querySnapshot;
-
-                try {
-                    querySnapshot = await getDocs(collection(db, 'catalog'));
-                } catch(e) {
-                    console.warn("Failed to fetch from unified catalog collection, using fallbacks:", e);
-                    try {
-                        querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'products'));
-                    } catch(err) {
-                        querySnapshot = await getDocs(collection(db, 'products'));
-                    }
-                }
-
-                if (!querySnapshot || querySnapshot.empty) {
-                    try {
-                        querySnapshot = await getDocs(collection(db, 'products'));
-                    } catch(e) {}
-                }
+                const querySnapshot = await db.collection('catalog').get();
 
                 if (querySnapshot && !querySnapshot.empty) {
                     querySnapshot.forEach((doc) => {
@@ -642,10 +610,9 @@
         }
 
         async function loadLogisticsData() {
-            if (!currentUser) return;
             try {
-                const storeSnap = await getDoc(doc(db, 'settings', 'logistics'));
-                if (storeSnap.exists()) {
+                const storeSnap = await db.collection('settings').doc('logistics').get();
+                if (storeSnap.exists) {
                     const storeData = storeSnap.data();
                     const storeOpenCheck = document.getElementById('store-is-open');
                     storeOpenCheck.checked = storeData.isOpen !== false;
@@ -660,8 +627,9 @@
                     document.getElementById('stat-store-status').style.color = storeData.isOpen !== false ? "#ffffff" : "#ef4444";
                 }
 
-                const priceSnap = await getDoc(doc(db, 'settings', 'pricingRules'));
-                if (priceSnap.exists()) {
+                // جلب تسعيرة محرك التنسيق والطبقات الفاخرة لربطها بالكتالوج تزامناً
+                const priceSnap = await db.collection('settings').doc('pricingRules').get();
+                if (priceSnap.exists) {
                     const priceData = priceSnap.data();
                     document.getElementById('price-per-person').value = priceData.pricePerPerson || 145;
                     document.getElementById('price-edible').value = priceData.printEdible || 60;
@@ -678,22 +646,7 @@
                     document.getElementById('adm-layer-cash-url').value = priceData.layerCashUrl || '';
                 }
 
-                let catalogSnapshot;
-                try {
-                    catalogSnapshot = await getDocs(collection(db, 'catalog'));
-                } catch(e) {
-                    try {
-                        catalogSnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'products'));
-                    } catch(err) {
-                        catalogSnapshot = await getDocs(collection(db, 'products'));
-                    }
-                }
-                if (!catalogSnapshot || catalogSnapshot.empty) {
-                    try {
-                        catalogSnapshot = await getDocs(collection(db, 'products'));
-                    } catch(e) {}
-                }
-
+                const catalogSnapshot = await db.collection('catalog').get();
                 if (catalogSnapshot && !catalogSnapshot.empty) {
                     window.BoseState.catalog = [];
                     catalogSnapshot.forEach((doc) => {
@@ -701,7 +654,7 @@
                     });
                 }
 
-                const querySnapshot = await getDocs(collection(db, 'shipping'));
+                const querySnapshot = await db.collection('shipping').get();
                 const list = document.getElementById('zones-list');
                 let html = '';
                 let count = 0;
@@ -736,16 +689,19 @@
         }
         
         window.saveStoreSettings = async function() {
-            if (!currentUser) return;
             try {
-                await setDoc(doc(db, 'settings', 'logistics'), {
+                await db.collection('settings').doc('logistics').set({
                     isOpen: document.getElementById('store-is-open').checked,
                     allowPickup: document.getElementById('store-allow-pickup').checked,
                     minOrder: parseFloat(document.getElementById('store-min-order').value) || 0,
                     updatedAt: Date.now()
                 }, { merge: true });
                 
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                await db.collection('system').doc('syncFlag').set({ 
+                    forceRefresh: true, 
+                    lastAdminUpdate: Date.now(),
+                    updateSource: 'admin_logistics_inventory'
+                }, { merge: true });
                 
                 document.getElementById('stat-store-status').innerText = document.getElementById('store-is-open').checked ? "مفتوح" : "مغلق";
                 document.getElementById('stat-store-status').style.color = document.getElementById('store-is-open').checked ? "#ffffff" : "#ef4444";
@@ -756,7 +712,6 @@
         };
 
         window.saveAllPricingRules = async function() {
-            if (!currentUser) return;
             try {
                 const unifiedPricingObj = {
                     pricePerPerson: parseFloat(document.getElementById('price-per-person').value) || 145,
@@ -778,8 +733,14 @@
                     updatedAt: Date.now()
                 };
 
-                await setDoc(doc(db, 'settings', 'pricingRules'), unifiedPricingObj, { merge: true });
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                await db.collection('settings').doc('pricingRules').set(unifiedPricingObj, { merge: true });
+                
+                // مزامنة قواعد التسعير لربطها بمستمع التنسيق الفاخر وإرسال وميض لـ BoseMonitor
+                await db.collection('system').doc('syncFlag').set({ 
+                    forceRefresh: true, 
+                    lastAdminUpdate: Date.now(),
+                    updateSource: 'admin_simulator_save'
+                }, { merge: true });
                 
                 showToast("تم اعتماد مركز التسعير الشامل (الورد والتورت) وتحديثه للموقع.");
                 loadLogisticsData();
@@ -809,7 +770,6 @@
         };
 
         window.saveZone = async function() {
-            if (!currentUser) return;
             const id = document.getElementById('zone-id').value.trim();
             const name = document.getElementById('zone-name').value.trim();
             const fee = parseFloat(document.getElementById('zone-fee').value) || 0;
@@ -820,14 +780,18 @@
             }
 
             try {
-                const zoneDocRef = id ? doc(db, 'shipping', id) : doc(collection(db, 'shipping'));
-                await setDoc(zoneDocRef, {
+                const zoneDocRef = id ? db.collection('shipping').doc(id) : db.collection('shipping').doc();
+                await zoneDocRef.set({
                     name,
                     fee,
                     updatedAt: Date.now()
                 }, { merge: true });
 
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                await db.collection('system').doc('syncFlag').set({ 
+                    forceRefresh: true, 
+                    lastAdminUpdate: Date.now(),
+                    updateSource: 'admin_logistics_inventory'
+                }, { merge: true });
                 
                 showToast(id ? "تم تعديل تسعيرة المنطقة بنجاح" : "تمت إضافة المنطقة الجديدة للنظام");
                 clearZoneForm();
@@ -841,8 +805,12 @@
         window.deleteZone = function(id, name) {
             showConfirm(`هل أنت متأكد من إلغاء التوصيل وحذف منطقة "${name}" نهائياً من النظام اللوجستي؟`, async () => {
                 try {
-                    await deleteDoc(doc(db, 'shipping', id));
-                    await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                    await db.collection('shipping').doc(id).delete();
+                    await db.collection('system').doc('syncFlag').set({ 
+                        forceRefresh: true, 
+                        lastAdminUpdate: Date.now(),
+                        updateSource: 'admin_logistics_inventory'
+                    }, { merge: true });
                     showToast("تم حذف منطقة الشحن بنجاح من قاعدة البيانات.");
                     loadLogisticsData();
                 } catch(e) {

@@ -35,6 +35,7 @@
     padding: 0;
     outline: none;
     -webkit-font-smoothing: antialiased;
+    font-weight: 600; /* الوزن الافتراضي للعناصر العادية لضمان التناسق التام والمريح للعين */
 }
 
 body {
@@ -98,7 +99,7 @@ details.main-menu > summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-weight: 700 !important; /* فرض الحد الأقصى الصارم لمنع التضخيم البصري */
+    font-weight: 700 !important; /* فرض الحد الأقصى الصارم لمنع التضخيم البصري والتشويه */
     color: var(--bose-text-main);
     font-size: var(--font-md);
     transition: all 0.3s ease;
@@ -146,7 +147,7 @@ details.main-menu[open] > summary {
     background-color: var(--bose-pink-muted);
     color: var(--bose-text-main);
     transform: translateX(-4px);
-    font-weight: 700 !important; /* الالتزام الصارم بوزن الخط المحدود التفاعلي */
+    font-weight: 700 !important; /* الالتزام الصارم بوزن الخط المحدود التفاعلي لضمان الرقي الفني */
 }
 
 /* =========================================
@@ -188,10 +189,10 @@ details.main-menu[open] > summary {
     border-radius: 20px;
     padding: 32px;
     margin-bottom: 30px;
-    /* صياغة نظام الإطار المزدوج الاحترافي والعمق اللوني للمتجر المعزول */
+    /* صياغة نظام الإطار المزدوج الاحترافي والعمق اللوني للمتجر المعزول للعلامة التجارية */
     box-shadow: 0 0 0 2px var(--bose-bg), 0 0 0 4px var(--bose-pink), 0 10px 30px rgba(0, 0, 0, 0.4);
     border: 2px solid var(--bose-pink);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
     width: 100%;
 }
 
@@ -202,7 +203,7 @@ details.main-menu[open] > summary {
 .form-label {
     display: block;
     color: var(--bose-text-muted);
-    font-weight: 700 !important; /* تثبيت مطلق لعدم تجاوز القيمة المسموحة */
+    font-weight: 700 !important; /* تثبيت مطلق لعدم تجاوز القيمة المسموحة هندسياً لحماية الواجهة */
     margin-bottom: 10px;
     font-size: var(--font-base);
 }
@@ -276,7 +277,7 @@ details.main-menu[open] > summary {
 }
 
 /* =========================================
-   محرك المؤثرات البصرية وتأثير الوميض الناعم
+   محرك المؤثرات البصرية وتأثير الوميض الناعم للانفصال والمزامنة الحية
 ========================================= */
 .update-flash {
     position: relative;
@@ -314,7 +315,7 @@ details.main-menu[open] > summary {
     border: none;
     border-radius: 12px;
     padding: 14px 28px;
-    font-weight: 700 !important; /* الحظر والالتزام الصارم بحد الـ 700 لمنع التضخيم */
+    font-weight: 700 !important; /* الحظر والالتزام الصارم بحد الـ 700 لمنع التضخيم أو المساس بالهيكل المعتمد */
     font-size: var(--font-md);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -339,15 +340,12 @@ details.main-menu[open] > summary {
     box-shadow: none !important;
 }
 
-/* فرض قيود صارمة مانعة لتجاوز أوزان الخطوط */
+/* فرض قيود سيادية صارمة مانعة نهائياً لتجاوز أوزان الخطوط الحاكمة بالموقع */
 h1, h2, h3, h4, h5, h6, font, span, label, p, button, input, select, textarea {
     font-weight: 700 !important;
 }
 h1:not([class]), h2:not([class]), h3:not([class]), h4:not([class]) {
     font-weight: 700 !important;
-}
-* {
-    font-weight: 600; /* الوزن الافتراضي للعناصر العادية لضمان التناسق التام */
 }
 
 /* =========================================
@@ -389,6 +387,6 @@ h1:not([class]), h2:not([class]), h3:not([class]), h4:not([class]) {
         margin-bottom: 20px; 
     }
     .catalog-grid {
-        grid-template-columns: 1fr; /* عمود واحد منسق ومريح على شاشات الهواتف الصغيرة */
+        grid-template-columns: 1fr; /* عمود واحد منسق ومريح تماماً على شاشات الهواتف المحمولة */
     }
 }

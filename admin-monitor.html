@@ -433,13 +433,13 @@
 
             const currentTime = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             
-            if (updateSource === 'catalog') {
+            if (updateSource === 'catalog' || updateSource === 'admin_catalog_save' || updateSource === 'admin_catalog_delete') {
                 const card = document.getElementById('card-catalog');
                 const timestamp = document.getElementById('catalog-timestamp');
                 if (card) { card.classList.add('update-flash'); setTimeout(() => card.classList.remove('update-flash'), 800); }
                 if (timestamp) timestamp.textContent = currentTime;
             } 
-            else if (updateSource === 'logistics') {
+            else if (updateSource === 'logistics' || updateSource === 'admin_logistics_inventory' || updateSource === 'admin_simulator_save') {
                 const card = document.getElementById('card-logistics');
                 const timestamp = document.getElementById('logistics-timestamp');
                 if (card) { card.classList.add('update-flash'); setTimeout(() => card.classList.remove('update-flash'), 800); }
@@ -549,32 +549,34 @@
                     let borderClass = "border-brand-pink";
                     let bgBadgeClass = "bg-brand-pink/10 text-brand-pink border border-brand-pink/30";
 
-                    if (flagData.updateSource === 'admin_catalog_save') {
+                    const currentSource = flagData.updateSource;
+
+                    if (currentSource === 'admin_catalog_save') {
                         logMessage = "تحديث هندسي ناجح: تم حفظ وتحديث خصائص منتج داخل الكتالوج ومزامنته سحابياً فورياً.";
                         logType = "success";
                         borderClass = "border-emerald-500";
                         bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
-                    } else if (flagData.updateSource === 'admin_catalog_delete') {
+                    } else if (currentSource === 'admin_catalog_delete') {
                         logMessage = "قرار سيادي قاطع: تم حذف وإزالة صنف من الكتالوج المركزي وتحديث فروع تخزين الواجهة للجمهور.";
                         logType = "warning";
                         borderClass = "border-amber-500";
                         bgBadgeClass = "bg-amber-950 text-amber-400 border border-amber-500/30";
-                    } else if (flagData.updateSource === 'admin_order_delete') {
+                    } else if (currentSource === 'admin_order_delete') {
                         logMessage = "أرشفة سجلات الأوردرات: تم مسح وأرشفة طلب عميل نهائياً من قائمة متابعة الطلبات الحية والإنتاج.";
                         logType = "warning";
                         borderClass = "border-amber-500";
                         bgBadgeClass = "bg-amber-950 text-amber-400 border border-amber-500/30";
-                    } else if (flagData.updateSource === 'admin_simulator_save') {
+                    } else if (currentSource === 'admin_simulator_save') {
                         logMessage = "تحديث أسعار الخامات والطبقات: تم تعديل معلمات تسعير محاكي الورد والشوكولاتة الفاخرة وتحديث مدخلات العميل الكلية.";
                         logType = "success";
                         borderClass = "border-emerald-500";
                         bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
-                    } else if (flagData.updateSource === 'admin_logistics_inventory') {
+                    } else if (currentSource === 'admin_logistics_inventory') {
                         logMessage = "تعديل مستويات الوفرة: تم تحديث كميات حقل المخزون الفعلي (inStock) لمنتجات المتجر لمنع الطلبات العشوائية أصناف نافذة.";
                         logType = "success";
                         borderClass = "border-emerald-500";
                         bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
-                    } else if (flagData.updateSource === 'admin_theme_save') {
+                    } else if (currentSource === 'admin_theme_save') {
                         logMessage = "تحديث هوية وتخطيط الواجهة: تم تعديل لوحة الألوان السحرية ومصفوفة الشريط الإعلاني وبنية builderLayout للمتجر.";
                         logType = "success";
                         borderClass = "border-emerald-500";
@@ -596,6 +598,11 @@
                         if (container.children.length > 30) container.lastElementChild.remove();
                         container.insertAdjacentHTML('afterbegin', newLogHtml);
                     }
+                    
+                    if (currentSource) {
+                        updateMonitorMetrics(currentSource);
+                    }
+                    
                     triggerSilentToast("مزامنة حية: رصد إشارة تشغيلية جديدة من السحابة.");
                 }
             });

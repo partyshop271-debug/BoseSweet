@@ -507,20 +507,25 @@ window.editProduct = function(pJsonEncoded) {
     document.getElementById('prod-img').value = imgSrc;
     window.previewImage('img-preview', 'img-placeholder', imgSrc);
 
-    document.getElementById('prod-hero-img').value = p.heroImg || p.heroImage || '';
-    window.previewImage('hero-preview', 'hero-placeholder', p.heroImg || p.heroImage || '');
+    const heroSrc = p.heroImg || p.heroImage || '';
+    document.getElementById('prod-hero-img').value = heroSrc;
+    window.previewImage('hero-preview', 'hero-placeholder', heroSrc);
 
-    document.getElementById('prod-img-natural').value = p.imgNatural || p.naturalImage || '';
-    window.previewImage('preview-natural', 'placeholder-natural', p.imgNatural || p.naturalImage || '');
+    const naturalSrc = p.imgNatural || p.naturalImage || '';
+    document.getElementById('prod-img-natural').value = naturalSrc;
+    window.previewImage('preview-natural', 'placeholder-natural', naturalSrc);
 
-    document.getElementById('prod-img-artificial').value = p.imgArtificial || p.artificialImage || '';
-    window.previewImage('preview-artificial', 'placeholder-artificial', p.imgArtificial || p.artificialImage || '');
+    const artificialSrc = p.imgArtificial || p.artificialImage || '';
+    document.getElementById('prod-img-artificial').value = artificialSrc;
+    window.previewImage('preview-artificial', 'placeholder-artificial', artificialSrc);
 
-    document.getElementById('prod-img-cash').value = p.imgCash || p.cashImage || '';
-    window.previewImage('preview-cash', 'placeholder-cash', p.imgCash || p.cashImage || '');
+    const cashSrc = p.imgCash || p.cashImage || '';
+    document.getElementById('prod-img-cash').value = cashSrc;
+    window.previewImage('preview-cash', 'placeholder-cash', cashSrc);
 
-    document.getElementById('prod-img-choco').value = p.imgChoco || p.chocoImage || '';
-    window.previewImage('preview-choco', 'placeholder-choco', p.imgChoco || p.chocoImage || '');
+    const chocoSrc = p.imgChoco || p.chocoImage || '';
+    document.getElementById('prod-img-choco').value = chocoSrc;
+    window.previewImage('preview-choco', 'placeholder-choco', chocoSrc);
 
     document.getElementById('productDisplayStyle').value = p.displayStyle || p.gridSpan || 'half'; 
     
@@ -594,24 +599,40 @@ window.saveProduct = async function() {
     }
 
     const finalStyle = document.getElementById('productDisplayStyle').value;
+    const heroImgValue = document.getElementById('prod-hero-img').value.trim();
+    const imgNaturalValue = document.getElementById('prod-img-natural').value.trim();
+    const imgArtificialValue = document.getElementById('prod-img-artificial').value.trim();
+    const imgCashValue = document.getElementById('prod-img-cash').value.trim();
+    const imgChocoValue = document.getElementById('prod-img-choco').value.trim();
 
+    // هندسة الحقول المزدوجة المتوافقة بنسبة 100% مع كافة أجزاء موقع حلويات بوسي لمنع الأعطال وفقدان الروابط
     const productData = {
-        name: name, category: category, price: price, oldPrice: oldPrice,
+        name: name, 
+        category: category, 
+        price: price, 
+        oldPrice: oldPrice,
         hasDiscount: document.getElementById('prod-has-discount').checked,
         description: document.getElementById('prod-desc').value.trim(),
         desc: document.getElementById('prod-desc').value.trim(),
         flavors: document.getElementById('prod-flavors').value.trim(),
-        img: img, image: img, heroImg: document.getElementById('prod-hero-img').value.trim(),
-        heroImage: document.getElementById('prod-hero-img').value.trim(),
         
-        imgNatural: document.getElementById('prod-img-natural').value.trim(),
-        naturalImage: document.getElementById('prod-img-natural').value.trim(),
-        imgArtificial: document.getElementById('prod-img-artificial').value.trim(),
-        artificialImage: document.getElementById('prod-img-artificial').value.trim(),
-        imgCash: document.getElementById('prod-img-cash').value.trim(),
-        cashImage: document.getElementById('prod-img-cash').value.trim(),
-        imgChoco: document.getElementById('prod-img-choco').value.trim(),
-        chocoImage: document.getElementById('prod-img-choco').value.trim(),
+        img: img, 
+        image: img, 
+        
+        heroImg: heroImgValue,
+        heroImage: heroImgValue,
+        
+        imgNatural: imgNaturalValue,
+        naturalImage: imgNaturalValue,
+        
+        imgArtificial: imgArtificialValue,
+        artificialImage: imgArtificialValue,
+        
+        imgCash: imgCashValue,
+        cashImage: imgCashValue,
+        
+        imgChoco: imgChocoValue,
+        chocoImage: imgChocoValue,
 
         gridSpan: finalStyle,
         displayStyle: finalStyle, 
@@ -619,7 +640,8 @@ window.saveProduct = async function() {
         cardHeight: parseInt(document.getElementById('prod-card-h').value),
         inStock: document.getElementById('prod-stock').checked,
         stock: document.getElementById('prod-stock').checked,
-        updatedAt: Date.now(), isActive: true
+        updatedAt: Date.now(), 
+        isActive: true
     };
 
     try {
@@ -635,6 +657,7 @@ window.saveProduct = async function() {
             await db.collection('catalog').add(productData); 
         }
         
+        // الترس السيادي الذي يربط المحرك مباشرة بصفحة المراقبة التشخيصية والمزامنة الحية
         await db.collection('system').doc('syncFlag').set({ 
             forceRefresh: true, 
             lastAdminUpdate: Date.now(),
@@ -1046,41 +1069,4 @@ document.addEventListener('DOMContentLoaded', () => {
         window.previewImage('preview-natural', 'placeholder-natural', this.value);
     });
     document.getElementById('prod-img-artificial')?.addEventListener('input', function() {
-        window.previewImage('preview-artificial', 'placeholder-artificial', this.value);
-    });
-    document.getElementById('prod-img-cash')?.addEventListener('input', function() {
-        window.previewImage('preview-cash', 'placeholder-cash', this.value);
-    });
-    document.getElementById('prod-img-choco')?.addEventListener('input', function() {
-        window.previewImage('preview-choco', 'placeholder-choco', this.value);
-    });
-
-    document.getElementById('btn-upload-prod-img')?.addEventListener('click', () => document.getElementById('file-prod-img').click());
-    document.getElementById('btn-upload-prod-hero')?.addEventListener('click', () => document.getElementById('file-prod-hero').click());
-    document.getElementById('btn-upload-img-natural')?.addEventListener('click', () => document.getElementById('file-img-natural').click());
-    document.getElementById('btn-upload-img-artificial')?.addEventListener('click', () => document.getElementById('file-img-artificial').click());
-    document.getElementById('btn-upload-img-cash')?.addEventListener('click', () => document.getElementById('file-img-cash').click());
-    document.getElementById('btn-upload-img-choco')?.addEventListener('click', () => document.getElementById('file-img-choco').click());
-
-    document.getElementById('file-prod-img')?.addEventListener('change', function() {
-        window.uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder');
-    });
-    document.getElementById('file-prod-hero')?.addEventListener('change', function() {
-        window.uploadToCloudinary(this, 'prod-hero-img', 'hero-preview', 'hero-placeholder');
-    });
-    document.getElementById('file-img-natural')?.addEventListener('change', function() {
-        window.uploadToCloudinary(this, 'prod-img-natural', 'preview-natural', 'placeholder-natural');
-    });
-    document.getElementById('file-img-artificial')?.addEventListener('change', function() {
-        window.uploadToCloudinary(this, 'prod-img-artificial', 'preview-artificial', 'placeholder-artificial');
-    });
-    document.getElementById('file-img-cash')?.addEventListener('change', function() {
-        window.uploadToCloudinary(this, 'prod-img-cash', 'preview-cash', 'placeholder-cash');
-    });
-    document.getElementById('file-img-choco')?.addEventListener('change', function() {
-        window.uploadToCloudinary(this, 'prod-img-choco', 'preview-choco', 'placeholder-choco');
-    });
-    document.getElementById('btn-save-simulator-settings')?.addEventListener('click', () => {
-        window.saveBoseSimulatorSettings();
-    });
-});
+        window.previewImage('preview

@@ -8,7 +8,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&family=Almarai:wght@400;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Tajawal:wght@400;700&family=Almarai:wght@400;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -103,7 +103,7 @@
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            font-weight: 900; 
+            font-weight: 700; 
             transition: all 0.3s ease; 
             color: var(--bose-text); 
             font-size: 1.1rem; 
@@ -131,7 +131,7 @@
             background-color: rgba(255, 145, 164, 0.15); 
             color: var(--bose-text); 
             border-right-color: var(--bose-pink); 
-            font-weight: 900; 
+            font-weight: 700; 
         }
 
         .main-content { margin-right: 340px; min-height: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
@@ -143,7 +143,7 @@
         }
         .admin-tabs-nav::-webkit-scrollbar { display: none; }
         .admin-tab-btn {
-            background: transparent; color: var(--bose-muted); border: 2px solid transparent; padding: 14px 28px; border-radius: 14px; font-weight: 900; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; font-size: 1.1rem; flex-shrink: 0;
+            background: transparent; color: var(--bose-muted); border: 2px solid transparent; padding: 14px 28px; border-radius: 14px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; font-size: 1.1rem; flex-shrink: 0;
         }
         .admin-tab-btn:hover { color: var(--bose-text); background: rgba(255, 145, 164, 0.1); }
         .admin-tab-btn.active {
@@ -191,7 +191,7 @@
         .form-label { 
             display: block; 
             color: var(--bose-text) !important; 
-            font-weight: 900; 
+            font-weight: 700; 
             margin-bottom: 10px; 
             font-size: 1.05rem; 
         }
@@ -221,7 +221,7 @@
             border-radius: 14px; 
             padding: 18px; 
             font-family: inherit; 
-            font-weight: 900; 
+            font-weight: 700; 
             font-size: 1.1rem; 
             transition: all 0.3s ease; 
         }
@@ -319,7 +319,7 @@
             border: none; 
             border-radius: 14px; 
             padding: 18px 36px; 
-            font-weight: 900; 
+            font-weight: 700; 
             font-size: 1.2rem; 
             cursor: pointer; 
             transition: all 0.3s ease; 
@@ -365,7 +365,7 @@
             padding: 18px 40px; 
             border-radius: 50px; 
             z-index: 10000; 
-            font-weight: 900; 
+            font-weight: 700; 
             font-size: 1.2rem; 
             display: none; 
             align-items: center; 
@@ -389,11 +389,11 @@
             <div class="w-16 h-16 rounded-full bg-red-900/20 border-2 border-red-500/50 flex items-center justify-center mx-auto mb-6">
                 <i data-lucide="alert-triangle" class="w-8 h-8 text-red-400"></i>
             </div>
-            <h4 class="text-2xl font-black text-white mb-4">هل ترغب بالاستمرار؟</h4>
+            <h4 class="text-2xl font-bold text-white mb-4">هل ترغب بالاستمرار؟</h4>
             <p id="bose-confirm-message" class="text-brand-textMuted font-bold text-lg mb-8 leading-relaxed">سيتم إجراء تعديل هندسي حساس على الهيكل.</p>
             <div class="flex gap-4">
-                <button id="bose-confirm-yes" class="btn-solid bg-red-500 hover:bg-red-600 text-white font-black py-4 rounded-xl flex-1 text-lg">نعم، متأكد</button>
-                <button id="bose-confirm-no" class="bg-brand-bg border-2 border-brand-border text-brand-textMuted hover:bg-brand-surface font-black py-4 rounded-xl flex-1 text-lg">تراجع</button>
+                <button id="bose-confirm-yes" class="btn-solid bg-red-500 hover:bg-red-600 text-white font-bold py-4 rounded-xl flex-1 text-lg">نعم، متأكد</button>
+                <button id="bose-confirm-no" class="bg-brand-bg border-2 border-brand-border text-brand-textMuted hover:bg-brand-surface font-bold py-4 rounded-xl flex-1 text-lg">تراجع</button>
             </div>
         </div>
     </div>
@@ -406,7 +406,7 @@
                 <div class="w-12 h-12 rounded-xl bg-brand-bg border border-brand-pink/40 flex items-center justify-center shadow-lg">
                     <i data-lucide="gem" class="w-7 h-7 text-brand-pink"></i>
                 </div>
-                <h1 class="text-2xl font-black text-brand-textMain tracking-tight bose-logo-text">حلويات بوسي</h1>
+                <h1 class="text-2xl font-bold text-brand-textMain tracking-tight bose-logo-text">حلويات بوسي</h1>
             </div>
             <button onclick="toggleSidebar()" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
         </div>
@@ -448,7 +448,7 @@
         <header class="bg-[#2a1b1f] border-b border-brand-border sticky top-0 z-40 px-8 py-5 flex items-center justify-between shadow-lg">
             <div class="flex items-center gap-5">
                 <button onclick="toggleSidebar()" class="lg:hidden text-white hover:text-brand-pink transition-colors"><i data-lucide="menu" class="w-8 h-8"></i></button>
-                <h2 id="current-section-title" class="text-2xl font-black text-brand-textMain">إدارة المظهر والواجهة</h2>
+                <h2 id="current-section-title" class="text-2xl font-bold text-brand-textMain">إدارة المظهر والواجهة</h2>
             </div>
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-3 bg-[#1a1012] px-5 py-2.5 rounded-full border border-brand-border shadow-inner">
@@ -470,11 +470,11 @@
                 
                 <section id="ui-header" class="admin-section">
                     <div class="admin-card">
-                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-top" class="text-brand-pink w-8 h-8"></i> إدارة الهيدر واللوجو</h3>
+                        <h3 class="text-2xl font-bold text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-top" class="text-brand-pink w-8 h-8"></i> إدارة الهيدر واللوجو</h3>
                         <div class="space-y-8">
                             <div>
                                 <label class="form-label">الاسم المعروض في أعلى الموقع (اللوجو النصي)</label>
-                                <input type="text" id="header-logo-text" class="form-input text-lg font-black" placeholder="حلويات بوسي">
+                                <input type="text" id="header-logo-text" class="form-input text-lg font-bold" placeholder="حلويات بوسي">
                                 <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يظهر هذا النص في الزاوية العلوية لجميع صفحات المتجر بجوار الماسة الرسمية للعلامة التجارية.</p>
                             </div>
                             
@@ -482,7 +482,7 @@
                                 <span class="text-brand-textMuted font-bold text-base">معاينة حية لشكل شعار المتجر:</span>
                                 <div class="flex items-center gap-3 bg-brand-surface px-6 py-3 rounded-xl border border-brand-pink/30 shadow-md">
                                     <i data-lucide="gem" class="w-6 h-6 text-brand-pink"></i>
-                                    <span class="bose-logo-text font-black text-white text-xl">حلويات بوسي</span>
+                                    <span class="bose-logo-text font-bold text-white text-xl">حلويات بوسي</span>
                                 </div>
                             </div>
                             
@@ -493,7 +493,7 @@
 
                 <section id="ui-colors" class="admin-section">
                     <div class="admin-card">
-                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
+                        <h3 class="text-2xl font-bold text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
                             <i data-lucide="palette" class="text-brand-pink w-8 h-8"></i> تخصيص لوحة الألوان السحرية للمتجر
                         </h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -532,7 +532,7 @@
 
                 <section id="ui-footer" class="admin-section">
                     <div class="admin-card">
-                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-bottom" class="text-brand-pink w-8 h-8"></i> الإعدادات الشاملة للفوتر والتواصل</h3>
+                        <h3 class="text-2xl font-bold text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="panel-bottom" class="text-brand-pink w-8 h-8"></i> الإعدادات الشاملة للفوتر والتواصل</h3>
                         <div class="space-y-8">
                             <div>
                                 <label class="form-label text-xl">نبذة تعريفية في ذيل الموقع</label>
@@ -542,7 +542,7 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-brand-border">
                                 <div>
                                     <label class="form-label">رقم الهاتف الرسمي</label>
-                                    <input type="text" id="footer-phone" class="form-input text-left font-black tracking-widest" dir="ltr" placeholder="01xxxxxxxxx">
+                                    <input type="text" id="footer-phone" class="form-input text-left font-bold tracking-widest" dir="ltr" placeholder="01xxxxxxxxx">
                                 </div>
                                 <div>
                                     <label class="form-label">البريد الإلكتروني للطلبات</label>
@@ -560,11 +560,11 @@
                             </div>
                             
                             <div class="bg-[#1a1012] p-8 rounded-2xl border border-brand-border space-y-5">
-                                <h4 class="text-brand-pink font-black text-lg border-b border-brand-border pb-3 flex items-center gap-2">
+                                <h4 class="text-brand-pink font-bold text-lg border-b border-brand-border pb-3 flex items-center gap-2">
                                     <i data-lucide="layout" class="w-5 h-5"></i> معاينة حية لقسم الفوتر (ذيل الموقع)
                                 </h4>
                                 <div class="space-y-3">
-                                    <h5 class="text-white font-black text-2xl bose-logo-text">حلويات بوسي</h5>
+                                    <h5 class="text-white font-bold text-2xl bose-logo-text">حلويات بوسي</h5>
                                     <p id="footer-brand-desc" class="text-brand-textMuted text-base font-bold leading-relaxed">نبذة الفوتر ستظهر هنا عند الكتابة...</p>
                                 </div>
                                 <div class="flex flex-wrap gap-6 text-sm font-bold text-brand-textMuted pt-4 border-t border-brand-border/40">
@@ -585,7 +585,7 @@
                 
                 <section id="ui-fonts" class="admin-section">
                     <div class="admin-card">
-                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
+                        <h3 class="text-2xl font-bold text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
                             <i data-lucide="type" class="text-brand-pink w-8 h-8"></i> الخط العربي المعتمد للعلامة التجارية
                         </h3>
                         <div class="space-y-8">
@@ -601,9 +601,9 @@
                             </div>
 
                             <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border">
-                                <span class="text-xs font-black text-brand-pink tracking-wider block mb-4 uppercase">معاينة حية للنصوص بالخط المحدد:</span>
+                                <span class="text-xs font-bold text-brand-pink tracking-wider block mb-4 uppercase">معاينة حية للنصوص بالخط المحدد:</span>
                                 <div id="typography-preview-box" class="space-y-4">
-                                    <h4 class="text-3xl font-black text-white">حلويات بوسي - عراقة الطعم وجودة الصنع</h4>
+                                    <h4 class="text-3xl font-bold text-white">حلويات بوسي - عراقة الطعم وجودة الصنع</h4>
                                     <p class="text-brand-textMuted text-lg font-bold leading-relaxed">استمتع بتشكيلاتنا الفاخرة التي نعدها بشغف وإتقان دائم. باقات الورد الطبيعي المنسقة بعناية لدينا مثالية لتكتمل بها لحظاتكم السعيدة.</p>
                                 </div>
                             </div>
@@ -615,7 +615,7 @@
 
                 <section id="ui-ticker" class="admin-section">
                     <div class="admin-card">
-                        <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="radio" class="text-brand-pink w-8 h-8"></i> الشريط الإعلاني المتحرك</h3>
+                        <h3 class="text-2xl font-bold text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6"><i data-lucide="radio" class="text-brand-pink w-8 h-8"></i> الشريط الإعلاني المتحرك</h3>
                         <div class="space-y-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div><label class="form-label">رسالة الجذب 1</label><input type="text" id="ticker-1" class="form-input" placeholder="اكتب الجملة هنا..."></div>
@@ -625,8 +625,8 @@
                             </div>
                             <div class="pt-6 border-t border-brand-border w-full md:w-1/2">
                                 <label class="form-label text-brand-pink">سرعة تحرك الشريط (بالثواني)</label>
-                                <input type="number" id="ticker-speed" class="form-input text-2xl font-black text-center" value="40" min="10" max="120">
-                                <p class="bose-helper-text"><i data-lucide="alert-circle" class="w-5 h-5"></i> العلاقة عكسية: تقليل الرقم (مثال: 20 ثانية) يجعل الحركة أسرع للفت الانتباه بشكل مكثف. زيادة الرقم (مثال: 60 ثانية) تبطئ الحركة لتكون هادئة وسهلة القراءة.</p>
+                                <input type="number" id="ticker-speed" class="form-input text-2xl font-bold text-center" value="40" min="10" max="120">
+                                <p class="bose-helper-text"><i data-lucide="alert-circle" class="w-5 h-5"></i>  العلاقة عكسية: تقليل الرقم (مثال: 20 ثانية) يجعل الحركة أسرع للفت الانتباه بشكل مكثف. زيادة الرقم (مثال: 60 ثانية) تبطئ الحركة لتكون هادئة وسهلة القراءة.</p>
                             </div>
                             <button onclick="saveTickerData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> حفظ وتحديث الشريط</button>
                         </div>
@@ -640,7 +640,7 @@
                         <div class="w-24 h-24 rounded-full bg-[#1a1012] border-2 border-brand-border flex items-center justify-center mb-6 shadow-xl">
                             <i data-lucide="shield-check" class="w-12 h-12 text-brand-pink"></i>
                         </div>
-                        <h3 class="text-3xl font-black text-white mb-4 tracking-tight text-center">المنصة الإدارية مستقرة وجاهزة للعمل</h3>
+                        <h3 class="text-3xl font-bold text-white mb-4 tracking-tight text-center">المنصة الإدارية مستقرة وجاهزة للعمل</h3>
                         <p class="font-bold text-lg text-brand-textMuted text-center max-w-3xl leading-relaxed">
                             نرحب بكم في المركز المتقدم لإدارة تخطيط الموقع لعلامة حلويات بوسي. تم ترتيب الأقسام والمكونات بنظام التبويبات الذكية لتوفير الوقت وسهولة المتابعة الفورية.
                         </p>
@@ -650,12 +650,12 @@
                 <section id="ui-builder" class="admin-section">
                     <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
                         <div>
-                            <h3 class="text-3xl font-black text-brand-textMain flex items-center gap-3"><i data-lucide="ruler" class="text-brand-pink w-8 h-8"></i> محرك البناء والتحكم بالأبعاد</h3>
+                            <h3 class="text-3xl font-bold text-brand-textMain flex items-center gap-3"><i data-lucide="ruler" class="text-brand-pink w-8 h-8"></i> محرك البناء والتحكم بالأبعاد</h3>
                             <p class="text-lg font-bold text-brand-textMuted mt-3 max-w-3xl leading-relaxed">
                                 صلاحيات سيادية مطلقة. أضف، انسخ، عطل، أو رتب أي قسم من أقسام الموقع بالكامل مع تحديد الأبعاد والسرعات بدقة تامة.
                             </p>
                         </div>
-                        <button onclick="addBuilderBlock()" class="bg-[#1a1012] border-2 border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#1a1012] font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 whitespace-nowrap text-xl shadow-lg">
+                        <button onclick="addBuilderBlock()" class="bg-[#1a1012] border-2 border-brand-pink text-brand-pink hover:bg-brand-pink hover:text-[#1a1012] font-bold py-4 px-8 rounded-xl transition-all flex items-center gap-3 whitespace-nowrap text-xl shadow-lg">
                             <i data-lucide="plus-square" class="w-6 h-6"></i> بناء قسم جديد
                         </button>
                     </div>
@@ -817,11 +817,11 @@
                 if (block.type === 'waterfall') {
                     specificSettingsHTML = `
                         <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
-                            <h4 class="text-brand-pink font-black text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="settings-2" class="w-6 h-6"></i> التحكم الحركي لقسم الشلال</h4>
+                            <h4 class="text-brand-pink font-bold text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="settings-2" class="w-6 h-6"></i> التحكم الحركي لقسم الشلال</h4>
                             <div class="w-full md:w-1/2">
                                 <div class="flex justify-between items-center mb-3">
                                     <label class="form-label mb-0">سرعة حركة الصور بالشلال</label>
-                                    <span class="text-brand-pink font-black text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-water-${index}">${block.waterfallSpeed || 40} ثانية</span>
+                                    <span class="text-brand-pink font-bold text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-water-${index}">${block.waterfallSpeed || 40} ثانية</span>
                                 </div>
                                 <input type="range" min="10" max="100" step="5" value="${block.waterfallSpeed || 40}" 
                                     oninput="document.getElementById('w-val-water-${index}').innerText = this.value + ' ثانية'" 
@@ -834,7 +834,7 @@
                 else if (block.type === 'slider' || block.type === 'grid') {
                     specificSettingsHTML = `
                         <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
-                            <h4 class="text-brand-pink font-black text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="settings-2" class="w-6 h-6"></i> أبعاد وهندسة كروت المنتجات</h4>
+                            <h4 class="text-brand-pink font-bold text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="settings-2" class="w-6 h-6"></i> أبعاد وهندسة كروت المنتجات</h4>
                             
                             <div class="mb-8 pb-8 border-b border-brand-border/50">
                                 <label class="form-label">مصدر تغذية المنتجات لهذا القسم</label>
@@ -854,7 +854,7 @@
                                 <div>
                                     <div class="flex justify-between items-center mb-3">
                                         <label class="form-label mb-0 text-brand-pink">عرض كارت المنتج بالكامل (Width)</label>
-                                        <span class="text-brand-pink font-black text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-w-${index}">${block.cardWidth || 280}px</span>
+                                        <span class="text-brand-pink font-bold text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-w-${index}">${block.cardWidth || 280}px</span>
                                     </div>
                                     <input type="range" min="150" max="600" step="10" value="${block.cardWidth || 280}" 
                                         oninput="document.getElementById('w-val-w-${index}').innerText = this.value + 'px'" 
@@ -865,7 +865,7 @@
                                 <div>
                                     <div class="flex justify-between items-center mb-3">
                                         <label class="form-label mb-0 text-brand-pink">ارتفاع كارت المنتج بالكامل (Height)</label>
-                                        <span class="text-brand-pink font-black text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-h-${index}">${block.cardHeight || 350}px</span>
+                                        <span class="text-brand-pink font-bold text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-h-${index}">${block.cardHeight || 350}px</span>
                                     </div>
                                     <input type="range" min="150" max="800" step="10" value="${block.cardHeight || 350}" 
                                         oninput="document.getElementById('w-val-h-${index}').innerText = this.value + 'px'" 
@@ -889,7 +889,7 @@
                 else if (block.type === 'featured_promo') {
                     specificSettingsHTML = `
                         <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
-                            <h4 class="text-brand-pink font-black text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="image" class="w-6 h-6"></i> محتوى وتفاصيل العرض الترويجي</h4>
+                            <h4 class="text-brand-pink font-bold text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="image" class="w-6 h-6"></i> محتوى وتفاصيل العرض الترويجي</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div class="md:col-span-2">
                                     <label class="form-label">النص التسويقي الطويل للقسم</label>
@@ -914,12 +914,12 @@
                 else if (block.type === 'categories_slider') {
                     specificSettingsHTML = `
                         <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border mt-6 shadow-inner">
-                            <h4 class="text-brand-pink font-black text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="layers" class="w-6 h-6"></i> الأبعاد الهندسية لكروت التصنيفات (الفئات)</h4>
+                            <h4 class="text-brand-pink font-bold text-xl mb-6 border-b border-brand-border pb-4 flex items-center gap-2"><i data-lucide="layers" class="w-6 h-6"></i> الأبعاد الهندسية لكروت التصنيفات (الفئات)</h4>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                                 <div>
                                     <div class="flex justify-between items-center mb-3">
                                         <label class="form-label mb-0 text-brand-pink">عرض كارت القسم بالبيكسل</label>
-                                        <span class="text-brand-pink font-black text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-cat-w-${index}">${block.cardWidth || 450}px</span>
+                                        <span class="text-brand-pink font-bold text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-cat-w-${index}">${block.cardWidth || 450}px</span>
                                     </div>
                                     <input type="range" min="200" max="800" step="10" value="${block.cardWidth || 450}" 
                                         oninput="document.getElementById('w-val-cat-w-${index}').innerText = this.value + 'px'" 
@@ -928,7 +928,7 @@
                                 <div>
                                     <div class="flex justify-between items-center mb-3">
                                         <label class="form-label mb-0 text-brand-pink">ارتفاع كارت القسم بالبيكسل</label>
-                                        <span class="text-brand-pink font-black text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-cat-h-${index}">${block.cardHeight || 560}px</span>
+                                        <span class="text-brand-pink font-bold text-lg bg-brand-surface px-3 py-1 rounded-lg border border-brand-border" id="w-val-cat-h-${index}">${block.cardHeight || 560}px</span>
                                     </div>
                                     <input type="range" min="200" max="800" step="10" value="${block.cardHeight || 560}" 
                                         oninput="document.getElementById('w-val-cat-h-${index}').innerText = this.value + 'px'" 
@@ -954,7 +954,7 @@
                             
                             <div class="flex-1 w-full space-y-6">
                                 <div class="flex items-center gap-4 mb-2">
-                                    <span class="bg-brand-surface text-brand-pink px-4 py-2 rounded-xl text-base font-black border-2 border-brand-border">قسم رقم: ${index + 1}</span>
+                                    <span class="bg-brand-surface text-brand-pink px-4 py-2 rounded-xl text-base font-bold border-2 border-brand-border">قسم رقم: ${index + 1}</span>
                                     ${isHidden ? '<span class="bg-red-900/30 text-red-400 px-4 py-2 rounded-xl text-base font-bold border border-red-900/50">القسم مخفي حالياً عن العملاء</span>' : ''}
                                 </div>
                                 
@@ -982,294 +982,4 @@
                             <div class="flex flex-row lg:flex-col gap-3 shrink-0 bg-brand-surface p-4 rounded-3xl border-2 border-brand-border w-full lg:w-auto justify-center shadow-lg">
                                 <div class="flex gap-3 justify-center">
                                     <button onclick="window.moveBlock(${index}, -1)" class="btn-action" title="رفع لأعلى خطوة" ${index === 0 ? 'disabled style="opacity:0.3"' : ''}><i data-lucide="arrow-up" class="w-6 h-6"></i></button>
-                                    <button onclick="window.moveBlock(${index}, 1)" class="btn-action" title="تنزيل لأسفل خطوة" ${index === builderBlocks.length - 1 ? 'disabled style="opacity:0.3"' : ''}><i data-lucide="arrow-down" class="w-6 h-6"></i></button>
-                                </div>
-                                <div class="flex gap-3 justify-center">
-                                    <button onclick="window.toggleVisibility(${index})" class="btn-action ${isHidden ? 'bg-brand-pink/20 text-brand-pink border-brand-pink' : ''}" title="${isHidden ? 'إظهار القسم للمستخدمين' : 'إخفاء القسم مؤقتاً'}"><i data-lucide="${isHidden ? 'eye-off' : 'eye'}" class="w-6 h-6"></i></button>
-                                    <button onclick="window.duplicateBlock(${index})" class="btn-action" title="نسخ القسم بكافة إعداداته"><i data-lucide="copy" class="w-6 h-6"></i></button>
-                                    <button onclick="window.deleteBlock(${index})" class="btn-action danger" title="هدم وحذف نهائي للقسم"><i data-lucide="trash-2" class="w-6 h-6"></i></button>
-                                </div>
-                            </div>
-                        </div>
-
-                        ${specificSettingsHTML}
-                        
-                    </div>
-                `;
-                container.insertAdjacentHTML('beforeend', html);
-            });
-            lucide.createIcons();
-        }
-
-        window.addBuilderBlock = function() {
-            builderBlocks.push({ id: 'sec_' + Date.now(), type: 'slider', title: 'قسم جديد', dataSource: 'latest', cardWidth: 280, cardHeight: 350, isVisible: true });
-            renderBuilderUI();
-            setTimeout(() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }), 100);
-        };
-
-        window.updateBlockData = function(index, key, value) {
-            builderBlocks[index][key] = value;
-            if(key === 'type') renderBuilderUI(); 
-        };
-
-        window.moveBlock = function(index, direction) {
-            if (index + direction < 0 || index + direction >= builderBlocks.length) return;
-            const temp = builderBlocks[index];
-            builderBlocks[index] = builderBlocks[index + direction];
-            builderBlocks[index + direction] = temp;
-            renderBuilderUI();
-        };
-
-        window.duplicateBlock = function(index) {
-            const copy = JSON.parse(JSON.stringify(builderBlocks[index]));
-            copy.id = 'sec_' + Date.now(); 
-            copy.title = copy.title ? copy.title + ' (نسخة)' : 'نسخة';
-            builderBlocks.splice(index + 1, 0, copy);
-            renderBuilderUI();
-        };
-
-        window.deleteBlock = function(index) {
-            window.showConfirm("تأكيد سيادي: هل ترغب بحذف هذا القسم نهائياً من الموقع وهدمه؟", () => {
-                builderBlocks.splice(index, 1);
-                renderBuilderUI();
-            });
-        };
-
-        window.toggleVisibility = function(index) {
-            builderBlocks[index].isVisible = !builderBlocks[index].isVisible;
-            renderBuilderUI();
-        };
-
-        const applyColorsToAdmin = (colors) => {
-            if (!colors) return;
-            if (colors.pink) {
-                document.documentElement.style.setProperty('--bose-pink', colors.pink);
-                const valEl = document.getElementById('color-pink-hex');
-                if (valEl) valEl.innerText = colors.pink.toUpperCase();
-                const inpEl = document.getElementById('color-pink');
-                if (inpEl) inpEl.value = colors.pink;
-            }
-            if (colors.bg) {
-                document.documentElement.style.setProperty('--bose-bg', colors.bg);
-                const valEl = document.getElementById('color-bg-hex');
-                if (valEl) valEl.innerText = colors.bg.toUpperCase();
-                const inpEl = document.getElementById('color-bg');
-                if (inpEl) inpEl.value = colors.bg;
-            }
-            if (colors.surface) {
-                document.documentElement.style.setProperty('--bose-surface', colors.surface);
-                const valEl = document.getElementById('color-surface-hex');
-                if (valEl) valEl.innerText = colors.surface.toUpperCase();
-                const inpEl = document.getElementById('color-surface');
-                if (inpEl) inpEl.value = colors.surface;
-            }
-            if (colors.border) {
-                document.documentElement.style.setProperty('--bose-border', colors.border);
-                const valEl = document.getElementById('color-border-hex');
-                if (valEl) valEl.innerText = colors.border.toUpperCase();
-                const inpEl = document.getElementById('color-border');
-                if (inpEl) inpEl.value = colors.border;
-            }
-        };
-
-        window.previewFont = function(fontName) {
-            const previewBox = document.getElementById('typography-preview-box');
-            if (previewBox) {
-                previewBox.style.fontFamily = `'${fontName}', 'Cairo', sans-serif`;
-            }
-        };
-
-        async function loadAdminData() {
-            try {
-                const snap = await getDoc(doc(db, 'settings', 'theme'));
-                if(snap.exists()) {
-                    const data = snap.data();
-                    
-                    if(data.builderLayout && Array.isArray(data.builderLayout) && data.builderLayout.length > 0) {
-                        builderBlocks = data.builderLayout;
-                    } else {
-                        builderBlocks = JSON.parse(JSON.stringify(defaultLayout));
-                    }
-                    renderBuilderUI();
-
-                    if(data.header) { 
-                        const logoText = data.header.logoText || 'حلويات بوسي';
-                        document.getElementById('header-logo-text').value = logoText; 
-                        document.querySelectorAll('.bose-logo-text').forEach(el => el.innerText = logoText);
-                    }
-
-                    if(data.colors) {
-                        applyColorsToAdmin(data.colors);
-                    }
-
-                    if(data.font) {
-                        const fontSelect = document.getElementById('font-family-select');
-                        if (fontSelect) fontSelect.value = data.font;
-                        window.previewFont(data.font);
-                        document.body.style.fontFamily = `'${data.font}', 'Cairo', sans-serif`;
-                    }
-
-                    if(data.ticker) {
-                        document.getElementById('ticker-1').value = data.ticker[0] || '';
-                        document.getElementById('ticker-2').value = data.ticker[1] || '';
-                        document.getElementById('ticker-3').value = data.ticker[2] || '';
-                        document.getElementById('ticker-4').value = data.ticker[3] || '';
-                        document.getElementById('ticker-speed').value = data.tickerSpeed || 40;
-                    }
-
-                    if(data.footer) {
-                        document.getElementById('footer-desc').value = data.footer.desc || '';
-                        document.getElementById('footer-phone').value = data.footer.phone || '';
-                        document.getElementById('footer-email').value = data.footer.email || '';
-                        document.getElementById('footer-address').value = data.footer.address || '';
-                        document.getElementById('footer-fb').value = data.footer.facebook || '';
-                        document.getElementById('footer-ig').value = data.footer.instagram || '';
-                        document.getElementById('footer-tiktok').value = data.footer.tiktok || '';
-                        
-                        document.getElementById('footer-brand-desc').innerText = data.footer.desc || 'نبذة الفوتر ستظهر هنا عند الكتابة...';
-                        document.getElementById('footer-phone-preview').innerText = data.footer.phone || '-';
-                        document.getElementById('footer-email-preview').innerText = data.footer.email || '-';
-                        document.getElementById('footer-address-preview').innerText = data.footer.address || '-';
-                    }
-                } else {
-                    builderBlocks = JSON.parse(JSON.stringify(defaultLayout));
-                    renderBuilderUI();
-                }
-            } catch (error) { 
-                console.error("خطأ قراءة السحابة:", error); 
-                document.getElementById('builder-container').innerHTML = '<div class="text-red-500 font-black text-center py-10 bg-red-900/20 rounded-xl border-2 border-red-500/50">فشل الاتصال بقاعدة البيانات. يرجى مراجعة الخادم والتحقق من جودة الاتصال.</div>';
-            }
-        }
-
-        window.saveBuilderLayout = async function() {
-            try {
-                await setDoc(doc(db, 'settings', 'theme'), { builderLayout: builderBlocks, updatedAt: Date.now() }, { merge: true });
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                window.showToast("تم اعتماد البناء الهندسي الجديد بنجاح وبث التحديثات للعملاء.");
-            } catch(e) { 
-                window.showToast("حدث خطأ غير متوقع أثناء الاتصال بالخادم السحابي.", "error");
-            }
-        }
-
-        window.saveHeaderData = async function() {
-            const val = document.getElementById('header-logo-text').value.trim();
-            try {
-                await setDoc(doc(db, 'settings', 'theme'), { header: { logoText: val }, updatedAt: Date.now() }, { merge: true });
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                document.querySelectorAll('.bose-logo-text').forEach(el => el.innerText = val || 'حلويات بوسي');
-                window.showToast("تم تحديث وحفظ لوجو الهيدر وبثه للعملاء.");
-            } catch(e) {
-                window.showToast("عطل اتصالي منع الحفظ السحابي للهيدر.", "error");
-            }
-        }
-
-        window.saveColorData = async function() {
-            const colors = {
-                pink: document.getElementById('color-pink').value,
-                bg: document.getElementById('color-bg').value,
-                surface: document.getElementById('color-surface').value,
-                border: document.getElementById('color-border').value,
-                textMain: '#ffffff',
-                textMuted: '#e0c8cc'
-            };
-            try {
-                await setDoc(doc(db, 'settings', 'theme'), { colors: colors, updatedAt: Date.now() }, { merge: true });
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                applyColorsToAdmin(colors);
-                window.showToast("تم اعتماد وتوثيق ألوان الهوية البصرية للمتجر.");
-            } catch(e) {
-                window.showToast("عطل اتصالي منع الحفظ السحابي للألوان.", "error");
-            }
-        }
-
-        window.saveFontData = async function() {
-            const font = document.getElementById('font-family-select').value;
-            try {
-                await setDoc(doc(db, 'settings', 'theme'), { font: font, updatedAt: Date.now() }, { merge: true });
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                document.body.style.fontFamily = `'${font}', 'Cairo', sans-serif`;
-                window.showToast("تم تثبيت الخط المختار رسمياً لجميع الواجهات.");
-            } catch(e) {
-                window.showToast("عطل اتصالي منع الحفظ السحابي للخطوط.", "error");
-            }
-        }
-
-        window.saveTickerData = async function() {
-            const tickerArr = [ 
-                document.getElementById('ticker-1').value.trim(), 
-                document.getElementById('ticker-2').value.trim(),
-                document.getElementById('ticker-3').value.trim(),
-                document.getElementById('ticker-4').value.trim()
-            ].filter(t => t !== '');
-            try {
-                await setDoc(doc(db, 'settings', 'theme'), { ticker: tickerArr, tickerSpeed: parseInt(document.getElementById('ticker-speed').value) || 40, updatedAt: Date.now() }, { merge: true });
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                window.showToast("تم تحديث نصوص الشريط وسرعة الحركة.");
-            } catch(e) {
-                window.showToast("عطل اتصالي منع الحفظ السحابي للشريط الإعلاني.", "error");
-            }
-        }
-
-        window.saveFooterData = async function() {
-            const footerObj = {
-                desc: document.getElementById('footer-desc').value.trim(),
-                phone: document.getElementById('footer-phone').value.trim(),
-                email: document.getElementById('footer-email').value.trim(),
-                address: document.getElementById('footer-address').value.trim(),
-                facebook: document.getElementById('footer-fb').value.trim(),
-                instagram: document.getElementById('footer-ig').value.trim(),
-                tiktok: document.getElementById('footer-tiktok').value.trim()
-            };
-            try {
-                await setDoc(doc(db, 'settings', 'theme'), { 
-                    footer: footerObj,
-                    updatedAt: Date.now()
-                }, { merge: true });
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                
-                document.getElementById('footer-brand-desc').innerText = footerObj.desc || 'نبذة الفوتر ستظهر هنا عند الكتابة...';
-                document.getElementById('footer-phone-preview').innerText = footerObj.phone || '-';
-                document.getElementById('footer-email-preview').innerText = footerObj.email || '-';
-                document.getElementById('footer-address-preview').innerText = footerObj.address || '-';
-                
-                window.showToast("تم توثيق بيانات الفوتر ومنافذ التواصل بنجاح.");
-            } catch(e) {
-                window.showToast("عطل اتصالي منع الحفظ السحابي لبيانات الفوتر.", "error");
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadAdminData();
-
-            document.getElementById('header-logo-text').addEventListener('input', (e) => {
-                const val = e.target.value.trim() || 'حلويات بوسي';
-                document.querySelectorAll('.bose-logo-text').forEach(el => el.innerText = val);
-            });
-
-            document.getElementById('color-pink').addEventListener('input', (e) => {
-                const hexValue = e.target.value;
-                document.getElementById('color-pink-hex').innerText = hexValue.toUpperCase();
-                document.documentElement.style.setProperty('--bose-pink', hexValue);
-            });
-
-            document.getElementById('color-bg').addEventListener('input', (e) => {
-                const hexValue = e.target.value;
-                document.getElementById('color-bg-hex').innerText = hexValue.toUpperCase();
-                document.documentElement.style.setProperty('--bose-bg', hexValue);
-            });
-
-            document.getElementById('color-surface').addEventListener('input', (e) => {
-                const hexValue = e.target.value;
-                document.getElementById('color-surface-hex').innerText = hexValue.toUpperCase();
-                document.documentElement.style.setProperty('--bose-surface', hexValue);
-            });
-
-            document.getElementById('color-border').addEventListener('input', (e) => {
-                const hexValue = e.target.value;
-                document.getElementById('color-border-hex').innerText = hexValue.toUpperCase();
-                document.documentElement.style.setProperty('--bose-border', hexValue);
-            });
-        });
-    </script>
-</body>
-</html>
+                                    <button onclick="window.moveBlock(${index
