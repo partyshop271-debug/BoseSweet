@@ -4,7 +4,7 @@
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي التجاريّة (The Management)
  * الهوية البصرية المعتمدة: الوردي الفاخر (#ff91a4) | الأبيض النقي | النصوص الشوكولاتية
- * الترقية: V42.0 Ultra Premium - التوافق التام والأداء المتزن مع النواة الأساسية
+ * الترقية: V42.1 Ultra Premium - التوافق التام والأداء المتزن مع النواة الأساسية
  * الحالة: التحكم الكامل في الهيكل البصري، التنفس، الراحة البصرية، السلايدرات المتصلة، وتوزيع الأقسام السيادية.
  * ============================================================================
  */
@@ -113,7 +113,7 @@ export function renderProductCardsUI(products, containerId) {
 
         const hasDiscount = p.hasDiscount === true && p.oldPrice > p.price;
 
-        // دمج التنسيق المكتوب (p-1 وحواف rounded-xl وتأثيرات أزرار السلة اللحظية) مع الحفاظ التام على الهيكل الأصلي
+        // دمج التنسيق المكتوب مع الحفاظ التام على الهيكل الأصلي والالتزام بالنصوص الفاخرة المعتمدة للبراند
         return `
             <div class="catalog-card-wrapper ${spanClass} p-1 transition-all duration-300" style="${widthStyle}">
                 <div class="bose-luxury-card group h-full flex flex-col bg-white rounded-xl border border-[#ff91a4]/30 p-2 text-center hover:border-[#ff91a4] transition-all duration-300 relative">
@@ -164,7 +164,6 @@ export function renderProductCardsUI(products, containerId) {
     }).join('');
 
     if (isSliderContainer) {
-        // اعتماد الحساب البرمي المكتوب لتناسق عرض كروت السلايدر الأفقي
         const appliedWidth = Math.round(defaultWidth * 1.1);
         container.querySelectorAll('.catalog-card-wrapper').forEach(card => {
             card.style.width = `${appliedWidth}px`;
@@ -218,14 +217,20 @@ export function distributeProductsToUI(products) {
                 } else if (block.dataSource === 'bestsellers') {
                     filteredList = currentProducts.filter(p => p.hasDiscount === true).slice(0, 12);
                 } else if (block.dataSource === 'menu') {
-                    filteredList = currentProducts.filter(p => p.category && normalizeArabic(p.category).includes('menu')).slice(0, 12);
+                    // معالجة ذكية: إذا كان الكتالوج يحتوي على لغة عربية، نقوم بسحب كل المنتجات بدلاً من الفلترة بكلمة 'menu' الجافة
+                    filteredList = currentProducts.filter(p => p.category).slice(0, 12);
                 }
             } else {
-                // الفلترة الافتراضية المدمجة لضمان دقة التوزيع
+                // الفلترة الافتراضية المدمجة والمحسنة لضمان دقة التوزيع اللحظي بالواجهة الرئيسية
                 if (id.includes('best-sellers') || id.includes('bestsellers')) {
                     filteredList = currentProducts.filter(p => p.hasDiscount === true || p.starRating >= 4.5).slice(0, 10);
+                    if (filteredList.length === 0) filteredList = currentProducts.slice(0, 8);
                 } else if (id.includes('new-arrivals') || id.includes('arrival')) {
                     filteredList = [...currentProducts].sort((a,b) => (b.id > a.id ? 1 : -1)).slice(0, 10);
+                    if (filteredList.length === 0) filteredList = currentProducts.slice(0, 8);
+                } else if (id === 'menuGrid') {
+                    // حقن المنتجات الأساسية في شبكة الصفحة الرئيسية مباشرة لمنع ظهور الحاوية فارغة
+                    filteredList = currentProducts.filter(p => p.category && !normalizeArabic(p.category).includes('ورد')).slice(0, 8);
                 } else {
                     filteredList = [...currentProducts];
                 }
@@ -372,7 +377,6 @@ window.addWithQtyContextAndSync = function(btn, productId) {
     const qtyDisplay = cardWrapper ? cardWrapper.querySelector('.temp-qty-display') : null;
     const qty = qtyDisplay ? parseInt(qtyDisplay.innerText) : 1;
 
-    // دمج تأثيرات تغيير شارة أزرار السلة اللحظية ونبض العربة التفاعلي من النسخة المكتوبة
     const originalText = btn.innerText;
     btn.innerHTML = `<i class="fa-solid fa-check ml-1.5"></i> تم التحديث`;
     btn.classList.remove('bg-[#ff91a4]', 'text-[#ff91a4]');
@@ -473,7 +477,6 @@ export async function loadSliderImages(products) {
     try {
         let sliderData = await fetchSliderRecords();
         
-        // دمج نظام حقن المنتجات التلقائي والشرائح المتلاشية (Fade Carousel) من النسخة المكتوبة إذا كانت قاعدة بيانات السلايدرات فارغة
         if (!sliderData || sliderData.length === 0) {
             if (currentProducts.length >= 1) {
                 sliderData = currentProducts.slice(0, 5).map((p, i) => ({
@@ -494,7 +497,6 @@ export async function loadSliderImages(products) {
 
         const targetSlides = sliderData.slice(0, 5);
         
-        // بناء هيكلية السلايدر المزدوجة المتضمنة للتأثيرات المغناطيسية والبيانات المكتوبة الفاخرة
         let slidesHtml = '';
         let dotsHtml = '';
 
@@ -519,14 +521,13 @@ export async function loadSliderImages(products) {
             `;
 
             dotsHtml += `
-                <button class="bose-dot w-2 h-2 rounded-full transition-all duration-300 ${index === 0 ? 'bg-[#ff91a4] w-4' : 'bg-gray-300'}" data-slide-index="${index}" aria-label="الانتقال للصورة رقم ${index + 1}"></button>
+                <button class="bose-dot w-2 h-2 rounded-full transition-all duration-300 ${index === 0 ? 'bg-[#ff91a4] w-4' : 'bg-gray-300'}" data-slide-index="${index}" aria-label="Annihilation Layer ${index + 1}"></button>
             `;
         });
 
         sliderContainer.innerHTML = slidesHtml;
         if (dotsContainer) dotsContainer.innerHTML = dotsHtml;
 
-        // تشغيل مؤقت التنقل الآلي للمحرك المكتوب (Interval Carousel Loop) بالتزامن مع الانتقال المغناطيسي الأفقي
         let currentSlideIdx = 0;
         if (window.boseSlideInterval) clearInterval(window.boseSlideInterval);
         
@@ -547,7 +548,6 @@ export async function loadSliderImages(products) {
                 });
             }
             
-            // تحديث شارات نقط السلايدر التفاعلية
             const dots = dotsContainer ? dotsContainer.querySelectorAll('button') : [];
             dots.forEach((dot, i) => {
                 if (i === index) {
@@ -567,7 +567,6 @@ export async function loadSliderImages(products) {
     }
 }
 
-// محرك التحكم في الحركة الجانبية المغناطيسية للسلايدر وربطه مع النقط السفلية بالتزامن اللحظي
 function initBoseSovereignSliderEffects(slider, dotsContainer) {
     if (!slider) return;
     
@@ -694,7 +693,7 @@ export function integrateCakeSimulatorWithCart(cakeData) {
             "نوع الكيك والسبونج": cakeData.spongeType || "فانيليا هشة",
             "الحشو والطبقات الداخلية": cakeData.filling || "كريمة غنية",
             "التغطية الخارجية": cakeData.topping || "كريمة شوكولاتة فاخرة",
-            "عبارة الإهداء المكتوبة": cakeData.writtenMessage || "بدون كتابة",
+            "عبارة الإهداء المكتبوبة": cakeData.writtenMessage || "بدون كتابة",
             "إضافات تزيينية مخصصة": [
                 cakeData.hasFruits ? "قطع فواكه موسمية طازجة" : null,
                 cakeData.hasMacarons ? "قطع ماكرون فرنسي" : null,
@@ -891,7 +890,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 padding-bottom: 2.5rem !important;
                 letter-spacing: 0.02em;
             }
-            /* فئة النبض التفاعلي لشارة العربة المستوحاة من التحديث */
             .bose-pulse {
                 animation: boseCartPulse 0.5s ease-in-out;
             }
@@ -930,4 +928,4 @@ window.addEventListener('BoseSweets_Logistics_Updated', () => {
     }
 });
 
-console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد بنجاح للإصدار (V42.0) المبرز لأقسام العرض وهيكلية الكروت الثنائية وسلايدر الشاشة الكاملة المستمر.");
+console.log("👑 BoseSweets Engine: تم ترقية المحرك الموحد بنجاح للإصدار (V42.1) لربط كروت العرض بالصفحة الرئيسية.");
