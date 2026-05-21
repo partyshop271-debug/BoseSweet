@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -102,7 +102,6 @@
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            font-weight: 700; 
             transition: all 0.3s ease; 
             color: var(--bose-text); 
             font-size: 1.1rem; 
@@ -134,7 +133,6 @@
             display: flex; 
             align-items: center; 
             justify-content: space-between; 
-            font-weight: 600; 
             transition: all 0.3s ease; 
             color: var(--bose-muted); 
             font-size: 1rem; 
@@ -156,14 +154,12 @@
             color: var(--bose-muted); 
             font-size: 0.95rem; 
             transition: all 0.3s ease; 
-            font-weight: 600; 
             cursor: pointer; 
             background: transparent; 
         }
         .submenu-item:hover, .submenu-item.active { 
             background-color: rgba(255, 145, 164, 0.12); 
             color: var(--bose-text); 
-            font-weight: 700; 
             transform: translateX(-4px); 
         }
         .submenu-item.nested-item { 
@@ -204,6 +200,14 @@
             background-color: rgba(255, 145, 164, 0.02);
             border-color: rgba(255, 145, 164, 0.2);
         }
+
+        /* حظر صارم لعدم تجاوز أوزان الخطوط الحاكمة بالموقع */
+        h1, h2, h3, h4, h5, h6, font, span, label, p, button, input, select, textarea, summary {
+            font-weight: 700 !important;
+        }
+        .submenu-item, .log-entry p {
+            font-weight: 600 !important;
+        }
     </style>
 </head>
 <body class="bg-brand-bg">
@@ -232,20 +236,13 @@
                 <i data-lucide="shopping-bag" class="w-6 h-6"></i> متابعة الطلبات والكتالوج
             </a>
 
-            <details class="main-menu bose-accordion">
+            <details class="main-menu bose-accordion" open>
                 <summary>
                     <div class="flex items-center gap-4"><i data-lucide="layers" class="w-6 h-6"></i> الفئات والأقسام</div>
                     <i data-lucide="chevron-down" class="w-5 h-5 transition-transform"></i>
                 </summary>
                 <div class="submenu-container">
-                    <a href="admin-catalog.html?section=التورت" class="submenu-item nested-item"><i data-lucide="cake" class="w-4 h-4"></i> قسم التورت المخصصة</a>
-                    <a href="admin-catalog.html?section=الجاتوهات" class="submenu-item nested-item"><i data-lucide="cookie" class="w-4 h-4"></i> قسم الجاتوهات والقطع</a>
-                    <a href="admin-catalog.html?section=السينابون" class="submenu-item nested-item"><i data-lucide="frown" class="w-4 h-4"></i> قسم السينابون الدفء</a>
-                    <a href="admin-catalog.html?section=الدوناتس" class="submenu-item nested-item"><i data-lucide="circle-dot" class="w-4 h-4"></i> قسم الدوناتس الخفيفة</a>
-                    <a href="admin-catalog.html?section=ورد" class="submenu-item nested-item"><i data-lucide="flower" class="w-4 h-4"></i> محاكي بوكيهات الورد</a>
-                    <a href="admin-catalog.html?section=الديسباسيتو" class="submenu-item nested-item"><i data-lucide="container" class="w-4 h-4"></i> كيك الديسباسيتو الفاخر</a>
-                    <a href="admin-catalog.html?section=القشطوطة" class="submenu-item nested-item"><i data-lucide="ice-cream" class="w-4 h-4"></i> حلوى القشطوطة الغنية</a>
-                    <a href="admin-catalog.html?section=كبات السعادة" class="submenu-item nested-item"><i data-lucide="cup-background" class="w-4 h-4"></i> كبات السعادة والشوكولاتة</a>
+                    <a href="admin-catalog.html" class="submenu-item nested-item"><i data-lucide="cake" class="w-4 h-4"></i> استعراض أقسام الكتالوج</a>
                 </div>
             </details>
 
@@ -257,7 +254,7 @@
                 <div class="submenu-container">
                     <a href="admin-theme.html" class="submenu-item nested-item"><i data-lucide="layout-template" class="w-5 h-5"></i> محرك الواجهة والفوتر</a>
                     <a href="admin-logistics.html" class="submenu-item nested-item"><i data-lucide="truck" class="w-5 h-5"></i> التسعير واللوجستيات</a>
-                    <a href="admin-logistics.html?tab=inventory" class="submenu-item nested-item"><i data-lucide="package" class="w-5 h-5"></i> إدارة كميات المخزون</a>
+                    <a href="admin-logistics.html" class="submenu-item nested-item"><i data-lucide="package" class="w-5 h-5"></i> إدارة كميات المخزون</a>
                 </div>
             </details>
         </nav>
@@ -477,7 +474,7 @@
                 networkStatus.className = "text-green-400 font-bold";
             }
 
-            // 1. المراقبة التزامنية لبيانات الكتالوج والمخزون الموحد وتحديث الـ Active والـ lowStock والـ alerts
+            // 1. المراقبة التزامنية لبيانات الكتالوج والمخزون الموحد
             db.collection('catalog').onSnapshot((snapshot) => {
                 let totalProducts = snapshot.size;
                 let activeProducts = 0;
@@ -509,7 +506,6 @@
                 }
                 if (alertsCountEl) {
                     alertsCountEl.textContent = `${lowStockItems} تنبيهات`;
-                    const cardAlerts = document.getElementById('card-alerts');
                     const alertIndicator = document.getElementById('alert-indicator');
                     if (lowStockItems > 0 && alertIndicator) {
                         alertIndicator.textContent = "تحذير نشط";
@@ -535,7 +531,7 @@
                 console.error("Catalog Stream Error:", error);
             });
 
-            // 2. البث الحي والمستمر لسجلات النظام والعمليات التشخيصية واستكمال كود معالجة السجلات الحية بشكل ممتد وكامل دون بتر
+            // 2. البث الحي والمستمر لسجلات النظام والعمليات التشخيصية دون بتر
             db.collection('system').doc('syncFlag').onSnapshot((docSnap) => {
                 if (docSnap.exists) {
                     const flagData = docSnap.data();
@@ -572,7 +568,7 @@
                         borderClass = "border-emerald-500";
                         bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
                     } else if (currentSource === 'admin_logistics_inventory') {
-                        logMessage = "تعديل مستويات الوفرة: تم تحديث كميات حقل المخزون الفعلي (inStock) لمنتجات المتجر لمنع الطلبات العشوائية أصناف نافذة.";
+                        logMessage = "تعديل مستويات الوفرة: تم تحديث كميات حقل المخزون الفعلي (inStock) لمنتجات المتجر لمنع الطلبات العشوائية للأصناف النافذة.";
                         logType = "success";
                         borderClass = "border-emerald-500";
                         bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
