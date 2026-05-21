@@ -781,17 +781,14 @@
                             let rawProductsArray = [];
                             let rawCategoriesArray = [];
 
-                            // محرك التحليل والمسح الذكي المتقدم الشامل لكافة التنسيقات والهياكل المحتملة في السحابة
                             if (Array.isArray(backupData)) {
                                 rawProductsArray = backupData;
                             } else if (typeof backupData === 'object' && backupData !== null) {
-                                // فحص واستخلاص مصفوفات المنتجات من الهياكل المتنوعة أو المركبة
                                 if (Array.isArray(backupData.products)) rawProductsArray = backupData.products;
                                 else if (Array.isArray(backupData.catalog)) rawProductsArray = backupData.catalog;
                                 else if (Array.isArray(backupData.menu)) rawProductsArray = backupData.menu;
                                 else if (Array.isArray(backupData.items)) rawProductsArray = backupData.items;
                                 else {
-                                    // البحث الذكي عن أول مصفوفة داخل الكائن إذا اختلفت المسميات
                                     for (let key in backupData) {
                                         if (Array.isArray(backupData[key])) {
                                             rawProductsArray = backupData[key];
@@ -799,7 +796,6 @@
                                         }
                                     }
                                 }
-                                // استخلاص مصفوفة الأصناف إن وجدت لتأمين التوافق الكلي
                                 if (Array.isArray(backupData.categories)) {
                                     rawCategoriesArray = backupData.categories;
                                 }
@@ -809,7 +805,6 @@
                                 throw new Error("ملف النسخة الاحتياطية فارغ أو يحتوي على بنية غير متوافقة مع قنوات قراءة النظام.");
                             }
 
-                            // فلترة، تطهير، ومعايرة خصائص المنتجات لضمان السلامة المطلقة للبيانات سحابياً وثبات أنماط البيانات الحقلية
                             const sanitizedProductsArray = rawProductsArray.map((product) => {
                                 const generatedId = product.id || product.productId || window.db.collection('catalog').doc().id;
                                 return {
@@ -823,7 +818,6 @@
                                 };
                             });
 
-                            // التوافق الرجعي المتقدم: في حالة عدم وجود مصفوفة أصناف صريحة، يتم استخراج الأصناف ديناميكياً لتأمين توافق محرك الموقع الكامل
                             if (rawCategoriesArray.length === 0) {
                                 const categoriesSet = new Set();
                                 sanitizedProductsArray.forEach(p => { if (p.category) categoriesSet.add(p.category); });
@@ -834,7 +828,6 @@
                                 }));
                             }
 
-                            // تدمير الكتالوج التالف أو المجهول وتطهير التفرع السحابي عبر العمليات الدفعية (Batches)
                             const currentSnapshot = await window.db.collection('catalog').get();
                             const batchDelete = window.db.batch();
                             currentSnapshot.forEach((doc) => {
@@ -842,7 +835,6 @@
                             });
                             await batchDelete.commit();
 
-                            // حقن البيانات المطهرة والمعايرة بأعلى كفاءة داخل الكتالوج المركزي
                             const batchInsert = window.db.batch();
                             sanitizedProductsArray.forEach((product) => {
                                 const docRef = window.db.collection('catalog').doc(product.id);
@@ -850,14 +842,53 @@
                             });
                             await batchInsert.commit();
 
-                            // تأمين قنوات المزامنة وحفظ نسخة احتياطية من مصفوفة الأصناف في مستند الإعدادات المتوافق لمنع عطل بقية الأجزاء لوحة التحكم
                             if (rawCategoriesArray.length > 0) {
                                 await window.db.collection('system').doc('uiSettings').set({
                                     categories: rawCategoriesArray
                                 }, { merge: true });
                             }
 
-                            // إطلاق إشارة التحديث السيادية لبقية ملفات المنظومة
                             await window.db.collection('system').doc('syncFlag').set({
                                 lastAdminUpdate: Date.now(),
-                                updateSource: '
+                                updateSource: 'admin_catalog_rollback'
+                            }, { merge: true });
+
+                            alert(`تمت استعادة كتالوج المنتجات بنجاح! إجمالي الأصناف الآمنة المحقونة سحابياً: ${sanitizedProductsArray.length}`);
+                            fileInput.value = ""; 
+
+                        } catch (err) {
+                            console.error("Rollback Process Error:", err);
+                            alert(`فشلت عملية الاستعادة: ${err.message || "تنسيق ملف JSON غير صحيح"}`);
+                        } final {
+                            if (textBtn && iconBtn) {
+                                textBtn.textContent = "بدء استعادة الأصناف والمنتجات فورياً";
+                                iconBtn.classList.remove('animate-spin');
+                            }
+                            btnRollback.disabled = false;
+                        }
+                    };
+                    reader.readAsText(selectedFile);
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            
+            // محرك تشغيل مرن يدعم المزامنة الفورية في البيئات المحلية والسحابية للموبايل والكمبيوتر
+            if (typeof window.auth !== 'undefined' && window.auth) {
+                window.auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        startLiveStreamListeners();
+                    } else {
+                        // كوبري فحص مباشر (Fallback) لضمان التشغيل في حالة عدم استجابة جلسة التحقق
+                        startLiveStreamListeners();
+                    }
+                });
+            } else {
+                startLiveStreamListeners();
+            }
+        });
+    </script>
+</body>
+</html>
