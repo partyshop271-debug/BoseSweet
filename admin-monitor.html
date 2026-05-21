@@ -59,7 +59,6 @@
         ::-webkit-scrollbar-thumb { background: var(--bose-border); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--bose-pink); }
 
-        /* هندسة القائمة الجانبية الشجرية الفاخرة */
         .sidebar { 
             background-color: var(--bose-surface) !important; 
             border-left: 1px solid var(--bose-border) !important; 
@@ -93,7 +92,6 @@
             .main-content { margin-right: 0 !important; width: 100%; } 
         }
         
-        /* القوائم المنسدلة الشجرية المتداخلة بدقة */
         details.main-menu > summary { 
             list-style: none; 
             cursor: pointer; 
@@ -124,26 +122,6 @@
             gap: 2px;
         }
         
-        details.sub-menu { margin-bottom: 4px; }
-        details.sub-menu > summary { 
-            list-style: none; 
-            cursor: pointer; 
-            padding: 12px 14px; 
-            border-radius: 10px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: space-between; 
-            transition: all 0.3s ease; 
-            color: var(--bose-muted); 
-            font-size: 1rem; 
-            background-color: rgba(0,0,0,0.2); 
-        }
-        details.sub-menu > summary::-webkit-details-marker { display: none; }
-        details.sub-menu > summary:hover, details.sub-menu[open] > summary { 
-            color: var(--bose-text); 
-            background-color: rgba(255, 145, 164, 0.05); 
-        }
-        
         .submenu-item { 
             display: flex; 
             align-items: center; 
@@ -169,7 +147,6 @@
 
         .main-content { margin-right: 340px; min-height: 100vh; display: flex; flex-direction: column; transition: margin 0.4s ease; }
         
-        /* كروت المراقبة التشخيصية */
         .monitor-card {
             border: 2px solid var(--bose-border);
             border-radius: 24px;
@@ -201,7 +178,6 @@
             border-color: rgba(255, 145, 164, 0.2);
         }
 
-        /* حظر صارم لعدم تجاوز أوزان الخطوط الحاكمة بالموقع */
         h1, h2, h3, h4, h5, h6, font, span, label, p, button, input, select, textarea, summary {
             font-weight: 700 !important;
         }
@@ -274,7 +250,7 @@
                     <span id="connection-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
                     <span id="connection-dot" class="relative inline-flex rounded-full h-3.5 w-3.5 bg-amber-500"></span>
                 </span>
-                <span id="connection-text" class="font-bold text-brand-textMuted">جاري جلب نبض السحابة...</span>
+                <span id="connection-text" class="font-bold text-brand-textMuted">جاري فحص الجلسة والاتصال...</span>
             </div>
         </header>
 
@@ -366,7 +342,7 @@
                             <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-pink opacity-75"></span>
                             <span class="relative inline-flex rounded-full h-6 w-6 bg-brand-pink"></span>
                         </span>
-                        <span>جاري إنشاء قناة اتصال آمنة ومزامنة السجلات الحية...</span>
+                        <span>جاري التحقق من الصلاحيات وربط قنوات البث الحي...</span>
                     </div>
                 </div>
             </div>
@@ -604,17 +580,27 @@
             });
         }
 
+        // التدخل الهندسي الحاسم: ربط الصفحة بمستمع الأمان الرسمي وبتر التوثيق المجهول العشوائي
         document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            auth.signInAnonymously().then(() => {
-                startLiveStreamListeners();
-            }).catch((error) => {
-                console.error("Auth Error:", error);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            
+            if (typeof window.auth !== 'undefined' && window.auth) {
+                window.auth.onAuthStateChanged((user) => {
+                    if (user && sessionStorage.getItem('bosy_admin_auth') === 'verified') {
+                        // المسؤول مسجل دخوله رسمياً ومحصن؛ نفتح قنوات البث الحي فوراً
+                        startLiveStreamListeners();
+                    } else {
+                        // الجلسة مفقودة أو غير مصرح لها؛ طرد أمني فوري لبوابة الدخول
+                        sessionStorage.removeItem('bosy_admin_auth');
+                        window.location.href = 'login.html';
+                    }
+                });
+            } else {
                 const placeholder = document.getElementById('loading-placeholder');
                 if (placeholder) {
-                    placeholder.innerHTML = `<span class="text-brand-discount font-bold">⚠️ عطل في تأمين جلسة المزامنة السحابية</span>`;
+                    placeholder.innerHTML = `<span class="text-brand-discount font-bold">⚠️ عطل حرج: محرك السحابة غير متصل بالمتصفح حالياً.</span>`;
                 }
-            });
+            }
         });
     </script>
 </body>
