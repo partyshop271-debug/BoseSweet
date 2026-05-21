@@ -26,7 +26,8 @@
                             textMuted: '#e0c8cc',
                             discount: '#f43f5e'
                         }
-                    },\n                    fontFamily: { sans: ['Cairo', 'sans-serif'] }
+                    },
+                    fontFamily: { sans: ['Cairo', 'sans-serif'] }
                 }
             }
         }
@@ -57,15 +58,6 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #ff91a4;
         }
-        @keyframes pulse-ring {
-            0% { transform: scale(0.33); opacity: 1; }
-            80%, 100% { opacity: 0; }
-        }
-        @keyframes pulse-dot {
-            0% { transform: scale(0.8); }
-            50% { transform: scale(1); }
-            100% { transform: scale(0.8); }
-        }
         .update-flash {
             animation: flash-bg 0.8s ease-out;
         }
@@ -93,6 +85,18 @@
             opacity: 1;
             pointer-events: auto;
         }
+        
+        /* حل جذري هندسي لمنع تداخل عناصر القائمة الجانبية */
+        .bose-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700 !important;
+            transition: all 0.2s ease;
+        }
     </style>
 </head>
 <body class="bg-brand-bg text-white min-h-screen antialiased select-none selection:bg-brand-pink/30 selection:text-white">
@@ -117,29 +121,29 @@
                     </button>
                 </div>
 
-                <nav class="p-4 space-y-1.5">
-                    <a href="admin-monitor.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-brand-pink/10 text-brand-pink font-bold text-sm border border-brand-pink/20 transition-all">
-                        <i data-lucide="activity" class="w-4 h-4"></i>
+                <nav class="p-4 space-y-2">
+                    <a href="admin-monitor.html" class="bose-nav-item bg-brand-pink/10 text-brand-pink border border-brand-pink/20">
+                        <i data-lucide="activity" class="w-4 h-4 shrink-0"></i>
                         <span>شاشة المراقبة BoseMonitor</span>
                     </a>
-                    <a href="admin-catalog.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brand-textMuted hover:text-white hover:bg-brand-border/20 font-medium text-sm transition-all">
-                        <i data-lucide="layers" class="w-4 h-4"></i>
+                    <a href="admin-catalog.html" class="bose-nav-item text-brand-textMuted hover:text-white hover:bg-brand-border/20 border border-transparent">
+                        <i data-lucide="layers" class="w-4 h-4 shrink-0"></i>
                         <span>إدارة كتالوج المنتجات</span>
                     </a>
-                    <a href="admin-orders.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brand-textMuted hover:text-white hover:bg-brand-border/20 font-medium text-sm transition-all">
-                        <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+                    <a href="admin-orders.html" class="bose-nav-item text-brand-textMuted hover:text-white hover:bg-brand-border/20 border border-transparent">
+                        <i data-lucide="shopping-bag" class="w-4 h-4 shrink-0"></i>
                         <span>متابعة الطلبات والأوردرات</span>
                     </a>
-                    <a href="admin-simulator.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brand-textMuted hover:text-white hover:bg-brand-border/20 font-medium text-sm transition-all">
-                        <i data-lucide="sliders" class="w-4 h-4"></i>
+                    <a href="admin-simulator.html" class="bose-nav-item text-brand-textMuted hover:text-white hover:bg-brand-border/20 border border-transparent">
+                        <i data-lucide="sliders" class="w-4 h-4 shrink-0"></i>
                         <span>محاكي تسعير الكيك المخصص</span>
                     </a>
-                    <a href="admin-theme.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brand-textMuted hover:text-white hover:bg-brand-border/20 font-medium text-sm transition-all">
-                        <i data-lucide="palette" class="w-4 h-4"></i>
+                    <a href="admin-theme.html" class="bose-nav-item text-brand-textMuted hover:text-white hover:bg-brand-border/20 border border-transparent">
+                        <i data-lucide="palette" class="w-4 h-4 shrink-0"></i>
                         <span>التحكم في الهوية البصرية</span>
                     </a>
-                    <a href="admin-logistics.html" class="flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brand-textMuted hover:text-white hover:bg-brand-border/20 font-medium text-sm transition-all">
-                        <i data-lucide="package" class="w-4 h-4"></i>
+                    <a href="admin-logistics.html" class="bose-nav-item text-brand-textMuted hover:text-white hover:bg-brand-border/20 border border-transparent">
+                        <i data-lucide="package" class="w-4 h-4 shrink-0"></i>
                         <span>المخزون واللوجستيات</span>
                     </a>
                 </nav>
@@ -482,15 +486,44 @@
                 console.error("Catalog Stream Error:", error);
             });
 
+            // آليات وقائية لكسر حالة الانتظار الأبدي في حال غياب حقل المزامنة الرئيسي بالسحابة
+            let flagLoaded = false;
+            const fallbackTimeout = setTimeout(() => {
+                if (!flagLoaded) {
+                    const placeholder = document.getElementById('loading-placeholder');
+                    if (placeholder) {
+                        placeholder.innerHTML = `
+                            <div class="p-4 bg-brand-surface border border-brand-border rounded-xl text-center">
+                                <p class="text-xs text-brand-textMuted/60 font-semibold">بوابة السجلات متصلة بالسحابة | في انتظار حدوث عمليات تشغيلية جديدة...</p>
+                            </div>
+                        `;
+                    }
+                }
+            }, 4000);
+
             // 2. البث الحي والمستمر لسجلات النظام والعمليات التشخيصية دون بتر
             window.db.collection('system').doc('syncFlag').onSnapshot((docSnap) => {
+                flagLoaded = true;
+                clearTimeout(fallbackTimeout);
+                
                 if (docSnap.exists) {
                     const flagData = docSnap.data();
                     const container = document.getElementById('logs-container');
                     const placeholder = document.getElementById('loading-placeholder');
                     if (placeholder) placeholder.remove();
 
-                    let formattedDate = new Date(flagData.lastAdminUpdate || Date.now()).toLocaleString('ar-EG');
+                    if (!flagData.updateSource || !flagData.lastAdminUpdate) {
+                        if (container && container.children.length === 0) {
+                            container.innerHTML = `
+                                <div class="p-4 text-center text-brand-textMuted/40 text-xs font-bold">
+                                    لا توجد عمليات مسجلة حالياً، النظام مستقر بالكامل.
+                                </div>
+                            `;
+                        }
+                        return;
+                    }
+
+                    let formattedDate = new Date(flagData.lastAdminUpdate).toLocaleString('ar-EG');
                     let logMessage = "تم رصد إجراء تشغيلي مجهول في النظام وبثه للمنظومة.";
                     let logType = "info";
                     let borderClass = "border-brand-pink";
@@ -531,7 +564,7 @@
                     }
 
                     const newLogHtml = `
-                        <div class="log-entry p-5 rounded-2xl border-r-4 ${borderClass} shadow-inner transition-all">
+                        <div class="log-entry p-5 rounded-2xl border-r-4 ${borderClass} shadow-inner transition-all bg-brand-surface border border-brand-border/30">
                             <div class="flex justify-between text-xs text-brand-textMuted font-bold mb-3">
                                 <span>محرك النظام المركزي السحابي</span>
                                 <span class="font-mono">${formattedDate}</span>
@@ -542,6 +575,8 @@
                     `;
 
                     if (container) {
+                        const existingPlaceholder = document.getElementById('loading-placeholder');
+                        if (existingPlaceholder) existingPlaceholder.remove();
                         if (container.children.length > 30) container.lastElementChild.remove();
                         container.insertAdjacentHTML('afterbegin', newLogHtml);
                     }
@@ -552,20 +587,22 @@
                     
                     triggerSilentToast("مزامنة حية: رصد إشارة تشغيلية جديدة من السحابة.");
                 }
+            }, (error) => {
+                console.error("System Stream Error:", error);
+                flagLoaded = true;
+                clearTimeout(fallbackTimeout);
             });
         }
 
-        // التدخل الهندسي الحاسم: ربط الصفحة بمستمع الأمان الرسمي وبتر التوثيق المجهول العشوائي
+        // ربط الصفحة بمستمع الأمان الرسمي وبتر التوثيق المجهول العشوائي
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
             
             if (typeof window.auth !== 'undefined' && window.auth) {
                 window.auth.onAuthStateChanged((user) => {
                     if (user && sessionStorage.getItem('bosy_admin_auth') === 'verified') {
-                        // المسؤول مسجل دخوله رسمياً ومحصن؛ نفتح قنوات البث الحي فوراً
                         startLiveStreamListeners();
                     } else {
-                        // الجلسة مفقودة أو غير مصرح لها؛ طرد أمني فوري لبوابة الدخول
                         sessionStorage.removeItem('bosy_admin_auth');
                         window.location.href = 'login.html';
                     }
