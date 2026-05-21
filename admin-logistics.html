@@ -102,7 +102,6 @@
         .shipping-zone-item { background-color: var(--bose-bg); border: 2px solid var(--bose-border); border-radius: 16px; padding: 20px; display: flex; align-items: center; justify-content: space-between; transition: all 0.3s ease; }
         .shipping-zone-item:hover { border-color: var(--bose-pink); box-shadow: 0 5px 15px rgba(0,0,0,0.3); transform: translateX(-5px); }
 
-        /* تثبيت أبعاد إدخالات الأرقام للكميات والمخزون لمنع الإدخال الخاطئ وضمان ثبات البيانات */
         input[type="number"].stock-input-field {
             width: 60px !important;
             text-align: center !important;
@@ -336,7 +335,6 @@
                 </section>
             </div>
 
-            <!-- تبويب إدارة كميات المخزون المستحدث للتحكم بالمنتجات والكميات فورياً -->
             <div id="tab-inventory" class="admin-tab-content">
                 <section id="inventory-section" class="admin-section">
                     <div class="flex flex-col xl:flex-row items-start xl:items-center justify-between mb-10 gap-6">
@@ -371,13 +369,11 @@
         const db = getFirestore(app);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-        // تهيئة الحالة البرمجية للموقع
         window.BoseState = window.BoseState || { catalog: [] };
         let currentUser = null;
         
         lucide.createIcons();
 
-        // نظام التحقق وتأمين العمليات قبل التواصل مع السحابة
         const initAuth = async () => {
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                 try {
@@ -503,26 +499,31 @@
             label.innerText = checkbox.checked ? "الاستلام من المقر متاح" : "الاستلام من المقر غير متاح";
         };
 
-        // دالة ربط المخزون ومزامنة الحالة وتحديث ui-engine.js فوراً
         window.updateStock = async function(productId, quantity) {
             if (!currentUser) return;
             const qty = Math.max(0, parseInt(quantity) || 0);
             
-            // 1. تحديث البيانات محلياً داخل مصفوفة الحالة الأساسية للموقع لضمان الاستجابة السريعة
             const product = window.BoseState.catalog.find(p => p.id === productId);
             if (product) {
                 product.inStock = qty;
             }
 
-            // 2. إرسال حدث مخصص لالتقاطه من قبل محرك الواجهة ومحرك السلة فوراً
             const event = new CustomEvent('BoseSweets_Logistics_Updated', {
                 detail: { productId, inStock: qty }
             });
             window.dispatchEvent(event);
 
-            // 3. حفظ القيمة وتأكيدها برمجياً وسحابياً داخل السحابة الآمنة
             try {
-                // حفظ داخل المسار المعتمد الخاص بالمشروع
+                // تعديل كمية وحالة المخزون مباشرة من مجموعة البيانات الرئيسية الموحدة لضمان اتساق البيانات والربط الشامل للموقع
+                try {
+                    await setDoc(doc(db, 'catalog', productId), {
+                        inStock: qty,
+                        updatedAt: Date.now()
+                    }, { merge: true });
+                } catch(err) {
+                    console.error("Direct update on catalog collection failed:", err);
+                }
+
                 try {
                     await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', productId), {
                         inStock: qty,
@@ -530,7 +531,6 @@
                     }, { merge: true });
                 } catch(err) {}
 
-                // دعم المسار الأساسي التوافقي لحماية تشغيل بقية الصفحات والملفات القديمة
                 try {
                     await setDoc(doc(db, 'products', productId), {
                         inStock: qty,
@@ -538,10 +538,8 @@
                     }, { merge: true });
                 } catch(err) {}
 
-                // إطلاق إشارة التحديث العام للمزامنة
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
 
-                // تحديث شارات الحالة البصرية
                 const badge = document.getElementById(`stock-badge-${productId}`);
                 if (badge) {
                     if (qty > 0) {
@@ -564,7 +562,6 @@
             window.updateStock(productId, value);
         };
 
-        // استدعاء المنتجات وعرضها بواجهة إدارة كميات المخزون
         async function loadInventoryData() {
             const listContainer = document.getElementById('inventory-list');
             if (!listContainer) return;
@@ -576,11 +573,16 @@
                 let productsList = [];
                 let querySnapshot;
 
-                // محاولة القراءة من المسار المعتمد للمشروع أولاً
+                // قراءة البيانات في قائمة إدارة المخزون مباشرة من المصدر الموحد للبيانات
                 try {
-                    querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'products'));
+                    querySnapshot = await getDocs(collection(db, 'catalog'));
                 } catch(e) {
-                    querySnapshot = await getDocs(collection(db, 'products'));
+                    console.warn("Failed to fetch from unified catalog collection, using fallbacks:", e);
+                    try {
+                        querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'products'));
+                    } catch(err) {
+                        querySnapshot = await getDocs(collection(db, 'products'));
+                    }
                 }
 
                 if (!querySnapshot || querySnapshot.empty) {
@@ -644,7 +646,6 @@
         async function loadLogisticsData() {
             if (!currentUser) return;
             try {
-                // مزامنة حالة المتجر والحد الأدنى
                 const storeSnap = await getDoc(doc(db, 'settings', 'logistics'));
                 if (storeSnap.exists()) {
                     const storeData = storeSnap.data();
@@ -661,7 +662,6 @@
                     document.getElementById('stat-store-status').style.color = storeData.isOpen !== false ? "#ffffff" : "#ef4444";
                 }
 
-                // استدعاء قواعد التسعير
                 const priceSnap = await getDoc(doc(db, 'settings', 'pricingRules'));
                 if (priceSnap.exists()) {
                     const priceData = priceSnap.data();
@@ -680,12 +680,15 @@
                     document.getElementById('adm-layer-cash-url').value = priceData.layerCashUrl || '';
                 }
 
-                // استرجاع الكتالوج وتعبئة مصفوفة الحالة العامة BoseState لضمان التوافقية مع محركات العميل
                 let catalogSnapshot;
                 try {
-                    catalogSnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'products'));
+                    catalogSnapshot = await getDocs(collection(db, 'catalog'));
                 } catch(e) {
-                    catalogSnapshot = await getDocs(collection(db, 'products'));
+                    try {
+                        catalogSnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'products'));
+                    } catch(err) {
+                        catalogSnapshot = await getDocs(collection(db, 'products'));
+                    }
                 }
                 if (!catalogSnapshot || catalogSnapshot.empty) {
                     try {
@@ -700,7 +703,6 @@
                     });
                 }
 
-                // استرجاع مناطق الشحن والتوصيل
                 const querySnapshot = await getDocs(collection(db, 'shipping'));
                 const list = document.getElementById('zones-list');
                 let html = '';
@@ -801,52 +803,4 @@
             document.getElementById('zone-editor-title').innerHTML = '<i data-lucide="edit-2" class="w-8 h-8 text-brand-pink"></i> تعديل التسعيرة';
             lucide.createIcons();
             
-            document.getElementById('zone-name').focus();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.saveZone = async function() {
-            if (!currentUser) return;
-            const idInput = document.getElementById('zone-id').value;
-            const name = document.getElementById('zone-name').value.trim();
-            const fee = parseFloat(document.getElementById('zone-fee').value) || 0;
-
-            if (!name) { showToast("يرجى كتابة اسم المنطقة.", "error"); return; }
-
-            try {
-                const zoneData = { name: name, fee: fee, updatedAt: Date.now() };
-                if (idInput) {
-                    await setDoc(doc(db, 'shipping', idInput), zoneData, { merge: true });
-                } else {
-                    await setDoc(doc(collection(db, 'shipping')), zoneData);
-                }
-                
-                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                showToast("تم اعتماد المنطقة ورسومها بنجاح.");
-                clearZoneForm();
-                loadLogisticsData();
-            } catch (e) { showToast("تعذر حفظ بيانات المنطقة.", "error"); }
-        };
-
-        window.deleteZone = async function(id, name) {
-            if (!currentUser) return;
-            window.showConfirm(`قرار سيادي: هل ترغبين في إيقاف خدمة التوصيل لمنطقة [${name}] وإزالتها نهائياً؟`, async () => {
-                try {
-                    await deleteDoc(doc(db, 'shipping', id));
-                    await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                    showToast(`تم إيقاف الشحن لمنطقة [${name}].`);
-                    loadLogisticsData();
-                } catch (e) { showToast("عائق فني أثناء الحذف.", "error"); }
-            });
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // التحقق من حالة التوصيل والمصادقة المسبقة
-            if (currentUser) {
-                loadLogisticsData();
-            }
-        });
-    </script>
-</body>
-</html>
-
+            document.getElementById('zone-name

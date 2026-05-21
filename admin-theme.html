@@ -8,7 +8,6 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- استدعاء كافة الخطوط العربية الراقية لضمان عمل المعاينة الحية بكفاءة -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;700;900&family=Almarai:wght@400;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -407,7 +406,6 @@
                 <div class="w-12 h-12 rounded-xl bg-brand-bg border border-brand-pink/40 flex items-center justify-center shadow-lg">
                     <i data-lucide="gem" class="w-7 h-7 text-brand-pink"></i>
                 </div>
-                <!-- الفئة bose-logo-text مضافة لربط تغيير الاسم اللحظي بالرأس واللوجو المكتوب -->
                 <h1 class="text-2xl font-black text-brand-textMain tracking-tight bose-logo-text">حلويات بوسي</h1>
             </div>
             <button onclick="toggleSidebar()" class="lg:hidden text-brand-textMuted hover:text-brand-pink"><i data-lucide="x" class="w-8 h-8"></i></button>
@@ -468,7 +466,6 @@
                 <button type="button" class="admin-tab-btn" onclick="switchAdminTab(event, 'tab-layout')">3. تخطيط الواجهة والبناء المباشر</button>
             </div>
 
-            <!-- التبويب الأول: الهوية والألوان الفاخرة -->
             <div id="tab-colors" class="admin-tab-content active-tab">
                 
                 <section id="ui-header" class="admin-section">
@@ -478,10 +475,9 @@
                             <div>
                                 <label class="form-label">الاسم المعروض في أعلى الموقع (اللوجو النصي)</label>
                                 <input type="text" id="header-logo-text" class="form-input text-lg font-black" placeholder="حلويات بوسي">
-                                <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يظهر هذا النص في الزاوية العلوية لجميع صفحات المتجر بجوار الماسة الرسمية للعلامة التجارية.</p>
+                                <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يظهر this النص في الزاوية العلوية لجميع صفحات المتجر بجوار الماسة الرسمية للعلامة التجارية.</p>
                             </div>
                             
-                            <!-- صندوق المعاينة اللحظية للهيدر والشعار -->
                             <div class="mt-4 bg-[#1a1012] p-6 rounded-2xl border border-brand-border flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                                 <span class="text-brand-textMuted font-bold text-base">معاينة حية لشكل شعار المتجر:</span>
                                 <div class="flex items-center gap-3 bg-brand-surface px-6 py-3 rounded-xl border border-brand-pink/30 shadow-md">
@@ -495,7 +491,6 @@
                     </div>
                 </section>
 
-                <!-- قسم تخصيص لوحة الألوان والهوية البصرية -->
                 <section id="ui-colors" class="admin-section">
                     <div class="admin-card">
                         <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
@@ -564,7 +559,6 @@
                                 <div><label class="form-label">رابط حساب التيك توك</label><input type="text" id="footer-tiktok" class="form-input text-left" dir="ltr"></div>
                             </div>
                             
-                            <!-- صندوق المعاينة الحية للفوتر الرقمي ومنافذ الاتصال -->
                             <div class="bg-[#1a1012] p-8 rounded-2xl border border-brand-border space-y-5">
                                 <h4 class="text-brand-pink font-black text-lg border-b border-brand-border pb-3 flex items-center gap-2">
                                     <i data-lucide="layout" class="w-5 h-5"></i> معاينة حية لقسم الفوتر (ذيل الموقع)
@@ -587,10 +581,8 @@
                 
             </div>
 
-            <!-- التبويب الثاني: الخطوط والنصوص الإعلانية -->
             <div id="tab-typography" class="admin-tab-content">
                 
-                <!-- قسم تخصيص الخط العربي الرسمي للموقع -->
                 <section id="ui-fonts" class="admin-section">
                     <div class="admin-card">
                         <h3 class="text-2xl font-black text-brand-textMain mb-8 flex items-center gap-3 border-b border-brand-border pb-6">
@@ -608,7 +600,6 @@
                                 <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يؤثر هذا الاختيار مباشرة على مظهر جميع العناوين، الفقرات، والأسعار لعملاء متجر حلويات بوسي.</p>
                             </div>
 
-                            <!-- منطقة محاكاة ومعاينة الخطوط الحية -->
                             <div class="bg-[#1a1012] p-8 rounded-2xl border-2 border-brand-border">
                                 <span class="text-xs font-black text-brand-pink tracking-wider block mb-4 uppercase">معاينة حية للنصوص بالخط المحدد:</span>
                                 <div id="typography-preview-box" class="space-y-4">
@@ -617,7 +608,7 @@
                                 </div>
                             </div>
 
-                            <button onclick="saveFontData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> اعتماد وتثبيت الخط الرسمي</button>
+                            <button onclick="saveFontData()" class="btn-solid"><i data-lucide="save" class="w-6 h-6"></i> اعتماد وتتبيث الخط الرسمي</button>
                         </div>
                     </div>
                 </section>
@@ -643,7 +634,6 @@
                 </section>
             </div>
 
-            <!-- التبويب الثالث: تخطيط الواجهة والبناء المباشر -->
             <div id="tab-layout" class="admin-tab-content">
                 <section id="dashboard" class="admin-section">
                     <div class="admin-card flex flex-col items-center justify-center py-24 border-2 border-dashed border-brand-border bg-transparent shadow-none">
@@ -687,7 +677,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         
-        const firebaseConfig = {
+        // آلية التهيئة الذاتية المرنة (Fallback Setup) لتجنب توقف الشاشة في بيئات العمل المتنوعة
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
             apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
             authDomain: "bosy-sweets.firebaseapp.com",
             projectId: "bosy-sweets",
@@ -835,7 +826,7 @@
                                 </div>
                                 <input type="range" min="10" max="100" step="5" value="${block.waterfallSpeed || 40}" 
                                     oninput="document.getElementById('w-val-water-${index}').innerText = this.value + ' ثانية'" 
-                                    onchange="updateBlockData(${index}, 'waterfallSpeed', parseInt(this.value))">
+                                    onchange="window.updateBlockData(${index}, 'waterfallSpeed', parseInt(this.value))">
                                 <p class="bose-helper-text mt-3"><i data-lucide="alert-circle" class="w-4 h-4"></i> تقليل الرقم يزيد من سرعة صعود الصور للفت الانتباه السريع. زيادة الرقم يجعل الحركة بطيئة وانسيابية مريحة لعين المتصفح.</p>
                             </div>
                         </div>
@@ -848,7 +839,7 @@
                             
                             <div class="mb-8 pb-8 border-b border-brand-border/50">
                                 <label class="form-label">مصدر تغذية المنتجات لهذا القسم</label>
-                                <select class="form-select w-full md:w-1/2" onchange="updateBlockData(${index}, 'dataSource', this.value)">
+                                <select class="form-select w-full md:w-1/2" onchange="window.updateBlockData(${index}, 'dataSource', this.value)">
                                     <option value="all" ${block.dataSource === 'all' ? 'selected' : ''}>كافة الكتالوج المعتمد (مختلط)</option>
                                     <option value="latest" ${block.dataSource === 'latest' ? 'selected' : ''}>وصل حديثاً (أحدث المنتجات المضافة)</option>
                                     <option value="bestsellers" ${block.dataSource === 'bestsellers' ? 'selected' : ''}>الأكثر مبيعاً ورواجاً</option>
@@ -868,7 +859,7 @@
                                     </div>
                                     <input type="range" min="150" max="600" step="10" value="${block.cardWidth || 280}" 
                                         oninput="document.getElementById('w-val-w-${index}').innerText = this.value + 'px'" 
-                                        onchange="updateBlockData(${index}, 'cardWidth', parseInt(this.value))">
+                                        onchange="window.updateBlockData(${index}, 'cardWidth', parseInt(this.value))">
                                     <p class="bose-helper-text"><i data-lucide="move-horizontal" class="w-4 h-4"></i> لتحديد عرض الكارت. زيادة العرض تمنح الصور مساحة أفقية أكبر وتبرز التفاصيل بدقة.</p>
                                 </div>
                                 
@@ -879,7 +870,7 @@
                                     </div>
                                     <input type="range" min="150" max="800" step="10" value="${block.cardHeight || 350}" 
                                         oninput="document.getElementById('w-val-h-${index}').innerText = this.value + 'px'" 
-                                        onchange="updateBlockData(${index}, 'cardHeight', parseInt(this.value))">
+                                        onchange="window.updateBlockData(${index}, 'cardHeight', parseInt(this.value))">
                                     <p class="bose-helper-text"><i data-lucide="move-vertical" class="w-4 h-4"></i> لتغيير الارتفاع الرأسي لصورة المنتج في الكارت بشكل حر تماماً للتحكم بنسبة الطول.</p>
                                 </div>
                             </div>
@@ -887,7 +878,7 @@
                             ${block.type === 'grid' ? `
                             <div class="mt-8 pt-8 border-t border-brand-border/50">
                                 <label class="form-label">عدد الأعمدة في الشبكة لمتصفحي الكمبيوتر</label>
-                                <select class="form-select w-full md:w-1/2" onchange="updateBlockData(${index}, 'gridCols', parseInt(this.value))">
+                                <select class="form-select w-full md:w-1/2" onchange="window.updateBlockData(${index}, 'gridCols', parseInt(this.value))">
                                     <option value="2" ${block.gridCols === 2 ? 'selected' : ''}>2 عمود (عرض كروت ضخمة ومميزة)</option>
                                     <option value="3" ${block.gridCols === 3 ? 'selected' : ''}>3 أعمدة (توازن مثالي للرؤية)</option>
                                     <option value="4" ${block.gridCols === 4 ? 'selected' : ''}>4 أعمدة (الحجم القياسي لمتجر حلويات بوسي)</option>
@@ -903,18 +894,18 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div class="md:col-span-2">
                                     <label class="form-label">النص التسويقي الطويل للقسم</label>
-                                    <textarea class="form-textarea h-28" onchange="updateBlockData(${index}, 'subtitle', this.value)" placeholder="اكتب النص التسويقي الجذاب هنا...">${block.subtitle || ''}</textarea>
+                                    <textarea class="form-textarea h-28" onchange="window.updateBlockData(${index}, 'subtitle', this.value)" placeholder="اكتب النص التسويقي الجذاب هنا...">${block.subtitle || ''}</textarea>
                                 </div>
                                 <div>
                                     <label class="form-label">رابط صورة العرض البانر (URL)</label>
-                                    <input type="text" class="form-input text-left" dir="ltr" value="${block.promoImage || ''}" onchange="updateBlockData(${index}, 'promoImage', this.value)">
+                                    <input type="text" class="form-input text-left" dir="ltr" value="${block.promoImage || ''}" onchange="window.updateBlockData(${index}, 'promoImage', this.value)">
                                     <p class="bose-helper-text"><i data-lucide="link" class="w-4 h-4"></i> يفضل وضع رابط لصورة بانورامية عالية الجودة لتبهر المتصفح فوراً.</p>
                                 </div>
                                 <div class="grid grid-cols-2 gap-4">
-                                    <div><label class="form-label">نص زر التوجيه</label><input type="text" class="form-input" value="${block.btnText || ''}" onchange="updateBlockData(${index}, 'btnText', this.value)"></div>
+                                    <div><label class="form-label">نص زر التوجيه</label><input type="text" class="form-input" value="${block.btnText || ''}" onchange="window.updateBlockData(${index}, 'btnText', this.value)"></div>
                                     <div>
                                         <label class="form-label text-brand-pink">القسم المستهدف للتوجيه عند الضغط</label>
-                                        <input type="text" class="form-input border-brand-pink/50 text-brand-pink font-bold" value="${block.targetCategory || ''}" onchange="updateBlockData(${index}, 'targetCategory', this.value)" placeholder="مثال: ورد">
+                                        <input type="text" class="form-input border-brand-pink/50 text-brand-pink font-bold" value="${block.targetCategory || ''}" onchange="window.updateBlockData(${index}, 'targetCategory', this.value)" placeholder="مثال: ورد">
                                     </div>
                                 </div>
                             </div>
@@ -933,7 +924,7 @@
                                     </div>
                                     <input type="range" min="200" max="800" step="10" value="${block.cardWidth || 450}" 
                                         oninput="document.getElementById('w-val-cat-w-${index}').innerText = this.value + 'px'" 
-                                        onchange="updateBlockData(${index}, 'cardWidth', parseInt(this.value))">
+                                        onchange="window.updateBlockData(${index}, 'cardWidth', parseInt(this.value))">
                                 </div>
                                 <div>
                                     <div class="flex justify-between items-center mb-3">
@@ -942,7 +933,7 @@
                                     </div>
                                     <input type="range" min="200" max="800" step="10" value="${block.cardHeight || 560}" 
                                         oninput="document.getElementById('w-val-cat-h-${index}').innerText = this.value + 'px'" 
-                                        onchange="updateBlockData(${index}, 'cardHeight', parseInt(this.value))">
+                                        onchange="window.updateBlockData(${index}, 'cardHeight', parseInt(this.value))">
                                     <p class="bose-helper-text"><i data-lucide="info" class="w-4 h-4"></i> تتيح لكِ إعطاء كروت المنيو حجماً مستقلاً لتبرز بوضوح فئات المنتجات للعملاء.</p>
                                 </div>
                             </div>
@@ -953,7 +944,7 @@
                     specificSettingsHTML = `
                         <div class="mt-6">
                             <label class="form-label">المحتوى النصي التفصيلي للقسم</label>
-                            <textarea class="form-textarea" onchange="updateBlockData(${index}, 'subtitle', this.value)" placeholder="اكتب النص التعريفي الكامل هنا...">${block.subtitle || ''}</textarea>
+                            <textarea class="form-textarea" onchange="window.updateBlockData(${index}, 'subtitle', this.value)" placeholder="اكتب النص التعريفي الكامل هنا...">${block.subtitle || ''}</textarea>
                         </div>
                     `;
                 }
@@ -971,7 +962,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div>
                                         <label class="form-label text-brand-pink">الهيكل التصميمي للقسم</label>
-                                        <select class="form-select border-brand-pink text-brand-pink" onchange="updateBlockData(${index}, 'type', this.value)">
+                                        <select class="form-select border-brand-pink text-brand-pink" onchange="window.updateBlockData(${index}, 'type', this.value)">
                                             <option value="slider" ${block.type === 'slider' ? 'selected' : ''}>شريط منتجات متحرك أفقي (Slider)</option>
                                             <option value="grid" ${block.type === 'grid' ? 'selected' : ''}>شبكة منتجات ثابتة (Grid)</option>
                                             <option value="featured_promo" ${block.type === 'featured_promo' ? 'selected' : ''}>عرض ترويجي لمنتج/قسم خاص (كالورد)</option>
@@ -984,20 +975,20 @@
                                     </div>
                                     <div>
                                         <label class="form-label">العنوان الرئيسي البارز للعميل</label>
-                                        <input type="text" class="form-input" value="${block.title || ''}" onchange="updateBlockData(${index}, 'title', this.value)" placeholder="مثال: الأكثر مبيعاً، إبداعاتنا...">
+                                        <input type="text" class="form-input" value="${block.title || ''}" onchange="window.updateBlockData(${index}, 'title', this.value)" placeholder="مثال: الأكثر مبيعاً، إبداعاتنا...">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="flex flex-row lg:flex-col gap-3 shrink-0 bg-brand-surface p-4 rounded-3xl border-2 border-brand-border w-full lg:w-auto justify-center shadow-lg">
                                 <div class="flex gap-3 justify-center">
-                                    <button onclick="moveBlock(${index}, -1)" class="btn-action" title="رفع لأعلى خطوة" ${index === 0 ? 'disabled style="opacity:0.3"' : ''}><i data-lucide="arrow-up" class="w-6 h-6"></i></button>
-                                    <button onclick="moveBlock(${index}, 1)" class="btn-action" title="تنزيل لأسفل خطوة" ${index === builderBlocks.length - 1 ? 'disabled style="opacity:0.3"' : ''}><i data-lucide="arrow-down" class="w-6 h-6"></i></button>
+                                    <button onclick="window.moveBlock(${index}, -1)" class="btn-action" title="رفع لأعلى خطوة" ${index === 0 ? 'disabled style="opacity:0.3"' : ''}><i data-lucide="arrow-up" class="w-6 h-6"></i></button>
+                                    <button onclick="window.moveBlock(${index}, 1)" class="btn-action" title="تنزيل لأسفل خطوة" ${index === builderBlocks.length - 1 ? 'disabled style="opacity:0.3"' : ''}><i data-lucide="arrow-down" class="w-6 h-6"></i></button>
                                 </div>
                                 <div class="flex gap-3 justify-center">
-                                    <button onclick="toggleVisibility(${index})" class="btn-action ${isHidden ? 'bg-brand-pink/20 text-brand-pink border-brand-pink' : ''}" title="${isHidden ? 'إظهار القسم للمستخدمين' : 'إخفاء القسم مؤقتاً'}"><i data-lucide="${isHidden ? 'eye-off' : 'eye'}" class="w-6 h-6"></i></button>
-                                    <button onclick="duplicateBlock(${index})" class="btn-action" title="نسخ القسم بكافة إعداداته"><i data-lucide="copy" class="w-6 h-6"></i></button>
-                                    <button onclick="deleteBlock(${index})" class="btn-action danger" title="هدم وحذف نهائي للقسم"><i data-lucide="trash-2" class="w-6 h-6"></i></button>
+                                    <button onclick="window.toggleVisibility(${index})" class="btn-action ${isHidden ? 'bg-brand-pink/20 text-brand-pink border-brand-pink' : ''}" title="${isHidden ? 'إظهار القسم للمستخدمين' : 'إخفاء القسم مؤقتاً'}"><i data-lucide="${isHidden ? 'eye-off' : 'eye'}" class="w-6 h-6"></i></button>
+                                    <button onclick="window.duplicateBlock(${index})" class="btn-action" title="نسخ القسم بكافة إعداداته"><i data-lucide="copy" class="w-6 h-6"></i></button>
+                                    <button onclick="window.deleteBlock(${index})" class="btn-action danger" title="هدم وحذف نهائي للقسم"><i data-lucide="trash-2" class="w-6 h-6"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -1050,7 +1041,6 @@
             renderBuilderUI();
         };
 
-        // دالة تطبيق الألوان فوراً على المتغيرات الأساسية للمتصفح
         const applyColorsToAdmin = (colors) => {
             if (!colors) return;
             if (colors.pink) {
@@ -1083,7 +1073,6 @@
             }
         };
 
-        // دالة تغيير ومعاينة الخط المحدد حياً
         window.previewFont = function(fontName) {
             const previewBox = document.getElementById('typography-preview-box');
             if (previewBox) {
@@ -1117,7 +1106,7 @@
                     if(data.font) {
                         const fontSelect = document.getElementById('font-family-select');
                         if (fontSelect) fontSelect.value = data.font;
-                        previewFont(data.font);
+                        window.previewFont(data.font);
                         document.body.style.fontFamily = `'${data.font}', 'Cairo', sans-serif`;
                     }
 
@@ -1138,7 +1127,6 @@
                         document.getElementById('footer-ig').value = data.footer.instagram || '';
                         document.getElementById('footer-tiktok').value = data.footer.tiktok || '';
                         
-                        // تحديث المعاينات الحية للفوتر
                         document.getElementById('footer-brand-desc').innerText = data.footer.desc || 'نبذة الفوتر ستظهر هنا عند الكتابة...';
                         document.getElementById('footer-phone-preview').innerText = data.footer.phone || '-';
                         document.getElementById('footer-email-preview').innerText = data.footer.email || '-';
@@ -1158,9 +1146,9 @@
             try {
                 await setDoc(doc(db, 'settings', 'theme'), { builderLayout: builderBlocks, updatedAt: Date.now() }, { merge: true });
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                showToast("تم اعتماد البناء الهندسي الجديد بنجاح وبث التحديثات للعملاء.");
+                window.showToast("تم اعتماد البناء الهندسي الجديد بنجاح وبث التحديثات للعملاء.");
             } catch(e) { 
-                showToast("حدث خطأ غير متوقع أثناء الاتصال بالخادم السحابي.", "error");
+                window.showToast("حدث خطأ غير متوقع أثناء الاتصال بالخادم السحابي.", "error");
             }
         }
 
@@ -1170,9 +1158,9 @@
                 await setDoc(doc(db, 'settings', 'theme'), { header: { logoText: val }, updatedAt: Date.now() }, { merge: true });
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 document.querySelectorAll('.bose-logo-text').forEach(el => el.innerText = val || 'حلويات بوسي');
-                showToast("تم تحديث وحفظ لوجو الهيدر وبثه للعملاء.");
+                window.showToast("تم تحديث وحفظ لوجو الهيدر وبثه للعملاء.");
             } catch(e) {
-                showToast("عطل اتصالي منع الحفظ السحابي للهيدر.", "error");
+                window.showToast("عطل اتصالي منع الحفظ السحابي للهيدر.", "error");
             }
         }
 
@@ -1189,9 +1177,9 @@
                 await setDoc(doc(db, 'settings', 'theme'), { colors: colors, updatedAt: Date.now() }, { merge: true });
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 applyColorsToAdmin(colors);
-                showToast("تم اعتماد وتوثيق ألوان الهوية البصرية للمتجر.");
+                window.showToast("تم اعتماد وتوثيق ألوان الهوية البصرية للمتجر.");
             } catch(e) {
-                showToast("عطل اتصالي منع الحفظ السحابي للألوان.", "error");
+                window.showToast("عطل اتصالي منع الحفظ السحابي للألوان.", "error");
             }
         }
 
@@ -1201,9 +1189,9 @@
                 await setDoc(doc(db, 'settings', 'theme'), { font: font, updatedAt: Date.now() }, { merge: true });
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 document.body.style.fontFamily = `'${font}', 'Cairo', sans-serif`;
-                showToast("تم تثبيت الخط المختار رسمياً لجميع الواجهات.");
+                window.showToast("تم تثبيت الخط المختار رسمياً لجميع الواجهات.");
             } catch(e) {
-                showToast("عطل اتصالي منع الحفظ السحابي للخطوط.", "error");
+                window.showToast("عطل اتصالي منع الحفظ السحابي للخطوط.", "error");
             }
         }
 
@@ -1217,9 +1205,9 @@
             try {
                 await setDoc(doc(db, 'settings', 'theme'), { ticker: tickerArr, tickerSpeed: parseInt(document.getElementById('ticker-speed').value) || 40, updatedAt: Date.now() }, { merge: true });
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
-                showToast("تم تحديث نصوص الشريط وسرعة الحركة.");
+                window.showToast("تم تحديث نصوص الشريط وسرعة الحركة.");
             } catch(e) {
-                showToast("عطل اتصالي منع الحفظ السحابي للشريط الإعلاني.", "error");
+                window.showToast("عطل اتصالي منع الحفظ السحابي للشريط الإعلاني.", "error");
             }
         }
 
@@ -1240,62 +1228,23 @@
                 }, { merge: true });
                 await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
                 
-                // تحديث المعاينات الحية
                 document.getElementById('footer-brand-desc').innerText = footerObj.desc || 'نبذة الفوتر ستظهر هنا عند الكتابة...';
                 document.getElementById('footer-phone-preview').innerText = footerObj.phone || '-';
                 document.getElementById('footer-email-preview').innerText = footerObj.email || '-';
                 document.getElementById('footer-address-preview').innerText = footerObj.address || '-';
                 
-                showToast("تم توثيق بيانات الفوتر ومنافذ التواصل بنجاح.");
+                window.showToast("تم توثيق بيانات الفوتر ومنافذ التواصل بنجاح.");
             } catch(e) {
-                showToast("عطل اتصالي منع الحفظ السحابي لبيانات الفوتر.", "error");
+                window.showToast("عطل اتصالي منع الحفظ السحابي لبيانات الفوتر.", "error");
             }
         }
 
-        // إرفاق مستمعي الأحداث الحية لمزامنة المدخلات على لوحة التحكم فوراً أثناء الكتابة أو السحب
         document.addEventListener('DOMContentLoaded', () => {
             loadAdminData();
 
-            // اللوجو النصي
             document.getElementById('header-logo-text').addEventListener('input', (e) => {
                 const val = e.target.value.trim() || 'حلويات بوسي';
                 document.querySelectorAll('.bose-logo-text').forEach(el => el.innerText = val);
             });
 
-            // الألوان السحرية
             document.getElementById('color-pink').addEventListener('input', (e) => {
-                document.documentElement.style.setProperty('--bose-pink', e.target.value);
-                document.getElementById('color-pink-hex').innerText = e.target.value.toUpperCase();
-            });
-            document.getElementById('color-bg').addEventListener('input', (e) => {
-                document.documentElement.style.setProperty('--bose-bg', e.target.value);
-                document.getElementById('color-bg-hex').innerText = e.target.value.toUpperCase();
-            });
-            document.getElementById('color-surface').addEventListener('input', (e) => {
-                document.documentElement.style.setProperty('--bose-surface', e.target.value);
-                document.getElementById('color-surface-hex').innerText = e.target.value.toUpperCase();
-            });
-            document.getElementById('color-border').addEventListener('input', (e) => {
-                document.documentElement.style.setProperty('--bose-border', e.target.value);
-                document.getElementById('color-border-hex').innerText = e.target.value.toUpperCase();
-            });
-
-            // الفوتر الرقمي
-            document.getElementById('footer-desc').addEventListener('input', (e) => {
-                document.getElementById('footer-brand-desc').innerText = e.target.value.trim() || 'نبذة الفوتر ستظهر هنا عند الكتابة...';
-            });
-            document.getElementById('footer-phone').addEventListener('input', (e) => {
-                document.getElementById('footer-phone-preview').innerText = e.target.value.trim() || '-';
-            });
-            document.getElementById('footer-email').addEventListener('input', (e) => {
-                document.getElementById('footer-email-preview').innerText = e.target.value.trim() || '-';
-            });
-            document.getElementById('footer-address').addEventListener('input', (e) => {
-                document.getElementById('footer-address-preview').innerText = e.target.value.trim() || '-';
-            });
-        });
-
-    </script>
-</body>
-</html>
-

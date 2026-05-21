@@ -1,5 +1,6 @@
 /* BoseSweets Admin Core Stylesheet
   Focus: Dark Mode, Eye Comfort, Double Border Cards, Balanced Typography
+  Strict Constraint: Maximum font-weight is 700 (No font weights shall exceed 700)
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
@@ -12,7 +13,7 @@
     --bose-border: #2a2a2a;
     --bose-border-light: #3a3a3a;
     
-    /* هوية العلامة التجارية */
+    /* هوية العلامة التجارية لـ حلويات بوسي */
     --bose-pink: #ff91a4;
     --bose-pink-muted: rgba(255, 145, 164, 0.12);
     
@@ -44,7 +45,7 @@ body {
     overflow-x: hidden;
 }
 
-/* شريط التمرير (Scrollbar) هادئ */
+/* شريط التمرير (Scrollbar) هادئ ومريح للعين */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bose-bg); }
 ::-webkit-scrollbar-thumb { background: var(--bose-border-light); border-radius: 10px; }
@@ -68,7 +69,7 @@ body {
 
 .bose-sidebar-header {
     padding: 24px;
-    border-b: 1px solid var(--bose-border);
+    border-bottom: 1px solid var(--bose-border);
     position: sticky;
     top: 0;
     background-color: var(--bose-surface-glass);
@@ -83,7 +84,7 @@ body {
     gap: 8px;
 }
 
-/* القوائم المنسدلة */
+/* القوائم المنسدلة الشجرية المحدثة */
 details {
     width: 100%;
 }
@@ -96,7 +97,7 @@ details > summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-weight: 700;
+    font-weight: 700; /* تثبيت الوزن عند الحد الأقصى المسموح به */
     color: var(--bose-text-main);
     font-size: var(--font-md);
     transition: all 0.3s ease;
@@ -144,6 +145,7 @@ details[open] > summary {
     background-color: var(--bose-pink-muted);
     color: var(--bose-text-main);
     transform: translateX(-4px);
+    font-weight: 700; /* الوزن المثالي للتفاعل دون تضخيم */
 }
 
 /* =========================================
@@ -160,7 +162,7 @@ details[open] > summary {
 .bose-header {
     background-color: var(--bose-surface-glass);
     backdrop-filter: blur(12px);
-    border-b: 1px solid var(--bose-border);
+    border-bottom: 1px solid var(--bose-border);
     padding: 20px 32px;
     position: sticky;
     top: 0;
@@ -185,16 +187,20 @@ details[open] > summary {
     border-radius: 20px;
     padding: 32px;
     margin-bottom: 30px;
-    /* تطبيق الإطار المزدوج باستخدام ظلال الصندوق المتعددة للنعومة والحدة */
+    /* تطبيق نظام الإطار المزدوج الاحترافي باستخدام ظلال الصندوق المتعددة والنعومة البصرية */
     box-shadow: 0 0 0 2px var(--bose-bg), 0 0 0 4px var(--bose-pink), 0 10px 30px rgba(0, 0, 0, 0.4);
     border: 2px solid var(--bose-pink);
     transition: transform 0.3s ease;
 }
 
+.bose-card:hover {
+    transform: translateY(-2px);
+}
+
 .form-label {
     display: block;
     color: var(--bose-text-muted);
-    font-weight: 700;
+    font-weight: 700; /* تثبيت الوزن عند 700 كحد أقصى لمنع تضخيم الهيكل الخارجي */
     margin-bottom: 10px;
     font-size: var(--font-base);
 }
@@ -226,7 +232,7 @@ details[open] > summary {
     border: none;
     border-radius: 12px;
     padding: 14px 28px;
-    font-weight: 700;
+    font-weight: 700; /* الإبقاء على وزن الخط عند 700 ومحظور تجاوزه */
     font-size: var(--font-md);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -242,7 +248,7 @@ details[open] > summary {
     transform: translateY(-2px);
 }
 
-/* التجاوب مع شاشات الموبايل */
+/* التجاوب والتوافق التام مع شاشات الموبايل والتابلت والكمبيوتر */
 @media (max-width: 1024px) {
     .bose-sidebar { right: -100%; width: 85%; max-width: 340px; }
     .bose-sidebar.active { right: 0; }
