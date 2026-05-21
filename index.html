@@ -574,7 +574,6 @@
             col2.innerHTML = htmlContent;
         };
 
-        // دالة آمنة تضمن توزيع المنتجات بدقة بعد تحميل DOM والمحرك كاملاً لمنع الوميض أو الاختفاء
         function triggerSovereignDistribution() {
             if (window.BoseState && window.BoseState.catalog && window.BoseState.catalog.length > 0) {
                 distributeProductsToUI(window.BoseState.catalog);
@@ -609,12 +608,8 @@
                         window.BoseState.catalog = srvProducts;
                         window.BoseState.catalogLoaded = true;
 
-                        // إذا كان المحرك جاهزاً بالفعل نقوم بالتوزيع، وإلا ننتظر حدث الجاهزية التام
-                        if (window.BoseState.isAppReady) {
-                            distributeProductsToUI(srvProducts);
-                        } else {
-                            window.dispatchEvent(new CustomEvent('BoseSweets_Catalog_Updated'));
-                        }
+                        // استدعاء فوري ولحظي بمجرد استقبال الكتالوج السحابي لضمان ملء الأقسام ومنع اختفائها
+                        distributeProductsToUI(srvProducts);
                         
                     }, (error) => {
                         console.error("فشل مزامنة الكتالوج:", error);
@@ -634,7 +629,6 @@
                 distributeProductsToUI([]);
             }
         } else {
-            // محاكاة الاتصال المحلي الفاخر في بيئة الاستضافة عند تأخر استجابة متغيرات Firebase الممررة
             setTimeout(() => {
                 if (window.BoseState && window.BoseState.catalog && window.BoseState.catalog.length > 0) {
                     distributeProductsToUI(window.BoseState.catalog);
@@ -717,7 +711,6 @@
     </script>
 
     <script type="module" src="core-engine.js"></script>
-
     <script type="module" src="ui-engine.js"></script>
 </body>
 </html>

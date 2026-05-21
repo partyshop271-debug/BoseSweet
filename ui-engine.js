@@ -3,7 +3,7 @@
  * 👑 BoseSweets Sovereign UI Engine | محرك الواجهة البصرية السيادي لعلامة حلويات بوسي
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي التجاريّة (The Management)
- * الهوية البصرية المعتمدة: الوردي الفاخر (#ff91a4) | الأبيض النقي | النصوص الشوكولاتية
+ * الهوية البصرية Mعتمدة: الوردي الفاخر (#ff91a4) | الأبيض النقي | النصوص الشوكولاتية
  * الترقية: V42.1 Ultra Premium - التوافق التام والأداء المتزن مع النواة الأساسية
  * الحالة: التحكم الكامل في الهيكل البصري، التنفس، الراحة البصرية، السلايدرات المتصلة، وتوزيع الأقسام السيادية.
  * ============================================================================
@@ -215,29 +215,29 @@ export function distributeProductsToUI(products) {
                 } else if (block.dataSource === 'latest') {
                     filteredList = [...currentProducts].sort((a,b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 12);
                 } else if (block.dataSource === 'bestsellers') {
-                    filteredList = currentProducts.filter(p => p.hasDiscount === true).slice(0, 12);
+                    filteredList = currentProducts.filter(p => p.hasDiscount === true || p.starRating >= 4.5).slice(0, 12);
                 } else if (block.dataSource === 'menu') {
-                    // معالجة ذكية: إذا كان الكتالوج يحتوي على لغة عربية، نقوم بسحب كل المنتجات بدلاً من الفلترة بكلمة 'menu' الجافة
-                    filteredList = currentProducts.filter(p => p.category).slice(0, 12);
+                    filteredList = currentProducts.filter(p => p.category && !normalizeArabic(p.category).includes('ورد')).slice(0, 12);
                 }
             } else {
-                // الفلترة الافتراضية المدمجة والمحسنة لضمان دقة التوزيع اللحظي بالواجهة الرئيسية
+                // الفلترة الافتراضية المدمجة والمحسنة لضمان دقة التوزيع اللحظي بالواجهة الرئيسية لقواطع الاستعراض
                 if (id.includes('best-sellers') || id.includes('bestsellers')) {
-                    filteredList = currentProducts.filter(p => p.hasDiscount === true || p.starRating >= 4.5).slice(0, 10);
-                    if (filteredList.length === 0) filteredList = currentProducts.slice(0, 8);
+                    filteredList = currentProducts.filter(p => p.hasDiscount === true || p.starRating >= 4.5);
+                    if (filteredList.length === 0) filteredList = currentProducts.slice(0, 10);
                 } else if (id.includes('new-arrivals') || id.includes('arrival')) {
-                    filteredList = [...currentProducts].sort((a,b) => (b.id > a.id ? 1 : -1)).slice(0, 10);
-                    if (filteredList.length === 0) filteredList = currentProducts.slice(0, 8);
+                    filteredList = [...currentProducts].sort((a,b) => String(b.id || '').localeCompare(String(a.id || '')));
+                    if (filteredList.length === 0) filteredList = currentProducts.slice(0, 10);
                 } else if (id === 'menuGrid') {
-                    // حقن المنتجات الأساسية في شبكة الصفحة الرئيسية مباشرة لمنع ظهور الحاوية فارغة
-                    filteredList = currentProducts.filter(p => p.category && !normalizeArabic(p.category).includes('ورد')).slice(0, 8);
+                    filteredList = currentProducts.filter(p => p.category && !normalizeArabic(p.category).includes('ورد'));
+                    if (filteredList.length === 0) filteredList = currentProducts.slice(0, 8);
                 } else {
                     filteredList = [...currentProducts];
                 }
             }
             
-            if (filteredList.length === 0) {
-                filteredList = [...currentProducts];
+            // حماية كاملة: منع الحاوية من الظهور فارغة عبر مدها ببدائل ذكية من الكتالوج الحالي المتاح
+            if (filteredList.length === 0 && currentProducts.length > 0) {
+                filteredList = currentProducts.slice(0, 10);
             }
             
             filteredList = filteredList.map(p => ({
@@ -248,7 +248,7 @@ export function distributeProductsToUI(products) {
             renderProductCardsUI(filteredList, id);
         });
 
-        // دمج استدعاء شلال الصور المعتمد على منتجات حقيقية من النسخة المكتوبة
+        // استدعاء شلال الصور المعتمد على المنتجات المتاحة والمحملة بالذاكرة الحية
         if (typeof window.initializeBoseWaterfall === 'function') {
             window.initializeBoseWaterfall(currentProducts);
         }
