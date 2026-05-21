@@ -50,6 +50,22 @@ export function renderProductCardsUI(products, containerId) {
     const defaultWidth = currentLayoutBlock?.cardWidth || 280;
     const defaultHeight = currentLayoutBlock?.cardHeight || 350;
 
+    // دمج ميزة التحقق من خلو القسم لمنع الاختفاء بصرياً مع الحفاظ على الأقسام كاملة
+    if (products.length === 0) {
+        container.innerHTML = `
+            <div class="col-span-full py-12 px-4 text-center w-full">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-[#fff5f6] text-[#ff91a4] rounded-full mb-3">
+                    <i class="fa-solid fa-cookie-bite text-lg"></i>
+                </div>
+                <h3 class="text-sm font-bold text-[#3d241c] mb-1">الأصناف الفاخرة قيد التجهيز</h3>
+                <p class="text-xs text-gray-500 max-w-xs mx-auto leading-relaxed">
+                    نقوم الآن بتحضير وتحديث هذه القائمة الطازجة من أجلك.
+                </p>
+            </div>
+        `;
+        return;
+    }
+
     container.innerHTML = products.map(p => {
         const img = processBoseImage(p.img || p.image) || BOSE_LOGO_FALLBACK;
         const name = p.name || 'منتج حلويات بوسي';
@@ -91,55 +107,54 @@ export function renderProductCardsUI(products, containerId) {
             spanClass = 'snap-start flex-shrink-0';
             widthStyle = `width: ${customWidth}px; max-width: 85vw;`;
         } else {
-            // كارتين جنب بعض في قنوات العرض العادية (grid-cols-2) لتحقيق محاكاة النموذج الاسترشادي مع التنفس البصري
             spanClass = isFullSpan ? 'col-span-full w-full' : 'col-span-1 w-full';
             widthStyle = `max-width: 100%; margin: 0 auto; width: 100%;`;
         }
 
         const hasDiscount = p.hasDiscount === true && p.oldPrice > p.price;
 
-        // تطبيق الهيكلة الجديدة الفاخرة للكارت: الصورة -> الاسم -> النكهة -> الوصف الاحترافي -> السعر في المنتصف محاطاً بأزرار التحكم -> زر إضافة للسلة
+        // دمج التنسيق المكتوب (p-1 وحواف rounded-xl وتأثيرات أزرار السلة اللحظية) مع الحفاظ التام على الهيكل الأصلي
         return `
-            <div class="catalog-card-wrapper ${spanClass} p-3 transition-all duration-300" style="${widthStyle}">
-                <div class="bose-luxury-card group h-full flex flex-col bg-white rounded-[24px] border border-[#ff91a4]/30 p-2 hover:border-[#ff91a4] transition-all duration-300 relative">
+            <div class="catalog-card-wrapper ${spanClass} p-1 transition-all duration-300" style="${widthStyle}">
+                <div class="bose-luxury-card group h-full flex flex-col bg-white rounded-xl border border-[#ff91a4]/30 p-2 text-center hover:border-[#ff91a4] transition-all duration-300 relative">
                     
-                    <div class="w-full overflow-hidden bg-[#fff5f6] rounded-[18px] relative aspect-square mb-4">
+                    <div class="w-full overflow-hidden bg-[#fff5f6] rounded-xl relative aspect-square mb-3">
                         <img src="${img}" loading="lazy" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-102" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
-                        ${hasDiscount && !isOut ? `<div class="absolute top-3 right-3 bg-[#ff91a4] text-white text-[10px] font-black px-2.5 py-1 rounded-md shadow-xs z-10">تميز خاص</div>` : ''}
-                        ${isOut ? '<div class="absolute inset-0 bg-white/80 backdrop-blur-xs flex items-center justify-center text-[#3d241c] font-black text-sm z-10 select-none">نترقب عودته</div>' : ''}
+                        ${hasDiscount && !isOut ? `<div class="absolute top-2 right-2 bg-[#ff91a4] text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-xs z-10">تميز خاص</div>` : ''}
+                        ${isOut ? '<div class="absolute inset-0 bg-white/80 backdrop-blur-xs flex items-center justify-center text-[#3d241c] font-bold text-xs z-10 select-none">نترقب عودته</div>' : ''}
                     </div>
                     
-                    <div class="flex flex-col flex-grow text-center px-2 pb-2">
+                    <div class="flex flex-col flex-grow px-1">
                         
-                        <h3 class="font-bold text-base text-[#3d241c] mb-1 tracking-wide">${name}</h3>
+                        <h3 class="font-bold text-base text-[#3d241c] mb-0.5 truncate">${name}</h3>
                         
-                        <p class="text-xs text-[#ff91a4] font-bold mb-2 tracking-normal">${category}</p>
+                        <p class="text-xs text-[#ff91a4] font-bold mb-2">${category}</p>
                         
-                        <p class="text-xs text-gray-500 mb-4 leading-relaxed product-desc min-h-[40px]" style="white-space: normal; overflow-wrap: anywhere; word-break: break-word;">
+                        <p class="text-[11px] text-gray-500 mb-3 min-h-[34px] leading-relaxed product-desc line-clamp-2" style="white-space: normal; overflow-wrap: anywhere; word-break: break-word;">
                             ${description}
                         </p>
                         
-                        <div class="mt-auto pt-3 border-t border-[#ff91a4]/10">
-                            <div class="flex items-center justify-between gap-2 mb-3 bg-[#fff5f6]/40 p-1.5 rounded-full px-3">
+                        <div class="mt-auto pt-2 border-t border-[#ff91a4]/5">
+                            <div class="flex items-center justify-between gap-1 mb-2 bg-[#fff5f6] py-1 px-2 rounded-full">
                                 
-                                <button onclick="window.updateTempQtyContext(this, -1)" class="w-6 h-6 flex items-center justify-center text-xs font-bold text-gray-600 bg-white rounded-full border border-[#ff91a4]/20 hover:bg-[#ff91a4] hover:text-white transition-all" ${isOut ? 'disabled' : ''}>-</button>
+                                <button onclick="window.updateTempQtyContext(this, -1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold bg-white text-[#ff91a4] rounded-full border border-[#ff91a4]/10 cursor-pointer select-none" ${isOut ? 'disabled' : ''}>-</button>
                                 
                                 <div class="flex flex-col items-center">
                                     ${hasDiscount ? `<span class="text-[9px] text-gray-400 line-through font-bold leading-none">${p.oldPrice} ج.م</span>` : ''}
-                                    <span class="font-black text-base text-[#3d241c] leading-none">
-                                        ${price}${typeof price === 'number' ? ' <span class="text-xs font-bold text-[#ff91a4]">ج.م</span>' : ''}
+                                    <span class="font-bold text-xs text-[#3d241c] leading-none">
+                                        ${price}${typeof price === 'number' ? ' <span class="text-[10px] font-bold text-[#ff91a4]">ج.م</span>' : ''}
                                     </span>
                                 </div>
                                 
-                                <div class="flex items-center gap-2">
-                                    <span class="temp-qty-display text-xs font-black text-[#3d241c] w-3 text-center">1</span>
-                                    <button onclick="window.updateTempQtyContext(this, 1)" class="w-6 h-6 flex items-center justify-center text-xs font-bold text-gray-600 bg-white rounded-full border border-[#ff91a4]/20 hover:bg-[#ff91a4] hover:text-white transition-all" ${isOut ? 'disabled' : ''}>+</button>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="temp-qty-display text-xs font-bold text-[#3d241c] w-3 text-center">1</span>
+                                    <button onclick="window.updateTempQtyContext(this, 1)" class="w-5 h-5 flex items-center justify-center text-xs font-bold bg-white text-[#ff91a4] rounded-full border border-[#ff91a4]/10 cursor-pointer select-none" ${isOut ? 'disabled' : ''}>+</button>
                                 </div>
                                 
                             </div>
                             
-                            <button onclick="window.addWithQtyContextAndSync(this, '${p.id}')" class="w-full py-2.5 rounded-full bg-[#fff5f6] text-[#ff91a4] font-black text-xs hover:bg-[#ff91a4] hover:text-white border border-[#ff91a4]/20 transition-all shadow-xs cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" ${isOut ? 'disabled' : ''}>
-                                تصفح السلة واضف للمنيو
+                            <button onclick="window.addWithQtyContextAndSync(this, '${p.id}')" class="w-full py-2 rounded-full bg-[#ff91a4] text-white font-bold text-xs hover:bg-[#3d241c] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed" ${isOut ? 'disabled' : ''}>
+                                تصفح المنيو استعرض المزيد
                             </button>
                         </div>
                         
@@ -149,7 +164,8 @@ export function renderProductCardsUI(products, containerId) {
     }).join('');
 
     if (isSliderContainer) {
-        const appliedWidth = Math.round(defaultWidth * 1.4);
+        // اعتماد الحساب البرمي المكتوب لتناسق عرض كروت السلايدر الأفقي
+        const appliedWidth = Math.round(defaultWidth * 1.1);
         container.querySelectorAll('.catalog-card-wrapper').forEach(card => {
             card.style.width = `${appliedWidth}px`;
             card.style.flexShrink = '0';
@@ -172,7 +188,6 @@ export function distributeProductsToUI(products) {
     if (window.uiRenderDebounceTimer) clearTimeout(window.uiRenderDebounceTimer);
     
     window.uiRenderDebounceTimer = setTimeout(() => {
-        // تحديث وتأمين توزيع المنتجات على الحاويات المعتمدة هندسياً وضمان توافقها الكامل مع ملف الـ HTML
         const sections = [
             'menuGrid',
             'dynamic-new-arrivals',
@@ -206,9 +221,9 @@ export function distributeProductsToUI(products) {
                     filteredList = currentProducts.filter(p => p.category && normalizeArabic(p.category).includes('menu')).slice(0, 12);
                 }
             } else {
-                // الفلترة الافتراضية الذكية حسب معرف الحاوية لضمان التوافق المطلق والأوتوماتيكي للأقسام
+                // الفلترة الافتراضية المدمجة لضمان دقة التوزيع
                 if (id.includes('best-sellers') || id.includes('bestsellers')) {
-                    filteredList = currentProducts.filter(p => p.hasDiscount === true || p.starRating >= 4.8).slice(0, 10);
+                    filteredList = currentProducts.filter(p => p.hasDiscount === true || p.starRating >= 4.5).slice(0, 10);
                 } else if (id.includes('new-arrivals') || id.includes('arrival')) {
                     filteredList = [...currentProducts].sort((a,b) => (b.id > a.id ? 1 : -1)).slice(0, 10);
                 } else {
@@ -216,12 +231,10 @@ export function distributeProductsToUI(products) {
                 }
             }
             
-            // التحصين وكسر ثغرة الاختفاء: إذا كانت المصفوفة المفلترة فارغة، نرتد لعرض الكتالوج المتاح كـ Fallback آمن
             if (filteredList.length === 0) {
                 filteredList = [...currentProducts];
             }
             
-            // مزامنة حالة المخزون بدقة كاملة بالتوافق المباشر مع محددات المحرك الأساسي (Core Engine)
             filteredList = filteredList.map(p => ({
                 ...p,
                 inStock: p.inStock !== false && p.stock !== 0 && p.stock != null
@@ -229,6 +242,11 @@ export function distributeProductsToUI(products) {
             
             renderProductCardsUI(filteredList, id);
         });
+
+        // دمج استدعاء شلال الصور المعتمد على منتجات حقيقية من النسخة المكتوبة
+        if (typeof window.initializeBoseWaterfall === 'function') {
+            window.initializeBoseWaterfall(currentProducts);
+        }
 
         if (typeof applyThemeConfigUI === 'function') applyThemeConfigUI();
     }, 150);
@@ -253,8 +271,8 @@ export function applyThemeConfigUI() {
     }
 
     if (themeData.footer) {
-        const fDesc = document.getElementById('footer-brand-desc');
-        if (fDesc) fDesc.innerText = themeData.footer.desc || '';
+        const fDesc = document.getElementById('footer-brand-desc') || document.getElementById('footer-dynamic-desc');
+        if (fDesc) fDesc.innerText = themeData.footer.desc || themeData.footer.description || fDesc.innerText;
         
         const fPhone = document.getElementById('footer-phone-link');
         if (fPhone) {
@@ -264,7 +282,7 @@ export function applyThemeConfigUI() {
     }
 
     if (typeof window.loadSliderImages === 'function') {
-        window.loadSliderImages();
+        window.loadSliderImages(BoseState?.catalog);
     }
 }
 
@@ -294,7 +312,7 @@ export const showInfo = function(type) {
     let title = "", content = "";
     if (type === 'about') {
         title = "عن علامة حلويات بوسي";
-        content = `تأسست حلويات بوسي في مدينة الكفاح بمركز الفرافرة... نحن نلتزم بأعلى معايير الجودة والفخامة لتوفير أفخر المخبوزات والحلويات الغربية والشرقية المصنوعة بأعلى مقاييس الإتقان اللامتناهي.`;
+        content = `تأسست حلويات بوسي في مدينة الكفاح بمركز الفرافرة... نلتزم بأعلى معايير الجودة والفخامة لتوفير أفخر المخبوزات والحلويات الغربية والشرقية المصنوعة بأعلى مقاييس الإتقان اللامتناهي.`;
     }
     const modalId = 'bose-info-modal'; let modal = document.getElementById(modalId);
     if (!modal) { 
@@ -321,7 +339,7 @@ window.updateTempQtyContext = function(btn, delta) {
 };
 
 // ============================================================================
-// 🛒 ترقية نظام السلة العائمة والمزامنة اللحظية
+// 🛒 ترقية نظام السلة العائمة والمزامنة اللحظية مع تأثيرات النبض البصري
 // ============================================================================
 
 window.syncBoseCartUI = function() {
@@ -354,6 +372,25 @@ window.addWithQtyContextAndSync = function(btn, productId) {
     const qtyDisplay = cardWrapper ? cardWrapper.querySelector('.temp-qty-display') : null;
     const qty = qtyDisplay ? parseInt(qtyDisplay.innerText) : 1;
 
+    // دمج تأثيرات تغيير شارة أزرار السلة اللحظية ونبض العربة التفاعلي من النسخة المكتوبة
+    const originalText = btn.innerText;
+    btn.innerHTML = `<i class="fa-solid fa-check ml-1.5"></i> تم التحديث`;
+    btn.classList.remove('bg-[#ff91a4]', 'text-[#ff91a4]');
+    btn.classList.add('bg-[#3d241c]', 'text-white');
+    
+    const badgeContainer = document.getElementById('cart-badge-container');
+    if (badgeContainer) {
+        badgeContainer.classList.remove('bose-pulse');
+        void badgeContainer.offsetWidth; 
+        badgeContainer.classList.add('bose-pulse');
+    }
+
+    setTimeout(() => {
+        btn.innerText = originalText;
+        btn.classList.remove('bg-[#3d241c]', 'text-white');
+        btn.classList.add('bg-[#fff5f6]', 'text-[#ff91a4]');
+    }, 1200);
+
     if (window.cartSystem && typeof window.cartSystem.addWithQtyContext === 'function') {
         window.cartSystem.addWithQtyContext(btn, productId);
         
@@ -368,6 +405,9 @@ window.addWithQtyContextAndSync = function(btn, productId) {
             }
             if (qtyDisplay) qtyDisplay.innerText = "1";
         }, 80);
+    } else if (window.cartSystem && typeof window.cartSystem.add === 'function') {
+        window.cartSystem.add(productId, qty);
+        if (qtyDisplay) qtyDisplay.innerText = "1";
     } else {
         const BoseState = window.BoseState;
         const product = BoseState?.catalog?.find(p => p.id === productId);
@@ -396,7 +436,7 @@ window.addWithQtyContextAndSync = function(btn, productId) {
 };
 
 // ============================================================================
-// 🖼️ القسم التاسع: محرك العرض المرئي وسلايدر الخمس صور اللانهائي بكامل الشاشة
+// 🖼️ القسم التاسع: هندسة السلايدر المتكامل والشامل لكلا الخيارين (Firebase + Fallbacks)
 // ============================================================================
 
 export async function fetchSliderRecords() {
@@ -420,59 +460,106 @@ export async function fetchSliderRecords() {
     }
 }
 
-// هندسة السلايدر المتصل اللانهائي (5 صور تملأ الشاشة تماماً بدون أي فراغات مع مؤشرات التنقل السفلية)
-export async function loadSliderImages() {
+export async function loadSliderImages(products) {
     const sliderContainer = document.getElementById('main-slider');
     const dotsContainer = document.getElementById('slider-dots-container');
     if (!sliderContainer) return;
+    
+    sliderContainer.classList.remove('bose-skeleton');
     const processBoseImage = window.processBoseImage;
     const BoseState = window.BoseState;
+    const currentProducts = Array.isArray(products) && products.length ? products : (BoseState?.catalog || []);
 
     try {
         let sliderData = await fetchSliderRecords();
         
-        // إذا كانت البيانات فارغة، يتم حقن صور افتراضية فاخرة لضمان بقاء الهيكل ممتلئاً وجميلاً دائماً
+        // دمج نظام حقن المنتجات التلقائي والشرائح المتلاشية (Fade Carousel) من النسخة المكتوبة إذا كانت قاعدة بيانات السلايدرات فارغة
         if (!sliderData || sliderData.length === 0) {
-            sliderData = [
-                { id: 'slide1', imageUrl: BOSE_LOGO_FALLBACK },
-                { id: 'slide2', imageUrl: BOSE_LOGO_FALLBACK },
-                { id: 'slide3', imageUrl: BOSE_LOGO_FALLBACK },
-                { id: 'slide4', imageUrl: BOSE_LOGO_FALLBACK },
-                { id: 'slide5', imageUrl: BOSE_LOGO_FALLBACK }
-            ];
+            if (currentProducts.length >= 1) {
+                sliderData = currentProducts.slice(0, 5).map((p, i) => ({
+                    id: `slide-prod-${i}`,
+                    imageUrl: p.img || p.image,
+                    title: p.name || "إتقان فريد من نوعه"
+                }));
+            } else {
+                sliderData = [
+                    { id: 'slide1', imageUrl: BOSE_LOGO_FALLBACK, title: "حلويات بوسي الفاخرة" },
+                    { id: 'slide2', imageUrl: BOSE_LOGO_FALLBACK, title: "حلويات بوسي الفاخرة" },
+                    { id: 'slide3', imageUrl: BOSE_LOGO_FALLBACK, title: "حلويات بوسي الفاخرة" },
+                    { id: 'slide4', imageUrl: BOSE_LOGO_FALLBACK, title: "حلويات بوسي الفاخرة" },
+                    { id: 'slide5', imageUrl: BOSE_LOGO_FALLBACK, title: "حلويات بوسي الفاخرة" }
+                ];
+            }
         }
 
-        // تحديد الحد الأقصى بـ 5 صور متصلة تماماً كما هو مطلوب هندسياً في قسم عقد من الإتقان
         const targetSlides = sliderData.slice(0, 5);
         
-        sliderContainer.innerHTML = '';
-        if (dotsContainer) dotsContainer.innerHTML = '';
+        // بناء هيكلية السلايدر المزدوجة المتضمنة للتأثيرات المغناطيسية والبيانات المكتوبة الفاخرة
+        let slidesHtml = '';
+        let dotsHtml = '';
 
         targetSlides.forEach((slide, index) => {
-            const slideItem = document.createElement('div');
-            // كتل العرض تملأ الشاشة بنسبة 100% عرضاً وارتفاعاً بدون اقتطاع أو فراغ بصري
-            slideItem.className = 'slider-item-exclusive h-full w-full flex-shrink-0 w-screen relative snap-start';
-            
             const sourceUrl = slide.imageUrl || slide.image || slide.img || '';
             const processedUrl = processBoseImage ? processBoseImage(sourceUrl) : sourceUrl;
             const smartTimeStamp = slide.updatedAt || (BoseState && BoseState.theme && BoseState.theme.lastAdminUpdate) || new Date().getTime();
             const separator = processedUrl.includes('?') ? '&' : '?';
             const finalImageUrl = sourceUrl ? `${processedUrl}${separator}v=${smartTimeStamp}` : BOSE_LOGO_FALLBACK;
-            
-            slideItem.innerHTML = `<img src="${finalImageUrl}" class="w-full h-full object-cover select-none pointer-events-none" style="min-height: 100%;">`;
-            sliderContainer.appendChild(slideItem);
+            const slideTitle = slide.title || "تميز وإتقان ممتد منذ عام 2014";
 
-            // إنشاء النقط الذكية لتعبر عن عدد الصور الحالية أسفل السلايدر بدقة مطلقة
-            if (dotsContainer) {
-                const dot = document.createElement('button');
-                dot.className = `w-2 h-2 rounded-full transition-all duration-300 ${index === 0 ? 'bg-[#ff91a4] w-4' : 'bg-gray-300'}`;
-                dot.dataset.slideIndex = index;
-                dot.ariaLabel = `الانتقال للصورة رقم ${index + 1}`;
-                dotsContainer.appendChild(dot);
-            }
+            slidesHtml += `
+                <div class="slider-item-exclusive bose-slide h-full flex-shrink-0 w-screen relative snap-start transition-opacity duration-1000 ease-in-out" data-index="${index}">
+                    <img src="${finalImageUrl}" class="w-full h-full object-cover select-none pointer-events-none" style="min-height: 100%;" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#3d241c]/80 via-transparent to-transparent flex items-end p-8 text-right">
+                        <div>
+                            <h3 class="text-white text-xl md:text-2xl font-bold mb-1">${slideTitle}</h3>
+                            <p class="text-[#ff91a4] font-bold text-xs md:text-sm">تميز وإتقان ممتد منذ عام 2014 بمركز الفرافرة</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            dotsHtml += `
+                <button class="bose-dot w-2 h-2 rounded-full transition-all duration-300 ${index === 0 ? 'bg-[#ff91a4] w-4' : 'bg-gray-300'}" data-slide-index="${index}" aria-label="الانتقال للصورة رقم ${index + 1}"></button>
+            `;
         });
 
-        // تهيئة محاكي التأثيرات المتصل اللانهائي للتنقل الجانبي المغناطيسي
+        sliderContainer.innerHTML = slidesHtml;
+        if (dotsContainer) dotsContainer.innerHTML = dotsHtml;
+
+        // تشغيل مؤقت التنقل الآلي للمحرك المكتوب (Interval Carousel Loop) بالتزامن مع الانتقال المغناطيسي الأفقي
+        let currentSlideIdx = 0;
+        if (window.boseSlideInterval) clearInterval(window.boseSlideInterval);
+        
+        window.boseSlideInterval = setInterval(() => {
+            if (sliderContainer.clientWidth > 0) {
+                currentSlideIdx = (currentSlideIdx + 1) % targetSlides.length;
+                window.setBoseSlide(currentSlideIdx);
+            }
+        }, 4500);
+
+        window.setBoseSlide = function(index) {
+            currentSlideIdx = index;
+            const width = sliderContainer.clientWidth;
+            if (width > 0) {
+                sliderContainer.scrollTo({
+                    left: width * index,
+                    behavior: 'smooth'
+                });
+            }
+            
+            // تحديث شارات نقط السلايدر التفاعلية
+            const dots = dotsContainer ? dotsContainer.querySelectorAll('button') : [];
+            dots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.add('bg-[#ff91a4]', 'w-4');
+                    dot.classList.remove('bg-gray-300');
+                } else {
+                    dot.classList.remove('bg-[#ff91a4]', 'w-4');
+                    dot.classList.add('bg-gray-300');
+                }
+            });
+        };
+
         initBoseSovereignSliderEffects(sliderContainer, dotsContainer);
 
     } catch (error) {
@@ -480,7 +567,7 @@ export async function loadSliderImages() {
     }
 }
 
-// محرك التحكم في الحركة المغناطيسية للسلايدر وربطه مع النقط السفلية بالتزامن اللحظي
+// محرك التحكم في الحركة الجانبية المغناطيسية للسلايدر وربطه مع النقط السفلية بالتزامن اللحظي
 function initBoseSovereignSliderEffects(slider, dotsContainer) {
     if (!slider) return;
     
@@ -506,11 +593,15 @@ function initBoseSovereignSliderEffects(slider, dotsContainer) {
     if (dotsContainer) {
         dotsContainer.querySelectorAll('button').forEach(dot => {
             dot.addEventListener('click', () => {
-                const idx = parseInt(dot.dataset.slideIndex);
-                slider.scrollTo({
-                    left: slider.clientWidth * idx,
-                    behavior: 'smooth'
-                });
+                const idx = parseInt(dot.dataset.slideIndex || dot.dataset.index);
+                if (typeof window.setBoseSlide === 'function') {
+                    window.setBoseSlide(idx);
+                } else {
+                    slider.scrollTo({
+                        left: slider.clientWidth * idx,
+                        behavior: 'smooth'
+                    });
+                }
             });
         });
     }
@@ -747,7 +838,6 @@ if (typeof window !== 'undefined') {
 
 document.addEventListener('DOMContentLoaded', () => {
     try {
-        // حاقن التنسيق الإضافي لحماية الكروت المنفصلة وتثبيت السلايدر المتصل ممتد الشاشة (التنفس والراحة البصرية للعميل)
         const style = document.createElement('style');
         style.textContent = `
             .product-desc {
@@ -758,7 +848,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 -webkit-line-clamp: unset !important;
                 height: auto !important;
             }
-            /* هندسة السلايدر اللانهائي المتصل - ممتد بكامل عرض الشاشة بدون فواصل أو فراغات */
             .bose-full-slider-container {
                 display: flex !important;
                 overflow-x: auto !important;
@@ -778,13 +867,14 @@ document.addEventListener('DOMContentLoaded', () => {
             .slider-item-exclusive {
                 width: 100vw !important;
                 max-width: 100vw !important;
-                height: 70vh !important; /* ارتفاع مريح ومتناسق للموبايل والكمبيوتر يعطي فخامة للمنتج */
+                height: 50vh !important;
+                min-height: 380px;
+                overflow: hidden;
             }
-            /* هندسة كروت المنتجات لتظهر كارتين جنب بعض على الموبايل وبارتياح بصري ممتاز */
             .bose-grid-two-columns {
                 display: grid !important;
                 grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-                gap: 12px !important;
+                gap: 16px !important;
                 padding: 8px !important;
             }
             @media (min-width: 768px) {
@@ -796,11 +886,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     height: 85vh !important;
                 }
             }
-            /* كلاس التنفس والارتياح البصري المأخوذ من روح الرول موديل */
             .bose-breathing-space {
                 padding-top: 2.5rem !important;
                 padding-bottom: 2.5rem !important;
                 letter-spacing: 0.02em;
+            }
+            /* فئة النبض التفاعلي لشارة العربة المستوحاة من التحديث */
+            .bose-pulse {
+                animation: boseCartPulse 0.5s ease-in-out;
+            }
+            @keyframes boseCartPulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.2); }
+                100% { transform: scale(1); }
             }
         `;
         document.head.appendChild(style);
