@@ -307,13 +307,39 @@
                         <div id="logs-container" class="p-6 max-h-[520px] overflow-y-auto space-y-4 custom-scrollbar min-h-[300px]">
                             <div id="loading-placeholder" class="py-16 text-center flex flex-col items-center justify-center gap-4">
                                 <div class="w-10 h-10 rounded-xl border-2 border-brand-pink/20 border-t-brand-pink animate-spin"></div>
-                                <p class="text-xs text-brand-textMuted/60 font-semibold tracking-wide">جاري الاستماع وبث نبضات النظام من السحابة المركزية للموقع...</p>
+                                <p class="text-xs text-brand-textMuted/60 font-semibold tracking-wide">جاري الاستماع وبث نبضات النظام من السحابة المركزي للموقع...</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="space-y-6">
                         
+                        <div class="bg-brand-surface border border-brand-border/40 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                            <div class="flex items-center justify-between mb-5 pb-4 border-b border-brand-border/20">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-brand-pink/10 border border-brand-pink/20 flex items-center justify-center text-brand-pink">
+                                        <i data-lucide="database-backup" class="w-4 h-4"></i>
+                                    </div>
+                                    <h3 class="text-xs font-bold text-white">استعادة بيانات الكتالوج المركزي</h3>
+                                </div>
+                                <span class="px-2 py-0.5 text-[9px] bg-brand-bg border border-brand-border text-brand-pink rounded-full font-bold">نواة آمنة</span>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="space-y-2">
+                                    <label for="bose-backup-file" class="block text-[11px] font-bold text-brand-textMuted/80">اختر ملف النسخة الاحتياطية (.json):</label>
+                                    <input type="file" id="bose-backup-file" accept=".json" class="w-full text-xs text-brand-textMuted bg-brand-bg border border-brand-border rounded-xl p-2.5 file:ml-4 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-brand-pink/10 file:text-brand-pink hover:file:bg-brand-pink/20 transition-all outline-none">
+                                </div>
+
+                                <button type="button" id="btn-trigger-rollback" class="w-full bg-brand-pink text-brand-bg py-3.5 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all hover:opacity-90 active:scale-[0.99]">
+                                    <i data-lucide="refresh-cw" class="w-4 h-4" id="icon-rollback-btn"></i>
+                                    <span id="text-rollback-btn">بدء استعادة الأصناف والمنتجات فورياً</span>
+                                </button>
+                            </div>
+                            
+                            <p class="text-[10px] text-brand-textMuted/40 leading-relaxed font-medium mt-4 border-t border-brand-border/10 pt-3 text-center">يقوم المحرك بقراءة السجل النصي، مسح التفرع المجهول، وإعادة بناء الـ 120 صنف المعتمد سحابياً.</p>
+                        </div>
+
                         <div class="bg-brand-surface border border-brand-border/40 rounded-2xl p-6 shadow-xl relative overflow-hidden">
                             <div class="flex items-center justify-between mb-5 pb-4 border-b border-brand-border/20">
                                 <div class="flex items-center gap-3">
@@ -342,18 +368,6 @@
                                     <span id="stat-alerts-count" class="text-sm font-bold text-brand-textMuted/80 font-mono">-</span>
                                 </div>
                             </div>
-                            
-                            <p class="text-[10px] text-brand-textMuted/40 leading-relaxed font-medium mt-5 border-t border-brand-border/10 pt-3 text-center">يقوم المحرك المركزي بإطلاق وميض أحمر فوري وتنبيه حي بمجرد انخفاض وفرة أي صنف.</p>
-                        </div>
-
-                        <div class="bg-gradient-to-br from-brand-surface to-brand-bg border border-brand-border/30 rounded-2xl p-5 relative overflow-hidden">
-                            <h4 class="text-xs font-bold text-white mb-2 flex items-center gap-2">
-                                <i data-lucide="info" class="w-3.5 h-3.5 text-brand-pink"></i>
-                                <span>دليل تشغيل لوحة الطوارئ الإدارية</span>
-                            </h4>
-                            <p class="text-[11px] text-brand-textMuted/60 leading-relaxed font-medium">
-                                شاشة BoseMonitor لا تتطلب عمداً أي تدخل يدوي للتحديث. بمجرد حدوث تعديل على أصناف الكيك المخصص، السينابون، الدونات، أو أرشفة طلبات التوصيل للعملاء، يتم التقاط الإشارة التشغيلية سحابياً وبثها للوحة الإدارة فوراً وبشكل صامت تماماً لحفظ استقرار المتجر.
-                            </p>
                         </div>
 
                     </div>
@@ -428,7 +442,7 @@
 
             const currentTime = new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             
-            if (updateSource === 'catalog' || updateSource === 'admin_catalog_save' || updateSource === 'admin_catalog_delete') {
+            if (updateSource === 'catalog' || updateSource === 'admin_catalog_save' || updateSource === 'admin_catalog_delete' || updateSource === 'admin_catalog_rollback') {
                 const card = document.getElementById('card-catalog');
                 const timestamp = document.getElementById('catalog-timestamp');
                 if (card) { card.classList.add('update-flash'); setTimeout(() => card.classList.remove('update-flash'), 800); }
@@ -694,6 +708,11 @@
                         logType = "success";
                         borderClass = "border-emerald-500";
                         bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
+                    } else if (currentSource === 'admin_catalog_rollback') {
+                        logMessage = "استعادة سيادية شاملة: تم مسح كتالوج الأخطاء وإعادة بناء الـ 120 صنف معتمد من نسخة الـ JSON الاحتياطية بنجاح.";
+                        logType = "success";
+                        borderClass = "border-emerald-500";
+                        bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
                     }
 
                     const newLogHtml = `
@@ -725,6 +744,85 @@
                 flagLoaded = true;
                 clearTimeout(fallbackTimeout);
             });
+
+            // 5. ربط آلية زر الاستعادة المركزي وقراءة محتوى ملف الـ JSON المرفوع
+            const btnRollback = document.getElementById('btn-trigger-rollback');
+            const fileInput = document.getElementById('bose-backup-file');
+            
+            if (btnRollback && fileInput) {
+                btnRollback.addEventListener('click', async () => {
+                    const selectedFile = fileInput.files[0];
+                    if (!selectedFile) {
+                        alert("يرجى اختيار ملف النسخة الاحتياطية (.json) أولاً قبل البدء.");
+                        return;
+                    }
+
+                    if (!confirm("تنبيه حرج للإدارة: هل أنت متأكد من رغبتك في مسح الكتالوج الحالي واستعادة المنتجات من الملف؟")) {
+                        return;
+                    }
+
+                    const textBtn = document.getElementById('text-rollback-btn');
+                    const iconBtn = document.getElementById('icon-rollback-btn');
+                    
+                    if (textBtn && iconBtn) {
+                        textBtn.textContent = "جاري قراءة واستعادة الأصناف سحابياً...";
+                        iconBtn.classList.add('animate-spin');
+                    }
+                    btnRollback.disabled = true;
+
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        try {
+                            const backupData = JSON.parse(e.target.result);
+                            
+                            // التحقق من بنية المصفوفة داخل الـ JSON المرفوع
+                            const productsArray = Array.isArray(backupData) ? backupData : (backupData.catalog || []);
+                            
+                            if (productsArray.length === 0) {
+                                throw new Error("ملف النسخة الاحتياطية فارغ أو يحتوي على بنية غير متوافقة.");
+                            }
+
+                            // أ) جلب الأصناف الحالية لمسحها تماماً وضمان النقاء
+                            const currentSnapshot = await window.db.collection('catalog').get();
+                            const batchDelete = window.db.batch();
+                            currentSnapshot.forEach((doc) => {
+                                batchDelete.delete(doc.ref);
+                            });
+                            await batchDelete.commit();
+
+                            // ب) حقن وإعادة بناء المنتجات والروابط الـ 120 من جديد
+                            const batchInsert = window.db.batch();
+                            productsArray.forEach((product) => {
+                                // توليد معرف فرعي للمنتج أو الحفاظ على معرفه الأصلي
+                                const docId = product.id || product.productId || window.db.collection('catalog').doc().id;
+                                const docRef = window.db.collection('catalog').doc(docId);
+                                batchInsert.set(docRef, product);
+                            });
+                            await batchInsert.commit();
+
+                            // ج) إرسال نبضة المزامنة وعلم التحديث لشريط السجلات
+                            await window.db.collection('system').doc('syncFlag').set({
+                                lastAdminUpdate: Date.now(),
+                                updateSource: 'admin_catalog_rollback'
+                            }, { merge: true });
+
+                            alert(`تمت استعادة كتالوج المنتجات بنجاح! إجمالي الأصناف المحقونة: ${productsArray.length}`);
+                            fileInput.value = ""; // تصفير حقل الملف
+
+                        } catch (err) {
+                            console.error("Rollback Process Error:", err);
+                            alert(`فشلت عملية الاستعادة: ${err.message || "تنسيق ملف JSON غير صحيح"}`);
+                        } finally {
+                            if (textBtn && iconBtn) {
+                                textBtn.textContent = "بدء استعادة الأصناف والمنتجات فورياً";
+                                iconBtn.classList.remove('animate-spin');
+                            }
+                            btnRollback.disabled = false;
+                        }
+                    };
+                    reader.readAsText(selectedFile);
+                });
+            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
