@@ -417,7 +417,7 @@
         }
         
         let eventsCounter = 0;
-        let lastLoggedTimestamp = 0; // متغير لمنع تكرار حقن السجل نفسه في شريط التدوين الحي
+        let lastLoggedTimestamp = 0; 
 
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebar-overlay');
@@ -495,7 +495,6 @@
                 networkStatus.className = "text-green-400 font-bold";
             }
 
-            // 1. المراقبة التزامنية لبيانات الكتالوج والمخزون الموحد
             window.db.collection('catalog').onSnapshot((snapshot) => {
                 let totalProducts = snapshot.size;
                 let activeProducts = 0;
@@ -552,7 +551,6 @@
                 console.error("Catalog Stream Error:", error);
             });
 
-            // 2. معالج الأمان الوقائي لكسر جمود الطلبات والمبيعات في حال عدم تهيئة المجموعة سحابياً
             try {
                 window.db.collection('orders').onSnapshot((snapshot) => {
                     let totalSales = 0;
@@ -609,7 +607,6 @@
                 console.error("Orders Listener Fallback Intercepted:", err);
             }
 
-            // 3. معالج الأمان الوقائي لكسر جمود إحصائيات الزوار
             try {
                 window.db.collection('analytics').doc('traffic').onSnapshot((docSnap) => {
                     const activeVisitorsEl = document.getElementById('stat-visitors-active');
@@ -649,7 +646,6 @@
                 }
             }, 4000);
 
-            // 4. البث الحي والمستمر لسجلات النظام والعمليات التشخيصية
             window.db.collection('system').doc('syncFlag').onSnapshot((docSnap) => {
                 flagLoaded = true;
                 clearTimeout(fallbackTimeout);
@@ -671,7 +667,6 @@
                         return;
                     }
 
-                    // التحقق الوقائي: منع تكرار كتابة السجل الفوري في واجهة المستخدم
                     if (flagData.lastAdminUpdate === lastLoggedTimestamp) {
                         return;
                     }
@@ -737,7 +732,6 @@
                         const existingPlaceholder = document.getElementById('loading-placeholder');
                         if (existingPlaceholder) existingPlaceholder.remove();
                         
-                        // صيانة الذاكرة وحفظ مساحة العرض للموبايل والكمبيوتر
                         while (container.children.length >= 30) {
                             container.lastElementChild.remove();
                         }
@@ -756,7 +750,6 @@
                 clearTimeout(fallbackTimeout);
             });
 
-            // 5. ربط آلية زر الاستعادة المركزي وقراءة محتوى ملف الـ JSON المرفوع
             const btnRollback = document.getElementById('btn-trigger-rollback');
             const fileInput = document.getElementById('bose-backup-file');
             
@@ -785,10 +778,13 @@
                     reader.onload = async (e) => {
                         try {
                             const backupData = JSON.parse(e.target.result);
-                            const productsArray = Array.isArray(backupData) ? backupData : (backupData.catalog || []);
+                            
+                            const productsArray = Array.isArray(backupData) 
+                                ? backupData 
+                                : (backupData.products || backupData.catalog || []);
                             
                             if (productsArray.length === 0) {
-                                throw new Error("ملف النسخة الاحتياطية فارغ أو يحتوي على بنية غير متوافقة.");
+                                throw new Error("ملف النسخة الاحتياطية فارغ أو يحتوي على بنية غير متوافقة مع قنوات قراءة النظام.");
                             }
 
                             const currentSnapshot = await window.db.collection('catalog').get();
@@ -811,7 +807,7 @@
                                 updateSource: 'admin_catalog_rollback'
                             }, { merge: true });
 
-                            alert(`تمت استعادة كتالوج المنتجات بنجاح! إجمالي الأصناف المحقونة: ${productsArray.length}`);
+                            alert(`تمت استعادة كتالوج المنتجات بنجاح! إجمالي الأصناف المحقونة سحابياً: ${productsArray.length}`);
                             fileInput.value = ""; 
 
                         } catch (err) {
