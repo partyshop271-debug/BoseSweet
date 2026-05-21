@@ -1,9 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+// ==========================================
+// BoseSweets Admin Core Engine Engine (admin-catalog.js)
+// Focus: Stable Cloud Connection, Realtime Streams, Cloudinary Direct Upload
+// Strict Constraint: Fully compatible with admin UI panels, NO code truncations.
+// ==========================================
 
-// ==========================================
-// 1. التكوين والتهيئة السحابية (Firebase Configuration)
-// ==========================================
+// التكوين والتهيئة السحابية المتوافقة مع المنظومة الإدارية المشتركة لمتجر حلويات بوسي
 const firebaseConfig = {
     apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
     authDomain: "bosy-sweets.firebaseapp.com",
@@ -13,14 +14,16 @@ const firebaseConfig = {
     appId: "1:473615735083:web:f09c6001c72640b2588d6e"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+// تأمين عدم تكرار التهيئة السحابية لمنع الأخطاء البرمجية داخل المتصفح
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
 
-const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1"; 
-const CLOUDINARY_UPLOAD_PRESET = "gct8i28h"; 
-const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+// الاعتماد الموحد على بروتوكول الاتصال التقليدي والمستقر لقاعدة البيانات
+const db = firebase.firestore();
+const appId = "bosy-sweets-global-id";
 
-// الحالات والمتغيرات المركزية للمحرك
+// الحالات والمتغيرات المركزية للمحرك الإداري
 let catalogData = [];
 let selectedCategory = ''; 
 let confirmCallback = null;
@@ -56,7 +59,6 @@ window.switchSection = function(sectionId, element = null) {
     const targetSec = document.getElementById(sectionId);
     if (targetSec) targetSec.classList.add('active');
     
-    // المسميات والعناوين الاستراتيجية للأقسام
     const titles = {
         'dashboard': 'المركز الإداري لحلويات بوسي',
         'orders-section': 'متابعة الطلبات الحية | حلويات بوسي',
@@ -219,6 +221,10 @@ window.handlePreviewError = function(previewId, iconId) {
     }
 };
 
+const CLOUDINARY_CLOUD_NAME = "dyx4w0dr1"; 
+const CLOUDINARY_UPLOAD_PRESET = "gct8i28h"; 
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
+
 window.uploadToCloudinary = async function(fileInput, urlInputId, previewId, placeholderId) {
     const file = fileInput.files[0];
     if (!file) return;
@@ -265,10 +271,9 @@ window.uploadToCloudinary = async function(fileInput, urlInputId, previewId, pla
 // ==========================================
 // 5. إدارة بيانات الكتالوج والبث السحابي الحي (Catalog CRUD)
 // ==========================================
-async function loadCatalog() {
+function loadCatalog() {
     try {
-        // تفعيل المراقبة الحية (Realtime Stream) لضمان اتساق تام وفوري للبيانات
-        onSnapshot(collection(db, 'catalog'), (querySnapshot) => {
+        db.collection('catalog').onSnapshot((querySnapshot) => {
             catalogData = [];
             let categoriesSet = new Set(['التورت', 'الجاتوهات', 'السينابون', 'الدوناتس', 'ورد', 'الديسباسيتو', 'القشطوطة', 'كبات السعادة']);
 
@@ -312,7 +317,6 @@ function renderDynamicSidebarCategories(categoriesSet) {
     
     sidebarNav.innerHTML = sidebarHtml;
 
-    // المراقبة الحية للورد لتمكين إعدادات محرك التنسيق تلقائياً
     const hasFlowers = Array.from(categoriesSet).some(cat => cat.includes('ورد') || cat.includes('بوكيه') || cat.includes('تنسيق'));
     if (hasFlowers) {
         const simulatorItemHtml = `
@@ -330,7 +334,6 @@ function renderDynamicSidebarCategories(categoriesSet) {
 
     if (typeof lucide !== 'undefined') lucide.createIcons();
 
-    // ربط مستمعي الأحداث للأقسام المتولدة ديناميكياً
     sidebarNav.querySelectorAll('.submenu-item[data-category]').forEach(item => {
         item.addEventListener('click', function() {
             const cat = this.getAttribute('data-category');
@@ -418,10 +421,10 @@ function renderCatalogGridForSection(catName) {
                     <p class="text-lg text-brand-textMuted font-bold line-clamp-2 mb-10 flex-grow opacity-80">${finalDesc}</p>
                     
                     <div class="flex items-center gap-6 pt-8 border-t border-brand-border">
-                        <button data-edit-json="${pJson}" class="btn-edit-product btn-action flex-1 py-4 h-auto rounded-2xl bg-[#0c0709] hover:bg-brand-pink" title="فتح غرفة العمليات والتعديل">
+                        <button onclick="window.editProduct('${pJson}')" class="btn-edit-product btn-action flex-1 py-4 h-auto rounded-2xl bg-[#0c0709] hover:bg-brand-pink" title="فتح غرفة العمليات والتعديل">
                             <i data-lucide="edit-3" class="w-8 h-8"></i>
                         </button>
-                        <button data-delete-id="${p.id}" data-delete-name="${p.name}" class="btn-delete-product btn-action danger flex-none w-16 h-auto py-4 rounded-2xl" title="حذف نهائي">
+                        <button onclick="window.deleteProduct('${p.id}', '${p.name}', this)" class="btn-delete-product btn-action danger flex-none w-16 h-auto py-4 rounded-2xl" title="حذف نهائي">
                             <i data-lucide="trash-2" class="w-8 h-8"></i>
                         </button>
                     </div>
@@ -431,21 +434,6 @@ function renderCatalogGridForSection(catName) {
     });
     grid.innerHTML = html;
     if (typeof lucide !== 'undefined') lucide.createIcons();
-
-    // ربط ميكانيكي آمن للمستمعات بدون استخدام دالات مدمجة داخل الكروت
-    grid.querySelectorAll('.btn-edit-product').forEach(btn => {
-        btn.addEventListener('click', function() {
-            window.editProduct(this.getAttribute('data-edit-json'));
-        });
-    });
-
-    grid.querySelectorAll('.btn-delete-product').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const id = this.getAttribute('data-delete-id');
-            const name = this.getAttribute('data-delete-name');
-            window.deleteProduct(id, name, this);
-        });
-    });
 }
 
 window.openIsolatedEditor = function() {
@@ -567,9 +555,9 @@ window.deleteProduct = async function(id, name, btnElement) {
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
             
-            await deleteDoc(doc(db, 'catalog', id));
+            await db.collection('catalog').doc(id).delete();
             
-            await setDoc(doc(db, 'system', 'syncFlag'), { 
+            await db.collection('system').doc('syncFlag').set({ 
                 forceRefresh: true, 
                 lastAdminUpdate: Date.now(),
                 updateSource: 'admin_catalog_delete' 
@@ -642,12 +630,12 @@ window.saveProduct = async function() {
         }
 
         if (idInput) { 
-            await setDoc(doc(db, 'catalog', idInput), productData, { merge: true }); 
+            await db.collection('catalog').doc(idInput).set(productData, { merge: true }); 
         } else { 
-            await setDoc(doc(collection(db, 'catalog')), productData); 
+            await db.collection('catalog').add(productData); 
         }
         
-        await setDoc(doc(db, 'system', 'syncFlag'), { 
+        await db.collection('system').doc('syncFlag').set({ 
             forceRefresh: true, 
             lastAdminUpdate: Date.now(),
             updateSource: 'admin_catalog_save'
@@ -683,12 +671,7 @@ window.fetchAdminOrders = async function() {
     }
 
     try {
-        // تحويل استدعاء الطلبات إلى Snapshot لمتابعة التحديثات تلقائياً وحياً
-        onSnapshot(collection(db, 'orders'), (ordersSnapshot) => {
-            if (document.getElementById('orders-section').classList.contains('active') === false && container.innerHTML !== "") {
-                // منع تشويه العرض الفوري إذا لم يكن الإداري داخل التبويب
-            }
-            
+        db.collection('orders').onSnapshot((ordersSnapshot) => {
             let ordersArray = [];
             ordersSnapshot.forEach((docSnap) => {
                 ordersArray.push({ id: docSnap.id, ...docSnap.data() });
@@ -812,7 +795,6 @@ window.fetchAdminOrders = async function() {
                         'cancelled': 'border-rose-500 text-rose-500 bg-rose-500/10'
                     };
                     const status = order.status || 'pending';
-                    const statusClass = statusColors[status] || statusColors['pending'];
 
                     ordersHtml += `
                         <div class="bg-brand-surface border border-brand-border rounded-3xl p-8 shadow-xl" id="order-card-${orderId}">
@@ -841,7 +823,7 @@ window.fetchAdminOrders = async function() {
                                     <p class="text-sm font-bold text-brand-textMuted">📅 موعد الاستلام المطلوب: <span class="text-brand-pink font-black text-lg">${formattedDate} - الساعة ${formattedTime}</span></p>
                                     <div class="pt-4 flex items-center gap-3">
                                         <label class="text-white font-bold text-sm">تعديل الحالة اللوجستية:</label>
-                                        <select data-order-select-id="${orderId}" class="bg-[#0c0709] border border-brand-border text-white text-base rounded-xl px-4 py-2 font-bold outline-none cursor-pointer focus:border-brand-pink transition-all">
+                                        <select onchange="window.updateOrderStatus('${orderId}', this.value)" class="bg-[#0c0709] border border-brand-border text-white text-base rounded-xl px-4 py-2 font-bold outline-none cursor-pointer focus:border-brand-pink transition-all">
                                             <option value="pending" ${status === 'pending' ? 'selected' : ''}>قيد الانتظار</option>
                                             <option value="preparing" ${status === 'preparing' ? 'selected' : ''}>جاري التحضير</option>
                                             <option value="completed" ${status === 'completed' ? 'selected' : ''}>تم التسليم</option>
@@ -862,7 +844,7 @@ window.fetchAdminOrders = async function() {
                                 <a href="https://wa.me/20${order.whatsappPhone ? order.whatsappPhone.replace(/^0/, '') : ''}" target="_blank" class="bg-emerald-600 hover:bg-emerald-700 text-white font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 text-lg">
                                     <i data-lucide="message-circle" class="w-6 h-6"></i> تواصل مع العميل وتأكيد الطلب
                                 </a>
-                                <button data-archive-id="${orderId}" class="btn-archive-order bg-[#0c0709] border-2 border-red-900 text-red-500 hover:bg-red-900/20 font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 text-lg">
+                                <button onclick="window.deleteAdminOrder('${orderId}', this)" class="btn-archive-order bg-[#0c0709] border-2 border-red-900 text-red-500 hover:bg-red-900/20 font-black py-4 px-8 rounded-xl transition-all flex items-center gap-3 text-lg">
                                     <i data-lucide="trash-2" class="w-6 h-6"></i> أرشفة ومسح الطلب نهائياً
                                 </button>
                             </div>
@@ -874,19 +856,6 @@ window.fetchAdminOrders = async function() {
             if (container) {
                 container.innerHTML = ordersHtml;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
-
-                // ربط الأحداث ميكانيكياً لعناصر الطلبات الحية
-                container.querySelectorAll('select[data-order-select-id]').forEach(select => {
-                    select.addEventListener('change', function() {
-                        window.updateOrderStatus(this.getAttribute('data-order-select-id'), this.value);
-                    });
-                });
-
-                container.querySelectorAll('.btn-archive-order').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        window.deleteAdminOrder(this.getAttribute('data-archive-id'), this);
-                    });
-                });
             }
         });
     } catch (error) {
@@ -897,7 +866,7 @@ window.fetchAdminOrders = async function() {
 
 window.updateOrderStatus = async function(orderId, newStatus) {
     try {
-        await setDoc(doc(db, 'orders', orderId), { status: newStatus }, { merge: true });
+        await db.collection('orders').doc(orderId).update({ status: newStatus });
         window.showToast("تم تحديث حالة الطلب بنجاح");
     } catch (error) {
         console.error("Order status update failed:", error);
@@ -914,9 +883,9 @@ window.deleteAdminOrder = async function(orderId, btnElement) {
                 btnElement.disabled = true;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
-            await deleteDoc(doc(db, 'orders', orderId));
+            await db.collection('orders').doc(orderId).delete();
             
-            await setDoc(doc(db, 'system', 'syncFlag'), { 
+            await db.collection('system').doc('syncFlag').set({ 
                 forceRefresh: true, 
                 lastAdminUpdate: Date.now(),
                 updateSource: 'admin_order_delete'
@@ -962,10 +931,9 @@ window.saveBoseSimulatorSettings = async function() {
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        const configDoc = doc(db, 'simulator-settings', 'config');
-        await setDoc(configDoc, settingsData, { merge: true });
+        await db.collection('simulator-settings').doc('config').set(settingsData, { merge: true });
         
-        await setDoc(doc(db, 'system', 'syncFlag'), { 
+        await db.collection('system').doc('syncFlag').set({ 
             forceRefresh: true, 
             lastAdminUpdate: Date.now(),
             updateSource: 'admin_simulator_save'
@@ -986,23 +954,19 @@ window.saveBoseSimulatorSettings = async function() {
 
 async function loadSimulatorSettings() {
     try {
-        const configDoc = doc(db, 'simulator-settings', 'config');
-        const docSnap = await getDocs(collection(db, 'simulator-settings'));
-        
-        docSnap.forEach(d => {
-            if (d.id === 'config') {
-                const data = d.data();
-                if (data.priceNatural !== undefined) document.getElementById('adm-price-natural').value = data.priceNatural;
-                if (data.priceArtificial !== undefined) document.getElementById('adm-price-artificial').value = data.priceArtificial;
-                if (data.priceSatin !== undefined) document.getElementById('adm-price-satin').value = data.priceSatin;
-                if (data.priceChocolate !== undefined) document.getElementById('adm-price-chocolate').value = data.priceChocolate;
-                if (data.priceCash !== undefined) document.getElementById('adm-price-cash').value = data.priceCash;
-                if (data.priceCard !== undefined) document.getElementById('adm-price-card').value = data.priceCard;
-                if (data.pricePhoto !== undefined) document.getElementById('adm-price-photo').value = data.pricePhoto;
-                if (data.layerChocolateUrl !== undefined) document.getElementById('adm-layer-chocolate-url').value = data.layerChocolateUrl;
-                if (data.layerCashUrl !== undefined) document.getElementById('adm-layer-cash-url').value = data.layerCashUrl;
-            }
-        });
+        const configDoc = await db.collection('simulator-settings').doc('config').get();
+        if (configDoc.exists) {
+            const data = configDoc.data();
+            if (data.priceNatural !== undefined) document.getElementById('adm-price-natural').value = data.priceNatural;
+            if (data.priceArtificial !== undefined) document.getElementById('adm-price-artificial').value = data.priceArtificial;
+            if (data.priceSatin !== undefined) document.getElementById('adm-price-satin').value = data.priceSatin;
+            if (data.priceChocolate !== undefined) document.getElementById('adm-price-chocolate').value = data.priceChocolate;
+            if (data.priceCash !== undefined) document.getElementById('adm-price-cash').value = data.priceCash;
+            if (data.priceCard !== undefined) document.getElementById('adm-price-card').value = data.priceCard;
+            if (data.pricePhoto !== undefined) document.getElementById('adm-price-photo').value = data.pricePhoto;
+            if (data.layerChocolateUrl !== undefined) document.getElementById('adm-layer-chocolate-url').value = data.layerChocolateUrl;
+            if (data.layerCashUrl !== undefined) document.getElementById('adm-layer-cash-url').value = data.layerCashUrl;
+        }
     } catch (error) {
         console.error("Load simulator settings failed:", error);
     }
@@ -1012,10 +976,8 @@ async function loadSimulatorSettings() {
 // 8. تهيئة خطوط مستمعي الأحداث المركزية (Central DOM Event Listeners)
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
-    // تشغيل جلب بيانات الكتالوج فورياً وبثها
     loadCatalog();
 
-    // 1. مستمعات التبويبات الفاخرة (Tabs configuration)
     document.querySelectorAll('.admin-tab-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const targetId = btn.getAttribute('data-target');
@@ -1023,12 +985,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 2. مستمعات القائمة الجانبية والهيدر
     document.getElementById('btn-open-sidebar')?.addEventListener('click', () => window.toggleSidebar(true));
     document.getElementById('btn-close-sidebar')?.addEventListener('click', () => window.toggleSidebar(false));
     document.getElementById('sidebar-overlay')?.addEventListener('click', () => window.toggleSidebar(false));
 
-    // 3. مستمعات التبديل الاستراتيجي للأقسام الرئيسية
     document.getElementById('menu-item-dash')?.addEventListener('click', function() {
         window.switchSection('dashboard', this);
     });
@@ -1040,7 +1000,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.fetchAdminOrders();
     });
 
-    // 4. مستمعات إضافة المنتجات والعودة منها
     document.getElementById('btn-dash-add-product')?.addEventListener('click', () => {
         window.openIsolatedEditor();
     });
@@ -1054,7 +1013,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.saveProduct();
     });
 
-    // 5. مستمعات التحديث الفوري للـ Labels وحجم الكروت والمدخلات
     document.getElementById('prod-stock')?.addEventListener('change', function() {
         window.updateStockLabel(this);
     });
@@ -1065,7 +1023,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.toggleFlowerFields(this.value);
     });
 
-    // محددات أبعاد الكروت التلقائية والمطاطية
     const cardW = document.getElementById('prod-card-w');
     if (cardW) {
         cardW.addEventListener('input', function() {
@@ -1079,7 +1036,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ربط مخرجات الروابط المباشرة مع المعاينة البصرية الفورية
     document.getElementById('prod-img')?.addEventListener('input', function() {
         window.previewImage('img-preview', 'img-placeholder', this.value);
     });
@@ -1099,7 +1055,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.previewImage('preview-choco', 'placeholder-choco', this.value);
     });
 
-    // ربط أزرار الرفع المستقلة (Cloudinary Triggers)
     document.getElementById('btn-upload-prod-img')?.addEventListener('click', () => document.getElementById('file-prod-img').click());
     document.getElementById('btn-upload-prod-hero')?.addEventListener('click', () => document.getElementById('file-prod-hero').click());
     document.getElementById('btn-upload-img-natural')?.addEventListener('click', () => document.getElementById('file-img-natural').click());
@@ -1107,7 +1062,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-upload-img-cash')?.addEventListener('click', () => document.getElementById('file-img-cash').click());
     document.getElementById('btn-upload-img-choco')?.addEventListener('click', () => document.getElementById('file-img-choco').click());
 
-    // ربط الأحداث الفعلية لملفات الرفع لعدم استخدام onchange مضمن
     document.getElementById('file-prod-img')?.addEventListener('change', function() {
         window.uploadToCloudinary(this, 'prod-img', 'img-preview', 'img-placeholder');
     });
@@ -1118,4 +1072,15 @@ document.addEventListener('DOMContentLoaded', () => {
         window.uploadToCloudinary(this, 'prod-img-natural', 'preview-natural', 'placeholder-natural');
     });
     document.getElementById('file-img-artificial')?.addEventListener('change', function() {
-        window.uploadToCloudinary(this, 'prod-img-artificial', 'preview-artificial', '
+        window.uploadToCloudinary(this, 'prod-img-artificial', 'preview-artificial', 'placeholder-artificial');
+    });
+    document.getElementById('file-img-cash')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-img-cash', 'preview-cash', 'placeholder-cash');
+    });
+    document.getElementById('file-img-choco')?.addEventListener('change', function() {
+        window.uploadToCloudinary(this, 'prod-img-choco', 'preview-choco', 'placeholder-choco');
+    });
+    document.getElementById('btn-save-simulator-settings')?.addEventListener('click', () => {
+        window.saveBoseSimulatorSettings();
+    });
+});

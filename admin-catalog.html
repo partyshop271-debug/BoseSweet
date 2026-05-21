@@ -188,6 +188,10 @@
                 <i data-lucide="shopping-bag" class="w-6 h-6"></i> متابعة الطلبات الحية
             </div>
 
+            <div class="submenu-item" id="menu-item-simulator">
+                <i data-lucide="sliders-horizontal" class="w-6 h-6"></i> محرك التنسيق الفاخر
+            </div>
+
             <details id="menu-accordion-catalog" class="main-menu mt-6 bose-accordion" open>
                 <summary>
                     <div class="flex items-center gap-4"><i data-lucide="layers" class="w-6 h-6"></i> إدارة الكتالوج</div>
@@ -494,15 +498,15 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 bg-[#0c0709] p-8 rounded-3xl border border-brand-border mt-8">
                             <div>
                                 <div class="flex justify-between items-center mb-5">
-                                    <label class="form-label mb-0 text-brand-pink text-base">العرض</label>
-                                    <span class="text-brand-bg font-bold text-base bg-brand-pink px-3 py-1 rounded-lg" id="val-custom-w">تلقائي</span>
+                                    <label class="form-label mb-0 text-brand-pink text-base">العرض العادي للبطاقة (بكسل)</label>
+                                    <span class="text-brand-bg font-bold text-base bg-brand-pink px-3 py-1 rounded-lg" id="val-custom-w">280</span>
                                 </div>
                                 <input type="range" id="prod-card-w" min="150" max="800" step="10" value="280">
                             </div>
                             <div>
                                 <div class="flex justify-between items-center mb-5">
-                                    <label class="form-label mb-0 text-brand-pink text-base">الارتفاع</label>
-                                    <span class="text-brand-bg font-bold text-base bg-brand-pink px-3 py-1 rounded-lg" id="val-custom-h">تلقائي</span>
+                                    <label class="form-label mb-0 text-brand-pink text-base">الارتفاع المخصص للبطاقة (بكسل)</label>
+                                    <span class="text-brand-bg font-bold text-base bg-brand-pink px-3 py-1 rounded-lg" id="val-custom-h">350</span>
                                 </div>
                                 <input type="range" id="prod-card-h" min="150" max="800" step="10" value="350">
                             </div>
@@ -586,4 +590,795 @@
                                     <input type="text" id="adm-layer-cash-url" class="w-full bg-brand-surface border border-brand-border rounded-xl p-3 text-white text-sm outline-none focus:border-brand-pink transition-colors" dir="ltr" placeholder="https://res.cloudinary.com/...">
                                 </div>
                             </div>
-                            <button id="btn-save-simulator-settings" class="w-full mt-6 bg-brand-pink text-
+                            <button id="btn-save-simulator-settings" class="w-full mt-6 bg-brand-pink text-brand-bg font-bold py-4 rounded-xl hover:bg-white hover:text-brand-pink transition-colors flex items-center justify-center gap-2 shadow-md">
+                                <i data-lucide="save" class="w-5 h-5"></i> حفظ إعدادات المحرك
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAs-FakeKeyForStructureValidationOnly",
+            authDomain: "bose-sweets.firebaseapp.com",
+            projectId: "bose-sweets",
+            storageBucket: "bose-sweets.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef123456"
+        };
+        
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        const CLOUDINARY_UPLOAD_PRESET = "bose_preset";
+        const CLOUDINARY_CLOUD_NAME = "bose-sweets-cloud";
+
+        let allProductsCache = [];
+        let activeCategoryFilter = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initSidebarNavigation();
+            initTabsBehavior();
+            initFormInteractions();
+            initRangeSliders();
+            listenToLiveCatalog();
+            listenToLiveOrders();
+            loadSimulatorSettings();
+            lucide.createIcons();
+        });
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById("admin-toast");
+            const icon = document.getElementById("toast-icon");
+            const text = document.getElementById("toast-msg");
+            
+            text.innerText = msg;
+            if(isError) {
+                toast.style.borderColor = "#ef4444";
+                icon.setAttribute("data-lucide", "alert-circle");
+                icon.style.color = "#ef4444";
+            } else {
+                toast.style.borderColor = "#ff91a4";
+                icon.setAttribute("data-lucide", "check-circle");
+                icon.style.color = "#ff91a4";
+            }
+            lucide.createIcons();
+            
+            toast.classList.add("active");
+            setTimeout(() => {
+                toast.classList.remove("active");
+            }, 4000);
+        }
+
+        function showConfirmModal(message, onConfirm) {
+            const modal = document.getElementById("bose-confirm-modal");
+            const msgContainer = document.getElementById("bose-confirm-message");
+            const btnYes = document.getElementById("bose-confirm-yes");
+            const btnNo = document.getElementById("bose-confirm-no");
+            
+            msgContainer.innerText = message;
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+            
+            const clearListeners = () => {
+                const newYes = btnYes.cloneNode(true);
+                const newNo = btnNo.cloneNode(true);
+                btnYes.parentNode.replaceChild(newYes, btnYes);
+                btnNo.parentNode.replaceChild(newNo, btnNo);
+            };
+            
+            document.getElementById("bose-confirm-yes").onclick = () => {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+                clearListeners();
+                onConfirm();
+            };
+            
+            document.getElementById("bose-confirm-no").onclick = () => {
+                modal.classList.add("hidden");
+                modal.classList.remove("flex");
+                clearListeners();
+            };
+        }
+
+        function switchSection(sectionId, customTitle = "") {
+            document.querySelectorAll(".admin-section").forEach(s => s.classList.remove("active"));
+            const targetSection = document.getElementById(sectionId);
+            if(targetSection) targetSection.classList.add("fadeInWorkspace", "active");
+
+            document.querySelectorAll(".submenu-item").forEach(item => item.classList.remove("active"));
+            
+            if(sectionId === 'dashboard') document.getElementById("menu-item-dash")?.classList.add("active");
+            if(sectionId === 'orders-section') document.getElementById("menu-item-orders")?.classList.add("active");
+            if(sectionId === 'simulator-settings-section') document.getElementById("menu-item-simulator")?.classList.add("active");
+
+            const titleElem = document.getElementById("current-section-title");
+            if(customTitle) {
+                titleElem.innerText = customTitle;
+            } else {
+                if(sectionId === 'dashboard') titleElem.innerText = "المركز الإداري لحلويات بوسي";
+                if(sectionId === 'orders-section') titleElem.innerText = "متابعة الطلبات الحية";
+                if(sectionId === 'product-list') titleElem.innerText = "إدارة منتجات القسم المعزول";
+                if(sectionId === 'product-editor') titleElem.innerText = "غرفة التعديل والتنسيق المعزولة";
+                if(sectionId === 'simulator-settings-section') titleElem.innerText = "محرك التنسيق الفاخر";
+            }
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("sidebar-overlay");
+            sidebar.classList.remove("active");
+            overlay.classList.remove("active");
+        }
+
+        function initSidebarNavigation() {
+            const btnOpen = document.getElementById("btn-open-sidebar");
+            const btnClose = document.getElementById("btn-close-sidebar");
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("sidebar-overlay");
+
+            btnOpen?.addEventListener("click", () => {
+                sidebar.classList.add("active");
+                overlay.classList.add("active");
+            });
+
+            btnClose?.addEventListener("click", () => {
+                sidebar.classList.remove("active");
+                overlay.classList.remove("active");
+            });
+
+            overlay?.addEventListener("click", () => {
+                sidebar.classList.remove("active");
+                overlay.classList.remove("active");
+            });
+
+            document.getElementById("menu-item-dash")?.addEventListener("click", () => switchSection("dashboard"));
+            document.getElementById("menu-item-orders")?.addEventListener("click", () => switchSection("orders-section"));
+            document.getElementById("menu-item-simulator")?.addEventListener("click", () => switchSection("simulator-settings-section"));
+            
+            document.getElementById("btn-dash-add-product")?.addEventListener("click", () => openEditorForNew());
+            document.getElementById("btn-list-add-product")?.addEventListener("click", () => openEditorForNew(activeCategoryFilter));
+            document.getElementById("btn-editor-back")?.addEventListener("click", () => {
+                if(activeCategoryFilter) {
+                    filterByCategory(activeCategoryFilter);
+                } else {
+                    switchSection("dashboard");
+                }
+            });
+        }
+
+        function initTabsBehavior() {
+            document.querySelectorAll(".admin-tab-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
+                    document.querySelectorAll(".admin-tab-content").forEach(c => c.classList.remove("active-tab"));
+                    
+                    btn.classList.add("active");
+                    const targetId = btn.getAttribute("data-target");
+                    document.getElementById(targetId)?.classList.add("active-tab");
+                });
+            });
+        }
+
+        function initRangeSliders() {
+            const wInput = document.getElementById("prod-card-w");
+            const hInput = document.getElementById("prod-card-h");
+            const wVal = document.getElementById("val-custom-w");
+            const hVal = document.getElementById("val-custom-h");
+
+            wInput?.addEventListener("input", (e) => wVal.innerText = e.target.value);
+            hInput?.addEventListener("input", (e) => hVal.innerText = e.target.value);
+        }
+
+        function initFormInteractions() {
+            const hasDisc = document.getElementById("prod-has-discount");
+            const discText = document.getElementById("discount-status-text");
+            hasDisc?.addEventListener("change", (e) => {
+                discText.innerText = e.target.checked ? "العرض الترويجي نشط" : "لا يوجد عرض";
+            });
+
+            const stock = document.getElementById("prod-stock");
+            const stockText = document.getElementById("stock-status-text");
+            stock?.addEventListener("change", (e) => {
+                stockText.innerText = e.target.checked ? "متوفر للطلب" : "نفذت الكمية";
+            });
+
+            const catInput = document.getElementById("prod-cat");
+            const flowerFields = document.getElementById("flower-exclusive-fields");
+            catInput?.addEventListener("input", (e) => {
+                if(e.target.value.trim() === "ورد") {
+                    flowerFields.style.display = "block";
+                } else {
+                    flowerFields.style.display = "none";
+                }
+            });
+
+            setupCloudinaryDirectUpload("btn-upload-prod-img", "file-prod-img", "prod-img", "img-preview", "img-placeholder");
+            setupCloudinaryDirectUpload("btn-upload-prod-hero", "file-prod-hero", "prod-hero-img", "hero-preview", "hero-placeholder");
+            setupCloudinaryDirectUpload("btn-upload-img-natural", "file-img-natural", "prod-img-natural", "preview-natural", "placeholder-natural");
+            setupCloudinaryDirectUpload("btn-upload-img-artificial", "file-img-artificial", "prod-img-artificial", "preview-artificial", "placeholder-artificial");
+            setupCloudinaryDirectUpload("btn-upload-img-cash", "file-img-cash", "prod-img-cash", "preview-cash", "placeholder-cash");
+            setupCloudinaryDirectUpload("btn-upload-img-choco", "file-img-choco", "prod-img-choco", "preview-choco", "placeholder-choco");
+
+            document.getElementById("btn-save-product")?.addEventListener("click", () => commitProductToFirebase());
+            document.getElementById("btn-save-simulator-settings")?.addEventListener("click", () => saveSimulatorSettings());
+        }
+
+        function setupCloudinaryDirectUpload(btnId, fileInputId, urlInputId, imgPreviewId, placeholderId) {
+            const btn = document.getElementById(btnId);
+            const fileInput = document.getElementById(fileInputId);
+            const urlInput = document.getElementById(urlInputId);
+            const preview = document.getElementById(imgPreviewId);
+            const placeholder = document.getElementById(placeholderId);
+
+            btn?.addEventListener("click", () => fileInput.click());
+            
+            fileInput?.addEventListener("change", async (e) => {
+                const file = e.target.files[0];
+                if(!file) return;
+
+                btn.disabled = true;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> جاري الرفع للسحابة...`;
+                lucide.createIcons();
+
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+                try {
+                    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                        method: "POST",
+                        body: formData
+                    });
+                    
+                    if(!res.ok) throw new Error("فشل الرفع السحابي");
+                    
+                    const data = await res.json();
+                    urlInput.value = data.secure_url;
+                    
+                    if(preview) {
+                        preview.src = data.secure_url;
+                        preview.classList.remove("hidden");
+                    }
+                    if(placeholder) {
+                        placeholder.classList.add("hidden");
+                    }
+                    
+                    showToast("تم رفع الوسائط وتأمين الرابط السحابي بنجاح");
+                } catch (err) {
+                    console.error(err);
+                    showToast("خطأ أثناء الاتصال بخادم الوسائط السحابي", true);
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                    lucide.createIcons();
+                }
+            });
+
+            urlInput?.addEventListener("input", (e) => {
+                if(e.target.value.trim() !== "") {
+                    if(preview) {
+                        preview.src = e.target.value.trim();
+                        preview.classList.remove("hidden");
+                    }
+                    if(placeholder) placeholder.classList.add("hidden");
+                } else {
+                    if(preview) preview.classList.add("hidden");
+                    if(placeholder) placeholder.classList.remove("hidden");
+                }
+            });
+        }
+
+        function listenToLiveCatalog() {
+            db.collection("catalog").onSnapshot((snapshot) => {
+                allProductsCache = [];
+                const categoriesMap = new Set();
+                
+                snapshot.forEach(doc => {
+                    allProductsCache.push({ id: doc.id, ...doc.data() });
+                    if(doc.data().category) {
+                        categoriesMap.add(doc.data().category.trim());
+                    }
+                });
+
+                rebuildSidebarCategories(Array.from(categoriesMap));
+                rebuildDatalistCategories(Array.from(categoriesMap));
+
+                if(activeCategoryFilter) {
+                    renderProductGridFiltered(activeCategoryFilter);
+                }
+            }, (error) => {
+                console.error(error);
+                showToast("فشل الاتصال بقاعدة بيانات الكتالوج الحية", true);
+            });
+        }
+
+        function rebuildSidebarCategories(categories) {
+            const container = document.getElementById("sidebar-dynamic-categories");
+            if(!container) return;
+            container.innerHTML = "";
+
+            categories.forEach(cat => {
+                const count = allProductsCache.filter(p => p.category === cat).length;
+                const div = document.createElement("div");
+                div.className = `submenu-item nested-item ${activeCategoryFilter === cat ? 'active' : ''}`;
+                div.innerHTML = `
+                    <div class="flex items-center gap-3"><i data-lucide="folder" class="w-4 h-4 text-brand-pink/70"></i> ${cat}</div>
+                    <span class="text-xs bg-brand-border px-2 py-1 rounded-full text-brand-textMuted">${count}</span>
+                `;
+                div.addEventListener("click", () => filterByCategory(cat));
+                container.appendChild(div);
+            });
+            lucide.createIcons();
+        }
+
+        function rebuildDatalistCategories(categories) {
+            const datalist = document.getElementById("existing-categories");
+            if(!datalist) return;
+            datalist.innerHTML = "";
+            categories.forEach(cat => {
+                const opt = document.createElement("option");
+                opt.value = cat;
+                datalist.appendChild(opt);
+            });
+        }
+
+        function filterByCategory(categoryName) {
+            activeCategoryFilter = categoryName;
+            document.getElementById("current-filtered-cat-title").innerText = categoryName;
+            document.getElementById("back-cat-name").innerText = categoryName;
+            
+            document.querySelectorAll("#sidebar-dynamic-categories .submenu-item").forEach(item => {
+                if(item.innerText.includes(categoryName)) {
+                    item.classList.add("active");
+                } else {
+                    item.classList.remove("active");
+                }
+            });
+
+            renderProductGridFiltered(categoryName);
+            switchSection("product-list", `إدارة قسم: ${categoryName}`);
+        }
+
+        function renderProductGridFiltered(categoryName) {
+            const grid = document.getElementById("catalog-grid");
+            if(!grid) return;
+            grid.innerHTML = "";
+
+            const filtered = allProductsCache.filter(p => p.category === categoryName);
+
+            if(filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 text-center text-brand-textMuted font-semibold bg-brand-surface border border-brand-border rounded-2xl">
+                        لا توجد منتجات مضافة في هذا القسم حالياً.
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(p => {
+                const card = document.createElement("div");
+                card.className = `catalog-item ${!p.inStock ? 'out-of-stock' : ''}`;
+                
+                let discountBadgeHtml = "";
+                if(p.hasDiscount && p.oldPrice && p.price) {
+                    const pct = Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100);
+                    if(pct > 0) discountBadgeHtml = `<div class="discount-badge">خصم ${pct}%</div>`;
+                }
+
+                card.innerHTML = `
+                    ${discountBadgeHtml}
+                    <div class="w-full h-48 bg-brand-bg overflow-hidden relative border-b border-brand-border">
+                        <img src="${p.image || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600'}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-6 flex-grow flex flex-col justify-between gap-4">
+                        <div>
+                            <h4 class="text-xl font-bold text-white mb-2 tracking-wide">${p.name || 'منتج غير مسمى'}</h4>
+                            <p class="text-sm font-semibold text-brand-textMuted line-clamp-2 leading-relaxed opacity-80">${p.description || 'لا يوجد وصف تسويقي متاح.'}</p>
+                        </div>
+                        <div class="flex items-center justify-between mt-2 pt-4 border-t border-brand-border/40">
+                            <div>
+                                <span class="text-2xl font-bold text-brand-pink">${p.price || 0} <span class="text-xs">ج.م</span></span>
+                                ${p.hasDiscount && p.oldPrice ? `<span class="block text-sm line-through text-brand-textMuted opacity-50">${p.oldPrice} ج.م</span>` : ''}
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openEditorForExisting('${p.id}')" class="btn-action border-brand-pink/50 text-brand-pink" title="تعديل المنتج">
+                                    <i data-lucide="edit-3" class="w-5 h-5"></i>
+                                </button>
+                                <button onclick="triggerProductDelete('${p.id}', '${p.name}')" class="btn-action danger border-red-900/40 text-red-400" title="حذف المنتج">
+                                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        function resetEditorTabs() {
+            document.querySelectorAll(".admin-tab-btn").forEach(b => b.classList.remove("active"));
+            document.querySelectorAll(".admin-tab-content").forEach(c => c.classList.remove("active-tab"));
+            
+            document.querySelector('[data-target="tab-identity"]')?.classList.add("active");
+            document.getElementById("tab-identity")?.classList.add("active-tab");
+        }
+
+        function openEditorForNew(prefilledCategory = null) {
+            resetEditorTabs();
+            document.getElementById("editor-title").innerHTML = `<i data-lucide="plus-circle" class="text-brand-pink w-8 h-8"></i> إضافة منتج جديد كلياً`;
+            
+            document.getElementById("prod-id").value = "";
+            document.getElementById("prod-name").value = "";
+            document.getElementById("prod-cat").value = prefilledCategory || "";
+            document.getElementById("prod-price").value = "";
+            document.getElementById("prod-old-price").value = "";
+            document.getElementById("prod-has-discount").checked = false;
+            document.getElementById("prod-stock").checked = true;
+            document.getElementById("prod-img").value = "";
+            document.getElementById("prod-hero-img").value = "";
+            document.getElementById("prod-desc").value = "";
+            document.getElementById("prod-flavors").value = "";
+            
+            document.getElementById("productDisplayStyle").value = "half";
+            document.getElementById("prod-card-w").value = 280;
+            document.getElementById("prod-card-h").value = 350;
+            document.getElementById("val-custom-w").innerText = "280";
+            document.getElementById("val-custom-h").innerText = "350";
+
+            document.getElementById("prod-img-natural").value = "";
+            document.getElementById("prod-img-artificial").value = "";
+            document.getElementById("prod-img-cash").value = "";
+            document.getElementById("prod-img-choco").value = "";
+
+            document.getElementById("discount-status-text").innerText = "لا يوجد عرض";
+            document.getElementById("stock-status-text").innerText = "متوفر للطلب";
+
+            document.querySelectorAll(".admin-tab-content img").forEach(img => {
+                img.src = "";
+                img.classList.add("hidden");
+            });
+            document.querySelectorAll(".admin-tab-content [data-lucide='camera'], .admin-tab-content [data-lucide='monitor']").forEach(i => {
+                i.classList.remove("hidden");
+            });
+
+            if(prefilledCategory === "ورد" || (prefilledCategory && prefilledCategory.trim() === "ورد")) {
+                document.getElementById("flower-exclusive-fields").style.display = "block";
+            } else {
+                document.getElementById("flower-exclusive-fields").style.display = "none";
+            }
+
+            lucide.createIcons();
+            switchSection("product-editor", "إضافة منتج جديد");
+        }
+
+        function openEditorForExisting(productId) {
+            resetEditorTabs();
+            const p = allProductsCache.find(prod => prod.id === productId);
+            if(!p) {
+                showToast("تعذر العثور على بيانات المنتج المحددة", true);
+                return;
+            }
+
+            document.getElementById("editor-title").innerHTML = `<i data-lucide="pen-tool" class="text-brand-pink w-8 h-8"></i> تعديل وتنسيق: <span class="text-brand-pink">${p.name}</span>`;
+            
+            document.getElementById("prod-id").value = p.id;
+            document.getElementById("prod-name").value = p.name || "";
+            document.getElementById("prod-cat").value = p.category || "";
+            document.getElementById("prod-price").value = p.price || "";
+            document.getElementById("prod-old-price").value = p.oldPrice || "";
+            document.getElementById("prod-has-discount").checked = !!p.hasDiscount;
+            document.getElementById("prod-stock").checked = p.inStock !== false;
+            document.getElementById("prod-img").value = p.image || "";
+            document.getElementById("prod-hero-img").value = p.heroImage || "";
+            document.getElementById("prod-desc").value = p.description || "";
+            document.getElementById("prod-flavors").value = p.flavors || "";
+            
+            document.getElementById("productDisplayStyle").value = p.displayStyle || "half";
+            document.getElementById("prod-card-w").value = p.cardWidth || 280;
+            document.getElementById("prod-card-h").value = p.cardHeight || 350;
+            document.getElementById("val-custom-w").innerText = p.cardWidth || "280";
+            document.getElementById("val-custom-h").innerText = p.cardHeight || "350";
+
+            document.getElementById("prod-img-natural").value = p.imgNatural || "";
+            document.getElementById("prod-img-artificial").value = p.imgArtificial || "";
+            document.getElementById("prod-img-cash").value = p.imgCash || "";
+            document.getElementById("prod-img-choco").value = p.imgChoco || "";
+
+            document.getElementById("discount-status-text").innerText = p.hasDiscount ? "العرض الترويجي نشط" : "لا يوجد عرض";
+            document.getElementById("stock-status-text").innerText = p.inStock !== false ? "متوفر للطلب" : "نفذت الكمية";
+
+            setupImagePreviewField("prod-img", "img-preview", "img-placeholder");
+            setupImagePreviewField("prod-hero-img", "hero-preview", "hero-placeholder");
+            setupImagePreviewField("prod-img-natural", "preview-natural", "placeholder-natural");
+            setupImagePreviewField("prod-img-artificial", "preview-artificial", "placeholder-artificial");
+            setupImagePreviewField("prod-img-cash", "preview-cash", "placeholder-cash");
+            setupImagePreviewField("prod-img-choco", "preview-choco", "placeholder-choco");
+
+            if(p.category === "ورد") {
+                document.getElementById("flower-exclusive-fields").style.display = "block";
+            } else {
+                document.getElementById("flower-exclusive-fields").style.display = "none";
+            }
+
+            lucide.createIcons();
+            switchSection("product-editor", "غرفة العمليات المعزولة");
+        }
+
+        function setupImagePreviewField(urlInputId, imgPreviewId, placeholderId) {
+            const val = document.getElementById(urlInputId).value.trim();
+            const img = document.getElementById(imgPreviewId);
+            const placeholder = document.getElementById(placeholderId);
+            if(val) {
+                img.src = val;
+                img.classList.remove("hidden");
+                placeholder.classList.add("hidden");
+            } else {
+                img.classList.add("hidden");
+                placeholder.classList.remove("hidden");
+            }
+        }
+
+        async function commitProductToFirebase() {
+            const prodId = document.getElementById("prod-id").value.trim();
+            const name = document.getElementById("prod-name").value.trim();
+            const category = document.getElementById("prod-cat").value.trim();
+            const price = parseFloat(document.getElementById("prod-price").value) || 0;
+            const oldPrice = parseFloat(document.getElementById("prod-old-price").value) || 0;
+            const hasDiscount = document.getElementById("prod-has-discount").checked;
+            const inStock = document.getElementById("prod-stock").checked;
+            const image = document.getElementById("prod-img").value.trim();
+            const heroImage = document.getElementById("prod-hero-img").value.trim();
+            const description = document.getElementById("prod-desc").value.trim();
+            const flavors = document.getElementById("prod-flavors").value.trim();
+            
+            const displayStyle = document.getElementById("productDisplayStyle").value;
+            const cardWidth = parseInt(document.getElementById("prod-card-w").value) || 280;
+            const cardHeight = parseInt(document.getElementById("prod-card-h").value) || 350;
+
+            const imgNatural = document.getElementById("prod-img-natural").value.trim();
+            const imgArtificial = document.getElementById("prod-img-artificial").value.trim();
+            const imgCash = document.getElementById("prod-img-cash").value.trim();
+            const imgChoco = document.getElementById("prod-img-choco").value.trim();
+
+            if(!name || !category) {
+                showToast("يرجى ملء البيانات الأساسية كاسم المنتج والقسم أولاً", true);
+                return;
+            }
+
+            const payload = {
+                name, category, price, oldPrice, hasDiscount, inStock,
+                image, heroImage, description, flavors,
+                displayStyle, cardWidth, cardHeight,
+                imgNatural, imgArtificial, imgCash, imgChoco,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updateSource: 'admin_catalog_editor'
+            };
+
+            const saveBtn = document.getElementById("btn-save-product");
+            saveBtn.disabled = true;
+            const origHtml = saveBtn.innerHTML;
+            saveBtn.innerHTML = `<i data-lucide="loader" class="w-6 h-6 animate-spin"></i> جاري مزامنة السحابة...`;
+            lucide.createIcons();
+
+            try {
+                if(prodId) {
+                    await db.collection("catalog").doc(prodId).update(payload);
+                    showToast("تم تحديث بيانات المنتج ومزامنة الكتالوج");
+                } else {
+                    const docRef = await db.collection("catalog").add(payload);
+                    showToast("تم إنشاء المنتج الجديد وإدراجه في السحابة");
+                    document.getElementById("prod-id").value = docRef.id;
+                }
+                
+                activeCategoryFilter = category;
+                setTimeout(() => {
+                    filterByCategory(category);
+                }, 1000);
+            } catch (err) {
+                console.error(err);
+                showToast("خطأ أثناء حفظ البيانات السحابية الحية", true);
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = origHtml;
+                lucide.createIcons();
+            }
+        }
+
+        function triggerProductDelete(productId, productName) {
+            showConfirmModal(`هل أنت متأكد من رغبتك في حذف المنتج "${productName}" نهائياً من الكتالوج؟ لا يمكن التراجع عن هذا الإجراء سحابياً.`, async () => {
+                try {
+                    await db.collection("catalog").doc(productId).delete();
+                    showToast("تم حذف المنتج بالكامل من السحابة");
+                    if(activeCategoryFilter) {
+                        renderProductGridFiltered(activeCategoryFilter);
+                    } else {
+                        switchSection("dashboard");
+                    }
+                } catch(err) {
+                    console.error(err);
+                    showToast("تعذر إتمام عملية الحذف من قاعدة البيانات", true);
+                }
+            });
+        }
+
+        function listenToLiveOrders() {
+            db.collection("orders").orderBy("createdAt", "desc").limit(50).onSnapshot((snapshot) => {
+                const container = document.getElementById("orders-container");
+                if(!container) return;
+                container.innerHTML = "";
+
+                if(snapshot.empty) {
+                    container.innerHTML = `
+                        <div class="py-20 text-center font-semibold text-lg text-brand-textMuted bg-brand-surface border border-brand-border rounded-3xl">
+                            لا توجد طلبات جارية حالياً في النظام.
+                        </div>
+                    `;
+                    return;
+                }
+
+                snapshot.forEach(doc => {
+                    const order = doc.data();
+                    const orderId = doc.id;
+                    const card = document.createElement("div");
+                    card.className = "admin-card border-l-4 border-l-brand-pink bg-[#1a1012]";
+                    
+                    let itemsHtml = "";
+                    if(order.items && Array.isArray(order.items)) {
+                        order.items.forEach(item => {
+                            let customDetails = "";
+                            if(item.customOptions) {
+                                customDetails = `<span class="block text-xs text-brand-pink mt-1 font-medium">تخصيص: ${JSON.stringify(item.customOptions)}</span>`;
+                            }
+                            itemsHtml += `
+                                <div class="flex justify-between items-center py-3 border-b border-brand-border/30 last:border-0">
+                                    <div>
+                                        <span class="font-bold text-white text-base">${item.name}</span>
+                                        <span class="text-sm text-brand-textMuted mr-2">× ${item.quantity || 1}</span>
+                                        ${customDetails}
+                                    </div>
+                                    <span class="font-bold text-brand-textMuted text-base">${(item.price || 0) * (item.quantity || 1)} ج.م</span>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    let dateString = "غير محدد";
+                    if(order.createdAt && order.createdAt.toDate) {
+                        dateString = order.createdAt.toDate().toLocaleString("ar-EG");
+                    }
+
+                    card.innerHTML = `
+                        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center border-b border-brand-border pb-6 mb-6 gap-4">
+                            <div>
+                                <span class="text-xs font-bold uppercase tracking-widest text-brand-pink block mb-1">معرف الطلب: ${orderId}</span>
+                                <h4 class="text-xl font-bold text-white">العميل: ${order.customerName || 'مجهول'}</h4>
+                                <span class="text-sm text-brand-textMuted font-medium block mt-1">التوقيت: ${dateString}</span>
+                            </div>
+                            <div class="flex items-center gap-4 w-full lg:w-auto">
+                                <select onchange="updateOrderStatusLive('${orderId}', this.value)" class="form-select text-sm py-2 px-4 rounded-xl bg-brand-bg text-white border-brand-border focus:border-brand-pink w-full lg:w-48">
+                                    <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>قيد الانتظار</option>
+                                    <option value="preparing" ${order.status === 'preparing' ? 'selected' : ''}>جاري التحضير</option>
+                                    <option value="delivering" ${order.status === 'delivering' ? 'selected' : ''}>خريج للتوصيل</option>
+                                    <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>تم التسليم</option>
+                                    <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>ملغي</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                            <div class="lg:col-span-2 space-y-2">
+                                <h5 class="text-sm font-bold text-brand-pink mb-3 flex items-center gap-2"><i data-lucide="cookie" class="w-4 h-4"></i> الأصناف المطلوبة</h5>
+                                <div class="bg-[#0c0709] p-5 rounded-2xl border border-brand-border/60">${itemsHtml}</div>
+                            </div>
+                            <div class="space-y-6">
+                                <div>
+                                    <h5 class="text-sm font-bold text-brand-pink mb-3 flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i> بيانات اللوجستيات</h5>
+                                    <p class="text-base font-semibold text-white leading-relaxed bg-[#0c0709] p-4 rounded-2xl border border-brand-border/40">
+                                        الهاتف: ${order.customerPhone || 'لا يوجد'}<br>
+                                        المنطقة: ${order.deliveryZone || 'غير محددة'}<br>
+                                        العنوان: ${order.customerAddress || 'لا يوجد'}
+                                    </p>
+                                </div>
+                                <div class="bg-[#0c0709] p-5 rounded-2xl border-2 border-brand-border flex justify-between items-center">
+                                    <span class="font-bold text-white text-base">إجمالي الحساب:</span>
+                                    <span class="text-2xl font-bold text-brand-pink">${order.totalPrice || 0} ج.م</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+                lucide.createIcons();
+            }, (error) => {
+                console.error(error);
+                showToast("تعذر الاستماع لتدفق الطلبات الحية", true);
+            });
+            
+            document.getElementById("btn-refresh-orders")?.addEventListener("click", () => {
+                listenToLiveOrders();
+                showToast("تمت إعادة تشغيل مستمع الطلبات ومزامنة القائمة");
+            });
+        }
+
+        async function updateOrderStatusLive(orderId, newStatus) {
+            try {
+                await db.collection("orders").doc(orderId).update({
+                    status: newStatus,
+                    statusUpdatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    updateSource: 'admin_catalog_orders'
+                });
+                showToast("تم تحديث حالة الطلب سحابياً فورياً");
+            } catch(err) {
+                console.error(err);
+                showToast("فشل تحديث حالة الطلب في قاعدة البيانات", true);
+            }
+        }
+
+        async function loadSimulatorSettings() {
+            try {
+                const doc = await db.collection("settings").doc("simulator").get();
+                if(doc.exists) {
+                    const data = doc.data();
+                    if(data.priceNatural) document.getElementById("adm-price-natural").value = data.priceNatural;
+                    if(data.priceArtificial) document.getElementById("adm-price-artificial").value = data.priceArtificial;
+                    if(data.priceSatin) document.getElementById("adm-price-satin").value = data.priceSatin;
+                    if(data.priceChocolate) document.getElementById("adm-price-chocolate").value = data.priceChocolate;
+                    if(data.priceCash) document.getElementById("adm-price-cash").value = data.priceCash;
+                    if(data.priceCard) document.getElementById("adm-price-card").value = data.priceCard;
+                    if(data.pricePhoto) document.getElementById("adm-price-photo").value = data.pricePhoto;
+                    if(data.layerChocolateUrl) document.getElementById("adm-layer-chocolate-url").value = data.layerChocolateUrl;
+                    if(data.layerCashUrl) document.getElementById("adm-layer-cash-url").value = data.layerCashUrl;
+                }
+            } catch(err) {
+                console.error(err);
+                showToast("فشل جلب إعدادات محرك التنسيق من السحابة", true);
+            }
+        }
+
+        async function saveSimulatorSettings() {
+            const priceNatural = parseFloat(document.getElementById("adm-price-natural").value) || 0;
+            const priceArtificial = parseFloat(document.getElementById("adm-price-artificial").value) || 0;
+            const priceSatin = parseFloat(document.getElementById("adm-price-satin").value) || 0;
+            const priceChocolate = parseFloat(document.getElementById("adm-price-chocolate").value) || 0;
+            const priceCash = parseFloat(document.getElementById("adm-price-cash").value) || 0;
+            const priceCard = parseFloat(document.getElementById("adm-price-card").value) || 0;
+            const pricePhoto = parseFloat(document.getElementById("adm-price-photo").value) || 0;
+            const layerChocolateUrl = document.getElementById("adm-layer-chocolate-url").value.trim();
+            const layerCashUrl = document.getElementById("adm-layer-cash-url").value.trim();
+
+            const payload = {
+                priceNatural, priceArtificial, priceSatin, priceChocolate, priceCash, priceCard, pricePhoto,
+                layerChocolateUrl, layerCashUrl,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                updateSource: 'admin_catalog_simulator_config'
+            };
+
+            const btn = document.getElementById("btn-save-simulator-settings");
+            btn.disabled = true;
+            const origText = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="loader" class="w-5 h-5 animate-spin"></i> جاري الحفظ...`;
+            lucide.createIcons();
+
+            try {
+                await db.collection("settings").doc("simulator").set(payload, { merge: true });
+                showToast("تم اعتماد وحفظ إعدادات الخامات والطبقات سحابياً");
+            } catch(err) {
+                console.error(err);
+                showToast("تعذر حفظ إعدادات المحرك في السحابة", true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = origText;
+                lucide.createIcons();
+            }
+        }
+    </script>
+</body>
+</html>

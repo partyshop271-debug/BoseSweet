@@ -514,7 +514,6 @@
             window.dispatchEvent(event);
 
             try {
-                // تعديل كمية وحالة المخزون مباشرة من مجموعة البيانات الرئيسية الموحدة لضمان اتساق البيانات والربط الشامل للموقع
                 try {
                     await setDoc(doc(db, 'catalog', productId), {
                         inStock: qty,
@@ -573,7 +572,6 @@
                 let productsList = [];
                 let querySnapshot;
 
-                // قراءة البيانات في قائمة إدارة المخزون مباشرة من المصدر الموحد للبيانات
                 try {
                     querySnapshot = await getDocs(collection(db, 'catalog'));
                 } catch(e) {
@@ -803,4 +801,55 @@
             document.getElementById('zone-editor-title').innerHTML = '<i data-lucide="edit-2" class="w-8 h-8 text-brand-pink"></i> تعديل التسعيرة';
             lucide.createIcons();
             
-            document.getElementById('zone-name
+            const nameField = document.getElementById('zone-name');
+            if(nameField) {
+                nameField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                nameField.focus();
+            }
+        };
+
+        window.saveZone = async function() {
+            if (!currentUser) return;
+            const id = document.getElementById('zone-id').value.trim();
+            const name = document.getElementById('zone-name').value.trim();
+            const fee = parseFloat(document.getElementById('zone-fee').value) || 0;
+
+            if(!name) {
+                showToast("يرجى إدخال اسم المنطقة أو القرية أولاً", "error");
+                return;
+            }
+
+            try {
+                const zoneDocRef = id ? doc(db, 'shipping', id) : doc(collection(db, 'shipping'));
+                await setDoc(zoneDocRef, {
+                    name,
+                    fee,
+                    updatedAt: Date.now()
+                }, { merge: true });
+
+                await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                
+                showToast(id ? "تم تعديل تسعيرة المنطقة بنجاح" : "تمت إضافة المنطقة الجديدة للنظام");
+                clearZoneForm();
+                loadLogisticsData();
+            } catch(e) {
+                console.error(e);
+                showToast("تعذر حفظ بيانات المنطقة في السحابة", "error");
+            }
+        };
+
+        window.deleteZone = function(id, name) {
+            showConfirm(`هل أنت متأكد من إلغاء التوصيل وحذف منطقة "${name}" نهائياً من النظام اللوجستي؟`, async () => {
+                try {
+                    await deleteDoc(doc(db, 'shipping', id));
+                    await setDoc(doc(db, 'system', 'syncFlag'), { forceRefresh: true, lastAdminUpdate: Date.now() }, { merge: true });
+                    showToast("تم حذف منطقة الشحن بنجاح من قاعدة البيانات.");
+                    loadLogisticsData();
+                } catch(e) {
+                    showToast("تعذر إتمام عملية حذف المنطقة.", "error");
+                }
+            });
+        };
+    </script>
+</body>
+</html>

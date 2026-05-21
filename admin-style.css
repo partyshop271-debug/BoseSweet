@@ -6,22 +6,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 
 :root {
-    /* الوضع الليلي العميق والمريح للعين */
-    --bose-bg: #0c0c0c;
-    --bose-surface: #151515;
-    --bose-surface-glass: rgba(21, 21, 21, 0.85);
-    --bose-border: #2a2a2a;
-    --bose-border-light: #3a3a3a;
+    /* الوضع الليلي العميق والمريح للعين لعلامة حلويات بوسي */
+    --bose-bg: #0c0709;
+    --bose-surface: #1a1012;
+    --bose-surface-glass: rgba(26, 16, 18, 0.85);
+    --bose-border: #3a2026;
+    --bose-border-light: #4a2d34;
     
     /* هوية العلامة التجارية لـ حلويات بوسي */
     --bose-pink: #ff91a4;
     --bose-pink-muted: rgba(255, 145, 164, 0.12);
+    --bose-discount: #f43f5e;
     
-    /* تدرجات النصوص المريحة للقراءة الطويلة */
-    --bose-text-main: #f0f0f0;
-    --bose-text-muted: #a8a8a8;
+    /* تدرجات النصوص المريحة للقراءة وفترات العمل الطويلة */
+    --bose-text-main: #ffffff;
+    --bose-text-muted: #e0c8cc;
     
-    /* أحجام الخطوط المتزنة (بدون تضخيم) */
+    /* أحجام الخطوط المتزنة هندسياً لحماية الواجهة من التضخم */
     --font-base: 15px;
     --font-md: 16px;
     --font-lg: 18px;
@@ -37,26 +38,26 @@
 }
 
 body {
-    background-color: var(--bose-bg);
-    color: var(--bose-text-main);
+    background-color: var(--bose-bg) !important;
+    color: var(--bose-text-main) !important;
     font-family: 'Cairo', sans-serif;
     font-size: var(--font-base);
     line-height: 1.6;
     overflow-x: hidden;
 }
 
-/* شريط التمرير (Scrollbar) هادئ ومريح للعين */
-::-webkit-scrollbar { width: 6px; }
+/* شريط التمرير (Scrollbar) احترافي صامت ومريح للعين */
+::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bose-bg); }
-::-webkit-scrollbar-thumb { background: var(--bose-border-light); border-radius: 10px; }
+::-webkit-scrollbar-thumb { background: var(--bose-border); border-radius: 10px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--bose-pink); }
 
 /* =========================================
-   تخطيط القائمة الجانبية الشجرية (Sidebar)
+   تخطيط القائمة الجانبية الشجرية العازلة (Sidebar)
 ========================================= */
 .bose-sidebar {
-    background-color: var(--bose-surface);
-    border-left: 1px solid var(--bose-border);
+    background-color: var(--bose-surface) !important;
+    border-left: 1px solid var(--bose-border) !important;
     position: fixed;
     top: 0;
     right: 0;
@@ -84,12 +85,12 @@ body {
     gap: 8px;
 }
 
-/* القوائم المنسدلة الشجرية المحدثة */
-details {
+/* العزل الكامل للتنسيقات الخاصة بالقوائم الشجرية المنسدلة */
+details.main-menu, details.bose-accordion {
     width: 100%;
 }
 
-details > summary {
+details.main-menu > summary {
     list-style: none;
     cursor: pointer;
     padding: 14px 18px;
@@ -97,21 +98,21 @@ details > summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-weight: 700; /* تثبيت الوزن عند الحد الأقصى المسموح به */
+    font-weight: 700 !important; /* فرض الحد الأقصى الصارم لمنع التضخيم البصري */
     color: var(--bose-text-main);
     font-size: var(--font-md);
     transition: all 0.3s ease;
     user-select: none;
 }
 
-details > summary::-webkit-details-marker { display: none; }
+details.main-menu > summary::-webkit-details-marker { display: none; }
 
-details > summary:hover {
+details.main-menu > summary:hover {
     background-color: var(--bose-pink-muted);
     color: var(--bose-pink);
 }
 
-details[open] > summary {
+details.main-menu[open] > summary {
     background-color: transparent;
     color: var(--bose-pink);
     border-bottom: 1px solid var(--bose-border);
@@ -145,7 +146,7 @@ details[open] > summary {
     background-color: var(--bose-pink-muted);
     color: var(--bose-text-main);
     transform: translateX(-4px);
-    font-weight: 700; /* الوزن المثالي للتفاعل دون تضخيم */
+    font-weight: 700 !important; /* الالتزام الصارم بوزن الخط المحدود التفاعلي */
 }
 
 /* =========================================
@@ -180,36 +181,37 @@ details[open] > summary {
 }
 
 /* =========================================
-   الكروت مزدوجة الإطار (Double Border Cards)
+   البطاقات المزدوجة الإطار الهندسية (.monitor-card و .bose-card)
 ========================================= */
-.bose-card {
-    background-color: var(--bose-surface);
+.bose-card, .monitor-card {
+    background-color: var(--bose-surface) !important;
     border-radius: 20px;
     padding: 32px;
     margin-bottom: 30px;
-    /* تطبيق نظام الإطار المزدوج الاحترافي باستخدام ظلال الصندوق المتعددة والنعومة البصرية */
+    /* صياغة نظام الإطار المزدوج الاحترافي والعمق اللوني للمتجر المعزول */
     box-shadow: 0 0 0 2px var(--bose-bg), 0 0 0 4px var(--bose-pink), 0 10px 30px rgba(0, 0, 0, 0.4);
     border: 2px solid var(--bose-pink);
     transition: transform 0.3s ease;
+    width: 100%;
 }
 
-.bose-card:hover {
+.bose-card:hover, .monitor-card:hover {
     transform: translateY(-2px);
 }
 
 .form-label {
     display: block;
     color: var(--bose-text-muted);
-    font-weight: 700; /* تثبيت الوزن عند 700 كحد أقصى لمنع تضخيم الهيكل الخارجي */
+    font-weight: 700 !important; /* تثبيت مطلق لعدم تجاوز القيمة المسموحة */
     margin-bottom: 10px;
     font-size: var(--font-base);
 }
 
 .form-input, .form-select, .form-textarea {
     width: 100%;
-    background-color: var(--bose-bg);
-    border: 1px solid var(--bose-border-light);
-    color: var(--bose-text-main);
+    background-color: var(--bose-bg) !important;
+    border: 2px solid var(--bose-border) !important;
+    color: var(--bose-text-main) !important;
     border-radius: 12px;
     padding: 14px;
     font-family: inherit;
@@ -219,20 +221,100 @@ details[open] > summary {
 }
 
 .form-input:focus, .form-select:focus, .form-textarea:focus {
-    border-color: var(--bose-pink);
+    border-color: var(--bose-pink) !important;
     box-shadow: 0 0 0 3px var(--bose-pink-muted);
 }
 
 /* =========================================
-   الأزرار (Buttons)
+   عرض شبكي ذكي للمنتجات والبطاقات التجاوبية
+========================================= */
+.catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    width: 100%;
+}
+
+/* دعم نمط كروت عرض الدوناتس والسينابون ثنائية العمود والبطاقات الممتدة للتورت الملكية */
+.catalog-item {
+    background: var(--bose-surface);
+    border: 2px solid var(--bose-border);
+    border-radius: 24px;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    width: 100%;
+}
+
+.catalog-item:hover {
+    border-color: var(--bose-pink);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+    transform: translateY(-4px);
+}
+
+.catalog-item.out-of-stock {
+    opacity: 0.6;
+    border-color: var(--bose-border-light);
+    filter: grayscale(40%);
+}
+
+.catalog-item .discount-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background-color: var(--bose-discount);
+    color: var(--bose-text-main);
+    font-weight: 700 !important;
+    padding: 6px 14px;
+    border-radius: 10px;
+    font-size: var(--font-base);
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.3);
+}
+
+/* =========================================
+   محرك المؤثرات البصرية وتأثير الوميض الناعم
+========================================= */
+.update-flash {
+    position: relative;
+    overflow: hidden;
+}
+
+.update-flash::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(
+        to right,
+        rgba(255, 145, 164, 0) 0%,
+        rgba(255, 145, 164, 0.15) 50%,
+        rgba(255, 145, 164, 0) 100%
+    );
+    transform: skewX(-25deg);
+    animation: boseSoftPulse 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes boseSoftPulse {
+    0% { left: -100%; }
+    100% { left: 200%; }
+}
+
+/* =========================================
+   الأزرار وعناصر التحكم الحاكمة (Buttons)
 ========================================= */
 .btn-primary {
-    background-color: var(--bose-pink);
-    color: var(--bose-bg);
+    background-color: var(--bose-pink) !important;
+    color: var(--bose-bg) !important;
     border: none;
     border-radius: 12px;
     padding: 14px 28px;
-    font-weight: 700; /* الإبقاء على وزن الخط عند 700 ومحظور تجاوزه */
+    font-weight: 700 !important; /* الحظر والالتزام الصارم بحد الـ 700 لمنع التضخيم */
     font-size: var(--font-md);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -240,19 +322,73 @@ details[open] > summary {
     align-items: center;
     justify-content: center;
     gap: 10px;
+    box-shadow: 0 4px 12px var(--bose-pink-muted);
 }
 
 .btn-primary:hover {
-    background-color: var(--bose-text-main);
-    color: var(--bose-pink);
+    background-color: var(--bose-text-main) !important;
+    color: var(--bose-pink) !important;
     transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 145, 164, 0.25);
 }
 
-/* التجاوب والتوافق التام مع شاشات الموبايل والتابلت والكمبيوتر */
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* فرض قيود صارمة مانعة لتجاوز أوزان الخطوط */
+h1, h2, h3, h4, h5, h6, font, span, label, p, button, input, select, textarea {
+    font-weight: 700 !important;
+}
+h1:not([class]), h2:not([class]), h3:not([class]), h4:not([class]) {
+    font-weight: 700 !important;
+}
+* {
+    font-weight: 600; /* الوزن الافتراضي للعناصر العادية لضمان التناسق التام */
+}
+
+/* =========================================
+   التجاوب والتوافق التام مع الشاشات (Responsive)
+========================================= */
 @media (max-width: 1024px) {
-    .bose-sidebar { right: -100%; width: 85%; max-width: 340px; }
-    .bose-sidebar.active { right: 0; }
-    .bose-main-content { margin-right: 0; }
-    .bose-workspace { padding: 20px; }
-    .bose-card { padding: 24px; margin-bottom: 24px; }
+    .bose-sidebar { 
+        right: -100%; 
+        width: 85%; 
+        max-width: 340px; 
+    }
+    .bose-sidebar.active { 
+        right: 0; 
+    }
+    .bose-main-content { 
+        margin-right: 0 !important; 
+        width: 100%;
+    }
+    .bose-workspace { 
+        padding: 24px; 
+    }
+    .bose-card, .monitor-card { 
+        padding: 24px; 
+        margin-bottom: 24px; 
+        border-radius: 16px;
+    }
+    .catalog-grid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .bose-workspace { 
+        padding: 16px; 
+    }
+    .bose-card, .monitor-card { 
+        padding: 16px 12px; 
+        margin-bottom: 20px; 
+    }
+    .catalog-grid {
+        grid-template-columns: 1fr; /* عمود واحد منسق ومريح على شاشات الهواتف الصغيرة */
+    }
 }

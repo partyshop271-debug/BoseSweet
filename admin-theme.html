@@ -475,7 +475,7 @@
                             <div>
                                 <label class="form-label">الاسم المعروض في أعلى الموقع (اللوجو النصي)</label>
                                 <input type="text" id="header-logo-text" class="form-input text-lg font-black" placeholder="حلويات بوسي">
-                                <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يظهر this النص في الزاوية العلوية لجميع صفحات المتجر بجوار الماسة الرسمية للعلامة التجارية.</p>
+                                <p class="bose-helper-text"><i data-lucide="info" class="w-5 h-5"></i> يظهر هذا النص في الزاوية العلوية لجميع صفحات المتجر بجوار الماسة الرسمية للعلامة التجارية.</p>
                             </div>
                             
                             <div class="mt-4 bg-[#1a1012] p-6 rounded-2xl border border-brand-border flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -635,7 +635,7 @@
             </div>
 
             <div id="tab-layout" class="admin-tab-content">
-                <section id="dashboard" class="admin-section">
+                <section id="dashboard-layout-info" class="admin-section">
                     <div class="admin-card flex flex-col items-center justify-center py-24 border-2 border-dashed border-brand-border bg-transparent shadow-none">
                         <div class="w-24 h-24 rounded-full bg-[#1a1012] border-2 border-brand-border flex items-center justify-center mb-6 shadow-xl">
                             <i data-lucide="shield-check" class="w-12 h-12 text-brand-pink"></i>
@@ -677,7 +677,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
         
-        // آلية التهيئة الذاتية المرنة (Fallback Setup) لتجنب توقف الشاشة في بيئات العمل المتنوعة
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
             apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
             authDomain: "bosy-sweets.firebaseapp.com",
@@ -1248,3 +1247,29 @@
             });
 
             document.getElementById('color-pink').addEventListener('input', (e) => {
+                const hexValue = e.target.value;
+                document.getElementById('color-pink-hex').innerText = hexValue.toUpperCase();
+                document.documentElement.style.setProperty('--bose-pink', hexValue);
+            });
+
+            document.getElementById('color-bg').addEventListener('input', (e) => {
+                const hexValue = e.target.value;
+                document.getElementById('color-bg-hex').innerText = hexValue.toUpperCase();
+                document.documentElement.style.setProperty('--bose-bg', hexValue);
+            });
+
+            document.getElementById('color-surface').addEventListener('input', (e) => {
+                const hexValue = e.target.value;
+                document.getElementById('color-surface-hex').innerText = hexValue.toUpperCase();
+                document.documentElement.style.setProperty('--bose-surface', hexValue);
+            });
+
+            document.getElementById('color-border').addEventListener('input', (e) => {
+                const hexValue = e.target.value;
+                document.getElementById('color-border-hex').innerText = hexValue.toUpperCase();
+                document.documentElement.style.setProperty('--bose-border', hexValue);
+            });
+        });
+    </script>
+</body>
+</html>
