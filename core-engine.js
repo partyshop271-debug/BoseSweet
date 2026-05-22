@@ -541,7 +541,7 @@ if (typeof window !== 'undefined') {
 }
 
 // ============================================================================
-// 🧠 القسم الرابع: الذاكرة المركزية الموحدة وعزل الحسابات الفعالة (BoseState)
+// 🔒 القسم الرابع: الذاكرة المركزية الموحدة وعزل الحسابات الفعالة (BoseState)
 // ============================================================================
 
 const BOSE_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg";
@@ -571,7 +571,7 @@ export const BoseState = {
     catalog: [],
     theme: {},
     logistics: { isOpen: true, allowPickup: true, minOrder: 0 },
-    pricingRules: {}, 
+    pricingRules: { pricePerPerson: 145, printEdible: 60, printNonEdible: 20, priceNatural: 15, priceArtificial: 10, priceSatin: 12, priceCard: 40, pricePhoto: 15 }, 
     siteSettings: {}, 
     shippingZones: [], 
     catMenu: [], 
@@ -1018,6 +1018,36 @@ export function initializeSovereignSync() {
         window.BoseState.catalog = list;
         syncCatalogMap();
         window.saveEngineMemory('cat');
+        isCatalogLoaded = true;
         
-        if (window.BoseState.cart.length > 0 && typeof window.cartSystem !== 'undefined') {
-            window.BoseState.cart = window.BoseState.securityLayer.validateCartPrices(window
+        if (window.BoseState.cart.length > 0 && typeof window.BoseState.securityLayer?.validateCartPrices === 'function') {
+            window.BoseState.cart = window.BoseState.securityLayer.validateCartPrices(window.BoseState.cart);
+        }
+        checkEngineStatus();
+    });
+
+    onSnapshot(doc(db, 'settings', 'theme'), (docSnap) => {
+        if (docSnap.exists()) {
+            window.BoseState.theme = docSnap.data();
+            window.saveEngineMemory('theme');
+        }
+        isThemeLoaded = true;
+        checkEngineStatus();
+    });
+
+    onSnapshot(doc(db, 'settings', 'logistics'), (docSnap) => {
+        if (docSnap.exists()) {
+            window.BoseState.logistics = docSnap.data();
+        }
+        isLogisticsLoaded = true;
+        checkEngineStatus();
+    });
+
+    onSnapshot(doc(db, 'settings', 'pricing'), (docSnap) => {
+        if (docSnap.exists()) {
+            window.BoseState.pricingRules = docSnap.data();
+        }
+        isPricingLoaded = true;
+        checkEngineStatus();
+    });
+}
