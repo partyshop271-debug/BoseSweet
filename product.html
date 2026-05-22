@@ -241,7 +241,7 @@
 
     <div class="ticker-wrap shadow-sm">
         <div class="ticker-scroll">
-            <div class="ticker-item">الجودة والإتقان في كل تفصيلة من حلويات بوسي</div>
+            <div class="ticker-item">الجمال والبناء الهندسي في منتجات حلويات بوسي</div>
             <div class="ticker-item">عشر سنوات من الشغف والتميز في صناعة الحلويات</div>
             <div class="ticker-item">مخبوزات طازجة يومياً بأعلى معايير الجودة العالمية</div>
             <div class="ticker-item">اختياركم الأول للمناسبات واللحظات المهمة المخلدة</div>
@@ -670,10 +670,8 @@
         </div>
     </template>
 
-<!-- أولاً: المحرك الأساسي (القلب النابض) -->
 <script type="module" src="core-engine.js"></script>
 
-<!-- ثانياً: محرك الواجهة البصرية -->
 <script type="module" src="ui-engine.js"></script>
     <script src="product-logic.js" defer></script>
 
@@ -822,7 +820,7 @@
                                 disp.innerText = val;
                                 window.ProductUI.cakeState.qty = val;
                                 const priceDisp = document.getElementById('final-price-display');
-                                if (priceDisp) priceDisp.innerText = `${val * 120 + 100} ج.م`;
+                                if (priceDisp) priceDisp.innerText = `${val * 145} ج.م`;
                             }
                         } 
                         else if (prop === 'modFlowerQty') {
@@ -912,7 +910,6 @@
                 }
             };
 
-            // تطبيق المصدة الزمنية (Debounce) لمنع الوميض وتكرار البناء الهندسي
             let _sidebarDebounce = null;
             const syncSidebarCategories = () => {
                 if(_sidebarDebounce) clearTimeout(_sidebarDebounce);
