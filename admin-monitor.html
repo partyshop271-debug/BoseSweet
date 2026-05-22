@@ -337,7 +337,7 @@
                                 </button>
                             </div>
                             
-                            <p class="text-[10px] text-brand-textMuted/40 leading-relaxed font-medium mt-4 border-t border-brand-border/10 pt-3 text-center">يقوم المحرك بقراءة السجل النصي، مسح التفرع المجهول، وإعادة بناء الـ 120 صنف المعتمد سحابياً.</p>
+                            <p class="text-[10px] text-brand-textMuted/40 leading-relaxed font-medium mt-4 border-t border-brand-border/10 pt-3 text-center">يقوم المحرك بقراءة السجل النصي للـ 120 منتجاً المعتمدة، ثم حقنها بشكل فردي ومستقل داخل الكتالوج السحابي الموحد.</p>
                         </div>
 
                         <div class="bg-brand-surface border border-brand-border/40 rounded-2xl p-6 shadow-xl relative overflow-hidden">
@@ -745,7 +745,7 @@
                         borderClass = "border-emerald-500";
                         bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
                     } else if (currentSource === 'admin_catalog_rollback') {
-                        logMessage = "استعادة سيادية شاملة: تم مسح كتالوج الأخطاء وإعادة بناء الأقسام المعتمدة من نسخة الـ JSON الاحتياطية بنجاح عبر التجزئة الذكية.";
+                        logMessage = "استعادة سيادية شاملة: تم مسح كتالوج الأخطاء وإعادة بناء الكتالوج الأصلي المكون من 120 منتجاً معتمداً بنجاح كامل.";
                         logType = "success";
                         borderClass = "border-emerald-500";
                         bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
@@ -785,9 +785,7 @@
             });
         }
 
-        // تفعيل وربط أحداث دالة الاستعادة (Rollback) بعد معالجة الخطأ الهيكلي القديم
         document.addEventListener('DOMContentLoaded', () => {
-            // تشغيل قنوات الاتصال السحابي فور تحميل الصفحة
             startLiveStreamListeners();
 
             const btnRollback = document.getElementById('btn-trigger-rollback');
@@ -801,7 +799,7 @@
                         return;
                     }
 
-                    if (!confirm("تنبيه حرج للإدارة: هل أنت متأكد من رغبتك في مسح الأقسام والكتالوج الحالي واستعادة المنتجات بالتجزئة الذكية؟")) {
+                    if (!confirm("تنبيه حرج للإدارة: هل أنت متأكد من رغبتك في استعادة الكتالوج المركزي وتحديث الـ 120 منتجاً بالأسعار والوصف الصحيح؟")) {
                         return;
                     }
 
@@ -809,7 +807,7 @@
                     const iconBtn = document.getElementById('icon-rollback-btn');
                     
                     if (textBtn && iconBtn) {
-                        textBtn.textContent = "جاري تفكيك وحقن الأقسام سحابياً...";
+                        textBtn.textContent = "جاري معالجة وحقن المنتجات سحابياً...";
                         iconBtn.classList.add('animate-spin');
                     }
                     btnRollback.disabled = true;
@@ -828,42 +826,106 @@
                             }
                             const firestoreDb = window.db || window.firebase.firestore();
 
-                            const categoriesKeys = Object.keys(backupData).filter(key => key !== 'settings' && key !== 'syncFlag');
-                            
-                            if (categoriesKeys.length === 0 && !backupData.settings) {
-                                throw new Error("بنية الملف المرفوع لا تحتوي على أقسام منيو صالحة للمعالجة.");
+                            logToDashboardLocal("بدء تحليل حزم الملف وعزل مصفوفة الكتالوج المركزي الموحد لحلويات بوسي...", "info");
+
+                            let productsList = [];
+
+                            // دعم كلتا البنيتين لملفات الـ JSON لمنع انهيار المعالجة البرمجية
+                            if (Array.isArray(backupData)) {
+                                productsList = backupData;
+                            } else if (backupData.catalog && Array.isArray(backupData.catalog)) {
+                                productsList = backupData.catalog;
+                            } else {
+                                // هيكلة ذكية في حال كانت المنتجات مجمعة تحت أسماء الأقسام داخل كائن احتياطي
+                                const keys = Object.keys(backupData).filter(k => k !== 'settings' && k !== 'syncFlag');
+                                keys.forEach(key => {
+                                    if (backupData[key] && Array.isArray(backupData[key].items)) {
+                                        backupData[key].items.forEach(item => {
+                                            if (!item.category) item.category = backupData[key].title || key;
+                                            productsList.push(item);
+                                        });
+                                    } else if (Array.isArray(backupData[key])) {
+                                        backupData[key].forEach(item => {
+                                            if (!item.category) item.category = key;
+                                            productsList.push(item);
+                                        });
+                                    }
+                                });
                             }
 
-                            logToDashboardLocal("بدء تفكيك الكائن الرئيسي وعزل حزم الأقسام السحابية...", "info");
+                            if (productsList.length === 0) {
+                                throw new Error("لم يتم العثور على مصفوفة منتجات صالحة للمعالجة والرفع داخل ملف الـ JSON.");
+                            }
+
+                            logToDashboardLocal(`تم رصد وتأكيد حزمة متكاملة تحتوي على ${productsList.length} منتجاً جاهزاً للحقن السحابي...`, "info");
 
                             let successfulInjections = 0;
+                            const batchSize = 10; 
+                            
+                            // تقسيم عملية الرفع إلى حزم صغيرة لضمان استقرار الاتصال على الشبكات والاستضافات المجانية للموبايل
+                            for (let i = 0; i < productsList.length; i += batchSize) {
+                                const currentBatch = productsList.slice(i, i + batchSize);
+                                const promises = currentBatch.map(async (product, index) => {
+                                    if (!product.name) return;
+                                    
+                                    // توليد معرف مستند فريد ثابت ومحكم بناءً على الاسم أو الـ ID الأصلي لمنع التكرار والتداخل
+                                    let docId = product.id || product.idInput || `prod_${i + index}_${Date.now()}`;
+                                    if (!product.id) product.id = docId;
 
-                            for (const key of categoriesKeys) {
-                                if (backupData[key] && typeof backupData[key] === 'object') {
-                                    logToDashboardLocal(`جاري حقن وتأمين مستند قسم [${backupData[key].title || key}] سحابياً...`, "info");
-                                    await firestoreDb.collection("menu").doc(key).set(backupData[key], { merge: true });
+                                    // تأمين الحقول المزدوجة المتطابقة بالكامل لمنع أي عطل مستقبلي في الواجهات
+                                    const finalProductData = {
+                                        name: product.name,
+                                        category: product.category || "عام",
+                                        price: parseFloat(product.price) || 0,
+                                        oldPrice: parseFloat(product.oldPrice) || 0,
+                                        hasDiscount: product.hasDiscount === true,
+                                        description: product.description || product.desc || "",
+                                        desc: product.description || product.desc || "",
+                                        flavors: product.flavors || "",
+                                        img: product.img || product.image || "",
+                                        image: product.img || product.image || "",
+                                        heroImg: product.heroImg || product.heroImage || "",
+                                        heroImage: product.heroImg || product.heroImage || "",
+                                        imgNatural: product.imgNatural || product.naturalImage || "",
+                                        naturalImage: product.imgNatural || product.naturalImage || "",
+                                        imgArtificial: product.imgArtificial || product.artificialImage || "",
+                                        artificialImage: product.imgArtificial || product.artificialImage || "",
+                                        imgCash: product.imgCash || product.cashImage || "",
+                                        cashImage: product.imgCash || product.cashImage || "",
+                                        imgChoco: product.imgChoco || product.chocoImage || "",
+                                        chocoImage: product.imgChoco || product.chocoImage || "",
+                                        gridSpan: product.gridSpan || product.displayStyle || "half",
+                                        displayStyle: product.gridSpan || product.displayStyle || "half",
+                                        cardWidth: parseInt(product.cardWidth) || 280,
+                                        cardHeight: parseInt(product.cardHeight) || 350,
+                                        inStock: product.inStock !== false && product.stock !== false,
+                                        stock: product.inStock !== false && product.stock !== false,
+                                        updatedAt: Date.now(),
+                                        isActive: true
+                                    };
+
+                                    await firestoreDb.collection("catalog").doc(docId).set(finalProductData, { merge: true });
                                     successfulInjections++;
-                                }
+                                });
+
+                                await Promise.all(promises);
+                                logToDashboardLocal(`جاري المزامنة... تم حقن وتأمين [${successfulInjections}] وثيقة داخل كتالوج الإنتاج بنجاح.`, "info");
                             }
 
-                            if (backupData.settings) {
-                                logToDashboardLocal("رصد حزمة الخصومات والإعدادات؛ جاري المزامنة المستقلة...", "info");
-                                await firestoreDb.collection("menu").doc("settings").set(backupData.settings, { merge: true });
-                                successfulInjections++;
-                            }
-
+                            // تفعيل الترس المزامر المركزي لإجبار جميع الواجهات وشاشات المراقبة على التحديث الفوري
                             await firestoreDb.collection('system').doc('syncFlag').set({
+                                forceRefresh: true,
                                 lastAdminUpdate: Date.now(),
                                 updateSource: 'admin_catalog_rollback'
                             }, { merge: true });
 
-                            logToDashboardLocal(`اكتملت المعالجة السحابية! تم حقن وتأمين ${successfulInjections} وثائق وقنوات مستقلة بنجاح.`, "success");
-                            alert(`تمت استعادة وبناء كتالوج المنتجات بنجاح كامل! إجمالي الحزم السحابية المستقلة المؤمنة: ${successfulInjections}`);
+                            logToDashboardLocal(`اكتملت المعالجة الهندسية! تم إعادة بناء وتأمين الكتالوج الأصلي بإجمالي ${successfulInjections} منتجاً معتمداً.`, "success");
+                            alert(`تهانينا! تمت استعادة كتالوج المنتجات الأصلي وعزل الأخطاء بنجاح كامل. إجمالي المنتجات النشطة المؤمنة سحابياً: ${successfulInjections}`);
                             fileInput.value = ""; 
 
                         } catch (err) {
                             console.error("Rollback Process Error:", err);
-                            alert(`فشلت عملية الاستعادة السحابية: ${err.message || "تنسيق ملف JSON غير متوافق"} \n\nيرجى التحقق من استقرار شبكة الإنترنت للاستضافة المجانية.`);
+                            alert(`فشلت عملية الاستعادة السحابية: ${err.message || "تنسيق ملف JSON غير متوافق"} \n\nيرجى مراجعة الدعم التقني.`);
                         } finally {
                             if (textBtn && iconBtn) {
                                 textBtn.textContent = "بدء استعادة الأصناف والمنتجات فورياً";
@@ -876,7 +938,6 @@
                 });
             }
             
-            // تهيئة أيقونات لوكيد الاحترافية
             if (typeof lucide !== 'undefined' && lucide.createIcons) {
                 lucide.createIcons();
             }
