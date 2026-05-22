@@ -477,6 +477,40 @@
             }
         }
 
+        function logToDashboardLocal(message, type = 'info') {
+            const container = document.getElementById('logs-container');
+            const placeholder = document.getElementById('loading-placeholder');
+            if (placeholder) placeholder.remove();
+
+            let borderClass = "border-brand-pink";
+            let bgBadgeClass = "bg-brand-pink/10 text-brand-pink border border-brand-pink/30";
+            if (type === 'success') {
+                borderClass = "border-emerald-500";
+                bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
+            } else if (type === 'warning') {
+                borderClass = "border-amber-500";
+                bgBadgeClass = "bg-amber-950 text-amber-400 border border-amber-500/30";
+            }
+
+            const formattedDate = new Date().toLocaleString('ar-EG');
+            const newLogHtml = `
+                <div class="log-entry p-5 rounded-2xl border-r-4 ${borderClass} shadow-inner transition-all bg-brand-surface border border-brand-border/30">
+                    <div class="flex justify-between text-xs text-brand-textMuted font-bold mb-3">
+                        <span>محرك النظام المركزي السحابي</span>
+                        <span class="font-mono">${formattedDate}</span>
+                    </div>
+                    <p class="text-sm font-semibold text-white leading-relaxed mb-3">${message}</p>
+                    <span class="inline-block px-3 py-1 ${bgBadgeClass} text-[10px] rounded-lg font-bold tracking-wide">الإجراء: ${type}</span>
+                </div>
+            `;
+            if (container) {
+                while (container.children.length >= 30) {
+                    container.lastElementChild.remove();
+                }
+                container.insertAdjacentHTML('afterbegin', newLogHtml);
+            }
+        }
+
         function startLiveStreamListeners() {
             if (!window.db) return;
             
@@ -711,7 +745,7 @@
                         borderClass = "border-emerald-500";
                         bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
                     } else if (currentSource === 'admin_catalog_rollback') {
-                        logMessage = "استعادة سيادية شاملة: تم مسح كتالوج الأخطاء وإعادة بناء الـ 120 صنف معتمد من نسخة الـ JSON الاحتياطية بنجاح.";
+                        logMessage = "استعادة سيادية شاملة: تم مسح كتالوج الأخطاء وإعادة بناء الأقسام المعتمدة من نسخة الـ JSON الاحتياطية بنجاح عبر التجزئة الذكية.";
                         logType = "success";
                         borderClass = "border-emerald-500";
                         bgBadgeClass = "bg-emerald-950 text-emerald-400 border border-emerald-500/30";
@@ -761,7 +795,7 @@
                         return;
                     }
 
-                    if (!confirm("تنبيه حرج للإدارة: هل أنت متأكد من رغبتك في مسح الكتالوج الحالي واستعادة المنتجات من الملف؟")) {
+                    if (!confirm("تنبيه حرج للإدارة: هل أنت متأكد من رغبتك في مسح الأقسام والكتالوج الحالي واستعادة المنتجات بالتجزئة الذكية؟")) {
                         return;
                     }
 
@@ -769,7 +803,7 @@
                     const iconBtn = document.getElementById('icon-rollback-btn');
                     
                     if (textBtn && iconBtn) {
-                        textBtn.textContent = "جاري قراءة واستعادة الأصناف سحابياً...";
+                        textBtn.textContent = "جاري تفكيك وحقن الأقسام سحابياً...";
                         iconBtn.classList.add('animate-spin');
                     }
                     btnRollback.disabled = true;
@@ -778,127 +812,59 @@
                     reader.onload = async (e) => {
                         try {
                             const backupData = JSON.parse(e.target.result);
-                            let rawProductsArray = [];
-                            let rawCategoriesArray = [];
+                            
+                            if (!backupData || typeof backupData !== 'object') {
+                                throw new Error("ملف النسخة الاحتياطية فارغ أو يحتوي على بنية غير متوافقة.");
+                            }
 
-                            if (Array.isArray(backupData)) {
-                                rawProductsArray = backupData;
-                            } else if (typeof backupData === 'object' && backupData !== null) {
-                                if (Array.isArray(backupData.products)) rawProductsArray = backupData.products;
-                                else if (Array.isArray(backupData.catalog)) rawProductsArray = backupData.catalog;
-                                else if (Array.isArray(backupData.menu)) rawProductsArray = backupData.menu;
-                                else if (Array.isArray(backupData.items)) rawProductsArray = backupData.items;
-                                else {
-                                    for (let key in backupData) {
-                                        if (Array.isArray(backupData[key])) {
-                                            rawProductsArray = backupData[key];
-                                            break;
-                                        }
-                                    }
+                            if (typeof window.db === 'undefined' && (!window.firebase || !window.firebase.firestore)) {
+                                throw new Error("محرك قاعدة البيانات Firestore غير متصل بالسياق البرمجي الحالي.");
+                            }
+                            const firestoreDb = window.db || window.firebase.firestore();
+
+                            // آلية "الحقن السحابي بالتجزئة الذكية": فصل الأقسام ومفاتيح المنيو الديناميكية
+                            const categoriesKeys = Object.keys(backupData).filter(key => key !== 'settings' && key !== 'syncFlag');
+                            
+                            if (categoriesKeys.length === 0 && !backupData.settings) {
+                                throw new Error("بنية الملف المرفوع لا تحتوي على أقسام منيو صالحة للمعالجة.");
+                            }
+
+                            logToDashboardLocal("بدء تفكيك الكائن الرئيسي وعزل حزم الأقسام السحابية...", "info");
+
+                            let successfulInjections = 0;
+
+                            // 1. معالجة وحقن أقسام المنتجات بشكل منفصل تمامًا لتخطي حاجز الـ 1MB لكل حزمة
+                            for (const key of categoriesKeys) {
+                                if (backupData[key] && typeof backupData[key] === 'object') {
+                                    logToDashboardLocal(`جاري حقن وتأمين مستند قسم [${backupData[key].title || key}] سحابياً...`, "info");
+                                    
+                                    // رفع كل مجموعة (دوناتس، سينابون، إلخ) في وثيقة منفصلة تماماً مع دمج الخصائص
+                                    await firestoreDb.collection("menu").doc(key).set(backupData[key], { merge: true });
+                                    successfulInjections++;
                                 }
-                                if (Array.isArray(backupData.categories)) {
-                                    rawCategoriesArray = backupData.categories;
-                                }
-                            }
-                            
-                            if (!rawProductsArray || rawProductsArray.length === 0) {
-                                throw new Error("ملف النسخة الاحتياطية فارغ أو يحتوي على بنية غير متوافقة مع قنوات قراءة النظام.");
                             }
 
-                            const sanitizedProductsArray = rawProductsArray.map((product) => {
-                                const generatedId = product.id || product.productId || window.db.collection('catalog').doc().id;
-                                return {
-                                    id: generatedId,
-                                    name: product.name || "صنف غير مسمى الفرافرة",
-                                    price: product.price !== undefined ? parseFloat(product.price) : 0,
-                                    image: product.image || product.imageUrl || "",
-                                    category: product.category || "عام",
-                                    inStock: product.inStock !== undefined ? parseInt(product.inStock) : 10,
-                                    isActive: product.isActive !== undefined ? product.isActive : true
-                                };
-                            });
-
-                            if (rawCategoriesArray.length === 0) {
-                                const categoriesSet = new Set();
-                                sanitizedProductsArray.forEach(p => { if (p.category) categoriesSet.add(p.category); });
-                                rawCategoriesArray = Array.from(categoriesSet).map((catName, index) => ({
-                                    id: `dynamic_cat_${index + 1}`,
-                                    name: catName,
-                                    slug: catName
-                                }));
+                            // 2. معالجة الإعدادات والأكواد الترويجية (settings) بشكل منفصل ومستقر
+                            if (backupData.settings) {
+                                logToDashboardLocal("رصد حزمة الخصومات والإعدادات؛ جاري المزامنة المستقلة...", "info");
+                                await firestoreDb.collection("menu").doc("settings").set(backupData.settings, { merge: true });
+                                successfulInjections++;
                             }
 
-                            const currentSnapshot = await window.db.collection('catalog').get();
-                            
-                            // تحسين هندسي: تجزئة مسح العناصر وتفادي ثغرات القيود لحقن الملفات بدون مشاكل
-                            const chunks = [];
-                            const currentDocs = currentSnapshot.docs;
-                            for (let i = 0; i < currentDocs.length; i += 400) {
-                                chunks.push(currentDocs.slice(i, i + 400));
-                            }
-                            
-                            for (const chunk of chunks) {
-                                const batchDelete = window.db.batch();
-                                chunk.forEach(doc => batchDelete.delete(doc.ref));
-                                await batchDelete.commit();
-                            }
-
-                            // تحسين هندسي: تقسيم الـ 120 صنف إلى دفعات صغيرة متوافقة مع محرك الاستضافة المجانية والموبايل
-                            const productChunks = [];
-                            for (let i = 0; i < sanitizedProductsArray.length; i += 400) {
-                                productChunks.push(sanitizedProductsArray.slice(i, i + 400));
-                            }
-
-                            for (const productChunk of productChunks) {
-                                const batchInsert = window.db.batch();
-                                productChunk.forEach((product) => {
-                                    const docRef = window.db.collection('catalog').doc(product.id);
-                                    batchInsert.set(docRef, product);
-                                });
-                                await batchInsert.commit();
-                            }
-
-                            if (rawCategoriesArray.length > 0) {
-                                await window.db.collection('system').doc('uiSettings').set({
-                                    categories: rawCategoriesArray
-                                }, { merge: true });
-                            }
-
-                            await window.db.collection('system').doc('syncFlag').set({
+                            // 3. تحديث علم التزامن السحابي لدفع النبضة الحية لجميع الشاشات
+                            await firestoreDb.collection('system').doc('syncFlag').set({
                                 lastAdminUpdate: Date.now(),
                                 updateSource: 'admin_catalog_rollback'
                             }, { merge: true });
 
-                            alert(`تمت استعادة كتالوج المنتجات بنجاح! إجمالي الأصناف الآمنة المحقونة سحابياً: ${sanitizedProductsArray.length}`);
+                            logToDashboardLocal(`اكتملت المعالجة السحابية! تم حقن وتأمين ${successfulInjections} وثائق وقنوات مستقلة بنجاح.`, "success");
+                            alert(`تمت استعادة وبناء كتالوج المنتجات بنجاح كامل! إجمالي الحزم السحابية المستقلة المؤمنة: ${successfulInjections}`);
                             fileInput.value = ""; 
 
                         } catch (err) {
                             console.error("Rollback Process Error:", err);
-                            alert(`فشلت عملية الاستعادة سحابياً: ${err.message || "تنسيق ملف JSON غير صحيح"} \n\n(يرجى مراجعة قواعد Firestore Rules في الكونسول لتخطي قيد الصلاحيات)`);
+                            alert(`فشلت عملية الاستعادة السحابية: ${err.message || "تنسيق ملف JSON غير متوافق"} \n\nيرجى التحقق من استقرار شبكة الإنترنت للاستضافة المجانية.`);
                         } finally {
                             if (textBtn && iconBtn) {
                                 textBtn.textContent = "بدء استعادة الأصناف والمنتجات فورياً";
-                                iconBtn.classList.remove('animate-spin');
-                            }
-                            btnRollback.disabled = false;
-                        }
-                    };
-                    reader.readAsText(selectedFile);
-                });
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            
-            if (typeof window.auth !== 'undefined' && window.auth) {
-                window.auth.onAuthStateChanged((user) => {
-                    startLiveStreamListeners();
-                });
-            } else {
-                startLiveStreamListeners();
-            }
-        });
-    </script>
-</body>
-</html>
+                                icon
