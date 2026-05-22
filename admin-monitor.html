@@ -265,7 +265,7 @@
                         <div class="flex justify-between items-start mb-4">
                             <div class="space-y-1.5">
                                 <span class="text-xs font-bold text-brand-textMuted/70 block">حالة وحجم الأوردرات النشطة</span>
-                                <span id="stat-orders-count" class="text-2xl font-bold font-mono text-white tracking-tight">0 أوردر</span>
+                                <span id="stat-orders-count" class="text-2xl font-bold font-mono tracking-tight">0 أوردر</span>
                             </div>
                             <span id="badge-orders-status" class="px-2.5 py-0.5 text-[10px] bg-brand-border/40 border border-brand-border text-brand-textMuted rounded-full font-bold">مستقر</span>
                         </div>
@@ -783,6 +783,12 @@
                 flagLoaded = true;
                 clearTimeout(fallbackTimeout);
             });
+        }
+
+        // تفعيل وربط أحداث دالة الاستعادة (Rollback) بعد معالجة الخطأ الهيكلي القديم
+        document.addEventListener('DOMContentLoaded', () => {
+            // تشغيل قنوات الاتصال السحابي فور تحميل الصفحة
+            startLiveStreamListeners();
 
             const btnRollback = document.getElementById('btn-trigger-rollback');
             const fileInput = document.getElementById('bose-backup-file');
@@ -822,7 +828,6 @@
                             }
                             const firestoreDb = window.db || window.firebase.firestore();
 
-                            // آلية "الحقن السحابي بالتجزئة الذكية": فصل الأقسام ومفاتيح المنيو الديناميكية
                             const categoriesKeys = Object.keys(backupData).filter(key => key !== 'settings' && key !== 'syncFlag');
                             
                             if (categoriesKeys.length === 0 && !backupData.settings) {
@@ -833,25 +838,20 @@
 
                             let successfulInjections = 0;
 
-                            // 1. معالجة وحقن أقسام المنتجات بشكل منفصل تمامًا لتخطي حاجز الـ 1MB لكل حزمة
                             for (const key of categoriesKeys) {
                                 if (backupData[key] && typeof backupData[key] === 'object') {
                                     logToDashboardLocal(`جاري حقن وتأمين مستند قسم [${backupData[key].title || key}] سحابياً...`, "info");
-                                    
-                                    // رفع كل مجموعة (دوناتس، سينابون، إلخ) في وثيقة منفصلة تماماً مع دمج الخصائص
                                     await firestoreDb.collection("menu").doc(key).set(backupData[key], { merge: true });
                                     successfulInjections++;
                                 }
                             }
 
-                            // 2. معالجة الإعدادات والأكواد الترويجية (settings) بشكل منفصل ومستقر
                             if (backupData.settings) {
                                 logToDashboardLocal("رصد حزمة الخصومات والإعدادات؛ جاري المزامنة المستقلة...", "info");
                                 await firestoreDb.collection("menu").doc("settings").set(backupData.settings, { merge: true });
                                 successfulInjections++;
                             }
 
-                            // 3. تحديث علم التزامن السحابي لدفع النبضة الحية لجميع الشاشات
                             await firestoreDb.collection('system').doc('syncFlag').set({
                                 lastAdminUpdate: Date.now(),
                                 updateSource: 'admin_catalog_rollback'
@@ -867,4 +867,20 @@
                         } finally {
                             if (textBtn && iconBtn) {
                                 textBtn.textContent = "بدء استعادة الأصناف والمنتجات فورياً";
-                                icon
+                                iconBtn.classList.remove('animate-spin');
+                            }
+                            btnRollback.disabled = false;
+                        }
+                    };
+                    reader.readAsText(selectedFile);
+                });
+            }
+            
+            // تهيئة أيقونات لوكيد الاحترافية
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+        });
+    </script>
+</body>
+</html>
