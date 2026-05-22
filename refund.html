@@ -43,37 +43,10 @@
             overflow-x: hidden; 
         }
         * { 
-            font-weight: 400; 
-            color: inherit; 
             box-sizing: border-box; 
         }
-        .font-bold, h1, h2, h3, h4, .btn-solid, .ticker-item { 
+        h1, h2, h3, h4, .font-bold, .btn-solid, .ticker-item { 
             font-weight: 700 !important; 
-        }
-
-        .ticker-wrap { 
-            width: 100%; 
-            overflow: hidden; 
-            background-color: #ff91a4; 
-            display: flex; 
-            direction: rtl; 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
-        }
-        .ticker-scroll { 
-            display: flex; 
-            width: max-content; 
-            animation: seamlessTicker 40s linear infinite; 
-        }
-        .ticker-item { 
-            padding: 10px 40px; 
-            color: #ffffff !important; 
-            font-weight: 700; 
-            font-size: 0.95rem; 
-            white-space: nowrap; 
-        }
-        @keyframes seamlessTicker { 
-            0% { transform: translateX(0); } 
-            100% { transform: translateX(50%); } 
         }
 
         .sidebar { 
@@ -86,11 +59,11 @@
             z-index: 9999 !important; 
             transition: right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1) !important; 
             background: #ffffff !important; 
-            box-shadow: -20px 0 50px rgba(255, 145, 164, 0.2); 
+            box-shadow: -20px 0 50px rgba(255, 145, 164, 0.1); 
             display: flex; 
             flex-direction: column; 
             overflow-y: auto; 
-            border-left: 2px solid rgba(255, 145, 164, 0.3); 
+            border-left: 2px solid rgba(255, 145, 164, 0.2); 
         }
         .sidebar.active { 
             right: 0 !important; 
@@ -98,7 +71,7 @@
         .sidebar-overlay { 
             position: fixed !important; 
             inset: 0 !important; 
-            background: rgba(255, 145, 164, 0.8) !important; 
+            background: rgba(255, 145, 164, 0.5) !important; 
             backdrop-filter: blur(4px) !important; 
             z-index: 9998 !important; 
             display: none; 
@@ -118,7 +91,7 @@
             transition: all 0.4s ease; 
             display: flex; 
             flex-direction: column; 
-            box-shadow: 0 10px 40px rgba(255, 145, 164, 0.08); 
+            box-shadow: 0 10px 40px rgba(255, 145, 164, 0.05); 
         }
         .bose-double-inner { 
             background: #ffffff; 
@@ -135,7 +108,7 @@
     <header class="border-b border-brand-pink/20 sticky top-0 z-[100] bg-white/95 backdrop-blur-md transition-all py-4 shadow-sm">
         <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
             <div class="w-1/3 flex justify-start">
-                <button id="sidebar-toggle-btn" class="text-brand-pink hover:text-brand-black transition-colors cursor-pointer bg-transparent border-0 p-0">
+                <button id="sidebar-toggle-btn" class="text-brand-pink hover:text-brand-pink/80 transition-colors cursor-pointer bg-transparent border-0 p-0">
                     <i data-lucide="menu" class="w-7 h-7 text-brand-pink"></i>
                 </button>
             </div>
@@ -146,7 +119,7 @@
                 </a>
             </div>
             <div class="w-1/3 flex justify-end">
-                <a href="cart.html" class="relative text-brand-pink hover:text-brand-black transition-colors cursor-pointer text-decoration-none">
+                <a href="cart.html" class="relative text-brand-pink hover:text-brand-pink/80 transition-colors cursor-pointer text-decoration-none">
                     <i data-lucide="shopping-bag" class="w-6 h-6 text-brand-pink"></i>
                     <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-brand-pink text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border border-white">0</span>
                 </a>
@@ -160,7 +133,7 @@
             <span class="text-xl font-bold text-brand-black flex items-center gap-2 uppercase">
                 <i data-lucide="gem" class="w-5 h-5 text-brand-pink"></i> حلويات بوسي
             </span>
-            <button id="sidebar-close-btn" class="text-brand-pink hover:text-brand-black transition-colors cursor-pointer bg-transparent border-0 p-0">
+            <button id="sidebar-close-btn" class="text-brand-pink hover:text-brand-pink/80 transition-colors cursor-pointer bg-transparent border-0 p-0">
                 <i data-lucide="x" class="w-6 h-6 text-brand-pink"></i>
             </button>
         </div>
@@ -198,50 +171,10 @@
     </main>
 
     <footer class="bg-white pt-10 pb-8 border-t-4 border-brand-pink text-center">
-        <p class="text-brand-black opacity-70 font-bold text-sm">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
+        <p class="text-brand-black/70 font-bold text-sm">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
     </footer>
 
     <script type="module" src="core-engine.js"></script>
     <script type="module" src="ui-engine.js"></script>
-    
-    <script type="module">
-        document.addEventListener('DOMContentLoaded', () => {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebar-overlay');
-            const toggleBtn = document.getElementById('sidebar-toggle-btn');
-            const closeBtn = document.getElementById('sidebar-close-btn');
-            const badge = document.getElementById('cart-count-badge');
-
-            const toggleSidebar = () => {
-                if (sidebar && overlay) {
-                    sidebar.classList.toggle('active');
-                    overlay.classList.toggle('active');
-                }
-            };
-
-            if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
-            if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
-            if (overlay) overlay.addEventListener('click', toggleSidebar);
-
-            const syncCartBadge = () => {
-                const count = window.BoseState?.cart?.reduce((acc, item) => acc + (item.quantity || 1), 0) || 0;
-                if (badge) {
-                    badge.innerText = count;
-                    badge.style.display = count > 0 ? 'flex' : 'none';
-                }
-            };
-
-            window.addEventListener('BoseSweets_Engine_Ready', () => {
-                if (typeof lucide !== 'undefined') {
-                    lucide.createIcons();
-                }
-                syncCartBadge();
-            });
-
-            setTimeout(() => {
-                window.dispatchEvent(new CustomEvent('BoseSweets_Engine_Ready'));
-            }, 500);
-        });
-    </script>
 </body>
 </html>

@@ -14,24 +14,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
-
-    <script>
-        tailwind.config = { 
-            theme: { 
-                extend: { 
-                    colors: { 
-                        brand: { 
-                            pink: '#ff91a4', 
-                            pinkLight: '#fff5f6', 
-                            black: '#111111', 
-                            white: '#ffffff' 
-                        } 
-                    },
-                    fontFamily: { sans: ['Cairo', 'sans-serif'] }
-                } 
-            } 
-        }
-    </script>
     
     <style>
         body { background-color: #ffffff; color: #111111; -webkit-tap-highlight-color: transparent; font-family: 'Cairo', sans-serif; overflow-x: hidden; }
@@ -97,7 +79,7 @@
             width: max-content; max-width: 90%; background: #ffffff; border: 2px solid #ff91a4; padding: 12px 28px;
             border-radius: 50px; z-index: 10001; box-shadow: 0 10px 30px rgba(255, 145, 164, 0.1);
             display: none; align-items: center; justify-content: center; gap: 12px;
-            font-weight: 700; color: #111111; text-align: center; white-space: nowrap; font-size: 1rem;
+            color: #111111; text-align: center; white-space: nowrap; font-size: 1rem;
             animation: slideDownToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         @media (max-width: 480px) { .bose-toast { white-space: normal; border-radius: 20px; } }
@@ -116,11 +98,11 @@
         }
     </style>
 </head>
-<body class="antialiased selection:bg-brand-pink selection:text-white">
+<body class="antialiased selection:bg-[#ff91a4] selection:text-white">
 
-    <div id="bose-toast" class="bose-toast">
-        <i data-lucide="check-circle" class="w-6 h-6 text-brand-pink"></i>
-        <span id="bose-toast-msg" style="font-weight: 700;">تنبيه</span>
+    <div id="bose-toast" class="bose-toast font-bold">
+        <i data-lucide="check-circle" class="w-6 h-6 text-[#ff91a4]"></i>
+        <span id="bose-toast-msg">تنبيه</span>
     </div>
 
     <div class="ticker-wrap shadow-sm">
@@ -136,26 +118,26 @@
         </div>
     </div>
 
-    <header class="border-b border-brand-pink/20 sticky top-0 z-[100] bg-white/95 backdrop-blur-md transition-all py-4 shadow-sm main-header">
+    <header class="border-b border-[#ff91a4]/20 sticky top-0 z-[100] bg-white/95 backdrop-blur-md transition-all py-4 shadow-sm main-header">
         <div class="container mx-auto px-4 md:px-8 flex justify-between items-center">
             <div class="w-1/3 flex justify-start">
-                <button id="sidebar-toggle-btn" class="text-brand-pink hover:text-[#ff91a4]/80 transition-colors cursor-pointer">
-                    <i data-lucide="menu" class="w-7 h-7 text-brand-pink"></i>
+                <button id="sidebar-toggle-btn" class="text-[#ff91a4] hover:text-[#ff91a4]/80 transition-colors cursor-pointer">
+                    <i data-lucide="menu" class="w-7 h-7 text-[#ff91a4]"></i>
                 </button>
             </div>
             <div class="w-1/3 flex justify-center">
                 <a href="index.html" class="flex flex-col items-center justify-center group text-decoration-none">
-                    <i data-lucide="gem" class="w-8 h-8 text-brand-pink mb-1 group-hover:scale-110 transition-transform"></i>
-                    <h1 class="text-xl font-bold text-brand-black tracking-tight uppercase" style="font-weight: 700;">حلويات بوسي</h1>
+                    <i data-lucide="gem" class="w-8 h-8 text-[#ff91a4] mb-1 group-hover:scale-110 transition-transform"></i>
+                    <h1 class="text-xl font-bold text-[#111111] tracking-tight uppercase">حلويات بوسي</h1>
                 </a>
             </div>
             <div class="w-1/3 flex justify-end items-center gap-5">
-                <button id="search-trigger-btn" class="text-brand-pink hover:text-[#ff91a4]/80 transition-colors cursor-pointer">
-                    <i data-lucide="search" class="w-6 h-6 text-brand-pink"></i>
+                <button id="search-trigger-btn" class="text-[#ff91a4] hover:text-[#ff91a4]/80 transition-colors cursor-pointer">
+                    <i data-lucide="search" class="w-6 h-6 text-[#ff91a4]"></i>
                 </button>
-                <a href="cart.html" class="relative text-brand-pink hover:text-[#ff91a4]/80 transition-colors cursor-pointer text-decoration-none">
-                    <i data-lucide="shopping-bag" class="w-6 h-6 text-brand-pink"></i>
-                    <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-brand-pink text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border border-white" style="font-weight: 700;">0</span>
+                <a href="cart.html" class="relative text-[#ff91a4] hover:text-[#ff91a4]/80 transition-colors cursor-pointer text-decoration-none">
+                    <i data-lucide="shopping-bag" class="w-6 h-6 text-[#ff91a4]"></i>
+                    <span id="cart-count-badge" class="absolute -top-2 -right-2 bg-[#ff91a4] text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center hidden border border-white">0</span>
                 </a>
             </div>
         </div>
@@ -163,38 +145,38 @@
 
     <div id="sidebar-overlay" class="sidebar-overlay"></div>
     <aside id="sidebar" class="sidebar">
-        <div class="p-6 flex justify-between items-center border-b border-brand-pink/20 bg-brand-pinkLight">
-            <span class="text-xl font-bold text-brand-black flex items-center gap-2" style="font-weight: 700;">
-                <i data-lucide="gem" class="w-5 h-5 text-brand-pink"></i> قائمة حلويات بوسي
+        <div class="p-6 flex justify-between items-center border-b border-[#ff91a4]/20 bg-[#fff5f6]">
+            <span class="text-xl font-bold text-[#111111] flex items-center gap-2">
+                <i data-lucide="gem" class="w-5 h-5 text-[#ff91a4]"></i> قائمة حلويات بوسي
             </span>
-            <button id="sidebar-close-btn" class="text-brand-pink hover:text-[#ff91a4]/80 transition-colors cursor-pointer">
-                <i data-lucide="x" class="w-6 h-6 text-brand-pink"></i>
+            <button id="sidebar-close-btn" class="text-[#ff91a4] hover:text-[#ff91a4]/80 transition-colors cursor-pointer">
+                <i data-lucide="x" class="w-6 h-6 text-[#ff91a4]"></i>
             </button>
         </div>
         <nav class="flex-grow p-6 flex flex-col gap-2">
-            <a href="index.html" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-black font-bold transition-colors flex items-center gap-3 text-decoration-none" style="font-weight: 700;">
-                <i data-lucide="home" class="w-5 h-5 text-brand-pink"></i> الصفحة الرئيسية
+            <a href="index.html" class="py-3 px-4 rounded-xl hover:bg-[#fff5f6] text-[#111111] font-bold transition-colors flex items-center gap-3 text-decoration-none">
+                <i data-lucide="home" class="w-5 h-5 text-[#ff91a4]"></i> الصفحة الرئيسية
             </a>
             <details class="group">
-                <summary class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-black font-bold transition-colors flex items-center justify-between outline-none cursor-pointer" style="font-weight: 700;">
-                    <div class="flex items-center gap-3"><i data-lucide="layout-grid" class="w-5 h-5 text-brand-pink"></i> تصفح المنيو</div>
-                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180 text-brand-pink"></i>
+                <summary class="py-3 px-4 rounded-xl hover:bg-[#fff5f6] text-[#111111] font-bold transition-colors flex items-center justify-between outline-none cursor-pointer">
+                    <div class="flex items-center gap-3"><i data-lucide="layout-grid" class="w-5 h-5 text-[#ff91a4]"></i> تصفح المنيو</div>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform group-open:rotate-180 text-[#ff91a4]"></i>
                 </summary>
-                <div class="flex flex-col gap-1 pr-4 pt-2 pb-4 border-r-2 border-brand-pink/20 mr-2">
-                    <a href="menu.html" class="py-2 text-brand-black hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none" style="font-weight: 700;">عرض كل المنيو</a>
-                    <a href="product.html?category=التورت" class="py-2 text-brand-black hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none" style="font-weight: 700;">التورت الفاخرة</a>
-                    <a href="product.html?category=الجاتوهات" class="py-2 text-brand-black hover:text-brand-pink font-bold text-sm transition-colors text-decoration-none" style="font-weight: 700;">الجاتوهات</a>
+                <div class="flex flex-col gap-1 pr-4 pt-2 pb-4 border-r-2 border-[#ff91a4]/20 mr-2">
+                    <a href="menu.html" class="py-2 text-[#111111] hover:text-[#ff91a4] font-bold text-sm transition-colors text-decoration-none">عرض كل المنيو</a>
+                    <a href="product.html?category=التورت" class="py-2 text-[#111111] hover:text-[#ff91a4] font-bold text-sm transition-colors text-decoration-none">التورت الفاخرة</a>
+                    <a href="product.html?category=الجاتوهات" class="py-2 text-[#111111] hover:text-[#ff91a4] font-bold text-sm transition-colors text-decoration-none">الجاتوهات</a>
                 </div>
             </details>
-            <a href="product.html?action=build_cake" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-black font-bold transition-colors flex items-center gap-3 text-decoration-none" style="font-weight: 700;">
-                <i data-lucide="cake" class="w-5 h-5 text-brand-pink"></i> تصميم تورتة خاصة
+            <a href="product.html?action=build_cake" class="py-3 px-4 rounded-xl hover:bg-[#fff5f6] text-[#111111] font-bold transition-colors flex items-center gap-3 text-decoration-none">
+                <i data-lucide="cake" class="w-5 h-5 text-[#ff91a4]"></i> تصميم تورتة خاصة
             </a>
-            <a href="product.html?category=ورد" class="py-3 px-4 rounded-xl hover:bg-brand-pinkLight text-brand-black font-bold transition-colors flex items-center gap-3 text-decoration-none" style="font-weight: 700;">
-                <i data-lucide="flower-2" class="w-5 h-5 text-brand-pink"></i> الورد الطبيعي
+            <a href="product.html?category=ورد" class="py-3 px-4 rounded-xl hover:bg-[#fff5f6] text-[#111111] font-bold transition-colors flex items-center gap-3 text-decoration-none">
+                <i data-lucide="flower-2" class="w-5 h-5 text-[#ff91a4]"></i> الورد الطبيعي
             </a>
         </nav>
-        <div class="p-6 border-t border-brand-pink/20 bg-brand-pinkLight/50">
-            <a href="cart.html" class="w-full py-4 bg-brand-pink text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-brand-pinkLight hover:text-brand-pink border-2 border-brand-pink transition-colors cursor-pointer text-decoration-none shadow-sm" style="font-weight: 700;">
+        <div class="p-6 border-t border-[#ff91a4]/20 bg-[#fff5f6]/50">
+            <a href="cart.html" class="w-full py-4 bg-[#ff91a4] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#fff5f6] hover:text-[#ff91a4] border-2 border-[#ff91a4] transition-colors cursor-pointer text-decoration-none shadow-sm">
                 <i data-lucide="shopping-basket" class="w-5 h-5"></i> <span>مراجعة الطلب</span>
             </a>
         </div>
@@ -202,8 +184,8 @@
 
     <main class="container mx-auto px-4 py-16 md:py-24 max-w-6xl min-h-[70vh]">
         <div class="text-center mb-16">
-            <h2 class="text-4xl md:text-6xl font-bold text-brand-black mb-4 tracking-tighter uppercase" style="font-weight: 700;">تأكيد الطلب</h2>
-            <p class="font-bold text-gray-500 text-lg" style="font-weight: 700;">يرجى إدخال تفاصيل الاستلام والتواصل بدقة لضمان معالجة طلبك بكفاءة.</p>
+            <h2 class="text-4xl md:text-6xl font-bold text-[#111111] mb-4 tracking-tighter uppercase">تأكيد الطلب</h2>
+            <p class="font-bold text-gray-500 text-lg">يرجى إدخال تفاصيل الاستلام والتواصل بدقة لضمان معالجة طلبك بكفاءة.</p>
         </div>
 
         <form id="checkout-form" novalidate>
@@ -213,18 +195,18 @@
                     
                     <div class="bose-double-wrap">
                         <div class="bose-double-inner">
-                            <h3 class="text-2xl font-bold text-brand-black mb-6 flex items-center gap-3 border-b border-brand-pink/10 pb-4 tracking-tighter uppercase" style="font-weight: 700;">
-                                <i data-lucide="user" class="w-6 h-6 text-brand-pink"></i> بيانات العميل والتواصل
+                            <h3 class="text-2xl font-bold text-[#111111] mb-6 flex items-center gap-3 border-b border-[#ff91a4]/10 pb-4 tracking-tighter uppercase">
+                                <i data-lucide="user" class="w-6 h-6 text-[#ff91a4]"></i> بيانات العميل والتواصل
                             </h3>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="space-y-2">
-                                    <label for="customer-name" class="block font-bold text-sm text-brand-black" style="font-weight: 700;">الاسم بالكامل *</label>
-                                    <input type="text" id="customer-name" name="name" required class="bose-input-field" placeholder="اكتب اسمك الثلاثي">
+                                    <label for="customer-name" class="block font-bold text-sm text-[#111111]">الاسم بالكامل *</label>
+                                    <input type="text" id="customer-name" name="name" required class="bose-input-field" placeholder="اكتب الاسم الثلاثي">
                                 </div>
                                 
                                 <div class="space-y-2">
-                                    <label for="customer-phone" class="block font-bold text-sm text-brand-black" style="font-weight: 700;">رقم الهاتف (واتساب) *</label>
+                                    <label for="customer-phone" class="block font-bold text-sm text-[#111111]">رقم الهاتف (واتساب) *</label>
                                     <input type="tel" id="customer-phone" name="phone" required class="bose-input-field" placeholder="01xxxxxxxxx" dir="ltr">
                                 </div>
                             </div>
@@ -233,18 +215,18 @@
 
                     <div class="bose-double-wrap">
                         <div class="bose-double-inner">
-                            <h3 class="text-2xl font-bold text-brand-black mb-6 flex items-center gap-3 border-b border-brand-pink/10 pb-4 tracking-tighter uppercase" style="font-weight: 700;">
-                                <i data-lucide="truck" class="w-6 h-6 text-brand-pink"></i> طريقة الاستلام والتوصيل
+                            <h3 class="text-2xl font-bold text-[#111111] mb-6 flex items-center gap-3 border-b border-[#ff91a4]/10 pb-4 tracking-tighter uppercase">
+                                <i data-lucide="truck" class="w-6 h-6 text-[#ff91a4]"></i> طريقة الاستلام والتوصيل
                             </h3>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                 <label class="relative block cursor-pointer">
                                     <input type="radio" name="shipping_method" value="pickup" checked class="sr-only bose-radio-input" id="method-pickup">
                                     <div class="bose-radio-card">
-                                        <i data-lucide="store" class="w-6 h-6 text-brand-pink shrink-0 mt-0.5"></i>
+                                        <i data-lucide="store" class="w-6 h-6 text-[#ff91a4] shrink-0 mt-0.5"></i>
                                         <div>
-                                            <span class="block font-bold text-brand-black text-base" style="font-weight: 700;">الاستلام من مقرنا</span>
-                                            <span class="block text-xs font-bold text-gray-400 mt-1" style="font-weight: 700;">الكفاح - مركز الفرافرة</span>
+                                            <span class="block font-bold text-[#111111] text-base">الاستلام من مقرنا</span>
+                                            <span class="block text-xs font-bold text-gray-400 mt-1">الكفاح - مركز الفرافرة</span>
                                         </div>
                                     </div>
                                 </label>
@@ -252,10 +234,10 @@
                                 <label class="relative block cursor-pointer">
                                     <input type="radio" name="shipping_method" value="delivery" class="sr-only bose-radio-input" id="method-delivery">
                                     <div class="bose-radio-card">
-                                        <i data-lucide="bike" class="w-6 h-6 text-brand-pink shrink-0 mt-0.5"></i>
+                                        <i data-lucide="bike" class="w-6 h-6 text-[#ff91a4] shrink-0 mt-0.5"></i>
                                         <div>
-                                            <span class="block font-bold text-brand-black text-base" style="font-weight: 700;">توصيل للمنزل</span>
-                                            <span class="block text-xs font-bold text-gray-400 mt-1" style="font-weight: 700;">توصيل متاح لمناطق الفرافرة</span>
+                                            <span class="block font-bold text-[#111111] text-base">توصيل للمنزل</span>
+                                            <span class="block text-xs font-bold text-gray-400 mt-1">توصيل متاح لمناطق الفرافرة</span>
                                         </div>
                                     </div>
                                 </label>
@@ -264,14 +246,14 @@
                             <div id="delivery-details-box" class="space-y-6 hidden transition-all duration-300">
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div class="space-y-2">
-                                        <label for="delivery-location" class="block font-bold text-sm text-brand-black" style="font-weight: 700;">المنطقة / القرية *</label>
+                                        <label for="delivery-location" class="block font-bold text-sm text-[#111111]">المنطقة / القرية *</label>
                                         <select id="delivery-location" name="location" class="bose-select-field">
                                             <option value="" disabled selected>اختر منطقتك لتحديد تكلفة التوصيل</option>
                                         </select>
                                     </div>
 
                                     <div class="space-y-2">
-                                        <label for="delivery-address" class="block font-bold text-sm text-brand-black" style="font-weight: 700;">العنوان بالتفصيل *</label>
+                                        <label for="delivery-address" class="block font-bold text-sm text-[#111111]">العنوان بالتفصيل *</label>
                                         <input type="text" id="delivery-address" name="address" class="bose-input-field" placeholder="اسم الشارع / علامة مميزة">
                                     </div>
                                 </div>
@@ -281,24 +263,24 @@
 
                     <div class="bose-double-wrap">
                         <div class="bose-double-inner">
-                            <h3 class="text-2xl font-bold text-brand-black mb-6 flex items-center gap-3 border-b border-brand-pink/10 pb-4 tracking-tighter uppercase" style="font-weight: 700;">
-                                <i data-lucide="calendar" class="w-6 h-6 text-brand-pink"></i> موعد الاستلام والملاحظات
+                            <h3 class="text-2xl font-bold text-[#111111] mb-6 flex items-center gap-3 border-b border-[#ff91a4]/10 pb-4 tracking-tighter uppercase">
+                                <i data-lucide="calendar" class="w-6 h-6 text-[#ff91a4]"></i> موعد الاستلام والملاحظات
                             </h3>
                             
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                                 <div class="space-y-2">
-                                    <label for="order-date" class="block font-bold text-sm text-brand-black" style="font-weight: 700;">تاريخ الاستلام المطلوبة *</label>
+                                    <label for="order-date" class="block font-bold text-sm text-[#111111]">تاريخ الاستلام المطلوبة *</label>
                                     <input type="date" id="order-date" name="delivery_date" required class="bose-input-field">
                                 </div>
                                 
                                 <div class="space-y-2">
-                                    <label for="order-time" class="block font-bold text-sm text-brand-black" style="font-weight: 700;">وقت الاستلام التقريبي *</label>
+                                    <label for="order-time" class="block font-bold text-sm text-[#111111]">وقت الاستلام التقريبي *</label>
                                     <input type="time" id="order-time" name="delivery_time" required class="bose-input-field">
                                 </div>
                             </div>
 
                             <div class="space-y-2">
-                                <label for="order-notes" class="block font-bold text-sm text-brand-black" style="font-weight: 700;">أي ملاحظات إضافية أو عبارة معينة لكتابتها</label>
+                                <label for="order-notes" class="block font-bold text-sm text-[#111111]">أي ملاحظات إضافية أو عبارة معينة لكتابتها</label>
                                 <textarea id="order-notes" name="notes" rows="3" class="bose-input-field resize-none h-28" placeholder="مثال: يرجى كتابة (عيد ميلاد سعيد) على التورتة أو أي تفاصيل أخرى ترغب بها"></textarea>
                             </div>
                         </div>
@@ -309,14 +291,14 @@
                 <div class="lg:col-span-1">
                     <div class="bose-double-wrap sticky top-28" id="checkout-summary-container">
                         <div class="bose-double-inner bg-white">
-                            <h3 class="text-2xl font-bold text-brand-black mb-6 border-b border-brand-pink/10 pb-4 tracking-tighter uppercase" style="font-weight: 700;">ملخص الفاتورة</h3>
+                            <h3 class="text-2xl font-bold text-[#111111] mb-6 border-b border-[#ff91a4]/10 pb-4 tracking-tighter uppercase">ملخص الفاتورة</h3>
                             
                             <div id="checkout-items-preview" class="space-y-4 max-h-48 overflow-y-auto pr-1 mb-6 no-scrollbar">
-                                <div class="text-center text-gray-400 py-4 font-bold" style="font-weight: 700;">جاري تحميل الأصناف...</div>
+                                <div class="text-center text-gray-400 py-4 font-bold">جاري تحميل الأصناف...</div>
                             </div>
 
-                            <div class="space-y-4 border-t border-brand-pink/10 pt-4 mb-6">
-                                <div class="flex justify-between items-center font-bold text-base text-gray-500" style="font-weight: 700;">
+                            <div class="space-y-4 border-t border-[#ff91a4]/10 pt-4 mb-6">
+                                <div class="flex justify-between items-center font-bold text-base text-gray-500">
                                     <span>إجمالي المنتجات</span>
                                     <span id="invoice-subtotal">0 ج.م</span>
                                 </div>
@@ -324,17 +306,17 @@
                                     <span>تكلفة التوصيل</span>
                                     <span id="invoice-shipping">0 ج.م</span>
                                 </div>
-                                <div class="flex justify-between items-center font-bold text-3xl text-brand-pink pt-2 border-t-2 border-brand-pink/10 tracking-tighter" style="font-weight: 700;">
-                                    <span class="text-xl text-brand-black" style="font-weight: 700;">الإجمالي النهائي</span>
+                                <div class="flex justify-between items-center font-bold text-3xl text-[#ff91a4] pt-2 border-t-2 border-[#ff91a4]/10 tracking-tighter">
+                                    <span class="text-xl text-[#111111]">الإجمالي النهائي</span>
                                     <span id="invoice-grand-total">0 ج.م</span>
                                 </div>
                             </div>
 
-                            <button type="submit" id="submit-order-btn" class="w-full py-5 rounded-full text-2xl cursor-pointer shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3 border-none bg-brand-pink text-white" style="font-weight: 700;">
+                            <button type="submit" id="submit-order-btn" class="w-full py-5 rounded-full text-2xl cursor-pointer shadow-xl hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-3 border-none bg-[#ff91a4] text-white">
                                 إرسال الطلب للواتساب <i data-lucide="send" class="w-6 h-6"></i>
                             </button>
                             
-                            <p class="text-center font-bold text-gray-400 text-sm mt-5 text-balance px-2" style="font-weight: 700;">عند الضغط، سيتم فتح الواتساب مباشرة لتأكيد طلبك وتجهيزه مع الإدارة.</p>
+                            <p class="text-center font-bold text-gray-400 text-sm mt-5 text-balance px-2">عند الضغط، سيتم فتح الواتساب مباشرة لتأكيد طلبك وتجهيزه مع الإدارة.</p>
                         </div>
                     </div>
                 </div>
@@ -343,43 +325,43 @@
         </form>
     </main>
 
-    <footer class="bg-white pt-20 pb-8 border-t-4 border-brand-pink">
+    <footer class="bg-white pt-20 pb-8 border-t-4 border-[#ff91a4]">
         <div class="container mx-auto px-4 md:px-8 max-w-6xl text-center">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-b border-brand-pink/10 pb-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 border-b border-[#ff91a4]/10 pb-16">
                 <div class="flex flex-col items-center justify-center">
-                    <div class="mb-6 inline-flex items-center justify-center w-16 h-16 bg-brand-pinkLight text-brand-pink rounded-2xl border-brand-pink/20 shadow-sm border-2">
-                        <i data-lucide="gem" class="w-8 h-8 text-brand-pink"></i>
+                    <div class="mb-6 inline-flex items-center justify-center w-16 h-16 bg-[#fff5f6] text-[#ff91a4] rounded-2xl border-[#ff91a4]/20 shadow-sm border-2">
+                        <i data-lucide="gem" class="w-8 h-8 text-[#ff91a4]"></i>
                     </div>
-                    <p class="text-brand-black font-bold text-base leading-loose max-w-xs opacity-90 mx-auto" style="font-weight: 700;">الجودة في حلويات بوسي مش مجرد كلمة، دي التزام. شغفنا بيبدأ من اختيار أجود الخامات عشان نوصلك طعم بيفضل في الذاكرة.</p>
+                    <p class="text-[#111111] font-bold text-base leading-loose max-w-xs opacity-90 mx-auto">الجودة في حلويات بوسي مش مجرد كلمة، دي التزام. شغفنا بيبدأ من اختيار أجود الخامات عشان نوصلك طعم بيفضل في الذاكرة.</p>
                 </div>
                 <div class="flex flex-col items-center justify-center">
-                    <h4 class="text-brand-black font-bold text-xl mb-6" style="font-weight: 700;">الشركة</h4>
+                    <h4 class="text-[#111111] font-bold text-xl mb-6">الشركة</h4>
                     <ul class="space-y-4">
-                        <li><a href="about.html" class="text-brand-black opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm block text-decoration-none" style="font-weight: 700;">عن المتجر</a></li>
-                        <li><a href="refund.html" class="text-brand-black opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm block text-decoration-none" style="font-weight: 700;">الإرجاع والاستبدال</a></li>
-                        <li><a href="privacy.html" class="text-brand-black opacity-80 hover:text-brand-pink hover:opacity-100 transition-colors font-bold text-sm block text-decoration-none" style="font-weight: 700;">سياسة الخصوصية</a></li>
+                        <li><a href="about.html" class="text-[#111111] opacity-80 hover:text-[#ff91a4] hover:opacity-100 transition-colors font-bold text-sm block text-decoration-none">عن المتجر</a></li>
+                        <li><a href="refund.html" class="text-[#111111] opacity-80 hover:text-[#ff91a4] hover:opacity-100 transition-colors font-bold text-sm block text-decoration-none">الإرجاع والاستبدال</a></li>
+                        <li><a href="privacy.html" class="text-[#111111] opacity-80 hover:text-[#ff91a4] hover:opacity-100 transition-colors font-bold text-sm block text-decoration-none">سياسة الخصوصية</a></li>
                     </ul>
                 </div>
                 <div class="flex flex-col items-center justify-center">
-                    <h4 class="text-brand-black font-bold text-xl mb-6" style="font-weight: 700;">تواصل الإدارة</h4>
+                    <h4 class="text-[#111111] font-bold text-xl mb-6">تواصل الإدارة</h4>
                     <ul class="space-y-4 flex flex-col items-center">
                         <li>
-                            <a href="contact.html" class="inline-flex items-center justify-center gap-2 bg-brand-pink text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-brand-pinkLight hover:text-brand-pink border-2 border-brand-pink transition-colors text-decoration-none shadow-sm" style="font-weight: 700;">
+                            <a href="contact.html" class="inline-flex items-center justify-center gap-2 bg-[#ff91a4] text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-[#fff5f6] hover:text-[#ff91a4] border-2 border-[#ff91a4] transition-colors text-decoration-none shadow-sm">
                                 <i data-lucide="message-square" class="w-4 h-4"></i> <span>تواصل معنا المباشر</span>
                             </a>
                         </li>
-                        <li><span class="text-brand-black font-bold text-sm block mt-4" dir="ltr" style="font-weight: 700;">bosesweets3@gmail.com</span></li>
-                        <li><span class="text-brand-black opacity-80 font-bold text-xs block flex items-center justify-center gap-2 mt-2" style="font-weight: 700;"><i data-lucide="map-pin" class="w-4 h-4 shrink-0 text-brand-pink"></i> الكفاح، الفرافرة، الوادي الجديد</span></li>
+                        <li><span class="text-[#111111] font-bold text-sm block mt-4" dir="ltr">bosesweets3@gmail.com</span></li>
+                        <li><span class="text-[#111111] opacity-80 font-bold text-xs block flex items-center justify-center gap-2 mt-2"><i data-lucide="map-pin" class="w-4 h-4 shrink-0 text-[#ff91a4]"></i> الكفاح، الفرافرة، الوادي الجديد</span></li>
                     </ul>
                 </div>
             </div>
             <div class="flex flex-col items-center justify-center gap-6">
                 <div class="flex gap-5 justify-center">
-                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm text-decoration-none"><i class="fa-brands fa-facebook-f text-xl"></i></a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm text-decoration-none"><i class="fa-brands fa-instagram text-xl"></i></a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-brand-pinkLight flex items-center justify-center text-brand-pink hover:bg-brand-pink hover:text-white transition-colors border border-brand-pink/20 shadow-sm text-decoration-none"><i class="fa-brands fa-tiktok text-xl"></i></a>
+                    <a href="https://www.facebook.com/share/18cVoighQ8/" target="_blank" class="w-12 h-12 rounded-full bg-[#fff5f6] flex items-center justify-center text-[#ff91a4] hover:bg-[#ff91a4] hover:text-white transition-colors border border-[#ff91a4]/20 shadow-sm text-decoration-none"><i class="fa-brands fa-facebook-f text-xl"></i></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="w-12 h-12 rounded-full bg-[#fff5f6] flex items-center justify-center text-[#ff91a4] hover:bg-[#ff91a4] hover:text-white transition-colors border border-[#ff91a4]/20 shadow-sm text-decoration-none"><i class="fa-brands fa-instagram text-xl"></i></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96PbHWq5Dng" target="_blank" class="w-12 h-12 rounded-full bg-[#fff5f6] flex items-center justify-center text-[#ff91a4] hover:bg-[#ff91a4] hover:text-white transition-colors border border-[#ff91a4]/20 shadow-sm text-decoration-none"><i class="fa-brands fa-tiktok text-xl"></i></a>
                 </div>
-                <p class="text-brand-black opacity-70 font-bold text-sm text-center" style="font-weight: 700;">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
+                <p class="text-[#111111] opacity-70 font-bold text-sm text-center">&copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي.</p>
             </div>
         </div>
     </footer>

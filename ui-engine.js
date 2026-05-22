@@ -4,12 +4,12 @@
  * ============================================================================
  * الإدارة المرجعية: إدارة علامة حلويات بوسي التجاريّة (The Management)
  * الهوية البصرية المعتمدة: الوردي الفاخر (#ff91a4) | الوردي الهادئ (#fff5f6) | الأسود الناعم (#111111) للخطوط حصراً
- * الترقية والدستور: V44.0 Ultra Premium & Clean - التوافق الشامل ونقاء منطق الواجهات
- * الحالة: التحكم الكامل في الهيكل البصري، التنفس، الراحة البصرية، وتوزيع الأقسام السيادية.
+ * الترقية والدستور: V44.0 Ultra Premium & Clean - التطهير الشامل ونقاء منطق الواجهات
+ * الحالة: أداء متطور، عزل كامل للمحرك، وتثبيت بصري حازم بدون اهتزازات.
  * ============================================================================
  */
 
-import { BoseState, normalizeArabic, cartSystem, processBoseImage } from "./core-engine.js";
+import { distributeProductsToUI } from "./core-engine.js";
 
 const BOSE_LOGO_FALLBACK = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg";
 
@@ -21,8 +21,8 @@ export function renderProductCardsUI(products, containerId) {
     const container = document.getElementById(containerId);
     if (!container || !Array.isArray(products)) return;
 
-    const currentBoseState = window.BoseState || BoseState;
-    const processImg = window.processBoseImage || processBoseImage;
+    const currentBoseState = window.BoseState;
+    const processImg = window.processBoseImage;
 
     const isSliderContainer = container.classList.contains('bose-horizontal-slider') || 
                               container.classList.contains('snap-x') || 
@@ -32,11 +32,13 @@ export function renderProductCardsUI(products, containerId) {
                                 'dynamic-categories-container',
                                 'best-sellers-slider-container',
                                 'arrival-section-container'
-                              ].includes(container.id);
+                              ].includes(containerId);
 
     const sectionTitle = container.dataset.sectionTitle || '';
     const currentLayoutBlock = currentBoseState?.theme?.builderLayout?.find(b => (b.containerId && b.containerId === containerId) || (b.title && b.title === sectionTitle));
-    const defaultWidth = currentLayoutBlock?.cardWidth || 280;
+    
+    const baseWidth = currentLayoutBlock?.cardWidth || 280;
+    const customWidth = isSliderContainer ? Math.round(baseWidth * 1.4) : baseWidth;
 
     if (products.length === 0) {
         container.innerHTML = `
@@ -54,19 +56,17 @@ export function renderProductCardsUI(products, containerId) {
     }
 
     container.innerHTML = products.map(p => {
-        const img = processImg(p.img || p.image) || BOSE_LOGO_FALLBACK;
+        const img = (typeof processImg === 'function' ? processImg(p.img || p.image) : (p.img || p.image)) || BOSE_LOGO_FALLBACK;
         const name = p.name || 'منتج حلويات بوسي';
         const category = p.category || 'صنف فاخر';
         const description = p.description || p.desc || 'نهتم بأدق التفاصيل لنقدم لكم تجربة تذوق استثنائية تعكس الجودة المطلقة لمنتجاتنا المخبوزة طازجاً.';
         const price = p.price || 'يحدد عند الطلب';
         const isOut = p.inStock === false || p.stock === 0;
-
-        let customWidth = p.cardWidth || defaultWidth;
         
-        const categoryNormalized = p.category ? normalizeArabic(p.category) : '';
-        const nameNormalized = p.name ? normalizeArabic(p.name) : '';
+        const categoryNormalized = p.category ? window.normalizeArabic(p.category) : '';
+        const nameNormalized = p.name ? window.normalizeArabic(p.name) : '';
 
-        // فرز شبكة العرض (أعمدة ثنائية للدونات والسينابون، وعرض كامل للتورت الفاخرة والجاتوه)
+        // فرز شبكة العرض (أعمدة ثنائية للدونات والسينابون والديسباسيتو والقشطوطة، وعرض كامل للتورت الفاخرة والجاتوه)
         const isDonutOrCinnabon = categoryNormalized.includes('دوناتس') || 
                                   categoryNormalized.includes('سينابون') || 
                                   categoryNormalized.includes('ديسباسيتو') || 
@@ -109,7 +109,7 @@ export function renderProductCardsUI(products, containerId) {
                     <div class="flex flex-col flex-grow px-1">
                         
                         <a href="product.html?id=${p.id || ''}" class="block text-decoration-none group-hover:text-[#ff91a4] transition-colors">
-                            <h3 class="text-base text-[#111111] mb-0.5 truncate">${name}</h3>
+                            <h3 class="text-base text-[#111111] mb-0.5 truncate font-normal">${name}</h3>
                         </a>
                         
                         <p class="text-xs text-[#ff91a4] mb-2">${category}</p>
@@ -147,30 +147,22 @@ export function renderProductCardsUI(products, containerId) {
             </div>`;
     }).join('');
 
-    if (isSliderContainer) {
-        const appliedWidth = Math.round(defaultWidth * 1.4); // التكبير بنسبة 40% المعتمد للسلايدرات الجانبية
-        container.querySelectorAll('.catalog-card-wrapper').forEach(card => {
-            card.style.width = `${appliedWidth}px`;
-            card.style.flexShrink = '0';
-            card.style.maxWidth = '85vw';
-        });
-    }
-
-    if (window.lucide) lucide.createIcons();
+    if (window.lucide) window.lucide.createIcons();
 }
 
 let uiRenderDebounceTimer = null;
 
 export function distributeProductsToUI(products) {
-    const currentBoseState = window.BoseState || BoseState;
+    const currentBoseState = window.BoseState;
     const currentProducts = Array.isArray(products) && products.length ? products : (currentBoseState?.catalog || []);
     if (currentProducts.length === 0) return;
 
     if (uiRenderDebounceTimer) clearTimeout(uiRenderDebounceTimer);
     
     uiRenderDebounceTimer = setTimeout(() => {
-        const baseMenuProducts = currentProducts.filter(p => p.category && !normalizeArabic(p.category).includes('ورد'));
-        const baseMenuIds = baseMenuProducts.map(p => p.id);
+        // تصفية ذكية لمنع تكرار الكروت وتطبيقا للدستور الموحد
+        const baseMenuProducts = currentProducts.filter(p => p.category && window.normalizeArabic ? !window.normalizeArabic(p.category).includes('ورد') : true);
+        const baseMenuIds = baseMenuProducts.slice(0, 8).map(p => p.id);
 
         const bestSellersPool = currentProducts.filter(p => !baseMenuIds.includes(p.id) && (p.hasDiscount === true || p.starRating >= 4.2));
         const finalBestSellers = bestSellersPool.length ? bestSellersPool.slice(0, 6) : currentProducts.slice(2, 8);
@@ -223,7 +215,8 @@ export function distributeProductsToUI(products) {
             } else if (id.includes('new-arrivals') || id.includes('arrival')) {
                 list = finalNewArrivals;
             } else {
-                list = currentProducts;
+                // منع التكرار العشوائي وضمان تمرير مصفوفة منقاة لا تتداخل مع المعروض رئيسياً
+                list = currentProducts.filter(p => !baseMenuIds.includes(p.id));
             }
             renderProductCardsUI(list, id);
         });
@@ -274,7 +267,7 @@ function initializeBoseSliderDots(count, dotsContainerId, sliderContainerId) {
 }
 
 export function applyThemeConfigUI() {
-    const currentBoseState = window.BoseState || BoseState;
+    const currentBoseState = window.BoseState;
     const themeData = currentBoseState ? currentBoseState.theme : null;
     if (!themeData) return;
 
@@ -333,15 +326,15 @@ window.updateTempQtyContext = function(btn, delta) {
 };
 
 window.syncBoseCartUI = function() {
-    const currentBoseState = window.BoseState || BoseState;
+    const currentBoseState = window.BoseState;
     if (currentBoseState && currentBoseState.cart) {
         localStorage.setItem('bose_cart_storage', JSON.stringify(currentBoseState.cart));
         localStorage.setItem('bose_cart', JSON.stringify(currentBoseState.cart));
     }
 
     window.dispatchEvent(new CustomEvent('BoseSweets_Cart_Updated', { detail: currentBoseState?.cart }));
-    if (cartSystem && typeof cartSystem.updateCartDisplay === 'function') {
-        cartSystem.updateCartDisplay();
+    if (window.cartSystem && typeof window.cartSystem.updateCartDisplay === 'function') {
+        window.cartSystem.updateCartDisplay();
     }
 };
 
@@ -368,8 +361,8 @@ window.addWithQtyContextAndSync = function(btn, productId) {
         btn.classList.add('bg-[#ff91a4]', 'text-white');
     }, 1200);
 
-    const currentBoseState = window.BoseState || BoseState;
-    const currentCartSystem = window.cartSystem || cartSystem;
+    const currentBoseState = window.BoseState;
+    const currentCartSystem = window.cartSystem;
 
     if (currentCartSystem && typeof currentCartSystem.addWithQtyContext === 'function') {
         currentCartSystem.addWithQtyContext(btn, productId);
@@ -390,8 +383,8 @@ export async function loadSliderImages(products) {
     if (!sliderContainer) return;
     
     sliderContainer.classList.remove('bose-skeleton');
-    const processImg = window.processBoseImage || processBoseImage;
-    const currentBoseState = window.BoseState || BoseState;
+    const processImg = window.processBoseImage;
+    const currentBoseState = window.BoseState;
     const currentProducts = Array.isArray(products) && products.length ? products : (currentBoseState?.catalog || []);
 
     try {
@@ -410,7 +403,7 @@ export async function loadSliderImages(products) {
 
         targetSlides.forEach((slide, index) => {
             const sourceUrl = slide.imageUrl || '';
-            const processedUrl = processImg(sourceUrl);
+            const processedUrl = typeof processImg === 'function' ? processImg(sourceUrl) : sourceUrl;
             const smartTimeStamp = currentBoseState?.theme?.lastAdminUpdate || new Date().getTime();
             const separator = processedUrl.includes('?') ? '&' : '?';
             const finalImageUrl = sourceUrl ? `${processedUrl}${separator}v=${smartTimeStamp}` : BOSE_LOGO_FALLBACK;
@@ -422,8 +415,8 @@ export async function loadSliderImages(products) {
                         <img src="${finalImageUrl}" class="w-full h-full object-cover select-none pointer-events-none" style="min-height: 100%;" onerror="this.src='${BOSE_LOGO_FALLBACK}';">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-8 text-right bose-breathing-space">
                             <div>
-                                <h3 class="text-white text-xl md:text-2xl mb-1">${slideTitle}</h3>
-                                <p class="text-[#ff91a4] text-xs md:text-sm">تميز وإتقان ممتد منذ عام 2014 بمركز الفرافرة</p>
+                                <h3 class="text-white text-xl md:text-2xl mb-1 font-bold">${slideTitle}</h3>
+                                <p class="text-[#ff91a4] text-xs md:text-sm font-normal">تميز وإتقان ممتد منذ عام 2014 بمركز الفرافرة</p>
                             </div>
                         </div>
                     </a>
@@ -509,9 +502,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 white-space: normal !important;
                 overflow-wrap: anywhere !important;
                 word-break: break-word !important;
-                line-clamp: unset !important;
-                -webkit-line-clamp: unset !important;
-                height: auto !important;
             }
             .bose-full-slider-container {
                 display: flex !important;
@@ -520,9 +510,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .bose-breathing-space {
                 padding: 1.5rem !important;
             }
-            h1, h2, h3, h4, h5, h6, p, span, a, button {
+            h1, h2, h3, h4, h5, h6 {
                 font-weight: 700 !important;
-                max-font-weight: 700 !important;
+            }
+            p, span, a, button {
+                font-weight: 400;
             }
         `;
         document.head.appendChild(style);

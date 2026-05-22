@@ -2,6 +2,7 @@
  * 👑 محرك واجهة المنتجات والطلبات الخاصة لعلامة حلويات بوسي التجارية
  * الإصدار المطور بالكامل والمطهر سحابياً وهندسياً لضمان أعلى أداء واستقرار برمجي.
  * تم إبادة كافة البيانات الافتراضية والأسعار الصلبة لمنع ظهور أي منتجات وهمية بالموقع.
+ * متوافق بنسبة 100% مع الدستور التكنولوجي السيادي V44.0.
  */
 
 import { BoseState, normalizeArabic, cartSystem } from "./core-engine.js";
@@ -137,8 +138,8 @@ export const ProductUI = {
                     <div class="w-16 h-16 rounded-full bg-white flex items-center justify-center mb-4 border-4 border-brand-pink/40 animate-pulse shadow-lg">
                         <i data-lucide="sparkles" class="w-8 h-8 text-brand-pink"></i>
                     </div>
-                    <p class="font-bold text-brand-black text-xl" style="font-weight: 700 !important;">مساحة تصميم وتنسيق البوكيه الفاخر</p>
-                    <p class="text-xs text-brand-black/70 mt-1 font-bold" style="font-weight: 700 !important;">مستوى متقدم من التخصيص لتنسيق باقة الورد الفاخرة لتناسب تفضيلاتكم بدقة</p>
+                    <p class="font-bold text-brand-black text-xl">مساحة تصميم وتنسيق البوكيه الفاخر</p>
+                    <p class="text-xs text-brand-black/70 mt-1 font-bold">مستوى متقدم من التخصيص لتنسيق باقة الورد الفاخرة لتناسب تفضيلاتكم بدقة</p>
                 </div>
             `;
             if (window.lucide) {
@@ -285,9 +286,11 @@ export const ProductUI = {
         if (!mainProductImg) return;
 
         const catalog = BoseState?.catalog || [];
+        const pricing = BoseState?.pricingRules || {};
         this.currentFlowerProduct = catalog.find(p => p.category && normalizeArabic(p.category) === normalizeArabic('ورد')) || this.currentFlowerProduct || {};
 
-        const defaultImg = this.currentFlowerProduct.img || this.currentFlowerProduct.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
+        const fallbackImg = pricing.defaultFallbackImg || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
+        const defaultImg = this.currentFlowerProduct.img || this.currentFlowerProduct.image || fallbackImg;
         
         let targetSrc = defaultImg;
 
@@ -431,8 +434,9 @@ export const ProductUI = {
      */
     setupBuilderPoster: function() {
         const catalog = BoseState?.catalog || [];
+        const pricing = BoseState?.pricingRules || {};
         const cakeProducts = catalog.filter(p => p.category && (p.category.includes('تورت') || p.category.includes('كيك')));
-        let builderPoster = 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
+        let builderPoster = pricing.defaultFallbackImg || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
         
         if(cakeProducts.length > 0) {
             let img = cakeProducts[0].heroImg || cakeProducts[0].img || cakeProducts[0].image;
@@ -450,13 +454,15 @@ export const ProductUI = {
         if (!galleryGrid) return;
         
         const catalog = BoseState?.catalog || [];
+        const pricing = BoseState?.pricingRules || {};
         const cakeProducts = catalog.filter(p => p.category && (p.category.includes('تورت') || p.category.includes('كيك'))).slice(0, 10);
         
         let galleryImages = cakeProducts.map(p => p.heroImg || p.img || p.image).filter(img => img);
 
         if(galleryImages.length < 4) {
+            const fallbackImg = pricing.defaultFallbackImg || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
             for (let i = 0; i < 4; i++) {
-                galleryImages.push('https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg');
+                galleryImages.push(fallbackImg);
             }
         }
 
@@ -602,6 +608,7 @@ export const ProductUI = {
      */
     setupCategoryView: function(catName) {
         const catalog = BoseState?.catalog || [];
+        const pricing = BoseState?.pricingRules || {};
         const normalizedSearch = normalizeArabic(catName);
 
         this.allCategoryProducts = catName === 'all' ? catalog : catalog.filter(p => {
@@ -646,7 +653,7 @@ export const ProductUI = {
         const titleEl = document.getElementById('sovereign-page-title');
         if (titleEl) titleEl.innerText = displayName;
 
-        let dynamicPoster = 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
+        let dynamicPoster = pricing.defaultFallbackImg || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1712586716/logo_bose_gold.jpg';
         if (this.allCategoryProducts.length > 0) {
             let firstProdImg = this.allCategoryProducts[0].heroImg || this.allCategoryProducts[0].img || this.allCategoryProducts[0].image;
             if (firstProdImg) { dynamicPoster = window.processBoseImage ? window.processBoseImage(firstProdImg) : firstProdImg; }
@@ -662,7 +669,7 @@ export const ProductUI = {
                         <img src="${dynamicPoster}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="${displayName}">
                         <div class="absolute inset-0 bg-gradient-to-t from-brand-pink/10 to-transparent"></div>
                         <div class="absolute bottom-0 w-full p-8 md:p-16 text-center">
-                            <h2 class="text-4xl md:text-6xl font-bold text-brand-black mb-2 tracking-tighter drop-shadow-md" style="font-weight: 700 !important;">${displayName}</h2>
+                            <h2 class="text-4xl md:text-6xl font-bold text-brand-black mb-2 tracking-tighter drop-shadow-md">${displayName}</h2>
                         </div>
                     </div>
                 </div>
@@ -713,7 +720,7 @@ export const ProductUI = {
         const grid = document.getElementById('category-grid') || document.getElementById('menuGrid');
         if (!grid) return;
         if (products.length === 0) {
-            grid.innerHTML = '<div class="col-span-full py-16 font-bold text-brand-black opacity-50 text-2xl text-center" style="font-weight: 700 !important;">لا توجد منتجات مطابقة لهذا الاختيار حالياً.</div>';
+            grid.innerHTML = '<div class="col-span-full py-16 font-bold text-brand-black opacity-50 text-2xl text-center">لا توجد منتجات مطابقة لهذا الاختيار حالياً.</div>';
             return;
         }
 
@@ -806,7 +813,6 @@ export const ProductUI = {
     fetchReviews: function() {
         const db = window.db;
         if (!db) {
-            // مؤشر صامت في حال عدم جاهزية قاعدة البيانات لمنع حقن تقييمات وهمية
             this.reviewsData = [];
             this.renderReviewsPage();
             return;
@@ -861,13 +867,13 @@ export const ProductUI = {
                         <div class="flex gap-1 text-brand-pink mb-6 justify-center md:justify-start">
                             <i data-lucide="star" class="w-6 h-6 fill-current text-brand-pink"></i><i data-lucide="star" class="w-6 h-6 fill-current text-brand-pink"></i><i data-lucide="star" class="w-6 h-6 fill-current text-brand-pink"></i><i data-lucide="star" class="w-6 h-6 fill-current text-brand-pink"></i><i data-lucide="star" class="w-6 h-6 fill-current text-brand-pink"></i>
                         </div>
-                        <p class="font-bold text-xl leading-relaxed text-brand-black opacity-90 mb-8 whitespace-normal text-balance" style="font-weight: 700 !important;">"${d.text || d.review}"</p>
+                        <p class="font-bold text-xl leading-relaxed text-brand-black opacity-90 mb-8 whitespace-normal text-balance">"${d.text || d.review}"</p>
                     </div>
                     <div class="flex items-center gap-4 border-t-2 border-brand-pink/10 pt-6 mt-auto justify-center md:justify-start">
-                        <div class="w-14 h-14 rounded-full bg-brand-pinkLight flex items-center justify-center font-bold text-brand-pink text-2xl border-3 border-brand-pink/20 shrink-0" style="font-weight: 700 !important;">${(d.name || 'ع').charAt(0)}</div>
+                        <div class="w-14 h-14 rounded-full bg-brand-pinkLight flex items-center justify-center font-bold text-brand-pink text-2xl border-3 border-brand-pink/20 shrink-0">${(d.name || 'ع').charAt(0)}</div>
                         <div class="text-right">
-                            <h5 class="font-bold text-brand-black" style="font-weight: 700 !important;">${d.name || 'عميل'}</h5>
-                            <span class="text-xs opacity-60 uppercase tracking-widest font-bold text-brand-pink" style="font-weight: 700 !important;">تجربة مؤكدة</span>
+                            <h5 class="font-bold text-brand-black">${d.name || 'عميل'}</h5>
+                            <span class="text-xs opacity-60 uppercase tracking-widest font-bold text-brand-pink">تجربة مؤكدة</span>
                         </div>
                     </div>
                 </div>`;
@@ -1018,7 +1024,7 @@ export const ProductUI = {
      */
     updatePrices: function() {
         const pricing = BoseState?.pricingRules || {};
-        const pricePerPerson = pricing.pricePerPerson || 0; // إبادة السعر الافتراضي الصلب لمنع التناقض
+        const pricePerPerson = pricing.pricePerPerson || 0; 
         
         if (pricePerPerson === 0) {
             const fin = document.getElementById('final-price-display');
@@ -1223,7 +1229,6 @@ window.addEventListener('catalogDataReady', () => {
 window.addEventListener('BoseSweets_Cart_Updated', () => ProductUI.syncCartBadge());
 
 document.addEventListener('DOMContentLoaded', () => {
-    // ربط مستمعات الأحداث التفاعلية بطريقة آمنة ونظيفة
     const plusBtn = document.getElementById('cake-qty-plus');
     const minusBtn = document.getElementById('cake-qty-minus');
     if (plusBtn) plusBtn.addEventListener('click', () => ProductUI.modQty(1));
