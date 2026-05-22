@@ -1,26 +1,25 @@
 /**
  * 👑 BoseSweets Pro Style Sheet | نظام الأناقة السيادي لعلامة حلويات بوسي
- * الإصدار الموحد: V39.2 (Complete Edition + Expanded Slider Cards & Unbreakable Text)
+ * الإصدار الموحد والمطور: V44.0 Ultra Premium & Clean
  * الإدارة المرجعية: إدارة علامة حلويات بوسي (The Management)
  * الحالة: ملف كامل وشامل لجميع مكونات الموقع دون أي حذف أو اختصار.
- * التحديث الأخير: تكبير كروت السلايدر بنسبة 40% وحماية النصوص الطويلة من البتر والتقطيع نهائياً.
+ * التحديث الأخير: التوافق الدستوري الكامل، تثبيت وزن الخطوط عند 700، وإحلال الأسود الفاخر الناعم.
  * ============================================================================
  */
 
 :root {
-    /* المنظومة اللونية الثلاثية المعتمدة (وردي، أبيض، بني شوكولاتة) */
-    --primary-pink: #ff91a4;       
-    --primary-pink-hover: #e67e91;
-    --primary-light: #fff5f6;      
-    --text-dark: #3d241c;          
-    --text-main: #3d241c;          
+    /* المنظومة اللونية الثلاثية المعتمدة لعلامة حلويات بوسي التجارية */
+    --brand-pink: #ff91a4;       
+    --brand-pink-hover: #e67e91;
+    --brand-pink-light: #fff5f6;      
+    --brand-black: #111111;          
     --bg-white: #ffffff;           
     --surface-light: #fff0f2;      
     --glass-pink: rgba(255, 145, 164, 0.92);
     --border-radius-card: 24px;
     --transition-smooth: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     
-    /* ظلال سيادية راقية (ممنوع الظلال السوداء) */
+    /* ظلال سيادية راقية معتمدة (محظور تماماً استخدام الظلال السوداء) */
     --shadow-premium: 0 15px 40px rgba(255, 145, 164, 0.25);
     --shadow-soft: 0 5px 15px rgba(255, 145, 164, 0.1);
     --shadow-cardHover: 0 12px 25px rgba(255, 145, 164, 0.2);
@@ -30,14 +29,14 @@
 }
 
 /* ============================================================================
-   1. التأسيس الهندسي والتحصين اللوني
+   1. التأسيس الهندسي والتحصين اللوني للواجهات
    ============================================================================ */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
-    color: var(--text-main); 
+    color: var(--brand-black); 
 }
 
 body {
@@ -47,7 +46,7 @@ body {
     overflow-x: hidden;
     scroll-behavior: smooth;
     direction: rtl;
-    /* إعطاء مساحة تنفس أسفل الصفحة كي لا يغطي الزر العائم على المحتوى (تحديث V39.1) */
+    /* مساحة تنفس معمارية مريحة أسفل الصفحة لضمان عدم حجب المحتوى من القوائم العائمة */
     padding-bottom: 90px; 
 }
 
@@ -57,21 +56,36 @@ body {
     padding: 0 20px;
 }
 
-/* تخصيص شريط التمرير السيادي */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: var(--primary-light); }
-::-webkit-scrollbar-thumb { background: var(--primary-pink); border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-dark); }
+/* تخصيص شريط التمرير السيادي الموحد */
+::-webkit-scrollbar { 
+    width: 8px; 
+}
+::-webkit-scrollbar-track { 
+    background: var(--brand-pink-light); 
+}
+::-webkit-scrollbar-thumb { 
+    background: var(--brand-pink); 
+    border-radius: 10px; 
+}
+::-webkit-scrollbar-thumb:hover { 
+    background: var(--brand-black); 
+}
 
-/* الطباعة والنصوص */
-.font-bold, h1, h2, h3, h4, .btn-solid, .ticker-item { font-weight: 700 !important; }
-.font-black { font-weight: 900 !important; }
+/* الهندسة الصارمة لأوزان الخطوط (الحد الأقصى المطلق هو 700) */
+.font-bold, .font-black, h1, h2, h3, h4, .btn-solid, .ticker-item { 
+    font-weight: 700 !important; 
+}
 
-/* إخفاء شريط التمرير للسلايدرز مع الحفاظ على الانسيابية */
-.hide-scroll::-webkit-scrollbar { display: none; }
-.hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+/* إخفاء أشرطة التمرير الأفقية للسلايدرز مع الحفاظ الكامل على انسيابية الحركة */
+.hide-scroll::-webkit-scrollbar { 
+    display: none; 
+}
+.hide-scroll { 
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+}
 
-/* حماية النصوص الطويلة من البتر والتقطيع لضمان القراءة الكاملة لوصف المنتجات */
+/* حماية النصوص الطويلة لوصف منتجات علامة حلويات بوسي من البتر والتقطيع نهائياً */
 .product-desc {
     white-space: normal !important;
     overflow-wrap: anywhere !important;
@@ -84,10 +98,10 @@ body {
 .bose-double-wrap {
     background: var(--bg-white);
     border-radius: 32px;
-    border: 2px solid var(--primary-pink); /* الإطار الخارجي */
+    border: 2px solid var(--brand-pink); /* الإطار الخارجي السيادي */
     padding: 6px;
     transition: var(--transition-smooth);
-    box-shadow: 0 5px 15px rgba(255, 145, 164, 0.1);
+    box-shadow: var(--shadow-soft);
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -97,30 +111,30 @@ body {
 .bose-double-wrap:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-cardHover);
-    border-color: var(--primary-pink-hover);
+    border-color: var(--brand-pink-hover);
 }
 
 .bose-double-inner {
     background: var(--bg-white);
     border-radius: 32px;
-    border: 2px solid var(--primary-pink); /* الإطار الداخلي الواضح لتأكيد الشكل المزدوج */
+    border: 2px solid var(--brand-pink); /* الإطار الداخلي التأكيدي للهوية الهندسية */
     overflow: hidden;
     display: flex;
     flex-direction: column;
     height: 100%;
     position: relative;
-    box-shadow: 0 5px 15px rgba(255, 145, 164, 0.1);
+    box-shadow: var(--shadow-soft);
 }
 
-/* هندسة الصور السيادية داخل الكروت */
+/* هندسة الصور الطبيعية بنسبة 100% داخل كروت العرض الفاخرة */
 .bose-image-wrap {
     aspect-ratio: 4 / 5;
-    background-color: var(--primary-light);
+    background-color: var(--brand-pink-light);
     padding: 0;
     display: flex; 
     align-items: center; 
     justify-content: center;
-    border-bottom: 2px solid var(--primary-pink);
+    border-bottom: 2px solid var(--brand-pink);
     overflow: hidden;
 }
 
@@ -136,12 +150,12 @@ body {
 }
 
 /* ============================================================================
-   3. الهيدر وشريط التنبيهات (Sovereign Header & Ticker)
+   3. الهيدر السيادي وشريط التنبيهات اللامتناهي (Sovereign Header & Ticker)
    ============================================================================ */
 .ticker-wrap {
     width: 100%;
     overflow: hidden;
-    background-color: var(--primary-pink);
+    background-color: var(--brand-pink);
     color: var(--bg-white);
     padding: 10px 0;
     box-shadow: 0 2px 10px rgba(255, 145, 164, 0.2);
@@ -162,7 +176,7 @@ body {
 
 .ticker-item {
     padding: 10px 40px;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 0.95rem;
     color: var(--bg-white) !important;
     white-space: nowrap;
@@ -185,7 +199,7 @@ body {
 }
 
 /* ============================================================================
-   4. محرك القائمة الجانبية (Sovereign Sidebar)
+   4. محرك وعزل القائمة الجانبية الموحدة (Sovereign Sidebar)
    ============================================================================ */
 .sidebar {
     position: fixed !important;
@@ -202,8 +216,8 @@ body {
     display: flex;
     flex-direction: column;
     border-left: 2px solid rgba(255, 145, 164, 0.3);
-    visibility: hidden; /* تحصين ضد منع التفاعل عند الإغلاق */
-    pointer-events: none; /* حماية منطقة العمل عند الإغلاق */
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .sidebar.active { 
@@ -221,7 +235,7 @@ body {
     backdrop-filter: blur(4px) !important;
     transition: opacity 0.4s ease;
     opacity: 0;
-    pointer-events: none; /* منع حجب الشاشة عند عدم النشاط */
+    pointer-events: none;
 }
 
 .sidebar-overlay.active { 
@@ -230,45 +244,53 @@ body {
     pointer-events: auto !important;
 }
 
-details > summary { list-style: none; cursor: pointer; outline: none; }
-details > summary::-webkit-details-marker { display: none; }
+details > summary { 
+    list-style: none; 
+    cursor: pointer; 
+    outline: none; 
+}
+details > summary::-webkit-details-marker { 
+    display: none; 
+}
 
 /* ============================================================================
-   5. الأزرار السيادية (Royal Interaction Buttons)
+   5. الأزرار السيادية والروابط الفاخرة (Royal Interaction Buttons)
    ============================================================================ */
 .btn-solid {
-    background-color: var(--primary-pink); 
+    background-color: var(--brand-pink); 
     color: var(--bg-white) !important;
     border-radius: 50px; 
     padding: 16px 45px;
-    font-weight: 900; 
+    font-weight: 700; 
     font-size: 1.15rem;
     display: inline-flex; 
     align-items: center; 
     justify-content: center;
     transition: var(--transition-smooth); 
     box-shadow: var(--shadow-premium);
-    border: 2px solid var(--primary-pink);
+    border: 2px solid var(--brand-pink);
     cursor: pointer;
     text-decoration: none;
 }
 
 .btn-solid:hover {
     background-color: var(--bg-white); 
-    color: var(--primary-pink) !important; 
+    color: var(--brand-pink) !important; 
     transform: translateY(-4px);
     box-shadow: 0 10px 25px rgba(255, 145, 164, 0.3);
 }
 
-.btn-solid:hover * { color: var(--primary-pink) !important; }
+.btn-solid:hover * { 
+    color: var(--brand-pink) !important; 
+}
 
 .btn-outline {
     background-color: var(--bg-white); 
-    color: var(--primary-pink) !important;
-    border: 2px solid var(--primary-pink); 
+    color: var(--brand-pink) !important;
+    border: 2px solid var(--brand-pink); 
     border-radius: 50px;
     padding: 14px 40px; 
-    font-weight: 900; 
+    font-weight: 700; 
     font-size: 1.1rem;
     display: inline-flex; 
     align-items: center; 
@@ -279,18 +301,20 @@ details > summary::-webkit-details-marker { display: none; }
 }
 
 .btn-outline:hover {
-    background-color: var(--primary-pink); 
+    background-color: var(--brand-pink); 
     color: var(--bg-white) !important; 
     box-shadow: var(--shadow-premium); 
     transform: translateY(-2px);
 }
 
-.btn-outline:hover * { color: var(--bg-white) !important; }
+.btn-outline:hover * { 
+    color: var(--bg-white) !important; 
+}
 
-/* أزرار الإطار المزدوج الجانبية */
+/* أزرار الإطار المزدوج الفرعية للقوائم */
 .double-btn-wrap {
     border-radius: 20px;
-    border: 2px solid var(--primary-pink);
+    border: 2px solid var(--brand-pink);
     padding: 4px;
     background: var(--bg-white);
     transition: var(--transition-smooth);
@@ -301,27 +325,27 @@ details > summary::-webkit-details-marker { display: none; }
 
 .double-btn-inner {
     border-radius: 14px;
-    border: 2px solid var(--primary-pink);
-    background: var(--primary-light);
+    border: 2px solid var(--brand-pink);
+    background: var(--brand-pink-light);
     padding: 14px 18px;
     display: flex; 
     align-items: center; 
     gap: 16px;
-    font-weight: 900; 
-    color: var(--text-dark);
+    font-weight: 700; 
+    color: var(--brand-black);
     transition: var(--transition-smooth);
 }
 
 .double-btn-wrap:hover {
-    background: var(--primary-pink-hover);
+    background: var(--brand-pink-hover);
     transform: translateX(-5px);
-    border-color: var(--text-dark);
+    border-color: var(--brand-black);
 }
 
 .double-btn-wrap:hover .double-btn-inner {
-    background: var(--text-dark);
+    background: var(--brand-black);
     color: var(--bg-white) !important;
-    border-color: var(--text-dark);
+    border-color: var(--brand-black);
 }
 
 .double-btn-wrap:hover i, .double-btn-wrap:hover svg {
@@ -329,11 +353,11 @@ details > summary::-webkit-details-marker { display: none; }
 }
 
 /* ============================================================================
-   6. درع التحصين اللوني للإدخالات والاستمارات
+   6. درع التحصين اللوني لاستمارات الإدخال والخيارات التفاعلية
    ============================================================================ */
 input, textarea, select {
     border: 2px solid rgba(255, 145, 164, 0.3) !important;
-    color: var(--text-dark) !important;
+    color: var(--brand-black) !important;
     background-color: var(--bg-white) !important;
     border-radius: 18px;
     padding: 14px 18px;
@@ -344,15 +368,15 @@ input, textarea, select {
 }
 
 input:focus, textarea:focus, select:focus {
-    border-color: var(--primary-pink) !important;
+    border-color: var(--brand-pink) !important;
     box-shadow: 0 0 0 4px rgba(255, 145, 164, 0.1);
 }
 
 input::placeholder, textarea::placeholder {
-    color: rgba(61, 36, 28, 0.4) !important;
+    color: rgba(17, 17, 17, 0.4) !important;
 }
 
-/* تنسيقات أزرار باني التورتة */
+/* خيارات باني التورتة والمحاكيات التفاعلية المعزولة */
 .option-btn {
     border: 2px solid rgba(255, 145, 164, 0.3);
     border-radius: 20px;
@@ -367,22 +391,35 @@ input::placeholder, textarea::placeholder {
     justify-content: center;
     gap: 10px;
 }
-.option-btn:hover { border-color: var(--primary-pink); transform: translateY(-2px); box-shadow: var(--shadow-soft); }
-.option-btn.selected { border-color: var(--primary-pink); background: var(--primary-light); color: var(--primary-pink); box-shadow: var(--shadow-soft); }
+.option-btn:hover { 
+    border-color: var(--brand-pink); 
+    transform: translateY(-2px); 
+    box-shadow: var(--shadow-soft); 
+}
+.option-btn.selected { 
+    border-color: var(--brand-pink); 
+    background: var(--brand-pink-light); 
+    color: var(--brand-pink); 
+    box-shadow: var(--shadow-soft); 
+}
 
 .upload-zone {
     border: 2px dashed rgba(255, 145, 164, 0.5);
-    background: var(--primary-light);
+    background: var(--brand-pink-light);
     border-radius: 24px;
     padding: 30px 20px;
     text-align: center;
     cursor: pointer;
     transition: var(--transition-smooth);
 }
-.upload-zone:hover { border-color: var(--primary-pink); background: var(--bg-white); box-shadow: var(--shadow-soft); }
+.upload-zone:hover { 
+    border-color: var(--brand-pink); 
+    background: var(--bg-white); 
+    box-shadow: var(--shadow-soft); 
+}
 
 /* ============================================================================
-   7. محرك الشلال البصري (Waterfall Layout Engine)
+   7. محرك الشلال البصري الانسيابي (Waterfall Layout Engine)
    ============================================================================ */
 .waterfall-mask {
     -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%);
@@ -394,30 +431,33 @@ input::placeholder, textarea::placeholder {
     background: var(--bg-white);
     aspect-ratio: 3/4;
     flex-shrink: 0;
-    border: 2px solid var(--primary-pink);
+    border: 2px solid var(--brand-pink);
     padding: 5px;
     overflow: hidden;
 }
 
 .waterfall-item-inner {
     border-radius: 18px;
-    border: 2px solid var(--primary-pink);
-    width: 100%; height: 100%;
+    border: 2px solid var(--brand-pink);
+    width: 100%; 
+    height: 100%;
     overflow: hidden;
 }
 
 .waterfall-item-inner img {
-    width: 100%; height: 100%; object-fit: cover;
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover;
 }
 
 @keyframes scrollUpLoop { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
 @keyframes scrollDownLoop { 0% { transform: translateY(-50%); } 100% { transform: translateY(0); } }
 
 /* ============================================================================
-   8. التنبيهات والنوافذ السيادية (Smart Feedback System)
+   8. نظام التنبيهات والنوافذ السيادية الموحدة (Smart Feedback System)
    ============================================================================ */
 
-/* 🚀 كبسولة الإشعارات العائمة الذكية (حل مشكلة الإشعار العملاق) */
+/* كبسولة الإشعارات العائمة الذكية المتوازنة بصرياً */
 .bose-toast {
     position: fixed;
     top: 90px;
@@ -426,9 +466,9 @@ input::placeholder, textarea::placeholder {
     width: max-content;
     max-width: 90%;
     background: var(--bg-white);
-    border: 2px solid var(--primary-pink);
+    border: 2px solid var(--brand-pink);
     padding: 12px 24px;
-    border-radius: 50px; /* شكل الكبسولة المريح للعين */
+    border-radius: 50px;
     z-index: 10001;
     box-shadow: 0 10px 30px rgba(255, 145, 164, 0.2);
     display: none; 
@@ -436,20 +476,22 @@ input::placeholder, textarea::placeholder {
     justify-content: center;
     gap: 12px;
     font-weight: 700;
-    color: var(--text-dark);
+    color: var(--brand-black);
     font-size: 1rem;
     line-height: 1.5;
     animation: slideDownToast 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.bose-toast i { flex-shrink: 0; } /* حماية الأيقونة من الانضغاط مع النصوص */
+.bose-toast i { 
+    flex-shrink: 0; 
+}
 
 @keyframes slideDownToast { 
     from { top: -50px; opacity: 0; } 
     to { top: 90px; opacity: 1; } 
 }
 
-/* النوافذ المنبثقة (Modals) */
+/* النوافذ السحابية المنبثقة (Modals) */
 .bose-modal-overlay {
     position: fixed;
     inset: 0;
@@ -463,11 +505,14 @@ input::placeholder, textarea::placeholder {
     transition: opacity 0.3s ease;
 }
 
-.bose-modal-overlay.active { display: flex; opacity: 1; }
+.bose-modal-overlay.active { 
+    display: flex; 
+    opacity: 1; 
+}
 
 .bose-modal-content {
     background: var(--bg-white);
-    border: 4px solid var(--primary-pink);
+    border: 4px solid var(--brand-pink);
     border-radius: 35px;
     padding: 40px;
     width: 90%;
@@ -479,18 +524,29 @@ input::placeholder, textarea::placeholder {
     position: relative;
 }
 
-.bose-modal-overlay.active .bose-modal-content { transform: scale(1); }
+.bose-modal-overlay.active .bose-modal-content { 
+    transform: scale(1); 
+}
 
 /* ============================================================================
-   9. الرسوم المتحركة (Global Animations)
+   9. محركات الحركات العامة وهياكل التحميل اللحظي
    ============================================================================ */
-.animate-fade { animation: fade 0.6s ease forwards; }
-@keyframes fade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade { 
+    animation: fade 0.6s ease forwards; 
+}
+@keyframes fade { 
+    from { opacity: 0; transform: translateY(15px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
 
-.spin-animation { animation: spin 1s linear infinite; }
-@keyframes spin { 100% { transform: rotate(-360deg); } }
+.spin-animation { 
+    animation: spin 1s linear infinite; 
+}
+@keyframes spin { 
+    100% { transform: rotate(-360deg); } 
+}
 
-/* هيكل التحميل */
+/* هيكل الهيكل العظمي الذكي للتحميل المنتظم بدون اهتزازات بصريّة */
 .skeleton-loader {
     background: linear-gradient(90deg, #fff5f6 25%, #ffffff 50%, #fff5f6 75%);
     background-size: 200% 100%;
@@ -499,13 +555,13 @@ input::placeholder, textarea::placeholder {
 @keyframes skeletonLoading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 /* ============================================================================
-   10. الفوتر الرسمي ومحسنات الموبايل
+   10. الفوتر الرسمي السيادي ومحسنات شاشات الأجهزة الذكية
    ============================================================================ */
 .footer-main {
     background: var(--bg-white);
     padding: 80px 0 40px;
     margin-top: 100px;
-    border-top: 4px solid var(--primary-pink);
+    border-top: 4px solid var(--brand-pink);
     text-align: center;
 }
 
@@ -513,16 +569,16 @@ input::placeholder, textarea::placeholder {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    border: 2px solid var(--primary-pink);
+    border: 2px solid var(--brand-pink);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--primary-pink);
+    color: var(--brand-pink);
     transition: var(--transition-smooth);
 }
 
 .social-icon:hover {
-    background: var(--primary-pink);
+    background: var(--brand-pink);
     color: var(--bg-white) !important;
     transform: translateY(-5px);
 }
@@ -535,16 +591,14 @@ input::placeholder, textarea::placeholder {
     .bose-toast {
         width: 90%;
         max-width: 100%;
-        border-radius: 20px; /* تقليل الاستدارة قليلاً في الموبايل لتناسب النصوص التي قد تُكسر سطورها */
+        border-radius: 20px;
         padding: 12px 16px;
     }
 }
 
-/* ========================================================= */
-/* التوسيعات البصرية المتطورة - محرك حلويات بوسي */
-/* ========================================================= */
-
-/* 1. هندسة ديناميكية الكروت في واجهة العميل (كارت أو كارتين) */
+/* ==========================================================================
+   11. الهندسة المرئية وهندسة كروت عرض المنتجات (معزز الثبات والعمودين بانتظام)
+   ========================================================================== */
 .products-grid {
     display: flex;
     flex-wrap: wrap;
@@ -552,25 +606,22 @@ input::placeholder, textarea::placeholder {
     justify-content: space-between;
 }
 
-/* إعادة توازن شبكة المنتجات العادية لمنع الانهيار وضمان استقرار الأعمدة (تحديث V39.1) */
+/* ربط حاوية العرض الموحد مع القاموس ومنع كسر أو انهيار المربعات الهيكلية للعميل */
 .main-product-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* عمودين بانتظام للمنتجات الدائمة */
+    grid-template-columns: repeat(2, 1fr); 
     gap: 15px;
 }
 
-/* حالة العرض الطبيعي (يملأ الشاشة) */
+/* تعيين حالات التحكم بالأبعاد لعرض المنتجات داخل الواجهة */
 .layout-full {
     width: 100%;
 }
 
-/* حالة العرض المزدوج (نصف الشاشة) */
 .layout-half {
-    /* حساب دقيق للمساحة لضمان التجاور المنتظم بدون كسر الهيكل */
     width: calc(50% - 7.5px); 
 }
 
-/* حماية تناسق الخطوط في حالة العرض المزدوج على شاشات الموبايل */
 @media (max-width: 480px) {
     .layout-half .product-name {
         font-size: 14px;
@@ -584,100 +635,79 @@ input::placeholder, textarea::placeholder {
     }
 }
 
-/* 2. الهندسة المرئية للصور الإدارية (القضاء على المط والضغط) */
-/* تطبق هذه القاعدة على أي صورة داخل لوحة التحكم لتعرض طبيعية 100% */
+/* الحفاظ الصارم على أبعاد الصور لمنع المط أو الانضغاط نهائياً */
 .admin-image-preview,
 .admin-panel img {
     width: 100%;
     height: 180px; 
-    object-fit: cover; /* القاعدة الذهبية لمنع التشوه البصري والحفاظ على الأبعاد */
+    object-fit: cover; 
     border-radius: 8px;
-    border: 1px solid #ff91a4; /* تثبيت اللون الرسمي للعلامة التجارية */
-    background-color: #ffffff;
+    border: 1px solid var(--brand-pink); 
+    background-color: var(--bg-white);
 }
 
-/* 3. تأسيس القواعد البصرية لنظام التبويبات (لإنهاء التمرير الطويل) */
-/* إخفاء كافة الأقسام افتراضياً */
+/* ==========================================================================
+   12. قواعد نظام التبويبات الموحد (لتأمين مساحات التنفس المعماري باللوحات)
+   ========================================================================== */
 .admin-tab-content {
     display: none; 
 }
 
-/* إظهار القسم النشط فقط عند اختياره */
 .admin-tab-content.active-tab {
     display: block; 
     animation: fadeIn 0.3s ease-in-out;
 }
 
-/* تنسيق حاوية أزرار التحكم العلوية */
 .admin-tabs-nav {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
-    border-bottom: 2px solid #ff91a4;
+    border-bottom: 2px solid var(--brand-pink);
     padding-bottom: 10px;
-    overflow-x: auto; /* السماح بالتمرير الأفقي للأزرار في الموبايل */
+    overflow-x: auto; 
 }
 
-/* تنسيق أزرار التبويبات */
 .admin-tab-btn {
-    background: #ffffff;
-    border: 1px solid #ff91a4;
-    color: #333;
+    background: var(--bg-white);
+    border: 1px solid var(--brand-pink);
+    color: var(--brand-black);
     padding: 10px 15px;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
     white-space: nowrap;
     transition: all 0.3s ease;
 }
 
-/* حالة الزر النشط (يعكس الهوية الرسمية) */
 .admin-tab-btn.active {
-    background: #ff91a4;
-    color: #ffffff;
+    background: var(--brand-pink);
+    color: var(--bg-white);
 }
 
-/* حركة تنقل ناعمة للتبويبات */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 /* ==========================================================================
-   هندسة وتأثيرات المحاكي البصري - حلويات بوسي
+   13. محرك وتأثيرات التخصيص والمحاكاة البصرية الفاخرة
    ========================================================================== */
-
-/* حركة الظهور الانسيابي لخطوات رحلة التخصيص */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(8px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* حماية الطبقات المتراكبة من اعتراض نقرات المستخدم */
 .simulator-layer {
     pointer-events: none;
 }
 
-/* تأثيرات التفاعل مع أزرار الخيارات الأساسية */
 .bose-btn-option {
     outline: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 .bose-btn-option:hover {
-    background-color: #ff91a4 !important;
-    color: #ffffff !important;
+    background-color: var(--brand-pink) !important;
+    color: var(--bg-white) !important;
     box-shadow: 0 4px 12px rgba(255, 145, 164, 0.25);
     transform: translateY(-1px);
 }
 
-/* تأثيرات التفاعل مع الدوائر اللونية */
 .color-circle {
     transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.2s ease;
 }
@@ -691,27 +721,24 @@ input::placeholder, textarea::placeholder {
     box-shadow: 0 4px 10px rgba(255, 145, 164, 0.35) !important;
 }
 
-/* تحسين حركة بنود اللمسات الفاخرة عند التمرير */
 .addon-item {
     transition: all 0.2s ease-in-out;
 }
 
 .addon-item:hover {
-    background-color: #fff9fa;
+    background-color: var(--brand-pink-light);
     padding-right: 8px;
     border-radius: 8px;
 }
 
-/* تأثيرات شريط التقدم الرقمي */
 .step-dot {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .step-dot.active {
-    box-shadow: 0 0 0 5px #ffffff, 0 4px 12px rgba(255, 145, 164, 0.45) !important;
+    box-shadow: 0 0 0 5px var(--bg-white), 0 4px 12px rgba(255, 145, 164, 0.45) !important;
 }
 
-/* ملاءمة أبعاد شاشات الموبايل لضمان ثبات التنسيق البصري */
 @media (max-width: 768px) {
     .bose-visual-simulator {
         min-height: 280px !important;
@@ -724,10 +751,8 @@ input::placeholder, textarea::placeholder {
 }
 
 /* ==========================================================================
-   11. محسنات هيكل تخصيص الورد ومنع بتر الأزرار (Mobile View Port Optimization)
-   ========================================================================= */
-
-/* ضبط مرونة حاوية التخصيص الكاملة ومنحها هامش أمان سفلي متكامل */
+   14. لوحة الإجراءات المباشرة وحماية منافذ الرؤية للموبايل (Viewport Guard)
+   ========================================================================== */
 #flower-customizer-container {
     display: flex;
     flex-direction: column;
@@ -735,7 +760,6 @@ input::placeholder, textarea::placeholder {
     padding-bottom: 100px; 
 }
 
-/* إعادة جدولة التموضع الجغرافي للوحة الاعتماد المالي والأزرار */
 .bose-action-sticky-panel {
     position: relative;
     margin-top: 40px;
@@ -743,28 +767,23 @@ input::placeholder, textarea::placeholder {
     clear: both;
 }
 
-/* ضبط السلوك الاستجابي للمحاكي وحاويات الخيارات على شاشات الموبايل */
 @media (max-width: 768px) {
-    /* فك تداخل العناصر الرأسية وإجبار المحرك على تبني تدفق مرن */
     .main-product-wrapper {
         display: flex;
         flex-direction: column;
         gap: 28px;
     }
 
-    /* كبح جماح الارتفاع الثابت للمحاكي لمنعه من دفع الأزرار إلى حافة الموت */
     .simulator-visual-area {
         height: 42vh !important;
         max-height: 360px;
         min-height: 260px;
     }
 
-    /* توفير هامش تعويضي مريح لكتلة الخيارات يمنع تداخلها مع اللوحة السفلية */
     .customizer-options-wrapper {
         padding-bottom: 50px !important;
     }
 
-    /* تكبير الهامش السفلي للوحة الأزرار المباشرة لضمان البقاء داخل حدود مساحة الرؤية */
     .bose-action-sticky-panel {
         margin-top: 24px;
         padding-bottom: 48px !important;
@@ -772,24 +791,20 @@ input::placeholder, textarea::placeholder {
 }
 
 /* ==========================================================================
-   12. محرك العرض المرئي المستقل (Slider Engine V39.2)
-   ========================================================================= */
-
-/* فصل الشريط المتحرك تماماً عن نظام الشبكة وتطبيق التكبير السيادي بنسبة 40% مع دعم flex و scroll-snap المطور */
+   15. محرك السلايدر المطور بالتكبير السيادي بنسبة 40% (Slider Engine V44.0)
+   ========================================================================== */
 .slider-item-exclusive,
 .bose-horizontal-slider > div {
     display: block;
     flex: 0 0 auto !important;
     scroll-snap-align: start;
-    width: 392px !important; /* حساب هندسي دقيق: 280px * 1.4 لتكبير الكروت بنسبة 40% */
+    width: 392px !important; /* معيار الحماية والحساب التكاملي للتكبير دون بتر الجوانب */
     max-width: 85vw;
 }
 
 /* ==========================================================================
-   13. واجهة التفاعل العائمة (Floating Action UI V39.2)
+   16. واجهة التفاعل العائمة والالتزام الدائم لزر الإضافة (Floating Action UI)
    ========================================================================== */
-
-/* التثبيت الدائم لزر الإضافة للسلة أسفل الشاشة لحماية أولوية التفاعل والمبيعات */
 .floating-cart-container {
     position: fixed !important;
     bottom: 0 !important;
@@ -797,7 +812,7 @@ input::placeholder, textarea::placeholder {
     width: 100% !important;
     background-color: var(--bg-white) !important;
     padding: 15px !important;
-    box-shadow: 0 -4px 15px rgba(255, 145, 164, 0.15) !important; /* ظل ناعم يعكس الرقي */
-    z-index: 9999 !important; /* لضمان بقائه فوق كل العناصر باستمرار */
-    border-top: 2px solid var(--primary-pink) !important; /* لون حلويات بوسي الرسمي للسيادة البصرية */
+    box-shadow: 0 -4px 15px rgba(255, 145, 164, 0.15) !important;
+    z-index: 9999 !important;
+    border-top: 2px solid var(--brand-pink) !important; 
 }
