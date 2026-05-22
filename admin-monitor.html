@@ -829,18 +829,34 @@
                             }
 
                             const currentSnapshot = await window.db.collection('catalog').get();
-                            const batchDelete = window.db.batch();
-                            currentSnapshot.forEach((doc) => {
-                                batchDelete.delete(doc.ref);
-                            });
-                            await batchDelete.commit();
+                            
+                            // تحسين هندسي: تجزئة مسح العناصر وتفادي ثغرات القيود لحقن الملفات بدون مشاكل
+                            const chunks = [];
+                            const currentDocs = currentSnapshot.docs;
+                            for (let i = 0; i < currentDocs.length; i += 400) {
+                                chunks.push(currentDocs.slice(i, i + 400));
+                            }
+                            
+                            for (const chunk of chunks) {
+                                const batchDelete = window.db.batch();
+                                chunk.forEach(doc => batchDelete.delete(doc.ref));
+                                await batchDelete.commit();
+                            }
 
-                            const batchInsert = window.db.batch();
-                            sanitizedProductsArray.forEach((product) => {
-                                const docRef = window.db.collection('catalog').doc(product.id);
-                                batchInsert.set(docRef, product);
-                            });
-                            await batchInsert.commit();
+                            // تحسين هندسي: تقسيم الـ 120 صنف إلى دفعات صغيرة متوافقة مع محرك الاستضافة المجانية والموبايل
+                            const productChunks = [];
+                            for (let i = 0; i < sanitizedProductsArray.length; i += 400) {
+                                productChunks.push(sanitizedProductsArray.slice(i, i + 400));
+                            }
+
+                            for (const productChunk of productChunks) {
+                                const batchInsert = window.db.batch();
+                                productChunk.forEach((product) => {
+                                    const docRef = window.db.collection('catalog').doc(product.id);
+                                    batchInsert.set(docRef, product);
+                                });
+                                await batchInsert.commit();
+                            }
 
                             if (rawCategoriesArray.length > 0) {
                                 await window.db.collection('system').doc('uiSettings').set({
@@ -858,7 +874,7 @@
 
                         } catch (err) {
                             console.error("Rollback Process Error:", err);
-                            alert(`فشلت عملية الاستعادة: ${err.message || "تنسيق ملف JSON غير صحيح"}`);
+                            alert(`فشلت عملية الاستعادة سحابياً: ${err.message || "تنسيق ملف JSON غير صحيح"} \n\n(يرجى مراجعة قواعد Firestore Rules في الكونسول لتخطي قيد الصلاحيات)`);
                         } finally {
                             if (textBtn && iconBtn) {
                                 textBtn.textContent = "بدء استعادة الأصناف والمنتجات فورياً";
@@ -875,15 +891,9 @@
         document.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
             
-            // محرك تشغيل مرن يدعم المزامنة الفورية في البيئات المحلية والسحابية للموبايل والكمبيوتر
             if (typeof window.auth !== 'undefined' && window.auth) {
                 window.auth.onAuthStateChanged((user) => {
-                    if (user) {
-                        startLiveStreamListeners();
-                    } else {
-                        // كوبري فحص مباشر (Fallback) لضمان التشغيل في حالة عدم استجابة جلسة التحقق
-                        startLiveStreamListeners();
-                    }
+                    startLiveStreamListeners();
                 });
             } else {
                 startLiveStreamListeners();
