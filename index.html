@@ -1575,8 +1575,7 @@
             `).join('');
         }
 
-        // RENDER DEDICATED PRODUCT DETAILS PAGE
-// RENDER DEDICATED PRODUCT DETAILS PAGE - ULTIMATE PRE-INTEGRATED VERSION
+// RENDER DEDICATED PRODUCT DETAILS PAGE - FIXED QUANTITY & PRICE ENGINE
 function renderProductPage(productId) {
     const item = menuData.find(i => i.id === productId);
     if (!item) return;
@@ -1594,7 +1593,6 @@ function renderProductPage(productId) {
             </div>
         `;
     } else if (item.id === 'despacito') {
-        // إدارة هندسة الديسباسيتو مع تقسيم الأحجام المعتمد وعزل الذاكرة بالكامل
         flavorsHtml = `
             <div class="space-y-6">
                 <div class="flex border-b border-brandPink/20">
@@ -1604,12 +1602,10 @@ function renderProductPage(productId) {
                         </button>
                     `).join('')}
                 </div>
-                <div id="despacitoFlavorsGrid" class="grid grid-cols-2 gap-4 md:gap-6">
-                    </div>
+                <div id="despacitoFlavorsGrid" class="grid grid-cols-2 gap-4 md:gap-6"></div>
             </div>
         `;
 
-        // دالة حقن نكهات الديسباسيتو المطورة بالتأثيرات التفاعلية الفاخرة
         window.selectDespacitoSize = function(sizeIndex) {
             const sizeData = item.sizes[sizeIndex];
             if (!sizeData) return;
@@ -1631,10 +1627,10 @@ function renderProductPage(productId) {
                 
                 despacitoGrid.innerHTML = sizeData.flavors.map((f, idx) => {
                     const uniqueKey = `${sizeIndex}-${idx}`;
-                    if (!window.despacitoQtys[uniqueKey]) window.despacitoQtys[uniqueKey] = 1;
+                    window.despacitoQtys[uniqueKey] = window.despacitoQtys[uniqueKey] || 1;
                     
                     return `
-                        <div class="bg-white rounded-3xl overflow-hidden border border-brandPink/15 flex flex-col justify-between hover:shadow-lg transition-all duration-300 transform active:scale-[0.99]">
+                        <div class="bg-white rounded-3xl overflow-hidden border border-brandPink/15 flex flex-col justify-between hover:shadow-lg transition-all duration-300">
                             <div>
                                 <div class="aspect-square overflow-hidden relative">
                                     <img src="${item.img}" alt="${f.name}" class="w-full h-full object-cover">
@@ -1645,12 +1641,17 @@ function renderProductPage(productId) {
                                 </div>
                             </div>
                             <div class="p-4 pt-0 space-y-3">
-                                <div class="flex items-center justify-between bg-brandPinkLight rounded-full p-1 border border-brandPink/15">
-                                    <button type="button" id="btn-dec-${uniqueKey}" onclick="adjustDespacitoQty('${uniqueKey}', ${f.price}, -1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm active:scale-90 transition-transform">-</button>
-                                    <span class="text-xs font-extrabold text-brandPink transition-all duration-150" id="despacitoPrice-${uniqueKey}">${f.price} ج.م</span>
-                                    <button type="button" id="btn-inc-${uniqueKey}" onclick="adjustDespacitoQty('${uniqueKey}', ${f.price}, 1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm active:scale-90 transition-transform">+</button>
+                                <div class="space-y-1.5">
+                                    <div class="flex items-center justify-between bg-brandPinkLight rounded-full p-1 border border-brandPink/15">
+                                        <button type="button" onclick="adjustDespacitoQty('${uniqueKey}', ${f.price}, -1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm active:scale-90 transition-transform">-</button>
+                                        <span class="text-xs font-extrabold text-brandBlack" id="despacitoQty-${uniqueKey}">${window.despacitoQtys[uniqueKey]}</span>
+                                        <button type="button" onclick="adjustDespacitoQty('${uniqueKey}', ${f.price}, 1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm active:scale-90 transition-transform">+</button>
+                                    </div>
+                                    <div class="text-center">
+                                        <span class="text-[11px] font-extrabold text-brandPink" id="despacitoPrice-${uniqueKey}">الإجمالي: ${f.price * window.despacitoQtys[uniqueKey]} ج.م</span>
+                                    </div>
                                 </div>
-                                <button type="button" onclick="addDespacitoToCart('${item.name} (حجم ${sizeData.label} - ${f.name})', ${f.price}, '${uniqueKey}')" class="w-full py-2 bg-brandPink hover:bg-brandPinkDark text-white rounded-full text-[11px] font-bold transition-all duration-300 shadow-sm">
+                                <button type="button" onclick="addDespacitoToCart('${item.name} (حجم ${sizeData.label} - ${f.name})', ${f.price}, '${uniqueKey}')" class="w-full py-2 bg-brandPink hover:bg-brandPinkDark text-white rounded-full text-[11px] font-bold transition-all duration-300">
                                     اضافة للسلة
                                 </button>
                             </div>
@@ -1660,24 +1661,27 @@ function renderProductPage(productId) {
             }
         };
 
-        // محرك تعديل كمية الديسباسيتو بالوميض البصري والحماية من القيم العشوائية
         window.adjustDespacitoQty = function(key, basePrice, dir) {
             let current = window.despacitoQtys[key] || 1;
             
             if (dir === 1 && current >= 50) {
-                showGlobalModal('الحد الأقصى للطلب', 'حد الأمان للمنتج هو 50 قطعة في الطلب الواحد. للتنسيقات الأكبر يرجى التواصل مع الإدارة.');
+                showGlobalModal('الحد الأقصى للطلب', 'حد الأمان للمنتج هو 50 قطعة في الطلب الواحد.');
                 return;
             }
             
             current = Math.max(1, current + dir);
             window.despacitoQtys[key] = current;
             
+            // تحديث نص الكمية في المنتصف
+            const qtyEl = document.getElementById(`despacitoQty-${key}`);
+            if (qtyEl) qtyEl.textContent = current;
+            
+            // تحديث السعر الإجمالي بالأسفل بناءً على السعر الثابت الأصلي
             const priceEl = document.getElementById(`despacitoPrice-${key}`);
             if (priceEl) {
-                priceEl.textContent = `${basePrice * current} ج.م`;
-                // تأثير الوميض الخاطف الفاخر لتأكيد الاستجابة الحية للعداد
-                priceEl.classList.add('scale-110', 'text-brandPinkDark');
-                setTimeout(() => priceEl.classList.remove('scale-110', 'text-brandPinkDark'), 150);
+                priceEl.textContent = `الإجمالي: ${basePrice * current} ج.م`;
+                priceEl.classList.add('scale-105');
+                setTimeout(() => priceEl.classList.remove('scale-105'), 100);
             }
         };
 
@@ -1699,7 +1703,6 @@ function renderProductPage(productId) {
 
         setTimeout(() => selectDespacitoSize(0), 50);
     } else {
-        // فحص نوع المنتج لتحديد التوزيع الهندسي للواجهة (كارتين متجاورين أو كارت عريض مالي الشاشة)
         const isFullWidth = ['gateaux', 'box-rowaqan', 'red-velvet', 'mini-tortes', 'cupcakes'].includes(item.id);
         const gridClasses = isFullWidth ? 'grid-cols-1 gap-6' : 'grid-cols-2 gap-4 md:gap-6';
 
@@ -1711,8 +1714,9 @@ function renderProductPage(productId) {
                 ${item.flavors.map((f, idx) => {
                     const cardImg = f.img || item.img; 
                     const cardDesc = f.desc || item.desc;
+                    const currentQty = window.productFlavorQtys[item.id][idx] || 1;
                     return `
-                        <div class="bg-white rounded-3xl overflow-hidden border border-brandPink/15 flex flex-col justify-between hover:shadow-lg transition-all duration-300 transform active:scale-[0.99]">
+                        <div class="bg-white rounded-3xl overflow-hidden border border-brandPink/15 flex flex-col justify-between hover:shadow-lg transition-all duration-300">
                             <div>
                                 <div class="${isFullWidth ? 'h-52 md:h-72' : 'aspect-square'} overflow-hidden relative">
                                     <img src="${cardImg}" alt="${f.name}" class="w-full h-full object-cover">
@@ -1723,12 +1727,17 @@ function renderProductPage(productId) {
                                 </div>
                             </div>
                             <div class="p-4 pt-0 space-y-3">
-                                <div class="flex items-center justify-between bg-brandPinkLight rounded-full p-1 border border-brandPink/15">
-                                    <button type="button" onclick="adjustProductFlavorQty('${item.id}', ${idx}, ${f.price}, -1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm active:scale-90 transition-transform">-</button>
-                                    <span class="text-xs font-extrabold text-brandPink transition-all duration-150" id="prodFlavorPrice-${item.id}-${idx}">${f.price} ج.م</span>
-                                    <button type="button" onclick="adjustProductFlavorQty('${item.id}', ${idx}, ${f.price}, 1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm active:scale-90 transition-transform">+</button>
+                                <div class="space-y-1.5">
+                                    <div class="flex items-center justify-between bg-brandPinkLight rounded-full p-1 border border-brandPink/15">
+                                        <button type="button" onclick="adjustProductFlavorQty('${item.id}', ${idx}, ${f.price}, -1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm active:scale-90 transition-transform">-</button>
+                                        <span class="text-xs font-extrabold text-brandBlack" id="prodFlavorQty-${item.id}-${idx}">${currentQty}</span>
+                                        <button type="button" onclick="adjustProductFlavorQty('${item.id}', ${idx}, ${f.price}, 1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm active:scale-90 transition-transform">+</button>
+                                    </div>
+                                    <div class="text-center">
+                                        <span class="text-[11px] font-extrabold text-brandPink" id="prodFlavorPrice-${item.id}-${idx}">الإجمالي: ${f.price * currentQty} ج.م</span>
+                                    </div>
                                 </div>
-                                <button type="button" onclick="addProductFlavorToCart('${item.id}', '${item.name} - ${f.name}', ${f.price}, ${idx})" class="w-full py-2 bg-brandPink hover:bg-brandPinkDark text-white rounded-full text-[11px] font-bold transition-all duration-300 shadow-sm">
+                                <button type="button" onclick="addProductFlavorToCart('${item.id}', '${item.name} - ${f.name}', ${f.price}, ${idx})" class="w-full py-2 bg-brandPink hover:bg-brandPinkDark text-white rounded-full text-[11px] font-bold transition-all duration-300">
                                     اضافة للسلة
                                 </button>
                             </div>
@@ -1738,23 +1747,27 @@ function renderProductPage(productId) {
             </div>
         `;
 
-        // محرك تعديل كمية النكهات العادية بالتأثير الوميضي وحماية الذاكرة الخلفية
         window.adjustProductFlavorQty = function(itemId, flavorIdx, basePrice, dir) {
             let current = window.productFlavorQtys[itemId][flavorIdx] || 1;
 
             if (dir === 1 && current >= 50) {
-                showGlobalModal('الحد الأقصى للطلب', 'حد الأمان للمنتج هو 50 قطعة في الطلب الواحد. للتنسيقات الأكبر يرجى التواصل مع الإدارة.');
+                showGlobalModal('الحد الأقصى للطلب', 'حد الأمان للمنتج هو 50 قطعة في الطلب الواحد.');
                 return;
             }
 
             current = Math.max(1, current + dir);
             window.productFlavorQtys[itemId][flavorIdx] = current;
 
+            // تحديث رقم الكمية في المنتصف
+            const qtyEl = document.getElementById(`prodFlavorQty-${itemId}-${flavorIdx}`);
+            if (qtyEl) qtyEl.textContent = current;
+
+            // حساب وتحديث السعر الإجمالي بالأسفل بالاعتماد على سعر القطعة الأصلي الثابت
             const priceEl = document.getElementById(`prodFlavorPrice-${itemId}-${flavorIdx}`);
             if (priceEl) {
-                priceEl.textContent = `${basePrice * current} ج.م`;
-                priceEl.classList.add('scale-110', 'text-brandPinkDark');
-                setTimeout(() => priceEl.classList.remove('scale-110', 'text-brandPinkDark'), 150);
+                priceEl.textContent = `الإجمالي: ${basePrice * current} ج.م`;
+                priceEl.classList.add('scale-105');
+                setTimeout(() => priceEl.classList.remove('scale-105'), 100);
             }
         };
 
