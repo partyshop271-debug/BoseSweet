@@ -371,413 +371,412 @@
                 </div>
             </section>
 
-            <!-- VIEW: CAKE BUILDER (محاكي التورت) -->
-            <section id="view-cake-builder" class="view-section hidden py-12 bg-white">
+<section id="view-cake-builder" class="view-section hidden py-16 bg-white">
                 <div class="max-w-3xl mx-auto px-4">
-                    <!-- Builder Header -->
-                    <div class="text-center mb-8">
-                        <h1 class="text-2xl md:text-3xl font-extrabold text-brandBlack">الكتالوج التشغيلي لـ "محاكي التورت"</h1>
-                        <p class="text-sm text-brandBlack/60 mt-1">صمّم تحفتك الفنية بثلاث شاشات مريحة وتفاعلية تماماً</p>
+                    
+                    <div class="text-center mb-12 space-y-3">
+                        <span class="inline-block px-4 py-1 bg-brandPinkLight text-brandPink rounded-full text-[11px] font-extrabold tracking-wider border border-brandPink/15 shadow-sm">تجربة التصميم الفاخر</span>
+                        <h1 class="text-3xl font-extrabold text-brandBlack tracking-tight">محاكي تصميم التورت الذكي</h1>
+                        <p class="text-xs text-brandBlack/50 max-w-md mx-auto leading-relaxed font-semibold">صمّم تحفتك الفنية الخاصة ومناسبتك السعيدة عبر ثلاث شاشات تفاعلية ومصقولة بالكامل لتليق باختياراتك.</p>
                     </div>
 
-                    <!-- Step Indicators -->
-                    <div class="flex items-center justify-between mb-8 max-w-md mx-auto">
-                        <div class="flex flex-col items-center gap-1">
-                            <span id="cake-step-1-indicator" class="w-8 h-8 rounded-full bg-brandPink text-white flex items-center justify-center font-bold text-sm">1</span>
-                            <span class="text-xs font-semibold text-brandBlack">المقاس والشكل</span>
+                    <div class="relative flex items-center justify-between mb-12 max-w-lg mx-auto px-4">
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="cake-step-1-indicator" class="w-10 h-10 rounded-full bg-brandPink text-white flex items-center justify-center font-extrabold text-sm shadow-md shadow-brandPink/20 transition-all duration-300">
+                                <i class="fa-solid fa-sliders text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack">المقاس والشكل</span>
                         </div>
-                        <div class="flex-grow h-0.5 bg-brandPink/30 mx-2" id="cake-line-1"></div>
-                        <div class="flex flex-col items-center gap-1">
-                            <span id="cake-step-2-indicator" class="w-8 h-8 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/30 flex items-center justify-center font-bold text-sm">2</span>
-                            <span class="text-xs font-semibold text-brandBlack/40">التصميم والطباعة</span>
+                        <div class="flex-grow h-[3px] bg-brandPinkLight mx-2 rounded-full relative overflow-hidden">
+                            <div class="absolute inset-0 bg-brandPink transition-all duration-500" id="cake-line-1" style="width: 0%;"></div>
                         </div>
-                        <div class="flex-grow h-0.5 bg-brandPink/30 mx-2" id="cake-line-2"></div>
-                        <div class="flex flex-col items-center gap-1">
-                            <span id="cake-step-3-indicator" class="w-8 h-8 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/30 flex items-center justify-center font-bold text-sm">3</span>
-                            <span class="text-xs font-semibold text-brandBlack/40">التفاصيل والتأكيد</span>
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="cake-step-2-indicator" class="w-10 h-10 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/15 flex items-center justify-center font-extrabold text-sm transition-all duration-300">
+                                <i class="fa-solid fa-palette text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack/40" id="cake-text-step-2">التصميم والطباعة</span>
+                        </div>
+                        <div class="flex-grow h-[3px] bg-brandPinkLight mx-2 rounded-full relative overflow-hidden">
+                            <div class="absolute inset-0 bg-brandPink transition-all duration-500" id="cake-line-2" style="width: 0%;"></div>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="cake-step-3-indicator" class="w-10 h-10 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/15 flex items-center justify-center font-extrabold text-sm transition-all duration-300">
+                                <i class="fa-solid fa-circle-check text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack/40" id="cake-text-step-3">التفاصيل والتأكيد</span>
                         </div>
                     </div>
 
-                    <!-- CAKE BUILDER: SCREEN 1 -->
-                    <div id="cake-screen-1" class="space-y-6">
-                        <!-- Cake Base Selection -->
+                    <div id="cake-screen-1" class="space-y-8 transition-all duration-300">
                         <div class="space-y-3">
-                            <label class="block text-sm font-bold text-brandBlack">نوع كيك الأساس:</label>
-                            <div class="flex flex-wrap gap-3">
-                                <button onclick="selectCakeBase('فانيليا')" id="cake-base-فانيليا" class="px-5 py-2.5 rounded-full border border-brandPink bg-brandPink/5 text-brandPink text-sm font-semibold transition-all-300">فانيليا</button>
-                                <button onclick="selectCakeBase('شوكولاتة')" id="cake-base-شوكولاتة" class="px-5 py-2.5 rounded-full border border-gray-200 text-sm font-semibold transition-all-300">شوكولاتة</button>
-                                <button onclick="selectCakeBase('نصف ونصف')" id="cake-base-نصف ونصف" class="px-5 py-2.5 rounded-full border border-gray-200 text-sm font-semibold transition-all-300">نصف ونصف</button>
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">اختر نوع كيك الأساس الفاخر:</label>
+                            <div class="grid grid-cols-3 gap-3.5">
+                                <button type="button" onclick="selectCakeBase('فانيليا')" id="cake-base-فانيليا" class="p-4 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold shadow-sm transition-all duration-300 text-center">
+                                    <i class="fa-solid fa-ice-cream block text-base mb-1.5 opacity-80"></i> فانيليا غنية
+                                </button>
+                                <button type="button" onclick="selectCakeBase('شوكولاتة')" id="cake-base-شوكولاتة" class="p-4 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-solid fa-cookie-bite block text-base mb-1.5 opacity-60"></i> شوكولاتة فاخرة
+                                </button>
+                                <button type="button" onclick="selectCakeBase('نصف ونصف')" id="cake-base-نصف ونصف" class="p-4 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-solid fa-pie-chart block text-base mb-1.5 opacity-60"></i> نصف ونصف
+                                </button>
                             </div>
-                            <!-- Inline notification -->
-                            <div id="cake-base-notification" class="hidden">
-                                <p class="text-brandBlack font-extrabold text-xs flex items-center gap-1"><i class="fa-solid fa-circle-check text-brandPink"></i> تم اعتماد قاعدة الكيك المختار بنجاح</p>
+                            <div id="cake-base-notification" class="hidden pt-1">
+                                <p class="text-brandPink font-extrabold text-[10px] flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> تم اعتماد قاعدة الكيك المختار بنجاح لمطبخنا.</p>
                             </div>
                         </div>
 
-                        <!-- Shape Selection -->
                         <div class="space-y-3">
-                            <label class="block text-sm font-bold text-brandBlack">شكل التورتة المعتمد:</label>
-                            <div class="flex flex-wrap gap-3">
-                                <button onclick="selectCakeShape('دائرة')" id="cake-shape-دائرة" class="px-5 py-2.5 rounded-full border-2 border-brandPink bg-brandPink/5 text-brandPink text-sm font-semibold transition-all-300">دائرة</button>
-                                <button onclick="selectCakeShape('قلب')" id="cake-shape-قلب" class="px-5 py-2.5 rounded-full border border-brandPink/20 text-sm font-semibold transition-all-300 text-brandBlack">قلب</button>
-                                <button onclick="selectCakeShape('مربع')" id="cake-shape-مربع" class="px-5 py-2.5 rounded-full border border-brandPink/20 text-sm font-semibold transition-all-300 text-brandBlack">مربع</button>
-                                <button onclick="selectCakeShape('مستطيل')" id="cake-shape-مستطيل" class="px-5 py-2.5 rounded-full border border-brandPink/20 text-sm font-semibold transition-all-300 text-brandBlack">مستطيل</button>
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">الشكل الهندسي المعتمد للتورتة:</label>
+                            <div class="grid grid-cols-4 gap-3">
+                                <button type="button" onclick="selectCakeShape('دائرة')" id="cake-shape-دائرة" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-regular fa-circle block text-sm mb-1 opacity-80"></i> دائرة
+                                </button>
+                                <button type="button" onclick="selectCakeShape('قلب')" id="cake-shape-قلب" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-regular fa-heart block text-sm mb-1 opacity-60"></i> قلب ناعم
+                                </button>
+                                <button type="button" onclick="selectCakeShape('مربع')" id="cake-shape-مربع" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-regular fa-square block text-sm mb-1 opacity-60"></i> مربع متماسك
+                                </button>
+                                <button type="button" onclick="selectCakeShape('مستطيل')" id="cake-shape-مستطيل" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-solid fa-rectangle-landscape block text-sm mb-1 opacity-60"></i> مستطيل عائلي
+                                </button>
                             </div>
-                            <!-- Helper / warning text for dimensions -->
-                            <div id="cake-shape-hint" class="text-xs text-brandPink font-bold hidden"></div>
+                            <div id="cake-shape-hint" class="text-[10px] text-brandPink font-extrabold hidden bg-brandPinkLight/50 p-2 rounded-xl border border-brandPink/10"></div>
                         </div>
 
-                        <!-- People Counter & Info Icon -->
-                        <div class="space-y-3 p-5 rounded-2xl bg-brandPinkLight border border-brandPink/20">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-bold text-brandBlack flex items-center gap-2">
-                                    حساب عدد الأفراد المقدر:
-                                    <button onclick="showCakePriceInfo()" class="text-brandPink hover:text-brandPinkDark text-sm" aria-label="معلومات التسعير">
-                                        <i class="fa-solid fa-circle-info"></i>
-                                    </button>
-                                </span>
-                                <!-- Live display price -->
-                                <span class="text-brandPink font-extrabold text-lg" id="cakeLivePriceDisplay">580 ج.م</span>
+                        <div class="p-6 rounded-[28px] bg-white border border-brandPink/15 shadow-[0_4px_25px_rgba(255,145,164,0.05)] space-y-5">
+                            <div class="flex items-center justify-between border-b border-brandPink/10 pb-4">
+                                <div class="space-y-0.5">
+                                    <span class="text-xs font-extrabold text-brandBlack flex items-center gap-1.5">
+                                        تحديد عدد الأفراد المقدر:
+                                        <button type="button" onclick="showCakePriceInfo()" class="text-brandPink hover:text-brandPinkDark text-xs transition-colors" aria-label="معلومات التسعير">
+                                            <i class="fa-solid fa-circle-info"></i>
+                                        </button>
+                                    </span>
+                                    <p class="text-[10px] text-brandBlack/40 font-bold">الحساب قنواته مستقلة وعادلة تماماً</p>
+                                </div>
+                                <div class="bg-brandPinkLight px-4 py-2 rounded-2xl border border-brandPink/10 text-center min-w-[110px]">
+                                    <span class="text-[10px] block font-bold text-brandBlack/50">الميزانية الحالية</span>
+                                    <span class="text-brandPink font-extrabold text-base md:text-lg tracking-tight" id="cakeLivePriceDisplay">580 ج.م</span>
+                                </div>
                             </div>
-                            <!-- Counter inputs -->
-                            <div class="flex items-center gap-4">
-                                <button onclick="adjustCakePeople(-2)" class="w-12 h-12 rounded-full border border-brandPink/30 bg-white hover:bg-brandPink/10 text-brandBlack font-extrabold transition-colors flex items-center justify-center text-lg">-</button>
-                                <span id="cakePeopleCount" class="text-xl font-extrabold text-brandBlack w-16 text-center">4</span>
-                                <button onclick="adjustCakePeople(2)" class="w-12 h-12 rounded-full border border-brandPink/30 bg-white hover:bg-brandPink/10 text-brandBlack font-extrabold transition-colors flex items-center justify-center text-lg">+</button>
-                                <span class="text-xs text-brandBlack/50 font-bold">فرد كحد أقصى 250</span>
+                            
+                            <div class="flex items-center gap-5 justify-center py-2">
+                                <button type="button" onclick="adjustCakePeople(-2)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">-</button>
+                                <div class="text-center min-w-[80px]">
+                                    <span id="cakePeopleCount" class="text-2xl font-black text-brandBlack tracking-tight block">4</span>
+                                    <span class="text-[9px] text-brandBlack/40 font-extrabold uppercase tracking-wider">فرد مستهدف</span>
+                                </div>
+                                <button type="button" onclick="adjustCakePeople(2)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">+</button>
                             </div>
-                            <!-- Live interactive warning block -->
-                            <div id="cakeCounterWarning" class="hidden text-xs text-brandPink font-bold mt-2"></div>
+                            <div id="cakeCounterWarning" class="hidden text-center text-[10px] text-brandPink font-extrabold bg-brandPinkLight/40 p-2 rounded-xl border border-brandPink/10"></div>
                         </div>
 
-                        <!-- Next Navigation Button -->
-                        <div class="pt-4">
-                            <button onclick="navigateCakeStep(2)" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all duration-300 shadow-md">
-                                خطوتنا الجاية: شكل التورتة والطباعة
+                        <div class="pt-2">
+                            <button type="button" onclick="navigateCakeStep(2)" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-[0_4px_15px_rgba(255,145,164,0.2)] transform hover:-translate-y-0.5">
+                                الخطوة التالية: التصميم الخارجي والطباعة <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
                             </button>
                         </div>
                     </div>
 
-                    <!-- CAKE BUILDER: SCREEN 2 -->
-                    <div id="cake-screen-2" class="space-y-6 hidden">
-                        <!-- Path 1: Design Image upload -->
-                        <div class="space-y-3 border-b border-brandPink/10 pb-5">
-                            <label class="block text-sm font-bold text-brandBlack">المسار الأول (صورة التصميم الخارجي المطلوبة):</label>
-                            <div class="relative border-2 border-dashed border-brandPink/30 hover:border-brandPink rounded-2xl p-6 transition-all-300 bg-brandPinkLight text-center cursor-pointer">
-                                <input type="file" id="cakeDesignFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleCakeFileUpload('design')">
-                                <div class="space-y-2">
-                                    <i class="fa-regular fa-image text-3xl text-brandPink"></i>
-                                    <p class="text-xs text-brandBlack font-bold" id="cakeDesignLabel">ارفع هنا صورة التورتة اللي حابب نعمل لك زيها</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Path 2: Direct printing options -->
-                        <div class="space-y-4 border-b border-brandPink/10 pb-5">
-                            <label class="block text-sm font-bold text-brandBlack">المسار الثاني (صور الطباعة المباشرة):</label>
-                            <div class="flex flex-wrap gap-3">
-                                <button onclick="selectCakePrintOption('none')" id="cake-print-none" class="px-5 py-2.5 rounded-full border border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all">بدون طباعة</button>
-                                <button onclick="selectCakePrintOption('edible')" id="cake-print-edible" class="px-5 py-2.5 rounded-full border border-brandPink/20 text-xs font-bold transition-all text-brandBlack">صورة قابلة للأكل (+60 ج.م)</button>
-                                <button onclick="selectCakePrintOption('non-edible')" id="cake-print-non-edible" class="px-5 py-2.5 rounded-full border border-brandPink/20 text-xs font-bold transition-all text-brandBlack">صورة غير قابلة للأكل (+20 ج.م)</button>
-                            </div>
-
-                            <!-- Image file input for print -->
-                            <div id="cakePrintUploadArea" class="hidden relative border-2 border-dashed border-brandPink/30 hover:border-brandPink rounded-2xl p-6 transition-all-300 bg-brandPinkLight text-center cursor-pointer">
-                                <input type="file" id="cakePrintFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleCakeFileUpload('print')">
-                                <div class="space-y-2">
-                                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-brandPink"></i>
-                                    <p class="text-xs text-brandBlack font-bold" id="cakePrintLabel">ارفع هنا الصورة اللي حابب نطبعها لك على التورتة بدقة عالية</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Inspiration Showcase Gallery -->
+                    <div id="cake-screen-2" class="space-y-8 hidden transition-all duration-300">
                         <div class="space-y-3">
-                            <label class="block text-sm font-bold text-brandBlack">نماذج فخمة من أعمالنا الملهمة لمطبخنا:</label>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="aspect-square rounded-2xl overflow-hidden border border-brandPink/20">
-                                    <img src="https://picsum.photos/600/600?random=cake1" alt="تورتة مطبوعة راقية" class="w-full h-full object-cover">
-                                </div>
-                                <div class="aspect-square rounded-2xl overflow-hidden border border-brandPink/20">
-                                    <img src="https://picsum.photos/600/600?random=cake2" alt="تورتة مجسمة 3D" class="w-full h-full object-cover">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">المسار الأول (رفع صورة التصميم المطلوبة):</label>
+                            <div class="relative border-2 border-dashed border-brandPink/20 hover:border-brandPink rounded-2xl p-8 transition-all duration-300 bg-brandPinkLight/30 text-center cursor-pointer group shadow-[inset_0_2px_8px_rgba(255,145,164,0.01)]">
+                                <input type="file" id="cakeDesignFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleCakeFileUpload('design')">
+                                <div class="space-y-2 relative z-10">
+                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm border border-brandPink/10">
+                                        <i class="fa-regular fa-image text-xl text-brandPink"></i>
+                                    </div>
+                                    <p class="text-xs text-brandBlack font-extrabold tracking-wide" id="cakeDesignLabel">ارفع هنا صورة التورتة اللي حابب ننفذ لك زيها بالظبط</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Step navigation -->
-                        <div class="grid grid-cols-2 gap-4 pt-4">
-                            <button onclick="navigateCakeStep(1)" class="py-4 border border-brandPink/20 hover:bg-brandPinkLight text-brandBlack font-bold rounded-full transition-all">
-                                العودة للمقاس
+                        <div class="space-y-4">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">المسار الثاني (خيارات طباعة الصور المباشرة):</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <button type="button" onclick="selectCakePrintOption('none')" id="cake-print-none" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">بدون طباعة</button>
+                                <button type="button" onclick="selectCakePrintOption('edible')" id="cake-print-edible" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/30">قابلة للأكل (+60 ج.م)</button>
+                                <button type="button" onclick="selectCakePrintOption('non-edible')" id="cake-print-non-edible" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/30">غير قابلة للأكل (+20 ج.م)</button>
+                            </div>
+
+                            <div id="cakePrintUploadArea" class="hidden relative border-2 border-dashed border-brandPink/20 hover:border-brandPink rounded-2xl p-8 transition-all duration-300 bg-brandPinkLight/30 text-center cursor-pointer group">
+                                <input type="file" id="cakePrintFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleCakeFileUpload('print')">
+                                <div class="space-y-2 relative z-10">
+                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm border border-brandPink/10">
+                                        <i class="fa-solid fa-cloud-arrow-up text-xl text-brandPink"></i>
+                                    </div>
+                                    <p class="text-xs text-brandBlack font-extrabold tracking-wide" id="cakePrintLabel">ارفع الصورة المراد طباعتها على سطح التورتة بدقة كاملة</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <button type="button" onclick="navigateCakeStep(1)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                                <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للمقاس
                             </button>
-                            <button onclick="navigateCakeStep(3)" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all shadow-md">
-                                خطوتنا الأخيرة: تفاصيل المناسبة والملاحظات
+                            <button type="button" onclick="navigateCakeStep(3)" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                                المرحلة الأخيرة: تفاصيل التأكيد <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
                             </button>
                         </div>
                     </div>
 
-                    <!-- CAKE BUILDER: SCREEN 3 -->
-                    <div id="cake-screen-3" class="space-y-6 hidden">
-                        <!-- Theme/Event Details -->
+                    <div id="cake-screen-3" class="space-y-6 hidden transition-all duration-300">
                         <div class="space-y-2">
-                            <label class="block text-sm font-bold text-brandBlack">تفاصيل المناسبة والثيم المفضل:</label>
-                            <textarea id="cakeThemeDetails" rows="3" placeholder="اكتب لنا هنا نوع المناسبة وتفاصيل الثيم اللي تحبه، زي مثلاً: (عيد ميلاد طفلة صغيرة بتحب الكرتون)" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack transition-all"></textarea>
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">تفاصيل ثيم وموضوع المناسبة الخاصة بك:</label>
+                            <textarea id="cakeThemeDetails" rows="3" placeholder="اكتب لنا هنا نوع المناسبة وتفاصيل الثيم المفضل لديك" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack transition-all leading-relaxed"></textarea>
                         </div>
 
-                        <!-- Health & Allergies Zone -->
-                        <div class="p-5 rounded-2xl bg-brandPinkLight border-2 border-brandPink space-y-2">
-                            <label class="block text-sm font-bold text-brandPink flex items-center gap-1">
-                                <i class="fa-solid fa-triangle-exclamation"></i> الأمان الصحي المحمي للأسرة:
+                        <div class="p-5 rounded-2xl bg-brandPinkLight/40 border-2 border-brandPink space-y-2 shadow-sm">
+                            <label class="block text-xs font-extrabold text-brandPink flex items-center gap-1.5 uppercase tracking-wide">
+                                <i class="fa-solid fa-shield-halved text-sm"></i> الأمان الصحي المحمي لكافة أفراد الأسرة:
                             </label>
-                            <textarea id="cakeAllergies" rows="2" placeholder="اكتب هنا لو عندك أي حساسية من مكونات معينة عشان نبعد عنها تماماً" class="w-full p-3 border border-brandPink/20 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 bg-white text-brandBlack transition-all"></textarea>
+                            <textarea id="cakeAllergies" rows="2" placeholder="اكتب هنا لو وجد أي حساسية من مكونات معينة لعزلها تماماً" class="w-full p-3.5 border border-brandPink/15 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 bg-white text-brandBlack transition-all leading-relaxed"></textarea>
                         </div>
 
-                        <!-- Text writing on cake -->
                         <div class="space-y-2">
-                            <label class="block text-sm font-bold text-brandBlack">الكتابة بخط اليد فوق الكيك:</label>
-                            <input type="text" id="cakeText" placeholder="اكتب هنا الجملة أو الاسم اللي حابب نخطّه لك فوق سطح التورتة" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack transition-all">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">الكتابة الفنية بخط اليد فوق سطح الكيك:</label>
+                            <input type="text" id="cakeText" placeholder="اكتب الجملة أو الاسم المطلوب خطّه بالكريمة" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack transition-all">
                         </div>
 
-                        <!-- Greeting card options -->
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-2">
-                                <input type="checkbox" id="cakeCardCheck" onchange="toggleCakeCardInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink">
-                                <label for="cakeCardCheck" class="text-sm font-bold text-brandBlack cursor-pointer">هل ترغب في إرفاق كارت إهداء خارجي فاخر؟</label>
+                        <div class="space-y-3 p-4 bg-white border border-brandPink/10 rounded-2xl shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="cakeCardCheck" onchange="toggleCakeCardInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
+                                <label for="cakeCardCheck" class="text-xs font-extrabold text-brandBlack cursor-pointer select-none">هل ترغب في إرفاق كارت إهداء خارجي فاخر ومطبوع؟</label>
                             </div>
-                            <div id="cakeCardInputArea" class="hidden">
-                                <input type="text" id="cakeCardText" placeholder="اكتب هنا الرسالة اللي حابب نكتبها لك جوه كارت الإهداء الخارجي" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack transition-all">
+                            <div id="cakeCardInputArea" class="hidden pt-2 transition-all duration-300">
+                                <input type="text" id="cakeCardText" placeholder="اكتب الرسالة أو الكلمات المطلوبة داخل كارت الإهداء الخارجي" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack transition-all">
                             </div>
                         </div>
 
-                        <!-- Complete Builder Actions -->
-                        <div class="grid grid-cols-2 gap-4 pt-4">
-                            <button onclick="navigateCakeStep(2)" class="py-4 border border-brandPink/20 hover:bg-brandPinkLight text-brandBlack font-bold rounded-full transition-all">
-                                العودة للتصميم
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <button type="button" onclick="navigateCakeStep(2)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                                <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للتصميم
                             </button>
-                            <button onclick="addCakeToCart()" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all shadow-lg shadow-brandPink/15">
-                                اضافة للسلة
+                            <button type="button" onclick="addCakeToCart()" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                                اعتماد التصميم وإضافته للسلة <i class="fa-solid fa-bag-shopping text-[11px] mr-1"></i>
                             </button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- VIEW: FLOWER BUILDER (محاكي الورد) -->
-            <section id="view-rose-builder" class="view-section hidden py-12 bg-white">
+            <section id="view-rose-builder" class="view-section hidden py-16 bg-white">
                 <div class="max-w-3xl mx-auto px-4">
-                    <!-- Builder Header -->
-                    <div class="text-center mb-8">
-                        <h1 class="text-2xl md:text-3xl font-extrabold text-brandBlack">الكتالوج التشغيلي لـ "محاكي الورد"</h1>
-                        <p class="text-sm text-brandBlack/60 mt-1">نسّق باقة زهورك المثالية بـ 3 شاشات تفاعلية استثنائية</p>
+                    
+                    <div class="text-center mb-12 space-y-3">
+                        <span class="inline-block px-4 py-1 bg-brandPinkLight text-brandPink rounded-full text-[11px] font-extrabold tracking-wider border border-brandPink/15 shadow-sm">تكامل الهدية والجمال</span>
+                        <h1 class="text-3xl font-extrabold text-brandBlack tracking-tight">محاكي تنسيق الورد الفاخر</h1>
+                        <p class="text-xs text-brandBlack/50 max-w-md mx-auto leading-relaxed font-semibold">صمّم باقة زهورك المثالية، وادمج الهدايا النقدية أو الشوكولاتة العالمية من خلال ثلاث شاشات تفاعلية ومصقولة.</p>
                     </div>
 
-                    <!-- Step Indicators -->
-                    <div class="flex items-center justify-between mb-8 max-w-md mx-auto">
-                        <div class="flex flex-col items-center gap-1">
-                            <span id="rose-step-1-indicator" class="w-8 h-8 rounded-full bg-brandPink text-white flex items-center justify-center font-bold text-sm">1</span>
-                            <span class="text-xs font-semibold text-brandBlack">الحجم والنوع</span>
+                    <div class="relative flex items-center justify-between mb-12 max-w-lg mx-auto px-4">
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="rose-step-1-indicator" class="w-10 h-10 rounded-full bg-brandPink text-white flex items-center justify-center font-extrabold text-sm shadow-md shadow-brandPink/20 transition-all duration-300">
+                                <i class="fa-solid fa-seedling text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack">الحجم والنوع</span>
                         </div>
-                        <div class="flex-grow h-0.5 bg-brandPink/30 mx-2" id="rose-line-1"></div>
-                        <div class="flex flex-col items-center gap-1">
-                            <span id="rose-step-2-indicator" class="w-8 h-8 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/30 flex items-center justify-center font-bold text-sm">2</span>
-                            <span class="text-xs font-semibold text-brandBlack/40">التخصيص والزينة</span>
+                        <div class="flex-grow h-[3px] bg-brandPinkLight mx-2 rounded-full relative overflow-hidden">
+                            <div class="absolute inset-0 bg-brandPink transition-all duration-500" id="rose-line-1" style="width: 0%;"></div>
                         </div>
-                        <div class="flex-grow h-0.5 bg-brandPink/30 mx-2" id="rose-line-2"></div>
-                        <div class="flex flex-col items-center gap-1">
-                            <span id="rose-step-3-indicator" class="w-8 h-8 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/30 flex items-center justify-center font-bold text-sm">3</span>
-                            <span class="text-xs font-semibold text-brandBlack/40">التفاصيل والإنهاء</span>
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="rose-step-2-indicator" class="w-10 h-10 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/15 flex items-center justify-center font-extrabold text-sm transition-all duration-300">
+                                <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack/40" id="rose-text-step-2">التخصيص والزينة</span>
+                        </div>
+                        <div class="flex-grow h-[3px] bg-brandPinkLight mx-2 rounded-full relative overflow-hidden">
+                            <div class="absolute inset-0 bg-brandPink transition-all duration-500" id="rose-line-2" style="width: 0%;"></div>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="rose-step-3-indicator" class="w-10 h-10 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/15 flex items-center justify-center font-extrabold text-sm transition-all duration-300">
+                                <i class="fa-solid fa-gift text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack/40" id="rose-text-step-3">الشوكولاتة والإنهاء</span>
                         </div>
                     </div>
 
-                    <!-- FLOWER BUILDER: SCREEN 1 -->
-                    <div id="rose-screen-1" class="space-y-6">
-                        <!-- File Upload and Quick Buy Link -->
-                        <div class="space-y-4 p-5 rounded-2xl bg-brandPinkLight border border-brandPink/20">
-                            <label class="block text-sm font-bold text-brandBlack">ارفع صورة بوكيه مرجعي (اختياري للحرية الكاملة):</label>
-                            <div class="relative border-2 border-dashed border-brandPink/30 hover:border-brandPink rounded-2xl p-6 transition-all-300 bg-white text-center cursor-pointer">
-                                <input type="file" id="roseReferenceFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" onchange="handleRoseReferenceUpload()">
-                                <div class="space-y-2">
-                                    <i class="fa-solid fa-image text-3xl text-brandPink"></i>
-                                    <p class="text-xs text-brandBlack font-bold" id="roseReferenceLabel">ارفع هنا صورة بوكيه الورد اللي حابب نعمل لك زيه</p>
+                    <div id="rose-screen-1" class="space-y-8 transition-all duration-300">
+                        <div class="space-y-3 p-5 rounded-2xl bg-brandPinkLight/30 border border-brandPink/15">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">ارفع صورة بوكيه مرجعي (اختياري للحرية الكاملة):</label>
+                            <div class="relative border-2 border-dashed border-brandPink/20 hover:border-brandPink rounded-xl p-6 transition-all bg-white text-center cursor-pointer group">
+                                <input type="file" id="roseReferenceFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleRoseReferenceUpload()">
+                                <div class="space-y-2 relative z-10">
+                                    <i class="fa-solid fa-image text-2xl text-brandPink"></i>
+                                    <p class="text-xs text-brandBlack font-extrabold" id="roseReferenceLabel">ارفع هنا صورة بوكيه الورد اللي حابب نعمل لك زيه</p>
                                 </div>
                             </div>
-                            <div class="flex justify-center" id="roseQuickBuyArea">
-                                <button onclick="quickBuyRoseBouquet()" class="text-xs text-brandPink font-bold hover:underline">
-                                    <i class="fa-solid fa-bolt"></i> حابب تكتفي بالصورة وتنهي الطلب فوراً؟
+                            <div class="flex justify-center pt-2" id="roseQuickBuyArea">
+                                <button type="button" onclick="quickBuyRoseBouquet()" class="text-xs text-brandPink font-extrabold hover:underline">
+                                    <i class="fa-solid fa-bolt animate-pulse"></i> حابب تكتفي بالصورة وتنهي الطلب فوراً؟
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Roses Counter -->
-                        <div class="space-y-3 p-5 rounded-2xl bg-brandPinkLight border border-brandPink/20">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-bold text-brandBlack">عدد الورد في البوكيه:</span>
-                                <span class="text-brandPink font-extrabold text-lg" id="roseLivePriceDisplay">400 ج.م</span>
+                        <div class="p-6 rounded-[28px] bg-white border border-brandPink/15 shadow-[0_4px_25px_rgba(255,145,164,0.05)] space-y-5">
+                            <div class="flex items-center justify-between border-b border-brandPink/10 pb-4">
+                                <div class="space-y-0.5">
+                                    <span class="text-xs font-extrabold text-brandBlack">عدد الورد في البوكيه الفاخر:</span>
+                                    <p class="text-[10px] text-brandBlack/40 font-bold">الحد الأدنى للتنسيق 15 وردة طبيعية</p>
+                                </div>
+                                <div class="bg-brandPinkLight px-4 py-2 rounded-2xl border border-brandPink/10 text-center min-w-[110px]">
+                                    <span class="text-[10px] block font-bold text-brandBlack/50">تكلفة الباقة المبدئية</span>
+                                    <span class="text-brandPink font-extrabold text-base md:text-lg tracking-tight" id="roseLivePriceDisplay">400 ج.م</span>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-4">
-                                <button onclick="adjustRoseCount(-1)" class="w-12 h-12 rounded-full border border-brandPink/30 bg-white hover:bg-brandPink/10 text-brandBlack font-extrabold transition-colors flex items-center justify-center text-lg">-</button>
-                                <span id="roseCount" class="text-xl font-extrabold text-brandBlack w-16 text-center">15</span>
-                                <button onclick="adjustRoseCount(1)" class="w-12 h-12 rounded-full border border-brandPink/30 bg-white hover:bg-brandPink/10 text-brandBlack font-extrabold transition-colors flex items-center justify-center text-lg">+</button>
-                                <span class="text-xs text-brandBlack/50 font-bold">الحد الأدنى 15 وردة</span>
+                            
+                            <div class="flex items-center gap-5 justify-center py-2">
+                                <button type="button" onclick="adjustRoseCount(-1)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">-</button>
+                                <div class="text-center min-w-[80px]">
+                                    <span id="roseCount" class="text-2xl font-black text-brandBlack tracking-tight block">15</span>
+                                    <span class="text-[9px] text-brandBlack/40 font-extrabold uppercase tracking-wider">وردة معتمدة</span>
+                                </div>
+                                <button type="button" onclick="adjustRoseCount(1)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">+</button>
                             </div>
                         </div>
 
-                        <!-- Rose Type & Color Options -->
                         <div class="space-y-4">
                             <div class="space-y-2">
-                                <label class="block text-sm font-bold text-brandBlack">نوع الورد المختار:</label>
-                                <div class="flex flex-wrap gap-3">
-                                    <button onclick="selectRoseType('ورد طبيعي')" id="rose-type-ورد طبيعي" class="px-5 py-2.5 rounded-full border border-brandPink bg-brandPink/5 text-brandPink text-sm font-semibold transition-all">ورد طبيعي</button>
-                                    <button onclick="selectRoseType('صناعي')" id="rose-type-صناعي" class="px-5 py-2.5 rounded-full border border-brandPink/20 text-brandBlack text-sm font-semibold transition-all">صناعي</button>
-                                    <button onclick="selectRoseType('ستان')" id="rose-type-ستان" class="px-5 py-2.5 rounded-full border border-brandPink/20 text-brandBlack text-sm font-semibold transition-all">ستان المشغول يدوياً</button>
+                                <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">نوع الورد المختار لمناسبتكم الكبرى:</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <button type="button" onclick="selectRoseType('ورد طبيعي')" id="rose-type-ورد طبيعي" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all text-center">ورد طبيعي فريش</button>
+                                    <button type="button" onclick="selectRoseType('صناعي')" id="rose-type-صناعي" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-extrabold transition-all text-center hover:border-brandPink/30">صناعي راقي</button>
+                                    <button type="button" onclick="selectRoseType('ستان')" id="rose-type-ستان" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-extrabold transition-all text-center hover:border-brandPink/30">ستان مشغول يدوياً</button>
                                 </div>
                             </div>
                             <div class="space-y-2">
-                                <label class="block text-sm font-bold text-brandBlack">تنسيق ألوان الورد المطلوبة:</label>
-                                <input type="text" id="roseColors" placeholder="مثال: ميكس أحمر مع أبيض" class="w-full p-3.5 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack">
+                                <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">تنسيق ألوان الورد المطلوبة بدقة:</label>
+                                <input type="text" id="roseColors" placeholder="مثال: ميكس أحمر ملكي مع أبيض ناصع" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
                             </div>
                         </div>
 
-                        <!-- Next Navigation Button -->
-                        <div class="pt-4">
-                            <button onclick="navigateRoseStep(2)" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all duration-300 shadow-md">
-                                تنسيق إضافات البوكيه الفاخرة
+                        <div class="pt-2">
+                            <button type="button" onclick="navigateRoseStep(2)" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                                تنسيق إضافات البوكيه الفاخرة والزينة <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
                             </button>
                         </div>
                     </div>
 
-                    <!-- FLOWER BUILDER: SCREEN 2 -->
-                    <div id="rose-screen-2" class="space-y-6 hidden">
-                        <!-- Cash Insertion (الكاش) -->
-                        <div class="space-y-4 p-5 rounded-2xl bg-brandPinkLight border border-brandPink/20">
-                            <label class="block text-sm font-bold text-brandBlack">خوارزمية دمج الأموال النقدية (الكاش) داخل البوكيه:</label>
-                            <input type="number" id="roseCashAmount" onkeyup="calculateRoseCash()" placeholder="اكتب هنا إجمالي المبلغ المالي اللي حابب ننسقه لك جوه البوكيه" class="w-full p-4 border border-brandPink/20 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack transition-all bg-white">
+                    <div id="rose-screen-2" class="space-y-6 hidden transition-all duration-300">
+                        <div class="space-y-4 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">خوارزمية دمج الأموال النقدية (الكاش) داخل البوكيه:</label>
+                            <input type="number" id="roseCashAmount" onkeyup="calculateRoseCash()" placeholder="اكتب إجمالي المبلغ المالي المراد لفه وتنسيقه وسط الورد" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
                             
                             <div class="space-y-2">
-                                <label class="block text-xs font-bold text-brandBlack/60">فئة الورقة النقدية المطلوبة للالتفاف:</label>
-                                <div class="flex flex-wrap gap-2">
-                                    <button onclick="selectRoseDenomination(5)" id="rose-denom-5" class="px-4 py-2 rounded-full border border-brandPink/20 text-brandBlack text-xs font-bold transition-all">5 جنيه</button>
-                                    <button onclick="selectRoseDenomination(10)" id="rose-denom-10" class="px-4 py-2 rounded-full border border-brandPink/20 text-brandBlack text-xs font-bold transition-all">10 جنيه</button>
-                                    <button onclick="selectRoseDenomination(20)" id="rose-denom-20" class="px-4 py-2 rounded-full border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all">20 جنيه</button>
-                                    <button onclick="selectRoseDenomination(50)" id="rose-denom-50" class="px-4 py-2 rounded-full border border-brandPink/20 text-brandBlack text-xs font-bold transition-all">50 جنيه</button>
-                                    <button onclick="selectRoseDenomination(100)" id="rose-denom-100" class="px-4 py-2 rounded-full border border-brandPink/20 text-brandBlack text-xs font-bold transition-all">100 جنيه</button>
-                                    <button onclick="selectRoseDenomination(200)" id="rose-denom-200" class="px-4 py-2 rounded-full border border-brandPink/20 text-brandBlack text-xs font-bold transition-all">200 جنيه</button>
+                                <label class="block text-[11px] font-extrabold text-brandBlack/50">فئة الورقة النقدية المطلوبة للالتفاف الفني:</label>
+                                <div class="grid grid-cols-6 gap-2">
+                                    <button type="button" onclick="selectRoseDenomination(5)" id="rose-denom-5" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">5 ج</button>
+                                    <button type="button" onclick="selectRoseDenomination(10)" id="rose-denom-10" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">10 ج</button>
+                                    <button type="button" onclick="selectRoseDenomination(20)" id="rose-denom-20" class="py-2 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">20 ج</button>
+                                    <button type="button" onclick="selectRoseDenomination(50)" id="rose-denom-50" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">50 ج</button>
+                                    <button type="button" onclick="selectRoseDenomination(100)" id="rose-denom-100" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">100 ج</button>
+                                    <button type="button" onclick="selectRoseDenomination(200)" id="rose-denom-200" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">200 ج</button>
                                 </div>
                             </div>
-                            
-                            <!-- Math calculation output -->
-                            <div id="roseCashOutput" class="hidden p-3.5 bg-white rounded-2xl border border-brandPink/30">
-                                <p class="text-sm font-bold text-brandBlack" id="roseCashCalcText"></p>
+                            <div id="roseCashOutput" class="hidden p-3.5 bg-brandPinkLight/30 rounded-xl border border-brandPink/10 text-xs font-bold">
+                                <p id="roseCashCalcText"></p>
                             </div>
                         </div>
 
-                        <!-- Photo printing inside roses -->
-                        <div class="space-y-4 p-5 rounded-2xl bg-brandPinkLight border border-brandPink/20">
+                        <div class="space-y-4 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
                             <div class="flex items-center justify-between">
-                                <label class="block text-sm font-bold text-brandBlack">إضافة صور مطبوعة تذكارية وسط الورد:</label>
-                                <span class="text-xs text-brandPink font-bold">كل صورة بتكلف +15 ج.م</span>
+                                <div class="space-y-0.5">
+                                    <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">إضافة صور مطبوعة تذكارية وسط الورد:</label>
+                                    <p class="text-[10px] text-brandBlack/40 font-bold">تكلفة طباعة وتجهيز كل صورة هي +15 ج.م</p>
+                                </div>
+                                <div class="flex items-center gap-3 bg-brandPinkLight p-1 rounded-full border border-brandPink/10">
+                                    <button type="button" onclick="adjustRosePhotos(-1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
+                                    <span id="rosePhotosCount" class="text-xs font-extrabold text-brandBlack w-6 text-center">0</span>
+                                    <button type="button" onclick="adjustRosePhotos(1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
+                                </div>
                             </div>
-                            <div class="flex items-center gap-4">
-                                <button onclick="adjustRosePhotos(-1)" class="w-10 h-10 rounded-full border border-brandPink/30 bg-white text-brandBlack font-extrabold flex items-center justify-center">-</button>
-                                <span id="rosePhotosCount" class="text-lg font-extrabold text-brandBlack w-8 text-center">0</span>
-                                <button onclick="adjustRosePhotos(1)" class="w-10 h-10 rounded-full border border-brandPink/30 bg-white text-brandBlack font-extrabold flex items-center justify-center">+</button>
+                            <div id="rosePhotoUploadsContainer" class="grid grid-cols-2 gap-3 hidden transition-all duration-300"></div>
+                        </div>
+
+                        <div class="space-y-3 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="roseRibbonCheck" onchange="toggleRoseRibbonInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
+                                <label for="roseRibbonCheck" class="text-xs font-extrabold text-brandBlack cursor-pointer select-none">إضافة شريط ستان مطبوع يلتف فاخراً حول البوكيه (+50 ج.م)</label>
                             </div>
-                            <div id="rosePhotoUploadsContainer" class="space-y-2 hidden">
-                                <!-- Injected dynamically by JS -->
+                            <div id="roseRibbonInputArea" class="hidden pt-1">
+                                <input type="text" id="roseRibbonText" placeholder="اكتب العبارة أو الكلمات المراد طباعتها على شريط الستان" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
                             </div>
                         </div>
 
-                        <!-- Satin Ribbon option -->
-                        <div class="space-y-3 p-5 rounded-2xl bg-brandPinkLight border border-brandPink/20">
-                            <div class="flex items-center gap-2">
-                                <input type="checkbox" id="roseRibbonCheck" onchange="toggleRoseRibbonInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink">
-                                <label for="roseRibbonCheck" class="text-sm font-bold text-brandBlack cursor-pointer">إضافة شريط ستان مطبوع يلتف حول البوكيه (+50 ج.م)</label>
-                            </div>
-                            <div id="roseRibbonInputArea" class="hidden">
-                                <input type="text" id="roseRibbonText" placeholder="اكتب العبارة اللي حابب نطبعها لك على شريط الستان المحيط بالبوكيه" class="w-full p-4 border border-brandPink/20 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink bg-white text-brandBlack transition-all">
-                            </div>
-                        </div>
-
-                        <!-- Step Navigation -->
-                        <div class="grid grid-cols-2 gap-4 pt-4">
-                            <button onclick="navigateRoseStep(1)" class="py-4 border border-brandPink/20 hover:bg-brandPinkLight text-brandBlack font-bold rounded-full transition-all">
-                                العودة للمقاس
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <button type="button" onclick="navigateRoseStep(1)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                                <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للمقاس
                             </button>
-                            <button onclick="navigateRoseStep(3)" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all shadow-md">
-                                إضافة الشكولاتة وكارت الإهداء
+                            <button type="button" onclick="navigateRoseStep(3)" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                                إضافة الشوكولاتة وكارت الإهداء <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
                             </button>
                         </div>
                     </div>
 
-                    <!-- FLOWER BUILDER: SCREEN 3 -->
-                    <div id="rose-screen-3" class="space-y-6 hidden">
-                        <!-- Chocolate integration algorithm -->
-                        <div class="space-y-4 p-5 rounded-2xl bg-brandPinkLight border border-brandPink/20">
-                            <label class="block text-sm font-bold text-brandBlack">إدراج الشوكولاتة الفاخرة للبوكيه:</label>
-                            <input type="number" id="roseChocBudget" onkeyup="calculateRoseChocolate()" placeholder="حدد هنا المبلغ اللي حابب نشتري بيه الشكولاتة لتزيين البوكيه" class="w-full p-4 border border-brandPink/20 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack transition-all bg-white">
+                    <div id="rose-screen-3" class="space-y-6 hidden transition-all duration-300">
+                        <div class="space-y-4 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">إلصاق الشوكولاتة الفاخرة وتوزيعها داخل البوكيه:</label>
+                            <input type="number" id="roseChocBudget" onkeyup="calculateRoseChocolate()" placeholder="حدد الميزانية المراد تخصيصها لشراء قطع الشوكولاتة المدمجة" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
                             
                             <div class="space-y-2">
-                                <label class="block text-xs font-bold text-brandBlack/60">فئة سعر القطعة المكررة المفضلة:</label>
-                                <div class="flex flex-wrap gap-2">
-                                    <button onclick="selectRoseChocPiecePrice(20)" id="rose-choc-piece-20" class="px-4 py-2 rounded-full border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all">20 جنيه</button>
-                                    <button onclick="selectRoseChocPiecePrice(30)" id="rose-choc-piece-30" class="px-4 py-2 rounded-full border border-brandPink/20 text-brandBlack text-xs font-bold transition-all">30 جنيه</button>
-                                    <button onclick="selectRoseChocPiecePrice(50)" id="rose-choc-piece-50" class="px-4 py-2 rounded-full border border-brandPink/20 text-brandBlack text-xs font-bold transition-all">50 جنيه</button>
+                                <label class="block text-[11px] font-extrabold text-brandBlack/50">فئة سعر قطعة الشوكولاتة المستهدفة للتكرار:</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <button type="button" onclick="selectRoseChocPiecePrice(20)" id="rose-choc-piece-20" class="py-2.5 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">قطع فئة 20 جنيه</button>
+                                    <button type="button" onclick="selectRoseChocPiecePrice(30)" id="rose-choc-piece-30" class="py-2.5 rounded-xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/20">قطع فئة 30 جنيه</button>
+                                    <button type="button" onclick="selectRoseChocPiecePrice(50)" id="rose-choc-piece-50" class="py-2.5 rounded-xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/20">قطع فئة 50 جنيه</button>
                                 </div>
                             </div>
-
-                            <!-- Calculations description output -->
-                            <div id="roseChocOutput" class="hidden p-3.5 bg-white rounded-2xl border border-brandPink/30">
-                                <p class="text-sm font-bold text-brandBlack" id="roseChocCalcText"></p>
+                            <div id="roseChocOutput" class="hidden p-3.5 bg-brandPinkLight/30 rounded-xl border border-brandPink/10 text-xs font-bold">
+                                <p id="roseChocCalcText"></p>
                             </div>
                         </div>
 
-                        <!-- Premium Chocolate Bars fixed list -->
-                        <div class="space-y-3 p-5 rounded-2xl bg-brandPinkLight border border-brandPink/20">
-                            <label class="block text-sm font-bold text-brandBlack">إضافة بارات شوكولاتة كبرى فاخرة (ثابتة السعر):</label>
-                            <div class="space-y-2">
-                                <div class="flex items-center justify-between">
+                        <div class="space-y-3 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">إضافة بارات شوكولاتة كبرى فاخرة (ثابتة السعر):</label>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between border-b border-brandPink/5 pb-2">
                                     <span class="text-xs font-bold text-brandBlack/70">بار جالاكسي كبير فاخر (100 ج.م)</span>
-                                    <div class="flex items-center gap-2">
-                                        <button onclick="adjustRosePremiumBar(100, -1)" class="w-8 h-8 rounded-full bg-white text-brandBlack border border-brandPink/30 flex items-center justify-center">-</button>
-                                        <span id="rosePremiumBar100" class="text-sm font-bold text-brandBlack w-4 text-center">0</span>
-                                        <button onclick="adjustRosePremiumBar(100, 1)" class="w-8 h-8 rounded-full bg-white text-brandBlack border border-brandPink/30 flex items-center justify-center">+</button>
+                                    <div class="flex items-center gap-3 bg-brandPinkLight p-1 rounded-full border border-brandPink/10">
+                                        <button type="button" onclick="adjustRosePremiumBar(100, -1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
+                                        <span id="rosePremiumBar100" class="text-xs font-extrabold text-brandBlack w-4 text-center">0</span>
+                                        <button type="button" onclick="adjustRosePremiumBar(100, 1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
                                     </div>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-brandBlack/70">بار كادبوري حليبي فاخر (120 ج.م)</span>
-                                    <div class="flex items-center gap-2">
-                                        <button onclick="adjustRosePremiumBar(120, -1)" class="w-8 h-8 rounded-full bg-white text-brandBlack border border-brandPink/30 flex items-center justify-center">-</button>
-                                        <span id="rosePremiumBar120" class="text-sm font-bold text-brandBlack w-4 text-center">0</span>
-                                        <button onclick="adjustRosePremiumBar(120, 1)" class="w-8 h-8 rounded-full bg-white text-brandBlack border border-brandPink/30 flex items-center justify-center">+</button>
+                                    <div class="flex items-center gap-3 bg-brandPinkLight p-1 rounded-full border border-brandPink/10">
+                                        <button type="button" onclick="adjustRosePremiumBar(120, -1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
+                                        <span id="rosePremiumBar120" class="text-xs font-extrabold text-brandBlack w-4 text-center">0</span>
+                                        <button type="button" onclick="adjustRosePremiumBar(120, 1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Greeting card options -->
-                        <div class="space-y-3 p-5 rounded-2xl bg-brandPinkLight border border-brandPink/20">
-                            <div class="flex items-center gap-2">
-                                <input type="checkbox" id="roseCardCheck" onchange="toggleRoseCardInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink">
-                                <label for="roseCardCheck" class="text-sm font-bold text-brandBlack cursor-pointer">شراء كارت إهداء خارجي فاخر مع الطباعة (+20 ج.م)</label>
+                        <div class="space-y-3 p-4 bg-white border border-brandPink/10 rounded-2xl shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="roseCardCheck" onchange="toggleRoseCardInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
+                                <label for="roseCardCheck" class="text-xs font-extrabold text-brandBlack cursor-pointer select-none">شراء كارت إهداء خارجي فاخر مع الطباعة الملونة (+20 ج.م)</label>
                             </div>
-                            <div id="roseCardInputArea" class="hidden">
-                                <input type="text" id="roseCardText" placeholder="اكتب هنا العبارة اللي حابب نطبعها لك جوه كارت الإهداء الخارجي" class="w-full p-4 border border-brandPink/20 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink bg-white text-brandBlack transition-all">
+                            <div id="roseCardInputArea" class="hidden pt-2 transition-all duration-300">
+                                <input type="text" id="roseCardText" placeholder="اكتب هنا الكلمات أو الرسالة المراد خطّها داخل كارت الإهداء" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
                             </div>
                         </div>
 
-                        <!-- Step navigation -->
-                        <div class="grid grid-cols-2 gap-4 pt-4">
-                            <button onclick="navigateRoseStep(2)" class="py-4 border border-brandPink/20 hover:bg-brandPinkLight text-brandBlack font-bold rounded-full transition-all">
-                                العودة للتخصيص
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <button type="button" onclick="navigateRoseStep(2)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                                <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للتخصيص
                             </button>
-                            <button onclick="addRoseToCart()" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all shadow-lg">
-                                اضافة للسلة
+                            <button type="button" onclick="addRoseToCart()" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                                إتمام باقة الزهور وإضافتها للسلة <i class="fa-solid fa-bag-shopping text-[11px] mr-1"></i>
                             </button>
                         </div>
                     </div>
                 </div>
-            </section>
-
-            <!-- VIEW: CART PAGE (سلة المشتريات) -->
+            </section>            <!-- VIEW: CART PAGE (سلة المشتريات) -->
             <section id="view-cart" class="view-section hidden py-12 bg-white">
                 <div class="max-w-4xl mx-auto px-4">
                     <h1 class="text-2xl md:text-3xl font-extrabold text-brandBlack mb-8">سلة المشتريات المعتمدة</h1>
