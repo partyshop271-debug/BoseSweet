@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>حلويات بوسي | عقد من التميز والاتقان</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -24,17 +23,16 @@
             }
         }
     </script>
-    <!-- Google Fonts - Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome for Premium Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght=300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- مكتبات الربط السحابي المعتمدة - فايربيس -->
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore-compat.js"></script>
+
+    <script src="unified-engine.js" defer></script>
 
     <style>
         body {
@@ -69,33 +67,27 @@
 </head>
 <body class="overflow-x-hidden">
 
-    <!-- Global App State & Controller Container -->
     <div id="app" class="min-h-screen flex flex-col justify-between">
         
-        <!-- PREMIUM DYNAMIC TOP TICKER BANNER -->
-        <div class="bg-brandPinkLight text-brandBlack border-b border-brandPink/30 py-2 overflow-hidden relative w-full z-50">
-            <div class="flex whitespace-nowrap gap-12 animate-marquee text-[11px] font-extrabold">
+        <div id="topTickerBanner" class="bg-brandPinkLight text-brandBlack border-b border-brandPink/30 py-2 overflow-hidden relative w-full z-50">
+            <div class="flex whitespace-nowrap gap-12 animate-marquee text-[11px] font-extrabold" id="marqueeContent">
                 <span>✨ عقد من التميز والاتقان الفني في صناعة الحلويات الطبيعية 100% بمكونات فاخرة خالية تماماً من الإضافات الكيميائية</span>
                 <span>✨ توصيل آمن ومبرد لجميع مناطق الفرافرة والكفاح للحفاظ على جودة وتماسك منتجاتنا الفاخرة</span>
                 <span>✨ صمّم تورتتك المخصصة أو بوكيه الورد المدمج بالهدايا والشوكولاتة الآن عبر محاكياتنا الذكية المعتمدة</span>
-                <!-- Loop duplicate for seamless scrolling -->
                 <span>✨ عقد من التميز والاتقان الفني في صناعة الحلويات الطبيعية 100% بمكونات فاخرة خالية تماماً من الإضافات الكيميائية</span>
                 <span>✨ توصيل آمن ومبرد لجميع مناطق الفرافرة والكفاح للحفاظ على جودة وتماسك منتجاتنا الفاخرة</span>
                 <span>✨ صمّم تورتتك المخصصة أو بوكيه الورد المدمج بالهدايا والشوكولاتة الآن عبر محاكياتنا الذكية المعتمدة</span>
             </div>
         </div>
 
-        <!-- HEADER & SIDEBAR -->
         <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-brandPink/20 transition-all-300 shadow-sm">
             <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between gap-4">
-                <!-- Sidebar Toggle -->
-                <button onclick="toggleSidebar(true)" class="p-3 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack hover:text-brandPink rounded-2xl transition-all duration-300" aria-label="القائمة الجانبية">
+                <button onclick="BoseSweetsEngine.toggleSidebar(true)" class="p-3 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack hover:text-brandPink rounded-2xl transition-all duration-300" aria-label="القائمة الجانبية">
                     <i class="fa-solid fa-bars-staggered text-xl"></i>
                 </button>
 
-                <!-- Brand Name and Live Status Badge -->
                 <div class="flex flex-col items-center md:items-start gap-1">
-                    <a href="#" onclick="navigateTo('home')" class="text-xl md:text-2xl font-extrabold text-brandBlack tracking-tight hover:opacity-90 transition-opacity">
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('home')" class="text-xl md:text-2xl font-extrabold text-brandBlack tracking-tight hover:opacity-90 transition-opacity">
                         حلويات <span class="text-brandPink">بوسي</span>
                     </a>
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brandPink/10 text-brandPink">
@@ -103,15 +95,12 @@
                     </span>
                 </div>
 
-                <!-- Search & Cart Group -->
                 <div class="flex items-center gap-3">
-                    <!-- Compact Search Toggle -->
                     <div class="relative hidden sm:block">
-                        <input type="text" id="headerSearch" onkeyup="handleSearch(event)" placeholder="ابحث عن منتجك المفضل..." class="w-48 md:w-64 px-4 py-2 text-sm rounded-full bg-brandPinkLight border border-brandPink/20 text-brandBlack focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink transition-all duration-300">
+                        <input type="text" id="headerSearch" onkeyup="BoseSweetsEngine.handleSearch(event)" placeholder="ابحث عن منتجك المفضل..." class="w-48 md:w-64 px-4 py-2 text-sm rounded-full bg-brandPinkLight border border-brandPink/20 text-brandBlack focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink transition-all duration-300">
                         <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-brandPink text-xs"></i>
                     </div>
-                    <!-- Cart Button with Dynamic Badge -->
-                    <button onclick="navigateTo('cart')" class="relative p-3 bg-brandPinkLight hover:bg-brandPink/20 rounded-2xl text-brandBlack hover:text-brandPink transition-all duration-300">
+                    <button onclick="BoseSweetsEngine.navigateTo('cart')" class="relative p-3 bg-brandPinkLight hover:bg-brandPink/20 rounded-2xl text-brandBlack hover:text-brandPink transition-all duration-300">
                         <i class="fa-solid fa-bag-shopping text-lg"></i>
                         <span id="cartCountBadge" class="absolute -top-1 -right-1 bg-brandPink text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white hidden">0</span>
                     </button>
@@ -119,52 +108,47 @@
             </div>
         </header>
 
-        <!-- SIDEBAR DRAWER -->
-        <div id="sidebarOverlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-brandPink/15 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+        <div id="sidebarOverlay" onclick="BoseSweetsEngine.toggleSidebar(false)" class="fixed inset-0 bg-brandPink/15 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
         <aside id="sidebar" class="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white z-50 shadow-2xl translate-x-full transition-transform duration-300 flex flex-col justify-between rounded-l-[2rem] border-l border-brandPink/20">
             <div class="p-6">
                 <div class="flex items-center justify-between border-b border-brandPink/10 pb-4 mb-6">
                     <span class="font-extrabold text-brandBlack text-lg">حلويات بوسي</span>
-                    <button onclick="toggleSidebar(false)" class="p-2.5 bg-brandPinkLight hover:bg-brandPink/20 rounded-full text-brandPink transition-all">
+                    <button onclick="BoseSweetsEngine.toggleSidebar(false)" class="p-2.5 bg-brandPinkLight hover:bg-brandPink/20 rounded-full text-brandPink transition-all">
                         <i class="fa-solid fa-xmark text-lg"></i>
                     </button>
                 </div>
                 <nav class="space-y-4">
-                    <a href="#" onclick="navigateTo('home'); toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('home'); BoseSweetsEngine.toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
                         <i class="fa-solid fa-house w-6 text-center text-sm text-brandPink"></i> الصفحة الرئيسية
                     </a>
-                    <a href="#" onclick="navigateTo('menu'); toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('menu'); BoseSweetsEngine.toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
                         <i class="fa-solid fa-utensils w-6 text-center text-sm text-brandPink"></i> المنيو الكامل
                     </a>
-                    <a href="#" onclick="navigateTo('cake-builder'); toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('cake-builder'); BoseSweetsEngine.toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
                         <i class="fa-solid fa-cake-candles w-6 text-center text-sm text-brandPink"></i> محاكي تصميم التورت
                     </a>
-                    <a href="#" onclick="navigateTo('rose-builder'); toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('rose-builder'); BoseSweetsEngine.toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
                         <i class="fa-solid fa-seedling w-6 text-center text-sm text-brandPink"></i> محاكي تنسيق الورد
                     </a>
-                    <a href="#" onclick="navigateTo('cart'); toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('cart'); BoseSweetsEngine.toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
                         <i class="fa-solid fa-cart-shopping w-6 text-center text-sm text-brandPink"></i> سلة التسوق
                     </a>
                 </nav>
             </div>
             
-            <!-- Sidebar Footer with Contact Cards & Hours -->
             <div class="p-6 border-t border-brandPink/10 bg-brandPinkLight/50 space-y-4">
                 <div class="p-3.5 rounded-2xl bg-white border border-brandPink/20 text-center space-y-1">
                     <p class="text-xs text-brandBlack/60 font-bold">المبيعات المعتمدة ومطابقة المواصفات:</p>
-                    <a href="tel:01097238441" class="text-sm font-extrabold text-brandPink hover:underline block" dir="ltr">01097238441</a>
+                    <a href="tel:01097238441" class="text-sm font-extrabold text-brandPink block" id="footerPhoneDisplay" dir="ltr">01097238441</a>
                     <p class="text-[10px] text-brandBlack/50 font-bold">العنوان: الكفاح - شارع الوحدة المحلية</p>
                 </div>
                 <p class="text-[10px] text-brandBlack/40 text-center font-bold">حلويات بوسي © 2026</p>
             </div>
         </aside>
 
-        <!-- DYNAMIC VIEWS -->
         <main class="flex-grow">
             
-            <!-- VIEW: HOME PAGE -->
             <section id="view-home" class="view-section">
-                <!-- Hero Section -->
                 <div class="relative py-20 bg-gradient-to-b from-brandPinkLight via-white to-white text-center px-4">
                     <div class="max-w-4xl mx-auto space-y-6">
                         <span class="inline-block px-4 py-1.5 bg-brandPinkLight text-brandPink rounded-full text-xs font-bold uppercase tracking-wider border border-brandPink/20">تاريخ يروى بالمذاق</span>
@@ -173,16 +157,15 @@
                             منذ انطلاقتنا، ونحن في حلويات بوسي نلتزم بتقديم أرقى تجارب التذوق، من خلال دمج المكونات الطبيعية النقية بالمهارة الفنية لتشكيل لوحات حلوى تليق بمناسباتكم السعيدة وتصنع ذكريات لا تُنسى.
                         </p>
                         <div class="pt-4">
-                            <button onclick="navigateTo('menu')" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all duration-300 shadow-lg shadow-brandPink/20 transform hover:-translate-y-0.5">
+                            <button onclick="BoseSweetsEngine.navigateTo('menu')" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all duration-300 shadow-lg shadow-brandPink/20 transform hover:-translate-y-0.5">
                                 تصفح المنيو المعتمد
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Visual Hook: Full-width Media Area -->
                 <div class="w-full aspect-video md:max-h-[500px] bg-brandPinkLight relative overflow-hidden flex items-center justify-center border-y border-brandPink/15">
-                    <img src="https://picsum.photos/1920/1080?random=hero" alt="حلويات بوسي الفاخرة" class="absolute inset-0 w-full h-full object-cover opacity-90">
+                    <img id="heroVisualMedia" src="https://picsum.photos/1920/1080?random=hero" alt="حلويات بوسي الفاخرة" class="absolute inset-0 w-full h-full object-cover opacity-90">
                     <div class="absolute inset-0 bg-gradient-to-t from-brandPink/40 via-transparent to-transparent"></div>
                     <div class="relative z-10 text-center px-4 space-y-2">
                         <span class="text-brandPink text-xs md:text-sm font-bold tracking-widest uppercase">الرحلة الفنية</span>
@@ -190,165 +173,11 @@
                     </div>
                 </div>
 
-                <!-- Bestsellers Slider (الاكثر مبيعا - 8 products - Card Size Increased by 40%) -->
-                <div class="py-16 bg-white">
-                    <div class="max-w-7xl mx-auto px-4">
-                        <div class="mb-8">
-                            <h2 class="text-2xl font-extrabold text-brandBlack">الأكثر مبيعاً لدى العائلات</h2>
-                            <p class="text-sm text-brandBlack/60 mt-1">تشكيلة مختارة نالت ثقة ومحبة عملائنا باستمرار</p>
-                        </div>
-                        <!-- Lateral scroll container -->
-                        <div class="flex gap-8 overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory" id="bestsellersContainer">
-                            <!-- Injected dynamically by JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Slideshow Promo Area (عقد من الاتقان) -->
-                <div class="py-16 bg-brandPinkLight/30 border-y border-brandPink/15">
-                    <div class="max-w-7xl mx-auto px-4">
-                        <div class="text-center max-w-3xl mx-auto mb-12">
-                            <h2 class="text-2xl md:text-3xl font-extrabold text-brandBlack">عقد من الاتقان والتفرد</h2>
-                            <p class="text-sm md:text-base text-brandBlack/80 mt-2">
-                                نحرص في حلويات بوسي على صقل مهاراتنا يومياً لنقدم لكم تصاميم وحشوات فريدة بأفضل جودة ممكنة.
-                            </p>
-                        </div>
-                        <!-- Slideshow Card -->
-                        <div class="relative w-full h-[350px] md:h-[450px] rounded-3xl overflow-hidden shadow-xl border border-brandPink/20" id="promoSlideshow">
-                            <img id="slideshowImage" src="https://picsum.photos/1200/800?random=slide1" alt="حلويات بوسي" class="w-full h-full object-cover transition-opacity duration-1000">
-                            <div class="absolute inset-0 bg-gradient-to-t from-brandPink/90 via-transparent to-transparent"></div>
-                            <div class="absolute bottom-8 right-8 left-8 text-brandBlack space-y-2">
-                                <span class="px-3 py-1 bg-brandPink text-white text-xs font-bold rounded-full">جودة بلا مساومة</span>
-                                <p class="text-lg md:text-xl font-extrabold">كل قطعة ننتجها تمر بفحص صارم للمكونات الطبيعية</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Products Grid Section (منتجاتنا - 8 cards total: 4 first, then ' اعرف اكتر') -->
-                <div class="py-16 bg-white">
-                    <div class="max-w-7xl mx-auto px-4">
-                        <div class="text-center mb-12">
-                            <h2 class="text-2xl md:text-3xl font-extrabold text-brandBlack">باقة مختارة من إبداعاتنا</h2>
-                            <p class="text-sm text-brandBlack/60 mt-1">تذوق الفخامة والجودة من حلويات بوسي</p>
-                        </div>
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6" id="productsGridHome">
-                            <!-- Injected dynamically by JS (8 cards, initially showing 4) -->
-                        </div>
-                        <div class="text-center mt-10" id="showMoreHomeContainer">
-                            <button onclick="revealAllHomeProducts()" class="px-8 py-3.5 border border-brandPink text-brandPink hover:bg-brandPink hover:text-white font-bold rounded-full transition-all duration-300">
-                                استعرض المزيد من المنتجات
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Cake Builder Callout (محاكي التورت) - Background purified from black to Premium Pink Light -->
-                <div class="py-12 bg-white">
-                    <div class="max-w-7xl mx-auto px-4">
-                        <div class="bg-gradient-to-br from-brandPinkLight to-white rounded-3xl p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl border-2 border-brandPink">
-                            <!-- Background accent circles -->
-                            <div class="absolute -right-20 -top-20 w-80 h-80 bg-brandPink/20 rounded-full blur-2xl"></div>
-                            <div class="relative z-10 max-w-xl space-y-4">
-                                <span class="text-brandPink text-xs font-bold tracking-widest uppercase">خدمة التصميم الفاخر</span>
-                                <h2 class="text-brandBlack text-3xl font-extrabold leading-tight">صمّم تورتة مناسبتك المخصصة بنفسك</h2>
-                                <p class="text-brandBlack/80 text-sm leading-relaxed">
-                                    أطلقنا أول محاكي تفاعلي ذكي يتيح لك تحديد حجم التورتة بناءً على عدد ضيوفك، واختيار الشكل، ورفع تصميمك الخاص أو طباعة صورتك، مع حساب فوري دقيق ومحايد للميزانية.
-                                </p>
-                                <div class="pt-2">
-                                    <button onclick="navigateTo('cake-builder')" class="px-6 py-3 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all duration-300">
-                                        ابدأ التجهيز الفني للتورتة
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="relative z-10 w-full md:w-1/2 aspect-square max-w-[320px] rounded-2xl overflow-hidden shadow-lg border border-brandPink/30">
-                                <img src="https://picsum.photos/800/800?random=cakebuilderpromo" alt="محاكي التورت" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Newly Arrived Slider (وصل حديثا - 6 products - Card Size Increased by 40%) -->
-                <div class="py-16 bg-brandPinkLight/30 border-y border-brandPink/15">
-                    <div class="max-w-7xl mx-auto px-4">
-                        <div class="mb-8">
-                            <h2 class="text-2xl font-extrabold text-brandBlack">وصل حديثاً لمطبخنا</h2>
-                            <p class="text-sm text-brandBlack/60 mt-1">آخر ابتكارات وتشكيلات حلويات بوسي</p>
-                        </div>
-                        <div class="flex gap-8 overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory" id="newlyArrivedContainer">
-                            <!-- Injected dynamically by JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pride Section (قسم الفخر والاعتزاز) - Background Purified from Black to Pink Light -->
-                <div class="py-16 bg-white text-center">
-                    <div class="max-w-4xl mx-auto px-4 space-y-6">
-                        <h2 class="text-2xl md:text-4xl font-extrabold text-brandBlack">شريك لحظاتكم السعيدة طوال عقد كامل</h2>
-                        <p class="text-sm md:text-base text-brandBlack/85 leading-relaxed max-w-2xl mx-auto">
-                            على مدار ما يزيد عن 10 سنوات، تشرفنا بخدمة أكثر من 10,000 عميل في الكفاح ومركز الفرافرة. كنتم وما زلتم المحفز الأول لنا لتقديم الفن في صورة حلوى فاخرة.
-                        </p>
-                        <!-- Statistics panel -->
-                        <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto pt-4">
-                            <div class="p-4 rounded-2xl bg-brandPinkLight border border-brandPink/20">
-                                <p class="text-2xl md:text-3xl font-extrabold text-brandPink">10+</p>
-                                <p class="text-xs text-brandBlack/60 mt-1">أعوام من الاتقان</p>
-                            </div>
-                            <div class="p-4 rounded-2xl bg-brandPinkLight border border-brandPink/20">
-                                <p class="text-2xl md:text-3xl font-extrabold text-brandPink">10K+</p>
-                                <p class="text-xs text-brandBlack/60 mt-1">عميل سعيد</p>
-                            </div>
-                            <div class="p-4 rounded-2xl bg-brandPinkLight border border-brandPink/20">
-                                <p class="text-2xl md:text-3xl font-extrabold text-brandPink">100%</p>
-                                <p class="text-xs text-brandBlack/60 mt-1">خامات طبيعية</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Full screen dynamic hook with pink tone overlay -->
-                    <div class="mt-12 w-full aspect-video md:max-h-[400px] bg-brandPinkLight relative overflow-hidden flex items-center justify-center border-y border-brandPink/20">
-                        <img src="https://picsum.photos/1920/1080?random=pride" alt="فخر حلويات بوسي" class="absolute inset-0 w-full h-full object-cover opacity-80">
-                        <div class="absolute inset-0 bg-gradient-to-t from-brandPink/30 to-transparent"></div>
-                    </div>
-                </div>
-
-                <!-- Flower Builder Callout (محاكي الورد) -->
-                <div class="py-12 bg-white">
-                    <div class="max-w-7xl mx-auto px-4">
-                        <div class="bg-gradient-to-br from-brandPinkLight via-white to-white rounded-3xl p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row-reverse items-center justify-between gap-8 border-2 border-brandPink shadow-xl">
-                            <div class="relative z-10 max-w-xl space-y-4">
-                                <span class="text-brandPink text-xs font-bold tracking-widest uppercase">تكامل الهدية والجمال</span>
-                                <h2 class="text-brandBlack text-3xl font-extrabold leading-tight">نسّق بوكيه الورد الفاخر مع هديتك</h2>
-                                <p class="text-brandBlack/80 text-sm leading-relaxed">
-                                    لأن الهدايا الراقية تكتمل بالورد، وفرنا لكم محاكياً متكاملاً لتنسيق بوكيه الورد المثالي بالتحكم في عدد الورد، ونوعه، وإدراج مبالغ مالية (كاش) مدمجة بدقة، أو إرفاق صور تذكارية وشوكولاتة فاخرة.
-                                </p>
-                                <div class="pt-2">
-                                    <button onclick="navigateTo('rose-builder')" class="px-6 py-3 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all duration-300">
-                                        صمم بوكيه الورد المخصص
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="relative z-10 w-full md:w-1/2 aspect-square max-w-[320px] rounded-2xl overflow-hidden shadow-lg border border-brandPink/20">
-                                <img src="https://picsum.photos/800/800?random=flowerpromo" alt="محاكي الورد" class="w-full h-full object-cover">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Shop by Category Slider (تسوق حسب الفئة - Card Size Increased by 40%) -->
-                <div class="py-16 bg-brandPinkLight/30 border-y border-brandPink/15">
-                    <div class="max-w-7xl mx-auto px-4">
-                        <div class="mb-8">
-                            <h2 class="text-2xl font-extrabold text-brandBlack">تسوق حسب الصنف</h2>
-                            <p class="text-sm text-brandBlack/60 mt-1">تصفح أقسامنا المتخصصة مباشرة</p>
-                        </div>
-                        <div class="flex gap-8 overflow-x-auto pb-6 scrollbar-hide snap-x snap-mandatory" id="categoriesSliderContainer">
-                            <!-- Injected dynamically by JS -->
-                        </div>
-                    </div>
+                <div id="homepageDynamicContent" class="space-y-4">
+                    <div class="text-center py-20 text-brandBlack/40 font-bold">جاري بناء هيكل العرض السحابي وتأمين المزامنة...</div>
                 </div>
             </section>
 
-            <!-- VIEW: MENU PAGE -->
             <section id="view-menu" class="view-section hidden py-12 bg-white">
                 <div class="max-w-7xl mx-auto px-4">
                     <div class="text-center max-w-2xl mx-auto mb-12">
@@ -357,21 +186,15 @@
                             جميع أصنافنا مجهزة بخامات طبيعية 100% وخالية تماماً من أي محسنات صناعية لضمان النكهة الأصلية الفاخرة.
                         </p>
                     </div>
-                    <!-- Categories grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="menuCategoriesGrid">
-                        <!-- Injected dynamically by JS -->
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="menuCategoriesGrid"></div>
                 </div>
             </section>
 
-            <!-- VIEW: PRODUCT DEDICATED PAGE -->
             <section id="view-product" class="view-section hidden py-12 bg-white">
-                <div class="max-w-4xl mx-auto px-4" id="productDetailContainer">
-                    <!-- Injected dynamically by JS based on selection -->
-                </div>
+                <div class="max-w-4xl mx-auto px-4" id="productDetailContainer"></div>
             </section>
 
-<section id="view-cake-builder" class="view-section hidden py-16 bg-white">
+            <section id="view-cake-builder" class="view-section hidden py-16 bg-white">
                 <div class="max-w-3xl mx-auto px-4">
                     
                     <div class="text-center mb-12 space-y-3">
@@ -411,13 +234,13 @@
                         <div class="space-y-3">
                             <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">اختر نوع كيك الأساس الفاخر:</label>
                             <div class="grid grid-cols-3 gap-3.5">
-                                <button type="button" onclick="selectCakeBase('فانيليا')" id="cake-base-فانيليا" class="p-4 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold shadow-sm transition-all duration-300 text-center">
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeBase('فانيليا')" id="cake-base-فانيليا" class="p-4 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold shadow-sm transition-all duration-300 text-center">
                                     <i class="fa-solid fa-ice-cream block text-base mb-1.5 opacity-80"></i> فانيليا غنية
                                 </button>
-                                <button type="button" onclick="selectCakeBase('شوكولاتة')" id="cake-base-شوكولاتة" class="p-4 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeBase('شوكولاتة')" id="cake-base-شوكولاتة" class="p-4 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
                                     <i class="fa-solid fa-cookie-bite block text-base mb-1.5 opacity-60"></i> شوكولاتة فاخرة
                                 </button>
-                                <button type="button" onclick="selectCakeBase('نصف ونصف')" id="cake-base-نصف ونصف" class="p-4 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeBase('نصف ونصف')" id="cake-base-نصف ونصف" class="p-4 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
                                     <i class="fa-solid fa-pie-chart block text-base mb-1.5 opacity-60"></i> نصف ونصف
                                 </button>
                             </div>
@@ -429,16 +252,16 @@
                         <div class="space-y-3">
                             <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">الشكل الهندسي المعتمد للتورتة:</label>
                             <div class="grid grid-cols-4 gap-3">
-                                <button type="button" onclick="selectCakeShape('دائرة')" id="cake-shape-دائرة" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all duration-300 text-center">
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeShape('دائرة')" id="cake-shape-دائرة" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all duration-300 text-center">
                                     <i class="fa-regular fa-circle block text-sm mb-1 opacity-80"></i> دائرة
                                 </button>
-                                <button type="button" onclick="selectCakeShape('قلب')" id="cake-shape-قلب" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeShape('قلب')" id="cake-shape-قلب" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
                                     <i class="fa-regular fa-heart block text-sm mb-1 opacity-60"></i> قلب ناعم
                                 </button>
-                                <button type="button" onclick="selectCakeShape('مربع')" id="cake-shape-مربع" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeShape('مربع')" id="cake-shape-مربع" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
                                     <i class="fa-regular fa-square block text-sm mb-1 opacity-60"></i> مربع متماسك
                                 </button>
-                                <button type="button" onclick="selectCakeShape('مستطيل')" id="cake-shape-مستطيل" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeShape('مستطيل')" id="cake-shape-مستطيل" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
                                     <i class="fa-solid fa-rectangle-landscape block text-sm mb-1 opacity-60"></i> مستطيل عائلي
                                 </button>
                             </div>
@@ -450,7 +273,7 @@
                                 <div class="space-y-0.5">
                                     <span class="text-xs font-extrabold text-brandBlack flex items-center gap-1.5">
                                         تحديد عدد الأفراد المقدر:
-                                        <button type="button" onclick="showCakePriceInfo()" class="text-brandPink hover:text-brandPinkDark text-xs transition-colors" aria-label="معلومات التسعير">
+                                        <button type="button" onclick="BoseSweetsEngine.showCakePriceInfo()" class="text-brandPink hover:text-brandPinkDark text-xs transition-colors" aria-label="معلومات التسعير">
                                             <i class="fa-solid fa-circle-info"></i>
                                         </button>
                                     </span>
@@ -463,18 +286,18 @@
                             </div>
                             
                             <div class="flex items-center gap-5 justify-center py-2">
-                                <button type="button" onclick="adjustCakePeople(-2)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">-</button>
+                                <button type="button" onclick="BoseSweetsEngine.adjustCakePeople(-2)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">-</button>
                                 <div class="text-center min-w-[80px]">
                                     <span id="cakePeopleCount" class="text-2xl font-black text-brandBlack tracking-tight block">4</span>
                                     <span class="text-[9px] text-brandBlack/40 font-extrabold uppercase tracking-wider">فرد مستهدف</span>
                                 </div>
-                                <button type="button" onclick="adjustCakePeople(2)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">+</button>
+                                <button type="button" onclick="BoseSweetsEngine.adjustCakePeople(2)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">+</button>
                             </div>
                             <div id="cakeCounterWarning" class="hidden text-center text-[10px] text-brandPink font-extrabold bg-brandPinkLight/40 p-2 rounded-xl border border-brandPink/10"></div>
                         </div>
 
                         <div class="pt-2">
-                            <button type="button" onclick="navigateCakeStep(2)" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-[0_4px_15px_rgba(255,145,164,0.2)] transform hover:-translate-y-0.5">
+                            <button type="button" onclick="BoseSweetsEngine.navigateCakeStep(2)" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-[0_4px_15px_rgba(255,145,164,0.2)] transform hover:-translate-y-0.5">
                                 الخطوة التالية: التصميم الخارجي والطباعة <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
                             </button>
                         </div>
@@ -484,7 +307,7 @@
                         <div class="space-y-3">
                             <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">المسار الأول (رفع صورة التصميم المطلوبة):</label>
                             <div class="relative border-2 border-dashed border-brandPink/20 hover:border-brandPink rounded-2xl p-8 transition-all duration-300 bg-brandPinkLight/30 text-center cursor-pointer group shadow-[inset_0_2px_8px_rgba(255,145,164,0.01)]">
-                                <input type="file" id="cakeDesignFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleCakeFileUpload('design')">
+                                <input type="file" id="cakeDesignFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="BoseSweetsEngine.handleCakeFileUpload('design')">
                                 <div class="space-y-2 relative z-10">
                                     <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm border border-brandPink/10">
                                         <i class="fa-regular fa-image text-xl text-brandPink"></i>
@@ -497,13 +320,13 @@
                         <div class="space-y-4">
                             <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">المسار الثاني (خيارات طباعة الصور المباشرة):</label>
                             <div class="grid grid-cols-3 gap-3">
-                                <button type="button" onclick="selectCakePrintOption('none')" id="cake-print-none" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">بدون طباعة</button>
-                                <button type="button" onclick="selectCakePrintOption('edible')" id="cake-print-edible" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/30">قابلة للأكل (+60 ج.م)</button>
-                                <button type="button" onclick="selectCakePrintOption('non-edible')" id="cake-print-non-edible" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/30">غير قابلة للأكل (+20 ج.م)</button>
+                                <button type="button" onclick="BoseSweetsEngine.selectCakePrintOption('none')" id="cake-print-none" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">بدون طباعة</button>
+                                <button type="button" onclick="BoseSweetsEngine.selectCakePrintOption('edible')" id="cake-print-edible" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/30">قابلة للأكل (+60 ج.م)</button>
+                                <button type="button" onclick="BoseSweetsEngine.selectCakePrintOption('non-edible')" id="cake-print-non-edible" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/30">غير قابلة للأكل (+20 ج.م)</button>
                             </div>
 
                             <div id="cakePrintUploadArea" class="hidden relative border-2 border-dashed border-brandPink/20 hover:border-brandPink rounded-2xl p-8 transition-all duration-300 bg-brandPinkLight/30 text-center cursor-pointer group">
-                                <input type="file" id="cakePrintFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleCakeFileUpload('print')">
+                                <input type="file" id="cakePrintFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="BoseSweetsEngine.handleCakeFileUpload('print')">
                                 <div class="space-y-2 relative z-10">
                                     <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm border border-brandPink/10">
                                         <i class="fa-solid fa-cloud-arrow-up text-xl text-brandPink"></i>
@@ -514,10 +337,10 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 pt-2">
-                            <button type="button" onclick="navigateCakeStep(1)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                            <button type="button" onclick="BoseSweetsEngine.navigateCakeStep(1)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
                                 <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للمقاس
                             </button>
-                            <button type="button" onclick="navigateCakeStep(3)" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                            <button type="button" onclick="BoseSweetsEngine.navigateCakeStep(3)" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
                                 المرحلة الأخيرة: تفاصيل التأكيد <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
                             </button>
                         </div>
@@ -533,7 +356,7 @@
                             <label class="block text-xs font-extrabold text-brandPink flex items-center gap-1.5 uppercase tracking-wide">
                                 <i class="fa-solid fa-shield-halved text-sm"></i> الأمان الصحي المحمي لكافة أفراد الأسرة:
                             </label>
-                            <textarea id="cakeAllergies" rows="2" placeholder="اكتب هنا لو وجد أي حساسية من مكونات معينة لعزلها تماماً" class="w-full p-3.5 border border-brandPink/15 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 bg-white text-brandBlack transition-all leading-relaxed"></textarea>
+                            <textarea id="cakeAllergies" rows="2" placeholder="اكتب هنا لو لوحظ أي حساسية من مكونات معينة لعزلها تماماً" class="w-full p-3.5 border border-brandPink/15 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 bg-white text-brandBlack transition-all leading-relaxed"></textarea>
                         </div>
 
                         <div class="space-y-2">
@@ -543,7 +366,7 @@
 
                         <div class="space-y-3 p-4 bg-white border border-brandPink/10 rounded-2xl shadow-sm">
                             <div class="flex items-center gap-3">
-                                <input type="checkbox" id="cakeCardCheck" onchange="toggleCakeCardInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
+                                <input type="checkbox" id="cakeCardCheck" onchange="BoseSweetsEngine.toggleCakeCardInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
                                 <label for="cakeCardCheck" class="text-xs font-extrabold text-brandBlack cursor-pointer select-none">هل ترغب في إرفاق كارت إهداء خارجي فاخر ومطبوع؟</label>
                             </div>
                             <div id="cakeCardInputArea" class="hidden pt-2 transition-all duration-300">
@@ -552,10 +375,10 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 pt-2">
-                            <button type="button" onclick="navigateCakeStep(2)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                            <button type="button" onclick="BoseSweetsEngine.navigateCakeStep(2)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
                                 <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للتصميم
                             </button>
-                            <button type="button" onclick="addCakeToCart()" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                            <button type="button" onclick="BoseSweetsEngine.addCakeToCart()" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
                                 اعتماد التصميم وإضافته للسلة <i class="fa-solid fa-bag-shopping text-[11px] mr-1"></i>
                             </button>
                         </div>
@@ -603,15 +426,15 @@
                         <div class="space-y-3 p-5 rounded-2xl bg-brandPinkLight/30 border border-brandPink/15">
                             <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">ارفع صورة بوكيه مرجعي (اختياري للحرية الكاملة):</label>
                             <div class="relative border-2 border-dashed border-brandPink/20 hover:border-brandPink rounded-xl p-6 transition-all bg-white text-center cursor-pointer group">
-                                <input type="file" id="roseReferenceFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleRoseReferenceUpload()">
+                                <input type="file" id="roseReferenceFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="BoseSweetsEngine.handleRoseReferenceUpload()">
                                 <div class="space-y-2 relative z-10">
                                     <i class="fa-solid fa-image text-2xl text-brandPink"></i>
                                     <p class="text-xs text-brandBlack font-extrabold" id="roseReferenceLabel">ارفع هنا صورة بوكيه الورد اللي حابب نعمل لك زيه</p>
                                 </div>
                             </div>
                             <div class="flex justify-center pt-2" id="roseQuickBuyArea">
-                                <button type="button" onclick="quickBuyRoseBouquet()" class="text-xs text-brandPink font-extrabold hover:underline">
-                                    <i class="fa-solid fa-bolt animate-pulse"></i> حابب تكتفي بالصورة وتنهي الطلب فوراً؟
+                                <button type="button" onclick="BoseSweetsEngine.quickBuyRoseBouquet()" class="text-xs text-brandPink font-extrabold hover:underline">
+                                    <i class="fa-solid fa-bolt animate-pulse"></i> حابب تكتفي بالصورة وتنهي الطلب فوراً?
                                 </button>
                             </div>
                         </div>
@@ -629,12 +452,12 @@
                             </div>
                             
                             <div class="flex items-center gap-5 justify-center py-2">
-                                <button type="button" onclick="adjustRoseCount(-1)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">-</button>
+                                <button type="button" onclick="BoseSweetsEngine.adjustRoseCount(-1)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">-</button>
                                 <div class="text-center min-w-[80px]">
                                     <span id="roseCount" class="text-2xl font-black text-brandBlack tracking-tight block">15</span>
                                     <span class="text-[9px] text-brandBlack/40 font-extrabold uppercase tracking-wider">وردة معتمدة</span>
                                 </div>
-                                <button type="button" onclick="adjustRoseCount(1)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">+</button>
+                                <button type="button" onclick="BoseSweetsEngine.adjustRoseCount(1)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">+</button>
                             </div>
                         </div>
 
@@ -642,9 +465,9 @@
                             <div class="space-y-2">
                                 <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">نوع الورد المختار لمناسبتكم الكبرى:</label>
                                 <div class="grid grid-cols-3 gap-3">
-                                    <button type="button" onclick="selectRoseType('ورد طبيعي')" id="rose-type-ورد طبيعي" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all text-center">ورد طبيعي فريش</button>
-                                    <button type="button" onclick="selectRoseType('صناعي')" id="rose-type-صناعي" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-extrabold transition-all text-center hover:border-brandPink/30">صناعي راقي</button>
-                                    <button type="button" onclick="selectRoseType('ستان')" id="rose-type-ستان" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-extrabold transition-all text-center hover:border-brandPink/30">ستان مشغول يدوياً</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseType('ورد طبيعي')" id="rose-type-ورد طبيعي" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all text-center">ورد طبيعي فريش</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseType('صناعي')" id="rose-type-صناعي" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-extrabold transition-all text-center hover:border-brandPink/30">صناعي راقي</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseType('ستان')" id="rose-type-ستان" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-extrabold transition-all text-center hover:border-brandPink/30">ستان مشغول يدوياً</button>
                                 </div>
                             </div>
                             <div class="space-y-2">
@@ -654,7 +477,7 @@
                         </div>
 
                         <div class="pt-2">
-                            <button type="button" onclick="navigateRoseStep(2)" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                            <button type="button" onclick="BoseSweetsEngine.navigateRoseStep(2)" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
                                 تنسيق إضافات البوكيه الفاخرة والزينة <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
                             </button>
                         </div>
@@ -663,17 +486,17 @@
                     <div id="rose-screen-2" class="space-y-6 hidden transition-all duration-300">
                         <div class="space-y-4 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
                             <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">خوارزمية دمج الأموال النقدية (الكاش) داخل البوكيه:</label>
-                            <input type="number" id="roseCashAmount" onkeyup="calculateRoseCash()" placeholder="اكتب إجمالي المبلغ المالي المراد لفه وتنسيقه وسط الورد" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
+                            <input type="number" id="roseCashAmount" onkeyup="BoseSweetsEngine.calculateRoseCash()" placeholder="اكتب إجمالي المبلغ المالي المراد لفه وتنسيقه وسط الورد" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
                             
                             <div class="space-y-2">
                                 <label class="block text-[11px] font-extrabold text-brandBlack/50">فئة الورقة النقدية المطلوبة للالتفاف الفني:</label>
                                 <div class="grid grid-cols-6 gap-2">
-                                    <button type="button" onclick="selectRoseDenomination(5)" id="rose-denom-5" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">5 ج</button>
-                                    <button type="button" onclick="selectRoseDenomination(10)" id="rose-denom-10" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">10 ج</button>
-                                    <button type="button" onclick="selectRoseDenomination(20)" id="rose-denom-20" class="py-2 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">20 ج</button>
-                                    <button type="button" onclick="selectRoseDenomination(50)" id="rose-denom-50" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">50 ج</button>
-                                    <button type="button" onclick="selectRoseDenomination(100)" id="rose-denom-100" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">100 ج</button>
-                                    <button type="button" onclick="selectRoseDenomination(200)" id="rose-denom-200" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">200 ج</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(5)" id="rose-denom-5" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">5 ج</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(10)" id="rose-denom-10" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">10 ج</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(20)" id="rose-denom-20" class="py-2 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">20 ج</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(50)" id="rose-denom-50" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">50 ج</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(100)" id="rose-denom-100" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">100 ج</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(200)" id="rose-denom-200" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">200 ج</button>
                                 </div>
                             </div>
                             <div id="roseCashOutput" class="hidden p-3.5 bg-brandPinkLight/30 rounded-xl border border-brandPink/10 text-xs font-bold">
@@ -688,9 +511,9 @@
                                     <p class="text-[10px] text-brandBlack/40 font-bold">تكلفة طباعة وتجهيز كل صورة هي +15 ج.م</p>
                                 </div>
                                 <div class="flex items-center gap-3 bg-brandPinkLight p-1 rounded-full border border-brandPink/10">
-                                    <button type="button" onclick="adjustRosePhotos(-1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
+                                    <button type="button" onclick="BoseSweetsEngine.adjustRosePhotos(-1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
                                     <span id="rosePhotosCount" class="text-xs font-extrabold text-brandBlack w-6 text-center">0</span>
-                                    <button type="button" onclick="adjustRosePhotos(1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
+                                    <button type="button" onclick="BoseSweetsEngine.adjustRosePhotos(1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
                                 </div>
                             </div>
                             <div id="rosePhotoUploadsContainer" class="grid grid-cols-2 gap-3 hidden transition-all duration-300"></div>
@@ -698,7 +521,7 @@
 
                         <div class="space-y-3 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
                             <div class="flex items-center gap-3">
-                                <input type="checkbox" id="roseRibbonCheck" onchange="toggleRoseRibbonInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
+                                <input type="checkbox" id="roseRibbonCheck" onchange="BoseSweetsEngine.toggleRoseRibbonInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
                                 <label for="roseRibbonCheck" class="text-xs font-extrabold text-brandBlack cursor-pointer select-none">إضافة شريط ستان مطبوع يلتف فاخراً حول البوكيه (+50 ج.م)</label>
                             </div>
                             <div id="roseRibbonInputArea" class="hidden pt-1">
@@ -707,10 +530,10 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 pt-2">
-                            <button type="button" onclick="navigateRoseStep(1)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                            <button type="button" onclick="BoseSweetsEngine.navigateRoseStep(1)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
                                 <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للمقاس
                             </button>
-                            <button type="button" onclick="navigateRoseStep(3)" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                            <button type="button" onclick="BoseSweetsEngine.navigateRoseStep(3)" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
                                 إضافة الشوكولاتة وكارت الإهداء <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
                             </button>
                         </div>
@@ -719,14 +542,14 @@
                     <div id="rose-screen-3" class="space-y-6 hidden transition-all duration-300">
                         <div class="space-y-4 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
                             <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">إلصاق الشوكولاتة الفاخرة وتوزيعها داخل البوكيه:</label>
-                            <input type="number" id="roseChocBudget" onkeyup="calculateRoseChocolate()" placeholder="حدد الميزانية المراد تخصيصها لشراء قطع الشوكولاتة المدمجة" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
+                            <input type="number" id="roseChocBudget" onkeyup="BoseSweetsEngine.calculateRoseChocolate()" placeholder="حدد الميزانية المراد تخصيصها لشراء قطع الشوكولاتة المدمجة" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
                             
                             <div class="space-y-2">
                                 <label class="block text-[11px] font-extrabold text-brandBlack/50">فئة سعر قطعة الشوكولاتة المستهدفة للتكرار:</label>
                                 <div class="grid grid-cols-3 gap-3">
-                                    <button type="button" onclick="selectRoseChocPiecePrice(20)" id="rose-choc-piece-20" class="py-2.5 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">قطع فئة 20 جنيه</button>
-                                    <button type="button" onclick="selectRoseChocPiecePrice(30)" id="rose-choc-piece-30" class="py-2.5 rounded-xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/20">قطع فئة 30 جنيه</button>
-                                    <button type="button" onclick="selectRoseChocPiecePrice(50)" id="rose-choc-piece-50" class="py-2.5 rounded-xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/20">قطع فئة 50 جنيه</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseChocPiecePrice(20)" id="rose-choc-piece-20" class="py-2.5 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">قطع فئة 20 جنيه</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseChocPiecePrice(30)" id="rose-choc-piece-30" class="py-2.5 rounded-xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/20">قطع فئة 30 جنيه</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseChocPiecePrice(50)" id="rose-choc-piece-50" class="py-2.5 rounded-xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/20">قطع فئة 50 جنيه</button>
                                 </div>
                             </div>
                             <div id="roseChocOutput" class="hidden p-3.5 bg-brandPinkLight/30 rounded-xl border border-brandPink/10 text-xs font-bold">
@@ -734,23 +557,23 @@
                             </div>
                         </div>
 
-                        <div class="space-y-3 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
+                        <div class="space-y-4 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
                             <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">إضافة بارات شوكولاتة كبرى فاخرة (ثابتة السعر):</label>
                             <div class="space-y-3">
                                 <div class="flex items-center justify-between border-b border-brandPink/5 pb-2">
                                     <span class="text-xs font-bold text-brandBlack/70">بار جالاكسي كبير فاخر (100 ج.م)</span>
                                     <div class="flex items-center gap-3 bg-brandPinkLight p-1 rounded-full border border-brandPink/10">
-                                        <button type="button" onclick="adjustRosePremiumBar(100, -1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
+                                        <button type="button" onclick="BoseSweetsEngine.adjustRosePremiumBar(100, -1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
                                         <span id="rosePremiumBar100" class="text-xs font-extrabold text-brandBlack w-4 text-center">0</span>
-                                        <button type="button" onclick="adjustRosePremiumBar(100, 1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
+                                        <button type="button" onclick="BoseSweetsEngine.adjustRosePremiumBar(100, 1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
                                     </div>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <span class="text-xs font-bold text-brandBlack/70">بار كادبوري حليبي فاخر (120 ج.م)</span>
                                     <div class="flex items-center gap-3 bg-brandPinkLight p-1 rounded-full border border-brandPink/10">
-                                        <button type="button" onclick="adjustRosePremiumBar(120, -1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
+                                        <button type="button" onclick="BoseSweetsEngine.adjustRosePremiumBar(120, -1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
                                         <span id="rosePremiumBar120" class="text-xs font-extrabold text-brandBlack w-4 text-center">0</span>
-                                        <button type="button" onclick="adjustRosePremiumBar(120, 1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
+                                        <button type="button" onclick="BoseSweetsEngine.adjustRosePremiumBar(120, 1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
                                     </div>
                                 </div>
                             </div>
@@ -758,7 +581,7 @@
 
                         <div class="space-y-3 p-4 bg-white border border-brandPink/10 rounded-2xl shadow-sm">
                             <div class="flex items-center gap-3">
-                                <input type="checkbox" id="roseCardCheck" onchange="toggleRoseCardInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
+                                <input type="checkbox" id="roseCardCheck" onchange="BoseSweetsEngine.toggleRoseCardInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
                                 <label for="roseCardCheck" class="text-xs font-extrabold text-brandBlack cursor-pointer select-none">شراء كارت إهداء خارجي فاخر مع الطباعة الملونة (+20 ج.م)</label>
                             </div>
                             <div id="roseCardInputArea" class="hidden pt-2 transition-all duration-300">
@@ -767,16 +590,17 @@
                         </div>
 
                         <div class="grid grid-cols-2 gap-4 pt-2">
-                            <button type="button" onclick="navigateRoseStep(2)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                            <button type="button" onclick="BoseSweetsEngine.navigateRoseStep(2)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
                                 <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للتخصيص
                             </button>
-                            <button type="button" onclick="addRoseToCart()" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                            <button type="button" onclick="BoseSweetsEngine.addRoseToCart()" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
                                 إتمام باقة الزهور وإضافتها للسلة <i class="fa-solid fa-bag-shopping text-[11px] mr-1"></i>
                             </button>
                         </div>
                     </div>
                 </div>
-            </section>            <!-- VIEW: CART PAGE (سلة المشتريات) -->
+            </section>
+
             <section id="view-cart" class="view-section hidden py-12 bg-white">
                 <div class="max-w-4xl mx-auto px-4">
                     <h1 class="text-2xl md:text-3xl font-extrabold text-brandBlack mb-8">سلة المشتريات المعتمدة</h1>
@@ -786,26 +610,22 @@
                             <i class="fa-solid fa-cart-shopping text-3xl"></i>
                         </div>
                         <p class="text-sm font-bold text-brandBlack/60">سلتك خالية تماماً من المنتجات حالياً</p>
-                        <button onclick="navigateTo('menu')" class="px-6 py-2.5 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full text-xs transition-colors shadow-md">
+                        <button onclick="BoseSweetsEngine.navigateTo('menu')" class="px-6 py-2.5 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full text-xs transition-colors shadow-md">
                             تصفح المنيو للبدء
                         </button>
                     </div>
 
                     <div id="cartItemsContainer" class="space-y-6 hidden">
-                        <!-- Items list -->
-                        <div id="cartItemsList" class="space-y-4">
-                            <!-- Injected dynamically by JS -->
-                        </div>
+                        <div id="cartItemsList" class="space-y-4"></div>
 
-                        <!-- Summary Block and Checkout Navigation -->
                         <div class="p-6 rounded-2xl bg-brandPinkLight border border-brandPink/25 flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
                             <div>
                                 <span class="text-xs font-bold text-brandBlack/60">إجمالي قيمة الفاتورة المقدرة:</span>
                                 <p class="text-2xl font-extrabold text-brandPink" id="cartTotalSum">0 ج.م</p>
                             </div>
                             <div class="flex gap-3 w-full sm:w-auto">
-                                <button onclick="clearCart()" class="px-5 py-3 border border-brandPink/20 hover:bg-brandPinkLight font-bold text-sm text-brandBlack/70 rounded-full transition-all">تفريغ السلة</button>
-                                <button onclick="navigateTo('checkout')" class="px-8 py-3.5 bg-brandPink hover:bg-brandPinkDark text-white font-bold text-sm rounded-full transition-all flex-grow sm:flex-grow-0 text-center shadow-md">
+                                <button onclick="BoseSweetsEngine.clearCart()" class="px-5 py-3 border border-brandPink/20 hover:bg-brandPinkLight font-bold text-sm text-brandBlack/70 rounded-full transition-all">تفريغ السلة</button>
+                                <button onclick="BoseSweetsEngine.navigateTo('checkout')" class="px-8 py-3.5 bg-brandPink hover:bg-brandPinkDark text-white font-bold text-sm rounded-full transition-all flex-grow sm:flex-grow-0 text-center shadow-md">
                                     التوجه لإتمام الطلب
                                 </button>
                             </div>
@@ -814,13 +634,11 @@
                 </div>
             </section>
 
-            <!-- VIEW: CHECKOUT PAGE (إتمام الطلب) -->
             <section id="view-checkout" class="view-section hidden py-12 bg-white">
                 <div class="max-w-3xl mx-auto px-4">
                     <h1 class="text-2xl md:text-3xl font-extrabold text-brandBlack mb-8">إتمام المعاملة وحجز الطلب</h1>
                     
-                    <form id="checkoutForm" onsubmit="handleCheckoutSubmit(event)" class="space-y-6">
-                        <!-- Customer Info -->
+                    <form id="checkoutForm" onsubmit="BoseSweetsEngine.handleCheckoutSubmit(event)" class="space-y-6">
                         <div class="space-y-4">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="space-y-2">
@@ -834,61 +652,45 @@
                             </div>
                         </div>
 
-                        <!-- Delivery or Pickup Select -->
                         <div class="space-y-3">
                             <label class="block text-sm font-bold text-brandBlack">طريقة تسليم الطلب المفضلة:</label>
                             <div class="grid grid-cols-2 gap-4">
-                                <button type="button" onclick="selectDeliveryMethod('pickup')" id="ship-pickup" class="p-4 border-2 border-brandPink bg-brandPink/5 text-brandPink rounded-2xl text-sm font-bold transition-all text-center">استلام من الفرع</button>
-                                <button type="button" onclick="selectDeliveryMethod('ship')" id="ship-delivery" class="p-4 border-2 border-brandPink/10 text-brandBlack/65 bg-white rounded-2xl text-sm font-bold transition-all text-center">شحن للعنوان</button>
+                                <button type="button" onclick="BoseSweetsEngine.selectDeliveryMethod('pickup')" id="ship-pickup" class="p-4 border-2 border-brandPink bg-brandPink/5 text-brandPink rounded-2xl text-sm font-bold transition-all text-center">استلام من الفرع</button>
+                                <button type="button" onclick="BoseSweetsEngine.selectDeliveryMethod('ship')" id="ship-delivery" class="p-4 border-2 border-brandPink/10 text-brandBlack/65 bg-white rounded-2xl text-sm font-bold transition-all text-center">شحن للعنوان</button>
                             </div>
                         </div>
 
-                        <!-- Dynamic Pickup Address Panel -->
                         <div id="pickupInfoPanel" class="p-5 rounded-2xl bg-brandPinkLight border border-brandPink/20 space-y-1">
                             <p class="text-xs text-brandBlack/60 font-bold">العنوان التفصيلي للفرع للاستلام:</p>
                             <p class="text-sm font-bold text-brandBlack">الكفاح، شارع الوحدة المحلية، بجوار صيدلية الدكتور أحمد مجدي، وبجوار عيادة الدكتور علي.</p>
                         </div>
 
-                        <!-- Dynamic Delivery Address and Rates Panel -->
                         <div id="shipInfoPanel" class="space-y-4 hidden">
                             <div class="space-y-2">
                                 <label class="block text-sm font-bold text-brandBlack">اختر منطقة الشحن المحددة:</label>
-                                <select id="shippingRegion" onchange="calculateShippingFee()" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack">
+                                <select id="shippingRegion" onchange="BoseSweetsEngine.calculateShippingFee()" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack">
                                     <option value="" disabled selected>-- اختر منطقتك للتسليم --</option>
-                                    <option value="الفرافرة">الفرافرة (50 ج.م)</option>
-                                    <option value="13">13 (70 ج.م)</option>
-                                    <option value="الجمعية">الجمعية (50 ج.م)</option>
-                                    <option value="الصنايع">الصنايع (40 ج.م)</option>
-                                    <option value="ابوبكر">ابوبكر (40 ج.م)</option>
-                                    <option value="ابوالهول">ابوالهول (30 ج.م)</option>
-                                    <option value="الكفاح">الكفاح (30 ج.م)</option>
-                                    <option value="الامل">الامل (50 ج.م)</option>
-                                    <option value="17">17 (70 ج.م)</option>
-                                    <option value="ابوهريرة">ابوهريرة (140 ج.م)</option>
                                 </select>
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-bold text-brandBlack">العنوان التفصيلي للتسليم (الشارع والمنزل):</label>
                                 <input type="text" id="custAddress" placeholder="مثال: الشارع الرئيسي، منزل رقم 10" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack">
                             </div>
-                            <!-- Selected shipping fee notification -->
                             <div id="shippingFeeNotice" class="hidden p-4 rounded-xl bg-brandPinkLight border border-brandPink text-xs font-bold text-brandBlack"></div>
                         </div>
 
-                        <!-- Delivery Date & Time Picker -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="space-y-2">
                                 <label class="block text-sm font-bold text-brandBlack">يوم التسليم المطلوب:</label>
-                                <input type="date" id="shipDate" required onchange="validateDateTimeRules()" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack text-right">
+                                <input type="date" id="shipDate" required onchange="BoseSweetsEngine.validateDateTimeRules()" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack text-right">
                             </div>
                             <div class="space-y-2">
                                 <label class="block text-sm font-bold text-brandBlack">ساعة التسليم المطلوبة:</label>
-                                <input type="time" id="shipTime" required onchange="validateDateTimeRules()" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack text-right" dir="rtl">
+                                <input type="time" id="shipTime" required onchange="BoseSweetsEngine.validateDateTimeRules()" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack text-right" dir="rtl">
                             </div>
                         </div>
                         <div id="dateTimeWarning" class="hidden text-xs text-brandPink font-bold"></div>
 
-                        <!-- Detailed Final invoice breakdown -->
                         <div class="p-6 rounded-2xl bg-brandPinkLight border border-brandPink/25 space-y-2">
                             <div class="flex justify-between text-sm text-brandBlack/70 font-semibold">
                                 <span>قيمة المشتريات:</span>
@@ -904,8 +706,7 @@
                             </div>
                         </div>
 
-                        <!-- Sacred Submit Button -->
-                        <button type="submit" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-base transition-all duration-300 shadow-lg shadow-brandPink/20 transform hover:-translate-y-0.5">
+                        <button type="submit" id="checkoutSubmitBtn" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-base transition-all duration-300 shadow-lg shadow-brandPink/20 transform hover:-translate-y-0.5">
                             تأكيد المعاملة وترحيل البيانات للواتساب
                         </button>
                     </form>
@@ -914,7 +715,6 @@
 
         </main>
 
-        <!-- GLOBAL CUSTOM DIALOG / MODAL (No Browser Alerts Allowed) -->
         <div id="globalModal" class="fixed inset-0 z-[100] bg-brandPink/20 backdrop-blur-sm hidden items-center justify-center p-4 transition-all duration-300">
             <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-brandPink/20">
                 <div class="flex items-center gap-3 text-brandPink border-b border-brandPink/10 pb-3">
@@ -922,13 +722,10 @@
                     <h3 id="globalModalTitle" class="text-base font-extrabold text-brandBlack"></h3>
                 </div>
                 <p id="globalModalBody" class="text-sm text-brandBlack/80 leading-relaxed font-bold"></p>
-                <div class="flex justify-end gap-3 pt-2" id="globalModalButtons">
-                    <!-- Dynamic Buttons Injected -->
-                </div>
+                <div class="flex justify-end gap-3 pt-2" id="globalModalButtons"></div>
             </div>
         </div>
 
-        <!-- FOOTER - Purified background to brandPinkLight and text to brandBlack -->
         <footer class="bg-brandPinkLight text-brandBlack py-12 px-4 border-t-2 border-brandPink">
             <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
                 <div class="space-y-4">
@@ -940,12 +737,12 @@
                 <div class="space-y-3">
                     <h4 class="text-sm font-bold text-brandPink">الروابط القانونية والتشغيلية</h4>
                     <ul class="space-y-2 text-xs text-brandBlack/80 font-bold">
-                        <li><a href="#" onclick="showPolicy('about')" class="hover:text-brandPink transition-colors">من نحن وتاريخنا</a></li>
-                        <li><a href="#" onclick="showPolicy('contact')" class="hover:text-brandPink transition-colors">تواصل مباشر معنا</a></li>
-                        <li><a href="#" onclick="showPolicy('privacy')" class="hover:text-brandPink transition-colors">سياسة الخصوصية والأمان</a></li>
-                        <li><a href="#" onclick="showPolicy('refund')" class="hover:text-brandPink transition-colors">سياسة الاسترجاع والضمان</a></li>
-                        <li><a href="#" onclick="showPolicy('delivery')" class="hover:text-brandPink transition-colors">سياسة التوصيل ومطابقة المواصفات</a></li>
-                        <li><a href="#" onclick="showPolicy('care')" class="hover:text-brandPink transition-colors">سياسة الحفاظ على منتجاتنا</a></li>
+                        <li><a href="#" onclick="BoseSweetsEngine.showPolicy('about')" class="hover:text-brandPink transition-colors">من نحن وتاريخنا</a></li>
+                        <li><a href="#" onclick="BoseSweetsEngine.showPolicy('contact')" class="hover:text-brandPink transition-colors">تواصل مباشر معنا</a></li>
+                        <li><a href="#" onclick="BoseSweetsEngine.showPolicy('privacy')" class="hover:text-brandPink transition-colors">سياسة الخصوصية والأمان</a></li>
+                        <li><a href="#" onclick="BoseSweetsEngine.showPolicy('refund')" class="hover:text-brandPink transition-colors">سياسة الاسترجاع والضمان</a></li>
+                        <li><a href="#" onclick="BoseSweetsEngine.showPolicy('delivery')" class="hover:text-brandPink transition-colors">سياسة التوصيل ومطابقة المواصفات</a></li>
+                        <li><a href="#" onclick="BoseSweetsEngine.showPolicy('care')" class="hover:text-brandPink transition-colors">سياسة الحفاظ على منتجاتنا</a></li>
                     </ul>
                 </div>
                 <div class="space-y-4">
@@ -954,7 +751,7 @@
                         <a href="https://facebook.com" target="_blank" class="hover:text-brandPink text-brandBlack transition-all" aria-label="فيسبوك"><i class="fa-brands fa-facebook"></i></a>
                         <a href="https://tiktok.com" target="_blank" class="hover:text-brandPink text-brandBlack transition-all" aria-label="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
                         <a href="https://instagram.com" target="_blank" class="hover:text-brandPink text-brandBlack transition-all" aria-label="انستجرام"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="https://wa.me/201097238441" target="_blank" class="hover:text-brandPink text-emerald-600 transition-all" aria-label="خدمة العملاء واتساب"><i class="fa-brands fa-whatsapp"></i></a>
+                        <a href="https://wa.me/201097238441" target="_blank" class="hover:text-brandPink text-emerald-600 transition-all" id="footerWhatsappLink" aria-label="خدمة العملاء واتساب"><i class="fa-brands fa-whatsapp"></i></a>
                     </div>
                     <p class="text-[10px] text-brandBlack/50 font-bold">حلويات بوسي © 2026. كافة الحقوق محفوظة.</p>
                 </div>
@@ -962,1508 +759,5 @@
         </footer>
 
     </div>
-
-    <!-- CORE SCRIPTING & LOGIC -->
-    <script>
-        // تهيئة اتصال قاعدة البيانات السحابية الآمنة لعلامة حلويات بوسي
-        const firebaseConfig = {
-          apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
-          authDomain: "bosy-sweets.firebaseapp.com",
-          projectId: "bosy-sweets",
-          storageBucket: "bosy-sweets.firebasestorage.app",
-          messagingSenderId: "473615735083",
-          appId: "1:473615735083:web:f09c6001c72640b2588d6e",
-          measurementId: "G-46D1CS3WLB"
-        };
-
-        // تفعيل الخدمات والتحقق الآمن من الهوية
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        let dbUser = null;
-
-        async function initAuth() {
-            try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await auth.signInWithCustomToken(__initial_auth_token);
-                } else {
-                    await auth.signInAnonymously();
-                }
-            } catch (error) {
-                console.error("فشل تفعيل الاتصال السحابي الآمن لعلامة حلويات بوسي:", error);
-            }
-        }
-
-        auth.onAuthStateChanged((user) => {
-            dbUser = user;
-        });
-
-        initAuth();
-
-        // BRAND CONFIGURATION
-        const brandWhatsAppNumber = '01097238441';
-
-        // RAW MENU DATABASE - UPGRADED PRICING +10% PRE-INTEGRATED DYNAMICALLY
-        const rawMenuData = [
-            {
-                id: 'despacito',
-                name: 'الديسباسيتو',
-                img: 'https://picsum.photos/1200/800?random=ds1',
-                desc: 'قاعدة من الكيك الفادج الغني بطبقة كثيفة من النوتيلا والموس الشوكولاتة المحضر بمعايير خاصة. يتميز المنتج بتناغم القوام المتماسك مع سلاسة الموس لضمان تجربة تذوق احترافية وعميقة النكهة.',
-                healthSection: 'نعتمد استخدام البودرة الكاكاو الخام الطبيعية مع موازنة دقيقة لنسب السكر لتعزيز النكهة الأصلية. خالي تماماً من الإضافات الصناعية.',
-                sizes: [
-                    { 
-                        label: 'المثلث', 
-                        flavors: [
-                            { name: 'النوتيلا الدارك', price: 60 }, { name: 'النوتيلا الوايت', price: 60 },
-                            { name: 'اللوتس', price: 60 }, { name: 'الكراميل', price: 60 },
-                            { name: 'الكيندر', price: 60 }, { name: 'البلوبيري', price: 60 },
-                            { name: 'الراسبيري', price: 60 }, { name: 'الكرز', price: 60 },
-                            { name: 'الاسنيكرز', price: 60 }, { name: 'الميكس شوكليت', price: 60 },
-                            { name: 'البيستاشيو', price: 75 }
-                        ]
-                    },
-                    { 
-                        label: 'الوسط', 
-                        flavors: [
-                            { name: 'النوتيلا الدارك', price: 120 }, { name: 'النوتيلا الوايت', price: 120 },
-                            { name: 'اللوتس', price: 120 }, { name: 'الكراميل', price: 120 },
-                            { name: 'الكيندر', price: 120 }, { name: 'البلوبيري', price: 120 },
-                            { name: 'الراسبيري', price: 120 }, { name: 'الكرز', price: 120 },
-                            { name: 'الاسنيكرز', price: 120 }, { name: 'الميكس شوكليت', price: 120 },
-                            { name: 'البيستاشيو', price: 150 }
-                        ]
-                    },
-                    { 
-                        label: 'الكبير', 
-                        flavors: [
-                            { name: 'النوتيلا الدارك', price: 240 }, { name: 'النوتيلا الوايت', price: 240 },
-                            { name: 'اللوتس', price: 240 }, { name: 'الكراميل', price: 240 },
-                            { name: 'الكيندر', price: 240 }, { name: 'البلوبيري', price: 240 },
-                            { name: 'الراسبيري', price: 240 }, { name: 'الكرز', price: 240 },
-                            { name: 'الاسنيكرز', price: 240 }, { name: 'الميكس شوكليت', price: 240 },
-                            { name: 'البيستاشيو', price: 270 }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: 'tortes',
-                name: 'التورت',
-                img: 'https://picsum.photos/1200/800?random=t1',
-                desc: 'نقدم عالماً من التنوع يرتكز على الفئة الملكية الفاخرة بالخامات العالمية وتصاميم الـ 3D الهندسية. يتم تصميم وتنفيذ التورت خصيصاً لتناسب عدد الأفراد بلمسات فنية احترافية.',
-                flavors: [
-                    { name: 'التورتة الملكية', price: 'حسب الطلب' }
-                ],
-                isCustomBuilder: true
-            },
-            {
-                id: 'mini-tortes',
-                name: 'الميني تورتة',
-                img: 'https://picsum.photos/1200/800?random=mt1',
-                desc: 'تورتات صغيرة الحجم تتميز بتفاصيل فنية دقيقة تُنفذ يدوياً وفقاً للتصميم المطلوب لمناسباتكم الخاصة.',
-                flavors: [
-                    { name: 'الفردين', price: 140 },
-                    { name: 'الأربعة أفراد', price: 280 },
-                    { name: 'الستة أفراد', price: 420 }
-                ]
-            },
-            {
-                id: 'gateaux',
-                name: 'الجاتوه',
-                img: 'https://picsum.photos/1200/800?random=g1',
-                desc: 'تشكيلة احترافية من الجاتوه، حيث تشتمل الدستة من أي فئة مختارة على الاثنتي عشرة قطعة لتلائم ضيافتكم.',
-                flavors: [
-                    { name: 'الملكي (12 قطعة)', price: 580 },
-                    { name: 'الكلاسيك (12 قطعة)', price: 460 },
-                    { name: 'السواريه (12 قطعة)', price: 340 }
-                ]
-            },
-            {
-                id: 'qashtoota',
-                name: 'القشطوطة',
-                img: 'https://picsum.photos/1200/800?random=q1',
-                desc: 'الكيك الفانيليا الهش المشبع بالحليب الطبيعي النقي والمغطى بطبقة من كريمة حلويات بوسي الخاصة.',
-                flavors: [
-                    { name: 'النوتيلا الوايت', price: 110 }, { name: 'النوتيلا الدارك', price: 110 },
-                    { name: 'اللوتس', price: 110 }, { name: 'البيستاشيو', price: 130 },
-                    { name: 'الكيندر', price: 110 }, { name: 'الكراميل', price: 110 },
-                    { name: 'المانجا', price: 110 }, { name: 'الفراولة', price: 110 },
-                    { name: 'الموز', price: 110 }, { name: 'الميكس نكهات', price: 110 }
-                ]
-            },
-            {
-                id: 'donuts',
-                name: 'الدوناتس',
-                img: 'https://picsum.photos/1200/800?random=d1',
-                desc: 'حلقات الدوناتس الهشة المخبوزة يومياً لضمان أعلى مستويات النعومة وجودة المذاق المتميز.',
-                flavors: [
-                    { name: 'النوتيلا الوايت', price: 80 }, { name: 'النوتيلا الدارك', price: 80 },
-                    { name: 'اللوتس', price: 80 }, { name: 'البيستاشيو', price: 100 },
-                    { name: 'الكيندر', price: 80 }, { name: 'الكراميل', price: 80 },
-                    { name: 'الريدفيلفت', price: 90 }, { name: 'البلوبيري والراسبيري', price: 90 },
-                    { name: 'الفراولة', price: 80 }, { name: 'المانجا', price: 90 },
-                    { name: 'الماتيلدا', price: 100 }, { name: 'الاوريو', price: 80 }, { name: 'الكرز', price: 80 }
-                ]
-            },
-            {
-                id: 'bambolini',
-                name: 'البامبوليني',
-                img: 'https://picsum.photos/1200/800?random=b1',
-                desc: 'قطع دائرية من العجين الهش محشوة غنياً من الداخل بأجود أنواع الكريمات والصوصات العالمية.',
-                flavors: [
-                    { name: 'النوتيلا الوايت', price: 80 }, { name: 'النوتيلا الدارك', price: 80 },
-                    { name: 'اللوتس', price: 80 }, { name: 'البيستاشيو', price: 100 },
-                    { name: 'الكيندر', price: 80 }, { name: 'الكراميل', price: 80 },
-                    { name: 'الريدفيلفت', price: 90 }, { name: 'البلوبيري والراسبيري', price: 90 },
-                    { name: 'الفراولة', price: 80 }, { name: 'المانجا', price: 90 },
-                    { name: 'الماتيلدا', price: 90 }, { name: 'الاوريو', price: 90 }, { name: 'الكرز', price: 80 }
-                ]
-            },
-            {
-                id: 'cinnabon',
-                name: 'السينابون',
-                img: 'https://picsum.photos/1200/800?random=c1',
-                desc: 'العجينة القطنية المحضرة بالزبدة الفاخرة والقرفة الممتازة المخبوزة طازجة مع الصوصات الرائعة.',
-                flavors: [
-                    { name: 'النوتيلا الدارك', price: 110 }, { name: 'النوتيلا الوايت', price: 110 },
-                    { name: 'البلوبيري', price: 110 }, { name: 'الراسبيري', price: 110 },
-                    { name: 'الرفايلو', price: 110 }, { name: 'الاوريو', price: 110 },
-                    { name: 'اللوتس', price: 110 }, { name: 'البيستاشيو', price: 130 },
-                    { name: 'الكيندر', price: 110 }, { name: 'الكراميل', price: 110 },
-                    { name: 'الكلاسيك', price: 110 }
-                ]
-            },
-            {
-                id: 'box-rowaqan',
-                name: 'البوكس الروقان',
-                img: 'https://picsum.photos/1200/800?random=br1',
-                desc: 'إصدار خاص يجمع تشكيلة متنوعة من منتجات حلويات بوسي المميزة في عبوة واحدة متكاملة وعائلية.',
-                flavors: [ { name: 'المتكامل', price: 500 } ]
-            },
-            {
-                id: 'red-velvet',
-                name: 'الريد فيلفت',
-                img: 'https://picsum.photos/1200/800?random=rv1',
-                desc: 'طبقات الكيك المخملي الفاخر بلونه الأحمر وكريمة الجبن الغنية والمحضرة ببراعة تامة.',
-                flavors: [
-                    { name: 'المثلث الكبير', price: 65 },
-                    { name: 'الكب الوسط', price: 90 },
-                    { name: 'الطاجن الكبير', price: 150 }
-                ]
-            },
-            {
-                id: 'happiness-cups',
-                name: 'الكبات السعادة',
-                img: 'https://picsum.photos/1200/800?random=h1',
-                desc: 'مزيج من طبقات الكيك والموس والكريمات في كبات تعطيك جرعة مركزة ومثالية من الجودة والرضا.',
-                flavors: [
-                    { name: 'النوتيلا', price: 55 }, { name: 'اللوتس', price: 55 }, { name: 'الأوريو', price: 55 },
-                    { name: 'الاسنيكرز', price: 55 }, { name: 'البلوبيري', price: 55 }, { name: 'الراسبيري', price: 55 },
-                    { name: 'الكرز', price: 55 }, { name: 'الكيت كات', price: 55 }, { name: 'الروشيه', price: 55 },
-                    { name: 'الرفايلو', price: 55 }, { name: 'الكيندر', price: 55 }
-                ]
-            },
-            {
-                id: 'cupcakes',
-                name: 'الكب كيك',
-                img: 'https://picsum.photos/1200/800?random=cupcake',
-                desc: 'قطع الكب كيك الفاخرة المخبوزة بعناية ومزينة بكريمة حلويات بوسي الغنية والصوصات المستوردة.',
-                flavors: [
-                    { name: 'النوتيلا الفاخرة', price: 40 },
-                    { name: 'اللوتس البلجيكي', price: 40 },
-                    { name: 'الفستق الطبيعي', price: 50 }
-                ]
-            },
-            {
-                id: 'roses',
-                name: 'الورد',
-                img: 'https://picsum.photos/1200/800?random=roses1',
-                desc: 'الباقات الزهور المختارة بعناية فائقة لتكون المكمل المثالي لهدايا حلويات بوسي الراقية لمناسباتكم.',
-                flavors: [
-                    { name: 'الطبيعي والصناعي', price: 'حسب الطلب' },
-                    { name: 'الستان المشغول يدوياً', price: 'حسب الطلب' }
-                ],
-                isCustomBuilder: true
-            }
-        ];
-
-        // GLOBAL DYNAMIC PRICING ADJUSTMENT (+10%) PROCESSOR
-        const menuData = JSON.parse(JSON.stringify(rawMenuData)).map(item => {
-            if (item.flavors) {
-                item.flavors = item.flavors.map(f => {
-                    if (typeof f.price === 'number') {
-                        f.price = Math.round(f.price * 1.1);
-                    }
-                    return f;
-                });
-            }
-            if (item.sizes) {
-                item.sizes = item.sizes.map(size => {
-                    size.flavors = size.flavors.map(f => {
-                        if (typeof f.price === 'number') {
-                            f.price = Math.round(f.price * 1.1);
-                        }
-                        return f;
-                    });
-                    return size;
-                });
-            }
-            return item;
-        });
-
-        // GLOBAL APPLICATION STATE
-        let state = {
-            currentView: 'home',
-            cart: [],
-            homeRevealAll: false,
-            // Cake Builder state
-            cake: {
-                step: 1,
-                base: 'فانيليا',
-                people: 4,
-                shape: 'دائرة',
-                designFile: null,
-                printOption: 'none',
-                printFile: null,
-                theme: '',
-                allergies: '',
-                writing: '',
-                cardEnabled: false,
-                cardText: '',
-                basePricePerPerson: 145
-            },
-            // Rose Builder state
-            rose: {
-                step: 1,
-                referenceFile: null,
-                count: 15,
-                type: 'ورد طبيعي',
-                colors: '',
-                cashAmount: 0,
-                cashDenomination: 20,
-                photosCount: 0,
-                photoFiles: [],
-                ribbonEnabled: false,
-                ribbonText: '',
-                chocBudget: 0,
-                chocPiecePrice: 20,
-                premiumBar100: 0,
-                premiumBar120: 0,
-                cardEnabled: false,
-                cardText: ''
-            },
-            // Order checkout details
-            checkout: {
-                method: 'pickup', // pickup | ship
-                region: '',
-                shippingFee: 0,
-                address: '',
-                date: '',
-                time: ''
-            }
-        };
-
-        // VIEW NAVIGATION ENGINE
-        function navigateTo(viewId, productId = null) {
-            state.currentView = viewId;
-            document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
-            
-            const targetView = document.getElementById(`view-${viewId}`);
-            if (targetView) targetView.classList.remove('hidden');
-
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-
-            if (viewId === 'home') {
-                renderHomeGrid();
-            } else if (viewId === 'menu') {
-                renderMenuCategories();
-            } else if (viewId === 'product' && productId) {
-                renderProductPage(productId);
-            } else if (viewId === 'cake-builder') {
-                resetCakeBuilder();
-                navigateCakeStep(1);
-            } else if (viewId === 'rose-builder') {
-                resetRoseBuilder();
-                navigateRoseStep(1);
-            } else if (viewId === 'cart') {
-                renderCart();
-            } else if (viewId === 'checkout') {
-                renderCheckout();
-            }
-        }
-
-        // SIDEBAR ENGINE
-        function toggleSidebar(isOpen) {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            if (isOpen) {
-                sidebar.classList.remove('translate-x-full');
-                overlay.classList.remove('pointer-events-none', 'opacity-0');
-            } else {
-                sidebar.classList.add('translate-x-full');
-                overlay.classList.add('pointer-events-none', 'opacity-0');
-            }
-        }
-
-        // UNIVERSAL SEARCH ROUTINE
-        function handleSearch(event) {
-            if (event.key === 'Enter' || event.type === 'keyup') {
-                const query = event.target.value.trim().toLowerCase();
-                if (!query) return;
-                // Simple redirection to Menu if they are searching
-                navigateTo('menu');
-                // Filter the display
-                const cards = document.querySelectorAll('.category-card');
-                cards.forEach(card => {
-                    const text = card.textContent.toLowerCase();
-                    if (text.includes(query)) {
-                        card.classList.remove('hidden');
-                    } else {
-                        card.classList.add('hidden');
-                    }
-                });
-            }
-        }
-
-        // GLOBAL MODAL ALERT SYSTEM (Pure UI Dialog replacement for browser alerts)
-        function showGlobalModal(title, message, buttons = [], icon = 'fa-circle-exclamation') {
-            const modal = document.getElementById('globalModal');
-            const mTitle = document.getElementById('globalModalTitle');
-            const mBody = document.getElementById('globalModalBody');
-            const mIcon = document.getElementById('globalModalIcon');
-            const mButtons = document.getElementById('globalModalButtons');
-
-            mTitle.textContent = title;
-            mBody.textContent = message;
-            mIcon.innerHTML = `<i class="fa-solid ${icon}"></i>`;
-            mButtons.innerHTML = '';
-
-            if (buttons.length === 0) {
-                buttons = [{ text: 'حسناً، فهمت', action: () => closeModal(), primary: true }];
-            }
-
-            buttons.forEach(btn => {
-                const bEl = document.createElement('button');
-                bEl.textContent = btn.text;
-                bEl.className = btn.primary 
-                    ? "px-5 py-2.5 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-bold rounded-full transition-all duration-200"
-                    : "px-5 py-2.5 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack text-xs font-bold rounded-full transition-all duration-200 border border-brandPink/20";
-                bEl.onclick = btn.action;
-                mButtons.appendChild(bEl);
-            });
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('globalModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        // HOME SLIDERS AND DATA CAROUSELS GENERATOR (With 40% Card Width Increase)
-        function initHomeSliders() {
-            // 1. الأكثر مبيعاً - 8 items (Width Increased by 40% from 280px to 392px)
-            const bestsellers = [
-                menuData.find(i => i.id === 'despacito'),
-                menuData.find(i => i.id === 'cinnabon'),
-                menuData.find(i => i.id === 'qashtoota'),
-                menuData.find(i => i.id === 'donuts'),
-                menuData.find(i => i.id === 'happiness-cups'),
-                menuData.find(i => i.id === 'red-velvet'),
-                menuData.find(i => i.id === 'bambolini'),
-                menuData.find(i => i.id === 'mini-tortes')
-            ];
-
-            const sliderBestsellers = document.getElementById('bestsellersContainer');
-            sliderBestsellers.innerHTML = bestsellers.filter(Boolean).map(item => `
-                <div class="min-w-[392px] w-[392px] max-w-[85vw] bg-white rounded-3xl overflow-hidden border border-brandPink/20 snap-start flex flex-col justify-between hover:shadow-lg transition-all duration-300">
-                    <div>
-                        <div class="h-60 overflow-hidden relative">
-                            <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-6 space-y-3">
-                            <h3 class="font-extrabold text-brandBlack text-lg">${item.name}</h3>
-                            <p class="text-sm text-brandBlack/70 line-clamp-2 leading-relaxed font-semibold">${item.desc}</p>
-                        </div>
-                    </div>
-                    <div class="p-6 pt-0">
-                        <button onclick="navigateTo('product', '${item.id}')" class="w-full py-3.5 bg-brandPinkLight hover:bg-brandPink text-brandBlack hover:text-white rounded-full text-xs font-bold transition-all duration-300">
-                            استعرض الأصناف
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-
-            // 2. عقد من الإتقان slideshow logic
-            const promoImages = [
-                'https://picsum.photos/1200/800?random=slide1',
-                'https://picsum.photos/1200/800?random=slide2',
-                'https://picsum.photos/1200/800?random=slide3'
-            ];
-            let currentSlideIndex = 0;
-            setInterval(() => {
-                currentSlideIndex = (currentSlideIndex + 1) % promoImages.length;
-                const slideImg = document.getElementById('slideshowImage');
-                if (slideImg) {
-                    slideImg.style.opacity = 0;
-                    setTimeout(() => {
-                        slideImg.src = promoImages[currentSlideIndex];
-                        slideImg.style.opacity = 1;
-                    }, 300);
-                }
-            }, 5000);
-
-            // 3. وصل حديثاً - 6 items (Width Increased by 40% from 280px to 392px)
-            const newArrived = [
-                menuData.find(i => i.id === 'cupcakes'),
-                menuData.find(i => i.id === 'box-rowaqan'),
-                menuData.find(i => i.id === 'qashtoota'),
-                menuData.find(i => i.id === 'donuts'),
-                menuData.find(i => i.id === 'cinnabon'),
-                menuData.find(i => i.id === 'bambolini')
-            ];
-            const newlyArrivedSlider = document.getElementById('newlyArrivedContainer');
-            newlyArrivedSlider.innerHTML = newArrived.filter(Boolean).map(item => `
-                <div class="min-w-[392px] w-[392px] max-w-[85vw] bg-white rounded-3xl overflow-hidden border border-brandPink/20 snap-start flex flex-col justify-between hover:shadow-lg transition-all duration-300">
-                    <div>
-                        <div class="h-60 overflow-hidden relative">
-                            <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover">
-                            <span class="absolute top-4 right-4 px-3 py-1 bg-brandPink text-white text-[10px] font-extrabold rounded-full">جديد</span>
-                        </div>
-                        <div class="p-6 space-y-3">
-                            <h3 class="font-extrabold text-brandBlack text-lg">${item.name}</h3>
-                            <p class="text-sm text-brandBlack/70 line-clamp-2 leading-relaxed font-semibold">${item.desc}</p>
-                        </div>
-                    </div>
-                    <div class="p-6 pt-0">
-                        <button onclick="navigateTo('product', '${item.id}')" class="w-full py-3.5 bg-brandPinkLight hover:bg-brandPink text-brandBlack hover:text-white rounded-full text-xs font-bold transition-all duration-300">
-                            تفاصيل المنتج
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-// تسوق حسب الفئة - تم التكبير بنسبة 40% إلى px لهذا القسم فقط (العرض من 280 لـ 40% 392px)
-const catSlider = document.getElementById('categoriesSliderContainer');
-
-if (catSlider) {
-    catSlider.innerHTML = menuData.map(function(item) {
-        return `
-            <div class="min-w-[392px] w-[392px] max-w-[85vw] bg-white rounded-[32px] border border-brandPink/15 overflow-hidden text-center hover:shadow-[0_12px_40px_rgba(255,145,164,0.1)] transition-all duration-500 flex flex-col justify-between p-2.5 group">
-<div class="h-[336px] rounded-[24px] overflow-hidden bg-brandPinkLight relative">
-                    <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-brandPink/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                </div>
-                <div class="p-6 space-y-4">
-                    <h4 class="font-black text-brandBlack text-xl tracking-tight">${item.name}</h4>
-                    <p class="text-[11px] text-brandBlack/40 font-bold leading-relaxed line-clamp-1 px-4">
-                        استكشفي تشكيلة حلويات بوسي الفاخرة لهذا الصنف
-                    </p>
-                    <button onclick="navigateTo('product', '${item.id}')" class="w-full py-3.5 bg-brandPink hover:bg-brandPinkDark text-white font-black text-xs rounded-full transition-all duration-300 shadow-md transform active:scale-95">
-                        استعرض الأقسام المعتمدة
-                    </button>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-            // RENDER PRODUCTS GRID (الصفحة الرئيسية - 8 cards shown in sets of 4)
-        function renderHomeGrid() {
-            // Let's take 8 key flavor choices from multiple categories to display directly.
-            const sampleFlavors = [
-                { id: 'happiness-cups', flavorName: 'الكبات السعادة - نوتيلا', price: 61, img: 'https://picsum.photos/400/400?random=hs1', desc: 'مزيج طبقات الكيك والموس مع النوتيلا الغنية.' },
-                { id: 'cinnabon', flavorName: 'السينابون - كلاسيك', price: 121, img: 'https://picsum.photos/400/400?random=cn1', desc: 'عجينة قطنية محضرة بالزبدة الفاخرة والقرفة.' },
-                { id: 'donuts', flavorName: 'الدوناتس - لوتس', price: 88, img: 'https://picsum.photos/400/400?random=dn1', desc: 'حلقات الدوناتس الهشة المغطاة بزبدة اللوتس الأصلية.' },
-                { id: 'qashtoota', flavorName: 'القشطوطة - مانجا', price: 121, img: 'https://picsum.photos/400/400?random=qs1', desc: 'الكيك المشبع بالحليب ومغطى بقطع المانجا الطازجة.' },
-                { id: 'bambolini', flavorName: 'البامبوليني - كراميل', price: 88, img: 'https://picsum.photos/400/400?random=bb1', desc: 'بامبوليني هش محشو غنياً بصوص الكراميل الطبيعي.' },
-                { id: 'red-velvet', flavorName: 'الريد فيلفت - مثلث كبير', price: 72, img: 'https://picsum.photos/400/400?random=rv1', desc: 'طبقات الكيك المخملي الفاخر وكريمة الجبن الغنية.' },
-                { id: 'mini-tortes', flavorName: 'الميني تورتة - الفردين', price: 154, img: 'https://picsum.photos/400/400?random=mt1', desc: 'ميني تورتة فنية دقيقة مخصصة لشخصين.' },
-                { id: 'box-rowaqan', flavorName: 'البوكس الروقان - المتكامل', price: 550, img: 'https://picsum.photos/400/400?random=bx1', desc: 'تشكيلة متكاملة وعائلية تضم كل ما يسعدكم.' }
-            ];
-
-            const grid = document.getElementById('productsGridHome');
-            const limit = state.homeRevealAll ? 8 : 4;
-
-            grid.innerHTML = sampleFlavors.slice(0, limit).map((f, index) => `
-                <div class="bg-white rounded-3xl overflow-hidden border border-brandPink/15 flex flex-col justify-between hover:shadow-lg transition-all duration-300">
-                    <div>
-                        <div class="aspect-square overflow-hidden relative">
-                            <img src="${f.img}" alt="${f.flavorName}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-4 space-y-1">
-                            <h3 class="font-extrabold text-brandBlack text-xs md:text-sm line-clamp-1">${f.flavorName}</h3>
-                            <p class="text-[10px] text-brandBlack/60 font-bold line-clamp-2 leading-relaxed">${f.desc}</p>
-                        </div>
-                    </div>
-                    <div class="p-4 pt-0 space-y-3">
-                        <!-- Quantity Selector + Price in middle -->
-                        <div class="flex items-center justify-between bg-brandPinkLight rounded-full p-1 border border-brandPink/15">
-                            <button onclick="adjustHomeCardQty(${index}, -1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs">-</button>
-                            <span class="text-xs font-extrabold text-brandPink" id="homePriceQty-${index}">${f.price} ج.م</span>
-                            <button onclick="adjustHomeCardQty(${index}, 1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs">+</button>
-                        </div>
-                        <button onclick="addHomeProductToCart('${f.id}', '${f.flavorName}', ${f.price}, ${index})" class="w-full py-2 bg-brandPink hover:bg-brandPinkDark text-white rounded-full text-[11px] font-bold transition-all duration-300">
-                            اضافة للسلة
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-
-            // Hide reveal button if all revealed
-            const showMoreBtn = document.getElementById('showMoreHomeContainer');
-            if (state.homeRevealAll) {
-                showMoreBtn.classList.add('hidden');
-            } else {
-                showMoreBtn.classList.remove('hidden');
-            }
-        }
-
-        // Home cards quantity multiplier (internal layout helper)
-        let homeCardQtys = [1, 1, 1, 1, 1, 1, 1, 1];
-        function adjustHomeCardQty(index, dir) {
-            let current = homeCardQtys[index] || 1;
-            current = Math.max(1, current + dir);
-            homeCardQtys[index] = current;
-
-            const samplePrices = [61, 121, 88, 121, 88, 72, 154, 550];
-            const basePrice = samplePrices[index];
-            const element = document.getElementById(`homePriceQty-${index}`);
-            if (element) {
-                element.textContent = `${basePrice * current} ج.م`;
-            }
-        }
-
-        function revealAllHomeProducts() {
-            state.homeRevealAll = true;
-            renderHomeGrid();
-        }
-
-        function addHomeProductToCart(productId, flavorName, basePrice, index) {
-            const qty = homeCardQtys[index] || 1;
-            const finalPrice = basePrice * qty;
-            
-            state.cart.push({
-                id: productId,
-                name: `${flavorName}`,
-                price: finalPrice,
-                qty: qty,
-                isCustom: false,
-                details: null
-            });
-            updateCartBadge();
-            showGlobalModal('عملية ناجحة', `تمت إضافة ${qty} من (${flavorName}) إلى سلة المشتريات المعتمدة بنجاح.`, [], 'fa-circle-check');
-        }
-
-        // RENDER MENU PAGE CATEGORIES
-        function renderMenuCategories() {
-            const grid = document.getElementById('menuCategoriesGrid');
-            grid.innerHTML = menuData.map(item => `
-                <div class="bg-white rounded-3xl overflow-hidden border border-brandPink/15 hover:shadow-xl transition-all duration-300 flex flex-col justify-between category-card">
-                    <div>
-                        <div class="h-56 overflow-hidden">
-                            <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-6 space-y-3">
-                            <h2 class="font-extrabold text-brandBlack text-lg">${item.name}</h2>
-                            <p class="text-xs text-brandBlack/60 font-semibold leading-relaxed line-clamp-3">${item.desc}</p>
-                        </div>
-                    </div>
-                    <div class="p-6 pt-0">
-                        <button onclick="navigateTo('product', '${item.id}')" class="w-full py-3.5 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-bold rounded-full transition-all text-center">
-                            اعرف أكتر
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-// RENDER DEDICATED PRODUCT DETAILS PAGE - ULTRA-PREMIUM LUXURY UX VERSION
-function renderProductPage(productId) {
-    const item = menuData.find(i => i.id === productId);
-    if (!item) return;
-
-    const container = document.getElementById('productDetailContainer');
-    let flavorsHtml = '';
-    
-    if (item.isCustomBuilder) {
-        flavorsHtml = `
-            <div class="p-8 rounded-[32px] bg-brandPinkLight text-center space-y-5 border border-brandPink/15 shadow-[0_10px_30px_rgba(255,145,164,0.05)] max-w-xl mx-auto">
-                <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm border border-brandPink/10">
-                    <i class="fa-solid fa-wand-magic-sparkles text-brandPink text-sm"></i>
-                </div>
-                <p class="text-xs md:text-sm font-bold text-brandBlack leading-relaxed px-4">هذا الصنف الفاخر يتطلب تنسيقاً دقيقاً ومميزاً لضمان تقديم أعلى مستويات الفخامة والرقي التي تليق باختياراتك.</p>
-                <button onclick="navigateTo('${productId === 'tortes' ? 'cake-builder' : 'rose-builder'}')" class="px-8 py-3.5 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-bold rounded-full transition-all duration-300 shadow-md transform active:scale-95 tracking-wide">
-                    دخول محاكي البناء المخصص
-                </button>
-            </div>
-        `;
-    } else if (item.id === 'despacito') {
-        flavorsHtml = `
-            <div class="space-y-8">
-                <div class="flex bg-brandPinkLight p-1.5 rounded-2xl border border-brandPink/10 max-w-md mx-auto shadow-[inset_0_2px_4px_rgba(0,0,0,0.01)]">
-                    ${item.sizes.map((sz, index) => `
-                        <button onclick="selectDespacitoSize(${index})" id="despacito-size-tab-${index}" class="flex-1 py-3 text-center text-xs font-extrabold rounded-xl transition-all duration-300 ${index === 0 ? 'bg-white text-brandPink shadow-sm border border-brandPink/5' : 'text-brandBlack/40 hover:text-brandBlack'}">
-                            حجم ${sz.label}
-                        </button>
-                    `).join('')}
-                </div>
-                <div id="despacitoFlavorsGrid" class="grid grid-cols-2 gap-6 md:gap-10 pt-2"></div>
-            </div>
-        `;
-
-        window.selectDespacitoSize = function(sizeIndex) {
-            const sizeData = item.sizes[sizeIndex];
-            if (!sizeData) return;
-
-            item.sizes.forEach((_, idx) => {
-                const tab = document.getElementById(`despacito-size-tab-${idx}`);
-                if (tab) {
-                    if (idx === sizeIndex) {
-                        tab.className = "flex-1 py-3 text-center text-xs font-extrabold rounded-xl bg-white text-brandPink shadow-sm border border-brandPink/5 transition-all duration-300";
-                    } else {
-                        tab.className = "flex-1 py-3 text-center text-xs font-extrabold rounded-xl text-brandBlack/40 hover:text-brandBlack transition-all duration-300";
-                    }
-                }
-            });
-
-            const despacitoGrid = document.getElementById('despacitoFlavorsGrid');
-            if (despacitoGrid) {
-                if (!window.despacitoQtys) window.despacitoQtys = {};
-                
-                despacitoGrid.innerHTML = sizeData.flavors.map((f, idx) => {
-                    const uniqueKey = `${sizeIndex}-${idx}`;
-                    window.despacitoQtys[uniqueKey] = window.despacitoQtys[uniqueKey] || 1;
-                    const currentQty = window.despacitoQtys[uniqueKey];
-                    
-                    return `
-                        <div class="bg-white rounded-[36px] overflow-hidden border border-brandPink/10 flex flex-col justify-between shadow-[0_10px_35px_rgba(255,145,164,0.04)] hover:shadow-[0_15px_45px_rgba(255,145,164,0.1)] transition-all duration-500 group">
-                            <div>
-                                <div class="aspect-square overflow-hidden relative bg-brandPinkLight">
-                                    <img src="${item.img}" alt="${f.name}" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105">
-                                    <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-brandPink/10 shadow-sm">
-                                        <span class="text-[10px] font-black text-brandPink transition-all duration-150" id="despacitoFloatPrice-${uniqueKey}">${f.price * currentQty} ج.م</span>
-                                    </div>
-                                </div>
-                                <div class="p-6 pb-4 space-y-1.5">
-                                    <h3 class="font-extrabold text-brandBlack text-xs md:text-sm tracking-wide line-clamp-1">${item.name} - ${f.name}</h3>
-                                    <p class="text-[10px] text-brandBlack/40 font-semibold leading-relaxed line-clamp-2 min-h-[32px]">${item.desc}</p>
-                                </div>
-                            </div>
-                            <div class="p-6 pt-0">
-                                <div class="grid grid-cols-5 gap-2 items-center bg-brandPinkLight rounded-full p-1 border border-brandPink/10">
-                                    <button type="button" onclick="adjustDespacitoQty('${uniqueKey}', ${f.price}, -1)" class="col-span-1 w-8 h-8 rounded-full bg-white text-brandBlack font-black flex items-center justify-center text-xs shadow-sm hover:bg-brandPinkLight active:scale-90 transition-all">-</button>
-                                    <span class="col-span-1 text-center text-xs font-black text-brandBlack transition-all" id="despacitoQty-${uniqueKey}">${currentQty}</span>
-                                    <button type="button" onclick="adjustDespacitoQty('${uniqueKey}', ${f.price}, 1)" class="col-span-1 w-8 h-8 rounded-full bg-white text-brandBlack font-black flex items-center justify-center text-xs shadow-sm hover:bg-brandPinkLight active:scale-90 transition-all">+</button>
-                                    <button type="button" onclick="addDespacitoToCart('${item.name} (حجم ${sizeData.label} - ${f.name})', ${f.price}, '${uniqueKey}')" class="col-span-2 h-8 bg-brandPink hover:bg-brandPinkDark text-white rounded-full text-[10px] font-black transition-all duration-300 flex items-center justify-center shadow-sm">إضافة</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-        };
-
-        window.adjustDespacitoQty = function(key, basePrice, dir) {
-            let current = window.despacitoQtys[key] || 1;
-            if (dir === 1 && current >= 50) { showGlobalModal('حد الأمان للطلب', 'الحد الأقصى للمنتج هو 50 قطعة في الطلب الواحد لسلامة التجهيز الفني.'); return; }
-            current = Math.max(1, current + dir);
-            window.despacitoQtys[key] = current;
-            
-            const qtyEl = document.getElementById(`despacitoQty-${key}`);
-            if (qtyEl) {
-                qtyEl.textContent = current;
-                qtyEl.classList.add('scale-125', 'text-brandPink');
-                setTimeout(() => qtyEl.classList.remove('scale-125', 'text-brandPink'), 150);
-            }
-            
-            const floatPriceEl = document.getElementById(`despacitoFloatPrice-${key}`);
-            if (floatPriceEl) {
-                floatPriceEl.textContent = `${basePrice * current} ج.م`;
-                floatPriceEl.classList.add('scale-110');
-                setTimeout(() => floatPriceEl.classList.remove('scale-110'), 150);
-            }
-        };
-
-        window.addDespacitoToCart = function(fullName, basePrice, key) {
-            const qty = window.despacitoQtys[key] || 1;
-            state.cart.push({ id: 'despacito', name: fullName, price: basePrice * qty, qty: qty, isCustom: false, details: null });
-            updateCartBadge();
-            showGlobalModal('عملية ناجحة', `تمت إضافة ${qty} من (${fullName}) إلى سلة المشتريات بنجاح.`, [], 'fa-circle-check');
-        };
-
-        setTimeout(() => selectDespacitoSize(0), 50);
-    } else {
-        const isFullWidth = ['gateaux', 'box-rowaqan', 'red-velvet', 'mini-tortes', 'cupcakes'].includes(item.id);
-        // هندسة المساحات: جاب 6 للأصناف اليومية المتجاورة وجاب 10 للأصناف العائلية الكبيرة لمنح فخامة وتنفس كامل للشاشة
-        const gridClasses = isFullWidth ? 'grid-cols-1 gap-10' : 'grid-cols-2 gap-6 md:gap-10';
-
-        if (!window.productFlavorQtys) window.productFlavorQtys = {};
-        window.productFlavorQtys[item.id] = item.flavors.map(() => 1);
-
-        flavorsHtml = `
-            <div class="grid ${gridClasses}">
-                ${item.flavors.map((f, idx) => {
-                    const cardImg = f.img || item.img; 
-                    const cardDesc = f.desc || item.desc;
-                    const currentQty = window.productFlavorQtys[item.id][idx] || 1;
-                    return `
-                        <div class="bg-white rounded-[36px] overflow-hidden border border-brandPink/10 flex flex-col justify-between shadow-[0_10px_35px_rgba(255,145,164,0.04)] hover:shadow-[0_15px_45px_rgba(255,145,164,0.1)] transition-all duration-500 group">
-                            <div>
-                                <div class="${isFullWidth ? 'h-60 md:h-88' : 'aspect-square'} overflow-hidden relative bg-brandPinkLight">
-                                    <img src="${cardImg}" alt="${item.name} - ${f.name}" class="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105">
-                                    <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full border border-brandPink/10 shadow-sm">
-                                        <span class="text-[10px] font-black text-brandPink transition-all duration-150" id="prodFlavorFloatPrice-${item.id}-${idx}">${f.price * currentQty} ج.م</span>
-                                    </div>
-                                </div>
-                                <div class="p-6 pb-4 space-y-1.5">
-                                    <h3 class="font-extrabold text-brandBlack text-xs md:text-sm tracking-wide line-clamp-1">${item.name} - ${f.name}</h3>
-                                    <p class="text-[10px] text-brandBlack/40 font-semibold leading-relaxed line-clamp-2 min-h-[32px]">${cardDesc}</p>
-                                </div>
-                            </div>
-                            <div class="p-6 pt-0">
-                                <div class="grid grid-cols-5 gap-2 items-center bg-brandPinkLight rounded-full p-1 border border-brandPink/10">
-                                    <button type="button" onclick="adjustProductFlavorQty('${item.id}', ${idx}, ${f.price}, -1)" class="col-span-1 w-8 h-8 rounded-full bg-white text-brandBlack font-black flex items-center justify-center text-xs shadow-sm hover:bg-brandPinkLight active:scale-90 transition-all">-</button>
-                                    <span class="col-span-1 text-center text-xs font-black text-brandBlack transition-all" id="prodFlavorQty-${item.id}-${idx}">${currentQty}</span>
-                                    <button type="button" onclick="adjustProductFlavorQty('${item.id}', ${idx}, ${f.price}, 1)" class="col-span-1 w-8 h-8 rounded-full bg-white text-brandBlack font-black flex items-center justify-center text-xs shadow-sm hover:bg-brandPinkLight active:scale-90 transition-all">+</button>
-                                    <button type="button" onclick="addProductFlavorToCart('${item.id}', '${item.name} - ${f.name}', ${f.price}, ${idx})" class="col-span-2 h-8 bg-brandPink hover:bg-brandPinkDark text-white rounded-full text-[10px] font-black transition-all duration-300 flex items-center justify-center shadow-sm">إضافة</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        `;
-
-        window.adjustProductFlavorQty = function(itemId, flavorIdx, basePrice, dir) {
-            let current = window.productFlavorQtys[itemId][flavorIdx] || 1;
-            if (dir === 1 && current >= 50) { showGlobalModal('حد الأمان للطلب', 'الحد الأقصى هو 50 قطعة في الطلب الواحد لسلامة التجهيز الفني.'); return; }
-            current = Math.max(1, current + dir);
-            window.productFlavorQtys[itemId][flavorIdx] = current;
-
-            const qtyEl = document.getElementById(`prodFlavorQty-${itemId}-${flavorIdx}`);
-            if (qtyEl) {
-                qtyEl.textContent = current;
-                qtyEl.classList.add('scale-125', 'text-brandPink');
-                setTimeout(() => qtyEl.classList.remove('scale-125', 'text-brandPink'), 150);
-            }
-
-            const floatPriceEl = document.getElementById(`prodFlavorFloatPrice-${itemId}-${flavorIdx}`);
-            if (floatPriceEl) {
-                floatPriceEl.textContent = `${basePrice * current} ج.م`;
-                floatPriceEl.classList.add('scale-110');
-                setTimeout(() => floatPriceEl.classList.remove('scale-110'), 150);
-            }
-        };
-
-        window.addProductFlavorToCart = function(itemId, fullName, basePrice, flavorIdx) {
-            const qty = window.productFlavorQtys[itemId][flavorIdx] || 1;
-            state.cart.push({ id: itemId, name: fullName, price: basePrice * qty, qty: qty, isCustom: false, details: null });
-            updateCartBadge();
-            showGlobalModal('عملية ناجحة', `تمت إضافة ${qty} من (${fullName}) إلى سلة المشتريات بنجاح.`, [], 'fa-circle-check');
-        };
-    }
-
-    container.innerHTML = `
-        <div class="space-y-8">
-            <button onclick="navigateTo('menu')" class="text-xs font-bold text-brandPink hover:underline flex items-center gap-1.5 transition-all">
-                <i class="fa-solid fa-arrow-right"></i> العودة لقائمة المنتجات
-            </button>
-
-            <div class="h-56 md:h-72 rounded-[36px] overflow-hidden relative border border-brandPink/10 shadow-[0_15px_40px_rgba(255,145,164,0.06)]">
-                <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent flex items-end p-8">
-                    <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-wide">${item.name}</h1>
-                </div>
-            </div>
-
-            ${item.healthSection ? `
-                <div class="p-6 rounded-3xl bg-brandPinkLight border border-brandPink/15 space-y-1.5 shadow-[inset_0_2px_8px_rgba(255,145,164,0.01)] max-w-2xl">
-                    <h4 class="text-xs font-black text-brandPink flex items-center gap-1.5 uppercase tracking-wide">
-                        <i class="fa-solid fa-shield-halved text-xs"></i> النقاء الطبيعي والجودة للأسرة:
-                    </h4>
-                    <p class="text-xs text-brandBlack/70 leading-relaxed font-bold">${item.healthSection}</p>
-                </div>
-            ` : ''}
-
-            <div class="space-y-6 pt-2">
-                <h3 class="text-sm font-black text-brandBlack tracking-wide">الخيارات والنكهات المتاحة للتخصيص الفوري:</h3>
-                ${flavorsHtml}
-            </div>
-        </div>
-    `;
-}
-
-// CAKE BUILDER & ROSE BUILDER LIFECYCLE ENGINES
-function resetCakeBuilder() {
-    state.cake = { step: 1, base: 'فانيليا', people: 4, shape: 'دائرة', designFile: null, printOption: 'none', printFile: null, theme: '', allergies: '', writing: '', cardEnabled: false, cardText: '', basePricePerPerson: 145 };
-    document.getElementById('cakeDesignFile').value = ''; document.getElementById('cakePrintFile').value = '';
-    document.getElementById('cakeDesignLabel').textContent = 'ارفع هنا صورة التورتة اللي حابب ننفذ لك زيها بالظبط';
-    document.getElementById('cakePrintLabel').textContent = 'ارفع الصورة المراد طباعتها على سطح التورتة بدقة كاملة';
-    document.getElementById('cakeThemeDetails').value = ''; document.getElementById('cakeAllergies').value = '';
-    document.getElementById('cakeText').value = ''; document.getElementById('cakeCardCheck').checked = false;
-    document.getElementById('cakeCardText').value = ''; document.getElementById('cakeCardInputArea').classList.add('hidden');
-}
-
-function selectCakeBase(baseName) {
-    state.cake.base = baseName;
-    ['فانيليا', 'شوكولاتة', 'نصف ونصف'].forEach(b => {
-        const btn = document.getElementById(`cake-base-${b}`);
-        if (btn) btn.className = b === baseName ? "p-4 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold shadow-sm transition-all duration-300 text-center" : "p-4 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center";
-    });
-    document.getElementById('cake-base-notification').classList.remove('hidden');
-}
-
-function selectCakeShape(shapeName) {
-    const count = state.cake.people;
-    if (shapeName === 'مستطيل' && count < 20) {
-        showGlobalModal('✨ توضيح بخصوص الشكل المستطيل', 'أقل مقاس للشكل المستطيل هو (20 فرد) لسلامة الأبعاد. السيستم هيرفع العداد تلقائياً لـ 20 فرد، حابب نعتمد الترقية؟', [{ text: 'تمام، اعتمد الترقية', primary: true, action: () => { closeModal(); applyCakeShapeUpgrade('مستطيل', 20); } }, { text: 'لاء، ارجع للسابق', primary: false, action: () => { closeModal(); selectCakeShape(state.cake.shape); } }]);
-        return;
-    }
-    if (shapeName === 'مربع' && count < 16) {
-        showGlobalModal('✨ توضيح بخصوص الشكل المربع', 'أقل مقاس للشكل المربع هو (16 فرد) لسلامة التماسك هندسياً. حابب نعتمد الترقية؟', [{ text: 'تمام، اعتمد الترقية', primary: true, action: () => { closeModal(); applyCakeShapeUpgrade('مربع', 16); } }, { text: 'لاء، ارجع للسابق', primary: false, action: () => { closeModal(); selectCakeShape(state.cake.shape); } }]);
-        return;
-    }
-
-    state.cake.shape = shapeName;
-    ['دائرة', 'قلب', 'مربع', 'مستطيل'].forEach(s => {
-        const btn = document.getElementById(`cake-shape-${s}`);
-        if (btn) btn.className = s === shapeName ? "p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all duration-300 text-center" : "p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center";
-    });
-
-    const hint = document.getElementById('cake-shape-hint');
-    if (shapeName === 'مربع') { hint.textContent = 'المقاس المربع يبدأ من 16 فرد كحد أدنى لسلامة التماسك.'; hint.classList.remove('hidden'); }
-    else if (shapeName === 'مستطيل') { hint.textContent = 'المقاس المستطيل يبدأ من 20 فرد كحد أدنى لضمان جودة الأبعاد.'; hint.classList.remove('hidden'); }
-    else { hint.classList.add('hidden'); }
-
-    calculateCakePrice();
-}
-
-function applyCakeShapeUpgrade(shape, peopleCount) {
-    state.cake.people = peopleCount; document.getElementById('cakePeopleCount').textContent = peopleCount;
-    selectCakeShape(shape);
-}
-
-function adjustCakePeople(amount) {
-    const shape = state.cake.shape; let current = state.cake.people; let target = current + amount;
-    if (target < 4 || target > 250) return;
-    if (shape === 'مستطيل' && target < 20) { document.getElementById('cakeCounterWarning').textContent = 'الشكل المستطيل يتطلب 20 فرد على الأقل.'; document.getElementById('cakeCounterWarning').classList.remove('hidden'); return; }
-    if (shape === 'مربع' && target < 16) { document.getElementById('cakeCounterWarning').textContent = 'الشكل المربع يتطلب 16 فرد على الأقل.'; document.getElementById('cakeCounterWarning').classList.remove('hidden'); return; }
-
-    document.getElementById('cakeCounterWarning').classList.add('hidden');
-    state.cake.people = target; document.getElementById('cakePeopleCount').textContent = target;
-    calculateCakePrice();
-}
-
-function calculateCakePrice() {
-    let total = state.cake.people * state.cake.basePricePerPerson;
-    if (state.cake.printOption === 'edible') total += 60;
-    else if (state.cake.printOption === 'non-edible') total += 20;
-    document.getElementById('cakeLivePriceDisplay').textContent = `${total} ج.م`;
-}
-
-function showCakePriceInfo() { showGlobalModal('تفاصيل حساب تسعير حلويات بوسي', 'الحسبة مبنية على استخدام خامات طبيعية نقيّة 100% بدون أي محسنات صناعية لضمان أرقى مذاق وأعلى جودة.'); }
-
-function selectCakePrintOption(option) {
-    state.cake.printOption = option;
-    ['none', 'edible', 'non-edible'].forEach(o => {
-        const btn = document.getElementById(`cake-print-${o}`);
-        if (btn) btn.className = o === option ? "p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center" : "p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/30";
-    });
-    document.getElementById('cakePrintUploadArea').className = option !== 'none' ? "relative border-2 border-dashed border-brandPink/20 hover:border-brandPink rounded-2xl p-8 transition-all duration-300 bg-brandPinkLight/30 text-center cursor-pointer group" : "hidden";
-    calculateCakePrice();
-}
-
-function handleCakeFileUpload(type) {
-    const fileInput = document.getElementById(type === 'design' ? 'cakeDesignFile' : 'cakePrintFile');
-    const label = document.getElementById(type === 'design' ? 'cakeDesignLabel' : 'cakePrintLabel');
-    if (fileInput.files.length > 0) {
-        if (type === 'design') state.cake.designFile = fileInput.files[0].name; else state.cake.printFile = fileInput.files[0].name;
-        label.innerHTML = `<span class="text-brandBlack font-extrabold"><i class="fa-solid fa-circle-check text-brandPink"></i> تم اعتماد الملف: ${fileInput.files[0].name}</span>`;
-    }
-}
-
-function toggleCakeCardInput() {
-    const isChecked = document.getElementById('cakeCardCheck').checked; state.cake.cardEnabled = isChecked;
-    document.getElementById('cakeCardInputArea').className = isChecked ? "pt-2 transition-all duration-300" : "hidden";
-}
-
-function navigateCakeStep(stepNum) {
-    state.cake.step = stepNum;
-    document.getElementById('cake-screen-1').classList.add('hidden'); document.getElementById('cake-screen-2').classList.add('hidden'); document.getElementById('cake-screen-3').classList.add('hidden');
-    document.getElementById(`cake-screen-${stepNum}`).classList.remove('hidden');
-
-    const line1 = document.getElementById('cake-line-1'); const line2 = document.getElementById('cake-line-2');
-    if (line1 && line2) {
-        if (stepNum === 1) { line1.style.width = '0%'; line2.style.width = '0%'; }
-        if (stepNum === 2) { line1.style.width = '100%'; line2.style.width = '0%'; }
-        if (stepNum === 3) { line1.style.width = '100%'; line2.style.width = '100%'; }
-    }
-
-    for (let i = 1; i <= 3; i++) {
-        const ind = document.getElementById(`cake-step-${i}-indicator`);
-        const textStep2 = document.getElementById('cake-text-step-2'); const textStep3 = document.getElementById('cake-text-step-3');
-        if (ind) {
-            if (i <= stepNum) {
-                ind.className = "w-10 h-10 rounded-full bg-brandPink text-white flex items-center justify-center font-extrabold text-sm shadow-md shadow-brandPink/20 transition-all duration-300";
-                if (i === 2 && textStep2) textStep2.className = "text-[11px] font-extrabold text-brandBlack transition-colors duration-300";
-                if (i === 3 && textStep3) textStep3.className = "text-[11px] font-extrabold text-brandBlack transition-colors duration-300";
-            } else {
-                ind.className = "w-10 h-10 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/15 flex items-center justify-center font-extrabold text-sm transition-all duration-300";
-                if (i === 2 && textStep2) textStep2.className = "text-[11px] font-extrabold text-brandBlack/40 transition-colors duration-300";
-                if (i === 3 && textStep3) textStep3.className = "text-[11px] font-extrabold text-brandBlack/40 transition-colors duration-300";
-            }
-        }
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function addCakeToCart() {
-    const total = state.cake.people * state.cake.basePricePerPerson + (state.cake.printOption === 'edible' ? 60 : state.cake.printOption === 'non-edible' ? 20 : 0);
-    state.cake.theme = document.getElementById('cakeThemeDetails').value; state.cake.allergies = document.getElementById('cakeAllergies').value;
-    state.cake.writing = document.getElementById('cakeText').value; state.cake.cardText = document.getElementById('cakeCardText').value;
-
-    const finalDetails = { 'قاعدة الكيك المعتمدة': state.cake.base, 'عدد الأفراد المستهدف': `${state.cake.people} فرد`, 'الشكل الهندسي': state.cake.shape, 'صورة التصميم الخارجي': state.cake.designFile || 'لم ترفع صورة', 'خيار الطباعة': state.cake.printOption === 'edible' ? 'صورة صالحة للأكل (+60 ج.م)' : state.cake.printOption === 'non-edible' ? 'صورة غير صالحة للأكل (+20 ج.م)' : 'بدون طباعة', 'ثيم المناسبة': state.cake.theme || 'لا يوجد تفاصيل', 'التحذير الصحي المكتوب': state.cake.allergies || 'لا يوجد حساسية', 'جملة الخط اليدوي': state.cake.writing || 'لا يوجد كتابة', 'كارت الإهداء': state.cake.cardEnabled ? (state.cake.cardText || 'كارت فارغ') : 'بدون كارت' };
-    state.cart.push({ id: 'custom-cake', name: 'تورتة ملكية - تصميم خاص', price: total, qty: 1, isCustom: true, details: finalDetails });
-    updateCartBadge(); resetCakeBuilder();
-    showGlobalModal('تم الإضافة للسلة', 'تم ترحيل تصميم تورتتك الخاصة بنجاح إلى سلة المشتريات المعتمدة.', [{ text: 'استمر بالتسوق', action: () => { closeModal(); navigateTo('menu'); } }, { text: 'شاهد سلة التسوق', action: () => { closeModal(); navigateTo('cart'); }, primary: true }], 'fa-circle-check');
-}
-
-// ROSE BUILDER RUNTIME ENGINE - LUXURY RE-ENGINEERED VERSION
-function resetRoseBuilder() {
-    state.rose = { step: 1, referenceFile: null, count: 15, type: 'ورد طبيعي', colors: '', cashAmount: 0, cashDenomination: 20, photosCount: 0, photoFiles: [], ribbonEnabled: false, ribbonText: '', chocBudget: 0, chocPiecePrice: 20, premiumBar100: 0, premiumBar120: 0, cardEnabled: false, cardText: '' };
-    document.getElementById('roseReferenceFile').value = ''; document.getElementById('roseReferenceLabel').textContent = 'ارفع هنا صورة بوكيه الورد اللي حابب نعمل لك زيه';
-    document.getElementById('roseCount').textContent = '15'; document.getElementById('roseColors').value = '';
-    document.getElementById('roseCashAmount').value = ''; document.getElementById('rosePhotosCount').textContent = '0';
-    document.getElementById('rosePhotoUploadsContainer').innerHTML = ''; document.getElementById('rosePhotoUploadsContainer').classList.add('hidden');
-    document.getElementById('roseRibbonCheck').checked = false; document.getElementById('roseRibbonText').value = '';
-    document.getElementById('roseRibbonInputArea').classList.add('hidden'); document.getElementById('roseChocBudget').value = '';
-    document.getElementById('rosePremiumBar100').textContent = '0'; document.getElementById('rosePremiumBar120').textContent = '0';
-    document.getElementById('roseCardCheck').checked = false; document.getElementById('roseCardText').value = '';
-    document.getElementById('roseCardInputArea').classList.add('hidden'); calculateRosePrice();
-}
-
-function handleRoseReferenceUpload() {
-    const fileInput = document.getElementById('roseReferenceFile');
-    if (fileInput.files.length > 0) {
-        state.rose.referenceFile = fileInput.files[0].name;
-        document.getElementById('roseReferenceLabel').innerHTML = `<span class="text-brandBlack font-extrabold"><i class="fa-solid fa-circle-check text-brandPink"></i> تم تحميل بوكيه مرجعي: ${fileInput.files[0].name}</span>`;
-    }
-}
-
-function quickBuyRoseBouquet() {
-    const fileInput = document.getElementById('roseReferenceFile');
-    if (fileInput.files.length === 0) { showGlobalModal('خطأ بالتخصيص', 'يرجى رفع صورة للبوكيه المرجعي أولاً لتسهيل الشراء السريع بناءً عليها.'); return; }
-    state.cart.push({ id: 'quick-rose', name: 'بوكيه ورد - شراء سريع بالصورة المرفقة', price: 400, qty: 1, isCustom: true, details: { 'طبيعة الطلب': 'شراء سريع ومباشر بناءً على ملف الصورة المرفوعة', 'صورة التصميم المرجعي': fileInput.files[0].name, 'سعر تقديري مبدئي': '400 ج.م' } });
-    updateCartBadge(); navigateTo('checkout');
-}
-
-function adjustRoseCount(amount) {
-    let current = state.rose.count; let target = current + amount;
-    if (target < 15) return;
-    state.rose.count = target; document.getElementById('roseCount').textContent = target;
-    calculateRosePrice();
-}
-
-function selectRoseType(type) {
-    state.rose.type = type;
-    ['ورد طبيعي', 'صناعي', 'ستان'].forEach(t => {
-        const btn = document.getElementById(`rose-type-${t}`);
-        if (btn) btn.className = t === type ? "p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all text-center" : "p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-extrabold transition-all text-center hover:border-brandPink/30";
-    });
-}
-
-function selectRoseDenomination(denom) {
-    state.rose.cashDenomination = denom;
-    [5, 10, 20, 50, 100, 200].forEach(d => {
-        const btn = document.getElementById(`rose-denom-${d}`);
-        if (btn) btn.className = d === denom ? "py-2 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center" : "py-2 rounded-xl border border-brandPink/10 bg-white text-brandBlack text-xs font-bold transition-all text-center hover:border-brandPink/20";
-    });
-    calculateRoseCash();
-}
-
-function calculateRoseCash() {
-    const amount = parseFloat(document.getElementById('roseCashAmount').value) || 0;
-    state.rose.cashAmount = amount;
-    const denom = state.rose.cashDenomination;
-    const outputPanel = document.getElementById('roseCashOutput');
-    const calcText = document.getElementById('roseCashCalcText');
-
-    if (amount <= 0) { outputPanel.classList.add('hidden'); calculateRosePrice(); return; }
-    outputPanel.classList.remove('hidden');
-
-    if (amount % denom !== 0) {
-        calcText.innerHTML = `<span class="text-brandPink"><i class="fa-solid fa-circle-xmark"></i> خطأ: المبلغ لا يقبل القسمة بالتساوي على فئة الـ ${denom} جنيه.</span>`;
-    } else {
-        calcText.innerHTML = `<span class="text-brandBlack font-extrabold"><i class="fa-solid fa-circle-check text-brandPink"></i> <i class="fa-solid fa-circle-check text-brandPink"></i> البوكيه جواه ${amount / denom} ورقة من فئة ${denom} جنيه.</span>`;
-    }
-    calculateRosePrice();
-}
-
-function adjustRosePhotos(amount) {
-    let current = state.rose.photosCount; let target = Math.max(0, current + amount);
-    state.rose.photosCount = target; document.getElementById('rosePhotosCount').textContent = target;
-    const container = document.getElementById('rosePhotoUploadsContainer'); container.innerHTML = '';
-
-    if (target > 0) {
-        container.classList.remove('hidden');
-        for (let i = 0; i < target; i++) {
-            const row = document.createElement('div'); row.className = "relative border border-brandPink/20 bg-white rounded-xl p-3 text-right";
-            row.innerHTML = `<input type="file" id="rosePhotoFile-${i}" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="handleRosePhotoRowUpload(${i})"><span class="text-[10px] text-brandBlack/60 font-bold" id="rosePhotoRowLabel-${i}">ارفع صورة رقم ${i+1}</span>`;
-            container.appendChild(row);
-        }
-    } else { container.classList.add('hidden'); }
-    calculateRosePrice();
-}
-
-function handleRosePhotoRowUpload(index) {
-    const fileInput = document.getElementById(`rosePhotoFile-${index}`);
-    if (fileInput.files.length > 0) {
-        state.rose.photoFiles[index] = fileInput.files[0].name;
-        document.getElementById(`rosePhotoRowLabel-${index}`).innerHTML = `<span class="text-brandBlack font-extrabold text-[10px]"><i class="fa-solid fa-circle-check text-brandPink"></i> تم الحفظ</span>`;
-    }
-}
-
-function toggleRoseRibbonInput() {
-    const isChecked = document.getElementById('roseRibbonCheck').checked; state.rose.ribbonEnabled = isChecked;
-    document.getElementById('roseRibbonInputArea').className = isChecked ? "pt-1" : "hidden";
-    calculateRosePrice();
-}
-
-function calculateRoseChocolate() {
-    const budget = parseFloat(document.getElementById('roseChocBudget').value) || 0;
-    state.rose.chocBudget = budget; const piecePrice = state.rose.chocPiecePrice;
-    const outputPanel = document.getElementById('roseChocOutput'); const calcText = document.getElementById('roseChocCalcText');
-
-    if (budget <= 0) { outputPanel.classList.add('hidden'); calculateRosePrice(); return; }
-    outputPanel.classList.remove('hidden');
-
-    const pieces = Math.floor(budget / piecePrice);
-    calcText.innerHTML = pieces === 0 ? `<span class="text-brandPink">الميزانية لا تكفي لشراء قطعة فئة ${piecePrice} جنيه.</span>` : `<span class="text-brandBlack font-extrabold"><i class="fa-solid fa-circle-check text-brandPink"></i> سيتم إضافة ${pieces} قطع شوكولاتة للبوكيه.</span>`;
-    calculateRosePrice();
-}
-
-function selectRoseChocPiecePrice(price) {
-    state.rose.chocPiecePrice = price;
-    [20, 30, 50].forEach(p => {
-        const btn = document.getElementById(`rose-choc-piece-${p}`);
-        if (btn) btn.className = p === price ? "py-2.5 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center" : "py-2.5 rounded-xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/20";
-    });
-    calculateRoseChocolate();
-}
-
-function adjustRosePremiumBar(barValue, dir) {
-    if (barValue === 100) { state.rose.premiumBar100 = Math.max(0, state.rose.premiumBar100 + dir); document.getElementById('rosePremiumBar100').textContent = state.rose.premiumBar100; }
-    else { state.rose.premiumBar120 = Math.max(0, state.rose.premiumBar120 + dir); document.getElementById('rosePremiumBar120').textContent = state.rose.premiumBar120; }
-    calculateRosePrice();
-}
-
-function calculateRosePrice() {
-    let total = 400; if (state.rose.count > 15) total += (state.rose.count - 15) * 35;
-    total += state.rose.cashAmount + (state.rose.photosCount * 15) + (state.rose.ribbonEnabled ? 50 : 0) + state.rose.chocBudget + (state.rose.premiumBar100 * 100) + (state.rose.premiumBar120 * 120) + (state.rose.cardEnabled ? 20 : 0);
-    document.getElementById('roseLivePriceDisplay').textContent = `${total} ج.م`;
-}
-
-function toggleRoseCardInput() {
-    const isChecked = document.getElementById('roseCardCheck').checked; state.rose.cardEnabled = isChecked;
-    document.getElementById('roseCardInputArea').className = isChecked ? "pt-2 transition-all duration-300" : "hidden";
-    calculateRosePrice();
-}
-
-function navigateRoseStep(stepNum) {
-    if (state.rose.step === 2 && stepNum === 3 && state.rose.cashAmount > 0 && (state.rose.cashAmount % state.rose.cashDenomination !== 0)) {
-        showGlobalModal('عدم تطابق في الكاش', 'يرجى موازنة قيمة الكاش لتناسب فئة الأوراق النقدية قبل المتابعة.'); return;
-    }
-    state.rose.step = stepNum;
-    document.getElementById('rose-screen-1').classList.add('hidden'); document.getElementById('rose-screen-2').classList.add('hidden'); document.getElementById('rose-screen-3').classList.add('hidden');
-    document.getElementById(`rose-screen-${stepNum}`).classList.remove('hidden');
-
-    const line1 = document.getElementById('rose-line-1'); const line2 = document.getElementById('rose-line-2');
-    if (line1 && line2) {
-        if (stepNum === 1) { line1.style.width = '0%'; line2.style.width = '0%'; }
-        if (stepNum === 2) { line1.style.width = '100%'; line2.style.width = '0%'; }
-        if (stepNum === 3) { line1.style.width = '100%'; line2.style.width = '100%'; }
-    }
-
-    for (let i = 1; i <= 3; i++) {
-        const ind = document.getElementById(`rose-step-${i}-indicator`);
-        const textStep2 = document.getElementById('rose-text-step-2'); const textStep3 = document.getElementById('rose-text-step-3');
-        if (ind) {
-            if (i <= stepNum) {
-                ind.className = "w-10 h-10 rounded-full bg-brandPink text-white flex items-center justify-center font-extrabold text-sm shadow-md shadow-brandPink/20 transition-all duration-300";
-                if (i === 2 && textStep2) textStep2.className = "text-[11px] font-extrabold text-brandBlack transition-colors duration-300";
-                if (i === 3 && textStep3) textStep3.className = "text-[11px] font-extrabold text-brandBlack transition-colors duration-300";
-            } else {
-                ind.className = "w-10 h-10 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/15 flex items-center justify-center font-extrabold text-sm transition-all duration-300";
-                if (i === 2 && textStep2) textStep2.className = "text-[11px] font-extrabold text-brandBlack/40 transition-colors duration-300";
-                if (i === 3 && textStep3) textStep3.className = "text-[11px] font-extrabold text-brandBlack/40 transition-colors duration-300";
-            }
-        }
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function addRoseToCart() {
-    if (state.rose.cashAmount > 0 && (state.rose.cashAmount % state.rose.cashDenomination !== 0)) { showGlobalModal('خطأ حسابي', 'يرجى موازنة قيمة الكاش لتناسب الأوراق النقدية.'); return; }
-    let total = 400; if (state.rose.count > 15) total += (state.rose.count - 15) * 35;
-    total += state.rose.cashAmount + (state.rose.photosCount * 15) + (state.rose.ribbonEnabled ? 50 : 0) + state.rose.chocBudget + (state.rose.premiumBar100 * 100) + (state.rose.premiumBar120 * 120) + (state.rose.cardEnabled ? 20 : 0);
-
-    state.rose.colors = document.getElementById('roseColors').value; state.rose.ribbonText = document.getElementById('roseRibbonText').value; state.rose.cardText = document.getElementById('roseCardText').value;
-    const details = { 'عدد الورد': `${state.rose.count} وردة`, 'نوع الورد': state.rose.type, 'الألوان': state.rose.colors || 'تنسيق عشوائي', 'الكاش المدمج': state.rose.cashAmount > 0 ? `${state.rose.cashAmount} جنيه` : 'لا يوجد كاش', 'الصور وسط الورد': `${state.rose.photosCount} صورة`, 'شريط الستان': state.rose.ribbonEnabled ? state.rose.ribbonText : 'لا يوجد', 'بارات جالاكسي': `${state.rose.premiumBar100} قطعة`, 'بارات كادبوري': `${state.rose.premiumBar120} قطعة`, 'كارت الإهداء': state.rose.cardEnabled ? state.rose.cardText : 'لا يوجد' };
-
-    state.cart.push({ id: 'custom-rose', name: 'بوكيه ورد - بناء خاص', price: total, qty: 1, isCustom: true, details: details });
-    updateCartBadge(); resetRoseBuilder();
-    showGlobalModal('تم الإضافة للسلة', 'تم ترحيل باقة زهورك الخاصة بنجاح إلى سلة المشتريات المعتمدة.', [{ text: 'استمر بالتسوق', action: () => { closeModal(); navigateTo('menu'); } }, { text: 'شاهد سلة التسوق', action: () => { closeModal(); navigateTo('cart'); }, primary: true }], 'fa-circle-check');
-}
-
-// =========================================================================
-// CORE CART ENGINE & EXPANDED RENDER ROUTINES
-// =========================================================================
-function updateCartBadge() {
-    const badge = document.getElementById('cartCountBadge');
-    const count = state.cart.reduce(function(sum, item) {
-        return sum + item.qty;
-    }, 0);
-    
-    if (count > 0) {
-        badge.textContent = count;
-        badge.classList.remove('hidden');
-    } else {
-        badge.classList.add('hidden');
-    }
-}
-
-function clearCart() {
-    state.cart = [];
-    updateCartBadge();
-    renderCart();
-}
-
-function removeCartItem(index) {
-    state.cart.splice(index, 1);
-    updateCartBadge();
-    renderCart();
-}
-
-function renderCart() {
-    const emptyState = document.getElementById('cartEmptyState');
-    const itemsContainer = document.getElementById('cartItemsContainer');
-
-    if (state.cart.length === 0) {
-        emptyState.classList.remove('hidden');
-        itemsContainer.classList.add('hidden');
-        return;
-    }
-
-    emptyState.classList.add('hidden');
-    itemsContainer.classList.remove('hidden');
-
-    const list = document.getElementById('cartItemsList');
-    list.innerHTML = state.cart.map(function(item, index) {
-        let detailsDropdownHtml = '';
-        if (item.isCustom && item.details) {
-            detailsDropdownHtml = `
-                <div class="mt-2 border-t border-brandPink/10 pt-2">
-                    <button onclick="toggleCartDetails(${index})" class="text-xs text-brandPink font-bold flex items-center gap-1 focus:outline-none">
-                        <i class="fa-solid fa-chevron-down text-[10px]" id="cartChevron-${index}"></i> استعراض تفاصيل التصميم المخصص
-                    </button>
-                    <div id="cartDetailsPanel-${index}" class="hidden mt-2 bg-brandPinkLight rounded-xl p-3 border border-brandPink/20 text-xs text-brandBlack/80 space-y-1.5 transition-all">
-                        ${Object.entries(item.details).map(function([key, val]) {
-                            return `
-                                <div class="flex justify-between border-b border-brandPink/5 pb-1 font-semibold">
-                                    <span class="text-brandBlack/50">${key}:</span>
-                                    <span class="text-brandBlack text-left">${val}</span>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        return `
-            <div class="p-5 rounded-2xl bg-white border border-brandPink/15 hover:shadow-md transition-all duration-300">
-                <div class="flex items-start justify-between gap-4">
-                    <div>
-                        <h3 class="font-extrabold text-brandBlack text-sm md:text-base">${item.name}</h3>
-                        <p class="text-xs text-brandPink font-extrabold mt-1">السعر الإجمالي: ${item.price} ج.م</p>
-                        ${item.qty > 1 ? `<span class="text-[10px] text-brandBlack/50 font-bold">الكمية المحجوزة: ${item.qty} قطع</span>` : ''}
-                    </div>
-                    <button onclick="removeCartItem(${index})" class="p-2.5 text-brandBlack/30 hover:text-brandPink hover:bg-brandPinkLight rounded-full transition-all" aria-label="حذف">
-                        <i class="fa-solid fa-trash-can text-sm"></i>
-                    </button>
-                </div>
-                ${detailsDropdownHtml}
-            </div>
-        `;
-    }).join('');
-
-    const sum = state.cart.reduce(function(total, item) {
-        return total + item.price;
-    }, 0);
-    document.getElementById('cartTotalSum').textContent = `${sum} ج.م`;
-}
-
-function toggleCartDetails(index) {
-    const panel = document.getElementById(`cartDetailsPanel-${index}`);
-    const chevron = document.getElementById(`cartChevron-${index}`);
-    if (panel.classList.contains('hidden')) {
-        panel.classList.remove('hidden');
-        chevron.className = "fa-solid fa-chevron-up text-[10px]";
-    } else {
-        panel.classList.add('hidden');
-        chevron.className = "fa-solid fa-chevron-down text-[10px]";
-    }
-}
-
-// =========================================================================
-// CHECKOUT SCENARIO CONTROLLER
-// =========================================================================
-function renderCheckout() {
-    const subtotal = state.cart.reduce(function(total, item) {
-        return total + item.price;
-    }, 0);
-    document.getElementById('checkoutSubtotal').textContent = `${subtotal} ج.م`;
-    selectDeliveryMethod(state.checkout.method);
-}
-
-function selectDeliveryMethod(method) {
-    state.checkout.method = method;
-    
-    const btnPickup = document.getElementById('ship-pickup');
-    const btnShip = document.getElementById('ship-delivery');
-    
-    const panelPickup = document.getElementById('pickupInfoPanel');
-    const panelShip = document.getElementById('shipInfoPanel');
-
-    if (method === 'pickup') {
-        btnPickup.className = "p-4 border-2 border-brandPink bg-brandPink/5 text-brandPink rounded-2xl text-sm font-bold transition-all text-center";
-        btnShip.className = "p-4 border-2 border-brandPink/10 text-brandBlack/65 bg-white rounded-2xl text-sm font-bold transition-all text-center";
-        panelPickup.classList.remove('hidden');
-        panelShip.classList.add('hidden');
-        state.checkout.shippingFee = 0;
-    } else {
-        btnShip.className = "p-4 border-2 border-brandPink bg-brandPink/5 text-brandPink rounded-2xl text-sm font-bold transition-all text-center";
-        btnPickup.className = "p-4 border-2 border-brandPink/10 text-brandBlack/65 bg-white rounded-2xl text-sm font-bold transition-all text-center";
-        panelShip.classList.remove('hidden');
-        panelPickup.classList.add('hidden');
-        calculateShippingFee();
-    }
-
-    updateCheckoutTotals();
-}
-
-function calculateShippingFee() {
-    const regionSelect = document.getElementById('shippingRegion');
-    const region = regionSelect.value;
-    state.checkout.region = region;
-
-    const rates = {
-        'الفرافرة': 50,
-        '13': 70,
-        'الجمعية': 50,
-        'الصنايع': 40,
-        'ابوبكر': 40,
-        'ابوالهول': 30,
-        'الكفاح': 30,
-        'الامل': 50,
-        '17': 70,
-        'ابوهريرة': 140
-    };
-
-    const fee = rates[region] || 0;
-    state.checkout.shippingFee = fee;
-
-    const notice = document.getElementById('shippingFeeNotice');
-    if (region) {
-        notice.textContent = `قيمة تكلفة الشحن لمنطقة (${region}) هي ${fee} ج.م مضافة للفاتورة.`;
-        notice.classList.remove('hidden');
-    } else {
-        notice.classList.add('hidden');
-    }
-
-    updateCheckoutTotals();
-}
-
-function updateCheckoutTotals() {
-    const subtotal = state.cart.reduce(function(total, item) {
-        return total + item.price;
-    }, 0);
-    const shipping = state.checkout.shippingFee;
-    const grandTotal = subtotal + shipping;
-
-    document.getElementById('checkoutShipping').textContent = `${shipping} ج.م`;
-    document.getElementById('checkoutGrandTotal').textContent = `${grandTotal} ج.م`;
-}
-
-function validateDateTimeRules() {
-    const dateInput = document.getElementById('shipDate').value;
-    const timeInput = document.getElementById('shipTime').value;
-    const warning = document.getElementById('dateTimeWarning');
-
-    if (!dateInput) return true;
-
-    const selectedDateTime = new Date(`${dateInput}T${timeInput || '00:00'}`);
-    const now = new Date();
-
-    if (selectedDateTime < now) {
-        warning.textContent = 'خطأ بالتنسيق الزمني: لا يمكن حجز تاريخ في الماضي.';
-        warning.classList.remove('hidden');
-        return false;
-    }
-
-    const minAllowedTime = new Date(now.getTime() + (24 * 60 * 60 * 1000));
-    if (selectedDateTime < minAllowedTime) {
-        warning.textContent = 'أقرب ميعاد متاح للتسليم هو بعد مرور 24 ساعة لضمان جودة التصنيع الفني.';
-        warning.classList.remove('hidden');
-        return false;
-    }
-
-    warning.classList.add('hidden');
-    return true;
-}
-
-function validateEgyptianPhone(phone) {
-    const clean = phone.trim();
-    const regex = /^(010|011|012|015)[0-9]{8}$/;
-    return regex.test(clean);
-}
-
-function handleCheckoutSubmit(event) {
-    event.preventDefault();
-
-    const phone = document.getElementById('custPhone').value;
-    if (!validateEgyptianPhone(phone)) {
-        showGlobalModal('خطأ الهاتف', 'يرجى كتابة رقم هاتف مصري صحيح مكون من 11 رقماً للاتصال.');
-        return;
-    }
-
-    if (!validateDateTimeRules()) {
-        showGlobalModal('شروط التوقيت', 'يرجى اختيار موعد استلام بعد 24 ساعة من الآن لسلامة التنفيذ.');
-        return;
-    }
-
-    const name = document.getElementById('custName').value;
-    const date = document.getElementById('shipDate').value;
-    const time = document.getElementById('shipTime').value;
-
-    const subtotal = state.cart.reduce(function(total, item) {
-        return total + item.price;
-    }, 0);
-    const shipping = state.checkout.shippingFee;
-    const grandTotal = subtotal + shipping;
-
-    let deliveryDetails = '';
-    if (state.checkout.method === 'pickup') {
-        deliveryDetails = `*طريقة التسليم:* استلام شخصي من فرع الكفاح المعتمد`;
-    } else {
-        const address = document.getElementById('custAddress').value;
-        deliveryDetails = `*طريقة التسليم:* شحن وتنسيق للعنوان\n*المنطقة:* ${state.checkout.region}\n*العنوان:* ${address || 'لم يكتب'}\n*تكلفة الشحن:* ${shipping} ج.م`;
-    }
-
-    let cartItemsString = state.cart.map(function(item, idx) {
-        let customDetails = '';
-        if (item.isCustom && item.details) {
-            customDetails = Object.entries(item.details).map(function([k, v]) {
-                return `  - ${k}: ${v}`;
-            }).join('\n');
-        }
-        return `🔹 *${idx+1}. ${item.name}*\n*الكمية:* ${item.qty} \n*السعر:* ${item.price} ج.م\n${customDetails ? `${customDetails}\n` : ''}`;
-    }).join('\n');
-
-    const messageText = `*طلب جديد معتمد - حلويات بوسي*\n\n` +
-                        `👤 *الاسم:* ${name}\n` +
-                        `📞 *الهاتف:* ${phone}\n` +
-                        `${deliveryDetails}\n` +
-                        `📅 *تاريخ التسليم:* ${date}\n` +
-                        `⏰ *الوقت:* ${time}\n\n` +
-                        `🛒 *المنتجات المطلوبة:*\n${cartItemsString}\n` +
-                        `💳 *قيمة المشتريات:* ${subtotal} ج.م\n` +
-                        `📦 *قيمة الشحن:* ${shipping} ج.م\n` +
-                        `💰 *الإجمالي النهائي المقدر:* ${grandTotal} ج.م\n\n` +
-                        `تم مراجعة الطلب ومطابقته لكافة شروط مطبخ حلويات بوسي بنجاح.`;
-
-    if (dbUser) {
-        const appId = 'bosy-sweets';
-        const orderDoc = {
-            customerName: name,
-            customerPhone: phone,
-            deliveryMethod: state.checkout.method,
-            shippingRegion: state.checkout.region || null,
-            shippingAddress: state.checkout.method === 'ship' ? (document.getElementById('custAddress').value || '') : '',
-            shippingFee: shipping,
-            deliveryDate: date,
-            deliveryTime: time,
-            items: state.cart.map(function(item) {
-                return { name: item.name, price: item.price, qty: item.qty, isCustom: item.isCustom, details: item.details || null };
-            }),
-            subtotal: subtotal,
-            grandTotal: grandTotal,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        };
-
-        db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders').add(orderDoc);
-    }
-
-    const encoded = encodeURIComponent(messageText);
-    const waUrl = `https://api.whatsapp.com/send?phone=20${brandWhatsAppNumber}&text=${encoded}`;
-    
-    clearCart();
-    navigateTo('home');
-    window.open(waUrl, '_blank');
-}
-
-// =========================================================================
-// LEGAL POLICIES DIALOG ROUTINES
-// =========================================================================
-function showPolicy(policyKey) {
-    const policies = {
-        'about': {
-            title: 'من نحن وتاريخنا الفني المعتمد',
-            body: 'على مدار ما يزيد عن 10 سنوات، تأسست حلويات بوسي في الكفاح بمركز الفرافرة بالوادي الجديد لتضع معايير استثنائية لصناعة الفطائر والكيك الطبيعي. نضمن لجميع العائلات خلو مطبخنا تماماً من المحسنات الكيميائية.'
-        },
-        'contact': {
-            title: 'تواصل مباشر معنا',
-            body: 'الخط الساخن للمبيعات المعتمدة: 01097238441. العنوان: الكفاح، شارع الوحدة المحلية، بجوار صيدلية الدكتور أحمد مجدي وعيادة الدكتور علي.'
-        },
-        'privacy': {
-            title: 'سياسة الخصوصية وأمان البيانات',
-            body: 'نلتزم التزاماً صارماً بالحفاظ على سرية الصور والملفات والبيانات الشخصية المرفوعة لمحاكيات التصميم الخاصة بكم، ويتم حذفها آلياً عقب مطابقتها للتنفيذ.'
-        },
-        'refund': {
-            title: 'سياسة الاسترجاع وضمان مطابقة المواصفات',
-            body: 'يحق للعميل مراجعة المنتج واسترجاعه فوراً في حال عدم مطابقة التصميم المختار بالمحاكي للمنتج النهائي المستلم.'
-        },
-        'delivery': {
-            title: 'سياسة التوصيل ومطابقة المواصفات',
-            body: 'يتم نقل وتوصيل الحلويات والتورت في مركبات مكيفة ومخصصة للحفاظ على تماسك الموس والكريمات، وبتكلفة شحن مدروسة تناسب كل منطقة بالفرافرة.'
-        },
-        'care': {
-            title: 'سياسة الحفاظ على منتجاتنا',
-            body: 'نظراً لاعتمادنا التام على خامات طبيعية ممتازة وخلوها من المواد الحافظة، نوصي بحفظ التورت والحلويات داخل التبريد بدرجة حرارة لا تزيد عن 4 درجات مئوية واستهلاكها خلال 3 أيام من تاريخ الاستلام.'
-        }
-    };
-
-    const data = policies[policyKey];
-    if (data) {
-        showGlobalModal(data.title, data.body, [], 'fa-circle-info');
-    }
-}
-
-// =========================================================================
-// WINDOW ONLOAD LAUNCH ENGINE
-// =========================================================================
-window.onload = function() {
-    initHomeSliders();
-    renderHomeGrid();
-    updateCartBadge();
-};
-    </script>
 </body>
 </html>
-

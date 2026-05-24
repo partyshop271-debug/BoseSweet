@@ -1,24 +1,26 @@
-```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>حلويات بوسي | لوحة التحكم السيادية</title>
+    <title>حلويات بوسي | كابينة التحكم السيادية والمراقبة</title>
     
-    <!-- Lucide Icons & Tailwind CSS -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts - Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght=300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Firebase Compat Modules matches login/index -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script> 
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
+          "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
+          "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"
+        }
+      }
+    </script>
 
     <script>
         tailwind.config = {
@@ -26,14 +28,14 @@
                 extend: {
                     colors: {
                         brandPink: '#ff91a4',
-                        brandPinkLight: '#fff5f6',
+                        brandPinkLight: '#2a171a',
                         brandPinkDark: '#e07d90',
-                        brandBg: '#0c0709',
-                        brandSurface: '#160d0f',
-                        brandSurfaceChild: '#1f1316',
-                        brandBorder: '#3a2026',
-                        brandTextMain: '#ffffff',
-                        brandTextMuted: '#e0c8cc',
+                        brandBg: '#0e090a',
+                        brandSurface: '#160f10',
+                        brandSurfaceChild: '#1f1517',
+                        brandBorder: '#2e1e21',
+                        brandTextMain: '#f5ecee',
+                        brandTextMuted: '#a89396',
                     },
                     fontFamily: {
                         sans: ['Cairo', 'sans-serif'],
@@ -45,76 +47,72 @@
 
     <style>
         body {
-            background-color: #0c0709;
-            color: #ffffff;
+            background-color: #0e090a;
+            color: #f5ecee;
             font-family: 'Cairo', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 8px;
+            height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #0c0709;
+            background: #0e090a;
         }
         ::-webkit-scrollbar-thumb {
-            background: #3a2026;
+            background: #2e1e21;
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #ff91a4;
         }
 
-        /* Smooth transitions */
         .transition-all-300 {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Custom Glow on focus and hover */
         .bose-input-glow:focus {
             border-color: #ff91a4;
-            box-shadow: 0 0 14px rgba(255, 145, 164, 0.18);
+            box-shadow: 0 0 14px rgba(255, 145, 164, 0.2);
+            background-color: #1f1517;
         }
 
-        .pink-neon-shadow {
-            box-shadow: 0 0 15px rgba(255, 145, 164, 0.08);
+        .pink-clean-shadow {
+            box-shadow: 0 10px 30px rgba(255, 145, 164, 0.02);
         }
 
-        /* Pulse alarm glow */
         @keyframes alarm-pulse {
-            0%, 100% { border-color: #3a2026; box-shadow: 0 0 0px transparent; }
-            50% { border-color: #ff91a4; box-shadow: 0 0 12px rgba(255, 145, 164, 0.25); }
+            0%, 100% { border-color: #2e1e21; box-shadow: 0 0 0px transparent; }
+            50% { border-color: #ff91a4; box-shadow: 0 0 15px rgba(255, 145, 164, 0.15); }
         }
         .urgent-order-card {
             animation: alarm-pulse 2.5s infinite ease-in-out;
+            background-color: #1f1517 !important;
         }
     </style>
+
+    <script type="module" src="admin-engine.js" defer></script>
 </head>
 <body class="min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
-    <!-- Screen Blocking Guard Loader -->
-    <div id="loadingGuard" class="fixed inset-0 bg-brandBg z-[200] flex flex-col items-center justify-center gap-4 transition-opacity duration-500">
-        <div class="w-14 h-14 rounded-2xl border-2 border-brandBorder border-t-brandPink animate-spin"></div>
-        <p class="text-brandTextMuted text-sm font-bold tracking-wide">جاري التحقق من الهوية السيادية والمزامنة...</p>
+    <div id="loadingGuard" class="fixed inset-0 bg-brandBg z-[200] flex flex-col items-center justify-center gap-5 transition-opacity duration-500">
+        <div class="w-16 h-16 rounded-3xl border-4 border-brandBorder border-t-brandPink animate-spin"></div>
+        <p class="text-brandTextMuted text-sm font-bold tracking-wide">جاري التحقق من الصلاحيات السيادية وتأمين المزامنة السحابية...</p>
     </div>
 
-    <!-- Active Global Notifications Toast Panel -->
-    <div id="toastNotification" class="fixed top-5 left-1/2 -translate-x-1/2 z-[150] px-6 py-4 rounded-2xl bg-brandSurface border border-brandBorder text-white text-sm font-bold shadow-2xl flex items-center gap-3 transform -translate-y-24 opacity-0 pointer-events-none transition-all duration-300">
+    <div id="toastNotification" class="fixed top-6 left-1/2 -translate-x-1/2 z-[150] px-6 py-4 rounded-2xl bg-brandSurface border border-brandBorder text-brandTextMain text-sm font-bold shadow-2xl flex items-center gap-3 transform -translate-y-28 opacity-0 pointer-events-none transition-all duration-300">
         <span id="toastIcon" class="text-brandPink"></span>
         <div class="flex flex-col">
             <span id="toastTitle" class="text-brandPink text-xs font-black"></span>
-            <span id="toastBody" class="text-xs text-brandTextMuted mt-0.5"></span>
+            <span id="toastBody" class="text-xs text-brandTextMuted mt-1"></span>
         </div>
     </div>
 
-    <!-- SIDEBAR DRAWER (Mobile Friendly) -->
-    <div id="sidebarOverlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-brandBg/60 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
     
     <aside id="mainSidebar" class="fixed md:sticky top-0 right-0 h-screen w-72 bg-brandSurface border-l border-brandBorder z-50 flex flex-col justify-between transition-transform duration-300 translate-x-full md:translate-x-0">
         <div class="flex flex-col h-full overflow-y-auto">
-            <!-- Brand Head -->
             <div class="p-6 border-b border-brandBorder flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-brandBg border border-brandBorder rounded-xl flex items-center justify-center">
@@ -125,73 +123,74 @@
                         <span class="text-[10px] text-brandTextMuted tracking-tight">المركز الإداري السيادي</span>
                     </div>
                 </div>
-                <button onclick="toggleSidebar(false)" class="p-2 bg-brandBg hover:bg-brandBorder rounded-lg text-brandPink transition-colors md:hidden">
+                <button id="btn-close-sidebar" class="p-2 bg-brandBg hover:bg-brandBorder rounded-lg text-brandPink transition-colors md:hidden">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
 
-            <!-- Accordion Nav Links -->
             <nav class="p-4 space-y-2 flex-grow">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-brandBorder/20 text-brandPink border-r-4 border-brandPink text-xs font-bold text-right transition-all">
+                <button id="nav-dashboard" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-brandPinkLight text-brandPink border-r-4 border-brandPink text-xs font-bold text-right transition-all">
                     <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                    <span>مؤشرات الأداء (BoseMonitor)</span>
+                    <span>مؤشرات الأداء السحابي (BoseMonitor)</span>
                 </button>
 
-                <button onclick="switchTab('orders')" id="nav-orders" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandBorder/10 text-xs font-bold text-right border-r-4 border-transparent transition-all">
+                <button id="nav-orders" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
                     <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                    <span>شلال إدارة الطلبات</span>
+                    <span>شلال إدارة الطلبات الحية</span>
                 </button>
 
-                <button onclick="switchTab('menu')" id="nav-menu" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandBorder/10 text-xs font-bold text-right border-r-4 border-transparent transition-all">
+                <button id="nav-menu" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
                     <i data-lucide="package" class="w-4 h-4"></i>
                     <span>إعدادات المنيو والتوفر الفوري</span>
                 </button>
 
-                <!-- Custom Builders Accordion Toggles -->
-                <div class="pt-2 border-t border-brandBorder/40">
-                    <span class="px-4 py-1.5 block text-[10px] text-brandTextMuted/50 font-black tracking-widest uppercase">محاكيات البناء</span>
-                    <button onclick="switchTab('cakeBuilderSettings')" id="nav-cakeBuilderSettings" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandBorder/10 text-xs font-bold text-right border-r-4 border-transparent transition-all">
+                <button id="nav-layoutsManager" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
+                    <i data-lucide="layout-template" class="w-4 h-4"></i>
+                    <span>إدارة أقسام الواجهة وهندسة العرض</span>
+                </button>
+
+                <div class="pt-2 border-t border-brandBorder">
+                    <span class="px-4 py-2 block text-[10px] text-brandTextMuted/50 font-black tracking-widest uppercase">محاكيات البناء الفاخر</span>
+                    <button id="nav-cakeBuilderSettings" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
                         <i data-lucide="sliders" class="w-4 h-4"></i>
                         <span>محددات محاكي التورت</span>
                     </button>
-                    <button onclick="switchTab('roseBuilderSettings')" id="nav-roseBuilderSettings" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandBorder/10 text-xs font-bold text-right border-r-4 border-transparent transition-all">
+                    <button id="nav-roseBuilderSettings" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
                         <i data-lucide="flower" class="w-4 h-4"></i>
                         <span>محددات محاكي الورد</span>
                     </button>
                 </div>
 
-                <!-- Global settings -->
-                <div class="pt-2 border-t border-brandBorder/40">
-                    <span class="px-4 py-1.5 block text-[10px] text-brandTextMuted/50 font-black tracking-widest uppercase">النظام والتسويق</span>
-                    <button onclick="switchTab('shippingRates')" id="nav-shippingRates" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandBorder/10 text-xs font-bold text-right border-r-4 border-transparent transition-all">
+                <div class="pt-2 border-t border-brandBorder">
+                    <span class="px-4 py-2 block text-[10px] text-brandTextMuted/50 font-black tracking-widest uppercase">النظام والتوزيع</span>
+                    <button id="nav-shippingRates" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
                         <i data-lucide="truck" class="w-4 h-4"></i>
                         <span>تعريفة ومناطق التوصيل</span>
                     </button>
-                    <button onclick="switchTab('globalConfig')" id="nav-globalConfig" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandBorder/10 text-xs font-bold text-right border-r-4 border-transparent transition-all">
+                    <button id="nav-globalConfig" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
                         <i data-lucide="settings" class="w-4 h-4"></i>
-                        <span>الإعلانات والتنبيهات العامة</span>
+                        <span>الإعلانات والميديا العامة</span>
                     </button>
-                    <button onclick="switchTab('systemLogs')" id="nav-systemLogs" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandBorder/10 text-xs font-bold text-right border-r-4 border-transparent transition-all">
+                    <button id="nav-systemLogs" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
                         <i data-lucide="terminal" class="w-4 h-4"></i>
-                        <span>سجلات أخطاء تشخيص النظام</span>
+                        <span>سجلات تشخيص النظام</span>
                     </button>
                 </div>
             </nav>
 
-            <!-- Sidebar Footer with secure logout -->
             <div class="p-4 border-t border-brandBorder bg-brandBg/60 flex flex-col gap-3">
-                <div class="p-3 rounded-xl bg-brandSurfaceChild border border-brandBorder flex items-center gap-3">
+                <div class="p-3.5 rounded-xl bg-brandSurfaceChild border border-brandBorder flex items-center gap-3">
                     <div class="w-8 h-8 rounded-lg bg-brandPink/15 flex items-center justify-center text-brandPink">
                         <i data-lucide="user-check" class="w-4 h-4"></i>
                     </div>
                     <div class="overflow-hidden">
                         <p class="text-[11px] text-brandTextMain font-bold truncate" id="adminEmailDisplay">إدارة حلويات بوسي</p>
                         <span class="text-[9px] text-emerald-400 font-extrabold flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>متصل سحابياً
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>مؤمن ومتصل حياً
                         </span>
                     </div>
                 </div>
-                <button onclick="executeLogout()" class="w-full py-3 bg-red-950/20 hover:bg-red-900/30 text-red-400 border border-red-900/30 rounded-xl text-xs font-extrabold transition-colors flex items-center justify-center gap-2">
+                <button id="btn-sidebar-logout" class="w-full py-3 bg-red-950/30 hover:bg-red-950/50 text-red-400 border border-red-900/40 rounded-xl text-xs font-extrabold transition-colors flex items-center justify-center gap-2">
                     <i data-lucide="log-out" class="w-4 h-4"></i>
                     <span>تسجيل الخروج الآمن</span>
                 </button>
@@ -199,18 +198,16 @@
         </div>
     </aside>
 
-    <!-- MAIN APP WRAPPER -->
     <div class="flex-grow flex flex-col min-w-0">
         
-        <!-- HEADER -->
-        <header class="sticky top-0 z-30 bg-brandBg/90 backdrop-blur-md border-b border-brandBorder h-16 flex items-center justify-between px-6">
+        <header class="sticky top-0 z-30 bg-brandSurface/90 backdrop-blur-md border-b border-brandBorder h-16 flex items-center justify-between px-6">
             <div class="flex items-center gap-4">
-                <button onclick="toggleSidebar(true)" class="p-2 bg-brandSurface hover:bg-brandBorder border border-brandBorder rounded-xl text-brandPink transition-colors md:hidden">
+                <button id="btn-open-sidebar" class="p-2 bg-brandBg hover:bg-brandBorder border border-brandBorder rounded-xl text-brandPink transition-colors md:hidden">
                     <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
                 <h1 class="text-sm md:text-base font-black text-brandTextMain flex items-center gap-2">
                     <i data-lucide="shield-check" class="w-5 h-5 text-brandPink"></i>
-                    بوابة المراقبة والتحكم الحاكمة لشاشة العملاء
+                    كابينة التوجيه والتحكم لشاشة عملاء حلويات بوسي
                 </h1>
             </div>
             
@@ -220,19 +217,16 @@
             </span>
         </header>
 
-        <!-- APP MAIN WORKSPACE -->
-        <main class="p-6 flex-grow overflow-y-auto">
+        <main class="p-6 md:p-8 flex-grow overflow-y-auto space-y-12">
             
-            <!-- SECTION: DASHBOARD (BoseMonitor Stats) -->
             <section id="section-dashboard" class="space-y-8">
                 <div class="flex flex-col gap-2">
-                    <h2 class="text-xl font-black text-brandTextMain">كابينة المؤشرات والأداء المالي والتشغيلي</h2>
-                    <p class="text-xs text-brandTextMuted font-bold">ملخص شامل لإحصائيات اليوم وتصنيفات الشحنات وصافي الإيرادات المحققة.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">كابينة المؤشرات والأداء المالي والتشغيلي</h2>
+                    <p class="text-xs md:text-sm text-brandTextMuted font-bold">ملخص شامل لإحصائيات اليوم وتصنيفات الشحنات وصافي الإيرادات المحققة في مركز الفرافرة والكفاح.</p>
                 </div>
 
-                <!-- Live Indicators Grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-neon-shadow relative overflow-hidden">
+                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-clean-shadow relative overflow-hidden">
                         <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-brandPink/5 rounded-full blur-xl"></div>
                         <div class="flex items-center justify-between">
                             <span class="text-[11px] text-brandTextMuted font-bold">إجمالي طلبات النظام</span>
@@ -243,7 +237,7 @@
                         <p class="text-3xl font-black text-brandTextMain" id="stat-total-orders">0</p>
                     </div>
 
-                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-neon-shadow relative overflow-hidden">
+                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-clean-shadow relative overflow-hidden">
                         <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-amber-500/5 rounded-full blur-xl"></div>
                         <div class="flex items-center justify-between">
                             <span class="text-[11px] text-brandTextMuted font-bold">الطلبات قيد الانتظار</span>
@@ -254,10 +248,10 @@
                         <p class="text-3xl font-black text-brandTextMain" id="stat-pending-orders">0</p>
                     </div>
 
-                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-neon-shadow relative overflow-hidden">
+                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-clean-shadow relative overflow-hidden">
                         <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-indigo-500/5 rounded-full blur-xl"></div>
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] text-brandTextMuted font-bold">الطلبات قيد المطبخ والحركة</span>
+                            <span class="text-[11px] text-brandTextMuted font-bold">الطلبات قيد الحركة والمطبخ</span>
                             <div class="w-9 h-9 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
                                 <i data-lucide="cooking-pot" class="w-5 h-5"></i>
                             </div>
@@ -265,7 +259,7 @@
                         <p class="text-3xl font-black text-brandTextMain" id="stat-active-orders">0</p>
                     </div>
 
-                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-neon-shadow relative overflow-hidden">
+                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-clean-shadow relative overflow-hidden">
                         <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl"></div>
                         <div class="flex items-center justify-between">
                             <span class="text-[11px] text-brandTextMuted font-bold">المعاملات المكتملة</span>
@@ -277,141 +271,204 @@
                     </div>
                 </div>
 
-                <!-- Financial Analysis Panel -->
-                <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder space-y-6">
+                <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-6 shadow-sm">
                     <div class="flex items-center gap-3">
                         <i data-lucide="wallet" class="w-5 h-5 text-brandPink"></i>
                         <h3 class="text-sm font-black text-brandTextMain">الحسابات والتدفق المالي (معاملات مكتملة فقط)</h3>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="p-5 rounded-2xl bg-brandSurfaceChild border border-brandBorder/60 space-y-1">
-                            <span class="text-[10px] text-brandTextMuted/70 font-bold block">إجمالي قيمة الفواتير</span>
+                        <div class="p-6 rounded-2xl bg-brandSurfaceChild border border-brandBorder space-y-2">
+                            <span class="text-[10px] text-brandTextMuted font-bold block">إجمالي قيمة الفواتير</span>
                             <p class="text-2xl font-black text-brandPink" id="stat-revenue-total">0 ج.م</p>
                         </div>
-                        <div class="p-5 rounded-2xl bg-brandSurfaceChild border border-brandBorder/60 space-y-1">
-                            <span class="text-[10px] text-brandTextMuted/70 font-bold block">تكلفة ومصاريف الشحن المقتطعة</span>
+                        <div class="p-6 rounded-2xl bg-brandSurfaceChild border border-brandBorder space-y-2">
+                            <span class="text-[10px] text-brandTextMuted font-bold block">تكلفة ومصاريف الشحن المقتطعة</span>
                             <p class="text-2xl font-black text-brandTextMain" id="stat-revenue-shipping">0 ج.م</p>
                         </div>
-                        <div class="p-5 rounded-2xl bg-brandSurfaceChild border border-brandBorder/60 space-y-1">
-                            <span class="text-[10px] text-brandTextMuted/70 font-bold block">صافي إيرادات المنتجات</span>
+                        <div class="p-6 rounded-2xl bg-brandSurfaceChild border border-brandBorder space-y-2">
+                            <span class="text-[10px] text-brandTextMuted font-bold block">صافي إيرادات المنتجات</span>
                             <p class="text-2xl font-black text-emerald-400" id="stat-revenue-net">0 ج.م</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION: ORDERS PIPELINE -->
             <section id="section-orders" class="space-y-8 hidden">
                 <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-brandBorder pb-6">
                     <div class="space-y-1">
-                        <h2 class="text-xl font-black text-brandTextMain">شلال وحركة المعالجة للطلبات المعتمدة</h2>
+                        <h2 class="text-xl md:text-2xl font-black text-brandTextMain">شلال وحركة المعالجة للطلبـات</h2>
                         <p class="text-xs text-brandTextMuted font-bold">فرز وتحديث حالات الطلبات لعملاء حلويات بوسي فوراً.</p>
                     </div>
                 </div>
 
-                <!-- State Filters Accordion-Mode for Pipelines -->
-                <div class="flex flex-wrap gap-2 pb-2">
-                    <button onclick="filterOrdersBy('all')" id="btn-filter-all" class="px-5 py-2.5 rounded-full text-xs font-black transition-all bg-brandPink text-brandBg border border-brandPink">الكل</button>
-                    <button onclick="filterOrdersBy('pending')" id="btn-filter-pending" class="px-5 py-2.5 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandBorder text-brandTextMuted border border-brandBorder flex items-center gap-2">
+                <div id="orders-filter-bar" class="flex flex-wrap gap-2.5 pb-2">
+                    <button id="btn-filter-all" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandPink text-white border border-brandPink flex items-center gap-2">الكل</button>
+                    <button id="btn-filter-pending" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder flex items-center gap-2">
                         <span>الوارد حديثاً</span>
-                        <span id="badge-count-pending" class="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-1.5 py-0.5 rounded-full text-[9px] font-black">0</span>
+                        <span id="badge-count-pending" class="bg-amber-950/40 text-amber-400 px-2 py-0.5 rounded-full text-[9px] font-black border border-amber-900/30">0</span>
                     </button>
-                    <button onclick="filterOrdersBy('processing')" id="btn-filter-processing" class="px-5 py-2.5 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandBorder text-brandTextMuted border border-brandBorder flex items-center gap-2">
-                        <span>داخل المطبخ</span>
-                        <span id="badge-count-processing" class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-1.5 py-0.5 rounded-full text-[9px] font-black">0</span>
+                    <button id="btn-filter-processing" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder flex items-center gap-2">
+                        <span>inside المطبخ</span>
+                        <span id="badge-count-processing" class="bg-indigo-950/40 text-indigo-400 px-2 py-0.5 rounded-full text-[9px] font-black border border-indigo-900/30">0</span>
                     </button>
-                    <button onclick="filterOrdersBy('shipping')" id="btn-filter-shipping" class="px-5 py-2.5 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandBorder text-brandTextMuted border border-brandBorder flex items-center gap-2">
+                    <button id="btn-filter-shipping" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder flex items-center gap-2">
                         <span>مع المناديب</span>
-                        <span id="badge-count-shipping" class="bg-sky-500/10 text-sky-400 border border-sky-500/20 px-1.5 py-0.5 rounded-full text-[9px] font-black">0</span>
+                        <span id="badge-count-shipping" class="bg-sky-950/40 text-sky-400 px-2 py-0.5 rounded-full text-[9px] font-black border border-sky-900/30">0</span>
                     </button>
-                    <button onclick="filterOrdersBy('completed')" id="btn-filter-completed" class="px-5 py-2.5 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandBorder text-brandTextMuted border border-brandBorder flex items-center gap-2">
-                        <span>المكتملة</span>
-                    </button>
-                    <button onclick="filterOrdersBy('cancelled')" id="btn-filter-cancelled" class="px-5 py-2.5 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandBorder text-brandTextMuted border border-brandBorder flex items-center gap-2">
-                        <span>الملغاة</span>
-                    </button>
+                    <button id="btn-filter-completed" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder">المكتملة</button>
+                    <button id="btn-filter-cancelled" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder">الملغاة</button>
                 </div>
 
-                <!-- Pipeline Workspace Dynamic Cards -->
-                <div id="ordersCardsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Cards will be dynamically injected by JS -->
+                <div id="production-filter-bar" class="bg-brandSurfaceChild p-4 rounded-2xl border border-brandBorder flex flex-wrap gap-2.5">
+                    <span class="text-xs font-bold text-brandTextMuted flex items-center gap-1.5 ml-2">
+                        <i data-lucide="filter" class="w-3.5 h-3.5 text-brandPink"></i> فلترة حسب نوع الإنتاج:
+                    </span>
+                    <button id="prod-filter-all" class="px-4 py-1.5 rounded-lg text-[11px] font-black transition-all bg-brandPink/15 text-brandPink">جميع المنتجات</button>
+                    <button id="prod-filter-cakes" class="px-4 py-1.5 rounded-lg text-[11px] font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder">طلبات الكيك المخصصة 🎂</button>
+                    <button id="prod-filter-roses" class="px-4 py-1.5 rounded-lg text-[11px] font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder">باقات وتنسيق الورد 💐</button>
+                    <button id="prod-filter-classic" class="px-4 py-1.5 rounded-lg text-[11px] font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder">أصناف المنيو الكلاسيكي 🍰</button>
+                </div>
+
+                <div id="ordersCardsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 </div>
             </section>
 
-            <!-- SECTION: MENU MATRIX AND INSTANT AVAILABILITY -->
             <section id="section-menu" class="space-y-8 hidden">
                 <div class="flex flex-col gap-2">
-                    <h2 class="text-xl font-black text-brandTextMain">كابينة الإدارة المطلقة للمنيو والتوفر الفوري</h2>
-                    <p class="text-xs text-brandTextMuted font-bold">إيقاف أو تشغيل توفر أي صنف أو نكهة في المطبخ فوراً لسلامة حجز العملاء بالموقع.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">كابينة المنيو والتوفر الفوري</h2>
+                    <p class="text-xs md:text-sm text-brandTextMuted font-bold">تعديل الأسعار والأوصاف والتوفر وإخفاء أي صنف فوراً لسلامة حجز العملاء.</p>
                 </div>
 
-                <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder space-y-6">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="info" class="w-5 h-5 text-brandPink"></i>
-                        <p class="text-xs text-brandTextMuted font-bold">هذه الواجهة تتيح التحكم في قائمة نفاد النكهات سحابياً. في حال نفدت مكونات صنف ما، يتم تجميده من هنا.</p>
+                <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-6 shadow-sm">
+                    <div class="flex flex-wrap gap-2 border-b border-brandBorder pb-4" id="menuTabsContainer">
                     </div>
 
-                    <!-- Config Editor for Out Of Stock Items -->
-                    <div class="space-y-4" id="outOfStockContainer">
-                        <!-- Filled by JS -->
+                    <div class="space-y-6" id="outOfStockContainer">
                     </div>
 
-                    <div class="pt-4 border-t border-brandBorder flex justify-end">
-                        <button onclick="saveConfigSettings()" class="px-8 py-3.5 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-full transition-all duration-300">
+                    <div class="pt-6 border-t border-brandBorder flex justify-end">
+                        <button id="btn-save-menu" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 shadow-md">
                             مزامنة وحفظ التعديلات سحابياً
                         </button>
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION: CAKE BUILDER SETTINGS -->
+            <section id="section-layoutsManager" class="space-y-8 hidden">
+                <div class="flex flex-col gap-2">
+                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">هندسة أقسام الواجهة وترتيب خطوط العرض للعميل</h2>
+                    <p class="text-xs text-brandTextMuted font-bold">التحكم السيادي المطلق في ترتيب الأقسام بالصفحة الرئيسية، إضافة منتجات جديدة، وتهيئة صفحات العرض المخصصة تلقائياً.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-7 p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-6">
+                        <div class="flex items-center justify-between border-b border-brandBorder pb-3">
+                            <h3 class="text-sm font-black text-brandTextMain flex items-center gap-2">
+                                <i data-lucide="layers" class="w-4 h-4 text-brandPink"></i>
+                                الهيكل الحالي لأقسام الواجهة الرئيسية
+                            </h3>
+                            <button id="btn-add-layout-section" class="px-4 py-2 bg-brandPink/10 text-brandPink hover:bg-brandPink/20 text-[11px] font-black rounded-xl border border-brandPink/20 flex items-center gap-1">
+                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> إضافة قسم جديد بالواجهة
+                            </button>
+                        </div>
+                        
+                        <div id="layoutSectionsContainer" class="space-y-4">
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-5 space-y-6">
+                        <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-6">
+                            <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3 flex items-center gap-2">
+                                <i data-lucide="columns" class="w-4 h-4 text-brandPink"></i>
+                                خيارات عرض المنتجات بالصفحات الجديدة والحالية
+                            </h3>
+                            
+                            <div class="space-y-4 text-xs">
+                                <div class="p-4 rounded-2xl bg-brandSurfaceChild border border-brandBorder space-y-3">
+                                    <label class="block text-brandTextMain font-bold">طريقة عرض المنتجات الافتراضية حالياً ومستقبلياً:</label>
+                                    <div class="grid grid-cols-2 gap-3 pt-1">
+                                        <button id="btn-mode-grid2" class="py-3 px-4 rounded-xl font-black text-center transition-all border border-brandBorder bg-brandBg text-brandTextMuted">
+                                            كارتين بجانب بعض (Dual Grid)
+                                        </button>
+                                        <button id="btn-mode-fullCard" class="py-3 px-4 rounded-xl font-black text-center transition-all border border-brandBorder bg-brandBg text-brandTextMuted">
+                                            كارت كامل ملء الشاشة
+                                        </button>
+                                    </div>
+                                    <p class="text-[10px] text-brandTextMuted font-semibold pt-1 leading-relaxed">
+                                        * ملاحظة: يتم تطبيق التغيير فوراً بمحرك العميل، مع استثناء تورت المناسبات الملكية الفاخرة لتعرض دائماً بكروت كاملة للحفاظ على تفاصيلها البارزة.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-4">
+                            <h3 class="text-sm font-black text-brandTextMain flex items-center gap-2 border-b border-brandBorder pb-3">
+                                <i data-lucide="cpu" class="w-4 h-4 text-brandPink"></i>
+                                نظام بناء الصفحات الداخلية التلقائي
+                            </h3>
+                            <p class="text-xs text-brandTextMuted leading-relaxed font-bold">
+                                بمجرد إضافة منتج جديد أو تعريف قسم برمجياً، يقوم النظام ببناء عنوان URL داخلي فريد ومسار مخصص لتوليد الصفحة ديناميكياً للعميل دون الحاجة لتحديث ملف الـ HTML يدوياً.
+                            </p>
+                            <div class="p-3 bg-brandPinkLight/40 rounded-xl border border-brandPink/10 text-[10px] font-black text-brandPink flex items-center gap-2">
+                                <i data-lucide="info" class="w-4 h-4 flex-shrink-0"></i>
+                                <span>يتم الحفاظ على البناء الهيكلي المرن ومساحات التنفس البصري تلقائياً.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-2 flex justify-end">
+                    <button id="btn-save-layouts" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 shadow-md">
+                        مزامنة واعتماد هندسة ترتيب الأقسام سحابياً
+                    </button>
+                </div>
+            </section>
+
             <section id="section-cakeBuilderSettings" class="space-y-8 hidden">
                 <div class="flex flex-col gap-2">
-                    <h2 class="text-xl font-black text-brandTextMain">تخصيص محاكي تصميم التورت الذكي</h2>
+                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">تخصيص محاكي تصميم التورت الذكي</h2>
                     <p class="text-xs text-brandTextMuted font-bold">تحديث أسعار الأفراد وخيارات الطباعة والمقاييس المعتمدة لمطبخ حلويات بوسي.</p>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Pricing Rules -->
-                    <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder space-y-4">
+                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-4">
                         <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">قواعد التسعير لمحاكي الكيك</h3>
                         
                         <div class="space-y-4">
                             <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted">سعر الفرد المعتمد أساسياً للكيك الطبيعي:</label>
+                                <label class="block text-xs text-brandTextMuted font-bold">سعر الفرد المعتمد أساسياً للكيك الطبيعي:</label>
                                 <div class="relative">
-                                    <input type="number" id="cfg-cakeBasePrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-white text-xs outline-none bose-input-glow transition-all" placeholder="145">
-                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] text-brandTextMuted">جنيه / فرد</span>
+                                    <input type="number" id="cfg-cakeBasePrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="145">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] text-brandTextMuted font-bold">جنيه / فرد</span>
                                 </div>
                             </div>
 
                             <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted">تكلفة طباعة صورة قابلة للأكل:</label>
+                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة طباعة صورة قابلة للأكل:</label>
                                 <div class="relative">
-                                    <input type="number" id="cfg-cakePrintEdible" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-white text-xs outline-none bose-input-glow transition-all" placeholder="60">
-                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] text-brandTextMuted">جنيه</span>
+                                    <input type="number" id="cfg-cakePrintEdible" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="60">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] text-brandTextMuted font-bold">جنيه</span>
                                 </div>
                             </div>
 
                             <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted">تكلفة طباعة صورة غير قابلة للأكل:</label>
+                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة طباعة صورة غير قابلة للأكل:</label>
                                 <div class="relative">
-                                    <input type="number" id="cfg-cakePrintNonEdible" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-white text-xs outline-none bose-input-glow transition-all" placeholder="20">
-                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] text-brandTextMuted">جنيه</span>
+                                    <input type="number" id="cfg-cakePrintNonEdible" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="20">
+                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] text-brandTextMuted font-bold">جنيه</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Builder logic notes -->
-                    <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder flex flex-col justify-between">
+                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder flex flex-col justify-between">
                         <div class="space-y-4">
                             <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">توجيهات تشغيلية</h3>
                             <p class="text-xs text-brandTextMuted leading-relaxed font-bold">
                                 يتم تطبيق هذه المتغيرات تلقائياً في صفحة العميل، حيث يقوم محاكي الكيك بحساب السعر الإجمالي التقديري بناءً على المعادلة: 
                                 <br><br>
-                                <code class="text-brandPink block bg-brandBg p-3 rounded-lg text-left" dir="ltr">
+                                <code class="text-brandPink block bg-brandBg p-3.5 rounded-lg text-left" dir="ltr">
                                     Total = (PeopleCount * PricePerPerson) + PrintOptionFee
                                 </code>
                                 <br>
@@ -419,7 +476,7 @@
                             </p>
                         </div>
                         <div class="pt-4 flex justify-end">
-                            <button onclick="saveConfigSettings()" class="px-8 py-3.5 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-full transition-all duration-300 w-full sm:w-auto">
+                            <button id="btn-save-cake-config" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 w-full sm:w-auto shadow-sm">
                                 حفظ قيود محاكي الكيك
                             </button>
                         </div>
@@ -427,65 +484,62 @@
                 </div>
             </section>
 
-            <!-- SECTION: ROSE BUILDER SETTINGS -->
             <section id="section-roseBuilderSettings" class="space-y-8 hidden">
                 <div class="flex flex-col gap-2">
-                    <h2 class="text-xl font-black text-brandTextMain">تخصيص محاكي تنسيق الورد الفاخر والهدية</h2>
-                    <p class="text-xs text-brandTextMuted font-bold">مراجعة أسعار الورود والشوكولاتة والبطاقات وشريط الستان الفاخر المدمج.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">تخصيص محاكي تنسيق الورد الفاخر والهدية</h2>
+                    <p class="text-xs text-brandTextMuted font-bold">مراقبة أسعار الورود والشوكولاتة والبطاقات وشريط الستان الفاخر المدمج.</p>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Pricing Rules -->
-                    <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder space-y-4">
+                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-4">
                         <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">قواعد تسعير محاكي الورد</h3>
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted">السعر الافتراضي للبوكيه (المبدئي):</label>
-                                <input type="number" id="cfg-roseBasePrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-white text-xs outline-none bose-input-glow transition-all" placeholder="400">
+                                <label class="block text-xs text-brandTextMuted font-bold">السعر الافتراضي للبوكيه (المبدئي):</label>
+                                <input type="number" id="cfg-roseBasePrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="400">
                             </div>
 
                             <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted">الحد الأدنى لعدد الورد:</label>
-                                <input type="number" id="cfg-roseMinCount" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-white text-xs outline-none bose-input-glow transition-all" placeholder="15">
+                                <label class="block text-xs text-brandTextMuted font-bold">الحد الأدنى لعدد الورد:</label>
+                                <input type="number" id="cfg-roseMinCount" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="15">
                             </div>
 
                             <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted">تكلفة كل وردة إضافية مضافة:</label>
-                                <input type="number" id="cfg-rosePricePerAdditional" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-white text-xs outline-none bose-input-glow transition-all" placeholder="35">
+                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة كل وردة إضافية مضافة:</label>
+                                <input type="number" id="cfg-rosePricePerAdditional" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="35">
                             </div>
 
                             <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted">تكلفة طباعة الصورة وسط الورد:</label>
-                                <input type="number" id="cfg-rosePhotoPrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-white text-xs outline-none bose-input-glow transition-all" placeholder="15">
+                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة طباعة صورة وسط الورد:</label>
+                                <input type="number" id="cfg-rosePhotoPrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="15">
                             </div>
 
                             <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted">تكلفة شريط الستان المطبوع:</label>
-                                <input type="number" id="cfg-roseRibbonPrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-white text-xs outline-none bose-input-glow transition-all" placeholder="50">
+                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة شريط الستان المطبوع:</label>
+                                <input type="number" id="cfg-roseRibbonPrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="50">
                             </div>
 
                             <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted">تكلفة كارت الإهداء الفاخر ملون:</label>
-                                <input type="number" id="cfg-roseCardPrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-white text-xs outline-none bose-input-glow transition-all" placeholder="20">
+                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة كارت الإهداء الفاخر ملون:</label>
+                                <input type="number" id="cfg-roseCardPrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="20">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Builder logic notes -->
-                    <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder flex flex-col justify-between">
+                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder flex flex-col justify-between">
                         <div class="space-y-4">
                             <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">خوارزمية حساب باقة الورد</h3>
                             <p class="text-xs text-brandTextMuted leading-relaxed font-bold">
                                 محاكي باقة الورد يعتمد على تفصيل دقيق وحساب مستمر بناءً على مدخلات العميل. يتم حساب المعادلة كالتالي:
                                 <br><br>
-                                <code class="text-brandPink block bg-brandBg p-3 rounded-lg text-left" dir="ltr">
+                                <code class="text-brandPink block bg-brandBg p-3.5 rounded-lg text-left" dir="ltr">
                                     Total = BasePrice + (ExcessRoses * PricePerRose) + CashAmount + (PhotosCount * PhotoPrice) + RibbonPrice + ChocBudget + PremiumBarsSum + CardPrice
                                 </code>
                             </p>
                         </div>
                         <div class="pt-4 flex justify-end">
-                            <button onclick="saveConfigSettings()" class="px-8 py-3.5 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-full transition-all duration-300 w-full sm:w-auto">
+                            <button id="btn-save-rose-config" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 w-full sm:w-auto shadow-sm">
                                 حفظ قيود محاكي الورد
                             </button>
                         </div>
@@ -493,87 +547,109 @@
                 </div>
             </section>
 
-            <!-- SECTION: SHIPPING RATES -->
             <section id="section-shippingRates" class="space-y-8 hidden">
                 <div class="flex flex-col gap-2">
-                    <h2 class="text-xl font-black text-brandTextMain">تعريفة ومحرك تسعير التوصيل الجغرافي لمركز الفرافرة والكفاح</h2>
-                    <p class="text-xs text-brandTextMuted font-bold">إضافة وتعديل مبالغ شحن وتنسيق كافة القرى والمناطق المعتمدة.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">تعريفة ومحرك تسعير التوصيل الجغرافي</h2>
+                    <p class="text-xs text-brandTextMuted font-bold">إضافة وتعديل مبالغ شحن وتنسيق كافة القرى والمناطق المعتمدة بمركز الفرافرة والكفاح.</p>
                 </div>
 
-                <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder space-y-6">
+                <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-6 shadow-sm">
                     <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">مناطق الشحن والتعريفة الحالية</h3>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="shippingRatesContainer">
-                        <!-- Instantiated by JS -->
                     </div>
 
                     <div class="pt-4 border-t border-brandBorder flex justify-end">
-                        <button onclick="saveConfigSettings()" class="px-8 py-3.5 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-full transition-all duration-300">
+                        <button id="btn-save-shipping" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 shadow-sm">
                             حفظ وتحديث خطوط التوصيل
                         </button>
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION: GLOBAL CONFIG -->
             <section id="section-globalConfig" class="space-y-8 hidden">
                 <div class="flex flex-col gap-2">
-                    <h2 class="text-xl font-black text-brandTextMain">الإعلانات والتنبيهات العامة وإعدادات التواصل السيادية</h2>
-                    <p class="text-xs text-brandTextMuted font-bold">التحكم بالشريط المتحرك العلوي للموقع، قنوات الاتصال، ومحاكيات التوقيت الصارم للعميل.</p>
+                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">الإعلانات والوسائط وإعدادات التواصل السيادية</h2>
+                    <p class="text-xs text-brandTextMuted font-bold">التحكم بالشريط المتحرك العلوي، والوسائط الخلفية الترويجية لعلامة حلويات بوسي.</p>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Global text configurations -->
-                    <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder space-y-5">
+                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-5 shadow-sm">
                         <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">متغيرات اللافتات وشريط الإعلانات</h3>
 
                         <div class="space-y-2">
-                            <label class="block text-xs text-brandTextMuted">محتوى نص لافتة شريط الإعلانات العلوية المتحرك:</label>
-                            <textarea id="cfg-marqueeText" rows="3" class="w-full bg-brandBg border border-brandBorder rounded-xl p-4 text-white text-xs outline-none bose-input-glow transition-all leading-relaxed" placeholder="✨ عقد من التميز والاتقان الفني في صناعة الحلويات الطبيعية 100%..."></textarea>
+                            <label class="block text-xs text-brandTextMuted font-bold">محتوى نص لافتة شريط الإعلانات العلوية المتحرك:</label>
+                            <textarea id="cfg-marqueeText" rows="3" class="w-full bg-brandBg border border-brandBorder rounded-xl p-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all leading-relaxed" placeholder="✨ عقد من التميز والاتقان فني..."></textarea>
+                        </div>
+
+                        <div class="space-y-2 pt-2">
+                            <div class="flex justify-between items-center">
+                                <label class="block text-xs text-brandTextMuted font-bold">سرعة حركة شريط الإعلانات العلوية:</label>
+                                <span id="marqueeSpeedLabel" class="text-[10px] text-brandPink font-black">متوسط</span>
+                            </div>
+                            <input type="range" id="cfg-marqueeSpeed" min="10" max="60" step="5" class="w-full h-1.5 bg-brandBorder rounded-lg appearance-none cursor-pointer accent-brandPink">
+                            <div class="flex justify-between text-[9px] text-brandTextMuted/70">
+                                <span>سريع جداً</span>
+                                <span>متوسط</span>
+                                <span>بطيء ومريح للعين 👁️</span>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 pt-2">
+                            <label class="block text-xs text-brandTextMuted font-bold">رابط تواصل المبيعات المعتمد للواتساب والاتصال:</label>
+                            <input type="text" id="cfg-phone" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="01097238441">
                         </div>
 
                         <div class="space-y-2">
-                            <label class="block text-xs text-brandTextMuted">رقم تواصل المبيعات المعتمد للواتساب والاتصال:</label>
-                            <input type="text" id="cfg-phone" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-white text-xs outline-none bose-input-glow transition-all" placeholder="01097238441">
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="block text-xs text-brandTextMuted">قاعدة الحد الأدنى للوقت المطلوب قبل تسليم الطلب (ساعات):</label>
-                            <input type="number" id="cfg-prepTime" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-white text-xs outline-none bose-input-glow transition-all" placeholder="24">
-                            <p class="text-[9px] text-brandTextMuted/70">تمنع العميل في صفحة المعاملة من الحجز مسبقاً قبل مرور هذا العدد من الساعات لسلامة تجهيز الأصناف وتجنب الضغط.</p>
+                            <label class="block text-xs text-brandTextMuted font-bold">قاعدة الحد الأدنى للوقت المطلوب قبل تسليم الطلب (ساعات):</label>
+                            <input type="number" id="cfg-prepTime" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="24">
                         </div>
                     </div>
 
-                    <!-- Visual help text panel -->
-                    <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">توجيهات التسويق والحماية</h3>
-                            <p class="text-xs text-brandTextMuted leading-relaxed font-bold">
-                                تظهر لافتات الإعلان للعميل بشكل مستمر لتقديم ثقة بصرية لمنتجات حلويات بوسي الطبيعية الخالية تماماً من الكيماويات والمواد الحافظة.
-                                <br><br>
-                                محاكي قفل التوقيت الصارم يعمل على مراجعة تاريخ حجز العميل وتطبيقه على الخادم فورياً.
-                            </p>
+                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-5 shadow-sm flex flex-col justify-between">
+                        <div class="space-y-5">
+                            <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">إدارة الوسائط الترويجية بالموقع</h3>
+                            
+                            <div class="space-y-2">
+                                <label class="block text-xs text-brandTextMuted font-bold">رابط فيديو الخلفية الترويجي:</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="cfg-bgVideoUrl" class="flex-grow bg-brandBg border border-brandBorder rounded-xl py-2.5 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="رابط فيديو MP4">
+                                    <button id="btn-upload-video" onclick="triggerCloudinaryUpload('cfg-bgVideoUrl', 'btn-upload-video')" class="px-4 py-2.5 bg-brandPink text-brandBg hover:bg-brandPinkDark text-xs font-black rounded-xl transition-all shadow-sm">
+                                        اختيار من الاستوديو
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="block text-xs text-brandTextMuted font-bold">رابط الصورة الترويجية الرئيسية للواجهة:</label>
+                                <div class="flex gap-2">
+                                    <input type="text" id="cfg-promoImageUrl" class="flex-grow bg-brandBg border border-brandBorder rounded-xl py-2.5 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="رابط صورة PNG/JPG">
+                                    <button id="btn-upload-promo" onclick="triggerCloudinaryUpload('cfg-promoImageUrl', 'btn-upload-promo')" class="px-4 py-2.5 bg-brandPink text-brandBg hover:bg-brandPinkDark text-xs font-black rounded-xl transition-all shadow-sm">
+                                        اختيار من الاستوديو
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="pt-4 flex justify-end">
-                            <button onclick="saveConfigSettings()" class="px-8 py-3.5 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-full transition-all duration-300 w-full sm:w-auto">
-                                حفظ ومزامنة إعدادات التواصل والنظام
+
+                        <div class="pt-6">
+                            <button id="btn-save-global-config" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 w-full shadow-sm">
+                                حفظ ومزامنة إعدادات التواصل والوسائط
                             </button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION: SYSTEM DIAGNOSTIC LOGS -->
             <section id="section-systemLogs" class="space-y-8 hidden">
                 <div class="flex flex-col gap-2">
-                    <h2 class="text-xl font-black text-brandTextMain">سجلات تشخيص ومراقبة النظام (BoseMonitor)</h2>
+                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">سجلات تشخيص ومراقبة النظام (BoseMonitor)</h2>
                     <p class="text-xs text-brandTextMuted font-bold">عرض وتتبع الأخطاء البرمجية أو المشكلات التشغيلية المبلغ عنها من الأجهزة المختلفة.</p>
                 </div>
 
-                <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder space-y-4">
+                <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-4 shadow-sm">
                     <div class="flex items-center justify-between border-b border-brandBorder pb-3">
                         <h3 class="text-sm font-black text-brandTextMain">أخطاء ومحاضر التشغيل المسجلة</h3>
-                        <button onclick="clearAllSystemLogs()" class="px-4 py-2 bg-red-950/20 hover:bg-red-900/30 text-red-400 border border-red-900/30 rounded-xl text-[10px] font-extrabold transition-all">تطهير وتفريغ السجلات</button>
+                        <button id="btn-clear-logs" class="px-4 py-2 bg-red-950/40 hover:bg-red-950/60 text-red-400 border border-red-900/50 rounded-xl text-[10px] font-extrabold transition-all">تطهير وتفريغ السجلات</button>
                     </div>
 
                     <div class="overflow-x-auto w-full">
@@ -587,7 +663,6 @@
                                 </tr>
                             </thead>
                             <tbody id="logsTableBody" class="font-semibold text-brandTextMuted">
-                                <!-- Filled by JS -->
                             </tbody>
                         </table>
                     </div>
@@ -597,720 +672,21 @@
         </main>
     </div>
 
-    <!-- GLOBAL COMPREHENSIVE MODAL DIALOG (Replaces basic alert dialogs completely) -->
-    <div id="globalDialogModal" class="fixed inset-0 z-[100] bg-brandBg/60 backdrop-blur-sm hidden items-center justify-center p-4 transition-all duration-300">
-        <div class="bg-brandSurface rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-brandBorder">
+    <input type="file" id="cloudinaryFileInput" class="hidden" accept="image/*,video/*">
+
+    <div id="globalDialogModal" class="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 transition-all duration-300">
+        <div class="bg-brandSurface rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl space-y-5 border border-brandBorder animate-in fade-in zoom-in-95 duration-200">
             <div class="flex items-center gap-3 text-brandPink border-b border-brandBorder pb-3">
                 <span id="globalDialogModalIcon" class="text-xl"></span>
                 <h3 id="globalDialogModalTitle" class="text-sm font-black text-brandTextMain"></h3>
             </div>
-            <p id="globalDialogModalBody" class="text-xs text-brandTextMuted leading-relaxed font-bold"></p>
-            <div class="flex justify-end gap-3 pt-2" id="globalDialogModalButtons">
-                <!-- Injected dynamically -->
+            <div id="globalDialogModalBodyContainer">
+                <p id="globalDialogModalBody" class="text-xs text-brandTextMuted leading-relaxed font-bold"></p>
+            </div>
+            <div class="flex justify-end gap-3.5 pt-2" id="globalDialogModalButtons">
             </div>
         </div>
     </div>
 
-    <!-- CORE SCRIPTS -->
-    <script>
-        // Use identical firebase configurations found in index/login
-        const firebaseConfig = {
-            apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
-            authDomain: "bosy-sweets.firebaseapp.com",
-            projectId: "bosy-sweets",
-            storageBucket: "bosy-sweets.firebasestorage.app",
-            messagingSenderId: "473615735083",
-            appId: "1:473615735083:web:f09c6001c72640b2588d6e",
-            measurementId: "G-46D1CS3WLB"
-        };
-
-        // Initialize Firebase Compat
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-        const appId = 'bosy-sweets';
-
-        // Check authentication and guard transition
-        auth.onAuthStateChanged((user) => {
-            const guard = document.getElementById('loadingGuard');
-            if (!user || sessionStorage.getItem('bosy_admin_auth') !== 'verified') {
-                window.location.href = 'login.html';
-            } else {
-                document.getElementById('adminEmailDisplay').textContent = user.email;
-                if (guard) {
-                    guard.classList.add('opacity-0');
-                    setTimeout(() => guard.classList.add('hidden'), 500);
-                }
-                lucide.createIcons();
-                initAppLifecycle();
-            }
-        });
-
-        // App States & Globals
-        let allOrders = [];
-        let systemLogs = [];
-        let currentTab = 'dashboard';
-        let activeOrderFilter = 'all';
-
-        let globalConfig = {
-            cakeBasePricePerPerson: 145,
-            cakePrintEdiblePrice: 60,
-            cakePrintNonEdiblePrice: 20,
-            roseBasePrice: 400,
-            roseMinCount: 15,
-            rosePricePerAdditional: 35,
-            rosePhotoPrice: 15,
-            roseRibbonPrice: 50,
-            roseCardPrice: 20,
-            shippingRates: {
-                'الفرافرة': 50,
-                '13': 70,
-                'الجمعية': 50,
-                'الصنايع': 40,
-                'ابوبكر': 40,
-                'ابوالهول': 30,
-                'الكفاح': 30,
-                'الامل': 50,
-                '17': 70,
-                'ابوهريرة': 140
-            },
-            marqueeText: "✨ عقد من التميز والاتقان الفني في صناعة الحلويات الطبيعية 100% بمكونات فاخرة خالية تماماً من الإضافات الكيميائية",
-            orderPrepTimeHours: 24,
-            phone: "01097238441",
-            outOfStockItems: []
-        };
-
-        const staticCatalogItems = [
-            { id: 'despacito', name: 'الديسباسيتو' },
-            { id: 'tortes', name: 'التورت' },
-            { id: 'mini-tortes', name: 'الميني تورتة' },
-            { id: 'gateaux', name: 'الجاتوه' },
-            { id: 'qashtoota', name: 'القشطوطة' },
-            { id: 'donuts', name: 'الدوناتس' },
-            { id: 'bambolini', name: 'البامبوليني' },
-            { id: 'cinnabon', name: 'السينابون' },
-            { id: 'box-rowaqan', name: 'البوكس الروقان' },
-            { id: 'red-velvet', name: 'الريد فيلفت' },
-            { id: 'happiness-cups', name: 'الكبات السعادة' },
-            { id: 'cupcakes', name: 'الكب كيك' },
-            { id: 'roses', name: 'الورد' }
-        ];
-
-        // Lifecycle Initiations
-        async function initAppLifecycle() {
-            await fetchConfigSettings();
-            subscribeToOrders();
-            subscribeToLogs();
-            renderShippingRates();
-            renderMenuAvailabilityList();
-        }
-
-        // Fetch Global System Configuration
-        async function fetchConfigSettings() {
-            try {
-                if (!auth.currentUser) return;
-                const docRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('settings').doc('config');
-                const docSnap = await docRef.get();
-                if (docSnap.exists) {
-                    globalConfig = { ...globalConfig, ...docSnap.data() };
-                } else {
-                    await docRef.set(globalConfig);
-                }
-                populateUIFromConfig();
-            } catch (err) {
-                console.error("Error reading system config:", err);
-            }
-        }
-
-        // Populate Config Data into Input elements
-        function populateUIFromConfig() {
-            document.getElementById('cfg-cakeBasePrice').value = globalConfig.cakeBasePricePerPerson;
-            document.getElementById('cfg-cakePrintEdible').value = globalConfig.cakePrintEdiblePrice;
-            document.getElementById('cfg-cakePrintNonEdible').value = globalConfig.cakePrintNonEdiblePrice;
-            document.getElementById('cfg-roseBasePrice').value = globalConfig.roseBasePrice;
-            document.getElementById('cfg-roseMinCount').value = globalConfig.roseMinCount;
-            document.getElementById('cfg-rosePricePerAdditional').value = globalConfig.rosePricePerAdditional;
-            document.getElementById('cfg-rosePhotoPrice').value = globalConfig.rosePhotoPrice;
-            document.getElementById('cfg-roseRibbonPrice').value = globalConfig.roseRibbonPrice;
-            document.getElementById('cfg-roseCardPrice').value = globalConfig.roseCardPrice;
-            document.getElementById('cfg-marqueeText').value = globalConfig.marqueeText;
-            document.getElementById('cfg-phone').value = globalConfig.phone;
-            document.getElementById('cfg-prepTime').value = globalConfig.orderPrepTimeHours;
-        }
-
-        // Subscribe to Orders Stream (Rule 2 simple queries compliance)
-        function subscribeToOrders() {
-            if (!auth.currentUser) return;
-            const ordersRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders');
-            ordersRef.onSnapshot((snapshot) => {
-                allOrders = [];
-                snapshot.forEach(doc => {
-                    allOrders.push({ id: doc.id, ...doc.data() });
-                });
-                // Sort in memory (Rule 2 compliance)
-                allOrders.sort((a, b) => {
-                    const dateA = a.createdAt ? (a.createdAt.seconds || 0) : 0;
-                    const dateB = b.createdAt ? (b.createdAt.seconds || 0) : 0;
-                    return dateB - dateA;
-                });
-                renderOrdersPipeline();
-                updateDashboardCounters();
-            }, (err) => {
-                console.error("Firestore Orders Subscription Failed:", err);
-            });
-        }
-
-        // Subscribe to System Logs Stream (Rule 1 compliance)
-        function subscribeToLogs() {
-            if (!auth.currentUser) return;
-            db.collection('system_logs').onSnapshot((snapshot) => {
-                systemLogs = [];
-                snapshot.forEach(doc => {
-                    systemLogs.push({ id: doc.id, ...doc.data() });
-                });
-                systemLogs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-                renderSystemLogsTable();
-            }, (err) => {
-                console.error("Logs Fetch Failed:", err);
-            });
-        }
-
-        // TAB ENGINE SWITCHER
-        function switchTab(tabId) {
-            currentTab = tabId;
-            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
-            
-            const targetSection = document.getElementById(`section-${tabId}`);
-            if (targetSection) targetSection.classList.remove('hidden');
-
-            document.querySelectorAll('aside nav button').forEach(btn => {
-                btn.className = "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandBorder/10 text-xs font-bold text-right border-r-4 border-transparent transition-all";
-            });
-
-            const activeBtn = document.getElementById(`nav-${tabId}`);
-            if (activeBtn) {
-                activeBtn.className = "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-brandBorder/20 text-brandPink border-r-4 border-brandPink text-xs font-bold text-right transition-all";
-            }
-
-            toggleSidebar(false);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            lucide.createIcons();
-        }
-
-        // SIDEBAR TOGGLE
-        function toggleSidebar(isOpen) {
-            const sidebar = document.getElementById('mainSidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            if (isOpen) {
-                sidebar.classList.remove('translate-x-full');
-                overlay.classList.remove('pointer-events-none', 'opacity-0');
-            } else {
-                sidebar.classList.add('translate-x-full');
-                overlay.classList.add('pointer-events-none', 'opacity-0');
-            }
-        }
-
-        // STATISTICS ENGINE
-        function updateDashboardCounters() {
-            const total = allOrders.length;
-            const pending = allOrders.filter(o => o.deliveryMethod && (!o.status || o.status === 'pending')).length;
-            const active = allOrders.filter(o => o.status === 'processing' || o.status === 'shipping').length;
-            const completed = allOrders.filter(o => o.status === 'completed').length;
-
-            document.getElementById('stat-total-orders').textContent = total;
-            document.getElementById('stat-pending-orders').textContent = pending;
-            document.getElementById('stat-active-orders').textContent = active;
-            document.getElementById('stat-completed-orders').textContent = completed;
-
-            // Update badge counts next to pipeline tabs
-            document.getElementById('badge-count-pending').textContent = pending;
-            document.getElementById('badge-count-processing').textContent = allOrders.filter(o => o.status === 'processing').length;
-            document.getElementById('badge-count-shipping').textContent = allOrders.filter(o => o.status === 'shipping').length;
-
-            // Finance breakdown
-            const completedOrdersList = allOrders.filter(o => o.status === 'completed');
-            const totalRevenue = completedOrdersList.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
-            const totalShipping = completedOrdersList.reduce((sum, o) => sum + (o.shippingFee || 0), 0);
-            const netRevenue = totalRevenue - totalShipping;
-
-            document.getElementById('stat-revenue-total').textContent = `${totalRevenue} ج.م`;
-            document.getElementById('stat-revenue-shipping').textContent = `${totalShipping} ج.م`;
-            document.getElementById('stat-revenue-net').textContent = `${netRevenue} ج.م`;
-        }
-
-        // ORDERS FILTERS
-        function filterOrdersBy(filterType) {
-            activeOrderFilter = filterType;
-            document.querySelectorAll('#section-orders button[id^="btn-filter-"]').forEach(btn => {
-                btn.className = "px-5 py-2.5 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandBorder text-brandTextMuted border border-brandBorder flex items-center gap-2";
-            });
-            const activeFilterBtn = document.getElementById(`btn-filter-${filterType}`);
-            if (activeFilterBtn) {
-                activeFilterBtn.className = "px-5 py-2.5 rounded-full text-xs font-black transition-all bg-brandPink text-brandBg border border-brandPink";
-            }
-            renderOrdersPipeline();
-        }
-
-        // RENDER ORDERS WORKSPACE CARDS
-        function renderOrdersPipeline() {
-            const container = document.getElementById('ordersCardsContainer');
-            let filtered = [];
-
-            if (activeOrderFilter === 'all') {
-                filtered = allOrders;
-            } else if (activeOrderFilter === 'pending') {
-                filtered = allOrders.filter(o => !o.status || o.status === 'pending');
-            } else {
-                filtered = allOrders.filter(o => o.status === activeOrderFilter);
-            }
-
-            if (filtered.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full py-16 text-center space-y-4 rounded-3xl bg-brandSurface border border-brandBorder">
-                        <div class="w-14 h-14 rounded-full bg-brandBorder/40 text-brandPink flex items-center justify-center mx-auto">
-                            <i data-lucide="inbox" class="w-6 h-6"></i>
-                        </div>
-                        <p class="text-xs font-bold text-brandTextMuted">لا يوجد معاملات مسجلة في هذا القسم حالياً.</p>
-                    </div>
-                `;
-                lucide.createIcons();
-                return;
-            }
-
-            container.innerHTML = filtered.map((order, idx) => {
-                const status = order.status || 'pending';
-                const createdDate = order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleString('ar-EG') : 'توقيت غير مسجل';
-                
-                // Urgency warning if under 24 hours
-                let urgencyClass = "p-6 rounded-3xl bg-brandSurface border border-brandBorder flex flex-col justify-between transition-all duration-300 relative overflow-hidden";
-                let urgencyBadge = "";
-                
-                if (status === 'pending' || status === 'processing') {
-                    if (order.deliveryDate) {
-                        const targetTime = new Date(`${order.deliveryDate}T${order.deliveryTime || '00:00'}`);
-                        const now = new Date();
-                        const hoursDiff = (targetTime - now) / (1000 * 60 * 60);
-                        if (hoursDiff <= 24 && hoursDiff > 0) {
-                            urgencyClass += " urgent-order-card border-brandPink";
-                            urgencyBadge = `
-                                <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black bg-brandPink/15 text-brandPink animate-pulse">
-                                    <i data-lucide="alert-triangle" class="w-3 h-3"></i> يقترب من موعد التسليم
-                                </span>
-                            `;
-                        }
-                    }
-                }
-
-                // Status Labels styles
-                let statusBadge = '';
-                if (status === 'pending') {
-                    statusBadge = '<span class="px-3 py-1 rounded-full text-[10px] font-black border border-amber-500/30 text-amber-400 bg-amber-950/20">وارد جديداً 🆕</span>';
-                } else if (status === 'processing') {
-                    statusBadge = '<span class="px-3 py-1 rounded-full text-[10px] font-black border border-indigo-500/30 text-indigo-400 bg-indigo-950/20">قيد التحضير بالمطبخ 👩‍🍳</span>';
-                } else if (status === 'shipping') {
-                    statusBadge = '<span class="px-3 py-1 rounded-full text-[10px] font-black border border-sky-500/30 text-sky-400 bg-sky-950/20">مع المندوب 🚚</span>';
-                } else if (status === 'completed') {
-                    statusBadge = '<span class="px-3 py-1 rounded-full text-[10px] font-black border border-emerald-500/30 text-emerald-400 bg-emerald-950/20">مكتمل بنجاح ✅</span>';
-                } else if (status === 'cancelled') {
-                    statusBadge = '<span class="px-3 py-1 rounded-full text-[10px] font-black border border-rose-500/30 text-rose-400 bg-rose-950/20">ملغى ❌</span>';
-                }
-
-                // Action controls depending on status
-                let controlButtons = '';
-                if (status === 'pending') {
-                    controlButtons = `
-                        <button onclick="updateOrderStatus('${order.id}', 'processing')" class="flex-grow py-3 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5">
-                            <i data-lucide="play" class="w-4 h-4"></i> تأكيد وبدء المطبخ
-                        </button>
-                    `;
-                } else if (status === 'processing') {
-                    controlButtons = `
-                        <button onclick="updateOrderStatus('${order.id}', 'shipping')" class="flex-grow py-3 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5">
-                            <i data-lucide="truck" class="w-4 h-4"></i> جاهز للشحن مع المندوب
-                        </button>
-                    `;
-                } else if (status === 'shipping') {
-                    controlButtons = `
-                        <button onclick="updateOrderStatus('${order.id}', 'completed')" class="flex-grow py-3 bg-emerald-500 hover:bg-emerald-600 text-brandBg text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5">
-                            <i data-lucide="check-circle-2" class="w-4 h-4"></i> تأكيد التسليم النهائي
-                        </button>
-                    `;
-                }
-
-                return `
-                    <div class="${urgencyClass}">
-                        ${urgencyBadge}
-                        <div class="space-y-4">
-                            <!-- Header of Card -->
-                            <div class="flex items-start justify-between border-b border-brandBorder/60 pb-4">
-                                <div>
-                                    <h3 class="text-sm font-black text-brandTextMain">${order.customerName}</h3>
-                                    <p class="text-[10px] text-brandTextMuted mt-1" dir="ltr">${order.customerPhone}</p>
-                                    <span class="text-[9px] text-brandTextMuted/50 block mt-1">تاريخ الحجز: ${createdDate}</span>
-                                </div>
-                                <div class="flex flex-col items-end gap-1.5">
-                                    ${statusBadge}
-                                    <span class="text-[10px] text-brandPink font-bold">${order.deliveryMethod === 'pickup' ? 'استلام فرعي 🏬' : 'توصيل شحنة 📍'}</span>
-                                </div>
-                            </div>
-
-                            <!-- Body of Card (Products List) -->
-                            <div class="space-y-2">
-                                <span class="text-[10px] text-brandTextMuted/60 font-black tracking-wider block">الأصناف المطلوبة:</span>
-                                <div class="space-y-2.5">
-                                    ${order.items.map((item, idx) => {
-                                        let customToggleBtn = '';
-                                        if (item.isCustom && item.details) {
-                                            customToggleBtn = `
-                                                <button onclick="toggleCardCustomDetails('${order.id}-${idx}')" class="text-[10px] text-brandPink font-black flex items-center gap-1 mt-1 outline-none">
-                                                    <i data-lucide="chevron-down" class="w-3 h-3 transition-transform" id="detailsChevron-${order.id}-${idx}"></i> استعراض تفاصيل البناء المخصص
-                                                </button>
-                                                <div id="detailsPanel-${order.id}-${idx}" class="hidden mt-2 p-3 rounded-xl bg-brandSurfaceChild border border-brandBorder text-[10px] font-bold text-brandTextMuted space-y-1.5">
-                                                    ${Object.entries(item.details).map(([key, val]) => `
-                                                        <div class="flex justify-between border-b border-brandBorder/30 pb-1">
-                                                            <span class="text-brandTextMuted/50">${key}:</span>
-                                                            <span class="text-brandTextMain text-left">${val}</span>
-                                                        </div>
-                                                    `).join('')}
-                                                </div>
-                                            `;
-                                        }
-
-                                        return `
-                                            <div class="p-3.5 rounded-2xl bg-brandBg border border-brandBorder flex flex-col justify-between">
-                                                <div class="flex justify-between items-center text-xs font-black">
-                                                    <span class="text-brandTextMain">${item.name}</span>
-                                                    <span class="text-brandPink">الكمية: ${item.qty}</span>
-                                                </div>
-                                                ${customToggleBtn}
-                                            </div>
-                                        `;
-                                    }).join('')}
-                                </div>
-                            </div>
-
-                            <!-- Delivery schedule Details -->
-                            <div class="p-3 bg-brandSurfaceChild border border-brandBorder/40 rounded-2xl text-[10px] font-black text-brandTextMuted space-y-1">
-                                <p class="flex items-center gap-1"><i data-lucide="calendar" class="w-3.5 h-3.5 text-brandPink"></i> تاريخ الاستلام: ${order.deliveryDate || 'غير محدد'}</p>
-                                <p class="flex items-center gap-1"><i data-lucide="clock" class="w-3.5 h-3.5 text-brandPink"></i> ساعة التسليم: ${order.deliveryTime || 'غير محدد'}</p>
-                                ${order.deliveryMethod === 'ship' ? `<p class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-brandPink"></i> العنوان: ${order.shippingRegion} - ${order.shippingAddress}</p>` : ''}
-                            </div>
-
-                            <!-- Invoice calculation -->
-                            <div class="flex justify-between items-center bg-brandPink/5 p-4 rounded-2xl border border-brandPink/15 text-xs font-black">
-                                <span class="text-brandTextMuted">إجمالي الحساب النهائي:</span>
-                                <span class="text-brandPink">${order.grandTotal} ج.م</span>
-                            </div>
-                        </div>
-
-                        <!-- Card Action Panel -->
-                        <div class="pt-6 border-t border-brandBorder/40 mt-6 flex gap-3.5">
-                            <a href="https://wa.me/20${order.customerPhone}?text=${generateWhatsAppStatusMessage(order)}" target="_blank" class="p-3 bg-emerald-950/20 hover:bg-emerald-900/30 border border-emerald-900/40 text-emerald-400 rounded-xl transition-all flex items-center justify-center" aria-label="مراسلة واتساب">
-                                <i data-lucide="message-square" class="w-5 h-5"></i>
-                            </a>
-                            
-                            ${controlButtons}
-
-                            ${status !== 'completed' && status !== 'cancelled' ? `
-                                <button onclick="cancelAndRefundOrder('${order.id}')" class="px-4 py-3 bg-rose-950/20 hover:bg-rose-900/30 border border-rose-900/30 text-rose-400 rounded-xl text-xs font-extrabold transition-all" aria-label="إلغاء الطلب">
-                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                </button>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            lucide.createIcons();
-        }
-
-        // WhatsApp Custom Status Messages matched with Boosy Sweets elite brand tone
-        function generateWhatsAppStatusMessage(order) {
-            const status = order.status || 'pending';
-            let txt = '';
-            if (status === 'pending') {
-                txt = `عميلنا الفاخر، نود إخطارك بأنه تم استقبال طلبك بنجاح وجاري البدء في تحضيره بمكونات طبيعية 100% في مطبخ حلويات بوسي ليكون جاهزاً في الميعاد المحدد.`;
-            } else if (status === 'processing') {
-                txt = `عميلنا الفاخر، نود إبلاغك بأن طلبك المعتمد يمر الآن بمراحل التحضير الأخيرة في مطبخ حلويات بوسي لضمان أعلى مستويات الفخامة والجودة.`;
-            } else if (status === 'shipping') {
-                txt = `عميلنا الفاخر، يسعدنا إخطارك بأن طلبك المميز قد غادر مطبخ حلويات بوسي الآن في سياراتنا المبردة وهو في طريقه للتسليم لحضرتك قريباً.`;
-            } else {
-                txt = `عميلنا الفاخر، نسعد دائماً بخدمتك ونتمنى أن ينال منتجنا الفاخر رضاك وصنع لك ذكريات لا تُنسى مع عائلتك الكريمة.`;
-            }
-            return encodeURIComponent(txt);
-        }
-
-        // Accordion Details panel inside Order cards
-        function toggleCardCustomDetails(panelId) {
-            const panel = document.getElementById(`detailsPanel-${panelId}`);
-            const chevron = document.getElementById(`detailsChevron-${panelId}`);
-            if (panel.classList.contains('hidden')) {
-                panel.classList.remove('hidden');
-                chevron.classList.add('rotate-180');
-            } else {
-                panel.classList.add('hidden');
-                chevron.classList.remove('rotate-180');
-            }
-        }
-
-        // Update Orders status (simple Firestore update)
-        async function updateOrderStatus(orderId, newStatus) {
-            try {
-                if (!auth.currentUser) return;
-                await db.collection('artifacts').doc(appId).collection('public').doc('data').collection('orders').doc(orderId).update({
-                    status: newStatus
-                });
-                showToastNotification('عملية ناجحة', `تم ترحيل وتحديث حالة الطلب بنجاح سحابياً.`, 'check');
-            } catch (err) {
-                console.error("Orders status update failed:", err);
-                showToastNotification('خطأ بالشبكة', 'فشل تحديث حالة الطلب على السحابة.', 'alert-triangle');
-            }
-        }
-
-        // Cancel order prompt
-        function cancelAndRefundOrder(orderId) {
-            showGlobalDialogModal(
-                'تأكيد إلغاء المعاملة', 
-                'هل أنتِ متأكدة من إلغاء هذا الطلب بالكامل وترحيله لقسم الملغاة؟ لا يمكن التراجع عن هذا الإجراء.',
-                [
-                    { text: 'نعم، إلغاء الطلب', primary: true, action: async () => {
-                        closeGlobalDialogModal();
-                        await updateOrderStatus(orderId, 'cancelled');
-                    }},
-                    { text: 'تراجع', primary: false, action: () => closeGlobalDialogModal() }
-                ]
-            );
-        }
-
-        // RENDER MENU MATRIX (Instant availability logic)
-        function renderMenuAvailabilityList() {
-            const container = document.getElementById('outOfStockContainer');
-            container.innerHTML = staticCatalogItems.map(item => {
-                const isOutOfStock = globalConfig.outOfStockItems.includes(item.id);
-                return `
-                    <div class="p-4 rounded-2xl bg-brandBg border border-brandBorder flex items-center justify-between">
-                        <div>
-                            <span class="text-xs font-black text-brandTextMain">${item.name}</span>
-                            <p class="text-[9px] text-brandTextMuted/50 font-bold mt-0.5">الرمز الكودي سحابياً: ${item.id}</p>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-[10px] font-black ${isOutOfStock ? 'text-red-400' : 'text-emerald-400'}">
-                                ${isOutOfStock ? 'نفد مؤقتاً 🛑' : 'متوفر بالمطبخ ✅'}
-                            </span>
-                            <button onclick="toggleItemStockAvailability('${item.id}')" class="px-4 py-2 rounded-xl text-[10px] font-black transition-all ${isOutOfStock ? 'bg-emerald-950/30 text-emerald-400 border border-emerald-900/30' : 'bg-red-950/30 text-red-400 border border-red-900/30'}">
-                                ${isOutOfStock ? 'إتاحة المنتج' : 'تجميد المنتج'}
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Toggle stock helper (updates internal list and configuration state)
-        function toggleItemStockAvailability(itemId) {
-            let list = [...globalConfig.outOfStockItems];
-            if (list.includes(itemId)) {
-                list = list.filter(id => id !== itemId);
-            } else {
-                list.push(itemId);
-            }
-            globalConfig.outOfStockItems = list;
-            renderMenuAvailabilityList();
-        }
-
-        // RENDER SHIPPING RATES EDITOR
-        function renderShippingRates() {
-            const container = document.getElementById('shippingRatesContainer');
-            container.innerHTML = Object.entries(globalConfig.shippingRates).map(([region, price]) => `
-                <div class="p-4 rounded-2xl bg-brandBg border border-brandBorder space-y-2">
-                    <span class="text-xs font-black text-brandTextMain">${region}</span>
-                    <div class="relative">
-                        <input type="number" id="rate-${region}" class="w-full bg-brandSurface border border-brandBorder rounded-xl py-2.5 px-4 text-white text-xs outline-none bose-input-glow transition-all" value="${price}">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] text-brandTextMuted">ج.م</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Save entire updated Configurations block back to Firestore
-        async function saveConfigSettings() {
-            try {
-                if (!auth.currentUser) return;
-                
-                // Read input modifications back to config states
-                globalConfig.cakeBasePricePerPerson = parseFloat(document.getElementById('cfg-cakeBasePrice').value) || 145;
-                globalConfig.cakePrintEdiblePrice = parseFloat(document.getElementById('cfg-cakePrintEdible').value) || 60;
-                globalConfig.cakePrintNonEdiblePrice = parseFloat(document.getElementById('cfg-cakePrintNonEdible').value) || 20;
-                
-                globalConfig.roseBasePrice = parseFloat(document.getElementById('cfg-roseBasePrice').value) || 400;
-                globalConfig.roseMinCount = parseInt(document.getElementById('cfg-roseMinCount').value) || 15;
-                globalConfig.rosePricePerAdditional = parseFloat(document.getElementById('cfg-rosePricePerAdditional').value) || 35;
-                globalConfig.rosePhotoPrice = parseFloat(document.getElementById('cfg-rosePhotoPrice').value) || 15;
-                globalConfig.roseRibbonPrice = parseFloat(document.getElementById('cfg-roseRibbonPrice').value) || 50;
-                globalConfig.roseCardPrice = parseFloat(document.getElementById('cfg-roseCardPrice').value) || 20;
-
-                globalConfig.marqueeText = document.getElementById('cfg-marqueeText').value;
-                globalConfig.phone = document.getElementById('cfg-phone').value;
-                globalConfig.orderPrepTimeHours = parseInt(document.getElementById('cfg-prepTime').value) || 24;
-
-                // Read shipping rate updates back to config states
-                Object.keys(globalConfig.shippingRates).forEach(region => {
-                    const inp = document.getElementById(`rate-${region}`);
-                    if (inp) {
-                        globalConfig.shippingRates[region] = parseFloat(inp.value) || 0;
-                    }
-                });
-
-                // Write configuration on cloud
-                const docRef = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('settings').doc('config');
-                await docRef.set(globalConfig);
-                
-                showToastNotification('تمت المزامنة بنجاح', 'تم تحديث كافة متغيرات ومحددات النظام على السحابة بنجاح.', 'check');
-                fetchConfigSettings(); // refresh populate
-            } catch (err) {
-                console.error("Configuration Write Failed:", err);
-                showToastNotification('خطأ بالحفظ', 'فشل إتمام كتابة التحديثات بالسيرفر.', 'alert-triangle');
-            }
-        }
-
-        // RENDER SYSTEM DIAGNOSTIC LOGS
-        function renderSystemLogsTable() {
-            const tbody = document.getElementById('logsTableBody');
-            if (systemLogs.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="py-8 text-center text-[10px] text-brandTextMuted/40 font-black">لا يوجد محاضر أو أخطاء برمجية مسجلة من BoseMonitor حالياً.</td>
-                    </tr>
-                `;
-                return;
-            }
-
-            tbody.innerHTML = systemLogs.map(log => {
-                const dateStr = log.timestamp ? new Date(log.timestamp).toLocaleString('ar-EG') : 'غير محدد';
-                let severityClass = 'text-amber-400';
-                if (log.type && log.type.includes('حرج')) {
-                    severityClass = 'text-red-400';
-                }
-                return `
-                    <tr class="border-b border-brandBorder/40 hover:bg-brandBorder/5 transition-colors">
-                        <td class="py-4 px-4 ${severityClass} font-black">${log.type || 'تشخيص'}</td>
-                        <td class="py-4 px-4 max-w-xs truncate" title="${log.message}">${log.message || 'لا يوجد تفاصيل'}</td>
-                        <td class="py-4 px-4 text-[10px] font-black" dir="ltr">${log.source || 'نافذة المتصفح'}</td>
-                        <td class="py-4 px-4 text-[10px]" dir="ltr">${dateStr}</td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        // Clear Diagnostics Logs (system_logs collection)
-        async function clearAllSystemLogs() {
-            showGlobalDialogModal(
-                'تأكيد تطهير تشخيص النظام',
-                'هل ترغبين في تطهير ومسح كافة السجلات الحالية نهائياً من قاعدة البيانات السحابية؟',
-                [
-                    { text: 'نعم، تطهير', primary: true, action: async () => {
-                        closeGlobalDialogModal();
-                        try {
-                            const snapshot = await db.collection('system_logs').get();
-                            const batch = db.batch();
-                            snapshot.forEach(doc => {
-                                batch.delete(doc.ref);
-                            });
-                            await batch.commit();
-                            showToastNotification('تم التطهير', 'تم تفريغ كافة سجلات الأخطاء بنجاح.', 'check');
-                        } catch (err) {
-                            console.error("Logs cleaning failed:", err);
-                        }
-                    }},
-                    { text: 'تراجع', primary: false, action: () => closeGlobalDialogModal() }
-                ]
-            );
-        }
-
-        // CUSTOM NOTIFICATIONS TOAST SYSTEM
-        function showToastNotification(title, message, iconType) {
-            const toast = document.getElementById('toastNotification');
-            const icon = document.getElementById('toastIcon');
-            const tTitle = document.getElementById('toastTitle');
-            const tBody = document.getElementById('toastBody');
-
-            tTitle.textContent = title;
-            tBody.textContent = message;
-            
-            if (iconType === 'check') {
-                icon.innerHTML = '<i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i>';
-            } else {
-                icon.innerHTML = '<i data-lucide="alert-triangle" class="w-5 h-5 text-brandPink"></i>';
-            }
-            lucide.createIcons();
-
-            toast.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-24');
-            toast.classList.add('opacity-100', 'translate-y-0');
-
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'pointer-events-none', '-translate-y-24');
-                toast.classList.remove('opacity-100', 'translate-y-0');
-            }, 4000);
-        }
-
-        // CUSTOM GLOBAL DIALOG MODAL SYSTEM
-        function showGlobalDialogModal(title, body, buttons = [], icon = 'alert-triangle') {
-            const modal = document.getElementById('globalDialogModal');
-            const mTitle = document.getElementById('globalDialogModalTitle');
-            const mBody = document.getElementById('globalDialogModalBody');
-            const mIcon = document.getElementById('globalDialogModalIcon');
-            const mButtons = document.getElementById('globalDialogModalButtons');
-
-            mTitle.textContent = title;
-            mBody.textContent = body;
-            mIcon.innerHTML = `<i data-lucide="${icon}" class="w-5 h-5"></i>`;
-            mButtons.innerHTML = '';
-
-            buttons.forEach(btn => {
-                const bEl = document.createElement('button');
-                bEl.textContent = btn.text;
-                bEl.className = btn.primary 
-                    ? "px-5 py-2.5 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-full transition-all duration-200"
-                    : "px-5 py-2.5 bg-brandSurfaceChild hover:bg-brandBorder/20 text-brandTextMuted text-xs font-black rounded-full transition-all duration-200 border border-brandBorder";
-                bEl.onclick = btn.action;
-                mButtons.appendChild(bEl);
-            });
-
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            lucide.createIcons();
-        }
-
-        function closeGlobalDialogModal() {
-            const modal = document.getElementById('globalDialogModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-
-        // LOGOUT LIFECYCLE
-        async function executeLogout() {
-            showGlobalDialogModal(
-                'تأكيد تسجيل الخروج الآمن',
-                'هل ترغبين في إغلاق الجلسة الحالية وتسجيل الخروج الآمن من كابينة الإدارة؟',
-                [
-                    { text: 'تسجيل خروج', primary: true, action: async () => {
-                        closeGlobalDialogModal();
-                        try {
-                            await auth.signOut();
-                            sessionStorage.removeItem('bosy_admin_auth');
-                            window.location.href = 'login.html';
-                        } catch (err) {
-                            console.error("Sign-out failed:", err);
-                        }
-                    }},
-                    { text: 'إلغاء', primary: false, action: () => closeGlobalDialogModal() }
-                ]
-            );
-        }
-    </script>
 </body>
 </html>
-
-```
