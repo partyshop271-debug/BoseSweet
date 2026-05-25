@@ -12,6 +12,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- خريطة الاستيراد المعتمدة للمكتبات السحابية الحديثة -->
     <script type="importmap">
       {
         "imports": {
@@ -22,6 +23,7 @@
       }
     </script>
 
+    <!-- منظومة المراقبة وتشخيص الأعطال المتطورة والمؤمنة بالكامل -->
     <script>
         (function() {
             if (window.BoseMonitor) return;
@@ -46,19 +48,20 @@
                         };
                         console.error("BoseMonitor Catch:", logPayload);
                         
-                        if (window.dbService && typeof window.addDocToLog === 'function') {
+                        // تمرير التقرير مباشرة في حال جاهزية دالة الإرسال السحابي الحديثة أو جدولته في طابور الانتظار
+                        if (typeof window.addDocToLog === 'function') {
                             window.addDocToLog(logPayload).catch(e => {
-                                window.BoseMonitor.logQueue.push(logPayload);
+                                this.logQueue.push(logPayload);
                             });
                         } else {
-                            window.BoseMonitor.logQueue.push(logPayload);
+                            this.logQueue.push(logPayload);
                         }
                     } catch (e) {
                         console.error("Critical Failure inside BoseMonitor report wrapper:", e);
                     }
                 },
                 flushQueue: async function() {
-                    if (!window.dbService || typeof window.addDocToLog !== 'function' || this.logQueue.length === 0) return;
+                    if (typeof window.addDocToLog !== 'function' || this.logQueue.length === 0) return;
                     const queueCopy = [...this.logQueue];
                     this.logQueue = [];
                     for (const log of queueCopy) {
@@ -79,7 +82,7 @@
     </script>
 
     <script>
-        // إعداد سمات Tailwind للهوية البصرية الجديدة - بمبي مطلق، أسود، أبيض
+        // إعداد سمات الهوية البصرية الثابتة لعلامة حلويات بوسي
         tailwind.config = {
             theme: {
                 extend: {
@@ -157,6 +160,7 @@
         </header>
 
         <section>
+            <!-- نافذة تنبيهات التحقق والتوثيق -->
             <div id="auth-alert-container" class="hidden mb-5 p-4 rounded-xl border-2 bg-black border-[#ff91a4] text-[#ff91a4] text-sm flex items-center gap-3">
                 <i data-lucide="alert-triangle" class="w-5 h-5 text-[#ff91a4] shrink-0"></i>
                 <span id="auth-alert-text">خطأ في تأكيد الهوية</span>
@@ -200,12 +204,15 @@
         </footer>
     </main>
 
+    <!-- وحدة المعالجة المركزية والتفاعل السحابي -->
     <script type="module">
         import { initializeApp, getApps } from "firebase/app";
         import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
         import { getFirestore, collection, addDoc } from "firebase/firestore";
 
-        const firebaseConfig = {
+        // إعداد متغيرات البيئة والقيم السحابية المتوفرة بشكل ديناميكي
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'bosy-sweets';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
             apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
             authDomain: "bosy-sweets.firebaseapp.com",
             projectId: "bosy-sweets",
@@ -214,7 +221,7 @@
             appId: "1:473615735083:web:f09c6001c72640b2588d6e"
         };
 
-        // تهيئة محركات المنظومة وتمريرها لنطاق النافذة العالمي لتوافقية ربط الملفات الأخرى
+        // تهيئة خدمات الاتصال والمزامنة
         try {
             let app;
             if (!getApps().length) {
@@ -227,25 +234,36 @@
             window.authService = getAuth(app);
             window.dbService = getFirestore(app);
 
-            // دالة الربط السريع لتسجيل السجلات السحابية عبر نظام المراقبة العالمي
+            // دالة تسجيل السجلات السحابية الحديثة والمتوافقة مع قواعد المسار الصارمة (Rule 1)
             window.addDocToLog = async function(payload) {
-                return await addDoc(collection(window.dbService, 'system_logs'), payload);
+                if (!window.dbService) throw new Error("قاعدة البيانات غير مهيأة حالياً.");
+                
+                // تطبيق المسار السيادي المطلوب: /artifacts/{appId}/public/data/{collectionName}
+                const logsCollection = collection(window.dbService, 'artifacts', appId, 'public', 'data', 'system_logs');
+                return await addDoc(logsCollection, payload);
             };
 
-            // تصفية طابور الانتظار للسجلات التي رُصدت قبل اكتمال الاتصال بالسحابة
-            window.BoseMonitor.flushQueue();
+            // تصفية السجلات المؤقتة التي رُصدت أثناء التهيئة الأولية
+            if (window.BoseMonitor && typeof window.BoseMonitor.flushQueue === 'function') {
+                window.BoseMonitor.flushQueue();
+            }
 
         } catch (initError) {
-            window.BoseMonitor.report(initError, 'login.html', null, null, 'تهيئة مكتبات Firebase 11.6.1 وسحابة البيانات');
+            if (window.BoseMonitor && typeof window.BoseMonitor.report === 'function') {
+                window.BoseMonitor.report(initError, 'login.html', null, null, 'تهيئة مكتبات Firebase وسحابة البيانات المعيارية');
+            } else {
+                console.error("Critical Firebase Initialization Error:", initError);
+            }
         }
 
-        // تفعيل أيقونات Lucide
+        // تفعيل مكتبة الأيقونات التفاعلية
         try {
             lucide.createIcons();
         } catch (e) {
             console.error("Lucide icons failed to load:", e);
         }
 
+        // معالجة رؤية حقل كلمة المرور بشكل آمن
         const btnTogglePwd = document.getElementById('btn-toggle-pwd');
         const adminPasswordInput = document.getElementById('admin-password');
         const iconPwdEye = document.getElementById('icon-pwd-eye');
@@ -262,7 +280,9 @@
                     }
                     lucide.createIcons();
                 } catch (err) {
-                    window.BoseMonitor.report(err, 'login.html', null, null, 'Toggle Password Visibility');
+                    if (window.BoseMonitor) {
+                        window.BoseMonitor.report(err, 'login.html', null, null, 'Toggle Password Visibility');
+                    }
                 }
             });
         }
@@ -281,6 +301,7 @@
             if (container) container.classList.add('hidden');
         }
 
+        // معالجة عملية تسجيل دخول المدير الإداري والتوثيق الثنائي
         async function executeAdminLogin() {
             const emailInput = document.getElementById('admin-email');
             const passwordInput = document.getElementById('admin-password');
@@ -305,7 +326,7 @@
                     throw new Error("محرّك Auth غير متصل بالسحابة حالياً.");
                 }
 
-                // الحفاظ على الجلسة محلياً لضمان انتقال الصلاحيات لصفحة المراقبة وفق المعيار الحديث
+                // ضبط ثبات الجلسة محلياً لضمان انتقال الصلاحيات لصفحة المراقبة
                 await setPersistence(window.authService, browserLocalPersistence);
                 
                 await signInWithEmailAndPassword(window.authService, email, password);
@@ -314,7 +335,7 @@
                 
                 submitBtn.innerHTML = `<span>تم تأكيد الصلاحية بنجاح...</span>`;
                 
-                // التوجيه المباشر والسيادي إلى واجهة المراقبة والتشخيصات كأول واجهة فورية بعد تسجيل الدخول
+                // التوجيه التلقائي للمركز الإداري
                 window.location.href = 'admin-monitor.html';
 
             } catch (error) {
@@ -330,7 +351,9 @@
                 }
                 
                 showAlert(fallbackMsg);
-                window.BoseMonitor.report(error, 'login.html', null, null, 'Firebase Password Authentication Process');
+                if (window.BoseMonitor) {
+                    window.BoseMonitor.report(error, 'login.html', null, null, 'Firebase Password Authentication Process');
+                }
             }
         }
 
@@ -348,7 +371,9 @@
                 if (e.key === 'Enter') executeAdminLogin();
             });
         } catch (e) {
-            window.BoseMonitor.report(e, 'login.html', null, null, 'Attach Enter Listeners');
+            if (window.BoseMonitor) {
+                window.BoseMonitor.report(e, 'login.html', null, null, 'Attach Enter Listeners');
+            }
         }
 
         // مراقبة حالة التوثيق المستمرة لضمان التوجيه التلقائي الآمن
@@ -361,14 +386,20 @@
                                 window.location.href = 'admin-monitor.html';
                             }
                         } catch (innerError) {
-                            window.BoseMonitor.report(innerError, 'login.html', null, null, 'onAuthStateChanged Callback');
+                            if (window.BoseMonitor) {
+                                window.BoseMonitor.report(innerError, 'login.html', null, null, 'onAuthStateChanged Callback');
+                            }
                         }
                     });
                 }
             } catch (error) {
-                window.BoseMonitor.report(error, 'login.html', null, null, 'DOMContentLoaded (Auth Check)');
+                if (window.BoseMonitor) {
+                    window.BoseMonitor.report(error, 'login.html', null, null, 'DOMContentLoaded (Auth Check)');
+                }
             }
         });
     </script>
 </body>
 </html>
+
+```

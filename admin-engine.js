@@ -1,7 +1,8 @@
+```javascript
 /**
  * @file admin-engine.js
  * @description المحرك البرمجي الموحد المغلق كلياً لإدارة ومراقبة كابينة حلويات بوسي (BoseMonitor)
- * @version 2.0.0
+ * @version 2.1.0
  * @compliance BoseSweets Unified Engine Specification
  */
 
@@ -33,7 +34,7 @@ const cloudinaryConfig = {
 };
 
 // ==========================================
-// 2. الذاكرة الحية لحفظ الحالة (Global State)
+// 2. الذاكرة الحية لحفظ الحالة (Global State) ومصائد الاستماع
 // ==========================================
 window.globalConfig = {
     cakeBasePricePerPerson: 145,
@@ -95,6 +96,9 @@ const catalogCategories = {
     'roses': 'باقات وتنسيق الورد 💐'
 };
 
+// حاوية مركزية لتخزين دوال إلغاء الاستماع السحابي للحفاظ على الذاكرة الحية وقنوات الاتصال
+const adminActiveListeners = [];
+
 let allOrders = [];
 let systemLogs = [];
 let currentTab = 'dashboard';
@@ -106,12 +110,27 @@ let currentTargetInputId = null;
 let currentTargetButtonId = null;
 let currentTargetItemId = null;
 
+// دالة تفريغ وإلغاء الاستماع لجميع القنوات السحابية المفتوحة مسبقاً لمنع تسريب الموارد
+function clearActiveListeners() {
+    while (adminActiveListeners.length > 0) {
+        const unsubscribe = adminActiveListeners.pop();
+        if (typeof unsubscribe === 'function') {
+            try {
+                unsubscribe();
+            } catch (err) {
+                console.error("فشل إلغاء تنشيط مستمع سحابي محدد:", err);
+            }
+        }
+    }
+}
+
 // ==========================================
 // 3. التحقق الأمني من الصلاحيات والتحضير للعمل
 // ==========================================
 onAuthStateChanged(auth, async (user) => {
     const guard = document.getElementById('loadingGuard');
     if (!user) {
+        clearActiveListeners();
         window.location.href = 'login.html';
         return;
     }
@@ -130,8 +149,9 @@ onAuthStateChanged(auth, async (user) => {
         if (window.lucide) window.lucide.createIcons();
         initAppLifecycle();
     } catch (err) {
-        console.error("فشل التحقق الأمني الأساسي:", err);
+        console.error("فشل التحقق الأمني الأساسي كابينة المراقبة:", err);
         await reportSystemError("خطأ حرج في الصلاحيات", err.message, "admin-monitor.html");
+        clearActiveListeners();
         await signOut(auth);
         window.location.href = 'login.html';
     }
@@ -155,6 +175,9 @@ async function reportSystemError(type, message, source) {
 }
 
 async function initAppLifecycle() {
+    // التطهير الإلزامي لأي مستمع نشط سابقاً قبل إعادة التهيئة
+    clearActiveListeners();
+
     await fetchConfigSettings();
     subscribeToOrders();
     subscribeToLogs();
@@ -187,7 +210,7 @@ async function fetchConfigSettings() {
             shippingRates: fetchedShipping.shippingRates || fetchedShipping.rates || window.globalConfig.shippingRates 
         };
 
-        // المحاذاة الثنائية الصارمة للمسميات في المحرك الموحد منعا لحدوث فجوة في القراءة
+        // المحاذاة الثنائية الصارمة للمسميات في المحرك الموحد لمنع حدوث فجوة في القراءة
         window.globalConfig.cakeBasePricePerPerson = fetchedGlobal.cakeBasePricePerPerson || fetchedGlobal.cakeBasePrice || 145;
         window.globalConfig.cakePrintEdiblePrice = fetchedGlobal.cakePrintEdiblePrice || fetchedGlobal.cakePrintEdible || 60;
         window.globalConfig.cakePrintNonEdiblePrice = fetchedGlobal.cakePrintNonEdiblePrice || fetchedGlobal.cakePrintNonEdible || 20;
@@ -207,9 +230,9 @@ async function fetchConfigSettings() {
             }
         });
 
-        // مراقبة المنيو السحابي الحقيقي لعدم حدوث ثغرات في تفاوت الأسعار
+        // مراقبة المنيو السحابي الحقيقي لعدم حدوث ثغرات في تفاوت الأسعار مع حفظ المستمع لتجنب تسريبه
         const menuCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'menu');
-        onSnapshot(menuCollectionRef, (snap) => {
+        const unsubscribeMenu = onSnapshot(menuCollectionRef, (snap) => {
             snap.forEach(doc => {
                 const mData = doc.data();
                 if (window.globalConfig.catalogItems[doc.id]) {
@@ -224,6 +247,7 @@ async function fetchConfigSettings() {
             });
             renderMenuAvailabilityList();
         });
+        adminActiveListeners.push(unsubscribeMenu);
 
         populateUIFromConfig();
         renderShippingRates();
@@ -231,7 +255,7 @@ async function fetchConfigSettings() {
         renderLayoutSectionsManager();
         updateGlobalDisplayModeUI();
     } catch (err) {
-        console.error("فشل قراءة محددات الإعدادات العامة:", err);
+        console.error("فشل قراءة محددات الإعدادات العامة لموقع حلويات بوسي:", err);
         await reportSystemError("فشل قراءة الإعدادات", err.message, "fetchConfigSettings");
     }
 }
@@ -295,7 +319,7 @@ function updateSpeedLabel(val) {
 // ==========================================
 function subscribeToOrders() {
     const ordersRef = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
-    onSnapshot(ordersRef, (snapshot) => {
+    const unsubscribeOrders = onSnapshot(ordersRef, (snapshot) => {
         allOrders = [];
         snapshot.forEach(doc => { allOrders.push({ id: doc.id, ...doc.data() }); });
         allOrders.sort((a, b) => {
@@ -306,20 +330,22 @@ function subscribeToOrders() {
         renderOrdersPipeline();
         updateDashboardCounters();
     }, (err) => {
-        console.error("فشل الاتصال بخط إنتاج الطلبات السحابية الحية:", err);
+        console.error("فشل الاتصال بخط إنتاج الطلبات السحابية الحية لـ حلويات بوسي:", err);
     });
+    adminActiveListeners.push(unsubscribeOrders);
 }
 
 function subscribeToLogs() {
     const logsRef = collection(db, 'system_logs');
-    onSnapshot(logsRef, (snapshot) => {
+    const unsubscribeLogs = onSnapshot(logsRef, (snapshot) => {
         systemLogs = [];
         snapshot.forEach(doc => { systemLogs.push({ id: doc.id, ...doc.data() }); });
         systemLogs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
         renderSystemLogsTable();
     }, (err) => {
-        console.error("فشل جلب سجلات تشخيص نظام بوسي مونيتور:", err);
+        console.error("فشل جلب سجلات تشخيص نظام بوسي مونيتور لتتبع الأعطال:", err);
     });
+    adminActiveListeners.push(unsubscribeLogs);
 }
 
 function updateDashboardCounters() {
@@ -549,7 +575,7 @@ function renderOrdersPipeline() {
                                         </div>
                                         ${customToggleBtn}
                                     </div>
-                                ];
+                                `;
                             }).join('')}
                         </div>
                     </div>
@@ -638,7 +664,7 @@ async function updateOrderStatus(orderId, newStatus) {
         await updateDoc(orderDocRef, { status: newStatus });
         showToastNotification('عملية ناجحة', `تم ترحيل وتحديث حالة الطلب بنجاح سحابياً.`, 'check');
     } catch (err) {
-        console.error("فشل ترحيل حالة الطلب:", err);
+        console.error("فشل ترحيل حالة الطلب السحابي لـ حلويات بوسي:", err);
         showToastNotification('خطأ بالشبكة', 'فشل تحديث حالة الطلب على السحابة.', 'alert-triangle');
     }
 }
@@ -984,7 +1010,7 @@ async function saveLayoutsStructureToCloud() {
         });
         showToastNotification('تمت المزامنة بنجاح', 'تم حفظ وتعميم هندسة ترتيب أقسام الواجهة وطرق العرض سحابياً للعملاء.', 'check');
     } catch (err) {
-        console.error("فشل إرسال هيكلة الأقسام:", err);
+        console.error("فشل إرسال هيكلة أقسام واجهات حلويات بوسي لسطح المكتب والموبايل:", err);
         showToastNotification('خطأ بالحفظ', 'فشل إرسال هيكلة الأقسام لخادم البيانات السحابي.', 'alert-triangle');
     }
 }
@@ -1052,7 +1078,7 @@ if (fileInputEl) {
             }
             showToastNotification('تم الرفع بنجاح', 'تم ضغط ورفع الوسائط بجودة نهارية فائقة الدقة.', 'check');
         } catch (err) {
-            console.error("فشل محاولة معالجة ورفع الصورة:", err);
+            console.error("فشل محاولة معالجة ورفع الصورة لخادم التخزين:", err);
             showToastNotification('فشل الرفع السحابي', 'يرجى مراجعة الاتصال بالإنترنت والتحول لشبكة مستقرة.', 'alert-triangle');
         } finally {
             if (btn) {
@@ -1141,7 +1167,7 @@ async function clearAllSystemLogs() {
                     await batch.commit();
                     showToastNotification('تم التطهير', 'تم تفريغ كافة سجلات الأخطاء بنجاح.', 'check');
                 } catch (err) {
-                    console.error("فشل تنفيذ حزمة حذف سجل الأخطاء:", err);
+                    console.error("فشل تنفيذ حزمة حذف سجل الأخطاء السحابي لـ BoseMonitor:", err);
                 }
             }},
             { text: 'تراجع', primary: false, action: () => window.closeGlobalDialogModal() }
@@ -1244,7 +1270,7 @@ async function saveConfigSettings() {
         showToastNotification('تمت المزامنة بنجاح', 'تم تحديث كافة متغيرات ومحددات النظام وتعميمها على السحابة لتتطابق مع العميل فوراً.', 'check');
         fetchConfigSettings();
     } catch (err) {
-        console.error("فشل إتمام عملية الحفظ السحابية للأدمن:", err);
+        console.error("فشل إتمام عملية الحفظ السحابية الموحدة لأدمن حلويات بوسي:", err);
         await reportSystemError("فشل الحفظ السحابي للأدمن", err.message, "saveConfigSettings");
         showToastNotification('خطأ بالحفظ', 'فشل إرسال البيانات المحدثة لقاعدة البيانات.', 'alert-triangle');
     }
@@ -1343,8 +1369,12 @@ async function executeLogout() {
         [
             { text: 'تسجيل خروج', primary: true, action: async () => {
                 window.closeGlobalDialogModal();
-                try { await signOut(auth); window.location.href = 'login.html'; } 
-                catch (err) { console.error("فشل تأمين عملية تسجيل الخروج:", err); }
+                try { 
+                    clearActiveListeners(); // تطهير المستمعات النشطة فوراً قبل الخروج
+                    await signOut(auth); 
+                    window.location.href = 'login.html'; 
+                } 
+                catch (err) { console.error("فشل تأمين عملية تسجيل الخروج الآمن لمديري المنصة:", err); }
             }},
             { text: 'إلغاء', primary: false, action: () => window.closeGlobalDialogModal() }
         ]

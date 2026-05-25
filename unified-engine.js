@@ -1,9 +1,15 @@
+```javascript
 /**
  * @file unified-engine.js
  * @description المحرك البرمجي الموحد لعلامة حلويات بوسي الفاخرة
  * @version 2.2.0
  * @copyright حلويات بوسي 2026
  */
+
+// استيراد وحدات Firebase الحديثة والمتوافقة مع نظام خريطة الاستيراد (Import Map) لإصدار السحابة 11.6.1
+import { initializeApp } from 'firebase/app';
+import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, collection, onSnapshot } from 'firebase/firestore';
 
 // تفعيل نظام الحماية وهندسة الكبسولة المغلقة لعزل كود البراند
 const BoseSweetsEngine = (function () {
@@ -107,30 +113,44 @@ const BoseSweetsEngine = (function () {
     }
 
     // FIREBASE INITIALIZATION & SNAPS WITH RESILIENCE ENGINE
-    function initFirebase() {
-        if (typeof firebase === 'undefined') {
-            console.error("خطأ: لم يتم تحميل مكتبات Firebase الأساسية بشكل صحيح.");
-            return;
-        }
+    async function initFirebase() {
+        // فحص وتأمين وجود إعدادات الاتصال السحابي للبيئة المضيفة
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : {
+                apiKey: "", 
+                authDomain: "bosy-sweets.firebaseapp.com",
+                projectId: "bosy-sweets",
+                storageBucket: "bosy-sweets.appspot.com",
+                messagingSenderId: "1234567890",
+                appId: "1:1234567890:web:1234567890"
+              };
 
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-        async function initAuth() {
+        // آلية التراجع الأسي لإعادة المحاولة عند حدوث انقطاع مؤقت في شبكات الهواتف المحمولة
+        async function initAuthWithRetry(retries = 5, delay = 1000) {
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await auth.signInWithCustomToken(__initial_auth_token);
+                    await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
-                    await auth.signInAnonymously();
+                    await signInAnonymously(auth);
                 }
             } catch (error) {
-                console.error("فشل تفعيل الاتصال السحابي الآمن لعلامة حلويات بوسي:", error);
-                // محاولة إعادة الاتصال التلقائي بعد 5 ثوانٍ في بيئة الاستضافة المجانية
-                setTimeout(initAuth, 5000);
+                if (retries > 0) {
+                    setTimeout(() => initAuthWithRetry(retries - 1, delay * 2), delay);
+                } else {
+                    showGlobalModal(
+                        'عطل في الاتصال السحابي', 
+                        'فشل النظام في تأمين الاتصال بقاعدة البيانات السحابية لعلامة حلويات بوسي بعد عدة محاولات متتالية. يرجى التحقق من استقرار شبكة الموبايل وإعادة المحاولة.'
+                    );
+                }
             }
         }
 
-        auth.onAuthStateChanged((user) => {
+        onAuthStateChanged(auth, (user) => {
             dbUser = user;
             if (user) {
                 setupFirestoreListeners(db);
@@ -139,7 +159,7 @@ const BoseSweetsEngine = (function () {
             }
         });
 
-        initAuth();
+        await initAuthWithRetry();
     }
 
     function detachFirestoreListeners() {
@@ -153,11 +173,11 @@ const BoseSweetsEngine = (function () {
         // تنظيف أي مستمعين سابقين لمنع تسريب البيانات وانقطاع الاتصال على الموبايل
         detachFirestoreListeners();
 
-        // 1. مستمع الإعدادات العامة
-        const unsubConfig = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('settings').doc('global_config')
-        .onSnapshot((doc) => {
-            if (doc.exists) {
-                const data = doc.data();
+        // 1. مستمع الإعدادات العامة للمطبخ السحابي
+        const globalConfigDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global_config');
+        const unsubConfig = onSnapshot(globalConfigDocRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
                 if (data.marqueeText || data.marqueeSpeed) {
                     applyMarqueeSettings(data.marqueeText, data.marqueeSpeed);
                 }
@@ -209,10 +229,10 @@ const BoseSweetsEngine = (function () {
         activeFirestoreListeners.push(unsubConfig);
 
         // 2. مستمع خطوط الشحن والتوصيل
-        const unsubShipping = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('settings').doc('shipping_rates')
-        .onSnapshot((doc) => {
-            if (doc.exists) {
-                const data = doc.data();
+        const shippingRatesDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'shipping_rates');
+        const unsubShipping = onSnapshot(shippingRatesDocRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
                 state.shippingRates = data.shippingRates || data.rates || {};
                 renderShippingRegions();
                 calculateShippingFee();
@@ -222,14 +242,14 @@ const BoseSweetsEngine = (function () {
         });
         activeFirestoreListeners.push(unsubShipping);
 
-        // 3. مستمع منيو المطبخ السحابي العريض
-        const unsubMenu = db.collection('artifacts').doc(appId).collection('public').doc('data').collection('menu')
-        .onSnapshot((snapshot) => {
+        // 3. مستمع منيو المطبخ السحابي العريض لعلامة حلويات بوسي
+        const menuCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'menu');
+        const unsubMenu = onSnapshot(menuCollectionRef, (snapshot) => {
             const fbMenu = [];
-            snapshot.forEach((doc) => {
-                const d = doc.data();
+            snapshot.forEach((docSnap) => {
+                const d = docSnap.data();
                 fbMenu.push({
-                    id: doc.id,
+                    id: docSnap.id,
                     name: d.name,
                     img: d.img,
                     desc: d.desc,
@@ -388,7 +408,7 @@ const BoseSweetsEngine = (function () {
         mButtons.innerHTML = '';
 
         if (buttons.length === 0) {
-            buttons = [{ text: 'حسناً، فهمت', action: () => closeModal(), primary: true }];
+            buttons = [{ text: 'متابعة التصفح', action: () => closeModal(), primary: true }];
         }
 
         buttons.forEach(btn => {
@@ -597,7 +617,7 @@ const BoseSweetsEngine = (function () {
             <div class="max-w-4xl mx-auto px-4 space-y-6">
                 <h2 class="text-2xl md:text-4xl font-extrabold text-brandBlack">شريك لحظاتكم السعيدة طوال عقد كامل</h2>
                 <p class="text-sm md:text-base text-brandBlack/85 leading-relaxed max-w-2xl mx-auto">
-                    على مدار ما يزيد عن 10 سنوات، تشرفنا بخدمة أكثر من 10,000 عميل في الكفاح ومركز الفرافرة. كنتم وما زلتم المحفز الأول لنا لتقديم الفن في صورة حلوى فاخرة.
+                    على مدار ما يزيد عن 10 سنوات، تشرفنا بخدمة عملائنا في الكفاح ومركز الفرافرة. كنتم وما زلتم المحفز الأول لنا لتقديم الفن في صورة حلوى فاخرة.
                 </p>
                 <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto pt-4">
                     <div class="p-4 rounded-2xl bg-brandPinkLight border border-brandPink/20">
@@ -690,7 +710,7 @@ const BoseSweetsEngine = (function () {
                     </div>
                     <div class="p-6 pt-0">
                         <button onclick="BoseSweetsEngine.navigateTo('product', '${item.id}')" class="w-full py-3.5 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-bold rounded-full transition-all text-center">
-                            اعرف أكتر
+                            استعرض التفاصيل
                         </button>
                     </div>
                 </div>
@@ -1004,7 +1024,7 @@ const BoseSweetsEngine = (function () {
         state.cake = { step: 1, base: 'فانيليا', people: 4, shape: 'دائرة', designFile: null, printOption: 'none', printFile: null, theme: '', allergies: '', writing: '', cardEnabled: false, cardText: '', basePricePerPerson: state.cake.basePricePerPerson || 145, cakePrintEdiblePrice: state.cake.cakePrintEdiblePrice || 60, cakePrintNonEdiblePrice: state.cake.cakePrintNonEdiblePrice || 20 };
         const df = document.getElementById('cakeDesignFile'); if (df) df.value = ''; 
         const pf = document.getElementById('cakePrintFile'); if (pf) pf.value = '';
-        document.getElementById('cakeDesignLabel').textContent = 'ارفع هنا صورة التورتة اللي حابب ننفذ لك زيها بالظبط';
+        document.getElementById('cakeDesignLabel').textContent = 'ارفع هنا صورة التورتة المراد مطابقتها بدقة كاملة';
         document.getElementById('cakePrintLabel').textContent = 'ارفع الصورة المراد طباعتها على سطح التورتة بدقة كاملة';
         document.getElementById('cakeThemeDetails').value = ''; document.getElementById('cakeAllergies').value = '';
         document.getElementById('cakeText').value = ''; document.getElementById('cakeCardCheck').checked = false;
@@ -1023,11 +1043,11 @@ const BoseSweetsEngine = (function () {
     function selectCakeShape(shapeName) {
         const count = state.cake.people;
         if (shapeName === 'مستطيل' && count < 20) {
-            showGlobalModal('✨ توضيح بخصوص الشكل المستطيل', 'أقل مقاس للشكل المستطيل هو (20 فرد) لسلامة الأبعاد. السيستم هيرفع العداد تلقائياً لـ 20 فرد، حابب نعتمد الترقية؟', [{ text: 'تمام، اعتمد الترقية', primary: true, action: () => { closeModal(); applyCakeShapeUpgrade('مستطيل', 20); } }, { text: 'لاء، ارجع للسابق', primary: false, action: () => { closeModal(); selectCakeShape(state.cake.shape); } }]);
+            showGlobalModal('توضيح بخصوص الشكل المستطيل', 'أقل مقاس للشكل المستطيل هو (20 فرد) لسلامة الأبعاد الهندسية للتورتة. هل تود اعتماد ترقية الحجم تلقائياً؟', [{ text: 'تمام، اعتمد الترقية', primary: true, action: () => { closeModal(); applyCakeShapeUpgrade('مستطيل', 20); } }, { text: 'العودة للاختيار السابق', primary: false, action: () => { closeModal(); selectCakeShape(state.cake.shape); } }]);
             return;
         }
         if (shapeName === 'مربع' && count < 16) {
-            showGlobalModal('✨ توضيح بخصوص الشكل المربع', 'أقل مقاس للشكل المربع هو (16 فرد) لسلامة التماسك هندسياً. حابب نعتمد الترقية؟', [{ text: 'تمام، اعتمد الترقية', primary: true, action: () => { closeModal(); applyCakeShapeUpgrade('مربع', 16); } }, { text: 'لاء، ارجع للسابق', primary: false, action: () => { closeModal(); selectCakeShape(state.cake.shape); } }]);
+            showGlobalModal('توضيح بخصوص الشكل المربع', 'أقل مقاس للشكل المربع هو (16 فرد) لضمان التماسك وقوة الهيكل. هل تود اعتماد ترقية الحجم تلقائياً؟', [{ text: 'تمام، اعتمد الترقية', primary: true, action: () => { closeModal(); applyCakeShapeUpgrade('مربع', 16); } }, { text: 'العودة للاختيار السابق', primary: false, action: () => { closeModal(); selectCakeShape(state.cake.shape); } }]);
             return;
         }
 
@@ -1074,7 +1094,7 @@ const BoseSweetsEngine = (function () {
     }
 
     function showCakePriceInfo() { 
-        showGlobalModal('تفاصيل حساب تسعير حلويات بوسي', 'الحسبة مبنية على استخدام خامات طبيعية نقيّة 100% بدون أي محسنات صناعية لضمان أرقى مذاق وأعلى جودة.'); 
+        showGlobalModal('تفاصيل حساب تسعير حلويات بوسي', 'الحسبة مبنية على استخدام خامات طبيعية نقيّة 100% وبدون أي محسنات صناعية لضمان أرقى مذاق وأعلى جودة.'); 
     }
 
     function selectCakePrintOption(option) {
@@ -1176,7 +1196,7 @@ const BoseSweetsEngine = (function () {
     function resetRoseBuilder() {
         state.rose = { step: 1, referenceFile: null, count: 15, type: 'ورد طبيعي', colors: '', cashAmount: 0, cashDenomination: 20, photosCount: 0, photoFiles: [], ribbonEnabled: false, ribbonText: '', chocBudget: 0, chocPiecePrice: 20, premiumBar100: 0, premiumBar120: 0, cardEnabled: false, cardText: '', roseBasePrice: state.rose.roseBasePrice || 400, roseMinCount: state.rose.roseMinCount || 15, rosePricePerAdditional: state.rose.rosePricePerAdditional || 35, rosePhotoPrice: state.rose.rosePhotoPrice || 15, roseRibbonPrice: state.rose.roseRibbonPrice || 50, roseCardPrice: state.rose.roseCardPrice || 20 };
         const rf = document.getElementById('roseReferenceFile'); if (rf) rf.value = '';
-        document.getElementById('roseReferenceLabel').textContent = 'ارفع هنا صورة بوكيه الورد اللي حابب نعمل لك زيه';
+        document.getElementById('roseReferenceLabel').textContent = 'ارفع هنا صورة بوكيه الورد المرجعي لمطابقته بدقة';
         document.getElementById('roseCount').textContent = '15'; document.getElementById('roseColors').value = '';
         document.getElementById('roseCashAmount').value = ''; document.getElementById('rosePhotosCount').textContent = '0';
         document.getElementById('rosePhotoUploadsContainer').innerHTML = ''; document.getElementById('rosePhotoUploadsContainer').classList.add('hidden');
@@ -1253,7 +1273,7 @@ const BoseSweetsEngine = (function () {
         if (amount % denom !== 0) {
             calcText.innerHTML = `<span class="text-brandPink"><i class="fa-solid fa-circle-xmark"></i> خطأ: المبلغ لا يقبل القسمة بالتساوي على فئة الـ ${denom} جنيه.</span>`;
         } else {
-            calcText.innerHTML = `<span class="text-brandBlack font-extrabold"><i class="fa-solid fa-circle-check text-brandPink"></i> البوكيه جواه ${amount / denom} ورقة من فئة ${denom} جنيه.</span>`;
+            calcText.innerHTML = `<span class="text-brandBlack font-extrabold"><i class="fa-solid fa-circle-check text-brandPink"></i> البوكيه يحتوي على ${amount / denom} ورقة من فئة ${denom} جنيه.</span>`;
         }
         calculateRosePrice();
     }
@@ -1456,6 +1476,7 @@ const BoseSweetsEngine = (function () {
         renderCart();
     }
 
+    // خوارزمية الحساب الرياضي لمطابقة الفواتير وتجنب الأخطاء التقريبية
     function runInvoiceIntegrityChecksum() {
         let computedSum = 0;
         state.cart.forEach(item => {
@@ -1543,6 +1564,7 @@ const BoseSweetsEngine = (function () {
             }
         }
     }
+    
     // CHECKOUT PROCESS
     function renderCheckout() {
         const subtotal = runInvoiceIntegrityChecksum();
@@ -1731,7 +1753,7 @@ const BoseSweetsEngine = (function () {
         let text = '';
         if (policyKey === 'about') {
             title = 'تاريخنا وعقد من الاتقان';
-            text = 'علامة حلويات بوسي انطلقت كعلامة تجارية مصرية رائدة في الفرافرة والكفاح لتصنيع الحلويات الفاخرة من خامات طبيعية 100% وبأعلى معايير الإتقان الفني.';
+            text = 'علامة حلويات بوسي انطلقت كعلامة تجارية مصرية رائدة في مركز الفرافرة والكفاح لتصنيع الحلويات الفاخرة من خامات طبيعية 100% وبأعلى معايير الإتقان الفني.';
         } else if (policyKey === 'contact') {
             title = 'قنوات الاتصال المباشر';
             text = 'يسعدنا تواصلكم مع الإدارة المركزية مباشرة عبر الرقم المعتمد: 01097238441 أو تشريفنا بالزيارة في فرع الكفاح الرئيسي - شارع الوحدة المحلية.';
@@ -1743,7 +1765,7 @@ const BoseSweetsEngine = (function () {
             text = 'نظراً لأن منتجاتنا طبيعية وصناعة يدوية فاخرة، يتم مراجعة ومطابقة الطلب لحظة الاستلام. في حال وجود أي اختلاف في المواصفات، يحق للعميل التعديل أو التعويض الفوري.';
         } else if (policyKey === 'delivery') {
             title = 'سياسة التوصيل المبرد الآمن';
-            text = 'يتم نقل كافة المنتجات عبر أسطول سيارات مبرد ومخصص للحفاظ على تماسك وهيكل التورت والحلويات من المصنع وحتى باب منزلك في الفرافرة والكفاح طوال العام.';
+            text = 'يتم نقل كافة المنتجات عبر أسطول سيارات مبرد ومخصص للحفاظ على تماسك وهيكل التورت والحلويات من المصنع وحتى باب منزلك طوال العام.';
         } else if (policyKey === 'care') {
             title = 'دليل الحفاظ على جودة المنتج';
             text = 'نظراً لخلو حلوياتنا تماماً من المواد الكيميائية والمحافظة، نوصي بحفظ التورت والحلويات داخل الثلاجة فور استلامها واستهلاكها خلال 48 ساعة لضمان النكهة الأصلية الفاخرة.';
@@ -1802,3 +1824,8 @@ const BoseSweetsEngine = (function () {
     };
 
 })();
+
+// ربط المحرك بـ window لضمان عمل الأحداث المباشرة (Inline Events) بداخل كود HTML دون أدنى خلل
+window.BoseSweetsEngine = BoseSweetsEngine;
+
+
