@@ -1,405 +1,1311 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>حلويات بوسي | بوابة الدخول السيادية</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <meta charset="UTF-8" />
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="IE=edge"
+    />
+
+    <meta
+        name="robots"
+        content="noindex,nofollow,noarchive,nosnippet"
+    />
+
+    <title>
+        حلويات بوسي | بوابة الإدارة المؤمنة
+    </title>
+
+    <!-- ===================================================== -->
+    <!-- Fonts -->
+    <!-- ===================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    />
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    />
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet"
+    />
+
+    <!-- ===================================================== -->
+    <!-- Icons -->
+    <!-- ===================================================== -->
 
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- ===================================================== -->
+    <!-- Tailwind -->
+    <!-- ===================================================== -->
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- خريطة الاستيراد المعتمدة للمكتبات السحابية الحديثة -->
+
+    <!-- ===================================================== -->
+    <!-- Firebase Import Map -->
+    <!-- ===================================================== -->
+
     <script type="importmap">
-      {
+    {
         "imports": {
-          "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
-          "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
-          "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"
+            "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
+            "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
+            "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"
         }
-      }
+    }
     </script>
 
-    <!-- منظومة المراقبة وتشخيص الأعطال المتطورة والمؤمنة بالكامل -->
-    <script>
-        (function() {
-            if (window.BoseMonitor) return;
-
-            window.BoseMonitor = {
-                logQueue: [],
-                diagnose: function(errorMsg) {
-                    const msg = String(errorMsg).toLowerCase();
-                    if (msg.includes('auth') || msg.includes('credential') || msg.includes('unauthorized')) return "عائق توثيق (Auth Error): فشل في تأكيد الصلاحيات مع السحابة.";
-                    if (msg.includes('network') || msg.includes('fetch') || msg.includes('failed-precondition')) return "عطّل اتصالي (Network): انقطاع في الشبكة يمنع بوابة الدخول من العمل.";
-                    return "خطأ غير معروف في بيئة التشغيل الإدارية.";
-                },
-                report: function(err, file, row, col, context) {
-                    try {
-                        const errorMsg = err ? (err.message || String(err)) : 'Unknown';
-                        const diag = this.diagnose(errorMsg);
-                        const logPayload = {
-                            message: `[${context || 'بوابة الدخول'}] ${diag} | تفاصيل: ${errorMsg}`,
-                            type: 'خطأ حرج',
-                            source: file || 'login.html',
-                            timestamp: Date.now()
-                        };
-                        console.error("BoseMonitor Catch:", logPayload);
-                        
-                        // تمرير التقرير مباشرة في حال جاهزية دالة الإرسال السحابي الحديثة أو جدولته في طابور الانتظار
-                        if (typeof window.addDocToLog === 'function') {
-                            window.addDocToLog(logPayload).catch(e => {
-                                this.logQueue.push(logPayload);
-                            });
-                        } else {
-                            this.logQueue.push(logPayload);
-                        }
-                    } catch (e) {
-                        console.error("Critical Failure inside BoseMonitor report wrapper:", e);
-                    }
-                },
-                flushQueue: async function() {
-                    if (typeof window.addDocToLog !== 'function' || this.logQueue.length === 0) return;
-                    const queueCopy = [...this.logQueue];
-                    this.logQueue = [];
-                    for (const log of queueCopy) {
-                        try { 
-                            await window.addDocToLog(log); 
-                        } catch (e) { 
-                            this.logQueue.push(log); 
-                        }
-                    }
-                }
-            };
-
-            window.onerror = function(message, source, lineno, colno, error) {
-                window.BoseMonitor.report(error || message, source, lineno, colno, 'نافذة المتصفح العالمية');
-                return false;
-            };
-        })();
-    </script>
+    <!-- ===================================================== -->
+    <!-- Theme -->
+    <!-- ===================================================== -->
 
     <script>
-        // إعداد سمات الهوية البصرية الثابتة لعلامة حلويات بوسي
+
         tailwind.config = {
+
             theme: {
+
                 extend: {
+
                     colors: {
+
                         brand: {
+
                             pink: '#ff91a4',
-                            bg: '#000000',
-                            surface: '#000000',
-                            border: 'rgba(255, 255, 255, 0.15)',
-                            textMain: '#ffffff',
-                            textMuted: 'rgba(255, 255, 255, 0.7)'
+
+                            bg: '#050505',
+
+                            surface: '#0e0e0e',
+
+                            border: 'rgba(255,255,255,.08)',
+
+                            text: '#ffffff',
+
+                            muted: 'rgba(255,255,255,.65)'
+
                         }
+
                     },
+
                     fontFamily: {
-                        sans: ['Cairo', 'sans-serif']
+
+                        cairo: ['Cairo', 'sans-serif']
+
                     }
+
                 }
+
             }
-        }
+
+        };
+
     </script>
+
+    <!-- ===================================================== -->
+    <!-- Styles -->
+    <!-- ===================================================== -->
 
     <style>
+
         :root {
+
+            color-scheme: dark;
+
             --brand-pink: #ff91a4;
-            --brand-bg: #000000;
-            --brand-surface: #000000;
-            --brand-border: rgba(255, 255, 255, 0.15);
+
+            --brand-bg: #050505;
+
+            --brand-surface: #0e0e0e;
+
+            --brand-border: rgba(255,255,255,.08);
+
+        }
+
+        * {
+
+            box-sizing: border-box;
+
+            -webkit-tap-highlight-color: transparent;
+
+        }
+
+        html {
+
+            scroll-behavior: smooth;
+
         }
 
         body {
-            background-color: var(--brand-bg);
-            color: #ffffff;
-            font-family: 'Cairo', sans-serif;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(circle at top, rgba(255,145,164,.08), transparent 45%),
+                #050505;
+
+            color: white;
+
+            font-family: Cairo, sans-serif;
+
         }
 
-        h1, h2, h3, h4, h5, h6, font, span, label, p, button, input, select, textarea {
-            font-weight: 700 !important;
+        input,
+        button {
+
+            font-family: inherit;
+
         }
 
-        .bose-input-glow:focus {
+        .glass {
+
+            background: rgba(255,255,255,.03);
+
+            backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(255,255,255,.06);
+
+        }
+
+        .focus-ring:focus {
+
             border-color: var(--brand-pink);
-            box-shadow: 0 0 14px rgba(255, 145, 164, 0.18);
+
+            box-shadow:
+                0 0 0 4px rgba(255,145,164,.12);
+
         }
 
-        .btn-premium-glow {
-            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.15);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .shadow-pink {
+
+            box-shadow:
+                0 10px 40px rgba(255,145,164,.12);
+
         }
 
-        .btn-premium-glow:hover {
-            box-shadow: 0 6px 20px rgba(255, 145, 164, 0.3);
-            transform: translateY(-2px);
+        .btn-hover {
+
+            transition:
+                transform .2s ease,
+                opacity .2s ease,
+                box-shadow .2s ease;
+
         }
 
-        .btn-premium-glow:active {
-            transform: translateY(1px);
+        .btn-hover:hover {
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 10px 30px rgba(255,145,164,.16);
+
         }
+
+        .btn-hover:active {
+
+            transform: scale(.99);
+
+        }
+
+        .fade-in {
+
+            animation: fadeIn .35s ease;
+
+        }
+
+        @keyframes fadeIn {
+
+            from {
+
+                opacity: 0;
+
+                transform: translateY(8px);
+
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform: translateY(0);
+
+            }
+
+        }
+
     </style>
+
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 relative selection:bg-brand-pink selection:text-brand-bg">
 
-    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,145,164,0.03)_0%,transparent_70%)] pointer-events-none"></div>
+<body class="font-cairo">
 
-    <main class="w-full max-w-[440px] bg-brand-surface border-2 border-brand-border rounded-3xl p-8 md:p-10 relative z-10 shadow-2xl transition-all duration-300">
-        
-        <header class="flex flex-col items-center mb-8 text-center">
-            <div class="w-20 h-20 bg-brand-bg border-2 border-brand-border rounded-2xl flex items-center justify-center mb-5 relative group transition-colors duration-300 hover:border-brand-pink/50">
-                <div class="absolute inset-1 border border-dashed border-brand-border rounded-xl group-hover:border-brand-pink/30 transition-colors"></div>
-                <i data-lucide="shield-check" class="w-10 h-10 text-brand-pink animate-pulse"></i>
-            </div>
-            <h1 class="text-2xl text-brand-textMain mb-2 tracking-wide">علامة حلويات بوسي</h1>
-            <p class="text-sm text-brand-textMuted tracking-normal">بوابة الدخول السيادية للمركز الإداري</p>
-        </header>
+    <!-- ===================================================== -->
+    <!-- Background -->
+    <!-- ===================================================== -->
 
-        <section>
-            <!-- نافذة تنبيهات التحقق والتوثيق -->
-            <div id="auth-alert-container" class="hidden mb-5 p-4 rounded-xl border-2 bg-black border-[#ff91a4] text-[#ff91a4] text-sm flex items-center gap-3">
-                <i data-lucide="alert-triangle" class="w-5 h-5 text-[#ff91a4] shrink-0"></i>
-                <span id="auth-alert-text">خطأ في تأكيد الهوية</span>
-            </div>
+    <div
+        class="absolute inset-0 pointer-events-none"
+    >
+        <div
+            class="absolute inset-0 opacity-40"
+            style="
+                background-image:
+                linear-gradient(
+                    rgba(255,255,255,.02) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,.02) 1px,
+                    transparent 1px
+                );
+                background-size: 32px 32px;
+            "
+        ></div>
+    </div>
 
-            <div class="space-y-5">
-                <div>
-                    <label for="admin-email" class="block text-sm text-brand-textMuted mb-2 pr-1">البريد الإلكتروني الإداري</label>
-                    <div class="relative">
-                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-brand-textMuted">
-                            <i data-lucide="mail" class="w-5 h-5"></i>
-                        </span>
-                        <input type="email" id="admin-email" class="w-full bg-brand-bg border border-brand-border rounded-xl py-3.5 pr-12 pl-4 text-white text-base outline-none bose-input-glow transition-all" dir="ltr" placeholder="admin@bosesweets.com" autocomplete="email">
-                    </div>
+    <!-- ===================================================== -->
+    <!-- Main -->
+    <!-- ===================================================== -->
+
+    <main
+        class="
+            relative
+            z-10
+            min-h-screen
+            flex
+            items-center
+            justify-center
+            p-5
+        "
+    >
+
+        <section
+            class="
+                glass
+                shadow-pink
+                fade-in
+                w-full
+                max-w-[460px]
+                rounded-[32px]
+                p-8
+                md:p-10
+            "
+        >
+
+            <!-- ============================================= -->
+            <!-- Header -->
+            <!-- ============================================= -->
+
+            <header
+                class="
+                    flex
+                    flex-col
+                    items-center
+                    text-center
+                    mb-8
+                "
+            >
+
+                <div
+                    class="
+                        w-24
+                        h-24
+                        rounded-[28px]
+                        flex
+                        items-center
+                        justify-center
+                        bg-[#111]
+                        border
+                        border-white/10
+                        mb-5
+                    "
+                >
+
+                    <i
+                        data-lucide="shield-check"
+                        class="
+                            w-11
+                            h-11
+                            text-brand-pink
+                        "
+                    ></i>
+
                 </div>
 
+                <h1
+                    class="
+                        text-3xl
+                        font-black
+                        tracking-wide
+                    "
+                >
+                    حلويات بوسي
+                </h1>
+
+                <p
+                    class="
+                        text-brand-muted
+                        mt-2
+                        text-sm
+                    "
+                >
+                    بوابة الإدارة المؤمنة
+                </p>
+
+            </header>
+
+            <!-- ============================================= -->
+            <!-- Alert -->
+            <!-- ============================================= -->
+
+            <div
+                id="authAlert"
+                class="
+                    hidden
+                    mb-5
+                    rounded-2xl
+                    border
+                    border-red-500/25
+                    bg-red-500/10
+                    p-4
+                    text-sm
+                    text-red-200
+                "
+            ></div>
+
+            <!-- ============================================= -->
+            <!-- Form -->
+            <!-- ============================================= -->
+
+            <form
+                id="loginForm"
+                class="space-y-5"
+                autocomplete="off"
+            >
+
+                <!-- ========================================= -->
+                <!-- Email -->
+                <!-- ========================================= -->
+
                 <div>
-                    <label for="admin-password" class="block text-sm text-brand-textMuted mb-2 pr-1">كلمة المرور الحاكمة</label>
+
+                    <label
+                        class="
+                            block
+                            text-sm
+                            mb-2
+                            text-brand-muted
+                        "
+                    >
+                        البريد الإلكتروني الإداري
+                    </label>
+
                     <div class="relative">
-                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-brand-textMuted">
-                            <i data-lucide="lock" class="w-5 h-5"></i>
-                        </span>
-                        <input type="password" id="admin-password" class="w-full bg-brand-bg border border-brand-border rounded-xl py-3.5 pr-12 pl-12 text-white text-base outline-none bose-input-glow transition-all" dir="ltr" placeholder="••••••••••••" autocomplete="current-password">
-                        <button type="button" id="btn-toggle-pwd" class="absolute left-4 top-1/2 -translate-y-1/2 text-brand-textMuted hover:text-brand-pink transition-colors focus:outline-none">
-                            <i data-lucide="eye" id="icon-pwd-eye" class="w-5 h-5"></i>
+
+                        <i
+                            data-lucide="mail"
+                            class="
+                                absolute
+                                right-4
+                                top-1/2
+                                -translate-y-1/2
+                                w-5
+                                h-5
+                                text-brand-muted
+                            "
+                        ></i>
+
+                        <input
+                            id="adminEmail"
+                            type="email"
+                            dir="ltr"
+                            inputmode="email"
+                            autocomplete="username"
+                            spellcheck="false"
+                            required
+                            class="
+                                focus-ring
+                                w-full
+                                rounded-2xl
+                                border
+                                border-white/10
+                                bg-black/40
+                                py-4
+                                pr-12
+                                pl-4
+                                outline-none
+                                transition-all
+                            "
+                            placeholder="admin@bosesweets.com"
+                        />
+
+                    </div>
+
+                </div>
+
+                <!-- ========================================= -->
+                <!-- Password -->
+                <!-- ========================================= -->
+
+                <div>
+
+                    <label
+                        class="
+                            block
+                            text-sm
+                            mb-2
+                            text-brand-muted
+                        "
+                    >
+                        كلمة المرور
+                    </label>
+
+                    <div class="relative">
+
+                        <i
+                            data-lucide="lock"
+                            class="
+                                absolute
+                                right-4
+                                top-1/2
+                                -translate-y-1/2
+                                w-5
+                                h-5
+                                text-brand-muted
+                            "
+                        ></i>
+
+                        <input
+                            id="adminPassword"
+                            type="password"
+                            dir="ltr"
+                            autocomplete="current-password"
+                            required
+                            class="
+                                focus-ring
+                                w-full
+                                rounded-2xl
+                                border
+                                border-white/10
+                                bg-black/40
+                                py-4
+                                pr-12
+                                pl-14
+                                outline-none
+                                transition-all
+                            "
+                            placeholder="••••••••••••"
+                        />
+
+                        <button
+                            id="togglePassword"
+                            type="button"
+                            class="
+                                absolute
+                                left-4
+                                top-1/2
+                                -translate-y-1/2
+                                text-brand-muted
+                            "
+                        >
+
+                            <i
+                                id="passwordEye"
+                                data-lucide="eye"
+                                class="w-5 h-5"
+                            ></i>
+
                         </button>
+
                     </div>
+
                 </div>
 
-                <div class="pt-2">
-                    <button type="button" id="btn-submit-auth" class="w-full bg-brand-pink text-brand-bg py-4 rounded-xl text-base btn-premium-glow flex items-center justify-center gap-2">
-                        <span>تأكيد الهوية والدخول</span>
-                        <i data-lucide="arrow-left" class="w-5 h-5"></i>
-                    </button>
-                </div>
-            </div>
+                <!-- ========================================= -->
+                <!-- Submit -->
+                <!-- ========================================= -->
+
+                <button
+                    id="submitButton"
+                    type="submit"
+                    class="
+                        btn-hover
+                        w-full
+                        rounded-2xl
+                        bg-brand-pink
+                        py-4
+                        text-black
+                        font-black
+                        flex
+                        items-center
+                        justify-center
+                        gap-2
+                    "
+                >
+
+                    <span id="submitText">
+                        تأكيد الهوية
+                    </span>
+
+                    <i
+                        data-lucide="arrow-left"
+                        class="w-5 h-5"
+                    ></i>
+
+                </button>
+
+            </form>
+
+            <!-- ============================================= -->
+            <!-- Footer -->
+            <!-- ============================================= -->
+
+            <footer
+                class="
+                    mt-8
+                    pt-6
+                    border-t
+                    border-white/5
+                    text-center
+                "
+            >
+
+                <p
+                    class="
+                        text-xs
+                        text-brand-muted
+                    "
+                >
+                    نظام مصادقة محمي ومراقب لحظياً
+                </p>
+
+            </footer>
+
         </section>
 
-        <footer class="mt-8 pt-6 border-t border-brand-border/60 text-center">
-            <p class="text-xs text-brand-textMuted/70 tracking-wide">نظام التوثيق محمي ومزامن حياً مع خوادمنا السحابية الآمنة</p>
-        </footer>
     </main>
 
-    <!-- وحدة المعالجة المركزية والتفاعل السحابي -->
-    <script type="module">
-        import { initializeApp, getApps } from "firebase/app";
-        import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-        import { getFirestore, collection, addDoc } from "firebase/firestore";
+    <!-- ===================================================== -->
+    <!-- Runtime -->
+    <!-- ===================================================== -->
 
-        // إعداد متغيرات البيئة والقيم السحابية المتوفرة بشكل ديناميكي
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'bosy-sweets';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
-            authDomain: "bosy-sweets.firebaseapp.com",
-            projectId: "bosy-sweets",
-            storageBucket: "bosy-sweets.firebasestorage.app",
-            messagingSenderId: "473615735083",
-            appId: "1:473615735083:web:f09c6001c72640b2588d6e"
+    <script type="module">
+
+        /**
+         * =================================================
+         * Firebase
+         * =================================================
+         */
+
+        import {
+
+            initializeApp,
+            getApps
+
+        } from 'firebase/app';
+
+        import {
+
+            getAuth,
+            setPersistence,
+            browserSessionPersistence,
+            signInWithEmailAndPassword,
+            onAuthStateChanged,
+            signOut
+
+        } from 'firebase/auth';
+
+        /**
+         * =================================================
+         * Config
+         * =================================================
+         */
+
+        const FIREBASE_CONFIG = {
+
+            apiKey: "YOUR_API_KEY",
+
+            authDomain: "YOUR_AUTH_DOMAIN",
+
+            projectId: "YOUR_PROJECT_ID",
+
+            storageBucket: "YOUR_STORAGE_BUCKET",
+
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+
+            appId: "YOUR_APP_ID"
+
         };
 
-        // تهيئة خدمات الاتصال والمزامنة
-        try {
-            let app;
-            if (!getApps().length) {
-                app = initializeApp(firebaseConfig);
-            } else {
-                app = getApps()[0];
-            }
-            
-            window.firebaseApp = app;
-            window.authService = getAuth(app);
-            window.dbService = getFirestore(app);
+        /**
+         * =================================================
+         * Runtime State
+         * =================================================
+         */
 
-            // دالة تسجيل السجلات السحابية الحديثة والمتوافقة مع قواعد المسار الصارمة (Rule 1)
-            window.addDocToLog = async function(payload) {
-                if (!window.dbService) throw new Error("قاعدة البيانات غير مهيأة حالياً.");
-                
-                // تطبيق المسار السيادي المطلوب: /artifacts/{appId}/public/data/{collectionName}
-                const logsCollection = collection(window.dbService, 'artifacts', appId, 'public', 'data', 'system_logs');
-                return await addDoc(logsCollection, payload);
-            };
+        const STATE = Object.seal({
 
-            // تصفية السجلات المؤقتة التي رُصدت أثناء التهيئة الأولية
-            if (window.BoseMonitor && typeof window.BoseMonitor.flushQueue === 'function') {
-                window.BoseMonitor.flushQueue();
-            }
+            locked: false,
 
-        } catch (initError) {
-            if (window.BoseMonitor && typeof window.BoseMonitor.report === 'function') {
-                window.BoseMonitor.report(initError, 'login.html', null, null, 'تهيئة مكتبات Firebase وسحابة البيانات المعيارية');
-            } else {
-                console.error("Critical Firebase Initialization Error:", initError);
-            }
+            loading: false,
+
+            attempts: 0,
+
+            lastAttempt: 0,
+
+            authenticated: false,
+
+            online: navigator.onLine,
+
+            destroyed: false
+
+        });
+
+        /**
+         * =================================================
+         * Constants
+         * =================================================
+         */
+
+        const MAX_ATTEMPTS = 5;
+
+        const LOCK_DURATION = 1000 * 60 * 5;
+
+        const ATTEMPT_WINDOW = 1000 * 4;
+
+        const IDLE_TIMEOUT = 1000 * 60 * 30;
+
+        /**
+         * =================================================
+         * DOM
+         * =================================================
+         */
+
+        const DOM = Object.freeze({
+
+            form:
+
+                document.getElementById('loginForm'),
+
+            email:
+
+                document.getElementById('adminEmail'),
+
+            password:
+
+                document.getElementById('adminPassword'),
+
+            alert:
+
+                document.getElementById('authAlert'),
+
+            submitButton:
+
+                document.getElementById('submitButton'),
+
+            submitText:
+
+                document.getElementById('submitText'),
+
+            togglePassword:
+
+                document.getElementById('togglePassword'),
+
+            passwordEye:
+
+                document.getElementById('passwordEye')
+
+        });
+
+        /**
+         * =================================================
+         * Firebase Boot
+         * =================================================
+         */
+
+        const app = !getApps().length
+
+            ? initializeApp(FIREBASE_CONFIG)
+
+            : getApps()[0];
+
+        const auth = getAuth(app);
+
+        /**
+         * =================================================
+         * Helpers
+         * =================================================
+         */
+
+        function now() {
+
+            return Date.now();
+
         }
 
-        // تفعيل مكتبة الأيقونات التفاعلية
-        try {
-            lucide.createIcons();
-        } catch (e) {
-            console.error("Lucide icons failed to load:", e);
-        }
+        function showAlert(message) {
 
-        // معالجة رؤية حقل كلمة المرور بشكل آمن
-        const btnTogglePwd = document.getElementById('btn-toggle-pwd');
-        const adminPasswordInput = document.getElementById('admin-password');
-        const iconPwdEye = document.getElementById('icon-pwd-eye');
+            DOM.alert.textContent = message;
 
-        if (btnTogglePwd && adminPasswordInput) {
-            btnTogglePwd.addEventListener('click', () => {
-                try {
-                    if (adminPasswordInput.type === 'password') {
-                        adminPasswordInput.type = 'text';
-                        iconPwdEye.setAttribute('data-lucide', 'eye-off');
-                    } else {
-                        adminPasswordInput.type = 'password';
-                        iconPwdEye.setAttribute('data-lucide', 'eye');
-                    }
-                    lucide.createIcons();
-                } catch (err) {
-                    if (window.BoseMonitor) {
-                        window.BoseMonitor.report(err, 'login.html', null, null, 'Toggle Password Visibility');
-                    }
-                }
-            });
-        }
+            DOM.alert.classList.remove('hidden');
 
-        function showAlert(msg) {
-            const container = document.getElementById('auth-alert-container');
-            const txt = document.getElementById('auth-alert-text');
-            if (container && txt) {
-                txt.innerText = msg;
-                container.classList.remove('hidden');
-            }
         }
 
         function hideAlert() {
-            const container = document.getElementById('auth-alert-container');
-            if (container) container.classList.add('hidden');
+
+            DOM.alert.classList.add('hidden');
+
         }
 
-        // معالجة عملية تسجيل دخول المدير الإداري والتوثيق الثنائي
-        async function executeAdminLogin() {
-            const emailInput = document.getElementById('admin-email');
-            const passwordInput = document.getElementById('admin-password');
-            const submitBtn = document.getElementById('btn-submit-auth');
+        function setLoading(status) {
 
-            if (!emailInput || !passwordInput || !submitBtn) return;
+            STATE.loading = status;
 
-            const email = emailInput.value.trim();
-            const password = passwordInput.value;
+            DOM.submitButton.disabled = status;
 
-            if (!email || !password) {
-                showAlert("يرجى ملء كافة الحقول المطلوبة للمتابعة.");
-                return;
+            DOM.submitButton.style.opacity = status
+
+                ? '.7'
+
+                : '1';
+
+            DOM.submitText.textContent = status
+
+                ? 'جاري التحقق...'
+
+                : 'تأكيد الهوية';
+
+        }
+
+        function sanitizeInput(value) {
+
+            return String(value || '')
+                .trim()
+                .replace(/[<>]/g, '');
+
+        }
+
+        function lockRuntime() {
+
+            STATE.locked = true;
+
+            localStorage.setItem(
+
+                'bose_login_lock',
+
+                String(now())
+
+            );
+
+        }
+
+        function unlockRuntime() {
+
+            STATE.locked = false;
+
+            localStorage.removeItem(
+
+                'bose_login_lock'
+
+            );
+
+        }
+
+        function validateLock() {
+
+            const lockTime = Number(
+
+                localStorage.getItem(
+
+                    'bose_login_lock'
+
+                ) || 0
+
+            );
+
+            if (
+
+                lockTime &&
+
+                now() - lockTime < LOCK_DURATION
+
+            ) {
+
+                STATE.locked = true;
+
+                return true;
+
             }
 
-            hideAlert();
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = `<span>جاري التحقق والمزامنة...</span>`;
+            unlockRuntime();
 
-            try {
-                if (!window.authService) {
-                    throw new Error("محرّك Auth غير متصل بالسحابة حالياً.");
-                }
+            return false;
 
-                // ضبط ثبات الجلسة محلياً لضمان انتقال الصلاحيات لصفحة المراقبة
-                await setPersistence(window.authService, browserLocalPersistence);
-                
-                await signInWithEmailAndPassword(window.authService, email, password);
-                
-                sessionStorage.setItem('bosy_admin_auth', 'verified');
-                
-                submitBtn.innerHTML = `<span>تم تأكيد الصلاحية بنجاح...</span>`;
-                
-                // التوجيه التلقائي للمركز الإداري
-                window.location.href = 'admin-monitor.html';
+        }
 
-            } catch (error) {
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = `<span>تأكيد الهوية والدخول</span> <i data-lucide="arrow-left" class="w-5 h-5"></i>`;
-                try { lucide.createIcons(); } catch(lErr){}
+        function safeRedirect() {
 
-                let fallbackMsg = "بيانات الدخول غير صحيحة، يرجى مراجعة الصلاحيات الحاكمة.";
-                if (error.code === 'auth/network-request-failed') {
-                    fallbackMsg = "عطل اتصالي سحابي، يرجى التأكد من شبكة الموبايل أو الكمبيوتر.";
-                } else if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
-                    fallbackMsg = "البريد الإلكتروني أو رمز المرور غير متوافق مع سجلات الإدارة.";
-                }
-                
-                showAlert(fallbackMsg);
-                if (window.BoseMonitor) {
-                    window.BoseMonitor.report(error, 'login.html', null, null, 'Firebase Password Authentication Process');
-                }
+            window.location.replace(
+
+                './admin-monitor.html'
+
+            );
+
+        }
+
+        /**
+         * =================================================
+         * Attempt Governance
+         * =================================================
+         */
+
+        function validateAttempts() {
+
+            if (STATE.locked) {
+
+                throw new Error(
+
+                    'تم قفل النظام مؤقتاً بسبب المحاولات المتكررة'
+
+                );
+
             }
-        }
 
-        // ربط أحداث الإدخال والضغط بالدالة التنفيذية الحديثة
-        const submitBtnObj = document.getElementById('btn-submit-auth');
-        if (submitBtnObj) {
-            submitBtnObj.addEventListener('click', executeAdminLogin);
-        }
+            const current = now();
 
-        try {
-            document.getElementById('admin-password').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') executeAdminLogin();
-            });
-            document.getElementById('admin-email').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') executeAdminLogin();
-            });
-        } catch (e) {
-            if (window.BoseMonitor) {
-                window.BoseMonitor.report(e, 'login.html', null, null, 'Attach Enter Listeners');
+            if (
+
+                current - STATE.lastAttempt
+
+                < ATTEMPT_WINDOW
+
+            ) {
+
+                throw new Error(
+
+                    'يرجى الانتظار قليلاً قبل إعادة المحاولة'
+
+                );
+
             }
+
+            STATE.lastAttempt = current;
+
         }
 
-        // مراقبة حالة التوثيق المستمرة لضمان التوجيه التلقائي الآمن
-        document.addEventListener('DOMContentLoaded', () => {
-            try {
-                if (window.authService) {
-                    onAuthStateChanged(window.authService, user => {
-                        try {
-                            if (user && sessionStorage.getItem('bosy_admin_auth') === 'verified') {
-                                window.location.href = 'admin-monitor.html';
+        function registerFailure() {
+
+            STATE.attempts++;
+
+            if (
+
+                STATE.attempts >= MAX_ATTEMPTS
+
+            ) {
+
+                lockRuntime();
+
+            }
+
+        }
+
+        function resetAttempts() {
+
+            STATE.attempts = 0;
+
+            unlockRuntime();
+
+        }
+
+        /**
+         * =================================================
+         * Password Toggle
+         * =================================================
+         */
+
+        DOM.togglePassword.addEventListener(
+
+            'click',
+
+            () => {
+
+                const visible =
+
+                    DOM.password.type === 'text';
+
+                DOM.password.type = visible
+
+                    ? 'password'
+
+                    : 'text';
+
+                DOM.passwordEye.setAttribute(
+
+                    'data-lucide',
+
+                    visible ? 'eye' : 'eye-off'
+
+                );
+
+                lucide.createIcons();
+
+            }
+
+        );
+
+        /**
+         * =================================================
+         * Login Runtime
+         * =================================================
+         */
+
+        async function login(email, password) {
+
+            validateAttempts();
+
+            if (!navigator.onLine) {
+
+                throw new Error(
+
+                    'لا يوجد اتصال بالشبكة حالياً'
+
+                );
+
+            }
+
+            await setPersistence(
+
+                auth,
+
+                browserSessionPersistence
+
+            );
+
+            return signInWithEmailAndPassword(
+
+                auth,
+
+                email,
+
+                password
+
+            );
+
+        }
+
+        /**
+         * =================================================
+         * Form Submit
+         * =================================================
+         */
+
+        DOM.form.addEventListener(
+
+            'submit',
+
+            async (event) => {
+
+                event.preventDefault();
+
+                hideAlert();
+
+                if (STATE.loading) {
+
+                    return;
+
+                }
+
+                try {
+
+                    if (validateLock()) {
+
+                        throw new Error(
+
+                            'تم قفل تسجيل الدخول مؤقتاً'
+
+                        );
+
+                    }
+
+                    setLoading(true);
+
+                    const email = sanitizeInput(
+
+                        DOM.email.value
+
+                    );
+
+                    const password = sanitizeInput(
+
+                        DOM.password.value
+
+                    );
+
+                    if (
+
+                        !email ||
+
+                        !password
+
+                    ) {
+
+                        throw new Error(
+
+                            'يرجى إدخال البيانات كاملة'
+
+                        );
+
+                    }
+
+                    await login(
+
+                        email,
+
+                        password
+
+                    );
+
+                    resetAttempts();
+
+                    STATE.authenticated = true;
+
+                    safeRedirect();
+
+                } catch (error) {
+
+                    registerFailure();
+
+                    let message =
+
+                        'تعذر تسجيل الدخول';
+
+                    switch (error.code) {
+
+                        case 'auth/network-request-failed':
+
+                            message =
+                                'حدثت مشكلة في الاتصال';
+
+                            break;
+
+                        case 'auth/invalid-credential':
+
+                        case 'auth/wrong-password':
+
+                        case 'auth/user-not-found':
+
+                            message =
+                                'بيانات الدخول غير صحيحة';
+
+                            break;
+
+                        default:
+
+                            if (error.message) {
+
+                                message = error.message;
+
                             }
-                        } catch (innerError) {
-                            if (window.BoseMonitor) {
-                                window.BoseMonitor.report(innerError, 'login.html', null, null, 'onAuthStateChanged Callback');
-                            }
-                        }
-                    });
+
+                    }
+
+                    showAlert(message);
+
+                } finally {
+
+                    setLoading(false);
+
                 }
-            } catch (error) {
-                if (window.BoseMonitor) {
-                    window.BoseMonitor.report(error, 'login.html', null, null, 'DOMContentLoaded (Auth Check)');
-                }
+
             }
+
+        );
+
+        /**
+         * =================================================
+         * Auth Watcher
+         * =================================================
+         */
+
+        onAuthStateChanged(
+
+            auth,
+
+            async (user) => {
+
+                try {
+
+                    if (user) {
+
+                        STATE.authenticated = true;
+
+                        safeRedirect();
+
+                        return;
+
+                    }
+
+                    STATE.authenticated = false;
+
+                } catch {
+
+                    try {
+
+                        await signOut(auth);
+
+                    } catch {}
+
+                }
+
+            }
+
+        );
+
+        /**
+         * =================================================
+         * Idle Session Protection
+         * =================================================
+         */
+
+        let idleTimer;
+
+        function resetIdleTimer() {
+
+            clearTimeout(idleTimer);
+
+            idleTimer = setTimeout(
+
+                async () => {
+
+                    try {
+
+                        await signOut(auth);
+
+                    } catch {}
+
+                },
+
+                IDLE_TIMEOUT
+
+            );
+
+        }
+
+        [
+
+            'click',
+
+            'mousemove',
+
+            'keydown',
+
+            'touchstart'
+
+        ].forEach(eventName => {
+
+            window.addEventListener(
+
+                eventName,
+
+                resetIdleTimer,
+
+                {
+
+                    passive: true
+
+                }
+
+            );
+
         });
-    </script>
-</body>
-</html>
 
-```
+        resetIdleTimer();
+
+        /**
+         * =================================================
+         * Network Recovery
+         * =================================================
+         */
+
+        window.addEventListener(
+
+            'online',
+
+            () => {
+
+                STATE.online = true;
+
+                hideAlert();
+
+            }
+
+        );
+
+        window.addEventListener(
+
+            'offline',
+
+            () => {
+
+                STATE.online = false;
+
+                showAlert(
+
+                    'تم فقد الاتصال بالشبكة'
+
+                );
+
+            }
+
+        );
+
+        /**
+         * =================================================
+         * Memory Cleanup
+         * =================================================
+         */
+
+        window.addEventListener(
+
+            'beforeunload',
+
+            () => {
+
+                STATE.destroyed = true;
+
+            }
+
+        );
+
+        /**
+         * =================================================
+         * Icons
+         * =================================================
+         */
+
+        lucide.createIcons();
+
+    </script>
+
+</body>
+
+</html>

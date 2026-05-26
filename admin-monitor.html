@@ -1,692 +1,1321 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
+    <!-- ===================================================== -->
+    <!-- CORE META -->
+    <!-- ===================================================== -->
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>حلويات بوسي | كابينة التحكم السيادية والمراقبة</title>
-    
-    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover"
+    >
+
+    <meta
+        http-equiv="X-UA-Compatible"
+        content="IE=edge"
+    >
+
+    <title>
+        Bose Sweets | الإدارة السيادية الكاملة
+    </title>
+
+    <meta
+        name="robots"
+        content="noindex,nofollow"
+    >
+
+    <!-- ===================================================== -->
+    <!-- PRECONNECT -->
+    <!-- ===================================================== -->
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <!-- ===================================================== -->
+    <!-- FONTS -->
+    <!-- ===================================================== -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- ===================================================== -->
+    <!-- TAILWIND -->
+    <!-- ===================================================== -->
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght=300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <script type="importmap">
-      {
-        "imports": {
-          "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
-          "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
-          "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"
-        }
-      }
-    </script>
 
     <script>
+
         tailwind.config = {
+
             theme: {
+
                 extend: {
+
                     colors: {
+
+                        brandBg: '#0b0a0a',
+
+                        brandSurface: '#121010',
+
+                        brandSurface2: '#181515',
+
+                        brandBorder: '#241f20',
+
                         brandPink: '#ff91a4',
-                        brandPinkLight: '#2a171a',
-                        brandPinkDark: '#e07d90',
-                        brandBg: '#0e090a',
-                        brandSurface: '#160f10',
-                        brandSurfaceChild: '#1f1517',
-                        brandBorder: '#2e1e21',
-                        brandTextMain: '#f5ecee',
-                        brandTextMuted: '#a89396',
+
+                        brandPinkSoft: '#2b1a1f',
+
+                        brandText: '#f7eff1',
+
+                        brandMuted: '#aa9da0',
+
+                        brandGreen: '#35d08b',
+
+                        brandRed: '#ff6b81',
+
+                        brandOrange: '#ffb347',
+
+                        brandBlue: '#72b6ff'
+
                     },
+
                     fontFamily: {
-                        sans: ['Cairo', 'sans-serif'],
+
+                        sans: ['Cairo', 'sans-serif']
+
+                    },
+
+                    boxShadow: {
+
+                        soft: '0 20px 60px rgba(0,0,0,.35)',
+
+                        pink: '0 10px 35px rgba(255,145,164,.08)'
+
                     }
+
                 }
+
             }
-        }
+
+        };
+
     </script>
 
+    <!-- ===================================================== -->
+    <!-- IMPORT MAP -->
+    <!-- ===================================================== -->
+
+    <script type="importmap">
+
+        {
+
+            "imports": {
+
+                "firebase/app":
+                "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
+
+                "firebase/auth":
+                "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
+
+                "firebase/firestore":
+                "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"
+
+            }
+
+        }
+
+    </script>
+
+    <!-- ===================================================== -->
+    <!-- STYLE -->
+    <!-- ===================================================== -->
+
     <style>
+
+        :root {
+
+            color-scheme: dark;
+
+        }
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+
+        }
+
+        html {
+
+            scroll-behavior: smooth;
+
+            -webkit-text-size-adjust: 100%;
+
+        }
+
         body {
-            background-color: #0e090a;
-            color: #f5ecee;
+
             font-family: 'Cairo', sans-serif;
-            -webkit-tap-highlight-color: transparent;
+
+            background: #0b0a0a;
+
+            color: #f7eff1;
+
+            overflow-x: hidden;
+
+            text-rendering: optimizeLegibility;
+
+            -webkit-font-smoothing: antialiased;
+
         }
 
         ::-webkit-scrollbar {
+
             width: 8px;
+
             height: 8px;
+
         }
-        ::-webkit-scrollbar-track {
-            background: #0e090a;
-        }
+
         ::-webkit-scrollbar-thumb {
-            background: #2e1e21;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #ff91a4;
+
+            background: #2a2324;
+
+            border-radius: 999px;
+
         }
 
-        .transition-all-300 {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        ::-webkit-scrollbar-track {
+
+            background: #0b0a0a;
+
         }
 
-        .bose-input-glow:focus {
+        button,
+        input,
+        textarea,
+        select {
+
+            font-family: inherit;
+
+        }
+
+        button {
+
+            cursor: pointer;
+
+            border: none;
+
+            outline: none;
+
+        }
+
+        input,
+        textarea,
+        select {
+
+            outline: none;
+
+        }
+
+        img {
+
+            display: block;
+
+            max-width: 100%;
+
+        }
+
+        .glass {
+
+            backdrop-filter: blur(20px);
+
+            background: rgba(18,16,16,.82);
+
+        }
+
+        .soft-card {
+
+            background: #121010;
+
+            border: 1px solid #241f20;
+
+            border-radius: 28px;
+
+            box-shadow: 0 10px 40px rgba(0,0,0,.2);
+
+        }
+
+        .soft-card-2 {
+
+            background: #181515;
+
+            border: 1px solid #241f20;
+
+            border-radius: 24px;
+
+        }
+
+        .soft-input {
+
+            width: 100%;
+
+            background: #0d0b0b;
+
+            border: 1px solid #241f20;
+
+            color: #f7eff1;
+
+            border-radius: 18px;
+
+            padding: 16px;
+
+            transition: .25s ease;
+
+        }
+
+        .soft-input:focus {
+
             border-color: #ff91a4;
-            box-shadow: 0 0 14px rgba(255, 145, 164, 0.2);
-            background-color: #1f1517;
+
+            box-shadow: 0 0 0 5px rgba(255,145,164,.08);
+
         }
 
-        .pink-clean-shadow {
-            box-shadow: 0 10px 30px rgba(255, 145, 164, 0.02);
+        .soft-btn {
+
+            border-radius: 18px;
+
+            font-weight: 800;
+
+            transition: .25s ease;
+
         }
 
-        @keyframes alarm-pulse {
-            0%, 100% { border-color: #2e1e21; box-shadow: 0 0 0px transparent; }
-            50% { border-color: #ff91a4; box-shadow: 0 0 15px rgba(255, 145, 164, 0.15); }
+        .soft-btn-primary {
+
+            background: #ff91a4;
+
+            color: #fff;
+
         }
-        .urgent-order-card {
-            animation: alarm-pulse 2.5s infinite ease-in-out;
-            background-color: #1f1517 !important;
+
+        .soft-btn-primary:hover {
+
+            background: #ff7890;
+
         }
+
+        .soft-btn-secondary {
+
+            background: #1c1718;
+
+            border: 1px solid #2b2425;
+
+            color: #f7eff1;
+
+        }
+
+        .soft-btn-secondary:hover {
+
+            background: #241d1f;
+
+        }
+
+        .sidebar-scroll {
+
+            scrollbar-width: thin;
+
+        }
+
+        .section-hidden {
+
+            display: none !important;
+
+        }
+
+        .nav-active {
+
+            background: #2b1a1f !important;
+
+            color: #ff91a4 !important;
+
+            border-color: #ff91a4 !important;
+
+        }
+
+        .metric-glow {
+
+            position: absolute;
+
+            width: 120px;
+
+            height: 120px;
+
+            border-radius: 999px;
+
+            filter: blur(40px);
+
+            opacity: .12;
+
+        }
+
+        @media (max-width: 768px) {
+
+            .mobile-safe {
+
+                padding-bottom: 120px;
+
+            }
+
+        }
+
     </style>
 
-    <script type="module" src="admin-engine.js" defer></script>
 </head>
-<body class="min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
-    <div id="loadingGuard" class="fixed inset-0 bg-brandBg z-[200] flex flex-col items-center justify-center gap-5 transition-opacity duration-500">
-        <div class="w-16 h-16 rounded-3xl border-4 border-brandBorder border-t-brandPink animate-spin"></div>
-        <p class="text-brandTextMuted text-sm font-bold tracking-wide">جاري التحقق من الصلاحيات السيادية وتأمين المزامنة السحابية...</p>
-    </div>
+<body>
 
-    <div id="toastNotification" class="fixed top-6 left-1/2 -translate-x-1/2 z-[150] px-6 py-4 rounded-2xl bg-brandSurface border border-brandBorder text-brandTextMain text-sm font-bold shadow-2xl flex items-center gap-3 transform -translate-y-28 opacity-0 pointer-events-none transition-all duration-300">
-        <span id="toastIcon" class="text-brandPink"></span>
-        <div class="flex flex-col">
-            <span id="toastTitle" class="text-brandPink text-xs font-black"></span>
-            <span id="toastBody" class="text-xs text-brandTextMuted mt-1"></span>
-        </div>
-    </div>
+    <!-- ===================================================== -->
+    <!-- APP -->
+    <!-- ===================================================== -->
 
-    <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
-    
-    <aside id="mainSidebar" class="fixed md:sticky top-0 right-0 h-screen w-72 bg-brandSurface border-l border-brandBorder z-50 flex flex-col justify-between transition-transform duration-300 translate-x-full md:translate-x-0">
-        <div class="flex flex-col h-full overflow-y-auto">
-            <div class="p-6 border-b border-brandBorder flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-brandBg border border-brandBorder rounded-xl flex items-center justify-center">
-                        <i data-lucide="crown" class="w-5 h-5 text-brandPink"></i>
+    <div
+        id="adminApp"
+        class="min-h-screen flex bg-brandBg"
+    >
+
+        <!-- ===================================================== -->
+        <!-- OVERLAY -->
+        <!-- ===================================================== -->
+
+        <div
+            id="sidebarOverlay"
+            class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden"
+        ></div>
+
+        <!-- ===================================================== -->
+        <!-- SIDEBAR -->
+        <!-- ===================================================== -->
+
+        <aside
+            id="sidebar"
+            class="fixed lg:sticky top-0 right-0 h-screen w-[340px] max-w-[88vw] bg-brandSurface border-l border-brandBorder z-50 flex flex-col translate-x-full lg:translate-x-0 transition-transform duration-300"
+        >
+
+            <!-- HEADER -->
+
+            <div
+                class="h-24 border-b border-brandBorder px-6 flex items-center justify-between"
+            >
+
+                <div
+                    class="flex items-center gap-4"
+                >
+
+                    <div
+                        class="w-14 h-14 rounded-3xl bg-brandPinkSoft border border-brandBorder flex items-center justify-center text-2xl"
+                    >
+                        👑
                     </div>
+
                     <div>
-                        <h2 class="text-sm font-black text-brandTextMain">حلويات بوسي</h2>
-                        <span class="text-[10px] text-brandTextMuted tracking-tight">المركز الإداري السيادي</span>
+
+                        <h2
+                            class="text-lg font-black"
+                        >
+                            حلويات بوسي
+                        </h2>
+
+                        <p
+                            class="text-[11px] text-brandMuted font-bold mt-1"
+                        >
+                            النظام الإداري السيادي
+                        </p>
+
                     </div>
+
                 </div>
-                <button id="btn-close-sidebar" class="p-2 bg-brandBg hover:bg-brandBorder rounded-lg text-brandPink transition-colors md:hidden">
-                    <i data-lucide="x" class="w-5 h-5"></i>
+
+                <button
+                    id="closeSidebarBtn"
+                    class="lg:hidden w-11 h-11 rounded-2xl bg-brandSurface2"
+                >
+                    ✕
                 </button>
+
             </div>
 
-            <nav class="p-4 space-y-2 flex-grow">
-                <button id="nav-dashboard" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-brandPinkLight text-brandPink border-r-4 border-brandPink text-xs font-bold text-right transition-all">
-                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                    <span>مؤشرات الأداء السحابي (BoseMonitor)</span>
-                </button>
+            <!-- USER -->
 
-                <button id="nav-orders" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
-                    <i data-lucide="shopping-bag" class="w-4 h-4"></i>
-                    <span>شلال إدارة الطلبات الحية</span>
-                </button>
+            <div
+                class="p-5 border-b border-brandBorder"
+            >
 
-                <button id="nav-menu" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
-                    <i data-lucide="package" class="w-4 h-4"></i>
-                    <span>إعدادات المنيو والتوفر الفوري</span>
-                </button>
+                <div
+                    class="soft-card-2 p-4 flex items-center gap-4"
+                >
 
-                <button id="nav-layoutsManager" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
-                    <i data-lucide="layout-template" class="w-4 h-4"></i>
-                    <span>إدارة أقسام الواجهة وهندسة العرض</span>
-                </button>
-
-                <div class="pt-2 border-t border-brandBorder">
-                    <span class="px-4 py-2 block text-[10px] text-brandTextMuted/50 font-black tracking-widest uppercase">محاكيات البناء الفاخر</span>
-                    <button id="nav-cakeBuilderSettings" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
-                        <i data-lucide="sliders" class="w-4 h-4"></i>
-                        <span>محددات محاكي التورت</span>
-                    </button>
-                    <button id="nav-roseBuilderSettings" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
-                        <i data-lucide="flower" class="w-4 h-4"></i>
-                        <span>محددات محاكي الورد</span>
-                    </button>
-                </div>
-
-                <div class="pt-2 border-t border-brandBorder">
-                    <span class="px-4 py-2 block text-[10px] text-brandTextMuted/50 font-black tracking-widest uppercase">النظام والتوزيع</span>
-                    <button id="nav-shippingRates" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
-                        <i data-lucide="truck" class="w-4 h-4"></i>
-                        <span>تعريفة ومناطق التوصيل</span>
-                    </button>
-                    <button id="nav-globalConfig" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
-                        <i data-lucide="settings" class="w-4 h-4"></i>
-                        <span>الإعلانات والميديا العامة</span>
-                    </button>
-                    <button id="nav-systemLogs" class="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all">
-                        <i data-lucide="terminal" class="w-4 h-4"></i>
-                        <span>سجلات تشخيص النظام</span>
-                    </button>
-                </div>
-            </nav>
-
-            <div class="p-4 border-t border-brandBorder bg-brandBg/60 flex flex-col gap-3">
-                <div class="p-3.5 rounded-xl bg-brandSurfaceChild border border-brandBorder flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-brandPink/15 flex items-center justify-center text-brandPink">
-                        <i data-lucide="user-check" class="w-4 h-4"></i>
+                    <div
+                        class="w-14 h-14 rounded-2xl bg-brandPinkSoft flex items-center justify-center text-xl"
+                    >
+                        🛡️
                     </div>
-                    <div class="overflow-hidden">
-                        <p class="text-[11px] text-brandTextMain font-bold truncate" id="adminEmailDisplay">إدارة حلويات بوسي</p>
-                        <span class="text-[9px] text-emerald-400 font-extrabold flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>مؤمن ومتصل حياً
-                        </span>
+
+                    <div
+                        class="overflow-hidden"
+                    >
+
+                        <div
+                            id="adminEmail"
+                            class="font-black truncate"
+                        >
+                            إدارة حلويات بوسي
+                        </div>
+
+                        <div
+                            class="text-[11px] text-brandGreen font-black mt-1 flex items-center gap-2"
+                        >
+
+                            <span
+                                class="w-2 h-2 rounded-full bg-brandGreen animate-pulse"
+                            ></span>
+
+                            النظام متصل ومؤمن
+
+                        </div>
+
                     </div>
+
                 </div>
-                <button id="btn-sidebar-logout" class="w-full py-3 bg-red-950/30 hover:bg-red-950/50 text-red-400 border border-red-900/40 rounded-xl text-xs font-extrabold transition-colors flex items-center justify-center gap-2">
-                    <i data-lucide="log-out" class="w-4 h-4"></i>
-                    <span>تسجيل الخروج الآمن</span>
-                </button>
+
             </div>
-        </div>
-    </aside>
 
-    <div class="flex-grow flex flex-col min-w-0">
-        
-        <header class="sticky top-0 z-30 bg-brandSurface/90 backdrop-blur-md border-b border-brandBorder h-16 flex items-center justify-between px-6">
-            <div class="flex items-center gap-4">
-                <button id="btn-open-sidebar" class="p-2 bg-brandBg hover:bg-brandBorder border border-brandBorder rounded-xl text-brandPink transition-colors md:hidden">
-                    <i data-lucide="menu" class="w-5 h-5"></i>
-                </button>
-                <h1 class="text-sm md:text-base font-black text-brandTextMain flex items-center gap-2">
-                    <i data-lucide="shield-check" class="w-5 h-5 text-brandPink"></i>
-                    كابينة التوجيه والتحكم لشاشة عملاء حلويات بوسي
-                </h1>
-            </div>
-            
-            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[10px] font-black bg-brandPink/10 text-brandPink border border-brandPink/20">
-                <span class="w-2 h-2 rounded-full bg-brandPink animate-ping"></span>
-                مزامنة البيانات الحية مفعّلة
-            </span>
-        </header>
+            <!-- NAV -->
 
-        <main class="p-6 md:p-8 flex-grow overflow-y-auto space-y-12">
-            
-            <section id="section-dashboard" class="space-y-8">
-                <div class="flex flex-col gap-2">
-                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">كابينة المؤشرات والأداء المالي والتشغيلي</h2>
-                    <p class="text-xs md:text-sm text-brandTextMuted font-bold">ملخص شامل لإحصائيات اليوم وتصنيفات الشحنات وصافي الإيرادات المحققة في مركز الفرافرة والكفاح.</p>
-                </div>
+            <div
+                class="flex-1 overflow-y-auto sidebar-scroll p-5 space-y-3"
+            >
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-clean-shadow relative overflow-hidden">
-                        <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-brandPink/5 rounded-full blur-xl"></div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-[11px] text-brandTextMuted font-bold">إجمالي طلبات النظام</span>
-                            <div class="w-9 h-9 rounded-xl bg-brandPink/10 flex items-center justify-center text-brandPink">
-                                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
-                            </div>
-                        </div>
-                        <p class="text-3xl font-black text-brandTextMain" id="stat-total-orders">0</p>
-                    </div>
+                <!-- DASHBOARD -->
 
-                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-clean-shadow relative overflow-hidden">
-                        <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-amber-500/5 rounded-full blur-xl"></div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-[11px] text-brandTextMuted font-bold">الطلبات قيد الانتظار</span>
-                            <div class="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
-                                <i data-lucide="clock" class="w-5 h-5"></i>
-                            </div>
-                        </div>
-                        <p class="text-3xl font-black text-brandTextMain" id="stat-pending-orders">0</p>
-                    </div>
+                <button
+                    data-section="dashboardSection"
+                    class="sidebar-link nav-active w-full flex items-center gap-4 p-4 rounded-2xl border border-brandBorder text-right"
+                >
 
-                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-clean-shadow relative overflow-hidden">
-                        <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-indigo-500/5 rounded-full blur-xl"></div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-[11px] text-brandTextMuted font-bold">الطلبات قيد الحركة والمطبخ</span>
-                            <div class="w-9 h-9 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-                                <i data-lucide="cooking-pot" class="w-5 h-5"></i>
-                            </div>
-                        </div>
-                        <p class="text-3xl font-black text-brandTextMain" id="stat-active-orders">0</p>
-                    </div>
-
-                    <div class="p-6 rounded-2xl bg-brandSurface border border-brandBorder space-y-3 pink-clean-shadow relative overflow-hidden">
-                        <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl"></div>
-                        <div class="flex items-center justify-between">
-                            <span class="text-[11px] text-brandTextMuted font-bold">المعاملات المكتملة</span>
-                            <div class="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                                <i data-lucide="check-circle-2" class="w-5 h-5"></i>
-                            </div>
-                        </div>
-                        <p class="text-3xl font-black text-brandTextMain" id="stat-completed-orders">0</p>
-                    </div>
-                </div>
-
-                <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-6 shadow-sm">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="wallet" class="w-5 h-5 text-brandPink"></i>
-                        <h3 class="text-sm font-black text-brandTextMain">الحسابات والتدفق المالي (معاملات مكتملة فقط)</h3>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="p-6 rounded-2xl bg-brandSurfaceChild border border-brandBorder space-y-2">
-                            <span class="text-[10px] text-brandTextMuted font-bold block">إجمالي قيمة الفواتير</span>
-                            <p class="text-2xl font-black text-brandPink" id="stat-revenue-total">0 ج.م</p>
-                        </div>
-                        <div class="p-6 rounded-2xl bg-brandSurfaceChild border border-brandBorder space-y-2">
-                            <span class="text-[10px] text-brandTextMuted font-bold block">تكلفة ومصاريف الشحن المقتطعة</span>
-                            <p class="text-2xl font-black text-brandTextMain" id="stat-revenue-shipping">0 ج.م</p>
-                        </div>
-                        <div class="p-6 rounded-2xl bg-brandSurfaceChild border border-brandBorder space-y-2">
-                            <span class="text-[10px] text-brandTextMuted font-bold block">صافي إيرادات المنتجات</span>
-                            <p class="text-2xl font-black text-emerald-400" id="stat-revenue-net">0 ج.م</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="section-orders" class="space-y-8 hidden">
-                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-brandBorder pb-6">
-                    <div class="space-y-1">
-                        <h2 class="text-xl md:text-2xl font-black text-brandTextMain">شلال وحركة المعالجة للطلبـات</h2>
-                        <p class="text-xs text-brandTextMuted font-bold">فرز وتحديث حالات الطلبات لعملاء حلويات بوسي فوراً.</p>
-                    </div>
-                </div>
-
-                <div id="orders-filter-bar" class="flex flex-wrap gap-2.5 pb-2">
-                    <button id="btn-filter-all" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandPink text-white border border-brandPink flex items-center gap-2">الكل</button>
-                    <button id="btn-filter-pending" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder flex items-center gap-2">
-                        <span>الوارد حديثاً</span>
-                        <span id="badge-count-pending" class="bg-amber-950/40 text-amber-400 px-2 py-0.5 rounded-full text-[9px] font-black border border-amber-900/30">0</span>
-                    </button>
-                    <button id="btn-filter-processing" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder flex items-center gap-2">
-                        <span>inside المطبخ</span>
-                        <span id="badge-count-processing" class="bg-indigo-950/40 text-indigo-400 px-2 py-0.5 rounded-full text-[9px] font-black border border-indigo-900/30">0</span>
-                    </button>
-                    <button id="btn-filter-shipping" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder flex items-center gap-2">
-                        <span>مع المناديب</span>
-                        <span id="badge-count-shipping" class="bg-sky-950/40 text-sky-400 px-2 py-0.5 rounded-full text-[9px] font-black border border-sky-900/30">0</span>
-                    </button>
-                    <button id="btn-filter-completed" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder">المكتملة</button>
-                    <button id="btn-filter-cancelled" class="px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder">الملغاة</button>
-                </div>
-
-                <div id="production-filter-bar" class="bg-brandSurfaceChild p-4 rounded-2xl border border-brandBorder flex flex-wrap gap-2.5">
-                    <span class="text-xs font-bold text-brandTextMuted flex items-center gap-1.5 ml-2">
-                        <i data-lucide="filter" class="w-3.5 h-3.5 text-brandPink"></i> فلترة حسب نوع الإنتاج:
+                    <span class="text-xl">
+                        📊
                     </span>
-                    <button id="prod-filter-all" class="px-4 py-1.5 rounded-lg text-[11px] font-black transition-all bg-brandPink/15 text-brandPink">جميع المنتجات</button>
-                    <button id="prod-filter-cakes" class="px-4 py-1.5 rounded-lg text-[11px] font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder">طلبات الكيك المخصصة 🎂</button>
-                    <button id="prod-filter-roses" class="px-4 py-1.5 rounded-lg text-[11px] font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder">باقات وتنسيق الورد 💐</button>
-                    <button id="prod-filter-classic" class="px-4 py-1.5 rounded-lg text-[11px] font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder">أصناف المنيو الكلاسيكي 🍰</button>
-                </div>
 
-                <div id="ordersCardsContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                </div>
-            </section>
+                    <div>
 
-            <section id="section-menu" class="space-y-8 hidden">
-                <div class="flex flex-col gap-2">
-                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">كابينة المنيو والتوفر الفوري</h2>
-                    <p class="text-xs md:text-sm text-brandTextMuted font-bold">تعديل الأسعار والأوصاف والتوفر وإخفاء أي صنف فوراً لسلامة حجز العملاء.</p>
-                </div>
-
-                <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-6 shadow-sm">
-                    <div class="flex flex-wrap gap-2 border-b border-brandBorder pb-4" id="menuTabsContainer">
-                    </div>
-
-                    <div class="space-y-6" id="outOfStockContainer">
-                    </div>
-
-                    <div class="pt-6 border-t border-brandBorder flex justify-end">
-                        <button id="btn-save-menu" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 shadow-md">
-                            مزامنة وحفظ التعديلات سحابياً
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="section-layoutsManager" class="space-y-8 hidden">
-                <div class="flex flex-col gap-2">
-                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">هندسة أقسام الواجهة وترتيب خطوط العرض للعميل</h2>
-                    <p class="text-xs text-brandTextMuted font-bold">التحكم السيادي المطلق في ترتيب الأقسام بالصفحة الرئيسية، إضافة منتجات جديدة، وتهيئة صفحات العرض المخصصة تلقائياً.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                    <div class="lg:col-span-7 p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-6">
-                        <div class="flex items-center justify-between border-b border-brandBorder pb-3">
-                            <h3 class="text-sm font-black text-brandTextMain flex items-center gap-2">
-                                <i data-lucide="layers" class="w-4 h-4 text-brandPink"></i>
-                                الهيكل الحالي لأقسام الواجهة الرئيسية
-                            </h3>
-                            <button id="btn-add-layout-section" class="px-4 py-2 bg-brandPink/10 text-brandPink hover:bg-brandPink/20 text-[11px] font-black rounded-xl border border-brandPink/20 flex items-center gap-1">
-                                <i data-lucide="plus" class="w-3.5 h-3.5"></i> إضافة قسم جديد بالواجهة
-                            </button>
+                        <div class="font-black text-sm">
+                            لوحة المؤشرات
                         </div>
-                        
-                        <div id="layoutSectionsContainer" class="space-y-4">
+
+                        <div class="text-[11px] text-brandMuted mt-1">
+                            الأداء والمبيعات
                         </div>
+
                     </div>
 
-                    <div class="lg:col-span-5 space-y-6">
-                        <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-6">
-                            <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3 flex items-center gap-2">
-                                <i data-lucide="columns" class="w-4 h-4 text-brandPink"></i>
-                                خيارات عرض المنتجات بالصفحات الجديدة والحالية
-                            </h3>
-                            
-                            <div class="space-y-4 text-xs">
-                                <div class="p-4 rounded-2xl bg-brandSurfaceChild border border-brandBorder space-y-3">
-                                    <label class="block text-brandTextMain font-bold">طريقة عرض المنتجات الافتراضية حالياً ومستقبلياً:</label>
-                                    <div class="grid grid-cols-2 gap-3 pt-1">
-                                        <button id="btn-mode-grid2" class="py-3 px-4 rounded-xl font-black text-center transition-all border border-brandBorder bg-brandBg text-brandTextMuted">
-                                            كارتين بجانب بعض (Dual Grid)
-                                        </button>
-                                        <button id="btn-mode-fullCard" class="py-3 px-4 rounded-xl font-black text-center transition-all border border-brandBorder bg-brandBg text-brandTextMuted">
-                                            كارت كامل ملء الشاشة
-                                        </button>
-                                    </div>
-                                    <p class="text-[10px] text-brandTextMuted font-semibold pt-1 leading-relaxed">
-                                        * ملاحظة: يتم تطبيق التغيير فوراً بمحرك العميل، مع استثناء تورت المناسبات الملكية الفاخرة لتعرض دائماً بكروت كاملة للحفاظ على تفاصيلها البارزة.
-                                    </p>
+                </button>
+
+                <!-- ORDERS -->
+
+                <button
+                    data-section="ordersSection"
+                    class="sidebar-link w-full flex items-center gap-4 p-4 rounded-2xl border border-brandBorder text-right"
+                >
+
+                    <span class="text-xl">
+                        🛍️
+                    </span>
+
+                    <div>
+
+                        <div class="font-black text-sm">
+                            إدارة الطلبات
+                        </div>
+
+                        <div class="text-[11px] text-brandMuted mt-1">
+                            الطلبات الحية
+                        </div>
+
+                    </div>
+
+                </button>
+
+                <!-- MENU -->
+
+                <button
+                    data-section="menuSection"
+                    class="sidebar-link w-full flex items-center gap-4 p-4 rounded-2xl border border-brandBorder text-right"
+                >
+
+                    <span class="text-xl">
+                        🍰
+                    </span>
+
+                    <div>
+
+                        <div class="font-black text-sm">
+                            المنيو والمنتجات
+                        </div>
+
+                        <div class="text-[11px] text-brandMuted mt-1">
+                            الأسعار والتوفر
+                        </div>
+
+                    </div>
+
+                </button>
+
+                <!-- LAYOUT -->
+
+                <button
+                    data-section="layoutSection"
+                    class="sidebar-link w-full flex items-center gap-4 p-4 rounded-2xl border border-brandBorder text-right"
+                >
+
+                    <span class="text-xl">
+                        🧩
+                    </span>
+
+                    <div>
+
+                        <div class="font-black text-sm">
+                            هندسة الواجهة
+                        </div>
+
+                        <div class="text-[11px] text-brandMuted mt-1">
+                            الأقسام والعرض
+                        </div>
+
+                    </div>
+
+                </button>
+
+                <!-- BUILDERS -->
+
+                <div
+                    class="pt-4"
+                >
+
+                    <div
+                        class="text-[10px] text-brandMuted tracking-[3px] font-black px-3 mb-3"
+                    >
+                        BUILDERS
+                    </div>
+
+                    <div
+                        class="space-y-3"
+                    >
+
+                        <button
+                            data-section="cakeBuilderSection"
+                            class="sidebar-link w-full flex items-center gap-4 p-4 rounded-2xl border border-brandBorder text-right"
+                        >
+
+                            <span class="text-xl">
+                                🎂
+                            </span>
+
+                            <div>
+
+                                <div class="font-black text-sm">
+                                    محاكي التورت
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-4">
-                            <h3 class="text-sm font-black text-brandTextMain flex items-center gap-2 border-b border-brandBorder pb-3">
-                                <i data-lucide="cpu" class="w-4 h-4 text-brandPink"></i>
-                                نظام بناء الصفحات الداخلية التلقائي
-                            </h3>
-                            <p class="text-xs text-brandTextMuted leading-relaxed font-bold">
-                                بمجرد إضافة منتج جديد أو تعريف قسم برمجياً، يقوم النظام ببناء عنوان URL داخلي فريد ومسار مخصص لتوليد الصفحة ديناميكياً للعميل دون الحاجة لتحديث ملف الـ HTML يدوياً.
-                            </p>
-                            <div class="p-3 bg-brandPinkLight/40 rounded-xl border border-brandPink/10 text-[10px] font-black text-brandPink flex items-center gap-2">
-                                <i data-lucide="info" class="w-4 h-4 flex-shrink-0"></i>
-                                <span>يتم الحفاظ على البناء الهيكلي المرن ومساحات التنفس البصري تلقائياً.</span>
+                                <div class="text-[11px] text-brandMuted mt-1">
+                                    التسعير والبناء
+                                </div>
+
                             </div>
-                        </div>
+
+                        </button>
+
+                        <button
+                            data-section="roseBuilderSection"
+                            class="sidebar-link w-full flex items-center gap-4 p-4 rounded-2xl border border-brandBorder text-right"
+                        >
+
+                            <span class="text-xl">
+                                💐
+                            </span>
+
+                            <div>
+
+                                <div class="font-black text-sm">
+                                    محاكي الورد
+                                </div>
+
+                                <div class="text-[11px] text-brandMuted mt-1">
+                                    الأسعار والتكوين
+                                </div>
+
+                            </div>
+
+                        </button>
+
                     </div>
+
                 </div>
 
-                <div class="pt-2 flex justify-end">
-                    <button id="btn-save-layouts" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 shadow-md">
-                        مزامنة واعتماد هندسة ترتيب الأقسام سحابياً
+                <!-- SHIPPING -->
+
+                <button
+                    data-section="shippingSection"
+                    class="sidebar-link w-full flex items-center gap-4 p-4 rounded-2xl border border-brandBorder text-right"
+                >
+
+                    <span class="text-xl">
+                        🚚
+                    </span>
+
+                    <div>
+
+                        <div class="font-black text-sm">
+                            الشحن والتوصيل
+                        </div>
+
+                        <div class="text-[11px] text-brandMuted mt-1">
+                            المناطق والأسعار
+                        </div>
+
+                    </div>
+
+                </button>
+
+                <!-- SETTINGS -->
+
+                <button
+                    data-section="settingsSection"
+                    class="sidebar-link w-full flex items-center gap-4 p-4 rounded-2xl border border-brandBorder text-right"
+                >
+
+                    <span class="text-xl">
+                        ⚙️
+                    </span>
+
+                    <div>
+
+                        <div class="font-black text-sm">
+                            الإعدادات العامة
+                        </div>
+
+                        <div class="text-[11px] text-brandMuted mt-1">
+                            التواصل والميديا
+                        </div>
+
+                    </div>
+
+                </button>
+
+                <!-- LOGS -->
+
+                <button
+                    data-section="logsSection"
+                    class="sidebar-link w-full flex items-center gap-4 p-4 rounded-2xl border border-brandBorder text-right"
+                >
+
+                    <span class="text-xl">
+                        🧠
+                    </span>
+
+                    <div>
+
+                        <div class="font-black text-sm">
+                            تشخيص النظام
+                        </div>
+
+                        <div class="text-[11px] text-brandMuted mt-1">
+                            الأخطاء والمراقبة
+                        </div>
+
+                    </div>
+
+                </button>
+
+            </div>
+
+            <!-- FOOTER -->
+
+            <div
+                class="p-5 border-t border-brandBorder"
+            >
+
+                <button
+                    id="logoutBtn"
+                    class="soft-btn soft-btn-secondary w-full py-4 text-red-400 border-red-900/30"
+                >
+                    تسجيل الخروج الآمن
+                </button>
+
+            </div>
+
+        </aside>
+
+        <!-- ===================================================== -->
+        <!-- MAIN -->
+        <!-- ===================================================== -->
+
+        <div
+            class="flex-1 flex flex-col min-w-0"
+        >
+
+            <!-- ================================================= -->
+            <!-- TOPBAR -->
+            <!-- ================================================= -->
+
+            <header
+                class="sticky top-0 z-30 h-20 glass border-b border-brandBorder px-6 flex items-center justify-between"
+            >
+
+                <div
+                    class="flex items-center gap-4"
+                >
+
+                    <button
+                        id="openSidebarBtn"
+                        class="lg:hidden w-12 h-12 rounded-2xl bg-brandSurface2"
+                    >
+                        ☰
                     </button>
-                </div>
-            </section>
 
-            <section id="section-cakeBuilderSettings" class="space-y-8 hidden">
-                <div class="flex flex-col gap-2">
-                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">تخصيص محاكي تصميم التورت الذكي</h2>
-                    <p class="text-xs text-brandTextMuted font-bold">تحديث أسعار الأفراد وخيارات الطباعة والمقاييس المعتمدة لمطبخ حلويات بوسي.</p>
+                    <div>
+
+                        <h1
+                            id="pageTitle"
+                            class="text-lg md:text-xl font-black"
+                        >
+                            لوحة المؤشرات
+                        </h1>
+
+                        <p
+                            class="text-[11px] text-brandMuted font-bold mt-1"
+                        >
+                            Bose Sweets Governance Runtime
+                        </p>
+
+                    </div>
+
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-4">
-                        <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">قواعد التسعير لمحاكي الكيك</h3>
-                        
-                        <div class="space-y-4">
-                            <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted font-bold">سعر الفرد المعتمد أساسياً للكيك الطبيعي:</label>
-                                <div class="relative">
-                                    <input type="number" id="cfg-cakeBasePrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="145">
-                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] text-brandTextMuted font-bold">جنيه / فرد</span>
+                <div
+                    class="flex items-center gap-3"
+                >
+
+                    <div
+                        class="hidden md:flex items-center gap-3 px-4 py-3 rounded-2xl bg-brandPinkSoft border border-brandBorder"
+                    >
+
+                        <span
+                            class="w-2 h-2 rounded-full bg-brandGreen animate-pulse"
+                        ></span>
+
+                        <span
+                            class="text-[11px] font-black text-brandGreen"
+                        >
+                            المزامنة الحية تعمل
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+            <!-- ================================================= -->
+            <!-- CONTENT -->
+            <!-- ================================================= -->
+
+            <main
+                class="flex-1 overflow-y-auto p-6 md:p-8 mobile-safe"
+            >
+
+                <!-- DASHBOARD -->
+
+                <section
+                    id="dashboardSection"
+                    class="space-y-8"
+                >
+
+                    <div>
+
+                        <h2
+                            class="text-3xl font-black"
+                        >
+                            نظرة عامة على النشاط
+                        </h2>
+
+                        <p
+                            class="text-brandMuted text-sm font-bold mt-3"
+                        >
+                            متابعة شاملة للمبيعات والطلبات والأداء التشغيلي.
+                        </p>
+
+                    </div>
+
+                    <!-- METRICS -->
+
+                    <div
+                        class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6"
+                    >
+
+                        <!-- CARD -->
+
+                        <div
+                            class="soft-card p-6 relative overflow-hidden"
+                        >
+
+                            <div
+                                class="metric-glow bg-brandPink"
+                            ></div>
+
+                            <div
+                                class="relative z-10"
+                            >
+
+                                <div
+                                    class="flex items-center justify-between"
+                                >
+
+                                    <div
+                                        class="text-sm font-black text-brandMuted"
+                                    >
+                                        إجمالي الطلبات
+                                    </div>
+
+                                    <div
+                                        class="w-14 h-14 rounded-2xl bg-brandPinkSoft flex items-center justify-center text-2xl"
+                                    >
+                                        🛍️
+                                    </div>
+
                                 </div>
-                            </div>
 
-                            <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة طباعة صورة قابلة للأكل:</label>
-                                <div class="relative">
-                                    <input type="number" id="cfg-cakePrintEdible" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="60">
-                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] text-brandTextMuted font-bold">جنيه</span>
+                                <div
+                                    id="metricTotalOrders"
+                                    class="mt-8 text-5xl font-black"
+                                >
+                                    0
                                 </div>
+
                             </div>
 
-                            <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة طباعة صورة غير قابلة للأكل:</label>
-                                <div class="relative">
-                                    <input type="number" id="cfg-cakePrintNonEdible" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="20">
-                                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] text-brandTextMuted font-bold">جنيه</span>
+                        </div>
+
+                        <!-- CARD -->
+
+                        <div
+                            class="soft-card p-6 relative overflow-hidden"
+                        >
+
+                            <div
+                                class="metric-glow bg-brandOrange"
+                            ></div>
+
+                            <div
+                                class="relative z-10"
+                            >
+
+                                <div
+                                    class="flex items-center justify-between"
+                                >
+
+                                    <div
+                                        class="text-sm font-black text-brandMuted"
+                                    >
+                                        قيد الانتظار
+                                    </div>
+
+                                    <div
+                                        class="w-14 h-14 rounded-2xl bg-[#2b2416] flex items-center justify-center text-2xl"
+                                    >
+                                        ⏳
+                                    </div>
+
                                 </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">توجيهات تشغيلية</h3>
-                            <p class="text-xs text-brandTextMuted leading-relaxed font-bold">
-                                يتم تطبيق هذه المتغيرات تلقائياً في صفحة العميل، حيث يقوم محاكي الكيك بحساب السعر الإجمالي التقديري بناءً على المعادلة: 
-                                <br><br>
-                                <code class="text-brandPink block bg-brandBg p-3.5 rounded-lg text-left" dir="ltr">
-                                    Total = (PeopleCount * PricePerPerson) + PrintOptionFee
-                                </code>
-                                <br>
-                                يتم ترحيل هذه القيم والعمليات الحسابية بنسبة 100% للتطابق المطلق بين شاشات الإدارة وشاشة الطلب للعملاء.
-                            </p>
-                        </div>
-                        <div class="pt-4 flex justify-end">
-                            <button id="btn-save-cake-config" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 w-full sm:w-auto shadow-sm">
-                                حفظ قيود محاكي الكيك
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="section-roseBuilderSettings" class="space-y-8 hidden">
-                <div class="flex flex-col gap-2">
-                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">تخصيص محاكي تنسيق الورد الفاخر والهدية</h2>
-                    <p class="text-xs text-brandTextMuted font-bold">مراقبة أسعار الورود والشوكولاتة والبطاقات وشريط الستان الفاخر المدمج.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-4">
-                        <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">قواعد تسعير محاكي الورد</h3>
-                        
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted font-bold">السعر الافتراضي للبوكيه (المبدئي):</label>
-                                <input type="number" id="cfg-roseBasePrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="400">
-                            </div>
-
-                            <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted font-bold">الحد الأدنى لعدد الورد:</label>
-                                <input type="number" id="cfg-roseMinCount" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="15">
-                            </div>
-
-                            <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة كل وردة إضافية مضافة:</label>
-                                <input type="number" id="cfg-rosePricePerAdditional" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="35">
-                            </div>
-
-                            <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة طباعة صورة وسط الورد:</label>
-                                <input type="number" id="cfg-rosePhotoPrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="15">
-                            </div>
-
-                            <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة شريط الستان المطبوع:</label>
-                                <input type="number" id="cfg-roseRibbonPrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="50">
-                            </div>
-
-                            <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted font-bold">تكلفة كارت الإهداء الفاخر ملون:</label>
-                                <input type="number" id="cfg-roseCardPrice" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="20">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder flex flex-col justify-between">
-                        <div class="space-y-4">
-                            <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">خوارزمية حساب باقة الورد</h3>
-                            <p class="text-xs text-brandTextMuted leading-relaxed font-bold">
-                                محاكي باقة الورد يعتمد على تفصيل دقيق وحساب مستمر بناءً على مدخلات العميل. يتم حساب المعادلة كالتالي:
-                                <br><br>
-                                <code class="text-brandPink block bg-brandBg p-3.5 rounded-lg text-left" dir="ltr">
-                                    Total = BasePrice + (ExcessRoses * PricePerRose) + CashAmount + (PhotosCount * PhotoPrice) + RibbonPrice + ChocBudget + PremiumBarsSum + CardPrice
-                                </code>
-                            </p>
-                        </div>
-                        <div class="pt-4 flex justify-end">
-                            <button id="btn-save-rose-config" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 w-full sm:w-auto shadow-sm">
-                                حفظ قيود محاكي الورد
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="section-shippingRates" class="space-y-8 hidden">
-                <div class="flex flex-col gap-2">
-                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">تعريفة ومحرك تسعير التوصيل الجغرافي</h2>
-                    <p class="text-xs text-brandTextMuted font-bold">إضافة وتعديل مبالغ شحن وتنسيق كافة القرى والمناطق المعتمدة بمركز الفرافرة والكفاح.</p>
-                </div>
-
-                <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-6 shadow-sm">
-                    <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">مناطق الشحن والتعريفة الحالية</h3>
-                    
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="shippingRatesContainer">
-                    </div>
-
-                    <div class="pt-4 border-t border-brandBorder flex justify-end">
-                        <button id="btn-save-shipping" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 shadow-sm">
-                            حفظ وتحديث خطوط التوصيل
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="section-globalConfig" class="space-y-8 hidden">
-                <div class="flex flex-col gap-2">
-                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">الإعلانات والوسائط وإعدادات التواصل السيادية</h2>
-                    <p class="text-xs text-brandTextMuted font-bold">التحكم بالشريط المتحرك العلوي، والوسائط الخلفية الترويجية لعلامة حلويات بوسي.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-5 shadow-sm">
-                        <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">متغيرات اللافتات وشريط الإعلانات</h3>
-
-                        <div class="space-y-2">
-                            <label class="block text-xs text-brandTextMuted font-bold">محتوى نص لافتة شريط الإعلانات العلوية المتحرك:</label>
-                            <textarea id="cfg-marqueeText" rows="3" class="w-full bg-brandBg border border-brandBorder rounded-xl p-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all leading-relaxed" placeholder="✨ عقد من التميز والاتقان فني..."></textarea>
-                        </div>
-
-                        <div class="space-y-2 pt-2">
-                            <div class="flex justify-between items-center">
-                                <label class="block text-xs text-brandTextMuted font-bold">سرعة حركة شريط الإعلانات العلوية:</label>
-                                <span id="marqueeSpeedLabel" class="text-[10px] text-brandPink font-black">متوسط</span>
-                            </div>
-                            <input type="range" id="cfg-marqueeSpeed" min="10" max="60" step="5" class="w-full h-1.5 bg-brandBorder rounded-lg appearance-none cursor-pointer accent-brandPink">
-                            <div class="flex justify-between text-[9px] text-brandTextMuted/70">
-                                <span>سريع جداً</span>
-                                <span>متوسط</span>
-                                <span>بطيء ومريح للعين 👁️</span>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2 pt-2">
-                            <label class="block text-xs text-brandTextMuted font-bold">رابط تواصل المبيعات المعتمد للواتساب والاتصال:</label>
-                            <input type="text" id="cfg-phone" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="01097238441">
-                        </div>
-
-                        <div class="space-y-2">
-                            <label class="block text-xs text-brandTextMuted font-bold">قاعدة الحد الأدنى للوقت المطلوب قبل تسليم الطلب (ساعات):</label>
-                            <input type="number" id="cfg-prepTime" class="w-full bg-brandBg border border-brandBorder rounded-xl py-3 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="24">
-                        </div>
-                    </div>
-
-                    <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-5 shadow-sm flex flex-col justify-between">
-                        <div class="space-y-5">
-                            <h3 class="text-sm font-black text-brandTextMain border-b border-brandBorder pb-3">إدارة الوسائط الترويجية بالموقع</h3>
-                            
-                            <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted font-bold">رابط فيديو الخلفية الترويجي:</label>
-                                <div class="flex gap-2">
-                                    <input type="text" id="cfg-bgVideoUrl" class="flex-grow bg-brandBg border border-brandBorder rounded-xl py-2.5 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="رابط فيديو MP4">
-                                    <button id="btn-upload-video" onclick="triggerCloudinaryUpload('cfg-bgVideoUrl', 'btn-upload-video')" class="px-4 py-2.5 bg-brandPink text-brandBg hover:bg-brandPinkDark text-xs font-black rounded-xl transition-all shadow-sm">
-                                        اختيار من الاستوديو
-                                    </button>
+                                <div
+                                    id="metricPendingOrders"
+                                    class="mt-8 text-5xl font-black"
+                                >
+                                    0
                                 </div>
+
                             </div>
 
-                            <div class="space-y-2">
-                                <label class="block text-xs text-brandTextMuted font-bold">رابط الصورة الترويجية الرئيسية للواجهة:</label>
-                                <div class="flex gap-2">
-                                    <input type="text" id="cfg-promoImageUrl" class="flex-grow bg-brandBg border border-brandBorder rounded-xl py-2.5 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" placeholder="رابط صورة PNG/JPG">
-                                    <button id="btn-upload-promo" onclick="triggerCloudinaryUpload('cfg-promoImageUrl', 'btn-upload-promo')" class="px-4 py-2.5 bg-brandPink text-brandBg hover:bg-brandPinkDark text-xs font-black rounded-xl transition-all shadow-sm">
-                                        اختيار من الاستوديو
-                                    </button>
+                        </div>
+
+                        <!-- CARD -->
+
+                        <div
+                            class="soft-card p-6 relative overflow-hidden"
+                        >
+
+                            <div
+                                class="metric-glow bg-brandBlue"
+                            ></div>
+
+                            <div
+                                class="relative z-10"
+                            >
+
+                                <div
+                                    class="flex items-center justify-between"
+                                >
+
+                                    <div
+                                        class="text-sm font-black text-brandMuted"
+                                    >
+                                        داخل المطبخ
+                                    </div>
+
+                                    <div
+                                        class="w-14 h-14 rounded-2xl bg-[#182331] flex items-center justify-center text-2xl"
+                                    >
+                                        👨‍🍳
+                                    </div>
+
                                 </div>
+
+                                <div
+                                    id="metricProcessingOrders"
+                                    class="mt-8 text-5xl font-black"
+                                >
+                                    0
+                                </div>
+
                             </div>
+
                         </div>
 
-                        <div class="pt-6">
-                            <button id="btn-save-global-config" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white text-xs font-black rounded-full transition-all duration-300 w-full shadow-sm">
-                                حفظ ومزامنة إعدادات التواصل والوسائط
-                            </button>
+                        <!-- CARD -->
+
+                        <div
+                            class="soft-card p-6 relative overflow-hidden"
+                        >
+
+                            <div
+                                class="metric-glow bg-brandGreen"
+                            ></div>
+
+                            <div
+                                class="relative z-10"
+                            >
+
+                                <div
+                                    class="flex items-center justify-between"
+                                >
+
+                                    <div
+                                        class="text-sm font-black text-brandMuted"
+                                    >
+                                        الإيرادات
+                                    </div>
+
+                                    <div
+                                        class="w-14 h-14 rounded-2xl bg-[#13251c] flex items-center justify-center text-2xl"
+                                    >
+                                        💰
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    id="metricRevenue"
+                                    class="mt-8 text-4xl font-black text-brandGreen"
+                                >
+                                    0 ج.م
+                                </div>
+
+                            </div>
+
                         </div>
-                    </div>
-                </div>
-            </section>
 
-            <section id="section-systemLogs" class="space-y-8 hidden">
-                <div class="flex flex-col gap-2">
-                    <h2 class="text-xl md:text-2xl font-black text-brandTextMain">سجلات تشخيص ومراقبة النظام (BoseMonitor)</h2>
-                    <p class="text-xs text-brandTextMuted font-bold">عرض وتتبع الأخطاء البرمجية أو المشكلات التشغيلية المبلغ عنها من الأجهزة المختلفة.</p>
-                </div>
-
-                <div class="p-6 md:p-8 rounded-3xl bg-brandSurface border border-brandBorder space-y-4 shadow-sm">
-                    <div class="flex items-center justify-between border-b border-brandBorder pb-3">
-                        <h3 class="text-sm font-black text-brandTextMain">أخطاء ومحاضر التشغيل المسجلة</h3>
-                        <button id="btn-clear-logs" class="px-4 py-2 bg-red-950/40 hover:bg-red-950/60 text-red-400 border border-red-900/50 rounded-xl text-[10px] font-extrabold transition-all">تطهير وتفريغ السجلات</button>
                     </div>
 
-                    <div class="overflow-x-auto w-full">
-                        <table class="w-full text-right text-xs">
-                            <thead>
-                                <tr class="border-b border-brandBorder text-brandTextMuted/60 font-black">
-                                    <th class="py-3 px-4">نوع المشكلة</th>
-                                    <th class="py-3 px-4">محتوى التشخيص التفصيلي</th>
-                                    <th class="py-3 px-4">الملف المتسبب</th>
-                                    <th class="py-3 px-4">التوقيت الزمني</th>
-                                </tr>
-                            </thead>
-                            <tbody id="logsTableBody" class="font-semibold text-brandTextMuted">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+                </section>
 
-        </main>
-    </div>
+            </main>
 
-    <input type="file" id="cloudinaryFileInput" class="hidden" accept="image/*,video/*">
-
-    <div id="globalDialogModal" class="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 transition-all duration-300">
-        <div class="bg-brandSurface rounded-3xl max-w-md w-full p-6 md:p-8 shadow-2xl space-y-5 border border-brandBorder animate-in fade-in zoom-in-95 duration-200">
-            <div class="flex items-center gap-3 text-brandPink border-b border-brandBorder pb-3">
-                <span id="globalDialogModalIcon" class="text-xl"></span>
-                <h3 id="globalDialogModalTitle" class="text-sm font-black text-brandTextMain"></h3>
-            </div>
-            <div id="globalDialogModalBodyContainer">
-                <p id="globalDialogModalBody" class="text-xs text-brandTextMuted leading-relaxed font-bold"></p>
-            </div>
-            <div class="flex justify-end gap-3.5 pt-2" id="globalDialogModalButtons">
-            </div>
         </div>
+
     </div>
+
+    <!-- ===================================================== -->
+    <!-- GLOBAL LOADER -->
+    <!-- ===================================================== -->
+
+    <div
+        id="globalLoader"
+        class="fixed inset-0 bg-brandBg/95 z-[999] flex items-center justify-center flex-col gap-8"
+    >
+
+        <div
+            class="w-20 h-20 rounded-full border-4 border-brandBorder border-t-brandPink animate-spin"
+        ></div>
+
+        <div
+            class="text-center"
+        >
+
+            <div
+                class="text-lg font-black"
+            >
+                جاري تحميل النظام الإداري
+            </div>
+
+            <div
+                class="text-sm text-brandMuted font-bold mt-3"
+            >
+                Bose Sweets Governed Runtime
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- TOAST -->
+    <!-- ===================================================== -->
+
+    <div
+        id="toast"
+        class="fixed top-8 left-1/2 -translate-x-1/2 z-[200] hidden"
+    >
+
+        <div
+            class="soft-card px-6 py-5 flex items-center gap-4 shadow-pink"
+        >
+
+            <div
+                id="toastIcon"
+                class="text-2xl"
+            >
+                ✅
+            </div>
+
+            <div>
+
+                <div
+                    id="toastTitle"
+                    class="font-black"
+                >
+                    تم التنفيذ
+                </div>
+
+                <div
+                    id="toastBody"
+                    class="text-sm text-brandMuted mt-1"
+                >
+                    تمت العملية بنجاح
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- MODULES -->
+    <!-- ===================================================== -->
+
+    <script
+        type="module"
+        src="./system-registry.js"
+    ></script>
+
+    <script
+        type="module"
+        src="./system-core.js"
+    ></script>
+
+    <script
+        type="module"
+        src="./firebase-engine.js"
+    ></script>
+
+    <script
+        type="module"
+        src="./commerce-engine.js"
+    ></script>
+
+    <script
+        type="module"
+        src="./unified-engine.js"
+    ></script>
+
+    <!-- ===================================================== -->
+    <!-- LOCAL UI RUNTIME -->
+    <!-- ===================================================== -->
+
+    <script>
+
+        const sidebar = document.getElementById('sidebar');
+
+        const overlay = document.getElementById('sidebarOverlay');
+
+        const openSidebarBtn = document.getElementById('openSidebarBtn');
+
+        const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+        const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+        const sections = document.querySelectorAll('main section');
+
+        const pageTitle = document.getElementById('pageTitle');
+
+        const globalLoader = document.getElementById('globalLoader');
+
+        // =====================================================
+        // LOADER
+        // =====================================================
+
+        window.addEventListener('load', () => {
+
+            setTimeout(() => {
+
+                globalLoader.style.opacity = '0';
+
+                globalLoader.style.pointerEvents = 'none';
+
+                setTimeout(() => {
+
+                    globalLoader.remove();
+
+                }, 400);
+
+            }, 800);
+
+        });
+
+        // =====================================================
+        // SIDEBAR
+        // =====================================================
+
+        function openSidebar() {
+
+            sidebar.classList.remove('translate-x-full');
+
+            overlay.classList.remove('hidden');
+
+        }
+
+        function closeSidebar() {
+
+            sidebar.classList.add('translate-x-full');
+
+            overlay.classList.add('hidden');
+
+        }
+
+        openSidebarBtn?.addEventListener('click', openSidebar);
+
+        closeSidebarBtn?.addEventListener('click', closeSidebar);
+
+        overlay?.addEventListener('click', closeSidebar);
+
+        // =====================================================
+        // NAVIGATION
+        // =====================================================
+
+        sidebarLinks.forEach(link => {
+
+            link.addEventListener('click', () => {
+
+                const target = link.dataset.section;
+
+                sections.forEach(sec => {
+
+                    sec.classList.add('section-hidden');
+
+                });
+
+                const targetSection = document.getElementById(target);
+
+                if (targetSection) {
+
+                    targetSection.classList.remove('section-hidden');
+
+                }
+
+                sidebarLinks.forEach(btn => {
+
+                    btn.classList.remove('nav-active');
+
+                });
+
+                link.classList.add('nav-active');
+
+                pageTitle.textContent = link.innerText.trim();
+
+                if (window.innerWidth < 1024) {
+
+                    closeSidebar();
+
+                }
+
+            });
+
+        });
+
+        // =====================================================
+        // TOAST
+        // =====================================================
+
+        window.BOSE_ADMIN_TOAST = function({
+
+            icon = '✅',
+
+            title = 'تم التنفيذ',
+
+            body = 'تمت العملية بنجاح'
+
+        } = {}) {
+
+            const toast = document.getElementById('toast');
+
+            document.getElementById('toastIcon').textContent = icon;
+
+            document.getElementById('toastTitle').textContent = title;
+
+            document.getElementById('toastBody').textContent = body;
+
+            toast.classList.remove('hidden');
+
+            setTimeout(() => {
+
+                toast.classList.add('hidden');
+
+            }, 3200);
+
+        };
+
+    </script>
 
 </body>
+
 </html>

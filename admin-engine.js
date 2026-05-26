@@ -2,8 +2,8 @@
 /**
  * @file admin-engine.js
  * @description المحرك البرمجي الموحد المغلق كلياً لإدارة ومراقبة كابينة حلويات بوسي (BoseMonitor)
- * @version 2.1.0
- * @compliance BoseSweets Unified Engine Specification
+ * @version 2.2.0
+ * @compliance BoseSweets Unified Engine Specification - Resolved Exec Order & Struct Mismatch
  */
 
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -124,6 +124,19 @@ function clearActiveListeners() {
     }
 }
 
+// دالات مساعدة لقراءة حقول الـ DOM بأمان مطلق وتجنب الأخطاء الصامتة (Bug 1 Fix)
+function getSafeElementValue(id, fallback = 0, isInt = false) {
+    const el = document.getElementById(id);
+    if (!el) return fallback;
+    const parsed = isInt ? parseInt(el.value) : parseFloat(el.value);
+    return isNaN(parsed) ? fallback : parsed;
+}
+
+function getSafeElementText(id, fallback = "") {
+    const el = document.getElementById(id);
+    return el ? el.value : fallback;
+}
+
 // ==========================================
 // 3. التحقق الأمني من الصلاحيات والتحضير للعمل
 // ==========================================
@@ -158,11 +171,12 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // ==========================================
-// 4. نظام BoseMonitor لاستقبال وإرسال التقارير التشخيصية
+// 4. نظام BoseMonitor لاستقبال وإرسال التقارير التشخيصية المتوافق مع Rule 1
 // ==========================================
 async function reportSystemError(type, message, source) {
     try {
-        const logRef = doc(collection(db, 'system_logs'));
+        // الالتزام التام بالمسار المعتمد للمقاييس وحفظ السجلات: /artifacts/{appId}/public/data/{collectionName}
+        const logRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'system_logs'));
         await setDoc(logRef, {
             type: type,
             message: message,
@@ -170,7 +184,7 @@ async function reportSystemError(type, message, source) {
             timestamp: Date.now()
         });
     } catch (e) {
-        console.error("فشل إرسال تقرير العطل محلياً:", e);
+        console.error("فشل إرسال تقرير العطل سحابياً:", e);
     }
 }
 
@@ -336,7 +350,8 @@ function subscribeToOrders() {
 }
 
 function subscribeToLogs() {
-    const logsRef = collection(db, 'system_logs');
+    // تفعيل المسار السيادي الموحد لتتبع سجلات تشخيص نظام بوسي مونيتور (Rule 1)
+    const logsRef = collection(db, 'artifacts', appId, 'public', 'data', 'system_logs');
     const unsubscribeLogs = onSnapshot(logsRef, (snapshot) => {
         systemLogs = [];
         snapshot.forEach(doc => { systemLogs.push({ id: doc.id, ...doc.data() }); });
@@ -1161,7 +1176,8 @@ async function clearAllSystemLogs() {
                 try {
                     const batch = writeBatch(db);
                     systemLogs.forEach(log => {
-                        const logDocRef = doc(db, 'system_logs', log.id);
+                        // استخدام المسار السيادي الموحد لتطهير السجلات (Rule 1)
+                        const logDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'system_logs', log.id);
                         batch.delete(logDocRef);
                     });
                     await batch.commit();
@@ -1176,13 +1192,14 @@ async function clearAllSystemLogs() {
 }
 
 // ==========================================
-// 13. دالة الحفظ السحابية الفائقة والموحدة كلياً
+// 13. دالة الحفظ السحابية الفائقة والموحدة كلياً (Bug 1 & Bug 2 Fix)
 // ==========================================
 async function saveConfigSettings() {
     try {
-        const cakeBase = parseFloat(document.getElementById('cfg-cakeBasePrice').value) || 145;
-        const ediblePrice = parseFloat(document.getElementById('cfg-cakePrintEdible').value) || 60;
-        const nonEdiblePrice = parseFloat(document.getElementById('cfg-cakePrintNonEdible').value) || 20;
+        // قراءة آمنة لجميع قيم المدخلات من الهيكل دون حدوث انهيارات برمجية بسبب التبويبات غير المفعلة
+        const cakeBase = getSafeElementValue('cfg-cakeBasePrice', window.globalConfig.cakeBasePricePerPerson || 145);
+        const ediblePrice = getSafeElementValue('cfg-cakePrintEdible', window.globalConfig.cakePrintEdiblePrice || 60);
+        const nonEdiblePrice = getSafeElementValue('cfg-cakePrintNonEdible', window.globalConfig.cakePrintNonEdiblePrice || 20);
         
         window.globalConfig.cakeBasePricePerPerson = cakeBase;
         window.globalConfig.cakeBasePrice = cakeBase; 
@@ -1191,70 +1208,86 @@ async function saveConfigSettings() {
         window.globalConfig.cakePrintNonEdiblePrice = nonEdiblePrice;
         window.globalConfig.cakePrintNonEdible = nonEdiblePrice;
         
-        window.globalConfig.roseBasePrice = parseFloat(document.getElementById('cfg-roseBasePrice').value) || 400;
-        window.globalConfig.roseMinCount = parseInt(document.getElementById('cfg-roseMinCount').value) || 15;
-        window.globalConfig.rosePricePerAdditional = parseFloat(document.getElementById('cfg-rosePricePerAdditional').value) || 35;
-        window.globalConfig.rosePhotoPrice = parseFloat(document.getElementById('cfg-rosePhotoPrice').value) || 15;
-        window.globalConfig.roseRibbonPrice = parseFloat(document.getElementById('cfg-roseRibbonPrice').value) || 50;
-        window.globalConfig.roseCardPrice = parseFloat(document.getElementById('cfg-roseCardPrice').value) || 20;
+        window.globalConfig.roseBasePrice = getSafeElementValue('cfg-roseBasePrice', window.globalConfig.roseBasePrice || 400);
+        window.globalConfig.roseMinCount = getSafeElementValue('cfg-roseMinCount', window.globalConfig.roseMinCount || 15, true);
+        window.globalConfig.rosePricePerAdditional = getSafeElementValue('cfg-rosePricePerAdditional', window.globalConfig.rosePricePerAdditional || 35);
+        window.globalConfig.rosePhotoPrice = getSafeElementValue('cfg-rosePhotoPrice', window.globalConfig.rosePhotoPrice || 15);
+        window.globalConfig.roseRibbonPrice = getSafeElementValue('cfg-roseRibbonPrice', window.globalConfig.roseRibbonPrice || 50);
+        window.globalConfig.roseCardPrice = getSafeElementValue('cfg-roseCardPrice', window.globalConfig.roseCardPrice || 20);
 
-        window.globalConfig.marqueeText = document.getElementById('cfg-marqueeText').value;
-        window.globalConfig.marqueeSpeed = parseInt(document.getElementById('cfg-marqueeSpeed').value) || 30;
-        window.globalConfig.phone = document.getElementById('cfg-phone').value;
+        window.globalConfig.marqueeText = getSafeElementText('cfg-marqueeText', window.globalConfig.marqueeText);
+        window.globalConfig.marqueeSpeed = getSafeElementValue('cfg-marqueeSpeed', window.globalConfig.marqueeSpeed || 30, true);
+        window.globalConfig.phone = getSafeElementText('cfg-phone', window.globalConfig.phone || "01097238441");
         
-        const prepHours = parseInt(document.getElementById('cfg-prepTime').value) || 24;
+        const prepHours = getSafeElementValue('cfg-prepTime', window.globalConfig.orderPrepTimeHours || 24, true);
         window.globalConfig.orderPrepTimeHours = prepHours;
         window.globalConfig.prepTime = prepHours; 
 
-        window.globalConfig.bgVideoUrl = document.getElementById('cfg-bgVideoUrl').value;
-        window.globalConfig.promoImageUrl = document.getElementById('cfg-promoImageUrl').value;
+        window.globalConfig.bgVideoUrl = getSafeElementText('cfg-bgVideoUrl', window.globalConfig.bgVideoUrl);
+        window.globalConfig.promoImageUrl = getSafeElementText('cfg-promoImageUrl', window.globalConfig.promoImageUrl);
 
         const batch = writeBatch(db);
         
+        // مزامنة المنيو الحقيقي بناءً على مدخلات الهيكل المتوفرة مع استرجاع الحالة المخزنة للأصناف غير المعروضة
         staticCatalogItems.forEach(item => {
             const priceInp = document.getElementById(`menuPrice-${item.id}`);
             const descInp = document.getElementById(`menuDesc-${item.id}`);
             const imgInp = document.getElementById(`menuImg-${item.id}`);
             
-            if (priceInp || descInp || imgInp) {
-                const menuDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'menu', item.id);
-                let updateData = {};
-                if (descInp && descInp.value) updateData.desc = descInp.value;
-                if (imgInp && imgInp.value) updateData.img = imgInp.value;
-                
-                if (priceInp && parseFloat(priceInp.value)) {
-                    const pVal = parseFloat(priceInp.value);
-                    
-                    if (!window.globalConfig.catalogItems[item.id]) {
-                        window.globalConfig.catalogItems[item.id] = {};
-                    }
-                    window.globalConfig.catalogItems[item.id].price = pVal;
-                    if (descInp && descInp.value) window.globalConfig.catalogItems[item.id].desc = descInp.value;
-                    if (imgInp && imgInp.value) window.globalConfig.catalogItems[item.id].image = imgInp.value;
-
-                    // الحفاظ الصارم على هندسة فدج كيك الشوكولاتة البلجيكية لـ ديسباسيتو حلويات بوسي
-                    if (item.id === 'despacito') {
-                        updateData.sizes = [
-                            { label: 'عائلي', flavors: [{ name: 'نوتيلا بندق غنية', price: pVal }, { name: 'لوتس بلجيكي مقرمش', price: pVal + 40 }, { name: 'كيندر بوينو مخملية', price: pVal + 40 }] },
-                            { label: 'ميني ميكس', flavors: [{ name: 'نوتيلا بندق غنية', price: Math.round(pVal/2) }, { name: 'لوتس بلجيكي مقرمش', price: Math.round(pVal/2) + 20 }] }
-                        ];
-                        updateData.healthSection = "مصنوعة كلياً بفدج كيك غني بالشوكولاتة البلجيكية الطبيعية الفاخرة وخالية تماماً من الإضافات الإسفنجية الجافة لضمان ذوبان متكامل.";
-                    } else if (item.id === 'tortes' || item.id === 'roses') {
-                        updateData.isCustomBuilder = true;
-                    } else {
-                        updateData.flavors = [{ name: 'التجهيز الفاخر المعتمد كلاسيكياً', price: pVal }];
-                    }
-                }
-                batch.set(menuDocRef, updateData, { merge: true });
+            // تهيئة بيانات الذاكرة في حال عدم وجودها مسبقاً لمنع القيم الفارغة
+            if (!window.globalConfig.catalogItems[item.id]) {
+                window.globalConfig.catalogItems[item.id] = { price: 150, desc: '', image: '' };
             }
+
+            // تحديث الذاكرة الحية فقط بالمدخلات الموجودة حالياً بالصفحة
+            if (priceInp) {
+                const parsedPrice = parseFloat(priceInp.value);
+                if (!isNaN(parsedPrice)) {
+                    window.globalConfig.catalogItems[item.id].price = parsedPrice;
+                }
+            }
+            if (descInp) window.globalConfig.catalogItems[item.id].desc = descInp.value;
+            if (imgInp) window.globalConfig.catalogItems[item.id].image = imgInp.value;
+
+            // المزامنة الآمنة على السحابة للمستندات المنفصلة من الذاكرة النظيفة
+            const menuDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'menu', item.id);
+            const itemData = window.globalConfig.catalogItems[item.id];
+            const pVal = itemData.price || 150;
+
+            let updateData = {
+                desc: itemData.desc || '',
+                img: itemData.image || ''
+            };
+
+            // الالتزام التام بالمعايير الهيكلية للديسباسيتو وباقي الكتل والورد الطبيعي
+            if (item.id === 'despacito') {
+                updateData.sizes = [
+                    { label: 'عائلي', flavors: [{ name: 'نوتيلا بندق غنية', price: pVal }, { name: 'لوتس بلجيكي مقرمش', price: pVal + 40 }, { name: 'كيندر بوينو مخملية', price: pVal + 40 }] },
+                    { label: 'ميني ميكس', flavors: [{ name: 'نوتيلا بندق غنية', price: Math.round(pVal/2) }, { name: 'لوتس بلجيكي مقرمش', price: Math.round(pVal/2) + 20 }] }
+                ];
+                // حقن وتعميم حقل المكونات الطبيعية الفاخرة لـ ديسباسيتو حلويات بوسي في المستوى الخارجي للمستند وداخل الذاكرة معاً (Bug 2 Fix)
+                updateData.healthSection = "مصنوعة كلياً بفدج كيك غني بالشوكولاتة البلجيكية الطبيعية الفاخرة وخالية تماماً من الإضافات الإسفنجية الجافة لضمان ذوبان متكامل.";
+                window.globalConfig.catalogItems['despacito'].healthSection = "مصنوعة كلياً بفدج كيك غني بالشوكولاتة البلجيكية الطبيعية الفاخرة وخالية تماماً من الإضافات الإسفنجية الجافة لضمان ذوبان متكامل.";
+            } else if (item.id === 'tortes' || item.id === 'roses') {
+                updateData.isCustomBuilder = true;
+            } else {
+                updateData.flavors = [{ name: 'التجهيز الفاخر المعتمد كلاسيكياً', price: pVal }];
+            }
+
+            batch.set(menuDocRef, updateData, { merge: true });
         });
+
         await batch.commit();
 
+        // تحديث جغرافيا خطوط الشحن محلياً
         document.querySelectorAll('.input-shipping-rate').forEach(inp => {
             const r = inp.getAttribute('data-region');
-            window.globalConfig.shippingRates[r] = parseFloat(inp.value) || 0;
+            if (r) {
+                window.globalConfig.shippingRates[r] = parseFloat(inp.value) || 0;
+            }
         });
 
+        // تنظيف البيانات وتصديرها للمستند السحابي العام للتكوين
         const { shippingRates, ...cleanGlobalConfig } = window.globalConfig;
         
         cleanGlobalConfig.homepageSections = window.globalConfig.homepageSections || [];
@@ -1370,7 +1403,7 @@ async function executeLogout() {
             { text: 'تسجيل خروج', primary: true, action: async () => {
                 window.closeGlobalDialogModal();
                 try { 
-                    clearActiveListeners(); // تطهير المستمعات النشطة فوراً قبل الخروج
+                    clearActiveListeners(); // تطهير المستمعات النشطة فوراً قبل الخروج لحماية الذاكرة
                     await signOut(auth); 
                     window.location.href = 'login.html'; 
                 } 
@@ -1597,3 +1630,5 @@ if (modeCardBtn) {
         await saveLayoutsStructureToCloud(); 
     };
 }
+
+```
