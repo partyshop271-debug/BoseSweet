@@ -183,13 +183,16 @@ export class BoseSweetsAppManager {
     }
 
     renderMenuCategories() {
-        const grid = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.HOMEPAGE.MENU_GRID.id);
-        if (!grid) return;
+        const grid = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ADMIN.MENU_TABS_CONTAINER.id) || UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ADMIN.MENU_SECTION.id);
+        const fallbackGrid = UNIFIED_ENGINE.DOM.get('menuCategoriesGrid');
+        const targetGrid = fallbackGrid || grid;
+        
+        if (!targetGrid) return;
 
         const categories = ['تورتات', 'باقات الورد', 'حلويات'];
         const outOfStockList = SYSTEM_CORE.STATE.get(REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key) || [];
 
-        grid.innerHTML = categories.map(cat => {
+        targetGrid.innerHTML = categories.map(cat => {
             const items = this.menuData.filter(i => {
                 const itemCat = String(i.category || '').toLowerCase();
                 if (cat === 'تورتات') return itemCat.includes('تورت') || itemCat.includes('cake');
@@ -566,7 +569,7 @@ export class BoseSweetsAppManager {
         if (current > 500) current = 500;
         this.roseCustomState.count = current;
 
-        const display = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.COUNT.id);
+        const display = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.COUNT.id);
         if (display) display.textContent = current;
 
         this.updateRosePriceDisplay();
@@ -666,7 +669,7 @@ export class BoseSweetsAppManager {
         const amount = Number(UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CASH_AMOUNT.id)?.value || 0);
         this.roseCustomState.cash = amount;
 
-        const output = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CASH_OUTPUT.id);
+        const output = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CASH_OUTPUT.id);
         const calcText = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CASH_CALC_TEXT.id);
         if (!output || !calcText) return;
 

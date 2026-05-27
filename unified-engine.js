@@ -363,6 +363,11 @@ const CLOUD_PIPELINE = {
             UI_PERFORMANCE.VIRTUAL_RENDERER.diff(container, htmlBuffer);
             UI_PERFORMANCE.LAZY_IMAGES.observeAll('.lazy-product-image');
 
+            const menuCategoriesGrid = DOM.get('menuCategoriesGrid');
+            if (menuCategoriesGrid && window.BoseSweetsEngine) {
+                window.BoseSweetsEngine.renderMenuCategories();
+            }
+
         } catch (ex) {
             error('Failure Inside Cloud Data Pipeline Virtual Render Architecture', { exception: ex });
         }
