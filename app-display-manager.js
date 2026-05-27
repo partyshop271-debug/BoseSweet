@@ -137,7 +137,7 @@ export class BoseSweetsAppManager {
     }
 
     handleRegionChange() {
-        const select = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CHECKOUT.SHIPPING_REGION.id);
+        const select = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CHECKOUT.SHIPPING_REGION.id);
         if (!select) return;
 
         const rates = COMMERCE_ENGINE.SHIPPING.regions();
@@ -170,7 +170,7 @@ export class BoseSweetsAppManager {
 
     toggleSidebar(open) {
         const sidebar = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.GLOBAL.SIDEBAR.id);
-        const overlay = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.GLOBAL.SIDEBAR_OVERLAY.id);
+        const overlay = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.GLOBAL.SIDEBAR_OVERLAY.id);
         if (!sidebar || !overlay) return;
 
         if (open) {
@@ -423,7 +423,7 @@ export class BoseSweetsAppManager {
         if (current > 250) current = 250;
         this.cakeCustomState.people = current;
 
-        const display = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.PEOPLE_COUNT.id);
+        const display = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.PEOPLE_COUNT.id);
         if (display) display.textContent = current;
 
         const warning = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.COUNTER_WARNING.id);
@@ -492,7 +492,7 @@ export class BoseSweetsAppManager {
     selectCakePrintOption(option) {
         this.cakeCustomState.print = option;
         ['none', 'edible', 'non-edible'].forEach(o => {
-            const btn = UNIFIED_ENGINE.DOM.get(`cake-print-${o}`);
+            const btn = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(`cake-print-${o}`);
             if (!btn) return;
             if (o === option) {
                 btn.className = "p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center";
@@ -644,11 +644,11 @@ export class BoseSweetsAppManager {
     }
 
     calculateRoseChocolate() {
-        const budget = Number(UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_BUCGET.id)?.value || 0);
+        const budget = Number(UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_BUDGET.id)?.value || 0);
         this.roseCustomState.chocBudget = budget;
 
         const output = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_OUTPUT.id);
-        const calcText = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_CALC_TEXT.id);
+        const calcText = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_CALC_TEXT.id);
         if (!output || !calcText) return;
 
         if (budget <= 0) {
