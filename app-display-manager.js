@@ -137,7 +137,7 @@ export class BoseSweetsAppManager {
     }
 
     handleRegionChange() {
-        const select = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CHECKOUT.SHIPPING_REGION.id);
+        const select = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CHECKOUT.SHIPPING_REGION.id);
         if (!select) return;
 
         const rates = COMMERCE_ENGINE.SHIPPING.regions();
@@ -170,7 +170,7 @@ export class BoseSweetsAppManager {
 
     toggleSidebar(open) {
         const sidebar = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.GLOBAL.SIDEBAR.id);
-        const overlay = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.GLOBAL.SIDEBAR_OVERLAY.id);
+        const overlay = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.GLOBAL.SIDEBAR_OVERLAY.id);
         if (!sidebar || !overlay) return;
 
         if (open) {
@@ -423,13 +423,13 @@ export class BoseSweetsAppManager {
         if (current > 250) current = 250;
         this.cakeCustomState.people = current;
 
-        const display = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.PEOPLE_COUNT.id);
+        const display = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.PEOPLE_COUNT.id);
         if (display) display.textContent = current;
 
         const warning = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.COUNTER_WARNING.id);
         if (warning) {
             if (current >= 24) {
-                warning.textContent = "⚠️ تنبيه: للمقاسات الكبرى فوق 24 فرد، يرجى تقديم الطلب قبل المناسبة بـ 48 ساعة على الأقل لضمان أعلى معايير الجودة.";
+                warning.textContent = "⚠️ تنبيه: للمقاسات الكبرى فوق 24 فرد، يرجى تقديم الطلب قبل المناسبة بـ 48 ساعة على الأثل لضمان أعلى معايير الجودة.";
                 warning.classList.remove('hidden');
             } else {
                 warning.classList.add('hidden');
@@ -492,7 +492,7 @@ export class BoseSweetsAppManager {
     selectCakePrintOption(option) {
         this.cakeCustomState.print = option;
         ['none', 'edible', 'non-edible'].forEach(o => {
-            const btn = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(`cake-print-${o}`);
+            const btn = UNIFIED_ENGINE.DOM.get(`cake-print-${o}`);
             if (!btn) return;
             if (o === option) {
                 btn.className = "p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center";
@@ -647,7 +647,7 @@ export class BoseSweetsAppManager {
         const budget = Number(UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_BUDGET.id)?.value || 0);
         this.roseCustomState.chocBudget = budget;
 
-        const output = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_OUTPUT.id);
+        const output = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_OUTPUT.id);
         const calcText = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_CALC_TEXT.id);
         if (!output || !calcText) return;
 
@@ -701,7 +701,7 @@ export class BoseSweetsAppManager {
     selectRoseChocPiecePrice(price) {
         this.roseCustomState.chocPiecePrice = price;
         [20, 30, 50].forEach(p => {
-            const btn = UNIFIED_ENGINE.DOM.get(`rose-choc-piece-${p}`);
+            const btn = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(`rose-choc-piece-${p}`);
             if (!btn) return;
             if (p === price) {
                 btn.className = "py-2.5 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center";
@@ -740,8 +740,8 @@ export class BoseSweetsAppManager {
 
     addRoseToCart() {
         const colorText = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.COLORS_INPUT.id)?.value || 'ميكس متناسق';
-        const cardText = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CARD_TEXT.id)?.value || '';
-        const ribbonText = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.RIBBON_TEXT.id)?.value || '';
+        const cardText = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CARD_TEXT.id)?.value || '';
+        const ribbonText = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.RIBBON_TEXT.id)?.value || '';
 
         COMMERCE_ENGINE.ROSE.set({
             type: this.roseCustomState.type,

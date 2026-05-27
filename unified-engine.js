@@ -289,7 +289,7 @@ const CLOUD_PIPELINE = {
             }
 
             const outOfStockList = SYSTEM_CORE.STATE.get(REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key) || [];
-            let htmlBuffer = '<div class="bose-dynamic-grid">';
+            let htmlBuffer = '<div class="bose-dynamic-grid bose-dynamic-grid-dual">';
 
             menuData.forEach(item => {
                 if (item.hidden || item.status === 'hidden') return;
