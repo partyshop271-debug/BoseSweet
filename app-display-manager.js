@@ -423,7 +423,7 @@ export class BoseSweetsAppManager {
         if (current > 250) current = 250;
         this.cakeCustomState.people = current;
 
-        const display = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.PEOPLE_COUNT.id);
+        const display = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.PEOPLE_COUNT.id);
         if (display) display.textContent = current;
 
         const warning = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.COUNTER_WARNING.id);
@@ -569,7 +569,7 @@ export class BoseSweetsAppManager {
         if (current > 500) current = 500;
         this.roseCustomState.count = current;
 
-        const display = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.COUNT.id);
+        const display = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.COUNT.id);
         if (display) display.textContent = current;
 
         this.updateRosePriceDisplay();
@@ -644,7 +644,7 @@ export class BoseSweetsAppManager {
     }
 
     calculateRoseChocolate() {
-        const budget = Number(UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_BUDGET.id)?.value || 0);
+        const budget = Number(UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_BUCGET.id)?.value || 0);
         this.roseCustomState.chocBudget = budget;
 
         const output = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_OUTPUT.id);
