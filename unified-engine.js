@@ -571,7 +571,6 @@ const OFFLINE = {
  * Cloud Data Pipeline
  * =========================================================
  */
-
 const CLOUD_PIPELINE = {
 
     async fetchAndRenderCatalog() {
@@ -616,7 +615,7 @@ const CLOUD_PIPELINE = {
 
                     container,
 
-                    '<div class="loading-state">جاري استعراض المنيو الفاخر...</div>'
+                    '<div class="loading-state text-xs font-bold text-brandBlack/40 text-center py-8">جاري استعراض المنيو الفاخر...</div>'
 
                 );
 
@@ -678,9 +677,9 @@ const CLOUD_PIPELINE = {
 
                 htmlBuffer += `
 
-                    <div class="${gridClass} ${isOutOfStock ? 'opacity-60' : ''}" data-id="${item.id}">
+                    <div class="${gridClass} ${isOutOfStock ? 'opacity-60 relative' : ''}" onclick="${isOutOfStock ? '' : `BoseSweetsEngine.viewProductDetails('${item.id}')`}">
 
-                        <div class="card-image-section relative w-full aspect-square md:aspect-auto overflow-hidden bg-brandPinkLight">
+                        <div class="card-image-section relative w-full aspect-square bg-brandPinkLight overflow-hidden">
 
                             <img
                                 class="lazy-product-image absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
@@ -691,11 +690,11 @@ const CLOUD_PIPELINE = {
                                 decoding="async"
                             />
 
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+                            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm border border-brandPink/15 text-brandPink text-[10px] font-black px-2.5 py-1 rounded-full">${item.category}</span>
 
                             ${isOutOfStock ? `
                                 <div class="absolute inset-0 bg-brandBlack/40 flex items-center justify-center text-white font-extrabold text-xs">
-                                    نفذت الكمية مؤقتاً
+                                    نفذت الكمية مؤقتاً 🛑
                                 </div>
                             ` : ''}
 
@@ -705,11 +704,11 @@ const CLOUD_PIPELINE = {
 
                             <div class="space-y-1.5">
 
-                                <h3 class="text-sm font-black text-brandBlack leading-snug">
+                                <h3 class="text-xs font-extrabold text-brandBlack line-clamp-1">
                                     ${item.name || ''}
                                 </h3>
 
-                                <p class="text-xs text-brandBlack/60 font-semibold leading-relaxed line-clamp-2">
+                                <p class="text-[11px] text-brandBlack/50 font-medium line-clamp-2 leading-relaxed">
                                     ${item.description || item.desc || ''}
                                 </p>
 
@@ -717,19 +716,13 @@ const CLOUD_PIPELINE = {
 
                             <div class="flex items-center justify-between pt-2 border-t border-brandPink/5 gap-3">
 
-                                <span class="text-brandPink font-black text-base tracking-tight">
+                                <span class="text-brandPink font-black text-sm tracking-tight">
                                     ${item.price || 0} ج.م
                                 </span>
 
-                                <button
-                                    class="action-add-to-cart px-5 py-2.5 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-[11px] transition-all duration-300 shadow-sm active:scale-95"
-                                    data-id="${item.id}"
-                                    ${isOutOfStock ? 'disabled' : ''}
-                                >
-
-                                    إضافة للسلة
-
-                                </button>
+                                <span class="text-[10px] font-bold text-brandBlack/40 bg-brandPinkLight px-2 py-0.5 rounded-md">
+                                    ${item.unit || 'معياري فاخر'}
+                                </span>
 
                             </div>
 
@@ -757,8 +750,6 @@ const CLOUD_PIPELINE = {
 
             );
 
-            this.attachCatalogEvents();
-
         } catch (ex) {
 
             error(
@@ -774,112 +765,6 @@ const CLOUD_PIPELINE = {
             );
 
         }
-
-    },
-
-    attachCatalogEvents() {
-
-        DOM.queryAll(
-
-            '.action-add-to-cart'
-
-        ).forEach(button => {
-
-            if (button.__bound) {
-
-                return;
-
-            }
-
-            button.__bound = true;
-
-            button.addEventListener(
-
-                'click',
-
-                (e) => {
-
-                    const id =
-
-                        e.target.dataset.id;
-
-                    if (!id) {
-
-                        return;
-
-                    }
-
-                    info(
-
-                        'Catalog Add To Cart Action Triggered',
-
-                        { id }
-
-                    );
-
-                    const menuData =
-
-                        SYSTEM_CORE.STATE.get(
-
-                            REGISTRY.STATE.MENU.key
-
-                        ) || [];
-
-                    const productObj =
-
-                        menuData.find(
-
-                            item => item.id === id
-
-                        );
-
-                    if (productObj) {
-
-                        if (
-
-                            window.BoseSweets &&
-
-                            typeof window.BoseSweets.addItemToCart === 'function'
-
-                        ) {
-
-                            window.BoseSweets.addItemToCart(id);
-
-                            EVENTS.emit(
-
-                                REGISTRY.EVENTS.CART.ITEM_ADDED,
-
-                                {
-
-                                    product: productObj
-
-                                }
-
-                            );
-
-                        } else {
-
-                            COMMERCE_ENGINE.CART.add(productObj);
-
-                        }
-
-                    } else {
-
-                        COMMERCE_ENGINE.CART.add(id);
-
-                    }
-
-                },
-
-                {
-
-                    passive: true
-
-                }
-
-            );
-
-        });
 
     }
 
@@ -957,101 +842,13 @@ const INTERACTIVE_BUILDERS = {
 
         }
 
-        const basePrice =
-
-            SYSTEM_CORE.STATE.get(
-
-                REGISTRY.STATE.SYSTEM_STATUS.key
-
-            )?.cakeBasePricePerPerson || 145;
-
         const updateLivePrice = () => {
 
-            const count = parseInt(
+            if (window.BoseSweetsEngine) {
 
-                peopleInput.textContent ||
-
-                peopleInput.value,
-
-                10
-
-            ) || 4;
-
-            let liveTotal =
-
-                count * basePrice;
-
-            if (
-
-                window.BoseSweets &&
-
-                window.BoseSweets.cakeCustomState
-
-            ) {
-
-                const printOpt =
-
-                    window.BoseSweets.cakeCustomState.print;
-
-                const config =
-
-                    SYSTEM_CORE.STATE.get(
-
-                        REGISTRY.STATE.SYSTEM_STATUS.key
-
-                    ) || {};
-
-                if (
-
-                    printOpt === 'edible'
-
-                ) {
-
-                    liveTotal += (
-
-                        config.cakePrintEdiblePrice || 60
-
-                    );
-
-                }
-
-                if (
-
-                    printOpt === 'non-edible'
-
-                ) {
-
-                    liveTotal += (
-
-                        config.cakePrintNonEdiblePrice || 20
-
-                    );
-
-                }
+                window.BoseSweetsEngine.updateCakePriceDisplay();
 
             }
-
-            DOM.text(
-
-                priceDisplay,
-
-                `${liveTotal} ج.م`
-
-            );
-
-            SYSTEM_CORE.STATE.merge(
-
-                REGISTRY.STATE.CAKE.key,
-
-                {
-
-                    peopleCount: count,
-
-                    currentLivePrice: liveTotal
-
-                }
-
-            );
 
         };
 
@@ -1099,8 +896,6 @@ const INTERACTIVE_BUILDERS = {
 
         );
 
-        updateLivePrice();
-
     },
 
     syncRoseBuilderSimulator() {
@@ -1129,131 +924,13 @@ const INTERACTIVE_BUILDERS = {
 
         }
 
-        const config =
-
-            SYSTEM_CORE.STATE.get(
-
-                REGISTRY.STATE.SYSTEM_STATUS.key
-
-            ) || {};
-
-        const minCount =
-
-            config.roseMinCount || 15;
-
-        const basePrice =
-
-            config.roseBasePrice || 400;
-
-        const additionalPrice =
-
-            config.rosePricePerAdditional || 15;
-
         const updateLivePrice = () => {
 
-            const count = parseInt(
+            if (window.BoseSweetsEngine) {
 
-                countInput.textContent ||
-
-                countInput.value,
-
-                10
-
-            ) || minCount;
-
-            let liveTotal = basePrice;
-
-            if (count > minCount) {
-
-                liveTotal += (
-
-                    count - minCount
-
-                ) * additionalPrice;
+                window.BoseSweetsEngine.updateRosePriceDisplay();
 
             }
-
-            if (
-
-                window.BoseSweets &&
-
-                window.BoseSweets.roseCustomState
-
-            ) {
-
-                const state =
-
-                    window.BoseSweets.roseCustomState;
-
-                liveTotal += (
-
-                    state.photos *
-
-                    (config.rosePhotoPrice || 15)
-
-                );
-
-                if (state.ribbon) {
-
-                    liveTotal += (
-
-                        config.roseRibbonPrice || 50
-
-                    );
-
-                }
-
-                if (state.card) {
-
-                    liveTotal += (
-
-                        config.roseCardPrice || 20
-
-                    );
-
-                }
-
-                liveTotal += Number(
-
-                    state.chocBudget || 0
-
-                );
-
-                liveTotal += (
-
-                    state.premiumBars[100] * 100
-
-                );
-
-                liveTotal += (
-
-                    state.premiumBars[120] * 120
-
-                );
-
-            }
-
-            DOM.text(
-
-                priceDisplay,
-
-                `${liveTotal} ج.م`
-
-            );
-
-            SYSTEM_CORE.STATE.merge(
-
-                REGISTRY.STATE.ROSE.key,
-
-                {
-
-                    roseCount: count,
-
-                    currentLivePrice: liveTotal
-
-                }
-
-            );
 
         };
 
@@ -1300,8 +977,6 @@ const INTERACTIVE_BUILDERS = {
             }
 
         );
-
-        updateLivePrice();
 
     }
 

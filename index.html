@@ -520,7 +520,7 @@
                         </p>
                         <div class="pt-4 flex flex-wrap justify-center gap-4">
                             <button data-nav="menu" onclick="BoseSweetsEngine.navigateTo('menu')" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all duration-300 shadow-lg shadow-brandPink/20 transform hover:-translate-y-0.5">
-                                تصفح المنيو
+                                استعرض المزيد
                             </button>
                             <button data-nav="cake-builder" onclick="BoseSweetsEngine.navigateTo('cake-builder')" class="px-8 py-4 border border-brandPink/20 text-brandBlack bg-white font-bold rounded-full transition-all duration-300 shadow-sm transform hover:-translate-y-0.5">
                                 تصميم تورتة
@@ -539,7 +539,7 @@
                 </div>
 
                 <div class="max-w-7xl mx-auto px-4 py-12 space-y-12">
-                    <div id="homepageDynamicContent" class="bose-dynamic-grid bose-dynamic-grid-dual">
+                    <div id="homepageDynamicContent" class="bose-dynamic-grid">
                         <div class="skeleton" style="height:320px"></div>
                         <div class="skeleton" style="height:320px"></div>
                         <div class="skeleton" style="height:320px"></div>
@@ -710,7 +710,7 @@
                                 <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للمقاس
                             </button>
                             <button type="button" onclick="BoseSweetsEngine.navigateCakeStep(3)" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
-                                {{ "المرحلة الأخيرة: تفاصيل التأكيد" }} <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
+                                المرحلة الأخيرة: تفاصيل التأكيد <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
                             </button>
                         </div>
                     </div>
@@ -748,7 +748,7 @@
                                 <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للتصميم
                             </button>
                             <button type="button" onclick="BoseSweetsEngine.addCakeToCart()" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
-                                اعتماد التصميم وإضافته للسلة <i class="fa-solid fa-bag-shopping text-[11px] mr-1"></i>
+                                اضافة للسلة <i class="fa-solid fa-bag-shopping text-[11px] mr-1"></i>
                             </button>
                         </div>
                     </div>
@@ -1085,7 +1085,7 @@
                 </div>
             </div>
             <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-bold text-white/40">
-                <p>جميع الحقوق البرمجية والمواصفات الفنية محفوظة © لعلامة حلويات بوسي 2026</p>
+                <p>جميع الحقوق الحقوق محفوظة البرمجية والمواصفات الفنية محفوظة © لعلامة حلويات بوسي 2026</p>
                 <div class="flex items-center gap-4">
                     <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" class="hover:text-brandPink text-sm transition-colors" aria-label="فيسبوك"><i class="fa-brands fa-facebook-f"></i></a>
                     <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="hover:text-brandPink text-sm transition-colors" aria-label="إنستغرام"><i class="fa-brands fa-instagram"></i></a>
@@ -1098,6 +1098,7 @@
 import { SYSTEM_CORE } from './system-core.js';
 import { REGISTRY } from './system-registry.js';
 import { FIREBASE_ENGINE } from './firebase-engine.js';
+import { COMMERCE_ENGINE } from './commerce-engine.js';
 
 class BoseSweetsAppManager {
     constructor() {
@@ -1138,7 +1139,6 @@ class BoseSweetsAppManager {
     }
 
     activateRealtimeCloudSync() {
-        // المزامنة الحية للإعدادات العامة وتكاليف الشحن من السحابة لضمان مطابقة الأسعار فوراً
         const unsubscribeConfigId = FIREBASE_ENGINE.WATCHERS.document(REGISTRY.FIREBASE.SETTINGS.GLOBAL_CONFIG, (cleanGlobalConfig) => {
             if (cleanGlobalConfig) {
                 this.globalConfig = { ...this.globalConfig, ...cleanGlobalConfig };
@@ -1159,7 +1159,6 @@ class BoseSweetsAppManager {
         });
         this.activeListeners.push(unsubscribeConfigId);
 
-        // المزامنة الحية للمنيو الكامل، توفر السلع، تعديل الأسعار، وصور السلع النهارية الطبيعية 100%
         const unsubscribeMenuId = FIREBASE_ENGINE.WATCHERS.collection(REGISTRY.FIREBASE.COLLECTIONS.MENU, (cloudMenu) => {
             if (cloudMenu && cloudMenu.length > 0) {
                 this.menuData = cloudMenu.map(item => {
@@ -1181,7 +1180,6 @@ class BoseSweetsAppManager {
                 });
                 
                 SYSTEM_CORE.STATE.set(REGISTRY.STATE.MENU.key, this.menuData);
-                this.renderHomepageGrid();
                 this.renderMenuCategories();
             }
         });
@@ -1194,8 +1192,8 @@ class BoseSweetsAppManager {
         if (!this.globalConfig) return;
         const edibleBtn = document.getElementById('cake-print-edible');
         const nonEdibleBtn = document.getElementById('cake-print-non-edible');
-        if (edibleBtn) edibleBtn.textContent = `قابلة للأكل (+${this.globalConfig.cakePrintEdiblePrice || 60} ج.م)──`;
-        if (nonEdibleBtn) nonEdibleBtn.textContent = `غير قابلة للأكل (+${this.globalConfig.cakePrintNonEdiblePrice || 20} ج.م)──`;
+        if (edibleBtn) edibleBtn.textContent = `قابلة للأكل (+${this.globalConfig.cakePrintEdiblePrice || 60} ج.م)`;
+        if (nonEdibleBtn) nonEdibleBtn.textContent = `غير قابلة للأكل (+${this.globalConfig.cakePrintNonEdiblePrice || 20} ج.م)`;
 
         const minCountHint = document.getElementById('roseMinCountHint');
         if (minCountHint) minCountHint.textContent = `الحد الأدنى للتنسيق ${this.globalConfig.roseMinCount || 15} وردة طبيعية فريش`;
@@ -1271,41 +1269,6 @@ class BoseSweetsAppManager {
         }
     }
 
-    renderHomepageGrid() {
-        const container = document.getElementById(REGISTRY.DOM.HOMEPAGE.DYNAMIC_CONTENT.id);
-        if (!container) return;
-
-        if (this.menuData.length === 0) {
-            container.innerHTML = `<p class="col-span-full text-center text-xs font-bold text-brandBlack/40 py-8">جاري مزامنة المنتجات الفاخرة من السحابة...</p>`;
-            return;
-        }
-
-        const outOfStockList = SYSTEM_CORE.STATE.get(REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key) || [];
-
-        container.innerHTML = this.menuData.map(item => {
-            const isOutOfStock = outOfStockList.includes(item.id);
-            return `
-                <div class="bose-full-card cursor-pointer ${isOutOfStock ? 'opacity-60 relative' : ''}" onclick="${isOutOfStock ? '' : `BoseSweetsEngine.viewProductDetails('${item.id}')`}">
-                    <div class="relative w-full aspect-square bg-brandPinkLight overflow-hidden">
-                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100%\" height=\"100%\" fill=\"%23fff5f6\"/><text x=\"50%\" y=\"50%\" font-size=\"10\" font-family=\"Cairo\" font-weight=\"bold\" dominant-baseline=\"middle\" text-anchor=\"middle\" fill=\"%23ff91a4\">حلويات بوسي</text></svg>'">
-                        <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm border border-brandPink/15 text-brandPink text-[10px] font-black px-2.5 py-1 rounded-full">${item.category}</span>
-                        ${isOutOfStock ? `<div class="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-xs font-black">نفذ مؤقتاً من المطبخ 🛑</div>` : ''}
-                    </div>
-                    <div class="p-4 flex flex-col justify-between flex-grow space-y-3">
-                        <div class="space-y-1">
-                            <h3 class="text-xs font-extrabold text-brandBlack line-clamp-1">${item.name}</h3>
-                            <p class="text-[11px] text-brandBlack/50 font-medium line-clamp-2 leading-relaxed">${item.desc}</p>
-                        </div>
-                        <div class="flex items-center justify-between pt-1 border-t border-brandPink/5">
-                            <span class="text-brandPink font-black text-sm tracking-tight">${item.price} ج.م</span>
-                            <span class="text-[10px] font-bold text-brandBlack/40 bg-brandPinkLight px-2 py-0.5 rounded-md">${item.unit}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
     renderMenuCategories() {
         const grid = document.getElementById(REGISTRY.DOM.HOMEPAGE.MENU_GRID.id);
         if (!grid) return;
@@ -1359,7 +1322,7 @@ class BoseSweetsAppManager {
                             <h1 class="text-xl font-black text-brandBlack leading-snug">${item.name}</h1>
                             <p class="text-xs text-brandBlack/60 font-semibold leading-relaxed">${item.desc}</p>
                             <div class="p-3 bg-brandPinkLight/50 rounded-xl border border-brandPink/5 text-[11px] font-bold text-brandBlack/70">
-                                <i class="fa-solid fa-circle-check text-brandPink ml-1"></i> خامات طبيعية 100% خالية تماماً من المكونات المهدرجة أو المحسنات الصناعية.
+                                <i class="fa-solid fa-grid-check text-brandPink ml-1"></i> خامات طبيعية 100% خالية تماماً من المكونات المهدرجة أو المحسنات الصناعية.
                             </div>
                         </div>
                         <div class="space-y-4 pt-4 border-t border-brandPink/10">
@@ -1368,7 +1331,7 @@ class BoseSweetsAppManager {
                                 <span class="text-2xl font-black text-brandPink tracking-tight">${item.price} ج.م</span>
                             </div>
                             <button onclick="BoseSweetsEngine.addItemToCart('${item.id}')" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs transition-all duration-300 shadow-md flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-bag-shopping"></i> إضافة المنتج لسلة المشتريات
+                                <i class="fa-solid fa-bag-shopping"></i> اضافة للسلة
                             </button>
                         </div>
                     </div>
@@ -1384,20 +1347,13 @@ class BoseSweetsAppManager {
 
         const outOfStockList = SYSTEM_CORE.STATE.get(REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key) || [];
         if (outOfStockList.includes(item.id)) {
-            alert("عذراً، هذا الصنف نفد مؤقتاً من المطبخ ولا يمكن حشوه حالياً.");
             return;
         }
 
-        this.cart.push({
-            cartId: 'standard-' + Date.now(),
-            type: 'standard',
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            details: item.unit
-        });
-
-        this.syncCartToCore();
+        const normalizedItem = COMMERCE_ENGINE.CART.add(item);
+        this.cart = COMMERCE_ENGINE.CART.getItems();
+        this.updateCartBadge();
+        this.navigateTo('cart');
     }
 
     syncCartToCore() {
@@ -1409,8 +1365,9 @@ class BoseSweetsAppManager {
         const badge = document.getElementById(REGISTRY.DOM.CART.BADGE.id);
         if (!badge) return;
 
-        if (this.cart.length > 0) {
-            badge.textContent = this.cart.length;
+        const totalCount = COMMERCE_ENGINE.CART.count();
+        if (totalCount > 0) {
+            badge.textContent = totalCount;
             badge.classList.remove('hidden');
         } else {
             badge.classList.add('hidden');
@@ -1425,6 +1382,8 @@ class BoseSweetsAppManager {
 
         if (!emptyState || !container || !list || !totalDisplay) return;
 
+        this.cart = COMMERCE_ENGINE.CART.getItems();
+
         if (this.cart.length === 0) {
             emptyState.classList.remove('hidden');
             container.classList.add('hidden');
@@ -1434,18 +1393,17 @@ class BoseSweetsAppManager {
         emptyState.classList.add('hidden');
         container.classList.remove('hidden');
 
-        let totalSum = 0;
         list.innerHTML = this.cart.map(item => {
-            totalSum += item.price;
+            const desc = item.details?.identity || item.details || '';
             return `
                 <div class="p-4 rounded-2xl bg-white border border-brandPink/15 flex items-center justify-between gap-4 shadow-[0_2px_12px_rgba(255,145,164,0.02)]">
                     <div class="space-y-1 min-w-0 flex-grow">
                         <h3 class="text-xs font-extrabold text-brandBlack truncate">${item.name}</h3>
-                        <p class="text-[10px] text-brandBlack/50 font-bold line-clamp-1">${item.details}</p>
+                        <p class="text-[10px] text-brandBlack/50 font-bold line-clamp-1">${desc}</p>
                     </div>
                     <div class="flex items-center gap-4 flex-shrink-0">
                         <span class="text-brandPink font-black text-sm tracking-tight">${item.price} ج.م</span>
-                        <button onclick="BoseSweetsEngine.removeCartItem('${item.cartId}')" class="p-2 bg-brandPinkLight hover:bg-brandPink/20 text-brandPink rounded-xl text-xs transition-colors">
+                        <button onclick="BoseSweetsEngine.removeCartItem('${item.uid}')" class="p-2 bg-brandPinkLight hover:bg-brandPink/20 text-brandPink rounded-xl text-xs transition-colors">
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </div>
@@ -1453,42 +1411,43 @@ class BoseSweetsAppManager {
             `;
         }).join('');
 
-        totalDisplay.textContent = `${totalSum} ج.م`;
+        totalDisplay.textContent = `${COMMERCE_ENGINE.CART.subtotal()} ج.م`;
     }
 
-    removeCartItem(cartId) {
-        this.cart = this.cart.filter(i => i.cartId !== cartId);
-        this.syncCartToCore();
+    removeCartItem(uid) {
+        COMMERCE_ENGINE.CART.remove(uid);
+        this.cart = COMMERCE_ENGINE.CART.getItems();
         this.renderCartView();
+        this.updateCartBadge();
     }
 
     clearCart() {
+        COMMERCE_ENGINE.CART.clear();
         this.cart = [];
-        this.syncCartToCore();
         this.renderCartView();
+        this.updateCartBadge();
     }
 
     renderCheckoutView() {
-        let subtotal = 0;
-        this.cart.forEach(i => subtotal += i.price);
-
+        const calculations = COMMERCE_ENGINE.PRICING.calculateCartTotal();
         const subtotalEl = document.getElementById(REGISTRY.DOM.CHECKOUT.SUBTOTAL.id);
         const shippingEl = document.getElementById(REGISTRY.DOM.CHECKOUT.SHIPPING.id);
         const totalEl = document.getElementById(REGISTRY.DOM.CHECKOUT.TOTAL.id);
 
-        if (subtotalEl) subtotalEl.textContent = `${subtotal} ج.م`;
-        if (shippingEl) shippingEl.textContent = `${this.selectedShippingCost} ج.م`;
-        if (totalEl) totalEl.textContent = `${subtotal + this.selectedShippingCost} ج.م`;
+        if (subtotalEl) subtotalEl.textContent = `${calculations.subtotal} ج.م`;
+        if (shippingEl) shippingEl.textContent = `${calculations.shipping} ج.م`;
+        if (totalEl) totalEl.textContent = `${calculations.total} ج.م`;
     }
 
     handleSearch(e) {
         const query = e.target.value.trim().toLowerCase();
-        if (!query) {
-            this.renderHomepageGrid();
-            return;
-        }
         const container = document.getElementById(REGISTRY.DOM.HOMEPAGE.DYNAMIC_CONTENT.id);
         if (!container) return;
+
+        if (!query) {
+            SYSTEM_CORE.EVENTS.emit(REGISTRY.EVENTS.MENU.UPDATED);
+            return;
+        }
 
         const filtered = this.menuData.filter(i => i.name.toLowerCase().includes(query) || i.desc.toLowerCase().includes(query));
         if (filtered.length === 0) {
@@ -1496,7 +1455,7 @@ class BoseSweetsAppManager {
             return;
         }
 
-        container.innerHTML = filtered.map(item => `
+        container.innerHTML = `<div class="bose-dynamic-grid">${filtered.map(item => `
             <div class="bose-full-card cursor-pointer" onclick="BoseSweetsEngine.viewProductDetails('${item.id}')">
                 <div class="relative w-full aspect-square bg-brandPinkLight overflow-hidden">
                     <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
@@ -1507,11 +1466,11 @@ class BoseSweetsAppManager {
                         <p class="text-[11px] text-brandBlack/50 font-medium line-clamp-2 leading-relaxed">${item.desc}</p>
                     </div>
                     <div class="flex items-center justify-between pt-1 border-t border-brandPink/5">
-                        <span class="text-brandPink font-black text-sm tracking-tight">${item.price} ج.م</span>
+                        <span class="text-brandPink font-black text-sm tracking-tight">${item.price} ج.m</span>
                     </div>
                 </div>
             </div>
-        `).join('');
+        `).join('')}</div>`;
     }
 
     selectCakeBase(baseType) {
@@ -1564,12 +1523,12 @@ class BoseSweetsAppManager {
 
     updateCakePriceDisplay() {
         if (!this.globalConfig) return;
-        let cost = this.cakeCustomState.people * (this.globalConfig.cakeBasePricePerPerson || 145);
-        if (this.cakeCustomState.print === 'edible') cost += (this.globalConfig.cakePrintEdiblePrice || 60);
-        if (this.cakeCustomState.print === 'non-edible') cost += (this.globalConfig.cakePrintNonEdiblePrice || 20);
-
+        const computedPrice = COMMERCE_ENGINE.PRICING.cake({
+            people: this.cakeCustomState.people,
+            printOption: this.cakeCustomState.print
+        });
         const display = document.getElementById(REGISTRY.DOM.CAKE.PRICE_DISPLAY.id);
-        if (display) display.textContent = `${cost} ج.م`;
+        if (display) display.textContent = `${computedPrice} ج.م`;
     }
 
     showCakePriceInfo() {
@@ -1644,22 +1603,26 @@ class BoseSweetsAppManager {
     }
 
     addCakeToCart() {
-        if (!this.globalConfig) return;
-        let cost = this.cakeCustomState.people * (this.globalConfig.cakeBasePricePerPerson || 145);
-        if (this.cakeCustomState.print === 'edible') cost += (this.globalConfig.cakePrintEdiblePrice || 60);
-        if (this.cakeCustomState.print === 'non-edible') cost += (this.globalConfig.cakePrintNonEdiblePrice || 20);
-
         const text = document.getElementById('cakeText')?.value || '';
         const theme = document.getElementById('cakeThemeDetails')?.value || '';
-        
-        this.cart.push({
-            cartId: 'cake-' + Date.now(),
-            type: 'custom_cake',
-            name: `تورتة ملكية مخصصة (${this.cakeCustomState.shape} - أساس ${this.cakeCustomState.base})`,
-            price: cost,
-            details: `مقاس ${this.cakeCustomState.people} فرد - نص مكتوب: ${text || 'لا يوجد'} - ثيم: ${theme || 'افتراضي'}`
+        const allergies = document.getElementById('cakeAllergies')?.value || '';
+        const cardText = document.getElementById('cakeCardText')?.value || '';
+        const cardEnabled = document.getElementById('cakeCardCheck').checked;
+
+        COMMERCE_ENGINE.CAKE.set({
+            base: this.cakeCustomState.base,
+            shape: this.cakeCustomState.shape,
+            people: this.cakeCustomState.people,
+            printOption: this.cakeCustomState.print,
+            writing: text,
+            theme: theme,
+            allergies: allergies,
+            cardEnabled: cardEnabled,
+            cardText: cardText
         });
 
+        COMMERCE_ENGINE.CAKE.addToCart();
+        this.cart = COMMERCE_ENGINE.CART.getItems();
         this.syncCartToCore();
         this.navigateTo('cart');
         
@@ -1674,13 +1637,9 @@ class BoseSweetsAppManager {
 
     quickBuyRoseBouquet() {
         if (!this.globalConfig) return;
-        this.cart.push({
-            cartId: 'rose-quick-' + Date.now(),
-            type: 'rose_quick',
-            name: 'بوكيه ورد فاخر مخصص من صورة مرفوعة',
-            price: this.globalConfig.roseBasePrice || 400,
-            details: 'تم الاعتماد المباشر للصورة، التنفيذ يطابق الواقع بنسبة 100%'
-        });
+        COMMERCE_ENGINE.ROSE.reset();
+        COMMERCE_ENGINE.ROSE.addToCart();
+        this.cart = COMMERCE_ENGINE.CART.getItems();
         this.syncCartToCore();
         this.navigateTo('cart');
     }
@@ -1714,22 +1673,18 @@ class BoseSweetsAppManager {
 
     updateRosePriceDisplay() {
         if (!this.globalConfig) return;
-        let baseCost = this.globalConfig.roseBasePrice || 400;
-        const minCount = this.globalConfig.roseMinCount || 15;
-        if (this.roseCustomState.count > minCount) {
-            baseCost += (this.roseCustomState.count - minCount) * (this.globalConfig.rosePricePerAdditional || 15);
-        }
-        
-        baseCost += (this.roseCustomState.photos * (this.globalConfig.rosePhotoPrice || 15));
-        if (this.roseCustomState.ribbon) baseCost += (this.globalConfig.roseRibbonPrice || 50);
-        if (this.roseCustomState.card) baseCost += (this.globalConfig.roseCardPrice || 20);
-
-        baseCost += Number(this.roseCustomState.chocBudget || 0);
-        baseCost += (this.roseCustomState.premiumBars[100] * 100);
-        baseCost += (this.roseCustomState.premiumBars[120] * 120);
+        const computedPrice = COMMERCE_ENGINE.PRICING.rose({
+            count: this.roseCustomState.count,
+            photosCount: this.roseCustomState.photos,
+            ribbonEnabled: this.roseCustomState.ribbon,
+            cardEnabled: this.roseCustomState.card,
+            chocBudget: this.roseCustomState.chocBudget,
+            premiumBars: this.roseCustomState.premiumBars,
+            cashAmount: this.roseCustomState.cash
+        });
 
         const display = document.getElementById(REGISTRY.DOM.ROSE.PRICE_DISPLAY.id);
-        if (display) display.textContent = `${baseCost} ج.م`;
+        if (display) display.textContent = `${computedPrice} ج.م`;
     }
 
     handleRoseCleanup() {
@@ -1799,6 +1754,39 @@ class BoseSweetsAppManager {
         this.updateRosePriceDisplay();
     }
 
+    calculateRoseCash() {
+        const amount = Number(document.getElementById('roseCashAmount').value || 0);
+        this.roseCustomState.cash = amount;
+
+        const output = document.getElementById('roseCashOutput');
+        const calcText = document.getElementById('roseCashCalcText');
+        if (!output || !calcText) return;
+
+        if (amount <= 0) {
+            output.classList.add('hidden');
+            this.updateRosePriceDisplay();
+            return;
+        }
+
+        calcText.textContent = `💸 دمج الأموال: سيتم لف وتنسيق مبلغ ${amount} ج.م فئة ${this.roseCustomState.denomination} جنيه فنيًا داخل الباقة.`;
+        output.classList.remove('hidden');
+        this.updateRosePriceDisplay();
+    }
+
+    selectRoseDenomination(denom) {
+        this.roseCustomState.denomination = denom;
+        [5, 10, 20, 50, 100, 200].forEach(p => {
+            const btn = document.getElementById(`rose-denom-${p}`);
+            if (!btn) return;
+            if (p === denom) {
+                btn.className = "py-2 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center";
+            } else {
+                btn.className = "py-2 rounded-xl border border-brandPink/10 bg-white text-brandBlack text-xs font-bold transition-all text-center hover:border-brandPink/20";
+            }
+        });
+        this.calculateRoseCash();
+    }
+
     selectRoseChocPiecePrice(price) {
         this.roseCustomState.chocPiecePrice = price;
         [20, 30, 50].forEach(p => {
@@ -1838,30 +1826,29 @@ class BoseSweetsAppManager {
     }
 
     addRoseToCart() {
-        if (!this.globalConfig) return;
-        let baseCost = this.globalConfig.roseBasePrice || 400;
-        const minCount = this.globalConfig.roseMinCount || 15;
-        if (this.roseCustomState.count > minCount) {
-            baseCost += (this.roseCustomState.count - minCount) * (this.globalConfig.rosePricePerAdditional || 15);
-        }
-        baseCost += (this.roseCustomState.photos * (this.globalConfig.rosePhotoPrice || 15));
-        if (this.roseCustomState.ribbon) baseCost += (this.globalConfig.roseRibbonPrice || 50);
-        if (this.roseCustomState.card) baseCost += (this.globalConfig.roseCardPrice || 20);
-        baseCost += Number(this.roseCustomState.chocBudget || 0);
-        baseCost += (this.roseCustomState.premiumBars[100] * 100);
-        baseCost += (this.roseCustomState.premiumBars[120] * 120);
-
         const colorText = document.getElementById('roseColors')?.value || 'ميكس متناسق';
         const cardText = document.getElementById('roseCardText')?.value || '';
+        const ribbonText = document.getElementById('roseRibbonText')?.value || '';
 
-        this.cart.push({
-            cartId: 'rose-bouquet-' + Date.now(),
-            type: 'custom_rose',
-            name: `بوكيه ورد فاخر مخصص (${this.roseCustomState.type} - عدد ${this.roseCustomState.count} وردة)`,
-            price: baseCost,
-            details: `ألوان: ${colorText} - نقد كاش مدمج: ${this.roseCustomState.cash} ج.م - شوكولاتة مدمجة: ${this.roseCustomState.chocBudget} ج.م`
+        COMMERCE_ENGINE.ROSE.set({
+            type: this.roseCustomState.type,
+            count: this.roseCustomState.count,
+            colors: colorText,
+            cashAmount: this.roseCustomState.cash,
+            cashDenomination: this.roseCustomState.denomination,
+            photosCount: this.roseCustomState.photos,
+            ribbonEnabled: this.roseCustomState.ribbon,
+            ribbonText: ribbonText,
+            chocBudget: this.roseCustomState.chocBudget,
+            chocPiecePrice: this.roseCustomState.chocPiecePrice,
+            premiumBar100: this.roseCustomState.premiumBars[100],
+            premiumBar120: this.roseCustomState.premiumBars[120],
+            cardEnabled: this.roseCustomState.card,
+            cardText: cardText
         });
 
+        COMMERCE_ENGINE.ROSE.addToCart();
+        this.cart = COMMERCE_ENGINE.CART.getItems();
         this.syncCartToCore();
         this.navigateTo('cart');
     }
@@ -1879,34 +1866,26 @@ class BoseSweetsAppManager {
             return;
         }
 
-        let subtotal = 0;
-        let cartPayload = this.cart.map((item, index) => {
-            subtotal += item.price;
-            return {
-                name: item.name,
-                price: item.price,
-                qty: 1,
-                isCustom: item.type !== 'standard',
-                details: item.details
-            };
+        COMMERCE_ENGINE.CHECKOUT.set({
+            method: 'shipping',
+            region: region
         });
-
-        const grandTotal = subtotal + this.selectedShippingCost;
 
         try {
             const orderPayload = {
                 customerName: name,
                 customerPhone: phone,
-                shippingAddress: address,
-                cart: cartPayload,
-                checkout: { method: 'shipping', region: region },
-                totals: { subtotal: subtotal, shipping: this.selectedShippingCost, total: grandTotal },
-                status: 'pending'
+                shippingAddress: address
             };
 
-            await FIREBASE_ENGINE.DATABASE.createDocument(REGISTRY.FIREBASE.COLLECTIONS.ORDERS, orderPayload);
+            const orderId = await COMMERCE_ENGINE.CHECKOUT.submit(orderPayload);
             
-            let itemsDescription = this.cart.map((item, index) => `${index + 1}- ${item.name} [${item.details}] -> السعر: ${item.price} ج.م`).join('\n');
+            let itemsDescription = this.cart.map((item, index) => {
+                const spec = item.details?.identity || item.details || '';
+                return `${index + 1}- ${item.name} [${spec}] -> السعر: ${item.price} ج.م`;
+            }).join('\n');
+
+            const calculations = COMMERCE_ENGINE.PRICING.calculateCartTotal();
             const whatsappText = encodeURIComponent(
                 `*طلب جديد معتمد من منصة حلويات بوسي الإلكترونية 2026*\n\n` +
                 `*بيانات العميل المعتمد:*\n` +
@@ -1916,26 +1895,27 @@ class BoseSweetsAppManager {
                 `- العنوان التفصيلي: ${address}\n\n` +
                 `*المنتجات المحجوزة في الفاتورة:*\n${itemsDescription}\n\n` +
                 `--------------------------------------\n` +
-                `*قيمة المنتجات المعتمدة:* ${subtotal} ج.م\n` +
-                `*تكلفة الشحن والتبريد للمنطقة:* ${this.selectedShippingCost} ج.م\n` +
-                `*إجمالي الفاتورة النهائي والمطابق:* ${grandTotal} ج.م\n\n` +
+                `*قيمة المنتجات المعتمدة:* ${calculations.subtotal} ج.م\n` +
+                `*تكلفة الشحن والتبريد للمنطقة:* ${calculations.shipping} ج.م\n` +
+                `*إجمالي الفاتورة النهائي والمطابق:* ${calculations.total} ج.م\n\n` +
                 `✨ _شكراً لاختياركم علامة حلويات بوسي - الإتقان الفني في صناعة الحلويات الطبيعية 100%_`
             );
 
             const cleanPhone = "201097238441";
             const apiURL = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${whatsappText}`;
 
-            this.clearCart();
+            this.cart = [];
             this.navigateTo('home');
             window.open(apiURL, '_blank');
         } catch (err) {
-            alert("حدث خطأ في الاتصال بالسحابة، يرجى إعادة المحاولة.");
+            alert("حدث خطأ في الامتثال، يرجى مراجعة البيانات.");
         }
     }
 }
 
 const manager = new BoseSweetsAppManager();
 window.BoseSweetsEngine = manager;
+window.BoseSweets = manager; // تأمين قنوات النداء للمحرك الموحد الخلفي
 manager.init();
 
 window.addEventListener('beforeunload', () => {
