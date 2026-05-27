@@ -20,7 +20,7 @@ import REGISTRY from './system-registry.js';
  * =========================================================
  */
 
-const CORE_VERSION = '8.0.0';
+const CORE_VERSION = '8.1.0';
 
 const MAX_DIAGNOSTICS = 500;
 
@@ -564,19 +564,27 @@ const STATE = {
 
         );
 
-        EVENTS.emit(
+        if (key === REGISTRY.STATE.MENU.key) {
 
-            REGISTRY.EVENTS.SYSTEM.READY,
+            EVENTS.emit(REGISTRY.EVENTS.MENU.UPDATED, { menu: value });
 
-            {
+        } else if (key === REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key) {
 
-                type: 'STATE_UPDATED',
+            EVENTS.emit(REGISTRY.EVENTS.MENU.STOCK_CHANGED, { outOfStockItems: value });
 
-                key
+        } else if (key === REGISTRY.STATE.CART.key) {
 
-            }
+            EVENTS.emit(REGISTRY.EVENTS.CART.UPDATED, { cart: value });
 
-        );
+        } else if (key === REGISTRY.STATE.CHECKOUT.key) {
+
+            EVENTS.emit(REGISTRY.EVENTS.CHECKOUT.UPDATED, { checkout: value });
+
+        } else {
+
+            EVENTS.emit(REGISTRY.EVENTS.CONFIG.UPDATED, { key, value });
+
+        }
 
     },
 
@@ -688,9 +696,7 @@ const EVENT_QUEUE = {
 
                     count:
 
-                        recent.length
-
-                }
+                        recent.length                }
 
             );
 

@@ -3,10 +3,6 @@
 
 <head>
 
-    <!-- ========================================================= -->
-    <!-- CORE META -->
-    <!-- ========================================================= -->
-
     <meta charset="UTF-8">
 
     <meta
@@ -16,7 +12,7 @@
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1, viewport-fit=cover"
+        content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
     >
 
     <meta
@@ -49,12 +45,8 @@
         content="default"
     >
 
-    <!-- ========================================================= -->
-    <!-- SEO -->
-    <!-- ========================================================= -->
-
     <title>
-        حلويات بوسي | تورتات فاخرة وحلويات طبيعية في الفرافرة
+        حلويات بوسي | عقد من التميز والاتقان الفني في الفرافرة
     </title>
 
     <meta
@@ -102,10 +94,6 @@
         href="https://bosesweets.com/"
     >
 
-    <!-- ========================================================= -->
-    <!-- PRECONNECT -->
-    <!-- ========================================================= -->
-
     <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
@@ -127,10 +115,6 @@
         href="https://www.gstatic.com"
     >
 
-    <!-- ========================================================= -->
-    <!-- FONTS -->
-    <!-- ========================================================= -->
-
     <link
         rel="preload"
         href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap"
@@ -142,9 +126,32 @@
         rel="stylesheet"
     >
 
-    <!-- ========================================================= -->
-    <!-- OPEN GRAPH -->
-    <!-- ========================================================= -->
+    <link 
+        rel="stylesheet" 
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandPink: '#ff91a4',
+                        brandPinkLight: '#fff5f6',
+                        brandPinkDark: '#e07d90',
+                        brandBlack: '#1a1a1a',
+                        brandWhite: '#ffffff',
+                    },
+                    fontFamily: {
+                        sans: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
     <meta
         property="og:type"
@@ -191,10 +198,6 @@
         content="630"
     >
 
-    <!-- ========================================================= -->
-    <!-- TWITTER -->
-    <!-- ========================================================= -->
-
     <meta
         name="twitter:card"
         content="summary_large_image"
@@ -215,10 +218,6 @@
         content="https://bosesweets.com/assets/og-cover.webp"
     >
 
-    <!-- ========================================================= -->
-    <!-- ICONS -->
-    <!-- ========================================================= -->
-
     <link
         rel="icon"
         href="./assets/favicon.png"
@@ -229,10 +228,6 @@
         rel="apple-touch-icon"
         href="./assets/favicon.png"
     >
-
-    <!-- ========================================================= -->
-    <!-- PERFORMANCE -->
-    <!-- ========================================================= -->
 
     <link
         rel="modulepreload"
@@ -259,212 +254,146 @@
         href="./unified-engine.js"
     >
 
-    <!-- ========================================================= -->
-    <!-- IMPORT MAP -->
-    <!-- ========================================================= -->
-
     <script type="importmap">
-
         {
             "imports": {
-
-                "firebase/app":
-                "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
-
-                "firebase/auth":
-                "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
-
-                "firebase/firestore":
-                "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js",
-
-                "firebase/storage":
-                "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js"
-
+                "firebase/app": "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js",
+                "firebase/storage": "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js"
             }
         }
-
     </script>
 
-    <!-- ========================================================= -->
-    <!-- CRITICAL CSS -->
-    <!-- ========================================================= -->
-
     <style>
-
         :root {
-
             --brand-pink: #ff91a4;
             --brand-pink-dark: #e07d90;
             --brand-bg: #fff7f8;
             --brand-black: #1a1a1a;
             --brand-border: rgba(255,145,164,.12);
-
-        }
-
-        * {
-
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-
-        }
-
-        html {
-
-            scroll-behavior: smooth;
-            -webkit-text-size-adjust: 100%;
-
         }
 
         body {
-
             font-family: "Cairo", sans-serif;
-            background: #ffffff;
             color: var(--brand-black);
-            overflow-x: hidden;
-            text-rendering: optimizeLegibility;
-            -webkit-font-smoothing: antialiased;
-
+            background-color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        img {
-
-            display: block;
-            width: 100%;
-            height: auto;
-
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
         }
 
-        button,
-        input,
-        textarea {
-
-            font: inherit;
-
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        a {
-
-            text-decoration: none;
-            color: inherit;
-
+        .transition-all-300 {
+            transition: all 0.3s ease-in-out;
         }
 
-        .hidden {
-
-            display: none !important;
-
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
 
-        .container-safe {
-
-            width: 100%;
-            max-width: 1400px;
-            margin-inline: auto;
-            padding-inline: 1rem;
-
-        }
-
-        .glass {
-
-            background: rgba(255,255,255,.84);
-            backdrop-filter: blur(18px);
-
-        }
-
-        .btn-primary {
-
-            background: var(--brand-pink);
-            color: #fff;
-            border: 0;
-            border-radius: 999px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: .25s ease;
-
-        }
-
-        .btn-primary:hover {
-
-            background: var(--brand-pink-dark);
-
-        }
-
-        .card {
-
-            background: #fff;
-            border: 1px solid var(--brand-border);
-            border-radius: 28px;
-            overflow: hidden;
-
-        }
-
-        .hero-image {
-
-            aspect-ratio: 16 / 10;
-            object-fit: cover;
-            border-radius: 32px;
-
+        .animate-marquee {
+            display: inline-flex;
+            width: max-content;
+            animation: marquee 35s linear infinite;
         }
 
         .view-section {
+            min-height: 75vh;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
 
-            min-height: 60vh;
+        .bose-dynamic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+        }
+        
+        @media (max-width: 640px) {
+            .bose-dynamic-grid-dual {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 0.75rem !important;
+            }
+        }
 
+        .bose-full-card {
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            border: 1px solid rgba(255, 145, 164, 0.15);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            width: 100%;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+        
+        .bose-full-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(255, 145, 164, 0.08);
+        }
+
+        @media (min-width: 768px) {
+            .bose-full-card-row {
+                flex-direction: row !important;
+                align-items: stretch;
+            }
+            .bose-full-card-row .card-image-section {
+                width: 45% !important;
+                min-height: 100%;
+            }
+            .bose-full-card-row .card-content-section {
+                width: 55% !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 2.25rem !important;
+            }
+        }
+
+        .premium-container-padding {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .premium-container-padding {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
         }
 
         .skeleton {
-
-            background:
-            linear-gradient(
-                90deg,
-                #f6f6f6 25%,
-                #ececec 37%,
-                #f6f6f6 63%
-            );
-
+            background: linear-gradient(90deg, #f6f6f6 25%, #ececec 37%, #f6f6f6 63%);
             background-size: 400% 100%;
             animation: shimmer 1.4s infinite linear;
             border-radius: 20px;
-
         }
 
         @keyframes shimmer {
-
-            0% {
-
-                background-position: 100% 0;
-
-            }
-
-            100% {
-
-                background-position: -100% 0;
-
-            }
-
+            0% { background-position: 100% 0; }
+            100% { background-position: -100% 0; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-
             * {
-
                 animation: none !important;
                 transition: none !important;
                 scroll-behavior: auto !important;
-
             }
-
         }
-
     </style>
 
-    <!-- ========================================================= -->
-    <!-- STRUCTURED DATA -->
-    <!-- ========================================================= -->
-
     <script type="application/ld+json">
-
         {
             "@context":"https://schema.org",
             "@type":"Bakery",
@@ -485,477 +414,1533 @@
                 "https://instagram.com/"
             ]
         }
-
     </script>
 
     <script type="application/ld+json">
-
         {
             "@context":"https://schema.org",
             "@type":"WebSite",
             "name":"حلويات بوسي",
             "url":"https://bosesweets.com"
         }
-
     </script>
 
 </head>
 
-<body>
+<body class="overflow-x-hidden">
 
-    <!-- ========================================================= -->
-    <!-- APP -->
-    <!-- ========================================================= -->
-
-    <div
-        id="app"
-        class="min-h-screen flex flex-col"
-    >
-
-        <!-- ========================================================= -->
-        <!-- HEADER -->
-        <!-- ========================================================= -->
-
-        <header
-            class="glass"
-            style="
-                position:sticky;
-                top:0;
-                z-index:100;
-                border-bottom:1px solid var(--brand-border);
-            "
-        >
-
-            <div
-                class="container-safe"
-                style="
-                    height:84px;
-                    display:flex;
-                    align-items:center;
-                    justify-content:space-between;
-                    gap:1rem;
-                "
-            >
-
-                <button
-                    id="sidebarToggleBtn"
-                    aria-label="فتح القائمة"
-                    style="
-                        width:52px;
-                        height:52px;
-                        border-radius:20px;
-                        border:0;
-                        background:var(--brand-bg);
-                        cursor:pointer;
-                        font-size:20px;
-                        font-weight:900;
-                    "
-                >
-                    ☰
-                </button>
-
-                <a
-                    href="/"
-                    aria-label="حلويات بوسي"
-                    style="
-                        display:flex;
-                        flex-direction:column;
-                        align-items:center;
-                    "
-                >
-
-                    <span
-                        style="
-                            font-size:2rem;
-                            font-weight:900;
-                        "
-                    >
-                        حلويات
-                        <span style="color:var(--brand-pink)">
-                            بوسي
-                        </span>
-                    </span>
-
-                    <span
-                        style="
-                            font-size:11px;
-                            font-weight:800;
-                            color:var(--brand-pink);
-                        "
-                    >
-                        صنعناها بحب لتهديها لمن تحب
-                    </span>
-
-                </a>
-
-                <button
-                    id="cartButton"
-                    aria-label="السلة"
-                    style="
-                        width:52px;
-                        height:52px;
-                        border-radius:20px;
-                        border:0;
-                        background:var(--brand-bg);
-                        position:relative;
-                        cursor:pointer;
-                        font-size:22px;
-                    "
-                >
-
-                    🛍️
-
-                    <span
-                        id="cartCountBadge"
-                        class="hidden"
-                        style="
-                            position:absolute;
-                            top:-4px;
-                            left:-4px;
-                            width:20px;
-                            height:20px;
-                            border-radius:999px;
-                            background:var(--brand-pink);
-                            color:#fff;
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            font-size:10px;
-                            font-weight:900;
-                        "
-                    >
-                        0
-                    </span>
-
-                </button>
-
+    <div id="app" class="min-h-screen flex flex-col justify-between">
+        
+        <div id="topTickerBanner" class="bg-brandPinkLight text-brandBlack border-b border-brandPink/30 py-2 overflow-hidden relative w-full z-50">
+            <div class="flex whitespace-nowrap gap-12 animate-marquee text-[11px] font-extrabold" id="marqueeContent">
+                <span>✨ عقد من التميز والاتقان الفني في صناعة الحلويات الطبيعية 100% بمكونات فاخرة خالية تماماً من الإضافات الكيميائية</span>
+                <span>✨ توصيل آمن ومبرد لجميع مناطق الفرافرة والكفاح للحفاظ على جودة وتماسك منتجاتنا الفاخرة</span>
+                <span>✨ صمّم تورتتك المخصصة أو بوكيه الورد المدمج بالهدايا والشوكولاتة الآن عبر محاكياتنا الذكية المعتمدة</span>
+                <span>✨ عقد من التميز والاتقان الفني في صناعة الحلويات الطبيعية 100% بمكونات فاخرة خالية تماماً من الإضافات الكيميائية</span>
+                <span>✨ توصيل آمن ومبرد لجميع مناطق الفرافرة والكفاح للحفاظ على جودة وتماسك منتجاتنا الفاخرة</span>
+                <span>✨ صمّم تورتتك المخصصة أو بوكيه الورد المدمج بالهدايا والشوكولاتة الآن عبر محاكياتنا الذكية المعتمدة</span>
             </div>
+        </div>
 
+        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-brandPink/20 transition-all-300 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between gap-4">
+                <button id="sidebarToggleBtn" onclick="BoseSweetsEngine.toggleSidebar(true)" class="p-3 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack hover:text-brandPink rounded-2xl transition-all duration-300" aria-label="القائمة الجانبية">
+                    <i class="fa-solid fa-bars-staggered text-xl"></i>
+                </button>
+
+                <div class="flex flex-col items-center md:items-start gap-1">
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('home')" class="text-xl md:text-2xl font-extrabold text-brandBlack tracking-tight hover:opacity-90 transition-opacity">
+                        حلويات <span class="text-brandPink">بوسي</span>
+                    </a>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-brandPink/10 text-brandPink">
+                        <span class="w-1.5 h-1.5 rounded-full bg-brandPink animate-pulse"></span>نستقبل طلباتكم الفاخرة الآن
+                    </span>
+                </div>
+
+                <div class="flex items-center gap-3">
+                    <div class="relative hidden sm:block">
+                        <input type="text" id="headerSearch" onkeyup="BoseSweetsEngine.handleSearch(event)" placeholder="ابحث عن منتجك المفضل..." class="w-48 md:w-64 px-4 py-2 text-sm rounded-full bg-brandPinkLight border border-brandPink/20 text-brandBlack focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink transition-all duration-300">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-brandPink text-xs"></i>
+                    </div>
+                    <button id="cartButton" onclick="BoseSweetsEngine.navigateTo('cart')" class="relative p-3 bg-brandPinkLight hover:bg-brandPink/20 rounded-2xl text-brandBlack hover:text-brandPink transition-all duration-300" aria-label="السلة">
+                        <i class="fa-solid fa-bag-shopping text-lg"></i>
+                        <span id="cartCountBadge" class="absolute -top-1 -right-1 bg-brandPink text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-white hidden">0</span>
+                    </button>
+                </div>
+            </div>
         </header>
 
-        <!-- ========================================================= -->
-        <!-- HERO -->
-        <!-- ========================================================= -->
-
-        <section
-            style="
-                background:
-                linear-gradient(
-                    to bottom,
-                    #fff7f8,
-                    #ffffff
-                );
-                padding-block:5rem;
-            "
-        >
-
-            <div
-                class="container-safe"
-                style="
-                    display:grid;
-                    grid-template-columns:
-                    repeat(auto-fit,minmax(320px,1fr));
-                    gap:3rem;
-                    align-items:center;
-                "
-            >
-
-                <div>
-
-                    <span
-                        style="
-                            display:inline-flex;
-                            padding:.7rem 1.2rem;
-                            background:#fff;
-                            border:1px solid var(--brand-border);
-                            border-radius:999px;
-                            font-size:12px;
-                            font-weight:900;
-                            color:var(--brand-pink);
-                        "
-                    >
-                        تورتات فاخرة • حلويات طبيعية • توصيل احترافي
-                    </span>
-
-                    <h1
-                        style="
-                            margin-top:1.5rem;
-                            font-size:clamp(2.5rem,6vw,5rem);
-                            line-height:1.15;
-                            font-weight:900;
-                        "
-                    >
-                        أفضل
-                        تورتات
-                        وحلويات
-                        في الفرافرة
-                    </h1>
-
-                    <p
-                        style="
-                            margin-top:1.5rem;
-                            line-height:2;
-                            color:#555;
-                            font-size:1.05rem;
-                        "
-                    >
-                        نقدم تورتات فاخرة، بوكيهات ورد،
-                        وحلويات طبيعية بتجهيز احترافي
-                        ومكونات عالية الجودة لجميع المناسبات.
-                    </p>
-
-                    <div
-                        style="
-                            margin-top:2rem;
-                            display:flex;
-                            flex-wrap:wrap;
-                            gap:1rem;
-                        "
-                    >
-
-                        <button
-                            data-nav="menu"
-                            class="btn-primary"
-                            style="
-                                padding:1rem 2rem;
-                            "
-                        >
-                            تصفح المنيو
-                        </button>
-
-                        <button
-                            data-nav="cake-builder"
-                            style="
-                                padding:1rem 2rem;
-                                border-radius:999px;
-                                border:1px solid var(--brand-border);
-                                background:#fff;
-                                font-weight:900;
-                                cursor:pointer;
-                            "
-                        >
-                            تصميم تورتة
-                        </button>
-
-                    </div>
-
+        <div id="sidebarOverlay" onclick="BoseSweetsEngine.toggleSidebar(false)" class="fixed inset-0 bg-brandPink/15 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+        <aside id="sidebar" class="fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white z-50 shadow-2xl translate-x-full transition-transform duration-300 flex flex-col justify-between rounded-l-[2rem] border-l border-brandPink/20">
+            <div class="p-6">
+                <div class="flex items-center justify-between border-b border-brandPink/10 pb-4 mb-6">
+                    <span class="font-extrabold text-brandBlack text-lg">حلويات بوسي</span>
+                    <button onclick="BoseSweetsEngine.toggleSidebar(false)" class="p-2.5 bg-brandPinkLight hover:bg-brandPink/20 rounded-full text-brandPink transition-all">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
                 </div>
-
-                <div>
-
-                    <img
-                        src="./assets/hero.webp"
-                        alt="تورتات وحلويات حلويات بوسي"
-                        class="hero-image"
-                        width="1200"
-                        height="900"
-                        loading="eager"
-                        decoding="async"
-                        fetchpriority="high"
-                    >
-
-                </div>
-
+                <nav class="space-y-4">
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('home'); BoseSweetsEngine.toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
+                        <i class="fa-solid fa-house w-6 text-center text-sm text-brandPink"></i> الصفحة الرئيسية
+                    </a>
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('menu'); BoseSweetsEngine.toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
+                        <i class="fa-solid fa-utensils w-6 text-center text-sm text-brandPink"></i> المنيو الكامل
+                    </a>
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('cake-builder'); BoseSweetsEngine.toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
+                        <i class="fa-solid fa-cake-candles w-6 text-center text-sm text-brandPink"></i> محاكي تصميم التورت
+                    </a>
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('rose-builder'); BoseSweetsEngine.toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
+                        <i class="fa-solid fa-seedling w-6 text-center text-sm text-brandPink"></i> محاكي تنسيق الورد
+                    </a>
+                    <a href="#" onclick="BoseSweetsEngine.navigateTo('cart'); BoseSweetsEngine.toggleSidebar(false);" class="flex items-center gap-3 p-3.5 rounded-2xl hover:bg-brandPinkLight hover:text-brandPink font-bold transition-all text-brandBlack border-r-4 border-transparent hover:border-brandPink">
+                        <i class="fa-solid fa-cart-shopping w-6 text-center text-sm text-brandPink"></i> سلة التسوق
+                    </a>
+                </nav>
             </div>
+            
+            <div class="p-6 border-t border-brandPink/10 bg-brandPinkLight/50 space-y-4">
+                <div class="p-3.5 rounded-2xl bg-white border border-brandPink/20 text-center space-y-1">
+                    <p class="text-xs text-brandBlack/60 font-bold">المبيعات المعتمدة ومطابقة المواصفات:</p>
+                    <a href="tel:01097238441" class="text-sm font-extrabold text-brandPink block" id="footerPhoneDisplay" dir="ltr">01097238441</a>
+                    <p class="text-[10px] text-brandBlack/50 font-bold">العنوان: الكفاح - شارع الوحدة المحلية</p>
+                </div>
+                <p class="text-[10px] text-brandBlack/40 text-center font-bold">حلويات بوسي © 2026</p>
+            </div>
+        </aside>
 
-        </section>
-
-        <!-- ========================================================= -->
-        <!-- DYNAMIC CONTENT -->
-        <!-- ========================================================= -->
-
-        <main>
-
-            <section
-                id="view-home"
-                class="view-section"
-            >
-
-                <div
-                    class="container-safe"
-                    style="
-                        padding-block:4rem;
-                    "
-                >
-
-                    <div
-                        id="homepageDynamicContent"
-                        style="
-                            display:grid;
-                            grid-template-columns:
-                            repeat(auto-fill,minmax(260px,1fr));
-                            gap:1.25rem;
-                        "
-                    >
-
-                        <div class="skeleton" style="height:320px"></div>
-                        <div class="skeleton" style="height:320px"></div>
-                        <div class="skeleton" style="height:320px"></div>
-                        <div class="skeleton" style="height:320px"></div>
-
+        <main class="flex-grow">
+            
+            <section id="view-home" class="view-section">
+                <div class="relative py-20 bg-gradient-to-b from-brandPinkLight via-white to-white text-center px-4">
+                    <div class="max-w-4xl mx-auto space-y-6">
+                        <span class="inline-block px-4 py-1.5 bg-brandPinkLight text-brandPink rounded-full text-xs font-bold uppercase tracking-wider border border-brandPink/20">تاريخ يروى بالمذاق</span>
+                        <h1 class="text-3xl md:text-5xl font-extrabold text-brandBlack leading-tight">أفضل تورتات وحلويات في الفرافرة</h1>
+                        <p class="text-base md:text-lg text-brandBlack/80 leading-relaxed max-w-2xl mx-auto">
+                            نقدم تورتات فاخرة، بوكيهات ورد، وحلويات طبيعية بتجهيز احترافي ومكونات عالية الجودة لجميع المناسبات.
+                        </p>
+                        <div class="pt-4 flex flex-wrap justify-center gap-4">
+                            <button data-nav="menu" onclick="BoseSweetsEngine.navigateTo('menu')" class="px-8 py-4 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full transition-all duration-300 shadow-lg shadow-brandPink/20 transform hover:-translate-y-0.5">
+                                تصفح المنيو
+                            </button>
+                            <button data-nav="cake-builder" onclick="BoseSweetsEngine.navigateTo('cake-builder')" class="px-8 py-4 border border-brandPink/20 text-brandBlack bg-white font-bold rounded-full transition-all duration-300 shadow-sm transform hover:-translate-y-0.5">
+                                تصميم تورتة
+                            </button>
+                        </div>
                     </div>
-
                 </div>
 
+                <div class="w-full aspect-video md:max-h-[500px] bg-brandPinkLight relative overflow-hidden flex items-center justify-center border-y border-brandPink/15">
+                    <img id="heroVisualMedia" src="./assets/hero.webp" alt="تورتات وحلويات حلويات بوسي" class="absolute inset-0 w-full h-full object-cover opacity-90" loading="eager" decoding="async" fetchpriority="high">
+                    <div class="absolute inset-0 bg-gradient-to-t from-brandPink/40 via-transparent to-transparent"></div>
+                    <div class="relative z-10 text-center px-4 space-y-2">
+                        <span class="text-brandPink text-xs md:text-sm font-bold tracking-widest uppercase">الرحلة الفنية</span>
+                        <h2 class="text-brandBlack text-lg md:text-2xl font-extrabold">دقة التنفيذ وروعة المذاق تكتمل في مصنعنا</h2>
+                    </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 py-12 space-y-12">
+                    <div id="homepageDynamicContent" class="bose-dynamic-grid bose-dynamic-grid-dual">
+                        <div class="skeleton" style="height:320px"></div>
+                        <div class="skeleton" style="height:320px"></div>
+                        <div class="skeleton" style="height:320px"></div>
+                        <div class="skeleton" style="height:320px"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-menu" class="view-section hidden py-12 bg-white">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="text-center max-w-2xl mx-auto mb-12">
+                        <h1 class="text-3xl font-extrabold text-brandBlack">قائمة حلويات بوسي الكاملة</h1>
+                        <p class="text-sm text-brandBlack/60 mt-2">
+                            جميع أصنافنا مجهزة بخامات طبيعية 100% وخالية تماماً من أي محسنات صناعية لضمان النكهة الأصلية الفاخرة.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8" id="menuCategoriesGrid"></div>
+                </div>
+            </section>
+
+            <section id="view-product" class="view-section hidden py-12 bg-white">
+                <div class="max-w-4xl mx-auto px-4" id="productDetailContainer"></div>
+            </section>
+
+            <section id="view-cake-builder" class="view-section hidden py-16 bg-white">
+                <div class="max-w-3xl mx-auto px-4">
+                    <div class="text-center mb-12 space-y-3">
+                        <span class="inline-block px-4 py-1 bg-brandPinkLight text-brandPink rounded-full text-[11px] font-extrabold tracking-wider border border-brandPink/15 shadow-sm">تجربة التصميم الفاخر</span>
+                        <h1 class="text-3xl font-extrabold text-brandBlack tracking-tight">محاكي تصميم التورت الذكي</h1>
+                        <p class="text-xs text-brandBlack/50 max-w-md mx-auto leading-relaxed font-semibold">صمّم تحفتك الفنية الخاصة ومناسبتك السعيدة عبر ثلاث شاشات تفاعلية ومصقولة بالكامل لتليق باختياراتك.</p>
+                    </div>
+
+                    <div class="relative flex items-center justify-between mb-12 max-w-lg mx-auto px-4">
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="cake-step-1-indicator" class="w-10 h-10 rounded-full bg-brandPink text-white flex items-center justify-center font-extrabold text-sm shadow-md shadow-brandPink/20 transition-all duration-300">
+                                <i class="fa-solid fa-sliders text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack">المقاس والشكل</span>
+                        </div>
+                        <div class="flex-grow h-[3px] bg-brandPinkLight mx-2 rounded-full relative overflow-hidden">
+                            <div class="absolute inset-0 bg-brandPink transition-all duration-500" id="cake-line-1" style="width: 0%;"></div>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="cake-step-2-indicator" class="w-10 h-10 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/15 flex items-center justify-center font-extrabold text-sm transition-all duration-300">
+                                <i class="fa-solid fa-palette text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack/40" id="cake-text-step-2">التصميم والطباعة</span>
+                        </div>
+                        <div class="flex-grow h-[3px] bg-brandPinkLight mx-2 rounded-full relative overflow-hidden">
+                            <div class="absolute inset-0 bg-brandPink transition-all duration-500" id="cake-line-2" style="width: 0%;"></div>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="cake-step-3-indicator" class="w-10 h-10 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/15 flex items-center justify-center font-extrabold text-sm transition-all duration-300">
+                                <i class="fa-solid fa-circle-check text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack/40" id="cake-text-step-3">التفاصيل والتأكيد</span>
+                        </div>
+                    </div>
+
+                    <div id="cake-screen-1" class="space-y-8 transition-all duration-300">
+                        <div class="space-y-3">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">اختر نوع كيك الأساس الفاخر:</label>
+                            <div class="grid grid-cols-3 gap-3.5">
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeBase('فانيليا')" id="cake-base-فانيليا" class="p-4 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold shadow-sm transition-all duration-300 text-center">
+                                    <i class="fa-solid fa-ice-cream block text-base mb-1.5 opacity-80"></i> فانيليا غنية
+                                </button>
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeBase('شوكولاتة')" id="cake-base-شوكولاتة" class="p-4 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-solid fa-cookie-bite block text-base mb-1.5 opacity-60"></i> شوكولاتة فاخرة
+                                </button>
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeBase('نصف ونصف')" id="cake-base-نصف ونصف" class="p-4 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-solid fa-pie-chart block text-base mb-1.5 opacity-60"></i> نصف ونصف
+                                </button>
+                            </div>
+                            <div id="cake-base-notification" class="hidden pt-1">
+                                <p class="text-brandPink font-extrabold text-[10px] flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> تم اعتماد قاعدة الكيك المختار بنجاح لمطبخنا.</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">الشكل الهندسي المعتمد للتورتة:</label>
+                            <div class="grid grid-cols-4 gap-3">
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeShape('دائرة')" id="cake-shape-دائرة" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-regular fa-circle block text-sm mb-1 opacity-80"></i> دائرة
+                                </button>
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeShape('قلب')" id="cake-shape-قلب" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-regular fa-heart block text-sm mb-1 opacity-60"></i> قلب ناعم
+                                </button>
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeShape('مربع')" id="cake-shape-مربع" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-regular fa-square block text-sm mb-1 opacity-60"></i> مربع متسق
+                                </button>
+                                <button type="button" onclick="BoseSweetsEngine.selectCakeShape('مستطيل')" id="cake-shape-مستطيل" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center">
+                                    <i class="fa-solid fa-rectangle-list block text-sm mb-1 opacity-60"></i> مستطيل عائلي
+                                </button>
+                            </div>
+                            <div id="cake-shape-hint" class="text-[10px] text-brandPink font-extrabold hidden bg-brandPinkLight/50 p-2 rounded-xl border border-brandPink/10"></div>
+                        </div>
+
+                        <div class="p-6 rounded-[28px] bg-white border border-brandPink/15 shadow-[0_4px_25px_rgba(255,145,164,0.05)] space-y-5">
+                            <div class="flex items-center justify-between border-b border-brandPink/10 pb-4">
+                                <div class="space-y-0.5">
+                                    <span class="text-xs font-extrabold text-brandBlack flex items-center gap-1.5">
+                                        تحديد عدد الأفراد المقدر:
+                                        <button type="button" onclick="BoseSweetsEngine.showCakePriceInfo()" class="text-brandPink hover:text-brandPinkDark text-xs transition-colors" aria-label="معلومات التسعير">
+                                            <i class="fa-solid fa-circle-info"></i>
+                                        </button>
+                                    </span>
+                                    <p class="text-[10px] text-brandBlack/40 font-bold">الحساب قنواته مستقلة وعادلة تماماً</p>
+                                </div>
+                                <div class="bg-brandPinkLight px-4 py-2 rounded-2xl border border-brandPink/10 text-center min-w-[110px]">
+                                    <span class="text-[10px] block font-bold text-brandBlack/50">الميزانية الحالية</span>
+                                    <span class="text-brandPink font-extrabold text-base md:text-lg tracking-tight" id="cakeLivePriceDisplay">0 ج.م</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-5 justify-center py-2">
+                                <button type="button" onclick="BoseSweetsEngine.adjustCakePeople(-2)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">-</button>
+                                <div class="text-center min-w-[80px]">
+                                    <span id="cakePeopleCount" class="text-2xl font-black text-brandBlack tracking-tight block">4</span>
+                                    <span class="text-[9px] text-brandBlack/40 font-extrabold uppercase tracking-wider">فرد مستهدف</span>
+                                </div>
+                                <button type="button" onclick="BoseSweetsEngine.adjustCakePeople(2)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">+</button>
+                            </div>
+                            <div id="cakeCounterWarning" class="hidden text-center text-[10px] text-brandPink font-extrabold bg-brandPinkLight/40 p-2 rounded-xl border border-brandPink/10"></div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="button" onclick="BoseSweetsEngine.navigateCakeStep(2)" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-[0_4px_15px_rgba(255,145,164,0.2)] transform hover:-translate-y-0.5">
+                                الخطوة التالية: التصميم الخارجي والطباعة <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="cake-screen-2" class="space-y-8 hidden transition-all duration-300">
+                        <div class="space-y-3">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">المسار الأول (رفع صورة التصميم المطلوبة):</label>
+                            <div class="relative border-2 border-dashed border-brandPink/20 hover:border-brandPink rounded-2xl p-8 transition-all duration-300 bg-brandPinkLight/30 text-center cursor-pointer group shadow-[inset_0_2px_8px_rgba(255,145,164,0.01)]">
+                                <input type="file" id="cakeDesignFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="BoseSweetsEngine.handleCakeFileUpload('design')">
+                                <div class="space-y-2 relative z-10">
+                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm border border-brandPink/10">
+                                        <i class="fa-regular fa-image text-xl text-brandPink"></i>
+                                    </div>
+                                    <p class="text-xs text-brandBlack font-extrabold tracking-wide" id="cakeDesignLabel">ارفع هنا صورة التورتة اللي حابب ننفذ لك زيها بالظبط</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">المسار الثاني (خيارات طباعة الصور المباشرة):</label>
+                            <div class="grid grid-cols-3 gap-3">
+                                <button type="button" onclick="BoseSweetsEngine.selectCakePrintOption('none')" id="cake-print-none" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">بدون طباعة</button>
+                                <button type="button" onclick="BoseSweetsEngine.selectCakePrintOption('edible')" id="cake-print-edible" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/30">قابلة للأكل</button>
+                                <button type="button" onclick="BoseSweetsEngine.selectCakePrintOption('non-edible')" id="cake-print-non-edible" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/30">غير قابلة للأكل</button>
+                            </div>
+
+                            <div id="cakePrintUploadArea" class="hidden relative border-2 border-dashed border-brandPink/20 hover:border-brandPink rounded-2xl p-8 transition-all duration-300 bg-brandPinkLight/30 text-center cursor-pointer group">
+                                <input type="file" id="cakePrintFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="BoseSweetsEngine.handleCakeFileUpload('print')">
+                                <div class="space-y-2 relative z-10">
+                                    <div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto shadow-sm border border-brandPink/10">
+                                        <i class="fa-solid fa-cloud-arrow-up text-xl text-brandPink"></i>
+                                    </div>
+                                    <p class="text-xs text-brandBlack font-extrabold tracking-wide" id="cakePrintLabel">ارفع الصورة المراد طباعتها على سطح التورتة بدقة كاملة</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <button type="button" onclick="BoseSweetsEngine.navigateCakeStep(1)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                                <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للمقاس
+                            </button>
+                            <button type="button" onclick="BoseSweetsEngine.navigateCakeStep(3)" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                                {{ "المرحلة الأخيرة: تفاصيل التأكيد" }} <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="cake-screen-3" class="space-y-6 hidden transition-all duration-300">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">تفاصيل ثيم وموضوع المناسبة الخاصة بك:</label>
+                            <textarea id="cakeThemeDetails" rows="3" placeholder="اكتب لنا هنا نوع المناسبة وتفاصيل الثيم المفضل لديك" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack transition-all leading-relaxed"></textarea>
+                        </div>
+
+                        <div class="p-5 rounded-2xl bg-brandPinkLight/40 border-2 border-brandPink space-y-2 shadow-sm">
+                            <label class="block text-xs font-extrabold text-brandPink flex items-center gap-1.5 uppercase tracking-wide">
+                                <i class="fa-solid fa-shield-halved text-sm"></i> الأمان الصحي المحمي لكافة أفراد الأسرة:
+                            </label>
+                            <textarea id="cakeAllergies" rows="2" placeholder="اكتب هنا لو لوحظ أي حساسية من مكونات معينة لعزلها تماماً" class="w-full p-3.5 border border-brandPink/15 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 bg-white text-brandBlack transition-all leading-relaxed"></textarea>
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">الكتابة الفنية بخط اليد فوق سطح الكيك:</label>
+                            <input type="text" id="cakeText" placeholder="اكتب الجملة أو الاسم المطلوب خطّه بالكريمة" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack transition-all">
+                        </div>
+
+                        <div class="space-y-3 p-4 bg-white border border-brandPink/10 rounded-2xl shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="cakeCardCheck" onchange="BoseSweetsEngine.toggleCakeCardInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
+                                <label for="cakeCardCheck" class="text-xs font-extrabold text-brandBlack cursor-pointer select-none">هل ترغب في إرفاق كارت إهداء خارجي فاخر ومطبوع?</label>
+                            </div>
+                            <div id="cakeCardInputArea" class="hidden pt-2 transition-all duration-300">
+                                <input type="text" id="cakeCardText" placeholder="اكتب الرسالة أو الكلمات المطلوبة داخل كارت الإهداء الخارجي" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack transition-all">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <button type="button" onclick="BoseSweetsEngine.navigateCakeStep(2)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                                <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للتصميم
+                            </button>
+                            <button type="button" onclick="BoseSweetsEngine.addCakeToCart()" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                                اعتماد التصميم وإضافته للسلة <i class="fa-solid fa-bag-shopping text-[11px] mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-rose-builder" class="view-section hidden py-16 bg-white">
+                <div class="max-w-3xl mx-auto px-4">
+                    <div class="text-center mb-12 space-y-3">
+                        <span class="inline-block px-4 py-1 bg-brandPinkLight text-brandPink rounded-full text-[11px] font-extrabold tracking-wider border border-brandPink/15 shadow-sm">تكامل الهدية والجمال</span>
+                        <h1 class="text-3xl font-extrabold text-brandBlack tracking-tight">محاكي تنسيق الورد الفاخر</h1>
+                        <p class="text-xs text-brandBlack/50 max-w-md mx-auto leading-relaxed font-semibold">صمّم باقة زهورك المثالية، وادمج الهدايا النقدية أو الشوكولاتة العالمية من خلال ثلاث شاشات تفاعلية ومصقولة.</p>
+                    </div>
+
+                    <div class="relative flex items-center justify-between mb-12 max-w-lg mx-auto px-4">
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="rose-step-1-indicator" class="w-10 h-10 rounded-full bg-brandPink text-white flex items-center justify-center font-extrabold text-sm shadow-md shadow-brandPink/20 transition-all duration-300">
+                                <i class="fa-solid fa-seedling text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack">الحجم والنوع</span>
+                        </div>
+                        <div class="flex-grow h-[3px] bg-brandPinkLight mx-2 rounded-full relative overflow-hidden">
+                            <div class="absolute inset-0 bg-brandPink transition-all duration-500" id="rose-line-1" style="width: 0%;"></div>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="rose-step-2-indicator" class="w-10 h-10 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/15 flex items-center justify-center font-extrabold text-sm transition-all duration-300">
+                                <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack/40" id="rose-text-step-2">التخصيص والزينة</span>
+                        </div>
+                        <div class="flex-grow h-[3px] bg-brandPinkLight mx-2 rounded-full relative overflow-hidden">
+                            <div class="absolute inset-0 bg-brandPink transition-all duration-500" id="rose-line-2" style="width: 0%;"></div>
+                        </div>
+                        <div class="flex flex-col items-center gap-2 relative z-10 group">
+                            <div id="rose-step-3-indicator" class="w-10 h-10 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/15 flex items-center justify-center font-extrabold text-sm transition-all duration-300">
+                                <i class="fa-solid fa-gift text-xs"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-brandBlack/40" id="rose-text-step-3">الشوكولاتة والإنهاء</span>
+                        </div>
+                    </div>
+
+                    <div id="rose-screen-1" class="space-y-8 transition-all duration-300">
+                        <div class="space-y-3 p-5 rounded-2xl bg-brandPinkLight/30 border border-brandPink/15">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">المسار الأول (رفع صورة بوكيه مرجعي - اختياري):</label>
+                            <div class="relative border-2 border-dashed border-brandPink/20 hover:border-brandPink rounded-xl p-6 transition-all bg-white text-center cursor-pointer group">
+                                <input type="file" id="roseReferenceFile" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer z-20" onchange="BoseSweetsEngine.handleRoseReferenceUpload()">
+                                <div class="space-y-2 relative z-10">
+                                    <i class="fa-solid fa-image text-2xl text-brandPink"></i>
+                                    <p class="text-xs text-brandBlack font-extrabold" id="roseReferenceLabel">ارفع هنا صورة بوكيه الورد اللي حابب نعمل لك زيه</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-center pt-2" id="roseQuickBuyArea">
+                                <button type="button" onclick="BoseSweetsEngine.quickBuyRoseBouquet()" class="text-xs text-brandPink font-extrabold hover:underline">
+                                    <i class="fa-solid fa-bolt animate-pulse"></i> حابب تكتفي بالصورة وتنهي الطلب فوراً؟
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-[28px] bg-white border border-brandPink/15 shadow-[0_4px_25px_rgba(255,145,164,0.05)] space-y-5">
+                            <div class="flex items-center justify-between border-b border-brandPink/10 pb-4">
+                                <div class="space-y-0.5">
+                                    <span class="text-xs font-extrabold text-brandBlack">عدد الورد في البوكيه الفاخر:</span>
+                                    <p class="text-[10px] text-brandBlack/40 font-bold" id="roseMinCountHint">الحد الأدنى للتنسيق 15 وردة طبيعية</p>
+                                </div>
+                                <div class="bg-brandPinkLight px-4 py-2 rounded-2xl border border-brandPink/10 text-center min-w-[110px]">
+                                    <span class="text-[10px] block font-bold text-brandBlack/50">تكلفة الباقة المبدئية</span>
+                                    <span class="text-brandPink font-extrabold text-base md:text-lg tracking-tight" id="roseLivePriceDisplay">0 ج.م</span>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center gap-5 justify-center py-2">
+                                <button type="button" onclick="BoseSweetsEngine.adjustRoseCount(-1)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">-</button>
+                                <div class="text-center min-w-[80px]">
+                                    <span id="roseCount" class="text-2xl font-black text-brandBlack tracking-tight block">15</span>
+                                    <span class="text-[9px] text-brandBlack/40 font-extrabold uppercase tracking-wider">وردة معتمدة</span>
+                                </div>
+                                <button type="button" onclick="BoseSweetsEngine.adjustRoseCount(1)" class="w-11 h-11 rounded-full border border-brandPink/20 bg-brandPinkLight hover:bg-brandPink/20 text-brandBlack font-black transition-all flex items-center justify-center text-lg shadow-sm active:scale-90">+</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">نوع الورد المختار لمناسبتكم الكبرى:</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseType('ورد طبيعي')" id="rose-type-ورد طبيعي" class="p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all text-center">ورد طبيعي فريش</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseType('صناعي')" id="rose-type-صناعي" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-extrabold transition-all text-center hover:border-brandPink/30">صناعي راقي</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseType('ستان')" id="rose-type-ستان" class="p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-extrabold transition-all text-center hover:border-brandPink/30">ستان مشغول يدوياً</button>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">تنسيق ألوان الورد المطلوبة بدقة:</label>
+                                <input type="text" id="roseColors" placeholder="مثال: ميكس أحمر ملكي مع أبيض ناصع" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
+                            </div>
+                        </div>
+
+                        <div class="pt-2">
+                            <button type="button" onclick="BoseSweetsEngine.navigateRoseStep(2)" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                                تنسيق إضافات البوكيه الفاخرة والزينة <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="rose-screen-2" class="space-y-6 hidden transition-all duration-300">
+                        <div class="space-y-4 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">خوارزمية دمج الأموال النقدية (الكاش) داخل البوكيه:</label>
+                            <input type="number" id="roseCashAmount" onkeyup="BoseSweetsEngine.calculateRoseCash()" placeholder="اكتب إجمالي المبلغ المالي المراد لفه وتنسيقه وسط الورد" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
+                            
+                            <div class="space-y-2">
+                                <label class="block text-[11px] font-extrabold text-brandBlack/50">فئة الورقة النقدية المطلوبة للالتفاف الفني:</label>
+                                <div class="grid grid-cols-6 gap-2">
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(5)" id="rose-denom-5" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">5 ج</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(10)" id="rose-denom-10" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">10 ج</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(20)" id="rose-denom-20" class="py-2 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">20 ج</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(50)" id="rose-denom-50" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">50 ج</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(100)" id="rose-denom-100" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">100 ج</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseDenomination(200)" id="rose-denom-200" class="py-2 rounded-xl border border-brandPink/10 text-brandBlack text-xs font-bold transition-all text-center bg-white hover:border-brandPink/20">200 ج</button>
+                                </div>
+                            </div>
+                            <div id="roseCashOutput" class="hidden p-3.5 bg-brandPinkLight/30 rounded-xl border border-brandPink/10 text-xs font-bold">
+                                <p id="roseCashCalcText"></p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <div class="space-y-0.5">
+                                    <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">إضافة صور مطبوعة تذكارية وسط الورد:</label>
+                                    <p class="text-[10px] text-brandBlack/40 font-bold" id="rosePhotoPriceHint">تكلفة طباعة وتجهيز كل صورة هي مخصصة وعادلة</p>
+                                </div>
+                                <div class="flex items-center gap-3 bg-brandPinkLight p-1 rounded-full border border-brandPink/10">
+                                    <button type="button" onclick="BoseSweetsEngine.adjustRosePhotos(-1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
+                                    <span id="rosePhotosCount" class="text-xs font-extrabold text-brandBlack w-6 text-center">0</span>
+                                    <button type="button" onclick="BoseSweetsEngine.adjustRosePhotos(1)" class="w-7 h-7 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
+                                </div>
+                            </div>
+                            <div id="rosePhotoUploadsContainer" class="grid grid-cols-2 gap-3 hidden transition-all duration-300"></div>
+                        </div>
+
+                        <div class="space-y-3 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="roseRibbonCheck" onchange="BoseSweetsEngine.toggleRoseRibbonInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
+                                <label for="roseRibbonCheck" class="text-xs font-extrabold text-brandBlack cursor-pointer select-none" id="roseRibbonLabel">إضافة شريط ستان مطبوع يلتف فاخراً حول البوكيه</label>
+                            </div>
+                            <div id="roseRibbonInputArea" class="hidden pt-1">
+                                <input type="text" id="roseRibbonText" placeholder="اكتب العبارة أو الكلمات المراد طباعتها على شريط الستان" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <button type="button" onclick="BoseSweetsEngine.navigateRoseStep(1)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                                <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للمقاس
+                            </button>
+                            <button type="button" onclick="BoseSweetsEngine.navigateRoseStep(3)" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                                إضافة الشوكولاتة وكارت الإهداء <i class="fa-solid fa-chevron-left text-[10px] mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="rose-screen-3" class="space-y-6 hidden transition-all duration-300">
+                        <div class="space-y-4 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">إلصاق الشوكولاتة الفاخرة وتوزيعها داخل البوكيه:</label>
+                            <input type="number" id="roseChocBudget" onkeyup="BoseSweetsEngine.calculateRoseChocolate()" placeholder="حدد الميزانية المراد تخصيصها لشراء قطع الشوكولاتة المدمجة" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
+                            
+                            <div class="space-y-2">
+                                <label class="block text-[11px] font-extrabold text-brandBlack/50">فئة سعر قطعة الشوكولاتة المستهدفة للتكرار:</label>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseChocPiecePrice(20)" id="rose-choc-piece-20" class="py-2.5 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center">قطع فئة 20 جنيه</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseChocPiecePrice(30)" id="rose-choc-piece-30" class="py-2.5 rounded-xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/20">قطع فئة 30 جنيه</button>
+                                    <button type="button" onclick="BoseSweetsEngine.selectRoseChocPiecePrice(50)" id="rose-choc-piece-50" class="py-2.5 rounded-xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/20">قطع فئة 50 جنيه</button>
+                                </div>
+                            </div>
+                            <div id="roseChocOutput" class="hidden p-3.5 bg-brandPinkLight/30 rounded-xl border border-brandPink/10 text-xs font-bold">
+                                <p id="roseChocCalcText"></p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 p-5 rounded-2xl bg-white border border-brandPink/15 shadow-sm">
+                            <label class="block text-xs font-extrabold text-brandBlack uppercase tracking-wider">إضافة بارات شوكولاتة كبرى فاخرة (ثابتة السعر):</label>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between border-b border-brandPink/5 pb-2">
+                                    <span class="text-xs font-bold text-brandBlack/70">بار جالاكسي كبير فاخر (100 ج.م)</span>
+                                    <div class="flex items-center gap-3 bg-brandPinkLight p-1 rounded-full border border-brandPink/10">
+                                        <button type="button" onclick="BoseSweetsEngine.adjustRosePremiumBar(100, -1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
+                                        <span id="rosePremiumBar100" class="text-xs font-extrabold text-brandBlack w-4 text-center">0</span>
+                                        <button type="button" onclick="BoseSweetsEngine.adjustRosePremiumBar(100, 1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-xs font-bold text-brandBlack/70">بار كادبوري حليبي فاخر (120 ج.م)</span>
+                                    <div class="flex items-center gap-3 bg-brandPinkLight p-1 rounded-full border border-brandPink/10">
+                                        <button type="button" onclick="BoseSweetsEngine.adjustRosePremiumBar(120, -1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">-</button>
+                                        <span id="rosePremiumBar120" class="text-xs font-extrabold text-brandBlack w-4 text-center">0</span>
+                                        <button type="button" onclick="BoseSweetsEngine.adjustRosePremiumBar(120, 1)" class="w-6 h-6 rounded-full bg-white text-brandBlack font-extrabold flex items-center justify-center text-xs shadow-sm">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 p-4 bg-white border border-brandPink/10 rounded-2xl shadow-sm">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="roseCardCheck" onchange="BoseSweetsEngine.toggleRoseCardInput()" class="rounded text-brandPink focus:ring-brandPink w-5 h-5 accent-brandPink cursor-pointer">
+                                <label for="roseCardCheck" class="text-xs font-extrabold text-brandBlack cursor-pointer select-none" id="roseCardLabel">شراء كارت إهداء خارجي فاخر مع الطباعة الملونة</label>
+                            </div>
+                            <div id="roseCardInputArea" class="hidden pt-2 transition-all duration-300">
+                                <input type="text" id="roseCardText" placeholder="اكتب هنا الكلمات أو الرسالة المراد خطّها داخل كارت الإهداء" class="w-full p-4 border border-brandPink/15 bg-brandPinkLight/30 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-brandPink/20 text-brandBlack">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-2">
+                            <button type="button" onclick="BoseSweetsEngine.navigateRoseStep(2)" class="py-4 border border-brandPink/20 text-brandBlack/70 hover:bg-brandPinkLight font-extrabold rounded-full text-xs">
+                                <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i> العودة للتخصيص
+                            </button>
+                            <button type="button" onclick="BoseSweetsEngine.addRoseToCart()" class="py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md">
+                                إتمام باقة الزهور وإضافتها للسلة <i class="fa-solid fa-bag-shopping text-[11px] mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-cart" class="view-section hidden py-12 bg-white">
+                <div class="max-w-4xl mx-auto px-4">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-brandBlack mb-8">سلة المشتريات المعتمدة</h1>
+              
+                    <div id="cartEmptyState" class="text-center py-16 space-y-4">
+                        <div class="w-20 h-20 bg-brandPinkLight text-brandPink flex items-center justify-center rounded-full mx-auto border border-brandPink/20">
+                            <i class="fa-solid fa-cart-shopping text-3xl"></i>
+                        </div>
+                        <p class="text-sm font-bold text-brandBlack/60">سلتك خالية تماماً من المنتجات حالياً</p>
+                        <button onclick="BoseSweetsEngine.navigateTo('menu')" class="px-6 py-2.5 bg-brandPink hover:bg-brandPinkDark text-white font-bold rounded-full text-xs transition-colors shadow-md">
+                            تصفح المنيو للبدء
+                        </button>
+                    </div>
+
+                    <div id="cartItemsContainer" class="space-y-6 hidden">
+                        <div id="cartItemsList" class="space-y-4"></div>
+
+                        <div class="p-6 rounded-2xl bg-brandPinkLight border border-brandPink/25 flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
+                            <div>
+                                <span class="text-xs font-bold text-brandBlack/60">إجمالي قيمة الفاتورة المقدرة:</span>
+                                <p class="text-2xl font-extrabold text-brandPink" id="cartTotalSum">0 ج.م</p>
+                            </div>
+                            <div class="flex gap-3 w-full sm:w-auto">
+                                <button onclick="BoseSweetsEngine.clearCart()" class="px-5 py-3 border border-brandPink/20 hover:bg-brandPinkLight font-bold text-sm text-brandBlack/70 rounded-full transition-all">تفريغ السلة</button>
+                                <button onclick="BoseSweetsEngine.navigateTo('checkout')" class="px-8 py-3.5 bg-brandPink hover:bg-brandPinkDark text-white font-bold text-sm rounded-full transition-all flex-grow sm:flex-grow-0 text-center shadow-md">
+                                    التوجه لإتمام الطلب
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-checkout" class="view-section hidden py-12 bg-white">
+                <div class="max-w-3xl mx-auto px-4">
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-brandBlack mb-8">إتمام المعاملة وحجز الطلب</h1>
+                    
+                    <form id="checkoutForm" onsubmit="BoseSweetsEngine.handleCheckoutSubmit(event)" class="space-y-6">
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-bold text-brandBlack">الاسم بالكامل للعميل المعتمد:</label>
+                                    <input type="text" id="custName" required placeholder="مثال: أحمد عبد الله" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="block text-sm font-bold text-brandBlack">رقم الهاتف للتواصل المباشر:</label>
+                                    <input type="tel" id="custPhone" required placeholder="مثال: 01097238441" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack text-left" dir="ltr">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="block text-sm font-bold text-brandBlack">قرية أو منطقة التسليم المستهدفة:</label>
+                                <select id="shippingRegion" required onchange="BoseSweetsEngine.handleRegionChange()" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack">
+                                    <option value="" disabled selected>اختر المنطقة لشحن وتبريد آمن...</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-sm font-bold text-brandBlack">العنوان التفصيلي (الشارع أو علامة مميزة):</label>
+                                <input type="text" id="shippingAddress" required placeholder="اسم الشارع، رقم المنزل، أو علامة مميزة" class="w-full p-4 border border-brandPink/20 bg-brandPinkLight rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brandPink/30 focus:border-brandPink text-brandBlack">
+                            </div>
+                        </div>
+
+                        <div id="checkoutPricingSummary" class="p-6 rounded-2xl bg-brandPinkLight/30 border border-brandPink/15 space-y-3">
+                            <div class="flex justify-between items-center text-xs font-bold text-brandBlack/70">
+                                <span>قيمة المنتجات المعتمدة:</span>
+                                <span id="checkoutSubtotal">0 ج.م</span>
+                            </div>
+                            <div class="flex justify-between items-center text-xs font-bold text-brandBlack/70">
+                                <span>تكلفة الشحن والتبريد للمنطقة:</span>
+                                <span id="checkoutShipping">0 ج.م</span>
+                            </div>
+                            <div class="h-px bg-brandPink/10 my-1"></div>
+                            <div class="flex justify-between items-center text-sm font-extrabold text-brandBlack">
+                                <span>إجمالي الفاتورة النهائي والمطابق:</span>
+                                <span class="text-brandPink text-base md:text-lg" id="checkoutGrandTotal">0 ج.م</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs tracking-wide transition-all duration-300 shadow-md transform hover:-translate-y-0.5">
+                            تأكيد المعاملة وإرسال الطلب عبر الواتساب <i class="fa-solid fa-circle-check mr-1"></i>
+                        </button>
+                    </form>
+                </div>
             </section>
 
         </main>
 
-        <!-- ========================================================= -->
-        <!-- FOOTER -->
-        <!-- ========================================================= -->
-
-        <footer
-            style="
-                margin-top:5rem;
-                background:#fff7f8;
-                border-top:1px solid var(--brand-border);
-            "
-        >
-
-            <div
-                class="container-safe"
-                style="
-                    padding-block:4rem;
-                    display:grid;
-                    grid-template-columns:
-                    repeat(auto-fit,minmax(260px,1fr));
-                    gap:2rem;
-                "
-            >
-
-                <div>
-
-                    <h2
-                        style="
-                            font-size:2rem;
-                            font-weight:900;
-                        "
-                    >
-                        حلويات
-                        <span style="color:var(--brand-pink)">
-                            بوسي
-                        </span>
-                    </h2>
-
-                    <p
-                        style="
-                            margin-top:1rem;
-                            line-height:2;
-                            color:#666;
-                        "
-                    >
-                        تورتات فاخرة وحلويات طبيعية
-                        وتجهيزات احترافية للمناسبات.
+        <footer class="bg-brandBlack text-white/90 border-t-2 border-brandPink/30 pt-16 pb-8">
+            <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-12 border-b border-white/10 pb-12 mb-8">
+                <div class="space-y-4">
+                    <span class="text-xl font-black tracking-tight block">حلويات <span class="text-brandPink">بوسي</span></span>
+                    <p class="text-xs text-white/60 leading-relaxed font-medium">
+                        صناعة يدوية فاخرة وخامات طبيعية 100% خالية تماماً من المحسنات الصناعية. نلتزم بأعلى معايير الإتقان الفني لتقديم تجربة تليق بمناسباتكم السعيدة داخل الفرافرة.
                     </p>
-
                 </div>
-
-                <div>
-
-                    <h3
-                        style="
-                            font-size:1.2rem;
-                            font-weight:900;
-                        "
-                    >
-                        روابط مهمة
-                    </h3>
-
-                    <ul
-                        style="
-                            margin-top:1rem;
-                            display:grid;
-                            gap:1rem;
-                            color:#444;
-                            font-weight:700;
-                        "
-                    >
-
-                        <li>
-                            <a href="/">
-                                الرئيسية
-                            </a>
-                        </li>
-
-                        <li>
-                            <a href="#view-home">
-                                المنيو
-                            </a>
-                        </li>
-
+                <div class="space-y-4">
+                    <span class="text-xs font-extrabold text-brandPink uppercase tracking-wider block">قنوات المبيعات والامتثال:</span>
+                    <ul class="space-y-2.5 text-xs font-bold">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-phone text-brandPink text-[11px]"></i> <a href="tel:01097238441" dir="ltr" class="hover:text-brandPink transition-colors">01097238441</a></li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-location-dot text-brandPink text-[11px]"></i> الوادي الجديد - مركز الفرافرة - الكفاح</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-clock text-brandPink text-[11px]"></i> استقبال الطلبات: 9:00 ص - 11:00 م</li>
                     </ul>
-
                 </div>
-
-                <div>
-
-                    <h3
-                        style="
-                            font-size:1.2rem;
-                            font-weight:900;
-                        "
-                    >
-                        التواصل
-                    </h3>
-
-                    <ul
-                        style="
-                            margin-top:1rem;
-                            display:grid;
-                            gap:1rem;
-                            color:#444;
-                            font-weight:700;
-                        "
-                    >
-
-                        <li>
-                            📞 01097238441
-                        </li>
-
-                        <li>
-                            📍 الكفاح — الفرافرة
-                        </li>
-
-                    </ul>
-
+                <div class="space-y-4">
+                    <span class="text-xs font-extrabold text-brandPink uppercase tracking-wider block">روابط سريعة ومباشرة:</span>
+                    <div class="grid grid-cols-2 gap-2 text-xs font-bold">
+                        <a href="#" onclick="BoseSweetsEngine.navigateTo('home')" class="hover:text-brandPink transition-colors">الرئيسية</a>
+                        <a href="#" onclick="BoseSweetsEngine.navigateTo('menu')" class="hover:text-brandPink transition-colors">المنيو الكامل</a>
+                        <a href="#" onclick="BoseSweetsEngine.navigateTo('cake-builder')" class="hover:text-brandPink transition-colors">محاكي التورت</a>
+                        <a href="#" onclick="BoseSweetsEngine.navigateTo('rose-builder')" class="hover:text-brandPink transition-colors">تنسيق الورد</a>
+                    </div>
                 </div>
-
             </div>
-
+            <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-bold text-white/40">
+                <p>جميع الحقوق البرمجية والمواصفات الفنية محفوظة © لعلامة حلويات بوسي 2026</p>
+                <div class="flex items-center gap-4">
+                    <a href="https://facebook.com/" target="_blank" rel="noopener noreferrer" class="hover:text-brandPink text-sm transition-colors" aria-label="فيسبوك"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://instagram.com/" target="_blank" rel="noopener noreferrer" class="hover:text-brandPink text-sm transition-colors" aria-label="إنستغرام"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
         </footer>
 
     </div>
+<script type="module">
+import { SYSTEM_CORE } from './system-core.js';
+import { REGISTRY } from './system-registry.js';
+import { FIREBASE_ENGINE } from './firebase-engine.js';
 
-    <!-- ========================================================= -->
-    <!-- MODULES -->
-    <!-- ========================================================= -->
+class BoseSweetsAppManager {
+    constructor() {
+        this.currentView = 'home';
+        this.cakeCustomState = { base: 'فانيليا', shape: 'دائرة', people: 4, print: 'none' };
+        this.roseCustomState = { type: 'ورد طبيعي', count: 15, cash: 0, denomination: 20, photos: 0, ribbon: false, chocBudget: 0, chocPiecePrice: 20, premiumBars: { 100: 0, 120: 0 }, card: false };
+        this.cart = [];
+        this.menuData = [];
+        this.globalConfig = null;
+        this.selectedShippingCost = 0;
+        this.activeListeners = [];
+    }
 
-    <script
-        type="module"
-        src="./system-registry.js"
-    ></script>
+    init() {
+        const executeLifecycleBoot = () => {
+            this.syncWithCoreState();
+            this.activateRealtimeCloudSync();
+        };
 
-    <script
-        type="module"
-        src="./system-core.js"
-    ></script>
+        const currentHealthStatus = SYSTEM_CORE.HEALTH.status();
+        if (currentHealthStatus.runtime && currentHealthStatus.runtime.initialized) {
+            executeLifecycleBoot();
+        } else {
+            SYSTEM_CORE.EVENTS.on(REGISTRY.EVENTS.SYSTEM.READY, (payload) => {
+                if (payload && payload.status === 'READY') {
+                    executeLifecycleBoot();
+                }
+            });
+        }
+    }
 
-    <script
-        type="module"
-        src="./firebase-engine.js"
-    ></script>
+    syncWithCoreState() {
+        const savedCart = SYSTEM_CORE.STATE.get(REGISTRY.STATE.CART.key);
+        if (savedCart && Array.isArray(savedCart)) {
+            this.cart = savedCart;
+            this.updateCartBadge();
+        }
+    }
 
-    <script
-        type="module"
-        src="./commerce-engine.js"
-    ></script>
+    activateRealtimeCloudSync() {
+        // المزامنة الحية للإعدادات العامة وتكاليف الشحن من السحابة لضمان مطابقة الأسعار فوراً
+        const unsubscribeConfigId = FIREBASE_ENGINE.WATCHERS.document(REGISTRY.FIREBASE.SETTINGS.GLOBAL_CONFIG, (cleanGlobalConfig) => {
+            if (cleanGlobalConfig) {
+                this.globalConfig = { ...this.globalConfig, ...cleanGlobalConfig };
+                SYSTEM_CORE.STATE.set(REGISTRY.STATE.SYSTEM_STATUS.key, this.globalConfig);
+                
+                const footerPhone = document.getElementById('footerPhoneDisplay');
+                if (footerPhone && cleanGlobalConfig.phone) footerPhone.textContent = cleanGlobalConfig.phone;
+                
+                const ticker = document.getElementById('marqueeContent');
+                if (ticker && cleanGlobalConfig.marqueeText) {
+                    ticker.innerHTML = `<span>✨ ${cleanGlobalConfig.marqueeText}</span>`.repeat(4);
+                }
+                
+                this.updateStaticLabels();
+                this.updateCakePriceDisplay();
+                this.updateRosePriceDisplay();
+            }
+        });
+        this.activeListeners.push(unsubscribeConfigId);
 
-    <script
-        type="module"
-        src="./unified-engine.js"
-    ></script>
+        // المزامنة الحية للمنيو الكامل، توفر السلع، تعديل الأسعار، وصور السلع النهارية الطبيعية 100%
+        const unsubscribeMenuId = FIREBASE_ENGINE.WATCHERS.collection(REGISTRY.FIREBASE.COLLECTIONS.MENU, (cloudMenu) => {
+            if (cloudMenu && cloudMenu.length > 0) {
+                this.menuData = cloudMenu.map(item => {
+                    let computedPrice = item.price || 150;
+                    if (item.flavors && item.flavors[0]) {
+                        computedPrice = item.flavors[0].price;
+                    } else if (item.sizes && item.sizes[0] && item.sizes[0].flavors && item.sizes[0].flavors[0]) {
+                        computedPrice = item.sizes[0].flavors[0].price;
+                    }
+                    return {
+                        id: item.id,
+                        name: item.name || 'صنف فاخر',
+                        category: item.category || 'حلويات',
+                        price: computedPrice,
+                        image: item.img || item.image || './assets/cake1.webp',
+                        desc: item.desc || item.description || '',
+                        unit: item.unit || 'معياري فاخر'
+                    };
+                });
+                
+                SYSTEM_CORE.STATE.set(REGISTRY.STATE.MENU.key, this.menuData);
+                this.renderHomepageGrid();
+                this.renderMenuCategories();
+            }
+        });
+        this.activeListeners.push(unsubscribeMenuId);
 
+        this.populateShippingRegions();
+    }
+
+    updateStaticLabels() {
+        if (!this.globalConfig) return;
+        const edibleBtn = document.getElementById('cake-print-edible');
+        const nonEdibleBtn = document.getElementById('cake-print-non-edible');
+        if (edibleBtn) edibleBtn.textContent = `قابلة للأكل (+${this.globalConfig.cakePrintEdiblePrice || 60} ج.م)──`;
+        if (nonEdibleBtn) nonEdibleBtn.textContent = `غير قابلة للأكل (+${this.globalConfig.cakePrintNonEdiblePrice || 20} ج.م)──`;
+
+        const minCountHint = document.getElementById('roseMinCountHint');
+        if (minCountHint) minCountHint.textContent = `الحد الأدنى للتنسيق ${this.globalConfig.roseMinCount || 15} وردة طبيعية فريش`;
+
+        const photoHint = document.getElementById('rosePhotoPriceHint');
+        if (photoHint) photoHint.textContent = `تكلفة طباعة وتجهيز كل صورة هي +${this.globalConfig.rosePhotoPrice || 15} ج.م`;
+
+        const ribbonLabel = document.getElementById('roseRibbonLabel');
+        if (ribbonLabel) ribbonLabel.textContent = `إضافة شريط ستان مطبوع يلتف فاخراً حول البوكيه (+${this.globalConfig.roseRibbonPrice || 50} ج.م)`;
+
+        const cardLabel = document.getElementById('roseCardLabel');
+        if (cardLabel) cardLabel.textContent = `شراء كارت إهداء خارجي فاخر مع الطباعة الملونة (+${this.globalConfig.roseCardPrice || 20} ج.م)`;
+    }
+
+    populateShippingRegions() {
+        const select = document.getElementById(REGISTRY.DOM.CHECKOUT.SHIPPING_REGION.id);
+        if (!select) return;
+
+        const rates = SYSTEM_CORE.STATE.get(REGISTRY.STATE.SHIPPING_RATES.key) || {
+            "الفرافرة": 50, "الكفاح": 30, "الجمعية": 50, "الصنايع": 40, "ابوبكر": 40,
+            "ابوالهول": 30, "الامل": 50, "13": 70, "17": 70, "ابوهريرة": 140
+        };
+
+        select.innerHTML = '<option value="" disabled selected>اختر المنطقة لشحن وتبريد آمن...</option>' + 
+            Object.keys(rates).map(region => `<option value="${region}">قرية ${region} (${rates[region]} ج.م)</option>`).join('');
+    }
+
+    handleRegionChange() {
+        const select = document.getElementById(REGISTRY.DOM.CHECKOUT.SHIPPING_REGION.id);
+        if (!select) return;
+
+        const rates = SYSTEM_CORE.STATE.get(REGISTRY.STATE.SHIPPING_RATES.key) || {
+            "الفرافرة": 50, "الكفاح": 30, "الجمعية": 50, "الصنايع": 40, "ابوبكر": 40,
+            "ابوالهول": 30, "الامل": 50, "13": 70, "17": 70, "ابوهريرة": 140
+        };
+
+        this.selectedShippingCost = rates[select.value] || 0;
+        this.renderCheckoutView();
+    }
+
+    navigateTo(viewId) {
+        const validViews = ['home', 'menu', 'product', 'cake-builder', 'rose-builder', 'cart', 'checkout'];
+        if (!validViews.includes(viewId)) return;
+
+        validViews.forEach(v => {
+            const el = document.getElementById(`view-${v}`);
+            if (el) el.classList.add('hidden');
+        });
+
+        const targetEl = document.getElementById(`view-${viewId}`);
+        if (targetEl) targetEl.classList.remove('hidden');
+
+        this.currentView = viewId;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        if (viewId === 'cart') this.renderCartView();
+        if (viewId === 'checkout') this.renderCheckoutView();
+        
+        SYSTEM_CORE.EVENTS.emit(REGISTRY.EVENTS.VIEW.CHANGED, { view: viewId });
+    }
+
+    toggleSidebar(open) {
+        const sidebar = document.getElementById(REGISTRY.DOM.GLOBAL.SIDEBAR.id);
+        const overlay = document.getElementById(REGISTRY.DOM.GLOBAL.SIDEBAR_OVERLAY.id);
+        if (!sidebar || !overlay) return;
+
+        if (open) {
+            sidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('opacity-0', 'pointer-events-none');
+        } else {
+            sidebar.classList.add('translate-x-full');
+            overlay.classList.add('opacity-0', 'pointer-events-none');
+        }
+    }
+
+    renderHomepageGrid() {
+        const container = document.getElementById(REGISTRY.DOM.HOMEPAGE.DYNAMIC_CONTENT.id);
+        if (!container) return;
+
+        if (this.menuData.length === 0) {
+            container.innerHTML = `<p class="col-span-full text-center text-xs font-bold text-brandBlack/40 py-8">جاري مزامنة المنتجات الفاخرة من السحابة...</p>`;
+            return;
+        }
+
+        const outOfStockList = SYSTEM_CORE.STATE.get(REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key) || [];
+
+        container.innerHTML = this.menuData.map(item => {
+            const isOutOfStock = outOfStockList.includes(item.id);
+            return `
+                <div class="bose-full-card cursor-pointer ${isOutOfStock ? 'opacity-60 relative' : ''}" onclick="${isOutOfStock ? '' : `BoseSweetsEngine.viewProductDetails('${item.id}')`}">
+                    <div class="relative w-full aspect-square bg-brandPinkLight overflow-hidden">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"100\" height=\"100\" viewBox=\"0 0 100 100\"><rect width=\"100%\" height=\"100%\" fill=\"%23fff5f6\"/><text x=\"50%\" y=\"50%\" font-size=\"10\" font-family=\"Cairo\" font-weight=\"bold\" dominant-baseline=\"middle\" text-anchor=\"middle\" fill=\"%23ff91a4\">حلويات بوسي</text></svg>'">
+                        <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm border border-brandPink/15 text-brandPink text-[10px] font-black px-2.5 py-1 rounded-full">${item.category}</span>
+                        ${isOutOfStock ? `<div class="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-xs font-black">نفذ مؤقتاً من المطبخ 🛑</div>` : ''}
+                    </div>
+                    <div class="p-4 flex flex-col justify-between flex-grow space-y-3">
+                        <div class="space-y-1">
+                            <h3 class="text-xs font-extrabold text-brandBlack line-clamp-1">${item.name}</h3>
+                            <p class="text-[11px] text-brandBlack/50 font-medium line-clamp-2 leading-relaxed">${item.desc}</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-1 border-t border-brandPink/5">
+                            <span class="text-brandPink font-black text-sm tracking-tight">${item.price} ج.م</span>
+                            <span class="text-[10px] font-bold text-brandBlack/40 bg-brandPinkLight px-2 py-0.5 rounded-md">${item.unit}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    renderMenuCategories() {
+        const grid = document.getElementById(REGISTRY.DOM.HOMEPAGE.MENU_GRID.id);
+        if (!grid) return;
+
+        const categories = ['تورتات', 'باقات الورد', 'حلويات'];
+        const outOfStockList = SYSTEM_CORE.STATE.get(REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key) || [];
+
+        grid.innerHTML = categories.map(cat => {
+            const items = this.menuData.filter(i => i.category === cat);
+            return `
+                <div class="bg-brandPinkLight/40 rounded-3xl p-6 border border-brandPink/10 space-y-4">
+                    <h2 class="text-sm font-black text-brandBlack border-r-4 border-brandPink pr-2.5 uppercase tracking-wide">${cat}</h2>
+                    <div class="space-y-3">
+                        ${items.map(item => {
+                            const isOutOfStock = outOfStockList.includes(item.id);
+                            return `
+                                <div class="flex items-center gap-3 bg-white p-3 rounded-2xl border border-brandPink/5 hover:border-brandPink/20 transition-colors cursor-pointer relative ${isOutOfStock ? 'opacity-50' : ''}" onclick="${isOutOfStock ? '' : `BoseSweetsEngine.viewProductDetails('${item.id}')`}">
+                                    <img src="${item.image}" alt="${item.name}" class="w-12 h-12 rounded-xl object-cover bg-brandPinkLight flex-shrink-0" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"50\" height=\"50\" viewBox=\"0 0 50 50\"><rect width=\"100%\" height=\"100%\" fill=\"%23fff5f6\"/></svg>'">
+                                    <div class="flex-grow min-w-0">
+                                        <h3 class="text-[11px] font-extrabold text-brandBlack truncate">${item.name}</h3>
+                                        <span class="text-brandPink font-black text-xs block mt-0.5">${item.price} ج.م ${isOutOfStock ? '<span class="text-[9px] text-red-500 font-bold">(غير متوفر)</span>' : ''}</span>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    viewProductDetails(productId) {
+        const item = this.menuData.find(i => i.id === productId);
+        if (!item) return;
+
+        const container = document.getElementById(REGISTRY.DOM.PRODUCT.CONTAINER.id);
+        if (!container) return;
+
+        container.innerHTML = `
+            <div class="bg-white rounded-[2rem] border border-brandPink/15 overflow-hidden shadow-sm space-y-6 p-4 md:p-8">
+                <button onclick="BoseSweetsEngine.navigateTo('menu')" class="inline-flex items-center gap-1 text-xs font-bold text-brandBlack/60 hover:text-brandPink mb-2 transition-colors">
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i> العودة للمنيو الكامل
+                </button>
+                <div class="flex flex-col md:flex-row gap-8 items-stretch">
+                    <div class="w-full md:w-1/2 aspect-square bg-brandPinkLight rounded-2xl overflow-hidden border border-brandPink/10">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="w-full md:w-1/2 flex flex-col justify-between py-2 space-y-6">
+                        <div class="space-y-4">
+                            <span class="inline-block px-3 py-1 bg-brandPinkLight text-brandPink rounded-full text-[10px] font-black">${item.category}</span>
+                            <h1 class="text-xl font-black text-brandBlack leading-snug">${item.name}</h1>
+                            <p class="text-xs text-brandBlack/60 font-semibold leading-relaxed">${item.desc}</p>
+                            <div class="p-3 bg-brandPinkLight/50 rounded-xl border border-brandPink/5 text-[11px] font-bold text-brandBlack/70">
+                                <i class="fa-solid fa-circle-check text-brandPink ml-1"></i> خامات طبيعية 100% خالية تماماً من المكونات المهدرجة أو المحسنات الصناعية.
+                            </div>
+                        </div>
+                        <div class="space-y-4 pt-4 border-t border-brandPink/10">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-brandBlack/50">السعر المعتمد للفرد/القطعة:</span>
+                                <span class="text-2xl font-black text-brandPink tracking-tight">${item.price} ج.م</span>
+                            </div>
+                            <button onclick="BoseSweetsEngine.addItemToCart('${item.id}')" class="w-full py-4 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-xs transition-all duration-300 shadow-md flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-bag-shopping"></i> إضافة المنتج لسلة المشتريات
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        this.navigateTo('product');
+    }
+
+    addItemToCart(productId) {
+        const item = this.menuData.find(i => i.id === productId);
+        if (!item) return;
+
+        const outOfStockList = SYSTEM_CORE.STATE.get(REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key) || [];
+        if (outOfStockList.includes(item.id)) {
+            alert("عذراً، هذا الصنف نفد مؤقتاً من المطبخ ولا يمكن حشوه حالياً.");
+            return;
+        }
+
+        this.cart.push({
+            cartId: 'standard-' + Date.now(),
+            type: 'standard',
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            details: item.unit
+        });
+
+        this.syncCartToCore();
+    }
+
+    syncCartToCore() {
+        SYSTEM_CORE.STATE.set(REGISTRY.STATE.CART.key, this.cart);
+        this.updateCartBadge();
+    }
+
+    updateCartBadge() {
+        const badge = document.getElementById(REGISTRY.DOM.CART.BADGE.id);
+        if (!badge) return;
+
+        if (this.cart.length > 0) {
+            badge.textContent = this.cart.length;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    }
+
+    renderCartView() {
+        const emptyState = document.getElementById(REGISTRY.DOM.CART.EMPTY_STATE.id);
+        const container = document.getElementById(REGISTRY.DOM.CART.CONTAINER.id);
+        const list = document.getElementById(REGISTRY.DOM.CART.ITEMS.id);
+        const totalDisplay = document.getElementById(REGISTRY.DOM.CART.TOTAL.id);
+
+        if (!emptyState || !container || !list || !totalDisplay) return;
+
+        if (this.cart.length === 0) {
+            emptyState.classList.remove('hidden');
+            container.classList.add('hidden');
+            return;
+        }
+
+        emptyState.classList.add('hidden');
+        container.classList.remove('hidden');
+
+        let totalSum = 0;
+        list.innerHTML = this.cart.map(item => {
+            totalSum += item.price;
+            return `
+                <div class="p-4 rounded-2xl bg-white border border-brandPink/15 flex items-center justify-between gap-4 shadow-[0_2px_12px_rgba(255,145,164,0.02)]">
+                    <div class="space-y-1 min-w-0 flex-grow">
+                        <h3 class="text-xs font-extrabold text-brandBlack truncate">${item.name}</h3>
+                        <p class="text-[10px] text-brandBlack/50 font-bold line-clamp-1">${item.details}</p>
+                    </div>
+                    <div class="flex items-center gap-4 flex-shrink-0">
+                        <span class="text-brandPink font-black text-sm tracking-tight">${item.price} ج.م</span>
+                        <button onclick="BoseSweetsEngine.removeCartItem('${item.cartId}')" class="p-2 bg-brandPinkLight hover:bg-brandPink/20 text-brandPink rounded-xl text-xs transition-colors">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        totalDisplay.textContent = `${totalSum} ج.م`;
+    }
+
+    removeCartItem(cartId) {
+        this.cart = this.cart.filter(i => i.cartId !== cartId);
+        this.syncCartToCore();
+        this.renderCartView();
+    }
+
+    clearCart() {
+        this.cart = [];
+        this.syncCartToCore();
+        this.renderCartView();
+    }
+
+    renderCheckoutView() {
+        let subtotal = 0;
+        this.cart.forEach(i => subtotal += i.price);
+
+        const subtotalEl = document.getElementById(REGISTRY.DOM.CHECKOUT.SUBTOTAL.id);
+        const shippingEl = document.getElementById(REGISTRY.DOM.CHECKOUT.SHIPPING.id);
+        const totalEl = document.getElementById(REGISTRY.DOM.CHECKOUT.TOTAL.id);
+
+        if (subtotalEl) subtotalEl.textContent = `${subtotal} ج.م`;
+        if (shippingEl) shippingEl.textContent = `${this.selectedShippingCost} ج.م`;
+        if (totalEl) totalEl.textContent = `${subtotal + this.selectedShippingCost} ج.م`;
+    }
+
+    handleSearch(e) {
+        const query = e.target.value.trim().toLowerCase();
+        if (!query) {
+            this.renderHomepageGrid();
+            return;
+        }
+        const container = document.getElementById(REGISTRY.DOM.HOMEPAGE.DYNAMIC_CONTENT.id);
+        if (!container) return;
+
+        const filtered = this.menuData.filter(i => i.name.toLowerCase().includes(query) || i.desc.toLowerCase().includes(query));
+        if (filtered.length === 0) {
+            container.innerHTML = `<p class="col-span-full text-center text-xs font-bold text-brandBlack/40 py-8">لا توجد نتائج مطابقة لبحثك.</p>`;
+            return;
+        }
+
+        container.innerHTML = filtered.map(item => `
+            <div class="bose-full-card cursor-pointer" onclick="BoseSweetsEngine.viewProductDetails('${item.id}')">
+                <div class="relative w-full aspect-square bg-brandPinkLight overflow-hidden">
+                    <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover">
+                </div>
+                <div class="p-4 flex flex-col justify-between flex-grow space-y-3">
+                    <div class="space-y-1">
+                        <h3 class="text-xs font-extrabold text-brandBlack line-clamp-1">${item.name}</h3>
+                        <p class="text-[11px] text-brandBlack/50 font-medium line-clamp-2 leading-relaxed">${item.desc}</p>
+                    </div>
+                    <div class="flex items-center justify-between pt-1 border-t border-brandPink/5">
+                        <span class="text-brandPink font-black text-sm tracking-tight">${item.price} ج.م</span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    selectCakeBase(baseType) {
+        this.cakeCustomState.base = baseType;
+        ['فانيليا', 'شوكولاتة', 'نصف ونصف'].forEach(b => {
+            const btn = document.getElementById(`cake-base-${b}`);
+            if (!btn) return;
+            if (b === baseType) {
+                btn.className = "p-4 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold shadow-sm transition-all duration-300 text-center";
+            } else {
+                btn.className = "p-4 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center";
+            }
+        });
+    }
+
+    selectCakeShape(shapeType) {
+        this.cakeCustomState.shape = shapeType;
+        ['دائرة', 'قلب', 'مربع', 'مستطيل'].forEach(s => {
+            const btn = document.getElementById(`cake-shape-${s}`);
+            if (!btn) return;
+            if (s === shapeType) {
+                btn.className = "p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all duration-300 text-center";
+            } else {
+                btn.className = "p-3.5 rounded-2xl border border-brandPink/10 bg-white hover:border-brandPink/30 text-brandBlack/70 text-xs font-extrabold transition-all duration-300 text-center";
+            }
+        });
+    }
+
+    adjustCakePeople(amount) {
+        let current = this.cakeCustomState.people;
+        current += amount;
+        if (current < 4) current = 4;
+        if (current > 250) current = 250;
+        this.cakeCustomState.people = current;
+
+        const display = document.getElementById(REGISTRY.DOM.CAKE.PEOPLE_COUNT.id);
+        if (display) display.textContent = current;
+
+        const warning = document.getElementById('cakeCounterWarning');
+        if (warning) {
+            if (current >= 24) {
+                warning.textContent = "⚠️ تنبيه: للمقاسات الكبرى فوق 24 فرد، يرجى تقديم الطلب قبل المناسبة بـ 48 ساعة على الأقل لضمان أعلى معايير الجودة.";
+                warning.classList.remove('hidden');
+            } else {
+                warning.classList.add('hidden');
+            }
+        }
+        this.updateCakePriceDisplay();
+    }
+
+    updateCakePriceDisplay() {
+        if (!this.globalConfig) return;
+        let cost = this.cakeCustomState.people * (this.globalConfig.cakeBasePricePerPerson || 145);
+        if (this.cakeCustomState.print === 'edible') cost += (this.globalConfig.cakePrintEdiblePrice || 60);
+        if (this.cakeCustomState.print === 'non-edible') cost += (this.globalConfig.cakePrintNonEdiblePrice || 20);
+
+        const display = document.getElementById(REGISTRY.DOM.CAKE.PRICE_DISPLAY.id);
+        if (display) display.textContent = `${cost} ج.م`;
+    }
+
+    showCakePriceInfo() {
+        if (!this.globalConfig) return;
+        alert(`معايير التسعير المعتمدة في مطبخنا:\n- السعر الأساسي: ${this.globalConfig.cakeBasePricePerPerson || 145} جنيه مصري لكل فرد مستهدف شامل المكونات الطبيعية الفاخرة.`);
+    }
+
+    navigateCakeStep(step) {
+        ['1', '2', '3'].forEach(s => {
+            const screen = document.getElementById(`cake-screen-${s}`);
+            if (screen) screen.classList.add('hidden');
+            
+            const indicator = document.getElementById(`cake-step-${s}-indicator`);
+            const labelText = document.getElementById(`cake-text-step-${s}`);
+            if (indicator) {
+                if (parseInt(s) <= step) {
+                    indicator.className = "w-10 h-10 rounded-full bg-brandPink text-white flex items-center justify-center font-extrabold text-sm shadow-md";
+                    if (labelText) labelText.className = "text-[11px] font-extrabold text-brandBlack";
+                } else {
+                    indicator.className = "w-10 h-10 rounded-full bg-brandPinkLight text-brandBlack/40 border border-brandPink/15 flex items-center justify-center font-extrabold text-sm";
+                    if (labelText) labelText.className = "text-[11px] font-extrabold text-brandBlack/40";
+                }
+            }
+        });
+
+        const currentScreen = document.getElementById(`cake-screen-${step}`);
+        if (currentScreen) currentScreen.classList.remove('hidden');
+
+        const line1 = document.getElementById('cake-line-1');
+        const line2 = document.getElementById('cake-line-2');
+        if (line1) line1.style.width = step >= 2 ? '100%' : '0%';
+        if (line2) line2.style.width = step >= 3 ? '100%' : '0%';
+    }
+
+    handleCakeFileUpload(type) {
+        if (type === 'design') {
+            const label = document.getElementById('cakeDesignLabel');
+            if (label) label.textContent = "✨ تم قراءة ملف التصميم المرجعي بنجاح وجاهز للمطابقة الطبيعية 100%.";
+        } else {
+            const label = document.getElementById('cakePrintLabel');
+            if (label) label.textContent = "✨ تم استقبال صورة الطباعة المباشرة بدقة أداء كاملة.";
+        }
+    }
+
+    selectCakePrintOption(option) {
+        this.cakeCustomState.print = option;
+        ['none', 'edible', 'non-edible'].forEach(o => {
+            const btn = document.getElementById(`cake-print-${o}`);
+            if (!btn) return;
+            if (o === option) {
+                btn.className = "p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center";
+            } else {
+                btn.className = "p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/30";
+            }
+        });
+
+        const uploadArea = document.getElementById('cakePrintUploadArea');
+        if (uploadArea) {
+            if (option !== 'none') uploadArea.classList.remove('hidden');
+            else uploadArea.classList.add('hidden');
+        }
+        this.updateCakePriceDisplay();
+    }
+
+    toggleCakeCardInput() {
+        const checked = document.getElementById('cakeCardCheck').checked;
+        const area = document.getElementById('cakeCardInputArea');
+        if (area) {
+            if (checked) area.classList.remove('hidden');
+            else area.classList.add('hidden');
+        }
+    }
+
+    addCakeToCart() {
+        if (!this.globalConfig) return;
+        let cost = this.cakeCustomState.people * (this.globalConfig.cakeBasePricePerPerson || 145);
+        if (this.cakeCustomState.print === 'edible') cost += (this.globalConfig.cakePrintEdiblePrice || 60);
+        if (this.cakeCustomState.print === 'non-edible') cost += (this.globalConfig.cakePrintNonEdiblePrice || 20);
+
+        const text = document.getElementById('cakeText')?.value || '';
+        const theme = document.getElementById('cakeThemeDetails')?.value || '';
+        
+        this.cart.push({
+            cartId: 'cake-' + Date.now(),
+            type: 'custom_cake',
+            name: `تورتة ملكية مخصصة (${this.cakeCustomState.shape} - أساس ${this.cakeCustomState.base})`,
+            price: cost,
+            details: `مقاس ${this.cakeCustomState.people} فرد - نص مكتوب: ${text || 'لا يوجد'} - ثيم: ${theme || 'افتراضي'}`
+        });
+
+        this.syncCartToCore();
+        this.navigateTo('cart');
+        
+        this.cakeCustomState = { base: 'فانيليا', shape: 'دائرة', people: 4, print: 'none' };
+        this.navigateCakeStep(1);
+    }
+
+    handleRoseReferenceUpload() {
+        const label = document.getElementById('roseReferenceLabel');
+        if (label) label.textContent = "✨ تم استقبال صورة البوكيه المستهدف للتنفيذ بدقة نهارية ممتازة.";
+    }
+
+    quickBuyRoseBouquet() {
+        if (!this.globalConfig) return;
+        this.cart.push({
+            cartId: 'rose-quick-' + Date.now(),
+            type: 'rose_quick',
+            name: 'بوكيه ورد فاخر مخصص من صورة مرفوعة',
+            price: this.globalConfig.roseBasePrice || 400,
+            details: 'تم الاعتماد المباشر للصورة، التنفيذ يطابق الواقع بنسبة 100%'
+        });
+        this.syncCartToCore();
+        this.navigateTo('cart');
+    }
+
+    adjustRoseCount(amount) {
+        if (!this.globalConfig) return;
+        let current = this.roseCustomState.count;
+        current += amount;
+        if (current < (this.globalConfig.roseMinCount || 15)) current = this.globalConfig.roseMinCount || 15;
+        if (current > 500) current = 500;
+        this.roseCustomState.count = current;
+
+        const display = document.getElementById(REGISTRY.DOM.ROSE.COUNT.id);
+        if (display) display.textContent = current;
+
+        this.updateRosePriceDisplay();
+    }
+
+    selectRoseType(type) {
+        this.roseCustomState.type = type;
+        ['ورد طبيعي', 'صناعي', 'ستان'].forEach(t => {
+            const btn = document.getElementById(`rose-type-${t}`);
+            if (!btn) return;
+            if (t === type) {
+                btn.className = "p-3.5 rounded-2xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-extrabold transition-all text-center";
+            } else {
+                btn.className = "p-3.5 rounded-2xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-extrabold transition-all text-center hover:border-brandPink/30";
+            }
+        });
+    }
+
+    updateRosePriceDisplay() {
+        if (!this.globalConfig) return;
+        let baseCost = this.globalConfig.roseBasePrice || 400;
+        const minCount = this.globalConfig.roseMinCount || 15;
+        if (this.roseCustomState.count > minCount) {
+            baseCost += (this.roseCustomState.count - minCount) * (this.globalConfig.rosePricePerAdditional || 15);
+        }
+        
+        baseCost += (this.roseCustomState.photos * (this.globalConfig.rosePhotoPrice || 15));
+        if (this.roseCustomState.ribbon) baseCost += (this.globalConfig.roseRibbonPrice || 50);
+        if (this.roseCustomState.card) baseCost += (this.globalConfig.roseCardPrice || 20);
+
+        baseCost += Number(this.roseCustomState.chocBudget || 0);
+        baseCost += (this.roseCustomState.premiumBars[100] * 100);
+        baseCost += (this.roseCustomState.premiumBars[120] * 120);
+
+        const display = document.getElementById(REGISTRY.DOM.ROSE.PRICE_DISPLAY.id);
+        if (display) display.textContent = `${baseCost} ج.م`;
+    }
+
+    handleRoseCleanup() {
+        while (this.activeListeners.length > 0) {
+            const listenerId = this.activeListeners.pop();
+            if (listenerId) FIREBASE_ENGINE.WATCHERS.stop(listenerId);
+        }
+    }
+
+    adjustRosePhotos(amount) {
+        let current = this.roseCustomState.photos;
+        current += amount;
+        if (current < 0) current = 0;
+        if (current > 12) current = 12;
+        this.roseCustomState.photos = current;
+
+        const display = document.getElementById('rosePhotosCount');
+        if (display) display.textContent = current;
+
+        const container = document.getElementById('rosePhotoUploadsContainer');
+        if (container) {
+            if (current > 0) {
+                container.classList.remove('hidden');
+                container.innerHTML = Array.from({ length: current }).map((_, i) => `
+                    <div class="p-2 border border-brandPink/10 rounded-xl bg-brandPinkLight/30 text-center relative text-[10px] font-bold text-brandBlack/60">
+                        رفع صورة ${i + 1}
+                        <input type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
+                    </div>
+                `).join('');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+        this.updateRosePriceDisplay();
+    }
+
+    toggleRoseRibbonInput() {
+        const checked = document.getElementById('roseRibbonCheck').checked;
+        this.roseCustomState.ribbon = checked;
+        const area = document.getElementById('roseRibbonInputArea');
+        if (area) {
+            if (checked) area.classList.remove('hidden');
+            else area.classList.add('hidden');
+        }
+        this.updateRosePriceDisplay();
+    }
+
+    calculateRoseChocolate() {
+        const budget = Number(document.getElementById('roseChocBudget').value || 0);
+        this.roseCustomState.chocBudget = budget;
+
+        const output = document.getElementById('roseChocOutput');
+        const calcText = document.getElementById('roseChocCalcText');
+        if (!output || !calcText) return;
+
+        if (budget <= 0) {
+            output.classList.add('hidden');
+            this.updateRosePriceDisplay();
+            return;
+        }
+
+        const piecePrice = this.roseCustomState.chocPiecePrice;
+        const count = Math.floor(budget / piecePrice);
+
+        calcText.textContent = `🍫 توزيع الشوكولاتة: سيتم تثبيت وإلصاق عدد ${count} قطعة شوكولاتة فاخرة وسط الزهور.`;
+        output.classList.remove('hidden');
+        this.updateRosePriceDisplay();
+    }
+
+    selectRoseChocPiecePrice(price) {
+        this.roseCustomState.chocPiecePrice = price;
+        [20, 30, 50].forEach(p => {
+            const btn = document.getElementById(`rose-choc-piece-${p}`);
+            if (!btn) return;
+            if (p === price) {
+                btn.className = "py-2.5 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center";
+            } else {
+                btn.className = "py-2.5 rounded-xl border border-brandPink/10 bg-white text-brandBlack/70 text-xs font-bold transition-all text-center hover:border-brandPink/20";
+            }
+        });
+        this.calculateRoseChocolate();
+    }
+
+    adjustRosePremiumBar(price, amount) {
+        let current = this.roseCustomState.premiumBars[price];
+        current += amount;
+        if (current < 0) current = 0;
+        if (current > 10) current = 10;
+        this.roseCustomState.premiumBars[price] = current;
+
+        const display = document.getElementById(`rosePremiumBar${price}`);
+        if (display) display.textContent = current;
+
+        this.updateRosePriceDisplay();
+    }
+
+    toggleRoseCardInput() {
+        const checked = document.getElementById('roseCardCheck').checked;
+        this.roseCustomState.card = checked;
+        const area = document.getElementById('roseCardInputArea');
+        if (area) {
+            if (checked) area.classList.remove('hidden');
+            else area.classList.add('hidden');
+        }
+        this.updateRosePriceDisplay();
+    }
+
+    addRoseToCart() {
+        if (!this.globalConfig) return;
+        let baseCost = this.globalConfig.roseBasePrice || 400;
+        const minCount = this.globalConfig.roseMinCount || 15;
+        if (this.roseCustomState.count > minCount) {
+            baseCost += (this.roseCustomState.count - minCount) * (this.globalConfig.rosePricePerAdditional || 15);
+        }
+        baseCost += (this.roseCustomState.photos * (this.globalConfig.rosePhotoPrice || 15));
+        if (this.roseCustomState.ribbon) baseCost += (this.globalConfig.roseRibbonPrice || 50);
+        if (this.roseCustomState.card) baseCost += (this.globalConfig.roseCardPrice || 20);
+        baseCost += Number(this.roseCustomState.chocBudget || 0);
+        baseCost += (this.roseCustomState.premiumBars[100] * 100);
+        baseCost += (this.roseCustomState.premiumBars[120] * 120);
+
+        const colorText = document.getElementById('roseColors')?.value || 'ميكس متناسق';
+        const cardText = document.getElementById('roseCardText')?.value || '';
+
+        this.cart.push({
+            cartId: 'rose-bouquet-' + Date.now(),
+            type: 'custom_rose',
+            name: `بوكيه ورد فاخر مخصص (${this.roseCustomState.type} - عدد ${this.roseCustomState.count} وردة)`,
+            price: baseCost,
+            details: `ألوان: ${colorText} - نقد كاش مدمج: ${this.roseCustomState.cash} ج.م - شوكولاتة مدمجة: ${this.roseCustomState.chocBudget} ج.م`
+        });
+
+        this.syncCartToCore();
+        this.navigateTo('cart');
+    }
+
+    async handleCheckoutSubmit(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('custName')?.value || '';
+        const phone = document.getElementById('custPhone')?.value || '';
+        const region = document.getElementById('shippingRegion')?.value || '';
+        const address = document.getElementById('shippingAddress')?.value || '';
+
+        if (this.cart.length === 0) {
+            alert("سلة المشتريات خالية تماماً!");
+            return;
+        }
+
+        let subtotal = 0;
+        let cartPayload = this.cart.map((item, index) => {
+            subtotal += item.price;
+            return {
+                name: item.name,
+                price: item.price,
+                qty: 1,
+                isCustom: item.type !== 'standard',
+                details: item.details
+            };
+        });
+
+        const grandTotal = subtotal + this.selectedShippingCost;
+
+        try {
+            const orderPayload = {
+                customerName: name,
+                customerPhone: phone,
+                shippingAddress: address,
+                cart: cartPayload,
+                checkout: { method: 'shipping', region: region },
+                totals: { subtotal: subtotal, shipping: this.selectedShippingCost, total: grandTotal },
+                status: 'pending'
+            };
+
+            await FIREBASE_ENGINE.DATABASE.createDocument(REGISTRY.FIREBASE.COLLECTIONS.ORDERS, orderPayload);
+            
+            let itemsDescription = this.cart.map((item, index) => `${index + 1}- ${item.name} [${item.details}] -> السعر: ${item.price} ج.م`).join('\n');
+            const whatsappText = encodeURIComponent(
+                `*طلب جديد معتمد من منصة حلويات بوسي الإلكترونية 2026*\n\n` +
+                `*بيانات العميل المعتمد:*\n` +
+                `- الاسم بالكامل: ${name}\n` +
+                `- رقم الهاتف: ${phone}\n` +
+                `- قرية/منطقة التسليم: ${region}\n` +
+                `- العنوان التفصيلي: ${address}\n\n` +
+                `*المنتجات المحجوزة في الفاتورة:*\n${itemsDescription}\n\n` +
+                `--------------------------------------\n` +
+                `*قيمة المنتجات المعتمدة:* ${subtotal} ج.م\n` +
+                `*تكلفة الشحن والتبريد للمنطقة:* ${this.selectedShippingCost} ج.م\n` +
+                `*إجمالي الفاتورة النهائي والمطابق:* ${grandTotal} ج.م\n\n` +
+                `✨ _شكراً لاختياركم علامة حلويات بوسي - الإتقان الفني في صناعة الحلويات الطبيعية 100%_`
+            );
+
+            const cleanPhone = "201097238441";
+            const apiURL = `https://api.whatsapp.com/send?phone=${cleanPhone}&text=${whatsappText}`;
+
+            this.clearCart();
+            this.navigateTo('home');
+            window.open(apiURL, '_blank');
+        } catch (err) {
+            alert("حدث خطأ في الاتصال بالسحابة، يرجى إعادة المحاولة.");
+        }
+    }
+}
+
+const manager = new BoseSweetsAppManager();
+window.BoseSweetsEngine = manager;
+manager.init();
+
+window.addEventListener('beforeunload', () => {
+    if (window.BoseSweetsEngine) window.BoseSweetsEngine.handleRoseCleanup();
+});
+</script>
 </body>
-
 </html>

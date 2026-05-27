@@ -24,10 +24,6 @@
         حلويات بوسي | بوابة الإدارة المؤمنة
     </title>
 
-    <!-- ===================================================== -->
-    <!-- Fonts -->
-    <!-- ===================================================== -->
-
     <link
         rel="preconnect"
         href="https://fonts.googleapis.com"
@@ -44,21 +40,9 @@
         rel="stylesheet"
     />
 
-    <!-- ===================================================== -->
-    <!-- Icons -->
-    <!-- ===================================================== -->
-
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- ===================================================== -->
-    <!-- Tailwind -->
-    <!-- ===================================================== -->
-
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- ===================================================== -->
-    <!-- Firebase Import Map -->
-    <!-- ===================================================== -->
 
     <script type="importmap">
     {
@@ -69,10 +53,6 @@
         }
     }
     </script>
-
-    <!-- ===================================================== -->
-    <!-- Theme -->
-    <!-- ===================================================== -->
 
     <script>
 
@@ -115,10 +95,6 @@
         };
 
     </script>
-
-    <!-- ===================================================== -->
-    <!-- Styles -->
-    <!-- ===================================================== -->
 
     <style>
 
@@ -251,15 +227,49 @@
 
         }
 
+        /* حاجب الحماية لمنع وميض البيانات غير المصادق عليها */
+        #loadingGuard {
+            position: fixed;
+            inset: 0;
+            background: #050505;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+
+        #loadingGuard.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255, 145, 164, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--brand-pink);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
     </style>
 
 </head>
 
 <body class="font-cairo">
 
-    <!-- ===================================================== -->
-    <!-- Background -->
-    <!-- ===================================================== -->
+    <div id="loadingGuard">
+        <div class="flex flex-col items-center gap-4">
+            <div class="spinner"></div>
+            <p class="text-xs text-brand-muted tracking-widest">جاري تأمين الاتصال بالنواة...</p>
+        </div>
+    </div>
 
     <div
         class="absolute inset-0 pointer-events-none"
@@ -281,10 +291,6 @@
             "
         ></div>
     </div>
-
-    <!-- ===================================================== -->
-    <!-- Main -->
-    <!-- ===================================================== -->
 
     <main
         class="
@@ -310,10 +316,6 @@
                 md:p-10
             "
         >
-
-            <!-- ============================================= -->
-            <!-- Header -->
-            <!-- ============================================= -->
 
             <header
                 class="
@@ -373,10 +375,6 @@
 
             </header>
 
-            <!-- ============================================= -->
-            <!-- Alert -->
-            <!-- ============================================= -->
-
             <div
                 id="authAlert"
                 class="
@@ -392,19 +390,11 @@
                 "
             ></div>
 
-            <!-- ============================================= -->
-            <!-- Form -->
-            <!-- ============================================= -->
-
             <form
                 id="loginForm"
                 class="space-y-5"
                 autocomplete="off"
             >
-
-                <!-- ========================================= -->
-                <!-- Email -->
-                <!-- ========================================= -->
 
                 <div>
 
@@ -441,6 +431,8 @@
                             inputmode="email"
                             autocomplete="username"
                             spellcheck="false"
+                            autocorrect="off"
+                            autocapitalize="none"
                             required
                             class="
                                 focus-ring
@@ -461,10 +453,6 @@
                     </div>
 
                 </div>
-
-                <!-- ========================================= -->
-                <!-- Password -->
-                <!-- ========================================= -->
 
                 <div>
 
@@ -499,6 +487,8 @@
                             type="password"
                             dir="ltr"
                             autocomplete="current-password"
+                            autocorrect="off"
+                            autocapitalize="none"
                             required
                             class="
                                 focus-ring
@@ -540,10 +530,6 @@
 
                 </div>
 
-                <!-- ========================================= -->
-                <!-- Submit -->
-                <!-- ========================================= -->
-
                 <button
                     id="submitButton"
                     type="submit"
@@ -575,10 +561,6 @@
 
             </form>
 
-            <!-- ============================================= -->
-            <!-- Footer -->
-            <!-- ============================================= -->
-
             <footer
                 class="
                     mt-8
@@ -604,17 +586,16 @@
 
     </main>
 
-    <!-- ===================================================== -->
-    <!-- Runtime -->
-    <!-- ===================================================== -->
-
     <script type="module">
 
         /**
          * =================================================
-         * Firebase
+         * Infrastructure Imports
          * =================================================
          */
+
+        import REGISTRY from './system-registry.js';
+        import SYSTEM_CORE from './system-core.js';
 
         import {
 
@@ -634,25 +615,34 @@
 
         } from 'firebase/auth';
 
+        import {
+            getFirestore,
+            collection,
+            addDoc,
+            serverTimestamp
+        } from 'firebase/firestore';
+
         /**
          * =================================================
-         * Config
+         * Unified Configuration - BoseSweets Verified Cloud
          * =================================================
          */
 
         const FIREBASE_CONFIG = {
 
-            apiKey: "YOUR_API_KEY",
+            apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
 
-            authDomain: "YOUR_AUTH_DOMAIN",
+            authDomain: "bosy-sweets.firebaseapp.com",
 
-            projectId: "YOUR_PROJECT_ID",
+            projectId: "bosy-sweets",
 
-            storageBucket: "YOUR_STORAGE_BUCKET",
+            storageBucket: "bosy-sweets.firebasestorage.app",
 
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            messagingSenderId: "473615735083",
 
-            appId: "YOUR_APP_ID"
+            appId: "1:473615735083:web:f09c6001c72640b2588d6e",
+
+            measurementId: "G-46D1CS3WLB"
 
         };
 
@@ -696,49 +686,7 @@
 
         /**
          * =================================================
-         * DOM
-         * =================================================
-         */
-
-        const DOM = Object.freeze({
-
-            form:
-
-                document.getElementById('loginForm'),
-
-            email:
-
-                document.getElementById('adminEmail'),
-
-            password:
-
-                document.getElementById('adminPassword'),
-
-            alert:
-
-                document.getElementById('authAlert'),
-
-            submitButton:
-
-                document.getElementById('submitButton'),
-
-            submitText:
-
-                document.getElementById('submitText'),
-
-            togglePassword:
-
-                document.getElementById('togglePassword'),
-
-            passwordEye:
-
-                document.getElementById('passwordEye')
-
-        });
-
-        /**
-         * =================================================
-         * Firebase Boot
+         * Firebase Boot & Services
          * =================================================
          */
 
@@ -749,6 +697,39 @@
             : getApps()[0];
 
         const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        /**
+         * =================================================
+         * Dom Contracts Alignment - Strictly via Registry
+         * =================================================
+         */
+
+        let DOM = {};
+
+        function initializeDOMContracts() {
+            DOM = Object.freeze({
+
+                form: SYSTEM_CORE.DOM.get(REGISTRY.DOM.AUTH.LOGIN_FORM),
+
+                email: SYSTEM_CORE.DOM.get(REGISTRY.DOM.AUTH.ADMIN_EMAIL),
+
+                password: SYSTEM_CORE.DOM.get(REGISTRY.DOM.AUTH.ADMIN_PASSWORD),
+
+                alert: SYSTEM_CORE.DOM.get(REGISTRY.DOM.AUTH.AUTH_ALERT),
+
+                submitButton: SYSTEM_CORE.DOM.get(REGISTRY.DOM.AUTH.SUBMIT_BUTTON),
+
+                submitText: SYSTEM_CORE.DOM.get(REGISTRY.DOM.AUTH.SUBMIT_TEXT),
+
+                loadingGuard: document.getElementById('loadingGuard'),
+
+                togglePassword: document.getElementById('togglePassword'),
+
+                passwordEye: document.getElementById('passwordEye')
+
+            });
+        }
 
         /**
          * =================================================
@@ -764,6 +745,7 @@
 
         function showAlert(message) {
 
+            if (!DOM.alert) return;
             DOM.alert.textContent = message;
 
             DOM.alert.classList.remove('hidden');
@@ -772,6 +754,7 @@
 
         function hideAlert() {
 
+            if (!DOM.alert) return;
             DOM.alert.classList.add('hidden');
 
         }
@@ -779,6 +762,8 @@
         function setLoading(status) {
 
             STATE.loading = status;
+
+            if (!DOM.submitButton || !DOM.submitText) return;
 
             DOM.submitButton.disabled = status;
 
@@ -866,10 +851,32 @@
 
             window.location.replace(
 
-                './admin-monitor.html'
+                REGISTRY.FILES.PAGES.ADMIN
 
             );
 
+        }
+
+        /**
+         * =================================================
+         * Cloud Logging System - السيادية الأمنية للمراقبة
+         * =================================================
+         */
+
+        async function logSecurityEvent(type, payload) {
+            try {
+                const logPath = REGISTRY.FIREBASE.COLLECTIONS.SYSTEM_LOGS;
+                // حل ثغرة التمرير المفرد للمصفوفات العميقة عبر دمج المسار بنمط نصي قياسي متوافق مع SDK
+                const pathString = logPath.join('/');
+                await addDoc(collection(db, pathString), {
+                    event: type,
+                    timestamp: serverTimestamp(),
+                    environment: REGISTRY.META.ENVIRONMENT,
+                    ...payload
+                });
+            } catch (err) {
+                SYSTEM_CORE.Diagnostics.error('Security Logging System Failure', { error: err.message });
+            }
         }
 
         /**
@@ -912,7 +919,7 @@
 
         }
 
-        function registerFailure() {
+        function registerFailure(email) {
 
             STATE.attempts++;
 
@@ -923,6 +930,7 @@
             ) {
 
                 lockRuntime();
+                logSecurityEvent('BRUTE_FORCE_LOCKOUT', { email, attempts: STATE.attempts });
 
             }
 
@@ -942,35 +950,41 @@
          * =================================================
          */
 
-        DOM.togglePassword.addEventListener(
+        function setupPasswordToggle() {
+            if (DOM.togglePassword) {
+                DOM.togglePassword.addEventListener(
 
-            'click',
+                    'click',
 
-            () => {
+                    () => {
 
-                const visible =
+                        if (!DOM.password || !DOM.passwordEye) return;
 
-                    DOM.password.type === 'text';
+                        const visible =
 
-                DOM.password.type = visible
+                            DOM.password.type === 'text';
 
-                    ? 'password'
+                        DOM.password.type = visible
 
-                    : 'text';
+                            ? 'password'
 
-                DOM.passwordEye.setAttribute(
+                            : 'text';
 
-                    'data-lucide',
+                        DOM.passwordEye.setAttribute(
 
-                    visible ? 'eye' : 'eye-off'
+                            'data-lucide',
+
+                            visible ? 'eye' : 'eye-off'
+
+                        );
+
+                        lucide.createIcons();
+
+                    }
 
                 );
-
-                lucide.createIcons();
-
             }
-
-        );
+        }
 
         /**
          * =================================================
@@ -1014,171 +1028,193 @@
 
         /**
          * =================================================
-         * Form Submit
+         * Form Submit Implementation
          * =================================================
          */
 
-        DOM.form.addEventListener(
+        function setupFormSubmit() {
+            if (DOM.form) {
+                DOM.form.addEventListener(
 
-            'submit',
+                    'submit',
 
-            async (event) => {
+                    async (event) => {
 
-                event.preventDefault();
+                        event.preventDefault();
 
-                hideAlert();
+                        hideAlert();
 
-                if (STATE.loading) {
+                        if (STATE.loading) {
 
-                    return;
+                            return;
 
-                }
+                        }
 
-                try {
+                        let emailInput = '';
 
-                    if (validateLock()) {
+                        try {
 
-                        throw new Error(
+                            if (validateLock()) {
 
-                            'تم قفل تسجيل الدخول مؤقتاً'
+                                throw new Error(
 
-                        );
+                                    'تم قفل تسجيل الدخول مؤقتاً'
 
-                    }
-
-                    setLoading(true);
-
-                    const email = sanitizeInput(
-
-                        DOM.email.value
-
-                    );
-
-                    const password = sanitizeInput(
-
-                        DOM.password.value
-
-                    );
-
-                    if (
-
-                        !email ||
-
-                        !password
-
-                    ) {
-
-                        throw new Error(
-
-                            'يرجى إدخال البيانات كاملة'
-
-                        );
-
-                    }
-
-                    await login(
-
-                        email,
-
-                        password
-
-                    );
-
-                    resetAttempts();
-
-                    STATE.authenticated = true;
-
-                    safeRedirect();
-
-                } catch (error) {
-
-                    registerFailure();
-
-                    let message =
-
-                        'تعذر تسجيل الدخول';
-
-                    switch (error.code) {
-
-                        case 'auth/network-request-failed':
-
-                            message =
-                                'حدثت مشكلة في الاتصال';
-
-                            break;
-
-                        case 'auth/invalid-credential':
-
-                        case 'auth/wrong-password':
-
-                        case 'auth/user-not-found':
-
-                            message =
-                                'بيانات الدخول غير صحيحة';
-
-                            break;
-
-                        default:
-
-                            if (error.message) {
-
-                                message = error.message;
+                                );
 
                             }
 
+                            setLoading(true);
+
+                            if (!DOM.email || !DOM.password) return;
+
+                            emailInput = sanitizeInput(
+
+                                DOM.email.value
+
+                            );
+
+                            const password = sanitizeInput(
+
+                                DOM.password.value
+
+                            );
+
+                            if (
+
+                                !emailInput ||
+
+                                !password
+
+                            ) {
+
+                                throw new Error(
+
+                                    'يرجى إدخال البيانات كاملة'
+
+                                );
+
+                            }
+
+                            await login(
+
+                                emailInput,
+
+                                password
+
+                            );
+
+                            resetAttempts();
+
+                            STATE.authenticated = true;
+
+                            SYSTEM_CORE.EVENTS.emit(REGISTRY.EVENTS.AUTH.LOGIN_SUCCESS, { email: emailInput });
+                            await logSecurityEvent('ADMIN_LOGIN_SUCCESS', { email: emailInput });
+
+                            safeRedirect();
+
+                        } catch (error) {
+
+                            registerFailure(emailInput);
+
+                            let message =
+
+                                'تعذر تسجيل الدخول';
+
+                            switch (error.code) {
+
+                                case 'auth/network-request-failed':
+
+                                    message =
+                                        'حدثت مشكلة في الاتصال';
+
+                                    break;
+
+                                case 'auth/invalid-credential':
+
+                                case 'auth/wrong-password':
+
+                                case 'auth/user-not-found':
+
+                                    message =
+                                        'بيانات الدخول غير صحيحة';
+
+                                    break;
+
+                                default:
+
+                                    if (error.message) {
+
+                                        message = error.message;
+
+                                    }
+
+                            }
+
+                            showAlert(message);
+                            SYSTEM_CORE.EVENTS.emit(REGISTRY.EVENTS.AUTH.LOGIN_FAILED, { error: error.message });
+                            await logSecurityEvent('ADMIN_LOGIN_FAILED', { email: emailInput, error: error.message });
+
+                        } finally {
+
+                            setLoading(false);
+
+                        }
+
                     }
 
-                    showAlert(message);
-
-                } finally {
-
-                    setLoading(false);
-
-                }
-
+                );
             }
-
-        );
+        }
 
         /**
          * =================================================
-         * Auth Watcher
+         * Orchestration Core Initialization - تفعيل آمن ومنظم
          * =================================================
          */
 
-        onAuthStateChanged(
+        async function executeInitializationSequence() {
+            // 1. تهيئة العقود البرمجية للـ DOM
+            initializeDOMContracts();
+            
+            // 2. تفعيل المستمعات والأحداث الخاصة بالواجهة
+            setupPasswordToggle();
+            setupFormSubmit();
+            lucide.createIcons();
 
-            auth,
-
-            async (user) => {
-
+            // 3. فحص حالة المصادقة بشكل مراقب وآمن
+            onAuthStateChanged(auth, async (user) => {
                 try {
-
                     if (user) {
-
                         STATE.authenticated = true;
-
                         safeRedirect();
-
                         return;
-
                     }
-
                     STATE.authenticated = false;
-
                 } catch {
-
                     try {
-
                         await signOut(auth);
-
                     } catch {}
-
+                } finally {
+                    // إزالة شاشة الحماية والتحميل بأمان فوري بعد انتهاء الفحص
+                    if (DOM.loadingGuard) {
+                        DOM.loadingGuard.classList.add('hidden');
+                    }
                 }
+            });
+        }
 
-            }
-
-        );
+        // حل ثغرة جمود دورة الحياة (Initialization Deadlock) لضمان العمل الفوري والمطابق
+        const systemStatus = SYSTEM_CORE.HEALTH.status();
+        if (systemStatus.runtime && systemStatus.runtime.initialized) {
+            executeInitializationSequence();
+        } else {
+            SYSTEM_CORE.EVENTS.on(REGISTRY.EVENTS.SYSTEM.READY, async (payload) => {
+                if (payload.runtime === 'SYSTEM_CORE' && payload.status === 'READY') {
+                    executeInitializationSequence();
+                }
+            });
+        }
 
         /**
          * =================================================
@@ -1199,6 +1235,8 @@
                     try {
 
                         await signOut(auth);
+
+                        SYSTEM_CORE.EVENTS.emit(REGISTRY.EVENTS.AUTH.LOGOUT);
 
                     } catch {}
 
@@ -1295,14 +1333,6 @@
             }
 
         );
-
-        /**
-         * =================================================
-         * Icons
-         * =================================================
-         */
-
-        lucide.createIcons();
 
     </script>
 

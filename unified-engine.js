@@ -5,7 +5,7 @@
  * File               : unified-engine.js
  * Architecture Level : ENTERPRISE UX INFRASTRUCTURE
  * Runtime Level      : ULTRA PERFORMANCE
- * Rendering Level    : VIRTUALIZED
+ * Rendering Level    : GOVERNED UI ORCHESTRATION
  * Mobile Level       : LOW MEMORY / LOW DATA
  * =========================================================
  */
@@ -20,31 +20,15 @@ import FIREBASE_ENGINE from './firebase-engine.js';
 
 import COMMERCE_ENGINE from './commerce-engine.js';
 
+import UI_PERFORMANCE from './ui-performance.js';
+
 /**
  * =========================================================
  * Constants
  * =========================================================
  */
 
-const ENGINE_VERSION = '9.0.0';
-
-const MAX_RENDER_QUEUE = 500;
-
-const MAX_RENDER_BATCH = 25;
-
-const MAX_CACHE_SIZE = 100;
-
-const MAX_IDLE_CALLBACK = 5000;
-
-const RENDER_FRAME_TIME = 16;
-
-const MAX_SCROLL_EVENTS = 80;
-
-const CLEANUP_INTERVAL = 30000;
-
-const CACHE_TTL = 300000;
-
-const MOBILE_MEMORY_LIMIT = 120;
+const ENGINE_VERSION = '10.0.0';
 
 /**
  * =========================================================
@@ -58,11 +42,7 @@ const __RUNTIME__ = Object.seal({
 
     booted: false,
 
-    rendering: false,
-
     navigating: false,
-
-    lowMemoryMode: false,
 
     offlineMode: false,
 
@@ -70,45 +50,21 @@ const __RUNTIME__ = Object.seal({
 
     currentRoute: '/',
 
-    activeRenders: 0,
-
-    scrollLocked: false,
-
-    suspended: false
+    scrollLocked: false
 
 });
 
 /**
  * =========================================================
- * Queues & Stores
+ * Runtime Stores
  * =========================================================
  */
 
-const __RENDER_QUEUE__ = [];
-
-const __CACHE__ = new Map();
-
 const __SECTIONS__ = new Map();
-
-const __RENDER_BATCH__ = [];
 
 const __NAVIGATION_STACK__ = [];
 
-const __INTERACTIONS__ = [];
-
-const __IDLE_TASKS__ = [];
-
-const __IMAGE_OBSERVERS__ = new Map();
-
 const __LIFECYCLES__ = new Map();
-
-const __MEMORY__ = [];
-
-const __PERFORMANCE__ = [];
-
-const __DOM_SNAPSHOTS__ = [];
-
-const __WATCHDOGS__ = new Map();
 
 /**
  * =========================================================
@@ -164,28 +120,6 @@ function now() {
 
 }
 
-function uuid() {
-
-    return crypto.randomUUID();
-
-}
-
-function trim(array, max) {
-
-    if (array.length > max) {
-
-        array.splice(
-
-            0,
-
-            array.length - max
-
-        );
-
-    }
-
-}
-
 function deepClone(value) {
 
     try {
@@ -203,138 +137,6 @@ function deepClone(value) {
     }
 
 }
-
-function idle(callback) {
-
-    if (
-
-        'requestIdleCallback' in window
-
-    ) {
-
-        return requestIdleCallback(
-
-            callback,
-
-            {
-
-                timeout:
-
-                    MAX_IDLE_CALLBACK
-
-            }
-
-        );
-
-    }
-
-    return setTimeout(
-
-        callback,
-
-        1
-
-    );
-
-}
-
-/**
- * =========================================================
- * Cache Engine
- * =========================================================
- */
-
-const CACHE = {
-
-    set(key, value) {
-
-        __CACHE__.set(key, {
-
-            value:
-
-                deepClone(value),
-
-            timestamp:
-
-                now()
-
-        });
-
-        if (
-
-            __CACHE__.size >
-
-            MAX_CACHE_SIZE
-
-        ) {
-
-            const oldest =
-
-                __CACHE__
-
-                    .keys()
-
-                    .next()
-
-                    .value;
-
-            __CACHE__.delete(oldest);
-
-        }
-
-    },
-
-    get(key) {
-
-        if (
-
-            !__CACHE__.has(key)
-
-        ) {
-
-            return null;
-
-        }
-
-        const cache =
-
-            __CACHE__.get(key);
-
-        if (
-
-            now() - cache.timestamp >
-
-            CACHE_TTL
-
-        ) {
-
-            __CACHE__.delete(key);
-
-            return null;
-
-        }
-
-        return deepClone(
-
-            cache.value
-
-        );
-
-    },
-
-    remove(key) {
-
-        __CACHE__.delete(key);
-
-    },
-
-    clear() {
-
-        __CACHE__.clear();
-
-    }
-
-};
 
 /**
  * =========================================================
@@ -398,657 +200,15 @@ const DOM = {
 
         nodes.forEach(node => {
 
-            fragment.appendChild(node);
+            if (node) {
+
+                fragment.appendChild(node);
+
+            }
 
         });
 
         return fragment;
-
-    }
-
-};
-
-/**
- * =========================================================
- * Render Queue
- * =========================================================
- */
-
-const RENDER_QUEUE = {
-
-    push(task) {
-
-        __RENDER_QUEUE__.push({
-
-            id: uuid(),
-
-            ...task,
-
-            timestamp: now()
-
-        });
-
-        trim(
-
-            __RENDER_QUEUE__,
-
-            MAX_RENDER_QUEUE
-
-        );
-
-    },
-
-    async process() {
-
-        if (
-
-            __RUNTIME__.rendering
-
-        ) {
-
-            return;
-
-        }
-
-        __RUNTIME__.rendering = true;
-
-        try {
-
-            while (
-
-                __RENDER_QUEUE__.length
-
-            ) {
-
-                const batch =
-
-                    __RENDER_QUEUE__
-
-                        .splice(
-
-                            0,
-
-                            MAX_RENDER_BATCH
-
-                        );
-
-                await Promise.all(
-
-                    batch.map(task => {
-
-                        return SYSTEM_CORE
-
-                            .safeExecute(
-
-                                async () => {
-
-                                    await task.callback();
-
-                                }
-
-                            );
-
-                    })
-
-                );
-
-                await new Promise(resolve => {
-
-                    requestAnimationFrame(resolve);
-
-                });
-
-            }
-
-        } finally {
-
-            __RUNTIME__.rendering = false;
-
-        }
-
-    }
-
-};
-
-/**
- * =========================================================
- * Virtual Renderer
- * =========================================================
- */
-
-const VIRTUAL_RENDERER = {
-
-    render(container, nodes = []) {
-
-        if (!container) {
-
-            return;
-
-        }
-
-        const fragment =
-
-            DOM.fragment(nodes);
-
-        container.replaceChildren(
-
-            fragment
-
-        );
-
-    },
-
-    diff(container, html) {
-
-        if (!container) {
-
-            return;
-
-        }
-
-        if (
-
-            container.__lastHTML === html
-
-        ) {
-
-            return;
-
-        }
-
-        container.innerHTML = html;
-
-        container.__lastHTML = html;
-
-    }
-
-};
-
-/**
- * =========================================================
- * Lazy Images
- * =========================================================
- */
-
-const LAZY_IMAGES = {
-
-    observe(image) {
-
-        if (!image) {
-
-            return;
-
-        }
-
-        const observer =
-
-            new IntersectionObserver(
-
-                entries => {
-
-                    entries.forEach(entry => {
-
-                        if (
-
-                            entry.isIntersecting
-
-                        ) {
-
-                            const target =
-
-                                entry.target;
-
-                            target.src =
-
-                                target.dataset.src;
-
-                            observer.unobserve(target);
-
-                        }
-
-                    });
-
-                },
-
-                {
-
-                    rootMargin: '150px'
-
-                }
-
-            );
-
-        observer.observe(image);
-
-        __IMAGE_OBSERVERS__.set(
-
-            image,
-
-            observer
-
-        );
-
-    },
-
-    disconnect() {
-
-        __IMAGE_OBSERVERS__
-
-            .forEach(observer => {
-
-                observer.disconnect();
-
-            });
-
-        __IMAGE_OBSERVERS__.clear();
-
-    }
-
-};
-
-/**
- * =========================================================
- * Navigation Engine
- * =========================================================
- */
-
-const NAVIGATION = {
-
-    async go(route, options = {}) {
-
-        if (
-
-            __RUNTIME__.navigating
-
-        ) {
-
-            return false;
-
-        }
-
-        __RUNTIME__.navigating = true;
-
-        try {
-
-            const {
-
-                replace = false
-
-            } = options;
-
-            if (!replace) {
-
-                history.pushState(
-
-                    {},
-
-                    '',
-
-                    route
-
-                );
-
-            }
-
-            __RUNTIME__.currentRoute =
-
-                route;
-
-            __NAVIGATION_STACK__.push({
-
-                route,
-
-                timestamp: now()
-
-            });
-
-            EVENTS.emit(
-
-                'navigation:change',
-
-                {
-
-                    route
-
-                }
-
-            );
-
-            return true;
-
-        } finally {
-
-            __RUNTIME__.navigating = false;
-
-        }
-
-    }
-
-};
-
-/**
- * =========================================================
- * Section Lifecycle
- * =========================================================
- */
-
-const SECTIONS = {
-
-    register(name, config) {
-
-        __SECTIONS__.set(
-
-            name,
-
-            deepClone(config)
-
-        );
-
-    },
-
-    async mount(name) {
-
-        if (
-
-            !__SECTIONS__.has(name)
-
-        ) {
-
-            return false;
-
-        }
-
-        const section =
-
-            __SECTIONS__.get(name);
-
-        if (
-
-            typeof section.mount ===
-
-            'function'
-
-        ) {
-
-            await section.mount();
-
-        }
-
-        __RUNTIME__.currentSection =
-
-            name;
-
-        return true;
-
-    },
-
-    async unmount(name) {
-
-        if (
-
-            !__SECTIONS__.has(name)
-
-        ) {
-
-            return false;
-
-        }
-
-        const section =
-
-            __SECTIONS__.get(name);
-
-        if (
-
-            typeof section.unmount ===
-
-            'function'
-
-        ) {
-
-            await section.unmount();
-
-        }
-
-        return true;
-
-    }
-
-};
-
-/**
- * =========================================================
- * Performance Engine
- * =========================================================
- */
-
-const PERFORMANCE = {
-
-    snapshot() {
-
-        const payload = {
-
-            timestamp: now(),
-
-            heap:
-
-                performance.memory
-
-                    ? Math.round(
-
-                        performance.memory.usedJSHeapSize /
-
-                        1048576
-
-                    )
-
-                    : 0,
-
-            dom:
-
-                document
-
-                    .querySelectorAll('*')
-
-                    .length,
-
-            renders:
-
-                __RUNTIME__.activeRenders
-
-        };
-
-        __PERFORMANCE__.push(payload);
-
-        trim(
-
-            __PERFORMANCE__,
-
-            100
-
-        );
-
-        return payload;
-
-    },
-
-    detectLowMemory() {
-
-        if (
-
-            !performance.memory
-
-        ) {
-
-            return false;
-
-        }
-
-        const heap =
-
-            Math.round(
-
-                performance.memory.usedJSHeapSize /
-
-                1048576
-
-            );
-
-        if (
-
-            heap >
-
-            MOBILE_MEMORY_LIMIT
-
-        ) {
-
-            __RUNTIME__.lowMemoryMode = true;
-
-            warn(
-
-                'Low Memory Mode Activated',
-
-                { heap }
-
-            );
-
-            return true;
-
-        }
-
-        return false;
-
-    }
-
-};
-
-/**
- * =========================================================
- * Scroll Optimization
- * =========================================================
- */
-
-const SCROLL = {
-
-    optimize() {
-
-        let ticking = false;
-
-        window.addEventListener(
-
-            'scroll',
-
-            () => {
-
-                if (ticking) {
-
-                    return;
-
-                }
-
-                ticking = true;
-
-                requestAnimationFrame(() => {
-
-                    EVENTS.emit(
-
-                        'scroll:optimized'
-
-                    );
-
-                    ticking = false;
-
-                });
-
-            },
-
-            {
-
-                passive: true
-
-            }
-
-        );
-
-    }
-
-};
-
-/**
- * =========================================================
- * Interaction Protection
- * =========================================================
- */
-
-const INTERACTION = {
-
-    debounce(callback, delay = 300) {
-
-        let timeout;
-
-        return (...args) => {
-
-            clearTimeout(timeout);
-
-            timeout = setTimeout(() => {
-
-                callback(...args);
-
-            }, delay);
-
-        };
-
-    },
-
-    throttle(callback, limit = 250) {
-
-        let waiting = false;
-
-        return (...args) => {
-
-            if (waiting) {
-
-                return;
-
-            }
-
-            callback(...args);
-
-            waiting = true;
-
-            setTimeout(() => {
-
-                waiting = false;
-
-            }, limit);
-
-        };
-
-    }
-
-};
-
-/**
- * =========================================================
- * Animation Governance
- * =========================================================
- */
-
-const ANIMATION = {
-
-    frame(callback) {
-
-        return requestAnimationFrame(
-
-            callback
-
-        );
-
-    },
-
-    cancel(frameId) {
-
-        cancelAnimationFrame(frameId);
 
     }
 
@@ -1102,45 +262,109 @@ const EVENTS = {
 
 /**
  * =========================================================
- * Idle Tasks
+ * Navigation Engine
  * =========================================================
  */
 
-const IDLE = {
+const NAVIGATION = {
 
-    push(task) {
+    async go(route, options = {}) {
 
-        __IDLE_TASKS__.push(task);
+        if (
 
-    },
+            __RUNTIME__.navigating
 
-    process() {
+        ) {
 
-        idle(() => {
+            return false;
 
-            while (
+        }
 
-                __IDLE_TASKS__.length
+        __RUNTIME__.navigating = true;
 
-            ) {
+        try {
 
-                const task =
+            const {
 
-                    __IDLE_TASKS__.shift();
+                replace = false
 
-                SYSTEM_CORE.safeExecute(
+            } = options;
 
-                    async () => {
+            if (!replace) {
 
-                        await task();
+                history.pushState(
 
-                    }
+                    {},
+
+                    '',
+
+                    route
 
                 );
 
             }
 
-        });
+            __RUNTIME__.currentRoute = route;
+
+            __NAVIGATION_STACK__.push({
+
+                route,
+
+                timestamp: now()
+
+            });
+
+            EVENTS.emit(
+
+                'navigation:change',
+
+                {
+
+                    route
+
+                }
+
+            );
+
+            return true;
+
+        } catch (ex) {
+
+            error(
+
+                'Navigation Failure',
+
+                {
+
+                    exception: ex
+
+                }
+
+            );
+
+            return false;
+
+        } finally {
+
+            __RUNTIME__.navigating = false;
+
+        }
+
+    },
+
+    current() {
+
+        return __RUNTIME__.currentRoute;
+
+    },
+
+    history() {
+
+        return deepClone(
+
+            __NAVIGATION_STACK__
+
+        );
 
     }
 
@@ -1148,59 +372,131 @@ const IDLE = {
 
 /**
  * =========================================================
- * Cleanup Engine
+ * Sections Lifecycle
  * =========================================================
  */
 
-const CLEANUP = {
+const SECTIONS = {
 
-    runtime() {
+    register(name, config = {}) {
 
-        trim(
+        __SECTIONS__.set(
 
-            __INTERACTIONS__,
+            name,
 
-            100
-
-        );
-
-        trim(
-
-            __PERFORMANCE__,
-
-            100
+            deepClone(config)
 
         );
 
-        trim(
-
-            __MEMORY__,
-
-            50
-
-        );
-
-        trim(
-
-            __DOM_SNAPSHOTS__,
-
-            20
-
-        );
+        return true;
 
     },
 
-    dom() {
+    exists(name) {
 
-        DOM.queryAll(
+        return __SECTIONS__.has(name);
 
-            '[data-runtime-temp]'
+    },
 
-        ).forEach(node => {
+    async mount(name) {
 
-            node.remove();
+        if (
 
-        });
+            !__SECTIONS__.has(name)
+
+        ) {
+
+            return false;
+
+        }
+
+        const section =
+
+            __SECTIONS__.get(name);
+
+        if (
+
+            typeof section.mount === 'function'
+
+        ) {
+
+            await SYSTEM_CORE.safeExecute(
+
+                async () => {
+
+                    await section.mount();
+
+                }
+
+            );
+
+        }
+
+        __RUNTIME__.currentSection = name;
+
+        EVENTS.emit(
+
+            'section:mounted',
+
+            {
+
+                section: name
+
+            }
+
+        );
+
+        return true;
+
+    },
+
+    async unmount(name) {
+
+        if (
+
+            !__SECTIONS__.has(name)
+
+        ) {
+
+            return false;
+
+        }
+
+        const section =
+
+            __SECTIONS__.get(name);
+
+        if (
+
+            typeof section.unmount === 'function'
+
+        ) {
+
+            await SYSTEM_CORE.safeExecute(
+
+                async () => {
+
+                    await section.unmount();
+
+                }
+
+            );
+
+        }
+
+        EVENTS.emit(
+
+            'section:unmounted',
+
+            {
+
+                section: name
+
+            }
+
+        );
+
+        return true;
 
     }
 
@@ -1248,11 +544,19 @@ const OFFLINE = {
 
                 );
 
-                await FIREBASE_ENGINE
+                await SYSTEM_CORE.safeExecute(
 
-                    .NETWORK
+                    async () => {
 
-                    .reconnect();
+                        await FIREBASE_ENGINE
+
+                            .NETWORK
+
+                            .reconnect();
+
+                    }
+
+                );
 
             }
 
@@ -1264,49 +568,388 @@ const OFFLINE = {
 
 /**
  * =========================================================
- * Watchdogs
+ * Cloud Data Pipeline
  * =========================================================
  */
 
-const WATCHDOGS = {
+const CLOUD_PIPELINE = {
 
-    start(name, callback, interval) {
+    async fetchAndRenderCatalog() {
 
-        if (
+        const container = DOM.get(
 
-            __WATCHDOGS__.has(name)
+            REGISTRY.DOM.HOMEPAGE.DYNAMIC_CONTENT.id
 
-        ) {
+        );
 
-            return;
+        if (!container) {
 
-        }
+            error(
 
-        const runtime =
-
-            setInterval(
-
-                callback,
-
-                interval
+                'Homepage Dynamic Content Container Missing'
 
             );
 
-        __WATCHDOGS__.set(
+            return;
 
-            name,
+        }
 
-            runtime
+        info(
+
+            'Executing Cloud Data Pipeline Catalog Fetch'
+
+        );
+
+        try {
+
+            const menuData =
+
+                SYSTEM_CORE.STATE.get(
+
+                    REGISTRY.STATE.MENU.key
+
+                ) || [];
+
+            if (!menuData.length) {
+
+                DOM.html(
+
+                    container,
+
+                    '<div class="loading-state">جاري استعراض المنيو الفاخر...</div>'
+
+                );
+
+                return;
+
+            }
+
+            let htmlBuffer =
+
+                '<div class="bose-dynamic-grid">';
+
+            menuData.forEach(item => {
+
+                if (item.hidden) {
+
+                    return;
+
+                }
+
+                const isOutOfStock =
+
+                    SYSTEM_CORE.STATE.get(
+
+                        REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key
+
+                    )?.includes(item.id);
+
+                const category =
+
+                    String(
+
+                        item.category || ''
+
+                    ).toLowerCase();
+
+                let gridClass =
+
+                    'bose-full-card bose-full-card-row';
+
+                if (
+
+                    category === 'donuts' ||
+
+                    category === 'cinnabon' ||
+
+                    item.name?.includes('دوناتس') ||
+
+                    item.name?.includes('سينابون') ||
+
+                    category === 'حلويات'
+
+                ) {
+
+                    gridClass =
+
+                        'bose-full-card';
+
+                }
+
+                htmlBuffer += `
+
+                    <div class="${gridClass} ${isOutOfStock ? 'opacity-60' : ''}" data-id="${item.id}">
+
+                        <div class="card-image-section relative w-full aspect-square md:aspect-auto overflow-hidden bg-brandPinkLight">
+
+                            <img
+                                class="lazy-product-image absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                                src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
+                                data-src="${item.image || ''}"
+                                alt="${item.name || ''}"
+                                loading="lazy"
+                                decoding="async"
+                            />
+
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent pointer-events-none"></div>
+
+                            ${isOutOfStock ? `
+                                <div class="absolute inset-0 bg-brandBlack/40 flex items-center justify-center text-white font-extrabold text-xs">
+                                    نفذت الكمية مؤقتاً
+                                </div>
+                            ` : ''}
+
+                        </div>
+
+                        <div class="card-content-section p-5 flex flex-col justify-between flex-grow space-y-4">
+
+                            <div class="space-y-1.5">
+
+                                <h3 class="text-sm font-black text-brandBlack leading-snug">
+                                    ${item.name || ''}
+                                </h3>
+
+                                <p class="text-xs text-brandBlack/60 font-semibold leading-relaxed line-clamp-2">
+                                    ${item.description || item.desc || ''}
+                                </p>
+
+                            </div>
+
+                            <div class="flex items-center justify-between pt-2 border-t border-brandPink/5 gap-3">
+
+                                <span class="text-brandPink font-black text-base tracking-tight">
+                                    ${item.price || 0} ج.م
+                                </span>
+
+                                <button
+                                    class="action-add-to-cart px-5 py-2.5 bg-brandPink hover:bg-brandPinkDark text-white font-extrabold rounded-full text-[11px] transition-all duration-300 shadow-sm active:scale-95"
+                                    data-id="${item.id}"
+                                    ${isOutOfStock ? 'disabled' : ''}
+                                >
+
+                                    إضافة للسلة
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            });
+
+            htmlBuffer += '</div>';
+
+            UI_PERFORMANCE.VIRTUAL_RENDERER.diff(
+
+                container,
+
+                htmlBuffer
+
+            );
+
+            UI_PERFORMANCE.LAZY_IMAGES.observeAll(
+
+                '.lazy-product-image'
+
+            );
+
+            this.attachCatalogEvents();
+
+        } catch (ex) {
+
+            error(
+
+                'Failure inside Cloud Data Pipeline Render Engine',
+
+                {
+
+                    exception: ex
+
+                }
+
+            );
+
+        }
+
+    },
+
+    attachCatalogEvents() {
+
+        DOM.queryAll(
+
+            '.action-add-to-cart'
+
+        ).forEach(button => {
+
+            if (button.__bound) {
+
+                return;
+
+            }
+
+            button.__bound = true;
+
+            button.addEventListener(
+
+                'click',
+
+                (e) => {
+
+                    const id =
+
+                        e.target.dataset.id;
+
+                    if (!id) {
+
+                        return;
+
+                    }
+
+                    info(
+
+                        'Catalog Add To Cart Action Triggered',
+
+                        { id }
+
+                    );
+
+                    const menuData =
+
+                        SYSTEM_CORE.STATE.get(
+
+                            REGISTRY.STATE.MENU.key
+
+                        ) || [];
+
+                    const productObj =
+
+                        menuData.find(
+
+                            item => item.id === id
+
+                        );
+
+                    if (productObj) {
+
+                        if (
+
+                            window.BoseSweets &&
+
+                            typeof window.BoseSweets.addItemToCart === 'function'
+
+                        ) {
+
+                            window.BoseSweets.addItemToCart(id);
+
+                            EVENTS.emit(
+
+                                REGISTRY.EVENTS.CART.ITEM_ADDED,
+
+                                {
+
+                                    product: productObj
+
+                                }
+
+                            );
+
+                        } else {
+
+                            COMMERCE_ENGINE.CART.add(productObj);
+
+                        }
+
+                    } else {
+
+                        COMMERCE_ENGINE.CART.add(id);
+
+                    }
+
+                },
+
+                {
+
+                    passive: true
+
+                }
+
+            );
+
+        });
+
+    }
+
+};
+
+/**
+ * =========================================================
+ * Interactive Builders
+ * =========================================================
+ */
+
+const INTERACTIVE_BUILDERS = {
+
+    initializeSimulators() {
+
+        info(
+
+            'Synthesizing Interactive Builders Simulators Contexts'
+
+        );
+
+        EVENTS.on(
+
+            REGISTRY.EVENTS.VIEW.CHANGED,
+
+            (payload) => {
+
+                if (
+
+                    payload.view === 'cake-builder'
+
+                ) {
+
+                    this.syncCakeBuilderSimulator();
+
+                } else if (
+
+                    payload.view === 'rose-builder'
+
+                ) {
+
+                    this.syncRoseBuilderSimulator();
+
+                }
+
+            }
 
         );
 
     },
 
-    stop(name) {
+    syncCakeBuilderSimulator() {
+
+        const priceDisplay = DOM.get(
+
+            REGISTRY.DOM.CAKE.PRICE_DISPLAY.id
+
+        );
+
+        const peopleInput = DOM.get(
+
+            REGISTRY.DOM.CAKE.PEOPLE_COUNT.id
+
+        );
 
         if (
 
-            !__WATCHDOGS__.has(name)
+            !priceDisplay ||
+
+            !peopleInput
 
         ) {
 
@@ -1314,25 +957,351 @@ const WATCHDOGS = {
 
         }
 
-        clearInterval(
+        const basePrice =
 
-            __WATCHDOGS__.get(name)
+            SYSTEM_CORE.STATE.get(
+
+                REGISTRY.STATE.SYSTEM_STATUS.key
+
+            )?.cakeBasePricePerPerson || 145;
+
+        const updateLivePrice = () => {
+
+            const count = parseInt(
+
+                peopleInput.textContent ||
+
+                peopleInput.value,
+
+                10
+
+            ) || 4;
+
+            let liveTotal =
+
+                count * basePrice;
+
+            if (
+
+                window.BoseSweets &&
+
+                window.BoseSweets.cakeCustomState
+
+            ) {
+
+                const printOpt =
+
+                    window.BoseSweets.cakeCustomState.print;
+
+                const config =
+
+                    SYSTEM_CORE.STATE.get(
+
+                        REGISTRY.STATE.SYSTEM_STATUS.key
+
+                    ) || {};
+
+                if (
+
+                    printOpt === 'edible'
+
+                ) {
+
+                    liveTotal += (
+
+                        config.cakePrintEdiblePrice || 60
+
+                    );
+
+                }
+
+                if (
+
+                    printOpt === 'non-edible'
+
+                ) {
+
+                    liveTotal += (
+
+                        config.cakePrintNonEdiblePrice || 20
+
+                    );
+
+                }
+
+            }
+
+            DOM.text(
+
+                priceDisplay,
+
+                `${liveTotal} ج.م`
+
+            );
+
+            SYSTEM_CORE.STATE.merge(
+
+                REGISTRY.STATE.CAKE.key,
+
+                {
+
+                    peopleCount: count,
+
+                    currentLivePrice: liveTotal
+
+                }
+
+            );
+
+        };
+
+        const observer =
+
+            new MutationObserver(
+
+                updateLivePrice
+
+            );
+
+        observer.observe(
+
+            peopleInput,
+
+            {
+
+                childList: true,
+
+                characterData: true,
+
+                subtree: true
+
+            }
 
         );
 
-        __WATCHDOGS__.delete(name);
+        peopleInput.addEventListener(
+
+            'input',
+
+            UI_PERFORMANCE.INTERACTION.throttle(
+
+                updateLivePrice,
+
+                100
+
+            ),
+
+            {
+
+                passive: true
+
+            }
+
+        );
+
+        updateLivePrice();
 
     },
 
-    stopAll() {
+    syncRoseBuilderSimulator() {
 
-        __WATCHDOGS__.forEach(runtime => {
+        const priceDisplay = DOM.get(
 
-            clearInterval(runtime);
+            REGISTRY.DOM.ROSE.PRICE_DISPLAY.id
 
-        });
+        );
 
-        __WATCHDOGS__.clear();
+        const countInput = DOM.get(
+
+            REGISTRY.DOM.ROSE.COUNT.id
+
+        );
+
+        if (
+
+            !priceDisplay ||
+
+            !countInput
+
+        ) {
+
+            return;
+
+        }
+
+        const config =
+
+            SYSTEM_CORE.STATE.get(
+
+                REGISTRY.STATE.SYSTEM_STATUS.key
+
+            ) || {};
+
+        const minCount =
+
+            config.roseMinCount || 15;
+
+        const basePrice =
+
+            config.roseBasePrice || 400;
+
+        const additionalPrice =
+
+            config.rosePricePerAdditional || 15;
+
+        const updateLivePrice = () => {
+
+            const count = parseInt(
+
+                countInput.textContent ||
+
+                countInput.value,
+
+                10
+
+            ) || minCount;
+
+            let liveTotal = basePrice;
+
+            if (count > minCount) {
+
+                liveTotal += (
+
+                    count - minCount
+
+                ) * additionalPrice;
+
+            }
+
+            if (
+
+                window.BoseSweets &&
+
+                window.BoseSweets.roseCustomState
+
+            ) {
+
+                const state =
+
+                    window.BoseSweets.roseCustomState;
+
+                liveTotal += (
+
+                    state.photos *
+
+                    (config.rosePhotoPrice || 15)
+
+                );
+
+                if (state.ribbon) {
+
+                    liveTotal += (
+
+                        config.roseRibbonPrice || 50
+
+                    );
+
+                }
+
+                if (state.card) {
+
+                    liveTotal += (
+
+                        config.roseCardPrice || 20
+
+                    );
+
+                }
+
+                liveTotal += Number(
+
+                    state.chocBudget || 0
+
+                );
+
+                liveTotal += (
+
+                    state.premiumBars[100] * 100
+
+                );
+
+                liveTotal += (
+
+                    state.premiumBars[120] * 120
+
+                );
+
+            }
+
+            DOM.text(
+
+                priceDisplay,
+
+                `${liveTotal} ج.م`
+
+            );
+
+            SYSTEM_CORE.STATE.merge(
+
+                REGISTRY.STATE.ROSE.key,
+
+                {
+
+                    roseCount: count,
+
+                    currentLivePrice: liveTotal
+
+                }
+
+            );
+
+        };
+
+        const observer =
+
+            new MutationObserver(
+
+                updateLivePrice
+
+            );
+
+        observer.observe(
+
+            countInput,
+
+            {
+
+                childList: true,
+
+                characterData: true,
+
+                subtree: true
+
+            }
+
+        );
+
+        countInput.addEventListener(
+
+            'input',
+
+            UI_PERFORMANCE.INTERACTION.throttle(
+
+                updateLivePrice,
+
+                100
+
+            ),
+
+            {
+
+                passive: true
+
+            }
+
+        );
+
+        updateLivePrice();
 
     }
 
@@ -1358,67 +1327,33 @@ async function boot() {
 
     );
 
+    await UI_PERFORMANCE.boot();
+
     OFFLINE.detect();
 
-    SCROLL.optimize();
+    INTERACTIVE_BUILDERS.initializeSimulators();
 
-    WATCHDOGS.start(
+    EVENTS.on(
 
-        'render_queue',
+        REGISTRY.EVENTS.MENU.UPDATED,
 
         async () => {
 
-            await RENDER_QUEUE.process();
+            await CLOUD_PIPELINE.fetchAndRenderCatalog();
 
-        },
-
-        RENDER_FRAME_TIME
+        }
 
     );
 
-    WATCHDOGS.start(
+    EVENTS.on(
 
-        'performance_monitor',
+        REGISTRY.EVENTS.MENU.STOCK_CHANGED,
 
-        () => {
+        async () => {
 
-            PERFORMANCE.snapshot();
+            await CLOUD_PIPELINE.fetchAndRenderCatalog();
 
-            PERFORMANCE.detectLowMemory();
-
-        },
-
-        10000
-
-    );
-
-    WATCHDOGS.start(
-
-        'idle_tasks',
-
-        () => {
-
-            IDLE.process();
-
-        },
-
-        5000
-
-    );
-
-    WATCHDOGS.start(
-
-        'cleanup_runtime',
-
-        () => {
-
-            CLEANUP.runtime();
-
-            CLEANUP.dom();
-
-        },
-
-        CLEANUP_INTERVAL
+        }
 
     );
 
@@ -1458,23 +1393,13 @@ async function boot() {
 
 function cleanup() {
 
-    WATCHDOGS.stopAll();
-
-    CACHE.clear();
-
-    LAZY_IMAGES.disconnect();
+    UI_PERFORMANCE.cleanup();
 
     __SECTIONS__.clear();
 
-    __CACHE__.clear();
+    __NAVIGATION_STACK__.length = 0;
 
-    __RENDER_QUEUE__.length = 0;
-
-    __RENDER_BATCH__.length = 0;
-
-    __INTERACTIONS__.length = 0;
-
-    __IDLE_TASKS__.length = 0;
+    __LIFECYCLES__.clear();
 
     info(
 
@@ -1498,33 +1423,19 @@ export const UNIFIED_ENGINE = Object.freeze({
 
     DOM,
 
-    CACHE,
-
     EVENTS,
 
     NAVIGATION,
 
     SECTIONS,
 
-    PERFORMANCE,
-
-    RENDER_QUEUE,
-
-    VIRTUAL_RENDERER,
-
-    LAZY_IMAGES,
-
-    INTERACTION,
-
-    ANIMATION,
-
     OFFLINE,
 
-    IDLE,
+    CLOUD_PIPELINE,
 
-    CLEANUP,
+    INTERACTIVE_BUILDERS,
 
-    WATCHDOGS,
+    UI_PERFORMANCE,
 
     cleanup
 

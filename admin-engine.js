@@ -1,17 +1,22 @@
-```javascript
 /**
  * @file admin-engine.js
  * @description المحرك البرمجي الموحد المغلق كلياً لإدارة ومراقبة كابينة حلويات بوسي (BoseMonitor)
- * @version 2.2.0
- * @compliance BoseSweets Unified Engine Specification - Resolved Exec Order & Struct Mismatch
+ * @version 3.0.0
+ * @compliance BoseSweets Unified Engine Specification - Governed Infrastructure Alignment
  */
+
+'use strict';
+
+import REGISTRY from './system-registry.js';
+import SYSTEM_CORE from './system-core.js';
+import FIREBASE_ENGINE from './firebase-engine.js';
 
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, onSnapshot, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, writeBatch } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // ==========================================
-// 1. الإعدادات والتحقق السحابي الفريد لـ حلويات بوسي
+// 1. الإعدادات والتحقق السحابي لـ حلويات بوسي
 // ==========================================
 const firebaseConfig = {
     apiKey: "AIzaSyBLIrbV_mzttQYwFzs5OYfq7w7pc0UvvLc",
@@ -26,7 +31,7 @@ const firebaseConfig = {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
-const appId = 'bosy-sweets';
+const appId = REGISTRY.APP.ID;
 
 const cloudinaryConfig = { 
     cloudName: 'dyx4w0dr1', 
@@ -38,11 +43,8 @@ const cloudinaryConfig = {
 // ==========================================
 window.globalConfig = {
     cakeBasePricePerPerson: 145,
-    cakeBasePrice: 145,
     cakePrintEdiblePrice: 60,
-    cakePrintEdible: 60,
     cakePrintNonEdiblePrice: 20,
-    cakePrintNonEdible: 20,
     roseBasePrice: 400,
     roseMinCount: 15,
     rosePricePerAdditional: 35,
@@ -56,7 +58,6 @@ window.globalConfig = {
     marqueeText: "✨ عقد من التميز والاتقان الفني في صناعة الحلويات الطبيعية 100% بمكونات فاخرة خالية تماماً من الإضافات الكيميائية",
     marqueeSpeed: 30,
     orderPrepTimeHours: 24,
-    prepTime: 24,
     phone: "01097238441",
     bgVideoUrl: "",
     promoImageUrl: "",
@@ -96,7 +97,7 @@ const catalogCategories = {
     'roses': 'باقات وتنسيق الورد 💐'
 };
 
-// حاوية مركزية لتخزين دوال إلغاء الاستماع السحابي للحفاظ على الذاكرة الحية وقنوات الاتصال
+// حاوية مركزية لتخزين معرفات دوال إلغاء الاستماع السحابي للحفاظ على الذاكرة الحية وقنوات الاتصال
 const adminActiveListeners = [];
 
 let allOrders = [];
@@ -110,21 +111,21 @@ let currentTargetInputId = null;
 let currentTargetButtonId = null;
 let currentTargetItemId = null;
 
-// دالة تفريغ وإلغاء الاستماع لجميع القنوات السحابية المفتوحة مسبقاً لمنع تسريب الموارد
+// دالة تفريغ وإلغاء الاستماع لجميع القنوات السحابية المفتوحة مسبقاً لمنع تسريب الموارد عبر نظام Watchers
 function clearActiveListeners() {
     while (adminActiveListeners.length > 0) {
-        const unsubscribe = adminActiveListeners.pop();
-        if (typeof unsubscribe === 'function') {
+        const listenerId = adminActiveListeners.pop();
+        if (listenerId) {
             try {
-                unsubscribe();
+                FIREBASE_ENGINE.WATCHERS.stop(listenerId);
             } catch (err) {
-                console.error("فشل إلغاء تنشيط مستمع سحابي محدد:", err);
+                console.error("فشل إلغاء تنشيط مستمع سحابي محدد من البنية التحتية:", err);
             }
         }
     }
 }
 
-// دالات مساعدة لقراءة حقول الـ DOM بأمان مطلق وتجنب الأخطاء الصامتة (Bug 1 Fix)
+// دالات مساعدة لقراءة حقول الـ DOM بأمان مطلق وتجنب الأخطاء الصامتة
 function getSafeElementValue(id, fallback = 0, isInt = false) {
     const el = document.getElementById(id);
     if (!el) return fallback;
@@ -141,17 +142,17 @@ function getSafeElementText(id, fallback = "") {
 // 3. التحقق الأمني من الصلاحيات والتحضير للعمل
 // ==========================================
 onAuthStateChanged(auth, async (user) => {
-    const guard = document.getElementById('loadingGuard');
+    const guard = SYSTEM_CORE.DOM.get(REGISTRY.DOM.ADMIN.LOADING_GUARD);
     if (!user) {
         clearActiveListeners();
-        window.location.href = 'login.html';
+        window.location.href = REGISTRY.FILES.PAGES.AUTH;
         return;
     }
     try {
         const globalRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global_config');
         await getDoc(globalRef);
         
-        const displayEmail = document.getElementById('adminEmailDisplay');
+        const displayEmail = SYSTEM_CORE.DOM.get(REGISTRY.DOM.ADMIN.EMAIL_DISPLAY);
         if (displayEmail) displayEmail.textContent = user.email;
         
         if (guard) {
@@ -166,30 +167,27 @@ onAuthStateChanged(auth, async (user) => {
         await reportSystemError("خطأ حرج في الصلاحيات", err.message, "admin-monitor.html");
         clearActiveListeners();
         await signOut(auth);
-        window.location.href = 'login.html';
+        window.location.href = REGISTRY.FILES.PAGES.AUTH;
     }
 });
 
 // ==========================================
-// 4. نظام BoseMonitor لاستقبال وإرسال التقارير التشخيصية المتوافق مع Rule 1
+// 4. نظام BoseMonitor لاستقبال وإرسال التقارير التشخيصية
 // ==========================================
 async function reportSystemError(type, message, source) {
     try {
-        // الالتزام التام بالمسار المعتمد للمقاييس وحفظ السجلات: /artifacts/{appId}/public/data/{collectionName}
-        const logRef = doc(collection(db, 'artifacts', appId, 'public', 'data', 'system_logs'));
-        await setDoc(logRef, {
+        await FIREBASE_ENGINE.DATABASE.createDocument(REGISTRY.FIREBASE.COLLECTIONS.SYSTEM_LOGS, {
             type: type,
             message: message,
             source: source,
             timestamp: Date.now()
         });
     } catch (e) {
-        console.error("فشل إرسال تقرير العطل سحابياً:", e);
+        console.error("فشل إرسال تقرير العطل سحابياً عبر محرك البيانات المعتمد:", e);
     }
 }
 
 async function initAppLifecycle() {
-    // التطهير الإلزامي لأي مستمع نشط سابقاً قبل إعادة التهيئة
     clearActiveListeners();
 
     await fetchConfigSettings();
@@ -209,14 +207,11 @@ async function initAppLifecycle() {
 // ==========================================
 async function fetchConfigSettings() {
     try {
-        const globalRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global_config');
-        const globalSnap = await getDoc(globalRef);
-        
-        const shippingRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'shipping_rates');
-        const shippingSnap = await getDoc(shippingRef);
+        const globalSnap = await FIREBASE_ENGINE.DATABASE.getDocument(REGISTRY.FIREBASE.SETTINGS.GLOBAL_CONFIG);
+        const shippingSnap = await FIREBASE_ENGINE.DATABASE.getDocument(REGISTRY.FIREBASE.SETTINGS.SHIPPING_RATES);
 
-        let fetchedGlobal = globalSnap.exists() ? globalSnap.data() : {};
-        let fetchedShipping = shippingSnap.exists() ? shippingSnap.data() : {};
+        let fetchedGlobal = globalSnap || {};
+        let fetchedShipping = shippingSnap || {};
 
         window.globalConfig = { 
             ...window.globalConfig, 
@@ -224,11 +219,11 @@ async function fetchConfigSettings() {
             shippingRates: fetchedShipping.shippingRates || fetchedShipping.rates || window.globalConfig.shippingRates 
         };
 
-        // المحاذاة الثنائية الصارمة للمسميات في المحرك الموحد لمنع حدوث فجوة في القراءة
-        window.globalConfig.cakeBasePricePerPerson = fetchedGlobal.cakeBasePricePerPerson || fetchedGlobal.cakeBasePrice || 145;
-        window.globalConfig.cakePrintEdiblePrice = fetchedGlobal.cakePrintEdiblePrice || fetchedGlobal.cakePrintEdible || 60;
-        window.globalConfig.cakePrintNonEdiblePrice = fetchedGlobal.cakePrintNonEdiblePrice || fetchedGlobal.cakePrintNonEdible || 20;
-        window.globalConfig.orderPrepTimeHours = fetchedGlobal.orderPrepTimeHours || fetchedGlobal.prepTime || 24;
+        // تدمير المسميات المزدوجة والمحاذاة الصارمة والموحدة مع السجل الحاكم لمنع تفاوت حساب الأسعار
+        window.globalConfig.cakeBasePricePerPerson = fetchedGlobal.cakeBasePricePerPerson || 145;
+        window.globalConfig.cakePrintEdiblePrice = fetchedGlobal.cakePrintEdiblePrice || 60;
+        window.globalConfig.cakePrintNonEdiblePrice = fetchedGlobal.cakePrintNonEdiblePrice || 20;
+        window.globalConfig.orderPrepTimeHours = fetchedGlobal.orderPrepTimeHours || 24;
 
         if (!window.globalConfig.catalogItems) window.globalConfig.catalogItems = {};
         if (!window.globalConfig.homepageSections) window.globalConfig.homepageSections = [];
@@ -244,30 +239,34 @@ async function fetchConfigSettings() {
             }
         });
 
-        // مراقبة المنيو السحابي الحقيقي لعدم حدوث ثغرات في تفاوت الأسعار مع حفظ المستمع لتجنب تسريبه
-        const menuCollectionRef = collection(db, 'artifacts', appId, 'public', 'data', 'menu');
-        const unsubscribeMenu = onSnapshot(menuCollectionRef, (snap) => {
-            snap.forEach(doc => {
-                const mData = doc.data();
-                if (window.globalConfig.catalogItems[doc.id]) {
-                    if (mData.desc) window.globalConfig.catalogItems[doc.id].desc = mData.desc;
-                    if (mData.img) window.globalConfig.catalogItems[doc.id].image = mData.img;
-                    if (mData.flavors && mData.flavors[0]) {
-                        window.globalConfig.catalogItems[doc.id].price = mData.flavors[0].price;
-                    } else if (mData.sizes && mData.sizes[0] && mData.sizes[0].flavors && mData.sizes[0].flavors[0]) {
-                        window.globalConfig.catalogItems[doc.id].price = mData.sizes[0].flavors[0].price;
+        // تشغيل مراقبة المنيو السحابي بالكامل عبر نظام كبسولة الـ WATCHERS ذاتي العلاج والتفريغ التلقائي للذاكرة الحية
+        const unsubscribeMenuId = FIREBASE_ENGINE.WATCHERS.collection(REGISTRY.FIREBASE.COLLECTIONS.MENU, (data) => {
+            data.forEach(itemDoc => {
+                if (window.globalConfig.catalogItems[itemDoc.id]) {
+                    if (itemDoc.desc) window.globalConfig.catalogItems[itemDoc.id].desc = itemDoc.desc;
+                    if (itemDoc.img) window.globalConfig.catalogItems[itemDoc.id].image = itemDoc.img;
+                    if (itemDoc.flavors && itemDoc.flavors[0]) {
+                        window.globalConfig.catalogItems[itemDoc.id].price = itemDoc.flavors[0].price;
+                    } else if (itemDoc.sizes && itemDoc.sizes[0] && itemDoc.sizes[0].flavors && itemDoc.sizes[0].flavors[0]) {
+                        window.globalConfig.catalogItems[itemDoc.id].price = itemDoc.sizes[0].flavors[0].price;
                     }
                 }
             });
             renderMenuAvailabilityList();
         });
-        adminActiveListeners.push(unsubscribeMenu);
+        adminActiveListeners.push(unsubscribeMenuId);
 
         populateUIFromConfig();
         renderShippingRates();
         renderMenuCategoryTabs();
         renderLayoutSectionsManager();
         updateGlobalDisplayModeUI();
+        
+        // حقن حالة النظام التشغيلية والمزامنة الحية داخل النواة الحاكمة
+        SYSTEM_CORE.STATE.set(REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key, window.globalConfig.outOfStockItems);
+        SYSTEM_CORE.STATE.set(REGISTRY.STATE.SHIPPING_RATES.key, window.globalConfig.shippingRates);
+        SYSTEM_CORE.STATE.set(REGISTRY.STATE.DISPLAY_MODE.key, window.globalConfig.displayMode);
+        
     } catch (err) {
         console.error("فشل قراءة محددات الإعدادات العامة لموقع حلويات بوسي:", err);
         await reportSystemError("فشل قراءة الإعدادات", err.message, "fetchConfigSettings");
@@ -279,9 +278,9 @@ function populateUIFromConfig() {
     const elEdible = document.getElementById('cfg-cakePrintEdible');
     const elNonEdible = document.getElementById('cfg-cakePrintNonEdible');
     
-    if (elCakeBase) elCakeBase.value = window.globalConfig.cakeBasePricePerPerson || 145;
-    if (elEdible) elEdible.value = window.globalConfig.cakePrintEdiblePrice || 60;
-    if (elNonEdible) elNonEdible.value = window.globalConfig.cakePrintNonEdiblePrice || 20;
+    if (elCakeBase) elCakeBase.value = window.globalConfig.cakeBasePricePerPerson;
+    if (elEdible) elEdible.value = window.globalConfig.cakePrintEdiblePrice;
+    if (elNonEdible) elNonEdible.value = window.globalConfig.cakePrintNonEdiblePrice;
     
     const elRoseBase = document.getElementById('cfg-roseBasePrice');
     const elRoseMin = document.getElementById('cfg-roseMinCount');
@@ -311,13 +310,13 @@ function populateUIFromConfig() {
     const elPromoImg = document.getElementById('cfg-promoImageUrl');
 
     if (elPhone) elPhone.value = window.globalConfig.phone || "01097238441";
-    if (elPrepTime) elPrepTime.value = window.globalConfig.orderPrepTimeHours || 24;
+    if (elPrepTime) elPrepTime.value = window.globalConfig.orderPrepTimeHours;
     if (elBgVideo) elBgVideo.value = window.globalConfig.bgVideoUrl || "";
     if (elPromoImg) elPromoImg.value = window.globalConfig.promoImageUrl || "";
 }
 
 function updateSpeedLabel(val) {
-    const label = document.getElementById('marqueeSpeedLabel');
+    const label = SYSTEM_CORE.DOM.get(REGISTRY.DOM.ADMIN.MARQUEE_SPEED_LABEL);
     if (!label) return;
     if (val <= 20) { 
         label.textContent = 'سريع جداً (قد يشتت العين)';
@@ -332,10 +331,8 @@ function updateSpeedLabel(val) {
 // 6. تتبع المزامنة الحية للطلبات والتدفقات المالية
 // ==========================================
 function subscribeToOrders() {
-    const ordersRef = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
-    const unsubscribeOrders = onSnapshot(ordersRef, (snapshot) => {
-        allOrders = [];
-        snapshot.forEach(doc => { allOrders.push({ id: doc.id, ...doc.data() }); });
+    const unsubscribeOrdersId = FIREBASE_ENGINE.WATCHERS.collection(REGISTRY.FIREBASE.COLLECTIONS.ORDERS, (data) => {
+        allOrders = [...data];
         allOrders.sort((a, b) => {
             const dateA = a.createdAt ? (a.createdAt.seconds || 0) : 0;
             const dateB = b.createdAt ? (b.createdAt.seconds || 0) : 0;
@@ -343,29 +340,22 @@ function subscribeToOrders() {
         });
         renderOrdersPipeline();
         updateDashboardCounters();
-    }, (err) => {
-        console.error("فشل الاتصال بخط إنتاج الطلبات السحابية الحية لـ حلويات بوسي:", err);
     });
-    adminActiveListeners.push(unsubscribeOrders);
+    adminActiveListeners.push(unsubscribeOrdersId);
 }
 
 function subscribeToLogs() {
-    // تفعيل المسار السيادي الموحد لتتبع سجلات تشخيص نظام بوسي مونيتور (Rule 1)
-    const logsRef = collection(db, 'artifacts', appId, 'public', 'data', 'system_logs');
-    const unsubscribeLogs = onSnapshot(logsRef, (snapshot) => {
-        systemLogs = [];
-        snapshot.forEach(doc => { systemLogs.push({ id: doc.id, ...doc.data() }); });
+    const unsubscribeLogsId = FIREBASE_ENGINE.WATCHERS.collection(REGISTRY.FIREBASE.COLLECTIONS.SYSTEM_LOGS, (data) => {
+        systemLogs = [...data];
         systemLogs.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
         renderSystemLogsTable();
-    }, (err) => {
-        console.error("فشل جلب سجلات تشخيص نظام بوسي مونيتور لتتبع الأعطال:", err);
     });
-    adminActiveListeners.push(unsubscribeLogs);
+    adminActiveListeners.push(unsubscribeLogsId);
 }
 
 function updateDashboardCounters() {
     const total = allOrders.length;
-    const pending = allOrders.filter(o => o.deliveryMethod && (!o.status || o.status === 'pending')).length;
+    const pending = allOrders.filter(o => o.checkout && (!o.status || o.status === 'pending')).length;
     const active = allOrders.filter(o => o.status === 'processing' || o.status === 'shipping').length;
     const completed = allOrders.filter(o => o.status === 'completed').length;
 
@@ -388,8 +378,8 @@ function updateDashboardCounters() {
     if (bShipping) bShipping.textContent = allOrders.filter(o => o.status === 'shipping').length;
 
     const completedOrdersList = allOrders.filter(o => o.status === 'completed');
-    const totalRevenue = completedOrdersList.reduce((sum, o) => sum + (o.grandTotal || 0), 0);
-    const totalShipping = completedOrdersList.reduce((sum, o) => sum + (o.shippingFee || 0), 0);
+    const totalRevenue = completedOrdersList.reduce((sum, o) => sum + (o.totals?.total || 0), 0);
+    const totalShipping = completedOrdersList.reduce((sum, o) => sum + (o.totals?.shipping || 0), 0);
     const netRevenue = totalRevenue - totalShipping;
 
     const elRevTotal = document.getElementById('stat-revenue-total');
@@ -398,28 +388,28 @@ function updateDashboardCounters() {
 
     if (elRevTotal) elRevTotal.textContent = `${totalRevenue} ج.م`;
     if (elRevShip) elRevShip.textContent = `${totalShipping} ج.م`;
-    if (elRevNet) elRevNet.textContent = `${netRevenue} ج.م`;
+    if (elRevNet) elRevNet.textContent = `${netRevenue} ج.m`;
 }
 
 // ==========================================
 // 7. صياغة وعرض شلال وحركة معالجة الطلبات بالتفصيل
 // ==========================================
 function getOrderSummary(order) {
-    if (!order.items || order.items.length === 0) return 'طلب مجهول الهوية';
-    const count = order.items.length;
-    const primaryItem = order.items[0];
+    if (!order.cart || order.cart.length === 0) return 'طلب مجهول الهوية';
+    const count = order.cart.length;
+    const primaryItem = order.cart[0];
     let summary = ``;
 
     if (primaryItem.isCustom) {
-        if (primaryItem.id === 'roses' || primaryItem.name.includes('ورد')) {
-            summary = `باقة تنسيق ورد فاخرة`;
-            if (primaryItem.details && primaryItem.details['عدد الورد الإجمالي']) {
-                summary += ` (${primaryItem.details['عدد الورد الإجمالي']} وردة)`;
+        if (primaryItem.id === 'custom-rose' || primaryItem.name.includes('ورد')) {
+            summary = `بوكيه ورد فاخر - تصميم خاص`;
+            if (primaryItem.details && primaryItem.details.count) {
+                summary += ` (${primaryItem.details.count} وردة)`;
             }
         } else {
-            summary = `تورتة وبناء كيك مخصص`;
-            if (primaryItem.details && primaryItem.details['حجم الكيك والمدعوين']) {
-                summary += ` (${primaryItem.details['حجم الكيك والمدعوين']})`;
+            summary = `تورتة ملكية - تصميم خاص`;
+            if (primaryItem.details && primaryItem.details.people) {
+                summary += ` (${primaryItem.details.people} أفراد)`;
             }
         }
     } else {
@@ -427,12 +417,12 @@ function getOrderSummary(order) {
         if (primaryItem.qty > 1) summary += ` (عدد ${primaryItem.qty})`;
     }
     if (count > 1) summary += ` + ${count - 1} منتجات أخرى`;
-    summary += order.deliveryMethod === 'ship' ? ` - شحن لقرية ${order.shippingRegion || 'الفرافرة'}` : ` - استلام فرعي بالمطبخ`;
+    summary += order.checkout?.method === 'shipping' ? ` - شحن لقرية ${order.checkout?.region || 'الفرافرة'}` : ` - استلام فرعي بالمطبخ`;
     return summary;
 }
 
 function renderOrdersPipeline() {
-    const container = document.getElementById('ordersCardsContainer');
+    const container = SYSTEM_CORE.DOM.get(REGISTRY.DOM.ADMIN.ORDERS_CARDS_CONTAINER);
     if (!container) return;
     
     let filtered = [...allOrders];
@@ -447,8 +437,9 @@ function renderOrdersPipeline() {
 
     if (activeProductionFilter !== 'all') {
         filtered = filtered.filter(order => {
-            const hasCakes = order.items.some(item => item.isCustom && item.id !== 'roses');
-            const hasRoses = order.items.some(item => item.id === 'roses');
+            if (!order.cart) return false;
+            const hasCakes = order.cart.some(item => item.isCustom && item.id !== 'custom-rose');
+            const hasRoses = order.cart.some(item => item.id === 'custom-rose');
             if (activeProductionFilter === 'cakes') return hasCakes;
             if (activeProductionFilter === 'roses') return hasRoses;
             if (activeProductionFilter === 'classic') return !hasCakes && !hasRoses;
@@ -459,10 +450,10 @@ function renderOrdersPipeline() {
     if (filtered.length === 0) {
         container.innerHTML = `
             <div class="col-span-full py-20 text-center space-y-4 rounded-3xl bg-brandSurface border border-brandBorder shadow-sm">
-                <div class="w-14 h-14 rounded-full bg-brandPinkLight text-brandPink flex items-center justify-center mx-auto">
+                <div class="w-14 h-14 rounded-full bg-brandPinkSoft text-brandPink flex items-center justify-center mx-auto">
                     <i data-lucide="inbox" class="w-6 h-6"></i>
                 </div>
-                <p class="text-xs font-bold text-brandTextMuted">لا يوجد شحنات أو معاملات مسجلة في هذا التصنيف حالياً.</p>
+                <p class="text-xs font-bold text-brandMuted">لا يوجد شحنات أو معاملات مسجلة في هذا التصنيف حالياً.</p>
             </div>
         `;
         if (window.lucide) window.lucide.createIcons();
@@ -481,9 +472,9 @@ function renderOrdersPipeline() {
                 const now = new Date();
                 const hoursDiff = (targetTime - now) / (1000 * 60 * 60);
                 if (hoursDiff <= 24 && hoursDiff > 0) {
-                    urgencyClass += " urgent-order-card border-brandPink";
+                    urgencyClass += " border-brandPink";
                     urgencyBadge = `
-                        <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black bg-brandPinkLight text-brandPink animate-pulse border border-brandPink/20">
+                        <span class="absolute top-4 left-4 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-black bg-brandPinkSoft text-brandPink animate-pulse border border-brandPink/20">
                             <i data-lucide="alert-triangle" class="w-3 h-3"></i> تسليم عاجل
                         </span>
                     `;
@@ -493,7 +484,7 @@ function renderOrdersPipeline() {
 
         let statusBadge = '';
         if (status === 'pending') statusBadge = '<span class="px-3 py-1 rounded-full text-[10px] font-black border border-amber-900/40 text-amber-400 bg-amber-950/30">وارد جديداً 🆕</span>';
-        else if (status === 'processing') statusBadge = '<span class="px-3 py-1 rounded-full text-[10px] font-black border border-indigo-900/40 text-indigo-400 bg-indigo-950/30">قيد التحضير 👩‍🍳</span>';
+        else if (status === 'processing') statusBadge = '<span class="px-3 py-1 rounded-full text-[10px] font-black border border-indigo-900/40 text-indigo-400 bg-indigo-950/30">قيد التحضير 👨‍🍳</span>';
         else if (status === 'shipping') statusBadge = '<span class="px-3 py-1 rounded-full text-[10px] font-black border border-sky-900/40 text-sky-400 bg-sky-950/30">مع المندوب 🚚</span>';
         else if (status === 'completed') statusBadge = '<span class="px-3 py-1 rounded-full text-[10px] font-black border border-emerald-900/40 text-emerald-400 bg-emerald-950/30">مكتمل ✅</span>';
         else if (status === 'cancelled') statusBadge = '<span class="px-3 py-1 rounded-full text-[10px] font-black border border-red-900/40 text-red-400 bg-red-950/30">ملغى ❌</span>';
@@ -501,13 +492,13 @@ function renderOrdersPipeline() {
         let controlButtons = '';
         if (status === 'pending') {
             controlButtons = `
-                <button data-id="${order.id}" data-target="processing" class="btn-change-status flex-grow py-3.5 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm">
+                <button data-id="${order.id}" data-target="processing" class="btn-change-status flex-grow py-3.5 bg-brandPink hover:bg-brandPink text-brandBg text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm">
                     <i data-lucide="play" class="w-4 h-4"></i> تأكيد وبدء المطبخ
                 </button>
             `;
         } else if (status === 'processing') {
             controlButtons = `
-                <button data-id="${order.id}" data-target="shipping" class="btn-change-status flex-grow py-3.5 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm">
+                <button data-id="${order.id}" data-target="shipping" class="btn-change-status flex-grow py-3.5 bg-brandPink hover:bg-brandPink text-brandBg text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm">
                     <i data-lucide="truck" class="w-4 h-4"></i> تسليم للمندوب
                 </button>
             `;
@@ -519,62 +510,57 @@ function renderOrdersPipeline() {
             `;
         }
 
+        const cartItems = order.cart || [];
+
         return `
             <div class="${urgencyClass}">
                 ${urgencyBadge}
                 <div class="space-y-4">
                     <div class="flex items-start justify-between border-b border-brandBorder pb-4">
                         <div>
-                            <h3 class="text-base font-black text-brandTextMain">${order.customerName}</h3>
-                            <p class="text-[11px] text-brandTextMuted mt-1" dir="ltr">${order.customerPhone}</p>
-                            <span class="text-[10px] text-brandTextMuted/70 block mt-1">تاريخ الحجز: ${createdDate}</span>
+                            <h3 class="text-base font-black text-brandText">${order.customerName || 'عميل حلويات بوسي'}</h3>
+                            <p class="text-[11px] text-brandMuted mt-1" dir="ltr">${order.customerPhone || ''}</p>
+                            <span class="text-[10px] text-brandMuted/70 block mt-1">تاريخ الحجز: ${createdDate}</span>
                         </div>
                         <div class="flex flex-col items-end gap-1.5">
                             ${statusBadge}
-                            <span class="text-[10px] text-brandPink font-bold">${order.deliveryMethod === 'pickup' ? 'استلام فرعي 🏬' : 'توصيل شحنة 📍'}</span>
+                            <span class="text-[10px] text-brandPink font-bold">${order.checkout?.method === 'pickup' ? 'استلام فرعي 🏬' : 'توصيل شحنة 📍'}</span>
                         </div>
                     </div>
 
-                    <div class="p-3.5 rounded-xl bg-brandPinkLight/60 border border-brandPink/10 text-xs font-black text-brandPink leading-relaxed">
-                        <span class="text-[9px] text-brandTextMuted/50 font-bold block mb-1">ملخص الشحنة السريع:</span>
+                    <div class="p-3.5 rounded-xl bg-brandPinkSoft/60 border border-brandPink/10 text-xs font-black text-brandPink leading-relaxed">
+                        <span class="text-[9px] text-brandMuted/50 font-bold block mb-1">ملخص الشحنة السريع:</span>
                         🚀 ${getOrderSummary(order)}
                     </div>
 
                     <div class="space-y-2">
-                        <span class="text-[10px] text-brandTextMuted font-black tracking-wider block">الأصناف المطلوبة بالتفصيل:</span>
+                        <span class="text-[10px] text-brandMuted font-black tracking-wider block">الأصناف المطلوبة بالتفصيل:</span>
                         <div class="space-y-2.5">
-                            ${order.items.map((item, itemIdx) => {
+                            ${cartItems.map((item, itemIdx) => {
                                 let customToggleBtn = '';
                                 if (item.isCustom && item.details) {
                                     customToggleBtn = `
                                         <button data-panel="${order.id}-${itemIdx}" class="btn-toggle-details text-[10px] text-brandPink font-black flex items-center gap-1 mt-1 outline-none">
                                             <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform" id="detailsChevron-${order.id}-${itemIdx}"></i> استعراض تفاصيل التصميم وبناء المطبخ
                                         </button>
-                                        <div id="detailsPanel-${order.id}-${itemIdx}" class="hidden mt-2 p-4 rounded-xl bg-brandBg border border-brandBorder text-[11px] font-semibold text-brandTextMain space-y-3">
+                                        <div id="detailsPanel-${order.id}-${itemIdx}" class="hidden mt-2 p-4 rounded-xl bg-brandBg border border-brandBorder text-[11px] font-semibold text-brandText space-y-3">
                                             ${Object.entries(item.details).map(([key, val]) => {
-                                                const isUrl = typeof val === 'string' && (val.startsWith('http://') || val.startsWith('https://'));
-                                                const isImage = isUrl && (val.match(/\.(jpeg|jpg|gif|png|webp)/i) || val.includes('cloudinary.com'));
-                                                if (isImage) {
-                                                    return `
+                                                if (key === 'designFile' || key === 'printFile' || key === 'photoFiles' || key === 'referenceFile') {
+                                                    if (!val) return '';
+                                                    const filesArray = Array.isArray(val) ? val : [val];
+                                                    return filesArray.map((fileUrl, fIdx) => `
                                                         <div class="flex flex-col gap-1 border-b border-brandBorder/40 pb-1.5">
-                                                            <span class="text-brandTextMuted">${key}:</span>
-                                                            <a href="${val}" target="_blank" class="mt-1 block max-w-xs rounded-xl overflow-hidden border border-brandBorder bg-brandSurface hover:opacity-80 transition-all">
-                                                                <img src="${val}" alt="${key}" class="w-full h-auto max-h-40 object-cover">
+                                                            <span class="text-brandMuted">${key} (${fIdx + 1}):</span>
+                                                            <a href="${fileUrl}" target="_blank" class="mt-1 block max-w-xs rounded-xl overflow-hidden border border-brandBorder bg-brandSurface2 hover:opacity-80 transition-all">
+                                                                <img src="${fileUrl}" alt="${key}" class="w-full h-auto max-h-40 object-cover">
                                                             </a>
                                                         </div>
-                                                    `;
-                                                } else if (isUrl) {
-                                                    return `
-                                                        <div class="flex justify-between border-b border-brandBorder/40 pb-1.5 items-center">
-                                                            <span class="text-brandTextMuted">${key}:</span>
-                                                            <a href="${val}" target="_blank" class="text-brandPink hover:underline font-bold truncate max-w-[200px]" dir="ltr">${val}</a>
-                                                        </div>
-                                                    `;
+                                                    `).join('');
                                                 } else {
                                                     return `
                                                         <div class="flex justify-between border-b border-brandBorder/40 pb-1.5">
-                                                            <span class="text-brandTextMuted">${key}:</span>
-                                                            <span class="text-brandTextMain font-bold text-left">${val}</span>
+                                                            <span class="text-brandMuted">${key}:</span>
+                                                            <span class="text-brandText font-bold text-left">${val}</span>
                                                         </div>
                                                     `;
                                                 }
@@ -583,10 +569,10 @@ function renderOrdersPipeline() {
                                     `;
                                 }
                                 return `
-                                    <div class="p-4 rounded-2xl bg-brandSurfaceChild border border-brandBorder flex flex-col justify-between">
+                                    <div class="p-4 rounded-2xl bg-brandSurface2 border border-brandBorder flex flex-col justify-between">
                                         <div class="flex justify-between items-center text-xs font-black">
-                                            <span class="text-brandTextMain text-sm">${item.name}</span>
-                                            <span class="text-brandPink bg-brandBg px-2 py-1 rounded-md border border-brandBorder text-[11px]">الكمية: ${item.qty}</span>
+                                            <span class="text-brandText text-sm">${item.name}</span>
+                                            <span class="text-brandPink bg-brandBg px-2 py-1 rounded-md border border-brandBorder text-[11px]">الكمية: ${item.qty || 1}</span>
                                         </div>
                                         ${customToggleBtn}
                                     </div>
@@ -595,15 +581,15 @@ function renderOrdersPipeline() {
                         </div>
                     </div>
 
-                    <div class="p-4 bg-brandSurfaceChild border border-brandBorder rounded-2xl text-xs font-bold text-brandTextMain space-y-1.5">
+                    <div class="p-4 bg-brandSurface2 border border-brandBorder window-rounded-2xl text-xs font-bold text-brandText space-y-1.5">
                         <p class="flex items-center gap-2"><i data-lucide="calendar" class="w-4 h-4 text-brandPink"></i> موعد التسليم المطلوب: ${order.deliveryDate || 'غير محدد'}</p>
                         <p class="flex items-center gap-2"><i data-lucide="clock" class="w-4 h-4 text-brandPink"></i> ساعة التسليم: ${order.deliveryTime || 'غير محدد'}</p>
-                        ${order.deliveryMethod === 'ship' ? `<p class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-brandPink"></i> العنوان: قرية ${order.shippingRegion} - ${order.shippingAddress}</p>` : ''}
+                        ${order.checkout?.method === 'shipping' ? `<p class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-brandPink"></i> العنوان: قرية ${order.checkout.region} - ${order.shippingAddress || ''}</p>` : ''}
                     </div>
 
-                    <div class="flex justify-between items-center bg-brandPinkLight p-4 rounded-2xl border border-brandPink/15 text-xs font-black">
-                        <span class="text-brandTextMuted">إجمالي الحساب النهائي:</span>
-                        <span class="text-base text-brandPink font-black">${order.grandTotal} ج.م</span>
+                    <div class="flex justify-between items-center bg-brandPinkSoft p-4 rounded-2xl border border-brandPink/15 text-xs font-black">
+                        <span class="text-brandMuted">إجمالي الحساب النهائي:</span>
+                        <span class="text-base text-brandPink font-black">${order.totals?.total || 0} ج.م</span>
                     </div>
                 </div>
 
@@ -675,8 +661,8 @@ function attachOrdersViewEventListeners() {
 
 async function updateOrderStatus(orderId, newStatus) {
     try {
-        const orderDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'orders', orderId);
-        await updateDoc(orderDocRef, { status: newStatus });
+        const orderPath = [...REGISTRY.FIREBASE.COLLECTIONS.ORDERS, orderId];
+        await FIREBASE_ENGINE.DATABASE.updateDocument(orderPath, { status: newStatus });
         showToastNotification('عملية ناجحة', `تم ترحيل وتحديث حالة الطلب بنجاح سحابياً.`, 'check');
     } catch (err) {
         console.error("فشل ترحيل حالة الطلب السحابي لـ حلويات بوسي:", err);
@@ -702,13 +688,13 @@ function cancelAndRefundOrder(orderId) {
 // 8. تهيئة أقسام وتوفر السلع بالمنيو الكلاسيكي
 // ==========================================
 function renderMenuCategoryTabs() {
-    const container = document.getElementById('menuTabsContainer');
+    const container = SYSTEM_CORE.DOM.get(REGISTRY.DOM.ADMIN.MENU_TABS_CONTAINER);
     if (!container) return;
     
     container.innerHTML = Object.entries(catalogCategories).map(([key, name]) => {
         const isActive = activeMenuCategoryTab === key;
         return `
-            <button data-cat="${key}" class="btn-menu-cat-tab px-5 py-2.5 rounded-full text-xs font-black transition-all ${isActive ? 'bg-brandPink text-brandBg' : 'bg-brandBg hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder'}">
+            <button data-cat="${key}" class="btn-menu-cat-tab px-5 py-2.5 rounded-full text-xs font-black transition-all ${isActive ? 'bg-brandPink text-brandBg' : 'bg-brandBg hover:bg-brandPinkSoft text-brandMuted border border-brandBorder'}">
                 ${name}
             </button>
         `;
@@ -724,13 +710,13 @@ function renderMenuCategoryTabs() {
 }
 
 function renderMenuAvailabilityList() {
-    const container = document.getElementById('outOfStockContainer');
+    const container = SYSTEM_CORE.DOM.get(REGISTRY.DOM.ADMIN.OUT_OF_STOCK_CONTAINER);
     if (!container) return;
     
     const filteredItems = staticCatalogItems.filter(item => item.category === activeMenuCategoryTab);
     
     if (filteredItems.length === 0) {
-        container.innerHTML = `<p class="text-xs text-brandTextMuted font-bold py-6 text-center">لا توجد أصناف تابعة لهذا القسم.</p>`;
+        container.innerHTML = `<p class="text-xs text-brandMuted font-bold py-6 text-center">لا توجد أصناف تابعة لهذا القسم.</p>`;
         return;
     }
 
@@ -742,11 +728,11 @@ function renderMenuAvailabilityList() {
         const currentImg = itemDetails.image || '';
 
         return `
-            <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder space-y-4 pink-clean-shadow relative transition-all">
+            <div class="p-6 rounded-3xl bg-brandSurface border border-brandBorder space-y-4 relative transition-all">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-3 border-b border-brandBorder">
                     <div>
-                        <span class="text-sm font-black text-brandTextMain">${item.name}</span>
-                        <p class="text-[10px] text-brandTextMuted font-bold mt-1">الرمز السحابي المعرف: ${item.id}</p>
+                        <span class="text-sm font-black text-brandText">${item.name}</span>
+                        <p class="text-[10px] text-brandMuted font-bold mt-1">الرمز السحابي المعرف: ${item.id}</p>
                     </div>
                     <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
                         <span class="text-[11px] font-black ${isOutOfStock ? 'text-red-400 bg-red-950/40 border border-red-900/50 px-3 py-1 rounded-full' : 'text-emerald-400 bg-emerald-950/40 border border-emerald-900/50 px-3 py-1 rounded-full'}">
@@ -762,26 +748,26 @@ function renderMenuAvailabilityList() {
                     <div class="md:col-span-8 space-y-3">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div class="space-y-1.5">
-                                <label class="block text-[10px] text-brandTextMuted font-bold">السعر الافتراضي (ج.م):</label>
-                                <input type="number" id="menuPrice-${item.id}" data-id="${item.id}" class="input-menu-price w-full bg-brandBg border border-brandBorder rounded-xl py-2.5 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all font-black" value="${currentPrice}">
+                                <label class="block text-[10px] text-brandMuted font-bold">السعر الافتراضي (ج.م):</label>
+                                <input type="number" id="menuPrice-${item.id}" data-id="${item.id}" class="input-menu-price w-full bg-brandBg border border-brandBorder rounded-xl py-2.5 px-4 text-brandText text-xs outline-none transition-all font-black" value="${currentPrice}">
                             </div>
                             <div class="space-y-1.5">
-                                <label class="block text-[10px] text-brandTextMuted font-bold">رابط صورة الصنف بالموقع:</label>
+                                <label class="block text-[10px] text-brandMuted font-bold">رابط صورة الصنف بالموقع:</label>
                                 <div class="flex gap-1.5">
-                                    <input type="text" id="menuImg-${item.id}" class="input-menu-img flex-grow bg-brandBg border border-brandBorder rounded-xl py-2.5 px-4 text-brandTextMain text-[10px] outline-none bose-input-glow transition-all" value="${currentImg}" data-id="${item.id}">
-                                    <button data-input="menuImg-${item.id}" data-btn="menuBtn-${item.id}" data-item="${item.id}" id="menuBtn-${item.id}" class="btn-trigger-upload px-3 bg-brandPink text-brandBg hover:bg-brandPinkDark text-[10px] font-black rounded-xl transition-all shadow-sm">رفع</button>
+                                    <input type="text" id="menuImg-${item.id}" class="input-menu-img flex-grow bg-brandBg border border-brandBorder rounded-xl py-2.5 px-4 text-brandText text-[10px] outline-none transition-all" value="${currentImg}" data-id="${item.id}">
+                                    <button data-input="menuImg-${item.id}" data-btn="menuBtn-${item.id}" data-item="${item.id}" id="menuBtn-${item.id}" class="btn-trigger-upload px-3 bg-brandPink text-brandBg hover:bg-brandPink text-[10px] font-black rounded-xl transition-all shadow-sm">رفع</button>
                                 </div>
                             </div>
                         </div>
                         <div class="space-y-1.5">
-                            <label class="block text-[10px] text-brandTextMuted font-bold">الوصف والتفاصيل الحسية (مكونات طبيعية 100%):</label>
-                            <textarea id="menuDesc-${item.id}" data-id="${item.id}" rows="2" class="textarea-menu-desc w-full bg-brandBg border border-brandBorder rounded-xl p-3 text-brandTextMain text-xs outline-none bose-input-glow transition-all leading-relaxed" placeholder="أدخل تفاصيل مكونات الصنف...">${currentDesc}</textarea>
+                            <label class="block text-[10px] text-brandMuted font-bold">الوصف والتفاصيل الحسية (مكونات طبيعية 100%):</label>
+                            <textarea id="menuDesc-${item.id}" data-id="${item.id}" rows="2" class="textarea-menu-desc w-full bg-brandBg border border-brandBorder rounded-xl p-3 text-brandText text-xs outline-none transition-all leading-relaxed" placeholder="أدخل تفاصيل مكونات الصنف...">${currentDesc}</textarea>
                         </div>
                     </div>
                     <div class="md:col-span-4 flex flex-col justify-center items-center p-3 rounded-2xl border border-brandBorder bg-brandSurface">
-                        <span class="text-[9px] text-brandTextMuted font-bold mb-2">معاينة نهارية طبيعية للمنتج</span>
+                        <span class="text-[9px] text-brandMuted font-bold mb-2">معاينة نهارية طبيعية للمنتج</span>
                         <div class="w-full h-28 rounded-xl bg-brandBg border border-brandBorder overflow-hidden flex items-center justify-center">
-                            ${currentImg ? `<img src="${currentImg}" alt="${item.name}" class="w-full h-full object-cover">` : `<div class="text-center p-3 text-brandTextMuted/40 text-[10px]"><i data-lucide="image" class="w-5 h-5 mx-auto mb-1"></i> لا يوجد صورة مسجلة</div>`}
+                            ${currentImg ? `<img src="${currentImg}" alt="${item.name}" class="w-full h-full object-cover">` : `<div class="text-center p-3 text-brandMuted/40 text-[10px]"><i data-lucide="image" class="w-5 h-5 mx-auto mb-1"></i> لا يوجد صورة مسجلة</div>`}
                         </div>
                     </div>
                 </div>
@@ -801,6 +787,7 @@ function attachMenuAvailabilityEventListeners() {
             if (list.includes(itemId)) list = list.filter(id => id !== itemId);
             else list.push(itemId);
             window.globalConfig.outOfStockItems = list;
+            SYSTEM_CORE.STATE.set(REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key, list); // مزامنة فورية مع نواة النظام
             renderMenuAvailabilityList();
         };
     });
@@ -843,25 +830,25 @@ function updateLocalCatalogItem(itemId, field, val) {
 // 9. هندسة وترتيب أقسام واجهة العرض للعملاء
 // ==========================================
 function renderLayoutSectionsManager() {
-    const container = document.getElementById('layoutSectionsContainer');
+    const container = SYSTEM_CORE.DOM.get(REGISTRY.DOM.ADMIN.LAYOUT_SECTIONS_CONTAINER);
     if (!container) return;
     
     if (!window.globalConfig.homepageSections || window.globalConfig.homepageSections.length === 0) {
-        container.innerHTML = `<p class="text-xs text-brandTextMuted font-bold text-center py-4">لم يتم تعيين أي أقسام هيكلية بعد.</p>`;
+        container.innerHTML = `<p class="text-xs text-brandMuted font-bold text-center py-4">لم يتم تعيين أي أقسام هيكلية بعد.</p>`;
         return;
     }
 
     container.innerHTML = window.globalConfig.homepageSections.map((section, idx) => {
         return `
-            <div class="p-5 rounded-2xl bg-brandSurfaceChild border border-brandBorder flex flex-col gap-4 relative transition-all">
+            <div class="p-5 rounded-2xl bg-brandSurface2 border border-brandBorder flex flex-col gap-4 relative transition-all">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <div class="p-2 bg-brandBg border border-brandBorder rounded-lg text-brandTextMuted">
+                        <div class="p-2 bg-brandBg border border-brandBorder rounded-lg text-brandMuted">
                             <i data-lucide="grip-vertical" class="w-4 h-4 cursor-move"></i>
                         </div>
                         <div>
-                            <h4 class="text-xs font-black text-brandTextMain">${section.name}</h4>
-                            <span class="text-[9px] text-brandTextMuted tracking-tight block mt-0.5" dir="ltr">المعرف البرمجي: ${section.id}</span>
+                            <h4 class="text-xs font-black text-brandText">${section.name}</h4>
+                            <span class="text-[9px] text-brandMuted tracking-tight block mt-0.5" dir="ltr">المعرف البرمجي: ${section.id}</span>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
@@ -872,10 +859,10 @@ function renderLayoutSectionsManager() {
                             <i data-lucide="copy" class="w-3.5 h-3.5"></i>
                         </button>
                         <div class="flex flex-col gap-1">
-                            <button data-idx="${idx}" data-dir="-1" class="btn-move-layout p-1 bg-brandBg hover:bg-brandBorder rounded border border-brandBorder text-brandTextMain ${idx === 0 ? 'opacity-30 pointer-events-none' : ''}">
+                            <button data-idx="${idx}" data-dir="-1" class="btn-move-layout p-1 bg-brandBg hover:bg-brandBorder rounded border border-brandBorder text-brandText ${idx === 0 ? 'opacity-30 pointer-events-none' : ''}">
                                 <i data-lucide="chevron-up" class="w-3 h-3"></i>
                             </button>
-                            <button data-idx="${idx}" data-dir="1" class="btn-move-layout p-1 bg-brandBg hover:bg-brandBorder rounded border border-brandBorder text-brandTextMain ${idx === window.globalConfig.homepageSections.length - 1 ? 'opacity-30 pointer-events-none' : ''}">
+                            <button data-idx="${idx}" data-dir="1" class="btn-move-layout p-1 bg-brandBg hover:bg-brandBorder rounded border border-brandBorder text-brandText ${idx === window.globalConfig.homepageSections.length - 1 ? 'opacity-30 pointer-events-none' : ''}">
                                 <i data-lucide="chevron-down" class="w-3 h-3"></i>
                             </button>
                         </div>
@@ -883,18 +870,18 @@ function renderLayoutSectionsManager() {
                 </div>
 
                 <div class="pt-3 border-t border-brandBorder/40">
-                    <span class="text-[10px] text-brandTextMuted font-bold block mb-2">المنتجات المرتبطة والمحقونة داخل هذا القسم:</span>
+                    <span class="text-[10px] text-brandMuted font-bold block mb-2">المنتجات المرتبطة والمحقونة داخل هذا القسم:</span>
                     <div class="flex flex-wrap gap-1.5" id="sectionItemsContainer-${idx}">
                         ${section.items && section.items.length > 0 ? section.items.map(itemId => {
                             const staticMatch = staticCatalogItems.find(si => si.id === itemId);
                             const itemName = staticMatch ? staticMatch.name : itemId;
                             return `
-                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-brandBg border border-brandBorder text-[10px] text-brandTextMain font-semibold">
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-brandBg border border-brandBorder text-[10px] text-brandText font-semibold">
                                     ${itemName}
                                     <button data-sec="${idx}" data-item="${itemId}" class="btn-remove-item-from-sec text-brandPink hover:text-red-400 font-bold ml-1">×</button>
                                 </span>
                             `;
-                        }).join('') : `<span class="text-[9px] text-brandTextMuted/50 font-bold">لا يوجد منتجات محقونة حالياً</span>`}
+                        }).join('') : `<span class="text-[9px] text-brandMuted/50 font-bold">لا يوجد منتجات محقونة حالياً</span>`}
                         <button data-idx="${idx}" class="btn-add-product-to-sec px-2 py-1 rounded-md bg-brandPink/10 hover:bg-brandPink/20 text-brandPink border border-brandPink/20 text-[9px] font-black flex items-center gap-0.5">
                             + ربط منتج
                         </button>
@@ -947,8 +934,8 @@ function addProductToSectionPrompt(sectionIdx) {
     let optionsHtml = staticCatalogItems.map(item => `<option value="${item.id}">${item.name}</option>`).join('');
     const customBody = `
         <div class="space-y-4">
-            <p class="text-xs text-brandTextMuted font-bold">واجهة ربط وحقن المنتجات بالقسم:</p>
-            <select id="popupAddProductSelect" class="w-full bg-brandBg border border-brandBorder text-brandTextMain rounded-xl p-3 text-xs font-bold outline-none">
+            <p class="text-xs text-brandMuted font-bold">واجهة ربط وحقن المنتجات بالقسم:</p>
+            <select id="popupAddProductSelect" class="w-full bg-brandBg border border-brandBorder text-brandText rounded-xl p-3 text-xs font-bold outline-none">
                 ${optionsHtml}
             </select>
         </div>
@@ -961,6 +948,7 @@ function addProductToSectionPrompt(sectionIdx) {
                 window.globalConfig.homepageSections[sectionIdx].items.push(selectedId);
             }
             window.closeGlobalDialogModal();
+            SYSTEM_CORE.STATE.set(REGISTRY.STATE.HOMEPAGE_SECTIONS.key, window.globalConfig.homepageSections);
             renderLayoutSectionsManager();
         }},
         { text: 'إلغاء', primary: false, action: () => window.closeGlobalDialogModal() }
@@ -971,12 +959,12 @@ function addNewLayoutSectionPrompt() {
     const customBody = `
         <div class="space-y-4 text-xs font-bold">
             <div class="space-y-1.5">
-                <label class="block text-brandTextMuted">اسم القسم باللغة العربية الظاهرة للعميل:</label>
-                <input type="text" id="popupNewSecName" class="w-full bg-brandBg border border-brandBorder text-brandTextMain rounded-xl p-3 outline-none" placeholder="مثال: قسم بوكسات السعادة الفاخرة">
+                <label class="block text-brandMuted">اسم القسم باللغة العربية الظاهرة للعميل:</label>
+                <input type="text" id="popupNewSecName" class="w-full bg-brandBg border border-brandBorder text-brandText rounded-xl p-3 outline-none" placeholder="مثال: قسم بوكسات السعادة الفاخرة">
             </div>
             <div class="space-y-1.5">
-                <label class="block text-brandTextMuted">المعرف البرمجي الفريد (ID بالإنجليزية دون مسافات):</label>
-                <input type="text" id="popupNewSecId" class="w-full bg-brandBg border border-brandBorder text-brandTextMain rounded-xl p-3 outline-none" placeholder="مثال: sec-custom-boxes">
+                <label class="block text-brandMuted">المعرف البرمجي الفريد (ID بالإنجليزية دون مسافات):</label>
+                <input type="text" id="popupNewSecId" class="w-full bg-brandBg border border-brandBorder text-brandText rounded-xl p-3 outline-none" placeholder="مثال: sec-custom-boxes">
             </div>
         </div>
     `;
@@ -990,6 +978,7 @@ function addNewLayoutSectionPrompt() {
             }
             window.globalConfig.homepageSections.push({ id: id, name: name, active: true, items: [] });
             window.closeGlobalDialogModal();
+            SYSTEM_CORE.STATE.set(REGISTRY.STATE.HOMEPAGE_SECTIONS.key, window.globalConfig.homepageSections);
             renderLayoutSectionsManager();
             showToastNotification('عملية ناجحة', 'تم إنشاء القسم السيادي وتجهيز مسار بنائه التلقائي للعميل.', 'check');
         }},
@@ -999,6 +988,7 @@ function addNewLayoutSectionPrompt() {
 
 function updateGlobalDisplayMode(mode) {
     window.globalConfig.displayMode = mode;
+    SYSTEM_CORE.STATE.set(REGISTRY.STATE.DISPLAY_MODE.key, mode);
     updateGlobalDisplayModeUI();
 }
 
@@ -1008,18 +998,17 @@ function updateGlobalDisplayModeUI() {
     if (!gridBtn || !cardBtn) return;
 
     if (window.globalConfig.displayMode === 'grid2') {
-        gridBtn.className = "py-3 px-4 rounded-xl font-black text-center transition-all border border-brandPink bg-brandPinkLight text-brandPink shadow-sm";
-        cardBtn.className = "py-3 px-4 rounded-xl font-black text-center transition-all border border-brandBorder bg-brandBg text-brandTextMuted";
+        gridBtn.className = "py-3 px-4 rounded-xl font-black text-center transition-all border border-brandPink bg-brandPinkSoft text-brandPink shadow-sm";
+        cardBtn.className = "py-3 px-4 rounded-xl font-black text-center transition-all border border-brandBorder bg-brandBg text-brandMuted";
     } else {
-        cardBtn.className = "py-3 px-4 rounded-xl font-black text-center transition-all border border-brandPink bg-brandPinkLight text-brandPink shadow-sm";
-        gridBtn.className = "py-3 px-4 rounded-xl font-black text-center transition-all border border-brandBorder bg-brandBg text-brandTextMuted";
+        cardBtn.className = "py-3 px-4 rounded-xl font-black text-center transition-all border border-brandPink bg-brandPinkSoft text-brandPink shadow-sm";
+        gridBtn.className = "py-3 px-4 rounded-xl font-black text-center transition-all border border-brandBorder bg-brandBg text-brandMuted";
     }
 }
 
 async function saveLayoutsStructureToCloud() {
     try {
-        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global_config');
-        await updateDoc(docRef, {
+        await FIREBASE_ENGINE.DATABASE.setDocument(REGISTRY.FIREBASE.SETTINGS.GLOBAL_CONFIG, {
             homepageSections: window.globalConfig.homepageSections,
             displayMode: window.globalConfig.displayMode
         });
@@ -1034,15 +1023,15 @@ async function saveLayoutsStructureToCloud() {
 // 10. تحديث جغرافيا خطوط الشحن والتسعير
 // ==========================================
 function renderShippingRates() {
-    const container = document.getElementById('shippingRatesContainer');
+    const container = SYSTEM_CORE.DOM.get(REGISTRY.DOM.ADMIN.SHIPPING_RATES_CONTAINER);
     if (!container) return;
     
     container.innerHTML = Object.entries(window.globalConfig.shippingRates).map(([region, price]) => `
         <div class="p-4 rounded-2xl bg-brandSurface border border-brandBorder space-y-2">
-            <span class="text-xs font-black text-brandTextMain">${region}</span>
+            <span class="text-xs font-black text-brandText">${region}</span>
             <div class="relative">
-                <input type="number" id="rate-${region}" class="input-shipping-rate w-full bg-brandBg border border-brandBorder rounded-xl py-2.5 px-4 text-brandTextMain text-xs outline-none bose-input-glow transition-all" value="${price}" data-region="${region}">
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] text-brandTextMuted font-bold">ج.م</span>
+                <input type="number" id="rate-${region}" class="input-shipping-rate w-full bg-brandBg border border-brandBorder rounded-xl py-2.5 px-4 text-brandText text-xs outline-none transition-all" value="${price}" data-region="${region}">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[9px] text-brandMuted font-bold">ج.م</span>
             </div>
         </div>
     `).join('');
@@ -1051,6 +1040,7 @@ function renderShippingRates() {
         inp.onchange = () => {
             const r = inp.getAttribute('data-region');
             window.globalConfig.shippingRates[r] = parseFloat(inp.value) || 0;
+            SYSTEM_CORE.STATE.set(REGISTRY.STATE.SHIPPING_RATES.key, window.globalConfig.shippingRates);
         };
     });
 }
@@ -1082,7 +1072,7 @@ if (fileInputEl) {
 
         try {
             const compressedFile = await compressImageClientSide(file);
-            const url = await uploadToCloudinary(compressedFile);
+            const url = await FIREBASE_ENGINE.UPLOADS.uploadImage(compressedFile);
             
             const inputEl = document.getElementById(currentTargetInputId);
             if (inputEl) inputEl.value = url;
@@ -1093,7 +1083,7 @@ if (fileInputEl) {
             }
             showToastNotification('تم الرفع بنجاح', 'تم ضغط ورفع الوسائط بجودة نهارية فائقة الدقة.', 'check');
         } catch (err) {
-            console.error("فشل محاولة معالجة ورفع الصورة لخادم التخزين:", err);
+            console.error("فشل محاولة معالجة ورفع الصورة لخادم التخزين الحاكم:", err);
             showToastNotification('فشل الرفع السحابي', 'يرجى مراجعة الاتصال بالإنترنت والتحول لشبكة مستقرة.', 'alert-triangle');
         } finally {
             if (btn) {
@@ -1130,25 +1120,15 @@ function compressImageClientSide(file) {
     });
 }
 
-async function uploadToCloudinary(file) {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', cloudinaryConfig.uploadPreset);
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/upload`, { method: 'POST', body: formData });
-    if (!response.ok) throw new Error('فشل إرسال كتل البيانات لخادم كلاوديناري');
-    const data = await response.json();
-    return data.secure_url;
-}
-
 // ==========================================
 // 12. عرض وإدارة سجلات الفحص (BoseMonitor Logs)
 // ==========================================
 function renderSystemLogsTable() {
-    const tbody = document.getElementById('logsTableBody');
+    const tbody = SYSTEM_CORE.DOM.get(REGISTRY.DOM.ADMIN.LOGS_TABLE_BODY);
     if (!tbody) return;
     
     if (systemLogs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-[10px] text-brandTextMuted/40 font-black">لا يوجد محاضر أو أخطاء برمجية مسجلة حالياً.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-[10px] text-brandMuted/40 font-black">لا يوجد محاضر أو أخطاء برمجية مسجلة حالياً.</td></tr>`;
         return;
     }
     tbody.innerHTML = systemLogs.map(log => {
@@ -1156,7 +1136,7 @@ function renderSystemLogsTable() {
         let severityClass = 'text-amber-400 bg-amber-950/40 border border-amber-900/30';
         if (log.type && log.type.includes('حرج')) severityClass = 'text-red-400 bg-red-950/40 border border-red-900/30';
         return `
-            <tr class="border-b border-brandBorder hover:bg-brandPinkLight/30 transition-colors">
+            <tr class="border-b border-brandBorder hover:bg-brandPinkSoft/30 transition-colors">
                 <td class="py-4 px-4 font-black"><span class="px-2 py-1 rounded-md text-[10px] ${severityClass}">${log.type || 'تشخيص'}</span></td>
                 <td class="py-4 px-4 max-w-xs truncate" title="${log.message}">${log.message || 'لا يوجد تفاصيل'}</td>
                 <td class="py-4 px-4 text-[10px] font-black" dir="ltr">${log.source || 'نافذة المتصفح'}</td>
@@ -1176,9 +1156,8 @@ async function clearAllSystemLogs() {
                 try {
                     const batch = writeBatch(db);
                     systemLogs.forEach(log => {
-                        // استخدام المسار السيادي الموحد لتطهير السجلات (Rule 1)
-                        const logDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'system_logs', log.id);
-                        batch.delete(logDocRef);
+                        const logPath = [...REGISTRY.FIREBASE.COLLECTIONS.SYSTEM_LOGS, log.id];
+                        batch.delete(doc(db, ...logPath));
                     });
                     await batch.commit();
                     showToastNotification('تم التطهير', 'تم تفريغ كافة سجلات الأخطاء بنجاح.', 'check');
@@ -1192,21 +1171,17 @@ async function clearAllSystemLogs() {
 }
 
 // ==========================================
-// 13. دالة الحفظ السحابية الفائقة والموحدة كلياً (Bug 1 & Bug 2 Fix)
+// 13. دالة الحفظ السحابية الفائقة والموحدة كلياً
 // ==========================================
 async function saveConfigSettings() {
     try {
-        // قراءة آمنة لجميع قيم المدخلات من الهيكل دون حدوث انهيارات برمجية بسبب التبويبات غير المفعلة
         const cakeBase = getSafeElementValue('cfg-cakeBasePrice', window.globalConfig.cakeBasePricePerPerson || 145);
         const ediblePrice = getSafeElementValue('cfg-cakePrintEdible', window.globalConfig.cakePrintEdiblePrice || 60);
         const nonEdiblePrice = getSafeElementValue('cfg-cakePrintNonEdible', window.globalConfig.cakePrintNonEdiblePrice || 20);
         
         window.globalConfig.cakeBasePricePerPerson = cakeBase;
-        window.globalConfig.cakeBasePrice = cakeBase; 
         window.globalConfig.cakePrintEdiblePrice = ediblePrice;
-        window.globalConfig.cakePrintEdible = ediblePrice;
         window.globalConfig.cakePrintNonEdiblePrice = nonEdiblePrice;
-        window.globalConfig.cakePrintNonEdible = nonEdiblePrice;
         
         window.globalConfig.roseBasePrice = getSafeElementValue('cfg-roseBasePrice', window.globalConfig.roseBasePrice || 400);
         window.globalConfig.roseMinCount = getSafeElementValue('cfg-roseMinCount', window.globalConfig.roseMinCount || 15, true);
@@ -1221,25 +1196,21 @@ async function saveConfigSettings() {
         
         const prepHours = getSafeElementValue('cfg-prepTime', window.globalConfig.orderPrepTimeHours || 24, true);
         window.globalConfig.orderPrepTimeHours = prepHours;
-        window.globalConfig.prepTime = prepHours; 
 
         window.globalConfig.bgVideoUrl = getSafeElementText('cfg-bgVideoUrl', window.globalConfig.bgVideoUrl);
         window.globalConfig.promoImageUrl = getSafeElementText('cfg-promoImageUrl', window.globalConfig.promoImageUrl);
 
         const batch = writeBatch(db);
         
-        // مزامنة المنيو الحقيقي بناءً على مدخلات الهيكل المتوفرة مع استرجاع الحالة المخزنة للأصناف غير المعروضة
         staticCatalogItems.forEach(item => {
             const priceInp = document.getElementById(`menuPrice-${item.id}`);
             const descInp = document.getElementById(`menuDesc-${item.id}`);
             const imgInp = document.getElementById(`menuImg-${item.id}`);
             
-            // تهيئة بيانات الذاكرة في حال عدم وجودها مسبقاً لمنع القيم الفارغة
             if (!window.globalConfig.catalogItems[item.id]) {
                 window.globalConfig.catalogItems[item.id] = { price: 150, desc: '', image: '' };
             }
 
-            // تحديث الذاكرة الحية فقط بالمدخلات الموجودة حالياً بالصفحة
             if (priceInp) {
                 const parsedPrice = parseFloat(priceInp.value);
                 if (!isNaN(parsedPrice)) {
@@ -1249,8 +1220,7 @@ async function saveConfigSettings() {
             if (descInp) window.globalConfig.catalogItems[item.id].desc = descInp.value;
             if (imgInp) window.globalConfig.catalogItems[item.id].image = imgInp.value;
 
-            // المزامنة الآمنة على السحابة للمستندات المنفصلة من الذاكرة النظيفة
-            const menuDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'menu', item.id);
+            const menuPath = [...REGISTRY.FIREBASE.COLLECTIONS.MENU, item.id];
             const itemData = window.globalConfig.catalogItems[item.id];
             const pVal = itemData.price || 150;
 
@@ -1259,13 +1229,12 @@ async function saveConfigSettings() {
                 img: itemData.image || ''
             };
 
-            // الالتزام التام بالمعايير الهيكلية للديسباسيتو وباقي الكتل والورد الطبيعي
+            // الالتزام التام بالمعايير الهيكلية لـ حلويات بوسي (ديسباسيتو بفدج كيك غني بالشوكولاتة الفاخرة)
             if (item.id === 'despacito') {
                 updateData.sizes = [
                     { label: 'عائلي', flavors: [{ name: 'نوتيلا بندق غنية', price: pVal }, { name: 'لوتس بلجيكي مقرمش', price: pVal + 40 }, { name: 'كيندر بوينو مخملية', price: pVal + 40 }] },
                     { label: 'ميني ميكس', flavors: [{ name: 'نوتيلا بندق غنية', price: Math.round(pVal/2) }, { name: 'لوتس بلجيكي مقرمش', price: Math.round(pVal/2) + 20 }] }
                 ];
-                // حقن وتعميم حقل المكونات الطبيعية الفاخرة لـ ديسباسيتو حلويات بوسي في المستوى الخارجي للمستند وداخل الذاكرة معاً (Bug 2 Fix)
                 updateData.healthSection = "مصنوعة كلياً بفدج كيك غني بالشوكولاتة البلجيكية الطبيعية الفاخرة وخالية تماماً من الإضافات الإسفنجية الجافة لضمان ذوبان متكامل.";
                 window.globalConfig.catalogItems['despacito'].healthSection = "مصنوعة كلياً بفدج كيك غني بالشوكولاتة البلجيكية الطبيعية الفاخرة وخالية تماماً من الإضافات الإسفنجية الجافة لضمان ذوبان متكامل.";
             } else if (item.id === 'tortes' || item.id === 'roses') {
@@ -1274,12 +1243,11 @@ async function saveConfigSettings() {
                 updateData.flavors = [{ name: 'التجهيز الفاخر المعتمد كلاسيكياً', price: pVal }];
             }
 
-            batch.set(menuDocRef, updateData, { merge: true });
+            batch.set(doc(db, ...menuPath), updateData, { merge: true });
         });
 
         await batch.commit();
 
-        // تحديث جغرافيا خطوط الشحن محلياً
         document.querySelectorAll('.input-shipping-rate').forEach(inp => {
             const r = inp.getAttribute('data-region');
             if (r) {
@@ -1287,18 +1255,19 @@ async function saveConfigSettings() {
             }
         });
 
-        // تنظيف البيانات وتصديرها للمستند السحابي العام للتكوين
         const { shippingRates, ...cleanGlobalConfig } = window.globalConfig;
         
         cleanGlobalConfig.homepageSections = window.globalConfig.homepageSections || [];
         cleanGlobalConfig.displayMode = window.globalConfig.displayMode || 'grid2';
         cleanGlobalConfig.outOfStockItems = window.globalConfig.outOfStockItems || [];
 
-        const globalRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'global_config');
-        await setDoc(globalRef, cleanGlobalConfig, { merge: true });
+        await FIREBASE_ENGINE.DATABASE.setDocument(REGISTRY.FIREBASE.SETTINGS.GLOBAL_CONFIG, cleanGlobalConfig);
+        await FIREBASE_ENGINE.DATABASE.setDocument(REGISTRY.FIREBASE.SETTINGS.SHIPPING_RATES, { shippingRates: window.globalConfig.shippingRates });
 
-        const shippingRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'shipping_rates');
-        await setDoc(shippingRef, { shippingRates: window.globalConfig.shippingRates }, { merge: true });
+        // ترحيل ومزامنة التغييرات الحية لقلب السيستم
+        SYSTEM_CORE.STATE.set(REGISTRY.STATE.OUT_OF_STOCK_ITEMS.key, window.globalConfig.outOfStockItems);
+        SYSTEM_CORE.STATE.set(REGISTRY.STATE.SHIPPING_RATES.key, window.globalConfig.shippingRates);
+        SYSTEM_CORE.STATE.set(REGISTRY.STATE.DISPLAY_MODE.key, window.globalConfig.displayMode);
 
         showToastNotification('تمت المزامنة بنجاح', 'تم تحديث كافة متغيرات ومحددات النظام وتعميمها على السحابة لتتطابق مع العميل فوراً.', 'check');
         fetchConfigSettings();
@@ -1340,7 +1309,7 @@ function showGlobalDialogModal(title, body, buttons = [], icon = 'alert-triangle
     const mBodyContainer = document.getElementById('globalDialogModalBodyContainer');
     if (!modal || !mBodyContainer) return;
 
-    mBodyContainer.innerHTML = `<p id="globalDialogModalBody" class="text-xs text-brandTextMuted leading-relaxed font-bold"></p>`;
+    mBodyContainer.innerHTML = `<p id="globalDialogModalBody" class="text-xs text-brandMuted leading-relaxed font-bold"></p>`;
     const mBody = document.getElementById('globalDialogModalBody');
     if (mBody) mBody.textContent = body;
     
@@ -1355,7 +1324,7 @@ function showGlobalDialogModal(title, body, buttons = [], icon = 'alert-triangle
         mButtons.innerHTML = '';
         buttons.forEach(btn => {
             const bEl = document.createElement('button'); bEl.textContent = btn.text;
-            bEl.className = btn.primary ? "px-5 py-3 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-full transition-all duration-200 shadow-sm" : "px-5 py-3 bg-brandSurfaceChild hover:bg-brandPinkLight text-brandTextMuted text-xs font-black rounded-full transition-all duration-200 border border-brandBorder";
+            bEl.className = btn.primary ? "px-5 py-3 bg-brandPink hover:bg-brandPink text-brandBg text-xs font-black rounded-full transition-all duration-200 shadow-sm" : "px-5 py-3 bg-brandSurface2 hover:bg-brandPinkSoft text-brandMuted text-xs font-black rounded-full transition-all duration-200 border border-brandBorder";
             bEl.onclick = btn.action; mButtons.appendChild(bEl);
         });
     }
@@ -1382,7 +1351,7 @@ function showGlobalCustomContentDialogModal(title, innerHtmlContent, buttons = [
         mButtons.innerHTML = '';
         buttons.forEach(btn => {
             const bEl = document.createElement('button'); bEl.textContent = btn.text;
-            bEl.className = btn.primary ? "px-5 py-3 bg-brandPink hover:bg-brandPinkDark text-brandBg text-xs font-black rounded-full transition-all duration-200 shadow-sm" : "px-5 py-3 bg-brandSurfaceChild hover:bg-brandPinkLight text-brandTextMuted text-xs font-black rounded-full transition-all duration-200 border border-brandBorder";
+            bEl.className = btn.primary ? "px-5 py-3 bg-brandPink hover:bg-brandPink text-brandBg text-xs font-black rounded-full transition-all duration-200 shadow-sm" : "px-5 py-3 bg-brandSurface2 hover:bg-brandPinkSoft text-brandMuted text-xs font-black rounded-full transition-all duration-200 border border-brandBorder";
             bEl.onclick = btn.action; mButtons.appendChild(bEl);
         });
     }
@@ -1403,9 +1372,9 @@ async function executeLogout() {
             { text: 'تسجيل خروج', primary: true, action: async () => {
                 window.closeGlobalDialogModal();
                 try { 
-                    clearActiveListeners(); // تطهير المستمعات النشطة فوراً قبل الخروج لحماية الذاكرة
+                    clearActiveListeners(); 
                     await signOut(auth); 
-                    window.location.href = 'login.html'; 
+                    window.location.href = REGISTRY.FILES.PAGES.AUTH; 
                 } 
                 catch (err) { console.error("فشل تأمين عملية تسجيل الخروج الآمن لمديري المنصة:", err); }
             }},
@@ -1420,16 +1389,31 @@ async function executeLogout() {
 function switchTab(tabId) {
     currentTab = tabId;
     document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
-    const targetSection = document.getElementById(`section-${tabId}`);
+    
+    // المطابقة والتحقق السليم من تبويبات الواجهة عبر عقود الدستور الموثق في السجل الحاكم
+    let registryContract = null;
+    switch (tabId) {
+        case 'dashboard': registryContract = REGISTRY.DOM.ADMIN.DASHBOARD_SECTION; break;
+        case 'orders': registryContract = REGISTRY.DOM.ADMIN.ORDERS_SECTION; break;
+        case 'menu': registryContract = REGISTRY.DOM.ADMIN.MENU_SECTION; break;
+        case 'layoutsManager': registryContract = REGISTRY.DOM.ADMIN.LAYOUT_SECTION; break;
+        case 'cakeBuilderSettings': registryContract = REGISTRY.DOM.ADMIN.CAKE_BUILDER_SECTION; break;
+        case 'roseBuilderSettings': registryContract = REGISTRY.DOM.ADMIN.ROSE_BUILDER_SECTION; break;
+        case 'shippingRates': registryContract = REGISTRY.DOM.ADMIN.SHIPPING_SECTION; break;
+        case 'globalConfig': registryContract = REGISTRY.DOM.ADMIN.SETTINGS_SECTION; break;
+        case 'systemLogs': registryContract = REGISTRY.DOM.ADMIN.LOGS_SECTION; break;
+    }
+
+    const targetSection = registryContract ? SYSTEM_CORE.DOM.get(registryContract) : document.getElementById(`section-${tabId}`);
     if (targetSection) targetSection.classList.remove('hidden');
 
     document.querySelectorAll('aside nav button').forEach(btn => {
-        btn.className = "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandTextMuted hover:bg-brandPinkLight text-xs font-bold text-right border-r-4 border-transparent transition-all";
+        btn.className = "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-brandMuted hover:bg-brandPinkSoft text-xs font-bold text-right border-r-4 border-transparent transition-all";
     });
 
     const activeBtn = document.getElementById(`nav-${tabId}`);
     if (activeBtn) {
-        activeBtn.className = "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-brandPinkLight text-brandPink border-r-4 border-brandPink text-xs font-bold text-right transition-all";
+        activeBtn.className = "w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl bg-brandPinkSoft text-brandPink border-r-4 border-brandPink text-xs font-bold text-right transition-all";
     }
     toggleSidebar(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1437,8 +1421,8 @@ function switchTab(tabId) {
 }
 
 function toggleSidebar(isOpen) {
-    const sidebar = document.getElementById('mainSidebar');
-    const overlay = document.getElementById('sidebarOverlay');
+    const sidebar = SYSTEM_CORE.DOM.get(REGISTRY.DOM.GLOBAL.SIDEBAR);
+    const overlay = SYSTEM_CORE.DOM.get(REGISTRY.DOM.GLOBAL.SIDEBAR_OVERLAY);
     if (!sidebar || !overlay) return;
 
     if (isOpen) {
@@ -1455,7 +1439,7 @@ function toggleSidebar(isOpen) {
 function filterOrdersBy(filterType) {
     activeOrderFilter = filterType;
     document.querySelectorAll('#orders-filter-bar button').forEach(btn => {
-        btn.className = "px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder flex items-center gap-2";
+        btn.className = "px-5 py-3 rounded-full text-xs font-black transition-all bg-brandSurface hover:bg-brandPinkSoft text-brandMuted border border-brandBorder flex items-center gap-2";
     });
     const activeFilterBtn = document.getElementById(`btn-filter-${filterType}`);
     if (activeFilterBtn) {
@@ -1467,7 +1451,7 @@ function filterOrdersBy(filterType) {
 function filterProductionBy(productionType) {
     activeProductionFilter = productionType;
     document.querySelectorAll('#production-filter-bar button').forEach(btn => {
-        btn.className = "px-4 py-1.5 rounded-lg text-[11px] font-black transition-all bg-brandSurface hover:bg-brandPinkLight text-brandTextMuted border border-brandBorder";
+        btn.className = "px-4 py-1.5 rounded-lg text-[11px] font-black transition-all bg-brandSurface hover:bg-brandPinkSoft text-brandMuted border border-brandBorder";
     });
     const activeBtn = document.getElementById(`prod-filter-${productionType}`);
     if (activeBtn) {
@@ -1485,6 +1469,7 @@ function switchMenuCategoryTab(catId) {
 function toggleLayoutSectionStatus(idx) {
     if (!window.globalConfig.homepageSections || !window.globalConfig.homepageSections[idx]) return;
     window.globalConfig.homepageSections[idx].active = !window.globalConfig.homepageSections[idx].active;
+    SYSTEM_CORE.STATE.set(REGISTRY.STATE.HOMEPAGE_SECTIONS.key, window.globalConfig.homepageSections);
     renderLayoutSectionsManager();
 }
 
@@ -1497,6 +1482,7 @@ function moveSectionOrder(idx, direction) {
     window.globalConfig.homepageSections[idx] = window.globalConfig.homepageSections[targetIdx];
     window.globalConfig.homepageSections[targetIdx] = temp;
     
+    SYSTEM_CORE.STATE.set(REGISTRY.STATE.HOMEPAGE_SECTIONS.key, window.globalConfig.homepageSections);
     renderLayoutSectionsManager();
 }
 
@@ -1510,6 +1496,7 @@ function duplicateLayoutSection(idx) {
         items: [...(source.items || [])]
     };
     window.globalConfig.homepageSections.splice(idx + 1, 0, duplicate);
+    SYSTEM_CORE.STATE.set(REGISTRY.STATE.HOMEPAGE_SECTIONS.key, window.globalConfig.homepageSections);
     renderLayoutSectionsManager();
     showToastNotification('عملية ناجحة', 'تم نسخ وتكرار قسم الواجهة بنجاح كمسودة مخفية.', 'check');
 }
@@ -1517,6 +1504,7 @@ function duplicateLayoutSection(idx) {
 function removeItemFromSection(sectionIdx, itemId) {
     if (!window.globalConfig.homepageSections || !window.globalConfig.homepageSections[sectionIdx]) return;
     window.globalConfig.homepageSections[sectionIdx].items = window.globalConfig.homepageSections[sectionIdx].items.filter(id => id !== itemId);
+    SYSTEM_CORE.STATE.set(REGISTRY.STATE.HOMEPAGE_SECTIONS.key, window.globalConfig.homepageSections);
     renderLayoutSectionsManager();
 }
 
@@ -1538,7 +1526,7 @@ window.updateGlobalDisplayMode = updateGlobalDisplayMode;
 
 // عناصر التحكم العامة في الهيكل
 const closeSidebarBtn = document.getElementById('btn-close-sidebar');
-const sidebarOverlayEl = document.getElementById('sidebarOverlay');
+const sidebarOverlayEl = SYSTEM_CORE.DOM.get(REGISTRY.DOM.GLOBAL.SIDEBAR_OVERLAY);
 const openSidebarBtn = document.getElementById('btn-open-sidebar');
 const logoutBtn = document.getElementById('btn-sidebar-logout');
 
@@ -1583,52 +1571,40 @@ if (fShip) fShip.onclick = () => filterOrdersBy('shipping');
 if (fComp) fComp.onclick = () => filterOrdersBy('completed');
 if (fCanc) fCanc.onclick = () => filterOrdersBy('cancelled');
 
-// ربط فلاتر خطوط الإنتاج
+// ربط أزرار فرز نوع الإنتاج داخل المطبخ
 const pAll = document.getElementById('prod-filter-all');
 const pCakes = document.getElementById('prod-filter-cakes');
 const pRoses = document.getElementById('prod-filter-roses');
-const pClass = document.getElementById('prod-filter-classic');
+const pClassic = document.getElementById('prod-filter-classic');
 
 if (pAll) pAll.onclick = () => filterProductionBy('all');
 if (pCakes) pCakes.onclick = () => filterProductionBy('cakes');
 if (pRoses) pRoses.onclick = () => filterProductionBy('roses');
-if (pClass) pClass.onclick = () => filterProductionBy('classic');
+if (pClassic) pClassic.onclick = () => filterProductionBy('classic');
 
-// أزرار المزامنة والحفظ المباشر
-const saveMenuBtn = document.getElementById('btn-save-menu');
-const saveCakeBtn = document.getElementById('btn-save-cake-config');
-const saveRoseBtn = document.getElementById('btn-save-rose-config');
-const saveShippingBtn = document.getElementById('btn-save-shipping');
-const saveGlobalBtn = document.getElementById('btn-save-global-config');
-const clearLogsBtn = document.getElementById('btn-clear-logs');
+// ربط أزرار التحكم وحفظ الإعدادات الشاملة
+const btnSaveConfig = document.getElementById('btn-save-global-config');
+const btnSaveLayouts = document.getElementById('btn-save-layouts-structure');
+const btnClearLogs = document.getElementById('btn-clear-system-logs');
+const btnAddNewSection = document.getElementById('btn-add-new-layout-section');
 
-if (saveMenuBtn) saveMenuBtn.onclick = saveConfigSettings;
-if (saveCakeBtn) saveCakeBtn.onclick = saveConfigSettings;
-if (saveRoseBtn) saveRoseBtn.onclick = saveConfigSettings;
-if (saveShippingBtn) saveShippingBtn.onclick = saveConfigSettings;
-if (saveGlobalBtn) saveGlobalBtn.onclick = saveConfigSettings;
-if (clearLogsBtn) clearLogsBtn.onclick = clearAllSystemLogs;
+if (btnSaveConfig) btnSaveConfig.onclick = () => saveConfigSettings();
+if (btnSaveLayouts) btnSaveLayouts.onclick = () => saveLayoutsStructureToCloud();
+if (btnClearLogs) btnClearLogs.onclick = () => clearAllSystemLogs();
+if (btnAddNewSection) btnAddNewSection.onclick = () => addNewLayoutSectionPrompt();
 
-// التحكم في أقسام العرض وهندسة الواجهات
-const addLayoutSecBtn = document.getElementById('btn-add-layout-section');
-const saveLayoutsBtn = document.getElementById('btn-save-layouts');
-const modeGridBtn = document.getElementById('btn-mode-grid2');
-const modeCardBtn = document.getElementById('btn-mode-fullCard');
+// ربط أزرار تحديد وضع العرض الموحد للواجهة
+const btnGrid2 = document.getElementById('btn-mode-grid2');
+const btnFullCard = document.getElementById('btn-mode-fullCard');
 
-if (addLayoutSecBtn) addLayoutSecBtn.onclick = addNewLayoutSectionPrompt;
-if (saveLayoutsBtn) saveLayoutsBtn.onclick = saveLayoutsStructureToCloud;
+if (btnGrid2) btnGrid2.onclick = () => updateGlobalDisplayMode('grid2');
+if (btnFullCard) btnFullCard.onclick = () => updateGlobalDisplayMode('fullCard');
 
-if (modeGridBtn) {
-    modeGridBtn.onclick = async () => { 
-        updateGlobalDisplayMode('grid2');
-        await saveLayoutsStructureToCloud(); 
-    };
-}
-if (modeCardBtn) {
-    modeCardBtn.onclick = async () => { 
-        updateGlobalDisplayMode('fullCard');
-        await saveLayoutsStructureToCloud(); 
-    };
-}
-
-```
+/**
+ * =========================================================
+ * المراقبة والتحقق التلقائي عند الإقلاع (Self-Boot Audit)
+ * =========================================================
+ */
+SYSTEM_CORE.safeExecute(async () => {
+    SYSTEM_CORE.Diagnostics.info("تم ربط البنية التحتية لكابينة إدارة حلويات بوسي بنجاح تام.");
+});

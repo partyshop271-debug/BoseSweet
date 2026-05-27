@@ -110,9 +110,9 @@ const REGISTRY_META = {
 
     SYSTEM_NAME: 'Bose Sweets Governance Registry',
 
-    REGISTRY_VERSION: '20.0.0',
+    REGISTRY_VERSION: '20.1.0',
 
-    SCHEMA_VERSION: '1.0.0',
+    SCHEMA_VERSION: '1.1.0',
 
     ENVIRONMENT,
 
@@ -160,7 +160,7 @@ const REGISTRY = {
 
         NAME: 'Bose Sweets',
 
-        VERSION: '5.0.0',
+        VERSION: '5.1.0',
 
         ARCHITECTURE: 'GOVERNED',
 
@@ -191,7 +191,9 @@ const REGISTRY = {
 
             COMMERCE: 'commerce-engine.js',
 
-            FIREBASE: 'firebase-engine.js'
+            FIREBASE: 'firebase-engine.js',
+            
+            ADMIN_ENGINE: 'admin-engine.js'
 
         },
 
@@ -471,6 +473,132 @@ const REGISTRY = {
                 required: false,
                 critical: false,
                 type: 'container'
+            },
+
+            DASHBOARD_SECTION: { 
+                id: 'dashboardSection', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            ORDERS_SECTION: { 
+                id: 'ordersSection', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            MENU_SECTION: { 
+                id: 'menuSection', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            LAYOUT_SECTION: { 
+                id: 'layoutSection', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            CAKE_BUILDER_SECTION: { 
+                id: 'cakeBuilderSection', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            ROSE_BUILDER_SECTION: { 
+                id: 'roseBuilderSection', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            SHIPPING_SECTION: { 
+                id: 'shippingSection', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            SETTINGS_SECTION: { 
+                id: 'settingsSection', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            LOGS_SECTION: { 
+                id: 'logsSection', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            ORDERS_CARDS_CONTAINER: { 
+                id: 'ordersCardsContainer', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            MENU_TABS_CONTAINER: { 
+                id: 'menuTabsContainer', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            OUT_OF_STOCK_CONTAINER: { 
+                id: 'outOfStockContainer', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            LAYOUT_SECTIONS_CONTAINER: { 
+                id: 'layoutSectionsContainer', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            SHIPPING_RATES_CONTAINER: { 
+                id: 'shippingRatesContainer', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            LOGS_TABLE_BODY: { 
+                id: 'logsTableBody', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            EMAIL_DISPLAY: { 
+                id: 'adminEmailDisplay', 
+                required: false, 
+                critical: false, 
+                type: 'text' 
+            },
+            
+            LOADING_GUARD: { 
+                id: 'loadingGuard', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            MARQUEE_SPEED_LABEL: { 
+                id: 'marqueeSpeedLabel', 
+                required: false, 
+                critical: false, 
+                type: 'text' 
             }
 
         },
@@ -482,6 +610,41 @@ const REGISTRY = {
                 required: false,
                 critical: false,
                 type: 'form'
+            },
+
+            ADMIN_EMAIL: { 
+                id: 'adminEmail', 
+                required: true, 
+                critical: true, 
+                type: 'input' 
+            },
+            
+            ADMIN_PASSWORD: { 
+                id: 'adminPassword', 
+                required: true, 
+                critical: true, 
+                type: 'input' 
+            },
+            
+            AUTH_ALERT: { 
+                id: 'authAlert', 
+                required: false, 
+                critical: false, 
+                type: 'container' 
+            },
+            
+            SUBMIT_BUTTON: { 
+                id: 'submitButton', 
+                required: true, 
+                critical: true, 
+                type: 'button' 
+            },
+            
+            SUBMIT_TEXT: { 
+                id: 'submitText', 
+                required: true, 
+                critical: true, 
+                type: 'text' 
             }
 
         }

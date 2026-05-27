@@ -21,6 +21,17 @@ import FIREBASE_ENGINE from './firebase-engine.js';
 
 /**
  * =========================================================
+ * Luxury Sensory Content - Identity Constants
+ * =========================================================
+ */
+const DESPACITO_IDENTITY = Object.freeze({
+    id: 'despacito',
+    name: 'ديسباسيتو كيك الملكي',
+    description: 'فدج كيك غني بالشوكولاتة البلجيكية الفاخرة خالي تماماً من الإضافات الإسفنجية الجافة'
+});
+
+/**
+ * =========================================================
  * Internal Commerce Runtime
  * =========================================================
  */
@@ -207,21 +218,24 @@ const CART = {
 
         }
 
+        // تفعيل الهوية الحسية المعتمدة للديسباسيتو لمنع تمرير أي وصف إسفنجي جاف
+        const isDespacito = item.id === DESPACITO_IDENTITY.id || item.name?.includes('ديسباسيتو');
+
         const normalized = {
 
             uid: generateId('cart'),
 
-            id: item.id || 'unknown',
+            id: isDespacito ? DESPACITO_IDENTITY.id : (item.id || 'unknown'),
 
-            name: item.name || 'Unnamed Product',
+            name: isDespacito ? DESPACITO_IDENTITY.name : (item.name || 'Unnamed Product'),
 
             qty: Number(item.qty || 1),
 
             price: Number(item.price || 0),
 
-            details: deepClone(
-                item.details || {}
-            ),
+            details: isDespacito 
+                ? { ...deepClone(item.details || {}), identity: DESPACITO_IDENTITY.description } 
+                : deepClone(item.details || {}),
 
             isCustom: Boolean(
                 item.isCustom
@@ -381,137 +395,161 @@ const PRICING = {
 
     cake(cakeState = {}) {
 
-        const people =
-            Number(cakeState.people || 4);
+        const liveConfig = getState(REGISTRY.STATE.CONFIG.key) || {};
 
-        const basePrice =
-            Number(
-                cakeState.basePricePerPerson ||
-                145
-            );
+        const people = Math.max(__LIMITS__.MIN_CAKE_PEOPLE, Number(cakeState.people || 4));
 
-        const edible =
-            Number(
-                cakeState
-                    .cakePrintEdiblePrice ||
-                60
-            );
+        // فحص المفتاح الأساسي لتكلفة الفرد لكعك المناسبات
+        const basePriceKey = REGISTRY.CONFIG.CAKE_BASE_PRICE.key;
+        let basePrice = 145;
+        
+        if (liveConfig[basePriceKey] !== undefined) {
+            basePrice = liveConfig[basePriceKey];
+        } else {
+            // توسيع البحث للتحقق من المسميات البديلة الصادرة من لوحة التحكم لمنع القيم الصفرية
+            const aliasFound = REGISTRY.CONFIG.CAKE_BASE_PRICE.aliases.find(alias => liveConfig[alias] !== undefined);
+            if (aliasFound) {
+                basePrice = liveConfig[aliasFound];
+            } else {
+                basePrice = cakeState.basePricePerPerson ?? cakeState.cakeBasePricePerPerson ?? 145;
+            }
+        }
+        
+        basePrice = Number(basePrice);
 
-        const nonEdible =
-            Number(
-                cakeState
-                    .cakePrintNonEdiblePrice ||
-                20
-            );
+        // قراءة أسعار الطباعة الصالحة للأكل والغير صالحة للأكل بشكل مرن ودقيق
+        const edible = Number(
+            liveConfig[REGISTRY.CONFIG.CAKE_PRINT_EDIBLE_PRICE.key] ??
+            liveConfig.cake_print_edible_price ??
+            cakeState.cakePrintEdiblePrice ??
+            60
+        );
 
-        let total =
-            people * basePrice;
+        const nonEdible = Number(
+            liveConfig[REGISTRY.CONFIG.CAKE_PRINT_NON_EDIBLE_PRICE.key] ??
+            liveConfig.cake_print_non_edible_price ??
+            cakeState.cakePrintNonEdiblePrice ??
+            20
+        );
 
-        if (
-            cakeState.printOption ===
-            'edible'
-        ) {
+        let total = people * basePrice;
+
+        if (cakeState.printOption === 'edible' || cakeState.print === 'edible') {
 
             total += edible;
 
-        }
-
-        if (
-            cakeState.printOption ===
-            'non-edible'
-        ) {
+        } else if (cakeState.printOption === 'non-edible' || cakeState.print === 'non-edible') {
 
             total += nonEdible;
 
         }
 
-        return total;
+        return Number(isNaN(total) ? 0 : total);
 
     },
 
     rose(roseState = {}) {
 
-        const base =
-            Number(
-                roseState.roseBasePrice ||
-                400
-            );
+        const liveConfig = getState(REGISTRY.STATE.CONFIG.key) || {};
 
-        const minCount =
-            Number(
-                roseState.roseMinCount ||
-                15
-            );
+        // جلب الأسعار الأساسية لباقات الورد مع توفير مسميات مرنة بالتنسيق السحابي
+        const base = Number(
+            liveConfig[REGISTRY.CONFIG.ROSE_BASE_PRICE.key] ??
+            liveConfig.rose_base_price ??
+            roseState.roseBasePrice ??
+            400
+        );
 
-        const currentCount =
-            Number(
-                roseState.count ||
-                minCount
-            );
+        const minCount = Number(
+            liveConfig[REGISTRY.CONFIG.ROSE_MIN_COUNT.key] ??
+            liveConfig.rose_min_count ??
+            roseState.roseMinCount ??
+            15
+        );
 
-        const additional =
-            Number(
-                roseState
-                    .rosePricePerAdditional ||
-                35
-            );
+        const currentCount = Math.max(
+            minCount,
+            Number(roseState.count ?? minCount)
+        );
 
-        const photoPrice =
-            Number(
-                roseState
-                    .rosePhotoPrice ||
-                15
-            );
+        const additional = Number(
+            liveConfig[REGISTRY.CONFIG.ROSE_PRICE_PER_ADDITIONAL.key] ??
+            liveConfig.rose_price_per_additional ??
+            roseState.rosePricePerAdditional ??
+            15
+        );
 
-        const ribbonPrice =
-            Number(
-                roseState
-                    .roseRibbonPrice ||
-                50
-            );
+        const photoPrice = Number(
+            liveConfig[REGISTRY.CONFIG.ROSE_PHOTO_PRICE.key] ??
+            liveConfig.rose_photo_price ??
+            roseState.rosePhotoPrice ??
+            15
+        );
 
-        const cardPrice =
-            Number(
-                roseState
-                    .roseCardPrice ||
-                20
-            );
+        const ribbonPrice = Number(
+            liveConfig[REGISTRY.CONFIG.ROSE_RIBBON_PRICE.key] ??
+            liveConfig.rose_ribbon_price ??
+            roseState.roseRibbonPrice ??
+            50
+        );
+
+        const cardPrice = Number(
+            liveConfig[REGISTRY.CONFIG.ROSE_CARD_PRICE.key] ??
+            liveConfig.rose_card_price ??
+            roseState.roseCardPrice ??
+            20
+        );
 
         let total = base;
 
-        if (
-            currentCount > minCount
-        ) {
+        // حساب الورد الإضافي المتجاوز للحد الأدنى للباقة لعلامة حلويات بوسي
+        if (currentCount > minCount) {
 
-            total += (
-                currentCount - minCount
-            ) * additional;
+            total += (currentCount - minCount) * additional;
 
         }
 
-        total += (
-            Number(
-                roseState.photosCount || 0
-            ) * photoPrice
-        );
+        // إضافة تكلفة الملحقات الإضافية المخصصة بدقة
+        const pCount = Number(roseState.photosCount ?? roseState.photos ?? 0);
+        total += (pCount * photoPrice);
 
-        if (
-            roseState.ribbonEnabled
-        ) {
+        if (roseState.ribbonEnabled || roseState.ribbon) {
 
             total += ribbonPrice;
 
         }
 
-        if (
-            roseState.cardEnabled
-        ) {
+        if (roseState.cardEnabled || roseState.card) {
 
             total += cardPrice;
 
         }
 
-        return total;
+        // دمج حسابات الشوكولاتة والعملات النقدية داخل الباقة لضمان عدم إسقاط أي تكلفة مخصصة
+        if (Number(roseState.cashAmount || roseState.cash || 0) > 0) {
+            total += Number(roseState.cashAmount || roseState.cash || 0);
+        }
+
+        if (Number(roseState.chocBudget || 0) > 0) {
+            total += Number(roseState.chocBudget || 0);
+        }
+
+        const premiumBar100Price = Number(liveConfig.premiumBar100Price ?? 100);
+        const premiumBar120Price = Number(liveConfig.premiumBar120Price ?? 120);
+
+        // مسح قنوات البارات الفاخرة المضافة للمحاكي الذكي
+        const pBar100 = roseState.premiumBars ? roseState.premiumBars[100] : roseState.premiumBar100;
+        const pBar120 = roseState.premiumBars ? roseState.premiumBars[120] : roseState.premiumBar120;
+
+        if (Number(pBar100 || 0) > 0) {
+            total += Number(pBar100 || 0) * premiumBar100Price;
+        }
+
+        if (Number(pBar120 || 0) > 0) {
+            total += Number(pBar120 || 0) * premiumBar120Price;
+        }
+
+        return Number(isNaN(total) ? 0 : total);
 
     }
 
@@ -697,6 +735,8 @@ const CAKE = {
 
     defaultState() {
 
+        const liveConfig = getState(REGISTRY.STATE.CONFIG.key) || {};
+
         return {
 
             step: 1,
@@ -723,11 +763,11 @@ const CAKE = {
 
             cardText: '',
 
-            basePricePerPerson: 145,
+            basePricePerPerson: Number(liveConfig[REGISTRY.CONFIG.CAKE_BASE_PRICE.key] || 145),
 
-            cakePrintEdiblePrice: 60,
+            cakePrintEdiblePrice: Number(liveConfig[REGISTRY.CONFIG.CAKE_PRINT_EDIBLE_PRICE.key] || 60),
 
-            cakePrintNonEdiblePrice: 20
+            cakePrintNonEdiblePrice: Number(liveConfig[REGISTRY.CONFIG.CAKE_PRINT_NON_EDIBLE_PRICE.key] || 20)
 
         };
 
@@ -850,12 +890,14 @@ const CAKE = {
 
 /**
  * =========================================================
- * Rose Builder Engine
+ * Rose Rose Engine
  * =========================================================
  */
 const ROSE = {
 
     defaultState() {
+
+        const liveConfig = getState(REGISTRY.STATE.CONFIG.key) || {};
 
         return {
 
@@ -893,17 +935,17 @@ const ROSE = {
 
             cardText: '',
 
-            roseBasePrice: 400,
+            roseBasePrice: Number(liveConfig[REGISTRY.CONFIG.ROSE_BASE_PRICE.key] || 400),
 
-            roseMinCount: 15,
+            roseMinCount: Number(liveConfig[REGISTRY.CONFIG.ROSE_MIN_COUNT.key] || 15),
 
-            rosePricePerAdditional: 35,
+            rosePricePerAdditional: Number(liveConfig[REGISTRY.CONFIG.ROSE_PRICE_PER_ADDITIONAL.key] || 15),
 
-            rosePhotoPrice: 15,
+            rosePhotoPrice: Number(liveConfig[REGISTRY.CONFIG.ROSE_PHOTO_PRICE.key] || 15),
 
-            roseRibbonPrice: 50,
+            roseRibbonPrice: Number(liveConfig[REGISTRY.CONFIG.ROSE_RIBBON_PRICE.key] || 50),
 
-            roseCardPrice: 20
+            roseCardPrice: Number(liveConfig[REGISTRY.CONFIG.ROSE_CARD_PRICE.key] || 20)
 
         };
 
