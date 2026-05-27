@@ -297,8 +297,6 @@ const CLOUD_PIPELINE = {
                 const isOutOfStock = outOfStockList.includes(item.id);
                 const category = String(item.category || '').toLowerCase();
                 
-                // خوارزمية تخطيط الشاشات الاحترافية المعتمدة لعلامة حلويات بوسي
-                // الدوناتس والسينابون والحلويات في عمودين متوازيين، والمنتجات الملكية الكبرى في بطاقات كاملة العرض لراحة العين والـ Breathing Space
                 let gridClass = 'bose-full-card bose-full-card-row';
                 if (
                     category.includes('donut') || 
@@ -311,6 +309,8 @@ const CLOUD_PIPELINE = {
                     gridClass = 'bose-full-card';
                 }
 
+                const finalImage = item.image || item.img || './assets/cake-placeholder.webp';
+
                 htmlBuffer += `
                     <div class="${gridClass} ${isOutOfStock ? 'opacity-50 pointer-events-none' : ''}" 
                          onclick="${isOutOfStock ? '' : `BoseSweetsEngine.viewProductDetails('${item.id}')`}">
@@ -319,7 +319,7 @@ const CLOUD_PIPELINE = {
                             <img
                                 class="lazy-product-image absolute inset-0 w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                                 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"
-                                data-src="${item.image || './assets/cake-placeholder.webp'}"
+                                data-src="${finalImage}"
                                 alt="${item.name || 'منتج فاخر'}"
                                 loading="lazy"
                                 decoding="async"
@@ -360,7 +360,6 @@ const CLOUD_PIPELINE = {
 
             htmlBuffer += '</div>';
 
-            // تفعيل محرك الـ Diffing المصقول لمنع وميض الشاشة وإعادة التحميل العشوائي
             UI_PERFORMANCE.VIRTUAL_RENDERER.diff(container, htmlBuffer);
             UI_PERFORMANCE.LAZY_IMAGES.observeAll('.lazy-product-image');
 
@@ -447,7 +446,6 @@ async function boot() {
     OFFLINE.detect();
     INTERACTIVE_BUILDERS.initializeSimulators();
 
-    // الاستماع المركزي لأحداث النواة لإعادة بناء القوائم فور حدوث أي تحديث سحابي
     EVENTS.on(REGISTRY.EVENTS.MENU.UPDATED, async () => {
         await CLOUD_PIPELINE.fetchAndRenderCatalog();
     });
@@ -481,11 +479,6 @@ function cleanup() {
     info('UX Unified Engine Context Matrices Cleaned Successfully');
 }
 
-/**
- * =========================================================
- * Public Governed API
- * =========================================================
- */
 export const UNIFIED_ENGINE = Object.freeze({
     VERSION: ENGINE_VERSION,
     boot,
@@ -500,7 +493,6 @@ export const UNIFIED_ENGINE = Object.freeze({
     cleanup
 });
 
-// التشغيل التلقائي الآمن للنظام
 SYSTEM_CORE.safeExecute(async () => {
     await boot();
 });
@@ -520,5 +512,3 @@ export {
     UI_PERFORMANCE,
     cleanup
 };
-
-export default UNIFIED_ENGINE;

@@ -33,7 +33,6 @@ export class BoseSweetsAppManager {
     init() {
         SYSTEM_CORE.Diagnostics.info('[DISPLAY_MANAGER] Initializing Technical Compliance Interface Pipeline');
         
-        // المزامنة الفورية مع النواة الجوهرية لمنع ضياع إشارة الاستعداد
         this.syncWithCoreState();
         this.activateRealtimeCloudSync();
         
@@ -53,7 +52,6 @@ export class BoseSweetsAppManager {
     }
 
     activateRealtimeCloudSync() {
-        // 1. الاستماع الحي لإعدادات لوحة التحكم العامة
         const unsubscribeConfigId = FIREBASE_ENGINE.WATCHERS.document(REGISTRY.FIREBASE.SETTINGS.GLOBAL_CONFIG, (cleanGlobalConfig) => {
             if (cleanGlobalConfig) {
                 this.globalConfig = { ...this.globalConfig, ...cleanGlobalConfig };
@@ -76,7 +74,6 @@ export class BoseSweetsAppManager {
         });
         this.activeListeners.push(unsubscribeConfigId);
 
-        // 2. الاستماع الحي لقنوات المنيو والكتالوج الموحد
         const unsubscribeMenuId = FIREBASE_ENGINE.WATCHERS.collection(REGISTRY.FIREBASE.COLLECTIONS.MENU, (cloudMenu) => {
             if (cloudMenu && cloudMenu.length > 0) {
                 this.menuData = cloudMenu.map(item => {
@@ -92,8 +89,11 @@ export class BoseSweetsAppManager {
                         category: item.category || 'حلويات',
                         price: computedPrice,
                         image: item.img || item.image || './assets/cake-placeholder.webp',
+                        img: item.img || item.image || './assets/cake-placeholder.webp',
                         desc: item.desc || item.description || '',
-                        unit: item.unit || 'معياري فاخر'
+                        unit: item.unit || 'معياري فاخر',
+                        hidden: Boolean(item.hidden),
+                        status: item.status || 'visible'
                     };
                 });
                 
@@ -666,8 +666,8 @@ export class BoseSweetsAppManager {
         const amount = Number(UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CASH_AMOUNT.id)?.value || 0);
         this.roseCustomState.cash = amount;
 
-        const output = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CASH_OUTPUT.id);
-        const calcText = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CASH_CALC_TEXT.id);
+        const output = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CASH_OUTPUT.id);
+        const calcText = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CASH_CALC_TEXT.id);
         if (!output || !calcText) return;
 
         if (amount <= 0) {
@@ -676,7 +676,7 @@ export class BoseSweetsAppManager {
             return;
         }
 
-        calcText.textContent = `💸 ددمج الأموال: سيتم لف وتنسيق مبلغ ${amount} ج.م فئة ${this.roseCustomState.denomination} جنيه فنيًا داخل الباقة.`;
+        calcText.textContent = `💸 دمج الأموال: سيتم لف وتنسيق مبلغ ${amount} ج.م فئة ${this.roseCustomState.denomination} جنيه فنيًا داخل الباقة.`;
         output.classList.remove('hidden');
         this.updateRosePriceDisplay();
     }
@@ -727,7 +727,7 @@ export class BoseSweetsAppManager {
         if (!checkbox) return;
         
         this.roseCustomState.card = checkbox.checked;
-        const area = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CARD_INPUT_AREA.id);
+        const area = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CARD_INPUT_AREA.id);
         if (area) {
             if (checkbox.checked) area.classList.remove('hidden');
             else area.classList.add('hidden');
@@ -834,7 +834,6 @@ export class BoseSweetsAppManager {
     }
 }
 
-// بناء وتفعيل مدير الواجهة وربطه بـ window لضمان التوافق مع قنوات النداء المباشرة من الـ DOM
 const manager = new BoseSweetsAppManager();
 window.BoseSweetsEngine = manager;
 window.BoseSweets = manager;
