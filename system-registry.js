@@ -110,9 +110,9 @@ const REGISTRY_META = {
 
     SYSTEM_NAME: 'Bose Sweets Governance Registry',
 
-    REGISTRY_VERSION: '20.1.0',
+    REGISTRY_VERSION: '20.2.0',
 
-    SCHEMA_VERSION: '1.1.0',
+    SCHEMA_VERSION: '1.2.0',
 
     ENVIRONMENT,
 
@@ -160,7 +160,7 @@ const REGISTRY = {
 
         NAME: 'Bose Sweets',
 
-        VERSION: '5.1.0',
+        VERSION: '5.2.0',
 
         ARCHITECTURE: 'GOVERNED',
 
@@ -193,7 +193,9 @@ const REGISTRY = {
 
             FIREBASE: 'firebase-engine.js',
             
-            ADMIN_ENGINE: 'admin-engine.js'
+            ADMIN_ENGINE: 'admin-engine.js',
+            
+            DISPLAY_MANAGER: 'app-display-manager.js'
 
         },
 
@@ -201,7 +203,9 @@ const REGISTRY = {
 
             REGISTRY: 'system-registry.js',
 
-            CORE: 'system-core.js'
+            CORE: 'system-core.js',
+            
+            VALIDATOR: 'runtime-validator.js'
 
         }
 
@@ -308,6 +312,27 @@ const REGISTRY = {
                 required: false,
                 critical: false,
                 type: 'input'
+            },
+            
+            TOP_TICKER_BANNER: {
+                id: 'topTickerBanner',
+                required: false,
+                critical: false,
+                type: 'container'
+            },
+            
+            MARQUEE_CONTENT: {
+                id: 'marqueeContent',
+                required: false,
+                critical: false,
+                type: 'container'
+            },
+            
+            FOOTER_PHONE_DISPLAY: {
+                id: 'footerPhoneDisplay',
+                required: false,
+                critical: false,
+                type: 'text'
             }
 
         },
@@ -393,6 +418,34 @@ const REGISTRY = {
 
         CHECKOUT: {
 
+            FORM: {
+                id: 'checkoutForm',
+                required: true,
+                critical: true,
+                type: 'form'
+            },
+
+            CUSTOMER_NAME: {
+                id: 'custName',
+                required: true,
+                critical: true,
+                type: 'input'
+            },
+
+            CUSTOMER_PHONE: {
+                id: 'custPhone',
+                required: true,
+                critical: true,
+                type: 'input'
+            },
+
+            SHIPPING_ADDRESS: {
+                id: 'shippingAddress',
+                required: true,
+                critical: true,
+                type: 'input'
+            },
+
             SUBTOTAL: {
                 id: 'checkoutSubtotal',
                 required: true,
@@ -437,6 +490,104 @@ const REGISTRY = {
                 required: true,
                 critical: true,
                 type: 'input'
+            },
+            
+            PRINT_EDIBLE_BTN: {
+                id: 'cake-print-edible',
+                required: false,
+                critical: false,
+                type: 'button'
+            },
+            
+            PRINT_NON_EDIBLE_BTN: {
+                id: 'cake-print-non-edible',
+                required: false,
+                critical: false,
+                type: 'button'
+            },
+            
+            COUNTER_WARNING: {
+                id: 'cakeCounterWarning',
+                required: false,
+                critical: false,
+                type: 'container'
+            },
+            
+            DESIGN_LABEL: {
+                id: 'cakeDesignLabel',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            PRINT_LABEL: {
+                id: 'cakePrintLabel',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            PRINT_UPLOAD_AREA: {
+                id: 'cakePrintUploadArea',
+                required: false,
+                critical: false,
+                type: 'container'
+            },
+            
+            CARD_CHECK: {
+                id: 'cakeCardCheck',
+                required: false,
+                critical: false,
+                type: 'checkbox'
+            },
+            
+            CARD_INPUT_AREA: {
+                id: 'cakeCardInputArea',
+                required: false,
+                critical: false,
+                type: 'container'
+            },
+            
+            TEXT_INPUT: {
+                id: 'cakeText',
+                required: false,
+                critical: false,
+                type: 'input'
+            },
+            
+            THEME_DETAILS: {
+                id: 'cakeThemeDetails',
+                required: false,
+                critical: false,
+                type: 'textarea'
+            },
+            
+            ALLERGIES: {
+                id: 'cakeAllergies',
+                required: false,
+                critical: false,
+                type: 'textarea'
+            },
+            
+            CARD_TEXT: {
+                id: 'cakeCardText',
+                required: false,
+                critical: false,
+                type: 'input'
+            },
+            
+            BASE_NOTIFICATION: {
+                id: 'cake-base-notification',
+                required: false,
+                critical: false,
+                type: 'container'
+            },
+            
+            SHAPE_HINT: {
+                id: 'cake-shape-hint',
+                required: false,
+                critical: false,
+                type: 'container'
             }
 
         },
@@ -455,6 +606,167 @@ const REGISTRY = {
                 required: true,
                 critical: true,
                 type: 'input'
+            },
+            
+            MIN_COUNT_HINT: {
+                id: 'roseMinCountHint',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            PHOTO_PRICE_HINT: {
+                id: 'rosePhotoPriceHint',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            RIBBON_LABEL: {
+                id: 'roseRibbonLabel',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            CARD_LABEL: {
+                id: 'roseCardLabel',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            REFERENCE_LABEL: {
+                id: 'roseReferenceLabel',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            PHOTOS_COUNT: {
+                id: 'rosePhotosCount',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            PHOTO_UPLOADS_CONTAINER: {
+                id: 'rosePhotoUploadsContainer',
+                required: false,
+                critical: false,
+                type: 'container'
+            },
+            
+            RIBBON_CHECK: {
+                id: 'roseRibbonCheck',
+                required: false,
+                critical: false,
+                type: 'checkbox'
+            },
+            
+            RIBBON_INPUT_AREA: {
+                id: 'roseRibbonInputArea',
+                required: false,
+                critical: false,
+                type: 'container'
+            },
+            
+            CHOC_BUDGET: {
+                id: 'roseChocBudget',
+                required: false,
+                critical: false,
+                type: 'input'
+            },
+            
+            CHOC_OUTPUT: {
+                id: 'roseChocOutput',
+                required: false,
+                critical: false,
+                type: 'container'
+            },
+            
+            CHOC_CALC_TEXT: {
+                id: 'roseChocCalcText',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            CASH_AMOUNT: {
+                id: 'roseCashAmount',
+                required: false,
+                critical: false,
+                type: 'input'
+            },
+            
+            CASH_OUTPUT: {
+                id: 'roseCashOutput',
+                required: false,
+                critical: false,
+                type: 'container'
+            },
+            
+            CASH_CALC_TEXT: {
+                id: 'roseCashCalcText',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            PREMIUM_BAR_100: {
+                id: 'rosePremiumBar100',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            PREMIUM_BAR_120: {
+                id: 'rosePremiumBar120',
+                required: false,
+                critical: false,
+                type: 'text'
+            },
+            
+            CARD_CHECK: {
+                id: 'roseCardCheck',
+                required: false,
+                critical: false,
+                type: 'checkbox'
+            },
+            
+            CARD_INPUT_AREA: {
+                id: 'roseCardInputArea',
+                required: false,
+                critical: false,
+                type: 'container'
+            },
+            
+            COLORS_INPUT: {
+                id: 'roseColors',
+                required: false,
+                critical: false,
+                type: 'input'
+            },
+            
+            CARD_TEXT: {
+                id: 'roseCardText',
+                required: false,
+                critical: false,
+                type: 'input'
+            },
+            
+            RIBBON_TEXT: {
+                id: 'roseRibbonText',
+                required: false,
+                critical: false,
+                type: 'input'
+            },
+            
+            QUICK_BUY_AREA: {
+                id: 'roseQuickBuyArea',
+                required: false,
+                critical: false,
+                type: 'container'
             }
 
         },
