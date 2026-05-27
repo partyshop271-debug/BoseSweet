@@ -301,11 +301,7 @@ const DOM_PROTECTION = {
 
             'sidebar',
 
-            'globalModal',
-
-            'cartItemsList',
-
-            'checkoutForm'
+            'menuCategoriesGrid'
 
         ];
 

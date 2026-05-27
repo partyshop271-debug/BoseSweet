@@ -33,6 +33,10 @@ export class BoseSweetsAppManager {
     init() {
         SYSTEM_CORE.Diagnostics.info('[DISPLAY_MANAGER] Initializing Technical Compliance Interface Pipeline');
         
+        // إسناد فوري ومبكر للكائن بنطاق النافذة لضمان استجابة واجهات واجهة المستخدم في كل الظروف
+        window.BoseSweetsEngine = this;
+        window.BoseSweets = this;
+
         this.syncWithCoreState();
         this.activateRealtimeCloudSync();
         
@@ -183,10 +187,8 @@ export class BoseSweetsAppManager {
     }
 
     renderMenuCategories() {
-        const grid = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ADMIN.MENU_TABS_CONTAINER.id) || UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ADMIN.MENU_SECTION.id);
-        const fallbackGrid = UNIFIED_ENGINE.DOM.get('menuCategoriesGrid');
-        const targetGrid = fallbackGrid || grid;
-        
+        // الالتزام التام بعقد السجل الأساسي لواجهة العرض والصفحة الرئيسية لمنع الاختفاء
+        const targetGrid = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.HOMEPAGE.MENU_GRID.id);
         if (!targetGrid) return;
 
         const categories = ['تورتات', 'باقات الورد', 'حلويات'];
@@ -423,13 +425,13 @@ export class BoseSweetsAppManager {
         if (current > 250) current = 250;
         this.cakeCustomState.people = current;
 
-        const display = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.PEOPLE_COUNT.id);
+        const display = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.PEOPLE_COUNT.id);
         if (display) display.textContent = current;
 
         const warning = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.CAKE.COUNTER_WARNING.id);
         if (warning) {
             if (current >= 24) {
-                warning.textContent = "⚠️ تنبيه: للمقاسات الكبرى فوق 24 فرد، يرجى تقديم الطلب قبل المناسبة بـ 48 ساعة على الأثل لضمان أعلى معايير الجودة.";
+                warning.textContent = "⚠️ تنبيه: للمقاسات الكبرى فوق 24 فرد، يرجى تقديم الطلب قبل المناسبة بـ 48 ساعة على الأقل لضمان أعلى معايير الجودة.";
                 warning.classList.remove('hidden');
             } else {
                 warning.classList.add('hidden');
@@ -647,8 +649,8 @@ export class BoseSweetsAppManager {
         const budget = Number(UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_BUDGET.id)?.value || 0);
         this.roseCustomState.chocBudget = budget;
 
-        const output = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_OUTPUT.id);
-        const calcText = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_CALC_TEXT.id);
+        const output = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_OUTPUT.id);
+        const calcText = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CHOC_CALC_TEXT.id);
         if (!output || !calcText) return;
 
         if (budget <= 0) {
@@ -701,7 +703,7 @@ export class BoseSweetsAppManager {
     selectRoseChocPiecePrice(price) {
         this.roseCustomState.chocPiecePrice = price;
         [20, 30, 50].forEach(p => {
-            const btn = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(`rose-choc-piece-${p}`);
+            const btn = UNIFIED_ENGINE.DOM.get(`rose-choc-piece-${p}`);
             if (!btn) return;
             if (p === price) {
                 btn.className = "py-2.5 rounded-xl border-2 border-brandPink bg-brandPink/5 text-brandPink text-xs font-bold transition-all text-center";
@@ -740,8 +742,8 @@ export class BoseSweetsAppManager {
 
     addRoseToCart() {
         const colorText = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.COLORS_INPUT.id)?.value || 'ميكس متناسق';
-        const cardText = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CARD_TEXT.id)?.value || '';
-        const ribbonText = UNUnified_ENGINE = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.RIBBON_TEXT.id)?.value || '';
+        const cardText = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.CARD_TEXT.id)?.value || '';
+        const ribbonText = UNIFIED_ENGINE.DOM.get(REGISTRY.DOM.ROSE.RIBBON_TEXT.id)?.value || '';
 
         COMMERCE_ENGINE.ROSE.set({
             type: this.roseCustomState.type,
@@ -837,9 +839,8 @@ export class BoseSweetsAppManager {
     }
 }
 
+// بناء وتشغيل المحرك الفوري
 const manager = new BoseSweetsAppManager();
-window.BoseSweetsEngine = manager;
-window.BoseSweets = manager;
 manager.init();
 
 if (typeof window !== 'undefined') {
