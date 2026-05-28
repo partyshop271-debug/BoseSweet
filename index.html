@@ -775,7 +775,7 @@
                             <div id="rose-step-1-indicator" class="w-10 h-10 rounded-full bg-brandPink text-white flex items-center justify-center font-extrabold text-sm shadow-md shadow-brandPink/20 transition-all duration-300">
                                 <i class="fa-solid fa-seedling text-xs"></i>
                             </div>
-                            <span class="text-[11px] font-extrabold text-brandBlack">الحجم والنوع</span>
+                            <span class="text-[11px] font-extrabold text-brandBlack">التحجيم والنوع</span>
                         </div>
                         <div class="flex-grow h-[3px] bg-brandPinkLight mx-2 rounded-full relative overflow-hidden">
                             <div class="absolute inset-0 bg-brandPink transition-all duration-500" id="rose-line-1" style="width: 0%;"></div>
@@ -1047,7 +1047,7 @@
                             </div>
                             <div class="flex justify-between items-center text-xs font-bold text-brandBlack/70">
                                 <span>تكلفة الشحن والتبريد للمنطقة:</span>
-                                <span id="checkoutShipping">0 ج.m</span>
+                                <span id="checkoutShipping">0 ج.م</span>
                             </div>
                             <div class="h-px bg-brandPink/10 my-1"></div>
                             <div class="flex justify-between items-center text-sm font-extrabold text-brandBlack">
@@ -1106,7 +1106,12 @@
         import { SYSTEM_CORE } from './system-core.js';
         import { REGISTRY } from './system-registry.js';
         import { UNIFIED_ENGINE } from './unified-engine.js';
-        import { BoseSweetsAppManager } from './app-display-manager.js';
+        import manager from './app-display-manager.js';
+        
+        // ربط وتشغيل كائن الإدارة الافتراضي لبدء دورة حياة الإقلاع بدون أخطاء توافق
+        if (manager && typeof manager.init === 'function') {
+            manager.init();
+        }
         
         SYSTEM_CORE.Diagnostics.info('[INDEX_HTML] Architecture Lifecycle Bootstrapped Successfully');
     </script>

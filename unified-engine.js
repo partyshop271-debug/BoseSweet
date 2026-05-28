@@ -376,7 +376,7 @@ const CLOUD_PIPELINE = {
 
 /**
  * =========================================================
- * Interactive Simulators Optimization Layer
+ * Interactive Simulators Optimization Layer (CRITICAL FIX)
  * =========================================================
  */
 const INTERACTIVE_BUILDERS = {
@@ -393,10 +393,8 @@ const INTERACTIVE_BUILDERS = {
     },
 
     syncCakeBuilderSimulator() {
-        const priceDisplay = DOM.get(REGISTRY.DOM.CAKE.PRICE_DISPLAY.id);
         const peopleInput = DOM.get(REGISTRY.DOM.CAKE.PEOPLE_COUNT.id);
-
-        if (!priceDisplay || !peopleInput) return;
+        if (!peopleInput) return;
 
         const updateLivePrice = () => {
             if (window.BoseSweetsEngine) {
@@ -404,21 +402,14 @@ const INTERACTIVE_BUILDERS = {
             }
         };
 
-        const observer = new MutationObserver(updateLivePrice);
-        observer.observe(peopleInput, {
-            childList: true,
-            characterData: true,
-            subtree: true
-        });
-
+        // استبدال الـ MutationObserver بحدث مباشر لإنهاء حلقة الرندر اللانهائية الحاظرة للنظام
+        peopleInput.removeEventListener('input', updateLivePrice);
         peopleInput.addEventListener('input', UI_PERFORMANCE.INTERACTION.throttle(updateLivePrice, 100), { passive: true });
     },
 
     syncRoseBuilderSimulator() {
-        const priceDisplay = DOM.get(REGISTRY.DOM.ROSE.PRICE_DISPLAY.id);
         const countInput = DOM.get(REGISTRY.DOM.ROSE.COUNT.id);
-
-        if (!priceDisplay || !countInput) return;
+        if (!countInput) return;
 
         const updateLivePrice = () => {
             if (window.BoseSweetsEngine) {
@@ -426,13 +417,8 @@ const INTERACTIVE_BUILDERS = {
             }
         };
 
-        const observer = new MutationObserver(updateLivePrice);
-        observer.observe(countInput, {
-            childList: true,
-            characterData: true,
-            subtree: true
-        });
-
+        // استبدال الـ MutationObserver بحدث مباشر آمن للموبايل والكمبيوتر
+        countInput.removeEventListener('input', updateLivePrice);
         countInput.addEventListener('input', UI_PERFORMANCE.INTERACTION.throttle(updateLivePrice, 100), { passive: true });
     }
 };
