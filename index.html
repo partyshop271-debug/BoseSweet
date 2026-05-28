@@ -1,0 +1,111 @@
+<!DOCTYPE html><html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حلويات بوسي</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body><!-- HEADER -->
+<header>
+    <div id="brand">حلويات بوسي</div>
+    <button id="sidebar-toggle">☰</button>
+    <input type="text" id="header-search" placeholder="ابحث عن منتج">
+    <div id="header-cart">
+        <span id="header-cart-count">0</span> سلة التسوق
+    </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+    <button id="sidebar-close">×</button>
+    <nav>
+        <ul>
+            <li><a href="#featured">الأكثر مبيعًا</a></li>
+            <li><a href="#products">منتجاتنا</a></li>
+            <li><a href="#cake-builder">محاكي التورت</a></li>
+            <li><a href="#flower-builder">محاكي الورد</a></li>
+        </ul>
+    </nav>
+</aside>
+<div id="sidebar-overlay"></div>
+
+<!-- MAIN CONTENT -->
+<main>
+
+    <!-- قسم عقد من التميز -->
+    <section id="brand-excellence">
+        <h1>عقد من التميز في صناعة الحلويات</h1>
+        <p>صنعناها بحب لتهديها لمن تحب</p>
+        <button onclick="window.location.href='menu.html'">اطلب الآن</button>
+    </section>
+
+    <!-- الفيديو الهوك البصري -->
+    <section id="hero-video">
+        <video src="assets/video/hero.mp4" autoplay muted loop playsinline></video>
+    </section>
+
+    <!-- الأكثر مبيعًا -->
+    <section id="featured">
+        <h2>الأكثر مبيعًا</h2>
+        <div id="featured-slider"></div>
+    </section>
+
+    <!-- عقد من الإتقان -->
+    <section id="excellence">
+        <h2>عقد من الإتقان</h2>
+        <div class="excellence-card">
+            <div class="excellence-carousel"></div>
+        </div>
+    </section>
+
+    <!-- منتجاتنا -->
+    <section id="products">
+        <h2>منتجاتنا</h2>
+        <div class="products-grid"></div>
+        <button id="load-more-products">اعرف أكثر</button>
+    </section>
+
+    <!-- محاكي التورت -->
+    <section id="cake-builder">
+        <h2>محاكي التورت</h2>
+        <div class="cake-builder-container"></div>
+    </section>
+
+    <!-- وصل حديثا -->
+    <section id="latest">
+        <h2>وصل حديثا</h2>
+        <div class="latest-slider"></div>
+    </section>
+
+    <!-- الفخر والاعتزاز -->
+    <section id="pride">
+        <h2>الفخر والاعتزاز</h2>
+        <video src="assets/video/pride.mp4" autoplay muted loop playsinline></video>
+    </section>
+
+    <!-- محاكي الورد -->
+    <section id="flower-builder">
+        <h2>محاكي الورد</h2>
+        <div class="flower-builder-container"></div>
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+    <p>من نحن | تواصل معنا | سياسة الخصوصية | سياسة الاسترجاع | الحفاظ على منتجاتنا</p>
+    <div class="social-links">
+        <a href="#">فيسبوك</a>
+        <a href="#">تيك توك</a>
+        <a href="#">انستجرام</a>
+    </div>
+</footer>
+
+<!-- SCRIPTS -->
+<script type="module" src="contracts.js"></script>
+<script type="module" src="data-service.js"></script>
+<script type="module" src="cart-service.js"></script>
+<script type="module" src="ui-engine.js"></script>
+
+</body>
+</html>
