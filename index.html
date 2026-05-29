@@ -858,27 +858,31 @@
     </script>
 
     <main id="homepage-view" class="page-view active-view">
-        <section class="premium-hero-section">
-            <div class="hero-content-wrapper">
+        <section class="luxury-hero-block">
+            <div class="hero-brand-card">
+                <div class="hero-tag-line"><i class="fa-solid fa-crown"></i> إصدار يوبيل عشر سنوات من الإتقان</div>
                 <h1 class="hero-main-title">عقد من التميز في صناعة الحلويات</h1>
                 <p class="hero-brand-description">
                     طوال عشر سنوات، صممنا كل قطعة في مطبخنا لتكون قصة نجاح ممسوكة الطعم. نعتمد على خامات طبيعية 100% لنقدم قيمة حقيقية وجودة تفرض احترامها من أول لقمة لآخر قطعة.
                 </p>
-                <button class="btn-oval-primary hero-cta-btn" data-target="menu-view">اطلب الآن</button>
+                <div class="hero-action-wrapper">
+                    <button class="btn-oval-primary" data-target="menu-view">استعرض المنيو الفاخر</button>
+                </div>
             </div>
             
-            <div class="hero-video-container">
+            <div class="hero-video-frame-wrapper">
                 <video class="hero-full-video" autoplay loop muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
                     <source src="" type="video/mp4">
                 </video>
-                <div class="video-overlay-breathing"></div>
+                <div class="video-pink-glow-overlay"></div>
             </div>
         </section>
 
         <section class="homepage-slider-section">
             <div class="section-header-zone">
+                <span class="section-mini-badge">التشكيلة المعتمدة</span>
                 <h2 class="slider-section-title">الأكثر مبيعاً</h2>
-                <p class="slider-section-subtitle">إليك المنتجات التي نالت الثقة الكاملة من عملائنا واعتمدوها لكل أوقاتهم السعيدة</p>
+                <p class="slider-section-subtitle">المنتجات التي نالت الثقة الكاملة من عملائنا واعتمدوها لكل أوقاتهم السعيدة</p>
             </div>
             
             <div class="horizontal-scroll-container" id="mostSellingSlider">
@@ -887,26 +891,28 @@
 
         <section class="excellence-pride-section">
             <div class="section-header-zone">
+                <span class="section-mini-badge">فلسفة المطبخ</span>
                 <h2 class="slider-section-title">عقد من الإتقان</h2>
-                <p class="slider-section-subtitle">تفاصيل دقيقة نلتزم بها يومياً لنحافظ على مكانة وجودة منتجاتنا في كل مناسبة</p>
+                <p class="slider-section-subtitle">تفاصيل دقيقة نلتزم بها يومياً لنحافظ على ثبات ومكانة منتجاتنا في كل مناسبة</p>
             </div>
             
             <div class="full-screen-showcase-card">
                 <div class="showcase-slider-wrapper" id="excellenceImagesWrapper">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لقطة إنتاجية فاخرة 1" class="showcase-img active-slide">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لقطة إنتاجية فاخرة 2" class="showcase-img">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تفاصيل إنتاجية فاخرة 1" class="showcase-img active-slide">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تفاصيل إنتاجية فاخرة 2" class="showcase-img">
                 </div>
-                <div class="showcase-dark-gradient"></div>
+                <div class="showcase-pink-gradient-overlay"></div>
                 <div class="showcase-text-overlay">
-                    <p class="showcase-highlight-text">نعمل على أدق التفاصيل لنقدم منتجاً يحاكي الواقع ويبهر التوقعات</p>
+                    <p class="showcase-highlight-text"><i class="fa-solid fa-sparkles"></i> نعمل على أدق التفاصيل لنقدم منتجاً طبيعياً 100% يفتح الشهية ويحفز على الشراء</p>
                 </div>
             </div>
         </section>
 
         <section class="homepage-grid-section">
             <div class="section-header-zone">
+                <span class="section-mini-badge">خيارات الصفوة</span>
                 <h2 class="slider-section-title">منتجاتنا الفاخرة</h2>
-                <p class="slider-section-subtitle">تصفح تشكيلتنا اليومية المصنوعة يدوياً بكل إتقان واهتمام</p>
+                <p class="slider-section-subtitle">تصفح وتذوق بعينك تشكيلتنا اليومية المصنوعة بكل إتقان واهتمام</p>
             </div>
 
             <div class="grid-groups-wrapper">
@@ -916,50 +922,61 @@
             </div>
 
             <div class="grid-actions-center" id="loadMoreGroupZone">
-                <button class="btn-oval-secondary" id="loadMoreProductsBtn">استعرض المزيد</button>
+                <button class="btn-oval-secondary" id="loadMoreProductsBtn">استعرض المزيد من المنتجات</button>
             </div>
         </section>
 
-        <section class="simulator-preview-section">
-            <div class="preview-premium-card">
-                <div class="preview-card-image-side">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تورتة ملكية فاخرة - تصميم خاص">
-                </div>
-                <div class="preview-card-info-side">
-                    <h3 class="preview-card-title">محاكي التورت الذكي</h3>
-                    <p class="preview-card-text">
-                        منصتك الحرة لبناء تورتة أحلامك خطوة بخطوة. اختر المقاس بدقة، حدد الشكل الهندسي المناسب، وارفع تصميمك المفضل أو صورتك الشخصية لننفذها لك بأعلى معايير الإتقان اليدوي والخامات الطبيعية 100%.
+        <section class="luxury-simulator-block block-cake-theme">
+            <div class="block-identity-strip"></div>
+            <div class="simulator-block-grid">
+                <div class="simulator-block-info-side">
+                    <div class="block-crown-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> تجربة تفاعلية حرة</div>
+                    <h3 class="simulator-block-title">محاكي التورت الذكي</h3>
+                    <p class="simulator-block-text">
+                        منصتك الاحترافية لبناء تورتة أحلامك خطوة بخطوة. اختر نوع قاعدة الكيك المفضل، حدد المقاس الدقيق والشكل الهندسي المناسب لعدد ضيوفك، وارفع تصميمك الخارجي أو صورتك الشخصية لننفذها لك بالكامل بخامات طبيعية 100% تضمن لك طعماً أصيلاً يشرفك أمام ضيوفك.
                     </p>
-                    <button class="btn-oval-primary" data-target="cake-simulator-view">اعرف المزيد</button>
+                    <button class="btn-oval-primary block-action-btn" data-target="cake-simulator-view">ابدأ محاكاة التصميم الآن</button>
+                </div>
+                <div class="simulator-block-image-side">
+                    <div class="luxury-image-frame">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تورتة ملكية فاخرة - تصميم خاص">
+                        <div class="frame-pink-shadow"></div>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section class="brand-pride-video-section">
             <div class="pride-text-container">
+                <div class="pride-badge-icon"><i class="fa-solid fa-heart-pulse"></i> شريك مناسباتكم السعيدة</div>
                 <h2 class="pride-main-stat">أكثر من 10 سنوات خبرة، أكثر من 10000 عميل</h2>
-                <p class="pride-sub-stat">فخورون بأننا كنا شريكاً دائماً وموثوقاً في تفاصيل ومسرات مناسباتكم السعيدة داخل الكفاح والفرافرة على مدار عقد من الزمان</p>
+                <p class="pride-sub-stat">فخورون بأننا كنا دائماً الخيار الأول والموثوق لتأمين فخامة وجودة حلوياتكم وتجمعاتكم العائلية داخل الفرافرة والكفاح على مدار عقد كامل.</p>
             </div>
             
             <div class="pride-video-frame">
                 <video class="pride-full-video" autoplay loop muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
                     <source src="" type="video/mp4">
                 </video>
-                <div class="video-overlay-breathing"></div>
+                <div class="video-pink-glow-overlay"></div>
             </div>
         </section>
 
-        <section class="simulator-preview-section" style="margin-bottom: 40px;">
-            <div class="preview-premium-card preview-reverse-layout">
-                <div class="preview-card-image-side">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكيه ورد ملكي فاخر - بناء خاص">
-                </div>
-                <div class="preview-card-info-side">
-                    <h3 class="preview-card-title">محاكي الورد الفاخر</h3>
-                    <p class="preview-card-text">
-                        صمم هديتك الفاخرة بنفسك وبكامل الحرية البصرية. نسق حجم البوكيه، اختر نوع الورد المفضل، وأضف لمساتك النقدية (الكاش)، الصور التذكارية، شريط الستان المطبوع، أو الشوكولاتة الفاخرة ليتم دمجها بدقة مطلقة وشحنها مباشرة لمن تحب.
+        <section class="luxury-simulator-block block-flower-theme">
+            <div class="block-identity-strip strip-gold"></div>
+            <div class="simulator-block-grid layout-reverse">
+                <div class="simulator-block-info-side">
+                    <div class="block-crown-badge badge-gold"><i class="fa-solid fa-gift"></i> تنسيق الهدايا الفاخرة</div>
+                    <h3 class="simulator-block-title">محاكي الورد الفاخر</h3>
+                    <p class="simulator-block-text">
+                        صمم هديتك الاستثنائية بكامل الحرية البصرية والتحكم المطلق. نسق حجم بوكيه الورد، حدد نوع الورود وألوانها المطلوبة، وأضف لمساتك المدفوعة والقيمة من المبالغ النقدية (الكاش)، الصور التذكارية المطبوعة، شريط الستان المخطوط، أو قطع الشوكولاتة الفاخرة لتصل لمن تحب في أبهى صورة تليق بمشاعرك.
                     </p>
-                    <button class="btn-oval-primary" data-target="flower-simulator-view">اعرف المزيد</button>
+                    <button class="btn-oval-primary block-action-btn" data-target="flower-simulator-view">ابدأ تنسيق البوكيه الآن</button>
+                </div>
+                <div class="simulator-block-image-side">
+                    <div class="luxury-image-frame frame-gold-theme">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكيه ورد ملكي - بناء خاص">
+                        <div class="frame-pink-shadow shadow-gold-glow"></div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -967,46 +984,72 @@
     </main>
 
     <style>
-        /* أنماط قسم الهوك البصري الأولي للمنصة */
-        .premium-hero-section {
-            background-color: var(--background);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            padding: 30px 0 0 0;
-            width: 100%;
+        /* شارات الأقسام الصغيرة المتطورة برقي البمبي */
+        .section-mini-badge {
+            display: inline-block;
+            padding: 5px 14px;
+            background-color: rgba(255, 145, 164, 0.08);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 15px;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 145, 164, 0.15);
         }
 
-        .hero-content-wrapper {
-            padding: 0 20px;
+        /* تطوير كامل وهيكلي لبلوك الهوك الرئيسي وعزل العرض */
+        .luxury-hero-block {
+            background-color: var(--background);
+            padding: 40px 0 0 0;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .hero-brand-card {
+            padding: 35px 24px;
+            background: linear-gradient(180deg, rgba(255, 145, 164, 0.03) 0%, rgba(255,255,255,0) 100%);
+            border-top: 1px solid rgba(255, 145, 164, 0.08);
+            border-bottom: 1px solid rgba(255, 145, 164, 0.08);
             text-align: center;
-            max-width: 650px;
+            max-width: 700px;
             margin: 0 auto;
+            border-radius: 24px;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .hero-tag-line {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
         .hero-main-title {
-            font-size: 22px;
+            font-size: 23px;
             font-weight: 800;
             color: var(--text-color);
             line-height: 1.4;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .hero-brand-description {
             font-size: 13.5px;
-            color: #444;
+            color: #333;
             line-height: 1.7;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
-        .hero-cta-btn {
-            margin-bottom: 10px;
-        }
-
-        .hero-video-container, .pride-video-frame {
+        .hero-video-frame-wrapper, .pride-video-frame {
             position: relative;
             width: 100%;
-            height: 55vh;
+            height: 50vh;
             background-color: var(--gray-light);
             overflow: hidden;
             border-top: 1px solid var(--gray-border);
@@ -1019,19 +1062,20 @@
             object-fit: cover;
         }
 
-        .video-overlay-breathing {
+        /* دمج طبقة التوهج والراحة البصرية بلون البمبي الملكي الفاخر للـ Video Overlay */
+        .video-pink-glow-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.02) 100%);
+            background: linear-gradient(180deg, rgba(255, 145, 164, 0.02) 0%, rgba(0,0,0,0) 100%);
             pointer-events: none;
         }
 
-        /* أنماط الأقسام والسلايدر الأفقي المرن الموفر للبيانات */
-        .homepage-slider-section, .homepage-grid-section {
-            padding: 35px 0;
+        /* تطوير قسم المجموعات وسلايدر الأكثر مبيعاً الفخم */
+        .homepage-slider-section, .homepage-grid-section, .excellence-pride-section {
+            padding: 40px 0;
             width: 100%;
             border-bottom: 1px solid var(--gray-border);
         }
@@ -1039,53 +1083,51 @@
         .section-header-zone {
             padding: 0 20px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .slider-section-title {
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 800;
             color: var(--text-color);
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
         .slider-section-subtitle {
             font-size: 12.5px;
-            color: #555;
-            max-width: 480px;
+            color: #444;
+            max-width: 490px;
             margin: 0 auto;
+            line-height: 1.6;
         }
 
         .horizontal-scroll-container {
             display: flex;
-            gap: 14px;
+            gap: 16px;
             overflow-x: auto;
-            padding: 5px 20px 20px 20px;
+            padding: 5px 20px 25px 20px;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
         }
 
         .horizontal-scroll-container::-webkit-scrollbar {
-            display: none; /* إخفاء تام لشريط السكرول لضمان الرقي ومظهر التطبيقات الذكية */
+            display: none;
         }
 
+        /* حقن دقة أبعاد وظلال كروت السلايدر الأفقي بلمسة الهوية */
         .horizontal-scroll-container .product-premium-card {
-            min-width: 240px;
-            max-width: 240px;
+            min-width: 245px;
+            max-width: 245px;
             scroll-snap-align: start;
+            border-color: rgba(255, 145, 164, 0.12);
+            box-shadow: 0 4px 15px rgba(255, 145, 164, 0.03);
         }
 
-        /* قسم عقد من الإتقان والكارت مالي الشاشة بمساحة صور متحركة */
-        .excellence-pride-section {
-            padding: 35px 0;
-            width: 100%;
-            border-bottom: 1px solid var(--gray-border);
-        }
-
+        /* تطوير لوحة عرض صور قسم عقد من الإتقان بالتوهج البمبي الناعم */
         .full-screen-showcase-card {
             position: relative;
             width: 100%;
-            height: 60vh;
+            height: 55vh;
             background-color: var(--gray-light);
             overflow: hidden;
         }
@@ -1112,20 +1154,20 @@
             z-index: 2;
         }
 
-        .showcase-dark-gradient {
+        .showcase-pink-gradient-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.4) 100%);
+            background: linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(255, 145, 164, 0.15) 100%);
             z-index: 3;
             pointer-events: none;
         }
 
         .showcase-text-overlay {
             position: absolute;
-            bottom: 30px;
+            bottom: 25px;
             right: 20px;
             left: 20px;
             z-index: 4;
@@ -1134,100 +1176,161 @@
 
         .showcase-highlight-text {
             color: #FFFFFF;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 700;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-        }
-
-        /* أنماط أزرار ومجموعات الجريد */
-        .hidden-group {
-            animation: viewFadeIn 0.4s ease-in-out forwards;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .grid-actions-center {
             display: flex;
             justify-content: center;
-            margin-top: 15px;
+            margin-top: 20px;
             padding: 0 20px;
         }
 
-        /* أنماط واجهات محاكيات التورت والورد المدمجة الفخمة */
-        .simulator-preview-section {
-            padding: 35px 20px;
+        /* الهندسة البنائية الشاملة لبلوكات المحاكيات الملكية الكبيرة وممتدة العرض */
+        .luxury-simulator-block {
             width: 100%;
+            padding: 50px 20px;
             border-bottom: 1px solid var(--gray-border);
-        }
-
-        .preview-premium-card {
-            background-color: var(--background);
-            border: 1px solid var(--gray-border);
-            border-radius: 20px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow-premium);
-        }
-
-        @media (min-width: 650px) {
-            .preview-premium-card {
-                flex-direction: row;
-                align-items: center;
-            }
-            .preview-reverse-layout {
-                flex-direction: row-reverse;
-            }
-            .preview-card-image-side, .preview-card-info-side {
-                flex: 1;
-                width: 50%;
-            }
-        }
-
-        .preview-card-image-side {
             position: relative;
-            padding-top: 65%;
-            width: 100%;
-            background-color: var(--gray-light);
+            overflow: hidden;
         }
 
-        @media (min-width: 650px) {
-            .preview-card-image-side {
-                padding-top: 35%;
-            }
+        .block-cake-theme {
+            background: linear-gradient(135deg, rgba(255, 145, 164, 0.04) 0%, rgba(255,255,255,0) 100%);
         }
 
-        .preview-card-image-side img {
+        .block-flower-theme {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 145, 164, 0.04) 100%);
+        }
+
+        .block-identity-strip {
             position: absolute;
             top: 0;
-            left: 0;
+            right: 0;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            height: 4px;
+            background: var(--primary);
         }
 
-        .preview-card-info-side {
-            padding: 24px;
+        .block-identity-strip.strip-gold {
+            background: rgba(255, 145, 164, 0.4); /* تلطيف خط الفصل للحفاظ على وحدة الهوية البصرية الرصينة */
+        }
+
+        .simulator-block-grid {
+            max-width: 1050px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .simulator-block-grid {
+                flex-direction: row;
+                align-items: center;
+                gap: 40px;
+            }
+            .simulator-block-grid.layout-reverse {
+                flex-direction: row-reverse;
+            }
+            .simulator-block-info-side, .simulator-block-image-side {
+                width: 50%;
+                flex: 1;
+            }
+        }
+
+        .simulator-block-info-side {
             display: flex;
             flex-direction: column;
             gap: 12px;
             align-items: flex-start;
         }
 
-        .preview-card-title {
-            font-size: 17px;
+        .block-crown-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background-color: var(--background);
+            border: 1px solid rgba(255, 145, 164, 0.25);
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 20px;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .block-crown-badge.badge-gold {
+            border-color: rgba(255, 145, 164, 0.2);
+            color: var(--primary);
+        }
+
+        .simulator-block-title {
+            font-size: 20px;
             font-weight: 800;
             color: var(--text-color);
         }
 
-        .preview-card-text {
-            font-size: 12.5px;
-            color: #444;
-            line-height: 1.6;
+        .simulator-block-text {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.7;
             text-align: justify;
         }
 
-        /* أنماط قسم الفخر والاعتزاز المطور */
+        .block-action-btn {
+            margin-top: 8px;
+        }
+
+        /* إطارات عرض الصور الفخمة ذات الظلال البمبية المشعة المريحة للعين */
+        .simulator-block-image-side {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+        .luxury-image-frame {
+            position: relative;
+            width: 100%;
+            max-width: 360px;
+            padding-top: 85%;
+            border-radius: 24px;
+            background-color: var(--gray-light);
+            border: 1px solid rgba(255, 145, 164, 0.15);
+        }
+
+        .luxury-image-frame img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 23px;
+            z-index: 5;
+        }
+
+        .frame-pink-shadow {
+            position: absolute;
+            top: 12px;
+            right: -10px;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 145, 164, 0.08);
+            border-radius: 24px;
+            z-index: 2;
+            border: 1px dashed rgba(255, 145, 164, 0.2);
+        }
+
+        /* تطوير قسم الفخر والاعتزاز الملكي */
         .brand-pride-video-section {
-            padding: 35px 0 0 0;
+            padding: 45px 0 0 0;
             width: 100%;
             background-color: var(--background);
             border-bottom: 1px solid var(--gray-border);
@@ -1236,24 +1339,40 @@
         .pride-text-container {
             padding: 0 20px;
             text-align: center;
-            margin-bottom: 25px;
-            max-width: 600px;
+            margin-bottom: 30px;
+            max-width: 650px;
             margin-left: auto;
             margin-right: auto;
         }
 
+        .pride-badge-icon {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
         .pride-main-stat {
-            font-size: 19px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--text-color);
             line-height: 1.4;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
 
         .pride-sub-stat {
-            font-size: 12.5px;
-            color: #444;
+            font-size: 13px;
+            color: #333;
             line-height: 1.6;
+        }
+
+        /* تعديل دقة حواف كروت المنتجات لتناسب لغة الفخامة الجديدة */
+        .product-premium-card {
+            border: 1px solid rgba(255, 145, 164, 0.1) !important;
         }
     </style>
 
@@ -1261,19 +1380,18 @@
         document.addEventListener('DOMContentLoaded', () => {
             // مخزن المنتجات المركزي المؤقت المشتق بالكامل من داتا الموقع الرسمية (Products Repository)
             const boseProductsDatabase = [
-                { id: 'despacito', title: 'الديسباسيتو', desc: 'طبقات متمتعة من الكيك الفادج والموس الغني مع حشوات واضحة وقوام ناعم.', price: 66, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
-                { id: 'qashtota', title: 'القشطوطة', desc: 'كيك هش غني بطبقات الحليب الناعمة وحشوات طبيعية متوازنة مريحة من أول لقمة.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
-                { id: 'donuts', title: 'الدوناتس', desc: 'دوناتس فريش خفيفة للغاية ومخبوزة يومياً بحشوات غنية مختارة بعناية.', price: 88, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
-                { id: 'cinabon', title: 'السينابون', desc: 'لفات السينابون الطرية بنكهة القرفة الأصلية وصوصات غنية متوازنة وموزونة.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
-                { id: 'happiness-cups', title: 'كبات السعادة', desc: 'أكواب من التناسق اللذيذ بحشوات شوكولاتة غنية مثالية للتقديم الفردي الراقي.', price: 61, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false },
-                { id: 'red-velvet', title: 'الريدڤيلڤت', desc: 'كيك ريدڤيلڤت رطب ومتزن تماماً مع كريمة ناعمة مخصصة تبرز الجودة الحقيقية.', price: 72, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false },
-                { id: 'mini-cake', title: 'الميني تورت', desc: 'تورت صغيرة مجهزة بأعلى درجات الاهتمام والإتقان ومناسبة للهدايا الفردية والقيمة.', price: 154, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false },
-                { id: 'relax-box', title: 'بوكس الروقان', desc: 'بوكس كامل يجمع تشكيلة فاخرة متناسقة بعناية ومثالية لجلسات الهدوء واللمة.', price: 550, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false }
+                { id: 'despacito', title: 'الديسباسيتو', desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة.', price: 66, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
+                { id: 'qashtota', title: 'القشطوطة', desc: 'كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح من أول لقمة.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
+                { id: 'donuts', title: 'الدوناتس', desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك طازجاً ونظيفاً.', price: 88, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
+                { id: 'cinabon', title: 'السينابون', desc: 'لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة وطعم ممسوك الإتقان.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
+                { id: 'happiness-cups', title: 'كبات السعادة', desc: 'أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة.', price: 61, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false },
+                { id: 'red-velvet', title: 'الريدڤيلڤت', desc: 'كيك ريدڤيلڤت بطبقات متوازنة وكريمة ناعمة معمول بخامات واضحة وجودة ثابتة في كل حجم.', price: 72, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false },
+                { id: 'mini-cake', title: 'الميني تورت', desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل مناسبة للهدايا والمناسبات الخاصة.', price: 154, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false },
+                { id: 'relax-box', title: 'بوكس الروقان', desc: 'تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية.', price: 550, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false }
             ];
 
             // دالة بناء وتوليد الكروت القياسية الملكية المعتمدة لتوحيد الأداء والواجهة (Card Compiler Generator)
             function compilePremiumCard(product) {
-                // مراجعة المحرك لمعرفة إذا كان المنتج مضافاً مسبقاً للسلة لتحديد كميته
                 const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.id === product.id);
                 const currentQty = cartItem ? cartItem.quantity : 1;
 
@@ -1307,9 +1425,7 @@
             const mostSellingSlider = document.getElementById('mostSellingSlider');
             if (mostSellingSlider) {
                 let sliderHtml = '';
-                boseProductsDatabase.forEach(prod => {
-                    sliderHtml += compilePremiumCard(prod);
-                });
+                boseProductsDatabase.forEach(prod => { sliderHtml += compilePremiumCard(prod); });
                 mostSellingSlider.innerHTML = sliderHtml;
             }
 
@@ -1328,14 +1444,14 @@
                 mainGridGroup2.innerHTML = group2Html;
             }
 
-            // تفعيل تفاعل زر "استعرض المزيد" لإظهار المجموعة الثانية بنعومة فائقة
+            // تفاعل زر "استعرض المزيد" لإظهار المجموعة الثانية بنعومة فائقة
             const loadMoreProductsBtn = document.getElementById('loadMoreProductsBtn');
             const loadMoreGroupZone = document.getElementById('loadMoreGroupZone');
             if (loadMoreProductsBtn && mainGridGroup2) {
                 loadMoreProductsBtn.addEventListener('click', () => {
                     mainGridGroup2.style.display = 'grid';
-                    loadMoreGroupZone.style.display = 'none'; // إخفاء الزر تماماً لتوفير مساحة التنفس البصري للعين
-                    window.BoseSweetsEngine.showToast('تم استعراض كامل تشكيلة المنتجات اليومية بنجاح');
+                    loadMoreGroupZone.style.display = 'none'; 
+                    window.BoseSweetsEngine.showToast('تم استعراض كامل المنتجات اليومية بنجاح');
                 });
             }
 
@@ -1347,61 +1463,8 @@
                     showcaseImages[currentSlideIdx].classList.remove('active-slide');
                     currentSlideIdx = (currentSlideIdx + 1) % showcaseImages.length;
                     showcaseImages[currentSlideIdx].classList.add('active-slide');
-                }, 4000); // الانتقال يتم تلقائياً كل 4 ثوانٍ بنعومة مريحة
+                }, 4000); 
             }
-
-            // 4. ميكانيكية إدارة تinteractions الكروت والكميات وإضافات السلة المركزية (Event Delegation)
-            document.addEventListener('click', (e) => {
-                const cardElement = e.target.closest('.product-premium-card');
-                if (!cardElement) return;
-
-                const productId = cardElement.getAttribute('data-product-id');
-                const matchedProduct = boseProductsDatabase.find(p => p.id === productId);
-                if (!matchedProduct) return;
-
-                const stepperValueNode = cardElement.querySelector('.stepper-value');
-                let currentQuantity = parseInt(stepperValueNode.textContent) || 1;
-
-                // التعامل مع ضغط زر زيادة الكمية
-                if (e.target.closest('.btn-plus')) {
-                    currentQuantity++;
-                    stepperValueNode.textContent = currentQuantity;
-                    return;
-                }
-
-                // التعامل مع ضغط زر نقص الكمية
-                if (e.target.closest('.btn-minus')) {
-                    if (currentQuantity > 1) {
-                        currentQuantity--;
-                        stepperValueNode.textContent = currentQuantity;
-                    }
-                    return;
-                }
-
-                // التعامل مع ضغط زر "إضافة للسلة" الكبير المقدس
-                if (e.target.closest('.card-add-to-cart-btn')) {
-                    const globalCart = window.BoseSweetsEngine.state.cart;
-                    const existingItemIdx = globalCart.findIndex(item => item.id === productId);
-
-                    if (existingItemIdx > -1) {
-                        // تعديل وتحديث الكمية إذا كان المنتج مضافاً مسبقاً
-                        globalCart[existingItemIdx].quantity = currentQuantity;
-                    } else {
-                        // إضافة المنتج كعنصر جديد بالكامل للسلة المركزية
-                        globalCart.push({
-                            id: matchedProduct.id,
-                            title: matchedProduct.title,
-                            basePrice: matchedProduct.price,
-                            quantity: currentQuantity,
-                            customType: 'menu-item'
-                        });
-                    }
-
-                    // بث التحديث صامتاً لحفظ وتحديث عداد السلة في الهيدر فوراً
-                    window.BoseSweetsEngine.updateUIComponents();
-                    window.BoseSweetsEngine.showToast(`تمت إضافة ${matchedProduct.title} للسلة بنجاح (الكمية: ${currentQuantity})`);
-                }
-            });
 
             // مزامنة كميات الكروت تلقائياً مع السلة عند تصفح الواجهة أو تبديل النوافذ
             window.addEventListener('boseStateUpdated', () => {
