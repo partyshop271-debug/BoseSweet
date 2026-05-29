@@ -1,676 +1,217 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-
 <meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-
-<meta name="description" content="حلويات بوسي - تورت مخصصة، ورد، بوكسات هدايا، جاتوهات، دوناتس، سينابون، كب كيك، وديسباسيتو بخامات مختارة وجودة ثابتة وخدمة طلب إلكتروني متكاملة.">
-
-<meta name="keywords" content="حلويات بوسي, تورت, تورت مخصصة, ورد, بوكيه ورد, جاتوه, دوناتس, سينابون, كب كيك, ديسباسيتو, ميني تورت, بوكس هدايا, حلويات الفرافرة">
-
-<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
-
-<meta name="theme-color" content="#FF91A4">
-
-<meta name="author" content="حلويات بوسي">
-
-<meta property="og:type" content="website">
-<meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-<meta property="og:description" content="اطلب التورت، الورد، الحلويات والبوكسات بسهولة من خلال متجر حلويات بوسي الإلكتروني.">
-<meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-<meta property="og:locale" content="ar_EG">
-
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="حلويات بوسي">
-<meta name="twitter:description" content="صنعناها بحب لتهديها لمن تحب">
-<meta name="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-
+<meta name="description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.">
+<meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس">
 <link rel="canonical" href="https://bosesweets.com">
+<meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
+<meta property="og:description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.">
+<meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+<meta property="og:url" content="https://bosesweets.com">
+<meta property="og:type" content="website">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-
-:root{
-
---primary:#FF91A4;
---primary-light:#fff1f4;
---black:#111111;
---white:#ffffff;
---border:#f2f2f2;
---shadow:0 10px 40px rgba(0,0,0,.06);
---radius:28px;
---radius-sm:18px;
---max-width:1400px;
---transition:.25s ease;
-
+:root {
+  --primary-color: #FF91A4;
+  --text-color: black;
+  --bg-color: white;
+  --font-family: 'Alexandria', sans-serif;
 }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
--webkit-tap-highlight-color:transparent;
-}
+* {margin:0; padding:0; box-sizing:border-box; font-family:var(--font-family);}
+body {background: var(--bg-color); color: var(--text-color); line-height:1.6;}
+a {text-decoration:none; color:inherit;}
 
-html{
-scroll-behavior:smooth;
+/* Header */
+header {
+  width: 100%; background: var(--bg-color); display: flex; justify-content: space-between; align-items:center;
+  padding:10px 20px; position: sticky; top:0; z-index:1000; border-bottom:1px solid #eee;
 }
+.logo img {height:50px;}
+nav {display:flex; gap:20px; align-items:center;}
+nav a {font-weight:600; color: var(--text-color); transition:.3s;}
+nav a:hover {color: var(--primary-color);}
+.search-cart {display:flex; gap:15px; align-items:center;}
+.search-cart button {background: var(--primary-color); border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer; font-weight:600; transition:.3s;}
+.search-cart button:hover {opacity:.85;}
 
-body{
-font-family:'Alexandria',sans-serif;
-background:#fff;
-color:#111;
-overflow-x:hidden;
-line-height:1.8;
+/* Hero Section */
+.hero {
+  display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
+  padding:60px 20px; background:#fff0f2 url('') no-repeat center center / cover;
 }
+.hero h1 {font-size:2.5rem; color: var(--primary-color); margin-bottom:15px;}
+.hero p {font-size:1.2rem; margin-bottom:25px; max-width:700px;}
+.hero .cta-btn {background: var(--primary-color); color:#fff; border:none; padding:15px 30px; border-radius:8px; font-size:1.1rem; font-weight:700; cursor:pointer; transition:.3s;}
+.hero .cta-btn:hover {opacity:.85;}
 
-img{
-display:block;
-width:100%;
-}
+/* Sliders & Sections */
+.slider-container {display:flex; overflow-x:auto; gap:15px; padding:20px;}
+.slider-container::-webkit-scrollbar {display:none;}
+.card {background:#fff; border-radius:10px; padding:15px; min-width:200px; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+.card img {width:100%; border-radius:10px; margin-bottom:10px;}
+.card h3 {font-size:1.1rem; color: var(--primary-color); margin-bottom:5px;}
+.card p {font-size:.95rem; margin-bottom:10px;}
+.card .price-qty {display:flex; justify-content:space-between; align-items:center; font-weight:600;}
+.card button {background: var(--primary-color); color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;}
 
-button,
-input,
-textarea,
-select{
-font-family:'Alexandria',sans-serif;
-outline:none;
-border:none;
-}
+/* Full-screen Cards */
+.fullscreen-card {position:relative; width:100%; min-height:400px; background:#fff0f2; display:flex; align-items:center; justify-content:center; margin:20px 0; border-radius:15px; overflow:hidden;}
+.fullscreen-card img {width:100%; height:100%; object-fit:cover; opacity:.8;}
+.fullscreen-card .overlay {position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#fff; text-align:center; padding:20px;}
+.fullscreen-card .overlay h2 {font-size:2rem; margin-bottom:10px; color: var(--primary-color);}
+.fullscreen-card .overlay p {font-size:1rem; margin-bottom:15px;}
+.fullscreen-card .overlay button {background: var(--primary-color); color:#fff; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:600;}
+.fullscreen-card .overlay button:hover {opacity:.85;}
 
-a{
-text-decoration:none;
-color:inherit;
-}
-
-ul{
-list-style:none;
-}
-
-.container{
-width:min(100% - 32px,var(--max-width));
-margin:auto;
-}
-
-.section{
-padding:90px 0;
-}
-
-.section-title{
-font-size:clamp(28px,4vw,54px);
-font-weight:800;
-text-align:center;
-margin-bottom:18px;
-}
-
-.section-description{
-max-width:850px;
-margin:auto;
-text-align:center;
-font-size:16px;
-color:#555;
-}
-
-.btn{
-height:58px;
-padding:0 32px;
-border-radius:999px;
-background:var(--primary);
-color:#fff;
-font-weight:700;
-cursor:pointer;
-transition:var(--transition);
-display:inline-flex;
-align-items:center;
-justify-content:center;
-}
-
-.btn:hover{
-transform:translateY(-2px);
-}
-
-.btn-outline{
-background:#fff;
-color:#111;
-border:1px solid #ececec;
-}
-
-.card{
-background:#fff;
-border:1px solid #f3f3f3;
-border-radius:var(--radius);
-box-shadow:var(--shadow);
-}
-
-.hidden{
-display:none!important;
-}
-
-body.menu-open{
-overflow:hidden;
-}
-
-.site-header{
-position:sticky;
-top:0;
-z-index:5000;
-background:rgba(255,255,255,.95);
-backdrop-filter:blur(16px);
-border-bottom:1px solid #f5f5f5;
-}
-
-.header-inner{
-height:78px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:12px;
-}
-
-.header-right,
-.header-left{
-display:flex;
-align-items:center;
-gap:10px;
-}
-
-.icon-btn{
-width:48px;
-height:48px;
-border-radius:50%;
-background:#fff;
-border:1px solid #f2f2f2;
-display:flex;
-align-items:center;
-justify-content:center;
-cursor:pointer;
-position:relative;
-}
-
-.icon-btn svg{
-width:22px;
-height:22px;
-}
-
-.logo-wrap{
-display:flex;
-align-items:center;
-gap:12px;
-}
-
-.logo-wrap img{
-width:48px;
-height:48px;
-object-fit:contain;
-}
-
-.brand-name{
-font-size:18px;
-font-weight:800;
-}
-
-.brand-slogan{
-font-size:11px;
-color:#777;
-}
-
-.badge{
-position:absolute;
-top:-4px;
-left:-4px;
-width:22px;
-height:22px;
-border-radius:50%;
-background:var(--primary);
-color:#fff;
-font-size:11px;
-display:flex;
-align-items:center;
-justify-content:center;
-font-weight:700;
-}
-
-.side-menu-overlay{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.35);
-opacity:0;
-visibility:hidden;
-transition:var(--transition);
-z-index:7000;
-}
-
-.side-menu-overlay.active{
-opacity:1;
-visibility:visible;
-}
-
-.side-menu{
-position:fixed;
-top:0;
-right:-340px;
-width:320px;
-height:100vh;
-background:#fff;
-z-index:8000;
-padding:24px;
-transition:.35s ease;
-overflow:auto;
-}
-
-.side-menu.active{
-right:0;
-}
-
-.side-menu-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:30px;
-}
-
-.side-menu-links{
-display:flex;
-flex-direction:column;
-gap:10px;
-}
-
-.side-menu-links a{
-padding:16px;
-border-radius:18px;
-background:#fafafa;
-font-weight:600;
-}
-
-.search-panel{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:#fff;
-z-index:9000;
-transform:translateY(-100%);
-transition:.35s ease;
-}
-
-.search-panel.active{
-transform:translateY(0);
-}
-
-.search-header{
-padding:20px;
-border-bottom:1px solid #f2f2f2;
-display:flex;
-gap:10px;
-}
-
-.search-input{
-flex:1;
-height:58px;
-background:#fafafa;
-border-radius:999px;
-padding:0 24px;
-font-size:15px;
-}
-
-.search-close{
-width:58px;
-height:58px;
-border-radius:999px;
-background:var(--primary);
-color:#fff;
-cursor:pointer;
-}
-
-.page-loader{
-position:fixed;
-inset:0;
-background:#fff;
-z-index:99999;
-display:flex;
-align-items:center;
-justify-content:center;
-transition:.5s;
-}
-
-.loader-logo{
-width:100px;
-animation:pulse 1.4s infinite;
-}
-
-@keyframes pulse{
-0%{transform:scale(1)}
-50%{transform:scale(1.08)}
-100%{transform:scale(1)}
-}
-
-.toast-container{
-position:fixed;
-top:90px;
-left:50%;
-transform:translateX(-50%);
-z-index:10000;
-display:flex;
-flex-direction:column;
-gap:10px;
-width:min(92%,450px);
-}
-
-.toast{
-background:#111;
-color:#fff;
-padding:16px 18px;
-border-radius:18px;
-font-size:14px;
-box-shadow:var(--shadow);
-animation:toastIn .3s ease;
-}
-
-@keyframes toastIn{
-from{
-opacity:0;
-transform:translateY(-10px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-@media(max-width:768px){
-
-.section{
-padding:70px 0;
-}
-
-.section-title{
-font-size:34px;
-}
-
-.brand-name{
-font-size:16px;
-}
-
-.brand-slogan{
-display:none;
-}
-
-}
-
+/* Footer */
+footer {background:#f9f9f9; padding:30px 20px; display:flex; flex-direction:column; gap:15px;}
+footer p {font-size:.95rem;}
+footer a {color: var(--primary-color); transition:.3s;}
+footer a:hover {opacity:.8;}
+.footer-links, .footer-policies, .footer-social {display:flex; gap:15px; flex-wrap:wrap;}
 </style>
-
-<script type="application/ld+json">
-{
-"@context":"https://schema.org",
-"@type":"Bakery",
-"name":"حلويات بوسي",
-"image":"https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-"description":"صنعناها بحب لتهديها لمن تحب",
-"telephone":"+201097238441",
-"address":{
-"@type":"PostalAddress",
-"addressCountry":"EG"
-},
-"sameAs":[
-"https://www.facebook.com/share/1H1vVMHyu9/",
-"https://www.instagram.com/bose_sweets",
-"https://www.tiktok.com/@bosesweets1"
-]
-}
-</script>
-
 </head>
-
 <body>
 
-<div class="page-loader" id="pageLoader">
-<img
-class="loader-logo"
-src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
-alt="حلويات بوسي">
-</div>
-
-<div class="toast-container" id="toastContainer"></div>
-
-<div class="side-menu-overlay" id="menuOverlay"></div>
-
-<aside class="side-menu" id="sideMenu">
-
-<div class="side-menu-header">
-
-<div class="logo-wrap">
-<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="">
-</div>
-
-<button class="icon-btn" id="closeMenuBtn">✕</button>
-
-</div>
-
-<nav class="side-menu-links">
-
-<a href="#home">الرئيسية</a>
-<a href="#menu-page">المنيو</a>
-<a href="#cake-builder">محاكي التورت</a>
-<a href="#flower-builder">محاكي الورد</a>
-<a href="#cart-page">السلة</a>
-
-</nav>
-
-</aside>
-
-<div class="search-panel" id="searchPanel">
-
-<div class="search-header">
-
-<input
-type="text"
-class="search-input"
-placeholder="ابحث عن أي منتج...">
-
-<button
-class="search-close"
-id="closeSearchBtn">
-✕
-</button>
-
-</div>
-
-</div>
-
-<header class="site-header">
-
-<div class="container">
-
-<div class="header-inner">
-
-<div class="header-right">
-
-<button
-class="icon-btn"
-id="menuBtn">
-
-☰
-
-</button>
-
-<div class="logo-wrap">
-
-<img
-src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
-alt="حلويات بوسي">
-
-<div>
-
-<div class="brand-name">
-حلويات بوسي
-</div>
-
-<div class="brand-slogan">
-صنعناها بحب لتهديها لمن تحب
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="header-left">
-
-<button
-class="icon-btn"
-id="searchBtn">
-
-⌕
-</button>
-
-<button
-class="icon-btn"
-id="cartBtn">
-
-🛒
-
-<span
-class="badge"
-id="cartCounter">
-0
-</span>
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
+<!-- Header -->
+<header>
+  <div class="logo">
+    <a href="#"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي"></a>
+  </div>
+  <nav>
+    <a href="#">الرئيسية</a>
+    <a href="#">المنيو</a>
+    <a href="#">السلة</a>
+    <a href="#">محاكي التورت</a>
+    <a href="#">محاكي الورد</a>
+  </nav>
+  <div class="search-cart">
+    <button>بحث</button>
+    <button>السلة</button>
+  </div>
 </header>
 
-<div id="app"></div>
+<!-- Hero Section -->
+<section class="hero">
+  <h1>عقد من التميز في صناعة الحلويات</h1>
+  <p>صنعناها بحب لتهديها لمن تحب. اكتشف منتجاتنا الفاخرة واستمتع بتجربة شراء سهلة ومميزة مع جودة ثابتة في كل منتج.</p>
+  <button class="cta-btn" onclick="window.location.href='#'">اطلب الآن</button>
+</section>
+
+<!-- Most Selling Slider -->
+<section>
+  <h2 style="text-align:center; margin:20px 0; color: var(--primary-color);">الأكثر مبيعاً</h2>
+  <div class="slider-container" id="mostSellingSlider">
+    <!-- كروت المنتجات الأكثر مبيعاً ستُضاف ديناميكياً -->
+  </div>
+</section>
+
+<!-- Excellence Section -->
+<div class="fullscreen-card">
+  <img src="" alt="عقد من الإتقان">
+  <div class="overlay">
+    <h2>عقد من الإتقان</h2>
+    <p>وصف قصير للتميز في صناعة الحلويات مع صور متحركة</p>
+  </div>
+</div>
+
+<!-- Products Section -->
+<section>
+  <h2 style="text-align:center; margin:20px 0; color: var(--primary-color);">منتجاتنا</h2>
+  <div class="slider-container" id="productsSlider">
+    <!-- 8 كروت أولى ستُضاف ديناميكياً -->
+  </div>
+</section>
+
+<!-- Cake & Flower Previews -->
+<div class="fullscreen-card">
+  <img src="" alt="محاكي التورت">
+  <div class="overlay">
+    <h2>محاكي التورت</h2>
+    <button onclick="window.location.href='#'">اعرف المزيد</button>
+  </div>
+</div>
+<div class="fullscreen-card">
+  <img src="" alt="محاكي الورد">
+  <div class="overlay">
+    <h2>محاكي الورد</h2>
+    <button onclick="window.location.href='#'">اعرف المزيد</button>
+  </div>
+</div>
+
+<!-- New Arrivals Slider -->
+<section>
+  <h2 style="text-align:center; margin:20px 0; color: var(--primary-color);">وصل حديثاً</h2>
+  <div class="slider-container" id="newArrivalsSlider">
+    <!-- 6 كروت ستُضاف ديناميكياً -->
+  </div>
+</section>
+
+<!-- Pride Section -->
+<div class="fullscreen-card">
+  <img src="" alt="الفخر والاعتزاز">
+  <div class="overlay">
+    <p>أكثر من 10 سنوات خبرة، أكثر من 10000 عميل</p>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات.</p>
+  <div class="footer-links">
+    <a href="#">الرئيسية</a>
+    <a href="#">المنيو</a>
+    <a href="#">السلة</a>
+  </div>
+  <div class="footer-policies">
+    <a href="#">سياسة الخصوصية</a>
+    <a href="#">سياسة الاسترجاع</a>
+  </div>
+  <div class="footer-social">
+    <a href="https://www.facebook.com/share/1H1vVMHyu9/">فيسبوك</a>
+    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy">انستجرام</a>
+    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK">تيك توك</a>
+    <a href="https://wa.me/201097238441">واتساب</a>
+  </div>
+</footer>
 
 <script>
+  // Placeholder ديناميكي لإضافة المنتجات الأكثر مبيعاً و المنتجات الجديدة
+  const mostSelling = []; // سيتم ملئها بالمنتجات من JSON
+  const newArrivals = [];
 
-const STORE = {
+  function createCard(product) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${product.images[0] || ''}" alt="${product.title}">
+      <h3>${product.title}</h3>
+      <p>${product.description}</p>
+      <div class="price-qty">
+        <span>${product.sizes ? product.sizes[0].basePrice : product.price} ج.م</span>
+        <div>
+          <button>-</button>
+          <button>+</button>
+        </div>
+      </div>
+      <button>أضف للسلة</button>
+    `;
+    return card;
+  }
 
-name:"حلويات بوسي",
+  const mostSellingContainer = document.getElementById('mostSellingSlider');
+  const productsContainer = document.getElementById('productsSlider');
+  const newArrivalsContainer = document.getElementById('newArrivalsSlider');
 
-slogan:"صنعناها بحب لتهديها لمن تحب",
-
-phone:"01097238441",
-
-logo:"https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-
-primary:"#FF91A4"
-
-};
-
-const AppState = {
-
-cart:[],
-
-favorites:[],
-
-products:[],
-
-cakeBuilder:{},
-
-flowerBuilder:{}
-
-};
-
-function toast(message){
-
-const container =
-document.getElementById('toastContainer');
-
-const toast =
-document.createElement('div');
-
-toast.className='toast';
-
-toast.innerText=message;
-
-container.appendChild(toast);
-
-setTimeout(()=>{
-toast.remove();
-},3500);
-
-}
-
-window.addEventListener('load',()=>{
-
-setTimeout(()=>{
-
-document.getElementById('pageLoader').style.opacity='0';
-
-setTimeout(()=>{
-document.getElementById('pageLoader').remove();
-},500);
-
-},700);
-
-});
-
-const menuBtn =
-document.getElementById('menuBtn');
-
-const closeMenuBtn =
-document.getElementById('closeMenuBtn');
-
-const sideMenu =
-document.getElementById('sideMenu');
-
-const menuOverlay =
-document.getElementById('menuOverlay');
-
-menuBtn.onclick=()=>{
-
-sideMenu.classList.add('active');
-menuOverlay.classList.add('active');
-document.body.classList.add('menu-open');
-
-};
-
-closeMenuBtn.onclick=closeMenu;
-menuOverlay.onclick=closeMenu;
-
-function closeMenu(){
-
-sideMenu.classList.remove('active');
-menuOverlay.classList.remove('active');
-document.body.classList.remove('menu-open');
-
-}
-
-const searchBtn =
-document.getElementById('searchBtn');
-
-const closeSearchBtn =
-document.getElementById('closeSearchBtn');
-
-const searchPanel =
-document.getElementById('searchPanel');
-
-searchBtn.onclick=()=>{
-
-searchPanel.classList.add('active');
-
-};
-
-closeSearchBtn.onclick=()=>{
-
-searchPanel.classList.remove('active');
-
-};
-
+  // Example: يمكن ملء المنتجات من ملف JSON المرفوع لاحقاً
 </script>
+</body>
+</html>
