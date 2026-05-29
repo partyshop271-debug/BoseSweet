@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-    <meta name="description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل. اكتشف تشكيلة فاخرة من الديسباسيتو، القشطوطة، الدوناتس، والسينابون المصنوعة بأعلى جودة وخامات طبيعية 100%.">
-    <meta name="keywords" content="حلويات بوسي, حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, الفرافرة, الوادي الجديد, الكفاح, BoseSweets">
+    <meta name="description" content="منصة بيع إلكترونية متكاملة لمنتجات حلويات بوسي الفاخرة. استمتع بتشكيلة فريدة من الديسباسيتو، القشطوطة، السينابون، الدوناتس، والميني تورت المصنوعة بالكامل من خامات طبيعية 100%، بجانب محاكي التورت والورد المطور خصيصاً لتنسيق مناسباتكم السعيدة.">
+    <meta name="keywords" content="حلويات بوسي, حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, الفرافرة, الوادي الجديد, الكفاح, BoseSweets, محاكي التورت, محاكي الورد">
     <meta name="author" content="إدارة حلويات بوسي">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://bosesweets.com">
@@ -14,13 +14,13 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bosesweets.com">
     <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta property="og:description" content="منصة بيع إلكترونية متكاملة لمنتجات حلويات بوسي الفاخرة. تصفح المنيو واستخدم محاكي التورت والورد المطور الآن.">
+    <meta property="og:description" content="تصفح منيو حلويات بوسي واستخدم محاكي التورت والورد التفاعلي لتنسيق طلبك فريش وبأعلى جودة خامات طبيعية ممسوكة ومضمونة.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
 
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://bosesweets.com">
     <meta property="twitter:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta property="twitter:description" content="تذوق الفخامة الحقيقية مع منتجات حلويات بوسي. خامات طبيعية ممتازة ومضمونة 100%.">
+    <meta property="twitter:description" content="الجودة الحقيقية والطعم الأصلي من مطبخ حلويات بوسي مباشرة إليكم.">
     <meta property="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,21 +31,26 @@
 
     <style>
         :root {
-            --primary: #FF91A4; /* روح الهوية البصرية */
-            --background: #FFFFFF; /* مساحات التنفس والراحة البصرية */
-            --text-color: #000000; /* الاستخدام الوحيد للون الأسود هو النصوص فقط */
-            --gray-light: #F9F9F9;
-            --gray-border: #ECECEC;
+            --primary: #FF91A4;        /* روح الهوية البصرية - البمبي الملكي */
+            --secondary: #FFD700;      /* اللون الذهبي المساعد للفخامة واللمسات المتممة */
+            --background: #FFFFFF;     /* الأبيض النقي للتنفس والراحة البصرية الكاملة */
+            --text-color: #000000;     /* اللون الأسود مخصص بشكل حصري وصارم للنصوص فقط */
+            --gray-light: #FBFBFB;     /* درجات رمادية ناعمة جداً للخلفيات الفرعية */
+            --gray-border: #F0F0F0;    /* خطوط الفصل والحدود الهادئة */
             --font-main: 'Alexandria', sans-serif;
-            --transition: all 0.3s ease-in-out;
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --shadow-premium: 0 4px 20px rgba(255, 145, 164, 0.08);
+            --shadow-gold: 0 4px 15px rgba(255, 215, 0, 0.15);
         }
 
+        /* الإعدادات العامة والتصفير الاحترافي */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: var(--font-main);
             -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
 
         body {
@@ -58,129 +63,171 @@
             line-height: 1.6;
         }
 
-        /* حاويات الصفحات الموحدة لعزل العرض ومنع التداخل */
+        /* تخصيص شريط التمرير (Scrollbar) بألوان الهوية البصرية */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--background);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+
+        /* حاويات العرض والصفحات المستقلة (Single Page Application Containers) */
         .page-view {
             display: none;
             width: 100%;
-            min-height: calc(100vh - 140px);
-            animation: fadeIn 0.4s ease-in-out;
+            min-height: calc(100vh - 70px);
+            animation: viewFadeIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .page-view.active-view {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(5px); }
+        @keyframes viewFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* مكونات الهيدر الثابت المشترك */
+        /* الهيدر المتطور المدمج بالهوية البصرية واللمسات الذهبية */
         header {
             position: sticky;
             top: 0;
             z-index: 1000;
             background-color: var(--background);
-            border-bottom: 1px solid var(--gray-border);
-            padding: 10px 20px;
+            border-bottom: 2px solid var(--gray-border);
+            padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 70px;
+            height: 75px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
         }
 
-        .header-right {
+        /* الخط الإرشادي الجمالي الفاخر أسفل الهيدر لدمج الألوان */
+        .header-identity-bar {
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 50%, var(--primary) 100%);
+        }
+
+        .header-right, .header-left {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
         }
 
         .menu-toggle-btn {
             background: none;
-            border: none;
-            font-size: 20px;
+            border: 2px solid var(--gray-border);
+            font-size: 18px;
             cursor: pointer;
             color: var(--text-color);
-            padding: 5px;
+            padding: 8px;
+            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+        }
+
+        .menu-toggle-btn:active {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(0.95);
         }
 
         .brand-logo-zone {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             text-decoration: none;
             color: var(--text-color);
         }
 
         .brand-logo-zone img {
-            width: 45px;
-            height: 45px;
+            width: 48px;
+            height: 48px;
             object-fit: contain;
+            filter: drop-shadow(0px 2px 5px rgba(255, 145, 164, 0.15));
         }
 
         .brand-title {
-            font-size: 18px;
+            font-size: 19px;
             font-weight: 800;
             color: var(--text-color);
+            letter-spacing: -0.5px;
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
+        /* أزرار الهيدر والرموز التفاعلية */
         .header-icon-btn {
             background: none;
             border: none;
-            font-size: 18px;
+            font-size: 19px;
             cursor: pointer;
             color: var(--text-color);
             position: relative;
-            width: 40px;
-            height: 40px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            transition: var(--transition);
+            transition: var(--transition-smooth);
         }
 
         .header-icon-btn:active {
             background-color: var(--gray-light);
+            color: var(--primary);
         }
 
+        /* عداد الأرقام للسلة والمفضلة مدمج باللون البمبي الدائري */
         .badge-count {
             position: absolute;
             top: 2px;
             right: 2px;
             background-color: var(--primary);
-            color: white;
+            color: #FFFFFF;
             font-size: 10px;
             font-weight: 700;
             border-radius: 50%;
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid var(--background);
+            box-shadow: var(--shadow-premium);
         }
 
-        /* القائمة الجانبية الفاخرة */
+        /* القائمة الجانبية المطورة بالكامل بلون الهوية والخط الذهبي */
         .sidebar-navigation {
             position: fixed;
             top: 0;
             right: -100%;
-            width: 280px;
+            width: 300px;
             height: 100%;
             background-color: var(--background);
             z-index: 2000;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.05);
+            box-shadow: -8px 0 35px rgba(0,0,0,0.06);
             transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            padding: 30px 20px;
+            padding: 30px 24px;
             display: flex;
             flex-direction: column;
-            gap: 25px;
+            gap: 30px;
+            border-left: 3px solid var(--secondary);
         }
 
         .sidebar-navigation.sidebar-open {
@@ -191,40 +238,63 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid var(--gray-border);
-            padding-bottom: 15px;
+            border-bottom: 2px solid var(--gray-border);
+            padding-bottom: 20px;
         }
 
         .close-sidebar-btn {
             background: none;
-            border: none;
-            font-size: 18px;
+            border: 2px solid var(--gray-border);
+            font-size: 16px;
             cursor: pointer;
             color: var(--text-color);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+        }
+
+        .close-sidebar-btn:active {
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         .sidebar-menu-links {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             list-style: none;
         }
 
         .sidebar-link-item a {
-            display: block;
-            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
             color: var(--text-color);
             text-decoration: none;
             font-size: 15px;
             font-weight: 500;
-            border-radius: 25px;
-            transition: var(--transition);
+            border-radius: 30px;
+            transition: var(--transition-smooth);
+            border: 1px solid transparent;
         }
 
+        /* التميز البصري واللوني للروابط النشطة */
         .sidebar-link-item.active-link a, .sidebar-link-item a:active {
             background-color: var(--gray-light);
             color: var(--primary);
             font-weight: 700;
+            border-color: rgba(255, 145, 164, 0.2);
+            box-shadow: var(--shadow-premium);
+        }
+
+        .sidebar-link-item a i {
+            font-size: 16px;
+            color: var(--secondary); /* استخدام الذهبي للأيقونات المساعدة في القائمة */
         }
 
         .sidebar-overlay {
@@ -233,27 +303,33 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.2);
+            background-color: rgba(0,0,0,0.25);
             z-index: 1900;
             display: none;
-            backdrop-filter: blur(2px);
+            backdrop-filter: blur(4px);
+            animation: fadeInOverlay 0.3s ease;
         }
 
-        /* شريط البحث المنبثق الاحترافي */
+        @keyframes fadeInOverlay {
+            from { opacity: 0; } to { opacity: 1; }
+        }
+
+        /* شريط البحث المطور المدمج بالمحرك الذكي */
         .search-overlay-bar {
             position: fixed;
-            top: -80px;
+            top: -90px;
             left: 0;
             width: 100%;
-            height: 70px;
+            height: 75px;
             background-color: var(--background);
             z-index: 1500;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            transition: top 0.3s ease-in-out;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             align-items: center;
             padding: 0 20px;
             gap: 15px;
+            border-bottom: 2px solid var(--primary);
         }
 
         .search-overlay-bar.search-bar-open {
@@ -267,261 +343,630 @@
 
         .search-input-wrapper input {
             width: 100%;
-            height: 45px;
-            border: 1px solid var(--gray-border);
-            border-radius: 25px;
-            padding: 0 45px 0 20px;
+            height: 46px;
+            border: 2px solid var(--gray-border);
+            border-radius: 30px;
+            padding: 0 50px 0 20px;
             font-size: 14px;
-            outline: none;
             background-color: var(--gray-light);
+            transition: var(--transition-smooth);
+            color: var(--text-color);
+        }
+
+        .search-input-wrapper input:focus {
+            border-color: var(--primary);
+            background-color: var(--background);
+            box-shadow: var(--shadow-premium);
         }
 
         .search-input-wrapper i {
             position: absolute;
-            top: 14px;
-            right: 18px;
-            color: #888;
+            top: 15px;
+            right: 20px;
+            color: var(--primary);
+            font-size: 16px;
         }
 
         .close-search-trigger {
             background: none;
-            border: none;
-            font-size: 16px;
+            border: 2px solid var(--gray-border);
+            font-size: 15px;
             cursor: pointer;
             color: var(--text-color);
-            padding: 10px;
-        }
-
-        /* الفوتر المشترك المعتمد للموقع */
-        footer {
-            background-color: var(--gray-light);
-            border-top: 1px solid var(--gray-border);
-            padding: 40px 20px 20px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-        }
-
-        .footer-upper-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-
-        .footer-brand-info {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .footer-about-text {
-            color: #555;
-            font-size: 13px;
-            line-height: 1.7;
-        }
-
-        .footer-links-column {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .footer-column-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 5px;
-        }
-
-        .footer-links-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .footer-links-list li a {
-            color: #444;
-            text-decoration: none;
-            font-size: 13px;
-            transition: var(--transition);
-            display: inline-block;
-        }
-
-        .footer-links-list li a:active {
-            color: var(--primary);
-        }
-
-        .footer-social-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 5px;
-        }
-
-        .footer-social-icon {
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background-color: var(--background);
-            border: 1px solid var(--gray-border);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-color);
-            text-decoration: none;
-            transition: var(--transition);
+            transition: var(--transition-smooth);
         }
 
-        .footer-social-icon:active {
+        .close-search-trigger:active {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ================================================================= */
+        /* الفئات البنائية المشتركة الجاهزة لجميع الأجزاء القادمة (Master Layout Classes) */
+        /* ================================================================= */
+        
+        /* أزرار بيضاوية فاخرة مرنة */
+        .btn-oval-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 28px;
             background-color: var(--primary);
-            color: white;
+            color: #FFFFFF;
+            border: 2px solid transparent;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: var(--shadow-premium);
+            text-decoration: none;
+            gap: 10px;
+        }
+
+        .btn-oval-primary:active {
+            transform: scale(0.97);
+            background-color: var(--background);
+            color: var(--primary);
             border-color: var(--primary);
         }
 
-        .footer-bottom-rights {
-            border-top: 1px solid var(--gray-border);
-            padding-top: 20px;
-            text-align: center;
+        .btn-oval-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 11px 26px;
+            background-color: var(--background);
+            color: var(--text-color);
+            border: 2px solid var(--secondary);
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: var(--shadow-gold);
+            text-decoration: none;
+            gap: 10px;
+        }
+
+        .btn-oval-secondary:active {
+            transform: scale(0.97);
+            background-color: var(--secondary);
+            color: #000000;
+        }
+
+        /* نمط كروت المنتجات المشتركة (كارتين جنب بعض) */
+        .products-dual-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .products-dual-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+        }
+
+        .product-premium-card {
+            background-color: var(--background);
+            border: 1px solid var(--gray-border);
+            border-radius: 18px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+
+        .product-premium-card:hover {
+            box-shadow: var(--shadow-premium);
+            border-color: rgba(255, 145, 164, 0.15);
+        }
+
+        .card-image-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 100%; /* كادر مربع متناسق تماماً */
+            background-color: var(--gray-light);
+            overflow: hidden;
+        }
+
+        .card-image-wrapper img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-smooth);
+        }
+
+        .card-favorite-trigger {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-color);
+            font-size: 14px;
+            transition: var(--transition-smooth);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+
+        .card-favorite-trigger.is-fav {
+            color: var(--primary);
+        }
+
+        .card-details-zone {
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .card-product-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-color);
+            line-height: 1.4;
+        }
+
+        .card-product-description {
+            font-size: 11px;
+            color: #666;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.5;
+            height: 33px;
+        }
+
+        .card-pricing-control-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 4px;
+            border-top: 1px dashed var(--gray-border);
+            padding-top: 8px;
+        }
+
+        .card-price-display {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+
+        .card-price-display span {
+            font-size: 10px;
+            font-weight: 400;
+            margin-right: 2px;
+        }
+
+        /* عداد التحكم في الكمية بالمسار الدائري والمؤشرات */
+        .premium-quantity-stepper {
+            display: flex;
+            align-items: center;
+            background-color: var(--gray-light);
+            border: 1px solid var(--gray-border);
+            border-radius: 20px;
+            padding: 2px;
+            gap: 8px;
+        }
+
+        .stepper-btn {
+            background-color: var(--background);
+            border: 1px solid var(--gray-border);
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
+            color: var(--text-color);
+            transition: var(--transition-smooth);
+        }
+
+        .stepper-btn:active {
+            background-color: var(--primary);
+            color: #FFFFFF;
+            border-color: var(--primary);
+        }
+
+        .stepper-value {
             font-size: 12px;
-            color: #777;
+            font-weight: 700;
+            min-width: 16px;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .card-add-to-cart-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--gray-light);
+            border: 1px solid var(--gray-border);
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .card-add-to-cart-btn:active {
+            background-color: var(--primary);
+            color: #FFFFFF;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-premium);
+        }
+
+        /* نظام التنبيهات الفورية الفاخر (Toast Notifications) بقوة الهوية */
+        .toast-notifications-container {
+            position: fixed;
+            bottom: 25px;
+            right: 20px;
+            left: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        @media (min-width: 480px) {
+            .toast-notifications-container {
+                left: auto;
+                width: 360px;
+            }
+        }
+
+        .premium-toast {
+            background-color: var(--background);
+            border-right: 4px solid var(--primary);
+            border-left: 1px solid var(--gray-border);
+            border-top: 1px solid var(--gray-border);
+            border-bottom: 1px solid var(--gray-border);
+            padding: 14px 18px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            pointer-events: auto;
+            animation: toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .premium-toast.toast-warning {
+            border-right-color: var(--secondary);
+        }
+
+        .premium-toast i {
+            font-size: 16px;
+            color: var(--primary);
+        }
+
+        .premium-toast.toast-warning i {
+            color: var(--secondary);
+        }
+
+        .toast-message-content {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-color);
+            flex: 1;
+        }
+
+        @keyframes toastSlideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* النوافذ المنبثقة الشاملة الفخمة (Premium Modals) */
+        .premium-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+            z-index: 2500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .premium-modal-wrapper {
+            background-color: var(--background);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.1);
+            border: 2px solid var(--gray-border);
+            overflow: hidden;
+            animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes modalPop {
+            from { transform: scale(0.9) translateY(10px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal-main-header {
+            padding: 20px 20px 10px 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-main-header i {
+            font-size: 24px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .modal-main-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-color);
+        }
+
+        .modal-main-body {
+            padding: 10px 20px 20px 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .modal-actions-footer {
+            padding: 15px 20px 20px 20px;
+            background-color: var(--gray-light);
+            border-top: 1px solid var(--gray-border);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* عناوين وأقسام الصفحات القياسية */
+        .view-section-container {
+            padding: 30px 20px;
+            width: 100%;
+        }
+
+        .view-section-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .view-section-subtitle {
+            font-size: 13px;
+            color: #555;
+            text-align: center;
+            margin-bottom: 25px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
 </head>
 <body>
+
+    <div class="toast-notifications-container" id="globalToastContainer"></div>
+
+    <div class="premium-modal-backdrop" id="centralUpgradeModal">
+        <div class="premium-modal-wrapper">
+            <div class="modal-main-header">
+                <i class="fa-solid fa-circle-info" id="modalIcon"></i>
+                <div class="modal-main-title" id="modalTitle">توضيح بخصوص التنسيق</div>
+            </div>
+            <div class="modal-main-body" id="modalBody">
+                تفاصيل الرسالة الإرشادية والترقية تظهر هنا للعميل بشكل مبسط ومباشر.
+            </div>
+            <div class="modal-actions-footer" id="modalActions">
+                </div>
+        </div>
+    </div>
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <div class="search-overlay-bar" id="searchOverlayBar">
         <div class="search-input-wrapper">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="globalSearchInput" placeholder="ابحث عن منتجك المفضل...">
+            <input type="text" id="globalSearchInput" placeholder="ابحث عن منتجك المفضل داخل المنيو...">
         </div>
-        <button class="close-search-trigger" id="closeSearchBtn"><i class="fa-solid fa-xmark"></i></button>
+        <button class="close-search-trigger" id="closeSearchBtn" aria-label="إغلاق البحث"><i class="fa-solid fa-xmark"></i></button>
     </div>
 
     <header>
         <div class="header-right">
-            <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="قائمة التنقل">
+            <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="فتح قائمة التنقل">
                 <i class="fa-solid fa-bars"></i>
             </button>
             <a href="#" class="brand-logo-zone" data-target="homepage-view">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي الفخم">
                 <span class="brand-title">حلويات بوسي</span>
             </a>
         </div>
         <div class="header-left">
-            <button class="header-icon-btn" id="searchTriggerBtn" aria-label="البحث">
+            <button class="header-icon-btn" id="searchTriggerBtn" aria-label="فتح البحث">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-            <button class="header-icon-btn" id="favoritesPageBtn" data-target="favorites-view" aria-label="المفضلة">
+            <button class="header-icon-btn" id="favoritesPageBtn" data-target="favorites-view" aria-label="فتح المفضلة">
                 <i class="fa-regular fa-heart"></i>
+                <span class="badge-count" id="favBadgeCount">0</span>
             </button>
-            <button class="header-icon-btn" id="cartPageBtn" data-target="cart-view" aria-label="سلة المشتريات">
+            <button class="header-icon-btn" id="cartPageBtn" data-target="cart-view" aria-label="فتح السلة">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span class="badge-count" id="cartBadgeCount">0</span>
             </button>
         </div>
+        <div class="header-identity-bar"></div>
     </header>
 
     <nav class="sidebar-navigation" id="sidebarNavigation">
         <div class="sidebar-header">
             <span class="brand-title">قائمة التصفح</span>
-            <button class="close-sidebar-btn" id="closeSidebarBtn"><i class="fa-solid fa-xmark"></i></button>
+            <button class="close-sidebar-btn" id="closeSidebarBtn" aria-label="إغلاق القائمة"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <ul class="sidebar-menu-links">
-            <li class="sidebar-link-item active-link" data-target="homepage-view"><a href="#">الرئيسية</a></li>
-            <li class="sidebar-link-item" data-target="menu-view"><a href="#">المنيو</a></li>
-            <li class="sidebar-link-item" data-target="cake-simulator-view"><a href="#">محاكي التورت</a></li>
-            <li class="sidebar-link-item" data-target="flower-simulator-view"><a href="#">محاكي الورد</a></li>
-            <li class="sidebar-link-item" data-target="cart-view"><a href="#">السلة</a></li>
+            <li class="sidebar-link-item active-link" data-target="homepage-view"><a href="#"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+            <li class="sidebar-link-item" data-target="menu-view"><a href="#"><i class="fa-solid fa-utensils"></i> المنيو العام</a></li>
+            <li class="sidebar-link-item" data-target="cake-simulator-view"><a href="#"><i class="fa-solid fa-cake-candles"></i> محاكي التورت</a></li>
+            <li class="sidebar-link-item" data-target="flower-simulator-view"><a href="#"><i class="fa-solid fa-id-card-clip"></i> محاكي الورد الفاخر</a></li>
+            <li class="sidebar-link-item" data-target="cart-view"><a href="#"><i class="fa-solid fa-basket-shopping"></i> سلة المشتريات</a></li>
         </ul>
     </nav>
 
-    <main id="homepage-view" class="page-view active-view">
-        </main>
-
-    <div id="menu-view" class="page-view">
-        </div>
-
-    <div id="cake-simulator-view" class="page-view">
-        </div>
-
-    <div id="flower-simulator-view" class="page-view">
-        </div>
-
-    <div id="cart-view" class="page-view">
-        </div>
-
-    <div id="checkout-view" class="page-view">
-        </div>
-
-    <div id="favorites-view" class="page-view">
-        </div>
-
-    <footer>
-        <div class="footer-upper-grid">
-            <div class="footer-brand-info">
-                <span class="brand-title">حلويات بوسي</span>
-                <p class="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة والمبتكرة لتوثيق أسعد لحظاتكم.</p>
-                <div class="footer-social-row">
-                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" class="footer-social-icon" aria-label="فيسبوك"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="footer-social-icon" aria-label="إنستغرام"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" target="_blank" class="footer-social-icon" aria-label="تيك توك"><i class="fa-brands fa-tiktok"></i></a>
-                    <a href="https://wa.me/201097238441" target="_blank" class="footer-social-icon" aria-label="واتساب الدعم الفني"><i class="fa-brands fa-whatsapp"></i></a>
-                </div>
-            </div>
-            <div class="footer-links-column">
-                <span class="footer-column-title">روابط سريعة</span>
-                <ul class="footer-links-list">
-                    <li><a href="#" data-target="homepage-view">الرئيسية</a></li>
-                    <li><a href="#" data-target="menu-view">المنيو العام</a></li>
-                    <li><a href="#" data-target="cake-simulator-view">محاكي التورت</a></li>
-                    <li><a href="#" data-target="flower-simulator-view">محاكي الورد الفاخر</a></li>
-                </ul>
-            </div>
-            <div class="footer-links-column">
-                <span class="footer-column-title">سياساتنا المتكاملة</span>
-                <ul class="footer-links-list">
-                    <li><a href="#" onclick="alert('سياسة الخصوصية: نلتزم بحماية بيانات العميل بالكامل ولا يتم مشاركتها خارج نطاق إتمام وشحن الطلب الرسمي.')">سياسة الخصوصية</a></li>
-                    <li><a href="#" onclick="alert('سياسة الاسترجاع: نظراً لأن منتجاتنا غذائية وتصنع خصيصاً وفريش لكل عميل، فإن إلغاء الطلب متاح مجاناً قبل موعد التسليم المتفق عليه بـ 24 ساعة على الأقل.')">سياسة الاسترجاع</a></li>
-                    <li><a href="#" onclick="alert('سياسة التواصل: يتم تأكيد كافة الطلبات المكتملة عبر رقم المبيعات الرسمي على واتساب لضمان أعلى مستويات الدقة.')">سياسة التواصل</a></li>
-                    <li><a href="#" onclick="alert('سياسة الحفاظ على المنتجات: ننصح بحفظ التورت والحلويات الغنية بالموس والكريمة داخل التبريد الفوري فور الاستلام للحفاظ على قوامها الطازج.')">سياسة الحفاظ على منتجاتنا</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom-rights">
-            &copy; 2026 جميع الحقوق محفوظة لـ حلويات بوسي | BoseSweets
-        </div>
-    </footer>
-
     <script>
+        // إعلان المحرك العالمي لمنصة حلويات بوسي لربط كافة الأجزاء القادمة بسلاسة
+        window.BoseSweetsEngine = {
+            state: {
+                cart: JSON.parse(localStorage.getItem('bose_cart')) || [],
+                favorites: JSON.parse(localStorage.getItem('bose_favs')) || [],
+                currentView: 'homepage-view'
+            },
+
+            // ميكانيكية تحديث العدادات التفاعلية وحفظ البيانات صامتاً لتقليل استهلاك موارد المعالج
+            updateUIComponents: function() {
+                document.getElementById('cartBadgeCount').textContent = this.state.cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
+                document.getElementById('favBadgeCount').textContent = this.state.favorites.length;
+                localStorage.setItem('bose_cart', JSON.stringify(this.state.cart));
+                localStorage.setItem('bose_favs', JSON.stringify(this.state.favorites));
+                
+                // بث حدث داخلي لتحديث واجهات السلة أو المنتجات تلقائياً إن وجدت
+                window.dispatchEvent(new CustomEvent('boseStateUpdated'));
+            },
+
+            // نظام إطلاق التنبيهات الفورية الفاخر المدمج بالهوية البصرية
+            showToast: function(message, type = 'success') {
+                const container = document.getElementById('globalToastContainer');
+                const toast = document.createElement('div');
+                toast.className = `premium-toast ${type === 'warning' ? 'toast-warning' : ''}`;
+                
+                const iconClass = type === 'warning' ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-circle-check';
+                toast.innerHTML = `
+                    <i class="${iconClass}"></i>
+                    <div class="toast-message-content">${message}</div>
+                `;
+                
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.animation = 'none';
+                    toast.offsetHeight; // Trigger reflow
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(-10px)';
+                    toast.style.transition = 'all 0.3s ease';
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            },
+
+            // ميكانيكية التحكم المطور في النوافذ المنبثقة وعرض الخيارات (Modals Engine)
+            showModal: function(title, bodyHtml, actionButtons = []) {
+                const backdrop = document.getElementById('centralUpgradeModal');
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalBody').innerHTML = bodyHtml;
+                
+                const footer = document.getElementById('modalActions');
+                footer.innerHTML = '';
+                
+                actionButtons.forEach(btnConfig => {
+                    const btn = document.createElement('button');
+                    btn.className = btnConfig.className || 'btn-oval-secondary';
+                    btn.textContent = btnConfig.text;
+                    btn.addEventListener('click', () => {
+                        if (btnConfig.callback) btnConfig.callback();
+                        backdrop.style.display = 'none';
+                    });
+                    footer.appendChild(btn);
+                });
+                
+                backdrop.style.display = 'flex';
+            },
+
+            // محرك التنقل الفوري الذكي بين واجهات المنصة الكاملة (SPA Router)
+            navigateToView: function(viewId) {
+                const views = document.querySelectorAll('.page-view');
+                let found = false;
+                
+                views.forEach(view => {
+                    if (view.id === viewId) {
+                        view.classList.add('active-view');
+                        found = true;
+                    } else {
+                        view.classList.remove('active-view');
+                    }
+                });
+
+                if (found) {
+                    this.state.currentView = viewId;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    
+                    // تحديث الحالة النشطة داخل عناصر الروابط في القائمة الجانبية
+                    document.querySelectorAll('.sidebar-link-item').forEach(item => {
+                        if (item.getAttribute('data-target') === viewId) {
+                            item.classList.add('active-link');
+                        } else {
+                            item.classList.remove('active-link');
+                        }
+                    });
+                }
+            }
+        };
+
+        // تفعيل المستمعات الأساسية لتفاعل عناصر واجهة المستخدم المشتركة فور تحميل الصفحة
         document.addEventListener('DOMContentLoaded', () => {
-            // مسك عناصر واجهة المستخدم المشتركة
             const menuToggleBtn = document.getElementById('menuToggleBtn');
             const closeSidebarBtn = document.getElementById('closeSidebarBtn');
             const sidebarNavigation = document.getElementById('sidebarNavigation');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
-            
             const searchTriggerBtn = document.getElementById('searchTriggerBtn');
             const closeSearchBtn = document.getElementById('closeSearchBtn');
             const searchOverlayBar = document.getElementById('searchOverlayBar');
 
-            // منطق فتح وإغلاق القائمة الجانبية بالكامل
-            function openSidebar() {
-                sidebarNavigation.classList.add('sidebar-open');
-                sidebarOverlay.style.display = 'block';
+            function toggleSidebar(open) {
+                if (open) {
+                    sidebarNavigation.classList.add('sidebar-open');
+                    sidebarOverlay.style.display = 'block';
+                } else {
+                    sidebarNavigation.classList.remove('sidebar-open');
+                    sidebarOverlay.style.display = 'none';
+                }
             }
 
-            function closeSidebar() {
-                sidebarNavigation.classList.remove('sidebar-open');
-                sidebarOverlay.style.display = 'none';
-            }
+            menuToggleBtn.addEventListener('click', () => toggleSidebar(true));
+            closeSidebarBtn.addEventListener('click', () => toggleSidebar(false));
+            sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
-            menuToggleBtn.addEventListener('click', openSidebar);
-            closeSidebarBtn.addEventListener('click', closeSidebar);
-            sidebarOverlay.addEventListener('click', closeSidebar);
-
-            // منطق فتح وإغلاق شريط البحث العلوي
             searchTriggerBtn.addEventListener('click', () => {
                 searchOverlayBar.classList.add('search-bar-open');
                 document.getElementById('globalSearchInput').focus();
@@ -531,43 +976,21 @@
                 searchOverlayBar.classList.remove('search-bar-open');
             });
 
-            // آلية التنقل الأساسية السريعة والناعمة بين حاويات الصفحات المحددة (SPA Architecture)
-            const navigationTriggers = document.querySelectorAll('[data-target]');
-            
-            navigationTriggers.forEach(trigger => {
-                trigger.addEventListener('click', (e) => {
+            // ربط ضغطات التنقل العامة الموزعة في الهيدر والفوتر والقائمة
+            document.addEventListener('click', (e) => {
+                const targetTrigger = e.target.closest('[data-target]');
+                if (targetTrigger) {
                     e.preventDefault();
-                    const targetId = trigger.getAttribute('data-target');
-                    
-                    if (targetId) {
-                        // إخفاء جميع الواجهات النشطة
-                        document.querySelectorAll('.page-view').forEach(view => {
-                            view.classList.remove('active-view');
-                        });
-                        
-                        // إظهار الواجهة المطلوبة فوراً وبنعومة
-                        const targetView = document.getElementById(targetId);
-                        if (targetView) {
-                            targetView.classList.add('active-view');
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }
-                        
-                        // تحديث الحالة النشطة في القائمة الجانبية
-                        document.querySelectorAll('.sidebar-link-item').forEach(item => {
-                            if (item.getAttribute('data-target') === targetId) {
-                                item.classList.add('active-link');
-                            } else {
-                                item.classList.remove('active-link');
-                            }
-                        });
-                        
-                        // إغلاق أي قوائم مفتوحة لتوفير مساحة تصفح مريحة
-                        closeSidebar();
-                        searchOverlayBar.classList.remove('search-bar-open');
-                    }
-                });
+                    const viewId = targetTrigger.getAttribute('data-target');
+                    window.BoseSweetsEngine.navigateToView(viewId);
+                    toggleSidebar(false);
+                    searchOverlayBar.classList.remove('search-bar-open');
+                }
             });
+
+            // مزامنة العدادات الأولية المخزنة في جهاز العميل فوراً
+            window.BoseSweetsEngine.updateUIComponents();
         });
     </script>
-</body>
-</html>
+
+    <main id="homepage-view" class="page-view active-view">
