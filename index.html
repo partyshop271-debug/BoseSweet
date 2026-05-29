@@ -36,10 +36,10 @@ background:#FF91A4;
 overflow:hidden;
 display:flex;
 align-items:center;
-position:relative;
 }
 .marquee-track{
 display:flex;
+align-items:center;
 width:max-content;
 animation:marqueeMove 22s linear infinite;
 white-space:nowrap;
@@ -61,9 +61,9 @@ to{transform:translateX(-50%);}
 position:sticky;
 top:44px;
 z-index:1000;
-height:84px;
-background:rgba(255,255,255,.96);
-backdrop-filter:blur(16px);
+height:70px;
+background:rgba(255,255,255,.97);
+backdrop-filter:blur(18px);
 display:flex;
 align-items:center;
 justify-content:space-between;
@@ -74,37 +74,20 @@ border-bottom:1px solid #f5e3e8;
 display:flex;
 align-items:center;
 gap:12px;
-min-width:0;
 }
 .brand-center img{
-width:60px;
-height:60px;
+width:52px;
+height:52px;
 object-fit:contain;
-flex-shrink:0;
 }
-.brand-text{
-display:flex;
-flex-direction:column;
-justify-content:center;
-min-width:0;
-}
-.brand-text h2{
-font-size:17px;
-font-weight:700; /* تم تعديل الوزن */
-line-height:1.2;
+.brand-center h2{
+font-size:18px;
+font-weight:700;
+line-height:1;
 margin:0;
-white-space:nowrap;
-}
-.brand-text span{
-font-size:11px;
-font-weight:500;
-line-height:1.3;
-opacity:.75;
-white-space:nowrap;
-overflow:hidden;
-text-overflow:ellipsis;
 }
 
+/* Header Actions */
 .header-actions{
 display:flex;
 justify-content:flex-end;
@@ -166,7 +149,7 @@ top:0;
 right:-360px;
 width:340px;
 max-width:90vw;
-height:100dvh; /* يحل مشكلة القطع من الأسفل */
+height:100dvh;
 background:#fff;
 z-index:9999;
 transition:.35s;
@@ -177,7 +160,6 @@ box-shadow:-15px 0 50px rgba(0,0,0,.15);
 .sidebar.active{right:0;}
 .sidebar::-webkit-scrollbar{width:4px;}
 .sidebar::-webkit-scrollbar-thumb{background:#FF91A4;border-radius:20px;}
-
 .sidebar-header{
 background:linear-gradient(135deg,#FF91A4,#ffb8c4);
 padding:30px 20px;
@@ -195,7 +177,6 @@ margin-bottom:15px;
 }
 .sidebar-logo img{width:100%;height:100%;object-fit:contain;}
 .sidebar-title{font-size:20px;font-weight:700;}
-.sidebar-subtitle{font-size:13px;margin-top:8px;opacity:.9;}
 .sidebar-links{padding:20px;}
 .sidebar-links a{
 display:flex;align-items:center;gap:12px;
@@ -230,8 +211,8 @@ font-weight:600;
 margin-bottom:28px;
 }
 .hero-section h1{
-font-size:58px;
-font-weight:700; /* تم تعديل الوزن */
+font-size:48px;
+font-weight:700;
 line-height:1.08;
 letter-spacing:-1px;
 margin-bottom:28px;
@@ -289,11 +270,8 @@ border:1px solid #f3d6dd;
 <header class="main-header">
 <button class="menu-btn" onclick="openSidebar()">☰</button>
 <div class="brand-center">
-<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-<div class="brand-text">
+<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
 <h2>حلويات بوسي</h2>
-<span>صنعناها بحب لتهديها لمن تحب</span>
-</div>
 </div>
 <div class="header-actions">
 <button class="header-icon">🔍</button>
@@ -307,17 +285,16 @@ border:1px solid #f3d6dd;
 <div class="sidebar-header">
 <div class="sidebar-logo"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"></div>
 <div class="sidebar-title">حلويات بوسي</div>
-<div class="sidebar-subtitle">صنعناها بحب لتهديها لمن تحب</div>
 </div>
 <div class="sidebar-links">
-<a href="#">🏠 الرئيسية</a>
-<a href="#">📖 المنيو</a>
-<a href="#">🎂 محاكي التورت</a>
-<a href="#">🌹 محاكي الورد</a>
-<a href="#">🛒 السلة</a>
-<a href="#">❤️ المفضلة</a>
-<a href="#">📞 تواصل معنا</a>
-<a href="#">📍 من نحن</a>
+<a href="/" onclick="closeSidebar()">🏠 الرئيسية</a>
+<a href="/menu.html" onclick="closeSidebar()">📖 المنيو</a>
+<a href="/cake-builder.html" onclick="closeSidebar()">🎂 محاكي التورت</a>
+<a href="/flower-builder.html" onclick="closeSidebar()">🌹 محاكي الورد</a>
+<a href="/cart.html" onclick="closeSidebar()">🛒 السلة</a>
+<a href="#" onclick="closeSidebar()">❤️ المفضلة</a>
+<a href="#" onclick="closeSidebar()">📞 تواصل معنا</a>
+<a href="#" onclick="closeSidebar()">📍 من نحن</a>
 </div>
 <div class="sidebar-footer">
 <a class="sidebar-whatsapp" href="https://wa.me/201097238441">خدمة العملاء</a>
@@ -330,19 +307,25 @@ border:1px solid #f3d6dd;
 <h1>عقد من التميز في صناعة الحلويات</h1>
 <p>حلويات مصنوعة بعناية وخامات مختارة وتجهيزات خاصة للمناسبات والهدايا واللحظات اللي تستحق حاجة تتعمل صح.</p>
 <div class="hero-buttons">
-<a href="#">اطلب الآن</a>
-<a href="#">تصفح المنيو</a>
+<a href="/menu.html">اطلب الآن</a>
+<a href="/menu.html">تصفح المنيو</a>
 </div>
 </section>
 
 <script>
+const sidebar = document.getElementById("sidebar");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+
 function openSidebar(){
-document.getElementById("sidebar").classList.add("active");
-document.getElementById("sidebarOverlay").classList.add("active");
+sidebar.classList.add("active");
+sidebarOverlay.classList.add("active");
+document.body.style.overflow="hidden";
 }
+
 function closeSidebar(){
-document.getElementById("sidebar").classList.remove("active");
-document.getElementById("sidebarOverlay").classList.remove("active");
+sidebar.classList.remove("active");
+sidebarOverlay.classList.remove("active");
+document.body.style.overflow="";
 }
 </script>
 </body>
