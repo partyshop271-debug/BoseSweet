@@ -1,0 +1,2613 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
+    <!-- استدعاء الخط الرسمي المعتمد للعلامة التجارية حلويات بوسي -->
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة التنسيق والتحسين البصري المتطور Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            pink: '#FF91A4',   /* اللون الأساسي لروح الهوية البصرية */
+                            gold: '#D4AF37',   /* اللون الثانوي للاستخدامات النوعية والتقييمات */
+                            dark: '#111111',   /* اللون الأسود الفخم للنصوص والقراءة المريحة */
+                            bg: '#FFFFFF',     /* اللون الأبيض الأساسي للتنفس والراحة البصرية */
+                            grayLight: '#F9F9F9'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Alexandria', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* أنماط وتنسيقات إضافية لضمان أفضل تجربة مستخدم على الموبايل والكمبيوتر */
+        body {
+            font-family: 'Alexandria', sans-serif;
+            background-color: #FFFFFF;
+            color: #111111;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* إخفاء شريط التمرير الافتراضي في القوائم الأفقية مع الحفاظ على ميزة السحب */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* تحريك انتقالي سلس للصور والعناصر التفاعلية */
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* تأثيرات الظهور والتنفس البصري */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-brand-bg text-brand-dark antialiased">
+
+    <!-- الحاوية الرئيسية التي سيتم حقن كود الـ React بها بالكامل -->
+    <div id="root"></div>
+
+    <!-- استدعاء بيئة تشغيل ومكتبات React 18 و Babel للترجمة الفورية داخل المتصفح مجاناً ودون الحاجة لخوادم معقدة -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useRef } = React;
+
+        // ==========================================
+        // 1. قاعدة البيانات والكتالوج الكامل لـ حلويات بوسي
+        // ==========================================
+        const siteData = {
+            "store": {
+                "name": "حلويات بوسي",
+                "slogan": "صنعناها بحب لتهديها لمن تحب",
+                "logo": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+                "colors": {
+                    "primary": "#FF91A4",
+                    "secondary": "gold",
+                    "text": "black",
+                    "background": "white"
+                },
+                "font": "Alexandria"
+            },
+            "seo": {
+                "title": "حلويات بوسي | صنعناها بحب لتهديها لمن تحب",
+                "description": "منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.",
+                "keywords": ["حلويات", "تورت", "بوكس هدايا", "كاب كيك", "سينابون", "ورد", "دوناتس"],
+                "ogImage": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+                "canonical": "https://bosesweets.com"
+            },
+            "social": {
+                "facebook": "https://www.facebook.com/share/1H1vVMHyu9/",
+                "instagram": "https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy",
+                "tiktok": "https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK",
+                "whatsapp": "01097238441"
+            },
+            "navigation": {
+                "showSearch": true,
+                "showCart": true,
+                "showFavorites": true,
+                "menuItems": ["الرئيسية", "المنيو", "السلة", "محاكي التورت", "محاكي الورد"]
+            },
+            "shippingZones": [
+                { "area": "الكفاح", "price": 30 },
+                { "area": "أبو الهول", "price": 30 },
+                { "area": "الصنايع", "price": 40 },
+                { "area": "أبو بكر", "price": 40 },
+                { "area": "الفرافرة", "price": 50 },
+                { "area": "الجمعية", "price": 50 },
+                { "area": "الأمل", "price": 50 },
+                { "area": "13", "price": 70 },
+                { "area": "17", "price": 70 },
+                { "area": "أبو هريرة", "price": 140 }
+            ],
+            "products": [
+                {
+                    "id": "despacito",
+                    "slug": "despacito",
+                    "category": "desserts",
+                    "title": "الديسباسيتو",
+                    "layout": "tabs",
+                    "featured": true,
+                    "searchTerms": ["ديسباسيتو", "حلويات", "شوكولاتة", "موس", "لوتس", "نوتيلا"],
+                    "description": "طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة. معمول بخامات مختارة بعناية علشان يوصلك بنفس الجودة اللي بنطلع بيها كل منتج من مطبخنا.",
+                    "images": ["https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=800&auto=format&fit=crop&q=80"],
+                    "sizes": [
+                        {
+                            "id": "triangle",
+                            "name": "مثلث",
+                            "basePrice": 66,
+                            "cartLabel": "ديسباسيتو مثلث",
+                            "variants": [
+                                { "id": "dark-nutella", "flavor": "نوتيلا دارك", "price": 66 },
+                                { "id": "lotus", "flavor": "لوتس", "price": 66 },
+                                { "id": "white-nutella", "flavor": "نوتيلا وايت", "price": 66 },
+                                { "id": "caramel", "flavor": "كراميل", "price": 66 },
+                                { "id": "kinder", "flavor": "كيندر", "price": 66 },
+                                { "id": "blueberry", "flavor": "بلوبيري", "price": 66 },
+                                { "id": "raspberry", "flavor": "راسبيري", "price": 66 },
+                                { "id": "cherry", "flavor": "كرز", "price": 66 },
+                                { "id": "snickers", "flavor": "اسنيكرز", "price": 66 },
+                                { "id": "mix-chocolate", "flavor": "ميكس شوكليت", "price": 66 },
+                                { "id": "pistachio", "flavor": "بيستاشيو", "price": 83 }
+                            ]
+                        },
+                        {
+                            "id": "medium",
+                            "name": "وسط",
+                            "basePrice": 132,
+                            "cartLabel": "ديسباسيتو وسط",
+                            "variants": [
+                                { "id": "dark-nutella", "flavor": "نوتيلا دارك", "price": 132 },
+                                { "id": "lotus", "flavor": "لوتس", "price": 132 },
+                                { "id": "white-nutella", "flavor": "نوتيلا وايت", "price": 132 },
+                                { "id": "caramel", "flavor": "كراميل", "price": 132 },
+                                { "id": "kinder", "flavor": "كيندر", "price": 132 },
+                                { "id": "blueberry", "flavor": "بلوبيري", "price": 132 },
+                                { "id": "raspberry", "flavor": "راسبيري", "price": 132 },
+                                { "id": "cherry", "flavor": "كرز", "price": 132 },
+                                { "id": "snickers", "flavor": "اسنيكرز", "price": 132 },
+                                { "id": "mix-chocolate", "flavor": "ميكس شوكليت", "price": 132 },
+                                { "id": "pistachio", "flavor": "بيستاشيو", "price": 165 }
+                            ]
+                        },
+                        {
+                            "id": "large",
+                            "name": "كبير",
+                            "basePrice": 264,
+                            "cartLabel": "ديسباسيتو كبير",
+                            "variants": [
+                                { "id": "dark-nutella", "flavor": "نوتيلا دارك", "price": 264 },
+                                { "id": "lotus", "flavor": "لوتس", "price": 264 },
+                                { "id": "white-nutella", "flavor": "نوتيلا وايت", "price": 264 },
+                                { "id": "caramel", "flavor": "كراميل", "price": 264 },
+                                { "id": "kinder", "flavor": "كيندر", "price": 264 },
+                                { "id": "blueberry", "flavor": "بلوبيري", "price": 264 },
+                                { "id": "raspberry", "flavor": "راسبيري", "price": 264 },
+                                { "id": "cherry", "flavor": "كرز", "price": 264 },
+                                { "id": "snickers", "flavor": "اسنيكرز", "price": 264 },
+                                { "id": "mix-chocolate", "flavor": "ميكس شوكليت", "price": 264 },
+                                { "id": "pistachio", "flavor": "بيستاشيو", "price": 297 }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "id": "qashtota",
+                    "slug": "qashtota",
+                    "category": "desserts",
+                    "title": "القشطوطة",
+                    "layout": "two-cards",
+                    "featured": true,
+                    "searchTerms": ["قشطوطة", "كيك", "حلويات", "لوتس", "بيستاشيو"],
+                    "description": "كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح من أول لقمة. منتج مناسب للضيافة اليومية ولأي وقت تحب فيه حاجة خفيفة لكن بجودة حقيقية.",
+                    "images": ["https://images.unsplash.com/photo-1587314168485-3236d6710814?w=800&auto=format&fit=crop&q=80"],
+                    "variants": [
+                        { "id": "white-nutella", "flavor": "نوتيلا وايت", "price": 121 },
+                        { "id": "dark-nutella", "flavor": "نوتيلا دارك", "price": 121 },
+                        { "id": "lotus", "flavor": "لوتس", "price": 121 },
+                        { "id": "pistachio", "flavor": "بيستاشيو", "price": 143 },
+                        { "id": "kinder", "flavor": "كيندر", "price": 121 },
+                        { "id": "caramel", "flavor": "كراميل", "price": 121 },
+                        { "id": "mango", "flavor": "مانجا", "price": 121 },
+                        { "id": "strawberry", "flavor": "فراولة", "price": 121 },
+                        { "id": "banana", "flavor": "موز", "price": 121 },
+                        { "id": "mix", "flavor": "ميكس نكهات", "price": 121 }
+                    ]
+                },
+                {
+                    "id": "donuts",
+                    "slug": "donuts",
+                    "category": "desserts",
+                    "title": "الدوناتس",
+                    "layout": "two-cards",
+                    "featured": true,
+                    "searchTerms": ["دوناتس", "دونت", "شوكولاتة", "حلويات"],
+                    "description": "دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك نفس الطعم والجودة اللي بنقدمها داخل الفرع.",
+                    "images": ["https://images.unsplash.com/photo-1551024601-bec78aea704b?w=800&auto=format&fit=crop&q=80"],
+                    "variants": [
+                        { "id": "white-nutella", "flavor": "نوتيلا وايت", "price": 88 },
+                        { "id": "dark-nutella", "flavor": "نوتيلا دارك", "price": 88 },
+                        { "id": "lotus", "flavor": "لوتس", "price": 88 },
+                        { "id": "pistachio", "flavor": "بيستاشيو", "price": 110 },
+                        { "id": "kinder", "flavor": "كيندر", "price": 88 },
+                        { "id": "caramel", "flavor": "كراميل", "price": 88 },
+                        { "id": "red-velvet", "flavor": "ريدفيلفت", "price": 99 },
+                        { "id": "blueberry-raspberry", "flavor": "بلوبيري + راسبيري", "price": 99 },
+                        { "id": "strawberry", "flavor": "فراولة", "price": 88 },
+                        { "id": "mango", "flavor": "مانجا", "price": 99 },
+                        { "id": "matilda", "flavor": "ماتيلدا", "price": 110 },
+                        { "id": "oreo", "flavor": "اوريو", "price": 88 },
+                        { "id": "cherry", "flavor": "كرز", "price": 88 }
+                    ]
+                },
+                {
+                    "id": "cinabon",
+                    "slug": "cinabon",
+                    "category": "desserts",
+                    "title": "السينابون",
+                    "layout": "two-cards",
+                    "featured": true,
+                    "searchTerms": ["سينابون", "قرفة", "حلويات"],
+                    "description": "لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة. معمول علشان تاخد تجربة واضحة في الطعم والجودة من أول قطعة.",
+                    "images": ["https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&auto=format&fit=crop&q=80"],
+                    "variants": [
+                        { "id": "dark-nutella", "flavor": "نوتيلا دارك", "price": 121 },
+                        { "id": "white-nutella", "flavor": "وايت نوتيلا", "price": 121 },
+                        { "id": "blueberry", "flavor": "بلوبيري", "price": 121 },
+                        { "id": "raspberry", "flavor": "راسبيري", "price": 121 },
+                        { "id": "raffaello", "flavor": "رفايلو", "price": 121 },
+                        { "id": "oreo", "flavor": "اوريو", "price": 121 },
+                        { "id": "lotus", "flavor": "لوتس", "price": 121 },
+                        { "id": "pistachio", "flavor": "بيستاشيو", "price": 143 },
+                        { "id": "kinder", "flavor": "كيندر", "price": 121 },
+                        { "id": "caramel", "flavor": "كراميل", "price": 121 },
+                        { "id": "classic", "flavor": "كلاسيك", "price": 121 }
+                    ]
+                },
+                {
+                    "id": "happiness-cups",
+                    "slug": "happiness-cups",
+                    "category": "desserts",
+                    "title": "كبات السعادة",
+                    "layout": "two-cards",
+                    "featured": true,
+                    "description": "أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة.",
+                    "images": ["https://images.unsplash.com/photo-1579372786545-d24232daf58c?w=800&auto=format&fit=crop&q=80"],
+                    "variants": [
+                        { "id": "nutella", "flavor": "نوتيلا", "price": 61 },
+                        { "id": "lotus", "flavor": "لوتس", "price": 61 },
+                        { "id": "oreo", "flavor": "أوريو", "price": 61 },
+                        { "id": "snickers", "flavor": "اسنيكرز", "price": 61 },
+                        { "id": "blueberry", "flavor": "بلوبيري", "price": 61 },
+                        { "id": "raspberry", "flavor": "راسبيري", "price": 61 },
+                        { "id": "cherry", "flavor": "كرز", "price": 61 },
+                        { "id": "kitkat", "flavor": "كيت كات", "price": 61 },
+                        { "id": "rocher", "flavor": "روشيه", "price": 61 },
+                        { "id": "raffaello", "flavor": "رفايلو", "price": 61 },
+                        { "id": "kinder", "flavor": "كيندر", "price": 61 }
+                    ]
+                },
+                {
+                    "id": "red-velvet",
+                    "slug": "red-velvet",
+                    "category": "desserts",
+                    "title": "الريدڤيلڤت",
+                    "layout": "full-card",
+                    "featured": true,
+                    "description": "كيك ريدڤيلڤت بطبقات متوازنة وكريمة ناعمة معمول بخامات واضحة وجودة ثابتة في كل حجم.",
+                    "images": ["https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?w=800&auto=format&fit=crop&q=80"],
+                    "sizes": [
+                        { "id": "triangle", "name": "مثلث كبير", "price": 72 },
+                        { "id": "cup", "name": "كب وسط", "price": 99 },
+                        { "id": "tray", "name": "طاجن كبير", "price": 165 }
+                    ]
+                },
+                {
+                    "id": "mini-cake",
+                    "slug": "mini-cake",
+                    "category": "desserts",
+                    "title": "الميني تورت",
+                    "layout": "full-card",
+                    "featured": true,
+                    "description": "تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل مناسبة للهدايا والمناسبات الخاصة.",
+                    "images": ["https://images.unsplash.com/photo-1535141192574-5d4897c13636?w=800&auto=format&fit=crop&q=80"],
+                    "sizes": [
+                        { "id": "two-person", "name": "فرد أو اتنين", "price": 154 },
+                        { "id": "four-person", "name": "3 أو 4 أفراد", "price": 308 },
+                        { "id": "six-person", "name": "5 أو 6 أفراد", "price": 462 }
+                    ]
+                },
+                {
+                    "id": "relax-box",
+                    "slug": "relax-box",
+                    "category": "boxes",
+                    "title": "بوكس الروقان",
+                    "layout": "full-card",
+                    "featured": true,
+                    "description": "تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية.",
+                    "images": ["https://images.unsplash.com/photo-1544982503-9f984c14501a?w=800&auto=format&fit=crop&q=80"],
+                    "price": 550
+                },
+                {
+                    "id": "gateaux",
+                    "slug": "gateaux",
+                    "category": "desserts",
+                    "title": "الجاتوهات",
+                    "layout": "full-card",
+                    "featured": true,
+                    "description": "تشكيلات جاتوه متنوعة بخامات متوازنة وطعم واضح مناسب للضيافة اليومية والمناسبات.",
+                    "images": ["https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=800&auto=format&fit=crop&q=80"],
+                    "variants": [
+                        { "id": "royal", "name": "جاتوه ملكي", "price": 638 },
+                        { "id": "classic", "name": "جاتوه كلاسيك", "price": 506 },
+                        { "id": "soirée", "name": "جاتوه سواريه", "price": 374 }
+                    ]
+                },
+                {
+                    "id": "cupcake",
+                    "slug": "cupcake",
+                    "category": "desserts",
+                    "title": "الكب كيك",
+                    "layout": "two-cards",
+                    "featured": true,
+                    "description": "كب كيك بتزيينات متنوعة وخامات متوازنة مناسب للهدايا والمناسبات والتجمعات الصغيرة.",
+                    "images": ["https://images.unsplash.com/photo-1550617931-e17a7b70dce2?w=800&auto=format&fit=crop&q=80"],
+                    "variants": [
+                        { "id": "chocolate", "name": "دستة كب كيك شوكولاتة", "pieces": 12, "price": 324 },
+                        { "id": "vanilla", "name": "دستة كب كيك فانيليا", "pieces": 12, "price": 324 },
+                        { "id": "mix", "name": "دستة كب كيك ميكس", "pieces": 12, "price": 324 }
+                    ]
+                }
+            ],
+            "cakeBuilder": {
+                "enabled": true,
+                "basePrice": 580,
+                "pricePerPerson": 145,
+                "persons": {
+                    "minimum": 4,
+                    "maximum": 250,
+                    "step": 2
+                },
+                "cakeTypes": [
+                    { "id": "vanilla", "name": "فانيليا" },
+                    { "id": "chocolate", "name": "شوكولاتة" },
+                    { "id": "half-half", "name": "نصف ونصف" }
+                ],
+                "shapes": [
+                    { "id": "circle", "name": "دائرة", "minimumPersons": 4 },
+                    { "id": "heart", "name": "قلب", "minimumPersons": 4 },
+                    { "id": "square", "name": "مربع", "minimumPersons": 16 },
+                    { "id": "rectangle", "name": "مستطيل", "minimumPersons": 20 }
+                ],
+                "printingOptions": [
+                    { "id": "edible", "name": "صورة قابلة للأكل", "price": 60 },
+                    { "id": "non-edible", "name": "صورة غير قابلة للأكل", "price": 20 }
+                ],
+                "messages": {
+                    "squareMinimum": "المقاس المربع يبدأ من 16 فرد",
+                    "rectangleMinimum": "المقاس المستطيل يبدأ من 20 فرد",
+                    "rectangleUpgrade": "عشان تطلع معاك التورتة المستطيلة مظبوطة وبأفضل تنسيق، أقل مقاس بنقدر ننفذه للشكل ده هو 20 فرد.",
+                    "pricingInfo": "الحسبة هنا قايمة على خامات طبيعية ممتازة ومضمونة 100% عشان تطلع لك تورتة تشرفك قدام ضيوفك وتبسطهم بالطعم الأصلي."
+                }
+            },
+            "flowerBuilder": {
+                "enabled": true,
+                "basePrice": 400,
+                "baseFlowers": 15,
+                "extraFlowerPrice": 35,
+                "flowerTypes": [
+                    { "id": "natural", "name": "ورد طبيعي" },
+                    { "id": "artificial", "name": "ورد صناعي" },
+                    { "id": "satin", "name": "ورد ستان" }
+                ],
+                "moneyCategories": [5, 10, 20, 50, 100, 200],
+                "photoPrintPrice": 15,
+                "ribbonPrice": 50,
+                "giftCardPrice": 20,
+                "chocolatePiecePrices": [20, 30, 50],
+                "largeChocolateMinimumPrice": 100
+            }
+        };
+
+        // صور متحركة مميزة لقسم "عقد من الإتقان" لتمثيل الجودة اليدوية
+        const excellenceGallery = [
+            "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1000&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1488477181946-6428a0291777?w=1000&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=1000&auto=format&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1519869325930-281384150729?w=1000&auto=format&fit=crop&q=80"
+        ];
+
+        // ==========================================
+        // 2. المكونات المشتركة الأساسية (Core Shared Components)
+        // ==========================================
+
+        // الهيدر الرئيسي مع القائمة الجانبية المدمجة والبحث الفوري ومؤشر السلة
+        function Header({ activePage, onNavigate, cartCount, onSearchChange, searchQuery, onToggleSidebar }) {
+            return (
+                <header class="sticky top-0 z-40 bg-brand-bg border-b border-gray-100 px-4 py-3 md:px-8 flex items-center justify-between smooth-transition">
+                    <div class="flex items-center gap-3 md:gap-5">
+                        {/* زر فتح القائمة الجانبية التفاعلية */}
+                        <button 
+                            onClick={onToggleSidebar} 
+                            class="p-2 text-brand-dark hover:bg-gray-50 rounded-full smooth-transition"
+                            aria-label="القائمة الجانبية"
+                        >
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                        </button>
+                        
+                        {/* شعار واسم العلامة التجارية الفخم حلويات بوسي */}
+                        <div onClick={() => onNavigate('home')} class="flex items-center gap-2 cursor-pointer select-none">
+                            <img src={siteData.store.logo} alt="شعار حلويات بوسي" class="w-10 h-10 object-contain" />
+                            <span class="font-bold text-base md:text-lg tracking-wide text-brand-dark">حلويات بوسي</span>
+                        </div>
+                    </div>
+
+                    {/* حقل البحث الفوري المدمج في الهيدر */}
+                    {siteData.navigation.showSearch && (
+                        <div class="relative hidden md:block w-64 lg:w-80">
+                            <input 
+                                type="text" 
+                                placeholder="ابحث عن أصناف السعادة..." 
+                                value={searchQuery}
+                                onChange={(e) => {
+                                    onSearchChange(e.target.value);
+                                    if (activePage !== 'menu') onNavigate('menu');
+                                }}
+                                class="w-full text-xs bg-[#F9F9F9] border border-gray-100 rounded-full py-2 px-5 outline-none focus:border-brand-pink focus:bg-white smooth-transition text-brand-dark"
+                            />
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </span>
+                        </div>
+                    )}
+
+                    {/* أيقونات التفاعل الأيمن (السلة، المفضلة) */}
+                    <div class="flex items-center gap-2">
+                        {siteData.navigation.showCart && (
+                            <button 
+                                onClick={() => onNavigate('cart')} 
+                                class="relative p-2 text-brand-dark hover:bg-gray-50 rounded-full smooth-transition"
+                                aria-label="سلة المشتريات"
+                            >
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                </svg>
+                                {cartCount > 0 && (
+                                    <span class="absolute -top-0.5 -right-0.5 bg-brand-pink text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold animate-pulse">
+                                        {cartCount}
+                                    </span>
+                                )}
+                            </button>
+                        )}
+                    </div>
+                </header>
+            );
+        }
+
+        // الفوتر المتكامل المحتوي على السياسات التشغيلية وروابط التواصل الاجتماعي
+        function Footer({ onNavigate }) {
+            return (
+                <footer class="bg-[#F9F9F9] border-t border-gray-100 py-12 px-6 md:px-12 smooth-transition">
+                    <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 text-right">
+                        <div>
+                            <h3 class="font-bold text-base mb-4 text-brand-dark">حلويات بوسي</h3>
+                            <p class="text-xs text-gray-500 leading-relaxed font-light">
+                                صنعناها بحب لتهديها لمن تحب. أكثر من 10 سنوات خبرة نلتزم خلالها بتقديم أعلى معايير الجودة والنظافة والاتقان في عالم صناعة الحلويات الراقية والمبتكرة.
+                            </p>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-brand-dark mb-4">روابط سريعة</h3>
+                            <div class="flex flex-col gap-3">
+                                <button onClick={() => onNavigate('home')} class="text-right text-xs text-gray-500 hover:text-brand-pink smooth-transition font-medium">الرئيسية</button>
+                                <button onClick={() => onNavigate('menu')} class="text-right text-xs text-gray-500 hover:text-brand-pink smooth-transition font-medium">المنيو</button>
+                                <button onClick={() => onNavigate('cart')} class="text-right text-xs text-gray-500 hover:text-brand-pink smooth-transition font-medium">السلة</button>
+                                <button onClick={() => onNavigate('cake-builder')} class="text-right text-xs text-gray-500 hover:text-brand-pink smooth-transition font-medium">محاكي التورت</button>
+                                <button onClick={() => onNavigate('flower-builder')} class="text-right text-xs text-gray-500 hover:text-brand-pink smooth-transition font-medium">محاكي الورد</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-xs uppercase tracking-wider text-brand-dark mb-4">سياساتنا ومعايير التشغيل</h3>
+                            <div class="flex flex-col gap-3 text-xs text-gray-500 leading-relaxed font-light">
+                                <span>• سياسة الخصوصية وأمان معلومات السداد والبيانات الشخصية</span>
+                                <span>• سياسة الاسترجاع والضمان الذهبي لجودة المكونات والمظهر</span>
+                                <span>• سياسة الحفاظ على المنتجات أثناء الشحن المبرد المتخصص</span>
+                                <span>• تواصل مباشر عبر خدمة العملاء على مدار 24 ساعة</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* الروابط والقنوات الرسمية مع حماية العلامة التجارية */}
+                    <div class="max-w-6xl mx-auto mt-10 pt-8 border-t border-gray-200/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex gap-4">
+                            <a href={siteData.social.facebook} target="_blank" rel="noopener noreferrer" class="p-2 bg-white rounded-full shadow-sm text-gray-600 hover:text-brand-pink smooth-transition" aria-label="Facebook">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1V12h3v3h-3v6.8c4.56-.93 8-4.96 8-9.8z"/></svg>
+                            </a>
+                            <a href={siteData.social.instagram} target="_blank" rel="noopener noreferrer" class="p-2 bg-white rounded-full shadow-sm text-gray-600 hover:text-brand-pink smooth-transition" aria-label="Instagram">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204 013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                            </a>
+                            <a href={siteData.social.tiktok} target="_blank" rel="noopener noreferrer" class="p-2 bg-white rounded-full shadow-sm text-gray-600 hover:text-brand-pink smooth-transition" aria-label="TikTok">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+                            </a>
+                        </div>
+                        <p class="text-[10px] text-gray-400 select-none">
+                            جميع الحقوق محفوظة © {new Date().getFullYear()} - حلويات بوسي BoseSweets
+                        </p>
+                    </div>
+                </footer>
+            );
+        }
+
+        // كارت المنتج الشامل والتفاعلي المكون من صورة وزر تحديد الكمية التفاعلي ± والسعر والإضافة المباشرة للسلة
+        function ProductCard({ product, quantity, onUpdateQuantity, onAddToCart, onNavigateToDetail }) {
+            return (
+                <div class="bg-brand-bg border border-gray-100 rounded-3xl overflow-hidden hover:shadow-lg hover:border-brand-pink/20 transition-all duration-300 flex flex-col h-full animate-fade-in group">
+                    {/* صورة المنتج */}
+                    <div 
+                        onClick={onNavigateToDetail} 
+                        class="relative aspect-square bg-gray-50 overflow-hidden cursor-pointer"
+                    >
+                        <img 
+                            src={product.images?.[0] || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&auto=format&fit=crop&q=80'} 
+                            alt={product.title} 
+                            class="w-full h-full object-cover group-hover:scale-105 smooth-transition"
+                            loading="lazy"
+                        />
+                        {product.featured && (
+                            <span class="absolute top-3 right-3 bg-brand-pink text-white text-[9px] font-bold px-2.5 py-1 rounded-full shadow-sm select-none">
+                                مميز
+                            </span>
+                        )}
+                    </div>
+
+                    {/* تفاصيل الكارت */}
+                    <div class="p-4 flex flex-col flex-grow text-right">
+                        <h3 
+                            onClick={onNavigateToDetail} 
+                            class="font-bold text-sm text-brand-dark mb-1 line-clamp-1 cursor-pointer hover:text-brand-pink smooth-transition"
+                        >
+                            {product.title}
+                        </h3>
+                        <p class="text-gray-400 text-[10px] leading-relaxed line-clamp-2 h-8 mb-4">
+                            {product.description}
+                        </p>
+
+                        <div class="mt-auto">
+                            {/* شريط السعر والكمية التفاعلي */}
+                            <div class="flex items-center justify-between bg-brand-grayLight rounded-full p-1 mb-3">
+                                <button 
+                                    onClick={() => onUpdateQuantity(product.id, -1)}
+                                    class="w-8 h-8 flex items-center justify-center bg-white text-brand-dark hover:bg-brand-pink hover:text-white rounded-full shadow-sm smooth-transition text-xs font-bold"
+                                    aria-label="تقليل الكمية"
+                                >
+                                    -
+                                </button>
+                                <span class="font-bold text-xs text-brand-dark">
+                                    {product.price 
+                                        ? `${product.price * quantity} ج.م` 
+                                        : (product.variants 
+                                            ? `${product.variants[0].price * quantity} ج.م` 
+                                            : `${product.sizes?.[0]?.basePrice * quantity} ج.م`
+                                          )
+                                    }
+                                </span>
+                                <button 
+                                    onClick={() => onUpdateQuantity(product.id, 1)}
+                                    class="w-8 h-8 flex items-center justify-center bg-white text-brand-dark hover:bg-brand-pink hover:text-white rounded-full shadow-sm smooth-transition text-xs font-bold"
+                                    aria-label="زيادة الكمية"
+                                >
+                                    +
+                                </button>
+                            </div>
+
+                            {/* زر إضافة للسلة الفوري */}
+                            <button 
+                                onClick={() => onAddToCart(product, quantity)}
+                                class="w-full bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold py-2.5 rounded-full smooth-transition shadow-sm active:scale-95"
+                            >
+                                إضافة للسلة
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+```javascript
+        // ==========================================
+        // 3. مكون الصفحة الرئيسية (HomePage Component)
+        // ==========================================
+        function HomePage({ 
+            onNavigate, 
+            quantities, 
+            onUpdateQuantity, 
+            onAddToCart, 
+            productGroupIndex, 
+            setProductGroupIndex,
+            excellenceIndex,
+            onNavigateToDetail
+        }) {
+            // استخراج أول 8 منتجات لعرضها في قسم منتجاتنا الراقية
+            const displayProducts = useMemo(() => {
+                return siteData.products.slice(0, 8);
+            }, []);
+
+            const firstGroup = displayProducts.slice(0, 4);
+            const secondGroup = displayProducts.slice(4, 8);
+
+            return (
+                <div class="animate-fade-in text-right">
+                    
+                    {/* قسم البطل البصري (Hero Section) */}
+                    <section class="relative bg-gradient-to-b from-[#FF91A4]/5 to-white py-16 px-4 md:px-8 text-center overflow-hidden">
+                        <div class="max-w-4xl mx-auto relative z-10">
+                            <span class="inline-block bg-brand-pink/10 text-brand-pink text-xs font-bold px-4 py-1.5 rounded-full mb-4 select-none">
+                                أكثر من 10 سنوات خبرة في صناعة السعادة
+                            </span>
+                            <h1 class="text-3xl md:text-5xl font-extrabold leading-tight text-brand-dark mb-4 tracking-tight">
+                                عقد من التميز في صناعة الحلويات
+                            </h1>
+                            <p class="text-gray-500 text-xs md:text-sm max-w-xl mx-auto mb-8 leading-relaxed font-light">
+                                نقدم في مطبخنا تجربة تذوق فريدة تعتمد بالكامل على خامات طبيعية ممتازة ومضمونة بنسبة 100% لتشارككم لحظاتكم الجميلة وتزين طاولات ضيافتكم بأرقى الأشكال والنكهات الأصيلة.
+                            </p>
+                            <button 
+                                onClick={() => onNavigate('menu')} 
+                                class="bg-brand-pink hover:bg-[#ff8095] text-white font-semibold text-xs md:text-sm px-10 py-3.5 rounded-full shadow-lg hover:shadow-xl smooth-transition active:scale-95"
+                            >
+                                اطلب الآن
+                            </button>
+                        </div>
+
+                        {/* الهوك البصري - فيديو أو صورة تمثيلية تملأ الشاشة لإبراز فخامة مطبخنا */}
+                        <div class="max-w-5xl mx-auto mt-12 rounded-3xl overflow-hidden shadow-2xl relative aspect-video bg-brand-dark border-4 border-white smooth-transition">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10 flex flex-col justify-end p-6 md:p-10 text-right">
+                                <span class="text-brand-pink text-[10px] md:text-xs font-bold tracking-widest mb-1.5 uppercase">حلويات بوسي BoseSweets</span>
+                                <h3 class="text-white font-bold text-lg md:text-2xl mb-2">شريك كل مناسباتكم السعيدة ولحظاتكم العائلية الدافئة</h3>
+                                <p class="text-gray-300 text-[10px] md:text-xs max-w-md font-light leading-relaxed">
+                                    جولة بصرية سريعة داخل كواليس تحضير الحلويات الفاخرة بأيدي خبراء مطبخنا وبأعلى معايير الدقة والترتيب.
+                                </p>
+                            </div>
+                            <img 
+                                src="https://images.unsplash.com/photo-1551024601-bec78aea704b?w=1200&auto=format&fit=crop&q=80" 
+                                alt="مطبخ حلويات بوسي" 
+                                class="w-full h-full object-cover opacity-85 hover:scale-105 smooth-transition" 
+                                loading="lazy"
+                            />
+                        </div>
+                    </section>
+
+                    {/* قسم الأكثر مبيعاً (سلايدر جانبي مريح للموبايل يضم 8 منتجات مميزة) */}
+                    <section class="py-12 bg-white px-4 md:px-8">
+                        <div class="max-w-6xl mx-auto">
+                            <div class="mb-8">
+                                <h2 class="text-xl md:text-2xl font-bold text-brand-dark">الأكثر مبيعاً</h2>
+                                <p class="text-xs text-gray-400 mt-1">خيارات حازت على إعجاب وثقة آلاف العملاء بمختلف الأوقات</p>
+                            </div>
+
+                            <div class="flex gap-4 md:gap-6 overflow-x-auto pb-4 no-scrollbar snap-x">
+                                {siteData.products.slice(0, 8).map(product => (
+                                    <div 
+                                        key={`best-seller-${product.id}`} 
+                                        class="min-w-[260px] max-w-[260px] snap-start bg-brand-bg border border-gray-100 rounded-3xl overflow-hidden hover:shadow-md smooth-transition flex flex-col"
+                                    >
+                                        <div 
+                                            onClick={() => onNavigateToDetail(product.id)} 
+                                            class="relative aspect-[4/3] bg-gray-50 overflow-hidden cursor-pointer"
+                                        >
+                                            <img 
+                                                src={product.images?.[0] || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=300&auto=format&fit=crop&q=80'} 
+                                                alt={product.title} 
+                                                class="w-full h-full object-cover" 
+                                                loading="lazy"
+                                            />
+                                        </div>
+                                        <div class="p-4 flex flex-col flex-grow text-right">
+                                            <h3 onClick={() => onNavigateToDetail(product.id)} class="font-bold text-xs md:text-sm text-brand-dark mb-1 cursor-pointer hover:text-brand-pink smooth-transition">{product.title}</h3>
+                                            <p class="text-gray-400 text-[10px] leading-relaxed line-clamp-2 h-8 mb-4">{product.description}</p>
+                                            <div class="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
+                                                <span class="font-extrabold text-brand-pink text-xs md:text-sm">
+                                                    {product.price ? `${product.price} ج.م` : (product.sizes ? `تبدأ من ${product.sizes[0].basePrice} ج.م` : `حسب الاختيار`)}
+                                                </span>
+                                                <button 
+                                                    onClick={() => onNavigateToDetail(product.id)} 
+                                                    class="text-[10px] bg-brand-pink/10 hover:bg-brand-pink hover:text-white text-brand-pink font-semibold px-4 py-1.5 rounded-full smooth-transition"
+                                                >
+                                                    استعرض
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* قسم "عقد من الإتقان" - كارت ثابت ممتد الشاشة وبداخله صور متحركة */}
+                    <section class="py-12 bg-brand-grayLight px-4 md:px-8">
+                        <div class="max-w-5xl mx-auto">
+                            <div class="text-center mb-8">
+                                <h2 class="text-2xl font-bold text-brand-dark mb-2">عقد من الإتقان</h2>
+                                <p class="text-xs text-gray-500 max-w-lg mx-auto leading-relaxed font-light">
+                                    أعلى درجات النظافة والجودة نطبقها في كل مرحلة من تحضير الحلويات لنضمن لك طعماً غنياً ومظهراً رائعاً يليق بك ويسعد ضيوفك.
+                                </p>
+                            </div>
+
+                            <div class="relative rounded-3xl overflow-hidden shadow-xl aspect-[16/9] bg-brand-dark">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent z-10 flex flex-col justify-end p-6 md:p-10 text-right">
+                                    <span class="text-brand-pink text-[10px] md:text-xs font-bold tracking-wider mb-2">صنعناها بحب لتهديها لمن تحب</span>
+                                    <h3 class="text-white text-base md:text-2xl font-bold mb-2">اللمسة اليدوية المبدعة والمكونات الفاخرة</h3>
+                                    <p class="text-gray-300 text-[10px] md:text-xs max-w-lg leading-relaxed font-light">
+                                        نختار الزبد الطبيعي والشوكولاتة الفاخرة والكريمة الغنية بعناية فائقة لتخرج لك كل لقمة متوازنة ومريحة من أول قطعة لآخر قطعة.
+                                    </p>
+                                </div>
+                                <img 
+                                    src={excellenceGallery[excellenceIndex]} 
+                                    alt="معرض صور إتقان العمل بمطبخنا" 
+                                    class="w-full h-full object-cover opacity-80 smooth-transition transform scale-105" 
+                                    loading="lazy"
+                                />
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* قسم منتجاتنا - عرض 8 كروت على مجموعتين كل مجموعة 4 كروت */}
+                    <section class="py-16 px-4 md:px-8 bg-white">
+                        <div class="max-w-6xl mx-auto">
+                            <div class="text-center mb-10">
+                                <h2 class="text-2xl font-bold text-brand-dark mb-2">منتجاتنا</h2>
+                                <p class="text-xs text-gray-400 max-w-sm mx-auto">تشكيلة واسعة من الحلويات المصنوعة يدوياً بكل حب وإتقان</p>
+                            </div>
+
+                            {/* شبكة المنتجات الثنائية على الموبايل والرباعية على الشاشات الكبيرة */}
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                                {firstGroup.map(product => (
+                                    <ProductCard 
+                                        key={`product-group1-${product.id}`}
+                                        product={product}
+                                        quantity={quantities[product.id] || 1}
+                                        onUpdateQuantity={onUpdateQuantity}
+                                        onAddToCart={onAddToCart}
+                                        onNavigateToDetail={() => onNavigateToDetail(product.id)}
+                                    />
+                                ))}
+
+                                {/* المجموعة الثانية تظهر فقط عند النقر على زر اعرف اكتر */}
+                                {productGroupIndex === 1 && secondGroup.map(product => (
+                                    <ProductCard 
+                                        key={`product-group2-${product.id}`}
+                                        product={product}
+                                        quantity={quantities[product.id] || 1}
+                                        onUpdateQuantity={onUpdateQuantity}
+                                        onAddToCart={onAddToCart}
+                                        onNavigateToDetail={() => onNavigateToDetail(product.id)}
+                                    />
+                                ))}
+                            </div>
+
+                            {productGroupIndex === 0 && (
+                                <div class="text-center mt-10">
+                                    <button 
+                                        onClick={() => setProductGroupIndex(1)}
+                                        class="bg-white border border-brand-pink/30 hover:border-brand-pink hover:bg-brand-pink/5 text-brand-pink text-xs font-semibold px-8 py-3 rounded-full smooth-transition active:scale-95"
+                                    >
+                                        استعرض المزيد من منتجاتنا
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </section>
+
+                    {/* قسم محاكي التورت - واجهة ترويجية تفاعلية وفخمة */}
+                    <section class="py-12 bg-gradient-to-l from-white to-[#FF91A4]/5 px-4 md:px-8 border-y border-brand-pink/10">
+                        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+                            <div class="flex-1 text-right">
+                                <span class="bg-brand-pink text-white text-[9px] font-bold px-3 py-1 rounded-full mb-3 inline-block select-none">تفاعلي بالكامل</span>
+                                <h3 class="text-xl md:text-2xl font-extrabold text-brand-dark mb-3">محاكي التورت والمناسبات الخاصة</h3>
+                                <p class="text-gray-500 text-xs md:text-sm leading-relaxed max-w-md font-light">
+                                    صمم تورتة لقائك القادم بدقة متناهية من خلال نظام المحاكاة الذكي. حدد نوع الكيك وعدد الأفراد بدقة واطلب طباعة صورة مخصصة أو اكتب جملة بخط اليد لنحول فكرتك إلى حقيقة مشرفة أمام ضيوفك.
+                                </p>
+                            </div>
+                            <div class="relative w-full max-w-[320px] aspect-square rounded-3xl overflow-hidden bg-white shadow-lg border border-gray-100 flex items-center justify-center p-4 group smooth-transition hover:shadow-xl">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1535141192574-5d4897c13636?w=400&auto=format&fit=crop&q=80" 
+                                    alt="تورتة مخصصة فاخرة" 
+                                    class="w-full h-full object-cover rounded-2xl smooth-transition group-hover:scale-105" 
+                                    loading="lazy"
+                                />
+                                <div class="absolute inset-0 bg-black/15 flex items-end justify-center p-4 opacity-100 md:opacity-0 group-hover:opacity-100 smooth-transition">
+                                    <button 
+                                        onClick={() => onNavigate('cake-builder')}
+                                        class="bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold px-8 py-3 rounded-full shadow-md smooth-transition active:scale-95"
+                                    >
+                                        اعرف المزيد وصمم الآن
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* قسم وصل حديثاً - سلايدر أفقي تفاعلي يضم 6 منتجات مبتكرة */}
+                    <section class="py-12 bg-white px-4 md:px-8">
+                        <div class="max-w-6xl mx-auto">
+                            <div class="mb-8">
+                                <h2 class="text-xl md:text-2xl font-bold text-brand-dark">وصل حديثاً</h2>
+                                <p class="text-xs text-gray-400 mt-1 font-light">ابتكارات لذيذة وحصرية تمت إضافتها مؤخراً لتجربتها ومشاركتها</p>
+                            </div>
+
+                            <div class="flex gap-4 md:gap-6 overflow-x-auto pb-4 no-scrollbar snap-x">
+                                {siteData.products.slice(2, 8).map(product => (
+                                    <div 
+                                        key={`new-arrival-${product.id}`} 
+                                        class="min-w-[240px] max-w-[240px] snap-start bg-brand-bg border border-gray-100 rounded-3xl overflow-hidden hover:shadow-md smooth-transition flex flex-col"
+                                    >
+                                        <div 
+                                            onClick={() => onNavigateToDetail(product.id)} 
+                                            class="relative aspect-[4/3] bg-gray-50 overflow-hidden cursor-pointer"
+                                        >
+                                            <img 
+                                                src={product.images?.[0] || 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=300&auto=format&fit=crop&q=80'} 
+                                                alt={product.title} 
+                                                class="w-full h-full object-cover" 
+                                                loading="lazy"
+                                            />
+                                        </div>
+                                        <div class="p-4 flex flex-col flex-grow text-right">
+                                            <h3 onClick={() => onNavigateToDetail(product.id)} class="font-bold text-xs text-brand-dark mb-1 line-clamp-1 cursor-pointer hover:text-brand-pink smooth-transition">{product.title}</h3>
+                                            <p class="text-gray-400 text-[9px] leading-relaxed line-clamp-2 h-7 mb-3">{product.description}</p>
+                                            <button 
+                                                onClick={() => onNavigateToDetail(product.id)} 
+                                                class="w-full text-[10px] bg-brand-grayLight text-brand-dark hover:bg-brand-pink hover:text-white font-medium py-1.5 rounded-full smooth-transition"
+                                            >
+                                                استكشف المنتج
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* قسم الفخر والاعتزاز - إنجازات العلامة التجارية عبر عقد من الزمن */}
+                    <section class="py-16 bg-brand-dark text-white px-4 md:px-8">
+                        <div class="max-w-4xl mx-auto text-center">
+                            <span class="text-brand-pink text-[10px] md:text-xs font-bold tracking-widest mb-2 block uppercase">تاريخنا وقصة فخرنا</span>
+                            <h2 class="text-2xl md:text-3xl font-extrabold mb-4">أكثر من 10 سنوات خبرة، أكثر من 10000 عميل</h2>
+                            <p class="text-gray-400 text-xs md:text-sm max-w-2xl mx-auto leading-relaxed font-light mb-8">
+                                نفخر في حلويات بوسي بأن نكون شركاء دائمين في جميع مناسباتكم ولقاءاتكم الدافئة على مدار عشر سنوات كاملة قدمنا خلالها أرقى حلويات المناسبات والضيافة المصنوعة يدوياً بكل فخر واهتمام بالصناعة المتميزة.
+                            </p>
+                            <div class="aspect-video w-full rounded-3xl overflow-hidden bg-gray-900 border-4 border-brand-pink/20 relative shadow-2xl">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1544982503-9f984c14501a?w=1000&auto=format&fit=crop&q=80" 
+                                    alt="لحظات سعيدة مع حلويات بوسي" 
+                                    class="w-full h-full object-cover opacity-90" 
+                                    loading="lazy"
+                                />
+                                <div class="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
+                                    <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                                        <svg class="w-6 h-6 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* قسم محاكي الورد - واجهة ترويجية تفاعلية وفخمة */}
+                    <section class="py-12 bg-gradient-to-r from-white to-[#FF91A4]/5 px-4 md:px-8 border-y border-brand-pink/10">
+                        <div class="max-w-5xl mx-auto flex flex-col md:flex-row-reverse items-center justify-between gap-8">
+                            <div class="flex-1 text-right">
+                                <span class="bg-brand-pink text-white text-[9px] font-bold px-3 py-1 rounded-full mb-3 inline-block select-none">تنسيق وهدايا</span>
+                                <h3 class="text-xl md:text-2xl font-extrabold text-brand-dark mb-3">محاكي بوكيهات الورد وهدايا الكاش</h3>
+                                <p class="text-gray-500 text-xs md:text-sm leading-relaxed max-w-md font-light">
+                                    نظام المحاكاة الذكي والفريد لتنسيق باقات الورد (الطبيعي والصناعي والستان) مع ميزة إدراج المبالغ النقدية وتنسيقها وتزيين البوكيه بالشوكولاتة الفاخرة أو الصور التذكارية لإتمام هديتكم بشكل غاية في التميز والرقي.
+                                </p>
+                            </div>
+                            <div class="relative w-full max-w-[320px] aspect-square rounded-3xl overflow-hidden bg-white shadow-lg border border-gray-100 flex items-center justify-center p-4 group smooth-transition hover:shadow-xl">
+                                <img 
+                                    src="https://images.unsplash.com/photo-1590736969955-71cb94801759?w=400&auto=format&fit=crop&q=80" 
+                                    alt="بوكيه ورد مخصص فاخر" 
+                                    class="w-full h-full object-cover rounded-2xl smooth-transition group-hover:scale-105" 
+                                    loading="lazy"
+                                />
+                                <div class="absolute inset-0 bg-black/15 flex items-end justify-center p-4 opacity-100 md:opacity-0 group-hover:opacity-100 smooth-transition">
+                                    <button 
+                                        onClick={() => onNavigate('flower-builder')}
+                                        class="bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold px-8 py-3 rounded-full shadow-md smooth-transition active:scale-95"
+                                    >
+                                        اعرف المزيد وصمم الآن
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* قسم تسوق حسب القسم */}
+                    <section class="py-16 px-4 md:px-8 bg-white">
+                        <div class="max-w-6xl mx-auto">
+                            <div class="mb-10 text-center md:text-right">
+                                <h2 class="text-xl md:text-2xl font-bold text-brand-dark">تسوق حسب القسم</h2>
+                                <p class="text-xs text-gray-400 mt-1">تصفح أقسامنا المتنوعة للوصول السريع إلى نكهاتك المفضلة</p>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                                {[
+                                    { title: "الديسباسيتو الفاخر", image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=350&auto=format&fit=crop&q=80", id: "despacito" },
+                                    { title: "القشطوطة الأصلية", image: "https://images.unsplash.com/photo-1587314168485-3236d6710814?w=350&auto=format&fit=crop&q=80", id: "qashtota" },
+                                    { title: "الدوناتس الطازج", image: "https://images.unsplash.com/photo-1551024601-bec78aea704b?w=350&auto=format&fit=crop&q=80", id: "donuts" },
+                                    { title: "السينابون الدافئ", image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=350&auto=format&fit=crop&q=80", id: "cinabon" }
+                                ].map(cat => (
+                                    <div key={`cat-card-${cat.id}`} class="relative rounded-3xl overflow-hidden aspect-square shadow-sm bg-gray-100 group border border-gray-100 smooth-transition hover:shadow-md">
+                                        <img src={cat.image} alt={cat.title} class="w-full h-full object-cover group-hover:scale-105 smooth-transition" loading="lazy" />
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-4 text-right">
+                                            <h4 class="text-white font-bold text-xs md:text-sm mb-2">{cat.title}</h4>
+                                            <button 
+                                                onClick={() => onNavigateToDetail(cat.id)}
+                                                class="text-[9px] md:text-[10px] text-white bg-brand-pink px-4 py-1.5 rounded-full self-start font-medium hover:bg-[#ff8095] smooth-transition"
+                                            >
+                                                استكشف القسم
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            );
+        }
+
+        // ==========================================
+        // 4. مكون صفحة المنيو الكاملة (MenuPage Component)
+        // ==========================================
+        function MenuPage({ onNavigate, searchQuery, onSearchChange, onNavigateToDetail }) {
+            const filteredProducts = useMemo(() => {
+                if (!searchQuery.trim()) return siteData.products;
+                const normalized = searchQuery.toLowerCase();
+                return siteData.products.filter(p => 
+                    p.title.toLowerCase().includes(normalized) || 
+                    p.description.toLowerCase().includes(normalized) ||
+                    (p.searchTerms && p.searchTerms.some(term => term.toLowerCase().includes(normalized)))
+                );
+            }, [searchQuery]);
+
+            return (
+                <div class="py-12 px-4 max-w-6xl mx-auto animate-fade-in text-right">
+                    <div class="text-center mb-10">
+                        <h1 class="text-2xl md:text-3xl font-extrabold text-brand-dark mb-2">منيو حلويات بوسي</h1>
+                        <p class="text-xs text-gray-500">مجموعتنا الكاملة من الأصناف الفاخرة التي نحضرها يومياً بكل حب وإتقان</p>
+                    </div>
+
+                    {/* شريط البحث المركزي بالمنيو */}
+                    <div class="max-w-md mx-auto mb-12">
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                placeholder="ابحث عن حلوياتك المفضلة..." 
+                                value={searchQuery}
+                                onChange={(e) => onSearchChange(e.target.value)}
+                                class="w-full text-xs bg-[#F9F9F9] border border-gray-100 rounded-full py-3 px-6 outline-none focus:border-brand-pink focus:bg-white shadow-sm smooth-transition text-brand-dark text-right"
+                            />
+                            {searchQuery && (
+                                <button 
+                                    onClick={() => onSearchChange('')} 
+                                    class="absolute left-4 top-1/2 -translate-y-1/2 text-xs text-gray-400 hover:text-brand-pink smooth-transition"
+                                >
+                                    مسح
+                                </button>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* عرض نتائج البحث والمنتجات بالمنيو */}
+                    {filteredProducts.length === 0 ? (
+                        <div class="text-center py-16">
+                            <p class="text-gray-400 text-xs">لم نجد أصنافاً تطابق بحثك الحالي، يرجى كتابة كلمة بحث أخرى.</p>
+                        </div>
+                    ) : (
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {filteredProducts.map(product => (
+                                <div key={`menu-item-${product.id}`} class="bg-white border border-gray-100 rounded-3xl overflow-hidden hover:shadow-lg smooth-transition flex flex-col">
+                                    <div class="relative aspect-[4/3] bg-gray-50 overflow-hidden">
+                                        <img 
+                                            src={product.images?.[0] || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=500&auto=format&fit=crop&q=80'} 
+                                            alt={product.title} 
+                                            class="w-full h-full object-cover hover:scale-105 smooth-transition" 
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                    <div class="p-5 flex flex-col flex-grow text-right">
+                                        <h3 class="font-bold text-base text-brand-dark mb-2">{product.title}</h3>
+                                        <p class="text-gray-500 text-xs leading-relaxed mb-6 flex-grow">{product.description}</p>
+                                        <div class="flex items-center justify-between pt-4 border-t border-gray-50">
+                                            <span class="font-extrabold text-brand-pink text-xs md:text-sm">
+                                                {product.price ? `${product.price} ج.م` : (product.variants ? `تبدأ من ${product.variants[0].price} ج.م` : (product.sizes ? `تبدأ من ${product.sizes[0].basePrice} ج.م` : 'حسب الاختيار'))}
+                                            </span>
+                                            <button 
+                                                onClick={() => onNavigateToDetail(product.id)}
+                                                class="bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold px-6 py-2 rounded-full smooth-transition shadow-sm active:scale-95"
+                                            >
+                                                اعرف اكتر
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // ==========================================
+        // 5. مكون صفحة تفاصيل المنتجات المستقلة (ProductDetailPage Component)
+        // ==========================================
+        function ProductDetailPage({ product, onAddToCart, onNavigate }) {
+            const [selectedSizeId, setSelectedSizeId] = useState(product.sizes ? product.sizes[0].id : null);
+            const [detailQuantity, setDetailQuantity] = useState(1);
+
+            const activeSizeObj = useMemo(() => {
+                if (!product.sizes) return null;
+                return product.sizes.find(s => s.id === selectedSizeId);
+            }, [product.sizes, selectedSizeId]);
+
+            const handleQtyAdjust = (val) => {
+                setDetailQuantity(prev => Math.max(1, prev + val));
+            };
+
+            return (
+                <div class="py-12 px-4 max-w-4xl mx-auto animate-fade-in text-right">
+                    
+                    {/* زر العودة للمنيو */}
+                    <button 
+                        onClick={() => onNavigate('menu')}
+                        class="mb-6 inline-flex items-center gap-1 text-xs text-gray-500 hover:text-brand-pink smooth-transition"
+                    >
+                        <span>← العودة لقائمة المنيو</span>
+                    </button>
+
+                    {/* عنوان المنتج في منتصف الصفحة */}
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-brand-dark text-center mb-6">{product.title}</h1>
+                    
+                    {/* صورة المنتج كبيرة ونظيفة تماماً خالية من أي كتابة */}
+                    <div class="rounded-3xl overflow-hidden aspect-[16/9] mb-8 bg-gray-50 shadow-md">
+                        <img 
+                            src={product.images?.[0] || 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=1000&auto=format&fit=crop&q=80'} 
+                            alt={product.title} 
+                            class="w-full h-full object-cover" 
+                            loading="lazy"
+                        />
+                    </div>
+
+                    <div class="max-w-2xl mx-auto">
+                        
+                        {/* وصف احترافي بأسلوب كوبي رايتر يركز على القيمة والجودة */}
+                        <div class="bg-brand-grayLight rounded-3xl p-6 border border-gray-100/50 mb-8">
+                            <h3 class="font-bold text-xs text-brand-pink mb-2">عن الجودة والتحضير</h3>
+                            <p class="text-brand-dark text-xs md:text-sm leading-relaxed font-light">
+                                {product.description} يتم تحضيره في مطبخ حلويات بوسي يومياً باعتماد أساليب دقيقة ومعايير نظافة فائقة لنضمن تقديم المذاق الغني والراحة الحقيقية من أول لقمة لآخر قطعة.
+                            </p>
+                        </div>
+
+                        {/* تنسيق التبويب المخصص للديسباسيتو (tabs layout) */}
+                        {product.layout === 'tabs' && product.sizes && (
+                            <div class="mb-8">
+                                <h3 class="font-bold text-xs text-gray-400 mb-3">اختر حجم الحاوية المفضل:</h3>
+                                <div class="flex gap-2 border-b border-gray-100 pb-2 mb-6">
+                                    {product.sizes.map(size => (
+                                        <button 
+                                            key={`tab-btn-${size.id}`}
+                                            onClick={() => setSelectedSizeId(size.id)}
+                                            class={`px-6 py-2 rounded-full text-xs font-semibold smooth-transition ${selectedSizeId === size.id ? 'bg-brand-pink text-white shadow' : 'bg-brand-grayLight text-brand-dark hover:bg-gray-100'}`}
+                                        >
+                                            {size.name}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {activeSizeObj && (
+                                    <div class="space-y-4">
+                                        <h4 class="font-bold text-xs text-gray-400 mb-3">خيارات النكهات المتاحة للحجم ({activeSizeObj.name}):</h4>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            {activeSizeObj.variants.map(variant => (
+                                                <div key={`variant-tab-${variant.id}`} class="bg-white border border-gray-100 hover:border-brand-pink/20 rounded-2xl p-4 flex flex-col justify-between smooth-transition">
+                                                    <div class="mb-3">
+                                                        <span class="font-bold text-xs text-brand-dark block mb-1">{variant.flavor}</span>
+                                                        <span class="text-brand-pink font-extrabold text-sm">{variant.price} ج.م</span>
+                                                    </div>
+                                                    <button 
+                                                        onClick={() => onAddToCart(product, detailQuantity, { id: `${activeSizeObj.id}-${variant.id}`, flavor: `${activeSizeObj.name} - ${variant.flavor}`, price: variant.price })}
+                                                        class="w-full bg-brand-pink/10 hover:bg-brand-pink text-brand-pink hover:text-white text-[10px] font-semibold py-2 rounded-full smooth-transition"
+                                                    >
+                                                        إضافة للسلة
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* تنسيق الكارتين المتجاورين (two-cards layout) */}
+                        {product.layout === 'two-cards' && product.variants && (
+                            <div class="mb-8">
+                                <h3 class="font-bold text-xs text-gray-400 mb-4">النكهات والخيارات المتوفرة:</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    {product.variants.map(variant => (
+                                        <div key={`two-card-${variant.id}`} class="bg-white border border-gray-100 hover:border-brand-pink/20 rounded-2xl p-4 flex flex-col justify-between smooth-transition">
+                                            <div class="mb-3">
+                                                <span class="font-bold text-xs text-brand-dark block mb-1">{variant.flavor || variant.name}</span>
+                                                {variant.pieces && <span class="text-gray-400 text-[10px] block mb-1">الكمية: {variant.pieces} قطعة</span>}
+                                                <span class="text-brand-pink font-extrabold text-sm">{variant.price} ج.م</span>
+                                            </div>
+                                            <button 
+                                                onClick={() => onAddToCart(product, detailQuantity, variant)}
+                                                class="w-full bg-brand-pink/10 hover:bg-brand-pink text-brand-pink hover:text-white text-[10px] font-semibold py-2 rounded-full smooth-transition"
+                                            >
+                                                إضافة للسلة
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* تنسيق الكارت الممتد العريض بالكامل (full-card layout) */}
+                        {product.layout === 'full-card' && (
+                            <div class="mb-8">
+                                <h3 class="font-bold text-xs text-gray-400 mb-4">الخيارات المتاحة للطلب:</h3>
+                                {product.variants ? (
+                                    <div class="space-y-3">
+                                        {product.variants.map(variant => (
+                                            <div key={`full-card-var-${variant.id}`} class="bg-white border border-gray-100 hover:border-brand-pink/20 rounded-2xl p-4 flex items-center justify-between smooth-transition">
+                                                <div>
+                                                    <span class="font-bold text-xs text-brand-dark block">{variant.name}</span>
+                                                    <span class="text-brand-pink font-extrabold text-xs md:text-sm mt-1 block">{variant.price} ج.م</span>
+                                                </div>
+                                                <button 
+                                                    onClick={() => onAddToCart(product, detailQuantity, variant)}
+                                                    class="bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold px-6 py-2 rounded-full smooth-transition shadow-sm"
+                                                >
+                                                    إضافة للسلة
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : product.sizes ? (
+                                    <div class="space-y-3">
+                                        {product.sizes.map(size => (
+                                            <div key={`full-card-size-${size.id}`} class="bg-white border border-gray-100 hover:border-brand-pink/20 rounded-2xl p-4 flex items-center justify-between smooth-transition">
+                                                <div>
+                                                    <span class="font-bold text-xs text-brand-dark block">{size.name}</span>
+                                                    <span class="text-brand-pink font-extrabold text-xs md:text-sm mt-1 block">{size.price} ج.م</span>
+                                                </div>
+                                                <button 
+                                                    onClick={() => onAddToCart(product, detailQuantity, { id: size.id, name: size.name, price: size.price })}
+                                                    class="bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold px-6 py-2 rounded-full smooth-transition shadow-sm"
+                                                >
+                                                    إضافة للسلة
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    // حالة منتج فردي ثابت السعر (مثل بوكس الروقان)
+                                    <div class="bg-white border border-gray-100 rounded-3xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                        <div>
+                                            <span class="font-bold text-xs text-gray-400 block">السعر الإجمالي الموحد:</span>
+                                            <span class="text-brand-pink font-extrabold text-xl mt-1 block">{product.price} ج.م</span>
+                                        </div>
+                                        <div class="flex items-center gap-4">
+                                            <div class="flex items-center bg-brand-grayLight rounded-full p-1 border">
+                                                <button onClick={() => handleQtyAdjust(-1)} class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm text-xs font-bold">-</button>
+                                                <span class="px-4 font-bold text-xs">{detailQuantity}</span>
+                                                <button onClick={() => handleQtyAdjust(1)} class="w-8 h-8 flex items-center justify-center bg-white rounded-full shadow-sm text-xs font-bold">+</button>
+                                            </div>
+                                            <button 
+                                                onClick={() => onAddToCart(product, detailQuantity)}
+                                                class="bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold px-8 py-3 rounded-full smooth-transition shadow"
+                                            >
+                                                إضافة للسلة
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+```javascript
+        // ==========================================
+        // 6. مكون محاكي التورت (CakeBuilder Page)
+        // ==========================================
+        function CakeBuilderPage({ onAddCustomItem }) {
+            const [step, setStep] = useState(1);
+            
+            // بيانات الحالة - الشاشة 1
+            const [cakeType, setCakeType] = useState('vanilla');
+            const [personsCount, setPersonsCount] = useState(4);
+            const [shape, setShape] = useState('circle');
+            
+            // بيانات الحالة - الشاشة 2
+            const [designFile, setDesignFile] = useState(null);
+            const [printType, setPrintType] = useState('none'); // 'none', 'edible', 'non-edible'
+            const [printFile, setPrintFile] = useState(null);
+
+            // بيانات الحالة - الشاشة 3
+            const [eventTheme, setEventTheme] = useState('');
+            const [allergyWarning, setAllergyWarning] = useState('');
+            const [cakeText, setCakeText] = useState('');
+            const [cardText, setCardText] = useState('');
+
+            // النوافذ المنبثقة والتحذيرات
+            const [showInfo, setShowInfo] = useState(false);
+            const [upgradeModal, setUpgradeModal] = useState(null); // { targetShape, targetMin }
+            const [limitAlert, setLimitAlert] = useState('');
+
+            const basePricePerPerson = 145; // الحسبة المبطنة للفرد الواحد
+
+            // احتساب السعر الإجمالي الفوري والشامل لخيارات الطباعة والتخصيص
+            const totalPrice = useMemo(() => {
+                let cost = personsCount * basePricePerPerson;
+                if (printType === 'edible') cost += 60;
+                if (printType === 'non-edible') cost += 20;
+                return cost;
+            }, [personsCount, printType]);
+
+            // معالجة اختيار الشكل مع محرك الترقية الفورية لمنع الخضة السعرية
+            const handleShapeSelect = (selectedShape) => {
+                if (selectedShape === 'square' && personsCount < 16) {
+                    setUpgradeModal({ targetShape: 'square', targetMin: 16, price: 16 * basePricePerPerson });
+                    return;
+                }
+                if (selectedShape === 'rectangle' && personsCount < 20) {
+                    setUpgradeModal({ targetShape: 'rectangle', targetMin: 20, price: 20 * basePricePerPerson });
+                    return;
+                }
+                setShape(selectedShape);
+            };
+
+            const confirmUpgrade = () => {
+                if (upgradeModal) {
+                    setPersonsCount(upgradeModal.targetMin);
+                    setShape(upgradeModal.targetShape);
+                    setUpgradeModal(null);
+                }
+            };
+
+            // معالجة زيادة ونقصان الأفراد مع تفعيل قيود الأشكال المختارة
+            const handlePersonsChange = (change) => {
+                const nextCount = personsCount + change;
+                if (nextCount < 4 || nextCount > 250) return;
+
+                if (shape === 'rectangle' && nextCount < 20) {
+                    setLimitAlert("الشكل المستطيل محتاج مقاس 20 فرد على الأقل عشان يطلع مظبوط. لو حابب مقاس أصغر، تقدر بكل بساطة تختار الشكل الدائري أو القلب وهيفتح معاك العداد فوراً.");
+                    return;
+                }
+                if (shape === 'square' && nextCount < 16) {
+                    setLimitAlert("الشكل المربع محتاج مقاس 16 فرد على الأقل عشان يطلع مظبوط. لو حابب مقاس أصغر، تقدر بكل بساطة تختار الشكل الدائري أو القلب وهيفتح معاك العداد فوراً.");
+                    return;
+                }
+
+                setPersonsCount(nextCount);
+            };
+
+            const navigateStep = (target) => {
+                setStep(target);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            const handleAddToBasket = () => {
+                const customItem = {
+                    id: `custom-cake-${Date.now()}`,
+                    label: "تورتة ملكية - تصميم خاص",
+                    price: totalPrice,
+                    qty: 1,
+                    image: 'https://images.unsplash.com/photo-1535141192574-5d4897c13636?w=300&auto=format&fit=crop&q=80',
+                    custom: true,
+                    details: {
+                        "نوع الكيك": cakeType === 'vanilla' ? 'فانيليا' : cakeType === 'chocolate' ? 'شوكولاتة' : 'نصف ونصف',
+                        "عدد الأفراد": `${personsCount} فرد`,
+                        "الشكل الهندسي": shape === 'circle' ? 'دائري' : shape === 'heart' ? 'قلب' : shape === 'square' ? 'مربع' : 'مستطيل',
+                        "تصميم خارجي مرفق": designFile ? 'نعم، تم إرفاق صورة مرجعية للتصميم' : 'لا يوجد',
+                        "نوع طباعة الصورة": printType === 'none' ? 'بدون طباعة صورة' : printType === 'edible' ? 'صورة قابلة للأكل (+60 ج.م)' : 'صورة غير قابلة للأكل (+20 ج.م)',
+                        "تفاصيل الثيم والمناسبة": eventTheme || 'لم تحدد',
+                        "ملاحظات الحساسية الصحية": allergyWarning || 'لا يوجد حساسية صحية',
+                        "الكلمات المخطوطة فوق التورتة": cakeText || 'لا يوجد',
+                        "رسالة كارت الإهداء الخارجي": cardText || 'لا يوجد'
+                    }
+                };
+                onAddCustomItem(customItem);
+            };
+
+            return (
+                <div class="py-12 px-4 max-w-2xl mx-auto animate-fade-in text-right">
+                    <h1 class="text-2xl font-extrabold text-brand-dark text-center mb-8 font-sans">محاكي التورت</h1>
+
+                    {/* تعقب مراحل التصميم */}
+                    <div class="flex items-center justify-between mb-8 text-[11px] font-semibold text-gray-400 select-none border-b border-gray-100 pb-3">
+                        <span class={`pb-1 border-b-2 transition-all ${step === 1 ? 'text-brand-pink border-brand-pink' : 'border-transparent'}`}>الشاشة 1: الأساسيات</span>
+                        <span class={`pb-1 border-b-2 transition-all ${step === 2 ? 'text-brand-pink border-brand-pink' : 'border-transparent'}`}>الشاشة 2: التخصيص البصري</span>
+                        <span class={`pb-1 border-b-2 transition-all ${step === 3 ? 'text-brand-pink border-brand-pink' : 'border-transparent'}`}>الشاشة 3: تفاصيل المناسبة</span>
+                    </div>
+
+                    {/* الشاشة 1 */}
+                    {step === 1 && (
+                        <div class="space-y-8">
+                            {/* نوع الكيك */}
+                            <div>
+                                <h3 class="font-bold text-sm text-brand-dark mb-3">نوع الكيك</h3>
+                                <div class="flex gap-3">
+                                    {['vanilla', 'chocolate', 'half-half'].map(type => (
+                                        <button 
+                                            key={`cake-flavor-${type}`}
+                                            onClick={() => setCakeType(type)}
+                                            class={`flex-1 py-3 text-xs font-semibold rounded-full smooth-transition ${cakeType === type ? 'bg-brand-pink text-white shadow-md' : 'bg-brand-grayLight text-brand-dark hover:bg-gray-100'}`}
+                                        >
+                                            {type === 'vanilla' ? 'فانيليا' : type === 'chocolate' ? 'شوكولاتة' : 'نصف ونصف'}
+                                        </button>
+                                    ))}
+                                </div>
+                                <span class="text-[10px] text-gray-400 mt-2 block font-light">✓ تم اعتماد قاعدة الكيك المختار بنجاح</span>
+                            </div>
+
+                            {/* العداد الذكي للأفراد */}
+                            <div>
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="font-bold text-sm text-brand-dark">حدد عدد الأفراد</h3>
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="text-brand-pink font-extrabold text-sm">{totalPrice} ج.م</span>
+                                        <button onClick={() => setShowInfo(true)} class="text-gray-400 hover:text-brand-pink smooth-transition" aria-label="مزيد من المعلومات">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-center bg-brand-grayLight rounded-full p-2 max-w-[220px] mx-auto border border-gray-100">
+                                    <button onClick={() => handlePersonsChange(-2)} class="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm text-sm font-bold hover:bg-gray-50 smooth-transition">-</button>
+                                    <span class="px-8 font-bold text-sm text-brand-dark">{personsCount} أفراد</span>
+                                    <button onClick={() => handlePersonsChange(2)} class="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm text-sm font-bold hover:bg-gray-50 smooth-transition">+</button>
+                                </div>
+                            </div>
+
+                            {/* اختيار الأشكال الهندسية */}
+                            <div>
+                                <h3 class="font-bold text-sm text-brand-dark mb-3">شكل التورتة المفضل</h3>
+                                <div class="grid grid-cols-2 gap-3">
+                                    {[
+                                        { id: 'circle', name: 'دائرة', min: 4, label: 'مناسب لجميع الأحجام' },
+                                        { id: 'heart', name: 'قلب', min: 4, label: 'تنسيق عائلي دافئ' },
+                                        { id: 'square', name: 'مربع', min: 16, label: 'المقاس المربع يبدأ من 16 فرد' },
+                                        { id: 'rectangle', name: 'مستطيل', min: 20, label: 'المقاس المستطيل يبدأ من 20 فرد' }
+                                    ].map(item => {
+                                        const isMuted = personsCount < item.min;
+                                        return (
+                                            <button 
+                                                key={`shape-opt-${item.id}`}
+                                                onClick={() => handleShapeSelect(item.id)}
+                                                class={`p-4 rounded-3xl border text-right flex flex-col justify-between smooth-transition ${shape === item.id ? 'border-brand-pink bg-brand-pink/5' : 'border-gray-100 bg-white hover:border-gray-200'}`}
+                                            >
+                                                <span class={`font-bold text-xs ${isMuted ? 'text-gray-400 font-light' : 'text-brand-dark'}`}>{item.name}</span>
+                                                <span class={`text-[9px] mt-1 ${isMuted ? 'text-brand-pink font-semibold' : 'text-gray-400'}`}>{item.label}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={() => navigateStep(2)}
+                                class="w-full bg-brand-pink hover:bg-[#ff8095] text-white font-semibold text-xs py-4 rounded-full shadow-lg smooth-transition mt-8 active:scale-95"
+                            >
+                                خطوتنا الجاية: شكل التورتة والطباعة
+                            </button>
+                        </div>
+                    )}
+
+                    {/* الشاشة 2 */}
+                    {step === 2 && (
+                        <div class="space-y-8 animate-fade-in">
+                            {/* رفع صورة التصميم الخارجي */}
+                            <div>
+                                <h3 class="font-bold text-sm text-brand-dark mb-2">تصميم كيك مخصص من اختيارك</h3>
+                                <p class="text-xs text-gray-400 mb-3 font-light">إذا كان لديك صورة لتصميم كيك ترغب بتنفيذه بدقة يرجى تحميلها هنا</p>
+                                <div class="border-2 border-dashed border-gray-100 rounded-3xl p-6 text-center bg-brand-grayLight/50 hover:bg-brand-grayLight smooth-transition">
+                                    <input 
+                                        type="file" 
+                                        accept="image/*"
+                                        onChange={(e) => setDesignFile(e.target.files[0] ? e.target.files[0].name : null)}
+                                        class="hidden" 
+                                        id="design-image-upload" 
+                                    />
+                                    <label htmlFor="design-image-upload" class="cursor-pointer flex flex-col items-center">
+                                        <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        <span class="text-xs text-brand-dark font-medium">ارفع هنا صورة التورتة اللي حابب نعمل لك زيها</span>
+                                        {designFile && <span class="text-[10px] text-brand-pink font-bold mt-2">✓ تم تجهيز الصورة: {designFile}</span>}
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* طباعة الصور المباشرة */}
+                            <div>
+                                <h3 class="font-bold text-sm text-brand-dark mb-3">طباعة صورة مخصصة فوق الكيك</h3>
+                                <div class="grid grid-cols-3 gap-2">
+                                    {[
+                                        { id: 'none', name: 'بدون طباعة صوره' },
+                                        { id: 'edible', name: 'صورة قابلة للأكل (+60 ج.م)' },
+                                        { id: 'non-edible', name: 'صورة غير قابلة للأكل (+20 ج.م)' }
+                                    ].map(opt => (
+                                        <button 
+                                            key={`print-opt-${opt.id}`}
+                                            onClick={() => setPrintType(opt.id)}
+                                            class={`py-3.5 px-2 rounded-2xl text-[10px] font-semibold smooth-transition ${printType === opt.id ? 'bg-brand-pink text-white shadow-sm' : 'bg-brand-grayLight text-brand-dark hover:bg-gray-100'}`}
+                                        >
+                                            {opt.name}
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {printType !== 'none' && (
+                                    <div class="mt-4 border-2 border-dashed border-gray-100 rounded-3xl p-6 text-center bg-brand-grayLight/50 animate-fade-in">
+                                        <input 
+                                            type="file" 
+                                            accept="image/*"
+                                            onChange={(e) => setPrintFile(e.target.files[0] ? e.target.files[0].name : null)}
+                                            class="hidden" 
+                                            id="print-image-upload" 
+                                        />
+                                        <label htmlFor="print-image-upload" class="cursor-pointer flex flex-col items-center">
+                                            <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                            <span class="text-xs text-brand-dark font-medium">ارفع هنا الصورة اللي حابب نطبعها لك على التورتة بدقة عالية</span>
+                                            {printFile && <span class="text-[10px] text-brand-pink font-bold mt-2">✓ تم تحميل الصورة للطباعة: {printFile}</span>}
+                                        </label>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* معرض الأعمال للخطوة */}
+                            <div>
+                                <h3 class="font-bold text-xs text-gray-400 mb-3 font-sans">معرض أعمال خطوة التخصيص البصري</h3>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=200&auto=format&fit=crop&q=80" alt="كيك مطبوع" class="rounded-2xl aspect-square object-cover shadow-sm border border-gray-50" />
+                                    <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=200&auto=format&fit=crop&q=80" alt="كيك مطبوع" class="rounded-2xl aspect-square object-cover shadow-sm border border-gray-50" />
+                                    <img src="https://images.unsplash.com/photo-1519869325930-281384150729?w=200&auto=format&fit=crop&q=80" alt="كيك مطبوع" class="rounded-2xl aspect-square object-cover shadow-sm border border-gray-50" />
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4 pt-4">
+                                <button onClick={() => navigateStep(1)} class="flex-1 bg-brand-grayLight text-brand-dark font-semibold text-xs py-3.5 rounded-full smooth-transition active:scale-95">العودة للخطوة السابقة</button>
+                                <button onClick={() => navigateStep(3)} class="flex-1 bg-brand-pink hover:bg-[#ff8095] text-white font-semibold text-xs py-3.5 rounded-full shadow-md smooth-transition active:scale-95">خطوتنا الأخيرة: تفاصيل المناسبة</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* الشاشة 3 */}
+                    {step === 3 && (
+                        <div class="space-y-6 animate-fade-in">
+                            {/* تفاصيل المناسبة والثيم */}
+                            <div>
+                                <h3 class="font-bold text-sm text-brand-dark mb-2">نوع المناسبة وتفاصيل ثيم التصميم</h3>
+                                <textarea 
+                                    value={eventTheme}
+                                    onChange={(e) => setEventTheme(e.target.value)}
+                                    placeholder="اكتب لنا هنا نوع المناسبة وتفاصيل الثيم اللي تحبه، زي مثلاً: (عيد ميلاد طفلة صغيرة بتحب الكرتون)"
+                                    rows="3"
+                                    class="w-full text-xs p-4 bg-brand-grayLight border border-gray-100 rounded-3xl outline-none focus:border-brand-pink focus:bg-white smooth-transition text-brand-dark"
+                                ></textarea>
+                            </div>
+
+                            {/* الأمان الصحي المحمي */}
+                            <div class="bg-red-50/50 border border-red-100 rounded-3xl p-5">
+                                <h4 class="text-red-700 font-bold text-xs mb-2 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                    معايير الأمان الصحي المحمي بمطبخنا
+                                </h4>
+                                <textarea 
+                                    value={allergyWarning}
+                                    onChange={(e) => setAllergyWarning(e.target.value)}
+                                    placeholder="اكتب هنا لو عندك أي حساسية من مكونات معينة عشان نبعد عنها تماماً"
+                                    rows="2"
+                                    class="w-full text-xs p-3.5 bg-white border border-red-200/50 rounded-2xl outline-none focus:border-red-400 text-brand-dark"
+                                ></textarea>
+                            </div>
+
+                            {/* خط اليد وكتابة سطح التورتة */}
+                            <div>
+                                <h3 class="font-bold text-sm text-brand-dark mb-2">الكلمات والجمل المطلوبة فوق الكيك</h3>
+                                <input 
+                                    type="text"
+                                    value={cakeText}
+                                    onChange={(e) => setCakeText(e.target.value)}
+                                    placeholder="اكتب هنا الجملة أو الاسم اللي حابب نخطّه لك فوق سطح التورتة"
+                                    class="w-full text-xs p-4 bg-brand-grayLight border border-gray-100 rounded-2xl outline-none focus:border-brand-pink focus:bg-white smooth-transition text-brand-dark"
+                                />
+                            </div>
+
+                            {/* كارت الإهداء */}
+                            <div>
+                                <h3 class="font-bold text-sm text-brand-dark mb-2">رسالة كارت الإهداء الخارجي</h3>
+                                <input 
+                                    type="text"
+                                    value={cardText}
+                                    onChange={(e) => setCardText(e.target.value)}
+                                    placeholder="اكتب هنا الرسالة اللي حابب نكتبها لك جوه كارت الإهداء الخارجي"
+                                    class="w-full text-xs p-4 bg-brand-grayLight border border-gray-100 rounded-2xl outline-none focus:border-brand-pink focus:bg-white smooth-transition text-brand-dark"
+                                />
+                            </div>
+
+                            <div class="flex gap-4 pt-4">
+                                <button onClick={() => navigateStep(2)} class="flex-1 bg-brand-grayLight text-brand-dark font-semibold text-xs py-3.5 rounded-full smooth-transition active:scale-95">العودة للخطوة السابقة</button>
+                                <button 
+                                    onClick={handleAddToBasket}
+                                    class="flex-1 bg-brand-pink hover:bg-[#ff8095] text-white font-semibold text-xs py-3.5 rounded-full shadow-lg smooth-transition active:scale-95"
+                                >
+                                    اضافة للسلة
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* نافذة معلومات الحسبة السعرية */}
+                    {showInfo && (
+                        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/40 backdrop-blur-sm">
+                            <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-gray-50 text-right animate-fade-in">
+                                <h4 class="font-bold text-sm text-brand-pink mb-2">معلومات السعر والاتقان</h4>
+                                <p class="text-xs text-gray-500 leading-relaxed mb-6 font-light">{siteData.cakeBuilder.messages.pricingInfo}</p>
+                                <button onClick={() => setShowInfo(false)} class="w-full bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold py-2.5 rounded-full smooth-transition">فهمت ذلك</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* نافذة ترقية المقاس الهندسي */}
+                    {upgradeModal && (
+                        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/40 backdrop-blur-sm">
+                            <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-gray-50 text-right animate-fade-in">
+                                <h4 class="font-bold text-sm text-brand-pink mb-3">✨ توضيح بخصوص الشكل {upgradeModal.targetShape === 'square' ? 'المربع' : 'المستطيل'}</h4>
+                                <p class="text-xs text-gray-500 leading-relaxed mb-6 font-light">
+                                    عشان تطلع معاك التورتة {upgradeModal.targetShape === 'square' ? 'المربعة' : 'المستطيلة'} مظبوطة وبأفضل تنسيق، أقل مقاس بنقدر ننفذه للشكل ده هو ({upgradeModal.targetMin} فرد).
+                                    السيستم هيرفع العداد تلقائياً لـ {upgradeModal.targetMin} فرد، والسعر الإجمالي هيكون ({upgradeModal.price} ج.م) شامل التنسيق بالكامل.
+                                    حابب نعتمد الشكل {upgradeModal.targetShape === 'square' ? 'المربع' : 'المستطيل'} ونغير المقاس دلوقتي؟
+                                </p>
+                                <div class="flex flex-col gap-2">
+                                    <button onClick={confirmUpgrade} class="w-full bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold py-2.5 rounded-full smooth-transition">تمام، اعتمد الترقية</button>
+                                    <button onClick={() => setUpgradeModal(null)} class="w-full bg-brand-grayLight text-brand-dark text-xs font-semibold py-2.5 rounded-full smooth-transition">لاء، ارجع للمقاس الحالي</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* نافذة التنبيه عن تخطي المقاييس */}
+                    {limitAlert && (
+                        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/40 backdrop-blur-sm">
+                            <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-gray-50 text-right animate-fade-in">
+                                <h4 class="font-bold text-sm text-red-600 mb-2">تنبيه المقاس المختار</h4>
+                                <p class="text-xs text-gray-500 leading-relaxed mb-6 font-light">{limitAlert}</p>
+                                <button onClick={() => setLimitAlert('')} class="w-full bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold py-2.5 rounded-full smooth-transition">فهمت ذلك</button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // ==========================================
+        // 7. مكون محاكي الورد (FlowerBuilder Page)
+        // ==========================================
+        function FlowerBuilderPage({ onAddCustomItem }) {
+            const [step, setStep] = useState(1);
+
+            // بيانات الحالة - الشاشة 1
+            const [refPhoto, setRefPhoto] = useState(null);
+            const [rosesCount, setRosesCount] = useState(15);
+            const [flowerType, setFlowerType] = useState('natural');
+            const [colorTheme, setColorTheme] = useState('أحمر كلاسيكي');
+
+            // بيانات الحالة - الشاشة 2
+            const [cashAmount, setCashAmount] = useState('');
+            const [cashDenom, setCashDenom] = useState(50);
+            const [photosCount, setPhotosCount] = useState(0);
+            const [photosList, setPhotosList] = useState([]);
+            const [hasRibbon, setHasRibbon] = useState(false);
+            const [ribbonText, setRibbonText] = useState('');
+
+            // بيانات الحالة - الشاشة 3
+            const [chocBudget, setChocBudget] = useState('');
+            const [chocPricePerPiece, setChocPricePerPiece] = useState(20);
+            const [hasCard, setHasCard] = useState(false);
+            const [cardText, setCardText] = useState('');
+
+            const [errorMsg, setErrorMsg] = useState('');
+
+            const basePrice = 400; // السعر الأساسي لـ 15 وردة والتغليف
+            const extraPrice = 35; // تكلفة الوردة الإضافية
+
+            // احتساب تكاليف التصميم التراكمية
+            const totalPrice = useMemo(() => {
+                let cost = basePrice;
+                if (rosesCount > 15) {
+                    cost += (rosesCount - 15) * extraPrice;
+                }
+                cost += photosCount * 15;
+                if (hasRibbon) cost += 50;
+                if (hasCard) cost += 20;
+                if (chocBudget && Number(chocBudget) > 0) {
+                    cost += Number(chocBudget);
+                }
+                return cost;
+            }, [rosesCount, photosCount, hasRibbon, hasCard, chocBudget]);
+
+            // احتساب عدد ورقات الكاش المالي المتطابق رياضياً
+            const calculatedNotes = useMemo(() => {
+                const amount = Number(cashAmount);
+                if (!amount || amount <= 0) return 0;
+                return Math.floor(amount / cashDenom);
+            }, [cashAmount, cashDenom]);
+
+            const isCashDivisible = useMemo(() => {
+                const amount = Number(cashAmount);
+                if (!amount) return true;
+                return amount % cashDenom === 0;
+            }, [cashAmount, cashDenom]);
+
+            // احتساب قطع الشوكولاتة التلقائي
+            const calculatedChocolatePieces = useMemo(() => {
+                const budget = Number(chocBudget);
+                if (!budget || budget <= 0) return 0;
+                return Math.floor(budget / chocPricePerPiece);
+            }, [chocBudget, chocPricePerPiece]);
+
+            const handleRosesChange = (change) => {
+                const next = rosesCount + change;
+                if (next < 15) return; // العداد مقفل عند 15 وردة كحد أدنى
+                setRosesCount(next);
+            };
+
+            const handlePhotosChange = (change) => {
+                const next = Math.max(0, photosCount + change);
+                setPhotosCount(next);
+                if (next > photosList.length) {
+                    setPhotosList(prev => [...prev, ...Array(next - prev.length).fill(null)]);
+                } else {
+                    setPhotosList(prev => prev.slice(0, next));
+                }
+            };
+
+            const navigateStep = (target) => {
+                setStep(target);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            const handleQuickPurchase = () => {
+                if (!refPhoto) {
+                    setErrorMsg("يرجى إرفاق صورة البوكيه المرجعي أولاً لتتمكن من استخدام خيار الشراء السريع بنجاح.");
+                    return;
+                }
+                const quickItem = {
+                    id: `custom-flower-${Date.now()}`,
+                    label: "بوكيه ورد - طلب سريع عبر الصورة",
+                    price: basePrice,
+                    qty: 1,
+                    image: 'https://images.unsplash.com/photo-1590736969955-71cb94801759?w=300&auto=format&fit=crop&q=80',
+                    custom: true,
+                    details: {
+                        "نوع الطلب": "طلب شراء سريع واكتفاء بالصورة المرجعية",
+                        "الصورة المرجعية": refPhoto,
+                        "عدد الورد": `${rosesCount} وردة`,
+                        "مادة الورد": flowerType === 'natural' ? 'ورد طبيعي' : flowerType === 'artificial' ? 'ورد صناعي' : 'ورد ستان'
+                    }
+                };
+                onAddCustomItem(quickItem);
+            };
+
+            const handleAddToBasket = () => {
+                if (cashAmount && !isCashDivisible) {
+                    setErrorMsg("عذراً، إجمالي المبلغ المالي المدخل لا يقبل القسمة على الفئة النقدية المختارة بالتساوي. يرجى تعديله لضمان الشفافية الحسابية المطلقة.");
+                    return;
+                }
+
+                const customItem = {
+                    id: `custom-flower-${Date.now()}`,
+                    label: "بوكيه ورد - بناء خاص",
+                    price: totalPrice,
+                    qty: 1,
+                    image: 'https://images.unsplash.com/photo-1590736969955-71cb94801759?w=300&auto=format&fit=crop&q=80',
+                    custom: true,
+                    details: {
+                        "عدد الورد": `${rosesCount} وردة`,
+                        "مادة الورد": flowerType === 'natural' ? 'ورد طبيعي' : flowerType === 'artificial' ? 'ورد صناعي' : 'ورد ستان',
+                        "تنسيق الألوان": colorTheme,
+                        "تنسيق كاش مالي": cashAmount ? `${cashAmount} ج.م (موزعة على ${calculatedNotes} ورقة فئة ${cashDenom} جنيه)` : 'بدون كاش',
+                        "صور تذكارية": photosCount > 0 ? `${photosCount} صور وسط الورد` : 'بدون صور تذكارية',
+                        "شريط ستان مطبوع": hasRibbon ? `نعم، المطبوع: (${ribbonText})` : 'بدون شريط مطبوع',
+                        "ميزانية الشوكولاتة": chocBudget ? `${chocBudget} ج.م (${calculatedChocolatePieces} قطعة فئة ${chocPricePerPiece} ج.م)` : 'بدون شوكولاتة',
+                        "كارت الإهداء": hasCard ? `نعم، المكتوب: (${cardText})` : 'بدون كارت'
+                    }
+                };
+                onAddCustomItem(customItem);
+            };
+
+            return (
+                <div class="py-12 px-4 max-w-2xl mx-auto animate-fade-in text-right">
+                    <h1 class="text-2xl font-extrabold text-brand-dark text-center mb-8 font-sans">محاكي بوكيهات الورد</h1>
+
+                    {/* تعقب مراحل التصميم */}
+                    <div class="flex items-center justify-between mb-8 text-[11px] font-semibold text-gray-400 select-none border-b border-gray-100 pb-3">
+                        <span class={`pb-1 border-b-2 transition-all ${step === 1 ? 'text-brand-pink border-brand-pink' : 'border-transparent'}`}>الشاشة 1: الحجم والمسار السريع</span>
+                        <span class={`pb-1 border-b-2 transition-all ${step === 2 ? 'text-brand-pink border-brand-pink' : 'border-transparent'}`}>الشاشة 2: التخصيص المالي والزينة</span>
+                        <span class={`pb-1 border-b-2 transition-all ${step === 3 ? 'text-brand-pink border-brand-pink' : 'border-transparent'}`}>الشاشة 3: الشوكولاتة وكارت الإهداء</span>
+                    </div>
+
+                    {/* الشاشة 1 */}
+                    {step === 1 && (
+                        <div class="space-y-8">
+                            {/* الشراء السريع بالصورة المرجعية */}
+                            <div class="bg-brand-grayLight/50 p-6 rounded-3xl border border-gray-100">
+                                <h3 class="font-bold text-sm text-brand-dark mb-2">أرفق صورة لبوكيه مخصص</h3>
+                                <p class="text-xs text-gray-400 mb-4 font-light">إذا كان لديك صورة لبوكيه ترغب في تنفيذ تصميم مطابق له بكل دقة</p>
+                                <div class="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+                                    <div class="flex-grow">
+                                        <input 
+                                            type="file" 
+                                            accept="image/*"
+                                            onChange={(e) => setRefPhoto(e.target.files[0] ? e.target.files[0].name : null)}
+                                            class="hidden" 
+                                            id="flower-ref-upload" 
+                                        />
+                                        <label htmlFor="flower-ref-upload" class="cursor-pointer bg-white border border-gray-100 rounded-2xl py-3 px-5 flex items-center justify-center gap-2 text-xs font-semibold text-brand-dark shadow-sm hover:bg-gray-50 smooth-transition">
+                                            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                            اختيار ملف الصورة المرجعية
+                                        </label>
+                                        {refPhoto && <span class="text-[10px] text-brand-pink font-bold block mt-2">✓ تم التجهيز: {refPhoto}</span>}
+                                    </div>
+                                    <button 
+                                        onClick={handleQuickPurchase}
+                                        class="bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold py-3 px-6 rounded-2xl smooth-transition shadow-sm active:scale-95"
+                                    >
+                                        انهاء سريع بالصورة المرجعية
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* عداد الورد الأساسي */}
+                            <div>
+                                <h3 class="font-bold text-sm text-brand-dark mb-2">حدد عدد الورد بالبوكيه</h3>
+                                <p class="text-xs text-gray-400 mb-4 font-light">أقل حجم للبوكيه يبدأ من 15 وردة كحد أدنى (الـ 15 وردة الأساسية مع التغليف الفاخر تكلفتها 400 ج.م)</p>
+                                <div class="flex items-center justify-center bg-brand-grayLight rounded-full p-2 max-w-[220px] mx-auto border border-gray-100">
+                                    <button onClick={() => handleRosesChange(-1)} class="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm text-sm font-bold hover:bg-gray-50 smooth-transition">-</button>
+                                    <span class="px-8 font-bold text-sm text-brand-dark">{rosesCount} وردة</span>
+                                    <button onClick={() => handleRosesChange(1)} class="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-sm text-sm font-bold hover:bg-gray-50 smooth-transition">+</button>
+                                </div>
+                            </div>
+
+                            {/* نوع الورد */}
+                            <div>
+                                <h3 class="font-bold text-sm text-brand-dark mb-3">مادة وخامة الورد</h3>
+                                <div class="flex gap-3">
+                                    {['natural', 'artificial', 'satin'].map(type => (
+                                        <button 
+                                            key={`flower-type-${type}`}
+                                            onClick={() => setFlowerType(type)}
+                                            class={`flex-1 py-3 text-xs font-semibold rounded-full smooth-transition ${flowerType === type ? 'bg-brand-pink text-white shadow-md' : 'bg-brand-grayLight text-brand-dark hover:bg-gray-100'}`}
+                                        >
+                                            {type === 'natural' ? 'ورد طبيعي' : type === 'artificial' ? 'ورد صناعي' : 'ورد ستان'}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* ألوان وتنسيق الورد */}
+                            <div>
+                                <h3 class="font-bold text-sm text-brand-dark mb-3">تنسيق الألوان المطلوبة</h3>
+                                <div class="grid grid-cols-2 gap-3">
+                                    {['أحمر كلاسيكي', 'أبيض ناصع ومميز', 'وردي وبمبي ناعم', 'ميكس متناسق'].map(color => (
+                                        <button 
+                                            key={`color-opt-${color}`}
+                                            onClick={() => setColorTheme(color)}
+                                            class={`py-3 px-4 border text-right rounded-2xl text-xs font-semibold smooth-transition ${colorTheme === color ? 'border-brand-pink bg-brand-pink/5 font-bold' : 'border-gray-100 bg-white hover:border-gray-200'}`}
+                                        >
+                                            {color}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <button 
+                                onClick={() => navigateStep(2)}
+                                class="w-full bg-brand-pink hover:bg-[#ff8095] text-white font-semibold text-xs py-4 rounded-full shadow-lg smooth-transition mt-8 active:scale-95"
+                            >
+                                تنسيق إضافات البوكيه الفاخرة
+                            </button>
+                        </div>
+                    )}
+
+                    {/* الشاشة 2 */}
+                    {step === 2 && (
+                        <div class="space-y-8 animate-fade-in">
+                            {/* دمج كاش مالي وسط الورد */}
+                            <div class="bg-brand-grayLight/50 p-6 rounded-3xl border border-gray-100">
+                                <h3 class="font-bold text-sm text-brand-dark mb-2">تنسيق مبلغ كاش وسط الورد</h3>
+                                <p class="text-xs text-gray-400 mb-4 font-light font-sans">اكتب هنا إجمالي المبلغ المالي اللي حابب ننسقه لك جوه البوكيه</p>
+                                
+                                <input 
+                                    type="number"
+                                    value={cashAmount}
+                                    onChange={(e) => setCashAmount(e.target.value)}
+                                    placeholder="مثال: 1000"
+                                    class="w-full text-xs p-4 bg-white border border-gray-100 rounded-2xl outline-none focus:border-brand-pink mb-4 text-brand-dark"
+                                />
+
+                                <h4 class="font-bold text-xs text-gray-400 mb-3">حدد فئة الورق النقدية المفضلة للتنسيق:</h4>
+                                <div class="grid grid-cols-3 gap-2">
+                                    {[5, 10, 20, 50, 100, 200].map(denom => (
+                                        <button 
+                                            key={`denom-opt-${denom}`}
+                                            onClick={() => setCashDenom(denom)}
+                                            class={`py-2.5 rounded-xl text-xs font-semibold smooth-transition ${cashDenom === denom ? 'bg-brand-pink text-white shadow-sm' : 'bg-white border border-gray-100 text-gray-700'}`}
+                                        >
+                                            {denom} جنيه
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {cashAmount && Number(cashAmount) > 0 && (
+                                    <div class="mt-4 p-3.5 bg-brand-pink/10 rounded-2xl text-xs font-semibold text-brand-dark leading-relaxed">
+                                        {isCashDivisible ? (
+                                            <span>البوكيه هيكون جواه {calculatedNotes} ورقة من فئة {cashDenom} جنيه</span>
+                                        ) : (
+                                            <span class="text-red-500">تنبيه: المبلغ المالي المدخل لا يقبل القسمة بالتساوي على فئة ({cashDenom} جنيه). يرجى تعديل المبلغ لضمان الحساب والشفافية.</span>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* تضمين صور تذكارية وسط الورد */}
+                            <div>
+                                <h3 class="font-bold text-sm text-brand-dark mb-2">تنسيق صور تذكارية وسط الورد</h3>
+                                <p class="text-xs text-gray-400 mb-4 font-light">تكلفة طباعة وتنسيق كل صورة إضافية هي +15 ج.م مضافاً للسعر تلقائياً</p>
+                                <div class="flex items-center justify-center gap-4 mb-4">
+                                    <button onClick={() => handlePhotosChange(-1)} class="w-8 h-8 flex items-center justify-center bg-brand-grayLight rounded-full shadow-sm text-xs font-bold">-</button>
+                                    <span class="font-bold text-xs text-brand-dark">{photosCount} صورة</span>
+                                    <button onClick={() => handlePhotosChange(1)} class="w-8 h-8 flex items-center justify-center bg-brand-grayLight rounded-full shadow-sm text-xs font-bold">+</button>
+                                </div>
+
+                                {photosCount > 0 && (
+                                    <div class="space-y-3 animate-fade-in">
+                                        {photosList.map((_, idx) => (
+                                            <div key={`photo-slot-${idx}`} class="bg-brand-grayLight p-4 rounded-2xl border border-dashed border-gray-200">
+                                                <input 
+                                                    type="file" 
+                                                    accept="image/*"
+                                                    onChange={(e) => {
+                                                        const updated = [...photosList];
+                                                        updated[idx] = e.target.files[0] ? e.target.files[0].name : null;
+                                                        setPhotosList(updated);
+                                                    }}
+                                                    class="hidden" 
+                                                    id={`bouquet-photo-${idx}`} 
+                                                />
+                                                <label htmlFor={`bouquet-photo-${idx}`} class="cursor-pointer flex items-center justify-between text-xs text-gray-600">
+                                                    <span>ارفع هنا الصورة {idx + 1} اللي حابب ننسقها لك وسط الورد بدقة عالية</span>
+                                                    <span class="text-brand-pink font-bold text-[10px]">تحميل صورة</span>
+                                                </label>
+                                                {photosList[idx] && <span class="text-[9px] text-brand-pink font-bold block mt-1.5">✓ تم تجهيز: {photosList[idx]}</span>}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* شريط ستان مطبوع فاخر */}
+                            <div class="bg-white border border-gray-100 rounded-3xl p-5">
+                                <label class="flex items-center justify-between cursor-pointer select-none mb-3">
+                                    <span class="font-bold text-sm text-brand-dark">شريط ستان مطبوع محيط بالبوكيه (+50 ج.م)</span>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={hasRibbon} 
+                                        onChange={() => setHasRibbon(!hasRibbon)}
+                                        class="w-4 h-4 accent-brand-pink" 
+                                    />
+                                </label>
+                                {hasRibbon && (
+                                    <input 
+                                        type="text"
+                                        value={ribbonText}
+                                        onChange={(e) => setRibbonText(e.target.value)}
+                                        placeholder="اكتب العبارة اللي حابب نطبعها لك على شريط الستان المحيط بالبوكيه"
+                                        class="w-full text-xs p-4 bg-brand-grayLight border border-gray-100 rounded-2xl outline-none focus:border-brand-pink focus:bg-white smooth-transition text-brand-dark animate-fade-in"
+                                    />
+                                )}
+                            </div>
+
+                            <div class="flex gap-4 pt-4">
+                                <button onClick={() => navigateStep(1)} class="flex-1 bg-brand-grayLight text-brand-dark font-semibold text-xs py-3.5 rounded-full smooth-transition active:scale-95">العودة للخطوة السابقة</button>
+                                <button onClick={() => navigateStep(3)} class="flex-1 bg-brand-pink hover:bg-[#ff8095] text-white font-semibold text-xs py-3.5 rounded-full shadow-md smooth-transition active:scale-95">إضافة الشوكولاتة وكارت الإهداء</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* الشاشة 3 */}
+                    {step === 3 && (
+                        <div class="space-y-8 animate-fade-in">
+                            {/* دمج شوكولاتة معتمدة */}
+                            <div class="bg-brand-grayLight/50 p-6 rounded-3xl border border-gray-100">
+                                <h3 class="font-bold text-sm text-brand-dark mb-2">تزيين وإضافة قطع شوكولاتة للبوكيه</h3>
+                                <p class="text-xs text-gray-400 mb-4 font-light">حدد هنا المبلغ اللي حابب نشتري بيه الشكولاتة لتزيين البوكيه</p>
+
+                                <input 
+                                    type="number"
+                                    value={chocBudget}
+                                    onChange={(e) => setChocBudget(e.target.value)}
+                                    placeholder="مثال: 300"
+                                    class="w-full text-xs p-4 bg-white border border-gray-100 rounded-2xl outline-none focus:border-brand-pink mb-4 text-brand-dark"
+                                />
+
+                                <h4 class="font-bold text-xs text-gray-400 mb-3">حدد فئة القطعة الواحدة من الشوكولاتة:</h4>
+                                <div class="grid grid-cols-3 gap-2">
+                                    {[20, 30, 50].map(price => (
+                                        <button 
+                                            key={`choc-piece-${price}`}
+                                            onClick={() => setChocPricePerPiece(price)}
+                                            class={`py-2.5 rounded-xl text-xs font-semibold smooth-transition ${chocPricePerPiece === price ? 'bg-brand-pink text-white shadow-sm' : 'bg-white border border-gray-100 text-gray-700'}`}
+                                        >
+                                            {price} ج.م / قطعة
+                                        </button>
+                                    ))}
+                                </div>
+
+                                {chocBudget && Number(chocBudget) > 0 && (
+                                    <div class="mt-4 p-3.5 bg-brand-pink/10 rounded-2xl text-xs font-semibold text-brand-dark">
+                                        سيتم إضافة {calculatedChocolatePieces} قطع شوكولاتة للبوكيه (سعر القطعة الواحدة {chocPricePerPiece} جنيه)
+                                    </div>
+                                )}
+
+                                <p class="text-[9px] text-gray-400 mt-3 leading-relaxed">
+                                    * ملاحظة وتوضيح: البارات والماركات الكبيرة الفاخرة تبدأ أسعار قطعها تلقائياً من 100 جنيه فما فوق للقطعة لسلامة الحسابات والتغليف الفخم.
+                                </p>
+                            </div>
+
+                            {/* شراء كارت إهداء وطباعة العبارات */}
+                            <div class="bg-white border border-gray-100 rounded-3xl p-5">
+                                <label class="flex items-center justify-between cursor-pointer select-none mb-3">
+                                    <span class="font-bold text-sm text-brand-dark">شراء كارت الإهداء والطباعة المخصصة (+20 ج.م)</span>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={hasCard} 
+                                        onChange={() => setHasCard(!hasCard)}
+                                        class="w-4 h-4 accent-brand-pink" 
+                                    />
+                                </label>
+                                {hasCard && (
+                                    <textarea 
+                                        value={cardText}
+                                        onChange={(e) => setCardText(e.target.value)}
+                                        placeholder="اكتب هنا العبارة اللي حابب نطبعها لك جوه كارت الإهداء الخارجي"
+                                        rows="3"
+                                        class="w-full text-xs p-4 bg-brand-grayLight border border-gray-100 rounded-2xl outline-none focus:border-brand-pink focus:bg-white smooth-transition text-brand-dark animate-fade-in"
+                                    ></textarea>
+                                )}
+                            </div>
+
+                            <div class="flex gap-4 pt-4">
+                                <button onClick={() => navigateStep(2)} class="flex-1 bg-brand-grayLight text-brand-dark font-semibold text-xs py-3.5 rounded-full smooth-transition active:scale-95">العودة للخطوة السابقة</button>
+                                <button 
+                                    onClick={handleAddToBasket}
+                                    class="flex-1 bg-brand-pink hover:bg-[#ff8095] text-white font-semibold text-xs py-3.5 rounded-full shadow-lg smooth-transition active:scale-95"
+                                >
+                                    اضافة للسلة
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* تنبيهات القيود والتحقق */}
+                    {errorMsg && (
+                        <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-brand-dark/40 backdrop-blur-sm">
+                            <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-gray-50 text-right animate-fade-in">
+                                <h4 class="font-bold text-sm text-red-600 mb-2">تنبيه الحسبة والمدخلات</h4>
+                                <p class="text-xs text-gray-500 leading-relaxed mb-6 font-light">{errorMsg}</p>
+                                <button onClick={() => setErrorMsg('')} class="w-full bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold py-2.5 rounded-full smooth-transition">فهمت ذلك</button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // ==========================================
+        // 8. مكون صفحة السلة (CartPage Component)
+        // ==========================================
+        function CartPage({ cart, onUpdateCartQty, onRemoveFromCart, onNavigate }) {
+            const [expandedCustomId, setExpandedCustomId] = useState(null);
+
+            const totalProductsSum = useMemo(() => {
+                return cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            }, [cart]);
+
+            const handleToggleDetails = (id) => {
+                setExpandedCustomId(expandedCustomId === id ? null : id);
+            };
+
+            if (cart.length === 0) {
+                return (
+                    <div class="py-24 px-4 text-center max-w-md mx-auto animate-fade-in">
+                        <svg class="w-16 h-16 mx-auto text-gray-200 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                        <h2 class="text-lg font-bold text-brand-dark mb-2">سلتك فارغة حالياً</h2>
+                        <p class="text-xs text-gray-400 mb-8 font-light">تصفح منيو حلويات بوسي واختر ما يناسب لقاءاتك السعيدة.</p>
+                        <button 
+                            onClick={() => onNavigate('menu')}
+                            class="bg-brand-pink hover:bg-[#ff8095] text-white text-xs font-semibold px-8 py-3 rounded-full shadow-md smooth-transition active:scale-95"
+                        >
+                            تصفح المنيو الآن
+                        </button>
+                    </div>
+                );
+            }
+
+            return (
+                <div class="py-12 px-4 max-w-3xl mx-auto animate-fade-in text-right">
+                    <h1 class="text-2xl font-extrabold text-brand-dark mb-8 text-center">سلة المشتريات</h1>
+
+                    <div class="space-y-4">
+                        {cart.map(item => (
+                            <div key={`cart-item-${item.id}`} class="bg-white border border-gray-100 rounded-3xl p-4 flex flex-col gap-4 shadow-sm">
+                                <div class="flex items-center justify-between flex-wrap gap-4">
+                                    <div class="flex items-center gap-4">
+                                        <img src={item.image} alt={item.label} class="w-16 h-16 rounded-2xl object-cover border border-gray-50" />
+                                        <div>
+                                            <h4 class="font-bold text-sm text-brand-dark">{item.label}</h4>
+                                            <span class="text-brand-pink font-bold text-xs mt-1 block">{item.price} ج.م</span>
+                                            
+                                            {item.custom && (
+                                                <button 
+                                                    onClick={() => handleToggleDetails(item.id)}
+                                                    class="text-[10px] text-gray-400 hover:text-brand-pink font-semibold underline mt-1 block smooth-transition"
+                                                >
+                                                    {expandedCustomId === item.id ? 'إخفاء خيارات التصميم' : 'استعراض تفاصيل التصميم المخصص'}
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* التحكم بالكمية وحذف الصنف */}
+                                    <div class="flex items-center gap-4 mr-auto">
+                                        <div class="flex items-center bg-brand-grayLight rounded-full p-1 border">
+                                            <button onClick={() => onUpdateCartQty(item.id, -1)} class="w-7 h-7 flex items-center justify-center bg-white rounded-full shadow-sm text-xs font-bold hover:bg-gray-50 smooth-transition">-</button>
+                                            <span class="px-3.5 font-bold text-xs text-brand-dark">{item.qty}</span>
+                                            <button onClick={() => onUpdateCartQty(item.id, 1)} class="w-7 h-7 flex items-center justify-center bg-white rounded-full shadow-sm text-xs font-bold hover:bg-gray-50 smooth-transition">+</button>
+                                        </div>
+                                        <span class="font-extrabold text-brand-pink text-sm w-20 text-left">{item.price * item.qty} ج.م</span>
+                                        <button onClick={() => onRemoveFromCart(item.id)} class="text-gray-300 hover:text-red-500 smooth-transition" aria-label="حذف الصنف">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* جدول تفاصيل الخيارات المخصصة المنسدل (أكورديون ناعم) */}
+                                {item.custom && expandedCustomId === item.id && item.details && (
+                                    <div class="bg-brand-grayLight/50 p-4 rounded-2xl border border-gray-100/50 mt-1 animate-fade-in text-right text-[11px] leading-relaxed">
+                                        <h5 class="font-bold text-brand-pink mb-2">خيارات وإضافات العميل لتنسيق وتصميم الفاتورة:</h5>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-gray-600">
+                                            {Object.entries(item.details).map(([key, value]) => (
+                                                <div key={`detail-row-${key}`} class="border-b border-gray-100 pb-1 flex justify-between gap-2">
+                                                    <span class="font-semibold text-brand-dark">{key}:</span>
+                                                    <span class="font-light text-left">{value}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* ملخص السلة الإجمالي والانتقال لصفحة إتمام الطلب */}
+                    <div class="mt-8 bg-brand-grayLight/50 rounded-3xl p-6 border border-gray-100/50">
+                        <div class="flex items-center justify-between font-extrabold text-base mb-6 text-brand-dark">
+                            <span>إجمالي قيمة المنتجات</span>
+                            <span class="text-brand-pink">{totalProductsSum} ج.م</span>
+                        </div>
+                        <button 
+                            onClick={() => onNavigate('checkout')}
+                            class="w-full bg-brand-pink hover:bg-[#ff8095] text-white font-semibold text-xs py-4 rounded-full shadow-lg smooth-transition text-center active:scale-95"
+                        >
+                            الانتقال لخطوة اتمام الطلب والدفع
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        // ==========================================
+        // 9. مكون صفحة إتمام الطلب (Checkout Page)
+        // ==========================================
+        function CheckoutPage({ cart, onNavigate, onClearCart }) {
+            const [custName, setCustName] = useState('');
+            const [custPhone, setCustPhone] = useState('');
+            const [deliveryType, setDeliveryType] = useState('pickup'); // 'pickup', 'shipping'
+            const [shippingArea, setShippingArea] = useState('');
+            
+            const [schedDate, setSchedDate] = useState('');
+            const [schedTime, setSchedTime] = useState('');
+
+            const [phoneError, setPhoneError] = useState(false);
+            const [schedulingError, setSchedulingError] = useState('');
+
+            const productsTotal = useMemo(() => {
+                return cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            }, [cart]);
+
+            const shippingCost = useMemo(() => {
+                if (deliveryType === 'pickup' || !shippingArea) return 0;
+                const zoneObj = siteData.shippingZones.find(z => z.area === shippingArea);
+                return zoneObj ? zoneObj.price : 0;
+            }, [deliveryType, shippingArea]);
+
+            const invoiceTotal = productsTotal + shippingCost;
+
+            // التحقق من توافق أرقام الهواتف المحمولة المصرية بدقة
+            const handlePhoneValidation = (val) => {
+                setCustPhone(val);
+                const regEx = /^01[0125]\d{8}$/;
+                if (val && !regEx.test(val)) {
+                    setPhoneError(true);
+                } else {
+                    setPhoneError(false);
+                }
+            };
+
+            // التحقق من قيود الجدولة: ممنوع استلام في الماضي + أسرع موعد بعد 24 ساعة من الحجز
+            const handleSchedulingValidation = (dateVal) => {
+                setSchedDate(dateVal);
+                if (!dateVal) {
+                    setSchedulingError('');
+                    return;
+                }
+
+                const selected = new Date(dateVal);
+                const now = new Date();
+                const todayOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+                if (selected < todayOnly) {
+                    setSchedulingError("عذراً، لا يمكن حجز موعد استلام أو توصيل في الماضي. يرجى اختيار تاريخ مستقبلي.");
+                    return;
+                }
+
+                const combinedDateTime = new Date(`${dateVal}T${schedTime || '12:00'}`);
+                const hoursDifference = (combinedDateTime.getTime() - now.getTime()) / (1000 * 60 * 60);
+
+                if (hoursDifference < 24) {
+                    setSchedulingError("عذراً، أسرع موعد للاستلام أو التوصيل بمطبخنا هو بعد 24 ساعة من الحجز لتجهيز طلبكم وتنسيقه بأعلى معايير الجودة.");
+                } else {
+                    setSchedulingError('');
+                }
+            };
+
+            const submitOrder = () => {
+                if (!custName || !custPhone || !schedDate || !schedTime) {
+                    alert("يرجى ملء كافة البيانات الأساسية المطلوبة لإتمام تأكيد طلبكم وتوجيهه للمبيعات.");
+                    return;
+                }
+                if (phoneError) {
+                    alert("يرجى مراجعة وتعديل رقم التواصل الخاص بكم ليكون متطابقاً مع أرقام الهواتف المصرية المعتمدة.");
+                    return;
+                }
+                if (schedulingError) {
+                    alert(schedulingError);
+                    return;
+                }
+
+                // صياغة فاتورة مبيعات راقية باللغة المصرية العامية المعتمدة
+                let waMessage = `الاسم  ${custName}\nالهاتف  ${custPhone}\nطريقة الاستلام  ${deliveryType === 'pickup' ? 'استلام من الفرع' : 'شحن وتوصيل لموقعك'}\n`;
+                
+                if (deliveryType === 'shipping') {
+                    waMessage += `المنطقة  ${shippingArea}\nتكلفة الشحن  ${shippingCost} ج م\n`;
+                } else {
+                    waMessage += `عنوان الاستلام  الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور احمد مجدي وبجوار عيادة الدكتور علي\n`;
+                }
+
+                waMessage += `تاريخ الاستلام  ${schedDate}\nالساعة  ${schedTime}\n\n`;
+                waMessage += `تفاصيل السلة والحلويات المطلوبة\n`;
+
+                cart.forEach(item => {
+                    waMessage += `* ${item.label}  العدد ${item.qty}  السعر الإجمالي ${item.price * item.qty} ج م\n`;
+                    if (item.custom && item.details) {
+                        Object.entries(item.details).forEach(([key, val]) => {
+                            waMessage += `  - ${key}  ${val}\n`;
+                        });
+                    }
+                });
+
+                waMessage += `\nإجمالي الفاتورة شاملة الرسوم  ${invoiceTotal} ج م\n`;
+                waMessage += `صنعناها بحب لتهديها لمن تحب`;
+
+                const encodedText = encodeURIComponent(waMessage);
+                window.open(`https://wa.me/201097238441?text=${encodedText}`, '_blank');
+
+                onClearCart();
+                onNavigate('home');
+            };
+
+            return (
+                <div class="py-12 px-4 max-w-xl mx-auto animate-fade-in text-right">
+                    <h1 class="text-2xl font-extrabold text-brand-dark mb-8 text-center">اتمام الطلب والدفع</h1>
+
+                    <div class="space-y-6">
+                        {/* اسم العميل */}
+                        <div>
+                            <label class="block text-xs font-bold text-brand-dark mb-2">اسم العميل بالكامل</label>
+                            <input 
+                                type="text"
+                                value={custName}
+                                onChange={(e) => setCustName(e.target.value)}
+                                placeholder="اكتب الاسم بالكامل"
+                                class="w-full text-xs p-4 bg-brand-grayLight border border-gray-100 rounded-2xl outline-none focus:border-brand-pink focus:bg-white smooth-transition text-brand-dark"
+                            />
+                        </div>
+
+                        {/* رقم الهاتف */}
+                        <div>
+                            <label class="block text-xs font-bold text-brand-dark mb-2">رقم هاتف محمول مصري للتواصل</label>
+                            <input 
+                                type="text"
+                                value={custPhone}
+                                onChange={(e) => handlePhoneValidation(e.target.value)}
+                                placeholder="مثال: 01097238441"
+                                class="w-full text-xs p-4 bg-brand-grayLight border border-gray-100 rounded-2xl outline-none focus:border-brand-pink focus:bg-white smooth-transition text-brand-dark"
+                            />
+                            {phoneError && (
+                                <span class="text-[10px] text-red-500 font-bold block mt-2 font-sans">
+                                    ⚠️ يرجى كتابة رقم هاتف مصري صحيح ومكون من 11 رقماً ويبدأ بالفئات المعتمدة.
+                                </span>
+                            )}
+                        </div>
+
+                        {/* خيار الاستلام أو الشحن */}
+                        <div>
+                            <label class="block text-xs font-bold text-brand-dark mb-2">طريقة استلام الفاتورة والطلب</label>
+                            <div class="flex gap-3">
+                                <button 
+                                    onClick={() => setDeliveryType('pickup')}
+                                    class={`flex-1 py-3 text-xs font-semibold rounded-2xl smooth-transition ${deliveryType === 'pickup' ? 'bg-brand-pink text-white shadow-sm' : 'bg-brand-grayLight text-brand-dark hover:bg-gray-100'}`}
+                                >
+                                    استلم بنفسي من الفرع
+                                </button>
+                                <button 
+                                    onClick={() => setDeliveryType('shipping')}
+                                    class={`flex-1 py-3 text-xs font-semibold rounded-2xl smooth-transition ${deliveryType === 'shipping' ? 'bg-brand-pink text-white shadow-sm' : 'bg-brand-grayLight text-brand-dark hover:bg-gray-100'}`}
+                                >
+                                    شحن وتوصيل للمنزل
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* تفاصيل عنوان الفرع */}
+                        {deliveryType === 'pickup' && (
+                            <div class="bg-brand-grayLight p-4 rounded-3xl border border-gray-100 text-xs text-gray-500 leading-relaxed font-light">
+                                <span class="font-bold text-brand-pink block mb-1">عنوان الفرع ومطبخنا لتلقي وتسليم الفواتير:</span>
+                                الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور احمد مجدي وبجوار عيادة الدكتور علي.
+                            </div>
+                        )}
+
+                        {/* تفاصيل مناطق الشحن */}
+                        {deliveryType === 'shipping' && (
+                            <div class="space-y-4 animate-fade-in">
+                                <label class="block text-xs font-bold text-brand-dark mb-1">اختر منطقة الشحن والحي السكني الخاص بك:</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    {siteData.shippingZones.map(zone => (
+                                        <button 
+                                            key={`shipping-zone-${zone.area}`}
+                                            onClick={() => setShippingArea(zone.area)}
+                                            class={`py-2.5 px-4 border rounded-2xl text-xs text-right transition flex items-center justify-between ${shippingArea === zone.area ? 'border-brand-pink bg-brand-pink/5 font-bold text-brand-dark' : 'border-gray-100 bg-white hover:border-gray-200'}`}
+                                        >
+                                            <span>{zone.area}</span>
+                                            <span class="text-[10px] text-gray-400 font-light">+{zone.price} ج.م</span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* التوقيت والجدولة */}
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-brand-dark mb-2">تاريخ الاستلام أو التوصيل</label>
+                                <input 
+                                    type="date"
+                                    value={schedDate}
+                                    onChange={(e) => handleSchedulingValidation(e.target.value)}
+                                    class="w-full text-xs p-3.5 bg-brand-grayLight border border-gray-100 rounded-2xl outline-none focus:border-brand-pink"
+                                />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-brand-dark mb-2">الساعة المقترحة</label>
+                                <input 
+                                    type="time"
+                                    value={schedTime}
+                                    onChange={(e) => setSchedTime(e.target.value)}
+                                    class="w-full text-xs p-3.5 bg-brand-grayLight border border-gray-100 rounded-2xl outline-none focus:border-brand-pink"
+                                />
+                            </div>
+                        </div>
+
+                        {schedulingError && (
+                            <div class="bg-red-50 text-red-700 p-4 rounded-3xl text-xs font-medium leading-relaxed">
+                                {schedulingError}
+                            </div>
+                        )}
+
+                        {/* جدول الحسبة المالية الشاملة */}
+                        <div class="bg-brand-grayLight/50 rounded-3xl p-6 border border-gray-100/50">
+                            <h4 class="font-bold text-sm text-brand-dark mb-4 border-b pb-2">تفاصيل الفاتورة النهائية</h4>
+                            <div class="space-y-2.5 text-xs text-gray-500 mb-4">
+                                <div class="flex justify-between">
+                                    <span>إجمالي الفاتورة الفرعي</span>
+                                    <span>{productsTotal} ج.م</span>
+                                </div>
+                                {deliveryType === 'shipping' && (
+                                    <div class="flex justify-between">
+                                        <span>رسوم التوصيل والشحن</span>
+                                        <span>{shippingCost} ج.م</span>
+                                    </div>
+                                )}
+                            </div>
+                            <div class="flex justify-between font-extrabold text-sm border-t pt-4 text-brand-dark">
+                                <span>القيمة الإجمالية لطلبكم</span>
+                                <span class="text-brand-pink">{invoiceTotal} ج.م</span>
+                            </div>
+                        </div>
+
+                        <button 
+                            onClick={submitOrder}
+                            class="w-full bg-brand-pink hover:bg-[#ff8095] text-white font-semibold text-xs py-4 rounded-full shadow-lg smooth-transition flex items-center justify-center gap-2 active:scale-95"
+                        >
+                            <span>إرسال وتأكيد الحجز عبر واتساب للمبيعات</span>
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        // ==========================================
+        // 10. المكون الرئيسي الحاكم للبرنامج (App Engine)
+        // ==========================================
+        function App() {
+            const [activePage, setActivePage] = useState('home');
+            const [sidebarOpen, setSidebarOpen] = useState(false);
+            const [searchQuery, setSearchQuery] = useState('');
+            const [cart, setCart] = useState([]);
+            const [selectedProductId, setSelectedProductId] = useState(null);
+
+            // عداد دورة التنبيه لصور الإتقان الفني
+            const [excellenceIndex, setExcellenceIndex] = useState(0);
+            const [productGroupIndex, setProductGroupIndex] = useState(0); // 0 = أول 4 منتجات، 1 = كل المنتجات الـ 8
+
+            // إدارة كميات المنتجات الفرعية في الكروت
+            const [quantities, setQuantities] = useState({});
+
+            // الدوران التلقائي لصور معرض الإتقان
+            useEffect(() => {
+                const rotationInterval = setInterval(() => {
+                    setExcellenceIndex(prev => (prev + 1) % excellenceGallery.length);
+                }, 4000);
+                return () => clearInterval(rotationInterval);
+            }, []);
+
+            const handleUpdateQuantity = (productId, change) => {
+                setQuantities(prev => {
+                    const current = prev[productId] || 1;
+                    const next = Math.max(1, current + change);
+                    return { ...prev, [productId]: next };
+                });
+            };
+
+            const handleAddToCart = (product, qty, variantDetails = null) => {
+                let uniqueCartId = product.id;
+                let finalPrice = product.price || 0;
+                let finalLabel = product.title;
+
+                if (variantDetails) {
+                    uniqueCartId = `${product.id}-${variantDetails.id}`;
+                    finalPrice = variantDetails.price;
+                    finalLabel = `${product.title} (${variantDetails.flavor || variantDetails.name})`;
+                } else if (product.sizes) {
+                    // إذا كان للمنتج أحجام نختار الحجم الأول كافتراضي
+                    const defaultSize = product.sizes[0];
+                    uniqueCartId = `${product.id}-${defaultSize.id}`;
+                    finalPrice = defaultSize.basePrice;
+                    finalLabel = `${product.title} (${defaultSize.name})`;
+                }
+
+                setCart(prev => {
+                    const existing = prev.find(item => item.id === uniqueCartId);
+                    if (existing) {
+                        return prev.map(item => item.id === uniqueCartId ? { ...item, qty: item.qty + qty } : item);
+                    }
+                    return [...prev, {
+                        id: uniqueCartId,
+                        productId: product.id,
+                        label: finalLabel,
+                        price: finalPrice,
+                        qty: qty,
+                        image: product.images?.[0] || 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=100&auto=format&fit=crop&q=80',
+                        custom: false
+                    }];
+                });
+
+                // تصفير عداد الكميات الموضعي
+                setQuantities(prev => ({ ...prev, [product.id]: 1 }));
+            };
+
+            const handleAddCustomItem = (customItem) => {
+                setCart(prev => [...prev, customItem]);
+                setActivePage('cart');
+            };
+
+            const handleRemoveFromCart = (cartId) => {
+                setCart(prev => prev.filter(item => item.id !== cartId));
+            };
+
+            const handleUpdateCartQty = (cartId, change) => {
+                setCart(prev => prev.map(item => {
+                    if (item.id === cartId) {
+                        return { ...item, qty: Math.max(1, item.qty + change) };
+                    }
+                    return item;
+                }));
+            };
+
+            const handleClearCart = () => {
+                setCart([]);
+            };
+
+            const handleNavigateToDetail = (productId) => {
+                setSelectedProductId(productId);
+                setActivePage('product-detail');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            const activeProductObj = useMemo(() => {
+                return siteData.products.find(p => p.id === selectedProductId);
+            }, [selectedProductId]);
+
+            const cartCount = useMemo(() => {
+                return cart.reduce((acc, curr) => acc + curr.qty, 0);
+            }, [cart]);
+
+            const handlePageNavigation = (targetPage) => {
+                setActivePage(targetPage);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            return (
+                <div class="min-h-screen flex flex-col justify-between relative bg-white">
+                    
+                    {/* الهيدر المشترك */}
+                    <Header 
+                        activePage={activePage}
+                        onNavigate={handlePageNavigation}
+                        cartCount={cartCount}
+                        onSearchChange={setSearchQuery}
+                        searchQuery={searchQuery}
+                        onToggleSidebar={() => setSidebarOpen(true)}
+                    />
+
+                    {/* القائمة الجانبية المنسدلة للتصفح المريح على الهواتف */}
+                    {sidebarOpen && (
+                        <div class="fixed inset-0 z-50 flex animate-fade-in">
+                            <div class="fixed inset-0 bg-brand-dark/45 backdrop-blur-sm transition-opacity" onClick={() => setSidebarOpen(false)}></div>
+                            <div class="relative w-80 max-w-xs bg-white h-full p-6 flex flex-col justify-between shadow-2xl z-10">
+                                <div>
+                                    <div class="flex items-center justify-between mb-8 border-b pb-4">
+                                        <div class="flex items-center gap-2">
+                                            <img src={siteData.store.logo} alt="شعار حلويات بوسي" class="w-10 h-10" />
+                                            <span class="font-bold text-sm text-brand-dark">حلويات بوسي</span>
+                                        </div>
+                                        <button onClick={() => setSidebarOpen(false)} class="p-2 text-gray-400 hover:text-brand-pink smooth-transition" aria-label="إغلاق القائمة">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <nav class="flex flex-col gap-3">
+                                        {[
+                                            { id: 'home', label: 'الرئيسية' },
+                                            { id: 'menu', label: 'المنيو' },
+                                            { id: 'cake-builder', label: 'محاكي التورت' },
+                                            { id: 'flower-builder', label: 'محاكي الورد' },
+                                            { id: 'cart', label: 'السلة' }
+                                        ].map(navItem => (
+                                            <button 
+                                                key={`sidebar-nav-${navItem.id}`}
+                                                onClick={() => { handlePageNavigation(navItem.id); setSidebarOpen(false); }} 
+                                                class={`text-right py-3.5 px-5 rounded-2xl text-xs font-semibold smooth-transition ${activePage === navItem.id ? 'bg-brand-pink/10 text-brand-pink' : 'text-brand-dark hover:bg-brand-grayLight'}`}
+                                            >
+                                                {navItem.label}
+                                            </button>
+                                        ))}
+                                    </nav>
+                                </div>
+                                <div class="border-t pt-4 text-center">
+                                    <span class="text-[9px] text-gray-400">صنعناها بحب لتهديها لمن تحب</span>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* مسار الصفحات التفاعلية الحية */}
+                    <main class="flex-grow">
+                        {activePage === 'home' && (
+                            <HomePage 
+                                onNavigate={handlePageNavigation}
+                                quantities={quantities}
+                                onUpdateQuantity={handleUpdateQuantity}
+                                onAddToCart={handleAddToCart}
+                                productGroupIndex={productGroupIndex}
+                                setProductGroupIndex={setProductGroupIndex}
+                                excellenceIndex={excellenceIndex}
+                                onNavigateToDetail={handleNavigateToDetail}
+                            />
+                        )}
+                        {activePage === 'menu' && (
+                            <MenuPage 
+                                onNavigate={handlePageNavigation}
+                                searchQuery={searchQuery}
+                                onSearchChange={setSearchQuery}
+                                onNavigateToDetail={handleNavigateToDetail}
+                            />
+                        )}
+                        {activePage === 'product-detail' && activeProductObj && (
+                            <ProductDetailPage 
+                                product={activeProductObj}
+                                onAddToCart={handleAddToCart}
+                                onNavigate={handlePageNavigation}
+                            />
+                        )}
+                        {activePage === 'cake-builder' && (
+                            <CakeBuilderPage 
+                                onAddCustomItem={handleAddCustomItem}
+                            />
+                        )}
+                        {activePage === 'flower-builder' && (
+                            <FlowerBuilderPage 
+                                onAddCustomItem={handleAddCustomItem}
+                            />
+                        )}
+                        {activePage === 'cart' && (
+                            <CartPage 
+                                cart={cart}
+                                onUpdateCartQty={handleUpdateCartQty}
+                                onRemoveFromCart={handleRemoveFromCart}
+                                onNavigate={handlePageNavigation}
+                            />
+                        )}
+                        {activePage === 'checkout' && (
+                            <CheckoutPage 
+                                cart={cart}
+                                onNavigate={handlePageNavigation}
+                                onClearCart={handleClearCart}
+                            />
+                        )}
+                    </main>
+
+                    {/* الفوتر المشترك */}
+                    <Footer onNavigate={handlePageNavigation} />
+                </div>
+            );
+        }
+
+        // ==========================================
+        // 11. تشغيل وحقن واجهة التطبيق التفاعلية
+        // ==========================================
+        const rootElement = document.getElementById('root');
+        const root = ReactDOM.createRoot(rootElement);
+        root.render(<App />);
+    </script>
+</body>
+</html>
