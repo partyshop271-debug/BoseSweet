@@ -17,12 +17,6 @@
     <meta property="og:description" content="تصفح منيو حلويات بوسي واستخدم محاكي التورت والورد التفاعلي لتنسيق طلبك فريش وبأعلى جودة خامات طبيعية ممسوكة ومضمونة.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
 
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://bosesweets.com">
-    <meta property="twitter:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta property="twitter:description" content="الجودة الحقيقية والطعم الأصلي من مطبخ حلويات بوسي مباشرة إليكم.">
-    <meta property="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;700;800&display=swap" rel="stylesheet">
@@ -32,15 +26,14 @@
     <style>
         :root {
             --primary: #FF91A4;        /* روح الهوية البصرية - البمبي الملكي */
-            --secondary: #FFD700;      /* اللون الذهبي المساعد للفخامة واللمسات المتممة */
+            --secondary: #FFD700;      /* اللمسة الملكية الناعمة - ذهبي متمم ومحدود جداً */
             --background: #FFFFFF;     /* الأبيض النقي للتنفس والراحة البصرية الكاملة */
             --text-color: #000000;     /* اللون الأسود مخصص بشكل حصري وصارم للنصوص فقط */
             --gray-light: #FBFBFB;     /* درجات رمادية ناعمة جداً للخلفيات الفرعية */
             --gray-border: #F0F0F0;    /* خطوط الفصل والحدود الهادئة */
             --font-main: 'Alexandria', sans-serif;
             --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            --shadow-premium: 0 4px 20px rgba(255, 145, 164, 0.08);
-            --shadow-gold: 0 4px 15px rgba(255, 215, 0, 0.15);
+            --shadow-premium: 0 4px 25px rgba(255, 145, 164, 0.06);
         }
 
         /* الإعدادات العامة والتصفير الاحترافي */
@@ -65,8 +58,8 @@
 
         /* تخصيص شريط التمرير (Scrollbar) بألوان الهوية البصرية */
         ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
         }
         ::-webkit-scrollbar-track {
             background: var(--background);
@@ -75,16 +68,13 @@
             background: var(--primary);
             border-radius: 10px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--secondary);
-        }
 
-        /* حاويات العرض والصفحات المستقلة (Single Page Application Containers) */
+        /* حاويات العرض والصفحات المستقلة (SPA Containers) */
         .page-view {
             display: none;
             width: 100%;
-            min-height: calc(100vh - 70px);
-            animation: viewFadeIn 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            min-height: calc(100vh - 75px);
+            animation: viewFadeIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .page-view.active-view {
@@ -92,33 +82,22 @@
         }
 
         @keyframes viewFadeIn {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* الهيدر المتطور المدمج بالهوية البصرية واللمسات الذهبية */
+        /* الهيدر المتطور المدمج بالهوية البصرية واللمسات الناعمة */
         header {
             position: sticky;
             top: 0;
             z-index: 1000;
             background-color: var(--background);
-            border-bottom: 2px solid var(--gray-border);
+            border-bottom: 1px solid var(--gray-border);
             padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             height: 75px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-        }
-
-        /* الخط الإرشادي الجمالي الفاخر أسفل الهيدر لدمج الألوان */
-        .header-identity-bar {
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 50%, var(--primary) 100%);
         }
 
         .header-right, .header-left {
@@ -129,14 +108,11 @@
 
         .menu-toggle-btn {
             background: none;
-            border: 2px solid var(--gray-border);
-            font-size: 18px;
+            border: none;
+            font-size: 20px;
             cursor: pointer;
             color: var(--text-color);
-            padding: 8px;
-            border-radius: 50%;
-            width: 42px;
-            height: 42px;
+            padding: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -144,31 +120,28 @@
         }
 
         .menu-toggle-btn:active {
-            border-color: var(--primary);
             color: var(--primary);
-            transform: scale(0.95);
         }
 
         .brand-logo-zone {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             text-decoration: none;
             color: var(--text-color);
         }
 
         .brand-logo-zone img {
-            width: 48px;
-            height: 48px;
+            width: 46px;
+            height: 46px;
             object-fit: contain;
-            filter: drop-shadow(0px 2px 5px rgba(255, 145, 164, 0.15));
         }
 
         .brand-title {
-            font-size: 19px;
+            font-size: 18px;
             font-weight: 800;
             color: var(--text-color);
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
         }
 
         /* أزرار الهيدر والرموز التفاعلية */
@@ -179,8 +152,8 @@
             cursor: pointer;
             color: var(--text-color);
             position: relative;
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -193,41 +166,39 @@
             color: var(--primary);
         }
 
-        /* عداد الأرقام للسلة والمفضلة مدمج باللون البمبي الدائري */
+        /* عداد الأرقام للسلة مدمج باللون البمبي الدائري */
         .badge-count {
             position: absolute;
-            top: 2px;
-            right: 2px;
+            top: 3px;
+            right: 3px;
             background-color: var(--primary);
             color: #FFFFFF;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 1px solid var(--background);
-            box-shadow: var(--shadow-premium);
         }
 
-        /* القائمة الجانبية المطورة بالكامل بلون الهوية والخط الذهبي */
+        /* القائمة الجانبية المتطورة والملتزمة بالهيكلة المطلوبة حرفياً */
         .sidebar-navigation {
             position: fixed;
             top: 0;
             right: -100%;
-            width: 300px;
+            width: 290px;
             height: 100%;
             background-color: var(--background);
             z-index: 2000;
-            box-shadow: -8px 0 35px rgba(0,0,0,0.06);
+            box-shadow: -6px 0 30px rgba(0,0,0,0.04);
             transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            padding: 30px 24px;
+            padding: 25px 20px;
             display: flex;
             flex-direction: column;
-            gap: 30px;
-            border-left: 3px solid var(--secondary);
+            gap: 25px;
         }
 
         .sidebar-navigation.sidebar-open {
@@ -238,19 +209,18 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 2px solid var(--gray-border);
-            padding-bottom: 20px;
+            border-bottom: 1px solid var(--gray-border);
+            padding-bottom: 15px;
         }
 
         .close-sidebar-btn {
             background: none;
-            border: 2px solid var(--gray-border);
-            font-size: 16px;
+            border: none;
+            font-size: 18px;
             cursor: pointer;
             color: var(--text-color);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: 34px;
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -258,43 +228,32 @@
         }
 
         .close-sidebar-btn:active {
-            border-color: var(--primary);
             color: var(--primary);
         }
 
         .sidebar-menu-links {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
             list-style: none;
         }
 
         .sidebar-link-item a {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px 18px;
+            display: block;
+            padding: 12px 16px;
             color: var(--text-color);
             text-decoration: none;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 500;
-            border-radius: 30px;
+            border-radius: 20px;
             transition: var(--transition-smooth);
-            border: 1px solid transparent;
         }
 
-        /* التميز البصري واللوني للروابط النشطة */
+        /* التميز البصري واللوني للروابط النشطة بلمسة الهوية */
         .sidebar-link-item.active-link a, .sidebar-link-item a:active {
             background-color: var(--gray-light);
             color: var(--primary);
             font-weight: 700;
-            border-color: rgba(255, 145, 164, 0.2);
-            box-shadow: var(--shadow-premium);
-        }
-
-        .sidebar-link-item a i {
-            font-size: 16px;
-            color: var(--secondary); /* استخدام الذهبي للأيقونات المساعدة في القائمة */
         }
 
         .sidebar-overlay {
@@ -303,33 +262,28 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.25);
+            background-color: rgba(0,0,0,0.15);
             z-index: 1900;
             display: none;
-            backdrop-filter: blur(4px);
-            animation: fadeInOverlay 0.3s ease;
+            backdrop-filter: blur(3px);
         }
 
-        @keyframes fadeInOverlay {
-            from { opacity: 0; } to { opacity: 1; }
-        }
-
-        /* شريط البحث المطور المدمج بالمحرك الذكي */
+        /* شريط البحث المطور */
         .search-overlay-bar {
             position: fixed;
-            top: -90px;
+            top: -85px;
             left: 0;
             width: 100%;
             height: 75px;
             background-color: var(--background);
             z-index: 1500;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.02);
             transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             display: flex;
             align-items: center;
             padding: 0 20px;
             gap: 15px;
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 1px solid var(--gray-border);
         }
 
         .search-overlay-bar.search-bar-open {
@@ -343,11 +297,11 @@
 
         .search-input-wrapper input {
             width: 100%;
-            height: 46px;
-            border: 2px solid var(--gray-border);
-            border-radius: 30px;
-            padding: 0 50px 0 20px;
-            font-size: 14px;
+            height: 44px;
+            border: 1px solid var(--gray-border);
+            border-radius: 22px;
+            padding: 0 45px 0 20px;
+            font-size: 13px;
             background-color: var(--gray-light);
             transition: var(--transition-smooth);
             color: var(--text-color);
@@ -356,35 +310,27 @@
         .search-input-wrapper input:focus {
             border-color: var(--primary);
             background-color: var(--background);
-            box-shadow: var(--shadow-premium);
         }
 
         .search-input-wrapper i {
             position: absolute;
-            top: 15px;
-            right: 20px;
+            top: 14px;
+            right: 18px;
             color: var(--primary);
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .close-search-trigger {
             background: none;
-            border: 2px solid var(--gray-border);
-            font-size: 15px;
+            border: none;
+            font-size: 16px;
             cursor: pointer;
             color: var(--text-color);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            padding: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition-smooth);
-        }
-
-        .close-search-trigger:active {
-            border-color: var(--primary);
-            color: var(--primary);
         }
 
         /* ================================================================= */
@@ -399,19 +345,18 @@
             padding: 12px 28px;
             background-color: var(--primary);
             color: #FFFFFF;
-            border: 2px solid transparent;
-            border-radius: 30px;
-            font-size: 14px;
+            border: 1px solid transparent;
+            border-radius: 25px;
+            font-size: 13px;
             font-weight: 700;
             cursor: pointer;
             transition: var(--transition-smooth);
             box-shadow: var(--shadow-premium);
             text-decoration: none;
-            gap: 10px;
         }
 
         .btn-oval-primary:active {
-            transform: scale(0.97);
+            transform: scale(0.98);
             background-color: var(--background);
             color: var(--primary);
             border-color: var(--primary);
@@ -421,24 +366,26 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 11px 26px;
-            background-color: var(--background);
+            padding: 12px 28px;
+            background-color: var(--gray-light);
             color: var(--text-color);
-            border: 2px solid var(--secondary);
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 700;
+            border: 1px solid var(--gray-border);
+            border-radius: 25px;
+            font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
             transition: var(--transition-smooth);
-            box-shadow: var(--shadow-gold);
             text-decoration: none;
-            gap: 10px;
         }
 
         .btn-oval-secondary:active {
-            transform: scale(0.97);
-            background-color: var(--secondary);
-            color: #000000;
+            background-color: var(--gray-border);
+        }
+
+        /* تفاصيل الخط الذهبي المساعد الناعم جداً كلمسة ملكية خفيفة */
+        .gold-royal-spot {
+            color: var(--secondary) !important;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
         /* نمط كروت المنتجات المشتركة (كارتين جنب بعض) */
@@ -459,7 +406,7 @@
         .product-premium-card {
             background-color: var(--background);
             border: 1px solid var(--gray-border);
-            border-radius: 18px;
+            border-radius: 16px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
@@ -469,13 +416,12 @@
 
         .product-premium-card:hover {
             box-shadow: var(--shadow-premium);
-            border-color: rgba(255, 145, 164, 0.15);
         }
 
         .card-image-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 100%; /* كادر مربع متناسق تماماً */
+            padding-top: 100%; 
             background-color: var(--gray-light);
             overflow: hidden;
         }
@@ -487,31 +433,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: var(--transition-smooth);
-        }
-
-        .card-favorite-trigger {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background-color: rgba(255, 255, 255, 0.9);
-            border: none;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: var(--text-color);
-            font-size: 14px;
-            transition: var(--transition-smooth);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            z-index: 10;
-        }
-
-        .card-favorite-trigger.is-fav {
-            color: var(--primary);
         }
 
         .card-details-zone {
@@ -555,13 +476,7 @@
             color: var(--text-color);
         }
 
-        .card-price-display span {
-            font-size: 10px;
-            font-weight: 400;
-            margin-right: 2px;
-        }
-
-        /* عداد التحكم في الكمية بالمسار الدائري والمؤشرات */
+        /* عداد التحكم في الكمية بالمسار والمؤشرات المطلوبة */
         .premium-quantity-stepper {
             display: flex;
             align-items: center;
@@ -569,20 +484,20 @@
             border: 1px solid var(--gray-border);
             border-radius: 20px;
             padding: 2px;
-            gap: 8px;
+            gap: 6px;
         }
 
         .stepper-btn {
             background-color: var(--background);
             border: 1px solid var(--gray-border);
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-color);
             transition: var(--transition-smooth);
         }
@@ -590,13 +505,12 @@
         .stepper-btn:active {
             background-color: var(--primary);
             color: #FFFFFF;
-            border-color: var(--primary);
         }
 
         .stepper-value {
             font-size: 12px;
             font-weight: 700;
-            min-width: 16px;
+            min-width: 14px;
             text-align: center;
             color: var(--text-color);
         }
@@ -623,10 +537,9 @@
             background-color: var(--primary);
             color: #FFFFFF;
             border-color: var(--primary);
-            box-shadow: var(--shadow-premium);
         }
 
-        /* نظام التنبيهات الفورية الفاخر (Toast Notifications) بقوة الهوية */
+        /* نظام التنبيهات الفورية الفاخر (Toast Notifications) */
         .toast-notifications-container {
             position: fixed;
             bottom: 25px;
@@ -642,48 +555,36 @@
         @media (min-width: 480px) {
             .toast-notifications-container {
                 left: auto;
-                width: 360px;
+                width: 350px;
             }
         }
 
         .premium-toast {
             background-color: var(--background);
             border-right: 4px solid var(--primary);
-            border-left: 1px solid var(--gray-border);
-            border-top: 1px solid var(--gray-border);
-            border-bottom: 1px solid var(--gray-border);
             padding: 14px 18px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
             display: flex;
             align-items: center;
             gap: 12px;
             pointer-events: auto;
-            animation: toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .premium-toast.toast-warning {
-            border-right-color: var(--secondary);
+            animation: toastSlideIn 0.3s ease forwards;
         }
 
         .premium-toast i {
-            font-size: 16px;
+            font-size: 15px;
             color: var(--primary);
-        }
-
-        .premium-toast.toast-warning i {
-            color: var(--secondary);
         }
 
         .toast-message-content {
             font-size: 13px;
             font-weight: 500;
             color: var(--text-color);
-            flex: 1;
         }
 
         @keyframes toastSlideIn {
-            from { transform: translateY(20px); opacity: 0; }
+            from { transform: translateY(15px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
@@ -694,8 +595,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.3);
-            backdrop-filter: blur(5px);
+            background-color: rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
             z-index: 2500;
             display: none;
             align-items: center;
@@ -705,34 +606,33 @@
 
         .premium-modal-wrapper {
             background-color: var(--background);
-            border-radius: 24px;
+            border-radius: 20px;
             width: 100%;
-            max-width: 420px;
-            box-shadow: 0 15px 45px rgba(0,0,0,0.1);
-            border: 2px solid var(--gray-border);
+            max-width: 400px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+            border: 1px solid var(--gray-border);
             overflow: hidden;
-            animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @keyframes modalPop {
-            from { transform: scale(0.9) translateY(10px); opacity: 0; }
-            to { transform: scale(1) translateY(0); opacity: 1; }
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
 
         .modal-main-header {
             padding: 20px 20px 10px 20px;
             text-align: center;
-            position: relative;
         }
 
         .modal-main-header i {
-            font-size: 24px;
+            font-size: 22px;
             color: var(--primary);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .modal-main-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             color: var(--text-color);
         }
@@ -741,7 +641,7 @@
             padding: 10px 20px 20px 20px;
             text-align: center;
             font-size: 13px;
-            color: #333;
+            color: #222;
             line-height: 1.6;
         }
 
@@ -761,21 +661,11 @@
         }
 
         .view-section-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--text-color);
             text-align: center;
             margin-bottom: 6px;
-        }
-
-        .view-section-subtitle {
-            font-size: 13px;
-            color: #555;
-            text-align: center;
-            margin-bottom: 25px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
         }
     </style>
 </head>
@@ -790,10 +680,9 @@
                 <div class="modal-main-title" id="modalTitle">توضيح بخصوص التنسيق</div>
             </div>
             <div class="modal-main-body" id="modalBody">
-                تفاصيل الرسالة الإرشادية والترقية تظهر هنا للعميل بشكل مبسط ومباشر.
+                تفاصيل الرسالة الإرشادية تظهر هنا.
             </div>
-            <div class="modal-actions-footer" id="modalActions">
-                </div>
+            <div class="modal-actions-footer" id="modalActions"></div>
         </div>
     </div>
 
@@ -802,7 +691,7 @@
     <div class="search-overlay-bar" id="searchOverlayBar">
         <div class="search-input-wrapper">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="globalSearchInput" placeholder="ابحث عن منتجك المفضل داخل المنيو...">
+            <input type="text" id="globalSearchInput" placeholder="ابحث عن منتجك المفضل...">
         </div>
         <button class="close-search-trigger" id="closeSearchBtn" aria-label="إغلاق البحث"><i class="fa-solid fa-xmark"></i></button>
     </div>
@@ -813,7 +702,7 @@
                 <i class="fa-solid fa-bars"></i>
             </button>
             <a href="#" class="brand-logo-zone" data-target="homepage-view">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي الفخم">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي">
                 <span class="brand-title">حلويات بوسي</span>
             </a>
         </div>
@@ -821,34 +710,28 @@
             <button class="header-icon-btn" id="searchTriggerBtn" aria-label="فتح البحث">
                 <i class="fa-solid fa-magnifying-glass"></i>
             </button>
-            <button class="header-icon-btn" id="favoritesPageBtn" data-target="favorites-view" aria-label="فتح المفضلة">
-                <i class="fa-regular fa-heart"></i>
-                <span class="badge-count" id="favBadgeCount">0</span>
-            </button>
             <button class="header-icon-btn" id="cartPageBtn" data-target="cart-view" aria-label="فتح السلة">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <span class="badge-count" id="cartBadgeCount">0</span>
             </button>
         </div>
-        <div class="header-identity-bar"></div>
     </header>
 
     <nav class="sidebar-navigation" id="sidebarNavigation">
         <div class="sidebar-header">
-            <span class="brand-title">قائمة التصفح</span>
+            <span class="brand-title">حلويات بوسي</span>
             <button class="close-sidebar-btn" id="closeSidebarBtn" aria-label="إغلاق القائمة"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <ul class="sidebar-menu-links">
-            <li class="sidebar-link-item active-link" data-target="homepage-view"><a href="#"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
-            <li class="sidebar-link-item" data-target="menu-view"><a href="#"><i class="fa-solid fa-utensils"></i> المنيو العام</a></li>
-            <li class="sidebar-link-item" data-target="cake-simulator-view"><a href="#"><i class="fa-solid fa-cake-candles"></i> محاكي التورت</a></li>
-            <li class="sidebar-link-item" data-target="flower-simulator-view"><a href="#"><i class="fa-solid fa-id-card-clip"></i> محاكي الورد الفاخر</a></li>
-            <li class="sidebar-link-item" data-target="cart-view"><a href="#"><i class="fa-solid fa-basket-shopping"></i> سلة المشتريات</a></li>
+            <li class="sidebar-menu-item sidebar-link-item active-link" data-target="homepage-view"><a href="#">الرئيسية</a></li>
+            <li class="sidebar-menu-item sidebar-link-item" data-target="menu-view"><a href="#">المنيو</a></li>
+            <li class="sidebar-menu-item sidebar-link-item" data-target="cart-view"><a href="#">السلة</a></li>
+            <li class="sidebar-menu-item sidebar-link-item" data-target="cake-simulator-view"><a href="#">محاكي التورت</a></li>
+            <li class="sidebar-menu-item sidebar-link-item" data-target="flower-simulator-view"><a href="#">محاكي الورد</a></li>
         </ul>
     </nav>
 
     <script>
-        // إعلان المحرك العالمي لمنصة حلويات بوسي لربط كافة الأجزاء القادمة بسلاسة
         window.BoseSweetsEngine = {
             state: {
                 cart: JSON.parse(localStorage.getItem('bose_cart')) || [],
@@ -856,46 +739,33 @@
                 currentView: 'homepage-view'
             },
 
-            // ميكانيكية تحديث العدادات التفاعلية وحفظ البيانات صامتاً لتقليل استهلاك موارد المعالج
             updateUIComponents: function() {
                 document.getElementById('cartBadgeCount').textContent = this.state.cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
-                document.getElementById('favBadgeCount').textContent = this.state.favorites.length;
                 localStorage.setItem('bose_cart', JSON.stringify(this.state.cart));
                 localStorage.setItem('bose_favs', JSON.stringify(this.state.favorites));
-                
-                // بث حدث داخلي لتحديث واجهات السلة أو المنتجات تلقائياً إن وجدت
                 window.dispatchEvent(new CustomEvent('boseStateUpdated'));
             },
 
-            // نظام إطلاق التنبيهات الفورية الفاخر المدمج بالهوية البصرية
             showToast: function(message, type = 'success') {
                 const container = document.getElementById('globalToastContainer');
                 const toast = document.createElement('div');
-                toast.className = `premium-toast ${type === 'warning' ? 'toast-warning' : ''}`;
-                
-                const iconClass = type === 'warning' ? 'fa-solid fa-triangle-exclamation' : 'fa-solid fa-circle-check';
+                toast.className = `premium-toast`;
                 toast.innerHTML = `
-                    <i class="${iconClass}"></i>
+                    <i class="fa-solid fa-circle-check"></i>
                     <div class="toast-message-content">${message}</div>
                 `;
-                
                 container.appendChild(toast);
                 setTimeout(() => {
-                    toast.style.animation = 'none';
-                    toast.offsetHeight; // Trigger reflow
                     toast.style.opacity = '0';
-                    toast.style.transform = 'translateY(-10px)';
                     toast.style.transition = 'all 0.3s ease';
                     setTimeout(() => toast.remove(), 300);
                 }, 3000);
             },
 
-            // ميكانيكية التحكم المطور في النوافذ المنبثقة وعرض الخيارات (Modals Engine)
             showModal: function(title, bodyHtml, actionButtons = []) {
                 const backdrop = document.getElementById('centralUpgradeModal');
                 document.getElementById('modalTitle').textContent = title;
                 document.getElementById('modalBody').innerHTML = bodyHtml;
-                
                 const footer = document.getElementById('modalActions');
                 footer.innerHTML = '';
                 
@@ -909,11 +779,9 @@
                     });
                     footer.appendChild(btn);
                 });
-                
                 backdrop.style.display = 'flex';
             },
 
-            // محرك التنقل الفوري الذكي بين واجهات المنصة الكاملة (SPA Router)
             navigateToView: function(viewId) {
                 const views = document.querySelectorAll('.page-view');
                 let found = false;
@@ -931,7 +799,6 @@
                     this.state.currentView = viewId;
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     
-                    // تحديث الحالة النشطة داخل عناصر الروابط في القائمة الجانبية
                     document.querySelectorAll('.sidebar-link-item').forEach(item => {
                         if (item.getAttribute('data-target') === viewId) {
                             item.classList.add('active-link');
@@ -943,7 +810,6 @@
             }
         };
 
-        // تفعيل المستمعات الأساسية لتفاعل عناصر واجهة المستخدم المشتركة فور تحميل الصفحة
         document.addEventListener('DOMContentLoaded', () => {
             const menuToggleBtn = document.getElementById('menuToggleBtn');
             const closeSidebarBtn = document.getElementById('closeSidebarBtn');
@@ -976,7 +842,6 @@
                 searchOverlayBar.classList.remove('search-bar-open');
             });
 
-            // ربط ضغطات التنقل العامة الموزعة في الهيدر والفوتر والقائمة
             document.addEventListener('click', (e) => {
                 const targetTrigger = e.target.closest('[data-target]');
                 if (targetTrigger) {
@@ -988,7 +853,6 @@
                 }
             });
 
-            // مزامنة العدادات الأولية المخزنة في جهاز العميل فوراً
             window.BoseSweetsEngine.updateUIComponents();
         });
     </script>
