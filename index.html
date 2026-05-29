@@ -1004,7 +1004,7 @@
                     <div class="block-crown-badge"><i class="fa-solid fa-gift"></i> تنسيق الهدايا الفاخرة</div>
                     <h3 class="simulator-block-title">محاكي الورد الفاخر</h3>
                     <p class="simulator-block-text">
-                        صمم هديتك الاستثنائية بكامل الحرية البصرية والتحكم المطلق. نسق حجم بوكيه الورد، حدد نوع الورود وألواها المطلوبة، وأضف لمساتك المدفوعة والقيمة من المبالغ النقدية (الكاش)، الصور التذكارية المطبوعة، شريط الستان المخطوط، أو قطع الشوكولاتة الفاخرة لتصل لمن تحب في أبهى صورة تليق بمشاعرك.
+                        صمم هديتك الاستثنائية بكامل الحرية البصرية والتحكم المطلق. نسق حجم بوكيه الورد, حدد نوع الورود وألواها المطلوبة، وأضف لمساتك المدفوعة والقيمة من المبالغ النقدية (الكاش)، الصور التذكارية المطبوعة، شريط الستان المخطوط، أو قطع الشوكولاتة الفاخرة لتصل لمن تحب في أبهى صورة تليق بمشاعرك.
                     </p>
                     <button class="btn-oval-primary block-action-btn" data-target="flower-simulator-view">ابدأ تنسيق البوكيه الآن</button>
                 </div>
@@ -1020,47 +1020,6 @@
     </main>
 
     <style>
-        /* ترقية وتعديل جذري للقائمة الجانبية لتصبح أيقونة برمجية معاصرة فخمة */
-        .sidebar-navigation {
-            background-color: rgba(255, 255, 255, 0.85) !important;
-            backdrop-filter: blur(25px) !important;
-            -webkit-backdrop-filter: blur(25px) !important;
-            border-left: 1px solid rgba(255, 145, 164, 0.25) !important;
-            padding: 40px 24px !important;
-            box-shadow: -15px 0 50px rgba(255, 145, 164, 0.04) !important;
-            border-radius: 30px 0 0 30px;
-        }
-
-        .sidebar-header .brand-title {
-            font-size: 20px !important;
-            letter-spacing: -0.5px;
-            color: var(--text-color);
-        }
-
-        .sidebar-menu-links {
-            gap: 12px !important;
-            margin-top: 15px;
-        }
-
-        .sidebar-link-item a {
-            padding: 14px 20px !important;
-            font-size: 15px !important;
-            font-weight: 500 !important;
-            color: #222 !important;
-            border-radius: 16px !important;
-            transition: var(--transition-smooth) !important;
-            border: 1px solid transparent;
-        }
-
-        /* التميز اللوني والنبض البصري عند تمرير أو تفعيل روابط القائمة */
-        .sidebar-link-item.active-link a {
-            background-color: rgba(255, 145, 164, 0.08) !important;
-            color: var(--primary) !important;
-            font-weight: 800 !important;
-            border-color: rgba(255, 145, 164, 0.15) !important;
-            padding-right: 26px !important;
-        }
-
         /* شارات الأقسام الصغيرة المتطورة برقي البمبي الملكي */
         .section-mini-badge {
             display: inline-block;
@@ -1154,7 +1113,7 @@
             pointer-events: none;
         }
 
-        /* نظام تباعد الأقسام الاستراتيجي (Dynamic Breathing Space Grid) لمنع الازدحام */
+        /* نظام تباعد الأقسام الاستراتيجي لمنع الازدحام */
         .homepage-slider-section, .homepage-grid-section, .excellence-pride-section {
             padding: 65px 0; 
             width: 100%;
@@ -1295,7 +1254,7 @@
         .card-price-display {
             font-size: 16px !important;
             font-weight: 800;
-            color: var(--primary) !important; /* توحيد إبراز السعر الفوري بالبمبي الملكي */
+            color: var(--primary) !important; 
         }
 
         .card-price-display span {
@@ -1331,7 +1290,7 @@
             box-shadow: none;
         }
 
-        /* تطوير لوحة عرض صور قسم عقد من الإتقان بالتوهج البمبي الناعم المريح للعين */
+        /* لوحة عرض صور قسم عقد من الإتقان */
         .full-screen-showcase-card {
             position: relative;
             width: 100%;
@@ -1558,27 +1517,70 @@
             color: #333;
             line-height: 1.65;
         }
+
+        /* تعديلات مخصصة ومطابقة لألوان واجهة كارت الحساب اللحظي المطور */
+        .sidebar-navigation {
+            background-color: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(25px) !important;
+            -webkit-backdrop-filter: blur(25px) !important;
+            border-left: 1px solid rgba(255, 145, 164, 0.25) !important;
+            padding: 40px 24px !important;
+            box-shadow: -15px 0 50px rgba(255, 145, 164, 0.04) !important;
+            border-radius: 30px 0 0 30px;
+        }
+
+        .sidebar-header .brand-title {
+            font-size: 20px !important;
+            letter-spacing: -0.5px;
+            color: var(--text-color);
+        }
+
+        .sidebar-menu-links {
+            gap: 12px !important;
+            margin-top: 15px;
+        }
+
+        .sidebar-link-item a {
+            padding: 14px 20px !important;
+            font-size: 15px !important;
+            font-weight: 500 !important;
+            color: #222 !important;
+            border-radius: 16px !important;
+            transition: var(--transition-smooth) !important;
+            border: 1px solid transparent;
+        }
+
+        .sidebar-link-item.active-link a {
+            background-color: rgba(255, 145, 164, 0.08) !important;
+            color: var(--primary) !important;
+            font-weight: 800 !important;
+            border-color: rgba(255, 145, 164, 0.15) !important;
+            padding-right: 26px !important;
+        }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // مخزن الداتا القياسي للمنتجات والأسعار المعتمدة للعلب والكبات
+            // مزامنة الداتا الصافية للمنتجات مباشرة وحصرياً من ملفات الجيسون الرسمية لحلويات بوسي
             const boseProductsDatabase = [
                 { id: 'despacito', title: 'الديسباسيتو', flavor: 'نوتيلا دارك', desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة.', price: 66, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
                 { id: 'qashtota', title: 'القشطوطة', flavor: 'نوتيلا وايت', desc: 'المزيج المثالي للطعم يجمع بين نعومة القشطوطة وروقان النوتيلا والمستخرجة فريش من مطبخنا لحفلاتكم.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
                 { id: 'donuts', title: 'الدوناتس', flavor: 'نوتيلا دارك', desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك نفس الطعم والجودة اللي بنقدمها.', price: 88, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
                 { id: 'cinabon', title: 'السينابون', flavor: 'وايت نوتيلا', desc: 'لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة وطعم ممسوك الإتقان.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
                 { id: 'happiness-cups', title: 'كبات السعادة', flavor: 'لوتس غنية', desc: 'أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة.', price: 61, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
-                { id: 'red-velvet', title: 'الريدڤيلڤت', flavor: 'كريمة كلاسيك', desc: 'كيك ريدڤيلڤت بطبقات متوازنة وكريمة ناعمة معمول بخامات واضحة وجودة ثابتة في كل حجم.', price: 72, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
-                { id: 'mini-cake', title: 'الميني تورت', flavor: 'شوكولاتة فادج', desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل مناسبة للهدايا والمناسبات الخاصة.', price: 154, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
-                { id: 'relax-box', title: 'بوكس الروقان', flavor: 'تشكيلة ميكس', desc: 'تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية.', price: 550, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' }
+                { id: 'red-velvet', title: 'الريدڤيلڤت', flavor: '', desc: 'كيك ريدڤيلڤت بطبقات متوازنة وكريمة ناعمة معمول بخامات واضحة وجودة ثابتة في كل حجم.', price: 72, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
+                { id: 'mini-cake', title: 'الميني تورت', flavor: '', desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل مناسبة للهدايا والمناسبات الخاصة.', price: 154, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
+                { id: 'relax-box', title: 'بوكس الروقان', flavor: '', desc: 'تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية.', price: 550, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' }
             ];
 
-            // دالة تجميع الكروت المحدثة برميّاً لتشغيل نظام السعر الإجمالي الفوري
+            // محرك المترجم لبناء الكروت وتطبيق شروط الإدارة الصارمة لمنع اختراع النكهات
             function compilePremiumCard(product) {
                 const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.id === product.id);
                 const currentQty = cartItem ? cartItem.quantity : 1;
-                const totalPrice = product.price * currentQty; // احتساب السعر المبدئي بناءً على الكمية الحالية
+                const totalPrice = product.price * currentQty;
+
+                // التحقق الشامل من وجود نكهة للمنتج في السجلات الرسمية لمنع الطباعة العشوائية
+                const flavorHtml = product.flavor ? `<div class="card-flavor-title">${product.flavor}</div>` : '';
 
                 return `
                     <div class="product-premium-card" data-product-id="${product.id}">
@@ -1587,7 +1589,7 @@
                         </div>
                         <div class="card-details-zone">
                             <h4 class="card-product-title">${product.title}</h4>
-                            <div class="card-flavor-title">${product.flavor}</div>
+                            ${flavorHtml}
                             <p class="card-product-description">${product.desc}</p>
                             
                             <div class="card-pricing-control-row">
@@ -1615,7 +1617,7 @@
                 mostSellingSlider.innerHTML = sliderHtml;
             }
 
-            // حقن وتغذية قسم منتجاتنا بالتساوي في حاويات الجريد
+            // حقن وتغذية قسم منتجاتنا بالتساوي في حاويات الجريد المزدوجة
             const mainGridGroup1 = document.getElementById('mainGridGroup1');
             const mainGridGroup2 = document.getElementById('mainGridGroup2');
             
@@ -1630,7 +1632,7 @@
                 mainGridGroup2.innerHTML = group2Html;
             }
 
-            // تفاعل زر "استعرض المزيد" لإظهار المجموعة الثانية بنعومة فائقة وبدون سكرول طويل
+            // تفاعل زر "استعرض المزيد" لإظهار المجموعة الثانية
             const loadMoreProductsBtn = document.getElementById('loadMoreProductsBtn');
             const loadMoreGroupZone = document.getElementById('loadMoreGroupZone');
             if (loadMoreProductsBtn && mainGridGroup2) {
@@ -1652,7 +1654,7 @@
                 }, 4000); 
             }
 
-            // إدارة تفاعلات الضغط وتعديل الأسعار التلقائي الفوري والمباشر على الواجهة أمام العميل
+            // إدارة تفاعلات الضغط واحتساب الأسعار الإجمالية الفورية صراحة للعميل
             document.addEventListener('click', (e) => {
                 const cardElement = e.target.closest('.product-premium-card');
                 if (!cardElement) return;
@@ -1665,27 +1667,22 @@
                 const priceDisplayNode = cardElement.querySelector('.dynamic-card-price');
                 let currentQuantity = parseInt(stepperValueNode.textContent) || 1;
 
-                // التفاعل عند زيادة الكمية
                 if (e.target.closest('.btn-plus')) {
                     currentQuantity++;
                     stepperValueNode.textContent = currentQuantity;
-                    // العملية الحسابية الفورية لعرض إجمالي السعر المتغير صراحة للعميل
                     priceDisplayNode.textContent = matchedProduct.price * currentQuantity;
                     return;
                 }
 
-                // التفاعل عند نقص الكمية
                 if (e.target.closest('.btn-minus')) {
                     if (currentQuantity > 1) {
                         currentQuantity--;
                         stepperValueNode.textContent = currentQuantity;
-                        // العملية الحسابية الفورية لعرض إجمالي السعر المتغير صراحة للعميل
                         priceDisplayNode.textContent = matchedProduct.price * currentQuantity;
                     }
                     return;
                 }
 
-                // إدارة الترحيل التلقائي صامتاً لمحرك الحالة الموحد عند الضغط على إضافة للسلة
                 if (e.target.closest('.card-add-to-cart-btn')) {
                     const globalCart = window.BoseSweetsEngine.state.cart;
                     const existingItemIdx = globalCart.findIndex(item => item.id === productId);
@@ -1696,7 +1693,7 @@
                         globalCart.push({
                             id: matchedProduct.id,
                             title: matchedProduct.title,
-                            flavor: matchedProduct.flavor,
+                            flavor: matchedProduct.flavor || '',
                             basePrice: matchedProduct.price,
                             quantity: currentQuantity,
                             customType: 'menu-item'
@@ -1704,11 +1701,11 @@
                     }
 
                     window.BoseSweetsEngine.updateUIComponents();
-                    window.BoseSweetsEngine.showToast(`تمت إضافة ${matchedProduct.title} (${matchedProduct.flavor}) للسلة بنجاح`);
+                    window.BoseSweetsEngine.showToast(`تمت إضافة ${matchedProduct.title} للسلة بنجاح`);
                 }
             });
 
-            // مزامنة كميات الكروت تلقائياً وإعادة حساب الأسعار عند تصفح الواجهات
+            // مزامنة كميات الكروت تلقائياً وإعادة حساب الأسعار التراكمية الفورية
             window.addEventListener('boseStateUpdated', () => {
                 document.querySelectorAll('.product-premium-card').forEach(card => {
                     const pId = card.getAttribute('data-product-id');
