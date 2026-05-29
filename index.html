@@ -1278,7 +1278,7 @@
         .card-price-display {
             font-size: 16px !important;
             font-weight: 800;
-            color: var(--primary) !important; /* توحيد إبراز السعر الفوري بالبمبي الملكي التفاعلي */
+            color: var(--primary) !important; 
         }
 
         .card-price-display span {
@@ -1314,7 +1314,7 @@
             box-shadow: none;
         }
 
-        /* تطوير لوحة عرض صور قسم عقد من الإتقان بالتوهج البمبي */
+        /* لوحة عرض صور قسم عقد من الإتقان */
         .full-screen-showcase-card {
             position: relative;
             width: 100%;
@@ -1633,7 +1633,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // مزامنة الداتا الصافية للمنتجات مباشرة وحصرياً من سجلات الجيسون الرسمية لحلويات بوسي لثبات الجودة
+            // سجل المنتجات والأسعار المعتمدة الرسمية لحلويات بوسي لثبات الجودة
             const boseProductsDatabase = [
                 { id: 'despacito', title: 'الديسباسيتو', flavor: 'نوتيلا دارك', desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة.', price: 66, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
                 { id: 'qashtota', title: 'القشطوطة', flavor: 'نوتيلا وايت', desc: 'المزيج المثالي للطعم يجمع بين نعومة القشطوطة وروقان النوتيلا والمستخرجة فريش من مطبخنا لحفلاتكم.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
@@ -1651,7 +1651,6 @@
                 const currentQty = cartItem ? cartItem.quantity : 1;
                 const totalPrice = product.price * currentQty;
 
-                // التحقق الشامل من وجود نكهة للمنتج في السجلات الرسمية لمنع الطباعة العشوائية
                 const flavorHtml = product.flavor ? `<div class="card-flavor-title">${product.flavor}</div>` : '';
 
                 return `
@@ -1726,7 +1725,7 @@
                 }, 4000); 
             }
 
-            // إدارة تفاعلات الضغط واحتساب الأسعار الإجمالية الفورية صراحة للعميل عند النقر لحظياً
+            // إدارة تفاعلات الضغط واحتساب الأسعار التراكمية الفورية وتصفير العداد التلقائي
             document.addEventListener('click', (e) => {
                 const cardElement = e.target.closest('.product-premium-card');
                 if (!cardElement) return;
@@ -1755,6 +1754,7 @@
                     return;
                 }
 
+                // تنفيذ بروتوكول تصفير العداد وإرجاع قيمة الكارت للسعر الأصلي فور نجاح عملية الإضافة
                 if (e.target.closest('.card-add-to-cart-btn')) {
                     const globalCart = window.BoseSweetsEngine.state.cart;
                     const existingItemIdx = globalCart.findIndex(item => item.id === productId);
@@ -1772,12 +1772,17 @@
                         });
                     }
 
+                    // بث أمر التحديث العام وحفظ المدخلات صامتاً
                     window.BoseSweetsEngine.updateUIComponents();
-                    window.BoseSweetsEngine.showToast(`تمت إضافة ${matchedProduct.title} للسلة بنجاح`);
+                    window.BoseSweetsEngine.showToast(`تمت إضافة ${matchedProduct.title} (${matchedProduct.flavor || 'سادة'}) للسلة بنجاح`);
+
+                    // بروتوكول التصفير الفوري على الشاشة: إعادة القيمة لـ 1 والسعر لقيمته الأساسية لمنع ارتباك العميل وحماية العين
+                    stepperValueNode.textContent = 1;
+                    priceDisplayNode.textContent = matchedProduct.price;
                 }
             });
 
-            // مزامنة كميات الكروت تلقائياً وإعادة حساب الأسعار التراكمية الفورية لحماية الأداء
+            // مزامنة كميات الكروت صامتاً لحماية الأداء
             window.addEventListener('boseStateUpdated', () => {
                 document.querySelectorAll('.product-premium-card').forEach(card => {
                     const pId = card.getAttribute('data-product-id');
@@ -1789,6 +1794,7 @@
                     const priceDisplayNode = card.querySelector('.dynamic-card-price');
                     
                     if (stepperVal && priceDisplayNode) {
+                        // طالما لم يتم إضافته أو تم تصفيره يرجع للحالة الأصلية المستقرة (1)
                         const qty = cartItem ? cartItem.quantity : 1;
                         stepperVal.textContent = qty;
                         priceDisplayNode.textContent = matched.price * qty;
