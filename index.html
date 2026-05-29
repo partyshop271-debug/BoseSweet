@@ -32,7 +32,7 @@
             --gray-light: #FBFBFB;     /* درجات رمادية ناعمة جداً للخلفيات الفرعية */
             --gray-border: #F0F0F0;    /* خطوط الفصل والحدود الهادئة */
             --font-main: 'Alexandria', sans-serif;
-            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             --shadow-premium: 0 4px 25px rgba(255, 145, 164, 0.06);
         }
 
@@ -74,7 +74,7 @@
             display: none;
             width: 100%;
             min-height: calc(100vh - 75px);
-            animation: viewFadeIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            animation: viewFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .page-view.active-view {
@@ -82,7 +82,7 @@
         }
 
         @keyframes viewFadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -91,13 +91,17 @@
             position: sticky;
             top: 0;
             z-index: 1000;
-            background-color: var(--background);
+            background-color: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--gray-border);
             padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             height: 75px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.01);
+            transition: var(--transition-smooth);
         }
 
         .header-right, .header-left {
@@ -117,10 +121,13 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition-smooth);
+            border-radius: 50%;
         }
 
         .menu-toggle-btn:active {
             color: var(--primary);
+            transform: scale(0.9);
+            background-color: var(--gray-light);
         }
 
         .brand-logo-zone {
@@ -129,6 +136,11 @@
             gap: 10px;
             text-decoration: none;
             color: var(--text-color);
+            transition: var(--transition-smooth);
+        }
+
+        .brand-logo-zone:active {
+            transform: scale(0.98);
         }
 
         .brand-logo-zone img {
@@ -164,6 +176,7 @@
         .header-icon-btn:active {
             background-color: var(--gray-light);
             color: var(--primary);
+            transform: scale(0.9);
         }
 
         /* عداد الأرقام للسلة مدمج باللون البمبي الدائري */
@@ -182,6 +195,7 @@
             align-items: center;
             justify-content: center;
             border: 1px solid var(--background);
+            box-shadow: 0 2px 6px rgba(255, 145, 164, 0.2);
         }
 
         /* القائمة الجانبية المتطورة والملتزمة بالهيكلة المطلوبة حرفياً */
@@ -193,8 +207,8 @@
             height: 100%;
             background-color: var(--background);
             z-index: 2000;
-            box-shadow: -6px 0 30px rgba(0,0,0,0.04);
-            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: -10px 0 40px rgba(0,0,0,0.03);
+            transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
             padding: 25px 20px;
             display: flex;
             flex-direction: column;
@@ -225,10 +239,13 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition-smooth);
+            border-radius: 50%;
         }
 
         .close-sidebar-btn:active {
             color: var(--primary);
+            transform: scale(0.9);
+            background-color: var(--gray-light);
         }
 
         .sidebar-menu-links {
@@ -254,6 +271,7 @@
             background-color: var(--gray-light);
             color: var(--primary);
             font-weight: 700;
+            padding-right: 22px;
         }
 
         .sidebar-overlay {
@@ -262,10 +280,17 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.15);
+            background-color: rgba(0,0,0,0.12);
             z-index: 1900;
             display: none;
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            animation: fadeInOverlay 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         /* شريط البحث المطور */
@@ -275,10 +300,12 @@
             left: 0;
             width: 100%;
             height: 75px;
-            background-color: var(--background);
+            background-color: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             z-index: 1500;
             box-shadow: 0 2px 15px rgba(0,0,0,0.02);
-            transition: top 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             align-items: center;
             padding: 0 20px;
@@ -331,6 +358,13 @@
             align-items: center;
             justify-content: center;
             transition: var(--transition-smooth);
+            border-radius: 50%;
+        }
+
+        .close-search-trigger:active {
+            transform: scale(0.9);
+            background-color: var(--gray-light);
+            color: var(--primary);
         }
 
         /* ================================================================= */
@@ -356,7 +390,7 @@
         }
 
         .btn-oval-primary:active {
-            transform: scale(0.98);
+            transform: scale(0.96);
             background-color: var(--background);
             color: var(--primary);
             border-color: var(--primary);
@@ -380,6 +414,7 @@
 
         .btn-oval-secondary:active {
             background-color: var(--gray-border);
+            transform: scale(0.96);
         }
 
         /* تفاصيل الخط الذهبي المساعد الناعم جداً كلمسة ملكية خفيفة */
@@ -505,6 +540,7 @@
         .stepper-btn:active {
             background-color: var(--primary);
             color: #FFFFFF;
+            transform: scale(0.9);
         }
 
         .stepper-value {
@@ -537,6 +573,7 @@
             background-color: var(--primary);
             color: #FFFFFF;
             border-color: var(--primary);
+            transform: scale(0.97);
         }
 
         /* نظام التنبيهات الفورية الفاخر (Toast Notifications) */
@@ -569,7 +606,7 @@
             align-items: center;
             gap: 12px;
             pointer-events: auto;
-            animation: toastSlideIn 0.3s ease forwards;
+            animation: toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .premium-toast i {
@@ -597,6 +634,7 @@
             height: 100%;
             background-color: rgba(0,0,0,0.2);
             backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             z-index: 2500;
             display: none;
             align-items: center;
@@ -612,7 +650,7 @@
             box-shadow: 0 10px 35px rgba(0,0,0,0.08);
             border: 1px solid var(--gray-border);
             overflow: hidden;
-            animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         @keyframes modalPop {
@@ -757,8 +795,8 @@
                 container.appendChild(toast);
                 setTimeout(() => {
                     toast.style.opacity = '0';
-                    toast.style.transition = 'all 0.3s ease';
-                    setTimeout(() => toast.remove(), 300);
+                    toast.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
+                    setTimeout(() => toast.remove(), 400);
                 }, 3000);
             },
 
@@ -858,7 +896,7 @@
     </script>
 
     <main id="homepage-view" class="page-view active-view">
-        <section class="luxury-hero-block">
+      <section class="luxury-hero-block">
             <div class="hero-brand-card">
                 <div class="hero-tag-line"><i class="fa-solid fa-crown"></i> إصدار يوبيل عشر سنوات من الإتقان</div>
                 <h1 class="hero-main-title">عقد من التميز في صناعة الحلويات</h1>
@@ -968,7 +1006,7 @@
                     <div class="block-crown-badge badge-gold"><i class="fa-solid fa-gift"></i> تنسيق الهدايا الفاخرة</div>
                     <h3 class="simulator-block-title">محاكي الورد الفاخر</h3>
                     <p class="simulator-block-text">
-                        صمم هديتك الاستثنائية بكامل الحرية البصرية والتحكم المطلق. نسق حجم بوكيه الورد، حدد نوع الورود وألوانها المطلوبة، وأضف لمساتك المدفوعة والقيمة من المبالغ النقدية (الكاش)، الصور التذكارية المطبوعة، شريط الستان المخطوط، أو قطع الشوكولاتة الفاخرة لتصل لمن تحب في أبهى صورة تليق بمشاعرك.
+                        صمم هديتك الاستثنائية بكامل الحرية البصرية والتحكم المطلق. نسق حجم بوكيه الورد، حدد نوع الورود وألواها المطلوبة، وأضف لمساتك المدفوعة والقيمة من المبالغ النقدية (الكاش)، الصور التذكارية المطبوعة، شريط الستان المخطوط، أو قطع الشوكولاتة الفاخرة لتصل لمن تحب في أبهى صورة تليق بمشاعرك.
                     </p>
                     <button class="btn-oval-primary block-action-btn" data-target="flower-simulator-view">ابدأ تنسيق البوكيه الآن</button>
                 </div>
@@ -1113,124 +1151,123 @@
         }
 
         .horizontal-scroll-container .product-premium-card {
-            min-width: 260px;
-            max-width: 260px;
+            min-width: 250px;
+            max-width: 250px;
             scroll-snap-align: start;
             border-color: rgba(255, 145, 164, 0.12);
             box-shadow: 0 4px 15px rgba(255, 145, 164, 0.03);
         }
 
-        /* حماية الكروت من قطع النصوص وإبراز خطوط العرض الشاملة */
+        /* الهندسة الجديدة تماماً للكارت الانسيابي الفاخر ومنع اقتطاع النصوص */
         .product-premium-card {
-            border: 1px solid rgba(255, 145, 164, 0.12) !important;
+            border: 1px solid rgba(255, 145, 164, 0.1) !important;
+            background-color: var(--background);
         }
 
         .card-details-zone {
             display: flex;
             flex-direction: column;
-            gap: 10px !important;
+            gap: 8px !important;
             padding: 14px !important;
         }
 
-        /* منع النصوص المقطوعة نهائياً وعرض الوصف كاملاً بمقروئية مريحة */
+        .card-product-title {
+            font-size: 15px !important;
+            font-weight: 800 !important;
+            color: var(--text-color);
+        }
+
+        .card-flavor-title {
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            color: var(--primary); /* اسم النكهة بالبمبي لتوجيه نظر العميل */
+            margin-top: -4px;
+        }
+
         .card-product-description {
-            font-size: 11.5px !important;
-            color: #444 !important;
+            font-size: 12px !important;
+            color: #555 !important;
             display: block !important;
             overflow: visible !important;
             height: auto !important;
             line-height: 1.6 !important;
+            text-align: justify;
             -webkit-line-clamp: unset !important;
         }
 
-        /* هندسة مجموعات الاختيار السريع للحجم والنكهة داخل الكارت (بدون قوائم منسدلة) */
-        .card-selectors-block {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin: 4px 0;
-            border-top: 1px solid var(--gray-border);
-            padding-top: 8px;
-        }
-
-        .selector-row-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: #555;
-            margin-bottom: 2px;
-        }
-
-        .oval-options-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-
-        .oval-badge-btn {
-            background-color: var(--gray-light);
-            border: 1px solid var(--gray-border);
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--text-color);
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            user-select: none;
-        }
-
-        /* تفعيل اللون البمبي الفاخر للخيارات النشطة والمنتقاة برقي */
-        .oval-badge-btn.is-active {
-            background-color: var(--primary);
-            color: #FFFFFF;
-            border-color: var(--primary);
-            font-weight: 700;
-            box-shadow: 0 3px 10px rgba(255, 145, 164, 0.2);
-        }
-
-        /* صبغ خطوط التحكم بالأسعار والـ Stepper بالكامل باللون البمبي الفاخر */
+        /* هندسة السطر الموحد المدمج للسعر وعداد التحكم بالكمية بمبي بالكامل */
         .card-pricing-control-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-top: 1px dashed rgba(255, 145, 164, 0.2);
-            padding-top: 10px;
-            margin-top: 2px;
-        }
-
-        .card-price-display {
-            font-size: 16px !important;
-            font-weight: 800;
-            color: var(--primary) !important; /* السعر بمبي واضح وصريح للعين */
-        }
-
-        .card-price-display span {
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--text-color);
-            margin-right: 2px;
+            border-top: 1px solid var(--gray-border);
+            padding-top: 12px;
+            margin-top: 4px;
         }
 
         .premium-quantity-stepper {
+            display: flex;
+            align-items: center;
             background-color: rgba(255, 145, 164, 0.06) !important;
-            border: 1px solid rgba(255, 145, 164, 0.2) !important;
+            border: 1px solid rgba(255, 145, 164, 0.15) !important;
+            border-radius: 20px;
+            padding: 2px;
+            gap: 8px;
         }
 
         .stepper-btn {
             background-color: var(--primary) !important;
             border: none !important;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
             color: #FFFFFF !important;
+            transition: var(--transition-smooth);
         }
 
-        /* تحويل زر الإضافة للسلة بالكامل ليكون بمبي فاخر مالي الكارد تفاعلياً */
+        .stepper-value {
+            font-size: 13px;
+            font-weight: 700;
+            min-width: 16px;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .card-price-display {
+            font-size: 15px !important;
+            font-weight: 800;
+            color: var(--text-color) !important;
+        }
+
+        .card-price-display span {
+            font-size: 11px;
+            font-weight: 500;
+            margin-right: 2px;
+            color: #444;
+        }
+
+        /* زر الإضافة للسلة البمبي الملكي الكامل والممتد */
         .card-add-to-cart-btn {
+            width: 100%;
+            padding: 12px !important;
             background-color: var(--primary) !important;
             border: 1px solid var(--primary) !important;
-            color: #FFFFFF !important;
+            border-radius: 16px !important;
             font-size: 13px !important;
             font-weight: 700 !important;
-            border-radius: 20px !important;
-            padding: 11px !important;
+            color: #FFFFFF !important;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 4px;
             box-shadow: var(--shadow-premium);
         }
 
@@ -1488,103 +1525,22 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // مخزن البيانات المركزي الشامل للأحجام والنكهات من ملفات الداتا الرسمية للموقع
+            // قاعدة البيانات الصافية والمبسطة والمطابقة للمثال المطلوب حرفياً من قِبل الإدارة
             const boseProductsDatabase = [
-                { 
-                    id: 'despacito', 
-                    title: 'الديسباسيتو', 
-                    desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة.', 
-                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
-                    sizes: [
-                        { name: 'مثلث', price: 66, active: true },
-                        { name: 'وسط', price: 132 },
-                        { name: 'كبير', price: 264 }
-                    ],
-                    flavors: ['نوتيلا دارك', 'لوتس', 'كيندر', 'بيستاشيو']
-                },
-                { 
-                    id: 'qashtota', 
-                    title: 'القشطوطة', 
-                    desc: 'كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح من أول لقمة. منتج مناسب للضيافة اليومية ولأي وقت تحب فيه حاجة خفيفة لكن بجودة حقيقية.', 
-                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
-                    sizes: [{ name: 'حجم موحد', price: 121, active: true }],
-                    flavors: ['نوتيلا وايت', 'لوتس', 'مانجا', 'بيستاشيو']
-                },
-                { 
-                    id: 'donuts', 
-                    title: 'الدوناتس', 
-                    desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك نفس الطعم والجودة اللي بنقدمها داخل الفرع.', 
-                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
-                    sizes: [{ name: 'قطعة واحدة', price: 88, active: true }],
-                    flavors: ['نوتيلا دارك', 'ريدفيلفت', 'ماتيلدا', 'بيستاشيو']
-                },
-                { 
-                    id: 'cinabon', 
-                    title: 'السينابون', 
-                    desc: 'لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة. معمول علشان تاخد تجربة واضحة في الطعم والجودة من أول قطعة.', 
-                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
-                    sizes: [{ name: 'قطعة كلاسيك', price: 121, active: true }],
-                    flavors: ['وايت نوتيلا', 'لوتس', 'كراميل', 'بيستاشيو']
-                },
-                { 
-                    id: 'happiness-cups', 
-                    title: 'كبات السعادة', 
-                    desc: 'أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة.', 
-                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
-                    sizes: [{ name: 'كب فردي', price: 61, active: true }],
-                    flavors: ['نوتيلا', 'أوريو', 'اسنيكرز', 'روشيه']
-                },
-                { 
-                    id: 'red-velvet', 
-                    title: 'الريدڤيلڤت', 
-                    desc: 'كيك ريدڤيلڤت بطبقات متوازنة وكريمة ناعمة معمول بخامات واضحة وجودة ثابتة في كل حجم.', 
-                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
-                    sizes: [
-                        { name: 'مثلث كبير', price: 72, active: true },
-                        { name: 'كب وسط', price: 99 },
-                        { name: 'طاجن كبير', price: 165 }
-                    ],
-                    flavors: ['كريمة كلاسيك']
-                },
-                { 
-                    id: 'mini-cake', 
-                    title: 'الميني تورت', 
-                    desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل مناسبة للهدايا والمناسبات الخاصة.', 
-                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
-                    sizes: [
-                        { name: 'فرد أو اتنين', price: 154, active: true },
-                        { name: '3 أو 4 أفراد', price: 308 },
-                        { name: '5 أو 6 أفراد', price: 462 }
-                    ],
-                    flavors: ['فانيليا غنية', 'شوكولاتة فادج']
-                },
-                { 
-                    id: 'relax-box', 
-                    title: 'بوكس الروقان', 
-                    desc: 'تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية.', 
-                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
-                    sizes: [{ name: 'بوكس كامل', price: 550, active: true }],
-                    flavors: ['تشكيلة ميكس فاخرة']
-                }
+                { id: 'despacito', title: 'الديسباسيتو', flavor: 'نوتيلا دارك', desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة.', price: 66, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
+                { id: 'qashtota', title: 'القشطوطة', flavor: 'نوتيلا وايت', desc: 'المزيج المثالي للطعم يجمع بين نعومة القشطوطة وروقان النوتيلا.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
+                { id: 'donuts', title: 'الدوناتس', flavor: 'نوتيلا دارك', desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك طازجاً ونظيفاً.', price: 88, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
+                { id: 'cinabon', title: 'السينابون', flavor: 'وايت نوتيلا', desc: 'لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة وطعم ممسوك الإتقان.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
+                { id: 'happiness-cups', title: 'كبات السعادة', flavor: 'لوتس غنية', desc: 'أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة.', price: 61, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
+                { id: 'red-velvet', title: 'الريدڤيلڤت', flavor: 'كريمة كلاسيك', desc: 'كيك ريدڤيلڤت بطبقات متوازنة وكريمة ناعمة معمول بخامات واضحة وجودة ثابتة في كل حجم.', price: 72, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
+                { id: 'mini-cake', title: 'الميني تورت', flavor: 'شوكولاتة فادج', desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل مناسبة للهدايا والمناسبات الخاصة.', price: 154, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
+                { id: 'relax-box', title: 'بوكس الروقان', flavor: 'تشكيلة ميكس', desc: 'تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية.', price: 550, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' }
             ];
 
-            // محرك توليد وبناء الكروت التفاعلية متضمنة أزرار الأحجام والنكهات (Card Template Compiler)
+            // محرك المترجم لإنشاء الكروت المطابقة للمثال حرفياً
             function compilePremiumCard(product) {
                 const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.id === product.id);
                 const currentQty = cartItem ? cartItem.quantity : 1;
-                const defaultPrice = product.sizes[0].price;
-
-                // إنشاء أزرار الأحجام البيضاوية
-                let sizesHtml = '';
-                product.sizes.forEach((s, idx) => {
-                    sizesHtml += `<span class="oval-badge-btn size-option-trigger ${idx === 0 ? 'is-active' : ''}" data-price="${s.price}">${s.name}</span>`;
-                });
-
-                // إنشاء أزرار النكهات البيضاوية
-                let flavorsHtml = '';
-                product.flavors.forEach((f, idx) => {
-                    flavorsHtml += `<span class="oval-badge-btn flavor-option-trigger ${idx === 0 ? 'is-active' : ''}">${f}</span>`;
-                });
 
                 return `
                     <div class="product-premium-card" data-product-id="${product.id}">
@@ -1593,23 +1549,16 @@
                         </div>
                         <div class="card-details-zone">
                             <h4 class="card-product-title">${product.title}</h4>
+                            <div class="card-flavor-title">${product.flavor}</div>
                             <p class="card-product-description">${product.desc}</p>
                             
-                            <div class="card-selectors-block">
-                                <div class="selector-row-title">اختر الحجم:</div>
-                                <div class="oval-options-group size-group-wrapper">${sizesHtml}</div>
-                                
-                                <div class="selector-row-title" style="margin-top: 4px;">اختر النكهة:</div>
-                                <div class="oval-options-group flavor-group-wrapper">${flavorsHtml}</div>
-                            </div>
-                            
                             <div class="card-pricing-control-row">
-                                <div class="card-price-display"><span class="price-num-node">${defaultPrice}</span> <span>ج.م</span></div>
                                 <div class="premium-quantity-stepper">
-                                    <button class="stepper-btn btn-minus"><i class="fa-solid fa-minus"></i></button>
-                                    <span class="stepper-value">${currentQty}</span>
                                     <button class="stepper-btn btn-plus"><i class="fa-solid fa-plus"></i></button>
+                                    <span class="stepper-value">${currentQty}</span>
+                                    <button class="stepper-btn btn-minus"><i class="fa-solid fa-minus"></i></button>
                                 </div>
+                                <div class="card-price-display">${product.price} <span>ج.م</span></div>
                             </div>
                             
                             <button class="card-add-to-cart-btn">
@@ -1620,7 +1569,7 @@
                 `;
             }
 
-            // حقن وتغذية الأقسام والجريدات بالتحديثات الهندسية الجديدة للبيانات
+            // حقن وتغذية السلايدر الخاص بقسم الأكثر مبيعاً
             const mostSellingSlider = document.getElementById('mostSellingSlider');
             if (mostSellingSlider) {
                 let sliderHtml = '';
@@ -1628,18 +1577,22 @@
                 mostSellingSlider.innerHTML = sliderHtml;
             }
 
+            // حقن وتغذية قسم منتجاتنا بالتساوي
             const mainGridGroup1 = document.getElementById('mainGridGroup1');
             const mainGridGroup2 = document.getElementById('mainGridGroup2');
+            
             if (mainGridGroup1 && mainGridGroup2) {
                 let group1Html = '';
                 let group2Html = '';
+                
                 boseProductsDatabase.slice(0, 4).forEach(prod => { group1Html += compilePremiumCard(prod); });
                 boseProductsDatabase.slice(4, 8).forEach(prod => { group2Html += compilePremiumCard(prod); });
+                
                 mainGridGroup1.innerHTML = group1Html;
                 mainGridGroup2.innerHTML = group2Html;
             }
 
-            // تفاعل زر "استعرض المزيد" لإظهار المجموعة الثانية
+            // تفاعل زر "استعرض المزيد" لإظهار المجموعة الثانية بنعومة فائقة
             const loadMoreProductsBtn = document.getElementById('loadMoreProductsBtn');
             const loadMoreGroupZone = document.getElementById('loadMoreGroupZone');
             if (loadMoreProductsBtn && mainGridGroup2) {
@@ -1661,7 +1614,7 @@
                 }, 4000); 
             }
 
-            // ميكانيكية إدارة تفاعلات الضغط وتحديث الأسعار المتبادلة لحظياً داخل الكارت
+            // إدارة تفاعلات الضغط والكميات والترحيل المركزي
             document.addEventListener('click', (e) => {
                 const cardElement = e.target.closest('.product-premium-card');
                 if (!cardElement) return;
@@ -1670,29 +1623,6 @@
                 const matchedProduct = boseProductsDatabase.find(p => p.id === productId);
                 if (!matchedProduct) return;
 
-                // 1. التفاعل عند ضغط العميل على أحد أزرار الأحجام
-                const sizeBtn = e.target.closest('.size-option-trigger');
-                if (sizeBtn) {
-                    const siblingSizeBtns = cardElement.querySelectorAll('.size-option-trigger');
-                    siblingSizeBtns.forEach(b => b.classList.remove('is-active'));
-                    sizeBtn.classList.add('is-active');
-                    
-                    // تحديث نص السعر المعروض فوراً ليتطابق مع الحجم المختار
-                    const targetPrice = sizeBtn.getAttribute('data-price');
-                    cardElement.querySelector('.price-num-node').textContent = targetPrice;
-                    return;
-                }
-
-                // 2. التفاعل عند ضغط العميل على أحد أزرار النكهات
-                const flavorBtn = e.target.closest('.flavor-option-trigger');
-                if (flavorBtn) {
-                    const siblingFlavorBtns = cardElement.querySelectorAll('.flavor-option-trigger');
-                    siblingFlavorBtns.forEach(b => b.classList.remove('is-active'));
-                    flavorBtn.classList.add('is-active');
-                    return;
-                }
-
-                // مستندات العداد والتحكم بالكمية
                 const stepperValueNode = cardElement.querySelector('.stepper-value');
                 let currentQuantity = parseInt(stepperValueNode.textContent) || 1;
 
@@ -1710,35 +1640,25 @@
                     return;
                 }
 
-                // 3. معالجة الإضافة النهائية للسلة بالخيارات التفصيلية المنتقاة
                 if (e.target.closest('.card-add-to-cart-btn')) {
-                    const activeSizeName = cardElement.querySelector('.size-option-trigger.is-active').textContent;
-                    const activeSizePrice = parseFloat(cardElement.querySelector('.size-option-trigger.is-active').getAttribute('data-price'));
-                    const activeFlavorName = cardElement.querySelector('.flavor-option-trigger.is-active').textContent;
-
                     const globalCart = window.BoseSweetsEngine.state.cart;
-                    
-                    // توليد معرف فريد يجمع المنتج وخياراته لمنع التداخل وحفظ الفروقات بالسلة
-                    const uniqueCartItemId = `${productId}_${activeSizeName}_${activeFlavorName}`;
-                    const existingItemIdx = globalCart.findIndex(item => item.cartId === uniqueCartItemId);
+                    const existingItemIdx = globalCart.findIndex(item => item.id === productId);
 
                     if (existingItemIdx > -1) {
                         globalCart[existingItemIdx].quantity = currentQuantity;
                     } else {
                         globalCart.push({
-                            cartId: uniqueCartItemId,
-                            id: productId,
+                            id: matchedProduct.id,
                             title: matchedProduct.title,
-                            size: activeSizeName,
-                            flavor: activeFlavorName,
-                            basePrice: activeSizePrice,
+                            flavor: matchedProduct.flavor,
+                            basePrice: matchedProduct.price,
                             quantity: currentQuantity,
                             customType: 'menu-item'
                         });
                     }
 
                     window.BoseSweetsEngine.updateUIComponents();
-                    window.BoseSweetsEngine.showToast(`تمت إضافة ${matchedProduct.title} للسلة (${activeSizeName} - نكهة ${activeFlavorName}) بنجاح`);
+                    window.BoseSweetsEngine.showToast(`تمت إضافة ${matchedProduct.title} (${matchedProduct.flavor}) للسلة بنجاح`);
                 }
             });
 
@@ -1746,19 +1666,10 @@
             window.addEventListener('boseStateUpdated', () => {
                 document.querySelectorAll('.product-premium-card').forEach(card => {
                     const pId = card.getAttribute('data-product-id');
-                    const sizeActiveNode = card.querySelector('.size-option-trigger.is-active');
-                    const flavorActiveNode = card.querySelector('.flavor-option-trigger.is-active');
-                    
-                    if (sizeActiveNode && flavorActiveNode) {
-                        const activeSizeName = sizeActiveNode.textContent;
-                        const activeFlavorName = flavorActiveNode.textContent;
-                        const uniqueCartItemId = `${pId}_${activeSizeName}_${activeFlavorName}`;
-                        
-                        const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.cartId === uniqueCartItemId);
-                        const stepperVal = card.querySelector('.stepper-value');
-                        if (stepperVal) {
-                            stepperVal.textContent = cartItem ? cartItem.quantity : 1;
-                        }
+                    const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.id === pId);
+                    const stepperVal = card.querySelector('.stepper-value');
+                    if (stepperVal) {
+                        stepperVal.textContent = cartItem ? cartItem.quantity : 1;
                     }
                 });
             });
