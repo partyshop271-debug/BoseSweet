@@ -29,189 +29,294 @@
 body {background: var(--bg-color); color: var(--text-color); line-height:1.6;}
 a {text-decoration:none; color:inherit;}
 
-/* Header */
-header {
-  width: 100%; background: var(--bg-color); display: flex; justify-content: space-between; align-items:center;
-  padding:10px 20px; position: sticky; top:0; z-index:1000; border-bottom:1px solid #eee;
+/* Top Marquee */
+.top-marquee{
+height:42px;
+background:#FF91A4;
+overflow:hidden;
+display:flex;
+align-items:center;
+position:relative;
 }
-.logo img {height:50px;}
-nav {display:flex; gap:20px; align-items:center;}
-nav a {font-weight:600; color: var(--text-color); transition:.3s;}
-nav a:hover {color: var(--primary-color);}
-.search-cart {display:flex; gap:15px; align-items:center;}
-.search-cart button {background: var(--primary-color); border:none; padding:8px 12px; border-radius:6px; color:white; cursor:pointer; font-weight:600; transition:.3s;}
-.search-cart button:hover {opacity:.85;}
+.marquee-track{
+display:flex;
+width:max-content;
+animation:marqueeMove 30s linear infinite;
+white-space:nowrap;
+}
+.marquee-track span{
+color:#fff;
+font-size:13px;
+font-weight:600;
+padding:0 30px;
+}
+@keyframes marqueeMove{
+from{transform:translateX(0);}
+to{transform:translateX(-50%);}
+}
+
+/* Header */
+.main-header{
+position:sticky;
+top:42px;
+z-index:1000;
+height:78px;
+background:rgba(255,255,255,.95);
+backdrop-filter:blur(18px);
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 18px;
+border-bottom:1px solid #f1f1f1;
+}
+.brand-center{
+display:flex;
+align-items:center;
+gap:12px;
+}
+.brand-center img{
+width:54px;
+height:54px;
+object-fit:contain;
+}
+.brand-text h2{
+font-size:18px;
+font-weight:700;
+margin:0;
+}
+.brand-text span{
+font-size:11px;
+opacity:.7;
+}
+.header-actions{
+display:flex;
+gap:10px;
+}
+.header-icon{
+width:46px;
+height:46px;
+border:none;
+border-radius:14px;
+background:#fff5f7;
+position:relative;
+cursor:pointer;
+}
+.cart-badge{
+position:absolute;
+top:-5px;
+left:-5px;
+width:20px;
+height:20px;
+background:#FF91A4;
+color:#fff;
+font-size:11px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* Sidebar */
+.menu-btn{
+width:48px;
+height:48px;
+border:none;
+border-radius:14px;
+background:#FF91A4;
+color:#fff;
+font-size:22px;
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 10px 30px rgba(255,145,164,.25);
+}
+.sidebar-overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.45);
+backdrop-filter:blur(4px);
+opacity:0;
+visibility:hidden;
+transition:.35s;
+z-index:1998;
+}
+.sidebar{
+position:fixed;
+top:0;
+right:-340px;
+width:320px;
+height:100vh;
+background:#fff;
+z-index:1999;
+transition:.35s;
+overflow-y:auto;
+box-shadow:-10px 0 40px rgba(0,0,0,.12);
+}
+.sidebar.active{right:0;}
+.sidebar-overlay.active{opacity:1;visibility:visible;}
+.sidebar-header{
+background:linear-gradient(135deg,#FF91A4,#ffb8c4);
+padding:30px 20px;
+color:#fff;
+text-align:center;
+}
+.sidebar-logo{
+width:90px;
+height:90px;
+border-radius:50%;
+background:#fff;
+padding:8px;
+margin:auto;
+margin-bottom:15px;
+}
+.sidebar-logo img{width:100%;height:100%;object-fit:contain;}
+.sidebar-title{font-size:20px;font-weight:700;}
+.sidebar-subtitle{font-size:13px;margin-top:8px;opacity:.9;}
+.sidebar-links{padding:20px;}
+.sidebar-links a{
+display:flex;align-items:center;gap:12px;
+padding:16px;margin-bottom:10px;
+border-radius:16px;
+font-weight:600;
+background:#fff5f7;
+transition:.25s;
+}
+.sidebar-links a:hover{
+background:#FF91A4;color:#fff;transform:translateX(-5px);
+}
+.sidebar-footer{padding:20px;}
+.sidebar-whatsapp{display:block;width:100%;background:#FF91A4;color:#fff;text-align:center;padding:15px;border-radius:18px;font-weight:700;}
 
 /* Hero Section */
-.hero {
-  display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
-  padding:60px 20px; background:#fff0f2 url('') no-repeat center center / cover;
+.hero-section{
+padding:80px 20px 50px;
+text-align:center;
+background: linear-gradient(180deg,#fff5f7,#ffffff);
 }
-.hero h1 {font-size:2.5rem; color: var(--primary-color); margin-bottom:15px;}
-.hero p {font-size:1.2rem; margin-bottom:25px; max-width:700px;}
-.hero .cta-btn {background: var(--primary-color); color:#fff; border:none; padding:15px 30px; border-radius:8px; font-size:1.1rem; font-weight:700; cursor:pointer; transition:.3s;}
-.hero .cta-btn:hover {opacity:.85;}
-
-/* Sliders & Sections */
-.slider-container {display:flex; overflow-x:auto; gap:15px; padding:20px;}
-.slider-container::-webkit-scrollbar {display:none;}
-.card {background:#fff; border-radius:10px; padding:15px; min-width:200px; flex-shrink:0; box-shadow:0 2px 8px rgba(0,0,0,0.1);}
-.card img {width:100%; border-radius:10px; margin-bottom:10px;}
-.card h3 {font-size:1.1rem; color: var(--primary-color); margin-bottom:5px;}
-.card p {font-size:.95rem; margin-bottom:10px;}
-.card .price-qty {display:flex; justify-content:space-between; align-items:center; font-weight:600;}
-.card button {background: var(--primary-color); color:#fff; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;}
-
-/* Full-screen Cards */
-.fullscreen-card {position:relative; width:100%; min-height:400px; background:#fff0f2; display:flex; align-items:center; justify-content:center; margin:20px 0; border-radius:15px; overflow:hidden;}
-.fullscreen-card img {width:100%; height:100%; object-fit:cover; opacity:.8;}
-.fullscreen-card .overlay {position:absolute; top:0; left:0; width:100%; height:100%; display:flex; flex-direction:column; justify-content:center; align-items:center; color:#fff; text-align:center; padding:20px;}
-.fullscreen-card .overlay h2 {font-size:2rem; margin-bottom:10px; color: var(--primary-color);}
-.fullscreen-card .overlay p {font-size:1rem; margin-bottom:15px;}
-.fullscreen-card .overlay button {background: var(--primary-color); color:#fff; border:none; padding:12px 25px; border-radius:8px; cursor:pointer; font-weight:600;}
-.fullscreen-card .overlay button:hover {opacity:.85;}
-
-/* Footer */
-footer {background:#f9f9f9; padding:30px 20px; display:flex; flex-direction:column; gap:15px;}
-footer p {font-size:.95rem;}
-footer a {color: var(--primary-color); transition:.3s;}
-footer a:hover {opacity:.8;}
-.footer-links, .footer-policies, .footer-social {display:flex; gap:15px; flex-wrap:wrap;}
+.hero-badge{
+display:inline-flex;
+padding:10px 18px;
+background:#fff;
+border:1px solid #ffd7df;
+border-radius:999px;
+font-size:13px;
+font-weight:600;
+margin-bottom:20px;
+}
+.hero-section h1{
+font-size:38px;
+font-weight:800;
+line-height:1.3;
+margin-bottom:18px;
+}
+.hero-section p{
+max-width:700px;
+margin:auto;
+font-size:16px;
+line-height:2;
+opacity:.85;
+}
+.hero-buttons{
+display:flex;
+justify-content:center;
+gap:15px;
+margin-top:30px;
+flex-wrap:wrap;
+}
+.hero-buttons a:first-child{
+background:#FF91A4;
+color:#fff;
+padding:15px 28px;
+border-radius:999px;
+font-weight:700;
+}
+.hero-buttons a:last-child{
+background:#fff;
+border:1px solid #ffd7df;
+padding:15px 28px;
+border-radius:999px;
+font-weight:700;
+}
 </style>
 </head>
 <body>
 
+<!-- Top Marquee -->
+<div class="top-marquee">
+  <div class="marquee-track">
+    <span>صنعناها بحب لتهديها لمن تحب ✦</span>
+    <span>أكثر من 10 سنوات خبرة ✦</span>
+    <span>شاركنا أكثر من 10000 مناسبة سعيدة ✦</span>
+    <span>خامات طبيعية مختارة بعناية ✦</span>
+    <span>تصميمات تورت وورد حسب الطلب ✦</span>
+    <span>صنعناها بحب لتهديها لمن تحب ✦</span>
+    <span>أكثر من 10 سنوات خبرة ✦</span>
+    <span>شاركنا أكثر من 10000 مناسبة سعيدة ✦</span>
+    <span>خامات طبيعية مختارة بعناية ✦</span>
+    <span>تصميمات تورت وورد حسب الطلب ✦</span>
+  </div>
+</div>
+
 <!-- Header -->
-<header>
-  <div class="logo">
-    <a href="#"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي"></a>
-  </div>
-  <nav>
-    <a href="#">الرئيسية</a>
-    <a href="#">المنيو</a>
-    <a href="#">السلة</a>
-    <a href="#">محاكي التورت</a>
-    <a href="#">محاكي الورد</a>
-  </nav>
-  <div class="search-cart">
-    <button>بحث</button>
-    <button>السلة</button>
-  </div>
+<header class="main-header">
+<button class="menu-btn" onclick="openSidebar()">☰</button>
+<div class="brand-center">
+<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+<div class="brand-text">
+<h2>حلويات بوسي</h2>
+<span>صنعناها بحب لتهديها لمن تحب</span>
+</div>
+</div>
+<div class="header-actions">
+<button class="header-icon">🔍</button>
+<button class="header-icon">🛒<span class="cart-badge">0</span></button>
+</div>
 </header>
 
+<!-- Sidebar -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-header">
+<div class="sidebar-logo"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"></div>
+<div class="sidebar-title">حلويات بوسي</div>
+<div class="sidebar-subtitle">صنعناها بحب لتهديها لمن تحب</div>
+</div>
+<div class="sidebar-links">
+<a href="#">🏠 الرئيسية</a>
+<a href="#">📖 المنيو</a>
+<a href="#">🎂 محاكي التورت</a>
+<a href="#">🌹 محاكي الورد</a>
+<a href="#">🛒 السلة</a>
+<a href="#">❤️ المفضلة</a>
+<a href="#">📞 تواصل معنا</a>
+<a href="#">📍 من نحن</a>
+</div>
+<div class="sidebar-footer">
+<a class="sidebar-whatsapp" href="https://wa.me/201097238441">خدمة العملاء</a>
+</div>
+</aside>
+
 <!-- Hero Section -->
-<section class="hero">
-  <h1>عقد من التميز في صناعة الحلويات</h1>
-  <p>صنعناها بحب لتهديها لمن تحب. اكتشف منتجاتنا الفاخرة واستمتع بتجربة شراء سهلة ومميزة مع جودة ثابتة في كل منتج.</p>
-  <button class="cta-btn" onclick="window.location.href='#'">اطلب الآن</button>
-</section>
-
-<!-- Most Selling Slider -->
-<section>
-  <h2 style="text-align:center; margin:20px 0; color: var(--primary-color);">الأكثر مبيعاً</h2>
-  <div class="slider-container" id="mostSellingSlider">
-    <!-- كروت المنتجات الأكثر مبيعاً ستُضاف ديناميكياً -->
-  </div>
-</section>
-
-<!-- Excellence Section -->
-<div class="fullscreen-card">
-  <img src="" alt="عقد من الإتقان">
-  <div class="overlay">
-    <h2>عقد من الإتقان</h2>
-    <p>وصف قصير للتميز في صناعة الحلويات مع صور متحركة</p>
-  </div>
+<section class="hero-section">
+<span class="hero-badge">منذ أكثر من 10 سنوات</span>
+<h1>عقد من التميز في صناعة الحلويات</h1>
+<p>حلويات مصنوعة بعناية وخامات مختارة وتجهيزات خاصة للمناسبات والهدايا واللحظات اللي تستحق حاجة تتعمل صح.</p>
+<div class="hero-buttons">
+<a href="#">اطلب الآن</a>
+<a href="#">تصفح المنيو</a>
 </div>
-
-<!-- Products Section -->
-<section>
-  <h2 style="text-align:center; margin:20px 0; color: var(--primary-color);">منتجاتنا</h2>
-  <div class="slider-container" id="productsSlider">
-    <!-- 8 كروت أولى ستُضاف ديناميكياً -->
-  </div>
 </section>
-
-<!-- Cake & Flower Previews -->
-<div class="fullscreen-card">
-  <img src="" alt="محاكي التورت">
-  <div class="overlay">
-    <h2>محاكي التورت</h2>
-    <button onclick="window.location.href='#'">اعرف المزيد</button>
-  </div>
-</div>
-<div class="fullscreen-card">
-  <img src="" alt="محاكي الورد">
-  <div class="overlay">
-    <h2>محاكي الورد</h2>
-    <button onclick="window.location.href='#'">اعرف المزيد</button>
-  </div>
-</div>
-
-<!-- New Arrivals Slider -->
-<section>
-  <h2 style="text-align:center; margin:20px 0; color: var(--primary-color);">وصل حديثاً</h2>
-  <div class="slider-container" id="newArrivalsSlider">
-    <!-- 6 كروت ستُضاف ديناميكياً -->
-  </div>
-</section>
-
-<!-- Pride Section -->
-<div class="fullscreen-card">
-  <img src="" alt="الفخر والاعتزاز">
-  <div class="overlay">
-    <p>أكثر من 10 سنوات خبرة، أكثر من 10000 عميل</p>
-  </div>
-</div>
-
-<!-- Footer -->
-<footer>
-  <p>صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات.</p>
-  <div class="footer-links">
-    <a href="#">الرئيسية</a>
-    <a href="#">المنيو</a>
-    <a href="#">السلة</a>
-  </div>
-  <div class="footer-policies">
-    <a href="#">سياسة الخصوصية</a>
-    <a href="#">سياسة الاسترجاع</a>
-  </div>
-  <div class="footer-social">
-    <a href="https://www.facebook.com/share/1H1vVMHyu9/">فيسبوك</a>
-    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy">انستجرام</a>
-    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK">تيك توك</a>
-    <a href="https://wa.me/201097238441">واتساب</a>
-  </div>
-</footer>
 
 <script>
-  // Placeholder ديناميكي لإضافة المنتجات الأكثر مبيعاً و المنتجات الجديدة
-  const mostSelling = []; // سيتم ملئها بالمنتجات من JSON
-  const newArrivals = [];
-
-  function createCard(product) {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `
-      <img src="${product.images[0] || ''}" alt="${product.title}">
-      <h3>${product.title}</h3>
-      <p>${product.description}</p>
-      <div class="price-qty">
-        <span>${product.sizes ? product.sizes[0].basePrice : product.price} ج.م</span>
-        <div>
-          <button>-</button>
-          <button>+</button>
-        </div>
-      </div>
-      <button>أضف للسلة</button>
-    `;
-    return card;
-  }
-
-  const mostSellingContainer = document.getElementById('mostSellingSlider');
-  const productsContainer = document.getElementById('productsSlider');
-  const newArrivalsContainer = document.getElementById('newArrivalsSlider');
-
-  // Example: يمكن ملء المنتجات من ملف JSON المرفوع لاحقاً
+function openSidebar(){
+document.getElementById("sidebar").classList.add("active");
+document.getElementById("sidebarOverlay").classList.add("active");
+}
+function closeSidebar(){
+document.getElementById("sidebar").classList.remove("active");
+document.getElementById("sidebarOverlay").classList.remove("active");
+}
 </script>
 </body>
 </html>
