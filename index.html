@@ -198,82 +198,6 @@
             box-shadow: 0 2px 6px rgba(255, 145, 164, 0.2);
         }
 
-        /* القائمة الجانبية المتطورة والملتزمة بالهيكلة المطلوبة حرفياً */
-        .sidebar-navigation {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 290px;
-            height: 100%;
-            background-color: var(--background);
-            z-index: 2000;
-            box-shadow: -10px 0 40px rgba(0,0,0,0.03);
-            transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-            padding: 25px 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .sidebar-navigation.sidebar-open {
-            right: 0;
-        }
-
-        .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid var(--gray-border);
-            padding-bottom: 15px;
-        }
-
-        .close-sidebar-btn {
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: var(--text-color);
-            width: 34px;
-            height: 34px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-smooth);
-            border-radius: 50%;
-        }
-
-        .close-sidebar-btn:active {
-            color: var(--primary);
-            transform: scale(0.9);
-            background-color: var(--gray-light);
-        }
-
-        .sidebar-menu-links {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            list-style: none;
-        }
-
-        .sidebar-link-item a {
-            display: block;
-            padding: 12px 16px;
-            color: var(--text-color);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 20px;
-            transition: var(--transition-smooth);
-        }
-
-        /* التميز البصري واللوني للروابط النشطة بلمسة الهوية */
-        .sidebar-link-item.active-link a, .sidebar-link-item a:active {
-            background-color: var(--gray-light);
-            color: var(--primary);
-            font-weight: 700;
-            padding-right: 22px;
-        }
-
         .sidebar-overlay {
             position: fixed;
             top: 0;
@@ -367,10 +291,6 @@
             color: var(--primary);
         }
 
-        /* ================================================================= */
-        /* الفئات البنائية المشتركة الجاهزة لجميع الأجزاء القادمة (Master Layout Classes) */
-        /* ================================================================= */
-        
         /* أزرار بيضاوية فاخرة مرنة */
         .btn-oval-primary {
             display: inline-flex;
@@ -896,10 +816,10 @@
     </script>
 
     <main id="homepage-view" class="page-view active-view">
-              <section class="luxury-hero-block">
+<section class="luxury-hero-block">
             <div class="hero-brand-card">
                 <div class="hero-tag-line"><i class="fa-solid fa-crown"></i> إصدار يوبيل عشر سنوات من الإتقان</div>
-                <h1 class="hero-main-title">عقد من التميز في صناعة الحلويات</h1>
+                <h1 class="hero-main-title">عقد من التميز in صناعة الحلويات</h1>
                 <p class="hero-brand-description">
                     طوال عشر سنوات، صممنا كل قطعة في مطبخنا لتكون قصة نجاح ممسوكة الطعم. نعتمد على خامات طبيعية 100% لنقدم قيمة حقيقية وجودة تفرض احترامها من أول لقمة لآخر قطعة.
                 </p>
@@ -984,7 +904,7 @@
                         منصتك الاحترافية الحرة لبناء تورتة أحلامك خطوة بخطوة. اختر نوع قاعدة الكيك المفضل لديك، حدد المقاس الدقيق والشكل الهندسي المتناسق مع عدد ضيوفك، وارفع تصميمك الخارجي أو صورتك الشخصية لننفذها لك بالكامل بخامات طبيعية 100% تضمن لك طعماً أصيلاً يشرفك أمام ضيوفك ويبسطهم.
                     </p>
                     <div class="simulator-features-pills">
-                        <span class="feature-pill"><i class="fa-solid fa-check"></i> قاعده فادج غنية</span>
+                        <span class="feature-pill"><i class="fa-solid fa-check"></i> قاعدة فادج غنية</span>
                         <span class="feature-pill"><i class="fa-solid fa-check"></i> حسابات مقاس ذكية</span>
                         <span class="feature-pill"><i class="fa-solid fa-check"></i> خامات طبيعية 100%</span>
                     </div>
@@ -1278,7 +1198,7 @@
         .card-price-display {
             font-size: 16px !important;
             font-weight: 800;
-            color: var(--primary) !important; 
+            color: var(--primary) !important; /* توحيد إبراز السعر الفوري بالبمبي الملكي التفاعلي */
         }
 
         .card-price-display span {
@@ -1648,8 +1568,9 @@
             // محرك المترجم لبناء الكروت وتطبيق شروط الإدارة الصارمة لمنع اختراع النكهات
             function compilePremiumCard(product) {
                 const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.id === product.id);
-                const currentQty = cartItem ? cartItem.quantity : 1;
-                const totalPrice = product.price * currentQty;
+                // العداد على الواجهة يبدأ دائماً مستقراً عند القيمة (0) لحماية التنفس البصري والتصفير الحقيقي
+                const currentQty = 0; 
+                const totalPrice = 0; // السعر الابتدائي الظاهر قبل الضغط هو 0 ج.م لربطه بالـ stepper
 
                 const flavorHtml = product.flavor ? `<div class="card-flavor-title">${product.flavor}</div>` : '';
 
@@ -1725,7 +1646,7 @@
                 }, 4000); 
             }
 
-            // إدارة تفاعلات الضغط واحتساب الأسعار التراكمية الفورية وتصفير العداد التلقائي
+            // إدارة تفاعلات الضغط واحتساب الأسعار التراكمية الفورية وتصفير العداد التلقائي الصارم (0)
             document.addEventListener('click', (e) => {
                 const cardElement = e.target.closest('.product-premium-card');
                 if (!cardElement) return;
@@ -1736,7 +1657,7 @@
 
                 const stepperValueNode = cardElement.querySelector('.stepper-value');
                 const priceDisplayNode = cardElement.querySelector('.dynamic-card-price');
-                let currentQuantity = parseInt(stepperValueNode.textContent) || 1;
+                let currentQuantity = parseInt(stepperValueNode.textContent) || 0;
 
                 if (e.target.closest('.btn-plus')) {
                     currentQuantity++;
@@ -1746,7 +1667,7 @@
                 }
 
                 if (e.target.closest('.btn-minus')) {
-                    if (currentQuantity > 1) {
+                    if (currentQuantity > 0) {
                         currentQuantity--;
                         stepperValueNode.textContent = currentQuantity;
                         priceDisplayNode.textContent = matchedProduct.price * currentQuantity;
@@ -1754,13 +1675,18 @@
                     return;
                 }
 
-                // تنفيذ بروتوكول تصفير العداد وإرجاع قيمة الكارت للسعر الأصلي فور نجاح عملية الإضافة
+                // تنفيذ بروتوكول التصفير الفوري التام (0) وإرجاع القيم صراحة بعد ترحيل الطلب
                 if (e.target.closest('.card-add-to-cart-btn')) {
+                    if (currentQuantity === 0) {
+                        window.BoseSweetsEngine.showToast('من فضلك حدد الكمية أولاً عن طريق زر (+)', 'warning');
+                        return;
+                    }
+
                     const globalCart = window.BoseSweetsEngine.state.cart;
                     const existingItemIdx = globalCart.findIndex(item => item.id === productId);
 
                     if (existingItemIdx > -1) {
-                        globalCart[existingItemIdx].quantity = currentQuantity;
+                        globalCart[existingItemIdx].quantity += currentQuantity;
                     } else {
                         globalCart.push({
                             id: productId,
@@ -1776,30 +1702,703 @@
                     window.BoseSweetsEngine.updateUIComponents();
                     window.BoseSweetsEngine.showToast(`تمت إضافة ${matchedProduct.title} (${matchedProduct.flavor || 'سادة'}) للسلة بنجاح`);
 
-                    // بروتوكول التصفير الفوري على الشاشة: إعادة القيمة لـ 1 والسعر لقيمته الأساسية لمنع ارتباك العميل وحماية العين
-                    stepperValueNode.textContent = 1;
-                    priceDisplayNode.textContent = matchedProduct.price;
+                    // بروتوكول التصفير الملكي الصارم: العودة فوراً للرقم (0) والسعر (0 ج.م) لراحة تامة للعين الفاحصة
+                    stepperValueNode.textContent = 0;
+                    priceDisplayNode.textContent = 0;
                 }
             });
 
-            // مزامنة كميات الكروت صامتاً لحماية الأداء
+            // مزامنة العدادات عند حدوث أي تعديل خارجي صامتاً لحماية الأداء
             window.addEventListener('boseStateUpdated', () => {
+                // الكروت على الواجهة تظل تحتفظ بحالة الاستعداد (0) ما لم يقم العميل برفعها يدوياً لشراء جديد
                 document.querySelectorAll('.product-premium-card').forEach(card => {
-                    const pId = card.getAttribute('data-product-id');
-                    const matched = boseProductsDatabase.find(p => p.id === pId);
-                    if (!matched) return;
-                    
-                    const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.id === pId);
                     const stepperVal = card.querySelector('.stepper-value');
                     const priceDisplayNode = card.querySelector('.dynamic-card-price');
-                    
-                    if (stepperVal && priceDisplayNode) {
-                        // طالما لم يتم إضافته أو تم تصفيره يرجع للحالة الأصلية المستقرة (1)
-                        const qty = cartItem ? cartItem.quantity : 1;
-                        stepperVal.textContent = qty;
-                        priceDisplayNode.textContent = matched.price * qty;
+                    // لراحة وتصفير عين الصفوة، الكارت يظل 0 مستعداً دائماً بعد الإضافة
+                    if (stepperVal && priceDisplayNode && parseInt(stepperVal.textContent) === 0) {
+                        stepperVal.textContent = 0;
+                        priceDisplayNode.textContent = 0;
                     }
                 });
             });
+        });
+    </script>
+<section class="menu-view-container">
+            
+            <div class="menu-page-header-zone">
+                <h1 class="menu-page-main-title">قائمة الحلويات الفاخرة</h1>
+                <div class="menu-title-divider"></div>
+            </div>
+
+            <div class="menu-hero-visual-frame">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="العرض البصري الفاخر لقسم الحلويات">
+                <div class="menu-hero-dimming-overlay"></div>
+            </div>
+
+            <p class="menu-brand-sensory-description">
+                كل صنف في منيو حلويات بوسي مخبوز على أصوله وبأعلى جودة خامات طبيعية 100% عشان يوصلك الطعم الأصلي الممسوك. مفيش تنازلات في مطبخنا؛ الإتقان اليدوي هو الأساس اللي بنقدم بيه قيمة حقيقية تليق بضيوفك وتفتح الشهية من أول نظرة.
+            </p>
+
+            <div class="menu-category-block-wrapper">
+                <h3 class="category-block-section-title"><i class="fa-solid fa-sheet-plastic"></i> قسم الجاتوهات</h3>
+                <div class="products-full-card-layout" id="gateauxCategoryGrid">
+                    </div>
+            </div>
+
+            <div class="menu-category-block-wrapper">
+                <h3 class="category-block-section-title"><i class="fa-solid fa-circle-dot"></i> قسم الدوناتس الفريش</h3>
+                <div class="products-dual-grid" id="donutsCategoryGrid">
+                    </div>
+            </div>
+
+            <div class="menu-category-block-wrapper">
+                <h3 class="category-block-section-title"><i class="fa-solid fa-scroll"></i> قسم السينابون الطري</h3>
+                <div class="products-dual-grid" id="cinabonCategoryGrid">
+                    </div>
+            </div>
+
+            <div class="menu-category-block-wrapper">
+                <h3 class="category-block-section-title"><i class="fa-solid fa-box-archive"></i> قسم الديسباسيتو الفاخر</h3>
+                
+                <div class="despacito-tabs-navigation-bar">
+                    <button class="oval-tab-trigger active-tab" data-size-target="triangle">حجم مثلث (66 ج.م)</button>
+                    <button class="oval-tab-trigger" data-size-target="medium">حجم وسط (132 ج.م)</button>
+                    <button class="oval-tab-trigger" data-size-target="large">حجم كبير (264 ج.م)</button>
+                </div>
+
+                <div class="products-dual-grid" id="despacitoCategoryGrid">
+                    </div>
+            </div>
+
+            <div class="menu-category-block-wrapper">
+                <h3 class="category-block-section-title"><i class="fa-solid fa-ice-cream"></i> قسم القشطوطة الغنية</h3>
+                <div class="products-dual-grid" id="qashtotaCategoryGrid">
+                    </div>
+            </div>
+
+            <div class="menu-category-block-wrapper">
+                <h3 class="category-block-section-title"><i class="fa-solid fa-glass-water"></i> كبات السعادة</h3>
+                <div class="products-dual-grid" id="happinessCupsCategoryGrid">
+                    </div>
+            </div>
+
+            <div class="menu-category-block-wrapper">
+                <h3 class="category-block-section-title"><i class="fa-solid fa-boxes-packing"></i> بوكسات الروقان واللمة</h3>
+                <div class="products-full-card-layout" id="relaxBoxCategoryGrid">
+                    </div>
+            </div>
+
+            <div class="menu-category-block-wrapper">
+                <h3 class="category-block-section-title"><i class="fa-solid fa-cake-candles"></i> قسم الريدڤيلڤت الرطب</h3>
+                <div class="products-full-card-layout" id="redVelvetCategoryGrid">
+                    </div>
+            </div>
+
+            <div class="menu-category-block-wrapper">
+                <h3 class="category-block-section-title"><i class="fa-solid fa-cake-candles"></i> قسم الميني تورت المتقنة</h3>
+                <div class="products-full-card-layout" id="miniCakeCategoryGrid">
+                    </div>
+            </div>
+
+            <div class="menu-category-block-wrapper" style="margin-bottom: 30px;">
+                <h3 class="category-block-section-title"><i class="fa-solid fa-cookie"></i> قسم الكب كيك المزين</h3>
+                <div class="products-full-card-layout" id="cupcakeCategoryGrid">
+                    </div>
+            </div>
+
+        </section>
+
+        <div class="standalone-product-details-overlay" id="standaloneProductOverlay">
+            <div class="standalone-details-wrapper">
+                <button class="close-standalone-details-btn" id="closeProductOverlayBtn"><i class="fa-solid fa-arrow-right"></i> العودة للمنيو</button>
+                
+                <div class="standalone-view-content" id="standaloneProductContent">
+                    </div>
+            </div>
+        </div>
+
+    </div> <style>
+        /* أنماط وتنسيقات حاوية صفحة المنيو ومساحات التنفس الرائعة */
+        .menu-view-container {
+            padding: 45px 0;
+            width: 100%;
+            background-color: var(--background);
+        }
+
+        .menu-page-header-zone {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+
+        .menu-page-main-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-color);
+            letter-spacing: -0.5px;
+        }
+
+        .menu-title-divider {
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary);
+            margin: 10px auto 0 auto;
+            border-radius: 2px;
+        }
+
+        /* تنسيق إطار الصورة الكبيرة النظيفة تماماً الخالية من أي كتابة نهائياً */
+        .menu-hero-visual-frame {
+            position: relative;
+            width: 100%;
+            height: 32vh;
+            background-color: var(--gray-light);
+            margin-bottom: 35px;
+            border-top: 1px solid var(--gray-border);
+            border-bottom: 1px solid var(--gray-border);
+            overflow: hidden;
+        }
+
+        .menu-hero-visual-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .menu-hero-dimming-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.02);
+            pointer-events: none;
+        }
+
+        /* تنسيق الوصف بأسلوب كوبي رايتر المباشر والمريح للعين الصفوة */
+        .menu-brand-sensory-description {
+            font-size: 14px;
+            color: #222;
+            line-height: 1.8;
+            text-align: justify;
+            max-width: 650px;
+            margin: 0 auto 50px auto;
+            padding: 0 20px;
+        }
+
+        /* كتل تصنيفات المنيو وعزل مساحات التصفح */
+        .menu-category-block-wrapper {
+            padding: 35px 0;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .category-block-section-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--text-color);
+            padding: 0 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-block-section-title i {
+            color: var(--primary);
+            font-size: 14px;
+        }
+
+        /* ميكانيكية الكارت مالي الشاشة المخصص للجاتوهات والبوكسات والكب كيك وريدفيلفت */
+        .products-full-card-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 0 20px;
+        }
+
+        @media (min-width: 650px) {
+            .products-full-card-layout {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+        }
+
+        .products-full-card-layout .product-premium-card {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+        .products-full-card-layout .card-image-wrapper {
+            padding-top: 55%; /* كادر مالي الشاشة مستطيل فخم جداً يناسب التورت والبوكسات الكبيرة */
+        }
+
+        /* هندسة لوحة التبويب الحجمي المخصصة للديسباسيتو (بدون قوائم منسدلة) */
+        .despacito-tabs-navigation-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 5px 20px 20px 20px;
+            margin-bottom: 10px;
+        }
+
+        .despacito-tabs-navigation-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .oval-tab-trigger {
+            background-color: var(--gray-light);
+            border: 1px solid var(--gray-border);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-color);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: var(--transition-smooth);
+        }
+
+        .oval-tab-trigger.active-tab {
+            background-color: var(--primary);
+            color: #FFFFFF;
+            border-color: var(--primary);
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
+        }
+
+        /* أنماط واجهة شاشة عرض تفاصيل المنتج المستقلة والمنفصلة تماماً (SPA Overlay View) */
+        .standalone-product-details-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background);
+            z-index: 2500;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .standalone-details-wrapper {
+            width: 100%;
+            min-height: 100%;
+            padding: 20px 20px 40px 20px;
+            max-width: 680px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .close-standalone-details-btn {
+            background: none;
+            border: 1px solid var(--gray-border);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-color);
+            cursor: pointer;
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-smooth);
+            background-color: var(--gray-light);
+        }
+
+        .close-standalone-details-btn:active {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* الهيكلة الاحترافية والوصفية للمنتج المستقل في منتصف صفحته الفاخرة */
+        .standalone-view-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: viewFadeIn 0.4s ease;
+        }
+
+        .standalone-product-main-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-color);
+            text-align: center; /* اسم المنتج كعنوان في نص الصفحة الحرة */
+            margin-bottom: 5px;
+        }
+
+        .standalone-large-visual-frame {
+            position: relative;
+            width: 100%;
+            padding-top: 75%; 
+            background-color: var(--gray-light);
+            border-radius: 24px;
+            border: 1px solid var(--gray-border);
+            overflow: hidden;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .standalone-large-visual-frame img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .standalone-product-flavor-badge {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: center;
+            margin-top: -5px;
+        }
+
+        .standalone-sensory-description-text {
+            font-size: 14px;
+            color: #222;
+            line-height: 1.8;
+            text-align: justify;
+            background-color: var(--gray-light);
+            padding: 20px;
+            border-radius: 18px;
+            border: 1px solid var(--gray-border);
+            margin: 5px 0;
+        }
+
+        /* دمج كتل التحكم والأسعار داخل واجهة الصفحة المستقلة */
+        .standalone-pricing-action-card {
+            border: 1px solid rgba(255, 145, 164, 0.15);
+            background-color: rgba(255, 145, 164, 0.02);
+            padding: 20px;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .standalone-row-pricing {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. قاعدة البيانات الرسمية المصنفة بالكامل طبقاً لملفات الجيسون وشروط حجب النكهات
+            const boseMenuProductsDatabase = [
+                // أصناف قسم الجاتوهات (كارت مالي الشاشة)
+                { id: 'gateaux-royal', title: 'الجاتوهات', flavor: 'جاتوه ملكي فاخر', desc: 'تشكيلات جاتوه ملكية متنوعة بخامات متوانة وطعم واضح مناسبة للضيافة الفاخرة والمناسبات السعيدة.', price: 638, category: 'gateaux', isFullLayout: true },
+                { id: 'gateaux-classic', title: 'الجاتوهات', flavor: 'جاتوه كلاسيك طازج', desc: 'قطع الجاتوه الكلاسيكية المخبوزة بعناية يومية وخامات متوازنة ومريحة من أول لقمة.', price: 506, category: 'gateaux', isFullLayout: true },
+                
+                // أصناف قسم الدوناتس (كارتين جنب بعض)
+                { id: 'donuts-white', title: 'الدوناتس', flavor: 'نوتيلا وايت', desc: 'دوناتس فريش خفيفة وقوام هادي مغطاة بالكامل بنوتيلا بيضاء غنية ممسوكة الطعم.', price: 88, category: 'donuts' },
+                { id: 'donuts-dark', title: 'الدوناتس', flavor: 'نوتيلا دارك', desc: 'دوناتس طازجة بقوام خفيف وحشوات نوتيلا غامقة واضحة المعالم معمولين يوم بيوم.', price: 88, category: 'donuts' },
+                { id: 'donuts-lotus', title: 'الدوناتس', flavor: 'لوتس غنية', desc: 'المزيج الفاخر بين روقان قوام الدوناتس الطري وزبدة اللوتس الأصلية.', price: 88, category: 'donuts' },
+                { id: 'donuts-pistachio', title: 'الدوناتس', flavor: 'بيستاشيو فخم', desc: 'دوناتس فريش مغطاة بصوص البيستاشيو الفاخر المجهز لتقديم أرقى مستويات المذاق.', price: 110, category: 'donuts' },
+                
+                // أصناف قسم السينابون (كارتين جنب بعض)
+                { id: 'cinabon-dark', title: 'السينابون', flavor: 'نوتيلا دارك', desc: 'لفات سينابون مخبوزة بقوام طري ونكهة القرفة الأصلية وصوص نوتيلا غني متوازن.', price: 121, category: 'cinabon' },
+                { id: 'cinabon-white', title: 'السينابون', flavor: 'وايت نوتيلا', desc: 'لفات السينابون الطرية بنكهة القرفة وصوص النوتيلا الأبيض المتوازن بدون مبالغة.', price: 121, category: 'cinabon' },
+                { id: 'cinabon-lotus', title: 'السينابون', flavor: 'لوتس ممسوك', desc: 'سينابون فريش غني بصوص اللوتس الأصلي الموزون ليعطيك تجربة واضحة الطعم.', price: 121, category: 'cinabon' },
+                { id: 'cinabon-classic', title: 'السينابون', flavor: 'كلاسيك غني', desc: 'السينابون الكلاسيكي الطري بصوص المطبخ الخاص والخامات الطبيعية 100%.', price: 121, category: 'cinabon' },
+
+                // أصناف قسم القشطوطة (كارتين جنب بعض)
+                { id: 'qashtota-white', title: 'القشطوطة', flavor: 'نوتيلا وايت', desc: 'المزيج المثالي للطعم يجمع بين نعومة القشطوطة وروقان النوتيلا والمستخرجة فريش من مطبخنا لحفلاتكم.', price: 121, category: 'qashtota' },
+                { id: 'qashtota-dark', title: 'القشطوطة', flavor: 'نوتيلا دارك', desc: 'كيك هش غني بطبقات الحليب وصوص نوتيلا غامق يعطي طعماً ممسوك الإتقان.', price: 121, category: 'qashtota' },
+                { id: 'qashtota-pistachio', title: 'القشطوطة', flavor: 'بيستاشيو', desc: 'القشطوطة الغنية بالحليب مغطاة بالكامل بصوص البيستاشيو الطبيعي الفاخر.', price: 143, category: 'qashtota' },
+                { id: 'qashtota-mango', title: 'القشطوطة', flavor: 'مانجا طازجة', desc: 'كيك قشطوطة هش بطبقات الكريمة ومغطى بقطع المانجا الطبيعية الباردة.', price: 121, category: 'qashtota' },
+
+                // أصناف قسم كبات السعادة (كارتين جنب بعض)
+                { id: 'cup-nutella', title: 'كبات السعادة', flavor: 'نوتيلا غنية', desc: 'أكواب متنوعة بحشوات نوتيلا غنية وطعم متوازن مناسب للتقديم الفردي الفاخر.', price: 61, category: 'happiness-cups' },
+                { id: 'cup-lotus', title: 'كبات السعادة', flavor: 'لوتس غنية', desc: 'كبات السعادة بطبقات البسكويت وزبدة اللوتس المتناسقة بعناية لإسعاد أوقاتكم.', price: 61, category: 'happiness-cups' },
+                { id: 'cup-rocher', title: 'كبات السعادة', flavor: 'روشيه فاخرة', desc: 'كبات فردية مجهزة بحشوة ومذاق الروشيه المتزن الذي يعطيك قيمة واضحة في كل معلقة.', price: 61, category: 'happiness-cups' },
+
+                // أصناف بوكس الروقان (كارت مالي الشاشة - حجب النكهة العشوائية والالتزام بالاسم فقط)
+                { id: 'relax-box-item', title: 'بوكس الروقان', flavor: '', desc: 'تجميعة متنوعة فخمة متنسقة بعناية تامة مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية 100%.', price: 550, category: 'boxes', isFullLayout: true },
+
+                // أصناف الريدفيلفت (كارت مالي الشاشة - حجب النكهة العشوائية والالتزام بالاسم فقط)
+                { id: 'redvelvet-triangle', title: 'الريدڤيلڤت - مثلث كبير', flavor: '', desc: 'كيك ريدڤيلڤت رطب بطبقات متوازنة وكريمة ناعمة مخصصة تبرز الجودة الحقيقية للخامات الطبيعية.', price: 72, category: 'red-velvet', isFullLayout: true },
+                { id: 'redvelvet-cup', title: 'الريدڤيلڤت - كب وسط', flavor: '', desc: 'كبات الريدفيلفت الرطبة المناسبة للتقديم والتحلية الفردية السريعة والفاخرة.', price: 99, category: 'red-velvet', isFullLayout: true },
+                { id: 'redvelvet-tray', title: 'الريدڤيلڤت - طاجن كبير', flavor: '', desc: 'طاجن الريدفيلفت العائلي الفاخر المجهز بالكامل للمناسبات والجمعات السعيدة.', price: 165, category: 'red-velvet', isFullLayout: true },
+
+                // أصناف المنيو تورت (كارت مالي الشاشة - حجب النكهة والالتزام بالاسم فقط)
+                { id: 'minicake-2p', title: 'الميني تورت - فرد أو اتنين', flavor: '', desc: 'تورت صغيرة مجهزة بأعلى درجات الاهتمام والإتقان ومناسبة تماماً للهدايا الفردية والقيمة.', price: 154, category: 'mini-cake', isFullLayout: true },
+                { id: 'minicake-4p', title: 'الميني تورت - 3 أو 4 أفراد', flavor: '', desc: 'ميني تورت متوسطة الحجم مخصصة لتأمين فخامة ومسرات تجمعاتكم العائلية الصغيرة.', price: 308, category: 'mini-cake', isFullLayout: true },
+
+                // أصناف الكب كيك (كارت مالي الشاشة)
+                { id: 'cupcake-mix', title: 'الكب كيك - دستة ميكس فاخرة', flavor: 'دستة ميكس', desc: 'كب كيك بتزيينات متنوعة وخامات متوازنة مناسب للهدايا والمناسبات والتجمعات الصغيرة (12 قطعة).', price: 324, category: 'cupcake', isFullLayout: true }
+            ];
+
+            // داتا الديسباسيتو المنفصلة لتشغيل التبويب الحجمي الديناميكي (مثلث / وسط / كبير)
+            const despacitoSizesDatabase = {
+                triangle: [
+                    { id: 'despa-t-dark', title: 'الديسباسيتو - مثلث', flavor: 'نوتيلا دارك', desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوة نوتيلا غامقة واضحة الطعم.', price: 66 },
+                    { id: 'despa-t-white', title: 'الديسباسيتو - مثلث', flavor: 'نوتيلا وايت', desc: 'كيك فادج غني بالموس الناعم وحشوة النوتيلا البيضاء المريحة من أول لقمة.', price: 66 },
+                    { id: 'despa-t-pistachio', title: 'الديسباسيتو - مثلث', flavor: 'بيستاشيو', desc: 'مثلث الديسباسيتو الفاخر المغطى بالكامل بصوص الفستق الطبيعي الممتاز.', price: 83 }
+                ],
+                medium: [
+                    { id: 'despa-m-dark', title: 'الديسباسيتو - وسط', flavor: 'نوتيلا دارك', desc: 'الحجم الوسط المتزن من كيك الفادج والموس الغني وحشوة نوتيلا دارك تفتح الشهية.', price: 132 },
+                    { id: 'despa-m-lotus', title: 'الديسباسيتو - وسط', flavor: 'لوتس الأصلي', desc: 'حجم وسط مجهز بالكامل بزبده اللوتس الأصلية لمذاق رصين يفرض احترامه.', price: 132 }
+                ],
+                large: [
+                    { id: 'despa-l-dark', title: 'الديسباسيتو - كبير', flavor: 'نوتيلا دارك', desc: 'طاجن ديسباسيتو عائلي كبير غني بالكامل بالفادج وكريمة الموس وحشوة نوتيلا مكثفة.', price: 264 },
+                    { id: 'despa-l-mix', title: 'الديسباسيتو - كبير', flavor: 'ميكس شوكليت', desc: 'طاجن الحجم الكبير المزين بتشكيلة ميكس فاخرة من صوصات النوتيلا واللوتس الممسوكة.', price: 264 }
+                ]
+            };
+
+            // 2. محرك توليد الكروت القياسية للمنيو مع بروتوكول تصفير العداد الفوري (0) والسعر (0)
+            function compileMenuCardElement(prod) {
+                const flavorHtml = prod.flavor ? `<div class="card-flavor-title">${prod.flavor}</div>` : '';
+                
+                return `
+                    <div class="product-premium-card menu-item-card" data-menu-id="${prod.id}" data-meta-title="${prod.title}" data-meta-flavor="${prod.flavor}" data-meta-desc="${prod.desc}" data-meta-price="${prod.price}">
+                        <div class="card-image-wrapper">
+                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="${prod.title}" loading="lazy">
+                        </div>
+                        <div class="card-details-zone">
+                            <h4 class="card-product-title">${prod.title}</h4>
+                            ${flavorHtml}
+                            <p class="card-product-description">${prod.desc}</p>
+                            
+                            <div class="card-pricing-control-row">
+                                <div class="premium-quantity-stepper">
+                                    <button class="stepper-btn btn-menu-plus"><i class="fa-solid fa-plus"></i></button>
+                                    <span class="stepper-value menu-qty-val">0</span>
+                                    <button class="stepper-btn btn-menu-minus"><i class="fa-solid fa-minus"></i></button>
+                                </div>
+                                <div class="card-price-display"><span class="dynamic-menu-price">0</span> <span>ج.م</span></div>
+                            </div>
+                            
+                            <button class="card-add-to-cart-btn menu-add-to-cart-trigger">
+                                <i class="fa-solid fa-basket-shopping"></i> إضافة للسلة
+                            </button>
+                            <button class="btn-oval-secondary open-standalone-trigger" style="width:100%; font-size:11px; padding:8px; border-radius:10px; margin-top:2px;">
+                                اعرف أكتر <i class="fa-solid fa-angle-left" style="font-size:9px; margin-right:4px;"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 3. ضخ وحقن الكروت داخل تصنيفات المنيو المعتمدة بالكامل
+            function injectCategoryData(categoryName, targetElementId) {
+                const targetNode = document.getElementById(targetElementId);
+                if (!targetNode) return;
+                
+                let compiledHtml = '';
+                boseMenuProductsDatabase.forEach(item => {
+                    if (item.category === categoryName) {
+                        compiledHtml += compileMenuCardElement(item);
+                    }
+                });
+                targetNode.innerHTML = compiledHtml;
+            }
+
+            // تنفيذ الحقن الفوري للأقسام التسعة القياسية
+            injectCategoryData('gateaux', 'gateauxCategoryGrid');
+            injectCategoryData('donuts', 'donutsCategoryGrid');
+            injectCategoryData('cinabon', 'cinabonCategoryGrid');
+            injectCategoryData('qashtota', 'qashtotaCategoryGrid');
+            injectCategoryData('happiness-cups', 'happinessCupsCategoryGrid');
+            injectCategoryData('boxes', 'relaxBoxCategoryGrid');
+            injectCategoryData('red-velvet', 'redVelvetCategoryGrid');
+            injectCategoryData('mini-cake', 'miniCakeCategoryGrid');
+            injectCategoryData('cupcake', 'cupcakeCategoryGrid');
+
+            // 4. محرك تشغيل تبويب الديسباسيتو الديناميكي الحجمي
+            function refreshDespacitoGrid(sizeKey) {
+                const gridNode = document.getElementById('despacitoCategoryGrid');
+                if (!gridNode) return;
+
+                let compiledHtml = '';
+                const activeDataset = despacitoSizesDatabase[sizeKey] || [];
+                activeDataset.forEach(prod => {
+                    compiledHtml += compileMenuCardElement({
+                        id: prod.id,
+                        title: prod.title,
+                        flavor: prod.flavor,
+                        desc: prod.desc,
+                        price: prod.price
+                    });
+                });
+                gridNode.innerHTML = compiledHtml;
+            }
+
+            // تشغيل التبويب الافتراضي الأول (حجم مثلث) فور تحميل الصفحة
+            refreshDespacitoGrid('triangle');
+
+            // مستمعات التبديل والضغط لتبويبات الديسباسيتو البيضاوية
+            const tabTriggers = document.querySelectorAll('.oval-tab-trigger');
+            tabTriggers.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabTriggers.forEach(t => t.classList.remove('active-tab'));
+                    tab.classList.add('active-tab');
+                    
+                    const sizeTarget = tab.getAttribute('data-size-target');
+                    refreshDespacitoGrid(sizeTarget);
+                });
+            });
+
+            // 5. ميكانيكية حسابات الأسعار الفورية وتصفير العداد التام (0) داخل المنيو والتبويبات
+            document.addEventListener('click', (e) => {
+                const cardNode = e.target.closest('.menu-item-card');
+                if (!cardNode) return;
+
+                const itemUniqueId = cardNode.getAttribute('data-menu-id');
+                const fixedBasePrice = parseFloat(cardNode.getAttribute('data-meta-price')) || 0;
+                const itemMetaTitle = cardNode.getAttribute('data-meta-title');
+                const itemMetaFlavor = cardNode.getAttribute('data-meta-flavor') || '';
+
+                const qtySpanNode = cardNode.querySelector('.menu-qty-val');
+                const priceSpanNode = cardNode.querySelector('.dynamic-menu-price');
+                let currentQty = parseInt(qtySpanNode.textContent) || 0;
+
+                // زيادة الكمية واحتساب السعر صراحة وفوراً للعميل
+                if (e.target.closest('.btn-menu-plus')) {
+                    currentQty++;
+                    qtySpanNode.textContent = currentQty;
+                    priceSpanNode.textContent = fixedBasePrice * currentQty;
+                    return;
+                }
+
+                // نقص الكمية واحتساب السعر صراحة وفوراً للعميل
+                if (e.target.closest('.btn-menu-minus')) {
+                    if (currentQty > 0) {
+                        currentQty--;
+                        qtySpanNode.textContent = currentQty;
+                        priceSpanNode.textContent = fixedBasePrice * currentQty;
+                    }
+                    return;
+                }
+
+                // تنفيذ بروتوكول تصفير العداد وإرسال المعطيات صامتاً للسلة الموحدة عند الضغط على إضافة للسلة
+                if (e.target.closest('.menu-add-to-cart-trigger')) {
+                    if (currentQty === 0) {
+                        window.BoseSweetsEngine.showToast('من فضلك حدد الكمية أولاً عن طريق زر (+)', 'warning');
+                        return;
+                    }
+
+                    const globalCartList = window.BoseSweetsEngine.state.cart;
+                    const existingIdx = globalCartList.findIndex(item => item.id === itemUniqueId);
+
+                    if (existingIdx > -1) {
+                        globalCartList[existingIdx].quantity += currentQty;
+                    } else {
+                        globalCartList.push({
+                            id: itemUniqueId,
+                            title: itemMetaTitle,
+                            flavor: itemMetaFlavor,
+                            basePrice: fixedBasePrice,
+                            quantity: currentQty,
+                            customType: 'menu-item'
+                        });
+                    }
+
+                    // مزامنة وبث التحديث لحفظ وحماية عداد الهيدر العلوي
+                    window.BoseSweetsEngine.updateUIComponents();
+                    window.BoseSweetsEngine.showToast(`تمت إضافة ${itemMetaTitle} (${itemMetaFlavor || 'سادة'}) للسلة بنجاح`);
+
+                    // التصفير الملكي الصارم: إرجاع العداد والأسعار المعروضة لـ (0) لراحة وتنفس العين
+                    qtySpanNode.textContent = 0;
+                    priceSpanNode.textContent = 0;
+                    return;
+                }
+
+                // 6. آلية فتح صفحة المنتج المستقلة والمنفصلة تماماً (اعرف أكتر) في منتصف صفحتها الفاخرة
+                if (e.target.closest('.open-standalone-trigger')) {
+                    const overlayContainer = document.getElementById('standaloneProductOverlay');
+                    const contentTargetNode = document.getElementById('standaloneProductContent');
+
+                    const flavorLabelHtml = itemMetaFlavor ? `<div class="standalone-product-flavor-badge">${itemMetaFlavor}</div>` : '';
+
+                    // حقن الهيكلة الاحترافية والوصفية لصفحة العرض المنفصلة تماماً
+                    contentTargetNode.innerHTML = `
+                        <h2 class="standalone-product-main-title">${itemMetaTitle}</h2>
+                        ${flavorLabelHtml}
+                        
+                        <div class="standalone-large-visual-frame">
+                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="${itemMetaTitle}">
+                        </div>
+                        
+                        <p class="standalone-sensory-description-text">${cardNode.getAttribute('data-meta-desc')}</p>
+                        
+                        <div class="standalone-pricing-action-card">
+                            <div class="standalone-row-pricing">
+                                <div class="premium-quantity-stepper">
+                                    <button class="stepper-btn" id="standaloneBtnPlus"><i class="fa-solid fa-plus"></i></button>
+                                    <span class="stepper-value" id="standaloneQtyVal">1</span>
+                                    <button class="stepper-btn" id="standaloneBtnMinus"><i class="fa-solid fa-minus"></i></button>
+                                </div>
+                                <div class="card-price-display" style="color: var(--primary) !important;"><span id="standalonePriceGlow">${fixedBasePrice}</span> <span>ج.م</span></div>
+                            </div>
+                            
+                            <button class="card-add-to-cart-btn" id="standaloneAddToCartBtn">
+                                <i class="fa-solid fa-basket-shopping"></i> تأكيد إضافة المنتج للسلة
+                            </button>
+                        </div>
+                    `;
+
+                    // تفعيل المحرك الحسابي والتصفير التابع لصفحة المنتج المستقلة فوراً
+                    let standaloneQty = 1;
+                    const sQtySpan = document.getElementById('standaloneQtyVal');
+                    const sPriceGlow = document.getElementById('standalonePriceGlow');
+
+                    document.getElementById('standaloneBtnPlus').addEventListener('click', () => {
+                        standaloneQty++;
+                        sQtySpan.textContent = standaloneQty;
+                        sPriceGlow.textContent = fixedBasePrice * standaloneQty;
+                    });
+
+                    document.getElementById('standaloneBtnMinus').addEventListener('click', () => {
+                        if (standaloneQty > 1) {
+                            standaloneQty--;
+                            sQtySpan.textContent = standaloneQty;
+                            sPriceGlow.textContent = fixedBasePrice * standaloneQty;
+                        }
+                    });
+
+                    document.getElementById('standaloneAddToCartBtn').addEventListener('click', () => {
+                        const globalCartList = window.BoseSweetsEngine.state.cart;
+                        const existingIdx = globalCartList.findIndex(item => item.id === itemUniqueId);
+
+                        if (existingIdx > -1) {
+                            globalCartList[existingIdx].quantity += standaloneQty;
+                        } else {
+                            globalCartList.push({
+                                id: itemUniqueId,
+                                title: itemMetaTitle,
+                                flavor: itemMetaFlavor,
+                                basePrice: fixedBasePrice,
+                                quantity: standaloneQty,
+                                customType: 'menu-item'
+                            });
+                        }
+
+                        window.BoseSweetsEngine.updateUIComponents();
+                        window.BoseSweetsEngine.showToast(`تمت إضافة ${itemMetaTitle} للسلة بنجاح من صفحة العرض المستقلة`);
+                        
+                        // إغلاق الواجهة تلقائياً وبنعومة بعد نجاح الترحيل
+                        overlayContainer.style.display = 'none';
+                    });
+
+                    // إظهار شاشة العرض المستقلة بكامل مساحتها الملكية الناعمة
+                    overlayContainer.style.display = 'block';
+                    overlayContainer.scrollTo({ top: 0 });
+                }
+            });
+
+            // تفعيل زر العودة لإغلاق شاشة العرض المستقلة والرجوع لقائمة المنيو
+            const closeProductOverlayBtn = document.getElementById('closeProductOverlayBtn');
+            if (closeProductOverlayBtn) {
+                closeProductOverlayBtn.addEventListener('click', () => {
+                    document.getElementById('standaloneProductOverlay').style.display = 'none';
+                });
+            }
         });
     </script>
