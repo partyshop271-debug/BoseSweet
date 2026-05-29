@@ -279,741 +279,169 @@ primary:"#FF91A4"
 </head>
 
 <body>
-<!-- START APP -->
+  <!-- START APP - Part 2 Rebuilt -->
 
 <div id="app">
 
 <!-- OVERLAY -->
-
 <div id="overlay"></div>
 
 <!-- SIDEBAR -->
-
 <aside id="sidebar">
-
 <div class="sidebar-header">
-
-<img
-src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
-alt="حلويات بوسي"
-loading="eager"
->
-
+<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" loading="eager">
 <div>
-
 <h3>حلويات بوسي</h3>
-
-<p>صنعناها بحب لتهديها لمن تحب</p>
-
+<p>صنعناها بحب<br>لتهديها لمن تحب</p>
 </div>
-
 </div>
 
 <nav class="sidebar-nav">
-
 <a href="#home">الرئيسية</a>
-
 <a href="#menu-page">المنيو</a>
-
 <a href="#cake-preview">محاكي التورت</a>
-
 <a href="#flower-preview">محاكي الورد</a>
-
 <a href="#cart-page">السلة</a>
-
 </nav>
 
 <div class="sidebar-footer">
-
-<a
-href="https://wa.me/201097238441"
-target="_blank"
-rel="noopener"
-class="sidebar-whatsapp"
->
-
+<a href="https://wa.me/201097238441" target="_blank" rel="noopener" class="sidebar-whatsapp">
 خدمة العملاء
-
 </a>
-
 </div>
-
 </aside>
 
 <!-- SEARCH DRAWER -->
-
 <div id="searchDrawer">
-
 <div class="search-head">
-
 <h3>البحث</h3>
-
 <button id="closeSearch">✕</button>
-
 </div>
-
 <div class="search-box">
-
-<input
-type="text"
-id="globalSearch"
-placeholder="ابحث عن منتج..."
->
-
+<input type="text" id="globalSearch" placeholder="ابحث عن منتج...">
 </div>
-
 <div id="searchResults"></div>
-
 </div>
 
 <!-- CART DRAWER -->
-
 <div id="cartDrawer">
-
 <div class="cart-head">
-
 <h3>سلة المشتريات</h3>
-
 <button id="closeCart">✕</button>
-
 </div>
-
 <div id="cartItems">
-
-<div class="empty-cart">
-
-السلة فارغة حالياً
-
+<div class="empty-cart">السلة فارغة حالياً</div>
 </div>
-
-</div>
-
 <div class="cart-footer">
-
 <div class="cart-total-row">
-
 <span>الإجمالي</span>
-
-<strong id="cartTotal">
-
-0 ج.م
-
-</strong>
-
+<strong id="cartTotal">0 ج.م</strong>
 </div>
-
-<button
-class="btn btn-primary cart-checkout-btn"
->
-
-إتمام الطلب
-
-</button>
-
+<button class="btn btn-primary cart-checkout-btn">إتمام الطلب</button>
 </div>
-
 </div>
 
 <!-- HEADER -->
-
 <header class="main-header">
-
 <div class="container">
-
 <div class="header-content">
-
-<button
-class="header-icon"
-id="openSidebar"
-aria-label="القائمة"
->
-
-☰
-
-</button>
+<button class="header-icon" id="openSidebar" aria-label="القائمة">☰</button>
 
 <div class="brand-area">
-
-<img
-src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
-alt="حلويات بوسي"
->
-
+<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
 <div>
-
-<h1>
-
-حلويات بوسي
-
-</h1>
-
-<p>
-
-صنعناها بحب لتهديها لمن تحب
-
-</p>
-
+<h1>حلويات بوسي</h1>
+<p>صنعناها بحب<br>لتهديها لمن تحب</p>
 </div>
-
 </div>
 
 <div class="header-actions">
-
-<button
-class="header-icon"
-id="openSearch"
-aria-label="البحث"
->
-
-⌕
-
+<button class="header-icon" id="openSearch" aria-label="البحث">⌕</button>
+<button class="header-icon cart-trigger" id="openCart" aria-label="السلة">
+🛒 <span id="cartCount">0</span>
 </button>
-
-<button
-class="header-icon cart-trigger"
-id="openCart"
-aria-label="السلة"
->
-
-🛒
-
-<span id="cartCount">
-
-0
-
-</span>
-
-</button>
-
 </div>
-
 </div>
-
 </div>
-
 </header>
 
 <!-- HOME PAGE -->
-
 <main id="home">
-
-<!-- HERO -->
-
 <section class="hero-section section">
-
 <div class="container">
-
 <div class="hero-card">
-
-<h2>
-
-عقد من التميز في صناعة الحلويات
-
-</h2>
-
-<p>
-
-من أكتر من 10 سنين وإحنا بنشتغل على حاجة واحدة بس...
-إن كل منتج يخرج بنفس الجودة والطعم والشكل اللي يخلّي هديتك أو مناسبتك تفضل في الذاكرة.
-
-</p>
-
-<a
-href="#menu-page"
-class="btn btn-primary hero-btn"
->
-
-اطلب الآن
-
-</a>
-
+<h2>عقد من التميز في صناعة الحلويات</h2>
+<p>من أكتر من 10 سنين وإحنا بنشتغل على حاجة واحدة بس... إن كل منتج يخرج بنفس الجودة والطعم والشكل اللي يخلّي هديتك أو مناسبتك تفضل في الذاكرة.</p>
+<a href="#menu-page" class="btn btn-primary hero-btn">اطلب الآن</a>
 </div>
-
 </div>
-
 </section>
 
 <style>
-
-#overlay{
-
-position:fixed;
-inset:0;
-
-background:rgba(0,0,0,.45);
-
-opacity:0;
-visibility:hidden;
-
-transition:.25s;
-
-z-index:500;
-
-}
-
-#overlay.active{
-
-opacity:1;
-visibility:visible;
-
-}
-
-#sidebar{
-
-position:fixed;
-
-top:0;
-right:-340px;
-
-width:320px;
-height:100vh;
-
-background:#fff;
-
-z-index:700;
-
-display:flex;
-flex-direction:column;
-
-transition:.35s ease;
-
-box-shadow:
--20px 0 60px rgba(0,0,0,.12);
-
-}
-
-#sidebar.active{
-right:0;
-}
-
-.sidebar-header{
-
-padding:24px;
-
-display:flex;
-gap:14px;
-align-items:center;
-
-border-bottom:1px solid #f1f1f1;
-
-}
-
-.sidebar-header img{
-
-width:60px;
-height:60px;
-
-object-fit:contain;
-
-}
-
-.sidebar-header h3{
-
-font-size:18px;
-font-weight:800;
-
-}
-
-.sidebar-header p{
-
-font-size:13px;
-
-color:#777;
-
-margin-top:6px;
-
-}
-
-.sidebar-nav{
-
-display:flex;
-flex-direction:column;
-
-padding:20px;
-
-gap:8px;
-
-}
-
-.sidebar-nav a{
-
-padding:14px 18px;
-
-border-radius:999px;
-
-background:#fff4f6;
-
-font-weight:600;
-
-}
-
-.sidebar-footer{
-
-margin-top:auto;
-
-padding:20px;
-
-}
-
-.sidebar-whatsapp{
-
-display:flex;
-justify-content:center;
-align-items:center;
-
-height:54px;
-
-background:#FF91A4;
-
-color:#fff;
-
-border-radius:999px;
-
-font-weight:700;
-
-}
-
-.main-header{
-
-position:sticky;
-
-top:0;
-
-z-index:400;
-
-background:
-rgba(255,255,255,.95);
-
-backdrop-filter:
-blur(18px);
-
-border-bottom:
-1px solid #f1f1f1;
-
-}
-
-.header-content{
-
-height:82px;
-
-display:flex;
-align-items:center;
-justify-content:space-between;
-
-gap:16px;
-
-}
-
-.brand-area{
-
-display:flex;
-align-items:center;
-
-gap:12px;
-
-}
-
-.brand-area img{
-
-width:56px;
-height:56px;
-
-object-fit:contain;
-
-}
-
-.brand-area h1{
-
-font-size:18px;
-font-weight:800;
-
-}
-
-.brand-area p{
-
-font-size:12px;
-color:#777;
-
-margin-top:4px;
-
-}
-
-.header-actions{
-
-display:flex;
-align-items:center;
-
-gap:10px;
-
-}
-
-.header-icon{
-
-width:48px;
-height:48px;
-
-border-radius:50%;
-
-cursor:pointer;
-
-background:#fff4f6;
-
-font-size:18px;
-
-position:relative;
-
-}
-
-.cart-trigger span{
-
-position:absolute;
-
-top:-4px;
-left:-4px;
-
-width:22px;
-height:22px;
-
-border-radius:50%;
-
-background:#FF91A4;
-
-color:#fff;
-
-font-size:12px;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-font-weight:700;
-
-}
-
-#searchDrawer,
-#cartDrawer{
-
-position:fixed;
-
-top:0;
-left:-100%;
-
-width:min(100%,420px);
-height:100vh;
-
-background:#fff;
-
-z-index:700;
-
-transition:.35s ease;
-
-display:flex;
-flex-direction:column;
-
-}
-
-#searchDrawer.active,
-#cartDrawer.active{
-
-left:0;
-
-}
-
-.search-head,
-.cart-head{
-
-height:80px;
-
-display:flex;
-align-items:center;
-justify-content:space-between;
-
-padding:0 20px;
-
-border-bottom:1px solid #f1f1f1;
-
-}
-
-.search-box{
-
-padding:20px;
-
-}
-
-.search-box input{
-
-width:100%;
-
-height:58px;
-
-border-radius:999px;
-
-padding:0 22px;
-
-background:#fff4f6;
-
-}
-
-.hero-section{
-
-padding-top:50px;
-
-}
-
-.hero-card{
-
-text-align:center;
-
-max-width:900px;
-
-margin:auto;
-
-}
-
-.hero-card h2{
-
-font-size:clamp(34px,5vw,70px);
-
-line-height:1.25;
-
-font-weight:800;
-
-margin-bottom:22px;
-
-}
-
-.hero-card p{
-
-font-size:17px;
-
-line-height:2;
-
-color:#666;
-
-margin-bottom:30px;
-
-}
-
-.hero-btn{
-
-width:260px;
-
-height:62px;
-
-margin:auto;
-
-}
-
-.empty-cart{
-
-padding:40px 20px;
-
-text-align:center;
-
-color:#777;
-
-}
-
-.cart-footer{
-
-margin-top:auto;
-
-padding:20px;
-
-border-top:1px solid #f1f1f1;
-
-}
-
-.cart-total-row{
-
-display:flex;
-justify-content:space-between;
-
-margin-bottom:20px;
-
-font-size:18px;
-font-weight:700;
-
-}
-
-.cart-checkout-btn{
-
-width:100%;
-height:58px;
-
+/* Overlay */
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;visibility:hidden;transition:.25s;z-index:500;}
+#overlay.active{opacity:1;visibility:visible;}
+
+/* Sidebar */
+#sidebar{position:fixed;top:0;right:-100%;width:min(88vw,340px);height:100vh;background:#fff;z-index:700;display:flex;flex-direction:column;transition:.35s ease;box-shadow:-20px 0 60px rgba(0,0,0,.12);overflow-y:auto;}
+#sidebar.active{right:0;}
+.sidebar-header{padding:20px;display:flex;gap:12px;align-items:center;border-bottom:1px solid #f1f1f1;}
+.sidebar-header img{width:50px;height:50px;object-fit:contain;}
+.sidebar-header h3{font-size:18px;font-weight:700;}
+.sidebar-header p{font-size:12px;color:#777;margin-top:2px;line-height:1.2;}
+.sidebar-nav{display:flex;flex-direction:column;padding:15px;gap:8px;}
+.sidebar-nav a{padding:12px 16px;border-radius:999px;background:#fff4f6;font-weight:600;}
+.sidebar-footer{margin-top:auto;padding:20px;}
+.sidebar-whatsapp{display:flex;justify-content:center;align-items:center;height:50px;background:#FF91A4;color:#fff;border-radius:999px;font-weight:700;}
+
+/* Header */
+.main-header{position:sticky;top:0;z-index:400;background:rgba(255,255,255,.95);backdrop-filter:blur(15px);border-bottom:1px solid #f1f1f1;}
+.header-content{height:70px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.brand-area{display:flex;align-items:center;gap:10px;}
+.brand-area img{width:48px;height:48px;object-fit:contain;}
+.brand-area h1{font-size:16px;font-weight:700;}
+.brand-area p{font-size:11px;color:#777;line-height:1.2;margin-top:0;}
+.header-actions{display:flex;align-items:center;gap:8px;}
+.header-icon{width:44px;height:44px;border-radius:50%;cursor:pointer;background:#fff4f6;font-size:18px;position:relative;}
+.cart-trigger span{position:absolute;top:-4px;left:-4px;width:22px;height:22px;border-radius:50%;background:#FF91A4;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;font-weight:700;}
+
+/* Hero */
+.hero-section{padding-top:50px;}
+.hero-card{text-align:center;max-width:900px;margin:auto;}
+.hero-card h2{font-size:clamp(30px,4vw,56px);font-weight:700;line-height:1.2;letter-spacing:-0.5px;margin-bottom:18px;}
+.hero-card p{font-size:16px;line-height:1.8;color:#666;margin-bottom:25px;}
+.hero-btn{width:220px;height:56px;margin:auto;}
+
+/* Media */
+@media(max-width:768px){
+.header-content{height:64px;gap:8px;}
+.hero-card h2{font-size:clamp(28px,5vw,50px);}
+.hero-card p{font-size:15px;}
+.hero-btn{width:200px;height:50px;}
 }
 
 </style>
 
 <script>
+const overlay=document.getElementById('overlay');
+const sidebar=document.getElementById('sidebar');
+const searchDrawer=document.getElementById('searchDrawer');
+const cartDrawer=document.getElementById('cartDrawer');
 
-const overlay =
-document.getElementById('overlay');
-
-const sidebar =
-document.getElementById('sidebar');
-
-const searchDrawer =
-document.getElementById('searchDrawer');
-
-const cartDrawer =
-document.getElementById('cartDrawer');
-
-document
-.getElementById('openSidebar')
-.onclick=()=>{
-
-sidebar.classList.add('active');
-overlay.classList.add('active');
-
-};
-
-document
-.getElementById('openSearch')
-.onclick=()=>{
-
-searchDrawer.classList.add('active');
-overlay.classList.add('active');
-
-};
-
-document
-.getElementById('openCart')
-.onclick=()=>{
-
-cartDrawer.classList.add('active');
-overlay.classList.add('active');
-
-};
-
-document
-.getElementById('closeSearch')
-.onclick=()=>{
-
-searchDrawer.classList.remove('active');
-overlay.classList.remove('active');
-
-};
-
-document
-.getElementById('closeCart')
-.onclick=()=>{
-
-cartDrawer.classList.remove('active');
-overlay.classList.remove('active');
-
-};
-
+document.getElementById('openSidebar').onclick=()=>{
+sidebar.classList.add('active');overlay.classList.add('active');};
+document.getElementById('openSearch').onclick=()=>{
+searchDrawer.classList.add('active');overlay.classList.add('active');};
+document.getElementById('openCart').onclick=()=>{
+cartDrawer.classList.add('active');overlay.classList.add('active');};
+document.getElementById('closeSearch').onclick=()=>{
+searchDrawer.classList.remove('active');overlay.classList.remove('active');};
+document.getElementById('closeCart').onclick=()=>{
+cartDrawer.classList.remove('active');overlay.classList.remove('active');};
 overlay.onclick=()=>{
-
 sidebar.classList.remove('active');
-
 searchDrawer.classList.remove('active');
-
 cartDrawer.classList.remove('active');
-
 overlay.classList.remove('active');
-
 };
-
 </script>
