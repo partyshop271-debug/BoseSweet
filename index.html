@@ -1062,7 +1062,6 @@
             object-fit: cover;
         }
 
-        /* دمج طبقة التوهج والراحة البصرية بلون البمبي الملكي الفاخر للـ Video Overlay */
         .video-pink-glow-overlay {
             position: absolute;
             top: 0;
@@ -1073,7 +1072,6 @@
             pointer-events: none;
         }
 
-        /* تطوير قسم المجموعات وسلايدر الأكثر مبيعاً الفخم */
         .homepage-slider-section, .homepage-grid-section, .excellence-pride-section {
             padding: 40px 0;
             width: 100%;
@@ -1114,16 +1112,135 @@
             display: none;
         }
 
-        /* حقن دقة أبعاد وظلال كروت السلايدر الأفقي بلمسة الهوية */
         .horizontal-scroll-container .product-premium-card {
-            min-width: 245px;
-            max-width: 245px;
+            min-width: 260px;
+            max-width: 260px;
             scroll-snap-align: start;
             border-color: rgba(255, 145, 164, 0.12);
             box-shadow: 0 4px 15px rgba(255, 145, 164, 0.03);
         }
 
-        /* تطوير لوحة عرض صور قسم عقد من الإتقان بالتوهج البمبي الناعم */
+        /* حماية الكروت من قطع النصوص وإبراز خطوط العرض الشاملة */
+        .product-premium-card {
+            border: 1px solid rgba(255, 145, 164, 0.12) !important;
+        }
+
+        .card-details-zone {
+            display: flex;
+            flex-direction: column;
+            gap: 10px !important;
+            padding: 14px !important;
+        }
+
+        /* منع النصوص المقطوعة نهائياً وعرض الوصف كاملاً بمقروئية مريحة */
+        .card-product-description {
+            font-size: 11.5px !important;
+            color: #444 !important;
+            display: block !important;
+            overflow: visible !important;
+            height: auto !important;
+            line-height: 1.6 !important;
+            -webkit-line-clamp: unset !important;
+        }
+
+        /* هندسة مجموعات الاختيار السريع للحجم والنكهة داخل الكارت (بدون قوائم منسدلة) */
+        .card-selectors-block {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 4px 0;
+            border-top: 1px solid var(--gray-border);
+            padding-top: 8px;
+        }
+
+        .selector-row-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 2px;
+        }
+
+        .oval-options-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .oval-badge-btn {
+            background-color: var(--gray-light);
+            border: 1px solid var(--gray-border);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            user-select: none;
+        }
+
+        /* تفعيل اللون البمبي الفاخر للخيارات النشطة والمنتقاة برقي */
+        .oval-badge-btn.is-active {
+            background-color: var(--primary);
+            color: #FFFFFF;
+            border-color: var(--primary);
+            font-weight: 700;
+            box-shadow: 0 3px 10px rgba(255, 145, 164, 0.2);
+        }
+
+        /* صبغ خطوط التحكم بالأسعار والـ Stepper بالكامل باللون البمبي الفاخر */
+        .card-pricing-control-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px dashed rgba(255, 145, 164, 0.2);
+            padding-top: 10px;
+            margin-top: 2px;
+        }
+
+        .card-price-display {
+            font-size: 16px !important;
+            font-weight: 800;
+            color: var(--primary) !important; /* السعر بمبي واضح وصريح للعين */
+        }
+
+        .card-price-display span {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-color);
+            margin-right: 2px;
+        }
+
+        .premium-quantity-stepper {
+            background-color: rgba(255, 145, 164, 0.06) !important;
+            border: 1px solid rgba(255, 145, 164, 0.2) !important;
+        }
+
+        .stepper-btn {
+            background-color: var(--primary) !important;
+            border: none !important;
+            color: #FFFFFF !important;
+        }
+
+        /* تحويل زر الإضافة للسلة بالكامل ليكون بمبي فاخر مالي الكارد تفاعلياً */
+        .card-add-to-cart-btn {
+            background-color: var(--primary) !important;
+            border: 1px solid var(--primary) !important;
+            color: #FFFFFF !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            border-radius: 20px !important;
+            padding: 11px !important;
+            box-shadow: var(--shadow-premium);
+        }
+
+        .card-add-to-cart-btn:active {
+            background-color: var(--background) !important;
+            color: var(--primary) !important;
+            box-shadow: none;
+        }
+
+        /* لوحة عرض صور قسم عقد من الإتقان بالتوهج البمبي الناعم */
         .full-screen-showcase-card {
             position: relative;
             width: 100%;
@@ -1191,7 +1308,7 @@
             padding: 0 20px;
         }
 
-        /* الهندسة البنائية الشاملة لبلوكات المحاكيات الملكية الكبيرة وممتدة العرض */
+        /* البلوكات الملكية الكبيرة وممتدة العرض */
         .luxury-simulator-block {
             width: 100%;
             padding: 50px 20px;
@@ -1218,7 +1335,7 @@
         }
 
         .block-identity-strip.strip-gold {
-            background: rgba(255, 145, 164, 0.4); /* تلطيف خط الفصل للحفاظ على وحدة الهوية البصرية الرصينة */
+            background: rgba(255, 145, 164, 0.4); 
         }
 
         .simulator-block-grid {
@@ -1287,7 +1404,6 @@
             margin-top: 8px;
         }
 
-        /* إطارات عرض الصور الفخمة ذات الظلال البمبية المشعة المريحة للعين */
         .simulator-block-image-side {
             display: flex;
             justify-content: center;
@@ -1328,7 +1444,6 @@
             border: 1px dashed rgba(255, 145, 164, 0.2);
         }
 
-        /* تطوير قسم الفخر والاعتزاز الملكي */
         .brand-pride-video-section {
             padding: 45px 0 0 0;
             width: 100%;
@@ -1369,31 +1484,107 @@
             color: #333;
             line-height: 1.6;
         }
-
-        /* تعديل دقة حواف كروت المنتجات لتناسب لغة الفخامة الجديدة */
-        .product-premium-card {
-            border: 1px solid rgba(255, 145, 164, 0.1) !important;
-        }
     </style>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // مخزن المنتجات المركزي المؤقت المشتق بالكامل من داتا الموقع الرسمية (Products Repository)
+            // مخزن البيانات المركزي الشامل للأحجام والنكهات من ملفات الداتا الرسمية للموقع
             const boseProductsDatabase = [
-                { id: 'despacito', title: 'الديسباسيتو', desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة.', price: 66, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
-                { id: 'qashtota', title: 'القشطوطة', desc: 'كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح من أول لقمة.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
-                { id: 'donuts', title: 'الدوناتس', desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك طازجاً ونظيفاً.', price: 88, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
-                { id: 'cinabon', title: 'السينابون', desc: 'لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة وطعم ممسوك الإتقان.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: true },
-                { id: 'happiness-cups', title: 'كبات السعادة', desc: 'أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة.', price: 61, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false },
-                { id: 'red-velvet', title: 'الريدڤيلڤت', desc: 'كيك ريدڤيلڤت بطبقات متوازنة وكريمة ناعمة معمول بخامات واضحة وجودة ثابتة في كل حجم.', price: 72, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false },
-                { id: 'mini-cake', title: 'الميني تورت', desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل مناسبة للهدايا والمناسبات الخاصة.', price: 154, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false },
-                { id: 'relax-box', title: 'بوكس الروقان', desc: 'تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية.', price: 550, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png', isFeatured: false }
+                { 
+                    id: 'despacito', 
+                    title: 'الديسباسيتو', 
+                    desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة.', 
+                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
+                    sizes: [
+                        { name: 'مثلث', price: 66, active: true },
+                        { name: 'وسط', price: 132 },
+                        { name: 'كبير', price: 264 }
+                    ],
+                    flavors: ['نوتيلا دارك', 'لوتس', 'كيندر', 'بيستاشيو']
+                },
+                { 
+                    id: 'qashtota', 
+                    title: 'القشطوطة', 
+                    desc: 'كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح من أول لقمة. منتج مناسب للضيافة اليومية ولأي وقت تحب فيه حاجة خفيفة لكن بجودة حقيقية.', 
+                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
+                    sizes: [{ name: 'حجم موحد', price: 121, active: true }],
+                    flavors: ['نوتيلا وايت', 'لوتس', 'مانجا', 'بيستاشيو']
+                },
+                { 
+                    id: 'donuts', 
+                    title: 'الدوناتس', 
+                    desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك نفس الطعم والجودة اللي بنقدمها داخل الفرع.', 
+                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
+                    sizes: [{ name: 'قطعة واحدة', price: 88, active: true }],
+                    flavors: ['نوتيلا دارك', 'ريدفيلفت', 'ماتيلدا', 'بيستاشيو']
+                },
+                { 
+                    id: 'cinabon', 
+                    title: 'السينابون', 
+                    desc: 'لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة. معمول علشان تاخد تجربة واضحة في الطعم والجودة من أول قطعة.', 
+                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
+                    sizes: [{ name: 'قطعة كلاسيك', price: 121, active: true }],
+                    flavors: ['وايت نوتيلا', 'لوتس', 'كراميل', 'بيستاشيو']
+                },
+                { 
+                    id: 'happiness-cups', 
+                    title: 'كبات السعادة', 
+                    desc: 'أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة.', 
+                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
+                    sizes: [{ name: 'كب فردي', price: 61, active: true }],
+                    flavors: ['نوتيلا', 'أوريو', 'اسنيكرز', 'روشيه']
+                },
+                { 
+                    id: 'red-velvet', 
+                    title: 'الريدڤيلڤت', 
+                    desc: 'كيك ريدڤيلڤت بطبقات متوازنة وكريمة ناعمة معمول بخامات واضحة وجودة ثابتة في كل حجم.', 
+                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
+                    sizes: [
+                        { name: 'مثلث كبير', price: 72, active: true },
+                        { name: 'كب وسط', price: 99 },
+                        { name: 'طاجن كبير', price: 165 }
+                    ],
+                    flavors: ['كريمة كلاسيك']
+                },
+                { 
+                    id: 'mini-cake', 
+                    title: 'الميني تورت', 
+                    desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل مناسبة للهدايا والمناسبات الخاصة.', 
+                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
+                    sizes: [
+                        { name: 'فرد أو اتنين', price: 154, active: true },
+                        { name: '3 أو 4 أفراد', price: 308 },
+                        { name: '5 أو 6 أفراد', price: 462 }
+                    ],
+                    flavors: ['فانيليا غنية', 'شوكولاتة فادج']
+                },
+                { 
+                    id: 'relax-box', 
+                    title: 'بوكس الروقان', 
+                    desc: 'تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية.', 
+                    img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
+                    sizes: [{ name: 'بوكس كامل', price: 550, active: true }],
+                    flavors: ['تشكيلة ميكس فاخرة']
+                }
             ];
 
-            // دالة بناء وتوليد الكروت القياسية الملكية المعتمدة لتوحيد الأداء والواجهة (Card Compiler Generator)
+            // محرك توليد وبناء الكروت التفاعلية متضمنة أزرار الأحجام والنكهات (Card Template Compiler)
             function compilePremiumCard(product) {
                 const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.id === product.id);
                 const currentQty = cartItem ? cartItem.quantity : 1;
+                const defaultPrice = product.sizes[0].price;
+
+                // إنشاء أزرار الأحجام البيضاوية
+                let sizesHtml = '';
+                product.sizes.forEach((s, idx) => {
+                    sizesHtml += `<span class="oval-badge-btn size-option-trigger ${idx === 0 ? 'is-active' : ''}" data-price="${s.price}">${s.name}</span>`;
+                });
+
+                // إنشاء أزرار النكهات البيضاوية
+                let flavorsHtml = '';
+                product.flavors.forEach((f, idx) => {
+                    flavorsHtml += `<span class="oval-badge-btn flavor-option-trigger ${idx === 0 ? 'is-active' : ''}">${f}</span>`;
+                });
 
                 return `
                     <div class="product-premium-card" data-product-id="${product.id}">
@@ -1404,8 +1595,16 @@
                             <h4 class="card-product-title">${product.title}</h4>
                             <p class="card-product-description">${product.desc}</p>
                             
+                            <div class="card-selectors-block">
+                                <div class="selector-row-title">اختر الحجم:</div>
+                                <div class="oval-options-group size-group-wrapper">${sizesHtml}</div>
+                                
+                                <div class="selector-row-title" style="margin-top: 4px;">اختر النكهة:</div>
+                                <div class="oval-options-group flavor-group-wrapper">${flavorsHtml}</div>
+                            </div>
+                            
                             <div class="card-pricing-control-row">
-                                <div class="card-price-display">${product.price} <span>ج.م</span></div>
+                                <div class="card-price-display"><span class="price-num-node">${defaultPrice}</span> <span>ج.م</span></div>
                                 <div class="premium-quantity-stepper">
                                     <button class="stepper-btn btn-minus"><i class="fa-solid fa-minus"></i></button>
                                     <span class="stepper-value">${currentQty}</span>
@@ -1421,7 +1620,7 @@
                 `;
             }
 
-            // 1. حقن وتغذية السلايدر الخاص بقسم الأكثر مبيعاً (8 منتجات كاملة)
+            // حقن وتغذية الأقسام والجريدات بالتحديثات الهندسية الجديدة للبيانات
             const mostSellingSlider = document.getElementById('mostSellingSlider');
             if (mostSellingSlider) {
                 let sliderHtml = '';
@@ -1429,22 +1628,18 @@
                 mostSellingSlider.innerHTML = sliderHtml;
             }
 
-            // 2. حقن وتغذية قسم منتجاتنا (المجموعة 1 والمجموعة 2 بالتساوي)
             const mainGridGroup1 = document.getElementById('mainGridGroup1');
             const mainGridGroup2 = document.getElementById('mainGridGroup2');
-            
             if (mainGridGroup1 && mainGridGroup2) {
                 let group1Html = '';
                 let group2Html = '';
-                
                 boseProductsDatabase.slice(0, 4).forEach(prod => { group1Html += compilePremiumCard(prod); });
                 boseProductsDatabase.slice(4, 8).forEach(prod => { group2Html += compilePremiumCard(prod); });
-                
                 mainGridGroup1.innerHTML = group1Html;
                 mainGridGroup2.innerHTML = group2Html;
             }
 
-            // تفاعل زر "استعرض المزيد" لإظهار المجموعة الثانية بنعومة فائقة
+            // تفاعل زر "استعرض المزيد" لإظهار المجموعة الثانية
             const loadMoreProductsBtn = document.getElementById('loadMoreProductsBtn');
             const loadMoreGroupZone = document.getElementById('loadMoreGroupZone');
             if (loadMoreProductsBtn && mainGridGroup2) {
@@ -1455,7 +1650,7 @@
                 });
             }
 
-            // 3. محرك تشغيل صور قسم "عقد من الإتقان" التلقائي المتزن
+            // محرك تشغيل صور قسم "عقد من الإتقان" التلقائي
             const showcaseImages = document.querySelectorAll('#excellenceImagesWrapper .showcase-img');
             if (showcaseImages.length > 1) {
                 let currentSlideIdx = 0;
@@ -1466,14 +1661,104 @@
                 }, 4000); 
             }
 
-            // مزامنة كميات الكروت تلقائياً مع السلة عند تصفح الواجهة أو تبديل النوافذ
+            // ميكانيكية إدارة تفاعلات الضغط وتحديث الأسعار المتبادلة لحظياً داخل الكارت
+            document.addEventListener('click', (e) => {
+                const cardElement = e.target.closest('.product-premium-card');
+                if (!cardElement) return;
+
+                const productId = cardElement.getAttribute('data-product-id');
+                const matchedProduct = boseProductsDatabase.find(p => p.id === productId);
+                if (!matchedProduct) return;
+
+                // 1. التفاعل عند ضغط العميل على أحد أزرار الأحجام
+                const sizeBtn = e.target.closest('.size-option-trigger');
+                if (sizeBtn) {
+                    const siblingSizeBtns = cardElement.querySelectorAll('.size-option-trigger');
+                    siblingSizeBtns.forEach(b => b.classList.remove('is-active'));
+                    sizeBtn.classList.add('is-active');
+                    
+                    // تحديث نص السعر المعروض فوراً ليتطابق مع الحجم المختار
+                    const targetPrice = sizeBtn.getAttribute('data-price');
+                    cardElement.querySelector('.price-num-node').textContent = targetPrice;
+                    return;
+                }
+
+                // 2. التفاعل عند ضغط العميل على أحد أزرار النكهات
+                const flavorBtn = e.target.closest('.flavor-option-trigger');
+                if (flavorBtn) {
+                    const siblingFlavorBtns = cardElement.querySelectorAll('.flavor-option-trigger');
+                    siblingFlavorBtns.forEach(b => b.classList.remove('is-active'));
+                    flavorBtn.classList.add('is-active');
+                    return;
+                }
+
+                // مستندات العداد والتحكم بالكمية
+                const stepperValueNode = cardElement.querySelector('.stepper-value');
+                let currentQuantity = parseInt(stepperValueNode.textContent) || 1;
+
+                if (e.target.closest('.btn-plus')) {
+                    currentQuantity++;
+                    stepperValueNode.textContent = currentQuantity;
+                    return;
+                }
+
+                if (e.target.closest('.btn-minus')) {
+                    if (currentQuantity > 1) {
+                        currentQuantity--;
+                        stepperValueNode.textContent = currentQuantity;
+                    }
+                    return;
+                }
+
+                // 3. معالجة الإضافة النهائية للسلة بالخيارات التفصيلية المنتقاة
+                if (e.target.closest('.card-add-to-cart-btn')) {
+                    const activeSizeName = cardElement.querySelector('.size-option-trigger.is-active').textContent;
+                    const activeSizePrice = parseFloat(cardElement.querySelector('.size-option-trigger.is-active').getAttribute('data-price'));
+                    const activeFlavorName = cardElement.querySelector('.flavor-option-trigger.is-active').textContent;
+
+                    const globalCart = window.BoseSweetsEngine.state.cart;
+                    
+                    // توليد معرف فريد يجمع المنتج وخياراته لمنع التداخل وحفظ الفروقات بالسلة
+                    const uniqueCartItemId = `${productId}_${activeSizeName}_${activeFlavorName}`;
+                    const existingItemIdx = globalCart.findIndex(item => item.cartId === uniqueCartItemId);
+
+                    if (existingItemIdx > -1) {
+                        globalCart[existingItemIdx].quantity = currentQuantity;
+                    } else {
+                        globalCart.push({
+                            cartId: uniqueCartItemId,
+                            id: productId,
+                            title: matchedProduct.title,
+                            size: activeSizeName,
+                            flavor: activeFlavorName,
+                            basePrice: activeSizePrice,
+                            quantity: currentQuantity,
+                            customType: 'menu-item'
+                        });
+                    }
+
+                    window.BoseSweetsEngine.updateUIComponents();
+                    window.BoseSweetsEngine.showToast(`تمت إضافة ${matchedProduct.title} للسلة (${activeSizeName} - نكهة ${activeFlavorName}) بنجاح`);
+                }
+            });
+
+            // مزامنة كميات الكروت تلقائياً مع السلة
             window.addEventListener('boseStateUpdated', () => {
                 document.querySelectorAll('.product-premium-card').forEach(card => {
                     const pId = card.getAttribute('data-product-id');
-                    const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.id === pId);
-                    const stepperVal = card.querySelector('.stepper-value');
-                    if (stepperVal) {
-                        stepperVal.textContent = cartItem ? cartItem.quantity : 1;
+                    const sizeActiveNode = card.querySelector('.size-option-trigger.is-active');
+                    const flavorActiveNode = card.querySelector('.flavor-option-trigger.is-active');
+                    
+                    if (sizeActiveNode && flavorActiveNode) {
+                        const activeSizeName = sizeActiveNode.textContent;
+                        const activeFlavorName = flavorActiveNode.textContent;
+                        const uniqueCartItemId = `${pId}_${activeSizeName}_${activeFlavorName}`;
+                        
+                        const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.cartId === uniqueCartItemId);
+                        const stepperVal = card.querySelector('.stepper-value');
+                        if (stepperVal) {
+                            stepperVal.textContent = cartItem ? cartItem.quantity : 1;
+                        }
                     }
                 });
             });
