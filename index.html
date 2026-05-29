@@ -1,1693 +1,1019 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-    <meta name="description" content="منصة بيع إلكترونية متكاملة لمنتجات حلويات بوسي الفاخرة. استمتع بتشكيلة فريدة من الديسباسيتو، القشطوطة، السينابون، الدوناتس، والميني تورت المصنوعة بالكامل من خامات طبيعية 100%، بجانب محاكي التورت والورد المطور خصيصاً لتنسيق مناسباتكم السعيدة.">
-    <meta name="keywords" content="حلويات بوسي, حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, الفرافرة, الوادي الجديد, الكفاح, BoseSweets, محاكي التورت, محاكي الورد">
-    <meta name="author" content="إدارة حلويات بوسي">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://bosesweets.com">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://bosesweets.com">
-    <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta property="og:description" content="تصفح منيو حلويات بوسي واستخدم محاكي التورت والورد التفاعلي لتنسيق طلبك فريش وبأعلى جودة خامات طبيعية ممسوكة ومضمونة.">
-    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            --primary: #FF91A4;        /* روح الهوية البصرية - البمبي الملكي */
-            --secondary: #FFD700;      /* اللمسة الملكية الناعمة - ذهبي متمم ومحدود جداً */
-            --background: #FFFFFF;     /* الأبيض النقي للتنفس والراحة البصرية الكاملة */
-            --text-color: #000000;     /* اللون الأسود مخصص بشكل حصري وصارم للنصوص فقط */
-            --gray-light: #FBFBFB;     /* درجات رمادية ناعمة جداً للخلفيات الفرعية */
-            --gray-border: #F0F0F0;    /* خطوط الفصل والحدود الهادئة */
-            --font-main: 'Alexandria', sans-serif;
-            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            --shadow-premium: 0 4px 25px rgba(255, 145, 164, 0.06);
-        }
-
-        /* الإعدادات العامة والتصفير الاحترافي */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: var(--font-main);
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
-        }
-
-        body {
-            background-color: var(--background);
-            color: var(--text-color);
-            direction: rtl;
-            text-align: right;
-            overflow-x: hidden;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        /* تخصيص شريط التمرير (Scrollbar) بألوان الهوية البصرية */
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--background);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 10px;
-        }
-
-        /* حاويات العرض والصفحات المستقلة (SPA Containers) */
-        .page-view {
-            display: none;
-            width: 100%;
-            min-height: calc(100vh - 75px);
-            animation: viewFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .page-view.active-view {
-            display: block;
-        }
-
-        @keyframes viewFadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* الهيدر المتطور المدمج بالهوية البصرية واللمسات الناعمة */
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--gray-border);
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 75px;
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.01);
-            transition: var(--transition-smooth);
-        }
-
-        .header-right, .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .menu-toggle-btn {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-            color: var(--text-color);
-            padding: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-smooth);
-            border-radius: 50%;
-        }
-
-        .menu-toggle-btn:active {
-            color: var(--primary);
-            transform: scale(0.9);
-            background-color: var(--gray-light);
-        }
-
-        .brand-logo-zone {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--text-color);
-            transition: var(--transition-smooth);
-        }
-
-        .brand-logo-zone:active {
-            transform: scale(0.98);
-        }
-
-        .brand-logo-zone img {
-            width: 46px;
-            height: 46px;
-            object-fit: contain;
-        }
-
-        .brand-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--text-color);
-            letter-spacing: -0.3px;
-        }
-
-        /* أزرار الهيدر والرموز التفاعلية */
-        .header-icon-btn {
-            background: none;
-            border: none;
-            font-size: 19px;
-            cursor: pointer;
-            color: var(--text-color);
-            position: relative;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: var(--transition-smooth);
-        }
-
-        .header-icon-btn:active {
-            background-color: var(--gray-light);
-            color: var(--primary);
-            transform: scale(0.9);
-        }
-
-        /* عداد الأرقام للسلة مدمج باللون البمبي الدائري */
-        .badge-count {
-            position: absolute;
-            top: 3px;
-            right: 3px;
-            background-color: var(--primary);
-            color: #FFFFFF;
-            font-size: 9px;
-            font-weight: 700;
-            border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--background);
-            box-shadow: 0 2px 6px rgba(255, 145, 164, 0.2);
-        }
-
-        .sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.12);
-            z-index: 1900;
-            display: none;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            animation: fadeInOverlay 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        @keyframes fadeInOverlay {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* شريط البحث المطور */
-        .search-overlay-bar {
-            position: fixed;
-            top: -85px;
-            left: 0;
-            width: 100%;
-            height: 75px;
-            background-color: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            z-index: 1500;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.02);
-            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            gap: 15px;
-            border-bottom: 1px solid var(--gray-border);
-        }
-
-        .search-overlay-bar.search-bar-open {
-            top: 0;
-        }
-
-        .search-input-wrapper {
-            flex: 1;
-            position: relative;
-        }
-
-        .search-input-wrapper input {
-            width: 100%;
-            height: 44px;
-            border: 1px solid var(--gray-border);
-            border-radius: 22px;
-            padding: 0 45px 0 20px;
-            font-size: 13px;
-            background-color: var(--gray-light);
-            transition: var(--transition-smooth);
-            color: var(--text-color);
-        }
-
-        .search-input-wrapper input:focus {
-            border-color: var(--primary);
-            background-color: var(--background);
-        }
-
-        .search-input-wrapper i {
-            position: absolute;
-            top: 14px;
-            right: 18px;
-            color: var(--primary);
-            font-size: 15px;
-        }
-
-        .close-search-trigger {
-            background: none;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            color: var(--text-color);
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-smooth);
-            border-radius: 50%;
-        }
-
-        .close-search-trigger:active {
-            transform: scale(0.9);
-            background-color: var(--gray-light);
-            color: var(--primary);
-        }
-
-        /* أزرار بيضاوية فاخرة مرنة */
-        .btn-oval-primary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 28px;
-            background-color: var(--primary);
-            color: #FFFFFF;
-            border: 1px solid transparent;
-            border-radius: 25px;
-            font-size: 13px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            box-shadow: var(--shadow-premium);
-            text-decoration: none;
-        }
-
-        .btn-oval-primary:active {
-            transform: scale(0.96);
-            background-color: var(--background);
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .btn-oval-secondary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 28px;
-            background-color: var(--gray-light);
-            color: var(--text-color);
-            border: 1px solid var(--gray-border);
-            border-radius: 25px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            text-decoration: none;
-        }
-
-        .btn-oval-secondary:active {
-            background-color: var(--gray-border);
-            transform: scale(0.96);
-        }
-
-        /* تفاصيل الخط الذهبي المساعد الناعم جداً كلمسة ملكية خفيفة */
-        .gold-royal-spot {
-            color: var(--secondary) !important;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
-
-        /* نمط كروت المنتجات المشتركة (كارتين جنب بعض) */
-        .products-dual-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 15px;
-        }
-
-        @media (min-width: 768px) {
-            .products-dual-grid {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 20px;
-            }
-        }
-
-        .product-premium-card {
-            background-color: var(--background);
-            border: 1px solid var(--gray-border);
-            border-radius: 16px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transition: var(--transition-smooth);
-        }
-
-        .product-premium-card:hover {
-            box-shadow: var(--shadow-premium);
-        }
-
-        .card-image-wrapper {
-            position: relative;
-            width: 100%;
-            padding-top: 100%; 
-            background-color: var(--gray-light);
-            overflow: hidden;
-        }
-
-        .card-image-wrapper img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .card-details-zone {
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            flex: 1;
-        }
-
-        .card-product-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-color);
-            line-height: 1.4;
-        }
-
-        .card-product-description {
-            font-size: 11px;
-            color: #666;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            line-height: 1.5;
-            height: 33px;
-        }
-
-        .card-pricing-control-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 4px;
-            border-top: 1px dashed var(--gray-border);
-            padding-top: 8px;
-        }
-
-        .card-price-display {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--text-color);
-        }
-
-        /* عداد التحكم في الكمية بالمسار والمؤشرات المطلوبة */
-        .premium-quantity-stepper {
-            display: flex;
-            align-items: center;
-            background-color: var(--gray-light);
-            border: 1px solid var(--gray-border);
-            border-radius: 20px;
-            padding: 2px;
-            gap: 6px;
-        }
-
-        .stepper-btn {
-            background-color: var(--background);
-            border: 1px solid var(--gray-border);
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 10px;
-            color: var(--text-color);
-            transition: var(--transition-smooth);
-        }
-
-        .stepper-btn:active {
-            background-color: var(--primary);
-            color: #FFFFFF;
-            transform: scale(0.9);
-        }
-
-        .stepper-value {
-            font-size: 12px;
-            font-weight: 700;
-            min-width: 14px;
-            text-align: center;
-            color: var(--text-color);
-        }
-
-        .card-add-to-cart-btn {
-            width: 100%;
-            padding: 10px;
-            background-color: var(--gray-light);
-            border: 1px solid var(--gray-border);
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-color);
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 4px;
-        }
-
-        .card-add-to-cart-btn:active {
-            background-color: var(--primary);
-            color: #FFFFFF;
-            border-color: var(--primary);
-            transform: scale(0.97);
-        }
-
-        /* نظام التنبيهات الفورية الفاخر (Toast Notifications) */
-        .toast-notifications-container {
-            position: fixed;
-            bottom: 25px;
-            right: 20px;
-            left: 20px;
-            z-index: 3000;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
-        }
-
-        @media (min-width: 480px) {
-            .toast-notifications-container {
-                left: auto;
-                width: 350px;
-            }
-        }
-
-        .premium-toast {
-            background-color: var(--background);
-            border-right: 4px solid var(--primary);
-            padding: 14px 18px;
-            border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            pointer-events: auto;
-            animation: toastSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .premium-toast i {
-            font-size: 15px;
-            color: var(--primary);
-        }
-
-        .toast-message-content {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-color);
-        }
-
-        @keyframes toastSlideIn {
-            from { transform: translateY(15px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        /* النوافذ المنبثقة الشاملة الفخمة (Premium Modals) */
-        .premium-modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.2);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            z-index: 2500;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .premium-modal-wrapper {
-            background-color: var(--background);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
-            border: 1px solid var(--gray-border);
-            overflow: hidden;
-            animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes modalPop {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-main-header {
-            padding: 20px 20px 10px 20px;
-            text-align: center;
-        }
-
-        .modal-main-header i {
-            font-size: 22px;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-
-        .modal-main-title {
-            font-size: 15px;
-            font-weight: 800;
-            color: var(--text-color);
-        }
-
-        .modal-main-body {
-            padding: 10px 20px 20px 20px;
-            text-align: center;
-            font-size: 13px;
-            color: #222;
-            line-height: 1.6;
-        }
-
-        .modal-actions-footer {
-            padding: 15px 20px 20px 20px;
-            background-color: var(--gray-light);
-            border-top: 1px solid var(--gray-border);
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        /* عناوين وأقسام الصفحات القياسية */
-        .view-section-container {
-            padding: 30px 20px;
-            width: 100%;
-        }
-
-        .view-section-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--text-color);
-            text-align: center;
-            margin-bottom: 6px;
-        }
-    </style>
+
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
+
+<meta name="description" content="حلويات بوسي - تورت، ورد، بوكسات هدايا، كب كيك، سينابون، دوناتس، جاتوهات ومنتجات مصنوعة بخامات مختارة بعناية وجودة ثابتة.">
+<meta name="keywords" content="حلويات بوسي, تورت, ورد, كب كيك, سينابون, دوناتس, جاتوه, ديسباسيتو, بوكس هدايا, حلويات الفرافرة">
+<meta name="author" content="حلويات بوسي">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="theme-color" content="#FF91A4">
+
+<link rel="canonical" href="https://bosesweets.com">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="حلويات بوسي">
+<meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
+<meta property="og:description" content="منصة بيع إلكترونية متكاملة لعرض وطلب منتجات حلويات بوسي بسهولة وسرعة.">
+<meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+<meta property="og:url" content="https://bosesweets.com">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="حلويات بوسي">
+<meta name="twitter:description" content="صنعناها بحب لتهديها لمن تحب">
+<meta name="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+
+<style>
+
+:root{
+
+--primary:#FF91A4;
+--primary-soft:#FFE7EC;
+--primary-light:#FFF4F6;
+
+--white:#FFFFFF;
+--black:#111111;
+
+--text:#111111;
+--text-light:#6F6F6F;
+
+--border:#F1F1F1;
+
+--shadow:
+0 10px 40px rgba(0,0,0,.06);
+
+--shadow-hover:
+0 20px 60px rgba(0,0,0,.12);
+
+--radius-xs:12px;
+--radius-sm:18px;
+--radius-md:24px;
+--radius-lg:32px;
+--radius-xl:42px;
+--radius-pill:999px;
+
+--container:1440px;
+
+--transition:
+all .25s ease;
+
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+}
+
+html{
+scroll-behavior:smooth;
+overflow-x:hidden;
+}
+
+body{
+
+font-family:'Alexandria',sans-serif;
+
+background:#fff;
+color:var(--text);
+
+overflow-x:hidden;
+
+text-rendering:optimizeLegibility;
+-webkit-font-smoothing:antialiased;
+-moz-osx-font-smoothing:grayscale;
+
+}
+
+img{
+display:block;
+width:100%;
+max-width:100%;
+}
+
+button,
+input,
+textarea,
+select{
+font-family:'Alexandria',sans-serif;
+outline:none;
+border:none;
+}
+
+a{
+text-decoration:none;
+color:inherit;
+}
+
+ul{
+list-style:none;
+}
+
+.container{
+
+width:min(
+calc(100% - 32px),
+var(--container)
+);
+
+margin-inline:auto;
+
+}
+
+.section{
+
+padding:
+80px
+0;
+
+}
+
+.section-title{
+
+font-size:clamp(28px,4vw,52px);
+font-weight:800;
+line-height:1.3;
+
+text-align:center;
+
+margin-bottom:18px;
+
+}
+
+.section-description{
+
+max-width:900px;
+
+margin-inline:auto;
+
+font-size:16px;
+line-height:2;
+
+color:var(--text-light);
+
+text-align:center;
+
+}
+
+.btn{
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+gap:10px;
+
+cursor:pointer;
+
+border-radius:var(--radius-pill);
+
+transition:var(--transition);
+
+font-weight:700;
+
+}
+
+.btn-primary{
+
+background:var(--primary);
+color:#fff;
+
+box-shadow:
+0 12px 30px rgba(255,145,164,.35);
+
+}
+
+.btn-primary:hover{
+
+transform:translateY(-3px);
+
+box-shadow:
+0 18px 40px rgba(255,145,164,.45);
+
+}
+
+.card{
+
+background:#fff;
+
+border:1px solid var(--border);
+
+border-radius:var(--radius-md);
+
+box-shadow:var(--shadow);
+
+transition:var(--transition);
+
+}
+
+.card:hover{
+
+transform:translateY(-4px);
+
+box-shadow:var(--shadow-hover);
+
+}
+
+.hide{
+display:none !important;
+}
+
+.desktop-only{
+display:block;
+}
+
+.mobile-only{
+display:none;
+}
+
+@media(max-width:768px){
+
+.section{
+padding:60px 0;
+}
+
+.desktop-only{
+display:none;
+}
+
+.mobile-only{
+display:block;
+}
+
+}
+
+</style>
+
+<script>
+
+const STORE_CONFIG = {
+
+name:"حلويات بوسي",
+
+slogan:"صنعناها بحب لتهديها لمن تحب",
+
+logo:"https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+
+whatsapp:"01097238441",
+
+primary:"#FF91A4"
+
+};
+
+</script>
+
 </head>
+
 <body>
+<!-- START APP -->
 
-    <div class="toast-notifications-container" id="globalToastContainer"></div>
-
-    <div class="premium-modal-backdrop" id="centralUpgradeModal">
-        <div class="premium-modal-wrapper">
-            <div class="modal-main-header">
-                <i class="fa-solid fa-circle-info" id="modalIcon"></i>
-                <div class="modal-main-title" id="modalTitle">توضيح بخصوص التنسيق</div>
-            </div>
-            <div class="modal-main-body" id="modalBody">
-                تفاصيل الرسالة الإرشادية تظهر هنا.
-            </div>
-            <div class="modal-actions-footer" id="modalActions"></div>
-        </div>
-    </div>
-
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-    <div class="search-overlay-bar" id="searchOverlayBar">
-        <div class="search-input-wrapper">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" id="globalSearchInput" placeholder="ابحث عن منتجك المفضل...">
-        </div>
-        <button class="close-search-trigger" id="closeSearchBtn" aria-label="إغلاق البحث"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-
-    <header>
-        <div class="header-right">
-            <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="فتح قائمة التنقل">
-                <i class="fa-solid fa-bars"></i>
-            </button>
-            <a href="#" class="brand-logo-zone" data-target="homepage-view">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي">
-                <span class="brand-title">حلويات بوسي</span>
-            </a>
-        </div>
-        <div class="header-left">
-            <button class="header-icon-btn" id="searchTriggerBtn" aria-label="فتح البحث">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-            <button class="header-icon-btn" id="cartPageBtn" data-target="cart-view" aria-label="فتح السلة">
-                <i class="fa-solid fa-bag-shopping"></i>
-                <span class="badge-count" id="cartBadgeCount">0</span>
-            </button>
-        </div>
-    </header>
-
-    <nav class="sidebar-navigation" id="sidebarNavigation">
-        <div class="sidebar-header">
-            <span class="brand-title">حلويات بوسي</span>
-            <button class="close-sidebar-btn" id="closeSidebarBtn" aria-label="إغلاق القائمة"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <ul class="sidebar-menu-links">
-            <li class="sidebar-menu-item sidebar-link-item active-link" data-target="homepage-view"><a href="#">الرئيسية</a></li>
-            <li class="sidebar-menu-item sidebar-link-item" data-target="menu-view"><a href="#">المنيو</a></li>
-            <li class="sidebar-menu-item sidebar-link-item" data-target="cart-view"><a href="#">السلة</a></li>
-            <li class="sidebar-menu-item sidebar-link-item" data-target="cake-simulator-view"><a href="#">محاكي التورت</a></li>
-            <li class="sidebar-menu-item sidebar-link-item" data-target="flower-simulator-view"><a href="#">محاكي الورد</a></li>
-        </ul>
-    </nav>
-
-    <script>
-        window.BoseSweetsEngine = {
-            state: {
-                cart: JSON.parse(localStorage.getItem('bose_cart')) || [],
-                favorites: JSON.parse(localStorage.getItem('bose_favs')) || [],
-                currentView: 'homepage-view'
-            },
-
-            updateUIComponents: function() {
-                document.getElementById('cartBadgeCount').textContent = this.state.cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
-                localStorage.setItem('bose_cart', JSON.stringify(this.state.cart));
-                localStorage.setItem('bose_favs', JSON.stringify(this.state.favorites));
-                window.dispatchEvent(new CustomEvent('boseStateUpdated'));
-            },
-
-            showToast: function(message, type = 'success') {
-                const container = document.getElementById('globalToastContainer');
-                const toast = document.createElement('div');
-                toast.className = `premium-toast`;
-                toast.innerHTML = `
-                    <i class="fa-solid fa-circle-check"></i>
-                    <div class="toast-message-content">${message}</div>
-                `;
-                container.appendChild(toast);
-                setTimeout(() => {
-                    toast.style.opacity = '0';
-                    toast.style.transition = 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)';
-                    setTimeout(() => toast.remove(), 400);
-                }, 3000);
-            },
-
-            showModal: function(title, bodyHtml, actionButtons = []) {
-                const backdrop = document.getElementById('centralUpgradeModal');
-                document.getElementById('modalTitle').textContent = title;
-                document.getElementById('modalBody').innerHTML = bodyHtml;
-                const footer = document.getElementById('modalActions');
-                footer.innerHTML = '';
-                
-                actionButtons.forEach(btnConfig => {
-                    const btn = document.createElement('button');
-                    btn.className = btnConfig.className || 'btn-oval-secondary';
-                    btn.textContent = btnConfig.text;
-                    btn.addEventListener('click', () => {
-                        if (btnConfig.callback) btnConfig.callback();
-                        backdrop.style.display = 'none';
-                    });
-                    footer.appendChild(btn);
-                });
-                backdrop.style.display = 'flex';
-            },
-
-            navigateToView: function(viewId) {
-                const views = document.querySelectorAll('.page-view');
-                let found = false;
-                
-                views.forEach(view => {
-                    if (view.id === viewId) {
-                        view.classList.add('active-view');
-                        found = true;
-                    } else {
-                        view.classList.remove('active-view');
-                    }
-                });
-
-                if (found) {
-                    this.state.currentView = viewId;
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    
-                    document.querySelectorAll('.sidebar-link-item').forEach(item => {
-                        if (item.getAttribute('data-target') === viewId) {
-                            item.classList.add('active-link');
-                        } else {
-                            item.classList.remove('active-link');
-                        }
-                    });
-                }
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const menuToggleBtn = document.getElementById('menuToggleBtn');
-            const closeSidebarBtn = document.getElementById('closeSidebarBtn');
-            const sidebarNavigation = document.getElementById('sidebarNavigation');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            const searchTriggerBtn = document.getElementById('searchTriggerBtn');
-            const closeSearchBtn = document.getElementById('closeSearchBtn');
-            const searchOverlayBar = document.getElementById('searchOverlayBar');
-
-            function toggleSidebar(open) {
-                if (open) {
-                    sidebarNavigation.classList.add('sidebar-open');
-                    sidebarOverlay.style.display = 'block';
-                } else {
-                    sidebarNavigation.classList.remove('sidebar-open');
-                    sidebarOverlay.style.display = 'none';
-                }
-            }
-
-            menuToggleBtn.addEventListener('click', () => toggleSidebar(true));
-            closeSidebarBtn.addEventListener('click', () => toggleSidebar(false));
-            sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
-
-            searchTriggerBtn.addEventListener('click', () => {
-                searchOverlayBar.classList.add('search-bar-open');
-                document.getElementById('globalSearchInput').focus();
-            });
-
-            closeSearchBtn.addEventListener('click', () => {
-                searchOverlayBar.classList.remove('search-bar-open');
-            });
-
-            document.addEventListener('click', (e) => {
-                const targetTrigger = e.target.closest('[data-target]');
-                if (targetTrigger) {
-                    e.preventDefault();
-                    const viewId = targetTrigger.getAttribute('data-target');
-                    window.BoseSweetsEngine.navigateToView(viewId);
-                    toggleSidebar(false);
-                    searchOverlayBar.classList.remove('search-bar-open');
-                }
-            });
-
-            window.BoseSweetsEngine.updateUIComponents();
-        });
-    </script>
-
-    <main id="homepage-view" class="page-view active-view">
-        <section class="luxury-hero-block">
-            <div class="hero-brand-card">
-                <div class="hero-tag-line"><i class="fa-solid fa-crown"></i> إصدار يوبيل عشر سنوات من الإتقان</div>
-                <h1 class="hero-main-title">عقد من التميز في صناعة الحلويات</h1>
-                <p class="hero-brand-description">
-                    طوال عشر سنوات، صممنا كل قطعة في مطبخنا لتكون قصة نجاح ممسوكة الطعم. نعتمد على خامات طبيعية 100% لنقدم قيمة حقيقية وجودة تفرض احترامها من أول لقمة لآخر قطعة.
-                </p>
-                <div class="hero-action-wrapper">
-                    <button class="btn-oval-primary hero-main-cta" data-target="menu-view">تصفح المنيو الفاخر</button>
-                </div>
-            </div>
-            
-            <div class="hero-video-frame-wrapper">
-                <video class="hero-full-video" autoplay loop muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-                    <source src="" type="video/mp4">
-                </video>
-                <div class="video-pink-glow-overlay"></div>
-            </div>
-        </section>
-
-        <section class="homepage-slider-section">
-            <div class="section-header-zone">
-                <span class="section-mini-badge">التشكيلة المعتمدة</span>
-                <h2 class="slider-section-title">الأكثر مبيعاً</h2>
-                <p class="slider-section-subtitle">المنتجات التي نالت الثقة الكاملة من عملائنا واعتمدوها لكل أوقاتهم السعيدة</p>
-            </div>
-            
-            <div class="horizontal-scroll-container" id="homepageMostSellingSlider">
-                </div>
-        </section>
-
-        <section class="excellence-pride-section">
-            <div class="section-header-zone">
-                <span class="section-mini-badge">فلسفة المطبخ</span>
-                <h2 class="slider-section-title">عقد من الإتقان</h2>
-                <p class="slider-section-subtitle">تفاصيل دقيقة نلتزم بها يومياً لنحافظ على ثبات ومكانة منتجاتنا في كل مناسبة</p>
-            </div>
-            
-            <div class="full-screen-showcase-card">
-                <div class="showcase-slider-wrapper" id="excellenceImagesWrapper">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تفاصيل إنتاجية فاخرة 1" class="showcase-img active-slide">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تفاصيل إنتاجية فاخرة 2" class="showcase-img">
-                </div>
-                <div class="showcase-pink-gradient-overlay"></div>
-                <div class="showcase-text-overlay">
-                    <p class="showcase-highlight-text"><i class="fa-solid fa-sparkles"></i> نعمل على أدق التفاصيل لنقدم منتجاً طبيعياً 100% يفتح الشهية ويحفز على الشراء</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="homepage-grid-section">
-            <div class="section-header-zone">
-                <span class="section-mini-badge">خيارات الصفوة</span>
-                <h2 class="slider-section-title">منتجاتنا الفاخرة</h2>
-                <p class="slider-section-subtitle">تصفح وتذوق بعينك تشكيلتنا اليومية المصنوعة بكل إتقان واهتمام</p>
-            </div>
-
-            <div class="grid-groups-wrapper">
-                <div class="products-dual-grid" id="homepageGridGroup1"></div>
-                
-                <div class="products-dual-grid hidden-group" id="homepageGridGroup2" style="display: none;"></div>
-            </div>
-
-            <div class="grid-actions-center" id="loadMoreGroupZone">
-                <button class="btn-oval-secondary" id="loadMoreProductsBtn">استعرض المزيد من المنتجات</button>
-            </div>
-        </section>
-
-        <section class="luxury-simulator-block block-cake-theme">
-            <div class="simulator-architecture-grid">
-                <div class="simulator-block-image-side">
-                    <div class="architecture-image-frame-wrapper">
-                        <div class="frame-ambient-glow-pink"></div>
-                        <div class="luxury-image-frame">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تورتة ملكية فاخرة - تصميم خاص من حلويات بوسي">
-                            <div class="frame-layered-shadow"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="simulator-block-info-side">
-                    <div class="block-crown-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> هندسة التصميم الخاص</div>
-                    <h3 class="simulator-block-title">محاكي التورت الذكي</h3>
-                    <p class="simulator-block-text">
-                        منصتك الاحترافية الحرة لبناء تورتة أحلامك خطوة بخطوة. اختر نوع قاعدة الكيك المفضل لديك، حدد المقاس الدقيق والشكل الهندسي المتناسق مع عدد ضيوفك، وارفع تصميمك الخارجي أو صورتك الشخصية لننفذها لك بالكامل بخامات طبيعية 100% تضمن لك طعماً أصيلاً يشرفك أمام ضيوفك ويبسطهم.
-                    </p>
-                    <div class="simulator-features-pills">
-                        <span class="feature-pill"><i class="fa-solid fa-check"></i> قاعدة فادج غنية</span>
-                        <span class="feature-pill"><i class="fa-solid fa-check"></i> حسابات مقاس ذكية</span>
-                        <span class="feature-pill"><i class="fa-solid fa-check"></i> خامات طبيعية 100%</span>
-                    </div>
-                    <button class="btn-oval-primary block-action-btn" data-target="cake-simulator-view">ابدأ محاكاة التصميم الآن</button>
-                </div>
-            </div>
-        </section>
-
-        <section class="brand-pride-video-section">
-            <div class="pride-text-container">
-                <div class="pride-badge-icon"><i class="fa-solid fa-heart-pulse"></i> شريك مناسباتكم السعيدة</div>
-                <h2 class="pride-main-stat">أكثر من 10 سنوات خبرة، أكثر من 10000 عميل</h2>
-                <p class="pride-sub-stat">فخورون بأننا كنا دائماً الخيار الأول والموثوق لتأمين فخامة وجودة حلوياتكم وتجمعاتكم العائلية داخل الفرافرة والكفاح على مدار عقد كامل.</p>
-            </div>
-            <div class="pride-video-frame">
-                <video class="pride-full-video" autoplay loop muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-                    <source src="" type="video/mp4">
-                </video>
-                <div class="video-pink-glow-overlay"></div>
-            </div>
-        </section>
-
-        <section class="luxury-simulator-block block-flower-theme">
-            <div class="simulator-architecture-grid layout-reverse">
-                <div class="simulator-block-image-side">
-                    <div class="architecture-image-frame-wrapper">
-                        <div class="frame-ambient-glow-pink"></div>
-                        <div class="luxury-image-frame">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكيه ورد ملكي فخم - تنسيق خاص من حلويات بوسي">
-                            <div class="frame-layered-shadow"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="simulator-block-info-side">
-                    <div class="block-crown-badge"><i class="fa-solid fa-gift"></i> تنسيق الهدايا الفاخرة</div>
-                    <h3 class="simulator-block-title">محاكي الورد الفاخر</h3>
-                    <p class="simulator-block-text">
-                        صمم هديتك الاستثنائية بكامل الحرية البصرية والتحكم المطلق. نسق حجم بوكيه الورد، حدد نوع الورود وألواها المطلوبة، وأضف لمساتك المدفوعة والقيمة من المبالغ النقدية (الكاش)، الصور التذكارية المطبوعة، شريط الستان المخطوط، أو قطع الشوكولاتة الفاخرة لتصل لمن تحب في أبهى صورة تليق بمشاعرك.
-                    </p>
-                    <div class="simulator-features-pills">
-                        <span class="feature-pill"><i class="fa-solid fa-check"></i> دمج المبالغ النقدية</span>
-                        <span class="feature-pill"><i class="fa-solid fa-check"></i> طباعة ستان فاخرة</span>
-                        <span class="feature-pill"><i class="fa-solid fa-check"></i> تزيين شكولاتة ذكي</span>
-                    </div>
-                    <button class="btn-oval-primary block-action-btn" data-target="flower-simulator-view">ابدأ تنسيق البوكيه الآن</button>
-                </div>
-            </div>
-        </section>
-
-        <section class="homepage-categories-slider-section">
-            <div class="section-header-zone">
-                <span class="section-mini-badge">تصفح ذكي</span>
-                <h2 class="slider-section-title">تسوق حسب الفئة</h2>
-                <p class="slider-section-subtitle">اختر فئتك المفضلة لتنتقل مباشرة لمنتجاتها المستقلة داخل المنيو</p>
-            </div>
-            
-            <div class="horizontal-scroll-container">
-                <div class="category-premium-card-wrapper" data-target="menu-view">
-                    <div class="category-visual-circle"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الحلويات"></div>
-                    <span class="category-visual-title">كل الحلويات</span>
-                </div>
-                <div class="category-premium-card-wrapper" data-target="cake-simulator-view">
-                    <div class="category-visual-circle"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="التورت"></div>
-                    <span class="category-visual-title">محاكي التورت</span>
-                </div>
-                <div class="category-premium-card-wrapper" data-target="flower-simulator-view">
-                    <div class="category-visual-circle"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الورد"></div>
-                    <span class="category-visual-title">محاكي الورد</span>
-                </div>
-            </div>
-        </section>
-
-    </main> <style>
-        /* الأنماط الهيكلية لحماية الصفحة الرئيسية وسلايدر فئات التسوق */
-        .homepage-categories-slider-section {
-            padding: 65px 0 80px 0;
-            width: 100%;
-            background-color: var(--background);
-        }
-
-        .category-premium-card-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            min-width: 110px;
-            text-align: center;
-            transition: var(--transition-smooth);
-        }
-
-        .category-premium-card-wrapper:active {
-            transform: scale(0.95);
-        }
-
-        .category-visual-circle {
-            width: 85px;
-            height: 85px;
-            border-radius: 50%;
-            background-color: var(--gray-light);
-            border: 1px solid rgba(255, 145, 164, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            box-shadow: var(--shadow-premium);
-        }
-
-        .category-visual-circle img {
-            width: 70%;
-            height: 70%;
-            object-fit: contain;
-        }
-
-        .category-visual-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-color);
-        }
-
-        /* شارات الأقسام الصغيرة المتطورة برقي البمبي الملكي */
-        .section-mini-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            background-color: rgba(255, 145, 164, 0.06);
-            color: var(--primary);
-            font-size: 11px;
-            font-weight: 700;
-            border-radius: 20px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255, 145, 164, 0.12);
-            letter-spacing: 0.3px;
-        }
-
-        /* تطبيق المسافات الفاخرة ونظام التنفس وعزل الكتل للشاشة الهيرو */
-        .luxury-hero-block {
-            background-color: var(--background);
-            padding: 50px 0 0 0;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 45px;
-        }
-
-        .hero-brand-card {
-            padding: 40px 24px;
-            background: linear-gradient(180deg, rgba(255, 145, 164, 0.02) 0%, rgba(255,255,255,0) 100%);
-            border-top: 1px solid rgba(255, 145, 164, 0.05);
-            border-bottom: 1px solid rgba(255, 145, 164, 0.05);
-            text-align: center;
-            max-width: 680px;
-            margin: 0 auto;
-            border-radius: 24px;
-        }
-
-        .hero-tag-line {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .hero-main-title {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--text-color);
-            line-height: 1.4;
-            margin-bottom: 16px;
-        }
-
-        .hero-brand-description {
-            font-size: 14px;
-            color: #333;
-            line-height: 1.75;
-            margin-bottom: 28px;
-        }
-
-        .hero-main-cta {
-            padding: 14px 35px !important;
-            font-size: 14px !important;
-            border-radius: 28px !important;
-        }
-
-        .hero-video-frame-wrapper, .pride-video-frame {
-            position: relative;
-            width: 100%;
-            height: 52vh;
-            background-color: var(--gray-light);
-            overflow: hidden;
-            border-top: 1px solid var(--gray-border);
-            border-bottom: 1px solid var(--gray-border);
-        }
-
-        .hero-full-video, .pride-full-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .video-pink-glow-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, rgba(255, 145, 164, 0.02) 0%, rgba(0,0,0,0) 100%);
-            pointer-events: none;
-        }
-
-        /* نظام تباعد الأقسام الاستراتيجي (Dynamic Breathing Space Grid) لمنع الازدحام */
-        .homepage-slider-section, .homepage-grid-section, .excellence-pride-section {
-            padding: 65px 0; 
-            width: 100%;
-            border-bottom: 1px solid var(--gray-border);
-        }
-
-        .section-header-zone {
-            padding: 0 20px;
-            text-align: center;
-            margin-bottom: 35px; 
-        }
-
-        .slider-section-title {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--text-color);
-            margin-bottom: 6px;
-        }
-
-        .slider-section-subtitle {
-            font-size: 13px;
-            color: #444;
-            max-width: 500px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-
-        .horizontal-scroll-container {
-            display: flex;
-            gap: 20px; 
-            overflow-x: auto;
-            padding: 5px 20px 25px 20px;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .horizontal-scroll-container::-webkit-scrollbar {
-            display: none; 
-        }
-
-        .horizontal-scroll-container .product-premium-card {
-            min-width: 255px;
-            max-width: 255px;
-            scroll-snap-align: start;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.01);
-        }
-
-        .product-premium-card {
-            border: 1px solid var(--gray-border) !important;
-            border-radius: 20px !important;
-            background-color: var(--background);
-            transition: var(--transition-smooth);
-        }
-
-        .product-premium-card:hover {
-            border-color: rgba(255, 145, 164, 0.2) !important;
-            box-shadow: var(--shadow-premium) !important;
-        }
-
-        .card-details-zone {
-            display: flex;
-            flex-direction: column;
-            gap: 10px !important; 
-            padding: 16px !important;
-        }
-
-        .card-product-title {
-            font-size: 16px !important;
-            font-weight: 800 !important;
-            color: var(--text-color);
-        }
-
-        .card-flavor-title {
-            font-size: 13px !important;
-            font-weight: 700 !important;
-            color: var(--primary); 
-            margin-top: -4px;
-        }
-
-        .card-product-description {
-            font-size: 12px !important;
-            color: #555 !important;
-            display: block !important;
-            overflow: visible !important;
-            height: auto !important;
-            line-height: 1.65 !important;
-            text-align: justify;
-            -webkit-line-clamp: unset !important;
-        }
-
-        .card-pricing-control-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-top: 1px solid var(--gray-border);
-            padding-top: 14px;
-            margin-top: 6px;
-        }
-
-        .premium-quantity-stepper {
-            display: flex;
-            align-items: center;
-            background-color: rgba(255, 145, 164, 0.06) !important;
-            border: 1px solid rgba(255, 145, 164, 0.15) !important;
-            border-radius: 24px;
-            padding: 3px;
-            gap: 10px;
-        }
-
-        .stepper-btn {
-            background-color: var(--primary) !important;
-            border: none !important;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 11px;
-            color: #FFFFFF !important;
-            transition: var(--transition-smooth);
-        }
-
-        .stepper-value {
-            font-size: 13.5px;
-            font-weight: 700;
-            min-width: 18px;
-            text-align: center;
-            color: var(--text-color);
-        }
-
-        .card-price-display {
-            font-size: 16px !important;
-            font-weight: 800;
-            color: var(--primary) !important; 
-        }
-
-        .card-price-display span {
-            font-size: 11.5px;
-            font-weight: 500;
-            margin-right: 2px;
-            color: #444;
-        }
-
-        .card-add-to-cart-btn {
-            width: 100%;
-            padding: 13px !important;
-            background-color: var(--primary) !important;
-            border: 1px solid var(--primary) !important;
-            border-radius: 16px !important;
-            font-size: 13px !important;
-            font-weight: 700 !important;
-            color: #FFFFFF !important;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 4px;
-            box-shadow: var(--shadow-premium);
-        }
-
-        .card-add-to-cart-btn:active {
-            background-color: var(--background) !important;
-            color: var(--primary) !important;
-            box-shadow: none;
-        }
-
-        .full-screen-showcase-card {
-            position: relative;
-            width: 100%;
-            height: 52vh;
-            background-color: var(--gray-light);
-            overflow: hidden;
-        }
-
-        .showcase-slider-wrapper {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        .showcase-img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0;
-            transition: opacity 0.8s ease-in-out;
-        }
-
-        .showcase-img.active-slide {
-            opacity: 1;
-            z-index: 2;
-        }
-
-        .showcase-pink-gradient-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(255, 145, 164, 0.12) 100%);
-            z-index: 3;
-            pointer-events: none;
-        }
-
-        .showcase-text-overlay {
-            position: absolute;
-            bottom: 25px;
-            right: 20px;
-            left: 20px;
-            z-index: 4;
-            text-align: center;
-        }
-
-        .showcase-highlight-text {
-            color: #FFFFFF;
-            font-size: 13.5px;
-            font-weight: 700;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .grid-actions-center {
-            display: flex;
-            justify-content: center;
-            margin-top: 25px;
-            padding: 0 20px;
-        }
-
-        .luxury-simulator-block {
-            width: 100%;
-            padding: 75px 20px; 
-            border-bottom: 1px solid var(--gray-border);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .block-cake-theme {
-            background: linear-gradient(180deg, rgba(255, 145, 164, 0.02) 0%, rgba(255,255,255,0) 100%);
-        }
-
-        .block-flower-theme {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 145, 164, 0.02) 100%);
-        }
-
-        .simulator-architecture-grid {
-            max-width: 1000px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 35px;
-        }
-
-        @media (min-width: 768px) {
-            .simulator-architecture-grid {
-                flex-direction: row;
-                align-items: center;
-                gap: 55px; 
-            }
-            .simulator-architecture-grid.layout-reverse {
-                flex-direction: row-reverse;
-            }
-            .simulator-block-info-side, .simulator-block-image-side {
-                width: 50%;
-                flex: 1;
-            }
-        }
-
-        .simulator-block-info-side {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            align-items: flex-start;
-        }
-
-        .block-crown-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 14px;
-            background-color: var(--background);
-            border: 1px solid rgba(255, 145, 164, 0.2);
-            color: var(--primary);
-            font-size: 11px;
-            font-weight: 700;
-            border-radius: 20px;
-            box-shadow: var(--shadow-premium);
-        }
-
-        .simulator-block-title {
-            font-size: 21px;
-            font-weight: 800;
-            color: var(--text-color);
-        }
-
-        .simulator-block-text {
-            font-size: 13.5px;
-            color: #333;
-            line-height: 1.75;
-            text-align: justify;
-        }
-
-        .block-action-btn {
-            margin-top: 10px;
-            padding: 13px 30px !important;
-        }
-
-        .simulator-block-image-side {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-
-        .luxury-image-frame {
-            position: relative;
-            width: 100%;
-            max-width: 350px;
-            padding-top: 85%;
-            border-radius: 24px;
-            background-color: var(--gray-light);
-            border: 1px solid rgba(255, 145, 164, 0.12);
-        }
-
-        .luxury-image-frame img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 23px;
-            z-index: 5;
-        }
-
-        .frame-layered-shadow {
-            position: absolute;
-            top: 14px;
-            right: -12px;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 145, 164, 0.05);
-            border-radius: 24px;
-            z-index: -1;
-            border: 1px dashed rgba(255, 145, 164, 0.15);
-        }
-
-        .brand-pride-video-section {
-            padding: 65px 0 0 0;
-            width: 100%;
-            background-color: var(--background);
-            border-bottom: 1px solid var(--gray-border);
-        }
-
-        .pride-text-container {
-            padding: 0 20px;
-            text-align: center;
-            margin-bottom: 35px;
-            max-width: 650px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .pride-badge-icon {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .pride-main-stat {
-            font-size: 21px;
-            font-weight: 800;
-            color: var(--text-color);
-            line-height: 1.4;
-            margin-bottom: 12px;
-        }
-
-        .pride-sub-stat {
-            font-size: 13.5px;
-            color: #333;
-            line-height: 1.65;
-        }
-    </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // سحب وتغذية البيانات الأساسية الحقيقية فقط لـ 8 منتجات رئيسية بالأسعار الممسوكة لملف الجيسون
-            const homepageProductsDataset = [
-                { id: 'despacito', title: 'الديسباسيتو', flavor: 'نوتيلا دارك', desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة.', price: 66, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
-                { id: 'qashtota', title: 'القشطوطة', flavor: 'نوتيلا وايت', desc: 'المزيج المثالي للطعم يجمع بين نعومة القشطوطة وروقان النوتيلا والمستخرجة فريش من مطبخنا لحفلاتكم.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
-                { id: 'donuts', title: 'الدوناتس', flavor: 'نوتيلا دارك', desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك نفس الطعم والجودة اللي بنقدمها.', price: 88, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
-                { id: 'cinabon', title: 'السينابون', flavor: 'وايت نوتيلا', desc: 'لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة وطعم ممسوك الإتقان.', price: 121, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
-                { id: 'happiness-cups', title: 'كبات السعادة', flavor: 'لوتس غنية', desc: 'أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة.', price: 61, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
-                { id: 'red-velvet', title: 'الريدڤيلڤت', flavor: '', desc: 'كيك ريدڤيلڤت بطبقات متوازنة وكريمة ناعمة معمول بخامات واضحة وجودة ثابتة في كل حجم.', price: 72, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
-                { id: 'mini-cake', title: 'الميني تورت', flavor: '', desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل مناسبة للهدايا والمناسبات الخاصة.', price: 154, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' },
-                { id: 'relax-box', title: 'بوكس الروقان', flavor: '', desc: 'تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية.', price: 550, img: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png' }
-            ];
-
-            function compileHomepageCard(product) {
-                const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.id === product.id);
-                const currentQty = cartItem ? cartItem.quantity : 1;
-                const initialPrice = product.price * currentQty;
-
-                const flavorHtml = product.flavor ? `<div class="card-flavor-title">${product.flavor}</div>` : '';
-
-                return `
-                    <div class="product-premium-card homepage-item-card" data-homepage-id="${product.id}" data-base-price="${product.price}">
-                        <div class="card-image-wrapper">
-                            <img src="${product.img}" alt="${product.title}" loading="lazy">
-                        </div>
-                        <div class="card-details-zone">
-                            <h4 class="card-product-title">${product.title}</h4>
-                            ${flavorHtml}
-                            <p class="card-product-description">${product.desc}</p>
-                            
-                            <div class="card-pricing-control-row">
-                                <div class="premium-quantity-stepper">
-                                    <button class="stepper-btn btn-home-plus"><i class="fa-solid fa-plus"></i></button>
-                                    <span class="stepper-value home-qty-val">${currentQty}</span>
-                                    <button class="stepper-btn btn-home-minus"><i class="fa-solid fa-minus"></i></button>
-                                </div>
-                                <div class="card-price-display"><span class="dynamic-home-price">${initialPrice}</span> <span>ج.م</span></div>
-                            </div>
-                            
-                            <button class="card-add-to-cart-btn home-add-to-cart-trigger">
-                                <i class="fa-solid fa-basket-shopping"></i> إضافة للسلة
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // 1. ضخ السلايدر الأفقي لـ 8 منتجات كاملة
-            const mostSellingSlider = document.getElementById('homepageMostSellingSlider');
-            if (mostSellingSlider) {
-                let sliderHtml = '';
-                homepageProductsDataset.forEach(prod => { sliderHtml += compileHomepageCard(prod); });
-                mostSellingSlider.innerHTML = sliderHtml;
-            }
-
-            // 2. ضخ مجموعات الجريد المزدوجة (4 و 4)
-            const mainGrid1 = document.getElementById('homepageGridGroup1');
-            const mainGrid2 = document.getElementById('homepageGridGroup2');
-            if (mainGrid1 && mainGrid2) {
-                let g1Html = '';
-                let g2Html = '';
-                homepageProductsDataset.slice(0, 4).forEach(prod => { g1Html += compileHomepageCard(prod); });
-                homepageProductsDataset.slice(4, 8).forEach(prod => { g2Html += compileHomepageCard(prod); });
-                mainGrid1.innerHTML = g1Html;
-                mainGrid2.innerHTML = g2Html;
-            }
-
-            // تفعيل زر استعرض المزيد من المنتجات
-            const loadMoreBtn = document.getElementById('loadMoreProductsBtn');
-            if (loadMoreBtn && mainGrid2) {
-                loadMoreBtn.addEventListener('click', () => {
-                    mainGrid2.style.display = 'grid';
-                    document.getElementById('loadMoreGroupZone').style.display = 'none';
-                    window.BoseSweetsEngine.showToast('تم استعراض كامل تشكيلة الواجهة الرئيسية بنجاح');
-                });
-            }
-
-            // محرك صور قسم عقد من الإتقان التلقائي كل 4 ثوانٍ
-            const showcaseImages = document.querySelectorAll('#excellenceImagesWrapper .showcase-img');
-            if (showcaseImages.length > 1) {
-                let currentSlideIdx = 0;
-                setInterval(() => {
-                    showcaseImages[currentSlideIdx].classList.remove('active-slide');
-                    currentSlideIdx = (currentSlideIdx + 1) % showcaseImages.length;
-                    showcaseImages[currentSlideIdx].classList.add('active-slide');
-                }, 4000); 
-            }
-
-            // 3. المحرك المالي اللحظي لحساب السعر التراكمي وتصفير العداد إلى (0) فور الشراء
-            document.addEventListener('click', (e) => {
-                const cardElement = e.target.closest('.homepage-item-card');
-                if (!cardElement) return;
-
-                const productId = cardElement.getAttribute('data-homepage-id');
-                const basePrice = parseFloat(cardElement.getAttribute('data-base-price')) || 0;
-                const matchedProduct = homepageProductsDataset.find(p => p.id === productId);
-                if (!matchedProduct) return;
-
-                const qtySpan = cardElement.querySelector('.home-qty-val');
-                const priceSpan = cardElement.querySelector('.dynamic-home-price');
-                let currentQty = parseInt(qtySpan.textContent) || 0;
-
-                // زيادة الكمية واحتساب ضرب السعر فوراً صراحة للعميل
-                if (e.target.closest('.btn-home-plus')) {
-                    currentQty++;
-                    qtySpan.textContent = currentQty;
-                    priceSpan.textContent = basePrice * currentQty;
-                    return;
-                }
-
-                // نقص الكمية واحتساب ضرب السعر فوراً صراحة للعميل
-                if (e.target.closest('.btn-home-minus')) {
-                    if (currentQty > 1) {
-                        currentQty--;
-                        qtySpan.textContent = currentQty;
-                        priceSpan.textContent = basePrice * currentQty;
-                    }
-                    return;
-                }
-
-                // معالجة التصفير التلقائي الفوري (0) وإرسال البيانات للسلة المركزية
-                if (e.target.closest('.home-add-to-cart-trigger')) {
-                    if (currentQty === 0) {
-                        window.BoseSweetsEngine.showToast('من فضلك حدد الكمية أولاً عن طريق زر (+)', 'warning');
-                        return;
-                    }
-
-                    const globalCartList = window.BoseSweetsEngine.state.cart;
-                    const existingItemIdx = globalCartList.findIndex(item => item.id === productId);
-
-                    if (existingItemIdx > -1) {
-                        globalCartList[existingItemIdx].quantity += currentQty;
-                    } else {
-                        globalCartList.push({
-                            id: productId,
-                            title: matchedProduct.title,
-                            flavor: matchedProduct.flavor || '',
-                            basePrice: basePrice,
-                            quantity: currentQuantity,
-                            customType: 'menu-item'
-                        });
-                    }
-
-                    window.BoseSweetsEngine.updateUIComponents();
-                    window.BoseSweetsEngine.showToast(`تمت إضافة ${matchedProduct.title} للسلة بنجاح`);
-
-                    // بروتوكول التصفير الملكي الفوري: العودة فوراً للرقم (0) والسعر (0 ج.م) لمنع التكرار وحماية العين
-                    qtySpan.textContent = 0;
-                    priceSpanNode = cardElement.querySelector('.dynamic-home-price');
-                    if (priceSpanNode) priceSpanNode.textContent = 0;
-                }
-            });
-
-            // مزامنة العدادات عند التحديث صامتاً لحماية الأداء
-            window.addEventListener('boseStateUpdated', () => {
-                document.querySelectorAll('.homepage-item-card').forEach(card => {
-                    const pId = card.getAttribute('data-homepage-id');
-                    const matched = homepageProductsDataset.find(p => p.id === pId);
-                    if (!matched) return;
-
-                    const cartItem = window.BoseSweetsEngine.state.cart.find(item => item.id === pId);
-                    const qtySpan = card.querySelector('.home-qty-val');
-                    const priceSpan = card.querySelector('.dynamic-home-price');
-
-                    if (qtySpan && priceSpan) {
-                        // الاحتفاظ برقم الكمية المحسوب حالياً ما لم يتم الشراء والتصفير التلقائي
-                        const qty = cartItem ? cartItem.quantity : parseInt(qtySpan.textContent);
-                        if (parseInt(qtySpan.textContent) !== 0) {
-                            qtySpan.textContent = qty;
-                            priceSpan.textContent = matched.price * qty;
-                        }
-                    }
-                });
-            });
-        });
-    </script>
+<div id="app">
+
+<!-- OVERLAY -->
+
+<div id="overlay"></div>
+
+<!-- SIDEBAR -->
+
+<aside id="sidebar">
+
+<div class="sidebar-header">
+
+<img
+src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+alt="حلويات بوسي"
+loading="eager"
+>
+
+<div>
+
+<h3>حلويات بوسي</h3>
+
+<p>صنعناها بحب لتهديها لمن تحب</p>
+
+</div>
+
+</div>
+
+<nav class="sidebar-nav">
+
+<a href="#home">الرئيسية</a>
+
+<a href="#menu-page">المنيو</a>
+
+<a href="#cake-preview">محاكي التورت</a>
+
+<a href="#flower-preview">محاكي الورد</a>
+
+<a href="#cart-page">السلة</a>
+
+</nav>
+
+<div class="sidebar-footer">
+
+<a
+href="https://wa.me/201097238441"
+target="_blank"
+rel="noopener"
+class="sidebar-whatsapp"
+>
+
+خدمة العملاء
+
+</a>
+
+</div>
+
+</aside>
+
+<!-- SEARCH DRAWER -->
+
+<div id="searchDrawer">
+
+<div class="search-head">
+
+<h3>البحث</h3>
+
+<button id="closeSearch">✕</button>
+
+</div>
+
+<div class="search-box">
+
+<input
+type="text"
+id="globalSearch"
+placeholder="ابحث عن منتج..."
+>
+
+</div>
+
+<div id="searchResults"></div>
+
+</div>
+
+<!-- CART DRAWER -->
+
+<div id="cartDrawer">
+
+<div class="cart-head">
+
+<h3>سلة المشتريات</h3>
+
+<button id="closeCart">✕</button>
+
+</div>
+
+<div id="cartItems">
+
+<div class="empty-cart">
+
+السلة فارغة حالياً
+
+</div>
+
+</div>
+
+<div class="cart-footer">
+
+<div class="cart-total-row">
+
+<span>الإجمالي</span>
+
+<strong id="cartTotal">
+
+0 ج.م
+
+</strong>
+
+</div>
+
+<button
+class="btn btn-primary cart-checkout-btn"
+>
+
+إتمام الطلب
+
+</button>
+
+</div>
+
+</div>
+
+<!-- HEADER -->
+
+<header class="main-header">
+
+<div class="container">
+
+<div class="header-content">
+
+<button
+class="header-icon"
+id="openSidebar"
+aria-label="القائمة"
+>
+
+☰
+
+</button>
+
+<div class="brand-area">
+
+<img
+src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+alt="حلويات بوسي"
+>
+
+<div>
+
+<h1>
+
+حلويات بوسي
+
+</h1>
+
+<p>
+
+صنعناها بحب لتهديها لمن تحب
+
+</p>
+
+</div>
+
+</div>
+
+<div class="header-actions">
+
+<button
+class="header-icon"
+id="openSearch"
+aria-label="البحث"
+>
+
+⌕
+
+</button>
+
+<button
+class="header-icon cart-trigger"
+id="openCart"
+aria-label="السلة"
+>
+
+🛒
+
+<span id="cartCount">
+
+0
+
+</span>
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</header>
+
+<!-- HOME PAGE -->
+
+<main id="home">
+
+<!-- HERO -->
+
+<section class="hero-section section">
+
+<div class="container">
+
+<div class="hero-card">
+
+<h2>
+
+عقد من التميز في صناعة الحلويات
+
+</h2>
+
+<p>
+
+من أكتر من 10 سنين وإحنا بنشتغل على حاجة واحدة بس...
+إن كل منتج يخرج بنفس الجودة والطعم والشكل اللي يخلّي هديتك أو مناسبتك تفضل في الذاكرة.
+
+</p>
+
+<a
+href="#menu-page"
+class="btn btn-primary hero-btn"
+>
+
+اطلب الآن
+
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<style>
+
+#overlay{
+
+position:fixed;
+inset:0;
+
+background:rgba(0,0,0,.45);
+
+opacity:0;
+visibility:hidden;
+
+transition:.25s;
+
+z-index:500;
+
+}
+
+#overlay.active{
+
+opacity:1;
+visibility:visible;
+
+}
+
+#sidebar{
+
+position:fixed;
+
+top:0;
+right:-340px;
+
+width:320px;
+height:100vh;
+
+background:#fff;
+
+z-index:700;
+
+display:flex;
+flex-direction:column;
+
+transition:.35s ease;
+
+box-shadow:
+-20px 0 60px rgba(0,0,0,.12);
+
+}
+
+#sidebar.active{
+right:0;
+}
+
+.sidebar-header{
+
+padding:24px;
+
+display:flex;
+gap:14px;
+align-items:center;
+
+border-bottom:1px solid #f1f1f1;
+
+}
+
+.sidebar-header img{
+
+width:60px;
+height:60px;
+
+object-fit:contain;
+
+}
+
+.sidebar-header h3{
+
+font-size:18px;
+font-weight:800;
+
+}
+
+.sidebar-header p{
+
+font-size:13px;
+
+color:#777;
+
+margin-top:6px;
+
+}
+
+.sidebar-nav{
+
+display:flex;
+flex-direction:column;
+
+padding:20px;
+
+gap:8px;
+
+}
+
+.sidebar-nav a{
+
+padding:14px 18px;
+
+border-radius:999px;
+
+background:#fff4f6;
+
+font-weight:600;
+
+}
+
+.sidebar-footer{
+
+margin-top:auto;
+
+padding:20px;
+
+}
+
+.sidebar-whatsapp{
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+height:54px;
+
+background:#FF91A4;
+
+color:#fff;
+
+border-radius:999px;
+
+font-weight:700;
+
+}
+
+.main-header{
+
+position:sticky;
+
+top:0;
+
+z-index:400;
+
+background:
+rgba(255,255,255,.95);
+
+backdrop-filter:
+blur(18px);
+
+border-bottom:
+1px solid #f1f1f1;
+
+}
+
+.header-content{
+
+height:82px;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+gap:16px;
+
+}
+
+.brand-area{
+
+display:flex;
+align-items:center;
+
+gap:12px;
+
+}
+
+.brand-area img{
+
+width:56px;
+height:56px;
+
+object-fit:contain;
+
+}
+
+.brand-area h1{
+
+font-size:18px;
+font-weight:800;
+
+}
+
+.brand-area p{
+
+font-size:12px;
+color:#777;
+
+margin-top:4px;
+
+}
+
+.header-actions{
+
+display:flex;
+align-items:center;
+
+gap:10px;
+
+}
+
+.header-icon{
+
+width:48px;
+height:48px;
+
+border-radius:50%;
+
+cursor:pointer;
+
+background:#fff4f6;
+
+font-size:18px;
+
+position:relative;
+
+}
+
+.cart-trigger span{
+
+position:absolute;
+
+top:-4px;
+left:-4px;
+
+width:22px;
+height:22px;
+
+border-radius:50%;
+
+background:#FF91A4;
+
+color:#fff;
+
+font-size:12px;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-weight:700;
+
+}
+
+#searchDrawer,
+#cartDrawer{
+
+position:fixed;
+
+top:0;
+left:-100%;
+
+width:min(100%,420px);
+height:100vh;
+
+background:#fff;
+
+z-index:700;
+
+transition:.35s ease;
+
+display:flex;
+flex-direction:column;
+
+}
+
+#searchDrawer.active,
+#cartDrawer.active{
+
+left:0;
+
+}
+
+.search-head,
+.cart-head{
+
+height:80px;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:0 20px;
+
+border-bottom:1px solid #f1f1f1;
+
+}
+
+.search-box{
+
+padding:20px;
+
+}
+
+.search-box input{
+
+width:100%;
+
+height:58px;
+
+border-radius:999px;
+
+padding:0 22px;
+
+background:#fff4f6;
+
+}
+
+.hero-section{
+
+padding-top:50px;
+
+}
+
+.hero-card{
+
+text-align:center;
+
+max-width:900px;
+
+margin:auto;
+
+}
+
+.hero-card h2{
+
+font-size:clamp(34px,5vw,70px);
+
+line-height:1.25;
+
+font-weight:800;
+
+margin-bottom:22px;
+
+}
+
+.hero-card p{
+
+font-size:17px;
+
+line-height:2;
+
+color:#666;
+
+margin-bottom:30px;
+
+}
+
+.hero-btn{
+
+width:260px;
+
+height:62px;
+
+margin:auto;
+
+}
+
+.empty-cart{
+
+padding:40px 20px;
+
+text-align:center;
+
+color:#777;
+
+}
+
+.cart-footer{
+
+margin-top:auto;
+
+padding:20px;
+
+border-top:1px solid #f1f1f1;
+
+}
+
+.cart-total-row{
+
+display:flex;
+justify-content:space-between;
+
+margin-bottom:20px;
+
+font-size:18px;
+font-weight:700;
+
+}
+
+.cart-checkout-btn{
+
+width:100%;
+height:58px;
+
+}
+
+</style>
+
+<script>
+
+const overlay =
+document.getElementById('overlay');
+
+const sidebar =
+document.getElementById('sidebar');
+
+const searchDrawer =
+document.getElementById('searchDrawer');
+
+const cartDrawer =
+document.getElementById('cartDrawer');
+
+document
+.getElementById('openSidebar')
+.onclick=()=>{
+
+sidebar.classList.add('active');
+overlay.classList.add('active');
+
+};
+
+document
+.getElementById('openSearch')
+.onclick=()=>{
+
+searchDrawer.classList.add('active');
+overlay.classList.add('active');
+
+};
+
+document
+.getElementById('openCart')
+.onclick=()=>{
+
+cartDrawer.classList.add('active');
+overlay.classList.add('active');
+
+};
+
+document
+.getElementById('closeSearch')
+.onclick=()=>{
+
+searchDrawer.classList.remove('active');
+overlay.classList.remove('active');
+
+};
+
+document
+.getElementById('closeCart')
+.onclick=()=>{
+
+cartDrawer.classList.remove('active');
+overlay.classList.remove('active');
+
+};
+
+overlay.onclick=()=>{
+
+sidebar.classList.remove('active');
+
+searchDrawer.classList.remove('active');
+
+cartDrawer.classList.remove('active');
+
+overlay.classList.remove('active');
+
+};
+
+</script>
