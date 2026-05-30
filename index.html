@@ -433,7 +433,6 @@
             color: var(--primary);
         }
 
-        /* إصلاح ثغرة بتر أو حذف النص - إظهار الوصف كاملاً بنعومة للعميل */
         .card-item-desc {
             font-size: 0.85rem;
             color: var(--gray-dark);
@@ -614,7 +613,6 @@
             height: 24px;
         }
 
-        /* الألوان والشعارات الأصلية والكاملة الحصرية دون تعديل */
         .social-icon-anchor.facebook { background-color: #1877F2; color: #FFFFFF; }
         .social-icon-anchor.instagram { background-color: #FFFFFF; color: #E1306C; border: 1px solid #E1306C; }
         .social-icon-anchor.tiktok { background-color: #000000; color: #FFFFFF; }
@@ -957,4 +955,21 @@
             if (slides.length > 0) {
                 let currentSlideIndex = 0;
                 setInterval(() => {
-                    slides[currentSlideIndex].classList.
+                    slides[currentSlideIndex].classList.remove('active');
+                    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+                    slides[currentSlideIndex].classList.add('active');
+                }, 4000);
+            }
+        })();
+
+        function addToCartDirect(productId, sizeId, variantId, price, name) {
+            console.log(`تم إضافة المنتج: ${name} بسعر ${price} ج.م بنجاح إلى سلة المشتريات المخصصة.`);
+            const badge = document.getElementById('cartCount');
+            if (badge) {
+                let currentCount = parseInt(badge.innerText) || 0;
+                badge.innerText = currentCount + 1;
+            }
+        }
+    </script>
+</body>
+</html>
