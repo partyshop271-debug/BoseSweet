@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-    <meta name="description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل. استمتع بألذ الحلويات والتورت المصنوعة بحب في الفرافرة.">
+    <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي التجارية. استمتع بألذ الحلويات والتورت المصنوعة بحب وخامات طبيعية 100% في الفرافرة.">
     <meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, حلويات بوسي, الفرافرة, الكفاح, الوادي الجديد">
     <meta name="robots" content="index, follow">
     
@@ -15,31 +15,23 @@
     <meta property="og:description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
 
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://bosesweets.com">
-    <meta property="twitter:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta property="twitter:description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.">
-    <meta property="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* نظام الهوية البصرية الصارم لـ حلويات بوسي */
         :root {
             --primary: #FF91A4;
-            --primary-alpha: rgba(255, 145, 164, 0.15);
-            --primary-shadow: rgba(255, 145, 164, 0.35);
+            --primary-shadow: rgba(255, 145, 164, 0.25);
+            --primary-shadow-strong: rgba(255, 145, 164, 0.45);
             --text-color: #000000;
             --bg-color: #FFFFFF;
-            --gray-light: #FAFAFA;
-            --gray-dark: #2B2B2B;
+            --gray-light: #F9F9F9;
+            --gray-dark: #333333;
             --font-main: 'Alexandria', sans-serif;
             --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* الإعدادات الأساسية ومنع التكدس */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -62,42 +54,26 @@
             display: block;
         }
 
-        /* نظام الصفحات المتعددة الافتراضي فائق السرعة */
-        .app-page {
-            display: none;
-            width: 100%;
-            animation: fadeInPage 0.4s var(--transition-smooth) forwards;
-        }
-
-        .app-page.active-page {
-            display: block;
-        }
-
-        @keyframes fadeInPage {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 1. شريط علوي متحرك انسيابي هادئ (تم تقليل السرعة بنسبة 30%) */
+        /* شريط علوي متحرك - تم تقليل السرعة بنسبة 30% لراحة وثبات الرؤية */
         .ticker-wrap {
             width: 100%;
             background-color: var(--primary);
             overflow: hidden;
             white-space: nowrap;
-            padding: 11px 0;
-            box-shadow: 0 2px 10px var(--primary-shadow);
+            padding: 10px 0;
+            box-shadow: 0 4px 12px var(--primary-shadow);
         }
 
         .ticker-content {
             display: inline-block;
-            animation: ticker 35s linear infinite; /* تم تعديل الزمن لتقليل السرعة */
+            animation: ticker 45s linear infinite;
             padding-right: 100%;
         }
 
         .ticker-item {
             display: inline-block;
-            padding: 0 2.5rem;
-            font-size: 0.85rem;
+            padding: 0 2rem;
+            font-size: 0.9rem;
             color: var(--bg-color);
             font-weight: 600;
         }
@@ -107,10 +83,10 @@
             100% { transform: translate3d(-100%, 0, 0); }
         }
 
-        /* 2. الهيدر المطور بلمسات الهوية البصرية */
+        /* هيدر متطور مع توزيع الظلال الوردية الفاخرة */
         .main-header {
             background-color: var(--bg-color);
-            border-bottom: 1px solid var(--primary-alpha);
+            border-bottom: 2px solid var(--primary);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -118,23 +94,23 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.05);
+            box-shadow: 0 4px 15px var(--primary-shadow);
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 15px;
         }
 
         .menu-toggle {
             background: none;
             border: none;
             cursor: pointer;
-            padding: 6px;
+            padding: 5px;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
         }
 
         .menu-toggle span {
@@ -150,22 +126,17 @@
         }
 
         .brand-name {
-            font-size: 1.25rem;
-            font-weight: 700; /* مقيد بحد أقصى 700 */
+            font-size: 1.3rem;
+            font-weight: 700;
             color: var(--text-color);
             text-decoration: none;
-            letter-spacing: -0.3px;
-            transition: color 0.3s ease;
-        }
-
-        .brand-name:hover {
-            color: var(--primary);
+            letter-spacing: -0.5px;
         }
 
         .header-left {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 18px;
         }
 
         .icon-btn {
@@ -176,12 +147,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 6px;
+            padding: 5px;
         }
 
         .icon-btn svg {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             fill: none;
             stroke: var(--text-color);
             stroke-width: 2;
@@ -190,13 +161,13 @@
 
         .icon-btn:hover svg {
             stroke: var(--primary);
-            transform: scale(1.05);
+            filter: drop-shadow(0 2px 6px var(--primary-shadow-strong));
         }
 
         .cart-badge {
             position: absolute;
-            top: -3px;
-            right: -3px;
+            top: -4px;
+            right: -4px;
             background-color: var(--primary);
             color: var(--bg-color);
             font-size: 0.7rem;
@@ -207,24 +178,24 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px var(--primary-shadow);
+            box-shadow: 0 2px 6px var(--primary-shadow-strong);
         }
 
-        /* القائمة الجانبية الأنيقة بلمسات بمبي */
+        /* قائمة جانبية تفاعلية مبرزة بظلال الهوية المعتمدة */
         .sidebar {
             position: fixed;
             top: 0;
-            right: -310px;
+            right: -300px;
             width: 300px;
             height: 100%;
             background-color: var(--bg-color);
-            box-shadow: -8px 0 30px rgba(255, 145, 164, 0.1);
+            box-shadow: -8px 0 30px var(--primary-shadow-strong);
             z-index: 2000;
             transition: right 0.4s var(--transition-smooth);
-            padding: 35px 24px;
+            padding: 30px 24px;
             display: flex;
             flex-direction: column;
-            border-left: 1px solid var(--primary-alpha);
+            border-left: 2px solid var(--primary);
         }
 
         .sidebar.active {
@@ -235,8 +206,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 45px;
-            border-bottom: 1px solid var(--primary-alpha);
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--primary-shadow);
             padding-bottom: 15px;
         }
 
@@ -244,11 +215,6 @@
             background: none;
             border: none;
             cursor: pointer;
-            transition: transform 0.3s ease;
-        }
-
-        .close-sidebar:hover {
-            transform: rotate(90deg);
         }
 
         .close-sidebar svg {
@@ -266,11 +232,11 @@
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 20px;
         }
 
         .sidebar-link {
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--text-color);
             text-decoration: none;
@@ -278,12 +244,14 @@
             display: block;
             padding: 10px 12px;
             border-radius: 8px;
+            border-bottom: 1px solid rgba(0,0,0,0.02);
         }
 
-        .sidebar-link:hover, .sidebar-link.active-link {
+        .sidebar-link:hover, .sidebar-link.active {
             color: var(--primary);
-            background-color: var(--primary-alpha);
+            background-color: var(--gray-light);
             padding-right: 18px;
+            box-shadow: inset 4px 0 0 var(--primary);
         }
 
         .overlay {
@@ -292,106 +260,89 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.25);
+            background-color: rgba(0,0,0,0.25);
             z-index: 1500;
             display: none;
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(4px);
         }
 
         .overlay.active {
             display: block;
         }
 
-        /* 3. قسم البطل (Hero Section) وإبراز التميز البمبي */
+        /* هندسة وتنسيق العناوين في منتصف الصفحة تماماً */
+        .section-title-center {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 12px;
+            padding: 0 20px;
+        }
+
+        .section-title-center span.highlight {
+            color: var(--primary);
+            text-shadow: 0 2px 8px var(--primary-shadow);
+        }
+
+        .section-desc-center {
+            font-size: 0.95rem;
+            color: var(--gray-dark);
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 35px auto;
+            padding: 0 20px;
+            font-weight: 400;
+        }
+
+        /* قسم البطل */
         .hero-section {
             padding: 65px 20px 45px 20px;
             text-align: center;
             background-color: var(--bg-color);
         }
 
-        .hero-title {
-            font-size: 1.95rem;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 18px;
-            line-height: 1.35;
-        }
-
-        .hero-title span.highlight {
-            color: var(--primary);
-            position: relative;
-        }
-
-        .hero-desc {
-            font-size: 0.95rem;
-            color: var(--gray-dark);
-            max-width: 620px;
-            margin: 0 auto 32px auto;
-            font-weight: 400;
-        }
-
-        /* زر بيضاوي ممتد ومطور بظلال بمبي وثقة تامة */
         .btn-primary-oval {
             display: inline-block;
             background-color: var(--primary);
             color: var(--bg-color);
             text-decoration: none;
-            padding: 13px 40px;
+            padding: 12px 40px;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s var(--transition-smooth);
+            font-size: 1rem;
+            transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth);
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 14px var(--primary-shadow);
+            box-shadow: 0 6px 18px var(--primary-shadow-strong);
         }
 
         .btn-primary-oval:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--primary-shadow);
-            background-color: #ff7d93;
+            box-shadow: 0 8px 24px var(--primary-shadow-strong);
         }
 
         .video-hook-container {
             width: 100%;
             margin-top: 45px;
             overflow: hidden;
-            background-color: var(--gray-light);
-            border: 1px solid var(--primary-alpha);
-            box-shadow: 0 10px 30px rgba(255, 145, 164, 0.04);
+            border: 2px solid var(--primary-shadow);
+            box-shadow: 0 10px 30px var(--primary-shadow);
         }
 
         .video-hook {
             width: 100%;
+            width: -webkit-fill-available;
             display: block;
             object-fit: cover;
             aspect-ratio: 16/9;
         }
 
-        /* 4. قسم الأكثر مبيعاً بكروت ذات بوردر بمبي ناعم وشفافية مطلقة */
+        /* كروت الأكثر مبيعاً مع إدراج النكهات وبوردر بمبي ناعم */
         .most-selling-section {
             padding: 45px 0;
             background-color: var(--bg-color);
             overflow: hidden;
-        }
-
-        .section-title-center {
-            font-size: 1.55rem;
-            font-weight: 700;
-            color: var(--text-color);
-            text-align: center;
-            margin-bottom: 28px;
-            padding: 0 20px;
-        }
-
-        .section-desc-center {
-            font-size: 0.9rem;
-            color: var(--gray-dark);
-            text-align: center;
-            max-width: 650px;
-            margin: -18px auto 32px auto;
-            padding: 0 20px;
-            font-weight: 400;
         }
 
         .slider-outer-container {
@@ -409,29 +360,29 @@
         .slider-track {
             display: flex;
             gap: 22px;
-            padding-bottom: 20px;
+            padding-bottom: 18px;
             width: max-content;
         }
 
-        /* تصميم الكارت الاحترافي ببوردر بمبي ناعم ورابط مدمج داخلي */
+        /* شبكة روابط تفاعلية مدمجة عبر الكروت بالكامل لزيادة المبيعات */
         .slider-card-item {
-            width: 265px;
+            width: 270px;
             background-color: var(--bg-color);
-            border: 1px solid rgba(255, 145, 164, 0.25); /* البوردر البمبي الناعم المفروض */
+            border: 2px solid rgba(255, 145, 164, 0.3);
             border-radius: 14px;
             padding: 18px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             cursor: pointer;
-            transition: all 0.3s var(--transition-smooth);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+            transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth), border-color 0.3s var(--transition-smooth);
+            box-shadow: 0 6px 16px var(--primary-shadow);
         }
 
         .slider-card-item:hover {
             transform: translateY(-5px);
             border-color: var(--primary);
-            box-shadow: 0 8px 24px rgba(255, 145, 164, 0.15);
+            box-shadow: 0 10px 25px var(--primary-shadow-strong);
         }
 
         .card-img-wrapper {
@@ -441,14 +392,14 @@
             overflow: hidden;
             background-color: var(--gray-light);
             margin-bottom: 14px;
-            border: 1px solid rgba(255, 145, 164, 0.05);
+            border: 1px solid rgba(255, 145, 164, 0.15);
         }
 
         .card-img-wrapper img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.6s var(--transition-smooth);
+            transition: transform 0.5s var(--transition-smooth);
         }
 
         .slider-card-item:hover .card-img-wrapper img {
@@ -456,22 +407,17 @@
         }
 
         .card-item-title {
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--text-color);
             margin-bottom: 8px;
-            transition: color 0.3s ease;
-        }
-
-        .slider-card-item:hover .card-item-title {
-            color: var(--primary);
         }
 
         .card-item-desc {
             font-size: 0.85rem;
             color: var(--gray-dark);
             font-weight: 400;
-            margin-bottom: 16px;
+            margin-bottom: 15px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -484,36 +430,36 @@
             align-items: center;
             justify-content: space-between;
             margin-top: auto;
-            border-top: 1px solid var(--primary-alpha);
+            border-top: 1px solid rgba(255, 145, 164, 0.2);
             padding-top: 14px;
         }
 
         .card-item-price {
-            font-size: 1.05rem;
+            font-size: 1.15rem;
             font-weight: 700;
             color: var(--text-color);
         }
 
-        /* الأزرار المحدثة بلمسة بمبي في الخلفية والظلال */
         .btn-card-action {
             background-color: var(--bg-color);
             color: var(--text-color);
-            border: 1px solid var(--primary);
-            padding: 7px 18px;
+            border: 1.5px solid var(--text-color);
+            padding: 6px 18px;
             border-radius: 50px;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s var(--transition-smooth);
+            transition: var(--transition-smooth);
         }
 
         .btn-card-action:hover {
             background-color: var(--primary);
             color: var(--bg-color);
-            box-shadow: 0 4px 10px var(--primary-shadow);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px var(--primary-shadow);
         }
 
-        /* 5. قسم عقد من الإتقان بصور متغيرة */
+        /* قسم عقد من الإتقان */
         .mastery-section {
             padding: 45px 0;
             background-color: var(--bg-color);
@@ -521,12 +467,13 @@
 
         .mastery-full-card {
             width: 100%;
-            height: 380px;
+            height: 390px;
             position: relative;
             overflow: hidden;
             background-color: var(--gray-light);
-            border-top: 1px solid var(--primary-alpha);
-            border-bottom: 1px solid var(--primary-alpha);
+            border-top: 2px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
+            box-shadow: 0 8px 24px var(--primary-shadow);
         }
 
         .mastery-slideshow-container {
@@ -565,131 +512,121 @@
 
         .mastery-card-overlay-text {
             position: absolute;
-            bottom: 35px;
-            right: 25px;
+            bottom: 30px;
+            right: 30px;
             z-index: 4;
             color: var(--bg-color);
         }
 
         .mastery-card-overlay-text h3 {
-            font-size: 1.35rem;
+            font-size: 1.4rem;
             font-weight: 700;
-            letter-spacing: -0.3px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
 
-        /* 6. الفوتر المطور الشامل لكافة السياسات والروابط الاجتماعية */
+        /* فوتر مركزي مستقل كلياً بالمسافات التنفسية والأيقونات الملونة الأصلية */
         .main-footer {
             background-color: var(--gray-light);
-            border-top: 1px solid var(--primary-alpha);
-            padding: 50px 20px 30px 20px;
+            border-top: 2px solid var(--primary);
+            padding: 55px 20px 35px 20px;
+            text-align: center;
         }
 
-        .footer-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 35px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .footer-brand-info h4 {
-            font-size: 1.2rem;
+        .footer-brand {
+            font-size: 1.6rem;
             font-weight: 700;
-            margin-bottom: 12px;
             color: var(--text-color);
+            margin-bottom: 14px;
         }
 
-        .footer-brand-info p {
-            font-size: 0.9rem;
-            color: var(--gray-dark);
-            max-width: 400px;
-        }
-
-        .footer-links-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .footer-links-group h5 {
+        .footer-about {
             font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-color);
-            margin-bottom: 4px;
-            border-right: 3px solid var(--primary);
-            padding-right: 8px;
-        }
-
-        .footer-link {
-            font-size: 0.85rem;
             color: var(--gray-dark);
+            max-width: 520px;
+            margin: 0 auto 28px auto;
+            font-weight: 400;
+        }
+
+        .footer-links-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 35px;
+        }
+
+        .footer-nav-link {
+            font-size: 0.95rem;
+            color: var(--text-color);
             text-decoration: none;
-            transition: all 0.3s ease;
-            display: inline-block;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+            padding: 4px 8px;
         }
 
-        .footer-link:hover {
+        .footer-nav-link:hover {
             color: var(--primary);
-            padding-right: 4px;
+            text-shadow: 0 2px 4px var(--primary-shadow);
         }
 
+        /* أيقونات شبكات التواصل الاجتماعي الرسمية بألوانها الحقيقية والتزام تام بالتوسط */
         .footer-social-row {
             display: flex;
-            gap: 14px;
-            margin-top: 8px;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 35px;
         }
 
-        .social-icon-btn {
-            background-color: var(--bg-color);
-            border: 1px solid var(--primary-alpha);
-            width: 40px;
-            height: 40px;
+        .social-icon-anchor {
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s var(--transition-smooth);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            background-color: var(--bg-color);
+            border: 1px solid rgba(0,0,0,0.03);
         }
 
-        .social-icon-btn:hover {
-            background-color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--primary-shadow);
+        .social-icon-anchor svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
         }
 
-        .social-icon-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: var(--text-color);
-            transition: fill 0.3s ease;
+        .social-icon-anchor.facebook { color: #1877F2; }
+        .social-icon-anchor.instagram { color: #E1306C; }
+        .social-icon-anchor.tiktok { color: #000000; }
+        .social-icon-anchor.whatsapp { color: #25D366; }
+
+        .social-icon-anchor:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
         }
 
-        .social-icon-btn:hover svg {
-            fill: var(--bg-color);
+        .footer-copyright {
+            font-size: 0.85rem;
+            color: var(--gray-dark);
+            border-top: 1px solid rgba(255, 145, 164, 0.15);
+            padding-top: 22px;
+            font-weight: 400;
         }
 
-        .footer-bottom {
-            margin-top: 40px;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
-            padding-top: 20px;
-            text-align: center;
-            font-size: 0.8rem;
-            color: #666666;
+        /* حاويات العرض للصفحات المتعددة المستقلة بالكامل */
+        .app-view-container {
+            display: none;
+        }
+        .app-view-container.view-active {
+            display: block;
         }
 
-        /* الشاشات الكبيرة للكمبيوتر والتابلت */
         @media (min-width: 769px) {
-            .hero-title { font-size: 2.8rem; }
-            .section-title-center { font-size: 1.9rem; }
+            .section-title-center { font-size: 2.1rem; }
             .slider-outer-container { padding: 0 40px; }
-            .mastery-full-card { height: 480px; }
-            .mastery-card-overlay-text h3 { font-size: 1.7rem; }
-            .footer-grid {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: flex-start;
-            }
+            .mastery-full-card { height: 520px; }
+            .mastery-card-overlay-text h3 { font-size: 1.9rem; }
         }
     </style>
 </head>
@@ -697,28 +634,27 @@
 
     <div class="ticker-wrap">
         <div class="ticker-content">
-            <span class="ticker-item">✨ حلويات بوسي - عقد من التميز في صناعة الحلويات الفاخرة</span>
-            <span class="ticker-item">🍓 خامات طبيعية ممتازة ومضمونة 100%</span>
-            <span class="ticker-item">🚚 توصيل سريع لكافة مناطق الفرافرة والكفاح</span>
-            <span class="ticker-item">✨ صنعت بحب لتهديها لمن تحب</span>
+            <span class="ticker-item">✨ حلويات بوسي - عشر سنوات من الاتقان الحرفي المتميز الفاخر</span>
+            <span class="ticker-item">🍓 خامات طبيعية ممتازة ومضمونة 100% لتشرفك أمام ضيوفك وتبيض وجهك</span>
+            <span class="ticker-item">🚚 توصيل سريع وآمن لكافة مناطق الفرافرة، الكفاح، والقرى السعيدة المجاورة</span>
         </div>
     </div>
 
     <header class="main-header">
         <div class="header-right">
-            <button class="menu-toggle" id="menuToggle" aria-label="قائمة التنقل">
+            <button class="menu-toggle" id="menuToggle" aria-label="تصفح المنيو">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-            <a href="javascript:void(0)" onclick="navigateToPage('home-page')" class="brand-name">حلويات بوسي</a>
+            <a href="#" class="brand-name" onclick="navigateToPage('home')">hlwyat bwsy</a>
         </div>
         
         <div class="header-left">
-            <button class="icon-btn" id="searchBtn" aria-label="البحث">
+            <button class="icon-btn" aria-label="البحث" onclick="navigateToPage('menu')">
                 <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </button>
-            <button class="icon-btn" id="cartBtn" onclick="navigateToPage('cart-page')" aria-label="سلة المشتريات">
+            <button class="icon-btn" aria-label="سلة المشتريات" onclick="navigateToPage('cart')">
                 <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
                 <span class="cart-badge" id="cartCount">0</span>
             </button>
@@ -734,126 +670,79 @@
             </button>
         </div>
         <nav class="sidebar-menu">
-            <a href="javascript:void(0)" onclick="navigateToPage('home-page')" class="sidebar-link active-link" id="link-home-page">الرئيسية</a>
-            <a href="javascript:void(0)" onclick="navigateToPage('menu-page')" class="sidebar-link" id="link-menu-page">المنيو</a>
-            <a href="javascript:void(0)" onclick="navigateToPage('cart-page')" class="sidebar-link" id="link-cart-page">السلة</a>
-            <a href="javascript:void(0)" onclick="navigateToPage('cake-builder-page')" class="sidebar-link" id="link-cake-builder-page">محاكي التورت</a>
-            <a href="javascript:void(0)" onclick="navigateToPage('flower-builder-page')" class="sidebar-link" id="link-flower-builder-page">محاكي الورد</a>
+            <a href="#" class="sidebar-link" id="nav-home" onclick="navigateToPage('home')">الرئيسية</a>
+            <a href="#" class="sidebar-link" id="nav-menu" onclick="navigateToPage('menu')">المنيو</a>
+            <a href="#" class="sidebar-link" id="nav-cart" onclick="navigateToPage('cart')">السلة</a>
+            <a href="#" class="sidebar-link" id="nav-cake" onclick="navigateToPage('cake-builder')">محاكي التورت</a>
+            <a href="#" class="sidebar-link" id="nav-flower" onclick="navigateToPage('flower-builder')">محاكي الورد</a>
         </nav>
     </aside>
 
-
-    <main id="home-page" class="app-page active-page">
+    <main id="view-home" class="app-view-container view-active">
         <section class="hero-section">
-            <h1 class="hero-title">عقد من <span class="highlight">التميز</span> في صناعة الحلويات</h1>
-            <p class="hero-desc">نصنع لك ذكريات لا تُنسى عبر قطع فنية تجمع بين المذاق الغني والاتقان الحرفي. خامات طبيعية بالكامل لتستمتع وتشارك من تحب الجودة الحقيقية.</p>
-            <button class="btn-primary-oval" onclick="navigateToPage('menu-page')">اطلب الآن</button>
+            <h1 class="section-title-center">عقد من <span class="highlight">التميز</span> في صناعة الحلويات</h1>
+            <p class="section-desc-center">نصنع لك ذكريات لا تُنسى عبر قطع فنية تجمع بين المذاق الغني والاتقان الحرفي الأصيل. خامات طبيعية بالكامل لتستمتع وتشارك من تحب الجودة الفاخرة.</p>
+            <button class="btn-primary-oval" onclick="navigateToPage('menu')">اطلب الآن</button>
             
-            <div class="video-hook-container" onclick="navigateToPage('menu-page')">
+            <div class="video-hook-container" onclick="navigateToPage('menu')" style="cursor:pointer;">
                 <video class="video-hook" autoplay loop muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
                     <source src="https://res.cloudinary.com/dyx4w0dr1/video/upload/v1740824900/hero_bg_compressed.mp4" type="video/mp4">
+                    تصفح موقعنا للاستمتاع بأحدث عروض المنتجات الفاخرة.
                 </video>
             </div>
         </section>
 
         <section class="most-selling-section" id="mostSelling">
             <h2 class="section-title-center">الأكثر مبيعاً من مطبخنا</h2>
+            <p class="section-desc-center">مجموعة حصرية من الحلويات الفاخرة المعدة يومياً بأعلى درجات الاتقان الحرفي الفاخر والمظهر الجذاب.</p>
             
             <div class="slider-outer-container">
                 <div class="slider-track" id="mostSellingSlider">
-                    <div class="slider-card-item" onclick="handleCardRouting('despacito')">
+                    <div class="slider-card-item" onclick="handleCardNavigation('despacito')">
                         <div class="card-img-wrapper">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ديسباسيتو مثلث نوتيلا دارك" loading="lazy">
+                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ديسباسيتو نوتيلا دارك" loading="lazy">
                         </div>
-                        <h3 class="card-item-title">ديسباسيتو مثلث نوتيلا دارك</h3>
-                        <p class="card-item-desc">طبقات متوازنة من كيك الفادج والموس الغني مع نوتيلا دارك وقوام مريح.</p>
-                        <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <h3 class="card-item-title">ديسباسيتو نوتيلا دارك</h3>
+                        <p class="card-item-desc">طبقات متوازنة من كيك الفادج والموس الغني مع نوتيلا دارك وقوام مريح من أول لقمة.</p>
+                        <div class="card-item-footer">
                             <span class="card-item-price">66 ج.م</span>
-                            <button class="btn-card-action" onclick="addToCartDirect('despacito', 'triangle', 'dark-nutella', 66, 'ديسباسيتو مثلث نوتيلا دارك')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('despacito', 'triangle', 'dark-nutella', 66, 'ديسباسيتو نوتيلا دارك')">إضافة للسلة</button>
                         </div>
                     </div>
 
-                    <div class="slider-card-item" onclick="handleCardRouting('qashtota')">
+                    <div class="slider-card-item" onclick="handleCardNavigation('qashtota')">
                         <div class="card-img-wrapper">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قشطوطة لوتس" loading="lazy">
+                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قشطوطة لوتس فاخرة" loading="lazy">
                         </div>
                         <h3 class="card-item-title">قشطوطة لوتس</h3>
-                        <p class="card-item-desc">كيك هش بطبقات ناعمة وحشوات متوازنة غنية بزبدة اللوتس الأصلية الطعم.</p>
-                        <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <p class="card-item-desc">كيك هش بطبقات ناعمة وحشوات متنزنة غنية بزبدة اللوتس الأصلية الفاخرة.</p>
+                        <div class="card-item-footer">
                             <span class="card-item-price">121 ج.م</span>
-                            <button class="btn-card-action" onclick="addToCartDirect('qashtota', 'default', 'lotus', 121, 'قشطوطة لوتس')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('qashtota', 'default', 'lotus', 121, 'قشطوطة لوتس')">إضافة للسلة</button>
                         </div>
                     </div>
 
-                    <div class="slider-card-item" onclick="handleCardRouting('cinabon')">
+                    <div class="slider-card-item" onclick="handleCardNavigation('cinabon')">
                         <div class="card-img-wrapper">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="سينابون بيستاشيو" loading="lazy">
+                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="سينابون بيستاشيو غني" loading="lazy">
                         </div>
                         <h3 class="card-item-title">سينابون بيستاشيو</h3>
-                        <p class="card-item-desc">لفات سينابون مخبوزة طازجة بقوام طري مغطاة بصوص البيستاشيو الفاخر.</p>
-                        <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <p class="card-item-desc">لفات سينابون مخبوزة طازجة بقوام طري ومغطاة كلياً بجمال صوص البيستاشيو الفاخر.</p>
+                        <div class="card-item-footer">
                             <span class="card-item-price">143 ج.م</span>
-                            <button class="btn-card-action" onclick="addToCartDirect('cinabon', 'default', 'pistachio', 143, 'سينابون بيستاشيو')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('cinabon', 'default', 'pistachio', 143, 'سينابون بيستاشيو')">إضافة للسلة</button>
                         </div>
                     </div>
 
-                    <div class="slider-card-item" onclick="handleCardRouting('donuts')">
+                    <div class="slider-card-item" onclick="handleCardNavigation('donuts')">
                         <div class="card-img-wrapper">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="دوناتس ماتيلدا" loading="lazy">
+                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="دوناتس ماتيلدا شوكليت" loading="lazy">
                         </div>
                         <h3 class="card-item-title">دوناتس ماتيلدا</h3>
-                        <p class="card-item-desc">دوناتس طازجة وخفيفة الوزن بحشوة الشوكولاتة الغنية على طريقة ماتيلدا الشهيرة.</p>
-                        <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <p class="card-item-desc">دوناتس طازجة وخفيفة الوزن بحشوة الشوكولاتة الغنية المكثفة لفتح الشهية وتحفيز الشراء.</p>
+                        <div class="card-item-footer">
                             <span class="card-item-price">110 ج.م</span>
-                            <button class="btn-card-action" onclick="addToCartDirect('donuts', 'default', 'matilda', 110, 'دوناتس ماتيلدا')">إضافة للسلة</button>
-                        </div>
-                    </div>
-
-                    <div class="slider-card-item" onclick="handleCardRouting('happiness-cups')">
-                        <div class="card-img-wrapper">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كب السعادة روشيه" loading="lazy">
-                        </div>
-                        <h3 class="card-item-title">كب السعادة روشيه</h3>
-                        <p class="card-item-desc">أكواب فردية بطعم غني ومكثف من شوكولاتة الفيريرو روشيه الفاخرة المقرمشة.</p>
-                        <div class="card-item-footer" onclick="event.stopPropagation();">
-                            <span class="card-item-price">61 ج.م</span>
-                            <button class="btn-card-action" onclick="addToCartDirect('happiness-cups', 'default', 'rocher', 61, 'كب السعادة روشيه')">إضافة للسلة</button>
-                        </div>
-                    </div>
-
-                    <div class="slider-card-item" onclick="handleCardRouting('mini-cake')">
-                        <div class="card-img-wrapper">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ميني تورتة فرد أو اتنين" loading="lazy">
-                        </div>
-                        <h3 class="card-item-title">ميني تورتة فرد أو اتنين</h3>
-                        <p class="card-item-desc">تورتة صغيرة الحجم مصممة ومصنوعة بعناية كاملة ومناسبة للاحتفالات الثنائية السريعة.</p>
-                        <div class="card-item-footer" onclick="event.stopPropagation();">
-                            <span class="card-item-price">154 ج.م</span>
-                            <button class="btn-card-action" onclick="addToCartDirect('mini-cake', 'two-person', 'default', 154, 'ميني تورتة فرد أو اتنين')">إضافة للسلة</button>
-                        </div>
-                    </div>
-
-                    <div class="slider-card-item" onclick="handleCardRouting('red-velvet')">
-                        <div class="card-img-wrapper">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ريدفيلفت طاجن كبير" loading="lazy">
-                        </div>
-                        <h3 class="card-item-title">ريدڤيلڤت طاجن كبير</h3>
-                        <p class="card-item-desc">كيك مخملي أحمر رائع مع طبقات كريمة غنية وناعمة متوازنة المذاق تماماً.</p>
-                        <div class="card-item-footer" onclick="event.stopPropagation();">
-                            <span class="card-item-price">165 ج.م</span>
-                            <button class="btn-card-action" onclick="addToCartDirect('red-velvet', 'tray', 'default', 165, 'ريدفيلفت طاجن كبير')">إضافة للسلة</button>
-                        </div>
-                    </div>
-
-                    <div class="slider-card-item" onclick="handleCardRouting('relax-box')">
-                        <div class="card-img-wrapper">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكس الروقان الفاخر" loading="lazy">
-                        </div>
-                        <h3 class="card-item-title">بوكس الروقان الفاخر</h3>
-                        <p class="card-item-desc">تجميعة حصرية ومتنوعة متسقة بعناية فائقة لتناسب اللمات العائلية والهدايا الحقيقية.</p>
-                        <div class="card-item-footer" onclick="event.stopPropagation();">
-                            <span class="card-item-price">550 ج.م</span>
-                            <button class="btn-card-action" onclick="addToCartDirect('relax-box', 'default', 'default', 550, 'بوكس الروقان')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('donuts', 'default', 'matilda', 110, 'دوناتس ماتيلدا')">إضافة للسلة</button>
                         </div>
                     </div>
                 </div>
@@ -861,126 +750,144 @@
         </section>
 
         <section class="mastery-section">
-            <h2 class="section-title-center">عقد من الإتقان</h2>
-            <p class="section-desc-center">على مدار عشر سنوات متواصلة، نركز على أدق التفاصيل لنمنحك تجربة تذوق حقيقية تُرضي شغفك بالجودة الحقيقية والمظهر الاحترافي المتقن.</p>
+            <h2 class="section-title-center">عقد من الإتقان الحرفي</h2>
+            <p class="section-desc-center">على مدار عشر سنوات متواصلة من العطاء الفاخر، نركز على أدق التفاصيل لنمنحك تجربة تذوق حقيقية تُشرفك أمام ضيوفك وتلبي تطلعاتك الجمالية.</p>
             
-            <div class="mastery-full-card" onclick="navigateToPage('menu-page')">
+            <div class="mastery-full-card" onclick="navigateToPage('menu')" style="cursor:pointer;">
                 <div class="mastery-slideshow-container" id="masterySlideshow">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide active" alt="إتقان حلويات بوسي 1" loading="lazy">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide" alt="إتقان حلويات بوسي 2" loading="lazy">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide" alt="إتقان حلويات بوسي 3" loading="lazy">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide active" alt="إتقان حلويات بوسي الفاخر 1" loading="lazy">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide" alt="إتقان حلويات بوسي الفاخر 2" loading="lazy">
                 </div>
                 <div class="mastery-card-overlay-text">
-                    <h3>جودة نلتزم بها يومياً</h3>
+                    <h3>جودة نلتزم بها يومياً لكافة مناسباتكم السعيدة والراقية</h3>
                 </div>
             </div>
         </section>
     </main>
 
-
-    <main id="menu-page" class="app-page">
-        <section style="padding: 40px 20px;">
-            <h2 class="section-title-center">منيو حلويات بوسي</h2>
-            <p class="section-desc-center">استمتع بتصفح قائمة المنتجات الفاخرة المصنوعة يدوياً وبخامات طبيعية بالكامل.</p>
-            </section>
-    </main>
-
-    <main id="cart-page" class="app-page">
-        <section style="padding: 40px 20px;">
-            <h2 class="section-title-center">سلة المشتريات</h2>
-            </section>
-    </main>
-
-    <main id="cake-builder-page" class="app-page">
-        </main>
-
-    <main id="flower-builder-page" class="app-page">
-        </main>
-
+    <div id="view-menu" class="app-view-container">
+        <h2 class="section-title-center" style="margin-top:40px;">قائمة المنتجات (المنيو)</h2>
+        <p class="section-desc-center">تصفح تشكيلة حلويات بوسي الفاخرة والمعدة يدوياً بعناية تامة لتناسب ذوقك الرفيع.</p>
+    </div>
+    
+    <div id="view-cart" class="app-view-container">
+        <h2 class="section-title-center" style="margin-top:40px;">سلة المشتريات</h2>
+        <p class="section-desc-center">مراجعة خياراتك المختارة بعناية لإنهاء عملية طلبك الفاخرة بنجاح.</p>
+    </div>
+    
+    <div id="view-cake-builder" class="app-view-container"></div>
+    <div id="view-flower-builder" class="app-view-container"></div>
+    <div id="view-product-single" class="app-view-container"></div>
+    
+    <div id="view-about" class="app-view-container">
+        <h2 class="section-title-center" style="margin-top:40px;">من نحن</h2>
+        <p class="section-desc-center">حلويات بوسي هي علامة تجارية مصرية رائدة في صناعة الحلويات الفاخرة والتورت المبتكرة والتنسيقات الإبداعية في مركز الفرافرة بمحافظة الوادي الجديد. نمتلك خبرة تزيد عن 10 سنوات من التميز والإتقان الفاخر، خدمنا خلالها أكثر من 10,000 عميل بمستوى من الاحترافية يعتمد كلياً على الخامات الطبيعية والمضمونة 100% لتأمين أرقى تجارب الضيافة والتهادي المتبادل بكامل الاحترام المتبادل.</p>
+    </div>
+    
+    <div id="view-privacy" class="app-view-container">
+        <h2 class="section-title-center" style="margin-top:40px;">سياسة الخصوصية</h2>
+        <p class="section-desc-center">نحن في علامة حلويات بوسي نلتزم التزاماً صارماً ومطلقاً بحماية وسلامة بيانات عملائنا وسجلات طلباتهم الخاصة. نضمن تشغيل العمليات الحسابية والمعلوماتية محلياً لتجربة تصفح وشراء آمنة وسريعة كلياً دون أي مشاركة لبياناتك الشخصية خارج حدود النظام.</p>
+    </div>
+    
+    <div id="view-return" class="app-view-container">
+        <h2 class="section-title-center" style="margin-top:40px;">سياسة الاسترجاع</h2>
+        <p class="section-desc-center">نظراً لأن جميع منتجات حلويات بوسي هي منتجات غذائية فاخرة تُصنع يدوياً وتُخبز طازجة يوم بيوم بناءً على طلبك ومواصفاتك الفردية الحصرية لتصلك بأعلى مستويات الجودة الفاخرة، فإن الطلبات تعتبر نهائية بمجرد اعتمادها برمجياً وتأكيدها الإداري لضمان سلامة الإنتاج ومطابقته التامة للمعايير الصحية الرفيعة.</p>
+    </div>
 
     <footer class="main-footer">
-        <div class="footer-grid">
-            <div class="footer-brand-info">
-                <h4>حلويات بوسي</h4>
-                <p>صنعناها بحب لتهديها لمن تحب. خبرة ممتدة لأكثر من عشر سنوات في عالم الحلويات الفاخرة والتصاميم المخصصة لتكون شريكاً في كافة مناسباتكم السعيدة.</p>
-            </div>
-            
-            <div class="footer-links-group">
-                <h5>روابط سريعة</h5>
-                <a href="javascript:void(0)" onclick="navigateToPage('home-page')" class="footer-link">الرئيسية</a>
-                <a href="javascript:void(0)" onclick="navigateToPage('menu-page')" class="footer-link">المنيو</a>
-                <a href="javascript:void(0)" onclick="navigateToPage('cart-page')" class="footer-link">سلة المشتريات</a>
-            </div>
-
-            <div class="footer-links-group">
-                <h5>السياسات العامة</h5>
-                <a href="javascript:void(0)" class="footer-link">سياسة الخصوصية</a>
-                <a href="javascript:void(0)" class="footer-link">سياسة الاسترجاع</a>
-                <a href="javascript:void(0)" class="footer-link">سياسة التواصل والحفاظ على المنتجات</a>
-            </div>
-
-            <div class="footer-links-group">
-                <h5>تابعوا منصاتنا</h5>
-                <div class="footer-social-row">
-                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" class="social-icon-btn" aria-label="فيسبوك">
-                        <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                    </a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="social-icon-btn" aria-label="انستجرام">
-                        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                    </a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" target="_blank" class="social-icon-btn" aria-label="تيك توك">
-                        <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5h-1a3 3 0 0 1-3-3V4H9z"></path></svg>
-                    </a>
-                    <a href="https://wa.me/201097238441" target="_blank" class="social-icon-btn" aria-label="واتساب خدمة العملاء">
-                        <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
-                    </a>
-                </div>
-            </div>
+        <div class="footer-brand">حلويات بوسي</div>
+        <p class="footer-about">صنعناها بحب لتهديها لمن تحب. علامة تجارية رائدة وخبرة تزيد عن 10 سنوات في صناعة أشهى التورت والحلويات الفاخرة بخامات طبيعية 100%.</p>
+        
+        <div class="footer-links-grid">
+            <a href="#" class="footer-nav-link" onclick="navigateToPage('home')">الرئيسية</a>
+            <a href="#" class="footer-nav-link" onclick="navigateToPage('menu')">المنيو</a>
+            <a href="#" class="footer-nav-link" onclick="navigateToPage('cart')">السلة</a>
+            <a href="#" class="footer-nav-link" onclick="navigateToPage('about')">من نحن</a>
+            <a href="#" class="footer-nav-link" onclick="navigateToPage('privacy')">سياسة الخصوصية</a>
+            <a href="#" class="footer-nav-link" onclick="navigateToPage('return')">سياسة الاسترجاع</a>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 حلويات بوسي (BoseSweets). جميع الحقوق محفوظة لـ إدارة العلامة التجارية.</p>
+
+        <div class="footer-social-row">
+            <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" class="social-icon-anchor facebook" aria-label="فيسبوك">
+                <svg viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            </a>
+            <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="social-icon-anchor instagram" aria-label="انستغرام">
+                <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            </a>
+            <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" target="_blank" class="social-icon-anchor tiktok" aria-label="تيك توك">
+                <svg viewBox="0 0 24 24"><path d="M9 12a4 4 0 1 0 4 4V4h3a4 4 0 0 0 4-4h-4a8 8 0 0 1-7 7v5z"></path></svg>
+            </a>
+            <a href="https://wa.me/201097238441" target="_blank" class="social-icon-anchor whatsapp" aria-label="واتساب">
+                <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            </a>
+        </div>
+
+        <div class="footer-copyright">
+            &copy; 2026 جميع الحقوق محفوظة لعلامة حلويات بوسي التجارية.
         </div>
     </footer>
 
     <script>
-        // 1. محرك التنقل والانتقال متعدد الصفحات الفائق الأداء والسرعة
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const closeSidebar = document.getElementById('closeSidebar');
+
+        function toggleSidebar() {
+            if(sidebarMenu && sidebarOverlay) {
+                sidebarMenu.classList.toggle('active');
+                sidebarOverlay.classList.toggle('active');
+            }
+        }
+
+        if(menuToggle) menuToggle.addEventListener('click', toggleSidebar);
+        if(closeSidebar) closeSidebar.addEventListener('click', toggleSidebar);
+        if(sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
+
+        // نظام معالجة وإدارة الصفحات المتعددة المعزولة ديناميكياً
         function navigateToPage(pageId) {
-            // إخفاء كافة الصفحات
-            const pages = document.querySelectorAll('.app-page');
-            pages.forEach(page => page.classList.remove('active-page'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             
-            // إظهار الصفحة المستهدفة
-            const targetPage = document.getElementById(pageId);
-            if (targetPage) {
-                targetPage.classList.add('active-page');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+            // إخفاء وحظر كافة واجهات العرض النشطة فوراً
+            const containers = document.querySelectorAll('.app-view-container');
+            containers.forEach(el => el.classList.remove('view-active'));
+            
+            // تفعيل الواجهة المستقلة المطلوبة تماماً
+            const activeTarget = document.getElementById(`view-${pageId}`);
+            if (activeTarget) {
+                activeTarget.classList.add('view-active');
             }
-
-            // تحديث كلاس النشاط في القائمة الجانبية
-            const links = document.querySelectorAll('.sidebar-link');
-            links.forEach(link => link.classList.remove('active-link'));
-            const activeLink = document.getElementById(`link-${pageId}`);
-            if (activeLink) {
-                activeLink.classList.add('active-link');
-            }
-
-            // إغلاق القائمة الجانبية تلقائياً بعد الاختيار لراحة العميل
-            const sidebarMenu = document.getElementById('sidebarMenu');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            
+            // تحديث ضوابط الروابط النشطة داخل القائمة الجانبية
+            const menuLinks = document.querySelectorAll('.sidebar-link');
+            menuLinks.forEach(link => link.classList.remove('active'));
+            const activeLink = document.getElementById(`nav-${pageId}`);
+            if(activeLink) activeLink.classList.add('active');
+            
+            // غلق القائمة الجانبية بعد الاختيار تلقائياً لراحة العميل وسرعة الاستخدام
             if (sidebarMenu && sidebarMenu.classList.contains('active')) {
-                sidebarMenu.classList.remove('active');
-                sidebarOverlay.classList.remove('active');
+                toggleSidebar();
             }
+
+            // تعديل مسار الـ URL لضمان معمارية الصفحات المتعددة التوافقية
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?page=${pageId}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
         }
 
-        // 2. نظام التوجيه الذكي للكروت لزيادة المبيعات والتحويل لصفحات المنتجات
-        function handleCardRouting(productSlug) {
-            console.log(`توجيه العميل برمجياً لصفحة المنتج المستقلة: ${productSlug}`);
-            // سيتم ربطها بفتح صفحة المنتج المنفصلة ديناميكياً داخل منيو الأجزاء القادمة
-            navigateToPage('menu-page');
+        // معالجة روابط وتوجيهات كروت المنتجات لصفحة المنيو لرفع المبيعات وتحقيق الأداء المطلوب
+        function handleCardNavigation(productId) {
+            console.log("توجيه دلالي كامل لصفحة المنتج المستقلة: " + productId);
+            navigateToPage('menu');
         }
 
-        // 3. التحكم في الـ Slideshow لقسم الإتقان بنعومة بالغة
+        // تهيئة التوجيه الأولي عند التمهيد الأولي للملف
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialPage = urlParams.get('page') || 'home';
+            navigateToPage(initialPage);
+        });
+
+        // تشغيل محرك كارت صور الإتقان المتغيرة تلقائياً بنعومة
         (function() {
             const slides = document.querySelectorAll('.mastery-slide');
             if (slides.length > 0) {
@@ -989,34 +896,17 @@
                     slides[currentSlideIndex].classList.remove('active');
                     currentSlideIndex = (currentSlideIndex + 1) % slides.length;
                     slides[currentSlideIndex].classList.add('active');
-                }, 4000);
+                }, 4500);
             }
         })();
 
-        // 4. دالة إضافة المنتجات المؤقتة للسلة
+        // محاكي إضافة المنتجات المباشرة للسلة
         function addToCartDirect(productId, sizeId, variantId, price, name) {
-            console.log(`تم إضافة: ${name} بسعر ${price} ج.م إلى السلة.`);
             const badge = document.getElementById('cartCount');
             if (badge) {
                 let currentCount = parseInt(badge.innerText) || 0;
                 badge.innerText = currentCount + 1;
             }
-        }
-
-        // ربط أحداث فتح وإغلاق القائمة الجانبية الأصلية بشكل معزول وآمن
-        const menuToggle = document.getElementById('menuToggle');
-        const sidebarMenu = document.getElementById('sidebarMenu');
-        const sidebarOverlay = document.getElementById('sidebarOverlay');
-        const closeSidebar = document.getElementById('closeSidebar');
-
-        if (menuToggle && sidebarMenu && sidebarOverlay && closeSidebar) {
-            function toggleSidebar() {
-                sidebarMenu.classList.toggle('active');
-                sidebarOverlay.classList.toggle('active');
-            }
-            menuToggle.addEventListener('click', toggleSidebar);
-            closeSidebar.addEventListener('click', toggleSidebar);
-            sidebarOverlay.addEventListener('click', toggleSidebar);
         }
     </script>
 </body>
