@@ -810,7 +810,7 @@
             <p class="section-desc-center">تصفح تشكيلتنا المصنوعة بحرفية تامة لتختار منها ما يسعد أوقاتك ومناسباتك العائلية.</p>
         </div>
     </div>
-<div class="products-section-container">
+        <div class="products-section-container">
             <h2 class="section-title-center">منتجاتنا الفاخرة</h2>
             <p class="section-desc-center">تذوق الإتقان الحرفي من خلال تشكيلتنا المعدة يومياً بخامات طبيعية 100% لتناسب ذوقك الرفيع.</p>
             
@@ -879,12 +879,12 @@
                     
                     <div class="card-quantity-row" onclick="event.stopPropagation();">
                         <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
-                        <span class="qty-price-display" data-base-price="121"><span class="price-val">121</span> ج.m</span>
+                        <span class="qty-price-display" data-base-price="121"><span class="price-val">121</span> ج.م</span>
                         <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
                     </div>
                     
                     <div class="card-item-footer" onclick="event.stopPropagation();">
-                        <button class="btn-card-action Full-width-action" onclick="addGridProductToCart('cinabon', 'default', 'classic', this)">إضافة للسلة</button>
+                        <button class="btn-card-action full-width-action" onclick="addGridProductToCart('cinabon', 'default', 'classic', this)">إضافة للسلة</button>
                     </div>
                 </div>
 
@@ -973,51 +973,96 @@
 
     <style>
         .products-section-container {
-            padding: 40px 20px;
+            padding: 45px 16px;
             background-color: var(--bg-color);
         }
 
-        /* هيكلة عرض كارتين جنب بعض على الموبايل و 4 على الكمبيوتر تماماً لمنع التكدس */
+        /* تعديل الأبعاد: زيادة عرض الكروس متجاوباً للموبايل والكمبيوتر بنسبة 20% تقريباً بالتحكم في الـ Gap و الـ Padding */
         .products-grid-layout {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 30px;
+            gap: 12px;
+            margin-top: 25px;
             transition: all 0.4s var(--transition-smooth);
         }
 
+        /* الكارت الفاخر المطور بأبعاد مضغوطة عمودياً وأعرض أفقياً */
         .product-main-card {
-            width: 100% !important; /* ملء مساحة الجريد بالتساوي */
-            box-shadow: 0 4px 12px var(--primary-shadow);
+            width: 100% !important;
+            padding: 10px !important; /* تقليص الهامش الداخلي لتقصير طول الكارت */
+            border: 1.5px solid var(--primary) !important; /* إضافة البوردر البمبي حوالين الكارت */
+            border-radius: 16px !important;
+            background-color: var(--bg-color);
+            box-shadow: 0 4px 10px var(--primary-shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: auto; /* ترك المساحة تتحدد بدقة وبدون طول مفرط */
         }
 
-        /* صف التحكم التفاعلي بالكميات والسعر */
+        /* تقصير منطقة الصورة بنسبة 25% */
+        .product-main-card .card-img-wrapper {
+            height: 110px !important; /* تحديد ارتفاع محكم للصورة لتقصير الكارت */
+            margin-bottom: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .product-main-card .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-main-card .card-item-title {
+            font-size: 0.95rem !important;
+            margin: 4px 0 !important;
+            text-align: center;
+            color: var(--text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* حماية الوصف: حجم خط متناسق يضمن ظهور النص كاملاً بنسبة 100% دون أي قطع */
+        .product-main-card .card-item-desc {
+            font-size: 0.82rem !important;
+            line-height: 1.35 !important;
+            margin: 0 0 10px 0 !important;
+            color: #555555;
+            text-align: center;
+            height: auto !important; /* السماح للنص بالانسياب الكامل دون بتر */
+            display: block !important;
+            overflow: visible !important;
+        }
+
+        /* صف التحكم بالكميات والسعر */
         .card-quantity-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             background-color: var(--gray-light);
-            border: 1px solid rgba(255, 145, 164, 0.2);
-            border-radius: 25px;
-            padding: 4px;
-            margin: 12px 0;
+            border: 1px solid rgba(255, 145, 164, 0.15);
+            border-radius: 20px;
+            padding: 3px 6px;
+            margin: 4px 0 8px 0;
         }
 
         .qty-btn {
-            width: 32px;
-            height: 32px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             border: none;
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition-smooth);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
         }
 
         .qty-btn:hover {
@@ -1026,7 +1071,7 @@
         }
 
         .qty-price-display {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 700;
             color: var(--text-color);
         }
@@ -1034,14 +1079,15 @@
         .full-width-action {
             width: 100%;
             text-align: center;
+            padding: 8px 10px !important;
+            font-size: 0.85rem !important;
         }
 
         .more-products-trigger-row {
             text-align: center;
-            margin: 35px 0 15px 0;
+            margin: 25px 0 10px 0;
         }
 
-        /* المجموعة المخفية ومسار تفعيلها بنعومة */
         .products-group-hidden {
             display: none;
             opacity: 0;
@@ -1053,20 +1099,29 @@
         }
 
         @keyframes fadeInGrid {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* شاشات أجهزة الكمبيوتر والتابلت لضبط التنفس البصري */
+        /* تكييف الأبعاد لشاشات أجهزة الكمبيوتر والتابلت الكبيرة لجعلها 4 كروت عريضة ومتنفسة */
         @media (min-width: 769px) {
             .products-grid-layout {
                 grid-template-columns: repeat(4, 1fr);
-                gap: 24px;
+                gap: 20px;
             }
             .products-section-container {
                 padding: 50px 40px;
             }
-            .qty-price-display { font-size: 0.95rem; }
+            .product-main-card .card-img-wrapper {
+                height: 140px !important; /* طول متناسق مع الشاشات الكبيرة */
+            }
+            .product-main-card .card-item-title {
+                font-size: 1.05rem !important;
+            }
+            .product-main-card .card-item-desc {
+                font-size: 0.88rem !important;
+            }
+            .qty-price-display { font-size: 0.9rem; }
         }
     </style>
 
@@ -1078,7 +1133,6 @@
             const priceValSpan = priceDisplay.querySelector('.price-val');
             const basePrice = parseInt(priceDisplay.getAttribute('data-base-price'));
             
-            // تحديد أو إنشاء مخزن مستقل للكمية الحالية لكل كارت
             if (!row.hasAttribute('data-current-qty')) {
                 row.setAttribute('data-current-qty', '1');
             }
@@ -1086,12 +1140,9 @@
             let currentQty = parseInt(row.getAttribute('data-current-qty'));
             currentQty += change;
             
-            // قفل الحد الأدنى للكمية عند 1 لمنع الأخطاء الحسابية
             if (currentQty < 1) currentQty = 1;
             
             row.setAttribute('data-current-qty', currentQty);
-            
-            // تحديث واجهة السعر المعروضة للعميل فورياً
             priceValSpan.innerText = basePrice * currentQty;
         }
 
@@ -1102,7 +1153,7 @@
             
             if (group2) {
                 group2.classList.add('products-group-reveal');
-                if (triggerRow) triggerRow.style.display = 'none'; // إخفاء الزر لراحة العين بعد العرض
+                if (triggerRow) triggerRow.style.display = 'none';
             }
         }
 
@@ -1117,14 +1168,12 @@
             
             console.log(`بروتوكول السلة: تم اعتماد إضافة ${qty} قطعة من (${title}) بإجمالي سعر ${totalPrice} ج.م.`);
             
-            // تحديث مؤشر عدد السلة في الهيدر فورياً
             const badge = document.getElementById('cartCount');
             if (badge) {
                 let currentCount = parseInt(badge.innerText) || 0;
                 badge.innerText = currentCount + qty;
             }
             
-            // تأثير تفاعلي سريع ومؤقت على الزر لتأكيد العملية للعميل بنعومة
             const originalText = buttonElement.innerText;
             buttonElement.innerText = "تمت الإضافة ✓";
             buttonElement.style.borderColor = "#25D366";
@@ -1139,6 +1188,7 @@
             }, 1800);
         }
     </script>
+
     <div id="view-cart" class="app-view-container">
         <div style="padding: 40px 24px;">
             <h2 class="section-title-center">سلة المشتريات الخاصة بك</h2>
