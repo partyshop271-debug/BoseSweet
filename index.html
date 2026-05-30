@@ -59,7 +59,7 @@
         h1, h2, h3, h4, h5, h6 {
             font-weight: 700;
             color: var(--bs-black);
-            white-space: normal; /* منع قطع النصوص */
+            white-space: normal;
             word-wrap: break-word;
         }
 
@@ -68,6 +68,11 @@
             color: var(--bs-gray-text);
             white-space: normal;
             word-wrap: break-word;
+        }
+
+        /* تخصيص كلمة ملوّنة بالهوية البصرية */
+        .bs-highlight {
+            color: var(--bs-pink);
         }
 
         /* أزرار بيضاوية احترافية خالية من الحواف الحادة */
@@ -84,7 +89,7 @@
             transition: all 0.3s var(--transition-smooth);
             text-decoration: none;
             outline: none;
-            white-space: nowrap; /* منع انقطاع نص الزر */
+            white-space: nowrap;
         }
 
         .bs-btn-primary {
@@ -97,7 +102,7 @@
             transform: translateY(-1px);
         }
 
-        /* شريط الإعلان العلوي المطور - تكرار النص لتدفق غير متناهٍ وممتلئ */
+        /* شريط الإعلان العلوي المطور بكثافة نصية متعددة لملء الشاشة بشكل دائم وضمان حركة لانهائية */
         .bs-ticker-wrapper {
             background-color: var(--bs-pink);
             overflow: hidden;
@@ -105,20 +110,20 @@
             padding: 10px 0;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.02);
         }
 
         .bs-ticker-track {
             display: flex;
             width: max-content;
-            animation: tickerMove 35s linear infinite;
+            animation: tickerMove 40s linear infinite;
         }
 
         .bs-ticker-item {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--bs-white);
-            padding: 0 40px;
+            padding: 0 25px;
             display: inline-block;
         }
 
@@ -127,73 +132,79 @@
             100% { transform: translate3d(-50%, 0, 0); }
         }
 
-        /* أنماط الهيدر والبار العلوي الثابت مع تحسين عرض اسم البراند */
+        /* أنماط الهيدر والبار العلوي - ضبط مرن لمنع انضغاط الهيكل */
         .bs-header {
             position: sticky;
             top: 0;
             background-color: var(--bs-white);
             border-bottom: 1px solid rgba(0, 0, 0, 0.04);
             z-index: 1000;
-            padding: 14px 0;
+            padding: 10px 0;
         }
 
         .bs-header-wrapper {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 15px;
+            gap: 10px;
         }
 
         .bs-brand-zone {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             cursor: pointer;
             text-decoration: none;
+            flex-shrink: 0;
         }
 
+        /* حماية اللوجو من الانضغاط باستعمال مربع مرجعي ونظام احتواء هندسي صارم */
         .bs-logo-container {
-            width: 44px;
-            height: 44px;
+            width: 46px;
+            height: 46px;
             border-radius: 50%;
-            padding: 2px;
-            border: 1.5px solid var(--bs-pink);
+            border: 1px solid rgba(255, 145, 164, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: var(--bs-white);
+            flex-shrink: 0;
         }
 
         .bs-logo {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* منع انضغاط اللوجو */
+            object-fit: contain; /* منع تمطد أو انضغاط الصورة هندسياً */
             border-radius: 50%;
         }
 
+        /* صياغة خطية واحترافية فائقة لعرض اسم العلامة التجارية بشكل متزن */
         .bs-brand-text-wrapper {
             display: flex;
             flex-direction: column;
-            line-height: 1.2;
         }
 
         .bs-brand-name {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 800;
             color: var(--bs-black);
-            letter-spacing: -0.3px;
+            letter-spacing: -0.2px;
+            line-height: 1.2;
         }
 
-        .bs-brand-sub {
-            font-size: 10px;
-            font-weight: 500;
+        .bs-brand-badge {
+            font-size: 9px;
+            font-weight: 600;
             color: var(--bs-pink);
+            margin-top: 1px;
+            letter-spacing: 0.5px;
         }
 
         .bs-nav-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
+            flex-shrink: 0;
         }
 
         .bs-icon-btn {
@@ -201,8 +212,8 @@
             border: none;
             cursor: pointer;
             position: relative;
-            width: 42px;
-            height: 42px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -215,23 +226,23 @@
         }
 
         .bs-icon-btn svg {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             fill: none;
             stroke: var(--bs-black);
-            stroke-width: 1.8;
+            stroke-width: 2;
         }
 
         .bs-cart-badge {
             position: absolute;
-            top: 4px;
-            left: 4px;
+            top: 3px;
+            left: 3px;
             background-color: var(--bs-pink);
             color: var(--bs-white);
             font-size: 10px;
             font-weight: 700;
-            min-width: 18px;
-            height: 18px;
+            min-width: 16px;
+            height: 16px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -239,15 +250,15 @@
             padding: 0 4px;
         }
 
-        /* التطوير الشامل والفاخر للقائمة الجانبية (Sidebar) */
+        /* حقن اللون البمبي والهوية البصرية الشاملة داخل القائمة الجانبية (Premium Pink Sidebar) */
         .bs-sidebar-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(4px); /* لمسة فخامة عصرية */
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(5px);
             z-index: 1500;
             opacity: 0;
             visibility: hidden;
@@ -262,15 +273,15 @@
         .bs-sidebar {
             position: fixed;
             top: 0;
-            right: -320px;
-            width: 320px;
+            right: -300px;
+            width: 300px;
             max-width: 85vw;
             height: 100%;
-            background-color: var(--bs-white);
+            background-color: var(--bs-pink); /* حقن اللون البمبي كخلفية أساسية فاخرة */
             z-index: 1600;
-            box-shadow: -10px 0 40px rgba(0,0,0,0.08);
+            box-shadow: -10px 0 40px rgba(0,0,0,0.15);
             transition: right 0.4s var(--transition-smooth);
-            padding: 40px 24px;
+            padding: 35px 24px;
             display: flex;
             flex-direction: column;
         }
@@ -283,22 +294,31 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 40px;
-            border-bottom: 1px solid rgba(0,0,0,0.04);
+            margin-bottom: 35px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
             padding-bottom: 20px;
+        }
+
+        /* تعديل الأزرار والنصوص داخل القائمة الجانبية لتتوافق مع الخلفية الوردية */
+        .bs-sidebar .bs-brand-name {
+            color: var(--bs-white);
+        }
+
+        .bs-sidebar .bs-icon-btn svg {
+            stroke: var(--bs-white);
         }
 
         .bs-menu-links {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             list-style: none;
         }
 
         .bs-menu-item {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
-            color: var(--bs-black);
+            color: var(--bs-white);
             cursor: pointer;
             padding: 14px 20px;
             border-radius: 16px;
@@ -306,18 +326,18 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: transparent;
+            background-color: rgba(255, 255, 255, 0.06);
         }
 
         .bs-menu-item:hover {
-            background-color: var(--bs-gray-light);
+            background-color: var(--bs-white);
             color: var(--bs-pink);
-            padding-right: 25px; /* تأثير حركة ناعم */
+            padding-right: 24px;
         }
 
         .bs-menu-item::after {
             content: '←';
-            font-size: 18px;
+            font-size: 16px;
             opacity: 0;
             transition: opacity 0.25s ease;
         }
@@ -329,10 +349,11 @@
         .bs-sidebar-footer {
             margin-top: auto;
             font-size: 11px;
-            color: var(--bs-gray-text);
+            color: rgba(255, 255, 255, 0.7);
             text-align: center;
-            border-top: 1px solid rgba(0,0,0,0.04);
+            border-top: 1px solid rgba(255,255,255,0.15);
             padding-top: 20px;
+            font-weight: 500;
         }
 
         /* مربع البحث المنزلق العلوي */
@@ -471,7 +492,6 @@
             overflow: hidden;
             background-color: var(--bs-gray-light);
             position: relative;
-            /* حماية النسبة 16:9 بشكل مطلق على كل الشاشات لمنع المياعة أو الانضغاط */
             aspect-ratio: 16 / 9; 
             box-shadow: 0 8px 30px rgba(0,0,0,0.03);
         }
@@ -479,7 +499,6 @@
         .bs-hero-video {
             width: 100%;
             height: 100%;
-            /* التغطية الذكية تمنع تمطّد أو انضغاط البيكسل وتحافظ على الأبعاد طبيعية 100% */
             object-fit: cover; 
             display: block;
         }
@@ -527,7 +546,7 @@
 
         .bs-slider-card {
             scroll-snap-align: start;
-            flex: 0 0 240px; /* الحجم الثابت يمنع الكارت من الانضغاط أفقياً */
+            flex: 0 0 240px; 
             background-color: var(--bs-white);
             border-radius: 20px;
             border: 1px solid rgba(0, 0, 0, 0.04);
@@ -545,7 +564,7 @@
 
         .bs-slider-img-holder {
             width: 100%;
-            aspect-ratio: 1 / 1; /* مربع مثالي ثابت للصور */
+            aspect-ratio: 1 / 1; 
             background-color: var(--bs-gray-light);
             border-radius: 14px;
             overflow: hidden;
@@ -554,7 +573,7 @@
         .bs-slider-img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* حماية تامة للمنتج ليظهر طبيعياً 100% بدون انضغاط بيكسل */
+            object-fit: cover; 
         }
 
         .bs-slider-info {
@@ -614,11 +633,13 @@
     <div class="bs-ticker-wrapper">
         <div class="bs-ticker-track">
             <span class="bs-ticker-item">✨ حلويات بوسي | صنعناها بحب لتهديها لمن تحب ✨</span>
-            <span class="bs-ticker-item">🎂 جودة متميزة وخامات طبيعية 100% 🎂</span>
-            <span class="bs-ticker-item">🚚 توصيل سريع لجميع مناطق الفرافرة والكفاح 🚚</span>
+            <span class="bs-ticker-item">🎂 خامات طبيعية ومضمونة 100% لتشرفك قدام ضيوفك 🎂</span>
+            <span class="bs-ticker-item">🚚 شحن سريع لكافة أحياء ومناطق الفرافرة والكفاح 🚚</span>
+            <span class="bs-ticker-item">✨ طعم أصلي غني وقوام مريح من أول لقمة لآخر قطعة ✨</span>
             <span class="bs-ticker-item">✨ حلويات بوسي | صنعناها بحب لتهديها لمن تحب ✨</span>
-            <span class="bs-ticker-item">🎂 جودة متميزة وخامات طبيعية 100% 🎂</span>
-            <span class="bs-ticker-item">🚚 توصيل سريع لجميع مناطق الفرافرة والكفاح 🚚</span>
+            <span class="bs-ticker-item">🎂 خامات طبيعية ومضمونة 100% لتشرفك قدام ضيوفك 🎂</span>
+            <span class="bs-ticker-item">🚚 شحن سريع لكافة أحياء ومناطق الفرافرة والكفاح 🚚</span>
+            <span class="bs-ticker-item">✨ طعم أصلي غني وقوام مريح من أول لقمة لآخر قطعة ✨</span>
         </div>
     </div>
 
@@ -634,7 +655,7 @@
                 </div>
                 <div class="bs-brand-text-wrapper">
                     <span class="bs-brand-name">حلويات بوسي</span>
-                    <span class="bs-brand-sub">صنعناها بحب لتهديها لمن تحب</span>
+                    <span class="bs-brand-badge">العلامة التجارية الرسمية</span>
                 </div>
             </div>
 
@@ -660,10 +681,10 @@
         <nav class="bs-sidebar" onclick="event.stopPropagation()">
             <div class="bs-sidebar-header">
                 <div class="bs-brand-zone">
-                    <div class="bs-logo-container">
+                    <div class="bs-logo-container" style="border-color: rgba(255,255,255,0.4);">
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="bs-logo">
                     </div>
-                    <span class="bs-brand-name" style="font-size: 16px;">حلويات بوسي</span>
+                    <span class="bs-brand-name">حلويات بوسي</span>
                 </div>
                 <button class="bs-icon-btn" onclick="BoseUI.toggleSidebar(false)" aria-label="إغلاق">
                     <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
@@ -726,11 +747,11 @@
             }
         };
 
-        // حقن محتوى الصفحة الرئيسية مع حماية العناصر البصرية من التشوه والانضغاط
+        // حقن محتوى الصفحة الرئيسية وتلوين كلمة التميز بالوردي وحماية الأبعاد البصرية
         document.getElementById('page-home').innerHTML = `
             <div class="bs-container">
                 <section class="bs-hero">
-                    <h1 class="bs-hero-title">عقد من التميز في صناعة الحلويات</h1>
+                    <h1 class="bs-hero-title">عقد من <span class="bs-highlight">التميز</span> في صناعة الحلويات</h1>
                     <p class="bs-hero-desc">منصتنا الإلكترونية مصممة خصيصاً لتمنحك تجربة تسوق راقية وسريعة. تصفح خياراتنا المبتكرة وحضر هديتك بكل سهولة.</p>
                     <button class="bs-btn bs-btn-primary" onclick="BoseRouter.navigateTo('menu')">اطلب الآن</button>
                     
