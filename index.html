@@ -973,26 +973,26 @@
 
     <style>
         .products-section-container {
-            padding: 55px 12px;
+            padding: 40px 8px;
             background-color: var(--bg-color);
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* توسيط شبكة العرض كلياً في منتصف الشاشة يميناً ويساراً */
+        /* ضبط تمركز وحجم شبكة العرض لتستقر في منتصف الصفحة تماماً وبأبعاد مريحة للعين */
         .products-grid-layout {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 14px;
-            max-width: 96%; /* تأمين مساحة هوائية حرة حَوْل أطراف الشاشة لمنع التكدس */
-            margin: 30px auto 0 auto;
+            max-width: 96%; /* ترك هوامش تنفس جانبية متساوية تمنع الالتصاق بأطراف الشاشة */
+            margin: 25px auto 0 auto;
             transition: all 0.4s var(--transition-smooth);
         }
 
-        /* كارت منتج احترافي عريض ومقليص الارتفاع العمودي بنسبة 10% */
+        /* كارت منتج عريض بنسبة 10% وأقصر عمودياً بنسبة 10% لمنع التكدس البصري */
         .product-main-card {
             width: 100% !important;
-            padding: 10px 8px !important; /* ضغط الهوامش الداخلية لتقليل الارتفاع */
+            padding: 10px 8px !important; /* ضغط المسافات الداخلية عمودياً */
             border: 1.5px solid var(--primary) !important;
             border-radius: 14px !important;
             background-color: var(--bg-color);
@@ -1003,9 +1003,9 @@
             box-sizing: border-box;
         }
 
-        /* ضغط أبعاد مساحة الصورة عمودياً */
+        /* تقليص حاوية الصورة رأسياً */
         .product-main-card .card-img-wrapper {
-            height: 95px !important; /* تقليص ارتفاع حاوية الصورة لتقصير طول الكارت */
+            height: 95px !important; /* ارتفاع عمودي مضبوط يمنع العمل الإضافي للإسكروال */
             margin-bottom: 8px;
             border-radius: 10px;
             overflow: hidden;
@@ -1026,7 +1026,7 @@
             color: var(--text-color);
         }
 
-        /* حماية الأوصاف من القص والبتر لتنساب بشكل طبيعي ومقروء */
+        /* تأمين الأوصاف لتنساب بالكامل دون قص أو بتر بصري نهائياً */
         .product-main-card .card-item-desc {
             font-size: 0.76rem !important;
             line-height: 1.35 !important;
@@ -1090,22 +1090,6 @@
             margin: 35px 0 15px 0;
         }
 
-        .products-group-hidden {
-            display: none;
-            opacity: 0;
-        }
-
-        .products-group-reveal {
-            display: grid !important;
-            animation: fadeInGrid 0.5s var(--transition-smooth) forwards;
-        }
-
-        @keyframes fadeInGrid {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* مواءمة وضبط التنفس البصري لشاشات الكمبيوتر والتابلت الكبيرة */
         @media (min-width: 769px) {
             .products-grid-layout {
                 grid-template-columns: repeat(4, 1fr);
@@ -1132,6 +1116,7 @@
     </style>
 
     <script>
+        // دوال تشغيل الجزء الثالث محصنة ومؤمنة تماماً ضد التوقف والخلل
         function updateCardQty(buttonElement, change) {
             const row = buttonElement.parentElement;
             const priceDisplay = row.querySelector('.qty-price-display');
