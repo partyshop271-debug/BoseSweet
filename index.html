@@ -889,118 +889,181 @@
                 </div>
             </div>
         </section>
-        <style>
-            /* تنسيقات شبكة كروت المنتجات الرئيسية */
+                <style>
             .main-products-section {
-                padding: 60px 0;
+                padding: 40px 0;
                 background-color: var(--bg-color);
             }
 
             .products-grid-container {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr); /* كارتين جنب بعض تماماً على الموبايل */
-                gap: 16px;
-                padding: 0 20px;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px; /* مسافات بينية مدروسة تضمن ظهور كارتين متجاورين */
+                padding: 0 10px;
                 max-width: 1200px;
                 margin: 0 auto;
             }
 
             .product-main-card {
                 background-color: var(--bg-color);
-                border: 1.5px solid rgba(255, 145, 164, 0.35); /* نفس إطار البوردر البمبي الناعم المعتمد */
+                border: 1.5px solid rgba(255, 145, 164, 0.35); /* إطار بمبي ناعم ورقيق */
                 border-radius: 14px;
-                padding: 14px;
+                padding: 12px 10px;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
                 cursor: pointer;
-                transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth), border-color 0.3s var(--transition-smooth);
-                box-shadow: 0 4px 14px var(--primary-shadow);
-                word-wrap: break-word;
-                height: 100%; /* منع الكروت الطويلة الممطوطة والالتزام بارتفاع متزن */
+                transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth);
+                box-shadow: 0 4px 12px var(--primary-shadow);
+                width: 100%;
+                /* تطبيق الأبعاد الذهبية: تقليل العرض 20% والارتفاع 10% للتوافق الكامل مع الموبايل */
+                height: 335px; 
+                overflow: hidden;
+                position: relative;
             }
 
             .product-main-card:hover {
-                transform: translateY(-4px);
+                transform: translateY(-3px);
                 border-color: var(--primary);
-                box-shadow: 0 8px 24px var(--primary-shadow-strong);
+                box-shadow: 0 8px 20px var(--primary-shadow-strong);
             }
 
             .main-card-img-wrap {
                 width: 100%;
-                aspect-ratio: 1/1;
+                aspect-ratio: 16/11;
                 border-radius: 10px;
                 overflow: hidden;
                 background-color: var(--gray-light);
-                margin-bottom: 12px;
-                border: 1px solid rgba(255, 145, 164, 0.08);
+                margin-bottom: 8px;
+                border: 1px solid rgba(255, 145, 164, 0.06);
             }
 
             .main-card-img-wrap img {
                 width: 100%;
                 height: 100%;
                 object-fit: cover;
-                transition: transform 0.5s var(--transition-smooth);
-            }
-
-            .product-main-card:hover .main-card-img-wrap img {
-                transform: scale(1.02);
             }
 
             .main-card-title {
-                font-size: 0.95rem;
+                font-size: 0.85rem;
                 font-weight: 700;
                 color: var(--text-color);
-                margin-bottom: 6px;
-                line-height: 1.4;
+                text-align: center;
+                margin-bottom: 4px;
+                line-height: 1.3;
             }
 
+            /* نصوص مركزة ومباشرة ومكتوبة بالكامل بدون أي بتر أو علامات حذف وبخط متزن */
             .main-card-desc {
-                font-size: 0.8rem;
-                color: var(--gray-dark);
+                font-size: 0.72rem;
+                color: var(--text-color);
                 font-weight: 400;
-                margin-bottom: 12px;
-                line-height: 1.5;
+                text-align: center;
+                margin-bottom: 6px;
+                line-height: 1.4;
+                padding: 0 2px;
                 display: block;
                 overflow: visible;
             }
 
-            /* الحاوية المخفية للمجموعة الثانية */
             .products-group-hidden {
                 display: none;
                 opacity: 0;
-                transition: opacity 0.4s var(--transition-smooth);
             }
 
             .products-group-hidden.show-group {
                 display: grid;
                 opacity: 1;
-                animation: fadeInGroup 0.5s var(--transition-smooth) forwards;
+                animation: fadeInGroup 0.4s var(--transition-smooth) forwards;
             }
 
             @keyframes fadeInGroup {
-                from { opacity: 0; transform: translateY(8px); }
+                from { opacity: 0; transform: translateY(6px); }
                 to { opacity: 1; transform: translateY(0); }
             }
 
-            /* حاوية أزرار التحكم والعمليات الفورية داخل الكارت */
             .main-card-action-wrap {
-                margin-top: auto;
+                width: 100%;
                 display: flex;
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
+                margin-top: auto;
             }
 
-            .main-card-price-row {
-                font-size: 1rem;
+            /* عداد كمية ناعم ومتناسق مع الأبعاد الجديدة */
+            .card-quantity-container {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background-color: var(--gray-light);
+                border: 1px solid rgba(255, 145, 164, 0.25);
+                border-radius: 50px;
+                padding: 2px 6px;
+                width: 100%;
+            }
+
+            .btn-qty-step {
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                border: 1px solid rgba(255, 145, 164, 0.2);
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                font-size: 0.95rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: var(--transition-smooth);
+            }
+
+            .btn-qty-step:hover {
+                background-color: var(--primary);
+                color: var(--bg-color);
+                border-color: var(--primary);
+            }
+
+            .qty-current-value {
+                font-size: 0.85rem;
                 font-weight: 700;
                 color: var(--text-color);
-                text-align: center;
-                padding: 4px 0;
-                border-bottom: 1px solid rgba(255, 145, 164, 0.15);
             }
 
-            /* زر اعرف أكتر السفلي الممتد بكامل العرض لتنفس الصفحة */
+            .card-footer-integration {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                width: 100%;
+                border-top: 1px solid rgba(255, 145, 164, 0.18);
+                padding-top: 8px;
+            }
+
+            .main-grid-price-display {
+                font-size: 0.9rem;
+                font-weight: 700;
+                color: var(--text-color);
+            }
+
+            .btn-main-grid-action {
+                background-color: var(--primary);
+                color: var(--bg-color);
+                border: 1px solid var(--primary);
+                padding: 6px 12px;
+                border-radius: 50px;
+                font-size: 0.75rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: var(--transition-smooth);
+                box-shadow: 0 3px 8px var(--primary-shadow);
+            }
+
+            .btn-main-grid-action:hover {
+                background-color: var(--bg-color);
+                color: var(--primary);
+                border-color: var(--primary);
+            }
+
             .load-more-container {
                 text-align: center;
                 margin-top: 35px;
@@ -1011,28 +1074,28 @@
                 background-color: var(--bg-color);
                 color: var(--primary);
                 border: 2px solid var(--primary);
-                padding: 12px 45px;
+                padding: 10px 40px;
                 border-radius: 50px;
                 font-weight: 600;
-                font-size: 0.95rem;
+                font-size: 0.9rem;
                 cursor: pointer;
                 transition: var(--transition-smooth);
-                box-shadow: 0 4px 12px var(--primary-shadow);
+                box-shadow: 0 4px 10px var(--primary-shadow);
             }
 
             .btn-load-more:hover {
                 background-color: var(--primary);
                 color: var(--bg-color);
-                box-shadow: 0 6px 20px var(--primary-shadow-strong);
             }
 
             @media (min-width: 769px) {
                 .products-grid-container {
-                    grid-template-columns: repeat(4, 1fr); /* 4 كروت متزنة جنب بعض على الشاشات الكبيرة */
-                    gap: 24px;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 20px;
                 }
-                .main-card-title { font-size: 1.05rem; }
-                .main-card-desc { font-size: 0.85rem; }
+                .product-main-card { height: 380px; }
+                .main-card-title { font-size: 1rem; }
+                .main-card-desc { font-size: 0.8rem; }
             }
         </style>
 
@@ -1046,17 +1109,17 @@
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ديسباسيتو نوتيلا وايت" loading="lazy">
                     </div>
                     <h3 class="main-card-title">ديسباسيتو نوتيلا وايت</h3>
-                    <p class="main-card-desc">طبقات متوازنة من كيك الفادج الغني والموس الناعم المغطى تماماً بطبقة سخية من شوكولاتة نوتيلا وايت الواضحة.</p>
+                    <p class="main-card-desc">فادج غني وموس ناعم مغطى بنوتيلا وايت الأصلية لمذاق متوازن فاخر.</p>
                     
                     <div class="main-card-action-wrap">
                         <div class="card-quantity-container" onclick="event.stopPropagation()">
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, -1)">-</button>
-                            <span class="qty-current-value">1</span>
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, 1)">+</button>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('despacito-white', -1, 66)">-</button>
+                            <span class="qty-current-value" id="qty-despacito-white">1</span>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('despacito-white', 1, 66)">+</button>
                         </div>
-                        <div class="card-item-footer" data-base-price="66">
-                            <span class="card-item-price">66 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('despacito', 'triangle', 'white-nutella', 'ديسباسيتو مثلث نوتيلا وايت', this)">إضافة للسلة</button>
+                        <div class="card-footer-integration" id="footer-despacito-white" data-base-price="66" onclick="event.stopPropagation()">
+                            <span class="main-grid-price-display" id="price-despacito-white">66 ج.م</span>
+                            <button class="btn-main-grid-action" onclick="addMainGridToCart('despacito', 'triangle', 'white-nutella', 'ديسباسيتو مثلث نوتيلا وايت', 'despacito-white')">إضافة</button>
                         </div>
                     </div>
                 </div>
@@ -1066,17 +1129,17 @@
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قشطوطة بيستاشيو" loading="lazy">
                     </div>
                     <h3 class="main-card-title">قشطوطة بيستاشيو</h3>
-                    <p class="main-card-desc">كيك هش ناعم ومتوازن الحشوة يبرز فيه طعم ومذاق زبدة الفستق (البيستاشيو) الطبيعية والممتازة 100%.</p>
+                    <p class="main-card-desc">كيك حليبي هش مغطى بزبدة الفستق الطبيعية والممتازة 100%.</p>
                     
                     <div class="main-card-action-wrap">
                         <div class="card-quantity-container" onclick="event.stopPropagation()">
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, -1)">-</button>
-                            <span class="qty-current-value">1</span>
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, 1)">+</button>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('qashtota-pistachio', -1, 143)">-</button>
+                            <span class="qty-current-value" id="qty-qashtota-pistachio">1</span>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('qashtota-pistachio', 1, 143)">+</button>
                         </div>
-                        <div class="card-item-footer" data-base-price="143">
-                            <span class="card-item-price">143 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('qashtota', 'default', 'pistachio', 'قشطوطة بيستاشيو', this)">إضافة للسلة</button>
+                        <div class="card-footer-integration" id="footer-qashtota-pistachio" data-base-price="143" onclick="event.stopPropagation()">
+                            <span class="main-grid-price-display" id="price-qashtota-pistachio">143 ج.م</span>
+                            <button class="btn-main-grid-action" onclick="addMainGridToCart('qashtota', 'default', 'pistachio', 'قشطوطة بيستاشيو', 'qashtota-pistachio')">إضافة</button>
                         </div>
                     </div>
                 </div>
@@ -1086,17 +1149,17 @@
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="دوناتس كراميل" loading="lazy">
                     </div>
                     <h3 class="main-card-title">دوناتس كراميل</h3>
-                    <p class="main-card-desc">حلقات دوناتس طازجة وخفيفة مجهزة يوم بيوم ومغطاة بطبقة غنية ومتزنة من صوص التوفي كراميل الفاخر.</p>
+                    <p class="main-card-desc">عجينة خفيفة طازجة مغطاة بصوص التوفي كراميل الغني والمعد يومياً.</p>
                     
                     <div class="main-card-action-wrap">
                         <div class="card-quantity-container" onclick="event.stopPropagation()">
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, -1)">-</button>
-                            <span class="qty-current-value">1</span>
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, 1)">+</button>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('donuts-caramel', -1, 88)">-</button>
+                            <span class="qty-current-value" id="qty-donuts-caramel">1</span>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('donuts-caramel', 1, 88)">+</button>
                         </div>
-                        <div class="card-item-footer" data-base-price="88">
-                            <span class="card-item-price">88 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('donuts', 'default', 'caramel', 'دوناتس كراميل', this)">إضافة للسلة</button>
+                        <div class="card-footer-integration" id="footer-donuts-caramel" data-base-price="88" onclick="event.stopPropagation()">
+                            <span class="main-grid-price-display" id="price-donuts-caramel">88 ج.م</span>
+                            <button class="btn-main-grid-action" onclick="addMainGridToCart('donuts', 'default', 'caramel', 'دوناتس كراميل', 'donuts-caramel')">إضافة</button>
                         </div>
                     </div>
                 </div>
@@ -1106,23 +1169,23 @@
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="سينابون كلاسيك" loading="lazy">
                     </div>
                     <h3 class="main-card-title">سينابون كلاسيك</h3>
-                    <p class="main-card-desc">لفات السينابون الشهيرة المخبوزة طرية برائحة القرفة الممتازة وصوص الجبن الغني المتوازن بدون مبالغة.</p>
+                    <p class="main-card-desc">لفات طرية غنية بنكهة القرفة الفاخرة وصوص الجبن الغني المتوازن.</p>
                     
                     <div class="main-card-action-wrap">
                         <div class="card-quantity-container" onclick="event.stopPropagation()">
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, -1)">-</button>
-                            <span class="qty-current-value">1</span>
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, 1)">+</button>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('cinabon-classic', -1, 121)">-</button>
+                            <span class="qty-current-value" id="qty-cinabon-classic">1</span>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('cinabon-classic', 1, 121)">+</button>
                         </div>
-                        <div class="card-item-footer" data-base-price="121">
-                            <span class="card-item-price">121 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('cinabon', 'default', 'classic', 'سينابون كلاسيك', this)">إضافة للسلة</button>
+                        <div class="card-footer-integration" id="footer-cinabon-classic" data-base-price="121" onclick="event.stopPropagation()">
+                            <span class="main-grid-price-display" id="price-cinabon-classic">121 ج.م</span>
+                            <button class="btn-main-grid-action" onclick="addMainGridToCart('cinabon', 'default', 'classic', 'سينابون كلاسيك', 'cinabon-classic')">إضافة</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div style="height: 16px;"></div>
+            <div style="height: 12px;"></div>
 
             <div class="products-grid-container products-group-hidden" id="productsGroup2">
                 <div class="product-main-card" onclick="handleCardNavigation('happiness-cups')">
@@ -1130,17 +1193,17 @@
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كب السعادة أوريو" loading="lazy">
                     </div>
                     <h3 class="main-card-title">كب السعادة أوريو</h3>
-                    <p class="main-card-desc">أكواب التقديم الفردية الغنية بموس الشوكولاتة المتناسق وقطع بسكويت الأوريو الأصلية المقرمشة وطعم واضح تماماً.</p>
+                    <p class="main-card-desc">طبقات موس الشوكولاتة الكثيفة مع قطع بسكويت الأوريو المقرمش.</p>
                     
                     <div class="main-card-action-wrap">
                         <div class="card-quantity-container" onclick="event.stopPropagation()">
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, -1)">-</button>
-                            <span class="qty-current-value">1</span>
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, 1)">+</button>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('cups-oreo', -1, 61)">-</button>
+                            <span class="qty-current-value" id="qty-cups-oreo">1</span>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('cups-oreo', 1, 61)">+</button>
                         </div>
-                        <div class="card-item-footer" data-base-price="61">
-                            <span class="card-item-price">61 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('happiness-cups', 'default', 'oreo', 'كب السعادة أوريو', this)">إضافة للسلة</button>
+                        <div class="card-footer-integration" id="footer-cups-oreo" data-base-price="61" onclick="event.stopPropagation()">
+                            <span class="main-grid-price-display" id="price-cups-oreo">61 ج.م</span>
+                            <button class="btn-main-grid-action" onclick="addMainGridToCart('happiness-cups', 'default', 'oreo', 'كب السعادة أوريو', 'cups-oreo')">إضافة</button>
                         </div>
                     </div>
                 </div>
@@ -1150,17 +1213,17 @@
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="دستة كب كيك شوكولاتة" loading="lazy">
                     </div>
                     <h3 class="main-card-title">دستة كب كيك شوكولاتة</h3>
-                    <p class="main-card-desc">عدد 12 قطعة من الكب كيك الهش الغني بالكاكاو الفاخر وتزيينات الشوكولاتة المتوازنة للمناسبات والتجمعات السعيدة.</p>
+                    <p class="main-card-desc">12 قطعة من الكب كيك الهش المجهز بأجود أنواع الكاكاو الطبيعي.</p>
                     
                     <div class="main-card-action-wrap">
                         <div class="card-quantity-container" onclick="event.stopPropagation()">
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, -1)">-</button>
-                            <span class="qty-current-value">1</span>
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, 1)">+</button>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('cupcake-choco', -1, 324)">-</button>
+                            <span class="qty-current-value" id="qty-cupcake-choco">1</span>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('cupcake-choco', 1, 324)">+</button>
                         </div>
-                        <div class="card-item-footer" data-base-price="324">
-                            <span class="card-item-price">324 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('cupcake', 'default', 'chocolate', 'دستة كب كيك شوكولاتة', this)">إضافة للسلة</button>
+                        <div class="card-footer-integration" id="footer-cupcake-choco" data-base-price="324" onclick="event.stopPropagation()">
+                            <span class="main-grid-price-display" id="price-cupcake-choco">324 ج.م</span>
+                            <button class="btn-main-grid-action" onclick="addMainGridToCart('cupcake', 'default', 'chocolate', 'دستة كب كيك شوكولاتة', 'cupcake-choco')">إضافة</button>
                         </div>
                     </div>
                 </div>
@@ -1170,17 +1233,17 @@
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="جاتوه كلاسيك فاخر" loading="lazy">
                     </div>
                     <h3 class="main-card-title">جاتوه كلاسيك</h3>
-                    <p class="main-card-desc">تشكيلة قطع الجاتوه المتنوعة والمنسقة بعناية بخامات ممتازة وطعم ثابت لضيافتكم اليومية الرسمية والخاصة.</p>
+                    <p class="main-card-desc">قطع جاتوه كلاسيكية فاخرة ومجهزة يومياً لتناسب ضيافتكم الفخمة.</p>
                     
                     <div class="main-card-action-wrap">
                         <div class="card-quantity-container" onclick="event.stopPropagation()">
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, -1)">-</button>
-                            <span class="qty-current-value">1</span>
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, 1)">+</button>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('gateaux-classic', -1, 506)">-</button>
+                            <span class="qty-current-value" id="qty-gateaux-classic">1</span>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('gateaux-classic', 1, 506)">+</button>
                         </div>
-                        <div class="card-item-footer" data-base-price="506">
-                            <span class="card-item-price">506 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('gateaux', 'default', 'classic', 'جاتوه كلاسيك فاخر', this)">إضافة للسلة</button>
+                        <div class="card-footer-integration" id="footer-gateaux-classic" data-base-price="506" onclick="event.stopPropagation()">
+                            <span class="main-grid-price-display" id="price-gateaux-classic">506 ج.م</span>
+                            <button class="btn-main-grid-action" onclick="addMainGridToCart('gateaux', 'default', 'classic', 'جاتوه كلاسيك فاخر', 'gateaux-classic')">إضافة</button>
                         </div>
                     </div>
                 </div>
@@ -1190,17 +1253,17 @@
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكس الروقان الفاخر" loading="lazy">
                     </div>
                     <h3 class="main-card-title">بوكس الروقان</h3>
-                    <p class="main-card-desc">تجميعة فاخرة ومتنوعة متسقة بعناية فائقة تجمع أشهر منتجاتنا بطعم واضح وجودة حقيقية للمات الهادئة السعيدة.</p>
+                    <p class="main-card-desc">تشكيلة مختارة من أشهر حلوياتنا تجمع أعلى مستويات القيمة والجودة.</p>
                     
                     <div class="main-card-action-wrap">
                         <div class="card-quantity-container" onclick="event.stopPropagation()">
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, -1)">-</button>
-                            <span class="qty-current-value">1</span>
-                            <button class="btn-qty-step" onclick="adjustCardQtyInline(this, 1)">+</button>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('relax-box-main', -1, 550)">-</button>
+                            <span class="qty-current-value" id="qty-relax-box-main">1</span>
+                            <button class="btn-qty-step" onclick="adjustMainGridQty('relax-box-main', 1, 550)">+</button>
                         </div>
-                        <div class="card-item-footer" data-base-price="550">
-                            <span class="card-item-price">550 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('relax-box', 'default', 'default', 'بوكس الروقان الفاخر', this)">إضافة للسلة</button>
+                        <div class="card-footer-integration" id="footer-relax-box-main" data-base-price="550" onclick="event.stopPropagation()">
+                            <span class="main-grid-price-display" id="price-relax-box-main">550 ج.م</span>
+                            <button class="btn-main-grid-action" onclick="addMainGridToCart('relax-box', 'default', 'default', 'بوكس الروقان الفاخر', 'relax-box-main')">إضافة</button>
                         </div>
                     </div>
                 </div>
@@ -1212,23 +1275,55 @@
         </section>
 
         <script>
+            function adjustMainGridQty(elementKey, amount, basePrice) {
+                const qtyElement = document.getElementById('qty-' + elementKey);
+                const priceElement = document.getElementById('price-' + elementKey);
+                if(qtyElement && priceElement) {
+                    let currentQty = parseInt(qtyElement.textContent) || 1;
+                    currentQty += amount;
+                    if(currentQty < 1) currentQty = 1;
+                    qtyElement.textContent = currentQty;
+                    priceElement.textContent = (basePrice * currentQty) + ' ج.م';
+                }
+            }
+
+            function addMainGridToCart(productId, sizeId, variantId, labelName, elementKey) {
+                const qtyElement = document.getElementById('qty-' + elementKey);
+                const priceElement = document.getElementById('price-' + elementKey);
+                const footerElement = document.getElementById('footer-' + elementKey);
+                const basePrice = parseFloat(footerElement.getAttribute('data-base-price'));
+                const chosenQuantity = qtyElement ? (parseInt(qtyElement.textContent) || 1) : 1;
+
+                const mainCartItem = {
+                    id: `${productId}-${sizeId}-${variantId}`,
+                    productId: productId,
+                    sizeId: sizeId,
+                    variantId: variantId,
+                    name: labelName,
+                    price: basePrice, 
+                    quantity: chosenQuantity
+                };
+
+                const existingIndex = cart.findIndex(item => item.id === mainCartItem.id);
+                if (existingIndex > -1) { cart[existingIndex].quantity += chosenQuantity; } else { cart.push(mainCartItem); }
+
+                if(qtyElement) qtyElement.textContent = 1;
+                if(priceElement && basePrice) priceElement.textContent = basePrice + ' ج.م';
+                updateCartCountUI();
+                showToastMessage(`تم إضافة (${chosenQuantity}) من ${labelName} بنجاح للسلة ✨`);
+            }
+
             function showSecondaryProductsGroup() {
                 const hiddenGroup = document.getElementById('productsGroup2');
                 const loadMoreBtnWrapper = document.getElementById('loadMoreWrapper');
-                
                 if(hiddenGroup) {
-                    // فتح المجموعة الثانية برمجياً وتطبيق أنيميشن الظهور الانسيابي
                     hiddenGroup.classList.add('show-group');
-                    
-                    // إخفاء الزر لتوفير مساحة راحة بصرية كاملة بعد اكتمال العرض
-                    if(loadMoreBtnWrapper) {
-                        loadMoreBtnWrapper.style.display = 'none';
-                    }
-                    
+                    if(loadMoreBtnWrapper) loadMoreBtnWrapper.style.display = 'none';
                     showToastMessage("تم استعراض كامل تشكيلة المنتجات الفاخرة بنجاح ✨");
                 }
             }
         </script>
+
     </main>
 
     <div id="dynamic-views-container"></div>
