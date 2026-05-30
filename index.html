@@ -973,39 +973,49 @@
 
     <style>
         .products-section-container {
-            padding: 45px 16px;
+            padding: 50px 16px;
             background-color: var(--bg-color);
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* تعديل الأبعاد: زيادة عرض الكروس متجاوباً للموبايل والكمبيوتر بنسبة 20% تقريباً بالتحكم في الـ Gap و الـ Padding */
+        /* شبكة عرض ممركزة في المنتصف تماماً مع تقليل العرض بنسبة 10% عبر هوامش جانبية مريحة */
         .products-grid-layout {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 25px;
+            gap: 16px;
+            max-width: 90%; /* تقليص مساحة العرض الإجمالية للجريد لترك مساحة هوائية على الجوانب */
+            margin: 30px auto 0 auto; /* ممركزة في المنتصف تماماً */
             transition: all 0.4s var(--transition-smooth);
         }
 
-        /* الكارت الفاخر المطور بأبعاد مضغوطة عمودياً وأعرض أفقياً */
+        /* كارت منتج احترافي ومضغوط عمودياً لتجنب التكدس البصري */
         .product-main-card {
             width: 100% !important;
-            padding: 10px !important; /* تقليص الهامش الداخلي لتقصير طول الكارت */
-            border: 1.5px solid var(--primary) !important; /* إضافة البوردر البمبي حوالين الكارت */
+            padding: 14px 12px !important;
+            border: 1.5px solid var(--primary) !important;
             border-radius: 16px !important;
             background-color: var(--bg-color);
-            box-shadow: 0 4px 10px var(--primary-shadow);
+            box-shadow: 0 4px 14px var(--primary-shadow);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: auto; /* ترك المساحة تتحدد بدقة وبدون طول مفرط */
+            box-sizing: border-box;
+            transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth);
         }
 
-        /* تقصير منطقة الصورة بنسبة 25% */
+        .product-main-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 22px var(--primary-shadow-strong);
+        }
+
+        /* مساحة ثابتة ومريحة للصورة */
         .product-main-card .card-img-wrapper {
-            height: 110px !important; /* تحديد ارتفاع محكم للصورة لتقصير الكارت */
-            margin-bottom: 8px;
-            border-radius: 10px;
+            height: 105px !important;
+            margin-bottom: 12px;
+            border-radius: 12px;
             overflow: hidden;
+            background-color: var(--gray-light);
         }
 
         .product-main-card .card-img-wrapper img {
@@ -1015,37 +1025,35 @@
         }
 
         .product-main-card .card-item-title {
-            font-size: 0.95rem !important;
-            margin: 4px 0 !important;
+            font-size: 0.9rem !important;
+            font-weight: 700;
+            margin: 0 0 8px 0 !important;
             text-align: center;
             color: var(--text-color);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
-        /* حماية الوصف: حجم خط متناسق يضمن ظهور النص كاملاً بنسبة 100% دون أي قطع */
+        /* مساحة نصية منسابة بالكامل ومقروءة بدون كتم للمساحة */
         .product-main-card .card-item-desc {
-            font-size: 0.82rem !important;
-            line-height: 1.35 !important;
-            margin: 0 0 10px 0 !important;
-            color: #555555;
+            font-size: 0.78rem !important;
+            line-height: 1.4 !important;
+            margin: 0 0 14px 0 !important;
+            color: var(--gray-dark);
             text-align: center;
-            height: auto !important; /* السماح للنص بالانسياب الكامل دون بتر */
+            height: auto !important;
             display: block !important;
             overflow: visible !important;
         }
 
-        /* صف التحكم بالكميات والسعر */
+        /* صف أداة التحكم ممركز وانسيابي */
         .card-quantity-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             background-color: var(--gray-light);
-            border: 1px solid rgba(255, 145, 164, 0.15);
+            border: 1px solid rgba(255, 145, 164, 0.2);
             border-radius: 20px;
-            padding: 3px 6px;
-            margin: 4px 0 8px 0;
+            padding: 4px 8px;
+            margin: 0 0 12px 0;
         }
 
         .qty-btn {
@@ -1055,14 +1063,14 @@
             border: none;
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-size: 1rem;
-            font-weight: 600;
+            font-size: 0.95rem;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition-smooth);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
         }
 
         .qty-btn:hover {
@@ -1071,7 +1079,7 @@
         }
 
         .qty-price-display {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: var(--text-color);
         }
@@ -1079,13 +1087,14 @@
         .full-width-action {
             width: 100%;
             text-align: center;
-            padding: 8px 10px !important;
+            padding: 10px 12px !important;
             font-size: 0.85rem !important;
+            border-radius: 50px !important;
         }
 
         .more-products-trigger-row {
             text-align: center;
-            margin: 25px 0 10px 0;
+            margin: 40px 0 20px 0;
         }
 
         .products-group-hidden {
@@ -1103,30 +1112,33 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* تكييف الأبعاد لشاشات أجهزة الكمبيوتر والتابلت الكبيرة لجعلها 4 كروت عريضة ومتنفسة */
+        /* ضبط التنفس والراحة البصرية الكاملة للشاشات الأكبر */
         @media (min-width: 769px) {
             .products-grid-layout {
                 grid-template-columns: repeat(4, 1fr);
-                gap: 20px;
+                gap: 24px;
+                max-width: 95%;
             }
             .products-section-container {
-                padding: 50px 40px;
+                padding: 60px 40px;
+            }
+            .product-main-card {
+                padding: 16px 14px !important;
             }
             .product-main-card .card-img-wrapper {
-                height: 140px !important; /* طول متناسق مع الشاشات الكبيرة */
+                height: 145px !important;
             }
             .product-main-card .card-item-title {
-                font-size: 1.05rem !important;
+                font-size: 1rem !important;
             }
             .product-main-card .card-item-desc {
-                font-size: 0.88rem !important;
+                font-size: 0.84rem !important;
             }
-            .qty-price-display { font-size: 0.9rem; }
+            .qty-price-display { font-size: 0.88rem; }
         }
     </style>
 
     <script>
-        // دالة تحديث كميات الكارت وحساب السعر طردياً بشكل فوري
         function updateCardQty(buttonElement, change) {
             const row = buttonElement.parentElement;
             const priceDisplay = row.querySelector('.qty-price-display');
@@ -1146,7 +1158,6 @@
             priceValSpan.innerText = basePrice * currentQty;
         }
 
-        // دالة التوسيع الفوري للمجموعة الثانية من كروت المنتجات
         function revealProductGroup2() {
             const group2 = document.getElementById('productGroup2');
             const triggerRow = document.getElementById('triggerRowGroup2');
@@ -1157,7 +1168,6 @@
             }
         }
 
-        // دالة ربط إضافة المنتجات من شبكة المنيو المطور إلى محرك السلة الموحد
         function addGridProductToCart(productId, sizeId, variantId, buttonElement) {
             const card = buttonElement.closest('.product-main-card');
             const qtyRow = card.querySelector('.card-quantity-row');
