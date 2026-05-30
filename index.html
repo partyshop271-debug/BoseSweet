@@ -433,50 +433,6 @@
             color: var(--primary);
         }
 
-        .card-item-desc {
-            font-size: 0.85rem;
-            color: var(--gray-dark);
-            font-weight: 400;
-            margin-bottom: 16px;
-            display: block;
-            overflow: visible;
-            height: auto;
-        }
-
-        .card-item-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: auto;
-            border-top: 1px solid rgba(255, 145, 164, 0.15);
-            padding-top: 14px;
-        }
-
-        .card-item-price {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: var(--text-color);
-        }
-
-        .btn-card-action {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            border: 1px solid var(--text-color);
-            padding: 7px 18px;
-            border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition-smooth);
-        }
-
-        .btn-card-action:hover {
-            background-color: var(--primary);
-            color: var(--bg-color);
-            border-color: var(--primary);
-            box-shadow: 0 4px 12px var(--primary-shadow);
-        }
-
         .mastery-section {
             padding: 50px 0;
             background-color: var(--bg-color);
@@ -660,7 +616,143 @@
             margin-bottom: 20px;
         }
 
+        /* تنسيقات الجزء الثالث المحسنة بالكامل لمنع التكدس وتوسيط الكروت يميناً ويساراً */
+        .products-section-container {
+            padding: 40px 8px;
+            background-color: var(--bg-color);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .products-grid-layout {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            max-width: 96%; 
+            margin: 30px auto 0 auto;
+            transition: all 0.4s var(--transition-smooth);
+        }
+
+        .product-main-card {
+            width: 100% !important;
+            padding: 10px 8px !important; 
+            border: 1.5px solid var(--primary) !important;
+            border-radius: 14px !important;
+            background-color: var(--bg-color);
+            box-shadow: 0 4px 12px var(--primary-shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-sizing: border-box;
+        }
+
+        .product-main-card .card-img-wrapper {
+            height: 95px !important; 
+            margin-bottom: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: var(--gray-light);
+        }
+
+        .product-main-card .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-main-card .card-item-title {
+            font-size: 0.88rem !important;
+            font-weight: 700;
+            margin: 0 0 6px 0 !important;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .product-main-card .card-item-desc {
+            font-size: 0.76rem !important;
+            line-height: 1.35 !important;
+            margin: 0 0 10px 0 !important;
+            color: var(--gray-dark);
+            text-align: center;
+            height: auto !important;
+            display: block !important;
+            overflow: visible !important;
+        }
+
+        .card-quantity-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--gray-light);
+            border: 1px solid rgba(255, 145, 164, 0.2);
+            border-radius: 20px;
+            padding: 4px 6px;
+            margin: 0 0 10px 0;
+        }
+
+        .qty-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: none;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .qty-btn:hover {
+            background-color: var(--primary);
+            color: var(--bg-color);
+        }
+
+        .qty-price-display {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .full-width-action {
+            width: 100%;
+            text-align: center;
+            padding: 9px 10px !important;
+            font-size: 0.82rem !important;
+            border-radius: 50px !important;
+        }
+
+        .more-products-trigger-row {
+            text-align: center;
+            margin: 35px 0 15px 0;
+        }
+
         @media (min-width: 769px) {
+            .products-grid-layout {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+                max-width: 95%;
+            }
+            .products-section-container {
+                padding: 60px 40px;
+            }
+            .product-main-card {
+                padding: 14px 12px !important;
+            }
+            .product-main-card .card-img-wrapper {
+                height: 135px !important;
+            }
+            .product-main-card .card-item-title {
+                font-size: 1rem !important;
+            }
+            .product-main-card .card-item-desc {
+                font-size: 0.84rem !important;
+            }
+            .qty-price-display { font-size: 0.88rem; }
             .section-title-center { font-size: 1.9rem; }
             .slider-outer-container { padding: 0 45px; }
             .mastery-full-card { height: 520px; }
@@ -809,26 +901,20 @@
             <h2 class="section-title-center">قائمة الحلويات الفاخرة</h2>
             <p class="section-desc-center">تصفح تشكيلتنا المصنوعة بحرفية تامة لتختار منها ما يسعد أوقاتك ومناسباتك العائلية.</p>
         </div>
-    </div>
+        
         <div class="products-section-container">
-            <h2 class="section-title-center">منتجاتنا الفاخرة</h2>
-            <p class="section-desc-center">تذوق الإتقان الحرفي من خلال تشكيلتنا المعدة يومياً بخامات طبيعية 100% لتناسب ذوقك الرفيع.</p>
-            
             <div class="products-grid-layout">
-                
                 <div class="slider-card-item product-main-card" onclick="handleCardNavigation('despacito')">
                     <div class="card-img-wrapper">
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ديسباسيتو نوتيلا وايت" loading="lazy">
                     </div>
                     <h3 class="card-item-title">ديسباسيتو نوتيلا وايت</h3>
                     <p class="card-item-desc">طبقات متوازنة من كيك الفادج والموس الغني مع نوتيلا وايت الأصلية وقوام مريح من أول لقمة لآخر قطعة.</p>
-                    
                     <div class="card-quantity-row" onclick="event.stopPropagation();">
                         <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
                         <span class="qty-price-display" data-base-price="66"><span class="price-val">66</span> ج.م</span>
                         <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
                     </div>
-                    
                     <div class="card-item-footer" onclick="event.stopPropagation();">
                         <button class="btn-card-action full-width-action" onclick="addGridProductToCart('despacito', 'triangle', 'white-nutella', this)">إضافة للسلة</button>
                     </div>
@@ -840,13 +926,11 @@
                     </div>
                     <h3 class="card-item-title">قشطوطة بيستاشيو</h3>
                     <p class="card-item-desc">كيك هش غني بالحليب بطبقات ناعمة وحشوات متوازنة مغطاة بصوص فستق طبيعي غني ومميز الطعم.</p>
-                    
                     <div class="card-quantity-row" onclick="event.stopPropagation();">
                         <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
                         <span class="qty-price-display" data-base-price="143"><span class="price-val">143</span> ج.م</span>
                         <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
                     </div>
-                    
                     <div class="card-item-footer" onclick="event.stopPropagation();">
                         <button class="btn-card-action full-width-action" onclick="addGridProductToCart('qashtota', 'default', 'pistachio', this)">إضافة للسلة</button>
                     </div>
@@ -858,13 +942,11 @@
                     </div>
                     <h3 class="card-item-title">دوناتس كراميل غني</h3>
                     <p class="card-item-desc">دوناتس طازجة خفيفة الوزن ومخبوزة يومياً بحشوة صوص الكراميل المتوازن المذاق لتجربة تذوق حقيقية ورائعة.</p>
-                    
                     <div class="card-quantity-row" onclick="event.stopPropagation();">
                         <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
                         <span class="qty-price-display" data-base-price="88"><span class="price-val">88</span> ج.م</span>
                         <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
                     </div>
-                    
                     <div class="card-item-footer" onclick="event.stopPropagation();">
                         <button class="btn-card-action full-width-action" onclick="addGridProductToCart('donuts', 'default', 'caramel', this)">إضافة للسلة</button>
                     </div>
@@ -876,18 +958,15 @@
                     </div>
                     <h3 class="card-item-title">سينابون كلاسيك قرفة</h3>
                     <p class="card-item-desc">لفات سينابون طرية مخبوزة بخلطة القرفة الممتازة ومغطاة بالصوص الأبيض الكلاسيكي الغني دون مبالغة.</p>
-                    
                     <div class="card-quantity-row" onclick="event.stopPropagation();">
                         <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
                         <span class="qty-price-display" data-base-price="121"><span class="price-val">121</span> ج.م</span>
                         <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
                     </div>
-                    
                     <div class="card-item-footer" onclick="event.stopPropagation();">
                         <button class="btn-card-action full-width-action" onclick="addGridProductToCart('cinabon', 'default', 'classic', this)">إضافة للسلة</button>
                     </div>
                 </div>
-
             </div>
 
             <div class="more-products-trigger-row" id="triggerRowGroup2">
@@ -895,20 +974,17 @@
             </div>
 
             <div class="products-grid-layout products-group-hidden" id="productGroup2">
-                
                 <div class="slider-card-item product-main-card" onclick="handleCardNavigation('happiness-cups')">
                     <div class="card-img-wrapper">
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كب السعادة روشيه" loading="lazy">
                     </div>
                     <h3 class="card-item-title">كب السعادة روشيه</h3>
                     <p class="card-item-desc">أكواب فردية غنية بشوكولاتة الفيريرو روشيه المقرمشة لتمنحك متعة الطعم الأصلي الفاخر في كل لقمة.</p>
-                    
                     <div class="card-quantity-row" onclick="event.stopPropagation();">
                         <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
                         <span class="qty-price-display" data-base-price="61"><span class="price-val">61</span> ج.م</span>
                         <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
                     </div>
-                    
                     <div class="card-item-footer" onclick="event.stopPropagation();">
                         <button class="btn-card-action full-width-action" onclick="addGridProductToCart('happiness-cups', 'default', 'rocher', this)">إضافة للسلة</button>
                     </div>
@@ -920,13 +996,11 @@
                     </div>
                     <h3 class="card-item-title">ريدڤيلڤت طاجن كبير</h3>
                     <p class="card-item-desc">كيك مخملي أحمر كلاسيكي بطبقات كريمة غنية ناعمة ومحضرة طبيعياً بالكامل لتناسب جمعتكم العائلية.</p>
-                    
                     <div class="card-quantity-row" onclick="event.stopPropagation();">
                         <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
                         <span class="qty-price-display" data-base-price="165"><span class="price-val">165</span> ج.م</span>
                         <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
                     </div>
-                    
                     <div class="card-item-footer" onclick="event.stopPropagation();">
                         <button class="btn-card-action full-width-action" onclick="addGridProductToCart('red-velvet', 'tray', 'default', this)">إضافة للسلة</button>
                     </div>
@@ -938,13 +1012,11 @@
                     </div>
                     <h3 class="card-item-title">الميني تورت فرد أو اتنين</h3>
                     <p class="card-item-desc">تورتة صغيرة مصممة بعناية ومزينة يدوياً لتناسب الاحتفالات الثنائية البسيطة واللحظات السعيدة.</p>
-                    
                     <div class="card-quantity-row" onclick="event.stopPropagation();">
                         <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
                         <span class="qty-price-display" data-base-price="154"><span class="price-val">154</span> ج.م</span>
                         <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
                     </div>
-                    
                     <div class="card-item-footer" onclick="event.stopPropagation();">
                         <button class="btn-card-action full-width-action" onclick="addGridProductToCart('mini-cake', 'two-person', 'default', this)">إضافة للسلة</button>
                     </div>
@@ -956,228 +1028,18 @@
                     </div>
                     <h3 class="card-item-title">بوكس الروقان الفاخر</h3>
                     <p class="card-item-desc">تجميعة حصرية ومتنوعة من قطع الحلويات الفاخرة متسقة بعناية فائقة لتناسب الهدايا واللمات العائلية السعيدة.</p>
-                    
                     <div class="card-quantity-row" onclick="event.stopPropagation();">
                         <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
                         <span class="qty-price-display" data-base-price="550"><span class="price-val">550</span> ج.م</span>
                         <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
                     </div>
-                    
                     <div class="card-item-footer" onclick="event.stopPropagation();">
                         <button class="btn-card-action full-width-action" onclick="addGridProductToCart('relax-box', 'default', 'default', this)">إضافة للسلة</button>
                     </div>
                 </div>
-
             </div>
         </div>
-
-    <style>
-        .products-section-container {
-            padding: 40px 8px;
-            background-color: var(--bg-color);
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* ضبط تمركز وحجم شبكة العرض لتستقر في منتصف الصفحة تماماً وبأبعاد مريحة للعين */
-        .products-grid-layout {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-            max-width: 96%; /* ترك هوامش تنفس جانبية متساوية تمنع الالتصاق بأطراف الشاشة */
-            margin: 25px auto 0 auto;
-            transition: all 0.4s var(--transition-smooth);
-        }
-
-        /* كارت منتج عريض بنسبة 10% وأقصر عمودياً بنسبة 10% لمنع التكدس البصري */
-        .product-main-card {
-            width: 100% !important;
-            padding: 10px 8px !important; /* ضغط المسافات الداخلية عمودياً */
-            border: 1.5px solid var(--primary) !important;
-            border-radius: 14px !important;
-            background-color: var(--bg-color);
-            box-shadow: 0 4px 12px var(--primary-shadow);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-sizing: border-box;
-        }
-
-        /* تقليص حاوية الصورة رأسياً */
-        .product-main-card .card-img-wrapper {
-            height: 95px !important; /* ارتفاع عمودي مضبوط يمنع العمل الإضافي للإسكروال */
-            margin-bottom: 8px;
-            border-radius: 10px;
-            overflow: hidden;
-            background-color: var(--gray-light);
-        }
-
-        .product-main-card .card-img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .product-main-card .card-item-title {
-            font-size: 0.88rem !important;
-            font-weight: 700;
-            margin: 0 0 6px 0 !important;
-            text-align: center;
-            color: var(--text-color);
-        }
-
-        /* تأمين الأوصاف لتنساب بالكامل دون قص أو بتر بصري نهائياً */
-        .product-main-card .card-item-desc {
-            font-size: 0.76rem !important;
-            line-height: 1.35 !important;
-            margin: 0 0 10px 0 !important;
-            color: var(--gray-dark);
-            text-align: center;
-            height: auto !important;
-            display: block !important;
-            overflow: visible !important;
-        }
-
-        .card-quantity-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: var(--gray-light);
-            border: 1px solid rgba(255, 145, 164, 0.2);
-            border-radius: 20px;
-            padding: 4px 6px;
-            margin: 0 0 10px 0;
-        }
-
-        .qty-btn {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: none;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-size: 0.9rem;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition-smooth);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-        }
-
-        .qty-btn:hover {
-            background-color: var(--primary);
-            color: var(--bg-color);
-        }
-
-        .qty-price-display {
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: var(--text-color);
-        }
-
-        .full-width-action {
-            width: 100%;
-            text-align: center;
-            padding: 9px 10px !important;
-            font-size: 0.82rem !important;
-            border-radius: 50px !important;
-        }
-
-        .more-products-trigger-row {
-            text-align: center;
-            margin: 35px 0 15px 0;
-        }
-
-        @media (min-width: 769px) {
-            .products-grid-layout {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 24px;
-                max-width: 95%;
-            }
-            .products-section-container {
-                padding: 60px 40px;
-            }
-            .product-main-card {
-                padding: 14px 12px !important;
-            }
-            .product-main-card .card-img-wrapper {
-                height: 135px !important;
-            }
-            .product-main-card .card-item-title {
-                font-size: 1rem !important;
-            }
-            .product-main-card .card-item-desc {
-                font-size: 0.84rem !important;
-            }
-            .qty-price-display { font-size: 0.88rem; }
-        }
-    </style>
-
-    <script>
-        // دوال تشغيل الجزء الثالث محصنة ومؤمنة تماماً ضد التوقف والخلل
-        function updateCardQty(buttonElement, change) {
-            const row = buttonElement.parentElement;
-            const priceDisplay = row.querySelector('.qty-price-display');
-            const priceValSpan = priceDisplay.querySelector('.price-val');
-            const basePrice = parseInt(priceDisplay.getAttribute('data-base-price'));
-            
-            if (!row.hasAttribute('data-current-qty')) {
-                row.setAttribute('data-current-qty', '1');
-            }
-            
-            let currentQty = parseInt(row.getAttribute('data-current-qty'));
-            currentQty += change;
-            
-            if (currentQty < 1) currentQty = 1;
-            
-            row.setAttribute('data-current-qty', currentQty);
-            priceValSpan.innerText = basePrice * currentQty;
-        }
-
-        function revealProductGroup2() {
-            const group2 = document.getElementById('productGroup2');
-            const triggerRow = document.getElementById('triggerRowGroup2');
-            
-            if (group2) {
-                group2.classList.add('products-group-reveal');
-                if (triggerRow) triggerRow.style.display = 'none';
-            }
-        }
-
-        function addGridProductToCart(productId, sizeId, variantId, buttonElement) {
-            const card = buttonElement.closest('.product-main-card');
-            const qtyRow = card.querySelector('.card-quantity-row');
-            const qty = parseInt(qtyRow.getAttribute('data-current-qty')) || 1;
-            const priceDisplay = qtyRow.querySelector('.qty-price-display');
-            const totalPrice = parseInt(priceDisplay.querySelector('.price-val').innerText);
-            const title = card.querySelector('.card-item-title').innerText;
-            
-            console.log(`بروتوكول السلة: تم اعتماد إضافة ${qty} قطعة من (${title}) بإجمالي سعر ${totalPrice} ج.م.`);
-            
-            const badge = document.getElementById('cartCount');
-            if (badge) {
-                let currentCount = parseInt(badge.innerText) || 0;
-                badge.innerText = currentCount + qty;
-            }
-            
-            const originalText = buttonElement.innerText;
-            buttonElement.innerText = "تمت الإضافة ✓";
-            buttonElement.style.borderColor = "#25D366";
-            buttonElement.style.backgroundColor = "#25D366";
-            buttonElement.style.color = "#FFFFFF";
-            
-            setTimeout(() => {
-                buttonElement.innerText = originalText;
-                buttonElement.style.borderColor = "";
-                buttonElement.style.backgroundColor = "";
-                buttonElement.style.color = "";
-            }, 1800);
-        }
-    </script>
-
-    <div id="view-cart" class="app-view-container">
+    </div> <div id="view-cart" class="app-view-container">
         <div style="padding: 40px 24px;">
             <h2 class="section-title-center">سلة المشتريات الخاصة بك</h2>
             <p class="section-desc-center">راجع طلباتك الحالية وتأكد من التفاصيل والنكهات المختارة قبل إتمام الشراء والتوجيه للمبيعات.</p>
@@ -1328,6 +1190,35 @@
             }
         })();
 
+        function updateCardQty(buttonElement, change) {
+            const row = buttonElement.parentElement;
+            const priceDisplay = row.querySelector('.qty-price-display');
+            const priceValSpan = priceDisplay.querySelector('.price-val');
+            const basePrice = parseInt(priceDisplay.getAttribute('data-base-price'));
+            
+            if (!row.hasAttribute('data-current-qty')) {
+                row.setAttribute('data-current-qty', '1');
+            }
+            
+            let currentQty = parseInt(row.getAttribute('data-current-qty'));
+            currentQty += change;
+            
+            if (currentQty < 1) currentQty = 1;
+            
+            row.setAttribute('data-current-qty', currentQty);
+            priceValSpan.innerText = basePrice * currentQty;
+        }
+
+        function revealProductGroup2() {
+            const group2 = document.getElementById('productGroup2');
+            const triggerRow = document.getElementById('triggerRowGroup2');
+            
+            if (group2) {
+                group2.classList.add('products-group-reveal');
+                if (triggerRow) triggerRow.style.display = 'none';
+            }
+        }
+
         function addToCartDirect(productId, sizeId, variantId, price, name) {
             console.log(`تم إضافة المنتج: ${name} بسعر ${price} ج.م بنجاح إلى سلة المشتريات المخصصة.`);
             const badge = document.getElementById('cartCount');
@@ -1335,6 +1226,36 @@
                 let currentCount = parseInt(badge.innerText) || 0;
                 badge.innerText = currentCount + 1;
             }
+        }
+
+        function addGridProductToCart(productId, sizeId, variantId, buttonElement) {
+            const card = buttonElement.closest('.product-main-card');
+            const qtyRow = card.querySelector('.card-quantity-row');
+            const qty = parseInt(qtyRow.getAttribute('data-current-qty')) || 1;
+            const priceDisplay = qtyRow.querySelector('.qty-price-display');
+            const totalPrice = parseInt(priceDisplay.querySelector('.price-val').innerText);
+            const title = card.querySelector('.card-item-title').innerText;
+            
+            console.log(`بروتوكول السلة: تم اعتماد إضافة ${qty} قطعة من (${title}) بإجمالي سعر ${totalPrice} ج.م.`);
+            
+            const badge = document.getElementById('cartCount');
+            if (badge) {
+                let currentCount = parseInt(badge.innerText) || 0;
+                badge.innerText = currentCount + qty;
+            }
+            
+            const originalText = buttonElement.innerText;
+            buttonElement.innerText = "تمت الإضافة ✓";
+            buttonElement.style.borderColor = "#25D366";
+            buttonElement.style.backgroundColor = "#25D366";
+            buttonElement.style.color = "#FFFFFF";
+            
+            setTimeout(() => {
+                buttonElement.innerText = originalText;
+                buttonElement.style.borderColor = "";
+                buttonElement.style.backgroundColor = "";
+                buttonElement.style.color = "";
+            }, 1800);
         }
     </script>
 </body>
