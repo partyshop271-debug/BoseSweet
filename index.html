@@ -22,12 +22,12 @@
     <style>
         :root {
             --primary: #FF91A4;
-            --primary-shadow: rgba(255, 145, 164, 0.25);
-            --primary-shadow-strong: rgba(255, 145, 164, 0.45);
+            --primary-shadow: rgba(255, 145, 164, 0.18);
+            --primary-shadow-strong: rgba(255, 145, 164, 0.35);
             --text-color: #000000;
             --bg-color: #FFFFFF;
-            --gray-light: #F9F9F9;
-            --gray-dark: #333333;
+            --gray-light: #FAFAFA;
+            --gray-dark: #2B2B2B;
             --font-main: 'Alexandria', sans-serif;
             --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -54,14 +54,14 @@
             display: block;
         }
 
-        /* شريط علوي متحرك - تم تقليل السرعة بنسبة 30% لراحة وثبات الرؤية */
+        /* شريط علوي متحرك - تم تقليل السرعة بنسبة 30% لضمان حركة انسيابية ناعمة */
         .ticker-wrap {
             width: 100%;
             background-color: var(--primary);
             overflow: hidden;
             white-space: nowrap;
-            padding: 10px 0;
-            box-shadow: 0 4px 12px var(--primary-shadow);
+            padding: 12px 0;
+            box-shadow: 0 2px 10px var(--primary-shadow);
         }
 
         .ticker-content {
@@ -72,8 +72,8 @@
 
         .ticker-item {
             display: inline-block;
-            padding: 0 2rem;
-            font-size: 0.9rem;
+            padding: 0 2.5rem;
+            font-size: 0.85rem;
             color: var(--bg-color);
             font-weight: 600;
         }
@@ -83,31 +83,31 @@
             100% { transform: translate3d(-100%, 0, 0); }
         }
 
-        /* هيدر متطور مع توزيع الظلال الوردية الفاخرة */
+        /* الهيدر المطور بلمسات وردية ناعمة وظلال متزنة */
         .main-header {
             background-color: var(--bg-color);
-            border-bottom: 2px solid var(--primary);
+            border-bottom: 1px solid rgba(255, 145, 164, 0.2);
             position: sticky;
             top: 0;
             z-index: 1000;
-            padding: 14px 20px;
+            padding: 14px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 4px 15px var(--primary-shadow);
+            box-shadow: 0 4px 16px var(--primary-shadow);
         }
 
         .header-right {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 16px;
         }
 
         .menu-toggle {
             background: none;
             border: none;
             cursor: pointer;
-            padding: 5px;
+            padding: 6px;
             display: flex;
             flex-direction: column;
             gap: 6px;
@@ -126,17 +126,22 @@
         }
 
         .brand-name {
-            font-size: 1.3rem;
+            font-size: 1.25rem;
             font-weight: 700;
             color: var(--text-color);
             text-decoration: none;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.3px;
+            transition: var(--transition-smooth);
+        }
+
+        .brand-name:hover {
+            color: var(--primary);
         }
 
         .header-left {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 20px;
         }
 
         .icon-btn {
@@ -147,12 +152,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 5px;
+            padding: 6px;
+            transition: var(--transition-smooth);
         }
 
         .icon-btn svg {
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             fill: none;
             stroke: var(--text-color);
             stroke-width: 2;
@@ -166,14 +172,14 @@
 
         .cart-badge {
             position: absolute;
-            top: -4px;
-            right: -4px;
+            top: -2px;
+            right: -2px;
             background-color: var(--primary);
             color: var(--bg-color);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             font-weight: 700;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -181,21 +187,21 @@
             box-shadow: 0 2px 6px var(--primary-shadow-strong);
         }
 
-        /* قائمة جانبية تفاعلية مبرزة بظلال الهوية المعتمدة */
+        /* القائمة الجانبية التفاعلية المحسنة بالظلال الوردية والنعومة الهيكلية */
         .sidebar {
             position: fixed;
             top: 0;
-            right: -300px;
-            width: 300px;
+            right: -310px;
+            width: 310px;
             height: 100%;
             background-color: var(--bg-color);
             box-shadow: -8px 0 30px var(--primary-shadow-strong);
             z-index: 2000;
             transition: right 0.4s var(--transition-smooth);
-            padding: 30px 24px;
+            padding: 35px 28px;
             display: flex;
             flex-direction: column;
-            border-left: 2px solid var(--primary);
+            border-left: 1px solid rgba(255, 145, 164, 0.25);
         }
 
         .sidebar.active {
@@ -206,8 +212,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 40px;
-            border-bottom: 1px solid var(--primary-shadow);
+            margin-bottom: 45px;
+            border-bottom: 1px solid rgba(255, 145, 164, 0.1);
             padding-bottom: 15px;
         }
 
@@ -215,43 +221,45 @@
             background: none;
             border: none;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            transition: var(--transition-smooth);
+        }
+
+        .close-sidebar:hover {
+            color: var(--primary);
         }
 
         .close-sidebar svg {
             width: 24px;
             height: 24px;
-            stroke: var(--text-color);
+            stroke: currentColor;
             stroke-width: 2;
-        }
-
-        .close-sidebar:hover svg {
-            stroke: var(--primary);
         }
 
         .sidebar-menu {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         .sidebar-link {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 600;
             color: var(--text-color);
             text-decoration: none;
             transition: var(--transition-smooth);
             display: block;
-            padding: 10px 12px;
-            border-radius: 8px;
-            border-bottom: 1px solid rgba(0,0,0,0.02);
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 145, 164, 0.05);
         }
 
         .sidebar-link:hover, .sidebar-link.active {
             color: var(--primary);
-            background-color: var(--gray-light);
-            padding-right: 18px;
-            box-shadow: inset 4px 0 0 var(--primary);
+            padding-right: 8px;
         }
 
         .overlay {
@@ -260,44 +268,44 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.25);
+            background-color: rgba(0,0,0,0.15);
             z-index: 1500;
             display: none;
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(5px);
         }
 
         .overlay.active {
             display: block;
         }
 
-        /* هندسة وتنسيق العناوين في منتصف الصفحة تماماً */
+        /* تنسيق العناوين المركزية والأوصاف المباشرة لمنع التكدس البصري */
         .section-title-center {
-            font-size: 1.7rem;
+            font-size: 1.55rem;
             font-weight: 700;
             color: var(--text-color);
             text-align: center;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             padding: 0 20px;
+            letter-spacing: -0.3px;
         }
 
         .section-title-center span.highlight {
             color: var(--primary);
-            text-shadow: 0 2px 8px var(--primary-shadow);
         }
 
         .section-desc-center {
             font-size: 0.95rem;
             color: var(--gray-dark);
             text-align: center;
-            max-width: 650px;
+            max-width: 600px;
             margin: 0 auto 35px auto;
             padding: 0 20px;
             font-weight: 400;
         }
 
-        /* قسم البطل */
+        /* قسم البطل الرئيسي المطور بمساحة تنفس بصري واسعة */
         .hero-section {
-            padding: 65px 20px 45px 20px;
+            padding: 70px 20px 50px 20px;
             text-align: center;
             background-color: var(--bg-color);
         }
@@ -307,27 +315,28 @@
             background-color: var(--primary);
             color: var(--bg-color);
             text-decoration: none;
-            padding: 12px 40px;
+            padding: 14px 40px;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth);
             border: none;
             cursor: pointer;
-            box-shadow: 0 6px 18px var(--primary-shadow-strong);
+            box-shadow: 0 4px 16px var(--primary-shadow-strong);
         }
 
         .btn-primary-oval:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px var(--primary-shadow-strong);
+            box-shadow: 0 6px 22px var(--primary-shadow-strong);
         }
 
         .video-hook-container {
             width: 100%;
             margin-top: 45px;
             overflow: hidden;
-            border: 2px solid var(--primary-shadow);
+            background-color: var(--gray-light);
             box-shadow: 0 10px 30px var(--primary-shadow);
+            border: 1px solid rgba(255, 145, 164, 0.1);
         }
 
         .video-hook {
@@ -338,16 +347,16 @@
             aspect-ratio: 16/9;
         }
 
-        /* كروت الأكثر مبيعاً مع إدراج النكهات وبوردر بمبي ناعم */
+        /* قسم الأكثر مبيعاً بكروت ذات حواف وبوردر وردي ناعم */
         .most-selling-section {
-            padding: 45px 0;
+            padding: 50px 0;
             background-color: var(--bg-color);
             overflow: hidden;
         }
 
         .slider-outer-container {
             width: 100%;
-            padding: 0 20px;
+            padding: 0 24px;
             overflow-x: auto;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
@@ -359,16 +368,16 @@
 
         .slider-track {
             display: flex;
-            gap: 22px;
-            padding-bottom: 18px;
+            gap: 24px;
+            padding-bottom: 20px;
             width: max-content;
         }
 
-        /* شبكة روابط تفاعلية مدمجة عبر الكروت بالكامل لزيادة المبيعات */
+        /* كروت المنتجات مع حواف وردية ناعمة وشبكة روابط داخلية كاملة */
         .slider-card-item {
             width: 270px;
             background-color: var(--bg-color);
-            border: 2px solid rgba(255, 145, 164, 0.3);
+            border: 1px solid rgba(255, 145, 164, 0.3);
             border-radius: 14px;
             padding: 18px;
             display: flex;
@@ -376,13 +385,13 @@
             justify-content: space-between;
             cursor: pointer;
             transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth), border-color 0.3s var(--transition-smooth);
-            box-shadow: 0 6px 16px var(--primary-shadow);
+            box-shadow: 0 4px 14px var(--primary-shadow);
         }
 
         .slider-card-item:hover {
             transform: translateY(-5px);
             border-color: var(--primary);
-            box-shadow: 0 10px 25px var(--primary-shadow-strong);
+            box-shadow: 0 8px 26px var(--primary-shadow-strong);
         }
 
         .card-img-wrapper {
@@ -392,7 +401,7 @@
             overflow: hidden;
             background-color: var(--gray-light);
             margin-bottom: 14px;
-            border: 1px solid rgba(255, 145, 164, 0.15);
+            border: 1px solid rgba(255, 145, 164, 0.05);
         }
 
         .card-img-wrapper img {
@@ -403,21 +412,26 @@
         }
 
         .slider-card-item:hover .card-img-wrapper img {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
 
         .card-item-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 700;
             color: var(--text-color);
             margin-bottom: 8px;
+            transition: color 0.3s var(--transition-smooth);
+        }
+
+        .slider-card-item:hover .card-item-title {
+            color: var(--primary);
         }
 
         .card-item-desc {
             font-size: 0.85rem;
             color: var(--gray-dark);
             font-weight: 400;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -430,12 +444,12 @@
             align-items: center;
             justify-content: space-between;
             margin-top: auto;
-            border-top: 1px solid rgba(255, 145, 164, 0.2);
+            border-top: 1px solid rgba(255, 145, 164, 0.15);
             padding-top: 14px;
         }
 
         .card-item-price {
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             font-weight: 700;
             color: var(--text-color);
         }
@@ -443,10 +457,10 @@
         .btn-card-action {
             background-color: var(--bg-color);
             color: var(--text-color);
-            border: 1.5px solid var(--text-color);
-            padding: 6px 18px;
+            border: 1px solid var(--text-color);
+            padding: 7px 18px;
             border-radius: 50px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition-smooth);
@@ -459,21 +473,21 @@
             box-shadow: 0 4px 12px var(--primary-shadow);
         }
 
-        /* قسم عقد من الإتقان */
+        /* قسم عقد من الإتقان المطور بصرياً */
         .mastery-section {
-            padding: 45px 0;
+            padding: 50px 0;
             background-color: var(--bg-color);
         }
 
         .mastery-full-card {
             width: 100%;
-            height: 390px;
+            height: 400px;
             position: relative;
             overflow: hidden;
             background-color: var(--gray-light);
-            border-top: 2px solid var(--primary);
-            border-bottom: 2px solid var(--primary);
             box-shadow: 0 8px 24px var(--primary-shadow);
+            border-top: 1px solid rgba(255, 145, 164, 0.15);
+            border-bottom: 1px solid rgba(255, 145, 164, 0.15);
         }
 
         .mastery-slideshow-container {
@@ -506,45 +520,47 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.05) 60%);
+            background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.02) 65%);
             z-index: 3;
         }
 
         .mastery-card-overlay-text {
             position: absolute;
-            bottom: 30px;
-            right: 30px;
+            bottom: 35px;
+            right: 35px;
             z-index: 4;
             color: var(--bg-color);
         }
 
         .mastery-card-overlay-text h3 {
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            letter-spacing: -0.3px;
         }
 
-        /* فوتر مركزي مستقل كلياً بالمسافات التنفسية والأيقونات الملونة الأصلية */
+        /* الفوتر المطور - نصوص وأقسام ممركزة في منتصف الصفحة تماماً */
         .main-footer {
             background-color: var(--gray-light);
-            border-top: 2px solid var(--primary);
-            padding: 55px 20px 35px 20px;
+            border-top: 1px solid rgba(255, 145, 164, 0.25);
+            padding: 60px 24px 35px 24px;
             text-align: center;
         }
 
         .footer-brand {
-            font-size: 1.6rem;
+            font-size: 1.45rem;
             font-weight: 700;
             color: var(--text-color);
             margin-bottom: 14px;
+            letter-spacing: -0.3px;
         }
 
         .footer-about {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--gray-dark);
             max-width: 520px;
             margin: 0 auto 28px auto;
             font-weight: 400;
+            line-height: 1.65;
         }
 
         .footer-links-grid {
@@ -556,20 +572,21 @@
         }
 
         .footer-nav-link {
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             color: var(--text-color);
             text-decoration: none;
             font-weight: 600;
             transition: var(--transition-smooth);
-            padding: 4px 8px;
+            padding: 4px 0;
+            border-bottom: 1px solid transparent;
         }
 
         .footer-nav-link:hover {
             color: var(--primary);
-            text-shadow: 0 2px 4px var(--primary-shadow);
+            border-bottom-color: var(--primary);
         }
 
-        /* أيقونات شبكات التواصل الاجتماعي الرسمية بألوانها الحقيقية والتزام تام بالتوسط */
+        /* أيقونات التواصل الاجتماعي بالألوان والرموز الأصلية الرسمية للتفاعل الثابت */
         .footer-social-row {
             display: flex;
             justify-content: center;
@@ -585,48 +602,73 @@
             align-items: center;
             justify-content: center;
             transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
             background-color: var(--bg-color);
-            border: 1px solid rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.02);
         }
 
         .social-icon-anchor svg {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             fill: currentColor;
         }
 
+        /* الهوية اللونية الرسمية والكاملة للشبكات */
         .social-icon-anchor.facebook { color: #1877F2; }
         .social-icon-anchor.instagram { color: #E1306C; }
         .social-icon-anchor.tiktok { color: #000000; }
         .social-icon-anchor.whatsapp { color: #25D366; }
 
         .social-icon-anchor:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12);
         }
 
         .footer-copyright {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--gray-dark);
-            border-top: 1px solid rgba(255, 145, 164, 0.15);
-            padding-top: 22px;
+            border-top: 1px solid rgba(255, 145, 164, 0.1);
+            padding-top: 24px;
             font-weight: 400;
         }
 
-        /* حاويات العرض للصفحات المتعددة المستقلة بالكامل */
+        /* حاويات العرض المعزولة لضمان معمارية الصفحات المتعددة وحظر التكدس */
         .app-view-container {
             display: none;
+            animation: fadeInView 0.4s var(--transition-smooth) forwards;
         }
+        
         .app-view-container.view-active {
             display: block;
         }
 
+        @keyframes fadeInView {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* تنسيق صفحات الفوتر المنفصلة والمستقلة لضمان التنفس البصري */
+        .static-page-content {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 40px 24px 60px 24px;
+            text-align: center;
+        }
+
+        .static-page-content p {
+            font-size: 0.95rem;
+            color: var(--gray-dark);
+            line-height: 1.75;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
         @media (min-width: 769px) {
-            .section-title-center { font-size: 2.1rem; }
-            .slider-outer-container { padding: 0 40px; }
+            .section-title-center { font-size: 1.9rem; }
+            .slider-outer-container { padding: 0 45px; }
             .mastery-full-card { height: 520px; }
-            .mastery-card-overlay-text h3 { font-size: 1.9rem; }
+            .mastery-card-overlay-text h3 { font-size: 1.65rem; }
+            .main-header { padding: 16px 45px; }
         }
     </style>
 </head>
@@ -635,8 +677,8 @@
     <div class="ticker-wrap">
         <div class="ticker-content">
             <span class="ticker-item">✨ حلويات بوسي - عشر سنوات من الاتقان الحرفي المتميز الفاخر</span>
-            <span class="ticker-item">🍓 خامات طبيعية ممتازة ومضمونة 100% لتشرفك أمام ضيوفك وتبيض وجهك</span>
-            <span class="ticker-item">🚚 توصيل سريع وآمن لكافة مناطق الفرافرة، الكفاح، والقرى السعيدة المجاورة</span>
+            <span class="ticker-item">🍓 خامات طبيعية ممتازة ومضمونة 100% لتشرفك أمام ضيوفك وتبسطهم بالطعم الأصلي</span>
+            <span class="ticker-item">🚚 خدمات توصيل مخصصة وسريعة لكافة مناطق الفرافرة والكفاح</span>
         </div>
     </div>
 
@@ -647,7 +689,7 @@
                 <span></span>
                 <span></span>
             </button>
-            <a href="#" class="brand-name" onclick="navigateToPage('home')">hlwyat bwsy</a>
+            <a href="#" class="brand-name" onclick="navigateToPage('home')">حلويات بوسي</a>
         </div>
         
         <div class="header-left">
@@ -681,10 +723,10 @@
     <main id="view-home" class="app-view-container view-active">
         <section class="hero-section">
             <h1 class="section-title-center">عقد من <span class="highlight">التميز</span> في صناعة الحلويات</h1>
-            <p class="section-desc-center">نصنع لك ذكريات لا تُنسى عبر قطع فنية تجمع بين المذاق الغني والاتقان الحرفي الأصيل. خامات طبيعية بالكامل لتستمتع وتشارك من تحب الجودة الفاخرة.</p>
+            <p class="section-desc-center">نصنع لك ذكريات لا تُنسى عبر قطع فنية تجمع بين المذاق الغني والاتقان الحرفي. خامات طبيعية بالكامل لتستمتع وتشارك من تحب الجودة الحقيقية.</p>
             <button class="btn-primary-oval" onclick="navigateToPage('menu')">اطلب الآن</button>
             
-            <div class="video-hook-container" onclick="navigateToPage('menu')" style="cursor:pointer;">
+            <div class="video-hook-container">
                 <video class="video-hook" autoplay loop muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
                     <source src="https://res.cloudinary.com/dyx4w0dr1/video/upload/v1740824900/hero_bg_compressed.mp4" type="video/mp4">
                     تصفح موقعنا للاستمتاع بأحدث عروض المنتجات الفاخرة.
@@ -694,7 +736,7 @@
 
         <section class="most-selling-section" id="mostSelling">
             <h2 class="section-title-center">الأكثر مبيعاً من مطبخنا</h2>
-            <p class="section-desc-center">مجموعة حصرية من الحلويات الفاخرة المعدة يومياً بأعلى درجات الاتقان الحرفي الفاخر والمظهر الجذاب.</p>
+            <p class="section-desc-center">مجموعة مختارة من الحلويات الفاخرة المجهزة يومياً بأعلى معايير الاتقان الحرفي الفاخر.</p>
             
             <div class="slider-outer-container">
                 <div class="slider-track" id="mostSellingSlider">
@@ -706,16 +748,16 @@
                         <p class="card-item-desc">طبقات متوازنة من كيك الفادج والموس الغني مع نوتيلا دارك وقوام مريح من أول لقمة.</p>
                         <div class="card-item-footer">
                             <span class="card-item-price">66 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('despacito', 'triangle', 'dark-nutella', 66, 'ديسباسيتو نوتيلا دارك')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('despacito', 'triangle', 'dark-nutella', 66, 'ديسباسيتو مثلث نوتيلا دارك')">إضافة للسلة</button>
                         </div>
                     </div>
 
                     <div class="slider-card-item" onclick="handleCardNavigation('qashtota')">
                         <div class="card-img-wrapper">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قشطوطة لوتس فاخرة" loading="lazy">
+                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قشطوطة لوتس" loading="lazy">
                         </div>
                         <h3 class="card-item-title">قشطوطة لوتس</h3>
-                        <p class="card-item-desc">كيك هش بطبقات ناعمة وحشوات متنزنة غنية بزبدة اللوتس الأصلية الفاخرة.</p>
+                        <p class="card-item-desc">كيك هش بطبقات ناعمة وحشوات متوازنة غنية بزبدة اللوتس الأصلية الطعم والواضحة تماماً.</p>
                         <div class="card-item-footer">
                             <span class="card-item-price">121 ج.م</span>
                             <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('qashtota', 'default', 'lotus', 121, 'قشطوطة لوتس')">إضافة للسلة</button>
@@ -724,10 +766,10 @@
 
                     <div class="slider-card-item" onclick="handleCardNavigation('cinabon')">
                         <div class="card-img-wrapper">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="سينابون بيستاشيو غني" loading="lazy">
+                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="سينابون بيستاشيو" loading="lazy">
                         </div>
                         <h3 class="card-item-title">سينابون بيستاشيو</h3>
-                        <p class="card-item-desc">لفات سينابون مخبوزة طازجة بقوام طري ومغطاة كلياً بجمال صوص البيستاشيو الفاخر.</p>
+                        <p class="card-item-desc">لفات سينابون مخبوزة طازجة بقوام طري غني بصوص البيستاشيو الطبيعي المختار بعناية.</p>
                         <div class="card-item-footer">
                             <span class="card-item-price">143 ج.م</span>
                             <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('cinabon', 'default', 'pistachio', 143, 'سينابون بيستاشيو')">إضافة للسلة</button>
@@ -736,10 +778,10 @@
 
                     <div class="slider-card-item" onclick="handleCardNavigation('donuts')">
                         <div class="card-img-wrapper">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="دوناتس ماتيلدا شوكليت" loading="lazy">
+                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="دوناتس ماتيلدا" loading="lazy">
                         </div>
                         <h3 class="card-item-title">دوناتس ماتيلدا</h3>
-                        <p class="card-item-desc">دوناتس طازجة وخفيفة الوزن بحشوة الشوكولاتة الغنية المكثفة لفتح الشهية وتحفيز الشراء.</p>
+                        <p class="card-item-desc">دوناتس طازجة وخفيفة الوزن ومخبوزة يوم بيوم بحشوة الشوكولاتة الغنية على طريقة ماتيلدا.</p>
                         <div class="card-item-footer">
                             <span class="card-item-price">110 ج.م</span>
                             <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('donuts', 'default', 'matilda', 110, 'دوناتس ماتيلدا')">إضافة للسلة</button>
@@ -751,52 +793,68 @@
 
         <section class="mastery-section">
             <h2 class="section-title-center">عقد من الإتقان الحرفي</h2>
-            <p class="section-desc-center">على مدار عشر سنوات متواصلة من العطاء الفاخر، نركز على أدق التفاصيل لنمنحك تجربة تذوق حقيقية تُشرفك أمام ضيوفك وتلبي تطلعاتك الجمالية.</p>
+            <p class="section-desc-center">على مدار عشر سنوات متواصلة، نركز على أدق التفاصيل لنمنحك تجربة تذوق حقيقية تُرضي شغفك بالجودة.</p>
             
-            <div class="mastery-full-card" onclick="navigateToPage('menu')" style="cursor:pointer;">
+            <div class="mastery-full-card">
                 <div class="mastery-slideshow-container" id="masterySlideshow">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide active" alt="إتقان حلويات بوسي الفاخر 1" loading="lazy">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide" alt="إتقان حلويات بوسي الفاخر 2" loading="lazy">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide active" alt="إتقان حلويات بوسي 1" loading="lazy">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide" alt="إتقان حلويات بوسي 2" loading="lazy">
                 </div>
                 <div class="mastery-card-overlay-text">
-                    <h3>جودة نلتزم بها يومياً لكافة مناسباتكم السعيدة والراقية</h3>
+                    <h3>جودة نلتزم بها يومياً لمناسباتكم السعيدة</h3>
                 </div>
             </div>
         </section>
     </main>
 
     <div id="view-menu" class="app-view-container">
-        <h2 class="section-title-center" style="margin-top:40px;">قائمة المنتجات (المنيو)</h2>
-        <p class="section-desc-center">تصفح تشكيلة حلويات بوسي الفاخرة والمعدة يدوياً بعناية تامة لتناسب ذوقك الرفيع.</p>
+        <div style="padding: 40px 0;">
+            <h2 class="section-title-center">قائمة الحلويات الفاخرة</h2>
+            <p class="section-desc-center">تصفح تشكيلتنا المصنوعة بحرفية تامة لتختار منها ما يسعد أوقاتك ومناسباتك العائلية.</p>
+            </div>
     </div>
-    
+
     <div id="view-cart" class="app-view-container">
-        <h2 class="section-title-center" style="margin-top:40px;">سلة المشتريات</h2>
-        <p class="section-desc-center">مراجعة خياراتك المختارة بعناية لإنهاء عملية طلبك الفاخرة بنجاح.</p>
+        <div style="padding: 40px 24px;">
+            <h2 class="section-title-center">سلة المشتريات الخاصة بك</h2>
+            <p class="section-desc-center">راجع طلباتك الحالية وتأكد من التفاصيل والنكهات المختارة قبل إتمام الشراء والتوجيه للمبيعات.</p>
+        </div>
     </div>
-    
+
     <div id="view-cake-builder" class="app-view-container"></div>
     <div id="view-flower-builder" class="app-view-container"></div>
     <div id="view-product-single" class="app-view-container"></div>
     
     <div id="view-about" class="app-view-container">
-        <h2 class="section-title-center" style="margin-top:40px;">من نحن</h2>
-        <p class="section-desc-center">حلويات بوسي هي علامة تجارية مصرية رائدة في صناعة الحلويات الفاخرة والتورت المبتكرة والتنسيقات الإبداعية في مركز الفرافرة بمحافظة الوادي الجديد. نمتلك خبرة تزيد عن 10 سنوات من التميز والإتقان الفاخر، خدمنا خلالها أكثر من 10,000 عميل بمستوى من الاحترافية يعتمد كلياً على الخامات الطبيعية والمضمونة 100% لتأمين أرقى تجارب الضيافة والتهادي المتبادل بكامل الاحترام المتبادل.</p>
+        <div class="static-page-content">
+            <h2 class="section-title-center">من نحن</h2>
+            <p class="section-desc-center">القصة وراء علامة حلويات بوسي التجارية</p>
+            <p>حلويات بوسي علامة تجارية رائدة ومسجلة بخبرة تزيد عن 10 سنوات في صناعة أرقى الحلويات الفاخرة والتورت المبتكرة والمصنوعة يدوياً بالكامل في الفرافرة والوادي الجديد.</p>
+            <p>نحن نؤمن بأن الحلويات ليست مجرد منتج استهلاكي، بل هي وسيلة للتعبير عن التقدير والمحبة شيدت على مدار عقد كامل من الثقة والتميز لعملائنا النخبة.</p>
+        </div>
     </div>
     
     <div id="view-privacy" class="app-view-container">
-        <h2 class="section-title-center" style="margin-top:40px;">سياسة الخصوصية</h2>
-        <p class="section-desc-center">نحن في علامة حلويات بوسي نلتزم التزاماً صارماً ومطلقاً بحماية وسلامة بيانات عملائنا وسجلات طلباتهم الخاصة. نضمن تشغيل العمليات الحسابية والمعلوماتية محلياً لتجربة تصفح وشراء آمنة وسريعة كلياً دون أي مشاركة لبياناتك الشخصية خارج حدود النظام.</p>
+        <div class="static-page-content">
+            <h2 class="section-title-center">سياسة الخصوصية</h2>
+            <p class="section-desc-center">التزامنا التام بحماية خصوصية عملائنا</p>
+            <p>نحن في إدارة علامة حلويات بوسي التجارية نضع حماية بياناتك الشخصية واختياراتك وسجل تعاملاتك في مقدمة أولوياتنا البرمجية والمصرفية لضمان أمان تام بنسبة 100%.</p>
+            <p>يتم التعامل مع أرقام الهواتف، العناوين، وتفاصيل المناسبات الشخصية بسرية تامة ومطلقة ومحاطة بأعلى معايير الأمان البرمجي المحمي لضمان تجربة مستخدم آمنة ومريحة.</p>
+        </div>
     </div>
     
     <div id="view-return" class="app-view-container">
-        <h2 class="section-title-center" style="margin-top:40px;">سياسة الاسترجاع</h2>
-        <p class="section-desc-center">نظراً لأن جميع منتجات حلويات بوسي هي منتجات غذائية فاخرة تُصنع يدوياً وتُخبز طازجة يوم بيوم بناءً على طلبك ومواصفاتك الفردية الحصرية لتصلك بأعلى مستويات الجودة الفاخرة، فإن الطلبات تعتبر نهائية بمجرد اعتمادها برمجياً وتأكيدها الإداري لضمان سلامة الإنتاج ومطابقته التامة للمعايير الصحية الرفيعة.</p>
+        <div class="static-page-content">
+            <h2 class="section-title-center">سياسة الاسترجاع والاستبدال</h2>
+            <p class="section-desc-center">الضمان المصنعي الحقيقي لمنتجاتنا</p>
+            <p>نظراً لأن جميع منتجات علامة حلويات بوسي التجارية تُصنع وتُجهز طازجة يدوياً بناءً على طلبك وتخصيصك الفردي الخالص، فإننا نلتزم بتقديم أعلى مستويات الجودة المطابقة للمواصفات المعتمدة.</p>
+            <p>في حال وجود أي ملاحظة مصنعية أو عدم تطابق في الحشوة والنكهة المختارة من قبلك، يتم فحص وتعديل الطلب فوراً لضمان رضاك التام وتقديم القيمة الحقيقية التي تستحقها.</p>
+        </div>
     </div>
 
     <footer class="main-footer">
         <div class="footer-brand">حلويات بوسي</div>
-        <p class="footer-about">صنعناها بحب لتهديها لمن تحب. علامة تجارية رائدة وخبرة تزيد عن 10 سنوات في صناعة أشهى التورت والحلويات الفاخرة بخامات طبيعية 100%.</p>
+        <p class="footer-about">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات متواصلة في صناعة أشهى التورت والحلويات المبتكرة بخامات طبيعية 100%.</p>
         
         <div class="footer-links-grid">
             <a href="#" class="footer-nav-link" onclick="navigateToPage('home')">الرئيسية</a>
@@ -844,50 +902,50 @@
         if(closeSidebar) closeSidebar.addEventListener('click', toggleSidebar);
         if(sidebarOverlay) sidebarOverlay.addEventListener('click', toggleSidebar);
 
-        // نظام معالجة وإدارة الصفحات المتعددة المعزولة ديناميكياً
+        // محرك توجيه الصفحات المتعددة المستقلة (Routing Engine Simulation) لمنع التكدس تماماً
         function navigateToPage(pageId) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
-            // إخفاء وحظر كافة واجهات العرض النشطة فوراً
+            // عزل وإخفاء كافة شاشات العرض المفتوحة حالياً
             const containers = document.querySelectorAll('.app-view-container');
             containers.forEach(el => el.classList.remove('view-active'));
             
-            // تفعيل الواجهة المستقلة المطلوبة تماماً
+            // إظهار الشاشة المطلوبة كصفحة مستقلة بذاتها
             const activeTarget = document.getElementById(`view-${pageId}`);
             if (activeTarget) {
                 activeTarget.classList.add('view-active');
             }
             
-            // تحديث ضوابط الروابط النشطة داخل القائمة الجانبية
+            // تحديث مؤشرات القائمة الجانبية بنعومة
             const menuLinks = document.querySelectorAll('.sidebar-link');
             menuLinks.forEach(link => link.classList.remove('active'));
             const activeLink = document.getElementById(`nav-${pageId}`);
             if(activeLink) activeLink.classList.add('active');
             
-            // غلق القائمة الجانبية بعد الاختيار تلقائياً لراحة العميل وسرعة الاستخدام
+            // غلق القائمة الجانبية تلقائياً بعد اختيار التوجيه لراحة العميل
             if (sidebarMenu && sidebarMenu.classList.contains('active')) {
                 toggleSidebar();
             }
 
-            // تعديل مسار الـ URL لضمان معمارية الصفحات المتعددة التوافقية
+            // تحديث رابط الـ URL الحركي لضمان توافق معمارية الصفحات المتعددة ومحركات البحث
             const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + `?page=${pageId}`;
             window.history.pushState({ path: newUrl }, '', newUrl);
         }
 
-        // معالجة روابط وتوجيهات كروت المنتجات لصفحة المنيو لرفع المبيعات وتحقيق الأداء المطلوب
+        // شبكة الروابط الداخلية - تحويل كروت العرض لروابط توجه لصفحة المنتج المستقلة لزيادة المبيعات
         function handleCardNavigation(productId) {
-            console.log("توجيه دلالي كامل لصفحة المنتج المستقلة: " + productId);
-            navigateToPage('menu');
+            console.log("توجيه العميل برابط داخلي مباشر إلى الصفحة المستقلة للمنتج: " + productId);
+            navigateToPage('menu'); 
         }
 
-        // تهيئة التوجيه الأولي عند التمهيد الأولي للملف
+        // معالجة معمارية الصفحات المتعددة وتوجيه الروابط المباشرة عند بدء التشغيل والتحميل
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const initialPage = urlParams.get('page') || 'home';
             navigateToPage(initialPage);
         });
 
-        // تشغيل محرك كارت صور الإتقان المتغيرة تلقائياً بنعومة
+        // محرك تبديل صور كارت الإتقان الانسيابي المتزامن بنعومة تامة
         (function() {
             const slides = document.querySelectorAll('.mastery-slide');
             if (slides.length > 0) {
@@ -896,12 +954,13 @@
                     slides[currentSlideIndex].classList.remove('active');
                     currentSlideIndex = (currentSlideIndex + 1) % slides.length;
                     slides[currentSlideIndex].classList.add('active');
-                }, 4500);
+                }, 4000);
             }
         })();
 
-        // محاكي إضافة المنتجات المباشرة للسلة
+        // دالة الإضافة الفورية المباشرة إلى السلة وتحديث المؤشرات اللحظية في الهيدر
         function addToCartDirect(productId, sizeId, variantId, price, name) {
+            console.log(`تم إضافة المنتج: ${name} بسعر ${price} ج.م بنجاح إلى سلة المشتريات المخصصة.`);
             const badge = document.getElementById('cartCount');
             if (badge) {
                 let currentCount = parseInt(badge.innerText) || 0;
