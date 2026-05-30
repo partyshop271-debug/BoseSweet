@@ -973,47 +973,41 @@
 
     <style>
         .products-section-container {
-            padding: 50px 16px;
+            padding: 55px 12px;
             background-color: var(--bg-color);
             max-width: 1200px;
             margin: 0 auto;
         }
 
-        /* شبكة عرض ممركزة في المنتصف تماماً مع تقليل العرض بنسبة 10% عبر هوامش جانبية مريحة */
+        /* توسيط شبكة العرض كلياً في منتصف الشاشة يميناً ويساراً */
         .products-grid-layout {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            max-width: 90%; /* تقليص مساحة العرض الإجمالية للجريد لترك مساحة هوائية على الجوانب */
-            margin: 30px auto 0 auto; /* ممركزة في المنتصف تماماً */
+            gap: 14px;
+            max-width: 96%; /* تأمين مساحة هوائية حرة حَوْل أطراف الشاشة لمنع التكدس */
+            margin: 30px auto 0 auto;
             transition: all 0.4s var(--transition-smooth);
         }
 
-        /* كارت منتج احترافي ومضغوط عمودياً لتجنب التكدس البصري */
+        /* كارت منتج احترافي عريض ومقليص الارتفاع العمودي بنسبة 10% */
         .product-main-card {
             width: 100% !important;
-            padding: 14px 12px !important;
+            padding: 10px 8px !important; /* ضغط الهوامش الداخلية لتقليل الارتفاع */
             border: 1.5px solid var(--primary) !important;
-            border-radius: 16px !important;
+            border-radius: 14px !important;
             background-color: var(--bg-color);
-            box-shadow: 0 4px 14px var(--primary-shadow);
+            box-shadow: 0 4px 12px var(--primary-shadow);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             box-sizing: border-box;
-            transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth);
         }
 
-        .product-main-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 22px var(--primary-shadow-strong);
-        }
-
-        /* مساحة ثابتة ومريحة للصورة */
+        /* ضغط أبعاد مساحة الصورة عمودياً */
         .product-main-card .card-img-wrapper {
-            height: 105px !important;
-            margin-bottom: 12px;
-            border-radius: 12px;
+            height: 95px !important; /* تقليص ارتفاع حاوية الصورة لتقصير طول الكارت */
+            margin-bottom: 8px;
+            border-radius: 10px;
             overflow: hidden;
             background-color: var(--gray-light);
         }
@@ -1025,18 +1019,18 @@
         }
 
         .product-main-card .card-item-title {
-            font-size: 0.9rem !important;
+            font-size: 0.88rem !important;
             font-weight: 700;
-            margin: 0 0 8px 0 !important;
+            margin: 0 0 6px 0 !important;
             text-align: center;
             color: var(--text-color);
         }
 
-        /* مساحة نصية منسابة بالكامل ومقروءة بدون كتم للمساحة */
+        /* حماية الأوصاف من القص والبتر لتنساب بشكل طبيعي ومقروء */
         .product-main-card .card-item-desc {
-            font-size: 0.78rem !important;
-            line-height: 1.4 !important;
-            margin: 0 0 14px 0 !important;
+            font-size: 0.76rem !important;
+            line-height: 1.35 !important;
+            margin: 0 0 10px 0 !important;
             color: var(--gray-dark);
             text-align: center;
             height: auto !important;
@@ -1044,7 +1038,6 @@
             overflow: visible !important;
         }
 
-        /* صف أداة التحكم ممركز وانسيابي */
         .card-quantity-row {
             display: flex;
             align-items: center;
@@ -1052,25 +1045,25 @@
             background-color: var(--gray-light);
             border: 1px solid rgba(255, 145, 164, 0.2);
             border-radius: 20px;
-            padding: 4px 8px;
-            margin: 0 0 12px 0;
+            padding: 4px 6px;
+            margin: 0 0 10px 0;
         }
 
         .qty-btn {
-            width: 26px;
-            height: 26px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             border: none;
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition-smooth);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         }
 
         .qty-btn:hover {
@@ -1079,7 +1072,7 @@
         }
 
         .qty-price-display {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 700;
             color: var(--text-color);
         }
@@ -1087,14 +1080,14 @@
         .full-width-action {
             width: 100%;
             text-align: center;
-            padding: 10px 12px !important;
-            font-size: 0.85rem !important;
+            padding: 9px 10px !important;
+            font-size: 0.82rem !important;
             border-radius: 50px !important;
         }
 
         .more-products-trigger-row {
             text-align: center;
-            margin: 40px 0 20px 0;
+            margin: 35px 0 15px 0;
         }
 
         .products-group-hidden {
@@ -1108,11 +1101,11 @@
         }
 
         @keyframes fadeInGrid {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ضبط التنفس والراحة البصرية الكاملة للشاشات الأكبر */
+        /* مواءمة وضبط التنفس البصري لشاشات الكمبيوتر والتابلت الكبيرة */
         @media (min-width: 769px) {
             .products-grid-layout {
                 grid-template-columns: repeat(4, 1fr);
@@ -1123,10 +1116,10 @@
                 padding: 60px 40px;
             }
             .product-main-card {
-                padding: 16px 14px !important;
+                padding: 14px 12px !important;
             }
             .product-main-card .card-img-wrapper {
-                height: 145px !important;
+                height: 135px !important;
             }
             .product-main-card .card-item-title {
                 font-size: 1rem !important;
