@@ -368,7 +368,7 @@
             aspect-ratio: 16/9;
         }
 
-        /* سلايدر الأكثر مبيعاً المطور بالكامل باللون البمبي الفاخر */
+        /* سلايدر الأكثر مبيعاً المطور مع إطار ناعم رقيق بلون الهوية البصرية البمبي */
         .most-selling-section {
             padding: 50px 0;
             background-color: var(--bg-color);
@@ -395,30 +395,30 @@
         }
 
         .slider-card-item {
-            width: 270px;
+            width: 280px;
             background-color: var(--bg-color);
-            border: 1px solid rgba(255, 145, 164, 0.3);
-            border-radius: 12px;
+            border: 1.5px solid rgba(255, 145, 164, 0.35); /* إطار ناعم ورقيق من اللون البمبي */
+            border-radius: 14px;
             padding: 18px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             cursor: pointer;
             transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth), border-color 0.3s var(--transition-smooth);
-            box-shadow: 0 4px 14px var(--primary-shadow);
+            box-shadow: 0 4px 16px var(--primary-shadow);
             word-wrap: break-word;
         }
 
         .slider-card-item:hover {
             transform: translateY(-5px);
             border-color: var(--primary);
-            box-shadow: 0 8px 26px var(--primary-shadow-strong);
+            box-shadow: 0 8px 28px var(--primary-shadow-strong);
         }
 
         .card-img-wrapper {
             width: 100%;
             aspect-ratio: 1/1;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
             background-color: var(--gray-light);
             margin-bottom: 14px;
@@ -456,6 +456,50 @@
             display: block;
             overflow: visible;
             height: auto;
+        }
+
+        /* التنسيق البرمجي المطور لمتحكم الكمية الذكي */
+        .card-quantity-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--gray-light);
+            border: 1px solid rgba(255, 145, 164, 0.25);
+            border-radius: 25px;
+            padding: 4px 8px;
+            margin-bottom: 14px;
+            width: 100%;
+        }
+
+        .btn-qty-step {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-qty-step:hover {
+            background-color: var(--primary);
+            color: var(--bg-color);
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px var(--primary-shadow-strong);
+        }
+
+        .qty-current-value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-color);
+            min-width: 24px;
+            text-align: center;
         }
 
         .card-item-footer {
@@ -681,9 +725,16 @@
                         </div>
                         <h3 class="card-item-title">ديسباسيتو نوتيلا دارك</h3>
                         <p class="card-item-desc">طبقات متوازنة من كيك الفادج والموس الغني مع نوتيلا دارك وقوام مريح من أول لقمة لاستكشاف المتعة الحقيقية بدون مبالغة.</p>
+                        
+                        <div class="card-quantity-container" onclick="event.stopPropagation()">
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('despacito-triangle-dark-nutella', -1)">-</button>
+                            <span class="qty-current-value" id="qty-despacito-triangle-dark-nutella">1</span>
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('despacito-triangle-dark-nutella', 1)">+</button>
+                        </div>
+
                         <div class="card-item-footer">
                             <span class="card-item-price">66 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('despacito', 'triangle', 'dark-nutella', 66, 'ديسباسيتو مثلث نوتيلا دارك')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('despacito', 'triangle', 'dark-nutella', 66, 'ديسباسيتو مثلث نوتيلا دارك', 'despacito-triangle-dark-nutella')">إضافة للسلة</button>
                         </div>
                     </div>
 
@@ -693,9 +744,16 @@
                         </div>
                         <h3 class="card-item-title">قشطوطة لوتس</h3>
                         <p class="card-item-desc">كيك هش بطبقات ناعمة وحشوات متوازنة غنية بزبدة اللوتس الأصلية الطعم والواضحة تماماً لضيافة يومية تشرفك دائماً.</p>
+                        
+                        <div class="card-quantity-container" onclick="event.stopPropagation()">
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('qashtota-default-lotus', -1)">-</button>
+                            <span class="qty-current-value" id="qty-qashtota-default-lotus">1</span>
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('qashtota-default-lotus', 1)">+</button>
+                        </div>
+
                         <div class="card-item-footer">
                             <span class="card-item-price">121 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('qashtota', 'default', 'lotus', 121, 'قشطوطة لوتس')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('qashtota', 'default', 'lotus', 121, 'قشطوطة لوتس', 'qashtota-default-lotus')">إضافة للسلة</button>
                         </div>
                     </div>
 
@@ -705,9 +763,16 @@
                         </div>
                         <h3 class="card-item-title">سينابون بيستاشيو</h3>
                         <p class="card-item-desc">لفات سينابون مخبوزة طازجة بقوام طري غني بصوص البيستاشيو الطبيعي المختار بعناية لتجربة واضحة وعميقة في الطعم والجودة الثابتة.</p>
+                        
+                        <div class="card-quantity-container" onclick="event.stopPropagation()">
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('cinabon-default-pistachio', -1)">-</button>
+                            <span class="qty-current-value" id="qty-cinabon-default-pistachio">1</span>
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('cinabon-default-pistachio', 1)">+</button>
+                        </div>
+
                         <div class="card-item-footer">
                             <span class="card-item-price">143 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('cinabon', 'default', 'pistachio', 143, 'سينابون بيستاشيو')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('cinabon', 'default', 'pistachio', 143, 'سينابون بيستاشيو', 'cinabon-default-pistachio')">إضافة للسلة</button>
                         </div>
                     </div>
 
@@ -717,9 +782,16 @@
                         </div>
                         <h3 class="card-item-title">دوناتس ماتيلدا</h3>
                         <p class="card-item-desc">دوناتس طازجة وخفيفة الوزن ومخبوزة يوم بيوم بحشوة الشوكولاتة الغنية والمكثفة على طريقة ماتيلدا الشهيرة لضمان أعلى مستويات القيمة الحقيقية.</p>
+                        
+                        <div class="card-quantity-container" onclick="event.stopPropagation()">
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('donuts-default-matilda', -1)">-</button>
+                            <span class="qty-current-value" id="qty-donuts-default-matilda">1</span>
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('donuts-default-matilda', 1)">+</button>
+                        </div>
+
                         <div class="card-item-footer">
                             <span class="card-item-price">110 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('donuts', 'default', 'matilda', 110, 'دوناتس ماتيلدا')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('donuts', 'default', 'matilda', 110, 'دوناتس ماتيلدا', 'donuts-default-matilda')">إضافة للسلة</button>
                         </div>
                     </div>
 
@@ -729,9 +801,16 @@
                         </div>
                         <h3 class="card-item-title">كب السعادة نوتيلا</h3>
                         <p class="card-item-desc">أكواب غنية بطبقات الكيك المتجانسة والموس الفاخر المغطى تماماً بالشوكولاتة الغنية والمكثفة لتقديم فردي متكامل.</p>
+                        
+                        <div class="card-quantity-container" onclick="event.stopPropagation()">
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('happiness-cups-default-nutella', -1)">-</button>
+                            <span class="qty-current-value" id="qty-happiness-cups-default-nutella">1</span>
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('happiness-cups-default-nutella', 1)">+</button>
+                        </div>
+
                         <div class="card-item-footer">
                             <span class="card-item-price">61 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('happiness-cups', 'default', 'nutella', 61, 'كب السعادة نوتيلا')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('happiness-cups', 'default', 'nutella', 61, 'كب السعادة نوتيلا', 'happiness-cups-default-nutella')">إضافة للسلة</button>
                         </div>
                     </div>
 
@@ -740,10 +819,17 @@
                             <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ميني تورتة فردين" loading="lazy">
                         </div>
                         <h3 class="card-item-title">الميني تورت</h3>
-                        <p class="card-item-desc">تورت صغيرة الحجم مصممة ومجهة بدقة حرفية كاملة وخامات طبيعية 100% مناسبة تماماً للإهداء والتجمعات العائلية البسيطة.</p>
+                        <p class="card-item-desc">تورت صغيرة الحجم مصممة ومجهزة بدقة حرفية كاملة وخامات طبيعية 100% مناسبة تماماً للإهداء والتجمعات العائلية البسيطة.</p>
+                        
+                        <div class="card-quantity-container" onclick="event.stopPropagation()">
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('mini-cake-two-person-default', -1)">-</button>
+                            <span class="qty-current-value" id="qty-mini-cake-two-person-default">1</span>
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('mini-cake-two-person-default', 1)">+</button>
+                        </div>
+
                         <div class="card-item-footer">
                             <span class="card-item-price">154 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('mini-cake', 'two-person', 'default', 154, 'ميني تورتة فرد أو اثنين')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('mini-cake', 'two-person', 'default', 154, 'ميني تورتة فرد أو اثنين', 'mini-cake-two-person-default')">إضافة للسلة</button>
                         </div>
                     </div>
 
@@ -753,9 +839,16 @@
                         </div>
                         <h3 class="card-item-title">مثلث ريدڤيلڤت</h3>
                         <p class="card-item-desc">كيك مخملي متوازن للغاية مجهز بكريمة غنية ناعمة وقوام متسق يعطيك متعة الطعم الأصلي لضيافة مثالية.</p>
+                        
+                        <div class="card-quantity-container" onclick="event.stopPropagation()">
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('red-velvet-triangle-default', -1)">-</button>
+                            <span class="qty-current-value" id="qty-red-velvet-triangle-default">1</span>
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('red-velvet-triangle-default', 1)">+</button>
+                        </div>
+
                         <div class="card-item-footer">
                             <span class="card-item-price">72 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('red-velvet', 'triangle', 'default', 72, 'ريدفيلفت مثلث كبير')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('red-velvet', 'triangle', 'default', 72, 'ريدفيلفت مثلث كبير', 'red-velvet-triangle-default')">إضافة للسلة</button>
                         </div>
                     </div>
 
@@ -765,9 +858,16 @@
                         </div>
                         <h3 class="card-item-title">بوكس الروقان</h3>
                         <p class="card-item-desc">تشكيلة مختارة ومنسقة بعناية فائقة تجمع أشهر الحلويات الفاخرة المجهزة يومياً لتمنحك قيمة حقيقية في تجمعاتك السعيدة.</p>
+                        
+                        <div class="card-quantity-container" onclick="event.stopPropagation()">
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('relax-box-default-default', -1)">-</button>
+                            <span class="qty-current-value" id="qty-relax-box-default-default">1</span>
+                            <button class="btn-qty-step" onclick="adjustCardQtyInline('relax-box-default-default', 1)">+</button>
+                        </div>
+
                         <div class="card-item-footer">
                             <span class="card-item-price">550 ج.م</span>
-                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartDirect('relax-box', 'default', 'default', 550, 'بوكس الروقان الفاخر')">إضافة للسلة</button>
+                            <button class="btn-card-action" onclick="event.stopPropagation(); addToCartFromCard('relax-box', 'default', 'default', 550, 'بوكس الروقان الفاخر', 'relax-box-default-default')">إضافة للسلة</button>
                         </div>
                     </div>
                 </div>
@@ -815,21 +915,17 @@
 
         // محرك نظام التنقل الديناميكي الفوري بين صفحات الموقع المتعددة (Multi-page SPA Simulator)
         function navigateToPage(pageId) {
-            // إغلاق القائمة الجانبية تلقائياً لتوفير مساحة رؤية مريحة
             sidebarMenu.classList.remove('active');
             sidebarOverlay.classList.remove('active');
 
-            // إخفاء كافة الحاويات أولاً
             document.querySelectorAll('.app-view-container').forEach(view => {
                 view.classList.remove('view-active');
             });
 
-            // إزالة الحالة النشطة من أزرار القائمة الجانبية
             document.querySelectorAll('.sidebar-link').forEach(link => {
                 link.classList.remove('active');
             });
 
-            // تفعيل الشاشة المطلوبة برمجياً
             const targetView = document.getElementById('view-' + pageId);
             if (targetView) {
                 targetView.classList.add('view-active');
@@ -838,7 +934,6 @@
                 console.warn(`الشاشة المستهدفة view-${pageId} غير متوفرة حالياً بالملف، سيتم تفعيلها فور دمج أجزاء المنيو والمحاكيات التالية.`);
             }
 
-            // تحديث رابط القائمة الجانبية النشط
             const targetNavLink = document.getElementById('nav-' + pageId);
             if(targetNavLink) targetNavLink.classList.add('active');
         }
@@ -849,8 +944,22 @@
             navigateToPage(productSlug);
         }
 
-        // إضافة المنتجات المباشرة إلى السلة مع إشعار فخم وثابت
-        function addToCartDirect(productId, sizeId, variantId, price, labelName) {
+        // محرك التحكم في العداد الداخلي للكارت ومنع القيم العشوائية أو الصفرية
+        function adjustCardQtyInline(elementId, amount) {
+            const qtyElement = document.getElementById('qty-' + elementId);
+            if(qtyElement) {
+                let currentQty = parseInt(qtyElement.textContent) || 1;
+                currentQty += amount;
+                if(currentQty < 1) currentQty = 1;
+                qtyElement.textContent = currentQty;
+            }
+        }
+
+        // إضافة المنتجات إلى السلة بالاعتماد على العداد المختار داخل الكارت
+        function addToCartFromCard(productId, sizeId, variantId, price, labelName, qtyElementId) {
+            const qtyElement = document.getElementById('qty-' + qtyElementId);
+            const chosenQuantity = qtyElement ? (parseInt(qtyElement.textContent) || 1) : 1;
+
             const cartItem = {
                 id: `${productId}-${sizeId}-${variantId}`,
                 productId: productId,
@@ -858,18 +967,21 @@
                 variantId: variantId,
                 name: labelName,
                 price: parseFloat(price),
-                quantity: 1
+                quantity: chosenQuantity
             };
 
             const existingItemIndex = cart.findIndex(item => item.id === cartItem.id);
             if (existingItemIndex > -1) {
-                cart[existingItemIndex].quantity += 1;
+                cart[existingItemIndex].quantity += chosenQuantity;
             } else {
                 cart.push(cartItem);
             }
 
+            // إعادة ضبط عداد الكارت إلى 1 بعد الإضافة الناجحة لتسهيل تجربة المستخدم
+            if(qtyElement) qtyElement.textContent = 1;
+
             updateCartCountUI();
-            showToastMessage(`تم إضافة ${labelName} بنجاح للسلة ✨`);
+            showToastMessage(`تم إضافة (${chosenQuantity}) من ${labelName} بنجاح للسلة ✨`);
         }
 
         // تحديث عداد السلة العلوي بالهيدر
