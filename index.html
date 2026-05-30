@@ -810,7 +810,335 @@
             <p class="section-desc-center">تصفح تشكيلتنا المصنوعة بحرفية تامة لتختار منها ما يسعد أوقاتك ومناسباتك العائلية.</p>
         </div>
     </div>
+<div class="products-section-container">
+            <h2 class="section-title-center">منتجاتنا الفاخرة</h2>
+            <p class="section-desc-center">تذوق الإتقان الحرفي من خلال تشكيلتنا المعدة يومياً بخامات طبيعية 100% لتناسب ذوقك الرفيع.</p>
+            
+            <div class="products-grid-layout">
+                
+                <div class="slider-card-item product-main-card" onclick="handleCardNavigation('despacito')">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ديسباسيتو نوتيلا وايت" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">ديسباسيتو نوتيلا وايت</h3>
+                    <p class="card-item-desc">طبقات متوازنة من كيك الفادج والموس الغني مع نوتيلا وايت الأصلية وقوام مريح من أول لقمة لآخر قطعة.</p>
+                    
+                    <div class="card-quantity-row" onclick="event.stopPropagation();">
+                        <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
+                        <span class="qty-price-display" data-base-price="66"><span class="price-val">66</span> ج.م</span>
+                        <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
+                    </div>
+                    
+                    <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <button class="btn-card-action full-width-action" onclick="addGridProductToCart('despacito', 'triangle', 'white-nutella', this)">إضافة للسلة</button>
+                    </div>
+                </div>
 
+                <div class="slider-card-item product-main-card" onclick="handleCardNavigation('qashtota')">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قشطوطة بيستاشيو" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">قشطوطة بيستاشيو</h3>
+                    <p class="card-item-desc">كيك هش غني بالحليب بطبقات ناعمة وحشوات متوازنة مغطاة بصوص فستق طبيعي غني ومميز الطعم.</p>
+                    
+                    <div class="card-quantity-row" onclick="event.stopPropagation();">
+                        <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
+                        <span class="qty-price-display" data-base-price="143"><span class="price-val">143</span> ج.م</span>
+                        <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
+                    </div>
+                    
+                    <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <button class="btn-card-action full-width-action" onclick="addGridProductToCart('qashtota', 'default', 'pistachio', this)">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item product-main-card" onclick="handleCardNavigation('donuts')">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="دوناتس كراميل غني" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">دوناتس كراميل غني</h3>
+                    <p class="card-item-desc">دوناتس طازجة خفيفة الوزن ومخبوزة يومياً بحشوة صوص الكراميل المتوازن المذاق لتجربة تذوق حقيقية ورائعة.</p>
+                    
+                    <div class="card-quantity-row" onclick="event.stopPropagation();">
+                        <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
+                        <span class="qty-price-display" data-base-price="88"><span class="price-val">88</span> ج.م</span>
+                        <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
+                    </div>
+                    
+                    <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <button class="btn-card-action full-width-action" onclick="addGridProductToCart('donuts', 'default', 'caramel', this)">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item product-main-card" onclick="handleCardNavigation('cinabon')">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="سينابون كلاسيك قرفة" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">سينابون كلاسيك قرفة</h3>
+                    <p class="card-item-desc">لفات سينابون طرية مخبوزة بخلطة القرفة الممتازة ومغطاة بالصوص الأبيض الكلاسيكي الغني دون مبالغة.</p>
+                    
+                    <div class="card-quantity-row" onclick="event.stopPropagation();">
+                        <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
+                        <span class="qty-price-display" data-base-price="121"><span class="price-val">121</span> ج.m</span>
+                        <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
+                    </div>
+                    
+                    <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <button class="btn-card-action Full-width-action" onclick="addGridProductToCart('cinabon', 'default', 'classic', this)">إضافة للسلة</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="more-products-trigger-row" id="triggerRowGroup2">
+                <button class="btn-primary-oval" onclick="revealProductGroup2()">اعرف أكتر</button>
+            </div>
+
+            <div class="products-grid-layout products-group-hidden" id="productGroup2">
+                
+                <div class="slider-card-item product-main-card" onclick="handleCardNavigation('happiness-cups')">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كب السعادة روشيه" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">كب السعادة روشيه</h3>
+                    <p class="card-item-desc">أكواب فردية غنية بشوكولاتة الفيريرو روشيه المقرمشة لتمنحك متعة الطعم الأصلي الفاخر في كل لقمة.</p>
+                    
+                    <div class="card-quantity-row" onclick="event.stopPropagation();">
+                        <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
+                        <span class="qty-price-display" data-base-price="61"><span class="price-val">61</span> ج.م</span>
+                        <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
+                    </div>
+                    
+                    <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <button class="btn-card-action full-width-action" onclick="addGridProductToCart('happiness-cups', 'default', 'rocher', this)">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item product-main-card" onclick="handleCardNavigation('red-velvet')">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ريدفيلفت طاجن كبير" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">ريدڤيلڤت طاجن كبير</h3>
+                    <p class="card-item-desc">كيك مخملي أحمر كلاسيكي بطبقات كريمة غنية ناعمة ومحضرة طبيعياً بالكامل لتناسب جمعتكم العائلية.</p>
+                    
+                    <div class="card-quantity-row" onclick="event.stopPropagation();">
+                        <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
+                        <span class="qty-price-display" data-base-price="165"><span class="price-val">165</span> ج.م</span>
+                        <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
+                    </div>
+                    
+                    <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <button class="btn-card-action full-width-action" onclick="addGridProductToCart('red-velvet', 'tray', 'default', this)">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item product-main-card" onclick="handleCardNavigation('mini-cake')">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الميني تورت فرد أو اتنين" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">الميني تورت فرد أو اتنين</h3>
+                    <p class="card-item-desc">تورتة صغيرة مصممة بعناية ومزينة يدوياً لتناسب الاحتفالات الثنائية البسيطة واللحظات السعيدة.</p>
+                    
+                    <div class="card-quantity-row" onclick="event.stopPropagation();">
+                        <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
+                        <span class="qty-price-display" data-base-price="154"><span class="price-val">154</span> ج.م</span>
+                        <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
+                    </div>
+                    
+                    <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <button class="btn-card-action full-width-action" onclick="addGridProductToCart('mini-cake', 'two-person', 'default', this)">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item product-main-card" onclick="handleCardNavigation('relax-box')">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكس الروقان الفاخر" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">بوكس الروقان الفاخر</h3>
+                    <p class="card-item-desc">تجميعة حصرية ومتنوعة من قطع الحلويات الفاخرة متسقة بعناية فائقة لتناسب الهدايا واللمات العائلية السعيدة.</p>
+                    
+                    <div class="card-quantity-row" onclick="event.stopPropagation();">
+                        <button class="qty-btn minus" onclick="updateCardQty(this, -1)">-</button>
+                        <span class="qty-price-display" data-base-price="550"><span class="price-val">550</span> ج.م</span>
+                        <button class="qty-btn plus" onclick="updateCardQty(this, 1)">+</button>
+                    </div>
+                    
+                    <div class="card-item-footer" onclick="event.stopPropagation();">
+                        <button class="btn-card-action full-width-action" onclick="addGridProductToCart('relax-box', 'default', 'default', this)">إضافة للسلة</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    <style>
+        .products-section-container {
+            padding: 40px 20px;
+            background-color: var(--bg-color);
+        }
+
+        /* هيكلة عرض كارتين جنب بعض على الموبايل و 4 على الكمبيوتر تماماً لمنع التكدس */
+        .products-grid-layout {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+            transition: all 0.4s var(--transition-smooth);
+        }
+
+        .product-main-card {
+            width: 100% !important; /* ملء مساحة الجريد بالتساوي */
+            box-shadow: 0 4px 12px var(--primary-shadow);
+        }
+
+        /* صف التحكم التفاعلي بالكميات والسعر */
+        .card-quantity-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--gray-light);
+            border: 1px solid rgba(255, 145, 164, 0.2);
+            border-radius: 25px;
+            padding: 4px;
+            margin: 12px 0;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .qty-btn:hover {
+            background-color: var(--primary);
+            color: var(--bg-color);
+        }
+
+        .qty-price-display {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .full-width-action {
+            width: 100%;
+            text-align: center;
+        }
+
+        .more-products-trigger-row {
+            text-align: center;
+            margin: 35px 0 15px 0;
+        }
+
+        /* المجموعة المخفية ومسار تفعيلها بنعومة */
+        .products-group-hidden {
+            display: none;
+            opacity: 0;
+        }
+
+        .products-group-reveal {
+            display: grid !important;
+            animation: fadeInGrid 0.5s var(--transition-smooth) forwards;
+        }
+
+        @keyframes fadeInGrid {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* شاشات أجهزة الكمبيوتر والتابلت لضبط التنفس البصري */
+        @media (min-width: 769px) {
+            .products-grid-layout {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+            }
+            .products-section-container {
+                padding: 50px 40px;
+            }
+            .qty-price-display { font-size: 0.95rem; }
+        }
+    </style>
+
+    <script>
+        // دالة تحديث كميات الكارت وحساب السعر طردياً بشكل فوري
+        function updateCardQty(buttonElement, change) {
+            const row = buttonElement.parentElement;
+            const priceDisplay = row.querySelector('.qty-price-display');
+            const priceValSpan = priceDisplay.querySelector('.price-val');
+            const basePrice = parseInt(priceDisplay.getAttribute('data-base-price'));
+            
+            // تحديد أو إنشاء مخزن مستقل للكمية الحالية لكل كارت
+            if (!row.hasAttribute('data-current-qty')) {
+                row.setAttribute('data-current-qty', '1');
+            }
+            
+            let currentQty = parseInt(row.getAttribute('data-current-qty'));
+            currentQty += change;
+            
+            // قفل الحد الأدنى للكمية عند 1 لمنع الأخطاء الحسابية
+            if (currentQty < 1) currentQty = 1;
+            
+            row.setAttribute('data-current-qty', currentQty);
+            
+            // تحديث واجهة السعر المعروضة للعميل فورياً
+            priceValSpan.innerText = basePrice * currentQty;
+        }
+
+        // دالة التوسيع الفوري للمجموعة الثانية من كروت المنتجات
+        function revealProductGroup2() {
+            const group2 = document.getElementById('productGroup2');
+            const triggerRow = document.getElementById('triggerRowGroup2');
+            
+            if (group2) {
+                group2.classList.add('products-group-reveal');
+                if (triggerRow) triggerRow.style.display = 'none'; // إخفاء الزر لراحة العين بعد العرض
+            }
+        }
+
+        // دالة ربط إضافة المنتجات من شبكة المنيو المطور إلى محرك السلة الموحد
+        function addGridProductToCart(productId, sizeId, variantId, buttonElement) {
+            const card = buttonElement.closest('.product-main-card');
+            const qtyRow = card.querySelector('.card-quantity-row');
+            const qty = parseInt(qtyRow.getAttribute('data-current-qty')) || 1;
+            const priceDisplay = qtyRow.querySelector('.qty-price-display');
+            const totalPrice = parseInt(priceDisplay.querySelector('.price-val').innerText);
+            const title = card.querySelector('.card-item-title').innerText;
+            
+            console.log(`بروتوكول السلة: تم اعتماد إضافة ${qty} قطعة من (${title}) بإجمالي سعر ${totalPrice} ج.م.`);
+            
+            // تحديث مؤشر عدد السلة في الهيدر فورياً
+            const badge = document.getElementById('cartCount');
+            if (badge) {
+                let currentCount = parseInt(badge.innerText) || 0;
+                badge.innerText = currentCount + qty;
+            }
+            
+            // تأثير تفاعلي سريع ومؤقت على الزر لتأكيد العملية للعميل بنعومة
+            const originalText = buttonElement.innerText;
+            buttonElement.innerText = "تمت الإضافة ✓";
+            buttonElement.style.borderColor = "#25D366";
+            buttonElement.style.backgroundColor = "#25D366";
+            buttonElement.style.color = "#FFFFFF";
+            
+            setTimeout(() => {
+                buttonElement.innerText = originalText;
+                buttonElement.style.borderColor = "";
+                buttonElement.style.backgroundColor = "";
+                buttonElement.style.color = "";
+            }, 1800);
+        }
+    </script>
     <div id="view-cart" class="app-view-container">
         <div style="padding: 40px 24px;">
             <h2 class="section-title-center">سلة المشتريات الخاصة بك</h2>
