@@ -32,8 +32,8 @@
         /* المتغيرات الثابتة للهوية البصرية لبراند حلويات بوسي */
         :root {
             --bs-pink: #FF91A4;
-            --bs-pink-light: rgba(255, 145, 164, 0.05);
-            --bs-pink-hover: rgba(255, 145, 164, 0.1);
+            --bs-pink-light: rgba(255, 145, 164, 0.06);
+            --bs-pink-hover: rgba(255, 145, 164, 0.12);
             --bs-white: #FFFFFF;
             --bs-black: #000000;
             --bs-gray-light: #F9F9F9;
@@ -115,7 +115,7 @@
         .bs-ticker-track {
             display: flex;
             width: max-content;
-            animation: tickerMove 40s linear infinite;
+            animation: tickerMove 50s linear infinite;
         }
 
         .bs-ticker-item {
@@ -291,24 +291,48 @@
         .bs-menu-links {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             list-style: none;
         }
 
-        /* تطعيم عناصر القائمة بالوردي الخفيف والذكي دون المساس ببياض الخلفية الدائم */
+        /* هندسة وتوزيع اللون الوردي الفاخر داخل القائمة الجانبية بنعومة واحترافية */
         .bs-menu-item {
             font-size: 15px;
             font-weight: 600;
-            color: var(--bs-black);
+            color: var(--bs-gray-text);
             cursor: pointer;
             padding: 14px 18px;
             border-radius: 14px;
             transition: all 0.25s var(--transition-smooth);
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 12px;
             background-color: transparent;
             border-right: 3px solid transparent;
+        }
+
+        .bs-menu-item-text {
+            flex-grow: 1;
+        }
+
+        .bs-menu-item-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: var(--bs-pink-light);
+            transition: all 0.25s var(--transition-smooth);
+        }
+
+        .bs-menu-item-icon svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--bs-pink);
+            stroke-width: 2;
+            fill: none;
+            transition: all 0.25s var(--transition-smooth);
         }
 
         .bs-menu-item:hover {
@@ -318,9 +342,18 @@
             padding-right: 22px;
         }
 
+        .bs-menu-item:hover .bs-menu-item-icon {
+            background-color: var(--bs-pink);
+        }
+
+        .bs-menu-item:hover .bs-menu-item-icon svg {
+            stroke: var(--bs-white);
+        }
+
         .bs-menu-item::after {
             content: '←';
             font-size: 16px;
+            color: var(--bs-pink);
             opacity: 0;
             transform: translateX(10px);
             transition: all 0.25s var(--transition-smooth);
@@ -627,6 +660,17 @@
             <span class="bs-ticker-item">🎂 جودة استثنائية وخامات طبيعية 100% لتشرفك قدام ضيوفك 🎂</span>
             <span class="bs-ticker-item">🚚 توصيل سريع ومستقر لجميع مناطق الفرافرة والكفاح 🚚</span>
             <span class="bs-ticker-item">🧁 تذوق الفخامة مع خيارات المنيو المبتكرة وحضر هديتك بسهولة 🧁</span>
+            
+            <span class="bs-ticker-item">✨ حلويات بوسي | صنعناها بحب لتهديها لمن تحب ✨</span>
+            <span class="bs-ticker-item">🎂 جودة استثنائية وخامات طبيعية 100% لتشرفك قدام ضيوفك 🎂</span>
+            <span class="bs-ticker-item">🚚 توصيل سريع ومستقر لجميع مناطق الفرافرة والكفاح 🚚</span>
+            <span class="bs-ticker-item">🧁 تذوق الفخامة مع خيارات المنيو المبتكرة وحضر هديتك بسهولة 🧁</span>
+
+            <span class="bs-ticker-item">✨ حلويات بوسي | صنعناها بحب لتهديها لمن تحب ✨</span>
+            <span class="bs-ticker-item">🎂 جودة استثنائية وخامات طبيعية 100% لتشرفك قدام ضيوفك 🎂</span>
+            <span class="bs-ticker-item">🚚 توصيل سريع ومستقر لجميع مناطق الفرافرة والكفاح 🚚</span>
+            <span class="bs-ticker-item">🧁 تذوق الفخامة مع خيارات المنيو المبتكرة وحضر هديتك بسهولة 🧁</span>
+
             <span class="bs-ticker-item">✨ حلويات بوسي | صنعناها بحب لتهديها لمن تحب ✨</span>
             <span class="bs-ticker-item">🎂 جودة استثنائية وخامات طبيعية 100% لتشرفك قدام ضيوفك 🎂</span>
             <span class="bs-ticker-item">🚚 توصيل سريع ومستقر لجميع مناطق الفرافرة والكفاح 🚚</span>
@@ -680,11 +724,36 @@
             </div>
             
             <ul class="bs-menu-links">
-                <li class="bs-menu-item" onclick="BoseUI.handleNav('home')">الرئيسية</li>
-                <li class="bs-menu-item" onclick="BoseUI.handleNav('menu')">تصفح المنيو</li>
-                <li class="bs-menu-item" onclick="BoseUI.handleNav('cake-builder')">محاكي التورت</li>
-                <li class="bs-menu-item" onclick="BoseUI.handleNav('flower-builder')">محاكي الورد</li>
-                <li class="bs-menu-item" onclick="BoseUI.handleNav('cart')">سلة المشتريات</li>
+                <li class="bs-menu-item" onclick="BoseRouter.navigateTo('home'); BoseUI.toggleSidebar(false);">
+                    <div class="bs-menu-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11v11a1 1 0 01-1 1h-3m-6 0V12a1 1 0 011-1h2a1 1 0 011 1v9" stroke-linecap="round"/></svg>
+                    </div>
+                    <span class="bs-menu-item-text">الرئيسية</span>
+                </li>
+                <li class="bs-menu-item" onclick="BoseRouter.navigateTo('menu'); BoseUI.toggleSidebar(false);">
+                    <div class="bs-menu-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round"/></svg>
+                    </div>
+                    <span class="bs-menu-item-text">تصفح المنيو</span>
+                </li>
+                <li class="bs-menu-item" onclick="BoseRouter.navigateTo('cake-builder'); BoseUI.toggleSidebar(false);">
+                    <div class="bs-menu-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 3" stroke-linecap="round"/></svg>
+                    </div>
+                    <span class="bs-menu-item-text">محاكي التورت</span>
+                </li>
+                <li class="bs-menu-item" onclick="BoseRouter.navigateTo('flower-builder'); BoseUI.toggleSidebar(false);">
+                    <div class="bs-menu-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M14 12a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round"/></svg>
+                    </div>
+                    <span class="bs-menu-item-text">محاكي الورد</span>
+                </li>
+                <li class="bs-menu-item" onclick="BoseRouter.navigateTo('cart'); BoseUI.toggleSidebar(false);">
+                    <div class="bs-menu-item-icon">
+                        <svg viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round"/></svg>
+                    </div>
+                    <span class="bs-menu-item-text">سلة المشتريات</span>
+                </li>
             </ul>
 
             <div class="bs-sidebar-footer">
