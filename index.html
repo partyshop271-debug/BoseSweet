@@ -5,905 +5,759 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-    <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامتنا التجارية حلويات بوسي. استكشف أفخم الحلويات الغنية والمبتكرة المصنوعة يدوياً بجودة استثنائية وخامات طبيعية 100%.">
-    <meta name="keywords" content="حلويات بوسي, BoseSweets, حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, الفرافرة, الكفاح, حلويات فاخرة">
-    <meta name="author" content="إدارة حلويات بوسي">
+    <meta name="description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل. استمتع بألذ الحلويات والتورت المصنوعة بحب في الفرافرة.">
+    <meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, حلويات بوسي, الفرافرة, الكفاح, الوادي الجديد">
     <meta name="robots" content="index, follow">
     
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bosesweets.com">
     <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta property="og:description" content="استمتع بتجربة تسوق راقية واكتشف خيارات المنيو المبتكرة من حلويات بوسي. خامات طبيعية 100% تضمن لك جودة تشرفك قدام ضيوفك.">
+    <meta property="og:description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
 
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://bosesweets.com">
     <meta property="twitter:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta property="twitter:description" content="استمتع بتجربة تسوق راقية واكتشف خيارات المنيو المبتكرة من حلويات بوسي. خامات طبيعية 100% تضمن لك جودة تشرفك قدام ضيوفك.">
+    <meta property="twitter:description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.">
     <meta property="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
 
-    <link class="bs-canonical" rel="canonical" href="https://bosesweets.com">
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
-        /* المتغيرات الثابتة للهوية البصرية لبراند حلويات بوسي */
+        /* نظام الألوان والمتغيرات العالمية لراحة بصرية واستهلاك بيانات أقل */
         :root {
-            --bs-pink: #FF91A4;
-            --bs-pink-light: rgba(255, 145, 164, 0.06);
-            --bs-pink-hover: rgba(255, 145, 164, 0.12);
-            --bs-white: #FFFFFF;
-            --bs-black: #000000;
-            --bs-gray-light: #F9F9F9;
-            --bs-gray-text: #333333;
-            --bs-font: 'Alexandria', sans-serif;
+            --primary: #FF91A4;
+            --text-color: #000000;
+            --bg-color: #FFFFFF;
+            --gray-light: #F9F9F9;
+            --gray-dark: #333333;
+            --font-main: 'Alexandria', sans-serif;
             --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* ضبط وتصفير العناصر لمنع انضغاط البيكسل وحماية الهياكل */
+        /* الإعدادات الأساسية */
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: var(--bs-font);
+            font-family: var(--font-main);
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bs-white);
-            color: var(--bs-black);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             overflow-x: hidden;
+            font-weight: 400;
             line-height: 1.6;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-weight: 700;
-            color: var(--bs-black);
-            white-space: normal;
-            word-wrap: break-word;
-        }
-
-        p {
-            font-weight: 400;
-            color: var(--bs-gray-text);
-            white-space: normal;
-            word-wrap: break-word;
-        }
-
-        /* أزرار بيضاوية انسيابية لرفع معدل التحويل والمبيعات */
-        .bs-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 12px 32px;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s var(--transition-smooth);
-            text-decoration: none;
-            outline: none;
-            white-space: nowrap;
-        }
-
-        .bs-btn-primary {
-            background-color: var(--bs-pink);
-            color: var(--bs-white);
-            box-shadow: 0 4px 15px rgba(255, 145, 164, 0.2);
-        }
-
-        .bs-btn-primary:hover {
-            opacity: 0.95;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 145, 164, 0.3);
-        }
-
-        /* شريط الإعلان العلوي المطور والمملوء بعبارات تسويقية متنوعة غير متناهية */
-        .bs-ticker-wrapper {
-            background-color: var(--bs-pink);
-            overflow: hidden;
-            white-space: nowrap;
-            padding: 10px 0;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .bs-ticker-track {
-            display: flex;
-            width: max-content;
-            animation: tickerMove 50s linear infinite;
-            will-change: transform;
-        }
-
-        .bs-ticker-item {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--bs-white);
-            padding: 0 35px;
-            display: inline-block;
-            flex-shrink: 0; /* تحسين هندسي لمنع انضغاط النصوص في الشاشات العريضة */
-        }
-
-        /* تعديل احترافي لسرعة وحركة المسار التكراري لمنع انقطاع النص نهائياً */
-        @keyframes tickerMove {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-50%, 0, 0); }
-        }
-
-        /* التصميم الفاخر والمطور للهيدر والبار العلوي الثابت */
-        .bs-header {
-            position: sticky;
-            top: 0;
-            background-color: var(--bs-white);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
-            z-index: 1000;
-            padding: 16px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.01);
-        }
-
-        .bs-header-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-        }
-
-        /* منطقة الهوية الاحترافية المحدثة بالكامل */
-        .bs-brand-zone {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            cursor: pointer;
-            text-decoration: none;
-        }
-
-        /* حماية الشعار المطلقة من الانضغاط مع إطار هندسي ناعم ومستقر */
-        .bs-logo-container {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            padding: 2px;
-            border: 1.5px solid var(--bs-pink);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--bs-white);
-            flex-shrink: 0;
-        }
-
-        .bs-logo {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 50%;
+        /* تحسينات الصور والفيديو لضمان الأداء الفائق */
+        img, video {
+            max-width: 100%;
+            height: auto;
             display: block;
         }
 
-        /* عرض اسم العلامة التجارية بطريقة خطية فاخرة واحترافية */
-        .bs-brand-name {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--bs-black);
-            letter-spacing: -0.5px;
-            position: relative;
-            user-select: none;
+        /* 1. شريط علوي متحرك بشكل لا نهائي بحركة انسيابية ناعمة */
+        .ticker-wrap {
+            width: 100%;
+            background-color: var(--primary);
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 10px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .bs-nav-actions {
+        .ticker-content {
+            display: inline-block;
+            animation: ticker 25s linear infinite;
+            padding-right: 100%;
+        }
+
+        .ticker-item {
+            display: inline-block;
+            padding: 0 2rem;
+            font-size: 0.9rem;
+            color: var(--bg-color);
+            font-weight: 600;
+        }
+
+        @keyframes ticker {
+            0% { transform: translate3d(100%, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* 2. الهيدر المطور */
+        .main-header {
+            background-color: var(--bg-color);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: space-between;
         }
 
-        .bs-icon-btn {
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background-color: var(--text-color);
+            transition: var(--transition-smooth);
+        }
+
+        .brand-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--text-color);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .icon-btn {
             background: none;
             border: none;
             cursor: pointer;
             position: relative;
-            width: 42px;
-            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            transition: background-color 0.2s ease;
+            padding: 5px;
         }
 
-        .bs-icon-btn:hover {
-            background-color: var(--bs-gray-light);
-        }
-
-        /* عزل الأحداث البرمجية للأيقونات الداخلية لضمان دقة الضغط على الموبايل */
-        .bs-icon-btn svg {
-            width: 24px;
-            height: 24px;
+        .icon-btn svg {
+            width: 22px;
+            height: 22px;
             fill: none;
-            stroke: var(--bs-black);
-            stroke-width: 1.8;
-            pointer-events: none;
+            stroke: var(--text-color);
+            stroke-width: 2;
+            transition: var(--transition-smooth);
         }
 
-        .bs-cart-badge {
+        .icon-btn:hover svg {
+            stroke: var(--primary);
+        }
+
+        .cart-badge {
             position: absolute;
-            top: 4px;
-            left: 4px;
-            background-color: var(--bs-pink);
-            color: var(--bs-white);
-            font-size: 10px;
+            top: -4px;
+            right: -4px;
+            background-color: var(--primary);
+            color: var(--bg-color);
+            font-size: 0.7rem;
             font-weight: 700;
-            min-width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 4px;
-            pointer-events: none;
-        }
-
-        /* التطوير الاحترافي والفاخر للقائمة الجانبية المطعمة باللون الوردي */
-        .bs-sidebar-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(5px);
-            z-index: 1500;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s var(--transition-smooth);
-        }
-
-        .bs-sidebar-overlay.active-sidebar {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .bs-sidebar {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 320px;
-            max-width: 85vw;
-            height: 100%;
-            background-color: var(--bs-white);
-            z-index: 1600;
-            box-shadow: -15px 0 40px rgba(0,0,0,0.06);
-            transition: right 0.4s var(--transition-smooth);
-            padding: 40px 24px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .bs-sidebar-overlay.active-sidebar .bs-sidebar {
-            right: 0;
-        }
-
-        .bs-sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 35px;
-            border-bottom: 1px solid rgba(0,0,0,0.04);
-            padding-bottom: 20px;
-        }
-
-        .bs-menu-links {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            list-style: none;
-        }
-
-        /* هندسة وتوزيع اللون الوردي الفاخر داخل القائمة الجانبية بنعومة واحترافية */
-        .bs-menu-item {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--bs-gray-text);
-            cursor: pointer;
-            padding: 14px 18px;
-            border-radius: 14px;
-            transition: all 0.25s var(--transition-smooth);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background-color: transparent;
-            border-right: 3px solid transparent;
-        }
-
-        .bs-menu-item-text {
-            flex-grow: 1;
-        }
-
-        .bs-menu-item-icon {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background-color: var(--bs-pink-light);
-            transition: all 0.25s var(--transition-smooth);
-        }
-
-        .bs-menu-item-icon svg {
             width: 16px;
             height: 16px;
-            stroke: var(--bs-pink);
-            stroke-width: 2;
-            fill: none;
-            transition: all 0.25s var(--transition-smooth);
-            pointer-events: none;
-        }
-
-        .bs-menu-item:hover {
-            background-color: var(--bs-pink-light);
-            color: var(--bs-pink);
-            border-right-color: var(--bs-pink);
-            padding-right: 22px;
-        }
-
-        .bs-menu-item:hover .bs-menu-item-icon {
-            background-color: var(--bs-pink);
-        }
-
-        .bs-menu-item:hover .bs-menu-item-icon svg {
-            stroke: var(--bs-white);
-        }
-
-        .bs-menu-item::after {
-            content: '←';
-            font-size: 16px;
-            color: var(--bs-pink);
-            opacity: 0;
-            transform: translateX(10px);
-            transition: all 0.25s var(--transition-smooth);
-        }
-
-        .bs-menu-item:hover::after {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .bs-sidebar-footer {
-            margin-top: auto;
-            font-size: 11px;
-            color: var(--bs-gray-text);
-            text-align: center;
-            border-top: 1px solid rgba(0,0,0,0.04);
-            padding-top: 20px;
-            font-weight: 500;
-        }
-
-        /* مربع البحث المنزلق العلوي */
-        .bs-search-bar-container {
-            max-height: 0;
-            overflow: hidden;
-            background-color: var(--bs-gray-light);
-            transition: max-height 0.3s var(--transition-smooth);
-        }
-
-        .bs-search-bar-container.active-search {
-            max-height: 75px;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-        }
-
-        .bs-search-wrapper {
-            padding: 14px 0;
+            border-radius: 50%;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
 
-        /* نظام إدارة وتأمين عرض الصفحات والشاشات */
-        .bs-page {
-            display: none;
-            width: 100%;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity 0.4s var(--transition-smooth);
+        /* القائمة الجانبية التفاعلية */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: var(--bg-color);
+            box-shadow: -5px 0 25px rgba(0,0,0,0.1);
+            z-index: 2000;
+            transition: right 0.4s var(--transition-smooth);
+            padding: 30px 24px;
+            display: flex;
+            flex-direction: column;
         }
 
-        .bs-page.active-page {
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .close-sidebar {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .close-sidebar svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--text-color);
+            stroke-width: 2;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-link {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition-smooth);
             display: block;
-            opacity: 1;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.02);
         }
 
-        /* نظام التنبيهات والرسائل المنبثقة الموحد */
-        .bs-modal-overlay {
+        .sidebar-link:hover {
+            color: var(--primary);
+            padding-right: 5px;
+        }
+
+        .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
+            background-color: rgba(0,0,0,0.3);
+            z-index: 1500;
+            display: none;
             backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s var(--transition-smooth);
-            padding: 20px;
         }
 
-        .bs-modal-overlay.active-modal {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .bs-modal-card {
-            background-color: var(--bs-white);
-            border-radius: 24px;
-            padding: 24px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transform: scale(0.9);
-            transition: transform 0.3s var(--transition-smooth);
-            text-align: center;
-        }
-
-        .bs-modal-overlay.active-modal .bs-modal-card {
-            transform: scale(1);
-        }
-
-        .bs-toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background-color: var(--bs-black);
-            color: var(--bs-white);
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 3000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            opacity: 0;
-            transition: all 0.3s var(--transition-smooth);
-            pointer-events: none;
-            white-space: nowrap;
-        }
-
-        .bs-toast.active-toast {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        /* مساحات التنفس والراحة البصرية العامة للشبكة للتحكم في المبيعات */
-        .bs-container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* قسم البطل المتكامل وتأمين الفيديوهات البصرية */
-        .bs-hero {
-            padding: 40px 0 20px 0;
-            text-align: center;
-        }
-
-        .bs-hero-title {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--bs-black);
-            margin-bottom: 14px;
-        }
-
-        /* تلوين نص التميز البطل بالوردي المعتمد فوراً */
-        .bs-highlight-text {
-            color: var(--bs-pink);
-        }
-
-        .bs-hero-desc {
-            font-size: 15px;
-            font-weight: 400;
-            color: var(--bs-gray-text);
-            max-width: 620px;
-            margin: 0 auto 28px auto;
-            padding: 0 10px;
-        }
-
-        /* تأمين وعرض الفيديو الاستراتيجي بنسبة أبعاد هندسية مطلقة تمنع الانضغاط تماماً */
-        .bs-hero-video-container {
-            width: 100%;
-            max-width: 850px;
-            margin: 35px auto 0 auto;
-            border-radius: 24px;
-            overflow: hidden;
-            background-color: var(--bs-gray-light);
-            position: relative;
-            aspect-ratio: 16 / 9;
-            box-shadow: 0 10px 35px rgba(0,0,0,0.02);
-        }
-
-        .bs-hero-video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .overlay.active {
             display: block;
         }
 
-        /* قسم الأكثر مبيعاً وعرض الكروت المستقر */
-        .bs-section {
-            padding: 45px 0;
+        /* 3. قسم البطل (Hero Section) والهوك البصري */
+        .hero-section {
+            padding: 60px 20px 40px 20px;
+            text-align: center;
+            background-color: var(--bg-color);
         }
 
-        .bs-section-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--bs-black);
-            margin-bottom: 24px;
-            position: relative;
-            padding-right: 15px;
+        .hero-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: 16px;
+            line-height: 1.3;
         }
 
-        .bs-section-title::before {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 5px;
-            height: 22px;
-            background-color: var(--bs-pink);
-            border-radius: 10px;
+        .hero-desc {
+            font-size: 1rem;
+            color: var(--gray-dark);
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            font-weight: 400;
         }
 
-        .bs-slider-container {
-            overflow-x: auto;
-            overflow-y: hidden;
-            display: flex;
-            gap: 16px;
-            padding: 10px 20px 20px 20px;
-            margin: 0 -20px;
-            scroll-snap-type: x mandatory;
-            scroll-padding: 20px; /* تحسين الراحة البصرية وحماية الهوامش في الموبايل */
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .bs-slider-container::-webkit-scrollbar {
-            display: none;
-        }
-
-        .bs-slider-card {
-            scroll-snap-align: start;
-            flex: 0 0 240px;
-            background-color: var(--bs-white);
-            border-radius: 20px;
-            border: 1px solid rgba(0, 0, 0, 0.04);
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .bs-slider-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.02);
-        }
-
-        .bs-slider-img-holder {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            background-color: var(--bs-gray-light);
-            border-radius: 14px;
-            overflow: hidden;
-        }
-
-        .bs-slider-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .bs-slider-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .bs-slider-name {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--bs-black);
-        }
-
-        .bs-slider-price {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--bs-pink);
-        }
-
-        /* تحسين المدخلات العامة */
-        input, textarea, select {
-            width: 100%;
-            padding: 14px 20px;
+        .btn-primary-oval {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--bg-color);
+            text-decoration: none;
+            padding: 12px 36px;
             border-radius: 50px;
-            border: 1px solid rgba(0,0,0,0.08);
-            background-color: var(--bs-gray-light);
-            font-size: 14px;
-            color: var(--bs-black);
-            outline: none;
-            transition: border-color 0.3s ease;
-            -webkit-appearance: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth);
+            border: none;
+            cursor: pointer;
         }
 
-        input:focus, textarea:focus, select:focus {
-            border-color: var(--bs-pink);
+        .btn-primary-oval:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 145, 164, 0.4);
         }
 
-        @media (min-width: 768px) {
-            .bs-hero-title { font-size: 38px; }
-            .bs-hero-desc { font-size: 16px; }
-            .bs-slider-container { margin: 0; padding: 10px 0 20px 0; overflow-x: hidden; flex-wrap: wrap; }
-            .bs-slider-card { flex: 0 0 calc(25% - 12px); }
+        .video-hook-container {
+            width: 100%;
+            margin-top: 40px;
+            border-radius: 0px;
+            overflow: hidden;
+            background-color: var(--gray-light);
+        }
+
+        .video-hook {
+            width: 100%;
+            width: -webkit-fill-available;
+            display: block;
+            object-fit: cover;
+            aspect-ratio: 16/9;
+        }
+
+        /* تحسين الشاشات الكبيرة للكمبيوتر */
+        @media (min-width: 769px) {
+            .hero-title { font-size: 3rem; }
+            .hero-desc { font-size: 1.1rem; }
+            .main-header { padding: 15px 40px; }
+            .video-hook { aspect-ratio: 21/9; }
         }
     </style>
 </head>
 <body>
 
-    <div id="bsToast" class="bs-toast" aria-live="assertive"></div>
-
-    <div id="bsGlobalModal" class="bs-modal-overlay" role="dialog" aria-modal="true">
-        <div class="bs-modal-card">
-            <div id="bsModalContent"></div>
+    <div class="ticker-wrap">
+        <div class="ticker-content">
+            <span class="ticker-item">✨ حلويات بوسي - عقد من التميز في صناعة الحلويات الفاخرة</span>
+            <span class="ticker-item">🍓 خامات طبيعية ممتازة ومضمونة 100%</span>
+            <span class="ticker-item">🚚 توصيل سريع لكافة مناطق الفرافرة والكفاح</span>
+            <span class="ticker-item">✨ صنعت بحب لتهديها لمن تحب</span>
         </div>
     </div>
 
-    <div class="bs-ticker-wrapper">
-        <div class="bs-ticker-track">
-            <span class="bs-ticker-item">✨ حلويات بوسي | صنعناها بحب لتهديها لمن تحب ✨</span>
-            <span class="bs-ticker-item">🎂 جودة استثنائية وخامات طبيعية 100% لتشرفك قدام ضيوفك 🎂</span>
-            <span class="bs-ticker-item">🚚 توصيل سريع ومستقر لجميع مناطق الفرافرة والكفاح 🚚</span>
-            <span class="bs-ticker-item">🧁 تذوق الفخامة مع خيارات المنيو المبتكرة وحضر هديتك بسهولة 🧁</span>
-            
-            <span class="bs-ticker-item">✨ حلويات بوسي | صنعناها بحب لتهديها لمن تحب ✨</span>
-            <span class="bs-ticker-item">🎂 جودة استثنائية وخامات طبيعية 100% لتشرفك قدام ضيوفك 🎂</span>
-            <span class="bs-ticker-item">🚚 توصيل سريع ومستقر لجميع مناطق الفرافرة والكفاح 🚚</span>
-            <span class="bs-ticker-item">🧁 تذوق الفخامة مع خيارات المنيو المبتكرة وحضر هديتك بسهولة 🧁</span>
-
-            <span class="bs-ticker-item">✨ حلويات بوسي | صنعناها بحب لتهديها لمن تحب ✨</span>
-            <span class="bs-ticker-item">🎂 جودة استثنائية وخامات طبيعية 100% لتشرفك قدام ضيوفك 🎂</span>
-            <span class="bs-ticker-item">🚚 توصيل سريع ومستقر لجميع مناطق الفرافرة والكفاح 🚚</span>
-            <span class="bs-ticker-item">🧁 تذوق الفخامة مع خيارات المنيو المبتكرة وحضر هديتك بسهولة 🧁</span>
-
-            <span class="bs-ticker-item">✨ حلويات بوسي | صنعناها بحب لتهديها لمن تحب ✨</span>
-            <span class="bs-ticker-item">🎂 جودة استثنائية وخامات طبيعية 100% لتشرفك قدام ضيوفك 🎂</span>
-            <span class="bs-ticker-item">🚚 توصيل سريع ومستقر لجميع مناطق الفرافرة والكفاح 🚚</span>
-            <span class="bs-ticker-item">🧁 تذوق الفخامة مع خيارات المنيو المبتكرة وحضر هديتك بسهولة 🧁</span>
-        </div>
-    </div>
-
-    <header class="bs-header">
-        <div class="bs-container bs-header-wrapper">
-            <button class="bs-icon-btn" onclick="BoseUI.toggleSidebar(true)" aria-label="فتح القائمة">
-                <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
+    <header class="main-header">
+        <div class="header-right">
+            <button class="menu-toggle" id="menuToggle" aria-label="قائمة التنقل">
+                <span></span>
+                <span></span>
+                <span></span>
             </button>
-
-            <div class="bs-brand-zone" onclick="BoseRouter.navigateTo('home')">
-                <div class="bs-logo-container">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="bs-logo">
-                </div>
-                <h1 class="bs-brand-name">حلويات بوسي</h1>
-            </div>
-
-            <div class="bs-nav-actions">
-                <button class="bs-icon-btn" onclick="BoseUI.toggleSearch()" aria-label="البحث">
-                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
-                </button>
-                <button class="bs-icon-btn" onclick="BoseRouter.navigateTo('cart')" aria-label="سلة المشتريات">
-                    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0" stroke-linecap="round"/></svg>
-                    <span class="bs-cart-badge" id="headerCartCount">0</span>
-                </button>
-            </div>
+            <a href="#" class="brand-name">حلويات بوسي</a>
+        </div>
+        
+        <div class="header-left">
+            <button class="icon-btn" id="searchBtn" aria-label="البحث">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <button class="icon-btn" id="cartBtn" aria-label="سلة المشتريات">
+                <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                <span class="cart-badge" id="cartCount">0</span>
+            </button>
         </div>
     </header>
 
-    <div class="bs-search-bar-container" id="bsSearchBar">
-        <div class="bs-container bs-search-wrapper">
-            <input type="search" placeholder="ابحث عن السينابون، الدوناتس، الديسباسيتو..." id="bsSearchInput">
+    <div class="overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar" id="sidebarMenu">
+        <div class="sidebar-header">
+            <span class="brand-name">تصفح المنيو</span>
+            <button class="close-sidebar" id="closeSidebar" aria-label="إغلاق">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="12"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
         </div>
-    </div>
-
-    <div class="bs-sidebar-overlay" id="bsSidebarOverlay" onclick="BoseUI.toggleSidebar(false)">
-        <nav class="bs-sidebar" onclick="event.stopPropagation()">
-            <div class="bs-sidebar-header">
-                <div class="bs-brand-zone">
-                    <div class="bs-logo-container">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="bs-logo">
-                    </div>
-                    <span class="bs-brand-name" style="font-size: 16px;">حلويات بوسي</span>
-                </div>
-                <button class="bs-icon-btn" onclick="BoseUI.toggleSidebar(false)" aria-label="إغلاق">
-                    <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
-                </button>
-            </div>
-            
-            <ul class="bs-menu-links">
-                <li class="bs-menu-item" onclick="BoseRouter.navigateTo('home'); BoseUI.toggleSidebar(false);">
-                    <div class="bs-menu-item-icon">
-                        <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3m10-11v11a1 1 0 01-1 1h-3m-6 0V12a1 1 0 011-1h2a1 1 0 011 1v9" stroke-linecap="round"/></svg>
-                    </div>
-                    <span class="bs-menu-item-text">الرئيسية</span>
-                </li>
-                <li class="bs-menu-item" onclick="BoseRouter.navigateTo('menu'); BoseUI.toggleSidebar(false);">
-                    <div class="bs-menu-item-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" stroke-linecap="round"/></svg>
-                    </div>
-                    <span class="bs-menu-item-text">تصفح المنيو</span>
-                </li>
-                <li class="bs-menu-item" onclick="BoseRouter.navigateTo('cake-builder'); BoseUI.toggleSidebar(false);">
-                    <div class="bs-menu-item-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 3" stroke-linecap="round"/></svg>
-                    </div>
-                    <span class="bs-menu-item-text">محاكي التورت</span>
-                </li>
-                <li class="bs-menu-item" onclick="BoseRouter.navigateTo('flower-builder'); BoseUI.toggleSidebar(false);">
-                    <div class="bs-menu-item-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M14 12a2 2 0 11-4 0 2 2 0 014 0z" stroke-linecap="round"/></svg>
-                    </div>
-                    <span class="bs-menu-item-text">محاكي الورد</span>
-                </li>
-                <li class="bs-menu-item" onclick="BoseRouter.navigateTo('cart'); BoseUI.toggleSidebar(false);">
-                    <div class="bs-menu-item-icon">
-                        <svg viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" stroke-linecap="round"/></svg>
-                    </div>
-                    <span class="bs-menu-item-text">سلة المشتريات</span>
-                </li>
-            </ul>
-
-            <div class="bs-sidebar-footer">
-                <span>عقد من الإتقان والتميز في صناعة الحلويات</span>
-            </div>
+        <nav class="sidebar-menu">
+            <a href="#" class="sidebar-link">الرئيسية</a>
+            <a href="#" class="sidebar-link">المنيو</a>
+            <a href="#" class="sidebar-link">السلة</a>
+            <a href="#" class="sidebar-link">محاكي التورت</a>
+            <a href="#" class="sidebar-link">محاكي الورد</a>
         </nav>
-    </div>
+    </aside>
 
-    <div id="mainLayout">
-        <main id="page-home" class="bs-page active-page"></main>
-        <section id="page-menu" class="bs-page"></section>
-        <section id="page-cake-builder" class="bs-page"></section>
-        <section id="page-flower-builder" class="bs-page"></section>
-        <section id="page-cart" class="bs-page"></section>
-        <section id="page-checkout" class="bs-page"></section>
-    </div>
+    <section class="hero-section">
+        <h1 class="hero-title">عقد من التميز في صناعة الحلويات</h1>
+        <p class="hero-desc">نصنع لك ذكريات لا تُنسى عبر قطع فنية تجمع بين المذاق الغني والاتقان الحرفي. خامات طبيعية بالكامل لتستمتع وتشارك من تحب الجودة الحقيقية.</p>
+        <button class="btn-primary-oval" onclick="location.href='#menu'">استعرض المزيد</button>
+        
+        <div class="video-hook-container">
+            <video class="video-hook" autoplay loop muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+                <source src="https://res.cloudinary.com/dyx4w0dr1/video/upload/v1740824900/hero_bg_compressed.mp4" type="video/mp4">
+                تصفح موقعنا للاستمتاع بأحدث عروض المنتجات.
+            </video>
+        </div>
+    </section>
 
     <script>
-        // نظام التوجيه المطور - يمنع توقف التطبيق الذكي في حالة طلب شاشات قيد البناء والتحضير
-        const BoseRouter = {
-            navigateTo(pageId) {
-                const targetPage = document.getElementById(`page-${pageId}`);
-                if (!targetPage) {
-                    BoseToast.show("هذه الشاشة قيد التحضير والتطوير الفاخر حالياً");
-                    return;
-                }
-                
-                const pages = document.querySelectorAll('.bs-page');
-                pages.forEach(page => { page.classList.remove('active-page'); });
-                
-                targetPage.classList.add('active-page');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        };
+        // بروتوكول التحكم في فتح وإغلاق القائمة الجانبية بنعومة تامة
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebarMenu = document.getElementById('sidebarMenu');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const closeSidebar = document.getElementById('closeSidebar');
 
-        const BoseModal = {
-            show(htmlContent) {
-                const overlay = document.getElementById('bsGlobalModal');
-                // مسموح تمرير هيكل مجهز أمنياً فقط لداخل المودال
-                document.getElementById('bsModalContent').innerHTML = htmlContent;
-                overlay.classList.add('active-modal');
-            },
-            hide() { document.getElementById('bsGlobalModal').classList.remove('active-modal'); }
-        };
+        function toggleSidebar() {
+            sidebarMenu.classList.toggle('active');
+            sidebarOverlay.classList.toggle('active');
+        }
 
-        const BoseToast = {
-            show(message, duration = 3500) {
-                const toast = document.getElementById('bsToast');
-                toast.textContent = message; /* حماية مطلقة ضد الحقن البرمجي النصي XSS */
-                toast.classList.add('active-toast');
-                clearTimeout(this.timeout);
-                this.timeout = setTimeout(() => { toast.classList.remove('active-toast'); }, duration);
-            }
-        };
-
-        // بناء الواجهة الرئيسية المستقرة هندسياً
-        document.getElementById('page-home').innerHTML = `
-            <div class="bs-container">
-                <section class="bs-hero">
-                    <h1 class="bs-hero-title">عقد من <span class="bs-highlight-text">التميز</span> في صناعة الحلويات</h1>
-                    <p class="bs-hero-desc">منصتنا الإلكترونية مصممة خصيصاً لتمنحك تجربة تسوق راقية وسريعة. تصفح خياراتنا المبتكرة وحضر هديتك بكل سهولة.</p>
-                    <button class="bs-btn bs-btn-primary" onclick="BoseRouter.navigateTo('menu')">اطلب الآن</button>
-                    
-                    <div class="bs-hero-video-container">
-                        <video class="bs-hero-video" autoplay loop muted playsinline preload="metadata" poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-                            <source src="https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-chocolate-sauce-on-a-cake-41584-large.mp4" type="video/mp4">
-                        </video>
-                    </div>
-                </section>
-
-                <section class="bs-section">
-                    <h2 class="bs-section-title">الأكثر مبيعاً</h2>
-                    <div class="bs-slider-container" id="mostSellingContainer"></div>
-                </section>
-            </div>
-        `;
-
-        const BoseUI = {
-            toggleSidebar(open) {
-                document.getElementById('bsSidebarOverlay').classList.toggle('active-sidebar', open);
-            },
-            toggleSearch() {
-                const searchBar = document.getElementById('bsSearchBar');
-                searchBar.classList.toggle('active-search');
-                if (searchBar.classList.contains('active-search')) {
-                    document.getElementById('bsSearchInput').focus();
-                }
-            },
-            handleNav(pageId) {
-                this.toggleSidebar(false);
-                BoseRouter.navigateTo(pageId);
-            },
-            // تنظيف ومعالجة الأسعار والأسماء برمجياً قبل حقنها بالـ DOM لمنع الثغرات الأمنية نهائياً
-            escapeHTML(str) {
-                return str.replace(/[&<>'"]/g, 
-                    tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-                );
-            },
-            initMostSelling() {
-                const topProducts = [
-                    { name: 'الديسباسيتو نوتيلا', price: '66 ج.م' },
-                    { name: 'سينابون لوتس', price: '121 ج.م' },
-                    { name: 'دوناتس ماتيلدا', price: '110 ج.م' },
-                    { name: 'قشطوطة مانجا', price: '121 ج.م' },
-                    { name: 'كبات السعادة روشيه', price: '61 ج.م' },
-                    { name: 'ميني تورتة فردين', price: '154 ج.م' },
-                    { name: 'بوكس الروقان الفاخر', price: '550 ج.م' },
-                    { name: 'سينابون بيستاشيو', price: '143 ج.م' }
-                ];
-                
-                const container = document.getElementById('mostSellingContainer');
-                if (container) {
-                    container.innerHTML = topProducts.map(prod => {
-                        const safeName = this.escapeHTML(prod.name);
-                        const safePrice = this.escapeHTML(prod.price);
-                        return `
-                            <div class="bs-slider-card">
-                                <div class="bs-slider-img-holder">
-                                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="${safeName}" class="bs-slider-img" loading="lazy">
-                                </div>
-                                <div class="bs-slider-info">
-                                    <span class="bs-slider-name">${safeName}</span>
-                                    <span class="bs-slider-price">${safePrice}</span>
-                                </div>
-                            </div>
-                        `;
-                    }).join('');
-                }
-            }
-        };
-
-        // تفعيل مستمع بحث ذكي لمنع تكرار العمليات وإجهاد المعالج (Debouncing Engine)
-        let searchTimeout;
-        document.getElementById('bsSearchInput').addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                const query = e.target.value.trim();
-                // هنا يتم ربط محرك تصفية المنتجات مستقبلاً بشكل سليم ومتوافق تماماً
-            }, 300);
-        });
-
-        BoseUI.initMostSelling();
+        menuToggle.addEventListener('click', toggleSidebar);
+        closeSidebar.addEventListener('click', toggleSidebar);
+        sidebarOverlay.addEventListener('click', toggleSidebar);
     </script>
-</body>
-</html>
+<section class="most-selling-section" id="mostSelling">
+        <h2 class="section-title-center">الأكثر مبيعاً من مطبخنا</h2>
+        
+        <div class="slider-outer-container">
+            <div class="slider-track" id="mostSellingSlider">
+                <div class="slider-card-item">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ديسباسيتو مثلث" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">ديسباسيتو مثلث</h3>
+                    <p class="card-item-desc">طبقات متوازنة من كيك الفادج والموس الغني مع نوتيلا دارك وقوام مريح.</p>
+                    <div class="card-item-footer">
+                        <span class="card-item-price">66 ج.م</span>
+                        <button class="btn-card-action" onclick="addToCartDirect('despacito', 'triangle', 'dark-nutella', 66, 'ديسباسيتو مثلث نوتيلا دارك')">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قشطوطة لوتس" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">قشطوطة لوتس</h3>
+                    <p class="card-item-desc">كيك هش بطبقات ناعمة وحشوات متوازنة غنية بزبدة اللوتس الأصلية الطعم.</p>
+                    <div class="card-index-meta"></div>
+                    <div class="card-item-footer">
+                        <span class="card-item-price">121 ج.م</span>
+                        <button class="btn-card-action" onclick="addToCartDirect('qashtota', 'default', 'lotus', 121, 'قشطوطة لوتس')">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="سينابون بيستاشيو" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">سينابون بيستاشيو</h3>
+                    <p class="card-item-desc">لفات سينابون مخبوزة طازجة بقوام طري مغطاة بصوص البيستاشيو الفاخر.</p>
+                    <div class="card-item-footer">
+                        <span class="card-item-price">143 ج.م</span>
+                        <button class="btn-card-action" onclick="addToCartDirect('cinabon', 'default', 'pistachio', 143, 'سينابون بيستاشيو')">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="دوناتس ماتيلدا" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">دوناتس ماتيلدا</h3>
+                    <p class="card-item-desc">دوناتس طازجة وخفيفة الوزن بحشوة الشوكولاتة الغنية على طريقة ماتيلدا الشهيرة.</p>
+                    <div class="card-item-footer">
+                        <span class="card-item-price">110 ج.م</span>
+                        <button class="btn-card-action" onclick="addToCartDirect('donuts', 'default', 'matilda', 110, 'دوناتس ماتيلدا')">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كب السعادة روشيه" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">كب السعادة روشيه</h3>
+                    <p class="card-item-desc">أكواب فردية بطعم غني ومكثف من شوكولاتة الفيريرو روشيه الفاخرة المقرمشة.</p>
+                    <div class="card-item-footer">
+                        <span class="card-item-price">61 ج.م</span>
+                        <button class="btn-card-action" onclick="addToCartDirect('happiness-cups', 'default', 'rocher', 61, 'كب السعادة روشيه')">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ميني تورتة" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">الميني تورت</h3>
+                    <p class="card-item-desc">تورتة صغيرة الحجم مصممة ومصنوعة بعناية كاملة ومناسبة للاحتفالات الثنائية السريعة.</p>
+                    <div class="card-item-footer">
+                        <span class="card-item-price">154 ج.م</span>
+                        <button class="btn-card-action" onclick="addToCartDirect('mini-cake', 'two-person', 'default', 154, 'ميني تورتة فرد أو اتنين')">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ريدفيلفت طاجن كبير" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">ريدڤيلڤت طاجن كبير</h3>
+                    <p class="card-item-desc">كيك مخملي أحمر رائع مع طبقات كريمة غنية وناعمة متوازنة المذاق تماماً.</p>
+                    <div class="card-item-footer">
+                        <span class="card-item-price">165 ج.م</span>
+                        <button class="btn-card-action" onclick="addToCartDirect('red-velvet', 'tray', 'default', 165, 'ريدفيلفت طاجن كبير')">إضافة للسلة</button>
+                    </div>
+                </div>
+
+                <div class="slider-card-item">
+                    <div class="card-img-wrapper">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكس الروقان الفاخر" loading="lazy">
+                    </div>
+                    <h3 class="card-item-title">بوكس الروقان</h3>
+                    <p class="card-item-desc">تجميعة حصرية ومتنوعة متسقة بعناية فائقة لتناسب اللمات العائلية والهدايا الحقيقية.</p>
+                    <div class="card-item-footer">
+                        <span class="card-item-price">550 ج.م</span>
+                        <button class="btn-card-action" onclick="addToCartDirect('relax-box', 'default', 'default', 550, 'بوكس الروقان')">إضافة للسلة</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mastery-section">
+        <h2 class="section-title-center">عقد من الإتقان</h2>
+        <p class="section-desc-center">على مدار عشر سنوات متواصلة، نركز على أدق التفاصيل لنمنحك تجربة تذوق حقيقية تُرضي شغفك بالجودة الحقيقية والمظهر الاحترافي المتقن.</p>
+        
+        <div class="mastery-full-card">
+            <div class="mastery-slideshow-container" id="masterySlideshow">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide active" alt="إتقان حلويات بوسي 1" loading="lazy">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide" alt="إتقان حلويات بوسي 2" loading="lazy">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="mastery-slide" alt="إتقان حلويات بوسي 3" loading="lazy">
+            </div>
+            <div class="mastery-card-overlay-text">
+                <h3>جودة نلتزم بها يومياً</h3>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        /* العناوين والفقرات المشتركة للأقسام */
+        .section-title-center {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--text-color);
+            text-align: center;
+            margin-bottom: 25px;
+            padding: 0 20px;
+        }
+
+        .section-desc-center {
+            font-size: 0.95rem;
+            color: var(--gray-dark);
+            text-align: center;
+            max-width: 650px;
+            margin: -15px auto 30px auto;
+            padding: 0 20px;
+            font-weight: 400;
+        }
+
+        /* تنسيق السلايدر الجانبي التفاعلي (الأكثر مبيعاً) */
+        .most-selling-section {
+            padding: 40px 0;
+            background-color: var(--bg-color);
+            overflow: hidden;
+        }
+
+        .slider-outer-container {
+            width: 100%;
+            padding: 0 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* إخفاء شريط التمرير الافتراضي لراحة العين */
+        .slider-outer-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .slider-track {
+            display: flex;
+            gap: 20px;
+            padding-bottom: 15px;
+            width: max-content;
+        }
+
+        /* كارت المنتج الفاخر ذو الحواف الناعمة والتنفس البصري الواضح */
+        .slider-card-item {
+            width: 260px;
+            background-color: var(--bg-color);
+            border: 1px solid rgba(0,0,0,0.04);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s var(--transition-smooth), box-shadow 0.3s var(--transition-smooth);
+        }
+
+        .slider-card-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
+        }
+
+        .card-img-wrapper {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--gray-light);
+            margin-bottom: 12px;
+        }
+
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s var(--transition-smooth);
+        }
+
+        .slider-card-item:hover .card-img-wrapper img {
+            transform: scale(1.04);
+        }
+
+        .card-item-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 6px;
+        }
+
+        .card-item-desc {
+            font-size: 0.85rem;
+            color: var(--gray-dark);
+            font-weight: 300;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 2.7rem;
+        }
+
+        .card-item-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            border-top: 1px solid rgba(0,0,0,0.02);
+            padding-top: 12px;
+        }
+
+        .card-item-price {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .btn-card-action {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-card-action:hover {
+            background-color: var(--primary);
+            color: var(--bg-color);
+            border-color: var(--primary);
+        }
+
+        /* تنسيق قسم عقد من الإتقان - كارت مالي الشاشة ثابت بصور متغيرة */
+        .mastery-section {
+            padding: 40px 0;
+            background-color: var(--bg-color);
+        }
+
+        .mastery-full-card {
+            width: 100%;
+            height: 380px;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--gray-light);
+        }
+
+        .mastery-slideshow-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .mastery-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1;
+        }
+
+        .mastery-slide.active {
+            opacity: 1;
+            z-index: 2;
+        }
+
+        /* طبقة حماية ورؤية النص على الكارت الفخم الممتد */
+        .mastery-full-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.05) 60%);
+            z-index: 3;
+        }
+
+        .mastery-card-overlay-text {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            z-index: 4;
+            color: var(--bg-color);
+        }
+
+        .mastery-card-overlay-text h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        /* شاشات سطح المكتب والتابلت للتوافقية الكاملة التلقائية */
+        @media (min-width: 769px) {
+            .section-title-center { font-size: 2rem; }
+            .slider-outer-container { padding: 0 40px; }
+            .mastery-full-card { height: 500px; }
+            .mastery-card-overlay-text h3 { font-size: 1.8rem; }
+        }
+    </style>
+
+    <script>
+        // مصفوفة الـ Slides وكود الانتقال التلقائي الصامت لضمان أعلى أداء وكفاءة بيانات
+        (function() {
+            const slides = document.querySelectorAll('.mastery-slide');
+            if (slides.length > 0) {
+                let currentSlideIndex = 0;
+                setInterval(() => {
+                    slides[currentSlideIndex].classList.remove('active');
+                    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+                    slides[currentSlideIndex].classList.add('active');
+                }, 4000); // الانتقال كل 4 ثوانٍ بنعومة متناهية
+            }
+        })();
+
+        // دالة تمهيدية لإضافة المنتجات مباشرة للسلة (سيتم ربطها بمحرك السلة الموحد في الأجزاء القادمة)
+        function addToCartDirect(productId, sizeId, variantId, price, name) {
+            console.log(`تم إضافة المنتج: ${name} بسعر ${price} ج.م إلى سلة المشتريات التلقائية.`);
+            // كود التحديث المؤقت لشارة السلة بالهيدر لضمان التفاعلية اللحظية
+            const badge = document.getElementById('cartCount');
+            if (badge) {
+                let currentCount = parseInt(badge.innerText) || 0;
+                badge.innerText = currentCount + 1;
+            }
+        }
+    </script>
