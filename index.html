@@ -103,194 +103,36 @@
             background-color: #EEEEEE;
         }
 
-        .bs-btn-full {
-            width: 100%;
-            display: flex;
-        }
-
-        /* نظام التوجيه وإدارة عرض الصفحات والشاشات (Single Page Application Layout) */
-        .bs-page {
-            display: none;
-            width: 100%;
-            min-height: 100vh;
-            opacity: 0;
-            transition: opacity 0.4s var(--transition-smooth);
-        }
-
-        .bs-page.active-page {
-            display: block;
-            opacity: 1;
-        }
-
-        /* نظام التنبيهات والرسائل المنبثقة الموحد (Modals & Toast) */
-        .bs-modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
+        /* شريط الإعلان العلوي المتحرك بشكل لا نهائي وناعم (Ticker) */
+        .bs-ticker-wrapper {
+            background-color: var(--bs-pink);
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 8px 0;
             display: flex;
             align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s var(--transition-smooth);
-            padding: 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
 
-        .bs-modal-overlay.active-modal {
-            opacity: 1;
-            visibility: visible;
+        .bs-ticker-track {
+            display: flex;
+            width: max-content;
+            animation: tickerMove 25s linear infinite;
         }
 
-        .bs-modal-card {
-            background-color: var(--bs-white);
-            border-radius: 24px;
-            padding: 24px;
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transform: scale(0.9);
-            transition: transform 0.3s var(--transition-smooth);
-            text-align: center;
-        }
-
-        .bs-modal-overlay.active-modal .bs-modal-card {
-            transform: scale(1);
-        }
-
-        .bs-toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background-color: var(--bs-black);
+        .bs-ticker-item {
+            font-size: 12px;
+            font-weight: 600;
             color: var(--bs-white);
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 3000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            opacity: 0;
-            transition: all 0.3s var(--transition-smooth);
-            pointer-events: none;
-            white-space: nowrap;
+            padding: 0 30px;
         }
 
-        .bs-toast.active-toast {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        @keyframes tickerMove {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(50%, 0, 0); }
         }
 
-        /* مساحات التنفس والراحة البصرية للـ Grid العام */
-        .bs-container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* تحسينات المدخلات للتوافق مع الموبايل والكمبيوتر */
-        input, textarea, select {
-            width: 100%;
-            padding: 14px 20px;
-            border-radius: 50px;
-            border: 1px solid rgba(0,0,0,0.08);
-            background-color: var(--bs-gray-light);
-            font-size: 14px;
-            color: var(--bs-black);
-            outline: none;
-            transition: border-color 0.3s ease;
-            -webkit-appearance: none;
-        }
-
-        input:focus, textarea:focus, select:focus {
-            border-color: var(--bs-pink);
-        }
-
-        textarea {
-            border-radius: 20px;
-            resize: none;
-            min-height: 100px;
-        }
-    </style>
-</head>
-<body>
-
-    <div id="bsToast" class="bs-toast" aria-live="assertive"></div>
-
-    <div id="bsGlobalModal" class="bs-modal-overlay" role="dialog" aria-modal="true">
-        <div class="bs-modal-card">
-            <div id="bsModalContent"></div>
-        </div>
-    </div>
-
-    <div id="mainLayout">
-        
-        <main id="page-home" class="bs-page active-page"></main>
-
-        <section id="page-menu" class="bs-page"></section>
-
-        <section id="page-cake-builder" class="bs-page"></section>
-
-        <section id="page-flower-builder" class="bs-page"></section>
-
-        <section id="page-cart" class="bs-page"></section>
-
-        <section id="page-checkout" class="bs-page"></section>
-
-    </div>
-
-    <script>
-        // نظام إدارة الحالة العام والتنقل الفوري بين الصفحات بدون ريفريش
-        const BoseRouter = {
-            navigateTo(pageId) {
-                const pages = document.querySelectorAll('.bs-page');
-                pages.forEach(page => {
-                    page.classList.remove('active-page');
-                });
-                
-                const targetPage = document.getElementById(`page-${pageId}`);
-                if (targetPage) {
-                    targetPage.classList.add('active-page');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            }
-        };
-
-        // محرك الرسائل المنبثقة الذكية (Modals)
-        const BoseModal = {
-            show(htmlContent) {
-                const overlay = document.getElementById('bsGlobalModal');
-                const contentContainer = document.getElementById('bsModalContent');
-                contentContainer.innerHTML = htmlContent;
-                overlay.classList.add('active-modal');
-            },
-            hide() {
-                const overlay = document.getElementById('bsGlobalModal');
-                overlay.classList.remove('active-modal');
-            }
-        };
-
-        // محرك الإشعارات السريعة (Toasts)
-        const BoseToast = {
-            show(message, duration = 3500) {
-                const toast = document.getElementById('bsToast');
-                toast.innerText = message;
-                toast.classList.add('active-toast');
-                
-                clearTimeout(this.timeout);
-                this.timeout = setTimeout(() => {
-                    toast.classList.remove('active-toast');
-                }, duration);
-            }
-        };
-    </script>
-<style>
-        /* أنماط الهيدر والبار العلوي */
+        /* أنماط الهيدر والبار العلوي الثابت والمستقر */
         .bs-header {
             position: sticky;
             top: 0;
@@ -460,6 +302,91 @@
             align-items: center;
         }
 
+        /* نظام التوجيه وإدارة عرض الصفحات والشاشات (Single Page Layout) */
+        .bs-page {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            opacity: 0;
+            transition: opacity 0.4s var(--transition-smooth);
+        }
+
+        .bs-page.active-page {
+            display: block;
+            opacity: 1;
+        }
+
+        /* نظام التنبيهات والرسائل المنبثقة الموحد (Modals & Toast) */
+        .bs-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s var(--transition-smooth);
+            padding: 20px;
+        }
+
+        .bs-modal-overlay.active-modal {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .bs-modal-card {
+            background-color: var(--bs-white);
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s var(--transition-smooth);
+            text-align: center;
+        }
+
+        .bs-modal-overlay.active-modal .bs-modal-card {
+            transform: scale(1);
+        }
+
+        .bs-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--bs-black);
+            color: var(--bs-white);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 3000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.3s var(--transition-smooth);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .bs-toast.active-toast {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* مساحات التنفس والراحة البصرية للـ Grid العام */
+        .bs-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
         /* قسم البطل والهوك البصري */
         .bs-hero {
             padding: 40px 0 20px 0;
@@ -590,6 +517,30 @@
             color: var(--bs-pink);
         }
 
+        /* تحسينات المدخلات للتوافق مع الموبايل والكمبيوتر */
+        input, textarea, select {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(0,0,0,0.08);
+            background-color: var(--bs-gray-light);
+            font-size: 14px;
+            color: var(--bs-black);
+            outline: none;
+            transition: border-color 0.3s ease;
+            -webkit-appearance: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--bs-pink);
+        }
+
+        textarea {
+            border-radius: 20px;
+            resize: none;
+            min-height: 100px;
+        }
+
         @media (min-width: 768px) {
             .bs-hero-title { font-size: 38px; }
             .bs-hero-desc { font-size: 16px; }
@@ -597,6 +548,27 @@
             .bs-slider-card { flex: 0 0 calc(25% - 12px); }
         }
     </style>
+</head>
+<body>
+
+    <div id="bsToast" class="bs-toast" aria-live="assertive"></div>
+
+    <div id="bsGlobalModal" class="bs-modal-overlay" role="dialog" aria-modal="true">
+        <div class="bs-modal-card">
+            <div id="bsModalContent"></div>
+        </div>
+    </div>
+
+    <div class="bs-ticker-wrapper">
+        <div class="bs-ticker-track">
+            <span class="bs-ticker-item">✨ حلويات بوسي | صنعناها بحب لتهديها لمن تحب ✨</span>
+            <span class="bs-ticker-item">🎂 جودة متميزة وخامات طبيعية 100% 🎂</span>
+            <span class="bs-ticker-item">🚚 توصيل سريع لجميع مناطق الفرافرة والكفاح 🚚</span>
+            <span class="bs-ticker-item">✨ حلويات بوسي | صنعناها بحب لتهديها لمن تحب ✨</span>
+            <span class="bs-ticker-item">🎂 جودة متميزة وخامات طبيعية 100% 🎂</span>
+            <span class="bs-ticker-item">🚚 توصيل سريع لجميع مناطق الفرافرة والكفاح 🚚</span>
+        </div>
+    </div>
 
     <header class="bs-header">
         <div class="bs-container bs-header-wrapper">
@@ -642,8 +614,68 @@
         </nav>
     </div>
 
+    <div id="mainLayout">
+        
+        <main id="page-home" class="bs-page active-page"></main>
+
+        <section id="page-menu" class="bs-page"></section>
+
+        <section id="page-cake-builder" class="bs-page"></section>
+
+        <section id="page-flower-builder" class="bs-page"></section>
+
+        <section id="page-cart" class="bs-page"></section>
+
+        <section id="page-checkout" class="bs-page"></section>
+
+    </div>
+
     <script>
-        // حقن محتوى الصفحة الرئيسية الأساسي المعتمد داخل حاوية الـ DOM المخصصة له
+        // نظام إدارة الحالة العام والتنقل الفوري بين الصفحات
+        const BoseRouter = {
+            navigateTo(pageId) {
+                const pages = document.querySelectorAll('.bs-page');
+                pages.forEach(page => {
+                    page.classList.remove('active-page');
+                });
+                
+                const targetPage = document.getElementById(`page-${pageId}`);
+                if (targetPage) {
+                    targetPage.classList.add('active-page');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        };
+
+        // محرك الرسائل المنبثقة الذكية (Modals)
+        const BoseModal = {
+            show(htmlContent) {
+                const overlay = document.getElementById('bsGlobalModal');
+                const contentContainer = document.getElementById('bsModalContent');
+                contentContainer.innerHTML = htmlContent;
+                overlay.classList.add('active-modal');
+            },
+            hide() {
+                const overlay = document.getElementById('bsGlobalModal');
+                overlay.classList.remove('active-modal');
+            }
+        };
+
+        // محرك الإشعارات السريعة (Toasts)
+        const BoseToast = {
+            show(message, duration = 3500) {
+                const toast = document.getElementById('bsToast');
+                toast.innerText = message;
+                toast.classList.add('active-toast');
+                
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => {
+                    toast.classList.remove('active-toast');
+                }, duration);
+            }
+        };
+
+        // حقن محتوى الصفحة الرئيسية الأساسي والمثالي داخل حاوية الـ DOM
         document.getElementById('page-home').innerHTML = `
             <div class="bs-container">
                 <section class="bs-hero">
@@ -660,13 +692,12 @@
 
                 <section class="bs-section">
                     <h2 class="bs-section-title">الأكثر مبيعاً</h2>
-                    <div class="bs-slider-container" id="mostSellingContainer">
-                        </div>
+                    <div class="bs-slider-container" id="mostSellingContainer"></div>
                 </section>
             </div>
         `;
 
-        // واجهات التحكم والوظائف التفاعلية الخاصة بالجزء الثاني
+        // واجهات التحكم والوظائف التفاعلية الخاصة بـ BoseUI
         const BoseUI = {
             toggleSidebar(open) {
                 const overlay = document.getElementById('bsSidebarOverlay');
@@ -684,7 +715,6 @@
                 BoseRouter.navigateTo(pageId);
             },
             initMostSelling() {
-                // مصفوفة تضم 8 منتجات تمثيلية مأخوذة من الهيكل المعتمد لبيانات الموقع لملء السلايدر
                 const topProducts = [
                     { name: 'الديسباسيتو نوتيلا', price: '66 ج.م' },
                     { name: 'سينابون لوتس', price: '121 ج.م' },
@@ -716,3 +746,5 @@
         // تشغيل البناء الفوري للسلايدر عند تحميل السكريبت
         BoseUI.initMostSelling();
     </script>
+</body>
+</html>
