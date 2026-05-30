@@ -1,336 +1,718 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
+    <meta name="description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل. استكشف أفخم الحلويات والمحاكيات الذكية للتورت والورد.">
+    <meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, حلويات بوسي, الفرافرة, الكفاح">
+    <meta name="author" content="إدارة حلويات بوسي">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bosesweets.com">
+    <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
+    <meta property="og:description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.">
+    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
 
-<title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-<meta name="description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.">
-<meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس">
-<link rel="canonical" href="https://bosesweets.com">
-<meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-<meta property="og:description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.">
-<meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-<meta property="og:url" content="https://bosesweets.com">
-<meta property="og:type" content="website">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bosesweets.com">
+    <meta property="twitter:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
+    <meta property="twitter:description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.">
+    <meta property="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
 
-<link rel="icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="canonical" href="https://bosesweets.com">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<style>
-:root {
-  --primary-color: #FF91A4;
-  --text-color: black;
-  --bg-color: white;
-  --font-family: 'Alexandria', sans-serif;
-}
+    <style>
+        /* إعدادات المتغيرات وتثبيت الهوية البصرية الصارمة */
+        :root {
+            --bs-pink: #FF91A4;
+            --bs-white: #FFFFFF;
+            --bs-black: #000000;
+            --bs-gray-light: #F9F9F9;
+            --bs-gray-text: #333333;
+            --bs-font: 'Alexandria', sans-serif;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-* {margin:0; padding:0; box-sizing:border-box; font-family:var(--font-family);}
-body {background: var(--bg-color); color: var(--text-color); line-height:1.6;}
-a {text-decoration:none; color:inherit;}
+        /* إعادة تعيين العناصر الأساسية لضمان التوافق بين الموبايل والكمبيوتر */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--bs-font);
+            -webkit-tap-highlight-color: transparent;
+        }
 
-/* Top Marquee */
-.top-marquee{
-height:44px;
-background:#FF91A4;
-overflow:hidden;
-display:flex;
-align-items:center;
-}
-.marquee-track{
-display:flex;
-align-items:center;
-width:max-content;
-animation:marqueeMove 22s linear infinite;
-white-space:nowrap;
-}
-.marquee-track span{
-color:#fff;
-font-size:14px;
-font-weight:600;
-padding:0 26px;
-white-space:nowrap;
-}
-@keyframes marqueeMove{
-from{transform:translateX(0);}
-to{transform:translateX(-50%);}
-}
+        body {
+            background-color: var(--bs-white);
+            color: var(--bs-black);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
-/* Header */
-.main-header{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-z-index:1000;
-height:70px;
-background:rgba(255,255,255,.97);
-backdrop-filter:blur(18px);
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:0 16px;
-border-bottom:1px solid #f5e3e8;
-}
+        /* أنماط العناوين والنصوص بوزن لا يتجاوز 800 */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            color: var(--bs-black);
+        }
 
-.brand-center{
-display:flex;
-align-items:center;
-gap:12px;
-}
-.brand-center img{
-width:52px;
-height:52px;
-object-fit:contain;
-}
-.brand-center h2{
-font-size:36px;
-font-weight:700; /* بصرياً مناسب */
-line-height:1;
-margin:0;
-}
+        p {
+            font-weight: 400;
+            color: var(--bs-gray-text);
+        }
 
-/* Header Actions */
-.header-actions{
-display:flex;
-justify-content:flex-end;
-gap:8px;
-}
-.header-icon{
-width:44px;
-height:44px;
-border:none;
-border-radius:16px;
-background:#fff4f6;
-cursor:pointer;
-position:relative;
-font-size:20px;
-}
-.cart-badge{
-position:absolute;
-top:-5px;
-left:-5px;
-width:20px;
-height:20px;
-background:#FF91A4;
-color:#fff;
-font-size:11px;
-border-radius:50%;
-display:flex;
-align-items:center;
-justify-content:center;
-}
+        /* أزرار بيضاوية احترافية خالية من الحواف الحادة */
+        .bs-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 24px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s var(--transition-smooth);
+            text-decoration: none;
+            outline: none;
+        }
 
-/* Sidebar */
-.menu-btn{
-width:46px;
-height:46px;
-border:none;
-border-radius:16px;
-background:#FF91A4;
-color:#fff;
-font-size:22px;
-cursor:pointer;
-display:flex;
-align-items:center;
-justify-content:center;
-box-shadow:0 10px 30px rgba(255,145,164,.25);
-}
-.sidebar-overlay{
-position:fixed;
-inset:0;
-background:rgba(0,0,0,.45);
-backdrop-filter:blur(4px);
-opacity:0;
-visibility:hidden;
-transition:.35s;
-z-index:1998;
-}
-.sidebar{
-position:fixed;
-top:0;
-right:-360px;
-width:340px;
-max-width:90vw;
-height:100dvh;
-background:#fff;
-z-index:9999;
-transition:.35s;
-overflow-y:auto;
-padding-bottom:120px;
-box-shadow:-15px 0 50px rgba(0,0,0,.15);
-}
-.sidebar.active{right:0;}
-.sidebar::-webkit-scrollbar{width:4px;}
-.sidebar::-webkit-scrollbar-thumb{background:#FF91A4;border-radius:20px;}
-.sidebar-header{
-background:linear-gradient(135deg,#FF91A4,#ffb8c4);
-padding:30px 20px;
-color:#fff;
-text-align:center;
-}
-.sidebar-logo{
-width:90px;
-height:90px;
-border-radius:50%;
-background:#fff;
-padding:8px;
-margin:auto;
-margin-bottom:15px;
-}
-.sidebar-logo img{width:100%;height:100%;object-fit:contain;}
-.sidebar-title{font-size:20px;font-weight:700;}
-.sidebar-links{padding:20px;}
-.sidebar-links a{
-display:flex;align-items:center;gap:12px;
-padding:16px;margin-bottom:10px;
-border-radius:16px;
-font-weight:600;
-background:#fff5f7;
-transition:.25s;
-}
-.sidebar-links a:hover{
-background:#FF91A4;color:#fff;transform:translateX(-5px);
-}
-.sidebar-footer{padding:20px;}
-.sidebar-whatsapp{display:block;width:100%;background:#FF91A4;color:#fff;text-align:center;padding:15px;border-radius:18px;font-weight:700;}
+        .bs-btn-primary {
+            background-color: var(--bs-pink);
+            color: var(--bs-white);
+        }
 
-/* Hero Section */
-.hero-section{
-padding:140px 22px 50px; /* لضبط بسبب الهيدر الثابت */
-text-align:center;
-background: linear-gradient(180deg,#fff5f7,#ffffff);
-}
-.hero-badge{
-display:inline-flex;
-align-items:center;
-justify-content:center;
-padding:12px 24px;
-border-radius:999px;
-background:#fff;
-border:1px solid #f3d6dd;
-font-size:15px;
-font-weight:600;
-margin-bottom:28px;
-}
-.hero-section h1{
-font-size:36px; /* مناسب بصرياً */
-font-weight:700;
-line-height:1.08;
-letter-spacing:0;
-margin-bottom:28px;
-max-width:700px;
-margin-inline:auto;
-}
-.hero-section p{
-font-size:18px;
-line-height:2;
-max-width:760px;
-margin:auto;
-color:#333;
-}
-.hero-buttons{
-display:flex;
-gap:16px;
-justify-content:center;
-margin-top:35px;
-flex-wrap:wrap;
-}
-.hero-buttons a{
-height:58px;
-padding:0 34px;
-display:flex;
-align-items:center;
-justify-content:center;
-border-radius:999px;
-font-weight:700;
-font-size:18px;
-}
-.hero-buttons a:first-child{
-background:#FF91A4;
-color:#fff;
-}
-.hero-buttons a:last-child{
-background:#fff;
-border:1px solid #f3d6dd;
-}
-body {margin-top:70px;} /* لتعويض ارتفاع الهيدر */
-</style>
+        .bs-btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .bs-btn-secondary {
+            background-color: var(--bs-gray-light);
+            color: var(--bs-black);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .bs-btn-secondary:hover {
+            background-color: #EEEEEE;
+        }
+
+        .bs-btn-full {
+            width: 100%;
+            display: flex;
+        }
+
+        /* نظام التوجيه وإدارة عرض الصفحات والشاشات (Single Page Application Layout) */
+        .bs-page {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            opacity: 0;
+            transition: opacity 0.4s var(--transition-smooth);
+        }
+
+        .bs-page.active-page {
+            display: block;
+            opacity: 1;
+        }
+
+        /* نظام التنبيهات والرسائل المنبثقة الموحد (Modals & Toast) */
+        .bs-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s var(--transition-smooth);
+            padding: 20px;
+        }
+
+        .bs-modal-overlay.active-modal {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .bs-modal-card {
+            background-color: var(--bs-white);
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: scale(0.9);
+            transition: transform 0.3s var(--transition-smooth);
+            text-align: center;
+        }
+
+        .bs-modal-overlay.active-modal .bs-modal-card {
+            transform: scale(1);
+        }
+
+        .bs-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--bs-black);
+            color: var(--bs-white);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 3000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            opacity: 0;
+            transition: all 0.3s var(--transition-smooth);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .bs-toast.active-toast {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* مساحات التنفس والراحة البصرية للـ Grid العام */
+        .bs-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* تحسينات المدخلات للتوافق مع الموبايل والكمبيوتر */
+        input, textarea, select {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(0,0,0,0.08);
+            background-color: var(--bs-gray-light);
+            font-size: 14px;
+            color: var(--bs-black);
+            outline: none;
+            transition: border-color 0.3s ease;
+            -webkit-appearance: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--bs-pink);
+        }
+
+        textarea {
+            border-radius: 20px;
+            resize: none;
+            min-height: 100px;
+        }
+    </style>
 </head>
 <body>
 
-<!-- Top Marquee -->
-<div class="top-marquee">
-  <div class="marquee-track">
-    <span>صنعناها بحب لتهديها لمن تحب ✦</span>
-    <span>أكثر من 10 سنوات خبرة ✦</span>
-    <span>شاركنا أكثر من 10000 مناسبة سعيدة ✦</span>
-    <span>خامات طبيعية مختارة بعناية ✦</span>
-    <span>تصميمات تورت وورد حسب الطلب ✦</span>
-  </div>
-</div>
+    <div id="bsToast" class="bs-toast" aria-live="assertive"></div>
 
-<!-- Header -->
-<header class="main-header">
-<button class="menu-btn" onclick="openSidebar()">☰</button>
-<div class="brand-center">
-<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
-<h2>حلويات بوسي</h2>
-</div>
-<div class="header-actions">
-<button class="header-icon">🔍</button>
-<button class="header-icon">🛒<span class="cart-badge">0</span></button>
-</div>
-</header>
+    <div id="bsGlobalModal" class="bs-modal-overlay" role="dialog" aria-modal="true">
+        <div class="bs-modal-card">
+            <div id="bsModalContent"></div>
+        </div>
+    </div>
 
-<!-- Sidebar -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
-<aside class="sidebar" id="sidebar">
-<div class="sidebar-header">
-<div class="sidebar-logo"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"></div>
-<div class="sidebar-title">حلويات بوسي</div>
-</div>
-<div class="sidebar-links">
-<a href="/" onclick="closeSidebar()">🏠 الرئيسية</a>
-<a href="/menu.html" onclick="closeSidebar()">📖 المنيو</a>
-<a href="/cake-builder.html" onclick="closeSidebar()">🎂 محاكي التورت</a>
-<a href="/flower-builder.html" onclick="closeSidebar()">🌹 محاكي الورد</a>
-<a href="/cart.html" onclick="closeSidebar()">🛒 السلة</a>
-<a href="#" onclick="closeSidebar()">❤️ المفضلة</a>
-<a href="#" onclick="closeSidebar()">📞 تواصل معنا</a>
-<a href="#" onclick="closeSidebar()">📍 من نحن</a>
-</div>
-<div class="sidebar-footer">
-<a class="sidebar-whatsapp" href="https://wa.me/20109723841">خدمة العملاء</a>
-</div>
-</aside>
+    <div id="mainLayout">
+        
+        <main id="page-home" class="bs-page active-page"></main>
 
-<!-- Hero Section -->
-<section class="hero-section">
-<span class="hero-badge">منذ أكثر من 10 سنوات</span>
-<h1>عقد من التميز في صناعة الحلويات</h1>
-<p>حلويات مصنوعة بعناية وخامات مختارة وتجهيزات خاصة للمناسبات والهدايا واللحظات اللي تستحق حاجة تتعمل صح.</p>
-<div class="hero-buttons">
-<a href="/menu.html">اطلب الآن</a>
-<a href="/menu.html">تصفح المنيو</a>
-</div>
-</section>
+        <section id="page-menu" class="bs-page"></section>
 
-<script>
-const sidebar = document.getElementById("sidebar");
-const sidebarOverlay = document.getElementById("sidebarOverlay");
+        <section id="page-cake-builder" class="bs-page"></section>
 
-function openSidebar(){
-sidebar.classList.add("active");
-sidebarOverlay.classList.add("active");
-document.body.style.overflow="hidden";
-}
+        <section id="page-flower-builder" class="bs-page"></section>
 
-function closeSidebar(){
-sidebar.classList.remove("active");
-sidebarOverlay.classList.remove("active");
-document.body.style.overflow="";
-}
-</script>
-</body>
-</html>
+        <section id="page-cart" class="bs-page"></section>
+
+        <section id="page-checkout" class="bs-page"></section>
+
+    </div>
+
+    <script>
+        // نظام إدارة الحالة العام والتنقل الفوري بين الصفحات بدون ريفريش
+        const BoseRouter = {
+            navigateTo(pageId) {
+                const pages = document.querySelectorAll('.bs-page');
+                pages.forEach(page => {
+                    page.classList.remove('active-page');
+                });
+                
+                const targetPage = document.getElementById(`page-${pageId}`);
+                if (targetPage) {
+                    targetPage.classList.add('active-page');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        };
+
+        // محرك الرسائل المنبثقة الذكية (Modals)
+        const BoseModal = {
+            show(htmlContent) {
+                const overlay = document.getElementById('bsGlobalModal');
+                const contentContainer = document.getElementById('bsModalContent');
+                contentContainer.innerHTML = htmlContent;
+                overlay.classList.add('active-modal');
+            },
+            hide() {
+                const overlay = document.getElementById('bsGlobalModal');
+                overlay.classList.remove('active-modal');
+            }
+        };
+
+        // محرك الإشعارات السريعة (Toasts)
+        const BoseToast = {
+            show(message, duration = 3500) {
+                const toast = document.getElementById('bsToast');
+                toast.innerText = message;
+                toast.classList.add('active-toast');
+                
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => {
+                    toast.classList.remove('active-toast');
+                }, duration);
+            }
+        };
+    </script>
+<style>
+        /* أنماط الهيدر والبار العلوي */
+        .bs-header {
+            position: sticky;
+            top: 0;
+            background-color: var(--bs-white);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            z-index: 1000;
+            padding: 12px 0;
+        }
+
+        .bs-header-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .bs-brand-zone {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .bs-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .bs-brand-name {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--bs-black);
+        }
+
+        .bs-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bs-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s ease;
+        }
+
+        .bs-icon-btn:hover {
+            background-color: var(--bs-gray-light);
+        }
+
+        .bs-icon-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: none;
+            stroke: var(--bs-black);
+            stroke-width: 2;
+        }
+
+        .bs-cart-badge {
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            background-color: var(--bs-pink);
+            color: var(--bs-white);
+            font-size: 10px;
+            font-weight: 700;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+        }
+
+        /* القائمة الجانبية المتجاوبة */
+        .bs-sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 1500;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .bs-sidebar-overlay.active-sidebar {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .bs-sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background-color: var(--bs-white);
+            z-index: 1600;
+            box-shadow: -5px 0 25px rgba(0,0,0,0.05);
+            transition: right 0.3s var(--transition-smooth);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .bs-sidebar-overlay.active-sidebar .bs-sidebar {
+            right: 0;
+        }
+
+        .bs-sidebar-close {
+            align-self: flex-start;
+        }
+
+        .bs-menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            list-style: none;
+        }
+
+        .bs-menu-item {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--bs-black);
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 50px;
+            transition: all 0.2s ease;
+        }
+
+        .bs-menu-item:hover {
+            background-color: var(--bs-gray-light);
+            color: var(--bs-pink);
+        }
+
+        /* مربع البحث المنزلق العلوي */
+        .bs-search-bar-container {
+            max-height: 0;
+            overflow: hidden;
+            background-color: var(--bs-gray-light);
+            transition: max-height 0.3s var(--transition-smooth);
+        }
+
+        .bs-search-bar-container.active-search {
+            max-height: 70px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .bs-search-wrapper {
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        /* قسم البطل والهوك البصري */
+        .bs-hero {
+            padding: 40px 0 20px 0;
+            text-align: center;
+        }
+
+        .bs-hero-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--bs-black);
+            margin-bottom: 12px;
+        }
+
+        .bs-hero-desc {
+            font-size: 15px;
+            font-weight: 400;
+            color: var(--bs-gray-text);
+            max-width: 600px;
+            margin: 0 auto 25px auto;
+            padding: 0 10px;
+        }
+
+        .bs-hero-video-container {
+            width: 100%;
+            border-radius: 24px;
+            overflow: hidden;
+            background-color: var(--bs-gray-light);
+            margin-top: 30px;
+            aspect-ratio: 16 / 9;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+        }
+
+        .bs-hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* قسم الأكثر مبيعاً - السلايدر الجانبي المتجاوب */
+        .bs-section {
+            padding: 40px 0;
+        }
+
+        .bs-section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--bs-black);
+            margin-bottom: 20px;
+            position: relative;
+            padding-right: 15px;
+        }
+
+        .bs-section-title::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 22px;
+            background-color: var(--bs-pink);
+            border-radius: 10px;
+        }
+
+        .bs-slider-container {
+            overflow-x: auto;
+            overflow-y: hidden;
+            display: flex;
+            gap: 16px;
+            padding: 10px 20px 20px 20px;
+            margin: 0 -20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .bs-slider-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .bs-slider-card {
+            scroll-snap-align: start;
+            flex: 0 0 240px;
+            background-color: var(--bs-white);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .bs-slider-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .bs-slider-img-holder {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background-color: var(--bs-gray-light);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .bs-slider-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .bs-slider-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .bs-slider-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--bs-black);
+        }
+
+        .bs-slider-price {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--bs-pink);
+        }
+
+        @media (min-width: 768px) {
+            .bs-hero-title { font-size: 38px; }
+            .bs-hero-desc { font-size: 16px; }
+            .bs-slider-container { margin: 0; padding: 10px 0 20px 0; overflow-x: hidden; flex-wrap: wrap; }
+            .bs-slider-card { flex: 0 0 calc(25% - 12px); }
+        }
+    </style>
+
+    <header class="bs-header">
+        <div class="bs-container bs-header-wrapper">
+            <button class="bs-icon-btn" onclick="BoseUI.toggleSidebar(true)" aria-label="فتح القائمة">
+                <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
+            </button>
+
+            <div class="bs-brand-zone" onclick="BoseRouter.navigateTo('home')">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="bs-logo">
+                <span class="bs-brand-name">حلويات بوسي</span>
+            </div>
+
+            <div class="bs-nav-actions">
+                <button class="bs-icon-btn" onclick="BoseUI.toggleSearch()" aria-label="البحث">
+                    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
+                </button>
+                <button class="bs-icon-btn" onclick="BoseRouter.navigateTo('cart')" aria-label="سلة المشتريات">
+                    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0" stroke-linecap="round"/></svg>
+                    <span class="bs-cart-badge" id="headerCartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="bs-search-bar-container" id="bsSearchBar">
+        <div class="bs-container bs-search-wrapper">
+            <input type="search" placeholder="ابحث عن السينابون، الدوناتس، الديسباسيتو..." id="bsSearchInput">
+        </div>
+    </div>
+
+    <div class="bs-sidebar-overlay" id="bsSidebarOverlay" onclick="BoseUI.toggleSidebar(false)">
+        <nav class="bs-sidebar" onclick="event.stopPropagation()">
+            <button class="bs-icon-btn bs-sidebar-close" onclick="BoseUI.toggleSidebar(false)" aria-label="إغلاق">
+                <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
+            </button>
+            <ul class="bs-menu-links">
+                <li class="bs-menu-item" onclick="BoseUI.handleNav('home')">الرئيسية</li>
+                <li class="bs-menu-item" onclick="BoseUI.handleNav('menu')">المنيو</li>
+                <li class="bs-menu-item" onclick="BoseUI.handleNav('cake-builder')">محاكي التورت</li>
+                <li class="bs-menu-item" onclick="BoseUI.handleNav('flower-builder')">محاكي الورد</li>
+                <li class="bs-menu-item" onclick="BoseUI.handleNav('cart')">السلة</li>
+            </ul>
+        </nav>
+    </div>
+
+    <script>
+        // حقن محتوى الصفحة الرئيسية الأساسي المعتمد داخل حاوية الـ DOM المخصصة له
+        document.getElementById('page-home').innerHTML = `
+            <div class="bs-container">
+                <section class="bs-hero">
+                    <h1 class="bs-hero-title">عقد من التميز في صناعة الحلويات</h1>
+                    <p class="bs-hero-desc">منصتنا الإلكترونية مصممة خصيصاً لتمنحك تجربة تسوق راقية وسريعة. تصفح خياراتنا المبتكرة وحضر هديتك بكل سهولة.</p>
+                    <button class="bs-btn bs-btn-primary" onclick="BoseRouter.navigateTo('menu')">اطلب الآن</button>
+                    
+                    <div class="bs-hero-video-container">
+                        <video class="bs-hero-video" autoplay loop muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+                            <source src="https://assets.mixkit.co/videos/preview/mixkit-pouring-hot-chocolate-sauce-on-a-cake-41584-large.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </section>
+
+                <section class="bs-section">
+                    <h2 class="bs-section-title">الأكثر مبيعاً</h2>
+                    <div class="bs-slider-container" id="mostSellingContainer">
+                        </div>
+                </section>
+            </div>
+        `;
+
+        // واجهات التحكم والوظائف التفاعلية الخاصة بالجزء الثاني
+        const BoseUI = {
+            toggleSidebar(open) {
+                const overlay = document.getElementById('bsSidebarOverlay');
+                overlay.classList.toggle('active-sidebar', open);
+            },
+            toggleSearch() {
+                const searchBar = document.getElementById('bsSearchBar');
+                searchBar.classList.toggle('active-search');
+                if (searchBar.classList.contains('active-search')) {
+                    document.getElementById('bsSearchInput').focus();
+                }
+            },
+            handleNav(pageId) {
+                this.toggleSidebar(false);
+                BoseRouter.navigateTo(pageId);
+            },
+            initMostSelling() {
+                // مصفوفة تضم 8 منتجات تمثيلية مأخوذة من الهيكل المعتمد لبيانات الموقع لملء السلايدر
+                const topProducts = [
+                    { name: 'الديسباسيتو نوتيلا', price: '66 ج.م' },
+                    { name: 'سينابون لوتس', price: '121 ج.م' },
+                    { name: 'دوناتس ماتيلدا', price: '110 ج.م' },
+                    { name: 'قشطوطة مانجا', price: '121 ج.م' },
+                    { name: 'كبات السعادة روشيه', price: '61 ج.م' },
+                    { name: 'ميني تورتة فردين', price: '154 ج.م' },
+                    { name: 'بوكس الروقان الفاخر', price: '550 ج.م' },
+                    { name: 'سينابون بيستاشيو', price: '143 ج.م' }
+                ];
+                
+                const container = document.getElementById('mostSellingContainer');
+                if (container) {
+                    container.innerHTML = topProducts.map(prod => `
+                        <div class="bs-slider-card" onclick="BoseRouter.navigateTo('menu')">
+                            <div class="bs-slider-img-holder">
+                                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="${prod.name}" class="bs-slider-img" loading="lazy">
+                            </div>
+                            <div class="bs-slider-info">
+                                <span class="bs-slider-name">${prod.name}</span>
+                                <span class="bs-slider-price">${prod.price}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }
+        };
+
+        // تشغيل البناء الفوري للسلايدر عند تحميل السكريبت
+        BoseUI.initMostSelling();
+    </script>
