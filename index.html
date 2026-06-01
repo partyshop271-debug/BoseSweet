@@ -11,22 +11,42 @@
       grid-template-columns: auto 1fr auto;
       align-items: center;
       height: 75px;
+      padding: 0 15px;
+    }
+    .bs-menu-trigger {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      color: #111111;
+      cursor: pointer;
+      justify-self: start;
     }
     .bs-logo-brand-zone {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
     }
     .bs-brand-name {
       color: #FF91A4;
       font-weight: 700;
-      font-size: 1.3rem;
+      font-size: 1.4rem;
     }
     .bs-left-actions {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
+      justify-self: end;
+    }
+    .bs-action-icon {
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      color: #111111;
+      cursor: pointer;
+      position: relative;
+      display: flex;
+      align-items: center;
     }
     .bs-mobile-menu {
       position: fixed;
@@ -39,14 +59,44 @@
       box-shadow: -10px 0 30px rgba(17, 17, 17, 0.15);
       transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 2500;
-      padding: 3rem 1.5px;
+      padding: 2rem 0;
       display: flex;
       flex-direction: column;
-      gap: 1.25rem;
-      border-left: 2px solid #FF91A4;
     }
     .bs-mobile-menu.active {
       right: 0;
+    }
+    .bs-menu-header {
+      background: linear-gradient(135deg, #FF91A4 0%, #ffb6c1 100%);
+      padding: 2.5rem 1.5px;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .bs-menu-header h3 {
+      color: #FFFFFF;
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    .bs-menu-header p {
+      color: #FFFFFF;
+      font-size: 0.95rem;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+    .bs-mobile-link {
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #111111;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 145, 164, 0.1);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+    .bs-mobile-link:hover {
+      background-color: rgba(255, 145, 164, 0.05);
+      color: #FF91A4;
     }
     .bs-menu-overlay {
       position: fixed;
@@ -71,12 +121,12 @@
       margin-right: calc(-50vw + 50%);
       overflow: hidden;
       background-color: #FFFFFF;
-      padding: 3rem 0;
+      padding: 4rem 0;
     }
     .bs-waterfall-wrapper {
       display: flex;
       width: 100%;
-      height: 480px;
+      height: 520px;
       overflow: hidden;
       position: relative;
     }
@@ -94,10 +144,10 @@
       gap: 0;
     }
     .bs-waterfall-track.up {
-      animation: bs-scroll-up 22s linear infinite;
+      animation: bs-scroll-up 20s linear infinite;
     }
     .bs-waterfall-track.down {
-      animation: bs-scroll-down 22s linear infinite;
+      animation: bs-scroll-down 20s linear infinite;
       bottom: 0;
     }
     @keyframes bs-scroll-up {
@@ -110,7 +160,7 @@
     }
     .bs-waterfall-card {
       width: 100%;
-      height: 240px;
+      height: 260px;
       display: block;
     }
     .bs-waterfall-card img {
@@ -123,7 +173,7 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 120px;
+      height: 140px;
       background: linear-gradient(to top, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%);
       pointer-events: none;
       z-index: 10;
@@ -137,7 +187,7 @@
     .bs-itqan-track {
       display: flex;
       width: 300vw;
-      animation: bs-itqan-slide 28s linear infinite;
+      animation: bs-itqan-slide 25s linear infinite;
     }
     .bs-itqan-img {
       width: 100vw;
@@ -157,7 +207,7 @@
       width: 100vw;
       margin-left: calc(-50vw + 50%);
       margin-right: calc(-50vw + 50%);
-      padding: 0.5rem 0;
+      padding: 1rem 0;
     }
     .bs-mobile-full-slider::-webkit-scrollbar {
       display: none;
@@ -165,38 +215,133 @@
     .bs-mobile-full-slider .bs-product-card {
       flex: 0 0 100vw;
       scroll-snap-align: start;
-      border-radius: 0;
-      border-left: none;
-      border-right: none;
-      box-shadow: none;
+      padding: 0 20px;
+    }
+    .bs-product-card {
+      background-color: #FFFFFF;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    .bs-card-border-outer {
+      border: 1px solid #FF91A4;
+      border-radius: 24px;
+      padding: 6px;
+      width: 100%;
+      height: 100%;
+      background-color: #FFFFFF;
+    }
+    .bs-card-border-inner {
+      border: 2px solid #FF91A4;
+      border-radius: 18px;
+      padding: 1.5rem;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background-color: #FFFFFF;
+    }
+    .bs-product-img-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 75%;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+    }
+    .bs-product-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .bs-category-tag {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #FF91A4;
+      margin-bottom: 0.5rem;
+    }
+    .bs-product-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #111111;
+      margin-bottom: 0.25rem;
+    }
+    .bs-flavor-text {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #FF91A4;
+      margin-bottom: 0.75rem;
+    }
+    .bs-product-desc {
+      font-size: 0.95rem;
+      color: #111111;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+      text-align: justify;
+    }
+    .bs-card-action-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      margin-bottom: 1.25rem;
+      gap: 15px;
     }
     .bs-qty-counter {
       display: flex;
       align-items: center;
       justify-content: space-between;
       border: 1px solid #FF91A4;
-      border-radius: 8px;
-      padding: 0.4rem 1rem;
-      margin-bottom: 1.25rem;
-      background-color: #FFFFFF;
+      border-radius: 20px;
+      padding: 0.25rem 0.5rem;
+      background-color: rgba(255, 145, 164, 0.03);
+      width: 130px;
     }
     .bs-qty-btn {
       background: none;
       border: none;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       font-weight: 700;
       cursor: pointer;
       color: #111111;
-      width: 35px;
-      height: 35px;
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .bs-qty-number {
+    .bs-qty-display-num {
       font-weight: 700;
       font-size: 1.2rem;
       color: #111111;
+    }
+    .bs-product-price {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #FF91A4;
+      white-space: nowrap;
+    }
+    .bs-product-price span {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-right: 2px;
+    }
+    .bs-add-to-cart-submit {
+      width: 100%;
+      background-color: #FF91A4;
+      color: #FFFFFF;
+      border: none;
+      padding: 0.9rem 1.5px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.3s ease;
     }
     .bs-premium-block-banner {
       width: 100vw;
@@ -204,15 +349,10 @@
       margin-right: calc(-50vw + 50%);
       border-top: 1px solid #FF91A4;
       border-bottom: 1px solid #FF91A4;
-      padding: 5rem 1.5px;
+      padding: 6rem 20px;
       text-align: center;
       background-color: #FFFFFF;
-      box-shadow: inset 0 0 40px rgba(255, 145, 164, 0.08);
-      position: relative;
-      overflow: hidden;
-    }
-    .bs-premium-block-banner:hover {
-      box-shadow: inset 0 0 50px rgba(255, 145, 164, 0.15);
+      box-shadow: inset 0 0 50px rgba(255, 145, 164, 0.08);
     }
     .bs-pride-section {
       width: 100vw;
@@ -220,25 +360,28 @@
       margin-right: calc(-50vw + 50%);
       border-top: 1px solid #FF91A4;
       border-bottom: 1px solid #FF91A4;
-      padding: 6rem 1.5px;
+      padding: 6rem 20px;
       text-align: center;
       background-color: #FFFFFF;
-      box-shadow: 0 10px 35px rgba(255, 145, 164, 0.12);
+      box-shadow: 0 10px 35px rgba(255, 145, 164, 0.1);
     }
     .bs-pride-stat {
-      font-size: 4rem;
+      font-size: 4.5rem;
       color: #FF91A4;
       font-weight: 700;
       line-height: 1;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
     }
     .bs-category-large-slider {
       display: flex;
       gap: 2rem;
       overflow-x: auto;
-      padding: 1.5rem 1rem;
+      padding: 1.5rem 20px;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
+      margin-right: calc(-50vw + 50%);
     }
     .bs-category-large-slider::-webkit-scrollbar {
       display: none;
@@ -246,34 +389,29 @@
     .bs-category-large-card {
       flex: 0 0 320px;
       scroll-snap-align: start;
-      border: 1px solid #FF91A4;
-      border-radius: 16px;
-      overflow: hidden;
-      background: #FFFFFF;
-      box-shadow: 0 8px 20px rgba(255, 145, 164, 0.12);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
-    .bs-category-large-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 12px 25px rgba(255, 145, 164, 0.2);
+    .bs-category-large-card .bs-card-border-inner {
+      padding: 0;
     }
     .bs-category-large-img {
       width: 100%;
-      height: 260px;
+      height: 280px;
       object-fit: cover;
+      border-top-left-radius: 14px;
+      border-top-right-radius: 14px;
     }
     .bs-category-large-title {
       padding: 1.5rem;
       text-align: center;
       font-weight: 700;
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       color: #111111;
     }
     .bs-footer-centered {
       text-align: center;
       background-color: #FFFFFF;
       border-top: 1px solid #FF91A4;
-      padding: 4rem 1.5px 2rem 1.5px;
+      padding: 4rem 20px 2rem 20px;
       margin-top: 5rem;
     }
     .bs-footer-centered .bs-footer-links {
@@ -292,10 +430,6 @@
     .bs-social-original-btn {
       width: 45px;
       height: 45px;
-      transition: transform 0.3s ease;
-    }
-    .bs-social-original-btn:hover {
-      transform: scale(1.15);
     }
     .bs-hidden-card {
       display: none !important;
@@ -328,16 +462,24 @@
 
   <div class="bs-menu-overlay" id="menuOverlay"></div>
   <div class="bs-mobile-menu" id="mobileMenu">
-    <a href="index.html" class="bs-mobile-link">الرئيسية</a>
-    <a href="menu.html" class="bs-mobile-link">تصفح المنيو</a>
-    <a href="cake-builder.html" class="bs-mobile-link">محاكي التورتة</a>
-    <a href="flower-builder.html" class="bs-mobile-link">محاكي الورد</a>
+    <div class="bs-menu-header">
+      <h3>حلويات بوسي</h3>
+      <p>صنعناها بحب لتهديها لمن تحب</p>
+    </div>
+    <a href="index.html" class="bs-mobile-link">🏠 الرئيسية</a>
+    <a href="menu.html" class="bs-mobile-link">📖 المنيو</a>
+    <a href="cake-builder.html" class="bs-mobile-link">🎂 محاكي التورتة</a>
+    <a href="flower-builder.html" class="bs-mobile-link">🌹 محاكي الورد</a>
+    <a href="cart.html" class="bs-mobile-link">🛒 السلة</a>
+    <a href="favorites.html" class="bs-mobile-link">❤️ المفضلة</a>
+    <a href="contact.html" class="bs-mobile-link">📞 تواصل معنا</a>
+    <a href="about.html" class="bs-mobile-link">📍 من نحن</a>
   </div>
 
   <section class="bs-waterfall-section">
-    <div class="bs-container" style="text-align: center; margin-bottom: 2rem;">
+    <div class="bs-container" style="text-align: center; margin-bottom: 2.5rem;">
       <h2 class="bs-section-title">عقد من التميز</h2>
-      <p style="color:#111111; max-width:600px; margin:0 auto;">تأسس مطبخنا لتقديم تجربة حقيقية تعتمد بالكامل على خامات طبيعية مختارة بعناية للحصول على أفضل جودة ثابتة ومستقرة طوال السنوات.</p>
+      <p style="color:#111111; max-width:650px; margin:0 auto; line-height:1.7;">تأسس مطبخنا لتقديم تجربة تذوق حقيقية تعتمد بالكامل على خامات طبيعية مختارة بعناية فائقة للحصول على أفضل جودة طازجة ومستقرة طوال السنوات.</p>
     </div>
     <div class="bs-waterfall-wrapper">
       <div class="bs-waterfall-column">
@@ -369,9 +511,9 @@
   </section>
 
   <section class="bs-section" style="padding-top: 0; padding-bottom: 0;">
-    <div class="bs-container" style="text-align: center; margin-bottom: 2rem;">
+    <div class="bs-container" style="text-align: center; margin-bottom: 2.5rem;">
       <h2 class="bs-section-title">عقد من الإتقان</h2>
-      <p style="color:#111111;">نلتزم بالخبز والتحضير اليومي الطازج لتصلك منتجاتنا بكامل قوامها ونكهتها الواضحة والمريحة.</p>
+      <p style="color:#111111; max-width:650px; margin:0 auto; line-height:1.7;">نلتزم بمعايير الخبز والتحضير اليومي الطازج والراقي لتصلك كافة منتجاتنا بكامل قوامها ونكهتها الواضحة والمريحة.</p>
     </div>
     <div class="bs-itqan-slider">
       <div class="bs-itqan-track">
@@ -386,7 +528,7 @@
     <div class="bs-container">
       <div style="text-align: center; margin-bottom: 2rem;">
         <h2 class="bs-section-title">وصل حديثاً</h2>
-        <p style="color:#111111;">أحدث التشكيلات والابتكارات الطازجة المضافة حديثاً لمطبخنا.</p>
+        <p style="color:#111111;">أحدث الابتكارات والتشكيلات الطازجة المضافة حديثاً لمطبخنا لتناسب تطلعاتكم الفاخرة.</p>
       </div>
       <div class="bs-mobile-full-slider" id="newArrivalsSlider"></div>
     </div>
@@ -395,8 +537,8 @@
   <section class="bs-section" style="padding-top:0; padding-bottom:0;">
     <div class="bs-premium-block-banner">
       <div class="bs-container">
-        <h2 style="margin-bottom: 1rem; font-size:1.8rem;">محاكي التورتة الذكي</h2>
-        <p style="margin-bottom: 2.5rem; max-width: 650px; margin-left: auto; margin-right: auto; line-height: 1.8; color:#111111;">تم تصميم هذه الواجهة لمساعدتك على تخصيص تفاصيل طلبك بالكامل وبشكل دقيق. حددي عدد الأفراد، الشكل المفضل، والحشوات المتوازنة للحصول على تورتة تشرفك قدام ضيوفك وتبسطهم بالطعم الأصلي الفاخر.</p>
+        <h2 style="margin-bottom: 1.25rem; font-size:1.9rem; font-weight:700;">محاكي التورتة الذكي</h2>
+        <p style="margin-bottom: 2.5rem; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.8; color:#111111; font-size:1.05rem;">تم تصميم هذه الواجهة لمساعدتك على اختيار وتخصيص تفاصيل طلبك بالكامل وبشكل دقيق. حددي عدد الأفراد، الشكل المفضل، والحشوات المتوازنة للحصول على تورتة تشرفك قدام ضيوفك وتبسطهم بالطعم الأصلي الفاخر.</p>
         <a href="cake-builder.html" class="bs-button">ابدئي رحلة تخصيص التورتة</a>
       </div>
     </div>
@@ -406,7 +548,7 @@
     <div class="bs-container">
       <div style="text-align: center; margin-bottom: 2rem;">
         <h2 class="bs-section-title">الأكثر مبيعاً</h2>
-        <p style="color:#111111;">الخيارات المفضلة والأكثر طلباً وتكراراً من عملائنا طوال الفترات الماضية.</p>
+        <p style="color:#111111;">الخيارات المفضلة والأكثر طلباً وتكراراً من عملائنا بفضل جودتها الحقيقية الثابتة.</p>
       </div>
       <div class="bs-mobile-full-slider" id="bestSellersSlider"></div>
     </div>
@@ -414,11 +556,11 @@
 
   <section class="bs-section">
     <div class="bs-container">
-      <div style="text-align: center; margin-bottom: 2rem;">
+      <div style="text-align: center; margin-bottom: 2.5rem;">
         <h2 class="bs-section-title">منتجاتنا</h2>
-        <p style="color:#111111;">قائمة المأكولات اليومية والتشكيلات المتاحة للطلب الفوري والمباشر.</p>
+        <p style="color:#111111;">قائمة المأكولات اليومية والتشكيلات الفاخرة المتاحة للطلب الفوري والمباشر.</p>
       </div>
-      <div class="bs-grid" id="ourProductsGrid" style="grid-template-columns: repeat(2, 1fr); gap: 1.5rem 1rem;"></div>
+      <div class="bs-grid" id="ourProductsGrid" style="grid-template-columns: repeat(2, 1fr); gap: 20px 15px;"></div>
       <div style="text-align: center; margin-top: 3rem;">
         <button class="bs-button" id="loadMoreProductsBtn">إظهار المزيد</button>
       </div>
@@ -426,10 +568,10 @@
   </section>
 
   <section class="bs-section" style="padding-top:0; padding-bottom:0;">
-    <div class="bs-premium-block-banner" style="border-color: #D4AF37;">
+    <div class="bs-premium-block-banner" style="border-color: #D4AF37; box-shadow: inset 0 0 50px rgba(212, 175, 55, 0.05);">
       <div class="bs-container">
-        <h2 style="margin-bottom: 1rem; font-size:1.8rem;">محاكي الورد وتنسيق الهدايا الفاخرة</h2>
-        <p style="margin-bottom: 2.5rem; max-width: 650px; margin-left: auto; margin-right: auto; line-height: 1.8; color:#111111;">انفردنا تماماً بتقديم باقات الورد الطبيعي الفاخر والأول من نوعه داخل مركز الفرافرة. صممي تنسيق هديتك واجمعي بين طعم الحلويات الفاخرة وجمال الورد الطبيعي لتقديم قيمة حقيقية لمن تحبين.</p>
+        <h2 style="margin-bottom: 1.25rem; font-size:1.9rem; font-weight:700;">محاكي الورد وتنسيق الهدايا الفاخرة</h2>
+        <p style="margin-bottom: 2.5rem; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.8; color:#111111; font-size:1.05rem;">انفردنا تماماً بتقديم باقات الورد الطبيعي الفاخر والأول من نوعه داخل مركز الفرافرة بالكامل. نسقي هديتك واجمعي بين فخامة الحلويات وجمال الورد الطبيعي لتقديم قيمة حقيقية تعبر عن مشاعرك الراقية لمن تحبين.</p>
         <a href="flower-builder.html" class="bs-button">ابدئي تخصيص بوكس الهدية</a>
       </div>
     </div>
@@ -438,10 +580,10 @@
   <section class="bs-section" style="padding-top:0; padding-bottom:0;">
     <div class="bs-pride-section">
       <div class="bs-container">
-        <h2 style="margin-bottom: 1.5rem; font-size:1.8rem;">الفخر والاعتزاز</h2>
+        <h2 style="margin-bottom: 1.5rem; font-size:1.9rem; font-weight:700;">الفخر والاعتزاز</h2>
         <div class="bs-pride-stat">+10,000</div>
-        <p style="font-weight: 700; font-size: 1.3rem; margin-bottom: 1.5rem; color: #111111;">عميل مستقر معنا ومشارك في اللحظات السعيدة</p>
-        <p style="max-width: 750px; margin: 0 auto; color: #111111; line-height: 1.8; font-size: 1.05rem;">على مدار أكثر من عشرة سنوات، تشرفنا بمشاركتكم وتلبية تفاصيلكم السعيدة في مختلف المناسبات. صُنعت هذه التشكيلات لتناسب تطلعاتكم، وبفضل التزامنا المطلق بالاعتماد على المكونات الطبيعية والمضمونة 100%، نجحنا في الحفاظ على سجل حقيقي خالٍ تماماً من أي تقييم سلبي واحد طوال مسيرتنا الحافلة بالثقة المتبادلة.</p>
+        <p style="font-weight: 700; font-size: 1.35rem; margin-bottom: 1.5rem; color: #111111;">عميل مستقر معنا ومشارك في اللحظات السعيدة</p>
+        <p style="max-width: 750px; margin: 0 auto; color: #111111; line-height: 1.8; font-size: 1.05rem;">على مدار أكثر من عشرة سنوات، تشرفنا بمشاركتكم وتلبية تفاصيلكم السعيدة في مختلف المناسبات. صُنعت هذه التشكيلات لتناسب تطلعاتكم، وبفضل التزامنا المطلق بالاعتماد على المكونات الطبيعية والمضمونة 100%، نجحنا في الحفاظ على سجل حقيقي خالٍ تماماً من أي تقييم سلبي واحد طوال مسيرتنا الحافلة بالثقة المتبادلة والإتقان.</p>
       </div>
     </div>
   </section>
@@ -450,19 +592,19 @@
     <div class="bs-container">
       <div style="text-align: center; margin-bottom: 2.5rem;">
         <h2 class="bs-section-title">تسوق حسب الفئة</h2>
-        <p style="color:#111111;">تصفح المنتجات بسهولة تامة من خلال الانتقال المباشر للفئة المطلوبة.</p>
+        <p style="color:#111111;">تصفح المنتجات بسهولة تامة من خلال الانتقال المباشر للفئة المطلوبة المحددة بعناية.</p>
       </div>
       <div class="bs-category-large-slider">
-        <div class="bs-category-large-card"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c4.jpg"><div class="bs-category-large-title">الديسباسيتو</div></a></div>
-        <div class="bs-category-large-card"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c5.jpg"><div class="bs-category-large-title">القشطوطة</div></a></div>
-        <div class="bs-category-large-card"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c6.jpg"><div class="bs-category-large-title">الدوناتس</div></a></div>
-        <div class="bs-category-large-card"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c7.jpg"><div class="bs-category-large-title">السينابون</div></a></div>
-        <div class="bs-category-large-card"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c9.jpg"><div class="bs-category-large-title">كبات السعادة</div></a></div>
-        <div class="bs-category-large-card"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c8.jpg"><div class="bs-category-large-title">الريد فيلفيت</div></a></div>
-        <div class="bs-category-large-card"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c11.jpg"><div class="bs-category-large-title">الميني تورت</div></a></div>
-        <div class="bs-category-large-card"><a href="menu.html?cat=boxes"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c10.jpg"><div class="bs-category-large-title">بوكس الروقان</div></a></div>
-        <div class="bs-category-large-card"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c2.jpg"><div class="bs-category-large-title">الجاتوهات</div></a></div>
-        <div class="bs-category-large-card"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c12.jpg"><div class="bs-category-large-title">الكب كيك</div></a></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c4.jpg"><div class="bs-category-large-title">الديسباسيتو</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c5.jpg"><div class="bs-category-large-title">القشطوطة</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c6.jpg"><div class="bs-category-large-title">الدوناتس</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c7.jpg"><div class="bs-category-large-title">السينابون</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c9.jpg"><div class="bs-category-large-title">كبات السعادة</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c8.jpg"><div class="bs-category-large-title">الريد فيلفيت</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c11.jpg"><div class="bs-category-large-title">الميني تورت</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=boxes"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c10.jpg"><div class="bs-category-large-title">بوكس الروقان</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c2.jpg"><div class="bs-category-large-title">الجاتوهات</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c12.jpg"><div class="bs-category-large-title">الكب كيك</div></a></div></div></div>
       </div>
     </div>
   </section>
@@ -484,8 +626,8 @@
         <a href="https://www.instagram.com/bose_sweets" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/ig_icon.png" class="bs-social-original-btn" alt="Instagram"></a>
         <a href="https://www.tiktok.com/@bosesweets1" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/tt_icon.png" class="bs-social-original-btn" alt="TikTok"></a>
       </div>
-      <div class="bs-copyright" style="border-top: 1px solid rgba(255, 145, 164, 0.15); padding-top: 1.5rem;">
-        &copy; 2026 حلويات بوسي. صُنعت الجودة والفخامة الرقمية الملتزمة لتبقى وتدوم.
+      <div class="bs-copyright" style="border-top: 1px solid rgba(255, 145, 164, 0.15); padding-top: 1.5rem; color:#111111; font-weight:600;">
+        &copy; 2026 حلويات بوسي. صُنعت الجودة والفخامة الرقمية الملتزمة لتبقى وتدوم والمستوحاة من ثقتكم الغالية.
       </div>
     </div>
   </footer>
@@ -511,34 +653,37 @@
       }
 
       const realApprovedProducts = [
-        { id: 'cinabon', name: 'السينابون', flavor: 'نوتيلا دارك', desc: 'لفات سينابون مخبوزة بقوام طري وصوصات غنية متنزنة من غير مبالغة للطعم الأصلي الكامل.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p3.jpg' },
-        { id: 'donuts', name: 'الدوناتس', flavor: 'نوتيلا وايت', desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم وبخامات مختارة بعناية فائقة.', price: 88, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p4.jpg' },
-        { id: 'qashtota', name: 'القشطوطة', flavor: 'نوتيلا وايت', desc: 'كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح ومريح من أول لقمة.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p1.jpg' },
-        { id: 'despacito', name: 'الديسباسيتو مثلث', flavor: 'نوتيلا دارك', desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام ثابت.', price: 66, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p2.jpg' },
-        { id: 'happiness-cups', name: 'كبات السعادة', flavor: 'نوتيلا غنية', desc: 'أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة الراقية.', price: 61, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p5.jpg' },
-        { id: 'mini-cake', name: 'الميني تورت', flavor: 'فرد أو اتنين', desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل دقيقة ومحترمة.', price: 154, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p6.jpg' },
+        { id: 'cinabon', name: 'السينابون', flavor: 'نوتيلا دارك', desc: 'لفات سينابون مخبوزة بقوام طري وصوصات غنية متزنة من غير مبالغة للحصول على تجربة واضحة في الطعم والجودة من أول قطعة.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p3.jpg' },
+        { id: 'donuts', name: 'الدوناتس', flavor: 'نوتيلا وايت', desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم وبخامات حقيقية وممتازة.', price: 88, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p4.jpg' },
+        { id: 'qashtota', name: 'القشطوطة', flavor: 'نوتيلا وايت', desc: 'كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح ومريح تماماً من أول لقمة لأخر قطعة.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p1.jpg' },
+        { id: 'despacito', name: 'الديسباسيتو مثلث', flavor: 'نوتيلا دارك', desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح وثابت.', price: 66, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p2.jpg' },
+        { id: 'happiness-cups', name: 'كبات السعادة', flavor: 'نوتيلا غنية', desc: 'أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة الفاخرة.', price: 61, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p5.jpg' },
+        { id: 'mini-cake', name: 'الميني تورت', flavor: 'فرد أو اتنين', desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل دقيقة ومحترمة تناسب تطلعاتكم.', price: 154, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p6.jpg' },
         { id: 'relax-box', name: 'بوكس الروقان', flavor: 'بوكس هدايا مشكل', desc: 'تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية 100%.', price: 550, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p7.jpg' },
-        { id: 'gateaux', name: 'الجاتوهات كلاسيك', flavor: 'شوكولاتة وفانيليا', desc: 'تشكيلات جاتوه متنوعة بخامات متوازنة وطعم واضح مناسب للضيافة اليومية والمناسبات الفاخرة.', price: 506, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p8.jpg' }
+        { id: 'gateaux', name: 'الجاتوهات كلاسيك', flavor: 'شوكولاتة وفانيليا', desc: 'تشكيلات جاتوه متنوعة بخامات متوازنة وطعم واضح مناسب للضيافة اليومية والمناسبات الراقية.', price: 506, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p8.jpg' }
       ];
 
       function buildProductCard(p, isHidden = false) {
         return `
           <div class="bs-product-card ${isHidden ? 'bs-hidden-card' : ''}" data-id="${p.id}">
-            <div class="bs-product-img-wrapper">
-              <img class="bs-product-img" src="${p.image}" alt="${p.name}">
-            </div>
-            <div class="bs-product-info">
-              <h3 class="bs-product-title">${p.name}</h3>
-              <div class="bs-flavor-text">${p.flavor}</div>
-              <p class="bs-product-desc">${p.desc}</p>
-              <div class="bs-qty-counter">
-                <button class="bs-qty-control-btn bs-minus">-</button>
-                <span class="bs-qty-display-num">0</span>
-                <button class="bs-qty-control-btn bs-plus">+</button>
-              </div>
-              <div class="bs-product-footer">
-                <span class="bs-product-price">${p.price}</span>
-                <button class="bs-button bs-add-to-cart-btn" style="padding:0.5rem 1rem; font-size:0.85rem;">إضافة للسلة</button>
+            <div class="bs-card-border-outer">
+              <div class="bs-card-border-inner">
+                <div class="bs-product-img-wrapper">
+                  <img class="bs-product-img" src="${p.image}" alt="${p.name}">
+                </div>
+                <div class="bs-category-tag">حلويات فاخرة</div>
+                <h3 class="bs-product-title">${p.name}</h3>
+                <div class="bs-flavor-text">${p.flavor}</div>
+                <p class="bs-product-desc">${p.desc}</p>
+                <div class="bs-card-action-row">
+                  <div class="bs-qty-counter">
+                    <button class="bs-qty-btn bs-minus">-</button>
+                    <span class="bs-qty-display-num">0</span>
+                    <button class="bs-qty-btn bs-plus">+</button>
+                  </div>
+                  <div class="bs-product-price">${p.price} <span>ج.م</span></div>
+                </div>
+                <button class="bs-add-to-cart-submit">إضافة للسلة</button>
               </div>
             </div>
           </div>
@@ -563,7 +708,7 @@
           const val = parseInt(numEl.textContent);
           if (val > 0) numEl.textContent = val - 1;
         }
-        if (e.target.classList.contains('bs-add-to-cart-btn')) {
+        if (e.target.classList.contains('bs-add-to-cart-btn') || e.target.classList.contains('bs-add-to-cart-submit')) {
           const card = e.target.closest('.bs-product-card');
           const id = card.getAttribute('data-id');
           const qty = parseInt(card.querySelector('.bs-qty-display-num').textContent);
