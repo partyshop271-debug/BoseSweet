@@ -1,251 +1,502 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-    <meta name="description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل.">
-    <link rel="icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" type="image/png">
-    <link rel="stylesheet" href="src/storefront/css/app-style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
+  <link rel="stylesheet" href="app.css">
+  <style>
+    .bs-main-slider {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    .bs-slider-track {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+    .bs-slider-track.bs-infinite {
+      animation: bs-infinite-scroll 20s linear infinite;
+    }
+    @keyframes bs-infinite-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(50%); }
+    }
+    .bs-waterfall-section {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      background-color: var(--bg);
+      padding: 3rem 0;
+    }
+    .bs-waterfall-container {
+      display: flex;
+      width: 100vw;
+      height: 500px;
+      overflow: hidden;
+      gap: 0;
+      position: relative;
+    }
+    .bs-waterfall-col {
+      flex: 1;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    .bs-waterfall-track {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      width: 100%;
+    }
+    .bs-waterfall-up {
+      animation: bs-scroll-up 25s linear infinite;
+    }
+    .bs-waterfall-down {
+      animation: bs-scroll-down 25s linear infinite;
+    }
+    @keyframes bs-scroll-up {
+      0% { top: 0; }
+      100% { top: -100%; }
+    }
+    @keyframes bs-scroll-down {
+      0% { bottom: 0; }
+      100% { bottom: -100%; }
+    }
+    .bs-waterfall-item {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      display: block;
+    }
+    .bs-waterfall-shadow {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+      pointer-events: none;
+      z-index: 10;
+    }
+    .bs-itqan-slider {
+      width: 100vw;
+      overflow: hidden;
+    }
+    .bs-itqan-track {
+      display: flex;
+      width: 300vw;
+      animation: bs-itqan-scroll 30s linear infinite;
+    }
+    .bs-itqan-img {
+      width: 100vw;
+      height: 60vh;
+      object-fit: cover;
+    }
+    @keyframes bs-itqan-scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(100vw); }
+    }
+    .bs-block-banner {
+      border: 1px solid var(--primary);
+      border-radius: 16px;
+      padding: 4rem 2rem;
+      text-align: center;
+      background-color: var(--bg);
+      box-shadow: 0 8px 24px var(--shadow-color);
+      margin-bottom: 2rem;
+    }
+    .bs-qty-selector {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--primary);
+      border-radius: 8px;
+      padding: 0.25rem 0.5rem;
+      margin-bottom: 1rem;
+    }
+    .bs-qty-btn {
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text);
+      width: 30px;
+      height: 30px;
+    }
+    .bs-qty-num {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .bs-hidden-card {
+      display: none !important;
+    }
+    .bs-pride-card {
+      border: 1px solid var(--primary);
+      border-radius: 16px;
+      padding: 3.5rem 2rem;
+      text-align: center;
+      box-shadow: 0 6px 20px var(--shadow-color);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .bs-pride-number {
+      font-size: 3rem;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .bs-product-card .bs-flavor-title {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+    .bs-category-slider-wrapper {
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      display: flex;
+      gap: 1.5rem;
+      padding: 1rem 0;
+      scrollbar-width: none;
+    }
+    .bs-category-slider-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+    .bs-category-item-card {
+      flex: 0 0 280px;
+      scroll-snap-align: start;
+      border: 1px solid var(--primary);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      background-color: var(--bg);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .bs-category-item-card:hover {
+      transform: translateY(-5px);
+    }
+    .bs-category-item-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .bs-category-item-name {
+      padding: 1rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="bs-app-shell">
-        <header class="bs-sticky-header">
-            <div class="bs-main-container bs-header-shell">
-                <a href="index.html" class="bs-brand-identity">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="bs-brand-logo">
-                    <h1 class="bs-brand-title">حلويات <span>بوسي</span></h1>
-                </a>
-                <nav>
-                    <ul class="bs-nav-list">
-                        <li><a href="index.html" class="bs-nav-anchor active">الرئيسية</a></li>
-                        <li><a href="menu.html" class="bs-nav-anchor">المنيو</a></li>
-                        <li><a href="cart.html" class="bs-nav-anchor">السلة</a></li>
-                        <li><a href="cake-builder.html" class="bs-nav-anchor">محاكي التورت</a></li>
-                        <li><a href="flower-builder.html" class="bs-nav-anchor">محاكي الورد</a></li>
-                    </ul>
-                </nav>
-                <div class="bs-header-utilities">
-                    <a href="cart.html" class="bs-interactive-icon" aria-label="سلة المشتريات">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                        <span class="bs-counter-badge" id="global-cart-counter">0</span>
-                    </a>
-                </div>
-            </div>
-        </header>
+  <div class="bs-announcement-bar">
+    <div class="bs-announcement-text">كل قطعة صُنعت بعناية فائقة وخامات طبيعية 100% لتسعد قلبك وقلب من تحب.. نورتنا في حلويات بوسي!</div>
+  </div>
 
-        <main class="bs-page-viewport">
-            <section class="bs-hero-showcase bs-breathing-section">
-                <div class="bs-main-container">
-                    <h2 class="bs-hero-headline">عقد من التميز في <em>صناعة الحلويات</em></h2>
-                    <p class="bs-hero-subtext">صنعناها بحب لتهديها لمن تحب. نختار مكوناتنا بعناية فائقة لنقدم لك تجربة تذوق راقية وفخمة تليق بمناسباتك السعيدة وتجعل من كل هدية ذكرى لا تُنسى.</p>
-                    <a href="menu.html" class="bs-action-button">اطلب الآن</a>
-                </div>
-            </section>
-
-            <section class="bs-breathing-section" style="border-top: 1px solid rgba(255,145,164,0.15)">
-                <div class="bs-main-container">
-                    <h3 style="text-align: center; margin-bottom: 32px; font-size: 26px;">أحدث الوصول</h3>
-                    <div class="bs-carousel-scroller" id="new-arrivals-carousel">
-                        <div class="bs-luxury-card" style="min-width: 280px; max-width: 280px;">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الديسباسيتو" class="bs-card-viewport">
-                            <div class="bs-card-details">
-                                <h4 class="bs-card-headline">الديسباسيتو الفاخرة</h4>
-                                <p class="bs-card-paragraph">طبقات متوازنة من كيك الفادج والموس الغني مع حشوات نوتيلا ولوتس واضحة الطعم.</p>
-                            </div>
-                            <div class="bs-card-action-bar">
-                                <span class="bs-dynamic-price">66 ج.م</span>
-                                <a href="product.html?id=despacito" class="bs-action-button">تخصيص المنتج</a>
-                            </div>
-                        </div>
-                        <div class="bs-luxury-card" style="min-width: 280px; max-width: 280px;">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكس الروقان" class="bs-card-viewport">
-                            <div class="bs-card-details">
-                                <h4 class="bs-card-headline">بوكس الروقان الشامل</h4>
-                                <p class="bs-card-paragraph">تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية.</p>
-                            </div>
-                            <div class="bs-card-action-bar">
-                                <span class="bs-dynamic-price">550 ج.م</span>
-                                <button class="bs-action-button" onclick="window.BoseSweets.Cart.addStaticItem('relax-box', 'بوكس الروقان', 550)">إضافة للسلة</button>
-                            </div>
-                        </div>
-                        <div class="bs-luxury-card" style="min-width: 280px; max-width: 280px;">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الميني تورت" class="bs-card-viewport">
-                            <div class="bs-card-details">
-                                <h4 class="bs-card-headline">الميني تورت الفاخرة</h4>
-                                <p class="bs-card-paragraph">تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل مناسبة للهدايا.</p>
-                            </div>
-                            <div class="bs-card-action-bar">
-                                <span class="bs-dynamic-price">154 ج.م</span>
-                                <a href="product.html?id=mini-cake" class="bs-action-button">تخصيص المقاس</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bs-breathing-section" style="background-color: rgba(255, 145, 164, 0.04); border-top: 1px solid rgba(255,145,164,0.15); border-bottom: 1px solid rgba(255,145,164,0.15)">
-                <div class="bs-main-container" style="text-align: center;">
-                    <h3 style="font-size: 28px; margin-bottom: 12px;">صممي تورتتك بنفسك</h3>
-                    <p style="max-width: 600px; margin: 0 auto 24px auto; font-size: 15px;">يمكنك الآن تحديد عدد الأفراد، اختيار الطعم والحشو، ورفع صورتك الطبيعية لنقوم بنحتها لك بدقة وعناية فائقة تشرفك أمام ضيوفك.</p>
-                    <a href="cake-builder.html" class="bs-action-button">فتح محاكي التورت</a>
-                </div>
-            </section>
-
-            <section class="bs-breathing-section">
-                <div class="bs-main-container">
-                    <h3 style="text-align: center; margin-bottom: 32px; font-size: 26px;">قائمة حلويات بوسي</h3>
-                    <div class="bs-double-card-grid" id="main-products-grid">
-                        <div class="bs-luxury-card">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="القشطوطة" class="bs-card-viewport">
-                            <div class="bs-card-details">
-                                <h4 class="bs-card-headline">القشطوطة الأصلية</h4>
-                                <p class="bs-card-paragraph">كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم غني بالحليب.</p>
-                            </div>
-                            <div class="bs-card-action-bar">
-                                <span class="bs-dynamic-price">121 ج.م</span>
-                                <a href="product.html?id=qashtota" class="bs-action-button">اختر النكهة</a>
-                            </div>
-                        </div>
-                        <div class="bs-luxury-card">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الدوناتس" class="bs-card-viewport">
-                            <div class="bs-card-details">
-                                <h4 class="bs-card-headline">الدوناتس الطازجة</h4>
-                                <p class="bs-card-paragraph">دوناتس طازجة بقوام خفيف وهش وحشوات متنوعة نوتيلا ولوتس وبيستاشيو مخبوزة يوم بيوم.</p>
-                            </div>
-                            <div class="bs-card-action-bar">
-                                <span class="bs-dynamic-price">88 ج.م</span>
-                                <a href="product.html?id=donuts" class="bs-action-button">اختر الحشوة</a>
-                            </div>
-                        </div>
-                        <div class="bs-luxury-card">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="السينابون" class="bs-card-viewport">
-                            <div class="bs-card-details">
-                                <h4 class="bs-card-headline">لفائف السينابون الدافئة</h4>
-                                <p class="bs-card-paragraph">لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة بالقرفة الممتازة من غير مبالغة.</p>
-                            </div>
-                            <div class="bs-card-action-bar">
-                                <span class="bs-dynamic-price">121 ج.م</span>
-                                <a href="product.html?id=cinabon" class="bs-action-button">اختر الصوص</a>
-                            </div>
-                        </div>
-                        <div class="bs-luxury-card">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كبات السعادة" class="bs-card-viewport">
-                            <div class="bs-card-details">
-                                <h4 class="bs-card-headline">كبات السعادة الفردية</h4>
-                                <p class="bs-card-paragraph">أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة.</p>
-                            </div>
-                            <div class="bs-card-action-bar">
-                                <span class="bs-dynamic-price">61 ج.م</span>
-                                <a href="product.html?id=happiness-cups" class="bs-action-button">اختر الطعم</a>
-                            </div>
-                        </div>
-                        <div class="bs-luxury-card bs-luxury-card.full-span">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الريدفيلفت" class="bs-card-viewport" style="aspect-ratio: 21/9;">
-                            <div class="bs-card-details">
-                                <h4 class="bs-card-headline">الريدڤيلڤت المخملية</h4>
-                                <p class="bs-card-paragraph">كيك ريدڤيلڤت بطبقات متوازنة وكريمة ناعمة غنية بطعم الجبن الكريمي الفاخر معمول بجودة ثابتة.</p>
-                            </div>
-                            <div class="bs-card-action-bar">
-                                <span class="bs-dynamic-price">72 ج.م</span>
-                                <a href="product.html?id=red-velvet" class="bs-action-button">عرض تفاصيل الحجم</a>
-                            </div>
-                        </div>
-                        <div class="bs-luxury-card">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الجاتوهات" class="bs-card-viewport">
-                            <div class="bs-card-details">
-                                <h4 class="bs-card-headline">الجاتوهات الملكية</h4>
-                                <p class="bs-card-paragraph">تشكيلات جاتوه متنوعة بخامات متوازنة وطعم واضح مناسب للضيافة اليومية والمناسبات الفخمة.</p>
-                            </div>
-                            <div class="bs-card-action-bar">
-                                <span class="bs-dynamic-price">374 ج.م</span>
-                                <a href="product.html?id=gateaux" class="bs-action-button">اختر التشكيلة</a>
-                            </div>
-                        </div>
-                        <div class="bs-luxury-card">
-                            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الكب كيك" class="bs-card-viewport">
-                            <div class="bs-card-details">
-                                <h4 class="bs-card-headline">دستة كب كيك منوع</h4>
-                                <p class="bs-card-paragraph">كب كيك بتزيينات شوكولاتة وفانيليا متنوعة وخامات متوازنة مناسب للتجمعات الصغيرة.</p>
-                            </div>
-                            <div class="bs-card-action-bar">
-                                <span class="bs-dynamic-price">324 ج.م</span>
-                                <a href="product.html?id=cupcake" class="bs-action-button">اختر النوع</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="bs-breathing-section" style="background-color: rgba(212, 175, 55, 0.03); border-top: 1px solid rgba(255,145,164,0.15); border-bottom: 1px solid rgba(255,145,164,0.15)">
-                <div class="bs-main-container" style="text-align: center;">
-                    <h3 style="font-size: 28px; margin-bottom: 12px; color: var(--bs-black-text)">نسّق باقة الهدايا والورد</h3>
-                    <p style="max-width: 600px; margin: 0 auto 24px auto; font-size: 15px;">اجمع بين سحر الورد الطبيعي أو الستان الفاخر والشوكولاتة الفخمة، مع إضافة كروت معايدة وصور مطبوعة مخصصة لمن تحب لتصنع هدية مكتملة القيمة.</p>
-                    <a href="flower-builder.html" class="bs-action-button">فتح محاكي الورد</a>
-                </div>
-            </section>
-
-            <section class="bs-breathing-section" style="text-align: center;">
-                <div class="bs-main-container">
-                    <h3 style="font-size: 32px; color: var(--bs-pink-life); font-weight: 700; margin-bottom: 8px;">أكثر من 10 سنوات خبرة</h3>
-                    <p style="font-size: 18px; font-weight: 600;">وأكثر من 10000 عميل وثقوا في جودتنا وإتقاننا بمركز الفرافرة</p>
-                </div>
-            </section>
-        </main>
-
-        <footer class="bs-ground-footer">
-            <div class="bs-main-container bs-footer-matrix">
-                <div class="bs-footer-brand">
-                    <h4>حلويات بوسي</h4>
-                    <p>صنعناها بحب لتهديها لمن تحب. خبرة ممتدة لأكثر من عشر سنوات في عالم صناعة الحلويات الفاخرة والهدايا المتكاملة في الوادي الجديد.</p>
-                </div>
-                <div class="bs-footer-anchors">
-                    <h5>روابط سريعة</h5>
-                    <ul>
-                        <li><a href="index.html">الرئيسية</a></li>
-                        <li><a href="menu.html">المنيو الكامل</a></li>
-                        <li><a href="cart.html">سلة المشتريات</a></li>
-                    </ul>
-                </div>
-                <div class="bs-footer-anchors">
-                    <h5>سياسات المتجر</h5>
-                    <ul>
-                        <li><a href="policies.html?tab=privacy">سياسة الخصوصية</a></li>
-                        <li><a href="policies.html?tab=returns">سياسة الاسترجاع والتوصيل</a></li>
-                        <li><a href="about.html">قصة إتقاننا</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="bs-footer-copyright">
-                <p>جميع الحقوق محفوظة © ٢٠٢٦ لـ حلويات بوسي</p>
-            </div>
-        </footer>
+  <header class="bs-header">
+    <div class="bs-container">
+      <div class="bs-header-wrapper">
+        <div class="bs-logo">
+          <a href="index.html">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
+          </a>
+        </div>
+        <nav class="bs-nav">
+          <a href="index.html" class="bs-nav-link active">الرئيسية</a>
+          <a href="menu.html" class="bs-nav-link">تصفح المنيو</a>
+          <a href="cake-builder.html" class="bs-nav-link">محاكي التورتة</a>
+          <a href="flower-builder.html" class="bs-nav-link">محاكي الورد</a>
+        </nav>
+        <div class="bs-actions">
+          <a href="cart.html" class="bs-action-icon">
+            🛒<span class="bs-cart-count" id="headerCartCount">0</span>
+          </a>
+          <button class="bs-menu-trigger" id="mobileMenuTrigger">☰</button>
+        </div>
+      </div>
     </div>
+  </header>
 
-    <script type="module">
-        window.BoseSweets = window.BoseSweets || {};
-        window.BoseSweets.Cart = {
-            items: JSON.parse(localStorage.getItem('bs_cart_state')) || [],
-            addStaticItem(id, title, price) {
-                const existing = this.items.find(item => item.id === id);
-                if (existing) {
-                    existing.quantity += 1;
-                } else {
-                    this.items.push({ id, title, price, quantity: 1 });
-                }
-                this.sync();
-            },
-            sync() {
-                localStorage.setItem('bs_cart_state', JSON.stringify(this.items));
-                this.renderCounter();
-            },
-            renderCounter() {
-                const count = this.items.reduce((sum, item) => sum + item.quantity, 0);
-                document.getElementById('global-cart-counter').innerText = count;
-            }
+  <div class="bs-mobile-menu" id="mobileMenu">
+    <a href="index.html" class="bs-mobile-link">الرئيسية</a>
+    <a href="menu.html" class="bs-mobile-link">تصفح المنيو</a>
+    <a href="cake-builder.html" class="bs-mobile-link">محاكي التورتة</a>
+    <a href="flower-builder.html" class="bs-mobile-link">محاكي الورد</a>
+  </div>
+
+  <section class="bs-waterfall-section">
+    <div class="bs-container" style="text-align: center; margin-bottom: 2rem;">
+      <h2>عقد من التميز</h2>
+      <p>عشر سنوات من التحليق في سماء الجودة والفخامة الرقمية لتجربة استثنائية</p>
+    </div>
+    <div class="bs-waterfall-container">
+      <div class="bs-waterfall-col">
+        <div class="bs-waterfall-track bs-waterfall-up">
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cake_m1.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/gateau_m2.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/donut_m3.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cinnabon_m4.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cake_m1.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/gateau_m2.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/donut_m3.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cinnabon_m4.jpg" alt=""></a>
+        </div>
+      </div>
+      <div class="bs-waterfall-col">
+        <div class="bs-waterfall-track bs-waterfall-down">
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cupcake_m5.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/qashtouta_m6.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/box_m7.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/velvet_m8.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cupcake_m5.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/qashtouta_m6.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/box_m7.jpg" alt=""></a>
+          <a href="menu.html"><img class="bs-waterfall-item" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/velvet_m8.jpg" alt=""></a>
+        </div>
+      </div>
+      <div class="bs-waterfall-shadow"></div>
+    </div>
+  </section>
+
+  <section class="bs-section" style="padding: 3rem 0 0 0;">
+    <div class="bs-container" style="text-align: center; margin-bottom: 2rem;">
+      <h2>عقد من الاتقان</h2>
+      <p>خطوط متصلة ممتدة من الخبرة والتحضير اليومي الطازج والراقي لطلباتكم</p>
+    </div>
+    <div class="bs-itqan-slider">
+      <div class="bs-itqan-track">
+        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider1_f.jpg" alt="">
+        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider2_f.jpg" alt="">
+        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider3_f.jpg" alt="">
+      </div>
+    </div>
+  </section>
+
+  <section class="bs-section">
+    <div class="bs-container">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2>وصل حديثاً</h2>
+        <p>أحدث إبداعاتنا الطازجة المجهزة اليوم لتصلك بكامل رونقها</p>
+      </div>
+      <div class="bs-category-slider-wrapper" id="newArrivalsSlider"></div>
+    </div>
+  </section>
+
+  <section class="bs-section">
+    <div class="bs-container">
+      <div class="bs-block-banner">
+        <h2>محاكي التورتة الذكي</h2>
+        <p style="margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">صممي تورتة أحلامك بنفسك خطوة بخطوة حددي المقاس والشكل والحشو واكتبي رسالتك الخاصة لنتولى تحضيرها لكِ بخامات طبيعية فاخرة 100%.</p>
+        <a href="cake-builder.html" class="bs-button">ابدئي تصميم التورتة الآن</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bs-section">
+    <div class="bs-container">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2>الأكثر مبيعاً</h2>
+        <p>الخيارات المعتمدة والأقرب لقلوب عملائنا ومناسباتهم الراقية</p>
+      </div>
+      <div class="bs-category-slider-wrapper" id="bestSellersSlider"></div>
+    </div>
+  </section>
+
+  <section class="bs-section">
+    <div class="bs-container">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2>منتجاتنا</h2>
+        <p>تشكيلة متكاملة ومتنوعة صُنعت خصيصاً لتلبي رغباتكم وتفاصيلكم السعيدة</p>
+      </div>
+      <div class="bs-grid" id="ourProductsGrid" style="grid-template-columns: repeat(2, 1fr); gap: 1rem;"></div>
+      <div style="text-align: center; margin-top: 2.5rem;">
+        <button class="bs-button" id="loadMoreProductsBtn">إظهار المزيد</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="bs-section">
+    <div class="bs-container">
+      <div class="bs-block-banner" style="border-color: var(--secondary);">
+        <h2>محاكي الورد وتنسيق الهدايا</h2>
+        <p style="margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">انفردنا بتقديم منتج الورد الطبيعي الفاخر والأول من نوعه في الفرافرة بالكامل نسقي بوكس هديتك واجمعي بين فخامة الحلويات وجمال الورد الطبيعي.</p>
+        <a href="flower-builder.html" class="bs-button">ابدئي تنسيق هديتك الآن</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bs-section">
+    <div class="bs-container">
+      <div class="bs-pride-card">
+        <h2>الفخر والاعتزاز</h2>
+        <div class="bs-pride-number">+10,000</div>
+        <p style="font-weight: 700; font-size: 1.25rem; margin-bottom: 1rem; color: var(--text);">عميل سعيد ومشارك في الفرحة</p>
+        <p style="max-width: 650px; margin: 0 auto; color: var(--text); line-height: 1.8;">على مدار أكثر من 10 سنوات تشرّفنا بخدمة أكثر من عشرة آلاف عميل وكنا سبباً وشريكاً حقيقياً في سعادتهم وأيامهم الجميلة ولحظاتهم المبهجة وطوال هذه السنوات الممتدة لم يكن لدينا فيدباك سلبي واحد بفضل التزامنا المطلق بالجودة الصادقة والقيمة الحقيقية.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="bs-section">
+    <div class="bs-container">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2>تسوق حسب الفئة</h2>
+        <p>تصفح أقسامنا الـ 12 الرئيسية لتصل مباشرة إلى نوع الحلوى المفضل لديك</p>
+      </div>
+      <div class="bs-category-slider-wrapper">
+        <div class="bs-category-item-card"><a href="menu.html?cat=cakes"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c1.jpg"><div class="bs-category-item-name">التورت</div></a></div>
+        <div class="bs-category-item-card"><a href="menu.html?cat=gateaux"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c2.jpg"><div class="bs-category-item-name">الجاتوهات</div></a></div>
+        <div class="bs-category-item-card"><a href="menu.html?cat=flowers"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c3.jpg"><div class="bs-category-item-name">الورد</div></a></div>
+        <div class="bs-category-item-card"><a href="menu.html?cat=despacito"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c4.jpg"><div class="bs-category-item-name">الديسباسيتو</div></a></div>
+        <div class="bs-category-item-card"><a href="menu.html?cat=qashtouta"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c5.jpg"><div class="bs-category-item-name">القشطوطة</div></a></div>
+        <div class="bs-category-item-card"><a href="menu.html?cat=donuts"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c6.jpg"><div class="bs-category-item-name">الدوناتس</div></a></div>
+        <div class="bs-category-item-card"><a href="menu.html?cat=cinnabon"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c7.jpg"><div class="bs-category-item-name">السينابون</div></a></div>
+        <div class="bs-category-item-card"><a href="menu.html?cat=red-velvet"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c8.jpg"><div class="bs-category-item-name">الريد فيلفيت</div></a></div>
+        <div class="bs-category-item-card"><a href="menu.html?cat=cups"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c9.jpg"><div class="bs-category-item-name">كبات السعادة</div></a></div>
+        <div class="bs-category-item-card"><a href="menu.html?cat=chill-box"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c10.jpg"><div class="bs-category-item-name">بوكس الروقان</div></a></div>
+        <div class="bs-category-item-card"><a href="menu.html?cat=mini-cakes"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c11.jpg"><div class="bs-category-item-name">الميني تورت</div></a></div>
+        <div class="bs-category-item-card"><a href="menu.html?cat=cupcakes"><img class="bs-category-item-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c12.jpg"><div class="bs-category-item-name">الكب كيك</div></a></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bs-footer">
+    <div class="bs-container">
+      <div class="bs-footer-grid">
+        <div class="bs-footer-about">
+          <h3 class="bs-footer-title">حلويات بوسي</h3>
+          <p>براند مصري واثق وخبير يقدم أفخم الحلويات الطبيعية والتورت المصممة بحب خصيصاً لتناسب أرقى مناسباتكم في الوادي الجديد.</p>
+        </div>
+        <div class="bs-footer-links">
+          <h3 class="bs-footer-title">روابط سريعة</h3>
+          <a href="menu.html" class="bs-footer-link">تصفح المنيو</a>
+          <a href="cake-builder.html" class="bs-footer-link">محاكي التورتة</a>
+          <a href="flower-builder.html" class="bs-footer-link">محاكي الورد</a>
+        </div>
+        <div class="bs-footer-links">
+          <h3 class="bs-footer-title">سياسات المتجر</h3>
+          <a href="about.html" class="bs-footer-link">من نحن</a>
+          <a href="privacy.html" class="bs-footer-link">سياسة الخصوصية</a>
+          <a href="return-policy.html" class="bs-footer-link">سياسة الاسترجاع</a>
+          <a href="contact-policy.html" class="bs-footer-link">سياسة التواصل</a>
+          <a href="important-info.html" class="bs-footer-link">معلومات تهمك</a>
+        </div>
+        <div>
+          <h3 class="bs-footer-title">تابعنا على</h3>
+          <div class="bs-social-icons">
+            <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="bs-social-icon" target="_blank">📘</a>
+            <a href="https://www.instagram.com/bose_sweets" class="bs-social-icon" target="_blank">📸</a>
+            <a href="https://www.tiktok.com/@bose_sweets" class="bs-social-icon" target="_blank">🎵</a>
+          </div>
+        </div>
+      </div>
+      <div class="bs-copyright">
+        &copy; 2026 حلويات بوسي. جميع الحقوق محفوظة. صُنعت الجودة والفخامة لتبقى وتدوم.
+      </div>
+    </div>
+  </footer>
+
+  <script src="core.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const trigger = document.getElementById('mobileMenuTrigger');
+      const menu = document.getElementById('mobileMenu');
+      
+      if (trigger && menu) {
+        trigger.addEventListener('click', function (e) {
+          e.stopPropagation();
+          menu.classList.toggle('active');
+        });
+        document.addEventListener('click', function () {
+          menu.classList.remove('active');
+        });
+      }
+
+      const dummyProducts = [
+        { id: 'p1', name: 'قشطوطة لوتس', flavor: 'حليب ونوتيلا', desc: 'كيكة الحليب الفاخرة مغطاة بزبدة اللوتس الأصلية المقرمشة وطبقة غنية الكريمة الكثيفة الطبيعية.', price: 120, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p1.jpg' },
+        { id: 'p2', name: 'ديسباسيتو كراميل', flavor: 'شوكولاتة بلجيكية', desc: 'موس الشوكولاتة الغني الممزوج بصوص الكراميل السائل والمعد يدوياً بكل إتقان وفخامة.', price: 140, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p2.jpg' },
+        { id: 'p3', name: 'سينابون كلاسيك', flavor: 'قرفة وسكر بني', desc: 'لفائف السينابون الهشة المحشوة بالقرفة الفاخرة والمغطاة بصوص الجبن السري الغني والناعم.', price: 80, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p3.jpg' },
+        { id: 'p4', name: 'دوناتس فستق', flavor: 'فستق حلبي كريمة', desc: 'عجينة الدوناتس الخفيفة المقلية بامتياز ومحشوة بكريمة الفستق الطبيعي الفاخر والمقرمش.', price: 70, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p4.jpg' },
+        { id: 'p5', name: 'كاب السعادة شوكو', flavor: 'شوكولاتة دبل', desc: 'كاب السعادة المليء بقطع الكيك الاسفنجي وموس الشوكولاتة وقطع الكرسبي اللذيذة والغنية.', price: 95, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p5.jpg' },
+        { id: 'p6', name: 'ريد فيلفيت ميني', flavor: 'كريمة تشيز غنية', desc: 'كيكة الريد فيلفيت المخملية بلونها الساحر وطعمها المتوازن مع كريمة التشيز الفاخرة البارزة.', price: 190, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p6.jpg' },
+        { id: 'p7', name: 'بوكس الروقان الفاخر', flavor: 'مشكل حلويات', desc: 'تجميعة ملكية خاصة من اختيارنا تضم أروع القطع الطازجة لتصنع لك لحظة روقان مثالية وراقية.', price: 320, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p7.jpg' },
+        { id: 'p8', name: 'جاتوه سوبريم', flavor: 'فانيليا وتوت', desc: 'طبقات الجاتوه الهشة والمحشوة بكريمة الفانيليا الطبيعية ومربى التوت البري المركز عالي الجودة.', price: 65, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p8.jpg' }
+      ];
+
+      function createCard(p, isHidden = false) {
+        return `
+          <div class="bs-product-card ${isHidden ? 'bs-hidden-card' : ''}" data-id="${p.id}">
+            <div class="bs-product-img-wrapper">
+              <img class="bs-product-img" src="${p.image}" alt="${p.name}">
+            </div>
+            <div class="bs-product-info">
+              <h3 class="bs-product-title">${p.name}</h3>
+              <div class="bs-flavor-title">${p.flavor}</div>
+              <p class="bs-product-desc">${p.desc}</p>
+              <div class="bs-qty-selector">
+                <button class="bs-qty-btn bs-minus">-</button>
+                <span class="bs-qty-num">0</span>
+                <button class="bs-qty-btn bs-plus">+</button>
+              </div>
+              <div class="bs-product-footer">
+                <span class="bs-product-price">${p.price}</span>
+                <button class="bs-button bs-add-to-cart-btn" style="padding:0.5rem 1rem; font-size:0.85rem;">إضافة للسلة</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      const arrivalsContainer = document.getElementById('newArrivalsSlider');
+      const sellersContainer = document.getElementById('bestSellersSlider');
+      const ourProductsContainer = document.getElementById('ourProductsGrid');
+
+      dummyProducts.slice(0, 6).forEach(p => { if(arrivalsContainer) arrivalsContainer.innerHTML += createCard(p); });
+      dummyProducts.forEach(p => { if(sellersContainer) sellersContainer.innerHTML += createCard(p); });
+      dummyProducts.forEach((p, idx) => { if(ourProductsContainer) ourProductsContainer.innerHTML += createCard(p, idx >= 4); });
+
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('bs-plus')) {
+          const numEl = e.target.parentElement.querySelector('.bs-qty-num');
+          numEl.textContent = parseInt(numEl.textContent) + 1;
+        }
+        if (e.target.classList.contains('bs-minus')) {
+          const numEl = e.target.parentElement.querySelector('.bs-qty-num');
+          const current = parseInt(numEl.textContent);
+          if (current > 0) numEl.textContent = current - 1;
+        }
+        if (e.target.classList.contains('bs-add-to-cart-btn')) {
+          const card = e.target.closest('.bs-product-card');
+          const id = card.getAttribute('data-id');
+          const qty = parseInt(card.querySelector('.bs-qty-num').textContent);
+          const product = dummyProducts.find(p => p.id === id);
+          if (product && qty > 0 && window.BoseSweetsCore) {
+            window.BoseSweetsCore.Store.addToCart(product, qty);
+            card.querySelector('.bs-qty-num').textContent = '0';
+          }
+        }
+      });
+
+      const loadMoreBtn = document.getElementById('loadMoreProductsBtn');
+      if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', function() {
+          const hiddenCards = ourProductsContainer.querySelectorAll('.bs-hidden-card');
+          hiddenCards.forEach(card => card.classList.remove('bs-hidden-card'));
+          loadMoreBtn.style.display = 'none';
+        });
+      }
+
+      if (window.BoseSweetsCore) {
+        const updateHeaderCart = () => {
+          const countEl = document.getElementById('headerCartCount');
+          if (countEl) countEl.textContent = window.BoseSweetsCore.Store.getCartCount();
         };
-        document.addEventListener('DOMContentLoaded', () => window.BoseSweets.Cart.renderCounter());
-    </script>
+        window.BoseSweetsCore.Store.subscribe(updateHeaderCart);
+        updateHeaderCart();
+      }
+    });
+  </script>
 </body>
 </html>
