@@ -5,14 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
   <link rel="stylesheet" href="app.css">
+  <!-- استدعاء خط Cairo الاحترافي المعتمد للهوية الرقمية للموقع -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  
   <style>
+    /* تطبيق خط Cairo الاحترافي الفخم على كامل الهوية البصرية للموقع */
+    * {
+      font-family: 'Cairo', sans-serif;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #FFFFFF; /* مساحات بيضاء ناصعة لخلق تنفس بصري مريح للعميل */
+      color: #111111; /* الأسود النقي معزول تماماً ومخصص حصرياً للنصوص والعناوين */
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
     .bs-header-wrapper {
       display: grid;
       grid-template-columns: auto 1fr auto;
       align-items: center;
       height: 75px;
       padding: 0 15px;
+      background-color: #FFFFFF;
     }
+
     .bs-menu-trigger {
       background: none;
       border: none;
@@ -21,23 +43,27 @@
       cursor: pointer;
       justify-self: start;
     }
+
     .bs-logo-brand-zone {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
     }
+
     .bs-brand-name {
-      color: #FF91A4;
-      font-weight: 700;
+      color: #FF91A4; /* نبض الحياة في الموقع */
+      font-weight: 700; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين */
       font-size: 1.4rem;
     }
+
     .bs-left-actions {
       display: flex;
       align-items: center;
       gap: 20px;
       justify-self: end;
     }
+
     .bs-action-icon {
       background: none;
       border: none;
@@ -47,7 +73,21 @@
       position: relative;
       display: flex;
       align-items: center;
+      text-decoration: none;
     }
+
+    .bs-cart-count {
+      position: absolute;
+      top: -5px;
+      left: -8px;
+      background-color: #FF91A4;
+      color: #FFFFFF;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+
     .bs-mobile-menu {
       position: fixed;
       top: 0;
@@ -56,33 +96,39 @@
       max-width: 320px;
       height: 100vh;
       background-color: #FFFFFF;
-      box-shadow: -10px 0 30px rgba(17, 17, 17, 0.15);
+      box-shadow: -10px 0 30px rgba(255, 145, 164, 0.1); /* ظلال ناعمة مستوحاة من الهوية لوقوف فخم */
       transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 2500;
       padding: 2rem 0;
       display: flex;
       flex-direction: column;
     }
+
     .bs-mobile-menu.active {
       right: 0;
     }
+
     .bs-menu-header {
       background: linear-gradient(135deg, #FF91A4 0%, #ffb6c1 100%);
-      padding: 2.5rem 1.5px;
+      padding: 2.5rem 1.5rem;
       text-align: center;
       margin-bottom: 1.5rem;
     }
+
     .bs-menu-header h3 {
       color: #FFFFFF;
       font-size: 1.6rem;
+      font-weight: 700;
       margin-bottom: 0.5rem;
     }
+
     .bs-menu-header p {
       color: #FFFFFF;
       font-size: 0.95rem;
       font-weight: 600;
       opacity: 0.9;
     }
+
     .bs-mobile-link {
       font-weight: 600;
       font-size: 1.2rem;
@@ -93,11 +139,14 @@
       gap: 12px;
       border-bottom: 1px solid rgba(255, 145, 164, 0.1);
       transition: background 0.3s ease, color 0.3s ease;
+      text-decoration: none;
     }
+
     .bs-mobile-link:hover {
       background-color: rgba(255, 145, 164, 0.05);
       color: #FF91A4;
     }
+
     .bs-menu-overlay {
       position: fixed;
       top: 0;
@@ -111,10 +160,19 @@
       pointer-events: none;
       transition: opacity 0.3s ease;
     }
+
     .bs-menu-overlay.active {
       opacity: 1;
       pointer-events: auto;
     }
+
+    .bs-section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111111;
+      margin-bottom: 1rem;
+    }
+
     .bs-waterfall-section {
       width: 100vw;
       margin-left: calc(-50vw + 50%);
@@ -123,6 +181,7 @@
       background-color: #FFFFFF;
       padding: 4rem 0;
     }
+
     .bs-waterfall-wrapper {
       display: flex;
       width: 100%;
@@ -130,12 +189,14 @@
       overflow: hidden;
       position: relative;
     }
+
     .bs-waterfall-column {
       flex: 1;
       height: 100%;
       position: relative;
       overflow: hidden;
     }
+
     .bs-waterfall-track {
       display: flex;
       flex-direction: column;
@@ -143,31 +204,38 @@
       width: 100%;
       gap: 0;
     }
+
     .bs-waterfall-track.up {
       animation: bs-scroll-up 20s linear infinite;
     }
+
     .bs-waterfall-track.down {
       animation: bs-scroll-down 20s linear infinite;
       bottom: 0;
     }
+
     @keyframes bs-scroll-up {
       0% { transform: translateY(0); }
       100% { transform: translateY(-50%); }
     }
+
     @keyframes bs-scroll-down {
       0% { transform: translateY(0); }
       100% { transform: translateY(50%); }
     }
+
     .bs-waterfall-card {
       width: 100%;
       height: 260px;
       display: block;
     }
+
     .bs-waterfall-card img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+
     .bs-waterfall-overlay {
       position: absolute;
       bottom: 0;
@@ -178,60 +246,101 @@
       pointer-events: none;
       z-index: 10;
     }
+
+    .bs-section {
+      padding: 4rem 20px;
+      background-color: #FFFFFF;
+    }
+
+    .bs-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
     .bs-itqan-slider {
       width: 100vw;
       margin-left: calc(-50vw + 50%);
       margin-right: calc(-50vw + 50%);
       overflow: hidden;
     }
+
     .bs-itqan-track {
       display: flex;
       width: 300vw;
       animation: bs-itqan-slide 25s linear infinite;
     }
+
     .bs-itqan-img {
       width: 100vw;
       height: 55vh;
       object-fit: cover;
     }
+
     @keyframes bs-itqan-slide {
       0% { transform: translateX(0); }
       100% { transform: translateX(200vw); }
     }
+
     .bs-mobile-full-slider {
       display: flex;
-      gap: 0;
+      gap: 20px;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
       scrollbar-width: none;
       width: 100vw;
       margin-left: calc(-50vw + 50%);
       margin-right: calc(-50vw + 50%);
-      padding: 1rem 0;
+      padding: 1.5rem 20px;
     }
+
     .bs-mobile-full-slider::-webkit-scrollbar {
       display: none;
     }
+
     .bs-mobile-full-slider .bs-product-card {
-      flex: 0 0 100vw;
+      flex: 0 0 calc(100vw - 40px);
       scroll-snap-align: start;
-      padding: 0 20px;
     }
+
+    @media (min-width: 768px) {
+      .bs-mobile-full-slider {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        overflow-x: visible;
+        width: 100%;
+        margin: 0;
+        padding: 1.5rem 0;
+      }
+      .bs-mobile-full-slider .bs-product-card {
+        flex: none;
+      }
+    }
+
     .bs-product-card {
       background-color: #FFFFFF;
       position: relative;
       display: flex;
       flex-direction: column;
       width: 100%;
+      height: 100%;
     }
+
     .bs-card-border-outer {
-      border: 1px solid #FF91A4;
+      border: 1px solid #FF91A4; /* حدود كروت المنتجات الحاكمة */
       border-radius: 24px;
       padding: 6px;
       width: 100%;
       height: 100%;
       background-color: #FFFFFF;
+      box-shadow: 0 4px 15px rgba(255, 145, 164, 0.05); /* ظلال ناعمة */
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
+
+    .bs-card-border-outer:hover {
+      transform: translateY(-5px); /* تأثيرات تفاعلية ناعمة للعميل */
+      box-shadow: 0 8px 25px rgba(255, 145, 164, 0.15);
+    }
+
     .bs-card-border-inner {
       border: 2px solid #FF91A4;
       border-radius: 18px;
@@ -242,6 +351,7 @@
       flex-direction: column;
       background-color: #FFFFFF;
     }
+
     .bs-product-img-wrapper {
       position: relative;
       width: 100%;
@@ -250,6 +360,7 @@
       overflow: hidden;
       margin-bottom: 1.25rem;
     }
+
     .bs-product-img {
       position: absolute;
       top: 0;
@@ -258,24 +369,31 @@
       height: 100%;
       object-fit: cover;
     }
+
     .bs-category-tag {
       font-size: 0.9rem;
       font-weight: 600;
       color: #FF91A4;
       margin-bottom: 0.5rem;
     }
+
     .bs-product-title {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: #111111;
       margin-bottom: 0.25rem;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap; /* منع انقطاع النصوص أو تشوه الكرت */
     }
+
     .bs-flavor-text {
       font-size: 1.1rem;
       font-weight: 600;
       color: #FF91A4;
       margin-bottom: 0.75rem;
     }
+
     .bs-product-desc {
       font-size: 0.95rem;
       color: #111111;
@@ -283,7 +401,12 @@
       margin-bottom: 1.5rem;
       font-weight: 400;
       text-align: justify;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden; /* حظر نصوص طافحة نهائياً لراحة العميل */
     }
+
     .bs-card-action-row {
       display: flex;
       align-items: center;
@@ -292,6 +415,7 @@
       margin-bottom: 1.25rem;
       gap: 15px;
     }
+
     .bs-qty-counter {
       display: flex;
       align-items: center;
@@ -302,6 +426,7 @@
       background-color: rgba(255, 145, 164, 0.03);
       width: 130px;
     }
+
     .bs-qty-btn {
       background: none;
       border: none;
@@ -315,22 +440,26 @@
       align-items: center;
       justify-content: center;
     }
+
     .bs-qty-display-num {
       font-weight: 700;
       font-size: 1.2rem;
       color: #111111;
     }
+
     .bs-product-price {
       font-size: 1.8rem;
       font-weight: 700;
-      color: #FF91A4;
+      color: #FF91A4; /* نصوص الأسعار الديناميكية المعتمدة */
       white-space: nowrap;
     }
+
     .bs-product-price span {
       font-size: 1.1rem;
       font-weight: 600;
       margin-right: 2px;
     }
+
     .bs-add-to-cart-submit {
       width: 100%;
       background-color: #FF91A4;
@@ -341,8 +470,40 @@
       font-weight: 700;
       border-radius: 20px;
       cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .bs-add-to-cart-submit:active {
+      transform: scale(0.98);
+    }
+
+    .bs-button {
+      display: inline-block;
+      background-color: #FF91A4;
+      color: #FFFFFF;
+      padding: 0.9rem 2rem;
+      font-size: 1.15rem;
+      font-weight: 700;
+      border-radius: 24px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
       transition: background 0.3s ease;
     }
+
+    .bs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px 15px;
+    }
+
+    @media (min-width: 768px) {
+      .bs-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 25px 20px;
+      }
+    }
+
     .bs-premium-block-banner {
       width: 100vw;
       margin-left: calc(-50vw + 50%);
@@ -354,6 +515,7 @@
       background-color: #FFFFFF;
       box-shadow: inset 0 0 50px rgba(255, 145, 164, 0.08);
     }
+
     .bs-pride-section {
       width: 100vw;
       margin-left: calc(-50vw + 50%);
@@ -365,6 +527,7 @@
       background-color: #FFFFFF;
       box-shadow: 0 10px 35px rgba(255, 145, 164, 0.1);
     }
+
     .bs-pride-stat {
       font-size: 4.5rem;
       color: #FF91A4;
@@ -372,6 +535,7 @@
       line-height: 1;
       margin-bottom: 1rem;
     }
+
     .bs-category-large-slider {
       display: flex;
       gap: 2rem;
@@ -383,23 +547,33 @@
       margin-left: calc(-50vw + 50%);
       margin-right: calc(-50vw + 50%);
     }
+
     .bs-category-large-slider::-webkit-scrollbar {
       display: none;
     }
+
     .bs-category-large-card {
-      flex: 0 0 320px;
+      flex: 0 0 280px;
       scroll-snap-align: start;
     }
+
     .bs-category-large-card .bs-card-border-inner {
       padding: 0;
     }
+
+    .bs-category-large-card a {
+      text-decoration: none;
+      display: block;
+    }
+
     .bs-category-large-img {
       width: 100%;
-      height: 280px;
+      height: 240px;
       object-fit: cover;
       border-top-left-radius: 14px;
       border-top-right-radius: 14px;
     }
+
     .bs-category-large-title {
       padding: 1.5rem;
       text-align: center;
@@ -407,6 +581,7 @@
       font-size: 1.35rem;
       color: #111111;
     }
+
     .bs-footer-centered {
       text-align: center;
       background-color: #FFFFFF;
@@ -414,6 +589,7 @@
       padding: 4rem 20px 2rem 20px;
       margin-top: 5rem;
     }
+
     .bs-footer-centered .bs-footer-links {
       display: flex;
       justify-content: center;
@@ -421,18 +597,46 @@
       gap: 2rem;
       margin-bottom: 2.5rem;
     }
-    .bs-footer-centered .bs-social-icons {
+
+    .bs-footer-link {
+      color: #111111;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .bs-footer-link:hover {
+      color: #FF91A4;
+    }
+
+    .bs-social-icons {
       display: flex;
       justify-content: center;
       gap: 2.5rem;
       margin-bottom: 2.5rem;
     }
+
     .bs-social-original-btn {
       width: 45px;
       height: 45px;
+      transition: transform 0.3s ease;
     }
+
+    .bs-social-original-btn:hover {
+      transform: scale(1.1);
+    }
+
     .bs-hidden-card {
       display: none !important;
+    }
+    
+    .bs-announcement-bar {
+      background-color: #FF91A4;
+      color: #FFFFFF;
+      text-align: center;
+      padding: 10px 15px;
+      font-size: 0.95rem;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -477,33 +681,33 @@
   </div>
 
   <section class="bs-waterfall-section">
-    <div class="bs-container" style="text-align: center; margin-bottom: 2.5rem;">
+    <div class="bs-container" style="text-align: center; margin-bottom: 2.5rem; padding: 0 20px;">
       <h2 class="bs-section-title">عقد من التميز</h2>
       <p style="color:#111111; max-width:650px; margin:0 auto; line-height:1.7;">تأسس مطبخنا لتقديم تجربة تذوق حقيقية تعتمد بالكامل على خامات طبيعية مختارة بعناية فائقة للحصول على أفضل جودة طازجة ومستقرة طوال السنوات.</p>
     </div>
     <div class="bs-waterfall-wrapper">
       <div class="bs-waterfall-column">
         <div class="bs-waterfall-track up">
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cake_m1.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/gateau_m2.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/donut_m3.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cinnabon_m4.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cake_m1.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/gateau_m2.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/donut_m3.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cinnabon_m4.jpg"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cake_m1.jpg" alt="ميني تورت"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/gateau_m2.jpg" alt="جاتوهات"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/donut_m3.jpg" alt="دوناتس"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cinnabon_m4.jpg" alt="سينابون"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cake_m1.jpg" alt="ميني تورت"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/gateau_m2.jpg" alt="جاتوهات"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/donut_m3.jpg" alt="دوناتس"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cinnabon_m4.jpg" alt="سينابون"></a>
         </div>
       </div>
       <div class="bs-waterfall-column">
         <div class="bs-waterfall-track down">
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cupcake_m5.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/qashtouta_m6.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/box_m7.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/velvet_m8.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cupcake_m5.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/qashtouta_m6.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/box_m7.jpg"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/velvet_m8.jpg"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cupcake_m5.jpg" alt="كب كيك"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/qashtouta_m6.jpg" alt="قشطوطة"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/box_m7.jpg" alt="بوكس الروقان"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/velvet_m8.jpg" alt="ريد فيلفيت"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cupcake_m5.jpg" alt="كب كيك"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/qashtouta_m6.jpg" alt="قشطوطة"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/box_m7.jpg" alt="بوكس الروقان"></a>
+          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/velvet_m8.jpg" alt="ريد فيلفيت"></a>
         </div>
       </div>
       <div class="bs-waterfall-overlay"></div>
@@ -517,9 +721,9 @@
     </div>
     <div class="bs-itqan-slider">
       <div class="bs-itqan-track">
-        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider1_f.jpg">
-        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider2_f.jpg">
-        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider3_f.jpg">
+        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider1_f.jpg" alt="جودة التجهيز">
+        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider2_f.jpg" alt="فخامة التقديم">
+        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider3_f.jpg" alt="خامات طبيعية 100%">
       </div>
     </div>
   </section>
@@ -560,7 +764,7 @@
         <h2 class="bs-section-title">منتجاتنا</h2>
         <p style="color:#111111;">قائمة المأكولات اليومية والتشكيلات الفاخرة المتاحة للطلب الفوري والمباشر.</p>
       </div>
-      <div class="bs-grid" id="ourProductsGrid" style="grid-template-columns: repeat(2, 1fr); gap: 20px 15px;"></div>
+      <div class="bs-grid" id="ourProductsGrid"></div>
       <div style="text-align: center; margin-top: 3rem;">
         <button class="bs-button" id="loadMoreProductsBtn">إظهار المزيد</button>
       </div>
@@ -572,7 +776,7 @@
       <div class="bs-container">
         <h2 style="margin-bottom: 1.25rem; font-size:1.9rem; font-weight:700;">محاكي الورد وتنسيق الهدايا الفاخرة</h2>
         <p style="margin-bottom: 2.5rem; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.8; color:#111111; font-size:1.05rem;">انفردنا تماماً بتقديم باقات الورد الطبيعي الفاخر والأول من نوعه داخل مركز الفرافرة بالكامل. نسقي هديتك واجمعي بين فخامة الحلويات وجمال الورد الطبيعي لتقديم قيمة حقيقية تعبر عن مشاعرك الراقية لمن تحبين.</p>
-        <a href="flower-builder.html" class="bs-button">ابدئي تخصيص بوكس الهدية</a>
+        <a href="flower-builder.html" class="bs-button" style="background-color: #D4AF37;">ابدئي تخصيص بوكس الهدية</a>
       </div>
     </div>
   </section>
@@ -595,16 +799,16 @@
         <p style="color:#111111;">تصفح المنتجات بسهولة تامة من خلال الانتقال المباشر للفئة المطلوبة المحددة بعناية.</p>
       </div>
       <div class="bs-category-large-slider">
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c4.jpg"><div class="bs-category-large-title">الديسباسيتو</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c5.jpg"><div class="bs-category-large-title">القشطوطة</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c6.jpg"><div class="bs-category-large-title">الدوناتس</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c7.jpg"><div class="bs-category-large-title">السينابون</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c9.jpg"><div class="bs-category-large-title">كبات السعادة</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c8.jpg"><div class="bs-category-large-title">الريد فيلفيت</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c11.jpg"><div class="bs-category-large-title">الميني تورت</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=boxes"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c10.jpg"><div class="bs-category-large-title">بوكس الروقان</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c2.jpg"><div class="bs-category-large-title">الجاتوهات</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c12.jpg"><div class="bs-category-large-title">الكب كيك</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c4.jpg" alt="الديسباسيتو"><div class="bs-category-large-title">الديسباسيتو</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c5.jpg" alt="القشطوطة"><div class="bs-category-large-title">القشطوطة</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c6.jpg" alt="الدوناتس"><div class="bs-category-large-title">الدوناتس</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c7.jpg" alt="السينابون"><div class="bs-category-large-title">السينابون</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c9.jpg" alt="كبات السعادة"><div class="bs-category-large-title">كبات السعادة</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c8.jpg" alt="الريد فيلفيت"><div class="bs-category-large-title">الريد فيلفيت</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c11.jpg" alt="الميني تورت"><div class="bs-category-large-title">الميني تورت</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=boxes"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c10.jpg" alt="بوكس الروقان"><div class="bs-category-large-title">بوكس الروقان</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c2.jpg" alt="الجاتوهات"><div class="bs-category-large-title">الجاتوهات</div></a></div></div></div>
+        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c12.jpg" alt="الكب كيك"><div class="bs-category-large-title">الكب كيك</div></a></div></div></div>
       </div>
     </div>
   </section>
@@ -635,6 +839,7 @@
   <script src="core.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      // تفعيل وإغلاق القائمة الجانبية للموبايل بسلاسة وثبات
       const trigger = document.getElementById('mobileMenuTrigger');
       const menu = document.getElementById('mobileMenu');
       const overlay = document.getElementById('menuOverlay');
@@ -652,9 +857,10 @@
         });
       }
 
+      // مصفوفة المنتجات المعتمدة رسمياً
       const realApprovedProducts = [
         { id: 'cinabon', name: 'السينابون', flavor: 'نوتيلا دارك', desc: 'لفات سينابون مخبوزة بقوام طري وصوصات غنية متزنة من غير مبالغة للحصول على تجربة واضحة في الطعم والجودة من أول قطعة.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p3.jpg' },
-        { id: 'donuts', name: 'الدوناتس', flavor: 'نوتيلا وايت', desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم وبخامات حقيقية وممتازة.', price: 88, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p4.jpg' },
+        { id: 'donuts', name: 'الدوناتس', flavor: 'نوتيلا وايت', desc: 'دوناتس طازجة بقوام خفيف وححشوات متنوعة معمولين يوم بيوم وبخامات حقيقية وممتازة.', price: 88, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p4.jpg' },
         { id: 'qashtota', name: 'القشطوطة', flavor: 'نوتيلا وايت', desc: 'كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح ومريح تماماً من أول لقمة لأخر قطعة.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p1.jpg' },
         { id: 'despacito', name: 'الديسباسيتو مثلث', flavor: 'نوتيلا دارك', desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح وثابت.', price: 66, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p2.jpg' },
         { id: 'happiness-cups', name: 'كبات السعادة', flavor: 'نوتيلا غنية', desc: 'أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة الفاخرة.', price: 61, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p5.jpg' },
@@ -663,42 +869,116 @@
         { id: 'gateaux', name: 'الجاتوهات كلاسيك', flavor: 'شوكولاتة وفانيليا', desc: 'تشكيلات جاتوه متنوعة بخامات متوازنة وطعم واضح مناسب للضيافة اليومية والمناسبات الراقية.', price: 506, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p8.jpg' }
       ];
 
-      function buildProductCard(p, isHidden = false) {
-        return `
-          <div class="bs-product-card ${isHidden ? 'bs-hidden-card' : ''}" data-id="${p.id}">
-            <div class="bs-card-border-outer">
-              <div class="bs-card-border-inner">
-                <div class="bs-product-img-wrapper">
-                  <img class="bs-product-img" src="${p.image}" alt="${p.name}">
-                </div>
-                <div class="bs-category-tag">حلويات فاخرة</div>
-                <h3 class="bs-product-title">${p.name}</h3>
-                <div class="bs-flavor-text">${p.flavor}</div>
-                <p class="bs-product-desc">${p.desc}</p>
-                <div class="bs-card-action-row">
-                  <div class="bs-qty-counter">
-                    <button class="bs-qty-btn bs-minus">-</button>
-                    <span class="bs-qty-display-num">0</span>
-                    <button class="bs-qty-btn bs-plus">+</button>
-                  </div>
-                  <div class="bs-product-price">${p.price} <span>ج.م</span></div>
-                </div>
-                <button class="bs-add-to-cart-submit">إضافة للسلة</button>
-              </div>
-            </div>
-          </div>
-        `;
+      // بناء وتأمين كروت المنتجات بطريقة احترافية لمنع ثغرات XSS
+      function buildProductCardSecure(p, isHidden = false) {
+        const card = document.createElement('div');
+        card.className = `bs-product-card ${isHidden ? 'bs-hidden-card' : ''}`;
+        card.setAttribute('data-id', p.id);
+
+        const outerBorder = document.createElement('div');
+        outerBorder.className = 'bs-card-border-outer';
+
+        const innerBorder = document.createElement('div');
+        innerBorder.className = 'bs-card-border-inner';
+
+        // غلاف الصورة
+        const imgWrapper = document.createElement('div');
+        imgWrapper.className = 'bs-product-img-wrapper';
+        const img = document.createElement('img');
+        img.className = 'bs-product-img';
+        img.src = p.image;
+        img.alt = p.name;
+        imgWrapper.appendChild(img);
+
+        // التاج والعناوين
+        const tag = document.createElement('div');
+        tag.className = 'bs-category-tag';
+        tag.textContent = 'حلويات فاخرة';
+
+        const title = document.createElement('h3');
+        title.className = 'bs-product-title';
+        title.textContent = p.name;
+
+        const flavor = document.createElement('div');
+        flavor.className = 'bs-flavor-text';
+        flavor.textContent = p.flavor;
+
+        const desc = document.createElement('p');
+        desc.className = 'bs-product-desc';
+        desc.textContent = p.desc;
+
+        // سطر التحكم والأسعار
+        const actionRow = document.createElement('div');
+        actionRow.className = 'bs-card-action-row';
+
+        const qtyCounter = document.createElement('div');
+        qtyCounter.className = 'bs-qty-counter';
+
+        const btnMinus = document.createElement('button');
+        btnMinus.className = 'bs-qty-btn bs-minus';
+        btnMinus.textContent = '-';
+
+        const qtyDisplay = document.createElement('span');
+        qtyDisplay.className = 'bs-qty-display-num';
+        qtyDisplay.textContent = '0';
+
+        const btnPlus = document.createElement('button');
+        btnPlus.className = 'bs-qty-btn bs-plus';
+        btnPlus.textContent = '+';
+
+        qtyCounter.appendChild(btnMinus);
+        qtyCounter.appendChild(qtyDisplay);
+        qtyCounter.appendChild(btnPlus);
+
+        const priceDiv = document.createElement('div');
+        priceDiv.className = 'bs-product-price';
+        priceDiv.textContent = p.price + ' ';
+        const currencySpan = document.createElement('span');
+        currencySpan.textContent = 'ج.م';
+        priceDiv.appendChild(currencySpan);
+
+        actionRow.appendChild(qtyCounter);
+        actionRow.appendChild(priceDiv);
+
+        // زر الإضافة للسلة
+        const btnSubmit = document.createElement('button');
+        btnSubmit.className = 'bs-add-to-cart-submit';
+        btnSubmit.textContent = 'إضافة للسلة';
+
+        // تركيب الكارت كاملاً بالترتيب الهندسي الصحيح
+        innerBorder.appendChild(imgWrapper);
+        innerBorder.appendChild(tag);
+        innerBorder.appendChild(title);
+        innerBorder.appendChild(flavor);
+        innerBorder.appendChild(desc);
+        innerBorder.appendChild(actionRow);
+        innerBorder.appendChild(btnSubmit);
+
+        outerBorder.appendChild(innerBorder);
+        card.appendChild(outerBorder);
+
+        return card;
       }
 
       const arrivalsTrack = document.getElementById('newArrivalsSlider');
       const sellersTrack = document.getElementById('bestSellersSlider');
       const gridContainer = document.getElementById('ourProductsGrid');
 
-      realApprovedProducts.slice(0, 6).forEach(p => { if(arrivalsTrack) arrivalsTrack.innerHTML += buildProductCard(p); });
-      realApprovedProducts.forEach(p => { if(sellersTrack) sellersTrack.innerHTML += buildProductCard(p); });
-      realApprovedProducts.forEach((p, idx) => { if(gridContainer) gridContainer.innerHTML += buildProductCard(p, idx >= 4); });
+      // توزيع المنتجات بأمان تام داخل مساحات العرض المتوافقة
+      realApprovedProducts.slice(0, 6).forEach(p => { 
+        if(arrivalsTrack) arrivalsTrack.appendChild(buildProductCardSecure(p)); 
+      });
+      
+      realApprovedProducts.forEach(p => { 
+        if(sellersTrack) sellersTrack.appendChild(buildProductCardSecure(p)); 
+      });
+      
+      realApprovedProducts.forEach((p, idx) => { 
+        if(gridContainer) gridContainer.appendChild(buildProductCardSecure(p, idx >= 4)); 
+      });
 
-      document.addEventListener('click', function(e) {
+      // معالجة ذكية وموحدة لعمليات الضغط داخل الكروت لمنع تكرار الأكواد
+      document.body.addEventListener('click', function(e) {
         if (e.target.classList.contains('bs-plus')) {
           const numEl = e.target.parentElement.querySelector('.bs-qty-display-num');
           numEl.textContent = parseInt(numEl.textContent) + 1;
@@ -708,11 +988,12 @@
           const val = parseInt(numEl.textContent);
           if (val > 0) numEl.textContent = val - 1;
         }
-        if (e.target.classList.contains('bs-add-to-cart-btn') || e.target.classList.contains('bs-add-to-cart-submit')) {
+        if (e.target.classList.contains('bs-add-to-cart-submit')) {
           const card = e.target.closest('.bs-product-card');
           const id = card.getAttribute('data-id');
           const qty = parseInt(card.querySelector('.bs-qty-display-num').textContent);
           const itemData = realApprovedProducts.find(p => p.id === id);
+          
           if (itemData && qty > 0 && window.BoseSweetsCore) {
             window.BoseSweetsCore.Store.addToCart(itemData, qty);
             card.querySelector('.bs-qty-display-num').textContent = '0';
@@ -720,8 +1001,9 @@
         }
       });
 
+      // زر إظهار المزيد من المنتجات بسلاسة تامة
       const loadBtn = document.getElementById('loadMoreProductsBtn');
-      if (loadBtn) {
+      if (loadBtn && gridContainer) {
         loadBtn.addEventListener('click', function() {
           const targets = gridContainer.querySelectorAll('.bs-hidden-card');
           targets.forEach(c => c.classList.remove('bs-hidden-card'));
@@ -729,6 +1011,7 @@
         });
       }
 
+      // الربط الديناميكي مع المحرك المعتمد لحساب عدد عناصر السلة تلقائياً
       if (window.BoseSweetsCore) {
         const syncCart = () => {
           const el = document.getElementById('headerCartCount');
