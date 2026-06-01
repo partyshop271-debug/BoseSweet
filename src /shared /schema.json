@@ -1,0 +1,109 @@
+{
+  "platformContract": "Bose Sweets Global Schema",
+  "version": 1,
+  "systemDefaults": {
+    "currency": "EGP",
+    "timezone": "Africa/Cairo",
+    "defaultLanguage": "ar",
+    "supportedLanguages": ["ar", "en"],
+    "globalNamespace": "window.BoseSweets"
+  },
+  "statusRegistry": {
+    "content": ["draft", "published", "hidden", "scheduled", "archived"],
+    "orders": ["new", "contacted", "confirmed", "preparing", "ready", "delivered", "cancelled"]
+  },
+  "storeMetadata": {
+    "id": "bose-sweets",
+    "name": "حلويات بوسي",
+    "slogan": "صنعناها بحب لتهديها لمن تحب",
+    "logo": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+    "phone": "01097238441",
+    "address": "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور احمد مجدي وبجوار عيادة الدكتور علي",
+    "themeTokens": {
+      "primary": "#FF91A4",
+      "background": "#FFFFFF",
+      "text": "#000000",
+      "secondary": "gold"
+    },
+    "typography": {
+      "fontFamily": "Alexandria",
+      "maxFontWeight": 700
+    },
+    "priceIncreaseStrategy": {
+      "enabled": true,
+      "percent": 10,
+      "applyOn": "menu-only"
+    }
+  },
+  "navigationContract": {
+    "showSearch": true,
+    "showCart": true,
+    "showFavorites": true,
+    "menuItems": ["الرئيسية", "المنيو", "السلة", "محاكي التورت", "محاكي الورد"]
+  },
+  "shippingZonesRegistry": [
+    {"id": "elkefah", "name": "الكفاح", "price": 30, "active": true},
+    {"id": "aboelhol", "name": "ابوالهول", "price": 30, "active": true},
+    {"id": "sanaye3", "name": "الصنايع", "price": 40, "active": true},
+    {"id": "abobakr", "name": "ابوبكر", "price": 40, "active": true},
+    {"id": "farafra", "name": "الفرافرة", "price": 50, "active": true},
+    {"id": "association", "name": "الجمعية", "price": 50, "active": true},
+    {"id": "alamal", "name": "الامل", "price": 50, "active": true},
+    {"id": "zone_13", "name": "13", "price": 70, "active": true},
+    {"id": "zone_17", "name": "17", "price": 70, "active": true},
+    {"id": "abohoraira", "name": "ابوهريرة", "price": 140, "active": true}
+  ],
+  "cakeBuilderRules": {
+    "enabled": true,
+    "basePrice": 580,
+    "pricePerPerson": 145,
+    "personsLimit": {
+      "minimum": 4,
+      "maximum": 250,
+      "step": 2
+    },
+    "cakeTypes": [
+      {"id": "vanilla", "name": "فانيليا"},
+      {"id": "chocolate", "name": "شوكولاتة"},
+      {"id": "half-half", "name": "نصف ونصف"}
+    ],
+    "shapes": [
+      {"id": "circle", "name": "دائرة", "minimumPersons": 4},
+      {"id": "heart", "name": "قلب", "minimumPersons": 4},
+      {"id": "square", "name": "مربع", "minimumPersons": 16},
+      {"id": "rectangle", "name": "مستطيل", "minimumPersons": 20}
+    ],
+    "printingOptions": [
+      {"id": "edible", "name": "صورة قابلة للأكل", "price": 60},
+      {"id": "non-edible", "name": "صورة غير قابلة للأكل", "price": 20}
+    ],
+    "messages": {
+      "squareMinimum": "المقاس المربع يبدأ من 16 فرد",
+      "rectangleMinimum": "المقاس المستطيل يبدأ من 20 فرد",
+      "rectangleUpgrade": "عشان تطلع معاك التورتة المستطيلة مظبوطة وبأفضل تنسيق، أقل مقاس بنقدر ننفذه للشكل ده هو 20 فرد.",
+      "pricingInfo": "الحسبة هنا قايمة على خامات طبيعية ممتازة ومضمونة 100% عشان تطلع لك تورتة تشرفك قدام ضيوفك وتبسطهم بالطعم الأصلي."
+    }
+  },
+  "flowerBuilderRules": {
+    "enabled": true,
+    "basePrice": 400,
+    "baseFlowers": 15,
+    "extraFlowerPrice": 35,
+    "flowerTypes": [
+      {"id": "natural", "name": "ورد طبيعي"},
+      {"id": "artificial", "name": "ورد صناعي"},
+      {"id": "satin", "name": "ورد ستان"}
+    ],
+    "moneyCategories": [5, 10, 20, 50, 100, 200],
+    "photoPrintPrice": 15,
+    "ribbonPrice": 50,
+    "giftCardPrice": 20,
+    "chocolatePiecePrices": [20, 30, 50],
+    "largeChocolateMinimumPrice": 100
+  },
+  "validationConstraints": {
+    "customerNameMinLength": 3,
+    "phonePattern": "^01[0125][0-9]{8}$",
+    "minimumPickupLeadTimeHours": 24
+  }
+}
