@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>تصفح القسم | حلويات بوسي</title>
+    <meta name="description" content="استعرض تشكيلة المنتجات الفاخرة للقسم المختار من حلويات بوسي. خامات طبيعية ممتازة ومضمونة 100% لتناسب مناسباتكم السعيدة.">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#FF91A4">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        :root {
+            --primary-pink: #FF91A4;
+            --pure-white: #FFFFFF;
+            --deep-black: #111111;
+            --soft-gold: #D4AF37;
+            --cairo-font: 'Cairo', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--cairo-font);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--pure-white);
+            color: var(--deep-black);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: 70px;
+            background-color: var(--pure-white);
+            border-bottom: 1px solid rgba(255, 145, 164, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 5px;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background-color: var(--deep-black);
+            border-radius: 2px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--deep-black);
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: var(--deep-black);
+            stroke-width: 2;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: var(--primary-pink);
+            color: var(--deep-black);
+            font-size: 11px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        main {
+            margin-top: 70px;
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            width: 100%;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .category-intro {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .category-intro h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--deep-black);
+            margin-bottom: 12px;
+        }
+
+        .category-intro p {
+            font-size: 16px;
+            color: var(--deep-black);
+            opacity: 0.8;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .products-static-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
+
+        .product-unified-card {
+            background-color: var(--pure-white);
+            border: 1px solid var(--primary-pink);
+            border-radius: 0px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(255, 145, 164, 0.05);
+        }
+
+        .product-image-frame {
+            position: relative;
+            width: 100%;
+            padding-top: 100%;
+            background-color: var(--pure-white);
+            overflow: hidden;
+        }
+
+        .product-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-details-box {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            text-align: right;
+        }
+
+        .product-card-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--deep-black);
+            margin-bottom: 4px;
+            text-decoration: none;
+        }
+
+        .product-card-flavor {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--primary-pink);
+            margin-bottom: 8px;
+        }
+
+        .product-card-desc {
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--deep-black);
+            opacity: 0.75;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-card-action-row {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 145, 164, 0.1);
+        }
+
+        .product-card-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--deep-black);
+        }
+
+        .quantity-controller-block {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--primary-pink);
+            background-color: var(--pure-white);
+            height: 36px;
+        }
+
+        .quantity-btn {
+            background: none;
+            border: none;
+            width: 32px;
+            height: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--deep-black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-display-value {
+            width: 36px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--deep-black);
+            border-right: 1px solid rgba(255, 145, 164, 0.2);
+            border-left: 1px solid rgba(255, 145, 164, 0.2);
+        }
+
+        .add-to-cart-trigger {
+            background-color: var(--pure-white);
+            border: 1px solid var(--primary-pink);
+            color: var(--deep-black);
+            padding: 0 15px;
+            height: 36px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .add-to-cart-trigger:hover {
+            background-color: var(--primary-pink);
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100vh;
+            background-color: var(--pure-white);
+            box-shadow: -5px 0 25px rgba(0,0,0,0.05);
+            z-index: 2000;
+            transition: right 0.3s ease;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.active {
+            right: 0;
+        }
+
+        .side-menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .side-menu-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .close-menu {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-menu svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--deep-black);
+            stroke-width: 2;
+        }
+
+        .side-menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .side-link {
+            text-decoration: none;
+            color: var(--deep-black);
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 5px;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            transition: color 0.2s ease;
+        }
+
+        .side-link:hover {
+            color: var(--primary-pink);
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0,0,0,0.3);
+            z-index: 1500;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        @media (max-width: 992px) {
+            .products-static-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 25px 15px;
+            }
+            .category-intro h1 {
+                font-size: 24px;
+            }
+            .category-intro p {
+                font-size: 14px;
+            }
+            .products-static-grid {
+                grid-template-columns: repeat(1, 1fr);
+                gap: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-right">
+            <button class="menu-toggle" id="menuToggleBtn" aria-label="فتح القائمة الجانبية">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <a href="index.html" class="logo-container">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي" class="logo-img">
+                <span class="brand-name">حلويات بوسي</span>
+            </a>
+        </div>
+        <div class="header-left">
+            <button class="header-btn" aria-label="بحث في المنتجات">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <a href="cart.html" class="header-btn" aria-label="سلة المشتريات">
+                <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                <span class="cart-count" id="headerCartCount">0</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <nav class="side-menu" id="sideMenu">
+        <div class="side-menu-header">
+            <span class="side-menu-title">تصفح المتجر</span>
+            <button class="close-menu" id="closeMenuBtn" aria-label="إغلاق القائمة">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="side-menu-links">
+            <a href="index.html" class="side-link">الصفحة الرئيسية</a>
+            <a href="menu.html" class="side-link">قائمة المنيو</a>
+            <a href="cake-builder.html" class="side-link">محاكي التورت</a>
+            <a href="flower-builder.html" class="side-link">محاكي الورد</a>
+            <a href="cart.html" class="side-link">سلة المشتريات</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="category-intro">
+            <h1 id="categoryPageTitle">استعراض القسم</h1>
+            <p id="categoryPageDesc">يرجى الانتظار، جاري تحميل المنتجات الفاخرة المجهزة بعناية تامة لخدمتكم...</p>
+        </section>
+
+        <section class="products-static-grid" id="categoryProductsGrid">
+            <!-- الـ JavaScript يولد المنتجات ديناميكياً هنا بناءً على الهيكل الموحد للكارت -->
+        </section>
+    </main>
+
+    <footer class="storefront-main-footer">
+        <div class="footer-layout-columns-wrapper">
+            <div class="footer-brand-summary-box">
+                <div class="footer-logo-block">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي لوجو" class="footer-brand-logo" loading="lazy">
+                    <h3 class="footer-brand-name">حلويات بوسي</h3>
+                </div>
+                <p class="footer-brief-paragraph">صنعناها بحب لتهديها لمن تحب. خبرة ممتدة لأكثر من 10 سنوات في تقديم وتصنيع الحلويات وتصميم كعكات التخصيص الفاخرة وتنسيق الورد الطبيعي والصناعي والستان بمركز الفرافرة.</p>
+            </div>
+            
+            <div class="footer-links-navigation-group">
+                <h4 class="footer-group-title">روابط سريعة</h4>
+                <ul class="footer-clickable-links-list">
+                    <li><a href="index.html">الصفحة الرئيسية</a></li>
+                    <li><a href="menu.html">تصفح المنيو الشامل</a></li>
+                    <li><a href="cart.html">سلة المشتريات</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-navigation-group">
+                <h4 class="footer-group-title">سياسات المتجر</h4>
+                <ul class="footer-clickable-links-list">
+                    <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+                    <li><a href="refund-policy.html">سياسة الاستبدال والاسترجاع</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-business-data-card">
+                <h4 class="footer-group-title">بيانات فرع الكفاح</h4>
+                <p class="footer-data-text-row">📍 شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وعيادة الدكتور علي</p>
+                <p class="footer-data-text-row">📞 للتواصل: 01097238441</p>
+                <div class="footer-social-original-icons-box">
+                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-icon facebook-icon" aria-label="فيسبوك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-icon instagram-icon" aria-label="انستجرام حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-icon tiktok-icon" aria-label="تيك توك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://wa.me/201097238441" class="social-icon whatsapp-icon" aria-label="واتساب حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyrights-bottom-bar">
+            <p class="copyright-legal-text">جميع الحقوق محفوظة © لعلامة حلويات بوسي التجارية 2026</p>
+        </div>
+    </footer>
+
+    <script>
+        // محاكاة سحب البيانات من ملف التشغيل المعتمد لمتجر حلويات بوسي
+        const databaseMock = {
+            "qashtouta": {
+                title: "القشطوطة",
+                desc: "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
+                products: [
+                    { id: "q-lotus", title: "قشطوطة باللوتس", flavor: "لوتس", price: 121, desc: "كيك الحليب الفاخر مشرب بالكامل مع زبدة اللوتس الأصلية المقرمشة." },
+                    { id: "q-pistachio", title: "قشطوطة بالبيستاشيو", flavor: "بيستاشيو", price: 143, desc: "مجهزة بكريمة فستق طبيعية غنية لمنح طعم مميز وممتد." },
+                    { id: "q-caramel", title: "قشطوطة بالكراميل", flavor: "كراميل", price: 121, desc: "مغطاة بطبقة كراميل غنية ومطبوخة بعناية فائقة داخل مطبخنا." }
+                ]
+            },
+            "despacito": {
+                title: "الديسباسيتو",
+                desc: "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
+                products: [
+                    { id: "d-nutella", title: "ديسباسيتو نوتيلا دارك", flavor: "نوتيلا دارك", price: 66, desc: "قالب مثلث غني بصوص الشوكولاتة فادج الغامق وعجينة الفادج الهشة." },
+                    { id: "d-pistachio", title: "ديسباسيتو بيستاشيو فخم", flavor: "بيستاشيو", price: 83, desc: "قالب مثلث من الفادج الغني بطبقة مميزة من صوص الفستق الطبيعي الفاخر." }
+                ]
+            }
+            // باقي الفئات الـ 12 تتبع نفس المعمارية في الـ JS المركزي للمتجر
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // كود تشغيل القائمة الجانبية الموحد
+            const menuToggleBtn = document.getElementById('menuToggleBtn');
+            const closeMenuBtn = document.getElementById('closeMenuBtn');
+            const sideMenu = document.getElementById('sideMenu');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const headerCartCount = document.getElementById('headerCartCount');
+
+            function toggleSideMenu(open) {
+                if (open) { sideMenu.classList.add('active'); menuOverlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+                else { sideMenu.classList.remove('active'); menuOverlay.classList.remove('active'); document.body.style.overflow = ''; }
+            }
+            if (menuToggleBtn) menuToggleBtn.addEventListener('click', () => toggleSideMenu(true));
+            if (closeMenuBtn) closeMenuBtn.addEventListener('click', () => toggleSideMenu(false));
+            if (menuOverlay) menuOverlay.addEventListener('click', () => toggleSideMenu(false));
+
+            // قراءة نوع الفئة من الرابط واستعراض البيانات
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryType = urlParams.get('type') || 'qashtouta';
+            const categoryData = databaseMock[categoryType] || databaseMock['qashtouta'];
+
+            document.getElementById('categoryPageTitle').textContent = categoryData.title;
+            document.getElementById('categoryPageDesc').textContent = categoryData.desc;
+
+            const gridContainer = document.getElementById('categoryProductsGrid');
+            gridContainer.innerHTML = '';
+
+            categoryData.products.forEach(prod => {
+                const card = document.createElement('div');
+                card.className = 'product-unified-card';
+                card.innerHTML = `
+                    <div class="product-image-frame">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="${prod.title}" class="product-img" loading="lazy">
+                    </div>
+                    <div class="product-details-box">
+                        <a href="product.html?id=${prod.id}" class="product-card-title">${prod.title}</a>
+                        <div class="product-card-flavor">النكهة: ${prod.flavor}</div>
+                        <p class="product-card-desc">${prod.desc}</p>
+                        <div class="product-card-action-row">
+                            <span class="product-card-price">${prod.price} ج.م</span>
+                            <div class="quantity-controller-block">
+                                <button class="quantity-btn minus">-</button>
+                                <div class="quantity-display-value">1</div>
+                                <button class="quantity-btn plus">+</button>
+                            </div>
+                            <button class="add-to-cart-trigger" onclick="location.href='product.html?id=${prod.id}'">عرض الخيارات</button>
+                        </div>
+                    </div>
+                `;
+                
+                // تفعيل عداد الكمية المرن والسهل للموبايل والكمبيوتر
+                const minusBtn = card.querySelector('.minus');
+                const plusBtn = card.querySelector('.plus');
+                const qtyDisplay = card.querySelector('.quantity-display-value');
+                
+                minusBtn.addEventListener('click', () => {
+                    let qty = parseInt(qtyDisplay.textContent);
+                    if(qty > 1) qtyDisplay.textContent = qty - 1;
+                });
+                plusBtn.addEventListener('click', () => {
+                    let qty = parseInt(qtyDisplay.textContent);
+                    qtyDisplay.textContent = qty + 1;
+                });
+
+                gridContainer.appendChild(card);
+            });
+
+            function updateCartBadge() {
+                const cart = JSON.parse(localStorage.getItem('bose_cart')) || [];
+                if (headerCartCount) headerCartCount.textContent = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
+            }
+            updateCartBadge();
+        });
+    </script>
+</body>
+</html>
