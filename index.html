@@ -88,6 +88,7 @@
       border-radius: 50%;
     }
 
+    /* تطوير وتحديث القائمة الجانبية بشكل فخم ومستقر */
     .bs-mobile-menu {
       position: fixed;
       top: 0;
@@ -96,55 +97,77 @@
       max-width: 320px;
       height: 100vh;
       background-color: #FFFFFF;
-      box-shadow: -10px 0 30px rgba(255, 145, 164, 0.1); /* ظلال ناعمة مستوحاة من الهوية لوقوف فخم */
-      transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: -10px 0 30px rgba(255, 145, 164, 0.08);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 2500;
-      padding: 2rem 0;
       display: flex;
       flex-direction: column;
+      transform: translateX(0);
     }
 
     .bs-mobile-menu.active {
-      right: 0;
+      transform: translateX(-100%);
     }
 
     .bs-menu-header {
-      background: linear-gradient(135deg, #FF91A4 0%, #ffb6c1 100%);
-      padding: 2.5rem 1.5rem;
+      background: #FFFFFF;
+      padding: 2rem 1.5rem;
       text-align: center;
-      margin-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 145, 164, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bs-menu-header img {
+      height: 60px;
+      width: auto;
     }
 
     .bs-menu-header h3 {
-      color: #FFFFFF;
-      font-size: 1.6rem;
+      color: #111111;
+      font-size: 1.4rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
     }
 
     .bs-menu-header p {
-      color: #FFFFFF;
-      font-size: 0.95rem;
+      color: #FF91A4;
+      font-size: 0.9rem;
       font-weight: 600;
-      opacity: 0.9;
+    }
+
+    .bs-menu-links-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 0;
     }
 
     .bs-mobile-link {
       font-weight: 600;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #111111;
       padding: 1rem 2rem;
       display: flex;
       align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid rgba(255, 145, 164, 0.1);
+      gap: 14px;
       transition: background 0.3s ease, color 0.3s ease;
       text-decoration: none;
     }
 
     .bs-mobile-link:hover {
-      background-color: rgba(255, 145, 164, 0.05);
+      background-color: rgba(255, 145, 164, 0.04);
       color: #FF91A4;
+    }
+
+    .bs-menu-footer-branding {
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #111111;
+      border-top: 1px solid rgba(255, 145, 164, 0.1);
+      background-color: rgba(255, 145, 164, 0.02);
     }
 
     .bs-menu-overlay {
@@ -153,8 +176,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(17, 17, 17, 0.4);
-      backdrop-filter: blur(4px);
+      background-color: rgba(17, 17, 17, 0.3);
+      backdrop-filter: blur(3px);
       z-index: 2400;
       opacity: 0;
       pointer-events: none;
@@ -325,24 +348,26 @@
       height: 100%;
     }
 
+    /* تعديل البوردر الخارجي ليكون خطاً واحداً مستمراً ناعماً للكروت */
     .bs-card-border-outer {
-      border: 1px solid #FF91A4; /* حدود كروت المنتجات الحاكمة */
+      border: 1px solid #FF91A4;
       border-radius: 24px;
       padding: 6px;
       width: 100%;
       height: 100%;
       background-color: #FFFFFF;
-      box-shadow: 0 4px 15px rgba(255, 145, 164, 0.05); /* ظلال ناعمة */
+      box-shadow: 0 4px 15px rgba(255, 145, 164, 0.05);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .bs-card-border-outer:hover {
-      transform: translateY(-5px); /* تأثيرات تفاعلية ناعمة للعميل */
+      transform: translateY(-5px);
       box-shadow: 0 8px 25px rgba(255, 145, 164, 0.15);
     }
 
+    /* تعديل البوردر الداخلي ليتكامل مع الخارجي مكوناً 2 بوردر فقط */
     .bs-card-border-inner {
-      border: 2px solid #FF91A4;
+      border: 1px solid #FF91A4;
       border-radius: 18px;
       padding: 1.5rem;
       width: 100%;
@@ -350,6 +375,23 @@
       display: flex;
       flex-direction: column;
       background-color: #FFFFFF;
+    }
+
+    /* تخصيص أبعاد كروت قسم منتجاتنا (أعرض 30% وأقصر 20%) مع الحفاظ على كارتين متجاورين دائماً */
+    #ourProductsGrid .bs-product-card {
+      height: auto;
+    }
+
+    #ourProductsGrid .bs-card-border-inner {
+      padding: 1rem;
+    }
+
+    #ourProductsGrid .bs-product-img-wrapper {
+      padding-top: 52.5%; /* تقليل الارتفاع النسبي للصورة لجعل الكارت أقصر */
+    }
+
+    #ourProductsGrid .bs-product-desc {
+      margin-bottom: 1rem;
     }
 
     .bs-product-img-wrapper {
@@ -378,13 +420,13 @@
     }
 
     .bs-product-title {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 700;
       color: #111111;
       margin-bottom: 0.25rem;
       text-overflow: ellipsis;
       overflow: hidden;
-      white-space: nowrap; /* منع انقطاع النصوص أو تشوه الكرت */
+      white-space: nowrap;
     }
 
     .bs-flavor-text {
@@ -401,10 +443,6 @@
       margin-bottom: 1.5rem;
       font-weight: 400;
       text-align: justify;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden; /* حظر نصوص طافحة نهائياً لراحة العميل */
     }
 
     .bs-card-action-row {
@@ -424,18 +462,18 @@
       border-radius: 20px;
       padding: 0.25rem 0.5rem;
       background-color: rgba(255, 145, 164, 0.03);
-      width: 130px;
+      width: 110px;
     }
 
     .bs-qty-btn {
       background: none;
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 700;
       cursor: pointer;
       color: #111111;
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -443,19 +481,19 @@
 
     .bs-qty-display-num {
       font-weight: 700;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       color: #111111;
     }
 
     .bs-product-price {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: 700;
-      color: #FF91A4; /* نصوص الأسعار الديناميكية المعتمدة */
+      color: #FF91A4;
       white-space: nowrap;
     }
 
     .bs-product-price span {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       margin-right: 2px;
     }
@@ -491,6 +529,7 @@
       transition: background 0.3s ease;
     }
 
+    /* هيكلة قسم منتجاتنا ليعرض كارتين عريضين متجاورين بدقة وثبات */
     .bs-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -499,8 +538,8 @@
 
     @media (min-width: 768px) {
       .bs-grid {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 25px 20px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px 25px;
       }
     }
 
@@ -665,19 +704,27 @@
   </header>
 
   <div class="bs-menu-overlay" id="menuOverlay"></div>
+  
+  <!-- تطوير الهيكل الداخلي للقائمة الجانبية بالكامل لمنع الاقتطاع وضمان الفخامة البصرية -->
   <div class="bs-mobile-menu" id="mobileMenu">
     <div class="bs-menu-header">
+      <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
       <h3>حلويات بوسي</h3>
       <p>صنعناها بحب لتهديها لمن تحب</p>
     </div>
-    <a href="index.html" class="bs-mobile-link">🏠 الرئيسية</a>
-    <a href="menu.html" class="bs-mobile-link">📖 المنيو</a>
-    <a href="cake-builder.html" class="bs-mobile-link">🎂 محاكي التورتة</a>
-    <a href="flower-builder.html" class="bs-mobile-link">🌹 محاكي الورد</a>
-    <a href="cart.html" class="bs-mobile-link">🛒 السلة</a>
-    <a href="favorites.html" class="bs-mobile-link">❤️ المفضلة</a>
-    <a href="contact.html" class="bs-mobile-link">📞 تواصل معنا</a>
-    <a href="about.html" class="bs-mobile-link">📍 من نحن</a>
+    <div class="bs-menu-links-container">
+      <a href="index.html" class="bs-mobile-link">🏠 الرئيسية</a>
+      <a href="menu.html" class="bs-mobile-link">📖 المنيو</a>
+      <a href="cake-builder.html" class="bs-mobile-link">🎂 محاكي التورتة</a>
+      <a href="flower-builder.html" class="bs-mobile-link">🌹 محاكي الورد</a>
+      <a href="cart.html" class="bs-mobile-link">🛒 السلة</a>
+      <a href="favorites.html" class="bs-mobile-link">❤️ المفضلة</a>
+      <a href="contact.html" class="bs-mobile-link">📞 تواصل معنا</a>
+      <a href="about.html" class="bs-mobile-link">📍 من نحن</a>
+    </div>
+    <div class="bs-menu-footer-branding">
+      مطبخ حلويات بوسي الفاخر الفرافرة
+    </div>
   </div>
 
   <section class="bs-waterfall-section">
@@ -825,13 +872,16 @@
         <a href="contact-policy.html" class="bs-footer-link">سياسة التواصل</a>
         <a href="important-info.html" class="bs-footer-link">معلومات تهمك</a>
       </div>
+      <!-- استبدال أيقونات التواصل الاجتماعي التالفة بأيقونات أصلية معتمدة وعالية الجودة -->
       <div class="bs-social-icons">
-        <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/fb_icon.png" class="bs-social-original-btn" alt="Facebook"></a>
-        <a href="https://www.instagram.com/bose_sweets" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/ig_icon.png" class="bs-social-original-btn" alt="Instagram"></a>
-        <a href="https://www.tiktok.com/@bosesweets1" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/tt_icon.png" class="bs-social-original-btn" alt="TikTok"></a>
+        <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1740343603/facebook_fymw7a.png" class="bs-social-original-btn" alt="Facebook"></a>
+        <a href="https://www.instagram.com/bose_sweets" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1740343603/instagram_g7b7ke.png" class="bs-social-original-btn" alt="Instagram"></a>
+        <a href="https://www.tiktok.com/@bosesweets1" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1740343603/tiktok_b7fkhg.png" class="bs-social-original-btn" alt="TikTok"></a>
+        <a href="https://wa.me/201021434313" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1740343603/whatsapp_gftv8q.png" class="bs-social-original-btn" alt="WhatsApp"></a>
       </div>
+      <!-- حذف العبارة القديمة والالتزام بوصف مباشر راقٍ خالٍ من التعبيرات غير الواقعية -->
       <div class="bs-copyright" style="border-top: 1px solid rgba(255, 145, 164, 0.15); padding-top: 1.5rem; color:#111111; font-weight:600;">
-        &copy; 2026 حلويات بوسي. صُنعت الجودة والفخامة الرقمية الملتزمة لتبقى وتدوم والمستوحاة من ثقتكم الغالية.
+        &copy; 2026 حلويات بوسي. جميع الحقوق محفوظة لمطبخنا الفاخر.
       </div>
     </div>
   </footer>
@@ -839,7 +889,7 @@
   <script src="core.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      // تفعيل وإغلاق القائمة الجانبية للموبايل بسلاسة وثبات
+      // تفعيل وإغلاق القائمة الجانبية للموبايل بسلاسة وثبات من خلال ميزة التحويل الصريحة
       const trigger = document.getElementById('mobileMenuTrigger');
       const menu = document.getElementById('mobileMenu');
       const overlay = document.getElementById('menuOverlay');
@@ -857,19 +907,19 @@
         });
       }
 
-      // مصفوفة المنتجات المعتمدة رسمياً
+      // مصفوفة المنتجات المعتمدة رسمياً مع استبدال الأوصاف الطويلة بعبارات قصيرة كاملة غير مقطوعة
       const realApprovedProducts = [
-        { id: 'cinabon', name: 'السينابون', flavor: 'نوتيلا دارك', desc: 'لفات سينابون مخبوزة بقوام طري وصوصات غنية متزنة من غير مبالغة للحصول على تجربة واضحة في الطعم والجودة من أول قطعة.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p3.jpg' },
-        { id: 'donuts', name: 'الدوناتس', flavor: 'نوتيلا وايت', desc: 'دوناتس طازجة بقوام خفيف وححشوات متنوعة معمولين يوم بيوم وبخامات حقيقية وممتازة.', price: 88, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p4.jpg' },
-        { id: 'qashtota', name: 'القشطوطة', flavor: 'نوتيلا وايت', desc: 'كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح ومريح تماماً من أول لقمة لأخر قطعة.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p1.jpg' },
-        { id: 'despacito', name: 'الديسباسيتو مثلث', flavor: 'نوتيلا دارك', desc: 'طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح وثابت.', price: 66, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p2.jpg' },
-        { id: 'happiness-cups', name: 'كبات السعادة', flavor: 'نوتيلا غنية', desc: 'أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة الفاخرة.', price: 61, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p5.jpg' },
-        { id: 'mini-cake', name: 'الميني تورت', flavor: 'فرد أو اتنين', desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة بخامات واضحة وتفاصيل دقيقة ومحترمة تناسب تطلعاتكم.', price: 154, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p6.jpg' },
-        { id: 'relax-box', name: 'بوكس الروقان', flavor: 'بوكس هدايا مشكل', desc: 'تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية 100%.', price: 550, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p7.jpg' },
-        { id: 'gateaux', name: 'الجاتوهات كلاسيك', flavor: 'شوكولاتة وفانيليا', desc: 'تشكيلات جاتوه متنوعة بخامات متوازنة وطعم واضح مناسب للضيافة اليومية والمناسبات الراقية.', price: 506, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p8.jpg' }
+        { id: 'cinabon', name: 'السينابون الفاخر', flavor: 'نوتيلا دارك', desc: 'لفات سينابون طازجة بقوام طري مخبوزة بعناية وصوصات غنية متزنة.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p3.jpg' },
+        { id: 'donuts', name: 'الدوناتس الخفيف', flavor: 'نوتيلا وايت', desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم.', price: 88, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p4.jpg' },
+        { id: 'qashtota', name: 'القشطوطة الأصلية', flavor: 'نوتيلا وايت', desc: 'كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p1.jpg' },
+        { id: 'despacito', name: 'الديسباسيتو الفاخر', flavor: 'نوتيلا دارك', desc: 'طبقات متوازنة من كيك الفادج والموس الفاخر مع حشوات غنية.', price: 66, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p2.jpg' },
+        { id: 'happiness-cups', name: 'كبات السعادة', flavor: 'نوتيلا غنية', desc: 'أكواب بحشوات غنية وطعم متوازن مناسب للتقديم الفردي الفاخر.', price: 61, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p5.jpg' },
+        { id: 'mini-cake', name: 'الميني تورت', flavor: 'فرد أو اتنين', desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة وبخامات واضحة.', price: 154, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p6.jpg' },
+        { id: 'relax-box', name: 'بوكس الروقان', flavor: 'بوكس هدايا مشكل', desc: 'تجميعة مشكلة ومتنوعة متنسقة بعناية مناسبة للهدايا واللمة.', price: 550, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p7.jpg' },
+        { id: 'gateaux', name: 'الجاتوهات كلاسيك', flavor: 'شوكولاتة وفانيليا', desc: 'تشكيلات جاتوه فاخرة بخامات متوازنة وطعم واضح مناسب للمناسبات.', price: 506, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p8.jpg' }
       ];
 
-      // بناء وتأمين كروت المنتجات بطريقة احترافية لمنع ثغرات XSS
+      // بناء وتأمين كروت المنتجات بطريقة احترافية مع تصفية نصوص الاقتطاع والعرض الكامل للنصوص بدون مط
       function buildProductCardSecure(p, isHidden = false) {
         const card = document.createElement('div');
         card.className = `bs-product-card ${isHidden ? 'bs-hidden-card' : ''}`;
@@ -945,7 +995,7 @@
         btnSubmit.className = 'bs-add-to-cart-submit';
         btnSubmit.textContent = 'إضافة للسلة';
 
-        // تركيب الكارت كاملاً بالترتيب الهندسي الصحيح
+        // تركيب الكارت كاملاً بالترتيب الهندسي المعتمد (2 بوردر فقط متكاملين)
         innerBorder.appendChild(imgWrapper);
         innerBorder.appendChild(tag);
         innerBorder.appendChild(title);
