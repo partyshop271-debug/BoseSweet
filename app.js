@@ -17,19 +17,16 @@
                 { id: "p-qashtota", title: "القشطوطة", flavor: "بيستاشيو", description: "كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح من أول لقمة مناسب للضيافة اليومية ولأي وقت بجودة حقيقية.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
                 { id: "p-donuts", title: "الدوناتس", flavor: "ماتيلدا شوكولاتة", description: "دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك نفس الطعم والجودة اللي بنقدمها داخل الفرع.", price: 110, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival"] },
                 { id: "p-cinabon", title: "السينابون", flavor: "كلاسيك صوص تشيز", description: "لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة معمول علشان تاخد تجربة واضحة في الطعم والجودة.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
-                { id: "p-cups", title: "كبات السعادة", flavor: "لوتس غني", description: "أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة ونظيفة.", price: 61, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
-                { id: "p-minicake", title: "الميني تورت", flavor: "فرد أو اتنين فانيليا وشوكولاتة", description: "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق وتُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها.", price: 154, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "new-arrival", "our-products"] },
-                { id: "p-relax", title: "بوكس الروقان", flavor: "تجميعة منوعة متسقة", description: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد يحتوي على تورتة و 2 كب سعادة و 1 كب ديسباسيتو و 1 كب ريدفيلفت.", price: 550, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
-                { id: "p-cupcake", title: "الكب كيك", flavor: "دستة كب كيك شوكولاتة", description: "قطع صغيرة من اللذة بطابع غني ومميز يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً ومزين بالكريمة اللباني الفاخرة.", price: 324, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
                 { id: "p-gateaux", title: "الجاتوهات الكلاسيك", flavor: "فانيليا وشوكولاتة منوعة", description: "تشكيلات جاتوه متنوعة بخامات متوازنة وطعم واضح مناسب للضيافة اليومية والمناسبات السعيدة.", price: 506, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
-                { id: "p-redvelvet", title: "مثلث الريدڤيلڤت", flavor: "كريم تشيز غني", description: "طبقات من الريدڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز الفاخر.", price: 72, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
                 { id: "p-cinabon-pistachio", title: "سينابون بيستاشيو", flavor: "صوص فستق فاخر", description: "لفات سينابون مخبوزة بقوام طري مغطاة بصوص البيستاشيو الغني والمميز طازج يوم بيوم.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
+                { id: "p-minicake", title: "الميني تورت", flavor: "فرد أو اتنين فانيليا وشوكولاتة", description: "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق وتُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها.", price: 154, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "new-arrival", "our-products"] },
+                { id: "p-redvelvet", title: "مثلث الريدڤيلڤت", flavor: "كريم تشيز غني", description: "طبقات من الريدڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز الفاخر.", price: 72, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
                 
-                // ملء قاعدة البيانات لتغطية الـ 8 منتجات المطلوبة في قسم منتجاتنا بالتكامل
-                { id: "p-cake-luxury", title: "تورتة الفخامة الملكية", flavor: "ميكس مكسرات فانيليا", description: "كيك إسفنجي غني بالكريمة اللباني والمكسرات المحمصة الفاخرة مصممة خصيصاً لتكون نجمة مناسبتكم السعيدة.", price: 420, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
-                { id: "p-gateaux-fudge", title: "جاتوه الفادج السوبر", flavor: "شوكولاتة بلجيكية غنية", description: "طبقات متناسقة من كيك الفادج الغني وصوص الشوكولاتة الكثيف لتجربة غنية تذوب في الفم.", price: 48, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
-                { id: "p-qashtota-lotus", title: "قشطوطة اللوتس الأصلية", flavor: "زبدة لوتس مقرمشة", description: "كيك الحليب التركي التقليدي يعلوه طبقة سميكة من زبدة اللوتس الفاخرة وبسكويت اللوتس المقرمش.", price: 135, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
-                { id: "p-cinnabon-nutella", title: "سينابون نوتيلا بندق", flavor: "شوكولاتة نوتيلا وبندق طازج", description: "عجينة السينابون الهشة محشوة بالقرفة والزبدة ومغطاة بالنوتيلا الغنية وحبات البندق المحمص.", price: 130, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] }
+                // المنتجات الأربعة الإضافية المعتمدة رسمياً من قائمة منتجات حلويات بوسي
+                { id: "p-happiness-cups", title: "كبات السعادة", flavor: "لوتس غني", description: "أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة ونظيفة.", price: 61, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "p-relax-box", title: "بوكس الروقان", flavor: "تجميعة منوعة متسقة", description: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد يحتوي على تورتة و 2 كب سعادة و 1 كب ديسباسيتو و 1 كب ريدفيلفت.", price: 550, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "p-cupcake", title: "الكب كيك", flavor: "دستة كب كيك شوكولاتة", description: "قطع صغيرة من اللذة بطابع غني ومميز يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً ومزين بالكريمة اللباني الفاخرة.", price: 324, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "p-qashtota-nutella", title: "القشطوطة", flavor: "نوتيلا وايت", description: "كيك فانيليا مشرب بالحليب يعلوه طبقة ناعمة من الكريمة اللباني الغنية مع صوص النوتيلا البيضاء الفاخرة بطعم متوازن.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] }
             ]
         },
         Runtime: {
@@ -69,15 +66,14 @@
     Core.renderStorefrontUI = function () {
         const state = Runtime.state;
         
-        // بناء الشلال بشكل تفاعلي مستقر
         const w1 = document.getElementById('waterfall-column-1');
         const w2 = document.getElementById('waterfall-column-2');
         if (w1 && w2 && w1.children.length === 0) {
             let column1Html = '';
             let column2Html = '';
             for (let i = 0; i < 4; i++) {
-                column1Html += `<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="waterfall-img-item" alt="منتجات حلويات بوسي الفاخرة" data-action="menu">`;
-                column2Html += `<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="waterfall-img-item" alt="منتجات حلويات بوسي الفاخرة" data-action="menu">`;
+                column1Html += `<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="waterfall-img-item" alt="منتجات حلويات بوسي الفاخرة">`;
+                column2Html += `<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="waterfall-img-item" alt="منتجات حلويات بوسي الفاخرة">`;
             }
             w1.innerHTML = column1Html;
             w2.innerHTML = column2Html;
@@ -90,14 +86,13 @@
             });
         }
 
-        // بناء سلايدر عقد من الإتقان مع ربط تفاعلية الصور والـ Dots
         const craftTrack = document.getElementById('craftsmanship-slider-track');
         const craftDots = document.getElementById('craftsmanship-slider-dots');
         if (craftTrack && craftDots && craftTrack.children.length === 0) {
             craftTrack.innerHTML = `
-                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 1" data-action="menu"></div>
-                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 2" data-action="menu"></div>
-                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 3" data-action="menu"></div>
+                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 1"></div>
+                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 2"></div>
+                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 3"></div>
             `;
             
             craftTrack.querySelectorAll('.slider-full-img').forEach(img => {
@@ -133,7 +128,6 @@
             }
         });
 
-        // دالة مساعدة لبناء هيكلية الكارت الموحد بدقة احترافية
         const buildProductCardHtml = (product) => {
             const currentQty = state.quantities[product.id] || 1;
             const safeId = Core.escapeHTML(product.id);
@@ -176,7 +170,6 @@
             }
         });
 
-        // معالجة قسم منتجاتنا: عرض 4 منتجات في البداية ثم إظهار 4 إضافية عند الضغط على الزر في المنتصف
         if (productsGrid) {
             const itemsToRender = state.showAllProducts ? ourProductsTotal.slice(0, 8) : ourProductsTotal.slice(0, 4);
             itemsToRender.forEach(product => {
@@ -193,7 +186,6 @@
             }
         }
 
-        // تفاعلية نقاط تنقل الأكثر مبيعاً
         const bsDots = document.getElementById('best-sellers-dots');
         if (bsDots) {
             bsDots.innerHTML = Array(bestSellersCount).fill(0).map((_, idx) => `<button class="dot-node" data-index="${idx}" aria-label="شريحة الأكثر مبيعاً ${idx + 1}"></button>`).join('');
@@ -206,7 +198,6 @@
             });
         }
 
-        // تفاعلية نقاط تنقل وصل حديثاً
         const naDots = document.getElementById('new-arrivals-dots');
         if (naDots) {
             naDots.innerHTML = Array(newArrivalsCount).fill(0).map((_, idx) => `<button class="dot-node" data-index="${idx}" aria-label="شريحة وصل حديثاً ${idx + 1}"></button>`).join('');
@@ -219,7 +210,6 @@
             });
         }
 
-        // بناء وتفاعلية قسم تسوق حسب الفئة الشامل مع ربط الـ Dots والصور
         const catTrack = document.getElementById('categories-carousel-slider-track');
         const catDots = document.getElementById('categories-carousel-slider-dots');
         if (catTrack && catDots && catTrack.children.length === 0) {
