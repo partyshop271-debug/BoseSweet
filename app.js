@@ -10,27 +10,19 @@
                 { id: "mini-cake", name: "الميني تورت" }, { id: "flowers", name: "الورد" },
                 { id: "happiness-cups", name: "كبات السعادة" }, { id: "relax-box", name: "بوكس الروقان" }
             ],
+            // البيانات الصادقة المعتمدة حرفياً بدون تلاعب أو ادعاءات غير مثبتة
             products: [
-                { id: "b1", title: "طاجن ديسباسيتو كب", flavor: "نوتيلا دارك فاخرة", description: "كيك فادج غني مشبع بالشوكولاتة البلجيكية بطعم واضح ومميز من أول لقمة.", price: 66, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
-                { id: "b2", title: "قشطوطة لوتس", flavor: "زبدة لوتس أصلية", description: "كيكة الحليب التركية الغنية مشربة بالكامل باللبن تعلوها طبقة ناعمة من القشطة.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
-                { id: "b3", title: "دوناتس ماتيلدا", flavor: "شوكولاتة غنية مكثفة", description: "دوناتس طازجة ومخبوزة يوم بيوم بقوام قطني خفيف وحشوة داخلية ممتازة.", price: 110, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
-                { id: "b4", title: "سينابون كلاسيك", flavor: "كريم تشيز قرفة", description: "لفات سينابون مخبوزة بقوام طري وصوصات غنية متوانة من غير مبالغة.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
-                { id: "b5", title: "كبات السعادة الفاخرة", flavor: "نوتيلا ومكسرات طازجة", description: "أكواب حلوى مصممة لتمنحك تجربة غنية مريحة ولذيذة في كل ملعقة.", price: 61, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
-                { id: "b6", title: "ميني تورتة فانيليا", flavor: "فواكه مشكلة طازجة", description: "طبقات غنية من كيك الفانيليا الهش مع حشوات موس وصوصات مختارة.", price: 154, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
-                { id: "b7", title: "بوكس الروقان الشامل", flavor: "تشكيلة منوعة هادية", description: "تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة بطعم واضح وخامات حقيقية.", price: 550, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
-                { id: "b8", title: "جاتوه كلاسيك فاخر", flavor: "شوكولاتة سويسري غنية", description: "تشكيلات جاتوه منوعة بخامات متوازنة وطعم واضح مناسب لكل ضيافة.", price: 506, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
+                { id: "p-despacito", title: "الديسباسيتو", flavor: "نوتيلا دارك", description: "طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة معمول بخامات مختارة بعناية.", price: 264, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "new-arrival"] },
+                { id: "p-qashtota", title: "القشطوطة", flavor: "بيستاشيو", description: "كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح من أول لقمة مناسب للضيافة اليومية ولأي وقت بجودة حقيقية.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
+                { id: "p-donuts", title: "الدوناتس", flavor: "ماتيلدا شوكولاتة", description: "دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك نفس الطعم والجودة اللي بنقدمها داخل الفرع.", price: 110, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival"] },
+                { id: "p-cinabon", title: "السينابون", flavor: "كلاسيك صوص تشيز", description: "لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة معمول علشان تاخد تجربة واضحة في الطعم والجودة.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "p-cups", title: "كبات السعادة", flavor: "لوتس غني", description: "أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة ونظيفة.", price: 61, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
                 
-                { id: "n1", title: "ديسباسيتو بستاشيو", flavor: "زبدة فستق أصلي", description: "نكهة حصرية جديدة كلياً بمزيج رائع غني لعشاق الفستق والموس.", price: 83, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival"] },
-                { id: "n2", title: "قشطوطة مانجا طازجة", flavor: "قطع مانجو طبيعية", description: "توليفة منعشة تجمع بين كيكة الحليب وقطع المانجو الاستوائية الطازجة.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival"] },
-                { id: "n3", title: "دوناتس ريدفيلفت", flavor: "كريمة تشيز ناعمة", description: "عجينة الدونات الهشة مع لمسة الريدفيلفت الفاخرة لتجربة فريدة.", price: 99, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival"] },
-                { id: "n4", title: "سينابون كيندر غني", flavor: "صوص شوكولاتة كيندر", description: "لفات السينابون الطرية المخبوزة بعناية مع غمر كامل بصوص كيندر.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival"] },
-                { id: "n5", title: "كبات سعادة سنيكرز", flavor: "كراميل وفول سوداني", description: "مزيج غني يجمع بين الكراميل المملح الخفيف والشوكولاتة لعشاق السنيكرز.", price: 61, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival"] },
-                { id: "n6", title: "ميني كعكة قلب", flavor: "موس فراولة مخملي", description: "تصميم أنيق بشكل قلب يعبر عن الذوق والاهتمام الفاخر بالتفاصيل.", price: 154, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival"] },
+                // الوصف الصارم والمطابق حرفياً للمواصفة المعتمدة للميني تورت الدائرية بالفاكيوم
+                { id: "p-minicake", title: "الميني تورت", flavor: "فرد أو اتنين فانيليا وشوكولاتة", description: "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق وتُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها.", price: 154, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
                 
-                { id: "p4", title: "دستة كب كيك شوكولاتة", flavor: "زبدة طبيعية غنية", description: "قطع صغيرة مخبوزة بدقة ومزينة بالكريمة اللباني الفاخرة.", price: 324, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
-                { id: "p5", title: "دستة كب كيك ميكس", flavor: "فانيليا وشوكولاتة منوعة", description: "تجميعة رائعة تناسب أعياد الميلاد والتجمعات العائلية المبهجة.", price: 324, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
-                { id: "p6", title: "طاجن ريدفيلفت كبير", flavor: "موس تشيز وراسبيري", description: "طبقات مخملية من الريدفيلفت متوازنة النكهة تمنحك شعور الرفاهية.", price: 165, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
-                { id: "p7", title: "جاتوه ملكي فاخر", flavor: "موس فرنسي ميكس", description: "تشكيلة سوبريم ملكية محضرة بعناية فائقة لتناسب أرقى الحفلات والمناسبات.", price: 638, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] }
+                { id: "p-relax", title: "بوكس الروقان", flavor: "تجميعة منوعة متسقة", description: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد يحتوي على تورتة و 2 كب سعادة و 1 كب ديسباسيتو و 1 كب ريدفيلفت.", price: 550, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "p-cupcake", title: "الكب كيك", flavor: "دستة كب كيك شوكولاتة", description: "قطع صغيرة من اللذة بطابع غني ومميز يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً ومزين بالكريمة اللباني الفاخرة.", price: 324, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] }
             ]
         },
         Runtime: {
@@ -83,7 +75,7 @@
         let ourProductsCount = 0;
 
         state.products.forEach(product => {
-            // كود الكارت الموحد بتمحور السعر أسفل العداد تماماً
+            // الهيكل الموحد المحدث الصارم بمحاذاة السعر أسفل العداد تماماً وبشكل منسق
             const cardHtml = `
                 <div class="bs-product-card" data-id="${product.id}">
                     <img src="${product.image}" class="card-image-box" alt="${product.title}" loading="lazy">
@@ -106,7 +98,6 @@
                 </div>
             `;
 
-            // جلب 8 عناصر للأكثر مبيعاً و 6 عناصر لوصل حديثاً بدقة تامة
             if (product.tags.includes('best-seller') && bestSellersTrack && bestSellersCount < 8) {
                 bestSellersTrack.innerHTML += cardHtml;
                 bestSellersCount++;
@@ -123,7 +114,6 @@
             }
         });
 
-        // رندرة الدوتس التفاعلية لقسم الأكثر مبيعاً (8 منتجات) ووصل حديثاً (6 منتجات)
         const bsDots = document.getElementById('best-sellers-dots');
         if (bsDots) {
             bsDots.innerHTML = Array(bestSellersCount).fill(`<span class="dot-node"></span>`).join('');
@@ -169,7 +159,6 @@
         }, 4000);
     };
 
-    // معالجة الدوتس التفاعلية وربطها برميًا بحركة سكرول السلايدرات
     Core.bindScrollEvents = function () {
         const setupScrollListener = (trackId, dotsId) => {
             const track = document.getElementById(trackId);

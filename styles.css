@@ -41,7 +41,6 @@ h1, h2, h3, h4 {
     margin-top: 14px;
 }
 
-/* تعديل الهيدر لمنع التكدس (العناصر والعدسة بجانب السلة أفقياً تماماً) */
 .header-container {
     position: sticky;
     top: 0;
@@ -66,7 +65,6 @@ h1, h2, h3, h4 {
     object-fit: contain;
 }
 
-/* قفل اسم البراند باللون البمبي المعتمد حصرياً */
 .brand-name {
     font-size: 20px;
     font-weight: 700;
@@ -254,12 +252,12 @@ h1, h2, h3, h4 {
     flex-shrink: 0;
 }
 
-/* الهيكل الموحد المحدث برميًا للكروت */
+/* الهيكل الموحد المحدث الصارم للكروت بكافة الأقسام */
 .bs-product-card {
     background-color: var(--white-background);
     border: 1px solid var(--pink-soft-border);
     border-radius: 20px;
-    padding: 16px;
+    padding: 12px;
     box-shadow: 0 4px 14px var(--pink-box-shadow);
     display: flex;
     flex-direction: column;
@@ -267,21 +265,22 @@ h1, h2, h3, h4 {
 
 .card-image-box {
     width: 100%;
-    height: 220px;
+    aspect-ratio: 1/1;
+    height: auto;
     object-fit: cover;
     border-radius: 14px;
     background-color: #FAFAFA;
 }
 
 .card-title-text {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
-    margin: 12px 0 2px 0;
+    margin: 10px 0 2px 0;
     text-align: right;
 }
 
 .card-flavor-text {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--pink-primary);
     margin-bottom: 4px;
@@ -289,18 +288,18 @@ h1, h2, h3, h4 {
 }
 
 .card-desc-paragraph {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--black-text-only);
     line-height: 1.5;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
     text-align: justify;
 }
 
-/* تنسيق منطقة الأزرار وتمرير السعر تحت العداد برميًا وعموديًا */
+/* تنسيق ترتيب السعر والعداد والزر عمودياً بشكل هندسي منسق */
 .card-meta-action-row {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 10px;
     margin-top: auto;
     width: 100%;
@@ -311,13 +310,14 @@ h1, h2, h3, h4 {
     align-items: center;
     justify-content: space-between;
     width: 100%;
+    gap: 6px;
 }
 
 .card-price-and-counter-zone {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
+    align-items: center;
+    gap: 4px;
 }
 
 .card-quantity-selector {
@@ -332,10 +332,10 @@ h1, h2, h3, h4 {
     background: none;
     border: none;
     color: var(--pink-primary);
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -343,82 +343,76 @@ h1, h2, h3, h4 {
 }
 
 .selector-value-display {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
-    min-width: 22px;
+    min-width: 18px;
     text-align: center;
     color: var(--black-text-only);
 }
 
-/* موضع السعر تحت العداد تلقائياً */
+/* حصر السعر أسفل العداد تماماً وبشكل منسق داخل الزون */
 .card-price-display-text {
-    font-size: 17px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--pink-primary);
-    padding-right: 4px;
+    text-align: center;
 }
 
 .card-add-to-cart-action-btn {
     background-color: var(--pink-primary);
     color: var(--white-background);
     border: none;
-    border-radius: 20px;
-    padding: 10px 20px;
-    font-size: 14px;
+    border-radius: 18px;
+    padding: 8px 12px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
+    flex-grow: 1;
     text-align: center;
+    max-height: 38px;
 }
 
+/* هندسة تقسيم كتل المحاكيات الكبيرة الفاخرة بارتفاع 600px للموبايل */
 .builder-visual-block-full {
     background-color: var(--pink-primary);
-    height: 600px;
+    min-height: 600px;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    padding: 0 24px;
+    padding: 32px 16px;
     width: 100%;
 }
 
-.builder-block-inner-content {
-    max-width: 500px;
+.builder-split-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+    max-width: 1100px;
 }
 
-.builder-showcase-title {
-    font-size: 24px;
-    color: var(--white-background);
-    margin-bottom: 12px;
+.builder-large-image-frame {
+    width: 100%;
+    max-width: 280px;
+    aspect-ratio: 1/1;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
 }
 
-.builder-showcase-description {
-    font-size: 14px;
-    color: var(--white-background);
-    line-height: 1.7;
-    margin-bottom: 24px;
+.builder-showcase-rich-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-.builder-cta-action-button {
-    background-color: var(--white-background);
-    color: var(--pink-palette);
-    border: none;
-    border-radius: 25px;
-    padding: 12px 36px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-/* قسم منتجاتنا: كارتين بجانب بعض ماليين الشاشة بالكامل بدون فراغات هابطة */
+/* قسم منتجاتنا: القفل النهائي لتصميم كارتين كاملين بجوار بعض ماليين الشاشة تماماً */
 .two-columns-static-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(2, 1fr); /* كارتين بجانب بعض بدقة */
+    gap: 8px; /* تقليص الهوامش لمنع التكدس وضمان الاحتواء الكامل للشاشة */
     padding: 12px 0;
-    width: 100%;
-}
-
-.two-columns-static-grid .bs-product-card {
     width: 100%;
 }
 
@@ -428,9 +422,10 @@ h1, h2, h3, h4 {
     margin-top: 16px;
 }
 
+/* هندسة قسم الفخر والاعتزاز المستقل الفاخر ومساحة الفيديو المحكمة */
 .pride-experience-block-clean {
     background-color: var(--white-background);
-    padding: 60px 16px;
+    padding: 56px 16px;
     text-align: center;
     border-top: 1px solid var(--pink-soft-border);
     border-bottom: 1px solid var(--pink-soft-border);
@@ -450,33 +445,52 @@ h1, h2, h3, h4 {
     font-size: 14px;
     color: var(--black-text-only);
     line-height: 1.7;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
+}
+
+/* حاوية وعاء عرض فيديو البراند المحكمة هندسياً لمنع التمدد */
+.pride-video-container-box {
+    width: 100%;
+    max-width: 500px;
+    aspect-ratio: 16/9;
+    margin: 0 auto 32px auto;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--pink-soft-border);
+    box-shadow: 0 6px 24px var(--pink-box-shadow);
+    background-color: #000000;
+}
+
+.pride-brand-native-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .counters-visual-row-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 20px;
+    gap: 16px;
 }
 
 .counter-metric-card {
     background-color: var(--white-background);
     border: 1px solid var(--pink-soft-border);
     border-radius: 16px;
-    padding: 24px;
+    padding: 20px;
     box-shadow: 0 4px 12px var(--pink-box-shadow);
 }
 
 .metric-numeric-digits {
     display: block;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 700;
     color: var(--pink-primary);
     margin-bottom: 4px;
 }
 
 .metric-text-label {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
 }
 
@@ -637,12 +651,14 @@ h1, h2, h3, h4 {
     .waterfall-component-wrapper { height: 1000px; }
     .waterfall-img-item { height: 280px; }
     .slider-full-img { height: 380px; }
+    .horizontal-scroll-slider-viewport .bs-product-card { width: 340px; }
+    .builder-split-layout { flex-direction: row; justify-content: space-between; text-align: right; }
+    .builder-large-image-frame { max-width: 360px; }
     .counters-visual-row-grid { grid-template-columns: repeat(3, 1fr); }
     .footer-layout-columns-wrapper { grid-template-columns: repeat(2, 1fr); display: grid; }
 }
 
 @media (min-width: 1024px) {
-    .static-grid-layout { grid-template-columns: repeat(4, 1fr); }
     .two-columns-static-grid { grid-template-columns: repeat(2, 1fr); }
     .footer-layout-columns-wrapper { grid-template-columns: repeat(4, 1fr); display: grid; }
     .waterfall-img-item { height: 320px; }
