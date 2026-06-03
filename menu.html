@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تصفح المنيو | حلويات بوسي</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary-pink: #FF91A4;
+            --pure-white: #FFFFFF;
+            --deep-black: #111111;
+            --soft-gold: #D4AF37;
+            --cairo-font: 'Cairo', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--cairo-font);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--pure-white);
+            color: var(--deep-black);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: 70px;
+            background-color: var(--pure-white);
+            border-bottom: 1px solid rgba(255, 145, 164, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 5px;
+        }
+
+        .menu-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background-color: var(--deep-black);
+            border-radius: 2px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--deep-black);
+        }
+
+        .logo-img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 700;
+            max-width: 700px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: none;
+            stroke: var(--deep-black);
+            stroke-width: 2;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: var(--primary-pink);
+            color: var(--deep-black);
+            font-size: 11px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        main {
+            margin-top: 70px;
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            width: 100%;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .menu-intro {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .menu-intro h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--deep-black);
+            margin-bottom: 12px;
+        }
+
+        .menu-intro p {
+            font-size: 16px;
+            color: var(--deep-black);
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            width: 100%;
+        }
+
+        .category-card {
+            background-color: var(--pure-white);
+            border: 1px solid rgba(255, 145, 164, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--deep-black);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+        }
+
+        .category-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-pink);
+            box-shadow: 0 8px 25px rgba(255, 145, 164, 0.15);
+        }
+
+        .category-image-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 85%;
+            background-color: #fafafa;
+            overflow: hidden;
+        }
+
+        .category-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .category-card:hover .category-img {
+            transform: scale(1.04);
+        }
+
+        .category-info {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            text-align: right;
+        }
+
+        .category-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .category-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--deep-black);
+            opacity: 0.7;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .category-action {
+            margin-top: auto;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--deep-black);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s ease;
+        }
+
+        .category-card:hover .category-action {
+            color: var(--primary-pink);
+        }
+
+        .category-action svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            transform: scaleX(-1);
+            transition: transform 0.2s ease;
+        }
+
+        .category-card:hover .category-action svg {
+            transform: scaleX(-1) translateX(4px);
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
+            height: 100vh;
+            background-color: var(--pure-white);
+            box-shadow: -5px 0 25px rgba(0,0,0,0.05);
+            z-index: 2000;
+            transition: right 0.3s ease;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .side-menu.active {
+            right: 0;
+        }
+
+        .side-menu-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .side-menu-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .close-menu {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-menu svg {
+            width: 24px;
+            height: 24px;
+            stroke: var(--deep-black);
+            stroke-width: 2;
+        }
+
+        .side-menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .side-link {
+            text-decoration: none;
+            color: var(--deep-black);
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 5px;
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            transition: color 0.2s ease;
+        }
+
+        .side-link:hover {
+            color: var(--primary-pink);
+        }
+
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0,0,0,0.3);
+            z-index: 1500;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        footer {
+            background-color: var(--pure-white);
+            border-top: 1px solid rgba(255, 145, 164, 0.15);
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer-brand {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .footer-slogan {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 25px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .footer-link {
+            text-decoration: none;
+            color: var(--deep-black);
+            font-size: 14px;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--primary-pink);
+        }
+
+        .footer-copy {
+            font-size: 12px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 992px) {
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            .menu-intro h1 {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 25px 15px;
+            }
+            .menu-intro {
+                margin-bottom: 30px;
+            }
+            .menu-intro h1 {
+                font-size: 24px;
+            }
+            .menu-intro p {
+                font-size: 14px;
+            }
+            .categories-grid {
+                grid-template-columns: repeat(1, 1fr);
+                gap: 20px;
+            }
+            .category-card {
+                border-radius: 14px;
+            }
+            .category-info {
+                padding: 20px;
+            }
+            .category-title {
+                font-size: 20px;
+            }
+            .category-image-wrapper {
+                padding-top: 75%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-right">
+            <button class="menu-toggle" id="menuToggleBtn" aria-label="فتح القائمة القائمة الجانبية">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <a href="index.html" class="logo-container">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي" class="logo-img">
+                <span class="brand-name">حلويات بوسي</span>
+            </a>
+        </div>
+        <div class="header-left">
+            <button class="header-btn" aria-label="بحث في المنتجات">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </button>
+            <a href="cart.html" class="header-btn" aria-label="سلة المشتريات">
+                <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                <span class="cart-count" id="headerCartCount">0</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <nav class="side-menu" id="sideMenu">
+        <div class="side-menu-header">
+            <span class="side-menu-title">تصفح المتجر</span>
+            <button class="close-menu" id="closeMenuBtn" aria-label="إغلاق القائمة">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div class="side-menu-links">
+            <a href="index.html" class="side-link">الصفحة الرئيسية</a>
+            <a href="menu.html" class="side-link" style="color: var(--primary-pink);">قائمة المنيو</a>
+            <a href="cake-builder.html" class="side-link">محاكي التورت</a>
+            <a href="flower-builder.html" class="side-link">محاكي الورد</a>
+            <a href="cart.html" class="side-link">سلة المشتريات</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="menu-intro">
+            <h1>استكشف المنيو كاملاً</h1>
+            <p>اختر القسم المفضل لديك لتستعرض تشكيلة المخبوزات والحلويات الطازجة التي صُنعت خصيصاً بمكونات طبيعية ممتازة وجودة فاخرة تشرفك دائماً.</p>
+        </section>
+
+        <section class="categories-grid" id="categoriesGrid">
+            <a href="category.html?type=despacito" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ديسباسيتو" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">ديسباسيتو</h2>
+                    <p class="category-desc">كيكة الشوكولاتة البرازيلية الغنية بصوصات بوسي الغامرة لتذوب في كل قمة طعم.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+
+            <a href="category.html?type=qashtouta" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قشطوطة" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">قشطوطة</h2>
+                    <p class="category-desc">كيكة الحليب الطازجة الغنية بالقشطة والمكسرات أو الفواكه لترطيب مثالي فائق الروعة.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+
+            <a href="category.html?type=donuts" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="دوناتس" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">دوناتس</h2>
+                    <p class="category-desc">عجينة خفيفة وهشة مغطاة بأفخر أنواع صوصات وتزيينات الشوكولاتة لتسعد أوقاتك.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+
+            <a href="category.html?type=cinnabon" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="سينابون" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">سينابون</h2>
+                    <p class="category-desc">لفائف القرفة الدافئة المخبوزة بعناية فائقة والمغطاة بصوص الجبن الكريمي المميز لدينا.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+
+            <a href="category.html?type=flowers" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ورد" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">ورد</h2>
+                    <p class="category-desc">بوكيهات وتنسيقات ورد راقية مصممة يدوياً لتناسب كافة هداياك وتناسب ذوقك الرفيع.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+
+            <a href="category.html?type=happiness-cups" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كابات السعادة" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">كابات السعادة</h2>
+                    <p class="category-desc">طبقات غنية من الكيك والكريمات الخفيفة المحضرة خصيصاً لتمنحك جرعة مركزة من السعادة.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+
+            <a href="category.html?type=chill-box" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تشيل بوكس" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">تشيل بوكس</h2>
+                    <p class="category-desc">بوكس متكامل يجمع تشكيلة مميزة من الأصناف الخفيفة والمبهجة لجمعاتك وأوقات راحتك الدائمة.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+
+            <a href="category.html?type=cupcakes" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كاب كيك" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">كاب كيك</h2>
+                    <p class="category-desc">قطع كيك فردية غنية ومزينة بكريمات مخفوقة ناعمة لتناسب الحفلات ومختلف المناسبات السعيدة.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+
+            <a href="category.html?type=cakes" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تورتات" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">تورتات</h2>
+                    <p class="category-desc">تصاميم تورت احترافية لجميع احتفالاتك ومناسباتك الكبيرة، صُنعت لتسعد قلوب ضيوفك الفاخرين.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+
+            <a href="category.html?type=gateaux" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="جاتوه" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">جاتوه</h2>
+                    <p class="category-desc">قطع جاتوه كلاسيكية فاخرة بطبقات متناسقة بدقة ومتوازنة تماماً تذوب في الفم بنعومة متناهية.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+
+            <a href="category.html?type=mini-cakes" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ميني كيك" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">ميني كيك</h2>
+                    <p class="category-desc">تورتات دائرية صغيرة مغلفة بالفاكيوم الشفاف، مصممة بدقة لتكفي المشاركات الثنائية الرقيقة.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+
+            <a href="category.html?type=red-velvet" class="category-card">
+                <div class="category-image-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ريد فيلفت" class="category-img">
+                </div>
+                <div class="category-info">
+                    <h2 class="category-title">ريد فيلفت</h2>
+                    <p class="category-desc">كيكة المخمل الأحمر الكلاسيكية الفخمة مع فروستينج الجبن الغني والمميز بلمسة بوسي الراقية.</p>
+                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                </div>
+            </a>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-brand">حلويات بوسي</div>
+        <div class="footer-slogan">صنعناها بحب لتهديها لمن تحب</div>
+        <div class="footer-links">
+            <a href="privacy-policy.html" class="footer-link">سياسة الخصوصية</a>
+            <a href="refund-policy.html" class="footer-link">سياسة الاستبدال والاسترجاع</a>
+        </div>
+        <div class="footer-copy">&copy; 2026 جميع الحقوق محفوظة لمتجر حلويات بوسي</div>
+    </footer>
+
+    <script id="cleanRuntimeScript">
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuToggleBtn = document.getElementById('menuToggleBtn');
+            const closeMenuBtn = document.getElementById('closeMenuBtn');
+            const sideMenu = document.getElementById('sideMenu');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const headerCartCount = document.getElementById('headerCartCount');
+
+            function toggleSideMenu(open) {
+                if (open) {
+                    sideMenu.classList.add('active');
+                    menuOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    sideMenu.classList.remove('active');
+                    menuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            if (menuToggleBtn) menuToggleBtn.addEventListener('click', () => toggleSideMenu(true));
+            if (closeMenuBtn) closeMenuBtn.addEventListener('click', () => toggleSideMenu(false));
+            if (menuOverlay) menuOverlay.addEventListener('click', () => toggleSideMenu(false));
+
+            function updateCartBadge() {
+                try {
+                    const cart = JSON.parse(localStorage.getItem('bose_cart')) || [];
+                    const totalItems = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
+                    if (headerCartCount) headerCartCount.textContent = totalItems;
+                } catch (e) {
+                    if (headerCartCount) headerCartCount.textContent = '0';
+                }
+            }
+
+            updateCartBadge();
+            window.addEventListener('storage', updateCartBadge);
+        });
+    </script>
+</body>
+</html>
