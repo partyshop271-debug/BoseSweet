@@ -1,4 +1,3 @@
-/* --- تصفير وتأمين ثبات الصفحة بالكامل ومنع السحب الأفقي --- */
 * {
     margin: 0;
     padding: 0;
@@ -10,7 +9,7 @@
 html, body {
     background-color: #FFFFFF;
     color: #111111;
-    overflow-x: hidden; /* منع السحب يميناً ويساراً نهائياً للحفاظ على ثبات الموقع */
+    overflow-x: hidden;
     max-width: 100%;
     position: relative;
     direction: rtl;
@@ -18,9 +17,9 @@ html, body {
 }
 
 :root {
-    --pink-primary: #FF91A4;        /* نبض الحياة: للحدود، الظلال، أرقام الأسعار والتفاعلات */
-    --white-background: #FFFFFF;    /* المسيطر تماماً على الخلفيات لخلق تنفس بصري ومنع التكديس */
-    --black-text-only: #111111;     /* محظور استخدامه بالظلال أو الخلفيات؛ مكانه الشرعي نصوص وعناوين للوضوح */
+    --pink-primary: #FF91A4;
+    --white-background: #FFFFFF;
+    --black-text-only: #111111;
     --pink-soft-border: rgba(255, 145, 164, 0.15);
     --pink-box-shadow: rgba(255, 145, 164, 0.08);
 }
@@ -30,7 +29,6 @@ h1, h2, h3, h4 {
     color: var(--black-text-only);
 }
 
-/* التمركز المتوازن المعتمد لجميع عناوين وأوصاف الأقسام في نص الصفحة */
 .section-meta-header {
     text-align: center;
     max-width: 700px;
@@ -43,7 +41,7 @@ h1, h2, h3, h4 {
     margin-top: 14px;
 }
 
-/* --- HEADER STICKY (ترتيب صارم دون عناصر إضافية) --- */
+/* تعديل الهيدر لمنع التكدس (العناصر والعدسة بجانب السلة أفقياً تماماً) */
 .header-container {
     position: sticky;
     top: 0;
@@ -68,9 +66,17 @@ h1, h2, h3, h4 {
     object-fit: contain;
 }
 
+/* قفل اسم البراند باللون البمبي المعتمد حصرياً */
 .brand-name {
     font-size: 20px;
     font-weight: 700;
+    color: var(--pink-primary);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .menu-toggle-btn, .search-trigger-btn, .cart-trigger-btn {
@@ -86,7 +92,6 @@ h1, h2, h3, h4 {
     color: var(--black-text-only);
 }
 
-/* --- TOP BAR (شريط متحرك لانهائي يقع برمجياً فوق الهيدر) --- */
 .top-announcement-bar {
     background-color: var(--pink-primary);
     overflow: hidden;
@@ -112,12 +117,10 @@ h1, h2, h3, h4 {
     100% { transform: translate3d(-50%, 0, 0); }
 }
 
-/* --- HOMEPAGE SECTIONS SPACING (مسافات تنفس بصري وتوزيع فخم) --- */
 .homepage-section {
     padding: 48px 16px;
     max-width: 1200px;
     margin: 0 auto;
-    overflow: hidden;
 }
 
 .main-section-title {
@@ -151,7 +154,6 @@ h1, h2, h3, h4 {
     cursor: pointer;
 }
 
-/* WATERFALL SYSTEM (ارتفاع إلزامي 700px مع ضبابية علوية وسفلية حركية) */
 .waterfall-component-wrapper {
     position: relative;
     height: 700px;
@@ -206,7 +208,6 @@ h1, h2, h3, h4 {
     100% { transform: translateY(0); }
 }
 
-/* SECTION 02: سلايدر عقد من الإتقان (متحرك تلقائياً ومستمر بدون فراغات وعرض كامل) */
 .slider-viewport-overflow-control {
     width: 100%;
     overflow: hidden;
@@ -216,8 +217,8 @@ h1, h2, h3, h4 {
 
 .full-slider-track {
     display: flex;
-    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
     width: 300%;
+    transition: transform 0.5s ease-in-out;
 }
 
 .full-slider-image-link {
@@ -232,27 +233,11 @@ h1, h2, h3, h4 {
     border-radius: 16px;
 }
 
-.slider-dots-navigation {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 14px;
+.carousel-slider-outer-wrapper {
+    position: relative;
+    width: 100%;
 }
 
-.dot-node {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: rgba(255, 145, 164, 0.3);
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.dot-node.active {
-    background-color: var(--pink-primary);
-    transform: scale(1.2);
-}
-
-/* التصفح الأفقي السلس لكروت المنتجات الفاخرة بقفل مقاس 85vw للموبايل */
 .horizontal-scroll-slider-viewport {
     display: flex;
     gap: 16px;
@@ -264,12 +249,12 @@ h1, h2, h3, h4 {
 .horizontal-scroll-slider-viewport::-webkit-scrollbar { display: none; }
 
 .horizontal-scroll-slider-viewport .bs-product-card {
-    width: 85vw; /* المقاس الإلزامي لكروت التصفح الأفقي للموبايل */
+    width: 85vw;
     scroll-snap-align: start;
     flex-shrink: 0;
 }
 
-/* الهيكل الموحد الصارم لكارت المنتج */
+/* الهيكل الموحد المحدث برميًا للكروت */
 .bs-product-card {
     background-color: var(--white-background);
     border: 1px solid var(--pink-soft-border);
@@ -311,15 +296,30 @@ h1, h2, h3, h4 {
     text-align: justify;
 }
 
+/* تنسيق منطقة الأزرار وتمرير السعر تحت العداد برميًا وعموديًا */
 .card-meta-action-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: auto;
+    width: 100%;
+}
+
+.card-controls-block {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: auto;
-    gap: 8px;
+    width: 100%;
 }
 
-/* شكل العداد الإلزامي الصارم (يمين: + ، وسط: العدد ، يسار: -) بـ Border بمبي خفيف جداً */
+.card-price-and-counter-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
 .card-quantity-selector {
     display: flex;
     align-items: center;
@@ -350,10 +350,12 @@ h1, h2, h3, h4 {
     color: var(--black-text-only);
 }
 
+/* موضع السعر تحت العداد تلقائياً */
 .card-price-display-text {
     font-size: 17px;
     font-weight: 700;
     color: var(--pink-primary);
+    padding-right: 4px;
 }
 
 .card-add-to-cart-action-btn {
@@ -361,13 +363,13 @@ h1, h2, h3, h4 {
     color: var(--white-background);
     border: none;
     border-radius: 20px;
-    padding: 8px 14px;
-    font-size: 13px;
+    padding: 10px 20px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
+    text-align: center;
 }
 
-/* SECTION 04 & 07: بلوكات المحاكيات (عرض كامل، ارتفاع إلزامي 600px، خلفية بمبية فخمة) */
 .builder-visual-block-full {
     background-color: var(--pink-primary);
     height: 600px;
@@ -398,7 +400,7 @@ h1, h2, h3, h4 {
 
 .builder-cta-action-button {
     background-color: var(--white-background);
-    color: var(--pink-primary);
+    color: var(--pink-palette);
     border: none;
     border-radius: 25px;
     padding: 12px 36px;
@@ -407,12 +409,13 @@ h1, h2, h3, h4 {
     cursor: pointer;
 }
 
-/* SECTION 06: منتجاتنا (توزيع إلزامي بجوار بعض صف أول 2 كارت وصف ثاني 2 كارت) */
+/* قسم منتجاتنا: كارتين بجانب بعض ماليين الشاشة بالكامل بدون فراغات هابطة */
 .two-columns-static-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
     padding: 12px 0;
+    width: 100%;
 }
 
 .two-columns-static-grid .bs-product-card {
@@ -425,7 +428,6 @@ h1, h2, h3, h4 {
     margin-top: 16px;
 }
 
-/* SECTION 08: الفخر والاعتزاز (منفصل بخلفية بيضاء نظيفة ومساحات هوامش هائلة لتجنب التكدس) */
 .pride-experience-block-clean {
     background-color: var(--white-background);
     padding: 60px 16px;
@@ -478,19 +480,19 @@ h1, h2, h3, h4 {
     font-weight: 700;
 }
 
-/* SECTION 09: تسوق حسب الفئة (كارت أكبر بـ 30%: عرض 280px، صورة 280px، كلي 360px) */
 .large-categories-carousel-track {
     display: flex;
     gap: 16px;
     overflow-x: auto;
-    padding: 12px 4px 24px 4px;
+    padding: 12px 4px 16px 4px;
+    scroll-snap-type: x mandatory;
     scrollbar-width: none;
 }
 .large-categories-carousel-track::-webkit-scrollbar { display: none; }
 
 .bs-category-large-card {
-    width: 280px;      /* المقاس الإلزامي للموبايل */
-    height: 360px;     /* الارتفاع الإلزامي الكلي */
+    width: 280px;
+    height: 360px;
     background-color: var(--white-background);
     border: 1px solid var(--pink-soft-border);
     border-radius: 20px;
@@ -498,23 +500,43 @@ h1, h2, h3, h4 {
     flex-shrink: 0;
     box-shadow: 0 4px 14px var(--pink-box-shadow);
     cursor: pointer;
+    scroll-snap-align: start;
 }
 
 .category-large-img {
     width: 280px;
-    height: 280px;     /* أبعاد الصورة المربعة الإلزامية */
+    height: 280px;
     object-fit: cover;
 }
 
 .category-large-title {
-    font-size: 20px;   /* المقاس الإلزامي */
+    font-size: 20px;
     font-weight: 700;
     color: var(--black-text-only);
     text-align: center;
     margin-top: 14px;
 }
 
-/* --- FOOTER (أعمدة موزعة ومحكمة بصرياً بخلفية بيضاء نظيفة) --- */
+.slider-dots-navigation {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.dot-node {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 145, 164, 0.3);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.dot-node.active {
+    background-color: var(--pink-primary);
+    transform: scale(1.2);
+}
+
 .storefront-main-footer {
     background-color: var(--white-background);
     border-top: 1px solid var(--pink-soft-border);
@@ -555,7 +577,6 @@ h1, h2, h3, h4 {
     font-size: 15px;
     font-weight: 700;
     margin-bottom: 12px;
-    position: relative;
 }
 
 .footer-clickable-links-list {
@@ -578,7 +599,6 @@ h1, h2, h3, h4 {
     margin-bottom: 8px;
 }
 
-/* الأيقونات الرسمية بألوانها الأصلية الحقيقية للمنصات */
 .footer-social-original-icons-box {
     display: flex;
     gap: 14px;
@@ -613,18 +633,17 @@ h1, h2, h3, h4 {
     font-weight: 600;
 }
 
-/* --- UPGRADES FOR TABLET & DESKTOP (قفل أبعاد الشاشات الكبيرة) --- */
 @media (min-width: 768px) {
-    .waterfall-component-wrapper { height: 950px; }
+    .waterfall-component-wrapper { height: 1000px; }
     .waterfall-img-item { height: 280px; }
     .slider-full-img { height: 380px; }
-    .horizontal-scroll-slider-viewport .bs-product-card { width: 340px; }
     .counters-visual-row-grid { grid-template-columns: repeat(3, 1fr); }
     .footer-layout-columns-wrapper { grid-template-columns: repeat(2, 1fr); display: grid; }
 }
 
 @media (min-width: 1024px) {
-    .two-columns-static-grid { grid-template-columns: repeat(4, 1fr); }
+    .static-grid-layout { grid-template-columns: repeat(4, 1fr); }
+    .two-columns-static-grid { grid-template-columns: repeat(2, 1fr); }
     .footer-layout-columns-wrapper { grid-template-columns: repeat(4, 1fr); display: grid; }
     .waterfall-img-item { height: 320px; }
 }
