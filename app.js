@@ -149,7 +149,7 @@
             let index = Runtime.state.currentCraftIndex;
             index = (index + 1) % 3;
             Runtime.state.currentCraftIndex = index;
-            if (track) track.style.transform = `translateX(-${index * 33.3333}%)`;
+            if (track) track.style.transform = `translateX(${index * 100}%)`;
             if (dots) {
                 Array.from(dots.children).forEach((dot, idx) => {
                     dot.classList.toggle('active', idx === index);
@@ -163,7 +163,7 @@
         Runtime.state.currentCraftIndex = index;
         const track = document.getElementById('craftsmanship-slider-track');
         const dots = document.getElementById('craftsmanship-slider-dots');
-        if (track) track.style.transform = `translateX(-${index * 33.3333}%)`;
+        if (track) track.style.transform = `translateX(${index * 100}%)`;
         if (dots) {
             Array.from(dots.children).forEach((dot, idx) => {
                 dot.classList.toggle('active', idx === index);

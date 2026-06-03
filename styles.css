@@ -419,21 +419,28 @@ h1, h2, h3, h4 {
 
 .builder-visual-block-full {
     background-color: var(--white-background);
-    border-top: 1px solid var(--pink-soft-border);
-    border-bottom: 1px solid var(--pink-soft-border);
-    min-height: 450px;
+    border: 1px solid var(--pink-primary);
+    box-shadow: 0 4px 14px var(--pink-box-shadow);
+    border-radius: 24px;
+    min-height: 380px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 48px 16px;
-    width: 100%;
+    padding: 32px 24px;
+    width: calc(100% - 32px);
+    margin: 24px auto;
+    transition: transform 0.3s ease;
+}
+
+.builder-visual-block-full:hover {
+    transform: translateY(-2px);
 }
 
 .builder-split-layout {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     align-items: center;
-    gap: 32px;
+    gap: 24px;
     width: 100%;
     max-width: 1100px;
 }
@@ -444,7 +451,7 @@ h1, h2, h3, h4 {
 }
 
 .builder-showcase-title {
-    font-size: 24px;
+    font-size: 22px;
     margin-bottom: 12px;
 }
 
@@ -473,12 +480,11 @@ h1, h2, h3, h4 {
 
 .builder-large-image-frame {
     width: 100%;
-    max-width: 320px;
+    max-width: 280px;
     aspect-ratio: 1/1;
-    border-radius: 20px;
+    border-radius: 16px;
     overflow: hidden;
     border: 1px solid var(--pink-soft-border);
-    box-shadow: 0 6px 20px var(--pink-box-shadow);
 }
 
 .builder-showcase-rich-img {
@@ -527,8 +533,8 @@ h1, h2, h3, h4 {
 
 .pride-video-container-box {
     width: 100%;
-    max-width: 500px;
-    aspect-ratio: 16/9;
+    max-width: 100%;
+    height: 240px;
     margin: 0 auto 32px auto;
     border-radius: 16px;
     overflow: hidden;
@@ -762,10 +768,11 @@ h1, h2, h3, h4 {
     .waterfall-component-wrapper { height: 1000px; }
     .waterfall-img-item { height: 280px; }
     .slider-full-img { height: 380px; }
+    .pride-video-container-box { height: 380px; }
     .horizontal-scroll-slider-viewport .bs-product-card { width: 340px; }
-    .builder-split-layout { flex-direction: row; justify-content: space-between; text-align: right; }
+    .builder-split-layout { flex-direction: row-reverse; justify-content: space-between; text-align: right; gap: 40px; }
     .builder-block-inner-content { text-align: right; }
-    .builder-large-image-frame { max-width: 360px; }
+    .builder-large-image-frame { max-width: 340px; }
     .counters-visual-row-grid { grid-template-columns: repeat(3, 1fr); }
     .footer-layout-columns-wrapper { grid-template-columns: repeat(2, 1fr); display: grid; }
     .bs-category-large-card { width: 240px; height: 310px; }
