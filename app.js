@@ -23,7 +23,13 @@
                 { id: "p-cupcake", title: "الكب كيك", flavor: "دستة كب كيك شوكولاتة", description: "قطع صغيرة من اللذة بطابع غني ومميز يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً ومزين بالكريمة اللباني الفاخرة.", price: 324, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
                 { id: "p-gateaux", title: "الجاتوهات الكلاسيك", flavor: "فانيليا وشوكولاتة منوعة", description: "تشكيلات جاتوه متنوعة بخامات متوازنة وطعم واضح مناسب للضيافة اليومية والمناسبات السعيدة.", price: 506, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
                 { id: "p-redvelvet", title: "مثلث الريدڤيلڤت", flavor: "كريم تشيز غني", description: "طبقات من الريدڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز الفاخر.", price: 72, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
-                { id: "p-cinabon-pistachio", title: "سينابون بيستاشيو", flavor: "صوص فستق فاخر", description: "لفات سينابون مخبوزة بقوام طري مغطاة بصوص البيستاشيو الغني والمميز طازج يوم بيوم.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] }
+                { id: "p-cinabon-pistachio", title: "سينابون بيستاشيو", flavor: "صوص فستق فاخر", description: "لفات سينابون مخبوزة بقوام طري مغطاة بصوص البيستاشيو الغني والمميز طازج يوم بيوم.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
+                
+                // ملء قاعدة البيانات لتغطية الـ 8 منتجات المطلوبة في قسم منتجاتنا بالتكامل
+                { id: "p-cake-luxury", title: "تورتة الفخامة الملكية", flavor: "ميكس مكسرات فانيليا", description: "كيك إسفنجي غني بالكريمة اللباني والمكسرات المحمصة الفاخرة مصممة خصيصاً لتكون نجمة مناسبتكم السعيدة.", price: 420, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "p-gateaux-fudge", title: "جاتوه الفادج السوبر", flavor: "شوكولاتة بلجيكية غنية", description: "طبقات متناسقة من كيك الفادج الغني وصوص الشوكولاتة الكثيف لتجربة غنية تذوب في الفم.", price: 48, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "p-qashtota-lotus", title: "قشطوطة اللوتس الأصلية", flavor: "زبدة لوتس مقرمشة", description: "كيك الحليب التركي التقليدي يعلوه طبقة سميكة من زبدة اللوتس الفاخرة وبسكويت اللوتس المقرمش.", price: 135, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "p-cinnabon-nutella", title: "سينابون نوتيلا بندق", flavor: "شوكولاتة نوتيلا وبندق طازج", description: "عجينة السينابون الهشة محشوة بالقرفة والزبدة ومغطاة بالنوتيلا الغنية وحبات البندق المحمص.", price: 130, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] }
             ]
         },
         Runtime: {
@@ -63,23 +69,42 @@
     Core.renderStorefrontUI = function () {
         const state = Runtime.state;
         
+        // بناء الشلال بشكل تفاعلي مستقر
         const w1 = document.getElementById('waterfall-column-1');
         const w2 = document.getElementById('waterfall-column-2');
         if (w1 && w2 && w1.children.length === 0) {
-            const placeholder = `<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="waterfall-img-item" alt="منتجات حلويات بوسي الفاخرة">`;
-            w1.innerHTML = Array(4).fill(placeholder).join('');
-            w2.innerHTML = Array(4).fill(placeholder).join('');
+            let column1Html = '';
+            let column2Html = '';
+            for (let i = 0; i < 4; i++) {
+                column1Html += `<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="waterfall-img-item" alt="منتجات حلويات بوسي الفاخرة" data-action="menu">`;
+                column2Html += `<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="waterfall-img-item" alt="منتجات حلويات بوسي الفاخرة" data-action="menu">`;
+            }
+            w1.innerHTML = column1Html;
+            w2.innerHTML = column2Html;
+            
+            w1.querySelectorAll('.waterfall-img-item').forEach(img => {
+                img.addEventListener('click', () => { location.href = 'menu.html'; });
+            });
+            w2.querySelectorAll('.waterfall-img-item').forEach(img => {
+                img.addEventListener('click', () => { location.href = 'menu.html'; });
+            });
         }
 
+        // بناء سلايدر عقد من الإتقان مع ربط تفاعلية الصور والـ Dots
         const craftTrack = document.getElementById('craftsmanship-slider-track');
         const craftDots = document.getElementById('craftsmanship-slider-dots');
         if (craftTrack && craftDots && craftTrack.children.length === 0) {
             craftTrack.innerHTML = `
-                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 1"></div>
-                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 2"></div>
-                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 3"></div>
+                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 1" data-action="menu"></div>
+                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 2" data-action="menu"></div>
+                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 3" data-action="menu"></div>
             `;
-            craftDots.innerHTML = Array(3).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}"></span>`).join('');
+            
+            craftTrack.querySelectorAll('.slider-full-img').forEach(img => {
+                img.addEventListener('click', () => { location.href = 'menu.html'; });
+            });
+
+            craftDots.innerHTML = Array(3).fill(0).map((_, idx) => `<button class="dot-node" data-index="${idx}" aria-label="شريحة ${idx + 1}"></button>`).join('');
             if (craftDots.children.length > 0) craftDots.children[0].classList.add('active');
             
             Array.from(craftDots.children).forEach(dot => {
@@ -100,7 +125,6 @@
 
         let bestSellersCount = 0;
         let newArrivalsCount = 0;
-        let ourProductsRendered = 0;
         let ourProductsTotal = [];
 
         state.products.forEach(product => {
@@ -109,7 +133,8 @@
             }
         });
 
-        state.products.forEach(product => {
+        // دالة مساعدة لبناء هيكلية الكارت الموحد بدقة احترافية
+        const buildProductCardHtml = (product) => {
             const currentQty = state.quantities[product.id] || 1;
             const safeId = Core.escapeHTML(product.id);
             const safeTitle = Core.escapeHTML(product.title);
@@ -117,10 +142,10 @@
             const safeDesc = Core.escapeHTML(product.description);
             const safeImg = Core.escapeHTML(product.image);
 
-            const cardHtml = `
+            return `
                 <div class="bs-product-card" data-id="${safeId}">
-                    <img src="${safeImg}" class="card-image-box" alt="${safeTitle}" loading="lazy">
-                    <h3 class="card-title-text">${safeTitle}</h3>
+                    <img src="${safeImg}" class="card-image-box" alt="${safeTitle}" loading="lazy" onclick="location.href='product.html?id=${safeId}'">
+                    <h3 class="card-title-text" onclick="location.href='product.html?id=${safeId}'">${safeTitle}</h3>
                     <div class="card-flavor-text">${safeFlavor}</div>
                     <p class="card-desc-paragraph">${safeDesc}</p>
                     <div class="card-meta-action-row">
@@ -138,48 +163,24 @@
                     </div>
                 </div>
             `;
+        };
 
+        state.products.forEach(product => {
             if (product.tags.includes('best-seller') && bestSellersTrack && bestSellersCount < 8) {
-                bestSellersTrack.innerHTML += cardHtml;
+                bestSellersTrack.innerHTML += buildProductCardHtml(product);
                 bestSellersCount++;
             }
             if (product.tags.includes('new-arrival') && newArrivalsTrack && newArrivalsCount < 6) {
-                newArrivalsTrack.innerHTML += cardHtml;
+                newArrivalsTrack.innerHTML += buildProductCardHtml(product);
                 newArrivalsCount++;
             }
         });
 
+        // معالجة قسم منتجاتنا: عرض 4 منتجات في البداية ثم إظهار 4 إضافية عند الضغط على الزر في المنتصف
         if (productsGrid) {
-            const itemsToRender = state.showAllProducts ? ourProductsTotal : ourProductsTotal.slice(0, 4);
+            const itemsToRender = state.showAllProducts ? ourProductsTotal.slice(0, 8) : ourProductsTotal.slice(0, 4);
             itemsToRender.forEach(product => {
-                const currentQty = state.quantities[product.id] || 1;
-                const safeId = Core.escapeHTML(product.id);
-                const safeTitle = Core.escapeHTML(product.title);
-                const safeFlavor = Core.escapeHTML(product.flavor);
-                const safeDesc = Core.escapeHTML(product.description);
-                const safeImg = Core.escapeHTML(product.image);
-
-                productsGrid.innerHTML += `
-                    <div class="bs-product-card" data-id="${safeId}">
-                        <img src="${safeImg}" class="card-image-box" alt="${safeTitle}" loading="lazy">
-                        <h3 class="card-title-text">${safeTitle}</h3>
-                        <div class="card-flavor-text">${safeFlavor}</div>
-                        <p class="card-desc-paragraph">${safeDesc}</p>
-                        <div class="card-meta-action-row">
-                            <div class="card-controls-block">
-                                <div class="card-price-and-counter-zone">
-                                    <div class="card-quantity-selector">
-                                        <button class="selector-action-btn pulse-trigger" data-action="plus" data-id="${safeId}">+</button>
-                                        <span class="selector-value-display" id="qty-node-${safeId}">${currentQty}</span>
-                                        <button class="selector-action-btn pulse-trigger" data-action="minus" data-id="${safeId}">-</button>
-                                    </div>
-                                    <div class="card-price-display-text">${product.price} EGP</div>
-                                </div>
-                                <button class="card-add-to-cart-action-btn" data-id="${safeId}">إضافة للسلة</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                productsGrid.innerHTML += buildProductCardHtml(product);
             });
 
             const loadMoreBtn = document.getElementById('action-trigger-load-more');
@@ -192,9 +193,10 @@
             }
         }
 
+        // تفاعلية نقاط تنقل الأكثر مبيعاً
         const bsDots = document.getElementById('best-sellers-dots');
         if (bsDots) {
-            bsDots.innerHTML = Array(bestSellersCount).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}"></span>`).join('');
+            bsDots.innerHTML = Array(bestSellersCount).fill(0).map((_, idx) => `<button class="dot-node" data-index="${idx}" aria-label="شريحة الأكثر مبيعاً ${idx + 1}"></button>`).join('');
             if (bsDots.children.length > 0) bsDots.children[0].classList.add('active');
             Array.from(bsDots.children).forEach(dot => {
                 dot.addEventListener('click', function() {
@@ -204,9 +206,10 @@
             });
         }
 
+        // تفاعلية نقاط تنقل وصل حديثاً
         const naDots = document.getElementById('new-arrivals-dots');
         if (naDots) {
-            naDots.innerHTML = Array(newArrivalsCount).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}"></span>`).join('');
+            naDots.innerHTML = Array(newArrivalsCount).fill(0).map((_, idx) => `<button class="dot-node" data-index="${idx}" aria-label="شريحة وصل حديثاً ${idx + 1}"></button>`).join('');
             if (naDots.children.length > 0) naDots.children[0].classList.add('active');
             Array.from(naDots.children).forEach(dot => {
                 dot.addEventListener('click', function() {
@@ -216,6 +219,7 @@
             });
         }
 
+        // بناء وتفاعلية قسم تسوق حسب الفئة الشامل مع ربط الـ Dots والصور
         const catTrack = document.getElementById('categories-carousel-slider-track');
         const catDots = document.getElementById('categories-carousel-slider-dots');
         if (catTrack && catDots && catTrack.children.length === 0) {
@@ -237,7 +241,7 @@
                 });
             });
 
-            catDots.innerHTML = Array(state.categories.length).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}"></span>`).join('');
+            catDots.innerHTML = Array(state.categories.length).fill(0).map((_, idx) => `<button class="dot-node" data-index="${idx}" aria-label="فئة ${idx + 1}"></button>`).join('');
             if (catDots.children.length > 0) catDots.children[0].classList.add('active');
             Array.from(catDots.children).forEach(dot => {
                 dot.addEventListener('click', function() {
@@ -254,6 +258,7 @@
         document.querySelectorAll('.pulse-trigger').forEach(btn => {
             btn.onclick = function (e) {
                 e.preventDefault();
+                e.stopPropagation();
                 const id = this.getAttribute('data-id');
                 const action = this.getAttribute('data-action');
                 Core.adjustQty(id, action === 'plus' ? 1 : -1);
@@ -263,6 +268,7 @@
         document.querySelectorAll('.card-add-to-cart-action-btn').forEach(btn => {
             btn.onclick = function (e) {
                 e.preventDefault();
+                e.stopPropagation();
                 const id = this.getAttribute('data-id');
                 Core.addToCart(id);
             };
