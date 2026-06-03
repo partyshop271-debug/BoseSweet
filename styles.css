@@ -20,8 +20,8 @@ html, body {
     --pink-primary: #FF91A4;
     --white-background: #FFFFFF;
     --black-text-only: #111111;
-    --pink-soft-border: rgba(255, 145, 164, 0.15);
-    --pink-box-shadow: rgba(255, 145, 164, 0.08);
+    --pink-soft-border: rgba(255, 145, 164, 0.22);
+    --pink-box-shadow: rgba(255, 145, 164, 0.12);
 }
 
 h1, h2, h3, h4 {
@@ -162,6 +162,14 @@ h1, h2, h3, h4 {
 .section-cta-button:active, .load-more-grid-button:active {
     transform: scale(0.95);
     box-shadow: 0 2px 8px rgba(255, 145, 164, 0.3);
+}
+
+.grid-action-row-center {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 24px;
+    padding: 8px 0;
 }
 
 .waterfall-component-wrapper {
@@ -424,12 +432,6 @@ h1, h2, h3, h4 {
     padding: 0 16px;
 }
 
-.adv-builder-grid-wrapper {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 24px;
-}
-
 .adv-builder-panel-card {
     background-color: var(--white-background);
     border: 1px solid var(--pink-primary);
@@ -441,6 +443,10 @@ h1, h2, h3, h4 {
     align-items: center;
     gap: 24px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pink-bg-builder {
+    background-color: #FFF5F6 !important;
 }
 
 .adv-builder-panel-card:hover {
@@ -518,7 +524,7 @@ h1, h2, h3, h4 {
 }
 
 .pride-experience-block-clean {
-    background-color: var(--white-background);
+    background-color: #FFF5F6;
     padding: 56px 16px;
     text-align: center;
     border-top: 1px solid var(--pink-soft-border);

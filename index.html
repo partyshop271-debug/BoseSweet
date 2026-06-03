@@ -3,8 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- سيو وميتا تاجز احترافية لبراند حلويات بوسي -->
     <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-    <meta name="description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل لبراند حلويات بوسي الفاخر.">
+    <meta name="description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل لبراند حلويات بوسي الفاخر. خبرة أكثر من 10 سنوات في الفرافرة.">
+    <meta name="keywords" content="حلويات بوسي, تورت الفرافرة, بوكس الروقان, قشطوطة, ديسباسيتو, سينابون, ميني تورت, محاكي التورت, محاكي الورد">
+    <meta name="author" content="BoseSweets">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bosesweets.com/">
+    <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
+    <meta property="og:description" content="تذوق الفخامة مع تشكيلات حلويات بوسي الفاخرة المجهزة بخامات طبيعية 100% في الفرافرة والوادي الجديد.">
+    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bosesweets.com/">
+    <meta property="twitter:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
+    <meta property="twitter:description" content="تذوق الفخامة مع تشكيلات حلويات بوسي الفاخرة المجهزة بخامات طبيعية 100% في الفرافرة والوادي الجديد.">
+    <meta property="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+
+    <!-- PWA Web Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FF91A4">
+
+    <!-- الخطوط والأيقونات الرسمية للبراند -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,6 +38,7 @@
 </head>
 <body>
 
+    <!-- TOP BAR: الشريط العلوي المتحرك -->
     <div class="top-announcement-bar">
         <div class="scrolling-ticker-wrapper">
             <span class="ticker-message-item">صنعناها بحب لتهديها لمن تحب</span>
@@ -24,10 +50,11 @@
         </div>
     </div>
 
+    <!-- HEADER: الهيدر الرسمي المعتمد -->
     <header class="header-container">
         <button class="menu-toggle-btn" aria-label="زر القائمة الجانبية">☰</button>
         <div class="logo-brand-block">
-            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="store-logo">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="store-logo" loading="lazy">
             <h1 class="brand-name">حلويات بوسي</h1>
         </div>
         <div class="header-actions">
@@ -38,12 +65,13 @@
 
     <main id="page-container">
         
+        <!-- SECTION 01: عقد من التميز + WATERFALL -->
         <section id="section-excellence" class="homepage-section">
             <div class="section-meta-header">
                 <h2 class="main-section-title">عقد من <span class="pink-text">التميز</span> في صناعة الحلويات</h2>
                 <p class="section-rich-description">تم تصميم وتجهيز تشكيلاتنا الفاخرة بخامات طبيعية ممتازة ومضمونة 100% لتناسب مختلف مناسباتكم السعيدة وتمنحكم طعماً أصيلاً يشرفكم أمام ضيوفكم من أول لقمة لآخر قطعة.</p>
                 <div class="center-action-wrapper">
-                    <button class="section-cta-button" id="hero-cta-btn">اطلب الآن</button>
+                    <button class="section-cta-button" id="hero-cta-btn" onclick="location.href='menu.html'">اطلب الآن</button>
                 </div>
             </div>
             
@@ -57,10 +85,11 @@
             </div>
         </section>
 
+        <!-- SECTION 02: عقد من الإتقان (السلايدر الأفقي التلقائي) -->
         <section id="section-craftsmanship" class="homepage-section">
             <div class="section-meta-header">
                 <h2 class="section-display-title">عقد من الإتقان</h2>
-                <p class="section-rich-description">التزامنا بالجودة يبدأ من اختيار أدق המكونات وحتى وصول طلبكم بالتنسيق الفاخر الذي تطمحون إليه لراحة نفسية تامة وضمان جودة حقيقية.</p>
+                <p class="section-rich-description">التزامنا بالجودة يبدأ من اختيار أدق المكونات وحتى وصول طلبكم بالتنسيق الفاخر الذي تطمحون إليه لراحة نفسية تامة وضمان جودة حقيقية.</p>
             </div>
             <div class="slider-viewport-overflow-control">
                 <div class="full-slider-track" id="craftsmanship-slider-track"></div>
@@ -68,6 +97,7 @@
             </div>
         </section>
 
+        <!-- SECTION 03: الأكثر مبيعاً (8 منتجات - هيكل موحد) -->
         <section id="section-best-sellers" class="homepage-section">
             <div class="section-meta-header">
                 <h2 class="section-display-title">الأكثر مبيعاً</h2>
@@ -79,31 +109,21 @@
             </div>
         </section>
 
-        <section id="section-interactive-builders" class="adv-builder-container-fluid">
-            <div class="adv-builder-grid-wrapper">
-                <div class="adv-builder-panel-card">
-                    <div class="adv-builder-text-block">
-                        <h2 class="adv-builder-title-main">محاكي التورت الحصري</h2>
-                        <p class="adv-builder-desc-text">حلويات بوسي تتيح لكم تصميم التورتة الخاصة بمناسباتكم السعيدة وتحديد حجم الأفراد والنكهات والطبقات والرسائل بالكامل كأهم ميزة تنافسية مخصصة لكم.</p>
-                        <button class="adv-builder-action-btn" id="cta-go-cake-builder">ابدأ تصميم تورتتك</button>
-                    </div>
-                    <div class="adv-builder-media-frame">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تصميم التورت حسب الطلب حلويات بوسي" class="adv-builder-native-img" loading="lazy">
-                    </div>
+        <!-- SECTION 04: محاكي التورت (بلوك بصري كامل) -->
+        <section id="section-cake-builder" class="adv-builder-container-fluid">
+            <div class="adv-builder-panel-card pink-bg-builder">
+                <div class="adv-builder-text-block">
+                    <h2 class="adv-builder-title-main">محاكي التورت الحصري</h2>
+                    <p class="adv-builder-desc-text">حلويات بوسي تتيح لكم تصميم التورتة الخاصة بمناسباتكم السعيدة وتحديد حجم الأفراد والنكهات والطبقات والرسائل بالكامل كأهم ميزة تنافسية مخصصة لكم.</p>
+                    <button class="adv-builder-action-btn" id="cta-go-cake-builder" onclick="location.href='cake-builder.html'">ابدأ تصميم تورتتك</button>
                 </div>
-                <div class="adv-builder-panel-card">
-                    <div class="adv-builder-text-block">
-                        <h2 class="adv-builder-title-main">محاكي الورد والتخصيص الفاخر</h2>
-                        <p class="adv-builder-desc-text">ميزتنا التنافسية الكبرى لتنسيق بوكيهات الورد الطبيعي والصناعي والستان مع الهدايا والشوكولاتة المخصصة والرسائل والصور المطبوعة بلمسة راقية تليق بكم.</p>
-                        <button class="adv-builder-action-btn" id="cta-go-flower-builder">صمم البوكيه الآن</button>
-                    </div>
-                    <div class="adv-builder-media-frame">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تنسيق الورد الفاخر حلويات بوسي" class="adv-builder-native-img" loading="lazy">
-                    </div>
+                <div class="adv-builder-media-frame">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تصميم التورت حسب الطلب حلويات بوسي" class="adv-builder-native-img" loading="lazy">
                 </div>
             </div>
         </section>
 
+        <!-- SECTION 05: وصل حديثاً (6 منتجات - هيكل موحد) -->
         <section id="section-new-arrivals" class="homepage-section">
             <div class="section-meta-header">
                 <h2 class="section-display-title">وصل حديثاً</h2>
@@ -115,6 +135,7 @@
             </div>
         </section>
 
+        <!-- SECTION 06: منتجاتنا (عرض 4 منتجات في البداية ثم 4 كروت إضافية عند الضغط على الزر في منتصف الصفحة) -->
         <section id="section-our-products" class="homepage-section">
             <div class="section-meta-header">
                 <h2 class="section-display-title">منتجاتنا الفاخرة</h2>
@@ -126,6 +147,21 @@
             </div>
         </section>
 
+        <!-- SECTION 07: محاكي الورد (بلوك بصري كامل منفصل) -->
+        <section id="section-flower-builder" class="adv-builder-container-fluid">
+            <div class="adv-builder-panel-card pink-bg-builder">
+                <div class="adv-builder-text-block">
+                    <h2 class="adv-builder-title-main">محاكي الورد والتخصيص الفاخر</h2>
+                    <p class="adv-builder-desc-text">ميزتنا التنافسية الكبرى لتنسيق بوكيهات الورد الطبيعي والصناعي والستان مع الهدايا والشوكولاتة المخصصة والرسائل والصور المطبوعة بلمسة راقية تليق بكم.</p>
+                    <button class="adv-builder-action-btn" id="cta-go-flower-builder" onclick="location.href='flower-builder.html'">صمم البوكيه الآن</button>
+                </div>
+                <div class="adv-builder-media-frame">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تنسيق الورد الفاخر حلويات بوسي" class="adv-builder-native-img" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 08: الفخر والاعتزاز رحلة النجاح والإتقان -->
         <section id="section-brand-pride" class="pride-experience-block-clean">
             <div class="pride-inner-layout">
                 <h2 class="pride-main-heading">رحلة النجاح والإتقان</h2>
@@ -155,6 +191,7 @@
             </div>
         </section>
 
+        <!-- SECTION 09: تسوق حسب الفئة (12 فئة، حجم الكارت أكبر 30%) -->
         <section id="section-shop-by-category" class="homepage-section">
             <div class="section-meta-header">
                 <h2 class="section-display-title">تسوق حسب الفئة</h2>
@@ -168,11 +205,12 @@
 
     </main>
 
+    <!-- FOOTER: الفوتر الفاخر بالخلفية الفاتحة الواسعة -->
     <footer class="storefront-main-footer">
         <div class="footer-layout-columns-wrapper">
             <div class="footer-brand-summary-box">
                 <div class="footer-logo-block">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي لوجو" class="footer-brand-logo">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي لوجو" class="footer-brand-logo" loading="lazy">
                     <h3 class="footer-brand-name">حلويات بوسي</h3>
                 </div>
                 <p class="footer-brief-paragraph">صنعناها بحب لتهديها لمن تحب. خبرة ممتدة لأكثر من 10 سنوات في تقديم وتصنيع الحلويات وتصميم كعكات التخصيص الفاخرة وتنسيق الورد الطبيعي والصناعي والستان بمركز الفرافرة.</p>
@@ -200,10 +238,10 @@
                 <p class="footer-data-text-row">📍 شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وعيادة الدكتور علي</p>
                 <p class="footer-data-text-row">📞 للتواصل: 01097238441</p>
                 <div class="footer-social-original-icons-box">
-                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-icon facebook-icon" aria-label="فيسبوك حلويات بوسي" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-icon instagram-icon" aria-label="انستجرام حلويات بوسي" target="_blank"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-icon tiktok-icon" aria-label="تيك توك حلويات بوسي" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
-                    <a href="https://wa.me/201097238441" class="social-icon whatsapp-icon" aria-label="واتساب حلويات بوسي" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-icon facebook-icon" aria-label="فيسبوك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-icon instagram-icon" aria-label="انستجرام حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-icon tiktok-icon" aria-label="تيك توك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://wa.me/201097238441" class="social-icon whatsapp-icon" aria-label="واتساب حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i></a>
                 </div>
             </div>
         </div>
@@ -211,6 +249,45 @@
             <p class="copyright-legal-text">جميع الحقوق محفوظة © لعلامة حلويات بوسي التجارية 2026</p>
         </div>
     </footer>
+
+    <!-- Structured Data (JSON-LD) لرفع مستويات الـ SEO وتصدر محركات البحث -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Bakery",
+      "name": "حلويات بوسي - BoseSweets",
+      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "@id": "https://bosesweets.com/#bakery",
+      "url": "https://bosesweets.com/",
+      "telephone": "01097238441",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي",
+        "addressLocality": "الفرافرة",
+        "addressRegion": "الوادي الجديد",
+        "addressCountry": "EG"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "10:00",
+        "closes": "23:00"
+      },
+      "sameAs": [
+        "https://www.facebook.com/share/1H1vVMHyu9/",
+        "https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy",
+        "https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK"
+      ]
+    }
+    </script>
 
     <script src="app.js"></script>
 </body>

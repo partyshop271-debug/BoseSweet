@@ -1,4 +1,6 @@
 (function () {
+    'use strict';
+
     window.BoseSweets = {
         Core: {},
         LocalDatabase: {
@@ -18,7 +20,7 @@
                 { id: "p-cups", title: "كبات السعادة", flavor: "لوتس غني", description: "أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة ونظيفة.", price: 61, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
                 { id: "p-minicake", title: "الميني تورت", flavor: "فرد أو اتنين فانيليا وشوكولاتة", description: "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق وتُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها.", price: 154, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "new-arrival", "our-products"] },
                 { id: "p-relax", title: "بوكس الروقان", flavor: "تجميعة منوعة متسقة", description: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد يحتوي على تورتة و 2 كب سعادة و 1 كب ديسباسيتو و 1 كب ريدفيلفت.", price: 550, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
-                { id: "p-cupcake", title: "الكب كيك", flavor: "دستة كب كيك شوكولاتة", description: "قطع صغيرة من اللذة بطابع غني ومميز يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً ومزين بالكريمة اللباني الفاخرة.", price: 324, height: "auto", image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
+                { id: "p-cupcake", title: "الكب كيك", flavor: "دستة كب كيك شوكولاتة", description: "قطع صغيرة من اللذة بطابع غني ومميز يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً ومزين بالكريمة اللباني الفاخرة.", price: 324, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
                 { id: "p-gateaux", title: "الجاتوهات الكلاسيك", flavor: "فانيليا وشوكولاتة منوعة", description: "تشكيلات جاتوه متنوعة بخامات متوازنة وطعم واضح مناسب للضيافة اليومية والمناسبات السعيدة.", price: 506, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
                 { id: "p-redvelvet", title: "مثلث الريدڤيلڤت", flavor: "كريم تشيز غني", description: "طبقات من الريدڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز الفاخر.", price: 72, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
                 { id: "p-cinabon-pistachio", title: "سينابون بيستاشيو", flavor: "صوص فستق فاخر", description: "لفات سينابون مخبوزة بقوام طري مغطاة بصوص البيستاشيو الغني والمميز طازج يوم بيوم.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] }
@@ -45,12 +47,25 @@
         Core.bindScrollEvents();
     };
 
+    Core.escapeHTML = function (str) {
+        if (!str) return '';
+        return str.replace(/[&<>"']/g, function (m) {
+            switch (m) {
+                case '&': return '&amp;';
+                case '<': return '&lt;';
+                case '>': return '&gt;';
+                case '"': return '&quot;';
+                case "'": return '&#039;';
+            }
+        });
+    };
+
     Core.renderStorefrontUI = function () {
         const state = Runtime.state;
         
         const w1 = document.getElementById('waterfall-column-1');
         const w2 = document.getElementById('waterfall-column-2');
-        if (w1 && w2) {
+        if (w1 && w2 && w1.children.length === 0) {
             const placeholder = `<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="waterfall-img-item" alt="منتجات حلويات بوسي الفاخرة">`;
             w1.innerHTML = Array(4).fill(placeholder).join('');
             w2.innerHTML = Array(4).fill(placeholder).join('');
@@ -58,14 +73,21 @@
 
         const craftTrack = document.getElementById('craftsmanship-slider-track');
         const craftDots = document.getElementById('craftsmanship-slider-dots');
-        if (craftTrack && craftDots) {
+        if (craftTrack && craftDots && craftTrack.children.length === 0) {
             craftTrack.innerHTML = `
                 <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 1"></div>
                 <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 2"></div>
                 <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 3"></div>
             `;
-            craftDots.innerHTML = Array(3).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}" onclick="BoseSweets.Core.scrollCraftsmanship(${idx})"></span>`).join('');
+            craftDots.innerHTML = Array(3).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}"></span>`).join('');
             if (craftDots.children.length > 0) craftDots.children[0].classList.add('active');
+            
+            Array.from(craftDots.children).forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-index'), 10);
+                    BoseSweets.Core.scrollCraftsmanship(idx);
+                });
+            });
         }
 
         const bestSellersTrack = document.getElementById('best-sellers-slider-container');
@@ -78,27 +100,40 @@
 
         let bestSellersCount = 0;
         let newArrivalsCount = 0;
-        let ourProductsCount = 0;
+        let ourProductsRendered = 0;
+        let ourProductsTotal = [];
+
+        state.products.forEach(product => {
+            if (product.tags.includes('our-products')) {
+                ourProductsTotal.push(product);
+            }
+        });
 
         state.products.forEach(product => {
             const currentQty = state.quantities[product.id] || 1;
+            const safeId = Core.escapeHTML(product.id);
+            const safeTitle = Core.escapeHTML(product.title);
+            const safeFlavor = Core.escapeHTML(product.flavor);
+            const safeDesc = Core.escapeHTML(product.description);
+            const safeImg = Core.escapeHTML(product.image);
+
             const cardHtml = `
-                <div class="bs-product-card" data-id="${product.id}">
-                    <img src="${product.image}" class="card-image-box" alt="${product.title}" loading="lazy">
-                    <h3 class="card-title-text">${product.title}</h3>
-                    <div class="card-flavor-text">${product.flavor}</div>
-                    <p class="card-desc-paragraph">${product.description}</p>
+                <div class="bs-product-card" data-id="${safeId}">
+                    <img src="${safeImg}" class="card-image-box" alt="${safeTitle}" loading="lazy">
+                    <h3 class="card-title-text">${safeTitle}</h3>
+                    <div class="card-flavor-text">${safeFlavor}</div>
+                    <p class="card-desc-paragraph">${safeDesc}</p>
                     <div class="card-meta-action-row">
                         <div class="card-controls-block">
                             <div class="card-price-and-counter-zone">
                                 <div class="card-quantity-selector">
-                                    <button class="selector-action-btn" onclick="BoseSweets.Core.adjustQty('${product.id}', 1)">+</button>
-                                    <span class="selector-value-display" id="qty-node-${product.id}">${currentQty}</span>
-                                    <button class="selector-action-btn" onclick="BoseSweets.Core.adjustQty('${product.id}', -1)">-</button>
+                                    <button class="selector-action-btn pulse-trigger" data-action="plus" data-id="${safeId}">+</button>
+                                    <span class="selector-value-display" id="qty-node-${safeId}">${currentQty}</span>
+                                    <button class="selector-action-btn pulse-trigger" data-action="minus" data-id="${safeId}">-</button>
                                 </div>
                                 <div class="card-price-display-text">${product.price} EGP</div>
                             </div>
-                            <button class="card-add-to-cart-action-btn" onclick="BoseSweets.Core.addToCart('${product.id}')">إضافة للسلة</button>
+                            <button class="card-add-to-cart-action-btn" data-id="${safeId}">إضافة للسلة</button>
                         </div>
                     </div>
                 </div>
@@ -112,40 +147,126 @@
                 newArrivalsTrack.innerHTML += cardHtml;
                 newArrivalsCount++;
             }
-            if (product.tags.includes('our-products') && productsGrid) {
-                ourProductsCount++;
-                if (ourProductsCount <= 4 || state.showAllProducts) {
-                    productsGrid.innerHTML += cardHtml;
+        });
+
+        if (productsGrid) {
+            const itemsToRender = state.showAllProducts ? ourProductsTotal : ourProductsTotal.slice(0, 4);
+            itemsToRender.forEach(product => {
+                const currentQty = state.quantities[product.id] || 1;
+                const safeId = Core.escapeHTML(product.id);
+                const safeTitle = Core.escapeHTML(product.title);
+                const safeFlavor = Core.escapeHTML(product.flavor);
+                const safeDesc = Core.escapeHTML(product.description);
+                const safeImg = Core.escapeHTML(product.image);
+
+                productsGrid.innerHTML += `
+                    <div class="bs-product-card" data-id="${safeId}">
+                        <img src="${safeImg}" class="card-image-box" alt="${safeTitle}" loading="lazy">
+                        <h3 class="card-title-text">${safeTitle}</h3>
+                        <div class="card-flavor-text">${safeFlavor}</div>
+                        <p class="card-desc-paragraph">${safeDesc}</p>
+                        <div class="card-meta-action-row">
+                            <div class="card-controls-block">
+                                <div class="card-price-and-counter-zone">
+                                    <div class="card-quantity-selector">
+                                        <button class="selector-action-btn pulse-trigger" data-action="plus" data-id="${safeId}">+</button>
+                                        <span class="selector-value-display" id="qty-node-${safeId}">${currentQty}</span>
+                                        <button class="selector-action-btn pulse-trigger" data-action="minus" data-id="${safeId}">-</button>
+                                    </div>
+                                    <div class="card-price-display-text">${product.price} EGP</div>
+                                </div>
+                                <button class="card-add-to-cart-action-btn" data-id="${safeId}">إضافة للسلة</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const loadMoreBtn = document.getElementById('action-trigger-load-more');
+            if (loadMoreBtn) {
+                if (state.showAllProducts || ourProductsTotal.length <= 4) {
+                    loadMoreBtn.style.display = 'none';
+                } else {
+                    loadMoreBtn.style.display = 'block';
                 }
             }
-        });
+        }
 
         const bsDots = document.getElementById('best-sellers-dots');
         if (bsDots) {
-            bsDots.innerHTML = Array(bestSellersCount).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}" onclick="BoseSweets.Core.scrollToCard('best-sellers-slider-container', ${idx})"></span>`).join('');
+            bsDots.innerHTML = Array(bestSellersCount).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}"></span>`).join('');
             if (bsDots.children.length > 0) bsDots.children[0].classList.add('active');
+            Array.from(bsDots.children).forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-index'), 10);
+                    Core.scrollToCard('best-sellers-slider-container', idx);
+                });
+            });
         }
+
         const naDots = document.getElementById('new-arrivals-dots');
         if (naDots) {
-            naDots.innerHTML = Array(newArrivalsCount).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}" onclick="BoseSweets.Core.scrollToCard('new-arrivals-slider-container', ${idx})"></span>`).join('');
+            naDots.innerHTML = Array(newArrivalsCount).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}"></span>`).join('');
             if (naDots.children.length > 0) naDots.children[0].classList.add('active');
+            Array.from(naDots.children).forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-index'), 10);
+                    Core.scrollToCard('new-arrivals-slider-container', idx);
+                });
+            });
         }
 
         const catTrack = document.getElementById('categories-carousel-slider-track');
         const catDots = document.getElementById('categories-carousel-slider-dots');
-        if (catTrack && catDots) {
+        if (catTrack && catDots && catTrack.children.length === 0) {
             catTrack.innerHTML = '';
             state.categories.forEach(cat => {
+                const safeCatId = Core.escapeHTML(cat.id);
+                const safeCatName = Core.escapeHTML(cat.name);
                 catTrack.innerHTML += `
-                    <div class="bs-category-large-card" onclick="location.href='category.html?id=${cat.id}'">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="category-large-img" alt="${cat.name}">
-                        <div class="category-large-title">${cat.name}</div>
+                    <div class="bs-category-large-card" data-link="category.html?id=${safeCatId}">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="category-large-img" alt="${safeCatName}" loading="lazy">
+                        <div class="category-large-title">${safeCatName}</div>
                     </div>
                 `;
             });
-            catDots.innerHTML = Array(state.categories.length).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}" onclick="BoseSweets.Core.scrollToCard('categories-carousel-slider-track', ${idx})"></span>`).join('');
+            
+            Array.from(catTrack.children).forEach(card => {
+                card.addEventListener('click', function() {
+                    location.href = this.getAttribute('data-link');
+                });
+            });
+
+            catDots.innerHTML = Array(state.categories.length).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}"></span>`).join('');
             if (catDots.children.length > 0) catDots.children[0].classList.add('active');
+            Array.from(catDots.children).forEach(dot => {
+                dot.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-index'), 10);
+                    Core.scrollToCard('categories-carousel-slider-track', idx);
+                });
+            });
         }
+
+        Core.rebindCardEvents();
+    };
+
+    Core.rebindCardEvents = function () {
+        document.querySelectorAll('.pulse-trigger').forEach(btn => {
+            btn.onclick = function (e) {
+                e.preventDefault();
+                const id = this.getAttribute('data-id');
+                const action = this.getAttribute('data-action');
+                Core.adjustQty(id, action === 'plus' ? 1 : -1);
+            };
+        });
+
+        document.querySelectorAll('.card-add-to-cart-action-btn').forEach(btn => {
+            btn.onclick = function (e) {
+                e.preventDefault();
+                const id = this.getAttribute('data-id');
+                Core.addToCart(id);
+            };
+        });
     };
 
     Core.startCraftsmanshipSlider = function () {
@@ -234,7 +355,6 @@
             loadMoreBtn.addEventListener('click', () => {
                 Runtime.state.showAllProducts = true;
                 Core.renderStorefrontUI();
-                loadMoreBtn.style.display = 'none';
             });
         }
     });
