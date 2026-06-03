@@ -3,11 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تصفح المنيو | حلويات بوسي</title>
+    
+    <title>تصفح منيو الفئات الشامل | حلويات بوسي</title>
+    <meta name="description" content="تصفح المنيو الشامل والكامل لمتجر حلويات بوسي. اكتشف شبكة فئاتنا الـ 12 الكبيرة من التورت والجاتوهات والسينابون وبوكيهات الورد المخصصة في الفرافرة.">
+    <meta name="keywords" content="منيو حلويات بوسي, ديسباسيتو, قشطوطة, دوناتس, سينابون, محاكي الورد, كابات السعادة, تشيل بوكس, كب كيك, تورتات, جاتوه, ميني تورت, ريد فيلفت">
+    <meta name="author" content="BoseSweets">
+    <meta name="robots" content="index, follow">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bosesweets.com/menu.html">
+    <meta property="og:title" content="تصفح منيو الفئات الشامل | حلويات بوسي">
+    <meta property="og:description" content="اكتشف تشكيلاتنا الفاخرة المجهزة بخامات طبيعية 100%، وتوجّه مباشرة إلى قسمك المفضل براحة بصرية كاملة.">
+    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bosesweets.com/menu.html">
+    <meta property="twitter:title" content="تصفح منيو الفئات الشامل | حلويات بوسي">
+    <meta property="twitter:description" content="اكتشف تشكيلاتنا الفاخرة المجهزة بخامات طبيعية 100%، وتوجّه مباشرة إلى قسمك المفضل براحة بصرية كاملة.">
+    <meta property="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+
+    <meta name="theme-color" content="#FF91A4">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    
     <style>
         :root {
             --primary-pink: #FF91A4;
@@ -90,7 +112,6 @@
         .brand-name {
             font-size: 20px;
             font-weight: 700;
-            max-width: 700px;
         }
 
         .header-left {
@@ -169,34 +190,33 @@
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
+            gap: 35px; /* كروت أكبر لمنع التشتيت البصري */
             width: 100%;
         }
 
         .category-card {
             background-color: var(--pure-white);
-            border: 1px solid rgba(255, 145, 164, 0.2);
-            border-radius: 16px;
+            border: 1px solid var(--primary-pink);
+            border-radius: 0px; /* قفل الهيكل الصارم للموقع */
             overflow: hidden;
             text-decoration: none;
             color: var(--deep-black);
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 145, 164, 0.05);
         }
 
         .category-card:hover {
             transform: translateY(-5px);
-            border-color: var(--primary-pink);
             box-shadow: 0 8px 25px rgba(255, 145, 164, 0.15);
         }
 
         .category-image-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 85%;
-            background-color: #fafafa;
+            padding-top: 100%; /* الحجم الضخم للكروت المتناسقة */
+            background-color: var(--pure-white);
             overflow: hidden;
         }
 
@@ -211,21 +231,22 @@
         }
 
         .category-card:hover .category-img {
-            transform: scale(1.04);
+            transform: scale(1.03);
         }
 
         .category-info {
-            padding: 24px;
+            padding: 25px 20px;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            text-align: right;
+            text-align: center;
+            border-top: 1px solid rgba(255, 145, 164, 0.1);
         }
 
         .category-title {
             font-size: 22px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             line-height: 1.4;
         }
 
@@ -233,7 +254,7 @@
             font-size: 14px;
             line-height: 1.6;
             color: var(--deep-black);
-            opacity: 0.7;
+            opacity: 0.85;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -248,6 +269,7 @@
             color: var(--deep-black);
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             transition: color 0.2s ease;
         }
@@ -357,55 +379,10 @@
             opacity: 1;
         }
 
-        footer {
-            background-color: var(--pure-white);
-            border-top: 1px solid rgba(255, 145, 164, 0.15);
-            padding: 40px 20px;
-            text-align: center;
-            margin-top: auto;
-        }
-
-        .footer-brand {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .footer-slogan {
-            font-size: 14px;
-            opacity: 0.7;
-            margin-bottom: 25px;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .footer-link {
-            text-decoration: none;
-            color: var(--deep-black);
-            font-size: 14px;
-            font-weight: 600;
-            transition: color 0.2s ease;
-        }
-
-        .footer-link:hover {
-            color: var(--primary-pink);
-        }
-
-        .footer-copy {
-            font-size: 12px;
-            opacity: 0.5;
-        }
-
         @media (max-width: 992px) {
             .categories-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
+                gap: 25px;
             }
             .menu-intro h1 {
                 font-size: 28px;
@@ -427,19 +404,13 @@
             }
             .categories-grid {
                 grid-template-columns: repeat(1, 1fr);
-                gap: 20px;
-            }
-            .category-card {
-                border-radius: 14px;
+                gap: 25px;
             }
             .category-info {
-                padding: 20px;
+                padding: 20px 15px;
             }
             .category-title {
-                font-size: 20px;
-            }
-            .category-image-wrapper {
-                padding-top: 75%;
+                font-size: 19px;
             }
         }
     </style>
@@ -448,7 +419,7 @@
 
     <header>
         <div class="header-right">
-            <button class="menu-toggle" id="menuToggleBtn" aria-label="فتح القائمة القائمة الجانبية">
+            <button class="menu-toggle" id="menuToggleBtn" aria-label="فتح القائمة الجانبية">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -489,19 +460,20 @@
 
     <main>
         <section class="menu-intro">
-            <h1>استكشف المنيو كاملاً</h1>
-            <p>اختر القسم المفضل لديك لتستعرض تشكيلة المخبوزات والحلويات الطازجة التي صُنعت خصيصاً بمكونات طبيعية ممتازة وجودة فاخرة تشرفك دائماً.</p>
+            <h1>تصفح المنيو</h1>
+            <p>تم تصميم هذه التشكيلة الفاخرة بعناية فائقة لتناسب مختلف الأوقات والمناسبات السعيدة وتلبي ذوقكم الرفيع.</p>
         </section>
 
         <section class="categories-grid" id="categoriesGrid">
+            
             <a href="category.html?type=despacito" class="category-card">
                 <div class="category-image-wrapper">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ديسباسيتو" class="category-img">
                 </div>
                 <div class="category-info">
                     <h2 class="category-title">ديسباسيتو</h2>
-                    <p class="category-desc">كيكة الشوكولاتة البرازيلية الغنية بصوصات بوسي الغامرة لتذوب في كل قمة طعم.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <p class="category-desc">قوالب غنية بصوصات الشوكولاتة الفاخرة والكيك الهش لتجربة تذوب في الفم.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
 
@@ -511,8 +483,8 @@
                 </div>
                 <div class="category-info">
                     <h2 class="category-title">قشطوطة</h2>
-                    <p class="category-desc">كيكة الحليب الطازجة الغنية بالقشطة والمكسرات أو الفواكه لترطيب مثالي فائق الروعة.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <p class="category-desc">كيك الحليب التركي التقليدي الغني بالكريمة الطازجة والإضافات المميزة.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
 
@@ -522,8 +494,8 @@
                 </div>
                 <div class="category-info">
                     <h2 class="category-title">دوناتس</h2>
-                    <p class="category-desc">عجينة خفيفة وهشة مغطاة بأفخر أنواع صوصات وتزيينات الشوكولاتة لتسعد أوقاتك.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <p class="category-desc">عجينة هشة وخفيفة محضرة يومياً ومغطاة بأجود أنواع الشوكولاتة والتزيين المبتكر.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
 
@@ -533,19 +505,19 @@
                 </div>
                 <div class="category-info">
                     <h2 class="category-title">سينابون</h2>
-                    <p class="category-desc">لفائف القرفة الدافئة المخبوزة بعناية فائقة والمغطاة بصوص الجبن الكريمي المميز لدينا.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <p class="category-desc">لفائف القرفة الدافئة المخبوزة بعناية مع الصوص الأبيض الغني والمكسرات النيئة.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
 
-            <a href="category.html?type=flowers" class="category-card">
+            <a href="flower-builder.html" class="category-card">
                 <div class="category-image-wrapper">
                     <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ورد" class="category-img">
                 </div>
                 <div class="category-info">
                     <h2 class="category-title">ورد</h2>
-                    <p class="category-desc">بوكيهات وتنسيقات ورد راقية مصممة يدوياً لتناسب كافة هداياك وتناسب ذوقك الرفيع.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <p class="category-desc">محاكي تنسيق البوكيهات الفاخرة من الورد الطبيعي والصناعي والستان مع خيارات الهدايا والصور.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
 
@@ -555,8 +527,8 @@
                 </div>
                 <div class="category-info">
                     <h2 class="category-title">كابات السعادة</h2>
-                    <p class="category-desc">طبقات غنية من الكيك والكريمات الخفيفة المحضرة خصيصاً لتمنحك جرعة مركزة من السعادة.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <p class="category-desc">طبقات متناغمة من الكيك والصوصات الفاخرة تم تنسيقها في كابات فردية مبهجة.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
 
@@ -566,30 +538,30 @@
                 </div>
                 <div class="category-info">
                     <h2 class="category-title">تشيل بوكس</h2>
-                    <p class="category-desc">بوكس متكامل يجمع تشكيلة مميزة من الأصناف الخفيفة والمبهجة لجمعاتك وأوقات راحتك الدائمة.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <p class="category-desc">صندوق تجميعات الحلويات المتنوعة والباردة المصمم للمشاركة في اللقاءات العائلية.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
 
             <a href="category.html?type=cupcakes" class="category-card">
                 <div class="category-image-wrapper">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كاب كيك" class="category-img">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كب كيك" class="category-img">
                 </div>
                 <div class="category-info">
-                    <h2 class="category-title">كاب كيك</h2>
-                    <p class="category-desc">قطع كيك فردية غنية ومزينة بكريمات مخفوقة ناعمة لتناسب الحفلات ومختلف المناسبات السعيدة.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <h2 class="category-title">كب كيك</h2>
+                    <p class="category-desc">قطع الكب كيك الصغيرة المخبوزة بدقة مع لمسات مبتكرة من الكريمة والتزيين الراقي.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
 
-            <a href="category.html?type=cakes" class="category-card">
+            <a href="cake-builder.html" class="category-card">
                 <div class="category-image-wrapper">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تورتات" class="category-img">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تورت" class="category-img">
                 </div>
                 <div class="category-info">
-                    <h2 class="category-title">تورتات</h2>
-                    <p class="category-desc">تصاميم تورت احترافية لجميع احتفالاتك ومناسباتك الكبيرة، صُنعت لتسعد قلوب ضيوفك الفاخرين.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <h2 class="category-title">تورت</h2>
+                    <p class="category-desc">محاكي التورت الحصري لتخصيص الحجم والمقاس وعدد الأفراد بدقة هندسية كاملة.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
 
@@ -599,19 +571,19 @@
                 </div>
                 <div class="category-info">
                     <h2 class="category-title">جاتوه</h2>
-                    <p class="category-desc">قطع جاتوه كلاسيكية فاخرة بطبقات متناسقة بدقة ومتوازنة تماماً تذوب في الفم بنعومة متناهية.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <p class="category-desc">قطع الجاتوه الكلاسيكية والحديثة المعدة بقطع متساوية وطبقات متوازنة النكهة.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
 
             <a href="category.html?type=mini-cakes" class="category-card">
                 <div class="category-image-wrapper">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ميني كيك" class="category-img">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ميني تورت" class="category-img">
                 </div>
                 <div class="category-info">
-                    <h2 class="category-title">ميني كيك</h2>
-                    <p class="category-desc">تورتات دائرية صغيرة مغلفة بالفاكيوم الشفاف، مصممة بدقة لتكفي المشاركات الثنائية الرقيقة.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <h2 class="category-title">ميني تورت</h2>
+                    <p class="category-desc">التورت الدائرية المصغرة والمغلفة بالفاكيوم الشفاف للحفاظ على طراوتها وجمالها الطبيعي.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
 
@@ -621,24 +593,97 @@
                 </div>
                 <div class="category-info">
                     <h2 class="category-title">ريد فيلفت</h2>
-                    <p class="category-desc">كيكة المخمل الأحمر الكلاسيكية الفخمة مع فروستينج الجبن الغني والمميز بلمسة بوسي الراقية.</p>
-                    <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                    <p class="category-desc">الكيك المخملي الأحمر الشهير الغني بطبقات كريمة الجبن الفاخرة والمتوازنة.</p>
+                    <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                 </div>
             </a>
+
         </section>
     </main>
 
-    <footer>
-        <div class="footer-brand">حلويات بوسي</div>
-        <div class="footer-slogan">صنعناها بحب لتهديها لمن تحب</div>
-        <div class="footer-links">
-            <a href="privacy-policy.html" class="footer-link">سياسة الخصوصية</a>
-            <a href="refund-policy.html" class="footer-link">سياسة الاستبدال والاسترجاع</a>
+    <footer class="storefront-main-footer">
+        <div class="footer-layout-columns-wrapper">
+            <div class="footer-brand-summary-box">
+                <div class="footer-logo-block">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي لوجو" class="footer-brand-logo" loading="lazy">
+                    <h3 class="footer-brand-name">حلويات بوسي</h3>
+                </div>
+                <p class="footer-brief-paragraph">صنعناها بحب لتهديها لمن تحب. خبرة ممتدة لأكثر من 10 سنوات في تقديم وتصنيع الحلويات وتصميم كعكات التخصيص الفاخرة وتنسيق الورد الطبيعي والصناعي والستان بمركز الفرافرة.</p>
+            </div>
+            
+            <div class="footer-links-navigation-group">
+                <h4 class="footer-group-title">روابط سريعة</h4>
+                <ul class="footer-clickable-links-list">
+                    <li><a href="index.html">الصفحة الرئيسية</a></li>
+                    <li><a href="menu.html">تصفح المنيو الشامل</a></li>
+                    <li><a href="cart.html">سلة المشتريات</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links-navigation-group">
+                <h4 class="footer-group-title">سياسات المتجر</h4>
+                <ul class="footer-clickable-links-list">
+                    <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+                    <li><a href="refund-policy.html">سياسة الاستبدال والاسترجاع</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-business-data-card">
+                <h4 class="footer-group-title">بيانات فرع الكفاح</h4>
+                <p class="footer-data-text-row">📍 شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وعيادة الدكتور علي</p>
+                <p class="footer-data-text-row">📞 للتواصل: 01097238441</p>
+                <div class="footer-social-original-icons-box">
+                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-icon facebook-icon" aria-label="فيسبوك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-icon instagram-icon" aria-label="انستجرام حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-icon tiktok-icon" aria-label="تيك توك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://wa.me/201097238441" class="social-icon whatsapp-icon" aria-label="واتساب حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
         </div>
-        <div class="footer-copy">&copy; 2026 جميع الحقوق محفوظة لمتجر حلويات بوسي</div>
+        <div class="footer-copyrights-bottom-bar">
+            <p class="copyright-legal-text">جميع الحقوق محفوظة © لعلامة حلويات بوسي التجارية 2026</p>
+        </div>
     </footer>
 
-    <script id="cleanRuntimeScript">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Bakery",
+      "name": "حلويات بوسي - BoseSweets",
+      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "@id": "https://bosesweets.com/#bakery",
+      "url": "https://bosesweets.com/",
+      "telephone": "01097238441",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي",
+        "addressLocality": "الفرافرة",
+        "addressRegion": "الوادي الجديد",
+        "addressCountry": "EG"
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "10:00",
+        "closes": "23:00"
+      },
+      "sameAs": [
+        "https://www.facebook.com/share/1H1vVMHyu9/",
+        "https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy",
+        "https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK"
+      ]
+    }
+    </script>
+
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
             const menuToggleBtn = document.getElementById('menuToggleBtn');
             const closeMenuBtn = document.getElementById('closeMenuBtn');
