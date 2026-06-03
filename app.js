@@ -14,11 +14,14 @@
                 { id: "p-despacito", title: "الديسباسيتو", flavor: "نوتيلا دارك", description: "طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة معمول بخامات مختارة بعناية.", price: 264, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "new-arrival"] },
                 { id: "p-qashtota", title: "القشطوطة", flavor: "بيستاشيو", description: "كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح من أول لقمة مناسب للضيافة اليومية ولأي وقت بجودة حقيقية.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
                 { id: "p-donuts", title: "الدوناتس", flavor: "ماتيلدا شوكولاتة", description: "دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك نفس الطعم والجودة اللي بنقدمها داخل الفرع.", price: 110, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival"] },
-                { id: "p-cinabon", title: "السينابون", flavor: "كلاسيك صوص تشيز", description: "لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة معمول علشان تاخد تجربة واضحة في الطعم والجودة.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
-                { id: "p-cups", title: "كبات السعادة", flavor: "لوتس غني", description: "أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة ونظيفة.", price: 61, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
-                { id: "p-minicake", title: "الميني تورت", flavor: "فرد أو اتنين فانيليا وشوكولاتة", description: "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق وتُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها.", price: 154, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
-                { id: "p-relax", title: "بوكس الروقان", flavor: "تجميعة منوعة متسقة", description: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد يحتوي على تورتة و 2 كب سعادة و 1 كب ديسباسيتو و 1 كب ريدفيلفت.", price: 550, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
-                { id: "p-cupcake", title: "الكب كيك", flavor: "دستة كب كيك شوكولاتة", description: "قطع صغيرة من اللذة بطابع غني ومميز يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً ومزين بالكريمة اللباني الفاخرة.", price: 324, height: "auto", image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] }
+                { id: "p-cinabon", title: "السينابون", flavor: "كلاسيك صوص تشيز", description: "لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة معمول علشان تاخد تجربة واضحة في الطعم والجودة.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
+                { id: "p-cups", title: "كبات السعادة", flavor: "لوتس غني", description: "أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة ونظيفة.", price: 61, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
+                { id: "p-minicake", title: "الميني تورت", flavor: "فرد أو اتنين فانيليا وشوكولاتة", description: "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق وتُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها.", price: 154, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "new-arrival", "our-products"] },
+                { id: "p-relax", title: "بوكس الروقان", flavor: "تجميعة منوعة متسقة", description: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد يحتوي على تورتة و 2 كب سعادة و 1 كب ديسباسيتو و 1 كب ريدفيلفت.", price: 550, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
+                { id: "p-cupcake", title: "الكب كيك", flavor: "دستة كب كيك شوكولاتة", description: "قطع صغيرة من اللذة بطابع غني ومميز يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً ومزين بالكريمة اللباني الفاخرة.", price: 324, height: "auto", image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
+                { id: "p-gateaux", title: "الجاتوهات الكلاسيك", flavor: "فانيليا وشوكولاتة منوعة", description: "تشكيلات جاتوه متنوعة بخامات متوازنة وطعم واضح مناسب للضيافة اليومية والمناسبات السعيدة.", price: 506, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
+                { id: "p-redvelvet", title: "مثلث الريدڤيلڤت", flavor: "كريم تشيز غني", description: "طبقات من الريدڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز الفاخر.", price: 72, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
+                { id: "p-cinabon-pistachio", title: "سينابون بيستاشيو", flavor: "صوص فستق فاخر", description: "لفات سينابون مخبوزة بقوام طري مغطاة بصوص البيستاشيو الغني والمميز طازج يوم بيوم.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] }
             ]
         },
         Runtime: {
@@ -56,7 +59,11 @@
         const craftTrack = document.getElementById('craftsmanship-slider-track');
         const craftDots = document.getElementById('craftsmanship-slider-dots');
         if (craftTrack && craftDots) {
-            craftTrack.innerHTML = Array(3).fill(`<div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة"></div>`).join('');
+            craftTrack.innerHTML = `
+                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 1"></div>
+                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 2"></div>
+                <div class="full-slider-image-link"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="slider-full-img" alt="إتقان الجودة 3"></div>
+            `;
             craftDots.innerHTML = Array(3).fill(0).map((_, idx) => `<span class="dot-node" data-index="${idx}" onclick="BoseSweets.Core.scrollCraftsmanship(${idx})"></span>`).join('');
             if (craftDots.children.length > 0) craftDots.children[0].classList.add('active');
         }
@@ -149,7 +156,7 @@
             let index = Runtime.state.currentCraftIndex;
             index = (index + 1) % 3;
             Runtime.state.currentCraftIndex = index;
-            if (track) track.style.transform = `translateX(${index * 100}%)`;
+            if (track) track.style.transform = `translateX(${index * (100 / 3)}%)`;
             if (dots) {
                 Array.from(dots.children).forEach((dot, idx) => {
                     dot.classList.toggle('active', idx === index);
@@ -163,7 +170,7 @@
         Runtime.state.currentCraftIndex = index;
         const track = document.getElementById('craftsmanship-slider-track');
         const dots = document.getElementById('craftsmanship-slider-dots');
-        if (track) track.style.transform = `translateX(${index * 100}%)`;
+        if (track) track.style.transform = `translateX(${index * (100 / 3)}%)`;
         if (dots) {
             Array.from(dots.children).forEach((dot, idx) => {
                 dot.classList.toggle('active', idx === index);
