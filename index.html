@@ -1,1076 +1,1711 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-  <link rel="stylesheet" href="app.css">
-  <!-- استدعاء خط Cairo الاحترافي المعتمد للهوية الرقمية للموقع -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-  
-  <style>
-    /* تطبيق خط Cairo الاحترافي الفخم على كامل الهوية البصرية للموقع */
-    * {
-      font-family: 'Cairo', sans-serif;
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
 
-    body {
-      background-color: #FFFFFF; /* مساحات بيضاء ناصعة لخلق تنفس بصري مريح للعميل */
-      color: #111111; /* الأسود النقي معزول تماماً ومخصص حصرياً للنصوص والعناوين */
-      overflow-x: hidden;
-      -webkit-tap-highlight-color: transparent;
-    }
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    .bs-header-wrapper {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      height: 75px;
-      padding: 0 15px;
-      background-color: #FFFFFF;
-    }
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    .bs-menu-trigger {
-      background: none;
-      border: none;
-      font-size: 1.8rem;
-      color: #111111;
-      cursor: pointer;
-      justify-self: start;
-    }
+<title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
 
-    .bs-logo-brand-zone {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-    }
+<meta
+name="description"
+content="أكثر من 10 سنوات من التميز في صناعة الحلويات والتورت والورد الطبيعي والهدايا. منصة حلويات بوسي الرسمية.">
 
-    .bs-brand-name {
-      color: #FF91A4; /* نبض الحياة في الموقع */
-      font-weight: 700; /* قفل وزن الخط عند 700 كحد أقصى لأضخم العناوين */
-      font-size: 1.4rem;
-    }
+<meta
+name="keywords"
+content="حلويات بوسي, حلويات الفرافرة, تورت, ورد طبيعي, بوكس هدايا, ديسباسيتو, قشطوطة, سينابون, دوناتس, كب كيك">
 
-    .bs-left-actions {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      justify-self: end;
-    }
+<meta name="robots" content="index,follow">
 
-    .bs-action-icon {
-      background: none;
-      border: none;
-      font-size: 1.6rem;
-      color: #111111;
-      cursor: pointer;
-      position: relative;
-      display: flex;
-      align-items: center;
-      text-decoration: none;
-    }
+<meta name="theme-color" content="#FF91A4">
 
-    .bs-cart-count {
-      position: absolute;
-      top: -5px;
-      left: -8px;
-      background-color: #FF91A4;
-      color: #FFFFFF;
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 50%;
-    }
+<meta property="og:type" content="website">
 
-    /* تطوير وتحديث القائمة الجانبية بشكل فخم ومستقر */
-    .bs-mobile-menu {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      width: 85%;
-      max-width: 320px;
-      height: 100vh;
-      background-color: #FFFFFF;
-      box-shadow: -10px 0 30px rgba(255, 145, 164, 0.08);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 2500;
-      display: flex;
-      flex-direction: column;
-      transform: translateX(0);
-    }
+<meta property="og:title" content="حلويات بوسي">
 
-    .bs-mobile-menu.active {
-      transform: translateX(-100%);
-    }
+<meta property="og:description"
+content="صنعناها بحب لتهديها لمن تحب">
 
-    .bs-menu-header {
-      background: #FFFFFF;
-      padding: 2rem 1.5rem;
-      text-align: center;
-      border-bottom: 1px solid rgba(255, 145, 164, 0.15);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
+<meta property="og:image"
+content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
 
-    .bs-menu-header img {
-      height: 60px;
-      width: auto;
-    }
+<meta property="og:url"
+content="https://bosesweets.com">
 
-    .bs-menu-header h3 {
-      color: #111111;
-      font-size: 1.4rem;
-      font-weight: 700;
-    }
+<link rel="canonical"
+href="https://bosesweets.com">
 
-    .bs-menu-header p {
-      color: #FF91A4;
-      font-size: 0.9rem;
-      font-weight: 600;
-    }
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
 
-    .bs-menu-links-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1rem 0;
-    }
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
 
-    .bs-mobile-link {
-      font-weight: 600;
-      font-size: 1.1rem;
-      color: #111111;
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      transition: background 0.3s ease, color 0.3s ease;
-      text-decoration: none;
-    }
+<link
+href="https://fonts.googleapis.com/css2?family=Alexandria:wght@300;400;500;600;700;800&display=swap"
+rel="stylesheet">
 
-    .bs-mobile-link:hover {
-      background-color: rgba(255, 145, 164, 0.04);
-      color: #FF91A4;
-    }
+<link rel="stylesheet" href="styles.css">
 
-    .bs-menu-footer-branding {
-      padding: 1.5rem;
-      text-align: center;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #111111;
-      border-top: 1px solid rgba(255, 145, 164, 0.1);
-      background-color: rgba(255, 145, 164, 0.02);
-    }
-
-    .bs-menu-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(17, 17, 17, 0.3);
-      backdrop-filter: blur(3px);
-      z-index: 2400;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-
-    .bs-menu-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
-    .bs-section-title {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #111111;
-      margin-bottom: 1rem;
-    }
-
-    .bs-waterfall-section {
-      width: 100vw;
-      margin-left: calc(-50vw + 50%);
-      margin-right: calc(-50vw + 50%);
-      overflow: hidden;
-      background-color: #FFFFFF;
-      padding: 4rem 0;
-    }
-
-    .bs-waterfall-wrapper {
-      display: flex;
-      width: 100%;
-      height: 520px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .bs-waterfall-column {
-      flex: 1;
-      height: 100%;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .bs-waterfall-track {
-      display: flex;
-      flex-direction: column;
-      position: absolute;
-      width: 100%;
-      gap: 0;
-    }
-
-    .bs-waterfall-track.up {
-      animation: bs-scroll-up 20s linear infinite;
-    }
-
-    .bs-waterfall-track.down {
-      animation: bs-scroll-down 20s linear infinite;
-      bottom: 0;
-    }
-
-    @keyframes bs-scroll-up {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-50%); }
-    }
-
-    @keyframes bs-scroll-down {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(50%); }
-    }
-
-    .bs-waterfall-card {
-      width: 100%;
-      height: 260px;
-      display: block;
-    }
-
-    .bs-waterfall-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .bs-waterfall-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 140px;
-      background: linear-gradient(to top, #FFFFFF 0%, rgba(255, 255, 255, 0) 100%);
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    .bs-section {
-      padding: 4rem 20px;
-      background-color: #FFFFFF;
-    }
-
-    .bs-container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .bs-itqan-slider {
-      width: 100vw;
-      margin-left: calc(-50vw + 50%);
-      margin-right: calc(-50vw + 50%);
-      overflow: hidden;
-    }
-
-    .bs-itqan-track {
-      display: flex;
-      width: 300vw;
-      animation: bs-itqan-slide 25s linear infinite;
-    }
-
-    .bs-itqan-img {
-      width: 100vw;
-      height: 55vh;
-      object-fit: cover;
-    }
-
-    @keyframes bs-itqan-slide {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(200vw); }
-    }
-
-    .bs-mobile-full-slider {
-      display: flex;
-      gap: 20px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-      width: 100vw;
-      margin-left: calc(-50vw + 50%);
-      margin-right: calc(-50vw + 50%);
-      padding: 1.5rem 20px;
-    }
-
-    .bs-mobile-full-slider::-webkit-scrollbar {
-      display: none;
-    }
-
-    .bs-mobile-full-slider .bs-product-card {
-      flex: 0 0 calc(100vw - 40px);
-      scroll-snap-align: start;
-    }
-
-    @media (min-width: 768px) {
-      .bs-mobile-full-slider {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        overflow-x: visible;
-        width: 100%;
-        margin: 0;
-        padding: 1.5rem 0;
-      }
-      .bs-mobile-full-slider .bs-product-card {
-        flex: none;
-      }
-    }
-
-    .bs-product-card {
-      background-color: #FFFFFF;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      height: 100%;
-    }
-
-    /* تعديل البوردر الخارجي ليكون خطاً واحداً مستمراً ناعماً للكروت */
-    .bs-card-border-outer {
-      border: 1px solid #FF91A4;
-      border-radius: 24px;
-      padding: 6px;
-      width: 100%;
-      height: 100%;
-      background-color: #FFFFFF;
-      box-shadow: 0 4px 15px rgba(255, 145, 164, 0.05);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .bs-card-border-outer:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(255, 145, 164, 0.15);
-    }
-
-    /* تعديل البوردر الداخلي ليتكامل مع الخارجي مكوناً 2 بوردر فقط */
-    .bs-card-border-inner {
-      border: 1px solid #FF91A4;
-      border-radius: 18px;
-      padding: 1.5rem;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      background-color: #FFFFFF;
-    }
-
-    /* تخصيص أبعاد كروت قسم منتجاتنا (أعرض 30% وأقصر 20%) مع الحفاظ على كارتين متجاورين دائماً */
-    #ourProductsGrid .bs-product-card {
-      height: auto;
-    }
-
-    #ourProductsGrid .bs-card-border-inner {
-      padding: 1rem;
-    }
-
-    #ourProductsGrid .bs-product-img-wrapper {
-      padding-top: 52.5%; /* تقليل الارتفاع النسبي للصورة لجعل الكارت أقصر */
-    }
-
-    #ourProductsGrid .bs-product-desc {
-      margin-bottom: 1rem;
-    }
-
-    .bs-product-img-wrapper {
-      position: relative;
-      width: 100%;
-      padding-top: 75%;
-      border-radius: 14px;
-      overflow: hidden;
-      margin-bottom: 1.25rem;
-    }
-
-    .bs-product-img {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .bs-category-tag {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #FF91A4;
-      margin-bottom: 0.5rem;
-    }
-
-    .bs-product-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #111111;
-      margin-bottom: 0.25rem;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-
-    .bs-flavor-text {
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #FF91A4;
-      margin-bottom: 0.75rem;
-    }
-
-    .bs-product-desc {
-      font-size: 0.95rem;
-      color: #111111;
-      line-height: 1.6;
-      margin-bottom: 1.5rem;
-      font-weight: 400;
-      text-align: justify;
-    }
-
-    .bs-card-action-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: auto;
-      margin-bottom: 1.25rem;
-      gap: 15px;
-    }
-
-    .bs-qty-counter {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: 1px solid #FF91A4;
-      border-radius: 20px;
-      padding: 0.25rem 0.5rem;
-      background-color: rgba(255, 145, 164, 0.03);
-      width: 110px;
-    }
-
-    .bs-qty-btn {
-      background: none;
-      border: none;
-      font-size: 1.3rem;
-      font-weight: 700;
-      cursor: pointer;
-      color: #111111;
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .bs-qty-display-num {
-      font-weight: 700;
-      font-size: 1.1rem;
-      color: #111111;
-    }
-
-    .bs-product-price {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #FF91A4;
-      white-space: nowrap;
-    }
-
-    .bs-product-price span {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-right: 2px;
-    }
-
-    .bs-add-to-cart-submit {
-      width: 100%;
-      background-color: #FF91A4;
-      color: #FFFFFF;
-      border: none;
-      padding: 0.9rem 1.5px;
-      font-size: 1.15rem;
-      font-weight: 700;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    .bs-add-to-cart-submit:active {
-      transform: scale(0.98);
-    }
-
-    .bs-button {
-      display: inline-block;
-      background-color: #FF91A4;
-      color: #FFFFFF;
-      padding: 0.9rem 2rem;
-      font-size: 1.15rem;
-      font-weight: 700;
-      border-radius: 24px;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    /* هيكلة قسم منتجاتنا ليعرض كارتين عريضين متجاورين بدقة وثبات */
-    .bs-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px 15px;
-    }
-
-    @media (min-width: 768px) {
-      .bs-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px 25px;
-      }
-    }
-
-    .bs-premium-block-banner {
-      width: 100vw;
-      margin-left: calc(-50vw + 50%);
-      margin-right: calc(-50vw + 50%);
-      border-top: 1px solid #FF91A4;
-      border-bottom: 1px solid #FF91A4;
-      padding: 6rem 20px;
-      text-align: center;
-      background-color: #FFFFFF;
-      box-shadow: inset 0 0 50px rgba(255, 145, 164, 0.08);
-    }
-
-    .bs-pride-section {
-      width: 100vw;
-      margin-left: calc(-50vw + 50%);
-      margin-right: calc(-50vw + 50%);
-      border-top: 1px solid #FF91A4;
-      border-bottom: 1px solid #FF91A4;
-      padding: 6rem 20px;
-      text-align: center;
-      background-color: #FFFFFF;
-      box-shadow: 0 10px 35px rgba(255, 145, 164, 0.1);
-    }
-
-    .bs-pride-stat {
-      font-size: 4.5rem;
-      color: #FF91A4;
-      font-weight: 700;
-      line-height: 1;
-      margin-bottom: 1rem;
-    }
-
-    .bs-category-large-slider {
-      display: flex;
-      gap: 2rem;
-      overflow-x: auto;
-      padding: 1.5rem 20px;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: none;
-      width: 100vw;
-      margin-left: calc(-50vw + 50%);
-      margin-right: calc(-50vw + 50%);
-    }
-
-    .bs-category-large-slider::-webkit-scrollbar {
-      display: none;
-    }
-
-    .bs-category-large-card {
-      flex: 0 0 280px;
-      scroll-snap-align: start;
-    }
-
-    .bs-category-large-card .bs-card-border-inner {
-      padding: 0;
-    }
-
-    .bs-category-large-card a {
-      text-decoration: none;
-      display: block;
-    }
-
-    .bs-category-large-img {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
-      border-top-left-radius: 14px;
-      border-top-right-radius: 14px;
-    }
-
-    .bs-category-large-title {
-      padding: 1.5rem;
-      text-align: center;
-      font-weight: 700;
-      font-size: 1.35rem;
-      color: #111111;
-    }
-
-    .bs-footer-centered {
-      text-align: center;
-      background-color: #FFFFFF;
-      border-top: 1px solid #FF91A4;
-      padding: 4rem 20px 2rem 20px;
-      margin-top: 5rem;
-    }
-
-    .bs-footer-centered .bs-footer-links {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 2rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .bs-footer-link {
-      color: #111111;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
-    }
-
-    .bs-footer-link:hover {
-      color: #FF91A4;
-    }
-
-    .bs-social-icons {
-      display: flex;
-      justify-content: center;
-      gap: 2.5rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .bs-social-original-btn {
-      width: 45px;
-      height: 45px;
-      transition: transform 0.3s ease;
-    }
-
-    .bs-social-original-btn:hover {
-      transform: scale(1.1);
-    }
-
-    .bs-hidden-card {
-      display: none !important;
-    }
-    
-    .bs-announcement-bar {
-      background-color: #FF91A4;
-      color: #FFFFFF;
-      text-align: center;
-      padding: 10px 15px;
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-  </style>
 </head>
+
 <body>
 
-  <div class="bs-announcement-bar">
-    <div class="bs-announcement-text">كل قطعة صُنعت بعناية فائقة وخامات طبيعية 100% لتسعد قلبك وقلب من تحب.. نورتنا في حلويات بوسي!</div>
-  </div>
+<!-- ========================= -->
+<!-- TOP BAR -->
+<!-- ========================= -->
 
-  <header class="bs-header">
-    <div class="bs-container">
-      <div class="bs-header-wrapper">
-        <button class="bs-menu-trigger" id="mobileMenuTrigger" aria-label="القائمة">☰</button>
-        <div class="bs-logo-brand-zone">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" style="height:48px; width:auto;" alt="حلويات بوسي">
-          <span class="bs-brand-name">حلويات بوسي</span>
-        </div>
-        <div class="bs-left-actions">
-          <button class="bs-action-icon" aria-label="البحث">🔍</button>
-          <a href="cart.html" class="bs-action-icon" aria-label="عربة التسوق">
-            🛒<span class="bs-cart-count" id="headerCartCount">0</span>
-          </a>
-        </div>
-      </div>
-    </div>
-  </header>
+<section class="top-bar">
 
-  <div class="bs-menu-overlay" id="menuOverlay"></div>
-  
-  <!-- تطوير الهيكل الداخلي للقائمة الجانبية بالكامل لمنع الاقتطاع وضمان الفخامة البصرية -->
-  <div class="bs-mobile-menu" id="mobileMenu">
-    <div class="bs-menu-header">
-      <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
-      <h3>حلويات بوسي</h3>
-      <p>صنعناها بحب لتهديها لمن تحب</p>
-    </div>
-    <div class="bs-menu-links-container">
-      <a href="index.html" class="bs-mobile-link">🏠 الرئيسية</a>
-      <a href="menu.html" class="bs-mobile-link">📖 المنيو</a>
-      <a href="cake-builder.html" class="bs-mobile-link">🎂 محاكي التورتة</a>
-      <a href="flower-builder.html" class="bs-mobile-link">🌹 محاكي الورد</a>
-      <a href="cart.html" class="bs-mobile-link">🛒 السلة</a>
-      <a href="favorites.html" class="bs-mobile-link">❤️ المفضلة</a>
-      <a href="contact.html" class="bs-mobile-link">📞 تواصل معنا</a>
-      <a href="about.html" class="bs-mobile-link">📍 من نحن</a>
-    </div>
-    <div class="bs-menu-footer-branding">
-      مطبخ حلويات بوسي الفاخر الفرافرة
-    </div>
-  </div>
+<div class="top-bar-track">
 
-  <section class="bs-waterfall-section">
-    <div class="bs-container" style="text-align: center; margin-bottom: 2.5rem; padding: 0 20px;">
-      <h2 class="bs-section-title">عقد من التميز</h2>
-      <p style="color:#111111; max-width:650px; margin:0 auto; line-height:1.7;">تأسس مطبخنا لتقديم تجربة تذوق حقيقية تعتمد بالكامل على خامات طبيعية مختارة بعناية فائقة للحصول على أفضل جودة طازجة ومستقرة طوال السنوات.</p>
-    </div>
-    <div class="bs-waterfall-wrapper">
-      <div class="bs-waterfall-column">
-        <div class="bs-waterfall-track up">
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cake_m1.jpg" alt="ميني تورت"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/gateau_m2.jpg" alt="جاتوهات"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/donut_m3.jpg" alt="دوناتس"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cinnabon_m4.jpg" alt="سينابون"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cake_m1.jpg" alt="ميني تورت"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/gateau_m2.jpg" alt="جاتوهات"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/donut_m3.jpg" alt="دوناتس"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cinnabon_m4.jpg" alt="سينابون"></a>
-        </div>
-      </div>
-      <div class="bs-waterfall-column">
-        <div class="bs-waterfall-track down">
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cupcake_m5.jpg" alt="كب كيك"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/qashtouta_m6.jpg" alt="قشطوطة"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/box_m7.jpg" alt="بوكس الروقان"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/velvet_m8.jpg" alt="ريد فيلفيت"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/cupcake_m5.jpg" alt="كب كيك"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/qashtouta_m6.jpg" alt="قشطوطة"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/box_m7.jpg" alt="بوكس الروقان"></a>
-          <a href="menu.html" class="bs-waterfall-card"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/velvet_m8.jpg" alt="ريد فيلفيت"></a>
-        </div>
-      </div>
-      <div class="bs-waterfall-overlay"></div>
-    </div>
-  </section>
+<span>
+صنعناها بحب لتهديها لمن تحب
+</span>
 
-  <section class="bs-section" style="padding-top: 0; padding-bottom: 0;">
-    <div class="bs-container" style="text-align: center; margin-bottom: 2.5rem;">
-      <h2 class="bs-section-title">عقد من الإتقان</h2>
-      <p style="color:#111111; max-width:650px; margin:0 auto; line-height:1.7;">نلتزم بمعايير الخبز والتحضير اليومي الطازج والراقي لتصلك كافة منتجاتنا بكامل قوامها ونكهتها الواضحة والمريحة.</p>
-    </div>
-    <div class="bs-itqan-slider">
-      <div class="bs-itqan-track">
-        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider1_f.jpg" alt="جودة التجهيز">
-        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider2_f.jpg" alt="فخامة التقديم">
-        <img class="bs-itqan-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/slider3_f.jpg" alt="خامات طبيعية 100%">
-      </div>
-    </div>
-  </section>
+<span>
+أكثر من 10 سنوات خبرة في صناعة الحلويات
+</span>
 
-  <section class="bs-section">
-    <div class="bs-container">
-      <div style="text-align: center; margin-bottom: 2rem;">
-        <h2 class="bs-section-title">وصل حديثاً</h2>
-        <p style="color:#111111;">أحدث الابتكارات والتشكيلات الطازجة المضافة حديثاً لمطبخنا لتناسب تطلعاتكم الفاخرة.</p>
-      </div>
-      <div class="bs-mobile-full-slider" id="newArrivalsSlider"></div>
-    </div>
-  </section>
+<span>
+خامات مختارة بعناية وجودة لا تقبل التنازل
+</span>
 
-  <section class="bs-section" style="padding-top:0; padding-bottom:0;">
-    <div class="bs-premium-block-banner">
-      <div class="bs-container">
-        <h2 style="margin-bottom: 1.25rem; font-size:1.9rem; font-weight:700;">محاكي التورتة الذكي</h2>
-        <p style="margin-bottom: 2.5rem; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.8; color:#111111; font-size:1.05rem;">تم تصميم هذه الواجهة لمساعدتك على اختيار وتخصيص تفاصيل طلبك بالكامل وبشكل دقيق. حددي عدد الأفراد، الشكل المفضل، والحشوات المتوازنة للحصول على تورتة تشرفك قدام ضيوفك وتبسطهم بالطعم الأصلي الفاخر.</p>
-        <a href="cake-builder.html" class="bs-button">ابدئي رحلة تخصيص التورتة</a>
-      </div>
-    </div>
-  </section>
+<span>
+نرافق عملاءنا في أجمل لحظاتهم ومناسباتهم
+</span>
 
-  <section class="bs-section">
-    <div class="bs-container">
-      <div style="text-align: center; margin-bottom: 2rem;">
-        <h2 class="bs-section-title">الأكثر مبيعاً</h2>
-        <p style="color:#111111;">الخيارات المفضلة والأكثر طلباً وتكراراً من عملائنا بفضل جودتها الحقيقية الثابتة.</p>
-      </div>
-      <div class="bs-mobile-full-slider" id="bestSellersSlider"></div>
-    </div>
-  </section>
+<span>
+الورد الطبيعي والتورت المخصصة في مكان واحد
+</span>
 
-  <section class="bs-section">
-    <div class="bs-container">
-      <div style="text-align: center; margin-bottom: 2.5rem;">
-        <h2 class="bs-section-title">منتجاتنا</h2>
-        <p style="color:#111111;">قائمة المأكولات اليومية والتشكيلات الفاخرة المتاحة للطلب الفوري والمباشر.</p>
-      </div>
-      <div class="bs-grid" id="ourProductsGrid"></div>
-      <div style="text-align: center; margin-top: 3rem;">
-        <button class="bs-button" id="loadMoreProductsBtn">إظهار المزيد</button>
-      </div>
-    </div>
-  </section>
+<span>
+صنعناها بحب لتهديها لمن تحب
+</span>
 
-  <section class="bs-section" style="padding-top:0; padding-bottom:0;">
-    <div class="bs-premium-block-banner" style="border-color: #D4AF37; box-shadow: inset 0 0 50px rgba(212, 175, 55, 0.05);">
-      <div class="bs-container">
-        <h2 style="margin-bottom: 1.25rem; font-size:1.9rem; font-weight:700;">محاكي الورد وتنسيق الهدايا الفاخرة</h2>
-        <p style="margin-bottom: 2.5rem; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.8; color:#111111; font-size:1.05rem;">انفردنا تماماً بتقديم باقات الورد الطبيعي الفاخر والأول من نوعه داخل مركز الفرافرة بالكامل. نسقي هديتك واجمعي بين فخامة الحلويات وجمال الورد الطبيعي لتقديم قيمة حقيقية تعبر عن مشاعرك الراقية لمن تحبين.</p>
-        <a href="flower-builder.html" class="bs-button" style="background-color: #D4AF37;">ابدئي تخصيص بوكس الهدية</a>
-      </div>
-    </div>
-  </section>
+<span>
+أكثر من 10 سنوات خبرة في صناعة الحلويات
+</span>
 
-  <section class="bs-section" style="padding-top:0; padding-bottom:0;">
-    <div class="bs-pride-section">
-      <div class="bs-container">
-        <h2 style="margin-bottom: 1.5rem; font-size:1.9rem; font-weight:700;">الفخر والاعتزاز</h2>
-        <div class="bs-pride-stat">+10,000</div>
-        <p style="font-weight: 700; font-size: 1.35rem; margin-bottom: 1.5rem; color: #111111;">عميل مستقر معنا ومشارك في اللحظات السعيدة</p>
-        <p style="max-width: 750px; margin: 0 auto; color: #111111; line-height: 1.8; font-size: 1.05rem;">على مدار أكثر من عشرة سنوات، تشرفنا بمشاركتكم وتلبية تفاصيلكم السعيدة في مختلف المناسبات. صُنعت هذه التشكيلات لتناسب تطلعاتكم، وبفضل التزامنا المطلق بالاعتماد على المكونات الطبيعية والمضمونة 100%، نجحنا في الحفاظ على سجل حقيقي خالٍ تماماً من أي تقييم سلبي واحد طوال مسيرتنا الحافلة بالثقة المتبادلة والإتقان.</p>
-      </div>
-    </div>
-  </section>
+<span>
+خامات مختارة بعناية وجودة لا تقبل التنازل
+</span>
 
-  <section class="bs-section">
-    <div class="bs-container">
-      <div style="text-align: center; margin-bottom: 2.5rem;">
-        <h2 class="bs-section-title">تسوق حسب الفئة</h2>
-        <p style="color:#111111;">تصفح المنتجات بسهولة تامة من خلال الانتقال المباشر للفئة المطلوبة المحددة بعناية.</p>
-      </div>
-      <div class="bs-category-large-slider">
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c4.jpg" alt="الديسباسيتو"><div class="bs-category-large-title">الديسباسيتو</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c5.jpg" alt="القشطوطة"><div class="bs-category-large-title">القشطوطة</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c6.jpg" alt="الدوناتس"><div class="bs-category-large-title">الدوناتس</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c7.jpg" alt="السينابون"><div class="bs-category-large-title">السينابون</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c9.jpg" alt="كبات السعادة"><div class="bs-category-large-title">كبات السعادة</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c8.jpg" alt="الريد فيلفيت"><div class="bs-category-large-title">الريد فيلفيت</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c11.jpg" alt="الميني تورت"><div class="bs-category-large-title">الميني تورت</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=boxes"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c10.jpg" alt="بوكس الروقان"><div class="bs-category-large-title">بوكس الروقان</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c2.jpg" alt="الجاتوهات"><div class="bs-category-large-title">الجاتوهات</div></a></div></div></div>
-        <div class="bs-category-large-card"><div class="bs-card-border-outer"><div class="bs-card-border-inner"><a href="menu.html?cat=desserts"><img class="bs-category-large-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/c12.jpg" alt="الكب كيك"><div class="bs-category-large-title">الكب كيك</div></a></div></div></div>
-      </div>
-    </div>
-  </section>
+</div>
 
-  <footer class="bs-footer-centered">
-    <div class="bs-container">
-      <div class="bs-footer-links">
-        <a href="menu.html" class="bs-footer-link">تصفح المنيو</a>
-        <a href="cake-builder.html" class="bs-footer-link">محاكي التورتة</a>
-        <a href="flower-builder.html" class="bs-footer-link">محاكي الورد</a>
-        <a href="about.html" class="bs-footer-link">من نحن</a>
-        <a href="privacy.html" class="bs-footer-link">سياسة الخصوصية</a>
-        <a href="return-policy.html" class="bs-footer-link">سياسة الاسترجاع</a>
-        <a href="contact-policy.html" class="bs-footer-link">سياسة التواصل</a>
-        <a href="important-info.html" class="bs-footer-link">معلومات تهمك</a>
-      </div>
-      <!-- استبدال أيقونات التواصل الاجتماعي التالفة بأيقونات أصلية معتمدة وعالية الجودة -->
-      <div class="bs-social-icons">
-        <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1740343603/facebook_fymw7a.png" class="bs-social-original-btn" alt="Facebook"></a>
-        <a href="https://www.instagram.com/bose_sweets" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1740343603/instagram_g7b7ke.png" class="bs-social-original-btn" alt="Instagram"></a>
-        <a href="https://www.tiktok.com/@bosesweets1" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1740343603/tiktok_b7fkhg.png" class="bs-social-original-btn" alt="TikTok"></a>
-        <a href="https://wa.me/201021434313" target="_blank"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1740343603/whatsapp_gftv8q.png" class="bs-social-original-btn" alt="WhatsApp"></a>
-      </div>
-      <!-- حذف العبارة القديمة والالتزام بوصف مباشر راقٍ خالٍ من التعبيرات غير الواقعية -->
-      <div class="bs-copyright" style="border-top: 1px solid rgba(255, 145, 164, 0.15); padding-top: 1.5rem; color:#111111; font-weight:600;">
-        &copy; 2026 حلويات بوسي. جميع الحقوق محفوظة لمطبخنا الفاخر.
-      </div>
-    </div>
-  </footer>
+</section>
 
-  <script src="core.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // تفعيل وإغلاق القائمة الجانبية للموبايل بسلاسة وثبات من خلال ميزة التحويل الصريحة
-      const trigger = document.getElementById('mobileMenuTrigger');
-      const menu = document.getElementById('mobileMenu');
-      const overlay = document.getElementById('menuOverlay');
-      
-      if (trigger && menu && overlay) {
-        const toggleMenu = (e) => {
-          e.stopPropagation();
-          menu.classList.toggle('active');
-          overlay.classList.toggle('active');
-        };
-        trigger.addEventListener('click', toggleMenu);
-        overlay.addEventListener('click', () => {
-          menu.classList.remove('active');
-          overlay.classList.remove('active');
-        });
-      }
+<!-- ========================= -->
+<!-- HEADER -->
+<!-- ========================= -->
 
-      // مصفوفة المنتجات المعتمدة رسمياً مع استبدال الأوصاف الطويلة بعبارات قصيرة كاملة غير مقطوعة
-      const realApprovedProducts = [
-        { id: 'cinabon', name: 'السينابون الفاخر', flavor: 'نوتيلا دارك', desc: 'لفات سينابون طازجة بقوام طري مخبوزة بعناية وصوصات غنية متزنة.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p3.jpg' },
-        { id: 'donuts', name: 'الدوناتس الخفيف', flavor: 'نوتيلا وايت', desc: 'دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم.', price: 88, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p4.jpg' },
-        { id: 'qashtota', name: 'القشطوطة الأصلية', flavor: 'نوتيلا وايت', desc: 'كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية.', price: 121, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p1.jpg' },
-        { id: 'despacito', name: 'الديسباسيتو الفاخر', flavor: 'نوتيلا دارك', desc: 'طبقات متوازنة من كيك الفادج والموس الفاخر مع حشوات غنية.', price: 66, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p2.jpg' },
-        { id: 'happiness-cups', name: 'كبات السعادة', flavor: 'نوتيلا غنية', desc: 'أكواب بحشوات غنية وطعم متوازن مناسب للتقديم الفردي الفاخر.', price: 61, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p5.jpg' },
-        { id: 'mini-cake', name: 'الميني تورت', flavor: 'فرد أو اتنين', desc: 'تورت صغير معمول بنفس اهتمام التورت الكبيرة وبخامات واضحة.', price: 154, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p6.jpg' },
-        { id: 'relax-box', name: 'بوكس الروقان', flavor: 'بوكس هدايا مشكل', desc: 'تجميعة مشكلة ومتنوعة متنسقة بعناية مناسبة للهدايا واللمة.', price: 550, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p7.jpg' },
-        { id: 'gateaux', name: 'الجاتوهات كلاسيك', flavor: 'شوكولاتة وفانيليا', desc: 'تشكيلات جاتوه فاخرة بخامات متوازنة وطعم واضح مناسب للمناسبات.', price: 506, image: 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/p8.jpg' }
-      ];
+<header class="main-header">
 
-      // بناء وتأمين كروت المنتجات بطريقة احترافية مع تصفية نصوص الاقتطاع والعرض الكامل للنصوص بدون مط
-      function buildProductCardSecure(p, isHidden = false) {
-        const card = document.createElement('div');
-        card.className = `bs-product-card ${isHidden ? 'bs-hidden-card' : ''}`;
-        card.setAttribute('data-id', p.id);
+<button
+class="menu-btn"
+aria-label="القائمة">
 
-        const outerBorder = document.createElement('div');
-        outerBorder.className = 'bs-card-border-outer';
+☰
 
-        const innerBorder = document.createElement('div');
-        innerBorder.className = 'bs-card-border-inner';
+</button>
 
-        // غلاف الصورة
-        const imgWrapper = document.createElement('div');
-        imgWrapper.className = 'bs-product-img-wrapper';
-        const img = document.createElement('img');
-        img.className = 'bs-product-img';
-        img.src = p.image;
-        img.alt = p.name;
-        imgWrapper.appendChild(img);
+<a
+href="/"
+class="brand">
 
-        // التاج والعناوين
-        const tag = document.createElement('div');
-        tag.className = 'bs-category-tag';
-        tag.textContent = 'حلويات فاخرة';
+<img
+src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+alt="حلويات بوسي">
 
-        const title = document.createElement('h3');
-        title.className = 'bs-product-title';
-        title.textContent = p.name;
+<div class="brand-content">
 
-        const flavor = document.createElement('div');
-        flavor.className = 'bs-flavor-text';
-        flavor.textContent = p.flavor;
+<h2>
 
-        const desc = document.createElement('p');
-        desc.className = 'bs-product-desc';
-        desc.textContent = p.desc;
+حلويات بوسي
 
-        // سطر التحكم والأسعار
-        const actionRow = document.createElement('div');
-        actionRow.className = 'bs-card-action-row';
+</h2>
 
-        const qtyCounter = document.createElement('div');
-        qtyCounter.className = 'bs-qty-counter';
+<p>
 
-        const btnMinus = document.createElement('button');
-        btnMinus.className = 'bs-qty-btn bs-minus';
-        btnMinus.textContent = '-';
+صنعناها بحب لتهديها لمن تحب
 
-        const qtyDisplay = document.createElement('span');
-        qtyDisplay.className = 'bs-qty-display-num';
-        qtyDisplay.textContent = '0';
+</p>
 
-        const btnPlus = document.createElement('button');
-        btnPlus.className = 'bs-qty-btn bs-plus';
-        btnPlus.textContent = '+';
+</div>
 
-        qtyCounter.appendChild(btnMinus);
-        qtyCounter.appendChild(qtyDisplay);
-        qtyCounter.appendChild(btnPlus);
+</a>
 
-        const priceDiv = document.createElement('div');
-        priceDiv.className = 'bs-product-price';
-        priceDiv.textContent = p.price + ' ';
-        const currencySpan = document.createElement('span');
-        currencySpan.textContent = 'ج.م';
-        priceDiv.appendChild(currencySpan);
+<div class="header-actions">
 
-        actionRow.appendChild(qtyCounter);
-        actionRow.appendChild(priceDiv);
+<button
+class="search-btn"
+aria-label="بحث">
 
-        // زر الإضافة للسلة
-        const btnSubmit = document.createElement('button');
-        btnSubmit.className = 'bs-add-to-cart-submit';
-        btnSubmit.textContent = 'إضافة للسلة';
+🔍
 
-        // تركيب الكارت كاملاً بالترتيب الهندسي المعتمد (2 بوردر فقط متكاملين)
-        innerBorder.appendChild(imgWrapper);
-        innerBorder.appendChild(tag);
-        innerBorder.appendChild(title);
-        innerBorder.appendChild(flavor);
-        innerBorder.appendChild(desc);
-        innerBorder.appendChild(actionRow);
-        innerBorder.appendChild(btnSubmit);
+</button>
 
-        outerBorder.appendChild(innerBorder);
-        card.appendChild(outerBorder);
+<button
+class="cart-btn"
+aria-label="السلة">
 
-        return card;
-      }
+🛒
 
-      const arrivalsTrack = document.getElementById('newArrivalsSlider');
-      const sellersTrack = document.getElementById('bestSellersSlider');
-      const gridContainer = document.getElementById('ourProductsGrid');
+<span>
 
-      // توزيع المنتجات بأمان تام داخل مساحات العرض المتوافقة
-      realApprovedProducts.slice(0, 6).forEach(p => { 
-        if(arrivalsTrack) arrivalsTrack.appendChild(buildProductCardSecure(p)); 
-      });
-      
-      realApprovedProducts.forEach(p => { 
-        if(sellersTrack) sellersTrack.appendChild(buildProductCardSecure(p)); 
-      });
-      
-      realApprovedProducts.forEach((p, idx) => { 
-        if(gridContainer) gridContainer.appendChild(buildProductCardSecure(p, idx >= 4)); 
-      });
+0
 
-      // معالجة ذكية وموحدة لعمليات الضغط داخل الكروت لمنع تكرار الأكواد
-      document.body.addEventListener('click', function(e) {
-        if (e.target.classList.contains('bs-plus')) {
-          const numEl = e.target.parentElement.querySelector('.bs-qty-display-num');
-          numEl.textContent = parseInt(numEl.textContent) + 1;
-        }
-        if (e.target.classList.contains('bs-minus')) {
-          const numEl = e.target.parentElement.querySelector('.bs-qty-display-num');
-          const val = parseInt(numEl.textContent);
-          if (val > 0) numEl.textContent = val - 1;
-        }
-        if (e.target.classList.contains('bs-add-to-cart-submit')) {
-          const card = e.target.closest('.bs-product-card');
-          const id = card.getAttribute('data-id');
-          const qty = parseInt(card.querySelector('.bs-qty-display-num').textContent);
-          const itemData = realApprovedProducts.find(p => p.id === id);
-          
-          if (itemData && qty > 0 && window.BoseSweetsCore) {
-            window.BoseSweetsCore.Store.addToCart(itemData, qty);
-            card.querySelector('.bs-qty-display-num').textContent = '0';
-          }
-        }
-      });
+</span>
 
-      // زر إظهار المزيد من المنتجات بسلاسة تامة
-      const loadBtn = document.getElementById('loadMoreProductsBtn');
-      if (loadBtn && gridContainer) {
-        loadBtn.addEventListener('click', function() {
-          const targets = gridContainer.querySelectorAll('.bs-hidden-card');
-          targets.forEach(c => c.classList.remove('bs-hidden-card'));
-          loadBtn.style.display = 'none';
-        });
-      }
+</button>
 
-      // الربط الديناميكي مع المحرك المعتمد لحساب عدد عناصر السلة تلقائياً
-      if (window.BoseSweetsCore) {
-        const syncCart = () => {
-          const el = document.getElementById('headerCartCount');
-          if (el) el.textContent = window.BoseSweetsCore.Store.getCartCount();
-        };
-        window.BoseSweetsCore.Store.subscribe(syncCart);
-        syncCart();
-      }
-    });
-  </script>
+</div>
+
+</header>
+
+<!-- ========================= -->
+<!-- SIDE MENU -->
+<!-- ========================= -->
+
+<aside class="side-menu">
+
+<div class="side-menu-overlay"></div>
+
+<div class="side-menu-content">
+
+<div class="side-menu-top">
+
+<img
+src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+alt="حلويات بوسي">
+
+<h2>
+
+حلويات بوسي
+
+</h2>
+
+<p>
+
+صنعناها بحب لتهديها لمن تحب
+
+</p>
+
+</div>
+
+<nav>
+
+<a href="index.html">
+
+الرئيسية
+
+</a>
+
+<a href="menu.html">
+
+المنيو
+
+</a>
+
+<a href="cake-builder.html">
+
+محاكي التورت
+
+</a>
+
+<a href="flower-builder.html">
+
+محاكي الورد
+
+</a>
+
+<a href="cart.html">
+
+السلة
+
+</a>
+
+<a href="about.html">
+
+من نحن
+
+</a>
+
+<a href="contact.html">
+
+تواصل معنا
+
+</a>
+
+<a href="privacy.html">
+
+سياسة الخصوصية
+
+</a>
+
+<a href="refund-policy.html">
+
+سياسة الاسترجاع
+
+</a>
+
+</nav>
+
+<div class="side-menu-bottom">
+
+<a href="#">
+
+فيسبوك
+
+</a>
+
+<a href="#">
+
+إنستجرام
+
+</a>
+
+<a href="#">
+
+تيك توك
+
+</a>
+
+<a href="#">
+
+واتساب
+
+</a>
+
+</div>
+
+</div>
+
+</aside>
+
+<!-- ========================= -->
+<!-- HERO -->
+<!-- ========================= -->
+
+<section class="hero">
+
+<div class="hero-content">
+
+<span class="hero-badge">
+
+أكثر من 10000 عميل وثقوا بنا
+
+</span>
+
+<h1>
+
+عقد من
+
+<span class="pink">
+
+التميز
+
+</span>
+
+في صناعة الحلويات
+
+</h1>
+
+<p>
+
+من أول قطعة خرجت من مطبخنا وحتى اليوم،
+ما زال هدفنا واحداً:
+أن نقدم منتجات تليق بأجمل لحظاتكم،
+وتمنحكم تجربة تستحق أن تُهدى لمن تحب.
+
+</p>
+
+<a
+href="#most-selling"
+class="hero-btn">
+
+اطلب الآن
+
+</a>
+
+</div>
+
+</section>
+
+<!-- ========================= -->
+<!-- WATERFALL -->
+<!-- ========================= -->
+
+<section class="waterfall-section">
+
+<div class="waterfall-fade-top"></div>
+
+<div class="waterfall">
+
+<div class="waterfall-column waterfall-up">
+
+<a href="#"><img src="" alt=""></a>
+<a href="#"><img src="" alt=""></a>
+<a href="#"><img src="" alt=""></a>
+<a href="#"><img src="" alt=""></a>
+
+</div>
+
+<div class="waterfall-column waterfall-down">
+
+<a href="#"><img src="" alt=""></a>
+<a href="#"><img src="" alt=""></a>
+<a href="#"><img src="" alt=""></a>
+<a href="#"><img src="" alt=""></a>
+
+</div>
+
+</div>
+
+<div class="waterfall-fade-bottom"></div>
+
+</section>
+
+<!-- ========================= -->
+<!-- EXCELLENCE -->
+<!-- ========================= -->
+
+<section class="excellence">
+
+<h2>
+
+عقد من الإتقان
+
+</h2>
+
+<p>
+
+كل منتج نقدمه هو انعكاس لسنوات من الخبرة والاهتمام بالتفاصيل واختيار الخامات التي تمنح عملاءنا تجربة مختلفة.
+
+</p>
+
+<div class="excellence-slider">
+
+<a href="#" class="excellence-slide">
+
+<img src="" alt="">
+
+</a>
+
+<a href="#" class="excellence-slide">
+
+<img src="" alt="">
+
+</a>
+
+<a href="#" class="excellence-slide">
+
+<img src="" alt="">
+
+</a>
+
+</div>
+
+<div class="slider-dots"></div>
+
+</section>
+
+<!-- ========================= -->
+<!-- MOST SELLING -->
+<!-- ========================= -->
+
+<section
+id="most-selling"
+class="products-section">
+
+<h2>
+
+الأكثر مبيعاً
+
+</h2>
+
+<p>
+
+منتجات اختارها عملاؤنا مراراً لأنها جمعت بين الجودة والطعم والتجربة التي تستحق التكرار.
+
+</p>
+
+<div class="products-slider">
+
+<!-- 8 PRODUCT CARDS -->
+
+</div>
+
+<div class="slider-dots"></div>
+
+</section>
+<!-- ===================================== -->
+<!-- MOST SELLING PRODUCTS -->
+<!-- ===================================== -->
+
+<div class="products-slider-track">
+
+<article class="product-card">
+
+<a href="product.html?product=despacito">
+
+<div class="product-image">
+
+<img src="" alt="الديسباسيتو">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+الديسباسيتو
+
+</h3>
+
+<h4>
+
+نوتيلا - لوتس - بيستاشيو
+
+</h4>
+
+<p>
+
+طبقات متوازنة من الكيك والموس الغني بحشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+66 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=qashtota">
+
+<div class="product-image">
+
+<img src="" alt="القشطوطة">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+القشطوطة
+
+</h3>
+
+<h4>
+
+لوتس - نوتيلا - بيستاشيو
+
+</h4>
+
+<p>
+
+كيك هش بطبقات ناعمة وحشوات متوازنة بخامات طبيعية وطعم واضح من أول لقمة.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+121 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=donuts">
+
+<div class="product-image">
+
+<img src="" alt="الدوناتس">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+الدوناتس
+
+</h3>
+
+<h4>
+
+نوتيلا - أوريو - كيندر
+
+</h4>
+
+<p>
+
+دوناتس طازجة بحشوات متنوعة وقوام خفيف وتجربة مناسبة للمشاركة أو الاستمتاع الفردي.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+88 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=cinabon">
+
+<div class="product-image">
+
+<img src="" alt="السينابون">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+السينابون
+
+</h3>
+
+<h4>
+
+كلاسيك - لوتس - بيستاشيو
+
+</h4>
+
+<p>
+
+لفات مخبوزة بقوام طري وصوصات متوازنة تمنحك تجربة واضحة في الطعم والجودة.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+121 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=happiness-cups">
+
+<div class="product-image">
+
+<img src="" alt="كبات السعادة">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+كبات السعادة
+
+</h3>
+
+<h4>
+
+لوتس - أوريو - روشيه
+
+</h4>
+
+<p>
+
+أكواب متنوعة بحشوات غنية وطعم متوازن مناسبة للهدايا البسيطة أو الاستمتاع اليومي.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+61 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=red-velvet">
+
+<div class="product-image">
+
+<img src="" alt="الريدفيلفت">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+الريدڤيلڤت
+
+</h3>
+
+<h4>
+
+كيك أحمر فاخر
+
+</h4>
+
+<p>
+
+طبقات متوازنة مع كريمة ناعمة وخامات مختارة تمنحك تجربة مميزة في كل قطعة.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+72 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=mini-cake">
+
+<div class="product-image">
+
+<img src="" alt="الميني تورت">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+الميني تورت
+
+</h3>
+
+<h4>
+
+هدية صغيرة بمظهر فاخر
+
+</h4>
+
+<p>
+
+تورت صغير مصنوع بنفس الاهتمام بالتفاصيل ليكون هدية أنيقة أو مفاجأة جميلة.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+154 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=relax-box">
+
+<div class="product-image">
+
+<img src="" alt="بوكس الروقان">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+بوكس الروقان
+
+</h3>
+
+<h4>
+
+تجميعة متنوعة للهدايا
+
+</h4>
+
+<p>
+
+بوكس متكامل بتنسيق أنيق يجمع مجموعة مختارة من المنتجات المناسبة للهدايا.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+550 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+</div>
+
+<div class="slider-dots">
+
+<button></button>
+<button></button>
+<button></button>
+<button></button>
+<button></button>
+<button></button>
+<button></button>
+<button></button>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- CAKE BUILDER BLOCK -->
+<!-- ===================================== -->
+
+<section class="cake-builder-block">
+
+<div class="builder-image">
+
+<img src="" alt="محاكي التورت">
+
+</div>
+
+<div class="builder-content">
+
+<span>
+
+ميزة حصرية
+
+</span>
+
+<h2>
+
+صمم تورتتك كما تتخيلها
+
+</h2>
+
+<p>
+
+اختر المقاس والشكل والنكهة والطباعة والتفاصيل التي تناسب مناسبتك واعرف السعر مباشرة قبل إرسال الطلب.
+
+</p>
+
+<ul>
+
+<li>اختيار عدد الأفراد</li>
+
+<li>اختيار الشكل</li>
+
+<li>اختيار الطباعة</li>
+
+<li>معرفة السعر فوراً</li>
+
+</ul>
+
+<a
+href="cake-builder.html"
+class="builder-btn">
+
+ابدأ التصميم
+
+</a>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- NEW ARRIVALS -->
+<!-- ===================================== -->
+
+<section class="new-arrivals">
+
+<h2>
+
+وصل حديثاً
+
+</h2>
+
+<p>
+
+نكهات مختارة تمنحك فرصة اكتشاف تفاصيل جديدة من منتجاتنا المفضلة.
+
+</p>
+
+<div class="products-slider">
+
+<!-- 6 FLAVOR CARDS -->
+
+</div>
+
+<div class="slider-dots">
+
+<button></button>
+<button></button>
+<button></button>
+<button></button>
+<button></button>
+<button></button>
+
+</div>
+
+</section>
+<!-- ===================================== -->
+<!-- NEW ARRIVALS CARDS -->
+<!-- ===================================== -->
+
+<div class="products-slider-track">
+
+<article class="product-card">
+
+<a href="product.html?product=despacito&flavor=pistachio">
+
+<div class="product-image">
+
+<img src="" alt="بيستاشيو">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+بيستاشيو
+
+</h3>
+
+<h4>
+
+من الديسباسيتو
+
+</h4>
+
+<p>
+
+نكهة غنية ومتوازنة بطعم الفستق الواضح وقوام يمنحك تجربة مختلفة من أول لقمة.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+83 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=despacito&flavor=lotus">
+
+<div class="product-image">
+
+<img src="" alt="لوتس">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+لوتس
+
+</h3>
+
+<h4>
+
+من الديسباسيتو
+
+</h4>
+
+<p>
+
+نكهة متوازنة تجمع بين القرمشة الخفيفة والطعم المعروف الذي يفضله عشاق اللوتس.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+66 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=donuts&flavor=matilda">
+
+<div class="product-image">
+
+<img src="" alt="ماتيلدا">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+ماتيلدا
+
+</h3>
+
+<h4>
+
+من الدوناتس
+
+</h4>
+
+<p>
+
+شوكولاتة غنية بطابع فاخر تمنحك تجربة ممتعة لعشاق النكهات المكثفة.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+110 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=cinabon&flavor=raffaello">
+
+<div class="product-image">
+
+<img src="" alt="رفايلو">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+رفايلو
+
+</h3>
+
+<h4>
+
+من السينابون
+
+</h4>
+
+<p>
+
+نكهة ناعمة ومتوازنة تمنح السينابون طابعاً مختلفاً ومحبباً.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+121 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=qashtota&flavor=mango">
+
+<div class="product-image">
+
+<img src="" alt="مانجا">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+مانجا
+
+</h3>
+
+<h4>
+
+من القشطوطة
+
+</h4>
+
+<p>
+
+طعم فاكهي منعش يضيف للقشطوطة لمسة خفيفة ومحببة.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+121 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+<article class="product-card">
+
+<a href="product.html?product=happiness-cups&flavor=rocher">
+
+<div class="product-image">
+
+<img src="" alt="روشيه">
+
+</div>
+
+</a>
+
+<div class="product-content">
+
+<h3>
+
+روشيه
+
+</h3>
+
+<h4>
+
+من كبات السعادة
+
+</h4>
+
+<p>
+
+مزيج غني ومحبب يمنحك تجربة حلوى متوازنة مناسبة للهدايا والاستمتاع الشخصي.
+
+</p>
+
+<div class="quantity-box">
+
+<button>+</button>
+
+<span>1</span>
+
+<button>-</button>
+
+</div>
+
+<div class="product-price">
+
+61 جنيه
+
+</div>
+
+<button class="add-to-cart">
+
+إضافة للسلة
+
+</button>
+
+</div>
+
+</article>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- OUR PRODUCTS -->
+<!-- ===================================== -->
+
+<section class="our-products">
+
+<h2>
+
+منتجاتنا
+
+</h2>
+
+<p>
+
+مجموعة مختارة بعناية تعكس تنوع ما نقدمه وجودة ما نصنعه كل يوم لعملائنا.
+
+</p>
+
+<div class="products-grid">
+
+<article class="product-card">
+<!-- الجاتوهات -->
+</article>
+
+<article class="product-card">
+<!-- الكب كيك -->
+</article>
+
+<article class="product-card">
+<!-- الميني تورت -->
+</article>
+
+<article class="product-card">
+<!-- بوكس الروقان -->
+</article>
+
+</div>
+
+<button class="show-more-products">
+
+إظهار المزيد
+
+</button>
+
+<div class="hidden-products">
+
+<article class="product-card">
+<!-- الدوناتس -->
+</article>
+
+<article class="product-card">
+<!-- القشطوطة -->
+</article>
+
+<article class="product-card">
+<!-- السينابون -->
+</article>
+
+<article class="product-card">
+<!-- كبات السعادة -->
+</article>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- FLOWER BUILDER -->
+<!-- ===================================== -->
+
+<section class="flower-builder-block">
+
+<div class="builder-image">
+
+<img src="" alt="محاكي الورد">
+
+</div>
+
+<div class="builder-content">
+
+<span>
+
+ميزة حصرية
+
+</span>
+
+<h2>
+
+صمم بوكيه الورد الخاص بك
+
+</h2>
+
+<p>
+
+لأن كل مناسبة مختلفة، وفرنا لك إمكانية تصميم بوكيه الورد بالطريقة التي تعبر عنك وتناسب لحظتك الخاصة.
+
+</p>
+
+<ul>
+
+<li>ورد طبيعي</li>
+
+<li>ورد صناعي</li>
+
+<li>ورد ستان</li>
+
+<li>إضافة صور ورسائل وهدايا</li>
+
+</ul>
+
+<a
+href="flower-builder.html"
+class="builder-btn">
+
+ابدأ التصميم
+
+</a>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- PRIDE SECTION -->
+<!-- ===================================== -->
+
+<section class="pride-section">
+
+<div class="pride-content">
+
+<h2>
+
+الفخر والاعتزاز
+
+</h2>
+
+<p>
+
+على مدار أكثر من عقد كامل لم نكن نصنع الحلويات فقط، بل كنا جزءاً من آلاف اللحظات السعيدة والذكريات الجميلة التي شاركنا فيها عملاءنا.
+
+</p>
+
+</div>
+
+<div class="pride-stats">
+
+<div class="stat-card">
+
+<h3>
+
+10+
+
+</h3>
+
+<span>
+
+سنوات خبرة
+
+</span>
+
+</div>
+
+<div class="stat-card">
+
+<h3>
+
+10000+
+
+</h3>
+
+<span>
+
+عميل سعيد
+
+</span>
+
+</div>
+
+<div class="stat-card">
+
+<h3>
+
+آلاف
+
+</h3>
+
+<span>
+
+التورت المخصصة
+
+</span>
+
+</div>
+
+<div class="stat-card">
+
+<h3>
+
+آلاف
+
+</h3>
+
+<span>
+
+المناسبات السعيدة
+
+</span>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- SHOP BY CATEGORY -->
+<!-- ===================================== -->
+
+<section class="categories-section">
+
+<h2>
+
+تسوق حسب الفئة
+
+</h2>
+
+<p>
+
+اختر الفئة التي تفضلها للوصول سريعاً إلى المنتجات التي تبحث عنها.
+
+</p>
+
+<div class="categories-slider">
+
+<a href="#">التورت</a>
+<a href="#">الجاتوهات</a>
+<a href="#">القشطوطة</a>
+<a href="#">الديسباسيتو</a>
+<a href="#">السينابون</a>
+<a href="#">الدوناتس</a>
+<a href="#">الريدڤيلڤت</a>
+<a href="#">الكب كيك</a>
+<a href="#">الميني تورت</a>
+<a href="#">الورد</a>
+<a href="#">كبات السعادة</a>
+<a href="#">بوكس الروقان</a>
+
+</div>
+
+</section>
+
+<!-- ===================================== -->
+<!-- FOOTER -->
+<!-- ===================================== -->
+
+<footer class="main-footer">
+
+<div class="footer-brand">
+
+<img
+src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
+alt="حلويات بوسي">
+
+<h3>
+
+حلويات بوسي
+
+</h3>
+
+<p>
+
+صنعناها بحب لتهديها لمن تحب
+
+</p>
+
+</div>
+
+<div class="footer-links">
+
+<h4>
+
+روابط مهمة
+
+</h4>
+
+<a href="index.html">الرئيسية</a>
+<a href="menu.html">المنيو</a>
+<a href="cake-builder.html">محاكي التورت</a>
+<a href="flower-builder.html">محاكي الورد</a>
+
+</div>
+
+<div class="footer-contact">
+
+<h4>
+
+تواصل معنا
+
+</h4>
+
+<a href="tel:01097238441">
+
+01097238441
+
+</a>
+
+<p>
+
+الكفاح - الفرافرة
+
+</p>
+
+</div>
+
+<div class="footer-social">
+
+<a href="#">Facebook</a>
+<a href="#">Instagram</a>
+<a href="#">TikTok</a>
+<a href="#">WhatsApp</a>
+
+</div>
+
+</footer>
+
+<script src="app.js"></script>
+
 </body>
 </html>
