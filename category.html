@@ -3,103 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <title>تصفح القسم | حلويات بوسي</title>
-    <meta name="description" content="استعرض تشكيلة المنتجات الفاخرة للقسم المختار من حلويات بوسي. خامات طبيعية ممتازة ومضمونة 100% لتناسب مناسباتكم السعيدة.">
-    <meta name="robots" content="index, follow">
-    <meta name="theme-color" content="#FF91A4">
-
+    <title>استعراض الأقسام | حلويات بوسي</title>
+    <meta name="description" content="تصفح تشكيلة حلويات بوسي الفاخرة المصنوعة بحب. تورت، جاتوهات، قشطوطة، ديسباسيتو، سينابون ودوناتس غنية بالنكهات المميزة والتفاصيل الراسخة.">
+    <meta property="og:title" content="استعراض الأقسام | حلويات بوسي">
+    <meta property="og:description" content="تصفح تشكيلة حلويات بوسي الفاخرة المصنوعة بحب وجهز طلبك الآن لتجربة تذوق لا تُنسى.">
+    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <meta property="og:url" content="https://bosesweets.com/category.html">
+    <link rel="canonical" href="https://bosesweets.com/category.html">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
-    
     <style>
-        :root {
-            --primary-pink: #FF91A4;
-            --pure-white: #FFFFFF;
-            --deep-black: #111111;
-            --soft-gold: #D4AF37;
-            --cairo-font: 'Cairo', sans-serif;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: var(--cairo-font);
+            font-family: 'Cairo', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--pure-white);
-            color: var(--deep-black);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background-color: #ffffff;
+            color: #111111;
             overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button, input, select, textarea {
+            font-family: inherit;
         }
 
         header {
             position: fixed;
             top: 0;
-            right: 0;
             left: 0;
+            right: 0;
             height: 70px;
-            background-color: var(--pure-white);
-            border-bottom: 1px solid rgba(255, 145, 164, 0.2);
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(255, 145, 164, 0.1);
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 0 20px;
-            z-index: 1000;
         }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .menu-toggle {
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            padding: 5px;
-        }
-
-        .menu-toggle span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background-color: var(--deep-black);
-            border-radius: 2px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: var(--deep-black);
-        }
-
-        .logo-img {
-            width: 40px;
-            height: 40px;
-            object-fit: contain;
-        }
-
-        .brand-name {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
-        .header-left {
+        .header-right, .header-left {
             display: flex;
             align-items: center;
             gap: 15px;
@@ -109,7 +63,6 @@
             background: none;
             border: none;
             cursor: pointer;
-            position: relative;
             width: 40px;
             height: 40px;
             display: flex;
@@ -120,17 +73,37 @@
         .header-btn svg {
             width: 24px;
             height: 24px;
-            fill: none;
-            stroke: var(--deep-black);
-            stroke-width: 2;
+            fill: #111111;
         }
 
-        .cart-count {
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111111;
+        }
+
+        .cart-badge-container {
+            position: relative;
+        }
+
+        .cart-badge {
             position: absolute;
             top: 2px;
             right: 2px;
-            background-color: var(--primary-pink);
-            color: var(--deep-black);
+            background-color: #ff91a4;
+            color: #111111;
             font-size: 11px;
             font-weight: 700;
             width: 18px;
@@ -141,280 +114,525 @@
             justify-content: center;
         }
 
-        main {
+        .top-marquee {
             margin-top: 70px;
-            flex: 1;
+            background-color: #ff91a4;
+            color: #111111;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 8px 0;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+            padding-right: 50px;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate3d(100%, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        .category-hero {
             padding: 40px 20px;
-            max-width: 1200px;
-            width: 100%;
-            margin-right: auto;
-            margin-left: auto;
-        }
-
-        .category-intro {
             text-align: center;
-            margin-bottom: 50px;
+            background: linear-gradient(180deg, rgba(255, 145, 164, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
         }
 
-        .category-intro h1 {
-            font-size: 32px;
+        .category-title {
+            font-size: 28px;
             font-weight: 700;
-            color: var(--deep-black);
+            color: #111111;
             margin-bottom: 12px;
         }
 
-        .category-intro p {
-            font-size: 16px;
-            color: var(--deep-black);
-            opacity: 0.8;
-            max-width: 700px;
+        .category-title span {
+            color: #ff91a4;
+        }
+
+        .category-desc {
+            font-size: 15px;
+            color: #111111;
+            max-width: 600px;
             margin: 0 auto;
-            line-height: 1.6;
         }
 
-        .products-static-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 30px;
-            width: 100%;
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            padding: 0 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
         }
 
-        .product-unified-card {
-            background-color: var(--pure-white);
-            border: 1px solid var(--primary-pink);
-            border-radius: 0px;
-            overflow: hidden;
+        .tabs-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            background-color: #ffffff;
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #111111;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background-color: #ff91a4;
+            border-color: #ff91a4;
+        }
+
+        .products-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px 60px 20px;
+        }
+
+        .layout-full {
             display: flex;
             flex-direction: column;
-            box-shadow: 0 4px 15px rgba(255, 145, 164, 0.05);
+            gap: 30px;
         }
 
-        .product-image-frame {
-            position: relative;
+        .layout-two-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .bs-product-card {
+            background-color: #ffffff;
+            border: 1px solid rgba(255, 145, 164, 0.2);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: 0 4px 15px rgba(255, 145, 164, 0.03);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bs-product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(255, 145, 164, 0.08);
+            border-color: #ff91a4;
+        }
+
+        .layout-full .bs-product-card {
             width: 100%;
-            padding-top: 100%;
-            background-color: var(--pure-white);
-            overflow: hidden;
         }
 
-        .product-img {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .card-img-link {
+            display: block;
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 14px;
+            background-color: rgba(255, 145, 164, 0.03);
+        }
+
+        .card-img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .product-details-box {
-            padding: 20px;
+        .card-info {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            text-align: right;
         }
 
-        .product-card-title {
-            font-size: 20px;
+        .card-title {
+            font-size: 16px;
             font-weight: 700;
-            color: var(--deep-black);
+            color: #111111;
             margin-bottom: 4px;
-            text-decoration: none;
+            line-height: 1.4;
         }
 
-        .product-card-flavor {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--primary-pink);
-            margin-bottom: 8px;
-        }
-
-        .product-card-desc {
+        .card-flavor {
             font-size: 13px;
+            font-weight: 600;
+            color: #ff91a4;
+            margin-bottom: 6px;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: #111111;
+            margin-bottom: 14px;
             line-height: 1.5;
-            color: var(--deep-black);
-            opacity: 0.75;
-            margin-bottom: 15px;
             display: -webkit-box;
             -webkit-line-clamp: 3;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        .product-card-action-row {
+        .layout-full .card-desc {
+            -webkit-line-clamp: initial;
+            display: block;
+            overflow: visible;
+        }
+
+        .card-actions-row {
             margin-top: auto;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255, 145, 164, 0.1);
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .product-card-price {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--deep-black);
-        }
-
-        .quantity-controller-block {
+        .quantity-selector {
             display: flex;
             align-items: center;
-            border: 1px solid var(--primary-pink);
-            background-color: var(--pure-white);
-            height: 36px;
+            justify-content: space-between;
+            background-color: #ffffff;
+            border: 1px solid rgba(255, 145, 164, 0.25);
+            border-radius: 12px;
+            height: 40px;
+            overflow: hidden;
         }
 
-        .quantity-btn {
+        .qty-btn {
             background: none;
             border: none;
-            width: 32px;
+            width: 40px;
             height: 100%;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111111;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .qty-btn:active {
+            background-color: rgba(255, 145, 164, 0.1);
+        }
+
+        .qty-val {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111111;
+        }
+
+        .price-text {
             font-size: 16px;
             font-weight: 700;
-            color: var(--deep-black);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: #111111;
+            text-align: center;
         }
 
-        .quantity-display-value {
-            width: 36px;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--deep-black);
-            border-right: 1px solid rgba(255, 145, 164, 0.2);
-            border-left: 1px solid rgba(255, 145, 164, 0.2);
-        }
-
-        .add-to-cart-trigger {
-            background-color: var(--pure-white);
-            border: 1px solid var(--primary-pink);
-            color: var(--deep-black);
-            padding: 0 15px;
-            height: 36px;
+        .add-to-cart-btn {
+            background-color: #ff91a4;
+            color: #111111;
+            border: none;
+            border-radius: 12px;
+            height: 44px;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.2s, color 0.2s;
-        }
-
-        .add-to-cart-trigger:hover {
-            background-color: var(--primary-pink);
-        }
-
-        .side-menu {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 320px;
-            height: 100vh;
-            background-color: var(--pure-white);
-            box-shadow: -5px 0 25px rgba(0,0,0,0.05);
-            z-index: 2000;
-            transition: right 0.3s ease;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .side-menu.active {
-            right: 0;
-        }
-
-        .side-menu-header {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 8px;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        .add-to-cart-btn:active {
+            transform: scale(0.98);
+        }
+
+        .add-to-cart-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: #111111;
+        }
+
+        .reviews-section {
+            background-color: rgba(255, 145, 164, 0.02);
+            border-top: 1px solid rgba(255, 145, 164, 0.08);
+            padding: 60px 20px;
+        }
+
+        .reviews-inner {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
             margin-bottom: 40px;
         }
 
-        .side-menu-title {
-            font-size: 20px;
+        .section-title {
+            font-size: 24px;
             font-weight: 700;
+            color: #111111;
+            margin-bottom: 8px;
         }
 
-        .close-menu {
-            background: none;
-            border: none;
-            cursor: pointer;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .section-title span {
+            color: #ff91a4;
         }
 
-        .close-menu svg {
-            width: 24px;
-            height: 24px;
-            stroke: var(--deep-black);
-            stroke-width: 2;
+        .section-subtitle {
+            font-size: 14px;
+            color: #111111;
         }
 
-        .side-menu-links {
+        .reviews-grid {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        .side-link {
-            text-decoration: none;
-            color: var(--deep-black);
-            font-size: 16px;
+        .bs-review-card {
+            background-color: #ffffff;
+            border: 1px solid rgba(255, 145, 164, 0.15);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+        }
+
+        .review-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reviewer-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #111111;
+        }
+
+        .verified-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
             font-weight: 600;
-            padding: 10px 5px;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
-            transition: color 0.2s ease;
+            color: #ff91a4;
+            background-color: rgba(255, 145, 164, 0.06);
+            padding: 2px 8px;
+            border-radius: 12px;
         }
 
-        .side-link:hover {
-            color: var(--primary-pink);
+        .verified-badge svg {
+            width: 12px;
+            height: 12px;
+            fill: #ff91a4;
         }
 
-        .menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0,0,0,0.3);
-            z-index: 1500;
+        .review-stars {
+            display: flex;
+            gap: 2px;
+        }
+
+        .review-stars svg {
+            width: 14px;
+            height: 14px;
+            fill: #D4AF37;
+        }
+
+        .review-text {
+            font-size: 13px;
+            color: #111111;
+            line-height: 1.6;
+        }
+
+        .you-may-like-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .slider-outer {
+            position: relative;
+            width: 100%;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 10px 0;
+        }
+
+        .slider-outer::-webkit-scrollbar {
             display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
-        .menu-overlay.active {
-            display: block;
-            opacity: 1;
+        .slider-inner {
+            display: flex;
+            gap: 16px;
+        }
+
+        .slider-inner .bs-product-card {
+            width: 260px;
+            flex-shrink: 0;
+        }
+
+        footer {
+            background-color: #ffffff;
+            border-top: 1px solid rgba(255, 145, 164, 0.15);
+            padding: 50px 20px 30px 20px;
+        }
+
+        .footer-grid {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111111;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 30px;
+            height: 20px;
+            border-bottom: 2px solid #ff91a4;
+        }
+
+        .footer-about-text {
+            font-size: 13px;
+            color: #111111;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .footer-social-links {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 145, 164, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+
+        .social-icon-btn:hover {
+            background-color: rgba(255, 145, 164, 0.15);
+        }
+
+        .social-icon-btn img {
+            width: 18px;
+            height: 18px;
+        }
+
+        .footer-links-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-links-list a {
+            font-size: 13px;
+            color: #111111;
+            transition: color 0.2s;
+        }
+
+        .footer-links-list a:hover {
+            color: #ff91a4;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255, 145, 164, 0.08);
+            padding-top: 25px;
+            text-align: center;
+        }
+
+        .footer-copyright {
+            font-size: 13px;
+            color: #111111;
         }
 
         @media (max-width: 992px) {
-            .products-static-grid {
+            .footer-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
+                gap: 30px;
             }
         }
 
-        @media (max-width: 600px) {
-            main {
-                padding: 25px 15px;
+        @media (max-width: 768px) {
+            .layout-two-cards {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
             }
-            .category-intro h1 {
-                font-size: 24px;
+            .bs-product-card {
+                padding: 12px;
+                border-radius: 20px;
             }
-            .category-intro p {
+            .card-img-link {
+                margin-bottom: 10px;
+            }
+            .card-title {
                 font-size: 14px;
             }
-            .products-static-grid {
-                grid-template-columns: repeat(1, 1fr);
+            .card-flavor {
+                font-size: 12px;
+            }
+            .card-desc {
+                font-size: 12px;
+                margin-bottom: 10px;
+            }
+            .price-text {
+                font-size: 15px;
+            }
+            .add-to-cart-btn {
+                height: 40px;
+                font-size: 13px;
+            }
+            .slider-inner .bs-product-card {
+                width: 220px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
                 gap: 25px;
+            }
+            .category-title {
+                font-size: 24px;
             }
         }
     </style>
@@ -423,196 +641,338 @@
 
     <header>
         <div class="header-right">
-            <button class="menu-toggle" id="menuToggleBtn" aria-label="فتح القائمة الجانبية">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button class="header-btn" aria-label="القائمة الجانبية">
+                <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
             </button>
-            <a href="index.html" class="logo-container">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي" class="logo-img">
+            <div class="logo-group">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="logo-img">
                 <span class="brand-name">حلويات بوسي</span>
-            </a>
+            </div>
         </div>
         <div class="header-left">
-            <button class="header-btn" aria-label="بحث في المنتجات">
-                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <button class="header-btn" aria-label="البحث">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </button>
-            <a href="cart.html" class="header-btn" aria-label="سلة المشتريات">
-                <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                <span class="cart-count" id="headerCartCount">0</span>
+            <a href="cart.html" class="header-btn cart-badge-container" aria-label="سلة المشتريات">
+                <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                <span class="cart-badge" id="global-cart-count">0</span>
             </a>
         </div>
     </header>
 
-    <div class="menu-overlay" id="menuOverlay"></div>
+    <div class="top-marquee">
+        <div class="marquee-content">توصيل سريع لمركز الفرافرة وقراها.. نحتاج 24 ساعة لتجهيز طلبك بأعلى جودة ممكنة.. مصنوع بحب لتهديه لمن تحب</div>
+        <div class="marquee-content">توصيل سريع لمركز الفرافرة وقراها.. نحتاج 24 ساعة لتجهيز طلبك بأعلى جودة ممكنة.. مصنوع بحب لتهديه لمن تحب</div>
+    </div>
 
-    <nav class="side-menu" id="sideMenu">
-        <div class="side-menu-header">
-            <span class="side-menu-title">تصفح المتجر</span>
-            <button class="close-menu" id="closeMenuBtn" aria-label="إغلاق القائمة">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-            </button>
-        </div>
-        <div class="side-menu-links">
-            <a href="index.html" class="side-link">الصفحة الرئيسية</a>
-            <a href="menu.html" class="side-link">قائمة المنيو</a>
-            <a href="cake-builder.html" class="side-link">محاكي التورت</a>
-            <a href="flower-builder.html" class="side-link">محاكي الورد</a>
-            <a href="cart.html" class="side-link">سلة المشتريات</a>
-        </div>
-    </nav>
+    <section class="category-hero">
+        <h1 class="category-title" id="main-category-title">استعرض <span>المنتجات</span></h1>
+        <p class="category-desc" id="main-category-desc">اختر فئتك المفضلة لتستعرض الحلويات الطازجة التي أعددناها لك اليوم بيوم بخامات طبيعية 100%.</p>
+    </section>
 
-    <main>
-        <section class="category-intro">
-            <h1 id="categoryPageTitle">استعراض القسم</h1>
-            <p id="categoryPageDesc">يرجى الانتظار، جاري تحميل المنتجات الفاخرة المجهزة بعناية تامة لخدمتكم...</p>
-        </section>
+    <div class="tabs-container" id="tabs-navigation-bar" style="display: none;"></div>
 
-        <section class="products-static-grid" id="categoryProductsGrid">
-            <!-- الـ JavaScript يولد المنتجات ديناميكياً هنا بناءً على الهيكل الموحد للكارت -->
-        </section>
+    <main class="products-wrapper">
+        <div id="products-render-grid"></div>
     </main>
 
-    <footer class="storefront-main-footer">
-        <div class="footer-layout-columns-wrapper">
-            <div class="footer-brand-summary-box">
-                <div class="footer-logo-block">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي لوجو" class="footer-brand-logo" loading="lazy">
-                    <h3 class="footer-brand-name">حلويات بوسي</h3>
-                </div>
-                <p class="footer-brief-paragraph">صنعناها بحب لتهديها لمن تحب. خبرة ممتدة لأكثر من 10 سنوات في تقديم وتصنيع الحلويات وتصميم كعكات التخصيص الفاخرة وتنسيق الورد الطبيعي والصناعي والستان بمركز الفرافرة.</p>
+    <section class="reviews-section">
+        <div class="reviews-inner">
+            <div class="section-header">
+                <h2 class="section-title">آراء <span>عملاؤنا</span></h2>
+                <p class="section-subtitle">ثقة نعتز بها ورحلة نجاح مستمرة معكم وبكم</p>
             </div>
-            
-            <div class="footer-links-navigation-group">
-                <h4 class="footer-group-title">روابط سريعة</h4>
-                <ul class="footer-clickable-links-list">
-                    <li><a href="index.html">الصفحة الرئيسية</a></li>
-                    <li><a href="menu.html">تصفح المنيو الشامل</a></li>
-                    <li><a href="cart.html">سلة المشتريات</a></li>
+            <div class="reviews-grid">
+                <div class="bs-review-card">
+                    <div class="review-top">
+                        <div class="reviewer-info">
+                            <span class="reviewer-name">أحمد سعيد</span>
+                            <span class="verified-badge">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                شراء مؤكد
+                            </span>
+                        </div>
+                        <div class="review-stars">
+                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        </div>
+                    </div>
+                    <p class="review-text">الخامات طازجة جداً والطعم متوازن ومظبوط، لسه حلاوتها في بوقي من يوم ما دوقتها. بجد شغل يشرف قدام الضيوف.</p>
+                </div>
+                <div class="bs-review-card">
+                    <div class="review-top">
+                        <div class="reviewer-info">
+                            <span class="reviewer-name">منة الله كريم</span>
+                            <span class="verified-badge">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                شراء مؤكد
+                            </span>
+                        </div>
+                        <div class="review-stars">
+                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        </div>
+                    </div>
+                    <p class="review-text">التوصيل كان دقيق وفي الموعد، والتقفيل فخم جداً. جربت القشطوطة والسينابون والاتنين طعمهم فوق الخيال.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="you-may-like-section">
+        <div class="section-header">
+            <h2 class="section-title">قد يعجبك <span>أيضاً</span></h2>
+            <p class="section-subtitle">إضافات مكملة لتجربة تذوق استثنائية</p>
+        </div>
+        <div class="slider-outer">
+            <div class="slider-inner" id="recommendations-slider-target"></div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h3>حلويات بوسي</h3>
+                <p class="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الشرقية والغربية والتورت المصممة خصيصاً لمناسباتكم السعيدة بالفرافرة.</p>
+                <div class="footer-social-links">
+                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" class="social-icon-btn"><img src="https://cdn-icons-png.flaticon.com/512/733/733547.png" alt="Facebook"></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" class="social-icon-btn"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" alt="Instagram"></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" target="_blank" class="social-icon-btn"><img src="https://cdn-icons-png.flaticon.com/512/3046/3046124.png" alt="TikTok"></a>
+                    <a href="https://wa.me/201097238441" target="_blank" class="social-icon-btn"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp"></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>روابط سريعة</h3>
+                <ul class="footer-links-list">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="menu.html">المنيو الشامل</a></li>
+                    <li><a href="cake-builder.html">محاكي التورت</a></li>
+                    <li><a href="flower-builder.html">محاكي الورد</a></li>
                 </ul>
             </div>
-
-            <div class="footer-links-navigation-group">
-                <h4 class="footer-group-title">سياسات المتجر</h4>
-                <ul class="footer-clickable-links-list">
+            <div class="footer-col">
+                <h3>السياسات الرسمية</h3>
+                <ul class="footer-links-list">
                     <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
                     <li><a href="refund-policy.html">سياسة الاستبدال والاسترجاع</a></li>
                 </ul>
             </div>
-
-            <div class="footer-business-data-card">
-                <h4 class="footer-group-title">بيانات فرع الكفاح</h4>
-                <p class="footer-data-text-row">📍 شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وعيادة الدكتور علي</p>
-                <p class="footer-data-text-row">📞 للتواصل: 01097238441</p>
-                <div class="footer-social-original-icons-box">
-                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-icon facebook-icon" aria-label="فيسبوك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-icon instagram-icon" aria-label="انستجرام حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-icon tiktok-icon" aria-label="تيك توك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i></a>
-                    <a href="https://wa.me/201097238441" class="social-icon whatsapp-icon" aria-label="واتساب حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i></a>
-                </div>
+            <div class="footer-col">
+                <h3>بيانات النشاط</h3>
+                <p class="footer-about-text">الفرع الرئيسي: الكفاح - شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي.</p>
+                <p class="footer-about-text">رقم الهاتف: 01097238441</p>
             </div>
         </div>
-        <div class="footer-copyrights-bottom-bar">
-            <p class="copyright-legal-text">جميع الحقوق محفوظة © لعلامة حلويات بوسي التجارية 2026</p>
+        <div class="footer-bottom">
+            <p class="footer-copyright">جميع الحقوق محفوظة © حلويات بوسي 2026</p>
         </div>
     </footer>
 
     <script>
-        // محاكاة سحب البيانات من ملف التشغيل المعتمد لمتجر حلويات بوسي
-        const databaseMock = {
-            "qashtouta": {
-                title: "القشطوطة",
-                desc: "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-                products: [
-                    { id: "q-lotus", title: "قشطوطة باللوتس", flavor: "لوتس", price: 121, desc: "كيك الحليب الفاخر مشرب بالكامل مع زبدة اللوتس الأصلية المقرمشة." },
-                    { id: "q-pistachio", title: "قشطوطة بالبيستاشيو", flavor: "بيستاشيو", price: 143, desc: "مجهزة بكريمة فستق طبيعية غنية لمنح طعم مميز وممتد." },
-                    { id: "q-caramel", title: "قشطوطة بالكراميل", flavor: "كراميل", price: 121, desc: "مغطاة بطبقة كراميل غنية ومطبوخة بعناية فائقة داخل مطبخنا." }
-                ]
-            },
-            "despacito": {
-                title: "الديسباسيتو",
-                desc: "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
-                products: [
-                    { id: "d-nutella", title: "ديسباسيتو نوتيلا دارك", flavor: "نوتيلا دارك", price: 66, desc: "قالب مثلث غني بصوص الشوكولاتة فادج الغامق وعجينة الفادج الهشة." },
-                    { id: "d-pistachio", title: "ديسباسيتو بيستاشيو فخم", flavor: "بيستاشيو", price: 83, desc: "قالب مثلث من الفادج الغني بطبقة مميزة من صوص الفستق الطبيعي الفاخر." }
-                ]
-            }
-            // باقي الفئات الـ 12 تتبع نفس المعمارية في الـ JS المركزي للمتجر
+        const BOOSY_DATABASE = {
+            products: [
+                { id: "despacito", slug: "despacito", title: "الديسباسيتو", layout: "tabs", description: "طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة. معمول بخامات مختارة بعناية علشان يوصلك بنفس الجودة اللي بنطلع بيها كل منتج من مطبخنا.", sizes: [ { id: "triangle", name: "مثلث", variants: [ { flavor: "نوتيلا دارك", price: 66 }, { flavor: "لوتس", price: 66 }, { flavor: "نوتيلا وايت", price: 66 }, { flavor: "كراميل", price: 66 }, { flavor: "كيندر", price: 66 }, { flavor: "بلوبيري", price: 66 }, { flavor: "راسبيري", price: 66 }, { flavor: "كرز", price: 66 }, { flavor: "اسنيكرز", price: 66 }, { flavor: "ميكس شوكليت", price: 66 }, { flavor: "بيستاشيو", price: 83 } ] }, { id: "medium", name: "وسط", variants: [ { flavor: "نوتيلا دارك", price: 132 }, { flavor: "لوتس", price: 132 }, { flavor: "نوتيلا وايت", price: 132 }, { flavor: "كراميل", price: 132 }, { flavor: "كيندر", price: 132 }, { flavor: "بلوبيري", price: 132 }, { flavor: "راسبيري", price: 132 }, { flavor: "كرز", price: 132 }, { flavor: "اسنيكرز", price: 132 }, { flavor: "ميكس شوكليت", price: 132 }, { flavor: "بيستاشيو", price: 165 } ] }, { id: "large", name: "كبير", variants: [ { flavor: "نوتيلا دارك", price: 264 }, { flavor: "لوتس", price: 264 }, { flavor: "نوتيلا وايت", price: 264 }, { flavor: "كراميل", price: 264 }, { flavor: "كيندر", price: 264 }, { flavor: "بلوبيري", price: 264 }, { flavor: "راسبيري", price: 264 }, { flavor: "كرز", price: 264 }, { flavor: "اسنيكرز", price: 264 }, { flavor: "ميكس شوكليت", price: 264 }, { flavor: "بيستاشيو", price: 297 } ] } ] },
+                { id: "qashtota", slug: "qashtota", title: "القشطوطة", layout: "two-cards", description: "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.", variants: [ { flavor: "نوتيلا وايت", price: 121 }, { flavor: "نوتيلا دارك", price: 121 }, { flavor: "لوتس", price: 121 }, { flavor: "بيستاشيو", price: 143 }, { flavor: "كيندر", price: 121 }, { flavor: "كراميل", price: 121 }, { flavor: "مانجا", price: 121 }, { flavor: "فراولة", price: 121 }, { flavor: "موز", price: 121 }, { flavor: "ميكس نكهات", price: 121 } ] },
+                { id: "donuts", slug: "donuts", title: "الدوناتس", layout: "two-cards", description: "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.", variants: [ { flavor: "نوتيلا وايت", price: 88 }, { flavor: "نوتيلا دارك", price: 88 }, { flavor: "لوتس", price: 88 }, { flavor: "بيستاشيو", price: 110 }, { flavor: "كيندر", price: 88 }, { flavor: "كراميل", price: 88 }, { flavor: "ريدفيلفت", price: 99 }, { flavor: "بلوبيري + راسبيري", price: 99 }, { flavor: "فراولة", price: 88 }, { flavor: "مانجا", price: 99 }, { flavor: "ماتيلدا", price: 110 }, { flavor: "اوريو", price: 88 }, { flavor: "كرز", price: 88 } ] },
+                { id: "cinabon", slug: "cinabon", title: "السينابون", layout: "two-cards", description: "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.", variants: [ { flavor: "نوتيلا دارك", price: 121 }, { flavor: "وايت نوتيلا", price: 121 }, { flavor: "بلوبيري", price: 121 }, { flavor: "راسبيري", price: 121 }, { flavor: "رفايلو", price: 121 }, { flavor: "اوريو", price: 121 }, { flavor: "لوتس", price: 121 }, { flavor: "بيستاشيو", price: 143 }, { flavor: "كيندر", price: 121 }, { flavor: "كراميل", price: 121 }, { flavor: "كلاسيك", price: 121 } ] },
+                { id: "happiness-cups", slug: "happiness-cups", title: "كبات السعادة", layout: "two-cards", description: "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج فانيليا أو شوكولاتة ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص.", variants: [ { flavor: "نوتيلا", price: 61 }, { flavor: "لوتس", price: 61 }, { flavor: "أوريو", price: 61 }, { flavor: "اسنيكرز", price: 61 }, { flavor: "بلوبيري", price: 61 }, { flavor: "راسبيري", price: 61 }, { flavor: "كرز", price: 61 }, { flavor: "كيت كات", price: 61 }, { flavor: "روشيه", price: 61 }, { flavor: "رفايلو", price: 61 }, { flavor: "كيندر", price: 61 } ] },
+                { id: "red-velvet", slug: "red-velvet", title: "الريدڤيلڤت", layout: "full-card", description: "طبقات من الريد ڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز والراسبيري التي تضيف توازناً رائعاً بين الحلاوة والانتعاش لتكوين تجربة متكاملة في كل قطعة.", variants: [ { flavor: "مثلث كبير", price: 72 }, { flavor: "كب وسط", price: 99 }, { flavor: "طاجن كبير", price: 165 } ] },
+                { id: "mini-cake", slug: "mini-cake", title: "الميني تورت", layout: "full-card", description: "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق. تُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها مع إمكانية تحديد نوع الكيك (فانيليا، شوكولاتة، نصف ونصف) وإضافة رسالة قصيرة وملاحظات الحساسية الغذائية.", variants: [ { flavor: "حجم فرد أو اتنين", price: 154 }, { flavor: "حجم 3 أو 4 أفراد", price: 308 }, { flavor: "حجم 5 أو 6 أفراد", price: 462 } ] },
+                { id: "relax-box", slug: "relax-box", title: "بوكس الروقان", layout: "full-card", description: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد. يحتوي على: تورتة، 2 كب سعادة، 1 كب ديسباسيتو، 1 كب ريد ڤيلڤت. مناسب للهدايا والجلسات الخاصة والمفاجآت الجميلة.", variants: [ { flavor: "بوكس كامل ومتكامل", price: 550 } ] },
+                { id: "gateaux", slug: "gateaux", title: "الجاتوهات", layout: "full-card", description: "الجاتوهات عندنا عبارة عن طبقات متوازنة من كيك الفانيليا أو الشوكولاتة مع حشوات غنية من الموسات والصوصات والكريمات المختارة بعناية لتناسب مختلف المناسبات والأذواق.", variants: [ { flavor: "دستة جاتوه ملكي", price: 638 }, { flavor: "دستة جاتوه كلاسيك", price: 506 }, { flavor: "دستة جاتوه سواريه", price: 374 } ] },
+                { id: "cupcake", slug: "cupcake", title: "الكب كيك", layout: "two-cards", description: "قطع صغيرة من اللذة بطابع غني ومميز. يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً، ثم يتم حشو كل قطعة بحشوات وصوصات متنوعة قبل تزيينها بطبقة من الكريمة اللباني الغنية. (يمكنك إضافة صور مطبوعة قابلة للأكل بـ 60 ج للدستة أو غير قابلة للأكل بـ 15 ج للدستة عند تأكيد الطلب).", variants: [ { flavor: "دستة كب كيك شوكولاتة", price: 324 }, { flavor: "دستة كب كيك فانيليا", price: 324 }, { flavor: "دستة كب كيك ميكس", price: 324 } ] },
+                { id: "cakes", slug: "cakes", title: "التورت", layout: "full-card", description: "التورت عندنا مش مجرد حلوى للمناسبة، لكنها قطعة مصممة خصيصاً لصاحب المناسبة. تجمع بين الشكل الذي يحبه العميل والطعم الذي يفضله والتفاصيل التي تعبر عنه لتكون نجمة سهرتكم السعيدة.", variants: [ { flavor: "تورتة مخصصة بالطلب - سعر أساسي", price: 580 } ] },
+                { id: "flowers", slug: "flowers", title: "الورد", layout: "full-card", description: "ننفرد بتقديم بوكيهات الورد الطبيعي والصناعي وورد الستان بأعلى مستوى من العناية والاهتمام بالتفاصيل لتصل إليكم بكامل نضارتها وحضورها الآسر بالشكل الذي يشرفك أمام كل من تهديه له.", variants: [ { flavor: "تنسيق بوكيه ورد فاخر - سعر أساسي", price: 400 } ] }
+            ]
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // كود تشغيل القائمة الجانبية الموحد
-            const menuToggleBtn = document.getElementById('menuToggleBtn');
-            const closeMenuBtn = document.getElementById('closeMenuBtn');
-            const sideMenu = document.getElementById('sideMenu');
-            const menuOverlay = document.getElementById('menuOverlay');
-            const headerCartCount = document.getElementById('headerCartCount');
+        let currentCart = JSON.parse(localStorage.getItem('boosy_cart')) || [];
 
-            function toggleSideMenu(open) {
-                if (open) { sideMenu.classList.add('active'); menuOverlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
-                else { sideMenu.classList.remove('active'); menuOverlay.classList.remove('active'); document.body.style.overflow = ''; }
-            }
-            if (menuToggleBtn) menuToggleBtn.addEventListener('click', () => toggleSideMenu(true));
-            if (closeMenuBtn) closeMenuBtn.addEventListener('click', () => toggleSideMenu(false));
-            if (menuOverlay) menuOverlay.addEventListener('click', () => toggleSideMenu(false));
-
-            // قراءة نوع الفئة من الرابط واستعراض البيانات
+        function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
-            const categoryType = urlParams.get('type') || 'qashtouta';
-            const categoryData = databaseMock[categoryType] || databaseMock['qashtouta'];
+            return urlParams.get(param);
+        }
 
-            document.getElementById('categoryPageTitle').textContent = categoryData.title;
-            document.getElementById('categoryPageDesc').textContent = categoryData.desc;
+        function updateCartBadge() {
+            const totalItems = currentCart.reduce((acc, item) => acc + item.quantity, 0);
+            document.getElementById('global-cart-count').textContent = totalItems;
+        }
 
-            const gridContainer = document.getElementById('categoryProductsGrid');
-            gridContainer.innerHTML = '';
+        function saveCartToStorage() {
+            localStorage.setItem('boosy_cart', JSON.stringify(currentCart));
+            updateCartBadge();
+        }
 
-            categoryData.products.forEach(prod => {
+        function handleQtyChange(btn, isPlus) {
+            const container = btn.closest('.quantity-selector');
+            const valEl = container.querySelector('.qty-val');
+            let currentVal = parseInt(valEl.textContent);
+            
+            if (isPlus) {
+                currentVal++;
+            } else {
+                if (currentVal > 1) currentVal--;
+            }
+            valEl.textContent = currentVal;
+        }
+
+        function initPage() {
+            const categoryId = getQueryParam('id') || "despacito";
+            const productData = BOOSY_DATABASE.products.find(p => p.id === categoryId);
+
+            if (!productData) {
+                document.getElementById('main-category-title').innerHTML = "القسم <span>غير موجود</span>";
+                return;
+            }
+
+            document.getElementById('main-category-title').innerHTML = `قسم <span>${productData.title}</span>`;
+            document.getElementById('main-category-desc').textContent = productData.description;
+
+            const gridTarget = document.getElementById('products-render-grid');
+            const tabsTarget = document.getElementById('tabs-navigation-bar');
+
+            if (productData.layout === "tabs") {
+                tabsTarget.style.display = "flex";
+                tabsTarget.innerHTML = "";
+                
+                productData.sizes.forEach((sizeObj, idx) => {
+                    const tabBtn = document.createElement('button');
+                    tabBtn.className = `tab-btn ${idx === 0 ? 'active' : ''}`;
+                    tabBtn.textContent = sizeObj.name;
+                    tabBtn.onclick = () => {
+                        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                        tabBtn.classList.add('active');
+                        renderTabsLayout(productData, sizeObj.id, gridTarget);
+                    };
+                    tabsTarget.appendChild(tabBtn);
+                });
+
+                renderTabsLayout(productData, productData.sizes[0].id, gridTarget);
+            } else if (productData.layout === "two-cards") {
+                tabsTarget.style.display = "none";
+                gridTarget.className = "layout-two-cards";
+                renderStandardCards(productData, productData.variants, gridTarget);
+            } else if (productData.layout === "full-card") {
+                tabsTarget.style.display = "none";
+                gridTarget.className = "layout-full";
+                renderStandardCards(productData, productData.variants, gridTarget);
+            }
+
+            renderRecommendations();
+            updateCartBadge();
+        }
+
+        function renderTabsLayout(productObj, sizeId, targetContainer) {
+            targetContainer.className = "layout-two-cards";
+            const selectedSize = productObj.sizes.find(s => s.id === sizeId);
+            renderStandardCards(productObj, selectedSize.variants, targetContainer, selectedSize.name);
+        }
+
+        function renderStandardCards(productObj, variantsArray, targetContainer, sizeLabel = "") {
+            targetContainer.innerHTML = "";
+
+            variantsArray.forEach((v) => {
                 const card = document.createElement('div');
-                card.className = 'product-unified-card';
+                card.className = "bs-product-card";
+
+                const currentTitle = productObj.title;
+                const currentFlavor = v.flavor;
+                const finalFlavorDisplay = sizeLabel ? `${sizeLabel} - ${currentFlavor}` : currentFlavor;
+
                 card.innerHTML = `
-                    <div class="product-image-frame">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="${prod.title}" class="product-img" loading="lazy">
-                    </div>
-                    <div class="product-details-box">
-                        <a href="product.html?id=${prod.id}" class="product-card-title">${prod.title}</a>
-                        <div class="product-card-flavor">النكهة: ${prod.flavor}</div>
-                        <p class="product-card-desc">${prod.desc}</p>
-                        <div class="product-card-action-row">
-                            <span class="product-card-price">${prod.price} ج.م</span>
-                            <div class="quantity-controller-block">
-                                <button class="quantity-btn minus">-</button>
-                                <div class="quantity-display-value">1</div>
-                                <button class="quantity-btn plus">+</button>
+                    <a href="product.html?id=${productObj.id}&flavor=${encodeURIComponent(currentFlavor)}&size=${encodeURIComponent(sizeLabel)}" class="card-img-link">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="${currentTitle}" class="card-img" loading="lazy">
+                    </a>
+                    <div class="card-info">
+                        <h2 class="card-title">${currentTitle}</h2>
+                        <span class="card-flavor">${finalFlavorDisplay}</span>
+                        <p class="card-desc">${productObj.description}</p>
+                        <div class="card-actions-row">
+                            <div class="quantity-selector">
+                                <button class="qty-btn minus-btn">-</button>
+                                <span class="qty-val">1</span>
+                                <button class="qty-btn plus-btn">+</button>
                             </div>
-                            <button class="add-to-cart-trigger" onclick="location.href='product.html?id=${prod.id}'">عرض الخيارات</button>
+                            <div class="price-text">${v.price} جنيهاً</div>
+                            <button class="add-to-cart-btn">
+                                <svg viewBox="0 0 24 24"><path d="M11 9h2V6h3V4h-3V1h-2v3H8v2h3v3zm-4 9c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-9.83-3.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.86-7.01L19.42 4h-.01l-1.1 2-2.76 5H8.53L4.27 2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.13 0-.25-.11-.25-.25z"/></svg>
+                                إضافة للسلة
+                            </button>
                         </div>
                     </div>
                 `;
-                
-                // تفعيل عداد الكمية المرن والسهل للموبايل والكمبيوتر
-                const minusBtn = card.querySelector('.minus');
-                const plusBtn = card.querySelector('.plus');
-                const qtyDisplay = card.querySelector('.quantity-display-value');
-                
-                minusBtn.addEventListener('click', () => {
-                    let qty = parseInt(qtyDisplay.textContent);
-                    if(qty > 1) qtyDisplay.textContent = qty - 1;
-                });
-                plusBtn.addEventListener('click', () => {
-                    let qty = parseInt(qtyDisplay.textContent);
-                    qtyDisplay.textContent = qty + 1;
-                });
 
-                gridContainer.appendChild(card);
+                card.querySelector('.minus-btn').onclick = (e) => handleQtyChange(e.target, false);
+                card.querySelector('.plus-btn').onclick = (e) => handleQtyChange(e.target, true);
+                
+                card.querySelector('.add-to-cart-btn').onclick = () => {
+                    const qty = parseInt(card.querySelector('.qty-val').textContent);
+                    addToCartGlobal(productObj.id, currentTitle, finalFlavorDisplay, v.price, qty);
+                };
+
+                targetContainer.appendChild(card);
             });
+        }
 
-            function updateCartBadge() {
-                const cart = JSON.parse(localStorage.getItem('bose_cart')) || [];
-                if (headerCartCount) headerCartCount.textContent = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
+        function addToCartGlobal(productId, title, flavor, price, quantity) {
+            const itemKey = `${productId}_${flavor}`;
+            const existingItem = currentCart.find(i => i.key === itemKey);
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                currentCart.push({
+                    key: itemKey,
+                    id: productId,
+                    title: title,
+                    flavor: flavor,
+                    price: price,
+                    quantity: quantity
+                });
             }
-            updateCartBadge();
-        });
+            saveCartToStorage();
+        }
+
+        function renderRecommendations() {
+            const recTarget = document.getElementById('recommendations-slider-target');
+            recTarget.innerHTML = "";
+
+            const currentId = getQueryParam('id') || "despacito";
+            const filtered = BOOSY_DATABASE.products.filter(p => p.id !== currentId).slice(0, 4);
+
+            filtered.forEach(p => {
+                const basePrice = p.variants ? p.variants[0].price : p.sizes[0].variants[0].price;
+                const baseFlavor = p.variants ? p.variants[0].flavor : p.sizes[0].variants[0].flavor;
+
+                const card = document.createElement('div');
+                card.className = "bs-product-card";
+                card.innerHTML = `
+                    <a href="category.html?id=${p.id}" class="card-img-link">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="${p.title}" class="card-img" loading="lazy">
+                    </a>
+                    <div class="card-info">
+                        <h2 class="card-title">${p.title}</h2>
+                        <span class="card-flavor">${baseFlavor}</span>
+                        <p class="card-desc">${p.description}</p>
+                        <div class="card-actions-row">
+                            <div class="price-text">${basePrice} جنيهاً</div>
+                            <a href="category.html?id=${p.id}" class="add-to-cart-btn" style="background-color: transparent; border: 1px solid #ff91a4;">
+                                تصفح القسم
+                            </a>
+                        </div>
+                    </div>
+                `;
+                recTarget.appendChild(card);
+            });
+        }
+
+        window.onload = initPage;
     </script>
 </body>
 </html>
