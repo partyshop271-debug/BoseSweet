@@ -1,176 +1,157 @@
 (function () {
-    // تأسيس النطاق الموحد الحاكم والآمن على نافذة المتصفح لمنع تضارب الملفات مستقبلاً
     window.BoseSweets = {
         Core: {},
-        // قاعدة البيانات المحلية المدمجة: خط الدفاع الصلب والكامل لحماية المنتجات والأسعار من انقطاع الاتصال بالإنترنت
         LocalDatabase: {
             store: {
                 name: "حلويات بوسي",
-                slogan: "صنعناها بحب لتهديها لمن تحب",
-                phone: "01097238441",
-                address: "الكفاح - شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي"
+                slogan: "صنعناها بحب لتهديها لمن تحب"
             },
-            // المنتجات المعتمدة والمطابقة لوثائق النشاط بالوصف الدقيق غير المبالغ فيه
+            // تشغيل الـ 12 فئة الإلزامية المذكورة في المواصفة الرسمية لقسم تسوق حسب الفئة بدون أي تعديل أو ابتكار
+            categories: [
+                { id: "cakes", name: "التورت" },
+                { id: "gateaux", name: "الجاتوهات" },
+                { id: "qashtota", name: "القشطوطة" },
+                { id: "despacito", name: "الديسباسيتو" },
+                { id: "cinnabon", name: "السينابون" },
+                { id: "donuts", name: "الدوناتس" },
+                { id: "red-velvet", name: "الريدڤيلڤت" },
+                { id: "cupcake", name: "الكب كيك" },
+                { id: "mini-cake", name: "الميني تورت" },
+                { id: "flowers", name: "الورد" },
+                { id: "happiness-cups", name: "كبات السعادة" },
+                { id: "relax-box", name: "بوكس الروقان" }
+            ],
+            // حشوة المنتجات الأولية الثابتة لاختبار الهيكل الموحد المكتوب في المواصفة
             products: [
-                {
-                    id: "despacito-box",
-                    title: "طاجن ديسباسيتو حلويات بوسي",
-                    flavor: "شوكولاتة بلجيكية غنية مع فدج طازج",
-                    description: "تم تحضير المكونات بعناية فائقة للحصول على أفضل جودة، كيكة فدج غنية مشبعة بصوص الشوكولاتة الأصلي تعلوها طبقة مقرمشة فاخرة تناسب تجمعاتكم السعيدة.",
-                    price: 120,
-                    image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-                    category: "despacito",
-                    tags: ["best-seller", "new"]
-                },
-                {
-                    id: "qashtoutah-nuts",
-                    title: "قشطوطة بالمكسرات المحمصة",
-                    flavor: "قشطة بلدي طبيعية 100% ومكسرات طازجة",
-                    description: "كيكة الحليب التركية الفاخرة مشربة باللبن الطازج بالكامل، تعلوها طبقة غنية من القشطة البلدية والمكسرات المقرمشة المنتقاة لراحة تذوق عميلنا.",
-                    price: 140,
-                    image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-                    category: "qashtoutah",
-                    tags: ["best-seller"]
-                },
-                {
-                    id: "box-roqan-luxury",
-                    title: "بوكس الروقان الشامل",
-                    flavor: "تشكيلة حصرية من الكبات والميني جاتوه",
-                    description: "تم تصميم وتجميع هذه التشكيلة لتناسب مختلف الأوقات واللمات، تحتوي على توليفة منوعة من أكثر قطعنا طلباً وشهرة لتوفر قيمة رائعة تشرفكم.",
-                    price: 250,
-                    image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-                    category: "boxes",
-                    tags: ["new"]
-                }
+                { id: "prod-1", title: "طاجن ديسباسيتو كبير", flavor: "نوتيلا دارك", description: "طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة.", price: 264, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "new-arrival"] },
+                { id: "prod-2", title: "قشطوطة فاخرة", flavor: "بيستاشيو", description: "كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح من أول لقمة منافسة للضيافة الفاخرة.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller"] },
+                { id: "prod-3", title: "دوناتس طازجة", flavor: "ماتيلدا", description: "دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك نفس الطعم والجودة الحقيقية.", price: 110, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival"] },
+                { id: "prod-4", title: "لفات سينابون", flavor: "كلاسيك صوص تشيز", description: "لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة لتاخذ تجربة واضحة في الطعم.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "prod-5", title: "كبات السعادة", flavor: "لوتس غني", description: "أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة.", price: 61, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "prod-6", title: "ميني تورت", flavor: "فرد أو اتنين فانيليا", description: "تورت صغير معمول بنفس اهتمام تورت المناسبات الكبيرة بخامات واضحة وتفاصيل مناسبة للهدايا الخاصة.", price: 154, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "prod-7", title: "بوكس الروقان", flavor: "تجميعة منوعة هادية", description: "تجميعة متنوعة متنسقة بعناية مناسبة للهدايا واللمة الهادية بطعم واضح وخامات حقيقية ومضمونة.", price: 550, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "prod-8", title: "دستة كب كيك", flavor: "ميكس نكهات شوكولاتة وفانيليا", description: "كب كيك بتزيينات متنوعة وخامات متوازنة مناسب للهدايا والمناسبات والتجمعات الصغيرة والتقديم الفاخر.", price: 324, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] }
             ]
         },
         Runtime: {
-            state: {
-                currentRoute: 'home',
-                cart: [],
-                products: []
-            },
+            state: { products: [], categories: [], showAllProducts: false },
             events: {}
         }
     };
 
     const Core = window.BoseSweets.Core;
-    const Runtime = window.BoseSweets.Runtime;
     const LocalDb = window.BoseSweets.LocalDatabase;
 
-    // محرك إدارة وتتبع الأحداث المركزي (Event Bus)
-    Core.listen = function (eventName, callback) {
-        if (!Runtime.events[eventName]) {
-            Runtime.events[eventName] = [];
-        }
-        Runtime.events[eventName].push(callback);
+    Core.loadInitialData = function () {
+        window.BoseSweets.Runtime.state.products = LocalDb.products;
+        window.BoseSweets.Runtime.state.categories = LocalDb.categories;
+        Core.renderUI();
     };
 
-    Core.emit = function (eventName, payload) {
-        if (Runtime.events[eventName]) {
-            Runtime.events[eventName].forEach(callback => {
-                try { callback(payload); } catch (e) { console.error(`خطأ بالحدث ${eventName}:`, e); }
-            });
-        }
-    };
-
-    Core.getState = function () { return Runtime.state; };
-    
-    Core.setState = function (newState) {
-        Runtime.state = { ...Runtime.state, ...newState };
-        Core.emit('system.state.changed', Runtime.state);
-    };
-
-    // محرك جلب المنتجات الذكي: يشحن البيانات المحلية فورا لحماية الموقع من الفراغ الفايربيزي
-    Core.loadProducts = function () {
-        console.log("تفعيل خط الدفاع الأول: جاري ضخ المنتجات المدمجة محلياً لضمان السرعة المطلقة للموقع...");
-        Core.setState({ products: LocalDb.products });
-        Core.renderStorefront();
-    };
-
-    // محرك رندرة وبناء الكروت بالهيكل الموحد المعتمد
-    Core.renderStorefront = function () {
-        const products = Core.getState().products;
+    Core.renderUI = function () {
+        const state = window.BoseSweets.Runtime.state;
         
-        const bestSellersContainer = document.getElementById('best-sellers-carousel');
-        const newArrivalsContainer = document.getElementById('new-arrivals-carousel');
-        const gridContainer = document.getElementById('products-grid-view');
+        // 1. رندرة الشلال بصور الـ Placeholder المعتمدة
+        const waterfall1 = document.getElementById('waterfall-column-1');
+        const waterfall2 = document.getElementById('waterfall-column-2');
+        if (waterfall1 && waterfall2) {
+            waterfall1.innerHTML = Array(4).fill(`<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="waterfall-img-item" alt="Placeholder">`).join('');
+            waterfall2.innerHTML = Array(4).fill(`<img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="waterfall-img-item" alt="Placeholder">`).join('');
+        }
 
-        if (!bestSellersContainer || !gridContainer) return;
+        // 2. رندرة قسم عقد من الإتقان بالسلايدر الأفقي بـ 3 صور متصلة بالكامل
+        const craftTrack = document.getElementById('craftsmanship-slider-track');
+        if (craftTrack) {
+            craftTrack.innerHTML = Array(3).fill(`<a href="menu.html"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="full-slider-image-link" alt="إتقان"></a>`).join('');
+            document.getElementById('craftsmanship-slider-dots').innerHTML = Array(3).fill(`<span class="dot-node"></span>`).join('');
+            document.getElementById('craftsmanship-slider-dots').children[0].classList.add('active');
+        }
 
-        bestSellersContainer.innerHTML = '';
-        if (newArrivalsContainer) newArrivalsContainer.innerHTML = '';
-        gridContainer.innerHTML = '';
+        // 3. بناء وتوزيع كروت السلايدرات والشبكة بالهيكل الموحد الإلزامي
+        const bestSellersTrack = document.getElementById('best-sellers-slider-container');
+        const newArrivalsTrack = document.getElementById('new-arrivals-slider-container');
+        const productsGrid = document.getElementById('storefront-products-grid-container');
 
-        products.forEach(product => {
-            // كود الكارت الموحد بحدوده البمبية الناعمة والتنفس البصري والعداد المرن للموبايل
+        if (bestSellersTrack) bestSellersTrack.innerHTML = '';
+        if (newArrivalsTrack) newArrivalsTrack.innerHTML = '';
+        if (productsGrid) productsGrid.innerHTML = '';
+
+        let ourProductsCount = 0;
+
+        state.products.forEach(product => {
+            // صياغة الهيكل الموحد الحاكم للكارت (صورة ◄ اسم ◄ نكهة ◄ وصف ◄ عداد [يمين+، وسط العدد، يسار-] ◄ سعر ◄ زر)
             const cardHtml = `
                 <div class="bs-product-card" data-id="${product.id}">
-                    <img src="${product.image}" alt="${product.title}" class="card-product-image" loading="lazy">
-                    <h3 class="card-product-title">${product.title}</h3>
-                    <div class="card-flavor-title">${product.flavor}</div>
-                    <p class="card-product-description">${product.description}</p>
-                    
-                    <div class="card-footer-action-row">
-                        <div class="card-price-value">${product.price} EGP</div>
-                        
-                        <div class="card-quantity-counter">
-                            <button class="counter-btn" onclick="BoseSweets.Core.updateCardQty('${product.id}', -1)">-</button>
-                            <span class="counter-value" id="qty-${product.id}">1</span>
-                            <button class="counter-btn" onclick="BoseSweets.Core.updateCardQty('${product.id}', 1)">+</button>
+                    <img src="${product.image}" class="card-image-box" alt="${product.title}" loading="lazy">
+                    <h3 class="card-title-text">${product.title}</h3>
+                    <div class="card-flavor-text">${product.flavor}</div>
+                    <p class="card-desc-paragraph">${product.description}</p>
+                    <div class="card-meta-action-row">
+                        <div class="card-quantity-selector">
+                            <button class="selector-action-btn" onclick="BoseSweets.Core.adjustQty('${product.id}', 1)">+</button>
+                            <span class="selector-value-display" id="qty-val-${product.id}">1</span>
+                            <button class="selector-action-btn" onclick="BoseSweets.Core.adjustQty('${product.id}', -1)">-</button>
                         </div>
-                        
-                        <button class="card-add-to-cart-btn" onclick="BoseSweets.Core.addToCart('${product.id}')">إضافة للسلة</button>
+                        <div class="card-price-display-text">${product.price} EGP</div>
+                        <button class="card-add-to-cart-action-btn" onclick="BoseSweets.Core.addToCart('${product.id}')">إضافة للسلة</button>
                     </div>
                 </div>
             `;
 
-            // التوزيع الذكي والتلقائي للمنتجات داخل واجهات الأقسام بناءً على دلالات التاجات
-            if (product.tags.includes('best-seller')) {
-                bestSellersContainer.innerHTML += cardHtml;
+            if (product.tags.includes('best-seller') && bestSellersTrack) bestSellersTrack.innerHTML += cardHtml;
+            if (product.tags.includes('new-arrival') && newArrivalsTrack) newArrivalsTrack.innerHTML += cardHtml;
+            
+            if (product.tags.includes('our-products') && productsGrid) {
+                ourProductsCount++;
+                // إخفاء الكروت الـ 4 الإضافية بشكل برمي حتى يضغط العميل إظهار المزيد
+                if (ourProductsCount <= 4 || state.showAllProducts) {
+                    productsGrid.innerHTML += cardHtml;
+                }
             }
-            if (product.tags.includes('new') && newArrivalsContainer) {
-                newArrivalsContainer.innerHTML += cardHtml;
-            }
-            gridContainer.innerHTML += cardHtml;
         });
-    };
 
-    // التحكم الذكي بعدادات كمية الكروت لتجربة لمس مريحة بالموبايل والكمبيوتر
-    Core.updateCardQty = function (productId, change) {
-        const qtyElement = document.getElementById(`qty-${productId}`);
-        if (qtyElement) {
-            let currentQty = parseInt(qtyElement.innerText) || 1;
-            currentQty += change;
-            if (currentQty < 1) currentQty = 1;
-            qtyElement.innerText = currentQty;
+        // 4. بناء الـ 12 كارت لقسم تسوق حسب الفئة بالمقاس الأكبر بـ 30% والخط المتمركز أسفله 20px وزن 700
+        const catTrack = document.getElementById('categories-carousel-slider-track');
+        if (catTrack) {
+            catTrack.innerHTML = '';
+            state.categories.forEach(cat => {
+                catTrack.innerHTML += `
+                    <div class="bs-category-large-card" onclick="location.href='category.html?id=${cat.id}'">
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="category-large-img" alt="${cat.name}">
+                        <div class="category-large-title">${cat.name}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('categories-carousel-slider-dots').innerHTML = Array(12).fill(`<span class="dot-node"></span>`).join('');
+            document.getElementById('categories-carousel-slider-dots').children[0].classList.add('active');
         }
     };
 
-    // التفاعل الفوري الراقي عند الضغط على إضافة للسلة
-    Core.addToCart = function (productId) {
-        const qtyElement = document.getElementById(`qty-${productId}`);
-        const qty = qtyElement ? parseInt(qtyElement.innerText) : 1;
-        console.log(`نواة الحركة: تمت إضافة المنتج ${productId} بكمية ${qty} للمشتريات محلياً.`);
-        
-        // إشعار مباشر خفيف وواضح ومفهوم للجميع دون تعقيد أو بطء
+    Core.adjustQty = function (id, delta) {
+        const node = document.getElementById(`qty-val-${id}`);
+        if (node) {
+            let val = parseInt(node.innerText) || 1;
+            val += delta;
+            if (val < 1) val = 1;
+            node.innerText = val;
+        }
+    };
+
+    Core.addToCart = function (id) {
         alert("تمت إضافة المنتج إلى السلة.");
     };
 
-    // نظام التوجيه والتنقل لربط مسارات الموقع وصفحاته مستقبلاً بنعومة كاملة
-    Core.navigate = function (route) {
-        Core.setState({ currentRoute: route });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    // الإقلاع الرسمي الوحيد والموحد للموقع (System Bootstrap)
-    Core.bootstrap = function () {
-        console.log("تم تشغيل وتهيئة النظام والمحرك المحلي لـ حلويات بوسي بنجاح تام.");
-        Core.loadProducts();
-    };
-
-    // التشغيل الفوري الآمن فور جاهزية مستند المتصفح
+    // معالجة ضغط زر إظهار المزيد لعرض الـ 4 كروت الإضافية بالهيكل الموحد لمنتجاتنا
     document.addEventListener('DOMContentLoaded', () => {
-        Core.bootstrap();
+        Core.loadInitialData();
+        
+        const loadMoreBtn = document.getElementById('action-trigger-load-more');
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', () => {
+                window.BoseSweets.Runtime.state.showAllProducts = true;
+                Core.renderUI();
+                loadMoreBtn.style.display = 'none'; // إخفاء الزر بعد عرض الـ 8 منتجات كاملة
+            });
+        }
     });
 })();

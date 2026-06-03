@@ -12,6 +12,7 @@
 </head>
 <body>
 
+    <!-- HEADER (Sticky - ترتيب صارم من اليمين لليسار: زر القائمة ◄ اللوجو ◄ اسم العلامة ◄ زر البحث ◄ زر السلة) -->
     <header class="header-container">
         <button class="menu-toggle-btn" aria-label="زر القائمة الجانبية">☰</button>
         <div class="logo-brand-block">
@@ -24,133 +25,178 @@
         </div>
     </header>
 
+    <!-- TOP BAR (شريط علوي متحرك بشكل لا نهائي يعرض رسائل تسويقية قصيرة بدون أي فراغ) -->
     <div class="top-announcement-bar">
         <div class="scrolling-ticker-wrapper">
             <span class="ticker-message-item">صنعناها بحب لتهديها لمن تحب</span>
-            <span class="ticker-message-item">خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة</span>
-            <span class="ticker-message-item">منتجات طازجة ومخبوزة يوم بيوم في فرعنا بالكفاح</span>
+            <span class="ticker-message-item">خبرة أكثر من 10 سنوات في صناعة الحلويات</span>
+            <span class="ticker-message-item">خامات طبيعية ممتازة ومضمونة 100%</span>
             <span class="ticker-message-item">صنعناها بحب لتهديها لمن تحب</span>
-            <span class="ticker-message-item">خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة</span>
-            <span class="ticker-message-item">منتجات طازجة ومخبوزة يوم بيوم في فرعنا بالكفاح</span>
+            <span class="ticker-message-item">خبرة أكثر من 10 سنوات في صناعة الحلويات</span>
+            <span class="ticker-message-item">خامات طبيعية ممتازة ومضمونة 100%</span>
         </div>
     </div>
 
+    <!-- الحاوية الرئيسية للمتجر (Mobile First) -->
     <main id="page-container">
         
-        <section id="hero-container" class="home-section-wrapper">
-            <div class="section-text-content">
-                <h2 class="main-hero-title">عقد من <span class="highlight-pink">التميز</span> في صناعة الحلويات</h2>
-                <p class="section-rich-description">تم تصميم وتجهيز تشكيلاتنا الفاخرة بخامات طبيعية ممتازة ومضمونة 100% لتناسب مختلف مناسباتكم السعيدة وتمنحكم طعماً أصيلاً يشرفكم أمام ضيوفكم من أول لقمة لآخر قطعة</p>
-                <button class="cta-action-btn" id="hero-cta-btn">تصفح المنيو</button>
+        <!-- SECTION 01: عقد من التميز -->
+        <section id="section-excellence" class="homepage-section">
+            <div class="section-meta-header">
+                <h2 class="main-section-title">عقد من <span class="pink-text">التميز</span> في صناعة الحلويات</h2>
+                <p class="section-rich-description">نقدم لكم توليفة فريدة من المخبوزات والحلويات الشرقية والغربية الفاخرة المحضرة يوم بيوم بشغف حقيقي وخامات طبيعية منتقاة بعناية لضمان مصداقية الجودة ورحلة نجاح تذوق مثالية تشرفكم في جميع مناسباتكم السعيدة.</p>
+                <button class="section-cta-button" id="hero-cta-btn">اطلب الآن</button>
             </div>
             
-            <div class="waterfall-visual-block">
-                <div class="waterfall-column column-ascending" id="waterfall-col-1"></div>
-                <div class="waterfall-column column-descending" id="waterfall-col-2"></div>
-            </div>
-        </section>
-
-        <section id="craftsmanship-container" class="home-section-wrapper">
-            <h2 class="section-title">عقد من الإتقان</h2>
-            <p class="section-rich-description">التزامنا الكامل بالجودة يبدأ من اختيار أدق المكونات وحتى وصول طلبكم بالتنسيق الفاخر الذي تطمحون إليه لتجربة تذوق مثالية</p>
-            <div class="fixed-slider-viewport">
-                <div class="slider-track-container" id="craftsmanship-slider"></div>
-                <div class="slider-dots-indicator" id="craftsmanship-dots"></div>
-            </div>
-        </section>
-
-        <section id="best-sellers-container" class="home-section-wrapper">
-            <h2 class="section-title">الأكثر مبيعاً</h2>
-            <p class="section-rich-description">الخيارات الفاخرة المفضلة التي نالت ثقة وإعجاب عملائنا على مدار العام وحققت أعلى تقييمات</p>
-            <div class="horizontal-carousel-viewport" id="best-sellers-carousel"></div>
-        </section>
-
-        <section id="cake-showcase-container" class="builder-block-showcase">
-            <div class="builder-showcase-inner">
-                <h2 class="showcase-title">محاكي التورت الحصري</h2>
-                <p class="showcase-description">صممي تورتة مناسبتك بنفسك وحددي حجم الأفراد، النكهات، الطبقات، والرسائل الخاصة بالكامل لنصنع لك قطعة فريدة تحكي قصتك المميزة وتدهش ضيوفك</p>
-                <button class="showcase-cta-btn" id="go-to-cake-builder">ابدأ تصميم تورتتك</button>
-            </div>
-        </section>
-
-        <section id="new-arrivals-container" class="home-section-wrapper">
-            <h2 class="section-title">وصل حديثاً</h2>
-            <p class="section-rich-description">اكتشف أحدث النكهات والتوليفات الحصرية المبتكرة واللوحات الفنية الطازجة داخل مطبخنا</p>
-            <div class="horizontal-carousel-viewport" id="new-arrivals-carousel"></div>
-        </section>
-
-        <section id="featured-products-container" class="home-section-wrapper">
-            <h2 class="section-title">منتجاتنا الفاخرة</h2>
-            <p class="section-rich-description">استعرض تشكيلتنا الشاملة المحضرة بعناية فائقة وشغف حقيقي يجمع بين روعة المذاق وجمال التفاصيل</p>
-            <div class="static-grid-layout" id="products-grid-view"></div>
-            <button class="load-more-action-btn" id="show-more-products-btn">استعرض المزيد</button>
-        </section>
-
-        <section id="flower-showcase-container" class="builder-block-showcase">
-            <div class="builder-showcase-inner">
-                <h2 class="showcase-title">محاكي الورد والتخصيص الفاخر</h2>
-                <p class="showcase-description">نسق بوكيه الورد المفضل لديك واختر نوعه، ألوانه، وأضف الهدايا، الشوكولاتة، الرسائل، أو الصور المطبوعة ليتم تجهيزه بأعلى مستوى من النضارة والجمال لتقديم تجربة إهداء تشرفك</p>
-                <button class="showcase-cta-btn" id="go-to-flower-builder">صمم البوكيه الآن</button>
-            </div>
-        </section>
-
-        <section id="brand-pride-container" class="pride-block-wrapper">
-            <h2 class="pride-title">رحلة النجاح والإتقان</h2>
-            <p class="pride-subtitle">نعتز بثقتكم ورضاكم الدائم عبر مسيرة ممتدة من العطاء والتميز</p>
-            <div class="statistics-counters-grid">
-                <div class="counter-card-item">
-                    <span class="counter-number-value">+10</span>
-                    <span class="counter-label-text">سنوات الخبرة</span>
+            <!-- WATERFALL (عمودين صاعد وهابط يعكسان بعضهما تلقائياً بدون فراغات أو قص صور مع ضبابية علوية وسفلية) -->
+            <div class="waterfall-component-wrapper">
+                <div class="waterfall-blur-overlay-top"></div>
+                <div class="waterfall-columns-container">
+                    <div class="waterfall-column col-ascending" id="waterfall-column-1"></div>
+                    <div class="waterfall-column col-descending" id="waterfall-column-2"></div>
                 </div>
-                <div class="counter-card-item">
-                    <span class="counter-number-value">+10,000</span>
-                    <span class="counter-label-text">عميل سعيد في الوادي الجديد</span>
-                </div>
-                <div class="counter-card-item">
-                    <span class="counter-number-value">100%</span>
-                    <span class="counter-label-text">خامات طبيعية مضمونة</span>
+                <div class="waterfall-blur-overlay-bottom"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 02: عقد من الإتقان -->
+        <section id="section-craftsmanship" class="homepage-section">
+            <div class="section-meta-header">
+                <h2 class="section-display-title">عقد من الإتقان</h2>
+                <p class="section-rich-description">التزامنا الراسخ بالمعايير الاحترافية المعتمدة يبرز بوضوح تام في كل تفصيلة صغيرة ومكون طبيعي أعددناه لنضمن لكم أفضل تجربة تسوق آمنة مريحة للعين والنفس قبل التذوق.</p>
+            </div>
+            <!-- سلايدر أفقي يحتوي على 3 صور متصلة بالكامل تملأ عرض الشاشة بدون فراغات -->
+            <div class="slider-viewport-full">
+                <div class="full-slider-track" id="craftsmanship-slider-track"></div>
+                <div class="slider-dots-navigation" id="craftsmanship-slider-dots"></div>
+            </div>
+        </section>
+
+        <!-- SECTION 03: الأكثر مبيعاً (سلايدر يحتوي على 8 منتجات كاملة بالهيكل الموحد) -->
+        <section id="section-best-sellers" class="homepage-section">
+            <div class="section-meta-header">
+                <h2 class="section-display-title">الأكثر مبيعاً</h2>
+                <p class="section-rich-description">استكشف القطع والتوليفات الاستثنائية الأكثر شهرة وإقبالاً من قبل عملائنا وحققت تقييمات متميزة تشهد على صدق وجودة التصنيع.</p>
+            </div>
+            <div class="horizontal-scroll-slider-viewport" id="best-sellers-slider-container"></div>
+        </section>
+
+        <!-- SECTION 04: محاكي Tورت (بلوك بصري كامل عرض كامل بارتفاع محدد بخلفية بمبي) -->
+        <section id="section-cake-builder-showcase" class="builder-visual-block-full">
+            <div class="builder-block-inner-content">
+                <h2 class="builder-showcase-title">محاكي التورت المخصص حسب الطلب</h2>
+                <p class="builder-showcase-description">حلويات بوسي تتيح لكم الميزة التنافسية الرئيسية لتصميم كعكتكم الفريدة واختيار الحجم بدقة متناهية من عدد الأفراد والطبقات والنكهات الحقيقية لتجسيد تفاصيل يومكم المبهج.</p>
+                <button class="builder-cta-action-button" id="cta-go-cake-builder">اعرف المزيد</button>
+            </div>
+        </section>
+
+        <!-- SECTION 05: وصل حديثاً (سلايدر يحتوي على 6 عناصر للنكهات الجديدة بالهيكل الموحد) -->
+        <section id="section-new-arrivals" class="homepage-section">
+            <div class="section-meta-header">
+                <h2 class="section-display-title">وصل حديثاً</h2>
+                <p class="section-rich-description">تابع التحديثات الحصرية ونكهات مطبخنا الجديدة والمبتكرة مثل البستاشيو واللوتس المصممة لتمنح حواسك لمسة من الرفاهية والسعادة الدائمة.</p>
+            </div>
+            <div class="horizontal-scroll-slider-viewport" id="new-arrivals-slider-container"></div>
+            <div class="slider-dots-navigation" id="new-arrivals-slider-dots"></div>
+        </section>
+
+        <!-- SECTION 06: منتجاتنا (كارتين بجوار بعض - المعروض أولاً 4 منتجات فقط ثم زر إظهار المزيد ليظهر الـ 4 كروت الإضافية بإجمالي 8 منتجات) -->
+        <section id="section-our-products" class="homepage-section">
+            <div class="section-meta-header">
+                <h2 class="section-display-title">منتجاتنا</h2>
+                <p class="section-rich-description">تشكيلات فاخرة متكاملة تجيب عن كافة تطلعاتكم وتناسب الضيافة اليومية الراقية والمناسبات وتبرز القيمة الحقيقية للمنتج المختار بعناية فائقة.</p>
+            </div>
+            <div class="two-columns-static-grid" id="storefront-products-grid-container"></div>
+            <div class="grid-action-row-center">
+                <button class="load-more-grid-button" id="action-trigger-load-more">إظهار المزيد</button>
+            </div>
+        </section>
+
+        <!-- SECTION 07: محاكي الورد (بلوك بصري كامل بارتفاع محدد ومزايا تنافسية واضحة) -->
+        <section id="section-flower-builder-showcase" class="builder-visual-block-full">
+            <div class="builder-block-inner-content">
+                <h2 class="builder-showcase-title">محاكي الورد وتخصيص الهدايا الفاخرة</h2>
+                <p class="builder-showcase-description">ننفرد بتقديم نظام تصميم وتنسيق بوكيهات الورد الطبيعي والصناعي والستان المخصص كلياً مع خيارات إضافة صور مطبوعة ورسائل وشوكولاتة راقية لتقديم تجربة إهداء متكاملة تشرفك.</p>
+                <button class="builder-cta-action-button" id="cta-go-flower-builder">اعرف المزيد</button>
+            </div>
+        </section>
+
+        <!-- SECTION 08: الفخر والاعتزاز (بلوك كامل بخلفية بمبية فخمة يعرض الثقة والأرقام الحقيقية) -->
+        <section id="section-brand-pride" class="pride-experience-block-full">
+            <div class="pride-inner-layout">
+                <h2 class="pride-main-heading">رحلة النجاح والإتقان الصادق</h2>
+                <p class="pride-rich-story">أكثر من 10 سنوات خبرة ممتدة في صناعة الحلويات وبناء جسور الثقة والمصداقية مع أكثر من 10000 عميل سعيد داخل مركز الفرافرة والوادي الجديد، صورنا الحقيقية ووصفنا يعكس شغفنا الخبير لخدمتكم وتلبية تطلعاتكم دائماً بأسلوب واثق هادئ محترم.</p>
+                <div class="counters-visual-row-grid">
+                    <div class="counter-metric-card">
+                        <span class="metric-numeric-digits">+10</span>
+                        <span class="metric-text-label">سنوات الخبرة والمصداقية</span>
+                    </div>
+                    <div class="counter-metric-card">
+                        <span class="metric-numeric-digits">+10,000</span>
+                        <span class="metric-text-label">عميل حقيقي واثق بنا</span>
+                    </div>
+                    <div class="counter-metric-card">
+                        <span class="metric-numeric-digits">100%</span>
+                        <span class="metric-text-label">خامات طبيعية من المطبخ للعميل</span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="categories-slider-container" class="home-section-wrapper">
-            <h2 class="section-title">تسوق حسب الفئة</h2>
-            <p class="section-rich-description">تصفح قوائمنا المتنوعة الغنية لسرعة الوصول إلى فئاتك المفضلة مباشرة وبنعومة فائقة</p>
-            <div class="large-category-slider-viewport" id="categories-slider-track"></div>
+        <!-- SECTION 09: تسوق حسب الفئة (سلايدر يحتوي على 12 كارت ضخم أكبر بـ 30%) -->
+        <section id="section-shop-by-category" class="homepage-section">
+            <div class="section-meta-header">
+                <h2 class="section-display-title">تسوق حسب الفئة</h2>
+                <p class="section-rich-description">تصفح بوابات المنيو المتخصصة لتصل إلى تصنيفاتك المفضلة بسرعة تامة وراحة نفسية تامة تمنع التكدس البصري.</p>
+            </div>
+            <div class="large-categories-carousel-track" id="categories-carousel-slider-track"></div>
+            <div class="slider-dots-navigation" id="categories-carousel-slider-dots"></div>
         </section>
 
     </main>
 
-    <footer class="footer-container-block">
-        <div class="footer-upper-section">
-            <div class="footer-brand-column">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي" class="footer-logo">
-                <h3 class="footer-brand-title">حلويات بوسي</h3>
-                <p class="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات والمخبوزات الفاخرة وتجهيز وتخصيص أرقى بوكسات الهدايا وتنسيق الورد الطبيعي والصناعي والستان في مركز الفرافرة.</p>
+    <!-- FOOTER (فوتر احترافي كامل، خلفية بيضاء فاتحة نظيفة تماماً، ليس أسود، لا توجد مساحات مهدرة وتوزيع متوازن بصرياً) -->
+    <footer class="storefront-main-footer">
+        <div class="footer-layout-columns-wrapper">
+            <div class="footer-brand-summary-box">
+                <div class="footer-logo-block">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي لوجو" class="footer-brand-logo">
+                    <h3 class="footer-brand-name">حلويات بوسي</h3>
+                </div>
+                <p class="footer-brief-paragraph">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات وتصميم كعكات المناسبات الفاخرة وتنسيق باقات الورد والهدايا المخصصة لراحة تامة وجودة حقيقية ومضمونة.</p>
             </div>
-            <div class="footer-links-column">
-                <h4 class="footer-column-title">روابط سريعة</h4>
-                <ul class="footer-links-list">
-                    <li><a href="#" data-route="home">الرئيسية</a></li>
-                    <li><a href="#" data-route="menu">المنيو الشامل</a></li>
-                    <li><a href="#" data-route="cart">سلة المشتريات</a></li>
+            
+            <div class="footer-links-navigation-group">
+                <h4 class="footer-group-title">صفحاتنا</h4>
+                <ul class="footer-clickable-links-list">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="menu.html">المنيو الشامل</a></li>
+                    <li><a href="cart.html">سلة المشتريات</a></li>
                 </ul>
             </div>
-            <div class="footer-links-column">
-                <h4 class="footer-column-title">سياسات المتجر</h4>
-                <ul class="footer-links-list">
-                    <li><a href="#" data-route="privacy">سياسة الخصوصية</a></li>
-                    <li><a href="#" data-route="refund">سياسة الاستبدال والاسترجاع</a></li>
+
+            <div class="footer-links-navigation-group">
+                <h4 class="footer-group-title">سياسات وقواعد المتجر</h4>
+                <ul class="footer-clickable-links-list">
+                    <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+                    <li><a href="refund-policy.html">سياسة الاستبدال والاسترجاع</a></li>
                 </ul>
             </div>
-            <div class="footer-contact-column">
-                <h4 class="footer-column-title">فرعنا وبيانات النشاط</h4>
-                <p class="footer-info-line">📍 الكفاح، شارع الوحدة المحلية، بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي</p>
-                <p class="footer-info-line">📞 01097238441</p>
+
+            <div class="footer-business-data-card">
+                <h4 class="footer-group-title">بيانات النشاط والتواصل</h4>
+                <p class="footer-data-text-row">📍 الكفاح، شارع الوحدة المحلية، بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي</p>
+                <p class="footer-data-text-row">📞 الهاتف: 01097238441</p>
+                <div class="footer-social-original-icons-box">
+                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-icon facebook-color" aria-label="فيسبوك حلويات بوسي"></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-icon instagram-color" aria-label="انستجرام حلويات بوسي"></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-icon tiktok-color" aria-label="تيك توك حلويات بوسي"></a>
+                    <a href="https://wa.me/201097238441" class="social-icon whatsapp-color" aria-label="واتساب حلويات بوسي"></a>
+                </div>
             </div>
         </div>
-        <div class="footer-copyright-bar">
-            <p class="copyright-text">جميع الحقوق محفوظة © حلويات بوسي 2026</p>
+        <div class="footer-copyrights-bottom-bar">
+            <p class="copyright-legal-text">جميع الحقوق محفوظة © لعلامة حلويات بوسي التجارية 2026</p>
         </div>
     </footer>
 
