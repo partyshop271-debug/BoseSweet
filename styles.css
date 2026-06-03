@@ -88,6 +88,12 @@ h1, h2, h3, h4 {
     align-items: center;
     justify-content: center;
     color: var(--black-text-only);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.menu-toggle-btn:active, .search-trigger-btn:active, .cart-trigger-btn:active {
+    transform: scale(0.9);
+    color: var(--pink-primary);
 }
 
 .top-announcement-bar {
@@ -150,6 +156,12 @@ h1, h2, h3, h4 {
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s ease;
+}
+
+.section-cta-button:active, .load-more-grid-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 8px rgba(255, 145, 164, 0.3);
 }
 
 .waterfall-component-wrapper {
@@ -192,6 +204,11 @@ h1, h2, h3, h4 {
     height: 250px;
     object-fit: cover;
     border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.waterfall-img-item:hover {
+    transform: scale(1.02);
 }
 
 .col-ascending { animation: waterfall-up 20s linear infinite; }
@@ -216,12 +233,13 @@ h1, h2, h3, h4 {
 .full-slider-track {
     display: flex;
     width: 300%;
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .full-slider-image-link {
     width: 33.3333%;
     display: block;
+    padding: 0 4px;
 }
 
 .slider-full-img {
@@ -229,6 +247,11 @@ h1, h2, h3, h4 {
     height: 240px;
     object-fit: cover;
     border-radius: 16px;
+    transition: transform 0.4s ease;
+}
+
+.slider-full-img:hover {
+    transform: scale(1.01);
 }
 
 .carousel-slider-outer-wrapper {
@@ -243,6 +266,7 @@ h1, h2, h3, h4 {
     padding: 8px 4px 16px 4px;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
+    scroll-behavior: smooth;
 }
 .horizontal-scroll-slider-viewport::-webkit-scrollbar { display: none; }
 
@@ -252,15 +276,20 @@ h1, h2, h3, h4 {
     flex-shrink: 0;
 }
 
-/* الهيكل الموحد المحدث الصارم للكروت بكافة الأقسام */
 .bs-product-card {
     background-color: var(--white-background);
-    border: 1px solid var(--pink-soft-border);
+    border: 1px solid var(--pink-primary);
     border-radius: 20px;
     padding: 12px;
     box-shadow: 0 4px 14px var(--pink-box-shadow);
     display: flex;
     flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+}
+
+.bs-product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(255, 145, 164, 0.16);
 }
 
 .card-image-box {
@@ -270,6 +299,11 @@ h1, h2, h3, h4 {
     object-fit: cover;
     border-radius: 14px;
     background-color: #FAFAFA;
+    transition: transform 0.4s ease;
+}
+
+.bs-product-card:hover .card-image-box {
+    transform: scale(1.03);
 }
 
 .card-title-text {
@@ -295,7 +329,6 @@ h1, h2, h3, h4 {
     text-align: justify;
 }
 
-/* تنسيق ترتيب السعر والعداد والزر عمودياً بشكل هندسي منسق */
 .card-meta-action-row {
     display: flex;
     flex-direction: column;
@@ -326,6 +359,7 @@ h1, h2, h3, h4 {
     border: 1px solid rgba(255, 145, 164, 0.4);
     border-radius: 20px;
     background-color: var(--white-background);
+    overflow: hidden;
 }
 
 .selector-action-btn {
@@ -340,6 +374,12 @@ h1, h2, h3, h4 {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.selector-action-btn:active {
+    background-color: var(--pink-soft-border);
+    transform: scale(0.9);
 }
 
 .selector-value-display {
@@ -350,7 +390,6 @@ h1, h2, h3, h4 {
     color: var(--black-text-only);
 }
 
-/* حصر السعر أسفل العداد تماماً وبشكل منسق داخل الزون */
 .card-price-display-text {
     font-size: 14px;
     font-weight: 700;
@@ -370,16 +409,23 @@ h1, h2, h3, h4 {
     flex-grow: 1;
     text-align: center;
     max-height: 38px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-/* هندسة تقسيم كتل المحاكيات الكبيرة الفاخرة بارتفاع 600px للموبايل */
+.card-add-to-cart-action-btn:active {
+    transform: scale(0.96);
+    opacity: 0.9;
+}
+
 .builder-visual-block-full {
-    background-color: var(--pink-primary);
-    min-height: 600px;
+    background-color: var(--white-background);
+    border-top: 1px solid var(--pink-soft-border);
+    border-bottom: 1px solid var(--pink-soft-border);
+    min-height: 450px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 32px 16px;
+    padding: 48px 16px;
     width: 100%;
 }
 
@@ -387,42 +433,73 @@ h1, h2, h3, h4 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 24px;
+    gap: 32px;
     width: 100%;
     max-width: 1100px;
 }
 
+.builder-block-inner-content {
+    flex: 1;
+    text-align: center;
+}
+
+.builder-showcase-title {
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.builder-showcase-description {
+    font-size: 14px;
+    color: var(--black-text-only);
+    margin-bottom: 20px;
+    line-height: 1.7;
+}
+
+.builder-cta-action-button {
+    background-color: var(--pink-primary);
+    color: var(--white-background);
+    border: none;
+    border-radius: 25px;
+    padding: 12px 32px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.builder-cta-action-button:active {
+    transform: scale(0.95);
+}
+
 .builder-large-image-frame {
     width: 100%;
-    max-width: 280px;
+    max-width: 320px;
     aspect-ratio: 1/1;
-    border-radius: 16px;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--pink-soft-border);
+    box-shadow: 0 6px 20px var(--pink-box-shadow);
 }
 
 .builder-showcase-rich-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.5s ease;
 }
 
-/* قسم منتجاتنا: القفل النهائي لتصميم كارتين كاملين بجوار بعض ماليين الشاشة تماماً */
+.builder-large-image-frame:hover .builder-showcase-rich-img {
+    transform: scale(1.04);
+}
+
 .two-columns-static-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* كارتين بجانب بعض بدقة */
-    gap: 8px; /* تقليص الهوامش لمنع التكدس وضمان الاحتواء الكامل للشاشة */
-    padding: 12px 0;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 16px 0;
     width: 100%;
 }
 
-.grid-action-row-center {
-    display: flex;
-    justify-content: center;
-    margin-top: 16px;
-}
-
-/* هندسة قسم الفخر والاعتزاز المستقل الفاخر ومساحة الفيديو المحكمة */
 .pride-experience-block-clean {
     background-color: var(--white-background);
     padding: 56px 16px;
@@ -448,7 +525,6 @@ h1, h2, h3, h4 {
     margin-bottom: 24px;
 }
 
-/* حاوية وعاء عرض فيديو البراند المحكمة هندسياً لمنع التمدد */
 .pride-video-container-box {
     width: 100%;
     max-width: 500px;
@@ -479,6 +555,11 @@ h1, h2, h3, h4 {
     border-radius: 16px;
     padding: 20px;
     box-shadow: 0 4px 12px var(--pink-box-shadow);
+    transition: transform 0.3s ease;
+}
+
+.counter-metric-card:hover {
+    transform: translateY(-2px);
 }
 
 .metric-numeric-digits {
@@ -501,12 +582,13 @@ h1, h2, h3, h4 {
     padding: 12px 4px 16px 4px;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
+    scroll-behavior: smooth;
 }
 .large-categories-carousel-track::-webkit-scrollbar { display: none; }
 
 .bs-category-large-card {
-    width: 280px;
-    height: 360px;
+    width: 200px;
+    height: 270px;
     background-color: var(--white-background);
     border: 1px solid var(--pink-soft-border);
     border-radius: 20px;
@@ -515,40 +597,58 @@ h1, h2, h3, h4 {
     box-shadow: 0 4px 14px var(--pink-box-shadow);
     cursor: pointer;
     scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+}
+
+.bs-category-large-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 18px rgba(255, 145, 164, 0.12);
 }
 
 .category-large-img {
-    width: 280px;
-    height: 280px;
+    width: 100%;
+    height: 200px;
     object-fit: cover;
 }
 
 .category-large-title {
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--black-text-only);
     text-align: center;
-    margin-top: 14px;
+    margin: auto 0;
+    padding: 6px 4px;
 }
 
 .slider-dots-navigation {
     display: flex;
     justify-content: center;
-    gap: 6px;
-    margin-top: 12px;
+    gap: 8px;
+    margin-top: 14px;
 }
 
 .dot-node {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background-color: rgba(255, 145, 164, 0.3);
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    background-color: rgba(255, 145, 164, 0.25);
+    transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    padding: 0;
+    border: none;
+}
+
+.dot-node:hover {
+    background-color: rgba(255, 145, 164, 0.5);
 }
 
 .dot-node.active {
     background-color: var(--pink-primary);
-    transform: scale(1.2);
+    transform: scale(1.3);
+    width: 12px;
+    border-radius: 6px;
 }
 
 .storefront-main-footer {
@@ -606,6 +706,11 @@ h1, h2, h3, h4 {
     color: var(--black-text-only);
     font-size: 14px;
     font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.footer-clickable-links-list a:hover {
+    color: var(--pink-primary);
 }
 
 .footer-data-text-row {
@@ -629,7 +734,13 @@ h1, h2, h3, h4 {
     color: #FFFFFF !important;
     font-size: 16px;
     text-decoration: none;
+    transition: transform 0.2s ease;
 }
+
+.social-icon:active {
+    transform: scale(0.9);
+}
+
 .facebook-icon { background-color: #1877F2; }
 .instagram-icon { background-color: #E1306C; }
 .tiktok-icon { background-color: #000000; }
@@ -653,13 +764,16 @@ h1, h2, h3, h4 {
     .slider-full-img { height: 380px; }
     .horizontal-scroll-slider-viewport .bs-product-card { width: 340px; }
     .builder-split-layout { flex-direction: row; justify-content: space-between; text-align: right; }
+    .builder-block-inner-content { text-align: right; }
     .builder-large-image-frame { max-width: 360px; }
     .counters-visual-row-grid { grid-template-columns: repeat(3, 1fr); }
     .footer-layout-columns-wrapper { grid-template-columns: repeat(2, 1fr); display: grid; }
+    .bs-category-large-card { width: 240px; height: 310px; }
+    .category-large-img { height: 240px; }
 }
 
 @media (min-width: 1024px) {
-    .two-columns-static-grid { grid-template-columns: repeat(2, 1fr); }
+    .two-columns-static-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
     .footer-layout-columns-wrapper { grid-template-columns: repeat(4, 1fr); display: grid; }
     .waterfall-img-item { height: 320px; }
 }
