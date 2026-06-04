@@ -23,6 +23,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
     <style>
         :root {
             --primary-pink: #FF91A4;
@@ -46,9 +47,9 @@
             flex-direction: column;
             overflow-x: hidden;
         }
-        header {
+        .header-container {
             position: fixed;
-            top: 0;
+            top: 40px;
             right: 0;
             left: 0;
             height: 70px;
@@ -60,70 +61,44 @@
             padding: 0 20px;
             z-index: 1000;
         }
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .menu-toggle {
+        .menu-toggle-btn {
             background: none;
             border: none;
             cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            padding: 5px;
-        }
-        .menu-toggle span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background-color: var(--deep-black);
-            border-radius: 2px;
-        }
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
+            font-size: 24px;
             color: var(--deep-black);
         }
-        .logo-img {
-            width: 40px;
-            height: 40px;
+        .logo-brand-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .store-logo {
+            width: 45px;
+            height: 45px;
             object-fit: contain;
         }
         .brand-name {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
         }
-        .header-left {
+        .header-actions {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-        .header-btn {
+        .search-trigger-btn, .cart-trigger-btn {
             background: none;
             border: none;
             cursor: pointer;
+            font-size: 20px;
+            color: var(--deep-black);
             position: relative;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .header-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: none;
-            stroke: var(--deep-black);
-            stroke-width: 2;
         }
         .cart-count {
             position: absolute;
-            top: 2px;
-            right: 2px;
+            top: -8px;
+            right: -8px;
             background-color: var(--primary-pink);
             color: var(--deep-black);
             font-size: 11px;
@@ -136,7 +111,7 @@
             justify-content: center;
         }
         main {
-            margin-top: 70px;
+            margin-top: 130px;
             flex: 1;
             padding: 40px 20px;
             max-width: 1200px;
@@ -164,8 +139,8 @@
         }
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 35px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
             width: 100%;
         }
         .category-card {
@@ -331,135 +306,12 @@
             display: block;
             opacity: 1;
         }
-        .storefront-main-footer {
-            background-color: var(--pure-white);
-            border-top: 1px solid rgba(255, 145, 164, 0.2);
-            padding: 50px 20px 20px 20px;
-            width: 100%;
-        }
-        .footer-layout-columns-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 2fr;
-            gap: 40px;
-        }
-        .footer-brand-summary-box {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .footer-logo-block {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .footer-brand-logo {
-            width: 45px;
-            height: 45px;
-            object-fit: contain;
-        }
-        .footer-brand-name {
-            font-size: 22px;
-            font-weight: 700;
-        }
-        .footer-brief-paragraph {
-            font-size: 14px;
-            line-height: 1.6;
-            opacity: 0.8;
-        }
-        .footer-links-navigation-group {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .footer-group-title {
-            font-size: 16px;
-            font-weight: 700;
-            position: relative;
-            padding-bottom: 8px;
-        }
-        .footer-group-title::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 30px;
-            height: 2px;
-            background-color: var(--primary-pink);
-        }
-        .footer-clickable-links-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .footer-clickable-links-list a {
-            text-decoration: none;
-            color: var(--deep-black);
-            font-size: 14px;
-            transition: color 0.2s ease;
-        }
-        .footer-clickable-links-list a:hover {
-            color: var(--primary-pink);
-        }
-        .footer-business-data-card {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .footer-data-text-row {
-            font-size: 14px;
-            line-height: 1.6;
-            opacity: 0.9;
-        }
-        .footer-social-original-icons-box {
-            display: flex;
-            gap: 12px;
-            margin-top: 5px;
-        }
-        .social-icon {
-            width: 36px;
-            height: 36px;
-            background-color: var(--pure-white);
-            border: 1px solid rgba(255, 145, 164, 0.3);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--deep-black);
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        .social-icon:hover {
-            background-color: var(--primary-pink);
-            color: var(--pure-white);
-            border-color: var(--primary-pink);
-            transform: translateY(-3px);
-        }
-        .footer-copyrights-bottom-bar {
-            max-width: 1200px;
-            margin: 40px auto 0 auto;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 145, 164, 0.1);
-            text-align: center;
-        }
-        .copyright-legal-text {
-            font-size: 13px;
-            opacity: 0.7;
-        }
-        @media (max-width: 992px) {
-            .categories-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 25px;
-            }
-            .footer-layout-columns-wrapper {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 30px;
-            }
-        }
         @media (max-width: 600px) {
+            .header-container {
+                top: 40px;
+            }
             main {
+                margin-top: 115px;
                 padding: 25px 15px;
             }
             .menu-intro {
@@ -481,35 +333,31 @@
             .category-title {
                 font-size: 19px;
             }
-            .footer-layout-columns-wrapper {
-                grid-template-columns: 1fr;
-                gap: 35px;
-            }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-right">
-            <button class="menu-toggle" id="menuToggleBtn" aria-label="فتح القائمة الجانبية">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <a href="index.html" class="logo-container">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي" class="logo-img">
-                <span class="brand-name">حلويات بوسي</span>
-            </a>
+    <div class="top-announcement-bar">
+        <div class="scrolling-ticker-wrapper">
+            <span class="ticker-message-item">صنعناها بحب لتهديها لمن تحب</span>
+            <span class="ticker-message-item">خبرة أكثر من 10 سنوات في صناعة الحلويات</span>
+            <span class="ticker-message-item">خامات طبيعية ممتازة ومضمونة 100%</span>
+            <span class="ticker-message-item">صنعناها بحب لتهديها لمن تحب</span>
+            <span class="ticker-message-item">خبرة أكثر من 10 سنوات في صناعة الحلويات</span>
+            <span class="ticker-message-item">خامات طبيعية ممتازة ومضمونة 100%</span>
         </div>
-        <div class="header-left">
-            <button class="header-btn" aria-label="بحث في المنتجات">
-                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            </button>
-            <a href="cart.html" class="header-btn" aria-label="سلة المشتريات">
-                <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                <span class="cart-count" id="headerCartCount">0</span>
-            </a>
+    </div>
+
+    <header class="header-container">
+        <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="زر القائمة الجانبية">☰</button>
+        <div class="logo-brand-block">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="store-logo" loading="lazy">
+            <h1 class="brand-name">حلويات بوسي</h1>
+        </div>
+        <div class="header-actions">
+            <button class="search-trigger-btn" aria-label="زر البحث"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button class="cart-trigger-btn" aria-label="زر السلة" onclick="location.href='cart.html'"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count" id="headerCartCount">0</span></button>
         </div>
     </header>
 
@@ -642,8 +490,8 @@
                 { id: "chill-box", name: "بوكس الروقان", desc: "صندوق تجميعات الحلويات المتنوعة والباردة المصمم للمشاركة في اللقاءات العائلية.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=chill-box" },
                 { id: "cupcakes", name: "كب كيك", desc: "قطع الكب كيك الصغيرة المخبوزة بدقة مع لمسات مبتكرة من الكريمة والتزيين الراقي.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=cupcakes" },
                 { id: "cake-builder", name: "تورت", desc: "محاكي التورت الحصري لتخصيص الحجم والمقاس وعدد الأفراد بدقة هندسية كاملة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "cake-builder.html" },
-                { id: "gateaux", name: "جاتوه", desc: "قطع الجاتوه الكلاسيكية والحديثة المعدة بقطع متساوية وطبقات متوانة النكهة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=gateaux" },
-                { id: "mini-cakes", name: "ميني تورت", desc: "التورت الدائرية المصغرة والمغلفة بالفاكيوم الشفاف للحفاظ على طراوتها وجمالها الطبيعي.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=mini-cakes" },
+                { id: "gateaux", name: "جاتوه", desc: "قطع الجاتوه الكلاسيكية والحديثة المعدة بقطع متساوية وطبقات متوازنة النكهة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=gateaux" },
+                { id: "mini-cakes", name: "ميني تورت", desc: "التورت الدائرية المصغرة والمغلفة بالفاكيوم الشفاف للحفاظ على طراوتها وجمالها الطبيعي.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "mini-cakes.html" },
                 { id: "red-velvet", name: "ريد فيلفت", desc: "الكيك المخملي الأحمر الشهير الغني بطبقات كريمة الجبن الفاخرة والمتوازنة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=red-velvet" }
             ];
 
