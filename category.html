@@ -16,6 +16,12 @@
     <meta property="og:description" content="استعرض نكهات وتشكيلات حلويات بوسي الفاخرة المجهزة بخامات طبيعية 100% في الفرافرة والوادي الجديد.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
 
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://bosesweets.com/category.html">
+    <meta property="twitter:title" content="تصفح الفئات الفاخرة | حلويات بوسي">
+    <meta property="twitter:description" content="استعرض نكهات وتشكيلات حلويات بوسي الفاخرة المجهزة بخامات طبيعية 100% في الفرافرة والوادي الجديد.">
+    <meta property="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+
     <meta name="theme-color" content="#FF91A4">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,24 +52,28 @@
             margin-bottom: 12px;
             color: #111111;
         }
-        .category-page-desc {
-            font-size: 15px;
-            color: #111111;
-            line-height: 1.7;
-        }
-        .category-hero-media-wrapper {
+        .category-hero-media-frame {
             width: 100%;
             max-width: 1200px;
-            margin: 0 auto 24px auto;
-            padding: 0 16px;
-        }
-        .category-full-viewport-img {
-            width: 100%;
             height: 300px;
+            margin: 20px auto;
+            overflow: hidden;
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            box-shadow: 0 4px 14px rgba(255, 145, 164, 0.1);
+        }
+        .category-hero-native-img {
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 145, 164, 0.22);
-            box-shadow: 0 4px 14px rgba(255, 145, 164, 0.12);
+        }
+        .category-page-desc {
+            font-size: 15px;
+            color: #111111 !important;
+            line-height: 1.7;
+            text-align: justify;
+            max-width: 900px;
+            margin: 20px auto 0 auto;
+            padding: 0 16px;
         }
         .tabs-nav-container {
             display: none;
@@ -101,16 +111,12 @@
         .card-price-and-counter-zone {
             flex-direction: column !important;
             align-items: center !important;
-            gap: 6px !important;
+            gap: 8px !important;
             width: 100% !important;
         }
         .card-price-display-text {
             order: 2 !important;
             margin-top: 4px;
-            font-size: 14px;
-            font-weight: 700;
-            color: #FF91A4;
-            text-align: center;
         }
         .card-quantity-selector {
             order: 1 !important;
@@ -193,10 +199,181 @@
         }
         .card-flavor-description-text {
             font-size: 11px;
+            color: #111111 !important;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            text-align: right;
+            font-weight: 600;
+        }
+        .reviews-luxury-section {
+            background-color: #FFF5F6;
+            padding: 60px 16px;
+            border-top: 1px solid rgba(255, 145, 164, 0.3);
+            border-bottom: 1px solid rgba(255, 145, 164, 0.3);
+            margin-top: 48px;
+        }
+        .reviews-inner-block {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .reviews-split-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            margin-top: 32px;
+        }
+        .reviews-form-panel {
+            background-color: #FFFFFF;
+            border: 1px solid #FF91A4;
+            padding: 24px;
+            box-shadow: 0 4px 14px rgba(255, 145, 164, 0.08);
+        }
+        .reviews-form-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
             color: #111111;
-            line-height: 1.5;
-            margin-bottom: 12px;
+        }
+        .review-input-row {
+            margin-bottom: 16px;
+        }
+        .review-input-native {
+            width: 100%;
+            border: 1px solid rgba(255, 145, 164, 0.4);
+            padding: 12px;
+            font-size: 14px;
+            outline: none;
+            background-color: #FFFFFF;
+            color: #111111;
+        }
+        .review-input-native:focus {
+            border-color: #FF91A4;
+        }
+        .review-textarea-native {
+            height: 100px;
+            resize: none;
+        }
+        .review-rating-stars-zone {
+            display: flex;
+            gap: 6px;
+            margin: 10px 0;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        .review-star-input-node {
+            font-size: 22px;
+            color: rgba(255, 145, 164, 0.3);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .review-star-input-node:hover,
+        .review-star-input-node:hover ~ .review-star-input-node,
+        .review-star-input-node.selected-star,
+        .review-star-input-node.selected-star ~ .review-star-input-node {
+            color: #D4AF37;
+        }
+        .file-upload-custom-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px dashed #FF91A4;
+            padding: 10px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            background-color: #FFF5F6;
+            width: 100%;
+            justify-content: center;
+        }
+        .review-submit-luxury-btn {
+            background-color: #FF91A4;
+            color: #FFFFFF;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+            margin-top: 10px;
+        }
+        .review-submit-luxury-btn:active {
+            opacity: 0.9;
+        }
+        .reviews-feed-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .luxury-review-item-card {
+            background-color: #FFFFFF;
+            border: 1px solid rgba(255, 145, 164, 0.2);
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.04);
+        }
+        .review-item-top-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .review-item-author-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #111111;
+        }
+        .review-item-stars-row {
+            color: #D4AF37;
+            font-size: 13px;
+        }
+        .review-item-products-tag {
+            font-size: 11px;
+            background-color: #FFF5F6;
+            color: #FF91A4;
+            padding: 4px 8px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+        .review-item-text-content {
+            font-size: 13px;
+            color: #111111;
+            line-height: 1.6;
             text-align: justify;
+            margin-bottom: 12px;
+        }
+        .review-item-attached-gallery {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .review-item-attached-img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 145, 164, 0.2);
+        }
+        .recommendations-smart-outer-section {
+            padding: 60px 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .recommendations-slider-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 16px 4px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+        .recommendations-slider-container::-webkit-scrollbar {
+            display: none;
+        }
+        .recommendations-slider-container .bs-product-card {
+            width: 85vw;
+            scroll-snap-align: start;
+            flex-shrink: 0;
         }
         @media (min-width: 768px) {
             .catalog-dynamic-grid {
@@ -207,8 +384,14 @@
             main {
                 margin-top: 150px;
             }
-            .category-full-viewport-img {
+            .category-hero-media-frame {
                 height: 400px;
+            }
+            .reviews-split-layout {
+                grid-template-columns: 400px 1fr;
+            }
+            .recommendations-slider-container .bs-product-card {
+                width: 380px;
             }
         }
         @media (min-width: 1024px) {
@@ -264,16 +447,65 @@
     <main>
         <section class="category-header-banner">
             <h1 class="category-page-title" id="categoryTitleNode">تصفح المنتجات</h1>
+            <div class="category-hero-media-frame">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="category-hero-native-img" id="categoryHeroImageNode" alt="تصنيف حلويات بوسي الطبيعية">
+            </div>
             <p class="category-page-desc" id="categoryDescNode">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة حقيقية ومضمونة.</p>
         </section>
-
-        <div class="category-hero-media-wrapper">
-            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="category-full-viewport-img" alt="تصنيع الحلويات الفاخرة طبيعية 100%" id="categoryHeroImage">
-        </div>
 
         <nav class="tabs-nav-container" id="sizeTabsContainer"></nav>
 
         <section class="catalog-dynamic-grid" id="catalogGridContainer"></section>
+
+        <section class="reviews-luxury-section">
+            <div class="reviews-inner-block">
+                <div class="section-meta-header">
+                    <h2 class="section-display-title">آراء ومشاركات عملائنا السعيدة</h2>
+                    <p class="section-rich-description">شاركونا تفاصيل لحظاتكم المميزة وصور مناسباتكم السعيدة التي تشرفنا بتقديم حلوياتنا الفاخرة داخلها لخدمتكم دائماً.</p>
+                </div>
+                <div class="reviews-split-layout">
+                    <div class="reviews-form-panel">
+                        <h3 class="reviews-form-title">اكتب مراجعتك بكل صدق</h3>
+                        <form id="luxuryReviewForm" onsubmit="return false;">
+                            <div class="review-input-row">
+                                <input type="text" class="review-input-native" id="revAuthorName" placeholder="اكتب اسمك بالكامل" required>
+                            </div>
+                            <div class="review-input-row">
+                                <input type="text" class="review-input-native" id="revPurchasedItems" placeholder="ما هي المنتجات التي اخترتها مننا؟" required>
+                            </div>
+                            <div class="review-input-row">
+                                <div class="review-rating-stars-zone" id="revStarsSelector">
+                                    <i class="fa-solid fa-star review-star-input-node" data-rating="5"></i>
+                                    <i class="fa-solid fa-star review-star-input-node" data-rating="4"></i>
+                                    <i class="fa-solid fa-star review-star-input-node" data-rating="3"></i>
+                                    <i class="fa-solid fa-star review-star-input-node" data-rating="2"></i>
+                                    <i class="fa-solid fa-star review-star-input-node" data-rating="1"></i>
+                                </div>
+                            </div>
+                            <div class="review-input-row">
+                                <textarea class="review-input-native review-textarea-native" id="revContent" placeholder="اكتب تفاصيل تجربتك ورأيك في جودة وطعم المنتجات" required></textarea>
+                            </div>
+                            <div class="review-input-row">
+                                <label class="file-upload-custom-label" for="revImageFile">
+                                    <i class="fa-solid fa-camera"></i> ارفع صور مناسبتك السعيدة
+                                </label>
+                                <input type="file" id="revImageFile" accept="image/*" style="display: none;">
+                            </div>
+                            <button type="submit" class="review-submit-luxury-btn" id="revSubmitBtn">إرسال مراجعتك الفاخرة</button>
+                        </form>
+                    </div>
+                    <div class="reviews-feed-panel" id="reviewsFeedContainer"></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="recommendations-smart-outer-section">
+            <div class="section-meta-header">
+                <h2 class="section-display-title">قد يعجبك أيضاً</h2>
+                <p class="section-rich-description">اكتشف تشكيلات ونكهات مميزة أخرى اخترناها لك بناءً على ذوقك وتصفحك الحالي لتكمل رحلتك السعيدة.</p>
+            </div>
+            <div class="recommendations-slider-container" id="smartRecommendationsContainer"></div>
+        </section>
     </main>
 
     <footer class="storefront-main-footer">
@@ -331,13 +563,18 @@
             
             const titleNode = document.getElementById('categoryTitleNode');
             const descNode = document.getElementById('categoryDescNode');
+            const heroImageNode = document.getElementById('categoryHeroImageNode');
             const tabsContainer = document.getElementById('sizeTabsContainer');
             const gridContainer = document.getElementById('catalogGridContainer');
+            const reviewsFeedContainer = document.getElementById('reviewsFeedContainer');
+            const smartRecommendationsContainer = document.getElementById('smartRecommendationsContainer');
+            const luxuryReviewForm = document.getElementById('luxuryReviewForm');
 
             let currentCategoryKey = "despacito";
             let activeSizeTab = "triangle";
             let loadedProducts = [];
             let quantitiesState = {};
+            let selectedRatingValue = 5;
 
             const categoriesStaticSchema = {
                 "despacito": { name: "الديسباسيتو", desc: "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه." },
@@ -378,17 +615,17 @@
                 "raffaello": "صوص جوز الهند الكريمي الفاخر مع قطع اللوز المقرمشة.",
                 "nutella": "حشوة النوتيلا الكلاسيكية المحبوبة للجميع بطعمها المتوازن.",
                 "kitkat": "أصابع كيت كات المقرمشة موزعة بعناية فوق الكريمة.",
-                "rocher": "مزيج شوكولاتة الفيريرو روشيه مع البندق المحمص المطحون.",
-                "classic-vanilla": "فانيليا مدغشقر الطبيعية الرائعة برائحتها الزكية وقوامها الناعم.",
+                "rocher": "مزيج شوكولاتة الفيريرو روشيه مع البندق المحمص المحفز.",
+                "classic-vanilla": "فانيليا طبيعية رائعة برائحتها الزكية وقوامها الناعم.",
                 "royal": "تشكيلة الجاتوه الملكي الفاخرة المجهزة للمناسبات الكبرى.",
                 "classic-gateaux": "قطع الجاتوه الكلاسيكية المتساوية المجهزة يوم بيوم.",
-                "soirئة": "قطع سواريه صغيرة وأنيقة للغاية مصممة للضيافة الراقية.",
-                "chocolate-dozen": "اثنتا عشرة قطعة من كب كيك الشوكولاتة الغنية بالزبدة والاصيلة.",
+                "soirée": "قطع سواريه صغيرة وأنيقة للغاية مصممة للضيافة الراقية.",
+                "chocolate-dozen": "اثنتا عشرة قطعة من كب كيك الشوكولاتة الغنية بالزبدة والأصيلة.",
                 "vanilla-dozen": "دستة كب كيك فانيليا هشة ومزينة بالكريمة اللباني الفاخرة.",
                 "mix-dozen": "تشكيلة منوعة من دستة الكب كيك تجمع بين الشوكولاتة والفانيليا.",
                 "triangle-velvet": "مثلث ريدفيلفت كبير الحجم مغطى بموس التشيز والراسبيري.",
                 "cup-velvet": "كوب ريدفيلفت وسط مناسب ومريح جدا للتناول الفردي السريع.",
-                "tray-velvet": "طاجن عائلي كبير من الريدفيلفت والتشيز الغني للمشاركة العائلية.",
+                "tray-velvet": "طاجن عائلي كبير من الريدفيلفت والتشيز الغني للمشاركة.",
                 "two-person": "ميني تورتة دائرية مصممة ومحسوبة بدقة لتكفي فرداً أو اثنين.",
                 "four-person": "ميني تورتة أنيقة تكفي من ثلاثة إلى أربعة أفراد بحشوات غنية.",
                 "six-person": "ميني تورتة فاخرة تكفي من خمسة إلى ستة أفراد لجمعة دافئة."
@@ -498,6 +735,11 @@
                 ]
             };
 
+            const initialStaticReviews = [
+                { author: "أحمد فرج", items: "بوكس الروقان", rating: 5, content: "البوكس بجد روقان حقيقي، التورتة طازة جداً والكبات طعمها متوازن ومش مسكرة زيادة، تشرف قدام الضيوف.", images: [] },
+                { author: "سارة محمود", items: "قشطوطة بيستاشيو", rating: 5, content: "كيك الحليب خفيف جداً والمكسرات مقرمشة وطازة، أحلى قشطوطة دوقناها في الفرافرة كلها.", images: [] }
+            ];
+
             function toggleSideMenu(open) {
                 if (open) {
                     sideMenu.classList.add('active');
@@ -542,21 +784,32 @@
                 });
             }
 
-            function adjustProductQty(id, delta) {
-                let currentVal = quantitiesState[id] || 1;
+            function adjustProductQty(id, delta, isRecommendation = false) {
+                let stateKey = isRecommendation ? `rec-${id}` : id;
+                let currentVal = quantitiesState[stateKey] || 1;
                 currentVal += delta;
                 if (currentVal < 1) currentVal = 1;
-                quantitiesState[id] = currentVal;
+                quantitiesState[stateKey] = currentVal;
                 
-                const node = document.getElementById(`qty-catalog-${id}`);
+                const node = document.getElementById(isRecommendation ? `qty-rec-${id}` : `qty-catalog-${id}`);
                 if (node) node.textContent = currentVal;
             }
 
-            function addProductToCart(id) {
-                const itemData = loadedProducts.find(p => p.id === id);
+            function addProductToCart(id, isRecommendation = false) {
+                let itemData = null;
+                if (isRecommendation) {
+                    for (const cat in fallbackProductsEngine) {
+                        const found = fallbackProductsEngine[cat].find(p => p.id === id);
+                        if (found) { itemData = found; break; }
+                    }
+                } else {
+                    itemData = loadedProducts.find(p => p.id === id);
+                }
+                
                 if (!itemData) return;
                 
-                const chosenQty = quantitiesState[id] || 1;
+                let stateKey = isRecommendation ? `rec-${id}` : id;
+                const chosenQty = quantitiesState[stateKey] || 1;
                 try {
                     let cart = JSON.parse(localStorage.getItem('bose_cart')) || [];
                     const existingItem = cart.find(item => item.id === id);
@@ -583,7 +836,7 @@
             function renderCatalogCards(productsList) {
                 gridContainer.innerHTML = '';
                 if (productsList.length === 0) {
-                    gridContainer.innerHTML = `<p style="grid-column: span 2; text-align:center; padding: 40px; font-weight:600;">لا توجد منتجات متوفرة حالياً في هذه الفئة.</p>`;
+                    gridContainer.innerHTML = `<p style="grid-column: span 2; text-align:center; padding: 40px; font-weight:600; color: #111111;">لا توجد منتجات متوفرة حالياً في هذه الفئة.</p>`;
                     return;
                 }
 
@@ -603,7 +856,7 @@
                         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="card-image-box" alt="${safeTitle}" loading="lazy" onclick="location.href='product.html?id=${safeId}'">
                         <h3 class="card-title-text" onclick="location.href='product.html?id=${safeId}'">${safeTitle}</h3>
                         <div class="card-flavor-text">${safeFlavor}</div>
-                        <div class="card-flavor-description-text">${safeFlavorDesc}</div>
+                        <p class="card-desc-paragraph" style="color: #111111 !important;">${safeFlavorDesc}</p>
                         <div class="card-meta-action-row">
                             <div class="card-controls-block">
                                 <div class="card-price-and-counter-zone">
@@ -624,21 +877,126 @@
                 gridContainer.querySelectorAll('.plus-btn').forEach(btn => {
                     btn.onclick = function(e) {
                         e.stopPropagation();
-                        adjustProductQty(this.getAttribute('data-id'), 1);
+                        adjustProductQty(this.getAttribute('data-id'), 1, false);
                     };
                 });
 
                 gridContainer.querySelectorAll('.minus-btn').forEach(btn => {
                     btn.onclick = function(e) {
                         e.stopPropagation();
-                        adjustProductQty(this.getAttribute('data-id'), -1);
+                        adjustProductQty(this.getAttribute('data-id'), -1, false);
                     };
                 });
 
                 gridContainer.querySelectorAll('.add-cart-trigger').forEach(btn => {
                     btn.onclick = function(e) {
                         e.stopPropagation();
-                        addProductToCart(this.getAttribute('data-id'));
+                        addProductToCart(this.getAttribute('data-id'), false);
+                    };
+                });
+            }
+
+            function renderReviewsFeed(reviewsList) {
+                reviewsFeedContainer.innerHTML = '';
+                reviewsList.forEach(rev => {
+                    const safeAuthor = escapeHTML(rev.author);
+                    const safeItems = escapeHTML(rev.items);
+                    const safeContent = escapeHTML(rev.content);
+                    
+                    let starsHtml = '';
+                    for (let i = 0; i < rev.rating; i++) {
+                        starsHtml += '<i class="fa-solid fa-star"></i> ';
+                    }
+
+                    let galleryHtml = '';
+                    if (rev.images && rev.images.length > 0) {
+                        galleryHtml = '<div class="review-item-attached-gallery">';
+                        rev.images.forEach(imgUrl => {
+                            galleryHtml += `<img src="${escapeHTML(imgUrl)}" class="review-item-attached-img" alt="مناسبات سعيدة حلويات بوسي">`;
+                        });
+                        galleryHtml += '</div>';
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'luxury-review-item-card';
+                    card.innerHTML = `
+                        <div class="review-item-top-meta">
+                            <span class="review-item-author-name">${safeAuthor}</span>
+                            <div class="review-item-stars-row">${starsHtml}</div>
+                        </div>
+                        <div class="review-item-products-tag">المنتجات: ${safeItems}</div>
+                        <p class="review-item-text-content">${safeContent}</p>
+                        ${galleryHtml}
+                    `;
+                    reviewsFeedContainer.appendChild(card);
+                });
+            }
+
+            function buildSmartRecommendations() {
+                let pool = [];
+                for (const cat in fallbackProductsEngine) {
+                    if (cat !== currentCategoryKey) {
+                        pool = pool.concat(fallbackProductsEngine[cat]);
+                    }
+                }
+                
+                pool.sort(() => 0.5 - Math.random());
+                const selectedRecs = pool.slice(0, 4);
+
+                smartRecommendationsContainer.innerHTML = '';
+                selectedRecs.forEach(product => {
+                    let stateKey = `rec-${product.id}`;
+                    if (!quantitiesState[stateKey]) {
+                        quantitiesState[stateKey] = 1;
+                    }
+
+                    const safeId = escapeHTML(product.id);
+                    const safeTitle = escapeHTML(product.title);
+                    const safeFlavor = escapeHTML(product.flavor);
+                    const safeFlavorDesc = escapeHTML(uniqueFlavorsDescriptions[product.flavorKey] || "");
+
+                    const card = document.createElement('div');
+                    card.className = 'bs-product-card';
+                    card.innerHTML = `
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="card-image-box" alt="${safeTitle}" loading="lazy" onclick="location.href='product.html?id=${safeId}'">
+                        <h3 class="card-title-text" onclick="location.href='product.html?id=${safeId}'">${safeTitle}</h3>
+                        <div class="card-flavor-text">${safeFlavor}</div>
+                        <p class="card-desc-paragraph" style="color: #111111 !important;">${safeFlavorDesc}</p>
+                        <div class="card-meta-action-row">
+                            <div class="card-controls-block">
+                                <div class="card-price-and-counter-zone">
+                                    <div class="card-quantity-selector">
+                                        <button class="selector-action-btn rec-plus-btn" data-id="${safeId}">+</button>
+                                        <span class="selector-value-display" id="qty-rec-${safeId}">${quantitiesState[stateKey]}</span>
+                                        <button class="selector-action-btn rec-minus-btn" data-id="${safeId}">-</button>
+                                    </div>
+                                    <div class="card-price-display-text">${product.price} EGP</div>
+                                </div>
+                                <button class="card-add-to-cart-action-btn rec-add-cart-trigger" data-id="${safeId}">إضافة للسلة</button>
+                            </div>
+                        </div>
+                    `;
+                    smartRecommendationsContainer.appendChild(card);
+                });
+
+                smartRecommendationsContainer.querySelectorAll('.rec-plus-btn').forEach(btn => {
+                    btn.onclick = function(e) {
+                        e.stopPropagation();
+                        adjustProductQty(this.getAttribute('data-id'), 1, true);
+                    };
+                });
+
+                smartRecommendationsContainer.querySelectorAll('.rec-minus-btn').forEach(btn => {
+                    btn.onclick = function(e) {
+                        e.stopPropagation();
+                        adjustProductQty(this.getAttribute('data-id'), -1, true);
+                    };
+                });
+
+                smartRecommendationsContainer.querySelectorAll('.rec-add-cart-trigger').forEach(btn => {
+                    btn.onclick = function(e) {
+                        e.stopPropagation();
+                        addProductToCart(this.getAttribute('data-id'), true);
                     };
                 });
             }
@@ -649,6 +1007,7 @@
                 
                 titleNode.textContent = meta.name;
                 descNode.textContent = meta.desc;
+                heroImageNode.setAttribute('alt', `تصنيف ${meta.name} الفاخر حلويات بوسي`);
 
                 let allCategoryProducts = fallbackProductsEngine[categoryKey] || [];
                 loadedProducts = allCategoryProducts;
@@ -679,6 +1038,63 @@
                 }
             }
 
+            const starsSelectorZone = document.getElementById('revStarsSelector');
+            if (starsSelectorZone) {
+                starsSelectorZone.querySelectorAll('.review-star-input-node').forEach(star => {
+                    star.addEventListener('click', function() {
+                        selectedRatingValue = parseInt(this.getAttribute('data-rating'), 10);
+                        starsSelectorZone.querySelectorAll('.review-star-input-node').forEach(s => {
+                            if (parseInt(s.getAttribute('data-rating'), 10) <= selectedRatingValue) {
+                                s.classList.add('selected-star');
+                            } else {
+                                s.classList.remove('selected-star');
+                            }
+                        });
+                    });
+                });
+            }
+
+            if (luxuryReviewForm) {
+                luxuryReviewForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const nameVal = document.getElementById('revAuthorName').value.trim();
+                    const itemsVal = document.getElementById('revPurchasedItems').value.trim();
+                    const contentVal = document.getElementById('revContent').value.trim();
+                    
+                    if (!nameVal || !itemsVal || !contentVal) return;
+
+                    const newReviewObj = {
+                        author: nameVal,
+                        items: itemsVal,
+                        rating: selectedRatingValue,
+                        content: contentVal,
+                        images: ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"]
+                    };
+
+                    initialStaticReviews.unshift(newReviewObj);
+                    renderReviewsFeed(initialStaticReviews);
+
+                    try {
+                        if (window.BoseSweets && window.BoseSweets.Engines && window.BoseSweets.Engines.ReviewEngine) {
+                            window.BoseSweets.Engines.ReviewEngine.createReview({
+                                productId: currentCategoryKey,
+                                rating: selectedRatingValue,
+                                author: nameVal,
+                                items: itemsVal,
+                                content: contentVal
+                            });
+                        }
+                    } catch(err) {
+                        console.log("Offline review storage buffered.");
+                    }
+
+                    luxuryReviewForm.reset();
+                    selectedRatingValue = 5;
+                    starsSelectorZone.querySelectorAll('.review-star-input-node').forEach(s => s.classList.remove('selected-star'));
+                    alert("تمت إضافة مراجعتك بنجاح، شكراً لمشاركتك السعيدة مع حلويات بوسي.");
+                });
+            }
+
             async function syncWithLiveFirebase() {
                 try {
                     if (window.BoseSweets && window.BoseSweets.Engines && window.BoseSweets.Engines.ProductEngine) {
@@ -700,6 +1116,20 @@
                             }
                         }
                     }
+
+                    if (window.BoseSweets && window.BoseSweets.Engines && window.BoseSweets.Engines.ReviewEngine) {
+                        const liveReviews = await window.BoseSweets.Engines.ReviewEngine.getReviewsByCategory(currentCategoryKey);
+                        if (liveReviews && liveReviews.length > 0) {
+                            const mappedReviews = liveReviews.map(r => ({
+                                author: r.author,
+                                items: r.items,
+                                rating: r.rating,
+                                content: r.content,
+                                images: r.images || []
+                            }));
+                            renderReviewsFeed(mappedReviews.concat(initialStaticReviews));
+                        }
+                    }
                 } catch (err) {
                     console.log("Firebase sync skipped or offline. Solid local mode active.");
                 }
@@ -707,6 +1137,8 @@
 
             const categoryParam = getQueryParam('type') || "despacito";
             initCatalogUI(categoryParam);
+            renderReviewsFeed(initialStaticReviews);
+            buildSmartRecommendations();
             updateCartBadge();
             syncWithLiveFirebase();
             window.addEventListener('storage', updateCartBadge);
