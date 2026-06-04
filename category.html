@@ -36,7 +36,7 @@
         }
         .category-header-banner {
             text-align: center;
-            padding: 40px 16px;
+            padding: 40px 16px 20px 16px;
             max-width: 800px;
             margin: 0 auto;
         }
@@ -50,7 +50,20 @@
             font-size: 15px;
             color: #111111;
             line-height: 1.7;
-            opacity: 0.9;
+        }
+        .category-hero-media-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 24px auto;
+            padding: 0 16px;
+        }
+        .category-full-viewport-img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 145, 164, 0.22);
+            box-shadow: 0 4px 14px rgba(255, 145, 164, 0.12);
         }
         .tabs-nav-container {
             display: none;
@@ -88,12 +101,16 @@
         .card-price-and-counter-zone {
             flex-direction: column !important;
             align-items: center !important;
-            gap: 8px !important;
+            gap: 6px !important;
             width: 100% !important;
         }
         .card-price-display-text {
             order: 2 !important;
             margin-top: 4px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #FF91A4;
+            text-align: center;
         }
         .card-quantity-selector {
             order: 1 !important;
@@ -176,11 +193,10 @@
         }
         .card-flavor-description-text {
             font-size: 11px;
-            color: #FF91A4;
-            line-height: 1.4;
-            margin-bottom: 8px;
-            text-align: right;
-            font-weight: 600;
+            color: #111111;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            text-align: justify;
         }
         @media (min-width: 768px) {
             .catalog-dynamic-grid {
@@ -190,6 +206,9 @@
             }
             main {
                 margin-top: 150px;
+            }
+            .category-full-viewport-img {
+                height: 400px;
             }
         }
         @media (min-width: 1024px) {
@@ -247,6 +266,10 @@
             <h1 class="category-page-title" id="categoryTitleNode">تصفح المنتجات</h1>
             <p class="category-page-desc" id="categoryDescNode">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة حقيقية ومضمونة.</p>
         </section>
+
+        <div class="category-hero-media-wrapper">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="category-full-viewport-img" alt="تصنيع الحلويات الفاخرة طبيعية 100%" id="categoryHeroImage">
+        </div>
 
         <nav class="tabs-nav-container" id="sizeTabsContainer"></nav>
 
@@ -328,12 +351,12 @@
                 "gateaux": { name: "الجاتوهات", desc: "الجاتوهات عندنا عبارة عن طبقات متوازنة من كيك الفانيليا أو الشوكولاتة مع حشوات غنية من الموسات والصوصات والكريمات المختارة بعناية. نوفر تشكيلة كبيرة ومتنوعة تناسب مختلف المناسبات والأذواق، بحيث يجد كل عميل الجاتوه الذي يناسب ذوقه ويكمل لحظته الجميلة." },
                 "cupcake": { name: "الكب كيك", desc: "قطع صغيرة من اللذة بطابع غني ومميز. يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً، ثم يتم حشو كل قطعة بحشوات وصوصات متنوعة قبل تزيينها بطبقة من الكريمة اللباني الغنية." },
                 "cakes": { name: "التورت", desc: "التورت عندنا مش مجرد حلوى للمناسبة، لكنها قطعة مصممة خصيصاً لصاحب المناسبة. كما تذهب الفتاة إلى مصمم أزياء محترف ليصنع لها فستاناً فريداً يخطف الأنظار، نحن نصمم كل تورتة بشكل يعبر عن شخصية صاحبها وذوقه وتفاصيل يومه المميز. لا نكرر نفس التورتة مرتين، لأن لكل عميل قصة مختلفة تستحق أن تُروى بشكل مختلف. كل تورتة تجمع بين الشكل الذي يحبه العميل والطعم الذي يفضله والتفاصيل التي تعبر عنه. لذلك كانت تورت حلويات بوسي نجمة العديد من المناسبات، وكانت دائماً سبباً في الإبهار قبل التذوق وبعده. ومن أكثر الجمل التي نسمعها من عملائنا: 'لسه حلاوتها في بوقي من يوم ما دوقتها.'" },
-                "flowers": { name: "الورد", desc: "ننفرد بتقديم بوكيهات الورد الطبيعي والصناعي وورد الستان بأعلى مستوى من العناية والاهتمام بالتفاصيل. هدفنا أن يصل الورد للعميل وكأنه قُطف للتو، بكامل نضارته وجماله وحضوره. نوفر مختلف الألوان والأحجام والتنسيقات، سواء كنت تبحث عن بوكيه بسيط، بوكس فاخر، أو تصميم خاص يعبر عن شخص عزيز عليك. كل تفصيلة يتم تنفيذها بعناية حتى يصل الورد بالشكل الذي يشرفك أمام كل من تهديه له." }
+                "flowers": { name: "الورد", desc: "ننفرد بتقديم بوكيهات الورد الطبيعي والصناعي وورد الستان بأعلى مستوى من العناية والاهتمام بالتفاصيل. هدفنا أن يصل الورد للعميل وكأنه قُطف للتو، بكامل نضارته وجماله وحضوره. نوفر مختلف الألوان والأحجام والتنسيقات, سواء كنت تبحث عن بوكيه بسيط، بوكس فاخر، أو تصميم خاص يعبر عن شخص عزيز عليك. كل تفصيلة يتم تنفيذها بعناية حتى يصل الورد بالشكل الذي يشرفك أمام كل من تهديه له." }
             };
 
             const uniqueFlavorsDescriptions = {
                 "dark-nutella": "نوتيلا أصلية داكنة غنية بالكاكاو لعشاق الطعم الأصيل والمكثف.",
-                "lotus": "زبدة لوتس بلجيكية فاخرة بنكهة القرفة المقرمشة الأصلية.",
+                "lotus": "زبدة لوتس فاخرة بنكهة القرفة المقرمشة الأصلية.",
                 "white-nutella": "شوكولاتة نوتيلا بيضاء ناعمة وقوام كريمي متوازن ومميز.",
                 "caramel": "توفي كراميل غني ومطبوخ بعناية ليعطي حلاوة متزنة ولذيذة.",
                 "kinder": "كريمة كيندر بوينو الشهيرة بطعم البندق والحليب الساحر.",
@@ -359,7 +382,7 @@
                 "classic-vanilla": "فانيليا مدغشقر الطبيعية الرائعة برائحتها الزكية وقوامها الناعم.",
                 "royal": "تشكيلة الجاتوه الملكي الفاخرة المجهزة للمناسبات الكبرى.",
                 "classic-gateaux": "قطع الجاتوه الكلاسيكية المتساوية المجهزة يوم بيوم.",
-                "soirée": "قطع سواريه صغيرة وأنيقة للغاية مصممة للضيافة الراقية.",
+                "soirئة": "قطع سواريه صغيرة وأنيقة للغاية مصممة للضيافة الراقية.",
                 "chocolate-dozen": "اثنتا عشرة قطعة من كب كيك الشوكولاتة الغنية بالزبدة والاصيلة.",
                 "vanilla-dozen": "دستة كب كيك فانيليا هشة ومزينة بالكريمة اللباني الفاخرة.",
                 "mix-dozen": "تشكيلة منوعة من دستة الكب كيك تجمع بين الشوكولاتة والفانيليا.",
@@ -564,8 +587,6 @@
                     return;
                 }
 
-                const currentMeta = categoriesStaticSchema[currentCategoryKey] || { desc: "" };
-
                 productsList.forEach(product => {
                     if (!quantitiesState[product.id]) {
                         quantitiesState[product.id] = 1;
@@ -574,7 +595,6 @@
                     const safeId = escapeHTML(product.id);
                     const safeTitle = escapeHTML(product.title);
                     const safeFlavor = escapeHTML(product.flavor);
-                    const safeProductDesc = escapeHTML(currentMeta.desc);
                     const safeFlavorDesc = escapeHTML(uniqueFlavorsDescriptions[product.flavorKey] || "");
 
                     const card = document.createElement('div');
@@ -584,7 +604,6 @@
                         <h3 class="card-title-text" onclick="location.href='product.html?id=${safeId}'">${safeTitle}</h3>
                         <div class="card-flavor-text">${safeFlavor}</div>
                         <div class="card-flavor-description-text">${safeFlavorDesc}</div>
-                        <p class="card-desc-paragraph">${safeProductDesc}</p>
                         <div class="card-meta-action-row">
                             <div class="card-controls-block">
                                 <div class="card-price-and-counter-zone">
