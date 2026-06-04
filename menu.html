@@ -42,8 +42,17 @@
             flex-direction: column;
             overflow-x: hidden;
         }
+        /* تعديل احترافي لتثبيت الهيدر والبار العلوي في مكانهم الطبيعي دون تتبع الاسكرول */
+        .top-announcement-bar {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            height: 40px;
+            z-index: 1000;
+        }
         .header-container {
-            position: fixed;
+            position: absolute;
             top: 40px;
             right: 0;
             left: 0;
@@ -305,6 +314,7 @@
         @media (max-width: 600px) {
             .header-container {
                 top: 40px;
+                position: absolute; /* يضمن بقاء التثبيت المطلق على الشاشات الصغيرة أيضاً */
             }
             main {
                 margin-top: 115px;
