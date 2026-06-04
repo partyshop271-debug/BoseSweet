@@ -179,6 +179,7 @@
             flex-direction: column;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             box-shadow: 0 4px 15px rgba(255, 145, 164, 0.05);
+            height: 100%;
         }
         .category-card:hover {
             transform: translateY(-5px);
@@ -199,6 +200,9 @@
             height: 100%;
             object-fit: cover;
             transition: transform 0.5s ease;
+        }
+        .category-card:hover .category-img {
+            transform: scale(1.03);
         }
         .category-info {
             padding: 25px 20px;
@@ -327,13 +331,131 @@
             display: block;
             opacity: 1;
         }
+        .storefront-main-footer {
+            background-color: var(--pure-white);
+            border-top: 1px solid rgba(255, 145, 164, 0.2);
+            padding: 50px 20px 20px 20px;
+            width: 100%;
+        }
+        .footer-layout-columns-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 2fr;
+            gap: 40px;
+        }
+        .footer-brand-summary-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .footer-logo-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .footer-brand-logo {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+        .footer-brand-name {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .footer-brief-paragraph {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+        .footer-links-navigation-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .footer-group-title {
+            font-size: 16px;
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 8px;
+        }
+        .footer-group-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 30px;
+            height: 2px;
+            background-color: var(--primary-pink);
+        }
+        .footer-clickable-links-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .footer-clickable-links-list a {
+            text-decoration: none;
+            color: var(--deep-black);
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+        .footer-clickable-links-list a:hover {
+            color: var(--primary-pink);
+        }
+        .footer-business-data-card {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .footer-data-text-row {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        .footer-social-original-icons-box {
+            display: flex;
+            gap: 12px;
+            margin-top: 5px;
+        }
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            background-color: var(--pure-white);
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--deep-black);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            background-color: var(--primary-pink);
+            color: var(--pure-white);
+            border-color: var(--primary-pink);
+            transform: translateY(-3px);
+        }
+        .footer-copyrights-bottom-bar {
+            max-width: 1200px;
+            margin: 40px auto 0 auto;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 145, 164, 0.1);
+            text-align: center;
+        }
+        .copyright-legal-text {
+            font-size: 13px;
+            opacity: 0.7;
+        }
         @media (max-width: 992px) {
             .categories-grid {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 25px;
             }
-            .menu-intro h1 {
-                font-size: 28px;
+            .footer-layout-columns-wrapper {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
             }
         }
         @media (max-width: 600px) {
@@ -358,6 +480,10 @@
             }
             .category-title {
                 font-size: 19px;
+            }
+            .footer-layout-columns-wrapper {
+                grid-template-columns: 1fr;
+                gap: 35px;
             }
         }
     </style>
@@ -516,7 +642,7 @@
                 { id: "chill-box", name: "بوكس الروقان", desc: "صندوق تجميعات الحلويات المتنوعة والباردة المصمم للمشاركة في اللقاءات العائلية.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=chill-box" },
                 { id: "cupcakes", name: "كب كيك", desc: "قطع الكب كيك الصغيرة المخبوزة بدقة مع لمسات مبتكرة من الكريمة والتزيين الراقي.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=cupcakes" },
                 { id: "cake-builder", name: "تورت", desc: "محاكي التورت الحصري لتخصيص الحجم والمقاس وعدد الأفراد بدقة هندسية كاملة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "cake-builder.html" },
-                { id: "gateaux", name: "جاتوه", desc: "قطع الجاتوه الكلاسيكية والحديثة المعدة بقطع متساوية وطبقات متوازنة النكهة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=gateaux" },
+                { id: "gateaux", name: "جاتوه", desc: "قطع الجاتوه الكلاسيكية والحديثة المعدة بقطع متساوية وطبقات متوانة النكهة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=gateaux" },
                 { id: "mini-cakes", name: "ميني تورت", desc: "التورت الدائرية المصغرة والمغلفة بالفاكيوم الشفاف للحفاظ على طراوتها وجمالها الطبيعي.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=mini-cakes" },
                 { id: "red-velvet", name: "ريد فيلفت", desc: "الكيك المخملي الأحمر الشهير الغني بطبقات كريمة الجبن الفاخرة والمتوازنة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=red-velvet" }
             ];
