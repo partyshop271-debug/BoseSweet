@@ -4,346 +4,696 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>حلويات بوسي | تصفح فئات منتجاتنا الفاخرة</title>
-    <meta name="description" content="اكتشف التشكيلة الكاملة من حلويات بوسي. كعكات مخصصة، ديسباسيتو غني، قشطوطة باردة، ودوناتس طازجة أُعدت بحب لتناسب جميع مناسباتكم الراقية الفخمة.">
-    <meta name="keywords" content="حلويات بوسي, المنيو, تورت, ديسباسيتو, قشطوطة, سينابون, دوناتس, كب كيك, ميني تورت, بوكس الروقان, الكفاح, الوادي الجديد">
-    <meta name="author" content="BoseSweets">
+    <title>تصفح القسم | حلويات بوسي</title>
+    <meta name="description" content="استعرض تشكيلة منتجاتنا الفاخرة والمجهزة بالكامل بخامات طبيعية 100% طازجة يوم بيوم داخل أقسام متجر حلويات بوسي المعتمدة.">
     <meta name="robots" content="index, follow">
     
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://bosesweets.com/category.html">
-    <meta property="og:title" content="حلويات بوسي | تصفح فئات منتجاتنا الفاخرة">
-    <meta property="og:description" content="تصفح قوائم المنتجات الغنية وتذوق الإتقان بعينك. خامات طبيعية 100% وتفاصيل فاخرة تُصنع يومياً خصيصاً لك.">
+    <meta property="og:title" content="تصفح القسم | حلويات بوسي">
+    <meta property="og:description" content="استعرض تشكيلة منتجاتنا الفاخرة والمجهزة بالكامل بخامات طبيعية 100% طازجة يوم بيوم داخل أقسام متجر حلويات بوسي المعتمدة.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://bosesweets.com/category.html">
-    <meta property="twitter:title" content="حلويات بوسي | تصفح فئات منتجاتنا الفاخرة">
-    <meta property="twitter:description" content="تصفح قوائم المنتجات الغنية وتذوق الإتقان بعينك. خامات طبيعية 100% وتفاصيل فاخرة تُصنع يومياً خصيصاً لك.">
-    <meta property="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-
-    <link rel="canonical" href="https://bosesweets.com/category.html">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      "name": "قائمة الفئات والمنتجات - حلويات بوسي",
-      "description": "استعرض الفئات المتنوعة والمنتجات الفاخرة المصنوعة يدوياً بأعلى معايير الجودة.",
-      "url": "https://bosesweets.com/category.html",
-      "publisher": {
-        "@type": "Bakery",
-        "name": "حلويات بوسي",
-        "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-        "telephone": "01097238441",
-        "url": "https://bosesweets.com/",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "شارع الوحدة المحلية، بجوار صيدلية الدكتور أحمد مجدي",
-          "addressLocality": "الكفاح، مركز الفرافرة",
-          "addressRegion": "الوادي الجديد",
-          "addressCountry": "EG"
+    
+    <style>
+        .category-view-hero-fluid {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 16px;
         }
-      }
-    }
-    </script>
+        .category-main-showcase-img {
+            width: 100%;
+            height: 340px;
+            object-fit: cover;
+            border-radius: 20px;
+            border: 1px solid var(--pink-soft-border);
+            box-shadow: 0 4px 14px var(--pink-box-shadow);
+            margin: 16px 0;
+        }
+        .category-dynamic-description-card {
+            background-color: var(--white-background);
+            border-radius: 16px;
+            padding: 16px 0;
+            margin-bottom: 24px;
+            text-align: justify;
+        }
+        .category-grid-injection-shell {
+            width: 100%;
+            margin-bottom: 48px;
+        }
+        .bs-product-card .card-price-and-counter-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            margin-bottom: 4px;
+        }
+        .bs-product-card .card-price-display-text {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--pink-primary);
+            text-align: center;
+            width: 100%;
+            margin-top: 2px;
+        }
+        .bs-product-card .card-controls-block {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+            gap: 12px;
+        }
+        .bs-product-card .card-quantity-selector {
+            width: 120px;
+            justify-content: space-between;
+        }
+        .reviews-ecosystem-fluid-section {
+            background-color: #FFF5F6;
+            border-top: 1px solid var(--pink-soft-border);
+            border-bottom: 1px solid var(--pink-soft-border);
+            padding: 48px 16px;
+            width: 100%;
+            margin-bottom: 48px;
+        }
+        .reviews-inner-layout-box {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .reviews-grid-wrapper-layout {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .review-testimonial-node-card {
+            background-color: var(--white-background);
+            border: 1px solid var(--pink-soft-border);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px var(--pink-box-shadow);
+        }
+        .review-user-info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .review-user-name-text {
+            font-size: 15px;
+            font-weight: 700;
+        }
+        .review-gold-stars-box {
+            color: #D4AF37;
+            font-size: 12px;
+            display: flex;
+            gap: 2px;
+        }
+        .review-verified-badge-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #25D366;
+            margin-bottom: 8px;
+        }
+        .review-body-text-paragraph {
+            font-size: 13px;
+            color: var(--black-text-only);
+            line-height: 1.6;
+            text-align: justify;
+        }
+        .recommendations-slider-outer-fluid {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto 48px auto;
+            padding: 0 16px;
+        }
+        .recommendations-horizontal-scroll-track {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 12px 4px 16px 4px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+        }
+        .recommendations-horizontal-scroll-track::-webkit-scrollbar {
+            display: none;
+        }
+        .recommendations-horizontal-scroll-track .recommendation-item-simple-card {
+            width: 260px;
+            background-color: var(--white-background);
+            border: 1px solid var(--pink-soft-border);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 4px 12px var(--pink-box-shadow);
+            flex-shrink: 0;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .recommendations-horizontal-scroll-track .recommendation-item-simple-card:active {
+            transform: scale(0.97);
+        }
+        .rec-card-native-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 12px;
+            background-color: #FAFAFA;
+            margin-bottom: 10px;
+        }
+        .rec-card-title-heading {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .rec-card-price-tag-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--pink-primary);
+            margin-top: auto;
+        }
+        .category-tabs-filter-row-bar {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 8px 0 24px 0;
+            width: 100%;
+            overflow-x: auto;
+            padding: 4px;
+            scrollbar-width: none;
+        }
+        .category-tabs-filter-row-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .filter-tab-action-trigger-node {
+            background-color: var(--white-background);
+            border: 1px solid var(--pink-primary);
+            color: var(--black-text-only);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+        .filter-tab-action-trigger-node.active-tab-node {
+            background-color: var(--pink-primary);
+            color: var(--white-background);
+        }
+        @media (min-width: 768px) {
+            .category-main-showcase-img {
+                height: 420px;
+            }
+            .reviews-grid-wrapper-layout {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            .recommendations-horizontal-scroll-track .recommendation-item-simple-card {
+                width: 280px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .category-main-showcase-img {
+                height: 480px;
+            }
+            .reviews-grid-wrapper-layout {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
 </head>
-<body id="app-shell">
+<body>
 
-    <header id="header-container" class="sticky-header">
-        <div class="header-content">
-            <button id="sidebar-toggle" class="header-btn" aria-label="فتح القائمة الجانبية" aria-controls="mobile-navigation" aria-expanded="false">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-            </button>
-            
-            <a href="index.html" class="logo-wrapper">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي" class="header-logo" width="40" height="40">
-                <span class="brand-name">حلويات بوسي</span>
-            </a>
+    <div class="top-announcement-bar">
+        <div class="scrolling-ticker-wrapper">
+            <span class="ticker-message-item">صنعناها بحب لتهديها لمن تحب</span>
+            <span class="ticker-message-item">خبرة أكثر من 10 سنوات في صناعة الحلويات</span>
+            <span class="ticker-message-item">خامات طبيعية ممتازة ومضمونة 100%</span>
+            <span class="ticker-message-item">صنعناها بحب لتهديها لمن تحب</span>
+            <span class="ticker-message-item">خبرة أكثر من 10 سنوات في صناعة الحلويات</span>
+            <span class="ticker-message-item">خامات طبيعية ممتازة ومضمونة 100%</span>
+        </div>
+    </div>
 
-            <div class="header-actions">
-                <button id="search-trigger" class="header-btn" aria-label="فتح البحث" aria-controls="search-container" aria-expanded="false">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                </button>
-                <a href="cart.html" id="cart-trigger" class="header-btn" aria-label="عرض سلة التسوق" data-product-count="0">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                </a>
-            </div>
+    <header class="header-container">
+        <button class="menu-toggle-btn" aria-label="زر القائمة الجانبية" id="global-sidebar-toggle-trigger">☰</button>
+        <div class="logo-brand-block" onclick="location.href='index.html'" style="cursor: pointer;">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="store-logo" loading="lazy">
+            <h1 class="brand-name">حلويات بوسي</h1>
+        </div>
+        <div class="header-actions">
+            <button class="search-trigger-btn" aria-label="زر البحث"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button class="cart-trigger-btn" aria-label="زر السلة" onclick="location.href='cart.html'"><i class="fa-solid fa-bag-shopping"></i></button>
         </div>
     </header>
 
-    <div id="search-container" aria-hidden="true">
-        <form id="search-form" action="search.html" method="GET">
-            <input type="search" id="search-input" name="query" placeholder="ابحث عن نكهتك المفضلة..." aria-label="ابحث في الموقع" autocomplete="off">
-            <button type="submit" id="search-submit-button" class="bs-button">بحث</button>
-        </form>
-        <div id="search-suggestions-container"></div>
-    </div>
-
-    <main id="page-container" class="category-page-container">
+    <main id="page-container">
         
-        <section id="category-header-container" class="category-hero">
-            <h1 class="category-main-title">منتجاتنا الفاخرة</h1>
-            <p class="category-sub-description">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بجمال أوقاتكم الفخمة.</p>
-        </section>
+        <div class="category-view-hero-fluid">
+            <div class="section-meta-header" style="margin-bottom: 12px;">
+                <h2 class="main-section-title" id="category-dynamic-title-heading">جاري تحميل القسم...</h2>
+            </div>
+            
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="category-main-showcase-img" id="category-dynamic-featured-image-node">
+            
+            <div class="category-dynamic-description-card">
+                <p class="section-rich-description" id="category-dynamic-text-description-node">جاري تحميل وصف القسم واستعراض الخامات الطبيعية المعتمدة للتوليفة الفاخرة...</p>
+            </div>
 
-        <section class="products-grid-wrapper">
-            <div id="category-products-container" class="bs-products-grid" data-layout-mode="two-cards">
-                
-                <article class="bs-product-card" data-product-id="despacito-pistachio">
-                    <div class="card-image-wrapper">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الديسباسيتو بيستاشيو" loading="lazy" class="product-card-img" width="320" height="320">
-                    </div>
-                    <div class="card-content">
-                        <h2 class="product-title">الديسباسيتو</h2>
-                        <span class="flavor-name">بيستاشيو</span>
-                        <p class="product-card-description">كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة ناعمة غنية من زبدة وموس البيستاشيو الأصلي بتوليفتنا الخاصة.</p>
-                        
-                        <div class="card-footer-dynamic">
-                            <div class="quantity-counter">
-                                <button type="button" class="counter-btn minus" aria-label="تقليل الكمية">-</button>
-                                <span class="count-value" aria-live="polite">1</span>
-                                <button type="button" class="counter-btn plus" aria-label="زيادة الكمية">+</button>
-                            </div>
-                            <div class="price-box">
-                                <span class="price-value">83</span> <span class="currency-label">جنيه</span>
-                            </div>
-                        </div>
-                        <button type="button" id="add-to-cart-button-1" class="bs-button add-to-cart-btn">إضافة للسلة</button>
-                    </div>
-                </article>
+            <div class="category-tabs-filter-row-bar" id="category-dynamic-tabs-filter-navigation-bar" style="display: none;"></div>
 
-                <article class="bs-product-card" data-product-id="qashtota-lotus">
-                    <div class="card-image-wrapper">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="القشطوطة لوتس" loading="lazy" class="product-card-img" width="320" height="320">
-                    </div>
-                    <div class="card-content">
-                        <h2 class="product-title">القشطوطة</h2>
-                        <span class="flavor-name">لوتس</span>
-                        <p class="product-card-description">كيك فانيليا مشرب بالحليب الغني، يعلوه طبقة من الكريمة اللباني الفاخرة وزبدة اللوتس المقرمشة الأصلية.</p>
-                        
-                        <div class="card-footer-dynamic">
-                            <div class="quantity-counter">
-                                <button type="button" class="counter-btn minus" aria-label="تقليل الكمية">-</button>
-                                <span class="count-value" aria-live="polite">1</span>
-                                <button type="button" class="counter-btn plus" aria-label="زيادة الكمية">+</button>
-                            </div>
-                            <div class="price-box">
-                                <span class="price-value">121</span> <span class="currency-label">جنيه</span>
-                            </div>
-                        </div>
-                        <button type="button" id="add-to-cart-button-2" class="bs-button add-to-cart-btn">إضافة للسلة</button>
-                    </div>
-                </article>
+            <div class="category-grid-injection-shell">
+                <div class="two-columns-static-grid" id="category-products-cards-grid-target"></div>
+            </div>
+        </div>
 
-                <article class="bs-product-card" data-product-id="donuts-matilda">
-                    <div class="card-image-wrapper">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الدوناتس ماتيلدا" loading="lazy" class="product-card-img" width="320" height="320">
-                    </div>
-                    <div class="card-content">
-                        <h2 class="product-title">الدوناتس</h2>
-                        <span class="flavor-name">ماتيلدا فخمة</span>
-                        <p class="product-card-description">عجينة هشة وطرية مقلية بعناية فائقة، محشوة بالكامل صوص شوكولاتة غني كثيف ومزينة بطبقة لامعة فاخرة.</p>
-                        
-                        <div class="card-footer-dynamic">
-                            <div class="quantity-counter">
-                                <button type="button" class="counter-btn minus" aria-label="تقليل الكمية">-</button>
-                                <span class="count-value" aria-live="polite">1</span>
-                                <button type="button" class="counter-btn plus" aria-label="زيادة الكمية">+</button>
-                            </div>
-                            <div class="price-box">
-                                <span class="price-value">110</span> <span class="currency-label">جنيه</span>
-                            </div>
-                        </div>
-                        <button type="button" id="add-to-cart-button-3" class="bs-button add-to-cart-btn">إضافة للسلة</button>
-                    </div>
-                </article>
-
-                <article class="bs-product-card" data-product-id="cinabon-classic">
-                    <div class="card-image-wrapper">
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="السينابون كلاسيك" loading="lazy" class="product-card-img" width="320" height="320">
-                    </div>
-                    <div class="card-content">
-                        <h2 class="product-title">السينابون</h2>
-                        <span class="flavor-name">كلاسيك صوص تشيز</span>
-                        <p class="product-card-description">لفات سينابون طرية غنية بالقرفة الفاخرة والزبدة، مخبوزة ومغطاة بطبقة كثيفة من صوص التشيز الكلاسيكي الخاص بنا.</p>
-                        
-                        <div class="card-footer-dynamic">
-                            <div class="quantity-counter">
-                                <button type="button" class="counter-btn minus" aria-label="تقليل الكمية">-</button>
-                                <span class="count-value" aria-live="polite">1</span>
-                                <button type="button" class="counter-btn plus" aria-label="زيادة الكمية">+</button>
-                            </div>
-                            <div class="price-box">
-                                <span class="price-value">121</span> <span class="currency-label">جنيه</span>
-                            </div>
-                        </div>
-                        <button type="button" id="add-to-cart-button-4" class="bs-button add-to-cart-btn">إضافة للسلة</button>
-                    </div>
-                </article>
-
+        <section class="reviews-ecosystem-fluid-section">
+            <div class="reviews-inner-layout-box">
+                <div class="section-meta-header" style="margin-bottom: 16px;">
+                    <h2 class="section-display-title">مراجعات عملائنا</h2>
+                    <p class="section-rich-description">آراء وتقييمات حقيقية من عملائنا الذين تذوقوا توليفاتنا الفاخرة المجهزة بحب داخل فرع الكفاح.</p>
+                </div>
+                <div class="reviews-grid-wrapper-layout" id="category-dynamic-reviews-cards-target"></div>
             </div>
         </section>
 
-        <section id="product-reviews-container" class="reviews-section-wrapper">
-            <div class="section-header-centered">
-                <h2 class="reviews-main-title">آراء عملائنا المحترمين</h2>
-                <p class="reviews-sub-title">ثقة نعتز بها على مدار أكثر من عقد من الإتقان والتميز.</p>
+        <section class="recommendations-slider-outer-fluid">
+            <div class="section-meta-header" style="margin-bottom: 16px;">
+                <h2 class="section-display-title">قد يعجبك أيضاً</h2>
+                <p class="section-rich-description">اقتراحات وتوليفات فاخرة إضافية نوصي بها لتكملة روعة تجربتك ومشاركتها مع من تحب.</p>
             </div>
-
-            <div id="review-statistics-container" class="ratings-summary-block">
-                <div class="rating-huge-number">4.9</div>
-                <div class="rating-stars-visual">
-                    <span class="star-gold">★</span><span class="star-gold">★</span><span class="star-gold">★</span><span class="star-gold">★</span><span class="star-gold">★</span>
-                </div>
-                <div class="rating-count-text">بناءً على 10,000+ عميل سعيد</div>
-            </div>
-
-            <div id="review-form-container" class="review-submission-box">
-                <h3 class="box-inner-title">شاركونا تجربتكم الراقية</h3>
-                <form id="review-form">
-                    <div class="form-group-star">
-                        <label for="review-rating-select">تقييمكم بالنجوم:</label>
-                        <select name="rating" id="review-rating-select" class="bs-input" required>
-                            <option value="5">5 نجوم - ممتاز جداً</option>
-                            <option value="4">4 نجوم - جيد جداً</option>
-                            <option value="3">3 نجوم - مقبول</option>
-                        </select>
-                    </div>
-                    <div class="form-group-text">
-                        <textarea id="review-content" class="bs-input" placeholder="اكتبوا رأيكم الصادق هنا بكل وضوح..." rows="3" required></textarea>
-                    </div>
-                    <button type="submit" id="submit-review-button" class="bs-button">إرسال التقييم للمراجعة</button>
-                </form>
-            </div>
-
-            <div id="reviews-list-container" class="reviews-cards-stack">
-                <article class="bs-review-card" data-review-id="rev-101">
-                    <div class="review-meta-top">
-                        <span class="reviewer-name">أحمد الكفاح</span>
-                        <span class="review-badge-verified" data-status="verified">✓ عميل مؤكد</span>
-                    </div>
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text-content">التورتة كانت مبهرة جداً في حفلة التخرج، ولسه حلاوتها في بوقي من يوم ما دوقتها فعلاً. جودة خامات طبيعية واضحة جداً ومشرفة قدام الضيوف.</p>
-                </article>
-
-                <article class="bs-review-card" data-review-id="rev-102">
-                    <div class="review-meta-top">
-                        <span class="reviewer-name">سارة الفرافرة</span>
-                        <span class="review-badge-verified" data-status="verified">✓ عميل مؤكد</span>
-                    </div>
-                    <div class="review-stars">★★★★★</div>
-                    <p class="review-text-content">الديسباسيتو بيستاشيو ملوش حل! موس شوكولاتة غني ومتوازن جداً واللمعة الطبيعية تفتح النفس. التوصيل سريع جداً للمركز والمنتج واصل سليم وبأعلى فخامة.</p>
-                </article>
-            </div>
-        </section>
-
-        <section id="related-products-container" class="recommendations-section-wrapper">
-            <div class="section-header-centered">
-                <h2 class="recommendations-title">إضافات تكمل روقانك (قد يعجبك أيضاً)</h2>
-                <p class="recommendations-subtitle">تشكيلة مختارة بعناية لزيادة متعة التذوق الراقية.</p>
-            </div>
-
-            <div id="cart-recommendations-container" class="recommendations-slider-horizontal">
-                
-                <div class="bs-recommendation-card" data-product-id="cupcake-vanilla">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كب كيك فانيليا فاخر" loading="lazy" class="rec-card-img" width="120" height="120">
-                    <div class="rec-card-details">
-                        <h3 class="rec-product-title">الكب كيك الفاخر</h3>
-                        <div class="rec-price-box">324 <span class="currency">جنيه / دستة</span></div>
-                        <button type="button" class="rec-add-btn-quick" aria-label="إضافة سريعة للكب كيك">+</button>
-                    </div>
-                </div>
-
-                <div class="bs-recommendation-card" data-product-id="happiness-cups-nutella">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كب السعادة نوتيلا" loading="lazy" class="rec-card-img" width="120" height="120">
-                    <div class="rec-card-details">
-                        <h3 class="rec-product-title">كبات السعادة نوتيلا</h3>
-                        <div class="rec-price-box">61 <span class="currency">جنيه</span></div>
-                        <button type="button" class="rec-add-btn-quick" aria-label="إضافة سريعة لكب السعادة">+</button>
-                    </div>
-                </div>
-
+            <div class="carousel-slider-outer-wrapper">
+                <div class="recommendations-horizontal-scroll-track" id="category-dynamic-recommendations-slider-target"></div>
             </div>
         </section>
 
     </main>
 
-    <div id="product-preview-modal" class="bs-modal" aria-hidden="true" role="dialog">
-        <div class="modal-body-content">
-            <button type="button" class="modal-close-btn" onclick="hideModal('product-preview-modal')" aria-label="إغلاق النافذة">×</button>
-            <div id="modal-dynamic-target"></div>
-        </div>
-    </div>
-
-    <footer id="footer-container" class="site-footer-light">
-        <div class="footer-inner-wrapper">
-            
-            <div class="footer-brand-section">
+    <footer class="storefront-main-footer">
+        <div class="footer-layout-columns-wrapper">
+            <div class="footer-brand-summary-box">
                 <div class="footer-logo-block">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي الفخم" class="footer-logo" width="60" height="60">
-                    <span class="footer-brand-title">حلويات بوسي</span>
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي لوجو" class="footer-brand-logo" loading="lazy">
+                    <h3 class="footer-brand-name">حلويات بوسي</h3>
                 </div>
-                <p class="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات من الإتقان والتميز والخبرة الطويلة في صناعة الحلويات الشرقية والغربية الفاخرة.</p>
+                <p class="footer-brief-paragraph">صنعناها بحب لتهديها لمن تحب. خبرة ممتدة لأكثر من 10 سنوات في تقديم وتصنيع الحلويات وتصميم كعكات التخصيص الفاخرة وتنسيق الورد الطبيعي والصناعي والستان بمركز الفرافرة.</p>
+            </div>
+            
+            <div class="footer-links-navigation-group">
+                <h4 class="footer-group-title">روابط سريعة</h4>
+                <ul class="footer-clickable-links-list">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="menu.html">تصفح المنيو الشامل</a></li>
+                    <li><a href="cart.html">سلة المشتريات</a></li>
+                </ul>
             </div>
 
-            <div class="footer-links-grid">
-                <div class="links-group">
-                    <h4 class="links-group-title">روابط سريعة</h4>
-                    <ul class="links-list">
-                        <li><a href="index.html">الرئيسية</a></li>
-                        <li><a href="menu.html">تصفح المنيو</a></li>
-                        <li><a href="cart.html">سلة المشتريات</a></li>
-                        <li><a href="cake-builder.html">محاكي تصميم التورت</a></li>
-                        <li><a href="flower-builder.html">محاكي تنسيق الورد</a></li>
-                    </ul>
-                </div>
-
-                <div class="links-group">
-                    <h4 class="links-group-title">السياسات النظامية</h4>
-                    <ul class="links-list">
-                        <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
-                        <li><a href="terms.html">الشروط والأحكام</a></li>
-                        <li><a href="shipping-policy.html">سياسة الطلبات والتوصيل</a></li>
-                        <li><a href="refund-policy.html">سياسة الاستبدال والاسترجاع</a></li>
-                    </ul>
-                </div>
-
-                <div class="links-group">
-                    <h4 class="links-group-title">بيانات النشاط المعتمدة</h4>
-                    <p class="activity-data-text">الموقع الرسمي لحلويات بوسي.</p>
-                    <p class="activity-data-text">الموقع الرئيسي: الكفاح، مركز الفرافرة، محافظه الوادي الجديد.</p>
-                    <p class="activity-data-text">رقم تواصل الدعم والطلبات المباشر: 01097238441</p>
-                </div>
+            <div class="footer-links-navigation-group">
+                <h4 class="footer-group-title">سياسات المتجر</h4>
+                <ul class="footer-clickable-links-list">
+                    <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+                    <li><a href="refund-policy.html">سياسة الاستبدال والاسترجاع</a></li>
+                </ul>
             </div>
 
-            <div class="footer-social-social">
-                <h4 class="social-title">تابعونا على منصات التواصل</h4>
-                <div class="social-icons-row">
-                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" rel="noopener noreferrer" class="social-link-item" aria-label="تابعونا على فيسبوك">فيسبوك</a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" target="_blank" rel="noopener noreferrer" class="social-link-item" aria-label="تابعونا على انستجرام">انستجرام</a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" target="_blank" rel="noopener noreferrer" class="social-link-item" aria-label="تابعونا على تيك توك">تيك توك</a>
-                    <a href="https://wa.me/201097238441" target="_blank" rel="noopener noreferrer" class="social-link-item" aria-label="تواصل معنا مباشرة عبر واتساب">واتساب</a>
+            <div class="footer-business-data-card">
+                <h4 class="footer-group-title">بيانات فرع الكفاح</h4>
+                <p class="footer-data-text-row">📍 شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وعيادة الدكتور علي</p>
+                <p class="footer-data-text-row">📞 للتواصل: 01097238441</p>
+                <div class="footer-social-original-icons-box">
+                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-icon facebook-icon" aria-label="فيسبوك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-icon instagram-icon" aria-label="انستجرام حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-icon tiktok-icon" aria-label="تيك توك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="https://wa.me/201097238441" class="social-icon whatsapp-icon" aria-label="واتساب حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i></a>
                 </div>
             </div>
-
-            <div class="footer-copyright-bottom">
-                <p class="copyright-prose">جميع الحقوق محفوظة © لعلامة حلويات بوسي التجارية 2026. تم التصميم والتطوير بكل إتقان وفخامة لتلبية تطلعات عملائنا المحترمين.</p>
-            </div>
-
+        </div>
+        <div class="footer-copyrights-bottom-bar">
+            <p class="copyright-legal-text">جميع الحقوق محفوظة © لعلامة حلويات بوسي التجارية 2026</p>
         </div>
     </footer>
 
-    <script src="js/core.js"></script>
-    <script src="js/integrations.js"></script>
-    <script src="js/engines.js"></script>
-    <script src="js/builders.js"></script>
-    <script src="js/ui.js"></script>
     <script src="app.js"></script>
+    <script>
+        (function () {
+            'use strict';
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryId = urlParams.get('id') || 'qashtota';
+
+            const categoriesStaticData = {
+                "cakes": {
+                    title: "التورت الفاخرة",
+                    desc: "التورت عندنا مش مجرد حلوى للمناسبة، لكنها قطعة مصممة خصيصاً لصاحب المناسبة. كما تذهب الفتاة إلى مصمم أزياء محترف ليصنع لها فستاناً فريداً يخطف الأنظار، نحن نصمم كل تورتة بشكل يعبر عن شخصية صاحبها وذوقه وتفاصيل يومه المميز. لا نكرر نفس التورتة مرتين، لأن لكل عميل قصة مختلفة تستحق أن تُروى بشكل مختلف. كل تورتة تجمع بين الشكل الذي يحبه العميل والطعم الذي يفضله والتفاصيل التي تعبر عنه. لذلك كانت تورت حلويات بوسي نجمة العديد من المناسبات، وكانت دائماً سبباً في الإبهار قبل التذوق وبعده. ومن أكثر الجمل التي نسمعها من عملائنا: 'لسه حلاوتها في بوقي من يوم ما دوقتها.'"
+                },
+                "gateaux": {
+                    title: "الجاتوهات الكلاسيكية",
+                    desc: "الجاتوهات عندنا عبارة عن طبقات متوازنة من كيك الفانيليا أو الشوكولاتة مع حشوات غنية من الموسات والصوصات والكريمات المختارة بعناية. نوفر تشكيلة كبيرة ومتنوعة تناسب مختلف المناسبات والأذواق، بحيث يجد كل عميل الجاتوه الذي يناسب ذوقه ويكمل لحظته الجميلة."
+                },
+                "qashtota": {
+                    title: "القشطوطة الأصلية",
+                    desc: "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل لحصولك على تجربة ضيافة حقيقية."
+                },
+                "despacito": {
+                    title: "الديسباسيتو البرازيلي",
+                    desc: "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه ومريحة من أول قطعة لآخر قطعة."
+                },
+                "cinnabon": {
+                    title: "السينابون الفاخر",
+                    desc: "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة وبقوام طري وصوصات غنية متوازنة من غير مبالغة لتستمتع بالتجربة الأقرب لذوقك الحقيقي."
+                },
+                "donuts": {
+                    title: "الدوناتس الطازجة",
+                    desc: "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة مخبوزة يوم بيوم لتوصلك بنفس طعم الجودة الأصلي."
+                },
+                "red-velvet": {
+                    title: "الريد ڤيلڤت المخملي",
+                    desc: "طبقات من الريد ڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز والراسبيري التي تضيف توازناً رائعاً بين الحلاوة والانتعاش لتكوين تجربة متكاملة ومترابطة في كل قطعة وحجم ثابت."
+                },
+                "cupcake": {
+                    title: "الكب كيك الأنيق",
+                    desc: "قطع صغيرة من اللذة بطابع غني ومميز. يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً، ثم يتم حشو كل قطعة بحشوات وصوصات متنوعة قبل تزيينها بطبقة من الكريمة اللباني الغنية والمناسبة تماماً للهدايا والتجمعات السعيدة."
+                },
+                "mini-cake": {
+                    title: "الميني تورت الحصرية",
+                    desc: "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق وتُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات الفاخرة داخلها ومناسبة جداً للهدايا والمفاجآت."
+                },
+                "flowers": {
+                    title: "بوكيهات الورد الفاخرة",
+                    desc: "ننفرد بتقديم بوكيهات الورد الطبيعي والصناعي وورد الستان بأعلى مستوى من العناية والاهتمام بالتفاصيل. هدفنا أن يصل الورد للعميل وكأنه قُطف للتو، بكامل نضارته وجماله وحضوره وشكله الفاخر الذي يشرفك تماماً أمام كل من تهديه له."
+                },
+                "happiness-cups": {
+                    title: "كبات السعادة",
+                    desc: "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج من الفانيليا أو الشوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الفردي الخاص وقيمته الواضحة."
+                },
+                "relax-box": {
+                    title: "بوكس الروقان الحصري",
+                    desc: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد. يحتوي البوكس بشكل متناسق ومعد بعناية على: تورتة، 2 كب سعادة، 1 كب ديسباسيتو، و 1 كب ريد ڤيلڤت، ليكون الاختيار الأروع للهدايا اللذيذة والمفاجآت الهادئة السعيدة."
+                }
+            };
+
+            const targetCategory = categoriesStaticData[categoryId] || categoriesStaticData["qashtota"];
+            document.getElementById('category-dynamic-title-heading').innerText = targetCategory.title;
+            document.getElementById('category-dynamic-text-description-node').innerText = targetCategory.desc;
+            document.title = `${targetCategory.title} | حلويات بوسي`;
+
+            const databaseProductsRegistry = {
+                "qashtota": [
+                    { id: "q-1", title: "قشطوطة نوتيلا وايت", flavor: "وايت نوتيلا فاخرة", desc: "كيك فانيليا مشرب بالحليب الغني مغطى بالكريمة اللباني وصوص النوتيلا البيضاء المميزة.", price: 121 },
+                    { id: "q-2", title: "قشطوطة نوتيلا دارك", flavor: "نوتيلا دارك أصلية", desc: "كيك فانيليا مشرب بالحليب يعلوه طبقة ناعمة من الكريمة اللباني وصوص النوتيلا الدارك الغني.", price: 121 },
+                    { id: "q-3", title: "قشطوطة لوتس", flavor: "زبدة لوتس بلجيكية", desc: "كيك الحليب التقليدي مغطى بالكامل بصوص اللوتس الأصلي مع بسكويت لوتس مقرمش.", price: 121 },
+                    { id: "q-4", title: "قشطوطة بيستاشيو", flavor: "فستق حلبي فاخر", desc: "التوليفة الأكثر طلباً بكيك الحليب المشرب المغطى بصوص الفستق الغني والمكسرات الطازجة.", price: 143 },
+                    { id: "q-5", title: "قشطوطة كيندر", flavor: "شوكولاتة كيندر ناعمة", desc: "كيك فانيليا مشرب بالحليب يعلوه طبقة موس الكريمة اللباني وصوص الكيندر الغني المتوازن.", price: 121 },
+                    { id: "q-6", title: "قشطوطة كراميل", flavor: "توفي كراميل دافئ", desc: "كيك مشرب بالحليب مغطى بطبقة الكريمة اللباني الفاخرة وصوص الكراميل المتوازن القوام.", price: 121 },
+                    { id: "q-7", title: "قشطوطة مانجا", flavor: "قطع مانجو طازجة", desc: "قطع المانجو الطبيعية الغنية بالانتعاش فوق طبقة الكريمة اللباني وكيك الحليب الهش البارد.", price: 121 },
+                    { id: "q-8", title: "قشطوطة فراولة", flavor: "فراولة طبيعية مركزة", desc: "كيك فانيليا مشرب بالحليب مغطى بالكامل بقطع الفراولة الطازجة وصوص الفراولة الغني.", price: 121 },
+                    { id: "q-9", title: "قشطوطة موز", flavor: "شرائح موز بالكراميل", desc: "شرائح الموز الطبيعية الطازجة المنسقة بعناية مع الكريمة اللباني فوق كيك الحليب الناعم.", price: 121 },
+                    { id: "q-10", title: "قشطوطة ميكس نكهات", flavor: "ميكس توليفة بوسي", desc: "البوكس المثالي لعشاق التنوع يجمع بين أشهر صوصات وتوبنج القشطوطة الفاخرة في كارت واحد.", price: 121 }
+                ],
+                "donuts": [
+                    { id: "d-1", title: "دوناتس نوتيلا وايت", flavor: "شوكولاتة بيضاء غنية", desc: "عجينة دوناتس هشة وطرية مقلية بعناية ومغطاة بصوص النوتيلا البيضاء الفاخرة يوم بيوم.", price: 88 },
+                    { id: "d-2", title: "دوناتس نوتيلا دارك", flavor: "نوتيلا دارك أصلية", desc: "قوام دوناتس طازج وخفيف مغطى بطبقة غنية ومكثفة من شوكولاتة النوتيلا الدارك المميزة.", price: 88 },
+                    { id: "d-3", title: "دوناتس لوتس", flavor: "زبدة لوتس ناعمة", desc: "عجينة دوناتس طازجة بقوام مثالي مغطاة بصوص اللوتس البلجيكي المقرمش اللذيذ.", price: 88 },
+                    { id: "d-4", title: "دوناتس بيستاشيو", flavor: "صوص فستق فاخر", desc: "التوليفة الفخمة لعجينة الدوناتس الطرية المغطاة بالكامل بصوص البيستاشيو والمكسرات.", price: 110 },
+                    { id: "d-5", title: "دوناتس كيندر", flavor: "صوص كيندر بوينو", desc: "عجينة دوناتس خفيفة وهشة ومجهزة يوميًا ومغطاة بصوص الكيندر الناعم الغني بطعمه الأصلي.", price: 88 },
+                    { id: "d-6", title: "دوناتس كراميل", flavor: "صلصة توفي كراميل", desc: "دوناتس طازجة ومقلية بامتياز ومغطاة بخيوط الكراميل المتوازنة والشهية يوم بيوم.", price: 88 },
+                    { id: "d-7", title: "دوناتس ريدفيلفت", flavor: "ميكس مخملي فاخر", desc: "قوام الدوناتس الهش والمغطى بفتات الريدفيلفت الفاخر مع صوص الكريمة الغني الحصري.", price: 99 },
+                    { id: "d-8", title: "دوناتس بلوبيري + راسبيري", flavor: "ميكس توت بري منعش", desc: "توليفة مزدوجة تجمع بين صوص البلوبيري والراسبيري المركز فوق الدوناتس الخفيفة الطازجة.", price: 99 },
+                    { id: "d-9", title: "دوناتس فراولة", flavor: "جليز الفراولة الطبيعي", desc: "عجينة دوناتس طازجة ومحشوة ومغطاة بصوص وجليز الفراولة الطبيعي اللذيذ والمبهج.", price: 88 },
+                    { id: "d-10", title: "دوناتس مانجا", flavor: "صوص مانجو مركز", desc: "انتعاش صوص المانجو الطبيعي الفاخر والمكثف فوق عجينة الدوناتس الطرية المخبوزة بعناية.", price: 99 },
+                    { id: "d-11", title: "دوناتس ماتيلدا", flavor: "شوكولاتة ماتيلدا المكثفة", desc: "الإصدار الأقوى والغني بعجينة غارقة بصوص شوكولاتة ماتيلدا الفاخرة ذات اللمعة الطبيعية.", price: 110 },
+                    { id: "d-12", title: "دوناتس اوريو", flavor: "بسكويت أوريو كريمي", desc: "دوناتس طازجة مغطاة بصوص الشوكولاتة البيضاء والداكنة مع قطع بسكويت الأوريو المقرمش.", price: 88 },
+                    { id: "d-13", title: "دوناتس كرز", flavor: "صوص حبات الكرز", desc: "طعم الكرز الفاخر الواضح والمركز فوق الدوناتس الطازجة بقوامها الخفيف المريح للعين والقلب.", price: 88 }
+                ],
+                "cinnabon": [
+                    { id: "c-1", title: "سينابون نوتيلا دارك", flavor: "شوكولاتة نوتيلا داكنة", desc: "لفات سينابون مخبوزة بقوام طري محشوة بالقرفة والزبدة ومغطاة بنوتيلا دارك غنية.", price: 121 },
+                    { id: "c-2", title: "سينابون وايت نوتيلا", flavor: "نوتيلا بيضاء ناعمة", desc: "عجينة سينابون طرية ودافئة مغمورة بصوص التشيز الكلاسيكي وصوص النوتيلا البيضاء الفاخرة.", price: 121 },
+                    { id: "c-3", title: "سينابون بلوبيري", flavor: "توت أزرق مركز", desc: "لفائف القرفة الطرية والمخبوزة بعناية والمغطاة بصوص التوت الأزرق المنعش والغني بالطعم.", price: 121 },
+                    { id: "c-4", title: "سينابون راسبيري", flavor: "توت أحمر طبيعي", desc: "عجينة سينابون مخبوزة يوم بيوم يعلوها صوص صوص التشيز وصوص التوت الأحمر المميز والواضح.", price: 121 },
+                    { id: "c-5", title: "سينابون رفايلو", flavor: "جوز هند رفايلو فاخر", desc: "تجربة ساحرة لسينابون القرفة المخبوز والمغطى بصوص الـ رفايلو الغني اللذيذ الناعم.", price: 121 },
+                    { id: "c-6", title: "سينابون اوريو", flavor: "فتات أوريو مقرمش", desc: "لفات السينابون الطرية المحشوة بالزبدة يعلوها صوص كلاسيكي وقطع بسكويت الأوريو الغنية.", price: 121 },
+                    { id: "c-7", title: "سينابون لوتس", flavor: "زبدة لوتس أصلية", desc: "عجينة السينابون الطرية الفاخرة مغطاة بصوص اللوتس البلجيكي وبسكويت اللوتس المقرمش.", price: 121 },
+                    { id: "c-8", title: "سينابون بيستاشيو", flavor: "صوص فستق حلبي غني", desc: "الإصدار الفاخر للفات السينابون المخبوزة المغطاة بصوص البيستاشيو الغني بتوليفتنا الخاصة.", price: 143 },
+                    { id: "c-9", title: "سينابون كيندر", flavor: "شوكولاتة كيندر بوينو", desc: "لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من صوص الكيندر الفاخر اللذيذ.", price: 121 },
+                    { id: "c-10", title: "سينابون كراميل", flavor: "صوص توفي الكراميل", desc: "عجينة السينابون الطازجة المغطاة بصوص الكراميل المحضر بمكوناتنا وخاماتنا الطبيعية الممتازة.", price: 121 },
+                    { id: "c-11", title: "سينابون كلاسيك", flavor: "صوص تشيز كلاسيكي أصلي", desc: "لفات السينابون التقليدية الساحرة بطعم القرفة الواضح مغطاة بالكامل بصوص التشيز الأصلي الغني.", price: 121 }
+                ],
+                "happiness-cups": [
+                    { id: "h-1", title: "كب سعادة نوتيلا", flavor: "نوتيلا دارك أصلية", desc: "أكواب حلوى مصممة بحشوة كيك الشوكولاتة الغني وموس النوتيلا المتوازن اللذيذ.", price: 61 },
+                    { id: "h-2", title: "كب سعادة لوتس", flavor: "زبدة وبسكويت لوتس", desc: "طبقات متوازنة من كيك الفانيليا الهش وموس اللوتس الناعم مع التوبنج الأصلي المقرمش.", price: 61 },
+                    { id: "h-3", title: "كب سعادة أوريو", flavor: "كريمة بسكويت الأوريو", desc: "أكواب حلوى غنية بفتات بسكويت الأوريو مع موس الكريمة اللباني بتوليفتنا الخاصة.", price: 61 },
+                    { id: "h-4", title: "كب سعادة اسنيكرز", flavor: "فول سوداني كراميل سنيكرز", desc: "ميكس غني من الشوكولاتة والكراميل وحبات الفول السوداني الطبيعي مع طبقات الكيك الهش.", price: 61 },
+                    { id: "h-5", title: "كب سعادة بلوبيري", flavor: "توت أزرق منعش", desc: "طبقات من كيك الفانيليا المشرب وموس التشيز الناعم المغطى بصوص البلوبيري الفاخر العالي الجودة.", price: 61 },
+                    { id: "h-6", title: "كب سعادة راسبيري", flavor: "توت أحمر مركز", desc: "أكواب حلوى مريحة للعين والنفس بطبقات موس الفواكه وصوص الراسبيري الطبيعي اللذيذ.", price: 61 },
+                    { id: "h-7", title: "كب سعادة كرز", flavor: "حبات الكرز الطبيعية", desc: "كاب حلوى غني بطبقات الكيك الإسفنجي وموس الفانيليا الناعم المغطى بصوص حبات الكرز الواضح الطعم.", price: 61 },
+                    { id: "h-8", title: "كب سعادة كيت كات", flavor: "أصابع كيت كات شوكليت", desc: "طبقات متوازنة من كيك فادج الشوكولاتة وموس الشوكولاتة الغني ومزين بقطع الكيت كات المقرمشة.", price: 61 },
+                    { id: "h-9", title: "كب سعادة روشيه", flavor: "موس فيريرو روشيه فاخر", desc: "التوليفة الملكية الفاخرة لموس الشوكولاتة بالبندق وقطع الفيريرو روشيه الغنية عن التعريف.", price: 61 },
+                    { id: "h-10", title: "كب سعادة رفايلو", flavor: "كريمة رفايلو وجوز هند", desc: "كاب حلوى أبيض ناصع غني بموس الـ رفايلو وجوز الهند والمكسرات النظيفة الطازجة المريحة للنفس.", price: 61 },
+                    { id: "h-11", title: "كب سعادة كيندر", flavor: "شوكولاتة كيندر ناعمة", desc: "أكواب حلوى مصممة لتمنحك تجربة غنية بطبقات كيك الشوكولاتة وموس الكيندر الفاخر المحضر يوم بيوم.", price: 61 }
+                ],
+                "despacito": [
+                    { id: "des-t-1", title: "ديسباسيتو نوتيلا دارك (مثلث)", size: "triangle", flavor: "نوتيلا دارك غنية", desc: "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا وموس الشوكولاتة الفاخر بمقاس مثلث مريح.", price: 66 },
+                    { id: "des-t-2", title: "ديسباسيتو لوتس (مثلث)", size: "triangle", flavor: "لوتس بلجيكي مقرمش", desc: "كيك فادج الشوكولاتة الغني مغطى بطبقة موس الشوكولاتة وصوص اللوتس الأصلي اللذيذ بمقاس مثلث.", price: 66 },
+                    { id: "des-t-3", title: "ديسباسيتو بيستاشيو (مثلث)", size: "triangle", flavor: "فستق حلبي فاخر", desc: "توليفة مميزة وحصرية من كيك الفادج وموس بوسي الفاخر المغطى بصوص البيستاشيو بمقاس مثلث.", price: 83 },
+                    { id: "des-m-1", title: "ديسباسيتو نوتيلا دارك (وسط)", size: "medium", flavor: "نوتيلا دارك غنية", desc: "كيك فادج غني مغمور بالشوكولاتة يعلوه طبقة نوتيلا دارك وموس الشوكولاتة بمقاس وسط مثالي للضيافة.", price: 132 },
+                    { id: "des-m-2", title: "ديسباسيتو لوتس (وسط)", size: "medium", flavor: "لوتس بلجيكي مقرمش", desc: "طبقات متوازنة من كيك الفادج والموس الغني وصوص اللوتس المقرمش بمقاس وسط طازج يوم بيوم.", price: 132 },
+                    { id: "des-m-3", title: "ديسباسيتو بيستاشيو (وسط)", size: "medium", flavor: "فستق حلبي فاخر", desc: "كيك فادج الشوكولاتة مغطى بالكامل بطبقة من صوص الفستق الغني والمكسرات بمقاس وسط فاخر.", price: 165 },
+                    { id: "des-l-1", title: "ديسباسيتو نوتيلا دارك (كبير)", size: "large", flavor: "نوتيلا دارك غنية", desc: "الحجم العائلي الأكبر لطهي الفادج الغني والمغمور بموس الشوكولاتة وصوص النوتيلا الدارك الكثيف المميز.", price: 264 },
+                    { id: "des-l-2", title: "ديسباسيتو لوتس (كبير)", size: "large", flavor: "لوتس بلجيكي مقرمش", desc: "طاجن عائلي كبير يجمع بين كيك الفادج الغني وموس شوكولاتة بوسي وصوص اللوتس وبسكويت لوتس كامل.", price: 264 },
+                    { id: "des-l-3", title: "ديسباسيتو بيستاشيو (كبير)", size: "large", flavor: "فستق حلبي فاخر", desc: "الفخامة الكاملة في طاجن عائلي كبير مغطى بالكامل بصوص البيستاشيو الفاخر الغني بالمكسرات النظيفة.", price: 297 }
+                ],
+                "cakes": [
+                    { id: "cake-1", title: "تورتة مخصصة كلاسيك", flavor: "فانيليا وشوكولاتة ميكس", desc: "تورتة مصممة خصيصاً تعبر عن تفاصيل يومكم المميز بخامات طبيعية ممتازة ومضمونة تشرفك قدام ضيوفك.", price: 580 }
+                ],
+                "gateaux": [
+                    { id: "gat-1", title: "دستة جاتوه ملكي فاخر", flavor: "ميكس موسات وصوصات منوعة", desc: "طبقات متوازنة من كيك الفانيليا أو الشوكولاتة مع حشوات غنية من الموسات الفاخرة للضيافة الراقية والمناسبات.", price: 638 },
+                    { id: "gat-2", title: "دستة جاتوه كلاسيك متميز", flavor: "فانيليا وشوكولاتة كلاسيكية", desc: "تشكيلات جاتوه كلاسيكية متنوعة بخامات متوازنة وطعم واضح من أول قطعة لآخر قطعة تشرفك دائمًا.", price: 506 }
+                ],
+                "red-velvet": [
+                    { id: "red-1", title: "مثلث الريد ڤيلڤت الكبير", flavor: "كريم تشيز وراسبيري", desc: "كيك ريدڤيلڤت غني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز الكثيف اللذيذ المنعش.", price: 72 },
+                    { id: "red-2", title: "طاجن الريد ڤيلڤت العائلي", flavor: "كريم تشيز وراسبيري كثيف", desc: "الحجم العائلي الكبير والفاخر لطبقات الريدڤيلڤت المخملي وموس التشيز المتوازن والراسبيري الطازج.", price: 165 }
+                ],
+                "cupcake": [
+                    { id: "cup-1", title: "دستة كب كيك شوكولاتة (12 قطعة)", flavor: "شوكولاتة فادج غنية", desc: "قطع صغيرة من اللذة بنسبة زبدة مدروسة تمنحه قواماً ممتازاً ومزين بالكريمة اللباني الفاخرة.", price: 324 },
+                    { id: "cup-2", title: "دستة كب كيك فانيليا (12 قطعة)", flavor: "فانيليا فرنسية ناعمة", desc: "كب كيك مخبوز طازج يوم بيوم ومحشو بحشوات منوعة ومزين بطبقة غنية من الكريمة اللباني النظيفة.", price: 324 }
+                ],
+                "mini-cake": [
+                    { id: "mini-1", title: "ميني تورتة (فرد أو اتنين)", flavor: "فانيليا وشوكولاتة اختيارية", desc: "تورتة صغيرة غنية ومحشوة بموس وصوص ومكسرات، تُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات.", price: 154 },
+                    { id: "mini-2", title: "ميني تورتة (3 أو 4 أفراد)", flavor: "فانيليا وشوكولاتة اختيارية", desc: "المقاس الأوسط للميني تورت الأنيقة المحاطة بغلاف الفاكيوم الشفاف المذهل والمناسب جداً للهدايا الحقيقية.", price: 308 }
+                ],
+                "flowers": [
+                    { id: "flow-1", title: "بوكيه الورد الملكي المخصص", flavor: "ورد طبيعي / صناعي / ستان", desc: "تنسيق بوكيهات فاخرة بأعلى مستوى من العناية والاهتمام بالتفاصيل ليصل الورد بكامل نضارته وحضوره الأخاذ.", price: 400 }
+                ],
+                "relax-box": [
+                    { id: "relax-b1", title: "بوكس الروقان الكامل الفاخر", flavor: "تجميعة بوسي الأكثر مبيعاً", desc: "تجربة متكاملة تجمع تورتة، 2 كبات سعادة، 1 كاب ديسباسيتو، و 1 كاب ريد ڤيلڤت في بوكس واحد فاخر للهدايا والمفاجآت.", price: 550 }
+                ]
+            };
+
+            const productsData = databaseProductsRegistry[categoryId] || [];
+            const gridTarget = document.getElementById('category-products-cards-grid-target');
+            
+            const isFourSpecialCategories = ["qashtota", "donuts", "cinnabon", "happiness-cups"].includes(categoryId);
+            
+            if (gridTarget) {
+                if (isFourSpecialCategories) {
+                    gridTarget.className = "two-columns-static-grid";
+                } else {
+                    gridTarget.className = "two-columns-static-grid";
+                    if (window.innerWidth >= 768) {
+                        gridTarget.style.gridTemplateColumns = "1fr";
+                    }
+                }
+            }
+
+            const activeQuantitiesRegistry = {};
+
+            function renderCategoryProducts(filteredItems) {
+                if (!gridTarget) return;
+                gridTarget.innerHTML = '';
+                
+                if (filteredItems.length === 0) {
+                    gridTarget.innerHTML = `<p class="section-rich-description" style="grid-column: 1/-1; text-align: center; padding: 40px 0;">لا توجد منتجات متوفرة حالياً في هذا القسم.</p>`;
+                    return;
+                }
+
+                filteredItems.forEach(product => {
+                    if (activeQuantitiesRegistry[product.id] === undefined) {
+                        activeQuantitiesRegistry[product.id] = 1;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'bs-product-card';
+                    card.setAttribute('data-id', product.id);
+                    
+                    card.innerHTML = `
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="card-image-box" alt="${product.title}" loading="lazy" onclick="location.href='product.html?id=${product.id}'">
+                        <h3 class="card-title-text" onclick="location.href='product.html?id=${product.id}'">${product.title}</h3>
+                        <div class="card-flavor-text">${product.flavor}</div>
+                        <p class="card-desc-paragraph">${product.desc}</p>
+                        <div class="card-meta-action-row">
+                            <div class="card-controls-block">
+                                <div class="card-price-and-counter-zone">
+                                    <div class="card-quantity-selector">
+                                        <button class="selector-action-btn counter-plus-trigger" data-id="${product.id}">+</button>
+                                        <span class="selector-value-display" id="qty-node-${product.id}">${activeQuantitiesRegistry[product.id]}</span>
+                                        <button class="selector-action-btn counter-minus-trigger" data-id="${product.id}">-</button>
+                                    </div>
+                                    <div class="card-price-display-text" id="price-display-${product.id}">${product.price} EGP</div>
+                                </div>
+                                <button class="card-add-to-cart-action-btn add-to-cart-trigger" data-id="${product.id}">إضافة للسلة</button>
+                            </div>
+                        </div>
+                    `;
+                    gridTarget.appendChild(card);
+                });
+
+                bindDynamicCardEvents(filteredItems);
+            }
+
+            function bindDynamicCardEvents(itemsList) {
+                gridTarget.querySelectorAll('.counter-plus-trigger').forEach(btn => {
+                    btn.onclick = function (e) {
+                        e.stopPropagation();
+                        const id = this.getAttribute('data-id');
+                        const item = itemsList.find(i => i.id === id);
+                        activeQuantitiesRegistry[id]++;
+                        document.getElementById(`qty-node-${id}`).innerText = activeQuantitiesRegistry[id];
+                        document.getElementById(`price-display-${id}`).innerText = `${item.price * activeQuantitiesRegistry[id]} EGP`;
+                    };
+                });
+
+                gridTarget.querySelectorAll('.counter-minus-trigger').forEach(btn => {
+                    btn.onclick = function (e) {
+                        e.stopPropagation();
+                        const id = this.getAttribute('data-id');
+                        const item = itemsList.find(i => i.id === id);
+                        if (activeQuantitiesRegistry[id] > 1) {
+                            activeQuantitiesRegistry[id]--;
+                            document.getElementById(`qty-node-${id}`).innerText = activeQuantitiesRegistry[id];
+                            document.getElementById(`price-display-${id}`).innerText = `${item.price * activeQuantitiesRegistry[id]} EGP`;
+                        }
+                    };
+                });
+
+                gridTarget.querySelectorAll('.add-to-cart-trigger').forEach(btn => {
+                    btn.onclick = function (e) {
+                        e.stopPropagation();
+                        alert("تمت إضافة المنتج إلى السلة.");
+                    };
+                });
+            }
+
+            if (categoryId === 'despacito') {
+                const tabsBar = document.getElementById('category-dynamic-tabs-filter-navigation-bar');
+                if (tabsBar) {
+                    tabsBar.style.display = 'flex';
+                    tabsBar.innerHTML = `
+                        <button class="filter-tab-action-trigger-node active-tab-node" data-size="triangle">مثلث</button>
+                        <button class="filter-tab-action-trigger-node" data-size="medium">وسط</button>
+                        <button class="filter-tab-action-trigger-node" data-size="large">كبير</button>
+                    `;
+                    
+                    tabsBar.querySelectorAll('.filter-tab-action-trigger-node').forEach(tab => {
+                        tab.onclick = function () {
+                            tabsBar.querySelectorAll('.filter-tab-action-trigger-node').forEach(t => t.classList.remove('active-tab-node'));
+                            this.classList.add('active-tab-node');
+                            const selectedSize = this.getAttribute('data-size');
+                            const filtered = productsData.filter(p => p.size === selectedSize);
+                            renderCategoryProducts(filtered);
+                        };
+                    });
+                }
+                const initialFiltered = productsData.filter(p => p.size === 'triangle');
+                renderCategoryProducts(initialFiltered);
+            } else {
+                renderCategoryProducts(productsData);
+            }
+
+            const staticReviewsDatabase = [
+                { name: "أحمد مجدي", text: "الخامات طعمها طبيعي 100% ومشبعة بالكريمة اللباني الفاخرة، جودة حقيقية تشرف بجد وسعرها ممتاز مقارنة بالطعم النظيف الأصلي." },
+                { name: "سارة علي", text: "الميني تورت المغلفة بالفاكيوم فكرة عبقرية حافظت على جمال الكيك والحشوة لغاية ما وصلت، شكلها راقٍ جداً وطعمها يفتح النفس." },
+                { name: "محمود الكفاح", text: "سينابون القرفة المخبوز طازج يوم بيوم طري جداً والصوصات متوازنة ومن غير أي مبالغة، لسه حلاوتها في بوقي من يوم ما دوقتها بجد." }
+            ];
+
+            const reviewsTarget = document.getElementById('category-dynamic-reviews-cards-target');
+            if (reviewsTarget) {
+                reviewsTarget.innerHTML = '';
+                staticReviewsDatabase.forEach(rev => {
+                    const revCard = document.createElement('div');
+                    revCard.className = 'review-testimonial-node-card';
+                    revCard.innerHTML = `
+                        <div class="review-user-info-row">
+                            <span class="review-user-name-text">${rev.name}</span>
+                            <div class="review-gold-stars-box">
+                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                            </div>
+                        </div>
+                        <div class="review-verified-badge-row">
+                            <i class="fa-solid fa-circle-check"></i> عميل مؤكد الشراء
+                        </div>
+                        <p class="review-body-text-paragraph">"${rev.text}"</p>
+                    `;
+                    reviewsTarget.appendChild(revCard);
+                });
+            }
+
+            const globalCategoriesArray = [
+                { id: "cakes", name: "التورت", price: 580 },
+                { id: "gateaux", name: "الجاتوهات", price: 506 },
+                { id: "qashtota", name: "القشطوطة", price: 121 },
+                { id: "despacito", name: "الديسباسيتو", price: 66 },
+                { id: "cinnabon", name: "السينابون", price: 121 },
+                { id: "donuts", name: "الدوناتس", price: 88 },
+                { id: "red-velvet", name: "الريدڤيلڤت", price: 72 },
+                { id: "cupcake", name: "الكب كيك", price: 324 },
+                { id: "mini-cake", name: "الميني تورت", price: 154 },
+                { id: "flowers", name: "الورد", price: 400 },
+                { id: "happiness-cups", name: "كبات السعادة", price: 61 },
+                { id: "relax-box", name: "بوكس الروقان", price: 550 }
+            ];
+
+            const recsTarget = document.getElementById('category-dynamic-recommendations-slider-target');
+            if (recsTarget) {
+                recsTarget.innerHTML = '';
+                const itemsToRecommend = globalCategoriesArray.filter(c => c.id !== categoryId).slice(0, 5);
+                
+                itemsToRecommend.forEach(item => {
+                    const recCard = document.createElement('div');
+                    recCard.className = 'recommendation-item-simple-card';
+                    recCard.onclick = function () {
+                        location.href = `category.html?id=${item.id}`;
+                    };
+                    recCard.innerHTML = `
+                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="rec-card-native-img" alt="${item.name}">
+                        <h4 class="rec-card-title-heading">${item.name} الفاخرة</h4>
+                        <div class="rec-card-price-tag-text">تبدأ من ${item.price} EGP</div>
+                    `;
+                    recsTarget.appendChild(recCard);
+                });
+            }
+
+            const sidebarToggle = document.getElementById('global-sidebar-toggle-trigger');
+            if (sidebarToggle && window.BoseSweets && window.BoseSweets.Core) {
+                sidebarToggle.onclick = function (e) {
+                    e.preventDefault();
+                    const drawer = document.getElementById('sidebar-drawer-overlay');
+                    if (drawer) drawer.classList.add('active-drawer');
+                };
+            }
+        })();
+    </script>
 </body>
 </html>
