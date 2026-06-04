@@ -1,0 +1,58 @@
+{
+  "system": {
+    "brandNameArabic": "حلويات بوسي",
+    "brandNameEnglish": "BoseSweets",
+    "version": "3.0.0",
+    "currency": "EGP",
+    "defaultLanguage": "ar"
+  },
+  "categories": [
+    { "id": "despacito", "slug": "despacito", "name": { "ar": "ديسباسيتو", "en": "Despacito" } },
+    { "id": "qashtouta", "slug": "qashtouta", "name": { "ar": "قشطوطة", "en": "Qashtouta" } },
+    { "id": "donuts", "slug": "donuts", "name": { "ar": "دوناتس", "en": "Donuts" } },
+    { "id": "cinnabon", "slug": "cinnabon", "name": { "ar": "سينابون", "en": "Cinnabon" } },
+    { "id": "flowers", "slug": "flowers", "name": { "ar": "زهور", "en": "Flowers" } },
+    { "id": "happiness-cups", "slug": "happiness-cups", "name": { "ar": "كاسات السعادة", "en": "Happiness Cups" } },
+    { "id": "chill-box", "slug": "chill-box", "name": { "ar": "تشيل بوكس", "en": "Chill Box" } },
+    { "id": "cupcakes", "slug": "cupcakes", "name": { "ar": "كب كيك", "en": "Cupcakes" } },
+    { "id": "cakes", "slug": "cakes", "name": { "ar": "تورتات", "en": "Cakes" } },
+    { "id": "gateaux", "slug": "gateaux", "name": { "ar": "جاتوه", "en": "Gateaux" } },
+    { "id": "mini-cakes", "slug": "mini-cakes", "name": { "ar": "ميني كيك", "en": "Mini Cakes" } },
+    { "id": "red-velvet", "slug": "red-velvet", "name": { "ar": "ريد فيلفيت", "en": "Red Velvet" } }
+  ],
+  "orderStatuses": [
+    "new",
+    "contacted",
+    "confirmed",
+    "preparing",
+    "ready",
+    "delivered",
+    "cancelled"
+  ],
+  "reviewStatuses": [
+    "pending",
+    "approved",
+    "rejected",
+    "featured"
+  ],
+  "contentStatuses": [
+    "draft",
+    "published",
+    "hidden",
+    "archived"
+  ],
+  "validationRules": {
+    "customerNameMinLength": 3,
+    "phonePattern": "^01[0125][0-9]{8}$",
+    "cakeBuilder": {
+      "minPersons": 2,
+      "maxPersons": 50,
+      "leadTimeHours": 24
+    },
+    "flowerBuilder": {
+      "minFlowers": 5,
+      "maxFlowers": 100,
+      "leadTimeHours": 24
+    }
+  }
+}
