@@ -13,11 +13,6 @@
     <meta property="og:title" content="تصفح منيو الفئات الشامل | حلويات بوسي">
     <meta property="og:description" content="اكتشف تشكيلاتنا الفاخرة المجهزة بخامات طبيعية 100%، وتوجّه مباشرة إلى قسمك المفضل براحة بصرية كاملة.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://bosesweets.com/menu.html">
-    <meta property="twitter:title" content="تصفح منيو الفئات الشامل | حلويات بوسي">
-    <meta property="twitter:description" content="اكتشف تشكيلاتنا الفاخرة المجهزة بخامات طبيعية 100%، وتوجّه مباشرة إلى قسمك المفضل براحة بصرية كاملة.">
-    <meta property="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     <meta name="theme-color" content="#FF91A4">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,7 +43,7 @@
             overflow-x: hidden;
         }
         .header-container {
-            position: absolute;
+            position: fixed;
             top: 40px;
             right: 0;
             left: 0;
@@ -81,6 +76,7 @@
         .brand-name {
             font-size: 22px;
             font-weight: 700;
+            color: var(--primary-pink);
         }
         .header-actions {
             display: flex;
@@ -100,7 +96,7 @@
             top: -8px;
             right: -8px;
             background-color: var(--primary-pink);
-            color: var(--deep-black);
+            color: var(--pure-white);
             font-size: 11px;
             font-weight: 700;
             width: 18px;
@@ -111,7 +107,7 @@
             justify-content: center;
         }
         main {
-            margin-top: 130px;
+            margin-top: 140px;
             flex: 1;
             padding: 40px 20px;
             max-width: 1200px;
@@ -146,7 +142,7 @@
         .category-card {
             background-color: var(--pure-white);
             border: 1px solid var(--primary-pink);
-            border-radius: 0px;
+            border-radius: 20px;
             overflow: hidden;
             text-decoration: none;
             color: var(--deep-black);
@@ -429,48 +425,6 @@
         </div>
     </footer>
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Bakery",
-      "name": "حلويات بوسي - BoseSweets",
-      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-      "@id": "https://bosesweets.com/#bakery",
-      "url": "https://bosesweets.com/",
-      "telephone": "01097238441",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي",
-        "addressLocality": "الفرافرة",
-        "addressRegion": "الوادي الجديد",
-        "addressCountry": "EG"
-      },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-          "Sunday"
-        ],
-        "opens": "10:00",
-        "closes": "23:00"
-      },
-      "sameAs": [
-        "https://www.facebook.com/share/1H1vVMHyu9/",
-        "https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy",
-        "https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK"
-      ]
-    }
-    </script>
-
-    <script src="src/core/bootstrap.js"></script>
-    <script src="src/integrations/firestore-service.js"></script>
-    <script src="src/engines/category-engine.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const menuToggleBtn = document.getElementById('menuToggleBtn');
@@ -481,18 +435,18 @@
             const categoriesGrid = document.getElementById('categoriesGrid');
 
             const fallbackCategories = [
-                { id: "despacito", name: "ديسباسيتو", desc: "قوالب غنية بصوصات الشوكولاتة الفاخرة والكيك الهش لتجربة تذوب في الفم.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=despacito" },
-                { id: "qashtouta", name: "قشطوطة", desc: "كيك الحليب التركي التقليدي الغني بالكريمة الطازجة والإضافات المميزة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=qashtouta" },
-                { id: "donuts", name: "دوناتس", desc: "عجينة هشة وخفيفة محضرة يومياً ومغطاة بأجود أنواع الشوكولاتة والتزيين المبتكر.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=donuts" },
-                { id: "cinnabon", name: "سينابون", desc: "لفائف القرفة الدافئة المخبوزة بعناية مع الصوص الأبيض الغني والمكسرات النيئة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=cinnabon" },
-                { id: "flower-builder", name: "ورد", desc: "محاكي تنسيق البوكيهات الفاخرة من الورد الطبيعي والصناعي والستان مع خيارات الهدايا والصور.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "flower-builder.html" },
-                { id: "happiness-cups", name: "كابات السعادة", desc: "طبقات متناغمة من الكيك والصوصات الفاخرة تم تنسيقها في كابات فردية مبهجة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=happiness-cups" },
-                { id: "chill-box", name: "بوكس الروقان", desc: "صندوق تجميعات الحلويات المتنوعة والباردة المصمم للمشاركة في اللقاءات العائلية.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=chill-box" },
-                { id: "cupcakes", name: "كب كيك", desc: "قطع الكب كيك الصغيرة المخبوزة بدقة مع لمسات مبتكرة من الكريمة والتزيين الراقي.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=cupcakes" },
-                { id: "cake-builder", name: "تورت", desc: "محاكي التورت الحصري لتخصيص الحجم والمقاس وعدد الأفراد بدقة هندسية كاملة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "cake-builder.html" },
-                { id: "gateaux", name: "جاتوه", desc: "قطع الجاتوه الكلاسيكية والحديثة المعدة بقطع متساوية وطبقات متوازنة النكهة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=gateaux" },
-                { id: "mini-cakes", name: "ميني تورت", desc: "التورت الدائرية المصغرة والمغلفة بالفاكيوم الشفاف للحفاظ على طراوتها وجمالها الطبيعي.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "mini-cakes.html" },
-                { id: "red-velvet", name: "ريد فيلفت", desc: "الكيك المخملي الأحمر الشهير الغني بطبقات كريمة الجبن الفاخرة والمتوازنة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=red-velvet" }
+                { id: "cakes", name: "التورت", desc: "التورت عندنا مش مجرد حلوى للمناسبة، قطعة مصممة خصيصاً لصاحب المناسبة تعبر عن قصته وشخصيته.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=cakes" },
+                { id: "gateaux", name: "الجاتوهات", desc: "الجاتوهات عندنا عبارة عن طبقات متوازنة من كيك الفانيليا أو الشوكولاتة مع حشوات غنية.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=gateaux" },
+                { id: "qashtota", name: "القشطوطة", desc: "كيك فانيليا مشرب بالحليب يعلوه طبقة ناعمة من الكريمة اللباني الغنية بتوليفتنا الخاصة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=qashtota" },
+                { id: "despacito", name: "الديسباسيتو", desc: "قوالب غنية بصوصات الشوكولاتة الفاخرة والكيك الفادج لتجربة تذوب في الفم تماماً.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=despacito" },
+                { id: "cinabon", name: "السينابون", desc: "عجينة طرية محشوة بالزبدة والقرفة والسكر تُخبز بعناية وتُغطى بطبقة من صوص التشيز.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=cinabon" },
+                { id: "donuts", name: "الدوناتس", desc: "عجينة هشة وطرية يتم قليها بعناية وتزين بالتوبنج المختار من الخارج لتقديم تجربة مثالية.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=donuts" },
+                { id: "red-velvet", name: "الريدڤيلڤت", desc: "طبقات من الريدڤيلڤت الغني بقوامه الناعم ولونه المميز مع موس التشيز الفاخر.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=red-velvet" },
+                { id: "cupcake", name: "الكب كيك", desc: "قطع صغيرة من اللذة بطابع غني ومميز يتم تحضير الكيك بنسبة زبدة مدروسة مع الكريمة.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=cupcake" },
+                { id: "mini-cake", name: "الميني تورت", desc: "التورت الدائرية المصغرة والمغلفة بالفاكيوم الشفاف للحفاظ على طراوتها وجمالها الطبيعي.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=mini-cake" },
+                { id: "flowers", name: "الورد", desc: "بوكيهات الورد الطبيعي والصناعي وورد الستان بأعلى مستوى من العناية والاهتمام بالتفاصيل.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "flower-builder.html" },
+                { id: "happiness-cups", name: "كبات السعادة", desc: "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة بطبقات الكيك والموس الفاخر.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=happiness-cups" },
+                { id: "relax-box", name: "بوكس الروقان", desc: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد فاخر ومميز.", img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", url: "category.html?type=relax-box" }
             ];
 
             function toggleSideMenu(open) {
@@ -525,7 +479,7 @@
                 categoriesGrid.innerHTML = '';
                 categoriesData.forEach(cat => {
                     const card = document.createElement('a');
-                    card.href = cat.url || `category.html?type=${cat.id}`;
+                    card.href = cat.url;
                     card.className = 'category-card';
                     card.setAttribute('data-category-id', cat.id);
                     card.innerHTML = `
@@ -535,7 +489,7 @@
                         <div class="category-info">
                             <h2 class="category-title">${cat.name}</h2>
                             <p class="category-desc">${cat.desc}</p>
-                            <span class="category-action">تصفح المنيو <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+                            <span class="category-action">استعرض المنتجات <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
                         </div>
                     `;
                     categoriesGrid.appendChild(card);
@@ -544,17 +498,9 @@
 
             async function loadMenuData() {
                 renderCategories(fallbackCategories);
-                
                 try {
-                    const fetchWithTimeout = (promise, ms) => {
-                        return new Promise((resolve, reject) => {
-                            const timer = setTimeout(() => reject(new Error('timeout')), ms);
-                            promise.then(res => { clearTimeout(timer); resolve(res); }, err => { clearTimeout(timer); reject(err); });
-                        });
-                    };
-
                     if (window.BoseSweets && window.BoseSweets.Engines && window.BoseSweets.Engines.CategoryEngine) {
-                        const liveCategories = await fetchWithTimeout(window.BoseSweets.Engines.CategoryEngine.getCategories(), 3500);
+                        const liveCategories = await window.BoseSweets.Engines.CategoryEngine.getCategories();
                         if (liveCategories && liveCategories.length > 0) {
                             const mappedCategories = liveCategories.map(cat => ({
                                 id: cat.id,

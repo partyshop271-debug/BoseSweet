@@ -25,9 +25,13 @@ html, body {
 }
 
 h1, h2, h3, h4 {
-    font-weight: 700;
+    font-weight: 700 !important;
     color: var(--black-text-only);
 }
+
+h1 { font-size: 26px; }
+h2 { font-size: 22px; }
+h3 { font-size: 18px; }
 
 .section-meta-header {
     text-align: center;
@@ -323,6 +327,9 @@ h1, h2, h3, h4 {
     margin: 10px 0 2px 0;
     text-align: right;
     cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .card-title-text:hover {
@@ -343,6 +350,10 @@ h1, h2, h3, h4 {
     line-height: 1.5;
     margin-bottom: 12px;
     text-align: justify;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .card-meta-action-row {
@@ -566,7 +577,7 @@ h1, h2, h3, h4 {
     overflow: hidden;
     border: 1px solid var(--pink-soft-border);
     box-shadow: 0 6px 24px var(--pink-box-shadow);
-    background-color: #000000;
+    background-color: var(--white-background);
 }
 
 .pride-brand-native-video {
@@ -796,8 +807,8 @@ h1, h2, h3, h4 {
     .slider-full-img { height: 380px; }
     .pride-video-container-box { height: 380px; }
     .horizontal-scroll-slider-viewport .bs-product-card { width: 380px; }
-    .adv-builder-grid-wrapper { grid-template-columns: repeat(2, 1fr); }
-    .adv-builder-panel-card { padding: 32px; height: 100%; }
+    .adv-builder-panel-card { padding: 32px; flex-direction: row; }
+    .adv-builder-text-block { text-align: right; align-items: flex-start; }
     .counters-visual-row-grid { grid-template-columns: repeat(3, 1fr); }
     .footer-layout-columns-wrapper { grid-template-columns: repeat(2, 1fr); display: grid; }
     .bs-category-large-card { width: 340px; height: 430px; }
