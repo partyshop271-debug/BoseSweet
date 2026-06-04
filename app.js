@@ -7,30 +7,30 @@
             categories: [
                 { id: "cakes", name: "التورت" },
                 { id: "gateaux", name: "الجاتوهات" },
-                { id: "qashtota", name: "القشطوطة" },
+                { id: "qashtouta", name: "القشطوطة" },
                 { id: "despacito", name: "الديسباسيتو" },
-                { id: "cinabon", name: "السينابون" },
+                { id: "cinnabon", name: "السينابون" },
                 { id: "donuts", name: "الدوناتس" },
                 { id: "red-velvet", name: "الريدڤيلڤت" },
                 { id: "cupcake", name: "الكب كيك" },
                 { id: "mini-cake", name: "الميني تورت" },
                 { id: "flowers", name: "الورد" },
                 { id: "happiness-cups", name: "كبات السعادة" },
-                { id: "relax-box", name: "بوكس الروقان" }
+                { id: "chill-box", name: "بوكس الروقان" }
             ],
             products: [
                 { id: "despacito", title: "الديسباسيتو", flavor: "نوتيلا دارك", description: "طبقات متوازنة من الكيك الفادج والموس الغني مع حشوات واضحة الطعم وقوام مريح من أول لقمة لآخر قطعة معمول بخامات مختارة بعناية.", price: 264, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "new-arrival", "our-products"] },
-                { id: "qashtota", title: "القشطوطة", flavor: "بيستاشيو", description: "كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح من أول لقمة مناسب للضيافة اليومية ولأي وقت بجودة حقيقية.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "our-products"] },
+                { id: "qashtouta", title: "القشطوطة", flavor: "بيستاشيو", description: "كيك هش بطبقات ناعمة وحشوات متوازنة معمول بخامات طبيعية وطعم واضح من أول لقمة مناسب للضيافة اليومية ولأي وقت بجودة حقيقية.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "our-products"] },
                 { id: "donuts", title: "الدوناتس", flavor: "ماتيلدا شوكولاتة", description: "دوناتس طازجة بقوام خفيف وحشوات متنوعة معمولين يوم بيوم علشان يوصلك نفس الطعم والجودة اللي بنقدمها داخل الفرع.", price: 110, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
-                { id: "cinabon", title: "السينابون", flavor: "كلاسيك صوص تشيز", description: "لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة معمول علشان تاخد تجربة واضحة في الطعم والجودة.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "our-products"] },
+                { id: "cinnabon", title: "السينابون", flavor: "كلاسيك صوص تشيز", description: "لفات سينابون مخبوزة بقوام طري وصوصات غنية متوازنة من غير مبالغة معمول علشان تاخد تجربة واضحة في الطعم والجودة.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "our-products"] },
                 { id: "gateaux", title: "الجاتوهات الكلاسيك", flavor: "فانيليا وشوكولاتة منوعة", description: "تشكيلات جاتوه متنوعة بخامات متوازنة وطعم واضح مناسب للضيافة اليومية والمناسبات السعيدة.", price: 506, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
-                { id: "cinabon-pistachio", title: "سينابون بيستاشيو", flavor: "صوص فستق فاخر", description: "لفات سينابون مخبوزة بقوام طري مغطاة بصوص البيستاشيو الغني والمميز طازج يوم بيوم.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
+                { id: "cinnabon-pistachio", title: "سينابون بيستاشيو", flavor: "صوص فستق فاخر", description: "لفات سينابون مخبوزة بقوام طري مغطاة بصوص البيستاشيو الغني والمميز طازج يوم بيوم.", price: 143, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
                 { id: "mini-cake", title: "الميني تورت", flavor: "فرد أو اتنين فانيليا وشوكولاتة", description: "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق وتُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها.", price: 154, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["best-seller", "new-arrival", "our-products"] },
                 { id: "red-velvet", title: "مثلث الريدڤيلڤت", flavor: "كريم تشيز غني", description: "طبقات من الريدڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز الفاخر.", price: 72, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["new-arrival", "our-products"] },
                 { id: "happiness-cups", title: "كبات السعادة", flavor: "لوتس غني", description: "أكواب متنوعة بحشوات غنية وطعم متوازن مناسب للتقديم الفردي أو الهدايا البسيطة اللي فيها قيمة واضحة ونظيفة.", price: 61, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
-                { id: "relax-box", title: "بوكس الروقان", flavor: "تجميعة منوعة متسقة", description: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد يحتوي على تورتة و 2 كب سعادة و 1 كب ديسباسيتو و 1 كب ريدفيلفت.", price: 550, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
+                { id: "chill-box", title: "بوكس الروقان", flavor: "تجميعة منوعة متسقة", description: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد يحتوي على تورتة و 2 كب سعادة و 1 كب ديسباسيتو و 1 كب ريدفيلفت.", price: 550, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
                 { id: "cupcake", title: "الكب كيك", flavor: "دستة كب كيك شوكولاتة", description: "قطع صغيرة من اللذة بطابع غني ومميز يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً ومزين بالكريمة اللباني الفاخرة.", price: 324, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] },
-                { id: "qashtota-nutella", title: "القشطوطة نوتيلا", flavor: "نوتيلا وايت", description: "كيك فانيليا مشرب بالحليب يعلوه طبقة ناعمة من الكريمة اللباني الغنية مع صوص النوتيلا البيضاء الفاخرة بطعم متوازن.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] }
+                { id: "qashtouta-nutella", title: "القشطوطة نوتيلا", flavor: "نوتيلا وايت", description: "كيك فانيليا مشرب بالحليب يعلوه طبقة ناعمة من الكريمة اللباني الغنية مع صوص النوتيلا البيضاء الفاخرة بطعم متوازن.", price: 121, image: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png", tags: ["our-products"] }
             ]
         },
         Runtime: {
@@ -53,6 +53,7 @@
         Core.startCraftsmanshipSlider();
         Core.bindScrollEvents();
         Core.updateCartBadgeGlobal();
+        Core.injectToastContainer();
     };
 
     Core.escapeHTML = function (str) {
@@ -66,6 +67,61 @@
                 case "'": return '&#039;';
             }
         });
+    };
+
+    Core.injectToastContainer = function () {
+        if (document.getElementById('bs-toast-container')) return;
+        const container = document.createElement('div');
+        container.id = 'bs-toast-container';
+        container.style.position = 'fixed';
+        container.style.bottom = '20px';
+        container.style.left = '50%';
+        container.style.transform = 'translateX(-50%)';
+        container.style.zIndex = '9999';
+        container.style.display = 'flex';
+        container.style.flexDirection = 'column';
+        container.style.gap = '10px';
+        container.style.width = 'calc(100% - 40px)';
+        container.style.maxWidth = '350px';
+        document.body.appendChild(container);
+    };
+
+    Core.showToast = function (message) {
+        Core.injectToastContainer();
+        const container = document.getElementById('bs-toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'bs-toast-notification';
+        toast.style.backgroundColor = '#FFFFFF';
+        toast.style.color = '#111111';
+        toast.style.border = '1px solid #FF91A4';
+        toast.style.boxShadow = '0 4px 14px rgba(255, 145, 164, 0.15)';
+        toast.style.padding = '12px 20px';
+        toast.style.borderRadius = '20px';
+        toast.style.fontSize = '14px';
+        toast.style.fontWeight = '700';
+        toast.style.textAlign = 'center';
+        toast.style.direction = 'rtl';
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        toast.style.transform = 'translateY(20px)';
+        toast.textContent = message;
+
+        container.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateY(0)';
+        }, 50);
+
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 2500);
     };
 
     Core.updateCartBadgeGlobal = function () {
@@ -379,9 +435,9 @@
             }
             localStorage.setItem('bose_cart', JSON.stringify(cart));
             Core.updateCartBadgeGlobal();
-            alert("تمت إضافة المنتج إلى السلة.");
+            Core.showToast("تمت إضافة المنتج إلى السلة.");
         } catch (e) {
-            alert("تمت إضافة المنتج إلى السلة.");
+            Core.showToast("تمت إضافة المنتج إلى السلة.");
         }
     };
 

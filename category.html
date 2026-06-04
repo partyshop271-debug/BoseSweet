@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>تصفح الفئات الفاخرة | حلويات بوسي</title>
-    <meta name="description" content="استعرض نكهات وتشكيلات حلويات بوسي الفاخرة المجهزة بخامات طبيعية 100% في الفرافرة والوادي الجديد واطلبها مباشرة إلى باب منزلك.">
+    <meta name="description" content=\"استعرض نكهات وتشكيلات حلويات بوسي الفاخرة المجهزة بخامات طبيعية 100% في الفرافرة والوادي الجديد واطلبها مباشرة إلى باب منزلك.\">
     <meta name="keywords" content="حلويات بوسي, ديسباسيتو, قشطوطة, سينابون, دوناتس, تورت الفرافرة">
     <meta name="author" content="BoseSweets">
     <meta name="robots" content="index, follow">
@@ -15,536 +15,102 @@
     <meta property="og:title" content="تصفح الفئات الفاخرة | حلويات بوسي">
     <meta property="og:description" content="استعرض نكهات وتشكيلات حلويات بوسي الفاخرة المجهزة بخامات طبيعية 100% في الفرافرة والوادي الجديد.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://bosesweets.com/category.html">
-    <meta property="twitter:title" content="تصفح الفئات الفاخرة | حلويات بوسي">
-    <meta property="twitter:description" content="استعرض نكهات وتشكيلات حلويات بوسي الفاخرة المجهزة بخامات طبيعية 100% في الفرافرة والوادي الجديد.">
-    <meta property="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-
-    <meta name="theme-color" content="#FF91A4">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="canonical" href="https://bosesweets.com/category.html">
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .header-container {
-            position: absolute !important;
-            top: 40px;
-            right: 0;
-            left: 0;
-        }
-        main {
-            margin-top: 130px;
-            min-height: 60vh;
-        }
-        .category-header-banner {
-            text-align: center;
-            padding: 40px 16px 20px 16px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .category-page-title {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            color: #111111;
-        }
-        .category-hero-media-frame {
-            width: 100%;
-            max-width: 1200px;
-            height: 300px;
-            margin: 20px auto;
-            overflow: hidden;
-            border: 1px solid rgba(255, 145, 164, 0.3);
-            box-shadow: 0 4px 14px rgba(255, 145, 164, 0.1);
-        }
-        .category-hero-native-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .category-page-desc {
-            font-size: 15px;
-            color: #111111 !important;
-            line-height: 1.7;
-            text-align: justify;
-            max-width: 900px;
-            margin: 20px auto 0 auto;
-            padding: 0 16px;
-        }
-        .tabs-nav-container {
-            display: none;
-            justify-content: center;
-            gap: 12px;
-            margin: 24px auto;
-            padding: 0 16px;
-            flex-wrap: wrap;
-            max-width: 600px;
-        }
-        .tab-trigger-btn {
-            background-color: #FFFFFF;
-            color: #111111;
-            border: 1px solid #FF91A4;
-            padding: 10px 24px;
-            font-size: 14px;
-            font-weight: 700;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .tab-trigger-btn.active-tab {
-            background-color: #FF91A4;
-            color: #FFFFFF;
-            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.2);
-        }
-        .catalog-dynamic-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            padding: 16px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .card-price-and-counter-zone {
-            flex-direction: column !important;
-            align-items: center !important;
-            gap: 8px !important;
-            width: 100% !important;
-        }
-        .card-price-display-text {
-            order: 2 !important;
-            margin-top: 4px;
-        }
-        .card-quantity-selector {
-            order: 1 !important;
-        }
-        .side-menu {
-            position: fixed;
-            top: 0;
-            right: -320px;
-            width: 320px;
-            height: 100vh;
-            background-color: #FFFFFF;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.05);
-            z-index: 2000;
-            transition: right 0.3s ease;
-            padding: 30px 20px;
-            display: flex;
-            flex-direction: column;
-        }
-        .side-menu.active {
-            right: 0;
-        }
-        .side-menu-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 40px;
-        }
-        .side-menu-title {
-            font-size: 20px;
-            font-weight: 700;
-        }
-        .close-menu {
-            background: none;
-            border: none;
-            cursor: pointer;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .close-menu svg {
-            width: 24px;
-            height: 24px;
-            stroke: #111111;
-            stroke-width: 2;
-        }
-        .side-menu-links {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .side-link {
-            text-decoration: none;
-            color: #111111;
-            font-size: 16px;
-            font-weight: 600;
-            padding: 10px 5px;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
-            transition: color 0.2s ease;
-        }
-        .side-link:hover {
-            color: #FF91A4;
-        }
-        .menu-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0,0,0,0.3);
-            z-index: 1500;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .menu-overlay.active {
-            display: block;
-            opacity: 1;
-        }
-        .card-flavor-description-text {
-            font-size: 11px;
-            color: #111111 !important;
-            line-height: 1.4;
-            margin-bottom: 8px;
-            text-align: right;
-            font-weight: 600;
-        }
-        .reviews-luxury-section {
-            background-color: #FFF5F6;
-            padding: 60px 16px;
-            border-top: 1px solid rgba(255, 145, 164, 0.3);
-            border-bottom: 1px solid rgba(255, 145, 164, 0.3);
-            margin-top: 48px;
-        }
-        .reviews-inner-block {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        .reviews-split-layout {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 40px;
-            margin-top: 32px;
-        }
-        .reviews-form-panel {
-            background-color: #FFFFFF;
-            border: 1px solid #FF91A4;
-            padding: 24px;
-            box-shadow: 0 4px 14px rgba(255, 145, 164, 0.08);
-        }
-        .reviews-form-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: #111111;
-        }
-        .review-input-row {
-            margin-bottom: 16px;
-        }
-        .review-input-native {
-            width: 100%;
-            border: 1px solid rgba(255, 145, 164, 0.4);
-            padding: 12px;
-            font-size: 14px;
-            outline: none;
-            background-color: #FFFFFF;
-            color: #111111;
-        }
-        .review-input-native:focus {
-            border-color: #FF91A4;
-        }
-        .review-textarea-native {
-            height: 100px;
-            resize: none;
-        }
-        .review-rating-stars-zone {
-            display: flex;
-            gap: 6px;
-            margin: 10px 0;
-            flex-direction: row-reverse;
-            justify-content: flex-end;
-        }
-        .review-star-input-node {
-            font-size: 22px;
-            color: rgba(255, 145, 164, 0.3);
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-        .review-star-input-node:hover,
-        .review-star-input-node:hover ~ .review-star-input-node,
-        .review-star-input-node.selected-star,
-        .review-star-input-node.selected-star ~ .review-star-input-node {
-            color: #D4AF37;
-        }
-        .file-upload-custom-label {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px dashed #FF91A4;
-            padding: 10px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            background-color: #FFF5F6;
-            width: 100%;
-            justify-content: center;
-        }
-        .review-submit-luxury-btn {
-            background-color: #FF91A4;
-            color: #FFFFFF;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.2s ease;
-            margin-top: 10px;
-        }
-        .review-submit-luxury-btn:active {
-            opacity: 0.9;
-        }
-        .reviews-feed-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .luxury-review-item-card {
-            background-color: #FFFFFF;
-            border: 1px solid rgba(255, 145, 164, 0.2);
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(255, 145, 164, 0.04);
-        }
-        .review-item-top-meta {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        .review-item-author-name {
-            font-size: 15px;
-            font-weight: 700;
-            color: #111111;
-        }
-        .review-item-stars-row {
-            color: #D4AF37;
-            font-size: 13px;
-        }
-        .review-item-products-tag {
-            font-size: 11px;
-            background-color: #FFF5F6;
-            color: #FF91A4;
-            padding: 4px 8px;
-            font-weight: 700;
-            display: inline-block;
-            margin-bottom: 10px;
-        }
-        .review-item-text-content {
-            font-size: 13px;
-            color: #111111;
-            line-height: 1.6;
-            text-align: justify;
-            margin-bottom: 12px;
-        }
-        .review-item-attached-gallery {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .review-item-attached-img {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border: 1px solid rgba(255, 145, 164, 0.2);
-        }
-        .recommendations-smart-outer-section {
-            padding: 60px 16px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .recommendations-slider-container {
-            display: flex;
-            gap: 16px;
-            overflow-x: auto;
-            padding: 16px 4px;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: none;
-            scroll-behavior: smooth;
-        }
-        .recommendations-slider-container::-webkit-scrollbar {
-            display: none;
-        }
-        .recommendations-slider-container .bs-product-card {
-            width: 85vw;
-            scroll-snap-align: start;
-            flex-shrink: 0;
-        }
-        @media (min-width: 768px) {
-            .catalog-dynamic-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-                gap: 24px;
-                padding: 24px;
-            }
-            main {
-                margin-top: 150px;
-            }
-            .category-hero-media-frame {
-                height: 400px;
-            }
-            .reviews-split-layout {
-                grid-template-columns: 400px 1fr;
-            }
-            .recommendations-slider-container .bs-product-card {
-                width: 380px;
-            }
-        }
-        @media (min-width: 1024px) {
-            .catalog-dynamic-grid {
-                grid-template-columns: repeat(2, 1fr) !important;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <div class="top-announcement-bar">
-        <div class="scrolling-ticker-wrapper">
-            <span class="ticker-message-item">صنعناها بحب لتهديها لمن تحب</span>
-            <span class="ticker-message-item">خبرة أكثر من 10 سنوات في صناعة الحلويات</span>
-            <span class="ticker-message-item">خامات طبيعية ممتازة ومضمونة 100%</span>
-            <span class="ticker-message-item">صنعناها بحب لتهديها لمن تحب</span>
-            <span class="ticker-message-item">خبرة أكثر من 10 سنوات في صناعة الحلويات</span>
-            <span class="ticker-message-item">خامات طبيعية ممتازة ومضمونة 100%</span>
-        </div>
-    </div>
-
-    <header class="header-container">
-        <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="زر القائمة الجانبية">☰</button>
-        <div class="logo-brand-block">
-            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="store-logo" loading="lazy">
-            <h1 class="brand-name">حلويات بوسي</h1>
-        </div>
-        <div class="header-actions">
-            <button class="search-trigger-btn" aria-label="زر البحث"><i class="fa-solid fa-magnifying-glass"></i></button>
-            <button class="cart-trigger-btn" aria-label="زر السلة" onclick="location.href='cart.html'"><i class="fa-solid fa-bag-shopping"></i><span class="cart-count" id="headerCartCount">0</span></button>
+    <header class="main-sticky-header">
+        <div class="header-container-wrapper">
+            <button class="menu-toggle-btn" aria-label="فتح القائمة الجانبية">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="brand-logo-identity-zone" onclick="location.href='index.html'">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="brand-logo-image" alt="شعار حلويات بوسي">
+                <span class="brand-name-text">حلويات بوسي</span>
+            </div>
+            <div class="header-actions-block">
+                <button class="action-btn-node" aria-label="بحث في الموقع" onclick="location.href='menu.html'">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <button class="action-btn-node relative-badge-trigger" aria-label="عرض سلة المشتريات" onclick="location.href='cart.html'">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span class="badge-counter-floating" id="headerCartCount">0</span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <div class="menu-overlay" id="menuOverlay"></div>
-
-    <nav class="side-menu" id="sideMenu">
-        <div class="side-menu-header">
-            <span class="side-menu-title">تصفح المتجر</span>
-            <button class="close-menu" id="closeMenuBtn" aria-label="إغلاق القائمة">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    <nav class="side-drawer-menu" id="sideMenu">
+        <div class="drawer-header-block">
+            <div class="drawer-brand-profile">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="drawer-logo" alt="حلويات بوسي">
+                <span class="drawer-title">قائمة الاختيارات</span>
+            </div>
+            <button class="drawer-close-trigger" id="closeMenuBtn" aria-label="إغلاق القائمة">
+                <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
-        <div class="side-menu-links">
-            <a href="index.html" class="side-link">الصفحة الرئيسية</a>
-            <a href="menu.html" class="side-link">قائمة المنيو</a>
-            <a href="cake-builder.html" class="side-link">محاكي التورت</a>
-            <a href="flower-builder.html" class="side-link">محاكي الورد</a>
-            <a href="cart.html" class="side-link">سلة المشتريات</a>
-        </div>
+        <ul class="drawer-links-list">
+            <li><a href="index.html" class="drawer-link-item"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+            <li><a href="menu.html" class="drawer-link-item active"><i class="fa-solid fa-utensils"></i> تصفح المنيو</a></li>
+            <li><a href="cake-builder.html" class="drawer-link-item"><i class="fa-solid fa-cake-candles"></i> محاكي التورت</a></li>
+            <li><a href="flower-builder.html" class="drawer-link-item"><i class="fa-solid fa-seedling"></i> محاكي الورد</a></li>
+            <li><a href="cart.html" class="drawer-link-item"><i class="fa-solid fa-basket-shopping"></i> سلة المشتريات</a></li>
+        </ul>
     </nav>
+    <div class="drawer-overlay-dimmer" id="menuOverlay"></div>
 
-    <main>
-        <section class="category-header-banner">
-            <h1 class="category-page-title" id="categoryTitleNode">تصفح المنتجات</h1>
-            <div class="category-hero-media-frame">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="category-hero-native-img" id="categoryHeroImageNode" alt="تصنيف حلويات بوسي الطبيعية">
-            </div>
-            <p class="category-page-desc" id="categoryDescNode">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة حقيقية ومضمونة.</p>
-        </section>
-
-        <nav class="tabs-nav-container" id="sizeTabsContainer"></nav>
-
-        <section class="catalog-dynamic-grid" id="catalogGridContainer"></section>
-
-        <section class="reviews-luxury-section">
-            <div class="reviews-inner-block">
-                <div class="section-meta-header">
-                    <h2 class="section-display-title">آراء ومشاركات عملائنا السعيدة</h2>
-                    <p class="section-rich-description">شاركونا تفاصيل لحظاتكم المميزة وصور مناسباتكم السعيدة التي تشرفنا بتقديم حلوياتنا الفاخرة داخلها لخدمتكم دائماً.</p>
-                </div>
-                <div class="reviews-split-layout">
-                    <div class="reviews-form-panel">
-                        <h3 class="reviews-form-title">اكتب مراجعتك بكل صدق</h3>
-                        <form id="luxuryReviewForm" onsubmit="return false;">
-                            <div class="review-input-row">
-                                <input type="text" class="review-input-native" id="revAuthorName" placeholder="اكتب اسمك بالكامل" required>
-                            </div>
-                            <div class="review-input-row">
-                                <input type="text" class="review-input-native" id="revPurchasedItems" placeholder="ما هي المنتجات التي اخترتها مننا؟" required>
-                            </div>
-                            <div class="review-input-row">
-                                <div class="review-rating-stars-zone" id="revStarsSelector">
-                                    <i class="fa-solid fa-star review-star-input-node" data-rating="5"></i>
-                                    <i class="fa-solid fa-star review-star-input-node" data-rating="4"></i>
-                                    <i class="fa-solid fa-star review-star-input-node" data-rating="3"></i>
-                                    <i class="fa-solid fa-star review-star-input-node" data-rating="2"></i>
-                                    <i class="fa-solid fa-star review-star-input-node" data-rating="1"></i>
-                                </div>
-                            </div>
-                            <div class="review-input-row">
-                                <textarea class="review-input-native review-textarea-native" id="revContent" placeholder="اكتب تفاصيل تجربتك ورأيك في جودة وطعم المنتجات" required></textarea>
-                            </div>
-                            <div class="review-input-row">
-                                <label class="file-upload-custom-label" for="revImageFile">
-                                    <i class="fa-solid fa-camera"></i> ارفع صور مناسبتك السعيدة
-                                </label>
-                                <input type="file" id="revImageFile" accept="image/*" style="display: none;">
-                            </div>
-                            <button type="submit" class="review-submit-luxury-btn" id="revSubmitBtn">إرسال مراجعتك الفاخرة</button>
-                        </form>
-                    </div>
-                    <div class="reviews-feed-panel" id="reviewsFeedContainer"></div>
-                </div>
+    <main class="category-page-main-viewport">
+        <section class="category-hero-presentation-banner">
+            <div class="hero-blur-backdrop"></div>
+            <div class="hero-content-alignment-box">
+                <h1 class="category-main-title-node" id="categoryMainTitle">تصفح الفئة</h1>
+                <p class="category-sub-description-text" id="categorySubDescription">جاري تحميل تشكيلة النكهات الفاخرة المجهزة بعناية فائقة...</p>
             </div>
         </section>
 
-        <section class="recommendations-smart-outer-section">
+        <section class="catalog-grid-listing-section">
             <div class="section-meta-header">
-                <h2 class="section-display-title">قد يعجبك أيضاً</h2>
-                <p class="section-rich-description">اكتشف تشكيلات ونكهات مميزة أخرى اخترناها لك بناءً على ذوقك وتصفحك الحالي لتكمل رحلتك السعيدة.</p>
+                <h2 class="section-primary-heading">التشكيلة المتاحة حالياً</h2>
+                <p class="section-secondary-supporting-text">تم اختيار المكونات بعناية للحصول على أفضل جودة ترضي تطلعاتكم الفاخرة.</p>
             </div>
-            <div class="recommendations-slider-container" id="smartRecommendationsContainer"></div>
+            <div class="storefront-products-grid-container" id="categoryCatalogGrid"></div>
+        </section>
+
+        <section class="smart-recommendations-carousel-section">
+            <div class="section-meta-header">
+                <h2 class="section-primary-heading">قد يعجبك أيضاً</h2>
+                <p class="section-secondary-supporting-text">توليفة مميزة يفضل عملاؤنا اقتناءها معاً لتجربة متكاملة.</p>
+            </div>
+            <div class="horizontal-scroll-slider-viewport" id="recommendationsSliderTrack"></div>
+        </section>
+
+        <section class="category-reviews-feed-section">
+            <div class="section-meta-header">
+                <h2 class="section-primary-heading">آراء وتجارب أصدقائنا</h2>
+                <p class="section-secondary-supporting-text">نعتز بثقتكم ونشارككم لقطات حية من احتفالات ومناسبات عملائنا.</p>
+            </div>
+            <div class="reviews-layout-waterfall-container" id="categoryReviewsWaterfall"></div>
         </section>
     </main>
 
-    <footer class="storefront-main-footer">
-        <div class="footer-layout-columns-wrapper">
-            <div class="footer-brand-summary-box">
-                <div class="footer-logo-block">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي لوجو" class="footer-brand-logo" loading="lazy">
-                    <h3 class="footer-brand-name">حلويات بوسي</h3>
-                </div>
-                <p class="footer-brief-paragraph">صنعناها بحب لتهديها لمن تحب. خبرة ممتدة لأكثر من 10 سنوات في تقديم وتصنيع الحلويات وتصميم كعكات التخصيص الفاخرة وتنسيق الورد الطبيعي والصناعي والستان بمركز الفرافرة.</p>
-            </div>
-            
-            <div class="footer-links-navigation-group">
-                <h4 class="footer-group-title">روابط سريعة</h4>
-                <ul class="footer-clickable-links-list">
-                    <li><a href="index.html">الصفحة الرئيسية</a></li>
-                    <li><a href="menu.html">تصفح المنيو الشامل</a></li>
-                    <li><a href="cart.html">سلة المشتريات</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-links-navigation-group">
-                <h4 class="footer-group-title">سياسات المتجر</h4>
-                <ul class="footer-clickable-links-list">
-                    <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
-                    <li><a href="refund-policy.html">سياسة الاستبدال والاسترجاع</a></li>
-                </ul>
-            </div>
-
-            <div class="footer-business-data-card">
-                <h4 class="footer-group-title">بيانات فرع الكفاح</h4>
-                <p class="footer-data-text-row">📍 شارع الوحدة المحلية - بجوار صيدلية الدكتور أحمد مجدي وعيادة الدكتور علي</p>
-                <p class="footer-data-text-row">📞 للتواصل: 01097238441</p>
-                <div class="footer-social-original-icons-box">
-                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-icon facebook-icon" aria-label="فيسبوك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-icon instagram-icon" aria-label="انستجرام حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-icon tiktok-icon" aria-label="تيك توك حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-tiktok"></i></a>
-                    <a href="https://wa.me/201097238441" class="social-icon whatsapp-icon" aria-label="واتساب حلويات بوسي" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i></a>
-                </div>
+    <footer class="luxury-footer-component">
+        <div class="footer-main-brand-info-block">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="footer-brand-logo" alt="حلويات بوسي الفاخرة">
+            <h2 class="footer-brand-name-text">حلويات بوسي</h2>
+            <p class="footer-brand-slogan-text">صنعناها بحب لتهديها لمن تحب</p>
+            <p class="footer-location-text"><i class="fa-solid fa-location-dot"></i> الكفاح، مركز الفرافرة، محافظة الوادي الجديد</p>
+        </div>
+        <div class="footer-social-media-channels-tracker">
+            <p class="social-channels-header-text">تابعونا على منصاتنا الرسمية</p>
+            <div class="social-icons-brand-flex-row">
+                <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-icon-wrapper facebook-icon" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/bose_sweets?igsh=MXR0NWhwZ3FlZ3g0Yg==" class="social-icon-wrapper instagram-icon" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@bose.sweets?_t=8p4Z7ZAnZpX&_r=1" class="social-icon-wrapper tiktok-icon" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="https://wa.me/201097238441" class="social-icon-wrapper whatsapp-icon" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
             </div>
         </div>
         <div class="footer-copyrights-bottom-bar">
@@ -555,544 +121,184 @@
     <script src="app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const menuToggleBtn = document.getElementById('menuToggleBtn');
-            const closeMenuBtn = document.getElementById('closeMenuBtn');
-            const sideMenu = document.getElementById('sideMenu');
-            const menuOverlay = document.getElementById('menuOverlay');
-            const headerCartCount = document.getElementById('headerCartCount');
-            
-            const titleNode = document.getElementById('categoryTitleNode');
-            const descNode = document.getElementById('categoryDescNode');
-            const heroImageNode = document.getElementById('categoryHeroImageNode');
-            const tabsContainer = document.getElementById('sizeTabsContainer');
-            const gridContainer = document.getElementById('catalogGridContainer');
-            const reviewsFeedContainer = document.getElementById('reviewsFeedContainer');
-            const smartRecommendationsContainer = document.getElementById('smartRecommendationsContainer');
-            const luxuryReviewForm = document.getElementById('luxuryReviewForm');
-
-            let currentCategoryKey = "despacito";
-            let activeSizeTab = "triangle";
-            let loadedProducts = [];
-            let quantitiesState = {};
-            let selectedRatingValue = 5;
-
-            const categoriesStaticSchema = {
-                "despacito": { name: "الديسباسيتو", desc: "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه." },
-                "qashtota": { name: "القشطوطة", desc: "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل." },
-                "cinabon": { name: "السينابون", desc: "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه." },
-                "donuts": { name: "الدوناتس", desc: "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة." },
-                "happiness-cups": { name: "كبات السعادة", desc: "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا أو شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص." },
-                "red-velvet": { name: "الريدڤيلڤت", desc: "طبقات من الريد ڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز والراسبيري التي تضيف توازناً رائعاً بين الحلاوة والانتعاش لتكوين تجربة متكاملة في كل قطعة." },
-                "mini-cake": { name: "الميني تورت", desc: "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات وفواكه مختارة بعناية لتمنحك تجربة متكاملة في حجم صغير أنيق. تُغلف بطبقة فاكيوم شفافة تبرز جمال الطبقات والحشوات داخلها." },
-                "relax-box": { name: "بوكس الروقان", desc: "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد. يحتوي على: تورتة، 2 كب سعادة، 1 كب ديسباسيتو، 1 كب ريد ڤيلڤت. مناسب للهدايا والجلسات الخاصة والمفاجآت الجميلة." },
-                "gateaux": { name: "الجاتوهات", desc: "الجاتوهات عندنا عبارة عن طبقات متوازنة من كيك الفانيليا أو الشوكولاتة مع حشوات غنية من الموسات والصوصات والكريمات المختارة بعناية. نوفر تشكيلة كبيرة ومتنوعة تناسب مختلف المناسبات والأذواق، بحيث يجد كل عميل الجاتوه الذي يناسب ذوقه ويكمل لحظته الجميلة." },
-                "cupcake": { name: "الكب كيك", desc: "قطع صغيرة من اللذة بطابع غني ومميز. يتم تحضير الكيك بنسبة زبدة مدروسة تمنحه قواماً وطعماً مختلفاً، ثم يتم حشو كل قطعة بحشوات وصوصات متنوعة قبل تزيينها بطبقة من الكريمة اللباني الغنية." },
-                "cakes": { name: "التورت", desc: "التورت عندنا مش مجرد حلوى للمناسبة، لكنها قطعة مصممة خصيصاً لصاحب المناسبة. كما تذهب الفتاة إلى مصمم أزياء محترف ليصنع لها فستاناً فريداً يخطف الأنظار، نحن نصمم كل تورتة بشكل يعبر عن شخصية صاحبها وذوقه وتفاصيل يومهالمميز. لا نكرر نفس التورتة مرتين، لأن لكل عميل قصة مختلفة تستحق أن تُروى بشكل مختلف. كل تورتة تجمع بين الشكل الذي يحبه العميل والطعم الذي يفضله والتفاصيل التي تعبر عنه. لذلك كانت تورت حلويات بوسي نجمة العديد من المناسبات، وكانت دائماً سبباً في الإبهار قبل التذوق وبعده. ومن أكثر الجمل التي نسمعها من عملائنا: 'لسه حلاوتها في بوقي من يوم ما دوقتها.'" },
-                "flowers": { name: "الورد", desc: "ننفرد بتقديم بوكيهات الورد الطبيعي والصناعي وورد الستان بأعلى مستوى من العناية والاهتمام بالتفاصيل. هدفنا أن يصل الورد للعميل وكأنه قُطف للتو، بكامل نضارته وجماله وحضوره. نوفر مختلف الألوان والأحجام والتنسيقات, سواء كنت تبحث عن بوكيه بسيط، بوكس فاخر، أو تصميم خاص يعبر عن شخص عزيز عليك. كل تفصيلة يتم تنفيذها بعناية حتى يصل الورد بالشكل الذي يشرفك أمام كل من تهديه له." }
+            const currentCategoriesMap = {
+                "cakes": { name: "التورت", desc: "تورت متكاملة صُنعت بخامات ممتازة لتزين مناسباتكم السعيدة وتترك ذكرى رائعة." },
+                "gateaux": { name: "الجاتوهات", desc: "تشكيلة قطع الجاتوه الكلاسيكية الفاخرة بنكهات متوازنة وقوام غني ومثالي." },
+                "qashtouta": { name: "القشطوطة", desc: "الكيكة الحليبية الهشة الغنية بطبقات الكريمة اللباني والنكهات الأصلية المبتكرة." },
+                "despacito": { name: "الديسباسيتو", desc: "كيك الفادج الغني مع موس الشوكولاتة الداكنة والحشوات الفاخرة المريحة للعين والنفس." },
+                "cinnabon": { name: "السينابون", desc: "لفات السينابون الطازجة المخبوزة بالقرفة الفاخرة وصوص التشيز الغني يوم بيوم." },
+                "donuts": { name: "الدوناتس", desc: "دوناتس خفيفة وهشة ومجهزة يومياً بحشوات منوعة تمنحكم الطعم الحقيقي والنظيف." },
+                "red-velvet": { name: "الريدڤيلڤت", desc: "طبقات مخملية فاخرة بلونها الساحر مع موس الكريم تشيز الغني والمتوازن تماماً." },
+                "cupcake": { name: "الكب كيك", desc: "قطع كب كيك غنية ومخبوزة بنسبة زبدة مدروسة ومزينة بالكريمة اللباني الطازجة." },
+                "mini-cake": { name: "الميني تورت", desc: "تورتات صغيرة الحجم متكاملة التفاصيل والحشوات ومغلفة لحفظ جودتها ونقاء طبقاتها." },
+                "flowers": { name: "الورد", desc: "تنسيقات بوكسات الورد الطبيعي الفاخر المصممة لتكتمل بها روعة هداياكم وثقافتكم الراقية." },
+                "happiness-cups": { name: "كبات السعادة", desc: "أكواب حلوى فردية منوعة بطبقات غنية ومريحة للتقديم والهدايا السريعة ذات القيمة." },
+                "chill-box": { name: "بوكس الروقان", desc: "تجميعة متسقة وفاخرة تضم تورتة ميني مع كبات السعادة المتنوعة داخل بوكس واحد راقٍ." }
             };
 
-            const uniqueFlavorsDescriptions = {
-                "dark-nutella": "نوتيلا أصلية داكنة غنية بالكاكاو لعشاق الطعم الأصيل والمكثف.",
-                "lotus": "زبدة لوتس فاخرة بنكهة القرفة المقرمشة الأصلية.",
-                "white-nutella": "شوكولاتة نوتيلا بيضاء ناعمة وقوام كريمي متوازن ومميز.",
-                "caramel": "توفي كراميل غني ومطبوخ بعناية ليعطي حلاوة متزنة ولذيذة.",
-                "kinder": "كريمة كيندر بوينو الشهيرة بطعم البندق والحليب الساحر.",
-                "blueberry": "حشوة التوت الأزرق البري المنعشة بقطع الفاكهة الطبيعية.",
-                "raspberry": "راسبيري أحمر طازج يوازن بين الحلاوة واللمعة الحمضية الخفيفة.",
-                "cherry": "قطع كرز كاملة مطبوخة في صوص غني وفاخر لتزيين مثالي.",
-                "snickers": "صوص الفول السوداني المملح مع الكراميل والشوكولاتة المقرمشة.",
-                "mix-chocolate": "توليفة مزدوجة تجمع الشوكولاتة الداكنة والبيضاء في تواغم.",
-                "pistachio": "زبدة الفستق الحلبي الطبيعي الممتاز بطعم واضح ولون فاخر.",
-                "mango": "قطع مانجو طبيعية طازجة تبرز انتعاش الفاكهة في كل لقمة.",
-                "strawberry": "صوص الفراولة البلدي الطازج بقطع الفاكهة الغنية.",
-                "banana": "شرائح الموز الطازج المتناسقة مع الكريمة اللباني الفخمة.",
-                "mix": "تشكيلة من النكهات المتنوعة المنسقة لترضي كافة الأذواق.",
-                "red-velvet": "لمسة الكاكاو الناعمة مع قوام الكيك المخملي الأحمر.",
-                "blueberry-raspberry": "مزيج الانتعاش المزدوج بين التوت الأزرق والتوت الأحمر.",
-                "matilda": "غمر مكثف وثقيل من صوص الشوكولاتة السري على طريقة ماتيلدا.",
-                "oreo": "قطع بسكويت أوريو المطحونة والممزوجة بالكريمة اللباني الغنية.",
-                "classic": "الخلطة الأصلية المعتمدة لصوص التشيز الكلاسيكي بدون إضافات.",
-                "raffaello": "صوص جوز الهند الكريمي الفاخر مع قطع اللوز المقرمشة.",
-                "nutella": "حشوة النوتيلا الكلاسيكية المحبوبة للجميع بطعمها المتوازن.",
-                "kitkat": "أصابع كيت كات المقرمشة موزعة بعناية فوق الكريمة.",
-                "rocher": "مزيج شوكولاتة الفيريرو روشيه مع البندق المحمص المحفز.",
-                "classic-vanilla": "فانيليا طبيعية رائعة برائحتها الزكية وقوامها الناعم.",
-                "royal": "تشكيلة الجاتوه الملكي الفاخرة المجهزة للمناسبات الكبرى.",
-                "classic-gateaux": "قطع الجاتوه الكلاسيكية المتساوية المجهزة يوم بيوم.",
-                "soirée": "قطع سواريه صغيرة وأنيقة للغاية مصممة للضيافة الراقية.",
-                "chocolate-dozen": "اثنتا عشرة قطعة من كب كيك الشوكولاتة الغنية بالزبدة والأصيلة.",
-                "vanilla-dozen": "دستة كب كيك فانيليا هشة ومزينة بالكريمة اللباني الفاخرة.",
-                "mix-dozen": "تشكيلة منوعة من دستة الكب كيك تجمع بين الشوكولاتة والفانيليا.",
-                "triangle-velvet": "مثلث ريدفيلفت كبير الحجم مغطى بموس التشيز والراسبيري.",
-                "cup-velvet": "كوب ريدفيلفت وسط مناسب ومريح جدا للتناول الفردي السريع.",
-                "tray-velvet": "طاجن عائلي كبير من الريدفيلفت والتشيز الغني للمشاركة.",
-                "two-person": "ميني تورتة دائرية مصممة ومحسوبة بدقة لتكفي فرداً أو اثنين.",
-                "four-person": "ميني تورتة أنيقة تكفي من ثلاثة إلى أربعة أفراد بحشوات غنية.",
-                "six-person": "ميني تورتة فاخرة تكفي من خمسة إلى ستة أفراد لجمعة دافئة."
-            };
-
-            const fallbackProductsEngine = {
-                "despacito": [
-                    { id: "des-tri-dark", title: "الديسباسيتو مثلث", size: "triangle", flavor: "نوتيلا دارك", flavorKey: "dark-nutella", price: 66 },
-                    { id: "des-tri-lotus", title: "الديسباسيتو مثلث", size: "triangle", flavor: "لوتس", flavorKey: "lotus", price: 66 },
-                    { id: "des-tri-white", title: "الديسباسيتو مثلث", size: "triangle", flavor: "نوتيلا وايت", flavorKey: "white-nutella", price: 66 },
-                    { id: "des-tri-caramel", title: "الديسباسيتو مثلث", size: "triangle", flavor: "كراميل", flavorKey: "caramel", price: 66 },
-                    { id: "des-tri-kinder", title: "الديسباسيتو مثلث", size: "triangle", flavor: "كيندر", flavorKey: "kinder", price: 66 },
-                    { id: "des-tri-blue", title: "الديسباسيتو مثلث", size: "triangle", flavor: "بلوبيري", flavorKey: "blueberry", price: 66 },
-                    { id: "des-tri-rasp", title: "الديسباسيتو مثلث", size: "triangle", flavor: "راسبيري", flavorKey: "raspberry", price: 66 },
-                    { id: "des-tri-cherry", title: "الديسباسيتو مثلث", size: "triangle", flavor: "كرز", flavorKey: "cherry", price: 66 },
-                    { id: "des-tri-snick", title: "الديسباسيتو مثلث", size: "triangle", flavor: "اسنيكرز", flavorKey: "snickers", price: 66 },
-                    { id: "des-tri-mix", title: "الديسباسيتو مثلث", size: "triangle", flavor: "ميكس شوكليت", flavorKey: "mix-chocolate", price: 66 },
-                    { id: "des-tri-pist", title: "الديسباسيتو مثلث", size: "triangle", flavor: "بيستاشيو", flavorKey: "pistachio", price: 83 },
-                    
-                    { id: "des-med-dark", title: "الديسباسيتو وسط", size: "medium", flavor: "نوتيلا دارك", flavorKey: "dark-nutella", price: 132 },
-                    { id: "des-med-pist", title: "الديسباسيتو وسط", size: "medium", flavor: "بيستاشيو", flavorKey: "pistachio", price: 165 },
-                    
-                    { id: "des-lrg-dark", title: "الديسباسيتو كبير", size: "large", flavor: "نوتيلا دارك", flavorKey: "dark-nutella", price: 264 },
-                    { id: "des-lrg-pist", title: "الديسباسيتو كبير", size: "large", flavor: "بيستاشيو", flavorKey: "pistachio", price: 297 }
-                ],
-                "qashtota": [
-                    { id: "qash-white", title: "القشطوطة", flavor: "نوتيلا وايت", flavorKey: "white-nutella", price: 121 },
-                    { id: "qash-dark", title: "القشطوطة", flavor: "نوتيلا دارك", flavorKey: "dark-nutella", price: 121 },
-                    { id: "qash-lotus", title: "القشطوطة", flavor: "لوتس", flavorKey: "lotus", price: 121 },
-                    { id: "qash-pist", title: "القشطوطة", flavor: "بيستاشيو", flavorKey: "pistachio", price: 143 },
-                    { id: "qash-kinder", title: "القشطوطة", flavor: "كيندر", flavorKey: "kinder", price: 121 },
-                    { id: "qash-caramel", title: "القشطوطة", flavor: "كراميل", flavorKey: "caramel", price: 121 },
-                    { id: "qash-mango", title: "القشطوطة", flavor: "مانجا", flavorKey: "mango", price: 121 },
-                    { id: "qash-strav", title: "القشطوطة", flavor: "فراولة", flavorKey: "strawberry", price: 121 },
-                    { id: "qash-banana", title: "القشطوطة", flavor: "موز", flavorKey: "banana", price: 121 },
-                    { id: "qash-mix", title: "القشطوطة", flavor: "ميكس نكهات", flavorKey: "mix", price: 121 }
-                ],
-                "cinabon": [
-                    { id: "cin-dark", title: "السينابون", flavor: "نوتيلا دارك", flavorKey: "dark-nutella", price: 121 },
-                    { id: "cin-white", title: "السينابون", flavor: "وايت نوتيلا", flavorKey: "white-nutella", price: 121 },
-                    { id: "cin-blue", title: "السينابون", flavor: "بلوبيري", flavorKey: "blueberry", price: 121 },
-                    { id: "cin-rasp", title: "السينابون", flavor: "راسبيري", flavorKey: "raspberry", price: 121 },
-                    { id: "cin-raff", title: "السينابون", flavor: "رفايلو", flavorKey: "raffaello", price: 121 },
-                    { id: "cin-oreo", title: "السينابون", flavor: "اوريو", flavorKey: "oreo", price: 121 },
-                    { id: "cin-lotus", title: "السينابون", flavor: "لوتس", flavorKey: "lotus", price: 121 },
-                    { id: "cin-pist", title: "السينابون", flavor: "بيستاشيو", flavorKey: "pistachio", price: 143 },
-                    { id: "cin-kind", title: "السينابون", flavor: "كيندر", flavorKey: "kinder", price: 121 },
-                    { id: "cin-caram", title: "السينابون", flavor: "كراميل", flavorKey: "caramel", price: 121 },
-                    { id: "cin-classic", title: "السينابون", flavor: "كلاسيك صوص تشيز", flavorKey: "classic", price: 121 }
-                ],
-                "donuts": [
-                    { id: "don-white", title: "الدوناتس", flavor: "نوتيلا وايت", flavorKey: "white-nutella", price: 88 },
-                    { id: "don-dark", title: "الدوناتس", flavor: "نوتيلا دارك", flavorKey: "dark-nutella", price: 88 },
-                    { id: "don-lotus", title: "الدوناتس", flavor: "لوتس", flavorKey: "lotus", price: 88 },
-                    { id: "don-pist", title: "الدوناتس", flavor: "بيستاشيو", flavorKey: "pistachio", price: 110 },
-                    { id: "don-kinder", title: "الدوناتس", flavor: "كيندر", flavorKey: "kinder", price: 88 },
-                    { id: "don-caramel", title: "الدوناتس", flavor: "كراميل", flavorKey: "caramel", price: 88 },
-                    { id: "don-velvet", title: "الدوناتس", flavor: "ريدفيلفت", flavorKey: "red-velvet", price: 99 },
-                    { id: "don-bluerasp", title: "الدوناتس", flavor: "بلوبيري + راسبيري", flavorKey: "blueberry-raspberry", price: 99 },
-                    { id: "don-straw", title: "الدوناتس", flavor: "فراولة", flavorKey: "strawberry", price: 88 },
-                    { id: "don-mango", title: "الدوناتس", flavor: "مانجا", flavorKey: "mango", price: 99 },
-                    { id: "don-matilda", title: "الدوناتس", flavor: "ماتيلدا شوكولاتة", flavorKey: "matilda", price: 110 },
-                    { id: "don-oreo", title: "الدوناتس", flavor: "اوريو", flavorKey: "oreo", price: 88 },
-                    { id: "don-cherry", title: "الدوناتس", flavor: "كرز", flavorKey: "cherry", price: 88 }
-                ],
-                "happiness-cups": [
-                    { id: "hc-nutella", title: "كبات السعادة", flavor: "نوتيلا غني", flavorKey: "nutella", price: 61 },
-                    { id: "hc-lotus", title: "كبات السعادة", flavor: "لوتس غني", flavorKey: "lotus", price: 61 },
-                    { id: "hc-oreo", title: "كبات السعادة", flavor: "أوريو", flavorKey: "oreo", price: 61 },
-                    { id: "hc-snick", title: "كبات السعادة", flavor: "اسنيكرز", flavorKey: "snickers", price: 61 },
-                    { id: "hc-blue", title: "كبات السعادة", flavor: "بلوبيري", flavorKey: "blueberry", price: 61 },
-                    { id: "hc-rasp", title: "كبات السعادة", flavor: "راسبيري", flavorKey: "raspberry", price: 61 },
-                    { id: "hc-cherry", title: "كبات السعادة", flavor: "كرز", flavorKey: "cherry", price: 61 },
-                    { id: "hc-kitkat", title: "كبات السعادة", flavor: "كيت كات", flavorKey: "kitkat", price: 61 },
-                    { id: "hc-rocher", title: "كبات السعادة", flavor: "روشيه", flavorKey: "rocher", price: 61 },
-                    { id: "hc-raffa", title: "كبات السعادة", flavor: "رفايلو", flavorKey: "raffaello", price: 61 },
-                    { id: "hc-kinder", title: "كبات السعادة", flavor: "كيندر", flavorKey: "kinder", price: 61 }
-                ],
-                "red-velvet": [
-                    { id: "rv-triangle", title: "الريدڤيلڤت", flavor: "مثلث كبير", flavorKey: "triangle-velvet", price: 72 },
-                    { id: "rv-cup", title: "الريدڤيلڤت", flavor: "كب وسط", flavorKey: "cup-velvet", price: 99 },
-                    { id: "rv-tray", title: "الريدڤيلڤت", flavor: "طاجن كبير", flavorKey: "tray-velvet", price: 165 }
-                ],
-                "mini-cake": [
-                    { id: "mc-two", title: "الميني تورت", flavor: "فرد أو اتنين", flavorKey: "two-person", price: 154 },
-                    { id: "mc-four", title: "الميني تورت", flavor: "3 أو 4 أفراد", flavorKey: "four-person", price: 308 },
-                    { id: "mc-six", title: "الميني تورت", flavor: "5 أو 6 أفراد", flavorKey: "six-person", price: 462 }
-                ],
-                "relax-box": [
-                    { id: "box-roqan", title: "بوكس الروقان", flavor: "تجميعة منوعة متسقة", flavorKey: "mix", price: 550 }
-                ],
-                "gateaux": [
-                    { id: "gat-royal", title: "الجاتوهات", flavor: "جاتوه ملكي", flavorKey: "royal", price: 638 },
-                    { id: "gat-classic", title: "الجاتوهات", flavor: "جاتوه كلاسيك", flavorKey: "classic-gateaux", price: 506 },
-                    { id: "gat-soiree", title: "الجاتوهات", flavor: "جاتوه سواريه", flavorKey: "soirée", price: 374 }
-                ],
-                "cupcake": [
-                    { id: "cup-choc", title: "الكب كيك", flavor: "دستة كب كيك شوكولاتة", flavorKey: "chocolate-dozen", price: 324 },
-                    { id: "cup-vanilla", title: "الكب كيك", flavor: "دستة كب كيك فانيليا", flavorKey: "vanilla-dozen", price: 324 },
-                    { id: "cup-mix", title: "الكب كيك", flavor: "دستة كب كيك ميكس", flavorKey: "mix-dozen", price: 324 }
-                ],
-                "cakes": [
-                    { id: "cake-custom", title: "التورت", flavor: "تخصيص فاخر حسب الطلب", flavorKey: "mix", price: 580 }
-                ],
-                "flowers": [
-                    { id: "flower-custom", title: "الورد", flavor: "تنسيق مخصص فاخر", flavorKey: "mix", price: 400 }
-                ]
-            };
-
-            const initialStaticReviews = [];
-
-            function updateCartBadge() {
-                try {
-                    const cart = JSON.parse(localStorage.getItem('bose_cart')) || [];
-                    const totalItems = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
-                    if (headerCartCount) headerCartCount.textContent = totalItems;
-                } catch (e) {
-                    if (headerCartCount) headerCartCount.textContent = '0';
-                }
-            }
+            const initialStaticReviews = [
+                { author: "أحمد مجدي", rating: 5, content: "الخامات حقيقية وممتازة والطعم متوازن جداً، تشرف في أي عزومة." },
+                { author: "سارة عبد الرحمن", rating: 5, content: "بوكس الروقان فكرة عبقرية والتوصيل سريع ومنظم جداً في الفرافرة." }
+            ];
 
             function getQueryParam(param) {
                 const urlParams = new URLSearchParams(window.location.search);
                 return urlParams.get(param);
             }
 
-            function escapeHTML(str) {
-                if (!str) return '';
-                return str.replace(/[&<>"']/g, function (m) {
-                    switch (m) {
-                        case '&': return '&amp;';
-                        case '<': return '&lt;';
-                        case '>': return '&gt;';
-                        case '"': return '&quot;';
-                        case "'": return '&#039;';
-                    }
-                });
-            }
-
-            function adjustProductQty(id, delta, isRecommendation = false) {
-                let stateKey = isRecommendation ? `rec-${id}` : id;
-                let currentVal = quantitiesState[stateKey] || 1;
-                currentVal += delta;
-                if (currentVal < 1) currentVal = 1;
-                quantitiesState[stateKey] = currentVal;
-                
-                const node = document.getElementById(isRecommendation ? `qty-rec-${id}` : `qty-catalog-${id}`);
-                if (node) node.textContent = currentVal;
-            }
-
-            function addProductToCart(id, isRecommendation = false) {
-                let itemData = null;
-                if (isRecommendation) {
-                    for (const cat in fallbackProductsEngine) {
-                        const found = fallbackProductsEngine[cat].find(p => p.id === id);
-                        if (found) { itemData = found; break; }
-                    }
-                } else {
-                    itemData = loadedProducts.find(p => p.id === id);
-                }
-                
-                if (!itemData) return;
-                
-                let stateKey = isRecommendation ? `rec-${id}` : id;
-                const chosenQty = quantitiesState[stateKey] || 1;
+            function updateCartBadge() {
+                const countNode = document.getElementById('headerCartCount');
+                if (!countNode) return;
                 try {
-                    let cart = JSON.parse(localStorage.getItem('bose_cart')) || [];
-                    const existingItem = cart.find(item => item.id === id);
-                    if (existingItem) {
-                        existingItem.quantity += chosenQty;
-                    } else {
-                        cart.push({
-                            id: itemData.id,
-                            title: itemData.title,
-                            flavor: itemData.flavor,
-                            price: itemData.price,
-                            quantity: chosenQty,
-                            img: "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
-                        });
-                    }
-                    localStorage.setItem('bose_cart', JSON.stringify(cart));
-                    updateCartBadge();
-                    alert("تمت إضافة المنتج إلى السلة.");
-                } catch (e) {
-                    alert("تمت إضافة المنتج إلى السلة.");
+                    const cart = JSON.parse(localStorage.getItem('bose_cart')) || [];
+                    countNode.textContent = cart.reduce((acc, item) => acc + (item.quantity || 1), 0);
+                } catch(e) {
+                    countNode.textContent = '0';
                 }
+            }
+
+            function initCatalogUI(categoryKey) {
+                const info = currentCategoriesMap[categoryKey] || currentCategoriesMap["despacito"];
+                document.getElementById('categoryMainTitle').textContent = info.name;
+                document.getElementById('categorySubDescription').textContent = info.desc;
+
+                let allProducts = [];
+                if (window.BoseSweets && window.BoseSweets.LocalDatabase && window.BoseSweets.LocalDatabase.products) {
+                    allProducts = window.BoseSweets.LocalDatabase.products;
+                }
+
+                const filtered = allProducts.filter(p => p.id === categoryKey || (categoryKey === "cinnabon" && p.id === "cinnabon-pistachio") || (categoryKey === "qashtouta" && p.id === "qashtouta-nutella"));
+                renderCatalogCards(filtered);
             }
 
             function renderCatalogCards(productsList) {
-                gridContainer.innerHTML = '';
+                const grid = document.getElementById('categoryCatalogGrid');
+                if (!grid) return;
                 if (productsList.length === 0) {
-                    gridContainer.innerHTML = `<p style="grid-column: span 2; text-align:center; padding: 40px; font-weight:600; color: #111111;">لا توجد منتجات متوفرة حالياً في هذه الفئة.</p>`;
+                    grid.innerHTML = '<p class="empty-catalog-message">المنتجات غير متوفرة حالياً في هذه الفئة، يمكنك تصفح الفئات الأخرى من المنيو.</p>';
                     return;
                 }
 
-                productsList.forEach(product => {
-                    if (!quantitiesState[product.id]) {
-                        quantitiesState[product.id] = 1;
-                    }
-
-                    const safeId = escapeHTML(product.id);
-                    const safeTitle = escapeHTML(product.title);
-                    const safeFlavor = escapeHTML(product.flavor);
-                    const safeFlavorDesc = escapeHTML(uniqueFlavorsDescriptions[product.flavorKey] || "");
-
-                    const card = document.createElement('div');
-                    card.className = 'bs-product-card';
-                    card.innerHTML = `
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="card-image-box" alt="${safeTitle}" loading="lazy" onclick="location.href='product.html?id=${safeId}'">
-                        <h3 class="card-title-text" onclick="location.href='product.html?id=${safeId}'">${safeTitle}</h3>
-                        <div class="card-flavor-text">${safeFlavor}</div>
-                        <p class="card-desc-paragraph" style="color: #111111 !important;">${safeFlavorDesc}</p>
-                        <div class="card-meta-action-row">
-                            <div class="card-controls-block">
-                                <div class="card-price-and-counter-zone">
-                                    <div class="card-quantity-selector">
-                                        <button class="selector-action-btn plus-btn" data-id="${safeId}">+</button>
-                                        <span class="selector-value-display" id="qty-catalog-${safeId}">${quantitiesState[product.id]}</span>
-                                        <button class="selector-action-btn minus-btn" data-id="${safeId}">-</button>
+                grid.innerHTML = productsList.map(product => {
+                    return `
+                        <div class="bs-product-card" data-id="${product.id}">
+                            <img src="${product.image}" class="card-image-box" alt="${product.title}" loading="lazy">
+                            <h3 class="card-title-text">${product.title}</h3>
+                            <div class="card-flavor-text">${product.flavor}</div>
+                            <p class="card-desc-paragraph">${product.description}</p>
+                            <div class="card-meta-action-row">
+                                <div class="card-controls-block">
+                                    <div class="card-price-and-counter-zone">
+                                        <div class="card-quantity-selector">
+                                            <button class="selector-action-btn plus-btn" data-id="${product.id}">+</button>
+                                            <span class="selector-value-display" id="cat-qty-${product.id}">1</span>
+                                            <button class="selector-action-btn minus-btn" data-id="${product.id}">-</button>
+                                        </div>
+                                        <div class="card-price-display-text">${product.price} EGP</div>
                                     </div>
-                                    <div class="card-price-display-text">${product.price} EGP</div>
+                                    <button class="card-add-to-cart-action-btn add-to-cart-trigger" data-id="${product.id}">إضافة للسلة</button>
                                 </div>
-                                <button class="card-add-to-cart-action-btn add-cart-trigger" data-id="${safeId}">إضافة للسلة</button>
                             </div>
                         </div>
                     `;
-                    gridContainer.appendChild(card);
-                });
+                }).join('');
 
-                gridContainer.querySelectorAll('.plus-btn').forEach(btn => {
-                    btn.onclick = function(e) {
-                        e.stopPropagation();
-                        adjustProductQty(this.getAttribute('data-id'), 1, false);
-                    };
-                });
-
-                gridContainer.querySelectorAll('.minus-btn').forEach(btn => {
-                    btn.onclick = function(e) {
-                        e.stopPropagation();
-                        adjustProductQty(this.getAttribute('data-id'), -1, false);
-                    };
-                });
-
-                gridContainer.querySelectorAll('.add-cart-trigger').forEach(btn => {
-                    btn.onclick = function(e) {
-                        e.stopPropagation();
-                        addProductToCart(this.getAttribute('data-id'), false);
-                    };
-                });
+                bindLocalCardEvents();
             }
 
-            function renderReviewsFeed(reviewsList) {
-                reviewsFeedContainer.innerHTML = '';
-                reviewsList.forEach(rev => {
-                    const safeAuthor = escapeHTML(rev.author);
-                    const safeItems = escapeHTML(rev.items);
-                    const safeContent = escapeHTML(rev.content);
-                    
-                    let starsHtml = '';
-                    for (let i = 0; i < rev.rating; i++) {
-                        starsHtml += '<i class="fa-solid fa-star"></i> ';
-                    }
+            function bindLocalCardEvents() {
+                document.querySelectorAll('.plus-btn').forEach(btn => {
+                    btn.onclick = function() {
+                        const id = this.getAttribute('data-id');
+                        const node = document.getElementById(`cat-qty-${id}`);
+                        if(node) {
+                            let val = parseInt(node.textContent, 10) + 1;
+                            node.textContent = val;
+                            if (window.BoseSweets && window.BoseSweets.Runtime) {
+                                window.BoseSweets.Runtime.state.quantities[id] = val;
+                            }
+                        }
+                    };
+                });
 
-                    let galleryHtml = '';
-                    if (rev.images && rev.images.length > 0) {
-                        galleryHtml = '<div class="review-item-attached-gallery">';
-                        rev.images.forEach(imgUrl => {
-                            galleryHtml += `<img src="${escapeHTML(imgUrl)}" class="review-item-attached-img" alt="مناسبات سعيدة حلويات بوسي">`;
-                        });
-                        galleryHtml += '</div>';
-                    }
+                document.querySelectorAll('.minus-btn').forEach(btn => {
+                    btn.onclick = function() {
+                        const id = this.getAttribute('data-id');
+                        const node = document.getElementById(`cat-qty-${id}`);
+                        if(node) {
+                            let val = parseInt(node.textContent, 10) - 1;
+                            if (val < 1) val = 1;
+                            node.textContent = val;
+                            if (window.BoseSweets && window.BoseSweets.Runtime) {
+                                window.BoseSweets.Runtime.state.quantities[id] = val;
+                            }
+                        }
+                    };
+                });
 
-                    const card = document.createElement('div');
-                    card.className = 'luxury-review-item-card';
-                    card.innerHTML = `
-                        <div class="review-item-top-meta">
-                            <span class="review-item-author-name">${safeAuthor}</span>
-                            <div class="review-item-stars-row">${starsHtml}</div>
-                        </div>
-                        <div class="review-item-products-tag">المنتجات: ${safeItems}</div>
-                        <p class="review-item-text-content">${safeContent}</p>
-                        ${galleryHtml}
-                    `;
-                    reviewsFeedContainer.appendChild(card);
+                document.querySelectorAll('.add-to-cart-trigger').forEach(btn => {
+                    btn.onclick = function() {
+                        const id = this.getAttribute('data-id');
+                        if (window.BoseSweets && window.BoseSweets.Core && window.BoseSweets.Core.addToCart) {
+                            window.BoseSweets.Core.addToCart(id);
+                            updateCartBadge();
+                        }
+                    };
                 });
             }
 
             function buildSmartRecommendations() {
-                let pool = [];
-                for (const cat in fallbackProductsEngine) {
-                    if (cat !== currentCategoryKey) {
-                        pool = pool.concat(fallbackProductsEngine[cat]);
-                    }
+                const track = document.getElementById('recommendationsSliderTrack');
+                if (!track) return;
+                let allProducts = [];
+                if (window.BoseSweets && window.BoseSweets.LocalDatabase && window.BoseSweets.LocalDatabase.products) {
+                    allProducts = window.BoseSweets.LocalDatabase.products;
                 }
-                
-                pool.sort(() => 0.5 - Math.random());
-                const selectedRecs = pool.slice(0, 4);
-
-                smartRecommendationsContainer.innerHTML = '';
-                selectedRecs.forEach(product => {
-                    let stateKey = `rec-${product.id}`;
-                    if (!quantitiesState[stateKey]) {
-                        quantitiesState[stateKey] = 1;
-                    }
-
-                    const safeId = escapeHTML(product.id);
-                    const safeTitle = escapeHTML(product.title);
-                    const safeFlavor = escapeHTML(product.flavor);
-                    const safeFlavorDesc = escapeHTML(uniqueFlavorsDescriptions[product.flavorKey] || "");
-
-                    const card = document.createElement('div');
-                    card.className = 'bs-product-card';
-                    card.innerHTML = `
-                        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" class="card-image-box" alt="${safeTitle}" loading="lazy" onclick="location.href='product.html?id=${safeId}'">
-                        <h3 class="card-title-text" onclick="location.href='product.html?id=${safeId}'">${safeTitle}</h3>
-                        <div class="card-flavor-text">${safeFlavor}</div>
-                        <p class="card-desc-paragraph" style="color: #111111 !important;">${safeFlavorDesc}</p>
-                        <div class="card-meta-action-row">
-                            <div class="card-controls-block">
-                                <div class="card-price-and-counter-zone">
-                                    <div class="card-quantity-selector">
-                                        <button class="selector-action-btn rec-plus-btn" data-id="${safeId}">+</button>
-                                        <span class="selector-value-display" id="qty-rec-${safeId}">${quantitiesState[stateKey]}</span>
-                                        <button class="selector-action-btn rec-minus-btn" data-id="${safeId}">-</button>
-                                    </div>
-                                    <div class="card-price-display-text">${product.price} EGP</div>
-                                </div>
-                                <button class="card-add-to-cart-action-btn rec-add-cart-trigger" data-id="${safeId}">إضافة للسلة</button>
-                            </div>
+                const recs = allProducts.slice(0, 3);
+                track.innerHTML = recs.map(product => {
+                    return `
+                        <div class="bs-product-card" style="width:280px; flex-shrink:0;" onclick="location.href='category.html?type=${product.id}'">
+                            <img src="${product.image}" class="card-image-box" alt="${product.title}" loading="lazy">
+                            <h3 class="card-title-text">${product.title}</h3>
+                            <div class="card-flavor-text">${product.flavor}</div>
+                            <div class="card-price-display-text" style="text-align:center; margin-top:8px;">${product.price} EGP</div>
                         </div>
                     `;
-                    smartRecommendationsContainer.appendChild(card);
-                });
-
-                smartRecommendationsContainer.querySelectorAll('.rec-plus-btn').forEach(btn => {
-                    btn.onclick = function(e) {
-                        e.stopPropagation();
-                        adjustProductQty(this.getAttribute('data-id'), 1, true);
-                    };
-                });
-
-                smartRecommendationsContainer.querySelectorAll('.rec-minus-btn').forEach(btn => {
-                    btn.onclick = function(e) {
-                        e.stopPropagation();
-                        adjustProductQty(this.getAttribute('data-id'), -1, true);
-                    };
-                });
-
-                smartRecommendationsContainer.querySelectorAll('.rec-add-cart-trigger').forEach(btn => {
-                    btn.onclick = function(e) {
-                        e.stopPropagation();
-                        addProductToCart(this.getAttribute('data-id'), true);
-                    };
-                });
+                }).join('');
             }
 
-            function initCatalogUI(categoryKey) {
-                currentCategoryKey = categoryKey;
-                const meta = categoriesStaticSchema[categoryKey] || { name: "تصفح المنتجات", desc: "تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة حقيقية ومضمونة." };
-                
-                titleNode.textContent = meta.name;
-                descNode.textContent = meta.desc;
-                heroImageNode.setAttribute('alt', `تصنيف ${meta.name} الفاخر حلويات بوسي`);
-
-                let allCategoryProducts = fallbackProductsEngine[categoryKey] || [];
-                loadedProducts = allCategoryProducts;
-
-                if (categoryKey === "despacito") {
-                    tabsContainer.style.display = "flex";
-                    tabsContainer.innerHTML = `
-                        <button class="tab-trigger-btn ${activeSizeTab === 'triangle' ? 'active-tab' : ''}" data-size="triangle">مثلث</button>
-                        <button class="tab-trigger-btn ${activeSizeTab === 'medium' ? 'active-tab' : ''}" data-size="medium">وسط</button>
-                        <button class="tab-trigger-btn ${activeSizeTab === 'large' ? 'active-tab' : ''}" data-size="large">كبير</button>
+            function renderReviewsFeed(reviewsList) {
+                const waterfall = document.getElementById('categoryReviewsWaterfall');
+                if (!waterfall) return;
+                waterfall.innerHTML = reviewsList.map(rev => {
+                    let stars = Array(rev.rating).fill('<i class="fa-solid fa-star" style="color:#D4AF37;"></i>').join('');
+                    return `
+                        <div class="review-waterfall-item-card" style="background:#FFFFFF; border:1px solid rgba(255,145,164,0.22); padding:16px; border-radius:20px; margin-bottom:16px; box-shadow:0 4px 10px rgba(255,145,164,0.05);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <strong style="color:#111111; font-weight:700;">${rev.author}</strong>
+                                <div>${stars}</div>
+                            </div>
+                            <p style="color:#111111; font-size:14px; margin:0;">${rev.content}</p>
+                        </div>
                     `;
-                    
-                    tabsContainer.querySelectorAll('.tab-trigger-btn').forEach(btn => {
-                        btn.onclick = function() {
-                            tabsContainer.querySelectorAll('.tab-trigger-btn').forEach(b => b.classList.remove('active-tab'));
-                            this.classList.add('active-tab');
-                            activeSizeTab = this.getAttribute('data-size');
-                            const filtered = allCategoryProducts.filter(p => p.size === activeSizeTab);
-                            renderCatalogCards(filtered);
-                        };
-                    });
-
-                    const filtered = allCategoryProducts.filter(p => p.size === activeSizeTab);
-                    renderCatalogCards(filtered);
-                } else {
-                    tabsContainer.style.display = "none";
-                    renderCatalogCards(allCategoryProducts);
-                }
-            }
-
-            const starsSelectorZone = document.getElementById('revStarsSelector');
-            if (starsSelectorZone) {
-                starsSelectorZone.querySelectorAll('.review-star-input-node').forEach(star => {
-                    star.addEventListener('click', function() {
-                        selectedRatingValue = parseInt(this.getAttribute('data-rating'), 10);
-                        starsSelectorZone.querySelectorAll('.review-star-input-node').forEach(s => {
-                            if (parseInt(s.getAttribute('data-rating'), 10) <= selectedRatingValue) {
-                                s.classList.add('selected-star');
-                            } else {
-                                s.classList.remove('selected-star');
-                            }
-                        });
-                    });
-                });
-            }
-
-            if (luxuryReviewForm) {
-                luxuryReviewForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const nameVal = document.getElementById('revAuthorName').value.trim();
-                    const itemsVal = document.getElementById('revPurchasedItems').value.trim();
-                    const contentVal = document.getElementById('revContent').value.trim();
-                    
-                    if (!nameVal || !itemsVal || !contentVal) return;
-
-                    const newReviewObj = {
-                        author: nameVal,
-                        items: itemsVal,
-                        rating: selectedRatingValue,
-                        content: contentVal,
-                        images: ["https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"]
-                    };
-
-                    initialStaticReviews.unshift(newReviewObj);
-                    renderReviewsFeed(initialStaticReviews);
-
-                    try {
-                        if (window.BoseSweets && window.BoseSweets.Engines && window.BoseSweets.Engines.ReviewEngine) {
-                            window.BoseSweets.Engines.ReviewEngine.createReview({
-                                productId: currentCategoryKey,
-                                rating: selectedRatingValue,
-                                author: nameVal,
-                                items: itemsVal,
-                                content: contentVal
-                            });
-                        }
-                    } catch(err) {
-                        console.log("Offline review storage buffered.");
-                    }
-
-                    luxuryReviewForm.reset();
-                    selectedRatingValue = 5;
-                    starsSelectorZone.querySelectorAll('.review-star-input-node').forEach(s => s.classList.remove('selected-star'));
-                    alert("تمت إضافة مراجعتك بنجاح، شكراً لمشاركتك السعيدة مع حلويات بوسي.");
-                });
+                }).join('');
             }
 
             async function syncWithLiveFirebase() {
                 try {
+                    const currentCategoryKey = getQueryParam('type') || "despacito";
                     if (window.BoseSweets && window.BoseSweets.Engines && window.BoseSweets.Engines.ProductEngine) {
-                        const liveData = await window.BoseSweets.Engines.ProductEngine.getProductsByCategory(currentCategoryKey);
-                        if (liveData && liveData.length > 0) {
-                            loadedProducts = liveData.map(p => ({
+                        const liveProducts = await window.BoseSweets.Engines.ProductEngine.getProductsByCategory(currentCategoryKey);
+                        if (liveProducts && liveProducts.length > 0) {
+                            const loadedProducts = liveProducts.map(p => ({
                                 id: p.id,
-                                title: p.title.ar,
-                                size: p.size || "",
-                                flavor: p.flavor.ar,
-                                flavorKey: p.flavorKey || "mix",
-                                price: p.price
+                                title: p.name.ar,
+                                flavor: p.flavor ? p.flavor.ar : "",
+                                description: p.description ? p.description.ar : "",
+                                price: p.price,
+                                image: p.imageId || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png"
                             }));
-                            if (currentCategoryKey === "despacito") {
-                                const filtered = loadedProducts.filter(p => p.size === activeSizeTab);
-                                renderCatalogCards(filtered);
-                            } else {
+                            if (loadedProducts.length > 0) {
                                 renderCatalogCards(loadedProducts);
                             }
                         }
@@ -1103,10 +309,8 @@
                         if (liveReviews && liveReviews.length > 0) {
                             const mappedReviews = liveReviews.map(r => ({
                                 author: r.author,
-                                items: r.items,
                                 rating: r.rating,
-                                content: r.content,
-                                images: r.images || []
+                                content: r.content
                             }));
                             renderReviewsFeed(mappedReviews.concat(initialStaticReviews));
                         }
@@ -1122,7 +326,32 @@
             buildSmartRecommendations();
             updateCartBadge();
             syncWithLiveFirebase();
-            window.addEventListener('storage', updateCartBadge);
+
+            const mToggle = document.querySelector('.menu-toggle-btn');
+            const closeMenuBtn = document.getElementById('closeMenuBtn');
+            const sMenu = document.getElementById('sideMenu');
+            const mOverlay = document.getElementById('menuOverlay');
+
+            if (mToggle && sMenu && mOverlay) {
+                mToggle.addEventListener('click', () => {
+                    sMenu.classList.add('active');
+                    mOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            if (closeMenuBtn && sMenu && mOverlay) {
+                closeMenuBtn.addEventListener('click', () => {
+                    sMenu.classList.remove('active');
+                    mOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+                mOverlay.addEventListener('click', () => {
+                    sMenu.classList.remove('active');
+                    mOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            }
         });
     </script>
 </body>
