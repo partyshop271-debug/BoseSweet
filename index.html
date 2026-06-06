@@ -3,7 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>حلويات بوسي - الفخامة والجودة الإبداعية</title>
+  
+  <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
+  <meta name="description" content="منصة بيع إلكترونية متكاملة لمنتجات حلويات بوسي الفاخرة. تسوقي أحدث تشكيلات الدوناتس، السينابون، التورتات المخصصة، وبوكسات الورد الطبيعي بمركز الفرافرة.">
+  <meta name="keywords" content="حلويات بوسي, تورتات الفرافرة, بوكس هدايا, كب كيك, سينابون, ورد طبيعي, دوناتس">
+  <link rel="canonical" href="https://bosesweets.com">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
+  <meta property="og:description" content="تسوقي التشكيلات الفاخرة والتورتات المخصصة وبوكسات الورد الطبيعي من حلويات بوسي بمركز الفرافرة.">
+  <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+  <meta property="og:url" content="https://bosesweets.com">
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +22,12 @@
   <link rel="stylesheet" href="style-main.css">
 </head>
 <body>
+
+  <div class="ticker-navigation-wrapper">
+    <div class="ticker-text-line">
+      ✨ تم اختيار المكونات بعناية للحصول على أفضل جودة طعم نقية تشرفك ✨ فرع الكفاح بمركز الفرافرة يرحب بكم ✨ اطلبي تورتتك المخصصة الآن من المحاكي الذكي ✨
+    </div>
+  </div>
 
   <header id="main-header" class="site-header">
     <div class="header-container">
@@ -33,7 +49,7 @@
   <main class="main-content-wrapper">
     
     <section id="hero-showcase" class="hero-section">
-      <div class="hero-overlay">
+      <div class="hero-overlay fade-in-element">
         <h2 class="hero-title">تم اختيار المكونات بعناية للحصول على أفضل جودة</h2>
         <p class="hero-subtitle">تم تصميم تشكيلاتنا الفاخرة لتناسب مختلف المناسبات السعيدة</p>
         <button id="hero-cta-btn" class="cta-primary">استعرض المزيد</button>
@@ -59,13 +75,13 @@
         <h3 class="section-title">التخصيص الفاخر</h3>
       </div>
       <div class="simulators-grid">
-        <div id="cake-simulator-card" class="simulator-card">
-          <h4>محاكي التورتات الذكي</h4>
+        <div id="cake-simulator-card" class="simulator-card fade-in-element">
+          <h4>محاكي Tورتات بوسي الذكي</h4>
           <p>يمكنك اختيار التصميم المناسب لك وتحديد أدق تفاصيل الحشو والحجم لكل فرد</p>
           <button id="open-cake-sim-btn" class="cta-secondary">دخول المحاكي</button>
         </div>
-        <div id="flower-simulator-card" class="simulator-card">
-          <h4>محاكي بوكسات الورد</h4>
+        <div id="flower-simulator-card" class="simulator-card fade-in-element">
+          <h4>محاكي بوكسات الورد الفاخر</h4>
           <p>تنسيق فاخر للشوكولاتة والورد الطبيعي المبهج ليناسب ذوقك الراقي</p>
           <button id="open-flower-sim-btn" class="cta-secondary">دخول المحاكي</button>
         </div>
@@ -75,7 +91,6 @@
   </main>
 
   <aside id="sidebar-cart-drawer" class="cart-drawer" aria-hidden="true">
-    <div class="drawer-overlay"></div>
     <div class="drawer-content">
       <div class="drawer-header">
         <h4>سلة المشتريات</h4>
@@ -94,7 +109,17 @@
 
   <footer id="main-footer" class="site-footer">
     <div class="footer-container">
-      <p>&copy; 2026 حلويات بوسي. جميع الحقوق محفوظة لفرع الكفاح، مركز الفرافرة.</p>
+      <div class="footer-brand-zone">
+        <h3>حلويات بوسي</h3>
+        <p>صنعناها بحب لتهديها لمن تحب</p>
+      </div>
+      <div class="footer-social-icons">
+        <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" aria-label="Facebook">Facebook</a>
+        <a href="https://www.instagram.com/bose_sweets" target="_blank" aria-label="Instagram">Instagram</a>
+      </div>
+      <div class="footer-copyright-zone">
+        <p>&copy; 2026 حلويات بوسي. جميع الحقوق محفوظة لفرع الكفاح، مركز الفرافرة.</p>
+      </div>
     </div>
   </footer>
 
@@ -115,5 +140,6 @@
   <script src="ui-products.js"></script>
   <script src="ui-simulators.js"></script>
   <script src="ui-cart-checkout.js"></script>
+  <script src="ui-runtime-binding.js"></script>
 </body>
 </html>
