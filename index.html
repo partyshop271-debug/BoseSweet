@@ -3,22 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  
   <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-  <meta name="description" content="منصة بيع إلكترونية متكاملة لمنتجات حلويات بوسي الفاخرة. تسوقي أحدث تشكيلات الدوناتس، السينابون، التورتات المخصصة، وبوكسات الورد الطبيعي بمركز الفرافرة.">
+  <meta name="description" content="الموقع الرسمي لحلويات بوسي بمركز الفرافرة. تسوقي أحدث تشكيلات الدوناتس، السينابون، التورتات المخصصة، وبوكسات الورد الطبيعي الفاخرة.">
   <meta name="keywords" content="حلويات بوسي, تورتات الفرافرة, بوكس هدايا, كب كيك, سينابون, ورد طبيعي, دوناتس">
   <link rel="canonical" href="https://bosesweets.com">
-  
   <meta property="og:type" content="website">
   <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
   <meta property="og:description" content="تسوقي التشكيلات الفاخرة والتورتات المخصصة وبوكسات الورد الطبيعي من حلويات بوسي بمركز الفرافرة.">
   <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
   <meta property="og:url" content="https://bosesweets.com">
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-  
   <link rel="stylesheet" href="style-main.css">
 </head>
 <body>
@@ -31,13 +27,15 @@
 
   <header id="main-header" class="site-header">
     <div class="header-container">
-      <div class="brand-logo">
+      <div class="main-navigation">
+        <button id="menu-toggle-btn" class="nav-hamburger-btn">☰ المنيو</button>
+      </div>
+      <div class="brand-logo-zone">
+        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="brand-logo-img">
         <h1 class="brand-title">حلويات بوسي</h1>
       </div>
-      <nav class="main-navigation">
-        <button id="menu-toggle-btn" class="nav-btn">تصفح المنيو</button>
-      </nav>
       <div class="header-actions">
+        <button id="search-trigger-btn" class="search-trigger-btn">🔍</button>
         <button id="cart-toggle-btn" class="cart-btn">
           <span class="cart-icon">🛒</span>
           <span id="cart-counter-badge" class="cart-badge">0</span>
@@ -46,19 +44,32 @@
     </div>
   </header>
 
+  <aside id="sidebar-hamburger-drawer" class="hamburger-sidebar-drawer" aria-hidden="true">
+    <div class="drawer-content">
+      <div class="drawer-header">
+        <h4>تصفح المنيو الفاخر</h4>
+        <button id="close-hamburger-btn" class="close-btn">×</button>
+      </div>
+      <div class="drawer-body">
+        <ul class="sidebar-menu-list" id="sidebar-categories-list"></ul>
+      </div>
+    </div>
+  </aside>
+
   <main class="main-content-wrapper">
     
     <section id="hero-showcase" class="hero-section">
       <div class="hero-overlay fade-in-element">
-        <h2 class="hero-title">تم اختيار المكونات بعناية للحصول على أفضل جودة</h2>
-        <p class="hero-subtitle">تم تصميم تشكيلاتنا الفاخرة لتناسب مختلف المناسبات السعيدة</p>
-        <button id="hero-cta-btn" class="cta-primary">استعرض المزيد</button>
+        <h2 class="hero-title">صنعناها بحب لتهديها لمن تحب</h2>
+        <p class="hero-subtitle">تشكيلات فاخرة تم تصميمها وتجهيزها بأجود الخامات الطبيعية لتسعد أوقاتكم وتشرفكم في كل مناسبة</p>
+        <button id="hero-cta-btn" class="cta-primary">تصفح المنيو</button>
       </div>
     </section>
 
     <section id="categories-grid-section" class="categories-section">
       <div class="section-heading">
         <h3 class="section-title">تسوق حسب الأقسام</h3>
+        <p class="section-desc">اختاري من بين المجموعات الـ 12 المعتمدة لتصلك طازجة وفخمة</p>
       </div>
       <div id="categories-container" class="categories-grid"></div>
     </section>
@@ -66,23 +77,25 @@
     <section id="new-arrivals-section" class="products-section">
       <div class="section-heading">
         <h3 class="section-title">أحدث التشكيلات</h3>
+        <p class="section-desc">منتجات تم تحضيرها اليوم لتستمتعوا بالطعم الأصلي الغني</p>
       </div>
       <div id="products-container" class="products-grid"></div>
     </section>
 
     <section id="simulators-showcase-section" class="simulators-section">
       <div class="section-heading">
-        <h3 class="section-title">التخصيص الفاخر</h3>
+        <h3 class="section-title">التخصيص والخدمات الذكية الفاخرة</h3>
+        <p class="section-desc">اصنعي هديتك وتورتتك خطوة بخطوة بالشكل والمقاس المناسب لمناسبتك السعيدة</p>
       </div>
       <div class="simulators-grid">
         <div id="cake-simulator-card" class="simulator-card fade-in-element">
-          <h4>محاكي Tورتات بوسي الذكي</h4>
-          <p>يمكنك اختيار التصميم المناسب لك وتحديد أدق تفاصيل الحشو والحجم لكل فرد</p>
+          <h4>محاكي التورتات الذكي</h4>
+          <p>اختاري الحجم، عدد الأفراد، ونوع الحشو والطبقات بدقة، واكتبي عبارة التهنئة التي تسعد قلوبهم لتنفذ بالملي.</p>
           <button id="open-cake-sim-btn" class="cta-secondary">دخول المحاكي</button>
         </div>
         <div id="flower-simulator-card" class="simulator-card fade-in-element">
           <h4>محاكي بوكسات الورد الفاخر</h4>
-          <p>تنسيق فاخر للشوكولاتة والورد الطبيعي المبهج ليناسب ذوقك الراقي</p>
+          <p>نسقي بوكس الهدايا الخاص بكِ واختاري عدد الورد الطبيعي المبهج ونوع الشوكولاتة المفضلة ليتم تحضيرها بفخامة.</p>
           <button id="open-flower-sim-btn" class="cta-secondary">دخول المحاكي</button>
         </div>
       </div>
@@ -99,10 +112,10 @@
       <div id="cart-items-wrapper" class="drawer-body"></div>
       <div class="drawer-footer">
         <div class="cart-total-line">
-          <span>المجموع الفوري:</span>
+          <span>المجموع الفرعي:</span>
           <span id="cart-subtotal-display">0 جنيه</span>
         </div>
-        <button id="checkout-action-btn" class="checkout-btn">إتمام الطلب</button>
+        <button id="checkout-action-btn" class="checkout-btn">إتمام الطلب الشراء</button>
       </div>
     </div>
   </aside>
@@ -114,8 +127,8 @@
         <p>صنعناها بحب لتهديها لمن تحب</p>
       </div>
       <div class="footer-social-icons">
-        <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" aria-label="Facebook">Facebook</a>
-        <a href="https://www.instagram.com/bose_sweets" target="_blank" aria-label="Instagram">Instagram</a>
+        <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" aria-label="Facebook" class="social-icon-fb">Facebook</a>
+        <a href="https://www.instagram.com/bose_sweets" target="_blank" aria-label="Instagram" class="social-icon-ig">Instagram</a>
       </div>
       <div class="footer-copyright-zone">
         <p>&copy; 2026 حلويات بوسي. جميع الحقوق محفوظة لفرع الكفاح، مركز الفرافرة.</p>
@@ -125,7 +138,6 @@
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
   <script src="core-bootstrap.js"></script>
   <script src="core-event-bus.js"></script>
   <script src="core-state-store.js"></script>
