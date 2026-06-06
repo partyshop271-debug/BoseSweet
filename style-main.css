@@ -30,7 +30,7 @@ body {
   line-height: 40px;
   font-size: 13px;
   font-weight: 700;
-  border-bottom: 1px solid rgba(255, 145, 164, 0.4);
+  border-bottom: 1px solid rgba(255, 145, 164, 0.3);
 }
 
 .ticker-text-line {
@@ -77,7 +77,7 @@ body {
   background: none;
   border: 1px solid #FF91A4;
   padding: 8px 18px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: #111111;
   cursor: pointer;
@@ -93,7 +93,7 @@ body {
 .brand-logo-zone {
   position: absolute;
   top: 50%;
-  right: 150px;
+  right: 140px;
   transform: translateY(-50%);
   display: flex;
   align-items: center;
@@ -246,79 +246,106 @@ body {
   margin-top: 8px;
 }
 
-.categories-section, .products-section, .simulators-section {
+.showcase-waterfall-layout {
+  display: block;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
-  margin-bottom: 40px;
 }
 
-.categories-grid, .products-grid, .simulators-grid {
+.waterfall-category-block {
+  display: block;
+  width: 100%;
+  margin-bottom: 60px;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid rgba(255, 145, 164, 0.15);
+  padding-bottom: 40px;
+}
+
+.category-block-header {
+  text-align: right;
+  margin-bottom: 25px;
+}
+
+.category-block-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111111;
+  border-right: 4px solid #FF91A4;
+  padding-right: 12px;
+  margin-bottom: 8px;
+}
+
+.category-block-desc {
+  font-size: 14px;
+  color: #111111;
+  opacity: 0.8;
+  max-width: 900px;
+}
+
+.products-flex-grid {
   display: block;
   width: 100%;
   text-align: center;
 }
 
-.category-card, .product-card, .simulator-card {
+.product-card {
   display: inline-block;
   vertical-align: top;
-  width: 320px;
-  margin: 15px;
+  width: 280px;
+  margin: 12px;
   background-color: #FFFFFF;
-  border: 1px solid rgba(255, 145, 164, 0.4);
+  border: 1px solid rgba(255, 145, 164, 0.35);
   border-radius: 8px;
-  padding: 20px;
+  padding: 16px;
   text-align: right;
-  box-shadow: 0 6px 15px rgba(255, 145, 164, 0.05);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(255, 145, 164, 0.04);
+  transition: all 0.3s ease;
   overflow: hidden;
 }
 
-.category-card:hover, .product-card:hover, .simulator-card:hover {
+.product-card:hover {
   border-color: #FF91A4;
-  box-shadow: 0 10px 25px rgba(255, 145, 164, 0.25);
-  transform: translateY(-5px);
+  box-shadow: 0 8px 22px rgba(255, 145, 164, 0.2);
+  transform: translateY(-4px);
 }
 
-.product-thumb, .category-thumb {
+.product-thumb {
   width: 100%;
-  height: 220px;
+  height: 190px;
   object-fit: cover;
   border-radius: 6px;
-  margin-bottom: 15px;
-  background-color: #FFFFFF;
+  margin-bottom: 12px;
 }
 
-.product-title, .category-title {
-  font-size: 18px;
+.product-title {
+  font-size: 16px;
   font-weight: 700;
   color: #111111;
-  margin-bottom: 10px;
-  white-space: normal;
+  margin-bottom: 8px;
 }
 
 .product-desc {
-  font-size: 14px;
+  font-size: 13px;
   color: #111111;
   opacity: 0.75;
-  margin-bottom: 15px;
-  height: 45px;
+  margin-bottom: 12px;
+  height: 40px;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .product-meta-row {
   display: block;
-  margin-top: 15px;
-  height: 40px;
+  height: 35px;
+  margin-top: 12px;
 }
 
 .product-price-display {
   float: right;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: #FF91A4;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .add-to-cart-btn {
@@ -327,8 +354,8 @@ body {
   background-color: #FFFFFF;
   border: 1px solid #FF91A4;
   color: #111111;
-  padding: 6px 16px;
-  font-size: 14px;
+  padding: 4px 14px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   border-radius: 4px;
@@ -339,30 +366,68 @@ body {
   background-color: #FF91A4;
 }
 
-.simulator-card {
-  width: 45%;
-  max-width: 480px;
-  text-align: center;
+.simulators-interactive-workspace {
+  max-width: 1200px;
+  margin: 80px auto;
+  padding: 0 20px;
 }
 
-.simulator-card h4 {
+.big-composite-simulator-block {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background-color: #FFFFFF;
+  border: 1px solid #FF91A4;
+  border-radius: 12px;
+  padding: 30px 15px;
+  box-shadow: 0 6px 25px rgba(255, 145, 164, 0.08);
+}
+
+.interactive-panel-card {
+  display: inline-block;
+  vertical-align: top;
+  width: 45%;
+  max-width: 500px;
+  margin: 0 15px;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(255, 145, 164, 0.2);
+  border-radius: 8px;
+  padding: 25px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.interactive-panel-card:hover {
+  border-color: #FF91A4;
+  box-shadow: 0 6px 20px rgba(255, 145, 164, 0.15);
+}
+
+.panel-card-visual-header {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.panel-card-title {
   font-size: 20px;
   font-weight: 700;
+  color: #111111;
   margin-bottom: 12px;
 }
 
-.simulator-card p {
+.panel-card-desc {
   font-size: 14px;
-  margin-bottom: 20px;
+  color: #111111;
   opacity: 0.8;
+  margin-bottom: 20px;
+  line-height: 1.6;
 }
 
 .cta-secondary {
   font-family: 'Cairo', sans-serif;
   background-color: #FFFFFF;
   border: 1px solid #FF91A4;
-  padding: 10px 24px;
-  font-size: 15px;
+  padding: 10px 28px;
+  font-size: 14px;
   font-weight: 700;
   color: #111111;
   cursor: pointer;
@@ -428,28 +493,12 @@ body {
   left: 0;
 }
 
-.drawer-overlay {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(255, 255, 255, 0.7);
-  z-index: 1999;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(2px);
-}
-
-.drawer-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.drawer-content {
-  position: relative;
-  height: 100%;
+.close-btn {
+  float: left;
+  background: none;
+  border: none;
+  font-size: 28px;
+  cursor: pointer;
 }
 
 .drawer-header {
@@ -462,15 +511,6 @@ body {
   float: right;
   font-size: 18px;
   font-weight: 700;
-}
-
-.close-btn {
-  float: left;
-  background: none;
-  border: none;
-  font-size: 28px;
-  cursor: pointer;
-  line-height: 1;
 }
 
 .drawer-body {
@@ -524,12 +564,6 @@ body {
   font-weight: 700;
   cursor: pointer;
   border-radius: 4px;
-  box-shadow: 0 4px 10px rgba(255, 145, 164, 0.15);
-  transition: all 0.2s ease;
-}
-
-.checkout-btn:hover {
-  background-color: #FF91A4;
 }
 
 .site-footer {
@@ -578,38 +612,22 @@ body {
 }
 
 @keyframes boseFadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 768px) {
-  .category-card, .product-card {
+  .product-card {
     width: 100%;
     max-width: 340px;
     margin: 15px auto;
     display: block;
   }
-  .simulator-card {
+  .interactive-panel-card {
     width: 100%;
-    max-width: 340px;
-    margin: 20px auto;
+    margin: 15px 0;
     display: block;
   }
-  .hero-title {
-    font-size: 24px;
-  }
-  .brand-title {
-    font-size: 20px;
-  }
-  .site-header {
-    height: 75px;
-  }
-  .main-content-wrapper {
-    padding-top: 115px;
-  }
-  .brand-logo-zone {
-    right: 70px;
-  }
+  .hero-title { font-size: 24px; }
+  .brand-title { font-size: 20px; }
+  .brand-logo-zone { right: 70px; }
 }
