@@ -14,358 +14,445 @@
   <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
   <meta property="og:url" content="https://bosesweets.com">
   
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Bakery",
-    "name": "حلويات بوسي",
-    "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-    "url": "https://bosesweets.com",
-    "telephone": "+201000000000",
-    "priceRange": "$$",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "فرع الكفاح",
-      "addressLocality": "مركز الفرافرة",
-      "addressRegion": "محافظة الوادي الجديد",
-      "addressCountry": "EG"
-    }
-  }
-  </script>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-weight/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style-main.css">
 </head>
 <body>
 
-  <div class="ticker-navigation-wrapper">
-    <div class="ticker-text-line">
-      ✨ تم اختيار المكونات بعناية للحصول على أفضل جودة طعم نقية تشرفك ✨ فرع الكفاح بمركز الفرافرة يرحب بكم ✨ اطلبي تورتتك المخصصة الآن من المحاكي الذكي ✨ تم اختيار المكونات بعناية للحصول على أفضل جودة طعم نقية تشرفك ✨ فرع الكفاح بمركز الفرافرة يرحب بكم ✨ اطلبي تورتتك المخصصة الآن من المحاكي الذكي ✨
+  <div class="announcement-marquee-bar" id="announcementBar">
+    <div class="marquee-inner-container">
+      <span class="marquee-text-item">✨ حلويات بوسي الفاخرة - طعم يأخذك لعالم آخر من السعادة ✨</span>
+      <span class="marquee-text-item">🧁 جودة ملكية وخامات منتقاة بعناية لضمان التميز 🧁</span>
+      <span class="marquee-text-item">🌹 هدايا وتنسيقات ورد طبيعي تليق بكل مناسباتكم السعيدة 🌹</span>
     </div>
   </div>
 
-  <header id="main-header" class="site-header">
-    <div class="header-container">
-      <div class="main-navigation">
-        <button id="menu-toggle-btn" class="nav-hamburger-btn" aria-label="قائمة التصفح">☰</button>
+  <header class="app-main-sticky-header">
+    <div class="header-container-wrapper">
+      <button class="header-action-trigger" id="sidebarToggleBtn" aria-label="القائمة الجانبية">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <div class="brand-logo-identity-zone">
+        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="brand-core-logo">
+        <span class="brand-legal-title-text">حلويات بوسي</span>
       </div>
-      <div class="brand-logo-zone">
-        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي" class="brand-logo-img">
-        <h1 class="brand-title">حلويات بوسي</h1>
-      </div>
-      <div class="header-actions">
-        <button id="search-trigger-btn" class="search-trigger-btn" aria-label="بحث">🔍</button>
-        <button id="cart-toggle-btn" class="cart-btn" aria-label="سلة المشتريات">
-          <span class="cart-icon">🛒</span>
-          <span id="cart-counter-badge" class="cart-badge">0</span>
+      
+      <div class="header-utilities-buttons">
+        <button class="utility-action-btn" id="globalSearchBtn" aria-label="البحث">
+          <i class="fas fa-search"></i>
+        </button>
+        <button class="utility-action-btn cart-relative-wrapper" id="headerCartBtn" aria-label="سلة المشتريات">
+          <i class="fas fa-shopping-bag"></i>
+          <span class="cart-badge-counter-node" id="cartGlobalCounter">0</span>
         </button>
       </div>
     </div>
   </header>
 
-  <aside id="sidebar-hamburger-drawer" class="hamburger-sidebar-drawer" aria-hidden="true">
-    <div class="drawer-content">
-      <div class="drawer-header">
-        <h4>قائمة التصفح</h4>
-        <button id="close-hamburger-btn" class="close-btn">×</button>
+  <aside class="sidebar-navigation-panel" id="sidebarNavigationDrawer">
+    <div class="sidebar-inner-scrollable">
+      <div class="sidebar-header-branding">
+        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="sidebar-logo-img">
+        <button class="sidebar-close-trigger" id="sidebarCloseBtn" aria-label="إغلاق">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
-      <div class="drawer-body">
-        <ul class="sidebar-menu-list">
-          <li><a href="#section-excellence" class="sidebar-menu-link">عقد من التميز</a></li>
-          <li><a href="#section-mastery" class="sidebar-menu-link">عقد من الإتقان</a></li>
-          <li><a href="#section-best-sellers" class="sidebar-menu-link">الأكثر مبيعاً</a></li>
-          <li><a href="#cake-simulator-block" class="sidebar-menu-link">محاكي التورت</a></li>
-          <li><a href="#section-new-arrivals" class="sidebar-menu-link">وصل حديثاً</a></li>
-          <li><a href="#section-our-products" class="sidebar-menu-link">منتجاتنا</a></li>
-          <li><a href="#flower-simulator-block" class="sidebar-menu-link">محاكي الورد</a></li>
-          <li><a href="#section-pride" class="sidebar-menu-link">الفخر والاعتزاز</a></li>
-          <li><a href="#section-categories-showcase" class="sidebar-menu-link">تسوق حسب الفئة</a></li>
-        </ul>
-      </div>
+      <nav class="sidebar-nav-links-tree">
+        <a href="index.html" class="nav-link-item active"><i class="fas fa-home"></i> الرئيسية</a>
+        <a href="menu.html" class="nav-link-item"><i class="fas fa-cookie-bite"></i> تصفح المنيو</a>
+        <a href="simulator-cake.html" class="nav-link-item"><i class="fas fa-birthday-cake"></i> مصمم التورتات</a>
+        <a href="simulator-flower.html" class="nav-link-item"><i class="fas fa-fan"></i> مصمم بوكسات الورد</a>
+        <a href="track-order.html" class="nav-link-item"><i class="fas fa-truck"></i> تتبع طلبك</a>
+      </nav>
     </div>
   </aside>
+  <div class="sidebar-overlay-backdrop" id="sidebarBackdrop"></div>
 
-  <main class="main-content-wrapper">
+  <main class="app-main-content-flow">
     
-    <section id="section-excellence" class="excellence-hero-section">
-      <div class="section-container text-center fade-in-element">
-        <h2 class="excellence-title text-center">عقد من <span class="highlight-pink">التميز</span> في صناعة الحلويات</h2>
-        <p class="excellence-desc text-center">تم تصميم وتجهيز تشكيلاتنا الفاخرة بأجود الخامات الطبيعية والنقية 100% لتلبي تطلعات ذوقكم الرفيع وتمنحكم تجربة تذوق ساحرة تشرفكم في جميع مناسباتكم السعيدة وتخلد لحظاتكم الرائعة.</p>
-        <button id="hero-order-now-btn" class="cta-primary">اطلب الآن</button>
-      </div>
-    </section>
-
-    <div id="waterfall-showcase-zone" class="waterfall-wrapper-layout">
-      <div class="waterfall-overlay-top"></div>
-      <div class="waterfall-container">
-        <div class="waterfall-column column-up">
-          <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي Placeholder"></div>
-          <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي Placeholder"></div>
-          <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي Placeholder"></div>
-          <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي Placeholder"></div>
-        </div>
-        <div class="waterfall-column column-down">
-          <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي Placeholder"></div>
-          <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي Placeholder"></div>
-          <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي Placeholder"></div>
-          <div class="waterfall-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي Placeholder"></div>
-        </div>
-      </div>
-      <div class="waterfall-overlay-bottom"></div>
-    </div>
-
-    <section id="section-mastery" class="mastery-section">
-      <div class="section-heading text-center">
-        <h3 class="section-title text-center">عقد من الإتقان</h3>
-        <p class="section-desc text-center">تفاصيل دقيقة تصنع الفارق ومخبوزات طازجة يومياً تعبر عن هويتنا وخبراتنا الطويلة في إرضاء حواسكم الرفيعة.</p>
-      </div>
-      <div class="mastery-infinite-slider-wrapper">
-        <div class="mastery-slider-track">
-          <a href="#section-categories-showcase" class="mastery-slide-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="إتقان حلويات بوسي 1"></a>
-          <a href="#section-categories-showcase" class="mastery-slide-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="إتقان حلويات بوسي 2"></a>
-          <a href="#section-categories-showcase" class="mastery-slide-item"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="إتقان حلويات بوسي 3"></a>
-        </div>
-      </div>
-      <div class="slider-dots-container">
-        <span class="dot active"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-      </div>
-    </section>
-
-    <section id="section-best-sellers" class="products-section-slider">
-      <div class="section-heading text-center">
-        <h3 class="section-title text-center">الأكثر مبيعاً</h3>
-        <p class="section-desc text-center">الخيارات المفضلة التي نالت ثقة وإعجاب عملائنا الكرام وتكرر طلبها دائماً لما تحمله من جودة فريدة تشرفك.</p>
-      </div>
-      <div class="horizontal-scroll-cards-container" id="best-sellers-render-target">
-        <div class="unified-product-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ديسباسيتو نوتيلا فاخر" class="product-thumb" loading="lazy">
-          <div class="product-card-body">
-            <h4 class="product-card-name">ديسباسيتو نوتيلا</h4>
-            <span class="product-flavor-name">نكهة الشوكولاتة الغنية</span>
-            <p class="product-unified-desc">كيك فادج غني مغمور بالشوكولاتة يعلوه طبقة من النوتيلا وموس الشوكولاتة الفاخر.</p>
-            <div class="product-card-action-row">
-              <div class="quantity-counter-widget">
-                <button class="counter-btn minus-btn">-</button>
-                <span class="counter-display-value">1</span>
-                <button class="counter-btn plus-btn">+</button>
-              </div>
-              <div class="price-and-action">
-                <span class="product-price-tag">150 جنيه</span>
-                <button class="unified-add-to-cart-action">اضافة للسلة</button>
-              </div>
+    <section class="composite-brand-simulator-hero-block">
+      <div class="hero-slider-container" id="heroSliderStage">
+        <div class="hero-slide-slide active">
+          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="hero-placeholder-image">
+          <div class="hero-slide-content-overlay">
+            <h1 class="hero-title-main-node">حلويات بوسي</h1>
+            <p class="hero-subtitle-desc-node">صنعناها بحب لتهديها لمن تحب، تشكيلات فاخرة مجهزة بأعلى معايير الجودة الإحترافية.</p>
+            <div class="hero-actions-button-group">
+              <a href="menu.html" class="hero-cta-button-node primary-pink-btn">تصفح المنيو</a>
+              <a href="#newArrivalsSection" class="hero-cta-button-node secondary-white-btn">أحدث الإضافات</a>
             </div>
           </div>
         </div>
-        </div>
-    </section>
-
-    <section id="cake-simulator-block" class="composite-brand-simulator-hero-block">
-      <div class="simulator-inner-content">
-        <div class="panel-card-visual-header">🎂</div>
-        <h3 class="panel-card-title text-center">محاكي التورتات الذكي</h3>
-        <p class="panel-card-desc text-center">انفردي بتصميم تورتتك الفاخرة بنفسك خطوة بخطوة. حددي المقاس، الحجم، عدد الأفراد، نوع الحشو، والطبقات بدقة، واكتبي عبارة التهنئة لتنفذ بالملي بقفل تحققي آمن ومثالي للمقاسات المربعة والمستطيلة لتكون نجمة مناسبتك الملكية السعيدة.</p>
-        
-        <div class="simulator-big-image-wrapper">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة محاكي التورتات الفاخر" class="simulator-big-img" loading="lazy">
-        </div>
-        
-        <button id="open-cake-sim-btn" class="cta-secondary">دخول المحاكي</button>
       </div>
     </section>
 
-    <section id="section-new-arrivals" class="products-section-slider">
-      <div class="section-heading text-center">
-        <h3 class="section-title text-center">وصل حديثاً</h3>
-        <p class="section-desc text-center">أحدث ابتكارات ونكهات مطبخ حلويات بوسي الفاخرة تم إعدادها لتفاجئ ذوقكم بمزيج ساحر وجديد بالكامل.</p>
-      </div>
-      <div class="horizontal-scroll-cards-container" id="new-arrivals-render-target">
-        </div>
-      <div class="slider-dots-container">
-        <span class="dot active"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-      </div>
-    </section>
-
-    <section id="section-our-products" class="our-products-grid-section">
-      <div class="section-heading text-center">
-        <h3 class="section-title text-center">منتجاتنا</h3>
-        <p class="section-desc text-center">مجموعتنا الشاملة المصنوعة يدوياً بأعلى معايير الإتقان وخامات طبيعية 100% لتزين سهرتكم ولقاءاتكم العائلية الدافئة.</p>
-      </div>
-      <div class="products-binary-flex-grid" id="our-products-render-grid"></div>
-      <div class="show-more-action-zone text-center">
-        <button id="load-more-products-btn" class="cta-primary">إظهار المزيد</button>
-      </div>
-    </section>
-
-    <section id="flower-simulator-block" class="composite-brand-simulator-hero-block flower-theme-bg">
-      <div class="simulator-inner-content">
-        <div class="panel-card-visual-header">💐</div>
-        <h3 class="panel-card-title text-center">محاكي بوكسات الورد الفاخر</h3>
-        <p class="panel-card-desc text-center">نسقي هديتك وبوكس الورد الخاص بكِ بالكامل. اختاري بين الورد الطبيعي المبهج النضر، الصناعي الرفيع، أو ورد الستان الفاخر، وحددي عدد الورود، نوع الشوكولاتة المفضلة، الإضافات، الصور، والرسائل الخاصة ليتم تجهيزها وتنسيقها بفخامة مطلقة تشرفك أمام من تحبين.</p>
-        
-        <div class="simulator-big-image-wrapper">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="معاينة محاكي بوكسات الورد والستان" class="simulator-big-img" loading="lazy">
-        </div>
-        
-        <button id="open-flower-sim-btn" class="cta-secondary">دخول المحاكي</button>
-      </div>
-    </section>
-
-    <section id="section-pride" class="brand-pride-achievement-block">
-      <div class="pride-content-container text-center fade-in-element">
-        <h3 class="pride-title text-center">الفخر والاعتزاز برحلة نجاحنا</h3>
-        <p class="pride-story-p text-center">نحن في حلويات بوسي نعرف قيمة ما نقدمه جيداً. انطلقت رحلتنا بفرع الكفاح بمركز الفرافرة في محافظة الوادي الجديد واضعين جودة المكونات الطبيعية والاتقان الحقيقي كدستور لا نقبل المساس به. حكاية فخر بنيناها بثقتكم و بآلاف التورتات وبوكسات الورد الفاخرة التي جملت جمعاتكم ورسمت السعادة على وجوه من تحبون برقي ملموس ومصداقية تامة.</p>
-        
-        <div class="pride-video-showcase-wrapper">
-          <video class="pride-brand-video" controls poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" preload="none" aria-label="فيديو رحلة فخر واعتزاز حلويات بوسي">
-            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-            متصفحك لا يدعم تشغيل مقاطع الفيديو، يرجى تحديثه للاستمتاع بتجربة المشاهدة الفخمة.
-          </video>
-        </div>
-        
-        <div class="achievement-counters-grid">
+    <section class="brand-pride-achievement-block">
+      <div class="block-container-limiter">
+        <h2 class="section-title-node">لماذا حلويات بوسي؟</h2>
+        <p class="section-desc-node">نهتم بأدق تفاصيل منتجاتنا لنقدم تجربة تليق بالاختيارات الرفيعة لعملائنا في مركز الفرافرة.</p>
+        <div class="metrics-counters-flex-row">
           <div class="counter-metric-item">
-            <span class="counter-number">10+</span>
-            <span class="counter-label">سنوات الخبرة</span>
+            <div class="metric-icon-holder"><i class="fas fa-star"></i></div>
+            <div class="metric-number-node" data-target="100">100%</div>
+            <div class="metric-label-node">خامات طبيعية فاخرة</div>
           </div>
           <div class="counter-metric-item">
-            <span class="counter-number">15K+</span>
-            <span class="counter-label">العملاء السعداء</span>
+            <div class="metric-icon-holder"><i class="fas fa-heart"></i></div>
+            <div class="metric-number-node" data-target="5000">5000+</div>
+            <div class="metric-label-node">عميل يثق بنا</div>
           </div>
           <div class="counter-metric-item">
-            <span class="counter-number">30K+</span>
-            <span class="counter-label">الطلبات المنفذة</span>
-          </div>
-          <div class="counter-metric-item">
-            <span class="counter-number">8K+</span>
-            <span class="counter-label">تورتة مخصصة</span>
+            <div class="metric-icon-holder"><i class="fas fa-award"></i></div>
+            <div class="metric-number-node" data-target="12">12</div>
+            <div class="metric-label-node">فئة من الحلويات المبتكرة</div>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="section-categories-showcase" class="categories-showcase-section-slider">
-      <div class="section-heading text-center">
-        <h3 class="section-title text-center">تسوق حسب الفئة</h3>
-        <p class="section-desc text-center">استكشفي تشكيلاتنا الفاخرة الموزعة لتسهيل وتوفير أرقى تجربة تسوق مريحة ونفسية ملائمة لذوقكِ الملكي.</p>
+    <section class="product-showcase-carousel-section" id="newArrivalsSection">
+      <div class="block-container-limiter">
+        <h2 class="section-title-node">وصل حديثاً</h2>
+        <p class="section-desc-node">أحدث ابتكاراتنا الطازجة خرجت للتو من فرن حلويات بوسي لتزين أوقاتكم السعيدة.</p>
+        <div class="carousel-viewport-scroller" id="newArrivalsScroller">
+          
+          <div class="unified-product-card" data-product-id="prod_new_01">
+            <div class="product-thumb-wrapper">
+              <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="سينابون بوكس الملكي" class="product-thumb-image">
+              <span class="product-tag-badge">جديد</span>
+            </div>
+            <div class="product-metadata-body">
+              <h3 class="product-title-node">سينابون بوكس الملكي</h3>
+              <p class="product-short-description">عجينة السينابون الهشة الغنية بالقرفة الفاخرة مع صوص الجبن الغني والمكسرات النيئة المنتقاة بعناية.</p>
+              <div class="product-price-row-zone">
+                <span class="price-currency-sign">جنيه</span>
+                <span class="price-numeric-value-node">180</span>
+              </div>
+              <button class="product-add-to-cart-trigger" onclick="event.stopPropagation(); globalAddToCart('prod_new_01', 'سينابون بوكس الملكي', 180, 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png')">
+                <i class="fas fa-shopping-basket"></i> اضافة للسلة
+              </button>
+            </div>
+          </div>
+
+          <div class="unified-product-card" data-product-id="prod_new_02">
+            <div class="product-thumb-wrapper">
+              <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ميني كيك الشوكولاتة البلجيكي" class="product-thumb-image">
+              <span class="product-tag-badge">جديد</span>
+            </div>
+            <div class="product-metadata-body">
+              <h3 class="product-title-node">ميني كيك الشوكولاتة البلجيكي</h3>
+              <p class="product-short-description">كيك شوكولاتة غني بطبقات الموس الناعمة المغطاة بجناش الشوكولاتة البلجيكية الفاخرة للمناسبات الهادئة.</p>
+              <div class="product-price-row-zone">
+                <span class="price-currency-sign">جنيه</span>
+                <span class="price-numeric-value-node">150</span>
+              </div>
+              <button class="product-add-to-cart-trigger" onclick="event.stopPropagation(); globalAddToCart('prod_new_02', 'ميني كيك الشوكولاتة البلجيكي', 150, 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png')">
+                <i class="fas fa-shopping-basket"></i> اضافة للسلة
+              </button>
+            </div>
+          </div>
+
+          <div class="unified-product-card" data-product-id="prod_new_03">
+            <div class="product-thumb-wrapper">
+              <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكس السعادة دوناتس" class="product-thumb-image">
+              <span class="product-tag-badge">جديد</span>
+            </div>
+            <div class="product-metadata-body">
+              <h3 class="product-title-node">بوكس السعادة دوناتس</h3>
+              <p class="product-short-description">تشكيلة من 6 قطع دوناتس خفيفة ومخبوزة بحرفية مغطاة بنكهات اللوتس والكراميل المملح والشوكولاتة.</p>
+              <div class="product-price-row-zone">
+                <span class="price-currency-sign">جنيه</span>
+                <span class="price-numeric-value-node">120</span>
+              </div>
+              <button class="product-add-to-cart-trigger" onclick="event.stopPropagation(); globalAddToCart('prod_new_03', 'بوكس السعادة دوناتس', 120, 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png')">
+                <i class="fas fa-shopping-basket"></i> اضافة للسلة
+              </button>
+            </div>
+          </div>
+
+        </div>
       </div>
-      <div class="categories-oversized-slider-wrapper">
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم التورت الفاخرة" loading="lazy">
-          <h4 class="category-oversized-title text-center">التورت</h4>
-        </div>
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم الجاتوهات الفاخرة" loading="lazy">
-          <h4 class="category-oversized-title text-center">الجاتوهات</h4>
-        </div>
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم القشطوطة الفاخرة" loading="lazy">
-          <h4 class="category-oversized-title text-center">القشطوطة</h4>
-        </div>
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم الديسباسيتو الفاخرة" loading="lazy">
-          <h4 class="category-oversized-title text-center">الديسباسيتو</h4>
-        </div>
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم السينابون الفاخر" loading="lazy">
-          <h4 class="category-oversized-title text-center">السينابون</h4>
-        </div>
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم الدوناتس الفاخرة" loading="lazy">
-          <h4 class="category-oversized-title text-center">الدوناتس</h4>
-        </div>
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم الريدلفيلفيت" loading="lazy">
-          <h4 class="category-oversized-title text-center">الريدڤيلڤت</h4>
-        </div>
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم الكب كيك" loading="lazy">
-          <h4 class="category-oversized-title text-center">الكب كيك</h4>
-        </div>
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم الميني تورت" loading="lazy">
-          <h4 class="category-oversized-title text-center">الميني تورت</h4>
-        </div>
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم الورد الطبيعي والهدايا" loading="lazy">
-          <h4 class="category-oversized-title text-center">الورد</h4>
-        </div>
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم كبات السعادة" loading="lazy">
-          <h4 class="category-oversized-title text-center">كبات السعادة</h4>
-        </div>
-        <div class="category-oversized-card">
-          <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم بوكس الروقان والتشيل" loading="lazy">
-          <h4 class="category-oversized-title text-center">بوكس الروقان</h4>
+    </section>
+
+    <section class="product-showcase-carousel-section" id="bestSellersSection">
+      <div class="block-container-limiter">
+        <h2 class="section-title-node">الأكثر مبيعاً</h2>
+        <p class="section-desc-node">المنتجات المفضلة التي اختارها عملاؤنا مراراً وتكراراً لجودتها ونكهتها التي لا تُنسى.</p>
+        <div class="carousel-viewport-scroller" id="bestSellersScroller">
+
+          <div class="unified-product-card" data-product-id="prod_best_01">
+            <div class="product-thumb-wrapper">
+              <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قشطوطة بالمانجو والكراميل" class="product-thumb-image">
+              <span class="product-tag-badge gold-badge"><i class="fas fa-crown"></i> مبيعاً</span>
+            </div>
+            <div class="product-metadata-body">
+              <h3 class="product-title-node">قشطوطة بالمانجو والكراميل</h3>
+              <p class="product-short-description">كيكة الحليب الشرقية الغنية بالقشطة البلدية الطازجة مغطاة بقطع المانجو الطبيعية خفيفة السكر.</p>
+              <div class="product-price-row-zone">
+                <span class="price-currency-sign">جنيه</span>
+                <span class="price-numeric-value-node">85</span>
+              </div>
+              <button class="product-add-to-cart-trigger" onclick="event.stopPropagation(); globalAddToCart('prod_best_01', 'قشطوطة بالمانجو والكراميل', 85, 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png')">
+                <i class="fas fa-shopping-basket"></i> اضافة للسلة
+              </button>
+            </div>
+          </div>
+
+          <div class="unified-product-card" data-product-id="prod_best_02">
+            <div class="product-thumb-wrapper">
+              <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تورتة اللافندر المخملية" class="product-thumb-image">
+              <span class="product-tag-badge gold-badge"><i class="fas fa-crown"></i> مبيعاً</span>
+            </div>
+            <div class="product-metadata-body">
+              <h3 class="product-title-node">تورتة اللافندر المخملية</h3>
+              <p class="product-short-description">تورتة مخصصة بثلاث طبقات من الكيك الاسفنجي الهش وكريمة اللافندر الناعمة، مثالية للإهداء الراقي.</p>
+              <div class="product-price-row-zone">
+                <span class="price-currency-sign">جنيه</span>
+                <span class="price-numeric-value-node">350</span>
+              </div>
+              <button class="product-add-to-cart-trigger" onclick="event.stopPropagation(); globalAddToCart('prod_best_02', 'تورتة اللافندر المخملية', 350, 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png')">
+                <i class="fas fa-shopping-basket"></i> اضافة للسلة
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
-      <div class="slider-dots-container">
-        <span class="dot active"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
+    </section>
+
+    <section class="grid-categories-showcase-section">
+      <div class="block-container-limiter">
+        <h2 class="section-title-node">تسوق بحسب الفئة</h2>
+        <p class="section-desc-node">استكشف أقسامنا المتميزة المكونة من 12 فئة فاخرة ومصممة بدقة لتلبي كافة الأذواق والمناسبات.</p>
+        <div class="categories-masonry-wrapper-grid">
+          
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=despacito'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ديسباسيتو">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">ديسباسيتو</h3>
+            </div>
+          </div>
+
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=qashtouta'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قشطوطة">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">قشطوطة</h3>
+            </div>
+          </div>
+
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=donuts'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="دوناتس">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">دوناتس</h3>
+            </div>
+          </div>
+
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=cinnabon'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="سينابون">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">سينابون</h3>
+            </div>
+          </div>
+
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=flowers'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ورد طبيعي">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">ورد طبيعي</h3>
+            </div>
+          </div>
+
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=happiness-cups'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كابات السعادة">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">كابات السعادة</h3>
+            </div>
+          </div>
+
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=chill-box'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تشيل بوكس">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">تشيل بوكس</h3>
+            </div>
+          </div>
+
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=cupcakes'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كب كيك">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">كب كيك</h3>
+            </div>
+          </div>
+
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=cakes'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تورتات">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">تورتات</h3>
+            </div>
+          </div>
+
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=gateaux'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="جاتوه">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">جاتوه</h3>
+            </div>
+          </div>
+
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=mini-cakes'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ميني كيك">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">ميني كيك</h3>
+            </div>
+          </div>
+
+          <div class="category-oversized-card" onclick="window.location.href='menu.html?cat=red-velvet'">
+            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="ريد فيلفيت">
+            <div class="category-card-overlay-info">
+              <h3 class="category-title-text-node">ريد فيلفيت</h3>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="interactive-simulators-teaser-section">
+      <div class="block-container-limiter">
+        <h2 class="section-title-node">تخصيص الهدايا والمحاكاة</h2>
+        <p class="section-desc-node">عش تجربة تفاعلية فريدة وصمم هديتك بنفسك عبر برامج المحاكاة الإحترافية الخاصة بنا.</p>
+        <div class="simulators-cards-binary-grid">
+          
+          <div class="simulator-panel-card">
+            <div class="simulator-icon-avatar"><i class="fas fa-birthday-cake"></i></div>
+            <h3 class="panel-card-title">محاكي التورتات الذكي</h3>
+            <p class="panel-card-desc">اختر الحجم، عدد الطبقات، النكهات الداخلية والتزيين الخارجي لتشاهد التورتة الخاصة بك في بث حي ومباشر قبل التجهيز.</p>
+            <a href="simulator-cake.html" class="simulator-panel-cta-link">ابدأ التصميم الآن <i class="fas fa-chevron-left"></i></a>
+          </div>
+
+          <div class="simulator-panel-card">
+            <div class="simulator-icon-avatar"><i class="fas fa-fan"></i></div>
+            <h3 class="panel-card-title">محاكي بوكسات الورد والهدايا</h3>
+            <p class="panel-card-desc">نسّق ألوان الورد الطبيعي، اختر فئة الحلويات المرفقة، وشكل الصندوق الفاخر لترسل مشاعرك الصادقة في أبهى صورة.</p>
+            <a href="simulator-flower.html" class="simulator-panel-cta-link">ابدأ التنسيق الآن <i class="fas fa-chevron-left"></i></a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="checkout-process-form-section" id="checkoutFormBlock">
+      <div class="block-container-limiter">
+        <h2 class="section-title-node">استكمال تفاصيل الطلب</h2>
+        <p class="section-desc-node">يرجى ملء الحقول التالية بعناية لضمان وصول طلبك الفاخر بأعلى جودة وفي الموعد المحدد تماماً.</p>
+        
+        <div class="checkout-split-layout-grid">
+          
+          <div class="checkout-inputs-form-panel">
+            <form id="checkoutCoreForm" novalidate>
+              
+              <div class="form-input-group-block">
+                <label for="customerNameField" class="form-field-label">الاسم بالكامل <span class="required-star-node">*</span></label>
+                <input type="text" id="customerNameField" class="form-core-input-element" placeholder="اكتب اسمك الثلاثي لتوثيق الطلب" required>
+                <span class="field-error-message-node" id="nameFieldError"></span>
+              </div>
+
+              <div class="form-binary-inputs-row">
+                <div class="form-input-group-block">
+                  <label for="customerPhone1Field" class="form-field-label">رقم الهاتف الأول <span class="required-star-node">*</span></label>
+                  <input type="tel" id="customerPhone1Field" class="form-core-input-element" placeholder="01xxxxxxxxx" required>
+                  <span class="field-error-message-node" id="phone1FieldError"></span>
+                </div>
+                <div class="form-input-group-block">
+                  <label for="customerPhone2Field" class="form-field-label">رقم الهاتف الثاني <span class="required-star-node">*</span></label>
+                  <input type="tel" id="customerPhone2Field" class="form-core-input-element" placeholder="رقم بديل لضمان الاتصال بك" required>
+                  <span class="field-error-message-node" id="phone2FieldError"></span>
+                </div>
+              </div>
+
+              <div class="form-input-group-block" id="addressInputContainer">
+                <label for="customerAddressField" class="form-field-label">العنوان بالتفصيل بمركز الفرافرة <span class="required-star-node">*</span></label>
+                <input type="text" id="customerAddressField" class="form-core-input-element" placeholder="اسم القرية، الشارع، علامة مميزة بالقرب من الكفاح" required>
+                <span class="field-error-message-node" id="addressFieldError"></span>
+              </div>
+
+              <div class="form-binary-inputs-row">
+                <div class="form-input-group-block">
+                  <label for="orderDateField" class="form-field-label">تاريخ الاستلام <span class="required-star-node">*</span></label>
+                  <input type="date" id="orderDateField" class="form-core-input-element" required>
+                  <span class="field-error-message-node" id="dateFieldError"></span>
+                </div>
+                <div class="form-input-group-block">
+                  <label for="orderTimeField" class="form-field-label">وقت الاستلام المحدد <span class="required-star-node">*</span></label>
+                  <input type="time" id="orderTimeField" class="form-core-input-element" required>
+                  <span class="field-error-message-node" id="timeFieldError"></span>
+                </div>
+              </div>
+
+              <div class="explanation-notice-box-node">
+                <p>نحتاج إلى وقت كافٍ لتجهيز طلبك بأفضل جودة ممكنة، لذلك لا يمكن اختيار موعد قبل 24 ساعة من وقت تأكيد الطلب.</p>
+              </div>
+
+              <div class="form-input-group-block">
+                <label for="orderNotesField" class="form-field-label">ملاحظات خاصة بالطلب (اختياري)</label>
+                <textarea id="orderNotesField" class="form-core-textarea-element" placeholder="مثال: عدم استخدام مكسرات، الاتصال قبل الوصول، تسليم لشخص آخر كهدية..."></textarea>
+              </div>
+
+            </form>
+          </div>
+
+          <div class="checkout-summary-sticky-panel">
+            <h3 class="summary-panel-title">ملخص الطلب</h3>
+            <div class="summary-items-list-node" id="cartSummaryItemsList">
+              <p class="empty-summary-text-node">السلة فارغة حالياً. تصفح المنيو وأضف منتجاتك المفضلة.</p>
+            </div>
+            
+            <div class="summary-totals-table-zone">
+              <div class="total-row-item">
+                <span>عدد المنتجات</span>
+                <span id="summaryTotalQuantity">0 قطع</span>
+              </div>
+              <div class="total-row-item">
+                <span>إجمالي المنتجات</span>
+                <span id="summarySubtotalPrice">0 جنيه</span>
+              </div>
+              <div class="total-row-item">
+                <span>رسوم الشحن والتوصيل</span>
+                <span id="summaryShippingFees">0 جنيه</span>
+              </div>
+              <div class="total-row-item discount-row">
+                <span>الخصومات والعروض</span>
+                <span id="summaryDiscountValue">0 جنيه</span>
+              </div>
+              <div class="total-row-item final-grand-total-row">
+                <span>الإجمالي النهائي</span>
+                <span id="summaryGrandTotalPrice">0 جنيه</span>
+              </div>
+            </div>
+
+            <button type="button" class="order-final-confirmation-trigger" id="submitOrderFinalBtn">
+              تأكيد الطلب
+            </button>
+          </div>
+
+        </div>
       </div>
     </section>
 
   </main>
 
-  <aside id="sidebar-cart-drawer" class="cart-drawer" aria-hidden="true">
-    <div class="drawer-content">
-      <div class="drawer-header">
-        <h4>سلة المشتريات</h4>
-        <button id="close-cart-btn" class="close-btn">×</button>
-      </div>
-      <div id="cart-items-wrapper" class="drawer-body"></div>
-      <div class="drawer-footer">
-        <div class="cart-total-line">
-          <span>المجموع الفرعي:</span>
-          <span id="cart-subtotal-display">0 جنيه</span>
-        </div>
-        <button id="checkout-action-btn" class="checkout-btn">إتمام طلب الشراء</button>
-      </div>
-    </div>
-  </aside>
-
-  <footer id="main-footer" class="site-footer">
-    <div class="footer-container text-center">
+  <footer class="app-main-site-footer">
+    <div class="footer-container-wrapper">
       
-      <div class="footer-brand-zone text-center">
-        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو الفوتر لحلويات بوسي" class="footer-logo-img" loading="lazy">
-        <h3 class="text-center">حلويات بوسي</h3>
-        <p class="footer-brand-p text-center">صنعناها بحب لتهديها لمن تحب. منتجاتنا تعبر عن الفخامة والجودة الاستثنائية المطبوخة والمعدة يدوياً بأحدث المكونات العالمية والمحلية النقية والفاخرة 100%.</p>
+      <div class="footer-brand-profile-block">
+        <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="footer-logo-img">
+        <h3 class="footer-brand-title">حلويات بوسي</h3>
+        <p class="footer-brand-bio">صنعناها بحب لتهديها لمن تحب. نلتزم بأعلى معايير الفخامة والجودة الإحترافية لتوفير أرقى الحلويات الغربية والشرقية المبتكرة وتنسيقات الورد الطبيعي الفاخر بمركز الفرافرة.</p>
       </div>
       
-      <div class="footer-links-wrapper-grid text-center">
-        <div class="footer-links-col text-center">
-          <h4 class="text-center">روابط الصفحات</h4>
-          <a href="menu.html">المنيو الشامل</a>
-          <a href="about.html">من نحن</a>
-          <a href="contact.html">تواصل معنا</a>
-        </div>
-        <div class="footer-links-col text-center">
-          <h4 class="text-center">السياسات الملكية</h4>
-          <a href="privacy-policy.html">سياسة الخصوصية</a>
-          <a href="terms.html">الشروط والأحكام</a>
-          <a href="shipping-policy.html">سياسة الطلبات والتوصيل</a>
-          <a href="refund-policy.html">سياسة الاستبدال والاسترجاع</a>
-        </div>
-        <div class="footer-links-col text-center">
-          <h4 class="text-center">بيانات النشاط الحقيقية</h4>
-          <p class="activity-data-text text-center">📍 فرع الكفاح، مركز الفرافرة، محافظة الوادي الجديد.</p>
-          <p class="activity-data-text text-center">⏰ نجهز طلباتكم المخصصة على مدار الساعة بتوقيت 24 ساعة للتحضير الآمن والمثالي لتصلكم طازجة.</p>
-        </div>
-      </div>
-      
-      <div class="footer-social-icons text-center">
-        <a href="https://www.facebook.com/share/1H1vVMHyu9/" target="_blank" aria-label="Facebook" class="social-icon-box fb-color">
+      <div class="footer-social-networks-links">
+        <a href="https://www.facebook.com/bose_sweets" target="_blank" aria-label="Facebook" class="social-icon-box fb-color">
           <i class="fab fa-facebook-f"></i>
         </a>
         <a href="https://www.instagram.com/bose_sweets" target="_blank" aria-label="Instagram" class="social-icon-box ig-color">
@@ -396,12 +483,7 @@
   <script src="engine-products.js"></script>
   <script src="engine-cart.js"></script>
   <script src="engine-pricing.js"></script>
-  <script src="engine-orders.js"></script>
-  <script src="engine-simulators.js"></script>
-  <script src="ui-global.js"></script>
-  <script src="ui-products.js"></script>
-  <script src="ui-simulators.js"></script>
-  <script src="ui-cart-checkout.js"></script>
-  <script src="ui-runtime-binding.js"></script>
+  <script src="engine-checkout.js"></script>
+  <script src="ui-interactions.js"></script>
 </body>
 </html>
