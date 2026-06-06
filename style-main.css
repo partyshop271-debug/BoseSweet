@@ -9,34 +9,38 @@
 }
 
 html {
-  scroll-behavior: smooth; /* جميع الحركات Smooth */
+  scroll-behavior: smooth; /* جميع الحركات Smooth إجبارياً */
 }
 
 body {
   font-family: 'Cairo', sans-serif;
-  background-color: #FFFFFF; /* مسيطر تماماً لخلق تنفس بصري ومنع التكديس نهائياً */
-  color: #111111; /* معزول تماماً ومحظور استخدامه بالخلفيات، مكانه الوحيد النصوص لضمان وضوح كامل للعين */
+  background-color: #FFFFFF; /* مسيطر تماماً لخلق تنفس بصري ومنع التكديس نهائياً لراحة العميل النفسية */
+  color: #111111; /* معزول تماماً ومحظور استخدامه بالخلفيات أو الظلال، مكانه الوحيد والنصوص والعناوين */
   direction: rtl;
   text-align: center; 
   line-height: 1.6;
   overflow-x: hidden;
 }
 
-/* هندسة النصوص لمنع التداخل والبهتان مع قفل الوزن الأقصى عند 700 إجبارياً للعناوين */
+/* هندسة النصوص لمنع التداخل والبهتان مع قفل الوزن الأقصى عند 700 إجبارياً لأضخم العناوين لضمان الفخامة */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700 !important;
   color: #111111;
   text-align: center !important; 
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
-p, .section-desc {
+p, .section-desc-node {
   text-align: center !important;
   color: #111111;
   font-weight: 400;
-  max-width: 700px;
+  max-width: 750px;
   margin: 0 auto 24px auto;
   font-size: 15px;
+}
+
+.highlight-pink {
+  color: #FF91A4; /* نبض الحياة في الموقع للتركيز على الكلمة المستهدفة */
 }
 
 a {
@@ -63,7 +67,7 @@ button {
 hr {
   border: none;
   height: 1px;
-  background-color: rgba(255, 145, 164, 0.2);
+  background-color: rgba(255, 145, 164, 0.15);
   margin: 30px 0;
 }
 
@@ -74,7 +78,7 @@ hr {
 }
 
 /* ==========================================================================
-   2. هيدر الموقع الثابت والذكي (Sticky Header)
+   2. هيدر الموقع الثابت والذكي (Sticky Header من اليمين لليسار)
    ========================================================================== */
 .app-main-sticky-header {
   position: sticky;
@@ -83,9 +87,9 @@ hr {
   right: 0;
   z-index: 1000;
   background-color: #FFFFFF;
-  box-shadow: 0 4px 20px rgba(255, 145, 164, 0.08); /* نبض الحياة كظلال ناعمة */
+  box-shadow: 0 4px 25px rgba(255, 145, 164, 0.06); /* نبض الحياة كظلال ناعمة */
   padding: 12px 16px;
-  border-bottom: 1px solid rgba(255, 145, 164, 0.15);
+  border-bottom: 1px solid rgba(255, 145, 164, 0.12);
 }
 
 .header-container-wrapper {
@@ -105,17 +109,17 @@ hr {
 .brand-logo-identity-zone {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .brand-core-logo {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
 }
 
 .brand-legal-title-text {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
   color: #111111;
 }
@@ -123,7 +127,7 @@ hr {
 .header-utilities-buttons {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .utility-action-btn {
@@ -135,9 +139,9 @@ hr {
 
 .cart-relative-wrapper .cart-badge-counter-node {
   position: absolute;
-  top: 0;
-  left: 0;
-  background-color: #FF91A4; /* نبض الحياة */
+  top: 2px;
+  left: 2px;
+  background-color: #FF91A4;
   color: #111111;
   font-size: 11px;
   font-weight: 700;
@@ -150,19 +154,19 @@ hr {
 }
 
 /* ==========================================================================
-   3. نظام شريط الإعلانات اللانهائي السلس (Ticker Ribbon)
+   3. نظام شريط الإعلانات اللانهائي السلس (Ticker Ribbon) منع الفراغات تماماً
    ========================================================================== */
 .announcement-marquee-bar {
   background-color: #FFFFFF;
-  border-bottom: 1px solid rgba(255, 145, 164, 0.15);
-  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 145, 164, 0.12);
+  padding: 10px 0;
   overflow: hidden;
   white-space: nowrap;
 }
 
 .marquee-inner-container {
   display: inline-block;
-  animation: marqueeInfiniteScroll 30s linear infinite;
+  animation: marqueeInfiniteScroll 25s linear infinite;
 }
 
 .marquee-text-item {
@@ -182,24 +186,14 @@ hr {
    4. SECTION 01: عقد من التميز
    ========================================================================== */
 .excellence-hero-section {
-  padding: 60px 0 40px 0;
+  padding: 50px 0 30px 0;
   background-color: #FFFFFF;
 }
 
 .excellence-title {
-  font-size: 26px;
-  margin-bottom: 16px;
+  font-size: 28px;
+  margin-bottom: 18px;
   line-height: 1.4;
-}
-
-.excellence-title::after {
-  content: '';
-  display: block;
-  width: 60px;
-  height: 3px;
-  background-color: #FF91A4; /* التميز باللون البمبي متمثلاً بالخط السفلي الحاكم للبراند */
-  margin: 8px auto 0 auto;
-  border-radius: 2px;
 }
 
 .excellence-description {
@@ -211,32 +205,32 @@ hr {
   display: inline-block;
   background-color: #FF91A4;
   color: #111111;
-  padding: 12px 36px;
+  padding: 12px 40px;
   border-radius: 30px;
   font-weight: 700;
-  box-shadow: 0 4px 15px rgba(255, 145, 164, 0.25);
-  margin-top: 10px;
+  box-shadow: 0 4px 15px rgba(255, 145, 164, 0.2);
+  margin-top: 15px;
 }
 
 .excellence-cta-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 145, 164, 0.4);
+  box-shadow: 0 6px 20px rgba(255, 145, 164, 0.35);
 }
 
 /* ==========================================================================
-   5. WATERFALL EFFECT GALLERY (معرض الشلال البصري اللانهائي)
+   5. WATERFALL EFFECT GALLERY (معرض الشلال البصري اللانهائي الإلزامي)
    ========================================================================== */
 .waterfall-visual-hook-section {
   position: relative;
-  height: 700px; /* مقاس موبايل الإلزامي */
+  height: 700px; /* مقاس موبايل الإلزامي بالمواصفة */
   overflow: hidden;
   background-color: #FFFFFF;
-  margin: 20px 0;
+  margin: 25px 0;
 }
 
 .waterfall-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* عمودين إجبارياً */
+  grid-template-columns: repeat(2, 1fr); /* عمودين إجبارياً على الموبايل */
   gap: 12px;
   height: 100%;
   padding: 0 12px;
@@ -249,19 +243,19 @@ hr {
 }
 
 .column-up {
-  animation: waterfallScrollUp 20s linear infinite;
+  animation: waterfallScrollUp 18s linear infinite;
 }
 
 .column-down {
-  animation: waterfallScrollDown 20s linear infinite;
+  animation: waterfallScrollDown 18s linear infinite;
 }
 
 .waterfall-img-item {
   width: 100%;
-  height: 250px; /* الارتفاع الإلزامي داخل الشلال */
+  height: 250px; /* المقاس الإلزامي للصورة داخل الشلال */
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(255, 145, 164, 0.1);
+  border: 1px solid rgba(255, 145, 164, 0.15);
 }
 
 .waterfall-img-item img {
@@ -274,7 +268,7 @@ hr {
   position: absolute;
   left: 0;
   right: 0;
-  height: 80px;
+  height: 90px;
   z-index: 5;
   pointer-events: none;
 }
@@ -300,10 +294,10 @@ hr {
 }
 
 /* ==========================================================================
-   6. SECTION 02: عقد من الإتقان (السلايدر الأفقي التلقائي)
+   6. SECTION 02: عقد من الإتقان (السلايدر الأفقي بـ 3 صور متصلة بالكامل)
    ========================================================================== */
 .mastery-slider-section {
-  padding: 40px 0;
+  padding: 30px 0;
   background-color: #FFFFFF;
 }
 
@@ -315,21 +309,20 @@ hr {
 
 .mastery-slider-track {
   display: inline-block;
-  animation: marqueeInfiniteScroll 25s linear infinite;
+  animation: marqueeInfiniteScroll 20s linear infinite;
 }
 
 .mastery-slide-link {
   display: inline-block;
-  width: 100vw; /* ملء عرض الشاشة بالكامل */
-  height: 300px;
-  padding: 0 4px;
+  width: 100vw; /* ملء عرض الشاشة بالكامل إجبارياً بدون فراغات */
+  height: 320px;
+  padding: 0;
 }
 
 .mastery-slide-link img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 12px;
 }
 
 /* ==========================================================================
@@ -338,26 +331,26 @@ hr {
 .unified-product-card {
   background-color: #FFFFFF;
   border-radius: 20px; /* إلزامي بالمواصفات للموبايل */
-  border: 1px solid rgba(255, 145, 164, 0.3); /* حدود بمبي خفيفة جداً */
+  border: 1px solid rgba(255, 145, 164, 0.25); /* حدود بمبي خفيفة جداً */
   padding: 16px; /* Padding إلزامي */
-  box-shadow: 0 6px 20px rgba(255, 145, 164, 0.04);
+  box-shadow: 0 6px 20px rgba(255, 145, 164, 0.03);
   display: flex;
   flex-direction: column;
-  width: 100%; /* الافتراضي موبايل */
+  width: 100%;
   height: auto;
   text-align: right;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .unified-product-card:hover {
-  border-color: #FF91A4; /* التفاعل السلس بالبمبي نبض الحياة */
-  box-shadow: 0 8px 25px rgba(255, 145, 164, 0.15);
+  border-color: #FF91A4; /* تأثير التفاعل السلس بالبمبي */
+  box-shadow: 0 8px 25px rgba(255, 145, 164, 0.12);
 }
 
 .unified-product-card .product-thumb {
   width: 100%;
-  height: 220px; /* إلزامي موبايل */
-  border-radius: 12px;
+  height: 220px; /* ارتفاع الصورة للموبايل إلزامي */
+  border-radius: 14px;
   overflow: hidden;
   margin-bottom: 12px;
 }
@@ -376,42 +369,43 @@ hr {
 
 .product-flavor-title {
   font-size: 14px;
-  color: #D4AF37; /* الوجود الرمزي الهادئ للذهبي */
+  color: #D4AF37; /* وجود رمزي ناعم وخفيف جداً للمحاكاة */
   text-align: right !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
   margin-bottom: 6px;
 }
 
 .product-card-short-desc {
   font-size: 13px;
-  color: rgba(17, 17, 17, 0.7);
+  color: rgba(17, 17, 17, 0.75);
   text-align: right !important;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  min-height: 40px;
 }
 
-/* عداد الكمية المتطور */
+/* عداد الكمية المطور الموحد */
 .quantity-counter-wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid rgba(255, 145, 164, 0.4);
+  border: 1px solid rgba(255, 145, 164, 0.35); /* بمبي خفيف جداً */
   border-radius: 8px;
-  padding: 4px 12px;
-  margin-bottom: 12px;
+  padding: 6px 14px;
+  margin-bottom: 14px;
   background-color: #FFFFFF;
 }
 
 .counter-btn {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  color: #FF91A4;
-  padding: 2px 8px;
+  color: #FF91A4; /* الأزرار بالبمبي نبض الحياة */
+  padding: 0 8px;
 }
 
 .counter-value-display {
   font-weight: 700;
   color: #111111;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .product-pricing-dynamic-zone {
@@ -421,7 +415,7 @@ hr {
 
 .price-current-value {
   color: #FF91A4 !important; /* نصوص الأسعار الديناميكية بمبي حصرياً */
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
 }
 
@@ -429,7 +423,7 @@ hr {
   background-color: #FFFFFF;
   color: #111111;
   border: 1px solid #FF91A4;
-  padding: 10px;
+  padding: 11px;
   border-radius: 8px;
   font-weight: 700;
   font-size: 14px;
@@ -438,50 +432,49 @@ hr {
 
 .product-card-interactive-action-btn:hover {
   background-color: #FF91A4;
+  color: #111111;
 }
 
 /* ==========================================================================
-   8. SECTIONS 03 & 05: السلايدرات الأفقية للكروت (الأكثر مبيعاً / وصل حديثاً)
+   8. SECTIONS 03 & 05: السلايدرات الأفقية للكروت (عرض كارت الموبايل 85vw)
    ========================================================================== */
-.bestsellers-horizontal-slider-viewport, .new-arrivals-slider-viewport {
+.carousel-viewport-scroller {
   overflow-x: auto;
   padding: 16px 0;
   scroll-behavior: smooth;
 }
 
-.bestsellers-horizontal-slider-viewport::-webkit-scrollbar,
-.new-arrivals-slider-viewport::-webkit-scrollbar {
-  display: none; /* إخفاء لراحة الموبايل بصرياً */
+.carousel-viewport-scroller::-webkit-scrollbar {
+  display: none; /* مخفي لجمالية الرؤية على الهاتف */
 }
 
 .bestsellers-slider-inner-track-layout, .new-arrivals-slider-track {
   display: flex;
   gap: 16px;
-  padding: 0 4px;
 }
 
 .bestsellers-slider-inner-track-layout .unified-product-card,
 .new-arrivals-slider-track .unified-product-card {
-  flex: 0 0 85vw; /* عرض الكارت إجباري للموبايل المذكور بالمواصفة */
+  flex: 0 0 85vw; /* عرض الكارت موبايل إلزامي */
 }
 
 .slider-dots-wrapper {
   display: flex;
   justify-content: center;
   gap: 6px;
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
 .slider-dots-wrapper .dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: rgba(255, 145, 164, 0.3);
+  background-color: rgba(255, 145, 164, 0.25);
 }
 
 .slider-dots-wrapper .dot.active {
   background-color: #FF91A4;
-  width: 20px;
+  width: 22px;
   border-radius: 4px;
 }
 
@@ -489,13 +482,12 @@ hr {
    9. SECTIONS 04 & 07: البلوكات البصرية للمحاكاة (التورت والورد)
    ========================================================================== */
 .cake-simulator-teaser-block, .flower-simulator-teaser-block {
-  height: 600px; /* مقاس إلزامي للموبايل بالمواصفة */
+  height: 600px; /* مقاس إلزامي للموبايل */
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
-  margin: 30px 0;
-  border-radius: 0;
+  padding: 20px;
+  margin: 35px 0;
   background-size: cover;
   background-position: center;
   position: relative;
@@ -503,45 +495,47 @@ hr {
 
 .cake-simulator-teaser-block {
   background-color: #FFFFFF;
-  border: 2px dashed #FF91A4; /* إطار تعبيري للمحاكي الذكي */
+  border-top: 1px solid rgba(255, 145, 164, 0.2);
+  border-bottom: 1px solid rgba(255, 145, 164, 0.2);
 }
 
 .flower-simulator-teaser-block {
   background-color: #FFFFFF;
-  border: 2px dashed #D4AF37; /* لمسة ذهبية لمحاكي الورد الفخم */
+  border-top: 1px solid rgba(255, 145, 164, 0.2);
+  border-bottom: 1px solid rgba(255, 145, 164, 0.2);
 }
 
 .simulator-block-content {
-  background-color: rgba(255, 255, 255, 0.96);
-  padding: 30px 20px;
-  border-radius: 20px;
+  background-color: #FFFFFF;
+  padding: 32px 24px;
+  border-radius: 24px;
   border: 1px solid rgba(255, 145, 164, 0.3);
-  max-width: 500px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+  max-width: 520px;
+  box-shadow: 0 10px 30px rgba(255, 145, 164, 0.04);
 }
 
 .simulator-heading {
-  font-size: 22px;
+  font-size: 23px;
   margin-bottom: 12px;
 }
 
 .simulator-paragraph {
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.65;
+  margin-bottom: 16px;
 }
 
 .simulator-cta-btn {
   display: inline-block;
   background-color: #FF91A4;
   color: #111111;
-  padding: 10px 28px;
+  padding: 12px 32px;
   border-radius: 8px;
   font-weight: 700;
-  margin-top: 12px;
 }
 
 /* ==========================================================================
-   10. SECTION 06: منتجاتنا (النظام الشبكي الثنائي للموبايل)
+   10. SECTION 06: منتجاتنا (النظام الشبكي الثنائي الصارم كارتين بجوار بعض)
    ========================================================================== */
 .our-products-grid-section {
   padding: 40px 0;
@@ -550,20 +544,20 @@ hr {
 
 .products-binary-static-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* صف أول: 2 كارت، صف ثاني: 2 كارت */
+  grid-template-columns: repeat(2, 1fr); /* صف أول كارتين، صف ثاني كارتين بدون قص */
   gap: 12px;
   margin-bottom: 24px;
 }
 
 .products-binary-static-grid .unified-product-card .product-thumb {
-  height: 160px; /* تعديل مرن للموبايل ليناسب التقسيم الثنائي */
+  height: 160px; /* متوافق مع العرض الثنائي بالموبايل */
 }
 
 .show-more-products-btn {
   background-color: #FFFFFF;
   border: 2px solid #FF91A4;
   color: #111111;
-  padding: 10px 32px;
+  padding: 12px 36px;
   border-radius: 8px;
   font-weight: 700;
   font-size: 15px;
@@ -574,7 +568,7 @@ hr {
    ========================================================================== */
 .brand-pride-achievement-block {
   min-height: 550px; /* الحد الأدنى الإلزامي للموبايل */
-  padding: 60px 16px;
+  padding: 50px 16px;
   background-color: #FFFFFF;
   border-top: 1px solid rgba(255, 145, 164, 0.15);
   display: flex;
@@ -586,37 +580,37 @@ hr {
 }
 
 .pride-narrative-main-heading {
-  font-size: 24px;
-  margin-bottom: 16px;
+  font-size: 25px;
+  margin-bottom: 14px;
 }
 
 .metrics-numerical-showcase-row {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 24px;
-  margin-top: 30px;
+  gap: 16px;
+  margin-top: 25px;
 }
 
 .counter-metric-item-box {
-  flex: 0 0 130px;
+  flex: 0 0 140px;
   background: #FFFFFF;
-  padding: 16px;
-  border-radius: 12px;
+  padding: 16px 10px;
+  border-radius: 14px;
   border: 1px solid rgba(255, 145, 164, 0.2);
 }
 
 .counter-metric-numeric-value {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   color: #FF91A4;
   display: block;
 }
 
 .counter-metric-label-text {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
-  color: rgba(17, 17, 17, 0.7);
+  color: rgba(17, 17, 17, 0.8);
 }
 
 /* ==========================================================================
@@ -645,10 +639,9 @@ hr {
   flex: 0 0 280px; /* العرض الإلزامي للموبايل بالمواصفة */
   background-color: #FFFFFF;
   border-radius: 20px;
-  border: 1px solid rgba(255, 145, 164, 0.25);
+  border: 1px solid rgba(255, 145, 164, 0.2);
   padding: 16px;
-  height: 36px; /* الطول الإجمالي للموبايل: 360px */
-  height: 360px;
+  height: 360px; /* الارتفاع الكلي الإلزامي للموبايل بالمواصفة */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -657,7 +650,7 @@ hr {
 
 .category-oversized-card .category-thumb {
   width: 100%;
-  height: 280px; /* الارتفاع الإلزامي للصورة للموبايل بالمواصفة */
+  height: 280px; /* ارتفاع الصورة الإلزامي للموبايل بموجب المواصفة */
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 12px;
@@ -670,25 +663,25 @@ hr {
 }
 
 .category-title {
-  font-size: 20px; /* الحجم الإلزامي */
-  font-weight: 700 !important; /* الوزن الإلزامي */
+  font-size: 20px; /* المقاس الإلزامي بالمواصفة */
+  font-weight: 700 !important; /* الوزن الإلزامي بالمواصفة */
   color: #111111;
   margin-top: auto;
 }
 
 /* ==========================================================================
-   13. فوتر الحوكمة والشركات الفاخر (Corporate Footer)
+   13. فوتر الحوكمة الفاخر (ممنوع منعا باتا الخلفيات السوداء أو الظلال القاتمة)
    ========================================================================== */
 .site-footer-corporate {
-  background-color: #FFFFFF; /* محظور الخلفيات السوداء تماماً بالفوتر */
+  background-color: #FFFFFF; 
   border-top: 1px solid rgba(255, 145, 164, 0.2);
-  padding: 40px 16px 20px 16px;
+  padding: 50px 16px 20px 16px;
 }
 
 .footer-container-fluid-grid {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 35px;
   text-align: right;
 }
 
@@ -706,19 +699,19 @@ hr {
 }
 
 .footer-brand-brief-summary-p {
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.65;
 }
 
 .footer-navigation-links-column, .footer-contact-channels-column {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .footer-column-heading-title {
-  font-size: 16px;
+  font-size: 17px;
   position: relative;
   padding-bottom: 6px;
 }
@@ -727,8 +720,8 @@ hr {
   content: '';
   position: absolute;
   bottom: 0;
-  left: 35%;
-  right: 35%;
+  left: 30%;
+  right: 30%;
   height: 2px;
   background-color: #FF91A4;
 }
@@ -737,18 +730,22 @@ hr {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .footer-item-navigation-link {
   font-size: 14px;
 }
 
+.footer-item-navigation-link:hover {
+  color: #FF91A4;
+}
+
 .contact-channel-item-text {
-  font-size: 13px;
+  font-size: 14px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .contact-icon-prefix {
@@ -759,17 +756,17 @@ hr {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
 }
 
 .footer-social-networks-icons-row {
   display: flex;
-  gap: 12px;
+  gap: 14px;
 }
 
 .social-icon-box {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -780,12 +777,12 @@ hr {
 
 .fb-color { background-color: #1877F2; }
 .ig-color { background-color: #E1306C; }
-.tt-color { background-color: #000000; }
+.tt-color { background-color: #111111; }
 .wa-color { background-color: #25D366; }
 
 .footer-copyright-zone p {
-  font-size: 12px;
-  color: rgba(17, 17, 17, 0.6);
+  font-size: 13px;
+  color: rgba(17, 17, 17, 0.65);
 }
 
 /* ==========================================================================
@@ -796,10 +793,7 @@ hr {
     height: 850px;
   }
   .waterfall-img-item {
-    height: 280px;
-  }
-  .products-binary-static-grid {
-    grid-template-columns: repeat(2, 1fr);
+    height: 260px; /* تابلت الإلزامي */
   }
   .footer-container-fluid-grid {
     flex-direction: row;
@@ -815,7 +809,7 @@ hr {
   }
   .footer-column-heading-title::after {
     left: 0;
-    right: 60%;
+    right: 50%;
   }
   .footer-bottom-social-copyright-wrapper {
     flex-direction: row;
@@ -831,39 +825,39 @@ hr {
     font-size: 36px;
   }
   .waterfall-visual-hook-section {
-    height: 1000px; /* الارتفاع الإلزامي ديسكتوب */
+    height: 1000px; /* الارتفاع الديسكتوب الإلزامي بموجب المادة 5 */
   }
   .waterfall-container {
-    grid-template-columns: repeat(4, 1fr); /* 4 أعمدة بالديسك توب لتوزيع بصري مثالي */
+    grid-template-columns: repeat(4, 1fr); /* 4 أعمدة في الديسكتوب لتوزيع بصري فاخر */
   }
   .waterfall-img-item {
-    height: 320px;
+    height: 320px; /* ديسكتوب الإلزامي */
   }
   .mastery-slide-link {
     height: 450px;
   }
   .bestsellers-slider-inner-track-layout .unified-product-card,
   .new-arrivals-slider-track .unified-product-card {
-    flex: 0 0 380px; /* العرض الإلزامي ديسكتوب للكروت بالسلايدر */
+    flex: 0 0 380px; /* ديسكتوب الإلزامي */
   }
   .bestsellers-slider-inner-track-layout .unified-product-card .product-thumb,
   .new-arrivals-slider-track .unified-product-card .product-thumb {
-    height: 320px; /* المقاس الإلزامي للصورة ديسكتوب */
+    height: 320px; /* مقاس صورة الكارت ديسكتوب الإلزامي بموجب المادة 4 */
   }
   .cake-simulator-teaser-block, .flower-simulator-teaser-block {
-    height: 750px; /* الارتفاع الإلزامي ديسكتوب */
+    height: 750px; /* الارتفاع الديسكتوب الإلزامي بموجب المادة 6 و7 */
   }
   .products-binary-static-grid {
-    grid-template-columns: repeat(4, 1fr); /* توزيع متوازن بالديسك توب */
+    grid-template-columns: repeat(4, 1fr); /* 4 أعمدة بالديسك توب لتنفس بصري كامل */
   }
   .brand-pride-achievement-block {
-    min-height: 700px; /* الحد الأدنى الإلزامي ديسكتوب */
+    min-height: 700px; /* الحد الأدنى ديسكتوب الإلزامي بموجب المادة 8 */
   }
   .category-oversized-card {
-    flex: 0 0 420px; /* العرض الإلزامي ديسكتوب لكارت الفئة */
-    height: 520px; /* الارتفاع الإجمالي الإلزامي ديسكتوب */
+    flex: 0 0 420px; /* العرض ديسكتوب الإلزامي بموجب المادة 9 */
+    height: 520px; /* الارتفاع الكلي ديسكتوب الإلزامي بموجب المادة 9 */
   }
   .category-oversized-card .category-thumb {
-    height: 420px; /* الارتفاع الإلزامي للصورة ديسكتوب */
+    height: 420px; /* ارتفاع الصورة ديسكتوب الإلزامي بموجب المادة 9 */
   }
 }
