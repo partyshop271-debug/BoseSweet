@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>حلويات بوسي - الفخامة والجودة الإبداعية</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style-main.css">
+</head>
+<body>
+
+  <header id="main-header" class="site-header">
+    <div class="header-container">
+      <div class="brand-logo">
+        <h1 class="brand-title">حلويات بوسي</h1>
+      </div>
+      <nav class="main-navigation">
+        <button id="menu-toggle-btn" class="nav-btn">تصفح المنيو</button>
+      </nav>
+      <div class="header-actions">
+        <button id="cart-toggle-btn" class="cart-btn">
+          <span class="cart-icon">🛒</span>
+          <span id="cart-counter-badge" class="cart-badge">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content-wrapper">
+    
+    <section id="hero-showcase" class="hero-section">
+      <div class="hero-overlay">
+        <h2 class="hero-title">تم اختيار المكونات بعناية للحصول على أفضل جودة</h2>
+        <p class="hero-subtitle">تم تصميم تشكيلاتنا الفاخرة لتناسب مختلف المناسبات السعيدة</p>
+        <button id="hero-cta-btn" class="cta-primary">استعرض المزيد</button>
+      </div>
+    </section>
+
+    <section id="categories-grid-section" class="categories-section">
+      <div class="section-heading">
+        <h3 class="section-title">تسوق حسب الأقسام</h3>
+      </div>
+      <div id="categories-container" class="categories-grid"></div>
+    </section>
+
+    <section id="new-arrivals-section" class="products-section">
+      <div class="section-heading">
+        <h3 class="section-title">أحدث التشكيلات</h3>
+      </div>
+      <div id="products-container" class="products-grid"></div>
+    </section>
+
+    <section id="simulators-showcase-section" class="simulators-section">
+      <div class="section-heading">
+        <h3 class="section-title">التخصيص الفاخر</h3>
+      </div>
+      <div class="simulators-grid">
+        <div id="cake-simulator-card" class="simulator-card">
+          <h4>محاكي التورتات الذكي</h4>
+          <p>يمكنك اختيار التصميم المناسب لك وتحديد أدق تفاصيل الحشو والحجم لكل فرد</p>
+          <button id="open-cake-sim-btn" class="cta-secondary">دخول المحاكي</button>
+        </div>
+        <div id="flower-simulator-card" class="simulator-card">
+          <h4>محاكي بوكسات الورد</h4>
+          <p>تنسيق فاخر للشوكولاتة والورد الطبيعي المبهج ليناسب ذوقك الراقي</p>
+          <button id="open-flower-sim-btn" class="cta-secondary">دخول المحاكي</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <aside id="sidebar-cart-drawer" class="cart-drawer" aria-hidden="true">
+    <div class="drawer-overlay"></div>
+    <div class="drawer-content">
+      <div class="drawer-header">
+        <h4>سلة المشتريات</h4>
+        <button id="close-cart-btn" class="close-btn">×</button>
+      </div>
+      <div id="cart-items-wrapper" class="drawer-body"></div>
+      <div class="drawer-footer">
+        <div class="cart-total-line">
+          <span>المجموع الفوري:</span>
+          <span id="cart-subtotal-display">0 جنيه</span>
+        </div>
+        <button id="checkout-action-btn" class="checkout-btn">إتمام الطلب</button>
+      </div>
+    </div>
+  </aside>
+
+  <footer id="main-footer" class="site-footer">
+    <div class="footer-container">
+      <p>&copy; 2026 حلويات بوسي. جميع الحقوق محفوظة لفرع الكفاح، مركز الفرافرة.</p>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script src="core-bootstrap.js"></script>
+  <script src="core-event-bus.js"></script>
+  <script src="core-state-store.js"></script>
+  <script src="integration-firebase.js"></script>
+  <script src="integration-cloudinary.js"></script>
+  <script src="engine-products.js"></script>
+  <script src="engine-cart.js"></script>
+  <script src="engine-pricing.js"></script>
+  <script src="engine-orders.js"></script>
+  <script src="engine-simulators.js"></script>
+  <script src="ui-global.js"></script>
+  <script src="ui-products.js"></script>
+  <script src="ui-simulators.js"></script>
+  <script src="ui-cart-checkout.js"></script>
+</body>
+</html>
