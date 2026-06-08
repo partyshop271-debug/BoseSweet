@@ -340,7 +340,7 @@ a {
     background: linear-gradient(to top, var(--bose-white) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
-/* SECTION 02: عقد من الإتقان */
+/* SECTION 02: عقد من الإتقان المطور بالتحريك التلقائي والسلس */
 .excellence-scroller-block {
     position: relative;
     width: 100vw;
@@ -362,18 +362,23 @@ a {
     width: 100%;
     height: 480px;
     display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-}
-
-.excellence-banner-scroller::-webkit-scrollbar {
-    display: none;
+    overflow: hidden; /* إخفاء أشرطة التمرير لخدمة التحريك التلقائي */
+    direction: ltr; /* توحيد حسابات الإزاحة البرمجية لتجنب ثغرات المتصفحات */
 }
 
 .excellence-images-wrapper {
     display: flex;
-    width: 100%;
+    width: max-content;
+}
+
+/* تفعيل محرك الحركة التلقائية المتواصلة الخالي من الفراغات البصرية */
+.excellence-images-wrapper.auto-scroll-track {
+    animation: excellenceInfiniteScroll 20s linear infinite;
+}
+
+@keyframes excellenceInfiniteScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* إزاحة مثالية لنصف المساحة بعد مضاعفة العناصر */
 }
 
 .excellence-img-slide-link {
@@ -381,7 +386,6 @@ a {
     width: 100vw; /* تملأ عرض الشاشة بالكامل */
     height: 100%;
     flex-shrink: 0;
-    scroll-snap-align: start;
 }
 
 .excellence-img-slide {
@@ -431,7 +435,7 @@ a {
 .product-card {
     background-color: var(--bose-white);
     border-radius: var(--bose-radius-md);
-    border: 1px solid rgba(255, 145, 164, 0.25); /* بمبي خفيف جداً */
+    border: var(--bose-border-pink); /* استخدام المتغير الموحد المغلق برمجياً */
     box-shadow: var(--bose-shadow-glow);
     overflow: hidden;
     display: flex;
@@ -531,7 +535,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border: 1px solid rgba(255, 145, 164, 0.15); /* بمبي خفيف جداً */
+    border: var(--bose-border-pink);
     border-radius: var(--bose-radius-full);
     padding: 4px 8px;
     background-color: #FFFDFD;
@@ -649,7 +653,7 @@ a {
     width: max-content;
 }
 
-/* مقاس الكروت في الأكثر مبيعاً ووصل حديثاً */
+/* كروت السلايدرات بالمقاسات المعيارية الصارمة للموبايل والديسك توب */
 .most-selling-slider-container .product-card,
 .new-arrivals-slider-container .product-card {
     width: 85vw; /* موبايل */
@@ -663,7 +667,7 @@ a {
     }
 }
 
-/* نقاط التحكم الدائرية السفلية */
+/* نقاط التحكم السفلية */
 .slider-dots-container {
     display: flex;
     justify-content: center;
