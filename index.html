@@ -304,22 +304,93 @@
                 loadStoreDatabase();
             });
 
+            // محرك الاستدعاء المتسلسل والذكي لحل مشكلة قراءة واستدعاء الملفات على جميع الاستضافات
             function loadStoreDatabase() {
-                fetch('site-data-final.json')
-                    .then(response => {
-                        if (!response.ok) throw new Error('Network error fetching site database json.');
-                        return response.json();
-                    })
-                    .then(data => {
-                        database = data;
-                        window.BoseStoreData = data;
-                        document.dispatchEvent(new CustomEvent("BoseDataReady", { detail: data }));
-                        executeInitializationSequence();
-                    })
-                    .catch(error => {
-                        console.error("❌ Critical database extraction failure:", error);
+                const cacheBuster = "?v=" + Date.now(); // كسر التخزين المؤقت لضمان قراءة أحدث التعديلات دوماً
+                
+                // قائمة بالمسارات المتوقعة للملف طبقاً لهيكلة المشروع المحلية والفرعية على الاستضافات
+                const potentialDatabasePaths = [
+                    "site-data-final.json" + cacheBuster,
+                    "./site-data-final.json" + cacheBuster,
+                    "data/site-data-final.json" + cacheBuster,
+                    "../site-data-final.json" + cacheBuster
+                ];
+                
+                let pathIndex = 0;
+
+                function attemptFetch() {
+                    if (pathIndex >= potentialDatabasePaths.length) {
+                        console.error("❌ Critical: All database paths failed on the hosting server.");
+                        showFriendlyDiagnosticOverlay(); // إظهار واجهة تشخيصية بدلاً من alert لتعريف العميل بالخطأ الفني
                         fallbackStaticInit();
-                    });
+                        return;
+                    }
+
+                    const activePath = potentialDatabasePaths[pathIndex];
+                    console.log(`📡 Attempting to load BoseSweets database from: ${activePath}`);
+
+                    fetch(activePath)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status} on path: ${activePath}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            database = data;
+                            window.BoseStoreData = data;
+                            document.dispatchEvent(new CustomEvent("BoseDataReady", { detail: data }));
+                            executeInitializationSequence();
+                            console.log(`✔️ Loaded database successfully from path: ${activePath}`);
+                        })
+                        .catch(error => {
+                            console.warn(`⚠️ Path resolution failed for [${activePath}]: ${error.message}`);
+                            pathIndex++;
+                            attemptFetch(); // الانتقال التلقائي والذكي لتجربة المسار البديل دون توقف الصفحة
+                        });
+                }
+
+                attemptFetch();
+            }
+
+            // واجهة تشخيصية تفاعلية فائقة الجمال لمطوري حلويات بوسي لحل المشاكل التقنية على الفور
+            function showFriendlyDiagnosticOverlay() {
+                if (document.getElementById('bose-diagnostic-box')) return;
+                
+                const box = document.createElement('div');
+                box.id = 'bose-diagnostic-box';
+                box.style.cssText = `
+                    position: fixed;
+                    bottom: 24px;
+                    right: 24px;
+                    left: 24px;
+                    background-color: #FFFFFF;
+                    border: 2px solid #FF91A4;
+                    border-radius: 20px;
+                    padding: 24px;
+                    box-shadow: 0 10px 40px rgba(255, 145, 164, 0.25);
+                    z-index: 10000;
+                    max-width: 500px;
+                    margin: 0 auto;
+                    direction: rtl;
+                    font-family: 'Cairo', sans-serif;
+                `;
+                
+                box.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                        <i class="fa-solid fa-circle-exclamation" style="color: #FF91A4; font-size: 1.6rem;"></i>
+                        <h4 style="margin: 0; color: #111111; font-weight: 700; font-size: 1.15rem;">تنبيه تشخيصي لموقع حلويات بوسي</h4>
+                    </div>
+                    <p style="margin: 0 0 16px 0; color: #111111; font-size: 0.92rem; line-height: 1.6; font-weight: 400;">
+                        لم نتمكن من العثور على ملف البيانات <strong style="color: #FF91A4;">site-data-final.json</strong> على خادم الاستضافة الحالية أو أن هناك مشكلة صلاحيات مسببة لخلل CORS أثناء الاختبار المحلي. 
+                        يرجى رفع ملف البيانات في المجلد الرئيسي للموقع وتطابق أحرف الاسم بالكامل.
+                    </p>
+                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                        <button onclick="location.reload()" class="bose-btn bose-btn-primary" style="padding: 8px 16px; font-size: 0.85rem; font-weight: 700;">إعادة المحاولة</button>
+                        <button onclick="document.getElementById('bose-diagnostic-box').remove()" class="bose-btn bose-btn-secondary" style="padding: 8px 16px; font-size: 0.85rem; font-weight: 700; border-color: rgba(255,145,164,0.3);">تجاهل</button>
+                    </div>
+                `;
+                document.body.appendChild(box);
             }
 
             function executeInitializationSequence() {
@@ -462,7 +533,6 @@
 
                 track.innerHTML = "";
                 
-                // مضاعفة المصفوفة لتأمين تحريك انسيابي لا نهائي دون فراغات
                 const duplicatedImages = [...data.images, ...data.images];
                 
                 duplicatedImages.forEach((url, i) => {
@@ -473,7 +543,6 @@
                     track.appendChild(anchor);
                 });
 
-                // تفعيل صنف الحركة التلقائية بالـ CSS
                 track.classList.add('auto-scroll-track');
 
                 setupSliderDots('excellence-slider-container', 'excellence-dots', data.images.length, 1);
@@ -616,7 +685,6 @@
                     if (item.customBuilderUrl) {
                         actionMarkup = `<a href="${item.customBuilderUrl}" class="bose-btn bose-btn-secondary card-action-btn">تخصيص وتصميم الآن <i class="fa-solid fa-wand-magic-sparkles"></i></a>`;
                     } else {
-                        // تعديل الأزرار لتلتزم باتجاه العرض RTL المعتمد للموقع (يمين: + | وسط: العدد | يسار: -) بالملي
                         actionMarkup = `
                             <div class="card-unified-counter-wrapper">
                                 <div class="bose-card-qty-counter">
