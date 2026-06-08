@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="منصة بيع إلكترونية متكاملة، ترفع متوسط قيمة الطلب، تسهل الشراء، وتحول الزائر إلى عميل لمنتجات حلويات بوسي الفاخرة.">
+    <meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, حلويات بوسي">
+    
+    <!-- خط القاهرة Cairo المعتمد من جوجل -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- مكتبة أيقونات Font Awesome لدعم الهيدر والفوتر والشبكات التفاعلية -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ملفات التنسيق القياسية الموحدة لمنع تضخم الملفات وتأخر التحميل -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- المحرك العام (يُستدعى في كل الصفحات: يقرأ JSON، يدير العداد الصغير للسلة بالهيدر) -->
+    <script src="js/core.html.js"></script>
+    
+    <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
+</head>
+<body>
+
+    <!-- 🏢 مكون الهيدر الموحد والثابت (Shared Universal Header) -->
+    <header class="bose-navbar">
+        <div class="brand-logo-container">
+            <a href="index.html">
+                <img id="bose-store-logo" src="" alt="حلويات بوسي">
+            </a>
+        </div>
+        <nav id="bose-nav-menu">
+            <ul class="nav-list">
+                <!-- تتولد الروابط ديناميكياً لتجنب التعارض -->
+            </ul>
+        </nav>
+        <div class="nav-actions">
+            <a href="cart.html" class="nav-cart-icon-wrapper">
+                <span id="nav-cart-count">0</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- 1. قسم البانر الرئيسي (hero-section) -->
+    <section id="hero-section">
+        <h1 id="hero-title">عقد من التميز في صناعة الحلويات</h1>
+        <p id="hero-description">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة.</p>
+        <a href="menu.html" id="hero-cta-btn">اطلب الآن</a>
+    </section>
+
+    <!-- 2. قسم الشلال البصري (waterfall-section) -->
+    <section id="waterfall-section">
+        <div class="waterfall-container">
+            <div id="waterfall-left-col"></div>
+            <div id="waterfall-right-col"></div>
+        </div>
+    </section>
+
+    <!-- 3. قسم سلايدر الفئات الدائري (categories-slider-section) -->
+    <section id="categories-slider-section">
+        <div id="categories-track">
+            <!-- الفئات الـ 12 المعتمدة تتولد هنا ديناميكياً بدون أي تغيير بأسماء الفئات -->
+        </div>
+    </section>
+
+    <!-- 4. قسم الأكثر مبيعاً (most-selling-section) -->
+    <section id="most-selling-section">
+        <div id="most-selling-grid" class="products-grid">
+            <!-- الـ 8 منتجات المحددة في الـ JSON للأكثر مبيعاً تتولد هنا -->
+        </div>
+    </section>
+
+    <!-- 5. قسم الإتقان ومعرض الصور المتصل الصامت (excellence-section) -->
+    <section id="excellence-section">
+        <div class="excellence-banner-scroller">
+            <div id="excellence-images-track">
+                <!-- الصور الثلاثة المتصلة تملأ العرض وتتحرك تلقائياً بدون فواصل بصرية -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. قسم الأحدث وصلاً (new-arrivals-section) -->
+    <section id="new-arrivals-section">
+        <div id="new-arrivals-grid" class="products-grid">
+            <!-- الـ 6 منتجات المحددة كجديد في الـ JSON تتولد هنا -->
+        </div>
+    </section>
+
+    <!-- 7. قسم محاكي التورت المبدئي (cake-preview-section) -->
+    <section id="cake-preview-section">
+        <img id="cake-preview-img" src="" alt="محاكي التورت">
+        <h2 id="cake-preview-title">محاكي التورت</h2>
+        <p id="cake-preview-desc">حلويات بوسي تتيح تصميم التورت حسب الطلب واختيار كافة التفاصيل التي تناسب ذوقكم ومناسباتكم الفريدة.</p>
+        <a href="cake-builder.html" id="cake-preview-cta">تصميم التورتة الآن</a>
+    </section>
+
+    <!-- 8. قسم أرقام الفخر والاعتزاز بالخبرة والعملاء (pride-section) -->
+    <section id="pride-section">
+        <div class="stats-container">
+            <!-- تتولد إحصائيات الفخر والاعتزاز المعتمدة بالـ JSON هنا ديناميكياً -->
+        </div>
+    </section>
+
+    <!-- 9. قسم محاكي الورد المبدئي (flower-preview-section) -->
+    <section id="flower-preview-section">
+        <img id="flower-preview-img" src="" alt="محاكي الورد">
+        <h2 id="flower-preview-title">محاكي الورد</h2>
+        <p id="flower-preview-desc">تخصيص البوكيه واختيار الورد الطبيعي، الصناعي، أو الستان مع إضافة الهدايا والرسائل والصور الخاصة.</p>
+        <a href="flower-builder.html" id="flower-preview-cta">تصميم البوكيه الآن</a>
+    </section>
+
+    <!-- 10. قسم تشكيلتنا العامة (our-products-section) -->
+    <section id="our-products-section">
+        <div id="our-products-grid" class="products-grid">
+            <!-- الـ 8 منتجات العامة المتبقية المحددة بالـ JSON تتولد هنا -->
+        </div>
+    </section>
+
+    <!-- 🏪 مكون الفوتر الموحد والثابت (Shared Universal Footer) -->
+    <footer class="bose-footer">
+        <div class="footer-about-block">
+            <p id="footer-about-text"></p>
+        </div>
+        <div id="footer-social-links">
+            <a href="" class="social-link-facebook" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="" class="social-link-instagram" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="" class="social-link-tiktok" target="_blank"><i class="fab fa-tiktok"></i></a>
+            <a href="" class="social-link-whatsapp" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <div class="footer-policies-container">
+            <!-- الروابط والسياسات المعتمدة تتولد تلقائياً لتطابق الـ JSON والـ Blueprint -->
+        </div>
+    </footer>
+
+    <!-- 🛡️ محرك الواجهة الرئيسية الصارم المتوافق مع شروط حماية البيانات وحساب الأسعار -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // حارس التمهيد القياسي لمنع بدء التوليد قبل استقرار كائن البيانات بالذاكرة
+            if (window.BoseStoreData && window.BoseStoreData.store) {
+                initializeHomepageEngine();
+            } else {
+                const homeGuardInterval = setInterval(() => {
+                    if (window.BoseStoreData && window.BoseStoreData.store) {
+                        clearInterval(homeGuardInterval);
+                        initializeHomepageEngine();
+                    }
+                }, 50);
+            }
+        });
+
+        function initializeHomepageEngine() {
+            console.log("🚀 Homepage Engine Verified & Initialized.");
+            const data = window.BoseStoreData;
+
+            // 1. حقن نصوص قسم البانر الرئيسي بالمليمتر طبقاً للـ JSON
+            document.getElementById('hero-title').textContent = data.homepage.hero.title;
+            document.getElementById('hero-description').textContent = data.homepage.hero.description;
+            if (data.homepage.hero.cta) {
+                document.getElementById('hero-cta-btn').textContent = data.homepage.hero.cta;
+            }
+
+            // 2. حقن صور الشلال البصري (Waterfall)
+            const leftCol = document.getElementById('waterfall-left-col');
+            const rightCol = document.getElementById('waterfall-right-col');
+            if (leftCol && rightCol) {
+                leftCol.innerHTML = '';
+                rightCol.innerHTML = '';
+                
+                data.homepage.waterfall.leftColumnImages.forEach(imgUrl => {
+                    leftCol.innerHTML += `<div class="waterfall-item"><img src="${imgUrl}" alt="حلويات بوسي" loading="lazy"></div>`;
+                });
+                
+                data.homepage.waterfall.rightColumnImages.forEach(imgUrl => {
+                    rightCol.innerHTML += `<div class="waterfall-item"><img src="${imgUrl}" alt="حلويات بوسي" loading="lazy"></div>`;
+                });
+            }
+
+            // 3. حقن سلايدر الفئات الـ 12 المعتمدة مع التكرار لضمان حركة CSS الدائرية المستمرة
+            const track = document.getElementById('categories-track');
+            if (track) {
+                track.innerHTML = '';
+                const categories = data.homepage.categoriesSlider;
+                
+                const generateCategoriesHTML = (itemsList) => {
+                    return itemsList.map(cat => `
+                        <a href="category.html?id=${cat.id}" class="category-slide-card">
+                            <div class="category-slide-img-wrapper">
+                                <img src="${cat.image}" alt="${cat.title}" loading="lazy">
+                            </div>
+                            <h3>${cat.title}</h3>
+                        </a>
+                    `).join('');
+                };
+
+                const originalHTML = generateCategoriesHTML(categories);
+                track.innerHTML = originalHTML + originalHTML; // تكرار المسار لمنع الفراغ البصري عند دوران السلايدر
+            }
+
+            // 4. بناء كروت شبكات المنتجات الثلاثة
+            renderProductGrid('most-selling-grid', data.homepage.mostSelling);
+            renderProductGrid('new-arrivals-grid', data.homepage.newArrivals);
+            renderProductGrid('our-products-grid', data.homepage.ourProducts);
+
+            // 5. حقن صور قسم الإتقان ومعرض الصور المتصل
+            const excellenceImagesTrack = document.getElementById('excellence-images-track');
+            if (excellenceImagesTrack) {
+                excellenceImagesTrack.innerHTML = '';
+                const excHTML = data.homepage.excellence.images.map(imgUrl => `
+                    <div class="excellence-img-wrapper">
+                        <img src="${imgUrl}" alt="حلويات بوسي" loading="lazy">
+                    </div>
+                `).join('');
+                excellenceImagesTrack.innerHTML = excHTML + excHTML; // مكرر للحركة المستمرة اللانهائية
+            }
+
+            // 6. حقن بيانات لوحة التورت والورد المبدئية
+            document.getElementById('cake-preview-img').src = data.homepage.cakePreview.image;
+            document.getElementById('cake-preview-title').textContent = data.homepage.cakePreview.title;
+            document.getElementById('cake-preview-desc').textContent = data.homepage.cakePreview.description;
+            document.getElementById('cake-preview-cta').href = data.homepage.cakePreview.target;
+            document.getElementById('cake-preview-cta').textContent = data.homepage.cakePreview.cta;
+
+            document.getElementById('flower-preview-img').src = data.homepage.flowerPreview.image;
+            document.getElementById('flower-preview-title').textContent = data.homepage.flowerPreview.title;
+            document.getElementById('flower-preview-desc').textContent = data.homepage.flowerPreview.description;
+            document.getElementById('flower-preview-cta').href = data.homepage.flowerPreview.target;
+            document.getElementById('flower-preview-cta').textContent = data.homepage.flowerPreview.cta;
+
+            // 7. حقن أرقام الفخر والاعتزاز
+            const statsContainer = document.querySelector('.stats-container');
+            if (statsContainer) {
+                statsContainer.innerHTML = '';
+                const stats = data.homepage.pride.stats;
+                
+                Object.keys(stats).forEach(key => {
+                    const stat = stats[key];
+                    statsContainer.innerHTML += `
+                        <div class="stat-card">
+                            <div class="stat-number-wrapper">
+                                <span class="stat-number">${stat.value}</span>
+                                <span class="stat-suffix">${stat.suffix}</span>
+                            </div>
+                            <span class="stat-label">${stat.label}</span>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        // دالة توليد كروت المنتجات القياسية
+        function renderProductGrid(gridId, productIdList) {
+            const gridContainer = document.getElementById(gridId);
+            if (!gridContainer || !window.BoseStoreData) return;
+            
+            gridContainer.innerHTML = '';
+            const allProducts = window.BoseStoreData.products;
+            
+            const targetProducts = productIdList.map(id => allProducts.find(p => p.id === id)).filter(Boolean);
+            
+            targetProducts.forEach(prod => {
+                // تفعيل دالة التحقق من نسبة زيادة الأسعار المعتمدة بالـ JSON لمنع ثغرات التلاعب
+                const currentPrice = window.calculateBosePrice(prod.price, "menu-only");
+                
+                let cardActionHTML = '';
+                if (prod.customBuilderUrl) {
+                    cardActionHTML = `
+                        <a href="${prod.customBuilderUrl}" class="btn-card-action btn-custom">
+                            <i class="fas fa-magic"></i> ابدأ التصميم بنفسك
+                        </a>
+                    `;
+                } else {
+                    cardActionHTML = `
+                        <div class="card-buy-actions">
+                            <a href="product.html?id=${prod.id}" class="btn-card-details">التفاصيل</a>
+                            <button onclick="addStandardProductToCart('${prod.id}')" class="btn-card-buy">
+                                <i class="fas fa-shopping-cart"></i> أضف للسلة
+                            </button>
+                        </div>
+                    `;
+                }
+
+                // الالتزام التام ببيانات ووصف وصور المنتجات المعتمدة بالـ JSON
+                gridContainer.innerHTML += `
+                    <div class="product-card">
+                        <div class="product-card-image-side">
+                            <img src="${prod.images[0]}" alt="${prod.flavorName || prod.title}" loading="lazy">
+                        </div>
+                        <div class="product-card-info-side">
+                            <span class="product-card-category">${prod.title}</span>
+                            <h3 class="product-card-title">${prod.flavorName || prod.title}</h3>
+                            <p class="product-card-desc">${prod.flavorDesc || ''}</p>
+                            <div class="product-card-footer">
+                                <span class="product-card-price">${currentPrice} <small>EGP</small></span>
+                                ${cardActionHTML}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // إضافة المنتجات العادية مباشرة للسلة
+        window.addStandardProductToCart = function(productId) {
+            if (!window.BoseStoreData) return;
+            
+            const product = window.BoseStoreData.products.find(p => p.id === productId);
+            if (!product) return;
+            
+            const calculatedPrice = window.calculateBosePrice(product.price, "menu-only");
+            
+            const rawCart = localStorage.getItem('bose_cart');
+            let cart = rawCart ? JSON.parse(rawCart) : [];
+            
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id: product.id,
+                    productSlug: product.slug,
+                    title: product.title,
+                    flavorName: product.flavorName || product.title,
+                    price: calculatedPrice,
+                    quantity: 1,
+                    image: product.images[0],
+                    type: "standard",
+                    customDetails: null
+                });
+            }
+            
+            localStorage.setItem('bose_cart', JSON.stringify(cart));
+            window.updateGlobalCartCounter();
+            window.showBoseAlert(`تمت إضافة ${product.flavorName || product.title} إلى سلتك بحب 🌸`);
+        };
+    </script>
+</body>
+</html>
+
+
