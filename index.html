@@ -146,15 +146,15 @@
 
     <!-- SECTION 02: عقد من الإتقان -->
     <section id="excellence-section" class="excellence-scroller-block">
+        <div class="excellence-header-centered">
+            <h2 id="excellence-title">عقد من الإتقان</h2>
+            <p id="excellence-description">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة تأخذكم لعالم من الفخامة والروقان.</p>
+        </div>
         <div class="excellence-scroller-outer">
             <div class="excellence-banner-scroller" id="excellence-slider-container">
                 <div id="excellence-images-track" class="excellence-images-wrapper"></div>
             </div>
             <div class="slider-dots-container" id="excellence-dots"></div>
-        </div>
-        <div class="excellence-overlay-content">
-            <h2 id="excellence-title">عقد من الإتقان</h2>
-            <p id="excellence-description">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة تأخذكم لعالم من الفخامة والروقان.</p>
         </div>
     </section>
 
@@ -694,14 +694,13 @@
                             <a href="${hrefTarget}">
                                 <img src="${item.images[0]}" alt="${item.title} - ${item.flavorName}" onerror="this.src='${database.store.logo}'" loading="lazy">
                             </a>
-                            ${item.featured ? '<span class="featured-badge">بصمة بوسي 👑</span>' : ''}
                         </div>
                         <div class="product-card-details">
                             <div class="card-title-row">
                                 <h3><a href="${hrefTarget}">${item.title}</a></h3>
                                 <span class="product-flavor-badge">${item.flavorName}</span>
                             </div>
-                            <p class="product-card-desc">${item.flavorDesc || item.description}</p>
+                            <p class="product-card-desc">${item.description || item.flavorDesc}</p>
                             <div class="product-card-footer">
                                 <div class="card-price-block">
                                     <span class="current-price-num" id="card-price-val-${item.id}" data-base-price="${computedPrice}">${computedPrice}</span>
@@ -973,5 +972,4 @@
     </script>
 </body>
 </html>
-
 
