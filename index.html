@@ -21,7 +21,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="main.css">
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -336,6 +336,7 @@
                 setupPremiumSearchEngine();
                 setupMobileResponsiveSidebar();
                 setupVideoPlayBehavior();
+                setupFooterPolicies();
                 window.updateGlobalCartCounter();
             }
 
@@ -424,7 +425,6 @@
                 left.innerHTML = "";
                 right.innerHTML = "";
 
-                // مضاعفة الصور لضمان سلاسة التمرير اللانهائي (No Empty Space)
                 const leftImages = [...data.leftColumnImages, ...data.leftColumnImages];
                 const rightImages = [...data.rightColumnImages, ...data.rightColumnImages];
 
@@ -461,13 +461,20 @@
                 if (!track) return;
 
                 track.innerHTML = "";
-                data.images.forEach((url, i) => {
+                
+                // مضاعفة المصفوفة لتأمين تحريك انسيابي لا نهائي دون فراغات
+                const duplicatedImages = [...data.images, ...data.images];
+                
+                duplicatedImages.forEach((url, i) => {
                     const anchor = document.createElement('a');
                     anchor.href = "menu.html";
                     anchor.className = "excellence-img-slide-link";
                     anchor.innerHTML = `<img src="${url}" alt="مراحل الإتقان والتميز في حلويات بوسي" class="excellence-img-slide" onerror="this.src='${database.store.logo}'">`;
                     track.appendChild(anchor);
                 });
+
+                // تفعيل صنف الحركة التلقائية بالـ CSS
+                track.classList.add('auto-scroll-track');
 
                 setupSliderDots('excellence-slider-container', 'excellence-dots', data.images.length, 1);
             }
@@ -609,12 +616,13 @@
                     if (item.customBuilderUrl) {
                         actionMarkup = `<a href="${item.customBuilderUrl}" class="bose-btn bose-btn-secondary card-action-btn">تخصيص وتصميم الآن <i class="fa-solid fa-wand-magic-sparkles"></i></a>`;
                     } else {
+                        // تعديل الأزرار لتلتزم باتجاه العرض RTL المعتمد للموقع (يمين: + | وسط: العدد | يسار: -) بالملي
                         actionMarkup = `
                             <div class="card-unified-counter-wrapper">
                                 <div class="bose-card-qty-counter">
-                                    <button onclick="decrementCardCounter(this, '${item.id}')" class="qty-btn minus">-</button>
-                                    <span class="qty-num" id="card-qty-val-${item.id}">1</span>
                                     <button onclick="incrementCardCounter(this, '${item.id}')" class="qty-btn plus">+</button>
+                                    <span class="qty-num" id="card-qty-val-${item.id}">1</span>
+                                    <button onclick="decrementCardCounter(this, '${item.id}')" class="qty-btn minus">-</button>
                                 </div>
                                 <button onclick="addBoseItemWithQty('${item.id}')" class="bose-btn bose-btn-primary card-action-btn-with-counter">إضافة للسلة <i class="fa-solid fa-basket-shopping"></i></button>
                             </div>
@@ -711,11 +719,9 @@
                     localStorage.setItem('bose_cart', JSON.stringify(cart));
                     window.updateGlobalCartCounter();
                     
-                    // Reset counter to 1
                     if (qtyLabel) qtyLabel.textContent = "1";
                     updateCardPriceDisplay(productId, 1);
 
-                    // Custom Notification Modal instead of Native alert
                     showBoseNotification(`تمت إضافة ${qty} من "${item.title} - ${item.flavorName}" إلى السلة بنجاح! 🌸`);
                 } catch (err) {
                     console.error("❌ Cart synchronization exception:", err);
@@ -749,7 +755,6 @@
                         dots.forEach(d => d.classList.remove('active'));
                         dot.classList.add('active');
                         
-                        // Scroll to position
                         const slideWidth = container.clientWidth;
                         container.scrollTo({
                             left: i * slideWidth,
@@ -759,7 +764,6 @@
                     dotsContainer.appendChild(dot);
                 }
 
-                // Sync active dot on manual scroll
                 container.addEventListener('scroll', () => {
                     const slideWidth = container.clientWidth;
                     const activeIndex = Math.round(container.scrollLeft / slideWidth);
@@ -882,6 +886,29 @@
                 video.addEventListener('play', () => {
                     trigger.style.display = 'none';
                 });
+            }
+
+            function setupFooterPolicies() {
+                const container = document.getElementById('global-footer-policies');
+                if (!container || !database.footer || !database.footer.policies) return;
+                container.innerHTML = "";
+                
+                const policyLinks = {
+                    "سياسة الخصوصية": "privacy-policy.html",
+                    "سياسة الاسترجاع": "refund-policy.html",
+                    "سياسة الطلبات": "shipping-policy.html",
+                    "الشروط والأحكام": "terms.html"
+                };
+                
+                const listItems = database.footer.policies.map(policy => {
+                    const file = policyLinks[policy] || "#";
+                    return `<a href="${file}" style="margin: 0 10px; color: var(--bose-black); font-weight: 600; transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='var(--bose-pink)'" onmouseout="this.style.color='var(--bose-black)'">${policy}</a>`;
+                });
+                
+                container.innerHTML = `
+                    <div style="margin-bottom: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">${listItems.join(' | ')}</div>
+                    <p style="color: #666; font-size: 0.8rem; margin-top: 8px;">&copy; ${new Date().getFullYear()} حلويات بوسي. جميع الحقوق محفوظة.</p>
+                `;
             }
         })();
     </script>
