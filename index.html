@@ -3,973 +3,437 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <title>حلويات بوسي | عقد من التميز في صناعة الحلويات الفاخرة وتصميم التورت</title>
+    <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
     <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة في مصر والشرق الأوسط.">
     <meta name="keywords" content="حلويات, حلويات بوسي, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, الفرافرة, الوادي الجديد, كبات السعادة, بوكس الروقان, تصميم تورتة, بوكيه ورد">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://bosesweets.com">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://bosesweets.com">
-    <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta property="og:description" content="تذوق الفخامة مع تشكيلة حلويات بوسي المصنوعة يدوياً وبأعلى جودة ومكونات طبيعية 100%. صمم هديتك وتورتتك بالملي الآن.">
-    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="حلويات بوسي | عقد من التميز في صناعة الحلويات">
-    <meta name="twitter:description" content="صمم هديتك، تورتتك، وبوكيه الورد الخاص بك لحظة بلحظة وبأسعار دقيقة خالية من الأخطاء في منصة حلويات بوسي التفاعلية.">
-    <meta name="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- استدعاء التنسيقات طبقاً للتقسيم الشجري الصارم -->
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
-    
-    <!-- محرك الحقن العالمي وحماية الذاكرة والسياسات العامة -->
-    <script src="js/core.html.js" defer></script>
-    
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Bakery",
-      "name": "حلويات بوسي",
-      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-      "@id": "https://bosesweets.com/#bakery",
-      "url": "https://bosesweets.com",
-      "telephone": "+201097238441",
-      "priceRange": "$$",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور احمد مجدي وبجوار عيادة الدكتور علي",
-        "addressLocality": "الفرافرة",
-        "addressRegion": "الوادي الجديد",
-        "postalCode": "72911",
-        "addressCountry": "EG"
-      },
-      "slogan": "صنعناها بحب لتهديها لمن تحب",
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": [
-          "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-        ],
-        "opens": "09:00",
-        "closes": "23:59"
-      }
-    }
-    </script>
 </head>
 <body>
 
-    <!-- TOP BAR -->
-    <div class="bose-top-marquee-bar" id="bose-top-ticker">
-        <div class="marquee-scrolling-container" id="top-bar-marquee-track"></div>
-    </div>
-
-    <!-- HEADER -->
-    <header class="bose-navbar">
-        <div class="nav-right-side-group">
-            <button class="menu-toggle-btn" id="sidebar-toggle-trigger" aria-label="افتح قائمة حلويات بوسي">
-                <span></span>
-                <span></span>
-                <span></span>
+    <header id="bose-global-header">
+        <div class="header-container">
+            <button id="sidebar-toggle-trigger" class="menu-toggle-btn" aria-label="فتح القائمة الجانبية">
+                <i class="fa-solid fa-bars"></i>
             </button>
-            <div class="brand-logo-container">
-                <a href="index.html">
-                    <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
+            <div class="header-logo-block">
+                <img id="bose-store-logo" src="" alt="حلويات بوسي">
+                <span class="header-brand-title">حلويات بوسي</span>
+            </div>
+            <nav id="bose-nav-menu" class="nav-menu-wrapper">
+                <button id="sidebar-close-trigger" class="menu-close-btn" aria-label="إغلاق القائمة الجانبية">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div class="sidebar-branding">
+                    <img id="sidebar-logo-img" src="" alt="حلويات بوسي">
+                    <p id="sidebar-slogan-text" class="sidebar-slogan"></p>
+                </div>
+                <ul id="main-nav-links-list" class="nav-list"></ul>
+            </nav>
+            <div class="header-controls">
+                <button id="global-search-trigger" class="control-btn" aria-label="بحث في المنتجات">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <a href="cart.html" id="global-cart-trigger" class="control-btn cart-anchor" aria-label="سلة المشتريات">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span id="nav-cart-count" class="cart-badge-count">0</span>
                 </a>
-                <span class="brand-title-head">حلويات بوسي</span>
             </div>
-        </div>
-
-        <nav id="bose-nav-menu">
-            <button class="close-sidebar-btn" id="sidebar-close-trigger" aria-label="إغلاق القائمة">×</button>
-            <div class="sidebar-brand-info">
-                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="sidebar-logo">
-                <div class="sidebar-brand-name">حلويات بوسي</div>
-                <div class="sidebar-brand-slogan">صنعناها بحب لتهديها لمن تحب</div>
-            </div>
-            <ul class="nav-list" id="main-nav-links-list"></ul>
-            <div class="sidebar-footer">
-                <p>تواصل مع فريق مبيعات حلويات بوسي مباشرة:</p>
-                <a href="tel:01097238441"><i class="fa-solid fa-phone"></i> 01097238441</a>
-                <p>موقعنا: مركز الفرافرة، الوادي الجديد</p>
-            </div>
-        </nav>
-
-        <div class="nav-actions">
-            <button class="search-trigger-btn" id="search-modal-open-btn" aria-label="ابحث عن حلويات بوسي">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </button>
-            <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="سلة حلويات بوسي">
-                <span id="nav-cart-count">0</span>
-            </a>
         </div>
     </header>
 
-    <!-- SEARCH OVERLAY -->
-    <div class="search-overlay" id="global-search-overlay">
-        <div class="search-container">
-            <div class="search-header">
-                <h3>البحث الفوري في المنيو الشامل</h3>
-                <button class="close-search-btn" id="search-modal-close-btn">×</button>
+    <main class="main-content-flow">
+        
+        <section id="bose-hero-section" class="hero-block-wrapper">
+            <div class="hero-inner-container">
+                <h1 class="hero-main-title">حلويات فاخرة تصنع لحظات لا تُنسى</h1>
+                <p class="hero-sub-description">نقدم لكم تشكيلة ساحرة من الحلويات الشرقية والغربية المصنوعة يدوياً بالكامل وبخامات طبيعية ومضمونة 100% لتليق بجميع مناسباتكم السعيدة</p>
+                <div class="hero-action-buttons">
+                    <a href="menu.html" class="bose-primary-btn">تصفح المنيو الكامل</a>
+                    <a href="cake-builder.html" class="bose-secondary-btn">صمم تورتتك بنفسك</a>
+                </div>
             </div>
-            <div class="search-input-box">
-                <input type="text" id="live-search-input" placeholder="اكتب اسم الصنف للبحث الفوري (مثال: قشطوطة، سينابون، تورت...)" autocomplete="off">
-                <i class="fa-solid fa-magnifying-glass"></i>
+        </section>
+
+        <section id="bose-features-ticker" class="features-ticker-bar">
+            <div class="ticker-inner-scroll">
+                <div class="feature-item-pill">
+                    <i class="fa-solid fa-wand-magic-sparkles feature-icon-pink"></i>
+                    <span class="feature-text-content">تخصيص كامل وتفاعلي فريد</span>
+                </div>
+                <div class="feature-item-pill">
+                    <i class="fa-solid fa-stroopwafel feature-icon-pink"></i>
+                    <span class="feature-text-content">مكونات طبيعية فاخرة 100%</span>
+                </div>
+                <div class="feature-item-pill">
+                    <i class="fa-solid fa-truck-ramp-box feature-icon-pink"></i>
+                    <span class="feature-text-content">استلام دقيق وآمن من فرعنا</span>
+                </div>
             </div>
-            <div class="search-results" id="live-search-results-box">
-                <p style="text-align: center; color: #111111; padding: 20px;">ابدأ بالكتابة للفرز التلقائي من قاعدة بيانات حلويات بوسي...</p>
+        </section>
+
+        <section id="bose-new-arrivals" class="products-grid-section">
+            <div class="section-header-block">
+                <h2 class="section-main-title">أحدث الإضافات</h2>
+                <p class="section-sub-title">تشكيلة حصرية متميزة وصلت حديثاً لتُبهج حواسك وتناسب ذوقك الرفيع</p>
             </div>
+            <div id="new-arrivals-render-container" class="products-cards-grid"></div>
+        </section>
+
+        <section id="bose-shop-by-category" class="categories-grid-section">
+            <div class="section-header-block">
+                <h2 class="section-main-title">تصفح بحسب الفئة</h2>
+                <p class="section-sub-title">اختر الفئة المفضلة لديك واستكشف روائعنا المجهزة خصيصاً لك</p>
+            </div>
+            <div id="categories-render-container" class="categories-cards-grid"></div>
+        </section>
+
+        <section id="bose-cake-simulator-banner" class="simulator-promo-banner-block">
+            <div class="simulator-banner-inner grid-two-columns">
+                <div class="banner-text-info">
+                    <h2 class="banner-title">محاكي التورت التفاعلي الأول في مصر</h2>
+                    <p class="banner-description">لا تختار تورتة عادية، بل اصنعها بنفسك خطوة بخطوة. حدد عدد الأفراد، الحشو الداخلي، الشكل الخارجي والرسائل الفاخرة، واحسب تكلفتها بدقة فورية تلبي تطلعاتك.</p>
+                    <a href="cake-builder.html" class="bose-primary-btn">ابدأ تصميم تورتتك الآن</a>
+                </div>
+                <div class="banner-visual-placeholder">
+                    <div class="bose-image-frame-container">
+                        <i class="fa-solid fa-cake-candles simulator-frame-icon"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="bose-flower-simulator-banner" class="simulator-promo-banner-block variant-reverse">
+            <div class="simulator-banner-inner grid-two-columns">
+                <div class="banner-visual-placeholder">
+                    <div class="bose-image-frame-container">
+                        <i class="fa-solid fa-seedling simulator-frame-icon"></i>
+                    </div>
+                </div>
+                <div class="banner-text-info">
+                    <h2 class="banner-title">محاكي بوكيهات الورد الطبيعي الفاخر</h2>
+                    <p class="banner-description">لأن الهدية لا تكتمل إلا بلمسة ورد ساحرة، نوفر لك محاكي فريد يتيح لك اختيار ألوان الورد، حجم البوكيه، ونوع اللف الخارجي لتقدم هدية متكاملة تشرفك وتعبّر عن مشاعرك.</p>
+                    <a href="flower-builder.html" class="bose-primary-btn">نسّق بوكيه الورد الفاخر</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="bose-our-story-section" class="brand-story-block-wrapper">
+            <div class="story-inner-container grid-two-columns">
+                <div class="story-text-content">
+                    <h2 class="story-title">حكايتنا وقيمنا الفنية</h2>
+                    <p class="story-paragraph">في حلويات بوسي، نحن لا نبيع مجرد منتجات، بل نصنع قيم جودة وخبرة نالت ثقة عملائنا الكرام. نعتمد بشكل مطلق وصارم على مكونات حقيقية وطبيعية 100% خالية من أي إضافات صناعية أو بدائل رخيصة، لنضمن لكم النكهة الغنية والقيمة الفاخرة التي تستحقونها.</p>
+                    <p class="story-paragraph">انطلقت مسيرتنا من قلب الكفاح بمركز الفرافرة بمحافظة الوادي الجديد، لنضع بين أيديكم خبرتنا الطويلة برؤية متطورة تدمج رقي التعامل وبساطة التجربة الرقمية الفاخرة.</p>
+                </div>
+                <div class="story-visual-frame">
+                    <div class="story-display-card">
+                        <span class="brand-watermark-title">حلويات بوسي</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="bose-statistics-section" class="statistics-counters-bar">
+            <div id="statistics-render-container" class="statistics-inner-grid"></div>
+        </section>
+
+        <section id="bose-testimonials-section" class="testimonials-slider-block">
+            <div class="section-header-block">
+                <h2 class="section-main-title">آراء وتقييمات عملائنا</h2>
+                <p class="section-sub-title">شرفنا بخدمة الكثير من العملاء، وإليكم بعض الرسائل والآراء الصادقة التي نعتز بها</p>
+            </div>
+            <div id="testimonials-render-container" class="testimonials-cards-wrapper"></div>
+        </section>
+
+        <section id="bose-scrolling-marquee" class="advertising-marquee-strip">
+            <div class="marquee-text-flow">
+                <span class="marquee-phrase">🌸 حلويات بوسي - صنعناها بحب لتهديها لمن تحب 🌸</span>
+                <span class="marquee-phrase">👑 مكونات طبيعية 100% وجودة تليق بمناسباتكم الفاخرة 👑</span>
+                <span class="marquee-phrase">📍 فرعنا بمركز الفرافرة - الكفاح يرحب بكم دوماً 📍</span>
+                <span class="marquee-phrase">🎂 صمم تورتتك وبوكيه الورد الخاص بك بكل سهولة 🎂</span>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="global-search-modal-view" class="search-modal-backdrop" style="display: none;">
+        <div class="search-modal-content-wrapper">
+            <div class="search-modal-header">
+                <h3 class="search-title-text">ابحث عن حلوياتك المفضلة</h3>
+                <button id="global-search-close-btn" class="search-close-x" aria-label="إغلاق نافذة البحث"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="search-input-field-wrapper">
+                <input type="text" id="bose-search-input-element" placeholder="اكتب اسم المنتج الذي تبحث عنه..." autocomplete="off">
+                <i class="fa-solid fa-magnifying-glass search-inner-icon"></i>
+            </div>
+            <div id="bose-search-results-output" class="search-results-scroll-area"></div>
         </div>
     </div>
 
-    <!-- SECTION 01: عقد من التميز -->
-    <section id="hero-section" class="hero-block">
-        <div class="hero-content">
-            <h1 id="hero-title">عقد من <span class="highlight-pink">التميز</span> في صناعة الحلويات</h1>
-            <p id="hero-description">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة.</p>
-            <a id="hero-cta-btn" href="menu.html" class="bose-btn bose-btn-primary">اطلب الآن</a>
-        </div>
-    </section>
-
-    <!-- WATERFALL -->
-    <section id="waterfall-section" class="waterfall-block">
-        <div class="waterfall-gradient-overlay top"></div>
-        <div class="waterfall-container">
-            <div id="waterfall-left-col" class="waterfall-column scroll-up-anim"></div>
-            <div id="waterfall-right-col" class="waterfall-column scroll-down-anim"></div>
-        </div>
-        <div class="waterfall-gradient-overlay bottom"></div>
-    </section>
-
-    <!-- SECTION 02: عقد من الإتقان -->
-    <section id="excellence-section" class="excellence-scroller-block">
-        <div class="excellence-header-centered">
-            <h2 id="excellence-title">عقد من الإتقان</h2>
-            <p id="excellence-description">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة تأخذكم لعالم من الفخامة والروقان.</p>
-        </div>
-        <div class="excellence-scroller-outer">
-            <div class="excellence-banner-scroller" id="excellence-slider-container">
-                <div id="excellence-images-track" class="excellence-images-wrapper"></div>
-            </div>
-            <div class="slider-dots-container" id="excellence-dots"></div>
-        </div>
-    </section>
-
-    <!-- SECTION 03: الأكثر مبيعاً -->
-    <section id="most-selling-section" class="products-grid-block">
-        <div class="section-header">
-            <h2>الأكثر مبيعاً</h2>
-            <p>الأصناف المفضلة التي نالت ثقة ومحبة عملائنا في الوادي الجديد لسنوات طويلة</p>
-        </div>
-        <div class="slider-wrapper-outer">
-            <div class="most-selling-slider-container" id="most-selling-slider">
-                <div id="most-selling-grid" class="products-grid slider-layout"></div>
-            </div>
-            <div class="slider-dots-container" id="most-selling-dots"></div>
-        </div>
-    </section>
-
-    <!-- SECTION 04: محاكي التورت -->
-    <section id="cake-preview-section" class="interactive-preview-block cake-banner">
-        <div class="preview-card-horizontal">
-            <div class="preview-img-holder">
-                <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت">
-            </div>
-            <div class="preview-content-holder">
-                <div class="badge-premium">لوحة محاكاة وتخصيص بالملي ⚡</div>
-                <h2 id="cake-preview-title">محاكي التورت</h2>
-                <p id="cake-preview-desc">حلويات بوسي تتيح تصميم التورت حسب الطلب واختيار كافة التفاصيل التي تناسب ذوقكم ومناسباتكم الفريدة.</p>
-                <a id="cake-preview-cta" href="cake-builder.html" class="bose-btn bose-btn-primary">تصميم التورتة الآن</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 05: وصل حديثاً -->
-    <section id="new-arrivals-section" class="products-grid-block">
-        <div class="section-header">
-            <h2>وصل حديثاً</h2>
-            <p>نكهات وتوليفات مبتكرة طازجة وصلت لتضفي البهجة على جلستكم ومناسبتكم السعيدة</p>
-        </div>
-        <div class="slider-wrapper-outer">
-            <div class="new-arrivals-slider-container" id="new-arrivals-slider">
-                <div id="new-arrivals-grid" class="products-grid slider-layout"></div>
-            </div>
-            <div class="slider-dots-container" id="new-arrivals-dots"></div>
-        </div>
-    </section>
-
-    <!-- SECTION 06: منتجاتنا -->
-    <section id="our-products-section" class="products-grid-block">
-        <div class="section-header">
-            <h2>منتجاتنا</h2>
-            <p>جميع أصناف ومخبوزات حلويات بوسي المصنوعة يومياً يدوياً بروح وشغف وحرفية عالية</p>
-        </div>
-        <div id="our-products-grid" class="products-grid grid-layout"></div>
-        <div class="show-more-container">
-            <button id="btn-show-more-products" class="bose-btn bose-btn-secondary">إظهار المزيد</button>
-        </div>
-    </section>
-
-    <!-- SECTION 07: محاكي الورد -->
-    <section id="flower-preview-section" class="interactive-preview-block flower-banner">
-        <div class="preview-card-horizontal reverse-layout">
-            <div class="preview-content-holder">
-                <div class="badge-premium">تنسيق وتجميع باقات الورد والهدايا 💐</div>
-                <h2 id="flower-preview-title">محاكي الورد</h2>
-                <p id="flower-preview-desc">تخصيص البوكيه واختيار الورد الطبيعي، الصناعي، أو الستان مع إضافة الهدايا والرسائل والصور الخاصة.</p>
-                <a id="flower-preview-cta" href="flower-builder.html" class="bose-btn bose-btn-primary">تصميم البوكيه الآن</a>
-            </div>
-            <div class="preview-img-holder">
-                <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد">
-            </div>
-        </div>
-    </section>
-
-    <!-- SECTION 08: الفخر والاعتزاز -->
-    <section id="pride-section" class="pride-statistics-block">
-        <div class="pride-content-wrapper">
-            <h2 id="pride-title">الفخر والاعتزاز</h2>
-            <p id="pride-text" class="pride-editorial-text">أكثر من 10 سنوات خبرة، أكثر من 10000 عميل، أكثر من 10000 طلب ناجح يروون قصة نجاحنا وفخرنا.</p>
-            <div class="pride-video-block">
-                <div class="video-preview-wrapper">
-                    <div class="video-overlay-play">
-                        <i class="fa-solid fa-play play-icon-glow"></i>
-                    </div>
-                    <video id="pride-video-player" poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" preload="none" controls>
-                        <source src="https://res.cloudinary.com/dyx4w0dr1/video/upload/v1718000000/bose_promo.mp4" type="video/mp4">
-                        متصفحك لا يدعم تشغيل مقاطع الفيديو.
-                    </video>
-                </div>
-            </div>
-            <div class="stats-container" id="pride-stats-grid"></div>
-        </div>
-    </section>
-
-    <!-- SECTION 09: تسوق حسب الفئة -->
-    <section id="categories-slider-section" class="categories-slider-block">
-        <div class="section-header-centered">
-            <h2>تسوق حسب الفئة</h2>
-            <p>اختر الفئة المفضلة لديك واستمتع بمنتجات طازجة ومعدة بكل حب وفن</p>
-        </div>
-        <div class="slider-wrapper-outer">
-            <div class="categories-scroller-viewport" id="categories-slider">
-                <div id="categories-track" class="categories-infinite-track"></div>
-            </div>
-            <div class="slider-dots-container" id="categories-dots"></div>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer class="bose-footer">
-        <div class="footer-grid-container">
-            <div class="footer-about-block">
-                <div class="footer-brand-header">
-                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="footer-logo">
+    <footer id="bose-global-footer">
+        <div class="footer-top-container">
+            <div class="footer-brand-profile">
+                <div class="footer-logo-block">
+                    <img id="footer-logo-img" src="" alt="حلويات بوسي">
                     <span class="footer-brand-title">حلويات بوسي</span>
                 </div>
-                <p id="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم.</p>
+                <p id="footer-about-text" class="footer-profile-description"></p>
             </div>
-            <div class="footer-links-block">
-                <h3 class="footer-block-title">روابط تهمك</h3>
-                <ul class="footer-nav-links">
-                    <li><a href="index.html">الرئيسية</a></li>
-                    <li><a href="menu.html">المنيو الشامل</a></li>
-                    <li><a href="cart.html">سلة المشتريات</a></li>
-                    <li><a href="cake-builder.html">محاكي التورت</a></li>
-                    <li><a href="flower-builder.html">محاكي الورد</a></li>
+            <div class="footer-links-navigation">
+                <h3 class="footer-column-heading">روابط تهمك</h3>
+                <ul id="footer-nav-links-list" class="footer-quick-links-list">
+                    <li><a href="index.html" class="footer-nav-link">الرئيسية</a></li>
+                    <li><a href="menu.html" class="footer-nav-link">قائمة المنيو</a></li>
+                    <li><a href="cake-builder.html" class="footer-nav-link">محاكي التورت</a></li>
+                    <li><a href="flower-builder.html" class="footer-nav-link">محاكي الورد</a></li>
+                    <li><a href="cart.html" class="footer-nav-link">سلة المشتريات</a></li>
                 </ul>
             </div>
-            <div class="footer-contact-block">
-                <h3 class="footer-block-title">مقرنا وفرعنا</h3>
-                <p class="footer-address">
-                    <i class="fa-solid fa-location-dot contact-icon-pink"></i> الكفاح - شارع الوحدة المحلية بجوار صيدلية الدكتور أحمد مجدي وبجوار عيادة الدكتور علي. مركز الفرافرة، محافظة الوادي الجديد.
-                </p>
-                <p class="footer-phone">
+            <div class="footer-contact-details">
+                <h3 class="footer-column-heading">مقرنا وفرعنا</h3>
+                <p id="footer-pickup-address-text" class="footer-address-paragraph"></p>
+                <p class="footer-phone-paragraph">
                     <i class="fa-solid fa-phone contact-icon-pink"></i> رقم التواصل والمكالمات: 
-                    <a href="tel:01097238441" class="footer-phone-link">01097238441</a>
+                    <a href="tel:01097238441" class="footer-phone-anchor">01097238441</a>
                 </p>
             </div>
         </div>
-        <div id="footer-social-links">
-            <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-link-facebook" target="_blank" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-link-instagram" target="_blank" aria-label="انستجرام"><i class="fab fa-instagram"></i></a>
-            <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-link-tiktok" target="_blank" aria-label="تيك توك"><i class="fab fa-tiktok"></i></a>
-            <a href="https://wa.me/201097238441" class="social-link-whatsapp" target="_blank" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+        <div id="footer-social-links" class="footer-social-networks-bar">
+            <a href="#" class="social-link-facebook" target="_blank" aria-label="تابعنا على فيسبوك"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-link-instagram" target="_blank" aria-label="تابعنا على انستجرام"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link-tiktok" target="_blank" aria-label="تابعنا على تيك توك"><i class="fab fa-tiktok"></i></a>
+            <a href="#" class="social-link-whatsapp" target="_blank" aria-label="تواصل معنا عبر واتساب"><i class="fab fa-whatsapp"></i></a>
         </div>
-        <div class="footer-policies-container" id="global-footer-policies"></div>
+        <div id="global-footer-policies" class="footer-legal-policies-container"></div>
     </footer>
 
-    <!-- محرك التشغيل والربط الذكي المتوافق مع core.html.js -->
-    <script>
-        (function() {
-            let database = null;
-            let currentOurProductsLimit = 4;
-            let ourProductsList = [];
+    <div id="bose-toast-container" class="toast-notifications-stack-area"></div>
 
-            document.addEventListener("DOMContentLoaded", () => {
-                // الانتظار الفوري لقراءة كائن البيانات العالمي لمنع ازدواجية الطلبات CORS وتحميل الذاكرة
-                if (window.BoseStoreData && window.BoseStoreData.store) {
-                    database = window.BoseStoreData;
-                    executeInitializationSequence();
-                } else {
-                    const checkDatabaseInterval = setInterval(() => {
-                        if (window.BoseStoreData && window.BoseStoreData.store) {
-                            clearInterval(checkDatabaseInterval);
-                            database = window.BoseStoreData;
-                            executeInitializationSequence();
-                        }
-                    }, 50);
-                    
-                    // مسار احتياطي احتياطي في حال تأخر core.html.js
-                    setTimeout(() => {
-                        if (!database) {
-                            loadStoreDatabaseFallback();
-                        }
-                    }, 2000);
+    <script src="js/core.html.js"></script>
+    <script>
+        document.addEventListener('BoseStoreDataReady', (event) => {
+            const data = event.detail;
+            
+            renderNewArrivals(data.products);
+            renderShopByCategories(data.categories);
+            renderStatisticsCounters(data.statistics);
+            renderTestimonialsSlider(data.testimonials);
+            setupLocalSearchEngine(data.products);
+        });
+
+        function renderNewArrivals(products) {
+            const container = document.getElementById('new-arrivals-render-container');
+            if (!container) return;
+            
+            const newProducts = products.filter(p => p.isNewArrival).slice(0, 4);
+            container.innerHTML = newProducts.map(product => {
+                const finalPrice = window.calculateBosePrice ? window.calculateBosePrice(product.price, "all") : product.price;
+                return `
+                    <div class="product-item-card" data-product-id="${product.id}">
+                        <div class="product-card-image-frame">
+                            <img src="${product.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="${product.name}" class="product-main-img">
+                            ${product.badge ? `<span class="product-promo-badge">${product.badge}</span>` : ''}
+                        </div>
+                        <div class="product-card-details">
+                            <h3 class="product-card-title">${product.name}</h3>
+                            <p class="product-card-brief-description">${product.description}</p>
+                            <div class="product-card-footer-row">
+                                <span class="product-dynamic-price">${finalPrice} ${product.currency || 'EGP'}</span>
+                                <button onclick="addArrivalProductToCart('${product.id}')" class="product-quick-add-btn" aria-label="إضافة المنتج للسلة">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderShopByCategories(categories) {
+            const container = document.getElementById('categories-render-container');
+            if (!container) return;
+
+            container.innerHTML = categories.map(cat => `
+                <a href="category.html?id=${cat.id}" class="category-navigation-card">
+                    <div class="category-card-image-wrapper">
+                        <img src="${cat.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="${cat.name}" class="category-main-img">
+                    </div>
+                    <div class="category-card-info-block">
+                        <h3 class="category-card-title">${cat.name}</h3>
+                        <p class="category-card-description-text">${cat.description}</p>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        function renderStatisticsCounters(stats) {
+            const container = document.getElementById('statistics-render-container');
+            if (!container) return;
+
+            container.innerHTML = stats.map(st => `
+                <div class="statistic-counter-card">
+                    <div class="stat-icon-wrapper"><i class="${st.icon} stat-icon-pink"></i></div>
+                    <div class="stat-number-value" data-target-count="${st.value}">${st.value}</div>
+                    <div class="stat-label-title">${st.label}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderTestimonialsSlider(testimonials) {
+            const container = document.getElementById('testimonials-render-container');
+            if (!container) return;
+
+            container.innerHTML = testimonials.map(t => {
+                let stars = '';
+                for(let i=0; i<5; i++) {
+                    stars += `<i class="fa-solid fa-star testimonial-star-gold" style="color: var(--bose-gold); margin: 0 2px;"></i>`;
+                }
+                return `
+                    <div class="testimonial-review-card">
+                        <div class="testimonial-stars-row">${stars}</div>
+                        <p class="testimonial-comment-text">"${t.comment}"</p>
+                        <div class="testimonial-client-profile">
+                            <h4 class="testimonial-client-name">${t.name}</h4>
+                            <span class="testimonial-client-city">${t.city}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function setupLocalSearchEngine(products) {
+            const trigger = document.getElementById('global-search-trigger');
+            const modal = document.getElementById('global-search-modal-view');
+            const closeBtn = document.getElementById('global-search-close-btn');
+            const input = document.getElementById('bose-search-input-element');
+            const output = document.getElementById('bose-search-results-output');
+
+            if (!trigger || !modal || !closeBtn || !input || !output) return;
+
+            trigger.addEventListener('click', () => {
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                input.focus();
+            });
+
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+                input.value = '';
+                output.innerHTML = '';
+            });
+
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeBtn.click();
                 }
             });
 
-            function loadStoreDatabaseFallback() {
-                const cacheBuster = "?v=" + Date.now();
-                const potentialPaths = [
-                    "data/site-data-final.json" + cacheBuster,
-                    "site-data-final.json" + cacheBuster,
-                    "./site-data-final.json" + cacheBuster
-                ];
-                
-                let pathIndex = 0;
-                function attemptFetch() {
-                    if (pathIndex >= potentialPaths.length) {
-                        console.error("❌ Fallback fetch options exhausted.");
-                        showFriendlyDiagnosticOverlay();
-                        return;
-                    }
-                    const activePath = potentialPaths[pathIndex];
-                    fetch(activePath)
-                        .then(response => {
-                            if (!response.ok) throw new Error("HTTP " + response.status);
-                            return response.json();
-                        })
-                        .then(data => {
-                            database = data;
-                            window.BoseStoreData = data;
-                            executeInitializationSequence();
-                        })
-                        .catch(() => {
-                            pathIndex++;
-                            attemptFetch();
-                        });
-                }
-                attemptFetch();
-            }
-
-            function showFriendlyDiagnosticOverlay() {
-                if (document.getElementById('bose-diagnostic-box')) return;
-                const box = document.createElement('div');
-                box.id = 'bose-diagnostic-box';
-                box.style.cssText = `
-                    position: fixed; bottom: 24px; right: 24px; left: 24px;
-                    background-color: #FFFFFF; border: 2px solid #FF91A4; border-radius: 20px;
-                    padding: 24px; box-shadow: 0 10px 40px rgba(255, 145, 164, 0.25);
-                    z-index: 10000; max-width: 500px; margin: 0 auto; direction: rtl; font-family: 'Cairo', sans-serif;
-                `;
-                box.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                        <i class="fa-solid fa-circle-exclamation" style="color: #FF91A4; font-size: 1.6rem;"></i>
-                        <h4 style="margin: 0; color: #111111; font-weight: 700; font-size: 1.15rem;">تنبيه فني تشخيصي</h4>
-                    </div>
-                    <p style="margin: 0 0 16px 0; color: #111111; font-size: 0.92rem; line-height: 1.6;">
-                        يرجى التأكد من رفع ملف البيانات <strong style="color: #FF91A4;">site-data-final.json</strong> في المجلد الرئيسي <strong style="color: #FF91A4;">data/</strong> للموقع وحفظه لضمان تدفق البيانات بسلاسة.
-                    </p>
-                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                        <button onclick="location.reload()" class="bose-btn bose-btn-primary" style="padding: 8px 16px; font-size: 0.85rem; font-weight: 700;">إعادة المحاولة</button>
-                        <button onclick="document.getElementById('bose-diagnostic-box').remove()" class="bose-btn bose-btn-secondary" style="padding: 8px 16px; font-size: 0.85rem; font-weight: 700;">تجاهل</button>
-                    </div>
-                `;
-                document.body.appendChild(box);
-            }
-
-            function executeInitializationSequence() {
-                if (!database) return;
-                setupUniversalTicker();
-                setupGlobalNavigationMenu();
-                setupHeroBlockData();
-                setupVisualWaterfall();
-                setupExcellenceBannerTrack();
-                setupInteractivePreviewCards();
-                setupPrideAndStatistics();
-                setupCategoriesInfiniteTrack();
-                setupProductCatalogs();
-                setupPremiumSearchEngine();
-                setupMobileResponsiveSidebar();
-                setupVideoPlayBehavior();
-                setupFooterPolicies();
-                window.updateGlobalCartCounter();
-            }
-
-            window.calculateBosePrice = function(basePrice) {
-                if (!database || !database.store || !database.store.priceIncrease) return basePrice;
-                const config = database.store.priceIncrease;
-                if (config.enabled && typeof config.percent === 'number') {
-                    return Math.round(basePrice * (1 + (config.percent / 100)));
-                }
-                return basePrice;
-            };
-
-            window.updateGlobalCartCounter = function() {
-                const cartCountBadge = document.getElementById('nav-cart-count');
-                if (!cartCountBadge) return;
-                try {
-                    const rawCart = localStorage.getItem('bose_cart');
-                    const cart = rawCart ? JSON.parse(rawCart) : [];
-                    const total = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
-                    cartCountBadge.textContent = total;
-                } catch(e) {
-                    cartCountBadge.textContent = "0";
-                }
-            };
-
-            function setupUniversalTicker() {
-                const track = document.getElementById('top-bar-marquee-track');
-                if (!track || !database.navigation || !database.navigation.topBarMessages) return;
-                track.innerHTML = "";
-                const messages = database.navigation.topBarMessages;
-                const replicated = [...messages, ...messages, ...messages];
-                replicated.forEach(text => {
-                    const span = document.createElement('span');
-                    span.className = "marquee-message-item";
-                    span.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-gold-icon"></i> ${text}`;
-                    track.appendChild(span);
-                });
-            }
-
-            function setupGlobalNavigationMenu() {
-                const listContainer = document.getElementById('main-nav-links-list');
-                if (!listContainer || !database.navigation || !database.navigation.menuItems) return;
-                listContainer.innerHTML = "";
-                
-                const linksMapping = {
-                    "الرئيسية": "index.html",
-                    "المنيو الشامل": "menu.html",
-                    "السلة": "cart.html",
-                    "محاكي التورت": "cake-builder.html",
-                    "محاكي الورد": "flower-builder.html"
-                };
-
-                database.navigation.menuItems.forEach(item => {
-                    const li = document.createElement('li');
-                    const url = linksMapping[item] || "menu.html";
-                    const currentFile = window.location.pathname.split("/").pop() || "index.html";
-                    const isActive = currentFile === url ? "active" : "";
-                    li.innerHTML = `<a href="${url}" class="nav-item-link ${isActive}">${item}</a>`;
-                    listContainer.appendChild(li);
-                });
-            }
-
-            function setupHeroBlockData() {
-                const title = document.getElementById('hero-title');
-                const desc = document.getElementById('hero-description');
-                const cta = document.getElementById('hero-cta-btn');
-                const data = database.homepage.hero;
-                if (!data) return;
-                if (title && data.title) title.innerHTML = data.title.replace("التميز", '<span class="highlight-pink">التميز</span>');
-                if (desc && data.description) desc.textContent = data.description;
-                if (cta && data.cta) cta.textContent = data.cta;
-            }
-
-            function setupVisualWaterfall() {
-                const left = document.getElementById('waterfall-left-col');
-                const right = document.getElementById('waterfall-right-col');
-                const data = database.homepage.waterfall;
-                if (!left || !right || !data) return;
-                
-                left.innerHTML = "";
-                right.innerHTML = "";
-
-                const leftImages = [...data.leftColumnImages, ...data.leftColumnImages];
-                const rightImages = [...data.rightColumnImages, ...data.rightColumnImages];
-
-                leftImages.forEach((url, i) => {
-                    const img = document.createElement('img');
-                    img.src = url;
-                    img.alt = `تشكيلة راقية من حلويات بوسي - لقطة ${i+1}`;
-                    img.className = "waterfall-img";
-                    img.loading = "lazy";
-                    img.onerror = function() { this.src = database.store.logo; };
-                    left.appendChild(img);
-                });
-
-                rightImages.forEach((url, i) => {
-                    const img = document.createElement('img');
-                    img.src = url;
-                    img.alt = `بصمة بوسي المتميزة بالمعرض - لقطة ${i+1}`;
-                    img.className = "waterfall-img";
-                    img.loading = "lazy";
-                    img.onerror = function() { this.src = database.store.logo; };
-                    right.appendChild(img);
-                });
-            }
-
-            function setupExcellenceBannerTrack() {
-                const track = document.getElementById('excellence-images-track');
-                const title = document.getElementById('excellence-title');
-                const desc = document.getElementById('excellence-description');
-                const data = database.homepage.excellence;
-                if (!data) return;
-
-                if (title && data.title) title.textContent = data.title;
-                if (desc && data.description) desc.textContent = data.description;
-                if (!track) return;
-
-                track.innerHTML = "";
-                const duplicatedImages = [...data.images, ...data.images];
-                
-                duplicatedImages.forEach((url, i) => {
-                    const anchor = document.createElement('a');
-                    anchor.href = "menu.html";
-                    anchor.className = "excellence-img-slide-link";
-                    anchor.innerHTML = `<img src="${url}" alt="مراحل الإتقان والتميز في حلويات بوسي" class="excellence-img-slide" onerror="this.src='${database.store.logo}'">`;
-                    track.appendChild(anchor);
-                });
-
-                track.classList.add('auto-scroll-track');
-                setupSliderDots('excellence-slider-container', 'excellence-dots', data.images.length, 1);
-            }
-
-            function setupInteractivePreviewCards() {
-                const cakeData = database.homepage.cakePreview;
-                if (cakeData) {
-                    const img = document.getElementById('cake-preview-img');
-                    const title = document.getElementById('cake-preview-title');
-                    const desc = document.getElementById('cake-preview-desc');
-                    const cta = document.getElementById('cake-preview-cta');
-                    if (img && cakeData.image) img.src = cakeData.image;
-                    if (title && cakeData.title) title.textContent = cakeData.title;
-                    if (desc && cakeData.description) desc.textContent = cakeData.description;
-                    if (cta && cakeData.cta) {
-                        cta.textContent = cakeData.cta;
-                        cta.href = cakeData.target;
-                    }
+            input.addEventListener('input', () => {
+                const query = input.value.trim().toLowerCase();
+                if (!query) {
+                    output.innerHTML = '';
+                    return;
                 }
 
-                const flowerData = database.homepage.flowerPreview;
-                if (flowerData) {
-                    const img = document.getElementById('flower-preview-img');
-                    const title = document.getElementById('flower-preview-title');
-                    const desc = document.getElementById('flower-preview-desc');
-                    const cta = document.getElementById('flower-preview-cta');
-                    if (img && flowerData.image) img.src = flowerData.image;
-                    if (title && flowerData.title) title.textContent = flowerData.title;
-                    if (desc && flowerData.description) desc.textContent = flowerData.description;
-                    if (cta && flowerData.cta) {
-                        cta.textContent = flowerData.cta;
-                        cta.href = flowerData.target;
-                    }
+                const matched = products.filter(p => 
+                    p.name.toLowerCase().includes(query) || 
+                    p.description.toLowerCase().includes(query)
+                );
+
+                if (matched.length === 0) {
+                    output.innerHTML = '<p class="search-empty-message" style="text-align: center; color: var(--bose-black); padding: 24px;">لم نجد منتجات تطابق هذا الاسم.</p>';
+                    return;
                 }
-            }
 
-            function setupPrideAndStatistics() {
-                const grid = document.getElementById('pride-stats-grid');
-                const title = document.getElementById('pride-title');
-                const txt = document.getElementById('pride-text');
-                const data = database.homepage.pride;
-                if (!data) return;
-
-                if (title && data.title) title.textContent = data.title;
-                if (txt && data.text) txt.textContent = data.text;
-                if (!grid) return;
-
-                grid.innerHTML = "";
-                Object.keys(data.stats).forEach(k => {
-                    const node = data.stats[k];
-                    const div = document.createElement('div');
-                    div.className = "stat-block";
-                    div.innerHTML = `
-                        <div class="stat-value">${node.value}${node.suffix}</div>
-                        <div class="stat-label">${node.label}</div>
-                    `;
-                    grid.appendChild(div);
-                });
-            }
-
-            function setupCategoriesInfiniteTrack() {
-                const track = document.getElementById('categories-track');
-                const sliderItems = database.homepage.categoriesSlider;
-                if (!track || !sliderItems) return;
-
-                track.innerHTML = "";
-                sliderItems.forEach((cat) => {
-                    const anchor = document.createElement('a');
-                    anchor.href = `menu.html?category=${cat.id}`;
-                    anchor.className = "category-slide-card";
-                    anchor.innerHTML = `
-                        <div class="category-slide-img-wrapper">
-                            <img src="${cat.image}" alt="فئة ${cat.title} - حلويات بوسي" onerror="this.src='${database.store.logo}'" loading="lazy">
-                        </div>
-                        <h3>${cat.title}</h3>
-                    `;
-                    track.appendChild(anchor);
-                });
-
-                setupSliderDots('categories-slider', 'categories-dots', sliderItems.length, 1);
-            }
-
-            function setupProductCatalogs() {
-                const arrGrid = document.getElementById('new-arrivals-grid');
-                const ourGrid = document.getElementById('our-products-grid');
-                const sellGrid = document.getElementById('most-selling-grid');
-
-                if (arrGrid && database.homepage.newArrivals) {
-                    renderCatalogItems(arrGrid, database.homepage.newArrivals, "slider");
-                    setupSliderDots('new-arrivals-slider', 'new-arrivals-dots', database.homepage.newArrivals.length, 1);
-                }
-                if (sellGrid && database.homepage.mostSelling) {
-                    renderCatalogItems(sellGrid, database.homepage.mostSelling, "slider");
-                    setupSliderDots('most-selling-slider', 'most-selling-dots', database.homepage.mostSelling.length, 1);
-                }
-                if (ourGrid && database.homepage.ourProducts) {
-                    ourProductsList = database.homepage.ourProducts;
-                    renderOurProductsSection();
-
-                    const btnMore = document.getElementById('btn-show-more-products');
-                    if (btnMore) {
-                        btnMore.addEventListener('click', () => {
-                            currentOurProductsLimit = 8;
-                            renderOurProductsSection();
-                            btnMore.style.display = "none";
-                        });
-                    }
-                }
-            }
-
-            function renderOurProductsSection() {
-                const ourGrid = document.getElementById('our-products-grid');
-                if (!ourGrid) return;
-                const visibleIds = ourProductsList.slice(0, currentOurProductsLimit);
-                renderCatalogItems(ourGrid, visibleIds, "grid");
-
-                const btnMore = document.getElementById('btn-show-more-products');
-                if (btnMore) {
-                    if (currentOurProductsLimit >= ourProductsList.length) {
-                        btnMore.style.display = "none";
-                    } else {
-                        btnMore.style.display = "inline-block";
-                    }
-                }
-            }
-
-            function renderCatalogItems(container, idArray, mode) {
-                container.innerHTML = "";
-                idArray.forEach(id => {
-                    const item = database.products.find(p => p.id === id);
-                    if (!item) return;
-
-                    const computedPrice = window.calculateBosePrice(item.price);
-                    const strikes = item.price !== computedPrice ? `<span class="original-price">${item.price} ج.م</span>` : "";
-                    const card = document.createElement('div');
-                    card.className = `product-card ${item.layout || 'two-cards'}`;
-
-                    let actionMarkup = "";
-                    if (item.customBuilderUrl) {
-                        actionMarkup = `<a href="${item.customBuilderUrl}" class="bose-btn bose-btn-secondary card-action-btn">تخصيص وتصميم الآن <i class="fa-solid fa-wand-magic-sparkles"></i></a>`;
-                    } else {
-                        actionMarkup = `
-                            <div class="card-unified-counter-wrapper">
-                                <div class="bose-card-qty-counter">
-                                    <button onclick="incrementCardCounter(this, '${item.id}')" class="qty-btn plus">+</button>
-                                    <span class="qty-num" id="card-qty-val-${item.id}">1</span>
-                                    <button onclick="decrementCardCounter(this, '${item.id}')" class="qty-btn minus">-</button>
+                output.innerHTML = matched.map(p => {
+                    const price = window.calculateBosePrice ? window.calculateBosePrice(p.price, "all") : p.price;
+                    return `
+                        <div class="search-result-row-card" style="display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid rgba(255, 145, 164, 0.1);">
+                            <a href="product.html?id=${p.id}" style="display: flex; align-items: center; gap: 16px; text-decoration: none; color: var(--bose-black);">
+                                <img src="${p.image || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="${p.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; border: var(--bose-border-pink);">
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; font-weight: 600;">${p.name}</h4>
+                                    <span style="font-size: 0.9rem; color: var(--bose-pink); font-weight: 700;">${price} EGP</span>
                                 </div>
-                                <button onclick="addBoseItemWithQty('${item.id}')" class="bose-btn bose-btn-primary card-action-btn-with-counter">إضافة للسلة <i class="fa-solid fa-basket-shopping"></i></button>
-                            </div>
-                        `;
-                    }
-
-                    const hrefTarget = `product.html?slug=${item.slug}`;
-                    card.innerHTML = `
-                        <div class="product-card-img-holder">
-                            <a href="${hrefTarget}">
-                                <img src="${item.images[0]}" alt="${item.title} - ${item.flavorName}" onerror="this.src='${database.store.logo}'" loading="lazy">
                             </a>
                         </div>
-                        <div class="product-card-details">
-                            <div class="card-title-row">
-                                <h3><a href="${hrefTarget}">${item.title}</a></h3>
-                                <span class="product-flavor-badge">${item.flavorName}</span>
-                            </div>
-                            <p class="product-card-desc">${item.description || item.flavorDesc}</p>
-                            <div class="product-card-footer">
-                                <div class="card-price-block">
-                                    <span class="current-price-num" id="card-price-val-${item.id}" data-base-price="${computedPrice}">${computedPrice}</span>
-                                    <span class="current-price-currency">ج.م</span>
-                                    ${strikes}
-                                </div>
-                            </div>
-                            <div class="card-action-block-outer">
-                                ${actionMarkup}
-                            </div>
-                        </div>
                     `;
-                    container.appendChild(card);
-                });
-            }
+                }).join('');
+            });
+        }
 
-            window.incrementCardCounter = function(btn, itemId) {
-                const label = document.getElementById(`card-qty-val-${itemId}`);
-                if (!label) return;
-                let val = parseInt(label.textContent) || 1;
-                val += 1;
-                label.textContent = val;
-                updateCardPriceDisplay(itemId, val);
-            };
+        function addArrivalProductToCart(productId) {
+            if (!window.BoseStoreData || !window.BoseStoreData.isLoaded) return;
+            const product = window.BoseStoreData.products.find(p => p.id === productId);
+            if (!product) return;
 
-            window.decrementCardCounter = function(btn, itemId) {
-                const label = document.getElementById(`card-qty-val-${itemId}`);
-                if (!label) return;
-                let val = parseInt(label.textContent) || 1;
-                if (val > 1) {
-                    val -= 1;
-                    label.textContent = val;
-                    updateCardPriceDisplay(itemId, val);
-                }
-            };
+            try {
+                let cart = JSON.parse(localStorage.getItem('bose_cart')) || [];
+                const existingIndex = cart.findIndex(item => item.id === productId && !item.isCustomCake && !item.isCustomFlower);
 
-            function updateCardPriceDisplay(itemId, qty) {
-                const priceTag = document.getElementById(`card-price-val-${itemId}`);
-                if (!priceTag) return;
-                const base = parseFloat(priceTag.getAttribute('data-base-price')) || 0;
-                priceTag.textContent = Math.round(base * qty);
-            }
-
-            window.addBoseItemWithQty = function(productId) {
-                if (!database) return;
-                const item = database.products.find(p => p.id === productId);
-                if (!item) return;
-
-                const qtyLabel = document.getElementById(`card-qty-val-${productId}`);
-                const qty = qtyLabel ? parseInt(qtyLabel.textContent) || 1 : 1;
-
-                const price = window.calculateBosePrice(item.price);
-                const cartNode = {
-                    id: item.id,
-                    productSlug: item.slug,
-                    title: item.title,
-                    flavorName: item.flavorName || "",
-                    price: price,
-                    quantity: qty,
-                    image: item.images[0],
-                    type: "standard",
-                    customDetails: null
-                };
-
-                try {
-                    const raw = localStorage.getItem('bose_cart');
-                    let cart = raw ? JSON.parse(raw) : [];
-                    const found = cart.findIndex(n => n.id === item.id && n.type === "standard");
-                    if (found > -1) {
-                        cart[found].quantity += qty;
-                    } else {
-                        cart.push(cartNode);
-                    }
-                    localStorage.setItem('bose_cart', JSON.stringify(cart));
-                    window.updateGlobalCartCounter();
-                    
-                    if (qtyLabel) qtyLabel.textContent = "1";
-                    updateCardPriceDisplay(productId, 1);
-
-                    showBoseNotification(`تمت إضافة ${qty} من "${item.title} - ${item.flavorName}" إلى السلة بنجاح! 🌸`);
-                } catch (err) {
-                    console.error("❌ Cart synchronization exception:", err);
-                }
-            };
-
-            function showBoseNotification(message) {
-                const box = document.createElement('div');
-                box.className = 'bose-toast-notification';
-                box.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${message}</span>`;
-                document.body.appendChild(box);
-                setTimeout(() => box.classList.add('show'), 50);
-                setTimeout(() => {
-                    box.classList.remove('show');
-                    setTimeout(() => box.remove(), 400);
-                }, 3500);
-            }
-
-            function setupSliderDots(containerId, dotsContainerId, itemsCount, itemsPerSlide) {
-                const container = document.getElementById(containerId);
-                const dotsContainer = document.getElementById(dotsContainerId);
-                if (!container || !dotsContainer) return;
-
-                dotsContainer.innerHTML = "";
-                const dotsCount = Math.ceil(itemsCount / itemsPerSlide);
-                for (let i = 0; i < dotsCount; i++) {
-                    const dot = document.createElement('span');
-                    dot.className = `slider-dot ${i === 0 ? 'active' : ''}`;
-                    dot.addEventListener('click', () => {
-                        const dots = dotsContainer.querySelectorAll('.slider-dot');
-                        dots.forEach(d => d.classList.remove('active'));
-                        dot.classList.add('active');
-                        
-                        const slideWidth = container.clientWidth;
-                        container.scrollTo({
-                            left: i * slideWidth,
-                            behavior: 'smooth'
-                        });
+                if (existingIndex > -1) {
+                    cart[existingIndex].quantity += 1;
+                } else {
+                    const price = window.calculateBosePrice ? window.calculateBosePrice(product.price, "all") : product.price;
+                    cart.push({
+                        id: product.id,
+                        name: product.name,
+                        price: price,
+                        image: product.image,
+                        quantity: 1,
+                        isCustomCake: false,
+                        isCustomFlower: false
                     });
-                    dotsContainer.appendChild(dot);
                 }
 
-                container.addEventListener('scroll', () => {
-                    const slideWidth = container.clientWidth;
-                    const activeIndex = Math.round(container.scrollLeft / slideWidth);
-                    const dots = dotsContainer.querySelectorAll('.slider-dot');
-                    dots.forEach((d, index) => {
-                        if (index === activeIndex) {
-                            d.classList.add('active');
-                        } else {
-                            d.classList.remove('active');
-                        }
-                    });
-                });
+                localStorage.setItem('bose_cart', JSON.stringify(cart));
+                if (window.updateNavigationCartCount) window.updateNavigationCartCount();
+                showBoseGlobalToast("تمت إضافة المنتج إلى السلة.");
+            } catch (e) {
+                console.error("Cart Error:", e);
             }
+        }
 
-            function setupPremiumSearchEngine() {
-                const open = document.getElementById('search-modal-open-btn');
-                const close = document.getElementById('search-modal-close-btn');
-                const lay = document.getElementById('global-search-overlay');
-                const inp = document.getElementById('live-search-input');
-                const box = document.getElementById('live-search-results-box');
+        function showBoseGlobalToast(message) {
+            const container = document.getElementById('bose-toast-container');
+            if (!container) return;
 
-                if (!open || !close || !lay || !inp || !box) return;
+            const toast = document.createElement('div');
+            toast.className = 'bose-toast-notification';
+            toast.style.cssText = `
+                background-color: var(--bose-white);
+                color: var(--bose-black);
+                border: 2px solid var(--bose-pink);
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 600;
+                box-shadow: 0 8px 24px rgba(255, 145, 164, 0.15);
+                margin-top: 8px;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: all 0.4s ease;
+                direction: rtl;
+                text-align: center;
+            `;
+            toast.textContent = message;
+            container.appendChild(toast);
 
-                open.addEventListener('click', () => {
-                    lay.classList.add('active');
-                    inp.value = "";
-                    box.innerHTML = '<p style="text-align: center; color: #111111; padding: 20px;">ابدأ بالكتابة للفرز التلقائي من قاعدة بيانات حلويات بوسي...</p>';
-                    setTimeout(() => inp.focus(), 120);
-                });
+            setTimeout(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translateY(0)';
+            }, 50);
 
-                close.addEventListener('click', () => lay.classList.remove('active'));
-
-                inp.addEventListener('input', () => {
-                    const q = inp.value.trim().toLowerCase();
-                    if (!database) return;
-
-                    if (q.length < 2) {
-                        box.innerHTML = '<p style="text-align: center; color: #111111; padding: 20px;">اكتب حرفين على الأقل لبدء الفرز والتصفية الذكية...</p>';
-                        return;
-                    }
-
-                    const standardMatches = database.products.filter(p => {
-                        const tMatch = p.title.toLowerCase().includes(q);
-                        const fMatch = p.flavorName && p.flavorName.toLowerCase().includes(q);
-                        const sMatch = p.searchTerms && p.searchTerms.some(term => term.toLowerCase().includes(q));
-                        return tMatch || fMatch || sMatch;
-                    });
-
-                    if (standardMatches.length === 0) {
-                        box.innerHTML = `
-                            <div style="text-align: center; padding: 30px; color: #111111;">
-                                <i class="fa-solid fa-cookie-bite" style="font-size: 2rem; color: var(--bose-pink); margin-bottom: 10px;"></i>
-                                <p>عذراً، لم نجد أصنافاً مطابقة لـ "${q}" في حلويات بوسي.</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    box.innerHTML = "";
-                    standardMatches.forEach(product => {
-                        const price = window.calculateBosePrice(product.price);
-                        const row = document.createElement('div');
-                        row.className = "search-result-card";
-                        row.innerHTML = `
-                            <img src="${product.images[0]}" alt="${product.title}" class="search-thumb" onerror="this.src='${database.store.logo}'">
-                            <div class="search-info">
-                                <h4>${product.title}</h4>
-                                <p>${product.flavorName || ""} - ${product.description.substring(0, 60)}...</p>
-                            </div>
-                            <div class="search-price-block">
-                                <span class="search-price">${price} ج.م</span>
-                                <a href="product.html?slug=${product.slug}" class="bose-btn bose-btn-primary search-btn-view">عرض المنتج <i class="fa-solid fa-chevron-left"></i></a>
-                            </div>
-                        `;
-                        box.appendChild(row);
-                    });
-                });
-            }
-
-            function setupMobileResponsiveSidebar() {
-                const trg = document.getElementById('sidebar-toggle-trigger');
-                const cls = document.getElementById('sidebar-close-trigger');
-                const menu = document.getElementById('bose-nav-menu');
-
-                if (!trg || !cls || !menu) return;
-
-                trg.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    menu.classList.add('active');
-                    trg.classList.add('active');
-                });
-
-                cls.addEventListener('click', () => {
-                    menu.classList.remove('active');
-                    trg.classList.remove('active');
-                });
-
-                document.addEventListener('click', (e) => {
-                    if (!menu.contains(e.target) && !trg.contains(e.target)) {
-                        menu.classList.remove('active');
-                        trg.classList.remove('active');
-                    }
-                });
-            }
-
-            function setupVideoPlayBehavior() {
-                const trigger = document.querySelector('.video-overlay-play');
-                const video = document.getElementById('pride-video-player');
-                if (!trigger || !video) return;
-
-                trigger.addEventListener('click', () => {
-                    trigger.style.display = 'none';
-                    video.play();
-                });
-
-                video.addEventListener('pause', () => {
-                    trigger.style.display = 'flex';
-                });
-
-                video.addEventListener('play', () => {
-                    trigger.style.display = 'none';
-                });
-            }
-
-            function setupFooterPolicies() {
-                const container = document.getElementById('global-footer-policies');
-                if (!container || !database.footer || !database.footer.policies) return;
-                container.innerHTML = "";
-                
-                const policyLinks = {
-                    "سياسة الخصوصية": "privacy-policy.html",
-                    "سياسة الاسترجاع": "refund-policy.html",
-                    "سياسة الطلبات": "shipping-policy.html",
-                    "الشروط والأحكام": "terms.html"
-                };
-                
-                const listItems = database.footer.policies.map(policy => {
-                    const file = policyLinks[policy] || "#";
-                    return `<a href="${file}" style="margin: 0 10px; color: var(--bose-black); font-weight: 600; transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='var(--bose-pink)'" onmouseout="this.style.color='var(--bose-black)'">${policy}</a>`;
-                });
-                
-                container.innerHTML = `
-                    <div style="margin-bottom: 12px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">${listItems.join(' | ')}</div>
-                    <p style="color: #666; font-size: 0.8rem; margin-top: 8px;">&copy; ${new Date().getFullYear()} حلويات بوسي. جميع الحقوق محفوظة.</p>
-                `;
-            }
-        })();
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-20px)';
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
     </script>
 </body>
 </html>
-
