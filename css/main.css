@@ -1,0 +1,1240 @@
+/* ========================================================================
+   👑 محرك التنسيقات والجماليات الرئيسي - موقع حلويات بوسي (css/main.css)
+   ========================================================================
+   * المطور المسؤول: المحرك الهندسي الجمالي لحلويات بوسي
+   * الغرض: تشكيل وتزيين الأقسام بالترتيب البصري وحمايتها من التشويه والقطع
+   * التزام تام بالألوان الحاكمة: البمبي (#FF91A4) نبض الحياة، الأبيض (#FFFFFF) المسيطر،
+   * الأسود (#111111) للنصوص والعناوين فقط ومحظور في الخلفيات أو الظلال نهائياً.
+   ========================================================================
+*/
+
+/* ------------------------------------------------------------------------
+   🏢 1. الهيدر الموحد والثابت (Shared Universal Header) وتفاعلاته المتطورة
+   ------------------------------------------------------------------------ */
+.bose-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: var(--bose-border-pink);
+    padding: 16px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: padding var(--bose-transition-smooth), box-shadow var(--bose-transition-smooth);
+}
+
+.bose-navbar.scrolled {
+    padding: 10px 40px;
+    box-shadow: var(--bose-shadow-glow);
+}
+
+.brand-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#bose-store-logo {
+    height: 56px;
+    width: auto;
+    object-fit: contain;
+    transition: transform var(--bose-transition-fast);
+}
+
+#bose-store-logo:hover {
+    transform: scale(1.05);
+}
+
+.brand-title-head {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    letter-spacing: -0.5px;
+}
+
+/* القائمة الجانبية المتطورة ونظام التنقل */
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: 36px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-item-link {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--bose-black);
+    position: relative;
+    padding: 8px 4px;
+    transition: color var(--bose-transition-fast);
+}
+
+.nav-item-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--bose-pink);
+    transition: width var(--bose-transition-fast);
+}
+
+.nav-item-link:hover::after,
+.nav-item-link.active::after {
+    width: 100%;
+}
+
+.nav-item-link:hover {
+    color: var(--bose-pink);
+}
+
+/* الهمبرجر للموبايل */
+.menu-toggle-btn {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 26px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1010;
+}
+
+.menu-toggle-btn span {
+    width: 100%;
+    height: 3px;
+    background-color: var(--bose-black);
+    border-radius: var(--bose-radius-full);
+    transition: all var(--bose-transition-fast);
+}
+
+/* ------------------------------------------------------------------------
+   🔍 نظام البحث الفوري والفلترة اللحظية (Premium Search Overlay)
+   ------------------------------------------------------------------------ */
+.search-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.98);
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--bose-transition-smooth) ease;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 100px 24px;
+    overflow-y: auto;
+}
+
+.search-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.search-container {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: var(--bose-border-pink);
+    padding-bottom: 16px;
+}
+
+.search-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    margin: 0;
+}
+
+.close-search-btn {
+    background: transparent;
+    border: none;
+    font-size: 2.2rem;
+    color: var(--bose-black);
+    cursor: pointer;
+    transition: color var(--bose-transition-fast);
+    line-height: 1;
+}
+
+.close-search-btn:hover {
+    color: var(--bose-pink);
+}
+
+.search-input-box {
+    position: relative;
+    width: 100%;
+}
+
+.search-input-box input {
+    width: 100%;
+    padding: 18px 24px 18px 60px;
+    font-size: 1.15rem;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 600;
+    border-radius: var(--bose-radius-md);
+    border: var(--bose-border-thick);
+    outline: none;
+    color: var(--bose-black);
+    box-shadow: var(--bose-shadow-glow);
+    background-color: var(--bose-white);
+}
+
+.search-input-box i {
+    position: absolute;
+    left: 24px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--bose-pink);
+    font-size: 1.4rem;
+}
+
+.search-results {
+    max-height: 55vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding-left: 8px;
+}
+
+.search-result-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px;
+    background-color: var(--bose-white);
+    border: var(--bose-border-pink);
+    border-radius: var(--bose-radius-md);
+    transition: transform var(--bose-transition-fast), box-shadow var(--bose-transition-fast), border-color var(--bose-transition-fast);
+}
+
+.search-result-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--bose-shadow-glow);
+    border-color: var(--bose-pink);
+}
+
+.search-thumb {
+    width: 72px;
+    height: 72px;
+    border-radius: var(--bose-radius-sm);
+    object-fit: cover;
+    border: var(--bose-border-pink);
+    background-color: var(--bose-white);
+}
+
+.search-info {
+    flex-grow: 1;
+}
+
+.search-info h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    margin-bottom: 4px;
+}
+
+.search-info p {
+    font-size: 0.88rem;
+    color: var(--bose-black);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.search-price-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.search-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--bose-pink);
+}
+
+.search-btn-view {
+    padding: 8px 16px !important;
+    font-size: 0.85rem !important;
+    border-radius: var(--bose-radius-sm) !important;
+}
+
+/* ------------------------------------------------------------------------
+   🌟 2. عقد من التميز (#hero-section)
+   ------------------------------------------------------------------------ */
+.hero-block {
+    position: relative;
+    width: 100%;
+    min-height: 85vh;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.92) 0%, rgba(255, 245, 246, 0.96) 100%),
+                url('https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png') no-repeat center/contain;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.hero-content {
+    max-width: 850px;
+    z-index: 5;
+    animation: fadeInBose 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.hero-content h1 {
+    font-size: clamp(2.2rem, 6vw, 3.8rem);
+    font-weight: 700;
+    color: var(--bose-black);
+    line-height: 1.25;
+    margin-bottom: 24px;
+    text-shadow: 0 4px 16px rgba(255, 145, 164, 0.15);
+}
+
+.hero-content p {
+    font-size: clamp(1.05rem, 2.5vw, 1.3rem);
+    font-weight: 400;
+    color: var(--bose-black);
+    line-height: 1.8;
+    margin-bottom: 40px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ------------------------------------------------------------------------
+   🌊 3. شلال الصور الطبيعي (#waterfall-section)
+   ------------------------------------------------------------------------ */
+.waterfall-block {
+    padding: 100px 24px;
+    background-color: var(--bose-white);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.waterfall-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+}
+
+.waterfall-column {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.waterfall-img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--bose-radius-lg);
+    border: var(--bose-border-pink);
+    box-shadow: var(--bose-shadow-glow);
+    object-fit: cover;
+    transition: transform var(--bose-transition-smooth), filter var(--bose-transition-smooth), box-shadow var(--bose-transition-smooth);
+    background-color: var(--bose-white);
+    filter: brightness(1);
+}
+
+.waterfall-img:hover {
+    transform: scale(1.03) translateY(-8px);
+    box-shadow: var(--bose-shadow-hover);
+    filter: brightness(1.03);
+}
+
+/* ------------------------------------------------------------------------
+   ✨ 4 & 5. عقد من الاتقان وسلايدر الصور المتصلة (#excellence-section)
+   ------------------------------------------------------------------------ */
+.excellence-scroller-block {
+    position: relative;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    overflow: hidden;
+    background-color: var(--bose-white);
+    border-top: var(--bose-border-pink);
+    border-bottom: var(--bose-border-pink);
+    padding: 0;
+}
+
+.excellence-banner-scroller {
+    width: 100%;
+    height: 480px;
+    display: flex;
+    overflow: hidden;
+}
+
+.excellence-images-wrapper {
+    display: flex;
+    width: 200%; /* تمديد لعرض مزدوج ومزامنة حركة التمرير الدائري */
+    gap: 0;
+    animation: excellenceScrollBose 30s linear infinite;
+}
+
+.excellence-img-slide {
+    width: calc(100vw / 3); /* عرض ثابت للثلاث صور المترابطة بالتساوي */
+    height: 480px;
+    object-fit: cover;
+    flex-shrink: 0;
+    filter: brightness(0.8);
+    transition: filter var(--bose-transition-smooth), transform var(--bose-transition-smooth);
+}
+
+.excellence-img-slide:hover {
+    filter: brightness(1);
+    transform: scale(1.02);
+}
+
+.excellence-overlay-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.35) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 24px;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.excellence-overlay-content h2 {
+    color: var(--bose-black);
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    margin-bottom: 18px;
+    text-shadow: 0 2px 12px rgba(255, 145, 164, 0.2);
+}
+
+.excellence-overlay-content p {
+    color: var(--bose-black);
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    max-width: 750px;
+    line-height: 1.8;
+    text-shadow: 0 1px 6px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes excellenceScrollBose {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(50%); } /* حركة انسيابية دائرية لليمين للتوافق العربي */
+}
+
+/* ------------------------------------------------------------------------
+   🌸 6 & 7. وصل حديثاً وسلايدر كروت المنتجات (#new-arrivals-section)
+   ------------------------------------------------------------------------ */
+.products-grid-block {
+    padding: 100px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.section-header {
+    margin-bottom: 56px;
+    border-right: 4px solid var(--bose-pink);
+    padding-right: 24px;
+}
+
+.section-header h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+    font-weight: 700;
+    color: var(--bose-black);
+    margin-bottom: 10px;
+}
+
+.section-header p {
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+    color: var(--bose-black);
+    font-weight: 400;
+}
+
+.new-arrivals-slider-container {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 24px;
+    scrollbar-width: none;
+}
+
+.new-arrivals-slider-container::-webkit-scrollbar {
+    display: none;
+}
+
+.products-grid.slider-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    width: max-content;
+    padding: 10px 4px;
+}
+
+.products-grid.slider-layout .product-card {
+    width: 310px;
+    flex-shrink: 0;
+}
+
+/* ------------------------------------------------------------------------
+   🏪 8 & 9. منتجاتنا والشبكة المتوازنة المتجاوبة (#our-products-section)
+   ------------------------------------------------------------------------ */
+.products-grid.grid-layout {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 32px;
+    width: 100%;
+}
+
+/* ------------------------------------------------------------------------
+   📦 كروت المنتجات القياسية وهيكلتها الفخمة (Product Cards CSS)
+   ------------------------------------------------------------------------ */
+.product-card {
+    background-color: var(--bose-white);
+    border-radius: var(--bose-radius-md);
+    border: var(--bose-border-pink);
+    box-shadow: var(--bose-shadow-glow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--bose-transition-fast), box-shadow var(--bose-transition-fast), border-color var(--bose-transition-fast);
+}
+
+.product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--bose-shadow-hover);
+    border-color: var(--bose-pink);
+}
+
+.product-card-img-holder {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    background-color: var(--bose-white);
+    overflow: hidden;
+    border-bottom: var(--bose-border-pink);
+}
+
+.product-card-img-holder img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--bose-transition-smooth);
+}
+
+.product-card:hover .product-card-img-holder img {
+    transform: scale(1.05);
+}
+
+.featured-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    padding: 6px 14px;
+    border-radius: var(--bose-radius-full);
+    font-size: 0.75rem;
+    font-weight: 700;
+    z-index: 5;
+    box-shadow: var(--bose-shadow-glow);
+}
+
+.product-card-details {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.card-title-row h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.card-title-row h3 a:hover {
+    color: var(--bose-pink);
+}
+
+.product-flavor-badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--bose-pink);
+    background-color: rgba(255, 145, 164, 0.08);
+    padding: 4px 10px;
+    border-radius: var(--bose-radius-full);
+    white-space: nowrap;
+}
+
+.product-card-desc {
+    font-size: 0.88rem;
+    color: var(--bose-black);
+    line-height: 1.6;
+    margin-bottom: 24px;
+    flex-grow: 1;
+}
+
+.product-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.card-price-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.current-price-num {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--bose-pink);
+}
+
+.current-price-currency {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--bose-black);
+    margin-right: 2px;
+}
+
+.original-price {
+    font-size: 0.85rem;
+    color: #888;
+    text-decoration: line-through;
+    margin-top: 2px;
+}
+
+.card-action-btn {
+    padding: 10px 18px !important;
+    font-size: 0.88rem !important;
+    border-radius: var(--bose-radius-md) !important;
+}
+
+/* ------------------------------------------------------------------------
+   🎂 10 & 11. محاكي التورت والـ Teaser البصري الفاخر (#cake-preview-section)
+   ------------------------------------------------------------------------ */
+.interactive-preview-block {
+    padding: 100px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.preview-card-horizontal {
+    background-color: var(--bose-white);
+    border-radius: var(--bose-radius-lg);
+    border: var(--bose-border-pink);
+    box-shadow: var(--bose-shadow-glow);
+    display: flex;
+    overflow: hidden;
+    align-items: center;
+    transition: transform var(--bose-transition-smooth), box-shadow var(--bose-transition-smooth);
+}
+
+.preview-card-horizontal:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--bose-shadow-hover);
+}
+
+.preview-img-holder {
+    width: 50%;
+    height: 440px;
+    overflow: hidden;
+    position: relative;
+    background-color: #FFF5F6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-img-holder img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 32px;
+    transition: transform var(--bose-transition-smooth);
+}
+
+.preview-card-horizontal:hover .preview-img-holder img {
+    transform: scale(1.05);
+}
+
+.preview-content-holder {
+    width: 50%;
+    padding: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.badge-premium {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--bose-pink);
+    background-color: rgba(255, 145, 164, 0.08);
+    padding: 6px 16px;
+    border-radius: var(--bose-radius-full);
+    margin-bottom: 24px;
+}
+
+.preview-content-holder h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    font-weight: 700;
+    color: var(--bose-black);
+    margin-bottom: 16px;
+}
+
+.preview-content-holder p {
+    font-size: 1.05rem;
+    color: var(--bose-black);
+    line-height: 1.8;
+    margin-bottom: 32px;
+}
+
+/* ------------------------------------------------------------------------
+   🏆 12 & 13. الأكثر مبيعاً وسلايدر كروت المنتجات (#most-selling-section)
+   ------------------------------------------------------------------------ */
+.most-selling-slider-container {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 24px;
+    scrollbar-width: none;
+}
+
+.most-selling-slider-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* ------------------------------------------------------------------------
+   📊 14 & 15. الفخر والاعتزاز وبلوك تشغيل الفيديو الحقيقي (#pride-section)
+   ------------------------------------------------------------------------ */
+.pride-statistics-block {
+    background-color: #FFF5F6;
+    padding: 100px 24px;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    border-top: var(--bose-border-pink);
+    border-bottom: var(--bose-border-pink);
+}
+
+.pride-content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.pride-content-wrapper h2 {
+    font-size: clamp(2rem, 4vw, 2.6rem);
+    font-weight: 700;
+    color: var(--bose-black);
+    margin-bottom: 16px;
+}
+
+.pride-editorial-text {
+    font-size: clamp(1.05rem, 2.2vw, 1.25rem);
+    line-height: 1.8;
+    color: var(--bose-black);
+    max-width: 800px;
+    margin: 0 auto 56px auto;
+}
+
+/* بلوك الفيديو التفاعلي */
+.pride-video-block {
+    max-width: 850px;
+    margin: 0 auto 64px auto;
+    width: 100%;
+}
+
+.video-preview-wrapper {
+    position: relative;
+    border-radius: var(--bose-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--bose-shadow-glow);
+    border: var(--bose-border-pink);
+    aspect-ratio: 16 / 9;
+}
+
+.video-overlay-play {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    cursor: pointer;
+    transition: background-color var(--bose-transition-fast);
+}
+
+.video-overlay-play:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.play-icon-glow {
+    font-size: 3.2rem;
+    color: var(--bose-white);
+    background-color: var(--bose-pink);
+    width: 84px;
+    height: 84px;
+    border-radius: var(--bose-radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 6px;
+    box-shadow: 0 0 28px rgba(255, 145, 164, 0.65);
+    transition: transform var(--bose-transition-fast);
+}
+
+.video-overlay-play:hover .play-icon-glow {
+    transform: scale(1.1);
+}
+
+#pride-video-player {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background-color: var(--bose-white);
+}
+
+/* كتل ومربعات الإحصائيات الفخمة */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+}
+
+.stat-block {
+    background-color: var(--bose-white);
+    padding: 36px 24px;
+    border-radius: var(--bose-radius-md);
+    border: var(--bose-border-pink);
+    box-shadow: var(--bose-shadow-glow);
+    transition: transform var(--bose-transition-fast);
+}
+
+.stat-block:hover {
+    transform: translateY(-6px);
+}
+
+.stat-value {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--bose-pink);
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 1rem;
+    color: var(--bose-black);
+    font-weight: 600;
+}
+
+/* ------------------------------------------------------------------------
+   💐 16 & 17. محاكي الورد والـ Teaser والبلوك البصري (#flower-preview-section)
+   ------------------------------------------------------------------------ */
+/* الترتيب العكسي لقسم محاكي الورد */
+.preview-card-horizontal.reverse-layout {
+    flex-direction: row-reverse;
+}
+
+/* ------------------------------------------------------------------------
+   🎡 18 & 19. تسوق حسب الفئة وسلايدر الحركة اللانهائية (#categories-slider-section)
+   ------------------------------------------------------------------------ */
+.categories-slider-block {
+    padding: 100px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    overflow: hidden;
+}
+
+.section-header-centered {
+    text-align: center;
+    margin-bottom: 56px;
+}
+
+.section-header-centered h2 {
+    font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+    font-weight: 700;
+    color: var(--bose-black);
+    margin-bottom: 12px;
+}
+
+.section-header-centered p {
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+    color: var(--bose-black);
+    max-width: 650px;
+    margin: 0 auto;
+}
+
+.categories-scroller-viewport {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    padding: 20px 0;
+}
+
+.categories-scroller-viewport::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 120px;
+    height: 100%;
+    background: linear-gradient(to right, var(--bose-white), transparent);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.categories-scroller-viewport::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 120px;
+    height: 100%;
+    background: linear-gradient(to left, var(--bose-white), transparent);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.categories-infinite-track {
+    display: flex;
+    gap: 32px;
+    width: max-content;
+    animation: categoriesScrollBose 35s linear infinite;
+}
+
+.categories-infinite-track:hover {
+    animation-play-state: paused; /* إيقاف مؤقت عند وقوف الماوس لراحة يد المتصفح */
+}
+
+.category-slide-card {
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+}
+
+.category-slide-img-wrapper {
+    width: 110px;
+    height: 110px;
+    border-radius: var(--bose-radius-full);
+    border: var(--bose-border-pink);
+    box-shadow: var(--bose-shadow-glow);
+    overflow: hidden;
+    background-color: var(--bose-white);
+    transition: transform var(--bose-transition-fast), border-color var(--bose-transition-fast);
+}
+
+.category-slide-card:hover .category-slide-img-wrapper {
+    transform: scale(1.08);
+    border-color: var(--bose-pink);
+}
+
+.category-slide-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.category-slide-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    margin: 0;
+}
+
+@keyframes categoriesScrollBose {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-160px * 12 - 32px * 12)); } /* انزلاق دقيق مساوي لطول الـ 12 فئة */
+}
+
+/* ------------------------------------------------------------------------
+   🏪 20. تصميم الفوتر الموحد والثابت وتفاصيل التذييل (The Footer)
+   ------------------------------------------------------------------------ */
+.bose-footer {
+    background-color: var(--bose-white);
+    border-top: var(--bose-border-pink);
+    padding: 80px 40px 40px 40px;
+    margin-top: auto;
+    width: 100%;
+}
+
+.footer-grid-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 1.5fr;
+    gap: 60px;
+    margin-bottom: 48px;
+}
+
+.footer-brand-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.footer-logo {
+    height: 56px;
+    width: auto;
+    object-fit: contain;
+}
+
+.footer-brand-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--bose-black);
+}
+
+#footer-about-text {
+    font-size: 0.95rem;
+    color: var(--bose-black);
+    line-height: 1.8;
+}
+
+.footer-links-block,
+.footer-contact-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.footer-block-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    margin-bottom: 28px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer-block-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 44px;
+    height: 2.5px;
+    background-color: var(--bose-pink);
+    border-radius: var(--bose-radius-full);
+}
+
+.footer-nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.footer-nav-links a {
+    font-size: 0.98rem;
+    color: var(--bose-black);
+    transition: transform var(--bose-transition-fast), color var(--bose-transition-fast);
+    display: inline-flex;
+    align-items: center;
+}
+
+.footer-nav-links a:hover {
+    color: var(--bose-pink);
+    transform: translateX(-6px);
+}
+
+.footer-address,
+.footer-phone {
+    font-size: 0.98rem;
+    line-height: 1.8;
+    color: var(--bose-black);
+    margin-bottom: 20px;
+}
+
+.footer-phone-link {
+    font-weight: 700;
+    color: var(--bose-black);
+    transition: color var(--bose-transition-fast);
+}
+
+.footer-phone-link:hover {
+    color: var(--bose-pink);
+}
+
+#footer-social-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 32px auto;
+    max-width: 1200px;
+}
+
+#footer-social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--bose-radius-full);
+    border: var(--bose-border-pink);
+    background-color: var(--bose-white);
+    color: var(--bose-black);
+    font-size: 1.1rem;
+    transition: all var(--bose-transition-fast);
+}
+
+#footer-social-links a:hover {
+    background-color: var(--bose-pink);
+    border-color: var(--bose-pink);
+    color: var(--bose-white);
+    transform: translateY(-4px);
+    box-shadow: var(--bose-shadow-glow);
+}
+
+.footer-policies-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 32px;
+    border-top: var(--bose-border-pink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--bose-black);
+}
+
+.footer-policies-links {
+    display: flex;
+    gap: 28px;
+}
+
+.footer-policies-links a:hover {
+    color: var(--bose-pink);
+}
+
+/* ------------------------------------------------------------------------
+   📱 21. استجابة التصميم لشاشات الهواتف المحمولة واللمس المتطورة
+   ------------------------------------------------------------------------ */
+@media (max-width: 991px) {
+    .menu-toggle-btn {
+        display: flex;
+    }
+
+    #bose-nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 300px;
+        height: 100vh;
+        background-color: var(--bose-white);
+        box-shadow: -4px 0 24px rgba(255, 145, 164, 0.08);
+        border-left: var(--bose-border-pink);
+        padding: 96px 32px 32px 32px;
+        transition: right var(--bose-transition-smooth);
+        display: flex;
+        flex-direction: column;
+        z-index: 1005;
+    }
+
+    #bose-nav-menu.active {
+        right: 0;
+    }
+
+    .nav-list {
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .waterfall-container {
+        grid-template-columns: 1fr; /* دمج الأعمدة بموبايل الشلال البصري */
+        gap: 24px;
+    }
+
+    .preview-card-horizontal,
+    .preview-card-horizontal.reverse-layout {
+        flex-direction: column; /* تحويل كروت المحاكيات لوضع عمودي لملاءمة شاشات اللمس */
+    }
+
+    .preview-img-holder,
+    .preview-content-holder {
+        width: 100%;
+    }
+
+    .preview-img-holder {
+        height: 300px;
+    }
+
+    .preview-content-holder {
+        padding: 40px 24px;
+    }
+
+    .footer-grid-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .footer-policies-container {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .excellence-img-slide {
+        width: 100vw; /* صورة كاملة العرض بالتناوب على موبايل الإتقان */
+    }
+
+    .excellence-banner-scroller {
+        height: 360px;
+    }
+}
+
+/* 🌀 تأثيرات الظهور التدريجي الفخمة (Bose Sweets Fine Transitions) */
+@keyframes fadeInBose {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
