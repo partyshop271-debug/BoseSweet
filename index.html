@@ -17,11 +17,19 @@
     <meta name="twitter:title" content="حلويات بوسي | عقد من التميز في صناعة الحلويات">
     <meta name="twitter:description" content="صمم هديتك، تورتتك، وبوكيه الورد الخاص بك لحظة بلحظة وبأسعار دقيقة خالية من الأخطاء في منصة حلويات بوسي التفاعلية.">
     <meta name="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="main.css">
+    
+    <!-- استدعاء التنسيقات طبقاً للتقسيم الشجري الصارم -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- محرك الحقن العالمي وحماية الذاكرة والسياسات العامة -->
+    <script src="js/core.html.js" defer></script>
+    
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -294,6 +302,7 @@
         <div class="footer-policies-container" id="global-footer-policies"></div>
     </footer>
 
+    <!-- محرك التشغيل والربط الذكي المتوافق مع core.html.js -->
     <script>
         (function() {
             let database = null;
@@ -301,93 +310,83 @@
             let ourProductsList = [];
 
             document.addEventListener("DOMContentLoaded", () => {
-                loadStoreDatabase();
+                // الانتظار الفوري لقراءة كائن البيانات العالمي لمنع ازدواجية الطلبات CORS وتحميل الذاكرة
+                if (window.BoseStoreData && window.BoseStoreData.store) {
+                    database = window.BoseStoreData;
+                    executeInitializationSequence();
+                } else {
+                    const checkDatabaseInterval = setInterval(() => {
+                        if (window.BoseStoreData && window.BoseStoreData.store) {
+                            clearInterval(checkDatabaseInterval);
+                            database = window.BoseStoreData;
+                            executeInitializationSequence();
+                        }
+                    }, 50);
+                    
+                    // مسار احتياطي احتياطي في حال تأخر core.html.js
+                    setTimeout(() => {
+                        if (!database) {
+                            loadStoreDatabaseFallback();
+                        }
+                    }, 2000);
+                }
             });
 
-            // محرك الاستدعاء المتسلسل والذكي لحل مشكلة قراءة واستدعاء الملفات على جميع الاستضافات
-            function loadStoreDatabase() {
-                const cacheBuster = "?v=" + Date.now(); // كسر التخزين المؤقت لضمان قراءة أحدث التعديلات دوماً
-                
-                // قائمة بالمسارات المتوقعة للملف طبقاً لهيكلة المشروع المحلية والفرعية على الاستضافات
-                const potentialDatabasePaths = [
-                    "site-data-final.json" + cacheBuster,
-                    "./site-data-final.json" + cacheBuster,
+            function loadStoreDatabaseFallback() {
+                const cacheBuster = "?v=" + Date.now();
+                const potentialPaths = [
                     "data/site-data-final.json" + cacheBuster,
-                    "../site-data-final.json" + cacheBuster
+                    "site-data-final.json" + cacheBuster,
+                    "./site-data-final.json" + cacheBuster
                 ];
                 
                 let pathIndex = 0;
-
                 function attemptFetch() {
-                    if (pathIndex >= potentialDatabasePaths.length) {
-                        console.error("❌ Critical: All database paths failed on the hosting server.");
-                        showFriendlyDiagnosticOverlay(); // إظهار واجهة تشخيصية بدلاً من alert لتعريف العميل بالخطأ الفني
-                        fallbackStaticInit();
+                    if (pathIndex >= potentialPaths.length) {
+                        console.error("❌ Fallback fetch options exhausted.");
+                        showFriendlyDiagnosticOverlay();
                         return;
                     }
-
-                    const activePath = potentialDatabasePaths[pathIndex];
-                    console.log(`📡 Attempting to load BoseSweets database from: ${activePath}`);
-
+                    const activePath = potentialPaths[pathIndex];
                     fetch(activePath)
                         .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status} on path: ${activePath}`);
-                            }
+                            if (!response.ok) throw new Error("HTTP " + response.status);
                             return response.json();
                         })
                         .then(data => {
                             database = data;
                             window.BoseStoreData = data;
-                            document.dispatchEvent(new CustomEvent("BoseDataReady", { detail: data }));
                             executeInitializationSequence();
-                            console.log(`✔️ Loaded database successfully from path: ${activePath}`);
                         })
-                        .catch(error => {
-                            console.warn(`⚠️ Path resolution failed for [${activePath}]: ${error.message}`);
+                        .catch(() => {
                             pathIndex++;
-                            attemptFetch(); // الانتقال التلقائي والذكي لتجربة المسار البديل دون توقف الصفحة
+                            attemptFetch();
                         });
                 }
-
                 attemptFetch();
             }
 
-            // واجهة تشخيصية تفاعلية فائقة الجمال لمطوري حلويات بوسي لحل المشاكل التقنية على الفور
             function showFriendlyDiagnosticOverlay() {
                 if (document.getElementById('bose-diagnostic-box')) return;
-                
                 const box = document.createElement('div');
                 box.id = 'bose-diagnostic-box';
                 box.style.cssText = `
-                    position: fixed;
-                    bottom: 24px;
-                    right: 24px;
-                    left: 24px;
-                    background-color: #FFFFFF;
-                    border: 2px solid #FF91A4;
-                    border-radius: 20px;
-                    padding: 24px;
-                    box-shadow: 0 10px 40px rgba(255, 145, 164, 0.25);
-                    z-index: 10000;
-                    max-width: 500px;
-                    margin: 0 auto;
-                    direction: rtl;
-                    font-family: 'Cairo', sans-serif;
+                    position: fixed; bottom: 24px; right: 24px; left: 24px;
+                    background-color: #FFFFFF; border: 2px solid #FF91A4; border-radius: 20px;
+                    padding: 24px; box-shadow: 0 10px 40px rgba(255, 145, 164, 0.25);
+                    z-index: 10000; max-width: 500px; margin: 0 auto; direction: rtl; font-family: 'Cairo', sans-serif;
                 `;
-                
                 box.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
                         <i class="fa-solid fa-circle-exclamation" style="color: #FF91A4; font-size: 1.6rem;"></i>
-                        <h4 style="margin: 0; color: #111111; font-weight: 700; font-size: 1.15rem;">تنبيه تشخيصي لموقع حلويات بوسي</h4>
+                        <h4 style="margin: 0; color: #111111; font-weight: 700; font-size: 1.15rem;">تنبيه فني تشخيصي</h4>
                     </div>
-                    <p style="margin: 0 0 16px 0; color: #111111; font-size: 0.92rem; line-height: 1.6; font-weight: 400;">
-                        لم نتمكن من العثور على ملف البيانات <strong style="color: #FF91A4;">site-data-final.json</strong> على خادم الاستضافة الحالية أو أن هناك مشكلة صلاحيات مسببة لخلل CORS أثناء الاختبار المحلي. 
-                        يرجى رفع ملف البيانات في المجلد الرئيسي للموقع وتطابق أحرف الاسم بالكامل.
+                    <p style="margin: 0 0 16px 0; color: #111111; font-size: 0.92rem; line-height: 1.6;">
+                        يرجى التأكد من رفع ملف البيانات <strong style="color: #FF91A4;">site-data-final.json</strong> في المجلد الرئيسي <strong style="color: #FF91A4;">data/</strong> للموقع وحفظه لضمان تدفق البيانات بسلاسة.
                     </p>
                     <div style="display: flex; gap: 8px; justify-content: flex-end;">
                         <button onclick="location.reload()" class="bose-btn bose-btn-primary" style="padding: 8px 16px; font-size: 0.85rem; font-weight: 700;">إعادة المحاولة</button>
-                        <button onclick="document.getElementById('bose-diagnostic-box').remove()" class="bose-btn bose-btn-secondary" style="padding: 8px 16px; font-size: 0.85rem; font-weight: 700; border-color: rgba(255,145,164,0.3);">تجاهل</button>
+                        <button onclick="document.getElementById('bose-diagnostic-box').remove()" class="bose-btn bose-btn-secondary" style="padding: 8px 16px; font-size: 0.85rem; font-weight: 700;">تجاهل</button>
                     </div>
                 `;
                 document.body.appendChild(box);
@@ -408,12 +407,6 @@
                 setupMobileResponsiveSidebar();
                 setupVideoPlayBehavior();
                 setupFooterPolicies();
-                window.updateGlobalCartCounter();
-            }
-
-            function fallbackStaticInit() {
-                setupMobileResponsiveSidebar();
-                setupVideoPlayBehavior();
                 window.updateGlobalCartCounter();
             }
 
@@ -532,7 +525,6 @@
                 if (!track) return;
 
                 track.innerHTML = "";
-                
                 const duplicatedImages = [...data.images, ...data.images];
                 
                 duplicatedImages.forEach((url, i) => {
@@ -544,7 +536,6 @@
                 });
 
                 track.classList.add('auto-scroll-track');
-
                 setupSliderDots('excellence-slider-container', 'excellence-dots', data.images.length, 1);
             }
 
@@ -982,4 +973,5 @@
     </script>
 </body>
 </html>
+
 
