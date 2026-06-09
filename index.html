@@ -69,6 +69,13 @@
 </head>
 <body>
 
+    <!-- 📢 المكون العالمي الثابت للشريط العلوي المتحرك (Top Bar Marquee) - مكانه فوق الهيدر تماماً -->
+    <div class="bose-top-bar" id="bose-announcements-bar">
+        <div class="marquee-track" id="bose-announcements-track">
+            <!-- سيتم حقن الرسائل ديناميكياً من ملف الـ JSON لمنع الفراغات -->
+        </div>
+    </div>
+
     <!-- 🏛️ مكون الهيدر الموحد والثابت (Shared Universal Header) -->
     <header class="bose-navbar">
         <div class="nav-right-side">
@@ -126,13 +133,6 @@
         </div>
     </div>
 
-    <!-- 📢 المكون العالمي الثابت للشريط العلوي المتحرك (Top Bar Marquee) -->
-    <div class="bose-top-bar" id="bose-announcements-bar">
-        <div class="marquee-track" id="bose-announcements-track">
-            <!-- سيتم حقن الرسائل ديناميكياً من ملف الـ JSON لمنع الفراغات -->
-        </div>
-    </div>
-
     <!-- 🌐 الحاوية الكبرى للمحتوى والصفحات -->
     <main class="bose-main-content">
 
@@ -182,7 +182,7 @@
         <!-- 🌸 SECTION 03: الأكثر مبيعاً (Most Selling Slider Section) -->
         <section id="most-selling-section">
             <div class="container">
-                <div class="section-header-rtl">
+                <div class="section-header-center">
                     <h2 class="section-title">الأكثر مبيعاً</h2>
                     <p class="section-desc">أصناف متميزة حازت على قلوب ورضا عملائنا، صنعت يدويًا وبدقة متناهية.</p>
                 </div>
@@ -215,7 +215,7 @@
         <!-- 🌸 SECTION 05: وصل حديثاً (New Arrivals Slider Section) -->
         <section id="new-arrivals-section">
             <div class="container">
-                <div class="section-header-rtl">
+                <div class="section-header-center">
                     <h2 class="section-title">وصل حديثاً</h2>
                     <p class="section-desc">نكهات جديدة ومبتكرة أعددناها خصيصاً لتمنحكم تجربة تذوق استثنائية وغير تقليدية.</p>
                 </div>
@@ -237,7 +237,7 @@
                     <h2 class="section-title">تشكيلة منتجاتنا</h2>
                     <p class="section-desc">استكشف عالمنا الساحر من الحلويات الفاخرة المجهزة يومياً بكل شغف وحب.</p>
                 </div>
-                <!-- شبكة المنتجات المستقرة (2 كروت بجوار بعض) -->
+                <!-- شبكة المنتجات المستقرة (2 كروت بجوار بعض بالتساوي على الموبايل) -->
                 <div class="products-grid-wrapper">
                     <div class="products-grid" id="our-products-grid">
                         <!-- سيتم توليد أول 4 كروت ثم الـ 4 كروت المتبقية مخفية -->
@@ -270,6 +270,17 @@
                 <div class="pride-content-block">
                     <h2 id="pride-title">الفخر والاعتزاز بنجاحنا</h2>
                     <p id="pride-text">أكثر من 10 سنوات خبرة، أكثر من 10000 عميل، أكثر من 10000 طلب ناجح يروون قصة نجاحنا وفخرنا.</p>
+                    
+                    <!-- مشغل فيديو الفخر والاعتزاز المدمج والفاخر -->
+                    <div class="pride-video-container">
+                        <video id="pride-bose-video" class="pride-video" loop muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+                            <source src="https://assets.mixkit.co/videos/preview/mixkit-decorating-a-chocolate-cake-with-cream-41581-large.mp4" type="video/mp4">
+                            عذراً، متصفحك لا يدعم تشغيل الفيديو.
+                        </video>
+                        <div class="video-overlay-play" id="video-play-btn">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
                 </div>
                 <div class="stats-container" id="bose-stats-grid">
                     <!-- سيتم تفريغ الأرقام والإحصائيات وتوليدها بصيغة ودية وراقية -->
@@ -280,7 +291,7 @@
         <!-- 🏷️ SECTION 09: تسوق حسب الفئة (Categories Navigation Slider) -->
         <section id="categories-slider-section">
             <div class="container">
-                <div class="section-header-rtl">
+                <div class="section-header-center">
                     <h2 class="section-title">تسوق حسب الفئة</h2>
                     <p class="section-desc">اختر فئتك المفضلة لتستعرض أشهى الحلويات والتنسيقات المصممة خصيصاً لك.</p>
                 </div>
@@ -393,6 +404,9 @@
 
             // ح. توليد سلايدر الفئات (12 فئة كبرى أكبر بـ 30%)
             renderCategoriesSlider(data.homepage.categoriesSlider, "categories-track", "categories-dots");
+
+            // ط. تهيئة مشغل الفيديو لقسم الفخر والاعتزاز
+            initializePrideVideo();
         }
 
         // 1. توليد الشريط العلوي المتحرك
@@ -422,7 +436,7 @@
 
             if (!waterfallData || !leftCol || !rightCol) return;
 
-            // حقن صور العمود الأيسر (الصاعد)
+            // حقن صور العمود الأيسر (العجلة الصاعدة)
             let leftHtml = "";
             waterfallData.leftColumnImages.forEach(imgUrl => {
                 leftHtml += `
@@ -431,10 +445,9 @@
                     </div>
                 `;
             });
-            // تكرار المحتوى لضمان انسيابية الحركة بدون توقف
             leftCol.innerHTML = leftHtml + leftHtml;
 
-            // حقن صور العمود الأيمن (الهابط)
+            // حقن صور العمود الأيمن (العجلة الهابطة)
             let rightHtml = "";
             waterfallData.rightColumnImages.forEach(imgUrl => {
                 rightHtml += `
@@ -491,7 +504,7 @@
             track.setAttribute("data-current", index);
         };
 
-        // 4. دالة بناء السلايدر العام للمنتجات (الأكثر مبيعا - وصل حديثا) مع الهيكل الموحد المعتمد
+        // 4. دالة بناء السلايدر للمنتجات (الهيكل الموحد المعتمد - السعر تحت العداد والكمية)
         function renderProductSlider(gridId, slugList, dotsId) {
             const grid = document.getElementById(gridId);
             const dotsContainer = document.getElementById(dotsId);
@@ -509,28 +522,40 @@
                     
                     htmlContent += `
                         <div class="product-card" data-slug="${product.slug}" data-index="${cardIndex}">
+                            <!-- 1. صورة المنتج -->
                             <div class="card-image-wrapper">
                                 <a href="product.html?slug=${product.slug}">
                                     <img src="${img}" alt="${product.title}" class="product-card-img" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
                                 </a>
                             </div>
                             <div class="product-card-info">
-                                <h3 class="product-card-title"><a href="product.html?slug=${product.slug}">${product.title}</a></h3>
+                                <!-- 2. اسم المنتج -->
+                                <h3 class="product-card-title">
+                                    <a href="product.html?slug=${product.slug}">${product.title}</a>
+                                </h3>
+                                <!-- 3. اسم النكهة -->
                                 <span class="product-card-flavor">${product.flavorName}</span>
+                                <!-- 4. وصف النكهة أو المنتج -->
                                 <p class="product-card-desc">${product.flavorDesc || product.description.substring(0, 75) + '...'}</p>
-                                <div class="product-card-bottom-row">
+                                
+                                <!-- 5. عداد الكمية (يمين +، وسط العدد، يسار -) -->
+                                <div class="bose-quantity-counter-wrapper">
                                     <div class="bose-quantity-counter">
                                         <button class="qty-btn btn-plus" onclick="incrementHomeQty(this)">+</button>
                                         <span class="qty-value">1</span>
                                         <button class="qty-btn btn-minus" onclick="decrementHomeQty(this)">-</button>
                                     </div>
-                                    <div class="product-card-price-action">
-                                        <span class="bose-price-text">${price} EGP</span>
-                                        <button class="bose-add-to-cart-btn" onclick="addCardToCart('${product.slug}', this)" aria-label="إضافة للسلة">
-                                            <i class="fas fa-shopping-basket"></i>
-                                        </button>
-                                    </div>
                                 </div>
+                                
+                                <!-- 6. السعر (تحت العداد) -->
+                                <div class="product-card-price-row">
+                                    <span class="bose-price-text">${price} EGP</span>
+                                </div>
+                                
+                                <!-- 7. زر إضافة للسلة -->
+                                <button class="bose-add-to-cart-btn-full" onclick="addCardToCart('${product.slug}', this)">
+                                    <i class="fas fa-shopping-basket"></i> إضافة للسلة
+                                </button>
                             </div>
                         </div>
                     `;
@@ -544,7 +569,6 @@
             if (dotsContainer) {
                 let dotsHtml = "";
                 const totalDots = Math.ceil(cardIndex);
-                // على الهاتف يعرض كروت بـ width: 85vw، سنحتاج لعدد نقاط مساوي للمنتجات
                 for (let i = 0; i < totalDots; i++) {
                     dotsHtml += `<button class="dot-btn ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="scrollSliderTo('${gridId}', ${i})"></button>`;
                 }
@@ -555,7 +579,7 @@
             bindSwipeAndScrollEvents(grid, dotsId);
         }
 
-        // 5. توليد شبكة كروت "منتجاتنا" (أول 4 ثم 4 إضافية تظهر بزر إظهار المزيد)
+        // 5. توليد شبكة كروت "منتجاتنا" (الهيكل الموحد المعتمد - السعر تحت العداد والكمية)
         function renderOurProductsGrid(slugList) {
             const grid = document.getElementById("our-products-grid");
             if (!grid || !slugList || !window.BoseStoreData) return;
@@ -572,28 +596,40 @@
 
                     htmlContent += `
                         <div class="product-card ${isHiddenClass}" data-slug="${product.slug}">
+                            <!-- 1. صورة المنتج -->
                             <div class="card-image-wrapper">
                                 <a href="product.html?slug=${product.slug}">
                                     <img src="${img}" alt="${product.title}" class="product-card-img" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
                                 </a>
                             </div>
                             <div class="product-card-info">
-                                <h3 class="product-card-title"><a href="product.html?slug=${product.slug}">${product.title}</a></h3>
+                                <!-- 2. اسم المنتج -->
+                                <h3 class="product-card-title">
+                                    <a href="product.html?slug=${product.slug}">${product.title}</a>
+                                </h3>
+                                <!-- 3. اسم النكهة -->
                                 <span class="product-card-flavor">${product.flavorName}</span>
+                                <!-- 4. وصف النكهة أو المنتج -->
                                 <p class="product-card-desc">${product.flavorDesc || product.description.substring(0, 75) + '...'}</p>
-                                <div class="product-card-bottom-row">
+                                
+                                <!-- 5. عداد الكمية (يمين +، وسط العدد، يسار -) -->
+                                <div class="bose-quantity-counter-wrapper">
                                     <div class="bose-quantity-counter">
                                         <button class="qty-btn btn-plus" onclick="incrementHomeQty(this)">+</button>
                                         <span class="qty-value">1</span>
                                         <button class="qty-btn btn-minus" onclick="decrementHomeQty(this)">-</button>
                                     </div>
-                                    <div class="product-card-price-action">
-                                        <span class="bose-price-text">${price} EGP</span>
-                                        <button class="bose-add-to-cart-btn" onclick="addCardToCart('${product.slug}', this)" aria-label="إضافة للسلة">
-                                            <i class="fas fa-shopping-basket"></i>
-                                        </button>
-                                    </div>
                                 </div>
+                                
+                                <!-- 6. السعر (تحت العداد) -->
+                                <div class="product-card-price-row">
+                                    <span class="bose-price-text">${price} EGP</span>
+                                </div>
+                                
+                                <!-- 7. زر إضافة للسلة -->
+                                <button class="bose-add-to-cart-btn-full" onclick="addCardToCart('${product.slug}', this)">
+                                    <i class="fas fa-shopping-basket"></i> إضافة للسلة
+                                </button>
                             </div>
                         </div>
                     `;
@@ -609,7 +645,6 @@
                     const hiddenCards = grid.querySelectorAll(".hidden-product-card");
                     hiddenCards.forEach(card => {
                         card.classList.remove("d-none");
-                        // تأثير ظهور ناعم ومتناسق
                         setTimeout(() => {
                             card.style.opacity = "1";
                             card.style.transform = "translateY(0)";
@@ -731,7 +766,7 @@
                 if (!isDown) return;
                 e.preventDefault();
                 const x = e.pageX - sliderTrack.offsetLeft;
-                const walk = (x - startX) * 1.5; // سرعة سحب الماوس
+                const walk = (x - startX) * 1.5; 
                 sliderTrack.scrollLeft = scrollLeft - walk;
             });
 
@@ -753,7 +788,6 @@
                 const cardWidth = cards[index].getBoundingClientRect().width;
                 const gap = parseFloat(window.getComputedStyle(slider).gap) || 0;
                 
-                // حساب المسافة الدقيقة للانتقال
                 const scrollTarget = index * (cardWidth + gap);
                 slider.scrollTo({
                     left: -scrollTarget, // الاتجاه اليمين لليسار RTL
@@ -773,7 +807,6 @@
             const gap = parseFloat(window.getComputedStyle(slider).gap) || 0;
             const step = cardWidth + gap;
 
-            // تحديد الـ Index المالي بناءً على الإزاحة الأفقية للدوران
             const scrollX = Math.abs(slider.scrollLeft);
             const activeIndex = Math.round(scrollX / step);
 
@@ -800,7 +833,7 @@
                 if (dots[currIndex]) dots[currIndex].classList.add("active");
 
                 track.setAttribute("data-current", currIndex);
-            }, 5500); // الانتقال آلياً كل 5.5 ثوانٍ لتجربة بصرية هادئة وفخمة
+            }, 5500); 
         }
 
         // 9. دوال التحكم بالكمية اللحظية لكروت المنتجات في الصفحة الرئيسية
@@ -830,11 +863,10 @@
 
             if (!product) return;
 
-            // مراجعة حارس الأسعار الرسمي لمنع الثغرات المالية
             const finalPrice = window.calculateBosePrice(product.price, "all");
 
             const newItem = {
-                id: `${product.slug}-${Date.now()}`, // توليد معرف فريد يمنع تضارب الكروت
+                id: `${product.slug}-${Date.now()}`, 
                 productSlug: product.slug,
                 title: product.title,
                 flavorName: product.flavorName,
@@ -845,12 +877,28 @@
                 customDetails: {}
             };
 
-            // حقن الصنف في السلة العامة
             window.addBoseCartItem(newItem);
-
-            // إعادة تعيين كاونتر الكارت الفردي للعدد 1 بعد الإضافة الناجحة
             card.querySelector(".qty-value").textContent = "1";
         };
+
+        // 11. تشغيل والتحكم في فيديو الفخر والاعتزاز
+        function initializePrideVideo() {
+            const video = document.getElementById("pride-bose-video");
+            const playBtn = document.getElementById("video-play-btn");
+            if (!video || !playBtn) return;
+
+            playBtn.addEventListener("click", () => {
+                if (video.paused) {
+                    video.play();
+                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    playBtn.style.opacity = "0.2";
+                } else {
+                    video.pause();
+                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    playBtn.style.opacity = "1";
+                }
+            });
+        }
     </script>
 </body>
 </html>
