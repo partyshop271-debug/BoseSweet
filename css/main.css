@@ -701,11 +701,11 @@
     padding: 0 24px 30px 24px;
 }
 
-/* زيادة عرض الكارد في قسم منتجاتنا بنسبة 20% لجميع الشاشات وتوافق المحرك */
+/* تعديل قسم منتجاتنا بالتسب المطلوبة: زيادة العرض 30%، تقصير الطول 20%، وضمان كارتين جنب بعض بالملي */
 #our-products-grid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 24px !important;
+    gap: 12px !important;
 }
 
 @media (min-width: 768px) {
@@ -727,11 +727,13 @@
     max-width: 100% !important;
     flex-shrink: 1 !important;
     flex-grow: 1 !important;
-    padding: 22px !important;
+    padding: 14px !important;
     border: var(--bose-border-pink) !important;
     border-radius: 24px !important;
     box-shadow: var(--bose-shadow-glow) !important;
     overflow: visible !important;
+    height: auto !important;
+    min-height: unset !important;
 }
 
 #our-products-grid .product-card:hover {
@@ -740,7 +742,8 @@
 }
 
 #our-products-grid .product-card-title {
-    font-size: 1.3rem !important;
+    font-size: 1.25rem !important;
+    line-height: 1.4 !important;
     min-height: unset !important;
 }
 
@@ -751,77 +754,83 @@
 }
 
 #our-products-grid .product-card-desc {
-    font-size: 1rem !important;
+    font-size: 0.88rem !important;
+    line-height: 1.4 !important;
     min-height: unset !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 3 !important; /* تقصير النصوص ليناسب الارتفاع الجديد المتناسق للفخامة بصرياً */
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+@media (min-width: 768px) {
+    #our-products-grid .product-card-desc {
+        font-size: 1rem !important;
+        -webkit-line-clamp: unset !important;
+        display: block !important;
+    }
 }
 
 #our-products-grid .product-card-flavor {
-    font-size: 1rem !important;
-    padding: 6px 16px !important;
+    font-size: 0.85rem !important;
+    padding: 4px 10px !important;
 }
 
 @media (min-width: 768px) {
     #our-products-grid .product-card-flavor {
         font-size: 1rem !important;
+        padding: 6px 16px !important;
     }
 }
 
 @media (max-width: 767px) {
     .products-grid-wrapper {
-        padding: 0 8px 20px 8px !important; /* تقليص الحواف الجانبية لزيادة مساحة العرض البصري للكروت */
+        padding: 0 10px 24px 10px !important;
     }
     
     #our-products-grid {
-        gap: 10px !important; /* تقليص الفراغات بين الكروت لزيادة عرض الكارد بصرياً بنسبة 20% وبقاء كارتين متجاورين بامتياز */
+        gap: 10px !important; /* تقليل المسافة بين الكارتين ليعطي مساحة عرض أكبر لكل كارت بنسبة 30% */
     }
     
     #our-products-grid .product-card {
-        padding: 10px !important; /* تقليص البادينج الداخلي للمساهمة في تقصير الطول بنسبة 20% */
+        padding: 10px !important; /* تقليص الحواف الداخلية لتقصير الطول وزيادة اتساع المحتوى */
         border-radius: 16px !important;
-        gap: 6px !important; /* تقليص الجاب الداخلي بين مكونات الكارد لتقصيره */
+        gap: 8px !important;
     }
     
     .card-image-wrapper {
         border-radius: 12px !important;
+        aspect-ratio: 1.2 / 1 !important; /* تقصير طول منطقة الصورة بنسبة 20% لمنع المط والقطع البصري */
     }
     
     #our-products-grid .product-card-title {
-        font-size: 1rem !important;
+        font-size: 1.1rem !important;
         line-height: 1.3 !important;
     }
     
     #our-products-grid .product-card-flavor {
-        font-size: 0.75rem !important;
+        font-size: 0.78rem !important;
         padding: 2px 6px !important;
         border-radius: 6px !important;
     }
     
-    #our-products-grid .product-card-desc {
-        font-size: 0.8rem !important;
-        line-height: 1.3 !important;
-    }
-    
     .bose-quantity-counter {
-        height: 30px !important; /* تقليص ارتفاع عداد الكمية لتقصير الكارد الكلي */
+        height: 32px !important; /* تقصير الطول الرأسي للعداد بنسبة 20% */
         border-radius: 8px !important;
-        max-width: 110px !important;
     }
     
     .qty-btn {
-        width: 30px !important;
+        width: 32px !important;
         font-size: 1rem !important;
     }
     
     .qty-value {
-        font-size: 0.9rem !important;
-    }
-    
-    .product-card-price-row {
-        padding: 2px 0 !important; /* تقليص المسافات الرأسية حول السعر */
+        font-size: 0.95rem !important;
     }
     
     .bose-add-to-cart-btn-full {
-        height: 34px !important; /* تقليص ارتفاع زرار الإضافة لتقصير الكارد الكلي بنسبة 20% */
+        height: 36px !important; /* تقصير طول زر إضافة للسلة بنسبة 20% لتوازن مثالي لكارت الموبايل */
         font-size: 0.85rem !important;
         border-radius: 8px !important;
     }
