@@ -4,21 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
-    <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.">
-    <meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, حلويات بوسي">
+    <title>حلويات بوسي | عقد من التميز في صناعة الحلويات الفاخرة وهدايا الورد</title>
+    <meta name="description" content="الموقع الرسمي لعلامة حلويات بوسي الفاخرة بفرع الكفاح. استمتع بتصفح المنيو الشامل، طلب الجاتوه، التورتات، السينابون، والدوناتس مع تجربة محاكيات التورت والورد التفاعلية الحصرية لتصميم هدايا ومناسباتكم السعيدة بجودة طبيعية 100%.">
+    <meta name="keywords" content="حلويات بوسي, فرع الكفاح, تورتات, سينابون, دوناتس, قشطوطة, محاكي التورت, محاكي الورد, بوكس الروقان, كابات السعادة, ميني تورت, ديسباسيتو, حلويات فاخرة, بوكيه ورد">
     <meta name="robots" content="index, follow">
     
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bosesweets.com">
     <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta property="og:description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.">
+    <meta property="og:description" content="الموقع الرسمي لعلامة حلويات بوسي الفاخرة بفرع الكفاح. استمتع بتصفح المنيو الشامل وتجربة محاكيات التورت والورد التفاعلية الحصرية.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
@@ -26,874 +25,556 @@
     <script src="js/core.html.js"></script>
     
     <style>
-        /* Document Layout & Core Positioning Constraints */
-        :root {
-            --bose-pink: #FF91A4;
-            --bose-white: #FFFFFF;
-            --bose-black: #111111;
-            --bose-gold: #D4AF37;
-            --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
-            --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
-            --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
-            --bose-border-thick: 2px solid #FF91A4;
-        }
-
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bose-white);
-            color: var(--bose-black);
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        [span_0](start_span)/* Continuous Looping Infinite Top Bar Configuration[span_0](end_span) */
         .bose-top-marquee-bar {
-            background-color: var(--bose-pink);
-            color: var(--bose-white);
-            font-size: 14px;
-            font-weight: 600;
-            padding: 10px 0;
+            background-color: var(--bose-cream);
+            border-bottom: 1px solid rgba(255, 145, 164, 0.15);
             overflow: hidden;
-            position: relative;
+            height: 42px;
+            display: flex;
+            align-items: center;
             width: 100%;
+            position: relative;
             z-index: 1010;
-            white-space: nowrap;
         }
-        
         .marquee-track-container {
             display: flex;
             width: max-content;
-            animation: marqueeContinuous 25s linear infinite;
+            animation: marqueeContinuous 40s linear infinite;
+            will-change: transform;
         }
-        
         .marquee-message-node {
-            display: inline-flex;
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--bose-black);
+            padding: 0 60px;
+            white-space: nowrap;
+            display: flex;
             align-items: center;
-            padding: 0 40px;
         }
-
         @keyframes marqueeContinuous {
             0% { transform: translate3d(0, 0, 0); }
             100% { transform: translate3d(-50%, 0, 0); }
         }
-
-        [span_1](start_span)[span_2](start_span)/* Shared Sticky Header Optimization[span_1](end_span)[span_2](end_span) */
-        .bose-navbar {
-            position: sticky;
-            top: 0;
-            background-color: var(--bose-white);
-            box-shadow: var(--bose-shadow-glow);
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 1000;
-            height: 70px;
-            box-sizing: border-box;
-        }
-
-        .header-right-cluster, .header-left-cluster {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .sidebar-toggle-trigger {
-            background: none;
-            border: none;
-            color: var(--bose-black);
-            font-size: 22px;
-            cursor: pointer;
-            padding: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
+        
         .brand-identity-anchor {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             text-decoration: none;
         }
-
-        #bose-store-logo {
-            height: 48px;
-            width: 48px;
-            object-fit: contain; /* Prevents compression distortion */
-            border-radius: 50%;
-        }
-
         .brand-name-text {
             color: var(--bose-black);
-            font-size: 19px;
+            font-size: 1.4rem;
             font-weight: 700;
             margin: 0;
+            white-space: nowrap;
         }
-
-        .header-action-button {
-            background: none;
-            border: none;
-            color: var(--bose-black);
-            font-size: 20px;
-            cursor: pointer;
-            text-decoration: none;
-            position: relative;
-            padding: 4px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #nav-cart-count {
-            position: absolute;
-            top: -4px;
-            left: -6px;
-            background-color: var(--bose-pink);
-            color: var(--bose-white);
-            font-size: 11px;
-            font-weight: 700;
-            min-width: 18px;
-            height: 18px;
+        #bose-store-logo {
+            width: 44px !important;
+            height: 44px !important;
+            object-fit: contain !important;
+            flex-shrink: 0;
             border-radius: 50%;
+        }
+        .header-left-cluster {
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 0 2px;
-            box-sizing: border-box;
+            gap: 16px;
         }
-
-        [span_3](start_span)/* Centered Section Typography Configuration[span_3](end_span) */
+        
         .bose-section-header-block {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto 35px auto;
+            text-align: center !important;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
             padding: 0 20px;
         }
-
-        .bose-section-header-block h1, .bose-section-header-block h2 {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--bose-black);
+        .bose-section-header-block h1, 
+        .bose-section-header-block h2 {
+            font-size: 2rem !important;
+            font-weight: 700 !important;
+            color: var(--bose-black) !important;
             margin: 0 0 12px 0;
         }
-
+        @media (min-width: 768px) {
+            .bose-section-header-block h1, 
+            .bose-section-header-block h2 { font-size: 2.6rem !important; }
+        }
         .bose-section-header-block p {
-            font-size: 16px;
-            font-weight: 400;
-            color: var(--bose-black);
+            font-size: 1rem !important;
+            font-weight: 400 !important;
+            color: var(--bose-black) !important;
+            opacity: 0.85;
             line-height: 1.7;
             margin: 0;
         }
-
-        /* Interactive Drawer Sidebar Navigation System */
-        .bose-sidebar-drawer {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            width: 290px;
-            height: 100%;
-            background-color: var(--bose-white);
-            box-shadow: -4px 0 24px rgba(0,0,0,0.15);
-            z-index: 1100;
-            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            padding: 24px;
-            box-sizing: border-box;
-        }
-
-        .bose-sidebar-drawer.drawer-active {
-            right: 0;
-        }
-
-        .drawer-header-pane {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 35px;
-            border-bottom: var(--bose-border-pink);
-            padding-bottom: 16px;
-        }
-
-        .drawer-close-trigger {
-            background: none;
-            border: none;
-            color: var(--bose-black);
-            font-size: 22px;
-            cursor: pointer;
-        }
-
-        .drawer-nav-menu-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .drawer-nav-item-node {
-            margin-bottom: 18px;
-        }
-
-        .drawer-nav-anchor {
-            color: var(--bose-black);
-            text-decoration: none;
-            font-size: 17px;
-            font-weight: 600;
-            display: block;
-            padding: 8px 0;
-            transition: color 0.2s ease;
-        }
-
-        .drawer-nav-anchor:hover {
-            color: var(--bose-pink);
-        }
-
-        .bose-drawer-overlay-shield {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.3);
-            z-index: 1050;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .bose-drawer-overlay-shield.shield-visible {
-            display: block;
-            opacity: 1;
-        }
-
-        [span_4](start_span)/* SECTION 01: Hero Content Banner[span_4](end_span) */
+        .hero-title-highlight { color: var(--bose-pink) !important; }
+        
         #hero-section {
-            padding: 60px 20px;
-            text-align: center;
+            position: relative;
+            padding: 80px 0;
             background-color: var(--bose-white);
+            text-align: center;
         }
-
-        .hero-title-highlight {
-            color: var(--bose-pink);
-        }
-
-        .bose-global-cta-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--bose-pink);
-            color: var(--bose-white);
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: 700;
-            padding: 14px 36px;
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            box-shadow: var(--bose-shadow-glow);
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
-            margin-top: 20px;
-        }
-
-        .bose-global-cta-btn:hover {
-            transform: scale(1.03);
-            box-shadow: var(--bose-shadow-hover);
-        }
-
-        [span_5](start_span)/* WATERFALL: Infinite Vertical Scrolling Product Canvas[span_5](end_span) */
+        .hero-cta-btn-wrapper { margin-top: 24px; }
+        
         #waterfall-section {
             position: relative;
+            width: 100%;
             height: 700px;
             overflow: hidden;
             background-color: var(--bose-white);
-            width: 100%;
+            padding: 40px 0;
         }
-
-        @media (min-width: 992px) {
-            #waterfall-section { height: 1000px; }
+        @media (min-width: 1024px) {
+            #waterfall-section { height: 950px; }
         }
-
         .waterfall-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
+            display: flex;
+            gap: 24px;
             height: 100%;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 0 16px;
-            box-sizing: border-box;
+            justify-content: center;
         }
-
-        .waterfall-column-track {
+        .waterfall-column {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-        }
-
-        #waterfall-left-col {
-            animation: scrollUpVertical 30s linear infinite;
-        }
-
-        #waterfall-right-col {
-            animation: scrollDownVertical 30s linear infinite;
-        }
-
-        .waterfall-image-wrapper {
+            gap: 20px;
+            height: max-content;
             width: 100%;
-            aspect-ratio: 1;
-            border-radius: 20px;
+            max-width: 480px;
+            flex: 1;
+        }
+        .waterfall-down { animation: waterfall-scroll-down 28s linear infinite; }
+        .waterfall-up { animation: waterfall-scroll-up 28s linear infinite; }
+        .waterfall-item {
+            width: 100%;
+            border-radius: 24px;
             overflow: hidden;
             box-shadow: var(--bose-shadow-glow);
+            border: var(--bose-border-pink);
+            transition: var(--bose-transition-smooth);
         }
-
-        .waterfall-image-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.4s ease;
+        .waterfall-item img {
+            width: 100% !important;
+            height: 280px !important;
+            object-fit: cover !important;
+            display: block !important;
         }
-
-        .waterfall-image-wrapper:hover img {
-            transform: scale(1.05);
+        @media (min-width: 768px) {
+            .waterfall-item img { height: 380px !important; }
         }
-
-        @keyframes scrollUpVertical {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(0, -50%, 0); }
+        @keyframes waterfall-scroll-down {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
         }
-
-        @keyframes scrollDownVertical {
-            0% { transform: translate3d(0, -50%, 0); }
-            100% { transform: translate3d(0, 0, 0); }
+        @keyframes waterfall-scroll-up {
+            0% { transform: translateY(-50%); }
+            100% { transform: translateY(0); }
         }
-
-        .waterfall-vignette-fog-top {
+        .waterfall-overlay-top, .waterfall-overlay-bottom {
             position: absolute;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        .waterfall-overlay-top {
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
-            z-index: 5;
-            pointer-events: none;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
         }
-
-        .waterfall-vignette-fog-bottom {
-            position: absolute;
+        .waterfall-overlay-bottom {
             bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100px;
-            background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
-            z-index: 5;
-            pointer-events: none;
+            background: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%);
         }
-
-        [span_6](start_span)/* SECTION 02: Mastery Horizontal Filmstrip[span_6](end_span) */
+        
         #excellence-section {
             padding: 60px 0;
             background-color: var(--bose-white);
-        }
-
-        .excellence-banner-scroller {
             width: 100%;
+            overflow: hidden;
+        }
+        .excellence-banner-scroller {
+            width: 100vw !important;
+            margin-left: calc(-50vw + 50%) !important;
+            margin-right: calc(-50vw + 50%) !important;
             overflow: hidden;
             position: relative;
         }
-
-        #excellence-images-track {
+        .excellence-images-track {
             display: flex;
-            width: 300%;
-            animation: excellenceStripContinuous 20s linear infinite;
+            width: 100%;
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1) !important;
+            will-change: transform;
         }
-
-        .excellence-strip-image {
-            width: 100vw;
-            height: 50vh;
-            min-height: 350px;
-            object-fit: cover; /* Guaranteed uncompressed architecture */
-            flex-shrink: 0;
+        .excellence-slide-item {
+            flex: 0 0 100vw !important;
+            min-width: 100vw !important;
+            width: 100vw !important;
+            height: 50vh !important;
         }
-
-        @keyframes excellenceStripContinuous {
-            0% { transform: translate3d(0, 0, 0); }
-            33.33% { transform: translate3d(-100vw, 0, 0); }
-            66.66% { transform: translate3d(-200vw, 0, 0); }
-            100% { transform: translate3d(0, 0, 0); }
+        @media (min-width: 768px) {
+            .excellence-slide-item { height: 75vh !important; }
         }
-
-        [span_7](start_span)[span_8](start_span)/* SECTION 09: Expanded Category Slider Architecture[span_7](end_span)[span_8](end_span) */
-        #categories-slider-section {
+        .excellence-slide-item img {
+            width: 100vw !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            display: block !important;
+        }
+        
+        #most-selling-section, #new-arrivals-section, #categories-slider-section {
+            padding: 60px 0;
+            background-color: var(--bose-white);
+            overflow: hidden;
+        }
+        .slider-wrapper {
+            width: 100%;
+            padding: 10px 24px 20px 24px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            direction: rtl !important;
+        }
+        .slider-wrapper::-webkit-scrollbar { display: none; }
+        .products-slider-track {
+            display: flex;
+            gap: 20px;
+            width: max-content;
+            direction: rtl !important;
+        }
+        
+        #our-products-section {
             padding: 60px 0;
             background-color: var(--bose-white);
         }
-
-        .categories-carousel-viewport {
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            padding: 20px 16px;
-            display: flex;
-            gap: 20px;
-            scrollbar-width: none;
-        }
-
-        .categories-carousel-viewport::-webkit-scrollbar {
-            display: none;
-        }
-
-        .category-showcase-card {
-            flex-shrink: 0;
-            width: 280px;
-            height: 360px;
-            background-color: var(--bose-white);
-            border-radius: 20px;
-            border: var(--bose-border-pink);
-            box-shadow: var(--bose-shadow-glow);
-            overflow: hidden;
-            position: relative;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .category-showcase-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--bose-shadow-hover);
-        }
-
-        .category-card-media-frame {
-            width: 280px;
-            height: 280px;
-            overflow: hidden;
-        }
-
-        .category-card-media-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .category-card-label-pane {
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--bose-white);
-        }
-
-        .category-card-label-pane h3 {
-            margin: 0;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--bose-black);
-            text-align: center;
-        }
-
-        @media (min-width: 768px) {
-            .category-showcase-card { width: 340px; height: 430px; }
-            .category-card-media-frame { width: 340px; height: 340px; }
-            .category-card-label-pane { height: 90px; }
-        }
-
-        @media (min-width: 1200px) {
-            .category-showcase-card { width: 420px; height: 520px; }
-            .category-card-media-frame { width: 420px; height: 420px; }
-            .category-card-label-pane { height: 100px; }
-        }
-
-        [span_9](start_span)[span_10](start_span)/* Base Products Grid Template Configuration[span_9](end_span)[span_10](end_span) */
-        .products-slider-viewport {
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            padding: 20px 16px;
-            display: flex;
-            gap: 20px;
-            scrollbar-width: none;
-        }
-
-        .products-slider-viewport::-webkit-scrollbar {
-            display: none;
-        }
-
-        .products-grid-layout-canvas {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            padding: 0 16px;
-            max-width: 1200px;
+        .products-grid-wrapper {
+            max-width: 1400px;
             margin: 0 auto;
+            padding: 0 16px 30px 16px;
         }
-
-        [span_11](start_span)[span_12](start_span)/* Mandatory Unified Card Architecture (Universal Card Blueprint)[span_11](end_span)[span_12](end_span) */
-        .bose-unified-product-card {
-            background-color: var(--bose-white);
-            border-radius: 20px;
-            border: var(--bose-border-pink);
-            box-shadow: var(--bose-shadow-glow);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            box-sizing: border-box;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        #our-products-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px !important;
+            width: 100% !important;
         }
-
-        #most-selling-section .bose-unified-product-card,
-        #new-arrivals-section .bose-unified-product-card {
-            width: 85vw;
-            flex-shrink: 0;
-        }
-
-        @media (min-width: 992px) {
-            #most-selling-section .bose-unified-product-card,
-            #new-arrivals-section .bose-unified-product-card {
-                width: 380px;
+        @media (min-width: 768px) {
+            #our-products-grid {
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 24px !important;
             }
         }
-
-        .bose-unified-product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--bose-shadow-hover);
-        }
-
-        .card-media-canvas {
-            width: 100%;
-            height: 220px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        @media (min-width: 768px) { .card-media-canvas { height: 260px; } }
-        @media (min-width: 1200px) { .card-media-canvas { height: 320px; } }
-
-        .card-media-canvas img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .card-details-pane {
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .card-product-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--bose-black);
-            margin: 0 0 4px 0;
-        }
-
-        .card-flavor-badge {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--bose-pink);
-            margin: 0 0 8px 0;
-        }
-
-        .card-product-description {
-            font-size: 14px;
-            font-weight: 400;
-            color: var(--bose-black);
-            line-height: 1.6;
-            margin: 0 0 16px 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .card-interactive-footer-row {
-            margin-top: auto;
+        
+        .product-card {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             gap: 12px;
+            box-shadow: var(--bose-shadow-glow);
+            transition: var(--bose-transition-smooth);
+            width: 100% !important;
+            box-sizing: border-box;
         }
-
-        .card-pricing-and-quantity-container {
+        .slider-wrapper .product-card {
+            width: 78vw !important;
+        }
+        @media (min-width: 768px) {
+            .slider-wrapper .product-card { width: 320px !important; }
+        }
+        .card-image-wrapper {
+            width: 100% !important;
+            aspect-ratio: 1/1 !important;
+            border-radius: 14px;
+            overflow: hidden;
+            background-color: var(--bose-cream);
+        }
+        .product-card-img {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            display: block !important;
+        }
+        .product-card-info {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+            text-align: center;
         }
-
-        .card-price-metric {
-            font-size: 18px;
+        .product-card-title {
+            font-size: 1.1rem !important;
+            font-weight: 700;
+            color: var(--bose-black);
+            line-height: 1.4 !important;
+            margin: 0;
+        }
+        .product-card-flavor {
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--bose-pink);
-            white-space: nowrap;
+            background-color: var(--bose-cream);
+            padding: 4px 10px;
+            border-radius: 8px;
+            width: max-content;
+            margin: 0 auto;
         }
-
-        .card-quantity-stepper-module {
-            display: inline-flex;
+        .product-card-desc {
+            font-size: 0.88rem;
+            color: var(--bose-black);
+            opacity: 0.75;
+            line-height: 1.5 !important;
+            margin: 0;
+        }
+        .product-card-title, .product-card-flavor, .product-card-desc {
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            word-wrap: break-word !important;
+            word-break: break-word !important;
+        }
+        
+        .bose-quantity-counter-wrapper {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .bose-quantity-counter {
+            display: flex;
             align-items: center;
             border: var(--bose-border-pink);
             border-radius: 12px;
-            overflow: hidden;
             background-color: var(--bose-white);
+            overflow: hidden;
+            height: 36px;
+            width: 100%;
+            max-width: 130px;
         }
-
-        .stepper-adjustment-action {
-            background: none;
-            border: none;
-            width: 32px;
-            height: 32px;
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--bose-black);
-            cursor: pointer;
+        .qty-btn {
+            width: 38px;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            user-select: none;
-        }
-
-        .stepper-numerical-display {
-            width: 36px;
-            text-align: center;
-            font-size: 15px;
+            font-size: 1.1rem;
             font-weight: 700;
-            color: var(--bose-black);
+            background: transparent;
             border: none;
-            background: none;
-            padding: 0;
-            pointer-events: none;
+            cursor: pointer;
         }
-
-        .card-cart-submission-btn {
+        .btn-plus { color: var(--bose-pink); border-left: 1px solid rgba(255, 145, 164, 0.15); }
+        .btn-minus { color: var(--bose-black); opacity: 0.6; border-right: 1px solid rgba(255, 145, 164, 0.15); }
+        .qty-value { flex-grow: 1; text-align: center; font-size: 0.95rem; font-weight: 700; color: var(--bose-black); }
+        .product-card-price-row { font-size: 1.1rem; font-weight: 700; color: var(--bose-pink); }
+        .bose-add-to-cart-btn-full {
             width: 100%;
+            height: 42px;
             background-color: var(--bose-pink);
             color: var(--bose-white);
             border: none;
-            padding: 10px 16px;
-            font-size: 15px;
-            font-weight: 700;
             border-radius: 12px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background-color 0.2s ease;
-        }
-
-        .card-cart-submission-btn:hover {
-            background-color: #ff7d93;
-        }
-
-        [span_13](start_span)[span_14](start_span)[span_15](start_span)/* Unified Carousel Dots Indicator System[span_13](end_span)[span_14](end_span)[span_15](end_span) */
-        .bose-carousel-dots-indicator-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 24px;
-        }
-
-        .indicator-dot-node {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background-color: rgba(255, 145, 164, 0.3);
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .indicator-dot-node.dot-node-active {
-            background-color: var(--bose-pink);
-            width: 24px;
-            border-radius: 5px;
-        }
-
-        [span_16](start_span)[span_17](start_span)/* SECTION 04 & 07: Immersive Simulator Entry Block Builders[span_16](end_span)[span_17](end_span) */
-        .immersive-simulator-preview-block {
-            padding: 60px 20px;
-            background-color: #FFF2F4;
-            text-align: center;
-            box-sizing: border-box;
-            height: 600px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        @media (min-width: 992px) {
-            .immersive-simulator-preview-block { height: 750px; }
-        }
-
-        .simulator-preview-display-frame {
-            width: 100%;
-            max-width: 450px;
-            height: 240px;
-            overflow: hidden;
-            margin-bottom: 24px;
-            border-radius: 20px;
-        }
-
-        .simulator-preview-display-frame img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        [span_18](start_span)[span_19](start_span)/* SECTION 08: Institutional Longevity & Metrics Section[span_18](end_span)[span_19](end_span) */
-        #pride-section {
-            padding: 60px 20px;
-            background-color: #FFF2F4;
-            text-align: center;
-            box-sizing: border-box;
-            min-height: 550px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        @media (min-width: 992px) {
-            #pride-section { min-height: 700px; }
-        }
-
-        .stats-grid-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            max-width: 900px;
-            width: 100%;
-            margin-top: 30px;
-        }
-
-        @media (min-width: 768px) {
-            .stats-grid-container { grid-template-columns: repeat(5, 1fr); }
-        }
-
-        .stat-metric-card-node {
-            background-color: var(--bose-white);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: var(--bose-shadow-glow);
-            border: var(--bose-border-pink);
-        }
-
-        .stat-metric-card-node h3 {
-            font-size: 26px;
+            font-size: 0.9rem;
             font-weight: 700;
-            color: var(--bose-pink);
-            margin: 0 0 4px 0;
+            cursor: pointer;
+            box-shadow: var(--bose-shadow-glow);
+            transition: var(--bose-transition-smooth);
+            margin-top: auto;
         }
-
-        .stat-metric-card-node p {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--bose-black);
-            margin: 0;
-        }
-
-        .pride-embedded-video-wrapper {
-            width: 100%;
-            max-width: 1000px;
-            aspect-ratio: 16/9;
-            margin-top: 40px;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: var(--bose-shadow-hover);
-            background-color: var(--bose-black);
-        }
-
-        .pride-embedded-video-wrapper video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        [span_20](start_span)/* Corporate Footer Block Layout Constraints[span_20](end_span) */
-        .bose-footer {
+        
+        #cake-preview-section, #flower-preview-section {
+            padding: 60px 16px;
             background-color: var(--bose-white);
-            border-top: var(--bose-border-pink);
-            padding: 60px 20px 30px 20px;
-            text-align: center;
         }
-
-        .footer-logo-brand-cluster {
-            display: inline-flex;
+        .cake-banner-container, .flower-banner-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: var(--bose-cream);
+            border: var(--bose-border-pink);
+            border-radius: 28px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--bose-shadow-glow);
+        }
+        @media (min-width: 1024px) {
+            .cake-banner-container { flex-direction: row-reverse; }
+            .flower-banner-container { flex-direction: row; }
+            .cake-banner-image-box, .flower-banner-image-box { width: 50%; }
+            .cake-banner-content-box, .flower-banner-content-box { width: 50%; padding: 60px 40px; }
+        }
+        .cake-banner-image-box, .flower-banner-image-box { width: 100%; height: 320px; overflow: hidden; }
+        @media (min-width: 1024px) { .cake-banner-image-box, .flower-banner-image-box { height: 480px; } }
+        .cake-banner-image-box img, .flower-banner-image-box img { width: 100% !important; height: 100% !important; object-fit: cover !important; }
+        .cake-banner-content-box, .flower-banner-content-box { padding: 32px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
+        .badge-accent { background-color: var(--bose-pink); color: var(--bose-white); font-size: 0.8rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; }
+        
+        #pride-section {
+            padding: 60px 0;
+            background-color: var(--bose-cream);
+            border-top: var(--bose-border-pink);
+            border-bottom: var(--bose-border-pink);
+        }
+        .pride-stats-grid {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto 40px auto;
+            padding: 0 16px;
+        }
+        .stat-card {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: var(--bose-shadow-glow);
+            min-width: 140px;
+            flex: 1;
+        }
+        .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--bose-pink); }
+        .stat-label { font-size: 0.85rem; font-weight: 600; color: var(--bose-black); opacity: 0.8; }
+        .pride-video-block-wrapper {
+            width: 100vw !important;
+            margin-left: calc(-50vw + 50%) !important;
+            margin-right: calc(-50vw + 50%) !important;
+            background-color: var(--bose-black);
+            line-height: 0;
+        }
+        .pride-video-large {
+            width: 100% !important;
+            height: auto !important;
+            max-height: 75vh !important;
+            object-fit: cover !important;
+            display: block !important;
+        }
+        
+        .category-slider-card {
+            background-color: var(--bose-white) !important;
+            border: var(--bose-border-pink) !important;
+            border-radius: 24px !important;
+            overflow: hidden !important;
+            display: flex !important;
+            flex-direction: column !important;
+            width: 240px !important;
+            height: 310px !important;
+            box-shadow: var(--bose-shadow-glow) !important;
+            flex-shrink: 0 !important;
+        }
+        .category-slider-card .card-image-wrapper {
+            width: 240px !important;
+            height: 240px !important;
+            border-radius: 0px !important;
+        }
+        @media (min-width: 768px) {
+            .category-slider-card { width: 310px !important; height: 390px !important; }
+            .category-slider-card .card-image-wrapper { width: 310px !important; height: 310px !important; }
+        }
+        @media (min-width: 1024px) {
+            .category-slider-card { width: 420px !important; height: 520px !important; }
+            .category-slider-card .card-image-wrapper { width: 420px !important; height: 420px !important; }
+        }
+        
+        .bose-footer {
+            background-color: var(--bose-cream) !important;
+            padding: 60px 20px 20px 20px !important;
+            border-top: var(--bose-border-pink) !important;
+            text-align: center !important;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            justify-items: center;
+        }
+        @media (min-width: 768px) {
+            .footer-container { grid-template-columns: repeat(3, 1fr); align-items: start; }
+        }
+        .footer-about-block, .footer-links-column {
+            display: flex;
             flex-direction: column;
             align-items: center;
+            text-align: center;
+        }
+        .footer-links-list {
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
             gap: 12px;
-            margin-bottom: 20px;
         }
-
-        .footer-logo-brand-cluster img {
-            height: 64px;
-            width: 64px;
-            object-fit: contain;
-        }
-
-        .footer-about-block {
-            max-width: 600px;
-            margin: 0 auto 30px auto;
-        }
-
-        .footer-about-block p {
-            font-size: 15px;
+        .footer-links-list a {
             color: var(--bose-black);
-            line-height: 1.7;
-            margin: 0;
+            opacity: 0.8;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--bose-transition-smooth);
         }
-
-        /* Strict Authentic Identity Brand Social Matrix */
+        .footer-links-list a:hover { color: var(--bose-pink); opacity: 1; }
+        
         #footer-social-links {
             display: flex;
-            align-items: center;
+            gap: 16px;
+            margin-top: 24px;
             justify-content: center;
-            gap: 24px;
-            margin-bottom: 35px;
         }
-
-        .social-link-node {
-            font-size: 24px;
-            text-decoration: none;
-            transition: transform 0.2s ease;
+        .social-link-facebook, .social-link-instagram, .social-link-tiktok, .social-link-whatsapp {
+            width: 40px !important;
+            height: 40px !important;
+            display: inline-block !important;
+            border-radius: 50% !important;
+            text-indent: -9999px !important;
+            overflow: hidden !important;
+            transition: transform 0.3s ease !important;
         }
-
-        .social-link-node:hover {
-            transform: scale(1.15);
+        .social-link-facebook:hover, .social-link-instagram:hover, .social-link-tiktok:hover, .social-link-whatsapp:hover {
+            transform: translateY(-4px) !important;
         }
-
-        .social-link-facebook { color: #1877F2; }
-        .social-link-instagram { color: #E4405F; }
-        .social-link-tiktok { color: #000000; }
-        .social-link-whatsapp { color: #25D366; }
-
-        .footer-policies-container {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            border-bottom: var(--bose-border-pink);
-            padding-bottom: 24px;
+        .social-link-facebook {
+            background: #1877F2 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z'/></svg>") no-repeat center/20px !important;
         }
-
-        .footer-policy-anchor {
-            color: var(--bose-black);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
+        .social-link-instagram {
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%) !important;
+            position: relative;
         }
-
-        .footer-policy-anchor:hover {
+        .social-link-instagram::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204 0-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z'/></svg>") no-repeat center/20px;
+        }
+        .social-link-tiktok {
+            background: #000000 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.06-2.89-.54-4.06-1.41-.12-.09-.24-.19-.36-.29v6.52c-.08 3.01-1.88 5.86-4.8 6.76-3.14.97-6.83-.35-8.41-3.23-1.72-3.13-.53-7.46 2.65-9.15 1.54-.82 3.39-.98 5.09-.5v4.11c-1.12-.34-2.36-.18-3.32.48-.99.68-1.5 1.95-1.32 3.14.2 1.34 1.37 2.45 2.72 2.5 1.41.05 2.74-.88 3.13-2.23.11-.38.16-.78.16-1.18V.02z'/></svg>") no-repeat center/18px !important;
+        }
+        .social-link-whatsapp {
+            background: #25D366 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.503-5.734-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.864.002-2.637-1.03-5.115-2.906-6.993-1.876-1.878-4.354-2.908-6.999-2.909-5.443 0-9.87 4.424-9.874 9.87-.001 1.748.461 3.454 1.339 4.966l-.999 3.648 3.749-.983zM18.06 14.85c-.328-.164-1.94-.957-2.24-1.066-.299-.11-.517-.164-.734.164-.218.328-.844 1.066-1.035 1.284-.19.218-.38.245-.709.081-.328-.164-1.386-.51-2.64-1.627-.975-.87-1.633-1.946-1.824-2.274-.19-.328-.02-.505.143-.668.148-.146.328-.382.493-.573.164-.19.218-.328.328-.546.11-.218.055-.41-.027-.573-.082-.164-.734-1.767-1.006-2.422-.266-.64-.537-.552-.734-.562-.19-.01-.408-.012-.626-.012-.218 0-.573.082-.872.41-.299.328-1.144 1.12-1.144 2.732 0 1.612 1.171 3.166 1.335 3.385.164.218 2.305 3.519 5.584 4.941.78.338 1.39.54 1.864.69.784.249 1.498.214 2.062.13.629-.094 1.94-.794 2.212-1.53.272-.734.272-1.365.19-1.499-.081-.134-.299-.218-.627-.382z'/></svg>") no-repeat center/20px !important;
+        }
+        
+        .show-more-actions-container { text-align: center; margin-top: 24px; }
+        .bose-btn-secondary-outline {
+            background-color: var(--bose-white);
             color: var(--bose-pink);
+            border: var(--bose-border-thick);
+            font-weight: 700;
+            padding: 12px 32px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: var(--bose-transition-smooth);
         }
-
-        .footer-legal-copyright-row {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--bose-black);
-            margin: 0;
+        .bose-btn-secondary-outline:hover {
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            box-shadow: var(--bose-shadow-glow);
         }
     </style>
 </head>
@@ -901,466 +582,488 @@
 
     <div class="bose-top-marquee-bar">
         <div class="marquee-track-container" id="top-marquee-track">
-            <div class="marquee-message-node">كل قطعة من حلويات بوسي صنعت يدوياً بحب وشغف لتليق بمناسباتكم السعيدة 🌸</div>
-            <div class="marquee-message-node">مكونات طبيعية 100% طازجة يومياً للحصول على الطعم الأصلي الفاخر ✨</div>
-            <div class="marquee-message-node">تميزوا بهداياكم وجلساتكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة 👑</div>
+            <div class="marquee-message-node">✨ طعم أصلي وخامات طبيعية 100% طازجة يومياً من مطبخنا إليكم مباشرة فرع الكفاح</div>
+            <div class="marquee-message-node">🌸 تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة</div>
+            <div class="marquee-message-node">👑 تميزوا بهداياكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة المتميزة الحصرية</div>
+            <div class="marquee-message-node">🎁 صمم تورتتك المخصصة وبوكيه الورد خطوة بخطوة عبر محاكياتنا التفاعلية المتطورة</div>
         </div>
     </div>
 
     <header class="bose-navbar">
-        <div class="header-right-cluster">
-            <button class="sidebar-toggle-trigger" id="sidebar-open-btn" aria-label="فتح القائمة الجانبية">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+        <div class="nav-right-side">
+            <button class="nav-menu-toggle" id="sidebar-open-btn" aria-label="فتح القائمة الجانبية"></button>
             <a href="index.html" class="brand-identity-anchor">
-                <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
+                <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي">
                 <span class="brand-name-text">حلويات بوسي</span>
             </a>
         </div>
         <div class="header-left-cluster">
-            <a href="search.html" class="header-action-button" aria-label="البحث في الموقع">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </a>
-            <a href="cart.html" class="header-action-button" aria-label="سلة المشتريات">
-                <i class="fa-solid fa-basket-shopping"></i>
+            <button class="nav-search-trigger" id="search-modal-open-btn" aria-label="فتح البحث"></button>
+            <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="عرض سلة التسوق">
                 <span id="nav-cart-count">0</span>
             </a>
         </div>
     </header>
 
-    <div class="bose-drawer-overlay-shield" id="drawer-shield"></div>
-
-    <aside class="bose-sidebar-drawer" id="sidebar-drawer">
-        <div class="drawer-header-pane">
-            <span class="brand-name-text">قائمة التصفح</span>
-            <button class="drawer-close-trigger" id="sidebar-close-btn" aria-label="إغلاق القائمة">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+    <div class="drawer-overlay" id="drawer-shield"></div>
+    <aside class="bose-drawer-menu" id="sidebar-drawer">
+        <div class="drawer-premium-header">
+            <h3>قائمة التصفح الفاخرة</h3>
+            <p>حلويات بوسي - فرع الكفاح 🌸</p>
         </div>
-        <nav id="bose-nav-menu">
-            <ul class="drawer-nav-menu-list">
-                <li class="drawer-nav-item-node"><a href="index.html" class="drawer-nav-anchor">الرئيسية</a></li>
-                <li class="drawer-nav-item-node"><a href="menu.html" class="drawer-nav-anchor">المنيو الشامل</a></li>
-                <li class="drawer-nav-item-node"><a href="cake-builder.html" class="drawer-nav-anchor">محاكي التورت</a></li>
-                <li class="drawer-nav-item-node"><a href="flower-builder.html" class="drawer-nav-anchor">محاكي الورد</a></li>
-                <li class="drawer-nav-item-node"><a href="cart.html" class="drawer-nav-anchor">السلة</a></li>
+        <div class="drawer-links-scrollable">
+            <span class="drawer-divider-label">الأقسام الرئيسية</span>
+            <ul class="drawer-links-list">
+                <li class="drawer-link-item"><a href="index.html">الواجهة الرئيسية</a></li>
+                <li class="drawer-link-item"><a href="menu.html">المنيو الشامل</a></li>
+                <li class="drawer-link-item"><a href="cart.html">سلة التسوق</a></li>
             </ul>
-        </nav>
+            <span class="drawer-divider-label">المحاكيات الحصرية</span>
+            <ul class="drawer-links-list">
+                <li class="drawer-link-item featured-hub"><a href="cake-builder.html">محاكي التورت التفاعلي</a></li>
+                <li class="drawer-link-item featured-hub"><a href="flower-builder.html">محاكي الورد التفاعلي</a></li>
+            </ul>
+        </div>
+        <div class="drawer-premium-footer">
+            <a href="tel:01097238441" class="bose-btn-primary" style="display:flex; align-items:center; justify-content:center; gap:8px;">اتصال فوري بالفرع</a>
+            <p>&copy; 2026 علامة حلويات بوسي.</p>
+        </div>
     </aside>
 
     <section id="hero-section">
         <div class="bose-section-header-block">
-            <h1 id="hero-title">عقد من <span class="hero-title-highlight">التميز</span> في صناعة الحلويات</h1>
-            <p id="hero-description">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة.</p>
-            <a href="menu.html" class="bose-global-cta-btn" id="hero-cta-btn">اطلب الآن</a>
+            <h1>عقد من <span class="hero-title-highlight">التميز</span> في صناعة الحلويات</h1>
+            <p>تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة بمنتجاتنا الطبيعية.</p>
+            <div class="hero-cta-btn-wrapper">
+                <a href="menu.html" class="bose-btn-primary" id="hero-cta-btn">اطلب الآن</a>
+            </div>
         </div>
     </section>
 
     <section id="waterfall-section">
-        <div class="waterfall-vignette-fog-top"></div>
-        <div class="waterfall-container">
-            <div class="waterfall-column-track" id="waterfall-left-col">
-                </div>
-            <div class="waterfall-column-track" id="waterfall-right-col">
-                </div>
+        <div class="bose-section-header-block">
+            <h2>شلال المنتجات الفاخرة</h2>
+            <p>استمتع برؤية بانورامية متدفقة لأشهر تراكيب ومصنوعات مطبخنا الفاخر المتجدد على مدار اليوم لجودة تذوق لا تقاوم.</p>
         </div>
-        <div class="waterfall-vignette-fog-bottom"></div>
+        <div class="waterfall-container">
+            <div class="waterfall-column waterfall-up" id="waterfall-left-col"></div>
+            <div class="waterfall-column waterfall-down" id="waterfall-right-col"></div>
+        </div>
+        <div class="waterfall-overlay-top"></div>
+        <div class="waterfall-overlay-bottom"></div>
     </section>
 
     <section id="excellence-section">
         <div class="bose-section-header-block">
             <h2>عقد من الإتقان</h2>
-            <p>خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة تأخذكم لعالم من الفخامة والروقان.</p>
+            <p>خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة تأخذكم لعالم من الفخامة الحقيقية.</p>
         </div>
         <div class="excellence-banner-scroller">
-            <div id="excellence-images-track">
-                </div>
+            <div class="excellence-images-track" id="excellence-images-track"></div>
         </div>
-        <div class="bose-carousel-dots-indicator-row" id="excellence-carousel-dots">
-            </div>
+        <div class="slider-dots-container" id="excellence-carousel-dots"></div>
     </section>
 
-    <section id="categories-slider-section">
-        <div class="bose-section-header-block">
-            <h2>تسوق حسب الفئة</h2>
-            <p>اختر فئتك المفضلة واستكشف تشكيلاتنا الواسعة والمعدة خصيصاً لتناسب أرقى الأذواق.</p>
-        </div>
-        <div class="categories-carousel-viewport" id="categories-track">
-            </div>
-        <div class="bose-carousel-dots-indicator-row" id="categories-carousel-dots"></div>
-    </section>
-
-    <section id="most-selling-section" style="padding: 60px 0;">
+    <section id="most-selling-section">
         <div class="bose-section-header-block">
             <h2>الأكثر مبيعاً</h2>
-            <p>الخيارات المفضلة التي حازت على ثقة ومحبة عملائنا وتصدرت اختياراتهم اليومية.</p>
+            <p>الخيارات المفضلة التي حازت على ثقة ومحبة عملائنا وتصدرت اختياراتهم اليومية طوال العام لجودتها الفريدة.</p>
         </div>
-        <div class="products-slider-viewport" id="most-selling-grid">
-            </div>
-        <div class="bose-carousel-dots-indicator-row" id="most-selling-carousel-dots"></div>
+        <div class="slider-wrapper" id="most-selling-wrapper">
+            <div class="products-slider-track" id="most-selling-grid"></div>
+        </div>
+        <div class="slider-dots-container" id="most-selling-carousel-dots"></div>
     </section>
 
-    <section id="cake-preview-section" class="immersive-simulator-preview-block">
-        <div class="bose-section-header-block">
-            <h2 id="cake-preview-title">محاكي التورت</h2>
-            <p id="cake-preview-desc">حلويات بوسي تتيح تصميم التورت حسب الطلب واختيار كافة التفاصيل التي تناسب ذوقكم ومناسباتكم الفريدة.</p>
-        </div>
-        <div class="simulator-preview-display-frame">
-            <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت">
-        </div>
-        <a href="cake-builder.html" class="bose-global-cta-btn" id="cake-preview-cta">تصميم التورتة الآن</a>
-    </section>
-
-    <section id="new-arrivals-section" style="padding: 60px 0;">
-        <div class="bose-section-header-block">
-            <h2>وصل حديثاً</h2>
-            <p>أحدث نكهات وتوليفات مطبخنا الفاخر، صُنعت لتفاجئ حواسك بكل ما هو جديد ومبتكر.</p>
-        </div>
-        <div class="products-slider-viewport" id="new-arrivals-grid">
-            </div>
-        <div class="bose-carousel-dots-indicator-row" id="new-arrivals-carousel-dots"></div>
-    </section>
-
-    <section id="flower-preview-section" class="immersive-simulator-preview-block">
-        <div class="bose-section-header-block">
-            <h2 id="flower-preview-title">محاكي الورد</h2>
-            <p id="flower-preview-desc">تخصيص البوكيه واختيار الورد الطبيعي، الصناعي، أو الستان مع إضافة الهدايا والرسائل والصور الخاصة.</p>
-        </div>
-        <div class="simulator-preview-display-frame">
-            <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد">
-        </div>
-        <a href="flower-builder.html" class="bose-global-cta-btn" id="flower-preview-cta">تصميم البوكيه الآن</a>
-    </section>
-
-    <section id="our-products-section" style="padding: 60px 0;">
+    <section id="our-products-section">
         <div class="bose-section-header-block">
             <h2>منتجاتنا</h2>
-            <p>التشكيلة الكاملة والفاخرة من إبداعات حلويات بوسي المتاحة لطلباتكم الفورية.</p>
+            <p>التشكيلة الكاملة والفاخرة من إبداعات حلويات بوسي المتاحة لطلباتكم الفورية والمجهزة بأعلى معايير الجودة العالية.</p>
         </div>
-        <div class="products-grid-layout-canvas" id="our-products-grid">
+        <div class="products-grid-wrapper">
+            <div id="our-products-grid"></div>
+            <div class="show-more-actions-container">
+                <button class="bose-btn-secondary-outline" id="btn-load-more-products">إظهار المزيد</button>
             </div>
-        <div style="text-align: center; margin-top: 35px;">
-            <button class="bose-global-cta-btn" id="btn-load-more-products" style="background-color: transparent; color: var(--bose-pink); border: var(--bose-border-thick);">إظهار المزيد</button>
+        </div>
+    </section>
+
+    <section id="cake-preview-section">
+        <div class="bose-section-header-block">
+            <h2>محاكي التورت</h2>
+            <p>صمم تورتتك الخاصة بنفسك من الحجم والشكل والطبقات والنكهات لتوثيق لحظاتكم السعيدة بطريقتكم الخاصة وبكل حرية تامة.</p>
+        </div>
+        <div class="cake-banner-container">
+            <div class="cake-banner-image-box">
+                <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت الفاخر التفاعلي">
+            </div>
+            <div class="cake-banner-content-box">
+                <span class="badge-accent">ميزة تنافسية حصرية</span>
+                <h3>محاكي التورت التفاعلي</h3>
+                <p>حلويات بوسي تتيح تصميم التورت حسب الطلب واختيار كافة التفاصيل التي تناسب ذوقكم ومناسباتكم الفريدة من حجم، طبقات، ونكهات صريحة ممتازة.</p>
+                <a href="cake-builder.html" class="bose-btn-primary">تصميم التورتة الآن</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="new-arrivals-section">
+        <div class="bose-section-header-block">
+            <h2>وصل حديثاً</h2>
+            <p>أحدث نكهات وتوليفات مطبخنا الفاخر، صُنعت وتكاملت لتفاجئ حواسك بكل ما هو جديد ومبتكر من توبنج متميز وعصري.</p>
+        </div>
+        <div class="slider-wrapper" id="new-arrivals-wrapper">
+            <div class="products-slider-track" id="new-arrivals-grid"></div>
+        </div>
+        <div class="slider-dots-container" id="new-arrivals-carousel-dots"></div>
+    </section>
+
+    <section id="flower-preview-section">
+        <div class="bose-section-header-block">
+            <h2>محاكي الورد</h2>
+            <p>نسّق بوكيه الورد الفاخر المخصص الطبيعي والستان مع دمج الهدايا والرسائل والصور لإرسالها مباشرة لمن تحب كهدية لا تُنسى أبداً.</p>
+        </div>
+        <div class="flower-banner-container">
+            <div class="flower-banner-image-box">
+                <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد الطبيعي والستان الفاخر">
+            </div>
+            <div class="flower-banner-content-box">
+                <span class="badge-accent">تخصيص الهدايا الفاخرة</span>
+                <h3>محاكي الورد والستان</h3>
+                <p>تخصيص البوكيه واختيار الورد الطبيعي، الصناعي، أو الستان مع إمكانية دمج الهدايا الفاخرة والرسائل والصور الخاصة لمفاجأة من تحب بجودة تليق بكم.</p>
+                <a href="flower-builder.html" class="bose-btn-primary">تصميم البوكيه الآن</a>
+            </div>
         </div>
     </section>
 
     <section id="pride-section">
         <div class="bose-section-header-block">
-            <h2 id="pride-title">الفخر والاعتزاز</h2>
-            <p id="pride-text">أكثر من 10 سنوات خبرة، أكثر من 10000 عميل، أكثر من 10000 طلب ناجح يروون قصة نجاحنا وفخرنا.</p>
+            <h2>الفخر والاعتزاز</h2>
+            <p>أكثر من 10 سنوات خبرة محترفة، وأكثر من 10000 عميل واثق يروون قصة نجاح ممتدة وصدارة حقيقية في عالم المخبوزات والحلويات.</p>
         </div>
-        
-        <div class="stats-grid-container">
-            <div class="stat-metric-card-node">
-                <h3 id="stat-years">10+</h3>
-                <p>سنوات خبرة</p>
+        <div class="pride-stats-grid">
+            <div class="stat-card">
+                <span class="stat-value">10+</span>
+                <span class="stat-label">سنوات خبرة</span>
             </div>
-            <div class="stat-metric-card-node">
-                <h3 id="stat-customers">10000+</h3>
-                <p>عميل واثق</p>
+            <div class="stat-card">
+                <span class="stat-value">10000+</span>
+                <span class="stat-label">عميل واثق</span>
             </div>
-            <div class="stat-metric-card-node">
-                <h3 id="stat-orders">10000+</h3>
-                <p>طلب ناجح</p>
-            </div>
-            <div class="stat-metric-card-node">
-                <h3 id="stat-cakes">آلاف</h3>
-                <p>التورت المصممة</p>
-            </div>
-            <div class="stat-metric-card-node">
-                <h3 id="stat-bouquets">بوكيهات</h3>
-                <p>منسقة بحب</p>
+            <div class="stat-card">
+                <span class="stat-value">10000+</span>
+                <span class="stat-label">طلب ناجح</span>
             </div>
         </div>
-
-        <div class="pride-embedded-video-wrapper">
-            <video autoplay loop muted playsinline preload="auto">
+        <div class="pride-video-block-wrapper">
+            <video class="pride-video-large" autoplay loop muted playsinline preload="auto">
                 <source src="https://res.cloudinary.com/dyx4w0dr1/video/upload/v1740000000/bose_promo_video.mp4" type="video/mp4">
-                تصفحك لا يدعم تشغيل الفيديو.
             </video>
         </div>
     </section>
 
+    <section id="categories-slider-section">
+        <div class="bose-section-header-block">
+            <h2>تسوق حسب الفئه</h2>
+            <p>اختر فئتك المفضلة من بين 12 فئة هيكلية معتمدة واستكشف تشكيلاتنا الواسعة والمعدة خصيصاً لتناسب أرقى الأذواق الفاخرة.</p>
+        </div>
+        <div class="slider-wrapper" id="categories-wrapper">
+            <div class="products-slider-track" id="categories-track"></div>
+        </div>
+        <div class="slider-dots-container" id="categories-carousel-dots"></div>
+    </section>
+
     <footer class="bose-footer">
-        <div class="footer-logo-brand-cluster">
-            <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي اللوجو المعتمد">
-            <span class="brand-name-text">حلويات بوسي</span>
+        <div class="footer-container">
+            <div class="footer-about-block">
+                <h3>حلويات بوسي</h3>
+                <p>صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز واحترافية كاملة من فرع الكفاح.</p>
+                <div id="footer-social-links">
+                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-link-facebook" target="_blank" title="فيسبوك">Facebook</a>
+                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-link-instagram" target="_blank" title="انستجرام">Instagram</a>
+                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-link-tiktok" target="_blank" title="تيك توك">TikTok</a>
+                    <a href="https://wa.me/201097238441" class="social-link-whatsapp" target="_blank" title="واتساب">WhatsApp</a>
+                </div>
+            </div>
+            
+            <div class="footer-links-column">
+                <h4>روابط الصفحات</h4>
+                <ul class="footer-links-list">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="menu.html">المنيو الشامل</a></li>
+                    <li><a href="cart.html">سلة التسوق</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links-column">
+                <h4>روابط السياسات</h4>
+                <ul class="footer-links-list">
+                    <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+                    <li><a href="terms.html">الشروط والأحكام</a></li>
+                    <li><a href="shipping-policy.html">سياسة الطلبات والتوصيل</a></li>
+                    <li><a href="refund-policy.html">سياسة الاستبدال والاسترجاع</a></li>
+                </ul>
+            </div>
         </div>
-        
-        <div class="footer-about-block">
-            <p id="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم.</p>
+        <div style="margin-top:40px; padding-top:20px; border-top:1px solid rgba(255, 145, 164, 0.15); font-size:0.85rem; color:var(--bose-black); opacity:0.7;">
+            <p>&copy; 2026 جميع الحقوق محفوظة لـ علامة حلويات بوسي الفاخرة.</p>
+            <p>تطوير وهندسة برمجية فاخرة لموقع BoseSweets.</p>
         </div>
-
-        <div id="footer-social-links">
-            <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-link-node social-link-facebook" target="_blank" aria-label="تابعنا على فيسبوك">
-                <i class="fab fa-facebook"></i>
-            </a>
-            <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-link-node social-link-instagram" target="_blank" aria-label="تابعنا على إنستغرام">
-                <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-link-node social-link-tiktok" target="_blank" aria-label="تابعنا على تيك توك">
-                <i class="fab fa-tiktok"></i>
-            </a>
-            <a href="https://wa.me/201097238441" class="social-link-node social-link-whatsapp" target="_blank" aria-label="تواصل معنا عبر واتساب">
-                <i class="fab fa-whatsapp"></i>
-            </a>
-        </div>
-
-        <div class="footer-policies-container">
-            <a href="index.html" class="footer-policy-anchor">الرئيسية</a>
-            <a href="menu.html" class="footer-policy-anchor">المنيو الشامل</a>
-            <a href="cart.html" class="footer-policy-anchor">سلة التسوق</a>
-            <a href="privacy-policy.html" class="footer-policy-anchor">سياسة الخصوصية</a>
-            <a href="refund-policy.html" class="footer-policy-anchor">سياسة الاسترجاع</a>
-            <a href="shipping-policy.html" class="footer-policy-anchor">سياسة الطلبات</a>
-            <a href="terms.html" class="footer-policy-anchor">الشروط والأحكام</a>
-        </div>
-
-        <p class="footer-legal-copyright-row">&copy; 2026 جميع الحقوق محفوظة لـ علامة حلويات بوسي الفاخرة.</p>
     </footer>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Interactive Navigation Drawer Handlers
             const sidebar = document.getElementById("sidebar-drawer");
             const overlay = document.getElementById("drawer-shield");
             const openBtn = document.getElementById("sidebar-open-btn");
-            const closeBtn = document.getElementById("sidebar-close-btn");
 
             function toggleDrawer(isOpen) {
                 if (isOpen) {
-                    sidebar.classList.add("drawer-active");
-                    overlay.classList.add("shield-visible");
+                    sidebar.classList.add("active");
+                    overlay.classList.add("active");
                     document.body.style.overflow = "hidden";
                 } else {
-                    sidebar.classList.remove("drawer-active");
-                    overlay.classList.remove("shield-visible");
+                    sidebar.classList.remove("active");
+                    overlay.classList.remove("active");
                     document.body.style.overflow = "";
                 }
             }
 
-            openBtn.addEventListener("click", () => toggleDrawer(true));
-            closeBtn.addEventListener("click", () => toggleDrawer(false));
-            overlay.addEventListener("click", () => toggleDrawer(false));
+            if(openBtn) openBtn.addEventListener("click", () => toggleDrawer(true));
+            if(overlay) overlay.addEventListener("click", () => toggleDrawer(false));
 
-            [span_21](start_span)// Continuous Infinite Top Marquee Cloner Engine[span_21](end_span)
             const track = document.getElementById("top-marquee-track");
             if (track) {
                 const items = Array.from(track.children);
-                items.forEach(item => {
-                    const clone = item.cloneNode(true);
-                    track.appendChild(clone);
-                });
+                items.forEach(item => track.appendChild(item.cloneNode(true)));
             }
 
-            [span_22](start_span)// Realtime Synchronized Database Hydration[span_22](end_span)
-            const databaseInterval = setInterval(() => {
-                if (window.BoseStoreData) {
-                    clearInterval(databaseInterval);
-                    initializeHomepageComponents(window.BoseStoreData);
+            const databaseGuardInterval = setInterval(() => {
+                if (window.BoseStoreData && window.BoseStoreData.store) {
+                    clearInterval(databaseGuardInterval);
+                    hydrateAndBuildHomepage(window.BoseStoreData);
                 }
             }, 50);
 
-            function initializeHomepageComponents(data) {
-                [span_23](start_span)// Populate Texts and SEO Targets from Schema[span_23](end_span)
-                document.getElementById('hero-title').innerHTML = `عقد من <span class="hero-title-highlight">التميز</span> في صناعة الحلويات`;
-                document.getElementById('hero-description').textContent = data.homepage.hero.description;
-                document.getElementById('hero-cta-btn').textContent = data.homepage.hero.cta;
+            function hydrateAndBuildHomepage(data) {
+                if(data.homepage && data.homepage.cakePreview && data.homepage.cakePreview.image) {
+                    document.getElementById('cake-preview-img').src = data.homepage.cakePreview.image;
+                }
+                if(data.homepage && data.homepage.flowerPreview && data.homepage.flowerPreview.image) {
+                    document.getElementById('flower-preview-img').src = data.homepage.flowerPreview.image;
+                }
 
-                [span_24](start_span)// 1. Build and Inject Vertical Scrolling Image Fall[span_24](end_span)
                 const leftCol = document.getElementById('waterfall-left-col');
                 const rightCol = document.getElementById('waterfall-right-col');
-                
-                // Doubled sequence arrays guarantee smooth spaceless loops
-                const leftImgs = [...data.homepage.waterfall.leftColumnImages, ...data.homepage.waterfall.leftColumnImages];
-                const rightImgs = [...data.homepage.waterfall.rightColumnImages, ...data.homepage.waterfall.rightColumnImages];
+                if(leftCol && rightCol && data.homepage && data.homepage.waterfall) {
+                    const leftImgs = [...data.homepage.waterfall.leftColumnImages, ...data.homepage.waterfall.leftColumnImages];
+                    const rightImgs = [...data.homepage.waterfall.rightColumnImages, ...data.homepage.waterfall.rightColumnImages];
 
-                leftCol.innerHTML = leftImgs.map(imgSrc => `
-                    <a href="menu.html" class="waterfall-image-wrapper">
-                        <img src="${imgSrc}" alt="حلويات بوسي الفاخرة" loading="lazy">
-                    </a>
-                `).join('');
+                    leftCol.innerHTML = leftImgs.map(src => `
+                        <div class="waterfall-item"><a href="menu.html"><img src="${src}" alt="حلويات بوسي الفاخرة" loading="lazy"></a></div>
+                    `).join('');
+                    rightCol.innerHTML = rightImgs.map(src => `
+                        <div class="waterfall-item"><a href="menu.html"><img src="${src}" alt="حلويات بوسي الطازجة" loading="lazy"></a></div>
+                    `).join('');
+                }
 
-                rightCol.innerHTML = rightImgs.map(imgSrc => `
-                    <a href="menu.html" class="waterfall-image-wrapper">
-                        <img src="${imgSrc}" alt="حلويات بوسي الطازجة" loading="lazy">
-                    </a>
-                `).join('');
-
-                [span_25](start_span)// 2. Build Mastery Horizontal Banner Strip Track[span_25](end_span)
                 const excellenceTrack = document.getElementById('excellence-images-track');
-                const excellenceImgs = data.homepage.excellence.images;
-                
-                excellenceTrack.innerHTML = excellenceImgs.map(imgSrc => `
-                    <img src="${imgSrc}" class="excellence-strip-image" alt="إتقان صناعة الحلويات">
-                `).join('');
-                buildCarouselDots('excellence-carousel-dots', excellenceImgs.length, 0);
+                if(excellenceTrack && data.homepage && data.homepage.excellence && data.homepage.excellence.images) {
+                    excellenceTrack.innerHTML = data.homepage.excellence.images.map(src => `
+                        <div class="excellence-slide-item"><img src="${src}" alt="إتقان حلويات بوسي"></div>
+                    `).join('');
+                    setupTrackIndicatorsAndScroll('excellence-images-track', 'excellence-carousel-dots', data.homepage.excellence.images.length, true);
+                }
 
-                [span_26](start_span)[span_27](start_span)// 3. Render 12 Structural Category Showcase Modules[span_26](end_span)[span_27](end_span)
                 const categoriesTrack = document.getElementById('categories-track');
-                categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
-                    <a href="category.html?id=${cat.id}" class="category-showcase-card">
-                        <div class="category-card-media-frame">
-                            <img src="${cat.image}" alt="${cat.title}" loading="lazy">
+                if(categoriesTrack && data.homepage && data.homepage.categoriesSlider) {
+                    categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
+                        <div class="category-slider-card">
+                            <a href="category.html?id=${cat.id}" style="text-decoration:none; display:block; width:100%; height:100%;">
+                                <div class="card-image-wrapper"><img src="${cat.image}" alt="${cat.title}" class="product-card-img" loading="lazy"></div>
+                                <div style="text-align:center; padding:12px 6px;"><h3 style="font-size:1.1rem; font-weight:700; color:var(--bose-black); margin:0;">${cat.title}</h3></div>
+                            </a>
                         </div>
-                        <div class="category-card-label-pane">
-                            <h3>${cat.title}</h3>
-                        </div>
-                    </a>
-                `).join('');
-                buildCarouselDots('categories-carousel-dots', data.homepage.categoriesSlider.length, 0);
-                bindScrollIndicatorActiveState('categories-track', 'categories-carousel-dots');
+                    `).join('');
+                    setupTrackIndicatorsAndScroll('categories-wrapper', 'categories-carousel-dots', data.homepage.categoriesSlider.length, false);
+                }
 
-                [span_28](start_span)[span_29](start_span)// 4. Resolve and Render Store Products via Blueprint Specification[span_28](end_span)[span_29](end_span)
-                const allProducts = data.products;
+                const allProducts = data.products || [];
 
-                // SECTION 03: الأكثر مبيعاً
-                const mostSellingContainer = document.getElementById('most-selling-grid');
-                const mostSellingItems = allProducts.filter(p => data.homepage.mostSelling.includes(p.id));
-                mostSellingContainer.innerHTML = mostSellingItems.map(p => generateProductCardMarkup(p)).join('');
-                buildCarouselDots('most-selling-carousel-dots', mostSellingItems.length, 0);
-                bindScrollIndicatorActiveState('most-selling-grid', 'most-selling-carousel-dots');
+                const mostSellingGrid = document.getElementById('most-selling-grid');
+                if(mostSellingGrid && data.homepage && data.homepage.mostSelling) {
+                    const mostSellingItems = allProducts.filter(p => data.homepage.mostSelling.includes(p.id));
+                    mostSellingGrid.innerHTML = mostSellingItems.map(p => generateBlueprintProductCard(p)).join('');
+                    setupTrackIndicatorsAndScroll('most-selling-wrapper', 'most-selling-carousel-dots', mostSellingItems.length, false);
+                }
 
-                // SECTION 05: وصل حديثاً
-                const newArrivalsContainer = document.getElementById('new-arrivals-grid');
-                const newArrivalsItems = allProducts.filter(p => data.homepage.newArrivals.includes(p.id));
-                newArrivalsContainer.innerHTML = newArrivalsItems.map(p => generateProductCardMarkup(p)).join('');
-                buildCarouselDots('new-arrivals-carousel-dots', newArrivalsItems.length, 0);
-                bindScrollIndicatorActiveState('new-arrivals-grid', 'new-arrivals-carousel-dots');
+                const newArrivalsGrid = document.getElementById('new-arrivals-grid');
+                if(newArrivalsGrid && data.homepage && data.homepage.newArrivals) {
+                    const newArrivalsItems = allProducts.filter(p => data.homepage.newArrivals.includes(p.id));
+                    newArrivalsGrid.innerHTML = newArrivalsItems.map(p => generateBlueprintProductCard(p)).join('');
+                    setupTrackIndicatorsAndScroll('new-arrivals-wrapper', 'new-arrivals-carousel-dots', newArrivalsItems.length, false);
+                }
 
-                [span_30](start_span)[span_31](start_span)// SECTION 06: منتجاتنا (Exactly 4 cards initial render grid layout)[span_30](end_span)[span_31](end_span)
-                const ourProductsContainer = document.getElementById('our-products-grid');
-                const ourProductsItems = allProducts.filter(p => data.homepage.ourProducts.includes(p.id));
-                
-                let initialSliceCount = 4;
-                ourProductsContainer.innerHTML = ourProductsItems.slice(0, initialSliceCount).map(p => generateProductCardMarkup(p)).join('');
+                const ourProductsGrid = document.getElementById('our-products-grid');
+                if(ourProductsGrid && data.homepage && data.homepage.ourProducts) {
+                    const ourProductsItems = allProducts.filter(p => data.homepage.ourProducts.includes(p.id));
+                    ourProductsGrid.innerHTML = ourProductsItems.slice(0, 4).map(p => generateBlueprintProductCard(p)).join('');
 
-                const loadMoreBtn = document.getElementById('btn-load-more-products');
-                loadMoreBtn.addEventListener('click', () => {
-                    ourProductsContainer.innerHTML = ourProductsItems.map(p => generateProductCardMarkup(p)).join('');
-                    loadMoreBtn.style.display = 'none';
-                });
+                    const loadMoreBtn = document.getElementById('btn-load-more-products');
+                    if(loadMoreBtn) {
+                        if(ourProductsItems.length <= 4) {
+                            loadMoreBtn.parentElement.style.display = 'none';
+                        }
+                        loadMoreBtn.addEventListener('click', () => {
+                            ourProductsGrid.innerHTML = ourProductsItems.map(p => generateBlueprintProductCard(p)).join('');
+                            loadMoreBtn.parentElement.style.display = 'none';
+                        });
+                    }
+                }
 
-                // Attach Runtime Quantity Stepper Dynamic Actions
-                attachStepperEventDelegators();
+                registerDynamicStepperDelegators();
             }
 
-            function generateProductCardMarkup(product) {
-                [span_32](start_span)// Parse and map pricing indices via verified inflation equations[span_32](end_span)
-                const finalCalculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(product.price, "menu-only") : product.price;
-                const displayFlavor = product.flavorName || "";
-                const displayDesc = product.flavorDesc || product.description || "";
+            function generateBlueprintProductCard(product) {
+                const finalCalculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(product.price, "all") : product.price;
+                const flavorDisplay = product.flavorName ? `<div class="product-card-flavor">${product.flavorName}</div>` : '';
+                const descDisplay = product.flavorDesc || product.description || '';
 
                 return `
-                    <div class="bose-unified-product-card" data-product-id="${product.id}" data-slug="${product.slug}">
-                        <div class="card-media-canvas">
-                            <img src="${product.images[0]}" alt="${product.title}" loading="lazy">
+                    <div class="product-card" data-product-id="${product.id}">
+                        <div class="card-image-wrapper">
+                            <img src="${product.images[0]}" alt="${product.title}" class="product-card-img" loading="lazy">
                         </div>
-                        <div class="card-details-pane">
-                            <h3 class="card-product-title">${product.title}</h3>
-                            <div class="card-flavor-badge">${displayFlavor}</div>
-                            <p class="card-product-description">${displayDesc}</p>
-                            <div class="card-interactive-footer-row">
-                                <div class="card-pricing-and-quantity-container">
-                                    <div class="card-price-metric">${finalCalculatedPrice} جنيه</div>
-                                    <div class="card-quantity-stepper-module">
-                                        <button class="stepper-adjustment-action dec-trigger" type="button">-</button>
-                                        <input class="stepper-numerical-display" type="number" value="1" min="1" max="99" readonly>
-                                        <button class="stepper-adjustment-action inc-trigger" type="button">+</button>
-                                    </div>
+                        <div class="product-card-info">
+                            <h3 class="product-card-title">${product.title}</h3>
+                            ${flavorDisplay}
+                            <p class="product-card-desc">${descDisplay}</p>
+                            <div class="bose-quantity-counter-wrapper">
+                                <div class="bose-quantity-counter">
+                                    <button class="qty-btn dec-trigger" type="button">-</button>
+                                    <span class="qty-value">1</span>
+                                    <button class="qty-btn inc-trigger" type="button" style="color:var(--bose-pink);">+</button>
                                 </div>
-                                <button class="card-cart-submission-btn" type="button">
-                                    <i class="fa-solid fa-basket-shopping"></i> إضافة للسلة
-                                </button>
                             </div>
+                            <div class="product-card-price-row">
+                                <span class="bose-price-text">${finalCalculatedPrice} جنيه</span>
+                            </div>
+                            <button class="bose-add-to-cart-btn-full core-cart-add-action" type="button">إضافة للسلة 🌸</button>
                         </div>
                     </div>
                 `;
             }
 
-            function buildCarouselDots(containerId, totalCount, activeIndex) {
-                const container = document.getElementById(containerId);
-                if (!container) return;
-                let dotsHtml = '';
-                for (let i = 0; i < totalCount; i++) {
-                    dotsHtml += `<button class="indicator-dot-node ${i === activeIndex ? 'dot-node-active' : ''}" data-index="${i}" aria-label="الانتقال للعنصر ${i + 1}"></button>`;
-                }
-                container.innerHTML = dotsHtml;
-            }
-
-            function bindScrollIndicatorActiveState(viewportId, dotsContainerId) {
-                const viewport = document.getElementById(viewportId);
+            function setupTrackIndicatorsAndScroll(wrapperId, dotsContainerId, totalElements, isExcellenceSlider) {
                 const dotsContainer = document.getElementById(dotsContainerId);
-                if (!viewport || !dotsContainer) return;
+                if(!dotsContainer) return;
+                
+                let dotsMarkup = '';
+                for(let i=0; i < totalElements; i++) {
+                    dotsMarkup += `<button class="dot-btn ${i===0?'active':''}" data-target-index="${i}" aria-label="العنصر ${i+1}"></button>`;
+                }
+                dotsContainer.innerHTML = dotsMarkup;
+                const dots = dotsContainer.querySelectorAll('.dot-btn');
 
-                viewport.addEventListener('scroll', () => {
-                    const cardWidth = viewport.firstElementChild ? viewport.firstElementChild.offsetWidth + 20 : 300;
-                    const computedActiveIndex = Math.round(viewport.scrollLeft / cardWidth);
-                    const dots = dotsContainer.querySelectorAll('.indicator-dot-node');
-                    dots.forEach((dot, idx) => {
-                        if (idx === Math.abs(computedActiveIndex)) {
-                            dot.classList.add('dot-node-active');
-                        } else {
-                            dot.classList.remove('dot-node-active');
-                        }
+                if (isExcellenceSlider) {
+                    let currentIdx = 0;
+                    const track = document.getElementById(wrapperId);
+                    if(!track) return;
+                    setInterval(() => {
+                        currentIdx = (currentIdx + 1) % totalElements;
+                        track.style.transform = `translate3d(-${currentIdx * 100}vw, 0, 0)`;
+                        dots.forEach((d, idx) => d.classList.toggle('active', idx === currentIdx));
+                    }, 5000);
+                    
+                    dots.forEach(dot => {
+                        dot.addEventListener('click', () => {
+                            const target = parseInt(dot.getAttribute('data-target-index'));
+                            currentIdx = target;
+                            track.style.transform = `translate3d(-${target * 100}vw, 0, 0)`;
+                            dots.forEach((d, idx) => d.classList.toggle('active', idx === target));
+                        });
                     });
-                });
-            }
-
-            function attachStepperEventDelegators() {
-                document.body.addEventListener('click', (e) => {
-                    if (e.target.classList.contains('inc-trigger')) {
-                        const input = e.target.parentElement.querySelector('.stepper-numerical-display');
-                        let val = parseInt(input.value) || 1;
-                        if (val < 99) input.value = val + 1;
-                    }
-                    if (e.target.classList.contains('dec-trigger')) {
-                        const input = e.target.parentElement.querySelector('.stepper-numerical-display');
-                        let val = parseInt(input.value) || 1;
-                        if (val > 1) input.value = val - 1;
-                    }
-                    if (e.target.classList.contains('card-cart-submission-btn') || e.target.closest('.card-cart-submission-btn')) {
-                        const targetBtn = e.target.classList.contains('card-cart-submission-btn') ? e.target : e.target.closest('.card-cart-submission-btn');
-                        const card = targetBtn.closest('.bose-unified-product-card');
-                        const prodId = card.getAttribute('data-product-id');
-                        const qty = parseInt(card.querySelector('.stepper-numerical-display').value) || 1;
-                        
-                        executeGlobalCartInsertion(prodId, qty);
-                    }
-                });
-            }
-
-            function executeGlobalCartInsertion(productId, quantity) {
-                if (!window.BoseStoreData) return;
-                const productObj = window.BoseStoreData.products.find(p => p.id === productId);
-                if (!productObj) return;
-
-                let rawCart = localStorage.getItem('bose_cart');
-                let cartArray = rawCart ? [span_33](start_span)JSON.parse(rawCart) : [];[span_33](end_span)
-
-                const finalPrice = window.calculateBosePrice ? window.calculateBosePrice(productObj.price, "menu-only") : productObj.price;
-
-                const existingItemIndex = cartArray.findIndex(item => item.id === productId && item.type === "standard");
-                if (existingItemIndex > -1) {
-                    cartArray[existingItemIndex].quantity += quantity;
-                } else {
-                    cartArray.push({
-                        [span_34](start_span)id: productObj.id,[span_34](end_span)
-                        [span_35](start_span)productSlug: productObj.slug,[span_35](end_span)
-                        [span_36](start_span)title: productObj.title,[span_36](end_span)
-                        flavorName: productObj.flavorName || [span_37](start_span)"كلاسيك",[span_37](end_span)
-                        [span_38](start_span)price: finalPrice,[span_38](end_span)
-                        [span_39](start_span)quantity: quantity,[span_39](end_span)
-                        [span_40](start_span)image: productObj.images[0],[span_40](end_span)
-                        [span_41](start_span)type: "standard"[span_41](end_span)
-                    });
+                    return;
                 }
 
-                localStorage.setItem('bose_cart', JSON.stringify(cartArray));
-                [span_42](start_span)if (window.updateGlobalCartCounter) window.updateGlobalCartCounter();[span_42](end_span)
-                
-                // Sophisticated Notification Alert UI
-                alert(`تمت إضافة ${quantity} قطعة من ${productObj.title} إلى السلة.`);
+                const wrapper = document.getElementById(wrapperId);
+                if(!wrapper) return;
+                wrapper.addEventListener('scroll', () => {
+                    const firstItem = wrapper.querySelector('.product-card') || wrapper.querySelector('.category-slider-card');
+                    if(!firstItem) return;
+                    const computedIndex = Math.round(wrapper.scrollLeft / (firstItem.offsetWidth + 20));
+                    dots.forEach((d, idx) => {
+                        d.classList.toggle('active', idx === Math.abs(computedIndex));
+                    });
+                });
+
+                dots.forEach(dot => {
+                    dot.addEventListener('click', () => {
+                        const target = parseInt(dot.getAttribute('data-target-index'));
+                        const firstItem = wrapper.querySelector('.product-card') || wrapper.querySelector('.category-slider-card');
+                        if(!firstItem) return;
+                        wrapper.scrollTo({
+                            left: -target * (firstItem.offsetWidth + 20),
+                            behavior: 'smooth'
+                        });
+                    });
+                });
+            }
+
+            function registerDynamicStepperDelegators() {
+                document.body.addEventListener('click', (e) => {
+                    if(e.target.classList.contains('inc-trigger')) {
+                        const valNode = e.target.parentElement.querySelector('.qty-value');
+                        let current = parseInt(valNode.textContent) || 1;
+                        if(current < 99) valNode.textContent = current + 1;
+                    }
+                    if(e.target.classList.contains('dec-trigger')) {
+                        const valNode = e.target.parentElement.querySelector('.qty-value');
+                        let current = parseInt(valNode.textContent) || 1;
+                        if(current > 1) valNode.textContent = current - 1;
+                    }
+                    if(e.target.classList.contains('core-cart-add-action')) {
+                        const card = e.target.closest('.product-card');
+                        const pId = card.getAttribute('data-product-id');
+                        const qty = parseInt(card.querySelector('.qty-value').textContent) || 1;
+                        executeGlobalCartPipeline(pId, qty);
+                    }
+                });
+            }
+
+            function executeGlobalCartPipeline(productId, quantity) {
+                if (!window.BoseStoreData) return;
+                const matchProduct = window.BoseStoreData.products.find(p => p.id === productId);
+                if (!matchProduct) return;
+
+                const resolvedPrice = window.calculateBosePrice ? window.calculateBosePrice(matchProduct.price, "all") : matchProduct.price;
+                const isCustomProduct = matchProduct.id.includes('custom') || matchProduct.id.includes('master');
+                const finalStorageId = isCustomProduct ? `${matchProduct.slug}-${Date.now()}` : matchProduct.id;
+
+                const payload = {
+                    id: finalStorageId,
+                    productSlug: matchProduct.slug,
+                    title: matchProduct.title,
+                    flavorName: matchProduct.flavorName || "كلاسيك",
+                    price: resolvedPrice,
+                    quantity: quantity,
+                    image: matchProduct.images[0],
+                    type: isCustomProduct ? "custom-cake" : "standard",
+                    customDetails: {}
+                };
+
+                if(window.addBoseCartItem) {
+                    window.addBoseCartItem(payload);
+                } else {
+                    let cart = localStorage.getItem('bose_cart') ? JSON.parse(localStorage.getItem('bose_cart')) : [];
+                    const idx = cart.findIndex(item => item.id === productId && item.type === "standard");
+                    if (idx > -1 && !isCustomProduct) { cart[idx].quantity
+                        cart[idx].quantity += quantity;
+                    } else {
+                        cart.push(payload);
+                    }
+                    localStorage.setItem('bose_cart', JSON.stringify(cart));
+                    if(window.updateGlobalCartCounter) window.updateGlobalCartCounter();
+                }
             }
         });
     </script>
