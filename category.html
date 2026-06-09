@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
-    <title>حلويات بوسي | تصفح الفئة والمنتجات الطازجة</title>
-    <meta name="description" content="تصفح منتجات حلويات بوسي الفاخرة فرع الكفاح. حلويات طازجة ومكونات طبيعية 100% تناسب مناسباتكم وجلساتكم السعيدة.">
-    <meta name="keywords" content="حلويات بوسي, تورتات, سينابون, دوناتس, قشطوطة, كبات السعادة, ديسباسيتو, حلويات فاخرة">
+    <title>حلويات بوسي | عرض الفئة الديناميكية</title>
+    <meta name="description" content="تصفح منتجاتنا الفاخرة المصنوعة بكل حب وشغف لتناسب مناسباتكم السعيدة من فرع الكفاح. اختر نكهتك المفضلة الآن واستمتع بالجودة الطبيعية 100%.">
     <meta name="robots" content="index, follow">
     
     <meta property="og:type" content="website">
-    <meta property="og:title" content="حلويات بوسي | تصفح الفئة والمنتجات الطازجة">
-    <meta property="og:description" content="تصفح منتجات حلويات بوسي الفاخرة فرع الكفاح. حلويات طازجة ومكونات طبيعية 100% تناسب مناسباتكم وجلساتكم السعيدة.">
+    <meta property="og:title" content="حلويات بوسي | عرض الفئة">
+    <meta property="og:description" content="تصفح منتجاتنا الفاخرة المعتمدة المصنوعة يدوياً بحب وشغف لتليق بمناسباتكم السعيدة.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,43 +23,6 @@
     <script src="js/core.html.js"></script>
     
     <style>
-        /* ==========================================================================
-           🛠️ حل هندسي جذري ومثالي لعلاج ثغرة اختفاء شريط الماركي العلوي 🛠️
-           ========================================================================== */
-        .bose-top-marquee-bar {
-            background-color: var(--bose-cream);
-            border-bottom: 1px solid rgba(255, 145, 164, 0.15);
-            overflow: hidden;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            width: 100%;
-            position: relative;
-            z-index: 1010;
-            direction: ltr !important;
-        }
-        .marquee-track-container {
-            display: flex;
-            width: max-content;
-            animation: marqueeContinuous 64.3s linear infinite;
-            will-change: transform;
-            direction: ltr !important;
-        }
-        .marquee-message-node {
-            font-size: 0.88rem;
-            font-weight: 700;
-            color: var(--bose-black);
-            padding: 0 60px;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            direction: rtl !important;
-        }
-        @keyframes marqueeContinuous {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-50%, 0, 0); }
-        }
-        
         .brand-identity-anchor {
             display: flex;
             align-items: center;
@@ -86,67 +48,46 @@
             align-items: center;
             gap: 16px;
         }
-
-        /* تصميم قسم البانر العلوي للفئة الديناميكية */
-        .category-hero {
+        #category-hero-banner {
             position: relative;
             width: 100%;
-            height: 250px;
-            background-size: cover;
+            padding: 80px 0;
+            background-color: var(--bose-white);
             background-position: center;
+            background-size: cover;
             background-repeat: no-repeat;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-bottom: var(--bose-border-pink);
-        }
-        @media (min-width: 768px) {
-            .category-hero {
-                height: 380px;
-            }
+            text-align: center;
         }
         .category-hero-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(17, 17, 17, 0.45), rgba(17, 17, 17, 0.8));
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
-        #category-page-title {
+        .category-hero-overlay h1 {
             font-size: 2rem !important;
             font-weight: 700 !important;
-            color: var(--bose-white) !important;
-            text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+            color: var(--bose-black) !important;
             margin: 0 0 12px 0;
         }
         @media (min-width: 768px) {
-            #category-page-title {
-                font-size: 3rem !important;
-            }
+            .category-hero-overlay h1 { font-size: 2.6rem !important; }
         }
-        #category-page-description {
+        .category-hero-overlay p {
             font-size: 1rem !important;
             font-weight: 400 !important;
-            color: var(--bose-white) !important;
-            max-width: 700px;
+            color: var(--bose-black) !important;
+            opacity: 0.85;
             line-height: 1.7;
-            text-shadow: 0 1px 8px rgba(0,0,0,0.5);
             margin: 0;
-            opacity: 0.95;
         }
-
-        /* شبكة الكروت وتطبيق الأبعاد والمقاسات القياسية المحددة */
         .products-display-section {
-            padding: 50px 16px;
+            padding: 40px 0 60px 0;
             background-color: var(--bose-white);
         }
-        .category-container {
+        .products-grid-wrapper {
             max-width: 1400px;
             margin: 0 auto;
+            padding: 0 16px;
         }
         #category-products-grid {
             display: grid !important;
@@ -160,8 +101,6 @@
                 gap: 24px !important;
             }
         }
-
-        /* كارت منتج موحد بالكامل للمطابقة القياسية */
         .product-card {
             background-color: var(--bose-white);
             border: var(--bose-border-pink);
@@ -175,24 +114,12 @@
             width: 100% !important;
             box-sizing: border-box;
         }
-        .product-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--bose-pink);
-            box-shadow: var(--bose-shadow-hover);
-        }
         .card-image-wrapper {
             width: 100% !important;
             aspect-ratio: 1/1 !important;
             border-radius: 14px;
             overflow: hidden;
             background-color: var(--bose-cream);
-            height: 220px !important; /* Mobile Standard */
-        }
-        @media (min-width: 768px) {
-            .card-image-wrapper { height: 260px !important; } /* Tablet Standard */
-        }
-        @media (min-width: 1024px) {
-            .card-image-wrapper { height: 320px !important; } /* Desktop Standard */
         }
         .product-card-img {
             width: 100% !important;
@@ -213,6 +140,10 @@
             color: var(--bose-black);
             line-height: 1.4 !important;
             margin: 0;
+            text-decoration: none;
+        }
+        .product-card-title-anchor {
+            text-decoration: none;
         }
         .product-card-flavor {
             font-size: 0.85rem;
@@ -277,20 +208,232 @@
             transition: var(--bose-transition-smooth);
             margin-top: auto;
         }
-        .bose-add-to-cart-btn-full:hover {
-            transform: scale(1.02);
-            box-shadow: var(--bose-shadow-hover);
+        .bose-reviews-interactive-section {
+            padding: 60px 16px;
+            background-color: var(--bose-white);
+            border-top: var(--bose-border-pink);
         }
-
-        .no-products-message {
-            grid-column: 1 / -1;
+        .reviews-inner-wrapper {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .bose-review-form-card {
+            background-color: var(--bose-cream);
+            border: var(--bose-border-pink);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: var(--bose-shadow-glow);
+            margin-bottom: 40px;
+        }
+        .review-form-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0 0 16px 0;
             text-align: center;
-            font-size: 1.2rem;
+        }
+        .bose-input-field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .bose-input-field-group label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--bose-black);
+        }
+        .bose-text-input-native {
+            width: 100%;
+            height: 46px;
+            border: var(--bose-border-pink);
+            background-color: var(--bose-white);
+            border-radius: 12px;
+            padding: 0 14px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            color: var(--bose-black);
+        }
+        .bose-textarea-input-native {
+            width: 100%;
+            height: 100px;
+            border: var(--bose-border-pink);
+            background-color: var(--bose-white);
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+            resize: none;
+            color: var(--bose-black);
+        }
+        .interactive-rating-stars-row {
+            display: flex;
+            gap: 8px;
+            font-size: 1.6rem;
+            color: #DDD;
+            cursor: pointer;
+            margin: 4px 0;
+        }
+        .interactive-rating-stars-row .fa-star.active {
+            color: var(--bose-gold);
+        }
+        .review-file-upload-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .review-file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            height: 46px;
+            background-color: var(--bose-white);
+            border: 1px dashed var(--bose-pink);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--bose-pink);
+        }
+        #review-image-input {
+            display: none;
+        }
+        .uploaded-img-preview-box {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            border: var(--bose-border-pink);
+            margin-top: 10px;
+            display: none;
+            object-fit: cover;
+        }
+        #bose-reviews-feed-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .bose-user-review-card-node {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--bose-shadow-glow);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .review-node-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .review-node-author-info h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0 0 4px 0;
+        }
+        .review-node-stars {
+            color: var(--bose-gold);
+            font-size: 0.95rem;
+        }
+        .review-node-comment {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--bose-black);
+            margin: 0;
+        }
+        .review-node-attached-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: var(--bose-border-pink);
+        }
+        #you-may-like-section {
+            padding: 60px 0;
+            background-color: var(--bose-white);
+            border-top: var(--bose-border-pink);
+            overflow: hidden;
+        }
+        .slider-wrapper {
+            width: 100%;
+            padding: 10px 24px 20px 24px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            direction: rtl !important;
+            box-sizing: border-box;
+        }
+        .slider-wrapper::-webkit-scrollbar { display: none; }
+        .products-slider-track {
+            display: flex;
+            gap: 20px;
+            width: max-content;
+            direction: rtl !important;
+        }
+        .slider-wrapper .product-card-mini-node {
+            width: 78vw !important;
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: var(--bose-shadow-glow);
+            box-sizing: border-box;
+        }
+        @media (min-width: 768px) {
+            .slider-wrapper .product-card-mini-node { width: 320px !important; }
+        }
+        .product-card-mini-node .mini-node-image-wrapper {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .product-card-mini-node .mini-node-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .product-card-mini-node .mini-node-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: center;
+        }
+        .product-card-mini-node .mini-node-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0;
+        }
+        .product-card-mini-node .mini-node-price {
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--bose-pink);
-            padding: 80px 20px;
         }
-
+        .bose-btn-mini-add-trigger {
+            width: 100%;
+            height: 38px;
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--bose-shadow-glow);
+        }
         .bose-footer {
             background-color: var(--bose-cream) !important;
             padding: 60px 20px 20px 20px !important;
@@ -329,7 +472,6 @@
             transition: var(--bose-transition-smooth);
         }
         .footer-links-list a:hover { color: var(--bose-pink); opacity: 1; }
-        
         #footer-social-links {
             display: flex;
             gap: 16px;
@@ -352,25 +494,6 @@
 </head>
 <body>
 
-    <!-- الشريط العلوي المتحرك (نسخة متطابقة صلبة مغلقة لحظر الفراغات) -->
-    <div class="bose-top-marquee-bar">
-        <div class="marquee-track-container" id="top-marquee-track">
-            <div class="marquee-message-node">✨ طعم أصلي وخامات طبيعية 100% طازجة يومياً من مطبخنا إليكم مباشرة فرع الكفاح 🌸</div>
-            <div class="marquee-message-node">🌸 تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة 🧁</div>
-            <div class="marquee-message-node">👑 تميزوا بهداياكم وجلساتكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة المتميزة الحصرية 🎉</div>
-            <div class="marquee-message-node">🎁 صمم تورتتك المخصصة وبوكيه الورد خطوة بخطوة عبر محاكياتنا التفاعلية المتطورة 🌹</div>
-            <div class="marquee-message-node">🍓 الفراولة الطازجة والمانجو الطبيعي يزينان أطباقنا يومياً لنسعد قلوبكم الكريمة ✨</div>
-            <div class="marquee-message-node">🧁 كب كيك هبط من جنة المذاق، غني بالزبدة الطبيعية الفاخرة ومحشو بنهر من الشوكولاتة السائلة 🍫</div>
-            <div class="marquee-message-node">🍩 دوناتس هشة وخفيفة كالسحاب تذوب في الفم مع توبنج البيستاشيو والنوتيلا البلجيكية الأصيلة 👑</div>
-            <div class="marquee-message-node">🍯 قشطوطة ريانة غنية بالحليب ومغطاة بأجود أنواع المكسرات واللوتس المتميز لتجربة تذوق ساحرة ✨</div>
-            <div class="marquee-message-node">🍫 ديسباسيتو غنية بموس الشوكولاتة البلجيكية وصوصاتنا الخاصة لتناسب ذوقكم الرفيع 🍰</div>
-            <div class="marquee-message-node">🌹 بوكيهات ورد طبيعي وصناعي وستان منسقة يدوياً لتكون الهدية الأجمل التي تليق بأحبابكم 🎁</div>
-            <div class="marquee-message-node">✨ نسعى دائماً لتقديم الأفضل لعملائنا الكرام بفرع الكفاح مع جودة تليق بوجودكم معنا 🌸</div>
-            <div class="marquee-message-node">🎉 كل احتفال ومناسبة سعيدة تكتمل بلمسة دافئة وساحرة من حلويات بوسي الفاخرة المجهزة بحب 👑</div>
-        </div>
-    </div>
-
-    <!-- الهيدر اللزج الرسمي (مطابق تماماً بـ IDs والكلاسات لـ index.html) -->
     <header class="bose-navbar">
         <div class="nav-right-side">
             <button class="nav-menu-toggle" id="sidebar-open-btn" aria-label="فتح القائمة الجانبية"></button>
@@ -387,7 +510,6 @@
         </div>
     </header>
 
-    <!-- القائمة الجانبية الفاخرة (مطابقة تماماً لـ index.html) -->
     <div class="drawer-overlay" id="drawer-shield"></div>
     <aside class="bose-drawer-menu" id="sidebar-drawer">
         <div class="drawer-premium-header">
@@ -413,7 +535,6 @@
         </div>
     </aside>
 
-    <!-- مودال البحث السريع (مطابق تماماً لـ index.html) -->
     <div class="bose-search-modal" id="search-container">
         <div class="search-header">
             <h3>البحث الفوري السريع</h3>
@@ -426,30 +547,83 @@
         <div class="search-results-container"></div>
     </div>
 
-    <!-- MAIN: البنية الديناميكية لـ الفئة -->
     <main class="category-page-container">
-        <!-- قسم البانر العلوي التفاعلي -->
-        <section id="category-hero-banner" class="category-hero">
+        <section id="category-hero-banner">
             <div class="category-hero-overlay">
                 <h1 id="category-page-title">جاري تحميل الفئة...</h1>
                 <p id="category-page-description"></p>
             </div>
         </section>
 
-        <!-- قسم عرض شبكة الكروت الموحدة -->
         <section class="products-display-section">
-            <div class="category-container">
-                <div id="category-products-grid" class="products-grid"></div>
+            <div class="products-grid-wrapper">
+                <div id="category-products-grid"></div>
             </div>
+        </section>
+
+        <section class="bose-reviews-interactive-section">
+            <div class="reviews-inner-wrapper">
+                <div class="bose-section-header-block">
+                    <h2>آراء ومراجعات عملائنا</h2>
+                    <p>المساحة المخصصة لعملائنا الكرام لمشاركة تجاربهم الصادقة ورأيهم في منتجاتنا الفاخرة بكل شفافية وحرية كاملة.</p>
+                </div>
+                
+                <div class="bose-review-form-card">
+                    <h3 class="review-form-title">إضافة مراجعة وتقييم للمنتج</h3>
+                    <form id="native-review-submission-form">
+                        <div class="bose-input-field-group">
+                            <label>الاسم بالكامل</label>
+                            <input type="text" id="review-user-name" class="bose-text-input-native" placeholder="اكتب اسمك الثنائي بالكامل" required>
+                        </div>
+                        <div class="bose-input-field-group">
+                            <label>تقييمك بالنجوم</label>
+                            <div class="interactive-rating-stars-row" id="form-stars-picker-container">
+                                <i class="fas fa-star" data-rating-score="1"></i>
+                                <i class="fas fa-star" data-rating-score="2"></i>
+                                <i class="fas fa-star" data-rating-score="3"></i>
+                                <i class="fas fa-star" data-rating-score="4"></i>
+                                <i class="fas fa-star" data-rating-score="5"></i>
+                            </div>
+                        </div>
+                        <div class="bose-input-field-group">
+                            <label>رأيك وتجربتك بالتفصيل</label>
+                            <textarea id="review-user-comment" class="bose-textarea-input-native" placeholder="شاركنا رأيك في طعم وجودة المكونات والتغليف الفاخر..." required></textarea>
+                        </div>
+                        <div class="bose-input-field-group">
+                            <label>إرفاق صورة للمنتج (اختياري)</label>
+                            <div class="review-file-upload-wrapper">
+                                <label for="review-image-input" class="review-file-upload-label">
+                                    <i class="fas fa-camera"></i> اضغط لإضافة صورة حقيقية لمنتجك
+                                </label>
+                                <input type="file" id="review-image-input" accept="image/*">
+                            </div>
+                            <img id="uploaded-review-preview" class="uploaded-img-preview-box" alt="معاينة الصورة المرفوعة">
+                        </div>
+                        <button type="submit" class="bose-add-to-cart-btn-full" style="height:46px;">نشر مراجعتي فوراً 🌸</button>
+                    </form>
+                </div>
+
+                <div id="bose-reviews-feed-container"></div>
+            </div>
+        </section>
+
+        <section id="you-may-like-section">
+            <div class="bose-section-header-block">
+                <h2>قد يعجبك أيضاً</h2>
+                <p>تشكيلة إضافية مميزة ومكملة تم اختيارها بعناية لتناسب ذوقك وتضفي مزيداً من البهجة والروقان على جلستك الفاخرة.</p>
+            </div>
+            <div class="slider-wrapper" id="you-may-like-wrapper">
+                <div class="products-slider-track" id="you-may-like-grid"></div>
+            </div>
+            <div class="slider-dots-container" id="you-may-like-carousel-dots"></div>
         </section>
     </main>
 
-    <!-- FOOTER: الفوتر الفاخر والمطابق تماماً لـ index.html -->
     <footer class="bose-footer">
         <div class="footer-container">
             <div class="footer-about-block">
                 <h3>حلويات بوسي</h3>
-                <p id="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز وااحترافية كاملة من فرع الكفاح.</p>
+                <p>صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز وااحترافية كاملة من فرع الكفاح.</p>
                 <div id="footer-social-links">
                     <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-link-facebook" target="_blank" title="فيسبوك">Facebook</a>
                     <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-link-instagram" target="_blank" title="انستجرام">Instagram</a>
@@ -484,115 +658,182 @@
     </footer>
 
     <script>
+        let chosenReviewRating = 5;
+
         document.addEventListener("DOMContentLoaded", () => {
-            // تفعيل حارس التمهيد والحماية للمحرك لضمان اكتمال تحميل البيانات قبل بدء الفلترة والتركيب
-            const databaseGuardInterval = setInterval(() => {
-                if (window.BoseStoreData && window.BoseStoreData.store) {
-                    clearInterval(databaseGuardInterval);
-                    hydrateAndBuildCategoryPage(window.BoseStoreData);
-                    initializeMarqueeStreaming();
-                }
-            }, 50);
+            setupUniversalInterfaceInteractions();
+            setupInteractiveRatingSystem();
+            
+            if (window.BoseStoreData && window.BoseStoreData.store) {
+                executeCategoryPageGeneration();
+            } else {
+                const databaseGuardInterval = setInterval(() => {
+                    if (window.BoseStoreData && window.BoseStoreData.store) {
+                        clearInterval(databaseGuardInterval);
+                        executeCategoryPageGeneration();
+                    }
+                }, 50);
+            }
+        });
 
-            // تفعيل شريط الماركي المتحرك وحمايته هندسياً
-            window.addEventListener('bose_data_ready', () => {
-                initializeMarqueeStreaming();
-            });
-
-            function initializeMarqueeStreaming() {
-                const track = document.getElementById("top-marquee-track");
-                if (track && !track.hasAttribute('data-cloned')) {
-                    const items = Array.from(track.children);
-                    items.forEach(item => track.appendChild(item.cloneNode(true)));
-                    track.setAttribute('data-cloned', 'true');
-                    track.style.display = 'none';
-                    track.offsetHeight; 
-                    track.style.display = 'flex';
-                }
+        function setupUniversalInterfaceInteractions() {
+            const openBtn = document.getElementById("sidebar-open-btn");
+            const shield = document.getElementById("drawer-shield");
+            const drawer = document.getElementById("sidebar-drawer");
+            
+            if (openBtn && shield && drawer) {
+                openBtn.addEventListener("click", () => {
+                    drawer.classList.add("active");
+                    shield.classList.add("active");
+                });
+                shield.addEventListener("click", () => {
+                    drawer.classList.remove("active");
+                    shield.classList.remove("active");
+                });
             }
 
-            // مصفوفة الصياغة النصية الراقية والوصف الموجه للقيم لكل الفئات الـ 12 المعتمدة
-            const categoryDescriptions = {
-                "taswaq-toort": "التورت عندنا مش مجرد حلوى للمناسبة، لكنها قطعة مصممة خصيصاً لتناسب أرقى الأذواق الفاخرة.",
-                "taswaq-gatowat": "جاتوهات ملكية غنية بالكريمة الطبيعية والشوكولاتة الفاخرة لتكمل مناسباتكم الكريمة بكل لذة.",
-                "taswaq-qashtota": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، مغطى بألذ توبنج مكسرات وفاكهة.",
-                "taswaq-despacito": "كيك فادج غني مغمور بالشوكولاتة مع طبقات الموس الغنية لتجربة شوكولاتة بلجيكية لا مثيل لها.",
-                "taswaq-cinabon": "عجينة السينابون الطرية المخبوزة يومياً ومغطاة بصوص التشيز الخاص والتوبنج المفضل لكم.",
-                "taswaq-donuts": "دوناتس هشة وخفيفة كالسحاب، محشوة من الداخل وغنية بالصوصات المبتكرة واللذيذة بالخارج.",
-                "taswaq-red-velvet": "مزيج متكامل يجمع بين نعومة كيك الريد ڤيلڤت الفاخر ولذة موس التشيز المنعش وصوص التوت البري.",
-                "taswaq-cupcake": "قطع الكب كيك الصغيرة الغنية بالزبدة الطبيعية والمحشوة باللذة لتقدم أرقى خيارات الضيافة.",
-                "taswaq-mini-cake": "تجربة تورتة متكاملة في حجم ميني أنيق ومغلف لحفظ الجودة، مثالية للمفاجآت والجلسات السعيدة.",
-                "taswaq-flowers": "بوكيهات منسقة بعناية فائقة من الورد الطبيعي والصناعي والستان لتشرفكم في كل إهداء.",
-                "taswaq-happiness-cups": "كبات السعادة المصممة لتمنحك متعة تذوق غنية ودافئة في كل ملعقة من الموس والكيك.",
-                "taswaq-relax-box": "بوكس رائع يجمع أفضل منتجاتنا المفضلة ليضمن لكم الروقان التام وتجربة تذوق استثنائية."
+            const searchTrigger = document.getElementById("search-modal-open-btn");
+            const searchModal = document.getElementById("search-container");
+            const searchClose = document.querySelector(".search-close-btn");
+            
+            if (searchTrigger && searchModal && searchClose) {
+                searchTrigger.addEventListener("click", () => searchModal.classList.add("active"));
+                searchClose.addEventListener("click", () => searchModal.classList.remove("active"));
+            }
+        }
+
+        function setupInteractiveRatingSystem() {
+            const stars = document.querySelectorAll("#form-stars-picker-container i");
+            stars.forEach((star, index) => {
+                star.addEventListener("click", () => {
+                    chosenReviewRating = parseInt(star.getAttribute("data-rating-score"));
+                    stars.forEach((s, idx) => {
+                        s.classList.toggle("active", idx <= index);
+                    });
+                });
+            });
+            stars.forEach((s, idx) => s.classList.toggle("active", idx < 5));
+
+            const imgInput = document.getElementById("review-image-input");
+            const imgPreview = document.getElementById("uploaded-review-preview");
+            if (imgInput && imgPreview) {
+                imgInput.addEventListener("change", (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                            imgPreview.src = event.target.result;
+                            imgPreview.style.display = "block";
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            const form = document.getElementById("native-review-submission-form");
+            if (form) {
+                form.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const categoryId = urlParams.get('id') || "taswaq-toort";
+                    
+                    const name = document.getElementById("review-user-name").value.trim();
+                    const comment = document.getElementById("review-user-comment").value.trim();
+                    const imgData = imgPreview.style.display === "block" ? imgPreview.src : "";
+
+                    const reviewObject = {
+                        id: `rev-${Date.now()}`,
+                        categoryId: categoryId,
+                        author: name,
+                        rating: chosenReviewRating,
+                        text: comment,
+                        image: imgData,
+                        timestamp: new Date().toLocaleDateString('ar-EG')
+                    };
+
+                    let allReviews = JSON.parse(localStorage.getItem("bose_dynamic_reviews")) || [];
+                    allReviews.unshift(reviewObject);
+                    localStorage.setItem("bose_dynamic_reviews", JSON.stringify(allReviews));
+
+                    form.reset();
+                    imgPreview.style.display = "none";
+                    imgPreview.src = "";
+                    stars.forEach((s, idx) => s.classList.toggle("active", idx < 5));
+                    chosenReviewRating = 5;
+
+                    renderDynamicReviewsFeed(categoryId);
+                });
+            }
+        }
+
+        function executeCategoryPageGeneration() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const categoryId = urlParams.get('id') || "taswaq-toort";
+            const data = window.BoseStoreData;
+
+            const categoryInfo = data.homepage.categoriesSlider.find(c => c.id === categoryId);
+            if (!categoryInfo) {
+                window.location.href = "menu.html";
+                return;
+            }
+
+            document.title = `${categoryInfo.title} | حلويات بوسي`;
+            document.getElementById("category-page-title").textContent = categoryInfo.title;
+            
+            const mappingDescription = {
+                "taswaq-toort": "التورت عندنا مش مجرد حلوى للمناسبة، لكنها قطعة مصممة خصيصاً لصاحب المناسبة لتعبر عن شخصيته وذوقه وتفاصيل يومه المميز.",
+                "taswaq-gatowat": "طبقات متوازنة من كيك الفانيليا أو الشوكولاتة مع حشوات غنية من الموسات والصوصات والكريمات المختارة بعناية لتكمل لحظتكم الجميلة.",
+                "taswaq-qashtota": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني والمكسرات الفاخرة المجهزة بحب.",
+                "taswaq-despacito": "كيك فادج غني مغمور بالشوكولاتة البلجيكية، يعلوه طبقة من النوتيلا وموس الشوكولاتة بتوليفتنا الخاصة المتوازنة والغنية.",
+                "taswaq-cinabon": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية وتُغطى بطبقة من صوص التشيز الكلاسيكي الحصري بمكوناتنا الفاخرة.",
+                "taswaq-donuts": "عجينة هشة وطرية يتم قليها بعناية فائقة حتى تصل للقوام المثالي، ثم تُحشى وتُغطى بالتوبنج المختار من الخارج.",
+                "taswaq-red-velvet": "طبقات من الريد ڤيلڤت الغني بقوامه الناعم ولونه المميز مع طبقات من موس التشيز والراسبيري لتوازن رائع بين الحلاوة والانتعاش.",
+                "taswaq-cupcake": "قطع صغيرة من اللذة بطابع غني، تُحضر بنسبة زبدة مدروسة وتُزين بطبقة من الكريمة اللباني الغنية مع خيارات إضافة الصور.",
+                "taswaq-mini-cake": "طبقات غنية من كيك الفانيليا أو الشوكولاتة مع حشوات موس وصوصات ومكسرات مختارة بعناية ومغلفة بطبقة فاكيوم شفافة تبرز جمالها.",
+                "taswaq-flowers": "ننفرد بتقديم بوكيهات الورد الطبيعي والصناعي وورد الستان بأعلى مستوى من العناية والاهتمام بالتفاصيل لتقديم هدية تشرفك.",
+                "taswaq-happiness-cups": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل ملعقة من الكيك والموس والحشوات المختارة بعناية لتتكامل مع النكهة المفضلة لك.",
+                "taswaq-relax-box": "تجربة متكاملة تجمع بين أكثر المنتجات التي يحبها عملاؤنا داخل بوكس واحد لتناسب الهدايا والجلسات الخاصة والمفاجآت الجميلة."
             };
 
-            function hydrateAndBuildCategoryPage(data) {
-                const urlParams = new URLSearchParams(window.location.search);
-                const categoryId = urlParams.get('id') || "taswaq-toort"; // الفئة الاحتياطية الافتراضية
+            document.getElementById("category-page-description").textContent = mappingDescription[categoryId] || data.seo.description;
 
-                const categoryInfo = data.homepage.categoriesSlider.find(c => c.id === categoryId);
-                if (!categoryInfo) {
-                    window.location.href = "menu.html";
-                    return;
-                }
-
-                // تحديث بيانات العنوان والـ SEO للبانر
-                document.title = `${categoryInfo.title} | حلويات بوسي`;
-                document.getElementById("category-page-title").textContent = categoryInfo.title;
-                document.getElementById("category-page-description").textContent = categoryDescriptions[categoryId] || "صُنعت وشُكلت يدوياً بكل حب لنسعد بها قلوب عملائنا الكرام وتوثق أجمل مناسباتكم الفاخرة.";
-
-                const heroBanner = document.getElementById("category-hero-banner");
-                if (heroBanner) {
-                    heroBanner.style.backgroundImage = `url('${categoryInfo.image}')`;
-                }
-
-                // جلب وفلترة المنتجات التابعة للفئة المحددة
-                const productsGrid = document.getElementById("category-products-grid");
-                if (!productsGrid) return;
-                productsGrid.innerHTML = "";
-
-                const filteredProducts = data.products.filter(p => p.category === categoryId);
-
-                if (filteredProducts.length === 0) {
-                    productsGrid.innerHTML = `<p class="no-products-message">لا توجد منتجات متوفرة في هذه الفئة حالياً، يرجى مراجعة المنيو الرئيسي.</p>`;
-                    return;
-                }
-
-                // توليد الكروت بالهيكل القياسي الحتمي الموحد
-                productsGrid.innerHTML = filteredProducts.map(p => generateBlueprintProductCard(p)).join('');
-
-                // تفعيل عدادات الكميات وأزرار الإضافة للسلة التلقائية
-                registerDynamicStepperDelegators();
-                initializeSidebarAndSearchInteractions(data);
+            const heroBanner = document.getElementById("category-hero-banner");
+            if (heroBanner) {
+                heroBanner.style.backgroundImage = `url('${categoryInfo.image}')`;
             }
 
-            function generateBlueprintProductCard(product) {
-                const finalCalculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(product.price, "all") : product.price;
-                const flavorDisplay = product.flavorName ? `<div class="product-card-flavor">${product.flavorName}</div>` : '';
-                const descDisplay = product.flavorDesc || product.description || '';
+            const productsGrid = document.getElementById("category-products-grid");
+            if (!productsGrid) return;
+            productsGrid.innerHTML = "";
 
-                let actionButton = '';
-                if (product.customBuilderUrl) {
-                    actionButton = `<a href="${product.customBuilderUrl}" class="bose-add-to-cart-btn-full" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">تخصيص المنتج الآن 🌸</a>`;
-                } else {
-                    actionButton = `<button class="bose-add-to-cart-btn-full core-cart-add-action" type="button">إضافة للسلة 🌸</button>`;
-                }
+            const filteredProducts = data.products.filter(p => p.category === categoryId);
+            if (filteredProducts.length === 0) {
+                productsGrid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; font-weight: 600; padding: 40px 0;">لا توجد منتجات متوفرة في هذه الفئة حالياً.</p>`;
+            } else {
+                filteredProducts.forEach(product => {
+                    const finalCalculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(product.price, "all") : product.price;
+                    const flavorDisplay = product.flavorName ? `<div class="product-card-flavor">${product.flavorName}</div>` : '';
+                    const descDisplay = product.flavorDesc || product.description || '';
+                    
+                    let actionButtonHTML = '';
+                    if (product.customBuilderUrl) {
+                        actionButtonHTML = `<a href="${product.customBuilderUrl}" class="bose-add-to-cart-btn-full" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">تخصيص المنتج الآن 🌸</a>`;
+                    } else {
+                        actionButtonHTML = `<button class="bose-add-to-cart-btn-full core-cart-add-action" type="button">إضافة للسلة 🌸</button>`;
+                    }
 
-                return `
-                    <div class="product-card" data-product-id="${product.id}">
+                    const cardNode = document.createElement("div");
+                    cardNode.className = "product-card";
+                    cardNode.setAttribute("data-product-id", product.id);
+                    cardNode.innerHTML = `
                         <div class="card-image-wrapper">
-                            <a href="product.html?id=${product.id}">
-                                <img src="${product.images[0]}" alt="${product.title}" class="product-card-img" loading="lazy">
-                            </a>
+                            <a href="product.html?id=${product.id}"><img src="${product.images[0]}" alt="${product.title}" class="product-card-img" loading="lazy"></a>
                         </div>
                         <div class="product-card-info">
-                            <a href="product.html?id=${product.id}" style="text-decoration:none;">
-                                <h3 class="product-card-title">${product.title}</h3>
-                            </a>
+                            <a href="product.html?id=${product.id}" class="product-card-title-anchor"><h3 class="product-card-title">${product.title}</h3></a>
                             ${flavorDisplay}
                             <p class="product-card-desc">${descDisplay}</p>
-                            <div class="bose-quantity-counter-wrapper" ${product.customBuilderUrl ? 'style="display:none;"' : ''}>
+                            <div class="bose-quantity-counter-wrapper">
                                 <div class="bose-quantity-counter">
                                     <button class="qty-btn dec-trigger" type="button">-</button>
                                     <span class="qty-value">1</span>
@@ -602,19 +843,129 @@
                             <div class="product-card-price-row">
                                 <span class="bose-price-text">${finalCalculatedPrice} جنيه</span>
                             </div>
-                            ${actionButton}
+                            ${actionButtonHTML}
                         </div>
+                    `;
+                    productsGrid.appendChild(cardNode);
+                });
+            }
+
+            renderDynamicReviewsFeed(categoryId);
+            generateYouMayLikeSlider(categoryId, data);
+            registerStepperAndCartDelegation();
+        }
+
+        function renderDynamicReviewsFeed(categoryId) {
+            const container = document.getElementById("bose-reviews-feed-container");
+            if (!container) return;
+            container.innerHTML = "";
+
+            const defaultReviews = [
+                { id: "def-1", categoryId: "taswaq-toort", author: "أحمد المصرى", rating: 5, text: "التورتة بجد كانت تحفة وفوق الخيال، الإضاءة واللمعة الطبيعية للمكونات باينة من أول ثانية والشغل احترافي جداً وشرّفني قدام ضيوفي.", image: "", timestamp: "2026-06-01" },
+                { id: "def-2", categoryId: "taswaq-qashtota", author: "سارة كريم", rating: 5, text: "القشطوطة غرقانة باللبن والكريمة اللباني طعمها غني جداً وخفيف في نفس الوقت والمكسرات طازة ومقرمشة.", image: "", timestamp: "2026-05-28" },
+                { id: "def-3", categoryId: "taswaq-despacito", author: "مي حسن", rating: 5, text: "موس الشوكولاتة توليفته سرية بجد متوازن ومش جزع خالص والبوكس يفتح النفس قبل ما تدوقه.", image: "", timestamp: "2026-05-25" }
+            ];
+
+            let localReviews = JSON.parse(localStorage.getItem("bose_dynamic_reviews")) || [];
+            let combinedReviews = [...localReviews, ...defaultReviews].filter(r => r.categoryId === categoryId);
+
+            if (combinedReviews.length === 0) {
+                container.innerHTML = `<p style="text-align:center; font-weight:600; opacity:0.7; padding:20px 0;">لا توجد مراجعات منشورة لهذه الفئة حتى الآن. كن أول من يشارك تجربته!</p>`;
+                return;
+            }
+
+            combinedReviews.forEach(review => {
+                let starsHTML = "";
+                for (let i = 1; i <= 5; i++) {
+                    starsHTML += `<i class="${i <= review.rating ? 'fas' : 'far'} fa-star"></i>`;
+                }
+
+                let imgHTML = review.image ? `<img src="${review.image}" class="review-node-attached-img" alt="صورة مرفقة مع التقييم">` : '';
+
+                const reviewNode = document.createElement("div");
+                reviewNode.className = "bose-user-review-card-node";
+                reviewNode.innerHTML = `
+                    <div class="review-node-header">
+                        <div class="review-node-author-info">
+                            <h4>${review.author}</h4>
+                            <div class="review-node-stars">${starsHTML}</div>
+                        </div>
+                        <span style="font-size:0.85rem; opacity:0.6; font-weight:600;">${review.timestamp}</span>
                     </div>
+                    <p class="review-node-comment">${review.text}</p>
+                    ${imgHTML}
                 `;
-            }
+                container.appendChild(reviewNode);
+            });
+        }
 
-            function registerDynamicStepperDelegators() {
-                // منع التكرار البرمجي عن طريق إزالة المستمعات السابقة إن وُجدت
-                document.body.removeEventListener('click', handleStepperAndCartClicks);
-                document.body.addEventListener('click', handleStepperAndCartClicks);
-            }
+        function generateYouMayLikeSlider(currentCategoryId, data) {
+            const grid = document.getElementById("you-may-like-grid");
+            if (!grid) return;
+            grid.innerHTML = "";
 
-            function handleStepperAndCartClicks(e) {
+            const targetSuggestions = data.products.filter(p => p.category !== currentCategoryId && p.featured === true).slice(0, 5);
+            
+            targetSuggestions.forEach(product => {
+                const finalPrice = window.calculateBosePrice ? window.calculateBosePrice(product.price, "all") : product.price;
+                
+                const card = document.createElement("div");
+                card.className = "product-card-mini-node";
+                card.setAttribute("data-product-id", product.id);
+                card.innerHTML = `
+                    <div class="mini-node-image-wrapper">
+                        <a href="product.html?id=${product.id}"><img src="${product.images[0]}" class="mini-node-img" alt="${product.title}" loading="lazy"></a>
+                    </div>
+                    <div class="mini-node-info">
+                        <h3 class="mini-node-title">${product.title} - ${product.flavorName || 'كلاسيك'}</h3>
+                        <span class="mini-node-price">${finalPrice} جنيه</span>
+                    </div>
+                    <button class="bose-btn-mini-add-trigger core-mini-add-action" type="button">+</button>
+                `;
+                grid.appendChild(card);
+            });
+
+            setupTrackIndicatorsAndScroll('you-may-like-wrapper', 'you-may-like-carousel-dots', targetSuggestions.length);
+        }
+
+        function setupTrackIndicatorsAndScroll(wrapperId, dotsContainerId, totalElements) {
+            const dotsContainer = document.getElementById(dotsContainerId);
+            if (!dotsContainer) return;
+            
+            let dotsMarkup = '';
+            for (let i = 0; i < totalElements; i++) {
+                dotsMarkup += `<button class="dot-btn ${i === 0 ? 'active' : ''}" data-target-index="${i}" aria-label="العنصر ${i + 1}"></button>`;
+            }
+            dotsContainer.innerHTML = dotsMarkup;
+            const dots = dotsContainer.querySelectorAll('.dot-btn');
+
+            const wrapper = document.getElementById(wrapperId);
+            if (!wrapper) return;
+            
+            wrapper.addEventListener('scroll', () => {
+                const firstItem = wrapper.querySelector('.product-card-mini-node');
+                if (!firstItem) return;
+                const computedIndex = Math.round(wrapper.scrollLeft / (firstItem.offsetWidth + 20));
+                dots.forEach((d, idx) => {
+                    d.classList.toggle('active', idx === Math.abs(computedIndex));
+                });
+            });
+
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const target = parseInt(dot.getAttribute('data-target-index'));
+                    const firstItem = wrapper.querySelector('.product-card-mini-node');
+                    if (!firstItem) return;
+                    wrapper.scrollTo({
+                        left: -target * (firstItem.offsetWidth + 20),
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        }
+
+        function registerStepperAndCartDelegation() {
+            document.body.addEventListener('click', (e) => {
                 if (e.target.classList.contains('inc-trigger')) {
                     const valNode = e.target.parentElement.querySelector('.qty-value');
                     let current = parseInt(valNode.textContent) || 1;
@@ -629,121 +980,49 @@
                     const card = e.target.closest('.product-card');
                     const pId = card.getAttribute('data-product-id');
                     const qty = parseInt(card.querySelector('.qty-value').textContent) || 1;
-                    executeGlobalCartPipeline(pId, qty);
+                    executeGlobalCartPipeline(pId, qty, "standard");
                 }
+                if (e.target.classList.contains('core-mini-add-action')) {
+                    const card = e.target.closest('.product-card-mini-node');
+                    const pId = card.getAttribute('data-product-id');
+                    executeGlobalCartPipeline(pId, 1, "standard");
+                }
+            });
+        }
+
+        function executeGlobalCartPipeline(productId, quantity, forcedType) {
+            if (!window.BoseStoreData) return;
+            const matchProduct = window.BoseStoreData.products.find(p => p.id === productId);
+            if (!matchProduct) return;
+
+            const resolvedPrice = window.calculateBosePrice ? window.calculateBosePrice(matchProduct.price, "all") : matchProduct.price;
+            const isCustomProduct = matchProduct.id.includes('custom') || matchProduct.id.includes('master');
+            const finalStorageId = isCustomProduct ? `${matchProduct.slug}-${Date.now()}` : matchProduct.id;
+
+            const payload = {
+                id: finalStorageId,
+                productSlug: matchProduct.slug,
+                title: matchProduct.title,
+                flavorName: matchProduct.flavorName || "كلاسيك",
+                price: resolvedPrice,
+                quantity: quantity,
+                image: matchProduct.images[0],
+                type: isCustomProduct ? "custom-cake" : "standard",
+                customDetails: {}
+            };
+
+            let cart = localStorage.getItem('bose_cart') ? JSON.parse(localStorage.getItem('bose_cart')) : [];
+            const idx = cart.findIndex(item => item.id === productId && item.type === "standard");
+            
+            if (idx > -1 && !isCustomProduct) {
+                cart[idx].quantity += quantity;
+            } else {
+                cart.push(payload);
             }
-
-            function executeGlobalCartPipeline(productId, quantity) {
-                if (!window.BoseStoreData) return;
-                const matchProduct = window.BoseStoreData.products.find(p => p.id === productId);
-                if (!matchProduct) return;
-
-                const resolvedPrice = window.calculateBosePrice ? window.calculateBosePrice(matchProduct.price, "all") : matchProduct.price;
-                const isCustomProduct = matchProduct.id.includes('custom') || matchProduct.id.includes('master');
-                const finalStorageId = isCustomProduct ? `${matchProduct.slug}-${Date.now()}` : matchProduct.id;
-
-                const payload = {
-                    id: finalStorageId,
-                    productSlug: matchProduct.slug,
-                    title: matchProduct.title,
-                    flavorName: matchProduct.flavorName || "كلاسيك",
-                    price: resolvedPrice,
-                    quantity: quantity,
-                    image: matchProduct.images[0],
-                    type: isCustomProduct ? "custom-cake" : "standard",
-                    customDetails: {}
-                };
-
-                if (window.addBoseCartItem) {
-                    window.addBoseCartItem(payload);
-                } else {
-                    let cart = localStorage.getItem('bose_cart') ? JSON.parse(localStorage.getItem('bose_cart')) : [];
-                    const idx = cart.findIndex(item => item.id === productId && item.type === "standard");
-                    if (idx > -1 && !isCustomProduct) {
-                        cart[idx].quantity += quantity;
-                    } else {
-                        cart.push(payload);
-                    }
-                    localStorage.setItem('bose_cart', JSON.stringify(cart));
-                    if (window.updateGlobalCartCounter) window.updateGlobalCartCounter();
-                }
-            }
-
-            function initializeSidebarAndSearchInteractions(data) {
-                // محرك التفاعل للقائمة الجانبية (Sidebar Drawer)
-                const sidebarOpenBtn = document.getElementById('sidebar-open-btn');
-                const sidebarDrawer = document.getElementById('sidebar-drawer');
-                const drawerShield = document.getElementById('drawer-shield');
-
-                if (sidebarOpenBtn && sidebarDrawer && drawerShield) {
-                    sidebarOpenBtn.addEventListener('click', () => {
-                        sidebarDrawer.classList.add('active');
-                        drawerShield.classList.add('active');
-                    });
-
-                    drawerShield.addEventListener('click', () => {
-                        sidebarDrawer.classList.remove('active');
-                        drawerShield.classList.remove('active');
-                    });
-                }
-
-                // محرك التفاعل لمودال البحث السريع
-                const searchOpenBtn = document.getElementById('search-modal-open-btn');
-                const searchContainer = document.getElementById('search-container');
-                const searchCloseBtn = searchContainer ? searchContainer.querySelector('.search-close-btn') : null;
-
-                if (searchOpenBtn && searchContainer) {
-                    searchOpenBtn.addEventListener('click', () => {
-                        searchContainer.classList.add('active');
-                    });
-
-                    if (searchCloseBtn) {
-                        searchCloseBtn.addEventListener('click', () => {
-                            searchContainer.classList.remove('active');
-                        });
-                    }
-                }
-
-                // محرك الفرز الفوري والبحث داخل مودال البحث
-                const searchInput = document.getElementById('global-search-input');
-                const searchResults = document.querySelector('.search-results-container');
-                if (searchInput && searchResults) {
-                    searchInput.addEventListener('input', () => {
-                        const query = searchInput.value.trim().toLowerCase();
-                        if (!query) {
-                            searchResults.innerHTML = '';
-                            return;
-                        }
-
-                        const filtered = data.products.filter(p => {
-                            const titleMatch = p.title.toLowerCase().includes(query);
-                            const flavorMatch = p.flavorName && p.flavorName.toLowerCase().includes(query);
-                            const searchTermsMatch = p.searchTerms && p.searchTerms.some(term => term.toLowerCase().includes(query));
-                            return titleMatch || flavorMatch || searchTermsMatch;
-                        });
-
-                        if (filtered.length === 0) {
-                            searchResults.innerHTML = '<p style="text-align:center; padding:12px; color:var(--bose-black); opacity:0.6;">لا توجد نتائج تطابق بحثك</p>';
-                            return;
-                        }
-
-                        searchResults.innerHTML = filtered.map(p => {
-                            const finalCalculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(p.price, "all") : p.price;
-                            return `
-                                <a href="product.html?id=${p.id}" class="search-result-item" style="display:flex; align-items:center; gap:12px; padding:12px; border-bottom:1px solid rgba(255, 145, 164, 0.1); text-decoration:none; color:var(--bose-black);">
-                                    <img src="${p.images[0]}" alt="${p.title}" style="width:50px; height:50px; object-fit:cover; border-radius:8px;">
-                                    <div>
-                                        <h4 style="margin:0; font-size:1rem; font-weight:700;">${p.title}</h4>
-                                        <span style="font-size:0.8rem; color:var(--bose-pink); font-weight:700;">${p.flavorName || ''}</span>
-                                        <div style="font-size:0.9rem; font-weight:700; margin-top:2px;">${finalCalculatedPrice} جنيه</div>
-                                    </div>
-                                </a>
-                            `;
-                        }).join('');
-                    });
-                }
-            }
-        });
+            
+            localStorage.setItem('bose_cart', JSON.stringify(cart));
+            if (window.updateGlobalCartCounter) window.updateGlobalCartCounter();
+        }
     </script>
 </body>
 </html>
