@@ -273,7 +273,7 @@
                     
                     <!-- مشغل فيديو الفخر والاعتزاز المدمج والفاخر -->
                     <div class="pride-video-container">
-                        <video id="pride-bose-video" class="pride-video" loop muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+                        <video id="pride-bose-video" class="pride-video" loop autoplay muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
                             <source src="https://assets.mixkit.co/videos/preview/mixkit-decorating-a-chocolate-cake-with-cream-41581-large.mp4" type="video/mp4">
                             عذراً، متصفحك لا يدعم تشغيل الفيديو.
                         </video>
@@ -407,6 +407,12 @@
 
             // ط. تهيئة مشغل الفيديو لقسم الفخر والاعتزاز
             initializePrideVideo();
+
+            // ي. تفعيل عناصر التحكم في المودالات والتخطيط
+            initializeLayoutControls();
+
+            // ك. تهيئة محرك البحث اللحظي الفاخر
+            initializeLiveSearch();
         }
 
         // 1. توليد الشريط العلوي المتحرك
@@ -414,7 +420,6 @@
             const track = document.getElementById("bose-announcements-track");
             if (!track || !messages || messages.length === 0) return;
 
-            // تكرار الرسائل 3 مرات لملء الفراغات ومنع الثغرات البصرية أثناء الدوران المستمر
             let htmlContent = "";
             for (let i = 0; i < 3; i++) {
                 messages.forEach(msg => {
@@ -436,7 +441,6 @@
 
             if (!waterfallData || !leftCol || !rightCol) return;
 
-            // حقن صور العمود الأيسر (العجلة الصاعدة)
             let leftHtml = "";
             waterfallData.leftColumnImages.forEach(imgUrl => {
                 leftHtml += `
@@ -447,7 +451,6 @@
             });
             leftCol.innerHTML = leftHtml + leftHtml;
 
-            // حقن صور العمود الأيمن (العجلة الهابطة)
             let rightHtml = "";
             waterfallData.rightColumnImages.forEach(imgUrl => {
                 rightHtml += `
@@ -475,18 +478,15 @@
             });
             track.innerHTML = htmlContent;
 
-            // نقاط التنقل (Dots)
             let dotsHtml = "";
             excellenceData.images.forEach((_, index) => {
                 dotsHtml += `<button class="dot-btn ${index === 0 ? 'active' : ''}" data-index="${index}" onclick="slideToExcellence(${index})"></button>`;
             });
             if (dotsContainer) dotsContainer.innerHTML = dotsHtml;
 
-            // تفعيل التمرير التلقائي السلس جداً
             initializeAutoSlide(track, excellenceData.images.length, "excellence-dots");
         }
 
-        // دالة حركة السلايد اليدوي لقسم التميز والإتقان
         window.slideToExcellence = function(index) {
             const track = document.getElementById("excellence-images-track");
             const dots = document.querySelectorAll("#excellence-dots .dot-btn");
@@ -565,7 +565,6 @@
 
             grid.innerHTML = htmlContent;
 
-            // إنشاء نقاط السلايدر للموبايل
             if (dotsContainer) {
                 let dotsHtml = "";
                 const totalDots = Math.ceil(cardIndex);
@@ -575,7 +574,6 @@
                 dotsContainer.innerHTML = dotsHtml;
             }
 
-            // تفعيل الاستماع للسحب باللمس والمزامنة مع النقاط اللحظية
             bindSwipeAndScrollEvents(grid, dotsId);
         }
 
@@ -638,7 +636,6 @@
 
             grid.innerHTML = htmlContent;
 
-            // تشغيل زر إظهار المزيد المخصص لمنتجاتنا
             const showMoreBtn = document.getElementById("btn-our-products-show-more");
             if (showMoreBtn) {
                 showMoreBtn.addEventListener("click", () => {
@@ -650,7 +647,7 @@
                             card.style.transform = "translateY(0)";
                         }, 50);
                     });
-                    showMoreBtn.parentElement.style.display = "none"; // إخفاء الحاوية للزر بالكامل بعد إظهار الكل
+                    showMoreBtn.parentElement.style.display = "none";
                 });
             }
         }
@@ -679,7 +676,6 @@
             });
             container.innerHTML = htmlContent;
 
-            // نقاط السلايدر للفئات
             if (dotsContainer) {
                 let dotsHtml = "";
                 for (let i = 0; i < categories.length; i++) {
@@ -693,7 +689,6 @@
 
         // 7. جلب بيانات وتفعيل كتل محاكي التورت، محاكي الورد وقسم الفخر والاعتزاز الرقمي
         function renderCakeAndFlowerPreviewBlocks(homepageData) {
-            // محاكي التورتة
             const cakeImg = document.getElementById("cake-preview-img");
             const cakeTitle = document.getElementById("cake-preview-title");
             const cakeDesc = document.getElementById("cake-preview-desc");
@@ -703,7 +698,6 @@
                 if (cakeDesc) cakeDesc.textContent = homepageData.cakePreview.description;
             }
 
-            // محاكي الورد
             const flowerImg = document.getElementById("flower-preview-img");
             const flowerTitle = document.getElementById("flower-preview-title");
             const flowerDesc = document.getElementById("flower-preview-desc");
@@ -713,7 +707,6 @@
                 if (flowerDesc) flowerDesc.textContent = homepageData.flowerPreview.description;
             }
 
-            // قسم الفخر والاعتزاز (Stats Block)
             const statsContainer = document.getElementById("bose-stats-grid");
             const prideTitle = document.getElementById("pride-title");
             const prideText = document.getElementById("pride-text");
@@ -770,7 +763,6 @@
                 sliderTrack.scrollLeft = scrollLeft - walk;
             });
 
-            // الاستماع اللحظي للتمرير لتحديث النقاط آلياً على الموبايل
             sliderTrack.addEventListener("scroll", () => {
                 clearTimeout(sliderTrack.scrollTimeout);
                 sliderTrack.scrollTimeout = setTimeout(() => {
@@ -790,7 +782,7 @@
                 
                 const scrollTarget = index * (cardWidth + gap);
                 slider.scrollTo({
-                    left: -scrollTarget, // الاتجاه اليمين لليسار RTL
+                    left: -scrollTarget, 
                     behavior: "smooth"
                 });
             }
@@ -853,7 +845,7 @@
             }
         };
 
-        // 10. دالة إضافة صنف من كروت الصفحة الرئيسية لداخل السلة
+        // 10. دالة إضافة صنف من كروت الصفحة الرئيسية لداخل السلة بطريقة دفاعية وآمنة
         window.addCardToCart = function(productSlug, btn) {
             if (!window.BoseStoreData) return;
 
@@ -877,17 +869,68 @@
                 customDetails: {}
             };
 
-            window.addBoseCartItem(newItem);
+            let cart = [];
+            try {
+                const rawCart = localStorage.getItem("bose_cart");
+                cart = rawCart ? JSON.parse(rawCart) : [];
+            } catch(e) {
+                cart = [];
+            }
+
+            const existingItem = cart.find(item => item.productSlug === productSlug && item.type === "standard");
+            if (existingItem) {
+                existingItem.quantity += qtyVal;
+            } else {
+                cart.push(newItem);
+            }
+
+            localStorage.setItem("bose_cart", JSON.stringify(cart));
+            
+            if (typeof window.updateGlobalCartCounter === "function") {
+                window.updateGlobalCartCounter();
+            }
+
+            showBoseToast(`تمت إضافة ${product.title} إلى السلة بنجاح! 🌸`);
             card.querySelector(".qty-value").textContent = "1";
         };
 
-        // 11. تشغيل والتحكم في فيديو الفخر والاعتزاز
+        // دالة إظهار التنبيه الموحد والراقي لمنع استخدام الـ browser alerts
+        function showBoseToast(message) {
+            let toastContainer = document.querySelector(".bose-toast-container");
+            if (!toastContainer) {
+                toastContainer = document.createElement("div");
+                toastContainer.className = "bose-toast-container";
+                document.body.appendChild(toastContainer);
+            }
+
+            const toast = document.createElement("div");
+            toast.className = "bose-toast active";
+            toast.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>${message}</span>
+            `;
+            toastContainer.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove("active");
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // 11. تشغيل والتحكم في فيديو الفخر والاعتزاز بنعومة فائقة
         function initializePrideVideo() {
             const video = document.getElementById("pride-bose-video");
             const playBtn = document.getElementById("video-play-btn");
             if (!video || !playBtn) return;
 
-            playBtn.addEventListener("click", () => {
+            video.play().then(() => {
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                playBtn.style.opacity = "0.2";
+            }).catch(err => {
+                console.log("Autoplay waiting for user gesture.", err);
+            });
+
+            const togglePlay = () => {
                 if (video.paused) {
                     video.play();
                     playBtn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -897,6 +940,102 @@
                     playBtn.innerHTML = '<i class="fas fa-play"></i>';
                     playBtn.style.opacity = "1";
                 }
+            };
+
+            playBtn.addEventListener("click", togglePlay);
+            video.addEventListener("click", togglePlay);
+        }
+
+        // 12. تفعيل القائمة الجانبية ومودال البحث لمنع أي ثغرات برمجية أو تداخل مع الموبايل
+        function initializeLayoutControls() {
+            const menuToggle = document.querySelector(".nav-menu-toggle");
+            const drawerMenu = document.querySelector(".bose-drawer-menu");
+            const searchTrigger = document.querySelector(".nav-search-trigger");
+            const searchModal = document.querySelector(".bose-search-modal");
+            const searchClose = document.querySelector(".search-close-btn");
+
+            let overlay = document.querySelector(".drawer-overlay");
+            if (!overlay) {
+                overlay = document.createElement("div");
+                overlay.className = "drawer-overlay";
+                document.body.appendChild(overlay);
+            }
+
+            const toggleDrawer = () => {
+                menuToggle.classList.toggle("active");
+                drawerMenu.classList.toggle("active");
+                overlay.classList.toggle("active");
+            };
+
+            menuToggle.addEventListener("click", toggleDrawer);
+            overlay.addEventListener("click", toggleDrawer);
+
+            searchTrigger.addEventListener("click", () => {
+                searchModal.classList.add("active");
+                searchModal.setAttribute("aria-hidden", "false");
+                document.getElementById("global-search-input").focus();
+            });
+
+            const closeSearch = () => {
+                searchModal.classList.remove("active");
+                searchModal.setAttribute("aria-hidden", "true");
+            };
+
+            searchClose.addEventListener("click", closeSearch);
+        }
+
+        // 13. محرك البحث اللحظي الفوري عالي الأداء لنتائج فادحة السرعة
+        function initializeLiveSearch() {
+            const searchInput = document.getElementById("global-search-input");
+            const resultsContainer = document.querySelector(".search-results-container");
+            if (!searchInput || !resultsContainer) return;
+
+            searchInput.addEventListener("input", (e) => {
+                const query = e.target.value.trim().toLowerCase();
+                if (query.length === 0) {
+                    resultsContainer.innerHTML = "";
+                    return;
+                }
+
+                if (!window.BoseStoreData || !window.BoseStoreData.products) return;
+
+                const matched = window.BoseStoreData.products.filter(p => {
+                    return p.title.toLowerCase().includes(query) || 
+                           p.flavorName.toLowerCase().includes(query) || 
+                           (p.searchTerms && p.searchTerms.some(term => term.toLowerCase().includes(query)));
+                });
+
+                if (matched.length === 0) {
+                    resultsContainer.innerHTML = `<p style="text-align: center; color: var(--bose-black); opacity: 0.6; padding: 20px;">عذراً، لم نجد نتائج تطابق بحثك 🌸</p>`;
+                    return;
+                }
+
+                let htmlContent = `<div class="search-results-grid">`;
+                matched.forEach(product => {
+                    const price = window.calculateBosePrice(product.price, "all");
+                    const img = product.images[0] || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
+                    htmlContent += `
+                        <div class="product-card" style="width: 100% !important; margin: 0 auto !important;" data-slug="${product.slug}">
+                            <div class="card-image-wrapper">
+                                <a href="product.html?slug=${product.slug}">
+                                    <img src="${img}" alt="${product.title}" class="product-card-img" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
+                                </a>
+                            </div>
+                            <div class="product-card-info">
+                                <h3 class="product-card-title"><a href="product.html?slug=${product.slug}">${product.title}</a></h3>
+                                <span class="product-card-flavor">${product.flavorName}</span>
+                                <div class="product-card-price-row">
+                                    <span class="bose-price-text">${price} EGP</span>
+                                </div>
+                                <button class="bose-add-to-cart-btn-full" onclick="addCardToCart('${product.slug}', this)">
+                                    <i class="fas fa-shopping-basket"></i> إضافة للسلة
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                htmlContent += `</div>`;
+                resultsContainer.innerHTML = htmlContent;
             });
         }
     </script>
