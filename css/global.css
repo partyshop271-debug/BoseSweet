@@ -1,3 +1,4 @@
+css
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
 
 :root {
@@ -425,7 +426,7 @@ button, input, select, textarea {
 .marquee-track {
     display: flex;
     width: max-content;
-    animation: marquee-scroll-rtl 40s linear infinite;
+    animation: marquee-scroll-rtl 57s linear infinite; /* قللنا سرعة الماركي الكلاسيكي بنسبة 30% بزيادة الزمن من 40s إلى 57s */
     will-change: transform;
 }
 
@@ -746,3 +747,4 @@ button, input, select, textarea {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--bose-pink);
 }
+

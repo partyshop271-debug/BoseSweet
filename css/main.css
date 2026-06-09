@@ -374,8 +374,9 @@
     flex: 1;
 }
 
-.waterfall-down { animation: waterfall-scroll-down 28s linear infinite; }
-.waterfall-up { animation: waterfall-scroll-up 28s linear infinite; }
+/* تم تعديل سرعة الشلال بنسبة 10% بزيادة زمن التحريك الإجمالي من 28 ثانية إلى 31.1 ثانية لثبات وهدوء بصرى فخم */
+.waterfall-down { animation: waterfall-scroll-down 31.1s linear infinite !important; }
+.waterfall-up { animation: waterfall-scroll-up 31.1s linear infinite !important; }
 
 .waterfall-item {
     width: 100%;
@@ -1219,3 +1220,5 @@
         height: 420px !important;
     }
 }
+
+
