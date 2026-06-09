@@ -39,7 +39,7 @@
         .marquee-track-container {
             display: flex;
             width: max-content;
-            animation: marqueeContinuous 40s linear infinite;
+            animation: marqueeContinuous 57s linear infinite; /* تم تبطئة السرعة بنسبة 30% لراحة القراءة */
             will-change: transform;
         }
         .marquee-message-node {
@@ -408,7 +408,6 @@
         .cake-banner-content-box, .flower-banner-content-box { padding: 32px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
         .badge-accent { background-color: var(--bose-pink); color: var(--bose-white); font-size: 0.8rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; }
         
-        /* إعادة هيكلة برمجية صارمة لقسم الفخر والاعتزاز ليكون متناسقاً وعمودياً بالكامل */
         #pride-section {
             display: block !important;
             position: relative;
@@ -447,8 +446,10 @@
         .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--bose-pink); display: block; margin-bottom: 4px; }
         .stat-label { font-size: 0.95rem; font-weight: 600; color: var(--bose-black); opacity: 0.8; }
         
+        /* جعل الفيديو يملأ الشاشة تماماً طولاً وعرضاً في قسم الفخر والاعتزاز */
         .pride-video-block-wrapper {
             width: 100vw !important;
+            height: 100vh !important; /* ملء الشاشة بالارتفاع بالكامل */
             margin-left: calc(-50vw + 50%) !important;
             margin-right: calc(-50vw + 50%) !important;
             background-color: var(--bose-black);
@@ -459,8 +460,7 @@
         }
         .pride-video-large {
             width: 100% !important;
-            height: auto !important;
-            max-height: 80vh !important;
+            height: 100% !important; /* ملء الشاشة بالكامل عرضاً وطولاً */
             object-fit: cover !important;
             display: block !important;
         }
@@ -571,10 +571,19 @@
 
     <div class="bose-top-marquee-bar">
         <div class="marquee-track-container" id="top-marquee-track">
-            <div class="marquee-message-node">✨ طعم أصلي وخامات طبيعية 100% طازجة يومياً من مطبخنا إليكم مباشرة فرع الكفاح</div>
-            <div class="marquee-message-node">🌸 تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة</div>
-            <div class="marquee-message-node">👑 تميزوا بهداياكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة المتميزة الحصرية</div>
-            <div class="marquee-message-node">🎁 صمم تورتتك المخصصة وبوكيه الورد خطوة بخطوة عبر محاكياتنا التفاعلية المتطورة</div>
+            <!-- تم زيادة عدد الرسائل وتجديدها 3 أضعاف لخلق تدفق تسويقي غني ولا نهائي وبدون فراغات -->
+            <div class="marquee-message-node">✨ طعم أصلي وخامات طبيعية 100% طازجة يومياً من مطبخنا إليكم مباشرة فرع الكفاح 🌸</div>
+            <div class="marquee-message-node">🌸 تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة 🧁</div>
+            <div class="marquee-message-node">👑 تميزوا بهداياكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة المتميزة الحصرية 🎉</div>
+            <div class="marquee-message-node">🎁 صمم تورتتك المخصصة وبوكيه الورد خطوة بخطوة عبر محاكياتنا التفاعلية المتطورة 🌹</div>
+            <div class="marquee-message-node">🍓 الفراولة الطازجة والمانجو الطبيعي يزينان أطباقنا يومياً لنسعد قلوبكم الكريمة ✨</div>
+            <div class="marquee-message-node">🧁 كب كيك هبط من جنة المذاق، غني بالزبدة الطبيعية الفاخرة ومحشو بنهر من الشوكولاتة السائلة 🍫</div>
+            <div class="marquee-message-node">🍩 دوناتس هشة وخفيفة كالسحاب تذوب في الفم مع توبنج البيستاشيو والنوتيلا البلجيكية الأصيلة 👑</div>
+            <div class="marquee-message-node">🍯 قشطوطة ريانة غنية بالحليب ومغطاة بأجود أنواع المكسرات واللوتس المتميز لتجربة تذوق ساحرة ✨</div>
+            <div class="marquee-message-node">🍫 ديسباسيتو غنية بموس الشوكولاتة البلجيكية وصوصاتنا الخاصة لتناسب ذوقكم الرفيع 🍰</div>
+            <div class="marquee-message-node">🌹 بوكيهات ورد طبيعي وصناعي وستان منسقة يدوياً لتكون الهدية الأجمل التي تليق بأحبابكم 🎁</div>
+            <div class="marquee-message-node">✨ نسعى دائماً لتقديم الأفضل لعملائنا الكرام بفرع الكفاح مع جودة تليق بوجودكم معنا 🌸</div>
+            <div class="marquee-message-node">🎉 كل احتفال ومناسبة سعيدة تكتمل بلمسة دافئة وساحرة من حلويات بوسي الفاخرة المجهزة بحب 👑</div>
         </div>
     </div>
 
@@ -641,7 +650,6 @@
         </div>
     </section>
 
-    <!-- تم حذف نصوص وعنوان الشلال ليكون أول خطاف بصري خالص بمظهر غاية في الرقي -->
     <section id="waterfall-section">
         <div class="waterfall-container">
             <div class="waterfall-column waterfall-up" id="waterfall-left-col"></div>
@@ -733,7 +741,6 @@
         </div>
     </section>
 
-    <!-- تطوير وتأمين قسم الفخر والاعتزاز ليكون ذو نسق عمودي كامل ومريح بصرياً -->
     <section id="pride-section">
         <div class="bose-section-header-block">
             <h2>الفخر والاعتزاز</h2>
@@ -755,6 +762,7 @@
             </div>
         </div>
         
+        <!-- الفيديو المطور لملء الشاشة بالكامل طولاً وعرضاً بدقة متطورة -->
         <div class="pride-video-block-wrapper">
             <video class="pride-video-large" autoplay loop muted playsinline preload="auto">
                 <source src="https://res.cloudinary.com/dyx4w0dr1/video/upload/v1740000000/bose_promo_video.mp4" type="video/mp4">
@@ -813,7 +821,7 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // تكرار شريط النصوص المتحرك العلوي بانسيابية
+            // تكرار شريط النصوص المتحرك العلوي بانسيابية لضمان استمراريته اللانهائية
             const track = document.getElementById("top-marquee-track");
             if (track) {
                 const items = Array.from(track.children);
@@ -1059,4 +1067,3 @@
     </script>
 </body>
 </html>
-
