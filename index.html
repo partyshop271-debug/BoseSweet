@@ -51,7 +51,6 @@
             display: flex;
             align-items: center;
         }
-        /* إصلاح وهندسة التحريك الدائري اللانهائي لمنع الاختفاء الفجائي */
         @keyframes marqueeContinuous {
             0% { transform: translate3d(0, 0, 0); }
             100% { transform: translate3d(-50%, 0, 0); }
@@ -447,7 +446,6 @@
         .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--bose-pink); display: block; margin-bottom: 4px; }
         .stat-label { font-size: 0.95rem; font-weight: 600; color: var(--bose-black); opacity: 0.8; }
         
-        /* تصغير حجم بلوك الفيديو في قسم الفخر والاعتزاز بنسبة 30% مع التوسيط الجمالي للموقع */
         .pride-video-block-wrapper {
             width: 70vw !important;
             height: 70vh !important;
@@ -574,7 +572,7 @@
         <div class="marquee-track-container" id="top-marquee-track">
             <div class="marquee-message-node">✨ طعم أصلي وخامات طبيعية 100% طازجة يومياً من مطبخنا إليكم مباشرة فرع الكفاح 🌸</div>
             <div class="marquee-message-node">🌸 تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة 🧁</div>
-            <div class="marquee-message-node">👑 تميزوا بهداياكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة المتميزة الحصرية 🎉</div>
+            <div class="marquee-message-node">👑 تميزوا بهداياكم وجلساتكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة المتميزة الحصرية 🎉</div>
             <div class="marquee-message-node">🎁 صمم تورتتك المخصصة وبوكيه الورد خطوة بخطوة عبر محاكياتنا التفاعلية المتطورة 🌹</div>
             <div class="marquee-message-node">🍓 الفراولة الطازجة والمانجو الطبيعي يزينان أطباقنا يومياً لنسعد قلوبكم الكريمة ✨</div>
             <div class="marquee-message-node">🧁 كب كيك هبط من جنة المذاق، غني بالزبدة الطبيعية الفاخرة ومحشو بنهر من الشوكولاتة السائلة 🍫</div>
@@ -684,7 +682,7 @@
     <section id="our-products-section">
         <div class="bose-section-header-block">
             <h2>منتجاتنا</h2>
-            <p>التشكيلة الكاملة والفاخرة من إبداعات حلويات بوسي المتاحة لطلباتكم الفورية والمجهزة بأعلى معايير الجودة العالية.</p>
+            <p>التشكيلة الكاملة والفاخرة من إبداعات حلويات بوسي المتاحة لطلباتكم الفورية والمجهة بأعلى معايير الجودة العالية.</p>
         </div>
         <div class="products-grid-wrapper">
             <div id="our-products-grid"></div>
@@ -820,10 +818,27 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const track = document.getElementById("top-marquee-track");
-            if (track) {
-                const items = Array.from(track.children);
-                items.forEach(item => track.appendChild(item.cloneNode(true)));
+            // حل المشكلة الجذري: ننتظر بث حدث اكتمال قراءة وحقن البيانات من محرك الأنوية قبل تكرار عناصر الشريط
+            window.addEventListener('bose_data_ready', () => {
+                initializeMarqueeStreaming();
+            });
+
+            // تأمين ارتدادي: إذا كانت البيانات قد حُملت بالفعل قبل رصد الحدث، ننعش شريط التمرير فوراً
+            if (window.BoseStoreData && window.BoseStoreData.store) {
+                initializeMarqueeStreaming();
+            }
+
+            function initializeMarqueeStreaming() {
+                const track = document.getElementById("top-marquee-track");
+                if (track && !track.hasAttribute('data-cloned')) {
+                    const items = Array.from(track.children);
+                    items.forEach(item => track.appendChild(item.cloneNode(true)));
+                    track.setAttribute('data-cloned', 'true');
+                    // إجبار محرك المعالجة على إعادة رسم الحاوية لمنع الانهيار البصري للحجم
+                    track.style.display = 'none';
+                    track.offsetHeight; 
+                    track.style.display = 'flex';
+                }
             }
 
             const databaseGuardInterval = setInterval(() => {
