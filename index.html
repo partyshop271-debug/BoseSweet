@@ -43,7 +43,7 @@
         .marquee-track-container {
             display: flex;
             width: max-content;
-            animation: marqueeContinuous 45s linear infinite;
+            animation: marqueeContinuous 64.3s linear infinite; /* تم تقليل السرعة بنسبة 30% من 45 ثانية إلى 64.3 ثانية لتسهيل قراءة النص بوضوح وراحة */
             will-change: transform;
             direction: ltr !important; /* توحيد تدفق الحركة لليسار لمنع التلاشي */
         }
@@ -153,8 +153,9 @@
             max-width: 480px;
             flex: 1;
         }
-        .waterfall-down { animation: waterfall-scroll-down 28s linear infinite; }
-        .waterfall-up { animation: waterfall-scroll-up 28s linear infinite; }
+        /* تم تقليل سرعة حركة الشلال بنسبة 10% بزيادة زمن الحركة الإجمالي من 28 ثانية إلى 31.1 ثانية لراحة بصرية وهدوء تفاعلي */
+        .waterfall-down { animation: waterfall-scroll-down 31.1s linear infinite; }
+        .waterfall-up { animation: waterfall-scroll-up 31.1s linear infinite; }
         .waterfall-item {
             width: 100%;
             border-radius: 24px;
@@ -629,7 +630,7 @@
         </div>
         <div class="drawer-premium-footer">
             <a href="tel:01097238441" class="bose-btn-primary" style="display:flex; align-items:center; justify-content:center; gap:8px;">اتصال فوري بالفرع</a>
-            <p>&copy; 2026 علامة حلويات بوسي.</p>
+            <p>&copy; 2026 جميع الحقوق محفوظة لـ علامة حلويات بوسي الفاخرة.</p>
         </div>
     </aside>
 
@@ -1091,3 +1092,4 @@
     </script>
 </body>
 </html>
+
