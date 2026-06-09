@@ -7,316 +7,16 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/main.css">
     
     <style>
-        :root {
-            --bose-pink: #FF91A4;
-            --bose-white: #FFFFFF;
-            --bose-black: #111111;
-            --bose-cream: #FFF5F6;
-            --bose-gold: #D4AF37;
-            --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
-            --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
-            --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
-            --bose-border-thick: 2px solid #FF91A4;
-            --bose-transition-smooth: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bose-white);
-            color: var(--bose-black);
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        /* تنسيقات الشريط العلوي المتحرك الموحد */
-        .bose-top-bar {
-            background-color: var(--bose-black);
-            color: var(--bose-white);
-            height: 40px;
-            overflow: hidden;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1001;
-            display: flex;
-            align-items: center;
-        }
-
-        .marquee-track {
-            display: flex;
-            white-space: nowrap;
-            animation: marquee 25s linear infinite;
-        }
-
-        .marquee-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0 30px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(50%); }
-        }
-
-        /* الهيدر الموحد الفاخر المتطابق مع الاندكس */
-        .bose-navbar {
-            position: fixed;
-            top: 40px; /* أسفل التوب بار مباشرة */
-            left: 0;
-            right: 0;
-            height: 70px;
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border-bottom: var(--bose-border-pink);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-            z-index: 1000;
-            box-shadow: var(--bose-shadow-glow);
-        }
-
-        .nav-right-side {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .brand-logo-container {
-            display: flex;
-            align-items: center;
-        }
-
-        .brand-logo-container a {
-            display: flex;
-            align-items: center;
-        }
-
-        #bose-store-logo {
-            height: 45px;
-            width: 45px;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-
-        .brand-name {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--bose-black);
-            text-decoration: none;
-        }
-
-        .nav-left-actions {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .nav-menu-toggle {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 24px;
-            height: 18px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .nav-menu-toggle span {
-            width: 100%;
-            height: 3px;
-            background-color: var(--bose-black);
-            transition: var(--bose-transition-smooth);
-            border-radius: 2px;
-        }
-
-        .nav-search-trigger {
-            background: transparent;
-            border: none;
-            font-size: 1.2rem;
-            color: var(--bose-black);
-            cursor: pointer;
-            transition: var(--bose-transition-smooth);
-        }
-
-        .nav-cart-icon-wrapper {
-            position: relative;
-            font-size: 1.25rem;
-            color: var(--bose-black);
-            text-decoration: none;
-            transition: var(--bose-transition-smooth);
-        }
-
-        #nav-cart-count {
-            position: absolute;
-            top: -6px;
-            right: -10px;
-            background-color: var(--bose-pink);
-            color: var(--bose-white);
-            font-size: 0.72rem;
-            font-weight: 700;
-            border-radius: 50%;
-            min-width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 4px;
-            box-shadow: 0 2px 6px rgba(255, 145, 164, 0.4);
-        }
-
-        /* تنسيقات القائمة الجانبية الموحدة */
-        .bose-drawer-menu {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            right: -300px;
-            width: 280px;
-            background-color: var(--bose-white);
-            z-index: 1002;
-            box-shadow: -4px 0 20px rgba(0,0,0,0.05);
-            transition: var(--bose-transition-smooth);
-            display: flex;
-            flex-direction: column;
-            padding: 40px 20px;
-        }
-
-        .bose-drawer-menu.active {
-            right: 0;
-        }
-
-        .drawer-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0,0,0,0.3);
-            z-index: 1001;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--bose-transition-smooth);
-        }
-
-        .drawer-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .drawer-links-list {
-            list-style: none;
-            padding: 0;
-            margin: 40px 0 0 0;
-        }
-
-        .drawer-link-item {
-            margin-bottom: 20px;
-        }
-
-        .drawer-link-item a {
-            text-decoration: none;
-            color: var(--bose-black);
-            font-size: 1.1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: var(--bose-transition-smooth);
-        }
-
-        .drawer-link-item a:hover {
-            color: var(--bose-pink);
-            padding-right: 6px;
-        }
-
-        .drawer-footer {
-            margin-top: auto;
-            text-align: center;
-            font-size: 0.9rem;
-            color: var(--bose-black);
-            opacity: 0.7;
-        }
-
-        /* مودال البحث السريع الموحد */
-        .bose-search-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--bose-white);
-            z-index: 2000;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--bose-transition-smooth);
-            padding: 30px 20px;
-        }
-
-        .bose-search-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .search-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .search-close-btn {
-            background: transparent;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--bose-black);
-        }
-
-        .search-input-wrapper {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        #global-search-input {
-            width: 100%;
-            padding: 15px 45px 15px 15px;
-            border: var(--bose-border-pink);
-            border-radius: 30px;
-            font-family: 'Cairo', sans-serif;
-            font-size: 1rem;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        .search-icon-inside {
-            position: absolute;
-            top: 50%;
-            right: 20px;
-            transform: translateY(-50%);
-            color: var(--bose-black);
-            opacity: 0.5;
-        }
-
-        /* حاويات المنيو الرئيسية */
+        /* كتل المنيو وتنسيقات التبويب الفريدة لشبكة الفئات الشاملة */
         .menu-main-container {
-            margin-top: 130px; /* مسافة كافية للتوب بار والهيدر الموحد */
+            margin-top: 40px;
             padding: 40px 16px 60px 16px;
             max-width: 1400px;
             margin-left: auto;
@@ -526,139 +226,6 @@
         .menu-category-block:hover .category-action-btn {
             letter-spacing: 0.5px;
         }
-
-        /* الفوتر الفاخر الموحد المتطابق مع الاندكس */
-        .bose-footer {
-            background-color: var(--bose-white);
-            border-top: var(--bose-border-pink);
-            padding: 60px 16px 20px 16px;
-            margin-top: 80px;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 40px;
-            padding-bottom: 40px;
-            border-bottom: 1px solid rgba(255, 145, 164, 0.15);
-        }
-
-        @media(min-width: 768px) {
-            .footer-container {
-                grid-template-columns: 2fr 1fr 1fr;
-            }
-        }
-
-        .footer-about-block {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .footer-brand-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--bose-black);
-            margin: 0;
-        }
-
-        #footer-about-text {
-            font-size: 0.95rem;
-            color: var(--bose-black);
-            opacity: 0.8;
-            line-height: 1.7;
-            margin: 0;
-        }
-
-        #footer-social-links {
-            display: flex;
-            gap: 12px;
-            margin-top: 8px;
-        }
-
-        #footer-social-links a {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--bose-cream);
-            color: var(--bose-black);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: var(--bose-transition-smooth);
-            border: var(--bose-border-pink);
-        }
-
-        #footer-social-links a:hover {
-            background-color: var(--bose-pink);
-            color: var(--bose-white);
-            transform: translateY(-4px);
-            box-shadow: var(--bose-shadow-hover);
-        }
-
-        .footer-links-column {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .footer-column-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--bose-black);
-            margin: 0;
-        }
-
-        .footer-links-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .footer-links-list a {
-            text-decoration: none;
-            color: var(--bose-black);
-            opacity: 0.8;
-            font-size: 0.95rem;
-            transition: var(--bose-transition-smooth);
-        }
-
-        .footer-links-list a:hover {
-            color: var(--bose-pink);
-            opacity: 1;
-            padding-right: 4px;
-        }
-
-        .footer-bottom-bar {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            text-align: center;
-            font-size: 0.85rem;
-            color: var(--bose-black);
-            opacity: 0.7;
-        }
-
-        @media(min-width: 768px) {
-            .footer-bottom-bar {
-                flex-direction: row;
-                justify-content: space-between;
-                text-align: right;
-            }
-        }
-
-        .footer-copyrights strong {
-            color: var(--bose-black);
-        }
     </style>
     
     <script type="application/ld+json">
@@ -689,7 +256,7 @@
 
     <div class="bose-top-bar" id="bose-announcements-bar">
         <div class="marquee-track" id="bose-announcements-track">
-            </div>
+        </div>
     </div>
 
     <header class="bose-navbar">
@@ -742,7 +309,7 @@
             <i class="fas fa-search search-icon-inside"></i>
         </div>
         <div class="search-results-container">
-            </div>
+        </div>
     </div>
 
     <main class="menu-main-container">
@@ -941,10 +508,9 @@
         </div>
     </footer>
 
-    <script src="js/core.html.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // تفعيل محرك فرز الفئات والأزرار للمنيو الشامل
+            // محرك فرز الفئات والأزرار للمنيو الشامل
             const tabs = document.querySelectorAll(".tab-filter-btn");
             const cards = document.querySelectorAll(".menu-category-block");
 
@@ -971,43 +537,11 @@
                 });
             });
 
-            // تحديث عداد السلة الفوري الدفاعي
-            if (window.updateGlobalCartCounter) {
-                window.updateGlobalCartCounter();
-            } else {
-                const rawCart = localStorage.getItem('bose_cart');
-                const cart = rawCart ? JSON.parse(rawCart) : [];
-                const total = cart.reduce((sum, item) => sum + item.quantity, 0);
-                const badge = document.getElementById('nav-cart-count');
-                if (badge) badge.textContent = total;
-            }
+            // التأكد من تهيئة القائمة والتحكم الفاخر في صفحة المنيو بالتطابق مع الاندكس لمنع التجمد
+            initializeLayoutControls();
+        });
 
-            // تفعيل الشريط العلوي بمضاعفة منوعة ونظيفة تماماً
-            const track = document.getElementById("bose-announcements-track");
-            if (track) {
-                const boseMessages = [
-                    "صنعناها بحب لتهديها لمن تحب 🌸",
-                    "خبرة أكثر من 10 سنوات في عالم الحلويات الفاخرة ✨",
-                    "خامات متميزة وجودة فائقة تليق بمناسباتكم السعيدة 👑",
-                    "استمتع بتجربة تسوق فريدة عبر محاكياتنا التفاعلية 💫",
-                    "توصيل سريع وآمن لجميع طلباتكم بدقة تامة 🌹",
-                    "كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة 🧁"
-                ];
-                let content = "";
-                for(let i=0; i<4; i++) {
-                    boseMessages.forEach(msg => {
-                        content += `
-                            <div class="marquee-item">
-                                <i class="fas fa-star" style="color: var(--bose-gold)"></i>
-                                <span>${msg}</span>
-                            </div>
-                        `;
-                    });
-                }
-                track.innerHTML = content;
-            }
-
-            // معالجة وحل مشكلة تحكم عناصر القائمة الجانبية ومودال البحث لمنع التجمد
+        function initializeLayoutControls() {
             const menuToggle = document.querySelector(".nav-menu-toggle");
             const drawerMenu = document.querySelector(".bose-drawer-menu");
             const searchTrigger = document.querySelector(".nav-search-trigger");
@@ -1021,34 +555,49 @@
                 document.body.appendChild(overlay);
             }
 
-            const toggleDrawer = (e) => {
+            const openDrawer = (e) => {
                 e.preventDefault();
-                menuToggle.classList.toggle("active");
-                drawerMenu.classList.toggle("active");
-                overlay.classList.toggle("active");
+                e.stopPropagation();
+                menuToggle.classList.add("active");
+                drawerMenu.classList.add("active");
+                overlay.classList.add("active");
+                document.body.style.overflow = "hidden";
             };
 
-            if(menuToggle) menuToggle.addEventListener("click", toggleDrawer);
-            overlay.addEventListener("click", toggleDrawer);
+            const closeDrawer = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                menuToggle.classList.remove("active");
+                drawerMenu.classList.remove("active");
+                overlay.classList.remove("active");
+                document.body.style.overflow = "initial";
+            };
 
-            if(searchTrigger) {
+            menuToggle.addEventListener("click", (e) => {
+                if (drawerMenu.classList.contains("active")) {
+                    closeDrawer(e);
+                } else {
+                    openDrawer(e);
+                }
+            });
+            overlay.addEventListener("click", closeDrawer);
+
+            if (searchTrigger && searchModal) {
                 searchTrigger.addEventListener("click", (e) => {
                     e.preventDefault();
                     searchModal.classList.add("active");
-                    searchModal.setAttribute("aria-hidden", "false");
-                    const sInput = document.getElementById("global-search-input");
-                    if(sInput) sInput.focus();
+                    const searchInput = document.getElementById("global-search-input");
+                    if(searchInput) searchInput.focus();
                 });
             }
 
-            if(searchClose) {
+            if (searchClose) {
                 searchClose.addEventListener("click", (e) => {
                     e.preventDefault();
                     searchModal.classList.remove("active");
-                    searchModal.setAttribute("aria-hidden", "true");
                 });
             }
-        });
+        }
     </script>
 </body>
 </html>
