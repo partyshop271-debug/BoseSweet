@@ -231,13 +231,15 @@
             width: 100% !important;
             box-sizing: border-box !important;
             overflow: hidden !important;
-            height: auto !important;
+            height: auto !important; /* مرن بالكامل للسماح بظهور كافة العناصر دون قص */
         }
         
         @media (max-width: 767px) {
             .product-card {
-                min-height: 370px !important; /* الارتفاع الإجمالي التقريبي للكرت على الموبايل */
-                max-height: 440px !important; /* مرن لمنع التداخل أو قطع النصوص */
+                padding: 10px !important; /* تقليل الحشو قليلاً ليتلاءم مع حجم الشاشة بصرياً */
+                gap: 10px !important;
+                min-height: 420px !important; /* الارتفاع الأدنى المناسب والتناسق بين الكروت */
+                max-height: none !important; /* إلغاء القيود القديمة نهائياً لمنع قطع النصوص أو إخفاء الأزرار */
             }
         }
 
@@ -291,6 +293,7 @@
             text-align: center;
             overflow: hidden;
         }
+        
         .product-card-title {
             font-size: 1.05rem !important;
             font-weight: 700;
@@ -303,6 +306,11 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+        }
+        @media (max-width: 767px) {
+            .product-card-title {
+                font-size: 0.95rem !important; /* جعل العنوان أكثر تناسقاً على شاشات الموبايل */
+            }
         }
         @media (min-width: 1024px) {
             .product-card-title {
@@ -326,6 +334,12 @@
             overflow: hidden;
             max-width: 90%;
         }
+        @media (max-width: 767px) {
+            .product-card-flavor {
+                font-size: 0.78rem !important;
+                padding: 3px 8px !important;
+            }
+        }
         .product-card-desc {
             font-size: 0.85rem;
             color: var(--bose-black);
@@ -338,11 +352,18 @@
             overflow: hidden;
             text-align: center !important;
         }
+        @media (max-width: 767px) {
+            .product-card-desc {
+                font-size: 0.78rem !important;
+                line-height: 1.4 !important;
+            }
+        }
 
         .bose-quantity-counter-wrapper {
             display: flex;
             justify-content: center;
             width: 100%;
+            margin-top: auto !important; /* محاذاة تلقائية ودفع الأزرار والأسعار للأسفل لتتساوى كافة الكروت */
         }
         .bose-quantity-counter {
             display: flex;
@@ -354,6 +375,12 @@
             height: 36px;
             width: 100%;
             max-width: 130px;
+        }
+        @media (max-width: 767px) {
+            .bose-quantity-counter {
+                height: 32px !important;
+                max-width: 110px !important;
+            }
         }
         .qty-btn {
             width: 38px;
@@ -368,13 +395,39 @@
             cursor: pointer;
             transition: var(--bose-transition-smooth);
         }
+        @media (max-width: 767px) {
+            .qty-btn {
+                width: 32px !important;
+                font-size: 1rem !important;
+            }
+        }
         .qty-btn:active {
             background-color: rgba(255, 145, 164, 0.1);
         }
         .btn-plus { color: var(--bose-pink); border-left: 1px solid rgba(255, 145, 164, 0.15); }
         .btn-minus { color: var(--bose-black); opacity: 0.6; border-right: 1px solid rgba(255, 145, 164, 0.15); }
         .qty-value { flex-grow: 1; text-align: center; font-size: 0.95rem; font-weight: 700; color: var(--bose-black); }
-        .product-card-price-row { font-size: 1.1rem; font-weight: 700; color: var(--bose-pink); margin-top: auto; text-align: center !important; }
+        @media (max-width: 767px) {
+            .qty-value {
+                font-size: 0.85rem !important;
+            }
+        }
+        
+        .product-card-price-row { 
+            font-size: 1.1rem; 
+            font-weight: 700; 
+            color: var(--bose-pink); 
+            margin-top: 4px; 
+            margin-bottom: 4px;
+            text-align: center !important; 
+        }
+        @media (max-width: 767px) {
+            .product-card-price-row {
+                font-size: 1rem !important;
+                margin-top: 4px !important;
+                margin-bottom: 4px !important;
+            }
+        }
         
         .bose-add-to-cart-btn-full {
             width: 100%;
@@ -388,6 +441,13 @@
             cursor: pointer;
             box-shadow: var(--bose-shadow-glow);
             transition: var(--bose-transition-smooth);
+        }
+        @media (max-width: 767px) {
+            .bose-add-to-cart-btn-full {
+                height: 38px !important;
+                font-size: 0.85rem !important;
+                border-radius: 10px !important;
+            }
         }
         .bose-add-to-cart-btn-full:hover {
             background-color: #ff788f;
@@ -1142,7 +1202,7 @@
             const descriptionsMap = {
                 "taswaq-despacito": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
                 "taswaq-qashtota": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
-                "taswaq-cinabon": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُخبز بعناية ثم تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
+                "taswaq-cinabon": "عجينة طرية محشوة بالزبدة والقرفة والسكر، تُغطى بطبقة من صوص التشيز الكلاسيكي المحضر بمكوناتنا الخاصة. بعد ذلك يختار العميل التوبنج الذي يفضله ليحصل على التجربة الأقرب لذوقه.",
                 "taswaq-donuts": "عجينة هشة وطرية يتم قليها بعناية حتى تصل للقوام المثالي، ثم تُحشى من الداخل بحشوات غنية ويضاف إليها التوبنج المختار من الخارج لتقديم تجربة متكاملة في كل قطعة.",
                 "taswaq-happiness-cups": "أكواب حلوى مصممة لتمنحك تجربة غنية في كل معلقة. يبدأ الأمر باختيار نوع الكيك المناسب للتوبنج: فانيليا، شوكولاتة، ثم نقوم بإضافة موس وحشوات مختارة بعناية لتتكامل مع النكهة المختارة وتمنح المنتج توازنه الخاص."
             };
