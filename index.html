@@ -713,7 +713,10 @@
         </div>
         <div class="cake-banner-container">
             <div class="cake-banner-image-box">
-                <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت الفاخر التفاعلي">
+                <!-- إدراج رابط يوجه مباشرة لمحاكي التورت لتدعيم شبكة الترابط الداخلي -->
+                <a href="cake-builder.html" style="display:block; width:100%; height:100%;" aria-label="الذهاب لمحاكي التورت التفاعلي">
+                    <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت الفاخر التفاعلي">
+                </a>
             </div>
             <div class="cake-banner-content-box">
                 <span class="badge-accent">ميزة تنافسية حصرية</span>
@@ -744,7 +747,10 @@
         </div>
         <div class="flower-banner-container">
             <div class="flower-banner-image-box">
-                <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد الطبيعي والستان الفاخر">
+                <!-- إدراج رابط يوجه مباشرة لمحاكي الورد لتدعيم شبكة الترابط الداخلي -->
+                <a href="flower-builder.html" style="display:block; width:100%; height:100%;" aria-label="الذهاب لمحاكي الورد التفاعلي">
+                    <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد الطبيعي والستان الفاخر">
+                </a>
             </div>
             <div class="flower-banner-content-box">
                 <span class="badge-accent">تخصيص الهدايا الفاخرة</span>
@@ -892,7 +898,11 @@
                 const excellenceTrack = document.getElementById('excellence-images-track');
                 if(excellenceTrack && data.homepage && data.homepage.excellence && data.homepage.excellence.images) {
                     excellenceTrack.innerHTML = data.homepage.excellence.images.map(src => `
-                        <div class="excellence-slide-item"><img src="${src}" alt="إتقان حلويات بوسي"></div>
+                        <div class="excellence-slide-item">
+                            <a href="menu.html" style="display:block; width:100%; height:100%;">
+                                <img src="${src}" alt="إتقان حلويات بوسي">
+                            </a>
+                        </div>
                     `).join('');
                     setupTrackIndicatorsAndScroll('excellence-images-track', 'excellence-carousel-dots', data.homepage.excellence.images.length, true);
                 }
@@ -946,18 +956,26 @@
                 registerDynamicStepperDelegators();
             }
 
+            // توليد كروت المنتجات مع دعم كامل لشبكة الروابط الداخلية المتقاطعة (صور المنتجات والعناوين كلها روابط نشطة)
             function generateBlueprintProductCard(product) {
                 const finalCalculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(product.price, "all") : product.price;
                 const flavorDisplay = product.flavorName ? `<div class="product-card-flavor">${product.flavorName}</div>` : '';
                 const descDisplay = product.flavorDesc || product.description || '';
+                const productUrl = `product.html?slug=${product.slug || product.id}`;
 
                 return `
                     <div class="product-card" data-product-id="${product.id}">
-                        <div class="card-image-wrapper">
-                            <img src="${product.images[0]}" alt="${product.title}" class="product-card-img" loading="lazy">
-                        </div>
+                        <a href="${productUrl}" style="text-decoration:none; display:block; width:100%;" aria-label="استعرض تفاصيل ${product.title}">
+                            <div class="card-image-wrapper">
+                                <img src="${product.images[0]}" alt="${product.title}" class="product-card-img" loading="lazy">
+                            </div>
+                        </a>
                         <div class="product-card-info">
-                            <h3 class="product-card-title">${product.title}</h3>
+                            <h3 class="product-card-title">
+                                <a href="${productUrl}" style="text-decoration:none; color:inherit; transition:color 0.25s ease;" onmouseover="this.style.color='var(--bose-pink)'" onmouseout="this.style.color='var(--bose-black)'">
+                                    ${product.title}
+                                </a>
+                            </h3>
                             ${flavorDisplay}
                             <p class="product-card-desc">${descDisplay}</p>
                             <div class="bose-quantity-counter-wrapper">
