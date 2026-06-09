@@ -13,7 +13,6 @@
     <meta property="og:description" content="تصفح منتجاتنا الفاخرة المعتمدة المصنوعة يدوياً بحب وشغف لتليق بمناسباتكم السعيدة.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     
-    <!-- خطوط غوغل والمكتبات الخارجية الصارمة للهوية -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
@@ -670,11 +669,69 @@
             font-weight: 700;
             color: var(--bose-pink);
         }
+        
+        /* تنسيقات روابط التواصل الاجتماعي ومطابقة أنماط الفوتر المجلوبة من الاندكس */
+        .bose-footer {
+            background-color: var(--bose-cream) !important;
+            padding: 60px 20px 20px 20px !important;
+            border-top: var(--bose-border-pink) !important;
+            text-align: center !important;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            justify-items: center;
+        }
+        @media (min-width: 768px) {
+            .footer-container { grid-template-columns: repeat(3, 1fr); align-items: start; }
+        }
+        .footer-about-block, .footer-links-column {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        .footer-links-list {
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .footer-links-list a {
+            color: var(--bose-black);
+            opacity: 0.8;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--bose-transition-smooth);
+        }
+        .footer-links-list a:hover { color: var(--bose-pink); opacity: 1; }
+        
+        #footer-social-links {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+            justify-content: center;
+        }
+        .social-link-facebook, .social-link-instagram, .social-link-tiktok, .social-link-whatsapp {
+            width: 40px !important;
+            height: 40px !important;
+            display: inline-block !important;
+            border-radius: 50% !important;
+            text-indent: -9999px !important;
+            overflow: hidden !important;
+            transition: transform 0.3s ease !important;
+        }
+        .social-link-facebook:hover, .social-link-instagram:hover, .social-link-tiktok:hover, .social-link-whatsapp:hover {
+            transform: translateY(-4px) !important;
+        }
     </style>
 </head>
 <body>
 
-    <!-- الشريط العلوي الماركي الدوار (مطابق تماماً لاندكس لتجنب الفراغات) -->
     <div class="bose-top-marquee-bar">
         <div class="marquee-track-container" id="top-marquee-track">
             <div class="marquee-message-node">✨ طعم أصلي وخامات طبيعية 100% طازجة يومياً من مطبخنا إليكم مباشرة فرع الكفاح 🌸</div>
@@ -692,7 +749,6 @@
         </div>
     </div>
 
-    <!-- هيدر الصفحة الرسمي (نسخة الاندكس المطابقة) -->
     <header class="bose-navbar">
         <div class="nav-right-side">
             <button class="nav-menu-toggle" id="sidebar-open-btn" aria-label="فتح القائمة الجانبية"></button>
@@ -709,7 +765,6 @@
         </div>
     </header>
 
-    <!-- القائمة الجانبية الموحدة (نسخة الاندكس المطابقة) -->
     <div class="drawer-overlay" id="drawer-shield"></div>
     <aside class="bose-drawer-menu" id="sidebar-drawer">
         <div class="drawer-premium-header">
@@ -735,7 +790,6 @@
         </div>
     </aside>
 
-    <!-- نافذة البحث السريع الموثقة (نسخة الاندكس المطابقة) -->
     <div class="bose-search-modal" id="search-container">
         <div class="search-header">
             <h3>البحث الفوري السريع</h3>
@@ -748,10 +802,8 @@
         <div class="search-results-container"></div>
     </div>
 
-    <!-- محتوى الفئة الرئيسي -->
     <main class="category-page-container">
         
-        <!-- الترويسة الموسطة بالكامل: عنوان -> صورة نظيفة -> وصف -->
         <section class="category-view-hero-section">
             <h1 class="category-clean-title" id="category-page-title" style="text-align:center !important;">جاري تحميل الفئة...</h1>
             
@@ -762,7 +814,6 @@
             <p class="category-clean-description" id="category-page-description" style="text-align:center !important;"></p>
         </section>
 
-        <!-- تبويبات أحجام الديسباسيتو (تظهر برمجياً عند تحميل فئة الديسباسيتو فقط) -->
         <div class="despacito-tabs-outer-wrapper" id="despacito-tabs-wrapper">
             <div class="despacito-tabs-container">
                 <button class="despacito-tab-btn active" data-size="triangle">مثلث</button>
@@ -771,14 +822,12 @@
             </div>
         </div>
 
-        <!-- شبكة عرض المنتجات (مطابقة لحجم وتوزيع قسم منتجاتنا في الاندكس) -->
         <section class="products-display-section">
             <div class="products-grid-wrapper">
                 <div id="category-products-grid" class="products-grid"></div>
             </div>
         </section>
 
-        <!-- قسم المراجعات الحقيقي والكامل والخالي من النصوص الوهمية -->
         <section class="bose-reviews-interactive-section">
             <div class="reviews-inner-wrapper">
                 <div class="bose-section-header-block" style="text-align:center; margin-bottom:40px;">
@@ -825,7 +874,6 @@
             </div>
         </section>
 
-        <!-- قد يعجبك أيضاً بمواصفاته المبسطة الخالية من التعقيد -->
         <section id="you-may-like-section">
             <div class="bose-section-header-block" style="text-align:center; margin-bottom:40px;">
                 <h2 style="text-align:center !important;">قد يعجبك أيضاً</h2>
@@ -838,7 +886,6 @@
         </section>
     </main>
 
-    <!-- فوتر الصفحة الرسمي (مطابق تماماً لاندكس) -->
     <footer class="bose-footer">
         <div class="footer-container">
             <div class="footer-about-block">
@@ -877,13 +924,33 @@
         </div>
     </footer>
 
-    <!-- محرك التشغيل البرمجي والفلترة فائقة السرعة للموقع -->
     <script>
         let chosenReviewRating = 5;
         let activeDespacitoSize = "triangle";
         const permittedCategories = ["taswaq-despacito", "taswaq-qashtota", "taswaq-cinabon", "taswaq-donuts", "taswaq-happiness-cups"];
 
         document.addEventListener("DOMContentLoaded", () => {
+            // حل المشكلة الجذري المأخوذ من index.html للتحميل البرمجي وضمان انسيابية شريط الماركي
+            window.addEventListener('bose_data_ready', () => {
+                initializeMarqueeStreaming();
+            });
+
+            if (window.BoseStoreData && window.BoseStoreData.store) {
+                initializeMarqueeStreaming();
+            }
+
+            function initializeMarqueeStreaming() {
+                const track = document.getElementById("top-marquee-track");
+                if (track && !track.hasAttribute('data-cloned')) {
+                    const items = Array.from(track.children);
+                    items.forEach(item => track.appendChild(item.cloneNode(true)));
+                    track.setAttribute('data-cloned', 'true');
+                    track.style.display = 'none';
+                    track.offsetHeight; 
+                    track.style.display = 'flex';
+                }
+            }
+
             setupUniversalInterfaceInteractions();
             setupInteractiveRatingSystem();
             setupSearchEngine();
@@ -902,9 +969,7 @@
 
         // تشغيل واجهات التفاعل للهيدر والسايدبار والماركي
         function setupUniversalInterfaceInteractions() {
-            // [حل الثغرة]: تم إزالة مستمعات الأحداث اليدوية المكررة للقائمة الجانبية من هنا لمنع حدوث تداخل أو إغلاق فوري،
-            // والاعتماد الكلي على محرك الحقن الموحد core.html.js الذي يتولى إدارة السايدبار باحترافية وتأمين كامل.
-
+            // [حل الثغرة المعزز من ملف index]: الاعتماد الكامل على محرك الحقن الموحد core.html.js لفتح وإغلاق السايدبار والقوائم لحمايتها بصرياً وبرمجياً من تكرار الأحداث والانهيارات البرمجية المفاجئة.
             const searchTrigger = document.getElementById("search-modal-open-btn");
             const searchModal = document.getElementById("search-container");
             const searchClose = document.querySelector(".search-close-btn");
@@ -912,13 +977,6 @@
             if (searchTrigger && searchModal && searchClose) {
                 searchTrigger.addEventListener("click", () => searchModal.classList.add("active"));
                 searchClose.addEventListener("click", () => searchModal.classList.remove("active"));
-            }
-
-            const track = document.getElementById("top-marquee-track");
-            if (track && !track.hasAttribute('data-cloned')) {
-                const items = Array.from(track.children);
-                items.forEach(item => track.appendChild(item.cloneNode(true)));
-                track.setAttribute('data-cloned', 'true');
             }
         }
 
