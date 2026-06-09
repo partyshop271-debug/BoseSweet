@@ -39,7 +39,7 @@
         .marquee-track-container {
             display: flex;
             width: max-content;
-            animation: marqueeContinuous 57s linear infinite; /* تم تبطئة السرعة بنسبة 30% لراحة القراءة */
+            animation: marqueeContinuous 45s linear infinite;
             will-change: transform;
         }
         .marquee-message-node {
@@ -51,6 +51,7 @@
             display: flex;
             align-items: center;
         }
+        /* إصلاح وهندسة التحريك الدائري اللانهائي لمنع الاختفاء الفجائي */
         @keyframes marqueeContinuous {
             0% { transform: translate3d(0, 0, 0); }
             100% { transform: translate3d(-50%, 0, 0); }
@@ -446,21 +447,21 @@
         .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--bose-pink); display: block; margin-bottom: 4px; }
         .stat-label { font-size: 0.95rem; font-weight: 600; color: var(--bose-black); opacity: 0.8; }
         
-        /* جعل الفيديو يملأ الشاشة تماماً طولاً وعرضاً في قسم الفخر والاعتزاز */
+        /* تصغير حجم بلوك الفيديو في قسم الفخر والاعتزاز بنسبة 30% مع التوسيط الجمالي للموقع */
         .pride-video-block-wrapper {
-            width: 100vw !important;
-            height: 100vh !important; /* ملء الشاشة بالارتفاع بالكامل */
-            margin-left: calc(-50vw + 50%) !important;
-            margin-right: calc(-50vw + 50%) !important;
+            width: 70vw !important;
+            height: 70vh !important;
+            margin: 0 auto !important;
             background-color: var(--bose-black);
             line-height: 0;
             overflow: hidden;
-            border-top: var(--bose-border-pink);
-            border-bottom: var(--bose-border-pink);
+            border-radius: 24px;
+            border: var(--bose-border-pink);
+            box-shadow: var(--bose-shadow-glow);
         }
         .pride-video-large {
             width: 100% !important;
-            height: 100% !important; /* ملء الشاشة بالكامل عرضاً وطولاً */
+            height: 100% !important;
             object-fit: cover !important;
             display: block !important;
         }
@@ -571,7 +572,6 @@
 
     <div class="bose-top-marquee-bar">
         <div class="marquee-track-container" id="top-marquee-track">
-            <!-- تم زيادة عدد الرسائل وتجديدها 3 أضعاف لخلق تدفق تسويقي غني ولا نهائي وبدون فراغات -->
             <div class="marquee-message-node">✨ طعم أصلي وخامات طبيعية 100% طازجة يومياً من مطبخنا إليكم مباشرة فرع الكفاح 🌸</div>
             <div class="marquee-message-node">🌸 تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة 🧁</div>
             <div class="marquee-message-node">👑 تميزوا بهداياكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة المتميزة الحصرية 🎉</div>
@@ -762,7 +762,6 @@
             </div>
         </div>
         
-        <!-- الفيديو المطور لملء الشاشة بالكامل طولاً وعرضاً بدقة متطورة -->
         <div class="pride-video-block-wrapper">
             <video class="pride-video-large" autoplay loop muted playsinline preload="auto">
                 <source src="https://res.cloudinary.com/dyx4w0dr1/video/upload/v1740000000/bose_promo_video.mp4" type="video/mp4">
@@ -785,7 +784,7 @@
         <div class="footer-container">
             <div class="footer-about-block">
                 <h3>حلويات بوسي</h3>
-                <p>صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز واحترافية كاملة من فرع الكفاح.</p>
+                <p>صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم بتميز وااحترافية كاملة من فرع الكفاح.</p>
                 <div id="footer-social-links">
                     <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-link-facebook" target="_blank" title="فيسبوك">Facebook</a>
                     <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-link-instagram" target="_blank" title="انستجرام">Instagram</a>
@@ -821,14 +820,12 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // تكرار شريط النصوص المتحرك العلوي بانسيابية لضمان استمراريته اللانهائية
             const track = document.getElementById("top-marquee-track");
             if (track) {
                 const items = Array.from(track.children);
                 items.forEach(item => track.appendChild(item.cloneNode(true)));
             }
 
-            // فحص قاعدة البيانات اللحظي وبدء حقن البيانات المشتركة
             const databaseGuardInterval = setInterval(() => {
                 if (window.BoseStoreData && window.BoseStoreData.store) {
                     clearInterval(databaseGuardInterval);
@@ -844,7 +841,6 @@
                     document.getElementById('flower-preview-img').src = data.homepage.flowerPreview.image;
                 }
 
-                // حقن شلال الصور الفوري
                 const leftCol = document.getElementById('waterfall-left-col');
                 const rightCol = document.getElementById('waterfall-right-col');
                 if(leftCol && rightCol && data.homepage && data.homepage.waterfall) {
@@ -859,7 +855,6 @@
                     `).join('');
                 }
 
-                // بناء سلايدر التميز والإتقان التلقائي المستمر
                 const excellenceTrack = document.getElementById('excellence-images-track');
                 if(excellenceTrack && data.homepage && data.homepage.excellence && data.homepage.excellence.images) {
                     excellenceTrack.innerHTML = data.homepage.excellence.images.map(src => `
@@ -868,7 +863,6 @@
                     setupTrackIndicatorsAndScroll('excellence-images-track', 'excellence-carousel-dots', data.homepage.excellence.images.length, true);
                 }
 
-                // بناء الفئات التسويقية الـ 12 المشفرة هندسياً
                 const categoriesTrack = document.getElementById('categories-track');
                 if(categoriesTrack && data.homepage && data.homepage.categoriesSlider) {
                     categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
@@ -884,7 +878,6 @@
 
                 const allProducts = data.products || [];
 
-                // بناء كروت الأكثر مبيعاً
                 const mostSellingGrid = document.getElementById('most-selling-grid');
                 if(mostSellingGrid && data.homepage && data.homepage.mostSelling) {
                     const mostSellingItems = allProducts.filter(p => data.homepage.mostSelling.includes(p.id));
@@ -892,7 +885,6 @@
                     setupTrackIndicatorsAndScroll('most-selling-wrapper', 'most-selling-carousel-dots', mostSellingItems.length, false);
                 }
 
-                // بناء كروت وصل حديثاً
                 const newArrivalsGrid = document.getElementById('new-arrivals-grid');
                 if(newArrivalsGrid && data.homepage && data.homepage.newArrivals) {
                     const newArrivalsItems = allProducts.filter(p => data.homepage.newArrivals.includes(p.id));
@@ -900,7 +892,6 @@
                     setupTrackIndicatorsAndScroll('new-arrivals-wrapper', 'new-arrivals-carousel-dots', newArrivalsItems.length, false);
                 }
 
-                // بناء كروت تشكيلتنا العامة مع زر إظهار المزيد
                 const ourProductsGrid = document.getElementById('our-products-grid');
                 if(ourProductsGrid && data.homepage && data.homepage.ourProducts) {
                     const ourProductsItems = allProducts.filter(p => data.homepage.ourProducts.includes(p.id));
