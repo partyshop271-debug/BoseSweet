@@ -63,7 +63,7 @@
 <body>
 
     <div class="bose-top-bar" id="bose-announcements-bar">
-        <div class="marquee-track" id="bose-announcements-track">
+        <div class="marquee-track" id="bose-announcements-track" style="animation: marquee-scroll-rtl 70s linear infinite;">
         </div>
     </div>
 
@@ -162,7 +162,7 @@
                     <h2 class="section-title">الأكثر مبيعاً</h2>
                     <p class="section-desc">أصناف متميزة حازت على قلوب ورضا عملائنا، صنعت يدويًا وبدقة متناهية.</p>
                 </div>
-                <div class="slider-wrapper">
+                <div class="slider-wrapper" id="most-selling-wrapper">
                     <div class="products-slider-track products-grid" id="most-selling-grid">
                     </div>
                 </div>
@@ -191,7 +191,7 @@
                     <h2 class="section-title">وصل حديثاً</h2>
                     <p class="section-desc">نكهات جديدة ومبتكرة أعددناها خصيصاً لتمنحكم تجربة تذوق استثنائية وغير تقليدية.</p>
                 </div>
-                <div class="slider-wrapper">
+                <div class="slider-wrapper" id="new-arrivals-wrapper">
                     <div class="products-slider-track products-grid" id="new-arrivals-grid">
                     </div>
                 </div>
@@ -257,7 +257,7 @@
                     <h2 class="section-title">تسوق حسب الفئة</h2>
                     <p class="section-desc">اختر فئتك المفضلة لتستعرض أشهى الحلويات والتنسيقات المصممة خصيصاً لك.</p>
                 </div>
-                <div class="slider-wrapper">
+                <div class="slider-wrapper" id="categories-wrapper">
                     <div class="categories-slider-track" id="categories-track">
                     </div>
                 </div>
@@ -314,9 +314,6 @@
     </footer>
 
     <script>
-        /**
-         * حارس التوافق الموحد ومنع التعارض البرمجي - حلويات بوسي
-         */
         document.addEventListener("DOMContentLoaded", () => {
             if (window.BoseStoreData && window.BoseStoreData.store) {
                 initializeHomePageLogic();
@@ -334,38 +331,18 @@
             const data = window.BoseStoreData;
             console.log("🚀 Custom Homepage Module Verified & Bound. Ready to Render.");
 
-            // أ. توليد رسائل الشريط العلوي المتحرك اللانهائي
             renderTopBarMarquee(data.navigation ? data.navigation.topBarMessages : null);
-
-            // ب. توليد شلال المنتجات التفاعلي
             renderWaterfall(data.homepage ? data.homepage.waterfall : null);
-
-            // ج. توليد صور قسم عقد من الإتقان
             renderExcellenceCarousel(data.homepage ? data.homepage.excellence : null);
-
-            // د. توليد قسم الأكثر مبيعا
-            renderProductSlider("most-selling-grid", data.homepage ? data.homepage.mostSelling : null, "most-selling-dots");
-
-            // هـ. توليد قسم وصل حديثاً
-            renderProductSlider("new-arrivals-grid", data.homepage ? data.homepage.newArrivals : null, "new-arrivals-dots");
-
-            // و. توليد كتل الأقسام الثابتة والمحاكيات
+            renderProductSlider("most-selling-grid", data.homepage ? data.homepage.mostSelling : null, "most-selling-dots", "most-selling-wrapper");
+            renderProductSlider("new-arrivals-grid", data.homepage ? data.homepage.newArrivals : null, "new-arrivals-dots", "new-arrivals-wrapper");
             renderCakeAndFlowerPreviewBlocks(data.homepage);
-
-            // ز. توليد قسم منتجاتنا شبكة مع زر استعراض المزيد
             renderOurProductsGrid(data.homepage ? data.homepage.ourProducts : null);
-
-            // ح. توليد سلايدر الفئات الكبير
-            renderCategoriesSlider(data.homepage ? data.homepage.categoriesSlider : null, "categories-track", "categories-dots");
-
-            // ط. تهيئة مشغل الفيديو لقسم الفخر والاعتزاز
+            renderCategoriesSlider(data.homepage ? data.homepage.categoriesSlider : null, "categories-track", "categories-dots", "categories-wrapper");
             initializePrideVideo();
-
-            // ي. تفعيل عناصر التحكم الموحدة في القائمة والبحث اللحظي لضمان عدم التجميد
             initializeLayoutControls();
         }
 
-        // 1. توليد الشريط العلوي المتحرك (مضاعفة مكثفة لنصوص متصلة لانهائية ومنوعة)
         function renderTopBarMarquee(messages) {
             const track = document.getElementById("bose-announcements-track");
             if (!track) return;
@@ -385,8 +362,7 @@
             const finalMessages = (messages && messages.length > 0) ? messages : nativeMessages;
             
             let htmlContent = "";
-            // التكرار 6 مرات متتالية لملء الشاشات العريضة ومنع أي فجوة بصرية أثناء الدوران اللانهائي
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < 12; i++) {
                 finalMessages.forEach(msg => {
                     htmlContent += `
                         <div class="marquee-item">
@@ -399,7 +375,6 @@
             track.innerHTML = htmlContent;
         }
 
-        // 2. شلال الصور التفاعلي
         function renderWaterfall(waterfallData) {
             const leftCol = document.getElementById("waterfall-left-col");
             const rightCol = document.getElementById("waterfall-right-col");
@@ -427,7 +402,6 @@
             rightCol.innerHTML = rightHtml + rightHtml;
         }
 
-        // 3. كاروسيل عقد من الإتقان
         function renderExcellenceCarousel(excellenceData) {
             const track = document.getElementById("excellence-images-track");
             const dotsContainer = document.getElementById("excellence-dots");
@@ -469,10 +443,10 @@
             track.setAttribute("data-current", index);
         };
 
-        // 4. توليد السلايدر للمنتجات
-        function renderProductSlider(gridId, slugList, dotsId) {
+        function renderProductSlider(gridId, slugList, dotsId, wrapperId) {
             const grid = document.getElementById(gridId);
             const dotsContainer = document.getElementById(dotsId);
+            const wrapper = document.getElementById(wrapperId);
             if (!grid || !slugList || !window.BoseStoreData) return;
 
             const products = window.BoseStoreData.products;
@@ -526,15 +500,16 @@
             if (dotsContainer) {
                 let dotsHtml = "";
                 for (let i = 0; i < cardIndex; i++) {
-                    dotsHtml += `<button class="dot-btn ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="scrollSliderTo('${gridId}', ${i})"></button>`;
+                    dotsHtml += `<button class="dot-btn ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="scrollSliderTo('${wrapperId}', ${i})"></button>`;
                 }
                 dotsContainer.innerHTML = dotsHtml;
             }
 
-            bindSwipeAndScrollEvents(grid, dotsId);
+            if (wrapper) {
+                bindSwipeAndScrollEvents(wrapper, dotsId);
+            }
         }
 
-        // 5. توليد شبكة كروت منتجاتنا
         function renderOurProductsGrid(slugList) {
             const grid = document.getElementById("our-products-grid");
             if (!grid || !slugList || !window.BoseStoreData) return;
@@ -602,10 +577,10 @@
             }
         }
 
-        // 6. سلايدر الفئات
-        function renderCategoriesSlider(categories, containerId, dotsId) {
+        function renderCategoriesSlider(categories, containerId, dotsId, wrapperId) {
             const container = document.getElementById(containerId);
             const dotsContainer = document.getElementById(dotsId);
+            const wrapper = document.getElementById(wrapperId);
             if (!container || !categories) return;
 
             let htmlContent = "";
@@ -629,15 +604,16 @@
             if (dotsContainer) {
                 let dotsHtml = "";
                 for (let i = 0; i < categories.length; i++) {
-                    dotsHtml += `<button class="dot-btn ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="scrollSliderTo('${containerId}', ${i})"></button>`;
+                    dotsHtml += `<button class="dot-btn ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="scrollSliderTo('${wrapperId}', ${i})"></button>`;
                 }
                 dotsContainer.innerHTML = dotsHtml;
             }
 
-            bindSwipeAndScrollEvents(container, dotsId);
+            if (wrapper) {
+                bindSwipeAndScrollEvents(wrapper, dotsId);
+            }
         }
 
-        // 7. كتل المعاينة وقسم الفخر
         function renderCakeAndFlowerPreviewBlocks(homepageData) {
             if (!homepageData) return;
             const cakeImg = document.getElementById("cake-preview-img");
@@ -682,75 +658,77 @@
             }
         }
 
-        // 8. محرك السحب اللمسي وحل مشكلة تجمد الدوتس (Swipe & Dynamic Dots Link Engine)
-        function bindSwipeAndScrollEvents(sliderTrack, dotsId) {
+        function bindSwipeAndScrollEvents(sliderWrapper, dotsId) {
             let isDown = false;
             let startX;
             let scrollLeft;
 
-            sliderTrack.addEventListener("mousedown", (e) => {
+            sliderWrapper.addEventListener("mousedown", (e) => {
                 isDown = true;
-                sliderTrack.classList.add("active-drag");
-                startX = e.pageX - sliderTrack.offsetLeft;
-                scrollLeft = sliderTrack.scrollLeft;
+                sliderWrapper.classList.add("active-drag");
+                startX = e.pageX - sliderWrapper.offsetLeft;
+                scrollLeft = sliderWrapper.scrollLeft;
             });
 
-            sliderTrack.addEventListener("mouseleave", () => {
+            sliderWrapper.addEventListener("mouseleave", () => {
                 isDown = false;
-                sliderTrack.classList.remove("active-drag");
+                sliderWrapper.classList.remove("active-drag");
             });
 
-            sliderTrack.addEventListener("mouseup", () => {
+            sliderWrapper.addEventListener("mouseup", () => {
                 isDown = false;
-                sliderTrack.classList.remove("active-drag");
-                updateActiveDotFromScroll(sliderTrack, dotsId);
+                sliderWrapper.classList.remove("active-drag");
+                updateActiveDotFromScroll(sliderWrapper, dotsId);
             });
 
-            sliderTrack.addEventListener("mousemove", (e) => {
+            sliderWrapper.addEventListener("mousemove", (e) => {
                 if (!isDown) return;
                 e.preventDefault();
-                const x = e.pageX - sliderTrack.offsetLeft;
+                const x = e.pageX - sliderWrapper.offsetLeft;
                 const walk = (x - startX) * 1.5; 
-                sliderTrack.scrollLeft = scrollLeft - walk;
+                sliderWrapper.scrollLeft = scrollLeft - walk;
             });
 
-            // تحديث ديناميكي فوري ومستمر مع تمرير الماوس أو اللمس على الموبايل والكمبيوتر
-            sliderTrack.addEventListener("scroll", () => {
-                updateActiveDotFromScroll(sliderTrack, dotsId);
+            sliderWrapper.addEventListener("scroll", () => {
+                updateActiveDotFromScroll(sliderWrapper, dotsId);
             });
         }
 
-        window.scrollSliderTo = function(sliderId, index) {
-            const slider = document.getElementById(sliderId);
-            if (!slider) return;
+        window.scrollSliderTo = function(wrapperId, index) {
+            const wrapper = document.getElementById(wrapperId);
+            if (!wrapper) return;
 
-            const cards = slider.children;
+            const sliderTrack = wrapper.querySelector(".products-grid, .categories-slider-track");
+            if (!sliderTrack) return;
+
+            const cards = sliderTrack.children;
             if (cards.length > 0 && cards[index]) {
                 const cardWidth = cards[index].getBoundingClientRect().width;
-                const gap = parseFloat(window.getComputedStyle(slider).gap) || 0;
-                
+                const gap = parseFloat(window.getComputedStyle(sliderTrack).gap) || 0;
                 const scrollTarget = index * (cardWidth + gap);
                 
-                // التوافق والتعامل مع اتجاه RTL الصحيح للموقع
-                slider.scrollTo({
+                wrapper.scrollTo({
                     left: -scrollTarget, 
                     behavior: "smooth"
                 });
             }
         };
 
-        function updateActiveDotFromScroll(slider, dotsId) {
+        function updateActiveDotFromScroll(wrapper, dotsId) {
             const dots = document.querySelectorAll(`#${dotsId} .dot-btn`);
             if (dots.length === 0) return;
 
-            const cards = slider.children;
+            const sliderTrack = wrapper.querySelector(".products-grid, .categories-slider-track");
+            if (!sliderTrack) return;
+
+            const cards = sliderTrack.children;
             if (cards.length === 0) return;
 
             const cardWidth = cards[0].getBoundingClientRect().width;
-            const gap = parseFloat(window.getComputedStyle(slider).gap) || 0;
+            const gap = parseFloat(window.getComputedStyle(sliderTrack).gap) || 0;
             const step = cardWidth + gap;
 
-            const scrollX = Math.abs(slider.scrollLeft);
+            const scrollX = Math.abs(wrapper.scrollLeft);
             const activeIndex = Math.min(Math.round(scrollX / step), dots.length - 1);
 
             dots.forEach(dot => dot.classList.remove("active"));
@@ -779,7 +757,6 @@
             }, 5500); 
         }
 
-        // 9. أزرار التحكم بالكمية
         window.incrementHomeQty = function(btn) {
             const valueSpan = btn.parentElement.querySelector(".qty-value");
             let qty = parseInt(valueSpan.textContent) || 1;
@@ -796,7 +773,6 @@
             }
         };
 
-        // 10. إضافة كروت الرئيسية للسلة الفورية
         window.addCardToCart = function(productSlug, btn) {
             if (!window.BoseStoreData) return;
 
@@ -847,7 +823,6 @@
             card.querySelector(".qty-value").textContent = "1";
         };
 
-        // 11. مشغل فيديو قسم الفخر والاعتزاز بنعومة فائقة
         function initializePrideVideo() {
             const video = document.getElementById("pride-bose-video");
             const playBtn = document.getElementById("video-play-btn");
@@ -876,7 +851,6 @@
             video.addEventListener("click", togglePlay);
         }
 
-        // 12. تفعيل وحل مشكلة تجمد القائمة الجانبية ومودال البحث بالكامل (Layout Controls Setup)
         function initializeLayoutControls() {
             const menuToggle = document.querySelector(".nav-menu-toggle");
             const drawerMenu = document.querySelector(".bose-drawer-menu");
@@ -891,10 +865,8 @@
                 document.body.appendChild(overlay);
             }
 
-            // فصل الأحداث والتأكد من إزالة أي كلاسات متعارضة لمنع تجمد الـ Drawer
             const openDrawer = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+                if(e) { e.preventDefault(); e.stopPropagation(); }
                 menuToggle.classList.add("active");
                 drawerMenu.classList.add("active");
                 overlay.classList.add("active");
@@ -902,15 +874,13 @@
             };
 
             const closeDrawer = (e) => {
-                e.preventDefault();
-                e.stopPropagation();
+                if(e) { e.preventDefault(); e.stopPropagation(); }
                 menuToggle.classList.remove("active");
                 drawerMenu.classList.remove("active");
                 overlay.classList.remove("active");
                 document.body.style.overflow = "initial";
             };
 
-            // إزالة الأحداث القديمة وربط المحدثة لمنع التكرار والتجميد
             menuToggle.removeAttribute("onclick");
             menuToggle.addEventListener("click", (e) => {
                 if (drawerMenu.classList.contains("active")) {
@@ -921,17 +891,15 @@
             });
             overlay.addEventListener("click", closeDrawer);
 
-            // السحب لمسح القائمة الجانبية على الموبايل لرفع تجربة المستخدم
             let touchStartX = 0;
             drawerMenu.addEventListener("touchstart", (e) => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
             drawerMenu.addEventListener("touchend", (e) => {
                 let touchEndX = e.changedTouches[0].screenX;
-                if (touchEndX - touchStartX > 60) { // سحب جهة اليمين للإغلاق في بيئة الـ RTL
+                if (touchEndX - touchStartX > 60) {
                     closeDrawer(e);
                 }
             }, {passive: true});
 
-            // تهيئة روابط البحث المودال
             if (searchTrigger && searchModal) {
                 searchTrigger.addEventListener("click", (e) => {
                     e.preventDefault();
