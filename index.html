@@ -123,7 +123,7 @@
             height: 700px;
             overflow: hidden;
             background-color: var(--bose-white);
-            padding: 40px 0;
+            padding: 20px 0;
         }
         @media (min-width: 1024px) {
             #waterfall-section { height: 950px; }
@@ -333,13 +333,6 @@
             line-height: 1.5 !important;
             margin: 0;
         }
-        .product-card-title, .product-card-flavor, .product-card-desc {
-            white-space: normal !important;
-            overflow: visible !important;
-            text-overflow: clip !important;
-            word-wrap: break-word !important;
-            word-break: break-word !important;
-        }
         
         .bose-quantity-counter-wrapper {
             display: flex;
@@ -415,11 +408,16 @@
         .cake-banner-content-box, .flower-banner-content-box { padding: 32px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; }
         .badge-accent { background-color: var(--bose-pink); color: var(--bose-white); font-size: 0.8rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; }
         
+        /* إعادة هيكلة برمجية صارمة لقسم الفخر والاعتزاز ليكون متناسقاً وعمودياً بالكامل */
         #pride-section {
-            padding: 60px 0;
-            background-color: var(--bose-cream);
-            border-top: var(--bose-border-pink);
-            border-bottom: var(--bose-border-pink);
+            display: block !important;
+            position: relative;
+            padding: 60px 0 !important;
+            background-color: var(--bose-cream) !important;
+            border-top: var(--bose-border-pink) !important;
+            border-bottom: var(--bose-border-pink) !important;
+            width: 100%;
+            text-align: center !important;
         }
         .pride-stats-grid {
             display: flex;
@@ -434,25 +432,35 @@
             background-color: var(--bose-white);
             border: var(--bose-border-pink);
             border-radius: 16px;
-            padding: 20px;
+            padding: 24px;
             text-align: center;
             box-shadow: var(--bose-shadow-glow);
-            min-width: 140px;
+            min-width: 180px;
             flex: 1;
+            transition: var(--bose-transition-smooth);
         }
-        .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--bose-pink); }
-        .stat-label { font-size: 0.85rem; font-weight: 600; color: var(--bose-black); opacity: 0.8; }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--bose-pink);
+            box-shadow: var(--bose-shadow-hover);
+        }
+        .stat-value { font-size: 2.2rem; font-weight: 700; color: var(--bose-pink); display: block; margin-bottom: 4px; }
+        .stat-label { font-size: 0.95rem; font-weight: 600; color: var(--bose-black); opacity: 0.8; }
+        
         .pride-video-block-wrapper {
             width: 100vw !important;
             margin-left: calc(-50vw + 50%) !important;
             margin-right: calc(-50vw + 50%) !important;
             background-color: var(--bose-black);
             line-height: 0;
+            overflow: hidden;
+            border-top: var(--bose-border-pink);
+            border-bottom: var(--bose-border-pink);
         }
         .pride-video-large {
             width: 100% !important;
             height: auto !important;
-            max-height: 75vh !important;
+            max-height: 80vh !important;
             object-fit: cover !important;
             display: block !important;
         }
@@ -464,19 +472,19 @@
             overflow: hidden !important;
             display: flex !important;
             flex-direction: column !important;
-            width: 240px !important;
-            height: 310px !important;
+            width: 280px !important;
+            height: 360px !important;
             box-shadow: var(--bose-shadow-glow) !important;
             flex-shrink: 0 !important;
         }
         .category-slider-card .card-image-wrapper {
-            width: 240px !important;
-            height: 240px !important;
+            width: 280px !important;
+            height: 280px !important;
             border-radius: 0px !important;
         }
         @media (min-width: 768px) {
-            .category-slider-card { width: 310px !important; height: 390px !important; }
-            .category-slider-card .card-image-wrapper { width: 310px !important; height: 310px !important; }
+            .category-slider-card { width: 340px !important; height: 430px !important; }
+            .category-slider-card .card-image-wrapper { width: 340px !important; height: 340px !important; }
         }
         @media (min-width: 1024px) {
             .category-slider-card { width: 420px !important; height: 520px !important; }
@@ -539,25 +547,6 @@
         }
         .social-link-facebook:hover, .social-link-instagram:hover, .social-link-tiktok:hover, .social-link-whatsapp:hover {
             transform: translateY(-4px) !important;
-        }
-        .social-link-facebook {
-            background: #1877F2 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z'/></svg>") no-repeat center/20px !important;
-        }
-        .social-link-instagram {
-            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%) !important;
-            position: relative;
-        }
-        .social-link-instagram::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204 0-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z'/></svg>") no-repeat center/20px;
-        }
-        .social-link-tiktok {
-            background: #000000 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.06-2.89-.54-4.06-1.41-.12-.09-.24-.19-.36-.29v6.52c-.08 3.01-1.88 5.86-4.8 6.76-3.14.97-6.83-.35-8.41-3.23-1.72-3.13-.53-7.46 2.65-9.15 1.54-.82 3.39-.98 5.09-.5v4.11c-1.12-.34-2.36-.18-3.32.48-.99.68-1.5 1.95-1.32 3.14.2 1.34 1.37 2.45 2.72 2.5 1.41.05 2.74-.88 3.13-2.23.11-.38.16-.78.16-1.18V.02z'/></svg>") no-repeat center/18px !important;
-        }
-        .social-link-whatsapp {
-            background: #25D366 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.503-5.734-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.864.002-2.637-1.03-5.115-2.906-6.993-1.876-1.878-4.354-2.908-6.999-2.909-5.443 0-9.87 4.424-9.874 9.87-.001 1.748.461 3.454 1.339 4.966l-.999 3.648 3.749-.983zM18.06 14.85c-.328-.164-1.94-.957-2.24-1.066-.299-.11-.517-.164-.734.164-.218.328-.844 1.066-1.035 1.284-.19.218-.38.245-.709.081-.328-.164-1.386-.51-2.64-1.627-.975-.87-1.633-1.946-1.824-2.274-.19-.328-.02-.505.143-.668.148-.146.328-.382.493-.573.164-.19.218-.328.328-.546.11-.218.055-.41-.027-.573-.082-.164-.734-1.767-1.006-2.422-.266-.64-.537-.552-.734-.562-.19-.01-.408-.012-.626-.012-.218 0-.573.082-.872.41-.299.328-1.144 1.12-1.144 2.732 0 1.612 1.171 3.166 1.335 3.385.164.218 2.305 3.519 5.584 4.941.78.338 1.39.54 1.864.69.784.249 1.498.214 2.062.13.629-.094 1.94-.794 2.212-1.53.272-.734.272-1.365.19-1.499-.081-.134-.299-.218-.627-.382z'/></svg>") no-repeat center/20px !important;
         }
         
         .show-more-actions-container { text-align: center; margin-top: 24px; }
@@ -630,6 +619,18 @@
         </div>
     </aside>
 
+    <div class="bose-search-modal" id="search-container">
+        <div class="search-header">
+            <h3>البحث الفوري السريع</h3>
+            <button class="search-close-btn" aria-label="إغلاق">&times;</button>
+        </div>
+        <div class="search-input-wrapper">
+            <input type="text" id="global-search-input" placeholder="عن شوكولاتة، دوناتس، تورتة...">
+            <span class="search-icon-inside">🔍</span>
+        </div>
+        <div class="search-results-container"></div>
+    </div>
+
     <section id="hero-section">
         <div class="bose-section-header-block">
             <h1>عقد من <span class="hero-title-highlight">التميز</span> في صناعة الحلويات</h1>
@@ -640,11 +641,8 @@
         </div>
     </section>
 
+    <!-- تم حذف نصوص وعنوان الشلال ليكون أول خطاف بصري خالص بمظهر غاية في الرقي -->
     <section id="waterfall-section">
-        <div class="bose-section-header-block">
-            <h2>شلال المنتجات الفاخرة</h2>
-            <p>استمتع برؤية بانورامية متدفقة لأشهر تراكيب ومصنوعات مطبخنا الفاخر المتجدد على مدار اليوم لجودة تذوق لا تقاوم.</p>
-        </div>
         <div class="waterfall-container">
             <div class="waterfall-column waterfall-up" id="waterfall-left-col"></div>
             <div class="waterfall-column waterfall-down" id="waterfall-right-col"></div>
@@ -735,11 +733,13 @@
         </div>
     </section>
 
+    <!-- تطوير وتأمين قسم الفخر والاعتزاز ليكون ذو نسق عمودي كامل ومريح بصرياً -->
     <section id="pride-section">
         <div class="bose-section-header-block">
             <h2>الفخر والاعتزاز</h2>
             <p>أكثر من 10 سنوات خبرة محترفة، وأكثر من 10000 عميل واثق يروون قصة نجاح ممتدة وصدارة حقيقية في عالم المخبوزات والحلويات.</p>
         </div>
+        
         <div class="pride-stats-grid">
             <div class="stat-card">
                 <span class="stat-value">10+</span>
@@ -754,6 +754,7 @@
                 <span class="stat-label">طلب ناجح</span>
             </div>
         </div>
+        
         <div class="pride-video-block-wrapper">
             <video class="pride-video-large" autoplay loop muted playsinline preload="auto">
                 <source src="https://res.cloudinary.com/dyx4w0dr1/video/upload/v1740000000/bose_promo_video.mp4" type="video/mp4">
@@ -812,31 +813,14 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            const sidebar = document.getElementById("sidebar-drawer");
-            const overlay = document.getElementById("drawer-shield");
-            const openBtn = document.getElementById("sidebar-open-btn");
-
-            function toggleDrawer(isOpen) {
-                if (isOpen) {
-                    sidebar.classList.add("active");
-                    overlay.classList.add("active");
-                    document.body.style.overflow = "hidden";
-                } else {
-                    sidebar.classList.remove("active");
-                    overlay.classList.remove("active");
-                    document.body.style.overflow = "";
-                }
-            }
-
-            if(openBtn) openBtn.addEventListener("click", () => toggleDrawer(true));
-            if(overlay) overlay.addEventListener("click", () => toggleDrawer(false));
-
+            // تكرار شريط النصوص المتحرك العلوي بانسيابية
             const track = document.getElementById("top-marquee-track");
             if (track) {
                 const items = Array.from(track.children);
                 items.forEach(item => track.appendChild(item.cloneNode(true)));
             }
 
+            // فحص قاعدة البيانات اللحظي وبدء حقن البيانات المشتركة
             const databaseGuardInterval = setInterval(() => {
                 if (window.BoseStoreData && window.BoseStoreData.store) {
                     clearInterval(databaseGuardInterval);
@@ -852,6 +836,7 @@
                     document.getElementById('flower-preview-img').src = data.homepage.flowerPreview.image;
                 }
 
+                // حقن شلال الصور الفوري
                 const leftCol = document.getElementById('waterfall-left-col');
                 const rightCol = document.getElementById('waterfall-right-col');
                 if(leftCol && rightCol && data.homepage && data.homepage.waterfall) {
@@ -866,6 +851,7 @@
                     `).join('');
                 }
 
+                // بناء سلايدر التميز والإتقان التلقائي المستمر
                 const excellenceTrack = document.getElementById('excellence-images-track');
                 if(excellenceTrack && data.homepage && data.homepage.excellence && data.homepage.excellence.images) {
                     excellenceTrack.innerHTML = data.homepage.excellence.images.map(src => `
@@ -874,6 +860,7 @@
                     setupTrackIndicatorsAndScroll('excellence-images-track', 'excellence-carousel-dots', data.homepage.excellence.images.length, true);
                 }
 
+                // بناء الفئات التسويقية الـ 12 المشفرة هندسياً
                 const categoriesTrack = document.getElementById('categories-track');
                 if(categoriesTrack && data.homepage && data.homepage.categoriesSlider) {
                     categoriesTrack.innerHTML = data.homepage.categoriesSlider.map(cat => `
@@ -889,6 +876,7 @@
 
                 const allProducts = data.products || [];
 
+                // بناء كروت الأكثر مبيعاً
                 const mostSellingGrid = document.getElementById('most-selling-grid');
                 if(mostSellingGrid && data.homepage && data.homepage.mostSelling) {
                     const mostSellingItems = allProducts.filter(p => data.homepage.mostSelling.includes(p.id));
@@ -896,6 +884,7 @@
                     setupTrackIndicatorsAndScroll('most-selling-wrapper', 'most-selling-carousel-dots', mostSellingItems.length, false);
                 }
 
+                // بناء كروت وصل حديثاً
                 const newArrivalsGrid = document.getElementById('new-arrivals-grid');
                 if(newArrivalsGrid && data.homepage && data.homepage.newArrivals) {
                     const newArrivalsItems = allProducts.filter(p => data.homepage.newArrivals.includes(p.id));
@@ -903,6 +892,7 @@
                     setupTrackIndicatorsAndScroll('new-arrivals-wrapper', 'new-arrivals-carousel-dots', newArrivalsItems.length, false);
                 }
 
+                // بناء كروت تشكيلتنا العامة مع زر إظهار المزيد
                 const ourProductsGrid = document.getElementById('our-products-grid');
                 if(ourProductsGrid && data.homepage && data.homepage.ourProducts) {
                     const ourProductsItems = allProducts.filter(p => data.homepage.ourProducts.includes(p.id));
@@ -1056,7 +1046,7 @@
                 } else {
                     let cart = localStorage.getItem('bose_cart') ? JSON.parse(localStorage.getItem('bose_cart')) : [];
                     const idx = cart.findIndex(item => item.id === productId && item.type === "standard");
-                    if (idx > -1 && !isCustomProduct) { cart[idx].quantity
+                    if (idx > -1 && !isCustomProduct) {
                         cart[idx].quantity += quantity;
                     } else {
                         cart.push(payload);
@@ -1069,3 +1059,4 @@
     </script>
 </body>
 </html>
+
