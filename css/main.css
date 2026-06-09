@@ -26,6 +26,7 @@
     align-items: center;
     gap: 20px;
     max-width: 800px;
+    margin: 0 auto;
 }
 
 #hero-title {
@@ -70,7 +71,7 @@
 ------------------------------------------------------------------------ */
 #waterfall-section {
     position: relative;
-    width: 100vw;
+    width: 100%;
     height: 700px; /* الارتفاع الإلزامي للموبايل */
     overflow: hidden;
     background-color: var(--bose-white);
@@ -172,19 +173,26 @@
 }
 
 /* ------------------------------------------------------------------------
-   🌸 SECTION 02: عقد من الإتقان (Excellence Banner Scroller Layout)
+   🌸 SECTION 02: عقد من الإتقان (Excellence Banner Scroller Layout) - صور كاملة ومحمية من الضغط والتشويه
 ------------------------------------------------------------------------ */
 #excellence-section {
     padding: 60px 0;
     background-color: var(--bose-white);
+    text-align: center;
 }
 
 .section-header-center {
-    text-align: center;
+    text-align: center !important;
     margin-bottom: 40px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 12px;
+    padding: 0 24px;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .section-title {
@@ -218,7 +226,7 @@
 .excellence-images-track {
     display: flex;
     width: 100%;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: transform;
 }
 
@@ -226,19 +234,26 @@
     min-width: 100%;
     width: 100%;
     display: block;
-    aspect-ratio: 16/9;
+    height: 350px; /* الارتفاع المثالي لمنع الانضغاط على الموبايل */
 }
 
 @media (min-width: 768px) {
     .excellence-slide-item {
-        aspect-ratio: 21/9;
+        height: 500px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .excellence-slide-item {
+        height: 650px; /* ملء الشاشة كلياً على أجهزة الديسكتوب */
     }
 }
 
 .excellence-slide-item img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: cover; /* لضمان المحافظة على التناسب التام والجمال البارز للمنتج */
+    display: block;
 }
 
 .slider-dots-container {
@@ -272,18 +287,6 @@
     background-color: var(--bose-white);
 }
 
-.section-header-rtl {
-    text-align: right;
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 0 24px;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .slider-wrapper {
     width: 100%;
     padding: 10px 24px 20px 24px;
@@ -304,7 +307,7 @@
 }
 
 /* ------------------------------------------------------------------------
-   📦 الهيكل الموحد للكارت (Standard Product Card CSS Blueprint)
+   📦 الهيكل الموحد للكارت (السعر تحت العداد وتحديد الكمية بشكل عمودي متكامل)
 ------------------------------------------------------------------------ */
 .products-grid {
     display: flex;
@@ -379,7 +382,7 @@
 .product-card-info {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 10px;
     flex-grow: 1;
 }
 
@@ -412,14 +415,12 @@
     height: 38px;
 }
 
-/* السطر السفلي للكارت الموحد (العداد، السعر، زر الشراء) */
-.product-card-bottom-row {
+/* الحاوية الوردية للعداد الموحد لضمان التناسق */
+.bose-quantity-counter-wrapper {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: auto;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 145, 164, 0.1);
+    justify-content: center;
+    width: 100%;
+    margin-top: 4px;
 }
 
 /* شكل العداد المعتمد: يمين +، وسط العدد، يسار - مع حدود بمبي خفيف */
@@ -431,17 +432,20 @@
     background-color: var(--bose-white);
     overflow: hidden;
     height: 38px;
-    width: max-content;
+    width: 100%;
+    max-width: 150px;
 }
 
 .qty-btn {
-    width: 34px;
+    width: 44px;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     font-weight: 700;
+    background: transparent;
+    border: none;
     cursor: pointer;
     transition: var(--bose-transition-smooth);
 }
@@ -462,38 +466,50 @@
 }
 
 .qty-value {
-    width: 32px;
+    flex-grow: 1;
     text-align: center;
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 700;
     color: var(--bose-black);
 }
 
-.product-card-price-action {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+/* السعر تحت تحديد الكمية والعداد */
+.product-card-price-row {
+    text-align: center;
+    width: 100%;
+    padding: 6px 0;
 }
 
-.bose-add-to-cart-btn {
-    width: 38px;
-    height: 38px;
+.bose-price-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--bose-pink);
+}
+
+/* زر الشراء والتفاعل العريض لسهولة الضغط بالموبايل */
+.bose-add-to-cart-btn-full {
+    width: 100%;
+    height: 44px;
     background-color: var(--bose-pink);
     color: var(--bose-white);
+    border: none;
     border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1rem;
+    gap: 8px;
     cursor: pointer;
     box-shadow: var(--bose-shadow-glow);
     transition: var(--bose-transition-smooth);
+    margin-top: auto;
 }
 
-.bose-add-to-cart-btn:hover {
-    transform: scale(1.08) rotate(-5deg);
+.bose-add-to-cart-btn-full:hover {
+    background-color: #ff7b91;
+    transform: translateY(-2px);
     box-shadow: var(--bose-shadow-hover);
-    filter: brightness(1.03);
 }
 
 /* ------------------------------------------------------------------------
@@ -556,7 +572,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center; /* توسيط المحتوى تفاعلياً ليتناسب مع الهوية */
+    text-align: center;
     gap: 16px;
 }
 
@@ -597,14 +614,13 @@
 }
 
 /* ------------------------------------------------------------------------
-   📦 SECTION 06: منتجاتنا (Our Products Static Grid Layout)
+   📦 SECTION 06: منتجاتنا (Our Products Grid - كارتين متجاورين بالتساوي على الموبايل)
 ------------------------------------------------------------------------ */
 #our-products-section {
     padding: 60px 0;
     background-color: var(--bose-white);
 }
 
-/* شبكة مستقرة: كارتين بجوار بعض (2 كروت بكل صف) */
 .products-grid-wrapper {
     max-width: 1200px;
     margin: 0 auto;
@@ -612,21 +628,21 @@
 }
 
 #our-products-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* تفرض كارتين بجوار بعض للموبايل إجبارياً */
-    gap: 16px;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* فرض كارتين متجاورين بالتساوي على الموبايل لمنع أي تشويه */
+    gap: 16px !important;
 }
 
 @media (min-width: 768px) {
     #our-products-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 20px !important;
     }
 }
 
 @media (min-width: 1024px) {
     #our-products-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(4, 1fr) !important;
     }
 }
 
@@ -697,7 +713,7 @@
 
 @media (min-width: 1024px) {
     .flower-banner-container {
-        flex-direction: row; /* عكس الكيك لتعطي تنفس وتماثل بصري رائع */
+        flex-direction: row; 
         min-height: 750px; /* الارتفاع الإلزامي للديسكتوب */
     }
 }
@@ -733,7 +749,8 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
+    text-align: center;
     gap: 16px;
 }
 
@@ -764,7 +781,7 @@
 }
 
 /* ------------------------------------------------------------------------
-   🏆 SECTION 08: الفخر والاعتزاز (Pride & Experience Stats Block Layout)
+   🏆 SECTION 08: الفخر والاعتزاز (Pride & Experience - مع مشغل فيديو فاخر ومحمي)
 ------------------------------------------------------------------------ */
 #pride-section {
     position: relative;
@@ -795,15 +812,16 @@
 
 @media (min-width: 1024px) {
     .pride-wrapper {
-        grid-template-columns: 1fr 1.2fr;
+        grid-template-columns: 1fr 1fr;
     }
 }
 
 .pride-content-block {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
     gap: 16px;
-    text-align: right;
 }
 
 #pride-title {
@@ -823,13 +841,62 @@
     color: var(--bose-black);
     opacity: 0.85;
     line-height: 1.8;
+    max-width: 600px;
 }
 
-/* شبكة الأرقام والإحصائيات الصادقة والودية */
+/* مشغل فيديو الفخر والاعتزاز */
+.pride-video-container {
+    position: relative;
+    width: 100%;
+    max-width: 550px;
+    aspect-ratio: 16/9;
+    border-radius: 24px;
+    overflow: hidden;
+    border: var(--bose-border-pink);
+    box-shadow: var(--bose-shadow-glow);
+    margin: 20px auto 0 auto;
+    background-color: var(--bose-black);
+}
+
+.pride-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.video-overlay-play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px;
+    height: 64px;
+    background-color: rgba(255, 145, 164, 0.95);
+    color: var(--bose-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: var(--bose-shadow-glow);
+    transition: var(--bose-transition-smooth);
+    z-index: 10;
+}
+
+.video-overlay-play:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    background-color: var(--bose-pink);
+    box-shadow: var(--bose-shadow-hover);
+}
+
+/* شبكة الأرقام والإحصائيات */
 .stats-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
+    width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -979,4 +1046,140 @@
 .category-slider-card:hover .category-btn-sub {
     letter-spacing: 0.5px;
 }
+
+/* ------------------------------------------------------------------------
+   🏪 المكون المطور للفوتر الموحد والثابت (Shared Center-Aligned Footer)
+------------------------------------------------------------------------ */
+.bose-footer {
+    background-color: var(--bose-white);
+    border-top: var(--bose-border-pink);
+    padding: 60px 24px 30px 24px;
+    text-align: center; /* توسيط كافة نصوص الفوتر */
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+    justify-items: center; /* توسيط الأعمدة كلياً */
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr 1fr; /* تقسيم متساو على الشاشات الكبيرة */
+    }
+}
+
+.footer-about-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 350px;
+}
+
+.footer-brand-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--bose-pink); /* الهوية البصرية للعلامة */
+}
+
+#footer-social-links {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+/* أيقونات التواصل الاجتماعي الأصلية والمدعومة بألوانها الرسمية */
+#footer-social-links a {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bose-white);
+    font-size: 1.2rem;
+    transition: var(--bose-transition-smooth);
+    box-shadow: var(--bose-shadow-glow);
+}
+
+.social-link-facebook {
+    background-color: #1877F2; /* فيسبوك الأصلي */
+}
+
+.social-link-instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); /* انستغرام الأصلي */
+}
+
+.social-link-tiktok {
+    background-color: #010101; /* تيك توك الأصلي */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.social-link-whatsapp {
+    background-color: #25D366; /* واتساب الأصلي */
+}
+
+#footer-social-links a:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: var(--bose-shadow-hover);
+}
+
+.footer-links-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.footer-column-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--bose-black);
+}
+
+.footer-links-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.footer-links-list a {
+    color: var(--bose-black);
+    opacity: 0.8;
+    font-size: 0.95rem;
+    transition: var(--bose-transition-smooth);
+    text-decoration: none;
+}
+
+.footer-links-list a:hover {
+    color: var(--bose-pink);
+    opacity: 1;
+    padding-right: 4px;
+}
+
+.footer-bottom-bar {
+    border-top: 1px solid rgba(255, 145, 164, 0.1);
+    margin-top: 40px;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-copyrights, .footer-developer-sig {
+    font-size: 0.85rem;
+    color: var(--bose-black);
+    opacity: 0.75;
+}
+
 
