@@ -62,6 +62,14 @@
     transition: var(--bose-transition-smooth);
 }
 
+/* حل مشكلة مستطيلات أيقونات التواصل وإظهار إنستجرام بوضوح كامل */
+.social-link-facebook, .social-link-instagram, .social-link-tiktok, .social-link-whatsapp {
+    font-family: inherit !important;
+    text-indent: -9999px !important;
+    overflow: hidden !important;
+    display: inline-block !important;
+}
+
 .social-link-facebook {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z'/></svg>") !important;
     background-repeat: no-repeat !important;
@@ -74,7 +82,6 @@
     background-repeat: no-repeat !important;
     background-position: center !important;
     background-size: 18px !important;
-    display: inline-block !important;
 }
 
 .social-link-tiktok {
@@ -694,23 +701,24 @@
     padding: 0 24px 30px 24px;
 }
 
+/* زيادة عرض الكارد في قسم منتجاتنا بنسبة 20% لجميع الشاشات وتوافق المحرك */
 #our-products-grid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
-    gap: 20px !important;
+    gap: 24px !important;
 }
 
 @media (min-width: 768px) {
     #our-products-grid {
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 24px !important;
+        gap: 28px !important;
     }
 }
 
 @media (min-width: 1024px) {
     #our-products-grid {
         grid-template-columns: repeat(4, 1fr) !important;
-        gap: 32px !important;
+        gap: 38px !important;
     }
 }
 
@@ -719,9 +727,9 @@
     max-width: 100% !important;
     flex-shrink: 1 !important;
     flex-grow: 1 !important;
-    padding: 16px !important;
+    padding: 22px !important;
     border: var(--bose-border-pink) !important;
-    border-radius: 20px !important;
+    border-radius: 24px !important;
     box-shadow: var(--bose-shadow-glow) !important;
     overflow: visible !important;
 }
@@ -732,79 +740,79 @@
 }
 
 #our-products-grid .product-card-title {
-    font-size: 1.15rem !important;
+    font-size: 1.3rem !important;
     min-height: unset !important;
 }
 
 @media (min-width: 768px) {
     #our-products-grid .product-card-title {
-        font-size: 1.35rem !important;
+        font-size: 1.55rem !important;
     }
 }
 
 #our-products-grid .product-card-desc {
-    font-size: 0.9rem !important;
+    font-size: 1rem !important;
     min-height: unset !important;
 }
 
 #our-products-grid .product-card-flavor {
-    font-size: 0.9rem !important;
-    padding: 5px 14px !important;
+    font-size: 1rem !important;
+    padding: 6px 16px !important;
 }
 
 @media (max-width: 767px) {
     .products-grid-wrapper {
-        padding: 0 12px 20px 12px !important;
+        padding: 0 14px 24px 14px !important;
     }
     
     #our-products-grid {
-        gap: 12px !important;
+        gap: 14px !important;
     }
     
     #our-products-grid .product-card {
-        padding: 10px !important;
-        border-radius: 16px !important;
-        gap: 8px !important;
+        padding: 14px !important;
+        border-radius: 20px !important;
+        gap: 10px !important;
     }
     
     .card-image-wrapper {
-        border-radius: 12px !important;
+        border-radius: 14px !important;
     }
     
     #our-products-grid .product-card-title {
-        font-size: 0.9rem !important;
+        font-size: 1.05rem !important;
         line-height: 1.4 !important;
     }
     
     #our-products-grid .product-card-flavor {
-        font-size: 0.75rem !important;
-        padding: 2px 6px !important;
-        border-radius: 6px !important;
+        font-size: 0.85rem !important;
+        padding: 3px 8px !important;
+        border-radius: 7px !important;
     }
     
     #our-products-grid .product-card-desc {
-        font-size: 0.75rem !important;
+        font-size: 0.85rem !important;
         line-height: 1.4 !important;
     }
     
     .bose-quantity-counter {
-        height: 32px !important;
-        border-radius: 8px !important;
+        height: 36px !important;
+        border-radius: 10px !important;
     }
     
     .qty-btn {
-        width: 32px !important;
-        font-size: 1rem !important;
+        width: 36px !important;
+        font-size: 1.1rem !important;
     }
     
     .qty-value {
-        font-size: 0.9rem !important;
+        font-size: 1rem !important;
     }
     
     .bose-add-to-cart-btn-full {
-        height: 38px !important;
-        font-size: 0.8rem !important;
-        border-radius: 8px !important;
+        height: 42px !important;
+        font-size: 0.9rem !important;
+        border-radius: 10px !important;
     }
 }
 
