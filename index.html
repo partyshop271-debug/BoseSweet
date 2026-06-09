@@ -6,718 +6,1024 @@
     
     <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
     <meta name="description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.">
-    <meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, حلويات بوسي">
+    <meta name="keywords" content="حلويات, تورت, بوكس هدايا, كاب كيك, سينابون, ورد, دوناتس, حلويات بوسي, ميني تورتة, قشطوطة, ديسباسيتو">
+    <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://bosesweets.com">
     
     <meta property="og:type" content="website">
     <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta property="og:description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.">
+    <meta property="og:description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة وصمم تورتتك الخاصة عبر المحاكي البصري.">
     <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
     <meta property="og:url" content="https://bosesweets.com">
-
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
-    <meta name="twitter:description" content="منصة بيع إلكترونية متكاملة لعلامة حلويات بوسي الفاخرة. استمتع بتجربة تسوق فريدة، صمم تورتتك الخاصة وبوكيه الورد المخصص عبر محاكياتنا التفاعلية الفريدة.">
-    <meta name="twitter:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-
+    <meta property="og:site_name" content="حلويات بوسي">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
-    <script src="core.html.js"></script>
+    
+    <script src="js/core.html.js"></script>
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Bakery",
-      "name": "حلويات بوسي - Boosy Sweets",
-      "image": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
-      "@id": "https://bosesweets.com/#bakery",
-      "url": "https://bosesweets.com",
-      "telephone": "+201097238441",
-      "priceRange": "$$",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "شارع الوحدة المحلية، بجوار صيدلية د. أحمد مجدي وعيادة د. علي",
-        "addressLocality": "الكفاح",
-        "addressCountry": "EG"
-      },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        "opens": "10:00",
-        "closes": "23:59"
-      }
-    }
-    </script>
+    <style>
+        /* كود تهيئة موضعي لضمان المطابقة الصارمة لتعليمات الشاشة والعرض الفاخر */
+        :root {
+            --bose-pink: #FF91A4;
+            --bose-white: #FFFFFF;
+            --bose-black: #111111;
+            --bose-gold: #D4AF37;
+            --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
+            --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+            --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+            --bose-border-thick: 2px solid #FF91A4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bose-white);
+            color: var(--bose-black);
+            overflow-x: hidden;
+        }
+
+        /* تعديلات الهندسة البصرية الموحدة: توسيط العناوين والنصوص المانعة للابتار */
+        .section-title {
+            text-align: center;
+            font-weight: 700;
+            font-size: 2rem;
+            color: var(--bose-black);
+            margin-bottom: 8px;
+        }
+        .section-desc {
+            text-align: center;
+            font-weight: 400;
+            font-size: 1.1rem;
+            color: var(--bose-black);
+            max-width: 600px;
+            margin: 0 auto 32px auto;
+            padding: 0 16px;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        /* الهيدر اللزج والمطابق للأبعاد والترتيب */
+        .bose-navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: var(--bose-white);
+            border-bottom: var(--bose-border-pink);
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            box-shadow: var(--bose-shadow-glow);
+        }
+        .nav-right-block {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .menu-toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            color: var(--bose-black);
+            cursor: pointer;
+        }
+        .brand-logo-container {
+            display: flex;
+            align-items: center;
+        }
+        #bose-store-logo {
+            height: 48px;
+            width: auto;
+            object-fit: contain; /* منع الضغط البصري نهائياً */
+        }
+        .brand-name-link {
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--bose-black);
+            text-decoration: none;
+            margin-right: 8px;
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .nav-search-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: var(--bose-black);
+            cursor: pointer;
+        }
+        .nav-cart-icon-wrapper {
+            position: relative;
+            font-size: 1.3rem;
+            color: var(--bose-black);
+            text-decoration: none;
+        }
+        #nav-cart-count {
+            position: absolute;
+            top: -8px;
+            left: -10px;
+            background-color: var(--bose-pink);
+            color: var(--bose-black);
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 50%;
+            padding: 2px 6px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* القائمة الجانبية المتقدمة والذكية */
+        .sidebar-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 280px;
+            height: 100vh;
+            background-color: var(--bose-white);
+            z-index: 2000;
+            box-shadow: var(--bose-shadow-hover);
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 24px;
+        }
+        .sidebar-menu.active {
+            right: 0;
+        }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            border-bottom: var(--bose-border-pink);
+            padding-bottom: 16px;
+        }
+        .sidebar-close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--bose-black);
+            cursor: pointer;
+        }
+        .sidebar-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .sidebar-links a {
+            color: var(--bose-black);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.3s;
+        }
+        .sidebar-links a:hover {
+            color: var(--bose-pink);
+        }
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(17, 17, 17, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1999;
+            display: none;
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* الشريط العلوي المتحرك بشكل لا نهائي ودون فراغات */
+        .top-bar-marquee {
+            background-color: var(--bose-pink);
+            overflow: hidden;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            height: 36px;
+            border-bottom: var(--bose-border-pink);
+        }
+        .marquee-track {
+            display: flex;
+            gap: 40px;
+            animation: marquee-scroll 25s linear infinite;
+        }
+        .marquee-item {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--bose-black);
+        }
+        @keyframes marquee-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(50%); }
+        }
+
+        /* الأقسام وهندسة المحتوى الممتد */
+        section {
+            padding: 48px 16px;
+            border-bottom: var(--bose-border-pink);
+        }
+
+        /* SECTION 01: البانر الرئيسي */
+        #hero-section {
+            background: linear-gradient(180deg, rgba(255,145,164,0.05) 0%, rgba(255,255,255,1) 100%);
+            text-align: center;
+            padding: 64px 16px;
+        }
+        #hero-title {
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin-bottom: 16px;
+        }
+        #hero-title span.pink-accent {
+            color: var(--bose-pink);
+        }
+        #hero-description {
+            font-size: 1.15rem;
+            font-weight: 400;
+            max-width: 650px;
+            margin: 0 auto 32px auto;
+            line-height: 1.7;
+        }
+        .bose-cta-btn {
+            display: inline-block;
+            background-color: var(--bose-pink);
+            color: var(--bose-black);
+            padding: 14px 40px;
+            border-radius: 30px;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: var(--bose-shadow-glow);
+            transition: all 0.3s ease;
+        }
+        .bose-cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--bose-shadow-hover);
+        }
+
+        /* WATERFALL: الشلال البصري المزدوج الرأسي */
+        #waterfall-section {
+            padding: 0;
+            position: relative;
+            background-color: var(--bose-white);
+        }
+        .waterfall-wrapper {
+            position: relative;
+            height: 700px; /* الافتراضي للموبايل */
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 12px;
+        }
+        @media (min-width: 992px) {
+            .waterfall-wrapper { height: 1000px; gap: 20px; padding: 20px; }
+        }
+        .waterfall-col {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        @media (min-width: 992px) { .waterfall-col { gap: 20px; } }
+        
+        #waterfall-left-col {
+            animation: scroll-up 35s linear infinite;
+        }
+        #waterfall-right-col {
+            animation: scroll-down 35s linear infinite;
+        }
+        .waterfall-item-link {
+            display: block;
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--bose-shadow-glow);
+            transition: transform 0.3s;
+        }
+        .waterfall-item-link:hover {
+            transform: scale(1.03);
+        }
+        .waterfall-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+        @media (min-width: 992px) { .waterfall-img { height: 320px; } }
+        
+        .waterfall-overlay-top, .waterfall-overlay-bottom {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .waterfall-overlay-top {
+            top: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+            backdrop-filter: blur(2px);
+        }
+        .waterfall-overlay-bottom {
+            bottom: 0;
+            background: linear-gradient(to top, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+            backdrop-filter: blur(2px);
+        }
+
+        @keyframes scroll-up {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+        @keyframes scroll-down {
+            0% { transform: translateY(-50%); }
+            100% { transform: translateY(0); }
+        }
+
+        /* SECTION 02: عقد من الإتقان - صور متصلة ممتدة بالكامل دون ضغط */
+        #excellence-section {
+            padding: 48px 0;
+        }
+        .excellence-banner-scroller {
+            width: 100vw;
+            overflow: hidden;
+            position: relative;
+        }
+        #excellence-images-track {
+            display: flex;
+            width: 300vw; /* 3 صور تملأ الشاشة بالكامل */
+            animation: infinite-slide 18s linear infinite;
+        }
+        .excellence-img-wrapper {
+            width: 100vw;
+            height: 50vh;
+            overflow: hidden;
+        }
+        .excellence-full-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* كاملة بدون قص أشكال أو ضغط */
+            display: block;
+        }
+        @keyframes infinite-slide {
+            0% { transform: translateX(0); }
+            33.33% { transform: translateX(100vw); }
+            66.66% { transform: translateX(200vw); }
+            100% { transform: translateX(300vw); }
+        }
+        .dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 145, 164, 0.4);
+        }
+        .dot.active {
+            background-color: var(--bose-pink);
+            width: 24px;
+            border-radius: 10px;
+        }
+
+        /* الهيكل الموحد للكروت - التنسيق الشبكي والأفقي القياسي */
+        .products-grid {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 12px 4px;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+        .products-grid::-webkit-scrollbar { display: none; }
+
+        .bose-product-card {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: var(--bose-shadow-glow);
+            flex: 0 0 85vw; /* مطابقة لحجم الموبايل */
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .bose-product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--bose-shadow-hover);
+            border-color: var(--bose-pink);
+        }
+        .card-img-wrapper {
+            width: 100%;
+            height: 220px;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+        .card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin-bottom: 4px;
+        }
+        .card-flavor-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--bose-pink);
+            margin-bottom: 6px;
+        }
+        .card-desc {
+            font-size: 0.88rem;
+            font-weight: 400;
+            color: var(--bose-black);
+            line-height: 1.5;
+            margin-bottom: 16px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden; /* حماية من تجاوز النصوص */
+        }
+        .card-interactive-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            gap: 8px;
+            border-top: 1px solid rgba(255, 145, 164, 0.1);
+            padding-top: 12px;
+        }
+        .bose-counter {
+            display: flex;
+            align-items: center;
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            overflow: hidden;
+            background-color: var(--bose-white);
+        }
+        .counter-btn {
+            background: none;
+            border: none;
+            width: 32px;
+            height: 32px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--bose-black);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .counter-btn:hover { background-color: rgba(255,145,164,0.1); }
+        .counter-value {
+            width: 36px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--bose-black);
+            border-left: 1px solid rgba(255, 145, 164, 0.2);
+            border-right: 1px solid rgba(255, 145, 164, 0.2);
+        }
+        .card-price-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--bose-black);
+        }
+        .btn-add-to-cart-small {
+            background-color: var(--bose-pink);
+            border: none;
+            color: var(--bose-black);
+            padding: 8px 14px;
+            border-radius: 18px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-add-to-cart-small:hover {
+            background-color: #ff788f;
+        }
+
+        @media (min-width: 768px) {
+            .bose-product-card { flex: 0 0 320px; }
+            .card-img-wrapper { height: 260px; }
+        }
+        @media (min-width: 992px) {
+            .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); overflow-x: visible; }
+            .bose-product-card { flex: none; width: 100%; }
+            .card-img-wrapper { height: 320px; }
+        }
+
+        /* SECTION 04 & 07: كتل المحاكاة (البلوكات البصرية الكاملة الممتدة) */
+        .bose-builder-block {
+            background: linear-gradient(135deg, rgba(255,145,164,0.15) 0%, rgba(255,255,255,1) 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 600px;
+            padding: 32px;
+        }
+        @media (min-width: 992px) { .bose-builder-block { height: 750px; } }
+        
+        .builder-large-img {
+            max-height: 220px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 24px;
+            transition: transform 0.5s ease;
+        }
+        .bose-builder-block:hover .builder-large-img {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        /* SECTION 06: منتجاتنا - كارتين بجانب بعض ماليين الشاشة بالكامل */
+        #our-products-section {
+            padding: 48px 12px;
+        }
+        .products-static-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* كارتين جنباً لجنب ماليين الشاشة */
+            gap: 12px;
+        }
+        @media (max-width: 480px) {
+            .products-static-grid .bose-product-card {
+                flex: none;
+                width: 100%;
+                padding: 10px;
+                border-radius: 14px;
+            }
+            .products-static-grid .card-img-wrapper {
+                height: 140px;
+            }
+            .products-static-grid .card-title { font-size: 1rem; }
+            .products-static-grid .card-flavor-name { font-size: 0.85rem; }
+            .products-static-grid .card-interactive-row { flex-direction: column; gap: 6px; align-items: stretch; }
+            .products-static-grid .bose-counter { justify-content: space-between; }
+            .products-static-grid .card-price-text { text-align: center; font-size: 1.05rem; }
+        }
+        @media (min-width: 768px) {
+            .products-static-grid { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+        }
+        @media (min-width: 992px) {
+            .products-static-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        .load-more-container {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        /* SECTION 08: الفخر والاعتزاز - ممتد ويضم فيديو عريض مالي الشاشة */
+        #pride-section {
+            background-color: rgba(255,145,164,0.08);
+            min-height: 550px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        @media (min-width: 992px) { #pride-section { min-height: 700px; } }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 40px;
+            padding: 0 16px;
+        }
+        @media (min-width: 768px) { .stats-container { grid-template-columns: repeat(5, 1fr); } }
+        .stat-box {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: var(--bose-shadow-glow);
+        }
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--bose-pink);
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--bose-black);
+            margin-top: 4px;
+        }
+        .pride-video-wrapper {
+            width: 100vw;
+            max-width: 100%;
+            margin-top: 24px;
+            padding: 0;
+            overflow: hidden;
+        }
+        .pride-video-element {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+            object-fit: cover; /* مالي الشاشة بدون مساحات هادفة */
+            border: none;
+            display: block;
+        }
+
+        /* SECTION 09: تسوق حسب الفئة - كروت أكبر بنسبة 30% */
+        .categories-track-grid {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 16px 4px;
+            scrollbar-width: none;
+        }
+        .categories-track-grid::-webkit-scrollbar { display: none; }
+        
+        .bose-category-card {
+            background-color: var(--bose-white);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--bose-shadow-glow);
+            border: var(--bose-border-pink);
+            flex: 0 0 280px; /* المقاس الإلزامي للموبايل */
+            height: 360px;
+            position: relative;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .category-card-img-wrapper {
+            width: 280px;
+            height: 280px;
+            overflow: hidden;
+        }
+        .category-card-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .category-card-title {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 700;
+            font-size: 20px;
+            color: var(--bose-black);
+            text-align: center;
+            width: 100%;
+        }
+        @media (min-width: 768px) {
+            .bose-category-card { flex: 0 0 340px; height: 430px; }
+            .category-card-img-wrapper { width: 340px; height: 340px; }
+        }
+        @media (min-width: 992px) {
+            .bose-category-card { flex: 0 0 420px; height: 520px; }
+            .category-card-img-wrapper { width: 420px; height: 420px; }
+        }
+
+        /* الفوتر المتوازن - ممركز بالكامل ومعزول عن الخلفيات السوداء */
+        .bose-footer {
+            background-color: #FFF5F6; /* خلفية فاتحة فاخرة مريحة */
+            padding: 48px 16px 24px 16px;
+            text-align: center;
+            border-top: var(--bose-border-thick);
+        }
+        .footer-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 32px;
+        }
+        .footer-logo-block img {
+            height: 64px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+        .footer-brand-title {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--bose-black);
+        }
+        #footer-about-text {
+            font-size: 1rem;
+            color: var(--bose-black);
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        #footer-social-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        #footer-social-links a {
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+        #footer-social-links a:hover { transform: scale(1.2); }
+        
+        /* الألوان الأصلية الرسمية لقنوات التواصل */
+        .social-link-facebook { color: #1877F2; }
+        .social-link-instagram { color: #E1306C; }
+        .social-link-tiktok { color: #000000; }
+        .social-link-whatsapp { color: #25D366; }
+
+        .footer-links-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            list-style: none;
+        }
+        .footer-links-wrapper a {
+            color: var(--bose-black);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .footer-links-wrapper a:hover { color: var(--bose-pink); }
+        
+        .footer-copyright {
+            margin-top: 16px;
+            border-top: 1px solid rgba(255,145,164,0.15);
+            padding-top: 16px;
+            font-size: 0.85rem;
+            color: var(--bose-black);
+            width: 100%;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="bose-top-bar" id="bose-announcements-bar">
-        <div class="marquee-track" id="bose-announcements-track"></div>
-    </div>
+    <div class="sidebar-overlay" id="bose-sidebar-overlay"></div>
+    <aside class="sidebar-menu" id="bose-sidebar">
+        <div class="sidebar-header">
+            <span class="footer-brand-title">قائمة الاختيارات</span>
+            <button class="sidebar-close-btn" id="close-sidebar-btn"><i class="fas fa-times"></i></button>
+        </div>
+        <ul class="sidebar-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="menu.html">المنيو الشامل</a></li>
+            <li><a href="cake-builder.html">محاكي التورت</a></li>
+            <li><a href="flower-builder.html">محاكي الورد</a></li>
+            <li><a href="cart.html">سلة المشتريات</a></li>
+        </ul>
+    </aside>
 
     <header class="bose-navbar">
-        <div class="nav-right-side">
-            <button class="nav-menu-toggle" aria-label="فتح القائمة الجانبية"></button>
+        <div class="nav-right-block">
+            <button class="menu-toggle-btn" id="open-sidebar-btn" aria-label="فتح القائمة">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="brand-logo-container">
                 <a href="index.html">
                     <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
                 </a>
             </div>
-            <a href="index.html" class="brand-name">حلويات بوسي</a>
+            <a href="index.html" class="brand-name-link">حلويات بوسي</a>
         </div>
-        <div class="nav-left-actions">
-            <button class="nav-search-trigger" aria-label="البحث عن منتج"></button>
-            <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="سلة المشتريات">
+        
+        <div class="nav-actions">
+            <button class="nav-search-btn" aria-label="بحث في الموقع"><i class="fas fa-search"></i></button>
+            <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="عرض السلة">
+                <i class="fas fa-shopping-basket"></i>
                 <span id="nav-cart-count">0</span>
             </a>
         </div>
     </header>
 
-    <aside class="bose-drawer-menu" aria-label="القائمة الجانبية">
-        <div class="drawer-premium-header">
-            <h3>أهلاً بك في عالمنا الفاخر 🌸</h3>
-            <p>حلويات بوسي - فرع الكفاح</p>
+    <div class="top-bar-marquee">
+        <div class="marquee-track">
+            <span class="marquee-item">كل قطعة من حلويات بوسي صنعت يدوياً بحب وشغف لتليق بمناسباتكم السعيدة 🌸</span>
+            <span class="marquee-item">مكونات طبيعية 100% طازجة يومياً للحصول على الطعم الأصلي الفاخر ✨</span>
+            <span class="marquee-item">تميزوا بهداياكم وجلساتكم الفاخرة مع تشكيلة بوكس الروقان وكبات السعادة 👑</span>
+            <span class="marquee-item">كل قطعة من حلويات بوسي صنعت يدوياً بحب وشغف لتليق بمناسباتكم السعيدة 🌸</span>
+            <span class="marquee-item">مكونات طبيعية 100% طازجة يومياً للحصول على الطعم الأصلي الفاخر ✨</span>
         </div>
-        <div class="drawer-links-scrollable">
-            <span class="drawer-divider-label">التصفح الأساسي</span>
-            <ul class="drawer-links-list">
-                <li class="drawer-link-item"><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
-                <li class="drawer-link-item"><a href="menu.html"><i class="fas fa-utensils"></i> المنيو الشامل</a></li>
-                <li class="drawer-link-item"><a href="cart.html"><i class="fas fa-shopping-basket"></i> سلة التسوق</a></li>
-            </ul>
-            
-            <span class="drawer-divider-label">المحاكيات الحصرية</span>
-            <ul class="drawer-links-list">
-                <li class="drawer-link-item featured-hub"><a href="cake-builder.html"><i class="fas fa-birthday-cake"></i> محاكي التورت التفاعلي</a></li>
-                <li class="drawer-link-item featured-hub"><a href="flower-builder.html"><i class="fas fa-spa"></i> محاكي الورد والهدايا</a></li>
-            </ul>
-            
-            <span class="drawer-divider-label">عن العلامة</span>
-            <ul class="drawer-links-list">
-                <li class="drawer-link-item"><a href="about.html"><i class="fas fa-info-circle"></i> من نحن</a></li>
-                <li class="drawer-link-item"><a href="contact.html"><i class="fas fa-envelope"></i> تواصل معنا</a></li>
-            </ul>
-        </div>
-        <div class="drawer-premium-footer">
-            <a href="tel:01097238441" class="drawer-action-call-btn"><i class="fas fa-phone-alt"></i> اتصال سريع بالفرع</a>
-            <a href="https://wa.me/201097238441" class="drawer-action-whatsapp-btn" target="_blank"><i class="fab fa-whatsapp"></i> طلب مباشر واتساب</a>
-            <p>صنعناها بحب لتهديها لمن تحب 🌸</p>
-        </div>
-    </aside>
-
-    <div class="bose-search-modal" aria-hidden="true">
-        <div class="search-header">
-            <span style="font-size: 1.2rem; font-weight: 700; color: var(--bose-black);">البحث السريع</span>
-            <button class="search-close-btn" aria-label="إغلاق نافذة البحث"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="search-input-wrapper">
-            <input type="text" id="global-search-input" placeholder="عن ماذا تبحث اليوم؟">
-            <i class="fas fa-search search-icon-inside"></i>
-        </div>
-        <div class="search-results-container"></div>
     </div>
 
-    <main class="bose-main-content">
+    <section id="hero-section">
+        <h1 id="hero-title">عقد من <span class="pink-accent">التميز</span> في صناعة الحلويات</h1>
+        <p id="hero-description">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة.</p>
+        <a href="menu.html" class="bose-cta-btn" id="hero-cta-btn">اطلب الآن</a>
+    </section>
 
-        <section id="hero-section">
-            <div class="container hero-wrapper">
-                <h1 id="hero-title">عقد من <span class="highlight-pink">التميز</span> في صناعة الحلويات</h1>
-                <p id="hero-description">تم اختيار المكونات بعناية فائقة للحصول على أفضل جودة تليق بمناسباتكم السعيدة وتضمن ثقتكم الدائمة.</p>
-                <div class="hero-cta-btn-wrapper">
-                    <a href="menu.html" id="hero-cta-btn" class="bose-btn-primary">استعرض المنيو <i class="fas fa-magic"></i></a>
-                </div>
+    <div id="waterfall-section">
+        <div class="waterfall-overlay-top"></div>
+        <div class="waterfall-wrapper">
+            <div class="waterfall-col" id="waterfall-left-col">
+                <a href="product.html?id=toort-custom-master" class="waterfall-item-link"><img class="waterfall-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="المنتج الأول"></a>
+                <a href="product.html?id=gateaux-royal" class="waterfall-item-link"><img class="waterfall-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="المنتج الثاني"></a>
+                <a href="product.html?id=qashtota-lotus-new" class="waterfall-item-link"><img class="waterfall-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="المنتج الثالث"></a>
+                <a href="product.html?id=toort-custom-master" class="waterfall-item-link"><img class="waterfall-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="المنتج الأول المكرر"></a>
             </div>
-        </section>
+            <div class="waterfall-col" id="waterfall-right-col">
+                <a href="product.html?id=despacito-pistachio-new" class="waterfall-item-link"><img class="waterfall-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="المنتج الرابع"></a>
+                <a href="product.html?id=cinabon-classic" class="waterfall-item-link"><img class="waterfall-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="المنتج الخامس"></a>
+                <a href="product.html?id=donuts-matilda" class="waterfall-item-link"><img class="waterfall-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="المنتج السادس"></a>
+                <a href="product.html?id=despacito-pistachio-new" class="waterfall-item-link"><img class="waterfall-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="المنتج الرابع المكرر"></a>
+            </div>
+        </div>
+        <div class="waterfall-overlay-bottom"></div>
+    </div>
 
-        <section id="waterfall-section" aria-label="شلال المنتجات التفاعلي">
-            <div class="waterfall-overlay-top"></div>
-            <div class="waterfall-container">
-                <div class="waterfall-column waterfall-down" id="waterfall-right-col"></div>
-                <div class="waterfall-column waterfall-up" id="waterfall-left-col"></div>
+    <section id="excellence-section">
+        <h2 class="section-title">عقد من الإتقان</h2>
+        <p class="section-desc">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة تأخذكم لعالم من الفخامة والروقان.</p>
+        <div class="excellence-banner-scroller">
+            <div id="excellence-images-track">
+                <div class="excellence-img-wrapper"><img class="excellence-full-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="إتقان 1"></div>
+                <div class="excellence-img-wrapper"><img class="excellence-full-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="إتقان 2"></div>
+                <div class="excellence-img-wrapper"><img class="excellence-full-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="إتقان 3"></div>
             </div>
-            <div class="waterfall-overlay-bottom"></div>
-        </section>
+        </div>
+        <div class="dots-container">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </section>
 
-        <section id="excellence-section">
-            <div class="container section-header-center">
-                <h2 class="section-title" id="excellence-section-title">عقد من الإتقان</h2>
-                <p class="section-desc" id="excellence-section-desc">خلف كل قطعة حكاية شغف وتفاصيل محفورة بالدقة والمهارة الفائقة لتقديم تجربة تذوق ساحرة تأخذكم لعالم من الفخامة والروقان.</p>
-            </div>
-            <div class="excellence-banner-scroller">
-                <div class="excellence-images-track" id="excellence-images-track"></div>
-            </div>
-            <div class="slider-dots-container" id="excellence-dots"></div>
-        </section>
-
-        <section id="most-selling-section">
-            <div class="container">
-                <div class="section-header-center">
-                    <h2 class="section-title">الأكثر مبيعاً</h2>
-                    <p class="section-desc">أصناف متميزة حازت على قلوب ورضا عملائنا، صنعت يدويًا وبدقة متناهية لتناسب لحظات الروقان الجميلة.</p>
+    <section id="most-selling-section">
+        <h2 class="section-title">الأكثر مبيعاً</h2>
+        <p class="section-desc">مجموعة المنتجات المختارة والملقبة بنجوم الأسبوع بناءً على تقييمات واختيارات عملائنا الفخورين.</p>
+        <div class="products-grid" id="most-selling-grid">
+            <div class="bose-product-card">
+                <div class="card-img-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="جاتوه ملكي">
                 </div>
-                <div class="slider-wrapper">
-                    <div class="products-slider-track products-grid" id="most-selling-grid"></div>
-                </div>
-                <div class="slider-dots-container" id="most-selling-dots"></div>
-            </div>
-        </section>
-
-        <section id="cake-preview-section" aria-label="محاكي تصميم التورت المخصص">
-            <div class="cake-banner-container">
-                <div class="cake-banner-image-box">
-                    <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت" loading="lazy">
-                </div>
-                <div class="cake-banner-content-box">
-                    <span class="badge-accent">ميزة حصرية 👑</span>
-                    <h2 id="cake-preview-title">محاكي التورت التفاعلي</h2>
-                    <p id="cake-preview-desc">حلويات بوسي تتيح لكِ تصميم تورتتك خطوة بخطوة بالوزن، الحجم، والشكل والخيارات التي تفضلها ومناسبتك الفريدة.</p>
-                    <a href="cake-builder.html" id="cake-preview-cta" class="bose-btn-primary">تصميم التورتة الآن <i class="fas fa-birthday-cake"></i></a>
-                </div>
-            </div>
-        </section>
-
-        <section id="new-arrivals-section">
-            <div class="container">
-                <div class="section-header-center">
-                    <h2 class="section-title">وصل حديثاً</h2>
-                    <p class="section-desc">نكهات وتشكيلات مبتكرة وفريدة تم إعدادها خصيصاً بمكونات طازجة وممتازة لتفاجئ بها حواسك وتذوقك.</p>
-                </div>
-                <div class="slider-wrapper">
-                    <div class="products-slider-track products-grid" id="new-arrivals-grid"></div>
-                </div>
-                <div class="slider-dots-container" id="new-arrivals-dots"></div>
-            </div>
-        </section>
-
-        <section id="our-products-section">
-            <div class="container">
-                <div class="section-header-center">
-                    <h2 class="section-title">تشكيلة منتجاتنا</h2>
-                    <p class="section-desc">استكشف عالمنا الساحر وتشكيلتنا المتكاملة من المخبوزات والحلويات المصنوعة يومياً بكل حب وشغف.</p>
-                </div>
-                <div class="products-grid-wrapper">
-                    <div class="products-grid" id="our-products-grid"></div>
-                </div>
-                <div class="show-more-actions-container">
-                    <button id="btn-our-products-show-more" class="bose-btn-secondary-outline">استعرض المزيد من الأصناف <i class="fas fa-chevron-down"></i></button>
-                </div>
-            </div>
-        </section>
-
-        <section id="flower-preview-section" aria-label="محاكي تنسيق الورد والهدايا المخصص">
-            <div class="flower-banner-container">
-                <div class="flower-banner-image-box">
-                    <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد" loading="lazy">
-                </div>
-                <div class="flower-banner-content-box">
-                    <span class="badge-accent">تخصيص كامل 🌹</span>
-                    <h2 id="flower-preview-title">محاكي الورد والهدايا</h2>
-                    <p id="flower-preview-desc">صممي باقتك الخاصة واختاري نوع الورد وملمسه المفضل وأضيفي الهدايا والشوكولاتة الفاخرة لتصل لمن تحبين بكل فخامة وسرور.</p>
-                    <a href="flower-builder.html" id="flower-preview-cta" class="bose-btn-primary">تصميم البوكيه الآن <i class="fas fa-gift"></i></a>
-                </div>
-            </div>
-        </section>
-
-        <section id="pride-section">
-            <div class="container pride-wrapper">
-                <div class="pride-content-block">
-                    <h2 id="pride-title">الفخر والاعتزاز بنجاحنا</h2>
-                    <p id="pride-text">أكثر من 10 سنوات خبرة، أكثر من 10,000 عميل سعيد، وأكثر من 10,000 مناسبة جميلة تشرفنا بأن نكون جزءاً منها وتوثيقاً لذكرياتها الساحرة.</p>
-                    <div class="pride-video-container">
-                        <video id="pride-bose-video" class="pride-video" loop autoplay muted playsinline poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-                            <source src="https://assets.mixkit.co/videos/preview/mixkit-decorating-a-chocolate-cake-with-cream-41581-large.mp4" type="video/mp4">
-                            عذراً، متصفحك لا يدعم تشغيل الفيديو.
-                        </video>
-                        <div class="video-overlay-play" id="video-play-btn">
-                            <i class="fas fa-play"></i>
-                        </div>
+                <h3 class="card-title">الجاتوهات</h3>
+                <div class="card-flavor-name">جاتوه ملكي</div>
+                <p class="card-desc">طبقات متوازنة غنية ومختارة بعناية لأصحاب الذوق الرفيع والمناسبات الملكية الفاخرة.</p>
+                <div class="card-interactive-row">
+                    <div class="bose-counter">
+                        <button class="counter-btn">-</button>
+                        <span class="counter-value">1</span>
+                        <button class="counter-btn">+</button>
                     </div>
+                    <span class="card-price-text">638 جنيه</span>
+                    <button class="btn-add-to-cart-small">إضافة</button>
                 </div>
-                <div class="stats-container" id="bose-stats-grid"></div>
             </div>
-        </section>
-
-        <section id="categories-slider-section">
-            <div class="container">
-                <div class="section-header-center">
-                    <h2 class="section-title">تسوق حسب الفئة</h2>
-                    <p class="section-desc">اختر الفئة المفضلة لديك واستكشف تشكيلات مخصصة ومصنوعة لك خصيصاً.</p>
-                </div>
-                <div class="slider-wrapper">
-                    <div class="categories-slider-track" id="categories-track"></div>
-                </div>
-                <div class="slider-dots-container" id="categories-dots"></div>
             </div>
-        </section>
+    </section>
 
-    </main>
+    <section id="cake-preview-section" style="padding:0;">
+        <div class="bose-builder-block">
+            <img class="builder-large-img" id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي التورت الفاخر">
+            <h2 class="section-title" id="cake-preview-title">محاكي التورت</h2>
+            <p class="section-desc" id="cake-preview-desc">حلويات بوسي تتيح تصميم التورت حسب الطلب واختيار كافة التفاصيل التي تناسب ذوقكم ومناسباتكم الفريدة.</p>
+            <a href="cake-builder.html" class="bose-cta-btn" id="cake-preview-cta">تصميم التورتة الآن</a>
+        </div>
+    </section>
+
+    <section id="new-arrivals-section">
+        <h2 class="section-title">وصل حديثاً</h2>
+        <p class="section-desc">أحدث النكهات والتوليفات المبتكرة التي انضمت حديثاً لعائلة حلويات بوسي لتستمتعوا بتذوقها أولاً.</p>
+        <div class="products-grid" id="new-arrivals-grid">
+            </div>
+        <div class="dots-container">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </section>
+
+    <section id="our-products-section">
+        <h2 class="section-title">منتجاتنا</h2>
+        <p class="section-desc">التشكيلة الشاملة والكاملة من الحلويات الفاخرة المصنوعة بكل فخر وشغف لتسعد قلوبكم.</p>
+        <div class="products-static-grid" id="our-products-grid">
+            </div>
+        <div class="load-more-container">
+            <button class="bose-cta-btn" id="btn-show-more-products" style="background:transparent; border:2px solid var(--bose-pink)">إظهار المزيد</button>
+        </div>
+    </section>
+
+    <section id="flower-preview-section" style="padding:0;">
+        <div class="bose-builder-block">
+            <img class="builder-large-img" id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي الورد الفاخر">
+            <h2 class="section-title" id="flower-preview-title">محاكي الورد</h2>
+            <p class="section-desc" id="flower-preview-desc">تخصيص البوكيه واختيار الورد الطبيعي، الصناعي، أو الستان مع إضافة الهدايا والرسائل والصور الخاصة.</p>
+            <a href="flower-builder.html" class="bose-cta-btn" id="flower-preview-cta">تصميم البوكيه الآن</a>
+        </div>
+    </section>
+
+    <section id="pride-section">
+        <h2 class="section-title">الفخر والاعتزاز</h2>
+        <p class="section-desc">أكثر من 10 سنوات خبرة، أكثر من 10000 عميل، أكثر من 10000 طلب ناجح يروون قصة نجاحنا وفخرنا وثقتكم الدائمة.</p>
+        
+        <div class="stats-container">
+            <div class="stat-box"><div class="stat-number">10+</div><div class="stat-label">سنوات خبرة</div></div>
+            <div class="stat-box"><div class="stat-number">10000+</div><div class="stat-label">عميل سعيد</div></div>
+            <div class="stat-box"><div class="stat-number">10000+</div><div class="stat-label">طلب ناجح</div></div>
+            <div class="stat-box"><div class="stat-number">آلاف</div><div class="stat-label">التورت المصممة</div></div>
+            <div class="stat-box"><div class="stat-number">حُب</div><div class="stat-label">منسقة بالكامل</div></div>
+        </div>
+
+        <div class="pride-video-wrapper">
+            <video class="pride-video-element" controls preload="metadata" poster="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                متصفحك لا يدعم تشغيل الفيديو.
+            </video>
+        </div>
+    </section>
+
+    <section id="categories-slider-section">
+        <h2 class="section-title">تسوق حسب الفئة</h2>
+        <p class="section-desc">استعرض كتل الفئات الـ 12 المعتمدة لدينا لتصل إلى تطلعاتك وتفضيلاتك بأسرع وقت وبراحة بصرية كاملة.</p>
+        <div class="categories-track-grid" id="categories-track">
+            <a href="category.html?category=taswaq-toort" class="bose-category-card">
+                <div class="category-card-img-wrapper">
+                    <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="قسم التورت">
+                </div>
+                <div class="category-card-title">التورت</div>
+            </a>
+            </div>
+        <div class="dots-container">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </section>
 
     <footer class="bose-footer">
         <div class="footer-container">
-            <div class="footer-about-block">
-                <h3 class="footer-brand-title">حلويات بوسي</h3>
-                <p id="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة تزيد عن عقد كامل في تجهيز ألذ تورت ومخبوزات ومناسبات وبوكيهات هدايا تشرفك دائماً وتسعد قلبك وقلب أحبابك.</p>
-                <div id="footer-social-links">
-                    <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-link-facebook" target="_blank" rel="noopener" aria-label="رابط فيسبوك"></a>
-                    <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-link-instagram" target="_blank" rel="noopener" aria-label="رابط انستغرام"></a>
-                    <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-link-tiktok" target="_blank" rel="noopener" aria-label="رابط تيك توك"></a>
-                    <a href="https://wa.me/201097238441" class="social-link-whatsapp" target="_blank" rel="noopener" aria-label="رابط واتساب"></a>
-                </div>
+            <div class="footer-logo-block">
+                <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي لوجو">
+                <div class="footer-brand-title">حلويات بوسي</div>
+            </div>
+            
+            <p id="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم العائلية والمجتمعية بجمال لا يُنسى.</p>
+            
+            <div id="footer-social-links">
+                <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-link-facebook" target="_blank" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-link-instagram" target="_blank" aria-label="إنستغرام"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-link-tiktok" target="_blank" aria-label="تيك توك"><i class="fab fa-tiktok"></i></a>
+                <a href="https://wa.me/201097238441" class="social-link-whatsapp" target="_blank" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
             </div>
 
-            <div class="footer-links-column">
-                <h4 class="footer-column-title">روابط سريعة</h4>
-                <ul class="footer-links-list">
-                    <li><a href="index.html">الرئيسية</a></li>
-                    <li><a href="menu.html">المنيو الشامل</a></li>
-                    <li><a href="cake-builder.html">مصمم التورت</a></li>
-                    <li><a href="flower-builder.html">مصمم البوكيهات</a></li>
-                    <li><a href="cart.html">سلة المشتريات</a></li>
-                </ul>
-            </div>
+            <ul class="footer-policies-container footer-links-wrapper">
+                <li><a href="index.html">الرئيسية</a></li>
+                <li><a href="menu.html">المنيو الشامل</a></li>
+                <li><a href="cart.html">السلة</a></li>
+                <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
+                <li><a href="refund-policy.html">سياسة الاسترجاع</a></li>
+                <li><a href="shipping-policy.html">سياسة الطلبات</a></li>
+                <li><a href="terms.html">الشروط والأحكام</a></li>
+            </ul>
 
-            <div class="footer-links-column">
-                <h4 class="footer-column-title">سياساتنا</h4>
-                <ul class="footer-links-list">
-                    <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
-                    <li><a href="refund-policy.html">سياسة الاستبدال والاسترجاع</a></li>
-                    <li><a href="shipping-policy.html">سياسة الطلبات والتوصيل</a></li>
-                    <li><a href="terms.html">الشروط والأحكام</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-bottom-bar">
-            <div class="footer-copyrights">
-                <span>&copy; 2026 جميع الحقوق محفوظة لـ <strong>حلويات بوسي</strong>.</span>
-            </div>
-            <div class="footer-developer-sig">
-                <span>العنوان: الكفاح - شارع الوحدة المحلية - بجوار صيدلية د. أحمد مجدي وعيادة د. علي 🌸</span>
+            <div class="footer-copyright">
+                &copy; 2026 حلويات بوسي. جميع الحقوق محفوظة. صُنع بكل حُب وإتقان.
             </div>
         </div>
     </footer>
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            if (window.BoseStoreData && window.BoseStoreData.store) {
-                initializeHomePageLogic();
-            } else {
-                const coreGuardInterval = setInterval(() => {
-                    if (window.BoseStoreData && window.BoseStoreData.store) {
-                        clearInterval(coreGuardInterval);
-                        initializeHomePageLogic();
-                    }
-                }, 50);
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('bose-sidebar');
+            const overlay = document.getElementById('bose-sidebar-overlay');
+            const openBtn = document.getElementById('open-sidebar-btn');
+            const closeBtn = document.getElementById('close-sidebar-btn');
+
+            function toggleSidebar() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
             }
+
+            openBtn.addEventListener('click', toggleSidebar);
+            closeBtn.addEventListener('click', toggleSidebar);
+            overlay.addEventListener('click', toggleSidebar);
+            
+            console.log("✔️ Sidebar Engine initialized with maximum capability.");
         });
-
-        function initializeHomePageLogic() {
-            const data = window.BoseStoreData;
-            console.log("🚀 Custom Homepage Module Verified & Bound. Ready to Render.");
-
-            renderTopBarMarquee(data.navigation ? data.navigation.topBarMessages : null);
-            renderWaterfall(data.homepage ? data.homepage.waterfall : null);
-            renderExcellenceCarousel(data.homepage ? data.homepage.excellence : null);
-            renderProductSlider("most-selling-grid", data.homepage ? data.homepage.mostSelling : null, "most-selling-dots");
-            renderProductSlider("new-arrivals-grid", data.homepage ? data.homepage.newArrivals : null, "new-arrivals-dots");
-            renderCakeAndFlowerPreviewBlocks(data.homepage);
-            renderOurProductsGrid(data.homepage ? data.homepage.ourProducts : null);
-            renderCategoriesSlider(data.homepage ? data.homepage.categoriesSlider : null, "categories-track", "categories-dots");
-            initializePrideVideo();
-            initializeLayoutControls();
-        }
-
-        function renderTopBarMarquee(messages) {
-            const track = document.getElementById("bose-announcements-track");
-            if (!track) return;
-
-            const nativeMessages = [
-                "صنعناها بحب لتهديها لمن تحب 🌸",
-                "خبرة أكثر من 10 سنوات في عالم الحلويات الفاخرة ✨",
-                "خامات متميزة وجودة فائقة تليق بمناسباتكم السعيدة 👑"
-            ];
-
-            const finalMessages = (messages && messages.length > 0) ? messages : nativeMessages;
-            let htmlContent = "";
-            for (let i = 0; i < 6; i++) {
-                finalMessages.forEach(msg => {
-                    htmlContent += `
-                        <div class="marquee-item">
-                            <i class="fas fa-star" style="color: var(--bose-gold)"></i>
-                            <span>${msg}</span>
-                        </div>
-                    `;
-                });
-            }
-            track.innerHTML = htmlContent;
-        }
-
-        function renderWaterfall(waterfallData) {
-            const leftCol = document.getElementById("waterfall-left-col");
-            const rightCol = document.getElementById("waterfall-right-col");
-            if (!waterfallData || !leftCol || !rightCol) return;
-
-            let leftHtml = "";
-            waterfallData.leftColumnImages.forEach(imgUrl => {
-                leftHtml += `<div class="waterfall-item"><img src="${imgUrl}" alt="حلويات بوسي الفاخرة" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'"></div>`;
-            });
-            leftCol.innerHTML = leftHtml + leftHtml;
-
-            let rightHtml = "";
-            waterfallData.rightColumnImages.forEach(imgUrl => {
-                rightHtml += `<div class="waterfall-item"><img src="${imgUrl}" alt="حلويات بوسي الفاخرة" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'"></div>`;
-            });
-            rightCol.innerHTML = rightHtml + rightHtml;
-        }
-
-        function renderExcellenceCarousel(excellenceData) {
-            const track = document.getElementById("excellence-images-track");
-            const dotsContainer = document.getElementById("excellence-dots");
-            if (!track || !excellenceData || !excellenceData.images) return;
-
-            let htmlContent = "";
-            excellenceData.images.forEach((imgUrl, index) => {
-                htmlContent += `
-                    <a href="menu.html" class="excellence-slide-item" data-index="${index}">
-                        <img src="${imgUrl}" alt="شغف حلويات بوسي" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
-                    </a>
-                `;
-            });
-            track.innerHTML = htmlContent;
-
-            let dotsHtml = "";
-            excellenceData.images.forEach((_, index) => {
-                dotsHtml += `<button class="dot-btn ${index === 0 ? 'active' : ''}" data-index="${index}" onclick="slideToExcellence(${index})"></button>`;
-            });
-            if (dotsContainer) dotsContainer.innerHTML = dotsHtml;
-
-            initializeAutoSlide(track, excellenceData.images.length, "excellence-dots");
-        }
-
-        window.slideToExcellence = function(index) {
-            const track = document.getElementById("excellence-images-track");
-            const dots = document.querySelectorAll("#excellence-dots .dot-btn");
-            if (!track) return;
-
-            const totalSlides = dots.length;
-            if (index >= totalSlides) index = 0;
-            if (index < 0) index = totalSlides - 1;
-
-            track.style.transform = `translateX(${-index * 100}%)`;
-            dots.forEach(d => d.classList.remove("active"));
-            if (dots[index]) dots[index].classList.add("active");
-            track.setAttribute("data-current", index);
-        };
-
-        function renderProductSlider(gridId, slugList, dotsId) {
-            const grid = document.getElementById(gridId);
-            const dotsContainer = document.getElementById(dotsId);
-            if (!grid || !slugList || !window.BoseStoreData) return;
-
-            const products = window.BoseStoreData.products;
-            let htmlContent = "";
-            let cardIndex = 0;
-
-            slugList.forEach(slug => {
-                const product = products.find(p => p.slug === slug);
-                if (product) {
-                    const price = window.calculateBosePrice ? window.calculateBosePrice(product.price, "all") : product.price;
-                    const img = product.images[0] || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
-                    
-                    htmlContent += `
-                        <div class="product-card" data-slug="${product.slug}" data-index="${cardIndex}">
-                            <div class="card-image-wrapper">
-                                <a href="product.html?slug=${product.slug}">
-                                    <img src="${img}" alt="${product.title}" class="product-card-img" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
-                                </a>
-                            </div>
-                            <div class="product-card-info">
-                                <h3 class="product-card-title">
-                                    <a href="product.html?slug=${product.slug}">${product.title}</a>
-                                </h3>
-                                <span class="product-card-flavor">${product.flavorName}</span>
-                                <p class="product-card-desc">${product.flavorDesc || product.description.substring(0, 75) + '...'}</p>
-                                <div class="bose-quantity-counter-wrapper">
-                                    <div class="bose-quantity-counter">
-                                        <button class="qty-btn btn-plus" onclick="incrementHomeQty(this)">+</button>
-                                        <span class="qty-value">1</span>
-                                        <button class="qty-btn btn-minus" onclick="decrementHomeQty(this)">-</button>
-                                    </div>
-                                </div>
-                                <div class="product-card-price-row">
-                                    <span class="bose-price-text">${price} EGP</span>
-                                </div>
-                                <button class="bose-add-to-cart-btn-full" onclick="addCardToCart('${product.slug}', this)">
-                                    <i class="fas fa-shopping-basket"></i> إضافة للسلة
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    cardIndex++;
-                }
-            });
-
-            grid.innerHTML = htmlContent;
-
-            if (dotsContainer) {
-                let dotsHtml = "";
-                for (let i = 0; i < cardIndex; i++) {
-                    dotsHtml += `<button class="dot-btn ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="scrollSliderTo('${gridId}', ${i})"></button>`;
-                }
-                dotsContainer.innerHTML = dotsHtml;
-            }
-            bindSwipeAndScrollEvents(grid, dotsId);
-        }
-
-        function renderOurProductsGrid(slugList) {
-            const grid = document.getElementById("our-products-grid");
-            if (!grid || !slugList || !window.BoseStoreData) return;
-
-            const products = window.BoseStoreData.products;
-            let htmlContent = "";
-
-            slugList.forEach((slug, index) => {
-                const product = products.find(p => p.slug === slug);
-                if (product) {
-                    const price = window.calculateBosePrice ? window.calculateBosePrice(product.price, "all") : product.price;
-                    const img = product.images[0] || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
-                    const isHiddenClass = index >= 4 ? "hidden-product-card d-none" : "";
-
-                    htmlContent += `
-                        <div class="product-card ${isHiddenClass}" data-slug="${product.slug}">
-                            <div class="card-image-wrapper">
-                                <a href="product.html?slug=${product.slug}">
-                                    <img src="${img}" alt="${product.title}" class="product-card-img" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
-                                </a>
-                            </div>
-                            <div class="product-card-info">
-                                <h3 class="product-card-title">
-                                    <a href="product.html?slug=${product.slug}">${product.title}</a>
-                                </h3>
-                                <span class="product-card-flavor">${product.flavorName}</span>
-                                <p class="product-card-desc">${product.flavorDesc || product.description.substring(0, 75) + '...'}</p>
-                                <div class="bose-quantity-counter-wrapper">
-                                    <div class="bose-quantity-counter">
-                                        <button class="qty-btn btn-plus" onclick="incrementHomeQty(this)">+</button>
-                                        <span class="qty-value">1</span>
-                                        <button class="qty-btn btn-minus" onclick="decrementHomeQty(this)">-</button>
-                                    </div>
-                                </div>
-                                <div class="product-card-price-row">
-                                    <span class="bose-price-text">${price} EGP</span>
-                                </div>
-                                <button class="bose-add-to-cart-btn-full" onclick="addCardToCart('${product.slug}', this)">
-                                    <i class="fas fa-shopping-basket"></i> إضافة للسلة
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-
-            grid.innerHTML = htmlContent;
-
-            const showMoreBtn = document.getElementById("btn-our-products-show-more");
-            if (showMoreBtn) {
-                showMoreBtn.addEventListener("click", () => {
-                    grid.querySelectorAll(".hidden-product-card").forEach(card => {
-                        card.classList.remove("d-none");
-                    });
-                    showMoreBtn.parentElement.style.display = "none";
-                });
-            }
-        }
-
-        function renderCategoriesSlider(categories, containerId, dotsId) {
-            const container = document.getElementById(containerId);
-            const dotsContainer = document.getElementById(dotsId);
-            if (!container || !categories) return;
-
-            let htmlContent = "";
-            categories.forEach((cat, index) => {
-                htmlContent += `
-                    <div class="category-slider-card" data-index="${index}">
-                        <a href="category.html?id=${cat.id}">
-                            <div class="category-image-wrapper">
-                                <img src="${cat.image}" alt="${cat.title}" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
-                            </div>
-                            <div class="category-card-footer">
-                                <h3 class="category-title-text">${cat.title}</h3>
-                                <span class="category-btn-sub">تصفح الفئة 🌸</span>
-                            </div>
-                        </a>
-                    </div>
-                `;
-            });
-            container.innerHTML = htmlContent;
-
-            if (dotsContainer) {
-                let dotsHtml = "";
-                for (let i = 0; i < categories.length; i++) {
-                    dotsHtml += `<button class="dot-btn ${i === 0 ? 'active' : ''}" data-index="${i}" onclick="scrollSliderTo('${containerId}', ${i})"></button>`;
-                }
-                dotsContainer.innerHTML = dotsHtml;
-            }
-            bindSwipeAndScrollEvents(container, dotsId);
-        }
-
-        function renderCakeAndFlowerPreviewBlocks(homepageData) {
-            if (!homepageData) return;
-            if (homepageData.cakePreview) {
-                document.getElementById("cake-preview-img").src = homepageData.cakePreview.image;
-                document.getElementById("cake-preview-title").textContent = homepageData.cakePreview.title;
-                document.getElementById("cake-preview-desc").textContent = homepageData.cakePreview.description;
-            }
-            if (homepageData.flowerPreview) {
-                document.getElementById("flower-preview-img").src = homepageData.flowerPreview.image;
-                document.getElementById("flower-preview-title").textContent = homepageData.flowerPreview.title;
-                document.getElementById("flower-preview-desc").textContent = homepageData.flowerPreview.description;
-            }
-
-            const statsContainer = document.getElementById("bose-stats-grid");
-            if (homepageData.pride && statsContainer) {
-                document.getElementById("pride-title").textContent = homepageData.pride.title;
-                document.getElementById("pride-text").textContent = homepageData.pride.text;
-
-                let statsHtml = "";
-                Object.keys(homepageData.pride.stats).forEach(key => {
-                    const stat = homepageData.pride.stats[key];
-                    statsHtml += `
-                        <div class="stat-card">
-                            <span class="stat-value">${stat.value}${stat.suffix}</span>
-                            <span class="stat-label">${stat.label}</span>
-                        </div>
-                    `;
-                });
-                statsContainer.innerHTML = statsHtml;
-            }
-        }
-
-        function bindSwipeAndScrollEvents(sliderTrack, dotsId) {
-            let isDown = false, startX, scrollLeft;
-            sliderTrack.addEventListener("mousedown", (e) => {
-                isDown = true;
-                startX = e.pageX - sliderTrack.offsetLeft;
-                scrollLeft = sliderTrack.scrollLeft;
-            });
-            sliderTrack.addEventListener("mouseleave", () => { isDown = false; });
-            sliderTrack.addEventListener("mouseup", () => { isDown = false; updateActiveDotFromScroll(sliderTrack, dotsId); });
-            sliderTrack.addEventListener("mousemove", (e) => {
-                if (!isDown) return;
-                e.preventDefault();
-                sliderTrack.scrollLeft = scrollLeft - ((e.pageX - sliderTrack.offsetLeft) - startX) * 1.5;
-            });
-            sliderTrack.addEventListener("scroll", () => { updateActiveDotFromScroll(sliderTrack, dotsId); });
-        }
-
-        window.scrollSliderTo = function(sliderId, index) {
-            const slider = document.getElementById(sliderId);
-            if (!slider || !slider.children[index]) return;
-            const step = slider.children[index].getBoundingClientRect().width + parseFloat(window.getComputedStyle(slider).gap || 0);
-            slider.scrollTo({ left: -index * step, behavior: "smooth" });
-        };
-
-        function updateActiveDotFromScroll(slider, dotsId) {
-            const dots = document.querySelectorAll(`#${dotsId} .dot-btn`);
-            if (dots.length === 0 || slider.children.length === 0) return;
-            const step = slider.children[0].getBoundingClientRect().width + parseFloat(window.getComputedStyle(slider).gap || 0);
-            const activeIndex = Math.min(Math.round(Math.abs(slider.scrollLeft) / step), dots.length - 1);
-            dots.forEach(dot => dot.classList.remove("active"));
-            if (dots[activeIndex]) dots[activeIndex].classList.add("active");
-        }
-
-        function initializeAutoSlide(track, length, dotsId) {
-            let current = 0;
-            setInterval(() => {
-                current = (current + 1) % length;
-                track.style.transform = `translateX(${-current * 100}%)`;
-                const dots = document.querySelectorAll(`#${dotsId} .dot-btn`);
-                dots.forEach(d => d.classList.remove("active"));
-                if (dots[current]) dots[current].classList.add("active");
-                track.setAttribute("data-current", current);
-            }, 5500);
-        }
-
-        window.incrementHomeQty = function(btn) {
-            const valueSpan = btn.parentElement.querySelector(".qty-value");
-            valueSpan.textContent = (parseInt(valueSpan.textContent) || 1) + 1;
-        };
-
-        window.decrementHomeQty = function(btn) {
-            const valueSpan = btn.parentElement.querySelector(".qty-value");
-            let qty = parseInt(valueSpan.textContent) || 1;
-            if (qty > 1) valueSpan.textContent = qty - 1;
-        };
-
-        window.addCardToCart = function(productSlug, btn) {
-            if (!window.BoseStoreData) return;
-            const card = btn.closest(".product-card");
-            const qtyVal = parseInt(card.querySelector(".qty-value").textContent) || 1;
-            const product = window.BoseStoreData.products.find(p => p.slug === productSlug);
-            if (!product) return;
-
-            const finalPrice = window.calculateBosePrice ? window.calculateBosePrice(product.price, "all") : product.price;
-            const newItem = {
-                id: `${product.slug}-${Date.now()}`,
-                productSlug: product.slug,
-                title: product.title,
-                flavorName: product.flavorName,
-                price: finalPrice,
-                quantity: qtyVal,
-                image: product.images[0] || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png',
-                type: "standard",
-                customDetails: {}
-            };
-
-            let cart = window.getBoseCart ? window.getBoseCart() : [];
-            const existingItem = cart.find(item => item.productSlug === productSlug && item.type === "standard");
-            if (existingItem) { existingItem.quantity += qtyVal; } else { cart.push(newItem); }
-
-            if (window.saveBoseCart) { window.saveBoseCart(cart); } else { localStorage.setItem("bose_cart", JSON.stringify(cart)); }
-            card.querySelector(".qty-value").textContent = "1";
-        };
-
-        function initializePrideVideo() {
-            const video = document.getElementById("pride-bose-video");
-            const playBtn = document.getElementById("video-play-btn");
-            if (!video || !playBtn) return;
-
-            video.play().then(() => { playBtn.innerHTML = '<i class="fas fa-pause"></i>'; playBtn.style.opacity = "0.2"; }).catch(() => {});
-            const togglePlay = () => {
-                if (video.paused) { video.play(); playBtn.innerHTML = '<i class="fas fa-pause"></i>'; playBtn.style.opacity = "0.2"; }
-                else { video.pause(); playBtn.innerHTML = '<i class="fas fa-play"></i>'; playBtn.style.opacity = "1"; }
-            };
-            playBtn.onclick = togglePlay;
-            video.onclick = togglePlay;
-        }
-
-        function initializeLayoutControls() {
-            const menuToggle = document.querySelector(".nav-menu-toggle");
-            const drawerMenu = document.querySelector(".bose-drawer-menu");
-            const searchTrigger = document.querySelector(".nav-search-trigger");
-            const searchModal = document.querySelector(".bose-search-modal");
-            const searchClose = document.querySelector(".search-close-btn");
-            const overlay = document.querySelector(".drawer-overlay");
-
-            const toggleDrawer = () => {
-                const active = drawerMenu.classList.toggle("active");
-                menuToggle.classList.toggle("active", active);
-                overlay.classList.toggle("active", active);
-                document.body.style.overflow = active ? "hidden" : "initial";
-            };
-
-            menuToggle.onclick = toggleDrawer;
-            overlay.onclick = toggleDrawer;
-
-            searchTrigger.onclick = () => {
-                searchModal.classList.add("active");
-                document.body.style.overflow = "hidden";
-                const input = document.getElementById("global-search-input");
-                if (input) { input.value = ""; input.focus(); }
-            };
-            searchClose.onclick = () => { searchModal.classList.remove("active"); document.body.style.overflow = "initial"; };
-        }
     </script>
 </body>
 </html>
