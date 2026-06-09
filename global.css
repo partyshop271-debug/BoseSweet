@@ -1,0 +1,761 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* 🎨 الألوان الحاكمة والمقدسة لعلامة حلويات بوسي */
+    --bose-pink-raw: 255, 145, 164;
+    --bose-pink: #FF91A4;       /* نبض الحياة: للحدود، الظلال الناعمة، واللمسات التفاعلية */
+    --bose-white: #FFFFFF;      /* المسيطر تماماً: للخلفيات لمنع التكديس وتحقيق التنفس البصري */
+    --bose-black: #111111;      /* معزول تماماً: يستخدم للنصوص والعناوين فقط لضمان وضوح كامل للعين */
+    --bose-gold: #D4AF37;       /* فخامة رمزية ناعمة: لنجوم التقييم وتفاصيل التخصيص الفاخرة */
+    --bose-cream: #FFF5F6;      /* خلفية دافئة وناعمة للفواصل والماركي والفوتر الفاخر */
+    
+    /* 📐 معايير الظلال والحدود البرمجية المعتمدة لحظر الظلال السوداء تماماً */
+    --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
+    --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+    --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+    --bose-border-thick: 2px solid #FF91A4;
+    --bose-border-gold: 1px solid rgba(212, 175, 55, 0.4);
+    --bose-transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --bose-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 🧱 إعادة تعيين الأنماط القياسية وحظر التشويه البصري */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Cairo', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+    background-color: var(--bose-white);
+    color: var(--bose-black);
+    overflow-x: hidden;
+}
+
+body {
+    background-color: var(--bose-white);
+    color: var(--bose-black);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700; /* سقف أوزان الخطوط المعتمد حظر التشويه */
+    color: var(--bose-black);
+    line-height: 1.3;
+}
+
+p {
+    font-weight: 400;
+    color: var(--bose-black);
+    font-size: 0.95rem;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--bose-transition-smooth);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+button, input, select, textarea {
+    font-family: 'Cairo', sans-serif;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+/* 🏢 الهيدر الثابت الموحد (Universal Sticky Header) */
+.bose-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.99);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 2px solid rgba(255, 145, 164, 0.25);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    height: 70px;
+    width: 100%;
+    box-shadow: var(--bose-shadow-glow);
+    transition: var(--bose-transition-smooth);
+}
+
+.nav-right-side {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.nav-menu-toggle {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 44px;
+    height: 44px;
+    padding: 13px 10px;
+    cursor: pointer;
+    background: transparent;
+    z-index: 1060;
+}
+
+.nav-menu-toggle span {
+    display: block;
+    width: 100%;
+    height: 2.5px;
+    background-color: var(--bose-black);
+    border-radius: 4px;
+    transition: var(--bose-transition-smooth);
+}
+
+.nav-menu-toggle.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+    background-color: var(--bose-pink);
+}
+
+.nav-menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-menu-toggle.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+    background-color: var(--bose-pink);
+}
+
+.brand-logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#bose-store-logo {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: var(--bose-border-pink);
+    object-fit: cover;
+    transition: var(--bose-transition-smooth);
+}
+
+#bose-store-logo:hover {
+    transform: scale(1.05) rotate(5deg);
+    border-color: var(--bose-pink);
+}
+
+.brand-name {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--bose-pink);
+    white-space: nowrap;
+    margin-right: 8px;
+}
+
+.nav-left-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-search-trigger {
+    background: transparent;
+    cursor: pointer;
+    color: var(--bose-black);
+    font-size: 1.45rem;
+    padding: 12px;
+    transition: var(--bose-transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-search-trigger:hover {
+    color: var(--bose-pink);
+    transform: scale(1.15);
+}
+
+.nav-cart-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bose-black);
+    font-size: 1.45rem;
+    padding: 12px;
+    transition: var(--bose-transition-smooth);
+}
+
+.nav-cart-icon-wrapper:hover {
+    color: var(--bose-pink);
+    transform: scale(1.15);
+}
+
+.nav-search-trigger i, 
+.nav-search-trigger span:not(#nav-cart-count),
+.nav-cart-icon-wrapper i,
+.nav-cart-icon-wrapper span:not(#nav-cart-count) {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+#nav-cart-count {
+    position: absolute;
+    top: 2px;
+    right: 0px;
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid var(--bose-white);
+    transition: var(--bose-transition-smooth);
+}
+
+/* 🚪 القائمة الجانبية الفاخرة (Drawer Menu) */
+.bose-drawer-menu {
+    position: fixed;
+    top: 0;
+    right: -320px;
+    width: 320px;
+    height: 100vh;
+    background-color: var(--bose-white);
+    box-shadow: -10px 0 40px rgba(255, 145, 164, 0.15);
+    z-index: 1050;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    padding: 90px 24px 40px 24px;
+    border-left: var(--bose-border-pink);
+}
+
+.bose-drawer-menu.active {
+    right: 0 !important;
+}
+
+.drawer-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(17, 17, 17, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1040;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--bose-transition-smooth);
+}
+
+.drawer-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.drawer-links-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.drawer-link-item a {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--bose-black);
+    padding: 12px 14px;
+    border-radius: 12px;
+    transition: var(--bose-transition-smooth);
+}
+
+.drawer-link-item a:hover {
+    background-color: var(--bose-cream);
+    color: var(--bose-pink);
+    padding-right: 20px;
+}
+
+.drawer-link-item a i {
+    color: var(--bose-pink);
+    font-size: 1.15rem;
+    width: 24px;
+    text-align: center;
+}
+
+.drawer-footer {
+    margin-top: auto;
+    border-top: var(--bose-border-pink);
+    padding-top: 24px;
+    text-align: center;
+}
+
+.drawer-footer p {
+    font-size: 0.85rem;
+    color: var(--bose-black);
+    opacity: 0.7;
+}
+
+/* 🔍 شاشة البحث الفوري الفاخرة */
+.bose-search-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.99);
+    z-index: 1100;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--bose-transition-smooth);
+    display: flex;
+    flex-direction: column;
+    padding: 40px 24px;
+}
+
+.bose-search-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto 30px auto;
+}
+
+.search-close-btn {
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.8rem;
+    color: var(--bose-black);
+    padding: 10px;
+    transition: var(--bose-transition-smooth);
+}
+
+.search-close-btn:hover {
+    color: var(--bose-pink);
+    transform: rotate(90deg);
+}
+
+.search-input-wrapper {
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    border-bottom: 2px solid var(--bose-pink);
+}
+
+#global-search-input {
+    width: 100%;
+    padding: 16px 48px 16px 16px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--bose-black);
+    background: transparent;
+}
+
+.search-icon-inside {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    color: var(--bose-pink);
+    font-size: 1.3rem;
+}
+
+.search-results-container {
+    max-width: 800px;
+    width: 100%;
+    margin: 30px auto 0 auto;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-bottom: 40px;
+}
+
+.search-results-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 4px;
+}
+
+@media (min-width: 768px) {
+    .search-results-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* 📣 شريط الإعلانات الدائري (Marquee Bar) */
+.bose-top-bar {
+    background-color: var(--bose-cream);
+    overflow: hidden;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 145, 164, 0.15);
+    position: relative;
+    z-index: 950;
+}
+
+.marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll-rtl 57s linear infinite;
+    will-change: transform;
+}
+
+.marquee-item {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--bose-black);
+    padding: 0 40px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@keyframes marquee-scroll-rtl {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* 🏪 الفوتر الفاخر والمتقن (Premium Footer) */
+.bose-footer {
+    background-color: var(--bose-cream) !important;
+    border-top: var(--bose-border-pink) !important;
+    padding: 60px 24px 30px 24px !important;
+    width: 100%;
+    margin-top: auto;
+    position: relative;
+    z-index: 10;
+    text-align: center !important;
+}
+
+.footer-container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 40px !important;
+}
+
+@media (min-width: 768px) {
+    .footer-container {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
+    }
+}
+
+.footer-about-block {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    align-items: center !important;
+    text-align: center !important;
+    max-width: 320px !important;
+}
+
+@media (min-width: 768px) {
+    .footer-about-block {
+        align-items: flex-start !important;
+        text-align: right !important;
+    }
+}
+
+.footer-brand-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--bose-black);
+}
+
+#footer-about-text {
+    font-size: 0.95rem;
+    color: var(--bose-black);
+    opacity: 0.8;
+    line-height: 1.7;
+}
+
+#footer-social-links {
+    display: flex !important;
+    gap: 16px !important;
+    justify-content: center !important;
+    margin-top: 15px !important;
+}
+
+#footer-social-links a {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: var(--bose-transition-smooth) !important;
+    box-shadow: var(--bose-shadow-glow) !important;
+    border: none !important;
+    text-decoration: none !important;
+}
+
+.social-link-facebook {
+    background-color: #1877F2 !important;
+}
+
+.social-link-instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+}
+
+.social-link-tiktok {
+    background-color: #000000 !important;
+}
+
+.social-link-whatsapp {
+    background-color: #25D366 !important;
+}
+
+#footer-social-links a:hover {
+    transform: translateY(-5px) scale(1.1) !important;
+    box-shadow: var(--bose-shadow-hover) !important;
+}
+
+.footer-links-column {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+    max-width: 320px !important;
+}
+
+@media (min-width: 768px) {
+    .footer-links-column {
+        align-items: flex-start !important;
+    }
+}
+
+.footer-column-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--bose-black);
+    position: relative;
+    padding-bottom: 8px;
+}
+
+.footer-column-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 50%;
+    transform: translateX(50%);
+    width: 35px;
+    height: 2.5px;
+    background-color: var(--bose-pink);
+    border-radius: 2px;
+}
+
+@media (min-width: 768px) {
+    .footer-column-title::after {
+        right: 0;
+        transform: none;
+    }
+}
+
+.footer-links-list {
+    list-style: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 0 !important;
+    align-items: center !important;
+}
+
+@media (min-width: 768px) {
+    .footer-links-list {
+        align-items: flex-start !important;
+    }
+}
+
+.footer-links-list li a {
+    font-size: 0.95rem;
+    color: var(--bose-black);
+    opacity: 0.85;
+    transition: var(--bose-transition-smooth);
+    display: inline-block;
+}
+
+.footer-links-list li a:hover {
+    color: var(--bose-pink);
+    opacity: 1;
+    transform: translateX(-4px);
+}
+
+.footer-bottom-bar {
+    max-width: 1200px !important;
+    margin: 40px auto 0 auto !important;
+    padding-top: 24px !important;
+    border-top: var(--bose-border-pink) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+    text-align: center !important;
+}
+
+@media (min-width: 768px) {
+    .footer-bottom-bar {
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        text-align: right !important;
+    }
+}
+
+.footer-copyrights {
+    font-size: 0.85rem;
+    color: var(--bose-black);
+    opacity: 0.85;
+}
+
+.footer-developer-sig {
+    font-size: 0.85rem;
+    color: var(--bose-black);
+    opacity: 0.6;
+}
+
+/* 📦 الحاويات العامة ومحركات الأزرار التفاعلية */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.bose-price-text {
+    color: var(--bose-pink);
+    font-weight: 700;
+    font-size: 1.15rem;
+}
+
+.bose-btn-primary {
+    background-color: var(--bose-pink);
+    color: var(--bose-white);
+    font-weight: 700;
+    padding: 14px 28px;
+    border-radius: 14px;
+    cursor: pointer;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: var(--bose-transition-smooth);
+    box-shadow: var(--bose-shadow-glow);
+    border: none;
+}
+
+.bose-btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--bose-shadow-hover);
+    filter: brightness(1.03);
+}
+
+.bose-btn-primary:active {
+    transform: translateY(-1px);
+}
+
+/* 🔔 نظام الإشعارات والتحذيرات الراقي */
+.bose-toast-container {
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    z-index: 1200 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    pointer-events: none !important;
+}
+
+.bose-toast {
+    background-color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
+    border: var(--bose-border-pink) !important;
+    border-right: 4px solid var(--bose-pink) !important;
+    padding: 16px 24px !important;
+    border-radius: 12px !important;
+    box-shadow: var(--bose-shadow-hover) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    pointer-events: auto !important;
+    transform: translateX(120%) !important;
+    transition: var(--bose-transition-smooth) !important;
+    min-width: 280px !important;
+}
+
+.bose-toast.active {
+    transform: translateX(0) !important;
+}
+
+.bose-toast i {
+    color: var(--bose-pink);
+    font-size: 1.2rem;
+}
+
+.bose-toast span {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* 🎛️ شريط التمرير الجانبي */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bose-white);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 145, 164, 0.4);
+    border-radius: 10px;
+    transition: var(--bose-transition-smooth);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--bose-pink);
+}
+
