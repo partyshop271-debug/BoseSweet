@@ -3,502 +3,729 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
     <title>المنيو الشامل | حلويات بوسي</title>
-    <meta name="description" content="استعرض المنيو الشامل لعلامة حلويات بوسي الفاخرة. اختر فئتك المفضلة من التورت، الجاتوهات، القشطوطة، الديسباسيتو، والورد وتعرف على التشكيلات المصممة بحب.">
-    <meta name="keywords" content="منيو حلويات بوسي, تورت, جاتوهات, سينابون, دوناتس, قشطوطة, ديسباسيتو, ورد طبيعي">
     
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="المنيو الشامل | حلويات بوسي">
-    <meta property="og:description" content="استعرض المنيو الشامل لعلامة حلويات بوسي الفاخرة. اختر فئتك المفضلة من التورت، الجاتوهات، القشطوطة، الديسباسيتو، والورد وتعرف على التشكيلات المصممة بحب.">
-    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-    <meta property="og:url" content="https://bosesweets.com/menu.html">
-
-    <link rel="stylesheet" href="css/global.css">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        :root {
+            --bose-pink: #FF91A4;
+            --bose-white: #FFFFFF;
+            --bose-black: #111111;
+            --bose-cream: #FFF5F6;
+            --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
+            --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+            --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+            --bose-border-thick: 2px solid #FF91A4;
+            --bose-transition-smooth: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
 
-    <script src="js/core.html.js"></script>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bose-white);
+            color: var(--bose-black);
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .bose-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: var(--bose-border-pink);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 1000;
+            box-shadow: var(--bose-shadow-glow);
+        }
+
+        .brand-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-logo-container a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        #bose-store-logo {
+            height: 45px;
+            width: 45px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .brand-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--bose-black);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-menu-toggle, .nav-search-trigger, .nav-cart-icon-wrapper {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background-color: transparent;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 24px;
+            cursor: pointer;
+            transition: var(--bose-transition-smooth);
+        }
+
+        .nav-menu-toggle {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111111'><path d='M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z'/></svg>");
+        }
+
+        .nav-search-trigger {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111111'><path d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/></svg>");
+        }
+
+        .nav-cart-icon-wrapper {
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111111'><path d='M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z'/></svg>");
+            position: relative;
+            display: inline-block;
+        }
+
+        #nav-cart-count {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            font-size: 0.72rem;
+            font-weight: 700;
+            border-radius: 50%;
+            min-width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            box-shadow: 0 2px 6px rgba(255, 145, 164, 0.4);
+            transition: var(--bose-transition-smooth);
+        }
+
+        .menu-main-container {
+            margin-top: 70px;
+            padding: 40px 16px 60px 16px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .menu-page-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .menu-page-title {
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0 0 8px 0;
+        }
+
+        .menu-page-description {
+            font-size: 0.95rem;
+            color: var(--bose-black);
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .tabs-outer-wrapper {
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+            margin-right: calc(-50vw + 50%);
+            overflow-x: auto;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            padding: 4px 16px 16px 16px;
+            margin-bottom: 24px;
+        }
+
+        .tabs-outer-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 12px;
+            width: max-content;
+            padding: 0 4px;
+        }
+
+        .tab-filter-btn {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bose-white);
+            color: var(--bose-black);
+            border: var(--bose-border-pink);
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--bose-shadow-glow);
+            transition: var(--bose-transition-smooth);
+            white-space: nowrap;
+        }
+
+        .tab-filter-btn.active {
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            border-color: var(--bose-pink);
+            box-shadow: 0 8px 20px rgba(255, 145, 164, 0.3);
+            transform: scale(1.02);
+        }
+
+        .full-menu-grid {
+            display: grid;
+            grid-template-columns: repeat(1, 1fr);
+            gap: 20px;
+            width: 100%;
+            transition: var(--bose-transition-smooth);
+        }
+
+        @media (min-width: 600px) {
+            .full-menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 24px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .full-menu-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 32px;
+            }
+        }
+
+        .menu-category-block {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 24px;
+            overflow: hidden;
+            width: 100%;
+            height: 360px;
+            box-shadow: var(--bose-shadow-glow);
+            display: flex;
+            flex-direction: column;
+            transition: var(--bose-transition-smooth);
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        @media (min-width: 600px) {
+            .menu-category-block {
+                height: 420px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .menu-category-block {
+                height: 520px;
+            }
+        }
+
+        .menu-category-block.d-none {
+            display: none !important;
+        }
+
+        .menu-category-block.visual-hidden {
+            opacity: 0;
+            transform: translateY(24px);
+        }
+
+        .category-clickable-wrapper {
+            display: block;
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            position: relative;
+            background-color: var(--bose-cream);
+            text-decoration: none;
+        }
+
+        @media (min-width: 600px) {
+            .category-clickable-wrapper {
+                height: 330px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .category-clickable-wrapper {
+                height: 420px;
+            }
+        }
+
+        .category-block-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: var(--bose-transition-smooth);
+        }
+
+        .menu-category-block:hover {
+            transform: translateY(-8px);
+            border-color: var(--bose-pink);
+            box-shadow: var(--bose-shadow-hover);
+        }
+
+        .menu-category-block:hover .category-block-img {
+            transform: scale(1.04);
+        }
+
+        .category-block-footer {
+            padding: 16px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            flex-grow: 1;
+            background-color: var(--bose-white);
+        }
+
+        .category-title-link {
+            text-decoration: none;
+            color: var(--bose-black);
+            font-size: 1.15rem;
+            font-weight: 700;
+            line-height: 1.4;
+            transition: var(--bose-transition-smooth);
+        }
+
+        .category-title-link:hover {
+            color: var(--bose-pink);
+        }
+
+        .category-action-btn {
+            text-decoration: none;
+            color: var(--bose-pink);
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: var(--bose-transition-smooth);
+        }
+
+        .menu-category-block:hover .category-action-btn {
+            letter-spacing: 0.5px;
+        }
+
+        .bose-footer {
+            background-color: var(--bose-cream);
+            border-top: var(--bose-border-pink);
+            padding: 40px 16px 24px 16px;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 24px;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .footer-brand-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--bose-black);
+        }
+
+        #footer-about-text {
+            font-size: 0.92rem;
+            color: var(--bose-black);
+            opacity: 0.8;
+            max-width: 500px;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        #footer-social-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            width: 100%;
+        }
+
+        .social-link-facebook, .social-link-instagram, .social-link-tiktok, .social-link-whatsapp {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            border-radius: 50%;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 20px;
+            text-indent: -9999px;
+            overflow: hidden;
+            box-shadow: var(--bose-shadow-glow);
+            transition: var(--bose-transition-smooth);
+        }
+
+        .social-link-facebook {
+            background-color: #1877F2;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z'/></svg>");
+        }
+
+        .social-link-instagram {
+            background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z'/></svg>");
+        }
+
+        .social-link-tiktok {
+            background-color: #000000;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.06-2.89-.54-4.06-1.41-.12-.09-.24-.19-.36-.29v6.52c-.08 3.01-1.88 5.86-4.8 6.76-3.14.97-6.83-.35-8.41-3.23-1.72-3.13-.53-7.46 2.65-9.15 1.54-.82 3.39-.98 5.09-.5v4.11c-1.12-.34-2.36-.18-3.32.48-.99.68-1.5 1.95-1.32 3.14.2 1.34 1.37 2.45 2.72 2.5 1.41.05 2.74-.88 3.13-2.23.11-.38.16-.78.16-1.18V.02z'/></svg>");
+        }
+
+        .social-link-whatsapp {
+            background-color: #25D366;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.503-5.734-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.864.002-2.637-1.03-5.115-2.906-6.993-1.876-1.878-4.354-2.908-6.999-2.909-5.443 0-9.87 4.424-9.874 9.87-.001 1.748.461 3.454 1.339 4.966l-.999 3.648 3.749-.983zM18.06 14.85c-.328-.164-1.94-.957-2.24-1.066-.299-.11-.517-.164-.734.164-.218.328-.844 1.066-1.035 1.284-.19.218-.38.245-.709.081-.328-.164-1.386-.51-2.64-1.627-.975-.87-1.633-1.946-1.824-2.274-.19-.328-.02-.505.143-.668.148-.146.328-.382.493-.573.164-.19.218-.328.328-.546.11-.218.055-.41-.027-.573-.082-.164-.734-1.767-1.006-2.422-.266-.64-.537-.552-.734-.562-.19-.01-.408-.012-.626-.012-.218 0-.573.082-.872.41-.299.328-1.144 1.12-1.144 2.732 0 1.612 1.171 3.166 1.335 3.385.164.218 2.305 3.519 5.584 4.941.78.338 1.39.54 1.864.69.784.249 1.498.214 2.062.13.629-.094 1.94-.794 2.212-1.53.272-.734.272-1.365.19-1.499-.081-.134-.299-.218-.627-.382z'/></svg>");
+        }
+
+        .social-link-facebook:hover, .social-link-instagram:hover, .social-link-tiktok:hover, .social-link-whatsapp:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: var(--bose-shadow-hover);
+        }
+
+        .footer-policies-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            border-top: 1px solid rgba(255, 145, 164, 0.15);
+            padding-top: 16px;
+            width: 100%;
+        }
+
+        .footer-policy-link {
+            text-decoration: none;
+            color: var(--bose-black);
+            opacity: 0.7;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: var(--bose-transition-smooth);
+        }
+
+        .footer-policy-link:hover {
+            color: var(--bose-pink);
+            opacity: 1;
+        }
+
+        .copyright-text {
+            font-size: 0.78rem;
+            color: var(--bose-black);
+            opacity: 0.5;
+            margin: 0;
+            font-weight: 400;
+        }
+    </style>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "حلويات بوسي",
+      "url": "https://bosesweets.com",
+      "logo": "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
+      "description": "تصفح منيو حلويات بوسي الفاخرة المكون من 12 فئة فريدة من التورت والحلويات والورد الطبيعي والمصممة بحب لمناسباتكم السعيدة.",
+      "telephone": "01097238441",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "الكفاح شارع الوحدة المحلية بجوار صيدلية الدكتور احمد مجدي وبجوار عيادة الدكتور علي",
+        "addressLocality": "الوادي الجديد",
+        "addressCountry": "EG"
+      },
+      "hasMenu": {
+        "@type": "Menu",
+        "name": "المنيو الشامل لحلويات بوسي",
+        "description": "قائمة الفئات الفاخرة للحلويات والمحاكيات التفاعلية لتصميم التورت والبوكيهات"
+      }
+    }
+    </script>
 </head>
 <body>
 
-    <div class="bose-top-bar" id="bose-announcements-bar">
-        <div class="marquee-track" id="bose-announcements-track">
-            </div>
-    </div>
-
     <header class="bose-navbar">
-        <div class="nav-right-side">
-            <button class="nav-menu-toggle" aria-label="فتح القائمة الجانبية">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <div class="brand-logo-container">
-                <a href="index.html">
-                    <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
-                </a>
-            </div>
-            <span class="brand-name">حلويات بوسي</span>
+        <div class="brand-logo-container">
+            <button class="nav-menu-toggle" aria-label="زر القائمة الجانبية"></button>
+            <a href="index.html">
+                <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
+                <span class="brand-name">حلويات بوسي</span>
+            </a>
         </div>
-        <div class="nav-left-actions">
-            <button class="nav-search-trigger" aria-label="البحث الفوري عن منتج">
-                <i class="fas fa-search"></i>
-            </button>
-            <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="سلة المشتريات">
-                <i class="fas fa-shopping-basket"></i>
+        <div class="nav-actions">
+            <button class="nav-search-trigger" aria-label="زر البحث"></button>
+            <a href="cart.html" class="nav-cart-icon-wrapper" aria-label="زر السلة">
                 <span id="nav-cart-count">0</span>
             </a>
         </div>
     </header>
 
-    <aside class="bose-drawer-menu" aria-label="القائمة الجانبية">
-        <nav class="drawer-nav">
-            <ul class="drawer-links-list">
-                <li class="drawer-link-item"><a href="index.html"><i class="fas fa-home"></i> الرئيسية</a></li>
-                <li class="drawer-link-item"><a href="menu.html"><i class="fas fa-utensils"></i> المنيو الشامل</a></li>
-                <li class="drawer-link-item"><a href="cake-builder.html"><i class="fas fa-birthday-cake"></i> محاكي التورت</a></li>
-                <li class="drawer-link-item"><a href="flower-builder.html"><i class="fas fa-spa"></i> محاكي الورد</a></li>
-                <li class="drawer-link-item"><a href="cart.html"><i class="fas fa-shopping-basket"></i> سلة التسوق</a></li>
-            </ul>
-        </nav>
-        <div class="drawer-footer">
-            <p>صنعناها بحب لتهديها لمن تحب 🌸</p>
-        </div>
-    </aside>
-
-    <div class="bose-search-modal" aria-hidden="true">
-        <div class="search-header">
-            <span style="font-size: 1.2rem; font-weight: 700; color: var(--bose-black);">البحث السريع</span>
-            <button class="search-close-btn" aria-label="إغلاق نافذة البحث"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="search-input-wrapper">
-            <input type="text" id="global-search-input" placeholder="عن ماذا تبحث اليوم؟">
-            <i class="fas fa-search search-icon-inside"></i>
-        </div>
-        <div class="search-results-container">
-            </div>
-    </div>
-
-    <main class="bose-main-content" style="background-color: var(--bose-white); min-height: 80vh;">
-        
-        <section class="menu-intro-section" style="padding: 60px 0 20px 0; background-color: var(--bose-white); text-align: center;">
-            <div class="container section-header-center">
-                <h1 class="section-title" style="font-size: 2.2rem; font-weight: 700; color: var(--bose-black); margin-bottom: 12px;">المنيو الشامل</h1>
-                <p class="section-desc" style="font-size: 1.05rem; color: var(--bose-black); opacity: 0.85; max-width: 650px; margin: 0 auto; line-height: 1.7;">تصفح فئاتنا الفاخرة بعناية، تم ترتيب القائمة لتسهيل وصولك إلى صنفك المفضل بأسرع وقت ممكن والاستمتاع بتجربة تسوق فريدة وراقية تلبي ذوقك.</p>
-            </div>
+    <main class="menu-main-container">
+        <section class="menu-page-header">
+            <h1 class="menu-page-title">المنيو الشامل</h1>
+            <p class="menu-page-description">تصفح فئاتنا الفاخرة بعناية، تم ترتيب القائمة لتسهيل وصولك إلى صنفك المفضل بأسرع وقت ممكن والاستمتاع بتجربة تسوق فريدة وراقية تلبي ذوقك.</p>
         </section>
 
-        <section class="menu-filter-tabs-section" style="padding: 10px 0; background-color: var(--bose-white); overflow: hidden;">
-            <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 16px;">
-                <div id="menu-tabs" class="tabs-container" style="display: flex; gap: 12px; overflow-x: auto; padding: 12px 4px; scrollbar-width: none; -webkit-overflow-scrolling: touch; direction: rtl;">
+        <div class="tabs-outer-wrapper">
+            <div class="tabs-container" id="menu-tabs">
+                <button class="tab-filter-btn active" data-category="all">الكل 🌸</button>
+                <button class="tab-filter-btn" data-category="taswaq-toort">التورت</button>
+                <button class="tab-filter-btn" data-category="taswaq-gatowat">الجاتوهات</button>
+                <button class="tab-filter-btn" data-category="taswaq-qashtota">القشطوطة</button>
+                <button class="tab-filter-btn" data-category="taswaq-despacito">الديسباسيتو</button>
+                <button class="tab-filter-btn" data-category="taswaq-cinabon">السينابون</button>
+                <button class="tab-filter-btn" data-category="taswaq-donuts">الدوناتس</button>
+                <button class="tab-filter-btn" data-category="taswaq-red-velvet">الريدڤيلڤت</button>
+                <button class="tab-filter-btn" data-category="taswaq-cupcake">الكب كيك</button>
+                <button class="tab-filter-btn" data-category="taswaq-mini-cake">الميني تورت</button>
+                <button class="tab-filter-btn" data-category="taswaq-flowers">الورد</button>
+                <button class="tab-filter-btn" data-category="taswaq-happiness-cups">كبات السعادة</button>
+                <button class="tab-filter-btn" data-category="taswaq-relax-box">بوكس الروقان</button>
+            </div>
+        </div>
+
+        <div class="full-menu-wrapper">
+            <div class="full-menu-grid" id="full-menu-wrapper">
+                
+                <div class="menu-category-block" data-category-id="taswaq-toort">
+                    <a href="category.html?id=taswaq-toort" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="التورت">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-toort" class="category-title-link">التورت</a>
+                        <a href="category.html?id=taswaq-toort" class="category-action-btn">استعرض المنتجات 🌸</a>
                     </div>
-            </div>
-        </section>
+                </div>
 
-        <section class="menu-grid-categories-section" style="padding: 30px 0 80px 0; background-color: var(--bose-white);">
-            <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: center;">
-                <div id="full-menu-wrapper" style="width: 100%;">
+                <div class="menu-category-block" data-category-id="taswaq-gatowat">
+                    <a href="category.html?id=taswaq-gatowat" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الجاتوهات">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-gatowat" class="category-title-link">الجاتوهات</a>
+                        <a href="category.html?id=taswaq-gatowat" class="category-action-btn">استعرض المنتجات 🌸</a>
                     </div>
-            </div>
-        </section>
+                </div>
 
+                <div class="menu-category-block" data-category-id="taswaq-qashtota">
+                    <a href="category.html?id=taswaq-qashtota" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="القشطوطة">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-qashtota" class="category-title-link">القشطوطة</a>
+                        <a href="category.html?id=taswaq-qashtota" class="category-action-btn">استعرض المنتجات 🌸</a>
+                    </div>
+                </div>
+
+                <div class="menu-category-block" data-category-id="taswaq-despacito">
+                    <a href="category.html?id=taswaq-despacito" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الديسباسيتو">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-despacito" class="category-title-link">الديسباسيتو</a>
+                        <a href="category.html?id=taswaq-despacito" class="category-action-btn">استعرض المنتجات 🌸</a>
+                    </div>
+                </div>
+
+                <div class="menu-category-block" data-category-id="taswaq-cinabon">
+                    <a href="category.html?id=taswaq-cinabon" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="السينابون">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-cinabon" class="category-title-link">السينابون</a>
+                        <a href="category.html?id=taswaq-cinabon" class="category-action-btn">استعرض المنتجات 🌸</a>
+                    </div>
+                </div>
+
+                <div class="menu-category-block" data-category-id="taswaq-donuts">
+                    <a href="category.html?id=taswaq-donuts" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الدوناتس">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-donuts" class="category-title-link">الدوناتس</a>
+                        <a href="category.html?id=taswaq-donuts" class="category-action-btn">استعرض المنتجات 🌸</a>
+                    </div>
+                </div>
+
+                <div class="menu-category-block" data-category-id="taswaq-red-velvet">
+                    <a href="category.html?id=taswaq-red-velvet" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الريدڤيلڤت">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-red-velvet" class="category-title-link">الريدڤيلڤت</a>
+                        <a href="category.html?id=taswaq-red-velvet" class="category-action-btn">استعرض المنتجات 🌸</a>
+                    </div>
+                </div>
+
+                <div class="menu-category-block" data-category-id="taswaq-cupcake">
+                    <a href="category.html?id=taswaq-cupcake" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الكب كيك">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-cupcake" class="category-title-link">الكب كيك</a>
+                        <a href="category.html?id=taswaq-cupcake" class="category-action-btn">استعرض المنتجات 🌸</a>
+                    </div>
+                </div>
+
+                <div class="menu-category-block" data-category-id="taswaq-mini-cake">
+                    <a href="category.html?id=taswaq-mini-cake" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الميني تورت">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-mini-cake" class="category-title-link">الميني تورت</a>
+                        <a href="category.html?id=taswaq-mini-cake" class="category-action-btn">استعرض المنتجات 🌸</a>
+                    </div>
+                </div>
+
+                <div class="menu-category-block" data-category-id="taswaq-flowers">
+                    <a href="category.html?id=taswaq-flowers" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="الورد">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-flowers" class="category-title-link">الورد</a>
+                        <a href="category.html?id=taswaq-flowers" class="category-action-btn">استعرض المنتجات 🌸</a>
+                    </div>
+                </div>
+
+                <div class="menu-category-block" data-category-id="taswaq-happiness-cups">
+                    <a href="category.html?id=taswaq-happiness-cups" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="كبات السعادة">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-happiness-cups" class="category-title-link">كبات السعادة</a>
+                        <a href="category.html?id=taswaq-happiness-cups" class="category-action-btn">استعرض المنتجات 🌸</a>
+                    </div>
+                </div>
+
+                <div class="menu-category-block" data-category-id="taswaq-relax-box">
+                    <a href="category.html?id=taswaq-relax-box" class="category-clickable-wrapper">
+                        <img class="category-block-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="بوكس الروقان">
+                    </a>
+                    <div class="category-block-footer">
+                        <a href="category.html?id=taswaq-relax-box" class="category-title-link">بوكس الروقان</a>
+                        <a href="category.html?id=taswaq-relax-box" class="category-action-btn">استعرض المنتجات 🌸</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </main>
 
     <footer class="bose-footer">
-        <div class="footer-container">
-            <div class="footer-about-block">
-                <h3 class="footer-brand-title">حلويات بوسي</h3>
-                <p id="footer-about-text"></p>
-                <div id="footer-social-links">
-                    <a href="" class="social-link-facebook" target="_blank" aria-label="رابط فيسبوك"><i class="fab fa-facebook-f"></i></a>
-                    <a href="" class="social-link-instagram" target="_blank" aria-label="رابط انستغرام"><i class="fab fa-instagram"></i></a>
-                    <a href="" class="social-link-tiktok" target="_blank" aria-label="رابط تيك توك"><i class="fab fa-tiktok"></i></a>
-                    <a href="" class="social-link-whatsapp" target="_blank" aria-label="رابط واتساب"><i class="fab fa-whatsapp"></i></a>
-                </div>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <img class="footer-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي">
+                <span class="footer-brand-name">حلويات بوسي</span>
+            </div>
+            <p id="footer-about-text">صنعناها بحب لتهديها لمن تحب. خبرة أكثر من 10 سنوات في صناعة الحلويات الفاخرة وتنسيق الهدايا والورد لنوثق أسعد لحظاتكم.</p>
+            
+            <div id="footer-social-links">
+                <a href="https://www.facebook.com/share/1H1vVMHyu9/" class="social-link-facebook" target="_blank" rel="noopener">Facebook</a>
+                <a href="https://www.instagram.com/bose_sweets?igsh=amdkMmhxMXJyanYy" class="social-link-instagram" target="_blank" rel="noopener">Instagram</a>
+                <a href="https://www.tiktok.com/@bosesweets1?_r=1&_t=ZS-96lRDDHq9QK" class="social-link-tiktok" target="_blank" rel="noopener">TikTok</a>
+                <a href="https://wa.me/01097238441" class="social-link-whatsapp" target="_blank" rel="noopener">WhatsApp</a>
             </div>
 
-            <div class="footer-links-column">
-                <h4 class="footer-column-title">روابط سريعة</h4>
-                <ul class="footer-links-list">
-                    <li><a href="index.html">الرئيسية</a></li>
-                    <li><a href="menu.html">المنيو الشامل</a></li>
-                    <li><a href="cake-builder.html">مصمم التورت</a></li>
-                    <li><a href="flower-builder.html">مصمم البوكيهات</a></li>
-                    <li><a href="cart.html">سلة المشتريات</a></li>
-                </ul>
+            <div class="footer-policies-container">
+                <a href="privacy-policy.html" class="footer-policy-link">سياسة الخصوصية</a>
+                <a href="refund-policy.html" class="footer-policy-link">سياسة الاسترجاع</a>
+                <a href="shipping-policy.html" class="footer-policy-link">سياسة الطلبات</a>
+                <a href="terms.html" class="footer-policy-link">الشروط والأحكام</a>
             </div>
-
-            <div class="footer-links-column">
-                <h4 class="footer-column-title">سياساتنا</h4>
-                <ul class="footer-links-list">
-                    <li><a href="privacy-policy.html">سياسة الخصوصية</a></li>
-                    <li><a href="refund-policy.html">سياسة الاستبدال والاسترجاع</a></li>
-                    <li><a href="shipping-policy.html">سياسة الطلبات والتوصيل</a></li>
-                    <li><a href="terms.html">الشروط والأحكام</a></li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-bottom-bar">
-            <div class="footer-copyrights">
-                <span>&copy; 2026 جميع الحقوق محفوظة لـ <strong>حلويات بوسي</strong>.</span>
-            </div>
-            <div class="footer-developer-sig">
-                <span>العنوان: الكفاح - شارع الوحدة المحلية - بجوار صيدلية د. أحمد مجدي وعيادة د. علي 🌸</span>
-            </div>
+            
+            <p class="copyright-text">© 2026 حلويات بوسي. جميع الحقوق محفوظة.</p>
         </div>
     </footer>
 
-    <style>
-        /* حاوية التوزيع الموحدة الحتمية للفئات لضمان الانسيابية المطلقة وعدم حدوث قطع بصري */
-        .products-grid {
-            display: grid !important;
-            grid-template-columns: repeat(1, 1fr) !important;
-            gap: 24px !important;
-            direction: rtl !important;
-            width: 100% !important;
-            justify-items: center !important;
-        }
-
-        .menu-category-block {
-            width: 100% !important;
-            display: flex !important;
-            justify-content: center !important;
-            transition: opacity 0.3s ease, transform 0.3s ease !important;
-        }
-
-        /* هندسة كروت فئات المنيو الصارمة بالملي وطبقاً للمقاسات الإلزامية للـ UI DIMENSIONS */
-        .menu-category-card {
-            background-color: var(--bose-white) !important;
-            border: var(--bose-border-pink) !important;
-            border-radius: 24px !important;
-            overflow: hidden !important;
-            display: flex !important;
-            flex-direction: column !important;
-            width: 280px !important; /* العرض المعتمد للموبايل بالمسطرة */
-            height: 360px !important; /* الارتفاع الكلي المعتمد للموبايل بالمسطرة */
-            box-shadow: var(--bose-shadow-glow) !important;
-            transition: var(--bose-transition-smooth) !important;
-            position: relative !important;
-        }
-
-        .menu-category-card-link {
-            width: 100% !important;
-            height: 100% !important;
-            display: flex !important;
-            flex-direction: column !important;
-            text-decoration: none !important;
-            color: inherit !important;
-        }
-
-        .menu-category-img-box {
-            width: 100% !important;
-            height: 280px !important; /* ارتفاع الصورة المعتمد للموبايل بالمسطرة */
-            overflow: hidden !important;
-            position: relative !important;
-            background-color: var(--bose-white) !important;
-        }
-
-        .menu-category-img-box img {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-            transition: var(--bose-transition-slow) !important;
-        }
-
-        .menu-category-card:hover {
-            transform: translateY(-6px) !important;
-            border-color: var(--bose-pink) !important;
-            box-shadow: var(--bose-shadow-hover) !important;
-        }
-
-        .menu-category-card:hover .menu-category-img-box img {
-            transform: scale(1.04) !important;
-        }
-
-        .menu-category-info-box {
-            padding: 12px 16px !important;
-            text-align: center !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-            gap: 4px !important;
-            margin-top: auto !important;
-            background-color: var(--bose-white) !important;
-            flex-grow: 1 !important;
-        }
-
-        .menu-category-title {
-            font-size: 20px !important; /* الحجم الإلزامي لعنوان الفئة */
-            font-weight: 700 !important; /* قفل وزن الخط الفاخر لأضخم العناوين */
-            color: var(--bose-black) !important;
-            line-height: 1.3 !important;
-            white-space: nowrap !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-            width: 100% !important;
-        }
-
-        .menu-category-btn-explore {
-            font-size: 0.88rem !important;
-            font-weight: 600 !important;
-            color: var(--bose-pink) !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            gap: 6px !important;
-            transition: var(--bose-transition-smooth) !important;
-            margin-top: 2px !important;
-        }
-
-        .menu-category-card:hover .menu-category-btn-explore {
-            letter-spacing: 0.5px !important;
-            color: #ff7b91 !important;
-        }
-
-        /* حاويات التبويبات الأفقية وسلاسل الحركة الفاخرة */
-        .filter-tab-btn {
-            background-color: var(--bose-white);
-            color: var(--bose-black);
-            border: var(--bose-border-pink);
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: var(--bose-transition-smooth);
-            white-space: nowrap;
-        }
-
-        .filter-tab-btn:hover {
-            background-color: var(--bose-white);
-            color: var(--bose-pink);
-            border-color: var(--bose-pink);
-        }
-
-        .filter-tab-btn.active {
-            background-color: var(--bose-pink) !important;
-            color: var(--bose-white) !important;
-            border-color: var(--bose-pink) !important;
-            font-weight: 700 !important;
-            box-shadow: var(--bose-shadow-glow) !important;
-        }
-
-        /* تحسينات وإعدادات التصفح لشرائح التبويبات على شاشات الموبايل لمنع ظهور السكرولبار المقيت */
-        .tabs-container::-webkit-scrollbar {
-            display: none !important;
-        }
-
-        /* الاستعلامات الطبوغرافية والهندسية لشاشات التابلت (Tablet Media Queries) */
-        @media (min-width: 768px) {
-            .products-grid {
-                grid-template-columns: repeat(2, 1fr) !important; /* كارتان بكل صف للتابلت بالمسطرة */
-                gap: 20px !important;
-            }
-            .menu-category-card {
-                width: 340px !important; /* العرض المعتمد للتابلت بالمسطرة */
-                height: 430px !important; /* ارتفاع الكارت الكلي للتابلت بالمسطرة */
-            }
-            .menu-category-img-box {
-                height: 340px !important; /* ارتفاع الصورة المعتمد للتابلت بالمسطرة */
-            }
-        }
-
-        /* الاستعلامات الهندسية للشاشات الكبيرة والكمبيوتر (Desktop Media Queries) */
-        @media (min-width: 1024px) {
-            .products-grid {
-                grid-template-columns: repeat(3, 1fr) !important; /* 3 كروت بكل صف للكمبيوتر بالمسطرة */
-                gap: 28px !important;
-            }
-            .menu-category-card {
-                width: 420px !important; /* العرض المعتمد للكمبيوتر بالمسطرة */
-                height: 520px !important; /* ارتفاع الكارت الكلي للكمبيوتر بالمسطرة */
-            }
-            .menu-category-img-box {
-                height: 420px !important; /* ارتفاع الصورة المعتمد للكمبيوتر بالمسطرة */
-            }
-            .menu-category-title {
-                font-size: 22px !important;
-            }
-        }
-    </style>
-
+    <script src="core.html.js"></script>
     <script>
-        /**
-         * حارس التوافق ومنع التعارض البرمجي لـ موقع حلويات بوسي
-         * يحظر تماماً تنفيذ أي دالة مخصصة أو تصفية بناء قبل استقرار كائن البيانات الموحد وثباته في الذاكرة
-         */
         document.addEventListener("DOMContentLoaded", () => {
-            if (window.BoseStoreData && window.BoseStoreData.store) {
-                verifyAndInitializeMenuEngine();
+            const tabs = document.querySelectorAll(".tab-filter-btn");
+            const cards = document.querySelectorAll(".menu-category-block");
+
+            tabs.forEach(tab => {
+                tab.addEventListener("click", () => {
+                    tabs.forEach(t => t.classList.remove("active"));
+                    tab.classList.add("active");
+
+                    const categoryFilter = tab.getAttribute("data-category");
+
+                    cards.forEach(card => {
+                        const cardCategory = card.getAttribute("data-category-id");
+
+                        if (categoryFilter === "all" || cardCategory === categoryFilter) {
+                            card.classList.remove("d-none");
+                            setTimeout(() => {
+                                card.classList.remove("visual-hidden");
+                            }, 50);
+                        } else {
+                            card.classList.add("visual-hidden");
+                            card.classList.add("d-none");
+                        }
+                    });
+                });
+            });
+
+            if (window.getBoseCart && window.updateGlobalCartCounter) {
+                window.updateGlobalCartCounter();
             } else {
-                const menuGuardInterval = setInterval(() => {
-                    if (window.BoseStoreData && window.BoseStoreData.store) {
-                        clearInterval(menuGuardInterval);
-                        verifyAndInitializeMenuEngine();
-                    }
-                }, 50);
+                const rawCart = localStorage.getItem('bose_cart');
+                const cart = rawCart ? JSON.parse(rawCart) : [];
+                const total = cart.reduce((sum, item) => sum + item.quantity, 0);
+                const badge = document.getElementById('nav-cart-count');
+                if (badge) badge.textContent = total;
             }
         });
-
-        function verifyAndInitializeMenuEngine() {
-            const data = window.BoseStoreData;
-            console.log("🚀 Custom Menu Module Verified Against Shared Database. Ready to Render Dynamic Categories.");
-
-            // 1. توليد رسائل الشريط العلوي المتحرك الموحد لمنع الفراغات البصرية
-            if (data.navigation && data.navigation.topBarMessages) {
-                renderMenuTopBarMarquee(data.navigation.topBarMessages);
-            }
-
-            // 2. قراءة وتوليد أزرار التبويبات الـ 12 المعتمدة في الـ JSON للفحص الذكي
-            if (data.homepage && data.homepage.categoriesSlider) {
-                renderMenuFilterTabs(data.homepage.categoriesSlider);
-                // 3. بناء الشبكة الكبرى وحقن الكتل الـ 12 بالترتيب والمسطرة الصارمة للتشغيل تلتزم بالهيكل الحتمي
-                renderMenuCategoriesGrid(data.homepage.categoriesSlider);
-            }
-
-            // 4. تفعيل كتل وظائف أحداث الواجهة العامة (البحث، الهيدر، القائمة الجانبية)
-            initializeMenuLayoutControls();
-        }
-
-        // دالة توليد رسائل الماركي العلوي اللانهائي لحفظ الانسيابية البصرية
-        function renderMenuTopBarMarquee(messages) {
-            const track = document.getElementById("bose-announcements-track");
-            if (!track || !messages || messages.length === 0) return;
-
-            let htmlContent = "";
-            for (let i = 0; i < 3; i++) {
-                messages.forEach(msg => {
-                    htmlContent += `
-                        <div class="marquee-item">
-                            <i class="fas fa-sparkles" style="color: var(--bose-gold)"></i>
-                            <span>${msg}</span>
-                        </div>
-                    `;
-                });
-            }
-            track.innerHTML = htmlContent;
-        }
-
-        // دالة توليد أزرار التصفية والتبويبات العليا ديناميكياً للـ 12 فئة الصريحة
-        function renderMenuFilterTabs(categories) {
-            const tabsContainer = document.getElementById("menu-tabs");
-            if (!tabsContainer || !categories) return;
-
-            let tabsHtml = `<button class="filter-tab-btn active" data-category="all">الكل 🌸</button>`;
-
-            categories.forEach(cat => {
-                tabsHtml += `
-                    <button class="filter-tab-btn" data-category="${cat.id}">${cat.title}</button>
-                `;
-            });
-
-            tabsContainer.innerHTML = tabsHtml;
-
-            const tabButtons = tabsContainer.querySelectorAll(".filter-tab-btn");
-            tabButtons.forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    tabButtons.forEach(b => b.classList.remove("active"));
-                    btn.classList.add("active");
-
-                    const selectedCategory = btn.getAttribute("data-category");
-                    filterMenuCardsDisplay(selectedCategory);
-                });
-            });
-        }
-
-        // دالة هندسة وبناء وحقن كروت الشبكة الـ 12 المعتمدة حرفياً بالملي في ملف المواصفات والـ DOM الحتمي للموقع
-        function renderMenuCategoriesGrid(categories) {
-            const wrapper = document.getElementById("full-menu-wrapper");
-            if (!wrapper || !categories) return;
-
-            // بناء الحاوية الحتمية والشبكة الكبرى التي تضم كتل الفئات الملتزمة لراحة العميل
-            let gridHtml = `<div class="products-grid">`;
-
-            categories.forEach(cat => {
-                gridHtml += `
-                    <div class="menu-category-block" data-cat-block-id="${cat.id}">
-                        <div class="menu-category-card">
-                            <a href="category.html?id=${cat.id}" class="menu-category-card-link">
-                                <div class="menu-category-img-box">
-                                    <img src="${cat.image}" alt="${cat.title}" loading="lazy" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
-                                </div>
-                                <div class="menu-category-info-box">
-                                    <h2 class="menu-category-title">${cat.title}</h2>
-                                    <span class="menu-category-btn-explore">استعرض المنتجات <i class="fas fa-chevron-left" style="font-size: 0.75rem;"></i></span>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                `;
-            });
-
-            gridHtml += `</div>`;
-            wrapper.innerHTML = gridHtml;
-        }
-
-        // دالة الفلترة والتصفية التفاعلية الناعمة للتحكم في ظهور واختفاء فئات كروت المنيو الشامل لمنع تشتت العميل
-        function filterMenuCardsDisplay(categoryId) {
-            const blocks = document.querySelectorAll(".menu-category-block");
-            blocks.forEach(block => {
-                const targetId = block.getAttribute("data-cat-block-id");
-                
-                if (categoryId === "all" || targetId === categoryId) {
-                    block.style.display = "flex";
-                    setTimeout(() => {
-                        block.style.opacity = "1";
-                        block.style.transform = "scale(1)";
-                    }, 10);
-                } else {
-                    block.style.opacity = "0";
-                    block.style.transform = "scale(0.95)";
-                    setTimeout(() => {
-                        block.style.display = "none";
-                    }, 300);
-                }
-            });
-        }
-
-        // دالة ربط وتهيئة مودال البحث الفوري الفخم والدرج الجانبي من الكور لحظر الثغرات البرمجية بالموبايل والكمبيوتر
-        function initializeMenuLayoutControls() {
-            const menuToggle = document.querySelector(".nav-menu-toggle");
-            const drawerMenu = document.querySelector(".bose-drawer-menu");
-            const searchTrigger = document.querySelector(".nav-search-trigger");
-            const searchModal = document.querySelector(".bose-search-modal");
-            const searchClose = document.querySelector(".search-close-btn");
-
-            let overlay = document.querySelector(".drawer-overlay");
-            if (!overlay) {
-                overlay = document.createElement("div");
-                overlay.className = "drawer-overlay";
-                document.body.appendChild(overlay);
-            }
-
-            const toggleDrawer = () => {
-                menuToggle.classList.toggle("active");
-                drawerMenu.classList.toggle("active");
-                overlay.classList.toggle("active");
-                document.body.style.overflow = drawerMenu.classList.contains("active") ? "hidden" : "initial";
-            };
-
-            menuToggle.onclick = toggleDrawer;
-            overlay.onclick = toggleDrawer;
-
-            searchTrigger.onclick = () => {
-                searchModal.classList.add("active");
-                searchModal.setAttribute("aria-hidden", "false");
-                document.getElementById("global-search-input").focus();
-                document.body.style.overflow = "hidden";
-            };
-
-            searchClose.onclick = () => {
-                searchModal.classList.remove("active");
-                searchModal.setAttribute("aria-hidden", "true");
-                document.body.style.overflow = "initial";
-            };
-        }
     </script>
 </body>
 </html>
