@@ -1,9 +1,100 @@
+```css
 /* ========================================================================
    👑 حلويات بوسي - محرك التنسيق للأقسام والواجهات والسلايدرات 👑
    التنسيق الكامل والنهائي للواجهة الرئيسية والمنيو - css/main.css
-   تم حل تداخل الكروت، انزياح السلايدرات، وعيوب الشلال والكروسيل بالكامل
+   إصدار الإنتاج الفاخر - معالجة تامة للمربعات الفارغة، بتر النصوص، وتوسيع الكروت 30%
 ========================================================================
 */
+
+/* ------------------------------------------------------------------------
+   🛡️ PROTECTING ICON FONTS & BULLETPROOF SVG FALLBACKS
+   مظلة الحماية الصارمة لمنع تداخل خط كايرو مع الأيقونات، وحقن أيقونات SVG أصلية فائقة الدقة
+------------------------------------------------------------------------ */
+
+/* منع تداخل أي خطوط خارجية مع FontAwesome */
+.fa, .fas, .fab, .far, .fa-solid, .fa-brands, [class*="fa-"] {
+    font-family: 'Font Awesome 5 Free', 'Font Awesome 6 Free', 'Font Awesome 5 Brands', 'Font Awesome 6 Brands', 'FontAwesome' !important;
+    font-weight: 900 !important;
+    display: inline-block !important;
+    font-style: normal !important;
+    font-variant: normal !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+}
+
+/* أيقونات هيدر مبتكرة ونظيفة بنظام SVG النقي تظهر دائماً حتى لو تعطل خط الأيقونات */
+.nav-menu-toggle {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111111'><path d='M3 4h18v2H3V4zm0 7h18v2H3v-2zm0 7h18v2H3v-2z'/></svg>") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 24px !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: none !important;
+    background-color: transparent !important;
+    cursor: pointer !important;
+    transition: var(--bose-transition-smooth);
+}
+
+.nav-search-trigger {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111111'><path d='M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/></svg>") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 24px !important;
+    width: 40px !important;
+    height: 40px !important;
+    border: none !important;
+    background-color: transparent !important;
+    cursor: pointer !important;
+    transition: var(--bose-transition-smooth);
+}
+
+.nav-cart-icon-wrapper {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111111'><path d='M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0 0 20 4H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z'/></svg>") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 24px !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: inline-block !important;
+    position: relative !important;
+    background-color: transparent !important;
+    cursor: pointer !important;
+    transition: var(--bose-transition-smooth);
+}
+
+/* فخامة أيقونات الفوتر الاجتماعية - كل برنامج بألوانه الرسمية وهوية بصرية خاطفة للعين بمجرد النظر */
+.social-link-facebook {
+    background-color: #1877F2 !important;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z'/></svg>") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 18px !important;
+}
+
+.social-link-instagram {
+    background: linear-gradient(45deg, #F09433 0%, #E6683C 25%, #DC2743 50%, #CC2366 75%, #BC1888 100%) !important;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z'/></svg>") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 18px !important;
+}
+
+.social-link-tiktok {
+    background-color: #000000 !important;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.06-2.89-.54-4.06-1.41-.12-.09-.24-.19-.36-.29v6.52c-.08 3.01-1.88 5.86-4.8 6.76-3.14.97-6.83-.35-8.41-3.23-1.72-3.13-.53-7.46 2.65-9.15 1.54-.82 3.39-.98 5.09-.5v4.11c-1.12-.34-2.36-.18-3.32.48-.99.68-1.5 1.95-1.32 3.14.2 1.34 1.37 2.45 2.72 2.5 1.41.05 2.74-.88 3.13-2.23.11-.38.16-.78.16-1.18V.02z'/></svg>") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 16px !important;
+}
+
+.social-link-whatsapp {
+    background-color: #25D366 !important;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.503-5.734-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.42 9.864-9.864.002-2.637-1.03-5.115-2.906-6.993-1.876-1.878-4.354-2.908-6.999-2.909-5.443 0-9.87 4.424-9.874 9.87-.001 1.748.461 3.454 1.339 4.966l-.999 3.648 3.749-.983zM18.06 14.85c-.328-.164-1.94-.957-2.24-1.066-.299-.11-.517-.164-.734.164-.218.328-.844 1.066-1.035 1.284-.19.218-.38.245-.709.081-.328-.164-1.386-.51-2.64-1.627-.975-.87-1.633-1.946-1.824-2.274-.19-.328-.02-.505.143-.668.148-.146.328-.382.493-.573.164-.19.218-.328.328-.546.11-.218.055-.41-.027-.573-.082-.164-.734-1.767-1.006-2.422-.266-.64-.537-.552-.734-.562-.19-.01-.408-.012-.626-.012-.218 0-.573.082-.872.41-.299.328-1.144 1.12-1.144 2.732 0 1.612 1.171 3.166 1.335 3.385.164.218 2.305 3.519 5.584 4.941.78.338 1.39.54 1.864.69.784.249 1.498.214 2.062.13.629-.094 1.94-.794 2.212-1.53.272-.734.272-1.365.19-1.499-.081-.134-.299-.218-.627-.382z'/></svg>") !important;
+    background-repeat: no-repeat !important;
+    background-position: center !important;
+    background-size: 18px !important;
+}
 
 /* ------------------------------------------------------------------------
    🌸 SECTION 01: عقد من التميز (Hero Section Layout)
@@ -69,7 +160,6 @@
 
 /* ------------------------------------------------------------------------
    🌊 WATERFALL: شلال المنتجات التفاعلي المزدوج (Waterfall Section Layout)
-   تم زيادة عرض الأعمدة بنسبة 15% كاملة وحظر الانكماش لمنع فقر المساحات
 ------------------------------------------------------------------------ */
 #waterfall-section {
     position: relative;
@@ -178,7 +268,6 @@
 
 /* ------------------------------------------------------------------------
    🌸 SECTION 02: عقد من الإتقان (Excellence Banner Scroller Layout)
-   تم ضبط الحركة لتكون انسيابية فائقة (Ultra Smooth) وملء كامل الشاشة دون فراغات جانبية
 ------------------------------------------------------------------------ */
 #excellence-section {
     padding: 60px 0;
@@ -259,7 +348,6 @@
 
 /* ------------------------------------------------------------------------
    🌸 SECTION 03 & 05: الأكثر مبيعاً ووصل حديثاً (Sliders Structure)
-   تم التصفير التام وإصلاح انزياح السلايدرات لليسار وتأمين التوازن المطلق
 ------------------------------------------------------------------------ */
 #most-selling-section, #new-arrivals-section, #categories-slider-section {
     padding: 60px 0;
@@ -293,7 +381,7 @@
 
 /* ------------------------------------------------------------------------
    📦 الهيكل الموحد للكارت المعتمد (Strict Product Card Layout)
-   تمت معالجة تداخل النصوص وتأمين مساحات ممتدة واسعة تمنع الانضغاط والبتر
+   تم القضاء تماماً على بتر وتداخل النصوص وتأمين مساحات ممتدة مرنة للخط العربي
 ------------------------------------------------------------------------ */
 .products-grid {
     display: flex;
@@ -304,10 +392,10 @@
     background-color: var(--bose-white);
     border: var(--bose-border-pink);
     border-radius: 20px;
-    padding: 12px;
+    padding: 16px; /* زيادة مسافة الأمان الداخلية */
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
     width: 85vw; /* العرض الحتمي للموبايل في السلايدرات لمنع انكماش المكونات */
     height: auto;
     box-shadow: var(--bose-shadow-glow);
@@ -319,7 +407,7 @@
 @media (min-width: 768px) {
     .product-card {
         width: 320px;
-        padding: 16px;
+        padding: 18px;
     }
 }
 
@@ -358,37 +446,40 @@
 .product-card-info {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
     flex-grow: 1;
     overflow: hidden;
 }
 
-/* تم معالجة بتر ونقص النصوص بتوليد سقف مرن يحمل حتى سطرين متكاملين دون تشويه */
+/* حل نهائي لبتر الخطوط العربية وعلامات التشكيل باستخدام min-height مرن بدلاً من الارتفاع الصلب */
 .product-card-title {
-    font-size: 0.95rem !important;
+    font-size: 1.05rem !important;
     font-weight: 700;
     color: var(--bose-black);
-    line-height: 1.4;
+    line-height: 1.6 !important; /* مساحة مريحة للخط العربي */
     display: -webkit-box;
-    -webkit-line-clamp: 2; /* يسمح بسطرين كاملين قبل البتر اللطيف لمنع تداخل الحروف */
+    -webkit-line-clamp: 2; 
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
-    height: 2.8rem; /* طول حتمي متناسق يحمي الشبكة من التخلخل البصري */
+    min-height: 3.4rem !important; /* ارتفاع مرن يحمي بنية الشبكة بدون خنق الخط */
+    height: auto !important;
+    padding-bottom: 2px;
 }
 
 @media (min-width: 768px) {
     .product-card-title {
-        font-size: 1.15rem !important;
+        font-size: 1.2rem !important;
+        min-height: 3.8rem !important;
     }
 }
 
 .product-card-flavor {
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
     color: var(--bose-pink);
     background-color: var(--bose-cream);
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 8px;
     width: max-content;
     white-space: nowrap;
@@ -398,15 +489,16 @@
 }
 
 .product-card-desc {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--bose-black);
     opacity: 0.75;
-    line-height: 1.4;
+    line-height: 1.6 !important; /* تهوية نصوص الشرح لراحة العين */
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    height: 36px;
+    min-height: 2.8rem !important;
+    height: auto !important;
 }
 
 /* حاوية العداد الموحد لضمان التناسق وسهولة اللمس */
@@ -601,7 +693,7 @@
 
 /* ------------------------------------------------------------------------
    📦 SECTION 06: منتجاتنا (Our Products Grid)
-   تم إصلاح شبكة الموبايل تماماً لتوزيع الكارتين متجاورين ليمثلا ملء الشاشة العادل بالتساوي
+   تم تطبيق التكبير الفخم بنسبة 30% لكروت قسم منتجاتنا وتوسيع شبكة العرض
 ------------------------------------------------------------------------ */
 #our-products-section {
     padding: 60px 0;
@@ -609,35 +701,61 @@
 }
 
 .products-grid-wrapper {
-    max-width: 1200px;
+    max-width: 1450px; /* توسيع شبكة العرض الكلية بنسبة 20% لتستوعب التكبير الفاخر للكروت */
     margin: 0 auto;
     padding: 0 24px 30px 24px;
 }
 
 #our-products-grid {
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important; /* توزيع عادل بنسبة 100% متجاورة بالتساوي دون أي انكماش مريب */
-    gap: 16px !important;
+    grid-template-columns: repeat(2, 1fr) !important; /* متجاورتين بالتساوي على الموبايل لمنع أي انكماش مريب */
+    gap: 20px !important; /* فضاء تنفسي رائع يبرز فخامة الصور والحدود البمبي */
 }
 
 @media (min-width: 768px) {
     #our-products-grid {
         grid-template-columns: repeat(3, 1fr) !important;
-        gap: 20px !important;
+        gap: 24px !important;
     }
 }
 
 @media (min-width: 1024px) {
     #our-products-grid {
         grid-template-columns: repeat(4, 1fr) !important;
+        gap: 32px !important;
     }
 }
 
+/* قواعد الاستهداف الدقيق والتوسيع الفخم بنسبة 30% لكروت قسم "منتجاتنا" */
 #our-products-grid .product-card {
-    width: 100% !important; /* إجبار الكارت على التمدد المرن داخل خليته */
+    width: 100% !important; /* تمدد كامل وتلقائي لملء العمود الأكبر بنسبة 30% */
     max-width: 100% !important;
     flex-shrink: 1 !important;
     flex-grow: 1 !important;
+    padding: 20px !important; /* زيادة الحشوة الداخلية لراحة العين */
+    border: var(--bose-border-thick) !important; /* حدود بمبية واضحة وفاخرة */
+}
+
+#our-products-grid .product-card-title {
+    font-size: 1.15rem !important; /* خط أكبر بنسبة 30% تماشياً مع حجم الكارت الجديد */
+    min-height: 4rem !important;
+}
+
+@media (min-width: 768px) {
+    #our-products-grid .product-card-title {
+        font-size: 1.35rem !important;
+        min-height: 4.4rem !important;
+    }
+}
+
+#our-products-grid .product-card-desc {
+    font-size: 0.9rem !important;
+    min-height: 3.2rem !important;
+}
+
+#our-products-grid .product-card-flavor {
+    font-size: 0.9rem !important;
+    padding: 5px 14px !important;
 }
 
 .hidden-product-card {
@@ -1076,4 +1194,3 @@
     line-height: 1.7 !important;
     font-size: 0.95rem !important;
 }
-
