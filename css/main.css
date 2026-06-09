@@ -64,7 +64,10 @@
 
 /* حل مشكلة مستطيلات أيقونات التواصل وإظهار إنستجرام بوضوح كامل */
 .social-link-facebook, .social-link-instagram, .social-link-tiktok, .social-link-whatsapp {
-    font-family: inherit !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 0 !important;
+    color: transparent !important;
+    line-height: 0 !important;
     text-indent: -9999px !important;
     overflow: hidden !important;
     display: inline-block !important;
@@ -78,7 +81,7 @@
 }
 
 .social-link-instagram {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z'/></svg>") !important;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23111111'><path d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z'/></svg>") !important;
     background-repeat: no-repeat !important;
     background-position: center !important;
     background-size: 18px !important;
@@ -701,7 +704,6 @@
     padding: 0 24px 30px 24px;
 }
 
-/* تعديل قسم منتجاتنا بالتسب المطلوبة: زيادة العرض 30%، تقصير الطول 20%، وضمان كارتين جنب بعض بالملي */
 #our-products-grid {
     display: grid !important;
     grid-template-columns: repeat(2, 1fr) !important;
@@ -758,7 +760,7 @@
     line-height: 1.4 !important;
     min-height: unset !important;
     display: -webkit-box !important;
-    -webkit-line-clamp: 3 !important; /* تقصير النصوص ليناسب الارتفاع الجديد المتناسق للفخامة بصرياً */
+    -webkit-line-clamp: 3 !important;
     -webkit-box-orient: vertical !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -790,18 +792,18 @@
     }
     
     #our-products-grid {
-        gap: 10px !important; /* تقليل المسافة بين الكارتين ليعطي مساحة عرض أكبر لكل كارت بنسبة 30% */
+        gap: 10px !important;
     }
     
     #our-products-grid .product-card {
-        padding: 10px !important; /* تقليص الحواف الداخلية لتقصير الطول وزيادة اتساع المحتوى */
+        padding: 10px !important;
         border-radius: 16px !important;
         gap: 8px !important;
     }
     
     .card-image-wrapper {
         border-radius: 12px !important;
-        aspect-ratio: 1.2 / 1 !important; /* تقصير طول منطقة الصورة بنسبة 20% لمنع المط والقطع البصري */
+        aspect-ratio: 1.2 / 1 !important;
     }
     
     #our-products-grid .product-card-title {
@@ -816,7 +818,7 @@
     }
     
     .bose-quantity-counter {
-        height: 32px !important; /* تقصير الطول الرأسي للعداد بنسبة 20% */
+        height: 32px !important;
         border-radius: 8px !important;
     }
     
@@ -830,7 +832,7 @@
     }
     
     .bose-add-to-cart-btn-full {
-        height: 36px !important; /* تقصير طول زر إضافة للسلة بنسبة 20% لتوازن مثالي لكارت الموبايل */
+        height: 36px !important;
         font-size: 0.85rem !important;
         border-radius: 8px !important;
     }
