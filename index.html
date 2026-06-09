@@ -68,18 +68,18 @@
     </div>
 
     <header class="bose-navbar">
-        <div class="nav-right-side">
-            <button class="nav-menu-toggle" aria-label="فتح القائمة الجانبية">
+        <div class="nav-right-side" style="display: flex; align-items: center; gap: 12px;">
+            <button class="nav-menu-toggle" aria-label="فتح القائمة الجانبية" style="flex-shrink: 0; margin: 0; padding: 0;">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-            <div class="brand-logo-container">
-                <a href="index.html">
-                    <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
+            <div class="brand-logo-container" style="display: flex; align-items: center; padding: 4px 0;">
+                <a href="index.html" style="display: flex; align-items: center;">
+                    <img id="bose-store-logo" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" style="width: 42px; height: 42px; object-fit: cover; border-radius: 50%; display: block;">
                 </a>
             </div>
-            <a href="index.html" class="brand-name">حلويات بوسي</a>
+            <a href="index.html" class="brand-name" style="margin-right: 4px; font-weight: 700;">حلويات بوسي</a>
         </div>
         <div class="nav-left-actions">
             <button class="nav-search-trigger" aria-label="البحث عن منتج">
@@ -865,38 +865,42 @@
                 document.body.appendChild(overlay);
             }
 
-            const openDrawer = (e) => {
-                if(e) { e.preventDefault(); e.stopPropagation(); }
+            const openDrawer = () => {
                 menuToggle.classList.add("active");
                 drawerMenu.classList.add("active");
                 overlay.classList.add("active");
                 document.body.style.overflow = "hidden";
             };
 
-            const closeDrawer = (e) => {
-                if(e) { e.preventDefault(); e.stopPropagation(); }
+            const closeDrawer = () => {
                 menuToggle.classList.remove("active");
                 drawerMenu.classList.remove("active");
                 overlay.classList.remove("active");
                 document.body.style.overflow = "initial";
             };
 
-            menuToggle.removeAttribute("onclick");
             menuToggle.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 if (drawerMenu.classList.contains("active")) {
-                    closeDrawer(e);
+                    closeDrawer();
                 } else {
-                    openDrawer(e);
+                    openDrawer();
                 }
             });
-            overlay.addEventListener("click", closeDrawer);
+
+            overlay.addEventListener("click", (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                closeDrawer();
+            });
 
             let touchStartX = 0;
             drawerMenu.addEventListener("touchstart", (e) => { touchStartX = e.changedTouches[0].screenX; }, {passive: true});
             drawerMenu.addEventListener("touchend", (e) => {
                 let touchEndX = e.changedTouches[0].screenX;
                 if (touchEndX - touchStartX > 60) {
-                    closeDrawer(e);
+                    closeDrawer();
                 }
             }, {passive: true});
 
