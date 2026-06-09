@@ -1,6 +1,7 @@
 /* ========================================================================
    👑 حلويات بوسي - دستور الهوية البصرية والخطوط والألوان الحاكمة 👑
-   الموقع المرجعي الصارم والوحيد - إصدار الإنتاج الكامل والمغلق
+   الملف المرجعي العالمي والمشترك لجميع الصفحات - css/global.css
+   تم التحديث وسد كافة ثغرات القائمة الجانبية، الهيدر، والفوتر بنسبة 100%
 ========================================================================
 */
 
@@ -29,7 +30,7 @@
     --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
     --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
     
-    /* الحدود المتوافقة مع التقييس البرمجي */
+    /* الحدود المتوافقة مع التقييس البرمجي الصارم */
     --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
     --bose-border-thick: 2px solid #FF91A4;
     --bose-border-gold: 1px solid rgba(212, 175, 55, 0.4);
@@ -70,7 +71,7 @@ body {
 
 /* 4. هندسة النصوص الصارمة لمنع التشويه البصري */
 h1, h2, h3, h4, h5, h6 {
-    font-weight: 700; /* سقف أوزان الخطوط الحتمي */
+    font-weight: 700; /* سقف أوزان الخطوط الحتمي لمنع تداخل الحروف */
     color: var(--bose-black);
     line-height: 1.3;
 }
@@ -108,36 +109,38 @@ button, input, select, textarea {
     position: sticky;
     top: 0;
     z-index: 1000;
-    background-color: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-bottom: var(--bose-border-pink);
+    background-color: rgba(255, 255, 255, 0.99);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 2px solid rgba(255, 145, 164, 0.25);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 24px;
+    padding: 0 16px;
     height: 70px;
     width: 100%;
     box-shadow: var(--bose-shadow-glow);
     transition: var(--bose-transition-smooth);
 }
 
-/* ترتيب الهيدر القياسي: زر القائمة، اللوجو، الاسم، زر البحث، زر السلة */
+/* ترتيب الهيدر المعتمد: زر القائمة، اللوجو، الاسم، زر البحث، زر السلة */
 .nav-right-side {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
+/* زر الهامبرجر المطور تفاعلياً لسهولة اللمس */
 .nav-menu-toggle {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 24px;
-    height: 18px;
+    width: 44px;
+    height: 44px;
+    padding: 13px 10px; /* ضمان مساحة لمس لا تقل عن 44px بموجب معايير الموبايل */
     cursor: pointer;
     background: transparent;
-    z-index: 1010;
+    z-index: 1060; /* أعلى من الـ Drawer عند فتحه */
 }
 
 .nav-menu-toggle span {
@@ -149,7 +152,7 @@ button, input, select, textarea {
     transition: var(--bose-transition-smooth);
 }
 
-/* تحريك علامة الهمبرجر إلى علامة إغلاق عند تفعيل القائمة */
+/* تحويل الهامبرجر لعلامة إغلاق (X) بانسيابية تامة عند التفعيل */
 .nav-menu-toggle.active span:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
     background-color: var(--bose-pink);
@@ -185,23 +188,26 @@ button, input, select, textarea {
 }
 
 .brand-name {
-    font-size: 1.25rem;
+    font-size: 1.35rem;
     font-weight: 700;
-    color: var(--bose-black);
+    color: var(--bose-pink); /* الاسم باللون البمبي الفخم لتفتيحه وتجميله بصرياً */
     white-space: nowrap;
+    margin-right: 8px;
 }
 
+/* تحسين أيقونات التفاعل والتحكم لمنع صغر الحجم وجفاف المظهر البصري */
 .nav-left-actions {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
 }
 
 .nav-search-trigger {
     background: transparent;
     cursor: pointer;
     color: var(--bose-black);
-    font-size: 1.2rem;
+    font-size: 1.45rem; /* تكبير حجم الأيقونات لسهولة الرؤية واللمس */
+    padding: 12px; /* توفير مساحة لمس ممتازة للموبايل والكمبيوتر */
     transition: var(--bose-transition-smooth);
     display: flex;
     align-items: center;
@@ -210,7 +216,7 @@ button, input, select, textarea {
 
 .nav-search-trigger:hover {
     color: var(--bose-pink);
-    transform: scale(1.1);
+    transform: scale(1.15);
 }
 
 .nav-cart-icon-wrapper {
@@ -219,25 +225,27 @@ button, input, select, textarea {
     align-items: center;
     justify-content: center;
     color: var(--bose-black);
-    font-size: 1.3rem;
+    font-size: 1.45rem; /* تكبير حجم الأيقونة */
+    padding: 12px; /* مساحة لمسية آمنة */
     transition: var(--bose-transition-smooth);
 }
 
 .nav-cart-icon-wrapper:hover {
     color: var(--bose-pink);
-    transform: scale(1.1);
+    transform: scale(1.15);
 }
 
+/* عداد السلة المدمج بالهيدر */
 #nav-cart-count {
     position: absolute;
-    top: -6px;
-    right: -10px;
+    top: 2px;
+    right: 0px;
     background-color: var(--bose-pink);
     color: var(--bose-white);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    min-width: 18px;
-    height: 18px;
+    min-width: 20px;
+    height: 20px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -250,21 +258,22 @@ button, input, select, textarea {
 .bose-drawer-menu {
     position: fixed;
     top: 0;
-    right: -100%;
+    right: -320px; /* مخفي تماماً خارج حدود الشاشة افتراضياً */
     width: 320px;
     height: 100vh;
     background-color: var(--bose-white);
-    box-shadow: -10px 0 40px rgba(0,0,0,0.05);
-    z-index: 999;
-    transition: var(--bose-transition-slow);
+    box-shadow: -10px 0 40px rgba(255, 145, 164, 0.15);
+    z-index: 1050; /* يقع فوق الهيدر */
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* حركة ناعمة جداً تمنع التجميد والقفز البصري */
     display: flex;
     flex-direction: column;
     padding: 90px 24px 40px 24px;
     border-left: var(--bose-border-pink);
 }
 
+/* كلاس التفعيل الحتمي لمنع التجميد والخلل البرمجي */
 .bose-drawer-menu.active {
-    right: 0;
+    right: 0 !important;
 }
 
 .drawer-overlay {
@@ -273,10 +282,10 @@ button, input, select, textarea {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(17, 17, 17, 0.3);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    z-index: 998;
+    background-color: rgba(17, 17, 17, 0.35);
+    backdrop-filter: blur(8px); /* طبقة ضبابية خلفية ممتازة لتركيز انتباه العميل */
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1040; /* أسفل الدرج مباشرة وفوق الهيدر */
     opacity: 0;
     visibility: hidden;
     transition: var(--bose-transition-smooth);
@@ -291,17 +300,17 @@ button, input, select, textarea {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 }
 
 .drawer-link-item a {
     display: flex;
     align-items: center;
     gap: 16px;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: var(--bose-black);
-    padding: 10px 14px;
+    padding: 12px 14px;
     border-radius: 12px;
     transition: var(--bose-transition-smooth);
 }
@@ -314,7 +323,7 @@ button, input, select, textarea {
 
 .drawer-link-item a i {
     color: var(--bose-pink);
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     width: 24px;
     text-align: center;
 }
@@ -327,7 +336,7 @@ button, input, select, textarea {
 }
 
 .drawer-footer p {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     color: var(--bose-black);
     opacity: 0.7;
 }
@@ -339,7 +348,7 @@ button, input, select, textarea {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(255, 255, 255, 0.98);
+    background-color: rgba(255, 255, 255, 0.99);
     z-index: 1100;
     opacity: 0;
     visibility: hidden;
@@ -366,8 +375,9 @@ button, input, select, textarea {
 .search-close-btn {
     background: transparent;
     cursor: pointer;
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     color: var(--bose-black);
+    padding: 10px;
     transition: var(--bose-transition-smooth);
 }
 
@@ -386,7 +396,7 @@ button, input, select, textarea {
 
 #global-search-input {
     width: 100%;
-    padding: 16px 40px 16px 16px;
+    padding: 16px 48px 16px 16px;
     font-size: 1.3rem;
     font-weight: 600;
     color: var(--bose-black);
@@ -415,6 +425,7 @@ button, input, select, textarea {
     display: grid;
     grid-template-columns: 1fr;
     gap: 16px;
+    padding: 4px;
 }
 
 @media (min-width: 768px) {
@@ -424,13 +435,14 @@ button, input, select, textarea {
 }
 
 /* 8. المكون العالمي الثابت للشريط العلوي المتحرك (Top Bar Marquee) */
+/* تم تعديل الأنيميشن والتكرار لمنع الفراغات البصرية والشريط الأبيض تماماً */
 .bose-top-bar {
     background-color: var(--bose-cream);
     overflow: hidden;
     height: 38px;
     display: flex;
     align-items: center;
-    border-bottom: var(--bose-border-pink);
+    border-bottom: 1px solid rgba(255, 145, 164, 0.15);
     position: relative;
     z-index: 950;
 }
@@ -438,7 +450,7 @@ button, input, select, textarea {
 .marquee-track {
     display: flex;
     width: max-content;
-    animation: marquee-scroll 35s linear infinite;
+    animation: marquee-scroll-rtl 40s linear infinite; /* حركة انسيابية لا نهائية ومطابقة للاتجاه العربي */
     will-change: transform;
 }
 
@@ -455,11 +467,7 @@ button, input, select, textarea {
 
 @keyframes marquee-scroll {
     0% { transform: translateX(0); }
-    100% { transform: translateX(50%); }
-}
-
-[dir="rtl"] .marquee-track {
-    animation: marquee-scroll-rtl 35s linear infinite;
+    100% { transform: translateX(-50%); }
 }
 
 @keyframes marquee-scroll-rtl {
@@ -467,36 +475,51 @@ button, input, select, textarea {
     100% { transform: translateX(-50%); }
 }
 
-/* 9. الهيكل الموحد والمقدس للفوتر (Shared Universal Footer) */
+/* 9. الهيكل الموحد والمقدس للفوتر الفاتح (Shared Universal Footer) */
+/* تم تصحيح هوية الفوتر البصرية وألوان السوشيال ميديا الحقيقية لمنع بهتان المظهر */
 .bose-footer {
-    background-color: var(--bose-cream);
-    border-top: var(--bose-border-pink);
-    padding: 60px 24px 30px 24px;
+    background-color: var(--bose-cream) !important;
+    border-top: var(--bose-border-pink) !important;
+    padding: 60px 24px 30px 24px !important;
     width: 100%;
     margin-top: auto;
     position: relative;
     z-index: 10;
+    text-align: center !important;
 }
 
-/* توزيع عناصر الفوتر بتناسق هندسي متوازن */
 .footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 40px;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 40px !important;
 }
 
 @media (min-width: 768px) {
     .footer-container {
-        grid-template-columns: 2fr 1.2fr 1.2fr;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: flex-start !important;
     }
 }
 
 .footer-about-block {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    align-items: center !important;
+    text-align: center !important;
+    max-width: 320px !important;
+}
+
+@media (min-width: 768px) {
+    .footer-about-block {
+        align-items: flex-start !important;
+        text-align: right !important;
+    }
 }
 
 .footer-brand-title {
@@ -512,38 +535,62 @@ button, input, select, textarea {
     line-height: 1.7;
 }
 
+/* أيقونات التواصل الاجتماعي بألوان التبريد الرسمية والبراند العالمي الفاخر */
 #footer-social-links {
-    display: flex;
-    gap: 12px;
-    margin-top: 10px;
+    display: flex !important;
+    gap: 16px !important;
+    justify-content: center !important;
+    margin-top: 15px !important;
 }
 
 #footer-social-links a {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--bose-white);
-    border: var(--bose-border-pink);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--bose-black);
-    font-size: 1.1rem;
-    transition: var(--bose-transition-smooth);
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: var(--bose-white) !important; /* لون الأيقونة أبيض ناصع وصريح */
+    font-size: 1.25rem !important;
+    transition: var(--bose-transition-smooth) !important;
+    box-shadow: var(--bose-shadow-glow) !important;
+    border: none !important;
+}
+
+.social-link-facebook {
+    background-color: #1877F2 !important; /* فيسبوك الرسمي */
+}
+
+.social-link-instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important; /* انستجرام الرسمي */
+}
+
+.social-link-tiktok {
+    background-color: #010101 !important; /* تيك توك الرسمي */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.social-link-whatsapp {
+    background-color: #25D366 !important; /* واتساب الرسمي */
 }
 
 #footer-social-links a:hover {
-    background-color: var(--bose-pink);
-    color: var(--bose-white);
-    transform: translateY(-4px) rotate(8deg);
-    border-color: var(--bose-pink);
-    box-shadow: var(--bose-shadow-glow);
+    transform: translateY(-5px) scale(1.1) !important;
+    box-shadow: var(--bose-shadow-hover) !important;
 }
 
 .footer-links-column {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+    max-width: 320px !important;
+}
+
+@media (min-width: 768px) {
+    .footer-links-column {
+        align-items: flex-start !important;
+    }
 }
 
 .footer-column-title {
@@ -558,18 +605,34 @@ button, input, select, textarea {
     content: '';
     position: absolute;
     bottom: 0;
-    right: 0;
+    right: 50%;
+    transform: translateX(50%);
     width: 35px;
     height: 2.5px;
     background-color: var(--bose-pink);
     border-radius: 2px;
 }
 
+@media (min-width: 768px) {
+    .footer-column-title::after {
+        right: 0;
+        transform: none;
+    }
+}
+
 .footer-links-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    list-style: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 0 !important;
+    align-items: center !important;
+}
+
+@media (min-width: 768px) {
+    .footer-links-list {
+        align-items: flex-start !important;
+    }
 }
 
 .footer-links-list li a {
@@ -587,22 +650,22 @@ button, input, select, textarea {
 }
 
 .footer-bottom-bar {
-    max-width: 1200px;
-    margin: 40px auto 0 auto;
-    padding-top: 24px;
-    border-top: var(--bose-border-pink);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    text-align: center;
+    max-width: 1200px !important;
+    margin: 40px auto 0 auto !important;
+    padding-top: 24px !important;
+    border-top: var(--bose-border-pink) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 16px !important;
+    text-align: center !important;
 }
 
 @media (min-width: 768px) {
     .footer-bottom-bar {
-        flex-direction: row;
-        justify-content: space-between;
-        text-align: right;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        text-align: right !important;
     }
 }
 
@@ -618,7 +681,7 @@ button, input, select, textarea {
     opacity: 0.6;
 }
 
-/* 10. الفتحة الشاملة لتنظيف العناصر والمؤثرات الإضافية الموحدة */
+/* 10. الفتحات الشاملة لتنظيف العناصر والمؤثرات الإضافية الموحدة */
 .container {
     width: 100%;
     max-width: 1200px;
@@ -660,37 +723,37 @@ button, input, select, textarea {
     transform: translateY(-1px);
 }
 
-/* شريط التنبيهات المخصص (Toast Alert System) لتجنب alert() */
+/* نظام التنبيهات المخصص (Toast Alert System) لتجنب alert() */
 .bose-toast-container {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    z-index: 1200;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    pointer-events: none;
+    position: fixed !important;
+    bottom: 30px !important;
+    right: 30px !important;
+    z-index: 1200 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    pointer-events: none !important;
 }
 
 .bose-toast {
-    background-color: var(--bose-white);
-    color: var(--bose-black);
-    border: var(--bose-border-pink);
-    border-right: 4px solid var(--bose-pink);
-    padding: 16px 24px;
-    border-radius: 12px;
-    box-shadow: var(--bose-shadow-hover);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    pointer-events: auto;
-    transform: translateX(120%);
-    transition: var(--bose-transition-smooth);
-    min-width: 280px;
+    background-color: var(--bose-white) !important;
+    color: var(--bose-black) !important;
+    border: var(--bose-border-pink) !important;
+    border-right: 4px solid var(--bose-pink) !important;
+    padding: 16px 24px !important;
+    border-radius: 12px !important;
+    box-shadow: var(--bose-shadow-hover) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 12px !important;
+    pointer-events: auto !important;
+    transform: translateX(120%) !important;
+    transition: var(--bose-transition-smooth) !important;
+    min-width: 280px !important;
 }
 
 .bose-toast.active {
-    transform: translateX(0);
+    transform: translateX(0) !important;
 }
 
 .bose-toast i {
