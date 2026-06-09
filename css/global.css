@@ -1,47 +1,21 @@
-```css
-/* ========================================================================
-   👑 حلويات بوسي - دستور الهوية البصرية والخطوط والألوان الحاكمة 👑
-   الملف المرجعي العالمي والمشترك لجميع الصفحات - css/global.css
-   تم التحديث وسد كافة ثغرات القائمة الجانبية، الهيدر، والفوتر بنسبة 100%
-========================================================================
-*/
-
-/* 1. استدعاء الخط العربي المعتمد والمثالي Cairo من منصة Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
 
-/* 2. الألوان الحاكمة والقواعد المقدسة للعلامة التجارية */
 :root {
-    /* نبض الحياة: حدود الكروت، الظلال الفاخرة، نصوص الأسعار اللحظية، وتأثيرات Hover */
     --bose-pink-raw: 255, 145, 164;
     --bose-pink: #FF91A4;
-    
-    /* المسيطر تماماً: يغطي الخلفيات والمساحات لمنع التكديس وضمان راحة العين ونفسية العميل */
     --bose-white: #FFFFFF;
-    
-    /* النصوص والعناوين فقط: معزول تماماً وممنوع استخدامه في الخلفيات أو الظلال نهائياً */
     --bose-black: #111111;
-    
-    /* فخامة اللوجو: لمسة خفيفة وراقية لنجوم التقييمات، الأيقونات المحددة وتفاصيل التخصيص الفاخرة */
     --bose-gold: #D4AF37;
-    
-    /* التدرج الحليبي الناعم للخلفيات المساعدة الخفيفة جداً */
     --bose-cream: #FFF5F6;
-
-    /* الهندسة البرمجية للظلال لمنع استخدام الظلال الداكنة أو السوداء نهائياً */
     --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
     --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
-    
-    /* الحدود المتوافقة مع التقييس البرمجي الصارم */
     --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
     --bose-border-thick: 2px solid #FF91A4;
     --bose-border-gold: 1px solid rgba(212, 175, 55, 0.4);
-    
-    /* أوقات الحركات والتأثيرات الانتقالية السلسة */
     --bose-transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --bose-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* 3. تصفير وإعادة تعيين المتصفح (Reset & Global Layout Settings) */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -70,9 +44,8 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* 4. هندسة النصوص الصارمة لمنع التشويه البصري */
 h1, h2, h3, h4, h5, h6 {
-    font-weight: 700; /* سقف أوزان الخطوط الحتمي لمنع تداخل الحروف */
+    font-weight: 700;
     color: var(--bose-black);
     line-height: 1.3;
 }
@@ -105,7 +78,6 @@ button, input, select, textarea {
     background: none;
 }
 
-/* 5. الهيكل الموحد والمقدس للهيدر (Shared Universal Header) */
 .bose-navbar {
     position: sticky;
     top: 0;
@@ -124,24 +96,22 @@ button, input, select, textarea {
     transition: var(--bose-transition-smooth);
 }
 
-/* ترتيب الهيدر المعتمد: زر القائمة، اللوجو، الاسم، زر البحث، زر السلة */
 .nav-right-side {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-/* زر الهامبرجر المطور تفاعلياً لسهولة اللمس */
 .nav-menu-toggle {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     width: 44px;
     height: 44px;
-    padding: 13px 10px; /* ضمان مساحة لمس لا تقل عن 44px بموجب معايير الموبايل */
+    padding: 13px 10px;
     cursor: pointer;
     background: transparent;
-    z-index: 1060; /* أعلى من الـ Drawer عند فتحه */
+    z-index: 1060;
 }
 
 .nav-menu-toggle span {
@@ -153,7 +123,6 @@ button, input, select, textarea {
     transition: var(--bose-transition-smooth);
 }
 
-/* تحويل الهامبرجر لعلامة إغلاق (X) بانسيابية تامة عند التفعيل */
 .nav-menu-toggle.active span:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
     background-color: var(--bose-pink);
@@ -191,12 +160,11 @@ button, input, select, textarea {
 .brand-name {
     font-size: 1.35rem;
     font-weight: 700;
-    color: var(--bose-pink); /* الاسم باللون البمبي الفخم لتفتيحه وتجميله بصرياً */
+    color: var(--bose-pink);
     white-space: nowrap;
     margin-right: 8px;
 }
 
-/* تحسين أيقونات التفاعل والتحكم لمنع صغر الحجم وجفاف المظهر البصري */
 .nav-left-actions {
     display: flex;
     align-items: center;
@@ -207,8 +175,8 @@ button, input, select, textarea {
     background: transparent;
     cursor: pointer;
     color: var(--bose-black);
-    font-size: 1.45rem; /* تكبير حجم الأيقونات لسهولة الرؤية واللمس */
-    padding: 12px; /* توفير مساحة لمس ممتازة للموبايل والكمبيوتر */
+    font-size: 1.45rem;
+    padding: 12px;
     transition: var(--bose-transition-smooth);
     display: flex;
     align-items: center;
@@ -226,8 +194,8 @@ button, input, select, textarea {
     align-items: center;
     justify-content: center;
     color: var(--bose-black);
-    font-size: 1.45rem; /* تكبير حجم الأيقونة */
-    padding: 12px; /* مساحة لمسية آمنة */
+    font-size: 1.45rem;
+    padding: 12px;
     transition: var(--bose-transition-smooth);
 }
 
@@ -236,7 +204,6 @@ button, input, select, textarea {
     transform: scale(1.15);
 }
 
-/* حماية أزرار التفاعل من إظهار المربعات والمستطيلات المكسورة تحتها */
 .nav-search-trigger i, 
 .nav-search-trigger span:not(#nav-cart-count),
 .nav-cart-icon-wrapper i,
@@ -249,7 +216,6 @@ button, input, select, textarea {
     overflow: hidden !important;
 }
 
-/* عداد السلة المدمج بالهيدر */
 #nav-cart-count {
     position: absolute;
     top: 2px;
@@ -268,24 +234,22 @@ button, input, select, textarea {
     transition: var(--bose-transition-smooth);
 }
 
-/* 6. القائمة الجانبية الفاخرة المنسدلة (Global Drawer Menu) */
 .bose-drawer-menu {
     position: fixed;
     top: 0;
-    right: -320px; /* مخفي تماماً خارج حدود الشاشة افتراضياً */
+    right: -320px;
     width: 320px;
     height: 100vh;
     background-color: var(--bose-white);
     box-shadow: -10px 0 40px rgba(255, 145, 164, 0.15);
-    z-index: 1050; /* يقع فوق الهيدر */
-    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* حركة ناعمة جداً تمنع التجميد والقفز البصري */
+    z-index: 1050;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     flex-direction: column;
     padding: 90px 24px 40px 24px;
     border-left: var(--bose-border-pink);
 }
 
-/* كلاس التفعيل الحتمي لمنع التجميد والخلل البرمجي */
 .bose-drawer-menu.active {
     right: 0 !important;
 }
@@ -297,9 +261,9 @@ button, input, select, textarea {
     width: 100vw;
     height: 100vh;
     background-color: rgba(17, 17, 17, 0.35);
-    backdrop-filter: blur(8px); /* طبقة ضبابية خلفية ممتازة لتركيز انتباه العميل */
+    backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    z-index: 1040; /* أسفل الدرج مباشرة وفوق الهيدر */
+    z-index: 1040;
     opacity: 0;
     visibility: hidden;
     transition: var(--bose-transition-smooth);
@@ -355,7 +319,6 @@ button, input, select, textarea {
     opacity: 0.7;
 }
 
-/* 7. محرك البحث العالمي الفوري المتكامل (Universal Search Modal) */
 .bose-search-modal {
     position: fixed;
     top: 0;
@@ -448,7 +411,6 @@ button, input, select, textarea {
     }
 }
 
-/* 8. المكون العالمي الثابت للشريط العلوي المتحرك (Top Bar Marquee) */
 .bose-top-bar {
     background-color: var(--bose-cream);
     overflow: hidden;
@@ -463,7 +425,7 @@ button, input, select, textarea {
 .marquee-track {
     display: flex;
     width: max-content;
-    animation: marquee-scroll-rtl 40s linear infinite; /* حركة انسيابية لا نهائية ومطابقة للاتجاه العربي */
+    animation: marquee-scroll-rtl 40s linear infinite;
     will-change: transform;
 }
 
@@ -478,17 +440,11 @@ button, input, select, textarea {
     gap: 8px;
 }
 
-@keyframes marquee-scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
-
 @keyframes marquee-scroll-rtl {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
 }
 
-/* 9. الهيكل الموحد والمقدس للفوتر الفاتح (Shared Universal Footer) */
 .bose-footer {
     background-color: var(--bose-cream) !important;
     border-top: var(--bose-border-pink) !important;
@@ -547,7 +503,6 @@ button, input, select, textarea {
     line-height: 1.7;
 }
 
-/* أيقونات التواصل الاجتماعي بألوان التبريد الرسمية والبراند العالمي الفاخر */
 #footer-social-links {
     display: flex !important;
     gap: 16px !important;
@@ -562,34 +517,26 @@ button, input, select, textarea {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    color: var(--bose-white) !important; /* لون الأيقونة أبيض ناصع وصريح */
-    font-size: 1.25rem !important;
     transition: var(--bose-transition-smooth) !important;
     box-shadow: var(--bose-shadow-glow) !important;
     border: none !important;
+    text-decoration: none !important;
 }
 
 .social-link-facebook {
-    background-color: #1877F2 !important; /* فيسبوك الرسمي */
+    background-color: #1877F2 !important;
 }
 
-/* تأمين ظهور أيقونة انستجرام الفاخرة بدون بهتان أو اختفاء */
 .social-link-instagram {
     background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFFFFF'><path d='M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z'/></svg>") !important;
-    background-repeat: no-repeat !important;
-    background-position: center !important;
-    background-size: 18px !important;
-    display: inline-block !important;
 }
 
 .social-link-tiktok {
-    background-color: #010101 !important; /* تيك توك الرسمي */
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background-color: #000000 !important;
 }
 
 .social-link-whatsapp {
-    background-color: #25D366 !important; /* واتساب الرسمي */
+    background-color: #25D366 !important;
 }
 
 #footer-social-links a:hover {
@@ -699,7 +646,6 @@ button, input, select, textarea {
     opacity: 0.6;
 }
 
-/* 10. الفتحات الشاملة لتنظيف العناصر والمؤثرات الإضافية الموحدة */
 .container {
     width: 100%;
     max-width: 1200px;
@@ -713,7 +659,6 @@ button, input, select, textarea {
     font-size: 1.15rem;
 }
 
-/* زر الحركة التفاعلية الموحد (Shared CTA Buttons) */
 .bose-btn-primary {
     background-color: var(--bose-pink);
     color: var(--bose-white);
@@ -741,7 +686,6 @@ button, input, select, textarea {
     transform: translateY(-1px);
 }
 
-/* نظام التنبيهات المخصص (Toast Alert System) لتجنب alert() */
 .bose-toast-container {
     position: fixed !important;
     bottom: 30px !important;
@@ -784,7 +728,6 @@ button, input, select, textarea {
     font-weight: 600;
 }
 
-/* 11. تخصيص شريط التمرير الفاخر (Scrollbar Styling) */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -803,4 +746,3 @@ button, input, select, textarea {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--bose-pink);
 }
-
