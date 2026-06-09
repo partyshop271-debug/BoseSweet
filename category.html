@@ -91,6 +91,33 @@
             100% { transform: translate3d(-50%, 0, 0); }
         }
 
+        /* الهوية البصرية الهيكلية للهيدر متطابقة تماماً مع index.html */
+        .brand-identity-anchor {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .brand-name-text {
+            color: var(--bose-black);
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 0;
+            white-space: nowrap;
+        }
+        #bose-store-logo {
+            width: 44px !important;
+            height: 44px !important;
+            object-fit: contain !important;
+            flex-shrink: 0;
+            border-radius: 50%;
+        }
+        .header-left-cluster {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
         /* ترويسة الفئة ومطابقة الوصف الفاخر موسطاً بالكامل */
         .category-view-hero-section {
             padding: 40px 16px 10px 16px;
@@ -969,7 +996,7 @@
 
         // تشغيل واجهات التفاعل للهيدر والسايدبار والماركي
         function setupUniversalInterfaceInteractions() {
-            // [حل الثغرة المعزز من ملف index]: الاعتماد الكامل على محرك الحقن الموحد core.html.js لفتح وإغلاق السايدبار والقوائم لحمايتها بصرياً وبرمجياً من تكرار الأحداث والانهيارات البرمجية المفاجئة.
+            // الاعتماد الكامل على محرك الحقن الموحد لفتح وإغلاق السايدبار والقوائم
             const searchTrigger = document.getElementById("search-modal-open-btn");
             const searchModal = document.getElementById("search-container");
             const searchClose = document.querySelector(".search-close-btn");
@@ -1470,3 +1497,4 @@
     </script>
 </body>
 </html>
+
