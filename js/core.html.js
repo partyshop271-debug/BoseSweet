@@ -1,8 +1,19 @@
+/**
+ * 👑 حلويات بوسي - محرك جلب البيانات والتحكم العام وحماية الذاكرة 👑
+ * إصدار الإنتاج الكامل المحدث والمؤمن برمجياً ومالياً
+ */
 (function () {
     // 1. المتغيرات العامة الأساسية داخل نطاق المحرك المغلق لضمان عدم التداخل
     window.BoseStoreData = null;
     const CART_STORAGE_KEY = 'bose_cart';
-    const DATABASE_PATH = 'data/site-data-final.json';
+    
+    // مسارات مرنة للبحث الذكي عن الملف لضمان التشغيل على جميع الاستضافات والمجلدات
+    const DATABASE_PATHS = [
+        'site-data-final.json',
+        'data/site-data-final.json',
+        '../site-data-final.json',
+        './site-data-final.json'
+    ];
 
     /**
      * 2. آلية الاستدعاء والاتصال الذكي مع خوارزمية الانتظار والتأمين الارتدادي (Exponential Backoff)
@@ -16,25 +27,40 @@
 
         for (let attempt = 1; attempt <= maxRetries; attempt++) {
             try {
-                const response = await fetch(DATABASE_PATH);
-                if (!response.ok) throw new Error(`HTTP Error Status: ${response.status}`);
-                
-                window.BoseStoreData = await response.json();
-                console.log("✔️ تم جلب قاعدة بيانات حلويات بوسي وتأمينها بنجاح في الذاكرة.");
-                
-                // تفعيل الميزات المشتركة فور تحميل البيانات واستقرارها
-                applyGlobalSEOAndBranding();
-                updateGlobalCartCounter();
-                initializeGlobalUIEvents();
-                return; // الخروج الفوري بعد النجاح
+                let success = false;
+                // محاولة البحث عبر المسارات المرشحة حتى نجد الملف بنجاح
+                for (const path of DATABASE_PATHS) {
+                    try {
+                        const response = await fetch(path);
+                        if (response.ok) {
+                            window.BoseStoreData = await response.json();
+                            console.log(`✔️ تم تحميل قاعدة بيانات حلويات بوسي بنجاح من المسار: ${path}`);
+                            success = true;
+                            break;
+                        }
+                    } catch (e) {
+                        // محاولة المسار التالي بصمت
+                    }
+                }
+
+                if (success && window.BoseStoreData) {
+                    // تفعيل الميزات المشتركة فور تحميل البيانات واستقرارها
+                    applyGlobalSEOAndBranding();
+                    updateGlobalCartCounter();
+                    initializeGlobalUIEvents();
+                    // بث حدث عالمي لإعلام الصفحات الأخرى باكتمال البيانات
+                    window.dispatchEvent(new Event('bose_data_ready'));
+                    return; // الخروج الفوري بعد النجاح
+                }
+
+                throw new Error("لا يمكن قراءة ملف الـ JSON من المسارات المعينة.");
 
             } catch (error) {
                 if (attempt === maxRetries) {
-                    console.error("❌ فشل تحميل قاعدة البيانات بعد 5 محاولات:", error);
-                    // عرض تنبيه راقٍ وودي للعميل بدلاً من التجميد أو استخدام alert()
+                    console.error("❌ فشل تحميل قاعدة البيانات بعد 5 محاولات متتالية:", error);
                     showBoseToast("عذراً، نواجه ضغطاً خفيفاً في الشبكة. يرجى تحديث الصفحة لاستعراض حلوياتنا الفاخرة.");
                 } else {
-                    // الانتظار مع مضاعفة الوقت في كل محاولة (Exponential Backoff) دون إزعاج الكونسول باللوغات
+                    // الانتظار مع مضاعفة الوقت في كل محاولة (Exponential Backoff) دون إزعاج الكونسول
                     await new Promise(resolve => setTimeout(resolve, retryDelay));
                     retryDelay *= 2;
                 }
@@ -119,17 +145,19 @@
      * دالة تحديث أزرار وروابط قنوات التواصل الاجتماعي في جميع الصفحات
      */
     function updateSocialLinks(socialData) {
-        const facebookBtn = document.querySelector(".social-link-facebook");
-        const instagramBtn = document.querySelector(".social-link-instagram");
-        const tiktokBtn = document.querySelector(".social-link-tiktok");
-        const whatsappBtn = document.querySelector(".social-link-whatsapp");
+        const facebookBtns = document.querySelectorAll(".social-link-facebook");
+        const instagramBtns = document.querySelectorAll(".social-link-instagram");
+        const tiktokBtns = document.querySelectorAll(".social-link-tiktok");
+        const whatsappBtns = document.querySelectorAll(".social-link-whatsapp");
 
-        if (facebookBtn && socialData.facebook) facebookBtn.href = socialData.facebook;
-        if (instagramBtn && socialData.instagram) instagramBtn.href = socialData.instagram;
-        if (tiktokBtn && socialData.tiktok) tiktokBtn.href = socialData.tiktok;
-        if (whatsappBtn && socialData.whatsapp) {
-            whatsappBtn.href = `https://wa.me/${socialData.whatsapp}`;
-        }
+        facebookBtns.forEach(btn => { if (socialData.facebook) btn.href = socialData.facebook; });
+        instagramBtns.forEach(btn => { if (socialData.instagram) btn.href = socialData.instagram; });
+        tiktokBtns.forEach(btn => { if (socialData.tiktok) btn.href = socialData.tiktok; });
+        whatsappBtns.forEach(btn => {
+            if (socialData.whatsapp) {
+                btn.href = `https://wa.me/${socialData.whatsapp}`;
+            }
+        });
     }
 
     /**
@@ -291,10 +319,10 @@
 
     /**
      * 8. تهيئة وتفعيل تفاعلات واجهات الاستخدام العامة والثابتة (DOM Events Setup)
-     * تشمل: فتح وإغلاق القائمة الجانبية، تفعيل البحث العالمي الفوري والحي، وإغلاق البحث
+     * تمنع تعارض الأحداث والتكرار وتمنح حركة فائقة الاستقرار والنعومة
      */
     function initializeGlobalUIEvents() {
-        // أ. تفعيل القائمة الجانبية التفاعلية (Drawer Navigation)
+        // أ. تفعيل القائمة الجانبية التفاعلية (Drawer Navigation) دون استنساخ مدمر للعناصر
         const menuToggleBtn = document.querySelector(".nav-menu-toggle");
         const drawerMenu = document.querySelector(".bose-drawer-menu");
         
@@ -312,19 +340,13 @@
                 menuToggleBtn.classList.toggle("active");
                 drawerOverlay.classList.toggle("active", isActive);
                 
-                // منع حركة صفحة الموقع في الخلفية عند فتح الدرج الجانبي
+                // منع حركة صفحة الموقع في الخلفية عند فتح الدرج الجانبي لزيادة راحة التصفح
                 document.body.style.overflow = isActive ? "hidden" : "initial";
             };
 
-            // إزالة المستمعات القديمة لمنع تكرار تنفيذ الأحداث والتعليق
-            menuToggleBtn.replaceWith(menuToggleBtn.cloneNode(true));
-            drawerOverlay.replaceWith(drawerOverlay.cloneNode(true));
-
-            const newToggleBtn = document.querySelector(".nav-menu-toggle");
-            const newOverlay = document.querySelector(".drawer-overlay");
-
-            newToggleBtn.addEventListener("click", toggleDrawer);
-            newOverlay.addEventListener("click", toggleDrawer);
+            // ربط أحداث الضغط بأمان دون الحاجة إلى الاستنساخ الذي يعطل البرمجة
+            menuToggleBtn.onclick = toggleDrawer;
+            drawerOverlay.onclick = toggleDrawer;
         }
 
         // ب. تفعيل محرك البحث الفوري الفاخر (Global Instant Search Engine)
@@ -346,11 +368,11 @@
                 }
             };
 
-            searchTriggerBtn.addEventListener("click", () => toggleSearchModal(true));
+            searchTriggerBtn.onclick = () => toggleSearchModal(true);
 
             const searchCloseBtn = searchModal.querySelector(".search-close-btn");
             if (searchCloseBtn) {
-                searchCloseBtn.addEventListener("click", () => toggleSearchModal(false));
+                searchCloseBtn.onclick = () => toggleSearchModal(false);
             }
 
             // إغلاق البحث بمفتاح Escape لسهولة تصفح مستخدمي الكمبيوتر
@@ -363,10 +385,10 @@
             // الاستماع لحقل الإدخال للبحث اللحظي
             const searchInput = document.getElementById("global-search-input");
             if (searchInput) {
-                searchInput.addEventListener("input", (e) => {
+                searchInput.oninput = (e) => {
                     const query = e.target.value.trim().toLowerCase();
                     renderSearchResults(query);
-                });
+                };
             }
         }
     }
@@ -422,9 +444,9 @@
             htmlResults += `
                 <a href="product.html?slug=${product.slug}" class="search-result-card" style="display: flex; gap: 16px; padding: 12px; border-radius: 16px; border: var(--bose-border-pink); background: var(--bose-white); transition: var(--bose-transition-smooth); align-items: center; text-decoration: none; color: inherit; box-shadow: var(--bose-shadow-glow);">
                     <img src="${product.images[0]}" alt="${product.title}" style="width: 70px; height: 70px; border-radius: 12px; object-fit: cover; flex-shrink: 0;" onerror="this.src='https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'">
-                    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px;">
-                        <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--bose-black); line-height: 1.3;">${product.title}</h4>
-                        <span style="font-size: 0.8rem; font-weight: 600; color: var(--bose-pink);">${product.flavorName}</span>
+                    <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 4px; overflow: hidden;">
+                        <h4 style="font-size: 0.95rem; font-weight: 700; color: var(--bose-black); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.title}</h4>
+                        <span style="font-size: 0.8rem; font-weight: 600; color: var(--bose-pink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${product.flavorName}</span>
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
                             <span class="bose-price-text" style="font-size: 0.95rem; font-weight: 700;">${finalPrice} ${data.store.currency}</span>
                             <span style="font-size: 0.75rem; background: var(--bose-cream); padding: 2px 8px; border-radius: 8px; color: var(--bose-black); opacity: 0.7; font-weight: 600;">استعراض 🌸</span>
@@ -460,4 +482,5 @@
         loadStoreDatabase();
     }
 })();
+
 
