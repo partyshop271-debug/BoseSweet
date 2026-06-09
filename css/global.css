@@ -1,13 +1,15 @@
-css
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap');
 
 :root {
+    /* 🎨 الألوان الحاكمة والمقدسة لعلامة حلويات بوسي */
     --bose-pink-raw: 255, 145, 164;
-    --bose-pink: #FF91A4;
-    --bose-white: #FFFFFF;
-    --bose-black: #111111;
-    --bose-gold: #D4AF37;
-    --bose-cream: #FFF5F6;
+    --bose-pink: #FF91A4;       /* نبض الحياة: للحدود، الظلال الناعمة، واللمسات التفاعلية */
+    --bose-white: #FFFFFF;      /* المسيطر تماماً: للخلفيات لمنع التكديس وتحقيق التنفس البصري */
+    --bose-black: #111111;      /* معزول تماماً: يستخدم للنصوص والعناوين فقط لضمان وضوح كامل للعين */
+    --bose-gold: #D4AF37;       /* فخامة رمزية ناعمة: لنجوم التقييم وتفاصيل التخصيص الفاخرة */
+    --bose-cream: #FFF5F6;      /* خلفية دافئة وناعمة للفواصل والماركي والفوتر الفاخر */
+    
+    /* 📐 معايير الظلال والحدود البرمجية المعتمدة لحظر الظلال السوداء تماماً */
     --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
     --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
     --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
@@ -17,6 +19,7 @@ css
     --bose-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* 🧱 إعادة تعيين الأنماط القياسية وحظر التشويه البصري */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -46,7 +49,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-weight: 700;
+    font-weight: 700; /* سقف أوزان الخطوط المعتمد حظر التشويه */
     color: var(--bose-black);
     line-height: 1.3;
 }
@@ -79,6 +82,7 @@ button, input, select, textarea {
     background: none;
 }
 
+/* 🏢 الهيدر الثابت الموحد (Universal Sticky Header) */
 .bose-navbar {
     position: sticky;
     top: 0;
@@ -235,6 +239,7 @@ button, input, select, textarea {
     transition: var(--bose-transition-smooth);
 }
 
+/* 🚪 القائمة الجانبية الفاخرة (Drawer Menu) */
 .bose-drawer-menu {
     position: fixed;
     top: 0;
@@ -320,6 +325,7 @@ button, input, select, textarea {
     opacity: 0.7;
 }
 
+/* 🔍 شاشة البحث الفوري الفاخرة */
 .bose-search-modal {
     position: fixed;
     top: 0;
@@ -412,6 +418,7 @@ button, input, select, textarea {
     }
 }
 
+/* 📣 شريط الإعلانات الدائري (Marquee Bar) */
 .bose-top-bar {
     background-color: var(--bose-cream);
     overflow: hidden;
@@ -426,7 +433,7 @@ button, input, select, textarea {
 .marquee-track {
     display: flex;
     width: max-content;
-    animation: marquee-scroll-rtl 57s linear infinite; /* قللنا سرعة الماركي الكلاسيكي بنسبة 30% بزيادة الزمن من 40s إلى 57s */
+    animation: marquee-scroll-rtl 57s linear infinite;
     will-change: transform;
 }
 
@@ -446,6 +453,7 @@ button, input, select, textarea {
     100% { transform: translateX(-50%); }
 }
 
+/* 🏪 الفوتر الفاخر والمتقن (Premium Footer) */
 .bose-footer {
     background-color: var(--bose-cream) !important;
     border-top: var(--bose-border-pink) !important;
@@ -647,6 +655,7 @@ button, input, select, textarea {
     opacity: 0.6;
 }
 
+/* 📦 الحاويات العامة ومحركات الأزرار التفاعلية */
 .container {
     width: 100%;
     max-width: 1200px;
@@ -687,6 +696,7 @@ button, input, select, textarea {
     transform: translateY(-1px);
 }
 
+/* 🔔 نظام الإشعارات والتحذيرات الراقي */
 .bose-toast-container {
     position: fixed !important;
     bottom: 30px !important;
@@ -729,6 +739,7 @@ button, input, select, textarea {
     font-weight: 600;
 }
 
+/* 🎛️ شريط التمرير الجانبي */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
