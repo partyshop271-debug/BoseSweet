@@ -1,4 +1,4 @@
-أ<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -679,6 +679,35 @@
             margin: 0;
         }
 
+        /* 👑 تصميم حصري وراقي لنظام الإشعارات بلمسة بمبية جذابة بدلاً من تنبيهات alert المتصفح */
+        .bose-custom-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--bose-white);
+            color: var(--bose-black);
+            border: 2px solid var(--bose-pink);
+            border-radius: 20px;
+            padding: 14px 28px;
+            box-shadow: var(--bose-shadow-hover);
+            z-index: 9999;
+            font-family: 'Cairo', sans-serif;
+            font-weight: 600;
+            font-size: 15px;
+            text-align: center;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s;
+            opacity: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            direction: rtl;
+        }
+        .bose-custom-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
         @media (max-width: 768px) {
             .product-main-title { font-size: 26px; }
             .product-full-card { padding: 20px; }
@@ -855,430 +884,527 @@
     <script src="js/core.html.js"></script>
     
     <script>
+        // دالة عرض التنبيهات المخصصة والراقية بدلاً من alert التي تسبب تجمد الهواتف
+        function showBoseToast(message) {
+            try {
+                const existingToast = document.querySelector('.bose-custom-toast');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+
+                const toast = document.createElement('div');
+                toast.className = 'bose-custom-toast';
+                toast.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--bose-pink); font-size: 18px;"></i> <span>${message}</span>`;
+                document.body.appendChild(toast);
+
+                toast.offsetHeight; // Force reflow
+                toast.classList.add('show');
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => {
+                        toast.remove();
+                    }, 400);
+                }, 3500);
+            } catch (err) {
+                console.error("Toast Exception:", err);
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             let selectedRatingValue = 5;
             let activelyLoadedProductRef = null;
+            let isInitialized = false;
 
-            if (window.BoseStoreData && window.BoseStoreData.store) {
+            // حارس تأمين وقفل تحميل قاعدة البيانات لمنع تضارب المتغيرات
+            if (window.BoseStoreData && window.BoseStoreData.store && window.BoseStoreData.products) {
                 initializeProductFormController();
             } else {
                 window.addEventListener('bose_data_ready', () => {
                     initializeProductFormController();
                 });
                 const checkGlobalStateInterval = setInterval(() => {
-                    if (window.BoseStoreData && window.BoseStoreData.store) {
+                    if (window.BoseStoreData && window.BoseStoreData.store && window.BoseStoreData.products) {
                         clearInterval(checkGlobalStateInterval);
                         initializeProductFormController();
                     }
-                }, 5);
+                }, 10);
             }
 
             function initializeProductFormController() {
-                const routingParams = new URLSearchParams(window.location.search);
-                // 🛠️ تحسين هندسي: فحص المتغيرين slug و id معاً لمنع التعارض بين الصفحات
-                let requestedProductSlug = routingParams.get('slug') || routingParams.get('id') || "toort-custom-master";
+                if (isInitialized) return;
                 
-                // 🛠️ تحسين هندسي: خريطة تحويل ذكية لمعرفات الفئات القادمة من المنيو إلى الـ Slugs الأساسية المقابلة لها في الـ JSON
-                const categoryToProductMap = {
-                    "taswaq-toort": "toort-custom-master",
-                    "taswaq-gatowat": "gateaux-royal",
-                    "taswaq-qashtota": "qashtota-lotus-new",
-                    "taswaq-despacito": "despacito-pistachio-new",
-                    "taswaq-cinabon": "cinabon-classic",
-                    "taswaq-donuts": "donuts-matilda",
-                    "taswaq-red-velvet": "red-velvet-master",
-                    "taswaq-cupcake": "cupcake-mix-new",
-                    "taswaq-mini-cake": "mini-cake-master",
-                    "taswaq-flowers": "flowers-master",
-                    "taswaq-happiness-cups": "happiness-cups-nutella",
-                    "taswaq-relax-box": "relax-box"
-                };
+                try {
+                    const routingParams = new URLSearchParams(window.location.search);
+                    let requestedProductSlug = routingParams.get('slug') || routingParams.get('id') || "toort-custom-master";
+                    
+                    const categoryToProductMap = {
+                        "taswaq-toort": "toort-custom-master",
+                        "taswaq-gatowat": "gateaux-royal",
+                        "taswaq-qashtota": "qashtota-lotus-new",
+                        "taswaq-despacito": "despacito-pistachio-new",
+                        "taswaq-cinabon": "cinabon-classic",
+                        "taswaq-donuts": "donuts-matilda",
+                        "taswaq-red-velvet": "red-velvet-master",
+                        "taswaq-cupcake": "cupcake-mix-new",
+                        "taswaq-mini-cake": "mini-cake-master",
+                        "taswaq-flowers": "flowers-master",
+                        "taswaq-happiness-cups": "happiness-cups-nutella",
+                        "taswaq-relax-box": "relax-box"
+                    };
 
-                if (categoryToProductMap[requestedProductSlug]) {
-                    requestedProductSlug = categoryToProductMap[requestedProductSlug];
+                    if (categoryToProductMap[requestedProductSlug]) {
+                        requestedProductSlug = categoryToProductMap[requestedProductSlug];
+                    }
+
+                    const dbProductsCollection = window.BoseStoreData.products || [];
+                    activelyLoadedProductRef = dbProductsCollection.find(item => item.slug === requestedProductSlug || item.id === requestedProductSlug);
+
+                    if (!activelyLoadedProductRef) {
+                        activelyLoadedProductRef = dbProductsCollection.find(item => item.slug === "toort-custom-master" || item.id === "toort-custom-master");
+                    }
+
+                    if (!activelyLoadedProductRef) {
+                        console.error("❌ Critical Error: Product master reference missing from database.");
+                        return;
+                    }
+
+                    isInitialized = true;
+
+                    renderTopBarMarketingContent();
+                    renderProductCoreLayoutData();
+                    generateCustomizerInterfaceElements();
+                    bindCoreOperationalEventListeners();
+                    executeCommunityExperienceGeneratorEngine();
+                    executeBehavioralRecommenderEngine();
+
+                } catch (err) {
+                    console.error("❌ Guard Prevented Initialization Crash:", err);
                 }
-
-                const verifiedFullCardScopeSlugs = [
-                    "toort-custom-master", "gateaux-royal", "gateaux-classic", "gateaux-soiree",
-                    "flowers-master", "cupcake-mix-new", "cupcake-chocolate", "cupcake-vanilla",
-                    "mini-cake-master", "red-velvet-master", "relax-box", "qashtota-lotus-new",
-                    "despacito-pistachio-new", "cinabon-classic", "donuts-matilda", "happiness-cups-nutella"
-                ];
-
-                const dbProductsCollection = window.BoseStoreData.products || [];
-                activelyLoadedProductRef = dbProductsCollection.find(item => item.slug === requestedProductSlug || item.id === requestedProductSlug);
-
-                // 🛠️ تحسين هندسي: منع انهيار الصفحة أو إخفائها وإسناد فالباك آمن في حال عدم العثور التام على المعرف
-                if (!activelyLoadedProductRef) {
-                    activelyLoadedProductRef = dbProductsCollection.find(item => item.slug === "toort-custom-master" || item.id === "toort-custom-master");
-                }
-
-                if (!activelyLoadedProductRef) {
-                    console.error("❌ Critical Error: Product master reference missing from database.");
-                    return;
-                }
-
-                renderTopBarMarketingContent();
-                renderProductCoreLayoutData();
-                generateCustomizerInterfaceElements();
-                bindCoreOperationalEventListeners();
-                executeCommunityExperienceGeneratorEngine();
-                executeBehavioralRecommenderEngine();
             }
 
             function renderTopBarMarketingContent() {
-                const container = document.getElementById('top-bar-messages-container');
-                if (!container || !window.BoseStoreData.navigation || !window.BoseStoreData.navigation.topBarMessages) return;
-                
-                const messages = window.BoseStoreData.navigation.topBarMessages;
-                container.innerHTML = messages.map(msg => `<span style="padding: 0 40px; display: inline-block;">${msg}</span>`).join('');
+                try {
+                    const container = document.getElementById('top-bar-messages-container');
+                    if (!container || !window.BoseStoreData.navigation || !window.BoseStoreData.navigation.topBarMessages) return;
+                    
+                    const messages = window.BoseStoreData.navigation.topBarMessages;
+                    container.innerHTML = messages.map(msg => `<span style="padding: 0 40px; display: inline-block;">${msg}</span>`).join('');
+                } catch(e) { 
+                    console.warn("Top Bar Rendering Exception:", e); 
+                }
             }
 
             function renderProductCoreLayoutData() {
-                document.title = `${activelyLoadedProductRef.title} | ${window.BoseStoreData.store.name}`;
-                document.getElementById('product-rendered-heading').textContent = activelyLoadedProductRef.title;
-                document.getElementById('product-rendered-subtitle').textContent = activelyLoadedProductRef.flavorName || "";
-                document.getElementById('product-rendered-description').textContent = activelyLoadedProductRef.description;
-                
-                if (activelyLoadedProductRef.images && activelyLoadedProductRef.images[0]) {
-                    document.getElementById('product-rendered-image').src = activelyLoadedProductRef.images[0];
-                    document.getElementById('product-rendered-image').alt = activelyLoadedProductRef.title;
-                }
-                
-                updateDynamicPriceDisplayMatrix();
-                
-                const socialContext = window.BoseStoreData.social || {};
-                const footerIcons = document.getElementById('footer-social-links');
-                if (footerIcons) {
-                    if (socialContext.facebook) footerIcons.querySelector('.social-link-facebook').href = socialContext.facebook;
-                    if (socialContext.instagram) footerIcons.querySelector('.social-link-instagram').href = socialContext.instagram;
-                    if (socialContext.tiktok) footerIcons.querySelector('.social-link-tiktok').href = socialContext.tiktok;
-                    if (socialContext.whatsapp) footerIcons.querySelector('.social-link-whatsapp').href = `https://wa.me/${socialContext.whatsapp}`;
+                try {
+                    if (!activelyLoadedProductRef) return;
+                    
+                    document.title = `${activelyLoadedProductRef.title} | ${window.BoseStoreData.store.name}`;
+                    
+                    const heading = document.getElementById('product-rendered-heading');
+                    if (heading) heading.textContent = activelyLoadedProductRef.title;
+                    
+                    const subtitle = document.getElementById('product-rendered-subtitle');
+                    if (subtitle) subtitle.textContent = activelyLoadedProductRef.flavorName || "";
+                    
+                    const desc = document.getElementById('product-rendered-description');
+                    if (desc) desc.textContent = activelyLoadedProductRef.description;
+                    
+                    const mainImage = document.getElementById('product-rendered-image');
+                    if (mainImage && activelyLoadedProductRef.images && activelyLoadedProductRef.images[0]) {
+                        mainImage.src = activelyLoadedProductRef.images[0];
+                        mainImage.alt = activelyLoadedProductRef.title;
+                    }
+                    
+                    updateDynamicPriceDisplayMatrix();
+                    
+                    const socialContext = window.BoseStoreData.social || {};
+                    const footerIcons = document.getElementById('footer-social-links');
+                    if (footerIcons) {
+                        const fb = footerIcons.querySelector('.social-link-facebook');
+                        if (fb && socialContext.facebook) fb.href = socialContext.facebook;
+
+                        const insta = footerIcons.querySelector('.social-link-instagram');
+                        if (insta && socialContext.instagram) insta.href = socialContext.instagram;
+
+                        const tiktok = footerIcons.querySelector('.social-link-tiktok');
+                        if (tiktok && socialContext.tiktok) tiktok.href = socialContext.tiktok;
+
+                        const wa = footerIcons.querySelector('.social-link-whatsapp');
+                        if (wa && socialContext.whatsapp) wa.href = `https://wa.me/${socialContext.whatsapp}`;
+                    }
+                } catch (e) { 
+                    console.warn("Layout Rendering Exception:", e); 
                 }
             }
 
             function generateCustomizerInterfaceElements() {
-                const configSlot = document.getElementById('product-interactive-customizer-slot');
-                if (!configSlot) return;
-                configSlot.innerHTML = "";
+                try {
+                    const configSlot = document.getElementById('product-interactive-customizer-slot');
+                    if (!configSlot || !activelyLoadedProductRef) return;
+                    configSlot.innerHTML = "";
 
-                if (activelyLoadedProductRef.customBuilderUrl) {
-                    document.getElementById('stepper-interface-wrapper').style.display = "none";
-                    const btnCta = document.getElementById('add-to-cart-main-action-trigger');
-                    btnCta.className = "direct-link-cta-btn";
-                    btnCta.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span>انتقل إلى المحاكي التفاعلي المخصص الآن</span>`;
-                    
-                    btnCta.onclick = (e) => {
-                        e.preventDefault();
-                        window.location.href = activelyLoadedProductRef.customBuilderUrl;
-                    };
-                    return;
-                }
-
-                // كود توليد واجهة السليدر والأحجام والخيارات المتكاملة دون المساس بالهيكل
-                if (activelyLoadedProductRef.prices) {
-                    let sizeMarkup = `
-                        <div class="config-container-node">
-                            <h3 class="config-group-title">اختر الحجم المناسب لك:</h3>
-                            <div class="config-options-flex">
-                    `;
-                    
-                    let checkedState = "checked";
-                    for (const [key, val] of Object.entries(activelyLoadedProductRef.prices)) {
-                        let sizeLabel = key === "triangle" ? "مثلث" : key === "medium" ? "وسط" : key === "large" ? "كبير" : key === "two-person" ? "فردين" : key === "four-person" ? "٤ أفراد" : key === "six-person" ? "٦ أفراد" : key === "cup" ? "كَب" : "طاجن / صينية";
+                    if (activelyLoadedProductRef.customBuilderUrl) {
+                        const stepper = document.getElementById('stepper-interface-wrapper');
+                        if (stepper) stepper.style.display = "none";
                         
-                        sizeMarkup += `
-                            <div>
-                                <input type="radio" name="bose-product-size-variant" id="size-var-${key}" class="config-radio-input" value="${key}" ${checkedState} data-price="${val}">
-                                <label for="size-var-${key}" class="config-radio-label">${sizeLabel}</label>
-                            </div>
-                        `;
-                        checkedState = ""; 
+                        const btnCta = document.getElementById('add-to-cart-main-action-trigger');
+                        if (btnCta) {
+                            btnCta.className = "direct-link-cta-btn";
+                            btnCta.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span>انتقل إلى المحاكي التفاعلي المخصص الآن</span>`;
+                            btnCta.onclick = (e) => {
+                                e.preventDefault();
+                                window.location.href = activelyLoadedProductRef.customBuilderUrl;
+                            };
+                        }
+                        return;
                     }
-                    sizeMarkup += `</div></div>`;
-                    configSlot.insertAdjacentHTML('beforeend', sizeMarkup);
-                }
 
-                if (activelyLoadedProductRef.printingOptions) {
-                    let printingMarkup = `
-                        <div class="config-container-node" style="margin-top: 16px;">
-                            <h3 class="config-group-title">خيارات إضافة صور مخصصة على الكب كيك (للدستة):</h3>
-                            <div class="config-options-flex">
-                                <div>
-                                    <input type="radio" name="bose-cupcake-printing" id="print-var-none" class="config-radio-input" value="none" checked data-cost="0">
-                                    <label for="print-var-none" class="config-radio-label">بدون صور مخصصة</label>
-                                </div>
-                    `;
-
-                    activelyLoadedProductRef.printingOptions.forEach(opt => {
-                        printingMarkup += `
-                            <div>
-                                <input type="radio" name="bose-cupcake-printing" id="print-var-${opt.id}" class="config-radio-input" value="${opt.id}" data-cost="${opt.price}">
-                                <label for="print-var-${opt.id}" class="config-radio-label">${opt.name} (+${opt.price} جنيه)</label>
-                            </div>
-                        `;
-                    });
-
-                    printingMarkup += `</div></div>`;
-                    configSlot.insertAdjacentHTML('beforeend', printingMarkup);
-                }
-
-                if (activelyLoadedProductRef.options) {
-                    const opts = activelyLoadedProductRef.options;
-                    if (opts.cakeTypes) {
-                        let typeMarkup = `
-                            <div class="config-container-node" style="margin-top: 16px;">
-                                <h3 class="config-group-title">اختر نوع ونكهة الكيك الأساسية:</h3>
+                    if (activelyLoadedProductRef.prices) {
+                        let sizeMarkup = `
+                            <div class="config-container-node">
+                                <h3 class="config-group-title">اختر الحجم المناسب لك:</h3>
                                 <div class="config-options-flex">
                         `;
-                        opts.cakeTypes.forEach((t, i) => {
-                            typeMarkup += `
+                        
+                        let checkedState = "checked";
+                        for (const [key, val] of Object.entries(activelyLoadedProductRef.prices)) {
+                            let sizeLabel = key === "triangle" ? "مثلث" : key === "medium" ? "وسط" : key === "large" ? "كبير" : key === "two-person" ? "فردين" : key === "four-person" ? "٤ أفراد" : key === "six-person" ? "٦ أفراد" : key === "cup" ? "كَب" : "طاجن / صينية";
+                            
+                            sizeMarkup += `
                                 <div>
-                                    <input type="radio" name="bose-minicake-type" id="minicake-type-${i}" class="config-radio-input" value="${t}" ${i === 0 ? 'checked' : ''}>
-                                    <label for="minicake-type-${i}" class="config-radio-label">${t}</label>
+                                    <input type="radio" name="bose-product-size-variant" id="size-var-${key}" class="config-radio-input" value="${key}" ${checkedState} data-price="${val}">
+                                    <label for="size-var-${key}" class="config-radio-label">${sizeLabel}</label>
+                                </div>
+                            `;
+                            checkedState = ""; 
+                        }
+                        sizeMarkup += `</div></div>`;
+                        configSlot.insertAdjacentHTML('beforeend', sizeMarkup);
+                    }
+
+                    if (activelyLoadedProductRef.printingOptions) {
+                        let printingMarkup = `
+                            <div class="config-container-node" style="margin-top: 16px;">
+                                <h3 class="config-group-title">خيارات إضافة صور مخصصة على الكب كيك (للدستة):</h3>
+                                <div class="config-options-flex">
+                                    <div>
+                                        <input type="radio" name="bose-cupcake-printing" id="print-var-none" class="config-radio-input" value="none" checked data-cost="0">
+                                        <label for="print-var-none" class="config-radio-label">بدون صور مخصصة</label>
+                                    </div>
+                        `;
+
+                        activelyLoadedProductRef.printingOptions.forEach(opt => {
+                            printingMarkup += `
+                                <div>
+                                    <input type="radio" name="bose-cupcake-printing" id="print-var-${opt.id}" class="config-radio-input" value="${opt.id}" data-cost="${opt.price}">
+                                    <label for="print-var-${opt.id}" class="config-radio-label">${opt.name} (+${opt.price} جنيه)</label>
                                 </div>
                             `;
                         });
-                        typeMarkup += `</div></div>`;
-                        configSlot.insertAdjacentHTML('beforeend', typeMarkup);
+
+                        printingMarkup += `</div></div>`;
+                        configSlot.insertAdjacentHTML('beforeend', printingMarkup);
                     }
 
-                    if (opts.customMessage) {
-                        configSlot.insertAdjacentHTML('beforeend', `
-                            <div class="config-container-node" style="margin-top: 16px;">
-                                <h3 class="config-group-title">اكتب عبارة قصيرة على الكيك (اختياري):</h3>
-                                <input type="text" id="bose-custom-text-msg" class="config-text-input" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="40">
-                            </div>
-                        `);
+                    if (activelyLoadedProductRef.options) {
+                        const opts = activelyLoadedProductRef.options;
+                        if (opts.cakeTypes) {
+                            let typeMarkup = `
+                                <div class="config-container-node" style="margin-top: 16px;">
+                                    <h3 class="config-group-title">اختر نوع ونكهة الكيك الأساسية:</h3>
+                                    <div class="config-options-flex">
+                            `;
+                            opts.cakeTypes.forEach((t, i) => {
+                                typeMarkup += `
+                                    <div>
+                                        <input type="radio" name="bose-minicake-type" id="minicake-type-${i}" class="config-radio-input" value="${t}" ${i === 0 ? 'checked' : ''}>
+                                        <label for="minicake-type-${i}" class="config-radio-label">${t}</label>
+                                    </div>
+                                `;
+                            });
+                            typeMarkup += `</div></div>`;
+                            configSlot.insertAdjacentHTML('beforeend', typeMarkup);
+                        }
+
+                        if (opts.customMessage) {
+                            configSlot.insertAdjacentHTML('beforeend', `
+                                <div class="config-container-node" style="margin-top: 16px;">
+                                    <h3 class="config-group-title">اكتب عبارة قصيرة على الكيك (اختياري):</h3>
+                                    <input type="text" id="bose-custom-text-msg" class="config-text-input" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="40">
+                                </div>
+                            `);
+                        }
+
+                        if (opts.allergyNote) {
+                            configSlot.insertAdjacentHTML('beforeend', `
+                                <div class="config-container-node" style="margin-top: 16px;">
+                                    <h3 class="config-group-title">ملاحظات الحساسية الغذائية لسلامتك (اختياري):</h3>
+                                    <input type="text" id="bose-allergy-text-note" class="config-text-input" placeholder="مثال: يرجى إلغاء المكسرات تماماً لحساسية طفلي" maxlength="100">
+                                </div>
+                            `);
+                        }
                     }
 
-                    if (opts.allergyNote) {
-                        configSlot.insertAdjacentHTML('beforeend', `
-                            <div class="config-container-node" style="margin-top: 16px;">
-                                <h3 class="config-group-title">ملاحظات الحساسية الغذائية لسلامتك (اختياري):</h3>
-                                <input type="text" id="bose-allergy-text-note" class="config-text-input" placeholder="مثال: يرجى إلغاء المكسرات تماماً لحساسية طفلي" maxlength="100">
-                            </div>
-                        `);
-                    }
-                }
-
-                configSlot.querySelectorAll('.config-radio-input').forEach(input => {
-                    input.addEventListener('change', () => {
-                        updateDynamicPriceDisplayMatrix();
+                    configSlot.querySelectorAll('.config-radio-input').forEach(input => {
+                        input.addEventListener('change', () => {
+                            updateDynamicPriceDisplayMatrix();
+                        });
                     });
-                });
+                } catch(e) { 
+                    console.error("Customizer Creation Exception:", e); 
+                }
             }
 
             function updateDynamicPriceDisplayMatrix() {
-                if (!activelyLoadedProductRef) return;
-                
-                let baseCalculatedUnitCost = activelyLoadedProductRef.price;
+                try {
+                    if (!activelyLoadedProductRef) return;
+                    
+                    let baseCalculatedUnitCost = activelyLoadedProductRef.price;
 
-                const selectedSizeElement = document.querySelector('input[name="bose-product-size-variant"]:checked');
-                if (selectedSizeElement) {
-                    baseCalculatedUnitCost = parseFloat(selectedSizeElement.getAttribute('data-price'));
+                    const selectedSizeElement = document.querySelector('input[name="bose-product-size-variant"]:checked');
+                    if (selectedSizeElement) {
+                        baseCalculatedUnitCost = parseFloat(selectedSizeElement.getAttribute('data-price'));
+                    }
+
+                    const selectedPrintElement = document.querySelector('input[name="bose-cupcake-printing"]:checked');
+                    if (selectedPrintElement) {
+                        baseCalculatedUnitCost += parseFloat(selectedPrintElement.getAttribute('data-cost'));
+                    }
+
+                    let finalizedPriceResult = window.calculateBosePrice ? window.calculateBosePrice(baseCalculatedUnitCost, "product-only") : baseCalculatedUnitCost;
+                    
+                    const qtyInput = document.getElementById('stepper-numeric-input');
+                    const stepperQty = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
+                    const grandTotalAggregate = finalizedPriceResult * stepperQty;
+
+                    const priceDisplay = document.getElementById('dynamic-calculated-price-display');
+                    if (priceDisplay) {
+                        priceDisplay.textContent = `${grandTotalAggregate} جنيه`;
+                        priceDisplay.setAttribute('data-final-unit-cost', finalizedPriceResult);
+                    }
+                } catch (e) { 
+                    console.warn("Pricing Calculation Exception Handled:", e); 
                 }
-
-                const selectedPrintElement = document.querySelector('input[name="bose-cupcake-printing"]:checked');
-                if (selectedPrintElement) {
-                    baseCalculatedUnitCost += parseFloat(selectedPrintElement.getAttribute('data-cost'));
-                }
-
-                let finalizedPriceResult = window.calculateBosePrice ? window.calculateBosePrice(baseCalculatedUnitCost, "product-only") : baseCalculatedUnitCost;
-                
-                const stepperQty = parseInt(document.getElementById('stepper-numeric-input').value) || 1;
-                const grandTotalAggregate = finalizedPriceResult * stepperQty;
-
-                document.getElementById('dynamic-calculated-price-display').textContent = `${grandTotalAggregate} جنيه`;
-                document.getElementById('dynamic-calculated-price-display').setAttribute('data-final-unit-cost', finalizedPriceResult);
             }
 
             function bindCoreOperationalEventListeners() {
-                const qtyInput = document.getElementById('stepper-numeric-input');
-                const btnDec = document.getElementById('stepper-decrement-trigger');
-                const btnInc = document.getElementById('stepper-increment-trigger');
+                try {
+                    const qtyInput = document.getElementById('stepper-numeric-input');
+                    const btnDec = document.getElementById('stepper-decrement-trigger');
+                    const btnInc = document.getElementById('stepper-increment-trigger');
 
-                if (btnDec && btnInc && qtyInput) {
-                    btnDec.onclick = () => {
-                        let currentVal = parseInt(qtyInput.value) || 1;
-                        if (currentVal > 1) {
-                            qtyInput.value = currentVal - 1;
-                            updateDynamicPriceDisplayMatrix();
-                        }
-                    };
-                    btnInc.onclick = () => {
-                        let currentVal = parseInt(qtyInput.value) || 1;
-                        qtyInput.value = currentVal + 1;
-                        updateDynamicPriceDisplayMatrix();
-                    };
-                }
-
-                const addToCartBtn = document.getElementById('add-to-cart-main-action-trigger');
-                if (addToCartBtn && !activelyLoadedProductRef.customBuilderUrl) {
-                    addToCartBtn.onclick = () => {
-                        executeFulfillmentAddToCartPipeline();
-                    };
-                }
-
-                const stars = document.querySelectorAll('#form-interactive-stars-row .rating-star-node');
-                stars.forEach(star => {
-                    star.onclick = function() {
-                        const idx = parseInt(this.getAttribute('data-star-index'));
-                        selectedRatingValue = idx;
-                        stars.forEach((s, i) => {
-                            if (i < idx) {
-                                s.classList.add('selected');
-                            } else {
-                                s.classList.remove('selected');
+                    if (btnDec && btnInc && qtyInput) {
+                        btnDec.onclick = () => {
+                            let currentVal = parseInt(qtyInput.value) || 1;
+                            if (currentVal > 1) {
+                                qtyInput.value = currentVal - 1;
+                                updateDynamicPriceDisplayMatrix();
                             }
-                        });
-                    };
-                });
+                        };
+                        btnInc.onclick = () => {
+                            let currentVal = parseInt(qtyInput.value) || 1;
+                            qtyInput.value = currentVal + 1;
+                            updateDynamicPriceDisplayMatrix();
+                        };
+                    }
 
-                const fileInput = document.getElementById('experience-photo-attachment');
-                const imgPreview = document.getElementById('form-attached-image-preview');
-                if (fileInput && imgPreview) {
-                    fileInput.onchange = function() {
-                        const fileNode = this.files[0];
-                        if (fileNode) {
-                            const readerInstance = new FileReader();
-                            readerInstance.onload = function(e) {
-                                imgPreview.src = e.target.result;
-                                imgPreview.style.display = "block";
-                            };
-                            readerInstance.readAsDataURL(fileNode);
-                        }
-                    };
-                }
+                    const addToCartBtn = document.getElementById('add-to-cart-main-action-trigger');
+                    if (addToCartBtn && activelyLoadedProductRef && !activelyLoadedProductRef.customBuilderUrl) {
+                        addToCartBtn.onclick = () => {
+                            executeFulfillmentAddToCartPipeline();
+                        };
+                    }
 
-                const reviewForm = document.getElementById('experience-capture-form');
-                if (reviewForm) {
-                    reviewForm.onsubmit = function(e) {
-                        e.preventDefault();
-                        executeReviewSubmissionPipeline();
-                    };
+                    const stars = document.querySelectorAll('#form-interactive-stars-row .rating-star-node');
+                    stars.forEach(star => {
+                        star.onclick = function() {
+                            const idx = parseInt(this.getAttribute('data-star-index'));
+                            selectedRatingValue = idx;
+                            stars.forEach((s, i) => {
+                                if (i < idx) {
+                                    s.classList.add('selected');
+                                } else {
+                                    s.classList.remove('selected');
+                                }
+                            });
+                        };
+                    });
+
+                    const fileInput = document.getElementById('experience-photo-attachment');
+                    const imgPreview = document.getElementById('form-attached-image-preview');
+                    if (fileInput && imgPreview) {
+                        fileInput.onchange = function() {
+                            const fileNode = this.files[0];
+                            if (fileNode) {
+                                const readerInstance = new FileReader();
+                                readerInstance.onload = function(e) {
+                                    imgPreview.src = e.target.result;
+                                    imgPreview.style.display = "block";
+                                };
+                                readerInstance.readAsDataURL(fileNode);
+                            }
+                        };
+                    }
+
+                    const reviewForm = document.getElementById('experience-capture-form');
+                    if (reviewForm) {
+                        reviewForm.onsubmit = function(e) {
+                            e.preventDefault();
+                            executeReviewSubmissionPipeline();
+                        };
+                    }
+                } catch(e) { 
+                    console.error("Operational Bind Event Exception:", e); 
                 }
             }
 
             function executeFulfillmentAddToCartPipeline() {
-                const qty = parseInt(document.getElementById('stepper-numeric-input').value) || 1;
-                const finalCalculatedUnitCost = parseFloat(document.getElementById('dynamic-calculated-price-display').getAttribute('data-final-unit-cost'));
-                
-                let flavorDetailsText = activelyLoadedProductRef.flavorName || "";
-                let customConfigObject = {};
+                try {
+                    if (!activelyLoadedProductRef) return;
 
-                const sizeOpt = document.querySelector('input[name="bose-product-size-variant"]:checked');
-                if (sizeOpt) {
-                    let sizeKey = sizeOpt.value;
-                    let sizeLabel = sizeKey === "triangle" ? "مثلث" : sizeKey === "medium" ? "وسط" : sizeKey === "large" ? "كبير" : sizeKey === "two-person" ? "فردين" : sizeKey === "four-person" ? "٤ أفراد" : "٦ أفراد";
-                    flavorDetailsText += ` (${sizeLabel})`;
-                    customConfigObject.size = sizeKey;
-                }
+                    const qtyInput = document.getElementById('stepper-numeric-input');
+                    const qty = qtyInput ? (parseInt(qtyInput.value) || 1) : 1;
+                    
+                    const priceDisplay = document.getElementById('dynamic-calculated-price-display');
+                    const finalCalculatedUnitCost = priceDisplay ? parseFloat(priceDisplay.getAttribute('data-final-unit-cost')) : activelyLoadedProductRef.price;
+                    
+                    let flavorDetailsText = activelyLoadedProductRef.flavorName || "";
+                    let customConfigObject = {};
 
-                const printOpt = document.querySelector('input[name="bose-cupcake-printing"]:checked');
-                if (printOpt && printOpt.value !== "none") {
-                    let printLabel = printOpt.value === "edible" ? "صور قابلة للأكل للدستة" : "صور غير قابلة للأكل للدستة";
-                    flavorDetailsText += ` - مع ${printLabel}`;
-                    customConfigObject.printingType = printOpt.value;
-                }
+                    const sizeOpt = document.querySelector('input[name="bose-product-size-variant"]:checked');
+                    if (sizeOpt) {
+                        let sizeKey = sizeOpt.value;
+                        let sizeLabel = sizeKey === "triangle" ? "مثلث" : sizeKey === "medium" ? "وسط" : sizeKey === "large" ? "كبير" : sizeKey === "two-person" ? "فردين" : sizeKey === "four-person" ? "٤ أفراد" : "٦ أفراد";
+                        flavorDetailsText += ` (${sizeLabel})`;
+                        customConfigObject.size = sizeKey;
+                    }
 
-                const cakeTypeOpt = document.querySelector('input[name="bose-minicake-type"]:checked');
-                if (cakeTypeOpt) {
-                    customConfigObject.cakeType = cakeTypeOpt.value;
-                }
-                const textMsgInput = document.getElementById('bose-custom-text-msg');
-                if (textMsgInput && textMsgInput.value.trim() !== "") {
-                    customConfigObject.customMessage = textMsgInput.value.trim();
-                }
-                const allergyInput = document.getElementById('bose-allergy-text-note');
-                if (allergyInput && allergyInput.value.trim() !== "") {
-                    customConfigObject.allergyNote = allergyInput.value.trim();
-                }
+                    const printOpt = document.querySelector('input[name="bose-cupcake-printing"]:checked');
+                    if (printOpt && printOpt.value !== "none") {
+                        let printLabel = printOpt.value === "edible" ? "صور قابلة للأكل للدستة" : "صور غير قابلة للأكل للدستة";
+                        flavorDetailsText += ` - مع ${printLabel}`;
+                        customConfigObject.printingType = printOpt.value;
+                    }
 
-                if (window.addBoseItemToCart) {
-                    window.addBoseItemToCart(activelyLoadedProductRef, qty, customConfigObject, finalCalculatedUnitCost);
-                } else if (window.addBoseCartItem) {
-                    window.addBoseCartItem({
-                        id: activelyLoadedProductRef.id,
-                        productSlug: activelyLoadedProductRef.slug,
-                        title: activelyLoadedProductRef.title,
-                        flavorName: flavorDetailsText,
-                        price: finalCalculatedUnitCost,
-                        quantity: qty,
-                        image: activelyLoadedProductRef.images[0] || "",
-                        type: "standard",
-                        customDetails: customConfigObject
-                    });
-                } else {
-                    const serializedCartStateRaw = localStorage.getItem('bose_cart');
-                    let cartArray = serializedCartStateRaw ? JSON.parse(serializedCartStateRaw) : [];
+                    const cakeTypeOpt = document.querySelector('input[name="bose-minicake-type"]:checked');
+                    if (cakeTypeOpt) {
+                        customConfigObject.cakeType = cakeTypeOpt.value;
+                    }
+                    
+                    const textMsgInput = document.getElementById('bose-custom-text-msg');
+                    if (textMsgInput && textMsgInput.value.trim() !== "") {
+                        customConfigObject.customMessage = textMsgInput.value.trim();
+                    }
+                    
+                    const allergyInput = document.getElementById('bose-allergy-text-note');
+                    if (allergyInput && allergyInput.value.trim() !== "") {
+                        customConfigObject.allergyNote = allergyInput.value.trim();
+                    }
+
+                    let cartArray = [];
+                    try {
+                        const serializedCartStateRaw = localStorage.getItem('bose_cart');
+                        cartArray = serializedCartStateRaw ? JSON.parse(serializedCartStateRaw) : [];
+                    } catch (e) {
+                        console.warn("Failed to parse cart localStorage state, resetting...", e);
+                        cartArray = [];
+                    }
+                    
                     const itemEntryPayload = {
-                        id: activelyLoadedProductRef.id,
+                        id: `${activelyLoadedProductRef.slug}-${Date.now()}`,
                         productSlug: activelyLoadedProductRef.slug,
                         title: activelyLoadedProductRef.title,
                         flavorName: flavorDetailsText,
                         price: finalCalculatedUnitCost,
                         quantity: qty,
-                        image: activelyLoadedProductRef.images[0] || "",
+                        image: activelyLoadedProductRef.images[0] || "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png",
                         type: "standard",
                         customDetails: customConfigObject
                     };
+
                     const matchedExistingIndex = cartArray.findIndex(item => 
                         item.productSlug === itemEntryPayload.productSlug && 
                         item.flavorName === itemEntryPayload.flavorName &&
                         JSON.stringify(item.customDetails) === JSON.stringify(itemEntryPayload.customDetails)
                     );
+
                     if (matchedExistingIndex > -1) {
                         cartArray[matchedExistingIndex].quantity += qty;
                     } else {
                         cartArray.push(itemEntryPayload);
                     }
+
                     localStorage.setItem('bose_cart', JSON.stringify(cartArray));
-                    if (window.updateGlobalCartCounter) window.updateGlobalCartCounter();
-                    alert(`تمت إضافة ${qty} قطعة من ${activelyLoadedProductRef.title} إلى السلة بنجاح!`);
+                    
+                    if (window.updateGlobalCartCounter) {
+                        window.updateGlobalCartCounter();
+                    }
+                    
+                    showBoseToast(`تمت إضافة ${qty} قطعة من ${activelyLoadedProductRef.title} إلى سلة مشترياتك بنجاح! 🌸`);
+                } catch(e) { 
+                    console.error("Cart Pipeline Exception:", e); 
                 }
             }
 
-function executeReviewSubmissionPipeline() {
-                const uName = document.getElementById('experience-user-name').value.trim();
-                const uCity = document.getElementById('experience-user-city').value.trim();
-                const uComment = document.getElementById('experience-user-comment').value.trim();
-                const previewImg = document.getElementById('form-attached-image-preview');
+            function executeReviewSubmissionPipeline() {
+                try {
+                    if (!activelyLoadedProductRef) return;
 
-                let imgSrcString = "";
-                if (previewImg.style.display === "block") {
-                    imgSrcString = previewImg.src;
-                }
+                    const nameInput = document.getElementById('experience-user-name');
+                    const cityInput = document.getElementById('experience-user-city');
+                    const commentInput = document.getElementById('experience-user-comment');
 
-                const payload = {
-                    name: uName,
-                    city: uCity,
-                    stars: selectedRatingValue,
-                    comment: uComment,
-                    image: imgSrcString,
-                    timestamp: Date.now()
-                };
+                    const uName = nameInput ? nameInput.value.trim() : "";
+                    const uCity = cityInput ? cityInput.value.trim() : "";
+                    const uComment = commentInput ? commentInput.value.trim() : "";
+                    
+                    const previewImg = document.getElementById('form-attached-image-preview');
 
-                const key = `bose_reviews_${activelyLoadedProductRef.slug}`;
-                const raw = localStorage.getItem(key);
-                let currentReviews = raw ? JSON.parse(raw) : [];
-                currentReviews.unshift(payload);
-                localStorage.setItem(key, JSON.stringify(currentReviews));
+                    let imgSrcString = "";
+                    if (previewImg && previewImg.style.display === "block") {
+                        imgSrcString = previewImg.src;
+                    }
 
-                document.getElementById('experience-capture-form').reset();
-                previewImg.style.display = "none";
-                previewImg.src = "#";
-                selectedRatingValue = 5;
-                
-                const stars = document.querySelectorAll('#form-interactive-stars-row .rating-star-node');
-                stars.forEach(s => s.classList.add('selected'));
-                
-                renderExperiencesListStream();
-                
-                if (window.showBoseAlert) {
-                    window.showBoseAlert("شكراً لك على مشاركة تجربتك الصادقة! تم نشر مراجعتك فوراً. 🌸");
-                } else {
-                    alert("شكراً لك على مشاركة تجربتك الصادقة! تم نشر مراجعتك فوراً.");
+                    const payload = {
+                        name: uName,
+                        city: uCity,
+                        stars: selectedRatingValue,
+                        comment: uComment,
+                        image: imgSrcString,
+                        timestamp: Date.now()
+                    };
+
+                    const key = `bose_reviews_${activelyLoadedProductRef.slug}`;
+                    let currentReviews = [];
+                    try {
+                        const raw = localStorage.getItem(key);
+                        currentReviews = raw ? JSON.parse(raw) : [];
+                    } catch (e) {
+                        currentReviews = [];
+                    }
+                    
+                    currentReviews.unshift(payload);
+                    localStorage.setItem(key, JSON.stringify(currentReviews));
+
+                    const form = document.getElementById('experience-capture-form');
+                    if (form) form.reset();
+                    
+                    if (previewImg) {
+                        previewImg.style.display = "none";
+                        previewImg.src = "#";
+                    }
+                    
+                    selectedRatingValue = 5;
+                    
+                    const stars = document.querySelectorAll('#form-interactive-stars-row .rating-star-node');
+                    stars.forEach(s => s.classList.add('selected'));
+                    
+                    renderExperiencesListStream();
+                    
+                    showBoseToast("تم نشر مراجعتك وتجربتك الفاخرة فوراً بالأسفل. شكراً لك! ✨");
+                } catch(e) { 
+                    console.error("Review Submission Pipeline Exception:", e); 
                 }
             }
 
@@ -1287,86 +1413,99 @@ function executeReviewSubmissionPipeline() {
             }
 
             function renderExperiencesListStream() {
-                const streamContainer = document.getElementById('rendered-experiences-target-stream');
-                if (!streamContainer) return;
+                try {
+                    const streamContainer = document.getElementById('rendered-experiences-target-stream');
+                    if (!streamContainer || !activelyLoadedProductRef) return;
 
-                const key = `bose_reviews_${activelyLoadedProductRef.slug}`;
-                const raw = localStorage.getItem(key);
-                let currentReviews = raw ? JSON.parse(raw) : [];
-
-                if (currentReviews.length === 0) {
-                    streamContainer.innerHTML = `
-                        <div style="text-align: center; padding: 24px; color: var(--bose-black); opacity: 0.6; font-size: 14px;">
-                            لم يتم كتابة أي مراجعات لهذا المنتج بعد. كن أول من يشاركنا تجربته الفخمة الموثوقة!
-                        </div>
-                    `;
-                    return;
-                }
-
-                let streamHtml = "";
-                currentReviews.forEach(rev => {
-                    let starsMarkup = "";
-                    for (let i = 1; i <= 5; i++) {
-                        starsMarkup += `<i class="${i <= rev.stars ? 'fa-solid' : 'fa-regular'} fa-star"></i>`;
+                    const key = `bose_reviews_${activelyLoadedProductRef.slug}`;
+                    let currentReviews = [];
+                    try {
+                        const raw = localStorage.getItem(key);
+                        currentReviews = raw ? JSON.parse(raw) : [];
+                    } catch (e) {
+                        currentReviews = [];
                     }
 
-                    let attachedPhotoMarkup = rev.image ? `<img src="${rev.image}" alt="صورة العميل المرفقة" class="experience-attached-photo">` : "";
-
-                    streamHtml += `
-                        <div class="experience-card-item">
-                            <div class="experience-card-header">
-                                <span class="experience-user-identity">${rev.name} - <small style="font-weight:400; opacity:0.8;">${rev.city}</small></span>
-                                <div class="experience-stars-row">${starsMarkup}</div>
+                    if (currentReviews.length === 0) {
+                        streamContainer.innerHTML = `
+                            <div style="text-align: center; padding: 24px; color: var(--bose-black); opacity: 0.6; font-size: 14px;">
+                                لم يتم كتابة أي مراجعات لهذا المنتج بعد. شاركنا تجربتك الحقيقية وكن أول من ينير هذه المساحة!
                             </div>
-                            <p class="experience-text-content">${rev.comment}</p>
-                            ${attachedPhotoMarkup}
-                        </div>
-                    `;
-                });
+                        `;
+                        return;
+                    }
 
-                streamContainer.innerHTML = streamHtml;
+                    let streamHtml = "";
+                    currentReviews.forEach(rev => {
+                        let starsMarkup = "";
+                        for (let i = 1; i <= 5; i++) {
+                            starsMarkup += `<i class="${i <= rev.stars ? 'fa-solid' : 'fa-regular'} fa-star"></i>`;
+                        }
+
+                        let attachedPhotoMarkup = rev.image ? `<img src="${rev.image}" alt="صورة العميل المرفقة" class="experience-attached-photo">` : "";
+
+                        streamHtml += `
+                            <div class="experience-card-item">
+                                <div class="experience-card-header">
+                                    <span class="experience-user-identity">${rev.name} - <small style="font-weight:400; opacity:0.8;">${rev.city}</small></span>
+                                    <div class="experience-stars-row">${starsMarkup}</div>
+                                </div>
+                                <p class="experience-text-content">${rev.comment}</p>
+                                ${attachedPhotoMarkup}
+                            </div>
+                        `;
+                    });
+
+                    streamContainer.innerHTML = streamHtml;
+                } catch(e) { 
+                    console.error("Experiences Rendering Exception Handled:", e); 
+                }
             }
 
             function executeBehavioralRecommenderEngine() {
-                const track = document.getElementById('recommended-products-cards-track');
-                if (!track) return;
+                try {
+                    const track = document.getElementById('recommended-products-cards-track');
+                    if (!track || !activelyLoadedProductRef) return;
 
-                const allProducts = window.BoseStoreData.products || [];
-                let filteredList = allProducts.filter(item => item.slug !== activelyLoadedProductRef.slug);
-                
-                filteredList.sort((a, b) => {
-                    if (a.category === activelyLoadedProductRef.category) return -1;
-                    if (b.category === activelyLoadedProductRef.category) return 1;
-                    return 0;
-                });
+                    const allProducts = window.BoseStoreData.products || [];
+                    let filteredList = allProducts.filter(item => activelyLoadedProductRef && item.slug !== activelyLoadedProductRef.slug);
+                    
+                    filteredList.sort((a, b) => {
+                        if (activelyLoadedProductRef && a.category === activelyLoadedProductRef.category) return -1;
+                        if (activelyLoadedProductRef && b.category === activelyLoadedProductRef.category) return 1;
+                        return 0;
+                    });
 
-                let chosenSelection = filteredList.slice(0, 4);
-                let trackHtml = "";
-                chosenSelection.forEach(prod => {
-                    let baseItemPrice = prod.price;
-                    let calculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(baseItemPrice, "menu-only") : baseItemPrice;
+                    let chosenSelection = filteredList.slice(0, 4);
+                    let trackHtml = "";
+                    chosenSelection.forEach(prod => {
+                        let baseItemPrice = prod.price;
+                        let calculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(baseItemPrice, "menu-only") : baseItemPrice;
 
-                    trackHtml += `
-                        <div class="unified-product-card">
-                            <div class="card-visual-node" style="cursor:pointer;" onclick="window.location.href='product.html?slug=${prod.slug}'">
-                                <img src="${prod.images[0] || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="${prod.title}" class="card-img-element">
+                        trackHtml += `
+                            <div class="unified-product-card">
+                                <div class="card-visual-node" style="cursor:pointer;" onclick="window.location.href='product.html?slug=${prod.slug}'">
+                                    <img src="${prod.images[0] || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="${prod.title}" class="card-img-element">
+                                </div>
+                                <h3 class="card-item-title" style="cursor:pointer;" onclick="window.location.href='product.html?slug=${prod.slug}'">${prod.title}</h3>
+                                <p class="card-flavor-badge">${prod.flavorName || ""}</p>
+                                <p class="card-description-node">${prod.flavorDesc || ""}</p>
+                                <div class="card-action-footer-row">
+                                    <span class="card-price-value">${calculatedPrice} جنيه</span>
+                                    <button type="button" class="card-add-to-cart-trigger" onclick="window.location.href='product.html?slug=${prod.slug}'" aria-label="استعراض التفاصيل والتخصيص">
+                                        <i class="fa-solid fa-ellipsis"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <h3 class="card-item-title" style="cursor:pointer;" onclick="window.location.href='product.html?slug=${prod.slug}'">${prod.title}</h3>
-                            <p class="card-flavor-badge">${prod.flavorName || ""}</p>
-                            <p class="card-description-node">${prod.flavorDesc || ""}</p>
-                            <div class="card-action-footer-row">
-                                <span class="card-price-value">${calculatedPrice} جنيه</span>
-                                <button type="button" class="card-add-to-cart-trigger" onclick="window.location.href='product.html?slug=${prod.slug}'" aria-label="استعراض التفاصيل والتخصيص">
-                                    <i class="fa-solid fa-ellipsis"></i>
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
+                        `;
+                    });
 
-                track.innerHTML = trackHtml;
+                    track.innerHTML = trackHtml;
+                } catch(e) { 
+                    console.error("Recommender Engine Exception Handled:", e); 
+                }
             }
         });
     </script>
-    </body>
+</body>
 </html>
