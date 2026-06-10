@@ -29,7 +29,6 @@
             overflow-x: hidden;
         }
 
-        /* Fixed Universal Top Bar Messaging */
         .bose-top-bar {
             background-color: var(--bose-black);
             color: var(--bose-white);
@@ -52,7 +51,6 @@
             100% { transform: translate3d(100%, 0, 0); }
         }
 
-        /* Fixed Universal Header Formatting */
         .bose-navbar {
             position: sticky;
             top: 0;
@@ -119,7 +117,6 @@
             padding: 2px;
         }
 
-        /* Full Layout Full-Card Core Container Styles */
         .product-master-container {
             max-width: 900px;
             margin: 40px auto;
@@ -178,7 +175,6 @@
             margin: 0;
         }
         
-        /* Interactive Product Content Customizer Layout */
         .product-configuration-panel {
             border-top: var(--bose-border-pink);
             padding-top: 24px;
@@ -235,7 +231,6 @@
             border-color: var(--bose-pink);
         }
 
-        /* Purchase Action Interface Execution */
         .purchase-control-row {
             display: flex;
             justify-content: space-between;
@@ -333,7 +328,6 @@
             opacity: 0.9;
         }
 
-        /* Unified Real-time Experiences Upload Component (User Reviews) */
         .experiences-feedback-system {
             margin-top: 48px;
             border-top: 1px solid rgba(17, 11, 17, 0.1);
@@ -477,7 +471,6 @@
             border: 1px solid rgba(255, 145, 164, 0.2);
         }
 
-        /* Behavioral Intelligence Recommended Items Slider (You May Also Like) */
         .recommender-system-block {
             margin-top: 56px;
             border-top: 1px solid rgba(17, 11, 17, 0.1);
@@ -504,7 +497,6 @@
             padding-bottom: 10px;
         }
         
-        /* Shared Unified Card Design Implementation */
         .unified-product-card {
             background-color: var(--bose-white);
             border: var(--bose-border-pink);
@@ -589,7 +581,6 @@
             background-color: var(--bose-black);
         }
 
-        /* Fixed Universal Footer Structure Styling */
         .bose-footer {
             background-color: #fafafa;
             border-top: var(--bose-border-pink);
@@ -688,7 +679,6 @@
             margin: 0;
         }
 
-        /* Mobile First Adaptive Media Queries Rules */
         @media (max-width: 768px) {
             .product-main-title { font-size: 26px; }
             .product-full-card { padding: 20px; }
@@ -713,8 +703,7 @@
 <body>
 
     <div class="bose-top-bar" id="global-top-bar-marquee">
-        <div class="top-bar-track" id="top-bar-messages-container">
-            </div>
+        <div class="top-bar-track" id="top-bar-messages-container"></div>
     </div>
 
     <header class="bose-navbar">
@@ -753,8 +742,7 @@
                 </p>
             </section>
 
-            <section class="product-configuration-panel" id="product-interactive-customizer-slot">
-                </section>
+            <section class="product-configuration-panel" id="product-interactive-customizer-slot"></section>
 
             <footer class="purchase-control-row" id="product-fulfillment-action-row">
                 <div class="price-display-wrapper">
@@ -815,15 +803,13 @@
                 <button type="submit" class="submit-feedback-action-btn">مشاركة تجربتي بكل صدق</button>
             </form>
 
-            <div class="dynamic-experiences-stream" id="rendered-experiences-target-stream">
-                </div>
+            <div class="dynamic-experiences-stream" id="rendered-experiences-target-stream"></div>
         </section>
 
         <section class="recommender-system-block">
             <h2 class="recommender-track-title">وقد يعجبك أيضاً هذه التشكيلة الفاخرة 🌸</h2>
             <div class="recommender-slider-outer">
-                <div class="recommender-cards-wrapper" id="recommended-products-cards-track">
-                    </div>
+                <div class="recommender-cards-wrapper" id="recommended-products-cards-track"></div>
             </div>
         </section>
     </main>
@@ -872,26 +858,25 @@
         document.addEventListener("DOMContentLoaded", () => {
             let selectedRatingValue = 5;
             let activelyLoadedProductRef = null;
-            let customFieldsCurrentCalculatedCost = 0;
 
-            // Engine Verification Guard
-            if (window.BoseStoreData) {
+            if (window.BoseStoreData && window.BoseStoreData.store) {
                 initializeProductFormController();
             } else {
+                window.addEventListener('bose_data_ready', () => {
+                    initializeProductFormController();
+                });
                 const checkGlobalStateInterval = setInterval(() => {
-                    if (window.BoseStoreData) {
+                    if (window.BoseStoreData && window.BoseStoreData.store) {
                         clearInterval(checkGlobalStateInterval);
                         initializeProductFormController();
                     }
-                }, 50);
+                }, 5);
             }
 
             function initializeProductFormController() {
-                // Parse targeted slug values safely from routing search parameters
                 const routingParams = new URLSearchParams(window.location.search);
                 let requestedProductSlug = routingParams.get('slug') || "toort-custom-master";
                 
-                // Content distribution filtering enforcement for full card layout items only
                 const verifiedFullCardScopeSlugs = [
                     "toort-custom-master", "gateaux-royal", "gateaux-classic", "gateaux-soiree",
                     "flowers-master", "cupcake-mix-new", "cupcake-chocolate", "cupcake-vanilla",
@@ -899,15 +884,21 @@
                 ];
 
                 if (!verifiedFullCardScopeSlugs.includes(requestedProductSlug)) {
-                    requestedProductSlug = "toort-custom-master";
+                    const dbProductsCollection = window.BoseStoreData.products || [];
+                    const foundBySlug = dbProductsCollection.find(item => item.slug === requestedProductSlug || item.id === requestedProductSlug);
+                    if (!foundBySlug) {
+                        requestedProductSlug = "toort-custom-master";
+                    } else {
+                        activelyLoadedProductRef = foundBySlug;
+                    }
                 }
 
-                // Query database context objects directly
-                const dbProductsCollection = window.BoseStoreData.products || [];
-                activelyLoadedProductRef = dbProductsCollection.find(item => item.slug === requestedProductSlug);
+                if (!activelyLoadedProductRef) {
+                    const dbProductsCollection = window.BoseStoreData.products || [];
+                    activelyLoadedProductRef = dbProductsCollection.find(item => item.slug === requestedProductSlug || item.id === requestedProductSlug);
+                }
 
                 if (!activelyLoadedProductRef) {
-                    console.error("Requested product layout entity missing from central repository database context mapping rules.");
                     return;
                 }
 
@@ -940,7 +931,6 @@
                 
                 updateDynamicPriceDisplayMatrix();
                 
-                // Inject structural links into the universally mapped social footers safely
                 const socialContext = window.BoseStoreData.social || {};
                 const footerIcons = document.getElementById('footer-social-links');
                 if (footerIcons) {
@@ -955,9 +945,7 @@
                 const configSlot = document.getElementById('product-interactive-customizer-slot');
                 if (!configSlot) return;
                 configSlot.innerHTML = "";
-                customFieldsCurrentCalculatedCost = 0;
 
-                // Scenario Mapping Rules: Simulators Direct Redirection
                 if (activelyLoadedProductRef.customBuilderUrl) {
                     document.getElementById('stepper-interface-wrapper').style.display = "none";
                     const btnCta = document.getElementById('add-to-cart-main-action-trigger');
@@ -971,7 +959,6 @@
                     return;
                 }
 
-                // Scenario Mapping Rules: Dynamic Sizing Layout Rendering
                 if (activelyLoadedProductRef.prices) {
                     let sizeMarkup = `
                         <div class="config-container-node">
@@ -995,7 +982,6 @@
                     configSlot.insertAdjacentHTML('beforeend', sizeMarkup);
                 }
 
-                // Scenario Mapping Rules: Cupcakes Photo Printing Options Layout Construction
                 if (activelyLoadedProductRef.printingOptions) {
                     let printingMarkup = `
                         <div class="config-container-node" style="margin-top: 16px;">
@@ -1020,7 +1006,6 @@
                     configSlot.insertAdjacentHTML('beforeend', printingMarkup);
                 }
 
-                // Scenario Mapping Rules: Mini Cakes Specialized Functional Inputs
                 if (activelyLoadedProductRef.options) {
                     const opts = activelyLoadedProductRef.options;
                     if (opts.cakeTypes) {
@@ -1060,7 +1045,6 @@
                     }
                 }
 
-                // Attach dynamically allocated runtime variation listeners to refresh calculation values
                 configSlot.querySelectorAll('.config-radio-input').forEach(input => {
                     input.addEventListener('change', () => {
                         updateDynamicPriceDisplayMatrix();
@@ -1073,19 +1057,16 @@
                 
                 let baseCalculatedUnitCost = activelyLoadedProductRef.price;
 
-                // Variant pricing dynamic extraction checks
                 const selectedSizeElement = document.querySelector('input[name="bose-product-size-variant"]:checked');
                 if (selectedSizeElement) {
                     baseCalculatedUnitCost = parseFloat(selectedSizeElement.getAttribute('data-price'));
                 }
 
-                // Printing option cost calculation additions
                 const selectedPrintElement = document.querySelector('input[name="bose-cupcake-printing"]:checked');
                 if (selectedPrintElement) {
                     baseCalculatedUnitCost += parseFloat(selectedPrintElement.getAttribute('data-cost'));
                 }
 
-                // Final pricing conversion through pricing equation algorithms
                 let finalizedPriceResult = window.calculateBosePrice ? window.calculateBosePrice(baseCalculatedUnitCost, "product-only") : baseCalculatedUnitCost;
                 
                 const stepperQty = parseInt(document.getElementById('stepper-numeric-input').value) || 1;
@@ -1115,7 +1096,6 @@
                     };
                 }
 
-                // Global cart dispatch interceptor
                 const addToCartBtn = document.getElementById('add-to-cart-main-action-trigger');
                 if (addToCartBtn && !activelyLoadedProductRef.customBuilderUrl) {
                     addToCartBtn.onclick = () => {
@@ -1123,7 +1103,6 @@
                     };
                 }
 
-                // Interactive review module stars execution hooks
                 const stars = document.querySelectorAll('#form-interactive-stars-row .rating-star-node');
                 stars.forEach(star => {
                     star.onclick = function() {
@@ -1139,7 +1118,6 @@
                     };
                 });
 
-                // File input file attachment changes preview generator execution
                 const fileInput = document.getElementById('experience-photo-attachment');
                 const imgPreview = document.getElementById('form-attached-image-preview');
                 if (fileInput && imgPreview) {
@@ -1156,7 +1134,6 @@
                     };
                 }
 
-                // Review submit listener
                 const reviewForm = document.getElementById('experience-capture-form');
                 if (reviewForm) {
                     reviewForm.onsubmit = function(e) {
@@ -1173,15 +1150,14 @@
                 let flavorDetailsText = activelyLoadedProductRef.flavorName || "";
                 let customConfigObject = {};
 
-                // Map Size Attributes
                 const sizeOpt = document.querySelector('input[name="bose-product-size-variant"]:checked');
                 if (sizeOpt) {
                     let sizeKey = sizeOpt.value;
                     let sizeLabel = sizeKey === "triangle" ? "مثلث" : sizeKey === "medium" ? "وسط" : sizeKey === "large" ? "كبير" : sizeKey === "two-person" ? "فردين" : sizeKey === "four-person" ? "٤ أفراد" : "٦ أفراد";
                     flavorDetailsText += ` (${sizeLabel})`;
+                    customConfigObject.size = sizeKey;
                 }
 
-                // Map Printing Attributes
                 const printOpt = document.querySelector('input[name="bose-cupcake-printing"]:checked');
                 if (printOpt && printOpt.value !== "none") {
                     let printLabel = printOpt.value === "edible" ? "صور قابلة للأكل للدستة" : "صور غير قابلة للأكل للدستة";
@@ -1189,7 +1165,6 @@
                     customConfigObject.printingType = printOpt.value;
                 }
 
-                // Map Mini Cakes Input Values
                 const cakeTypeOpt = document.querySelector('input[name="bose-minicake-type"]:checked');
                 if (cakeTypeOpt) {
                     customConfigObject.cakeType = cakeTypeOpt.value;
@@ -1203,43 +1178,48 @@
                     customConfigObject.allergyNote = allergyInput.value.trim();
                 }
 
-                // LocalStorage state management compilation rules
-                const serializedCartStateRaw = localStorage.getItem('bose_cart');
-                let cartArray = serializedCartStateRaw ? JSON.parse(serializedCartStateRaw) : [];
-
-                // Standard item compilation entry structure
-                const itemEntryPayload = {
-                    id: activelyLoadedProductRef.id,
-                    productSlug: activelyLoadedProductRef.slug,
-                    title: activelyLoadedProductRef.title,
-                    flavorName: flavorDetailsText,
-                    price: finalCalculatedUnitCost,
-                    quantity: qty,
-                    image: activelyLoadedProductRef.images[0] || "",
-                    type: "standard",
-                    customDetails: customConfigObject
-                };
-
-                // Deduplication calculation sequence rules
-                const matchedExistingIndex = cartArray.findIndex(item => 
-                    item.productSlug === itemEntryPayload.productSlug && 
-                    item.flavorName === itemEntryPayload.flavorName &&
-                    JSON.stringify(item.customDetails) === JSON.stringify(itemEntryPayload.customDetails)
-                );
-
-                if (matchedExistingIndex > -1) {
-                    cartArray[matchedExistingIndex].quantity += qty;
+                if (window.addBoseItemToCart) {
+                    window.addBoseItemToCart(activelyLoadedProductRef, qty, customConfigObject, finalCalculatedUnitCost);
+                } else if (window.addBoseCartItem) {
+                    window.addBoseCartItem({
+                        id: activelyLoadedProductRef.id,
+                        productSlug: activelyLoadedProductRef.slug,
+                        title: activelyLoadedProductRef.title,
+                        flavorName: flavorDetailsText,
+                        price: finalCalculatedUnitCost,
+                        quantity: qty,
+                        image: activelyLoadedProductRef.images[0] || "",
+                        type: "standard",
+                        customDetails: customConfigObject
+                    });
                 } else {
-                    cartArray.push(itemEntryPayload);
+                    const serializedCartStateRaw = localStorage.getItem('bose_cart');
+                    let cartArray = serializedCartStateRaw ? JSON.parse(serializedCartStateRaw) : [];
+                    const itemEntryPayload = {
+                        id: activelyLoadedProductRef.id,
+                        productSlug: activelyLoadedProductRef.slug,
+                        title: activelyLoadedProductRef.title,
+                        flavorName: flavorDetailsText,
+                        price: finalCalculatedUnitCost,
+                        quantity: qty,
+                        image: activelyLoadedProductRef.images[0] || "",
+                        type: "standard",
+                        customDetails: customConfigObject
+                    };
+                    const matchedExistingIndex = cartArray.findIndex(item => 
+                        item.productSlug === itemEntryPayload.productSlug && 
+                        item.flavorName === itemEntryPayload.flavorName &&
+                        JSON.stringify(item.customDetails) === JSON.stringify(itemEntryPayload.customDetails)
+                    );
+                    if (matchedExistingIndex > -1) {
+                        cartArray[matchedExistingIndex].quantity += qty;
+                    } else {
+                        cartArray.push(itemEntryPayload);
+                    }
+                    localStorage.setItem('bose_cart', JSON.stringify(cartArray));
+                    if (window.updateGlobalCartCounter) window.updateGlobalCartCounter();
+                    alert(`تمت إضافة ${qty} قطعة من ${activelyLoadedProductRef.title} إلى السلة بنجاح!`);
                 }
-
-                localStorage.setItem('bose_cart', JSON.stringify(cartArray));
-                
-                if (window.updateGlobalCartCounter) {
-                    window.updateGlobalCartCounter();
-                }
-
-                alert(`تمت إضافة ${qty} قطعة من ${activelyLoadedProductRef.title} إلى السلة بنجاح!`);
             }
 
             function executeReviewSubmissionPipeline() {
@@ -1262,14 +1242,12 @@
                     timestamp: Date.now()
                 };
 
-                // Cache reviews persistently locally mapped per product configuration
                 const key = `bose_reviews_${activelyLoadedProductRef.slug}`;
                 const raw = localStorage.getItem(key);
                 let currentReviews = raw ? JSON.parse(raw) : [];
                 currentReviews.unshift(payload);
                 localStorage.setItem(key, JSON.stringify(currentReviews));
 
-                // Clear input elements safely
                 document.getElementById('experience-capture-form').reset();
                 previewImg.style.display = "none";
                 previewImg.src = "#";
@@ -1277,9 +1255,8 @@
                 
                 const stars = document.querySelectorAll('#form-interactive-stars-row .rating-star-node');
                 stars.forEach(s => s.classList.add('selected'));
-                                    renderExperiencesListStream();
-                    alert("شكراً لك على مشاركة تجربتك الصادقة! تم نشر مراجعتك فوراً.");
-                };
+                renderExperiencesListStream();
+                alert("شكراً لك على مشاركة تجربتك الصادقة! تم نشر مراجعتك فوراً.");
             }
 
             function executeCommunityExperienceGeneratorEngine() {
@@ -1332,20 +1309,15 @@
                 if (!track) return;
 
                 const allProducts = window.BoseStoreData.products || [];
-                
-                // تصفية المنتج الحالي لمنع تكراره في الاقتراحات
                 let filteredList = allProducts.filter(item => item.slug !== activelyLoadedProductRef.slug);
                 
-                // ترتيب المنتجات ذكياً لعرض نفس الفئة أولاً لرفع معدل التحويل
                 filteredList.sort((a, b) => {
                     if (a.category === activelyLoadedProductRef.category) return -1;
                     if (b.category === activelyLoadedProductRef.category) return 1;
                     return 0;
                 });
 
-                // عرض المنتجات في السلايدر بهيكلية الكارت الموحد
                 let chosenSelection = filteredList.slice(0, 4);
-
                 let trackHtml = "";
                 chosenSelection.forEach(prod => {
                     let baseItemPrice = prod.price;
