@@ -42,6 +42,10 @@
                 --bose-white: #FFFFFF;
                 --bose-black: #111111;
                 --bose-gold: #D4AF37;
+                --bose-shadow-glow: 0 8px 32px rgba(255, 145, 164, 0.12);
+                --bose-shadow-hover: 0 16px 40px rgba(255, 145, 164, 0.22);
+                --bose-border-pink: 1px solid rgba(255, 145, 164, 0.3);
+                --bose-border-thick: 2px solid #FF91A4;
             }
             .bose-toast-container {
                 position: fixed;
@@ -239,9 +243,9 @@
         ensureMetaTag("og:image", data.seo.ogImage, true);
         ensureMetaTag("og:url", window.location.href, true);
 
-        const logoElements = document.querySelectorAll("img#bose-store-logo");
+        const logoElements = document.querySelectorAll("img#bose-store-logo, .bose-header-logo-image, .footer-brand-logo");
         logoElements.forEach(img => {
-            if (img.src !== data.store.logo) {
+            if (img && img.src !== data.store.logo) {
                 img.src = data.store.logo;
                 img.alt = data.store.name;
                 img.loading = "lazy";
@@ -284,22 +288,23 @@
     }
 
     window.updateGlobalCartCounter = function () {
-        const cartCountBadge = document.getElementById("nav-cart-count");
-        if (!cartCountBadge) return;
+        const cartCountBadges = document.querySelectorAll("#nav-cart-count, .nav-cart-count-badge");
+        if (cartCountBadges.length === 0) return;
 
         try {
             const rawCart = localStorage.getItem(CART_STORAGE_KEY);
             const cart = rawCart ? JSON.parse(rawCart) : [];
             const totalItemsCount = cart.reduce((total, item) => total + (parseInt(item.quantity) || 0), 0);
             
-            cartCountBadge.textContent = totalItemsCount;
-            
-            if (totalItemsCount > 0) {
-                cartCountBadge.style.transform = "scale(1.25)";
-                setTimeout(() => {
-                    cartCountBadge.style.transform = "scale(1)";
-                }, 200);
-            }
+            cartCountBadges.forEach(badge => {
+                badge.textContent = totalItemsCount;
+                if (totalItemsCount > 0) {
+                    badge.style.transform = "scale(1.25)";
+                    setTimeout(() => {
+                        badge.style.transform = "scale(1)";
+                    }, 200);
+                }
+            });
         } catch (e) {
             console.error("❌ فشل تحديث عداد السلة:", e);
         }
@@ -405,7 +410,6 @@
         toast.className = "bose-toast";
         toast.setAttribute("role", "alert");
         toast.innerHTML = `
-            <i class="fas fa-magic"></i>
             <span>${escapeHTML(message)}</span>
         `;
 
@@ -427,44 +431,54 @@
     };
 
     function initializeGlobalUIEvents() {
-        const menuToggleBtn = document.querySelector(".nav-menu-toggle");
-        const drawerMenu = document.querySelector(".bose-drawer-menu");
+        const menuToggleButtons = document.querySelectorAll(".nav-menu-toggle, #menu-toggle-btn, #sidebar-open-btn");
+        const drawerMenu = document.querySelector(".bose-drawer-menu, #navigation-sidebar-panel, #sidebar-drawer");
+        const closeDrawerButtons = document.querySelectorAll("#sidebar-close-panel-btn, #drawer-shield");
         
-        let drawerOverlay = document.querySelector(".drawer-overlay");
+        let drawerOverlay = document.querySelector(".drawer-overlay, #drawer-shield");
         if (!drawerOverlay && drawerMenu) {
             drawerOverlay = document.createElement("div");
             drawerOverlay.className = "drawer-overlay";
+            drawerOverlay.id = "drawer-shield";
             document.body.appendChild(drawerOverlay);
         }
 
-        if (menuToggleBtn && drawerMenu && drawerOverlay) {
-            menuToggleBtn.replaceWith(menuToggleBtn.cloneNode(true));
-            drawerOverlay.replaceWith(drawerOverlay.cloneNode(true));
+        const toggleDrawer = (forceState) => {
+            if (!drawerMenu) return;
+            const currentState = drawerMenu.classList.contains("active");
+            const nextState = typeof forceState === "boolean" ? forceState : !currentState;
             
-            const newToggleBtn = document.querySelector(".nav-menu-toggle");
-            const newOverlay = document.querySelector(".drawer-overlay");
+            drawerMenu.classList.toggle("active", nextState);
+            if (drawerOverlay) drawerOverlay.classList.toggle("active", nextState);
+            document.body.style.overflow = nextState ? "hidden" : "";
+        };
 
-            const toggleDrawer = () => {
-                const isActive = drawerMenu.classList.toggle("active");
-                newToggleBtn.classList.toggle("active");
-                newOverlay.classList.toggle("active", isActive);
-                document.body.style.overflow = isActive ? "hidden" : "";
-            };
+        menuToggleButtons.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                e.preventDefault();
+                toggleDrawer();
+            });
+        });
 
-            newToggleBtn.addEventListener("click", toggleDrawer);
-            newOverlay.addEventListener("click", toggleDrawer);
+        if (drawerOverlay) {
+            drawerOverlay.addEventListener("click", () => toggleDrawer(false));
         }
 
-        const searchTriggerBtn = document.querySelector(".nav-search-trigger");
-        const searchModal = document.querySelector(".bose-search-modal");
+        closeDrawerButtons.forEach(btn => {
+            btn.addEventListener("click", () => toggleDrawer(false));
+        });
+
+        const searchTriggerButtons = document.querySelectorAll(".nav-search-trigger, #search-trigger-btn, #search-modal-open-btn");
+        const searchModal = document.querySelector(".bose-search-modal, #search-container, #search-overlay-panel");
+        const searchCloseButtons = document.querySelectorAll(".search-close-btn, #search-close-panel-btn");
         
-        if (searchTriggerBtn && searchModal) {
+        if (searchModal) {
             const toggleSearchModal = (show) => {
                 searchModal.classList.toggle("active", show);
                 document.body.style.overflow = show ? "hidden" : "";
                 
                 if (show) {
-                    const searchInput = document.getElementById("global-search-input");
+                    const searchInput = document.getElementById("global-search-input") || document.getElementById("bose-search-input-field");
                     if (searchInput) {
                         searchInput.value = "";
                         searchInput.focus();
@@ -473,14 +487,16 @@
                 }
             };
 
-            searchTriggerBtn.replaceWith(searchTriggerBtn.cloneNode(true));
-            const newSearchTriggerBtn = document.querySelector(".nav-search-trigger");
-            newSearchTriggerBtn.addEventListener("click", () => toggleSearchModal(true));
+            searchTriggerButtons.forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    toggleSearchModal(true);
+                });
+            });
 
-            const searchCloseBtn = searchModal.querySelector(".search-close-btn");
-            if (searchCloseBtn) {
-                searchCloseBtn.addEventListener("click", () => toggleSearchModal(false));
-            }
+            searchCloseButtons.forEach(btn => {
+                btn.addEventListener("click", () => toggleSearchModal(false));
+            });
 
             document.addEventListener("keydown", (e) => {
                 if (e.key === "Escape" && searchModal.classList.contains("active")) {
@@ -488,7 +504,7 @@
                 }
             });
 
-            const searchInput = document.getElementById("global-search-input");
+            const searchInput = document.getElementById("global-search-input") || document.getElementById("bose-search-input-field");
             if (searchInput) {
                 searchInput.addEventListener("input", (e) => {
                     const query = e.target.value.trim();
@@ -502,13 +518,12 @@
     }
 
     function renderSearchResults(query) {
-        const resultsContainer = document.querySelector(".search-results-container");
+        const resultsContainer = document.querySelector(".search-results-container") || document.getElementById("search-results-viewport-list");
         if (!resultsContainer) return;
 
         if (!query) {
             resultsContainer.innerHTML = `
                 <div style="text-align: center; padding: 40px 20px; color: #111111; opacity: 0.5;">
-                    <i class="fas fa-search" style="font-size: 2.5rem; margin-bottom: 12px; color: #FF91A4;"></i>
                     <p style="font-size: 1rem; font-weight: 700;">اكتب اسم صنفك المفضل للبحث السريع عنه.. 🌸</p>
                 </div>
             `;
@@ -522,8 +537,8 @@
 
         const matchedProducts = data.products.filter(product => {
             const inTitle = product.title.toLowerCase().includes(lowerCaseQuery);
-            const inFlavor = product.flavorName.toLowerCase().includes(lowerCaseQuery);
-            const inDesc = product.description.toLowerCase().includes(lowerCaseQuery);
+            const inFlavor = (product.flavorName || "").toLowerCase().includes(lowerCaseQuery);
+            const inDesc = (product.description || "").toLowerCase().includes(lowerCaseQuery);
             const inSearchTerms = product.searchTerms && product.searchTerms.some(term => term.toLowerCase().includes(lowerCaseQuery));
             
             return inTitle || inFlavor || inDesc || inSearchTerms;
@@ -532,7 +547,6 @@
         if (matchedProducts.length === 0) {
             resultsContainer.innerHTML = `
                 <div style="text-align: center; padding: 40px 20px; color: #111111; opacity: 0.6;">
-                    <i class="fas fa-cookie-bite" style="font-size: 2.5rem; margin-bottom: 12px; color: #FF91A4; opacity: 0.3;"></i>
                     <p style="font-size: 1rem; font-weight: 700;">ملقناش أصناف مطابقة لـ "${escapeHTML(query)}"</p>
                     <p style="font-size: 0.85rem; opacity: 0.8; margin-top: 4px;">جرب تكتب كلمات بسيطة زي: لوتس، كب كيك، بوكس، تورتة..</p>
                 </div>
@@ -545,7 +559,7 @@
         matchedProducts.forEach(product => {
             const finalPrice = window.calculateBosePrice(product.price, "menu-only");
             const sanitizedTitle = escapeHTML(product.title);
-            const sanitizedFlavor = escapeHTML(product.flavorName);
+            const sanitizedFlavor = escapeHTML(product.flavorName || "كلاسيك");
             const firstImage = product.images && product.images.length > 0 ? product.images[0] : 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png';
             
             htmlResults += `
