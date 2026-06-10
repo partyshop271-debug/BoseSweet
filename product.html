@@ -1,0 +1,1377 @@
+أ<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تفاصيل المنتج | حلويات بوسي</title>
+    
+    <meta name="description" content="عرض تفاصيل المنتج الفاخر من حلويات بوسي. تعرف على المكونات الطبيعية، المزايا، وخيارات التخصيص الكاملة قبل إضافة طلبك للسلة.">
+    <meta name="keywords" content="حلويات بوسي, تفاصيل المنتج, تورت مخصصة, بوكس الروقان, كب كيك, جاتوه, حلويات فاخرة">
+    
+    <meta property="og:title" content="تفاصيل المنتج | حلويات بوسي">
+    <meta property="og:description" content="تذوق الجودة والفخامة مع منتجاتنا المصنوعة يدوياً بحب وشغف ومكونات طبيعية 100%.">
+    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <meta property="og:type" content="product">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/main.css">
+    
+    <style>
+        body {
+            background-color: var(--bose-white);
+            color: var(--bose-black);
+            font-family: 'Cairo', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Fixed Universal Top Bar Messaging */
+        .bose-top-bar {
+            background-color: var(--bose-black);
+            color: var(--bose-white);
+            font-size: 14px;
+            font-weight: 400;
+            padding: 8px 16px;
+            text-align: center;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+            z-index: 1001;
+        }
+        .top-bar-track {
+            display: inline-block;
+            padding-right: 100%;
+            animation: boseTopBarMarquee 25s linear infinite;
+        }
+        @keyframes boseTopBarMarquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(100%, 0, 0); }
+        }
+
+        /* Fixed Universal Header Formatting */
+        .bose-navbar {
+            position: sticky;
+            top: 0;
+            background-color: var(--bose-white);
+            box-shadow: var(--bose-shadow-glow);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        .brand-logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-logo-container img {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+        .brand-name-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--bose-black);
+        }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .nav-action-btn {
+            color: var(--bose-black);
+            font-size: 20px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .nav-action-btn:hover {
+            color: var(--bose-pink);
+        }
+        .nav-cart-icon-wrapper {
+            position: relative;
+            display: inline-block;
+            color: var(--bose-black);
+            font-size: 22px;
+            text-decoration: none;
+        }
+        #nav-cart-count {
+            position: absolute;
+            top: -8px;
+            left: -10px;
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+        }
+
+        /* Full Layout Full-Card Core Container Styles */
+        .product-master-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .product-full-card {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            box-shadow: var(--bose-shadow-glow);
+            padding: 32px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .product-full-card:hover {
+            box-shadow: var(--bose-shadow-hover);
+        }
+        .product-header-block {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .product-main-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0 0 8px 0;
+        }
+        .product-flavor-subtitle {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--bose-pink);
+            margin: 0;
+        }
+        .product-visual-wrapper {
+            width: 100%;
+            max-height: 500px;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 28px;
+            background-color: #fafafa;
+        }
+        .product-large-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .product-description-container {
+            margin-bottom: 32px;
+        }
+        .product-description-paragraph {
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.8;
+            color: var(--bose-black);
+            text-align: justify;
+            margin: 0;
+        }
+        
+        /* Interactive Product Content Customizer Layout */
+        .product-configuration-panel {
+            border-top: var(--bose-border-pink);
+            padding-top: 24px;
+            margin-bottom: 32px;
+        }
+        .config-group-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0 0 16px 0;
+        }
+        .config-options-flex {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .config-radio-label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 145, 164, 0.4);
+            border-radius: 30px;
+            background-color: var(--bose-white);
+            color: var(--bose-black);
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .config-radio-input {
+            display: none;
+        }
+        .config-radio-input:checked + .config-radio-label {
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            border-color: var(--bose-pink);
+        }
+        .config-text-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 145, 164, 0.4);
+            border-radius: 12px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            color: var(--bose-black);
+            background-color: var(--bose-white);
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .config-text-input:focus {
+            outline: none;
+            border-color: var(--bose-pink);
+        }
+
+        /* Purchase Action Interface Execution */
+        .purchase-control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            background-color: rgba(255, 145, 164, 0.04);
+            padding: 20px;
+            border-radius: 16px;
+            border: var(--bose-border-pink);
+        }
+        .price-display-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+        .price-label-text {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--bose-black);
+            opacity: 0.8;
+        }
+        .price-amount-dynamic {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--bose-pink);
+        }
+        .quantity-stepper-container {
+            display: flex;
+            align-items: center;
+            border: 1px solid rgba(255, 145, 164, 0.4);
+            border-radius: 25px;
+            background-color: var(--bose-white);
+            overflow: hidden;
+        }
+        .quantity-stepper-btn {
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--bose-black);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+        .quantity-stepper-btn:hover {
+            background-color: rgba(255, 145, 164, 0.1);
+        }
+        .quantity-display-value {
+            width: 40px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--bose-black);
+            border: none;
+            outline: none;
+            pointer-events: none;
+        }
+        .add-to-cart-cta-button {
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            border: none;
+            padding: 12px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        .add-to-cart-cta-button:hover {
+            opacity: 0.9;
+        }
+        .direct-link-cta-btn {
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            border: none;
+            padding: 14px 40px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        .direct-link-cta-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Unified Real-time Experiences Upload Component (User Reviews) */
+        .experiences-feedback-system {
+            margin-top: 48px;
+            border-top: 1px solid rgba(17, 11, 17, 0.1);
+            padding-top: 40px;
+        }
+        .experiences-module-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin-bottom: 24px;
+        }
+        .experiences-submission-form {
+            background-color: var(--bose-white);
+            border: 1px solid rgba(255, 145, 164, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        .rating-stars-interactive {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .rating-star-node {
+            font-size: 20px;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        .rating-star-node.selected, .rating-star-node:hover, .rating-star-node:hover ~ .rating-star-node {
+            color: var(--bose-gold);
+        }
+        .form-flex-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .form-flex-field {
+            flex: 1;
+            min-width: 200px;
+        }
+        .feedback-form-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            color: var(--bose-black);
+            box-sizing: border-box;
+        }
+        .feedback-form-input:focus {
+            outline: none;
+            border-color: var(--bose-pink);
+        }
+        .file-upload-styled-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background-color: var(--bose-white);
+            border: 1px dashed var(--bose-pink);
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--bose-pink);
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+        .file-upload-styled-btn:hover {
+            background-color: rgba(255, 145, 164, 0.05);
+        }
+        .hidden-file-input {
+            display: none;
+        }
+        .image-preview-thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            border: 1px solid rgba(255, 145, 164, 0.3);
+        }
+        .submit-feedback-action-btn {
+            background-color: var(--bose-black);
+            color: var(--bose-white);
+            border: none;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .submit-feedback-action-btn:hover {
+            background-color: var(--bose-pink);
+        }
+        .dynamic-experiences-stream {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .experience-card-item {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .experience-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .experience-user-identity {
+            font-weight: 700;
+            color: var(--bose-black);
+            font-size: 15px;
+        }
+        .experience-stars-row {
+            color: var(--bose-gold);
+            font-size: 13px;
+            display: flex;
+            gap: 2px;
+        }
+        .experience-text-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--bose-black);
+            margin: 0 0 12px 0;
+        }
+        .experience-attached-photo {
+            max-width: 150px;
+            border-radius: 8px;
+            display: block;
+            border: 1px solid rgba(255, 145, 164, 0.2);
+        }
+
+        /* Behavioral Intelligence Recommended Items Slider (You May Also Like) */
+        .recommender-system-block {
+            margin-top: 56px;
+            border-top: 1px solid rgba(17, 11, 17, 0.1);
+            padding-top: 40px;
+        }
+        .recommender-track-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin-bottom: 24px;
+        }
+        .recommender-slider-outer {
+            width: 100%;
+            overflow-x: auto;
+            position: relative;
+            scrollbar-width: none;
+        }
+        .recommender-slider-outer::-webkit-scrollbar {
+            display: none;
+        }
+        .recommender-cards-wrapper {
+            display: flex;
+            gap: 16px;
+            padding-bottom: 10px;
+        }
+        
+        /* Shared Unified Card Design Implementation */
+        .unified-product-card {
+            background-color: var(--bose-white);
+            border: var(--bose-border-pink);
+            border-radius: 20px;
+            box-shadow: var(--bose-shadow-glow);
+            flex: 0 0 calc(50% - 8px);
+            min-width: 280px;
+            max-width: 380px;
+            box-sizing: border-box;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .unified-product-card:hover {
+            box-shadow: var(--bose-shadow-hover);
+        }
+        .card-visual-node {
+            width: 100%;
+            height: 220px;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 14px;
+            background-color: #fafafa;
+        }
+        .card-img-element {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .card-item-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0 0 4px 0;
+        }
+        .card-flavor-badge {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--bose-pink);
+            margin: 0 0 6px 0;
+        }
+        .card-description-node {
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--bose-black);
+            opacity: 0.9;
+            margin: 0 0 12px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-action-footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            gap: 8px;
+        }
+        .card-price-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--bose-pink);
+        }
+        .card-add-to-cart-trigger {
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        .card-add-to-cart-trigger:hover {
+            background-color: var(--bose-black);
+        }
+
+        /* Fixed Universal Footer Structure Styling */
+        .bose-footer {
+            background-color: #fafafa;
+            border-top: var(--bose-border-pink);
+            padding: 40px 24px 20px 24px;
+            margin-top: 80px;
+        }
+        .footer-grid-layout {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+        .footer-about-block p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--bose-black);
+            margin: 0 0 16px 0;
+        }
+        #footer-social-links {
+            display: flex;
+            gap: 12px;
+        }
+        #footer-social-links a {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--bose-white);
+            border: 1px solid rgba(255, 145, 164, 0.3);
+            color: var(--bose-black);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        #footer-social-links a.social-link-facebook:hover { color: var(--bose-white); background-color: #1877F2; border-color: #1877F2; }
+        #footer-social-links a.social-link-instagram:hover { color: var(--bose-white); background-color: #E4405F; border-color: #E4405F; }
+        #footer-social-links a.social-link-tiktok:hover { color: var(--bose-white); background-color: #000000; border-color: #000000; }
+        #footer-social-links a.social-link-whatsapp:hover { color: var(--bose-white); background-color: #25D366; border-color: #25D366; }
+        
+        .footer-links-column-block h4 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--bose-black);
+            margin: 0 0 16px 0;
+        }
+        .footer-links-list-node {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .footer-links-list-node a {
+            font-size: 14px;
+            color: var(--bose-black);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-links-list-node a:hover {
+            color: var(--bose-pink);
+        }
+        .footer-policies-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-policies-container a {
+            font-size: 13px;
+            color: var(--bose-black);
+            text-decoration: none;
+            opacity: 0.8;
+        }
+        .footer-policies-container a:hover {
+            color: var(--bose-pink);
+            opacity: 1;
+        }
+        .footer-bottom-copyrights-bar {
+            max-width: 1200px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(17, 11, 17, 0.06);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .footer-copyrights-text {
+            font-size: 13px;
+            color: var(--bose-black);
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        /* Mobile First Adaptive Media Queries Rules */
+        @media (max-width: 768px) {
+            .product-main-title { font-size: 26px; }
+            .product-full-card { padding: 20px; }
+            .product-visual-wrapper { max-height: 320px; }
+            .unified-product-card { flex: 0 0 100%; max-width: 100%; }
+            .purchase-control-row { flex-direction: column; align-items: stretch; gap: 16px; }
+            .price-display-wrapper { text-align: center; }
+            .quantity-stepper-container { justify-content: center; }
+            .add-to-cart-cta-button { justify-content: center; }
+            .direct-link-cta-btn { justify-content: center; }
+            .footer-bottom-copyrights-bar { flex-direction: column; text-align: center; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .product-visual-wrapper { max-height: 420px; }
+            .unified-product-card { flex: 0 0 calc(50% - 8px); }
+        }
+        @media (min-width: 1025px) {
+            .unified-product-card { flex: 0 0 380px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bose-top-bar" id="global-top-bar-marquee">
+        <div class="top-bar-track" id="top-bar-messages-container">
+            </div>
+    </div>
+
+    <header class="bose-navbar">
+        <div class="brand-logo-container">
+            <a href="index.html">
+                <img id="bose-store-logo" src="" alt="حلويات بوسي">
+            </a>
+            <span class="brand-name-text">حلويات بوسي</span>
+        </div>
+        <div class="nav-actions">
+            <a href="search.html" class="nav-action-btn" id="header-search-trigger">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </a>
+            <a href="cart.html" class="nav-cart-icon-wrapper">
+                <i class="fa-solid fa-basket-shopping"></i>
+                <span id="nav-cart-count">0</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="product-master-container">
+        <article class="product-full-card" id="active-product-root-node">
+            
+            <header class="product-header-block">
+                <h1 class="product-main-title" id="product-rendered-heading">جاري التحميل...</h1>
+                <p class="product-flavor-subtitle" id="product-rendered-subtitle"></p>
+            </header>
+
+            <div class="product-visual-wrapper">
+                <img id="product-rendered-image" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="شعار حلويات بوسي" class="product-large-img">
+            </div>
+
+            <section class="product-description-container">
+                <p class="product-description-paragraph" id="product-rendered-description">
+                    جاري تحميل تفاصيل المنتج الفاخرة...
+                </p>
+            </section>
+
+            <section class="product-configuration-panel" id="product-interactive-customizer-slot">
+                </section>
+
+            <footer class="purchase-control-row" id="product-fulfillment-action-row">
+                <div class="price-display-wrapper">
+                    <span class="price-label-text">السعر الإجمالي</span>
+                    <span class="price-amount-dynamic" id="dynamic-calculated-price-display">0 جنيه</span>
+                </div>
+                
+                <div class="quantity-stepper-container" id="stepper-interface-wrapper">
+                    <button type="button" class="quantity-stepper-btn" id="stepper-decrement-trigger">-</button>
+                    <input type="text" class="quantity-display-value" id="stepper-numeric-input" value="1">
+                    <button type="button" class="quantity-stepper-btn" id="stepper-increment-trigger">+</button>
+                </div>
+
+                <button type="button" class="add-to-cart-cta-button" id="add-to-cart-main-action-trigger">
+                    <i class="fa-solid fa-cart-plus"></i>
+                    <span>إضافة للسلة</span>
+                </button>
+            </footer>
+
+        </article>
+
+        <section class="experiences-feedback-system">
+            <h2 class="experiences-module-title">آراء وتجارب عملائنا الموثوقة ✨</h2>
+            
+            <form class="experiences-submission-form" id="experience-capture-form">
+                <div class="rating-stars-interactive" id="form-interactive-stars-row">
+                    <i class="fa-solid fa-star rating-star-node" data-star-index="1"></i>
+                    <i class="fa-solid fa-star rating-star-node" data-star-index="2"></i>
+                    <i class="fa-solid fa-star rating-star-node" data-star-index="3"></i>
+                    <i class="fa-solid fa-star rating-star-node" data-star-index="4"></i>
+                    <i class="fa-solid fa-star rating-star-node" data-star-index="5"></i>
+                </div>
+                
+                <div class="form-flex-row">
+                    <div class="form-flex-field">
+                        <input type="text" class="feedback-form-input" id="experience-user-name" placeholder="اكتب اسمك الكريم" required>
+                    </div>
+                    <div class="form-flex-field">
+                        <input type="text" class="feedback-form-input" id="experience-user-city" placeholder="المدينة / المنطقة" required>
+                    </div>
+                </div>
+
+                <div class="form-flex-row" style="margin-bottom: 12px;">
+                    <div class="form-flex-field" style="width: 100%;">
+                        <textarea class="feedback-form-input" id="experience-user-comment" rows="3" placeholder="احكي لنا عن تجربتك مع هذا المنتج وطعمه المتميز..." required></textarea>
+                    </div>
+                </div>
+
+                <div class="file-upload-block">
+                    <label for="experience-photo-attachment" class="file-upload-styled-btn">
+                        <i class="fa-solid fa-camera"></i>
+                        <span>ارفاق صورة لتجربتك الحقيقية</span>
+                    </label>
+                    <input type="file" id="experience-photo-attachment" class="hidden-file-input" accept="image/*">
+                    <img id="form-attached-image-preview" src="#" alt="معاينة الصورة" class="image-preview-thumbnail">
+                </div>
+
+                <button type="submit" class="submit-feedback-action-btn">مشاركة تجربتي بكل صدق</button>
+            </form>
+
+            <div class="dynamic-experiences-stream" id="rendered-experiences-target-stream">
+                </div>
+        </section>
+
+        <section class="recommender-system-block">
+            <h2 class="recommender-track-title">وقد يعجبك أيضاً هذه التشكيلة الفاخرة 🌸</h2>
+            <div class="recommender-slider-outer">
+                <div class="recommender-cards-wrapper" id="recommended-products-cards-track">
+                    </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bose-footer">
+        <div class="footer-grid-layout">
+            <div class="footer-about-block">
+                <h4 style="font-size: 18px; font-weight: 700; color: var(--bose-black); margin-bottom: 16px;">حلويات بوسي</h4>
+                <p id="footer-about-text"></p>
+                <div id="footer-social-links">
+                    <a href="" class="social-link-facebook" aria-label="فيسبوك"><i class="fab fa-facebook-f"></i></a>
+                    <a href="" class="social-link-instagram" aria-label="إنستجرام"><i class="fab fa-instagram"></i></a>
+                    <a href="" class="social-link-tiktok" aria-label="تيك توك"><i class="fab fa-tiktok"></i></a>
+                    <a href="" class="social-link-whatsapp" aria-label="واتساب"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links-column-block">
+                <h4>روابط سريعة</h4>
+                <ul class="footer-links-list-node">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="menu.html">المنيو الشامل</a></li>
+                    <li><a href="cart.html">سلة المشتريات</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-links-column-block">
+                <h4>سياسات المتجر</h4>
+                <div class="footer-policies-container">
+                    <a href="privacy-policy.html">سياسة الخصوصية</a>
+                    <a href="refund-policy.html">سياسة الاسترجاع</a>
+                    <a href="shipping-policy.html">سياسة الطلبات</a>
+                    <a href="terms.html">الشروط والأحكام</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom-copyrights-bar">
+            <p class="footer-copyrights-text">© ٢٠٢٦ حلويات بوسي. جميع الحقوق محفوظة. صنعناها بحب لتهديها لمن تحب.</p>
+        </div>
+    </footer>
+
+    <script src="js/core.html.js"></script>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let selectedRatingValue = 5;
+            let activelyLoadedProductRef = null;
+            let customFieldsCurrentCalculatedCost = 0;
+
+            // Engine Verification Guard
+            if (window.BoseStoreData) {
+                initializeProductFormController();
+            } else {
+                const checkGlobalStateInterval = setInterval(() => {
+                    if (window.BoseStoreData) {
+                        clearInterval(checkGlobalStateInterval);
+                        initializeProductFormController();
+                    }
+                }, 50);
+            }
+
+            function initializeProductFormController() {
+                // Parse targeted slug values safely from routing search parameters
+                const routingParams = new URLSearchParams(window.location.search);
+                let requestedProductSlug = routingParams.get('slug') || "toort-custom-master";
+                
+                // Content distribution filtering enforcement for full card layout items only
+                const verifiedFullCardScopeSlugs = [
+                    "toort-custom-master", "gateaux-royal", "gateaux-classic", "gateaux-soiree",
+                    "flowers-master", "cupcake-mix-new", "cupcake-chocolate", "cupcake-vanilla",
+                    "mini-cake-master", "red-velvet-master", "relax-box"
+                ];
+
+                if (!verifiedFullCardScopeSlugs.includes(requestedProductSlug)) {
+                    requestedProductSlug = "toort-custom-master";
+                }
+
+                // Query database context objects directly
+                const dbProductsCollection = window.BoseStoreData.products || [];
+                activelyLoadedProductRef = dbProductsCollection.find(item => item.slug === requestedProductSlug);
+
+                if (!activelyLoadedProductRef) {
+                    console.error("Requested product layout entity missing from central repository database context mapping rules.");
+                    return;
+                }
+
+                renderTopBarMarketingContent();
+                renderProductCoreLayoutData();
+                generateCustomizerInterfaceElements();
+                bindCoreOperationalEventListeners();
+                executeCommunityExperienceGeneratorEngine();
+                executeBehavioralRecommenderEngine();
+            }
+
+            function renderTopBarMarketingContent() {
+                const container = document.getElementById('top-bar-messages-container');
+                if (!container || !window.BoseStoreData.navigation || !window.BoseStoreData.navigation.topBarMessages) return;
+                
+                const messages = window.BoseStoreData.navigation.topBarMessages;
+                container.innerHTML = messages.map(msg => `<span style="padding: 0 40px; display: inline-block;">${msg}</span>`).join('');
+            }
+
+            function renderProductCoreLayoutData() {
+                document.title = `${activelyLoadedProductRef.title} | ${window.BoseStoreData.store.name}`;
+                document.getElementById('product-rendered-heading').textContent = activelyLoadedProductRef.title;
+                document.getElementById('product-rendered-subtitle').textContent = activelyLoadedProductRef.flavorName || "";
+                document.getElementById('product-rendered-description').textContent = activelyLoadedProductRef.description;
+                
+                if (activelyLoadedProductRef.images && activelyLoadedProductRef.images[0]) {
+                    document.getElementById('product-rendered-image').src = activelyLoadedProductRef.images[0];
+                    document.getElementById('product-rendered-image').alt = activelyLoadedProductRef.title;
+                }
+                
+                updateDynamicPriceDisplayMatrix();
+                
+                // Inject structural links into the universally mapped social footers safely
+                const socialContext = window.BoseStoreData.social || {};
+                const footerIcons = document.getElementById('footer-social-links');
+                if (footerIcons) {
+                    if (socialContext.facebook) footerIcons.querySelector('.social-link-facebook').href = socialContext.facebook;
+                    if (socialContext.instagram) footerIcons.querySelector('.social-link-instagram').href = socialContext.instagram;
+                    if (socialContext.tiktok) footerIcons.querySelector('.social-link-tiktok').href = socialContext.tiktok;
+                    if (socialContext.whatsapp) footerIcons.querySelector('.social-link-whatsapp').href = `https://wa.me/${socialContext.whatsapp}`;
+                }
+            }
+
+            function generateCustomizerInterfaceElements() {
+                const configSlot = document.getElementById('product-interactive-customizer-slot');
+                if (!configSlot) return;
+                configSlot.innerHTML = "";
+                customFieldsCurrentCalculatedCost = 0;
+
+                // Scenario Mapping Rules: Simulators Direct Redirection
+                if (activelyLoadedProductRef.customBuilderUrl) {
+                    document.getElementById('stepper-interface-wrapper').style.display = "none";
+                    const btnCta = document.getElementById('add-to-cart-main-action-trigger');
+                    btnCta.className = "direct-link-cta-btn";
+                    btnCta.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i> <span>انتقل إلى المحاكي التفاعلي المخصص الآن</span>`;
+                    
+                    btnCta.onclick = (e) => {
+                        e.preventDefault();
+                        window.location.href = activelyLoadedProductRef.customBuilderUrl;
+                    };
+                    return;
+                }
+
+                // Scenario Mapping Rules: Dynamic Sizing Layout Rendering
+                if (activelyLoadedProductRef.prices) {
+                    let sizeMarkup = `
+                        <div class="config-container-node">
+                            <h3 class="config-group-title">اختر الحجم المناسب لك:</h3>
+                            <div class="config-options-flex">
+                    `;
+                    
+                    let checkedState = "checked";
+                    for (const [key, val] of Object.entries(activelyLoadedProductRef.prices)) {
+                        let sizeLabel = key === "triangle" ? "مثلث" : key === "medium" ? "وسط" : key === "large" ? "كبير" : key === "two-person" ? "فردين" : key === "four-person" ? "٤ أفراد" : key === "six-person" ? "٦ أفراد" : key === "cup" ? "كَب" : "طاجن / صينية";
+                        
+                        sizeMarkup += `
+                            <div>
+                                <input type="radio" name="bose-product-size-variant" id="size-var-${key}" class="config-radio-input" value="${key}" ${checkedState} data-price="${val}">
+                                <label for="size-var-${key}" class="config-radio-label">${sizeLabel}</label>
+                            </div>
+                        `;
+                        checkedState = ""; 
+                    }
+                    sizeMarkup += `</div></div>`;
+                    configSlot.insertAdjacentHTML('beforeend', sizeMarkup);
+                }
+
+                // Scenario Mapping Rules: Cupcakes Photo Printing Options Layout Construction
+                if (activelyLoadedProductRef.printingOptions) {
+                    let printingMarkup = `
+                        <div class="config-container-node" style="margin-top: 16px;">
+                            <h3 class="config-group-title">خيارات إضافة صور مخصصة على الكب كيك (للدستة):</h3>
+                            <div class="config-options-flex">
+                                <div>
+                                    <input type="radio" name="bose-cupcake-printing" id="print-var-none" class="config-radio-input" value="none" checked data-cost="0">
+                                    <label for="print-var-none" class="config-radio-label">بدون صور مخصصة</label>
+                                </div>
+                    `;
+
+                    activelyLoadedProductRef.printingOptions.forEach(opt => {
+                        printingMarkup += `
+                            <div>
+                                <input type="radio" name="bose-cupcake-printing" id="print-var-${opt.id}" class="config-radio-input" value="${opt.id}" data-cost="${opt.price}">
+                                <label for="print-var-${opt.id}" class="config-radio-label">${opt.name} (+${opt.price} جنيه)</label>
+                            </div>
+                        `;
+                    });
+
+                    printingMarkup += `</div></div>`;
+                    configSlot.insertAdjacentHTML('beforeend', printingMarkup);
+                }
+
+                // Scenario Mapping Rules: Mini Cakes Specialized Functional Inputs
+                if (activelyLoadedProductRef.options) {
+                    const opts = activelyLoadedProductRef.options;
+                    if (opts.cakeTypes) {
+                        let typeMarkup = `
+                            <div class="config-container-node" style="margin-top: 16px;">
+                                <h3 class="config-group-title">اختر نوع ونكهة الكيك الأساسية:</h3>
+                                <div class="config-options-flex">
+                        `;
+                        opts.cakeTypes.forEach((t, i) => {
+                            typeMarkup += `
+                                <div>
+                                    <input type="radio" name="bose-minicake-type" id="minicake-type-${i}" class="config-radio-input" value="${t}" ${i === 0 ? 'checked' : ''}>
+                                    <label for="minicake-type-${i}" class="config-radio-label">${t}</label>
+                                </div>
+                            `;
+                        });
+                        typeMarkup += `</div></div>`;
+                        configSlot.insertAdjacentHTML('beforeend', typeMarkup);
+                    }
+
+                    if (opts.customMessage) {
+                        configSlot.insertAdjacentHTML('beforeend', `
+                            <div class="config-container-node" style="margin-top: 16px;">
+                                <h3 class="config-group-title">اكتب عبارة قصيرة على الكيك (اختياري):</h3>
+                                <input type="text" id="bose-custom-text-msg" class="config-text-input" placeholder="مثال: عيد ميلاد سعيد يا بوسي" maxlength="40">
+                            </div>
+                        `);
+                    }
+
+                    if (opts.allergyNote) {
+                        configSlot.insertAdjacentHTML('beforeend', `
+                            <div class="config-container-node" style="margin-top: 16px;">
+                                <h3 class="config-group-title">ملاحظات الحساسية الغذائية لسلامتك (اختياري):</h3>
+                                <input type="text" id="bose-allergy-text-note" class="config-text-input" placeholder="مثال: يرجى إلغاء المكسرات تماماً لحساسية طفلي" maxlength="100">
+                            </div>
+                        `);
+                    }
+                }
+
+                // Attach dynamically allocated runtime variation listeners to refresh calculation values
+                configSlot.querySelectorAll('.config-radio-input').forEach(input => {
+                    input.addEventListener('change', () => {
+                        updateDynamicPriceDisplayMatrix();
+                    });
+                });
+            }
+
+            function updateDynamicPriceDisplayMatrix() {
+                if (!activelyLoadedProductRef) return;
+                
+                let baseCalculatedUnitCost = activelyLoadedProductRef.price;
+
+                // Variant pricing dynamic extraction checks
+                const selectedSizeElement = document.querySelector('input[name="bose-product-size-variant"]:checked');
+                if (selectedSizeElement) {
+                    baseCalculatedUnitCost = parseFloat(selectedSizeElement.getAttribute('data-price'));
+                }
+
+                // Printing option cost calculation additions
+                const selectedPrintElement = document.querySelector('input[name="bose-cupcake-printing"]:checked');
+                if (selectedPrintElement) {
+                    baseCalculatedUnitCost += parseFloat(selectedPrintElement.getAttribute('data-cost'));
+                }
+
+                // Final pricing conversion through pricing equation algorithms
+                let finalizedPriceResult = window.calculateBosePrice ? window.calculateBosePrice(baseCalculatedUnitCost, "product-only") : baseCalculatedUnitCost;
+                
+                const stepperQty = parseInt(document.getElementById('stepper-numeric-input').value) || 1;
+                const grandTotalAggregate = finalizedPriceResult * stepperQty;
+
+                document.getElementById('dynamic-calculated-price-display').textContent = `${grandTotalAggregate} جنيه`;
+                document.getElementById('dynamic-calculated-price-display').setAttribute('data-final-unit-cost', finalizedPriceResult);
+            }
+
+            function bindCoreOperationalEventListeners() {
+                const qtyInput = document.getElementById('stepper-numeric-input');
+                const btnDec = document.getElementById('stepper-decrement-trigger');
+                const btnInc = document.getElementById('stepper-increment-trigger');
+
+                if (btnDec && btnInc && qtyInput) {
+                    btnDec.onclick = () => {
+                        let currentVal = parseInt(qtyInput.value) || 1;
+                        if (currentVal > 1) {
+                            qtyInput.value = currentVal - 1;
+                            updateDynamicPriceDisplayMatrix();
+                        }
+                    };
+                    btnInc.onclick = () => {
+                        let currentVal = parseInt(qtyInput.value) || 1;
+                        qtyInput.value = currentVal + 1;
+                        updateDynamicPriceDisplayMatrix();
+                    };
+                }
+
+                // Global cart dispatch interceptor
+                const addToCartBtn = document.getElementById('add-to-cart-main-action-trigger');
+                if (addToCartBtn && !activelyLoadedProductRef.customBuilderUrl) {
+                    addToCartBtn.onclick = () => {
+                        executeFulfillmentAddToCartPipeline();
+                    };
+                }
+
+                // Interactive review module stars execution hooks
+                const stars = document.querySelectorAll('#form-interactive-stars-row .rating-star-node');
+                stars.forEach(star => {
+                    star.onclick = function() {
+                        const idx = parseInt(this.getAttribute('data-star-index'));
+                        selectedRatingValue = idx;
+                        stars.forEach((s, i) => {
+                            if (i < idx) {
+                                s.classList.add('selected');
+                            } else {
+                                s.classList.remove('selected');
+                            }
+                        });
+                    };
+                });
+
+                // File input file attachment changes preview generator execution
+                const fileInput = document.getElementById('experience-photo-attachment');
+                const imgPreview = document.getElementById('form-attached-image-preview');
+                if (fileInput && imgPreview) {
+                    fileInput.onchange = function() {
+                        const fileNode = this.files[0];
+                        if (fileNode) {
+                            const readerInstance = new FileReader();
+                            readerInstance.onload = function(e) {
+                                imgPreview.src = e.target.result;
+                                imgPreview.style.display = "block";
+                            };
+                            readerInstance.readAsDataURL(fileNode);
+                        }
+                    };
+                }
+
+                // Review submit listener
+                const reviewForm = document.getElementById('experience-capture-form');
+                if (reviewForm) {
+                    reviewForm.onsubmit = function(e) {
+                        e.preventDefault();
+                        executeReviewSubmissionPipeline();
+                    };
+                }
+            }
+
+            function executeFulfillmentAddToCartPipeline() {
+                const qty = parseInt(document.getElementById('stepper-numeric-input').value) || 1;
+                const finalCalculatedUnitCost = parseFloat(document.getElementById('dynamic-calculated-price-display').getAttribute('data-final-unit-cost'));
+                
+                let flavorDetailsText = activelyLoadedProductRef.flavorName || "";
+                let customConfigObject = {};
+
+                // Map Size Attributes
+                const sizeOpt = document.querySelector('input[name="bose-product-size-variant"]:checked');
+                if (sizeOpt) {
+                    let sizeKey = sizeOpt.value;
+                    let sizeLabel = sizeKey === "triangle" ? "مثلث" : sizeKey === "medium" ? "وسط" : sizeKey === "large" ? "كبير" : sizeKey === "two-person" ? "فردين" : sizeKey === "four-person" ? "٤ أفراد" : "٦ أفراد";
+                    flavorDetailsText += ` (${sizeLabel})`;
+                }
+
+                // Map Printing Attributes
+                const printOpt = document.querySelector('input[name="bose-cupcake-printing"]:checked');
+                if (printOpt && printOpt.value !== "none") {
+                    let printLabel = printOpt.value === "edible" ? "صور قابلة للأكل للدستة" : "صور غير قابلة للأكل للدستة";
+                    flavorDetailsText += ` - مع ${printLabel}`;
+                    customConfigObject.printingType = printOpt.value;
+                }
+
+                // Map Mini Cakes Input Values
+                const cakeTypeOpt = document.querySelector('input[name="bose-minicake-type"]:checked');
+                if (cakeTypeOpt) {
+                    customConfigObject.cakeType = cakeTypeOpt.value;
+                }
+                const textMsgInput = document.getElementById('bose-custom-text-msg');
+                if (textMsgInput && textMsgInput.value.trim() !== "") {
+                    customConfigObject.customMessage = textMsgInput.value.trim();
+                }
+                const allergyInput = document.getElementById('bose-allergy-text-note');
+                if (allergyInput && allergyInput.value.trim() !== "") {
+                    customConfigObject.allergyNote = allergyInput.value.trim();
+                }
+
+                // LocalStorage state management compilation rules
+                const serializedCartStateRaw = localStorage.getItem('bose_cart');
+                let cartArray = serializedCartStateRaw ? JSON.parse(serializedCartStateRaw) : [];
+
+                // Standard item compilation entry structure
+                const itemEntryPayload = {
+                    id: activelyLoadedProductRef.id,
+                    productSlug: activelyLoadedProductRef.slug,
+                    title: activelyLoadedProductRef.title,
+                    flavorName: flavorDetailsText,
+                    price: finalCalculatedUnitCost,
+                    quantity: qty,
+                    image: activelyLoadedProductRef.images[0] || "",
+                    type: "standard",
+                    customDetails: customConfigObject
+                };
+
+                // Deduplication calculation sequence rules
+                const matchedExistingIndex = cartArray.findIndex(item => 
+                    item.productSlug === itemEntryPayload.productSlug && 
+                    item.flavorName === itemEntryPayload.flavorName &&
+                    JSON.stringify(item.customDetails) === JSON.stringify(itemEntryPayload.customDetails)
+                );
+
+                if (matchedExistingIndex > -1) {
+                    cartArray[matchedExistingIndex].quantity += qty;
+                } else {
+                    cartArray.push(itemEntryPayload);
+                }
+
+                localStorage.setItem('bose_cart', JSON.stringify(cartArray));
+                
+                if (window.updateGlobalCartCounter) {
+                    window.updateGlobalCartCounter();
+                }
+
+                alert(`تمت إضافة ${qty} قطعة من ${activelyLoadedProductRef.title} إلى السلة بنجاح!`);
+            }
+
+            function executeReviewSubmissionPipeline() {
+                const uName = document.getElementById('experience-user-name').value.trim();
+                const uCity = document.getElementById('experience-user-city').value.trim();
+                const uComment = document.getElementById('experience-user-comment').value.trim();
+                const previewImg = document.getElementById('form-attached-image-preview');
+
+                let imgSrcString = "";
+                if (previewImg.style.display === "block") {
+                    imgSrcString = previewImg.src;
+                }
+
+                const payload = {
+                    name: uName,
+                    city: uCity,
+                    stars: selectedRatingValue,
+                    comment: uComment,
+                    image: imgSrcString,
+                    timestamp: Date.now()
+                };
+
+                // Cache reviews persistently locally mapped per product configuration
+                const key = `bose_reviews_${activelyLoadedProductRef.slug}`;
+                const raw = localStorage.getItem(key);
+                let currentReviews = raw ? JSON.parse(raw) : [];
+                currentReviews.unshift(payload);
+                localStorage.setItem(key, JSON.stringify(currentReviews));
+
+                // Clear input elements safely
+                document.getElementById('experience-capture-form').reset();
+                previewImg.style.display = "none";
+                previewImg.src = "#";
+                selectedRatingValue = 5;
+                
+                const stars = document.querySelectorAll('#form-interactive-stars-row .rating-star-node');
+                stars.forEach(s => s.classList.add('selected'));
+                                    renderExperiencesListStream();
+                    alert("شكراً لك على مشاركة تجربتك الصادقة! تم نشر مراجعتك فوراً.");
+                };
+            }
+
+            function executeCommunityExperienceGeneratorEngine() {
+                renderExperiencesListStream();
+            }
+
+            function renderExperiencesListStream() {
+                const streamContainer = document.getElementById('rendered-experiences-target-stream');
+                if (!streamContainer) return;
+
+                const key = `bose_reviews_${activelyLoadedProductRef.slug}`;
+                const raw = localStorage.getItem(key);
+                let currentReviews = raw ? JSON.parse(raw) : [];
+
+                if (currentReviews.length === 0) {
+                    streamContainer.innerHTML = `
+                        <div style="text-align: center; padding: 24px; color: var(--bose-black); opacity: 0.6; font-size: 14px;">
+                            لم يتم كتابة أي مراجعات لهذا المنتج بعد. كن أول من يشاركنا تجربته الفخمة الموثوقة!
+                        </div>
+                    `;
+                    return;
+                }
+
+                let streamHtml = "";
+                currentReviews.forEach(rev => {
+                    let starsMarkup = "";
+                    for (let i = 1; i <= 5; i++) {
+                        starsMarkup += `<i class="${i <= rev.stars ? 'fa-solid' : 'fa-regular'} fa-star"></i>`;
+                    }
+
+                    let attachedPhotoMarkup = rev.image ? `<img src="${rev.image}" alt="صورة العميل المرفقة" class="experience-attached-photo">` : "";
+
+                    streamHtml += `
+                        <div class="experience-card-item">
+                            <div class="experience-card-header">
+                                <span class="experience-user-identity">${rev.name} - <small style="font-weight:400; opacity:0.8;">${rev.city}</small></span>
+                                <div class="experience-stars-row">${starsMarkup}</div>
+                            </div>
+                            <p class="experience-text-content">${rev.comment}</p>
+                            ${attachedPhotoMarkup}
+                        </div>
+                    `;
+                });
+
+                streamContainer.innerHTML = streamHtml;
+            }
+
+            function executeBehavioralRecommenderEngine() {
+                const track = document.getElementById('recommended-products-cards-track');
+                if (!track) return;
+
+                const allProducts = window.BoseStoreData.products || [];
+                
+                // تصفية المنتج الحالي لمنع تكراره في الاقتراحات
+                let filteredList = allProducts.filter(item => item.slug !== activelyLoadedProductRef.slug);
+                
+                // ترتيب المنتجات ذكياً لعرض نفس الفئة أولاً لرفع معدل التحويل
+                filteredList.sort((a, b) => {
+                    if (a.category === activelyLoadedProductRef.category) return -1;
+                    if (b.category === activelyLoadedProductRef.category) return 1;
+                    return 0;
+                });
+
+                // عرض المنتجات في السلايدر بهيكلية الكارت الموحد
+                let chosenSelection = filteredList.slice(0, 4);
+
+                let trackHtml = "";
+                chosenSelection.forEach(prod => {
+                    let baseItemPrice = prod.price;
+                    let calculatedPrice = window.calculateBosePrice ? window.calculateBosePrice(baseItemPrice, "menu-only") : baseItemPrice;
+
+                    trackHtml += `
+                        <div class="unified-product-card">
+                            <div class="card-visual-node" style="cursor:pointer;" onclick="window.location.href='product.html?slug=${prod.slug}'">
+                                <img src="${prod.images[0] || 'https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png'}" alt="${prod.title}" class="card-img-element">
+                            </div>
+                            <h3 class="card-item-title" style="cursor:pointer;" onclick="window.location.href='product.html?slug=${prod.slug}'">${prod.title}</h3>
+                            <p class="card-flavor-badge">${prod.flavorName || ""}</p>
+                            <p class="card-description-node">${prod.flavorDesc || ""}</p>
+                            <div class="card-action-footer-row">
+                                <span class="card-price-value">${calculatedPrice} جنيه</span>
+                                <button type="button" class="card-add-to-cart-trigger" onclick="window.location.href='product.html?slug=${prod.slug}'" aria-label="استعراض التفاصيل والتخصيص">
+                                    <i class="fa-solid fa-ellipsis"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                track.innerHTML = trackHtml;
+            }
+        });
+    </script>
+</body>
+</html>
