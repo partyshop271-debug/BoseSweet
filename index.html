@@ -986,7 +986,7 @@
                                 </div>
                             </div>
                             <div class="product-card-price-row">
-                                <span class="bose-price-text">${finalCalculatedPrice} جنيه</span>
+                                <span class="bose-price-text" data-base-price="${finalCalculatedPrice}">${finalCalculatedPrice} جنيه</span>
                             </div>
                             <button class="bose-add-to-cart-btn-full core-cart-add-action" type="button">إضافة للسلة 🌸</button>
                         </div>
@@ -1055,12 +1055,20 @@
                     if(e.target.classList.contains('inc-trigger')) {
                         const valNode = e.target.parentElement.querySelector('.qty-value');
                         let current = parseInt(valNode.textContent) || 1;
-                        if(current < 99) valNode.textContent = current + 1;
+                        if(current < 99) {
+                            current = current + 1;
+                            valNode.textContent = current;
+                            updateCardPriceDisplay(e.target, current);
+                        }
                     }
                     if(e.target.classList.contains('dec-trigger')) {
                         const valNode = e.target.parentElement.querySelector('.qty-value');
                         let current = parseInt(valNode.textContent) || 1;
-                        if(current > 1) valNode.textContent = current - 1;
+                        if(current > 1) {
+                            current = current - 1;
+                            valNode.textContent = current;
+                            updateCardPriceDisplay(e.target, current);
+                        }
                     }
                     if(e.target.classList.contains('core-cart-add-action')) {
                         const card = e.target.closest('.product-card');
@@ -1069,6 +1077,19 @@
                         executeGlobalCartPipeline(pId, qty);
                     }
                 });
+            }
+
+            // محرك التحديث التفاعلي الفوري لربط السعر بالكمية المختارة على البطاقة
+            function updateCardPriceDisplay(triggerElement, quantity) {
+                const card = triggerElement.closest('.product-card');
+                if (!card) return;
+                const priceNode = card.querySelector('.bose-price-text');
+                if (!priceNode) return;
+                const basePrice = parseFloat(priceNode.getAttribute('data-base-price'));
+                if (!isNaN(basePrice)) {
+                    const finalPrice = basePrice * quantity;
+                    priceNode.textContent = `${finalPrice} جنيه`;
+                }
             }
 
             function executeGlobalCartPipeline(productId, quantity) {
@@ -1110,4 +1131,3 @@
     </script>
 </body>
 </html>
-

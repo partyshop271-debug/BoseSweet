@@ -56,7 +56,7 @@
             margin-top: 0;
         }
 
-        /* الشريط العلوي المتحرك الماركي لمنع ظهور الفراغات */
+        /* شريط الماركي العلوي اللانهائي */
         .bose-top-marquee-bar {
             background-color: var(--bose-cream);
             border-bottom: 1px solid rgba(255, 145, 164, 0.15);
@@ -91,7 +91,7 @@
             100% { transform: translate3d(-50%, 0, 0); }
         }
 
-        /* الهوية البصرية الهيكلية للهيدر متطابقة تماماً مع index.html */
+        /* الهوية البصرية الهيكلية للهيدر الموحد */
         .brand-identity-anchor {
             display: flex;
             align-items: center;
@@ -118,7 +118,82 @@
             gap: 16px;
         }
 
-        /* ترويسة الفئة ومطابقة الوصف الفاخر موسطاً بالكامل */
+        /* أزرار الهيدر والتحكم الفاخر لضمان الأناقة الكاملة */
+        .nav-menu-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .nav-menu-toggle::before {
+            content: "☰";
+            font-size: 1.6rem;
+            color: var(--bose-black);
+            transition: var(--bose-transition-smooth);
+        }
+        .nav-menu-toggle:hover::before {
+            color: var(--bose-pink);
+        }
+        .nav-search-trigger {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-search-trigger::before {
+            content: "🔍";
+            font-size: 1.3rem;
+            color: var(--bose-black);
+            transition: var(--bose-transition-smooth);
+        }
+        .nav-search-trigger:hover::before {
+            color: var(--bose-pink);
+        }
+        .nav-cart-icon-wrapper {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+        .nav-cart-icon-wrapper::before {
+            content: "🛒";
+            font-size: 1.4rem;
+            color: var(--bose-black);
+            transition: var(--bose-transition-smooth);
+        }
+        .nav-cart-icon-wrapper:hover::before {
+            color: var(--bose-pink);
+        }
+        #nav-cart-count {
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            font-size: 0.75rem;
+            font-weight: 700;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--bose-shadow-glow);
+        }
+
+        /* ترويسة الفئة ووصف البانر */
         .category-view-hero-section {
             padding: 40px 16px 10px 16px;
             background-color: var(--bose-white);
@@ -130,7 +205,6 @@
             text-align: center !important;
         }
         
-        /* زيادة حجم الصورة التي تحت العنوان بنسبة 40% (تعديل النسبة لـ 16/9 بدلاً من 21/9) لملء العرض بفخامة */
         .clean-category-banner-container {
             width: 100%;
             max-width: 1200px;
@@ -139,7 +213,7 @@
             overflow: hidden;
             box-shadow: var(--bose-shadow-glow);
             border: var(--bose-border-pink);
-            aspect-ratio: 16/9 !important; /* زيادة الحجم بنسبة 40% ورفع الطول البصري للبانر */
+            aspect-ratio: 16/9 !important;
             background-color: var(--bose-cream);
         }
         #category-clean-banner {
@@ -195,7 +269,7 @@
             box-shadow: var(--bose-shadow-glow);
         }
 
-        /* شبكة عرض المنتجات وتطبيق أبعاد الكروت والمقاسات القياسية الإلزامية الصارمة للموبايل والدسكتوب */
+        /* شبكة عرض المنتجات وكروت العرض الموحدة */
         .products-display-section {
             padding: 20px 0 60px 0;
             background-color: var(--bose-white);
@@ -203,43 +277,42 @@
         .products-grid-wrapper {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 16px !important; /* هوامش الصفحة الجانبية 32px إجمالاً (16px يمين + 16px يسار) */
+            padding: 0 16px !important;
             box-sizing: border-box;
         }
         
         #category-products-grid {
             display: grid !important;
-            grid-template-columns: repeat(2, 1fr) !important; /* افتراضياً كارتين بجوار بعض للموبايل */
-            gap: 12px !important; /* الفجوة بين الكروت للموبايل */
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 12px !important;
             width: 100% !important;
             box-sizing: border-box;
             padding: 0 !important;
             margin: 0 !important;
         }
 
-        /* كارت المنتج الموحد الفاخر ومقاساته الدقيقة لمنع التداخل أو قطع النصوص */
         .product-card {
             background-color: var(--bose-white) !important;
             border: var(--bose-border-pink) !important;
             border-radius: 20px !important;
-            padding: 14px !important; /* الهامش الداخلي للكرت */
+            padding: 14px !important;
             display: flex !important;
             flex-direction: column !important;
-            gap: 12px !important; /* الفجوة البينية داخل الكرت */
+            gap: 12px !important;
             box-shadow: var(--bose-shadow-glow) !important;
             transition: var(--bose-transition-smooth) !important;
             width: 100% !important;
             box-sizing: border-box !important;
             overflow: hidden !important;
-            height: auto !important; /* مرن بالكامل للسماح بظهور كافة العناصر دون قص */
+            height: auto !important;
         }
         
         @media (max-width: 767px) {
             .product-card {
-                padding: 10px !important; /* تقليل الحشو قليلاً ليتلاءم مع حجم الشاشة بصرياً */
+                padding: 10px !important;
                 gap: 10px !important;
-                min-height: 420px !important; /* الارتفاع الأدنى المناسب والتناسق بين الكروت */
-                max-height: none !important; /* إلغاء القيود القديمة نهائياً لمنع قطع النصوص أو إخفاء الأزرار */
+                min-height: 440px !important;
+                max-height: none !important;
             }
         }
 
@@ -249,10 +322,9 @@
             border-color: var(--bose-pink) !important;
         }
 
-        /* حاوية الصورة المربعة المثالية بنسبة 1:1 */
         .card-image-wrapper {
             width: 100% !important;
-            aspect-ratio: 1/1 !important; /* مربع مثالي بنسبة أبعاد 1:1 */
+            aspect-ratio: 1/1 !important;
             border-radius: 14px !important;
             overflow: hidden !important;
             background-color: var(--bose-cream) !important;
@@ -268,20 +340,19 @@
             transition: var(--bose-transition-smooth) !important;
         }
 
-        /* الفروقات الدقيقة والمقاسات لشاشات الدسكتوب الكبيرة */
         @media (min-width: 1024px) {
             .products-grid-wrapper {
-                padding: 0 16px !important; /* هوامش الصفحة الجانبية 32px إجمالاً */
+                padding: 0 16px !important;
             }
             #category-products-grid {
-                grid-template-columns: repeat(4, 1fr) !important; /* 4 كروت في السطر للدسكتوب */
-                gap: 24px !important; /* الفجوة بين الكروت في الشبكة للدسكتوب */
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 24px !important;
             }
             .product-card {
-                padding: 14px !important; /* الهامش الداخلي للكرت */
-                gap: 12px !important; /* الفجوة البينية داخل الكرت */
-                min-height: 540px !important; /* الارتفاع الإجمالي التقريبي للكرت للدسكتوب */
-                max-height: 600px !important; /* مرن ومريح لراحة العميل النفسية */
+                padding: 14px !important;
+                gap: 12px !important;
+                min-height: 540px !important;
+                max-height: 600px !important;
             }
         }
 
@@ -309,7 +380,7 @@
         }
         @media (max-width: 767px) {
             .product-card-title {
-                font-size: 0.95rem !important; /* جعل العنوان أكثر تناسقاً على شاشات الموبايل */
+                font-size: 0.95rem !important;
             }
         }
         @media (min-width: 1024px) {
@@ -363,7 +434,7 @@
             display: flex;
             justify-content: center;
             width: 100%;
-            margin-top: auto !important; /* محاذاة تلقائية ودفع الأزرار والأسعار للأسفل لتتساوى كافة الكروت */
+            margin-top: auto !important;
         }
         .bose-quantity-counter {
             display: flex;
@@ -639,7 +710,6 @@
             direction: rtl !important;
         }
         
-        /* كارت قد يعجبك أيضاً الموحد والمبسط للغاية */
         .product-card-mini-node {
             width: 78vw !important;
             background-color: var(--bose-white);
@@ -673,7 +743,7 @@
             flex-direction: column;
             gap: 6px;
             text-align: center;
-            margin-bottom: 40px; /* ترك مساحة للزر المطلق */
+            margin-bottom: 40px;
         }
         .mini-node-title {
             font-size: 1.05rem;
@@ -757,7 +827,7 @@
             color: var(--bose-pink);
         }
         
-        /* تنسيقات روابط التواصل الاجتماعي ومطابقة أنماط الفوتر المجلوبة من الاندكس */
+        /* تنسيقات روابط التواصل الاجتماعي ومطابقة أنماط الفوتر */
         .bose-footer {
             background-color: var(--bose-cream) !important;
             padding: 60px 20px 20px 20px !important;
@@ -814,6 +884,92 @@
         }
         .social-link-facebook:hover, .social-link-instagram:hover, .social-link-tiktok:hover, .social-link-whatsapp:hover {
             transform: translateY(-4px) !important;
+        }
+
+        /* ==========================================================================
+           🛡️ غلق ثغرة الدرج الجانبي (Drawer Styles) 🛡️
+           ========================================================================== */
+        .bose-drawer-menu {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100%;
+            background-color: var(--bose-white);
+            box-shadow: -8px 0 32px rgba(255, 145, 164, 0.15);
+            z-index: 1100;
+            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+            border-left: var(--bose-border-pink);
+        }
+        .bose-drawer-menu.active {
+            right: 0 !important;
+        }
+        .drawer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(17, 17, 17, 0.4);
+            backdrop-filter: blur(4px);
+            z-index: 1090;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+        .drawer-overlay.active {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+
+        /* نظام التنبيهات الفاخر الرديف لـ alert */
+        .bose-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: var(--bose-pink);
+            color: var(--bose-white);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            box-shadow: var(--bose-shadow-hover);
+            z-index: 10000;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .bose-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .slider-dots-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+        .dot-btn {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: none;
+            background-color: rgba(255, 145, 164, 0.3);
+            cursor: pointer;
+            transition: var(--bose-transition-smooth);
+            padding: 0;
+        }
+        .dot-btn.active {
+            background-color: var(--bose-pink);
+            width: 24px;
+            border-radius: 12px;
         }
     </style>
 </head>
@@ -1056,7 +1212,6 @@
 
         // تشغيل واجهات التفاعل للهيدر والسايدبار والماركي
         function setupUniversalInterfaceInteractions() {
-            // الاعتماد الكامل على محرك الحقن الموحد لفتح وإغلاق السايدبار والقوائم
             const searchTrigger = document.getElementById("search-modal-open-btn");
             const searchModal = document.getElementById("search-container");
             const searchClose = document.querySelector(".search-close-btn");
@@ -1065,6 +1220,39 @@
                 searchTrigger.addEventListener("click", () => searchModal.classList.add("active"));
                 searchClose.addEventListener("click", () => searchModal.classList.remove("active"));
             }
+
+            // 🛡️ معالجة وحل مشكلة شلل القائمة الجانبية (السايدبار)
+            const sidebarOpenBtn = document.getElementById("sidebar-open-btn");
+            const sidebarDrawer = document.getElementById("sidebar-drawer");
+            const drawerShield = document.getElementById("drawer-shield");
+
+            if (sidebarOpenBtn && sidebarDrawer && drawerShield) {
+                sidebarOpenBtn.addEventListener("click", () => {
+                    sidebarDrawer.classList.add("active");
+                    drawerShield.classList.add("active");
+                });
+
+                drawerShield.addEventListener("click", () => {
+                    sidebarDrawer.classList.remove("active");
+                    drawerShield.classList.remove("active");
+                });
+            }
+        }
+
+        // إشعار المستخدم المطور عند الإضافة الفورية للسلة كبديل للـ alert
+        function showBoseToast(message) {
+            let toast = document.getElementById("bose-global-toast");
+            if (!toast) {
+                toast = document.createElement("div");
+                toast.id = "bose-global-toast";
+                toast.className = "bose-toast";
+                document.body.appendChild(toast);
+            }
+            toast.textContent = message;
+            toast.classList.add("show");
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3000);
         }
 
         // تشغيل محرك البحث الفوري السريع
@@ -1168,6 +1356,7 @@
                     chosenReviewRating = 5;
 
                     renderDynamicReviewsFeed(categoryId);
+                    showBoseToast("شكراً لك، تم نشر رأيك وتجربتك الفاخرة بنجاح 🌸");
                 });
             }
         }
@@ -1178,7 +1367,6 @@
             const categoryId = urlParams.get('id') || "taswaq-despacito";
             const data = window.BoseStoreData;
 
-            // توجيه تلقائي لمنع عرض الفئات الخارجية غير المتوافقة مع هذا التبويب
             if (!permittedCategories.includes(categoryId)) {
                 window.location.href = "menu.html";
                 return;
@@ -1198,7 +1386,6 @@
                 cleanBanner.src = categoryInfo.image;
             }
 
-            // أوصاف دقيقة معتمدة من مواصفة التشغيل
             const descriptionsMap = {
                 "taswaq-despacito": "كيك فادج غني مغمور بالشوكولاتة، يعلوه طبقة من النوتيلا ثم طبقة من موس الشوكولاتة بتوليفتنا الخاصة التي تمنحه طعماً متوازناً وغنياً. بعد ذلك يختار العميل التوبنج الذي يفضله ليكمل التجربة بالطريقة التي تناسب ذوقه.",
                 "taswaq-qashtota": "كيك فانيليا مشرب بالحليب بعناية ليحافظ على نعومته وغناه، يعلوه طبقة من الكريمة اللباني بتوليفتنا الخاصة التي تحمل بصمتنا المميزة. ثم تأتي طبقة المكسرات التي أعددناها لتكمل التجربة وتمنح المنتج شخصيته الخاصة، مع إمكانية اختيار التوبنج المفضل للعميل.",
@@ -1236,7 +1423,7 @@
             });
         }
 
-        // بناء وعرض المنتجات بالهيكل الموحد المزدوج (مطابق للاندكس)
+        // بناء وعرض المنتجات بالهيكل الموحد المزدوج
         function renderProductsGrid(categoryId, data) {
             const grid = document.getElementById("category-products-grid");
             if (!grid) return;
@@ -1272,6 +1459,9 @@
                 const cardNode = document.createElement("div");
                 cardNode.className = "product-card";
                 cardNode.setAttribute("data-product-id", product.id);
+                // 🛡️ زراعة السعر الفردي المحسوب لتسريع التعديل والمضاعفة في العداد
+                cardNode.setAttribute("data-resolved-price", resolvedPrice);
+                
                 cardNode.innerHTML = `
                     <div class="card-image-wrapper">
                         <a href="product.html?id=${product.id}">
@@ -1309,7 +1499,6 @@
 
             let allReviews = JSON.parse(localStorage.getItem("bose_dynamic_reviews")) || [];
             
-            // تهيئة افتراضية راقية وصادقة في حال كانت الذاكرة فارغة
             if (allReviews.length === 0) {
                 const defaultFeed = [
                     {
@@ -1467,31 +1656,54 @@
             });
         }
 
+        // 🛡️ تحديث السعر المعروض لحظياً عند تفاعل المستخدم مع العداد لمنع تجمد السعر
+        function updateDisplayCardPrice(cardElement, quantity) {
+            const resolvedPrice = parseFloat(cardElement.getAttribute("data-resolved-price")) || 0;
+            const priceTextSpan = cardElement.querySelector(".product-card-price-row .bose-price-text");
+            if (priceTextSpan) {
+                const calculatedTotal = resolvedPrice * quantity;
+                priceTextSpan.textContent = `${calculatedTotal} جنيه`;
+            }
+        }
+
         // رصد عمليات العداد والإضافة الفورية للسلة
         function registerStepperAndCartDelegation() {
-            document.body.addEventListener('click', (e) => {
-                if (e.target.classList.contains('inc-trigger')) {
-                    const valNode = e.target.parentElement.querySelector('.qty-value');
-                    let current = parseInt(valNode.textContent) || 1;
-                    if (current < 99) valNode.textContent = current + 1;
+            document.body.removeEventListener('click', handleGlobalClicks); // وقاية لمنع تكرار مستمعي الأحداث
+            document.body.addEventListener('click', handleGlobalClicks);
+        }
+
+        function handleGlobalClicks(e) {
+            if (e.target.classList.contains('inc-trigger')) {
+                const card = e.target.closest('.product-card');
+                const valNode = e.target.parentElement.querySelector('.qty-value');
+                let current = parseInt(valNode.textContent) || 1;
+                if (current < 99) {
+                    current += 1;
+                    valNode.textContent = current;
+                    if (card) updateDisplayCardPrice(card, current);
                 }
-                if (e.target.classList.contains('dec-trigger')) {
-                    const valNode = e.target.parentElement.querySelector('.qty-value');
-                    let current = parseInt(valNode.textContent) || 1;
-                    if (current > 1) valNode.textContent = current - 1;
+            }
+            if (e.target.classList.contains('dec-trigger')) {
+                const card = e.target.closest('.product-card');
+                const valNode = e.target.parentElement.querySelector('.qty-value');
+                let current = parseInt(valNode.textContent) || 1;
+                if (current > 1) {
+                    current -= 1;
+                    valNode.textContent = current;
+                    if (card) updateDisplayCardPrice(card, current);
                 }
-                if (e.target.classList.contains('core-cart-add-action')) {
-                    const card = e.target.closest('.product-card');
-                    const pId = card.getAttribute('data-product-id');
-                    const qty = parseInt(card.querySelector('.qty-value').textContent) || 1;
-                    executeGlobalCartPipeline(pId, qty);
-                }
-                if (e.target.classList.contains('core-mini-add-action')) {
-                    const card = e.target.closest('.product-card-mini-node');
-                    const pId = card.getAttribute('data-product-id');
-                    executeGlobalCartPipeline(pId, 1);
-                }
-            });
+            }
+            if (e.target.classList.contains('core-cart-add-action')) {
+                const card = e.target.closest('.product-card');
+                const pId = card.getAttribute('data-product-id');
+                const qty = parseInt(card.querySelector('.qty-value').textContent) || 1;
+                executeGlobalCartPipeline(pId, qty);
+            }
+            if (e.target.classList.contains('core-mini-add-action')) {
+                const card = e.target.closest('.product-card-mini-node');
+                const pId = card.getAttribute('data-product-id');
+                executeGlobalCartPipeline(pId, 1);
+            }
         }
 
         // معالجة وحساب وحفظ السلة ديناميكياً
@@ -1553,6 +1765,9 @@
                     window.updateGlobalCartCounter();
                 }
             }
+
+            // إشعار المستخدم بنعومة واحترافية كاملة متوافقة مع التوجيه السلوكي للعلامة التجارية
+            showBoseToast(`تمت إضافة ${quantity} قطعة إلى السلة بنجاح 🌸`);
         }
     </script>
 </body>
