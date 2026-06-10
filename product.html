@@ -14,11 +14,9 @@
     <link rel="stylesheet" href="css/global.css">
     <link rel="stylesheet" href="css/main.css">
     
-    <!-- استدعاء المحرك العام وحارس حماية الذاكرة والبيانات الشامل أولاً -->
     <script src="js/core.html.js"></script>
     
     <style>
-        /* 🌸 شاشة التحميل الفاخرة لمنتجات حلويات بوسي لمنع الفراغ البصري */
         .bose-loader-overlay {
             position: fixed !important;
             top: 0 !important;
@@ -109,7 +107,6 @@
             100% { transform: translateX(100%); }
         }
 
-        /* تنسيقات كتل تفاصيل المنتج الفاخرة */
         .bose-breadcrumb-nav {
             background-color: var(--bose-white);
             padding: 16px 0;
@@ -421,7 +418,6 @@
             box-shadow: var(--bose-shadow-glow);
         }
 
-        /* تنسيقات التبويبات الفاخرة */
         .product-tabs-section {
             max-width: 1200px;
             margin: 60px auto;
@@ -479,7 +475,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* كروت التوصية والمنتجات المشابهة */
         .related-products-section {
             background-color: var(--bose-cream);
             padding: 60px 0;
@@ -506,7 +501,6 @@
             gap: 25px;
         }
 
-        /* تهيئة التجاوب الكامل للموبايل */
         @media (max-width: 991px) {
             .product-details-container {
                 grid-template-columns: 1fr;
@@ -521,14 +515,12 @@
 </head>
 <body>
 
-    <!-- 🌸 شاشة التحميل الفاخرة لمنع الفراغ البصري (Loader Screen) -->
     <div id="bose-page-loader" class="bose-loader-overlay">
         <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي" class="bose-loader-logo" onerror="this.style.display='none'">
         <div class="bose-spinner"></div>
         <p class="bose-loader-text">بندورلك على تفاصيل الصنف الفاخر... 🌸</p>
     </div>
 
-    <!-- شريط الإعلانات اللامع المتكرر -->
     <div class="bose-top-marquee-bar">
         <div class="bose-marquee-content">
             <div class="bose-marquee-item"><span class="emoji">🌸</span> خامات طبيعية ممتازة ومضمونة 100% لتليق بمناسباتكم الفخمة</div>
@@ -537,17 +529,14 @@
         </div>
     </div>
 
-    <!-- الهيدر الموحد القياسي للموقع -->
     <header class="bose-header-sticky">
         <div class="header-container-wrapper">
-            <!-- زر القائمة الجانبية -->
             <button class="nav-hamburger-toggle" id="menu-toggle-btn" aria-label="عرض القائمة الجانبية">
                 <span class="bar-line"></span>
                 <span class="bar-line"></span>
                 <span class="bar-line"></span>
             </button>
             
-            <!-- اللوجو والهوية الشرفية للعلامة -->
             <a href="index.html" class="bose-branding-wrapper">
                 <img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="لوجو حلويات بوسي الفاخر" class="bose-header-logo-image">
                 <div class="bose-brand-text-block">
@@ -555,7 +544,6 @@
                 </div>
             </a>
 
-            <!-- أزرار التفاعل بالهيدر -->
             <div class="header-interactive-actions">
                 <button class="nav-search-trigger" id="search-trigger-btn" aria-label="بحث في المنتجات">
                     <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -575,7 +563,6 @@
         </div>
     </header>
 
-    <!-- محرك البحث العائم السريع -->
     <div class="bose-search-overlay-modal" id="search-overlay-panel">
         <div class="search-modal-container">
             <div class="search-input-wrapper-row">
@@ -586,7 +573,6 @@
         </div>
     </div>
 
-    <!-- القائمة الجانبية التفاعلية -->
     <aside class="bose-sidebar-menu" id="navigation-sidebar-panel">
         <div class="sidebar-header-row">
             <span class="sidebar-title">أقسام حلويات بوسي 🌸</span>
@@ -601,7 +587,6 @@
         </nav>
     </aside>
 
-    <!-- مسار التنقل الديناميكي (Breadcrumbs) -->
     <nav class="bose-breadcrumb-nav">
         <div class="bose-breadcrumb-container">
             <ul class="bose-breadcrumb-list">
@@ -613,20 +598,16 @@
         </div>
     </nav>
 
-    <!-- واجهة تفاصيل المنتج الأساسية -->
     <main class="product-details-container">
         
-        <!-- العمود الأيمن: معرض صور المنتج -->
         <section class="product-images-column">
             <div class="main-image-container">
                 <img id="main-product-image" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تفاصيل المنتج">
             </div>
             <div class="thumbnails-track" id="thumbnails-track">
-                <!-- يتم توليد الصور المصغرة ديناميكياً -->
             </div>
         </section>
 
-        <!-- العمود الأيسر: نصوص تفاصيل المنتج وإدارته -->
         <section class="product-content-column">
             <span class="product-tag" id="product-detail-flavor-name">فاخر 🌸</span>
             <h1 class="product-title" id="product-detail-title">تورتة الشوكولاتة والكرز الفاخرة</h1>
@@ -635,27 +616,22 @@
                 جاري سحب تفاصيل المذاق الاستثنائي الذي أعده لكم طهاتنا بكل حب وعناية...
             </p>
 
-            <!-- خيارات اختيار الحشوات (ديناميكية) -->
             <div class="custom-option-group" id="product-flavors-section" style="display: none;">
                 <h4 class="option-section-title">
                     <span>✨ اختر الحشو الداخلي المناسب لمذاقك:</span>
                 </h4>
                 <div class="options-grid" id="flavors-options-container">
-                    <!-- الحشوات المتاحة -->
                 </div>
             </div>
 
-            <!-- خيارات اختيار المقاسات (ديناميكية) -->
             <div class="custom-option-group" id="product-sizes-section" style="display: none;">
                 <h4 class="option-section-title">
                     <span>📐 اختر المقاس المفضل:</span>
                 </h4>
                 <div class="options-grid" id="sizes-options-container">
-                    <!-- المقاسات والأسعار المتاحة -->
                 </div>
             </div>
 
-            <!-- تخصيصات الكيك الفاخر الإضافية للمناسبات -->
             <div class="cake-customization-options" id="cake-customization-options" style="display: none;">
                 <h4 class="option-section-title">🎨 لمسة تخصيص إضافية لتورتتك:</h4>
                 
@@ -677,7 +653,6 @@
                 </div>
             </div>
 
-            <!-- التحكم بالكمية وزر الإضافة للسلة القياسي -->
             <div class="qty-and-cart-row">
                 <div class="qty-selector-wrapper">
                     <button class="qty-btn" id="qty-minus" aria-label="تقليل الكمية">−</button>
@@ -692,7 +667,6 @@
         </section>
     </main>
 
-    <!-- قسم تبويبات التفاصيل الإضافية والمعلومات الفنية -->
     <section class="product-tabs-section">
         <div class="tabs-nav">
             <button class="tab-trigger active" data-tab="details">التفاصيل الفنية</button>
@@ -713,17 +687,14 @@
         </div>
     </section>
 
-    <!-- قسم المنتجات المرشحة والمشابهة -->
     <section class="related-products-section">
         <div class="related-products-container">
             <h2 class="related-section-title">إليك أيضاً روائع قد تنال إعجابك 🌸</h2>
             <div class="related-products-slider" id="related-products-track">
-                <!-- يتم ملؤها ديناميكياً بمنتجات من نفس التصنيف -->
             </div>
         </div>
     </section>
 
-    <!-- فوتر الموقع المعتمد والشامخ للعلامة التجارية -->
     <footer class="bose-footer-luxury">
         <div class="footer-core-grid">
             <div class="footer-brand-column">
@@ -753,25 +724,22 @@
         </div>
     </footer>
 
-    <!-- محرك التحكم بالتفاصيل والبحث والتأمين القياسي -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
             const productSlug = urlParams.get('slug');
 
-            // إذا لم يكن هناك slug، نعود للمنيو فوراً لحماية مسار التصفح
             if (!productSlug) {
                 window.location.href = 'menu.html';
                 return;
             }
 
-            // 🛡️ حارس التوافق ومنع التحويل التلقائي المتسرع (Engine Guard)
             let checkAttempts = 0;
-            const maxCheckAttempts = 100; // 5 ثوانٍ كحد أقصى (100 * 50ms)
+            const maxCheckAttempts = 100;
 
             const coreDatabaseGuard = setInterval(() => {
                 checkAttempts++;
-                if (window.BoseStoreData && window.BoseStoreData.store) {
+                if (window.BoseStoreData && (window.BoseStoreData.store || window.BoseStoreData.products || window.BoseStoreData.categories)) {
                     clearInterval(coreDatabaseGuard);
                     initProductDetailEngine();
                 } else if (checkAttempts >= maxCheckAttempts) {
@@ -780,7 +748,6 @@
                 }
             }, 50);
 
-            // دوال تبديل التبويبات الفنية
             const tabTriggers = document.querySelectorAll('.tab-trigger');
             tabTriggers.forEach(trig => {
                 trig.addEventListener('click', () => {
@@ -799,7 +766,6 @@
                 let matchProduct = null;
                 let matchCategory = null;
 
-                // البحث الدقيق عن الصنف داخل جميع فئات المتجر المتاحة
                 if (data.categories && Array.isArray(data.categories)) {
                     for (const cat of data.categories) {
                         if (cat.products && Array.isArray(cat.products)) {
@@ -813,16 +779,27 @@
                     }
                 }
 
-                // التوجيه الحصري للمنيو في حال اكتمل تحميل البيانات والمنتج غير موجود فعلاً بالمتجر (رابط منتهي أو معطوب)
+                if (!matchProduct && data.products && Array.isArray(data.products)) {
+                    const found = data.products.find(p => p.slug === productSlug);
+                    if (found) {
+                        matchProduct = found;
+                        const catId = found.category || 'general';
+                        matchCategory = (data.categories && Array.isArray(data.categories)) ? 
+                            data.categories.find(c => c.id === catId) : null;
+                        
+                        if (!matchCategory) {
+                            matchCategory = { id: catId, name: found.categoryName || 'أصنافنا الفاخرة', products: data.products.filter(p => p.category === catId) };
+                        }
+                    }
+                }
+
                 if (!matchProduct) {
                     window.location.href = 'menu.html';
                     return;
                 }
 
-                // تنفيذ معالجة البيانات وعرض واجهة المستخدم بامتياز
                 renderProduct(data, matchProduct, matchCategory);
 
-                // إخفاء شاشة التحميل الفاخرة بنعومة بالغة لإبهار العميل بالواجهة المستقرة
                 const loader = document.getElementById('bose-page-loader');
                 if (loader) {
                     loader.classList.add('fade-out');
@@ -833,7 +810,6 @@
             }
 
             function handleDatabaseLoadError() {
-                // عرض واجهة خطأ تواصل وتنسيق احترافي في حال انقطاع الشبكة بدلاً من القفز لصفحة المنيو بدون سبب
                 const loaderText = document.querySelector('.bose-loader-text');
                 const loaderSpinner = document.querySelector('.bose-spinner');
                 if (loaderSpinner) loaderSpinner.style.display = 'none';
@@ -850,22 +826,19 @@
             }
 
             function renderProduct(data, matchProduct, matchCategory) {
-                const currencyToken = data.store.currency || 'EGP';
+                const currencyToken = (data.store && data.store.currency) ? data.store.currency : 'EGP';
                 
-                // تحديث الـ SEO وعنوان المتصفح
                 document.title = `${matchProduct.title} | حلويات بوسي`;
                 
-                // ملء Breadcrumbs
                 const breadcrumbCurrent = document.getElementById('breadcrumb-current-product');
                 if (breadcrumbCurrent) breadcrumbCurrent.textContent = matchProduct.title;
                 
                 const breadcrumbCat = document.getElementById('breadcrumb-category-link');
-                if (breadcrumbCat) {
+                if (breadcrumbCat && matchCategory) {
                     breadcrumbCat.textContent = matchCategory.name;
                     breadcrumbCat.href = `category.html?id=${matchCategory.id}`;
                 }
 
-                // الصور ومعرض العرض الديناميكي
                 const mainImg = document.getElementById('main-product-image');
                 if (mainImg && matchProduct.images && matchProduct.images[0]) {
                     mainImg.src = matchProduct.images[0];
@@ -888,7 +861,6 @@
                     });
                 }
                 
-                // النصوص الأساسية
                 const titleEl = document.getElementById('product-detail-title');
                 if (titleEl) titleEl.textContent = matchProduct.title;
 
@@ -898,27 +870,23 @@
                 const descEl = document.getElementById('product-detail-desc');
                 if (descEl) descEl.textContent = matchProduct.description || '';
 
-                // المتغيرات الديناميكية للحساب المالي المعتمد والمحمي
                 let activeSizePrice = matchProduct.price || 0;
                 let activeSizeName = "standard";
                 let activeFlavorName = matchProduct.flavorName || 'كلاسيك';
                 let extraPrintingPrice = 0;
 
-                // احتساب زيادة الأسعار المعتمدة بملف الـ JSON إن وجدت
                 function resolveFinalPrice(basePrice) {
                     let finalPrice = basePrice;
-                    if (data.store.priceIncrease && data.store.priceIncrease.enabled) {
+                    if (data.store && data.store.priceIncrease && data.store.priceIncrease.enabled) {
                         finalPrice = finalPrice + (finalPrice * (data.store.priceIncrease.percent / 100));
                     }
                     return Math.round(finalPrice);
                 }
 
-                // الحصول على التكلفة القاعدية للمنتج مع ملحقات التخصيص
                 function getCustomTotalBasePrice() {
                     return activeSizePrice + extraPrintingPrice;
                 }
 
-                // تحديث حقل السعر المعروض
                 const priceEl = document.getElementById('product-detail-price');
                 function updateDisplayedPrice() {
                     if (priceEl) {
@@ -928,7 +896,6 @@
                 }
                 updateDisplayedPrice();
 
-                // توليد أزرار اختيار المقاسات الفاخرة
                 const sizesContainer = document.getElementById('sizes-options-container');
                 const sizesSection = document.getElementById('product-sizes-section');
                 if (sizesSection && sizesContainer) {
@@ -958,7 +925,6 @@
                     }
                 }
 
-                // توليد أزرار اختيار الحشوات والنكهات
                 const flavorsContainer = document.getElementById('flavors-options-container');
                 const flavorsSection = document.getElementById('product-flavors-section');
                 if (flavorsSection && flavorsContainer) {
@@ -984,17 +950,15 @@
                     }
                 }
 
-                // إظهار كتل التخصيص للمنتجات من قسم التورتات ميني أو الكبرى
                 const cakeCustomizationSection = document.getElementById('cake-customization-options');
-                if (cakeCustomizationSection) {
-                    if (matchCategory.id === 'taswaq-turt' || matchCategory.id === 'taswaq-mini-turt') {
+                if (cakeCustomizationSection && matchCategory) {
+                    if (matchCategory.id === 'taswaq-turt' || matchCategory.id === 'taswaq-mini-turt' || matchProduct.category === 'taswaq-turt' || matchProduct.category === 'taswaq-mini-turt') {
                         cakeCustomizationSection.style.display = 'block';
                     } else {
                         cakeCustomizationSection.style.display = 'none';
                     }
                 }
 
-                // محرك تخصيص التورت الفني
                 const hasPrintingCheckbox = document.getElementById('custom-printing-enabled');
                 const printingOptionRow = document.getElementById('printing-option-row');
                 const printingImageInput = document.getElementById('custom-printing-image');
@@ -1004,7 +968,7 @@
                     hasPrintingCheckbox.addEventListener('change', () => {
                         if (hasPrintingCheckbox.checked) {
                             printingOptionRow.style.display = 'block';
-                            extraPrintingPrice = 60; // رسوم طباعة الصور القابلة للأكل القياسية
+                            extraPrintingPrice = 60;
                         } else {
                             printingOptionRow.style.display = 'none';
                             extraPrintingPrice = 0;
@@ -1014,7 +978,6 @@
                     });
                 }
 
-                // محاكاة وتحديث كتل الكمية المشتراة
                 const qtyMinus = document.getElementById('qty-minus');
                 const qtyPlus = document.getElementById('qty-plus');
                 const qtyInput = document.getElementById('qty-input');
@@ -1042,7 +1005,6 @@
                     });
                 }
 
-                // محرك وزرار إرسال وإضافة الصنف إلى السلة بمرونة مالية مؤمنة
                 const addToCartBtn = document.getElementById('add-to-cart-action-btn');
                 if (addToCartBtn) {
                     addToCartBtn.addEventListener('click', () => {
@@ -1083,7 +1045,6 @@
                             }
                         }
 
-                        // إعلام المستخدم بإشعار التوستر البمبي العائم بنجاح الإضافة
                         if (window.showBoseToast) {
                             window.showBoseToast(`تمت إضافة ${currentQty} قطعة إلى السلة بنجاح 🌸`);
                         } else {
@@ -1092,9 +1053,8 @@
                     });
                 }
 
-                // ملء المنتجات المشابهة والمقترحة من نفس القسم لرفع التفاعل الشرائي لدى العميل
                 const relatedTrack = document.getElementById('related-products-track');
-                if (relatedTrack && matchCategory.products) {
+                if (relatedTrack && matchCategory && matchCategory.products) {
                     relatedTrack.innerHTML = '';
                     const filteredRelated = matchCategory.products.filter(p => p.slug !== matchProduct.slug).slice(0, 4);
                     
@@ -1129,7 +1089,6 @@
                                 </div>
                             `;
 
-                            // إضافة مستمع نقرات عالي التجاوب للتحويل بدون أي أخطاء سينتاكس برمجية
                             cardNode.querySelectorAll('a, button').forEach(element => {
                                 element.addEventListener('click', (e) => {
                                     e.preventDefault();
@@ -1146,4 +1105,3 @@
     </script>
 </body>
 </html>
-
