@@ -875,30 +875,46 @@
 
             function initializeProductFormController() {
                 const routingParams = new URLSearchParams(window.location.search);
-                let requestedProductSlug = routingParams.get('slug') || "toort-custom-master";
+                // 🛠️ تحسين هندسي: فحص المتغيرين slug و id معاً لمنع التعارض بين الصفحات
+                let requestedProductSlug = routingParams.get('slug') || routingParams.get('id') || "toort-custom-master";
                 
+                // 🛠️ تحسين هندسي: خريطة تحويل ذكية لمعرفات الفئات القادمة من المنيو إلى الـ Slugs الأساسية المقابلة لها في الـ JSON
+                const categoryToProductMap = {
+                    "taswaq-toort": "toort-custom-master",
+                    "taswaq-gatowat": "gateaux-royal",
+                    "taswaq-qashtota": "qashtota-lotus-new",
+                    "taswaq-despacito": "despacito-pistachio-new",
+                    "taswaq-cinabon": "cinabon-classic",
+                    "taswaq-donuts": "donuts-matilda",
+                    "taswaq-red-velvet": "red-velvet-master",
+                    "taswaq-cupcake": "cupcake-mix-new",
+                    "taswaq-mini-cake": "mini-cake-master",
+                    "taswaq-flowers": "flowers-master",
+                    "taswaq-happiness-cups": "happiness-cups-nutella",
+                    "taswaq-relax-box": "relax-box"
+                };
+
+                if (categoryToProductMap[requestedProductSlug]) {
+                    requestedProductSlug = categoryToProductMap[requestedProductSlug];
+                }
+
                 const verifiedFullCardScopeSlugs = [
                     "toort-custom-master", "gateaux-royal", "gateaux-classic", "gateaux-soiree",
                     "flowers-master", "cupcake-mix-new", "cupcake-chocolate", "cupcake-vanilla",
-                    "mini-cake-master", "red-velvet-master", "relax-box"
+                    "mini-cake-master", "red-velvet-master", "relax-box", "qashtota-lotus-new",
+                    "despacito-pistachio-new", "cinabon-classic", "donuts-matilda", "happiness-cups-nutella"
                 ];
 
-                if (!verifiedFullCardScopeSlugs.includes(requestedProductSlug)) {
-                    const dbProductsCollection = window.BoseStoreData.products || [];
-                    const foundBySlug = dbProductsCollection.find(item => item.slug === requestedProductSlug || item.id === requestedProductSlug);
-                    if (!foundBySlug) {
-                        requestedProductSlug = "toort-custom-master";
-                    } else {
-                        activelyLoadedProductRef = foundBySlug;
-                    }
+                const dbProductsCollection = window.BoseStoreData.products || [];
+                activelyLoadedProductRef = dbProductsCollection.find(item => item.slug === requestedProductSlug || item.id === requestedProductSlug);
+
+                // 🛠️ تحسين هندسي: منع انهيار الصفحة أو إخفائها وإسناد فالباك آمن في حال عدم العثور التام على المعرف
+                if (!activelyLoadedProductRef) {
+                    activelyLoadedProductRef = dbProductsCollection.find(item => item.slug === "toort-custom-master" || item.id === "toort-custom-master");
                 }
 
                 if (!activelyLoadedProductRef) {
-                    const dbProductsCollection = window.BoseStoreData.products || [];
-                    activelyLoadedProductRef = dbProductsCollection.find(item => item.slug === requestedProductSlug || item.id === requestedProductSlug);
-                }
-
-                if (!activelyLoadedProductRef) {
+                    console.error("❌ Critical Error: Product master reference missing from database.");
                     return;
                 }
 
@@ -959,6 +975,7 @@
                     return;
                 }
 
+                // كود توليد واجهة السليدر والأحجام والخيارات المتكاملة دون المساس بالهيكل
                 if (activelyLoadedProductRef.prices) {
                     let sizeMarkup = `
                         <div class="config-container-node">
@@ -1222,7 +1239,7 @@
                 }
             }
 
-            function executeReviewSubmissionPipeline() {
+function executeReviewSubmissionPipeline() {
                 const uName = document.getElementById('experience-user-name').value.trim();
                 const uCity = document.getElementById('experience-user-city').value.trim();
                 const uComment = document.getElementById('experience-user-comment').value.trim();
@@ -1255,8 +1272,14 @@
                 
                 const stars = document.querySelectorAll('#form-interactive-stars-row .rating-star-node');
                 stars.forEach(s => s.classList.add('selected'));
+                
                 renderExperiencesListStream();
-                alert("شكراً لك على مشاركة تجربتك الصادقة! تم نشر مراجعتك فوراً.");
+                
+                if (window.showBoseAlert) {
+                    window.showBoseAlert("شكراً لك على مشاركة تجربتك الصادقة! تم نشر مراجعتك فوراً. 🌸");
+                } else {
+                    alert("شكراً لك على مشاركة تجربتك الصادقة! تم نشر مراجعتك فوراً.");
+                }
             }
 
             function executeCommunityExperienceGeneratorEngine() {
@@ -1345,5 +1368,5 @@
             }
         });
     </script>
-</body>
+    </body>
 </html>
